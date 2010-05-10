@@ -45,11 +45,14 @@ namespace HeuristicLab.Selection {
     public LookupParameter<DoubleValue> CurrentSuccessRatioParameter {
       get { return (LookupParameter<DoubleValue>)Parameters["CurrentSuccessRatio"]; }
     }
-    public LookupParameter<ItemList<IScope>> WinnersParameter {
-      get { return (LookupParameter<ItemList<IScope>>)Parameters["Winners"]; }
+    public LookupParameter<ItemList<IScope>> OffspringPopulationParameter {
+      get { return (LookupParameter<ItemList<IScope>>)Parameters["OffspringPopulation"]; }
     }
-    public LookupParameter<ItemList<IScope>> LuckyLosersParameter {
-      get { return (LookupParameter<ItemList<IScope>>)Parameters["LuckyLosers"]; }
+    public LookupParameter<IntValue> OffspringPopulationWinnersParameter {
+      get { return (LookupParameter<IntValue>)Parameters["OffspringPopulationWinners"]; }
+    }
+    public ScopeTreeLookupParameter<BoolValue> SuccessfulOffspringParameter {
+      get { return (ScopeTreeLookupParameter<BoolValue>)Parameters["SuccessfulOffspring"]; }
     }
     public OperatorParameter OffspringCreatorParameter {
       get { return (OperatorParameter)Parameters["OffspringCreator"]; }
@@ -66,8 +69,9 @@ namespace HeuristicLab.Selection {
       Parameters.Add(new ValueLookupParameter<DoubleValue>("SuccessRatio", "The ratio of successful offspring that has to be produced."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("SelectionPressure", "The amount of selection pressure currently necessary to fulfill the success ratio."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("CurrentSuccessRatio", "The current success ratio indicates how much of the successful offspring have already been generated."));
-      Parameters.Add(new LookupParameter<ItemList<IScope>>("Winners", "Temporary store of the successful offspring."));
-      Parameters.Add(new LookupParameter<ItemList<IScope>>("LuckyLosers", "Temporary store of the lucky losers."));
+      Parameters.Add(new LookupParameter<ItemList<IScope>>("OffspringPopulation", "Temporary store of the offspring population."));
+      Parameters.Add(new LookupParameter<IntValue>("OffspringPopulationWinners", "Temporary store the number of successful offspring in the offspring population."));
+      Parameters.Add(new ScopeTreeLookupParameter<BoolValue>("SuccessfulOffspring", "True if the offspring was more successful than its parents.", 2));
       Parameters.Add(new OperatorParameter("OffspringCreator", "The operator used to create new offspring."));
     }
 
@@ -76,8 +80,9 @@ namespace HeuristicLab.Selection {
       double successRatio = SuccessRatioParameter.ActualValue.Value;
       IScope scope = ExecutionContext.Scope;
       IScope parents = scope.SubScopes[0];
-      IScope children = scope.SubScopes[1];
+      IScope offspring = scope.SubScopes[1];
       int populationSize = parents.SubScopes.Count;
+      int offspringSize = offspring.SubScopes.Count;
 
       // retrieve actual selection pressure and success ratio
       DoubleValue selectionPressure = SelectionPressureParameter.ActualValue;
@@ -91,44 +96,54 @@ namespace HeuristicLab.Selection {
         CurrentSuccessRatioParameter.ActualValue = currentSuccessRatio;
       }
 
-      // retrieve winners and lucky losers
-      ItemList<IScope> winners = WinnersParameter.ActualValue;
-      if (winners == null) {
-        winners = new ItemList<IScope>();
-        WinnersParameter.ActualValue = winners;
+      // retrieve next population
+      ItemList<IScope> population = OffspringPopulationParameter.ActualValue;
+      IntValue successfulOffspring;
+      if (population == null) {
+        population = new ItemList<IScope>();
+        OffspringPopulationParameter.ActualValue = population;
         selectionPressure.Value = 0; // initialize selection pressure for this round
         currentSuccessRatio.Value = 0; // initialize current success ratio for this round
-      }
-      ItemList<IScope> luckyLosers = LuckyLosersParameter.ActualValue;
-      if (luckyLosers == null) {
-        luckyLosers = new ItemList<IScope>();
-        LuckyLosersParameter.ActualValue = luckyLosers;
-      }
+        successfulOffspring = new IntValue(0);
+        OffspringPopulationWinnersParameter.ActualValue = successfulOffspring;
+      } else successfulOffspring = OffspringPopulationWinnersParameter.ActualValue;
+      
+      int worseOffspringNeeded = (int)((1 - successRatio) * populationSize) - (population.Count - successfulOffspring.Value);
+      int successfulOffspringAdded = 0;
 
-      // separate new offspring in winners and lucky losers, the unlucky losers are discarded, sorry guys
-      int winnersCount = 0;
-      int losersCount = 0;
-      ScopeList offspring = children.SubScopes[1].SubScopes; // the winners
-      winnersCount += offspring.Count;
-      winners.AddRange(offspring);
-      offspring = children.SubScopes[0].SubScopes; // the losers
-      losersCount += offspring.Count;
-      while (offspring.Count > 0 && ((1 - successRatio) * populationSize > luckyLosers.Count ||
-            selectionPressure.Value >= maxSelPress)) {
-        luckyLosers.Add(offspring[0]);
-        offspring.RemoveAt(0);
+      // implement the ActualValue fetch here - otherwise the parent scope would also be included, given that there may be 1000 or more parents, this is quite unnecessary
+      string tname = SuccessfulOffspringParameter.TranslatedName;
+      double tmpSelPress = selectionPressure.Value, tmpSelPressInc = 1.0 / populationSize;
+      for (int i = 0; i < offspringSize; i++) {
+        // fetch value
+        IVariable tmpVar;
+        if (!offspring.SubScopes[i].Variables.TryGetValue(tname, out tmpVar)) throw new InvalidOperationException(Name + ": Could not determine if an offspring was successful or not.");
+        BoolValue tmp = (tmpVar.Value as BoolValue);
+        if (tmp == null) throw new InvalidOperationException(Name + ": The variable that indicates whether an offspring is successful or not must contain a BoolValue.");
+
+        // add to population
+        if (tmp.Value) {
+          population.Add(offspring.SubScopes[i]);
+          successfulOffspringAdded++;
+        } else if (worseOffspringNeeded > 0 || tmpSelPress >= maxSelPress) {
+          population.Add(offspring.SubScopes[i]);
+          worseOffspringNeeded--;
+        }
+        tmpSelPress += tmpSelPressInc;
+        if (population.Count == populationSize) break;
       }
+      successfulOffspring.Value += successfulOffspringAdded;
 
       // calculate actual selection pressure and success ratio
-      selectionPressure.Value += (winnersCount + losersCount) / ((double)populationSize);
-      currentSuccessRatio.Value = winners.Count / ((double)populationSize);
+      selectionPressure.Value += offspringSize / (double)populationSize;
+      currentSuccessRatio.Value = successfulOffspring.Value / ((double)populationSize);
 
       // check if enough children have been generated
       if (((selectionPressure.Value < maxSelPress) && (currentSuccessRatio.Value < successRatio)) ||
-          ((winners.Count + luckyLosers.Count) < populationSize)) {
+          (population.Count < populationSize)) {
         // more children required -> reduce left and start children generation again
         scope.SubScopes.Remove(parents);
-        scope.SubScopes.Remove(children);
+        scope.SubScopes.Remove(offspring);
         while(parents.SubScopes.Count > 0)
           scope.SubScopes.Add(parents.SubScopes[0]);
 
@@ -137,19 +152,11 @@ namespace HeuristicLab.Selection {
         return ExecutionContext.CreateOperation(moreOffspring);
       } else {
         // enough children generated
-        children.SubScopes.Clear();
-        while (children.SubScopes.Count < populationSize) {
-          if (winners.Count > 0) {
-            children.SubScopes.Add((IScope)winners[0]);
-            winners.RemoveAt(0);
-          } else {
-            children.SubScopes.Add((IScope)luckyLosers[0]);
-            luckyLosers.RemoveAt(0);
-          }
-        }
+        offspring.SubScopes.Clear();
+        offspring.SubScopes.AddRange(population);
 
-        scope.Variables.Remove(WinnersParameter.ActualName);
-        scope.Variables.Remove(LuckyLosersParameter.ActualName);
+        scope.Variables.Remove(OffspringPopulationParameter.ActualName);
+        scope.Variables.Remove(OffspringPopulationWinnersParameter.ActualName);
         return base.Apply();
       }
     }

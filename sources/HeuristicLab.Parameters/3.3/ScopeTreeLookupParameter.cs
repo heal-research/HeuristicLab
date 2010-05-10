@@ -54,13 +54,25 @@ namespace HeuristicLab.Parameters {
       : base(name) {
       depth = 1;
     }
+    public ScopeTreeLookupParameter(string name, int depth)
+      : base(name) {
+      this.depth = depth;
+    }
     public ScopeTreeLookupParameter(string name, string description)
       : base(name, description) {
       depth = 1;
     }
+    public ScopeTreeLookupParameter(string name, string description, int depth)
+      : base(name, description) {
+      this.depth = depth;
+    }
     public ScopeTreeLookupParameter(string name, string description, string actualName)
       : base(name, description, actualName) {
       depth = 1;
+    }
+    public ScopeTreeLookupParameter(string name, string description, string actualName, int depth)
+      : base(name, description, actualName) {
+      this.depth = depth;
     }
     [StorableConstructor]
     protected ScopeTreeLookupParameter(bool deserializing) : base(deserializing) { }

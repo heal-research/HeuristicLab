@@ -133,7 +133,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       IntCounter evaluationCounter3 = new IntCounter();
       WeightedParentsQualityComparator qualityComparer2 = new WeightedParentsQualityComparator();
       SubScopesRemover subScopesRemover = new SubScopesRemover();
-      ConditionalSelector conditionalSelector = new ConditionalSelector();
       OffspringSelector offspringSelector = new OffspringSelector();
       SubScopesProcessor subScopesProcessor2 = new SubScopesProcessor();
       BestSelector bestSelector = new BestSelector();
@@ -200,15 +199,13 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
 
       subScopesRemover.RemoveAllSubScopes = true;
 
-      conditionalSelector.CopySelected = new BoolValue(false);
-      conditionalSelector.ConditionParameter.ActualName = "SuccessfulOffspring";
-
       offspringSelector.CurrentSuccessRatioParameter.ActualName = CurrentSuccessRatioParameter.Name;
-      offspringSelector.LuckyLosersParameter.ActualName = "OSLuckyLosers";
       offspringSelector.MaximumSelectionPressureParameter.ActualName = MaximumSelectionPressureParameter.Name;
       offspringSelector.SelectionPressureParameter.ActualName = SelectionPressureParameter.Name;
       offspringSelector.SuccessRatioParameter.ActualName = SuccessRatioParameter.Name;
-      offspringSelector.WinnersParameter.ActualName = "OSWinners";
+      offspringSelector.OffspringPopulationParameter.ActualName = "OffspringPopulation";
+      offspringSelector.OffspringPopulationWinnersParameter.ActualName = "OffspringPopulationWinners";
+      offspringSelector.SuccessfulOffspringParameter.ActualName = "SuccessfulOffspring";
 
       bestSelector.CopySelected = new BoolValue(false);
       bestSelector.MaximizationParameter.ActualName = MaximizationParameter.Name;
@@ -229,7 +226,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       subScopesProcessor1.Successor = offspringSelector;
       childrenCreator.Successor = uniformSubScopesProcessor;
       uniformSubScopesProcessor.Operator = crossover;
-      uniformSubScopesProcessor.Successor = conditionalSelector;
+      uniformSubScopesProcessor.Successor = null;
       crossover.Successor = osBeforeMutationBranch;
       osBeforeMutationBranch.TrueBranch = evaluator1;
       osBeforeMutationBranch.FalseBranch = mutationBranch2;
