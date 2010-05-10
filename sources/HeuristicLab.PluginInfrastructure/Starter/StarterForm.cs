@@ -53,6 +53,8 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
     public StarterForm()
       : base() {
       InitializeComponent();
+      largeImageList.Images.Add(HeuristicLab.PluginInfrastructure.Resources.HeuristicLab);
+      smallImageList.Images.Add(HeuristicLab.PluginInfrastructure.Resources.HeuristicLab);
       FileVersionInfo pluginInfrastructureVersion = FileVersionInfo.GetVersionInfo(GetType().Assembly.Location);
       Text = "HeuristicLab " + pluginInfrastructureVersion.FileVersion;
 

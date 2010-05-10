@@ -1,4 +1,25 @@
-﻿namespace HeuristicLab.PluginInfrastructure.Starter {
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+namespace HeuristicLab.PluginInfrastructure.Starter {
   partial class AboutDialog {
     /// <summary>
     /// Required designer variable.
@@ -39,12 +60,12 @@
       this.versionTextBox = new System.Windows.Forms.TextBox();
       this.copyrightTextBox = new System.Windows.Forms.TextBox();
       this.pluginsGroupBox = new System.Windows.Forms.GroupBox();
-      this.externalLibrariesTextBox = new System.Windows.Forms.RichTextBox();
+      this.licenseTextBox = new System.Windows.Forms.RichTextBox();
       this.label2 = new System.Windows.Forms.Label();
-      this.urlTextBox = new System.Windows.Forms.RichTextBox();
       this.panel1 = new System.Windows.Forms.Panel();
       this.label4 = new System.Windows.Forms.Label();
       this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+      this.linkLabel = new System.Windows.Forms.LinkLabel();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
       this.pluginsGroupBox.SuspendLayout();
       this.panel1.SuspendLayout();
@@ -73,12 +94,13 @@
       this.pluginListView.Location = new System.Drawing.Point(6, 19);
       this.pluginListView.Name = "pluginListView";
       this.pluginListView.ShowGroups = false;
-      this.pluginListView.Size = new System.Drawing.Size(589, 159);
+      this.pluginListView.Size = new System.Drawing.Size(589, 201);
       this.pluginListView.SmallImageList = this.imageList;
       this.pluginListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
       this.pluginListView.TabIndex = 1;
       this.pluginListView.UseCompatibleStateImageBehavior = false;
       this.pluginListView.View = System.Windows.Forms.View.Details;
+      this.pluginListView.ItemActivate += new System.EventHandler(this.pluginListView_ItemActivate);
       // 
       // pluginNameColumnHeader
       // 
@@ -173,26 +195,27 @@
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.pluginsGroupBox.Controls.Add(this.pluginListView);
-      this.pluginsGroupBox.Location = new System.Drawing.Point(12, 348);
+      this.pluginsGroupBox.Location = new System.Drawing.Point(12, 306);
       this.pluginsGroupBox.Name = "pluginsGroupBox";
-      this.pluginsGroupBox.Size = new System.Drawing.Size(601, 184);
+      this.pluginsGroupBox.Size = new System.Drawing.Size(601, 226);
       this.pluginsGroupBox.TabIndex = 10;
       this.pluginsGroupBox.TabStop = false;
       this.pluginsGroupBox.Text = "Plugins";
       // 
-      // externalLibrariesTextBox
+      // licenseTextBox
       // 
-      this.externalLibrariesTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.licenseTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.externalLibrariesTextBox.BackColor = System.Drawing.SystemColors.HighlightText;
-      this.externalLibrariesTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-      this.externalLibrariesTextBox.Location = new System.Drawing.Point(186, 115);
-      this.externalLibrariesTextBox.Name = "externalLibrariesTextBox";
-      this.externalLibrariesTextBox.ReadOnly = true;
-      this.externalLibrariesTextBox.Size = new System.Drawing.Size(427, 227);
-      this.externalLibrariesTextBox.TabIndex = 11;
-      this.externalLibrariesTextBox.Text = resources.GetString("externalLibrariesTextBox.Text");
-      this.externalLibrariesTextBox.WordWrap = false;
+      this.licenseTextBox.BackColor = System.Drawing.SystemColors.HighlightText;
+      this.licenseTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+      this.licenseTextBox.Location = new System.Drawing.Point(186, 115);
+      this.licenseTextBox.Name = "licenseTextBox";
+      this.licenseTextBox.ReadOnly = true;
+      this.licenseTextBox.Size = new System.Drawing.Size(427, 185);
+      this.licenseTextBox.TabIndex = 11;
+      this.licenseTextBox.Text = "License Text";
+      this.licenseTextBox.WordWrap = false;
+      this.licenseTextBox.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.licenseTextBox_LinkClicked);
       // 
       // label2
       // 
@@ -202,19 +225,6 @@
       this.label2.Size = new System.Drawing.Size(49, 13);
       this.label2.TabIndex = 12;
       this.label2.Text = "Website:";
-      // 
-      // urlTextBox
-      // 
-      this.urlTextBox.BackColor = System.Drawing.SystemColors.HighlightText;
-      this.urlTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-      this.urlTextBox.Location = new System.Drawing.Point(258, 69);
-      this.urlTextBox.Multiline = false;
-      this.urlTextBox.Name = "urlTextBox";
-      this.urlTextBox.ReadOnly = true;
-      this.urlTextBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-      this.urlTextBox.Size = new System.Drawing.Size(355, 13);
-      this.urlTextBox.TabIndex = 13;
-      this.urlTextBox.Text = "www.heuristiclab.com";
       // 
       // panel1
       // 
@@ -247,7 +257,18 @@
       this.richTextBox1.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
       this.richTextBox1.Size = new System.Drawing.Size(355, 13);
       this.richTextBox1.TabIndex = 16;
-      this.richTextBox1.Text = "developers@heuristiclab.com";
+      this.richTextBox1.Text = "support@heuristiclab.com";
+      // 
+      // linkLabel
+      // 
+      this.linkLabel.AutoSize = true;
+      this.linkLabel.Location = new System.Drawing.Point(255, 69);
+      this.linkLabel.Name = "linkLabel";
+      this.linkLabel.Size = new System.Drawing.Size(135, 13);
+      this.linkLabel.TabIndex = 17;
+      this.linkLabel.TabStop = true;
+      this.linkLabel.Text = "http://dev.heuristiclab.com";
+      this.linkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_LinkClicked);
       // 
       // AboutDialog
       // 
@@ -256,12 +277,12 @@
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.SystemColors.Window;
       this.ClientSize = new System.Drawing.Size(625, 586);
+      this.Controls.Add(this.linkLabel);
       this.Controls.Add(this.richTextBox1);
       this.Controls.Add(this.label4);
       this.Controls.Add(this.panel1);
-      this.Controls.Add(this.urlTextBox);
       this.Controls.Add(this.label2);
-      this.Controls.Add(this.externalLibrariesTextBox);
+      this.Controls.Add(this.licenseTextBox);
       this.Controls.Add(this.pluginsGroupBox);
       this.Controls.Add(this.copyrightTextBox);
       this.Controls.Add(this.versionTextBox);
@@ -300,11 +321,11 @@
     private System.Windows.Forms.TextBox versionTextBox;
     private System.Windows.Forms.TextBox copyrightTextBox;
     private System.Windows.Forms.GroupBox pluginsGroupBox;
-    private System.Windows.Forms.RichTextBox externalLibrariesTextBox;
+    private System.Windows.Forms.RichTextBox licenseTextBox;
     private System.Windows.Forms.Label label2;
-    private System.Windows.Forms.RichTextBox urlTextBox;
     private System.Windows.Forms.Panel panel1;
     private System.Windows.Forms.Label label4;
     private System.Windows.Forms.RichTextBox richTextBox1;
+    private System.Windows.Forms.LinkLabel linkLabel;
   }
 }
