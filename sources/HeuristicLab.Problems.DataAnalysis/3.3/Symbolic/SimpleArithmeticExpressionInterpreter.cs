@@ -114,6 +114,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             for (int i = 1; i < currentInstr.nArguments; i++) {
               s -= Evaluate();
             }
+            if (currentInstr.nArguments == 1) s = -s;
             return s;
           }
         case OpCodes.Mul: {
@@ -128,6 +129,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             for (int i = 1; i < currentInstr.nArguments; i++) {
               p /= Evaluate();
             }
+            if (currentInstr.nArguments == 1) p = 1.0 / p;
             return p;
           }
         case OpCodes.Call: {
