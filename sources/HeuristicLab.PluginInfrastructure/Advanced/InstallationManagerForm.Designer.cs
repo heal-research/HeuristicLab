@@ -297,7 +297,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.Controls.Add(this.tabControl);
       this.Controls.Add(this.statusStrip);
       this.Controls.Add(this.menuStrip);
-      this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+      this.Icon = HeuristicLab.PluginInfrastructure.Resources.HeuristicLab;
       this.MainMenuStrip = this.menuStrip;
       this.Name = "InstallationManagerForm";
       this.Text = "Plugin Manager";

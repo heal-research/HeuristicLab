@@ -103,7 +103,6 @@
     </Compile>
     <None Include="app.config" />
     <None Include="CopyAssemblies.cmd" />
-    <None Include="CreateConsoleApplication.cmd" />
     <None Include="CustomPostBuild.cmd" />
     <None Include="CustomPostBuildTemplate_UpdateLocalInstallation.cmd" />
     <None Include="HeuristicLab.snk" />

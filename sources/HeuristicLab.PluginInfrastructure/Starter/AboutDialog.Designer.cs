@@ -291,7 +291,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.Controls.Add(this.label1);
       this.Controls.Add(this.label);
       this.Controls.Add(this.pictureBox);
-      this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+      this.Icon = HeuristicLab.PluginInfrastructure.Resources.HeuristicLab;
       this.MaximizeBox = false;
       this.MinimizeBox = false;
       this.Name = "AboutDialog";

@@ -177,7 +177,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.Controls.Add(this.label1);
       this.Controls.Add(this.licenseLabel);
       this.Controls.Add(this.richTextBox);
-      this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+      this.Icon = HeuristicLab.PluginInfrastructure.Resources.HeuristicLab;
       this.MaximizeBox = false;
       this.MinimizeBox = false;
       this.Name = "LicenseConfirmationDialog";

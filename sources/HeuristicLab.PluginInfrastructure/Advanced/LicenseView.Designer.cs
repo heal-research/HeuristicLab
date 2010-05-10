@@ -64,7 +64,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(410, 445);
       this.Controls.Add(this.richTextBox);
-      this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+      this.Icon = HeuristicLab.PluginInfrastructure.Resources.HeuristicLab;
       this.Name = "LicenseView";
       this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
       this.Text = "License Agreement";

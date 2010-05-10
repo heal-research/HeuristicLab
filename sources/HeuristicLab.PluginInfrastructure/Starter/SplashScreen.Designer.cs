@@ -103,9 +103,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       // 
       // imageList
       // 
-      this.imageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList.ImageStream")));
-      this.imageList.TransparentColor = System.Drawing.Color.Magenta;
-      this.imageList.Images.SetKeyName(0, "BuilderDialog_delete.bmp");
+      this.imageList.Images.Add(HeuristicLab.PluginInfrastructure.Resources.Remove);
       // 
       // companyLabel
       // 

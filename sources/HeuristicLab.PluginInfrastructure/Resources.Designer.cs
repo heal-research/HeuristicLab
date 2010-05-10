@@ -81,6 +81,15 @@ namespace HeuristicLab.PluginInfrastructure {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string Bla {
+            get {
+                return ResourceManager.GetString("Bla", resourceCulture);
+            }
+        }
+        
         internal static System.Drawing.Bitmap Document {
             get {
                 object obj = ResourceManager.GetObject("Document", resourceCulture);
@@ -95,6 +104,13 @@ namespace HeuristicLab.PluginInfrastructure {
             }
         }
         
+        internal static System.Drawing.Icon HeuristicLab {
+            get {
+                object obj = ResourceManager.GetObject("HeuristicLab", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap Install {
             get {
                 object obj = ResourceManager.GetObject("Install", resourceCulture);
@@ -106,6 +122,25 @@ namespace HeuristicLab.PluginInfrastructure {
             get {
                 object obj = ResourceManager.GetObject("Internet", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to HeuristicLab is free software: you can redistribute it and/or modify
+        ///it under the terms of the GNU General Public License as published by
+        ///the Free Software Foundation, either version 3 of the License, or
+        ///(at your option) any later version.
+        ///
+        ///HeuristicLab is distributed in the hope that it will be useful,
+        ///but WITHOUT ANY WARRANTY; without even the implied warranty of
+        ///MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        ///GNU General Public License for more details.
+        ///
+        ///You should have received a copy of t [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string LicenseText {
+            get {
+                return ResourceManager.GetString("LicenseText", resourceCulture);
             }
         }
         

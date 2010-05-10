@@ -315,7 +315,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.Controls.Add(this.versionLabel);
       this.Controls.Add(this.nameTextBox);
       this.Controls.Add(this.nameLabel);
-      this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+      this.Icon = HeuristicLab.PluginInfrastructure.Resources.HeuristicLab;
       this.Name = "PluginView";
       this.dependenciesGroupBox.ResumeLayout(false);
       this.filesGroupBox.ResumeLayout(false);

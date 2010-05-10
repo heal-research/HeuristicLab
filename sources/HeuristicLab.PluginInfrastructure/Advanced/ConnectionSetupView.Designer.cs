@@ -180,7 +180,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.Controls.Add(this.applyButton);
       this.Controls.Add(this.urlLabel);
       this.Controls.Add(this.urlTextBox);
-      this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+      this.Icon = HeuristicLab.PluginInfrastructure.Resources.HeuristicLab;
       this.MaximizeBox = false;
       this.MinimizeBox = false;
       this.Name = "ConnectionSetupView";

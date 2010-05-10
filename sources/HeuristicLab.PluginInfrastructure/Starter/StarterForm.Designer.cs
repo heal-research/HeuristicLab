@@ -177,7 +177,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.Controls.Add(this.showLargeIconsButton);
       this.Controls.Add(this.applicationsListView);
       this.Controls.Add(this.startButton);
-      this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+      this.Icon = HeuristicLab.PluginInfrastructure.Resources.HeuristicLab;
       this.Name = "StarterForm";
       this.Text = "HeuristicLab Starter";
       this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
