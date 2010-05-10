@@ -166,10 +166,12 @@ namespace HeuristicLab.Optimization.Views {
       if (!Locked) {
         ListViewItem listViewItem = (ListViewItem)e.Item;
         IItem item = (IItem)listViewItem.Tag;
-        DataObject data = new DataObject();
-        data.SetData("Type", item.GetType());
-        data.SetData("Value", item);
-        DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy);
+        if (item != null) {
+          DataObject data = new DataObject();
+          data.SetData("Type", item.GetType());
+          data.SetData("Value", item);
+          DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy);
+        }
       }
     }
     private void showAlgorithmButton_Click(object sender, EventArgs e) {
