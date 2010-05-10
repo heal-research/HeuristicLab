@@ -237,8 +237,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
 
     private void RegisterParameterEvents() {
-      MaxFunctionArgumentsParameter.Value.ValueChanged += new EventHandler(ArchitectureParameter_ValueChanged);
-      MaxFunctionDefiningBranchesParameter.Value.ValueChanged += new EventHandler(ArchitectureParameter_ValueChanged);
+      MaxFunctionArgumentsParameter.Value.ValueChanged += new EventHandler(ArchitectureParameterValue_ValueChanged);
+      MaxFunctionDefiningBranchesParameter.Value.ValueChanged += new EventHandler(ArchitectureParameterValue_ValueChanged);
       SolutionCreator.SymbolicExpressionTreeParameter.ActualNameChanged += new EventHandler(SolutionCreator_SymbolicExpressionTreeParameter_ActualNameChanged);
       Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
     }
@@ -294,6 +294,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       OnEvaluatorChanged(e);
     }
     private void ArchitectureParameter_ValueChanged(object sender, EventArgs e) {
+      MaxFunctionArgumentsParameter.Value.ValueChanged += new EventHandler(ArchitectureParameterValue_ValueChanged);
+      MaxFunctionDefiningBranchesParameter.Value.ValueChanged += new EventHandler(ArchitectureParameterValue_ValueChanged);
+      OnArchitectureParameterChanged(e);
+    }
+    private void ArchitectureParameterValue_ValueChanged(object sender, EventArgs e) {
       OnArchitectureParameterChanged(e);
     }
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
