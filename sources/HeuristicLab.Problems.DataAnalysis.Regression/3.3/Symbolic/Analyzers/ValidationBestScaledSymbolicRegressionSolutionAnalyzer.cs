@@ -59,6 +59,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     private const string BestSolutionQualityParameterName = "Best solution quality (validation)";
     private const string CurrentBestValidationQualityParameterName = "Current best validation quality";
     private const string ResultsParameterName = "Results";
+    private const string BestKnownQualityParameterName = "BestKnownQuality";
 
     public ScopeTreeLookupParameter<SymbolicExpressionTree> SymbolicExpressionTreeParameter {
       get { return (ScopeTreeLookupParameter<SymbolicExpressionTree>)Parameters[SymbolicExpressionTreeParameterName]; }
@@ -90,6 +91,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     public ILookupParameter<ResultCollection> ResultsParameter {
       get { return (ILookupParameter<ResultCollection>)Parameters[ResultsParameterName]; }
     }
+    public ILookupParameter<DoubleValue> BestKnownQualityParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters[BestKnownQualityParameterName]; }
+    }
 
     [Storable]
     private BestSymbolicRegressionSolutionAnalyzer bestSolutionAnalyzer;
@@ -110,12 +114,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       Parameters.Add(new LookupParameter<SymbolicRegressionSolution>(BestSolutionParameterName, "The best symbolic regression solution."));
       Parameters.Add(new LookupParameter<DoubleValue>(BestSolutionQualityParameterName, "The quality of the best symbolic regression solution."));
       Parameters.Add(new LookupParameter<ResultCollection>(ResultsParameterName, "The result collection where the best symbolic regression solution should be stored."));
+      Parameters.Add(new LookupParameter<DoubleValue>(BestKnownQualityParameterName, "The best known (validation) quality achieved on the data set."));
 
       #region operator initialization
       subScopesProcessor = new UniformSubScopesProcessor();
       SymbolicRegressionSolutionLinearScaler linearScaler = new SymbolicRegressionSolutionLinearScaler();
       SymbolicRegressionMeanSquaredErrorEvaluator validationMseEvaluator = new SymbolicRegressionMeanSquaredErrorEvaluator();
       bestSolutionAnalyzer = new BestSymbolicRegressionSolutionAnalyzer();
+      BestQualityMemorizer bestKnownQualityMemorizer = new BestQualityMemorizer();
        bestAvgWorstValidationQualityCalculator = new BestAverageWorstQualityCalculator();
       DataTableValuesCollector validationValuesCollector = new DataTableValuesCollector();
       ResultsCollector resultsCollector = new ResultsCollector();
@@ -156,6 +162,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       bestAvgWorstValidationQualityCalculator.QualityParameter.Depth = SymbolicExpressionTreeParameter.Depth;
       bestAvgWorstValidationQualityCalculator.WorstQualityParameter.ActualName = "Current worst validation quality";
 
+      bestKnownQualityMemorizer.BestQualityParameter.ActualName = BestKnownQualityParameterName;
+      bestKnownQualityMemorizer.MaximizationParameter.Value = new BoolValue(false);
+      bestKnownQualityMemorizer.QualityParameter.ActualName = CurrentBestValidationQualityParameterName;
+      bestKnownQualityMemorizer.QualityParameter.Depth = 0;
+
       validationValuesCollector.DataTableParameter.ActualName = "Validation quality";
       validationValuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>(CurrentBestValidationQualityParameterName, null, CurrentBestValidationQualityParameterName));
       validationValuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>(BestSolutionQualityParameter.Name, null, BestSolutionQualityParameter.Name));
@@ -173,7 +184,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       validationMseEvaluator.Successor = null;
       subScopesProcessor.Successor = bestSolutionAnalyzer;
       bestSolutionAnalyzer.Successor = bestAvgWorstValidationQualityCalculator;
-      bestAvgWorstValidationQualityCalculator.Successor = validationValuesCollector;
+      bestAvgWorstValidationQualityCalculator.Successor = bestKnownQualityMemorizer;
+      bestKnownQualityMemorizer.Successor = validationValuesCollector;
       validationValuesCollector.Successor = resultsCollector;
       resultsCollector.Successor = null;
       #endregion
