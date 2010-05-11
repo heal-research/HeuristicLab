@@ -52,6 +52,19 @@ namespace HeuristicLab.Core.Views {
       Content.ItemsReplaced += new CollectionItemsChangedEventHandler<T>(Content_ItemsReplaced);
     }
 
+    protected override void OnContentChanged() {
+      string selectedName = null;
+      if ((itemsListView.SelectedItems.Count == 1) && (itemsListView.SelectedItems[0].Tag != null))
+        selectedName = ((T)itemsListView.SelectedItems[0].Tag).Name;
+      base.OnContentChanged();
+      if (selectedName != null) {
+        foreach (ListViewItem item in itemsListView.Items) {
+          if ((item.Tag != null) && (((T)item.Tag).Name.Equals(selectedName)))
+            item.Selected = true;
+        }
+      }
+    }
+
     protected override T CreateItem() {
       T item = base.CreateItem();
       if (item != null) {

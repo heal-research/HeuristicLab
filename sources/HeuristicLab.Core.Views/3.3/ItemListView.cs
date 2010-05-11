@@ -87,11 +87,17 @@ namespace HeuristicLab.Core.Views {
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
+
+      int selectedIndex = -1;
+      if (itemsListView.SelectedItems.Count == 1) selectedIndex = itemsListView.SelectedIndices[0];
+
       while (itemsListView.Items.Count > 0) RemoveListViewItem(itemsListView.Items[0]);
       viewHost.Content = null;
       if (Content != null) {
         foreach (T item in Content)
           AddListViewItem(CreateListViewItem(item));
+        if ((selectedIndex != -1) && (selectedIndex < itemsListView.Items.Count))
+          itemsListView.Items[selectedIndex].Selected = true;
       }
       SetEnabledStateOfControls();
     }

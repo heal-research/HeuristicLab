@@ -93,6 +93,11 @@ namespace HeuristicLab.Optimization.Views {
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
+
+      string selectedName = null;
+      if ((itemsListView.SelectedItems.Count == 1) && (itemsListView.SelectedItems[0].Tag != null))
+        selectedName = ((IRun)itemsListView.SelectedItems[0].Tag).Name;
+
       while (itemsListView.Items.Count > 0) RemoveListViewItem(itemsListView.Items[0]);
       viewHost.Content = null;
 
@@ -104,8 +109,11 @@ namespace HeuristicLab.Optimization.Views {
           runCollectionConstraintCollectionView.ReadOnly = itemsListView.Items.Count == 0;
         }
         foreach (IRun item in Content) {
-          AddListViewItem(CreateListViewItem(item));
+          ListViewItem listViewItem = CreateListViewItem(item);
+          AddListViewItem(listViewItem);
           UpdateRun(item);
+          if ((selectedName != null) && item.Name.Equals(selectedName))
+            listViewItem.Selected = true;
         }
       } else {
         runCollectionConstraintCollectionView.Content = null;

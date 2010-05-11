@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -68,11 +69,10 @@ namespace HeuristicLab.Optimization.Views {
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      FillListView();
-      viewHost.ViewType = null;
       viewHost.Content = null;
       if (Content != null)
         UpdateColorPictureBox();
+      FillListView();
 
       SetEnabledStateOfControls();
     }
@@ -111,13 +111,16 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void FillListView() {
+      string selectedName = null;
+      if (listView.SelectedItems.Count == 1) selectedName = listView.SelectedItems[0].SubItems[0].Text;
+
       listView.Items.Clear();
       listView.SmallImageList.Images.Clear();
       if (Content != null) {
         foreach (string key in Content.Parameters.Keys)
-          CreateListViewItem(key, Content.Parameters[key], listView.Groups["parametersGroup"]);
+          CreateListViewItem(key, Content.Parameters[key], listView.Groups["parametersGroup"], selectedName);
         foreach (string key in Content.Results.Keys)
-          CreateListViewItem(key, Content.Results[key], listView.Groups["resultsGroup"]);
+          CreateListViewItem(key, Content.Results[key], listView.Groups["resultsGroup"], selectedName);
         if (listView.Items.Count > 0) {
           for (int i = 0; i < listView.Columns.Count; i++)
             listView.Columns[i].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
@@ -125,22 +128,21 @@ namespace HeuristicLab.Optimization.Views {
       }
     }
 
-    private void CreateListViewItem(string name, IItem value, ListViewGroup group) {
+    private void CreateListViewItem(string name, IItem value, ListViewGroup group, string selectedName) {
       ListViewItem item = new ListViewItem(new string[] { name, value != null ? value.ToString() : "-" });
       item.Tag = value;
       item.Group = group;
       listView.SmallImageList.Images.Add(value == null ? HeuristicLab.Common.Resources.VS2008ImageLibrary.Nothing : value.ItemImage);
       item.ImageIndex = listView.SmallImageList.Images.Count - 1;
       listView.Items.Add(item);
+      if ((selectedName != null) && name.Equals(selectedName)) item.Selected = true;
     }
 
     private void listView_SelectedIndexChanged(object sender, EventArgs e) {
-      if (listView.SelectedItems.Count == 1) {
-        viewHost.ViewType = null;
+      if (listView.SelectedItems.Count == 1)
         viewHost.Content = (IContent)listView.SelectedItems[0].Tag;
-      } else {
+      else
         viewHost.Content = null;
-      }
     }
     private void listView_DoubleClick(object sender, EventArgs e) {
       if (listView.SelectedItems.Count == 1) {
