@@ -52,7 +52,6 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     public ScopeView() {
       InitializeComponent();
-      Caption = "Scope";
       scopeNodeTable = new Dictionary<IScope, TreeNode>();
       subScopesScopeTable = new Dictionary<ScopeList, IScope>();
     }
@@ -67,9 +66,7 @@ namespace HeuristicLab.Core.Views {
         ClearTreeNode(scopesTreeView.Nodes[0]);
       scopesTreeView.Nodes.Clear();
       variableCollectionView.Content = null;
-      Caption = "Scope";
       if (Content != null) {
-        Caption = Content.Name + " (" + Content.ItemName + ")";
         scopesTreeView.Nodes.Add(CreateTreeNode(Content));
       }
       SetEnabledStateOfControls();

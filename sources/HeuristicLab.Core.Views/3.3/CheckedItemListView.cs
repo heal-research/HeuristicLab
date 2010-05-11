@@ -58,7 +58,6 @@ namespace HeuristicLab.Core.Views {
     }
 
     protected override void OnContentChanged() {
-      Caption = "Checked Item List";
       base.OnContentChanged();
     }
 

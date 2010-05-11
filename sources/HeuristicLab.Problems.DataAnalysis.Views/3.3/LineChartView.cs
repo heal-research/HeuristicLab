@@ -50,7 +50,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     public LineChartView()
       : base() {
       InitializeComponent();
-      this.Caption = "Line Chart View";
       //configure axis
       this.chart.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
       this.chart.ChartAreas[0].AxisX.ScaleView.Zoomable = true;

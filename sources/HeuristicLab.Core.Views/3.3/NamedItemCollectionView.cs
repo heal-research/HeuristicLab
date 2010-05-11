@@ -41,7 +41,6 @@ namespace HeuristicLab.Core.Views {
     public NamedItemCollectionView() {
       listViewItemDictionary = new Dictionary<T, ListViewItem>();
       InitializeComponent();
-      Caption = "Named Item Collection";
     }
 
     protected override void DeregisterContentEvents() {

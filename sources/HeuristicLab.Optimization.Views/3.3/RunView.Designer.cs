@@ -172,7 +172,6 @@ namespace HeuristicLab.Optimization.Views {
       this.viewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.viewHost.Caption = null;
       this.viewHost.Content = null;
       this.viewHost.Location = new System.Drawing.Point(6, 19);
       this.viewHost.Name = "viewHost";

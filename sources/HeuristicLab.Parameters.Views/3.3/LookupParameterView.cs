@@ -48,7 +48,6 @@ namespace HeuristicLab.Parameters.Views {
     /// </summary>
     public LookupParameterView() {
       InitializeComponent();
-      Caption = "LookupParameter";
     }
 
     /// <summary>
@@ -71,13 +70,11 @@ namespace HeuristicLab.Parameters.Views {
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      if (Content == null) {
-        Caption = "LookupParameter";
+      if (Content == null)
         actualNameTextBox.Text = "-";
-      } else {
-        Caption = Content.Name + " (" + Content.GetType().Name + ")";
+      else
         actualNameTextBox.Text = Content.ActualName;
-      }
+
       SetEnabledStateOfControls();
     }
 

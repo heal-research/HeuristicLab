@@ -53,7 +53,6 @@ namespace HeuristicLab.Optimization.Views {
     /// </summary>
     public ResultView() {
       InitializeComponent();
-      Caption = "Result";
       base.ReadOnly = true;
     }
 
@@ -78,11 +77,9 @@ namespace HeuristicLab.Optimization.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        Caption = "Result";
         dataTypeTextBox.Text = "-";
         viewHost.Content = null;
       } else {
-        Caption = Content.Name + " (" + Content.GetType().Name + ")";
         dataTypeTextBox.Text = Content.DataType.GetPrettyName();
         viewHost.ViewType = null;
         viewHost.Content = Content.Value;

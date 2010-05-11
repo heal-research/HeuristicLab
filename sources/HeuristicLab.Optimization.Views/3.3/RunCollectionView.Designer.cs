@@ -189,7 +189,6 @@ namespace HeuristicLab.Optimization.Views {
       this.viewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.viewHost.Caption = null;
       this.viewHost.Content = null;
       this.viewHost.Location = new System.Drawing.Point(6, 19);
       this.viewHost.Name = "viewHost";
@@ -244,7 +243,6 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // runCollectionConstraintCollectionView
       // 
-      this.runCollectionConstraintCollectionView.Caption = "Filter";
       this.runCollectionConstraintCollectionView.Content = null;
       this.runCollectionConstraintCollectionView.Dock = System.Windows.Forms.DockStyle.Fill;
       this.runCollectionConstraintCollectionView.Location = new System.Drawing.Point(3, 3);

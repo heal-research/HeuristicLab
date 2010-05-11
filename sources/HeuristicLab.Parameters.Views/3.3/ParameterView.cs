@@ -47,18 +47,15 @@ namespace HeuristicLab.Parameters.Views {
     /// </summary>
     public ParameterView() {
       InitializeComponent();
-      Caption = "Parameter";
     }
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      if (Content == null) {
-        Caption = "Parameter";
+      if (Content == null)
         dataTypeTextBox.Text = "-";
-      } else {
-        Caption = Content.Name + " (" + Content.GetType().Name + ")";
+      else
         dataTypeTextBox.Text = Content.DataType.GetPrettyName();
-      }
+
       SetEnabledStateOfControls();
     }
 

@@ -37,7 +37,6 @@ namespace HeuristicLab.Optimization.Views {
     /// </summary>
     public OptimizerListView() {
       InitializeComponent();
-      Caption = "OptimizerList";
       itemsGroupBox.Text = "Optimizers";
     }
 

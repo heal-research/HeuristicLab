@@ -35,7 +35,6 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     public OperatorListView() {
       InitializeComponent();
-      Caption = "Operator List";
       itemsGroupBox.Text = "Operators";
     }
 

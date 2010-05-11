@@ -40,7 +40,6 @@ namespace HeuristicLab.Core.Views {
 
     public NamedItemView() {
       InitializeComponent();
-      Caption = "NamedItem";
       errorProvider.SetIconAlignment(nameTextBox, ErrorIconAlignment.MiddleLeft);
       errorProvider.SetIconPadding(nameTextBox, 2);
     }
@@ -59,15 +58,18 @@ namespace HeuristicLab.Core.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        Caption = "NamedItem";
         nameTextBox.Text = string.Empty;
         descriptionTextBox.Text = string.Empty;
         toolTip.SetToolTip(descriptionTextBox, string.Empty);
+        if (ViewAttribute.HasViewAttribute(this.GetType()))
+          this.Caption = ViewAttribute.GetViewName(this.GetType());
+        else
+          this.Caption = "NamedItem View";
       } else {
-        Caption = Content.Name + " (" + Content.GetType().Name + ")";
         nameTextBox.Text = Content.Name;
         descriptionTextBox.Text = Content.Description;
         toolTip.SetToolTip(descriptionTextBox, Content.Description);
+        Caption = Content.Name;
       }
       SetEnabledStateOfControls();
     }
@@ -91,8 +93,10 @@ namespace HeuristicLab.Core.Views {
     protected virtual void Content_NameChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_NameChanged), sender, e);
-      else
+      else {
         nameTextBox.Text = Content.Name;
+        Caption = Content.Name;
+      }
     }
     protected virtual void Content_DescriptionChanged(object sender, EventArgs e) {
       if (InvokeRequired)
@@ -105,8 +109,13 @@ namespace HeuristicLab.Core.Views {
 
     protected virtual void nameTextBox_Validating(object sender, CancelEventArgs e) {
       if ((Content != null) && (Content.CanChangeName)) {
+        if (string.IsNullOrEmpty(nameTextBox.Text)) {
+          e.Cancel = true;
+          errorProvider.SetError(nameTextBox, "Name cannot be empty");
+          nameTextBox.SelectAll();
+          return;
+        }
         Content.Name = nameTextBox.Text;
-
         // check if variable name was set successfully
         if (!Content.Name.Equals(nameTextBox.Text)) {
           e.Cancel = true;

@@ -41,17 +41,15 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
 
     public SymbolicExpressionView() {
       InitializeComponent();
-      Caption = "SymbolicExpression View";
     }
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      if (Content == null) {
-        Caption = "SymbolicExpression View";
+      if (Content == null)
         textBox.Text = string.Empty;
-      } else {
+      else
         textBox.Text = SymbolicExpression(Content.Root, 0);
-      }
+
       SetEnabledStateOfControls();
     }
 

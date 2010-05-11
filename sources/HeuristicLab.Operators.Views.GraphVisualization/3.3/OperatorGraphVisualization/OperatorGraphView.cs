@@ -41,8 +41,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
   public partial class OperatorGraphView : AsynchronousContentView {
     public OperatorGraphView() {
       InitializeComponent();
-      Caption = "Operator Graph Visualization";
-
+ 
       this.graphVisualizationInfoView.Controller.OnShowContextMenu += new EventHandler<EntityMenuEventArgs>(Controller_OnShowContextMenu);
       this.graphVisualizationInfoView.Controller.Model.Selection.OnNewSelection += new EventHandler(Controller_SelectionChanged);
       this.graphVisualizationInfoView.Controller.OnMouseDown += new EventHandler<MouseEventArgs>(Controller_OnMouseDown);

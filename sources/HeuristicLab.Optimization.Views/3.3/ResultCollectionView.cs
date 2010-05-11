@@ -39,7 +39,6 @@ namespace HeuristicLab.Optimization.Views {
     /// </summary>
     public ResultCollectionView() {
       InitializeComponent();
-      Caption = "ResultCollection";
       itemsGroupBox.Text = "Results";
       base.ReadOnly = true;
     }

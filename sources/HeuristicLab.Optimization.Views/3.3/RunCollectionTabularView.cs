@@ -38,7 +38,6 @@ namespace HeuristicLab.Optimization.Views {
   public partial class RunCollectionTabularView : StringConvertibleMatrixView {
     public RunCollectionTabularView() {
       InitializeComponent();
-      Caption = "Run Collection";
       this.dataGridView.RowHeaderMouseDoubleClick += new DataGridViewCellMouseEventHandler(dataGridView_RowHeaderMouseDoubleClick);
       base.ReadOnly = true;
     }

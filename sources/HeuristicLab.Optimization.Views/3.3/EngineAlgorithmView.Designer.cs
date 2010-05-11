@@ -198,7 +198,6 @@ namespace HeuristicLab.Optimization.Views {
       this.engineViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.engineViewHost.Caption = null;
       this.engineViewHost.Content = null;
       this.engineViewHost.Location = new System.Drawing.Point(6, 33);
       this.engineViewHost.Name = "engineViewHost";
@@ -246,7 +245,6 @@ namespace HeuristicLab.Optimization.Views {
       this.operatorGraphViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.operatorGraphViewHost.Caption = null;
       this.operatorGraphViewHost.Content = null;
       this.operatorGraphViewHost.Location = new System.Drawing.Point(3, 33);
       this.operatorGraphViewHost.Name = "operatorGraphViewHost";

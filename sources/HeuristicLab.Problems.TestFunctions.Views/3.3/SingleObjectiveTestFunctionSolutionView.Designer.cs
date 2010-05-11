@@ -70,7 +70,6 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
       this.qualityView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.qualityView.Caption = null;
       this.qualityView.Content = null;
       this.qualityView.Location = new System.Drawing.Point(6, 19);
       this.qualityView.Name = "qualityView";
@@ -132,7 +131,6 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
       this.realVectorView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.realVectorView.Caption = null;
       this.realVectorView.Content = null;
       this.realVectorView.Location = new System.Drawing.Point(6, 19);
       this.realVectorView.Name = "realVectorView";

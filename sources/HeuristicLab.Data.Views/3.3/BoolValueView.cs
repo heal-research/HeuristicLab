@@ -43,7 +43,6 @@ namespace HeuristicLab.Data.Views {
 
     public BoolValueView() {
       InitializeComponent();
-      Caption = "BoolValue View";
     }
 
     protected override void DeregisterContentEvents() {
@@ -58,10 +57,8 @@ namespace HeuristicLab.Data.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        Caption = "BoolValue View";
         valueCheckBox.Checked = false;
       } else {
-        Caption = Content.ToString() + " (" + Content.GetType().Name + ")";
         valueCheckBox.Checked = Content.Value;
       }
       SetEnabledStateOfControls();

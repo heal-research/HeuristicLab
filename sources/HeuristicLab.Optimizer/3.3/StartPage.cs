@@ -36,7 +36,6 @@ namespace HeuristicLab.Optimizer {
   public partial class StartPage : HeuristicLab.MainForm.WindowsForms.View {
     public StartPage() {
       InitializeComponent();
-      Caption = "Start Page";
     }
 
     protected override void OnInitialized(EventArgs e) {

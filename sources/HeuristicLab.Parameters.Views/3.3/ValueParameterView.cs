@@ -53,7 +53,6 @@ namespace HeuristicLab.Parameters.Views {
     /// </summary>
     public ValueParameterView() {
       InitializeComponent();
-      Caption = "ValueParameter";
     }
 
     /// <summary>
@@ -77,11 +76,9 @@ namespace HeuristicLab.Parameters.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        Caption = "ValueParameter";
         clearValueButton.Visible = true;
         viewHost.Content = null;
       } else {
-        Caption = Content.Name + " (" + Content.GetType().Name + ")";
         clearValueButton.Visible = !(Content is ValueParameter<T>);
         viewHost.ViewType = null;
         viewHost.Content = Content.Value;

@@ -51,7 +51,6 @@ namespace HeuristicLab.Optimization.Views {
 
     public RunCollectionView() {
       InitializeComponent();
-      Caption = "Run Collection";
       itemsGroupBox.Text = "Runs";
     }
 
@@ -94,7 +93,6 @@ namespace HeuristicLab.Optimization.Views {
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      Caption = "Run Collection";
       while (itemsListView.Items.Count > 0) RemoveListViewItem(itemsListView.Items[0]);
       viewHost.Content = null;
 
@@ -105,7 +103,6 @@ namespace HeuristicLab.Optimization.Views {
           runCollectionConstraintCollectionView.Content = RunCollection.Constraints;
           runCollectionConstraintCollectionView.ReadOnly = itemsListView.Items.Count == 0;
         }
-        Caption += " (" + Content.GetType().Name + ")";
         foreach (IRun item in Content) {
           AddListViewItem(CreateListViewItem(item));
           UpdateRun(item);

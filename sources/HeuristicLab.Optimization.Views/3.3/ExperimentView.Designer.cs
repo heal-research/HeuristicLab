@@ -101,7 +101,6 @@ namespace HeuristicLab.Optimization.Views {
       this.optimizerListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.optimizerListView.Caption = "OptimizerList";
       this.optimizerListView.Content = null;
       this.optimizerListView.Location = new System.Drawing.Point(6, 6);
       this.optimizerListView.Name = "optimizerListView";

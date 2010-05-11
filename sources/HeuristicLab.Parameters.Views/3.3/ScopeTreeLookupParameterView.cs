@@ -48,7 +48,6 @@ namespace HeuristicLab.Parameters.Views {
     /// </summary>
     public ScopeTreeLookupParameterView() {
       InitializeComponent();
-      Caption = "ScopeTreeLookupParameter";
     }
 
     /// <summary>
@@ -74,11 +73,9 @@ namespace HeuristicLab.Parameters.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        Caption = "ScopeTreeLookupParameter";
         actualNameTextBox.Text = string.Empty;
         depthTextBox.Text = string.Empty;
       } else {
-        Caption = Content.Name + " (" + Content.GetType().Name + ")";
         actualNameTextBox.Text = Content.ActualName;
         depthTextBox.Text = Content.Depth.ToString();
       }

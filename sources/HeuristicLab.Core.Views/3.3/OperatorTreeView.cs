@@ -69,7 +69,6 @@ namespace HeuristicLab.Core.Views {
       opParamNodeTable = new Dictionary<IValueParameter, List<TreeNode>>();
       operatorNodeTable = new Dictionary<IOperator, List<TreeNode>>();
       parametersOperatorTable = new Dictionary<IKeyedItemCollection<string, IParameter>, IOperator>();
-      Caption = "Operator";
     }
 
     /// <summary>
@@ -80,9 +79,7 @@ namespace HeuristicLab.Core.Views {
       base.OnContentChanged();
       if (graphTreeView.Nodes.Count > 0)
         RemoveTreeNode(graphTreeView.Nodes[0]);
-      Caption = "Operator";
       if (Content != null) {
-        Caption = Content.Name + " (" + Content.GetType().Name + ")";
         TreeNode root = new TreeNode();
         FillTreeNode(root, Content);
         graphTreeView.Nodes.Add(root);

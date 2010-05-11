@@ -80,7 +80,6 @@ namespace HeuristicLab.Core.Views {
       this.operatorsView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.operatorsView.Caption = "Operator Set";
       this.operatorsView.Content = null;
       this.operatorsView.Location = new System.Drawing.Point(3, 3);
       this.operatorsView.Name = "operatorsView";
@@ -124,7 +123,6 @@ namespace HeuristicLab.Core.Views {
       this.operatorTreeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.operatorTreeView.Caption = "Operator";
       this.operatorTreeView.Content = null;
       this.operatorTreeView.Location = new System.Drawing.Point(6, 19);
       this.operatorTreeView.Name = "operatorTreeView";

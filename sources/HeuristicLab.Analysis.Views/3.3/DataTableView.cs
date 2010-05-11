@@ -53,7 +53,6 @@ namespace HeuristicLab.Analysis.Views {
     /// </summary>
     public DataTableView() {
       InitializeComponent();
-      Caption = "DataTable";
       valuesRowsTable = new Dictionary<IObservableList<double>, DataRow>();
       invisibleSeries = new List<Series>();
     }
@@ -91,9 +90,7 @@ namespace HeuristicLab.Analysis.Views {
       invisibleSeries.Clear();
       chart.Titles.Clear();
       chart.Series.Clear();
-      Caption = "DataTable";
       if (Content != null) {
-        Caption = Content.Name + " (" + Content.GetType().Name + ")";
         chart.Titles.Add(new Title(Content.Name, Docking.Top));
         foreach (DataRow row in Content.Rows)
           AddDataRow(row);
@@ -105,7 +102,6 @@ namespace HeuristicLab.Analysis.Views {
       base.OnReadOnlyChanged();
       SetEnabledStateOfControls();
     }
-
     private void SetEnabledStateOfControls() {
       chart.Enabled = Content != null;
     }

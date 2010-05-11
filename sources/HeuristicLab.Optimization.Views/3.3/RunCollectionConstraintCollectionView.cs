@@ -37,7 +37,6 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     public RunCollectionConstraintCollectionView() {
       InitializeComponent();
-      Caption = "RunCollectionConstraintCollection";
       itemsGroupBox.Text = "RunCollection Constraints";
     }
 

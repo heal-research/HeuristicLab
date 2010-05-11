@@ -54,7 +54,6 @@ namespace HeuristicLab.Optimization.Views {
     /// </summary>
     public RunView() {
       InitializeComponent();
-      Caption = "Run";
       base.ReadOnly = true;
     }
 
@@ -78,12 +77,9 @@ namespace HeuristicLab.Optimization.Views {
       FillListView();
       viewHost.ViewType = null;
       viewHost.Content = null;
-      if (Content == null)
-        Caption = "Run";
-      else {
-        Caption = Content.Name + " (" + Content.GetType().Name + ")";
+      if (Content != null)
         UpdateColorPictureBox();
-      }
+
       SetEnabledStateOfControls();
     }
     protected override void OnReadOnlyChanged() {

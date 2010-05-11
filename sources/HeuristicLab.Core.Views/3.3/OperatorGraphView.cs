@@ -47,7 +47,6 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     public OperatorGraphView() {
       InitializeComponent();
-      Caption = "Operator Graph";
     }
 
     /// <summary>
@@ -74,11 +73,9 @@ namespace HeuristicLab.Core.Views {
     /// <remarks>Calls <see cref="ViewBase.UpdateControls"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      Caption = "Operator Graph";
       operatorsView.Content = null;
       operatorTreeView.Content = null;
       if (Content != null) {
-        Caption = Content.ItemName + " (" + Content.GetType().Name + ")";
         operatorsView.Content = Content.Operators;
         MarkInitialOperator();
         operatorTreeView.Content = Content.InitialOperator;

@@ -210,7 +210,6 @@ namespace HeuristicLab.Operators.Programmable {
       // 
       // parameterCollectionView1
       // 
-      this.parameterCollectionView.Caption = "ParameterCollection";
       this.parameterCollectionView.Content = null;
       this.parameterCollectionView.Dock = System.Windows.Forms.DockStyle.Fill;
       this.parameterCollectionView.Location = new System.Drawing.Point(3, 3);

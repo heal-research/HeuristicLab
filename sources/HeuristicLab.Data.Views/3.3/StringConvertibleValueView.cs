@@ -44,7 +44,6 @@ namespace HeuristicLab.Data.Views {
 
     public StringConvertibleValueView() {
       InitializeComponent();
-      Caption = "StringConvertibleValue View";
       errorProvider.SetIconAlignment(valueTextBox, ErrorIconAlignment.MiddleLeft);
       errorProvider.SetIconPadding(valueTextBox, 2);
     }
@@ -62,12 +61,10 @@ namespace HeuristicLab.Data.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        Caption = "StringConvertibleValue View";
         valueTextBox.Text = string.Empty;
-      } else {
-        Caption = Content.GetValue() + " (" + Content.GetType().Name + ")";
+      } else
         valueTextBox.Text = Content.GetValue();
-      }
+
       SetEnabledStateOfControls();
     }
     protected override void OnReadOnlyChanged() {

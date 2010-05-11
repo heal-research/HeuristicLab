@@ -46,7 +46,6 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     public LogView() {
       InitializeComponent();
-      Caption = "LogView";
     }
 
     /// <summary>

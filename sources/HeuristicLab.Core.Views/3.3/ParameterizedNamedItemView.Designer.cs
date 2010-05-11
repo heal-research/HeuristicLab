@@ -63,7 +63,6 @@ namespace HeuristicLab.Core.Views {
       this.parameterCollectionView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.parameterCollectionView.Caption = "ParameterCollection";
       this.parameterCollectionView.Content = null;
       this.parameterCollectionView.Location = new System.Drawing.Point(0, 52);
       this.parameterCollectionView.Name = "parameterCollectionView";

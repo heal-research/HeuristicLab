@@ -58,7 +58,6 @@ namespace HeuristicLab.Problems.OneMax.Views {
       // 
       // qualityView
       // 
-      this.qualityView.Caption = null;
       this.qualityView.Content = null;
       this.qualityView.Dock = System.Windows.Forms.DockStyle.Fill;
       this.qualityView.Location = new System.Drawing.Point(3, 16);
@@ -102,7 +101,6 @@ namespace HeuristicLab.Problems.OneMax.Views {
       // 
       // qualityView
       // 
-      this.qualityView.Caption = null;
       this.qualityView.Content = null;
       this.qualityView.Dock = System.Windows.Forms.DockStyle.Fill;
       this.qualityView.Location = new System.Drawing.Point(3, 16);
@@ -125,7 +123,6 @@ namespace HeuristicLab.Problems.OneMax.Views {
       // 
       // binaryVectorView
       // 
-      this.binaryVectorView.Caption = null;
       this.binaryVectorView.Content = null;
       this.binaryVectorView.Dock = System.Windows.Forms.DockStyle.Fill;
       this.binaryVectorView.Location = new System.Drawing.Point(3, 16);

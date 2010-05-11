@@ -47,7 +47,6 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     public VariableValueView() {
       InitializeComponent();
-      Caption = "Variable";
     }
 
     /// <summary>
@@ -71,10 +70,8 @@ namespace HeuristicLab.Core.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        Caption = "Variable";
         viewHost.Content = null;
       } else {
-        Caption = Content.Name + " (" + Content.GetType().Name + ")";
         viewHost.ViewType = null;
         viewHost.Content = Content.Value;
       }

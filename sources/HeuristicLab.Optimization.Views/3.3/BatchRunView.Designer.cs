@@ -169,7 +169,6 @@ namespace HeuristicLab.Optimization.Views {
       this.runsView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.runsView.Caption = "RunCollection";
       this.runsView.Content = null;
       this.runsView.Location = new System.Drawing.Point(6, 6);
       this.runsView.Name = "runsView";

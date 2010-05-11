@@ -131,7 +131,6 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
       this.tourViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.tourViewHost.Caption = null;
       this.tourViewHost.Content = null;
       this.tourViewHost.Location = new System.Drawing.Point(6, 19);
       this.tourViewHost.Name = "tourViewHost";
@@ -176,7 +175,6 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
       this.qualityViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.qualityViewHost.Caption = null;
       this.qualityViewHost.Content = null;
       this.qualityViewHost.Location = new System.Drawing.Point(6, 19);
       this.qualityViewHost.Name = "qualityViewHost";

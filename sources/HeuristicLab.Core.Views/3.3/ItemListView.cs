@@ -57,7 +57,6 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     public ItemListView() {
       InitializeComponent();
-      Caption = "Item List";
     }
 
     /// <summary>
@@ -88,11 +87,9 @@ namespace HeuristicLab.Core.Views {
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      Caption = "Item List";
       while (itemsListView.Items.Count > 0) RemoveListViewItem(itemsListView.Items[0]);
       viewHost.Content = null;
       if (Content != null) {
-        Caption += " (" + Content.GetType().Name + ")";
         foreach (T item in Content)
           AddListViewItem(CreateListViewItem(item));
       }

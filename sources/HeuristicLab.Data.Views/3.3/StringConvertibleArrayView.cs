@@ -46,7 +46,6 @@ namespace HeuristicLab.Data.Views {
 
     public StringConvertibleArrayView() {
       InitializeComponent();
-      Caption = "StringConvertibleArray View";
       errorProvider.SetIconAlignment(lengthTextBox, ErrorIconAlignment.MiddleLeft);
       errorProvider.SetIconPadding(lengthTextBox, 2);
     }
@@ -66,14 +65,11 @@ namespace HeuristicLab.Data.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        Caption = "StringConvertibleArray View";
         lengthTextBox.Text = "";
         dataGridView.Rows.Clear();
         dataGridView.Columns.Clear();
-      } else {
-        Caption = "StringConvertibleArray (" + Content.GetType().Name + ")";
+      } else
         UpdateData();
-      }
       SetEnabledStateOfControls();
     }
     protected override void OnReadOnlyChanged() {

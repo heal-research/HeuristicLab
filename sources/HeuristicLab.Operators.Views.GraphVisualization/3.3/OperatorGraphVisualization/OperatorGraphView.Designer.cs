@@ -75,7 +75,6 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       this.graphVisualizationInfoView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.graphVisualizationInfoView.Caption = null;
       this.graphVisualizationInfoView.Content = null;
       this.graphVisualizationInfoView.Location = new System.Drawing.Point(3, 30);
       this.graphVisualizationInfoView.Name = "graphVisualizationInfoView";
@@ -247,7 +246,6 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       this.detailsViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.detailsViewHost.Caption = null;
       this.detailsViewHost.Content = null;
       this.detailsViewHost.Location = new System.Drawing.Point(3, 16);
       this.detailsViewHost.Name = "detailsViewHost";

@@ -37,7 +37,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Scatter Plot View")]
   [Content(typeof(DataAnalysisSolution), true)]
   public partial class ScatterPlotView : AsynchronousContentView {
-    private const string DEFAULT_CAPTION = "Scatter Plot";
     private const string ALL_SERIES = "All Samples";
     private const string TRAINING_SERIES = "Training Samples";
     private const string TEST_SERIES = "Test Samples";
@@ -50,7 +49,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     public ScatterPlotView()
       : base() {
       InitializeComponent();
-      this.Caption = DEFAULT_CAPTION;
 
       this.chart.Series.Add(ALL_SERIES);
       this.chart.Series[ALL_SERIES].LegendText = ALL_SERIES;
@@ -109,13 +107,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       if (InvokeRequired) Invoke((Action)UpdateChart);
       else {
         if (Content != null) {
-          this.Caption = Content.ItemName + " " + DEFAULT_CAPTION;
           this.UpdateSeries();
           if (!this.chart.Series.Any(s => s.Points.Count > 0))
             this.ToggleSeriesData(this.chart.Series[TRAINING_SERIES]);
-        } else {
-          this.Caption = DEFAULT_CAPTION;
-          this.ClearChart();
+          else
+            this.ClearChart();
         }
       }
     }

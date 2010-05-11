@@ -32,7 +32,6 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     public ScopeListView() {
       InitializeComponent();
-      Caption = "ScopeList";
       itemsGroupBox.Text = "Scopes";
     }
   }

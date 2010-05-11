@@ -46,7 +46,6 @@ namespace HeuristicLab.Core.Views {
 
     public ItemCollectionView() {
       InitializeComponent();
-      Caption = "Item Collection";
     }
 
     protected override void DeregisterContentEvents() {
@@ -64,7 +63,6 @@ namespace HeuristicLab.Core.Views {
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      Caption = "Item Collection";
       while (itemsListView.Items.Count > 0) RemoveListViewItem(itemsListView.Items[0]);
       viewHost.Content = null;
       if (Content != null) {

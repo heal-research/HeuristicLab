@@ -52,7 +52,6 @@ namespace HeuristicLab.Data.Views {
 
     public StringConvertibleMatrixView() {
       InitializeComponent();
-      Caption = "StringConvertibleMatrix View";
       errorProvider.SetIconAlignment(rowsTextBox, ErrorIconAlignment.MiddleLeft);
       errorProvider.SetIconPadding(rowsTextBox, 2);
       errorProvider.SetIconAlignment(columnsTextBox, ErrorIconAlignment.MiddleLeft);
@@ -79,16 +78,14 @@ namespace HeuristicLab.Data.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        Caption = "StringConvertibleMatrix View";
         rowsTextBox.Text = "";
         columnsTextBox.Text = "";
         dataGridView.Rows.Clear();
         dataGridView.Columns.Clear();
         virtualRowIndizes = new int[0];
-      } else {
-        Caption = "StringConvertibleMatrix (" + Content.GetType().Name + ")";
+      } else 
         UpdateData();
-      }
+
       SetEnabledStateOfControls();
     }
     protected override void OnReadOnlyChanged() {

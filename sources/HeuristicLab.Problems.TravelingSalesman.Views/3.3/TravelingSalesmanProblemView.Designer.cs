@@ -108,7 +108,6 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
       this.parameterCollectionView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.parameterCollectionView.Caption = "ParameterCollection";
       this.parameterCollectionView.Content = null;
       this.parameterCollectionView.Location = new System.Drawing.Point(6, 6);
       this.parameterCollectionView.Name = "parameterCollectionView";
@@ -132,7 +131,6 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
       this.pathTSPTourView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.pathTSPTourView.Caption = "View";
       this.pathTSPTourView.Content = null;
       this.pathTSPTourView.Location = new System.Drawing.Point(6, 6);
       this.pathTSPTourView.Name = "pathTSPTourView";

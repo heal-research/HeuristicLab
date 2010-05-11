@@ -43,7 +43,6 @@ namespace HeuristicLab.Data.Views {
 
     public ComparisonView() {
       InitializeComponent();
-      Caption = "Comparison View";
       valueComboBox.DataSource = Enum.GetValues(typeof(ComparisonType));
     }
 
@@ -59,13 +58,11 @@ namespace HeuristicLab.Data.Views {
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      if (Content == null) {
-        Caption = "Comparison View";
+      if (Content == null)
         valueComboBox.Enabled = false;
-      } else {
-        Caption = Content.ToString() + " (" + Content.GetType().Name + ")";
+      else
         valueComboBox.SelectedItem = Content.Value;
-      }
+
       SetEnabledStateOfControls();
     }
     protected override void OnReadOnlyChanged() {

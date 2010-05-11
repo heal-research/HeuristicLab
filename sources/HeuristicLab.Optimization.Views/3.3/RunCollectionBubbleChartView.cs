@@ -56,7 +56,6 @@ namespace HeuristicLab.Optimization.Views {
 
     public RunCollectionBubbleChartView() {
       InitializeComponent();
-      Caption = "Run Collection Bubble Chart";
 
       this.categoricalMapping = new Dictionary<int, Dictionary<object, double>>();
       this.xJitter = new Dictionary<IRun, double>();

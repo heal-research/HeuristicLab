@@ -34,6 +34,10 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.isShown = false;
       this.closeReason = CloseReason.None;
       this.readOnly = false;
+      if (ViewAttribute.HasViewAttribute(this.GetType()))
+        this.Caption = ViewAttribute.GetViewName(this.GetType());
+      else
+        this.Caption = "View";
     }
 
     private string caption;

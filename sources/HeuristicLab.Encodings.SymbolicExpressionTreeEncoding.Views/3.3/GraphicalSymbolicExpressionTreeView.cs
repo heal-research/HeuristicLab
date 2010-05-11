@@ -44,7 +44,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     public GraphicalSymbolicExpressionTreeView()
       : base() {
       InitializeComponent();
-      Caption = "Graphical SymbolicExpressionTree View";
     }
 
     protected override void OnContentChanged() {

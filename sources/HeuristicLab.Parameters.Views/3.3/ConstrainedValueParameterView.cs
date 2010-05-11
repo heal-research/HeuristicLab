@@ -52,7 +52,6 @@ namespace HeuristicLab.Parameters.Views {
     /// </summary>
     public ConstrainedValueParameterView() {
       InitializeComponent();
-      Caption = "ConstrainedValueParameter";
       valueComboBoxItems = new List<T>();
     }
 
@@ -83,11 +82,9 @@ namespace HeuristicLab.Parameters.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        Caption = "ConstrainedValueParameter";
         viewHost.Content = null;
         FillValueComboBox();
       } else {
-        Caption = Content.Name + " (" + Content.GetType().Name + ")";
         FillValueComboBox();
         viewHost.ViewType = null;
         viewHost.Content = Content.Value;

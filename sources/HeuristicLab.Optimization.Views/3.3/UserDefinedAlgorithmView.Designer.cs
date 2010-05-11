@@ -129,7 +129,6 @@ namespace HeuristicLab.Optimization.Views {
       this.globalScopeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.globalScopeView.Caption = "Scope";
       this.globalScopeView.Content = null;
       this.globalScopeView.Location = new System.Drawing.Point(3, 3);
       this.globalScopeView.Name = "globalScopeView";

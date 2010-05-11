@@ -32,7 +32,6 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     public VariableCollectionView() {
       InitializeComponent();
-      Caption = "VariableCollection";
       itemsGroupBox.Text = "Variables";
     }
 

@@ -39,16 +39,6 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     public ItemView() {
       InitializeComponent();
-      Caption = "View";
-    }
-
-    protected override void OnContentChanged() {
-      base.OnContentChanged();
-      if (Content == null) {
-        Caption = "View";
-      } else {
-        Caption = Content.ItemName;
-      }
     }
   }
 }

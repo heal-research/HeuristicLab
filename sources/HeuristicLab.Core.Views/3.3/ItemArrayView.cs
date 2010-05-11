@@ -57,7 +57,6 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     public ItemArrayView() {
       InitializeComponent();
-      Caption = "Item Array";
     }
 
     /// <summary>
@@ -84,7 +83,6 @@ namespace HeuristicLab.Core.Views {
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      Caption = "Item Array";
       while (itemsListView.Items.Count > 0) RemoveListViewItem(itemsListView.Items[0]);
       viewHost.Content = null;
       if (Content != null) {

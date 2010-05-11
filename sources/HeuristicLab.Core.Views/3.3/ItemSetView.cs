@@ -42,12 +42,10 @@ namespace HeuristicLab.Core.Views {
     public ItemSetView() {
       listViewItemDictionary = new Dictionary<T, ListViewItem>();
       InitializeComponent();
-      Caption = "Item Set";
     }
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      Caption = "Item Set";
       if (Content != null)
         Caption += " (" + Content.GetType().Name + ")";
     }
