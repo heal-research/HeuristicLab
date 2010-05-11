@@ -64,6 +64,10 @@ namespace HeuristicLab.Problems.TestFunctions {
       get { return 2; }
     }
 
+    public override RealVector GetBestKnownSolution(int dimension) {
+      if (dimension != 2) throw new ArgumentException(Name + ": This function is only defined for 2 dimensions.", "dimension");
+      return new RealVector(dimension);
+    }
     /// <summary>
     /// Evaluates the test function for a specific <paramref name="point"/>.
     /// </summary>

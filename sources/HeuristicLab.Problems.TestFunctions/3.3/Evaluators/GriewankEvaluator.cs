@@ -66,6 +66,9 @@ namespace HeuristicLab.Problems.TestFunctions {
       get { return int.MaxValue; }
     }
 
+    public override RealVector GetBestKnownSolution(int dimension) {
+      return new RealVector(dimension);
+    }
     /// <summary>
     /// If dimension of the problem is less or equal than 100 the values of Math.Sqrt(i + 1) are precomputed.
     /// </summary>

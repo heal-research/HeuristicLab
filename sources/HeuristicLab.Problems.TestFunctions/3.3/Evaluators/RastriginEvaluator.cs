@@ -79,6 +79,10 @@ namespace HeuristicLab.Problems.TestFunctions {
       set { if (value != null) AParameter.Value = value; }
     }
 
+    public override RealVector GetBestKnownSolution(int dimension) {
+      return new RealVector(dimension);
+    }
+
     /// <summary>
     /// Initializes a new instance of the RastriginEvaluator with one parameter (<c>A</c>).
     /// </summary>

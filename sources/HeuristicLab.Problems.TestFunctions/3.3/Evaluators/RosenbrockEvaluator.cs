@@ -68,6 +68,13 @@ It is implemented as generalized Rosenbrock function for which the 2 dimensional
       get { return int.MaxValue; }
     }
 
+    public override RealVector GetBestKnownSolution(int dimension) {
+      if (dimension < 2) throw new ArgumentException(Name + ": This function is not defined for 1 dimension.");
+      RealVector result = new RealVector(dimension);
+      for (int i = 0; i < dimension; i++) result[i] = 1;
+      return result;
+    }
+
     /// <summary>
     /// Evaluates the test function for a specific <paramref name="point"/>.
     /// </summary>

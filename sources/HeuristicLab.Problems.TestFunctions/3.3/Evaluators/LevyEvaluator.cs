@@ -64,6 +64,12 @@ namespace HeuristicLab.Problems.TestFunctions {
       get { return int.MaxValue; }
     }
 
+    public override RealVector GetBestKnownSolution(int dimension) {
+      if (dimension < 2) throw new ArgumentException(Name + ": This function is not defined for 1 dimension.");
+      RealVector result = new RealVector(dimension);
+      for (int i = 0; i < dimension; i++) result[i] = 1;
+      return result;
+    }
     /// <summary>
     /// Evaluates the test function for a specific <paramref name="point"/>.
     /// </summary>
@@ -79,6 +85,7 @@ namespace HeuristicLab.Problems.TestFunctions {
       }
 
       s = Math.Sin(Math.PI * z[0]);
+      if (Math.Abs(s) < 1e-15) s = 0; // Math.Sin(Math.PI) == 0.00000000000000012246063538223773
       s *= s;
 
       for (int i = 0; i < length - 1; i++) {

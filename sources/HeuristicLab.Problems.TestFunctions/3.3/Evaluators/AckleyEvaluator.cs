@@ -65,6 +65,10 @@ namespace HeuristicLab.Problems.TestFunctions {
       get { return int.MaxValue; }
     }
 
+    public override RealVector GetBestKnownSolution(int dimension) {
+      return new RealVector(dimension);
+    }
+
     /// <summary>
     /// Evaluates the Ackley function for a specific <paramref name="point"/>.
     /// </summary>

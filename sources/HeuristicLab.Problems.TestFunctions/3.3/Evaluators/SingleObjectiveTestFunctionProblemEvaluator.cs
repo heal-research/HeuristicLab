@@ -86,6 +86,10 @@ namespace HeuristicLab.Problems.TestFunctions {
     public virtual double Evaluate2D(double x, double y) {
       return EvaluateFunction(new RealVector(new double[] { x, y }));
     }
+    /// <summary>
+    /// Gets the best known solution for this function.
+    /// </summary>
+    public abstract RealVector GetBestKnownSolution(int dimension);
 
     /// <summary>
     /// Evaluates the test function for a specific <paramref name="point"/>.

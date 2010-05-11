@@ -30,7 +30,7 @@ namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
   /// The Schwefel function (sine root) is implemented as described in Affenzeller, M. and Wagner, S. 2005. Offspring Selection: A New Self-Adaptive Selection Scheme for Genetic Algorithms.  Ribeiro, B., Albrecht, R. F., Dobnikar, A., Pearson, D. W., and Steele, N. C. (eds.). Adaptive and Natural Computing Algorithms, pp. 218-221, Springer.
   /// </summary>
-  [Item("SchwefelEvaluator", "Evaluates the Schwefel function (sine root) on a given point. The optimum of this function is 0 at (420.968746453712,420.968746453712,...,420.968746453712). It is implemented as described in Affenzeller, M. and Wagner, S. 2005. Offspring Selection: A New Self-Adaptive Selection Scheme for Genetic Algorithms.  Ribeiro, B., Albrecht, R. F., Dobnikar, A., Pearson, D. W., and Steele, N. C. (eds.). Adaptive and Natural Computing Algorithms, pp. 218-221, Springer.")]
+  [Item("SchwefelEvaluator", "Evaluates the Schwefel function (sine root) on a given point. In the given bounds [-500;500] the optimum of this function is close to 0 at (420.968746453712,420.968746453712,...,420.968746453712). It is implemented as described in Affenzeller, M. and Wagner, S. 2005. Offspring Selection: A New Self-Adaptive Selection Scheme for Genetic Algorithms.  Ribeiro, B., Albrecht, R. F., Dobnikar, A., Pearson, D. W., and Steele, N. C. (eds.). Adaptive and Natural Computing Algorithms, pp. 218-221, Springer.")]
   [StorableClass]
   public class SchwefelEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
     /// <summary>
@@ -62,6 +62,10 @@ namespace HeuristicLab.Problems.TestFunctions {
     /// </summary>
     public override int MaximumProblemSize {
       get { return int.MaxValue; }
+    }
+
+    public override RealVector GetBestKnownSolution(int dimension) {
+      return null;
     }
 
     /// <summary>

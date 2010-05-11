@@ -65,6 +65,11 @@ namespace HeuristicLab.Problems.TestFunctions {
     public override int MaximumProblemSize {
       get { return int.MaxValue; }
     }
+
+    public override RealVector GetBestKnownSolution(int dimension) {
+      return new RealVector(dimension);
+    }
+
     /// <summary>
     /// The parameter C modifies the steepness of the objective function y = C * ||X||^Alpha. Default is C = 1.
     /// </summary>

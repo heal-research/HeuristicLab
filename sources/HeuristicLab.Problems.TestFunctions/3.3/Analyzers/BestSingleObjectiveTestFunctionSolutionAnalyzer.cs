@@ -54,6 +54,12 @@ namespace HeuristicLab.Problems.TestFunctions.Analyzers {
     public ILookupParameter<SingleObjectiveTestFunctionSolution> BestSolutionParameter {
       get { return (ILookupParameter<SingleObjectiveTestFunctionSolution>)Parameters["BestSolution"]; }
     }
+    public ILookupParameter<RealVector> BestKnownSolutionParameter {
+      get { return (ILookupParameter<RealVector>)Parameters["BestKnownSolution"]; }
+    }
+    public ILookupParameter<DoubleValue> BestKnownQualityParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
+    }
     public IValueLookupParameter<ResultCollection> ResultsParameter {
       get { return (IValueLookupParameter<ResultCollection>)Parameters["Results"]; }
     }
@@ -66,6 +72,8 @@ namespace HeuristicLab.Problems.TestFunctions.Analyzers {
       Parameters.Add(new ScopeTreeLookupParameter<RealVector>("RealVector", "The SingleObjectiveTestFunction solutions from which the best solution should be visualized."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The qualities of the SingleObjectiveTestFunction solutions which should be visualized."));
       Parameters.Add(new LookupParameter<SingleObjectiveTestFunctionSolution>("BestSolution", "The best SingleObjectiveTestFunction solution."));
+      Parameters.Add(new LookupParameter<RealVector>("BestKnownSolution", "The best known solution."));
+      Parameters.Add(new LookupParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution."));
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the SingleObjectiveTestFunction solution should be stored."));
       Parameters.Add(new ValueLookupParameter<ISingleObjectiveTestFunctionProblemEvaluator>("Evaluator", "The evaluator with which the solution is evaluated."));
     }
@@ -75,23 +83,33 @@ namespace HeuristicLab.Problems.TestFunctions.Analyzers {
       ItemArray<DoubleValue> qualities = QualityParameter.ActualValue;
       ResultCollection results = ResultsParameter.ActualValue;
       ISingleObjectiveTestFunctionProblemEvaluator evaluator = EvaluatorParameter.ActualValue;
+      bool max = evaluator.Maximization;
 
       int i = qualities.Select((x, index) => new { index, x.Value }).OrderBy(x => x.Value).First().index;
       SingleObjectiveTestFunctionSolution solution = BestSolutionParameter.ActualValue;
       if (solution == null) {
         solution = new SingleObjectiveTestFunctionSolution(realVectors[i], qualities[i], evaluator);
         solution.Population = realVectors;
+        double bestknownQuality = BestKnownQualityParameter.ActualValue.Value;
+        if (max && qualities[i].Value >= bestknownQuality
+          || !max && qualities[i].Value <= bestknownQuality) {
+          BestKnownSolutionParameter.ActualValue = (RealVector)realVectors[i].Clone();
+        }
+        solution.BestKnownRealVector = BestKnownSolutionParameter.ActualValue;
         BestSolutionParameter.ActualValue = solution;
-
         results.Add(new Result("Best SingleObjectiveTestFunction Solution", solution));
       } else {
-        if (evaluator.Maximization && qualities[i].Value > solution.BestQuality.Value
-          || !evaluator.Maximization && qualities[i].Value < solution.BestQuality.Value) {
+        double bestknownQuality = BestKnownQualityParameter.ActualValue.Value;
+        if (max && qualities[i].Value >= bestknownQuality
+          || !max && qualities[i].Value <= bestknownQuality) {
+          BestKnownSolutionParameter.ActualValue = (RealVector)realVectors[i].Clone();
+        }
+        if (max && qualities[i].Value > solution.BestQuality.Value
+          || !max && qualities[i].Value < solution.BestQuality.Value) {
           solution.BestRealVector = realVectors[i];
           solution.BestQuality = qualities[i];
         }
         solution.Population = realVectors;
-
         //results["Best SingleObjectiveTestFunction Solution"].Value = solution;
       }
 
