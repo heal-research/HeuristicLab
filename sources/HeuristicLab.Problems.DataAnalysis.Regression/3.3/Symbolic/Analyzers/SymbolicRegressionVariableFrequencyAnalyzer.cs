@@ -80,15 +80,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       ResultCollection results = ResultsParameter.ActualValue;
 
       if (VariableImpacts == null) {
-        VariableImpacts = new DataTable("Variable Frequencies", "Relative frequency of variable references aggregated over the whole population.");
+        VariableImpacts = new DataTable("Variable frequencies", "Relative frequency of variable references aggregated over the whole population.");
         // add a data row for each input variable
         foreach (var inputVariable in inputVariables)
           VariableImpacts.Rows.Add(new DataRow(inputVariable));
-        results.Add(new Result("Variable Frequencies", VariableImpacts));
+        results.Add(new Result("Variable frequencies", VariableImpacts));
       }
       foreach (var pair in VariableFrequencyAnalyser.CalculateVariableFrequencies(expressions, inputVariables)) {
         VariableImpacts.Rows[pair.Key].Values.Add(pair.Value);
-        results["Variable Frequencies"].Value = VariableImpacts;
+        results["Variable frequencies"].Value = VariableImpacts;
       }
 
       return base.Apply();
