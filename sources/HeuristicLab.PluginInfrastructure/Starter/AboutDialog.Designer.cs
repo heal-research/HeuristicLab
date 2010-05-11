@@ -124,8 +124,8 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       // 
       this.pictureBox.Location = new System.Drawing.Point(12, 12);
       this.pictureBox.Name = "pictureBox";
-      this.pictureBox.Size = new System.Drawing.Size(165, 183);
-      this.pictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+      this.pictureBox.Size = new System.Drawing.Size(160, 180);
+      this.pictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
       this.pictureBox.TabIndex = 2;
       this.pictureBox.TabStop = false;
       // 

@@ -28,6 +28,7 @@ using System.Reflection;
 using System.Linq;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.PluginInfrastructure.Manager;
+using System.Diagnostics;
 
 namespace HeuristicLab.PluginInfrastructure.Starter {
   internal partial class SplashScreen : Form {
@@ -35,7 +36,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
     private Timer fadeTimer;
     private int initialInterval;
     private PluginManager manager;
-    private bool fadeOutForced;
+
     internal SplashScreen() {
       InitializeComponent();
     }
@@ -45,7 +46,6 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.initialInterval = initialInterval;
       this.manager = manager;
 
-      closeButton.Image = HeuristicLab.PluginInfrastructure.Resources.Delete;
       manager.ApplicationStarted += new EventHandler<PluginInfrastructureEventArgs>(manager_ApplicationStarted);
       manager.ApplicationStarting += new EventHandler<PluginInfrastructureEventArgs>(manager_ApplicationStarting);
       manager.Initializing += new EventHandler<PluginInfrastructureEventArgs>(manager_Initializing);
@@ -53,18 +53,12 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       manager.PluginLoaded += new EventHandler<PluginInfrastructureEventArgs>(manager_PluginLoaded);
       manager.PluginUnloaded += new EventHandler<PluginInfrastructureEventArgs>(manager_PluginUnloaded);
 
-      titleLabel.Text = Application.ProductName;
-      versionLabel.Text = "Version " + Application.ProductVersion;
+      FileVersionInfo pluginInfrastructureVersion = FileVersionInfo.GetVersionInfo(GetType().Assembly.Location);
+      versionLabel.Text = "Version " + pluginInfrastructureVersion.FileVersion;
       infoLabel.Text = "";
 
       var attr = (AssemblyCopyrightAttribute)this.GetType().Assembly.GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false).Single();
       copyrightLabel.Text = "Copyright " + attr.Copyright;
-
-      string user = HeuristicLab.PluginInfrastructure.Properties.Settings.Default.User;
-      string company = HeuristicLab.PluginInfrastructure.Properties.Settings.Default.Organization;
-
-      userNameLabel.Text = string.IsNullOrEmpty(user) ? "-" : user;
-      companyLabel.Text = string.IsNullOrEmpty(company) ? "-" : company;
 
       fadeTimer = new Timer();
       fadeTimer.Tick += fadeTimer_Elapsed;
@@ -100,7 +94,6 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       else {
         Opacity = 1;
         infoLabel.Text = initialText;
-        fadeOutForced = false;
         ResetFadeTimer();
         Show();
       }
@@ -111,7 +104,6 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       else {
         Opacity = 1;
         infoLabel.Text = initialText;
-        fadeOutForced = false;
         ResetFadeTimer();
         Show(owner);
       }
@@ -136,11 +128,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       if (InvokeRequired) {
         Invoke((Action<string>)UpdateMessage, msg);
       } else {
-        // when the user forced a fade-out (by closing the splashscreen)
-        // don't reset the fadeTimer
-        if (!fadeOutForced) {
-          ResetFadeTimer();
-        }
+        ResetFadeTimer();
         SetInfoText(msg);
         Application.DoEvents(); // force immediate update of splash screen control
       }
@@ -163,12 +151,6 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
         fadeTimer.Stop();
         Hide();
       }
-    }
-
-    // force fade out
-    private void closeButton_Click(object sender, EventArgs e) {
-      fadeOutForced = true;
-      FadeOut();
     }
   }
 }
