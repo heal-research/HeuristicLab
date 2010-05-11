@@ -203,7 +203,13 @@ namespace HeuristicLab.Optimization {
 
     public override void CollectParameterValues(IDictionary<string, IItem> values) {
       base.CollectParameterValues(values);
-      if (Problem != null) Problem.CollectParameterValues(values);
+      values.Add("Algorithm Name", new StringValue(Name));
+      values.Add("Algorithm Type", new StringValue(this.GetType().GetPrettyName()));
+      if (Problem != null) {
+        Problem.CollectParameterValues(values);
+        values.Add("Problem Name", new StringValue(Problem.Name));
+        values.Add("Problem Type", new StringValue(Problem.GetType().GetPrettyName()));
+      }
     }
     public virtual void CollectResultValues(IDictionary<string, IItem> values) {
       values.Add("Execution Time", new TimeSpanValue(ExecutionTime));

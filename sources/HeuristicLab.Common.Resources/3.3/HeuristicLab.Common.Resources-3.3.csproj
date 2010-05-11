@@ -401,6 +401,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\HeuristicLab\HeuristicLab.ico" />
+    <None Include="Resources\HeuristicLab\HeuristicLabBanner.png" />
+    <None Include="Resources\HeuristicLab\HeuristicLabLogo.png" />
     <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_ActualSize.png" />
     <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Performance.ico" />
   </ItemGroup>
