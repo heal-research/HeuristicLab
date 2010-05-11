@@ -26,6 +26,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.Persistence.Default.Xml;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Optimization.Views {
   /// <summary>
@@ -119,7 +120,7 @@ namespace HeuristicLab.Optimization.Views {
       if (InvokeRequired)
         Invoke(new EventHandler<EventArgs<Exception>>(Content_ExceptionOccurred), sender, e);
       else
-        Auxiliary.ShowErrorMessageBox(e.Value);
+        ErrorHandling.ShowErrorDialog(this, e.Value);
     }
     private void Content_AlgorithmChanged(object sender, EventArgs e) {
       if (InvokeRequired)
@@ -156,7 +157,7 @@ namespace HeuristicLab.Optimization.Views {
           Content.Algorithm = (IAlgorithm)algorithmTypeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
         }
         catch (Exception ex) {
-          Auxiliary.ShowErrorMessageBox(ex);
+          ErrorHandling.ShowErrorDialog(this, ex);
         }
       }
     }
@@ -176,7 +177,7 @@ namespace HeuristicLab.Optimization.Views {
               Content.Algorithm = algorithm;
           }
           catch (Exception ex) {
-            Auxiliary.ShowErrorMessageBox(ex);
+            ErrorHandling.ShowErrorDialog(this, ex);
           }
           finally {
             Invoke(new Action(delegate() {

@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Core {
   [Item("Log", "A log for logging string messages.")]
@@ -62,7 +63,7 @@ namespace HeuristicLab.Core {
       OnMessageAdded(s);
     }
     public virtual void LogException(Exception ex) {
-      string s = DateTime.Now.ToString() + "\t" + "Exception occurred:" + Environment.NewLine + BuildErrorMessage(ex);
+      string s = DateTime.Now.ToString() + "\t" + "Exception occurred:" + Environment.NewLine + ErrorHandling.BuildErrorMessage(ex);
       messages.Add(s);
       OnMessageAdded(s);
     }
@@ -76,17 +77,6 @@ namespace HeuristicLab.Core {
     protected virtual void OnCleared() {
       EventHandler handler = Cleared;
       if (handler != null) handler(this, EventArgs.Empty);
-    }
-
-    public static string BuildErrorMessage(Exception ex) {
-      string nl = Environment.NewLine;
-      string message = ex.Message + nl + ex.StackTrace;
-
-      while (ex.InnerException != null) {
-        ex = ex.InnerException;
-        message += nl + "-----" + nl + ex.Message + nl + ex.StackTrace;
-      }
-      return message;
     }
   }
 }

@@ -23,6 +23,7 @@ using System;
 using System.Windows.Forms;
 using HeuristicLab.Collections;
 using HeuristicLab.MainForm;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Core.Views {
   [View("OperatorCollection View")]
@@ -51,7 +52,7 @@ namespace HeuristicLab.Core.Views {
           return (IOperator)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
         }
         catch (Exception ex) {
-          Auxiliary.ShowErrorMessageBox(ex);
+          ErrorHandling.ShowErrorDialog(this, ex);
         }
       }
       return null;

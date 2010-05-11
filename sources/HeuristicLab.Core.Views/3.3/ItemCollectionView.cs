@@ -26,6 +26,7 @@ using System.Windows.Forms;
 using HeuristicLab.Collections;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Core.Views {
   [View("ItemCollection View")]
@@ -111,7 +112,7 @@ namespace HeuristicLab.Core.Views {
           return (T)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
         }
         catch (Exception ex) {
-          Auxiliary.ShowErrorMessageBox(ex);
+          ErrorHandling.ShowErrorDialog(this, ex);
         }
       }
       return null;

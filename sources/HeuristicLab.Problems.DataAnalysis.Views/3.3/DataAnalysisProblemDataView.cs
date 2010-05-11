@@ -29,6 +29,7 @@ using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Data-Analysis Problem View")]
@@ -55,7 +56,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           importButton.Enabled = false;
         }
         catch (Exception ex) {
-          Auxiliary.ShowErrorMessageBox(ex);
+          ErrorHandling.ShowErrorDialog(this, ex);
         }
       }
     }

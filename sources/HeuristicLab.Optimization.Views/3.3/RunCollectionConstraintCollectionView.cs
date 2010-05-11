@@ -25,6 +25,7 @@ using HeuristicLab.Collections;
 using HeuristicLab.MainForm;
 using HeuristicLab.Optimization;
 using System.Drawing;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Core.Views {
   [View("ConstraintCollection View")]
@@ -53,7 +54,7 @@ namespace HeuristicLab.Core.Views {
           return (IRunCollectionConstraint)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
         }
         catch (Exception ex) {
-          Auxiliary.ShowErrorMessageBox(ex);
+          ErrorHandling.ShowErrorDialog(this, ex);
         }
       }
       return null;

@@ -23,6 +23,7 @@ using System;
 using System.Windows.Forms;
 using HeuristicLab.Common;
 using HeuristicLab.MainForm;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Core.Views {
   /// <summary>
@@ -120,7 +121,7 @@ namespace HeuristicLab.Core.Views {
           Content.Value = (IItem)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
         }
         catch (Exception ex) {
-          Auxiliary.ShowErrorMessageBox(ex);
+          ErrorHandling.ShowErrorDialog(this, ex);
         }
       }
     }

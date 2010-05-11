@@ -152,7 +152,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
           }
           catch (Exception ex) {
             stopped = false;
-            ThreadPool.QueueUserWorkItem(delegate(object exception) { ShowErrorMessageBox((Exception)exception); }, ex);
+            ThreadPool.QueueUserWorkItem(delegate(object exception) { ErrorHandling.ShowErrorDialog(this, (Exception)exception); }, ex);
             Thread.Sleep(5000); // sleep 5 seconds before autorestart
           }
         } while (!abortRequested && !stopped && app.AutoRestart);
@@ -176,26 +176,6 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
           column.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
         else column.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
       }
-    }
-
-    private void ShowErrorMessageBox(Exception ex) {
-      MessageBoxOptions options = RightToLeft == RightToLeft.Yes ? MessageBoxOptions.RightAlign | MessageBoxOptions.RtlReading : MessageBoxOptions.DefaultDesktopOnly;
-      MessageBox.Show(null,
-         BuildErrorMessage(ex),
-         "Error - " + ex.GetType().Name,
-         MessageBoxButtons.OK,
-         MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, options);
-    }
-    private static string BuildErrorMessage(Exception ex) {
-      string nl = Environment.NewLine;
-      StringBuilder sb = new StringBuilder();
-      sb.Append(ex.Message + nl + ex.StackTrace);
-
-      while (ex.InnerException != null) {
-        ex = ex.InnerException;
-        sb.Append(nl + "-----" + nl + ex.Message + nl + ex.StackTrace);
-      }
-      return sb.ToString();
     }
 
     private void MainForm_FormClosing(object sender, FormClosingEventArgs e) {

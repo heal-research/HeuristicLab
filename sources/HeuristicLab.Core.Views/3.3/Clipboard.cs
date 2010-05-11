@@ -27,6 +27,7 @@ using System.Threading;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
 using HeuristicLab.Persistence.Default.Xml;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Core.Views {
   [View("Clipboard")]
@@ -278,7 +279,7 @@ namespace HeuristicLab.Core.Views {
           AddItem((T)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType());
         }
         catch (Exception ex) {
-          Auxiliary.ShowErrorMessageBox(ex);
+          ErrorHandling.ShowErrorDialog(this, ex);
         }
       }
     }

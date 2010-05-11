@@ -27,6 +27,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.Persistence.Default.Xml;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Optimization.Views {
   /// <summary>
@@ -154,7 +155,7 @@ namespace HeuristicLab.Optimization.Views {
       if (InvokeRequired)
         Invoke(new EventHandler<EventArgs<Exception>>(Content_ExceptionOccurred), sender, e);
       else
-        Auxiliary.ShowErrorMessageBox(e.Value);
+        ErrorHandling.ShowErrorDialog(this, e.Value);
     }
     #endregion
 
@@ -171,7 +172,7 @@ namespace HeuristicLab.Optimization.Views {
           Content.Problem = (IProblem)problemTypeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
         }
         catch (Exception ex) {
-          Auxiliary.ShowErrorMessageBox(ex);
+          ErrorHandling.ShowErrorDialog(this, ex);
         }
       }
     }
@@ -195,7 +196,7 @@ namespace HeuristicLab.Optimization.Views {
               Content.Problem = problem;
           }
           catch (Exception ex) {
-            Invoke(new Action(() => Auxiliary.ShowErrorMessageBox(ex)));
+            Invoke(new Action(() => ErrorHandling.ShowErrorDialog(this, ex)));
           }
           finally {
             Invoke(new Action(delegate() {

@@ -36,6 +36,7 @@ using HeuristicLab.CodeEditor;
 using HeuristicLab.Core.Views;
 using HeuristicLab.Operators.Views;
 using HeuristicLab.MainForm;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Operators.Programmable {
   [View("ProgrammableOperator View")]
@@ -133,7 +134,7 @@ namespace HeuristicLab.Operators.Programmable {
         ProgrammableOperator.Compile();
         MessageBox.Show("Compilation successful", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
       } catch (Exception ex) {
-        Auxiliary.ShowErrorMessageBox(ex);
+        ErrorHandling.ShowErrorDialog(this, ex);
       }
       OnContentChanged();
       this.Enabled = true;

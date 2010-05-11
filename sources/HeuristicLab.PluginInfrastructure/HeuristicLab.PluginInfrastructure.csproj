@@ -193,6 +193,14 @@
     <Compile Include="BaseClasses\ApplicationBase.cs" />
     <Compile Include="BaseClasses\PluginBase.cs" />
     <Compile Include="DefaultApplicationManager.cs" />
+    <Compile Include="ErrorHandling\ErrorDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ErrorHandling\ErrorDialog.Designer.cs">
+      <DependentUpon>ErrorDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ErrorHandling\ErrorHandling.cs">
+    </Compile>
     <Compile Include="LightweightApplicationManager.cs" />
     <Compile Include="Interfaces\IPluginFile.cs" />
     <Compile Include="Interfaces\IApplicationManager.cs" />
@@ -259,11 +267,13 @@
     <Content Include="ICSharpCode.SharpZipLib.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\Error.ico" />
     <Content Include="Resources\HeuristicLab.ico" />
     <Content Include="Resources\Logo_white.gif" />
     <None Include="Resources\VS2008ImageLibrary_Actions_Delete.png" />
     <Content Include="Resources\VS2008ImageLibrary_Actions_PublishToWebHS.png" />
     <Content Include="Resources\VS2008ImageLibrary_Actions_RepeatHS.png" />
+    <None Include="Resources\VS2008ImageLibrary_Annotations_Error.png" />
     <Content Include="Resources\VS2008ImageLibrary_CommonElements_Actions_Add.png" />
     <Content Include="Resources\VS2008ImageLibrary_Objects_Plugin.png" />
     <EmbeddedResource Include="Advanced\DeploymentService\servdev.cer" />

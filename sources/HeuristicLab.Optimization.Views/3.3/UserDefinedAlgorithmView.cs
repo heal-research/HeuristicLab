@@ -26,6 +26,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.Persistence.Default.Xml;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Optimization.Views {
   /// <summary>
@@ -89,7 +90,7 @@ namespace HeuristicLab.Optimization.Views {
               Content.OperatorGraph = operatorGraph;
           }
           catch (Exception ex) {
-            Auxiliary.ShowErrorMessageBox(ex);
+            ErrorHandling.ShowErrorDialog(this, ex);
           }
           finally {
             Invoke(new Action(delegate() {

@@ -25,6 +25,7 @@ using HeuristicLab.Collections;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Optimization.Views {
   [View("OptimizerList View")]
@@ -53,7 +54,7 @@ namespace HeuristicLab.Optimization.Views {
           return (IOptimizer)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
         }
         catch (Exception ex) {
-          Auxiliary.ShowErrorMessageBox(ex);
+          ErrorHandling.ShowErrorDialog(this, ex);
         }
       }
       return null;

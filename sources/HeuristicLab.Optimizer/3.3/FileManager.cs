@@ -25,6 +25,7 @@ using System.Windows.Forms;
 using HeuristicLab.Common;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Optimizer {
   internal static class FileManager {
@@ -72,7 +73,7 @@ namespace HeuristicLab.Optimizer {
         });
       }
       catch (Exception ex) {
-        Auxiliary.ShowErrorMessageBox(ex);
+        ErrorHandling.ShowErrorDialog((Control)MainFormManager.MainForm, "Cannot open file.", ex);
       }
       finally {
         ((OptimizerMainForm)MainFormManager.MainForm).ResetAppStartingCursor();
@@ -132,7 +133,7 @@ namespace HeuristicLab.Optimizer {
         });
       }
       catch (Exception ex) {
-        Auxiliary.ShowErrorMessageBox(ex);
+        ErrorHandling.ShowErrorDialog((Control)MainFormManager.MainForm, "Cannot save file.", ex);
       }
       finally {
         ((OptimizerMainForm)MainFormManager.MainForm).ResetAppStartingCursor();

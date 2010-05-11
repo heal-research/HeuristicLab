@@ -152,7 +152,6 @@
     <Compile Include="CreateParameterDialog.Designer.cs">
       <DependentUpon>CreateParameterDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Auxiliary.cs" />
     <Compile Include="EngineView.cs">
       <SubType>UserControl</SubType>
     </Compile>

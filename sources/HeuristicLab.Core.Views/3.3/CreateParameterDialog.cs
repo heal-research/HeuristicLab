@@ -21,6 +21,7 @@
 
 using System;
 using System.Windows.Forms;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Core.Views {
   public partial class CreateParameterDialog : Form {
@@ -39,7 +40,7 @@ namespace HeuristicLab.Core.Views {
           return (IParameter)Activator.CreateInstance(type, nameTextBox.Text, descriptionTextBox.Text);
         }
         catch (Exception ex) {
-          Auxiliary.ShowErrorMessageBox(ex);
+          ErrorHandling.ShowErrorDialog(this, ex);
         }
         return null;
       }

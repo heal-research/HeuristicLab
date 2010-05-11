@@ -43,28 +43,8 @@ namespace HeuristicLab.PluginInfrastructure {
         Application.Run(new StarterForm());
       }
       catch (Exception ex) {
-        ShowErrorMessageBox(ex);
+        ErrorHandling.ShowErrorDialog(ex);
       }
-    }
-
-    private static void ShowErrorMessageBox(Exception ex) {
-      MessageBox.Show(null,
-        BuildErrorMessage(ex),
-        "Error - " + ex.GetType().Name,
-        MessageBoxButtons.OK,
-        MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
-    }
-
-    private static string BuildErrorMessage(Exception ex) {
-      string nl = Environment.NewLine;
-      StringBuilder sb = new StringBuilder();
-      sb.Append(ex.Message + nl + ex.StackTrace);
-
-      while (ex.InnerException != null) {
-        ex = ex.InnerException;
-        sb.Append(nl + "-----" + nl + ex.Message + nl + ex.StackTrace);
-      }
-      return sb.ToString();
     }
   }
 }
