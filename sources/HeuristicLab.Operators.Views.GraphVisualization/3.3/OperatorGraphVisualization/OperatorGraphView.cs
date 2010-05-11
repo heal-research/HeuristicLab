@@ -181,7 +181,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
         this.initialToolStripMenuItem.Checked = this.Content.InitialOperator == op;
         this.initialToolStripMenuItem.Enabled = !ReadOnly && !Locked;
         this.breakPointToolStripMenuItem.Checked = op.Breakpoint;
-        this.breakPointToolStripMenuItem.Enabled = !ReadOnly && !Locked;
+        this.breakPointToolStripMenuItem.Enabled = !Locked;
       }
     }
 
@@ -198,23 +198,19 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     }
 
     private void initialOperatorToolStripMenuItem_Click(object sender, EventArgs e) {
-      if (!ReadOnly) {
         IOperatorShapeInfo shapeInfo = this.shapeContextMenu.Tag as IOperatorShapeInfo;
         if (this.VisualizationInfo.InitialShape == shapeInfo)
           this.VisualizationInfo.InitialShape = null;
         else
           this.VisualizationInfo.InitialShape = shapeInfo;
-      }
     }
 
     private void breakPointToolStripMenuItem_Click(object sender, EventArgs e) {
-      if (!ReadOnly) {
         IOperatorShapeInfo shapeInfo = this.shapeContextMenu.Tag as IOperatorShapeInfo;
         if (shapeInfo != null) {
           IOperator op = this.VisualizationInfo.GetOperatorForShapeInfo(shapeInfo);
           op.Breakpoint = !op.Breakpoint;
         }
-      }
     }
     #endregion
 
