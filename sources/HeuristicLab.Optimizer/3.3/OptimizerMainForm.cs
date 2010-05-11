@@ -89,7 +89,7 @@ namespace HeuristicLab.Optimizer {
       }
     }
 
-    private static string CHARTCONTROLASSEMBLY = "System.Windows.Forsms.DataVisualization, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35";
+    private static string CHARTCONTROLASSEMBLY = "System.Windows.Forms.DataVisualization, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35";
     private bool CheckChartControls() {
       try {
         Assembly chartControlsAssembly = Assembly.Load(CHARTCONTROLASSEMBLY);
