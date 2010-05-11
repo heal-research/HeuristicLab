@@ -43,32 +43,16 @@ namespace HeuristicLab.Optimizer {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.messageTextBox = new System.Windows.Forms.TextBox();
       this.iconLabel = new System.Windows.Forms.Label();
       this.okButton = new System.Windows.Forms.Button();
       this.linkLabel = new System.Windows.Forms.LinkLabel();
+      this.label1 = new System.Windows.Forms.Label();
       this.SuspendLayout();
-      // 
-      // messageTextBox
-      // 
-      this.messageTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.messageTextBox.BackColor = System.Drawing.SystemColors.Control;
-      this.messageTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-      this.messageTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.messageTextBox.Location = new System.Drawing.Point(39, 12);
-      this.messageTextBox.Multiline = true;
-      this.messageTextBox.Name = "messageTextBox";
-      this.messageTextBox.ReadOnly = true;
-      this.messageTextBox.Size = new System.Drawing.Size(284, 27);
-      this.messageTextBox.TabIndex = 3;
-      this.messageTextBox.Text = "Microsoft Chart Controls are not properly installed. Please download and install " +
-          "them.";
       // 
       // iconLabel
       // 
       this.iconLabel.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Warning;
-      this.iconLabel.Location = new System.Drawing.Point(12, 17);
+      this.iconLabel.Location = new System.Drawing.Point(12, 9);
       this.iconLabel.Name = "iconLabel";
       this.iconLabel.Size = new System.Drawing.Size(21, 22);
       this.iconLabel.TabIndex = 1;
@@ -77,17 +61,17 @@ namespace HeuristicLab.Optimizer {
       // 
       this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-      this.okButton.Location = new System.Drawing.Point(248, 41);
+      this.okButton.Location = new System.Drawing.Point(234, 59);
       this.okButton.Name = "okButton";
       this.okButton.Size = new System.Drawing.Size(75, 23);
       this.okButton.TabIndex = 6;
-      this.okButton.Text = "&OK";
+      this.okButton.Text = "&Close";
       this.okButton.UseVisualStyleBackColor = true;
       // 
       // linkLabel
       // 
       this.linkLabel.AutoSize = true;
-      this.linkLabel.Location = new System.Drawing.Point(36, 42);
+      this.linkLabel.Location = new System.Drawing.Point(39, 66);
       this.linkLabel.Name = "linkLabel";
       this.linkLabel.Size = new System.Drawing.Size(141, 13);
       this.linkLabel.TabIndex = 9;
@@ -95,16 +79,27 @@ namespace HeuristicLab.Optimizer {
       this.linkLabel.Text = "MS Chart Controls download";
       this.linkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_LinkClicked);
       // 
+      // label1
+      // 
+      this.label1.Location = new System.Drawing.Point(39, 9);
+      this.label1.Name = "label1";
+      this.label1.Size = new System.Drawing.Size(255, 33);
+      this.label1.TabIndex = 10;
+      this.label1.Text = "Microsoft Chart Controls are not properly installed. Please download and install " +
+          "them.";
+      // 
       // ChartControlsWarning
       // 
       this.AcceptButton = this.okButton;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(335, 70);
+      this.CancelButton = this.okButton;
+      this.ClientSize = new System.Drawing.Size(321, 94);
+      this.Controls.Add(this.label1);
       this.Controls.Add(this.linkLabel);
       this.Controls.Add(this.okButton);
       this.Controls.Add(this.iconLabel);
-      this.Controls.Add(this.messageTextBox);
+      this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
       this.Icon = HeuristicLab.Common.Resources.HeuristicLab.Icon;
       this.MaximizeBox = false;
       this.MinimizeBox = false;
@@ -119,9 +114,9 @@ namespace HeuristicLab.Optimizer {
 
     #endregion
 
-    private System.Windows.Forms.TextBox messageTextBox;
     private System.Windows.Forms.Label iconLabel;
     private System.Windows.Forms.Button okButton;
     private System.Windows.Forms.LinkLabel linkLabel;
+    private System.Windows.Forms.Label label1;
   }
 }
