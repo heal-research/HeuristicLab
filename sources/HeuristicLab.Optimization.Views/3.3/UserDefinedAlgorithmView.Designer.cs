@@ -58,12 +58,6 @@ namespace HeuristicLab.Optimization.Views {
       this.globalScopeTabPage.SuspendLayout();
       this.SuspendLayout();
       // 
-      // createUserDefinedAlgorithmButton
-      // 
-      this.createUserDefinedAlgorithmButton.Enabled = false;
-      this.toolTip.SetToolTip(this.createUserDefinedAlgorithmButton, "Create User Defined Algorithm from this Algorithm");
-      this.createUserDefinedAlgorithmButton.Visible = false;
-      // 
       // engineComboBox
       // 
       this.engineComboBox.Size = new System.Drawing.Size(644, 21);

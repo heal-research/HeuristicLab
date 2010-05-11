@@ -26,20 +26,21 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
+using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Optimizer.MenuItems {
-  internal class CopyToClipboardMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItem, IOptimizerUserInterfaceItemProvider {
+  internal class ConvertIntoUserDefinedAlgorithmMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItem, IOptimizerUserInterfaceItemProvider {
     public override string Name {
-      get { return "&Copy To Clipboard"; }
+      get { return "Convert into &User-Defined Algorithm"; }
     }
     public override IEnumerable<string> Structure {
       get { return new string[] { "&Edit" }; }
     }
     public override int Position {
-      get { return 2100; }
+      get { return 2200; }
     }
     public override string ToolTipText {
-      get { return "Copy the shown content into the HeuristicLab Optimizer clipboard"; }
+      get { return "Convert the shown algorithm into a user-defined algorithm"; }
     }
 
     protected override void OnToolStripItemSet(EventArgs e) {
@@ -47,15 +48,14 @@ namespace HeuristicLab.Optimizer.MenuItems {
     }
     protected override void OnActiveViewChanged(object sender, EventArgs e) {
       IContentView activeView = MainFormManager.MainForm.ActiveView as IContentView;
-      ToolStripItem.Enabled = (activeView != null) && (activeView.Content != null) && (activeView.Content is IItem) && !activeView.Locked;
+      ToolStripItem.Enabled = (activeView != null) && (activeView.Content != null) && (activeView.Content is EngineAlgorithm) && !(activeView.Content is UserDefinedAlgorithm) && !activeView.Locked;
     }
 
     public override void Execute() {
       IContentView activeView = MainFormManager.MainForm.ActiveView as IContentView;
-      if ((activeView != null) && (activeView.Content != null) && (activeView.Content is IItem) && !activeView.Locked) {
-        Clipboard<IItem> clipboard = ((OptimizerMainForm)MainFormManager.MainForm).Clipboard;
-        IItem content = (IItem)activeView.Content;
-        clipboard.AddItem((IItem)content.Clone());
+      if ((activeView != null) && (activeView.Content != null) && (activeView.Content is EngineAlgorithm) && !activeView.Locked) {
+        IAlgorithm alg = ((EngineAlgorithm)activeView.Content).CreateUserDefinedAlgorithm();
+        MainFormManager.MainForm.ShowContent(alg);
       }
     }
   }

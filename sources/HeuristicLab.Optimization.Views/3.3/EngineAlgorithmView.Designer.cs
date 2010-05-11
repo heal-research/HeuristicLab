@@ -45,7 +45,6 @@ namespace HeuristicLab.Optimization.Views {
     /// </summary>
     private void InitializeComponent() {
       this.engineLabel = new System.Windows.Forms.Label();
-      this.createUserDefinedAlgorithmButton = new System.Windows.Forms.Button();
       this.engineComboBox = new System.Windows.Forms.ComboBox();
       this.engineTabPage = new System.Windows.Forms.TabPage();
       this.engineViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
@@ -118,12 +117,12 @@ namespace HeuristicLab.Optimization.Views {
       // executionTimeLabel
       // 
       this.executionTimeLabel.Location = new System.Drawing.Point(487, 532);
-      this.executionTimeLabel.TabIndex = 10;
+      this.executionTimeLabel.TabIndex = 9;
       // 
       // executionTimeTextBox
       // 
       this.executionTimeTextBox.Location = new System.Drawing.Point(576, 529);
-      this.executionTimeTextBox.TabIndex = 11;
+      this.executionTimeTextBox.TabIndex = 10;
       // 
       // resultsTabPage
       // 
@@ -168,18 +167,6 @@ namespace HeuristicLab.Optimization.Views {
       this.engineLabel.Size = new System.Drawing.Size(43, 13);
       this.engineLabel.TabIndex = 0;
       this.engineLabel.Text = "&Engine:";
-      // 
-      // createUserDefinedAlgorithmButton
-      // 
-      this.createUserDefinedAlgorithmButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.createUserDefinedAlgorithmButton.Location = new System.Drawing.Point(150, 525);
-      this.createUserDefinedAlgorithmButton.Name = "createUserDefinedAlgorithmButton";
-      this.createUserDefinedAlgorithmButton.Size = new System.Drawing.Size(254, 24);
-      this.createUserDefinedAlgorithmButton.TabIndex = 9;
-      this.createUserDefinedAlgorithmButton.Text = "&Create User Defined Algorithm";
-      this.toolTip.SetToolTip(this.createUserDefinedAlgorithmButton, "Create User Defined Algorithm from this Algorithm");
-      this.createUserDefinedAlgorithmButton.UseVisualStyleBackColor = true;
-      this.createUserDefinedAlgorithmButton.Click += new System.EventHandler(this.createUserDefinedAlgorithmButton_Click);
       // 
       // engineComboBox
       // 
@@ -272,11 +259,9 @@ namespace HeuristicLab.Optimization.Views {
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.createUserDefinedAlgorithmButton);
       this.Name = "EngineAlgorithmView";
       this.Size = new System.Drawing.Size(713, 549);
       this.Controls.SetChildIndex(this.stopButton, 0);
-      this.Controls.SetChildIndex(this.createUserDefinedAlgorithmButton, 0);
       this.Controls.SetChildIndex(this.resetButton, 0);
       this.Controls.SetChildIndex(this.pauseButton, 0);
       this.Controls.SetChildIndex(this.executionTimeLabel, 0);
@@ -305,7 +290,6 @@ namespace HeuristicLab.Optimization.Views {
     #endregion
 
     protected System.Windows.Forms.Label engineLabel;
-    protected System.Windows.Forms.Button createUserDefinedAlgorithmButton;
     protected System.Windows.Forms.ComboBox engineComboBox;
     protected System.Windows.Forms.TabPage engineTabPage;
     protected HeuristicLab.MainForm.WindowsForms.ViewHost engineViewHost;

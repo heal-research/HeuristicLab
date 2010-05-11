@@ -107,7 +107,6 @@ namespace HeuristicLab.Optimization.Views {
       operatorGraphViewHost.Enabled = Content != null;
       operatorGraphViewHost.ReadOnly = true;
       engineComboBox.Enabled = Content != null && !ReadOnly;
-      createUserDefinedAlgorithmButton.Enabled = Content != null && !Locked;
     }
 
     protected virtual void Content_EngineChanged(object sender, System.EventArgs e) {
@@ -140,14 +139,6 @@ namespace HeuristicLab.Optimization.Views {
           if ((Content.Engine == null) || (Content.Engine.GetType() != t))
             Content.Engine = (IEngine)Activator.CreateInstance(t);
         }
-      }
-    }
-
-    protected virtual void createUserDefinedAlgorithmButton_Click(object sender, EventArgs e) {
-      IContentView view = MainFormManager.MainForm.ShowContent(Content.CreateUserDefinedAlgorithm());
-      if (view != null) {
-        view.ReadOnly = this.ReadOnly;
-        view.Locked = this.Locked;
       }
     }
   }

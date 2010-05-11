@@ -38,13 +38,13 @@ namespace HeuristicLab.Optimizer.MenuItems {
       get { return new string[] { "&Help" }; }
     }
     public override int Position {
-      get { return 4100; }
+      get { return 9100; }
     }
 
     public override void Execute() {
       if (aboutDialog == null)
         aboutDialog = new AboutDialog();
-      aboutDialog.ShowDialog();
+      aboutDialog.ShowDialog((IWin32Window)MainFormManager.MainForm);
     }
   }
 }
