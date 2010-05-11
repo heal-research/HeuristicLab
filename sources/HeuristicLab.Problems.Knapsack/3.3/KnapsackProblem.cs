@@ -303,6 +303,9 @@ namespace HeuristicLab.Problems.Knapsack {
       }
     }
     private void ParameterizeAnalyzer() {
+      BestKnapsackSolutionAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
+      BestKnapsackSolutionAnalyzer.BestKnownQualityParameter.ActualName = BestKnownQualityParameter.Name;
+      BestKnapsackSolutionAnalyzer.BestKnownSolutionParameter.ActualName = BestKnownSolutionParameter.Name;
       BestKnapsackSolutionAnalyzer.BinaryVectorParameter.ActualName = SolutionCreator.BinaryVectorParameter.ActualName;
       BestKnapsackSolutionAnalyzer.KnapsackCapacityParameter.ActualName = KnapsackCapacityParameter.Name;
       BestKnapsackSolutionAnalyzer.WeightsParameter.ActualName = WeightsParameter.Name;

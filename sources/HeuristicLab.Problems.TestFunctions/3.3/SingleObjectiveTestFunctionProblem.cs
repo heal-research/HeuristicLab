@@ -125,8 +125,8 @@ namespace HeuristicLab.Problems.TestFunctions {
     public IEnumerable<IOperator> Operators {
       get { return operators; }
     }
-    private IEnumerable<IBestSingleObjectiveTestFunctionSolutionAnalyzer> BestSingleObjectiveTestFunctionSolutionAnalyzers {
-      get { return operators.OfType<IBestSingleObjectiveTestFunctionSolutionAnalyzer>(); }
+    private BestSingleObjectiveTestFunctionSolutionAnalyzer BestSingleObjectiveTestFunctionSolutionAnalyzer {
+      get { return operators.OfType<BestSingleObjectiveTestFunctionSolutionAnalyzer>().FirstOrDefault(); }
     }
     #endregion
 
@@ -299,10 +299,13 @@ namespace HeuristicLab.Problems.TestFunctions {
       strategyVectorCreator.StrategyParameterParameter.ActualNameChanged += new EventHandler(strategyVectorCreator_StrategyParameterParameter_ActualNameChanged);
     }
     private void ParameterizeAnalyzers() {
-      foreach (IBestSingleObjectiveTestFunctionSolutionAnalyzer analyzer in BestSingleObjectiveTestFunctionSolutionAnalyzers) {
-        analyzer.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
-        analyzer.ResultsParameter.ActualName = "Results";
-      }
+      BestSingleObjectiveTestFunctionSolutionAnalyzer.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
+      BestSingleObjectiveTestFunctionSolutionAnalyzer.ResultsParameter.ActualName = "Results";
+      BestSingleObjectiveTestFunctionSolutionAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
+      BestSingleObjectiveTestFunctionSolutionAnalyzer.BestKnownQualityParameter.ActualName = BestKnownQualityParameter.Name;
+      BestSingleObjectiveTestFunctionSolutionAnalyzer.BestKnownSolutionParameter.ActualName = BestKnownSolutionParameter.Name;
+      BestSingleObjectiveTestFunctionSolutionAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
+      BestSingleObjectiveTestFunctionSolutionAnalyzer.EvaluatorParameter.ActualName = EvaluatorParameter.Name;
     }
     private void InitializeOperators() {
       operators = new List<IOperator>();

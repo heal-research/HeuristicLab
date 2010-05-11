@@ -213,6 +213,8 @@ namespace HeuristicLab.Problems.OneMax {
         ((OneMaxEvaluator)Evaluator).BinaryVectorParameter.ActualName = SolutionCreator.BinaryVectorParameter.ActualName;
     }
     private void ParameterizeAnalyzer() {
+      BestOneMaxSolutionAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
+      BestOneMaxSolutionAnalyzer.BestKnownQualityParameter.ActualName = BestKnownQualityParameter.Name;
       BestOneMaxSolutionAnalyzer.BinaryVectorParameter.ActualName = SolutionCreator.BinaryVectorParameter.ActualName;
       BestOneMaxSolutionAnalyzer.ResultsParameter.ActualName = "Results";
     }
