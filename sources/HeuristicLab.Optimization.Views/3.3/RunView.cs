@@ -44,17 +44,11 @@ namespace HeuristicLab.Optimization.Views {
       set { base.Content = value; }
     }
 
-    public override bool ReadOnly {
-      get { return base.ReadOnly; }
-      set { /*not needed because results are always readonly */}
-    }
-
     /// <summary>
     /// Initializes a new instance of <see cref="VariableView"/> with caption "Variable".
     /// </summary>
     public RunView() {
       InitializeComponent();
-      base.ReadOnly = true;
     }
 
     protected override void RegisterContentEvents() {
@@ -153,7 +147,7 @@ namespace HeuristicLab.Optimization.Views {
         IItem item = (IItem)listView.SelectedItems[0].Tag;
         IContentView view = MainFormManager.MainForm.ShowContent(item);
         if (view != null) {
-          view.ReadOnly = ReadOnly;
+          view.ReadOnly = true;
           view.Locked = Locked;
         }
       }

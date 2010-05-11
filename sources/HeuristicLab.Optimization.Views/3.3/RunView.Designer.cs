@@ -175,7 +175,7 @@ namespace HeuristicLab.Optimization.Views {
       this.viewHost.Content = null;
       this.viewHost.Location = new System.Drawing.Point(6, 19);
       this.viewHost.Name = "viewHost";
-      this.viewHost.ReadOnly = false;
+      this.viewHost.ReadOnly = true;
       this.viewHost.Size = new System.Drawing.Size(290, 195);
       this.viewHost.TabIndex = 0;
       this.viewHost.ViewType = null;
