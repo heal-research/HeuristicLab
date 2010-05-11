@@ -9,7 +9,7 @@
       <Value Profile="(Default)">-</Value>
     </Setting>
     <Setting Name="UpdateLocation" Type="System.String" Scope="User">
-      <Value Profile="(Default)">http://servdev.heuristiclab.com/Deployment-3.3/Update.svc</Value>
+      <Value Profile="(Default)">http://services.heuristiclab.com/Deployment-3.3/Update.svc</Value>
     </Setting>
     <Setting Name="UpdateLocationUserName" Type="System.String" Scope="User">
       <Value Profile="(Default)">anonymous</Value>
@@ -18,7 +18,7 @@
       <Value Profile="(Default)">GetTheLab!</Value>
     </Setting>
     <Setting Name="UpdateLocationAdministrationAddress" Type="System.String" Scope="User">
-      <Value Profile="(Default)">http://servdev.heuristiclab.com/Deployment-3.3/Admin.svc</Value>
+      <Value Profile="(Default)">http://services.heuristiclab.com/Deployment-3.3/Admin.svc</Value>
     </Setting>
     <Setting Name="ShowPluginUploadControls" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>

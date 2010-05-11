@@ -43,7 +43,7 @@ namespace HeuristicLab.PluginInfrastructure.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://servdev.heuristiclab.com/Deployment-3.3/Update.svc")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://services.heuristiclab.com/Deployment-3.3/Update.svc")]
         public string UpdateLocation {
             get {
                 return ((string)(this["UpdateLocation"]));
@@ -79,7 +79,7 @@ namespace HeuristicLab.PluginInfrastructure.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://servdev.heuristiclab.com/Deployment-3.3/Admin.svc")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://services.heuristiclab.com/Deployment-3.3/Admin.svc")]
         public string UpdateLocationAdministrationAddress {
             get {
                 return ((string)(this["UpdateLocationAdministrationAddress"]));
