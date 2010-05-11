@@ -76,11 +76,8 @@ namespace HeuristicLab.Analysis {
     private BestQualityMemorizer BestQualityMemorizer {
       get { return (BestQualityMemorizer)OperatorGraph.InitialOperator; }
     }
-    private BestQualityMemorizer BestKnownQualityMemorizer {
-      get { return (BestQualityMemorizer)BestQualityMemorizer.Successor; }
-    }
     private BestAverageWorstQualityCalculator BestAverageWorstQualityCalculator {
-      get { return (BestAverageWorstQualityCalculator)BestKnownQualityMemorizer.Successor; }
+      get { return (BestAverageWorstQualityCalculator)BestQualityMemorizer.Successor; }
     }
     #endregion
 
@@ -102,7 +99,6 @@ namespace HeuristicLab.Analysis {
 
       #region Create operators
       BestQualityMemorizer bestQualityMemorizer = new BestQualityMemorizer();
-      BestQualityMemorizer bestKnownQualityMemorizer = new BestQualityMemorizer();
       BestAverageWorstQualityCalculator bestAverageWorstQualityCalculator = new BestAverageWorstQualityCalculator();
       DataTableValuesCollector dataTableValuesCollector = new DataTableValuesCollector();
       QualityDifferenceCalculator qualityDifferenceCalculator = new QualityDifferenceCalculator();
@@ -112,11 +108,6 @@ namespace HeuristicLab.Analysis {
       bestQualityMemorizer.MaximizationParameter.ActualName = MaximizationParameter.Name;
       bestQualityMemorizer.QualityParameter.ActualName = QualityParameter.Name;
       bestQualityMemorizer.QualityParameter.Depth = QualityParameter.Depth;
-
-      bestKnownQualityMemorizer.BestQualityParameter.ActualName = BestKnownQualityParameter.Name;
-      bestKnownQualityMemorizer.MaximizationParameter.ActualName = MaximizationParameter.Name;
-      bestKnownQualityMemorizer.QualityParameter.ActualName = QualityParameter.Name;
-      bestKnownQualityMemorizer.QualityParameter.Depth = QualityParameter.Depth;
 
       bestAverageWorstQualityCalculator.AverageQualityParameter.ActualName = CurrentAverageQualityParameter.Name;
       bestAverageWorstQualityCalculator.BestQualityParameter.ActualName = CurrentBestQualityParameter.Name;
@@ -150,8 +141,7 @@ namespace HeuristicLab.Analysis {
 
       #region Create operator graph
       OperatorGraph.InitialOperator = bestQualityMemorizer;
-      bestQualityMemorizer.Successor = bestKnownQualityMemorizer;
-      bestKnownQualityMemorizer.Successor = bestAverageWorstQualityCalculator;
+      bestQualityMemorizer.Successor = bestAverageWorstQualityCalculator;
       bestAverageWorstQualityCalculator.Successor = dataTableValuesCollector;
       dataTableValuesCollector.Successor = qualityDifferenceCalculator;
       qualityDifferenceCalculator.Successor = resultsCollector;
@@ -176,7 +166,6 @@ namespace HeuristicLab.Analysis {
 
     private void QualityParameter_DepthChanged(object sender, System.EventArgs e) {
       BestQualityMemorizer.QualityParameter.Depth = QualityParameter.Depth;
-      BestKnownQualityMemorizer.QualityParameter.Depth = QualityParameter.Depth;
       BestAverageWorstQualityCalculator.QualityParameter.Depth = QualityParameter.Depth;
     }
   }

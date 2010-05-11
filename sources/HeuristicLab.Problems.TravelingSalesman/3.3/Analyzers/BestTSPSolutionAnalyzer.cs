@@ -36,6 +36,9 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   [Item("BestTSPSolutionAnalyzer", "An operator for analyzing the best solution of Traveling Salesman Problems given in path representation using city coordinates.")]
   [StorableClass]
   public sealed class BestTSPSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer {
+    public LookupParameter<BoolValue> MaximizationParameter {
+      get { return (LookupParameter<BoolValue>)Parameters["Maximization"]; }
+    }
     public LookupParameter<DoubleMatrix> CoordinatesParameter {
       get { return (LookupParameter<DoubleMatrix>)Parameters["Coordinates"]; }
     }
@@ -51,14 +54,23 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     public ValueLookupParameter<ResultCollection> ResultsParameter {
       get { return (ValueLookupParameter<ResultCollection>)Parameters["Results"]; }
     }
+    public LookupParameter<DoubleValue> BestKnownQualityParameter {
+      get { return (LookupParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
+    }
+    public LookupParameter<Permutation> BestKnownSolutionParameter {
+      get { return (LookupParameter<Permutation>)Parameters["BestKnownSolution"]; }
+    }
 
     public BestTSPSolutionAnalyzer()
       : base() {
+      Parameters.Add(new LookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem."));
       Parameters.Add(new LookupParameter<DoubleMatrix>("Coordinates", "The x- and y-Coordinates of the cities."));
       Parameters.Add(new ScopeTreeLookupParameter<Permutation>("Permutation", "The TSP solutions given in path representation from which the best solution should be analyzed."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The qualities of the TSP solutions which should be analyzed."));
       Parameters.Add(new LookupParameter<PathTSPTour>("BestSolution", "The best TSP solution."));
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the best TSP solution should be stored."));
+      Parameters.Add(new LookupParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this TSP instance."));
+      Parameters.Add(new LookupParameter<Permutation>("BestKnownSolution", "The best known solution of this TSP instance."));
     }
 
     public override IOperation Apply() {
@@ -66,8 +78,20 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       ItemArray<Permutation> permutations = PermutationParameter.ActualValue;
       ItemArray<DoubleValue> qualities = QualityParameter.ActualValue;
       ResultCollection results = ResultsParameter.ActualValue;
+      bool max = MaximizationParameter.ActualValue.Value;
+      DoubleValue bestKnownQuality = BestKnownQualityParameter.ActualValue;
 
-      int i = qualities.Select((x, index) => new { index, x.Value }).OrderBy(x => x.Value).First().index;
+      int i = -1;
+      if (!max)
+        i = qualities.Select((x, index) => new { index, x.Value }).OrderBy(x => x.Value).First().index;
+      else i = qualities.Select((x, index) => new { index, x.Value }).OrderByDescending(x => x.Value).First().index;
+      
+      if (bestKnownQuality == null ||
+          max && qualities[i].Value > bestKnownQuality.Value ||
+          !max && qualities[i].Value < bestKnownQuality.Value) {
+        BestKnownQualityParameter.ActualValue = new DoubleValue(qualities[i].Value);
+        BestKnownSolutionParameter.ActualValue = (Permutation)permutations[i].Clone();
+      }
 
       PathTSPTour tour = BestSolutionParameter.ActualValue;
       if (tour == null) {
@@ -75,11 +99,11 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         BestSolutionParameter.ActualValue = tour;
         results.Add(new Result("Best TSP Solution", tour));
       } else {
-        if (tour.Quality.Value > qualities[i].Value) {
+        if (max && tour.Quality.Value < qualities[i].Value ||
+          !max && tour.Quality.Value > qualities[i].Value) {
           tour.Coordinates = coordinates;
           tour.Permutation = (Permutation)permutations[i].Clone();
           tour.Quality.Value = qualities[i].Value;
-          results["Best TSP Solution"].Value = tour;
         }
       }
 

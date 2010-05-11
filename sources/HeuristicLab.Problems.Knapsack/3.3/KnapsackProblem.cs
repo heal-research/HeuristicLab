@@ -79,6 +79,9 @@ namespace HeuristicLab.Problems.Knapsack {
     IParameter ISingleObjectiveProblem.BestKnownQualityParameter {
       get { return BestKnownQualityParameter; }
     }
+    public OptionalValueParameter<BinaryVector> BestKnownSolutionParameter {
+      get { return (OptionalValueParameter<BinaryVector>)Parameters["BestKnownSolution"]; }
+    }
     #endregion
 
     #region Properties
@@ -118,6 +121,10 @@ namespace HeuristicLab.Problems.Knapsack {
     public DoubleValue BestKnownQuality {
       get { return BestKnownQualityParameter.Value; }
       set { BestKnownQualityParameter.Value = value; }
+    }
+    public BinaryVector BestKnownSolution {
+      get { return BestKnownSolutionParameter.Value; }
+      set { BestKnownSolutionParameter.Value = value; }
     }
     private List<IOperator> operators;
     public IEnumerable<IOperator> Operators {
@@ -163,6 +170,7 @@ namespace HeuristicLab.Problems.Knapsack {
       Parameters.Add(new ValueParameter<IBinaryVectorCreator>("SolutionCreator", "The operator which should be used to create new Knapsack solutions.", creator));
       Parameters.Add(new ValueParameter<IKnapsackEvaluator>("Evaluator", "The operator which should be used to evaluate Knapsack solutions.", evaluator));
       Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this Knapsack instance."));
+      Parameters.Add(new OptionalValueParameter<BinaryVector>("BestKnownSolution", "The best known solution of this Knapsack instance."));
 
       creator.BinaryVectorParameter.ActualName = "KnapsackSolution";
 
