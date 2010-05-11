@@ -29,6 +29,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
+using System.IO;
 
 namespace HeuristicLab.Optimizer {
   internal partial class OptimizerMainForm : DockingMainForm {
@@ -85,6 +86,30 @@ namespace HeuristicLab.Optimizer {
       if (Properties.Settings.Default.ShowStartPage) {
         StartPage startPage = new StartPage();
         startPage.Show();
+      }
+    }
+
+    private static string CHARTCONTROLASSEMBLY = "12System.Windows.Forsms.DataVisualization, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35";
+    private bool CheckChartControls() {
+      try {
+        Assembly chartControlsAssembly = Assembly.Load(CHARTCONTROLASSEMBLY);
+        if (chartControlsAssembly != null)
+          return true;
+      }
+      catch (FileNotFoundException) {
+      }
+      catch (FileLoadException) {
+      }
+      catch (BadImageFormatException) {
+      }
+      return false;
+    }
+
+    protected override void OnShown(EventArgs e) {
+      base.OnShown(e);
+      if (!CheckChartControls()) {
+        ChartControlsWarning dlg = new ChartControlsWarning();
+        dlg.ShowDialog(this);
       }
     }
 

@@ -156,7 +156,7 @@ namespace Netron.Diagramming.Core
             Graph.ClearSpanningTree();
             Graph.MakeSpanningTree(LayoutRoot as INode);
 
-            Trace.WriteLine((LayoutRoot as INode).ChildCount);
+            //Trace.WriteLine((LayoutRoot as INode).ChildCount);
 
             if (Graph.SpanningTree == null)
                 throw new InconsistencyException("The spanning tree is not set (se the root of the tree layout first)");
@@ -280,7 +280,7 @@ namespace Netron.Diagramming.Core
 
         private void firstWalk(INode n, int num, int depth)
         {
-            Trace.WriteLine("depthj: " + depth);
+            //Trace.WriteLine("depthj: " + depth);
             Params np = Pars[n.Uid.ToString()];
 
             np.number = num;

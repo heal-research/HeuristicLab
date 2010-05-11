@@ -86,6 +86,12 @@
   <ItemGroup>
     <None Include="HeuristicLabOptimizerPlugin.cs.frame" />
     <Compile Include="FileManager.cs" />
+    <Compile Include="ChartControlsWarning.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ChartControlsWarning.Designer.cs">
+      <DependentUpon>ChartControlsWarning.cs</DependentUpon>
+    </Compile>
     <Compile Include="MenuItems\ClipboardMenuItem.cs" />
     <Compile Include="MenuItems\AboutMenuItem.cs" />
     <Compile Include="MenuItems\ConvertIntoUserDefinedAlgorithmMenuItem.cs" />
