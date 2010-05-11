@@ -113,7 +113,7 @@ namespace HeuristicLab.Selection {
 
       // implement the ActualValue fetch here - otherwise the parent scope would also be included, given that there may be 1000 or more parents, this is quite unnecessary
       string tname = SuccessfulOffspringParameter.TranslatedName;
-      double tmpSelPress = selectionPressure.Value, tmpSelPressInc = 1.0 / offspringSize;
+      double tmpSelPress = selectionPressure.Value, tmpSelPressInc = 1.0 / populationSize;
       for (int i = 0; i < offspringSize; i++) {
         // fetch value
         IVariable tmpVar;
