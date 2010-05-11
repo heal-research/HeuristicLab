@@ -401,6 +401,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
           bestValidationSolutionAnalyzer.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
           bestValidationSolutionAnalyzer.SamplesStartParameter.Value = ValidationSamplesStart;
           bestValidationSolutionAnalyzer.SamplesEndParameter.Value = ValidationSamplesEnd;
+          bestValidationSolutionAnalyzer.BestKnownQualityParameter.ActualName = BestKnownQualityParameter.Name;
         }
         var varFreqAnalyzer = analyzer as SymbolicRegressionVariableFrequencyAnalyzer;
         if (varFreqAnalyzer != null) {
