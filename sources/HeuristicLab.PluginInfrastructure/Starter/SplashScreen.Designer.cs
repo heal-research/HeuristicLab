@@ -57,9 +57,10 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       // versionLabel
       // 
       this.versionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.versionLabel.Location = new System.Drawing.Point(400, 115);
+      this.versionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F);
+      this.versionLabel.Location = new System.Drawing.Point(436, 147);
       this.versionLabel.Name = "versionLabel";
-      this.versionLabel.Size = new System.Drawing.Size(186, 16);
+      this.versionLabel.Size = new System.Drawing.Size(150, 9);
       this.versionLabel.TabIndex = 1;
       this.versionLabel.Text = "Version ";
       this.versionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -70,7 +71,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.infoLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.infoLabel.ForeColor = System.Drawing.Color.DarkOrange;
-      this.infoLabel.Location = new System.Drawing.Point(0, 83);
+      this.infoLabel.Location = new System.Drawing.Point(0, 113);
       this.infoLabel.Name = "infoLabel";
       this.infoLabel.Size = new System.Drawing.Size(598, 30);
       this.infoLabel.TabIndex = 6;
@@ -80,9 +81,10 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       // copyrightLabel
       // 
       this.copyrightLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.copyrightLabel.Location = new System.Drawing.Point(12, 115);
+      this.copyrightLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F);
+      this.copyrightLabel.Location = new System.Drawing.Point(12, 147);
       this.copyrightLabel.Name = "copyrightLabel";
-      this.copyrightLabel.Size = new System.Drawing.Size(186, 16);
+      this.copyrightLabel.Size = new System.Drawing.Size(150, 9);
       this.copyrightLabel.TabIndex = 2;
       this.copyrightLabel.Text = "Copyright";
       this.copyrightLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -94,7 +96,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.pictureBox.Image = global::HeuristicLab.PluginInfrastructure.Resources.HeuristicLabBanner;
       this.pictureBox.Location = new System.Drawing.Point(0, 0);
       this.pictureBox.Name = "pictureBox";
-      this.pictureBox.Size = new System.Drawing.Size(598, 80);
+      this.pictureBox.Size = new System.Drawing.Size(598, 110);
       this.pictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
       this.pictureBox.TabIndex = 0;
       this.pictureBox.TabStop = false;
@@ -104,12 +106,12 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.Color.White;
-      this.ClientSize = new System.Drawing.Size(598, 134);
+      this.ClientSize = new System.Drawing.Size(598, 165);
       this.ControlBox = false;
-      this.Controls.Add(this.infoLabel);
       this.Controls.Add(this.pictureBox);
       this.Controls.Add(this.versionLabel);
       this.Controls.Add(this.copyrightLabel);
+      this.Controls.Add(this.infoLabel);
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
       this.MaximizeBox = false;
       this.MinimizeBox = false;
