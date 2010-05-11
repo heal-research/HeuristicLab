@@ -180,11 +180,11 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       // 
       this.pictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)));
-      this.pictureBox.Image = global::HeuristicLab.PluginInfrastructure.Resources.Logo_white;
+      this.pictureBox.Image = global::HeuristicLab.PluginInfrastructure.Resources.HeuristicLabLogo;
       this.pictureBox.Location = new System.Drawing.Point(-1, -1);
       this.pictureBox.Name = "pictureBox";
       this.pictureBox.Size = new System.Drawing.Size(165, 161);
-      this.pictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+      this.pictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
       this.pictureBox.TabIndex = 0;
       this.pictureBox.TabStop = false;
       // 

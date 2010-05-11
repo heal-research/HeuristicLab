@@ -123,6 +123,20 @@ namespace HeuristicLab.PluginInfrastructure {
             }
         }
         
+        internal static System.Drawing.Bitmap HeuristicLabBanner {
+            get {
+                object obj = ResourceManager.GetObject("HeuristicLabBanner", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap HeuristicLabLogo {
+            get {
+                object obj = ResourceManager.GetObject("HeuristicLabLogo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap Install {
             get {
                 object obj = ResourceManager.GetObject("Install", resourceCulture);
@@ -153,13 +167,6 @@ namespace HeuristicLab.PluginInfrastructure {
         internal static string LicenseText {
             get {
                 return ResourceManager.GetString("LicenseText", resourceCulture);
-            }
-        }
-        
-        internal static System.Drawing.Bitmap Logo_white {
-            get {
-                object obj = ResourceManager.GetObject("Logo_white", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

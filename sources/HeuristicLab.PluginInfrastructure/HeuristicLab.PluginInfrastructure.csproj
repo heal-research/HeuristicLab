@@ -269,7 +269,8 @@
     </Content>
     <None Include="Resources\Error.ico" />
     <Content Include="Resources\HeuristicLab.ico" />
-    <Content Include="Resources\Logo_white.gif" />
+    <None Include="Resources\HeuristicLabLogo.png" />
+    <None Include="Resources\HeuristicLabBanner.png" />
     <None Include="Resources\VS2008ImageLibrary_Actions_Delete.png" />
     <Content Include="Resources\VS2008ImageLibrary_Actions_PublishToWebHS.png" />
     <Content Include="Resources\VS2008ImageLibrary_Actions_RepeatHS.png" />

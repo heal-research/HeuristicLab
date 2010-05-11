@@ -46,7 +46,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       versionTextBox.Text = GetVersion(curAssembly);
       copyrightTextBox.Text = GetCopyright(curAssembly);
       imageList.Images.Add(HeuristicLab.PluginInfrastructure.Resources.Plugin);
-      pictureBox.Image = HeuristicLab.PluginInfrastructure.Resources.Logo_white;
+      pictureBox.Image = HeuristicLab.PluginInfrastructure.Resources.HeuristicLabLogo;
       licenseTextBox.Text = HeuristicLab.PluginInfrastructure.Resources.LicenseText;
       UpdatePluginList(ApplicationManager.Manager.Plugins);
       ActiveControl = okButton;
@@ -110,8 +110,12 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       System.Diagnostics.Process.Start(e.LinkText);
     }
 
-    private void linkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-      System.Diagnostics.Process.Start(linkLabel.Text);
+    private void webLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+      System.Diagnostics.Process.Start(webLinkLabel.Text);
+    }
+
+    private void mailLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+      System.Diagnostics.Process.Start("mailto:" + mailLinkLabel.Text);
     }
   }
 }

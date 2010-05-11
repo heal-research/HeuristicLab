@@ -45,7 +45,6 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AboutDialog));
       this.okButton = new System.Windows.Forms.Button();
       this.pluginListView = new System.Windows.Forms.ListView();
       this.pluginNameColumnHeader = new System.Windows.Forms.ColumnHeader();
@@ -64,8 +63,8 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.label2 = new System.Windows.Forms.Label();
       this.panel1 = new System.Windows.Forms.Panel();
       this.label4 = new System.Windows.Forms.Label();
-      this.richTextBox1 = new System.Windows.Forms.RichTextBox();
-      this.linkLabel = new System.Windows.Forms.LinkLabel();
+      this.webLinkLabel = new System.Windows.Forms.LinkLabel();
+      this.mailLinkLabel = new System.Windows.Forms.LinkLabel();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
       this.pluginsGroupBox.SuspendLayout();
       this.panel1.SuspendLayout();
@@ -74,11 +73,12 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       // okButton
       // 
       this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
       this.okButton.Location = new System.Drawing.Point(538, 13);
       this.okButton.Name = "okButton";
       this.okButton.Size = new System.Drawing.Size(75, 23);
       this.okButton.TabIndex = 0;
-      this.okButton.Text = "Close";
+      this.okButton.Text = "&Close";
       this.okButton.UseVisualStyleBackColor = true;
       this.okButton.Click += new System.EventHandler(this.okButton_Click);
       // 
@@ -97,7 +97,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.pluginListView.Size = new System.Drawing.Size(589, 201);
       this.pluginListView.SmallImageList = this.imageList;
       this.pluginListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
-      this.pluginListView.TabIndex = 1;
+      this.pluginListView.TabIndex = 0;
       this.pluginListView.UseCompatibleStateImageBehavior = false;
       this.pluginListView.View = System.Windows.Forms.View.Details;
       this.pluginListView.ItemActivate += new System.EventHandler(this.pluginListView_ItemActivate);
@@ -124,7 +124,8 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       // 
       this.pictureBox.Location = new System.Drawing.Point(12, 12);
       this.pictureBox.Name = "pictureBox";
-      this.pictureBox.Size = new System.Drawing.Size(165, 161);
+      this.pictureBox.Size = new System.Drawing.Size(165, 183);
+      this.pictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
       this.pictureBox.TabIndex = 2;
       this.pictureBox.TabStop = false;
       // 
@@ -134,7 +135,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.label.Location = new System.Drawing.Point(183, 12);
       this.label.Name = "label";
       this.label.Size = new System.Drawing.Size(47, 13);
-      this.label.TabIndex = 3;
+      this.label.TabIndex = 1;
       this.label.Text = "Product:";
       // 
       // label1
@@ -143,7 +144,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.label1.Location = new System.Drawing.Point(183, 31);
       this.label1.Name = "label1";
       this.label1.Size = new System.Drawing.Size(45, 13);
-      this.label1.TabIndex = 4;
+      this.label1.TabIndex = 3;
       this.label1.Text = "Version:";
       // 
       // label3
@@ -152,7 +153,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.label3.Location = new System.Drawing.Point(183, 50);
       this.label3.Name = "label3";
       this.label3.Size = new System.Drawing.Size(54, 13);
-      this.label3.TabIndex = 6;
+      this.label3.TabIndex = 5;
       this.label3.Text = "Copyright:";
       // 
       // productTextBox
@@ -164,7 +165,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.productTextBox.Name = "productTextBox";
       this.productTextBox.ReadOnly = true;
       this.productTextBox.Size = new System.Drawing.Size(355, 13);
-      this.productTextBox.TabIndex = 7;
+      this.productTextBox.TabIndex = 2;
       this.productTextBox.Text = "HeuristicLab";
       // 
       // versionTextBox
@@ -175,7 +176,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.versionTextBox.Name = "versionTextBox";
       this.versionTextBox.ReadOnly = true;
       this.versionTextBox.Size = new System.Drawing.Size(355, 13);
-      this.versionTextBox.TabIndex = 8;
+      this.versionTextBox.TabIndex = 4;
       this.versionTextBox.Text = "1.0";
       // 
       // copyrightTextBox
@@ -186,7 +187,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.copyrightTextBox.Name = "copyrightTextBox";
       this.copyrightTextBox.ReadOnly = true;
       this.copyrightTextBox.Size = new System.Drawing.Size(355, 13);
-      this.copyrightTextBox.TabIndex = 9;
+      this.copyrightTextBox.TabIndex = 6;
       this.copyrightTextBox.Text = "(C)";
       // 
       // pluginsGroupBox
@@ -198,7 +199,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.pluginsGroupBox.Location = new System.Drawing.Point(12, 306);
       this.pluginsGroupBox.Name = "pluginsGroupBox";
       this.pluginsGroupBox.Size = new System.Drawing.Size(601, 226);
-      this.pluginsGroupBox.TabIndex = 10;
+      this.pluginsGroupBox.TabIndex = 12;
       this.pluginsGroupBox.TabStop = false;
       this.pluginsGroupBox.Text = "Plugins";
       // 
@@ -223,7 +224,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.label2.Location = new System.Drawing.Point(183, 69);
       this.label2.Name = "label2";
       this.label2.Size = new System.Drawing.Size(49, 13);
-      this.label2.TabIndex = 12;
+      this.label2.TabIndex = 7;
       this.label2.Text = "Website:";
       // 
       // panel1
@@ -235,7 +236,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.panel1.Location = new System.Drawing.Point(0, 538);
       this.panel1.Name = "panel1";
       this.panel1.Size = new System.Drawing.Size(626, 48);
-      this.panel1.TabIndex = 14;
+      this.panel1.TabIndex = 0;
       // 
       // label4
       // 
@@ -243,32 +244,30 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.label4.Location = new System.Drawing.Point(183, 88);
       this.label4.Name = "label4";
       this.label4.Size = new System.Drawing.Size(47, 13);
-      this.label4.TabIndex = 15;
+      this.label4.TabIndex = 9;
       this.label4.Text = "Contact:";
       // 
-      // richTextBox1
+      // webLinkLabel
       // 
-      this.richTextBox1.BackColor = System.Drawing.SystemColors.HighlightText;
-      this.richTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-      this.richTextBox1.Location = new System.Drawing.Point(258, 88);
-      this.richTextBox1.Multiline = false;
-      this.richTextBox1.Name = "richTextBox1";
-      this.richTextBox1.ReadOnly = true;
-      this.richTextBox1.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-      this.richTextBox1.Size = new System.Drawing.Size(355, 13);
-      this.richTextBox1.TabIndex = 16;
-      this.richTextBox1.Text = "support@heuristiclab.com";
+      this.webLinkLabel.AutoSize = true;
+      this.webLinkLabel.Location = new System.Drawing.Point(255, 69);
+      this.webLinkLabel.Name = "webLinkLabel";
+      this.webLinkLabel.Size = new System.Drawing.Size(135, 13);
+      this.webLinkLabel.TabIndex = 8;
+      this.webLinkLabel.TabStop = true;
+      this.webLinkLabel.Text = "http://dev.heuristiclab.com";
+      this.webLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.webLinkLabel_LinkClicked);
       // 
-      // linkLabel
+      // mailLinkLabel
       // 
-      this.linkLabel.AutoSize = true;
-      this.linkLabel.Location = new System.Drawing.Point(255, 69);
-      this.linkLabel.Name = "linkLabel";
-      this.linkLabel.Size = new System.Drawing.Size(135, 13);
-      this.linkLabel.TabIndex = 17;
-      this.linkLabel.TabStop = true;
-      this.linkLabel.Text = "http://dev.heuristiclab.com";
-      this.linkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_LinkClicked);
+      this.mailLinkLabel.AutoSize = true;
+      this.mailLinkLabel.Location = new System.Drawing.Point(255, 88);
+      this.mailLinkLabel.Name = "mailLinkLabel";
+      this.mailLinkLabel.Size = new System.Drawing.Size(129, 13);
+      this.mailLinkLabel.TabIndex = 10;
+      this.mailLinkLabel.TabStop = true;
+      this.mailLinkLabel.Text = "support@heuristiclab.com";
+      this.mailLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.mailLinkLabel_LinkClicked);
       // 
       // AboutDialog
       // 
@@ -276,9 +275,10 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.SystemColors.Window;
+      this.CancelButton = this.okButton;
       this.ClientSize = new System.Drawing.Size(625, 586);
-      this.Controls.Add(this.linkLabel);
-      this.Controls.Add(this.richTextBox1);
+      this.Controls.Add(this.mailLinkLabel);
+      this.Controls.Add(this.webLinkLabel);
       this.Controls.Add(this.label4);
       this.Controls.Add(this.panel1);
       this.Controls.Add(this.label2);
@@ -291,7 +291,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.Controls.Add(this.label1);
       this.Controls.Add(this.label);
       this.Controls.Add(this.pictureBox);
-      this.Icon = HeuristicLab.PluginInfrastructure.Resources.HeuristicLab;
+      this.Icon = global::HeuristicLab.PluginInfrastructure.Resources.HeuristicLab;
       this.MaximizeBox = false;
       this.MinimizeBox = false;
       this.Name = "AboutDialog";
@@ -325,7 +325,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
     private System.Windows.Forms.Label label2;
     private System.Windows.Forms.Panel panel1;
     private System.Windows.Forms.Label label4;
-    private System.Windows.Forms.RichTextBox richTextBox1;
-    private System.Windows.Forms.LinkLabel linkLabel;
+    private System.Windows.Forms.LinkLabel webLinkLabel;
+    private System.Windows.Forms.LinkLabel mailLinkLabel;
   }
 }
