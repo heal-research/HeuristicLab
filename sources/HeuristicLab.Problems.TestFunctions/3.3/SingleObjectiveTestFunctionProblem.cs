@@ -157,6 +157,7 @@ namespace HeuristicLab.Problems.TestFunctions {
       ParameterizeEvaluator();
 
       Initialize();
+      UpdateStrategyVectorBounds();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
