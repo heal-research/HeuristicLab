@@ -109,7 +109,7 @@ namespace HeuristicLab.Analysis.Views {
     private void AddDataRow(DataRow row) {
       Series series = new Series(row.Name);
       series.ChartType = SeriesChartType.FastLine;
-      series.ToolTip = row.Name + " #VAL";
+      series.ToolTip = row.Name + " X = #INDEX, Y = #VAL";
       FillSeriesWithRowValues(series, row);
       chart.Series.Add(series);
       UpdateYCursorInterval();
