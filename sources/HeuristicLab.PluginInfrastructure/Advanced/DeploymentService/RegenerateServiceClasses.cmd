@@ -1,2 +1,2 @@
 ﻿#
-svcutil http://servdev.heuristiclab.com/Deployment-3.3/Update.svc/mex http://servdev.heuristiclab.com/Deployment-3.3/Admin.svc/mex  /language:C# /targetClientVersion:Version35 /out:DeploymentService /namespace:*,HeuristicLab.PluginInfrastructure.Advanced.DeploymentService /mergeConfig /config:../../app.config
+svcutil http://services.heuristiclab.com/Deployment-3.3/Update.svc/mex http://services.heuristiclab.com/Deployment-3.3/Admin.svc/mex  /language:C# /targetClientVersion:Version35 /out:DeploymentService /namespace:*,HeuristicLab.PluginInfrastructure.Advanced.DeploymentService /mergeConfig /config:../../app.config

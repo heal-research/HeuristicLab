@@ -82,6 +82,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IdentityModel">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Runtime.Serialization">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -116,6 +119,7 @@
     <Compile Include="Advanced\ConnectionSetupView.Designer.cs">
       <DependentUpon>ConnectionSetupView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Advanced\DeploymentService\DeploymentServerCertificateValidator.cs" />
     <Compile Include="Advanced\EditProductsView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -267,6 +271,7 @@
     <Content Include="ICSharpCode.SharpZipLib.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="Advanced\DeploymentService\services.heuristiclab.com.cer" />
     <None Include="Resources\Error.ico" />
     <Content Include="Resources\HeuristicLab.ico" />
     <None Include="Resources\HeuristicLabLogo.png" />
@@ -277,7 +282,6 @@
     <None Include="Resources\VS2008ImageLibrary_Annotations_Error.png" />
     <Content Include="Resources\VS2008ImageLibrary_CommonElements_Actions_Add.png" />
     <Content Include="Resources\VS2008ImageLibrary_Objects_Plugin.png" />
-    <EmbeddedResource Include="Advanced\DeploymentService\servdev.cer" />
     <EmbeddedResource Include="Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

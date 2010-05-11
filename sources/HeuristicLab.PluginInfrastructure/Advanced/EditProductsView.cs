@@ -138,7 +138,11 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // upload
       try {
         foreach (var product in products) {
-          adminClient.DeployProduct(product);
+          // only upload necessary data (product name and version, and for each plugin only plugin name and version)
+          var lightWeightProduct = new DeploymentService.ProductDescription(product.Name, product.Version);
+          lightWeightProduct.Plugins = (from plugin in product.Plugins
+                                        select new DeploymentService.PluginDescription(plugin.Name, plugin.Version)).ToArray();
+          adminClient.DeployProduct(lightWeightProduct);
         }
         adminClient.Close();
       }
