@@ -48,6 +48,7 @@ namespace HeuristicLab.Core.Views {
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       base.itemsListView.CheckBoxes = true;
       base.itemsListView.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(itemsListView_ItemCheck);
+      base.itemsListView.MouseDown += new System.Windows.Forms.MouseEventHandler(itemsListView_MouseDown);
     }
 
     #endregion

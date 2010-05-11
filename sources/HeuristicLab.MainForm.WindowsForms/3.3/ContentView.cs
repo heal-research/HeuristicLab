@@ -71,9 +71,9 @@ namespace HeuristicLab.MainForm.WindowsForms {
           if (value != locked) {
             this.SuspendRepaint();
             locked = value;
+            OnLockedChanged();
             PropertyInfo prop = typeof(IContentView).GetProperty("Locked");
             PropagateStateChanges(this, typeof(IContentView), prop);
-            OnLockedChanged();
             OnChanged();
             this.ResumeRepaint(true);
           }

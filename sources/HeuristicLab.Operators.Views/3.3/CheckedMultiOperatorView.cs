@@ -84,7 +84,6 @@ namespace HeuristicLab.Operators.Views {
 
     private void SetEnabledStateOfControls() {
       breakpointCheckBox.Enabled = Content != null && !Locked;
-      operatorListView.Enabled = Content != null;
       parameterCollectionView.Enabled = Content != null;
     }
 

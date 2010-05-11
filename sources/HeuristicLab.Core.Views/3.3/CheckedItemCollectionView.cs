@@ -57,6 +57,12 @@ namespace HeuristicLab.Core.Views {
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
+      base.itemsListView.Enabled = !this.Locked;
+    }
+
+    protected override void OnLockedChanged() {
+      base.OnLockedChanged();
+      base.itemsListView.Enabled = !this.Locked;
     }
 
     protected override ListViewItem CreateListViewItem(T item) {
@@ -66,12 +72,22 @@ namespace HeuristicLab.Core.Views {
     }
 
     #region ListView Events
+    private bool doubleClick;
     protected virtual void itemsListView_ItemCheck(object sender, ItemCheckEventArgs e) {
-      var checkedItem = (T)itemsListView.Items[e.Index].Tag;
-      bool check = e.NewValue == CheckState.Checked;
-      if (Content.ItemChecked(checkedItem) != check) {
-        Content.SetItemCheckedState(checkedItem, check);
+      if (doubleClick) {
+        e.NewValue = e.CurrentValue;
+        doubleClick = false;
+      } else {
+        var checkedItem = (T)itemsListView.Items[e.Index].Tag;
+        bool check = e.NewValue == CheckState.Checked;
+        if (Content.ItemChecked(checkedItem) != check) {
+          Content.SetItemCheckedState(checkedItem, check);
+        }
       }
+    }
+    protected void itemsListView_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e) {
+      if (e.Clicks > 1)
+        doubleClick = true;
     }
     #endregion
 
