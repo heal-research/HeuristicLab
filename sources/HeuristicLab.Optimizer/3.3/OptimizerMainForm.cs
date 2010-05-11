@@ -68,8 +68,11 @@ namespace HeuristicLab.Optimizer {
 
       ContentManager.Initialize(new PersistenceContentManager());
 
+      WindowState = Properties.Settings.Default.ShowMaximized ? FormWindowState.Maximized : FormWindowState.Normal;
+
       clipboard = new Clipboard<IItem>();
       clipboard.Dock = DockStyle.Left;
+      clipboard.Collapsed = Properties.Settings.Default.CollapseClipboard;
       if (Properties.Settings.Default.ShowClipboard) {
         clipboard.Show();
       }
@@ -77,6 +80,7 @@ namespace HeuristicLab.Optimizer {
         OperatorsSidebar operatorsSidebar = new OperatorsSidebar();
         operatorsSidebar.Dock = DockStyle.Left;
         operatorsSidebar.Show();
+        operatorsSidebar.Collapsed = Properties.Settings.Default.CollapseOperatorsSidebar;
       }
       if (Properties.Settings.Default.ShowStartPage) {
         StartPage startPage = new StartPage();
@@ -90,6 +94,14 @@ namespace HeuristicLab.Optimizer {
         if (MessageBox.Show(this, "Some views are still opened. If their content has not been saved, it will be lost after closing. Do you really want to close HeuristicLab Optimizer?", "Close Optimizer", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) == DialogResult.No)
           e.Cancel = true;
       }
+    }
+    protected override void OnClosed(EventArgs e) {
+      base.OnClosed(e);
+      Properties.Settings.Default.ShowMaximized = WindowState == FormWindowState.Maximized;
+      Properties.Settings.Default.CollapseClipboard = clipboard.Collapsed;
+      OperatorsSidebar operatorsSidebar = MainFormManager.MainForm.Views.OfType<OperatorsSidebar>().FirstOrDefault();
+      if (operatorsSidebar != null) Properties.Settings.Default.CollapseOperatorsSidebar = operatorsSidebar.Collapsed;
+      Properties.Settings.Default.Save();
     }
 
     protected override void OnActiveViewChanged() {

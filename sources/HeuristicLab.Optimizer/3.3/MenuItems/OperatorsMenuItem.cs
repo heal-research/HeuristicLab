@@ -72,6 +72,7 @@ namespace HeuristicLab.Optimizer.MenuItems {
         OperatorsSidebar operatorsSidebar = new OperatorsSidebar();
         operatorsSidebar.Dock = DockStyle.Left;
         operatorsSidebar.Show();
+        operatorsSidebar.Collapsed = Properties.Settings.Default.CollapseOperatorsSidebar;
       } else if (view.IsShown) {
         view.Hide();
       } else {
