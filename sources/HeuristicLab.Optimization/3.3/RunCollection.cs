@@ -152,10 +152,10 @@ namespace HeuristicLab.Optimization {
 
     public IItem GetValue(IRun run, string columnName) {
       IItem value = null;
-       if (run.Parameters.ContainsKey(columnName))
-         value = run.Parameters[columnName];
-       else if (run.Results.ContainsKey(columnName))
-         value = run.Results[columnName];
+      if (run.Parameters.ContainsKey(columnName))
+        value = run.Parameters[columnName];
+      else if (run.Results.ContainsKey(columnName))
+        value = run.Results[columnName];
       return value;
     }
 
@@ -241,7 +241,6 @@ namespace HeuristicLab.Optimization {
       if (handler != null)
         handler(this, EventArgs.Empty);
     }
-
     public event EventHandler SortableViewChanged;
     protected virtual void OnSortableViewChanged() {
       EventHandler handler = SortableViewChanged;
