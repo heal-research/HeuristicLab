@@ -69,10 +69,12 @@ namespace HeuristicLab.Optimization.Views {
       // openOperatorGraphButton
       // 
       this.toolTip.SetToolTip(this.openOperatorGraphButton, "Open Operator Graph");
+      this.openOperatorGraphButton.Click += new System.EventHandler(openOperatorGraphButton_Click);
       // 
       // newOperatorGraphButton
       // 
       this.toolTip.SetToolTip(this.newOperatorGraphButton, "New Operator Graph");
+      this.newOperatorGraphButton.Click += new System.EventHandler(newOperatorGraphButton_Click);
       // 
       // tabControl
       // 

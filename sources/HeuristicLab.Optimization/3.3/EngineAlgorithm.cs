@@ -158,13 +158,11 @@ namespace HeuristicLab.Optimization {
       globalScope.Clear();
       globalScope.Variables.Add(new Variable("Results", new ResultCollection()));
 
-      if (engine != null) {
+      if ((engine != null) && (operatorGraph.InitialOperator != null)) {
         ExecutionContext context = null;
-        if (operatorGraph.InitialOperator != null) {
-          if (Problem != null) context = new ExecutionContext(context, Problem, globalScope);
-          context = new ExecutionContext(context, this, globalScope);
-          context = new ExecutionContext(context, operatorGraph.InitialOperator, globalScope);
-        }
+        if (Problem != null) context = new ExecutionContext(context, Problem, globalScope);
+        context = new ExecutionContext(context, this, globalScope);
+        context = new ExecutionContext(context, operatorGraph.InitialOperator, globalScope);
         engine.Prepare(context);
       }
     }
