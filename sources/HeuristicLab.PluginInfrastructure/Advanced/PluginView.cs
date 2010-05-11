@@ -39,12 +39,14 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
 
     private IPluginDescription plugin;
 
-    public PluginView() : base() {
+    public PluginView()
+      : base() {
       InitializeComponent();
       PopulateImageList();
     }
 
-    public PluginView(IPluginDescription plugin) : base() {
+    public PluginView(IPluginDescription plugin)
+      : base() {
       InitializeComponent();
       PopulateImageList();
 
@@ -71,7 +73,8 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       var localPlugin = plugin as PluginDescription;
       if (localPlugin != null) {
         stateTextBox.Text = localPlugin.PluginState.ToString();
-        errorTextBox.Text = localPlugin.LoadingErrorInformation.Replace(Environment.NewLine, " ");
+        if (!string.IsNullOrEmpty(localPlugin.LoadingErrorInformation))
+          errorTextBox.Text = localPlugin.LoadingErrorInformation.Replace(Environment.NewLine, " ");
         toolTip.SetToolTip(stateTextBox, stateTextBox.Text + Environment.NewLine + errorTextBox.Text);
         toolTip.SetToolTip(errorTextBox, errorTextBox.Text);
       }
