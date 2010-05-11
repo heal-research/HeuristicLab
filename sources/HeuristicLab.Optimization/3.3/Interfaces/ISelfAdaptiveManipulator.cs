@@ -27,7 +27,7 @@ namespace HeuristicLab.Optimization {
   /// <summary>
   /// An interface which represents an operator for manipulating solutions, given a strategy parameter.
   /// </summary>
-  public interface ISelfAdaptiveManipulator : IOperator {
+  public interface ISelfAdaptiveManipulator : IManipulator {
     Type StrategyParameterType { get; }
     IParameter StrategyParameterParameter { get; }
   }
