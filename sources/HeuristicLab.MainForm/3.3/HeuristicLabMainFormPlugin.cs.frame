@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Modeling.Database {
+namespace HeuristicLab.MainForm {
   [Plugin("HeuristicLab.MainForm", "3.3.0.$WCREV$")]
   [PluginFile("HeuristicLab.MainForm-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Common", "3.3")]

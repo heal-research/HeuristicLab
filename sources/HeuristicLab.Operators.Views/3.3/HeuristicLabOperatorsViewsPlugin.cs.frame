@@ -21,7 +21,7 @@
 
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Operators {
+namespace HeuristicLab.Operators.Views {
   /// <summary>
   /// Plugin class for HeuristicLab.Operators.Views plugin.
   /// </summary>

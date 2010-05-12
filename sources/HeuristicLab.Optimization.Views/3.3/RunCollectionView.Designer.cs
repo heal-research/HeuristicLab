@@ -67,7 +67,7 @@ namespace HeuristicLab.Optimization.Views {
       this.tabControl = new System.Windows.Forms.TabControl();
       this.runPage = new System.Windows.Forms.TabPage();
       this.constraintPage = new System.Windows.Forms.TabPage();
-      this.runCollectionConstraintCollectionView = new HeuristicLab.Core.Views.RunCollectionConstraintCollectionView();
+      this.runCollectionConstraintCollectionView = new RunCollectionConstraintCollectionView();
       this.clearButton = new System.Windows.Forms.Button();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
@@ -300,7 +300,7 @@ namespace HeuristicLab.Optimization.Views {
     protected TabControl tabControl;
     protected TabPage runPage;
     protected TabPage constraintPage;
-    protected HeuristicLab.Core.Views.RunCollectionConstraintCollectionView runCollectionConstraintCollectionView;
+    protected RunCollectionConstraintCollectionView runCollectionConstraintCollectionView;
     protected Button clearButton;
   }
 }

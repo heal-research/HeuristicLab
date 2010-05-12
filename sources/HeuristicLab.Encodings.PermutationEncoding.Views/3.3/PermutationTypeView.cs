@@ -25,10 +25,10 @@ using HeuristicLab.Core.Views;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.MainForm;
 
-namespace HeuristicLab.Data.Views {
+namespace HeuristicLab.Encodings.PermutationEncoding.Views {
   [View("PermutationType View")]
   [Content(typeof(PermutationType), true)]
-  public partial class ComparisonView : ItemView {
+  public partial class PermutationTypeView : ItemView {
     public new PermutationType Content {
       get { return (PermutationType)base.Content; }
       set { base.Content = value; }
@@ -42,11 +42,11 @@ namespace HeuristicLab.Data.Views {
       set { base.ReadOnly = value; }
     }
 
-    public ComparisonView() {
+    public PermutationTypeView() {
       InitializeComponent();
       valueComboBox.DataSource = Enum.GetValues(typeof(PermutationTypes));
     }
-    public ComparisonView(PermutationType content)
+    public PermutationTypeView(PermutationType content)
       : this() {
       Content = content;
     }

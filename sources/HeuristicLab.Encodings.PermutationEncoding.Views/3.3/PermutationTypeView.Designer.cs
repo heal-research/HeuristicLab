@@ -19,8 +19,8 @@
  */
 #endregion
 
-namespace HeuristicLab.Data.Views {
-  partial class ComparisonView {
+namespace HeuristicLab.Encodings.PermutationEncoding.Views {
+  partial class PermutationTypeView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>

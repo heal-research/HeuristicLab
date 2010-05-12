@@ -26,7 +26,7 @@ using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 
-namespace HeuristicLab.Optimization.Interfaces {
+namespace HeuristicLab.Optimization {
   public interface IRealVectorDecoder {
     IParameter RealVectorParameter { get; }
     ILookupParameter<IntValue> LengthParameter { get; }

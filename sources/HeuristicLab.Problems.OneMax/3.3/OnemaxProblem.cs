@@ -31,7 +31,6 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Problems.OneMax.Analyzers;
 
 namespace HeuristicLab.Problems.OneMax {
   [Item("OneMax Problem", "Represents a OneMax Problem.")]

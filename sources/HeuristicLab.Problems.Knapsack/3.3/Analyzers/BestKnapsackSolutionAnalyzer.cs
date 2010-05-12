@@ -31,7 +31,7 @@ using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Problems.Knapsack.Analyzers {
+namespace HeuristicLab.Problems.Knapsack {
   /// <summary>
   /// An operator for analyzing the best solution for a knapsack problem.
   /// </summary>

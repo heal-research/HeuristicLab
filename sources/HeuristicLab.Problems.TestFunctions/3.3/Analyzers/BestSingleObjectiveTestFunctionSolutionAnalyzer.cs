@@ -31,7 +31,7 @@ using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Problems.TestFunctions.Analyzers {
+namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
   /// An operator for analyzing the best solution for a SingleObjectiveTestFunction problem.
   /// </summary>

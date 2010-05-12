@@ -20,14 +20,16 @@
 #endregion
 
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 using HeuristicLab.Collections;
+using HeuristicLab.Core;
+using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.Optimization;
-using System.Drawing;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Core.Views {
+namespace HeuristicLab.Optimization.Views {
   [View("ConstraintCollection View")]
   [Content(typeof(RunCollectionConstraintCollection), true)]
   [Content(typeof(IItemCollection<IRunCollectionConstraint>), false)]

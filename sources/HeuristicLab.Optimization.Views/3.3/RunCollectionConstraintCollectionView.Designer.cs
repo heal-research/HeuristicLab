@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.Core.Views {
+namespace HeuristicLab.Optimization.Views {
   partial class RunCollectionConstraintCollectionView {
     /// <summary> 
     /// Required designer variable.

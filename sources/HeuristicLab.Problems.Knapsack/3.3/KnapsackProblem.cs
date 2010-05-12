@@ -31,7 +31,6 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Problems.Knapsack.Analyzers;
 
 namespace HeuristicLab.Problems.Knapsack {
   [Item("Knapsack Problem", "Represents a Knapsack Problem.")]

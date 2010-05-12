@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Operators {
+namespace HeuristicLab.Operators.Views.GraphVisualization {
   /// <summary>
   /// Plugin class for HeuristicLab.Operators.Views plugin.
   /// </summary>

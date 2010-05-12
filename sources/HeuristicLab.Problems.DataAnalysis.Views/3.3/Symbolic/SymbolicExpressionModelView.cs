@@ -28,7 +28,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Common;
-using HeuristicLab.Modeling;
 using HeuristicLab.MainForm;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.MainForm.WindowsForms;

@@ -31,7 +31,7 @@ using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Problems.OneMax.Analyzers {
+namespace HeuristicLab.Problems.OneMax {
   /// <summary>
   /// An operator for analyzing the best solution for a OneMax problem.
   /// </summary>
