@@ -52,25 +52,20 @@ namespace HeuristicLab.Problems.ArtificialAnt.Views {
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      if (Content == null) {
-        pictureBox.Image = null;
-      } else {
-        GenerateImage();
-      }
+      this.playButton.Enabled = Content != null && !Locked;
+      GenerateImage();
     }
 
     protected override void OnLockedChanged() {
-      this.playButton.Enabled = !Locked;
+      this.playButton.Enabled = Content != null && !Locked;
       base.OnLockedChanged();
     }
 
     private void GenerateImage() {
       animationTimer.Stop();
+      pictureBox.Image = null;
       if ((pictureBox.Width > 0) && (pictureBox.Height > 0)) {
-        if (Content == null) {
-          pictureBox.Image = null;
-          playButton.Enabled = false;
-        } else {
+        if (Content != null) {
           var nodeStack = new Stack<SymbolicExpressionTreeNode>();
           int rows = Content.World.Rows;
           int columns = Content.World.Columns;

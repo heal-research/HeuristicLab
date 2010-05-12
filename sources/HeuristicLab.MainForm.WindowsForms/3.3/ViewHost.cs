@@ -65,7 +65,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
               view.OnShown(new ViewShownEventArgs(view, false));
           }
           ActiveViewChanged();
-          OnViewTypeChanged();
         }
       }
     }
@@ -108,11 +107,13 @@ namespace HeuristicLab.MainForm.WindowsForms {
         }
 
         Type defaultViewType = MainFormManager.GetDefaultViewType(Content.GetType());
-        if (!ViewCanShowContent(viewType, Content) || defaultViewType != this.ViewType) {
+        if (!ViewCanShowContent(viewType, Content)) {
           cachedViews.Clear();
-          ViewType = defaultViewType;
-          if ((viewType == null) && (viewContextMenuStrip.Items.Count > 0))  // create first available view if default view is not available
-            ViewType = (Type)viewContextMenuStrip.Items[0].Tag;
+          if (defaultViewType == null) {
+            if (viewContextMenuStrip.Items.Count > 0)  // create first available view if default view is not available
+              ViewType = (Type)viewContextMenuStrip.Items[0].Tag;
+          } else if (defaultViewType != this.ViewType)
+            ViewType = defaultViewType;
         }
         UpdateActiveMenuItem();
         foreach (IContentView view in cachedViews.Values)
@@ -241,7 +242,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     private void viewsLabel_DoubleClick(object sender, EventArgs e) {
-      IContentView view = MainFormManager.GetMainForm<MainForm>().ShowContent(this.Content,this.ViewType);
+      IContentView view = MainFormManager.GetMainForm<MainForm>().ShowContent(this.Content, this.ViewType);
       if (view != null) {
         view.ReadOnly = this.ReadOnly;
         view.Locked = this.Locked;
