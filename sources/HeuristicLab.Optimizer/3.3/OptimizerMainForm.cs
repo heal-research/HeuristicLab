@@ -69,8 +69,6 @@ namespace HeuristicLab.Optimizer {
 
       ContentManager.Initialize(new PersistenceContentManager());
 
-      WindowState = Properties.Settings.Default.ShowMaximized ? FormWindowState.Maximized : FormWindowState.Normal;
-
       clipboard = new Clipboard<IItem>();
       clipboard.Dock = DockStyle.Left;
       clipboard.Collapsed = Properties.Settings.Default.CollapseClipboard;
@@ -87,6 +85,8 @@ namespace HeuristicLab.Optimizer {
         StartPage startPage = new StartPage();
         startPage.Show();
       }
+
+      WindowState = Properties.Settings.Default.ShowMaximized ? FormWindowState.Maximized : FormWindowState.Normal;
     }
 
     private static string CHARTCONTROLASSEMBLY = "System.Windows.Forms.DataVisualization, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35";

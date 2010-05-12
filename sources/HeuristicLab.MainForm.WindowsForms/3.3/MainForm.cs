@@ -165,11 +165,11 @@ namespace HeuristicLab.MainForm.WindowsForms {
     private void MainFormBase_Load(object sender, EventArgs e) {
       if (!DesignMode) {
         MainFormManager.RegisterMainForm(this);
+        this.CreateGUI();
         if (!this.initialized) {
           this.initialized = true;
           this.OnInitialized(EventArgs.Empty);
         }
-        this.CreateGUI();
       }
     }
 
