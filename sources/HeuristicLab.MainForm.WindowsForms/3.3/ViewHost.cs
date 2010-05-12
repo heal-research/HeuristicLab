@@ -242,7 +242,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     private void viewsLabel_DoubleClick(object sender, EventArgs e) {
-      IContentView view = MainFormManager.GetMainForm<MainForm>().ShowContent(this.Content, this.ViewType);
+      IContentView view = MainFormManager.MainForm.ShowContent(this.Content, this.ViewType);
       if (view != null) {
         view.ReadOnly = this.ReadOnly;
         view.Locked = this.Locked;

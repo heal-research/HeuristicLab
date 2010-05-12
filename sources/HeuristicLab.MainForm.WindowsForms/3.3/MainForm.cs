@@ -221,15 +221,19 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     public IContentView ShowContent(IContent content) {
+      if (content == null)
+        throw new ArgumentNullException("Content cannot be null.");
       Type viewType = MainFormManager.GetDefaultViewType(content.GetType());
       if (viewType != null)
         return ShowContent(content, viewType);
       return null;
     }
 
-    internal IContentView ShowContent(IContent content, Type viewType) {
+    public IContentView ShowContent(IContent content, Type viewType) {
+      if (content == null)
+        throw new ArgumentNullException("Content cannot be null.");
       if (viewType == null)
-        throw new ArgumentNullException("Could not create view of type null");
+        throw new ArgumentNullException("ViewType cannot be null.");
 
       IContentView view;
       if (this.ShowContentInViewHost) {

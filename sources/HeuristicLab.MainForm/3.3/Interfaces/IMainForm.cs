@@ -42,6 +42,7 @@ namespace HeuristicLab.MainForm {
     event EventHandler<ViewEventArgs> ViewHidden;
 
     IContentView ShowContent(IContent content);
+    IContentView ShowContent(IContent content, Type viewType);
 
     Type UserInterfaceItemType { get; }
     void CloseAllViews();

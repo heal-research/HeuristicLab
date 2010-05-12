@@ -259,12 +259,11 @@ namespace HeuristicLab.Optimization.Views {
     #region Button Events
     protected virtual void menuItem_Click(object sender, EventArgs e) {
       ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
-      IContentView view = MainFormManager.CreateView((Type)menuItem.Tag);
+      Type viewType = (Type)menuItem.Tag;
+      IContentView view = MainFormManager.MainForm.ShowContent(Content, viewType);
       if (view != null) {
         view.Locked = Locked;
         view.ReadOnly = ReadOnly;
-        view.Show();
-        view.Content = Content;
       }
     }
     protected virtual void removeButton_Click(object sender, EventArgs e) {
