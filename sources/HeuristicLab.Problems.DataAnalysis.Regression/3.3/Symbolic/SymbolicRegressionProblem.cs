@@ -246,6 +246,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     #region event handling
     protected override void OnDataAnalysisProblemChanged(EventArgs e) {
       base.OnDataAnalysisProblemChanged(e);
+      BestKnownQualityParameter.Value = null;
       // paritions could be changed
       ParameterizeEvaluator();
       ParameterizeAnalyzers();
@@ -402,6 +403,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
           bestValidationSolutionAnalyzer.SamplesStartParameter.Value = ValidationSamplesStart;
           bestValidationSolutionAnalyzer.SamplesEndParameter.Value = ValidationSamplesEnd;
           bestValidationSolutionAnalyzer.BestKnownQualityParameter.ActualName = BestKnownQualityParameter.Name;
+          bestValidationSolutionAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
         }
         var varFreqAnalyzer = analyzer as SymbolicRegressionVariableFrequencyAnalyzer;
         if (varFreqAnalyzer != null) {

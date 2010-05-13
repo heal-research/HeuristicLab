@@ -50,7 +50,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     private const string ProblemDataParameterName = "ProblemData";
     private const string SamplesStartParameterName = "SamplesStart";
     private const string SamplesEndParameterName = "SamplesEnd";
-    private const string QualityParameterName = "ScaledQuality";
+    private const string QualityParameterName = "Quality";
+    private const string ScaledQualityParameterName = "ScaledQuality";
     private const string UpperEstimationLimitParameterName = "UpperEstimationLimit";
     private const string LowerEstimationLimitParameterName = "LowerEstimationLimit";
     private const string AlphaParameterName = "Alpha";
@@ -63,6 +64,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
 
     public ScopeTreeLookupParameter<SymbolicExpressionTree> SymbolicExpressionTreeParameter {
       get { return (ScopeTreeLookupParameter<SymbolicExpressionTree>)Parameters[SymbolicExpressionTreeParameterName]; }
+    }
+    public ScopeTreeLookupParameter<DoubleValue> QualityParameter {
+      get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters[QualityParameterName]; }
     }
     public IValueLookupParameter<ISymbolicExpressionTreeInterpreter> SymbolicExpressionTreeInterpreterParameter {
       get { return (IValueLookupParameter<ISymbolicExpressionTreeInterpreter>)Parameters[SymbolicExpressionTreeInterpreterParameterName]; }
@@ -101,10 +105,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     private UniformSubScopesProcessor subScopesProcessor;
     [Storable]
     private BestAverageWorstQualityCalculator bestAvgWorstValidationQualityCalculator;
+    [Storable]
+    private BestQualityMemorizer bestKnownQualityMemorizer;
 
     public ValidationBestScaledSymbolicRegressionSolutionAnalyzer()
       : base() {
       Parameters.Add(new ScopeTreeLookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression trees to analyze."));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>(QualityParameterName, "The quality of the symbolic expression trees to analyze."));
       Parameters.Add(new ValueLookupParameter<ISymbolicExpressionTreeInterpreter>(SymbolicExpressionTreeInterpreterParameterName, "The interpreter that should be used for the analysis of symbolic expression trees."));
       Parameters.Add(new ValueLookupParameter<DataAnalysisProblemData>(ProblemDataParameterName, "The problem data for which the symbolic expression tree is a solution."));
       Parameters.Add(new ValueLookupParameter<IntValue>(SamplesStartParameterName, "The first index of the validation partition of the data set."));
@@ -121,8 +128,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       SymbolicRegressionSolutionLinearScaler linearScaler = new SymbolicRegressionSolutionLinearScaler();
       SymbolicRegressionMeanSquaredErrorEvaluator validationMseEvaluator = new SymbolicRegressionMeanSquaredErrorEvaluator();
       bestSolutionAnalyzer = new BestSymbolicRegressionSolutionAnalyzer();
-      BestQualityMemorizer bestKnownQualityMemorizer = new BestQualityMemorizer();
-       bestAvgWorstValidationQualityCalculator = new BestAverageWorstQualityCalculator();
+      bestKnownQualityMemorizer = new BestQualityMemorizer();
+      bestAvgWorstValidationQualityCalculator = new BestAverageWorstQualityCalculator();
       DataTableValuesCollector validationValuesCollector = new DataTableValuesCollector();
       ResultsCollector resultsCollector = new ResultsCollector();
       #endregion
@@ -139,7 +146,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       validationMseEvaluator.UpperEstimationLimitParameter.ActualName = UpperEstimationLimitParameter.Name;
       validationMseEvaluator.SymbolicExpressionTreeParameter.ActualName = ScaledSymbolicExpressionTreeParameterName;
       validationMseEvaluator.SymbolicExpressionTreeInterpreterParameter.ActualName = SymbolicExpressionTreeInterpreterParameter.Name;
-      validationMseEvaluator.QualityParameter.ActualName = QualityParameterName;
+      validationMseEvaluator.QualityParameter.ActualName = ScaledQualityParameterName;
       validationMseEvaluator.RegressionProblemDataParameter.ActualName = ProblemDataParameter.Name;
       validationMseEvaluator.SamplesStartParameter.ActualName = SamplesStartParameter.Name;
       validationMseEvaluator.SamplesEndParameter.ActualName = SamplesEndParameter.Name;
@@ -148,7 +155,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       bestSolutionAnalyzer.BestSolutionQualityParameter.ActualName = BestSolutionQualityParameter.Name;
       bestSolutionAnalyzer.LowerEstimationLimitParameter.ActualName = LowerEstimationLimitParameter.Name;
       bestSolutionAnalyzer.ProblemDataParameter.ActualName = ProblemDataParameter.Name;
-      bestSolutionAnalyzer.QualityParameter.ActualName = QualityParameterName;
+      bestSolutionAnalyzer.QualityParameter.ActualName = ScaledQualityParameterName;
       bestSolutionAnalyzer.ResultsParameter.ActualName = ResultsParameter.Name;
       bestSolutionAnalyzer.SymbolicExpressionTreeInterpreterParameter.ActualName = SymbolicExpressionTreeInterpreterParameter.Name;
       bestSolutionAnalyzer.SymbolicExpressionTreeParameter.ActualName = ScaledSymbolicExpressionTreeParameterName;
@@ -158,14 +165,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       bestAvgWorstValidationQualityCalculator.AverageQualityParameter.ActualName = "Current average validation quality";
       bestAvgWorstValidationQualityCalculator.BestQualityParameter.ActualName = CurrentBestValidationQualityParameterName;
       bestAvgWorstValidationQualityCalculator.MaximizationParameter.Value = new BoolValue(false);
-      bestAvgWorstValidationQualityCalculator.QualityParameter.ActualName = QualityParameterName;
+      bestAvgWorstValidationQualityCalculator.QualityParameter.ActualName = ScaledQualityParameterName;
       bestAvgWorstValidationQualityCalculator.QualityParameter.Depth = SymbolicExpressionTreeParameter.Depth;
       bestAvgWorstValidationQualityCalculator.WorstQualityParameter.ActualName = "Current worst validation quality";
 
       bestKnownQualityMemorizer.BestQualityParameter.ActualName = BestKnownQualityParameterName;
       bestKnownQualityMemorizer.MaximizationParameter.Value = new BoolValue(false);
-      bestKnownQualityMemorizer.QualityParameter.ActualName = CurrentBestValidationQualityParameterName;
-      bestKnownQualityMemorizer.QualityParameter.Depth = 0;
+      bestKnownQualityMemorizer.QualityParameter.ActualName = QualityParameter.Name;
+      bestKnownQualityMemorizer.QualityParameter.Depth = QualityParameter.Depth;
 
       validationValuesCollector.DataTableParameter.ActualName = "Validation quality";
       validationValuesCollector.CollectedValues.Add(new LookupParameter<DoubleValue>(CurrentBestValidationQualityParameterName, null, CurrentBestValidationQualityParameterName));
@@ -212,6 +219,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       bestSolutionAnalyzer.SymbolicExpressionTreeParameter.Depth = SymbolicExpressionTreeParameter.Depth;
       bestSolutionAnalyzer.QualityParameter.Depth = SymbolicExpressionTreeParameter.Depth;
       bestAvgWorstValidationQualityCalculator.QualityParameter.Depth = SymbolicExpressionTreeParameter.Depth;
+      bestKnownQualityMemorizer.QualityParameter.Depth = SymbolicExpressionTreeParameter.Depth;
     }
   }
 }
