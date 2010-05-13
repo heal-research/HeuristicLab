@@ -464,7 +464,6 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       IslandAnalyzer.Operators.Clear();
       Analyzer.Operators.Clear();
       IslandAnalyzer.Operators.Add(islandQualityAnalyzer);
-      Analyzer.Operators.Add(qualityAnalyzer);
       if (Problem != null) {
         foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>().OrderBy(x => x.Name)) {
           foreach (IScopeTreeLookupParameter param in analyzer.Parameters.OfType<IScopeTreeLookupParameter>())
@@ -472,6 +471,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
           Analyzer.Operators.Add(analyzer);
         }
       }
+      Analyzer.Operators.Add(qualityAnalyzer);
     }
     #endregion
   }
