@@ -71,17 +71,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       SymbolicExpressionTree tree = SymbolicExpressionTreeParameter.ActualValue;
       DoubleValue alpha = AlphaParameter.ActualValue;
       DoubleValue beta = BetaParameter.ActualValue;
-      var mainBranch = tree.Root.SubTrees[0].SubTrees[0];
-      var scaledMainBranch = MakeSum(MakeProduct(beta.Value, mainBranch), alpha.Value);
+      if (alpha != null && beta != null) {
+        var mainBranch = tree.Root.SubTrees[0].SubTrees[0];
+        var scaledMainBranch = MakeSum(MakeProduct(beta.Value, mainBranch), alpha.Value);
 
-      // remove the main branch before cloning to prevent cloning of sub-trees
-      tree.Root.SubTrees[0].RemoveSubTree(0);
-      var scaledTree = (SymbolicExpressionTree)tree.Clone();
-      // insert main branch into the original tree again 
-      tree.Root.SubTrees[0].InsertSubTree(0, mainBranch);
-      // insert the scaled main branch into the cloned tree
-      scaledTree.Root.SubTrees[0].InsertSubTree(0, scaledMainBranch);
-      ScaledSymbolicExpressionTreeParameter.ActualValue = scaledTree;
+        // remove the main branch before cloning to prevent cloning of sub-trees
+        tree.Root.SubTrees[0].RemoveSubTree(0);
+        var scaledTree = (SymbolicExpressionTree)tree.Clone();
+        // insert main branch into the original tree again 
+        tree.Root.SubTrees[0].InsertSubTree(0, mainBranch);
+        // insert the scaled main branch into the cloned tree
+        scaledTree.Root.SubTrees[0].InsertSubTree(0, scaledMainBranch);
+        ScaledSymbolicExpressionTreeParameter.ActualValue = scaledTree;
+      } else {
+        // alpha or beta parameter not available => do not scale tree
+        ScaledSymbolicExpressionTreeParameter.ActualValue = tree;
+      }
+      
       return base.Apply();
     }
 
