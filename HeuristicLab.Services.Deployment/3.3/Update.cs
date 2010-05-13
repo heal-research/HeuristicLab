@@ -1,0 +1,51 @@
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization;
+using System.ServiceModel;
+using System.Text;
+using HeuristicLab.Services.Deployment.DataAccess;
+
+namespace HeuristicLab.Services.Deployment {
+  public class Update : IUpdate {
+    #region IUpdate Members
+
+    public byte[] GetPlugin(PluginDescription description) {
+      PluginStore store = new PluginStore();
+      return store.PluginFile(description);
+    }
+
+
+    public IEnumerable<ProductDescription> GetProducts() {
+      PluginStore store = new PluginStore();
+      return store.Products;
+    }
+
+    public IEnumerable<PluginDescription> GetPlugins() {
+      PluginStore store = new PluginStore();
+      return store.Plugins;
+    }
+    #endregion
+  }
+}

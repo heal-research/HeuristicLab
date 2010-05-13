@@ -1,0 +1,27 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="HeuristicLab.PluginInfrastructure.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="User" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">-</Value>
+    </Setting>
+    <Setting Name="Organization" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">-</Value>
+    </Setting>
+    <Setting Name="UpdateLocation" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://services.heuristiclab.com/Deployment-3.3/Update.svc</Value>
+    </Setting>
+    <Setting Name="UpdateLocationUserName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">anonymous</Value>
+    </Setting>
+    <Setting Name="UpdateLocationPassword" Type="System.String" Scope="User">
+      <Value Profile="(Default)">GetTheLab!</Value>
+    </Setting>
+    <Setting Name="UpdateLocationAdministrationAddress" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://services.heuristiclab.com/Deployment-3.3/Admin.svc</Value>
+    </Setting>
+    <Setting Name="ShowPluginUploadControls" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
