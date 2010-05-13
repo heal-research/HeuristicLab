@@ -162,7 +162,8 @@ namespace HeuristicLab.Core {
     /// <param name="oldItems">The elements of the list before it has been reset.</param>
     protected override void OnCollectionReset(IEnumerable<IndexedItem<T>> items, IEnumerable<IndexedItem<T>> oldItems) {
       foreach (var oldIndexedItem in oldItems) {
-        checkedState.Remove(oldIndexedItem.Value);
+        if (!list.Contains(oldIndexedItem.Value))
+          checkedState.Remove(oldIndexedItem.Value);
       }
       foreach (var indexedItem in items) {
         if (!checkedState.ContainsKey(indexedItem.Value))
@@ -188,7 +189,8 @@ namespace HeuristicLab.Core {
     /// <param name="items">Items that are removed.</param>
     protected override void OnItemsRemoved(IEnumerable<IndexedItem<T>> items) {
       foreach (var indexedItem in items)
-        checkedState.Remove(indexedItem.Value);
+        if (!list.Contains(indexedItem.Value))
+          checkedState.Remove(indexedItem.Value);
       base.OnItemsRemoved(items);
     }
 
@@ -199,7 +201,8 @@ namespace HeuristicLab.Core {
     /// <param name="oldItems">The items that are replaced by <paramref name="items"/></param>
     protected override void OnItemsReplaced(IEnumerable<IndexedItem<T>> items, IEnumerable<IndexedItem<T>> oldItems) {
       foreach (var oldIndexedItem in oldItems)
-        checkedState.Remove(oldIndexedItem.Value);
+        if (!list.Contains(oldIndexedItem.Value))
+          checkedState.Remove(oldIndexedItem.Value);
       foreach (var indexedItem in items)
         if (!checkedState.ContainsKey(indexedItem.Value))
           checkedState.Add(indexedItem.Value, true);

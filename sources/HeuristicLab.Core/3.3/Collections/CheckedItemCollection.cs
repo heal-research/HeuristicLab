@@ -126,7 +126,8 @@ namespace HeuristicLab.Core {
     /// <param name="oldItems">The elements in the collection before the reset.</param>
     protected override void OnCollectionReset(IEnumerable<T> items, IEnumerable<T> oldItems) {
       foreach (var oldItem in oldItems)
-        checkedState.Remove(oldItem);
+        if (!list.Contains(oldItem))
+          checkedState.Remove(oldItem);
       foreach (var item in items)
         if (!checkedState.ContainsKey(item))
           checkedState.Add(item, true);
@@ -150,7 +151,8 @@ namespace HeuristicLab.Core {
     /// <param name="items">The items that are removed.</param>
     protected override void OnItemsRemoved(IEnumerable<T> items) {
       foreach (var item in items) {
-        checkedState.Remove(item);
+        if (!list.Contains(item))
+          checkedState.Remove(item);
       }
       base.OnItemsRemoved(items);
     }
