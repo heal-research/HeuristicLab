@@ -86,6 +86,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public static IEnumerable<KeyValuePair<string, double>> CalculateVariableFrequencies(IEnumerable<SymbolicExpressionTree> trees, IEnumerable<string> inputVariables) {
       int totalVariableReferences = 0;
       Dictionary<string, double> variableReferencesSum = new Dictionary<string, double>();
+      Dictionary<string, double> variableFrequencies = new Dictionary<string, double>();
       foreach (var inputVariable in inputVariables)
         variableReferencesSum[inputVariable] = 0.0;
       foreach (var tree in trees) {
@@ -97,8 +98,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
       foreach (string inputVariable in inputVariables) {
         double relFreq = variableReferencesSum[inputVariable] / (double)totalVariableReferences;
-        yield return new KeyValuePair<string, double>(inputVariable, relFreq);
+        variableFrequencies.Add(inputVariable, relFreq);
       }
+      return variableFrequencies;
     }
 
     private static int GetTotalVariableReferencesCount(SymbolicExpressionTree tree) {
@@ -106,18 +108,24 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private static IEnumerable<KeyValuePair<string, int>> GetVariableReferenceCount(SymbolicExpressionTree tree, IEnumerable<string> inputVariables) {
+      Dictionary<string, int> references = new Dictionary<string, int>();
       var groupedFuns = (from node in tree.IterateNodesPrefix().OfType<VariableTreeNode>()
-                         select node.VariableName).GroupBy(x => x);
+                         select node.VariableName)
+                         .GroupBy(x => x)
+                         .Select(g => new { Key = g.Key, Count = g.Count() })
+                         .ToArray();
 
       foreach (var inputVariable in inputVariables) {
         var matchingFuns = from g in groupedFuns
                            where g.Key == inputVariable
-                           select g.Count();
-        if (matchingFuns.Count() == 0) yield return new KeyValuePair<string, int>(inputVariable, 0);
+                           select g.Count;
+        if (matchingFuns.Count() == 0)
+          references.Add(inputVariable, 0);
         else {
-          yield return new KeyValuePair<string, int>(inputVariable, matchingFuns.Single());
+          references.Add(inputVariable, matchingFuns.Single());
         }
       }
+      return references;
     }
   }
 }
