@@ -67,9 +67,6 @@ namespace HeuristicLab.Algorithms.LocalSearch {
     public ValueLookupParameter<IOperator> MoveMakerParameter {
       get { return (ValueLookupParameter<IOperator>)Parameters["MoveMaker"]; }
     }
-    public ValueLookupParameter<IOperator> MoveAnalyzerParameter {
-      get { return (ValueLookupParameter<IOperator>)Parameters["MoveAnalyzer"]; }
-    }
     public ValueLookupParameter<IOperator> AnalyzerParameter {
       get { return (ValueLookupParameter<IOperator>)Parameters["Analyzer"]; }
     }
@@ -103,8 +100,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       Parameters.Add(new ValueLookupParameter<IOperator>("MoveMaker", "The operator that performs a move and updates the quality."));
       Parameters.Add(new ValueLookupParameter<IOperator>("MoveEvaluator", "The operator that evaluates a move."));
 
-      Parameters.Add(new ValueLookupParameter<IOperator>("MoveAnalyzer", "The operator used to analyze the moves."));
-      Parameters.Add(new ValueLookupParameter<IOperator>("Analyzer", "The operator used to analyze the solution."));
+      Parameters.Add(new ValueLookupParameter<IOperator>("Analyzer", "The operator used to analyze the solution and moves."));
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope which represents a population of solutions on which the TS should be applied."));
       #endregion
 
@@ -122,17 +118,17 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       IntCounter evaluatedMovesCounter = new IntCounter();
       Placeholder moveAnalyzer = new Placeholder();
       BestSelector bestSelector = new BestSelector();
-      RightReducer rightReducer = new RightReducer();
       SubScopesProcessor moveMakingProcessor = new SubScopesProcessor();
+      UniformSubScopesProcessor selectedMoveMakingProcessor = new UniformSubScopesProcessor();
       QualityComparator qualityComparator = new QualityComparator();
       ConditionalBranch improvesQualityBranch = new ConditionalBranch();
       Placeholder moveMaker = new Placeholder();
       Assigner bestQualityUpdater = new Assigner();
+      MergingReducer mergingReducer = new MergingReducer();
+      Placeholder analyzer2 = new Placeholder();
       SubScopesRemover subScopesRemover = new SubScopesRemover();
       IntCounter iterationsCounter = new IntCounter();
       Comparator iterationsComparator = new Comparator();
-      SubScopesProcessor subScopesProcessor1 = new SubScopesProcessor();
-      Placeholder analyzer2 = new Placeholder();
       ResultsCollector resultsCollector3 = new ResultsCollector();
       ConditionalBranch iterationsTermination = new ConditionalBranch();
 
@@ -166,9 +162,6 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       evaluatedMovesCounter.ValueParameter.ActualName = "EvaluatedMoves";
       evaluatedMovesCounter.Increment = new IntValue(1);
 
-      moveAnalyzer.Name = "MoveAnalyzer (placeholder)";
-      moveAnalyzer.OperatorParameter.ActualName = MoveAnalyzerParameter.Name;
-
       bestSelector.CopySelected = new BoolValue(false);
       bestSelector.MaximizationParameter.ActualName = MaximizationParameter.Name;
       bestSelector.NumberOfSelectedSubScopesParameter.Value = new IntValue(1);
@@ -187,6 +180,9 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       bestQualityUpdater.LeftSideParameter.ActualName = "BestQuality";
       bestQualityUpdater.RightSideParameter.ActualName = QualityParameter.Name;
 
+      analyzer2.Name = "Analyzer (placeholder)";
+      analyzer2.OperatorParameter.ActualName = AnalyzerParameter.Name;
+
       subScopesRemover.RemoveAllSubScopes = true;
 
       iterationsCounter.Name = "Iterations Counter";
@@ -198,9 +194,6 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       iterationsComparator.LeftSideParameter.ActualName = "Iterations";
       iterationsComparator.RightSideParameter.ActualName = MaximumIterationsParameter.Name;
       iterationsComparator.ResultParameter.ActualName = "Terminate";
-
-      analyzer2.Name = "Analyzer (placeholder)";
-      analyzer2.OperatorParameter.ActualName = AnalyzerParameter.Name;
 
       resultsCollector3.CopyValue = new BoolValue(true);
       resultsCollector3.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Moves", null, "EvaluatedMoves"));
@@ -227,22 +220,22 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       moveEvaluator.Successor = evaluatedMovesCounter;
       evaluatedMovesCounter.Successor = null;
       moveAnalyzer.Successor = bestSelector;
-      bestSelector.Successor = rightReducer;
-      rightReducer.Successor = moveMakingProcessor;
-      moveMakingProcessor.Operators.Add(qualityComparator);
-      moveMakingProcessor.Successor = subScopesRemover;
-      subScopesRemover.Successor = null;
+      bestSelector.Successor = moveMakingProcessor;
+      moveMakingProcessor.Operators.Add(new EmptyOperator());
+      moveMakingProcessor.Operators.Add(selectedMoveMakingProcessor);
+      moveMakingProcessor.Successor = mergingReducer;
+      selectedMoveMakingProcessor.Operator = qualityComparator;
       qualityComparator.Successor = improvesQualityBranch;
       improvesQualityBranch.TrueBranch = moveMaker;
       improvesQualityBranch.FalseBranch = null;
       improvesQualityBranch.Successor = null;
       moveMaker.Successor = bestQualityUpdater;
       bestQualityUpdater.Successor = null;
+      mergingReducer.Successor = analyzer2;
+      analyzer2.Successor = subScopesRemover;
+      subScopesRemover.Successor = null;
       iterationsCounter.Successor = iterationsComparator;
-      iterationsComparator.Successor = subScopesProcessor1;
-      subScopesProcessor1.Operators.Add(analyzer2);
-      subScopesProcessor1.Successor = resultsCollector3;
-      analyzer2.Successor = null;
+      iterationsComparator.Successor = resultsCollector3;
       resultsCollector3.Successor = iterationsTermination;
       iterationsTermination.TrueBranch = null;
       iterationsTermination.FalseBranch = mainProcessor;

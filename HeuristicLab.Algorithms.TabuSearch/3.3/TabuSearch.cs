@@ -80,9 +80,6 @@ namespace HeuristicLab.Algorithms.TabuSearch {
     private ValueParameter<IntValue> SampleSizeParameter {
       get { return (ValueParameter<IntValue>)Parameters["SampleSize"]; }
     }
-    private ValueParameter<MultiAnalyzer> MoveAnalyzerParameter {
-      get { return (ValueParameter<MultiAnalyzer>)Parameters["MoveAnalyzer"]; }
-    }
     private ValueParameter<MultiAnalyzer> AnalyzerParameter {
       get { return (ValueParameter<MultiAnalyzer>)Parameters["Analyzer"]; }
     }
@@ -125,10 +122,6 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       get { return MaximumIterationsParameter.Value; }
       set { MaximumIterationsParameter.Value = value; }
     }
-    public MultiAnalyzer MoveAnalyzer {
-      get { return MoveAnalyzerParameter.Value; }
-      set { MoveAnalyzerParameter.Value = value; }
-    }
     public MultiAnalyzer Analyzer {
       get { return AnalyzerParameter.Value; }
       set { AnalyzerParameter.Value = value; }
@@ -160,7 +153,6 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       Parameters.Add(new ValueParameter<IntValue>("TabuTenure", "The length of the tabu list.", new IntValue(10)));
       Parameters.Add(new ValueParameter<IntValue>("MaximumIterations", "The maximum number of generations which should be processed.", new IntValue(1000)));
       Parameters.Add(new ValueParameter<IntValue>("SampleSize", "The neighborhood size for stochastic sampling move generators", new IntValue(100)));
-      Parameters.Add(new ValueParameter<MultiAnalyzer>("MoveAnalyzer", "The operator used to analyze the moves.", new MultiAnalyzer()));
       Parameters.Add(new ValueParameter<MultiAnalyzer>("Analyzer", "The operator used to analyze the solution.", new MultiAnalyzer()));
       
       RandomCreator randomCreator = new RandomCreator();
@@ -186,7 +178,6 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       tsMainLoop.MaximumIterationsParameter.ActualName = MaximumIterationsParameter.Name;
       tsMainLoop.RandomParameter.ActualName = RandomCreator.RandomParameter.ActualName;
       tsMainLoop.ResultsParameter.ActualName = "Results";
-      tsMainLoop.MoveAnalyzerParameter.ActualName = MoveAnalyzerParameter.Name;
       tsMainLoop.AnalyzerParameter.ActualName = AnalyzerParameter.Name;
 
       moveQualityAnalyzer = new BestAverageWorstQualityAnalyzer();
@@ -391,9 +382,6 @@ namespace HeuristicLab.Algorithms.TabuSearch {
     }
     private void UpdateAnalyzers() {
       Analyzer.Operators.Clear();
-      MoveAnalyzer.Operators.Clear();
-      MoveAnalyzer.Operators.Add(moveQualityAnalyzer);
-      MoveAnalyzer.Operators.Add(tabuNeighborhoodAnalyzer);
       if (Problem != null) {
         foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>().OrderBy(x => x.Name)) {
           foreach (IScopeTreeLookupParameter param in analyzer.Parameters.OfType<IScopeTreeLookupParameter>())
@@ -401,6 +389,8 @@ namespace HeuristicLab.Algorithms.TabuSearch {
           Analyzer.Operators.Add(analyzer);
         }
       }
+      Analyzer.Operators.Add(moveQualityAnalyzer);
+      Analyzer.Operators.Add(tabuNeighborhoodAnalyzer);
     }
     private void ClearMoveParameters() {
       MoveMakerParameter.ValidValues.Clear();

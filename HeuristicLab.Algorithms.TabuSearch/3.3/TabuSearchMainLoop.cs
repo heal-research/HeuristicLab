@@ -76,9 +76,6 @@ namespace HeuristicLab.Algorithms.TabuSearch {
     public ValueLookupParameter<IOperator> TabuMakerParameter {
       get { return (ValueLookupParameter<IOperator>)Parameters["TabuMaker"]; }
     }
-    public ValueLookupParameter<IOperator> MoveAnalyzerParameter {
-      get { return (ValueLookupParameter<IOperator>)Parameters["MoveAnalyzer"]; }
-    }
     public ValueLookupParameter<IOperator> AnalyzerParameter {
       get { return (ValueLookupParameter<IOperator>)Parameters["Analyzer"]; }
     }
@@ -111,8 +108,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       Parameters.Add(new ValueLookupParameter<IOperator>("TabuChecker", "The operator that checks whether a move is tabu."));
       Parameters.Add(new ValueLookupParameter<IOperator>("TabuMaker", "The operator that declares a move tabu."));
 
-      Parameters.Add(new ValueLookupParameter<IOperator>("MoveAnalyzer", "The operator used to analyze the moves."));
-      Parameters.Add(new ValueLookupParameter<IOperator>("Analyzer", "The operator used to analyze the solution."));
+      Parameters.Add(new ValueLookupParameter<IOperator>("Analyzer", "The operator used to analyze the solution and moves."));
       Parameters.Add(new ValueLookupParameter<VariableCollection>("Results", "The variable collection where results should be stored."));
       #endregion
 
@@ -129,21 +125,20 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       Placeholder moveEvaluator = new Placeholder();
       IntCounter evaluatedMovesCounter = new IntCounter();
       Placeholder tabuChecker = new Placeholder();
-      Placeholder moveAnalyzer = new Placeholder();
       SubScopesSorter moveQualitySorter = new SubScopesSorter();
       TabuSelector tabuSelector = new TabuSelector();
       ConditionalBranch emptyNeighborhoodBranch1 = new ConditionalBranch();
-      RightReducer rightReducer = new RightReducer();
       SubScopesProcessor moveMakingProcessor = new SubScopesProcessor();
+      UniformSubScopesProcessor selectedMoveMakingProcesor = new UniformSubScopesProcessor();
       Placeholder tabuMaker = new Placeholder();
       Placeholder moveMaker = new Placeholder();
+      MergingReducer mergingReducer = new MergingReducer();
+      Placeholder analyzer2 = new Placeholder();
       SubScopesRemover subScopesRemover = new SubScopesRemover();
       ConditionalBranch emptyNeighborhoodBranch2 = new ConditionalBranch();
       BestQualityMemorizer bestQualityUpdater = new BestQualityMemorizer();
       IntCounter iterationsCounter = new IntCounter();
       Comparator iterationsComparator = new Comparator();
-      SubScopesProcessor subScopesProcessor1 = new SubScopesProcessor();
-      Placeholder analyzer2 = new Placeholder();
       ResultsCollector resultsCollector3 = new ResultsCollector();
       ConditionalBranch iterationsTermination = new ConditionalBranch();
 
@@ -182,9 +177,6 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       tabuChecker.Name = "TabuChecker (placeholder)";
       tabuChecker.OperatorParameter.ActualName = TabuCheckerParameter.Name;
 
-      moveAnalyzer.Name = "MoveAnalyzer (placeholder)";
-      moveAnalyzer.OperatorParameter.ActualName = MoveAnalyzerParameter.Name;
-
       moveQualitySorter.DescendingParameter.ActualName = MaximizationParameter.Name;
       moveQualitySorter.ValueParameter.ActualName = MoveQualityParameter.Name;
 
@@ -207,6 +199,9 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       moveMaker.Name = "MoveMaker (placeholder)";
       moveMaker.OperatorParameter.ActualName = MoveMakerParameter.Name;
 
+      analyzer2.Name = "Analyzer (placeholder)";
+      analyzer2.OperatorParameter.ActualName = AnalyzerParameter.Name;
+
       subScopesRemover.RemoveAllSubScopes = true;
 
       bestQualityUpdater.Name = "Update BestQuality";
@@ -224,9 +219,6 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       iterationsComparator.RightSideParameter.ActualName = MaximumIterationsParameter.Name;
       iterationsComparator.ResultParameter.ActualName = "Terminate";
 
-      analyzer2.Name = "Analyzer (placeholder)";
-      analyzer2.OperatorParameter.ActualName = AnalyzerParameter.Name;
-
       resultsCollector3.CopyValue = new BoolValue(true);
       resultsCollector3.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Moves", null, "EvaluatedMoves"));
       resultsCollector3.ResultsParameter.ActualName = ResultsParameter.Name;
@@ -243,32 +235,35 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       variableCreator.Successor = subScopesProcessor0;
       subScopesProcessor0.Operators.Add(bestQualityInitializer);
       subScopesProcessor0.Successor = resultsCollector1;
+      bestQualityInitializer.Successor = analyzer1;
+      analyzer1.Successor = null;
       resultsCollector1.Successor = resultsCollector2;
       resultsCollector2.Successor = solutionProcessor;
       solutionProcessor.Operators.Add(moveGenerator);
       solutionProcessor.Successor = iterationsCounter;
       moveGenerator.Successor = moveEvaluationProcessor;
       moveEvaluationProcessor.Operator = moveEvaluator;
-      moveEvaluationProcessor.Successor = moveAnalyzer;
+      moveEvaluationProcessor.Successor = moveQualitySorter;
       moveEvaluator.Successor = evaluatedMovesCounter;
       evaluatedMovesCounter.Successor = tabuChecker;
       tabuChecker.Successor = null;
-      moveAnalyzer.Successor = moveQualitySorter;
       moveQualitySorter.Successor = tabuSelector;
       tabuSelector.Successor = emptyNeighborhoodBranch1;
-      emptyNeighborhoodBranch1.FalseBranch = rightReducer;
+      emptyNeighborhoodBranch1.FalseBranch = moveMakingProcessor;
       emptyNeighborhoodBranch1.TrueBranch = null;
       emptyNeighborhoodBranch1.Successor = subScopesRemover;
-      rightReducer.Successor = moveMakingProcessor;
-      moveMakingProcessor.Operators.Add(tabuMaker);
-      moveMakingProcessor.Successor = null;
+      moveMakingProcessor.Operators.Add(new EmptyOperator());
+      moveMakingProcessor.Operators.Add(selectedMoveMakingProcesor);
+      moveMakingProcessor.Successor = mergingReducer;
+      selectedMoveMakingProcesor.Operator = tabuMaker;
+      selectedMoveMakingProcesor.Successor = null;
       tabuMaker.Successor = moveMaker;
       moveMaker.Successor = null;
+      mergingReducer.Successor = analyzer2;
+      analyzer2.Successor = null;
       subScopesRemover.Successor = null;
       iterationsCounter.Successor = iterationsComparator;
-      iterationsComparator.Successor = subScopesProcessor1;
-      subScopesProcessor1.Operators.Add(analyzer2);
-      subScopesProcessor1.Successor = resultsCollector3;
+      iterationsComparator.Successor = resultsCollector3;
       resultsCollector3.Successor = emptyNeighborhoodBranch2;
       emptyNeighborhoodBranch2.TrueBranch = null;
       emptyNeighborhoodBranch2.FalseBranch = iterationsTermination;

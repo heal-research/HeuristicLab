@@ -47,20 +47,22 @@ namespace HeuristicLab.Algorithms.TabuSearch {
 
     public override IOperation Apply() {
       ItemArray<BoolValue> tabu = IsTabuParameter.ActualValue;
-      PercentValue value = PercentTabuParameter.ActualValue;
-      if (value == null) {
-        value = new PercentValue();
-        PercentTabuParameter.ActualValue = value;
-      }
-      value.Value = tabu.Where(x => x.Value).Count() / (double)tabu.Length;
-      ResultCollection results = ResultsParameter.ActualValue;
-      if (results != null) {
-        IResult result = null;
-        results.TryGetValue(PercentTabuParameter.ActualName, out result);
-        if (result != null)
-          result.Value = value;
-        else
-          results.Add(new Result(PercentTabuParameter.ActualName, "Indicates how much of the neighborhood is tabu.", (IItem)value.Clone()));
+      if (tabu.Length > 0) {
+        PercentValue value = PercentTabuParameter.ActualValue;
+        if (value == null) {
+          value = new PercentValue();
+          PercentTabuParameter.ActualValue = value;
+        }
+        value.Value = tabu.Where(x => x.Value).Count() / (double)tabu.Length;
+        ResultCollection results = ResultsParameter.ActualValue;
+        if (results != null) {
+          IResult result = null;
+          results.TryGetValue(PercentTabuParameter.ActualName, out result);
+          if (result != null)
+            result.Value = value;
+          else
+            results.Add(new Result(PercentTabuParameter.ActualName, "Indicates how much of the neighborhood is tabu.", (IItem)value.Clone()));
+        }
       }
       return base.Apply();
     }
