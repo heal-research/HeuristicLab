@@ -59,6 +59,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
           }
           activeView = value;
           if (activeView != null) {
+            ViewType = activeView.GetType();
             RegisterActiveViewEvents();
             View view = activeView as View;
             if (view != null)
@@ -107,7 +108,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
         }
 
         Type defaultViewType = MainFormManager.GetDefaultViewType(Content.GetType());
-        if (!ViewCanShowContent(viewType, Content)) {
+        if (ViewType == null || !ViewCanShowContent(viewType, Content)) {
           cachedViews.Clear();
           if (defaultViewType == null) {
             if (viewContextMenuStrip.Items.Count > 0)  // create first available view if default view is not available
