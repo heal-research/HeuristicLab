@@ -92,45 +92,58 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
 
     private static IEnumerable<double> CalculateScaledEstimatedValues(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree solution, Dataset dataset, string targetVariable, int start, int end, out double beta, out double alpha) {
       int targetVariableIndex = dataset.GetVariableIndex(targetVariable);
-      var estimatedValues = interpreter.GetSymbolicExpressionTreeValues(solution, dataset, Enumerable.Range(start, end - start)).ToList();
+      var estimatedValues = interpreter.GetSymbolicExpressionTreeValues(solution, dataset, Enumerable.Range(start, end - start)).ToArray();
       var originalValues = dataset.GetVariableValues(targetVariable, start, end);
       CalculateScalingParameters(originalValues, estimatedValues, out beta, out alpha);
-      for (int i = 0; i < estimatedValues.Count; i++)
+      for (int i = 0; i < estimatedValues.Length; i++)
         estimatedValues[i] = estimatedValues[i] * beta + alpha;
       return estimatedValues;
     }
 
 
     public static void CalculateScalingParameters(IEnumerable<double> original, IEnumerable<double> estimated, out double beta, out double alpha) {
-      var originalEnumerator = original.GetEnumerator();
-      var estimatedEnumerator = estimated.GetEnumerator();
+      double[] originalValues = original.ToArray();
+      double[] estimatedValues = estimated.ToArray();
+      if (originalValues.Length != estimatedValues.Length) throw new ArgumentException();
+      var filteredResult = (from row in Enumerable.Range(0, originalValues.Length)
+                            let t = originalValues[row]
+                            let e = estimatedValues[row]
+                            where IsValidValue(t)
+                            where IsValidValue(e)
+                            select new { Estimation = e, Target = t })
+                   .OrderBy(x => Math.Abs(x.Target))            // make sure small values are considered before large values
+                   .ToArray();      
 
-      double tMean = original.Average();
-      double xMean = estimated.Average();
-      double sumXT = 0;
-      double sumXX = 0;
-      while (originalEnumerator.MoveNext() & estimatedEnumerator.MoveNext()) {
-        // calculate alpha and beta on the subset of rows with valid values 
-        if (IsValidValue(originalEnumerator.Current) && IsValidValue(estimatedEnumerator.Current)) {
-          double x = estimatedEnumerator.Current;
-          double t = originalEnumerator.Current;
+      // calculate alpha and beta on the subset of rows with valid values 
+      originalValues = filteredResult.Select(x => x.Target).ToArray();
+      estimatedValues = filteredResult.Select(x => x.Estimation).ToArray();
+      int n = originalValues.Length;
+      if (n > 2) {
+        double tMean = originalValues.Average();
+        double xMean = estimatedValues.Average();
+        double sumXT = 0;
+        double sumXX = 0;
+        for (int i = 0; i < n; i++) {
+          // calculate alpha and beta on the subset of rows with valid values 
+          double x = estimatedValues[i];
+          double t = originalValues[i];
           sumXT += (x - xMean) * (t - tMean);
           sumXX += (x - xMean) * (x - xMean);
         }
-      }
-      if (estimatedEnumerator.MoveNext() || originalEnumerator.MoveNext()) {
-        throw new ArgumentException("Number of elements in estimated and original doesn't match.");
-      }
-      if (sumXX != 0) {
-        beta = sumXT / sumXX;
+        if (!sumXX.IsAlmost(0.0)) {
+          beta = sumXT / sumXX;
+        } else {
+          beta = 1;
+        }
+        alpha = tMean - beta * xMean;
       } else {
-        beta = 1;
+        alpha = 0.0;
+        beta = 1.0;
       }
-      alpha = tMean - beta * xMean;
     }
 
     private static bool IsValidValue(double d) {
-      return !double.IsInfinity(d) && !double.IsNaN(d);
+      return !double.IsInfinity(d) && !double.IsNaN(d) && d > -1.0E07 && d < 1.0E07;  // don't consider very large or very small values for scaling
     }
   }
 }
