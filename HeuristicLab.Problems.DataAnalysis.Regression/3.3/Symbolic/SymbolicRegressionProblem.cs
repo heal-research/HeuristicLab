@@ -370,7 +370,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       operators.Add(new ValidationBestScaledSymbolicRegressionSolutionAnalyzer());
       operators.Add(new MinAvgMaxSymbolicExpressionTreeSizeAnalyzer());
       operators.Add(new SymbolicRegressionVariableFrequencyAnalyzer());
-      operators.Add(new SymbolicRegressionModelQualityAnalyzer());
       ParameterizeOperators();
       ParameterizeAnalyzers();
     }
@@ -400,26 +399,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
           bestValidationSolutionAnalyzer.LowerEstimationLimitParameter.ActualName = LowerEstimationLimitParameter.Name;
           bestValidationSolutionAnalyzer.SymbolicExpressionTreeInterpreterParameter.ActualName = SymbolicExpressionTreeInterpreterParameter.Name;
           bestValidationSolutionAnalyzer.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
-          bestValidationSolutionAnalyzer.SamplesStartParameter.Value = ValidationSamplesStart;
-          bestValidationSolutionAnalyzer.SamplesEndParameter.Value = ValidationSamplesEnd;
+          bestValidationSolutionAnalyzer.TrainingSamplesStartParameter.Value = TrainingSamplesStart;
+          bestValidationSolutionAnalyzer.TrainingSamplesEndParameter.Value = TrainingSamplesEnd;
+          bestValidationSolutionAnalyzer.ValidationSamplesStartParameter.Value = ValidationSamplesStart;
+          bestValidationSolutionAnalyzer.ValidationSamplesEndParameter.Value = ValidationSamplesEnd;
+          bestValidationSolutionAnalyzer.TestSamplesStartParameter.Value = TestSamplesStart;
+          bestValidationSolutionAnalyzer.TestSamplesEndParameter.Value = TestSamplesEnd;
           bestValidationSolutionAnalyzer.BestKnownQualityParameter.ActualName = BestKnownQualityParameter.Name;
           bestValidationSolutionAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
         }
         var varFreqAnalyzer = analyzer as SymbolicRegressionVariableFrequencyAnalyzer;
         if (varFreqAnalyzer != null) {
           varFreqAnalyzer.ProblemDataParameter.ActualName = DataAnalysisProblemDataParameter.Name;
-        }
-        var modelQualityAnalyzer = analyzer as SymbolicRegressionModelQualityAnalyzer;
-        if (modelQualityAnalyzer != null) {
-          modelQualityAnalyzer.ProblemDataParameter.ActualName = DataAnalysisProblemDataParameter.Name;
-          modelQualityAnalyzer.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
-          modelQualityAnalyzer.UpperEstimationLimitParameter.ActualName = UpperEstimationLimitParameter.Name;
-          modelQualityAnalyzer.LowerEstimationLimitParameter.ActualName = LowerEstimationLimitParameter.Name;
-          modelQualityAnalyzer.SymbolicExpressionTreeInterpreterParameter.ActualName = SymbolicExpressionTreeInterpreterParameter.Name;
-          modelQualityAnalyzer.TrainingSamplesStartParameter.Value = TrainingSamplesStart;
-          modelQualityAnalyzer.TrainingSamplesEndParameter.Value = ValidationSamplesEnd;
-          modelQualityAnalyzer.TestSamplesStartParameter.Value = TestSamplesStart;
-          modelQualityAnalyzer.TestSamplesEndParameter.Value = TestSamplesEnd;
         }
       }
       foreach (ISymbolicExpressionTreeAnalyzer analyzer in Operators.OfType<ISymbolicExpressionTreeAnalyzer>()) {
