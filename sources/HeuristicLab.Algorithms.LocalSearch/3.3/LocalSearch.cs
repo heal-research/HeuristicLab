@@ -71,9 +71,6 @@ namespace HeuristicLab.Algorithms.LocalSearch {
     private ValueParameter<IntValue> SampleSizeParameter {
       get { return (ValueParameter<IntValue>)Parameters["SampleSize"]; }
     }
-    private ValueParameter<MultiAnalyzer> MoveAnalyzerParameter {
-      get { return (ValueParameter<MultiAnalyzer>)Parameters["MoveAnalyzer"]; }
-    }
     private ValueParameter<MultiAnalyzer> AnalyzerParameter {
       get { return (ValueParameter<MultiAnalyzer>)Parameters["Analyzer"]; }
     }
@@ -108,10 +105,6 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       get { return SampleSizeParameter.Value; }
       set { SampleSizeParameter.Value = value; }
     }
-    public MultiAnalyzer MoveAnalyzer {
-      get { return MoveAnalyzerParameter.Value; }
-      set { MoveAnalyzerParameter.Value = value; }
-    }
     public MultiAnalyzer Analyzer {
       get { return AnalyzerParameter.Value; }
       set { AnalyzerParameter.Value = value; }
@@ -140,8 +133,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       Parameters.Add(new ConstrainedValueParameter<ISingleObjectiveMoveEvaluator>("MoveEvaluator", "The operator used to evaluate a move."));
       Parameters.Add(new ValueParameter<IntValue>("MaximumIterations", "The maximum number of generations which should be processed.", new IntValue(1000)));
       Parameters.Add(new ValueParameter<IntValue>("SampleSize", "Number of moves that MultiMoveGenerators should create. This is ignored for Exhaustive- and SingleMoveGenerators.", new IntValue(100)));
-      Parameters.Add(new ValueParameter<MultiAnalyzer>("MoveAnalyzer", "The operator used to analyze the moves.", new MultiAnalyzer()));
-      Parameters.Add(new ValueParameter<MultiAnalyzer>("Analyzer", "The operator used to analyze the solution.", new MultiAnalyzer()));
+      Parameters.Add(new ValueParameter<MultiAnalyzer>("Analyzer", "The operator used to analyze the solution and moves.", new MultiAnalyzer()));
       
       RandomCreator randomCreator = new RandomCreator();
       SolutionsCreator solutionsCreator = new SolutionsCreator();
@@ -164,7 +156,6 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       lsMainLoop.MaximumIterationsParameter.ActualName = MaximumIterationsParameter.Name;
       lsMainLoop.RandomParameter.ActualName = RandomCreator.RandomParameter.ActualName;
       lsMainLoop.ResultsParameter.ActualName = "Results";
-      lsMainLoop.MoveAnalyzerParameter.ActualName = MoveAnalyzerParameter.Name;
       lsMainLoop.AnalyzerParameter.ActualName = AnalyzerParameter.Name;
 
       moveQualityAnalyzer = new BestAverageWorstQualityAnalyzer();
@@ -317,8 +308,6 @@ namespace HeuristicLab.Algorithms.LocalSearch {
     }
     private void UpdateAnalyzers() {
       Analyzer.Operators.Clear();
-      MoveAnalyzer.Operators.Clear();
-      MoveAnalyzer.Operators.Add(moveQualityAnalyzer);
       if (Problem != null) {
         foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>().OrderBy(x => x.Name)) {
           foreach (IScopeTreeLookupParameter param in analyzer.Parameters.OfType<IScopeTreeLookupParameter>())
@@ -326,6 +315,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
           Analyzer.Operators.Add(analyzer);
         }
       }
+      Analyzer.Operators.Add(moveQualityAnalyzer);
     }
     private void ClearMoveParameters() {
       MoveMakerParameter.ValidValues.Clear();
