@@ -1040,6 +1040,19 @@ namespace HeuristicLab.Persistence_33.Tests {
         Assert.AreEqual(lines[i], newLines[i]);
       }
     }
+
+    [TestMethod]
+    public void TestSpecialNumbers() {
+      List<double> specials = new List<double>() { 1.0 / 0, -1.0 / 0, 0.0 / 0 };
+      Assert.IsTrue(double.IsPositiveInfinity(specials[0]));
+      Assert.IsTrue(double.IsNegativeInfinity(specials[1]));
+      Assert.IsTrue(double.IsNaN(specials[2]));
+      XmlGenerator.Serialize(specials, tempFile);
+      List<double> newSpecials = XmlParser.Deserialize<List<double>>(tempFile);
+      Assert.IsTrue(double.IsPositiveInfinity(newSpecials[0]));
+      Assert.IsTrue(double.IsNegativeInfinity(newSpecials[1]));
+      Assert.IsTrue(double.IsNaN(newSpecials[2]));
+    }
     
 
     [ClassInitialize]

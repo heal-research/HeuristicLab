@@ -29,6 +29,8 @@ using System.Reflection;
 using System.Globalization;
 using System.Text;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Persistence.Default.Xml.Primitive;
+using HeuristicLab.Persistence.Default.Xml;
 
 namespace HeuristicLab.Persistence.Default.CompositeSerializers {
 
@@ -43,30 +45,26 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
   [StorableClass]
   public sealed class Number2StringSerializer : ICompositeSerializer {
 
-    private static readonly List<Type> numberTypes =
-      new List<Type> {
-        typeof(bool),
-        typeof(byte),
-        typeof(sbyte),
-        typeof(short),
-        typeof(ushort),
-        typeof(int),
-        typeof(uint),
-        typeof(long),
-        typeof(ulong),
-        typeof(float),
-        typeof(double),
-        typeof(decimal),
-      };
-
-    private static readonly Dictionary<Type, MethodInfo> numberParsers;
+    private static readonly Dictionary<Type, IPrimitiveSerializer> numberSerializerMap;
+    private static readonly List<IPrimitiveSerializer> numberSerializers = new List<IPrimitiveSerializer> {
+      new Bool2XmlSerializer(),
+      new Byte2XmlSerializer(),
+      new SByte2XmlSerializer(),
+      new Short2XmlSerializer(),
+      new UShort2XmlSerializer(),
+      new Int2XmlSerializer(),
+      new UInt2XmlSerializer(),
+      new Long2XmlSerializer(),
+      new ULong2XmlSerializer(),
+      new Float2XmlSerializer(),
+      new Double2XmlSerializer(),
+      new Decimal2XmlSerializer(),
+    };
 
     static Number2StringSerializer() {
-      numberParsers = new Dictionary<Type, MethodInfo>();
-      foreach (var type in numberTypes) {
-        numberParsers[type] = type
-          .GetMethod("Parse", BindingFlags.Static | BindingFlags.Public,
-                     null, new[] { typeof(string) }, null);
+      numberSerializerMap = new Dictionary<Type,IPrimitiveSerializer>();
+      foreach (var s in numberSerializers) {
+        numberSerializerMap[s.SourceType] = s;
       }
     }
 
@@ -78,7 +76,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
     /// 	<c>true</c> if this instance can serialize the specified type; otherwise, <c>false</c>.
     /// </returns>
     public bool CanSerialize(Type type) {
-      return numberParsers.ContainsKey(type);
+      return numberSerializerMap.ContainsKey(type);
     }
 
     /// <summary>
@@ -91,7 +89,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
     /// </returns>
     public string JustifyRejection(Type type) {
       return string.Format("not a number type (one of {0})",
-        string.Join(", ", numberTypes.Select(n => n.Name).ToArray()));
+        string.Join(", ", numberSerializers.Select(n => n.SourceType.Name).ToArray()));
     }
 
     /// <summary>
@@ -100,13 +98,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
     /// <param name="obj">The obj.</param>
     /// <returns></returns>
     public string Format(object obj) {
-      if (obj.GetType() == typeof(float))
-        return ((float)obj).ToString("r", CultureInfo.InvariantCulture);
-      if (obj.GetType() == typeof(double))
-        return ((double)obj).ToString("r", CultureInfo.InvariantCulture);
-      if (obj.GetType() == typeof(decimal))
-        return ((decimal)obj).ToString("r", CultureInfo.InvariantCulture);
-      return obj.ToString();
+      return ((XmlString)numberSerializerMap[obj.GetType()].Format(obj)).Data;
     }
 
     /// <summary>
@@ -117,10 +109,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
     /// <returns></returns>
     public object Parse(string stringValue, Type type) {
       try {
-        return numberParsers[type]
-          .Invoke(null,
-              BindingFlags.Static | BindingFlags.PutRefDispProperty,
-                    null, new[] { stringValue }, CultureInfo.InvariantCulture);
+        return numberSerializerMap[type].Parse(new XmlString(stringValue));
       } catch (FormatException e) {
         throw new PersistenceException("Invalid element data during number parsing.", e);
       } catch (OverflowException e) {
