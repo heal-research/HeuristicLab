@@ -515,7 +515,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       VillageAnalyzer.Operators.Add(villageQualityAnalyzer);
       VillageAnalyzer.Operators.Add(villageSelectionPressureAnalyzer);
       if (Problem != null) {
-        foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>().OrderBy(x => x.Name)) {
+        foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>()) {
           foreach (IScopeTreeLookupParameter param in analyzer.Parameters.OfType<IScopeTreeLookupParameter>())
             param.Depth = 2;
           Analyzer.Operators.Add(analyzer);

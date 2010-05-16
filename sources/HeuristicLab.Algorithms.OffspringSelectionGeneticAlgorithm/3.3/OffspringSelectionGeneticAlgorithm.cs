@@ -426,7 +426,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     private void UpdateAnalyzers() {
       Analyzer.Operators.Clear();
       if (Problem != null) {
-        foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>().OrderBy(x => x.Name)) {
+        foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>()) {
           foreach (IScopeTreeLookupParameter param in analyzer.Parameters.OfType<IScopeTreeLookupParameter>())
             param.Depth = 1;
           Analyzer.Operators.Add(analyzer);
