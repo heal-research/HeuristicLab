@@ -58,6 +58,8 @@ namespace HeuristicLab.Analysis {
 
         if (param.ActualValue is DoubleValue) {
           AddValue(table, (param.ActualValue as DoubleValue).Value, name, param.Description);
+        } else if (param.ActualValue is IntValue) {
+          AddValue(table, (param.ActualValue as IntValue).Value, name, param.Description);
         } else if (param.ActualValue is IEnumerable<DoubleValue>) {
           IEnumerable<DoubleValue> values = (IEnumerable<DoubleValue>)param.ActualValue;
           if (values.Count() <= 1) {
@@ -66,6 +68,18 @@ namespace HeuristicLab.Analysis {
           } else {
             int counter = 1;
             foreach (DoubleValue data in values) {
+              AddValue(table, data != null ? data.Value : double.NaN, name + " " + counter.ToString(), param.Description);
+              counter++;
+            }
+          }
+        } else if (param.ActualValue is IEnumerable<IntValue>) {
+          IEnumerable<IntValue> values = (IEnumerable<IntValue>)param.ActualValue;
+          if (values.Count() <= 1) {
+            foreach (IntValue data in values)
+              AddValue(table, data != null ? data.Value : double.NaN, name, param.Description);
+          } else {
+            int counter = 1;
+            foreach (IntValue data in values) {
               AddValue(table, data != null ? data.Value : double.NaN, name + " " + counter.ToString(), param.Description);
               counter++;
             }
