@@ -224,9 +224,15 @@ namespace HeuristicLab.Core.Views {
     private void listView_DoubleClick(object sender, EventArgs e) {
       if (listView.SelectedItems.Count == 1) {
         T item = (T)listView.SelectedItems[0].Tag;
-        IView view = MainFormManager.MainForm.ShowContent(item);
+        IContentView view;
+        view = MainFormManager.MainForm.Views.OfType<IContentView>().Where(x => (x.Content != null) && (x.Content == item)).FirstOrDefault();
         if (view != null) {
-          view.ReadOnly = this.ReadOnly;
+          view.Show();
+        } else {
+          view = MainFormManager.MainForm.ShowContent(item);
+          if (view != null) {
+            view.ReadOnly = this.ReadOnly;
+          }
         }
       }
     }
