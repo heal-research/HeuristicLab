@@ -262,7 +262,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     private void UpdateAnalyzers() {
       Analyzer.Operators.Clear();
       if (Problem != null) {
-        foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>().OrderBy(x => x.Name))
+        foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>())
           Analyzer.Operators.Add(analyzer);
       }
       Analyzer.Operators.Add(qualityAnalyzer);
