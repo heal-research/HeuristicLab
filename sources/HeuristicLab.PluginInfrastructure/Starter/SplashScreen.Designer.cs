@@ -71,12 +71,12 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.infoLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.infoLabel.ForeColor = System.Drawing.Color.DarkOrange;
-      this.infoLabel.Location = new System.Drawing.Point(0, 113);
+      this.infoLabel.Location = new System.Drawing.Point(12, 113);
       this.infoLabel.Name = "infoLabel";
-      this.infoLabel.Size = new System.Drawing.Size(598, 30);
+      this.infoLabel.Size = new System.Drawing.Size(574, 30);
       this.infoLabel.TabIndex = 6;
       this.infoLabel.Text = "Startup Information";
-      this.infoLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+      this.infoLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
       // copyrightLabel
       // 
