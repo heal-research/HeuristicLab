@@ -368,7 +368,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       operators = new List<IOperator>();
       operators.AddRange(ApplicationManager.Manager.GetInstances<ISymbolicExpressionTreeOperator>().OfType<IOperator>());
       operators.Add(new ValidationBestScaledSymbolicRegressionSolutionAnalyzer());
-      operators.Add(new MinAvgMaxSymbolicExpressionTreeSizeAnalyzer());
+      operators.Add(new MinAverageMaxSymbolicExpressionTreeSizeAnalyzer());
       operators.Add(new SymbolicRegressionVariableFrequencyAnalyzer());
       ParameterizeOperators();
       ParameterizeAnalyzers();

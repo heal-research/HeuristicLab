@@ -36,11 +36,11 @@ using HeuristicLab.Optimization.Operators;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Analyzers {
   /// <summary>
-  /// An operator that tracks the min avgerage and max tree size.
+  /// An operator that tracks the min average and max tree size.
   /// </summary>
-  [Item("MinAvgMaxSymbolicExpressionTreeSizeAnalyzer", "An operator that tracks the min avgerage and max tree size.")]
+  [Item("MinAverageMaxSymbolicExpressionTreeSizeAnalyzer", "An operator that tracks the min avgerage and max tree size.")]
   [StorableClass]
-  public sealed class MinAvgMaxSymbolicExpressionTreeSizeAnalyzer : AlgorithmOperator, ISymbolicExpressionTreeAnalyzer {
+  public sealed class MinAverageMaxSymbolicExpressionTreeSizeAnalyzer : AlgorithmOperator, ISymbolicExpressionTreeAnalyzer {
     private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
     private const string SymbolicExpressionTreeSizeParameterName = "SymbolicExpressionTreeSize";
     private const string SymbolicExpressionTreeSizesParameterName = "Symbolic expression tree size";
@@ -69,7 +69,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Analyzers {
     private UniformSubScopesProcessor subScopesProcessor;
 
     #endregion
-    public MinAvgMaxSymbolicExpressionTreeSizeAnalyzer()
+    public MinAverageMaxSymbolicExpressionTreeSizeAnalyzer()
       : base() {
       Parameters.Add(new ScopeTreeLookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression tree whose size should be calculated."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>(SymbolicExpressionTreeSizeParameterName, "The tree size of the symbolic expression tree."));
@@ -103,7 +103,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Analyzers {
     }
 
     [StorableConstructor]
-    private MinAvgMaxSymbolicExpressionTreeSizeAnalyzer(bool deserializing) : base() { }
+    private MinAverageMaxSymbolicExpressionTreeSizeAnalyzer(bool deserializing) : base() { }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
@@ -112,7 +112,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Analyzers {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      MinAvgMaxSymbolicExpressionTreeSizeAnalyzer clone = (MinAvgMaxSymbolicExpressionTreeSizeAnalyzer)base.Clone(cloner);
+      MinAverageMaxSymbolicExpressionTreeSizeAnalyzer clone = (MinAverageMaxSymbolicExpressionTreeSizeAnalyzer)base.Clone(cloner);
       clone.Initialize();
       return clone;
     }
