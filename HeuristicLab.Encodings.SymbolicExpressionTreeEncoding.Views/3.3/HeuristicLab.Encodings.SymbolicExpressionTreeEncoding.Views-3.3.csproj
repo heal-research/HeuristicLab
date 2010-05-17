@@ -154,14 +154,6 @@
     <None Include="HeuristicLabEncodingsSymbolicExpressionTreeEncodingViewsPlugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="DefaultSymbolicExpressionGrammarView.resx">
-      <DependentUpon>DefaultSymbolicExpressionGrammarView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SymbolView.resx">
-      <DependentUpon>SymbolView.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
