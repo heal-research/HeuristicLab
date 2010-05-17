@@ -188,7 +188,6 @@ namespace HeuristicLab.Analysis {
     private void OnReset() {
       if (Reset != null)
         Reset(this, EventArgs.Empty);
-      OnToStringChanged();
     }
     public event EventHandler ColumnNamesChanged;
     private void OnColumnNamesChanged() {
@@ -208,7 +207,6 @@ namespace HeuristicLab.Analysis {
       if (handler != null)
         handler(this, EventArgs.Empty);
     }
-
     #endregion
   }
 }
