@@ -49,8 +49,22 @@ namespace HeuristicLab.Core {
 
     public static string GetName(Type type) {
       object[] attribs = type.GetCustomAttributes(typeof(ItemAttribute), false);
-      if (attribs.Length > 0) return ((ItemAttribute)attribs[0]).Name;
-      else return type.GetPrettyName();
+      if (attribs.Length > 0) {
+        string name = ((ItemAttribute)attribs[0]).Name;
+        if (type.IsGenericType) {
+          name += "<";
+          Type[] typeParams = type.GetGenericArguments();
+          if (typeParams.Length > 0) {
+            name += GetName(typeParams[0]);
+            for (int i = 1; i < typeParams.Length; i++)
+              name += ", " + GetName(typeParams[i]);
+          }
+          name += ">";
+        }
+        return name;
+      } else {
+        return type.GetPrettyName();
+      }
     }
     public static string GetDescription(Type type) {
       object[] attribs = type.GetCustomAttributes(typeof(ItemAttribute), false);

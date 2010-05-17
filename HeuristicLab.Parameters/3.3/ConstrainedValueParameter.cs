@@ -30,7 +30,7 @@ namespace HeuristicLab.Parameters {
   /// <summary>
   /// A parameter whose value has to be chosen from a set of valid values.
   /// </summary>
-  [Item("ConstrainedValueParameter<T>", "A parameter whose value has to be chosen from a set of valid values.")]
+  [Item("ConstrainedValueParameter", "A parameter whose value has to be chosen from a set of valid values.")]
   [StorableClass]
   public class ConstrainedValueParameter<T> : OptionalConstrainedValueParameter<T> where T : class, IItem {
     public override T Value {

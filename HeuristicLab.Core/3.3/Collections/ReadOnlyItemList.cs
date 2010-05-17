@@ -30,7 +30,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
   [StorableClass]
-  [Item("ReadOnlyItemList<T>", "Represents a read-only list of items.")]
+  [Item("ReadOnlyItemList", "Represents a read-only list of items.")]
   public class ReadOnlyItemList<T> : ReadOnlyObservableList<T>, IItemList<T> where T : class, IItem {
     private string filename;
     public string Filename {

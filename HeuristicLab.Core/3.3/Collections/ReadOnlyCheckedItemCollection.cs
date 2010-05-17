@@ -30,7 +30,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
   [StorableClass]
-  [Item("ReadOnlyCheckedItemCollection<T>", "Represents a read-only collection of checked items.")]
+  [Item("ReadOnlyCheckedItemCollection", "Represents a read-only collection of checked items.")]
   public class ReadOnlyCheckedItemCollection<T> : ReadOnlyItemCollection<T>, ICheckedItemCollection<T> where T : class, IItem {
     private CheckedItemCollection<T> CheckedItemCollection {
       get { return (CheckedItemCollection<T>)base.collection; }

@@ -30,7 +30,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
-  [Item("ValueTypeArray<T>", "An abstract base class for representing arrays of value types.")]
+  [Item("ValueTypeArray", "An abstract base class for representing arrays of value types.")]
   [StorableClass]
   public abstract class ValueTypeArray<T> : Item, IEnumerable<T> where T : struct {
     public override Image ItemImage {
