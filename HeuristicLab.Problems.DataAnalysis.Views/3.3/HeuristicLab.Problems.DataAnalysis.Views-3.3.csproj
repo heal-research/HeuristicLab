@@ -123,6 +123,18 @@
     <Compile Include="Symbolic\SymbolicExpressionModelView.designer.cs">
       <DependentUpon>SymbolicExpressionModelView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Symbolic\Symbols\ConstantView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Symbolic\Symbols\ConstantView.Designer.cs">
+      <DependentUpon>ConstantView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Symbolic\Symbols\VariableView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Symbolic\Symbols\VariableView.Designer.cs">
+      <DependentUpon>VariableView.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
@@ -205,6 +217,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Symbolic\SymbolicExpressionModelView.resx">
       <DependentUpon>SymbolicExpressionModelView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Symbolic\Symbols\ConstantView.resx">
+      <DependentUpon>ConstantView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Symbolic\Symbols\VariableView.resx">
+      <DependentUpon>VariableView.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -81,6 +81,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DefaultSymbolicExpressionGrammarView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DefaultSymbolicExpressionGrammarView.Designer.cs">
+      <DependentUpon>DefaultSymbolicExpressionGrammarView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SymbolView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SymbolView.Designer.cs">
+      <DependentUpon>SymbolView.cs</DependentUpon>
+    </Compile>
     <Compile Include="GraphicalSymbolicExpressionTreeView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -104,6 +116,10 @@
     <Compile Include="VisualSymbolicExpressionTreeNode.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
+      <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
+      <Name>HeuristicLab.Collections-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Common\3.3\HeuristicLab.Common-3.3.csproj">
       <Project>{A9AD58B9-3EF9-4CC1-97E5-8D909039FF5C}</Project>
       <Name>HeuristicLab.Common-3.3</Name>
@@ -137,6 +153,14 @@
     <None Include="HeuristicLab.snk" />
     <None Include="HeuristicLabEncodingsSymbolicExpressionTreeEncodingViewsPlugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.frame" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DefaultSymbolicExpressionGrammarView.resx">
+      <DependentUpon>DefaultSymbolicExpressionGrammarView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SymbolView.resx">
+      <DependentUpon>SymbolView.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

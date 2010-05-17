@@ -29,7 +29,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
   /// </summary>
   [StorableClass]
   [Item("InvokeFunction", "Symbol that the invokation of another function.")]
-  public sealed class InvokeFunction : Symbol {
+  public sealed class InvokeFunction : ReadOnlySymbol {
     public override bool CanChangeName {
       get {
         return false;

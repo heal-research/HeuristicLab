@@ -28,12 +28,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
   /// </summary>
   [StorableClass]
   [Item("Argument", "Symbol that represents a function argument.")]
-  public sealed class Argument : Symbol {
-    public override bool CanChangeName {
-      get {
-        return false;
-      }
-    }
+  public sealed class Argument : ReadOnlySymbol {
     [Storable]
     private int argumentIndex;
     public int ArgumentIndex {

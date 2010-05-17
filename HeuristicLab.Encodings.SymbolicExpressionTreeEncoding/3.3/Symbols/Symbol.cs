@@ -40,8 +40,14 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
       get { return initialFrequency; }
       set {
         if (value < 0.0) throw new ArgumentException("InitialFrequency must be positive");
-        initialFrequency = value;
+        if (value != initialFrequency) {
+          initialFrequency = value;
+          OnChanged(EventArgs.Empty);
+        }
       }
+    }
+    public override bool CanChangeName {
+      get { return false; }
     }
     #endregion
 
@@ -57,9 +63,18 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      Symbol clone = (Symbol) base.Clone(cloner);
+      Symbol clone = (Symbol)base.Clone(cloner);
       clone.initialFrequency = initialFrequency;
       return clone;
     }
+
+    #region events
+    public event EventHandler Changed;
+    protected void OnChanged(EventArgs e) {
+      EventHandler handlers = Changed;
+      if (handlers != null)
+        handlers(this, e);
+    }
+    #endregion
   }
 }
