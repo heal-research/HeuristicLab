@@ -239,9 +239,27 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <returns>Enumerable of the discovered types.</returns>
     private static IEnumerable<Type> GetTypes(Type type, Assembly assembly, bool onlyInstantiable) {
       return from t in assembly.GetTypes()
-             where type.IsAssignableFrom(t)
+             where CheckTypeCompatibility(type, t)
              where onlyInstantiable == false || (!t.IsAbstract && !t.IsInterface && !t.HasElementType)
-             select t;
+             select BuildType(type, t);
+    }
+
+    private static bool CheckTypeCompatibility(Type type, Type other) {
+      if (type.IsAssignableFrom(other))
+        return true;
+      if (type.IsGenericType && other.IsGenericType) {
+        try {
+          if (type.IsAssignableFrom(other.GetGenericTypeDefinition().MakeGenericType(type.GetGenericArguments())))
+            return true;
+        } catch (Exception) { }
+      }
+      return false;
+    }
+    private static Type BuildType(Type type, Type other) {
+      if (type.IsGenericType && other.IsGenericType)
+        return other.GetGenericTypeDefinition().MakeGenericType(type.GetGenericArguments());
+      else
+        return other;
     }
 
     private void OnPluginLoaded(PluginInfrastructureEventArgs e) {
