@@ -241,7 +241,7 @@ namespace HeuristicLab.PluginInfrastructure {
       return from t in assembly.GetTypes()
              where CheckTypeCompatibility(type, t)
              where onlyInstantiable == false || (!t.IsAbstract && !t.IsInterface && !t.HasElementType)
-             select BuildType(type, t);
+             select BuildType(t, type);
     }
 
     private static bool CheckTypeCompatibility(Type type, Type other) {
@@ -255,11 +255,11 @@ namespace HeuristicLab.PluginInfrastructure {
       }
       return false;
     }
-    private static Type BuildType(Type type, Type other) {
-      if (type.IsGenericType && other.IsGenericType)
-        return other.GetGenericTypeDefinition().MakeGenericType(type.GetGenericArguments());
+    private static Type BuildType(Type type, Type protoType) {
+      if (type.IsGenericType && protoType.IsGenericType)
+        return type.GetGenericTypeDefinition().MakeGenericType(protoType.GetGenericArguments());
       else
-        return other;
+        return type;
     }
 
     private void OnPluginLoaded(PluginInfrastructureEventArgs e) {
