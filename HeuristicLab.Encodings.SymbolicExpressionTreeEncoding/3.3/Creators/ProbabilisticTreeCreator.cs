@@ -89,7 +89,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators {
         }
         // try a different size MAX_TRIES times
       }
-      throw new ArgumentException("Couldn't create a valid tree with the specified constraints.");
+      throw new ArgumentException("Couldn't create a random valid tree.");
     }
 
     private static bool CreateFullTreeFromSeed(IRandom random, SymbolicExpressionTreeNode root, ISymbolicExpressionGrammar globalGrammar,
@@ -233,16 +233,17 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators {
     private static Symbol SelectRandomSymbol(IRandom random, IEnumerable<Symbol> symbols) {
       var symbolList = symbols.ToList();
       var ticketsSum = symbolList.Select(x => x.InitialFrequency).Sum();
+      if (ticketsSum == 0.0) throw new ArgumentException("The initial frequency of all allowed symbols is zero.");
       var r = random.NextDouble() * ticketsSum;
       double aggregatedTickets = 0;
       for (int i = 0; i < symbolList.Count; i++) {
         aggregatedTickets += symbolList[i].InitialFrequency;
-        if (aggregatedTickets >= r) {
+        if (aggregatedTickets > r) {
           return symbolList[i];
         }
       }
       // this should never happen
-      throw new ArgumentException();
+      throw new ArgumentException("There is a problem with the initial frequency setting of allowed symbols.");
     }
 
     private static int SampleArity(IRandom random, SymbolicExpressionTreeNode node, int targetSize) {
