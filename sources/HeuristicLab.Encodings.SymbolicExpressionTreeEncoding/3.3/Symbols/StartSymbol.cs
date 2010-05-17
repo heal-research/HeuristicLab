@@ -25,12 +25,7 @@ using HeuristicLab.Core;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
   [StorableClass]
   [Item("StartSymbol", "Special symbol that represents the starting node of the result producing branch of a symbolic expression tree.")]
-  public sealed class StartSymbol : Symbol {
-    public override bool CanChangeName {
-      get {
-        return false;
-      }
-    }
+  public sealed class StartSymbol : ReadOnlySymbol {
 
     public override SymbolicExpressionTreeNode CreateTreeNode() {
       return new SymbolicExpressionTreeTopLevelNode(this);

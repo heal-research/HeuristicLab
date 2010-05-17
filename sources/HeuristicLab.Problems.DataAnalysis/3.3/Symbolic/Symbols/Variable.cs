@@ -39,7 +39,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
     private double weightNu;
     public double WeightNu {
       get { return weightNu; }
-      set { weightNu = value; }
+      set {
+        if (value != weightNu) {
+          weightNu = value;
+          OnChanged(EventArgs.Empty);
+        }
+      }
     }
     [Storable]
     private double weightSigma;
@@ -47,14 +52,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
       get { return weightSigma; }
       set {
         if (weightSigma < 0.0) throw new ArgumentException("Negative sigma is not allowed.");
-        weightSigma = value;
+        if (value != weightSigma) {
+          weightSigma = value;
+          OnChanged(EventArgs.Empty);
+        }
       }
     }
     [Storable]
     private double weightManipulatorNu;
     public double WeightManipulatorNu {
       get { return weightManipulatorNu; }
-      set { weightManipulatorNu = value; }
+      set {
+        if (value != weightManipulatorNu) {
+          weightManipulatorNu = value;
+          OnChanged(EventArgs.Empty);
+        }
+      }
     }
     [Storable]
     private double weightManipulatorSigma;
@@ -62,7 +75,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
       get { return weightManipulatorSigma; }
       set {
         if (weightManipulatorSigma < 0.0) throw new ArgumentException("Negative sigma is not allowed.");
-        weightManipulatorSigma = value;
+        if (value != weightManipulatorSigma) {
+          weightManipulatorSigma = value;
+          OnChanged(EventArgs.Empty);
+        }
       }
     }
     private List<string> variableNames;
@@ -73,6 +89,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
         if (value == null) throw new ArgumentNullException();
         variableNames.Clear();
         variableNames.AddRange(value);
+        OnChanged(EventArgs.Empty);
       }
     }
     #endregion

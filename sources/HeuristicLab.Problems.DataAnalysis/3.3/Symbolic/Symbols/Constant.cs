@@ -37,19 +37,34 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
     private double minValue;
     public double MinValue {
       get { return minValue; }
-      set { minValue = value; }
+      set {
+        if (value != minValue) {
+          minValue = value;
+          OnChanged(EventArgs.Empty);
+        }
+      }
     }
     [Storable]
     private double maxValue;
     public double MaxValue {
       get { return maxValue; }
-      set { maxValue = value; }
+      set {
+        if (value != maxValue) {
+          maxValue = value;
+          OnChanged(EventArgs.Empty);
+        }
+      }
     }
     [Storable]
     private double manipulatorNu;
     public double ManipulatorNu {
       get { return manipulatorNu; }
-      set { manipulatorNu = value; }
+      set {
+        if (value != manipulatorNu) {
+          manipulatorNu = value;
+          OnChanged(EventArgs.Empty);
+        }
+      }
     }
     [Storable]
     private double manipulatorSigma;
@@ -57,7 +72,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
       get { return manipulatorSigma; }
       set {
         if (value < 0) throw new ArgumentException();
-        manipulatorSigma = value;
+        if (value != manipulatorSigma) {
+          manipulatorSigma = value;
+          OnChanged(EventArgs.Empty);
+        }
       }
     }
     #endregion

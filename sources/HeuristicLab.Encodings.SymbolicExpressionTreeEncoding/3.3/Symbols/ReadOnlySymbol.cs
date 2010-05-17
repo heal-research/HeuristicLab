@@ -19,15 +19,41 @@
  */
 #endregion
 
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System;
+using System.Collections.Generic;
+using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using System.Linq;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Data;
+using HeuristicLab.Parameters;
+
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
   [StorableClass]
-  [Item("ProgramRootSymbol", "Special symbol that represents the program root node of a symbolic expression tree.")]
-  public sealed class ProgramRootSymbol : ReadOnlySymbol {
-    public override SymbolicExpressionTreeNode CreateTreeNode() {
-      return new SymbolicExpressionTreeTopLevelNode(this);
+  [Item("ReadOnlySymbol", "Represents a symbol in a symbolic function tree that cannot be modified.")]
+  public abstract class ReadOnlySymbol : Symbol {
+    #region Properties
+    [Storable]
+    private double initialFrequency;
+    public double InitialFrequency {
+      get { return initialFrequency; }
+      set { throw new NotSupportedException(); }
+    }
+    #endregion
+
+    public override bool CanChangeName {
+      get { return false; }
+    }
+    public override bool CanChangeDescription {
+      get { return false; }
+    }
+
+    protected ReadOnlySymbol()
+      : base() {
+      this.name = ItemName;
+      this.description = ItemDescription;
+      initialFrequency = 1.0;
     }
   }
 }
