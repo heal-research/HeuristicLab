@@ -33,7 +33,7 @@ using HeuristicLab.Collections;
 
 namespace HeuristicLab.Core {
   [StorableClass]
-  [Item("ItemArray<T>", "Represents an array of items.")]
+  [Item("ItemArray", "Represents an array of items.")]
   public class ItemArray<T> : ObservableArray<T>, IItemArray<T> where T : class, IItem {
     private string filename;
     public string Filename {

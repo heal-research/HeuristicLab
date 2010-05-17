@@ -28,7 +28,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
-  [Item("KeyedItemCollection<TKey, TItem>", "Represents a keyed collection of items.")]
+  [Item("KeyedItemCollection", "Represents a keyed collection of items.")]
   [StorableClass]
   public abstract class KeyedItemCollection<TKey, TItem> : ObservableKeyedCollection<TKey, TItem>, IKeyedItemCollection<TKey, TItem> where TItem : class, IItem {
     private string filename;

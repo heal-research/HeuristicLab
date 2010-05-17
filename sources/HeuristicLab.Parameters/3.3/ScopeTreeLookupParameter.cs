@@ -30,7 +30,7 @@ namespace HeuristicLab.Parameters {
   /// <summary>
   /// A generic parameter representing instances of type T which are collected from or written to scope tree.
   /// </summary>
-  [Item("ScopeTreeLookupParameter<T>", "A generic parameter representing instances of type T which are collected from or written to scope tree.")]
+  [Item("ScopeTreeLookupParameter", "A generic parameter representing instances of type T which are collected from or written to scope tree.")]
   [StorableClass]
   public class ScopeTreeLookupParameter<T> : LookupParameter<ItemArray<T>>, IScopeTreeLookupParameter<T> where T : class, IItem {
     [Storable]

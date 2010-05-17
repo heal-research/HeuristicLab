@@ -30,7 +30,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Data {
-  [Item("ValueTypeMatrix<T>", "An abstract base class for representing matrices of value types.")]
+  [Item("ValueTypeMatrix", "An abstract base class for representing matrices of value types.")]
   [StorableClass]
   public abstract class ValueTypeMatrix<T> : Item, IEnumerable<T> where T : struct {
     public override Image ItemImage {

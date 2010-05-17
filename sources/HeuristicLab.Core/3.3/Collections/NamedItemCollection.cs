@@ -28,7 +28,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
-  [Item("NamedItemCollection<T>", "Represents a collection of named items.")]
+  [Item("NamedItemCollection", "Represents a collection of named items.")]
   [StorableClass]
   public class NamedItemCollection<T> : KeyedItemCollection<string, T> where T : class, INamedItem {
     public NamedItemCollection() : base() { }

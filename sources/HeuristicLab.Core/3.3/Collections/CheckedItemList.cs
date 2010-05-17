@@ -37,7 +37,7 @@ namespace HeuristicLab.Core {
   /// </summary>
   /// <typeparam name="T">The element type (base type is IItem)</typeparam>
   [StorableClass]
-  [Item("CheckedItemList<T>", "Represents a list of items that can be checked or unchecked.")]
+  [Item("CheckedItemList", "Represents a list of items that can be checked or unchecked.")]
   public class CheckedItemList<T> : ItemList<T>, ICheckedItemList<T> where T : class, IItem {
     [Storable]
     private Dictionary<T, bool> checkedState;

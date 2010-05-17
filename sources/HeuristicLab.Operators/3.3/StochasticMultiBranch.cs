@@ -33,7 +33,7 @@ namespace HeuristicLab.Operators {
   /// <summary>
   /// Selects one of its branches (if there are any) given a list of relative probabilities.
   /// </summary>
-  [Item("StochasticMultiBranch<T>", "Selects one of its branches (if there are any) given a list of relative probabilities.")]
+  [Item("StochasticMultiBranch", "Selects one of its branches (if there are any) given a list of relative probabilities.")]
   [StorableClass]
   public abstract class StochasticMultiBranch<T> : CheckedMultiOperator<T> where T : class, IOperator {
     /// <summary>
