@@ -1,9 +1,8 @@
-set target=C:\Program Files\HeuristicLab 3.0
+set target=C:\Program Files\HeuristicLab 3.3
 
-copy HeuristicLab.exe "%target%"
-copy HeuristicLab.Console.exe "%target%"
-copy HeuristicLab.exe.config "%target%"
-copy HeuristicLab.PluginInfrastructure.dll "%target%"
+copy "HeuristicLab 3.3.exe" "%target%"
+copy "HeuristicLab 3.3.exe.config" "%target%"
+copy HeuristicLab.PluginInfrastructure-3.3.dll "%target%"
 
 FOR /F "skip=1 tokens=1-2 delims=: usebackq" %%G IN ("%ProjectDir%\Files.txt") DO copy "%SolutionDir%\%%G\%Outdir%\%%H" "%target%" >nul
 
