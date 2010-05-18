@@ -162,6 +162,7 @@ namespace HeuristicLab.Core.Views {
     #region ListView Events
     protected virtual void itemsListView_SelectedIndexChanged(object sender, EventArgs e) {
       removeButton.Enabled = (Content != null) && !Content.IsReadOnly && !ReadOnly && itemsListView.SelectedItems.Count > 0;
+      AdjustListViewColumnSizes();
       if (itemsListView.SelectedItems.Count == 1) {
         T item = (T)itemsListView.SelectedItems[0].Tag;
         detailsGroupBox.Enabled = true;
@@ -299,7 +300,6 @@ namespace HeuristicLab.Core.Views {
         T item = (T)sender;
         foreach (ListViewItem listViewItem in GetListViewItemsForItem(item))
           UpdateListViewItemText(listViewItem);
-        AdjustListViewColumnSizes();
       }
     }
     #endregion

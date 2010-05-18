@@ -25,19 +25,13 @@ using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Core.Views {
   public partial class CreateParameterDialog : Form {
-    protected TypeSelectorDialog typeSelectorDialog;
-
     public TypeSelector ParameterTypeSelector {
       get { return parameterTypeSelector; }
     }
     public IParameter Parameter {
       get {
         try {
-          Type type = parameterTypeSelector.SelectedType;
-          if (type.ContainsGenericParameters) {
-            type = type.MakeGenericType((Type)dataTypeTextBox.Tag);
-          }
-          return (IParameter)Activator.CreateInstance(type, nameTextBox.Text, descriptionTextBox.Text);
+          return (IParameter)Activator.CreateInstance(parameterTypeSelector.SelectedType, nameTextBox.Text, descriptionTextBox.Text);
         }
         catch (Exception ex) {
           ErrorHandling.ShowErrorDialog(this, ex);
@@ -54,35 +48,8 @@ namespace HeuristicLab.Core.Views {
       parameterTypeSelector.Configure(typeof(IParameter), false, true);
     }
 
-    protected virtual void setDataTypeButton_Click(object sender, EventArgs e) {
-      if (typeSelectorDialog == null) {
-        typeSelectorDialog = new TypeSelectorDialog();
-        typeSelectorDialog.Caption = "Select Data Type";
-        typeSelectorDialog.TypeSelector.Configure(typeof(IItem), true, true);
-      }
-
-      if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
-        dataTypeTextBox.Text = typeSelectorDialog.TypeSelector.SelectedType.FullName;
-        dataTypeTextBox.Tag = typeSelectorDialog.TypeSelector.SelectedType;
-      }
-      okButton.Enabled = dataTypeTextBox.Tag != null;
-    }
-
     protected virtual void parameterTypeSelector_SelectedTypeChanged(object sender, EventArgs e) {
-      dataTypeTextBox.Text = "-";
-      dataTypeTextBox.Tag = null;
-      dataTypeTextBox.Enabled = false;
-      setDataTypeButton.Enabled = false;
-      okButton.Enabled = false;
-
-      if (parameterTypeSelector.SelectedType != null) {
-        if (parameterTypeSelector.SelectedType.ContainsGenericParameters) {
-          dataTypeTextBox.Enabled = true;
-          setDataTypeButton.Enabled = true;
-        } else {
-          okButton.Enabled = true;
-        }
-      }
+      okButton.Enabled = (parameterTypeSelector.SelectedType != null) && !parameterTypeSelector.SelectedType.ContainsGenericParameters;
     }
   }
 }

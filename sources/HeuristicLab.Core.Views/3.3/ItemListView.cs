@@ -198,6 +198,7 @@ namespace HeuristicLab.Core.Views {
                                (Content != null) && !Content.IsReadOnly && !ReadOnly;
       removeButton.Enabled = itemsListView.SelectedItems.Count > 0 &&
                              (Content != null) && !Content.IsReadOnly && !ReadOnly;
+      AdjustListViewColumnSizes();
 
       if (itemsListView.SelectedItems.Count == 1) {
         T item = (T)itemsListView.SelectedItems[0].Tag;
@@ -391,7 +392,6 @@ namespace HeuristicLab.Core.Views {
           if (((T)listViewItem.Tag) == item)
             UpdateListViewItemText(listViewItem);
         }
-        AdjustListViewColumnSizes();
       }
     }
     #endregion
