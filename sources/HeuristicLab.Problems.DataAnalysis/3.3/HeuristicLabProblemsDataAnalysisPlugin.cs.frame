@@ -33,6 +33,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [PluginDependency("HeuristicLab.Core", "3.3.0.0")]
   [PluginDependency("HeuristicLab.Data", "3.3.0.0")]
   [PluginDependency("HeuristicLab.Encodings.SymbolicExpressionTreeEncoding", "3.3.0.0")]
+  [PluginDependency("HeuristicLab.LibSVM", "1.6.3.0")]
   [PluginDependency("HeuristicLab.Operators", "3.3.0.0")]
   [PluginDependency("HeuristicLab.Parameters", "3.3.0.0")]
   [PluginDependency("HeuristicLab.Persistence", "3.3.0.0")]

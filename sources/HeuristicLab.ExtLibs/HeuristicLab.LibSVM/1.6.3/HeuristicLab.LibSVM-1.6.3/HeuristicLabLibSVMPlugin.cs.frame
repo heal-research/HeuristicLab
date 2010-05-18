@@ -18,18 +18,18 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.ALGLIB {
-  [Plugin("HeuristicLab.ALGLIB","2.5.0.0")]  
-  [PluginFile("HeuristicLab.ALGLIB-2.5.0.dll", PluginFileType.Assembly)]
-  [PluginFile("ALGLIB-2.5.0.dll", PluginFileType.Assembly)]
-  [PluginFile("ALGLIB License-2.5.0.txt", PluginFileType.License)]
-  public class HeuristicLabAlgLibPlugin : PluginBase {
+namespace HeuristicLab.LibSVM {
+  [Plugin("HeuristicLab.LibSVM", "1.6.3.$WCREV$")]
+  [PluginFile("HeuristicLab.LibSVM-1.6.3.dll", PluginFileType.Assembly)]
+  [PluginFile("LibSVM-1.6.3.dll", PluginFileType.Assembly)]
+  [PluginFile("SVM.NET-1.6.3 License.txt",PluginFileType.License)]
+  public class HeuristicLabLibSVMPlugin : PluginBase {
   }
 }
