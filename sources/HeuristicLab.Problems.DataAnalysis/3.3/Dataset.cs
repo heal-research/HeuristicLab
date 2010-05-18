@@ -88,6 +88,20 @@ namespace HeuristicLab.Problems.DataAnalysis {
         }
       }
     }
+    public double this[string variableName, int rowIndex] {
+      get {
+        int columnIndex = GetVariableIndex(variableName);
+        return data[rowIndex, columnIndex];
+      }
+      set {
+        int columnIndex = GetVariableIndex(variableName);
+        if (!value.Equals(data[rowIndex, columnIndex])) {
+          data[rowIndex, columnIndex] = value;
+          OnDataChanged(new EventArgs<int, int>(rowIndex, columnIndex));
+          OnItemChanged(rowIndex, columnIndex);
+        }
+      }
+    }
     // access to full columns
     public double[] this[string variableName] {
       get { return GetVariableValues(GetVariableIndex(variableName), 0, Rows); }

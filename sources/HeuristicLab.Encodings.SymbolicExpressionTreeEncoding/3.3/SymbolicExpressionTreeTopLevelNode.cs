@@ -53,7 +53,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     // copy constructor
     protected SymbolicExpressionTreeTopLevelNode(SymbolicExpressionTreeTopLevelNode original)
       : base(original) {
-      grammar = (ISymbolicExpressionGrammar)original.Grammar.Clone();
+      if (original.Grammar != null)
+        grammar = (ISymbolicExpressionGrammar)original.Grammar.Clone();
     }
 
     public override object Clone() {
