@@ -1,8 +1,8 @@
 ﻿; This line is skipped. DO NOT TOUCH THIS line!
 ; List of project directories and file names separated by ':' that are part of the installation
 
-HeuristicLab.PluginInfrastructure\3:3:ICSharpCode.SharpZipLib.dll
-HeuristicLab.PluginInfrastructure\3:3:ICSharpCode.SharpZipLib License.txt
+HeuristicLab.PluginInfrastructure\3.3:ICSharpCode.SharpZipLib.dll
+HeuristicLab.PluginInfrastructure\3.3:ICSharpCode.SharpZipLib License.txt
 HeuristicLab.Algorithms.EvolutionStrategy\3.3:HeuristicLab.Algorithms.EvolutionStrategy-3.3.dll
 HeuristicLab.Algorithms.GeneticAlgorithm\3.3:HeuristicLab.Algorithms.GeneticAlgorithm-3.3.dll
 HeuristicLab.Algorithms.LocalSearch\3.3:HeuristicLab.Algorithms.LocalSearch-3.3.dll
