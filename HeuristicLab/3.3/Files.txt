@@ -7,7 +7,6 @@ HeuristicLab.Algorithms.EvolutionStrategy\3.3:HeuristicLab.Algorithms.EvolutionS
 HeuristicLab.Algorithms.GeneticAlgorithm\3.3:HeuristicLab.Algorithms.GeneticAlgorithm-3.3.dll
 HeuristicLab.Algorithms.LocalSearch\3.3:HeuristicLab.Algorithms.LocalSearch-3.3.dll
 HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm\3.3:HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm-3.3.dll
-HeuristicLab.Algorithms.ParticleSwarmOptimization\3.3:HeuristicLab.Algorithms.ParticleSwarmOptimization-3.3.dll
 HeuristicLab.Algorithms.SimulatedAnnealing\3.3:HeuristicLab.Algorithms.SimulatedAnnealing-3.3.dll
 HeuristicLab.Algorithms.TabuSearch\3.3:HeuristicLab.Algorithms.TabuSearch-3.3.dll
 HeuristicLab.Analysis\3.3:HeuristicLab.Analysis-3.3.dll
@@ -40,7 +39,6 @@ HeuristicLab.Optimizer\3.3:HeuristicLab.Optimizer-3.3.dll
 HeuristicLab.Parameters\3.3:HeuristicLab.Parameters-3.3.dll
 HeuristicLab.Parameters.Views\3.3:HeuristicLab.Parameters.Views-3.3.dll
 HeuristicLab.Persistence\3.3:HeuristicLab.Persistence-3.3.dll
-HeuristicLab.Persistence.GUI\3.3:HeuristicLab.Persistence.GUI-3.3.dll
 HeuristicLab.Problems.ArtificialAnt\3.3:HeuristicLab.Problems.ArtificialAnt-3.3.dll
 HeuristicLab.Problems.ArtificialAnt.Views\3.3:HeuristicLab.Problems.ArtificialAnt.Views-3.3.dll
 HeuristicLab.Problems.DataAnalysis\3.3:HeuristicLab.Problems.DataAnalysis-3.3.dll
