@@ -29,7 +29,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Selection-3.3"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Operators.Programmable-3.3", "HeuristicLab.Operators.Programmable\3.3\HeuristicLab.Operators.Programmable-3.3.csproj", "{6A5F8C2D-B0C3-4B36-BC20-9B1A91EE6DB6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab 3.3", "HeuristicLab 3.3\HeuristicLab 3.3.csproj", "{B1DCDECA-B56E-41D5-9850-EF0D3A77DEAF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab-3.3", "HeuristicLab\3.3\HeuristicLab-3.3.csproj", "{B1DCDECA-B56E-41D5-9850-EF0D3A77DEAF}"
 	ProjectSection(ProjectDependencies) = postProject
 		{125D3006-67F5-48CB-913E-73C0548F17FA} = {125D3006-67F5-48CB-913E-73C0548F17FA}
 		{489CFE09-FDF7-4C89-BAB5-BD09CADD61AD} = {489CFE09-FDF7-4C89-BAB5-BD09CADD61AD}
