@@ -81,21 +81,26 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
     }
 
     public override IOperation Apply() {
-      int targetVariableIndex = DataAnalysisProblemData.Dataset.GetVariableIndex(DataAnalysisProblemData.TargetVariable.Value);
       int start = SamplesStart.Value;
       int end = SamplesEnd.Value;
 
-      SVM.Problem problem = SupportVectorMachineUtil.CreateSvmProblem(DataAnalysisProblemData, start, end);
-      SVM.Problem scaledProblem = SupportVectorMachineModel.RangeTransform.Scale(problem);
+      ValuesParameter.ActualValue = new DoubleMatrix(Evaluate(SupportVectorMachineModel, DataAnalysisProblemData, start, end));
+      return base.Apply();
+    }
+
+    public static double[,] Evaluate(SupportVectorMachineModel model, DataAnalysisProblemData problemData, int start, int end) {
+      SVM.Problem problem = SupportVectorMachineUtil.CreateSvmProblem(problemData, start, end);
+      SVM.Problem scaledProblem = model.RangeTransform.Scale(problem);
+
+      int targetVariableIndex = problemData.Dataset.GetVariableIndex(problemData.TargetVariable.Value);
 
       double[,] values = new double[scaledProblem.Count, 2];
       for (int i = 0; i < scaledProblem.Count; i++) {
-        values[i, 0] = DataAnalysisProblemData.Dataset[start + i, targetVariableIndex];
-        values[i, 1] = SVM.Prediction.Predict(SupportVectorMachineModel.Model, scaledProblem.X[i]);
+        values[i, 0] = problemData.Dataset[start + i, targetVariableIndex];
+        values[i, 1] = SVM.Prediction.Predict(model.Model, scaledProblem.X[i]);
       }
 
-      ValuesParameter.ActualValue = new DoubleMatrix(values);
-      return base.Apply();
+      return values;
     }
   }
 }
