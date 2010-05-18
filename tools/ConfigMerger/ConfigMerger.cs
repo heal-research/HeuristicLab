@@ -37,6 +37,10 @@ namespace HeuristicLab.Tools.ConfigMerger {
     }
 
     public static void Merge(string sourceFile, string destinationFile) {
+      Console.Out.WriteLine("ConfigMerger: Merge started ...");
+      Console.Out.WriteLine("ConfigMerger: Merge source:      \"" + sourceFile + "\"");
+      Console.Out.WriteLine("ConfigMerger: Merge destination: \"" + destinationFile + "\"");
+
       XmlDocument source = new XmlDocument();
       source.Load(sourceFile);
       XmlDocument destination = new XmlDocument();
@@ -181,6 +185,8 @@ namespace HeuristicLab.Tools.ConfigMerger {
       Merge(sourceNode, destinationNode, destination, "/configuration");
 
       destination.Save(destinationFile);
+
+      Console.Out.WriteLine("ConfigMerger: Merge successfully finished!");
     }
 
     private static void Merge(XmlNode source, XmlNode destination, XmlDocument document, string root) {
