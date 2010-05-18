@@ -28,6 +28,7 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
+using System.Globalization;
 namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
 
@@ -62,7 +63,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
     public static void CreateRandomTrees(TestContext testContext) {
       twister = new MersenneTwister();
       dataset = Util.CreateRandomDataset(twister, Rows, Columns);
-      var grammar = new GlobalSymbolicExpressionGrammar(new ArithmeticExpressionGrammar());
+      var grammar = new GlobalSymbolicExpressionGrammar(new FullFunctionalExpressionGrammar());
       grammar.MaxFunctionArguments = 0;
       grammar.MaxFunctionDefinitions = 0;
       grammar.MinFunctionArguments = 0;
@@ -131,6 +132,70 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
       Evaluate(interpreter, ds, "(/ (variable 2.0 a ) 2.0)", 1, 2.0);
       Evaluate(interpreter, ds, "(/ (variable 3.0 b ) 2.0)", 2, 3.0);
       Evaluate(interpreter, ds, "(/ 8.0 2.0 2.0)", 0, 2.0);
+
+      // gt
+      Evaluate(interpreter, ds, "(> (variable 2.0 a) 2.0)", 0, -1.0);
+      Evaluate(interpreter, ds, "(> 2.0 (variable 2.0 a))", 0, -1.0);
+      Evaluate(interpreter, ds, "(> (variable 2.0 a) 1.9)", 0, 1.0);
+      Evaluate(interpreter, ds, "(> 1.9 (variable 2.0 a))", 0, -1.0);
+      //Evaluate(interpreter, ds, "(> (sqrt -1.0) (log -1.0))", 0, -1.0); // (> nan nan) should be false
+
+      // lt
+      Evaluate(interpreter, ds, "(< (variable 2.0 a) 2.0)", 0, -1.0);
+      Evaluate(interpreter, ds, "(< 2.0 (variable 2.0 a))", 0, -1.0);
+      Evaluate(interpreter, ds, "(< (variable 2.0 a) 1.9)", 0, -1.0);
+      Evaluate(interpreter, ds, "(< 1.9 (variable 2.0 a))", 0, 1.0);
+      //Evaluate(interpreter, ds, "(< (sqrt -1,0) (log -1,0))", 0, -1.0); // (< nan nan) should be false
+
+      // If
+      Evaluate(interpreter, ds, "(if -10.0 2.0 3.0)", 0, 3.0);
+      Evaluate(interpreter, ds, "(if -1.0 2.0 3.0)", 0, 3.0);
+      Evaluate(interpreter, ds, "(if 0.0 2.0 3.0)", 0, 3.0);
+      Evaluate(interpreter, ds, "(if 1.0 2.0 3.0)", 0, 2.0);
+      Evaluate(interpreter, ds, "(if 10.0 2.0 3.0)", 0, 2.0);
+      // Evaluate(interpreter, ds, "(if (sqrt -1.0) 2.0 3.0)", 0, 3.0); // if(nan) should return the else branch
+
+      // NOT
+      Evaluate(interpreter, ds, "(not -1.0)", 0, 1.0);
+      Evaluate(interpreter, ds, "(not -2.0)", 0, 2.0);
+      Evaluate(interpreter, ds, "(not 1.0)", 0, -1.0);
+      Evaluate(interpreter, ds, "(not 2.0)", 0, -2.0);
+      Evaluate(interpreter, ds, "(not 0.0)", 0, 0.0);
+
+      // AND
+      Evaluate(interpreter, ds, "(and -1.0 -2.0)", 0, -1.0);
+      Evaluate(interpreter, ds, "(and -1.0 2.0)", 0, -1.0);
+      Evaluate(interpreter, ds, "(and 1.0 -2.0)", 0, -1.0);
+      Evaluate(interpreter, ds, "(and 1.0 0.0)", 0, -1.0);
+      Evaluate(interpreter, ds, "(and 0.0 0.0)", 0, -1.0);
+      Evaluate(interpreter, ds, "(and 1.0 2.0)", 0, 1.0);
+      Evaluate(interpreter, ds, "(and 1.0 2.0 3.0)", 0, 1.0);
+      Evaluate(interpreter, ds, "(and 1.0 -2.0 3.0)", 0, -1.0);
+
+      // OR
+      Evaluate(interpreter, ds, "(or -1.0 -2.0)", 0, -1.0);
+      Evaluate(interpreter, ds, "(or -1.0 2.0)", 0, 1.0);
+      Evaluate(interpreter, ds, "(or 1.0 -2.0)", 0, 1.0);
+      Evaluate(interpreter, ds, "(or 1.0 2.0)", 0, 1.0);
+      Evaluate(interpreter, ds, "(or 0.0 0.0)", 0, -1.0);
+      Evaluate(interpreter, ds, "(or -1.0 -2.0 -3.0)", 0, -1.0);
+      Evaluate(interpreter, ds, "(or -1.0 -2.0 3.0)", 0, 1.0);
+
+      // sin, cos, tan
+      Evaluate(interpreter, ds, "(sin " + Math.PI.ToString(NumberFormatInfo.InvariantInfo) + ")", 0, 0.0);
+      Evaluate(interpreter, ds, "(sin 0.0)", 0, 0.0);
+      Evaluate(interpreter, ds, "(cos " + Math.PI.ToString(NumberFormatInfo.InvariantInfo) + ")", 0, -1.0);
+      Evaluate(interpreter, ds, "(cos 0.0)", 0, 1.0);
+      Evaluate(interpreter, ds, "(tan " + Math.PI.ToString(NumberFormatInfo.InvariantInfo) + ")", 0, Math.Tan(Math.PI));
+      Evaluate(interpreter, ds, "(tan 0.0)", 0, Math.Tan(Math.PI));
+
+      // exp, log
+      Evaluate(interpreter, ds, "(log (exp 7.0))", 0, Math.Log(Math.Exp(7)));
+      Evaluate(interpreter, ds, "(exp (log 7.0))", 0, Math.Exp(Math.Log(7)));
+      Evaluate(interpreter, ds, "(log -3.0)", 0, Math.Log(-3));
+
+      // mean
+      Evaluate(interpreter, ds, "(mean -1.0 1.0 -1.0)", 0, -1.0 / 3.0);
 
       // ADF      
       Evaluate(interpreter, ds, @"(PROG 

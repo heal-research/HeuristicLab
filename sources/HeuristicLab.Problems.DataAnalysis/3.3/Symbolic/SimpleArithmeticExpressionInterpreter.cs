@@ -39,12 +39,57 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       public const byte Sub = 2;
       public const byte Mul = 3;
       public const byte Div = 4;
-      public const byte Variable = 5;
-      public const byte Constant = 6;
-      public const byte Call = 100;
-      public const byte Arg = 101;
+
+      public const byte Sin = 5;
+      public const byte Cos = 6;
+      public const byte Tan = 7;
+
+      public const byte Log = 8;
+      public const byte Exp = 9;
+
+      public const byte IfThenElse = 10;
+
+      public const byte GT = 11;
+      public const byte LT = 12;
+
+      public const byte AND = 13;
+      public const byte OR = 14;
+      public const byte NOT = 15;
+
+
+      public const byte Average = 16;
+
+      public const byte Call = 17;
+
+      public const byte Variable = 18;
+      public const byte LagVariable = 19;
+      public const byte Constant = 20;
+      public const byte Arg = 21;
     }
 
+    private Dictionary<Type, byte> symbolToOpcode = new Dictionary<Type, byte>() {
+      { typeof(Addition), OpCodes.Add },
+      { typeof(Subtraction), OpCodes.Sub },
+      { typeof(Multiplication), OpCodes.Mul },
+      { typeof(Division), OpCodes.Div },
+      { typeof(Sine), OpCodes.Sin },
+      { typeof(Cosine), OpCodes.Cos },
+      { typeof(Tangent), OpCodes.Tan },
+      { typeof(Logarithm), OpCodes.Log },
+      { typeof(Exponential), OpCodes.Exp },
+      { typeof(IfThenElse), OpCodes.IfThenElse },
+      { typeof(GreaterThan), OpCodes.GT },
+      { typeof(LessThan), OpCodes.LT },
+      { typeof(And), OpCodes.AND },
+      { typeof(Or), OpCodes.OR },
+      { typeof(Not), OpCodes.NOT},
+      { typeof(Average), OpCodes.Average},
+      { typeof(InvokeFunction), OpCodes.Call },
+      { typeof(HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols.Variable), OpCodes.Variable },
+      { typeof(LaggedVariable), OpCodes.LagVariable },
+      { typeof(Constant), OpCodes.Constant },
+      { typeof(Argument), OpCodes.Arg },
+    };
     private const int ARGUMENT_STACK_SIZE = 1024;
 
     private Dataset dataset;
@@ -80,20 +125,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (instr.opCode == OpCodes.Variable) {
         var variableTreeNode = instr.dynamicNode as VariableTreeNode;
         instr.iArg0 = (ushort)dataset.GetVariableIndex(variableTreeNode.VariableName);
-      } 
+      } else if (instr.opCode == OpCodes.LagVariable) {
+        var variableTreeNode = instr.dynamicNode as LaggedVariableTreeNode;
+        instr.iArg0 = (ushort)dataset.GetVariableIndex(variableTreeNode.VariableName);
+      }
       return instr;
     }
 
     private byte MapSymbolToOpCode(SymbolicExpressionTreeNode treeNode) {
-      if (treeNode.Symbol is Addition) return OpCodes.Add;
-      if (treeNode.Symbol is Subtraction) return OpCodes.Sub;
-      if (treeNode.Symbol is Multiplication) return OpCodes.Mul;
-      if (treeNode.Symbol is Division) return OpCodes.Div;
-      if (treeNode.Symbol is HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols.Variable) return OpCodes.Variable;
-      if (treeNode.Symbol is Constant) return OpCodes.Constant;
-      if (treeNode.Symbol is InvokeFunction) return OpCodes.Call;
-      if (treeNode.Symbol is Argument) return OpCodes.Arg;
-      throw new NotSupportedException("Symbol: " + treeNode.Symbol);
+      if (symbolToOpcode.ContainsKey(treeNode.Symbol.GetType()))
+        return symbolToOpcode[treeNode.Symbol.GetType()];
+      else
+        throw new NotSupportedException("Symbol: " + treeNode.Symbol);
     }
 
     private double[] argumentStack = new double[ARGUMENT_STACK_SIZE];
@@ -132,6 +175,73 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             if (currentInstr.nArguments == 1) p = 1.0 / p;
             return p;
           }
+        case OpCodes.Average: {
+            double sum = Evaluate();
+            for (int i = 1; i < currentInstr.nArguments; i++) {
+              sum += Evaluate();
+            }
+            return sum / currentInstr.nArguments;
+          }
+        case OpCodes.Cos: {
+            return Math.Cos(Evaluate());
+          }
+        case OpCodes.Sin: {
+            return Math.Sin(Evaluate());
+          }
+        case OpCodes.Tan: {
+            return Math.Tan(Evaluate());
+          }
+        case OpCodes.Exp: {
+            return Math.Exp(Evaluate());
+          }
+        case OpCodes.Log: {
+            return Math.Log(Evaluate());
+          }
+        case OpCodes.IfThenElse: {
+            double condition = Evaluate();
+            double result;
+            if (condition > 0.0) {
+              result = Evaluate(); SkipBakedCode();
+            } else {
+              SkipBakedCode(); result = Evaluate();
+            }
+            return result;
+          }
+        case OpCodes.AND: {
+            double result = Evaluate();
+            for (int i = 1; i < currentInstr.nArguments; i++) {
+              if (result <= 0.0) SkipBakedCode();
+              else {
+                result = Evaluate();
+              }
+            }
+            return result <= 0.0 ? -1.0 : 1.0;
+          }
+        case OpCodes.OR: {
+            double result = Evaluate();
+            for (int i = 1; i < currentInstr.nArguments; i++) {
+              if (result > 0.0) SkipBakedCode();
+              else {
+                result = Evaluate();
+              }
+            }
+            return result > 0.0 ? 1.0 : -1.0;
+          }
+        case OpCodes.NOT: {
+            return -Evaluate();
+          }
+        case OpCodes.GT: {
+            double x = Evaluate();
+            double y = Evaluate();
+            if (x > y) return 1.0;
+            else return -1.0;
+          }
+        case OpCodes.LT: {
+            double x = Evaluate();
+            double y = Evaluate();
+            if (x < y) return 1.0;
+            else return -1.0;
+          }
         case OpCodes.Call: {
             // evaluate sub-trees
             // push on argStack in reverse order 
@@ -162,11 +272,26 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             var variableTreeNode = currentInstr.dynamicNode as VariableTreeNode;
             return dataset[row, currentInstr.iArg0] * variableTreeNode.Weight;
           }
+        case OpCodes.LagVariable: {
+            var lagVariableTreeNode = currentInstr.dynamicNode as LaggedVariableTreeNode;
+            int actualRow = row + lagVariableTreeNode.Lag;
+            if (actualRow < 0 || actualRow >= dataset.Rows) throw new ArgumentException("Out of range access to dataset row: " + row);
+            return dataset[actualRow, currentInstr.iArg0] * lagVariableTreeNode.Weight;
+          }
         case OpCodes.Constant: {
             var constTreeNode = currentInstr.dynamicNode as ConstantTreeNode;
             return constTreeNode.Value;
           }
         default: throw new NotSupportedException();
+      }
+    }
+
+    // skips a whole branch
+    protected void SkipBakedCode() {
+      int i = 1;
+      while (i > 0) {
+        i += code[pc++].nArguments;
+        i--;
       }
     }
   }

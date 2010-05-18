@@ -188,7 +188,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       : base() {
       SymbolicExpressionTreeCreator creator = new ProbabilisticTreeCreator();
       var evaluator = new SymbolicRegressionScaledMeanSquaredErrorEvaluator();
-      var grammar = new ArithmeticExpressionGrammar();
+      var grammar = new FullFunctionalExpressionGrammar();
       var globalGrammar = new GlobalSymbolicExpressionGrammar(grammar);
       var interpreter = new SimpleArithmeticExpressionInterpreter();
       Parameters.Add(new ValueParameter<BoolValue>("Maximization", "Set to false as the error of the regression model should be minimized.", (BoolValue)new BoolValue(false).AsReadOnly()));

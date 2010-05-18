@@ -41,8 +41,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
         {"/", new Division()},
         {"*", new Multiplication()},
         {"-", new Subtraction()},
+        {"EXP", new Exponential()},
+        {"LOG", new Logarithm()},
+        {"SIN",new Sine()},
+        {"COS", new Cosine()},
+        {"TAN", new Tangent()},
+        {"MEAN", new Average()},
+        {"IF", new IfThenElse()},
+        {">", new GreaterThan()},
+        {"<", new LessThan()},
+        {"AND", new And()},
+        {"OR", new Or()},
+        {"NOT", new Not()},
         {"PROG", new ProgramRootSymbol()},
-        {"MAIN", new StartSymbol()}
+        {"MAIN", new StartSymbol()},
       };
 
     Constant constant = new Constant();
