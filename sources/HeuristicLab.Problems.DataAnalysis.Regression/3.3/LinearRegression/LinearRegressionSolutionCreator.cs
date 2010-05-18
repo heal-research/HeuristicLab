@@ -73,7 +73,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.LinearRegression {
 
     public override IOperation Apply() {
       SymbolicExpressionTree = CreateSymbolicExpressionTree(DataAnalysisProblemData);
-      return null;
+      return base.Apply();
     }
 
     public static SymbolicExpressionTree CreateSymbolicExpressionTree(DataAnalysisProblemData problem) {
