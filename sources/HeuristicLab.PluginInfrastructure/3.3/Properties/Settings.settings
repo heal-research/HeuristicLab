@@ -2,12 +2,6 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="HeuristicLab.PluginInfrastructure.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="User" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">-</Value>
-    </Setting>
-    <Setting Name="Organization" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">-</Value>
-    </Setting>
     <Setting Name="UpdateLocation" Type="System.String" Scope="User">
       <Value Profile="(Default)">http://services.heuristiclab.com/Deployment-3.3/Update.svc</Value>
     </Setting>
