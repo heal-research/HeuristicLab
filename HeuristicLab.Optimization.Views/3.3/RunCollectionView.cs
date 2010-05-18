@@ -160,6 +160,7 @@ namespace HeuristicLab.Optimization.Views {
       itemsListView.Items.Add(listViewItem);
       ((IRun)listViewItem.Tag).ItemImageChanged += new EventHandler(Item_ItemImageChanged);
       ((IRun)listViewItem.Tag).ToStringChanged += new EventHandler(Item_ToStringChanged);
+      AdjustListViewColumnSizes();
     }
     protected virtual void RemoveListViewItem(ListViewItem listViewItem) {
       ((IRun)listViewItem.Tag).ItemImageChanged -= new EventHandler(Item_ItemImageChanged);
@@ -189,6 +190,7 @@ namespace HeuristicLab.Optimization.Views {
     #region ListView Events
     protected virtual void itemsListView_SelectedIndexChanged(object sender, EventArgs e) {
       removeButton.Enabled = itemsListView.SelectedItems.Count > 0 && (Content != null) && !Content.IsReadOnly && !ReadOnly;
+      AdjustListViewColumnSizes();
       if (itemsListView.SelectedItems.Count == 1) {
         IRun item = (IRun)itemsListView.SelectedItems[0].Tag;
         detailsGroupBox.Enabled = true;
@@ -197,10 +199,6 @@ namespace HeuristicLab.Optimization.Views {
         viewHost.Content = null;
         detailsGroupBox.Enabled = false;
       }
-    }
-    protected virtual void itemsListView_SizeChanged(object sender, EventArgs e) {
-      if (itemsListView.Columns.Count > 0)
-        itemsListView.Columns[0].Width = Math.Max(0, itemsListView.Width - 25);
     }
     protected virtual void itemsListView_KeyDown(object sender, KeyEventArgs e) {
       if (e.KeyCode == Keys.Delete) {
@@ -345,6 +343,7 @@ namespace HeuristicLab.Optimization.Views {
         IRun item = (IRun)sender;
         foreach (ListViewItem listViewItem in GetListViewItemsForItem(item))
           UpdateListViewItemText(listViewItem);
+        AdjustListViewColumnSizes();
       }
     }
     protected virtual void Run_Changed(object sender, EventArgs e) {
@@ -369,6 +368,15 @@ namespace HeuristicLab.Optimization.Views {
     }
     #endregion
 
+    #region Helpers
+    protected virtual void AdjustListViewColumnSizes() {
+      if (itemsListView.Items.Count > 0) {
+        for (int i = 0; i < itemsListView.Columns.Count; i++) {
+          itemsListView.Columns[i].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+        }
+      }
+    }
+    #endregion
   }
 }
 
