@@ -1,0 +1,58 @@
+﻿package HeuristicLab.Problems.ExternalEvaluation;
+option java_package = "com.heuristiclab.problems.externalevaluation";
+
+message MainMessage {
+  message IntegerVariables {
+    required string name = 1;
+    optional int32 data = 2;
+  }
+  repeated IntegerVariables integerVars = 1;
+  
+  message IntegerArrayVariables {
+    required string name = 1;
+    repeated string data = 2;
+  }
+  repeated IntegerArrayVariables integerArrayVars = 2;
+  
+  message DoubleVariables {
+    required string name = 1;
+    optional double data = 2;
+  }
+  repeated DoubleVariables doubleVars = 3;
+  
+  message DoubleArrayVariables {
+    required string name = 1;
+    repeated double data = 2;
+  }
+  repeated DoubleArrayVariables doubleArrayVars = 4;
+  
+  message BoolVariables {
+    required string name = 1;
+    optional bool data = 2;
+  }
+  repeated BoolVariables boolVars = 5;
+  
+  message BoolArrayVariables {
+    required string name = 1;
+    repeated bool data = 2;
+  }
+  repeated BoolArrayVariables boolArrayVars = 6;
+  
+  message StringVariables {
+    required string name = 1;
+    optional string data = 2;
+  }
+  repeated StringData stringVars = 7;
+  
+  message StringArrayVariables {
+    required string name = 1;
+    repeated string data = 2;
+  }
+  repeated StringArrayVariables stringArrayVars = 8;
+  
+  message RawVariables {
+    required string name = 1;
+    optional bytes data = 2;
+  }
+  repeated RawVariables rawVars = 9;
+}

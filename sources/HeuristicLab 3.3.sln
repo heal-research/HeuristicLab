@@ -266,6 +266,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibSVM-1.6.3", "HeuristicLa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.LibSVM-1.6.3", "HeuristicLab.ExtLibs\HeuristicLab.LibSVM\1.6.3\HeuristicLab.LibSVM-1.6.3\HeuristicLab.LibSVM-1.6.3.csproj", "{89B50302-9CEE-4D13-9779-633EADCAE624}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.ExternalEvaluation-3.3", "HeuristicLab.Problems.ExternalEvaluation\3.3\HeuristicLab.Problems.ExternalEvaluation-3.3.csproj", "{25735DB4-8E54-4A2C-83E3-A60C76565E55}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1379,12 +1381,16 @@ Global
 		{5A4679EF-A8F3-4647-B722-441A36B3BA6B}.Services|x86.ActiveCfg = Release|Any CPU
 		{71D904D9-233B-44B2-ABB2-1525691228C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{71D904D9-233B-44B2-ABB2-1525691228C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{71D904D9-233B-44B2-ABB2-1525691228C5}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{71D904D9-233B-44B2-ABB2-1525691228C5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{71D904D9-233B-44B2-ABB2-1525691228C5}.Debug|x64.ActiveCfg = Debug|x64
+		{71D904D9-233B-44B2-ABB2-1525691228C5}.Debug|x64.Build.0 = Debug|x64
+		{71D904D9-233B-44B2-ABB2-1525691228C5}.Debug|x86.ActiveCfg = Debug|x86
+		{71D904D9-233B-44B2-ABB2-1525691228C5}.Debug|x86.Build.0 = Debug|x86
 		{71D904D9-233B-44B2-ABB2-1525691228C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{71D904D9-233B-44B2-ABB2-1525691228C5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{71D904D9-233B-44B2-ABB2-1525691228C5}.Release|x64.ActiveCfg = Release|Any CPU
-		{71D904D9-233B-44B2-ABB2-1525691228C5}.Release|x86.ActiveCfg = Release|Any CPU
+		{71D904D9-233B-44B2-ABB2-1525691228C5}.Release|x64.ActiveCfg = Release|x64
+		{71D904D9-233B-44B2-ABB2-1525691228C5}.Release|x64.Build.0 = Release|x64
+		{71D904D9-233B-44B2-ABB2-1525691228C5}.Release|x86.ActiveCfg = Release|x86
+		{71D904D9-233B-44B2-ABB2-1525691228C5}.Release|x86.Build.0 = Release|x86
 		{71D904D9-233B-44B2-ABB2-1525691228C5}.Services|Any CPU.ActiveCfg = Release|Any CPU
 		{71D904D9-233B-44B2-ABB2-1525691228C5}.Services|Any CPU.Build.0 = Release|Any CPU
 		{71D904D9-233B-44B2-ABB2-1525691228C5}.Services|x64.ActiveCfg = Release|Any CPU
@@ -1451,6 +1457,16 @@ Global
 		{89B50302-9CEE-4D13-9779-633EADCAE624}.Services|Any CPU.ActiveCfg = Release|Any CPU
 		{89B50302-9CEE-4D13-9779-633EADCAE624}.Services|x64.ActiveCfg = Release|x64
 		{89B50302-9CEE-4D13-9779-633EADCAE624}.Services|x86.ActiveCfg = Release|x86
+		{25735DB4-8E54-4A2C-83E3-A60C76565E55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25735DB4-8E54-4A2C-83E3-A60C76565E55}.Debug|x64.ActiveCfg = Debug|x64
+		{25735DB4-8E54-4A2C-83E3-A60C76565E55}.Debug|x86.ActiveCfg = Debug|x86
+		{25735DB4-8E54-4A2C-83E3-A60C76565E55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25735DB4-8E54-4A2C-83E3-A60C76565E55}.Release|x64.ActiveCfg = Release|x64
+		{25735DB4-8E54-4A2C-83E3-A60C76565E55}.Release|x86.ActiveCfg = Release|x86
+		{25735DB4-8E54-4A2C-83E3-A60C76565E55}.Services|Any CPU.ActiveCfg = Release|Any CPU
+		{25735DB4-8E54-4A2C-83E3-A60C76565E55}.Services|Any CPU.Build.0 = Release|Any CPU
+		{25735DB4-8E54-4A2C-83E3-A60C76565E55}.Services|x64.ActiveCfg = Release|Any CPU
+		{25735DB4-8E54-4A2C-83E3-A60C76565E55}.Services|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
