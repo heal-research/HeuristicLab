@@ -42,7 +42,13 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
     /// </summary>
     public SVM.Model Model {
       get { return model; }
-      set { model = value; }
+      set {
+        if (value != model) {
+          if (value == null) throw new ArgumentNullException();
+          model = value;
+          OnChanged(EventArgs.Empty);
+        }
+      }
     }
 
     /// <summary>
@@ -51,8 +57,27 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
     private SVM.RangeTransform rangeTransform;
     public SVM.RangeTransform RangeTransform {
       get { return rangeTransform; }
-      set { rangeTransform = value; }
+      set {
+        if (value != rangeTransform) {
+          if (value == null) throw new ArgumentNullException();
+          rangeTransform = value;
+          OnChanged(EventArgs.Empty);
+        }
+      }
     }
+
+    public SupportVectorMachineModel()
+      : base() {
+    }
+
+    #region events
+    public event EventHandler Changed;
+    private void OnChanged(EventArgs e) {
+      var handlers = Changed;
+      if (handlers != null)
+        handlers(this, e);
+    }
+    #endregion
 
     #region persistence
     [Storable]
@@ -98,14 +123,14 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
     }
 
     /// <summary>
-    ///  Exports the <paramref name="model"/> in string representation to output stream <paramref name="s"/>
+    ///  Exports the <paramref name="model"/> in string representation to stream <paramref name="s"/>
     /// </summary>
     /// <param name="model">The support vector regression model to export</param>
-    /// <param name="s">The output stream to export the model to</param>
+    /// <param name="s">The stream to export the model to</param>
     public static void Export(SupportVectorMachineModel model, Stream s) {
       StreamWriter writer = new StreamWriter(s);
       writer.WriteLine("RangeTransform:");
-      writer.Flush();
+      writer.Flush(); 
       using (MemoryStream memStream = new MemoryStream()) {
         SVM.RangeTransform.Write(memStream, model.RangeTransform);
         memStream.Seek(0, SeekOrigin.Begin);

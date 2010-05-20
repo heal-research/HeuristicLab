@@ -85,6 +85,18 @@
     <None Include="HeuristicLab.snk" />
     <None Include="HeuristicLabProblemsDataAnalysisViewsPlugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.frame" />
+    <Compile Include="SupportVectorRegressionSolutionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SupportVectorRegressionSolutionView.Designer.cs">
+      <DependentUpon>SupportVectorRegressionSolutionView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SupportVectorMachineModelView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SupportVectorMachineModelView.Designer.cs">
+      <DependentUpon>SupportVectorMachineModelView.cs</DependentUpon>
+    </Compile>
     <Compile Include="EstimatedValuesView.cs">
       <SubType>UserControl</SubType>
     </Compile>
