@@ -82,7 +82,6 @@ namespace HeuristicLab.Selection {
       IScope parents = scope.SubScopes[0];
       IScope offspring = scope.SubScopes[1];
       int populationSize = parents.SubScopes.Count;
-      int offspringSize = offspring.SubScopes.Count;
 
       // retrieve actual selection pressure and success ratio
       DoubleValue selectionPressure = SelectionPressureParameter.ActualValue;
@@ -114,7 +113,7 @@ namespace HeuristicLab.Selection {
       // implement the ActualValue fetch here - otherwise the parent scope would also be included, given that there may be 1000 or more parents, this is quite unnecessary
       string tname = SuccessfulOffspringParameter.TranslatedName;
       double tmpSelPress = selectionPressure.Value, tmpSelPressInc = 1.0 / populationSize;
-      for (int i = 0; i < offspringSize; i++) {
+      for (int i = 0; i < offspring.SubScopes.Count; i++) {
         // fetch value
         IVariable tmpVar;
         if (!offspring.SubScopes[i].Variables.TryGetValue(tname, out tmpVar)) throw new InvalidOperationException(Name + ": Could not determine if an offspring was successful or not.");
@@ -123,10 +122,16 @@ namespace HeuristicLab.Selection {
 
         // add to population
         if (tmp.Value) {
-          population.Add(offspring.SubScopes[i]);
+          IScope currentOffspring = offspring.SubScopes[i];
+          offspring.SubScopes.Remove(currentOffspring);
+          i--;
+          population.Add(currentOffspring);
           successfulOffspringAdded++;
         } else if (worseOffspringNeeded > 0 || tmpSelPress >= maxSelPress) {
-          population.Add(offspring.SubScopes[i]);
+          IScope currentOffspring = offspring.SubScopes[i];
+          offspring.SubScopes.Remove(currentOffspring);
+          i--;
+          population.Add(currentOffspring);
           worseOffspringNeeded--;
         }
         tmpSelPress += tmpSelPressInc;
