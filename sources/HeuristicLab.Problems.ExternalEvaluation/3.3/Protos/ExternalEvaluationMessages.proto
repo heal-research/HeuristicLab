@@ -1,58 +1,62 @@
-﻿package HeuristicLab.Problems.ExternalEvaluation;
+package HeuristicLab.Problems.ExternalEvaluation;
 option java_package = "com.heuristiclab.problems.externalevaluation";
 
 message MainMessage {
-  message IntegerVariables {
+  message IntegerVariable {
     required string name = 1;
     optional int32 data = 2;
   }
-  repeated IntegerVariables integerVars = 1;
+  repeated IntegerVariable integerVars = 1;
   
-  message IntegerArrayVariables {
+  message IntegerArrayVariable {
     required string name = 1;
-    repeated string data = 2;
+    repeated int32 data = 2 [packed = true];
   }
-  repeated IntegerArrayVariables integerArrayVars = 2;
+  repeated IntegerArrayVariable integerArrayVars = 2;
   
-  message DoubleVariables {
+  message DoubleVariable {
     required string name = 1;
     optional double data = 2;
   }
-  repeated DoubleVariables doubleVars = 3;
+  repeated DoubleVariable doubleVars = 3;
   
-  message DoubleArrayVariables {
+  message DoubleArrayVariable {
     required string name = 1;
     repeated double data = 2;
   }
-  repeated DoubleArrayVariables doubleArrayVars = 4;
+  repeated DoubleArrayVariable doubleArrayVars = 4;
   
-  message BoolVariables {
+  message BoolVariable {
     required string name = 1;
     optional bool data = 2;
   }
-  repeated BoolVariables boolVars = 5;
+  repeated BoolVariable boolVars = 5;
   
-  message BoolArrayVariables {
+  message BoolArrayVariable {
     required string name = 1;
     repeated bool data = 2;
   }
-  repeated BoolArrayVariables boolArrayVars = 6;
+  repeated BoolArrayVariable boolArrayVars = 6;
   
-  message StringVariables {
+  message StringVariable {
     required string name = 1;
     optional string data = 2;
   }
-  repeated StringData stringVars = 7;
+  repeated StringVariable stringVars = 7;
   
-  message StringArrayVariables {
+  message StringArrayVariable {
     required string name = 1;
     repeated string data = 2;
   }
-  repeated StringArrayVariables stringArrayVars = 8;
+  repeated StringArrayVariable stringArrayVars = 8;
   
-  message RawVariables {
+  message RawVariable {
     required string name = 1;
     optional bytes data = 2;
   }
-  repeated RawVariables rawVars = 9;
+  repeated RawVariable rawVars = 9;
+}
+
+service ExchangeService {
+  rpc Exchange (MainMessage) returns (MainMessage);
 }

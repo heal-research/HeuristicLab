@@ -21,14 +21,11 @@
 
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Problems.ExternalEvaluation {
-  [Plugin("HeuristicLab.Problems.ExternalEvaluation", "3.3.0.3832")]
-  [PluginFile("HeuristicLab.Problems.ExternalEvaluation-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Persistence", "3.3")]
-  [PluginDependency("HeuristicLab.Core", "3.3")]
-  [PluginDependency("HeuristicLab.Collections", "3.3")]
-  [PluginDependency("HeuristicLab.Parameters", "3.3")]
-  [PluginDependency("HeuristicLab.ProtobufCS", "0.9.1")]
-  public class HeuristicLabProblemsExternalEvaluationPlugin : PluginBase {
+namespace HeuristicLab.ProtobufCS {
+  [Plugin("HeuristicLab.ProtobufCS", "0.9.1.$WCREV$")]
+  [PluginFile("HeuristicLab.ProtobufCS-0.9.1.dll", PluginFileType.Assembly)]
+  [PluginFile("Google.ProtocolBuffers-0.9.1.dll", PluginFileType.Assembly)]
+  [PluginFile("Google.ProtocolBuffers-license-0.9.1.txt", PluginFileType.License)]
+  public class HeuristicLabProtobufCSPlugin : PluginBase {
   }
 }
