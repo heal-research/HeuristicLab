@@ -32,6 +32,7 @@ namespace SVM {
     private Parameter _parameter;
     private int _numberOfClasses;
     private int _supportVectorCount;
+    private int[] _supportVectorIndizes;
     private Node[][] _supportVectors;
     private double[][] _supportVectorCoefficients;
     private double[] _rho;
@@ -77,6 +78,18 @@ namespace SVM {
       }
       set {
         _supportVectorCount = value;
+      }
+    }
+
+    /// <summary>
+    /// Indizes of support vectors identified in the training.
+    /// </summary>
+    public int[] SupportVectorIndizes {
+      get {
+        return _supportVectorIndizes;
+      }
+      set {
+        _supportVectorIndizes = value;
       }
     }
 

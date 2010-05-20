@@ -1672,14 +1672,18 @@ namespace SVM
                 for (i = 0; i < prob.Count; i++)
                     if (Math.Abs(f.alpha[i]) > 0) ++nSV;                
                 model.SupportVectorCount = nSV;
+                model.SupportVectorIndizes = new int[nSV];
                 model.SupportVectors = new Node[nSV][];
                 model.SupportVectorCoefficients[0] = new double[nSV];
+                
                 int j = 0;
                 for (i = 0; i < prob.Count; i++)
                     if (Math.Abs(f.alpha[i]) > 0)
                     {
                         model.SupportVectors[j] = prob.X[i];
+                        model.SupportVectorIndizes[j] = i;
                         model.SupportVectorCoefficients[0][j] = f.alpha[i];
+                       
                         ++j;
                     }
             }
@@ -1819,9 +1823,15 @@ namespace SVM
 
                 model.SupportVectorCount = nnz;
                 model.SupportVectors = new Node[nnz][];
+                model.SupportVectorIndizes = new int[nnz];
                 p = 0;
-                for (i = 0; i < l; i++)
-                    if (nonzero[i]) model.SupportVectors[p++] = x[i];
+                for (i = 0; i < l; i++) {
+                  if (nonzero[i]) {
+                    model.SupportVectors[p] = x[i];
+                    model.SupportVectorIndizes[p] = i;
+                    p++;
+                  }
+                }
 
                 int[] nz_start = new int[nr_class];
                 nz_start[0] = 0;

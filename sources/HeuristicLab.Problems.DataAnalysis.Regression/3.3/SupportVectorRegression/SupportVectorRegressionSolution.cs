@@ -48,18 +48,31 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.SupportVectorRegression 
       get { return model; }
     }
 
-    [Storable]
-    private List<string> inputVariables;
+    public Dataset SupportVectors {
+      get { return CalculateSupportVectors(); }
+    }
 
     public SupportVectorRegressionSolution() : base() { }
     public SupportVectorRegressionSolution(DataAnalysisProblemData problemData, SupportVectorMachineModel model, IEnumerable<string> inputVariables, double lowerEstimationLimit, double upperEstimationLimit)
       : base(problemData, lowerEstimationLimit, upperEstimationLimit) {
       this.model = model;
-      this.inputVariables = new List<string>(inputVariables);
     }
 
     protected override void OnProblemDataChanged(EventArgs e) {
       RecalculateEstimatedValues();
+      model.Model.SupportVectorIndizes = new int[0];
+    }
+
+    private Dataset CalculateSupportVectors() {
+      if (model.Model.SupportVectorIndizes.Length == 0)
+        return new Dataset();
+
+      Dataset dataset = new Dataset(ProblemData.Dataset.VariableNames, new double[model.Model.SupportVectorCount, ProblemData.Dataset.Columns]);
+      for (int i = 0; i < model.Model.SupportVectorIndizes.Length; i++) {
+        for (int column = 0; column < ProblemData.Dataset.Columns; column++)
+          dataset[i, column] = ProblemData.Dataset[model.Model.SupportVectorIndizes[i], column];
+      }
+      return dataset;
     }
 
     private void RecalculateEstimatedValues() {

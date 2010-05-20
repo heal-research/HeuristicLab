@@ -58,9 +58,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       if (Content != null) {
         dataPanel.Content = Content.ProblemData;
         modelPanel.Content = Content.Model;
+        supportVectorViewHost.Content = Content.SupportVectors;
       } else {
         dataPanel.Content = null;
         modelPanel.Content = null;
+        supportVectorViewHost.Content = null;
       }
     }
     protected override void RegisterContentEvents() {
