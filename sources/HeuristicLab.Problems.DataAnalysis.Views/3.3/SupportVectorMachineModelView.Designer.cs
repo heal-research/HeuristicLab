@@ -54,6 +54,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.textBox.Location = new System.Drawing.Point(3, 3);
       this.textBox.Multiline = true;
       this.textBox.Name = "textBox";
+      this.textBox.ReadOnly = true;
+      this.textBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
       this.textBox.Size = new System.Drawing.Size(247, 245);
       this.textBox.TabIndex = 0;
       // 
@@ -73,6 +75,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     #endregion
 
     private System.Windows.Forms.TextBox textBox;
+
 
   }
 }

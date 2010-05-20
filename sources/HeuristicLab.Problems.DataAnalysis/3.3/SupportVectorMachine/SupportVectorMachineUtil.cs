@@ -45,8 +45,8 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
       int maxNodeIndex = 0;
       for (int row = 0; row < rowCount; row++) {
         tempRow = new List<SVM.Node>();
-        foreach (var inputVariable in problemData.InputVariables) {
-          int col = problemData.Dataset.GetVariableIndex(inputVariable.Value);
+        foreach (var inputVariable in problemData.InputVariables.CheckedItems) {
+          int col = problemData.Dataset.GetVariableIndex(inputVariable.Value.Value);
           double value = problemData.Dataset[start + row, col];
           if (!double.IsNaN(value)) {
             int nodeIndex = col + 1; // make sure the smallest nodeIndex = 1

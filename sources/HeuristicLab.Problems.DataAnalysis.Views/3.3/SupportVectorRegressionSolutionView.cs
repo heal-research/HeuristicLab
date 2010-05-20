@@ -53,22 +53,27 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       InitializeComponent();
     }
 
-
-    #region events
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
+      if (Content != null) {
+        dataPanel.Content = Content.ProblemData;
+        modelPanel.Content = Content.Model;
+      } else {
+        dataPanel.Content = null;
+        modelPanel.Content = null;
+      }
+    }
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      Content.ProblemDataChanged += new EventHandler(Content_Changed);
+      Content.ProblemDataChanged += new EventHandler(Content_ProblemDataChanged);
     }
 
     protected override void DeregisterContentEvents() {
       base.DeregisterContentEvents();
     }
 
-    private void Content_Changed(object sender, EventArgs e) {
-      modelPanel.Content = Content.Model;
+    private void Content_ProblemDataChanged(object sender, EventArgs e) {
       dataPanel.Content = Content.ProblemData;
     }
-
-    #endregion
   }
 }

@@ -52,19 +52,27 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       InitializeComponent();
     }
 
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
+      if (Content == null)
+        textBox.Text = string.Empty;
+      else
+        UpdateTextBox();
+    }
 
-    #region events
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.Changed += new EventHandler(Content_Changed);
     }
-
     protected override void DeregisterContentEvents() {
       base.DeregisterContentEvents();
       Content.Changed -= new EventHandler(Content_Changed);
     }
-
     private void Content_Changed(object sender, EventArgs e) {
+      UpdateTextBox();
+    }
+
+    private void UpdateTextBox() {
       using (MemoryStream s = new MemoryStream()) {
         SupportVectorMachineModel.Export(Content, s);
         s.Seek(0, System.IO.SeekOrigin.Begin);
@@ -72,7 +80,5 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         textBox.Text = reader.ReadToEnd();
       }
     }
-
-    #endregion
   }
 }
