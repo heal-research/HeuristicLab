@@ -1,62 +1,69 @@
 package HeuristicLab.Problems.ExternalEvaluation;
 option java_package = "com.heuristiclab.problems.externalevaluation";
 
-message MainMessage {
+message SolutionMessage {
+  required int32 solutionId = 1;
+  
   message IntegerVariable {
     required string name = 1;
     optional int32 data = 2;
   }
-  repeated IntegerVariable integerVars = 1;
+  repeated IntegerVariable integerVars = 2;
   
   message IntegerArrayVariable {
     required string name = 1;
-    repeated int32 data = 2 [packed = true];
+    repeated int32 data = 2;
   }
-  repeated IntegerArrayVariable integerArrayVars = 2;
+  repeated IntegerArrayVariable integerArrayVars = 3;
   
   message DoubleVariable {
     required string name = 1;
     optional double data = 2;
   }
-  repeated DoubleVariable doubleVars = 3;
+  repeated DoubleVariable doubleVars = 4;
   
   message DoubleArrayVariable {
     required string name = 1;
     repeated double data = 2;
   }
-  repeated DoubleArrayVariable doubleArrayVars = 4;
+  repeated DoubleArrayVariable doubleArrayVars = 5;
   
   message BoolVariable {
     required string name = 1;
     optional bool data = 2;
   }
-  repeated BoolVariable boolVars = 5;
+  repeated BoolVariable boolVars = 6;
   
   message BoolArrayVariable {
     required string name = 1;
     repeated bool data = 2;
   }
-  repeated BoolArrayVariable boolArrayVars = 6;
+  repeated BoolArrayVariable boolArrayVars = 7;
   
   message StringVariable {
     required string name = 1;
     optional string data = 2;
   }
-  repeated StringVariable stringVars = 7;
+  repeated StringVariable stringVars = 8;
   
   message StringArrayVariable {
     required string name = 1;
     repeated string data = 2;
   }
-  repeated StringArrayVariable stringArrayVars = 8;
+  repeated StringArrayVariable stringArrayVars = 9;
   
   message RawVariable {
     required string name = 1;
     optional bytes data = 2;
   }
-  repeated RawVariable rawVars = 9;
+  repeated RawVariable rawVars = 10;
 }
 
+message QualityMessage {
+  required int32 solutionId = 1;
+  required double quality = 2;
+}
+  
 service ExchangeService {
-  rpc Exchange (MainMessage) returns (MainMessage);
+  rpc EvaluateSingleObjectively (SolutionMessage) returns (QualityMessage);
 }

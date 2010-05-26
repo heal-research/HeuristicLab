@@ -19,7 +19,10 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Core;
+using Google.ProtocolBuffers;
+using Google.ProtocolBuffers.Descriptors;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   public interface IExternalEvaluationDriver : IItem {
@@ -32,37 +35,22 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     /// </summary>
     /// <remarks>
     /// Must be called before calling <seealso cref="Send"/> or <seealso cref="Receive"/>.
-    /// The concrete implementation of the driver may require additional information on how to start a connection.
+    /// The concrete implementation of the driver may require additional information on how to start a connection,
+    /// which should be passed into the concrete driver's constructor.
     /// </remarks>
     void Start();
     /// <summary>
-    /// Tells the driver to send a particular message.
+    /// Evaluates a given solution in a blocking manner.
     /// </summary>
-    /// <param name="msg">The message that should be transmitted.</param>
-    /// <remarks>
-    /// This call is non-blocking, the message need not be received synchronously.
-    /// </remarks>
-    void Send(MainMessage msg);
+    /// <param name="solution">The solution message that should be evaluated.</param>
+    /// <returns>The resulting quality message from the external process.</returns>
+    QualityMessage Evaluate(SolutionMessage solution);
     /// <summary>
-    /// Tells the driver to receive the next message.
+    /// Evaluates a given solution in a non-blocking manner.
     /// </summary>
-    /// <exception cref="ConnectionTerminatedException">Thrown when the other client sent a message saying it will end the connection. In this case <see cref="Stop"/> is called automatically.</exception>
-    /// <exception cref="NotSupportedException">Thrown when there is no notion of a "next" message for a given driver.</exception>
-    /// <returns>The message that was received or null if no message is present.</returns>
-    /// <remarks>
-    /// This call is non-blocking and returns null if no message is present.
-    /// </remarks>
-    MainMessage Receive();
-    /// <summary>
-    /// Tells the driver to receive the next message of the type given in the parameter.
-    /// </summary>
-    /// <exception cref="NotSupportedException">Some implementations may not support receiving a specific message.</exception>
-    /// <returns>The message that was received.</returns>
-    /// <remarks>
-    /// This call is non-blocking and returns null if no message is present.
-    /// </remarks>
-    /// <param name="messageDescriptor">The fullname of the descriptor for the message type to receive.</param>
-    MainMessage Receive(MainMessage message);
+    /// <param name="solution">The solution message that should be evaluated.</param>
+    /// <param name="callback">The callback method that is invoked when evaluation is finished.</param>
+    void EvaluateAsync(SolutionMessage solution, Action<QualityMessage> callback);
     /// <summary>
     /// Tells the driver to stop and terminate open connections.
     /// </summary>

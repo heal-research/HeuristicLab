@@ -19,21 +19,18 @@
  */
 #endregion
 
-using HeuristicLab.PluginInfrastructure;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Operators;
+using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
-  [Plugin("HeuristicLab.Problems.ExternalEvaluation", "3.3.0.3832")]
-  [PluginFile("HeuristicLab.Problems.ExternalEvaluation-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Collections", "3.3")]
-  [PluginDependency("HeuristicLab.Common", "3.3")]
-  [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
-  [PluginDependency("HeuristicLab.Core", "3.3")]
-  [PluginDependency("HeuristicLab.Data", "3.3")]
-  [PluginDependency("HeuristicLab.Operators", "3.3")]
-  [PluginDependency("HeuristicLab.Optimization", "3.3")]
-  [PluginDependency("HeuristicLab.Parameters", "3.3")]
-  [PluginDependency("HeuristicLab.Persistence", "3.3")]
-  [PluginDependency("HeuristicLab.ProtobufCS", "0.9.1")]
-  public class HeuristicLabProblemsExternalEvaluationPlugin : PluginBase {
+  [Item("ExternalEvaluationSolutionCreator", "The solution creator for external evaluation problems.")]
+  [StorableClass]
+  public class ExternalEvaluationSolutionCreator : CheckedMultiOperator<IOperator>, ISolutionCreator {
   }
 }
