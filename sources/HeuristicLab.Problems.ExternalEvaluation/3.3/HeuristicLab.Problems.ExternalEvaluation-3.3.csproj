@@ -82,6 +82,7 @@
     <Compile Include="Drivers\ExternalEvaluationProcessDriver.cs" />
     <Compile Include="Drivers\ExternalEvaluationStreamDriver.cs" />
     <Compile Include="ExternalEvaluationProblem.cs" />
+    <Compile Include="ExternalEvaluationSolutionCreator.cs" />
     <Compile Include="ExternalEvaluator.cs" />
     <Compile Include="HeuristicLabProblemsExternalEvaluationPlugin.cs" />
     <Compile Include="Interfaces\IExternalEvaluationDriver.cs" />

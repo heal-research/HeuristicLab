@@ -68,6 +68,41 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     }
     #endregion
 
+    #region Properties
+    public BoolValue Maximization {
+      get { return MaximizationParameter.Value; }
+      set { MaximizationParameter.Value = value; }
+    }
+    public IOperator SolutionCreator {
+      get { return SolutionCreatorParameter.Value; }
+      set { SolutionCreatorParameter.Value = value; }
+    }
+    ISolutionCreator IProblem.SolutionCreator {
+      get { return SolutionCreatorParameter.Value; }
+    }
+    public ISingleObjectiveTestFunctionProblemEvaluator Evaluator {
+      get { return EvaluatorParameter.Value; }
+      set { EvaluatorParameter.Value = value; }
+    }
+    ISingleObjectiveEvaluator ISingleObjectiveProblem.Evaluator {
+      get { return EvaluatorParameter.Value; }
+    }
+    IEvaluator IProblem.Evaluator {
+      get { return EvaluatorParameter.Value; }
+    }
+    public DoubleValue BestKnownQuality {
+      get { return BestKnownQualityParameter.Value; }
+      set { BestKnownQualityParameter.Value = value; }
+    }
+    private List<IOperator> operators;
+    public IEnumerable<IOperator> Operators {
+      get { return operators; }
+    }
+    private BestSingleObjectiveTestFunctionSolutionAnalyzer BestSingleObjectiveTestFunctionSolutionAnalyzer {
+      get { return operators.OfType<BestSingleObjectiveTestFunctionSolutionAnalyzer>().FirstOrDefault(); }
+    }
+    #endregion
+
     public ExternalEvaluationProblem()
       : base() {
       ExternalEvaluator evaluator = new ExternalEvaluator();
