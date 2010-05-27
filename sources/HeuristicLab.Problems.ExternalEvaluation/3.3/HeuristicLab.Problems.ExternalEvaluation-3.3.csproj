@@ -12,6 +12,8 @@
     <AssemblyName>HeuristicLab.Problems.ExternalEvaluation-3.3</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -79,6 +81,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Analyzers\BestExternalEvaluationSolutionAnalyzer.cs" />
+    <None Include="HeuristicLabProblemsExternalEvaluationPlugin.cs.frame" />
     <Compile Include="Drivers\ExternalEvaluationDriver.cs" />
     <Compile Include="Drivers\ExternalEvaluationProcessDriver.cs" />
     <Compile Include="Drivers\ExternalEvaluationStreamDriver.cs" />
@@ -89,6 +92,7 @@
     <Compile Include="Interfaces\IExternalEvaluationDriver.cs" />
     <Compile Include="Interfaces\IExternalEvaluationProblemEvaluator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="Properties\AssemblyInfo.frame" />
     <Compile Include="Protos\ExternalEvaluationMessages.cs" />
     <Compile Include="SolutionMessageBuilding.cs" />
     <None Include="Protos\ProcessProtos.cmd" />
@@ -144,6 +148,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="HeuristicLab.snk" />
     <None Include="Protos\ExternalEvaluationMessages.proto" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -155,8 +160,12 @@
   </Target>
   -->
   <PropertyGroup>
-    <PreBuildEvent>set ProjectDir=$(ProjectDir)
+    <PreBuildEvent>set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
-call "$(ProjectDir)"Protos\ProcessProtos.cmd</PreBuildEvent>
+call "$(ProjectDir)Protos\ProcessProtos.cmd"
+
+call PreBuildEvent.cmd
+SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabProblemsExternalEvaluationPlugin.cs.frame" "%25ProjectDir%25\HeuristicLabProblemsExternalEvaluationPlugin.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>

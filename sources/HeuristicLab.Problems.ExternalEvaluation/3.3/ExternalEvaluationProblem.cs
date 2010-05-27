@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using HeuristicLab.Collections;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
@@ -32,8 +33,9 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("External Evaluation Problem", "A problem that is evaluated in a different process.")]
+  [Creatable("Problems")]
   [StorableClass]
-  public class ExternalEvaluationProblem : ParameterizedNamedItem, ISingleObjectiveProblem {
+  public sealed class ExternalEvaluationProblem : ParameterizedNamedItem, ISingleObjectiveProblem {
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Type; }
     }
@@ -123,7 +125,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
 
       Parameters.Add(new ValueParameter<IExternalEvaluationDriver>("Driver", "The communication driver that is used to exchange data with the external process."));
       Parameters.Add(new ValueParameter<IExternalEvaluationProblemEvaluator>("Evaluator", "The evaluator that collects the values to exchange.", evaluator));
-      Parameters.Add(new ValueParameter<IOperator>("SolutionCreator", "An operator to create the solution components.", solutionCreator));
+      Parameters.Add(new ValueParameter<ISolutionCreator>("SolutionCreator", "An operator to create the solution components.", solutionCreator));
       Parameters.Add(new ValueParameter<BoolValue>("Maximization", "Set to false as most test functions are minimization problems.", new BoolValue(false)));
       Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this problem."));
       Parameters.Add(new OptionalValueParameter<IScope>("BestKnownSolution", "The best known solution for this external evaluation problem."));
@@ -131,6 +133,12 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
 
       InitializeOperators();
       AttachEventHandlers();
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      ExternalEvaluationProblem clone = (ExternalEvaluationProblem)base.Clone(cloner);
+      clone.AttachEventHandlers();
+      return clone;
     }
 
     #region Events
@@ -198,7 +206,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
       EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
       Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
-      OperatorsParameter.ValueChanged += new System.EventHandler(OperatorsParameter_ValueChanged);
+      OperatorsParameter.ValueChanged += new EventHandler(OperatorsParameter_ValueChanged);
       OperatorsParameter.Value.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<IOperator>>(OperatorsParameter_Value_ItemsAdded);
       OperatorsParameter.Value.ItemsRemoved += new CollectionItemsChangedEventHandler<IndexedItem<IOperator>>(OperatorsParameter_Value_ItemsRemoved);
       OperatorsParameter.Value.CollectionReset += new CollectionItemsChangedEventHandler<IndexedItem<IOperator>>(OperatorsParameter_Value_CollectionReset);

@@ -21,8 +21,6 @@
 
 using System;
 using HeuristicLab.Core;
-using Google.ProtocolBuffers;
-using Google.ProtocolBuffers.Descriptors;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   public interface IExternalEvaluationDriver : IItem {

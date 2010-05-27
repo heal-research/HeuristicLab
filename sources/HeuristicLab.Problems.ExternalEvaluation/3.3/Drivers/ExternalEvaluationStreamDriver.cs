@@ -20,9 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 using Google.ProtocolBuffers;
 using HeuristicLab.Core;
@@ -37,6 +34,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     private CodedOutputStream outputStream;
     private Stream output;
 
+    public ExternalEvaluationStreamDriver() : base() { }
     public ExternalEvaluationStreamDriver(Stream input, Stream output)
       : base() {
       if (!input.CanRead) throw new ArgumentException("Input stream cannot be read", "input");

@@ -20,11 +20,8 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Diagnostics;
 using System.IO;
-using Google.ProtocolBuffers;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -39,6 +36,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     private string arguments;
     private ExternalEvaluationStreamDriver driver;
 
+    public LocalProcessDriver() : this(String.Empty, String.Empty) { }
     public LocalProcessDriver(string executable, string arguments)
       : base() {
       this.executable = executable;

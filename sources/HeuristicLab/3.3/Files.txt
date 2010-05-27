@@ -46,6 +46,7 @@ HeuristicLab.Problems.ArtificialAnt.Views\3.3:HeuristicLab.Problems.ArtificialAn
 HeuristicLab.Problems.DataAnalysis\3.3:HeuristicLab.Problems.DataAnalysis-3.3.dll
 HeuristicLab.Problems.DataAnalysis.Regression\3.3:HeuristicLab.Problems.DataAnalysis.Regression-3.3.dll
 HeuristicLab.Problems.DataAnalysis.Views\3.3:HeuristicLab.Problems.DataAnalysis.Views-3.3.dll
+HeuristicLab.Problems.ExternalEvaluation\3.3:HeuristicLab.Problems.ExternalEvaluation-3.3.dll
 HeuristicLab.Problems.Knapsack\3.3:HeuristicLab.Problems.Knapsack-3.3.dll
 HeuristicLab.Problems.Knapsack.Views\3.3:HeuristicLab.Problems.Knapsack.Views-3.3.dll
 HeuristicLab.Problems.OneMax\3.3:HeuristicLab.Problems.OneMax-3.3.dll
@@ -75,6 +76,10 @@ HeuristicLab.ExtLibs\HeuristicLab.log4net\1.2.10.0:log4net License.txt
 HeuristicLab.ExtLibs\HeuristicLab.Netron\3.0.2672.12446\Netron.Diagramming.Core-3.0.2672.12446:Netron.Diagramming.Core-3.0.2672.12446.dll
 HeuristicLab.ExtLibs\HeuristicLab.Netron\3.0.2672.12446\HeuristicLab.Netron-3.0.2672.12446:HeuristicLab.Netron-3.0.2672.12446.dll
 HeuristicLab.ExtLibs\HeuristicLab.Netron\3.0.2672.12446\HeuristicLab.Netron-3.0.2672.12446:Netron.Diagramming.Core License.txt
+
+HeuristicLab.ExtLibs\HeuristicLab.ProtobufCS\0.9.1\HeuristicLab.ProtobufCS:HeuristicLab.ProtobufCS-0.9.1.dll
+HeuristicLab.ExtLibs\HeuristicLab.ProtobufCS\0.9.1\HeuristicLab.ProtobufCS:Google.ProtocolBuffers-0.9.1.dll
+HeuristicLab.ExtLibs\HeuristicLab.ProtobufCS\0.9.1\HeuristicLab.ProtobufCS:Google.ProtocolBuffers-license-0.9.1.txt
 
 HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327:HeuristicLab.SharpDevelop-3.1.1.5327.dll
 HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327:ICSharpCode.NRefactory.dll

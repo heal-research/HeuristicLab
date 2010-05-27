@@ -19,12 +19,11 @@
  */
 #endregion
 
-using HeuristicLab.Data;
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Core;
-using Google.ProtocolBuffers;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   public static class SolutionMessageBuildRegistry {
