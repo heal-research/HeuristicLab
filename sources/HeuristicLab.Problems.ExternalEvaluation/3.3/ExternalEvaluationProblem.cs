@@ -117,7 +117,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     #endregion
 
     [StorableConstructor]
-    protected ExternalEvaluationProblem(bool deserializing) : base(deserializing) { }
+    private ExternalEvaluationProblem(bool deserializing) : base(deserializing) { }
     public ExternalEvaluationProblem()
       : base() {
       ExternalEvaluator evaluator = new ExternalEvaluator();

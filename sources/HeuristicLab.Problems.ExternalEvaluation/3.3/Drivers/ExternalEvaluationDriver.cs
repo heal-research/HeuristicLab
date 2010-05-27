@@ -26,7 +26,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("ExternalEvaluationDriver", "Abstract base class for drivers to be used in an external evaluation problem.")]
   [StorableClass]
-  public abstract class ExternalEvaluationDriver : Item, IExternalEvaluationDriver {
+  public abstract class ExternalEvaluationDriver : NamedItem, IExternalEvaluationDriver {
     // will not be serialized, since it will always be false after deserialization
     public bool IsInitialized { get; protected set; }
 

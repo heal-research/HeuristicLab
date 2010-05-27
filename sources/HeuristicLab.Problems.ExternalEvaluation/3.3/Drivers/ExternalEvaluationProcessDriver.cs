@@ -28,7 +28,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("ExternalEvaluationProcessDriver", "A driver for external evaluation problems that launches the external application in a new process.")]
   [StorableClass]
-  public class LocalProcessDriver : ExternalEvaluationDriver {
+  public class ExternalEvaluationProcessDriver : ExternalEvaluationDriver {
     private Process process;
     [Storable]
     private string executable;
@@ -36,8 +36,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     private string arguments;
     private ExternalEvaluationStreamDriver driver;
 
-    public LocalProcessDriver() : this(String.Empty, String.Empty) { }
-    public LocalProcessDriver(string executable, string arguments)
+    public ExternalEvaluationProcessDriver() : this(String.Empty, String.Empty) { }
+    public ExternalEvaluationProcessDriver(string executable, string arguments)
       : base() {
       this.executable = executable;
       this.arguments = arguments;
