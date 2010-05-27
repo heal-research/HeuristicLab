@@ -29,6 +29,9 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("ExternalEvaluationStreamDriver", "A driver for external evaluation problems that communicates via an input and an output stream.")]
   [StorableClass]
   public class ExternalEvaluationStreamDriver : ExternalEvaluationDriver {
+    public override bool CanChangeName { get { return false; } }
+    public override bool CanChangeDescription { get { return false; } }
+
     private CodedInputStream inputStream;
     private Stream input;
     private CodedOutputStream outputStream;

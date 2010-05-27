@@ -44,25 +44,46 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
     }
 
     protected override void DeregisterContentEvents() {
-      // TODO: Deregister your event handlers here
+      Content.ExecutableChanged -= new EventHandler(Content_ExecutableChanged);
+      Content.ArgumentsChanged -= new EventHandler(Content_ArgumentsChanged);
+      Content.ProcessStarted -= new EventHandler(Content_ProcessStarted);
+      Content.ProcessExited -= new EventHandler(Content_ProcessExited);
       base.DeregisterContentEvents();
     }
 
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      // TODO: Register your event handlers here
+      Content.ExecutableChanged += new EventHandler(Content_ExecutableChanged);
+      Content.ArgumentsChanged += new EventHandler(Content_ArgumentsChanged);
+      Content.ProcessStarted += new EventHandler(Content_ProcessStarted);
+      Content.ProcessExited += new EventHandler(Content_ProcessExited);
     }
 
     #region Event Handlers (Content)
-    // TODO: Put event handlers of the content here
+    private void Content_ExecutableChanged(object sender, EventArgs e) {
+      executableTextBox.Text = Content.Executable;
+    }
+    private void Content_ArgumentsChanged(object sender, EventArgs e) {
+      argumentsTextBox.Text = Content.Arguments;
+    }
+    private void Content_ProcessStarted(object sender, EventArgs e) {
+      if (InvokeRequired) Invoke(new Action<object, EventArgs>(Content_ProcessStarted), sender, e);
+      else SetEnabledStateOfControls();
+    }
+    private void Content_ProcessExited(object sender, EventArgs e) {
+      if (InvokeRequired) Invoke(new Action<object, EventArgs>(Content_ProcessExited), sender, e);
+      else SetEnabledStateOfControls();
+    }
     #endregion
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        // TODO: Add code when content has been changed and is null
+        executableTextBox.Text = String.Empty;
+        argumentsTextBox.Text = String.Empty;
       } else {
-        // TODO: Add code when content has been changed and is not null
+        executableTextBox.Text = Content.Executable;
+        argumentsTextBox.Text = Content.Arguments;
       }
       SetEnabledStateOfControls();
     }
@@ -73,11 +94,45 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
     }
 
     private void SetEnabledStateOfControls() {
-      // TODO: Enable or disable controls based on whether the content is null or the view is set readonly
+      bool readOnlyDriverNullOrStarted = ReadOnly || Content == null || Content.IsInitialized;
+      browseExecutableButton.Enabled = !readOnlyDriverNullOrStarted;
+      startButton.Enabled = !readOnlyDriverNullOrStarted;
+      terminateButton.Enabled = !ReadOnly && Content != null && Content.IsInitialized;
+      executableTextBox.Enabled = !readOnlyDriverNullOrStarted;
+      argumentsTextBox.Enabled = !readOnlyDriverNullOrStarted;
     }
 
     #region Event Handlers (child controls)
-    // TODO: Put event handlers of child controls here.
+    private void browseExecutableButton_Click(object sender, EventArgs e) {
+      if (openFileDialog.ShowDialog() == DialogResult.OK) {
+        try {
+          Content.Executable = openFileDialog.FileName;
+        } catch (InvalidOperationException ex) {
+          MessageBox.Show(ex.Message);
+        }
+      }
+    }
+    private void argumentsTextBox_Validated(object sender, EventArgs e) {
+      if (Content != null) {
+        Content.Arguments = argumentsTextBox.Text;
+      }
+    }
     #endregion
+
+    private void startButton_Click(object sender, EventArgs e) {
+      try {
+        Content.Start();
+      } catch (InvalidOperationException ex) {
+        MessageBox.Show(ex.Message);
+      }
+    }
+
+    private void terminateButton_Click(object sender, EventArgs e) {
+      try {
+        Content.Stop();
+      } catch (InvalidOperationException ex) {
+        MessageBox.Show(ex.Message);
+      }
+    }
   }
 }

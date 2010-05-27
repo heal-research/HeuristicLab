@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("HeuristicLab.Problems.ExternalEvaluation.Views-3.3")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("HeuristicLab.Problems.ExternalEvaluation.Views")]
+[assembly: AssemblyDescription("View-Plugin for Problems that are evaluated outside of HeuristicLab.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("HeuristicLab.Problems.ExternalEvaluation.Views-3.3")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2010")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("HeuristicLab")]
+[assembly: AssemblyCopyright("(c) 2002-2010 HEAL")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("3.3.0.0")]
+[assembly: AssemblyFileVersion("3.3.0.0")]

@@ -205,6 +205,7 @@ namespace HeuristicLab.Problems.TestFunctions {
       ParameterizeSolutionCreator();
       ParameterizeAnalyzers();
       SolutionCreator_RealVectorParameter_ActualNameChanged(null, EventArgs.Empty);
+      OnSolutionCreatorChanged();
     }
     private void SolutionCreator_RealVectorParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeEvaluator();
@@ -223,6 +224,7 @@ namespace HeuristicLab.Problems.TestFunctions {
         ProblemSize.Value = Evaluator.MaximumProblemSize;
       BestKnownQuality = new DoubleValue(Evaluator.BestKnownQuality);
       Evaluator_QualityParameter_ActualNameChanged(null, EventArgs.Empty);
+      OnEvaluatorChanged();
       OnReset();
     }
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {

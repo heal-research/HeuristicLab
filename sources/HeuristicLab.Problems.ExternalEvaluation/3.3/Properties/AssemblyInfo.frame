@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("HeuristicLab.Problems.ExternalEvaluation")]
-[assembly: AssemblyDescription("Plugins for Problems that are evaluated outside of HeuristicLab.")]
+[assembly: AssemblyDescription("Plugin for Problems that are evaluated outside of HeuristicLab.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("HeuristicLab")]

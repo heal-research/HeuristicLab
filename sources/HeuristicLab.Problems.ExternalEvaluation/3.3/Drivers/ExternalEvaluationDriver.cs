@@ -30,6 +30,12 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     // will not be serialized, since it will always be false after deserialization
     public bool IsInitialized { get; protected set; }
 
+    protected ExternalEvaluationDriver()
+      : base() {
+      name = ItemName;
+      description = ItemDescription;
+    }
+
     #region IExternalEvaluationDriver Members
 
     public virtual void Start() {
