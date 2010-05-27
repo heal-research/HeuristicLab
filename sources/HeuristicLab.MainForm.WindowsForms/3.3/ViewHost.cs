@@ -113,8 +113,12 @@ namespace HeuristicLab.MainForm.WindowsForms {
           if (defaultViewType == null) {
             if (viewContextMenuStrip.Items.Count > 0)  // create first available view if default view is not available
               ViewType = (Type)viewContextMenuStrip.Items[0].Tag;
-          } else if (defaultViewType != this.ViewType)
-            ViewType = defaultViewType;
+          } else ViewType = defaultViewType;
+        } else {
+          foreach (Type type in cachedViews.Keys.ToList()) {
+            if (!ViewCanShowContent(type, Content))
+              cachedViews.Remove(type);
+          }
         }
         UpdateActiveMenuItem();
         foreach (IContentView view in cachedViews.Values)
