@@ -32,5 +32,13 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("ExternalEvaluationSolutionCreator", "The solution creator for external evaluation problems.")]
   [StorableClass]
   public class ExternalEvaluationSolutionCreator : CheckedMultiOperator<IOperator>, ISolutionCreator {
+    public override IOperation Apply() {
+      OperationCollection result = new OperationCollection();
+      foreach (IOperator op in Operators.CheckedItems.OrderBy(x => x.Index).Select(x => x.Value)) {
+        result.Add(ExecutionContext.CreateOperation(op));
+      }
+      result.Add(base.Apply());
+      return result;
+    }
   }
 }

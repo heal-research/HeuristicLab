@@ -78,6 +78,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Analyzers\BestExternalEvaluationSolutionAnalyzer.cs" />
     <Compile Include="Drivers\ExternalEvaluationDriver.cs" />
     <Compile Include="Drivers\ExternalEvaluationProcessDriver.cs" />
     <Compile Include="Drivers\ExternalEvaluationStreamDriver.cs" />

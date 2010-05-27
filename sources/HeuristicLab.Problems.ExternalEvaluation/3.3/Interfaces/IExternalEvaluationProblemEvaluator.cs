@@ -24,8 +24,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using HeuristicLab.Optimization;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   public interface IExternalEvaluationProblemEvaluator : ISingleObjectiveEvaluator {
+    IValueLookupParameter<IExternalEvaluationDriver> DriverParameter { get; }
   }
 }
