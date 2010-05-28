@@ -92,6 +92,7 @@
     <Compile Include="Evaluators\GriewankEvaluator.cs" />
     <Compile Include="Evaluators\LevyEvaluator.cs" />
     <Compile Include="Evaluators\MatyasEvaluator.cs" />
+    <Compile Include="Evaluators\MultinormalEvaluator.cs" />
     <Compile Include="Evaluators\RastriginEvaluator.cs" />
     <Compile Include="Evaluators\RosenbrockEvaluator.cs" />
     <Compile Include="Evaluators\SchwefelEvaluator.cs" />
@@ -112,6 +113,7 @@
     <Compile Include="MoveEvaluators\AckleyAdditiveMoveEvaluator.cs" />
     <Compile Include="MoveEvaluators\BealeAdditiveMoveEvaluator.cs" />
     <Compile Include="MoveEvaluators\BoothAdditiveMoveEvaluator.cs" />
+    <Compile Include="MoveEvaluators\MultinormalAdditiveMoveEvaluator.cs" />
     <Compile Include="MoveEvaluators\GriewankAdditiveMoveEvaluator.cs" />
     <Compile Include="MoveEvaluators\ZakharovAdditiveMoveEvaluator.cs" />
     <Compile Include="MoveEvaluators\SumSquaresAdditiveMoveEvaluator.cs" />
