@@ -61,7 +61,6 @@ namespace HeuristicLab.Optimization.Operators {
       ItemArray<DoubleValue> rightQualities = RightSideParameter.ActualValue;
       if (rightQualities.Length < 1) throw new InvalidOperationException(Name + ": No subscopes found.");
       double compFact = ComparisonFactorParameter.ActualValue.Value;
-      if (compFact < 0 || compFact > 1) throw new InvalidOperationException(Name + ": Comparison Factor is outside the range [0;1]");
       bool maximization = MaximizationParameter.ActualValue.Value;
       double leftQuality = LeftSideParameter.ActualValue.Value;
 
@@ -69,30 +68,35 @@ namespace HeuristicLab.Optimization.Operators {
 
       #region Calculate threshold
       if (rightQualities.Length == 2) { // this case will probably be used most often
-        threshold = (maximization ?
-        (Math.Max(rightQualities[0].Value, rightQualities[1].Value) * compFact + Math.Min(rightQualities[0].Value, rightQualities[1].Value) * (1 - compFact)) :
-        (Math.Min(rightQualities[0].Value, rightQualities[1].Value) * compFact + Math.Max(rightQualities[0].Value, rightQualities[1].Value) * (1 - compFact)));
+        double minQuality = Math.Min(rightQualities[0].Value, rightQualities[1].Value);
+        double maxQuality = Math.Max(rightQualities[0].Value, rightQualities[1].Value);
+        if (maximization)
+          threshold = minQuality + (maxQuality - minQuality) * compFact;
+        else
+          threshold = maxQuality - (maxQuality - minQuality) * compFact;
       } else if (rightQualities.Length == 1) { // case for just one parent
         threshold = rightQualities[0].Value;
       } else { // general case extended to 3 or more parents
         List<double> sortedQualities = rightQualities.Select(x => x.Value).ToList();
         sortedQualities.Sort();
-        double min = sortedQualities.First() * -1; // min is used to pull the qualities to the 0 line
+        double minimumQuality = sortedQualities.First();
 
-        double sum = min * sortedQualities.Count;
+        double integral = 0;
         for (int i = 0; i < sortedQualities.Count - 1; i++) {
-          sum += (sortedQualities[i] + sortedQualities[i + 1]) / 2.0; // sum of the trapezoid
+          integral += (sortedQualities[i] + sortedQualities[i + 1]) / 2.0; // sum of the trapezoid
         }
-        if (sum == 0) threshold = sortedQualities[0]; // all qualities are equal
+        integral -= minimumQuality * sortedQualities.Count;
+        if (integral == 0) threshold = sortedQualities[0]; // all qualities are equal
         else {
-          double area = sum * (maximization ? compFact : (1 - compFact)); // the qualities are sorted ascending so in minimization a high comp factor (close to 1) means small area
-          sum = 0;
+          double selectedArea = integral * (maximization ? compFact : (1 - compFact));
+          integral = 0;
           for (int i = 0; i < sortedQualities.Count - 1; i++) {
-            double currentArea = (sortedQualities[i] + sortedQualities[i + 1]) / 2.0;
-            if (min + currentArea == 0) continue; // skip the first few consecutive 0s
-            sum += min + currentArea;
-            if (sum >= area) {
-              double factor = 1 - ((sum - area) / (min + currentArea));
+            double currentSliceArea = (sortedQualities[i] + sortedQualities[i + 1]) / 2.0;
+            double windowedSliceArea = currentSliceArea - minimumQuality;
+            if (windowedSliceArea == 0) continue;
+            integral += windowedSliceArea;
+            if (integral >= selectedArea) {
+              double factor = 1 - ((integral - selectedArea) / (windowedSliceArea));
               threshold = sortedQualities[i] + (sortedQualities[i + 1] - sortedQualities[i]) * factor;
               break;
             }
