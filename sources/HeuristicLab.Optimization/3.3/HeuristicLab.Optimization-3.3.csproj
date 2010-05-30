@@ -142,6 +142,7 @@
     <Compile Include="HeuristicLabOptimizationPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResultCollection.cs" />
+    <Compile Include="UserDefinedProblem.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />

@@ -80,6 +80,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UserDefinedCrossover.cs" />
+    <Compile Include="UserDefinedEvaluator.cs" />
+    <Compile Include="UserDefinedManipulator.cs" />
+    <Compile Include="UserDefinedOperator.cs" />
+    <Compile Include="UserDefinedSolutionCreator.cs" />
     <Compile Include="ProbabilisticQualityComparator.cs" />
     <Compile Include="ResultsCollector.cs" />
     <Compile Include="SASEGASAReunificator.cs" />
