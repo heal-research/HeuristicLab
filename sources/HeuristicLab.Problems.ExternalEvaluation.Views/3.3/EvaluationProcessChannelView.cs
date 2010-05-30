@@ -20,26 +20,20 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Problems.ExternalEvaluation.Views {
-  [View("ExternalEvaluation ProcessDriver View")]
-  [Content(typeof(ExternalEvaluationProcessDriver), IsDefaultView = true)]
-  public sealed partial class ExternalEvaluationProcessDriverView : NamedItemView {
-    public new ExternalEvaluationProcessDriver Content {
-      get { return (ExternalEvaluationProcessDriver)base.Content; }
+  [View("Process-Channel View")]
+  [Content(typeof(EvaluationProcessChannel), IsDefaultView = true)]
+  public sealed partial class EvaluationProcessChannelView : NamedItemView {
+    public new EvaluationProcessChannel Content {
+      get { return (EvaluationProcessChannel)base.Content; }
       set { base.Content = value; }
     }
 
-    public ExternalEvaluationProcessDriverView() {
+    public EvaluationProcessChannelView() {
       InitializeComponent();
     }
 
@@ -121,7 +115,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
 
     private void startButton_Click(object sender, EventArgs e) {
       try {
-        Content.Start();
+        Content.Open();
       } catch (InvalidOperationException ex) {
         MessageBox.Show(ex.Message);
       }
@@ -129,7 +123,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
 
     private void terminateButton_Click(object sender, EventArgs e) {
       try {
-        Content.Stop();
+        Content.Close();
       } catch (InvalidOperationException ex) {
         MessageBox.Show(ex.Message);
       }

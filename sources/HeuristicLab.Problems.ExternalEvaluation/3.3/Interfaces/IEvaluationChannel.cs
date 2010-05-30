@@ -20,38 +20,38 @@
 #endregion
 
 using System;
+using Google.ProtocolBuffers;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
-  public interface IExternalEvaluationDriver : IItem {
+  public interface IEvaluationChannel : IItem {
     /// <summary>
-    /// A flag that describes whether the driver has been initialized or not.
+    /// A flag that describes whether the channel has been initialized or not.
     /// </summary>
     bool IsInitialized { get; }
     /// <summary>
-    /// Tells the driver to start.
+    /// Opens the channel for communication.
     /// </summary>
     /// <remarks>
     /// Must be called before calling <seealso cref="Send"/> or <seealso cref="Receive"/>.
-    /// The concrete implementation of the driver may require additional information on how to start a connection,
-    /// which should be passed into the concrete driver's constructor.
+    /// The concrete implementation of the channel may require additional information on how to start a connection,
+    /// which should be passed into the concrete channel's constructor.
     /// </remarks>
-    void Start();
+    void Open();
     /// <summary>
-    /// Evaluates a given solution in a blocking manner.
+    /// Sends a message over the channel.
     /// </summary>
-    /// <param name="solution">The solution message that should be evaluated.</param>
-    /// <returns>The resulting quality message from the external process.</returns>
-    QualityMessage Evaluate(SolutionMessage solution);
+    /// <param name="solution">The message to send.</param>
+    void Send(IMessage solution);
     /// <summary>
-    /// Evaluates a given solution in a non-blocking manner.
+    /// Receives a message from the channel and merges the message with the given builder.
     /// </summary>
-    /// <param name="solution">The solution message that should be evaluated.</param>
-    /// <param name="callback">The callback method that is invoked when evaluation is finished.</param>
-    void EvaluateAsync(SolutionMessage solution, Action<QualityMessage> callback);
+    /// <param name="builder">The builder that must match the message type that is to be received.</param>
+    /// <returns>The received message.</returns>
+    IMessage Receive(IBuilder builder);
     /// <summary>
-    /// Tells the driver to stop and terminate open connections.
+    /// Tells the channel to close down and terminate open connections.
     /// </summary>
-    void Stop();
+    void Close();
   }
 }

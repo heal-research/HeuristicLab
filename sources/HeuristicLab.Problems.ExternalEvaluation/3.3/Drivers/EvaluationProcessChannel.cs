@@ -22,16 +22,15 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using Google.ProtocolBuffers;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
-  [Item("ExternalEvaluationProcessDriver", "A driver for external evaluation problems that launches the external application in a new process.")]
+  [Item("EvaluationProcessChannel", "A channel that launches an external application in a new process and communicates with that process via stdin and stdout.")]
   [StorableClass]
-  public class ExternalEvaluationProcessDriver : ExternalEvaluationDriver {
-    public override bool CanChangeName { get { return false; } }
-    public override bool CanChangeDescription { get { return false; } }
+  public class EvaluationProcessChannel : EvaluationChannel {
 
     private Process process;
     [Storable]
@@ -39,7 +38,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     public string Executable {
       get { return executable; }
       set {
-        if (IsInitialized) throw new InvalidOperationException("ExternalEvaluationProcessDriver cannot change the executable path as it has already been started.");
+        if (IsInitialized) throw new InvalidOperationException(Name + ": Cannot change the executable path as the process has already been started.");
         string oldExecutable = executable;
         executable = value;
         if (!oldExecutable.Equals(executable)) OnExecutableChanged();
@@ -50,33 +49,33 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     public string Arguments {
       get { return arguments; }
       set {
-        if (IsInitialized) throw new InvalidOperationException("ExternalEvaluationProcessDriver cannot change the arguments as it has already been started.");
+        if (IsInitialized) throw new InvalidOperationException(Name + ": Cannot change the arguments as the process has already been started.");
         string oldArguments = arguments;
         arguments = value;
         if (!oldArguments.Equals(arguments)) OnArgumentsChanged();
       }
     }
-    private ExternalEvaluationStreamDriver driver;
+    private EvaluationStreamChannel streamingChannel;
 
-    public ExternalEvaluationProcessDriver() : this(String.Empty, String.Empty) { }
-    public ExternalEvaluationProcessDriver(string executable, string arguments)
+    public EvaluationProcessChannel() : this(String.Empty, String.Empty) { }
+    public EvaluationProcessChannel(string executable, string arguments)
       : base() {
       this.executable = executable;
       this.arguments = arguments;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      ExternalEvaluationProcessDriver clone = (ExternalEvaluationProcessDriver)base.Clone(cloner);
+      EvaluationProcessChannel clone = (EvaluationProcessChannel)base.Clone(cloner);
       clone.executable = executable;
       clone.arguments = arguments;
       return clone;
     }
 
-    #region IExternalDriver Members
+    #region IExternalEvaluationChannel Members
 
-    public override void Start() {
+    public override void Open() {
       if (!String.IsNullOrEmpty(executable.Trim())) {
-        base.Start();
+        base.Open();
         process = new Process();
         process.StartInfo = new ProcessStartInfo(executable, arguments);
         process.StartInfo.UseShellExecute = false;
@@ -88,24 +87,24 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
         Stream processStdIn = process.StandardInput.BaseStream;
         OnProcessStarted();
         process.Exited += new EventHandler(process_Exited);
-        driver = new ExternalEvaluationStreamDriver(processStdOut, processStdIn);
-        driver.Start();
-      } else throw new InvalidOperationException("Cannot start ExternalEvaluationProcessDriver because executable is not defined.");
+        streamingChannel = new EvaluationStreamChannel(processStdOut, processStdIn);
+        streamingChannel.Open();
+      } else throw new InvalidOperationException(Name + ": Cannot open the process channel because the executable is not defined.");
     }
 
-    public override QualityMessage Evaluate(SolutionMessage solution) {
-      return driver.Evaluate(solution);
+    public override void Send(IMessage message) {
+      streamingChannel.Send(message);
     }
 
-    public override void EvaluateAsync(SolutionMessage solution, Action<QualityMessage> callback) {
-      driver.EvaluateAsync(solution, callback);
+    public override IMessage Receive(IBuilder builder) {
+      return streamingChannel.Receive(builder);
     }
 
-    public override void Stop() {
-      base.Stop();
+    public override void Close() {
+      base.Close();
       if (process != null) {
         if (!process.HasExited) {
-          driver.Stop();
+          streamingChannel.Close();
           if (!process.HasExited) {
             process.CloseMainWindow();
             process.WaitForExit(1000);
@@ -123,7 +122,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     #region Event handlers (process)
     private void process_Exited(object sender, EventArgs e) {
       if (IsInitialized) {
-        if (driver.IsInitialized) driver.Stop();
+        if (streamingChannel.IsInitialized) streamingChannel.Close();
         IsInitialized = false;
         process = null;
       }

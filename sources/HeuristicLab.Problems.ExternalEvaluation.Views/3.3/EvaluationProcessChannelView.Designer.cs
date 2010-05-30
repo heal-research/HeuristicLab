@@ -1,5 +1,5 @@
 ﻿namespace HeuristicLab.Problems.ExternalEvaluation.Views {
-  partial class ExternalEvaluationProcessDriverView {
+  partial class EvaluationProcessChannelView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>

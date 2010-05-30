@@ -26,17 +26,15 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
-  [Item("ExternalEvaluationStreamDriver", "A driver for external evaluation problems that communicates via an input and an output stream.")]
+  [Item("EvaluationStreamChannel", "A channel that communicates via an input and an output stream.")]
   [StorableClass]
-  public class ExternalEvaluationStreamDriver : ExternalEvaluationDriver {
-    public override bool CanChangeName { get { return false; } }
-    public override bool CanChangeDescription { get { return false; } }
+  public class EvaluationStreamChannel : EvaluationChannel {
 
     private Stream input;
     private Stream output;
 
-    public ExternalEvaluationStreamDriver() : base() { }
-    public ExternalEvaluationStreamDriver(Stream input, Stream output)
+    public EvaluationStreamChannel() : base() { }
+    public EvaluationStreamChannel(Stream input, Stream output)
       : base() {
       if (!input.CanRead) throw new ArgumentException("Input stream cannot be read", "input");
       this.input = input;
@@ -44,38 +42,29 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       this.output = output;
     }
 
-    #region Overrides
-    public override QualityMessage Evaluate(SolutionMessage solution) {
-      Send(solution);
-      QualityMessage message = QualityMessage.ParseDelimitedFrom(input);
-      return message;
-    }
+    #region IExternalEvaluationChannel Members
 
-    public override void EvaluateAsync(SolutionMessage solution, Action<QualityMessage> callback) {
-      Send(solution);
-      System.Threading.ThreadPool.QueueUserWorkItem(new System.Threading.WaitCallback(ReceiveAsync), callback);
-    }
-
-    private void Send(SolutionMessage solution) {
+    public override void Send(IMessage solution) {
       lock (output) {
         solution.WriteDelimitedTo(output);
         output.Flush();
       }
     }
 
-    public override void Stop() {
-      base.Stop();
-      input.Close();
-      output.Close();
-    }
-    #endregion
-
-    private void ReceiveAsync(object callback) {
+    public override IMessage Receive(IBuilder builder) {
       QualityMessage message;
       lock (input) { // only one thread can read from the stream at one time
         message = QualityMessage.ParseDelimitedFrom(input);
       }
-      ((Action<QualityMessage>)callback).Invoke(message);
+      return message;
     }
+
+    public override void Close() {
+      base.Close();
+      input.Close();
+      output.Close();
+    }
+
+    #endregion
   }
 }

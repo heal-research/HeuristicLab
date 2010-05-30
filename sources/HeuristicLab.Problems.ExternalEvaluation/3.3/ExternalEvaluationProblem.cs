@@ -30,6 +30,8 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Optimization.Operators;
+using HeuristicLab.Analysis;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("External Evaluation Problem", "A problem that is evaluated in a different process.")]
@@ -47,10 +49,10 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     }
 
     #region Parameters
-    private IValueParameter<IExternalEvaluationDriver> DriverParameter {
-      get { return (IValueParameter<IExternalEvaluationDriver>)Parameters["Driver"]; }
+    public IValueParameter<IEvaluationServiceClient> ClientParameter {
+      get { return (IValueParameter<IEvaluationServiceClient>)Parameters["Client"]; }
     }
-    private IValueParameter<IExternalEvaluationProblemEvaluator> EvaluatorParameter {
+    public IValueParameter<IExternalEvaluationProblemEvaluator> EvaluatorParameter {
       get { return (IValueParameter<IExternalEvaluationProblemEvaluator>)Parameters["Evaluator"]; }
     }
     public ValueParameter<BoolValue> MaximizationParameter {
@@ -111,8 +113,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     public IEnumerable<IOperator> Operators {
       get { return OperatorsParameter.Value; }
     }
-    private BestExternalEvaluationSolutionAnalyzer BestExternalEvaluationSolutionAnalyzer {
-      get { return OperatorsParameter.Value.OfType<BestExternalEvaluationSolutionAnalyzer>().FirstOrDefault(); }
+    private BestScopeSolutionAnalyzer BestScopeSolutionAnalyzer {
+      get { return OperatorsParameter.Value.OfType<BestScopeSolutionAnalyzer>().FirstOrDefault(); }
     }
     #endregion
 
@@ -121,9 +123,9 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     public ExternalEvaluationProblem()
       : base() {
       ExternalEvaluator evaluator = new ExternalEvaluator();
-      ExternalEvaluationSolutionCreator solutionCreator = new ExternalEvaluationSolutionCreator();
+      UserDefinedSolutionCreator solutionCreator = new UserDefinedSolutionCreator();
 
-      Parameters.Add(new ValueParameter<IExternalEvaluationDriver>("Driver", "The communication driver that is used to exchange data with the external process."));
+      Parameters.Add(new ValueParameter<IEvaluationServiceClient>("Client", "The client that is used to communicate with the external application."));
       Parameters.Add(new ValueParameter<IExternalEvaluationProblemEvaluator>("Evaluator", "The evaluator that collects the values to exchange.", evaluator));
       Parameters.Add(new ValueParameter<ISolutionCreator>("SolutionCreator", "An operator to create the solution components.", solutionCreator));
       Parameters.Add(new ValueParameter<BoolValue>("Maximization", "Set to false as most test functions are minimization problems.", new BoolValue(false)));
@@ -167,19 +169,12 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       OnSolutionCreatorChanged();
     }
     private void EvaluatorParameter_ValueChanged(object sender, EventArgs e) {
+      Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
+      ParameterizeOperators();
       OnEvaluatorChanged();
     }
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
-      // TODO: Following code is not yet approved behavior, but it's the best effort I can make here regarding wiring
-      string qualityName = Evaluator.QualityParameter.ActualName;
-      foreach (IOperator op in OperatorsParameter.Value) {
-        foreach (ILookupParameter<DoubleValue> param in op.Parameters.OfType<ILookupParameter<DoubleValue>>()) {
-          if (param.Name.Equals("Quality")) param.ActualName = qualityName;
-        }
-        foreach (IScopeTreeLookupParameter<DoubleValue> param in op.Parameters.OfType<IScopeTreeLookupParameter<DoubleValue>>()) {
-          if (param.Name.Equals("Quality")) param.ActualName = qualityName;
-        }
-      }
+      ParameterizeOperators();
     }
     private void OperatorsParameter_ValueChanged(object sender, EventArgs e) {
       OnOperatorsChanged();
@@ -198,7 +193,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     #region Helpers
     private void InitializeOperators() {
       ItemList<IOperator> operators = OperatorsParameter.Value;
-      operators.Add(new BestExternalEvaluationSolutionAnalyzer());
+      operators.Add(new BestScopeSolutionAnalyzer());
       ParameterizeAnalyzers();
     }
     [StorableHook(HookType.AfterDeserialization)]
@@ -212,14 +207,26 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       OperatorsParameter.Value.CollectionReset += new CollectionItemsChangedEventHandler<IndexedItem<IOperator>>(OperatorsParameter_Value_CollectionReset);
     }
     private void ParameterizeAnalyzers() {
-      BestExternalEvaluationSolutionAnalyzer.ResultsParameter.ActualName = "Results";
-      BestExternalEvaluationSolutionAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
-      BestExternalEvaluationSolutionAnalyzer.BestKnownQualityParameter.ActualName = BestKnownQualityParameter.Name;
-      BestExternalEvaluationSolutionAnalyzer.BestKnownSolutionParameter.ActualName = BestKnownSolutionParameter.Name;
-      BestExternalEvaluationSolutionAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
+      BestScopeSolutionAnalyzer.ResultsParameter.ActualName = "Results";
+      BestScopeSolutionAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
+      BestScopeSolutionAnalyzer.BestKnownQualityParameter.ActualName = BestKnownQualityParameter.Name;
+      BestScopeSolutionAnalyzer.BestKnownSolutionParameter.ActualName = BestKnownSolutionParameter.Name;
+      BestScopeSolutionAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
     }
     private void ParameterizeEvaluator() {
-      Evaluator.DriverParameter.ActualName = DriverParameter.Name;
+      Evaluator.ClientParameter.ActualName = ClientParameter.Name;
+    }
+    private void ParameterizeOperators() {
+      // This is a best effort approach to wiring
+      string qualityName = Evaluator.QualityParameter.ActualName;
+      foreach (IOperator op in OperatorsParameter.Value) {
+        foreach (ILookupParameter<DoubleValue> param in op.Parameters.OfType<ILookupParameter<DoubleValue>>()) {
+          if (param.Name.Equals("Quality")) param.ActualName = qualityName;
+        }
+        foreach (IScopeTreeLookupParameter<DoubleValue> param in op.Parameters.OfType<IScopeTreeLookupParameter<DoubleValue>>()) {
+          if (param.Name.Equals("Quality")) param.ActualName = qualityName;
+        }
+      }
     }
     #endregion
   }

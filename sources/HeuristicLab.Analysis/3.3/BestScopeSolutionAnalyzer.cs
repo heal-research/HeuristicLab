@@ -28,13 +28,13 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Problems.ExternalEvaluation {
+namespace HeuristicLab.Analysis {
   /// <summary>
-  /// An operator for analyzing the best solution for an external evaluation problem.
+  /// An operator that extracts (clones) the scope containing the best quality.
   /// </summary>
-  [Item("BestExternalEvaluationSolutionAnalyzer", "An operator for analyzing the best solution (=scope) for an external evaluation problem.")]
+  [Item("BestScopeSolutionAnalyzer", "An operator that extracts the scope containing the best quality.")]
   [StorableClass]
-  class BestExternalEvaluationSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer {
+  public class BestScopeSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer {
     public LookupParameter<BoolValue> MaximizationParameter {
       get { return (LookupParameter<BoolValue>)Parameters["Maximization"]; }
     }
@@ -54,7 +54,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       get { return (IValueLookupParameter<ResultCollection>)Parameters["Results"]; }
     }
 
-    public BestExternalEvaluationSolutionAnalyzer()
+    public BestScopeSolutionAnalyzer()
       : base() {
       Parameters.Add(new LookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The qualities of the solutions."));

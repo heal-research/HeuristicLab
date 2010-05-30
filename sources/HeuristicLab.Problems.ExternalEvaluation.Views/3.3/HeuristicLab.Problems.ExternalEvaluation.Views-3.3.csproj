@@ -82,11 +82,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExternalEvaluationProcessDriverView.cs">
+    <Compile Include="EvaluationServiceClientView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ExternalEvaluationProcessDriverView.Designer.cs">
-      <DependentUpon>ExternalEvaluationProcessDriverView.cs</DependentUpon>
+    <Compile Include="EvaluationServiceClientView.Designer.cs">
+      <DependentUpon>EvaluationServiceClientView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EvaluationProcessChannelView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="EvaluationProcessChannelView.Designer.cs">
+      <DependentUpon>EvaluationProcessChannelView.cs</DependentUpon>
     </Compile>
     <Compile Include="HeuristicLabProblemsExternalEvaluationViewsPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -125,8 +131,11 @@
     <None Include="HeuristicLab.snk" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ExternalEvaluationProcessDriverView.resx">
-      <DependentUpon>ExternalEvaluationProcessDriverView.cs</DependentUpon>
+    <EmbeddedResource Include="EvaluationProcessChannelView.resx">
+      <DependentUpon>EvaluationProcessChannelView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EvaluationServiceClientView.resx">
+      <DependentUpon>EvaluationServiceClientView.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -20,33 +20,38 @@
 #endregion
 
 using System;
+using Google.ProtocolBuffers;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
-  [Item("ExternalEvaluationDriver", "Abstract base class for drivers to be used in an external evaluation problem.")]
+  [Item("EvaluationChannel", "Abstract base class for channels to be used in an external evaluation problem.")]
   [StorableClass]
-  public abstract class ExternalEvaluationDriver : NamedItem, IExternalEvaluationDriver {
-    // will not be serialized, since it will always be false after deserialization
-    public bool IsInitialized { get; protected set; }
+  public abstract class EvaluationChannel : NamedItem, IEvaluationChannel {
+    public override bool CanChangeName { get { return false; } }
+    public override bool CanChangeDescription { get { return false; } }
 
-    protected ExternalEvaluationDriver()
+    [StorableConstructor]
+    protected EvaluationChannel(bool deserializing) : base(deserializing) { }
+    protected EvaluationChannel()
       : base() {
       name = ItemName;
       description = ItemDescription;
     }
 
-    #region IExternalEvaluationDriver Members
+    #region IExternalEvaluationChannel Members
+    // will not be serialized, since it will always be false after deserialization
+    public bool IsInitialized { get; protected set; }
 
-    public virtual void Start() {
+    public virtual void Open() {
       IsInitialized = true;
     }
 
-    public abstract QualityMessage Evaluate(SolutionMessage solution);
+    public abstract void Send(IMessage message);
 
-    public abstract void EvaluateAsync(SolutionMessage solution, Action<QualityMessage> callback);
+    public abstract IMessage Receive(IBuilder builder);
 
-    public virtual void Stop() {
+    public virtual void Close() {
       IsInitialized = false;
     }
 

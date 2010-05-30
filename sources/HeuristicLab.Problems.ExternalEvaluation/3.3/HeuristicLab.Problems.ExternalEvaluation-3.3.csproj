@@ -81,18 +81,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Analyzers\BestExternalEvaluationSolutionAnalyzer.cs" />
     <None Include="HeuristicLabProblemsExternalEvaluationPlugin.cs.frame" />
-    <Compile Include="ExternalEvaluationManipulator.cs" />
-    <Compile Include="Drivers\ExternalEvaluationDriver.cs" />
-    <Compile Include="Drivers\ExternalEvaluationProcessDriver.cs" />
-    <Compile Include="Drivers\ExternalEvaluationStreamDriver.cs" />
-    <Compile Include="ExternalEvaluationCrossover.cs" />
+    <Compile Include="Drivers\EvaluationServiceClient.cs" />
+    <Compile Include="Drivers\EvaluationChannel.cs" />
+    <Compile Include="Drivers\EvaluationProcessChannel.cs" />
+    <Compile Include="Drivers\EvaluationStreamChannel.cs" />
     <Compile Include="ExternalEvaluationProblem.cs" />
-    <Compile Include="ExternalEvaluationSolutionCreator.cs" />
     <Compile Include="ExternalEvaluator.cs" />
     <Compile Include="HeuristicLabProblemsExternalEvaluationPlugin.cs" />
-    <Compile Include="Interfaces\IExternalEvaluationDriver.cs" />
+    <Compile Include="Interfaces\IEvaluationServiceClient.cs" />
+    <Compile Include="Interfaces\IEvaluationChannel.cs" />
     <Compile Include="Interfaces\IExternalEvaluationProblemEvaluator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\AssemblyInfo.frame" />
@@ -101,6 +99,10 @@
     <None Include="Protos\ProcessProtos.cmd" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
+      <Project>{887425B4-4348-49ED-A457-B7D2C26DDBF9}</Project>
+      <Name>HeuristicLab.Analysis-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
       <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
       <Name>HeuristicLab.Collections-3.3</Name>
@@ -132,6 +134,10 @@
     <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
       <Project>{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}</Project>
       <Name>HeuristicLab.Operators-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Optimization.Operators\3.3\HeuristicLab.Optimization.Operators-3.3.csproj">
+      <Project>{25087811-F74C-4128-BC86-8324271DA13E}</Project>
+      <Name>HeuristicLab.Optimization.Operators-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
       <Project>{14AB8D24-25BC-400C-A846-4627AA945192}</Project>

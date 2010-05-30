@@ -86,6 +86,7 @@
     <None Include="HeuristicLabAnalysisPlugin.cs.frame" />
     <Compile Include="BestAverageWorstQualityAnalyzer.cs" />
     <Compile Include="BestAverageWorstQualityCalculator.cs" />
+    <Compile Include="BestScopeSolutionAnalyzer.cs" />
     <Compile Include="BestQualityMemorizer.cs" />
     <Compile Include="QualityAnalyzer.cs" />
     <Compile Include="MinAverageMaxValueAnalyzer.cs" />

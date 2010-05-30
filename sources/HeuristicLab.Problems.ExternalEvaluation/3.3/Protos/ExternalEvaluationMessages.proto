@@ -64,6 +64,6 @@ message QualityMessage {
   required double quality = 2;
 }
   
-service ExchangeService {
-  rpc EvaluateSingleObjectively (SolutionMessage) returns (QualityMessage);
+service EvaluationService {
+  rpc Evaluate (SolutionMessage) returns (QualityMessage);
 }

@@ -19,23 +19,22 @@
  */
 #endregion
 
-using System.Linq;
+using System;
 using HeuristicLab.Core;
-using HeuristicLab.Operators;
-using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
-  [Item("ExternalEvaluationCrossover", "A crossover that can be customized with operators which it will execute one after another.")]
-  [StorableClass]
-  public class ExternalEvaluationCrossover : CheckedMultiOperator<IOperator>, ICrossover {
-    public override IOperation Apply() {
-      OperationCollection result = new OperationCollection();
-      foreach (IOperator op in Operators.CheckedItems.OrderBy(x => x.Index).Select(x => x.Value)) {
-        result.Add(ExecutionContext.CreateOperation(op));
-      }
-      result.Add(base.Apply());
-      return result;
-    }
+  public interface IEvaluationServiceClient : IItem {
+    /// <summary>
+    /// Evaluates a given solution in a blocking manner.
+    /// </summary>
+    /// <param name="solution">The solution message that should be evaluated.</param>
+    /// <returns>The resulting quality message from the external process.</returns>
+    QualityMessage Evaluate(SolutionMessage solution);
+    /// <summary>
+    /// Evaluates a given solution in a non-blocking manner.
+    /// </summary>
+    /// <param name="solution">The solution message that should be evaluated.</param>
+    /// <param name="callback">The callback method that is invoked when evaluation is finished.</param>
+    void EvaluateAsync(SolutionMessage solution, Action<QualityMessage> callback);
   }
 }

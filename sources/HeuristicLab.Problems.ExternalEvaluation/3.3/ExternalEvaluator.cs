@@ -33,18 +33,18 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     public ILookupParameter<DoubleValue> QualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
-    public IValueLookupParameter<IExternalEvaluationDriver> DriverParameter {
-      get { return (IValueLookupParameter<IExternalEvaluationDriver>)Parameters["Driver"]; }
+    public IValueLookupParameter<IEvaluationServiceClient> ClientParameter {
+      get { return (IValueLookupParameter<IEvaluationServiceClient>)Parameters["Client"]; }
     }
 
     public ExternalEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of the current solution."));
-      Parameters.Add(new ValueLookupParameter<IExternalEvaluationDriver>("Driver", "The driver to communicate with the external process."));
+      Parameters.Add(new ValueLookupParameter<IEvaluationServiceClient>("Client", "The client that communicates with the external process."));
     }
 
     public override IOperation Apply() {
-      IExternalEvaluationDriver driver = DriverParameter.ActualValue;
+      IEvaluationServiceClient client = ClientParameter.ActualValue;
       SolutionMessage.Builder messageBuilder = SolutionMessage.CreateBuilder();
       messageBuilder.SolutionId = 0;
       foreach (IParameter param in CollectedValues) {
@@ -59,7 +59,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
           }
         }
       }
-      QualityMessage answer = driver.Evaluate(messageBuilder.Build());
+      QualityMessage answer = client.Evaluate(messageBuilder.Build());
       if (QualityParameter.ActualValue == null)
         QualityParameter.ActualValue = new DoubleValue(answer.Quality);
       else QualityParameter.ActualValue.Value = answer.Quality;

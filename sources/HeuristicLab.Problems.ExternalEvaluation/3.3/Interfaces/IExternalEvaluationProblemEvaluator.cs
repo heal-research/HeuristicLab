@@ -24,6 +24,6 @@ using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   public interface IExternalEvaluationProblemEvaluator : ISingleObjectiveEvaluator {
-    IValueLookupParameter<IExternalEvaluationDriver> DriverParameter { get; }
+    IValueLookupParameter<IEvaluationServiceClient> ClientParameter { get; }
   }
 }
