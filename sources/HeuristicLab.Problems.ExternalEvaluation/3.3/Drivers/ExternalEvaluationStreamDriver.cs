@@ -32,51 +32,48 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     public override bool CanChangeName { get { return false; } }
     public override bool CanChangeDescription { get { return false; } }
 
-    private CodedInputStream inputStream;
     private Stream input;
-    private CodedOutputStream outputStream;
     private Stream output;
 
     public ExternalEvaluationStreamDriver() : base() { }
     public ExternalEvaluationStreamDriver(Stream input, Stream output)
       : base() {
       if (!input.CanRead) throw new ArgumentException("Input stream cannot be read", "input");
-      this.inputStream = CodedInputStream.CreateInstance(input);
       this.input = input;
       if (!output.CanWrite) throw new ArgumentException("Output stream cannot be written", "output");
-      this.outputStream = CodedOutputStream.CreateInstance(output);
       this.output = output;
     }
 
     #region Overrides
     public override QualityMessage Evaluate(SolutionMessage solution) {
-      solution.WriteTo(outputStream);
-      outputStream.Flush();
-      output.Flush();
-      QualityMessage message = QualityMessage.ParseFrom(inputStream);
+      Send(solution);
+      QualityMessage message = QualityMessage.ParseDelimitedFrom(input);
       return message;
     }
 
     public override void EvaluateAsync(SolutionMessage solution, Action<QualityMessage> callback) {
-      solution.WriteTo(outputStream);
-      outputStream.Flush();
-      output.Flush();
+      Send(solution);
       System.Threading.ThreadPool.QueueUserWorkItem(new System.Threading.WaitCallback(ReceiveAsync), callback);
+    }
+
+    private void Send(SolutionMessage solution) {
+      lock (output) {
+        solution.WriteDelimitedTo(output);
+        output.Flush();
+      }
     }
 
     public override void Stop() {
       base.Stop();
-      inputStream = null;
       input.Close();
-      outputStream = null;
       output.Close();
     }
     #endregion
 
     private void ReceiveAsync(object callback) {
       QualityMessage message;
-      lock (inputStream) { // only one thread can read from the stream at one time
-        message = QualityMessage.ParseFrom(inputStream);
+      lock (input) { // only one thread can read from the stream at one time
+        message = QualityMessage.ParseDelimitedFrom(input);
       }
       ((Action<QualityMessage>)callback).Invoke(message);
     }

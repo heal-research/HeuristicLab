@@ -86,21 +86,21 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       SolutionMessage.Types.IntegerArrayVariable.Builder tmp = SolutionMessage.Types.IntegerArrayVariable.CreateBuilder();
       tmp.SetName(name);
       for (int i = 0; i < valueTypeArray.Length; i++)
-        tmp.SetData(i, valueTypeArray[i]);
+        tmp.AddData(valueTypeArray[i]);
       builder.AddIntegerArrayVars(tmp.Build());
     }
     public static void AddAsDoubleArrayVar(string name, ValueTypeArray<double> valueTypeArray, SolutionMessage.Builder builder) {
       SolutionMessage.Types.DoubleArrayVariable.Builder tmp = SolutionMessage.Types.DoubleArrayVariable.CreateBuilder();
       tmp.SetName(name);
       for (int i = 0; i < valueTypeArray.Length; i++)
-        tmp.SetData(i, valueTypeArray[i]);
+        tmp.AddData(valueTypeArray[i]);
       builder.AddDoubleArrayVars(tmp.Build());
     }
     public static void AddAsBoolArrayVar(string name, ValueTypeArray<bool> valueTypeArray, SolutionMessage.Builder builder) {
       SolutionMessage.Types.BoolArrayVariable.Builder tmp = SolutionMessage.Types.BoolArrayVariable.CreateBuilder();
       tmp.SetName(name);
       for (int i = 0; i < valueTypeArray.Length; i++)
-        tmp.SetData(i, valueTypeArray[i]);
+        tmp.AddData(valueTypeArray[i]);
       builder.AddBoolArrayVars(tmp.Build());
     }
   }
