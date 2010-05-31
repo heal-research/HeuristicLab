@@ -82,6 +82,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLabProblemsExternalEvaluationPlugin.cs.frame" />
+    <Compile Include="Converters\BoolConverter.cs" />
+    <Compile Include="Converters\TimeSpanValueConverter.cs" />
+    <Compile Include="Converters\DateTimeValueConverter.cs" />
+    <Compile Include="Converters\DoubleConverter.cs" />
+    <Compile Include="Converters\IntegerConverter.cs" />
+    <Compile Include="Converters\StringConverter.cs" />
     <Compile Include="Drivers\EvaluationServiceClient.cs" />
     <Compile Include="Drivers\EvaluationChannel.cs" />
     <Compile Include="Drivers\EvaluationProcessChannel.cs" />
@@ -92,10 +98,11 @@
     <Compile Include="Interfaces\IEvaluationServiceClient.cs" />
     <Compile Include="Interfaces\IEvaluationChannel.cs" />
     <Compile Include="Interfaces\IExternalEvaluationProblemEvaluator.cs" />
+    <Compile Include="Interfaces\IItemToSolutionMessageConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\AssemblyInfo.frame" />
     <Compile Include="Protos\ExternalEvaluationMessages.cs" />
-    <Compile Include="SolutionMessageBuilding.cs" />
+    <Compile Include="SolutionMessageBuilder.cs" />
     <None Include="Protos\ProcessProtos.cmd" />
   </ItemGroup>
   <ItemGroup>

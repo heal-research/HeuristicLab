@@ -13,6 +13,7 @@ message SolutionMessage {
   message IntegerArrayVariable {
     required string name = 1;
     repeated int32 data = 2;
+    optional int32 length = 3;
   }
   repeated IntegerArrayVariable integerArrayVars = 3;
   
@@ -25,6 +26,7 @@ message SolutionMessage {
   message DoubleArrayVariable {
     required string name = 1;
     repeated double data = 2;
+    optional int32 length = 3;
   }
   repeated DoubleArrayVariable doubleArrayVars = 5;
   
@@ -37,6 +39,7 @@ message SolutionMessage {
   message BoolArrayVariable {
     required string name = 1;
     repeated bool data = 2;
+    optional int32 length = 3;
   }
   repeated BoolArrayVariable boolArrayVars = 7;
   
@@ -49,6 +52,7 @@ message SolutionMessage {
   message StringArrayVariable {
     required string name = 1;
     repeated string data = 2;
+    optional int32 length = 3;
   }
   repeated StringArrayVariable stringArrayVars = 9;
   
