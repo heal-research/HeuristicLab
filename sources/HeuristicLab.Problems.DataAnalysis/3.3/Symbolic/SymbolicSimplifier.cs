@@ -66,7 +66,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var argSym = node.Symbol as Argument;
         // return the correct argument sub-tree (already macro-expanded)
         return (SymbolicExpressionTreeNode)argumentTrees[argSym.ArgumentIndex].Clone();
-      } else if(node.Symbol is StartSymbol) {
+      } else if (node.Symbol is StartSymbol) {
         return MacroExpand(root, subtrees[0], argumentTrees);
       } else {
         // recursive application
@@ -135,6 +135,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           var simplifiedTrees = original.SubTrees.Select(x => GetSimplifiedTree(x));
           return
             MakeMultiplication(simplifiedTrees.First(), Invert(simplifiedTrees.Skip(1).Aggregate((a, b) => MakeMultiplication(a, b))));
+        }
+      } else if (IsAverage(original)) {
+        if (original.SubTrees.Count == 1) {
+          return GetSimplifiedTree(original.SubTrees[0]);
+        } else {
+          // simpliy expressions x0..xn
+          // make sum(x0..xn) / n
+          Trace.Assert(original.SubTrees.Count > 1);
+          var sum = original.SubTrees
+            .Select(x => GetSimplifiedTree(x))
+            .Aggregate((a, b) => MakeAddition(a, b));
+          return MakeDivision(sum, MakeConstant(original.SubTrees.Count));
         }
       } else {
         // can't simplify this function but simplify all subtrees 
@@ -296,6 +308,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return a;
       } else if (IsConstant(b) && IsAddition(a)) {
         return a.SubTrees.Select(x => MakeMultiplication(x, b)).Aggregate((c, d) => MakeAddition(c, d));
+      } else if(IsDivision(a) && IsDivision(b)) {
+        return MakeDivision(MakeMultiplication(a.SubTrees[0], b.SubTrees[0]), MakeMultiplication(a.SubTrees[1], b.SubTrees[1]));
       } else if (IsDivision(a)) {
         Trace.Assert(a.SubTrees.Count == 2);
         return MakeDivision(MakeMultiplication(a.SubTrees[0], b), a.SubTrees[1]);
@@ -349,6 +363,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     private bool IsConstant(SymbolicExpressionTreeNode original) {
       return original.Symbol is Constant;
+    }
+
+    private bool IsAverage(SymbolicExpressionTreeNode original) {
+      return original.Symbol is Average;
     }
     #endregion
 
