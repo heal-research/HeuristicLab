@@ -116,7 +116,7 @@ namespace HeuristicLab.Optimization {
     private UserDefinedProblem(bool deserializing) : base(deserializing) { }
     public UserDefinedProblem()
       : base() {
-      Parameters.Add(new ValueParameter<ISingleObjectiveEvaluator>("Evaluator", "The evaluator that collects the values to exchange."));
+      Parameters.Add(new ValueParameter<ISingleObjectiveEvaluator>("Evaluator", "The evaluator that collects the values to exchange.", new EmptyUserDefinedProblemEvaluator()));
       Parameters.Add(new ValueParameter<ISolutionCreator>("SolutionCreator", "An operator to create the solution components."));
       Parameters.Add(new ValueParameter<BoolValue>("Maximization", "Set to false as most test functions are minimization problems.", new BoolValue(false)));
       Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this problem."));
@@ -210,5 +210,48 @@ namespace HeuristicLab.Optimization {
       }
     }
     #endregion
+
+    [Item("EmptyUserDefinedProblemEvaluator", "A dummy evaluator that will throw an exception when executed.")]
+    [StorableClass]
+    private class EmptyUserDefinedProblemEvaluator : ParameterizedNamedItem, ISingleObjectiveEvaluator {
+      #region ISingleObjectiveEvaluator Members
+
+      public ILookupParameter<DoubleValue> QualityParameter {
+        get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
+      }
+
+      #endregion
+
+      public EmptyUserDefinedProblemEvaluator() {
+        Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The solution quality."));
+      }
+
+      #region IOperator Members
+
+      public bool Breakpoint {
+        get;
+        set;
+      }
+
+      public IOperation Execute(IExecutionContext context) {
+        throw new InvalidOperationException("Please choose an appropriate evaluation operator.");
+      }
+
+      public void Abort() {
+        throw new InvalidOperationException("Please choose an appropriate evaluation operator.");
+      }
+
+      #pragma warning disable 67
+      public event EventHandler BreakpointChanged;
+
+      public event EventHandler Executed;
+      #pragma warning restore 67
+
+      #endregion
+
+      public override Image ItemImage {
+        get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Method; }
+      }
+    } 
   }
 }
