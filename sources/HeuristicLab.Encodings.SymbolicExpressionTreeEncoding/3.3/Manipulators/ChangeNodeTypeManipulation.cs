@@ -25,6 +25,9 @@ using HeuristicLab.Operators;
 using HeuristicLab.Random;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System;
+using System.Collections.Generic;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators {
   [StorableClass]
@@ -64,7 +67,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators {
         success = false;
         return;
       }
-      var newSymbol = constrainedSymbols.SelectRandom(random);
+      var newSymbol = SelectRandomSymbol(random, constrainedSymbols);
 
       // replace the old node with the new node
       var newNode = newSymbol.CreateTreeNode();
@@ -75,6 +78,22 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators {
       manipulationPoint.Parent.RemoveSubTree(manipulationPoint.Index);
       manipulationPoint.Parent.InsertSubTree(manipulationPoint.Index, newNode);
       success = true;
+    }
+
+    private static Symbol SelectRandomSymbol(IRandom random, IEnumerable<Symbol> symbols) {
+      var symbolList = symbols.ToList();
+      var ticketsSum = symbolList.Select(x => x.InitialFrequency).Sum();
+      if (ticketsSum == 0.0) throw new ArgumentException("The initial frequency of all allowed symbols is zero.");
+      var r = random.NextDouble() * ticketsSum;
+      double aggregatedTickets = 0;
+      for (int i = 0; i < symbolList.Count; i++) {
+        aggregatedTickets += symbolList[i].InitialFrequency;
+        if (aggregatedTickets > r) {
+          return symbolList[i];
+        }
+      }
+      // this should never happen
+      throw new ArgumentException("There is a problem with the initial frequency setting of allowed symbols.");
     }
   }
 }
