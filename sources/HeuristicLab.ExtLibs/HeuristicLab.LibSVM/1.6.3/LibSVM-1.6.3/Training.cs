@@ -49,7 +49,7 @@ namespace SVM
             Procedures.svm_cross_validation(problem, parameters, nr_fold, target);
             int total_correct = 0;
             double total_error = 0;
-            double sumv = 0, sumy = 0, sumvv = 0, sumyy = 0, sumvy = 0;
+            //double sumv = 0, sumy = 0, sumvv = 0, sumyy = 0, sumvy = 0;
             if (parameters.SvmType == SvmType.EPSILON_SVR || parameters.SvmType == SvmType.NU_SVR)
             {
                 for (i = 0; i < problem.Count; i++)
@@ -57,13 +57,14 @@ namespace SVM
                     double y = problem.Y[i];
                     double v = target[i];
                     total_error += (v - y) * (v - y);
-                    sumv += v;
-                    sumy += y;
-                    sumvv += v * v;
-                    sumyy += y * y;
-                    sumvy += v * y;
+                    //sumv += v;
+                    //sumy += y;
+                    //sumvv += v * v;
+                    //sumyy += y * y;
+                    //sumvy += v * y;
                 }
-                return(problem.Count * sumvy - sumv * sumy) / (Math.Sqrt(problem.Count * sumvv - sumv * sumv) * Math.Sqrt(problem.Count * sumyy - sumy * sumy));
+                return total_error / problem.Count; // return MSE
+              // (problem.Count * sumvy - sumv * sumy) / (Math.Sqrt(problem.Count * sumvv - sumv * sumv) * Math.Sqrt(problem.Count * sumyy - sumy * sumy));
             }
             else
                 for (i = 0; i < problem.Count; i++)
