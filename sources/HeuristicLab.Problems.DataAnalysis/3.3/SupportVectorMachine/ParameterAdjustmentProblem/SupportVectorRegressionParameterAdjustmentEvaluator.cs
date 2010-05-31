@@ -1,4 +1,4 @@
-﻿#region License Information
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -20,25 +20,23 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using System.Threading;
-using HeuristicLab.LibSVM;
-using HeuristicLab.Operators;
-using HeuristicLab.Parameters;
-using SVM;
+using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.DataAnalysis.SupportVectorMachine;
+using HeuristicLab.Problems.DataAnalysis;
+using HeuristicLab.Problems.DataAnalysis.Evaluators;
+using HeuristicLab.Parameters;
+using HeuristicLab.Optimization;
+using HeuristicLab.Operators;
 
-namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
-  /// <summary>
-  /// Represents an operator that creates a support vector machine model.
-  /// </summary>
+namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine.ParameterAdjustmentProblem {
+  [Item("SupportVectorRegressionParameterAdjustmentEvaluator", "")]
   [StorableClass]
-  [Item("SupportVectorMachineModelCreator", "Represents an operator that creates a support vector machine model.")]
-  public class SupportVectorMachineModelCreator : SingleSuccessorOperator {
+  public class SupportVectorRegressionParameterAdjustmentEvaluator : AlgorithmOperator, ISingleObjectiveEvaluator {
+    private const string ParameterVectorParameterName = "ParameterVector";
     private const string DataAnalysisProblemDataParameterName = "DataAnalysisProblemData";
     private const string SvmTypeParameterName = "SvmType";
     private const string KernelTypeParameterName = "KernelType";
@@ -48,9 +46,13 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
     private const string EpsilonParameterName = "Epsilon";
     private const string SamplesStartParameterName = "SamplesStart";
     private const string SamplesEndParameterName = "SamplesEnd";
-    private const string ModelParameterName = "SupportVectorMachineModel";
+    private const string NumberOfFoldsParameterName = "NumberOfFolds";
+    private const string QualityParameterName = "Quality";
 
     #region parameter properties
+    public ILookupParameter<RealVector> ParameterVectorParameter {
+      get { return (ILookupParameter<RealVector>)Parameters["ParameterVector"]; }
+    }
     public IValueLookupParameter<DataAnalysisProblemData> DataAnalysisProblemDataParameter {
       get { return (IValueLookupParameter<DataAnalysisProblemData>)Parameters[DataAnalysisProblemDataParameterName]; }
     }
@@ -78,11 +80,17 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
     public IValueLookupParameter<IntValue> SamplesEndParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters[SamplesEndParameterName]; }
     }
-    public ILookupParameter<SupportVectorMachineModel> SupportVectorMachineModelParameter {
-      get { return (ILookupParameter<SupportVectorMachineModel>)Parameters[ModelParameterName]; }
+    public IValueLookupParameter<IntValue> NumberOfFoldsParameter {
+      get { return (IValueLookupParameter<IntValue>)Parameters[NumberOfFoldsParameterName]; }
+    }
+    public ILookupParameter<DoubleValue> QualityParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters[QualityParameterName]; }
     }
     #endregion
     #region properties
+    public RealVector ParameterVector {
+      get { return ParameterVectorParameter.ActualValue; }
+    }
     public DataAnalysisProblemData DataAnalysisProblemData {
       get { return DataAnalysisProblemDataParameter.ActualValue; }
     }
@@ -92,86 +100,48 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
     public StringValue KernelType {
       get { return KernelTypeParameter.Value; }
     }
-    public DoubleValue Nu {
-      get { return NuParameter.ActualValue; }
-    }
-    public DoubleValue Cost {
-      get { return CostParameter.ActualValue; }
-    }
-    public DoubleValue Gamma {
-      get { return GammaParameter.ActualValue; }
-    }
-    public DoubleValue Epsilon {
-      get { return EpsilonParameter.ActualValue; }
-    }
     public IntValue SamplesStart {
       get { return SamplesStartParameter.ActualValue; }
     }
     public IntValue SamplesEnd {
       get { return SamplesEndParameter.ActualValue; }
     }
+    public IntValue NumberOfFolds {
+      get { return NumberOfFoldsParameter.ActualValue; }
+    }
     #endregion
 
-    public SupportVectorMachineModelCreator()
+    public SupportVectorRegressionParameterAdjustmentEvaluator()
       : base() {
       StringValue nuSvrType = new StringValue("NU_SVR").AsReadOnly();
       StringValue rbfKernelType = new StringValue("RBF").AsReadOnly();
+      Parameters.Add(new LookupParameter<RealVector>(ParameterVectorParameterName, "The parameters for the SVM encoded as a real vector."));
       Parameters.Add(new ValueLookupParameter<DataAnalysisProblemData>(DataAnalysisProblemDataParameterName, "The data analysis problem data to use for training."));
       Parameters.Add(new ValueLookupParameter<StringValue>(SvmTypeParameterName, "The type of SVM to use.", nuSvrType));
       Parameters.Add(new ValueLookupParameter<StringValue>(KernelTypeParameterName, "The kernel type to use for the SVM.", rbfKernelType));
       Parameters.Add(new ValueLookupParameter<DoubleValue>(NuParameterName, "The value of the nu parameter nu-SVC, one-class SVM and nu-SVR."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>(CostParameterName, "The value of the C (cost) parameter of C-SVC, epsilon-SVR and nu-SVR."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>(GammaParameterName, "The value of the gamma parameter in the kernel function."));
-      Parameters.Add(new ValueLookupParameter<DoubleValue>(EpsilonParameterName, "The value of the epsilon parameter for epsilon-SVR."));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>(EpsilonParameterName, "The value of the epsilon parameter of epsilon-SVR."));
       Parameters.Add(new ValueLookupParameter<IntValue>(SamplesStartParameterName, "The first index of the data set partition the support vector machine should use for training."));
       Parameters.Add(new ValueLookupParameter<IntValue>(SamplesEndParameterName, "The last index of the data set partition the support vector machine should use for training."));
-      Parameters.Add(new LookupParameter<SupportVectorMachineModel>(ModelParameterName, "The result model generated by the SVM."));
+      Parameters.Add(new ValueLookupParameter<IntValue>(NumberOfFoldsParameterName, "The number of folds to use for cross-validation."));
+      Parameters.Add(new LookupParameter<DoubleValue>(QualityParameterName, "The cross validation quality reached with the given parameters."));
+
+
+      SupportVectorMachineCrossValidationEvaluator evaluator = new SupportVectorMachineCrossValidationEvaluator();
+      OperatorGraph.InitialOperator = evaluator;
+      evaluator.Successor = null;
     }
 
     public override IOperation Apply() {
-      SupportVectorMachineModel model = TrainModel(DataAnalysisProblemData,
-                             SamplesStart.Value, SamplesEnd.Value,
-                             SvmType.Value, KernelType.Value,
-                             Cost.Value, Nu.Value, Gamma.Value, Epsilon.Value);
-      SupportVectorMachineModelParameter.ActualValue = model;
+      var point = ParameterVector;
+      NuParameter.Value = new DoubleValue(point[0]);
+      CostParameter.Value = new DoubleValue(Math.Pow(2, point[1]));
+      GammaParameter.Value = new DoubleValue(Math.Pow(2, point[2]));
+      EpsilonParameter.Value = new DoubleValue();
 
       return base.Apply();
-    }
-
-    private static SupportVectorMachineModel TrainModel(
-      DataAnalysisProblemData problemData,
-      string svmType, string kernelType,
-      double cost, double nu, double gamma, double epsilon) {
-      return TrainModel(problemData, problemData.TrainingSamplesStart.Value, problemData.TrainingSamplesEnd.Value, svmType, kernelType, cost, nu, gamma, epsilon);
-    }
-
-    public static SupportVectorMachineModel TrainModel(
-      DataAnalysisProblemData problemData,
-      int start, int end,
-      string svmType, string kernelType,
-      double cost, double nu, double gamma, double epsilon) {
-      int targetVariableIndex = problemData.Dataset.GetVariableIndex(problemData.TargetVariable.Value);
-
-      //extract SVM parameters from scope and set them
-      SVM.Parameter parameter = new SVM.Parameter();
-      parameter.SvmType = (SVM.SvmType)Enum.Parse(typeof(SVM.SvmType), svmType, true);
-      parameter.KernelType = (SVM.KernelType)Enum.Parse(typeof(SVM.KernelType), kernelType, true);
-      parameter.C = cost;
-      parameter.Nu = nu;
-      parameter.Gamma = gamma;
-      parameter.P = epsilon;
-      parameter.CacheSize = 500;
-      parameter.Probability = false;
-
-
-      SVM.Problem problem = SupportVectorMachineUtil.CreateSvmProblem(problemData, start, end);
-      SVM.RangeTransform rangeTransform = SVM.RangeTransform.Compute(problem);
-      SVM.Problem scaledProblem = Scaling.Scale(rangeTransform, problem);
-      var model = new SupportVectorMachineModel();
-      model.Model = SVM.Training.Train(scaledProblem, parameter);
-      model.RangeTransform = rangeTransform;
-
-      return model;
     }
   }
 }

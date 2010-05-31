@@ -30,12 +30,13 @@ using HeuristicLab.Data;
 using HeuristicLab.Problems.DataAnalysis;
 using System.Drawing;
 using System.IO;
+using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   [Item("Data Analysis Problem", "Represents a data analysis problem.")]
   [Creatable("Problems")]
   [StorableClass]
-  public class DataAnalysisProblem : ParameterizedNamedItem {
+  public class DataAnalysisProblem : ParameterizedNamedItem, IDataAnalysisProblem {
     private const string DataAnalysisProblemDataParameterName = "DataAnalysisProblemData";
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Type; }
@@ -89,10 +90,61 @@ namespace HeuristicLab.Problems.DataAnalysis {
     #endregion
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      DataAnalysisProblem clone = (DataAnalysisProblem) base.Clone(cloner);
+      DataAnalysisProblem clone = (DataAnalysisProblem)base.Clone(cloner);
       clone.RegisterParameterEvents();
       clone.RegisterParameterValueEvents();
       return clone;
     }
+
+    #region IProblem Members
+
+    public virtual IParameter SolutionCreatorParameter {
+      get { return null; }
+    }
+
+    public virtual ISolutionCreator SolutionCreator {
+      get { return null; }
+    }
+
+    public virtual IParameter EvaluatorParameter {
+      get { return null; }
+    }
+
+    public virtual IEvaluator Evaluator {
+      get { return null; }
+    }
+
+    public virtual IEnumerable<IOperator> Operators {
+      get { return new IOperator[0]; }
+    }
+
+    public event EventHandler SolutionCreatorChanged;
+    protected void RaiseSolutionCreatorChanged(EventArgs e) {
+      var changed = SolutionCreatorChanged;
+      if (changed != null)
+        changed(this, e);
+    }
+
+    public event EventHandler EvaluatorChanged;
+    protected void RaiseEvaluatorChanged(EventArgs e) {
+      var changed = EvaluatorChanged;
+      if (changed != null)
+        changed(this, e);
+    }
+
+    public event EventHandler OperatorsChanged;
+    protected void RaiseOperatorsChanged(EventArgs e) {
+      var changed = OperatorsChanged;
+      if (changed != null)
+        changed(this, e);
+    }
+
+    public event EventHandler Reset;
+    protected void RaiseReset(EventArgs e) {
+      var changed = Reset;
+      if (changed != null)
+        changed(this, e);
+    }
+    #endregion
   }
 }

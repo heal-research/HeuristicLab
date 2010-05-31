@@ -115,7 +115,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       get { return MaxFunctionArgumentsParameter.Value; }
       set { MaxFunctionArgumentsParameter.Value = value; }
     }
-    public SymbolicExpressionTreeCreator SolutionCreator {
+    public new SymbolicExpressionTreeCreator SolutionCreator {
       get { return SolutionCreatorParameter.Value; }
       set { SolutionCreatorParameter.Value = value; }
     }
@@ -135,7 +135,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       set { UpperEstimationLimitParameter.Value = value; }
     }
 
-    public ISymbolicRegressionEvaluator Evaluator {
+    public new ISymbolicRegressionEvaluator Evaluator {
       get { return EvaluatorParameter.Value; }
       set { EvaluatorParameter.Value = value; }
     }
@@ -152,7 +152,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       get { return BestKnownQualityParameter.Value; }
     }
     private List<IOperator> operators;
-    public IEnumerable<IOperator> Operators {
+    public override IEnumerable<IOperator> Operators {
       get { return operators; }
     }
     public IEnumerable<ISymbolicRegressionAnalyzer> Analyzers {
@@ -304,34 +304,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
       OnQualityParameterNameChanged(e);
-    }
-    #endregion
-
-    #region events
-    public event EventHandler SolutionCreatorChanged;
-    private void RaiseSolutionCreatorChanged(EventArgs e) {
-      var changed = SolutionCreatorChanged;
-      if (changed != null)
-        changed(this, e);
-    }
-    public event EventHandler EvaluatorChanged;
-    private void RaiseEvaluatorChanged(EventArgs e) {
-      var changed = EvaluatorChanged;
-      if (changed != null)
-        changed(this, e);
-    }
-
-    public event EventHandler OperatorsChanged;
-    private void RaiseOperatorsChanged(EventArgs e) {
-      var changed = OperatorsChanged;
-      if (changed != null)
-        changed(this, e);
-    }
-    public event EventHandler Reset;
-    private void RaiseReset(EventArgs e) {
-      var changed = Reset;
-      if (changed != null)
-        changed(this, e);
     }
     #endregion
 

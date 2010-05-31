@@ -39,7 +39,7 @@ using HeuristicLab.Problems.DataAnalysis.SupportVectorMachine;
 namespace HeuristicLab.Problems.DataAnalysis.Regression.SupportVectorRegression {
   [Item("BestSupportVectorRegressionSolutionAnalyzer", "An operator for analyzing the best support vector solution of regression problems.")]
   [StorableClass]
-  public sealed class BestSymbolicRegressionSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer {
+  public sealed class BestSupportVectorRegressionSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer {
     private const string SupportVectorRegressionModelParameterName = "SupportVectorRegressionModel";
     private const string ProblemDataParameterName = "ProblemData";
     private const string QualityParameterName = "Quality";
@@ -82,7 +82,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.SupportVectorRegression 
       get { return (ILookupParameter<ResultCollection>)Parameters[ResultsParameterName]; }
     }
 
-    public BestSymbolicRegressionSolutionAnalyzer()
+    public BestSupportVectorRegressionSolutionAnalyzer()
       : base() {
       Parameters.Add(new ScopeTreeLookupParameter<SupportVectorMachineModel>(SupportVectorRegressionModelParameterName, "The support vector regression models to analyze."));
       Parameters.Add(new ValueLookupParameter<DataAnalysisProblemData>(ProblemDataParameterName, "The problem data for which the support vector model is a solution."));

@@ -31,14 +31,15 @@ using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using SVM;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
   /// <summary>
-  /// Represents an operator that creates a support vector machine model.
+  /// Represents an operator that performs SVM cross validation with the given parameters.
   /// </summary>
   [StorableClass]
-  [Item("SupportVectorMachineModelCreator", "Represents an operator that creates a support vector machine model.")]
-  public class SupportVectorMachineModelCreator : SingleSuccessorOperator {
+  [Item("SupportVectorMachineCrossValidationEvaluator", "Represents an operator that performs SVM cross validation with the given parameters.")]
+  public class SupportVectorMachineCrossValidationEvaluator : SingleSuccessorOperator, ISingleObjectiveEvaluator {
     private const string DataAnalysisProblemDataParameterName = "DataAnalysisProblemData";
     private const string SvmTypeParameterName = "SvmType";
     private const string KernelTypeParameterName = "KernelType";
@@ -48,7 +49,8 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
     private const string EpsilonParameterName = "Epsilon";
     private const string SamplesStartParameterName = "SamplesStart";
     private const string SamplesEndParameterName = "SamplesEnd";
-    private const string ModelParameterName = "SupportVectorMachineModel";
+    private const string NumberOfFoldsParameterName = "NumberOfFolds";
+    private const string QualityParameterName = "Quality";
 
     #region parameter properties
     public IValueLookupParameter<DataAnalysisProblemData> DataAnalysisProblemDataParameter {
@@ -78,8 +80,11 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
     public IValueLookupParameter<IntValue> SamplesEndParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters[SamplesEndParameterName]; }
     }
-    public ILookupParameter<SupportVectorMachineModel> SupportVectorMachineModelParameter {
-      get { return (ILookupParameter<SupportVectorMachineModel>)Parameters[ModelParameterName]; }
+    public IValueLookupParameter<IntValue> NumberOfFoldsParameter {
+      get { return (IValueLookupParameter<IntValue>)Parameters[NumberOfFoldsParameterName]; }
+    }
+    public ILookupParameter<DoubleValue> QualityParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters[QualityParameterName]; }
     }
     #endregion
     #region properties
@@ -87,10 +92,10 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
       get { return DataAnalysisProblemDataParameter.ActualValue; }
     }
     public StringValue SvmType {
-      get { return SvmTypeParameter.Value; }
+      get { return SvmTypeParameter.ActualValue; }
     }
     public StringValue KernelType {
-      get { return KernelTypeParameter.Value; }
+      get { return KernelTypeParameter.ActualValue; }
     }
     public DoubleValue Nu {
       get { return NuParameter.ActualValue; }
@@ -110,46 +115,50 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
     public IntValue SamplesEnd {
       get { return SamplesEndParameter.ActualValue; }
     }
+    public IntValue NumberOfFolds {
+      get { return NumberOfFoldsParameter.ActualValue; }
+    }
     #endregion
 
-    public SupportVectorMachineModelCreator()
+    public SupportVectorMachineCrossValidationEvaluator()
       : base() {
-      StringValue nuSvrType = new StringValue("NU_SVR").AsReadOnly();
-      StringValue rbfKernelType = new StringValue("RBF").AsReadOnly();
       Parameters.Add(new ValueLookupParameter<DataAnalysisProblemData>(DataAnalysisProblemDataParameterName, "The data analysis problem data to use for training."));
-      Parameters.Add(new ValueLookupParameter<StringValue>(SvmTypeParameterName, "The type of SVM to use.", nuSvrType));
-      Parameters.Add(new ValueLookupParameter<StringValue>(KernelTypeParameterName, "The kernel type to use for the SVM.", rbfKernelType));
+      Parameters.Add(new ValueLookupParameter<StringValue>(SvmTypeParameterName, "The type of SVM to use."));
+      Parameters.Add(new ValueLookupParameter<StringValue>(KernelTypeParameterName, "The kernel type to use for the SVM."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>(NuParameterName, "The value of the nu parameter nu-SVC, one-class SVM and nu-SVR."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>(CostParameterName, "The value of the C (cost) parameter of C-SVC, epsilon-SVR and nu-SVR."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>(GammaParameterName, "The value of the gamma parameter in the kernel function."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>(EpsilonParameterName, "The value of the epsilon parameter for epsilon-SVR."));
       Parameters.Add(new ValueLookupParameter<IntValue>(SamplesStartParameterName, "The first index of the data set partition the support vector machine should use for training."));
       Parameters.Add(new ValueLookupParameter<IntValue>(SamplesEndParameterName, "The last index of the data set partition the support vector machine should use for training."));
-      Parameters.Add(new LookupParameter<SupportVectorMachineModel>(ModelParameterName, "The result model generated by the SVM."));
+      Parameters.Add(new ValueLookupParameter<IntValue>(NumberOfFoldsParameterName, "The number of folds to use for cross-validation."));
+      Parameters.Add(new LookupParameter<DoubleValue>(QualityParameterName, "The cross validation quality reached with the given parameters."));
     }
 
     public override IOperation Apply() {
-      SupportVectorMachineModel model = TrainModel(DataAnalysisProblemData,
+      double quality = PerformCrossValidation(DataAnalysisProblemData,
                              SamplesStart.Value, SamplesEnd.Value,
                              SvmType.Value, KernelType.Value,
-                             Cost.Value, Nu.Value, Gamma.Value, Epsilon.Value);
-      SupportVectorMachineModelParameter.ActualValue = model;
+                             Cost.Value, Nu.Value, Gamma.Value, Epsilon.Value, NumberOfFolds.Value);
 
+      QualityParameter.ActualValue = new DoubleValue(quality);
       return base.Apply();
     }
 
-    private static SupportVectorMachineModel TrainModel(
+    private static double PerformCrossValidation(
       DataAnalysisProblemData problemData,
       string svmType, string kernelType,
-      double cost, double nu, double gamma, double epsilon) {
-      return TrainModel(problemData, problemData.TrainingSamplesStart.Value, problemData.TrainingSamplesEnd.Value, svmType, kernelType, cost, nu, gamma, epsilon);
+      double cost, double nu, double gamma, double epsilon,
+      int nFolds) {
+      return PerformCrossValidation(problemData, problemData.TrainingSamplesStart.Value, problemData.TrainingSamplesEnd.Value, svmType, kernelType, cost, nu, gamma, epsilon, nFolds);
     }
 
-    public static SupportVectorMachineModel TrainModel(
+    public static double PerformCrossValidation(
       DataAnalysisProblemData problemData,
       int start, int end,
       string svmType, string kernelType,
-      double cost, double nu, double gamma, double epsilon) {
+      double cost, double nu, double gamma, double epsilon,
+      int nFolds) {
       int targetVariableIndex = problemData.Dataset.GetVariableIndex(problemData.TargetVariable.Value);
 
       //extract SVM parameters from scope and set them
@@ -167,11 +176,8 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
       SVM.Problem problem = SupportVectorMachineUtil.CreateSvmProblem(problemData, start, end);
       SVM.RangeTransform rangeTransform = SVM.RangeTransform.Compute(problem);
       SVM.Problem scaledProblem = Scaling.Scale(rangeTransform, problem);
-      var model = new SupportVectorMachineModel();
-      model.Model = SVM.Training.Train(scaledProblem, parameter);
-      model.RangeTransform = rangeTransform;
 
-      return model;
+      return SVM.Training.PerformCrossValidation(scaledProblem, parameter, nFolds);
     }
   }
 }
