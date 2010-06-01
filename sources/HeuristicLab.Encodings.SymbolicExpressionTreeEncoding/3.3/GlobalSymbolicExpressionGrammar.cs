@@ -138,7 +138,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       clone.maxFunctionDefinitions = maxFunctionDefinitions;
       clone.minFunctionArguments = minFunctionArguments;
       clone.minFunctionDefinitions = minFunctionDefinitions;
-      clone.mainBranchGrammar = mainBranchGrammar;
+      clone.mainBranchGrammar = (ISymbolicExpressionGrammar)cloner.Clone(mainBranchGrammar);
       return clone;
     }
   }
