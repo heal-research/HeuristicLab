@@ -118,6 +118,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (Problem != null) base.Prepare();
     }
 
+    protected override void Problem_Reset(object sender, EventArgs e) {
+      TrainingSamplesStartParameter.ActualValue = Problem.DataAnalysisProblemData.TrainingSamplesStart;
+      TrainingSamplesEndParameter.ActualValue = Problem.DataAnalysisProblemData.TrainingSamplesEnd;      
+      base.Problem_Reset(sender, e);
+    }
+
     #region Events
     protected override void OnProblemChanged() {
       solutionCreator.DataAnalysisProblemDataParameter.ActualName = Problem.DataAnalysisProblemDataParameter.Name;
@@ -125,6 +131,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       analyzer.ProblemDataParameter.ActualName = Problem.DataAnalysisProblemDataParameter.Name; 
       TrainingSamplesStartParameter.ActualValue = Problem.DataAnalysisProblemData.TrainingSamplesStart;
       TrainingSamplesEndParameter.ActualValue = Problem.DataAnalysisProblemData.TrainingSamplesEnd;
+      Problem.Reset += new EventHandler(Problem_Reset);
       base.OnProblemChanged();
     }
 
@@ -160,6 +167,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         solutionCreator.DataAnalysisProblemDataParameter.ActualName = Problem.DataAnalysisProblemDataParameter.Name;
         evaluator.RegressionProblemDataParameter.ActualName = Problem.DataAnalysisProblemDataParameter.Name;
         analyzer.ProblemDataParameter.ActualName = Problem.DataAnalysisProblemDataParameter.Name;
+        Problem.Reset += new EventHandler(Problem_Reset);
       }
     }
     #endregion
