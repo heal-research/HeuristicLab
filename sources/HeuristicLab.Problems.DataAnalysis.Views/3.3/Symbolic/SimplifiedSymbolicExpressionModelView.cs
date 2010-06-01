@@ -38,41 +38,29 @@ using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic {
   [View("Simplified Symbolic Expression Model View")]
-  [Content(typeof(SymbolicRegressionSolution))]
+  [Content(typeof(SymbolicRegressionModel))]
   public partial class SimplifiedSymbolicExpressionModelView : AsynchronousContentView {
-    public new SymbolicRegressionSolution Content {
-      get { return (SymbolicRegressionSolution)base.Content; }
-      set { base.Content = value; }
-    }
-
-
     public SimplifiedSymbolicExpressionModelView()
       : base() {
       InitializeComponent();
     }
 
-    protected override void RegisterContentEvents() {
-      base.RegisterContentEvents();
-      Content.ModelChanged += new EventHandler(Content_ModelChanged);
-    }
-
-    protected override void DeregisterContentEvents() {
-      base.DeregisterContentEvents();
-      Content.ModelChanged -= new EventHandler(Content_ModelChanged);
-    }
-
-    void Content_ModelChanged(object sender, EventArgs e) {
-      UpdateTreeChart();
+    public new SymbolicRegressionModel Content {
+      get { return (SymbolicRegressionModel)base.Content; }
+      set { base.Content = value; }
     }
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      UpdateTreeChart();
+      if (Content != null)
+        UpdateTreeChart();
+      else
+        viewHost.Content = null;
     }
 
     private void UpdateTreeChart() {
       var simplifier = new SymbolicSimplifier();
-      var simplifiedTree = simplifier.Simplify(Content.Model.SymbolicExpressionTree);
+      var simplifiedTree = simplifier.Simplify(Content.SymbolicExpressionTree);
       viewHost.Content = simplifiedTree;
     }
   }

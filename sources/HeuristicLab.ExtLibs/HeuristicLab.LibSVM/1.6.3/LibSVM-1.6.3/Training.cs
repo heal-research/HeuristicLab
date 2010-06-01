@@ -42,11 +42,11 @@ namespace SVM
             }
         }
 
-        private static double doCrossValidation(Problem problem, Parameter parameters, int nr_fold)
+        private static double doCrossValidation(Problem problem, Parameter parameters, int nr_fold, bool shuffleTraining)
         {
             int i;
             double[] target = new double[problem.Count];
-            Procedures.svm_cross_validation(problem, parameters, nr_fold, target);
+            Procedures.svm_cross_validation(problem, parameters, nr_fold, target, shuffleTraining);
             int total_correct = 0;
             double total_error = 0;
             //double sumv = 0, sumy = 0, sumvv = 0, sumyy = 0, sumvy = 0;
@@ -86,7 +86,7 @@ namespace SVM
             string modelFilename;
             parseCommandLine(args, out parameters, out problem, out crossValidation, out nrfold, out modelFilename);
             if (crossValidation)
-                PerformCrossValidation(problem, parameters, nrfold);
+                PerformCrossValidation(problem, parameters, nrfold, true);
             else Model.Write(modelFilename, Train(problem, parameters));
         }
 
@@ -97,11 +97,11 @@ namespace SVM
         /// <param name="parameters">The parameters to test</param>
         /// <param name="nrfold">The number of cross validations to use</param>
         /// <returns>The cross validation score</returns>
-        public static double PerformCrossValidation(Problem problem, Parameter parameters, int nrfold)
+        public static double PerformCrossValidation(Problem problem, Parameter parameters, int nrfold, bool shuffleTraining)
         {
             string error = Procedures.svm_check_parameter(problem, parameters);
             if (error == null)
-                return doCrossValidation(problem, parameters, nrfold);
+                return doCrossValidation(problem, parameters, nrfold, shuffleTraining);
             else throw new Exception(error);
         }
 

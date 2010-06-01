@@ -38,9 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private OpenFileDialog openFileDialog;
     public new DataAnalysisProblemData Content {
       get { return (DataAnalysisProblemData)base.Content; }
-      set {
-        base.Content = value;
-      }
+      set { base.Content = value; }
     }
 
     public DataAnalysisProblemDataView() {

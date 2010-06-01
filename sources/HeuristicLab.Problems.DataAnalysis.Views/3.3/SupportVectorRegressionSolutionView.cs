@@ -39,13 +39,11 @@ using HeuristicLab.Problems.DataAnalysis.Regression.SupportVectorRegression;
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Support Vector Regression Solution View")]
   [Content(typeof(SupportVectorRegressionSolution))]
-  public partial class SupportVectorRegressionSolutionView : AsynchronousContentView {
+  public partial class SupportVectorRegressionSolutionView : DataAnalysisSolutionView {
 
     public new SupportVectorRegressionSolution Content {
       get { return (SupportVectorRegressionSolution)base.Content; }
-      set {
-        base.Content = value;
-      }
+      set { base.Content = value; }
     }
 
     public SupportVectorRegressionSolutionView()
@@ -56,26 +54,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content != null) {
-        dataPanel.Content = Content.ProblemData;
-        modelPanel.Content = Content.Model;
         supportVectorViewHost.Content = Content.SupportVectors;
       } else {
-        dataPanel.Content = null;
-        modelPanel.Content = null;
         supportVectorViewHost.Content = null;
       }
-    }
-    protected override void RegisterContentEvents() {
-      base.RegisterContentEvents();
-      Content.ProblemDataChanged += new EventHandler(Content_ProblemDataChanged);
-    }
-
-    protected override void DeregisterContentEvents() {
-      base.DeregisterContentEvents();
-    }
-
-    private void Content_ProblemDataChanged(object sender, EventArgs e) {
-      dataPanel.Content = Content.ProblemData;
     }
   }
 }

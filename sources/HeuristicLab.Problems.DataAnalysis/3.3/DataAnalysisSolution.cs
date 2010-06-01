@@ -35,52 +35,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [Item("DataAnalysisSolution", "Represents a solution for a data analysis problem which can be visualized in the GUI.")]
   [StorableClass]
   public abstract class DataAnalysisSolution : NamedItem {
-    [Storable]
-    private DataAnalysisProblemData problemData;
-    public DataAnalysisProblemData ProblemData {
-      get { return problemData; }
-      set {
-        if (problemData != value) {
-          if (value == null) throw new ArgumentNullException();
-          if (problemData != null) DeregisterProblemDataEvents();
-          problemData = value;
-          RegisterProblemDataEvents();
-          OnProblemDataChanged(EventArgs.Empty);
-        }
-      }
-    }
-    [Storable]
-    private double lowerEstimationLimit;
-    public double LowerEstimationLimit {
-      get { return lowerEstimationLimit; }
-      set {
-        if (lowerEstimationLimit != value) {
-          lowerEstimationLimit = value;
-          OnEstimatedValuesChanged(EventArgs.Empty);
-        }
-      }
-    }
-
-    [Storable]
-    private double upperEstimationLimit;
-    public double UpperEstimationLimit {
-      get { return upperEstimationLimit; }
-      set {
-        if (upperEstimationLimit != value) {
-          upperEstimationLimit = value;
-          OnEstimatedValuesChanged(EventArgs.Empty);
-        }
-      }
-    }
-
-    public abstract IEnumerable<double> EstimatedValues { get; }
-    public abstract IEnumerable<double> EstimatedTrainingValues { get; }
-    public abstract IEnumerable<double> EstimatedTestValues { get; }
-
-    protected DataAnalysisSolution() : base() {
-      Name = ItemName;
-      Description = ItemDescription;
-    }
+    protected DataAnalysisSolution()
+      : base() { }
     protected DataAnalysisSolution(DataAnalysisProblemData problemData) : this(problemData, double.NegativeInfinity, double.PositiveInfinity) { }
     protected DataAnalysisSolution(DataAnalysisProblemData problemData, double lowerEstimationLimit, double upperEstimationLimit)
       : this() {
@@ -92,21 +48,71 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     [StorableConstructor]
     private DataAnalysisSolution(bool deserializing) : base(deserializing) { }
-
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
       if (problemData != null) RegisterProblemDataEvents();
     }
 
-    public override IDeepCloneable Clone(Cloner cloner) {
-      DataAnalysisSolution clone = (DataAnalysisSolution)base.Clone(cloner);
-      // don't clone the problem data!
-      clone.problemData = problemData;
-      clone.lowerEstimationLimit = lowerEstimationLimit;
-      clone.upperEstimationLimit = upperEstimationLimit;
-      clone.Initialize();
-      return clone;
+    [Storable]
+    private DataAnalysisProblemData problemData;
+    public DataAnalysisProblemData ProblemData {
+      get { return problemData; }
+      set {
+        if (problemData != value) {
+          if (value == null) throw new ArgumentNullException();
+          if (model != null && problemData != null && !problemData.InputVariables.Select(c => c.Value).SequenceEqual(
+            value.InputVariables.Select(c => c.Value)))
+            throw new ArgumentException("Could not set new problem data with different structure");
+
+          if (problemData != null) DeregisterProblemDataEvents();
+          problemData = value;
+          RegisterProblemDataEvents();
+          OnProblemDataChanged();
+        }
+      }
     }
+
+    [Storable]
+    private IDataAnalysisModel model;
+    public IDataAnalysisModel Model {
+      get { return model; }
+      set {
+        if (model != value) {
+          if (value == null) throw new ArgumentNullException();
+          model = value;
+          OnModelChanged();
+        }
+      }
+    }
+
+    [Storable]
+    private double lowerEstimationLimit;
+    public double LowerEstimationLimit {
+      get { return lowerEstimationLimit; }
+      set {
+        if (lowerEstimationLimit != value) {
+          lowerEstimationLimit = value;
+          RecalculateEstimatedValues();
+        }
+      }
+    }
+
+    [Storable]
+    private double upperEstimationLimit;
+    public double UpperEstimationLimit {
+      get { return upperEstimationLimit; }
+      set {
+        if (upperEstimationLimit != value) {
+          upperEstimationLimit = value;
+          RecalculateEstimatedValues();
+        }
+      }
+    }
+
+    public abstract IEnumerable<double> EstimatedValues { get; }
+    public abstract IEnumerable<double> EstimatedTrainingValues { get; }
+    public abstract IEnumerable<double> EstimatedTestValues { get; }
+    protected abstract void RecalculateEstimatedValues();
 
     #region Events
     protected virtual void RegisterProblemDataEvents() {
@@ -115,24 +121,43 @@ namespace HeuristicLab.Problems.DataAnalysis {
     protected virtual void DeregisterProblemDataEvents() {
       ProblemData.ProblemDataChanged += new EventHandler(ProblemData_Changed);
     }
-
     private void ProblemData_Changed(object sender, EventArgs e) {
-      OnProblemDataChanged(EventArgs.Empty);
+      OnProblemDataChanged();
     }
 
     public event EventHandler ProblemDataChanged;
-    protected virtual void OnProblemDataChanged(EventArgs e) {
+    protected virtual void OnProblemDataChanged() {
+      RecalculateEstimatedValues();
       var listeners = ProblemDataChanged;
       if (listeners != null)
-        listeners(this, e);
+        listeners(this, EventArgs.Empty);
+    }
+
+    public event EventHandler ModelChanged;
+    protected virtual void OnModelChanged() {
+      RecalculateEstimatedValues();
+      EventHandler handler = ModelChanged;
+      if (handler != null)
+        handler(this, EventArgs.Empty);
     }
 
     public event EventHandler EstimatedValuesChanged;
-    protected virtual void OnEstimatedValuesChanged(EventArgs e) {
+    protected virtual void OnEstimatedValuesChanged() {
       var listeners = EstimatedValuesChanged;
       if (listeners != null)
-        listeners(this, e);
+        listeners(this, EventArgs.Empty);
     }
     #endregion
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      DataAnalysisSolution clone = (DataAnalysisSolution)base.Clone(cloner);
+      // don't clone the problem data!
+      clone.problemData = problemData;
+      clone.Model = (IDataAnalysisModel)cloner.Clone(model);
+      clone.lowerEstimationLimit = lowerEstimationLimit;
+      clone.upperEstimationLimit = upperEstimationLimit;
+      clone.Initialize();
+      return clone;
+    }
   }
 }

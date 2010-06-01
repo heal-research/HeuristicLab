@@ -40,6 +40,7 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
   [StorableClass]
   [Item("SupportVectorMachineCrossValidationEvaluator", "Represents an operator that performs SVM cross validation with the given parameters.")]
   public class SupportVectorMachineCrossValidationEvaluator : SingleSuccessorOperator, ISingleObjectiveEvaluator {
+    private const string RandomParameterName = "Random";
     private const string DataAnalysisProblemDataParameterName = "DataAnalysisProblemData";
     private const string SvmTypeParameterName = "SvmType";
     private const string KernelTypeParameterName = "KernelType";
@@ -49,10 +50,14 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
     private const string EpsilonParameterName = "Epsilon";
     private const string SamplesStartParameterName = "SamplesStart";
     private const string SamplesEndParameterName = "SamplesEnd";
+    private const string ActualSamplesParameterName = "ActualSamples";
     private const string NumberOfFoldsParameterName = "NumberOfFolds";
     private const string QualityParameterName = "Quality";
 
     #region parameter properties
+    public ILookupParameter<IRandom> RandomParameter {
+      get { return (ILookupParameter<IRandom>)Parameters[RandomParameterName]; }
+    }
     public IValueLookupParameter<DataAnalysisProblemData> DataAnalysisProblemDataParameter {
       get { return (IValueLookupParameter<DataAnalysisProblemData>)Parameters[DataAnalysisProblemDataParameterName]; }
     }
@@ -79,6 +84,9 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
     }
     public IValueLookupParameter<IntValue> SamplesEndParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters[SamplesEndParameterName]; }
+    }
+    public IValueLookupParameter<PercentValue> ActualSamplesParameter {
+      get { return (IValueLookupParameter<PercentValue>)Parameters[ActualSamplesParameterName]; }
     }
     public IValueLookupParameter<IntValue> NumberOfFoldsParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters[NumberOfFoldsParameterName]; }
@@ -122,6 +130,7 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
 
     public SupportVectorMachineCrossValidationEvaluator()
       : base() {
+      Parameters.Add(new LookupParameter<IRandom>(RandomParameterName, "The random generator to use."));
       Parameters.Add(new ValueLookupParameter<DataAnalysisProblemData>(DataAnalysisProblemDataParameterName, "The data analysis problem data to use for training."));
       Parameters.Add(new ValueLookupParameter<StringValue>(SvmTypeParameterName, "The type of SVM to use."));
       Parameters.Add(new ValueLookupParameter<StringValue>(KernelTypeParameterName, "The kernel type to use for the SVM."));
@@ -131,18 +140,38 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
       Parameters.Add(new ValueLookupParameter<DoubleValue>(EpsilonParameterName, "The value of the epsilon parameter for epsilon-SVR."));
       Parameters.Add(new ValueLookupParameter<IntValue>(SamplesStartParameterName, "The first index of the data set partition the support vector machine should use for training."));
       Parameters.Add(new ValueLookupParameter<IntValue>(SamplesEndParameterName, "The last index of the data set partition the support vector machine should use for training."));
+      Parameters.Add(new ValueLookupParameter<PercentValue>(ActualSamplesParameterName, "The percentage of the training set that should be acutally used for cross-validation (samples are picked randomly from the training set)."));
       Parameters.Add(new ValueLookupParameter<IntValue>(NumberOfFoldsParameterName, "The number of folds to use for cross-validation."));
       Parameters.Add(new LookupParameter<DoubleValue>(QualityParameterName, "The cross validation quality reached with the given parameters."));
     }
 
     public override IOperation Apply() {
-      double quality = PerformCrossValidation(DataAnalysisProblemData,
-                             SamplesStart.Value, SamplesEnd.Value,
+      double reductionRatio = 1.0;
+      if (ActualSamplesParameter.ActualValue != null)
+        reductionRatio = ActualSamplesParameter.ActualValue.Value;
+
+      int reducedRows = (int)((SamplesEnd.Value - SamplesStart.Value) * reductionRatio);
+      var reducedProblemData = (DataAnalysisProblemData)DataAnalysisProblemData.Clone();
+      ShuffleRows(RandomParameter.ActualValue, reducedProblemData.Dataset, SamplesStart.Value, SamplesEnd.Value);
+
+      double quality = PerformCrossValidation(reducedProblemData,
+                             SamplesStart.Value, SamplesStart.Value + reducedRows,
                              SvmType.Value, KernelType.Value,
                              Cost.Value, Nu.Value, Gamma.Value, Epsilon.Value, NumberOfFolds.Value);
 
       QualityParameter.ActualValue = new DoubleValue(quality);
       return base.Apply();
+    }
+
+    private void ShuffleRows(IRandom random, Dataset dataset, int start, int end) {
+      for (int row = end - 1; row > start ; row--) {
+        int otherRow = random.Next(start, row);
+        for (int column = 0; column < dataset.Columns; column++) {
+          double tmp = dataset[otherRow, column];
+          dataset[otherRow, column] = dataset[row, column];
+          dataset[row, column] = tmp;
+        }
+      }
     }
 
     private static double PerformCrossValidation(
@@ -177,7 +206,7 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
       SVM.RangeTransform rangeTransform = SVM.RangeTransform.Compute(problem);
       SVM.Problem scaledProblem = Scaling.Scale(rangeTransform, problem);
 
-      return SVM.Training.PerformCrossValidation(scaledProblem, parameter, nFolds);
+      return SVM.Training.PerformCrossValidation(scaledProblem, parameter, nFolds, false);
     }
   }
 }

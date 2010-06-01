@@ -70,7 +70,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     #region events
-    protected virtual void OnDataAnalysisProblemChanged(EventArgs e) { }
+    protected virtual void OnDataAnalysisProblemChanged(EventArgs e) {
+      RaiseReset(e);
+    }
 
     private void RegisterParameterEvents() {
       DataAnalysisProblemDataParameter.ValueChanged += new EventHandler(DataAnalysisProblemDataParameter_ValueChanged);

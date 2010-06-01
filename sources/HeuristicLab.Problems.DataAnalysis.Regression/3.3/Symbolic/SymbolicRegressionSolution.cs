@@ -36,45 +36,26 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [Item("SymbolicRegressionSolution", "Represents a solution for a symbolic regression problem which can be visualized in the GUI.")]
   [StorableClass]
   public sealed class SymbolicRegressionSolution : DataAnalysisSolution {
-    public override Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Function; }
-    }
-    [Storable]
-    private SymbolicRegressionModel model;
-    public SymbolicRegressionModel Model {
-      get { return model; }
-      set {
-        if (model != value) {
-          if (value == null) throw new ArgumentNullException();
-          model = value;
-          OnModelChanged(EventArgs.Empty);
-        }
-      }
-    }
-
     public SymbolicRegressionSolution() : base() { }
     public SymbolicRegressionSolution(DataAnalysisProblemData problemData, SymbolicRegressionModel model, double lowerEstimationLimit, double upperEstimationLimit)
       : base(problemData, lowerEstimationLimit, upperEstimationLimit) {
-      this.model = model;
+      this.Model = model;
     }
 
-    public event EventHandler ModelChanged;
-    private void OnModelChanged(EventArgs e) {
-      RecalculateEstimatedValues();
-      var listeners = ModelChanged;
-      if (listeners != null)
-        listeners(this, e);
+    public override Image ItemImage {
+      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Function; }
     }
 
-    protected override void OnProblemDataChanged(EventArgs e) {
-      RecalculateEstimatedValues();
+    public new SymbolicRegressionModel Model {
+      get { return (SymbolicRegressionModel)base.Model; }
+      set { base.Model = value; }
     }
 
-    private void RecalculateEstimatedValues() {
-      estimatedValues = (from x in model.GetEstimatedValues(ProblemData.Dataset, 0, ProblemData.Dataset.Rows)
+    protected override void RecalculateEstimatedValues() {
+      estimatedValues = (from x in Model.GetEstimatedValues(ProblemData, 0, ProblemData.Dataset.Rows)
                          let boundedX = Math.Min(UpperEstimationLimit, Math.Max(LowerEstimationLimit, x))
                          select double.IsNaN(boundedX) ? UpperEstimationLimit : boundedX).ToList();
-      OnEstimatedValuesChanged(EventArgs.Empty);
+      OnEstimatedValuesChanged();
     }
 
     private List<double> estimatedValues;
@@ -101,12 +82,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
         int n = ProblemData.TestSamplesEnd.Value - start;
         return estimatedValues.Skip(start).Take(n).ToList();
       }
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      SymbolicRegressionSolution clone = (SymbolicRegressionSolution)base.Clone(cloner);
-      clone.model = (SymbolicRegressionModel)cloner.Clone(model);
-      return clone;
     }
   }
 }

@@ -216,6 +216,7 @@ namespace SVM {
       model.PairwiseProbabilityB = null;
       model.ClassLabels = null;
       model.NumberOfSVPerClass = null;
+      model.SupportVectorIndizes = new int[0];
 
       bool headerFinished = false;
       while (!headerFinished) {

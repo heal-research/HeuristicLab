@@ -1554,7 +1554,7 @@ namespace SVM
 
             Parameter newparam = (Parameter)param.Clone();
             newparam.Probability = false;
-            svm_cross_validation(prob, newparam, nr_fold, ymv);
+            svm_cross_validation(prob, newparam, nr_fold, ymv, true);
             for (i = 0; i < prob.Count; i++)
             {
                 ymv[i] = prob.Y[i] - ymv[i];
@@ -1871,7 +1871,7 @@ namespace SVM
         }
 
         // Stratified cross validation
-        public static void svm_cross_validation(Problem prob, Parameter param, int nr_fold, double[] target)
+        public static void svm_cross_validation(Problem prob, Parameter param, int nr_fold, double[] target, bool shuffleTraining)
         {
             Random rand = new Random();
             int i;
@@ -1935,10 +1935,11 @@ namespace SVM
             else
             {
                 for (i = 0; i < l; i++) perm[i] = i;
-                for (i = 0; i < l; i++)
-                {
+                if (shuffleTraining) {
+                  for (i = 0; i < l; i++) {
                     int j = i + (int)(rand.NextDouble() * (l - i));
                     do { int _ = perm[i]; perm[i] = perm[j]; perm[j] = _; } while (false);
+                  }
                 }
                 for (i = 0; i <= nr_fold; i++)
                     fold_start[i] = i * l / nr_fold;

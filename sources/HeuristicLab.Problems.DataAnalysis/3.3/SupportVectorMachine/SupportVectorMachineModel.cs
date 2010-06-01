@@ -28,6 +28,8 @@ using System.Globalization;
 using System.IO;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Common;
+using SVM;
+using System.Linq;
 
 namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
   /// <summary>
@@ -35,7 +37,11 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
   /// </summary>
   [StorableClass]
   [Item("SupportVectorMachineModel", "Represents a support vector machine model.")]
-  public class SupportVectorMachineModel : NamedItem {
+  public class SupportVectorMachineModel : NamedItem, IDataAnalysisModel {
+    public SupportVectorMachineModel()
+      : base() {
+    }
+
     private SVM.Model model;
     /// <summary>
     /// Gets or sets the SVM model.
@@ -66,8 +72,12 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
       }
     }
 
-    public SupportVectorMachineModel()
-      : base() {
+    public IEnumerable<double> GetEstimatedValues(DataAnalysisProblemData problemData, int start, int end) {
+      SVM.Problem problem = SupportVectorMachineUtil.CreateSvmProblem(problemData, start, end);
+      SVM.Problem scaledProblem = Scaling.Scale(RangeTransform, problem);
+
+      return (from row in Enumerable.Range(0, scaledProblem.Count)
+              select SVM.Prediction.Predict(Model, scaledProblem.X[row])).ToList();
     }
 
     #region events
@@ -80,6 +90,12 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
     #endregion
 
     #region persistence
+    [Storable]
+    private int[] SupportVectorIndizes {
+      get { return this.Model.SupportVectorIndizes; }
+      set { this.Model.SupportVectorIndizes = value; }
+    }
+
     [Storable]
     private string ModelAsString {
       get {
@@ -130,7 +146,7 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
     public static void Export(SupportVectorMachineModel model, Stream s) {
       StreamWriter writer = new StreamWriter(s);
       writer.WriteLine("RangeTransform:");
-      writer.Flush(); 
+      writer.Flush();
       using (MemoryStream memStream = new MemoryStream()) {
         SVM.RangeTransform.Write(memStream, model.RangeTransform);
         memStream.Seek(0, SeekOrigin.Begin);

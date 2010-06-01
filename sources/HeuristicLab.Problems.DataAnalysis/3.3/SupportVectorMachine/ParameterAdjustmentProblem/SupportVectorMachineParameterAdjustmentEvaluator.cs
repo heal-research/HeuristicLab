@@ -33,9 +33,9 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Operators;
 
 namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine.ParameterAdjustmentProblem {
-  [Item("SupportVectorRegressionParameterAdjustmentEvaluator", "")]
+  [Item("SupportVectorMachineParameterAdjustmentEvaluator", "")]
   [StorableClass]
-  public class SupportVectorRegressionParameterAdjustmentEvaluator : AlgorithmOperator, ISingleObjectiveEvaluator {
+  public class SupportVectorMachineParameterAdjustmentEvaluator : AlgorithmOperator, ISingleObjectiveEvaluator {
     private const string ParameterVectorParameterName = "ParameterVector";
     private const string DataAnalysisProblemDataParameterName = "DataAnalysisProblemData";
     private const string SvmTypeParameterName = "SvmType";
@@ -111,7 +111,7 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine.ParameterAdjus
     }
     #endregion
 
-    public SupportVectorRegressionParameterAdjustmentEvaluator()
+    public SupportVectorMachineParameterAdjustmentEvaluator()
       : base() {
       StringValue nuSvrType = new StringValue("NU_SVR").AsReadOnly();
       StringValue rbfKernelType = new StringValue("RBF").AsReadOnly();
@@ -140,7 +140,6 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine.ParameterAdjus
       CostParameter.Value = new DoubleValue(Math.Pow(2, point[1]));
       GammaParameter.Value = new DoubleValue(Math.Pow(2, point[2]));
       EpsilonParameter.Value = new DoubleValue();
-
       return base.Apply();
     }
   }

@@ -38,52 +38,51 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.SupportVectorRegression 
   [Item("SupportVectorRegressionSolution", "Represents a support vector solution for a regression problem which can be visualized in the GUI.")]
   [StorableClass]
   public sealed class SupportVectorRegressionSolution : DataAnalysisSolution {
+    public SupportVectorRegressionSolution() : base() { }
+    public SupportVectorRegressionSolution(DataAnalysisProblemData problemData, SupportVectorMachineModel model, IEnumerable<string> inputVariables, double lowerEstimationLimit, double upperEstimationLimit)
+      : base(problemData, lowerEstimationLimit, upperEstimationLimit) {
+      this.Model = model;
+    }
+
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Function; }
     }
 
-    [Storable]
-    private SupportVectorMachineModel model;
-    public SupportVectorMachineModel Model {
-      get { return model; }
+    public new SupportVectorMachineModel Model {
+      get { return (SupportVectorMachineModel)base.Model; }
+      set { base.Model = value; }
     }
 
     public Dataset SupportVectors {
       get { return CalculateSupportVectors(); }
     }
 
-    public SupportVectorRegressionSolution() : base() { }
-    public SupportVectorRegressionSolution(DataAnalysisProblemData problemData, SupportVectorMachineModel model, IEnumerable<string> inputVariables, double lowerEstimationLimit, double upperEstimationLimit)
-      : base(problemData, lowerEstimationLimit, upperEstimationLimit) {
-      this.model = model;
-    }
-
-    protected override void OnProblemDataChanged(EventArgs e) {
-      RecalculateEstimatedValues();
-      model.Model.SupportVectorIndizes = new int[0];
+    protected override void OnProblemDataChanged() {
+      Model.Model.SupportVectorIndizes = new int[0];
+      base.OnProblemDataChanged();
     }
 
     private Dataset CalculateSupportVectors() {
-      if (model.Model.SupportVectorIndizes.Length == 0)
+      if (Model.Model.SupportVectorIndizes.Length == 0)
         return new Dataset();
 
-      Dataset dataset = new Dataset(ProblemData.Dataset.VariableNames, new double[model.Model.SupportVectorCount, ProblemData.Dataset.Columns]);
-      for (int i = 0; i < model.Model.SupportVectorIndizes.Length; i++) {
+      Dataset dataset = new Dataset(ProblemData.Dataset.VariableNames, new double[Model.Model.SupportVectorCount, ProblemData.Dataset.Columns]);
+      for (int i = 0; i < Model.Model.SupportVectorIndizes.Length; i++) {
         for (int column = 0; column < ProblemData.Dataset.Columns; column++)
-          dataset[i, column] = ProblemData.Dataset[model.Model.SupportVectorIndizes[i], column];
+          dataset[i, column] = ProblemData.Dataset[Model.Model.SupportVectorIndizes[i], column];
       }
       return dataset;
     }
 
-    private void RecalculateEstimatedValues() {
+    protected override void RecalculateEstimatedValues() {
       SVM.Problem problem = SupportVectorMachineUtil.CreateSvmProblem(ProblemData, 0, ProblemData.Dataset.Rows);
-      SVM.Problem scaledProblem = Scaling.Scale(model.RangeTransform, problem);
+      SVM.Problem scaledProblem = Scaling.Scale(Model.RangeTransform, problem);
 
       estimatedValues = (from row in Enumerable.Range(0, scaledProblem.Count)
-                         let prediction = SVM.Prediction.Predict(model.Model, scaledProblem.X[row])
+                         let prediction = SVM.Prediction.Predict(Model.Model, scaledProblem.X[row])
                          let boundedX = Math.Min(UpperEstimationLimit, Math.Max(LowerEstimationLimit, prediction))
                          select double.IsNaN(boundedX) ? UpperEstimationLimit : boundedX).ToList();
-      OnEstimatedValuesChanged(EventArgs.Empty);
+      OnEstimatedValuesChanged();
     }
 
     private List<double> estimatedValues;
@@ -110,12 +109,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.SupportVectorRegression 
         int n = ProblemData.TestSamplesEnd.Value - start;
         return estimatedValues.Skip(start).Take(n).ToList();
       }
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      SupportVectorRegressionSolution clone = (SupportVectorRegressionSolution)base.Clone(cloner);
-      clone.model = (SupportVectorMachineModel)cloner.Clone(model);
-      return clone;
     }
   }
 }

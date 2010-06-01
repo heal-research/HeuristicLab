@@ -43,82 +43,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.modelTabControl = new System.Windows.Forms.TabControl();
-      this.modelTabPage = new System.Windows.Forms.TabPage();
-      this.modelPanel = new HeuristicLab.MainForm.WindowsForms.ViewHost();
-      this.dataTabPage = new System.Windows.Forms.TabPage();
-      this.dataPanel = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.supportVectorTabControl = new System.Windows.Forms.TabPage();
       this.supportVectorViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
-      this.modelTabControl.SuspendLayout();
-      this.modelTabPage.SuspendLayout();
-      this.dataTabPage.SuspendLayout();
       this.supportVectorTabControl.SuspendLayout();
       this.SuspendLayout();
-      // 
-      // modelTabControl
-      // 
-      this.modelTabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.modelTabControl.Controls.Add(this.modelTabPage);
-      this.modelTabControl.Controls.Add(this.dataTabPage);
-      this.modelTabControl.Controls.Add(this.supportVectorTabControl);
-      this.modelTabControl.Location = new System.Drawing.Point(3, 3);
-      this.modelTabControl.Name = "modelTabControl";
-      this.modelTabControl.SelectedIndex = 0;
-      this.modelTabControl.Size = new System.Drawing.Size(247, 245);
-      this.modelTabControl.TabIndex = 0;
-      // 
-      // modelTabPage
-      // 
-      this.modelTabPage.Controls.Add(this.modelPanel);
-      this.modelTabPage.Location = new System.Drawing.Point(4, 22);
-      this.modelTabPage.Name = "modelTabPage";
-      this.modelTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.modelTabPage.Size = new System.Drawing.Size(239, 219);
-      this.modelTabPage.TabIndex = 0;
-      this.modelTabPage.Text = "Model";
-      this.modelTabPage.UseVisualStyleBackColor = true;
-      // 
-      // modelPanel
-      // 
-      this.modelPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.modelPanel.Caption = "View";
-      this.modelPanel.Content = null;
-      this.modelPanel.Location = new System.Drawing.Point(6, 6);
-      this.modelPanel.Name = "modelPanel";
-      this.modelPanel.ReadOnly = false;
-      this.modelPanel.Size = new System.Drawing.Size(227, 207);
-      this.modelPanel.TabIndex = 0;
-      this.modelPanel.ViewType = null;
-      // 
-      // dataTabPage
-      // 
-      this.dataTabPage.Controls.Add(this.dataPanel);
-      this.dataTabPage.Location = new System.Drawing.Point(4, 22);
-      this.dataTabPage.Name = "dataTabPage";
-      this.dataTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.dataTabPage.Size = new System.Drawing.Size(239, 219);
-      this.dataTabPage.TabIndex = 1;
-      this.dataTabPage.Text = "Data";
-      this.dataTabPage.UseVisualStyleBackColor = true;
-      // 
-      // dataPanel
-      // 
-      this.dataPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.dataPanel.Caption = "View";
-      this.dataPanel.Content = null;
-      this.dataPanel.Location = new System.Drawing.Point(6, 6);
-      this.dataPanel.Name = "dataPanel";
-      this.dataPanel.ReadOnly = false;
-      this.dataPanel.Size = new System.Drawing.Size(227, 207);
-      this.dataPanel.TabIndex = 0;
-      this.dataPanel.ViewType = null;
       // 
       // supportVectorTabControl
       // 
@@ -150,12 +78,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.AllowDrop = true;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.modelTabControl);
       this.Name = "SupportVectorRegressionSolutionView";
-      this.Size = new System.Drawing.Size(253, 251);
-      this.modelTabControl.ResumeLayout(false);
-      this.modelTabPage.ResumeLayout(false);
-      this.dataTabPage.ResumeLayout(false);
+      this.tabControl.TabPages.Add(supportVectorTabControl);
       this.supportVectorTabControl.ResumeLayout(false);
       this.ResumeLayout(false);
 
@@ -163,14 +87,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     #endregion
 
-    private System.Windows.Forms.TabControl modelTabControl;
-    private System.Windows.Forms.TabPage modelTabPage;
-    private HeuristicLab.MainForm.WindowsForms.ViewHost modelPanel;
-    private System.Windows.Forms.TabPage dataTabPage;
-    private HeuristicLab.MainForm.WindowsForms.ViewHost dataPanel;
     private System.Windows.Forms.TabPage supportVectorTabControl;
     private HeuristicLab.MainForm.WindowsForms.ViewHost supportVectorViewHost;
-
-
   }
 }

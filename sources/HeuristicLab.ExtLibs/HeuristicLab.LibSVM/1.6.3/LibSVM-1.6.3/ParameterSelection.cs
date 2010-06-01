@@ -149,7 +149,7 @@ namespace SVM
                 {
                     parameters.C = CValues[i];
                     parameters.Gamma = GammaValues[j];
-                    double test = Training.PerformCrossValidation(problem, parameters, nrfold);
+                    double test = Training.PerformCrossValidation(problem, parameters, nrfold, true);
                     Console.Write("{0} {1} {2}", parameters.C, parameters.Gamma, test);
                     if(output != null)
                         output.WriteLine("{0} {1} {2}", parameters.C, parameters.Gamma, test);

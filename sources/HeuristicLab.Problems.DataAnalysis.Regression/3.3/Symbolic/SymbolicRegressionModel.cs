@@ -38,7 +38,19 @@ using HeuristicLab.Problems.DataAnalysis.Symbolic;
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [StorableClass]
   [Item("SymbolicRegressionModel", "A symbolic regression model represents an entity that provides estimated values based on input values.")]
-  public class SymbolicRegressionModel : Item {
+  public class SymbolicRegressionModel : NamedItem, IDataAnalysisModel {
+    private SymbolicRegressionModel() : base() { } // for cloning
+    [StorableConstructor]
+    protected SymbolicRegressionModel(bool deserializing)
+      : base(deserializing) {
+    }
+    public SymbolicRegressionModel(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree tree, IEnumerable<string> inputVariables)
+      : base() {
+      this.tree = tree;
+      this.interpreter = interpreter;
+      this.inputVariables = inputVariables.ToList();
+    }
+
     [Storable]
     private SymbolicExpressionTree tree;
     public SymbolicExpressionTree SymbolicExpressionTree {
@@ -49,8 +61,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     public ISymbolicExpressionTreeInterpreter Interpreter {
       get { return interpreter; }
     }
-    private List<string> inputVariables;
     [Storable]
+    private List<string> inputVariables;
     public IEnumerable<string> InputVariables {
       get { return inputVariables.AsEnumerable(); }
       set {
@@ -58,17 +70,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
           inputVariables = new List<string>(value);
       }
     }
-    public SymbolicRegressionModel() : base() { } // for cloning
 
-    public SymbolicRegressionModel(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree tree, IEnumerable<string> inputVariables)
-      : base() {
-      this.tree = tree;
-      this.interpreter = interpreter;
-      this.inputVariables = inputVariables.ToList();
-    }
-
-    public IEnumerable<double> GetEstimatedValues(Dataset dataset, int start, int end) {
-      return interpreter.GetSymbolicExpressionTreeValues(tree, dataset, Enumerable.Range(start, end - start));
+    public IEnumerable<double> GetEstimatedValues(DataAnalysisProblemData problemData, int start, int end) {
+      return interpreter.GetSymbolicExpressionTreeValues(tree, problemData.Dataset, Enumerable.Range(start, end - start));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

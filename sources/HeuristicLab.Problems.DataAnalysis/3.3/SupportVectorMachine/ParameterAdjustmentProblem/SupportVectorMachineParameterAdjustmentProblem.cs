@@ -35,10 +35,10 @@ using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine.ParameterAdjustmentProblem {
-  [Item("Support Vector Regression Parameter Adjustment Problem", "Represents the problem of finding good parameter settings for support vector machines.")]
+  [Item("Support Vector Machine Parameter Adjustment Problem", "Represents the problem of finding good parameter settings for support vector machines.")]
   [StorableClass]
   [Creatable("Problems")]
-  public sealed class SupportVectorRegressionParameterAdjustmentProblem : DataAnalysisProblem, ISingleObjectiveProblem {
+  public sealed class SupportVectorMachineParameterAdjustmentProblem : DataAnalysisProblem, ISingleObjectiveProblem {
 
     #region Parameter Properties
     public ValueParameter<BoolValue> MaximizationParameter {
@@ -59,8 +59,8 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine.ParameterAdjus
     IParameter IProblem.SolutionCreatorParameter {
       get { return SolutionCreatorParameter; }
     }
-    public new ValueParameter<SupportVectorRegressionParameterAdjustmentEvaluator> EvaluatorParameter {
-      get { return (ValueParameter<SupportVectorRegressionParameterAdjustmentEvaluator>)Parameters["Evaluator"]; }
+    public new ValueParameter<SupportVectorMachineParameterAdjustmentEvaluator> EvaluatorParameter {
+      get { return (ValueParameter<SupportVectorMachineParameterAdjustmentEvaluator>)Parameters["Evaluator"]; }
     }
     IParameter IProblem.EvaluatorParameter {
       get { return EvaluatorParameter; }
@@ -95,7 +95,7 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine.ParameterAdjus
     ISolutionCreator IProblem.SolutionCreator {
       get { return SolutionCreatorParameter.Value; }
     }
-    public new SupportVectorRegressionParameterAdjustmentEvaluator Evaluator {
+    public new SupportVectorMachineParameterAdjustmentEvaluator Evaluator {
       get { return EvaluatorParameter.Value; }
       set { EvaluatorParameter.Value = value; }
     }
@@ -115,14 +115,6 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine.ParameterAdjus
     }
     #endregion
 
-
-    //public int MinimumProblemSize {
-    //  get { return 3; }
-    //}
-    //public int MaximumProblemSize {
-    //  get { return 3; }
-    //}
-
     public IntValue TrainingSamplesStart {
       get { return new IntValue(DataAnalysisProblemData.TrainingSamplesStart.Value); }
     }
@@ -138,11 +130,11 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine.ParameterAdjus
     private StdDevStrategyVectorManipulator strategyVectorManipulator;
 
     [StorableConstructor]
-    private SupportVectorRegressionParameterAdjustmentProblem(bool deserializing) : base() { }
-    public SupportVectorRegressionParameterAdjustmentProblem()
+    private SupportVectorMachineParameterAdjustmentProblem(bool deserializing) : base() { }
+    public SupportVectorMachineParameterAdjustmentProblem()
       : base() {
       UniformRandomRealVectorCreator creator = new UniformRandomRealVectorCreator();
-      SupportVectorRegressionParameterAdjustmentEvaluator evaluator = new SupportVectorRegressionParameterAdjustmentEvaluator();
+      SupportVectorMachineParameterAdjustmentEvaluator evaluator = new SupportVectorMachineParameterAdjustmentEvaluator();
 
       var bounds = new DoubleMatrix(new double[,] { 
         { 0.01, 1.0 },
@@ -154,7 +146,7 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine.ParameterAdjus
       Parameters.Add(new ValueParameter<DoubleMatrix>("Bounds", "The lower and upper bounds in each dimension.", bounds));
       Parameters.Add(new ValueParameter<IntValue>("ProblemSize", "The dimension of the problem.", new IntValue(3)));
       Parameters.Add(new ValueParameter<IRealVectorCreator>("SolutionCreator", "The operator which should be used to create new test function solutions.", creator));
-      Parameters.Add(new ValueParameter<SupportVectorRegressionParameterAdjustmentEvaluator>("Evaluator", "The operator which should be used to evaluate test function solutions.", evaluator));
+      Parameters.Add(new ValueParameter<SupportVectorMachineParameterAdjustmentEvaluator>("Evaluator", "The operator which should be used to evaluate test function solutions.", evaluator));
       Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this test function.", new DoubleValue(0)));
       Parameters.Add(new OptionalValueParameter<RealVector>("BestKnownSolution", "The best known solution for this test function instance."));
 
@@ -168,13 +160,14 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine.ParameterAdjus
       creator.RealVectorParameter.ActualName = "ParameterVector";
       ParameterizeSolutionCreator();
       ParameterizeEvaluator();
+      ParameterizeAnalyzers();
 
       Initialize();
       UpdateStrategyVectorBounds();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      SupportVectorRegressionParameterAdjustmentProblem clone = (SupportVectorRegressionParameterAdjustmentProblem)base.Clone(cloner);
+      SupportVectorMachineParameterAdjustmentProblem clone = (SupportVectorMachineParameterAdjustmentProblem)base.Clone(cloner);
       clone.strategyVectorCreator = (StdDevStrategyVectorCreator)cloner.Clone(strategyVectorCreator);
       clone.strategyVectorCrossover = (StdDevStrategyVectorCrossover)cloner.Clone(strategyVectorCrossover);
       clone.strategyVectorManipulator = (StdDevStrategyVectorManipulator)cloner.Clone(strategyVectorManipulator);
@@ -190,17 +183,17 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine.ParameterAdjus
     #region Events
     private void SolutionCreatorParameter_ValueChanged(object sender, EventArgs e) {
       ParameterizeSolutionCreator();
-      //ParameterizeAnalyzers();
+      ParameterizeAnalyzers();
       SolutionCreator_RealVectorParameter_ActualNameChanged(null, EventArgs.Empty);
     }
     private void SolutionCreator_RealVectorParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeEvaluator();
       ParameterizeOperators();
-      //ParameterizeAnalyzers();
+      ParameterizeAnalyzers();
     }
     private void EvaluatorParameter_ValueChanged(object sender, EventArgs e) {
       ParameterizeEvaluator();
-      //ParameterizeAnalyzers();
+      ParameterizeAnalyzers();
       RaiseReset(EventArgs.Empty);
     }
     private void strategyVectorCreator_StrategyParameterParameter_ActualNameChanged(object sender, EventArgs e) {
@@ -223,6 +216,7 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine.ParameterAdjus
     private void InitializeOperators() {
       operators = new List<IOperator>();
       operators.AddRange(ApplicationManager.Manager.GetInstances<IRealVectorOperator>().Cast<IOperator>());
+      operators.Add(new SupportVectorMachineParameterAdjustmentBestSolutionAnalyzer());
       operators.Add(strategyVectorCreator);
       operators.Add(strategyVectorCrossover);
       operators.Add(strategyVectorManipulator);
@@ -253,7 +247,7 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine.ParameterAdjus
       foreach (IRealVectorMoveGenerator op in Operators.OfType<IRealVectorMoveGenerator>()) {
         op.BoundsParameter.ActualName = BoundsParameter.Name;
       }
-      foreach (SupportVectorRegressionParameterAdjustmentEvaluator op in Operators.OfType<SupportVectorRegressionParameterAdjustmentEvaluator>()) {
+      foreach (SupportVectorMachineParameterAdjustmentEvaluator op in Operators.OfType<SupportVectorMachineParameterAdjustmentEvaluator>()) {
         op.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
         op.ParameterVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
       }

@@ -168,10 +168,5 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.SupportVectorRegression 
 
       return base.Apply();
     }
-
-    private IEnumerable<string> GetInputVariables(SymbolicExpressionTree tree) {
-      return (from varNode in tree.IterateNodesPrefix().OfType<VariableTreeNode>()
-              select varNode.VariableName).Distinct();
-    }
   }
 }

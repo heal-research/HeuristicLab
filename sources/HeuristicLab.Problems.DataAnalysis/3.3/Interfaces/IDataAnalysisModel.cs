@@ -22,21 +22,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Drawing;
-using HeuristicLab.Common;
+using System.Text;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Optimization;
-using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Problems.DataAnalysis;
 
-namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
-  public interface ISymbolicRegressionEvaluator : ISingleObjectiveEvaluator {
-    ILookupParameter<SymbolicExpressionTree> FunctionTreeParameter { get; }
-    ILookupParameter<RegressionProblemData> RegressionProblemDataParameter { get; }
-    ILookupParameter<DoubleValue> NumberOfEvaluatedNodesParameter { get; }
+namespace HeuristicLab.Problems.DataAnalysis {
+  public interface IDataAnalysisModel : INamedItem {
+    IEnumerable<double> GetEstimatedValues(DataAnalysisProblemData problemData, int start, int end);
   }
 }
