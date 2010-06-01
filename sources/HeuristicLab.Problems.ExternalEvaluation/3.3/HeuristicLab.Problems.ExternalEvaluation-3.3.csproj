@@ -92,6 +92,7 @@
     <Compile Include="Drivers\EvaluationChannel.cs" />
     <Compile Include="Drivers\EvaluationProcessChannel.cs" />
     <Compile Include="Drivers\EvaluationStreamChannel.cs" />
+    <Compile Include="Drivers\EvaluationTCPChannel.cs" />
     <Compile Include="ExternalEvaluationProblem.cs" />
     <Compile Include="ExternalEvaluator.cs" />
     <Compile Include="HeuristicLabProblemsExternalEvaluationPlugin.cs" />
