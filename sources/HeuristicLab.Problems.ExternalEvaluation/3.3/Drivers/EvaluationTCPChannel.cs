@@ -108,7 +108,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       // Varints in Protocol Buffers are encoded using the 7 lower order bits (the MSB indicates continuation (=1) or termination (=0))
       int sizeByteCount = 1;
       int limit = 128;
-      while (size > limit) {
+      while (size >= limit) {
         sizeByteCount++;
         limit *= 128;
       }
