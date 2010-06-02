@@ -184,10 +184,12 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       ConditionalBranch villageCountConditionalBranch = new ConditionalBranch();
       Assigner finalMaxSelPressAssigner = new Assigner();
       Comparator maximumGenerationsComparator = new Comparator();
+      Comparator maximumEvaluatedSolutionsComparator = new Comparator();
       Placeholder analyzer2 = new Placeholder();
       ResultsCollector resultsCollector3 = new ResultsCollector();
       ConditionalBranch terminationCondition = new ConditionalBranch();
       ConditionalBranch maximumGenerationsTerminationCondition = new ConditionalBranch();
+      ConditionalBranch maximumEvaluatedSolutionsTerminationCondition = new ConditionalBranch();
 
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Reunifications", new IntValue(0)));
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Generations", new IntValue(0))); // Class SASEGASA expects this to be called Generations
@@ -355,6 +357,12 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       maximumGenerationsComparator.Comparison = new Comparison(ComparisonType.GreaterOrEqual);
       maximumGenerationsComparator.ResultParameter.ActualName = "TerminateMaximumGenerations";
 
+      maximumEvaluatedSolutionsComparator.Name = "EvaluatedSolutions >= MaximumEvaluatedSolutions";
+      maximumEvaluatedSolutionsComparator.Comparison = new Comparison(ComparisonType.GreaterOrEqual);
+      maximumEvaluatedSolutionsComparator.LeftSideParameter.ActualName = "EvaluatedSolutions";
+      maximumEvaluatedSolutionsComparator.ResultParameter.ActualName = "TerminateEvaluatedSolutions";
+      maximumEvaluatedSolutionsComparator.RightSideParameter.ActualName = "MaximumEvaluatedSolutions";
+
       analyzer2.Name = "Analyzer (placeholder)";
       analyzer2.OperatorParameter.ActualName = AnalyzerParameter.Name;
 
@@ -364,6 +372,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
 
       terminationCondition.ConditionParameter.ActualName = "TerminateSASEGASA";
       maximumGenerationsTerminationCondition.ConditionParameter.ActualName = "TerminateMaximumGenerations";
+      maximumEvaluatedSolutionsTerminationCondition.ConditionParameter.ActualName = "TerminateEvaluatedSolutions";
       #endregion
 
       #region Create operator graph
@@ -421,15 +430,19 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       villageCountConditionalBranch.FalseBranch = null;
       villageCountConditionalBranch.Successor = null;
       finalMaxSelPressAssigner.Successor = null;
-      maximumGenerationsComparator.Successor = analyzer2;
+      maximumGenerationsComparator.Successor = maximumEvaluatedSolutionsComparator;
+      maximumEvaluatedSolutionsComparator.Successor = analyzer2;
       analyzer2.Successor = resultsCollector3;
       resultsCollector3.Successor = terminationCondition;
       terminationCondition.TrueBranch = null;
       terminationCondition.FalseBranch = maximumGenerationsTerminationCondition;
       terminationCondition.Successor = null;
       maximumGenerationsTerminationCondition.TrueBranch = null;
-      maximumGenerationsTerminationCondition.FalseBranch = uniformSubScopesProcessor1;
+      maximumGenerationsTerminationCondition.FalseBranch = maximumEvaluatedSolutionsTerminationCondition;
       maximumGenerationsTerminationCondition.Successor = null;
+      maximumEvaluatedSolutionsTerminationCondition.TrueBranch = null;
+      maximumEvaluatedSolutionsTerminationCondition.FalseBranch = uniformSubScopesProcessor1;
+      maximumEvaluatedSolutionsTerminationCondition.Successor = null;
       #endregion
     }
 

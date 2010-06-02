@@ -202,11 +202,13 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Placeholder immigrationReplacer = new Placeholder();
       Comparator generationsComparator = new Comparator();
       Comparator terminatedIslandsComparator = new Comparator();
+      Comparator maxEvaluatedSolutionsComparator = new Comparator();
       Placeholder comparisonFactorModifier = new Placeholder();
       Placeholder analyzer2 = new Placeholder();
       ResultsCollector resultsCollector3 = new ResultsCollector();
       ConditionalBranch generationsTerminationCondition = new ConditionalBranch();
       ConditionalBranch terminatedIslandsCondition = new ConditionalBranch();
+      ConditionalBranch evaluatedSolutionsTerminationCondition = new ConditionalBranch();
 
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Migrations", new IntValue(0)));
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Generations", new IntValue(0))); // Class IslandOffspringSelectionGeneticAlgorithm expects this to be called Generations
@@ -347,6 +349,12 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       terminatedIslandsComparator.RightSideParameter.ActualName = NumberOfIslandsParameter.Name;
       terminatedIslandsComparator.ResultParameter.ActualName = "TerminateTerminatedIslands";
 
+      maxEvaluatedSolutionsComparator.Name = "EvaluatedSolutions >= MaximumEvaluatedSolutions ?";
+      maxEvaluatedSolutionsComparator.Comparison = new Comparison(ComparisonType.GreaterOrEqual);
+      maxEvaluatedSolutionsComparator.LeftSideParameter.ActualName = "EvaluatedSolutions";
+      maxEvaluatedSolutionsComparator.ResultParameter.ActualName = "TerminateEvaluatedSolutions";
+      maxEvaluatedSolutionsComparator.RightSideParameter.ActualName = "MaximumEvaluatedSolutions";
+
       comparisonFactorModifier.Name = "Update Comparison Factor (Placeholder)";
       comparisonFactorModifier.OperatorParameter.ActualName = ComparisonFactorModifierParameter.Name;
 
@@ -362,6 +370,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
 
       terminatedIslandsCondition.Name = "Terminate (TerminatedIslands) ?";
       terminatedIslandsCondition.ConditionParameter.ActualName = "TerminateTerminatedIslands";
+
+      evaluatedSolutionsTerminationCondition.Name = "Terminate (EvaluatedSolutions) ?";
+      evaluatedSolutionsTerminationCondition.ConditionParameter.ActualName = "TerminateEvaluatedSolutions";
       #endregion
 
       #region Create operator graph
@@ -408,7 +419,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       uniformSubScopesProcessor3.Successor = null;
       immigrationReplacer.Successor = null;
       generationsComparator.Successor = terminatedIslandsComparator;
-      terminatedIslandsComparator.Successor = comparisonFactorModifier;
+      terminatedIslandsComparator.Successor = maxEvaluatedSolutionsComparator;
+      maxEvaluatedSolutionsComparator.Successor = comparisonFactorModifier;
       comparisonFactorModifier.Successor = analyzer2;
       analyzer2.Successor = resultsCollector3;
       resultsCollector3.Successor = generationsTerminationCondition;
@@ -416,8 +428,11 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       generationsTerminationCondition.FalseBranch = terminatedIslandsCondition;
       generationsTerminationCondition.Successor = null;
       terminatedIslandsCondition.TrueBranch = null;
-      terminatedIslandsCondition.FalseBranch = uniformSubScopesProcessor1;
+      terminatedIslandsCondition.FalseBranch = evaluatedSolutionsTerminationCondition;
       terminatedIslandsCondition.Successor = null;
+      evaluatedSolutionsTerminationCondition.TrueBranch = null;
+      evaluatedSolutionsTerminationCondition.FalseBranch = uniformSubScopesProcessor1;
+      evaluatedSolutionsTerminationCondition.Successor = null;
       #endregion
     }
 

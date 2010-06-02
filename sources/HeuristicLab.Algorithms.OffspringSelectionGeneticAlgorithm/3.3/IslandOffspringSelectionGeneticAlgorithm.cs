@@ -126,6 +126,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     private ValueParameter<MultiAnalyzer> IslandAnalyzerParameter {
       get { return (ValueParameter<MultiAnalyzer>)Parameters["IslandAnalyzer"]; }
     }
+    private ValueParameter<IntValue> MaximumEvaluatedSolutionsParameter {
+      get { return (ValueParameter<IntValue>)Parameters["MaximumEvaluatedSolutions"]; }
+    }
     #endregion
 
     #region Properties
@@ -221,6 +224,10 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       get { return IslandAnalyzerParameter.Value; }
       set { IslandAnalyzerParameter.Value = value; }
     }
+    public IntValue MaximumEvaluatedSolutions {
+      get { return MaximumEvaluatedSolutionsParameter.Value; }
+      set { MaximumEvaluatedSolutionsParameter.Value = value; }
+    }
     private RandomCreator RandomCreator {
       get { return (RandomCreator)OperatorGraph.InitialOperator; }
     }
@@ -271,7 +278,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Parameters.Add(new ValueLookupParameter<IntValue>("SelectedParents", "How much parents should be selected each time the offspring selection step is performed until the population is filled. This parameter should be about the same or twice the size of PopulationSize for smaller problems, and less for large problems.", new IntValue(200)));
       Parameters.Add(new ValueParameter<MultiAnalyzer>("Analyzer", "The operator used to analyze the islands.", new MultiAnalyzer()));
       Parameters.Add(new ValueParameter<MultiAnalyzer>("IslandAnalyzer", "The operator used to analyze each island.", new MultiAnalyzer()));
-      
+      Parameters.Add(new ValueParameter<IntValue>("MaximumEvaluatedSolutions", "The maximum number of evaluated solutions (approximately).", new IntValue(int.MaxValue)));
+
       RandomCreator randomCreator = new RandomCreator();
       SubScopesCreator populationCreator = new SubScopesCreator();
       UniformSubScopesProcessor ussp1 = new UniformSubScopesProcessor();
