@@ -306,6 +306,7 @@ namespace HeuristicLab.Problems.TestFunctions {
       BestSingleObjectiveTestFunctionSolutionAnalyzer.BestKnownSolutionParameter.ActualName = BestKnownSolutionParameter.Name;
       BestSingleObjectiveTestFunctionSolutionAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
       BestSingleObjectiveTestFunctionSolutionAnalyzer.EvaluatorParameter.ActualName = EvaluatorParameter.Name;
+      BestSingleObjectiveTestFunctionSolutionAnalyzer.BoundsParameter.ActualName = BoundsParameter.Name;
     }
     private void InitializeOperators() {
       operators = new List<IOperator>();

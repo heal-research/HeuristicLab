@@ -107,6 +107,20 @@ namespace HeuristicLab.Problems.TestFunctions {
       }
     }
 
+    [Storable]
+    private DoubleMatrix bounds;
+    public DoubleMatrix Bounds {
+      get { return bounds; }
+      set {
+        if (bounds != value) {
+          if (bounds != null) DeregisterBoundsEvents();
+          bounds = value;
+          if (bounds != null) RegisterBoundsEvents();
+          OnBoundsChanged();
+        }
+      }
+    }
+
     public SingleObjectiveTestFunctionSolution() : base() { }
     public SingleObjectiveTestFunctionSolution(RealVector realVector, DoubleValue quality, ISingleObjectiveTestFunctionProblemEvaluator evaluator)
       : base() {
@@ -124,6 +138,7 @@ namespace HeuristicLab.Problems.TestFunctions {
       if (bestRealVector != null) RegisterBestRealVectorEvents();
       if (bestQuality != null) RegisterQualityEvents();
       if (population != null) RegisterPopulationEvents();
+      if (bounds != null) RegisterBoundsEvents();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -134,6 +149,7 @@ namespace HeuristicLab.Problems.TestFunctions {
       clone.bestQuality = (DoubleValue)cloner.Clone(bestQuality);
       clone.population = (ItemArray<RealVector>)cloner.Clone(population);
       clone.evaluator = (ISingleObjectiveTestFunctionProblemEvaluator)cloner.Clone(evaluator);
+      clone.bounds = (DoubleMatrix)cloner.Clone(bounds);
       clone.Initialize();
       return clone;
     }
@@ -174,6 +190,13 @@ namespace HeuristicLab.Problems.TestFunctions {
         changed(this, EventArgs.Empty);
     }
 
+    public event EventHandler BoundsChanged;
+    private void OnBoundsChanged() {
+      var changed = BoundsChanged;
+      if (changed != null)
+        changed(this, EventArgs.Empty);
+    }
+
     private void RegisterBestKnownRealVectorEvents() {
       BestKnownRealVector.ItemChanged += new EventHandler<EventArgs<int>>(BestKnownRealVector_ItemChanged);
       BestKnownRealVector.Reset += new EventHandler(BestKnownRealVector_Reset);
@@ -206,6 +229,14 @@ namespace HeuristicLab.Problems.TestFunctions {
       Population.ItemsMoved -= new CollectionItemsChangedEventHandler<IndexedItem<RealVector>>(Population_ItemsMoved);
       Population.ItemsReplaced -= new CollectionItemsChangedEventHandler<IndexedItem<RealVector>>(Population_ItemsReplaced);
     }
+    private void RegisterBoundsEvents() {
+      Bounds.ItemChanged += new EventHandler<EventArgs<int, int>>(Bounds_ItemChanged);
+      Bounds.Reset += new EventHandler(Bounds_Reset);
+    }
+    private void DeregisterBoundsEvents() {
+      Bounds.ItemChanged -= new EventHandler<EventArgs<int, int>>(Bounds_ItemChanged);
+      Bounds.Reset -= new EventHandler(Bounds_Reset);
+    }
 
     private void BestKnownRealVector_ItemChanged(object sender, EventArgs<int> e) {
       OnBestKnownRealVectorChanged();
@@ -230,6 +261,12 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
     private void Population_CollectionReset(object sender, CollectionItemsChangedEventArgs<IndexedItem<RealVector>> e) {
       OnPopulationChanged();
+    }
+    private void Bounds_ItemChanged(object sender, EventArgs<int, int> e) {
+      OnBoundsChanged();
+    }
+    private void Bounds_Reset(object sender, EventArgs e) {
+      OnBoundsChanged();
     }
     #endregion
   }

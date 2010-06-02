@@ -68,7 +68,11 @@ namespace HeuristicLab.Problems.TestFunctions {
     public IValueLookupParameter<ISingleObjectiveTestFunctionProblemEvaluator> EvaluatorParameter {
       get { return (IValueLookupParameter<ISingleObjectiveTestFunctionProblemEvaluator>)Parameters["Evaluator"]; }
     }
+    public ILookupParameter<DoubleMatrix> BoundsParameter {
+      get { return (ILookupParameter<DoubleMatrix>)Parameters["Bounds"]; }
+    }
 
+    protected BestSingleObjectiveTestFunctionSolutionAnalyzer(bool deserializing) : base(deserializing) { }
     public BestSingleObjectiveTestFunctionSolutionAnalyzer()
       : base() {
       Parameters.Add(new LookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem."));
@@ -79,15 +83,25 @@ namespace HeuristicLab.Problems.TestFunctions {
       Parameters.Add(new LookupParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution."));
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the SingleObjectiveTestFunction solution should be stored."));
       Parameters.Add(new ValueLookupParameter<ISingleObjectiveTestFunctionProblemEvaluator>("Evaluator", "The evaluator with which the solution is evaluated."));
+      Parameters.Add(new LookupParameter<DoubleMatrix>("Bounds", "The bounds of the function."));
+    }
+
+    /// <summary>
+    /// This method can simply be removed when the plugin version is > 3.3
+    /// </summary>
+    [StorableHook(HookType.AfterDeserialization)]
+    private void CompatibilityMethod() {
+      // Bounds are introduced in 3.3.0.3894
+      if (!Parameters.ContainsKey("Bounds"))
+        Parameters.Add(new LookupParameter<DoubleMatrix>("Bounds", "The bounds of the function."));
     }
 
     public override IOperation Apply() {
       ItemArray<RealVector> realVectors = RealVectorParameter.ActualValue;
       ItemArray<DoubleValue> qualities = QualityParameter.ActualValue;
-      ResultCollection results = ResultsParameter.ActualValue;
-      ISingleObjectiveTestFunctionProblemEvaluator evaluator = EvaluatorParameter.ActualValue;
       bool max = MaximizationParameter.ActualValue.Value;
       DoubleValue bestKnownQuality = BestKnownQualityParameter.ActualValue;
+      SingleObjectiveTestFunctionSolution solution = BestSolutionParameter.ActualValue;
 
       int i = qualities.Select((x, index) => new { index, x.Value }).OrderBy(x => x.Value).First().index;
 
@@ -96,13 +110,16 @@ namespace HeuristicLab.Problems.TestFunctions {
           || !max && qualities[i].Value < bestKnownQuality.Value) {
         BestKnownQualityParameter.ActualValue = new DoubleValue(qualities[i].Value);
         BestKnownSolutionParameter.ActualValue = (RealVector)realVectors[i].Clone();
+        if (solution != null)
+          solution.BestKnownRealVector = BestKnownSolutionParameter.ActualValue;
       }
 
-      SingleObjectiveTestFunctionSolution solution = BestSolutionParameter.ActualValue;
       if (solution == null) {
-        solution = new SingleObjectiveTestFunctionSolution(realVectors[i], qualities[i], evaluator);
+        ResultCollection results = ResultsParameter.ActualValue;
+        solution = new SingleObjectiveTestFunctionSolution(realVectors[i], qualities[i], EvaluatorParameter.ActualValue);
         solution.Population = realVectors;
         solution.BestKnownRealVector = BestKnownSolutionParameter.ActualValue;
+        solution.Bounds = BoundsParameter.ActualValue;
         BestSolutionParameter.ActualValue = solution;
         results.Add(new Result("Best Solution", solution));
       } else {

@@ -54,6 +54,7 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
       Content.BestRealVectorChanged -= new EventHandler(Content_BestRealVectorChanged);
       Content.QualityChanged -= new EventHandler(Content_QualityChanged);
       Content.PopulationChanged -= new EventHandler(Content_PopulationChanged);
+      Content.BoundsChanged -= new EventHandler(Content_BoundsChanged);
       base.DeregisterContentEvents();
     }
     protected override void RegisterContentEvents() {
@@ -62,6 +63,7 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
       Content.BestRealVectorChanged += new EventHandler(Content_BestRealVectorChanged);
       Content.QualityChanged += new EventHandler(Content_QualityChanged);
       Content.PopulationChanged += new EventHandler(Content_PopulationChanged);
+      Content.BoundsChanged += new EventHandler(Content_BoundsChanged);
     }
 
     private void Content_BestKnownRealVectorChanged(object sender, EventArgs e) {
@@ -98,6 +100,13 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
       else {
         GenerateImage();
       }
+    }
+
+    private void Content_BoundsChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_BoundsChanged), sender, e);
+      else
+        GenerateImage();
     }
 
     protected override void OnContentChanged() {
@@ -138,7 +147,8 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
             pictureBox.Image = backgroundImage;
           }
           pictureBox.Refresh();
-          DoubleMatrix bounds = Content.Evaluator.Bounds;
+          DoubleMatrix bounds = Content.Bounds;
+          if (bounds == null) bounds = Content.Evaluator.Bounds;
           double xMin = bounds[0, 0], xMax = bounds[0, 1], yMin = bounds[1 % bounds.Rows, 0], yMax = bounds[1 % bounds.Rows, 1];
           double xStep = backgroundImage.Width / (xMax - xMin), yStep = backgroundImage.Height / (yMax - yMin);
           using (Graphics graphics = pictureBox.CreateGraphics()) {
@@ -163,7 +173,8 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
       if (backgroundImage != null)
         backgroundImage.Dispose();
       backgroundImage = new Bitmap(pictureBox.Width, pictureBox.Height);
-      DoubleMatrix bounds = Content.Evaluator.Bounds;
+      DoubleMatrix bounds = Content.Bounds;
+      if (bounds == null) bounds = Content.Evaluator.Bounds;
       double xMin = bounds[0, 0], xMax = bounds[0, 1], yMin = bounds[1 % bounds.Rows, 0], yMax = bounds[1 % bounds.Rows, 1];
       double xStep = (xMax - xMin) / backgroundImage.Width, yStep = (yMax - yMin) / backgroundImage.Height;
       double minPoint = Double.MaxValue, maxPoint = Double.MinValue;
