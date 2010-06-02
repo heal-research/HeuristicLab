@@ -124,8 +124,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       SymbolicExpressionTree tree = SymbolicExpressionTree;
       int start = SamplesStart.Value;
       int end = SamplesEnd.Value;
-      double lowerEstimationLimit = LowerEstimationLimit.Value;
-      double upperEstimationLimit = UpperEstimationLimit.Value;
+      double lowerEstimationLimit = LowerEstimationLimit != null ? LowerEstimationLimit.Value : double.NegativeInfinity;
+      double upperEstimationLimit = UpperEstimationLimit != null ? UpperEstimationLimit.Value : double.PositiveInfinity;
       int targetVariableIndex = dataset.GetVariableIndex(targetVariable);
       var estimatedValues = from x in interpreter.GetSymbolicExpressionTreeValues(tree, dataset, Enumerable.Range(start, end - start))
                             let boundedX = Math.Min(upperEstimationLimit, Math.Max(lowerEstimationLimit, x))

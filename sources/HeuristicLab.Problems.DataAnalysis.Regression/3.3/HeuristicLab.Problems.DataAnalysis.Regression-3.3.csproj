@@ -83,6 +83,9 @@
     <None Include="HeuristicLab.snk" />
     <None Include="HeuristicLabProblemsDataAnalysisRegressionPlugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.frame" />
+    <Compile Include="Analyzers\RegressionSolutionAnalyzer.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="HeuristicLabProblemsDataAnalysisRegressionPlugin.cs" />
     <Compile Include="LinearRegression\LinearRegressionSolutionCreator.cs" />
     <Compile Include="LinearRegression\LinearRegressionUtil.cs" />

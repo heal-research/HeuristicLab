@@ -230,7 +230,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public override IDeepCloneable Clone(Cloner cloner) {
       Dataset clone = (Dataset)base.Clone(cloner);
-      clone.data = data;
+      clone.data = (double[,])data.Clone();
       clone.variableNames = (string[])variableNames.Clone();
       return clone;
     }

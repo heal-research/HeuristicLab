@@ -168,8 +168,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     protected override void Problem_Reset(object sender, EventArgs e) {
-      TrainingSamplesStartParameter.ActualValue = Problem.DataAnalysisProblemData.TrainingSamplesStart;
-      TrainingSamplesEndParameter.ActualValue = Problem.DataAnalysisProblemData.TrainingSamplesEnd;
+      UpdateAlgorithmParameters();
       base.Problem_Reset(sender, e);
     }
 
@@ -178,8 +177,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       solutionCreator.DataAnalysisProblemDataParameter.ActualName = Problem.DataAnalysisProblemDataParameter.Name;
       evaluator.DataAnalysisProblemDataParameter.ActualName = Problem.DataAnalysisProblemDataParameter.Name;
       analyzer.ProblemDataParameter.ActualName = Problem.DataAnalysisProblemDataParameter.Name;
-      TrainingSamplesStartParameter.ActualValue = Problem.DataAnalysisProblemData.TrainingSamplesStart;
-      TrainingSamplesEndParameter.ActualValue = Problem.DataAnalysisProblemData.TrainingSamplesEnd;
+      UpdateAlgorithmParameters();
       Problem.Reset += new EventHandler(Problem_Reset);
       base.OnProblemChanged();
     }
@@ -209,8 +207,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       analyzer.SupportVectorRegressionModelParameter.Depth = 0;
       analyzer.QualityParameter.ActualName = mseEvaluator.MeanSquaredErrorParameter.ActualName;
       analyzer.QualityParameter.Depth = 0;
-      analyzer.LowerEstimationLimitParameter.Value = new DoubleValue(double.NegativeInfinity);
-      analyzer.UpperEstimationLimitParameter.Value = new DoubleValue(double.PositiveInfinity);
 
       if (Problem != null) {
         solutionCreator.DataAnalysisProblemDataParameter.ActualName = Problem.DataAnalysisProblemDataParameter.Name;
@@ -218,6 +214,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         analyzer.ProblemDataParameter.ActualName = Problem.DataAnalysisProblemDataParameter.Name;
         Problem.Reset += new EventHandler(Problem_Reset);
       }
+    }
+
+    private void UpdateAlgorithmParameters() {
+      TrainingSamplesStartParameter.ActualValue = Problem.DataAnalysisProblemData.TrainingSamplesStart;
+      TrainingSamplesEndParameter.ActualValue = Problem.DataAnalysisProblemData.TrainingSamplesEnd;
     }
     #endregion
   }

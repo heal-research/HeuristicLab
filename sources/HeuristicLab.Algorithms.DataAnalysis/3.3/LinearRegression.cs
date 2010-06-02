@@ -119,8 +119,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     protected override void Problem_Reset(object sender, EventArgs e) {
-      TrainingSamplesStartParameter.ActualValue = Problem.DataAnalysisProblemData.TrainingSamplesStart;
-      TrainingSamplesEndParameter.ActualValue = Problem.DataAnalysisProblemData.TrainingSamplesEnd;      
+      UpdateAlgorithmParameterValues();
       base.Problem_Reset(sender, e);
     }
 
@@ -128,12 +127,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     protected override void OnProblemChanged() {
       solutionCreator.DataAnalysisProblemDataParameter.ActualName = Problem.DataAnalysisProblemDataParameter.Name;
       evaluator.RegressionProblemDataParameter.ActualName = Problem.DataAnalysisProblemDataParameter.Name;
-      analyzer.ProblemDataParameter.ActualName = Problem.DataAnalysisProblemDataParameter.Name; 
-      TrainingSamplesStartParameter.ActualValue = Problem.DataAnalysisProblemData.TrainingSamplesStart;
-      TrainingSamplesEndParameter.ActualValue = Problem.DataAnalysisProblemData.TrainingSamplesEnd;
+      analyzer.ProblemDataParameter.ActualName = Problem.DataAnalysisProblemDataParameter.Name;
+      UpdateAlgorithmParameterValues();
       Problem.Reset += new EventHandler(Problem_Reset);
       base.OnProblemChanged();
     }
+
 
     #endregion
 
@@ -144,8 +143,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       solutionCreator.SamplesEndParameter.ActualName = TrainingSamplesEndParameter.Name;
       solutionCreator.SymbolicExpressionTreeParameter.ActualName = LinearRegressionModelParameterName;
 
-      evaluator.LowerEstimationLimitParameter.Value = new DoubleValue(double.NegativeInfinity);
-      evaluator.UpperEstimationLimitParameter.Value = new DoubleValue(double.PositiveInfinity);
       evaluator.SymbolicExpressionTreeParameter.ActualName = solutionCreator.SymbolicExpressionTreeParameter.ActualName;
       evaluator.SymbolicExpressionTreeInterpreterParameter.ActualName = ModelInterpreterParameter.Name;
       evaluator.ValuesParameter.ActualName = "Training values";
@@ -160,8 +157,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       analyzer.QualityParameter.ActualName = mseEvaluator.MeanSquaredErrorParameter.ActualName;
       analyzer.QualityParameter.Depth = 0;
       analyzer.SymbolicExpressionTreeInterpreterParameter.ActualName = ModelInterpreterParameter.Name;
-      analyzer.LowerEstimationLimitParameter.Value = new DoubleValue(double.NegativeInfinity);
-      analyzer.UpperEstimationLimitParameter.Value = new DoubleValue(double.PositiveInfinity);
 
       if (Problem != null) {
         solutionCreator.DataAnalysisProblemDataParameter.ActualName = Problem.DataAnalysisProblemDataParameter.Name;
@@ -169,6 +164,21 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         analyzer.ProblemDataParameter.ActualName = Problem.DataAnalysisProblemDataParameter.Name;
         Problem.Reset += new EventHandler(Problem_Reset);
       }
+    }
+
+    private void UpdateAlgorithmParameterValues() {
+      TrainingSamplesStartParameter.ActualValue = Problem.DataAnalysisProblemData.TrainingSamplesStart;
+      TrainingSamplesEndParameter.ActualValue = Problem.DataAnalysisProblemData.TrainingSamplesEnd;
+      //var targetValues =
+      //  Problem.DataAnalysisProblemData.Dataset.GetVariableValues(Problem.DataAnalysisProblemData.TargetVariable.Value,
+      //  TrainingSamplesStartParameter.Value.Value, TrainingSamplesEndParameter.Value.Value);
+      //double range = targetValues.Max() - targetValues.Min();
+      //double lowerEstimationLimit = targetValues.Average() - 10.0 * range;
+      //double upperEstimationLimit = targetValues.Average() + 10.0 * range;
+      //evaluator.LowerEstimationLimitParameter.Value = new DoubleValue(lowerEstimationLimit);
+      //evaluator.UpperEstimationLimitParameter.Value = new DoubleValue(upperEstimationLimit);
+      //analyzer.LowerEstimationLimitParameter.Value = new DoubleValue(lowerEstimationLimit);
+      //analyzer.UpperEstimationLimitParameter.Value = new DoubleValue(upperEstimationLimit);
     }
     #endregion
   }

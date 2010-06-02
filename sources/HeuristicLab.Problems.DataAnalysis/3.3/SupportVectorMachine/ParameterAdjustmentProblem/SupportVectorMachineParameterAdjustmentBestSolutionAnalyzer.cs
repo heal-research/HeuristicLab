@@ -80,8 +80,8 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine.ParameterAdjus
     public StringValue KernelType {
       get { return KernelTypeParameter.Value; }
     }
-    public ILookupParameter<SupportVectorMachineModel> BestSolutionParameter {
-      get { return (ILookupParameter<SupportVectorMachineModel>)Parameters[BestSolutionParameterName]; }
+    public ILookupParameter<DataAnalysisSolution> BestSolutionParameter {
+      get { return (ILookupParameter<DataAnalysisSolution>)Parameters[BestSolutionParameterName]; }
     }
     public ILookupParameter<DoubleValue> BestSolutionQualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters[BestSolutionQualityParameterName]; }
@@ -101,7 +101,7 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine.ParameterAdjus
       Parameters.Add(new ValueLookupParameter<StringValue>(SvmTypeParameterName, "The type of SVM to use.", nuSvrType));
       Parameters.Add(new ValueLookupParameter<StringValue>(KernelTypeParameterName, "The kernel type to use for the SVM.", rbfKernelType));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>(QualityParameterName, "The cross validation quality reached with the given parameters."));
-      Parameters.Add(new LookupParameter<SupportVectorMachineModel>(BestSolutionParameterName, "The best support vector solution."));
+      Parameters.Add(new LookupParameter<DataAnalysisSolution>(BestSolutionParameterName, "The best support vector solution."));
       Parameters.Add(new LookupParameter<DoubleValue>(BestSolutionQualityParameterName, "The quality of the best support vector model."));
       Parameters.Add(new LookupParameter<ResultCollection>(ResultsParameterName, "The result collection where the best support vector solution should be stored."));
     }
@@ -123,7 +123,7 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine.ParameterAdjus
       double gamma = Math.Pow(2, bestPoint[2]);
       DataAnalysisProblemData problemData = DataAnalysisProblemData;
 
-      SupportVectorMachineModel bestModel = BestSolutionParameter.ActualValue;
+      DataAnalysisSolution bestSolution = BestSolutionParameter.ActualValue;
       if (bestModel == null) {
         bestModel = SupportVectorMachineModelCreator.TrainModel(DataAnalysisProblemData,
           DataAnalysisProblemData.TrainingSamplesStart.Value, DataAnalysisProblemData.TrainingSamplesEnd.Value,
