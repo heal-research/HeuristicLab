@@ -94,6 +94,12 @@
     <Compile Include="EvaluationProcessChannelView.Designer.cs">
       <DependentUpon>EvaluationProcessChannelView.cs</DependentUpon>
     </Compile>
+    <Compile Include="EvaluationTCPChannelView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="EvaluationTCPChannelView.Designer.cs">
+      <DependentUpon>EvaluationTCPChannelView.cs</DependentUpon>
+    </Compile>
     <Compile Include="HeuristicLabProblemsExternalEvaluationViewsPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SolutionMessageBuilderView.cs">
@@ -146,6 +152,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="EvaluationServiceClientView.resx">
       <DependentUpon>EvaluationServiceClientView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EvaluationTCPChannelView.resx">
+      <DependentUpon>EvaluationTCPChannelView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SolutionMessageBuilderView.resx">
       <DependentUpon>SolutionMessageBuilderView.cs</DependentUpon>
