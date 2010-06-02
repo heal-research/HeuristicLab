@@ -149,6 +149,7 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine.ParameterAdjus
       Parameters.Add(new ValueParameter<SupportVectorMachineParameterAdjustmentEvaluator>("Evaluator", "The operator which should be used to evaluate test function solutions.", evaluator));
       Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this test function.", new DoubleValue(0)));
       Parameters.Add(new OptionalValueParameter<RealVector>("BestKnownSolution", "The best known solution for this test function instance."));
+      Parameters.Add(new OptionalValueParameter<PercentValue>("ActualSamples", "The percentage of samples to use for cross validation."));
 
       strategyVectorCreator = new StdDevStrategyVectorCreator();
       strategyVectorCreator.LengthParameter.Value = ProblemSize;
@@ -160,7 +161,6 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine.ParameterAdjus
       creator.RealVectorParameter.ActualName = "ParameterVector";
       ParameterizeSolutionCreator();
       ParameterizeEvaluator();
-      ParameterizeAnalyzers();
 
       Initialize();
       UpdateStrategyVectorBounds();
@@ -250,6 +250,13 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine.ParameterAdjus
       foreach (SupportVectorMachineParameterAdjustmentEvaluator op in Operators.OfType<SupportVectorMachineParameterAdjustmentEvaluator>()) {
         op.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
         op.ParameterVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
+      }
+    }
+    private void ParameterizeAnalyzers() {
+      foreach (SupportVectorMachineParameterAdjustmentBestSolutionAnalyzer analyzer in Operators.OfType<SupportVectorMachineParameterAdjustmentBestSolutionAnalyzer>()) {
+        analyzer.DataAnalysisProblemDataParameter.ActualName = DataAnalysisProblemDataParameter.Name;
+        analyzer.ParameterVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
+        analyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
       }
     }
     private void UpdateStrategyVectorBounds() {
