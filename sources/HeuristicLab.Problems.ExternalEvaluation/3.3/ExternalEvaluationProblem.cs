@@ -125,7 +125,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       ExternalEvaluator evaluator = new ExternalEvaluator();
       UserDefinedSolutionCreator solutionCreator = new UserDefinedSolutionCreator();
 
-      Parameters.Add(new ValueParameter<IEvaluationServiceClient>("Client", "The client that is used to communicate with the external application."));
+      Parameters.Add(new ValueParameter<IEvaluationServiceClient>("Client", "The client that is used to communicate with the external application.", new EvaluationServiceClient()));
       Parameters.Add(new ValueParameter<IExternalEvaluationProblemEvaluator>("Evaluator", "The evaluator that collects the values to exchange.", evaluator));
       Parameters.Add(new ValueParameter<ISolutionCreator>("SolutionCreator", "An operator to create the solution components.", solutionCreator));
       Parameters.Add(new ValueParameter<BoolValue>("Maximization", "Set to false as most test functions are minimization problems.", new BoolValue(false)));

@@ -93,11 +93,21 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     }
 
     public override void Send(IMessage message) {
-      streamingChannel.Send(message);
+      try {
+        streamingChannel.Send(message);
+      } catch {
+        Close();
+        throw;
+      }
     }
 
     public override IMessage Receive(IBuilder builder) {
-      return streamingChannel.Receive(builder);
+      try {
+        return streamingChannel.Receive(builder);
+      } catch {
+        Close();
+        throw;
+      }
     }
 
     public override void Close() {
@@ -106,12 +116,14 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
         if (!process.HasExited) {
           streamingChannel.Close();
           if (!process.HasExited) {
-            process.CloseMainWindow();
-            process.WaitForExit(1000);
-            process.Close();
-            // for some reasons the event process_Exited does not fire
-            OnProcessExited();
+            try {
+              process.CloseMainWindow();
+              process.WaitForExit(1000);
+              process.Close();
+            } catch { }
           }
+          // for some reasons the event process_Exited does not fire
+          OnProcessExited();
         }
         process = null;
       }

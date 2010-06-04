@@ -88,9 +88,11 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
         socket.Send(buffer);
       } catch (SocketException) {
         Close();
+        throw;
       } catch (ObjectDisposedException) {
         socket = null;
         Close();
+        throw;
       }
     }
 
@@ -121,11 +123,12 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
         return builder.WeakMergeFrom(ByteString.CopyFrom(buffer)).WeakBuild();
       } catch (SocketException) {
         Close();
+        throw;
       } catch (ObjectDisposedException) {
         socket = null;
         Close();
+        throw;
       }
-      return null;
     }
 
     private byte[] GetMessageBuffer() {
@@ -156,9 +159,11 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
 
     public override void Close() {
       if (socket != null) {
-        if (socket.Connected)
-          socket.Disconnect(false);
-        socket.Close();
+        try {
+          if (socket.Connected)
+            socket.Disconnect(false);
+          socket.Close();
+        } catch { }
         socket = null;
       }
       bool wasInitialized = IsInitialized;

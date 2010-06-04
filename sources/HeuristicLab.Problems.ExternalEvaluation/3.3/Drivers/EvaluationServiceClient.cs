@@ -26,6 +26,7 @@ using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Parameters;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("EvaluationServiceClient", "An RPC client that evaluates a solution.")]
@@ -37,6 +38,9 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     public IValueParameter<IEvaluationChannel> ChannelParameter {
       get { return (IValueParameter<IEvaluationChannel>)Parameters["Channel"]; }
     }
+    public IValueParameter<IntValue> RetryParameter {
+      get { return (IValueParameter<IntValue>)Parameters["Retry"]; }
+    }
 
     private IEvaluationChannel Channel {
       get { return ChannelParameter.Value; }
@@ -45,19 +49,48 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     public EvaluationServiceClient()
       : base() {
       Parameters.Add(new ValueParameter<IEvaluationChannel>("Channel", "The channel over which to call the remote function."));
+      Parameters.Add(new ValueParameter<IntValue>("Retry", "How many times the client should retry obtaining a quality in case there is an exception. Note that it immediately aborts when the channel cannot be opened.", new IntValue(10)));
     }
 
     #region IEvaluationServiceClient Members
     
     public QualityMessage Evaluate(SolutionMessage solution) {
-      CheckAndOpenChannel();
-      Channel.Send(solution);
-      return (QualityMessage)Channel.Receive(QualityMessage.CreateBuilder());
+      int tries = 0, maxTries = RetryParameter.Value.Value;
+      bool success = false;
+      QualityMessage result = null;
+      while (!success) {
+        try {
+          tries++;
+          CheckAndOpenChannel();
+          Channel.Send(solution);
+          result = (QualityMessage)Channel.Receive(QualityMessage.CreateBuilder());
+          success = true;
+        } catch (InvalidOperationException) {
+          throw;
+        } catch {
+          if (tries >= maxTries)
+            throw;
+        }
+      }
+      return result;
     }
 
     public void EvaluateAsync(SolutionMessage solution, Action<QualityMessage> callback) {
-      CheckAndOpenChannel();
-      Channel.Send(solution);
+      int tries = 0, maxTries = RetryParameter.Value.Value;
+      bool success = false;
+      while (!success) {
+        try {
+          tries++;
+          CheckAndOpenChannel();
+          Channel.Send(solution);
+          success = true;
+        } catch (InvalidOperationException) {
+          throw;
+        } catch {
+          if (tries >= maxTries)
+            throw;
+        }
+      }
       System.Threading.ThreadPool.QueueUserWorkItem(new System.Threading.WaitCallback(ReceiveAsync), callback);
     }
 
@@ -68,14 +101,17 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       if (!Channel.IsInitialized) {
         try {
           Channel.Open();
-        } catch (Exception e) { // TODO: Change to specific exception
+        } catch (Exception e) {
           throw new InvalidOperationException(Name + ": The channel could not be opened.", e);
         }
       }
     }
 
     private void ReceiveAsync(object callback) {
-      QualityMessage message = (QualityMessage)Channel.Receive(QualityMessage.CreateBuilder());
+      QualityMessage message = null;
+      try {
+        message = (QualityMessage)Channel.Receive(QualityMessage.CreateBuilder());
+      } catch { }
       ((Action<QualityMessage>)callback).Invoke(message);
     }
   }
