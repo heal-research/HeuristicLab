@@ -165,6 +165,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ExternalEvaluationCD.cd" />
     <None Include="HeuristicLab.snk" />
     <None Include="Protos\ExternalEvaluationMessages.proto" />
   </ItemGroup>
