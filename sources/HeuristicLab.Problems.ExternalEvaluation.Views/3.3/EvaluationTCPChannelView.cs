@@ -121,14 +121,14 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
       try {
         Content.Open();
       } catch (Exception ex) {
-        MessageBox.Show(ex.Message);
+        PluginInfrastructure.ErrorHandling.ShowErrorDialog(ex);
       }
     }
     private void disconnectButton_Click(object sender, EventArgs e) {
       try {
         Content.Close();
       } catch (Exception ex) {
-        MessageBox.Show(ex.Message);
+        PluginInfrastructure.ErrorHandling.ShowErrorDialog(ex);
       }
     }
     #endregion
