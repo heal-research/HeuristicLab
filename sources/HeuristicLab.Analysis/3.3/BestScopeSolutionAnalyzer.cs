@@ -70,7 +70,10 @@ namespace HeuristicLab.Analysis {
       bool max = MaximizationParameter.ActualValue.Value;
       DoubleValue bestKnownQuality = BestKnownQualityParameter.ActualValue;
 
-      int i = qualities.Select((x, index) => new { index, x.Value }).OrderBy(x => x.Value).First().index;
+      int i = -1;
+      if (!max)
+        i = qualities.Select((x, index) => new { index, x.Value }).OrderBy(x => x.Value).First().index;
+      else i = qualities.Select((x, index) => new { index, x.Value }).OrderByDescending(x => x.Value).First().index;
       
       IEnumerable<IScope> scopes = new IScope[] { ExecutionContext.Scope };
       for (int j = 0; j < QualityParameter.Depth; j++)
