@@ -41,9 +41,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     private void OnSizeChangedHelper(EventArgs e) {
-      ((Control)this).SuspendRepaint();
       base.OnSizeChanged(e);
-      ((Control)this).ResumeRepaint(true);
     }
   }
 }
