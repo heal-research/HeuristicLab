@@ -70,7 +70,6 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
         GenerateImage();
         tourViewHost.Content = Content.Permutation;
       }
-      SetEnabledStateOfControls();
     }
 
     protected override void OnReadOnlyChanged() {
@@ -78,7 +77,8 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
       SetEnabledStateOfControls();
     }
 
-    private void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       qualityGroupBox.Enabled = Content != null;
       pictureBox.Enabled = Content != null;
       tourGroupBox.Enabled = Content != null;

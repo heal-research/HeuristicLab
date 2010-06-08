@@ -44,15 +44,10 @@ namespace HeuristicLab.Core.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       parameterCollectionView.Content = Content == null ? null : Content.Parameters;
-      SetEnabledStateOfControls();
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnabledStateOfControls();
-    }
-
-    private void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       parameterCollectionView.Enabled = Content != null;
     }
   }

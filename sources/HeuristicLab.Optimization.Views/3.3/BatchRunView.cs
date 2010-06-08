@@ -79,13 +79,9 @@ namespace HeuristicLab.Optimization.Views {
         runsView.Content = Content.Runs;
         executionTimeTextBox.Text = Content.ExecutionTime.ToString();
       }
-      SetEnableStateOfControls();
     }
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnableStateOfControls();
-    }
-    private void SetEnableStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       repetitionsNumericUpDown.Enabled = Content != null && !ReadOnly;
       newAlgorithmButton.Enabled = Content != null && !ReadOnly;
       openAlgorithmButton.Enabled = Content != null && !ReadOnly;

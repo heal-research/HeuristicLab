@@ -57,8 +57,8 @@ namespace HeuristicLab.Core.Views {
       base.DeregisterContentEvents();
     }
 
-    protected override void OnContentChanged() {
-      base.OnContentChanged();
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       base.itemsListView.Enabled = !this.Locked;
     }
 
@@ -66,11 +66,6 @@ namespace HeuristicLab.Core.Views {
       ListViewItem listViewItem = base.CreateListViewItem(item);
       listViewItem.Checked = Content.ItemChecked(item);
       return listViewItem;
-    }
-
-    protected override void OnLockedChanged() {
-      base.OnLockedChanged();
-      base.itemsListView.Enabled = !this.Locked;
     }
 
     #region ListView Events

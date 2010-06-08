@@ -84,15 +84,10 @@ namespace HeuristicLab.Core.Views {
         FillTreeNode(root, Content);
         graphTreeView.Nodes.Add(root);
       }
-      SetEnabledStateOfControls();
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnabledStateOfControls();
-    }
-
-    private void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       graphTreeView.Enabled = Content != null;
     }
 

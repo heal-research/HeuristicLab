@@ -85,14 +85,10 @@ namespace HeuristicLab.Data.Views {
         virtualRowIndizes = new int[0];
       } else 
         UpdateData();
+    }
 
-      SetEnabledStateOfControls();
-    }
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnabledStateOfControls();
-    }
-    private void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       rowsTextBox.Enabled = Content != null;
       columnsTextBox.Enabled = Content != null;
       dataGridView.Enabled = Content != null;

@@ -89,18 +89,10 @@ namespace HeuristicLab.Optimization.Views {
         operatorGraphViewHost.ViewType = null;
         operatorGraphViewHost.Content = Content.OperatorGraph;
       }
-      SetEnableStateOfControls();
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnableStateOfControls();
-    }
-    protected override void OnLockedChanged() {
-      base.OnLockedChanged();
-      SetEnableStateOfControls();
-    }
-    private void SetEnableStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       engineViewHost.Enabled = Content != null;
       newOperatorGraphButton.Enabled = false;
       openOperatorGraphButton.Enabled = false;

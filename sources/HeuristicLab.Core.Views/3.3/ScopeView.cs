@@ -69,15 +69,10 @@ namespace HeuristicLab.Core.Views {
       if (Content != null) {
         scopesTreeView.Nodes.Add(CreateTreeNode(Content));
       }
-      SetEnabledStateOfControls();
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnabledStateOfControls();
-    }
-
-    private void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       scopesTreeView.Enabled = Content != null;
       variableCollectionView.Enabled = scopesTreeView.SelectedNode != null;
     }

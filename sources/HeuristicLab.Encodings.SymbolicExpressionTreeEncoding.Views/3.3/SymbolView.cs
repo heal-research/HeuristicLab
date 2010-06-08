@@ -60,12 +60,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       UpdateControl();
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnabledStateOfControls();
-    }
-
-    private void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       initialFrequencyTextBox.Enabled = Content != null;
       initialFrequencyTextBox.ReadOnly = ReadOnly;
     }

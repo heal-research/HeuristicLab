@@ -79,15 +79,10 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
         executableTextBox.Text = Content.Executable;
         argumentsTextBox.Text = Content.Arguments;
       }
-      SetEnabledStateOfControls();
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnabledStateOfControls();
-    }
-
-    private void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       bool readOnlyDriverNullOrStarted = ReadOnly || Content == null || Content.IsInitialized;
       browseExecutableButton.Enabled = !readOnlyDriverNullOrStarted;
       startButton.Enabled = !readOnlyDriverNullOrStarted;

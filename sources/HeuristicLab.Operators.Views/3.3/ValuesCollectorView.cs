@@ -73,19 +73,10 @@ namespace HeuristicLab.Operators.Views {
         collectedValuesView.Content = Content.CollectedValues;
         parameterCollectionView.Content = ((IOperator)Content).Parameters;
       }
-      SetEnabledStateOfControls();
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnabledStateOfControls();
-    }
-    protected override void OnLockedChanged() {
-      base.OnLockedChanged();
-      this.SetEnabledStateOfControls();
-    }
-
-    private void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       breakpointCheckBox.Enabled = Content != null && !Locked;
       collectedValuesView.Enabled = Content != null;
       parameterCollectionView.Enabled = Content != null;

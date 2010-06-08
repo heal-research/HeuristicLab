@@ -120,14 +120,10 @@ namespace HeuristicLab.Optimization.Views {
         if (tabControl.TabPages.Contains(constraintPage))
           tabControl.TabPages.Remove(constraintPage);
       }
-      SetEnabledStateOfControls();
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnabledStateOfControls();
-    }
-    private void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       if (Content == null) {
         analyzeRunsToolStripDropDownButton.Enabled = false;
         runCollectionConstraintCollectionView.ReadOnly = true;

@@ -39,7 +39,7 @@ namespace HeuristicLab.Problems.Knapsack.Views {
       get { return (KnapsackSolution)base.Content; }
       set { base.Content = value; }
     }
-    
+
     public KnapsackSolutionView() {
       InitializeComponent();
     }
@@ -62,35 +62,35 @@ namespace HeuristicLab.Problems.Knapsack.Views {
       Content.QualityChanged += new EventHandler(Content_QualityChanged);
     }
 
-    void Content_BinaryVectorChanged(object sender, EventArgs e) {
+    private void Content_BinaryVectorChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_BinaryVectorChanged), sender, e);
       else
         GenerateImage();
     }
 
-    void Content_QualityChanged(object sender, EventArgs e) {
+    private void Content_QualityChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_QualityChanged), sender, e);
       else
         GenerateImage();
     }
 
-    void Content_CapacityChanged(object sender, EventArgs e) {
+    private void Content_CapacityChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_CapacityChanged), sender, e);
       else
         GenerateImage();
     }
 
-    void Content_WeightsChanged(object sender, EventArgs e) {
+    private void Content_WeightsChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_WeightsChanged), sender, e);
       else
         GenerateImage();
     }
 
-    void Content_ValuesChanged(object sender, EventArgs e) {
+    private void Content_ValuesChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_ValuesChanged), sender, e);
       else
@@ -99,20 +99,14 @@ namespace HeuristicLab.Problems.Knapsack.Views {
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      if (Content == null) {
+      if (Content == null)
         pictureBox.Image = null;
-      } else {
+      else
         GenerateImage();
-      }
-      SetEnabledStateOfControls();
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnabledStateOfControls();
-    }
-
-    private void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       pictureBox.Enabled = Content != null;
     }
 
@@ -164,7 +158,7 @@ namespace HeuristicLab.Problems.Knapsack.Views {
               //draw items sorted by value
               List<int> sortedIndices = new List<int>();
               for (int i = 0; i < Content.BinaryVector.Length; i++) {
-                if(Content.BinaryVector[i]) {
+                if (Content.BinaryVector[i]) {
                   sortedIndices.Add(i);
                 }
               }
@@ -182,7 +176,7 @@ namespace HeuristicLab.Problems.Knapsack.Views {
               int currentPosition = pictureBox.Height - borderY;
               foreach (int i in sortedIndices) {
                 if (Content.BinaryVector[i]) {
-                  
+
                   double weight = Content.Weights[i];
                   double factor = weight / capacity;
                   int elementHeight = (int)Math.Floor(knapsackHeight * factor);

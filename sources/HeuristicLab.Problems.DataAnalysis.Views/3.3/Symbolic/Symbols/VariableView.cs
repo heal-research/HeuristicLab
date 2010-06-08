@@ -61,12 +61,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       UpdateControl();
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnabledStateOfControls();
-    }
-
-    private void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       weightNuTextBox.Enabled = Content != null;
       weightSigmaTextBox.Enabled = Content != null;
       weightChangeNuTextBox.Enabled = Content != null;

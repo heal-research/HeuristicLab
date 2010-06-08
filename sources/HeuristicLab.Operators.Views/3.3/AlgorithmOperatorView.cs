@@ -74,19 +74,10 @@ namespace HeuristicLab.Operators.Views {
         operatorGraphViewHost.ViewType = null;
         operatorGraphViewHost.Content = Content.OperatorGraph;
       }
-      SetEnabledStateOfControls();
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnabledStateOfControls();
-    }
-    protected override void OnLockedChanged() {
-      base.OnLockedChanged();
-      this.SetEnabledStateOfControls();
-    }
-
-    private void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       breakpointCheckBox.Enabled = Content != null && !Locked;
       parameterCollectionView.Enabled = Content != null;
       operatorGraphViewHost.Enabled = Content != null;

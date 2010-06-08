@@ -42,9 +42,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     public new SupportVectorMachineModel Content {
       get { return (SupportVectorMachineModel)base.Content; }
-      set {
-        base.Content = value;
-      }
+      set { base.Content = value; }
     }
 
     public SupportVectorMachineModelView()

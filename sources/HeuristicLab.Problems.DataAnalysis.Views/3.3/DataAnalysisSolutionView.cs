@@ -51,7 +51,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         modelViewHost.Content = null;
         dataViewHost.Content = null;
       }
-      SetEnabledStateOfControls();
     }
 
     protected override void RegisterContentEvents() {
@@ -64,15 +63,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
     private void Content_ProblemDataChanged(object sender, EventArgs e) {
       dataViewHost.Content = Content.ProblemData;
-    }
-
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-    }
-    protected override void OnLockedChanged() {
-      base.OnLockedChanged();
-    }
-    private void SetEnabledStateOfControls() {
     }
   }
 }

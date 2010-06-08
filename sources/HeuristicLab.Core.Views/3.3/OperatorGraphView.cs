@@ -80,20 +80,14 @@ namespace HeuristicLab.Core.Views {
         MarkInitialOperator();
         operatorTreeView.Content = Content.InitialOperator;
       }
-      SetEnabledStateOfControls();
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnabledStateOfControls();
-    }
-
-    private void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       operatorsView.Enabled = Content != null;
       operatorTreeView.Enabled = Content != null;
       operatorsContextMenuStrip.Enabled = Content != null && !ReadOnly;
     }
-
 
     protected virtual void MarkInitialOperator() {
       foreach (ListViewItem item in operatorsView.ItemsListView.Items) {

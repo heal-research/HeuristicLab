@@ -64,14 +64,10 @@ namespace HeuristicLab.Data.Views {
         valueTextBox.Text = string.Empty;
       } else
         valueTextBox.Text = Content.GetValue();
+    }
 
-      SetEnabledStateOfControls();
-    }
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnabledStateOfControls();
-    }
-    private void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       valueTextBox.Enabled = Content != null;
       valueTextBox.ReadOnly = ReadOnly;
     }

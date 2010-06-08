@@ -53,6 +53,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
             this.content = value;
             if (this.content != null) this.RegisterContentEvents();
             this.OnContentChanged();
+            this.SetEnabledStateOfControls();
             this.OnChanged();
             this.ResumeRepaint(true);
           }
@@ -72,6 +73,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
             this.SuspendRepaint();
             locked = value;
             OnLockedChanged();
+            this.SetEnabledStateOfControls();
             PropertyInfo prop = typeof(IContentView).GetProperty("Locked");
             PropagateStateChanges(this, typeof(IContentView), prop);
             OnChanged();
@@ -90,7 +92,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
           handler(this, EventArgs.Empty);
       }
     }
-
     /// <summary>
     /// Adds eventhandlers to the current instance.
     /// </summary>
@@ -107,6 +108,12 @@ namespace HeuristicLab.MainForm.WindowsForms {
     /// Is called when the content property changes.
     /// </summary>
     protected virtual void OnContentChanged() {
+    }
+
+    /// <summary>
+    /// This method is called if the ReadyOnly, Locked or Content property of the ContentView changes to update the controls of the view.
+    /// </summary>
+    protected override void SetEnabledStateOfControls() {
     }
   }
 }

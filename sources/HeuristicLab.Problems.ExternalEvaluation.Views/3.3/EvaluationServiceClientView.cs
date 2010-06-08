@@ -65,15 +65,10 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
       } else {
         // TODO: Add code when content has been changed and is not null
       }
-      SetEnabledStateOfControls();
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnabledStateOfControls();
-    }
-
-    private void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       // TODO: Enable or disable controls based on whether the content is null or the view is set readonly
     }
 

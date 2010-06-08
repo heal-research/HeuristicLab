@@ -55,16 +55,10 @@ namespace HeuristicLab.Parameters.Views {
         dataTypeTextBox.Text = "-";
       else
         dataTypeTextBox.Text = Content.DataType.GetPrettyName();
-
-      SetEnabledStateOfControls();
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnabledStateOfControls();
-    }
-
-    private void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       dataTypeTextBox.Enabled = Content != null;
     }
   }

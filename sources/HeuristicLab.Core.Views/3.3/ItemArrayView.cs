@@ -96,15 +96,10 @@ namespace HeuristicLab.Core.Views {
         if ((selectedIndex != -1) && (selectedIndex < itemsListView.Items.Count))
           itemsListView.Items[selectedIndex].Selected = true;
       }
-      SetEnabledStateOfControls();
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnabledStateOfControls();
-    }
-
-    private void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       if (Content == null) {
         addButton.Enabled = false;
         moveUpButton.Enabled = false;

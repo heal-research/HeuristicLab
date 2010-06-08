@@ -49,16 +49,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
         textBox.Text = string.Empty;
       else
         textBox.Text = SymbolicExpression(Content.Root, 0);
-
-      SetEnabledStateOfControls();
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnabledStateOfControls();
-    }
-
-    private void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       textBox.Enabled = Content != null;
       textBox.ReadOnly = ReadOnly;
     }

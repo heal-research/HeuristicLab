@@ -98,14 +98,10 @@ namespace HeuristicLab.Optimization.Views {
         runsView.Content = Content.Runs;
         executionTimeTextBox.Text = Content.ExecutionTime.ToString();
       }
-      SetEnableStateOfControls();
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnableStateOfControls();
-    }
-    private void SetEnableStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       parameterCollectionView.Enabled = Content != null;
       newProblemButton.Enabled = Content != null && !ReadOnly;
       openProblemButton.Enabled = Content != null && !ReadOnly;

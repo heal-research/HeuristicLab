@@ -61,12 +61,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       UpdateControl();
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnabledStateOfControls();
-    }
-
-    private void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       minValueTextBox.Enabled = Content != null;
       maxValueTextBox.Enabled = Content != null;
       valueChangeNuTextBox.Enabled = Content != null;

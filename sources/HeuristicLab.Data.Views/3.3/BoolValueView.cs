@@ -61,14 +61,10 @@ namespace HeuristicLab.Data.Views {
       } else {
         valueCheckBox.Checked = Content.Value;
       }
-      SetEnabledStateOfControls();
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnabledStateOfControls();
-    }
-    private void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       if (Content == null) valueCheckBox.Enabled = false;
       else valueCheckBox.Enabled = !ReadOnly;
     }

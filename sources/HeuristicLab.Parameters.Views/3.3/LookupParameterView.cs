@@ -74,16 +74,10 @@ namespace HeuristicLab.Parameters.Views {
         actualNameTextBox.Text = "-";
       else
         actualNameTextBox.Text = Content.ActualName;
-
-      SetEnabledStateOfControls();
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnabledStateOfControls();
-    }
-
-    private void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       actualNameTextBox.Enabled = Content != null;
       actualNameTextBox.ReadOnly = ReadOnly;
     }

@@ -91,11 +91,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
 
-    void Content_ProblemDataChanged(object sender, EventArgs e) {
+    private void Content_ProblemDataChanged(object sender, EventArgs e) {
       UpdateChart();
     }
-
-    void Content_EstimatedValuesChanged(object sender, EventArgs e) {
+    private void Content_EstimatedValuesChanged(object sender, EventArgs e) {
       UpdateSeries();
     }
 

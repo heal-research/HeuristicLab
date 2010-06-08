@@ -83,15 +83,10 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
         ipAddressTextBox.Text = Content.IpAddress;
         portTextBox.Text = Content.Port.ToString();
       }
-      SetEnabledStateOfControls();
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnabledStateOfControls();
-    }
-
-    private void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       bool readOnlyDriverNullOrStarted = ReadOnly || Content == null || Content.IsInitialized;
       ipAddressTextBox.Enabled = !readOnlyDriverNullOrStarted;
       portTextBox.Enabled = !readOnlyDriverNullOrStarted;
@@ -104,7 +99,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
       if (Content != null) {
         try {
           System.Net.IPAddress.Parse(ipAddressTextBox.Text);
-        } catch (FormatException) {
+        }
+        catch (FormatException) {
           e.Cancel = true;
         }
         if (!e.Cancel) Content.IpAddress = ipAddressTextBox.Text;
@@ -120,14 +116,16 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
     private void connectButton_Click(object sender, EventArgs e) {
       try {
         Content.Open();
-      } catch (Exception ex) {
+      }
+      catch (Exception ex) {
         PluginInfrastructure.ErrorHandling.ShowErrorDialog(ex);
       }
     }
     private void disconnectButton_Click(object sender, EventArgs e) {
       try {
         Content.Close();
-      } catch (Exception ex) {
+      }
+      catch (Exception ex) {
         PluginInfrastructure.ErrorHandling.ShowErrorDialog(ex);
       }
     }

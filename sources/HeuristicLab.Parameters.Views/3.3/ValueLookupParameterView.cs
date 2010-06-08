@@ -84,15 +84,10 @@ namespace HeuristicLab.Parameters.Views {
         viewHost.ViewType = null;
         viewHost.Content = Content.Value;
       }
-      SetEnabledStateOfControls();
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnabledStateOfControls();
-    }
-
-    private void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       actualNameTextBox.Enabled = Content != null;
       actualNameTextBox.ReadOnly = ReadOnly;
       setValueButton.Enabled = Content != null && !ReadOnly;

@@ -39,7 +39,7 @@ namespace HeuristicLab.Problems.OneMax.Views {
       get { return (OneMaxSolution)base.Content; }
       set { base.Content = value; }
     }
-    
+
     public OneMaxSolutionView() {
       InitializeComponent();
 
@@ -58,7 +58,7 @@ namespace HeuristicLab.Problems.OneMax.Views {
       Content.QualityChanged += new EventHandler(Content_QualityChanged);
     }
 
-    void Content_QualityChanged(object sender, EventArgs e) {
+    private void Content_QualityChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_QualityChanged), sender, e);
       else {
@@ -66,7 +66,7 @@ namespace HeuristicLab.Problems.OneMax.Views {
       }
     }
 
-    void Content_BinaryVectorChanged(object sender, EventArgs e) {
+    private void Content_BinaryVectorChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_BinaryVectorChanged), sender, e);
       else {
@@ -76,7 +76,6 @@ namespace HeuristicLab.Problems.OneMax.Views {
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-
       if (Content == null) {
         qualityView.Content = null;
         binaryVectorView.Content = null;
@@ -84,11 +83,10 @@ namespace HeuristicLab.Problems.OneMax.Views {
         qualityView.Content = Content.Quality;
         binaryVectorView.Content = Content.BinaryVector;
       }
-
-      SetEnabledStateOfControls();
     }
 
-    private void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       qualityView.Enabled = Content != null;
       binaryVectorView.Enabled = Content != null;
     }

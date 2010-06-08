@@ -78,12 +78,9 @@ namespace HeuristicLab.Core.Views {
       infoPanel.Visible = true;
       ThreadPool.QueueUserWorkItem(new WaitCallback(LoadItems));
     }
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnabledStateOfControls();
-    }
 
-    private void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       addButton.Enabled = !ReadOnly;
       removeButton.Enabled = !ReadOnly && listView.SelectedItems.Count > 0;
       saveButton.Enabled = !ReadOnly;

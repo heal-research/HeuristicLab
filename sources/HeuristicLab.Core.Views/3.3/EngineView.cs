@@ -77,15 +77,10 @@ namespace HeuristicLab.Core.Views {
         logView.Content = Content.Log;
         executionTimeTextBox.Text = Content.ExecutionTime.ToString();
       }
-      SetEnabledStateOfControls();
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnabledStateOfControls();
-    }
-
-    private void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       if (Content == null) {
         logView.Enabled = false;
         executionTimeTextBox.Enabled = false;

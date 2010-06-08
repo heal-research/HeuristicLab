@@ -66,14 +66,20 @@ namespace HeuristicLab.MainForm.WindowsForms {
         } else {
           if (value != readOnly) {
             this.SuspendRepaint();
-            readOnly = value;
-            OnReadOnlyChanged();
+            this.readOnly = value;
+            this.OnReadOnlyChanged();
+            this.SetEnabledStateOfControls();
             PropertyInfo prop = typeof(IView).GetProperty("ReadOnly");
             PropagateStateChanges(this, typeof(IView), prop);
             this.ResumeRepaint(true);
           }
         }
       }
+    }
+    /// <summary>
+    /// This method is called if the ReadyOnly property of the View changes to update the controls of the view.
+    /// </summary>
+    protected virtual void SetEnabledStateOfControls() {
     }
 
     private bool isShown;

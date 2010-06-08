@@ -34,7 +34,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// Rules:
   ///  * Constants are always the last argument to any function
   ///  * f(c1, c2) => c3 (constant expression folding)
-  ///  * c1 / ( c2 * Var) => ( var * ( c2 / c1))
   /// </summary>
   public class SymbolicSimplifier {
     private Addition addSymbol = new Addition();

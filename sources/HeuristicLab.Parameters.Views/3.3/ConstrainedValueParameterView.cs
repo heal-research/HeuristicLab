@@ -89,15 +89,10 @@ namespace HeuristicLab.Parameters.Views {
         viewHost.ViewType = null;
         viewHost.Content = Content.Value;
       }
-      SetEnabledStateOfControls();
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnabledStateOfControls();
-    }
-
-    private void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       valueGroupBox.Enabled = Content != null;
       valueComboBox.Enabled = (valueComboBox.Items.Count > 0) && !ReadOnly;
     }

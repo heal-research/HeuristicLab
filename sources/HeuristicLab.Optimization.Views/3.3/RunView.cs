@@ -73,18 +73,10 @@ namespace HeuristicLab.Optimization.Views {
       if (Content != null)
         UpdateColorPictureBox();
       FillListView();
+    }
 
-      SetEnabledStateOfControls();
-    }
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnabledStateOfControls();
-    }
-    protected override void OnLockedChanged() {
-      base.OnLockedChanged();
-      SetEnabledStateOfControls();
-    }
-    private void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       listView.Enabled = Content != null;
       viewHost.Enabled = Content != null;
       changeColorButton.Enabled = Content != null;

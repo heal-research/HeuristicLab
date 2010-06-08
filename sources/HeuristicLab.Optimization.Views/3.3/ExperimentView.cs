@@ -70,14 +70,10 @@ namespace HeuristicLab.Optimization.Views {
         runsViewHost.Content = Content.Runs;
         executionTimeTextBox.Text = Content.ExecutionTime.ToString();
       }
-      SetEnableStateOfControls();
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnableStateOfControls();
-    }
-    private void SetEnableStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       optimizerListView.Enabled = Content != null;
       runsViewHost.Enabled = Content != null;
       executionTimeTextBox.Enabled = Content != null;

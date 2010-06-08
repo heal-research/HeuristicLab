@@ -111,7 +111,6 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-
       if (Content == null) {
         qualityView.Content = null;
         realVectorView.Content = null;
@@ -122,17 +121,15 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
         pictureBox.Visible = Content.BestRealVector.Length == 2;
         GenerateImage();
       }
-
-      SetEnabledStateOfControls();
     }
 
     protected override void OnPaint(PaintEventArgs e) {
       GenerateImage();
-      
       base.OnPaint(e);
     }
 
-    private void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       qualityView.Enabled = Content != null;
       realVectorView.Enabled = Content != null;
     }

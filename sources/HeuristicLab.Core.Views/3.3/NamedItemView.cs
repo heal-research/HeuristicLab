@@ -71,14 +71,10 @@ namespace HeuristicLab.Core.Views {
         toolTip.SetToolTip(descriptionTextBox, Content.Description);
         Caption = Content.Name;
       }
-      SetEnabledStateOfControls();
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnabledStateOfControls();
-    }
-    private void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       if (Content == null) {
         nameTextBox.Enabled = false;
         descriptionTextBox.Enabled = false;

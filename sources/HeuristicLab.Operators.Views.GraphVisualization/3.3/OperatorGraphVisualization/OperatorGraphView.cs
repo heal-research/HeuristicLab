@@ -65,21 +65,10 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       this.graphVisualizationInfoView.Content = this.VisualizationInfo;
       if (createdVisualizationInfo)
         this.graphVisualizationInfoView.RelayoutGraph();
-
-      this.SetEnabledStateOfControls();
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      this.SetEnabledStateOfControls();
-    }
-
-    protected override void OnLockedChanged() {
-      base.OnLockedChanged();
-      this.SetEnabledStateOfControls();
-    }
-
-    private void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       if (Content == null) {
         selectButton.Enabled = false;
         panButton.Enabled = false;

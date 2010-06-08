@@ -70,13 +70,10 @@ namespace HeuristicLab.Data.Views {
         dataGridView.Columns.Clear();
       } else
         UpdateData();
-      SetEnabledStateOfControls();
     }
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnabledStateOfControls();
-    }
-    private void SetEnabledStateOfControls() {
+
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       lengthTextBox.Enabled = Content != null;
       dataGridView.Enabled = Content != null;
       lengthTextBox.ReadOnly = ReadOnly;

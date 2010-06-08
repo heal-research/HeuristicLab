@@ -55,13 +55,8 @@ namespace HeuristicLab.Core.Views {
       base.DeregisterContentEvents();
     }
 
-    protected override void OnContentChanged() {
-      base.OnContentChanged();
-      base.itemsListView.Enabled = !this.Locked;
-    }
-
-    protected override void OnLockedChanged() {
-      base.OnLockedChanged();
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       base.itemsListView.Enabled = !this.Locked;
     }
 

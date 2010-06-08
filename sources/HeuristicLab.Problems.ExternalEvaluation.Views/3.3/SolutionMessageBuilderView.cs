@@ -69,15 +69,10 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
       } else {
         converterView.Content = Content.Converters;
       }
-      SetEnabledStateOfControls();
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnabledStateOfControls();
-    }
-
-    private void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
     }
 
     #region Event Handlers (child controls)

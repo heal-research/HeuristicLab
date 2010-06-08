@@ -53,15 +53,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       } else {
         symbolicExpressionTreeChart.Tree = Content;
       }
-      SetEnabledStateOfControls();
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnabledStateOfControls();
-    }
-
-    private void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       symbolicExpressionTreeChart.Enabled = Content != null;
     }
   }

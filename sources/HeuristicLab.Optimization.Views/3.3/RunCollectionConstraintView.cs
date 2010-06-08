@@ -59,7 +59,6 @@ namespace HeuristicLab.Optimization.Views {
         chbActive.Checked = Content.Active;
         this.ReadOnly = Content.Active;
       }
-      SetEnabledStateOfControls();
     }
 
     protected virtual void UpdateColumnComboBox() {
@@ -87,15 +86,8 @@ namespace HeuristicLab.Optimization.Views {
       this.Content.ConstrainedValueChanged += new EventHandler(Content_ConstrainedValueChanged);
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnabledStateOfControls();
-    }
-    protected override void OnLockedChanged() {
-      base.OnLockedChanged();
-      SetEnabledStateOfControls();
-    }
-    protected virtual void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       cmbConstraintColumn.Enabled = !this.ReadOnly && !this.Locked && Content != null;
       cmbConstraintOperation.Enabled = !this.ReadOnly && !this.Locked && Content != null;
       chbActive.Enabled = !this.Locked && Content != null;

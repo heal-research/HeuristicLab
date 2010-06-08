@@ -79,15 +79,10 @@ namespace HeuristicLab.Parameters.Views {
         actualNameTextBox.Text = Content.ActualName;
         depthTextBox.Text = Content.Depth.ToString();
       }
-      SetEnabledStateOfControls();
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnabledStateOfControls();
-    }
-
-    private void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       actualNameTextBox.Enabled = Content != null;
       actualNameTextBox.ReadOnly = ReadOnly;
       depthTextBox.Enabled = Content != null;

@@ -70,15 +70,10 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
         parameterCollectionView.Content = ((IParameterizedNamedItem)Content).Parameters;
         pathTSPTourView.Content = new PathTSPTour(Content.Coordinates, Content.BestKnownSolution, Content.BestKnownQuality);
       }
-      SetEnabledStateOfControls();
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnabledStateOfControls();
-    }
-
-    private void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       parameterCollectionView.Enabled = Content != null;
       pathTSPTourView.Enabled = Content != null;
       importButton.Enabled = Content != null && !ReadOnly;

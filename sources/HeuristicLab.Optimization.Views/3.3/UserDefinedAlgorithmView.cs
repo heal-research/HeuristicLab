@@ -53,18 +53,10 @@ namespace HeuristicLab.Optimization.Views {
         globalScopeView.Content = null;
       else
         globalScopeView.Content = Content.GlobalScope;
-      SetEnableStateOfControls();
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnableStateOfControls();
-    }
-    protected override void OnLockedChanged() {
-      base.OnLockedChanged();
-      SetEnableStateOfControls();
-    }
-    private void SetEnableStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       globalScopeView.Enabled = Content != null;
       newOperatorGraphButton.Enabled = Content != null && !ReadOnly;
       openOperatorGraphButton.Enabled = Content != null && !ReadOnly;

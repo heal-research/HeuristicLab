@@ -25,7 +25,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
-namespace HeuristicLab.Operators.Views { 
+namespace HeuristicLab.Operators.Views {
   /// <summary>
   /// The base class for visual representations of items.
   /// </summary>
@@ -73,19 +73,10 @@ namespace HeuristicLab.Operators.Views {
         operatorListView.Content = Content.Operators;
         parameterCollectionView.Content = ((IOperator)Content).Parameters;
       }
-      SetEnabledStateOfControls();
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnabledStateOfControls();
-    }
-    protected override void OnLockedChanged() {
-      base.OnLockedChanged();
-      this.SetEnabledStateOfControls();
-    }
-
-    private void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       breakpointCheckBox.Enabled = Content != null && !Locked;
       operatorListView.Enabled = Content != null;
       parameterCollectionView.Enabled = Content != null;

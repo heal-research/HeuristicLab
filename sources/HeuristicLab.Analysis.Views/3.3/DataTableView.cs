@@ -95,14 +95,10 @@ namespace HeuristicLab.Analysis.Views {
         foreach (DataRow row in Content.Rows)
           AddDataRow(row);
       }
-      SetEnabledStateOfControls();
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnabledStateOfControls();
-    }
-    private void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       chart.Enabled = Content != null;
     }
 
