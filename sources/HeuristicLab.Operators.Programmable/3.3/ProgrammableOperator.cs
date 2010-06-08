@@ -37,12 +37,13 @@ using System.Data.Linq;
 using System.Xml.XPath;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Persistence.Auxiliary;
 using HeuristicLab.Collections;
 
 namespace HeuristicLab.Operators.Programmable {
 
   [Item("ProgrammableOperator", "An operator that can be programmed for arbitrary needs.")]
-  [StorableClass]  
+  [StorableClass]
   public class ProgrammableOperator : Operator, IParameterizedNamedItem {
 
     #region Fields & Properties
@@ -78,10 +79,10 @@ namespace HeuristicLab.Operators.Programmable {
 
     protected Dictionary<Assembly, bool> Assemblies;
 
-    [Storable]
-    private List<string> _persistedAssemblyNames {
+    [Storable(Name="SelectedAssemblies")]
+    private List<string> _selectedAssemblyNames_persistence {
       get {
-        return Assemblies.Keys.Select(a => a.FullName).ToList();
+        return Assemblies.Where(a => a.Value).Select(a => a.Key.FullName).ToList();        
       }
       set {
         var selectedAssemblyNames = new HashSet<string>(value);
@@ -114,21 +115,25 @@ namespace HeuristicLab.Operators.Programmable {
     #region Extended Accessors
 
     public void SelectAssembly(Assembly a) {
-      if (a != null && Assemblies.ContainsKey(a))
+      if (a != null && Assemblies.ContainsKey(a) && !Assemblies[a]) {
         Assemblies[a] = true;
+      }
     }
 
     public void UnselectAssembly(Assembly a) {
-      if (a != null && Assemblies.ContainsKey(a))
+      if (a != null && Assemblies.ContainsKey(a) && Assemblies[a]) {
         Assemblies[a] = false;
+      }
     }
 
     public void SelectNamespace(string ns) {
       namespaces.Add(ns);
+      OnSignatureChanged();
     }
 
     public void UnselectNamespace(string ns) {
       namespaces.Remove(ns);
+      OnSignatureChanged();
     }
 
     public IEnumerable<string> GetAllNamespaces(bool selectedAssembliesOnly) {
@@ -161,28 +166,34 @@ namespace HeuristicLab.Operators.Programmable {
       code = "";
       executeMethod = null;
       ProgrammableOperator.StaticInitialize();
-      Assemblies = defaultAssemblyDict;
-      Plugins = defaultPluginDict;
+      Assemblies = defaultAssemblyDict.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+      Plugins = defaultPluginDict.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToList());
       namespaces = new HashSet<string>(DiscoverNamespaces());
       RegisterEvents();
     }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void RegisterEvents() {
-      Parameters.ItemsAdded += OnSignatureChanged;
-      Parameters.ItemsRemoved += OnSignatureChanged;
-      Parameters.ItemsReplaced += OnSignatureChanged;
-      Parameters.CollectionReset += OnSignatureChanged;
+      Parameters.ItemsAdded += Parameters_Changed;
+      Parameters.ItemsRemoved += Parameters_Changed;
+      Parameters.ItemsReplaced += Parameters_Changed;
+      Parameters.CollectionReset += Parameters_Changed;
     }
 
-    protected void OnSignatureChanged(object sender, CollectionItemsChangedEventArgs<IParameter> args) {
-      if (SignatureChanged != null)
-        SignatureChanged(sender, EventArgs.Empty);
+    private void Parameters_Changed(object sender, CollectionItemsChangedEventArgs<IParameter> args) {
+      OnSignatureChanged();
+    }
+
+    protected void OnSignatureChanged() {
+      EventHandler handler = SignatureChanged;
+      if (handler != null)
+        handler(this, EventArgs.Empty);
     }
 
     private static void StaticInitialize() {
       lock (initLock) {
-        if (defaultPluginDict != null || defaultAssemblyDict != null) return;
+        if (defaultPluginDict != null && defaultAssemblyDict != null)
+          return;
         defaultAssemblyDict = DiscoverAssemblies();
         defaultPluginDict = GroupAssemblies(defaultAssemblyDict.Keys);
       }
@@ -219,6 +230,10 @@ namespace HeuristicLab.Operators.Programmable {
       typeof(HeuristicLab.Common.IDeepCloneable).Assembly,
       typeof(HeuristicLab.Core.Item).Assembly,
       typeof(HeuristicLab.Data.IntValue).Assembly,
+      typeof(HeuristicLab.Parameters.ValueParameter<IItem>).Assembly,
+      typeof(HeuristicLab.Collections.ObservableList<IItem>).Assembly,
+      typeof(System.ComponentModel.INotifyPropertyChanged).Assembly,
+
     };
 
     protected static Dictionary<Assembly, bool> DiscoverAssemblies() {
@@ -247,14 +262,15 @@ namespace HeuristicLab.Operators.Programmable {
 
     protected static List<string> DiscoverNamespaces() {
       return new List<string>() {
+        "HeuristicLab.Common",
+        "HeuristicLab.Core",
+        "HeuristicLab.Data",
+        "HeuristicLab.Parameters",
         "System",
         "System.Collections.Generic",
         "System.Text",
         "System.Linq",
         "System.Data.Linq",
-        "HeuristicLab.Common",
-        "HeuristicLab.Core",
-        "HeuristicLab.Data",
       };
     }
 
@@ -355,9 +371,15 @@ namespace HeuristicLab.Operators.Programmable {
     public string Signature {
       get {
         var sb = new StringBuilder()
-        .Append("public static IOperation Execute(IOperator op, IExecutionContext context");
+        .Append("public static IOperation Execute(")
+        .Append(TypeNameParser.Parse(typeof(IOperator).FullName).GetTypeNameInCode(namespaces))
+        .Append(" op, ")
+        .Append(TypeNameParser.Parse(typeof(IExecutionContext).FullName).GetTypeNameInCode(namespaces))
+        .Append(" context");
         foreach (IParameter param in Parameters) {
-          sb.Append(String.Format(", {0} {1}", param.DataType.Name, param.Name));
+          sb.Append(String.Format(", {0} {1}",
+            TypeNameParser.Parse(param.GetType().FullName).GetTypeNameInCode(namespaces),
+            param.Name));
         }
         return sb.Append(")").ToString();
       }
@@ -375,7 +397,7 @@ namespace HeuristicLab.Operators.Programmable {
       method.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IOperator), "op"));
       method.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IExecutionContext), "context"));
       foreach (var param in Parameters)
-        method.Parameters.Add(new CodeParameterDeclarationExpression(param.DataType, param.Name));
+        method.Parameters.Add(new CodeParameterDeclarationExpression(param.GetType(), param.Name));
       string[] codeLines = lineSplitter.Split(code);
       for (int i = 0; i < codeLines.Length; i++) {
         codeLines[i] = string.Format("#line {0} \"ProgrammableOperator\"{1}{2}", i + 1, "\r\n", codeLines[i]);
@@ -398,7 +420,7 @@ namespace HeuristicLab.Operators.Programmable {
       }
 
       var parameters = new List<object>() { this, ExecutionContext };
-      parameters.AddRange(Parameters.Select(p => (object)p.ActualValue));
+      parameters.AddRange(Parameters.Select(p => (object)p));
       return (IOperation)executeMethod.Invoke(null, parameters.ToArray());
     }
 

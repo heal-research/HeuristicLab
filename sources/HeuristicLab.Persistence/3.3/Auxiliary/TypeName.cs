@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Reflection.Emit;
@@ -156,6 +157,23 @@ namespace HeuristicLab.Persistence.Auxiliary {
         if (full)
           foreach (var property in AssemblyAttribues)
             sb.Append(", ").Append(property.Key).Append('=').Append(property.Value);
+      }
+      return sb.ToString();
+    }
+
+    public string GetTypeNameInCode(HashSet<string> omitNamespaces) {
+      StringBuilder sb = new StringBuilder();
+      if (!string.IsNullOrEmpty(Namespace) && omitNamespaces == null || !omitNamespaces.Contains(Namespace))
+        sb.Append(Namespace).Append('.');
+      sb.Append(ClassName);
+      if (IsGeneric) {
+        sb.Append("<");
+        sb.Append(
+          string.Join(", ",
+            GenericArgs
+              .Select(a => a.GetTypeNameInCode(omitNamespaces))
+              .ToArray()));
+        sb.Append(">");
       }
       return sb.ToString();
     }

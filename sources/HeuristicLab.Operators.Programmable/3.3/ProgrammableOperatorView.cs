@@ -37,6 +37,7 @@ using HeuristicLab.Core.Views;
 using HeuristicLab.Operators.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Common.Resources;
 
 namespace HeuristicLab.Operators.Programmable {
   [View("ProgrammableOperator View")]
@@ -50,11 +51,11 @@ namespace HeuristicLab.Operators.Programmable {
 
     public ProgrammableOperatorView() {
       InitializeComponent();
-    }
-
-    public ProgrammableOperatorView(ProgrammableOperator programmableOperator)
-      : this() {
-      ProgrammableOperator = programmableOperator;
+      namespacesTreeView.ImageList = new ImageList();
+      namespacesTreeView.ImageList.Images.Add(VS2008ImageLibrary.Namespace);
+      assembliesTreeView.ImageList = new ImageList();
+      assembliesTreeView.ImageList.Images.Add(VS2008ImageLibrary.Assembly);
+      assembliesTreeView.ImageList.Images.Add(VS2008ImageLibrary.Module);
     }
 
     protected override void RegisterContentEvents() {
@@ -77,13 +78,12 @@ namespace HeuristicLab.Operators.Programmable {
         parameterCollectionView.Content = null;
       } else {
         codeEditor.Prefix = GetGeneratedPrefix();
-        codeEditor.Suffix = @"
-    return null;
+        codeEditor.Suffix = @"    return null;
   }
 }";
         codeEditor.UserCode = ProgrammableOperator.Code;
         if (codeEditor.UserCode == "")
-          codeEditor.UserCode = "\n\n\n";
+          codeEditor.UserCode = "    \n    \n    \n    \n";
         InitializeAssemblyList();
         InitializeNamespacesList();
         foreach (var a in ProgrammableOperator.SelectedAssemblies) {
@@ -91,8 +91,8 @@ namespace HeuristicLab.Operators.Programmable {
         }
         codeEditor.ScrollAfterPrefix();
         codeEditor.ShowCompileErrors(ProgrammableOperator.CompileErrors, "ProgrammableOperator");
-        showCodeButton.Enabled = 
-          ProgrammableOperator.CompilationUnitCode != null && 
+        showCodeButton.Enabled =
+          ProgrammableOperator.CompilationUnitCode != null &&
           ProgrammableOperator.CompilationUnitCode.Length > 0;
         parameterCollectionView.Content = ProgrammableOperator.Parameters;
       }
@@ -185,19 +185,24 @@ namespace HeuristicLab.Operators.Programmable {
       foreach (var p in ProgrammableOperator.Plugins) {
         var node = assembliesTreeView.Nodes.Add(p.Key);
         node.Tag = p;
+        node.ImageIndex = 1;
         foreach (var a in p.Value) {
           var aNode = node.Nodes.Add(a.GetName().Name);
           aNode.Tag = a;
+          aNode.ImageIndex = 0;
           if (selectedAssemblies.Contains(a))
             aNode.Checked = true;
         }
         if (node.Nodes.Count == 1 && node.Nodes[0].Name == node.Nodes[0].Name) {
           node.Tag = node.Nodes[0].Tag;
+          node.ImageIndex = node.Nodes[0].ImageIndex;
+          node.Checked = node.Nodes[0].Checked;
           node.Nodes.Clear();
         } else if (node.Nodes.Count > 0 && node.Nodes.Cast<TreeNode>().All(n => n.Checked)) {
           node.Checked = true;
         }
       }
+      assembliesTreeView.Sort();
       assembliesTreeView.EndUpdate();
       assembliesTreeView.Enabled = true;
       namespacesTreeView.Enabled = true;
@@ -215,6 +220,7 @@ namespace HeuristicLab.Operators.Programmable {
       foreach (var ns in ProgrammableOperator.GetAllNamespaces(true))
         AddNamespace(namespacesTreeView.Nodes, ns, selectedNamespaces.Contains(ns), oldTree);
       codeEditor.Prefix = GetGeneratedPrefix();
+      namespacesTreeView.Sort();
       namespacesTreeView.EndUpdate();
       namespacesTreeView.Enabled = true;
       initializing = false;
@@ -224,6 +230,7 @@ namespace HeuristicLab.Operators.Programmable {
       foreach (TreeNode n in nodes) {
         TreeNode newNode = root.Nodes.Add(n.Text, n.Text);
         newNode.Checked = n.Checked;
+        newNode.ImageIndex = n.ImageIndex;
         CloneTreeNodeCollection(newNode, n.Nodes);
         if (n.IsExpanded)
           newNode.Expand();
@@ -245,8 +252,12 @@ namespace HeuristicLab.Operators.Programmable {
       }
       if (isNew || oldNode != null && oldNode.IsExpanded)
         node.Expand();
-      if (isNew)
+      if (isNew) {
         namespacesTreeView.SelectedNode = node;
+        node.ImageIndex = 0;
+      } else {
+        node.ImageIndex = oldNode.ImageIndex;
+      }
       return isNew;
     }
 
