@@ -220,23 +220,6 @@
       <Name>HeuristicLab.Problems.DataAnalysis-3.3</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="EstimatedValuesView.resx">
-      <DependentUpon>EstimatedValuesView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="LineChartView.resx">
-      <DependentUpon>LineChartView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ScatterPlotView.resx">
-      <DependentUpon>ScatterPlotView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Symbolic\SimplifiedSymbolicExpressionModelView.resx">
-      <DependentUpon>SimplifiedSymbolicExpressionModelView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Symbolic\SymbolicExpressionModelView.resx">
-      <DependentUpon>SymbolicExpressionModelView.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
