@@ -96,15 +96,10 @@ namespace HeuristicLab.Operators.Programmable {
           ProgrammableOperator.CompilationUnitCode.Length > 0;
         parameterCollectionView.Content = ProgrammableOperator.Parameters;
       }
-      SetEnabledStateOfControls();
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnabledStateOfControls();
-    }
-
-    private void SetEnabledStateOfControls() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       parameterCollectionView.Enabled = Content != null;
       assembliesTreeView.Enabled = Content != null && !ReadOnly;
       namespacesTreeView.Enabled = Content != null && !ReadOnly;
