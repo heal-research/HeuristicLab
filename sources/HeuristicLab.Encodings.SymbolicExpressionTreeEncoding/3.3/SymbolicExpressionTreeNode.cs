@@ -120,13 +120,21 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     public IEnumerable<SymbolicExpressionTreeNode> IterateNodesPrefix() {
-      return (new SymbolicExpressionTreeNode[] { this })
-        .Concat(SubTrees.SelectMany(tree => tree.IterateNodesPrefix()));
+      if (SubTrees != null) {
+        return (new SymbolicExpressionTreeNode[] { this })
+          .Concat(SubTrees.SelectMany(tree => tree.IterateNodesPrefix()));
+      } else {
+        return new SymbolicExpressionTreeNode[] { this };
+      }
     }
 
     public IEnumerable<SymbolicExpressionTreeNode> IterateNodesPostfix() {
-      return SubTrees.SelectMany(tree => tree.IterateNodesPrefix())
-        .Concat(new SymbolicExpressionTreeNode[] { this });
+      if (SubTrees != null) {
+        return SubTrees.SelectMany(tree => tree.IterateNodesPrefix())
+          .Concat(new SymbolicExpressionTreeNode[] { this });
+      } else {
+        return new SymbolicExpressionTreeNode[] { this };
+      }
     }
     public IEnumerable<Symbol> GetAllowedSymbols(int argumentIndex) {
       return Grammar.Symbols.Where(s => Grammar.IsAllowedChild(Symbol, s, argumentIndex));

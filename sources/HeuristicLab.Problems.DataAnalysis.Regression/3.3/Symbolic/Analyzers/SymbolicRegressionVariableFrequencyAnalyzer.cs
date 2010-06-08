@@ -59,7 +59,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     }
     #endregion
     #region properties
-    public DataTable VariableImpacts {
+    public DataTable VariableFrequencies {
       get { return VariableFrequenciesParameter.ActualValue; }
       set { VariableFrequenciesParameter.ActualValue = value; }
     }
@@ -79,16 +79,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       var inputVariables = problemData.InputVariables.Select(x => x.Value);
       ResultCollection results = ResultsParameter.ActualValue;
 
-      if (VariableImpacts == null) {
-        VariableImpacts = new DataTable("Variable frequencies", "Relative frequency of variable references aggregated over the whole population.");
+      if (VariableFrequencies == null) {
+        VariableFrequencies = new DataTable("Variable frequencies", "Relative frequency of variable references aggregated over the whole population.");
         // add a data row for each input variable
         foreach (var inputVariable in inputVariables)
-          VariableImpacts.Rows.Add(new DataRow(inputVariable));
-        results.Add(new Result("Variable frequencies", VariableImpacts));
+          VariableFrequencies.Rows.Add(new DataRow(inputVariable));
+        results.Add(new Result("Variable frequencies", VariableFrequencies));
       }
       foreach (var pair in VariableFrequencyAnalyser.CalculateVariableFrequencies(expressions, inputVariables)) {
-        VariableImpacts.Rows[pair.Key].Values.Add(pair.Value);
-        results["Variable frequencies"].Value = VariableImpacts;
+        VariableFrequencies.Rows[pair.Key].Values.Add(pair.Value);
+        results["Variable frequencies"].Value = VariableFrequencies;
       }
 
       return base.Apply();

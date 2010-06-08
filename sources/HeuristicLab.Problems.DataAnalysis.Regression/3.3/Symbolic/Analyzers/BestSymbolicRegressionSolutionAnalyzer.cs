@@ -34,6 +34,7 @@ using System.Collections.Generic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Evaluators;
+using HeuristicLab.Analysis;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
   [Item("BestSymbolicRegressionSolutionAnalyzer", "An operator for analyzing the best solution of symbolic regression problems given in symbolic expression tree encoding.")]
@@ -42,6 +43,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
     private const string SymbolicExpressionTreeInterpreterParameterName = "SymbolicExpressionTreeInterpreter";
     private const string BestSolutionInputvariableCountResultName = "Variables used by best solution";
+    private const string VariableFrequenciesParameterName = "VariableFrequencies";
+    private const string VariableImpactsResultName = "Integrated variable frequencies";
     private const string BestSolutionParameterName = "BestSolution";
 
     #region parameter properties
@@ -54,6 +57,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     public ILookupParameter<SymbolicRegressionSolution> BestSolutionParameter {
       get { return (ILookupParameter<SymbolicRegressionSolution>)Parameters[BestSolutionParameterName]; }
     }
+    public ILookupParameter<DataTable> VariableFrequenciesParameter {
+      get { return (ILookupParameter<DataTable>)Parameters[VariableFrequenciesParameterName]; }
+    }
     #endregion
     #region properties
     public ISymbolicExpressionTreeInterpreter SymbolicExpressionTreeInterpreter {
@@ -62,13 +68,24 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     public ItemArray<SymbolicExpressionTree> SymbolicExpressionTree {
       get { return SymbolicExpressionTreeParameter.ActualValue; }
     }
+    public DataTable VariableFrequencies {
+      get { return VariableFrequenciesParameter.ActualValue; }
+    }
     #endregion
 
     public BestSymbolicRegressionSolutionAnalyzer()
       : base() {
       Parameters.Add(new ScopeTreeLookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression trees to analyze."));
       Parameters.Add(new ValueLookupParameter<ISymbolicExpressionTreeInterpreter>(SymbolicExpressionTreeInterpreterParameterName, "The interpreter that should be used for the analysis of symbolic expression trees."));
+      Parameters.Add(new LookupParameter<DataTable>(VariableFrequenciesParameterName, "The variable frequencies table to use for the calculation of variable impacts"));
       Parameters.Add(new LookupParameter<SymbolicRegressionSolution>(BestSolutionParameterName, "The best symbolic regression solution."));
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void Initialize() {
+      if (!Parameters.ContainsKey(VariableFrequenciesParameterName)) {
+        Parameters.Add(new LookupParameter<DataTable>(VariableFrequenciesParameterName, "The variable frequencies table to use for the calculation of variable impacts"));
+      }
     }
 
     protected override DataAnalysisSolution UpdateBestSolution() {
@@ -88,11 +105,32 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
 
         if (Results.ContainsKey(BestSolutionInputvariableCountResultName)) {
           Results[BestSolutionInputvariableCountResultName].Value = new IntValue(model.InputVariables.Count());
+          Results[VariableImpactsResultName].Value = CalculateVariableImpacts();
         } else {
           Results.Add(new Result(BestSolutionInputvariableCountResultName, new IntValue(model.InputVariables.Count())));
+          Results.Add(new Result(VariableImpactsResultName, CalculateVariableImpacts()));
         }
       }
       return BestSolutionParameter.ActualValue;
+    }
+
+    private DoubleMatrix CalculateVariableImpacts() {
+      if (VariableFrequencies != null) {
+        var impacts = new DoubleMatrix(VariableFrequencies.Rows.Count, 1, new string[] { "Impact" }, VariableFrequencies.Rows.Select(x => x.Name));
+        int rowIndex = 0;
+        foreach (var dataRow in VariableFrequencies.Rows) {
+          string variableName = dataRow.Name;
+          double integral = 0;
+          if (dataRow.Values.Count > 1) {
+            double baseline = dataRow.Values.First();
+            integral = (from value in dataRow.Values
+                        select value - baseline)
+                              .Sum();
+          }
+          impacts[rowIndex++, 0] = integral;
+        }
+        return impacts;
+      } else return new DoubleMatrix(1, 1);
     }
 
     private IEnumerable<string> GetInputVariables(SymbolicExpressionTree tree) {

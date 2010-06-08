@@ -43,6 +43,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     private const string UpperEstimationLimitParameterName = "UpperEstimationLimit";
     private const string LowerEstimationLimitParameterName = "LowerEstimationLimit";
     private const string BestSolutionQualityParameterName = "BestSolutionQuality";
+    private const string GenerationsParameterName = "Generations";
     private const string ResultsParameterName = "Results";
     private const string BestSolutionResultName = "Best solution (on validiation set)";
     private const string BestSolutionTrainingRSquared = "Best solution R² (training)";
@@ -51,6 +52,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     private const string BestSolutionTestMse = "Best solution mean squared error (test)";
     private const string BestSolutionTrainingRelativeError = "Best solution average relative error (training)";
     private const string BestSolutionTestRelativeError = "Best solution average relative error (test)";
+    private const string BestSolutionGeneration = "Best solution generation";
 
     #region parameter properties
     public IValueLookupParameter<DataAnalysisProblemData> ProblemDataParameter {
@@ -70,6 +72,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     }
     public ILookupParameter<ResultCollection> ResultsParameter {
       get { return (ILookupParameter<ResultCollection>)Parameters[ResultsParameterName]; }
+    }
+    public ILookupParameter<IntValue> GenerationsParameter {
+      get {
+        return (ILookupParameter<IntValue>)Parameters[GenerationsParameterName];
+      }
     }
     #endregion
     #region properties
@@ -97,7 +104,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       Parameters.Add(new ValueLookupParameter<DoubleValue>(LowerEstimationLimitParameterName, "The lower estimation limit that was set for the evaluation of the symbolic expression trees."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>(QualityParameterName, "The qualities of the symbolic regression trees which should be analyzed."));
       Parameters.Add(new LookupParameter<DoubleValue>(BestSolutionQualityParameterName, "The quality of the best regression solution."));
+      Parameters.Add(new LookupParameter<IntValue>(GenerationsParameterName, "The number of generations calculated so far."));
       Parameters.Add(new LookupParameter<ResultCollection>(ResultsParameterName, "The result collection where the best symbolic regression solution should be stored."));
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    public void Initialize() {
+      // backwards compatibility
+      if (!Parameters.ContainsKey(GenerationsParameterName)) {
+        Parameters.Add(new LookupParameter<IntValue>(GenerationsParameterName, "The number of generations calculated so far."));
+      }
     }
 
     public override IOperation Apply() {
@@ -134,6 +150,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
         Results[BestSolutionTestMse].Value = new DoubleValue(testMse);
         Results[BestSolutionTrainingRelativeError].Value = new DoubleValue(trainingRelError);
         Results[BestSolutionTestRelativeError].Value = new DoubleValue(testRelError);
+        Results[BestSolutionGeneration].Value = new IntValue(GenerationsParameter.ActualValue.Value);
       } else {
         Results.Add(new Result(BestSolutionResultName, solution));
         Results.Add(new Result(BestSolutionTrainingRSquared, new DoubleValue(trainingR2)));
@@ -142,6 +159,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
         Results.Add(new Result(BestSolutionTestMse, new DoubleValue(testMse)));
         Results.Add(new Result(BestSolutionTrainingRelativeError, new DoubleValue(trainingRelError)));
         Results.Add(new Result(BestSolutionTestRelativeError, new DoubleValue(testRelError)));
+        Results.Add(new Result(BestSolutionGeneration, new IntValue(GenerationsParameter.ActualValue.Value)));
       }
       #endregion
     }
