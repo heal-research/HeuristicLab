@@ -37,7 +37,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// It is implemented as described in Takahashi, M. and Kita, H. 2001. A crossover operator using independent component analysis for real-coded genetic algorithms Proceedings of the 2001 Congress on Evolutionary Computation, pp. 643-649.<br/>
   /// The default value for alpha is 0.75, the default value for beta is 0.25.
   /// </remarks>
-  [Item("BlendAlphaBetaCrossover", "The blend alpha beta crossover (BLX-a-b) for real vectors is similar to the blend alpha crossover (BLX-a), but distinguishes between the better and worse of the parents. The interval from which to choose the new offspring can be extended more around the better parent by specifying a higher alpha value. It is implemented as described in Takahashi, M. and Kita, H. 2001. A crossover operator using independent component analysis for real-coded genetic algorithms Proceedings of the 2001 Congress on Evolutionary Computation, pp. 643-649.")]
+  [Item("BlendAlphaBetaCrossover", "The blend alpha beta crossover (BLX-a-b) for real vectors is similar to the blend alpha crossover (BLX-a), but distinguishes between the better and worse of the parents. The interval from which to choose the new offspring can be extended beyond the better parent by specifying a higher alpha value, and beyond the worse parent by specifying a higher beta value. The new offspring is sampled uniformly in the extended range. It is implemented as described in Takahashi, M. and Kita, H. 2001. A crossover operator using independent component analysis for real-coded genetic algorithms Proceedings of the 2001 Congress on Evolutionary Computation, pp. 643-649.")]
   [StorableClass]
   public class BlendAlphaBetaCrossover : RealVectorCrossover {
     /// <summary>
@@ -53,13 +53,13 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
     /// <summary>
-    /// The alpha parameter specifies how much the interval between the parents should be extended in direction of the better parent.
+    /// The Alpha parameter controls the extension of the range beyond the better parent. The value must be >= 0 and does not depend on Beta.
     /// </summary>
     public ValueLookupParameter<DoubleValue> AlphaParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["Alpha"]; }
     }
     /// <summary>
-    /// The beta parameter specifies how much the interval between the parents should be extended in direction of the worse parent.
+    /// The Beta parameter controls the extension of the range beyond the worse parent. The value must be >= 0 and does not depend on Alpha.
     /// </summary>
     public ValueLookupParameter<DoubleValue> BetaParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["Beta"]; }
@@ -73,8 +73,8 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       : base() {
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "Whether the problem is a maximization problem or not."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The quality values of the parents."));
-      Parameters.Add(new ValueLookupParameter<DoubleValue>("Alpha", "The value for alpha.", new DoubleValue(0.75)));
-      Parameters.Add(new ValueLookupParameter<DoubleValue>("Beta", "The value for beta.", new DoubleValue(0.25)));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("Alpha", "The Alpha parameter controls the extension of the range beyond the better parent. The value must be >= 0 and does not depend on Beta.", new DoubleValue(0.75)));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("Beta", "The Beta parameter controls the extension of the range beyond the worse parent. The value must be >= 0 and does not depend on Alpha.", new DoubleValue(0.25)));
     }
 
     /// <summary>
@@ -140,7 +140,6 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       
       ItemArray<DoubleValue> qualities = QualityParameter.ActualValue;
       bool maximization = MaximizationParameter.ActualValue.Value;
-      // the better parent 
       if (maximization && qualities[0].Value >= qualities[1].Value || !maximization && qualities[0].Value <= qualities[1].Value)
         return Apply(random, parents[0], parents[1], AlphaParameter.ActualValue, BetaParameter.ActualValue);
       else {
