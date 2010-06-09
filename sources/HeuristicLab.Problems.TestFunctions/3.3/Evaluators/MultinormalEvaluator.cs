@@ -72,13 +72,6 @@ namespace HeuristicLab.Problems.TestFunctions.Evaluators {
       Parameters.Add(new LookupParameter<IRandom>("Random", "Random number generator"));
       centers = new ItemList<RealVector>();
       s_2s = new RealVector();
-      /* centers = new ItemList<RealVector>() {
-          new RealVector(new double[] { -5.0, -5.0 }),
-          new RealVector(new double[] {  5.0, -5.0 }),
-          new RealVector(new double[] { -5.0,  5.0 }),
-          new RealVector(new double[] {  5.0,  5.0 }),
-        };
-      s_2s = new RealVector(new double[] { 0.2, 1, 1, 2 });
     }
     
     private double FastFindOptimum(out RealVector bestSolution) {
