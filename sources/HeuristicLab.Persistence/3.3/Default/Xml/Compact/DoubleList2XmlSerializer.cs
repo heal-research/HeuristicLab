@@ -22,28 +22,38 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Default.Xml.Primitive;
+using System.Text;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
 
-  internal sealed class DoubleList2XmlSerializer : NumberEnumeration2XmlSerializerBase<List<double>> {
+  internal sealed class DoubleList2XmlSerializer : CompactXmlSerializerBase<List<double>> {
 
-    protected override void Add(IEnumerable enumeration, object o) {
-      ((List<double>)enumeration).Add((double)o);
+    private static readonly char[] separators = new char[] { ';' };
+
+    public override XmlString Format(List<double> list) {
+      StringBuilder sb = new StringBuilder();
+      foreach (var d in list) {
+        sb.Append(Double2XmlSerializer.FormatG17(d)).Append(';');
+      }
+      return new XmlString(sb.ToString());
     }
 
-    protected override IEnumerable Instantiate() {
-      return new List<double>();
+    public override List<double> Parse(XmlString data) {
+      try {
+        var values = data.Data.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+        List<double> list = new List<double>(values.Length);
+        foreach (var value in values) {
+          list.Add(Double2XmlSerializer.ParseG17(value));
+        }
+        return list;
+      } catch (InvalidCastException e) {
+        throw new PersistenceException("Invalid element data during reconstruction of List<double>.", e);
+      } catch (OverflowException e) {
+        throw new PersistenceException("Overflow during element parsing while trying to reconstruct List<double>.", e);
+      }
     }
-
-    protected override string FormatValue(object o) {
-      return Double2XmlSerializer.FormatG17((double)o);
-    }
-
-    protected override object ParseValue(string o) {
-      return Double2XmlSerializer.ParseG17(o);
-    }
-
   }
 }

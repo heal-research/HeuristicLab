@@ -186,7 +186,7 @@ namespace HeuristicLab.Persistence.Core {
     /// iterate through serialization tokens.
     /// </returns>
     public IEnumerator<ISerializationToken> GetEnumerator() {
-      var enumerator = Serialize(new DataMemberAccessor(rootName, null, () => obj, null));
+      var enumerator = Serialize(new DataMemberAccessor(rootName), obj);
       if (isTestRun) {
         return AddExceptionCompiler(enumerator);
       } else {
@@ -205,9 +205,9 @@ namespace HeuristicLab.Persistence.Core {
 
     private Stack<string> objectGraphTrace = new Stack<string>();
 
-    private IEnumerator<ISerializationToken> Serialize(DataMemberAccessor accessor) {
+    private IEnumerator<ISerializationToken> Serialize(DataMemberAccessor accessor, object obj) {
       
-      object value = accessor.Get();
+      object value = accessor.Get(obj);
       if (value == null)
         return NullReferenceEnumerator(accessor.Name);
       Type type = value.GetType();
@@ -310,7 +310,7 @@ namespace HeuristicLab.Persistence.Core {
       bool first = true;
       if (metaInfo != null) {
         foreach (var tag in metaInfo) {
-          IEnumerator<ISerializationToken> metaIt = Serialize(new DataMemberAccessor(tag.Value, tag.Name));
+          IEnumerator<ISerializationToken> metaIt = Serialize(new DataMemberAccessor(tag.Name), tag.Value);
           while (metaIt.MoveNext()) {
             if (first) {
               yield return new MetaInfoBeginToken();
@@ -325,7 +325,7 @@ namespace HeuristicLab.Persistence.Core {
       }
       if (tags != null) {
         foreach (var tag in tags) {
-          IEnumerator<ISerializationToken> it = Serialize(new DataMemberAccessor(tag.Value, tag.Name));
+          IEnumerator<ISerializationToken> it = Serialize(new DataMemberAccessor(tag.Name), tag.Value);
           while (it.MoveNext())
             yield return it.Current;
         }

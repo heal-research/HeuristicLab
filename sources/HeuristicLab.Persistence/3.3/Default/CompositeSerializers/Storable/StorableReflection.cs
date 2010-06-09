@@ -72,23 +72,23 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     }
 
     private static object[] emptyArgs = new object[0];
+    private static Type[] objectArg = new[] { typeof(object) };
 
     public static IEnumerable<Hook> CollectHooks(HookType hookType, Type type) {
       if (type.BaseType != null)
         foreach (var mi in CollectHooks(hookType, type.BaseType))
           yield return mi;
       foreach (MemberInfo memberInfo in type.GetMembers(DECLARED_INSTANCE_MEMBERS)) {
+        if (memberInfo.MemberType != MemberTypes.Method)
+          continue;
+        MethodInfo methodInfo = memberInfo as MethodInfo;
+        if (methodInfo.ReturnType != typeof(void))
+          continue;
+        if (methodInfo.GetParameters().Length > 0)
+          continue;
         foreach (StorableHookAttribute hook in memberInfo.GetCustomAttributes(typeof(StorableHookAttribute), false)) {
           if (hook != null && hook.HookType == hookType) {
-            MethodInfo methodInfo = memberInfo as MethodInfo;
-            if (memberInfo.MemberType != MemberTypes.Method || memberInfo == null)
-              throw new ArgumentException("Storable hooks must be methods");            
-            DynamicMethod dm = new DynamicMethod("", null, new[] { typeof(object) }, type);
-            ILGenerator ilgen = dm.GetILGenerator();
-            ilgen.Emit(OpCodes.Ldarg_0);
-            ilgen.Emit(OpCodes.Callvirt, methodInfo);
-            ilgen.Emit(OpCodes.Ret);
-            yield return (Hook)dm.CreateDelegate(typeof(Hook));            
+            yield return new Hook((o) => methodInfo.Invoke(o, emptyArgs));
           }
         }
       }
@@ -98,8 +98,11 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
 
     private static void AddMarkedMembers(Type type, List<StorableMemberInfo> storableMembers) {
       foreach (MemberInfo memberInfo in type.GetMembers(DECLARED_INSTANCE_MEMBERS)) {
-        foreach (StorableAttribute attribute in memberInfo.GetCustomAttributes(typeof(StorableAttribute), false)) {
-          storableMembers.Add(new StorableMemberInfo(attribute, memberInfo));
+        if (memberInfo.MemberType == MemberTypes.Field ||
+          memberInfo.MemberType == MemberTypes.Property) {
+          foreach (StorableAttribute attribute in memberInfo.GetCustomAttributes(typeof(StorableAttribute), false)) {
+            storableMembers.Add(new StorableMemberInfo(attribute, memberInfo));
+          }
         }
       }
     }

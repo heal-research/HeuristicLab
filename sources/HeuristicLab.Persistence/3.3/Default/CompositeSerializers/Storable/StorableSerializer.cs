@@ -108,8 +108,8 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     /// <param name="obj">An object.</param>
     /// <returns>An enumerable of <see cref="Tag"/>s.</returns>
     public IEnumerable<Tag> Decompose(object obj) {
-      foreach (var accessor in GetStorableAccessors(obj)) {
-        yield return new Tag(accessor.Name, accessor.Get());
+      foreach (var accessor in GetStorableAccessors(obj.GetType())) {
+        yield return new Tag(accessor.Name, accessor.Get(obj));
       }
     }
 
@@ -141,11 +141,11 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       while (iter.MoveNext()) {
         memberDict.Add(iter.Current.Name, iter.Current);
       }
-      foreach (var accessor in GetStorableAccessors(instance)) {
+      foreach (var accessor in GetStorableAccessors(instance.GetType())) {
         if (memberDict.ContainsKey(accessor.Name)) {
-          accessor.Set(memberDict[accessor.Name].Value);
+          accessor.Set(instance, memberDict[accessor.Name].Value);
         } else if (accessor.DefaultValue != null) {
-          accessor.Set(accessor.DefaultValue);
+          accessor.Set(instance, accessor.DefaultValue);
         }
       }
       InvokeHook(HookType.AfterDeserialization, instance);
@@ -159,6 +159,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
     private static readonly object[] emptyArgs = new object[] { };
+    private static readonly object[] trueArgs = new object[] { true };
 
     private sealed class HookDesignator {
       public Type Type { get; private set; }
@@ -170,13 +171,15 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       }
     }
 
-    private sealed class MemberCache : Dictionary<Type, IEnumerable<StorableMemberInfo>> { }
+    private sealed class AccessorListCache : Dictionary<Type, IEnumerable<DataMemberAccessor>> { }
+    private sealed class AccessorCache : Dictionary<MemberInfo, DataMemberAccessor> { }
 
     #endregion
 
     #region caches
 
-    private MemberCache storableMemberCache = new MemberCache();
+    private AccessorListCache accessorListCache = new AccessorListCache();
+    private AccessorCache accessorCache = new AccessorCache();
 
     private delegate object Constructor();
 
@@ -190,13 +193,25 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
 
     #region attribute access
 
-    private IEnumerable<StorableMemberInfo> GetStorableMembers(Type type) {
-      lock (storableMemberCache) {
-        if (storableMemberCache.ContainsKey(type))
-          return storableMemberCache[type];
-        var storablesMembers = StorableReflection.GenerateStorableMembers(type);
-        storableMemberCache[type] = storablesMembers;
-        return storablesMembers;
+    private IEnumerable<DataMemberAccessor> GetStorableAccessors(Type type) {
+      lock (accessorListCache) {
+        if (accessorListCache.ContainsKey(type))
+          return accessorListCache[type];
+        var storableMembers = StorableReflection
+          .GenerateStorableMembers(type)
+          .Select(mi => GetMemberAccessor(mi));
+        accessorListCache[type] = storableMembers;
+        return storableMembers;
+      }      
+    }
+
+    private DataMemberAccessor GetMemberAccessor(StorableMemberInfo mi) {
+      lock (accessorCache) {
+        if (accessorCache.ContainsKey(mi.MemberInfo))
+          return new DataMemberAccessor(accessorCache[mi.MemberInfo], mi.DisentangledName, mi.DefaultValue);
+        DataMemberAccessor dma = new DataMemberAccessor(mi.MemberInfo, mi.DisentangledName, mi.DefaultValue);
+        accessorCache[mi.MemberInfo] = dma;
+        return dma;
       }
     }
 
@@ -208,12 +223,12 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
         constructorCache.Add(type, c);
         return c;
       }
-    }
+    }    
 
     private Constructor GetDefaultConstructor(Type type) {
       ConstructorInfo ci = type.GetConstructor(ALL_CONSTRUCTORS, null, Type.EmptyTypes, null);
       if (ci == null)
-        return null;
+        return null;      
       DynamicMethod dm = new DynamicMethod("", typeof(object), null, type);
       ILGenerator ilgen = dm.GetILGenerator();
       ilgen.Emit(OpCodes.Newobj, ci);
@@ -226,7 +241,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
         if (ci.GetCustomAttributes(typeof(StorableConstructorAttribute), false).Length > 0) {
           if (ci.GetParameters().Length != 1 ||
               ci.GetParameters()[0].ParameterType != typeof(bool))
-            throw new PersistenceException("StorableConstructor must have exactly one argument of type bool");
+            throw new PersistenceException("StorableConstructor must have exactly one argument of type bool");          
           DynamicMethod dm = new DynamicMethod("", typeof(object), null, type);
           ILGenerator ilgen = dm.GetILGenerator();
           ilgen.Emit(OpCodes.Ldc_I4_1); // load true
@@ -236,12 +251,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
         }
       }
       return null;
-    }
-
-    private IEnumerable<DataMemberAccessor> GetStorableAccessors(object obj) {
-      return GetStorableMembers(obj.GetType())
-        .Select(mi => new DataMemberAccessor(mi.MemberInfo, mi.DisentangledName, mi.DefaultValue, obj));
-    }
+    }    
 
     private void InvokeHook(HookType hookType, object obj) {
       if (obj == null)

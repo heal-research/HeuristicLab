@@ -187,8 +187,16 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// <param name="filename">The filename.</param>
     /// <returns>A fresh object instance</returns>
     public static object Deserialize(string filename) {
-      using (ZipFile file = new ZipFile(filename)) {
-        return Deserialize(file);
+      TimeSpan start = System.Diagnostics.Process.GetCurrentProcess().TotalProcessorTime;
+      try {
+        using (ZipFile file = new ZipFile(filename)) {
+          return Deserialize(file);
+        }
+      } finally {
+        TimeSpan end = System.Diagnostics.Process.GetCurrentProcess().TotalProcessorTime;
+        Tracing.Logger.Info(string.Format(
+          "deserialization of {0} took {1} seconds",
+          filename, (end - start).TotalSeconds));
       }
     }
 
