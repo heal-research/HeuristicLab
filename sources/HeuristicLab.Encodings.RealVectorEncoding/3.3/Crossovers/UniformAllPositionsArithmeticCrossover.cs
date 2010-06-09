@@ -34,7 +34,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// By setting alpha = 0.5 it is the same as the <see cref="AverageCrossover"/>, but only on two parents.
   /// It is implemented as described in Michalewicz, Z. 1999. Genetic Algorithms + Data Structures = Evolution Programs. Third, Revised and Extended Edition, Spring-Verlag Berlin Heidelberg.
   /// </remarks>
-  [Item("UniformAllPositionsArithmeticCrossover", "The uniform all positions arithmetic crossover constructs an offspring by calculating x = alpha * p1 + (1-alpha) * p2 for every position x in the vector. Note that for alpha = 0.5 it is the same as the AverageCrossover. It is implemented as described in Michalewicz, Z. 1999. Genetic Algorithms + Data Structures = Evolution Programs. Third, Revised and Extended Edition, Spring-Verlag Berlin Heidelberg.")]
+  [Item("UniformAllPositionsArithmeticCrossover", "The uniform all positions arithmetic crossover constructs an offspring by calculating x = alpha * p1 + (1-alpha) * p2 for every position x in the vector. Note that for alpha = 0.5 it is the same as the AverageCrossover (except that the AverageCrossover is defined for more than 2 parents). It is implemented as described in Michalewicz, Z. 1999. Genetic Algorithms + Data Structures = Evolution Programs. Third, Revised and Extended Edition, Spring-Verlag Berlin Heidelberg.")]
   [StorableClass]
   public class UniformAllPositionsArithmeticCrossover : RealVectorCrossover {
     /// <summary>

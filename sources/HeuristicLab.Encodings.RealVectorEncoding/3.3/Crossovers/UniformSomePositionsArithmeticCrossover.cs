@@ -55,7 +55,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// </summary>
     public UniformSomePositionsArithmeticCrossover()
       : base() {
-      Parameters.Add(new ValueLookupParameter<DoubleValue>("Alpha", "The alpha value in the range [0;1]", new DoubleValue(0.5)));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("Alpha", "The alpha value in the range [0;1] that defines whether the point should be close to parent1 (=1) or parent2 (=0)", new DoubleValue(0.5)));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("Probability", "The probability for crossing a position in the range [0;1]", new DoubleValue(0.5)));
     }
 

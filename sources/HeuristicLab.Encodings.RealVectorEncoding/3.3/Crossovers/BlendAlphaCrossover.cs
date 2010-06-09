@@ -53,7 +53,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// </summary>
     public BlendAlphaCrossover()
       : base() {
-      Parameters.Add(new ValueLookupParameter<DoubleValue>("Alpha", "Value for alpha", new DoubleValue(0.5)));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("Alpha", "The Alpha parameter controls the extension of the range beyond the two parents. It must be >= 0. A value of 0.5 means that half the range is added to both sides of the intervals.", new DoubleValue(0.5)));
     }
 
     /// <summary>
