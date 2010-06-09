@@ -21,21 +21,64 @@ namespace HeuristicLab.Problems.TestFunctions.Evaluators {
     private RealVector s_2s {
       get { return (RealVector)Parameters["s^2s"].ActualValue; }
       set { Parameters["s^2s"].ActualValue = value; }
-    }   
+    }
+    private static Random Random = new Random();
 
     [StorableConstructor]
     public MultinormalEvaluator(bool deserializing) { }
-    
-    public MultinormalEvaluator() {      
+
+    private Dictionary<int, List<RealVector>> stdCenters;
+    public IEnumerable<RealVector> Centers(int nDim) {
+      if (stdCenters == null)
+        stdCenters = new Dictionary<int, List<RealVector>>();
+      if (!stdCenters.ContainsKey(nDim))
+        stdCenters[nDim] = GetCenters(nDim).ToList();
+      return stdCenters[nDim];
+    }
+
+    private IEnumerable<RealVector> GetCenters(int nDim) {
+      RealVector r0 = new RealVector(nDim);
+      for (int i = 0; i < r0.Length; i++)
+        r0[i] = 5;
+      yield return r0;
+      for (int i = 1; i < 1 << nDim; i++) {
+        RealVector r = new RealVector(nDim);
+        for (int j = 0; j < nDim; j++) {
+          r[j] = (i >> j) % 2 == 0 ? Random.NextDouble() + 4.5 : Random.NextDouble() + 14.5;
+        }
+        yield return r;
+      }
+    }
+
+    private Dictionary<int, List<double>> stdSigma_2s;
+    public IEnumerable<double> Sigma_2s(int nDim) {
+      if (stdSigma_2s == null)
+        stdSigma_2s = new Dictionary<int, List<double>>();
+      if (!stdSigma_2s.ContainsKey(nDim))
+        stdSigma_2s[nDim] = GetSigma_2s(nDim).ToList();
+      return stdSigma_2s[nDim];
+    }
+    private IEnumerable<double> GetSigma_2s(int nDim) {
+      yield return 0.2;
+      for (int i = 1; i < (1 << nDim)-1; i++) {
+        yield return Random.NextDouble() * 0.5 + 0.75;
+      }
+      yield return 2;
+    }
+
+    public MultinormalEvaluator() {
       Parameters.Add(new ValueParameter<ItemList<RealVector>>("Centers", "Centers of normal distributions"));
       Parameters.Add(new ValueParameter<RealVector>("s^2s", "sigma^2 of normal distributions"));
-      centers = new ItemList<RealVector>() {
+      Parameters.Add(new LookupParameter<IRandom>("Random", "Random number generator"));
+      centers = new ItemList<RealVector>();
+      s_2s = new RealVector();
+      /* centers = new ItemList<RealVector>() {
           new RealVector(new double[] { -5.0, -5.0 }),
-          new RealVector(new double[] {  5.0, -5.0 }),          
+          new RealVector(new double[] {  5.0, -5.0 }),
           new RealVector(new double[] { -5.0,  5.0 }),
           new RealVector(new double[] {  5.0,  5.0 }),
         };
-      s_2s = new RealVector(new double[] { 0.2, 1, 1, 2 });        
+      s_2s = new RealVector(new double[] { 0.2, 1, 1, 2 });
     }
     
     private double FastFindOptimum(out RealVector bestSolution) {
@@ -64,28 +107,39 @@ namespace HeuristicLab.Problems.TestFunctions.Evaluators {
     }
 
     public override DoubleMatrix Bounds {
-      get { return new DoubleMatrix(new double[,] { { -10, 10 } }); }
+      get { return new DoubleMatrix(new double[,] { { 0, 20 } }); }
     }
 
     public override double BestKnownQuality {
       get {
-        RealVector bestSolution;
-        return FastFindOptimum(out bestSolution);
+        if (centers.Count == 0) {
+          return - 1 / (2 * Math.PI * 0.2);
+        } else {
+          RealVector bestSolution;
+          return FastFindOptimum(out bestSolution);
+        }
       }
     }
 
     public override int MinimumProblemSize { get { return 1; } }
 
-    public override int MaximumProblemSize { get { return 1000; } }
+    public override int MaximumProblemSize { get { return 100; } }
 
     private RealVector Shorten(RealVector x, int dimensions) {
-      return new RealVector(x.Take(dimensions).ToArray());      
+      return new RealVector(x.Take(dimensions).ToArray());
     }
 
     public override RealVector GetBestKnownSolution(int dimension) {
-      RealVector bestSolution;
-      FastFindOptimum(out bestSolution);
-      return Shorten(bestSolution, dimension);
+      if (centers.Count == 0) {
+        RealVector r = new RealVector(dimension);
+        for (int i = 0; i < r.Length; i++)
+          r[i] = 5;
+        return r;
+      } else {
+        RealVector bestSolution;
+        FastFindOptimum(out bestSolution);
+        return Shorten(bestSolution, dimension);
+      }
     }
 
     public double Evaluate(RealVector point) {
@@ -94,8 +148,16 @@ namespace HeuristicLab.Problems.TestFunctions.Evaluators {
 
     protected override double EvaluateFunction(RealVector point) {
       double value = 0;
-      for (int i = 0; i < centers.Count; i++) {        
-        value -= N(point, Shorten(centers[i], point.Length), s_2s[i]);
+      if (centers.Count == 0) {
+        var c = Centers(point.Length).GetEnumerator();
+        var s = Sigma_2s(point.Length).GetEnumerator();
+        while (c.MoveNext() && s.MoveNext()) {
+          value -= N(point, c.Current, s.Current);
+        }
+      } else {
+        for (int i = 0; i < centers.Count; i++) {
+          value -= N(point, centers[i], s_2s[i]);
+        }
       }
       return value;
     }
