@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols.Views {
   partial class VariableView {
     /// <summary> 
     /// Required designer variable.
