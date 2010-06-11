@@ -39,7 +39,6 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       BindingFlags.NonPublic |
       BindingFlags.DeclaredOnly;
 
-    private delegate void HookWrapper<T>(T o);
     public delegate void Hook(object o);
 
     public static IEnumerable<StorableMemberInfo> GenerateStorableMembers(Type type) {
@@ -66,32 +65,32 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       return DisentangleNameMapping(storableMembers);
     }
 
-    public static bool IsEmptyOrStorableType(Type type, bool recursive) {      
+    public static bool IsEmptyOrStorableType(Type type, bool recursive) {
       if (!HasStorableClassAttribute(type) && !IsEmptyType(type, false)) return false;
       return !recursive || type.BaseType == null || IsEmptyOrStorableType(type.BaseType, true);
     }
 
     private static object[] emptyArgs = new object[0];
-    private static Type[] objectArg = new[] { typeof(object) };
 
     public static IEnumerable<Hook> CollectHooks(HookType hookType, Type type) {
       if (type.BaseType != null)
-        foreach (var mi in CollectHooks(hookType, type.BaseType))
-          yield return mi;
-      foreach (MemberInfo memberInfo in type.GetMembers(DECLARED_INSTANCE_MEMBERS)) {
-        if (memberInfo.MemberType != MemberTypes.Method)
-          continue;
-        MethodInfo methodInfo = memberInfo as MethodInfo;
-        if (methodInfo.ReturnType != typeof(void))
-          continue;
-        if (methodInfo.GetParameters().Length > 0)
-          continue;
-        foreach (StorableHookAttribute hook in memberInfo.GetCustomAttributes(typeof(StorableHookAttribute), false)) {
-          if (hook != null && hook.HookType == hookType) {
-            yield return new Hook((o) => methodInfo.Invoke(o, emptyArgs));
+        foreach (var hook in CollectHooks(hookType, type.BaseType))
+          yield return hook;
+      if (HasStorableClassAttribute(type)) {
+        foreach (MethodInfo methodInfo in type.GetMethods(DECLARED_INSTANCE_MEMBERS)) {
+          if (methodInfo.ReturnType == typeof(void) && methodInfo.GetParameters().Length == 0) {
+            foreach (StorableHookAttribute hook in methodInfo.GetCustomAttributes(typeof(StorableHookAttribute), false)) {
+              if (hook != null && hook.HookType == hookType) {
+                yield return CreateHook(methodInfo);
+              }
+            }
           }
         }
       }
+    }
+
+    private static Hook CreateHook(MethodInfo methodInfo) {
+      return new Hook((o) => methodInfo.Invoke(o, emptyArgs));
     }
 
     #region [Storable] helpers
@@ -178,7 +177,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       return GetStorableClassAttribute(type) != null;
     }
 
-    private static Dictionary<Type, StorableClassAttribute> storableClassCache = 
+    private static Dictionary<Type, StorableClassAttribute> storableClassCache =
       new Dictionary<Type, StorableClassAttribute>();
 
     #endregion
