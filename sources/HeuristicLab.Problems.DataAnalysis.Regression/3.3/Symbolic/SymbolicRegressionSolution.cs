@@ -56,6 +56,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
                          let boundedX = Math.Min(UpperEstimationLimit, Math.Max(LowerEstimationLimit, x))
                          select double.IsNaN(boundedX) ? UpperEstimationLimit : boundedX).ToList();
       OnEstimatedValuesChanged();
+      RecalculateResultValues();
     }
 
     private List<double> estimatedValues;

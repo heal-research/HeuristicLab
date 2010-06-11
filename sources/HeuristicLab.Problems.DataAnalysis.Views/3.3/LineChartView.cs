@@ -42,9 +42,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     public new DataAnalysisSolution Content {
       get { return (DataAnalysisSolution)base.Content; }
-      set {
-        base.Content = value;
-      }
+      set { base.Content = value; }
     }
 
     public LineChartView()
@@ -93,18 +91,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       Content.EstimatedValuesChanged += new EventHandler(Content_EstimatedValuesChanged);
       Content.ProblemDataChanged += new EventHandler(Content_ProblemDataChanged);
     }
-
     protected override void DeregisterContentEvents() {
       base.DeregisterContentEvents();
       Content.EstimatedValuesChanged -= new EventHandler(Content_EstimatedValuesChanged);
       Content.ProblemDataChanged -= new EventHandler(Content_ProblemDataChanged);
     }
 
-    void Content_ProblemDataChanged(object sender, EventArgs e) {
+    private void Content_ProblemDataChanged(object sender, EventArgs e) {
       RedrawChart();
     }
 
-    void Content_EstimatedValuesChanged(object sender, EventArgs e) {
+    private void Content_EstimatedValuesChanged(object sender, EventArgs e) {
       UpdateEstimatedValuesLineChart();
     }
 

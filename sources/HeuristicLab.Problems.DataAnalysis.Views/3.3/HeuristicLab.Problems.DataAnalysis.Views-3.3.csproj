@@ -91,6 +91,12 @@
     <Compile Include="DataAnalysisSolutionView.Designer.cs">
       <DependentUpon>DataAnalysisSolutionView.cs</DependentUpon>
     </Compile>
+    <Compile Include="ResultsView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ResultsView.Designer.cs">
+      <DependentUpon>ResultsView.cs</DependentUpon>
+    </Compile>
     <Compile Include="SupportVectorRegressionSolutionView.cs">
       <SubType>UserControl</SubType>
     </Compile>
