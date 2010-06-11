@@ -96,8 +96,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
 
       if (BestSolutionQualityParameter.ActualValue == null || BestSolutionQualityParameter.ActualValue.Value > Quality[i].Value) {
         var model = new SymbolicRegressionModel((ISymbolicExpressionTreeInterpreter)SymbolicExpressionTreeInterpreter.Clone(),
-          SymbolicExpressionTree[i],
-          GetInputVariables(SymbolicExpressionTree[i]));
+          SymbolicExpressionTree[i]);
         var solution = new SymbolicRegressionSolution(ProblemData, model, lowerEstimationLimit, upperEstimationLimit);
 
         BestSolutionParameter.ActualValue = solution;
@@ -133,9 +132,5 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       } else return new DoubleMatrix(1, 1);
     }
 
-    private IEnumerable<string> GetInputVariables(SymbolicExpressionTree tree) {
-      return (from varNode in tree.IterateNodesPrefix().OfType<VariableTreeNode>()
-              select varNode.VariableName).Distinct();
-    }
   }
 }

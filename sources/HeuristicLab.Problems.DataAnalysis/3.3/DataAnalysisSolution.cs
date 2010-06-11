@@ -68,6 +68,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
           problemData = value;
           RegisterProblemDataEvents();
           OnProblemDataChanged();
+          RecalculateEstimatedValues();
         }
       }
     }
@@ -81,6 +82,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
           if (value == null) throw new ArgumentNullException();
           model = value;
           OnModelChanged();
+          RecalculateEstimatedValues();
         }
       }
     }
@@ -127,7 +129,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public event EventHandler ProblemDataChanged;
     protected virtual void OnProblemDataChanged() {
-      RecalculateEstimatedValues();
       var listeners = ProblemDataChanged;
       if (listeners != null)
         listeners(this, EventArgs.Empty);
@@ -135,7 +136,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public event EventHandler ModelChanged;
     protected virtual void OnModelChanged() {
-      RecalculateEstimatedValues();
       EventHandler handler = ModelChanged;
       if (handler != null)
         handler(this, EventArgs.Empty);

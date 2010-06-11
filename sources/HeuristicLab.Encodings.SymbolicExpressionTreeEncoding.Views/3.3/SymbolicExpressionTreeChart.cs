@@ -131,6 +131,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       }
     }
 
+    public VisualSymbolicExpressionTreeNode GetVisualSymbolicExpressionTreeNode(SymbolicExpressionTreeNode symbolicExpressionTreeNode) {
+      if (visualTreeNodes.ContainsKey(symbolicExpressionTreeNode))
+        return visualTreeNodes[symbolicExpressionTreeNode];
+      return null;
+    }
+
     #region events
     public event MouseEventHandler SymbolicExpressionTreeNodeClicked;
     private void OnSymbolicExpressionTreeNodeClicked(object sender, MouseEventArgs e) {

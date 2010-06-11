@@ -55,11 +55,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
+      Content.ModelChanged += new EventHandler(Content_ModelChanged);
       Content.ProblemDataChanged += new EventHandler(Content_ProblemDataChanged);
     }
+
     protected override void DeregisterContentEvents() {
       base.DeregisterContentEvents();
+      Content.ModelChanged -= new EventHandler(Content_ModelChanged);
       Content.ProblemDataChanged -= new EventHandler(Content_ProblemDataChanged);
+    }
+
+    private void Content_ModelChanged(object sender, EventArgs e) {
+      modelViewHost.Content = Content.Model;
     }
     private void Content_ProblemDataChanged(object sender, EventArgs e) {
       dataViewHost.Content = Content.ProblemData;

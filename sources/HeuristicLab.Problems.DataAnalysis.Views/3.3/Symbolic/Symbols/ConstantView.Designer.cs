@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols.Views {
+namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
   partial class ConstantView {
     /// <summary> 
     /// Required designer variable.

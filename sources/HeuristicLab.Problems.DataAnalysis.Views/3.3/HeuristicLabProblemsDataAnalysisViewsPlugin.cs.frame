@@ -38,6 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
   [PluginDependency("HeuristicLab.MainForm", "3.3.0.0")]
   [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.3.0.0")]
   [PluginDependency("HeuristicLab.Operators", "3.3.0.0")]
+  [PluginDependency("HeuristicLab.Optimization", "3.3.0.0")]
   [PluginDependency("HeuristicLab.Parameters", "3.3.0.0")]
   [PluginDependency("HeuristicLab.Persistence", "3.3.0.0")]
   [PluginDependency("HeuristicLab.Problems.DataAnalysis", "3.3.0.0")]

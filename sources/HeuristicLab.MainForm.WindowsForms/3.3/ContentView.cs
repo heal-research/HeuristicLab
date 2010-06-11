@@ -42,7 +42,9 @@ namespace HeuristicLab.MainForm.WindowsForms {
     public IContent Content {
       get { return content; }
       set {
-        if ((value != null) && (!MainFormManager.ViewCanViewContent(this, value)))
+        //check if the ContentView is tagged with a corresponding ContentAttribute for the type of the Content
+        if ((value != null) && (!MainFormManager.ViewCanViewContent(this, value)) &&
+          ContentAttribute.HasContentAttribute(this.GetType()))
           throw new ArgumentException(string.Format("View \"{0}\" cannot view object \"{1}\".", this.GetType().Name, value.GetType().Name));
         if (InvokeRequired) {
           Invoke(new Action<IContent>(delegate(IContent o) { this.Content = o; }), value);

@@ -21,19 +21,20 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Drawing;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.Operators;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
+using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [StorableClass]
@@ -44,11 +45,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     protected SymbolicRegressionModel(bool deserializing)
       : base(deserializing) {
     }
-    public SymbolicRegressionModel(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree tree, IEnumerable<string> inputVariables)
+    public SymbolicRegressionModel(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree tree)
       : base() {
       this.tree = tree;
       this.interpreter = interpreter;
-      this.inputVariables = inputVariables.ToList();
+      this.inputVariables = tree.IterateNodesPrefix().OfType<VariableTreeNode>().Select(var => var.VariableName).Distinct().ToList();
     }
 
     [Storable]
@@ -65,10 +66,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     private List<string> inputVariables;
     public IEnumerable<string> InputVariables {
       get { return inputVariables.AsEnumerable(); }
-      set {
-        if (value != null)
-          inputVariables = new List<string>(value);
-      }
     }
 
     public IEnumerable<double> GetEstimatedValues(DataAnalysisProblemData problemData, int start, int end) {

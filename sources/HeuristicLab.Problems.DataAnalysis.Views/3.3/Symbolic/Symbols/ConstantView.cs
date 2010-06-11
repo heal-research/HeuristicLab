@@ -34,7 +34,7 @@ using HeuristicLab.Core.Views;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views;
 
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols.Views {
+namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
   [View("Constant View")]
   [Content(typeof(Constant), true)]
   public partial class ConstantView : SymbolView {
