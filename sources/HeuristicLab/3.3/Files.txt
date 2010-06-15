@@ -57,6 +57,8 @@ HeuristicLab.Problems.TestFunctions\3.3:HeuristicLab.Problems.TestFunctions-3.3.
 HeuristicLab.Problems.TestFunctions.Views\3.3:HeuristicLab.Problems.TestFunctions.Views-3.3.dll
 HeuristicLab.Problems.TravelingSalesman\3.3:HeuristicLab.Problems.TravelingSalesman-3.3.dll
 HeuristicLab.Problems.TravelingSalesman.Views\3.3:HeuristicLab.Problems.TravelingSalesman.Views-3.3.dll
+HeuristicLab.Problems.VehicleRouting\3.3:HeuristicLab.Problems.VehicleRouting-3.3.dll
+HeuristicLab.Problems.VehicleRouting.Views\3.3:HeuristicLab.Problems.VehicleRouting.Views-3.3.dll
 HeuristicLab.Random\3.3:HeuristicLab.Random-3.3.dll
 HeuristicLab.Selection\3.3:HeuristicLab.Selection-3.3.dll
 HeuristicLab.SequentialEngine\3.3:HeuristicLab.SequentialEngine-3.3.dll
