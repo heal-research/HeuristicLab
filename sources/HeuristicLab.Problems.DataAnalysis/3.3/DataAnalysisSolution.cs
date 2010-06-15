@@ -51,7 +51,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private DataAnalysisSolution(bool deserializing) : base(deserializing) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
-      if (problemData != null) RegisterProblemDataEvents();
+      if (problemData != null)
+        RegisterProblemDataEvents();
     }
 
     [Storable]
@@ -144,7 +145,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public event EventHandler EstimatedValuesChanged;
     protected virtual void OnEstimatedValuesChanged() {
-      RecalculateResultValues();
       var listeners = EstimatedValuesChanged;
       if (listeners != null)
         listeners(this, EventArgs.Empty);
@@ -155,10 +155,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
       DataAnalysisSolution clone = (DataAnalysisSolution)base.Clone(cloner);
       // don't clone the problem data!
       clone.problemData = problemData;
-      clone.Model = (IDataAnalysisModel)cloner.Clone(model);
+      clone.model = (IDataAnalysisModel)cloner.Clone(model);
       clone.lowerEstimationLimit = lowerEstimationLimit;
       clone.upperEstimationLimit = upperEstimationLimit;
       clone.Initialize();
+
       return clone;
     }
 
