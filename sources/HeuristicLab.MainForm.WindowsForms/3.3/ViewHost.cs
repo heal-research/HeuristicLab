@@ -99,11 +99,11 @@ namespace HeuristicLab.MainForm.WindowsForms {
       if (Content != null) {
         if (viewContextMenuStrip.Items.Count == 0) {
           messageLabel.Visible = true;
-          viewsLabel.Enabled = false;
+          viewsLabel.Visible = false;
           viewPanel.Visible = false;
         } else {
           messageLabel.Visible = false;
-          viewsLabel.Enabled = true;
+          viewsLabel.Visible = true;
           viewPanel.Visible = true;
         }
 
@@ -116,8 +116,12 @@ namespace HeuristicLab.MainForm.WindowsForms {
           } else ViewType = defaultViewType;
         } else {
           foreach (Type type in cachedViews.Keys.ToList()) {
-            if (!ViewCanShowContent(type, Content))
+            if (!ViewCanShowContent(type, Content)) {
+              Control c = cachedViews[type] as Control;
+              if (c != null)
+                c.Dispose();
               cachedViews.Remove(type);
+            }
           }
         }
         UpdateActiveMenuItem();
@@ -125,7 +129,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
           view.Content = this.Content;
       } else {
         messageLabel.Visible = false;
-        viewsLabel.Enabled = false;
+        viewsLabel.Visible = false;
         viewPanel.Visible = false;
       }
     }
@@ -162,7 +166,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
       control.Dock = DockStyle.Fill;
       viewPanel.Controls.Add(control);
       viewPanel.Visible = true;
-      viewPanel.Refresh();
     }
 
     private void viewPanel_Resize(object sender, EventArgs e) {
