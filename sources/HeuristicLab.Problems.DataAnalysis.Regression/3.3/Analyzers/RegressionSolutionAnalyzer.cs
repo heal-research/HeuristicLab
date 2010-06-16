@@ -74,9 +74,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       get { return (ILookupParameter<ResultCollection>)Parameters[ResultsParameterName]; }
     }
     public ILookupParameter<IntValue> GenerationsParameter {
-      get {
-        return (ILookupParameter<IntValue>)Parameters[GenerationsParameterName];
-      }
+      get { return (ILookupParameter<IntValue>)Parameters[GenerationsParameterName]; }
     }
     #endregion
     #region properties
@@ -150,7 +148,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
         Results[BestSolutionTestMse].Value = new DoubleValue(testMse);
         Results[BestSolutionTrainingRelativeError].Value = new DoubleValue(trainingRelError);
         Results[BestSolutionTestRelativeError].Value = new DoubleValue(testRelError);
-        Results[BestSolutionGeneration].Value = new IntValue(GenerationsParameter.ActualValue.Value);
+        if (GenerationsParameter.ActualValue != null) // this check is needed because linear regression solutions do not have a generations parameter
+          Results[BestSolutionGeneration].Value = new IntValue(GenerationsParameter.ActualValue.Value);
       } else {
         Results.Add(new Result(BestSolutionResultName, solution));
         Results.Add(new Result(BestSolutionTrainingRSquared, new DoubleValue(trainingR2)));
@@ -159,7 +158,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
         Results.Add(new Result(BestSolutionTestMse, new DoubleValue(testMse)));
         Results.Add(new Result(BestSolutionTrainingRelativeError, new DoubleValue(trainingRelError)));
         Results.Add(new Result(BestSolutionTestRelativeError, new DoubleValue(testRelError)));
-        Results.Add(new Result(BestSolutionGeneration, new IntValue(GenerationsParameter.ActualValue.Value)));
+        if (GenerationsParameter.ActualValue != null)
+          Results.Add(new Result(BestSolutionGeneration, new IntValue(GenerationsParameter.ActualValue.Value)));
       }
       #endregion
     }
