@@ -126,6 +126,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
             integral = (from value in dataRow.Values
                         select value - baseline)
                               .Sum();
+            integral /= dataRow.Values.Count;
           }
           impacts[rowIndex++, 0] = integral;
         }
