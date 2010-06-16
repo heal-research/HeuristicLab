@@ -116,6 +116,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     private DoubleMatrix CalculateVariableImpacts() {
       if (VariableFrequencies != null) {
         var impacts = new DoubleMatrix(VariableFrequencies.Rows.Count, 1, new string[] { "Impact" }, VariableFrequencies.Rows.Select(x => x.Name));
+        impacts.SortableView = true;
         int rowIndex = 0;
         foreach (var dataRow in VariableFrequencies.Rows) {
           string variableName = dataRow.Name;
