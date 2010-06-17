@@ -48,6 +48,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic {
       this.viewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
       this.grpSimplify = new System.Windows.Forms.GroupBox();
+      this.btnSimplify = new System.Windows.Forms.Button();
       this.grpViewHost = new System.Windows.Forms.GroupBox();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
@@ -65,7 +66,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic {
       this.treeChart.LineColor = System.Drawing.Color.Black;
       this.treeChart.Location = new System.Drawing.Point(6, 16);
       this.treeChart.Name = "treeChart";
-      this.treeChart.Size = new System.Drawing.Size(201, 326);
+      this.treeChart.Size = new System.Drawing.Size(201, 297);
       this.treeChart.Spacing = 5;
       this.treeChart.TabIndex = 0;
       this.treeChart.TextFont = new System.Drawing.Font("Times New Roman", 8F);
@@ -105,6 +106,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic {
       // 
       // grpSimplify
       // 
+      this.grpSimplify.Controls.Add(this.btnSimplify);
       this.grpSimplify.Controls.Add(this.treeChart);
       this.grpSimplify.Dock = System.Windows.Forms.DockStyle.Fill;
       this.grpSimplify.Location = new System.Drawing.Point(0, 0);
@@ -113,6 +115,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic {
       this.grpSimplify.TabIndex = 1;
       this.grpSimplify.TabStop = false;
       this.grpSimplify.Text = "Simplify";
+      // 
+      // btnSimplify
+      // 
+      this.btnSimplify.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnSimplify.Location = new System.Drawing.Point(6, 319);
+      this.btnSimplify.Name = "btnSimplify";
+      this.btnSimplify.Size = new System.Drawing.Size(201, 23);
+      this.btnSimplify.TabIndex = 1;
+      this.btnSimplify.Text = "Simplify";
+      this.btnSimplify.UseVisualStyleBackColor = true;
+      this.btnSimplify.Click += new System.EventHandler(this.btnSimplify_Click);
       // 
       // grpViewHost
       // 
@@ -148,5 +162,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic {
     private HeuristicLab.MainForm.WindowsForms.ViewHost viewHost;
     private System.Windows.Forms.GroupBox grpSimplify;
     private System.Windows.Forms.GroupBox grpViewHost;
+    private System.Windows.Forms.Button btnSimplify;
   }
 }

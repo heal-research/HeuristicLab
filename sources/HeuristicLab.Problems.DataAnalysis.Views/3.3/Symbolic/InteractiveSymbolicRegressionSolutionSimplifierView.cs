@@ -214,5 +214,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic {
           this.treeChart.GetVisualSymbolicExpressionTreeNode(treeNode).LineColor = Color.Black;
       }
     }
+
+    private void btnSimplify_Click(object sender, EventArgs e) {
+      this.CalculateReplacementNodesAndNodeImpacts();
+    }
   }
 }
