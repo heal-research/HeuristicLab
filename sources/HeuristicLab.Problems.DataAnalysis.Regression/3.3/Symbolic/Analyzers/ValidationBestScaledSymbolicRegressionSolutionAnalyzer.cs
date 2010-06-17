@@ -116,15 +116,27 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     }
 
     [Storable]
-    private BestSymbolicRegressionSolutionAnalyzer bestSolutionAnalyzer;
-    [Storable]
     private UniformSubScopesProcessor subScopesProcessor;
     [Storable]
-    private BestAverageWorstQualityCalculator bestAvgWorstValidationQualityCalculator;
+    private SymbolicRegressionSolutionLinearScaler linearScaler;
+    [Storable]
+    private SymbolicRegressionModelQualityAnalyzer modelQualityAnalyzer;
+    [Storable]
+    private SymbolicRegressionMeanSquaredErrorEvaluator validationMseEvaluator;
+    [Storable]
+    private BestSymbolicRegressionSolutionAnalyzer bestSolutionAnalyzer;
+    [Storable]
+    private UniformSubScopesProcessor cleaningSubScopesProcessor;
+    [Storable]
+    private Assigner removeScaledExpressionTreeAssigner;
     [Storable]
     private BestQualityMemorizer bestKnownQualityMemorizer;
     [Storable]
-    private SymbolicRegressionModelQualityAnalyzer modelQualityAnalyzer;
+    private BestAverageWorstQualityCalculator bestAvgWorstValidationQualityCalculator;
+    [Storable]
+    private DataTableValuesCollector validationValuesCollector;
+    [Storable]
+    private ResultsCollector resultsCollector;
 
     public ValidationBestScaledSymbolicRegressionSolutionAnalyzer()
       : base() {
@@ -147,14 +159,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
 
       #region operator initialization
       subScopesProcessor = new UniformSubScopesProcessor();
-      SymbolicRegressionSolutionLinearScaler linearScaler = new SymbolicRegressionSolutionLinearScaler();
+      linearScaler = new SymbolicRegressionSolutionLinearScaler();
       modelQualityAnalyzer = new SymbolicRegressionModelQualityAnalyzer();
-      SymbolicRegressionMeanSquaredErrorEvaluator validationMseEvaluator = new SymbolicRegressionMeanSquaredErrorEvaluator();
+      validationMseEvaluator = new SymbolicRegressionMeanSquaredErrorEvaluator();
       bestSolutionAnalyzer = new BestSymbolicRegressionSolutionAnalyzer();
+      cleaningSubScopesProcessor = new UniformSubScopesProcessor();
+      removeScaledExpressionTreeAssigner = new Assigner();
       bestKnownQualityMemorizer = new BestQualityMemorizer();
       bestAvgWorstValidationQualityCalculator = new BestAverageWorstQualityCalculator();
-      DataTableValuesCollector validationValuesCollector = new DataTableValuesCollector();
-      ResultsCollector resultsCollector = new ResultsCollector();
+      validationValuesCollector = new DataTableValuesCollector();
+      resultsCollector = new ResultsCollector();
       #endregion
 
       #region parameter wiring
@@ -196,6 +210,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       bestSolutionAnalyzer.SymbolicExpressionTreeParameter.Depth = SymbolicExpressionTreeParameter.Depth;
       bestSolutionAnalyzer.UpperEstimationLimitParameter.ActualName = UpperEstimationLimitParameter.Name;
 
+      cleaningSubScopesProcessor.Depth.Value = SymbolicExpressionTreeParameter.Depth;
+
+      removeScaledExpressionTreeAssigner.LeftSideParameter.ActualName = ScaledSymbolicExpressionTreeParameterName;
+      removeScaledExpressionTreeAssigner.RightSideParameter.Value = new SymbolicExpressionTree();
+
       bestAvgWorstValidationQualityCalculator.AverageQualityParameter.ActualName = "Current average validation quality";
       bestAvgWorstValidationQualityCalculator.BestQualityParameter.ActualName = CurrentBestValidationQualityParameterName;
       bestAvgWorstValidationQualityCalculator.MaximizationParameter.Value = new BoolValue(false);
@@ -225,7 +244,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       validationMseEvaluator.Successor = null;
       subScopesProcessor.Successor = modelQualityAnalyzer;
       modelQualityAnalyzer.Successor = bestSolutionAnalyzer;
-      bestSolutionAnalyzer.Successor = bestAvgWorstValidationQualityCalculator;
+      bestSolutionAnalyzer.Successor = cleaningSubScopesProcessor;
+      cleaningSubScopesProcessor.Operator = removeScaledExpressionTreeAssigner;
+      cleaningSubScopesProcessor.Successor = bestAvgWorstValidationQualityCalculator;
       bestAvgWorstValidationQualityCalculator.Successor = bestKnownQualityMemorizer;
       bestKnownQualityMemorizer.Successor = validationValuesCollector;
       validationValuesCollector.Successor = resultsCollector;
@@ -251,6 +272,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
 
     private void SymbolicExpressionTreeParameter_DepthChanged(object sender, EventArgs e) {
       subScopesProcessor.Depth.Value = SymbolicExpressionTreeParameter.Depth;
+      cleaningSubScopesProcessor.Depth.Value = SymbolicExpressionTreeParameter.Depth;
       bestSolutionAnalyzer.SymbolicExpressionTreeParameter.Depth = SymbolicExpressionTreeParameter.Depth;
       bestSolutionAnalyzer.QualityParameter.Depth = SymbolicExpressionTreeParameter.Depth;
       bestAvgWorstValidationQualityCalculator.QualityParameter.Depth = SymbolicExpressionTreeParameter.Depth;

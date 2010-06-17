@@ -52,12 +52,16 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
     public int Size {
       get {
+        if (root == null)
+          return 0;
         return root.GetSize();
       }
     }
 
     public int Height {
       get {
+        if (root == null)
+          return 0;
         return root.GetHeight();
       }
     }
@@ -72,16 +76,21 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     public IEnumerable<SymbolicExpressionTreeNode> IterateNodesPrefix() {
+      if (root == null)
+        return new SymbolicExpressionTreeNode[0];
       return root.IterateNodesPrefix();
     }
     public IEnumerable<SymbolicExpressionTreeNode> IterateNodesPostfix() {
+      if (root == null)
+        return new SymbolicExpressionTreeNode[0];
       return root.IterateNodesPostfix();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       SymbolicExpressionTree clone = new SymbolicExpressionTree();
       cloner.RegisterClonedObject(this, clone);
-      clone.root = (SymbolicExpressionTreeNode)this.root.Clone();
+      if (root != null)
+        clone.root = (SymbolicExpressionTreeNode)this.root.Clone();
       return clone;
     }
   }
