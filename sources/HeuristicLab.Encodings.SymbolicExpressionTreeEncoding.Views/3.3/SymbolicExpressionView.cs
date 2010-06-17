@@ -34,6 +34,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
   [View("SymbolicExpression View")]
   [Content(typeof(SymbolicExpressionTree), false)]
   public partial class SymbolicExpressionView : AsynchronousContentView {
+    private SymbolicExpressionTreeStringFormatter treeFormatter;
+
     public new SymbolicExpressionTree Content {
       get { return (SymbolicExpressionTree)base.Content; }
       set { base.Content = value; }
@@ -41,6 +43,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
 
     public SymbolicExpressionView() {
       InitializeComponent();
+      treeFormatter = new SymbolicExpressionTreeStringFormatter();
     }
 
     protected override void OnContentChanged() {
@@ -48,34 +51,13 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       if (Content == null)
         textBox.Text = string.Empty;
       else
-        textBox.Text = SymbolicExpression(Content.Root, 0);
+        textBox.Text = treeFormatter.Format(Content);
     }
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
       textBox.Enabled = Content != null;
       textBox.ReadOnly = ReadOnly;
-    }
-
-    private static string SymbolicExpression(SymbolicExpressionTreeNode node, int indentLength) {
-      StringBuilder strBuilder = new StringBuilder();
-      strBuilder.Append(' ', indentLength); strBuilder.Append("(");
-      // internal nodes or leaf nodes?
-      if (node.SubTrees.Count > 0) {
-        // symbol on same line as '('
-        strBuilder.AppendLine(node.ToString());
-        // each subtree expression on a new line
-        // and closing ')' also on new line
-        foreach (var subtree in node.SubTrees) {
-          strBuilder.AppendLine(SymbolicExpression(subtree, indentLength + 2));
-        }
-        strBuilder.Append(' ', indentLength); strBuilder.Append(")");
-      } else {
-        // symbol in the same line with as '(' and ')'
-        strBuilder.Append(node.ToString());
-        strBuilder.Append(")");
-      }
-      return strBuilder.ToString();
     }
   }
 }
