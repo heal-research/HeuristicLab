@@ -74,6 +74,7 @@
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms.DataVisualization, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -85,7 +86,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HeuristicLabProblemsVehicleRoutingViewsPlugin.cs" />
+    <Compile Include="VRPSolutionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VRPSolutionView.Designer.cs">
+      <DependentUpon>VRPSolutionView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VehicleRoutingProblemView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VehicleRoutingProblemView.Designer.cs">
+      <DependentUpon>VehicleRoutingProblemView.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
@@ -112,6 +125,10 @@
     <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
       <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>
       <Name>HeuristicLab.Core-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Data.Views\3.3\HeuristicLab.Data.Views-3.3.csproj">
+      <Project>{72104A0B-90E7-42F3-9ABE-9BBBADD4B943}</Project>
+      <Name>HeuristicLab.Data.Views-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
       <Project>{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}</Project>
@@ -141,12 +158,16 @@
       <Project>{56F9106A-079F-4C61-92F6-86A84C2D84B7}</Project>
       <Name>HeuristicLab.Parameters-3.3</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
+      <Project>{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}</Project>
+      <Name>HeuristicLab.Persistence-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Problems.VehicleRouting\3.3\HeuristicLab.Problems.VehicleRouting-3.3.csproj">
-      <Project>{D767C38D-8014-46B0-9A32-03A3AECCE34A}</Project>
+      <Project>{6410BDA6-3641-42B2-BABA-AA626E2F6F71}</Project>
       <Name>HeuristicLab.Problems.VehicleRouting-3.3</Name>
     </ProjectReference>
   </ItemGroup>

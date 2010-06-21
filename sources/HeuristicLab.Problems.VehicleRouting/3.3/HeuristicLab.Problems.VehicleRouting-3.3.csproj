@@ -83,8 +83,40 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Analyzers\BestVRPSolutionAnalyzer.cs" />
+    <Compile Include="Encodings\Alba\Crossovers\AlbaPermutationCrossover.cs" />
+    <Compile Include="Encodings\Alba\Manipulators\AlbaPermutationManipulator.cs" />
+    <Compile Include="Encodings\Alba\Creators\AlbaPushForwardInsertionCreator.cs" />
+    <Compile Include="Encodings\Alba\Moves\AlbaMoveOperator.cs" />
+    <Compile Include="Encodings\Alba\Moves\AlbaMoveMaker.cs" />
+    <Compile Include="Encodings\Alba\Moves\ThreeOpt\AlbaTranslocationMoveGenerator.cs" />
+    <Compile Include="Encodings\Alba\Moves\ThreeOpt\AlbaTranslocationMoveMaker.cs" />
+    <Compile Include="Encodings\Alba\Moves\ThreeOpt\AlbaTranslocationMoveTabuMaker.cs" />
+    <Compile Include="Encodings\Alba\Moves\ThreeOpt\AlbaTranslocationMoveSoftTabuCriterion.cs" />
+    <Compile Include="Encodings\Alba\Moves\ThreeOpt\AlbaTranslocationMoveHardTabuCriterion.cs" />
+    <Compile Include="Encodings\VRPMoveOperator.cs" />
+    <Compile Include="Encodings\VRPCrossover.cs" />
+    <Compile Include="Encodings\VRPCreator.cs" />
+    <Compile Include="Encodings\Alba\Creators\AlbaPermutationCreator.cs" />
+    <Compile Include="Encodings\Alba\AlbaEncoding.cs" />
+    <Compile Include="Encodings\Tour.cs" />
+    <Compile Include="Encodings\VRPManipulator.cs" />
+    <Compile Include="Evaluators\VRPEvaluator.cs" />
     <Compile Include="HeuristicLabProblemsVehicleRoutingPlugin.cs" />
+    <Compile Include="Interfaces\IVRPCrossover.cs" />
+    <Compile Include="Interfaces\IVRPEncoding.cs" />
+    <Compile Include="Interfaces\IVRPEvaluator.cs" />
+    <Compile Include="Interfaces\IVRPManipulator.cs" />
+    <Compile Include="Interfaces\IVRPMoveEvaluator.cs" />
+    <Compile Include="Interfaces\IVRPMoveOperator.cs" />
+    <Compile Include="Interfaces\IVRPCreator.cs" />
+    <Compile Include="Interfaces\IVRPOperator.cs" />
+    <Compile Include="Encodings\Alba\Moves\ThreeOpt\AlbaTranslocationMoveEvaluator.cs" />
+    <Compile Include="MoveEvaluators\VRPMoveEvaluator.cs" />
+    <Compile Include="VRPSolution.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SolomonParser.cs" />
+    <Compile Include="VehicleRoutingProblem.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
@@ -114,6 +146,10 @@
     <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
       <Project>{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}</Project>
       <Name>HeuristicLab.Operators-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Optimization.Operators\3.3\HeuristicLab.Optimization.Operators-3.3.csproj">
+      <Project>{25087811-F74C-4128-BC86-8324271DA13E}</Project>
+      <Name>HeuristicLab.Optimization.Operators-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
       <Project>{14AB8D24-25BC-400C-A846-4627AA945192}</Project>
