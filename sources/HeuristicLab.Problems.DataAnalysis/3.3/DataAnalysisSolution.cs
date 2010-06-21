@@ -153,8 +153,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public override IDeepCloneable Clone(Cloner cloner) {
       DataAnalysisSolution clone = (DataAnalysisSolution)base.Clone(cloner);
-      // don't clone the problem data!
-      clone.problemData = problemData;
+      clone.problemData = (DataAnalysisProblemData)cloner.Clone(problemData);
       clone.model = (IDataAnalysisModel)cloner.Clone(model);
       clone.lowerEstimationLimit = lowerEstimationLimit;
       clone.upperEstimationLimit = upperEstimationLimit;

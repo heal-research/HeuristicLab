@@ -151,8 +151,8 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
         reductionRatio = ActualSamplesParameter.ActualValue.Value;
 
       int reducedRows = (int)((SamplesEnd.Value - SamplesStart.Value) * reductionRatio);
-      var reducedProblemData = (DataAnalysisProblemData)DataAnalysisProblemData.Clone();
-      ShuffleRows(RandomParameter.ActualValue, reducedProblemData.Dataset, SamplesStart.Value, SamplesEnd.Value);
+      DataAnalysisProblemData reducedProblemData = (DataAnalysisProblemData)DataAnalysisProblemData.Clone();
+      reducedProblemData.Dataset = CreateReducedDataset(RandomParameter.ActualValue, reducedProblemData.Dataset, reductionRatio, SamplesStart.Value, SamplesEnd.Value);
 
       double quality = PerformCrossValidation(reducedProblemData,
                              SamplesStart.Value, SamplesStart.Value + reducedRows,
@@ -163,15 +163,17 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
       return base.Apply();
     }
 
-    private void ShuffleRows(IRandom random, Dataset dataset, int start, int end) {
-      for (int row = end - 1; row > start ; row--) {
-        int otherRow = random.Next(start, row);
-        for (int column = 0; column < dataset.Columns; column++) {
-          double tmp = dataset[otherRow, column];
-          dataset[otherRow, column] = dataset[row, column];
-          dataset[row, column] = tmp;
-        }
+    private Dataset CreateReducedDataset(IRandom random, Dataset dataset, double reductionRatio, int start, int end) {
+      int reducedRows = (int)((end - start) * reductionRatio);
+      double[,] reducedData = dataset.GetClonedData();
+      HashSet<int> leftRows = new HashSet<int>(Enumerable.Range(0, end - start));
+      for (int row = 0; row < reducedRows; row++) {
+        int rowIndex = random.Next(0, leftRows.Count);
+        leftRows.Remove(rowIndex);
+        for (int column = 0; column < dataset.Columns; column++)
+          reducedData[row, column] = dataset[rowIndex, column];
       }
+      return new Dataset(dataset.VariableNames, reducedData);
     }
 
     private static double PerformCrossValidation(

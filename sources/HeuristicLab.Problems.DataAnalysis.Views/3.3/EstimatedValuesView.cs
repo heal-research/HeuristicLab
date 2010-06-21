@@ -90,7 +90,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       else {
         double[,] values =
         MatrixExtensions<double>.Create(
-          Content.ProblemData.Dataset[Content.ProblemData.TargetVariable.Value],
+          Content.ProblemData.Dataset.GetVariableValues(Content.ProblemData.TargetVariable.Value),
           Content.EstimatedValues.ToArray());
         var content = new DoubleMatrix(values);
         content.ColumnNames = new string[] { "Original", "Estimated" };

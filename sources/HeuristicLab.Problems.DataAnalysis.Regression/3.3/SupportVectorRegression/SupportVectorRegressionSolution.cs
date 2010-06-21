@@ -64,14 +64,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.SupportVectorRegression 
 
     private Dataset CalculateSupportVectors() {
       if (Model.Model.SupportVectorIndizes.Length == 0)
-        return new Dataset();
+        return new Dataset(new List<string>(),new double[0,0]);
 
-      Dataset dataset = new Dataset(ProblemData.Dataset.VariableNames, new double[Model.Model.SupportVectorCount, ProblemData.Dataset.Columns]);
+      double[,] data = new double[Model.Model.SupportVectorIndizes.Length, ProblemData.Dataset.Columns];
       for (int i = 0; i < Model.Model.SupportVectorIndizes.Length; i++) {
         for (int column = 0; column < ProblemData.Dataset.Columns; column++)
-          dataset[i, column] = ProblemData.Dataset[Model.Model.SupportVectorIndizes[i], column];
+          data[i, column] = ProblemData.Dataset[Model.Model.SupportVectorIndizes[i], column];
       }
-      return dataset;
+      return new Dataset(ProblemData.Dataset.VariableNames, data);
     }
 
     protected override void RecalculateEstimatedValues() {

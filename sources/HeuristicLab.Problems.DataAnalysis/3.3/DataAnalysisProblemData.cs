@@ -99,7 +99,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
       set {
         if (value != Dataset) {
           if (value == null) throw new ArgumentNullException();
-          if (Dataset != null) DeregisterDatasetEventHandlers();
           DatasetParameter.Value = value;
         }
       }
@@ -215,7 +214,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     private void RegisterParameterValueEventHandlers() {
-      RegisterDatasetEventHandlers();
       RegisterInputVariablesEventHandlers();
       if (TargetVariable != null) RegisterStringValueEventHandlers(TargetVariable);
       RegisterValueTypeEventHandlers(TrainingSamplesStart);
@@ -227,7 +225,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     #region parameter value changed event handlers
     void DatasetParameter_ValueChanged(object sender, EventArgs e) {
-      RegisterDatasetEventHandlers();
       OnProblemDataChanged(EventArgs.Empty);
     }
     void InputVariablesParameter_ValueChanged(object sender, EventArgs e) {
@@ -257,31 +254,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
       OnProblemDataChanged(EventArgs.Empty);
     }
     #endregion
-
-
-    private void RegisterDatasetEventHandlers() {
-      Dataset.DataChanged += new EventHandler<EventArgs<int, int>>(Dataset_DataChanged);
-      Dataset.Reset += new EventHandler(Dataset_Reset);
-      Dataset.ColumnNamesChanged += new EventHandler(Dataset_ColumnNamesChanged);
-    }
-
-    private void DeregisterDatasetEventHandlers() {
-      Dataset.DataChanged -= new EventHandler<EventArgs<int, int>>(Dataset_DataChanged);
-      Dataset.Reset -= new EventHandler(Dataset_Reset);
-      Dataset.ColumnNamesChanged -= new EventHandler(Dataset_ColumnNamesChanged);
-    }
-
-    void Dataset_ColumnNamesChanged(object sender, EventArgs e) {
-      OnProblemDataChanged(e);
-    }
-
-    void Dataset_Reset(object sender, EventArgs e) {
-      OnProblemDataChanged(e);
-    }
-
-    void Dataset_DataChanged(object sender, EventArgs<int, int> e) {
-      OnProblemDataChanged(e);
-    }
 
     private void RegisterInputVariablesEventHandlers() {
       InputVariables.CollectionReset += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<HeuristicLab.Collections.IndexedItem<StringValue>>(InputVariables_CollectionReset);

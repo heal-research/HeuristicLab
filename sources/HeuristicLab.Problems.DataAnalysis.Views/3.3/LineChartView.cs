@@ -63,7 +63,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.chart.Series.Add(TARGETVARIABLE_SERIES_NAME);
       this.chart.Series[TARGETVARIABLE_SERIES_NAME].LegendText = Content.ProblemData.TargetVariable.Value;
       this.chart.Series[TARGETVARIABLE_SERIES_NAME].ChartType = SeriesChartType.FastLine;
-      this.chart.Series[TARGETVARIABLE_SERIES_NAME].Points.DataBindY(Content.ProblemData.Dataset[Content.ProblemData.TargetVariable.Value]);
+      this.chart.Series[TARGETVARIABLE_SERIES_NAME].Points.DataBindY(Content.ProblemData.Dataset.GetVariableValues(Content.ProblemData.TargetVariable.Value));
       this.UpdateStripLines();
 
       this.chart.Series.Add(ESTIMATEDVALUES_SERIES_NAME);

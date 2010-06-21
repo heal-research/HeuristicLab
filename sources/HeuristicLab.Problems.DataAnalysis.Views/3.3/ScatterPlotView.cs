@@ -136,18 +136,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         int trainingEnd = Content.ProblemData.TrainingSamplesEnd.Value;
         int testStart = Content.ProblemData.TestSamplesStart.Value;
         int testEnd = Content.ProblemData.TestSamplesEnd.Value;
-        if(this.chart.Series[ALL_SERIES].Points.Count > 0)
-        this.chart.Series[ALL_SERIES].Points.DataBindXY(Content.EstimatedValues.ToArray(), "",
-          dataset[targetVariableName], "");
+        if (this.chart.Series[ALL_SERIES].Points.Count > 0)
+          this.chart.Series[ALL_SERIES].Points.DataBindXY(Content.EstimatedValues.ToArray(), "",
+            dataset.GetVariableValues(targetVariableName), "");
         if (this.chart.Series[TRAINING_SERIES].Points.Count > 0)
-        this.chart.Series[TRAINING_SERIES].Points.DataBindXY(Content.EstimatedTrainingValues.ToArray(), "",
-          dataset.GetVariableValues(targetVariableName, trainingStart, trainingEnd), "");
+          this.chart.Series[TRAINING_SERIES].Points.DataBindXY(Content.EstimatedTrainingValues.ToArray(), "",
+            dataset.GetVariableValues(targetVariableName, trainingStart, trainingEnd), "");
         if (this.chart.Series[TEST_SERIES].Points.Count > 0)
-        this.chart.Series[TEST_SERIES].Points.DataBindXY(Content.EstimatedTestValues.ToArray(), "",
-          dataset.GetVariableValues(targetVariableName, testStart, testEnd), "");
+          this.chart.Series[TEST_SERIES].Points.DataBindXY(Content.EstimatedTestValues.ToArray(), "",
+            dataset.GetVariableValues(targetVariableName, testStart, testEnd), "");
 
-        double max = Math.Max(Content.EstimatedValues.Max(), dataset.GetMax(targetVariableName));
-        double min = Math.Min(Content.EstimatedValues.Min(), dataset.GetMin(targetVariableName));
+        double max = Math.Max(Content.EstimatedValues.Max(), dataset.GetVariableValues(targetVariableName).Max());
+        double min = Math.Min(Content.EstimatedValues.Min(), dataset.GetVariableValues(targetVariableName).Min());
 
         max = Math.Ceiling(max) * 1.2;
         min = Math.Floor(min) * 0.8;
@@ -184,7 +184,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         switch (series.Name) {
           case ALL_SERIES:
             predictedValues = Content.EstimatedValues;
-            targetValues = dataset[targetVariableName];
+            targetValues = dataset.GetVariableValues(targetVariableName);
             break;
           case TRAINING_SERIES:
             predictedValues = Content.EstimatedTrainingValues;
