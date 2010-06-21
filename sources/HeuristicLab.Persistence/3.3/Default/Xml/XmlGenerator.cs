@@ -39,8 +39,8 @@ namespace HeuristicLab.Persistence.Default.Xml {
   /// </summary>
   public class XmlGenerator : GeneratorBase<string> {
 
-    private int depth;
-    private int Depth {
+    protected int depth;
+    protected int Depth {
       get {
         return depth;
       }
@@ -50,7 +50,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
       }
     }
 
-    private string prefix;
+    protected string prefix;
 
 
     /// <summary>
@@ -60,9 +60,9 @@ namespace HeuristicLab.Persistence.Default.Xml {
       Depth = 0;
     }
 
-    private enum NodeType { Start, End, Inline } ;
+    protected enum NodeType { Start, End, Inline } ;
 
-    private static void AddXmlTagContent(StringBuilder sb, string name, Dictionary<string, object> attributes) {
+    protected static void AddXmlTagContent(StringBuilder sb, string name, Dictionary<string, object> attributes) {
       sb.Append(name);
       foreach (var attribute in attributes) {
         if (attribute.Value != null && !string.IsNullOrEmpty(attribute.Value.ToString())) {
@@ -75,25 +75,25 @@ namespace HeuristicLab.Persistence.Default.Xml {
       }
     }
 
-    private static void AddXmlStartTag(StringBuilder sb, string name, Dictionary<string, object> attributes) {
+    protected static void AddXmlStartTag(StringBuilder sb, string name, Dictionary<string, object> attributes) {
       sb.Append('<');
       AddXmlTagContent(sb, name, attributes);
       sb.Append('>');
     }
 
-    private static void AddXmlInlineTag(StringBuilder sb, string name, Dictionary<string, object> attributes) {
+    protected static void AddXmlInlineTag(StringBuilder sb, string name, Dictionary<string, object> attributes) {
       sb.Append('<');
       AddXmlTagContent(sb, name, attributes);
       sb.Append("/>");
     }
 
-    private static void AddXmlEndTag(StringBuilder sb, string name) {
+    protected static void AddXmlEndTag(StringBuilder sb, string name) {
       sb.Append("</");
       sb.Append(name);
       sb.Append(">");
     }
 
-    private string CreateNodeStart(string name, Dictionary<string, object> attributes) {
+    protected string CreateNodeStart(string name, Dictionary<string, object> attributes) {
       StringBuilder sb = new StringBuilder();
       sb.Append(prefix);
       Depth += 1;
@@ -102,11 +102,11 @@ namespace HeuristicLab.Persistence.Default.Xml {
       return sb.ToString();
     }
 
-    private string CreateNodeStart(string name) {
+    protected string CreateNodeStart(string name) {
       return CreateNodeStart(name, new Dictionary<string, object>());
     }
 
-    private string CreateNodeEnd(string name) {
+    protected string CreateNodeEnd(string name) {
       Depth -= 1;
       StringBuilder sb = new StringBuilder();
       sb.Append(prefix);
@@ -115,7 +115,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
       return sb.ToString();
     }
 
-    private string CreateNode(string name, Dictionary<string, object> attributes) {
+    protected string CreateNode(string name, Dictionary<string, object> attributes) {
       StringBuilder sb = new StringBuilder();
       sb.Append(prefix);
       AddXmlInlineTag(sb, name, attributes);
@@ -123,7 +123,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
       return sb.ToString();
     }
 
-    private string CreateNode(string name, Dictionary<string, object> attributes, string content) {
+    protected string CreateNode(string name, Dictionary<string, object> attributes, string content) {
       StringBuilder sb = new StringBuilder();
       sb.Append(prefix);
       AddXmlStartTag(sb, name, attributes);
@@ -147,7 +147,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
         
     }
 
-    private void AddTypeInfo(int typeId, Dictionary<string, object> dict) {
+    protected void AddTypeInfo(int typeId, Dictionary<string, object> dict) {
       if (lastTypeToken != null) {
         if (typeId == lastTypeToken.Id) {
           dict.Add("typeName", lastTypeToken.TypeName);
@@ -224,7 +224,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
       return CreateNodeEnd(XmlStringConstants.METAINFO);
     }
 
-    private TypeToken lastTypeToken;
+    protected TypeToken lastTypeToken;
     /// <summary>
     /// Formats the specified token.
     /// </summary>
@@ -235,7 +235,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
       return "";
     }
 
-    private string FlushTypeToken() {
+    protected string FlushTypeToken() {
       if (lastTypeToken == null)
         return "";
       try {

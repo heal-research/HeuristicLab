@@ -157,6 +157,7 @@
     <Compile Include="Default\Xml\Compact\IntList2XmlSerializer.cs" />
     <Compile Include="Default\Xml\Compact\NumberArray2XmlSerializerBase.cs" />
     <Compile Include="Default\Xml\Compact\NumberEnumeration2XmlSerializerBase.cs" />
+    <Compile Include="Default\Xml\EasyXmlGenerator.cs" />
     <Compile Include="Default\Xml\Primitive\System.Drawing\Bitmap2XmlSerializer.cs" />
     <Compile Include="Default\Xml\Primitive\Bool2XmlSerializer.cs" />
     <Compile Include="Default\Xml\Primitive\Byte2XmlSerializer.cs" />

@@ -41,7 +41,7 @@ using System.Drawing.Imaging;
 
 namespace HeuristicLab.Persistence_33.Tests {
 
-  [StorableClass]  
+  [StorableClass]
   public class NumberTest {
     [Storable]
     private bool _bool = true;
@@ -287,6 +287,16 @@ namespace HeuristicLab.Persistence_33.Tests {
       XmlGenerator.Serialize(r, tempFile);
       Root newR = (Root)XmlParser.Deserialize(tempFile);
       CompareComplexStorables(r, newR);
+    }
+
+    [TestMethod]
+    public void ComplexEasyStorable() {
+      Root r = InitializeComplexStorable();
+      ReadableXmlGenerator.Serialize(r, tempFile);
+      using (var reader = new StreamReader(tempFile)) {
+        string text = reader.ReadToEnd();
+        Assert.IsTrue(text.StartsWith("<Root"));
+      }
     }
 
     private static void CompareComplexStorables(Root r, Root newR) {
@@ -773,9 +783,9 @@ namespace HeuristicLab.Persistence_33.Tests {
       Bitmap newBitmap = (Bitmap)XmlParser.Deserialize(tempFile);
 
       Assert.AreEqual(bitmap.Size, newBitmap.Size);
-      for(int i=0; i< bitmap.Size.Width; i++)
-        for(int j =0; j< bitmap.Size.Height; j++)
-          Assert.AreEqual(bitmap.GetPixel(i,j),newBitmap.GetPixel(i,j));
+      for (int i = 0; i < bitmap.Size.Width; i++)
+        for (int j = 0; j < bitmap.Size.Height; j++)
+          Assert.AreEqual(bitmap.GetPixel(i, j), newBitmap.GetPixel(i, j));
     }
 
     [StorableClass]
@@ -812,7 +822,7 @@ namespace HeuristicLab.Persistence_33.Tests {
       Assert.AreEqual(newHookTest.sum, newHookTest.a + newHookTest.b);
       Assert.IsFalse(newHookTest.WasSerialized);
     }
-    
+
     [StorableClass]
     private class CustomConstructor {
       public string Value = "none";
@@ -857,13 +867,13 @@ namespace HeuristicLab.Persistence_33.Tests {
     }
 
     [TestMethod]
-    public void TestRejectionJustifications() { 
+    public void TestRejectionJustifications() {
       NonSerializable ns = new NonSerializable();
       try {
         XmlGenerator.Serialize(ns, tempFile);
         Assert.Fail("PersistenceException expected");
       } catch (PersistenceException x) {
-        Assert.IsTrue(x.Message.Contains(new StorableSerializer().JustifyRejection(typeof(NonSerializable))));        
+        Assert.IsTrue(x.Message.Contains(new StorableSerializer().JustifyRejection(typeof(NonSerializable))));
       }
     }
 
@@ -966,7 +976,7 @@ namespace HeuristicLab.Persistence_33.Tests {
       Assert.AreEqual(2, newAfs.Value2);
       Assert.AreEqual(afs.Value3, newAfs.Value3);
       Assert.AreEqual(afs.Value4, newAfs.Value4);
-      
+
     }
 
     [StorableClass(StorableClassType.AllFieldsAndAllProperties)]
@@ -995,7 +1005,7 @@ namespace HeuristicLab.Persistence_33.Tests {
       Assert.AreEqual(afs.Value1, newAfs.Value1);
       Assert.AreEqual(afs.Value2, newAfs.Value2);
       Assert.AreEqual(afs.Value3, newAfs.Value3);
-      Assert.AreEqual(afs.Value4, newAfs.Value4);      
+      Assert.AreEqual(afs.Value4, newAfs.Value4);
     }
 
     [StorableClass(StorableClassType.MarkedOnly)]
@@ -1021,7 +1031,7 @@ namespace HeuristicLab.Persistence_33.Tests {
       MarkedOnlyStorable afs = new MarkedOnlyStorable(false);
       XmlGenerator.Serialize(afs, tempFile);
       MarkedOnlyStorable newAfs = (MarkedOnlyStorable)XmlParser.Deserialize(tempFile);
-      Assert.AreEqual(1, newAfs.Value1);      
+      Assert.AreEqual(1, newAfs.Value1);
       Assert.AreEqual(afs.Value2, newAfs.Value2);
       Assert.AreEqual(0, newAfs.Value3);
       Assert.AreEqual(0, newAfs.Value4);
@@ -1053,7 +1063,7 @@ namespace HeuristicLab.Persistence_33.Tests {
       Assert.IsTrue(double.IsNegativeInfinity(newSpecials[1]));
       Assert.IsTrue(double.IsNaN(newSpecials[2]));
     }
-    
+
 
     [ClassInitialize]
     public static void Initialize(TestContext testContext) {

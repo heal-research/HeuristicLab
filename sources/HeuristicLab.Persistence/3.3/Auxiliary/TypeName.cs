@@ -175,6 +175,25 @@ namespace HeuristicLab.Persistence.Auxiliary {
               .ToArray()));
         sb.Append(">");
       }
+      sb.Append(MemoryMagic);
+      return sb.ToString();
+    }
+
+    public string GetTypeNameInCode(bool includeAllNamespaces) {
+      StringBuilder sb = new StringBuilder();
+      if (includeAllNamespaces)
+        sb.Append(Namespace).Append('.');
+      sb.Append(ClassName);
+      if (IsGeneric) {
+        sb.Append("<");
+        sb.Append(
+          string.Join(", ",
+            GenericArgs
+              .Select(a => a.GetTypeNameInCode(includeAllNamespaces))
+              .ToArray()));
+        sb.Append(">");
+      }
+      sb.Append(MemoryMagic);
       return sb.ToString();
     }
 
