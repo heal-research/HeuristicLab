@@ -164,14 +164,34 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
     }
 
     private Dataset CreateReducedDataset(IRandom random, Dataset dataset, double reductionRatio, int start, int end) {
-      int reducedRows = (int)((end - start) * reductionRatio);
+      int n = (int)((end - start) * reductionRatio);
+      // must not make a fink:
+      // => select n rows randomly from start..end
+      // => sort the selected rows by index
+      // => move rows to beginning of partition (start)
+
+      // all possible rowIndexes from start..end
+      int[] rowIndexes = Enumerable.Range(start, end - start).ToArray();
+
+      // knuth shuffle
+      for (int i = rowIndexes.Length - 1; i > 0; i--) {
+        int j = random.Next(0, i);
+        // swap
+        int tmp = rowIndexes[i];
+        rowIndexes[i] = rowIndexes[j];
+        rowIndexes[j] = tmp;
+      }
+
+      // take the first n indexes (selected n rowIndexes from start..end)
+      // now order by index
+      var orderedRandomIndexes = rowIndexes.Take(n).OrderBy(x => x).ToArray();
+
+      // now build a dataset collecting the rows from orderedRandomIndexes into the dataset starting at index start
       double[,] reducedData = dataset.GetClonedData();
-      HashSet<int> leftRows = new HashSet<int>(Enumerable.Range(0, end - start));
-      for (int row = 0; row < reducedRows; row++) {
-        int rowIndex = random.Next(0, leftRows.Count);
-        leftRows.Remove(rowIndex);
-        for (int column = 0; column < dataset.Columns; column++)
-          reducedData[row, column] = dataset[rowIndex, column];
+      for (int i = 0; i < n; i++) {
+        for (int column = 0; column < dataset.Columns; column++) {
+          reducedData[start + i, column] = dataset[orderedRandomIndexes[i], column];
+        }
       }
       return new Dataset(dataset.VariableNames, reducedData);
     }
