@@ -64,9 +64,9 @@ namespace HeuristicLab.Persistence.Core {
     /// </summary>
     /// <returns>A dictionary containing all properties
     /// and values of this instance.</returns>
-    public Dictionary<string, object> GetDict() {
-      return new Dictionary<string, object> {
-        {"id", Id},
+    public Dictionary<string, string> GetDict() {
+      return new Dictionary<string, string> {
+        {"id", Id.ToString()},
         {"typeName", TypeName},
         {"serializer", Serializer}};
     }

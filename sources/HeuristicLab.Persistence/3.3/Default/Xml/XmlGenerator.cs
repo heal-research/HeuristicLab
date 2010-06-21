@@ -22,6 +22,7 @@
 using System.Collections.Generic;
 using System;
 using System.Text;
+using System.Linq;
 using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Persistence.Core;
 using System.IO;
@@ -62,7 +63,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
 
     protected enum NodeType { Start, End, Inline } ;
 
-    protected static void AddXmlTagContent(StringBuilder sb, string name, Dictionary<string, object> attributes) {
+    protected static void AddXmlTagContent(StringBuilder sb, string name, Dictionary<string, string> attributes) {
       sb.Append(name);
       foreach (var attribute in attributes) {
         if (attribute.Value != null && !string.IsNullOrEmpty(attribute.Value.ToString())) {
@@ -75,13 +76,19 @@ namespace HeuristicLab.Persistence.Default.Xml {
       }
     }
 
-    protected static void AddXmlStartTag(StringBuilder sb, string name, Dictionary<string, object> attributes) {
+    protected static int AttributeLength(Dictionary<string, string> attributes) {
+      return attributes
+        .Where(kvp => !string.IsNullOrEmpty(kvp.Key) && !string.IsNullOrEmpty(kvp.Value))
+        .Select(kvp => kvp.Key.Length + kvp.Value.Length + 4).Sum();
+    }
+
+    protected static void AddXmlStartTag(StringBuilder sb, string name, Dictionary<string, string> attributes) {
       sb.Append('<');
       AddXmlTagContent(sb, name, attributes);
       sb.Append('>');
     }
 
-    protected static void AddXmlInlineTag(StringBuilder sb, string name, Dictionary<string, object> attributes) {
+    protected static void AddXmlInlineTag(StringBuilder sb, string name, Dictionary<string, string> attributes) {
       sb.Append('<');
       AddXmlTagContent(sb, name, attributes);
       sb.Append("/>");
@@ -93,8 +100,9 @@ namespace HeuristicLab.Persistence.Default.Xml {
       sb.Append(">");
     }
 
-    protected string CreateNodeStart(string name, Dictionary<string, object> attributes) {
-      StringBuilder sb = new StringBuilder();
+    protected string CreateNodeStart(string name, Dictionary<string, string> attributes) {
+      StringBuilder sb = new StringBuilder(prefix.Length + name.Length + 4
+        + AttributeLength(attributes));
       sb.Append(prefix);
       Depth += 1;
       AddXmlStartTag(sb, name, attributes);
@@ -102,28 +110,30 @@ namespace HeuristicLab.Persistence.Default.Xml {
       return sb.ToString();
     }
 
+    private static Dictionary<string, string> emptyDict = new Dictionary<string, string>();
     protected string CreateNodeStart(string name) {
-      return CreateNodeStart(name, new Dictionary<string, object>());
+      return CreateNodeStart(name, emptyDict);
     }
 
     protected string CreateNodeEnd(string name) {
       Depth -= 1;
-      StringBuilder sb = new StringBuilder();
+      StringBuilder sb = new StringBuilder(prefix.Length + name.Length + 5);
       sb.Append(prefix);
       AddXmlEndTag(sb, name);
       sb.Append("\r\n");
       return sb.ToString();
     }
 
-    protected string CreateNode(string name, Dictionary<string, object> attributes) {
-      StringBuilder sb = new StringBuilder();
+    protected string CreateNode(string name, Dictionary<string, string> attributes) {
+      StringBuilder sb = new StringBuilder(prefix.Length + name.Length + 5
+        + AttributeLength(attributes));
       sb.Append(prefix);
       AddXmlInlineTag(sb, name, attributes);
       sb.Append("\r\n");
       return sb.ToString();
     }
 
-    protected string CreateNode(string name, Dictionary<string, object> attributes, string content) {
+    protected string CreateNode(string name, Dictionary<string, string> attributes, string content) {
       StringBuilder sb = new StringBuilder();
       sb.Append(prefix);
       AddXmlStartTag(sb, name, attributes);
@@ -138,16 +148,16 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// <param name="beginToken">The begin token.</param>
     /// <returns>The token in serialized form.</returns>
     protected override string Format(BeginToken beginToken) {
-      var dict = new Dictionary<string, object> {
+      var dict = new Dictionary<string, string> {
           {"name", beginToken.Name},
-          {"typeId", beginToken.TypeId},
-          {"id", beginToken.Id}};
+          {"typeId", beginToken.TypeId.ToString()},
+          {"id", beginToken.Id.ToString()}};
       AddTypeInfo(beginToken.TypeId, dict);
       return CreateNodeStart(XmlStringConstants.COMPOSITE, dict);
         
     }
 
-    protected void AddTypeInfo(int typeId, Dictionary<string, object> dict) {
+    protected void AddTypeInfo(int typeId, Dictionary<string, string> dict) {
       if (lastTypeToken != null) {
         if (typeId == lastTypeToken.Id) {
           dict.Add("typeName", lastTypeToken.TypeName);
@@ -174,10 +184,10 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// <param name="dataToken">The data token.</param>
     /// <returns>The token in serialized form.</returns>
     protected override string Format(PrimitiveToken dataToken) {
-      var dict = new Dictionary<string, object> {
-            {"typeId", dataToken.TypeId},
+      var dict = new Dictionary<string, string> {
+            {"typeId", dataToken.TypeId.ToString()},
             {"name", dataToken.Name},
-            {"id", dataToken.Id}};
+            {"id", dataToken.Id.ToString()}};
       AddTypeInfo(dataToken.TypeId, dict);
       return CreateNode(XmlStringConstants.PRIMITIVE, dict,
         ((XmlString)dataToken.SerialData).Data);
@@ -190,8 +200,8 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// <returns>The token in serialized form.</returns>
     protected override string Format(ReferenceToken refToken) {
       return CreateNode(XmlStringConstants.REFERENCE,
-        new Dictionary<string, object> {
-          {"ref", refToken.Id},
+        new Dictionary<string, string> {
+          {"ref", refToken.Id.ToString()},
           {"name", refToken.Name}});
     }
 
@@ -202,7 +212,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// <returns>The token in serialized form.</returns>
     protected override string Format(NullReferenceToken nullRefToken) {
       return CreateNode(XmlStringConstants.NULL,
-        new Dictionary<string, object>{
+        new Dictionary<string, string>{
           {"name", nullRefToken.Name}});
     }
 
@@ -240,8 +250,8 @@ namespace HeuristicLab.Persistence.Default.Xml {
         return "";
       try {
         return CreateNode(XmlStringConstants.TYPE,
-          new Dictionary<string, object> {
-          {"id", lastTypeToken.Id},
+          new Dictionary<string, string> {
+          {"id", lastTypeToken.Id.ToString()},
           {"typeName", lastTypeToken.TypeName },
           {"serializer", lastTypeToken.Serializer }});
       } finally {

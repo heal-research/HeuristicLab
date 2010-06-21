@@ -97,6 +97,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Auxiliary\StringExtensions.cs" />
     <Compile Include="Auxiliary\TypeLoader.cs" />
     <Compile Include="Auxiliary\TypeNameParser.cs" />
     <Compile Include="Auxiliary\ReflectionTools.cs" />

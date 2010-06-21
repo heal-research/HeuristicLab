@@ -25,13 +25,14 @@ using HeuristicLab.Persistence.Interfaces;
 using System;
 using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Persistence.Auxiliary;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
 
   [StorableClass]
   internal abstract class NumberEnumeration2XmlSerializerBase<T> : CompactXmlSerializerBase<T> where T : IEnumerable {
 
-    protected virtual string Separator { get { return ";"; } }
+    protected virtual char Separator { get { return ';'; } }
     protected abstract void Add(IEnumerable enumeration, object o);
     protected abstract IEnumerable Instantiate();
     protected abstract string FormatValue(object o);
@@ -49,8 +50,7 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
     public override T Parse(XmlString x) {
       try {
         IEnumerable enumeration = Instantiate();
-        string[] values = x.Data.Split(new[] { Separator }, StringSplitOptions.RemoveEmptyEntries);
-        foreach (var value in values) {
+        foreach (var value in x.Data.EnumerateSplit(Separator)) {
           Add(enumeration, ParseValue(value));
         }
         return (T)enumeration;

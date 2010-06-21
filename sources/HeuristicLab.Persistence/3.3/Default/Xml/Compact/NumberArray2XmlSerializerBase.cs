@@ -25,13 +25,14 @@ using HeuristicLab.Persistence.Interfaces;
 using System;
 using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Persistence.Auxiliary;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
 
   [StorableClass]
   internal abstract class NumberArray2XmlSerializerBase<T> : CompactXmlSerializerBase<T> where T : class {
 
-    protected virtual string Separator { get { return ";"; } }
+    protected virtual char Separator { get { return ';'; } }
     protected abstract string FormatValue(object o);
     protected abstract object ParseValue(string o);
 
@@ -39,13 +40,16 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
       Array a = (Array)(object)t;
       int[] lengths = new int[a.Rank];
       int[] lowerBounds = new int[a.Rank];
-      StringBuilder sb = new StringBuilder();
+      StringBuilder sb = new StringBuilder(a.Rank * 3);
       sb.Append(a.Rank);
+      int capacity = 1;
       for (int i = 0; i < a.Rank; i++) {
         sb.Append(Separator);
         sb.Append(a.GetLength(i));
         lengths[i] = a.GetLength(i);
+        capacity *= lengths[i];
       }
+      sb.EnsureCapacity(capacity * 3);
       for (int i = 0; i < a.Rank; i++) {
         sb.Append(Separator);
         sb.Append(a.GetLowerBound(i));
@@ -70,9 +74,7 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
 
     public override T Parse(XmlString x) {
       try {
-        IEnumerator values =
-          x.Data.Split(new[] { Separator },
-          StringSplitOptions.RemoveEmptyEntries).GetEnumerator();
+        IEnumerator values = x.Data.GetSplitEnumerator(Separator);
         values.MoveNext();
         int rank = int.Parse((string)values.Current);
         int[] lengths = new int[rank];

@@ -26,15 +26,14 @@ using System.Linq;
 using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Default.Xml.Primitive;
 using System.Text;
+using HeuristicLab.Persistence.Auxiliary;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
 
   internal sealed class DoubleList2XmlSerializer : CompactXmlSerializerBase<List<double>> {
 
-    private static readonly char[] separators = new char[] { ';' };
-
     public override XmlString Format(List<double> list) {
-      StringBuilder sb = new StringBuilder();
+      StringBuilder sb = new StringBuilder(list.Count * 3);
       foreach (var d in list) {
         sb.Append(Double2XmlSerializer.FormatG17(d)).Append(';');
       }
@@ -43,9 +42,8 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
 
     public override List<double> Parse(XmlString data) {
       try {
-        var values = data.Data.Split(separators, StringSplitOptions.RemoveEmptyEntries);
-        List<double> list = new List<double>(values.Length);
-        foreach (var value in values) {
+        List<double> list = new List<double>();
+        foreach (var value in data.Data.EnumerateSplit(';')) {
           list.Add(Double2XmlSerializer.ParseG17(value));
         }
         return list;

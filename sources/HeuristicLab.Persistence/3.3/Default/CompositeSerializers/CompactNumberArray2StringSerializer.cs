@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Linq;
 using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Persistence.Core;
 using System.Collections.Generic;
@@ -27,6 +28,7 @@ using System.Reflection;
 using System.Globalization;
 using System.Text;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Persistence.Auxiliary;
 
 namespace HeuristicLab.Persistence.Default.CompositeSerializers {
 
@@ -57,12 +59,15 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
       Array a = (Array)obj;
       int[] lengths = new int[a.Rank];
       int[] lowerBounds = new int[a.Rank];
-      StringBuilder sb = new StringBuilder();
+      StringBuilder sb = new StringBuilder(a.Rank * 3);
       sb.Append(a.Rank).Append(';');
+      int capacity = 1;
       for (int i = 0; i < a.Rank; i++) {
         sb.Append(a.GetLength(i)).Append(';');
         lengths[i] = a.GetLength(i);
+        capacity *= lengths[i];
       }
+      sb.EnsureCapacity(capacity * 3);
       for (int i = 0; i < a.Rank; i++) {
         sb.Append(a.GetLowerBound(i)).Append(';');
         lowerBounds[i] = a.GetLowerBound(i);
@@ -91,9 +96,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
       try {
         var tagIter = metaInfo.GetEnumerator();
         tagIter.MoveNext();
-        var valueIter = ((string)tagIter.Current.Value)
-          .Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
-          .GetEnumerator();
+        var valueIter = ((string)tagIter.Current.Value).GetSplitEnumerator(';');
         valueIter.MoveNext();
         int rank = int.Parse((string)valueIter.Current);
         int[] lengths = new int[rank];

@@ -92,6 +92,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
       return new Tag[] { };
     }
 
+    private static object[] emptyArgs = new object[0];
     public IEnumerable<Tag> Decompose(object obj) {
       Type type = obj.GetType();
       Type enumerable = GetGenericEnumerableInterface(type);
@@ -101,12 +102,11 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
         Array.IndexOf(
           iMap.InterfaceMethods,
           enumerable.GetMethod("GetEnumerator"))];
-      object[] empty = new object[] { };
-      object genericEnumerator = getEnumeratorMethod.Invoke(obj, empty);
+      object genericEnumerator = getEnumeratorMethod.Invoke(obj, emptyArgs);
       MethodInfo moveNextMethod = genericEnumerator.GetType().GetMethod("MoveNext");
       PropertyInfo currentProperty = genericEnumerator.GetType().GetProperty("Current");
       StringBuilder sb = new StringBuilder();
-      while ((bool)moveNextMethod.Invoke(genericEnumerator, empty))
+      while ((bool)moveNextMethod.Invoke(genericEnumerator, emptyArgs))
         sb.Append(
           numberConverter.Format(
             currentProperty.GetValue(genericEnumerator, null))).Append(';');

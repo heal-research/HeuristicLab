@@ -48,10 +48,10 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// <param name="beginToken">The begin token.</param>
     /// <returns>The token in serialized form.</returns>
     protected override string Format(BeginToken beginToken) {
-      var dict = new Dictionary<string, object> {
+      var dict = new Dictionary<string, string> {
           {"name", beginToken.Name},
-          {"id", beginToken.Id}};
-      return CreateNodeStart(typeCache[beginToken.TypeId], dict);        
+          {"id", beginToken.Id.ToString()}};
+      return CreateNodeStart(typeCache[beginToken.TypeId], dict);
     }
 
     /// <summary>
@@ -69,9 +69,9 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// <param name="dataToken">The data token.</param>
     /// <returns>The token in serialized form.</returns>
     protected override string Format(PrimitiveToken dataToken) {
-      var dict = new Dictionary<string, object> {
+      var dict = new Dictionary<string, string> {
             {"name", dataToken.Name},
-            {"id", dataToken.Id}};
+            {"id", dataToken.Id.ToString()}};
       return CreateNode(typeCache[dataToken.TypeId], dict,
         ((XmlString)dataToken.SerialData).Data);
     }
@@ -83,7 +83,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// <returns>The token in serialized form.</returns>
     protected override string Format(ReferenceToken refToken) {
       return CreateNode(refToken.Id.ToString(),
-        new Dictionary<string, object> {
+        new Dictionary<string, string> {
           {"name", refToken.Name}});
     }
 
@@ -94,7 +94,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// <returns>The token in serialized form.</returns>
     protected override string Format(NullReferenceToken nullRefToken) {
       return CreateNode(XmlStringConstants.NULL,
-        new Dictionary<string, object>{
+        new Dictionary<string, string>{
           {"name", nullRefToken.Name}});
     }
 

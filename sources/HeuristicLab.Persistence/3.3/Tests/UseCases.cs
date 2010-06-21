@@ -1064,6 +1064,16 @@ namespace HeuristicLab.Persistence_33.Tests {
       Assert.IsTrue(double.IsNaN(newSpecials[2]));
     }
 
+    [TestMethod]
+    public void TestStringSplit() {
+      string s = "1.2;2.3;3.4;;;4.9";
+      var l = s.EnumerateSplit(';').ToList();
+      Assert.AreEqual("1.2", l[0]);
+      Assert.AreEqual("2.3", l[1]);
+      Assert.AreEqual("3.4", l[2]);
+      Assert.AreEqual("4.9", l[3]);
+    }
+
 
     [ClassInitialize]
     public static void Initialize(TestContext testContext) {
