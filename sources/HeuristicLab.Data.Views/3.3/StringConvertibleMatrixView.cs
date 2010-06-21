@@ -83,7 +83,7 @@ namespace HeuristicLab.Data.Views {
         dataGridView.Rows.Clear();
         dataGridView.Columns.Clear();
         virtualRowIndizes = new int[0];
-      } else 
+      } else
         UpdateData();
     }
 
@@ -98,12 +98,11 @@ namespace HeuristicLab.Data.Views {
     }
 
     private void UpdateData() {
-      sortedColumnIndizes.Clear();
+      ClearSorting();
       rowsTextBox.Text = Content.Rows.ToString();
       rowsTextBox.Enabled = true;
       columnsTextBox.Text = Content.Columns.ToString();
       columnsTextBox.Enabled = true;
-      virtualRowIndizes = Enumerable.Range(0, Content.Rows).ToArray();
       //DataGridViews with Rows but no columns are not allowed !
       if (Content.Rows == 0 && dataGridView.RowCount != Content.Rows && !Content.ReadOnly)
         Content.Rows = dataGridView.RowCount;
@@ -114,32 +113,37 @@ namespace HeuristicLab.Data.Views {
       else
         dataGridView.ColumnCount = Content.Columns;
 
-      Sort();
       UpdateRowHeaders();
       UpdateColumnHeaders();
-      dataGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.ColumnHeader);
-      dataGridView.AutoResizeRowHeadersWidth(DataGridViewRowHeadersWidthSizeMode.AutoSizeToDisplayedHeaders);
       dataGridView.Enabled = true;
     }
 
     private void UpdateColumnHeaders() {
-      for (int i = 0; i < Content.Columns; i++) {
+      int firstDisplayedColumnIndex = this.dataGridView.FirstDisplayedScrollingColumnIndex;
+      if (firstDisplayedColumnIndex == -1)
+        firstDisplayedColumnIndex = 0;
+      int lastDisplayedColumnIndex = firstDisplayedColumnIndex + dataGridView.DisplayedColumnCount(true);
+      for (int i = firstDisplayedColumnIndex; i < lastDisplayedColumnIndex; i++) {
         if (Content.ColumnNames.Count() != 0)
           dataGridView.Columns[i].HeaderText = Content.ColumnNames.ElementAt(i);
         else
           dataGridView.Columns[i].HeaderText = "Column " + (i + 1);
       }
-      dataGridView.Invalidate();
+      dataGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.ColumnHeader);
     }
 
     private void UpdateRowHeaders() {
-      for (int i = 0; i < dataGridView.RowCount; i++) {
+      int firstDisplayedRowIndex = dataGridView.FirstDisplayedScrollingRowIndex;
+      if(firstDisplayedRowIndex == -1)
+        firstDisplayedRowIndex = 0;
+      int lastDisplaydRowIndex = firstDisplayedRowIndex + dataGridView.DisplayedRowCount(true);
+      for (int i = firstDisplayedRowIndex; i < lastDisplaydRowIndex; i++) {
         if (Content.RowNames.Count() != 0)
           dataGridView.Rows[i].HeaderCell.Value = Content.RowNames.ElementAt(virtualRowIndizes[i]);
         else
           dataGridView.Rows[i].HeaderCell.Value = "Row " + (i + 1);
       }
-      dataGridView.Invalidate();
+      dataGridView.AutoResizeRowHeadersWidth(DataGridViewRowHeadersWidthSizeMode.AutoSizeToDisplayedHeaders);
     }
 
     private void Content_RowNamesChanged(object sender, EventArgs e) {
@@ -243,9 +247,11 @@ namespace HeuristicLab.Data.Views {
     }
     private void dataGridView_Scroll(object sender, ScrollEventArgs e) {
       UpdateRowHeaders();
+      UpdateColumnHeaders();
     }
     private void dataGridView_Resize(object sender, EventArgs e) {
       UpdateRowHeaders();
+      UpdateColumnHeaders();
     }
 
     private void dataGridView_KeyDown(object sender, KeyEventArgs e) {
