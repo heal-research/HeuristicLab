@@ -134,7 +134,9 @@ namespace HeuristicLab.Persistence.Default.Xml {
     }
 
     protected string CreateNode(string name, Dictionary<string, string> attributes, string content) {
-      StringBuilder sb = new StringBuilder();
+      StringBuilder sb = new StringBuilder(
+        prefix.Length + name.Length + AttributeLength(attributes) + 2
+        + content.Length + name.Length + 5);
       sb.Append(prefix);
       AddXmlStartTag(sb, name, attributes);
       sb.Append(content);
@@ -154,7 +156,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
           {"id", beginToken.Id.ToString()}};
       AddTypeInfo(beginToken.TypeId, dict);
       return CreateNodeStart(XmlStringConstants.COMPOSITE, dict);
-        
+
     }
 
     protected void AddTypeInfo(int typeId, Dictionary<string, string> dict) {
@@ -316,7 +318,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// <param name="config">The configuration.</param>
     /// <param name="includeAssemblies">if set to <c>true</c> include needed assemblies.</param>
     /// <param name="compression">The ZIP compression level.</param>
-    public static void Serialize(object obj, string filename, Configuration config, bool includeAssemblies, int compression) {      
+    public static void Serialize(object obj, string filename, Configuration config, bool includeAssemblies, int compression) {
       try {
         string tempfile = Path.GetTempFileName();
         DateTime start = DateTime.Now;
@@ -398,7 +400,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// <param name="stream">The stream.</param>
     /// <param name="config">The configuration.</param>
     /// <param name="includeAssemblies">if set to <c>true</c> include need assemblies.</param>
-    public static void Serialize(object obj, Stream stream, Configuration config, bool includeAssemblies) {      
+    public static void Serialize(object obj, Stream stream, Configuration config, bool includeAssemblies) {
       try {
         using (StreamWriter writer = new StreamWriter(new GZipStream(stream, CompressionMode.Compress))) {
           Serializer serializer = new Serializer(obj, config);
