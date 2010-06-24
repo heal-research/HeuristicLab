@@ -1074,6 +1074,27 @@ namespace HeuristicLab.Persistence_33.Tests {
       Assert.AreEqual("4.9", l[3]);
     }
 
+    [TestMethod]
+    public void TestCompactNumberArraySerializer() {
+      Random r = new Random();
+      double[] a = new double[CompactNumberArray2StringSerializer.SPLIT_THRESHOLD * 2 + 1];
+      for (int i = 0; i < a.Length; i++)
+        a[i] = r.Next(10);
+      var config = ConfigurationService.Instance.GetDefaultConfig(new XmlFormat());
+      config = new Configuration(config.Format,
+        config.PrimitiveSerializers.Where(s => s.SourceType != typeof(double[])),
+        config.CompositeSerializers);
+      XmlGenerator.Serialize(a, tempFile, config);
+      double[] newA = XmlParser.Deserialize<double[]>(tempFile);
+      Assert.AreEqual(a.Length, newA.Length);
+      for (int i = 0; i < a.Rank; i++) {
+        Assert.AreEqual(a.GetLength(i), newA.GetLength(i));
+        Assert.AreEqual(a.GetLowerBound(i), newA.GetLowerBound(i));
+      }
+      for (int i = 0; i < a.Length; i++) {
+        Assert.AreEqual(a[i], newA[i]);
+      }
+    }
 
     [ClassInitialize]
     public static void Initialize(TestContext testContext) {

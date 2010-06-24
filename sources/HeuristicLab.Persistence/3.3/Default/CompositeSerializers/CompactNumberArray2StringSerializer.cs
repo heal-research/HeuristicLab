@@ -33,7 +33,9 @@ using HeuristicLab.Persistence.Auxiliary;
 namespace HeuristicLab.Persistence.Default.CompositeSerializers {
 
   [StorableClass]
-  internal sealed class CompactNumberArray2StringSerializer : ICompositeSerializer {
+  public sealed class CompactNumberArray2StringSerializer : ICompositeSerializer {
+
+    public const int SPLIT_THRESHOLD = 1024 * 1024;
 
     public int Priority {
       get { return 200; }
@@ -59,22 +61,31 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
       Array a = (Array)obj;
       int[] lengths = new int[a.Rank];
       int[] lowerBounds = new int[a.Rank];
-      StringBuilder sb = new StringBuilder(a.Rank * 3);
+      StringBuilder sb = new StringBuilder(a.Rank * 6);
       sb.Append(a.Rank).Append(';');
-      int capacity = 1;
       for (int i = 0; i < a.Rank; i++) {
         sb.Append(a.GetLength(i)).Append(';');
         lengths[i] = a.GetLength(i);
-        capacity *= lengths[i];
       }
-      sb.EnsureCapacity(capacity * 3);
       for (int i = 0; i < a.Rank; i++) {
         sb.Append(a.GetLowerBound(i)).Append(';');
         lowerBounds[i] = a.GetLowerBound(i);
       }
+      yield return new Tag(sb.ToString());
+      int nElements = 1;
+      for (int i = 0; i < a.Rank; i++) {
+        lowerBounds[i] = a.GetLowerBound(i);
+        lengths[i] = a.GetLength(i);
+        nElements *= lengths[i];
+      }
+      sb = new StringBuilder(Math.Min(nElements * 3, SPLIT_THRESHOLD));
       int[] positions = (int[])lowerBounds.Clone();
       while (positions[a.Rank - 1] < lengths[a.Rank - 1] + lowerBounds[a.Rank - 1]) {
         sb.Append(numberConverter.Format(a.GetValue(positions))).Append(';');
+        if (sb.Length > SPLIT_THRESHOLD && sb.Length > sb.Capacity - 18) {
+          yield return new Tag(sb.ToString());
+          sb = new StringBuilder(Math.Min(nElements * 3, SPLIT_THRESHOLD));
+        }
         positions[0] += 1;
         for (int i = 0; i < a.Rank - 1; i++) {
           if (positions[i] >= lengths[i] + lowerBounds[i]) {
@@ -85,11 +96,13 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
           }
         }
       }
-      yield return new Tag("compact array", sb.ToString());
+      if (sb.Length > 0)
+        yield return new Tag(sb.ToString());
     }
 
+    private static Tag[] emptyTag = new Tag[0];
     public IEnumerable<Tag> Decompose(object obj) {
-      return new Tag[] { };
+      return emptyTag;
     }
 
     public object CreateInstance(Type type, IEnumerable<Tag> metaInfo) {
@@ -98,44 +111,46 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
         tagIter.MoveNext();
         var valueIter = ((string)tagIter.Current.Value).GetSplitEnumerator(';');
         valueIter.MoveNext();
-        int rank = int.Parse((string)valueIter.Current);
+        int rank = int.Parse(valueIter.Current);
         int[] lengths = new int[rank];
         int[] lowerBounds = new int[rank];
         for (int i = 0; i < rank; i++) {
           valueIter.MoveNext();
-          lengths[i] = int.Parse((string)valueIter.Current);
+          lengths[i] = int.Parse(valueIter.Current);
         }
         for (int i = 0; i < rank; i++) {
           valueIter.MoveNext();
-          lowerBounds[i] = int.Parse((string)valueIter.Current);
+          lowerBounds[i] = int.Parse(valueIter.Current);
         }
         Type elementType = type.GetElementType();
         Array a = Array.CreateInstance(elementType, lengths, lowerBounds);
+        if (a == null) throw new PersistenceException("invalid instance data type, expected array");
         int[] positions = (int[])lowerBounds.Clone();
-        while (valueIter.MoveNext()) {
-          a.SetValue(
-            numberConverter.Parse((string)valueIter.Current, elementType),
-            positions);
-          positions[0] += 1;
-          for (int i = 0; i < rank - 1; i++) {
-            if (positions[i] >= lengths[i] + lowerBounds[i]) {
-              positions[i + 1] += 1;
-              positions[i] = lowerBounds[i];
-            } else {
-              break;
+        while (tagIter.MoveNext()) {
+          valueIter = ((string)tagIter.Current.Value).GetSplitEnumerator(';');
+          while (valueIter.MoveNext()) {
+            a.SetValue(numberConverter.Parse(valueIter.Current, elementType), positions);
+            positions[0] += 1;
+            for (int i = 0; i < a.Rank - 1; i++) {
+              if (positions[i] >= lengths[i] + lowerBounds[i]) {
+                positions[i + 1] += 1;
+                positions[i] = lowerBounds[i];
+              } else {
+                break;
+              }
             }
           }
         }
         return a;
       } catch (InvalidOperationException e) {
-        throw new PersistenceException("Insufficient data to deserialize compact array", e);
+        throw new PersistenceException("Insuffictient data to deserialize compact array", e);
       } catch (InvalidCastException e) {
         throw new PersistenceException("Invalid element data during compact array deserialization", e);
       }
     }
 
     public void Populate(object instance, IEnumerable<Tag> tags, Type type) {
-      // Nothing to do: Compact arrays are already populated during instance creation.
+      // Nothing to do. Arrays are populated during instance creation;
     }
 
   }
