@@ -26,6 +26,8 @@ using System;
 using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Persistence.Auxiliary;
+using HeuristicLab.Tracing;
+using System.Collections.Generic;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
 
@@ -40,16 +42,16 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
       Array a = (Array)(object)t;
       int[] lengths = new int[a.Rank];
       int[] lowerBounds = new int[a.Rank];
-      StringBuilder sb = new StringBuilder(a.Rank * 3);
+      StringBuilder sb = new StringBuilder(3 + a.Rank * 3);
       sb.Append(a.Rank);
-      int capacity = 1;
+      int nElements = 1;
       for (int i = 0; i < a.Rank; i++) {
         sb.Append(Separator);
         sb.Append(a.GetLength(i));
         lengths[i] = a.GetLength(i);
-        capacity *= lengths[i];
-      }
-      sb.EnsureCapacity(capacity * 3);
+        nElements *= lengths[i];
+      }      
+      sb.EnsureCapacity(sb.Length + nElements * 3);
       for (int i = 0; i < a.Rank; i++) {
         sb.Append(Separator);
         sb.Append(a.GetLowerBound(i));
@@ -68,33 +70,33 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
             break;
           }
         }
-      }
+      }      
       return new XmlString(sb.ToString());
     }
 
     public override T Parse(XmlString x) {
       try {
-        IEnumerator values = x.Data.GetSplitEnumerator(Separator);
+        IEnumerator<string> values = x.Data.GetSplitEnumerator(Separator);
         values.MoveNext();
-        int rank = int.Parse((string)values.Current);
+        int rank = int.Parse(values.Current);
         int[] lengths = new int[rank];
         for (int i = 0; i < rank; i++) {
           values.MoveNext();
-          lengths[i] = int.Parse((string)values.Current);
+          lengths[i] = int.Parse(values.Current);
         }
         int[] lowerBounds = new int[rank];
         for (int i = 0; i < rank; i++) {
           values.MoveNext();
-          lowerBounds[i] = int.Parse((string)values.Current);
+          lowerBounds[i] = int.Parse(values.Current);
         }
         Array a = Array.CreateInstance(this.SourceType.GetElementType(), lengths, lowerBounds);
         int[] positions = (int[])lowerBounds.Clone();
-        while (values.MoveNext()) {
-          a.SetValue(ParseValue((string)values.Current), positions);
+        while (values.MoveNext()) {          
+          a.SetValue(ParseValue(values.Current), positions);
           positions[0] += 1;
           for (int i = 0; i < rank - 1; i++) {
-            if (positions[i] >= lengths[i]) {
-              positions[i] = 0;
+            if (positions[i] >= lowerBounds[i] + lengths[i]) {
+              positions[i] = lowerBounds[i];
               positions[i + 1] += 1;
             } else {
               break;
