@@ -42,7 +42,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       }
 
       PermutationMoveOperatorParameter.PermutationParameter.ActualName = VRPSolutionParameter.ActualName;
-      IAtomicOperation op = this.ExecutionContext.CreateOperation(PermutationMoveOperatorParameter);
+      IAtomicOperation op = this.ExecutionContext.CreateChildOperation(PermutationMoveOperatorParameter);
       op.Operator.Execute((IExecutionContext)op);
 
       return base.Apply();

@@ -68,20 +68,20 @@ namespace HeuristicLab.Problems.VehicleRouting {
     public ILookupParameter<DoubleArray> ServiceTimeParameter {
       get { return (ILookupParameter<DoubleArray>)Parameters["ServiceTime"]; }
     }
-    public IValueParameter<DoubleValue> FleetUsageFactor {
-      get { return (IValueParameter<DoubleValue>)Parameters["FleetUsageFactor"]; }
+    public ILookupParameter<DoubleValue> FleetUsageFactor {
+      get { return (ILookupParameter<DoubleValue>)Parameters["FleetUsageFactor"]; }
     }
-    public IValueParameter<DoubleValue> TimeFactor {
-      get { return (IValueParameter<DoubleValue>)Parameters["TimeFactor"]; }
+    public ILookupParameter<DoubleValue> TimeFactor {
+      get { return (ILookupParameter<DoubleValue>)Parameters["TimeFactor"]; }
     }
-    public IValueParameter<DoubleValue> DistanceFactor {
-      get { return (IValueParameter<DoubleValue>)Parameters["DistanceFactor"]; }
+    public ILookupParameter<DoubleValue> DistanceFactor {
+      get { return (ILookupParameter<DoubleValue>)Parameters["DistanceFactor"]; }
     }
-    public IValueParameter<DoubleValue> OverloadPenalty {
-      get { return (IValueParameter<DoubleValue>)Parameters["OverloadPenalty"]; }
+    public ILookupParameter<DoubleValue> OverloadPenalty {
+      get { return (ILookupParameter<DoubleValue>)Parameters["OverloadPenalty"]; }
     }
-    public IValueParameter<DoubleValue> TardinessPenalty {
-      get { return (IValueParameter<DoubleValue>)Parameters["TardinessPenalty"]; }
+    public ILookupParameter<DoubleValue> TardinessPenalty {
+      get { return (ILookupParameter<DoubleValue>)Parameters["TardinessPenalty"]; }
     }
 
     public ILookupParameter<DoubleValue> QualityParameter {
@@ -125,11 +125,11 @@ namespace HeuristicLab.Problems.VehicleRouting {
       Parameters.Add(new LookupParameter<DoubleArray>("ReadyTime", "The ready time of each customer."));
       Parameters.Add(new LookupParameter<DoubleArray>("DueTime", "The due time of each customer."));
       Parameters.Add(new LookupParameter<DoubleArray>("ServiceTime", "The service time of each customer."));
-      Parameters.Add(new ValueParameter<DoubleValue>("FleetUsageFactor", "The fleet usage factor considered in the evaluation.", new DoubleValue(0)));
-      Parameters.Add(new ValueParameter<DoubleValue>("TimeFactor", "The time factor considered in the evaluation.", new DoubleValue(0)));
-      Parameters.Add(new ValueParameter<DoubleValue>("DistanceFactor", "The distance factor considered in the evaluation.", new DoubleValue(1)));
-      Parameters.Add(new ValueParameter<DoubleValue>("OverloadPenalty", "The overload penalty considered in the evaluation.", new DoubleValue(50)));
-      Parameters.Add(new ValueParameter<DoubleValue>("TardinessPenalty", "The tardiness penalty considered in the evaluation.", new DoubleValue(50)));
+      Parameters.Add(new LookupParameter<DoubleValue>("FleetUsageFactor", "The fleet usage factor considered in the evaluation."));
+      Parameters.Add(new LookupParameter<DoubleValue>("TimeFactor", "The time factor considered in the evaluation."));
+      Parameters.Add(new LookupParameter<DoubleValue>("DistanceFactor", "The distance factor considered in the evaluation."));
+      Parameters.Add(new LookupParameter<DoubleValue>("OverloadPenalty", "The overload penalty considered in the evaluation."));
+      Parameters.Add(new LookupParameter<DoubleValue>("TardinessPenalty", "The tardiness penalty considered in the evaluation."));
     }
 
     protected abstract TourEvaluation GetMoveQuality();

@@ -89,6 +89,21 @@ namespace HeuristicLab.Problems.VehicleRouting {
     IParameter IProblem.EvaluatorParameter {
       get { return EvaluatorParameter; }
     }
+    public IValueParameter<DoubleValue> FleetUsageFactor {
+      get { return (IValueParameter<DoubleValue>)Parameters["FleetUsageFactor"]; }
+    }
+    public IValueParameter<DoubleValue> TimeFactor {
+      get { return (IValueParameter<DoubleValue>)Parameters["TimeFactor"]; }
+    }
+    public IValueParameter<DoubleValue> DistanceFactor {
+      get { return (IValueParameter<DoubleValue>)Parameters["DistanceFactor"]; }
+    }
+    public IValueParameter<DoubleValue> OverloadPenalty {
+      get { return (IValueParameter<DoubleValue>)Parameters["OverloadPenalty"]; }
+    }
+    public IValueParameter<DoubleValue> TardinessPenalty {
+      get { return (IValueParameter<DoubleValue>)Parameters["TardinessPenalty"]; }
+    }
     public OptionalValueParameter<DoubleValue> BestKnownQualityParameter {
       get { return (OptionalValueParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
     }
@@ -180,6 +195,11 @@ namespace HeuristicLab.Problems.VehicleRouting {
       Parameters.Add(new ValueParameter<DoubleArray>("DueTime", "The due time of each customer.", new DoubleArray()));
       Parameters.Add(new ValueParameter<DoubleArray>("ServiceTime", "The service time of each customer.", new DoubleArray()));
       Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this VRP instance."));
+      Parameters.Add(new ValueParameter<DoubleValue>("FleetUsageFactor", "The fleet usage factor considered in the evaluation.", new DoubleValue(100)));
+      Parameters.Add(new ValueParameter<DoubleValue>("TimeFactor", "The time factor considered in the evaluation.", new DoubleValue(0)));
+      Parameters.Add(new ValueParameter<DoubleValue>("DistanceFactor", "The distance factor considered in the evaluation.", new DoubleValue(1)));
+      Parameters.Add(new ValueParameter<DoubleValue>("OverloadPenalty", "The overload penalty considered in the evaluation.", new DoubleValue(100)));
+      Parameters.Add(new ValueParameter<DoubleValue>("TardinessPenalty", "The tardiness penalty considered in the evaluation.", new DoubleValue(100)));
 
       Parameters.Add(new ValueParameter<IVRPCreator>("SolutionCreator", "The operator which should be used to create new VRP solutions.", creator));
       Parameters.Add(new ValueParameter<IVRPEvaluator>("Evaluator", "The operator which should be used to evaluate VRP solutions.", evaluator));
@@ -342,6 +362,11 @@ namespace HeuristicLab.Problems.VehicleRouting {
       Evaluator.ReadyTimeParameter.ActualName = ReadyTimeParameter.Name;
       Evaluator.DueTimeParameter.ActualName = DueTimeParameter.Name;
       Evaluator.ServiceTimeParameter.ActualName = ServiceTimeParameter.Name;
+      Evaluator.FleetUsageFactor.ActualName = FleetUsageFactor.Name;
+      Evaluator.TimeFactor.ActualName = TimeFactor.Name;
+      Evaluator.DistanceFactor.ActualName = DistanceFactor.Name;
+      Evaluator.OverloadPenalty.ActualName = OverloadPenalty.Name;
+      Evaluator.TardinessPenalty.ActualName = TardinessPenalty.Name;
     }
     private void ParameterizeAnalyzer() {
       BestVRPSolutionAnalyzer.CoordinatesParameter.ActualName = CoordinatesParameter.Name;
@@ -368,6 +393,11 @@ namespace HeuristicLab.Problems.VehicleRouting {
         op.ReadyTimeParameter.ActualName = ReadyTimeParameter.Name;
         op.DueTimeParameter.ActualName = DueTimeParameter.Name;
         op.ServiceTimeParameter.ActualName = ServiceTimeParameter.Name;
+        op.FleetUsageFactor.ActualName = FleetUsageFactor.Name;
+        op.TimeFactor.ActualName = TimeFactor.Name;
+        op.DistanceFactor.ActualName = DistanceFactor.Name;
+        op.OverloadPenalty.ActualName = OverloadPenalty.Name;
+        op.TardinessPenalty.ActualName = TardinessPenalty.Name;
       }
       string translocationMove = Operators.OfType<IMoveGenerator>().OfType<IPermutationTranslocationMoveOperator>().First().TranslocationMoveParameter.ActualName;
       foreach (IPermutationTranslocationMoveOperator op in Operators.OfType<IPermutationTranslocationMoveOperator>())

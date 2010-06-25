@@ -53,8 +53,8 @@ namespace HeuristicLab.Problems.VehicleRouting {
       return VRPEvaluator.Evaluate(
         newSolution,
         DueTimeParameter.ActualValue, ServiceTimeParameter.ActualValue, ReadyTimeParameter.ActualValue,
-        DemandParameter.ActualValue, CapacityParameter.ActualValue, 
-        FleetUsageFactor.Value, TimeFactor.Value, DistanceFactor.Value, OverloadPenalty.Value, TardinessPenalty.Value,
+        DemandParameter.ActualValue, CapacityParameter.ActualValue,
+        FleetUsageFactor.ActualValue, TimeFactor.ActualValue, DistanceFactor.ActualValue, OverloadPenalty.ActualValue, TardinessPenalty.ActualValue,
         CoordinatesParameter.ActualValue, DistanceMatrixParameter, UseDistanceMatrixParameter.ActualValue);
     }
   }

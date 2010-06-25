@@ -28,18 +28,24 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Parameters;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaTranslocationMoveGenerator", "An operator which generates translocation moves for the alba representation.")]
   [StorableClass]
-  public sealed class AlbaTranslocationMoveGenerator : AlbaMoveOperator, IPermutationTranslocationMoveOperator, IMoveGenerator {
+  public sealed class AlbaTranslocationMoveGenerator : AlbaMoveOperator, IPermutationTranslocationMoveOperator, IMultiMoveGenerator {
     public IValueLookupParameter<TranslocationMoveGenerator> TranslocationMoveGeneratorParameter {
       get { return (IValueLookupParameter<TranslocationMoveGenerator>)Parameters["TranslocationMoveGenerator"]; }
     }
 
     protected override IPermutationMoveOperator PermutationMoveOperatorParameter {
       get { return TranslocationMoveGeneratorParameter.Value; }
-      set { TranslocationMoveGeneratorParameter.Value = value as TranslocationMoveGenerator; }
+      set { 
+        TranslocationMoveGeneratorParameter.Value = value as TranslocationMoveGenerator;
+        if (TranslocationMoveGeneratorParameter.Value is IMultiMoveGenerator) {
+          ((IMultiMoveGenerator)TranslocationMoveGeneratorParameter.Value).SampleSizeParameter.ActualName = SampleSizeParameter.Name;
+        }
+      }
     }
 
     public ILookupParameter<TranslocationMove> TranslocationMoveParameter {
@@ -60,9 +66,16 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       }
     }
 
+    public IValueLookupParameter<IntValue> SampleSizeParameter {
+      get { return (IValueLookupParameter<IntValue>)Parameters["SampleSize"]; }
+    }
+
     public AlbaTranslocationMoveGenerator(): base() {
       Parameters.Add(new ValueLookupParameter<TranslocationMoveGenerator>("TranslocationMoveGenerator", "The move generator.", 
         new StochasticTranslocationMultiMoveGenerator()));
+      Parameters.Add(new ValueLookupParameter<IntValue>("SampleSize", "The number of moves to generate."));
+
+      ((IMultiMoveGenerator)TranslocationMoveGeneratorParameter.Value).SampleSizeParameter.ActualName = SampleSizeParameter.Name;
     }
 
     public override IOperation Apply() {

@@ -44,5 +44,11 @@ namespace HeuristicLab.Problems.VehicleRouting {
     ILookupParameter<DoubleValue> MoveDistanceParameter { get; }
     ILookupParameter<DoubleValue> MoveOverloadParameter { get; }
     ILookupParameter<DoubleValue> MoveTardinessParameter { get; }
+
+    ILookupParameter<DoubleValue> FleetUsageFactor { get; }
+    ILookupParameter<DoubleValue> TimeFactor { get; }
+    ILookupParameter<DoubleValue> DistanceFactor { get; }
+    ILookupParameter<DoubleValue> OverloadPenalty { get; }
+    ILookupParameter<DoubleValue> TardinessPenalty { get; }
   }
 }

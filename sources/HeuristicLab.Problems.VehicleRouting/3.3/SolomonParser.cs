@@ -144,7 +144,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
         demand.Add((double)int.Parse(m[3].Value));
         readyTime.Add((double)int.Parse(m[4].Value));
         double st = (double)int.Parse(m[6].Value);
-        dueTime.Add(st + (double)int.Parse(m[5].Value));
+        dueTime.Add((double)int.Parse(m[5].Value));
         serviceTime.Add(st);
         line = reader.ReadLine();
       }
