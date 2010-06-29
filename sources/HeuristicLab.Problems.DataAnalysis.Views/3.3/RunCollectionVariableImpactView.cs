@@ -32,6 +32,7 @@ using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Core;
 using HeuristicLab.Common;
 using HeuristicLab.Data;
+using alglib;
 
 namespace HeuristicLab.Optimization.Views {
   [Content(typeof(RunCollection), false)]
@@ -87,11 +88,12 @@ namespace HeuristicLab.Optimization.Views {
         List<string> variableNames = (from varImpact in variableImpacts
                                       from variableName in varImpact.RowNames
                                       select variableName).Distinct().ToList();
+        List<string> statictics = new List<string> { "Mean", "Median", "StdDev", "Significance Mean>0", "Significance Median>0" };
         List<string> columnNames = runsWithVariables.Select(r => r.Name).ToList();
-        columnNames.AddRange( new List<string> { "Mean", "Median", "StdDev" });
+        columnNames.AddRange(statictics);
         int runs = runsWithVariables.Count();
 
-        matrix = new DoubleMatrix(variableNames.Count, runs + 3);
+        matrix = new DoubleMatrix(variableNames.Count, runs + statictics.Count);
         matrix.SortableView = true;
         matrix.RowNames = variableNames;
         matrix.ColumnNames = columnNames;
@@ -112,6 +114,12 @@ namespace HeuristicLab.Optimization.Views {
           matrix[variableIndex, runs] = impacts.Average();
           matrix[variableIndex, runs + 1] = impacts.Median();
           matrix[variableIndex, runs + 2] = impacts.StandardDeviation();
+          double leftTail = 0; double rightTail = 0; double bothTails = 0;
+          double[] impactsArray = impacts.ToArray();
+          studentttests.studentttest1(ref impactsArray, impactsArray.Length, 0, ref bothTails, ref leftTail, ref rightTail);
+          matrix[variableIndex, runs + 3] = leftTail;
+          wsr.wilcoxonsignedranktest(impacts.ToArray(), impactsArray.Length, 0, ref bothTails, ref leftTail, ref rightTail);
+          matrix[variableIndex, runs + 4] = leftTail;
         }
       }
       return matrix;

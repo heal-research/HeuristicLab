@@ -97,6 +97,12 @@
     <Compile Include="ResultsView.Designer.cs">
       <DependentUpon>ResultsView.cs</DependentUpon>
     </Compile>
+    <Compile Include="RunCollectionVariableImpactView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="RunCollectionVariableImpactView.Designer.cs">
+      <DependentUpon>RunCollectionVariableImpactView.cs</DependentUpon>
+    </Compile>
     <Compile Include="SupportVectorRegressionSolutionView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -204,6 +210,10 @@
     <ProjectReference Include="..\..\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding\3.3\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3.csproj">
       <Project>{125D3006-67F5-48CB-913E-73C0548F17FA}</Project>
       <Name>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\2.5.0\ALGLIB-2.5.0\ALGLIB-2.5.0.csproj">
+      <Project>{29E4B033-1FEF-4FE1-AE17-0A9319D7C54E}</Project>
+      <Name>ALGLIB-2.5.0</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.MainForm.WindowsForms\3.3\HeuristicLab.MainForm.WindowsForms-3.3.csproj">
       <Project>{AB687BBE-1BFE-476B-906D-44237135431D}</Project>

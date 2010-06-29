@@ -153,12 +153,6 @@
     <Compile Include="RunCollectionTabularView.Designer.cs">
       <DependentUpon>RunCollectionTabularView.cs</DependentUpon>
     </Compile>
-    <Compile Include="RunCollectionVariableImpactView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="RunCollectionVariableImpactView.Designer.cs">
-      <DependentUpon>RunCollectionVariableImpactView.cs</DependentUpon>
-    </Compile>
     <Compile Include="RunCollectionView.cs">
       <SubType>UserControl</SubType>
     </Compile>
