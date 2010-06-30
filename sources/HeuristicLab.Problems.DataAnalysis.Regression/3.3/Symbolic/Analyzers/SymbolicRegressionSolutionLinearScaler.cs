@@ -72,26 +72,30 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       DoubleValue alpha = AlphaParameter.ActualValue;
       DoubleValue beta = BetaParameter.ActualValue;
       if (alpha != null && beta != null) {
-        var mainBranch = tree.Root.SubTrees[0].SubTrees[0];
-        var scaledMainBranch = MakeSum(MakeProduct(beta.Value, mainBranch), alpha.Value);
-
-        // remove the main branch before cloning to prevent cloning of sub-trees
-        tree.Root.SubTrees[0].RemoveSubTree(0);
-        var scaledTree = (SymbolicExpressionTree)tree.Clone();
-        // insert main branch into the original tree again 
-        tree.Root.SubTrees[0].InsertSubTree(0, mainBranch);
-        // insert the scaled main branch into the cloned tree
-        scaledTree.Root.SubTrees[0].InsertSubTree(0, scaledMainBranch);
-        ScaledSymbolicExpressionTreeParameter.ActualValue = scaledTree;
+        ScaledSymbolicExpressionTreeParameter.ActualValue = Scale(tree, alpha.Value, beta.Value);
       } else {
         // alpha or beta parameter not available => do not scale tree
         ScaledSymbolicExpressionTreeParameter.ActualValue = tree;
       }
-      
+
       return base.Apply();
     }
 
-    private SymbolicExpressionTreeNode MakeSum(SymbolicExpressionTreeNode treeNode, double alpha) {
+    public static SymbolicExpressionTree Scale(SymbolicExpressionTree original, double alpha, double beta) {
+      var mainBranch = original.Root.SubTrees[0].SubTrees[0];
+      var scaledMainBranch = MakeSum(MakeProduct(beta, mainBranch), alpha);
+
+      // remove the main branch before cloning to prevent cloning of sub-trees
+      original.Root.SubTrees[0].RemoveSubTree(0);
+      var scaledTree = (SymbolicExpressionTree)original.Clone();
+      // insert main branch into the original tree again 
+      original.Root.SubTrees[0].InsertSubTree(0, mainBranch);
+      // insert the scaled main branch into the cloned tree
+      scaledTree.Root.SubTrees[0].InsertSubTree(0, scaledMainBranch);
+      return scaledTree;
+    }
+
+    private static SymbolicExpressionTreeNode MakeSum(SymbolicExpressionTreeNode treeNode, double alpha) {
       var node = (new Addition()).CreateTreeNode();
       var alphaConst = MakeConstant(alpha);
       node.AddSubTree(treeNode);
@@ -99,7 +103,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       return node;
     }
 
-    private SymbolicExpressionTreeNode MakeProduct(double beta, SymbolicExpressionTreeNode treeNode) {
+    private static SymbolicExpressionTreeNode MakeProduct(double beta, SymbolicExpressionTreeNode treeNode) {
       var node = (new Multiplication()).CreateTreeNode();
       var betaConst = MakeConstant(beta);
       node.AddSubTree(treeNode);
@@ -107,7 +111,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       return node;
     }
 
-    private SymbolicExpressionTreeNode MakeConstant(double c) {
+    private static SymbolicExpressionTreeNode MakeConstant(double c) {
       var node = (ConstantTreeNode)(new Constant()).CreateTreeNode();
       node.Value = c;
       return node;
