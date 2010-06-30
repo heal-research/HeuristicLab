@@ -66,27 +66,26 @@ namespace HeuristicLab.Common {
     /// <param name="values"></param>
     /// <returns></returns>
     public static double Variance(this IEnumerable<double> values) {
-      IList<double> list = values as IList<double>;
-      if (list == null) {
-        list = values.ToList();
-      }
-      if (list.Count == 0) throw new ArgumentException("Enumeration contains no elements.");
+      int m_n = 0;
+      double m_oldM = 0.0;
+      double m_newM = 0.0;
+      double m_oldS = 0.0;
+      double m_newS = 0.0;
+      foreach (double x in values) {
+        m_n++;
+        if (m_n == 1) {
+          m_oldM = m_newM = x;
+          m_oldS = 0.0;
+        } else {
+          m_newM = m_oldM + (x - m_oldM) / m_n;
+          m_newS = m_oldS + (x - m_oldM) * (x - m_newM);
 
-      double mean = list.Average();
-      double squaredErrorsSum = 0.0;
-      int n = list.Count;
-      int s = 0;
-      for (int i = 0; i < n; i++) {
-        if (!double.IsNaN(list[i])) {
-          double d = list[i] - mean;
-          squaredErrorsSum += d * d;
-          s++;
+          // set up for next iteration
+          m_oldM = m_newM;
+          m_oldS = m_newS;
         }
       }
-      if (s == 0) {
-        throw new ArgumentException("Enumeration contains no non-NaN elements.");
-      }
-      return squaredErrorsSum / n;
+      return ((m_n > 1) ? m_newS / (m_n - 1) : 0.0);
     }
   }
 }
