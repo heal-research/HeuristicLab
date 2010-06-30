@@ -51,9 +51,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator."));
       Parameters.Add(new ValueLookupParameter<IPermutationCreator>("PermutationCreatorParameter", "The permutation creator.", new RandomPermutationCreator()));
 
-      ParameterizeSolutionCreator();
-
       Initialize();
+      ParameterizeSolutionCreator();
     }
 
     [StorableConstructor]
@@ -74,7 +73,6 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
 
     void CitiesParameter_ValueChanged(object sender, EventArgs e) {
       CitiesParameter.Value.ValueChanged += new EventHandler(CitiesValue_ValueChanged);
-      
       ParameterizeSolutionCreator();
     }
 
@@ -83,7 +81,6 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     }
 
     private void ParameterizeSolutionCreator() {
-      PermutationCreatorParameter.Value.LengthParameter.Value = CitiesParameter.Value;
       PermutationCreatorParameter.Value.PermutationTypeParameter.Value = new PermutationType(PermutationTypes.RelativeUndirected);
     }
 
