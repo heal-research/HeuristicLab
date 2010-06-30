@@ -39,7 +39,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       get { return minFunctionDefinitions; }
       set { 
         minFunctionDefinitions = value;
-        Initialize();
+        UpdateAdfConstraints();
       }
     }
     [Storable]
@@ -48,7 +48,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       get { return maxFunctionDefinitions; }
       set { 
         maxFunctionDefinitions = value;
-        Initialize();
+        UpdateAdfConstraints();
       }
     }
     [Storable]
@@ -57,7 +57,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       get { return minFunctionArguments; }
       set { 
         minFunctionArguments = value;
-        Initialize();
       }
     }
     [Storable]
@@ -66,11 +65,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       get { return maxFunctionArguments; }
       set { 
         maxFunctionArguments = value;
-        Initialize();
       }
     }
+
     [Storable]
-    private ISymbolicExpressionGrammar mainBranchGrammar;
+    private Defun defunSymbol;
 
     public GlobalSymbolicExpressionGrammar() : base() { } // empty constructor for cloning
 
@@ -78,18 +77,17 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       : base() {
       maxFunctionArguments = 3;
       maxFunctionDefinitions = 3;
-      this.mainBranchGrammar = mainBranchGrammar;
-      Initialize();
+      Initialize(mainBranchGrammar);
     }
 
-    private void Initialize() {
+    private void Initialize(ISymbolicExpressionGrammar mainBranchGrammar) {
       base.Clear();
 
       // remove the start symbol of the default grammar
       RemoveSymbol(StartSymbol);
 
       StartSymbol = new ProgramRootSymbol();
-      var defunSymbol = new Defun();
+      defunSymbol = new Defun();
       AddSymbol(StartSymbol);
       AddSymbol(defunSymbol);
 
@@ -97,6 +95,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       SetMaxSubtreeCount(StartSymbol, maxFunctionDefinitions + 1);
       SetMinSubtreeCount(defunSymbol, 1);
       SetMaxSubtreeCount(defunSymbol, 1);
+
+      // ADF branches maxFunctionDefinitions 
+      for (int argumentIndex = 1; argumentIndex < maxFunctionDefinitions + 1; argumentIndex++) {
+        SetAllowedChild(StartSymbol, defunSymbol, argumentIndex);
+      }
 
       if (mainBranchGrammar != null) {
         // copy symbols from mainBranchGrammar
@@ -108,11 +111,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
         // the start symbol of the mainBranchGrammar is allowed as the result producing branch
         SetAllowedChild(StartSymbol, mainBranchGrammar.StartSymbol, 0);
-
-        // ADF branches maxFunctionDefinitions 
-        for (int argumentIndex = 1; argumentIndex < maxFunctionDefinitions + 1; argumentIndex++) {
-          SetAllowedChild(StartSymbol, defunSymbol, argumentIndex);
-        }
 
         // copy syntax constraints from mainBranchGrammar
         foreach (var parent in mainBranchGrammar.Symbols) {
@@ -132,13 +130,23 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         }
       }
     }
+    private void UpdateAdfConstraints() {
+      SetMinSubtreeCount(StartSymbol, minFunctionDefinitions + 1);
+      SetMaxSubtreeCount(StartSymbol, maxFunctionDefinitions + 1);
+      
+      // ADF branches maxFunctionDefinitions 
+      for (int argumentIndex = 1; argumentIndex < maxFunctionDefinitions + 1; argumentIndex++) {
+        SetAllowedChild(StartSymbol, defunSymbol, argumentIndex);
+      }
+    }
+
     public override IDeepCloneable Clone(Cloner cloner) {
       GlobalSymbolicExpressionGrammar clone = (GlobalSymbolicExpressionGrammar)base.Clone(cloner);
+      clone.defunSymbol = defunSymbol;
       clone.maxFunctionArguments = maxFunctionArguments;
       clone.maxFunctionDefinitions = maxFunctionDefinitions;
       clone.minFunctionArguments = minFunctionArguments;
       clone.minFunctionDefinitions = minFunctionDefinitions;
-      clone.mainBranchGrammar = (ISymbolicExpressionGrammar)cloner.Clone(mainBranchGrammar);
       return clone;
     }
   }
