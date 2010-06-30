@@ -56,8 +56,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Evaluators {
         double o = originalEnumerator.Current;
         if (!double.IsNaN(e) && !double.IsInfinity(e) &&
             !double.IsNaN(o) && !double.IsInfinity(o) && !o.IsAlmost(0.0)) {
-          double error = Math.Abs((e - o) / o);
-          sre += error * error;
+          sre += Math.Abs((e - o) / o);
           cnt++;
         }
       }
