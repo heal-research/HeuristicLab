@@ -34,6 +34,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [Item("Dataset", "Represents a dataset containing data that should be analyzed.")]
   [StorableClass]
   public sealed class Dataset : NamedItem, IStringConvertibleMatrix {
+    // empty constructor for cloning
+    private Dataset() : base() {
+    }
+    
     [StorableConstructor]
     protected Dataset(bool deserializing)
       : base(deserializing) {
@@ -115,7 +119,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return this;
+      Dataset clone = (Dataset)base.Clone(cloner);
+      clone.variableNames = variableNames;
+      clone.data = data;
+      return clone;
     }
 
     public event EventHandler Reset;
