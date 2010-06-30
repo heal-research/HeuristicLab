@@ -66,7 +66,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Crossovers {
       int maxInsertedBranchSize = maxTreeSize - (parent0.Size - crossoverPoint0.SubTrees[replacedSubtreeIndex].GetSize());
       int maxInsertedBranchHeight = maxTreeHeight - GetBranchLevel(parent0.Root, crossoverPoint0);
 
-      var allowedBranches = (from branch in parent1.Root.IterateNodesPrefix()
+      var allowedBranches = (from branch in parent1.Root.IterateNodesPostfix()
                              where branch.GetSize() < maxInsertedBranchSize
                              where branch.GetHeight() < maxInsertedBranchHeight
                              where IsMatchingPointType(crossoverPoint0, replacedSubtreeIndex, branch)
@@ -102,14 +102,14 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Crossovers {
     }
 
     private static void SelectCrossoverPoint(IRandom random, SymbolicExpressionTree parent0, double internalNodeProbability, int maxBranchSize, int maxBranchHeight, out SymbolicExpressionTreeNode crossoverPoint, out int subtreeIndex) {
-      var crossoverPoints = from branch in parent0.Root.IterateNodesPrefix()
-                            where branch.SubTrees.Count > 0
-                            where branch != parent0.Root
-                            where branch.GetSize() < maxBranchSize
-                            where branch.GetHeight() < maxBranchHeight
-                            from index in Enumerable.Range(0, branch.SubTrees.Count)
-                            let p = new { CrossoverPoint = branch, SubtreeIndex = index, IsLeaf = branch.SubTrees[index].SubTrees.Count == 0 }
-                            select p;
+      var crossoverPoints = (from branch in parent0.Root.IterateNodesPostfix()
+                             where branch.SubTrees.Count > 0
+                             where branch != parent0.Root
+                             where branch.GetSize() < maxBranchSize
+                             where branch.GetHeight() < maxBranchHeight
+                             from index in Enumerable.Range(0, branch.SubTrees.Count)
+                             let p = new { CrossoverPoint = branch, SubtreeIndex = index, IsLeaf = branch.SubTrees[index].SubTrees.Count == 0 }
+                             select p).ToList();
       var internalCrossoverPoints = (from p in crossoverPoints
                                      where !p.IsLeaf
                                      select p).ToList();
@@ -138,17 +138,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Crossovers {
 
     private static SymbolicExpressionTreeNode SelectRandomBranch(IRandom random, IEnumerable<SymbolicExpressionTreeNode> branches, double internalNodeProbability) {
       if (internalNodeProbability < 0.0 || internalNodeProbability > 1.0) throw new ArgumentException("internalNodeProbability");
-      var groupedBranches = (from branch in branches
-                             group branch by branch.SubTrees.Count into g
-                             select g).ToList();
-      var allowedInternalBranches = (from g in groupedBranches
-                                     where g.Key > 0
-                                     from branch in g
+      var allowedInternalBranches = (from branch in branches
+                                     where branch.SubTrees.Count > 0
                                      select branch).ToList();
-      var allowedLeafBranches = (from g in groupedBranches
-                                 where g.Key == 0
-                                 from leaf in g
-                                 select leaf).ToList();
+      var allowedLeafBranches = (from branch in branches
+                                 where branch.SubTrees.Count == 0
+                                 select branch).ToList();
       if (allowedInternalBranches.Count == 0) {
         return allowedLeafBranches.SelectRandom(random);
       } else if (allowedLeafBranches.Count == 0) {
