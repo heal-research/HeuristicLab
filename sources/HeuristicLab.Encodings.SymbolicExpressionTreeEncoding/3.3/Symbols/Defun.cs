@@ -29,6 +29,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
   [StorableClass]
   [Item("Defun", "Symbol that represents a function defining node.")]
   public sealed class Defun : ReadOnlySymbol {
+    public Defun() : base() { }
+
     public override SymbolicExpressionTreeNode CreateTreeNode() {
       return new DefunTreeNode(this);
     }
