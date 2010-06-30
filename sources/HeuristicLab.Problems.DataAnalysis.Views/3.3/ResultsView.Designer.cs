@@ -43,10 +43,33 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      components = new System.ComponentModel.Container();
+      this.matrixView = new HeuristicLab.Data.Views.StringConvertibleMatrixView();
+      this.SuspendLayout();
+      // 
+      // matrixView
+      // 
+      this.matrixView.Caption = "StringConvertibleMatrix View";
+      this.matrixView.Content = null;
+      this.matrixView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.matrixView.Location = new System.Drawing.Point(0, 0);
+      this.matrixView.Name = "matrixView";
+      this.matrixView.ReadOnly = true;
+      this.matrixView.Size = new System.Drawing.Size(494, 317);
+      this.matrixView.TabIndex = 0;
+      // 
+      // ResultsView
+      // 
+      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.matrixView);
+      this.Name = "ResultsView";
+      this.Size = new System.Drawing.Size(494, 317);
+      this.ResumeLayout(false);
+
     }
 
     #endregion
+
+    private HeuristicLab.Data.Views.StringConvertibleMatrixView matrixView;
   }
 }

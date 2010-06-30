@@ -83,7 +83,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.SupportVectorRegression 
                          let boundedX = Math.Min(UpperEstimationLimit, Math.Max(LowerEstimationLimit, prediction))
                          select double.IsNaN(boundedX) ? UpperEstimationLimit : boundedX).ToList();
       OnEstimatedValuesChanged();
-      RecalculateResultValues();
     }
 
     private List<double> estimatedValues;

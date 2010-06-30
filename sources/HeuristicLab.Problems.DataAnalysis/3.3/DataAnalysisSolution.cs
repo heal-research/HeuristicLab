@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
   /// </summary>
   [Item("DataAnalysisSolution", "Represents a solution for a data analysis problem which can be visualized in the GUI.")]
   [StorableClass]
-  public abstract class DataAnalysisSolution : NamedItem, IStringConvertibleMatrix {
+  public abstract class DataAnalysisSolution : NamedItem {
     protected DataAnalysisSolution()
       : base() { }
     protected DataAnalysisSolution(DataAnalysisProblemData problemData) : this(problemData, double.NegativeInfinity, double.PositiveInfinity) { }
@@ -161,50 +161,5 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
       return clone;
     }
-
-    #region IStringConvertibleMatrix implementation
-    private List<string> rowNames = new List<string>() { "MeanSquaredError", "CoefficientOfDetermination", "MeanAbsolutePercentageError" };
-    private List<string> columnNames = new List<string>() { "Training", "Test" };
-    private double[,] resultValues = new double[3, 2];
-    int IStringConvertibleMatrix.Rows { get { return rowNames.Count; } set { } }
-    int IStringConvertibleMatrix.Columns { get { return columnNames.Count; } set { } }
-    IEnumerable<string> IStringConvertibleMatrix.ColumnNames { get { return columnNames; } set { } }
-    IEnumerable<string> IStringConvertibleMatrix.RowNames { get { return rowNames; } set { } }
-    bool IStringConvertibleMatrix.SortableView { get { return false; } set { } }
-    bool IStringConvertibleMatrix.ReadOnly { get { return true; } }
-
-    string IStringConvertibleMatrix.GetValue(int rowIndex, int columnIndex) {
-      return resultValues[rowIndex, columnIndex].ToString();
-    }
-    bool IStringConvertibleMatrix.Validate(string value, out string errorMessage) {
-      errorMessage = "This matrix is readonly.";
-      return false;
-    }
-    bool IStringConvertibleMatrix.SetValue(string value, int rowIndex, int columnIndex) { return false; }
-
-    protected void RecalculateResultValues() {
-      IEnumerable<double> originalTrainingValues = problemData.Dataset.GetVariableValues(problemData.TargetVariable.Value, problemData.TrainingSamplesStart.Value, problemData.TrainingSamplesEnd.Value);
-      IEnumerable<double> originalTestValues = problemData.Dataset.GetVariableValues(problemData.TargetVariable.Value, problemData.TestSamplesStart.Value, problemData.TestSamplesEnd.Value);
-      resultValues[0, 0] = SimpleMSEEvaluator.Calculate(originalTrainingValues, EstimatedTrainingValues);
-      resultValues[0, 1] = SimpleMSEEvaluator.Calculate(originalTestValues, EstimatedTestValues);
-      resultValues[1, 0] = SimpleRSquaredEvaluator.Calculate(originalTrainingValues, EstimatedTrainingValues);
-      resultValues[1, 1] = SimpleRSquaredEvaluator.Calculate(originalTestValues, EstimatedTestValues);
-      resultValues[2, 0] = SimpleMeanAbsolutePercentageErrorEvaluator.Calculate(originalTrainingValues, EstimatedTrainingValues);
-      resultValues[2, 1] = SimpleMeanAbsolutePercentageErrorEvaluator.Calculate(originalTestValues, EstimatedTestValues);
-
-      this.OnReset();
-    }
-
-    public event EventHandler ColumnNamesChanged;
-    public event EventHandler RowNamesChanged;
-    public event EventHandler SortableViewChanged;
-    public event EventHandler<EventArgs<int, int>> ItemChanged;
-    public event EventHandler Reset;
-    protected virtual void OnReset() {
-      EventHandler handler = Reset;
-      if (handler != null)
-        handler(this, EventArgs.Empty);
-    }
-    #endregion
   }
 }
