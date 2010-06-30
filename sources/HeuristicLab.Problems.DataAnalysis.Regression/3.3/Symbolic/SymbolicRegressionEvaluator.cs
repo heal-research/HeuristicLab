@@ -103,7 +103,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     public override IOperation Apply() {
       QualityParameter.ActualValue = new DoubleValue(Evaluate(SymbolicExpressionTreeInterpreter, SymbolicExpressionTree, RegressionProblemData.Dataset,
         RegressionProblemData.TargetVariable, SamplesStart, SamplesEnd));
-      return null;
+      return base.Apply();
     }
 
     protected abstract double Evaluate(ISymbolicExpressionTreeInterpreter interpreter,
