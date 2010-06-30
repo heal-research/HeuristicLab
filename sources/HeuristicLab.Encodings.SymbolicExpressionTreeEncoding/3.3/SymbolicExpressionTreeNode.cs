@@ -38,6 +38,13 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     private IList<SymbolicExpressionTreeNode> subTrees;
     [Storable]
     private Symbol symbol;
+
+    // cached values to prevent unnecessary tree iterations
+    private short size;
+    private short height;
+    private List<SymbolicExpressionTreeNode> prefixForm;
+    private List<SymbolicExpressionTreeNode> postfixForm;
+
     public Symbol Symbol {
       get { return symbol; }
       protected set { symbol = value; }
@@ -63,7 +70,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     // copy constructor
     protected SymbolicExpressionTreeNode(SymbolicExpressionTreeNode original) {
       symbol = original.symbol;
-      subTrees = new List<SymbolicExpressionTreeNode>();
+      subTrees = new List<SymbolicExpressionTreeNode>(original.SubTrees.Count);
       foreach (var subtree in original.SubTrees) {
         AddSubTree((SymbolicExpressionTreeNode)subtree.Clone());
       }
@@ -90,15 +97,21 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     public int GetSize() {
-      int size = 1;
-      foreach (SymbolicExpressionTreeNode tree in SubTrees) size += tree.GetSize();
-      return size;
+      if (size > 0) return size;
+      else {
+        size = 1;
+        for (int i = 0; i < SubTrees.Count; i++) size += (short)SubTrees[i].GetSize();
+        return size;
+      }
     }
 
     public int GetHeight() {
-      int maxHeight = 0;
-      foreach (SymbolicExpressionTreeNode tree in SubTrees) maxHeight = Math.Max(maxHeight, tree.GetHeight());
-      return maxHeight + 1;
+      if (height > 0) return height;
+      else {
+        for (int i = 0; i < SubTrees.Count; i++) height = Math.Max(height, (short)SubTrees[i].GetHeight());
+        height++;
+        return height;
+      }
     }
 
     public virtual void ResetLocalParameters(IRandom random) { }
@@ -107,35 +120,51 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     public virtual void AddSubTree(SymbolicExpressionTreeNode tree) {
       subTrees.Add(tree);
       tree.Parent = this;
+      ResetCachedValues();
     }
 
     public virtual void InsertSubTree(int index, SymbolicExpressionTreeNode tree) {
       subTrees.Insert(index, tree);
       tree.Parent = this;
+      ResetCachedValues();
     }
 
     public virtual void RemoveSubTree(int index) {
       subTrees[index].Parent = null;
       subTrees.RemoveAt(index);
+      ResetCachedValues();
     }
 
     public IEnumerable<SymbolicExpressionTreeNode> IterateNodesPrefix() {
-      if (SubTrees != null) {
-        return (new SymbolicExpressionTreeNode[] { this })
-          .Concat(SubTrees.SelectMany(tree => tree.IterateNodesPrefix()));
-      } else {
-        return new SymbolicExpressionTreeNode[] { this };
+      if (prefixForm == null) {
+        prefixForm = new List<SymbolicExpressionTreeNode>(200);
+        ForEachNodePrefix(x => prefixForm.Add(x));
+      }
+      return prefixForm;
+    }
+
+    private void ForEachNodePrefix(Action<SymbolicExpressionTreeNode> a) {
+      a(this);
+      for (int i = 0; i < SubTrees.Count; i++) {
+        SubTrees[i].ForEachNodePrefix(a);
       }
     }
 
     public IEnumerable<SymbolicExpressionTreeNode> IterateNodesPostfix() {
-      if (SubTrees != null) {
-        return SubTrees.SelectMany(tree => tree.IterateNodesPrefix())
-          .Concat(new SymbolicExpressionTreeNode[] { this });
-      } else {
-        return new SymbolicExpressionTreeNode[] { this };
+      if (postfixForm == null) {
+        postfixForm = new List<SymbolicExpressionTreeNode>(200);
+        ForEachNodePostfix(x => postfixForm.Add(x));
       }
+      return postfixForm;
     }
+
+    private void ForEachNodePostfix(Action<SymbolicExpressionTreeNode> a) {
+      for (int i = 0; i < SubTrees.Count; i++) {
+        SubTrees[i].ForEachNodePrefix(a);
+      }
+      a(this);
+    }
+
     public IEnumerable<Symbol> GetAllowedSymbols(int argumentIndex) {
       return Grammar.Symbols.Where(s => Grammar.IsAllowedChild(Symbol, s, argumentIndex));
     }
@@ -156,6 +185,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
     public override string ToString() {
       return Symbol.Name;
+    }
+
+    private void ResetCachedValues() {
+      size = 0; height = 0;
+      prefixForm = null; postfixForm = null;
+      if (parent != null) parent.ResetCachedValues();
     }
   }
 }
