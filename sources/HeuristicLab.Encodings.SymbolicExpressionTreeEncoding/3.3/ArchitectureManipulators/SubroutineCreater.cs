@@ -167,7 +167,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureMani
       }
       // remove the subtrees so that we can clone only the root node
       List<SymbolicExpressionTreeNode> subtrees = new List<SymbolicExpressionTreeNode>(node.SubTrees);
-      while (node.SubTrees.Count > 0) node.SubTrees.RemoveAt(0);
+      while (node.SubTrees.Count > 0) node.RemoveSubTree(0);
       // recursively apply function for subtrees or append a argument terminal node
       foreach (var subtree in subtrees) {
         node.AddSubTree(DisconnectBranches(subtree, argumentBranches));

@@ -52,7 +52,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     // the argumentTrees list contains already expanded trees used as arguments for invocations
     private SymbolicExpressionTreeNode MacroExpand(SymbolicExpressionTreeNode root, SymbolicExpressionTreeNode node, IList<SymbolicExpressionTreeNode> argumentTrees) {
       List<SymbolicExpressionTreeNode> subtrees = new List<SymbolicExpressionTreeNode>(node.SubTrees);
-      while (node.SubTrees.Count > 0) node.SubTrees.RemoveAt(0);
+      while (node.SubTrees.Count > 0) node.RemoveSubTree(0);
       if (node.Symbol is InvokeFunction) {
         var invokeSym = node.Symbol as InvokeFunction;
         var defunNode = FindFunctionDefinition(root, invokeSym.FunctionName);
@@ -213,8 +213,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return a;
       } else {
         var div = divSymbol.CreateTreeNode();
-        div.SubTrees.Add(a);
-        div.SubTrees.Add(b);
+        div.AddSubTree(a);
+        div.AddSubTree(b);
         return div;
       }
     }
@@ -269,8 +269,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return add;
       } else {
         var add = addSymbol.CreateTreeNode();
-        add.SubTrees.Add(a);
-        add.SubTrees.Add(b);
+        add.AddSubTree(a);
+        add.AddSubTree(b);
         MergeVariables(add);
         return add;
       }

@@ -111,7 +111,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic {
       root.AddSubTree(start);
       SymbolicExpressionTree tree = new SymbolicExpressionTree(root);
       foreach (SymbolicExpressionTreeNode node in this.simplifiedExpressionTree.IterateNodesPrefix()) {
-        start.SubTrees.Clear();
+        while(start.SubTrees.Count > 0) start.RemoveSubTree(0);
         start.AddSubTree(node);
         double constantTreeNodeValue = interpreter.GetSymbolicExpressionTreeValues(tree, Content.ProblemData.Dataset, trainingSamples).Median();
         ConstantTreeNode constantTreeNode = MakeConstantTreeNode(constantTreeNodeValue);

@@ -135,7 +135,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureMani
       } else {
         // call recursively for all subtree
         List<SymbolicExpressionTreeNode> subtrees = new List<SymbolicExpressionTreeNode>(branch.SubTrees);
-        while (branch.SubTrees.Count > 0) branch.SubTrees.RemoveAt(0);
+        while (branch.SubTrees.Count > 0) branch.RemoveSubTree(0);
         foreach (var subtree in subtrees) {
           branch.AddSubTree(ReplaceArgumentsInBranch(subtree, argumentTrees));
         }
