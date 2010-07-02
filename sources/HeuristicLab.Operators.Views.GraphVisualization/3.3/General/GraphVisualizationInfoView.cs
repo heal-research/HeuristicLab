@@ -83,10 +83,10 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     }
 
     private void UpdateContent() {
-      foreach (IConnectionInfo connectionInfo in this.connectionInfoConnectionMapping.FirstValues)
+      foreach (IConnectionInfo connectionInfo in this.connectionInfoConnectionMapping.FirstValues.ToList())
         this.RemoveConnectionInfo(connectionInfo);
       this.connectionInfoConnectionMapping.Clear();
-      foreach (IShapeInfo shapeInfo in this.shapeInfoShapeMapping.FirstValues)
+      foreach (IShapeInfo shapeInfo in this.shapeInfoShapeMapping.FirstValues.ToList())
         this.RemoveShapeInfo(shapeInfo);
       this.shapeInfoShapeMapping.Clear();
 

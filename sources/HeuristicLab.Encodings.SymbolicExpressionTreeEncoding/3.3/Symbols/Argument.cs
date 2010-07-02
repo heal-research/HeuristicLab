@@ -27,18 +27,25 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
   /// Symbol for function arguments
   /// </summary>
   [StorableClass]
-  [Item("Argument", "Symbol that represents a function argument.")]
+  [Item(Argument.ArgumentName, Argument.ArgumentDescription)]
   public sealed class Argument : ReadOnlySymbol {
+    public const string ArgumentName = "Argument";
+    public const string ArgumentDescription = "Symbol that represents a function argument.";
     [Storable]
     private int argumentIndex;
     public int ArgumentIndex {
       get { return argumentIndex; }
     }
 
+    public override bool CanChangeDescription {
+      get { return false; }
+    }
+
+    [StorableConstructor]
     private Argument() : base() { }
 
     public Argument(int argumentIndex)
-      : base() {
+      : base("ARG" + argumentIndex, Argument.ArgumentDescription) {
       this.argumentIndex = argumentIndex;
       this.name = "ARG" + argumentIndex;
     }

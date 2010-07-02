@@ -28,5 +28,6 @@ namespace HeuristicLab.Problems.ArtificialAnt.Symbols {
   [StorableClass]
   [Item("Move", "Represents the move-forward symbol in a artificial ant expression.")]
   public sealed class Move : Symbol {
+    public Move() : base("Move", "Represents the move-forward symbol in a artificial ant expression.") { }
   }
 }

@@ -49,11 +49,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
       get { return false; }
     }
 
-    protected ReadOnlySymbol()
-      : base() {
-      this.name = ItemName;
-      this.description = ItemDescription;
-      initialFrequency = 1.0;
-    }
+    protected ReadOnlySymbol() : base() { }
+    protected ReadOnlySymbol(string name, string description) : base(name, description) { }
+    [StorableConstructor]
+    protected ReadOnlySymbol(bool deserializing) : base(deserializing) { }
   }
 }

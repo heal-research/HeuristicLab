@@ -89,7 +89,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
     }
     #endregion
     public LaggedVariable()
-      : base() {
+      : base("LaggedVariable", "Represents a variable value with a time offset.") {
       weightNu = 1.0;
       weightSigma = 1.0;
       weightManipulatorNu = 0.0;

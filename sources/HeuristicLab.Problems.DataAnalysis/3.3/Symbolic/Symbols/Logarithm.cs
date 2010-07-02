@@ -27,5 +27,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [StorableClass]
   [Item("Logarithm", "Symbol that represents the logarithm function.")]
   public sealed class Logarithm : Symbol {
+    public Logarithm() : base("Logarithm", "Symbol that represents the logarithm function.") { }
   }
 }

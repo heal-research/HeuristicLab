@@ -27,5 +27,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [StorableClass]
   [Item("LessThan", "Symbol that represents a less than relation.")]
   public sealed class LessThan : Symbol {
+    public LessThan() : base("LessThan", "Symbol that represents a less than relation.") { }
   }
 }

@@ -27,5 +27,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [StorableClass]
   [Item("Addition", "Symbol that represents the + operator.")]
   public sealed class Addition : Symbol {
+    public Addition() :base("Addition","Symbol that represents the + operator.") {}
   }
 }

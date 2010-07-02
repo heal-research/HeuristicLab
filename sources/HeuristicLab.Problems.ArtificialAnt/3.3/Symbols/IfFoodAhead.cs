@@ -28,5 +28,6 @@ namespace HeuristicLab.Problems.ArtificialAnt.Symbols {
   [StorableClass]
   [Item("IfFoodAhead", "Represents the if-food-ahead symbol in a artificial ant expression.")]
   public sealed class IfFoodAhead : Symbol {
+    public IfFoodAhead() : base("IfFoodAhead", "Represents the if-food-ahead symbol in a artificial ant expression.") { }
   }
 }

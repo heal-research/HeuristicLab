@@ -27,5 +27,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [StorableClass]
   [Item("Not", "Symbol that represents the boolean NOT operator.")]
   public sealed class Not : Symbol {
+    public Not() : base("Not", "Symbol that represents the boolean NOT operator.") { }
   }
 }

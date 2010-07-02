@@ -27,5 +27,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [StorableClass]
   [Item("Cosine", "Symbol that represents the cosine function.")]
   public sealed class Cosine : Symbol {
+    public Cosine() : base("Cosine", "Symbol that represents the cosine function.") { }
   }
 }

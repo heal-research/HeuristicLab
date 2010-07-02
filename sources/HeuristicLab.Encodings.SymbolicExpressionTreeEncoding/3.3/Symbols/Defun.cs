@@ -27,9 +27,14 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
   /// Symbol for function defining branches
   /// </summary>
   [StorableClass]
-  [Item("Defun", "Symbol that represents a function defining node.")]
+  [Item(Defun.DefunName, Defun.DefunDescription)]
   public sealed class Defun : ReadOnlySymbol {
-    public Defun() : base() { }
+    public const string DefunName = "Defun";
+    public const string DefunDescription = "Symbol that represents a function defining node.";
+
+    public Defun() : base(Defun.DefunName, Defun.DefunDescription) { }
+    [StorableConstructor]
+    protected Defun(bool deserializing) : base(deserializing) { }
 
     public override SymbolicExpressionTreeNode CreateTreeNode() {
       return new DefunTreeNode(this);

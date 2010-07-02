@@ -40,6 +40,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       : base() {
       Initialize();
     }
+    [StorableConstructor]
+    protected FullFunctionalExpressionGrammar(bool deserializing) : base(deserializing) { }
 
     private void Initialize() {
       var add = new Addition();
@@ -66,7 +68,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var allSymbols = new List<Symbol>() { add, sub, mul, div, mean, sin, cos, tan, log, exp, @if, gt, lt, and, or, not, constant, variableSymbol };
       var unaryFunctionSymbols = new List<Symbol>() { sin, cos, tan, log, exp, not };
       var binaryFunctionSymbols = new List<Symbol>() { gt, lt };
-      var functionSymbols = new List<Symbol>() { add, sub, mul, div, mean, and, or};
+      var functionSymbols = new List<Symbol>() { add, sub, mul, div, mean, and, or };
 
       foreach (var symb in allSymbols)
         AddSymbol(symb);

@@ -27,5 +27,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [StorableClass]
   [Item("Subtraction", "Symbol that represents the - operator.")]
   public sealed class Subtraction : Symbol {
+    public Subtraction() : base("Subtraction", "Symbol that represents the - operator.") { }
   }
 }

@@ -28,8 +28,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
   /// Symbol for invoking automatically defined functions
   /// </summary>
   [StorableClass]
-  [Item("InvokeFunction", "Symbol that the invokation of another function.")]
+  [Item(InvokeFunction.InvokeFunctionName, InvokeFunction.InvokeFunctionDescription)]
   public sealed class InvokeFunction : ReadOnlySymbol {
+    public const string InvokeFunctionName = "InvokeFunction";
+    public const string InvokeFunctionDescription = "Symbol that the invokation of another function.";
     public override bool CanChangeName {
       get {
         return false;
@@ -45,12 +47,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
       }
     }
 
-    private InvokeFunction() : base() { }
-
+    [StorableConstructor]
+    private InvokeFunction(bool deserializing) : base(deserializing) { }
     public InvokeFunction(string functionName)
-      : base() {
+      : base("Invoke: " + functionName, InvokeFunction.InvokeFunctionDescription) {
       this.FunctionName = functionName;
-      this.name = "Invoke: " + functionName;
     }
 
     public override SymbolicExpressionTreeNode CreateTreeNode() {

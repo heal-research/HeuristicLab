@@ -27,5 +27,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [StorableClass]
   [Item("Or", "Symbol that represents the boolean OR operator.")]
   public sealed class Or : Symbol {
+    public Or() : base("Or", "Symbol that represents the boolean OR operator.") { }
   }
 }

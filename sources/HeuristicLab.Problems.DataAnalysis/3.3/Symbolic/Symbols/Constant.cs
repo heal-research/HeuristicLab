@@ -80,7 +80,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
     }
     #endregion
     public Constant()
-      : base() {
+      : base("Constant", "Represents a constant value.") {
       manipulatorNu = 0.0;
       manipulatorSigma = 1.0;
       minValue = -20.0;

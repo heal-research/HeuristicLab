@@ -27,5 +27,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [StorableClass]
   [Item("Multiplication", "Symbol that represents the * operator.")]
   public sealed class Multiplication : Symbol {
+    public Multiplication() : base("Multiplication", "Symbol that represents the * operator.") { }
   }
 }

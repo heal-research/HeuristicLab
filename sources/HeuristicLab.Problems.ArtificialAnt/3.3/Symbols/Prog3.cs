@@ -28,5 +28,6 @@ namespace HeuristicLab.Problems.ArtificialAnt.Symbols {
   [StorableClass]
   [Item("Prog3", "Represents the sequence symbol with 3 sub-trees in a artificial ant expression.")]
   public sealed class Prog3 : Symbol {
+    public Prog3() : base("Prog3", "Represents the sequence symbol with 3 sub-trees in a artificial ant expression.") { }
   }
 }

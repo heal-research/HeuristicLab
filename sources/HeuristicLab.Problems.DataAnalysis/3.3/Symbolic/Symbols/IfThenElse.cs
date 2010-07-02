@@ -27,5 +27,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [StorableClass]
   [Item("IfThenElse", "Symbol that represents a conditional operator.")]
   public sealed class IfThenElse : Symbol {
+    public IfThenElse() : base("IfThenElse", "Symbol that represents a conditional operator.") { }
   }
 }

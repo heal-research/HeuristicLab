@@ -27,5 +27,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [StorableClass]
   [Item("Sine", "Symbol that represents the sine function.")]
   public sealed class Sine : Symbol {
+    public Sine() : base("Sine", "Symbol that represents the sine function.") { }
   }
 }

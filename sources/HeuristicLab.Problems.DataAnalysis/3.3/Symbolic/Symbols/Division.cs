@@ -27,5 +27,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [StorableClass]
   [Item("Division", "Symbol that represents the / operator.")]
   public sealed class Division : Symbol {
+    public Division() : base("Division", "Symbol that represents the / operator.") { }
   }
 }

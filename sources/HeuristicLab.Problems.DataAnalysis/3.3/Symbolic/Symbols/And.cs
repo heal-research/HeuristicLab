@@ -27,5 +27,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [StorableClass]
   [Item("And", "Symbol that represents the boolean AND operator.")]
   public sealed class And : Symbol {
+    public And() : base("And", "Symbol that represents the boolean AND operator.") { }
   }
 }

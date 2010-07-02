@@ -53,10 +53,16 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
 
     protected Symbol()
       : base() {
-      this.name = ItemName;
-      this.description = ItemDescription;
       initialFrequency = 1.0;
     }
+
+    protected Symbol(string name, string description)
+      : base(name, description) {
+      initialFrequency = 1.0;
+    }
+
+    [StorableConstructor]
+    protected Symbol(bool deserializing) : base(deserializing) { }
 
     public virtual SymbolicExpressionTreeNode CreateTreeNode() {
       return new SymbolicExpressionTreeNode(this);

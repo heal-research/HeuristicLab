@@ -28,5 +28,6 @@ namespace HeuristicLab.Problems.ArtificialAnt.Symbols {
   [StorableClass]
   [Item("Right", "Represents the turn-right symbol in a artificial ant expression.")]
   public sealed class Right : Symbol {
+    public Right() : base("Right", "Represents the turn-right symbol in a artificial ant expression.") { }
   }
 }

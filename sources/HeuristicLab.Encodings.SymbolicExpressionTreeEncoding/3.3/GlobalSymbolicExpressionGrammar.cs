@@ -71,13 +71,27 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     [Storable]
     private Defun defunSymbol;
 
-    public GlobalSymbolicExpressionGrammar() : base() { } // empty constructor for cloning
+
 
     public GlobalSymbolicExpressionGrammar(ISymbolicExpressionGrammar mainBranchGrammar )
       : base() {
       maxFunctionArguments = 3;
       maxFunctionDefinitions = 3;
       Initialize(mainBranchGrammar);
+    }
+
+    //copy constructor for cloning
+    protected GlobalSymbolicExpressionGrammar(GlobalSymbolicExpressionGrammar copy)
+      : base(copy) {
+      this.maxFunctionArguments = copy.maxFunctionArguments;
+      this.minFunctionArguments = copy.minFunctionArguments;
+      this.maxFunctionDefinitions = copy.maxFunctionDefinitions;
+      this.minFunctionDefinitions = copy.minFunctionDefinitions;
+    }
+
+    [StorableConstructor]
+    protected GlobalSymbolicExpressionGrammar(bool deserializing)
+      : base(deserializing) {
     }
 
     private void Initialize(ISymbolicExpressionGrammar mainBranchGrammar) {
@@ -141,12 +155,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      GlobalSymbolicExpressionGrammar clone = (GlobalSymbolicExpressionGrammar)base.Clone(cloner);
-      clone.defunSymbol = defunSymbol;
-      clone.maxFunctionArguments = maxFunctionArguments;
-      clone.maxFunctionDefinitions = maxFunctionDefinitions;
-      clone.minFunctionArguments = minFunctionArguments;
-      clone.minFunctionDefinitions = minFunctionDefinitions;
+      GlobalSymbolicExpressionGrammar clone = new GlobalSymbolicExpressionGrammar(this);
+      cloner.RegisterClonedObject(this, clone);
       return clone;
     }
   }

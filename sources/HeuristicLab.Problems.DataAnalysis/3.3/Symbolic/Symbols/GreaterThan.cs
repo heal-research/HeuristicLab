@@ -27,5 +27,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [StorableClass]
   [Item("GreaterThan", "Symbol that represents a greater than relation.")]
   public sealed class GreaterThan : Symbol {
+    public GreaterThan() : base("GreaterThan", "Symbol that represents a greater than relation.") { }
   }
 }

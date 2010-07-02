@@ -41,6 +41,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Initialize();
     }
 
+    [StorableConstructor]
+    protected ArithmeticExpressionGrammar(bool deserializing) : base(deserializing) { }
+
     private void Initialize() {
       var add = new Addition();
       var sub = new Subtraction();

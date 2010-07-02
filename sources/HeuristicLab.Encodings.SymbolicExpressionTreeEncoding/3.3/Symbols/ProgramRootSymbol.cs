@@ -24,8 +24,15 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
   [StorableClass]
-  [Item("ProgramRootSymbol", "Special symbol that represents the program root node of a symbolic expression tree.")]
+  [Item(ProgramRootSymbol.ProgramRootSymbolName, ProgramRootSymbol.ProgramRootSymbolDescription)]
   public sealed class ProgramRootSymbol : ReadOnlySymbol {
+    public const string ProgramRootSymbolName = "ProgramRootSymbol";
+    public const string ProgramRootSymbolDescription = "Special symbol that represents the program root node of a symbolic expression tree.";
+
+    public ProgramRootSymbol() : base(ProgramRootSymbol.ProgramRootSymbolName, ProgramRootSymbol.ProgramRootSymbolDescription) { }
+    [StorableConstructor]
+    private ProgramRootSymbol(bool deserializing) : base(deserializing) { }
+
     public override SymbolicExpressionTreeNode CreateTreeNode() {
       return new SymbolicExpressionTreeTopLevelNode(this);
     }

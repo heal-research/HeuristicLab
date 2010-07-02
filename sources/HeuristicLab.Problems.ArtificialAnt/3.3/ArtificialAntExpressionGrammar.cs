@@ -37,6 +37,8 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       : base() {
       Initialize();
     }
+    [StorableConstructor]
+    protected ArtificialAntExpressionGrammar(bool deserializing) : base(deserializing) { }
 
     private void Initialize() {
       var ifFoodAhead = new IfFoodAhead();

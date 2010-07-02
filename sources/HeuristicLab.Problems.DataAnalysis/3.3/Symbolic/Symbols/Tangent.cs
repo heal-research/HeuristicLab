@@ -27,5 +27,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [StorableClass]
   [Item("Tangent", "Symbol that represents the tangent trigonometric function.")]
   public sealed class Tangent : Symbol {
+    public Tangent() : base("Tangent", "Symbol that represents the tangent trigonometric function.") { }
   }
 }

@@ -27,5 +27,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [StorableClass]
   [Item("Average", "Symbol that represents the average (arithmetic mean) function.")]
   public sealed class Average : Symbol {
+    public Average() : base("Average", "Symbol that represents the average (arithmetic mean) function.") { }
   }
 }

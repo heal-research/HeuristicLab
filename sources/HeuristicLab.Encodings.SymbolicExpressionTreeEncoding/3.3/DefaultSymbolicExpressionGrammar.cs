@@ -62,11 +62,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
                 .ToList();
       }
       set {
-        allowedChildSymbols = new Dictionary<string, List<HashSet<string>>>();
+        allowedChildSymbols = new Dictionary<string, List<List<string>>>();
         foreach (var pair in value) {
-          allowedChildSymbols[pair.Key] = new List<HashSet<string>>();
+          allowedChildSymbols[pair.Key] = new List<List<string>>();
           foreach (var entry in pair.Value) {
-            var hashSet = new HashSet<string>();
+            var hashSet = new List<string>();
             foreach (string child in entry) {
               hashSet.Add(child);
             }
@@ -84,24 +84,65 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
     private Dictionary<string, int> minSubTreeCount;
     private Dictionary<string, int> maxSubTreeCount;
-    private Dictionary<string, List<HashSet<string>>> allowedChildSymbols;
+    private Dictionary<string, List<List<string>>> allowedChildSymbols;
     private Dictionary<string, Symbol> allSymbols;
     [Storable]
     private Symbol startSymbol;
 
     public DefaultSymbolicExpressionGrammar()
       : base() {
-      Clear();
-    }
-
-    public void Clear() {
       minSubTreeCount = new Dictionary<string, int>();
       maxSubTreeCount = new Dictionary<string, int>();
-      allowedChildSymbols = new Dictionary<string, List<HashSet<string>>>();
+      allowedChildSymbols = new Dictionary<string, List<List<string>>>();
       allSymbols = new Dictionary<string, Symbol>();
+
       cachedMinExpressionLength = new Dictionary<string, int>();
       cachedMaxExpressionLength = new Dictionary<string, int>();
       cachedMinExpressionDepth = new Dictionary<string, int>();
+
+      startSymbol = new StartSymbol();
+      AddSymbol(startSymbol);
+      SetMinSubtreeCount(startSymbol, 1);
+      SetMaxSubtreeCount(startSymbol, 1);
+    }
+
+    //copy constructor for cloning
+    protected DefaultSymbolicExpressionGrammar(DefaultSymbolicExpressionGrammar copy) :base() {
+      this.minSubTreeCount = new Dictionary<string, int>(copy.minSubTreeCount);
+      this.maxSubTreeCount = new Dictionary<string, int>(copy.maxSubTreeCount);
+      
+      this.startSymbol = copy.startSymbol;
+      this.allowedChildSymbols = new Dictionary<string, List<List<string>>>();
+      foreach (var entry in copy.allowedChildSymbols) {
+        this.allowedChildSymbols[entry.Key] = new List<List<string>>(entry.Value.Count);
+        foreach (var set in entry.Value) {
+          this.allowedChildSymbols[entry.Key].Add(new List<string>(set));
+        }
+      }
+      this.allSymbols = new Dictionary<string, Symbol>(copy.allSymbols);
+
+      cachedMinExpressionLength = new Dictionary<string, int>();
+      cachedMaxExpressionLength = new Dictionary<string, int>();
+      cachedMinExpressionDepth = new Dictionary<string, int>();
+    }
+
+    [StorableConstructor]
+    protected DefaultSymbolicExpressionGrammar(bool deserializing)
+      : base(deserializing) {
+      cachedMinExpressionLength = new Dictionary<string, int>();
+      cachedMaxExpressionLength = new Dictionary<string, int>();
+      cachedMinExpressionDepth = new Dictionary<string, int>();
+    }
+
+    public void Clear() {
+      minSubTreeCount.Clear();
+      maxSubTreeCount.Clear();
+      allowedChildSymbols.Clear();
+      allSymbols.Clear();
+
+      cachedMaxExpressionLength.Clear();
+      cachedMinExpressionLength.Clear();
+      cachedMinExpressionDepth.Clear();
 
       startSymbol = new StartSymbol();
       AddSymbol(startSymbol);
@@ -116,11 +157,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       set { startSymbol = value; }
     }
 
-
     public void AddSymbol(Symbol symbol) {
       if (ContainsSymbol(symbol)) throw new ArgumentException("Symbol " + symbol + " is already defined.");
       allSymbols.Add(symbol.Name, symbol);
-      allowedChildSymbols[symbol.Name] = new List<HashSet<string>>();
+      allowedChildSymbols[symbol.Name] = new List<List<string>>();
       ClearCaches();
     }
 
@@ -210,7 +250,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       if (!ContainsSymbol(symbol)) throw new ArgumentException("Unknown symbol: " + symbol);
       maxSubTreeCount[symbol.Name] = nSubTrees;
       while (allowedChildSymbols[symbol.Name].Count <= nSubTrees)
-        allowedChildSymbols[symbol.Name].Add(new HashSet<string>());
+        allowedChildSymbols[symbol.Name].Add(new List<string>());
       while (allowedChildSymbols[symbol.Name].Count > nSubTrees) {
         allowedChildSymbols[symbol.Name].RemoveAt(allowedChildSymbols[symbol.Name].Count - 1);
       }
@@ -242,18 +282,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      DefaultSymbolicExpressionGrammar clone = (DefaultSymbolicExpressionGrammar)base.Clone(cloner);
-      clone.maxSubTreeCount = new Dictionary<string, int>(maxSubTreeCount);
-      clone.minSubTreeCount = new Dictionary<string, int>(minSubTreeCount);
-      clone.startSymbol = startSymbol;
-      clone.allowedChildSymbols = new Dictionary<string, List<HashSet<string>>>();
-      foreach (var entry in allowedChildSymbols) {
-        clone.allowedChildSymbols[entry.Key] = new List<HashSet<string>>();
-        foreach (var set in entry.Value) {
-          clone.allowedChildSymbols[entry.Key].Add(new HashSet<string>(set));
-        }
-      }
-      clone.allSymbols = new Dictionary<string, Symbol>(allSymbols);
+      DefaultSymbolicExpressionGrammar clone = new DefaultSymbolicExpressionGrammar(this);
+      cloner.RegisterClonedObject(this, clone);
       return clone;
     }
   }

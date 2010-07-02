@@ -27,5 +27,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [StorableClass]
   [Item("Exponential", "Symbol that represents the exponential function.")]
   public sealed class Exponential : Symbol {
+    public Exponential() : base("Exponential", "Symbol that represents the exponential function.") { }
   }
 }

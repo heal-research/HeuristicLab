@@ -94,7 +94,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
     }
     #endregion
     public Variable()
-      : base() {
+      : base("Variable", "Represents a variable value.") {
       weightNu = 1.0;
       weightSigma = 1.0;
       weightManipulatorNu = 0.0;
