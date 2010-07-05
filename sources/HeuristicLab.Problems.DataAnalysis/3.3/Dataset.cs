@@ -35,9 +35,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
   public sealed class Dataset : NamedItem, IStringConvertibleMatrix {
     // empty constructor for cloning
-    private Dataset() : base() {
+    private Dataset()
+      : base() {
     }
-    
+
     [StorableConstructor]
     protected Dataset(bool deserializing)
       : base(deserializing) {
@@ -69,7 +70,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public double this[int rowIndex, int columnIndex] {
       get { return data[rowIndex, columnIndex]; }
     }
-
     public double this[string variableName, int rowIndex] {
       get {
         int columnIndex = GetVariableIndex(variableName);
@@ -80,7 +80,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public double[] GetVariableValues(int variableIndex) {
       return GetVariableValues(variableIndex, 0, Rows);
     }
-
     public double[] GetVariableValues(int variableIndex, int start, int end) {
       if (start < 0 || !(start <= end))
         throw new ArgumentException("Start must be between 0 and end (" + end + ").");
@@ -92,16 +91,33 @@ namespace HeuristicLab.Problems.DataAnalysis {
         values[i] = data[i + start, variableIndex];
       return values;
     }
-
     public double[] GetVariableValues(string variableName) {
       return GetVariableValues(GetVariableIndex(variableName), 0, Rows);
     }
-
     public double[] GetVariableValues(string variableName, int start, int end) {
       return GetVariableValues(GetVariableIndex(variableName), start, end);
     }
 
-    #region Variable name methods
+    public IEnumerable<double> GetEnumeratedVariableValues(int variableIndex) {
+      return GetEnumeratedVariableValues(variableIndex, 0, Rows);
+    }
+    public IEnumerable<double> GetEnumeratedVariableValues(int variableIndex, int start, int end) {
+      if (start < 0 || !(start <= end))
+        throw new ArgumentException("Start must be between 0 and end (" + end + ").");
+      if (end > Rows || end < start)
+        throw new ArgumentException("End must be between start (" + start + ") and dataset rows (" + Rows + ").");
+      for (int i = 0; i < end - start; i++)
+        yield return data[i + start, variableIndex];
+    }
+    public IEnumerable<double> GetEnumeratedVariableValues(string variableName) {
+      return GetEnumeratedVariableValues(GetVariableIndex(variableName), 0, Rows);
+    }
+    public IEnumerable<double> GetEnumeratedVariableValues(string variableName, int start, int end) {
+      return GetEnumeratedVariableValues(GetVariableIndex(variableName), start, end);
+    }
+
+
+
     public string GetVariableName(int variableIndex) {
       return variableNames[variableIndex];
     }
@@ -112,7 +128,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
       throw new ArgumentException("The variable name " + variableName + " was not found.");
     }
-    #endregion
 
     public double[,] GetClonedData() {
       return (double[,])data.Clone();
