@@ -74,71 +74,93 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
 
     public static double Calculate(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, Dataset dataset, string targetVariable, int start, int end, out double beta, out double alpha) {
-      var estimatedValues = CalculateScaledEstimatedValues(interpreter, solution, dataset, targetVariable, start, end, out beta, out alpha);
-      estimatedValues = from x in estimatedValues
-                        let boundedX = Math.Min(upperEstimationLimit, Math.Max(lowerEstimationLimit, x))
-                        select double.IsNaN(boundedX) ? upperEstimationLimit : boundedX;
-      var originalValues = dataset.GetVariableValues(targetVariable, start, end);
-      return SimpleMSEEvaluator.Calculate(originalValues, estimatedValues);
+      IEnumerable<double> originalValues = dataset.GetEnumeratedVariableValues(targetVariable, start, end);
+      IEnumerable<double> estimatedValues = interpreter.GetSymbolicExpressionTreeValues(solution, dataset, Enumerable.Range(start, end - start));
+      CalculateScalingParameters(originalValues, estimatedValues, out beta, out alpha);
+
+      return CalculateWithScaling(interpreter, solution, lowerEstimationLimit, upperEstimationLimit, dataset, targetVariable, start, end, beta, alpha);
     }
 
     public static double CalculateWithScaling(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, Dataset dataset, string targetVariable, int start, int end, double beta, double alpha) {
-      var estimatedValues = from x in interpreter.GetSymbolicExpressionTreeValues(solution, dataset, Enumerable.Range(start, end - start))
-                            let boundedX = Math.Min(upperEstimationLimit, Math.Max(lowerEstimationLimit, x * beta + alpha))
-                            select double.IsNaN(boundedX) ? upperEstimationLimit : boundedX;
-      var originalValues = dataset.GetVariableValues(targetVariable, start, end);
-      return SimpleMSEEvaluator.Calculate(originalValues, estimatedValues);
-    }
+      //IEnumerable<double> estimatedValues = from x in interpreter.GetSymbolicExpressionTreeValues(solution, dataset, Enumerable.Range(start, end - start))
+      //                                      let boundedX = Math.Min(upperEstimationLimit, Math.Max(lowerEstimationLimit, x * beta + alpha))
+      //                                      select double.IsNaN(boundedX) ? upperEstimationLimit : boundedX;
+      IEnumerable<double> estimatedValues = interpreter.GetSymbolicExpressionTreeValues(solution, dataset, Enumerable.Range(start, end - start));
+      IEnumerable<double> originalValues = dataset.GetEnumeratedVariableValues(targetVariable, start, end);
+      IEnumerator<double> originalEnumerator = originalValues.GetEnumerator();
+      IEnumerator<double> estimatedEnumerator = estimatedValues.GetEnumerator();
+      double cnt = 0;
+      double sse = 0;
 
-    private static IEnumerable<double> CalculateScaledEstimatedValues(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree solution, Dataset dataset, string targetVariable, int start, int end, out double beta, out double alpha) {
-      int targetVariableIndex = dataset.GetVariableIndex(targetVariable);
-      var estimatedValues = interpreter.GetSymbolicExpressionTreeValues(solution, dataset, Enumerable.Range(start, end - start)).ToArray();
-      var originalValues = dataset.GetVariableValues(targetVariable, start, end);
-      CalculateScalingParameters(originalValues, estimatedValues, out beta, out alpha);
-      for (int i = 0; i < estimatedValues.Length; i++)
-        estimatedValues[i] = estimatedValues[i] * beta + alpha;
-      return estimatedValues;
-    }
-
-
-    public static void CalculateScalingParameters(IEnumerable<double> original, IEnumerable<double> estimated, out double beta, out double alpha) {
-      double[] originalValues = original.ToArray();
-      double[] estimatedValues = estimated.ToArray();
-      if (originalValues.Length != estimatedValues.Length) throw new ArgumentException();
-      var filteredResult = (from row in Enumerable.Range(0, originalValues.Length)
-                            let t = originalValues[row]
-                            let e = estimatedValues[row]
-                            where IsValidValue(t)
-                            where IsValidValue(e)
-                            select new { Estimation = e, Target = t })
-                   .OrderBy(x => Math.Abs(x.Target))            // make sure small values are considered before large values
-                   .ToArray();      
-
-      // calculate alpha and beta on the subset of rows with valid values 
-      originalValues = filteredResult.Select(x => x.Target).ToArray();
-      estimatedValues = filteredResult.Select(x => x.Estimation).ToArray();
-      int n = originalValues.Length;
-      if (n > 2) {
-        double tMean = originalValues.Average();
-        double xMean = estimatedValues.Average();
-        double sumXT = 0;
-        double sumXX = 0;
-        for (int i = 0; i < n; i++) {
-          // calculate alpha and beta on the subset of rows with valid values 
-          double x = estimatedValues[i];
-          double t = originalValues[i];
-          sumXT += (x - xMean) * (t - tMean);
-          sumXX += (x - xMean) * (x - xMean);
+      while (originalEnumerator.MoveNext() & estimatedEnumerator.MoveNext()) {
+        double estimated = estimatedEnumerator.Current * beta + alpha;
+        double original = originalEnumerator.Current;
+        estimated = Math.Min(upperEstimationLimit, Math.Max(lowerEstimationLimit, estimated));
+        if (double.IsNaN(estimated))
+          estimated = upperEstimationLimit;
+        if (!double.IsNaN(estimated) && !double.IsInfinity(estimated) &&
+            !double.IsNaN(original) && !double.IsInfinity(original)) {
+          double error = estimated - original;
+          sse += error * error;
+          cnt++;
         }
-        if (!sumXX.IsAlmost(0.0)) {
-          beta = sumXT / sumXX;
-        } else {
-          beta = 1;
-        }
-        alpha = tMean - beta * xMean;
+      }
+
+      if (estimatedEnumerator.MoveNext() || originalEnumerator.MoveNext()) {
+        throw new ArgumentException("Number of elements in original and estimated enumeration doesn't match.");
+      } else if (cnt == 0) {
+        throw new ArgumentException("Mean squared errors is not defined for input vectors of NaN or Inf");
       } else {
-        alpha = 0.0;
-        beta = 1.0;
+        double mse = sse / cnt;
+        return mse;
+      }
+    }
+
+    /// <summary>
+    /// Calculates linear scaling parameters in one pass.
+    /// The formulas to calculate the scaling parameters were taken from Scaled Symblic Regression by Maarten Keijzer.
+    /// http://www.springerlink.com/content/x035121165125175/
+    /// </summary>
+    public static void CalculateScalingParameters(IEnumerable<double> original, IEnumerable<double> estimated, out double beta, out double alpha) {
+      IEnumerator<double> originalEnumerator = original.GetEnumerator();
+      IEnumerator<double> estimatedEnumerator = estimated.GetEnumerator();
+
+      int cnt = 0;
+      double tSum = 0;
+      double ySum = 0;
+      double yySum = 0;
+      double ytSum = 0;
+
+      while (originalEnumerator.MoveNext() & estimatedEnumerator.MoveNext()) {
+        double y = estimatedEnumerator.Current;
+        double t = originalEnumerator.Current;
+        if (IsValidValue(t) && IsValidValue(y)) {
+          cnt++;
+          tSum += t;
+          ySum += y;
+          yySum += y * y;
+          ytSum += t * y;
+        }
+      }
+
+      if (estimatedEnumerator.MoveNext() || originalEnumerator.MoveNext())
+        throw new ArgumentException("Number of elements in original and estimated enumeration doesn't match.");
+      if (cnt < 2) {
+        alpha = 0;
+        beta = 1;
+      } else {
+        double tMean = tSum / cnt;
+        double yMean = ySum / cnt;
+        //division by cnt is omited because the variance and covariance are divided afterwards.
+        double yVariance = yySum - 2 * yMean * ySum + cnt * yMean * yMean;
+        double ytCovariance = ytSum - tMean * ySum - yMean * tSum + cnt * yMean * tMean;
+
+        if (yVariance.IsAlmost(0.0))
+          beta = 1;
+        else
+          beta = ytCovariance / yVariance;
+
+        alpha = tMean - beta * yMean;
       }
     }
 

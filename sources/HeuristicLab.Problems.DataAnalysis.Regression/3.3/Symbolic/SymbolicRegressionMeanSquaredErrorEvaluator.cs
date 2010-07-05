@@ -71,11 +71,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
 
     public static double Calculate(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, Dataset dataset, string targetVariable, int start, int end) {
-      int targetVariableIndex = dataset.GetVariableIndex(targetVariable);
       var estimatedValues = from x in interpreter.GetSymbolicExpressionTreeValues(solution, dataset, Enumerable.Range(start, end - start))
                             let boundedX = Math.Min(upperEstimationLimit, Math.Max(lowerEstimationLimit, x))
                             select double.IsNaN(boundedX) ? upperEstimationLimit : boundedX;
-      var originalValues = from row in Enumerable.Range(start, end - start) select dataset[row, targetVariableIndex];
+      var originalValues = dataset.GetEnumeratedVariableValues(targetVariable, start, end);
       return SimpleMSEEvaluator.Calculate(originalValues, estimatedValues);
     }
   }
