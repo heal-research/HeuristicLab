@@ -146,8 +146,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var currentInstr = code[pc++];
       switch (currentInstr.opCode) {
         case OpCodes.Add: {
-            double s = 0.0;
-            for (int i = 0; i < currentInstr.nArguments; i++) {
+            double s = Evaluate();
+            for (int i = 1; i < currentInstr.nArguments; i++) {
               s += Evaluate();
             }
             return s;

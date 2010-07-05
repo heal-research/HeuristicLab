@@ -71,11 +71,27 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
 
     public static double Calculate(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, Dataset dataset, string targetVariable, int start, int end) {
-      var estimatedValues = from x in interpreter.GetSymbolicExpressionTreeValues(solution, dataset, Enumerable.Range(start, end - start))
-                            let boundedX = Math.Min(upperEstimationLimit, Math.Max(lowerEstimationLimit, x))
-                            select double.IsNaN(boundedX) ? upperEstimationLimit : boundedX;
-      var originalValues = dataset.GetEnumeratedVariableValues(targetVariable, start, end);
-      return SimpleMSEEvaluator.Calculate(originalValues, estimatedValues);
+      IEnumerable<double> estimatedValues = interpreter.GetSymbolicExpressionTreeValues(solution, dataset, Enumerable.Range(start, end - start));
+      IEnumerable<double> originalValues = dataset.GetEnumeratedVariableValues(targetVariable, start, end);
+      IEnumerator<double> originalEnumerator = originalValues.GetEnumerator();
+      IEnumerator<double> estimatedEnumerator = estimatedValues.GetEnumerator();
+      OnlineMeanSquaredErrorEvaluator mseEvaluator = new OnlineMeanSquaredErrorEvaluator();
+
+      while (originalEnumerator.MoveNext() & estimatedEnumerator.MoveNext()) {
+        double estimated = estimatedEnumerator.Current;
+        double original = originalEnumerator.Current;
+        if (double.IsNaN(estimated))
+          estimated = upperEstimationLimit;
+        else
+          estimated = Math.Min(upperEstimationLimit, Math.Max(lowerEstimationLimit, estimated));
+        mseEvaluator.Add(original, estimated);
+      }
+
+      if (estimatedEnumerator.MoveNext() || originalEnumerator.MoveNext()) {
+        throw new ArgumentException("Number of elements in original and estimated enumeration doesn't match.");
+      } else {
+        return mseEvaluator.MeanSquaredError;
+      }
     }
   }
 }

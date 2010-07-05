@@ -98,27 +98,37 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
         var model = new SymbolicRegressionModel((ISymbolicExpressionTreeInterpreter)SymbolicExpressionTreeInterpreter.Clone(),
           SymbolicExpressionTree[i]);
         var solution = new SymbolicRegressionSolution(ProblemData, model, lowerEstimationLimit, upperEstimationLimit);
-
+        solution.Name = BestSolutionParameterName;
+        solution.Description = "Best solution on validation partition found over the whole run.";
         BestSolutionParameter.ActualValue = solution;
         BestSolutionQualityParameter.ActualValue = Quality[i];
-
-        if (Results.ContainsKey(BestSolutionInputvariableCountResultName)) {
-          Results[BestSolutionInputvariableCountResultName].Value = new IntValue(model.InputVariables.Count());
-          Results[VariableImpactsResultName].Value = CalculateVariableImpacts();
-        } else {
-          Results.Add(new Result(BestSolutionInputvariableCountResultName, new IntValue(model.InputVariables.Count())));
-          Results.Add(new Result(VariableImpactsResultName, CalculateVariableImpacts()));
-        }
+        BestSymbolicRegressionSolutionAnalyzer.UpdateSymbolicRegressionBestSolutionResults(solution, ProblemData, Results, VariableFrequencies);
       }
       return BestSolutionParameter.ActualValue;
     }
 
-    private DoubleMatrix CalculateVariableImpacts() {
-      if (VariableFrequencies != null) {
-        var impacts = new DoubleMatrix(VariableFrequencies.Rows.Count, 1, new string[] { "Impact" }, VariableFrequencies.Rows.Select(x => x.Name));
+    public static void UpdateBestSolutionResults(SymbolicRegressionSolution bestSolution, DataAnalysisProblemData problemData, ResultCollection results, IntValue currentGeneration, DataTable variableFrequencies) {
+      RegressionSolutionAnalyzer.UpdateBestSolutionResults(bestSolution, problemData, results, currentGeneration);
+      UpdateSymbolicRegressionBestSolutionResults(bestSolution, problemData, results, variableFrequencies);
+    }
+
+    private static void UpdateSymbolicRegressionBestSolutionResults(SymbolicRegressionSolution bestSolution, DataAnalysisProblemData problemData, ResultCollection results, DataTable variableFrequencies) {
+      if (results.ContainsKey(BestSolutionInputvariableCountResultName)) {
+        results[BestSolutionInputvariableCountResultName].Value = new IntValue(bestSolution.Model.InputVariables.Count());
+        results[VariableImpactsResultName].Value = CalculateVariableImpacts(variableFrequencies);
+      } else {
+        results.Add(new Result(BestSolutionInputvariableCountResultName, new IntValue(bestSolution.Model.InputVariables.Count())));
+        results.Add(new Result(VariableImpactsResultName, CalculateVariableImpacts(variableFrequencies)));
+      }
+    }
+
+
+    private static DoubleMatrix CalculateVariableImpacts(DataTable variableFrequencies) {
+      if (variableFrequencies != null) {
+        var impacts = new DoubleMatrix(variableFrequencies.Rows.Count, 1, new string[] { "Impact" }, variableFrequencies.Rows.Select(x => x.Name));
         impacts.SortableView = true;
         int rowIndex = 0;
-        foreach (var dataRow in VariableFrequencies.Rows) {
+        foreach (var dataRow in variableFrequencies.Rows) {
           string variableName = dataRow.Name;
           double integral = 0;
           if (dataRow.Values.Count > 1) {
@@ -133,6 +143,5 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
         return impacts;
       } else return new DoubleMatrix(1, 1);
     }
-
   }
 }

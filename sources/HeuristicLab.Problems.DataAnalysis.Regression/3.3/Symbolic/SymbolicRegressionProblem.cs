@@ -339,9 +339,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     private void InitializeOperators() {
       operators = new List<IOperator>();
       operators.AddRange(ApplicationManager.Manager.GetInstances<ISymbolicExpressionTreeOperator>().OfType<IOperator>());
-      operators.Add(new ValidationBestScaledSymbolicRegressionSolutionAnalyzer());
-      operators.Add(new MinAverageMaxSymbolicExpressionTreeSizeAnalyzer());
       operators.Add(new SymbolicRegressionVariableFrequencyAnalyzer());
+      operators.Add(new FixedValidationBestScaledSymbolicRegressionSolutionAnalyzer());
+      operators.Add(new MinAverageMaxSymbolicExpressionTreeSizeAnalyzer());
       ParameterizeOperators();
       ParameterizeAnalyzers();
     }
@@ -364,19 +364,27 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     private void ParameterizeAnalyzers() {
       foreach (var analyzer in Analyzers) {
         analyzer.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
-        var bestValidationSolutionAnalyzer = analyzer as ValidationBestScaledSymbolicRegressionSolutionAnalyzer;
+        var fixedBestValidationSolutionAnalyzer = analyzer as FixedValidationBestScaledSymbolicRegressionSolutionAnalyzer;
+        if (fixedBestValidationSolutionAnalyzer != null) {
+          fixedBestValidationSolutionAnalyzer.ProblemDataParameter.ActualName = DataAnalysisProblemDataParameter.Name;
+          fixedBestValidationSolutionAnalyzer.UpperEstimationLimitParameter.ActualName = UpperEstimationLimitParameter.Name;
+          fixedBestValidationSolutionAnalyzer.LowerEstimationLimitParameter.ActualName = LowerEstimationLimitParameter.Name;
+          fixedBestValidationSolutionAnalyzer.SymbolicExpressionTreeInterpreterParameter.ActualName = SymbolicExpressionTreeInterpreterParameter.Name;
+          fixedBestValidationSolutionAnalyzer.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
+          fixedBestValidationSolutionAnalyzer.ValidationSamplesStartParameter.Value = ValidationSamplesStart;
+          fixedBestValidationSolutionAnalyzer.ValidationSamplesEndParameter.Value = ValidationSamplesEnd;
+          fixedBestValidationSolutionAnalyzer.BestKnownQualityParameter.ActualName = BestKnownQualityParameter.Name;
+          fixedBestValidationSolutionAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
+        }
+        var bestValidationSolutionAnalyzer = analyzer as FixedValidationBestScaledSymbolicRegressionSolutionAnalyzer;
         if (bestValidationSolutionAnalyzer != null) {
           bestValidationSolutionAnalyzer.ProblemDataParameter.ActualName = DataAnalysisProblemDataParameter.Name;
           bestValidationSolutionAnalyzer.UpperEstimationLimitParameter.ActualName = UpperEstimationLimitParameter.Name;
           bestValidationSolutionAnalyzer.LowerEstimationLimitParameter.ActualName = LowerEstimationLimitParameter.Name;
           bestValidationSolutionAnalyzer.SymbolicExpressionTreeInterpreterParameter.ActualName = SymbolicExpressionTreeInterpreterParameter.Name;
           bestValidationSolutionAnalyzer.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
-          bestValidationSolutionAnalyzer.TrainingSamplesStartParameter.Value = TrainingSamplesStart;
-          bestValidationSolutionAnalyzer.TrainingSamplesEndParameter.Value = TrainingSamplesEnd;
           bestValidationSolutionAnalyzer.ValidationSamplesStartParameter.Value = ValidationSamplesStart;
           bestValidationSolutionAnalyzer.ValidationSamplesEndParameter.Value = ValidationSamplesEnd;
-          bestValidationSolutionAnalyzer.TestSamplesStartParameter.Value = TestSamplesStart;
-          bestValidationSolutionAnalyzer.TestSamplesEndParameter.Value = TestSamplesEnd;
           bestValidationSolutionAnalyzer.BestKnownQualityParameter.ActualName = BestKnownQualityParameter.Name;
           bestValidationSolutionAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
         }

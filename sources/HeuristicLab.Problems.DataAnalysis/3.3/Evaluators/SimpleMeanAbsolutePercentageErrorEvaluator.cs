@@ -47,25 +47,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Evaluators {
     }
 
     public static double Calculate(IEnumerable<double> original, IEnumerable<double> estimated) {
-      double sre = 0;
-      int cnt = 0;
+      OnlineMeanAbsolutePercentageErrorEvaluator onlineEvaluator = new OnlineMeanAbsolutePercentageErrorEvaluator();
       var originalEnumerator = original.GetEnumerator();
       var estimatedEnumerator = estimated.GetEnumerator();
       while (originalEnumerator.MoveNext() & estimatedEnumerator.MoveNext()) {
         double e = estimatedEnumerator.Current;
         double o = originalEnumerator.Current;
-        if (!double.IsNaN(e) && !double.IsInfinity(e) &&
-            !double.IsNaN(o) && !double.IsInfinity(o) && !o.IsAlmost(0.0)) {
-          sre += Math.Abs((e - o) / o);
-          cnt++;
-        }
+        onlineEvaluator.Add(o, e);
       }
       if (estimatedEnumerator.MoveNext() || originalEnumerator.MoveNext()) {
         throw new ArgumentException("Number of elements in original and estimated enumeration doesn't match.");
-      } else if (cnt == 0) {
-        throw new ArgumentException("Average relative error is not defined for input vectors of NaN or Inf");
       } else {
-        return sre / cnt;
+        return onlineEvaluator.MeanAbsolutePercentageError;
       }
     }
   }

@@ -118,48 +118,73 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       DoubleValue prevBestSolutionQuality = BestSolutionQualityParameter.ActualValue;
       var bestSolution = UpdateBestSolution();
       if (prevBestSolutionQuality == null || prevBestSolutionQuality.Value > BestSolutionQualityParameter.ActualValue.Value) {
-        UpdateBestSolutionResults(bestSolution);
+        RegressionSolutionAnalyzer.UpdateBestSolutionResults(bestSolution, ProblemData, Results, GenerationsParameter.ActualValue);
       }
 
       return base.Apply();
     }
-    private void UpdateBestSolutionResults(DataAnalysisSolution bestSolution) {
+
+    public static void UpdateBestSolutionResults(DataAnalysisSolution bestSolution, DataAnalysisProblemData problemData, ResultCollection results, IntValue CurrentGeneration) {
       var solution = bestSolution;
       #region update R2,MSE, Rel Error
-      double[] trainingValues = ProblemData.Dataset.GetVariableValues(
-        ProblemData.TargetVariable.Value,
-        ProblemData.TrainingSamplesStart.Value,
-        ProblemData.TrainingSamplesEnd.Value);
-      double[] testValues = ProblemData.Dataset.GetVariableValues(
-        ProblemData.TargetVariable.Value,
-        ProblemData.TestSamplesStart.Value,
-        ProblemData.TestSamplesEnd.Value);
-      double trainingR2 = SimpleRSquaredEvaluator.Calculate(trainingValues, solution.EstimatedTrainingValues);
-      double testR2 = SimpleRSquaredEvaluator.Calculate(testValues, solution.EstimatedTestValues);
-      double trainingMse = SimpleMSEEvaluator.Calculate(trainingValues, solution.EstimatedTrainingValues);
-      double testMse = SimpleMSEEvaluator.Calculate(testValues, solution.EstimatedTestValues);
-      double trainingRelError = SimpleMeanAbsolutePercentageErrorEvaluator.Calculate(trainingValues, solution.EstimatedTrainingValues);
-      double testRelError = SimpleMeanAbsolutePercentageErrorEvaluator.Calculate(testValues, solution.EstimatedTestValues);
-      if (Results.ContainsKey(BestSolutionResultName)) {
-        Results[BestSolutionResultName].Value = solution;
-        Results[BestSolutionTrainingRSquared].Value = new DoubleValue(trainingR2);
-        Results[BestSolutionTestRSquared].Value = new DoubleValue(testR2);
-        Results[BestSolutionTrainingMse].Value = new DoubleValue(trainingMse);
-        Results[BestSolutionTestMse].Value = new DoubleValue(testMse);
-        Results[BestSolutionTrainingRelativeError].Value = new DoubleValue(trainingRelError);
-        Results[BestSolutionTestRelativeError].Value = new DoubleValue(testRelError);
-        if (GenerationsParameter.ActualValue != null) // this check is needed because linear regression solutions do not have a generations parameter
-          Results[BestSolutionGeneration].Value = new IntValue(GenerationsParameter.ActualValue.Value);
+      IEnumerable<double> trainingValues = problemData.Dataset.GetEnumeratedVariableValues(
+        problemData.TargetVariable.Value,
+        problemData.TrainingSamplesStart.Value,
+        problemData.TrainingSamplesEnd.Value);
+      IEnumerable<double> testValues = problemData.Dataset.GetEnumeratedVariableValues(
+        problemData.TargetVariable.Value,
+        problemData.TestSamplesStart.Value,
+        problemData.TestSamplesEnd.Value);
+      OnlineMeanSquaredErrorEvaluator mseEvaluator = new OnlineMeanSquaredErrorEvaluator();
+      OnlineMeanAbsolutePercentageErrorEvaluator relErrorEvaluator = new OnlineMeanAbsolutePercentageErrorEvaluator();
+      OnlinePearsonsRSquaredEvaluator r2Evaluator = new OnlinePearsonsRSquaredEvaluator();
+      #region training
+      var originalEnumerator = trainingValues.GetEnumerator();
+      var estimatedEnumerator = solution.EstimatedTrainingValues.GetEnumerator();
+      while (originalEnumerator.MoveNext() & estimatedEnumerator.MoveNext()) {
+        mseEvaluator.Add(originalEnumerator.Current, estimatedEnumerator.Current);
+        r2Evaluator.Add(originalEnumerator.Current, estimatedEnumerator.Current);
+        relErrorEvaluator.Add(originalEnumerator.Current, estimatedEnumerator.Current);
+      }
+      double trainingR2 = r2Evaluator.RSquared;
+      double trainingMse = mseEvaluator.MeanSquaredError;
+      double trainingRelError = relErrorEvaluator.MeanAbsolutePercentageError;
+      #endregion
+      mseEvaluator.Reset();
+      relErrorEvaluator.Reset();
+      r2Evaluator.Reset();
+      #region test
+      originalEnumerator = testValues.GetEnumerator();
+      estimatedEnumerator = solution.EstimatedTestValues.GetEnumerator();
+      while (originalEnumerator.MoveNext() & estimatedEnumerator.MoveNext()) {
+        mseEvaluator.Add(originalEnumerator.Current, estimatedEnumerator.Current);
+        r2Evaluator.Add(originalEnumerator.Current, estimatedEnumerator.Current);
+        relErrorEvaluator.Add(originalEnumerator.Current, estimatedEnumerator.Current);
+      }
+      double testR2 = r2Evaluator.RSquared;
+      double testMse = mseEvaluator.MeanSquaredError;
+      double testRelError = relErrorEvaluator.MeanAbsolutePercentageError;
+      #endregion
+      if (results.ContainsKey(BestSolutionResultName)) {
+        results[BestSolutionResultName].Value = solution;
+        results[BestSolutionTrainingRSquared].Value = new DoubleValue(trainingR2);
+        results[BestSolutionTestRSquared].Value = new DoubleValue(testR2);
+        results[BestSolutionTrainingMse].Value = new DoubleValue(trainingMse);
+        results[BestSolutionTestMse].Value = new DoubleValue(testMse);
+        results[BestSolutionTrainingRelativeError].Value = new DoubleValue(trainingRelError);
+        results[BestSolutionTestRelativeError].Value = new DoubleValue(testRelError);
+        if (CurrentGeneration != null) // this check is needed because linear regression solutions do not have a generations parameter
+          results[BestSolutionGeneration].Value = new IntValue(CurrentGeneration.Value);
       } else {
-        Results.Add(new Result(BestSolutionResultName, solution));
-        Results.Add(new Result(BestSolutionTrainingRSquared, new DoubleValue(trainingR2)));
-        Results.Add(new Result(BestSolutionTestRSquared, new DoubleValue(testR2)));
-        Results.Add(new Result(BestSolutionTrainingMse, new DoubleValue(trainingMse)));
-        Results.Add(new Result(BestSolutionTestMse, new DoubleValue(testMse)));
-        Results.Add(new Result(BestSolutionTrainingRelativeError, new DoubleValue(trainingRelError)));
-        Results.Add(new Result(BestSolutionTestRelativeError, new DoubleValue(testRelError)));
-        if (GenerationsParameter.ActualValue != null)
-          Results.Add(new Result(BestSolutionGeneration, new IntValue(GenerationsParameter.ActualValue.Value)));
+        results.Add(new Result(BestSolutionResultName, solution));
+        results.Add(new Result(BestSolutionTrainingRSquared, new DoubleValue(trainingR2)));
+        results.Add(new Result(BestSolutionTestRSquared, new DoubleValue(testR2)));
+        results.Add(new Result(BestSolutionTrainingMse, new DoubleValue(trainingMse)));
+        results.Add(new Result(BestSolutionTestMse, new DoubleValue(testMse)));
+        results.Add(new Result(BestSolutionTrainingRelativeError, new DoubleValue(trainingRelError)));
+        results.Add(new Result(BestSolutionTestRelativeError, new DoubleValue(testRelError)));
+        if (CurrentGeneration != null)
+          results.Add(new Result(BestSolutionGeneration, new IntValue(CurrentGeneration.Value)));
       }
       #endregion
     }

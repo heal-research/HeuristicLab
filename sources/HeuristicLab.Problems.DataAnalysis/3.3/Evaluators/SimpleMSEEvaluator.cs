@@ -44,27 +44,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Evaluators {
     }
 
     public static double Calculate(IEnumerable<double> original, IEnumerable<double> estimated) {
-      double sse = 0.0;
-      int cnt = 0;
+      var onlineMseEvaluator = new OnlineMeanSquaredErrorEvaluator();
       var originalEnumerator = original.GetEnumerator();
       var estimatedEnumerator = estimated.GetEnumerator();
       while (originalEnumerator.MoveNext() & estimatedEnumerator.MoveNext()) {
         double e = estimatedEnumerator.Current;
         double o = originalEnumerator.Current;
-        if (!double.IsNaN(e) && !double.IsInfinity(e) &&
-            !double.IsNaN(o) && !double.IsInfinity(o)) {
-          double error = e - o;
-          sse += error * error;
-          cnt++;
-        }
+        onlineMseEvaluator.Add(o, e);
       }
       if (estimatedEnumerator.MoveNext() || originalEnumerator.MoveNext()) {
         throw new ArgumentException("Number of elements in original and estimated enumeration doesn't match.");
-      } else if (cnt == 0) {
-        throw new ArgumentException("Mean squared errors is not defined for input vectors of NaN or Inf");
       } else {
-        double mse = sse / cnt;
-        return mse;
+        return onlineMseEvaluator.MeanSquaredError;
       }
     }
 

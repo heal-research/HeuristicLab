@@ -82,37 +82,26 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
 
     public static double CalculateWithScaling(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, Dataset dataset, string targetVariable, int start, int end, double beta, double alpha) {
-      //IEnumerable<double> estimatedValues = from x in interpreter.GetSymbolicExpressionTreeValues(solution, dataset, Enumerable.Range(start, end - start))
-      //                                      let boundedX = Math.Min(upperEstimationLimit, Math.Max(lowerEstimationLimit, x * beta + alpha))
-      //                                      select double.IsNaN(boundedX) ? upperEstimationLimit : boundedX;
       IEnumerable<double> estimatedValues = interpreter.GetSymbolicExpressionTreeValues(solution, dataset, Enumerable.Range(start, end - start));
       IEnumerable<double> originalValues = dataset.GetEnumeratedVariableValues(targetVariable, start, end);
       IEnumerator<double> originalEnumerator = originalValues.GetEnumerator();
       IEnumerator<double> estimatedEnumerator = estimatedValues.GetEnumerator();
-      double cnt = 0;
-      double sse = 0;
+      OnlineMeanSquaredErrorEvaluator mseEvaluator = new OnlineMeanSquaredErrorEvaluator();
 
       while (originalEnumerator.MoveNext() & estimatedEnumerator.MoveNext()) {
         double estimated = estimatedEnumerator.Current * beta + alpha;
         double original = originalEnumerator.Current;
-        estimated = Math.Min(upperEstimationLimit, Math.Max(lowerEstimationLimit, estimated));
         if (double.IsNaN(estimated))
           estimated = upperEstimationLimit;
-        if (!double.IsNaN(estimated) && !double.IsInfinity(estimated) &&
-            !double.IsNaN(original) && !double.IsInfinity(original)) {
-          double error = estimated - original;
-          sse += error * error;
-          cnt++;
-        }
+        else
+          estimated = Math.Min(upperEstimationLimit, Math.Max(lowerEstimationLimit, estimated));
+        mseEvaluator.Add(original, estimated);
       }
 
       if (estimatedEnumerator.MoveNext() || originalEnumerator.MoveNext()) {
         throw new ArgumentException("Number of elements in original and estimated enumeration doesn't match.");
-      } else if (cnt == 0) {
-        throw new ArgumentException("Mean squared errors is not defined for input vectors of NaN or Inf");
       } else {
-        double mse = sse / cnt;
-        return mse;
+        return mseEvaluator.MeanSquaredError;
       }
     }
 

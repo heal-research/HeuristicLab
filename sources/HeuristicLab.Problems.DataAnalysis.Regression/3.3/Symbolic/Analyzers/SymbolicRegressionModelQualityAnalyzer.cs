@@ -44,7 +44,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
   /// </summary>
   [Item("SymbolicRegressionModelQualityAnalyzer", "An operator for analyzing the quality of symbolic regression solutions symbolic expression tree encoding.")]
   [StorableClass]
-  public sealed class SymbolicRegressionModelQualityAnalyzer : AlgorithmOperator, ISymbolicRegressionAnalyzer {
+  public sealed class SymbolicRegressionModelQualityAnalyzer : SingleSuccessorOperator, ISymbolicRegressionAnalyzer {
     private const string SymbolicExpressionTreeInterpreterParameterName = "SymbolicExpressionTreeInterpreter";
     private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
     private const string ProblemDataParameterName = "ProblemData";
@@ -129,21 +129,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       get { return (ILookupParameter<ResultCollection>)Parameters[ResultsParameterName]; }
     }
     #endregion
-
-    [Storable]
-    private UniformSubScopesProcessor subScopesProcessor;
-    [Storable]
-    private MinAverageMaxValueAnalyzer minAvgMaxTrainingMseAnalyzer;
-    [Storable]
-    private MinAverageMaxValueAnalyzer minAvgMaxTestMseAnalyzer;
-    [Storable]
-    private MinAverageMaxValueAnalyzer minAvgMaxTrainingRSquaredAnalyzer;
-    [Storable]
-    private MinAverageMaxValueAnalyzer minAvgMaxTestRSquaredAnalyzer;
-    [Storable]
-    private MinAverageMaxValueAnalyzer minAvgMaxTrainingRelErrorAnalyzer;
-    [Storable]
-    private MinAverageMaxValueAnalyzer minAvgMaxTestRelErrorAnalyzer;
+    #region properties
+    public DoubleValue UpperEstimationLimit {
+      get { return UpperEstimationLimitParameter.ActualValue; }
+    }
+    public DoubleValue LowerEstimationLimit {
+      get { return LowerEstimationLimitParameter.ActualValue; }
+    }
+    #endregion
 
     public SymbolicRegressionModelQualityAnalyzer()
       : base() {
@@ -160,157 +153,121 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       Parameters.Add(new ValueLookupParameter<DataTable>(RSquaredValuesParameterName, "The data table to collect R² correlation coefficient values."));
       Parameters.Add(new ValueLookupParameter<DataTable>(RelativeErrorValuesParameterName, "The data table to collect relative error values."));
       Parameters.Add(new LookupParameter<ResultCollection>(ResultsParameterName, "The result collection where the best symbolic regression solution should be stored."));
-
-      #region operator initialization
-      subScopesProcessor = new UniformSubScopesProcessor();
-      SymbolicRegressionModelQualityCalculator trainingQualityCalculator = new SymbolicRegressionModelQualityCalculator();
-      SymbolicRegressionModelQualityCalculator testQualityCalculator = new SymbolicRegressionModelQualityCalculator();
-      minAvgMaxTrainingMseAnalyzer = new MinAverageMaxValueAnalyzer();
-      minAvgMaxTestMseAnalyzer = new MinAverageMaxValueAnalyzer();
-
-      minAvgMaxTrainingRSquaredAnalyzer = new MinAverageMaxValueAnalyzer();
-      minAvgMaxTestRSquaredAnalyzer = new MinAverageMaxValueAnalyzer();
-
-      minAvgMaxTrainingRelErrorAnalyzer = new MinAverageMaxValueAnalyzer();
-      minAvgMaxTestRelErrorAnalyzer = new MinAverageMaxValueAnalyzer();
-      #endregion
-
-      #region parameter wiring
-      subScopesProcessor.Depth.Value = SymbolicExpressionTreeParameter.Depth;
-      trainingQualityCalculator.LowerEstimationLimitParameter.ActualName = LowerEstimationLimitParameter.Name;
-      trainingQualityCalculator.ProblemDataParameter.ActualName = ProblemDataParameter.Name;
-      trainingQualityCalculator.SamplesStartParameter.ActualName = TrainingSamplesStartParameter.Name;
-      trainingQualityCalculator.SamplesEndParameter.ActualName = TrainingSamplesEndParameter.Name;
-      trainingQualityCalculator.SymbolicExpressionTreeInterpreterParameter.ActualName = SymbolicExpressionTreeInterpreterParameter.Name;
-      trainingQualityCalculator.SymbolicExpressionTreeParameter.ActualName = SymbolicExpressionTreeParameter.Name;
-      trainingQualityCalculator.UpperEstimationLimitParameter.ActualName = UpperEstimationLimitParameter.Name;
-      trainingQualityCalculator.AverageRelativeErrorQualityParameter.ActualName = TrainingAverageRelativeErrorQualityParameterName;
-      trainingQualityCalculator.MeanSquaredErrorQualityParameter.ActualName = TrainingMeanSquaredErrorQualityParameterName;
-      trainingQualityCalculator.RSquaredQualityParameter.ActualName = TrainingRSquaredQualityParameterName;
-
-      testQualityCalculator.LowerEstimationLimitParameter.ActualName = LowerEstimationLimitParameter.Name;
-      testQualityCalculator.ProblemDataParameter.ActualName = ProblemDataParameter.Name;
-      testQualityCalculator.SamplesStartParameter.ActualName = TestSamplesStartParameter.Name;
-      testQualityCalculator.SamplesEndParameter.ActualName = TestSamplesEndParameter.Name;
-      testQualityCalculator.SymbolicExpressionTreeInterpreterParameter.ActualName = SymbolicExpressionTreeInterpreterParameter.Name;
-      testQualityCalculator.SymbolicExpressionTreeParameter.ActualName = SymbolicExpressionTreeParameter.Name;
-      testQualityCalculator.UpperEstimationLimitParameter.ActualName = UpperEstimationLimitParameter.Name;
-      testQualityCalculator.AverageRelativeErrorQualityParameter.ActualName = TestAverageRelativeErrorQualityParameterName;
-      testQualityCalculator.MeanSquaredErrorQualityParameter.ActualName = TestMeanSquaredErrorQualityParameterName;
-      testQualityCalculator.RSquaredQualityParameter.ActualName = TestRSquaredQualityParameterName;
-      #region training/test MSE
-      minAvgMaxTrainingMseAnalyzer.ValueParameter.ActualName = TrainingMeanSquaredErrorQualityParameterName;
-      minAvgMaxTrainingMseAnalyzer.ValueParameter.Depth = SymbolicExpressionTreeParameter.Depth;
-      minAvgMaxTrainingMseAnalyzer.AverageValueParameter.ActualName = AverageTrainingMeanSquaredErrorQualityParameterName;
-      minAvgMaxTrainingMseAnalyzer.MaxValueParameter.ActualName = MaxTrainingMeanSquaredErrorQualityParameterName;
-      minAvgMaxTrainingMseAnalyzer.MinValueParameter.ActualName = MinTrainingMeanSquaredErrorQualityParameterName;
-      minAvgMaxTrainingMseAnalyzer.ValuesParameter.ActualName = MeanSquaredErrorValuesParameterName;
-      minAvgMaxTrainingMseAnalyzer.ResultsParameter.ActualName = ResultsParameter.Name;
-      minAvgMaxTrainingMseAnalyzer.CollectMinValueInResultsParameter.Value = new BoolValue(false);
-      minAvgMaxTrainingMseAnalyzer.CollectAverageValueInResultsParameter.Value = new BoolValue(false);
-      minAvgMaxTrainingMseAnalyzer.CollectMaxValueInResultsParameter.Value = new BoolValue(false);
-
-      minAvgMaxTestMseAnalyzer.ValueParameter.ActualName = TestMeanSquaredErrorQualityParameterName;
-      minAvgMaxTestMseAnalyzer.ValueParameter.Depth = SymbolicExpressionTreeParameter.Depth;
-      minAvgMaxTestMseAnalyzer.AverageValueParameter.ActualName = AverageTestMeanSquaredErrorQualityParameterName;
-      minAvgMaxTestMseAnalyzer.MaxValueParameter.ActualName = MaxTestMeanSquaredErrorQualityParameterName;
-      minAvgMaxTestMseAnalyzer.MinValueParameter.ActualName = MinTestMeanSquaredErrorQualityParameterName;
-      minAvgMaxTestMseAnalyzer.ValuesParameter.ActualName = MeanSquaredErrorValuesParameterName;
-      minAvgMaxTestMseAnalyzer.ResultsParameter.ActualName = ResultsParameter.Name;
-      minAvgMaxTestMseAnalyzer.CollectMinValueInResultsParameter.Value = new BoolValue(false);
-      minAvgMaxTestMseAnalyzer.CollectAverageValueInResultsParameter.Value = new BoolValue(false);
-      minAvgMaxTestMseAnalyzer.CollectMaxValueInResultsParameter.Value = new BoolValue(false);
-
-      #endregion
-      #region training/test R²
-      minAvgMaxTrainingRSquaredAnalyzer.ValueParameter.ActualName = TrainingRSquaredQualityParameterName;
-      minAvgMaxTrainingRSquaredAnalyzer.ValueParameter.Depth = SymbolicExpressionTreeParameter.Depth;
-      minAvgMaxTrainingRSquaredAnalyzer.AverageValueParameter.ActualName = AverageTrainingRSquaredQualityParameterName;
-      minAvgMaxTrainingRSquaredAnalyzer.MaxValueParameter.ActualName = MaxTrainingRSquaredQualityParameterName;
-      minAvgMaxTrainingRSquaredAnalyzer.MinValueParameter.ActualName = MinTrainingRSquaredQualityParameterName;
-      minAvgMaxTrainingRSquaredAnalyzer.ValuesParameter.ActualName = RSquaredValuesParameterName;
-      minAvgMaxTrainingRSquaredAnalyzer.ResultsParameter.ActualName = ResultsParameter.Name;
-      minAvgMaxTrainingRSquaredAnalyzer.CollectMinValueInResultsParameter.Value = new BoolValue(false);
-      minAvgMaxTrainingRSquaredAnalyzer.CollectAverageValueInResultsParameter.Value = new BoolValue(false);
-      minAvgMaxTrainingRSquaredAnalyzer.CollectMaxValueInResultsParameter.Value = new BoolValue(false);
-
-
-      minAvgMaxTestRSquaredAnalyzer.ValueParameter.ActualName = TestRSquaredQualityParameterName;
-      minAvgMaxTestRSquaredAnalyzer.ValueParameter.Depth = SymbolicExpressionTreeParameter.Depth;
-      minAvgMaxTestRSquaredAnalyzer.AverageValueParameter.ActualName = AverageTestRSquaredQualityParameterName;
-      minAvgMaxTestRSquaredAnalyzer.MaxValueParameter.ActualName = MaxTestRSquaredQualityParameterName;
-      minAvgMaxTestRSquaredAnalyzer.MinValueParameter.ActualName = MinTestRSquaredQualityParameterName;
-      minAvgMaxTestRSquaredAnalyzer.ValuesParameter.ActualName = RSquaredValuesParameterName;
-      minAvgMaxTestRSquaredAnalyzer.ResultsParameter.ActualName = ResultsParameter.Name;
-      minAvgMaxTestRSquaredAnalyzer.CollectMinValueInResultsParameter.Value = new BoolValue(false);
-      minAvgMaxTestRSquaredAnalyzer.CollectAverageValueInResultsParameter.Value = new BoolValue(false);
-      minAvgMaxTestRSquaredAnalyzer.CollectMaxValueInResultsParameter.Value = new BoolValue(false);
-
-      #endregion
-      #region training/test avg. rel. error
-      minAvgMaxTrainingRelErrorAnalyzer.ValueParameter.ActualName = TrainingAverageRelativeErrorQualityParameterName;
-      minAvgMaxTrainingRelErrorAnalyzer.ValueParameter.Depth = SymbolicExpressionTreeParameter.Depth;
-      minAvgMaxTrainingRelErrorAnalyzer.AverageValueParameter.ActualName = AverageTrainingAverageRelativeErrorQualityParameterName;
-      minAvgMaxTrainingRelErrorAnalyzer.MaxValueParameter.ActualName = MaxTrainingAverageRelativeErrorQualityParameterName;
-      minAvgMaxTrainingRelErrorAnalyzer.MinValueParameter.ActualName = MinTrainingAverageRelativeErrorQualityParameterName;
-      minAvgMaxTrainingRelErrorAnalyzer.ValuesParameter.ActualName = RelativeErrorValuesParameterName;
-      minAvgMaxTrainingRelErrorAnalyzer.ResultsParameter.ActualName = ResultsParameter.Name;
-      minAvgMaxTrainingRelErrorAnalyzer.CollectMinValueInResultsParameter.Value = new BoolValue(false);
-      minAvgMaxTrainingRelErrorAnalyzer.CollectAverageValueInResultsParameter.Value = new BoolValue(false);
-      minAvgMaxTrainingRelErrorAnalyzer.CollectMaxValueInResultsParameter.Value = new BoolValue(false);
-
-      minAvgMaxTestRelErrorAnalyzer.ValueParameter.ActualName = TestAverageRelativeErrorQualityParameterName;
-      minAvgMaxTestRelErrorAnalyzer.ValueParameter.Depth = SymbolicExpressionTreeParameter.Depth;
-      minAvgMaxTestRelErrorAnalyzer.AverageValueParameter.ActualName = AverageTestAverageRelativeErrorQualityParameterName;
-      minAvgMaxTestRelErrorAnalyzer.MaxValueParameter.ActualName = MaxTestAverageRelativeErrorQualityParameterName;
-      minAvgMaxTestRelErrorAnalyzer.MinValueParameter.ActualName = MinTestAverageRelativeErrorQualityParameterName;
-      minAvgMaxTestRelErrorAnalyzer.ValuesParameter.ActualName = RelativeErrorValuesParameterName;
-      minAvgMaxTestRelErrorAnalyzer.ResultsParameter.ActualName = ResultsParameter.Name;
-      minAvgMaxTestRelErrorAnalyzer.CollectMinValueInResultsParameter.Value = new BoolValue(false);
-      minAvgMaxTestRelErrorAnalyzer.CollectAverageValueInResultsParameter.Value = new BoolValue(false);
-      minAvgMaxTestRelErrorAnalyzer.CollectMaxValueInResultsParameter.Value = new BoolValue(false);
-      #endregion
-      #endregion
-
-      #region operator graph
-      OperatorGraph.InitialOperator = subScopesProcessor;
-      subScopesProcessor.Operator = trainingQualityCalculator;
-      trainingQualityCalculator.Successor = testQualityCalculator;
-      testQualityCalculator.Successor = null;
-      subScopesProcessor.Successor = minAvgMaxTrainingMseAnalyzer;
-      minAvgMaxTrainingMseAnalyzer.Successor = minAvgMaxTestMseAnalyzer;
-      minAvgMaxTestMseAnalyzer.Successor = minAvgMaxTrainingRSquaredAnalyzer;
-      minAvgMaxTrainingRSquaredAnalyzer.Successor = minAvgMaxTestRSquaredAnalyzer;
-      minAvgMaxTestRSquaredAnalyzer.Successor = minAvgMaxTrainingRelErrorAnalyzer;
-      minAvgMaxTrainingRelErrorAnalyzer.Successor = minAvgMaxTestRelErrorAnalyzer;
-      minAvgMaxTestRelErrorAnalyzer.Successor = null;
-      #endregion
-
-      Initialize();
     }
 
     [StorableConstructor]
     private SymbolicRegressionModelQualityAnalyzer(bool deserializing) : base() { }
 
-    [StorableHook(HookType.AfterDeserialization)]
-    private void Initialize() {
-      SymbolicExpressionTreeParameter.DepthChanged += new EventHandler(SymbolicExpressionTreeParameter_DepthChanged);
+    public override IOperation Apply() {
+      Analyze(SymbolicExpressionTreeParameter.ActualValue, SymbolicExpressionTreeInterpreterParameter.ActualValue,
+        UpperEstimationLimit.Value, LowerEstimationLimit.Value, ProblemDataParameter.ActualValue,
+        TrainingSamplesStartParameter.ActualValue.Value, TrainingSamplesEndParameter.ActualValue.Value,
+        TestSamplesStartParameter.ActualValue.Value, TestSamplesEndParameter.ActualValue.Value,
+        ResultsParameter.ActualValue);
+      return base.Apply();
     }
 
-    public override IDeepCloneable Clone(Cloner cloner) {
-      SymbolicRegressionModelQualityAnalyzer clone = (SymbolicRegressionModelQualityAnalyzer)base.Clone(cloner);
-      clone.Initialize();
-      return clone;
+    public static void Analyze(IEnumerable<SymbolicExpressionTree> trees, ISymbolicExpressionTreeInterpreter interpreter,
+      double upperEstimationLimit, double lowerEstimationLimit,
+      DataAnalysisProblemData problemData, int trainingStart, int trainingEnd, int testStart, int testEnd, ResultCollection results) {
+      int targetVariableIndex = problemData.Dataset.GetVariableIndex(problemData.TargetVariable.Value);
+      IEnumerable<double> originalTrainingValues = problemData.Dataset.GetEnumeratedVariableValues(targetVariableIndex, trainingStart, trainingEnd);
+      IEnumerable<double> originalTestValues = problemData.Dataset.GetEnumeratedVariableValues(targetVariableIndex, testStart, testEnd);
+      List<double> trainingMse = new List<double>();
+      List<double> trainingR2 = new List<double>();
+      List<double> trainingRelErr = new List<double>();
+      List<double> testMse = new List<double>();
+      List<double> testR2 = new List<double>();
+      List<double> testRelErr = new List<double>();
+
+      OnlineMeanSquaredErrorEvaluator mseEvaluator = new OnlineMeanSquaredErrorEvaluator();
+      OnlineMeanAbsolutePercentageErrorEvaluator relErrEvaluator = new OnlineMeanAbsolutePercentageErrorEvaluator();
+      OnlinePearsonsRSquaredEvaluator r2Evaluator = new OnlinePearsonsRSquaredEvaluator();
+
+      foreach (var tree in trees) {
+        #region training
+        var estimatedTrainingValues = interpreter.GetSymbolicExpressionTreeValues(tree, problemData.Dataset, Enumerable.Range(trainingStart, trainingEnd - trainingStart));
+        mseEvaluator.Reset();
+        r2Evaluator.Reset();
+        relErrEvaluator.Reset();
+        var estimatedEnumerator = estimatedTrainingValues.GetEnumerator();
+        var originalEnumerator = originalTrainingValues.GetEnumerator();
+        while (estimatedEnumerator.MoveNext() & originalEnumerator.MoveNext()) {
+          double estimated = estimatedEnumerator.Current;
+          if (double.IsNaN(estimated)) estimated = upperEstimationLimit;
+          else estimated = Math.Min(upperEstimationLimit, Math.Max(lowerEstimationLimit, estimated));
+          mseEvaluator.Add(originalEnumerator.Current, estimated);
+          r2Evaluator.Add(originalEnumerator.Current, estimated);
+          relErrEvaluator.Add(originalEnumerator.Current, estimated);
+        }
+        if (estimatedEnumerator.MoveNext() || originalEnumerator.MoveNext()) {
+          throw new InvalidOperationException("Number of elements in estimated and original enumeration doesn't match.");
+        }
+        trainingMse.Add(mseEvaluator.MeanSquaredError);
+        trainingR2.Add(r2Evaluator.RSquared);
+        trainingRelErr.Add(relErrEvaluator.MeanAbsolutePercentageError);
+        #endregion
+        #region test
+        var estimatedTestValues = interpreter.GetSymbolicExpressionTreeValues(tree, problemData.Dataset, Enumerable.Range(testStart, testEnd - testStart));
+
+        mseEvaluator.Reset();
+        r2Evaluator.Reset();
+        relErrEvaluator.Reset();
+        estimatedEnumerator = estimatedTestValues.GetEnumerator();
+        originalEnumerator = originalTestValues.GetEnumerator();
+        while (estimatedEnumerator.MoveNext() & originalEnumerator.MoveNext()) {
+          double estimated = estimatedEnumerator.Current;
+          if (double.IsNaN(estimated)) estimated = upperEstimationLimit;
+          else estimated = Math.Min(upperEstimationLimit, Math.Max(lowerEstimationLimit, estimated));
+          mseEvaluator.Add(originalEnumerator.Current, estimated);
+          r2Evaluator.Add(originalEnumerator.Current, estimated);
+          relErrEvaluator.Add(originalEnumerator.Current, estimated);
+        }
+        if (estimatedEnumerator.MoveNext() || originalEnumerator.MoveNext()) {
+          throw new InvalidOperationException("Number of elements in estimated and original enumeration doesn't match.");
+        }
+        testMse.Add(mseEvaluator.MeanSquaredError);
+        testR2.Add(r2Evaluator.RSquared);
+        testRelErr.Add(relErrEvaluator.MeanAbsolutePercentageError);
+        #endregion
+      }
+
+      AddResultTableValues(results, MeanSquaredErrorValuesParameterName, "mean squared error (training)", trainingMse.Min(), trainingMse.Average(), trainingMse.Max());
+      AddResultTableValues(results, MeanSquaredErrorValuesParameterName, "mean squared error (test)", testMse.Min(), testMse.Average(), testMse.Max());
+      AddResultTableValues(results, RelativeErrorValuesParameterName, "mean relative error (training)", trainingRelErr.Min(), trainingRelErr.Average(), trainingRelErr.Max());
+      AddResultTableValues(results, RelativeErrorValuesParameterName, "mean relative error (test)", testRelErr.Min(), testRelErr.Average(), testRelErr.Max());
+      AddResultTableValues(results, RSquaredValuesParameterName, "Pearson's R² (training)", trainingR2.Min(), trainingR2.Average(), trainingR2.Max());
+      AddResultTableValues(results, RSquaredValuesParameterName, "Pearson's R² (test)", testR2.Min(), testR2.Average(), testR2.Max());
     }
 
-    private void SymbolicExpressionTreeParameter_DepthChanged(object sender, EventArgs e) {
-      subScopesProcessor.Depth.Value = SymbolicExpressionTreeParameter.Depth;
-      minAvgMaxTrainingMseAnalyzer.ValueParameter.Depth = SymbolicExpressionTreeParameter.Depth;
-      minAvgMaxTrainingRelErrorAnalyzer.ValueParameter.Depth = SymbolicExpressionTreeParameter.Depth;
-      minAvgMaxTrainingRSquaredAnalyzer.ValueParameter.Depth = SymbolicExpressionTreeParameter.Depth;
-      minAvgMaxTestMseAnalyzer.ValueParameter.Depth = SymbolicExpressionTreeParameter.Depth;
-      minAvgMaxTestRelErrorAnalyzer.ValueParameter.Depth = SymbolicExpressionTreeParameter.Depth;
-      minAvgMaxTestRSquaredAnalyzer.ValueParameter.Depth = SymbolicExpressionTreeParameter.Depth;
+    private static void AddResultTableValues(ResultCollection results, string tableName, string valueName, double minValue, double avgValue, double maxValue) {
+      if (!results.ContainsKey(tableName)) {
+        results.Add(new Result(tableName, new DataTable(tableName)));
+      }
+      DataTable table = (DataTable)results[tableName].Value;
+      AddValue(table, minValue, "Min. " + valueName, string.Empty);
+      AddValue(table, avgValue, "Avg. " + valueName, string.Empty);
+      AddValue(table, maxValue, "Max. " + valueName, string.Empty);
+    }
+
+    private static void AddValue(DataTable table, double data, string name, string description) {
+      DataRow row;
+      table.Rows.TryGetValue(name, out row);
+      if (row == null) {
+        row = new DataRow(name, description);
+        row.Values.Add(data);
+        table.Rows.Add(row);
+      } else {
+        row.Values.Add(data);
+      }
+    }
+
+
+    private static void SetResultValue(ResultCollection results, string name, double value) {
+      if (results.ContainsKey(name))
+        results[name].Value = new DoubleValue(value);
+      else
+        results.Add(new Result(name, new DoubleValue(value)));
     }
   }
 }
