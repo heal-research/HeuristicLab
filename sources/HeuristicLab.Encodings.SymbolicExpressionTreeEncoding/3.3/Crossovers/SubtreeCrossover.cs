@@ -96,9 +96,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Crossovers {
       bool result = true;
       // check point type for the whole branch
       branch.ForEachNodePostfix((n) => {
-        result &= n.SubTrees.Count >= parent.Grammar.GetMinSubtreeCount(n.Symbol);
-        result &= n.SubTrees.Count <= parent.Grammar.GetMaxSubtreeCount(n.Symbol);
-        result &= parent.Grammar.ContainsSymbol(n.Symbol);
+        result =
+          result &&
+          n.SubTrees.Count >= parent.Grammar.GetMinSubtreeCount(n.Symbol) &&
+          n.SubTrees.Count <= parent.Grammar.GetMaxSubtreeCount(n.Symbol) &&
+          parent.Grammar.ContainsSymbol(n.Symbol);
       });
       return result;
     }
