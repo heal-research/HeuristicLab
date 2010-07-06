@@ -93,6 +93,7 @@
     <Compile Include="SupportVectorRegression\BestSupportVectorRegressionSolutionAnalyzer.cs" />
     <Compile Include="SupportVectorRegression\SupportVectorRegressionSolution.cs" />
     <Compile Include="Symbolic\Analyzers\BestSymbolicRegressionSolutionAnalyzer.cs" />
+    <Compile Include="Symbolic\Analyzers\FixedValidationBestScaledSymbolicRegressionSolutionAnalyzer.cs" />
     <Compile Include="Symbolic\Analyzers\ISymbolicRegressionAnalyzer.cs" />
     <Compile Include="Symbolic\Analyzers\SymbolicRegressionModelQualityAnalyzer.cs" />
     <Compile Include="Symbolic\Analyzers\SymbolicRegressionModelQualityCalculator.cs">

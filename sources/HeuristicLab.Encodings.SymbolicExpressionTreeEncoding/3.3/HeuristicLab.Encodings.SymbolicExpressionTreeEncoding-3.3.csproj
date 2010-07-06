@@ -96,6 +96,7 @@
     <Compile Include="Compiler\Instruction.cs" />
     <Compile Include="Compiler\SymbolicExpressionTreeCompiler.cs" />
     <Compile Include="Creators\SymbolicExpressionTreeCreator.cs" />
+    <Compile Include="Crossovers\CrossoverPoint.cs" />
     <Compile Include="Crossovers\SymbolicExpressionTreeCrossover.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionTreeAnalyzer.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionTreeArchitectureManipulator.cs" />
