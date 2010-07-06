@@ -115,20 +115,26 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       IEnumerator<double> estimatedEnumerator = estimated.GetEnumerator();
 
       int cnt = 0;
-      double tSum = 0;
-      double ySum = 0;
-      double yySum = 0;
-      double ytSum = 0;
+      double tMean = 0;
+      double yMean = 0;
+      double Cn = 0;
+      double M2 = 0;
 
       while (originalEnumerator.MoveNext() & estimatedEnumerator.MoveNext()) {
         double y = estimatedEnumerator.Current;
         double t = originalEnumerator.Current;
         if (IsValidValue(t) && IsValidValue(y)) {
           cnt++;
-          tSum += t;
-          ySum += y;
-          yySum += y * y;
-          ytSum += t * y;
+          // online calculation of tMean
+          tMean = tMean + (t - tMean) / cnt;
+          double delta = y - yMean; // delta = (y - yMean(n-1))
+          yMean = yMean + delta / cnt;
+          
+          // online calculation of variance 
+          M2 = M2 + delta * (y - yMean); // M2(n) = M2(n-1) + (y - yMean(n-1)) (y - yMean(n))
+
+          // online calculation of covariance
+          Cn = Cn + delta * (t - tMean); // C(n) = C(n-1) + (y - yMean(n-1)) (t - tMean(n)) 
         }
       }
 
@@ -138,16 +144,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
         alpha = 0;
         beta = 1;
       } else {
-        double tMean = tSum / cnt;
-        double yMean = ySum / cnt;
-        //division by cnt is omited because the variance and covariance are divided afterwards.
-        double yVariance = yySum - 2 * yMean * ySum + cnt * yMean * yMean;
-        double ytCovariance = ytSum - tMean * ySum - yMean * tSum + cnt * yMean * tMean;
+        // yVariance = M2 / cnt;
+        // ytCovariance = Cn / cnt;
 
-        if (yVariance.IsAlmost(0.0))
+        if (M2.IsAlmost(0.0))
           beta = 1;
         else
-          beta = ytCovariance / yVariance;
+          beta = Cn / M2; // omit division by cnt
 
         alpha = tMean - beta * yMean;
       }
