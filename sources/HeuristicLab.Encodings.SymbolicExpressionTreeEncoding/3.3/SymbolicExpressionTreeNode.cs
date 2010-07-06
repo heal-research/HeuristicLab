@@ -42,8 +42,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     // cached values to prevent unnecessary tree iterations
     private short size;
     private short height;
-    private List<SymbolicExpressionTreeNode> prefixForm;
-    private List<SymbolicExpressionTreeNode> postfixForm;
 
     public Symbol Symbol {
       get { return symbol; }
@@ -63,7 +61,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     public SymbolicExpressionTreeNode(Symbol symbol) {
-      subTrees = new List<SymbolicExpressionTreeNode>();
+      subTrees = new List<SymbolicExpressionTreeNode>(3);
       this.symbol = symbol;
     }
 
@@ -136,14 +134,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     public IEnumerable<SymbolicExpressionTreeNode> IterateNodesPrefix() {
-      if (prefixForm == null) {
-        prefixForm = new List<SymbolicExpressionTreeNode>(200);
-        ForEachNodePrefix(x => prefixForm.Add(x));
-      }
-      return prefixForm;
+      List<SymbolicExpressionTreeNode> list = new List<SymbolicExpressionTreeNode>();
+      ForEachNodePrefix((n) => list.Add(n));
+      return list;
     }
 
-    private void ForEachNodePrefix(Action<SymbolicExpressionTreeNode> a) {
+    public void ForEachNodePrefix(Action<SymbolicExpressionTreeNode> a) {
       a(this);
       for (int i = 0; i < SubTrees.Count; i++) {
         SubTrees[i].ForEachNodePrefix(a);
@@ -151,14 +147,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     public IEnumerable<SymbolicExpressionTreeNode> IterateNodesPostfix() {
-      if (postfixForm == null) {
-        postfixForm = new List<SymbolicExpressionTreeNode>(200);
-        ForEachNodePostfix(x => postfixForm.Add(x));
-      }
-      return postfixForm;
+      List<SymbolicExpressionTreeNode> list = new List<SymbolicExpressionTreeNode>();
+      ForEachNodePostfix((n) => list.Add(n));
+      return list;
     }
 
-    private void ForEachNodePostfix(Action<SymbolicExpressionTreeNode> a) {
+    public void ForEachNodePostfix(Action<SymbolicExpressionTreeNode> a) {
       for (int i = 0; i < SubTrees.Count; i++) {
         SubTrees[i].ForEachNodePrefix(a);
       }
@@ -189,7 +183,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
     private void ResetCachedValues() {
       size = 0; height = 0;
-      prefixForm = null; postfixForm = null;
       if (parent != null) parent.ResetCachedValues();
     }
   }

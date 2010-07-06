@@ -57,7 +57,7 @@ namespace HeuristicLab.Random {
     [Storable]
     private IRandom uniform;
 
-    private double[] w = new double[] {
+    private static double[] w = new double[] {
       1.7290404664e-09,
       1.2680928529e-10,
       1.6897518107e-10,
@@ -187,7 +187,7 @@ namespace HeuristicLab.Random {
       1.5008658760e-09,
       1.6030947680e-09
     };
-    private long[] k = new long[] {
+    private static long[] k = new long[] {
       1991057938,
       0,
       1611602771,
@@ -317,7 +317,7 @@ namespace HeuristicLab.Random {
       2054300022,
       2010539237
    };
-    private double[] f = new double[] {
+    private static double[] f = new double[] {
       1.0000000000e+00,
       9.6359968185e-01,
       9.3628269434e-01,
@@ -509,39 +509,8 @@ namespace HeuristicLab.Random {
     /// </summary>
     /// <returns>A double random number.</returns>
     public double NextDouble() {
-      double signFactor = uniform.Next() % 2 == 0 ? 1.0 : -1.0;
-      return sigma * signFactor * NextPositiveDouble() + mu;
+      return NormalDistributedRandom.NextDouble(uniform, mu, sigma);
     }
-
-    private double NextPositiveDouble() {
-      int j = uniform.Next();
-      int i = (j & 127);
-      if (Math.Abs(j) < k[i]) {
-        return j * w[i];
-      } else {
-        double r = 3.442620;
-        double x, y;
-        x = j * w[i];
-        if (i == 0) {
-          do {
-            x = -Math.Log(ScaledUniform()) * 0.2904764;
-            y = -Math.Log(ScaledUniform());
-          } while (y + y < x * x);
-          return (j > 0) ? r + x : -r - x;
-        }
-        if (f[i] + ScaledUniform() * (f[i - 1] - f[i]) < Math.Exp(-0.5 * x * x)) {
-          return x;
-        } else {
-          // recurse
-          return (NextPositiveDouble());
-        }
-      }
-    }
-
-    private double ScaledUniform() {
-      return 0.5 + uniform.Next() * 0.2328306e-9;
-    }
-
 
     #endregion
 
@@ -558,6 +527,40 @@ namespace HeuristicLab.Random {
       clone.mu = mu;
       clone.sigma = sigma;
       return clone;
+    }
+
+    public static double NextDouble(IRandom uniformRandom, double mu, double sigma) {
+      double signFactor = uniformRandom.Next() % 2 == 0 ? 1.0 : -1.0;
+      return sigma * signFactor * NextPositiveDouble(uniformRandom) + mu;
+    }
+
+    private static double NextPositiveDouble(IRandom uniformRandom) {
+      int j = uniformRandom.Next();
+      int i = (j & 127);
+      if (Math.Abs(j) < k[i]) {
+        return j * w[i];
+      } else {
+        double r = 3.442620;
+        double x, y;
+        x = j * w[i];
+        if (i == 0) {
+          do {
+            x = -Math.Log(ScaledUniform(uniformRandom)) * 0.2904764;
+            y = -Math.Log(ScaledUniform(uniformRandom));
+          } while (y + y < x * x);
+          return (j > 0) ? r + x : -r - x;
+        }
+        if (f[i] + ScaledUniform(uniformRandom) * (f[i - 1] - f[i]) < Math.Exp(-0.5 * x * x)) {
+          return x;
+        } else {
+          // recurse
+          return (NextPositiveDouble(uniformRandom));
+        }
+      }
+    }
+
+    private static double ScaledUniform(IRandom uniformRandom) {
+      return 0.5 + uniformRandom.Next() * 0.2328306e-9;
     }
   }
 }

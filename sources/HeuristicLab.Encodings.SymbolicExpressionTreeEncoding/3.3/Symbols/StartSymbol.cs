@@ -24,8 +24,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
   [StorableClass]
-  [Item("StartSymbol", "Special symbol that represents the starting node of the result producing branch of a symbolic expression tree.")]
+  [Item(StartSymbol.StartSymbolName, StartSymbol.StartSymbolDescription)]
   public sealed class StartSymbol : ReadOnlySymbol {
+    public const string StartSymbolName = "StartSymbol";
+    public const string StartSymbolDescription = "Special symbol that represents the starting node of the result producing branch of a symbolic expression tree.";
+
+    public StartSymbol() : base(StartSymbol.StartSymbolName, StartSymbol.StartSymbolDescription) { }
+    [StorableConstructor]
+    private StartSymbol(bool deserializing) : base(deserializing) { }
 
     public override SymbolicExpressionTreeNode CreateTreeNode() {
       return new SymbolicExpressionTreeTopLevelNode(this);

@@ -34,6 +34,7 @@ using System.Collections.Generic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Evaluators;
+using System;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
   [StorableClass]
