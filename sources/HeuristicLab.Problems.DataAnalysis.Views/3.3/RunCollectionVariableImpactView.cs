@@ -82,7 +82,7 @@ namespace HeuristicLab.Optimization.Views {
     private DoubleMatrix CalculateVariableImpactMatrix() {
       DoubleMatrix matrix = null;
       if (Content != null) {
-        IEnumerable<IRun> runsWithVariables = Content.Where(r => r.Results.ContainsKey(variableImpactResultName));
+        List<IRun> runsWithVariables = Content.Where(r => r.Results.ContainsKey(variableImpactResultName)).ToList() ;
         IEnumerable<DoubleMatrix> variableImpacts = (from run in runsWithVariables
                                                      select run.Results[variableImpactResultName]).Cast<DoubleMatrix>();
         List<string> variableNames = (from varImpact in variableImpacts
@@ -98,12 +98,12 @@ namespace HeuristicLab.Optimization.Views {
         matrix.RowNames = variableNames;
         matrix.ColumnNames = columnNames;
 
-        foreach (IRun run in runsWithVariables) {
+        for(int i = 0; i< runsWithVariables.Count; i++) {
+          IRun run = runsWithVariables[i];
           DoubleMatrix runVariableImpacts = (DoubleMatrix)run.Results[variableImpactResultName];
-          for (int i = 0; i < runVariableImpacts.Rows; i++) {
-            int rowIndex = variableNames.FindIndex(s => s == runVariableImpacts.RowNames.ElementAt(i));
-            int columnIndex = columnNames.FindIndex(s => s == run.Name);
-            matrix[rowIndex, columnIndex] = runVariableImpacts[i, 0];
+          for (int j = 0; j < runVariableImpacts.Rows; j++) {
+            int rowIndex = variableNames.FindIndex(s => s == runVariableImpacts.RowNames.ElementAt(j));
+            matrix[rowIndex, i] = runVariableImpacts[j, 0];
           }
         }
 
