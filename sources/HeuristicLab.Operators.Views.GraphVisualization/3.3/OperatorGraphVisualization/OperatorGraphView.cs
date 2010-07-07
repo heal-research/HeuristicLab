@@ -41,7 +41,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
   public partial class OperatorGraphView : AsynchronousContentView {
     public OperatorGraphView() {
       InitializeComponent();
- 
+
       this.graphVisualizationInfoView.Controller.OnShowContextMenu += new EventHandler<EntityMenuEventArgs>(Controller_OnShowContextMenu);
       this.graphVisualizationInfoView.Controller.Model.Selection.OnNewSelection += new EventHandler(Controller_SelectionChanged);
       this.graphVisualizationInfoView.Controller.OnMouseDown += new EventHandler<MouseEventArgs>(Controller_OnMouseDown);
@@ -57,14 +57,18 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     }
 
     protected override void OnContentChanged() {
-      bool createdVisualizationInfo = false;
-      if (this.VisualizationInfo == null) {
-        this.VisualizationInfo = new OperatorGraphVisualizationInfo(this.Content);
-        createdVisualizationInfo = true;
+      if (Content != null) {
+        bool createdVisualizationInfo = false;
+        if (this.VisualizationInfo == null) {
+          this.VisualizationInfo = new OperatorGraphVisualizationInfo(this.Content);
+          createdVisualizationInfo = true;
+        }
+        this.graphVisualizationInfoView.Content = this.VisualizationInfo;
+        if (createdVisualizationInfo)
+          this.graphVisualizationInfoView.RelayoutGraph();
+      } else {
+        this.graphVisualizationInfoView.Content = null;
       }
-      this.graphVisualizationInfoView.Content = this.VisualizationInfo;
-      if (createdVisualizationInfo)
-        this.graphVisualizationInfoView.RelayoutGraph();
     }
 
     protected override void SetEnabledStateOfControls() {
@@ -187,19 +191,19 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     }
 
     private void initialOperatorToolStripMenuItem_Click(object sender, EventArgs e) {
-        IOperatorShapeInfo shapeInfo = this.shapeContextMenu.Tag as IOperatorShapeInfo;
-        if (this.VisualizationInfo.InitialShape == shapeInfo)
-          this.VisualizationInfo.InitialShape = null;
-        else
-          this.VisualizationInfo.InitialShape = shapeInfo;
+      IOperatorShapeInfo shapeInfo = this.shapeContextMenu.Tag as IOperatorShapeInfo;
+      if (this.VisualizationInfo.InitialShape == shapeInfo)
+        this.VisualizationInfo.InitialShape = null;
+      else
+        this.VisualizationInfo.InitialShape = shapeInfo;
     }
 
     private void breakPointToolStripMenuItem_Click(object sender, EventArgs e) {
-        IOperatorShapeInfo shapeInfo = this.shapeContextMenu.Tag as IOperatorShapeInfo;
-        if (shapeInfo != null) {
-          IOperator op = this.VisualizationInfo.GetOperatorForShapeInfo(shapeInfo);
-          op.Breakpoint = !op.Breakpoint;
-        }
+      IOperatorShapeInfo shapeInfo = this.shapeContextMenu.Tag as IOperatorShapeInfo;
+      if (shapeInfo != null) {
+        IOperator op = this.VisualizationInfo.GetOperatorForShapeInfo(shapeInfo);
+        op.Breakpoint = !op.Breakpoint;
+      }
     }
     #endregion
 

@@ -102,8 +102,8 @@ namespace HeuristicLab.Optimization.Views {
       return colorImage;
     }
 
+    private string selectedName;
     private void FillListView() {
-      string selectedName = null;
       if (listView.SelectedItems.Count == 1) selectedName = listView.SelectedItems[0].SubItems[0].Text;
 
       listView.Items.Clear();
@@ -116,6 +116,7 @@ namespace HeuristicLab.Optimization.Views {
         if (listView.Items.Count > 0) {
           for (int i = 0; i < listView.Columns.Count; i++)
             listView.Columns[i].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+          selectedName = null;
         }
       }
     }

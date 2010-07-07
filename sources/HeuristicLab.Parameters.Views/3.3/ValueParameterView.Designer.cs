@@ -46,13 +46,11 @@ namespace HeuristicLab.Parameters.Views {
     /// </summary>
     private void InitializeComponent() {
       this.valueGroupBox = new System.Windows.Forms.GroupBox();
-      this.valuePanel = new System.Windows.Forms.Panel();
-      this.viewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
+      this.valueViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.clearValueButton = new System.Windows.Forms.Button();
       this.setValueButton = new System.Windows.Forms.Button();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.valueGroupBox.SuspendLayout();
-      this.valuePanel.SuspendLayout();
       this.SuspendLayout();
       // 
       // dataTypeTextBox
@@ -77,7 +75,7 @@ namespace HeuristicLab.Parameters.Views {
       this.valueGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.valueGroupBox.Controls.Add(this.valuePanel);
+      this.valueGroupBox.Controls.Add(this.valueViewHost);
       this.valueGroupBox.Controls.Add(this.clearValueButton);
       this.valueGroupBox.Controls.Add(this.setValueButton);
       this.valueGroupBox.Location = new System.Drawing.Point(0, 78);
@@ -87,30 +85,21 @@ namespace HeuristicLab.Parameters.Views {
       this.valueGroupBox.TabStop = false;
       this.valueGroupBox.Text = "Value";
       // 
-      // valuePanel
-      // 
-      this.valuePanel.AllowDrop = true;
-      this.valuePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.valuePanel.Controls.Add(this.viewHost);
-      this.valuePanel.Location = new System.Drawing.Point(6, 49);
-      this.valuePanel.Name = "valuePanel";
-      this.valuePanel.Size = new System.Drawing.Size(374, 182);
-      this.valuePanel.TabIndex = 0;
-      this.valuePanel.DragOver += new System.Windows.Forms.DragEventHandler(this.valuePanel_DragEnterOver);
-      this.valuePanel.DragDrop += new System.Windows.Forms.DragEventHandler(this.valuePanel_DragDrop);
-      this.valuePanel.DragEnter += new System.Windows.Forms.DragEventHandler(this.valuePanel_DragEnterOver);
-      // 
       // viewHost
       // 
-      this.viewHost.Content = null;
-      this.viewHost.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.viewHost.Location = new System.Drawing.Point(0, 0);
-      this.viewHost.Name = "viewHost";
-      this.viewHost.Size = new System.Drawing.Size(374, 182);
-      this.viewHost.TabIndex = 0;
-      this.viewHost.ViewType = null;
+      this.valueViewHost.AllowDrop = true;
+      this.valueViewHost.Content = null;
+      this.valueViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.valueViewHost.Location = new System.Drawing.Point(6, 49);
+      this.valueViewHost.Name = "viewHost";
+      this.valueViewHost.Size = new System.Drawing.Size(374, 182);
+      this.valueViewHost.TabIndex = 0;
+      this.valueViewHost.ViewType = null;
+      this.valueViewHost.DragOver += new System.Windows.Forms.DragEventHandler(this.valueViewHost_DragEnterOver);
+      this.valueViewHost.DragDrop += new System.Windows.Forms.DragEventHandler(this.valueViewHost_DragDrop);
+      this.valueViewHost.DragEnter += new System.Windows.Forms.DragEventHandler(this.valueViewHost_DragEnterOver);
       // 
       // clearValueButton
       // 
@@ -151,7 +140,6 @@ namespace HeuristicLab.Parameters.Views {
       this.Controls.SetChildIndex(this.valueGroupBox, 0);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.valueGroupBox.ResumeLayout(false);
-      this.valuePanel.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -160,8 +148,7 @@ namespace HeuristicLab.Parameters.Views {
     #endregion
 
     protected System.Windows.Forms.GroupBox valueGroupBox;
-    protected System.Windows.Forms.Panel valuePanel;
-    protected HeuristicLab.MainForm.WindowsForms.ViewHost viewHost;
+    protected HeuristicLab.MainForm.WindowsForms.ViewHost valueViewHost;
     protected System.Windows.Forms.Button setValueButton;
     protected System.Windows.Forms.Button clearValueButton;
   }

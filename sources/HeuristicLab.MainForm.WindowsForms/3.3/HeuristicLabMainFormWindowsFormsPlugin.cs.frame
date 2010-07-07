@@ -31,6 +31,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
   [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
   [PluginDependency("HeuristicLab.MainForm", "3.3")]
   [PluginDependency("HeuristicLab.WinFormsUI", "2.3.1")]
-  public class HeuristicLabMainFormTestPlugin : PluginBase {
+  public class HeuristicLabMainFormPlugin : PluginBase {
   }
 }

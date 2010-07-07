@@ -134,7 +134,7 @@ namespace HeuristicLab.Data.Views {
 
     private void UpdateRowHeaders() {
       int firstDisplayedRowIndex = dataGridView.FirstDisplayedScrollingRowIndex;
-      if(firstDisplayedRowIndex == -1)
+      if (firstDisplayedRowIndex == -1)
         firstDisplayedRowIndex = 0;
       int lastDisplaydRowIndex = firstDisplayedRowIndex + dataGridView.DisplayedRowCount(true);
       for (int i = firstDisplayedRowIndex; i < lastDisplaydRowIndex; i++) {
@@ -240,7 +240,7 @@ namespace HeuristicLab.Data.Views {
       dataGridView.Rows[e.RowIndex].ErrorText = string.Empty;
     }
     private void dataGridView_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e) {
-      if (e.RowIndex < Content.Rows && e.ColumnIndex < Content.Columns) {
+      if (Content != null && e.RowIndex < Content.Rows && e.ColumnIndex < Content.Columns) {
         int rowIndex = virtualRowIndizes[e.RowIndex];
         e.Value = Content.GetValue(rowIndex, e.ColumnIndex);
       }

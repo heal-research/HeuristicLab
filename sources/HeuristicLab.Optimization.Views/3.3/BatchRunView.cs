@@ -139,7 +139,8 @@ namespace HeuristicLab.Optimization.Views {
         repetitionsNumericUpDown.Text = repetitionsNumericUpDown.Value.ToString();
     }
     private void repetitionsNumericUpDown_ValueChanged(object sender, EventArgs e) {
-      Content.Repetitions = (int)repetitionsNumericUpDown.Value;
+      if (Content != null)
+        Content.Repetitions = (int)repetitionsNumericUpDown.Value;
     }
     private void newAlgorithmButton_Click(object sender, EventArgs e) {
       if (algorithmTypeSelectorDialog == null) {
@@ -196,7 +197,7 @@ namespace HeuristicLab.Optimization.Views {
     private void resetButton_Click(object sender, EventArgs e) {
       Content.Prepare(false);
     }
-    private void algorithmPanel_DragEnterOver(object sender, DragEventArgs e) {
+    private void algorithmViewHost_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
       if (ReadOnly)
         return;
@@ -209,7 +210,7 @@ namespace HeuristicLab.Optimization.Views {
         else if ((e.AllowedEffect & DragDropEffects.Link) == DragDropEffects.Link) e.Effect = DragDropEffects.Link;
       }
     }
-    private void algorithmPanel_DragDrop(object sender, DragEventArgs e) {
+    private void algorithmViewHost_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
         IAlgorithm algorithm = e.Data.GetData("Value") as IAlgorithm;
         if ((e.Effect & DragDropEffects.Copy) == DragDropEffects.Copy) algorithm = (IAlgorithm)algorithm.Clone();

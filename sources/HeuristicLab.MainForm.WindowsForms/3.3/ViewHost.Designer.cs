@@ -45,23 +45,11 @@ namespace HeuristicLab.MainForm.WindowsForms {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      this.viewPanel = new HeuristicLab.MainForm.WindowsForms.ViewHostPanel();
       this.messageLabel = new System.Windows.Forms.Label();
       this.viewsLabel = new System.Windows.Forms.Label();
       this.viewContextMenuStrip = new HeuristicLab.MainForm.WindowsForms.ViewContextMenuStrip();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.SuspendLayout();
-      // 
-      // viewPanel
-      // 
-      this.viewPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.viewPanel.Location = new System.Drawing.Point(0, 0);
-      this.viewPanel.Name = "viewPanel";
-      this.viewPanel.Size = new System.Drawing.Size(205, 184);
-      this.viewPanel.TabIndex = 1;
-      this.viewPanel.Resize += new System.EventHandler(this.viewPanel_Resize);
       // 
       // messageLabel
       // 
@@ -79,6 +67,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.viewsLabel.ContextMenuStrip = this.viewContextMenuStrip;
       this.viewsLabel.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Windows;
       this.viewsLabel.Location = new System.Drawing.Point(211, 0);
+      this.viewsLabel.Margin = new System.Windows.Forms.Padding(3);
       this.viewsLabel.Name = "viewsLabel";
       this.viewsLabel.Size = new System.Drawing.Size(16, 16);
       this.viewsLabel.TabIndex = 0;
@@ -99,18 +88,14 @@ namespace HeuristicLab.MainForm.WindowsForms {
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.viewPanel);
       this.Controls.Add(this.viewsLabel);
       this.Controls.Add(this.messageLabel);
       this.Name = "ViewHost";
       this.Size = new System.Drawing.Size(227, 184);
       this.ResumeLayout(false);
-
     }
 
     #endregion
-
-    private ViewHostPanel viewPanel;
     private System.Windows.Forms.Label viewsLabel;
     private System.Windows.Forms.Label messageLabel;
     private System.Windows.Forms.ToolTip toolTip;

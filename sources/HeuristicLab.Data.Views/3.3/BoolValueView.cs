@@ -77,7 +77,7 @@ namespace HeuristicLab.Data.Views {
     }
 
     private void valueCheckBox_CheckedChanged(object sender, EventArgs e) {
-      if (!Content.ReadOnly) Content.Value = valueCheckBox.Checked;
+      if (Content != null && !Content.ReadOnly) Content.Value = valueCheckBox.Checked;
     }
   }
 }

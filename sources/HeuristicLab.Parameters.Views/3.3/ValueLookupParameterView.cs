@@ -78,11 +78,11 @@ namespace HeuristicLab.Parameters.Views {
       base.OnContentChanged();
       if (Content == null) {
         actualNameTextBox.Text = "-";
-        viewHost.Content = null;
+        valueViewHost.Content = null;
       } else {
         actualNameTextBox.Text = Content.ActualName;
-        viewHost.ViewType = null;
-        viewHost.Content = Content.Value;
+        valueViewHost.ViewType = null;
+        valueViewHost.Content = Content.Value;
       }
     }
 
@@ -106,8 +106,8 @@ namespace HeuristicLab.Parameters.Views {
         Invoke(new EventHandler(Content_ValueChanged), sender, e);
       else {
         clearValueButton.Enabled = Content.Value != null && !ReadOnly;
-        viewHost.ViewType = null;
-        viewHost.Content = Content.Value;
+        valueViewHost.ViewType = null;
+        valueViewHost.Content = Content.Value;
       }
     }
 
@@ -132,7 +132,7 @@ namespace HeuristicLab.Parameters.Views {
     protected virtual void clearValueButton_Click(object sender, EventArgs e) {
       Content.Value = null;
     }
-    protected virtual void valuePanel_DragEnterOver(object sender, DragEventArgs e) {
+    protected virtual void valueViewHostPanel_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
       Type type = e.Data.GetData("Type") as Type;
       if (!ReadOnly && (type != null) && (Content.DataType.IsAssignableFrom(type))) {
@@ -143,7 +143,7 @@ namespace HeuristicLab.Parameters.Views {
         else if ((e.AllowedEffect & DragDropEffects.Link) == DragDropEffects.Link) e.Effect = DragDropEffects.Link;
       }
     }
-    protected virtual void valuePanel_DragDrop(object sender, DragEventArgs e) {
+    protected virtual void valueViewHost_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
         T value = e.Data.GetData("Value") as T;
         if ((e.Effect & DragDropEffects.Copy) == DragDropEffects.Copy) value = (T)value.Clone();

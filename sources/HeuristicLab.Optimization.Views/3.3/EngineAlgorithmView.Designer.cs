@@ -57,7 +57,6 @@ namespace HeuristicLab.Optimization.Views {
       this.problemTabPage.SuspendLayout();
       this.resultsTabPage.SuspendLayout();
       this.runsTabPage.SuspendLayout();
-      this.problemPanel.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.engineTabPage.SuspendLayout();
       this.operatorGraphTabPage.SuspendLayout();
@@ -147,7 +146,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // problemPanel
       // 
-      this.problemPanel.Size = new System.Drawing.Size(693, 399);
+      this.problemViewHost.Size = new System.Drawing.Size(693, 399);
       // 
       // nameTextBox
       // 
@@ -275,7 +274,6 @@ namespace HeuristicLab.Optimization.Views {
       this.problemTabPage.ResumeLayout(false);
       this.resultsTabPage.ResumeLayout(false);
       this.runsTabPage.ResumeLayout(false);
-      this.problemPanel.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.engineTabPage.ResumeLayout(false);
       this.engineTabPage.PerformLayout();

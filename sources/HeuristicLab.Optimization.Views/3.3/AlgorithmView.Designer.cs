@@ -49,7 +49,6 @@ namespace HeuristicLab.Optimization.Views {
       this.parametersTabPage = new System.Windows.Forms.TabPage();
       this.parameterCollectionView = new HeuristicLab.Core.Views.ParameterCollectionView();
       this.problemTabPage = new System.Windows.Forms.TabPage();
-      this.problemPanel = new System.Windows.Forms.Panel();
       this.problemViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.openProblemButton = new System.Windows.Forms.Button();
       this.newProblemButton = new System.Windows.Forms.Button();
@@ -68,7 +67,6 @@ namespace HeuristicLab.Optimization.Views {
       this.tabControl.SuspendLayout();
       this.parametersTabPage.SuspendLayout();
       this.problemTabPage.SuspendLayout();
-      this.problemPanel.SuspendLayout();
       this.resultsTabPage.SuspendLayout();
       this.runsTabPage.SuspendLayout();
       this.SuspendLayout();
@@ -122,7 +120,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // problemTabPage
       // 
-      this.problemTabPage.Controls.Add(this.problemPanel);
+      this.problemTabPage.Controls.Add(this.problemViewHost);
       this.problemTabPage.Controls.Add(this.openProblemButton);
       this.problemTabPage.Controls.Add(this.newProblemButton);
       this.problemTabPage.Location = new System.Drawing.Point(4, 22);
@@ -133,30 +131,21 @@ namespace HeuristicLab.Optimization.Views {
       this.problemTabPage.Text = "Problem";
       this.problemTabPage.UseVisualStyleBackColor = true;
       // 
-      // problemPanel
-      // 
-      this.problemPanel.AllowDrop = true;
-      this.problemPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.problemPanel.Controls.Add(this.problemViewHost);
-      this.problemPanel.Location = new System.Drawing.Point(6, 36);
-      this.problemPanel.Name = "problemPanel";
-      this.problemPanel.Size = new System.Drawing.Size(659, 332);
-      this.problemPanel.TabIndex = 3;
-      this.problemPanel.DragOver += new System.Windows.Forms.DragEventHandler(this.problemPanel_DragEnterOver);
-      this.problemPanel.DragDrop += new System.Windows.Forms.DragEventHandler(this.problemPanel_DragDrop);
-      this.problemPanel.DragEnter += new System.Windows.Forms.DragEventHandler(this.problemPanel_DragEnterOver);
-      // 
       // problemViewHost
       // 
+      this.problemViewHost.AllowDrop = true;
       this.problemViewHost.Content = null;
-      this.problemViewHost.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.problemViewHost.Location = new System.Drawing.Point(0, 0);
+      this.problemViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.problemViewHost.Location = new System.Drawing.Point(6, 36);
       this.problemViewHost.Name = "problemViewHost";
       this.problemViewHost.Size = new System.Drawing.Size(659, 332);
-      this.problemViewHost.TabIndex = 0;
+      this.problemViewHost.TabIndex = 3;
       this.problemViewHost.ViewType = null;
+      this.problemViewHost.DragOver += new System.Windows.Forms.DragEventHandler(this.problemViewHost_DragEnterOver);
+      this.problemViewHost.DragDrop += new System.Windows.Forms.DragEventHandler(this.problemViewHost_DragDrop);
+      this.problemViewHost.DragEnter += new System.Windows.Forms.DragEventHandler(this.problemViewHost_DragEnterOver);
       // 
       // openProblemButton
       // 
@@ -326,7 +315,6 @@ namespace HeuristicLab.Optimization.Views {
       this.tabControl.ResumeLayout(false);
       this.parametersTabPage.ResumeLayout(false);
       this.problemTabPage.ResumeLayout(false);
-      this.problemPanel.ResumeLayout(false);
       this.resultsTabPage.ResumeLayout(false);
       this.runsTabPage.ResumeLayout(false);
       this.ResumeLayout(false);
@@ -354,7 +342,5 @@ namespace HeuristicLab.Optimization.Views {
     protected System.Windows.Forms.Button stopButton;
     protected System.Windows.Forms.TabPage runsTabPage;
     protected RunCollectionView runsView;
-    protected System.Windows.Forms.Panel problemPanel;
-
   }
 }

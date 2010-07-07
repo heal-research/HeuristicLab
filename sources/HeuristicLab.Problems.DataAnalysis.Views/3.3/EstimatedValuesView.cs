@@ -88,13 +88,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private void UpdateEstimatedValues() {
       if (InvokeRequired) Invoke((Action)UpdateEstimatedValues);
       else {
-        double[,] values =
-        MatrixExtensions<double>.Create(
-          Content.ProblemData.Dataset.GetVariableValues(Content.ProblemData.TargetVariable.Value),
-          Content.EstimatedValues.ToArray());
-        var content = new DoubleMatrix(values);
-        content.ColumnNames = new string[] { "Original", "Estimated" };
-        matrixView.Content = content;
+        DoubleMatrix matrix = null;
+        if (Content != null) {
+          double[,] values =
+          MatrixExtensions<double>.Create(
+            Content.ProblemData.Dataset.GetVariableValues(Content.ProblemData.TargetVariable.Value),
+            Content.EstimatedValues.ToArray());
+          matrix = new DoubleMatrix(values);
+          matrix.ColumnNames = new string[] { "Original", "Estimated" };
+        }
+        matrixView.Content = matrix;
       }
     }
     #endregion

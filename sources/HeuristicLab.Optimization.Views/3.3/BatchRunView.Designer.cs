@@ -47,7 +47,6 @@ namespace HeuristicLab.Optimization.Views {
     private void InitializeComponent() {
       this.tabControl = new System.Windows.Forms.TabControl();
       this.algorithmTabPage = new System.Windows.Forms.TabPage();
-      this.algorithmPanel = new System.Windows.Forms.Panel();
       this.algorithmViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.openAlgorithmButton = new System.Windows.Forms.Button();
       this.newAlgorithmButton = new System.Windows.Forms.Button();
@@ -65,7 +64,6 @@ namespace HeuristicLab.Optimization.Views {
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.tabControl.SuspendLayout();
       this.algorithmTabPage.SuspendLayout();
-      this.algorithmPanel.SuspendLayout();
       this.runsTabPage.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.repetitionsNumericUpDown)).BeginInit();
       this.SuspendLayout();
@@ -95,7 +93,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // algorithmTabPage
       // 
-      this.algorithmTabPage.Controls.Add(this.algorithmPanel);
+      this.algorithmTabPage.Controls.Add(this.algorithmViewHost);
       this.algorithmTabPage.Controls.Add(this.openAlgorithmButton);
       this.algorithmTabPage.Controls.Add(this.newAlgorithmButton);
       this.algorithmTabPage.Location = new System.Drawing.Point(4, 22);
@@ -106,30 +104,21 @@ namespace HeuristicLab.Optimization.Views {
       this.algorithmTabPage.Text = "Algorithm";
       this.algorithmTabPage.UseVisualStyleBackColor = true;
       // 
-      // algorithmPanel
-      // 
-      this.algorithmPanel.AllowDrop = true;
-      this.algorithmPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.algorithmPanel.Controls.Add(this.algorithmViewHost);
-      this.algorithmPanel.Location = new System.Drawing.Point(6, 36);
-      this.algorithmPanel.Name = "algorithmPanel";
-      this.algorithmPanel.Size = new System.Drawing.Size(659, 306);
-      this.algorithmPanel.TabIndex = 3;
-      this.algorithmPanel.DragOver += new System.Windows.Forms.DragEventHandler(this.algorithmPanel_DragEnterOver);
-      this.algorithmPanel.DragDrop += new System.Windows.Forms.DragEventHandler(this.algorithmPanel_DragDrop);
-      this.algorithmPanel.DragEnter += new System.Windows.Forms.DragEventHandler(this.algorithmPanel_DragEnterOver);
-      // 
       // algorithmViewHost
       // 
       this.algorithmViewHost.Content = null;
-      this.algorithmViewHost.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.algorithmViewHost.Location = new System.Drawing.Point(0, 0);
+      this.algorithmViewHost.AllowDrop = true;
+      this.algorithmViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.algorithmViewHost.Location = new System.Drawing.Point(6, 36);
       this.algorithmViewHost.Name = "algorithmViewHost";
       this.algorithmViewHost.Size = new System.Drawing.Size(659, 306);
-      this.algorithmViewHost.TabIndex = 0;
+      this.algorithmViewHost.TabIndex = 3;
       this.algorithmViewHost.ViewType = null;
+      this.algorithmViewHost.DragOver += new System.Windows.Forms.DragEventHandler(this.algorithmViewHost_DragEnterOver);
+      this.algorithmViewHost.DragDrop += new System.Windows.Forms.DragEventHandler(this.algorithmViewHost_DragDrop);
+      this.algorithmViewHost.DragEnter += new System.Windows.Forms.DragEventHandler(this.algorithmViewHost_DragEnterOver);
       // 
       // openAlgorithmButton
       // 
@@ -316,7 +305,6 @@ namespace HeuristicLab.Optimization.Views {
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.tabControl.ResumeLayout(false);
       this.algorithmTabPage.ResumeLayout(false);
-      this.algorithmPanel.ResumeLayout(false);
       this.runsTabPage.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.repetitionsNumericUpDown)).EndInit();
       this.ResumeLayout(false);
@@ -341,7 +329,5 @@ namespace HeuristicLab.Optimization.Views {
     private System.Windows.Forms.NumericUpDown repetitionsNumericUpDown;
     private RunCollectionView runsView;
     private System.Windows.Forms.Button pauseButton;
-    private System.Windows.Forms.Panel algorithmPanel;
-
   }
 }

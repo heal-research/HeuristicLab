@@ -60,18 +60,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     private void RedrawChart() {
       this.chart.Series.Clear();
-      this.chart.Series.Add(TARGETVARIABLE_SERIES_NAME);
-      this.chart.Series[TARGETVARIABLE_SERIES_NAME].LegendText = Content.ProblemData.TargetVariable.Value;
-      this.chart.Series[TARGETVARIABLE_SERIES_NAME].ChartType = SeriesChartType.FastLine;
-      this.chart.Series[TARGETVARIABLE_SERIES_NAME].Points.DataBindY(Content.ProblemData.Dataset.GetVariableValues(Content.ProblemData.TargetVariable.Value));
-      this.UpdateStripLines();
+      if (Content != null) {
+        this.chart.Series.Add(TARGETVARIABLE_SERIES_NAME);
+        this.chart.Series[TARGETVARIABLE_SERIES_NAME].LegendText = Content.ProblemData.TargetVariable.Value;
+        this.chart.Series[TARGETVARIABLE_SERIES_NAME].ChartType = SeriesChartType.FastLine;
+        this.chart.Series[TARGETVARIABLE_SERIES_NAME].Points.DataBindY(Content.ProblemData.Dataset.GetVariableValues(Content.ProblemData.TargetVariable.Value));
+        this.UpdateStripLines();
 
-      this.chart.Series.Add(ESTIMATEDVALUES_SERIES_NAME);
-      this.chart.Series[ESTIMATEDVALUES_SERIES_NAME].LegendText = Content.ItemName;
-      this.chart.Series[ESTIMATEDVALUES_SERIES_NAME].ChartType = SeriesChartType.FastLine;
-      this.chart.Series[ESTIMATEDVALUES_SERIES_NAME].Points.DataBindY(Content.EstimatedValues.ToArray());
-      this.chart.Series[ESTIMATEDVALUES_SERIES_NAME].Tag = Content;
-      UpdateCursorInterval();
+        this.chart.Series.Add(ESTIMATEDVALUES_SERIES_NAME);
+        this.chart.Series[ESTIMATEDVALUES_SERIES_NAME].LegendText = Content.ItemName;
+        this.chart.Series[ESTIMATEDVALUES_SERIES_NAME].ChartType = SeriesChartType.FastLine;
+        this.chart.Series[ESTIMATEDVALUES_SERIES_NAME].Points.DataBindY(Content.EstimatedValues.ToArray());
+        this.chart.Series[ESTIMATEDVALUES_SERIES_NAME].Tag = Content;
+        UpdateCursorInterval();
+      }
     }
 
     private void UpdateCursorInterval() {

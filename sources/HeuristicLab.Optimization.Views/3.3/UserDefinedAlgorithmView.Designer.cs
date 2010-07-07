@@ -53,7 +53,6 @@ namespace HeuristicLab.Optimization.Views {
       this.problemTabPage.SuspendLayout();
       this.resultsTabPage.SuspendLayout();
       this.runsTabPage.SuspendLayout();
-      this.problemPanel.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.globalScopeTabPage.SuspendLayout();
       this.SuspendLayout();
@@ -151,7 +150,6 @@ namespace HeuristicLab.Optimization.Views {
       this.problemTabPage.ResumeLayout(false);
       this.resultsTabPage.ResumeLayout(false);
       this.runsTabPage.ResumeLayout(false);
-      this.problemPanel.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.globalScopeTabPage.ResumeLayout(false);
       this.ResumeLayout(false);
