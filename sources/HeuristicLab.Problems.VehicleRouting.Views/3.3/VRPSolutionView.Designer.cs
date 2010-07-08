@@ -51,19 +51,19 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
       this.tourGroupBox = new System.Windows.Forms.GroupBox();
       this.tourViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
-      this.tabControl1 = new System.Windows.Forms.TabControl();
-      this.tabPage1 = new System.Windows.Forms.TabPage();
-      this.qualityViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
-      this.tabPage6 = new System.Windows.Forms.TabPage();
-      this.distanceViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
-      this.tabPage2 = new System.Windows.Forms.TabPage();
-      this.overloadViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
-      this.tabPage3 = new System.Windows.Forms.TabPage();
-      this.tardinessViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
-      this.tabPage4 = new System.Windows.Forms.TabPage();
+      this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
       this.travelTimeViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
-      this.tabPage5 = new System.Windows.Forms.TabPage();
+      this.label6 = new System.Windows.Forms.Label();
+      this.tardinessViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
+      this.label5 = new System.Windows.Forms.Label();
+      this.overloadViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
+      this.label4 = new System.Windows.Forms.Label();
       this.vehicleUtilizationViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
+      this.label3 = new System.Windows.Forms.Label();
+      this.label2 = new System.Windows.Forms.Label();
+      this.qualityViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
+      this.label1 = new System.Windows.Forms.Label();
+      this.distanceViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
       this.tabControl.SuspendLayout();
       this.visualizationTabPage.SuspendLayout();
@@ -72,13 +72,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
       this.splitContainer.SuspendLayout();
-      this.tabControl1.SuspendLayout();
-      this.tabPage1.SuspendLayout();
-      this.tabPage6.SuspendLayout();
-      this.tabPage2.SuspendLayout();
-      this.tabPage3.SuspendLayout();
-      this.tabPage4.SuspendLayout();
-      this.tabPage5.SuspendLayout();
+      this.tableLayoutPanel1.SuspendLayout();
       this.SuspendLayout();
       // 
       // pictureBox
@@ -90,22 +84,20 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
       this.pictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
       this.pictureBox.Location = new System.Drawing.Point(6, 6);
       this.pictureBox.Name = "pictureBox";
-      this.pictureBox.Size = new System.Drawing.Size(403, 288);
+      this.pictureBox.Size = new System.Drawing.Size(403, 386);
       this.pictureBox.TabIndex = 0;
       this.pictureBox.TabStop = false;
       this.pictureBox.SizeChanged += new System.EventHandler(this.pictureBox_SizeChanged);
       // 
       // tabControl
       // 
-      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl.Controls.Add(this.visualizationTabPage);
       this.tabControl.Controls.Add(this.valueTabPage);
-      this.tabControl.Location = new System.Drawing.Point(0, 3);
+      this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.tabControl.Location = new System.Drawing.Point(0, 0);
       this.tabControl.Name = "tabControl";
       this.tabControl.SelectedIndex = 0;
-      this.tabControl.Size = new System.Drawing.Size(423, 326);
+      this.tabControl.Size = new System.Drawing.Size(423, 424);
       this.tabControl.TabIndex = 0;
       // 
       // visualizationTabPage
@@ -114,7 +106,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
       this.visualizationTabPage.Location = new System.Drawing.Point(4, 22);
       this.visualizationTabPage.Name = "visualizationTabPage";
       this.visualizationTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.visualizationTabPage.Size = new System.Drawing.Size(415, 300);
+      this.visualizationTabPage.Size = new System.Drawing.Size(415, 398);
       this.visualizationTabPage.TabIndex = 0;
       this.visualizationTabPage.Text = "Visualization";
       this.visualizationTabPage.UseVisualStyleBackColor = true;
@@ -125,20 +117,18 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
       this.valueTabPage.Location = new System.Drawing.Point(4, 22);
       this.valueTabPage.Name = "valueTabPage";
       this.valueTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.valueTabPage.Size = new System.Drawing.Size(415, 300);
+      this.valueTabPage.Size = new System.Drawing.Size(415, 398);
       this.valueTabPage.TabIndex = 1;
       this.valueTabPage.Text = "Value";
       this.valueTabPage.UseVisualStyleBackColor = true;
       // 
       // tourGroupBox
       // 
-      this.tourGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
       this.tourGroupBox.Controls.Add(this.tourViewHost);
-      this.tourGroupBox.Location = new System.Drawing.Point(6, 6);
+      this.tourGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.tourGroupBox.Location = new System.Drawing.Point(3, 3);
       this.tourGroupBox.Name = "tourGroupBox";
-      this.tourGroupBox.Size = new System.Drawing.Size(403, 288);
+      this.tourGroupBox.Size = new System.Drawing.Size(409, 392);
       this.tourGroupBox.TabIndex = 0;
       this.tourGroupBox.TabStop = false;
       this.tourGroupBox.Text = "Tour";
@@ -153,192 +143,202 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
       this.tourViewHost.Location = new System.Drawing.Point(6, 19);
       this.tourViewHost.Name = "tourViewHost";
       this.tourViewHost.ReadOnly = false;
-      this.tourViewHost.Size = new System.Drawing.Size(391, 263);
+      this.tourViewHost.Size = new System.Drawing.Size(397, 367);
       this.tourViewHost.TabIndex = 0;
       this.tourViewHost.ViewType = null;
       // 
       // splitContainer
       // 
       this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.splitContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+      this.splitContainer.IsSplitterFixed = true;
       this.splitContainer.Location = new System.Drawing.Point(0, 0);
       this.splitContainer.Name = "splitContainer";
       this.splitContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
       // 
       // splitContainer.Panel1
       // 
-      this.splitContainer.Panel1.Controls.Add(this.tabControl1);
+      this.splitContainer.Panel1.Controls.Add(this.tableLayoutPanel1);
       // 
       // splitContainer.Panel2
       // 
       this.splitContainer.Panel2.Controls.Add(this.tabControl);
-      this.splitContainer.Size = new System.Drawing.Size(423, 402);
-      this.splitContainer.SplitterDistance = 69;
+      this.splitContainer.Size = new System.Drawing.Size(423, 558);
+      this.splitContainer.SplitterDistance = 130;
       this.splitContainer.TabIndex = 0;
       // 
-      // tabControl1
+      // tableLayoutPanel1
       // 
-      this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.tabControl1.Controls.Add(this.tabPage1);
-      this.tabControl1.Controls.Add(this.tabPage6);
-      this.tabControl1.Controls.Add(this.tabPage5);
-      this.tabControl1.Controls.Add(this.tabPage2);
-      this.tabControl1.Controls.Add(this.tabPage3);
-      this.tabControl1.Controls.Add(this.tabPage4);
-      this.tabControl1.Location = new System.Drawing.Point(4, 3);
-      this.tabControl1.Name = "tabControl1";
-      this.tabControl1.SelectedIndex = 0;
-      this.tabControl1.Size = new System.Drawing.Size(416, 63);
-      this.tabControl1.TabIndex = 0;
-      // 
-      // tabPage1
-      // 
-      this.tabPage1.Controls.Add(this.qualityViewHost);
-      this.tabPage1.Location = new System.Drawing.Point(4, 22);
-      this.tabPage1.Name = "tabPage1";
-      this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage1.Size = new System.Drawing.Size(408, 37);
-      this.tabPage1.TabIndex = 0;
-      this.tabPage1.Text = "Quality";
-      this.tabPage1.UseVisualStyleBackColor = true;
-      // 
-      // qualityViewHost
-      // 
-      this.qualityViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.qualityViewHost.BackColor = System.Drawing.Color.Transparent;
-      this.qualityViewHost.Caption = "View";
-      this.qualityViewHost.Content = null;
-      this.qualityViewHost.Location = new System.Drawing.Point(3, 1);
-      this.qualityViewHost.Name = "qualityViewHost";
-      this.qualityViewHost.ReadOnly = false;
-      this.qualityViewHost.Size = new System.Drawing.Size(402, 35);
-      this.qualityViewHost.TabIndex = 5;
-      this.qualityViewHost.ViewType = null;
-      // 
-      // tabPage6
-      // 
-      this.tabPage6.Controls.Add(this.distanceViewHost);
-      this.tabPage6.Location = new System.Drawing.Point(4, 22);
-      this.tabPage6.Name = "tabPage6";
-      this.tabPage6.Size = new System.Drawing.Size(408, 37);
-      this.tabPage6.TabIndex = 5;
-      this.tabPage6.Text = "Distance";
-      this.tabPage6.UseVisualStyleBackColor = true;
-      // 
-      // distanceViewHost
-      // 
-      this.distanceViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.distanceViewHost.BackColor = System.Drawing.Color.Transparent;
-      this.distanceViewHost.Caption = "View";
-      this.distanceViewHost.Content = null;
-      this.distanceViewHost.Location = new System.Drawing.Point(3, 1);
-      this.distanceViewHost.Name = "distanceViewHost";
-      this.distanceViewHost.ReadOnly = false;
-      this.distanceViewHost.Size = new System.Drawing.Size(402, 35);
-      this.distanceViewHost.TabIndex = 6;
-      this.distanceViewHost.ViewType = null;
-      // 
-      // tabPage2
-      // 
-      this.tabPage2.Controls.Add(this.overloadViewHost);
-      this.tabPage2.Location = new System.Drawing.Point(4, 22);
-      this.tabPage2.Name = "tabPage2";
-      this.tabPage2.Size = new System.Drawing.Size(408, 37);
-      this.tabPage2.TabIndex = 1;
-      this.tabPage2.Text = "Overload";
-      this.tabPage2.UseVisualStyleBackColor = true;
-      // 
-      // overloadViewHost
-      // 
-      this.overloadViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.overloadViewHost.BackColor = System.Drawing.Color.Transparent;
-      this.overloadViewHost.Caption = "View";
-      this.overloadViewHost.Content = null;
-      this.overloadViewHost.Location = new System.Drawing.Point(3, 2);
-      this.overloadViewHost.Name = "overloadViewHost";
-      this.overloadViewHost.ReadOnly = false;
-      this.overloadViewHost.Size = new System.Drawing.Size(402, 35);
-      this.overloadViewHost.TabIndex = 4;
-      this.overloadViewHost.ViewType = null;
-      // 
-      // tabPage3
-      // 
-      this.tabPage3.Controls.Add(this.tardinessViewHost);
-      this.tabPage3.Location = new System.Drawing.Point(4, 22);
-      this.tabPage3.Name = "tabPage3";
-      this.tabPage3.Size = new System.Drawing.Size(408, 37);
-      this.tabPage3.TabIndex = 2;
-      this.tabPage3.Text = "Tardiness";
-      this.tabPage3.UseVisualStyleBackColor = true;
-      // 
-      // tardinessViewHost
-      // 
-      this.tardinessViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.tardinessViewHost.Caption = "View";
-      this.tardinessViewHost.Content = null;
-      this.tardinessViewHost.Location = new System.Drawing.Point(2, 1);
-      this.tardinessViewHost.Name = "tardinessViewHost";
-      this.tardinessViewHost.ReadOnly = false;
-      this.tardinessViewHost.Size = new System.Drawing.Size(404, 35);
-      this.tardinessViewHost.TabIndex = 2;
-      this.tardinessViewHost.ViewType = null;
-      // 
-      // tabPage4
-      // 
-      this.tabPage4.Controls.Add(this.travelTimeViewHost);
-      this.tabPage4.Location = new System.Drawing.Point(4, 22);
-      this.tabPage4.Name = "tabPage4";
-      this.tabPage4.Size = new System.Drawing.Size(408, 37);
-      this.tabPage4.TabIndex = 3;
-      this.tabPage4.Text = "TravelTime";
-      this.tabPage4.UseVisualStyleBackColor = true;
+      this.tableLayoutPanel1.ColumnCount = 2;
+      this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 23.64066F));
+      this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 76.35934F));
+      this.tableLayoutPanel1.Controls.Add(this.travelTimeViewHost, 1, 5);
+      this.tableLayoutPanel1.Controls.Add(this.label6, 0, 5);
+      this.tableLayoutPanel1.Controls.Add(this.tardinessViewHost, 1, 4);
+      this.tableLayoutPanel1.Controls.Add(this.label5, 0, 4);
+      this.tableLayoutPanel1.Controls.Add(this.overloadViewHost, 1, 3);
+      this.tableLayoutPanel1.Controls.Add(this.label4, 0, 3);
+      this.tableLayoutPanel1.Controls.Add(this.vehicleUtilizationViewHost, 1, 2);
+      this.tableLayoutPanel1.Controls.Add(this.label3, 0, 2);
+      this.tableLayoutPanel1.Controls.Add(this.label2, 0, 1);
+      this.tableLayoutPanel1.Controls.Add(this.qualityViewHost, 1, 0);
+      this.tableLayoutPanel1.Controls.Add(this.label1, 0, 0);
+      this.tableLayoutPanel1.Controls.Add(this.distanceViewHost, 1, 1);
+      this.tableLayoutPanel1.GrowStyle = System.Windows.Forms.TableLayoutPanelGrowStyle.FixedSize;
+      this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+      this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+      this.tableLayoutPanel1.RowCount = 6;
+      this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+      this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+      this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+      this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+      this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+      this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+      this.tableLayoutPanel1.Size = new System.Drawing.Size(423, 121);
+      this.tableLayoutPanel1.TabIndex = 2;
       // 
       // travelTimeViewHost
       // 
-      this.travelTimeViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
       this.travelTimeViewHost.Caption = "View";
       this.travelTimeViewHost.Content = null;
-      this.travelTimeViewHost.Location = new System.Drawing.Point(2, 1);
+      this.travelTimeViewHost.Dock = System.Windows.Forms.DockStyle.Left;
+      this.travelTimeViewHost.Location = new System.Drawing.Point(102, 103);
       this.travelTimeViewHost.Name = "travelTimeViewHost";
       this.travelTimeViewHost.ReadOnly = false;
-      this.travelTimeViewHost.Size = new System.Drawing.Size(404, 35);
-      this.travelTimeViewHost.TabIndex = 2;
+      this.travelTimeViewHost.Size = new System.Drawing.Size(281, 15);
+      this.travelTimeViewHost.TabIndex = 17;
       this.travelTimeViewHost.ViewType = null;
       // 
-      // tabPage5
+      // label6
       // 
-      this.tabPage5.Controls.Add(this.vehicleUtilizationViewHost);
-      this.tabPage5.Location = new System.Drawing.Point(4, 22);
-      this.tabPage5.Name = "tabPage5";
-      this.tabPage5.Size = new System.Drawing.Size(408, 37);
-      this.tabPage5.TabIndex = 4;
-      this.tabPage5.Text = "Vehicle utilization";
-      this.tabPage5.UseVisualStyleBackColor = true;
+      this.label6.AutoSize = true;
+      this.label6.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.label6.Location = new System.Drawing.Point(3, 100);
+      this.label6.Name = "label6";
+      this.label6.Size = new System.Drawing.Size(93, 21);
+      this.label6.TabIndex = 16;
+      this.label6.Text = "Travel Time";
+      this.label6.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+      // 
+      // tardinessViewHost
+      // 
+      this.tardinessViewHost.Caption = "View";
+      this.tardinessViewHost.Content = null;
+      this.tardinessViewHost.Dock = System.Windows.Forms.DockStyle.Left;
+      this.tardinessViewHost.Location = new System.Drawing.Point(102, 83);
+      this.tardinessViewHost.Name = "tardinessViewHost";
+      this.tardinessViewHost.ReadOnly = false;
+      this.tardinessViewHost.Size = new System.Drawing.Size(281, 14);
+      this.tardinessViewHost.TabIndex = 15;
+      this.tardinessViewHost.ViewType = null;
+      // 
+      // label5
+      // 
+      this.label5.AutoSize = true;
+      this.label5.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.label5.Location = new System.Drawing.Point(3, 80);
+      this.label5.Name = "label5";
+      this.label5.Size = new System.Drawing.Size(93, 20);
+      this.label5.TabIndex = 14;
+      this.label5.Text = "Tardiness";
+      this.label5.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+      // 
+      // overloadViewHost
+      // 
+      this.overloadViewHost.BackColor = System.Drawing.Color.Transparent;
+      this.overloadViewHost.Caption = "View";
+      this.overloadViewHost.Content = null;
+      this.overloadViewHost.Dock = System.Windows.Forms.DockStyle.Left;
+      this.overloadViewHost.Location = new System.Drawing.Point(102, 63);
+      this.overloadViewHost.Name = "overloadViewHost";
+      this.overloadViewHost.ReadOnly = false;
+      this.overloadViewHost.Size = new System.Drawing.Size(281, 14);
+      this.overloadViewHost.TabIndex = 13;
+      this.overloadViewHost.ViewType = null;
+      // 
+      // label4
+      // 
+      this.label4.AutoSize = true;
+      this.label4.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.label4.Location = new System.Drawing.Point(3, 60);
+      this.label4.Name = "label4";
+      this.label4.Size = new System.Drawing.Size(93, 20);
+      this.label4.TabIndex = 12;
+      this.label4.Text = "Overload";
+      this.label4.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
       // 
       // vehicleUtilizationViewHost
       // 
-      this.vehicleUtilizationViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
       this.vehicleUtilizationViewHost.Caption = "View";
       this.vehicleUtilizationViewHost.Content = null;
-      this.vehicleUtilizationViewHost.Location = new System.Drawing.Point(2, 1);
+      this.vehicleUtilizationViewHost.Dock = System.Windows.Forms.DockStyle.Left;
+      this.vehicleUtilizationViewHost.Location = new System.Drawing.Point(102, 43);
       this.vehicleUtilizationViewHost.Name = "vehicleUtilizationViewHost";
       this.vehicleUtilizationViewHost.ReadOnly = false;
-      this.vehicleUtilizationViewHost.Size = new System.Drawing.Size(404, 35);
-      this.vehicleUtilizationViewHost.TabIndex = 2;
+      this.vehicleUtilizationViewHost.Size = new System.Drawing.Size(281, 14);
+      this.vehicleUtilizationViewHost.TabIndex = 11;
       this.vehicleUtilizationViewHost.ViewType = null;
+      // 
+      // label3
+      // 
+      this.label3.AutoSize = true;
+      this.label3.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.label3.Location = new System.Drawing.Point(3, 40);
+      this.label3.Name = "label3";
+      this.label3.Size = new System.Drawing.Size(93, 20);
+      this.label3.TabIndex = 10;
+      this.label3.Text = "Vehicle utilization";
+      this.label3.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+      // 
+      // label2
+      // 
+      this.label2.AutoSize = true;
+      this.label2.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.label2.Location = new System.Drawing.Point(3, 20);
+      this.label2.Name = "label2";
+      this.label2.Size = new System.Drawing.Size(93, 20);
+      this.label2.TabIndex = 9;
+      this.label2.Text = "Distance";
+      this.label2.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+      // 
+      // qualityViewHost
+      // 
+      this.qualityViewHost.BackColor = System.Drawing.Color.Transparent;
+      this.qualityViewHost.Caption = "View";
+      this.qualityViewHost.Content = null;
+      this.qualityViewHost.Dock = System.Windows.Forms.DockStyle.Left;
+      this.qualityViewHost.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.qualityViewHost.Location = new System.Drawing.Point(102, 3);
+      this.qualityViewHost.Name = "qualityViewHost";
+      this.qualityViewHost.ReadOnly = false;
+      this.qualityViewHost.Size = new System.Drawing.Size(281, 14);
+      this.qualityViewHost.TabIndex = 8;
+      this.qualityViewHost.ViewType = null;
+      // 
+      // label1
+      // 
+      this.label1.AutoSize = true;
+      this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.label1.Location = new System.Drawing.Point(3, 0);
+      this.label1.Name = "label1";
+      this.label1.Size = new System.Drawing.Size(93, 20);
+      this.label1.TabIndex = 0;
+      this.label1.Text = "Quality";
+      this.label1.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+      // 
+      // distanceViewHost
+      // 
+      this.distanceViewHost.BackColor = System.Drawing.Color.Transparent;
+      this.distanceViewHost.Caption = "View";
+      this.distanceViewHost.Content = null;
+      this.distanceViewHost.Dock = System.Windows.Forms.DockStyle.Left;
+      this.distanceViewHost.Location = new System.Drawing.Point(102, 23);
+      this.distanceViewHost.Name = "distanceViewHost";
+      this.distanceViewHost.ReadOnly = false;
+      this.distanceViewHost.Size = new System.Drawing.Size(281, 14);
+      this.distanceViewHost.TabIndex = 7;
+      this.distanceViewHost.ViewType = null;
       // 
       // VRPSolutionView
       // 
@@ -346,7 +346,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.splitContainer);
       this.Name = "VRPSolutionView";
-      this.Size = new System.Drawing.Size(423, 402);
+      this.Size = new System.Drawing.Size(423, 558);
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
       this.tabControl.ResumeLayout(false);
       this.visualizationTabPage.ResumeLayout(false);
@@ -355,13 +355,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
       this.splitContainer.Panel1.ResumeLayout(false);
       this.splitContainer.Panel2.ResumeLayout(false);
       this.splitContainer.ResumeLayout(false);
-      this.tabControl1.ResumeLayout(false);
-      this.tabPage1.ResumeLayout(false);
-      this.tabPage6.ResumeLayout(false);
-      this.tabPage2.ResumeLayout(false);
-      this.tabPage3.ResumeLayout(false);
-      this.tabPage4.ResumeLayout(false);
-      this.tabPage5.ResumeLayout(false);
+      this.tableLayoutPanel1.ResumeLayout(false);
+      this.tableLayoutPanel1.PerformLayout();
       this.ResumeLayout(false);
 
     }
@@ -375,18 +370,18 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
     private System.Windows.Forms.GroupBox tourGroupBox;
     private HeuristicLab.MainForm.WindowsForms.ViewHost tourViewHost;
     private System.Windows.Forms.SplitContainer splitContainer;
-    private System.Windows.Forms.TabControl tabControl1;
-    private System.Windows.Forms.TabPage tabPage1;
-    private System.Windows.Forms.TabPage tabPage2;
-    private System.Windows.Forms.TabPage tabPage3;
-    private HeuristicLab.MainForm.WindowsForms.ViewHost tardinessViewHost;
-    private System.Windows.Forms.TabPage tabPage4;
+    private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+    private System.Windows.Forms.Label label1;
     private HeuristicLab.MainForm.WindowsForms.ViewHost travelTimeViewHost;
-    private System.Windows.Forms.TabPage tabPage5;
-    private HeuristicLab.MainForm.WindowsForms.ViewHost vehicleUtilizationViewHost;
+    private System.Windows.Forms.Label label6;
+    private HeuristicLab.MainForm.WindowsForms.ViewHost tardinessViewHost;
+    private System.Windows.Forms.Label label5;
     private HeuristicLab.MainForm.WindowsForms.ViewHost overloadViewHost;
+    private System.Windows.Forms.Label label4;
+    private HeuristicLab.MainForm.WindowsForms.ViewHost vehicleUtilizationViewHost;
+    private System.Windows.Forms.Label label3;
+    private System.Windows.Forms.Label label2;
     private HeuristicLab.MainForm.WindowsForms.ViewHost qualityViewHost;
-    private System.Windows.Forms.TabPage tabPage6;
     private HeuristicLab.MainForm.WindowsForms.ViewHost distanceViewHost;
 
 

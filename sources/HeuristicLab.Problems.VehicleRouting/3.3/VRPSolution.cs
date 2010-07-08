@@ -141,12 +141,63 @@ namespace HeuristicLab.Problems.VehicleRouting {
         }
       }
     }
+    [Storable]
+    private DoubleMatrix distanceMatrix;
+    public DoubleMatrix DistanceMatrix {
+      get { return distanceMatrix; }
+      set {
+        if (distanceMatrix != value) {
+          distanceMatrix = value;
+        }
+      }
+    }
+    [Storable]
+    private BoolValue useDistanceMatrix;
+    public BoolValue UseDistanceMatrix {
+      get { return useDistanceMatrix; }
+      set {
+        if (useDistanceMatrix != value) {
+          useDistanceMatrix = value;
+        }
+      }
+    }
+    [Storable]
+    private DoubleArray readyTime;
+    public DoubleArray ReadyTime {
+      get { return readyTime; }
+      set {
+        if (readyTime != value) {
+          readyTime = value;
+        }
+      }
+    }
+    [Storable]
+    private DoubleArray dueTime;
+    public DoubleArray DueTime {
+      get { return dueTime; }
+      set {
+        if (dueTime != value) {
+          dueTime = value;
+        }
+      }
+    }
+    [Storable]
+    private DoubleArray serviceTime;
+    public DoubleArray ServiceTime {
+      get { return serviceTime; }
+      set {
+        if (serviceTime != value) {
+          serviceTime = value;
+        }
+      }
+    }
 
     public VRPSolution() : base() { }
 
     public VRPSolution(DoubleMatrix coordinates, IVRPEncoding solution, DoubleValue quality, 
       DoubleValue distance, DoubleValue overload, DoubleValue tardiness, DoubleValue travelTime, 
-      DoubleValue vehicleUtilization)
+      DoubleValue vehicleUtilization, DoubleMatrix distanceMatrix, BoolValue useDistanceMatrix,
+      DoubleArray readyTime, DoubleArray dueTime, DoubleArray serviceTime)
       : base() {
       this.coordinates = coordinates;
       this.solution = solution;
@@ -156,6 +207,11 @@ namespace HeuristicLab.Problems.VehicleRouting {
       this.tardiness = tardiness;
       this.travelTime = travelTime;
       this.vehicleUtilization = vehicleUtilization;
+      this.distanceMatrix = distanceMatrix;
+      this.useDistanceMatrix = useDistanceMatrix;
+      this.readyTime = readyTime;
+      this.dueTime = dueTime;
+      this.serviceTime = serviceTime;
       Initialize();
     }
     [StorableConstructor]
@@ -166,6 +222,11 @@ namespace HeuristicLab.Problems.VehicleRouting {
       if (coordinates != null) RegisterCoordinatesEvents();
       if (solution != null) RegisterSolutionEvents();
       if (quality != null) RegisterQualityEvents();
+      if (distance != null) RegisterDistanceEvents();
+      if (overload != null) RegisterOverloadEvents();
+      if (tardiness != null) RegisterTardinessEvents();
+      if (travelTime != null) RegisterTravelTimeEvents();
+      if (vehicleUtilization != null) RegisterVehicleUtilizationEvents();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -179,6 +240,11 @@ namespace HeuristicLab.Problems.VehicleRouting {
       clone.tardiness = (DoubleValue)cloner.Clone(tardiness);
       clone.travelTime = (DoubleValue)cloner.Clone(travelTime);
       clone.vehicleUtilization = (DoubleValue)cloner.Clone(vehicleUtilization);
+      clone.distanceMatrix = (DoubleMatrix)cloner.Clone(distanceMatrix);
+      clone.useDistanceMatrix = (BoolValue)cloner.Clone(useDistanceMatrix);
+      clone.readyTime = (DoubleArray)cloner.Clone(readyTime);
+      clone.dueTime = (DoubleArray)cloner.Clone(dueTime);
+      clone.serviceTime = (DoubleArray)cloner.Clone(serviceTime);
       clone.Initialize();
       return clone;
     }

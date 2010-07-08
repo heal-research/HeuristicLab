@@ -96,7 +96,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
-      tabControl1.Enabled = Content != null;
+      tableLayoutPanel1.Enabled = Content != null;
       pictureBox.Enabled = Content != null;
       tourGroupBox.Enabled = Content != null;
     }
@@ -107,7 +107,20 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
           pictureBox.Image = null;
         } else {
           DoubleMatrix coordinates = Content.Coordinates;
+          DoubleMatrix distanceMatrix = Content.DistanceMatrix;
+          BoolValue useDistanceMatrix = Content.UseDistanceMatrix;
+          DoubleArray dueTime = Content.DueTime;
+          DoubleArray serviceTime = Content.ServiceTime;
+          DoubleArray readyTime = Content.ReadyTime;
+
           Bitmap bitmap = new Bitmap(pictureBox.Width, pictureBox.Height);
+
+          Pen[] pens = {new Pen(Color.FromArgb(92,20,237)), new Pen(Color.FromArgb(237,183,20)), new Pen(Color.FromArgb(237,20,219)), new Pen(Color.FromArgb(20,237,76)),
+                    new Pen(Color.FromArgb(237,61,20)), new Pen(Color.FromArgb(115,78,26)), new Pen(Color.FromArgb(20,237,229)), new Pen(Color.FromArgb(39,101,19)),
+                    new Pen(Color.FromArgb(230,170,229)), new Pen(Color.FromArgb(142,136,89)), new Pen(Color.FromArgb(157,217,166)), new Pen(Color.FromArgb(31,19,101)),
+                    new Pen(Color.FromArgb(173,237,20)), new Pen(Color.FromArgb(230,231,161)), new Pen(Color.FromArgb(142,89,89)), new Pen(Color.FromArgb(93,89,142)),
+                    new Pen(Color.FromArgb(146,203,217)), new Pen(Color.FromArgb(101,19,75)), new Pen(Color.FromArgb(198,20,237)), new Pen(Color.FromArgb(185,185,185)),
+                    new Pen(Color.FromArgb(179,32,32)), new Pen(Color.FromArgb(18,119,115)), new Pen(Color.FromArgb(104,158,239)), new Pen(Color.Black)};
 
           if ((coordinates != null) && (coordinates.Rows > 0) && (coordinates.Columns == 2)) {
             double xMin = double.MaxValue, yMin = double.MaxValue, xMax = double.MinValue, yMax = double.MinValue;
@@ -122,26 +135,51 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
             double xStep = xMax != xMin ? (pictureBox.Width - 2 * border) / (xMax - xMin) : 1;
             double yStep = yMax != yMin ? (pictureBox.Height - 2 * border) / (yMax - yMin) : 1;
 
-            Point[] points = new Point[coordinates.Rows];
-            for (int i = 0; i < coordinates.Rows; i++)
-              points[i] = new Point(border + ((int)((coordinates[i, 0] - xMin) * xStep)),
-                                    bitmap.Height - (border + ((int)((coordinates[i, 1] - yMin) * yStep))));
-
             using (Graphics graphics = Graphics.FromImage(bitmap)) {
               if (Content.Solution != null) {
+                int currentTour = 0;
                 foreach (Tour tour in Content.Solution.Tours) {
+                  double t = 0.0;
                   Point[] tourPoints = new Point[tour.Count];
-                  for (int i = 0; i < tour.Count; i++) {
-                    tourPoints[i] = points[tour[i].Value];
-                  }
-                  graphics.DrawPolygon(Pens.Black, tourPoints);
-                }
-              }
+                  int lastCustomer = 0;
 
-              for (int i = 0; i < points.Length; i++)
-                graphics.FillRectangle(Brushes.Red, points[i].X - 2, points[i].Y - 2, 6, 6);
+                  for (int i = 0; i < tour.Count; i++) {
+                    int customer = tour[i].Value;
+
+                    Point customerPoint = new Point(border + ((int)((coordinates[customer, 0] - xMin) * xStep)),
+                                    bitmap.Height - (border + ((int)((coordinates[customer, 1] - yMin) * yStep))));
+                    tourPoints[i] = customerPoint;
+
+                    if (i > 0) {
+                      Brush customerBrush = Brushes.Black;
+
+                      t += VehicleRoutingProblem.GetDistance(
+                        lastCustomer, customer, coordinates, distanceMatrix, useDistanceMatrix);
+
+                      if (t < readyTime[customer]) {
+                        t = readyTime[customer];
+                        customerBrush = Brushes.Yellow;
+                      } else if (t > dueTime[customer]) {
+                        customerBrush = Brushes.Red;
+                      }
+
+                      t += serviceTime[customer];
+
+                      graphics.FillRectangle(customerBrush, customerPoint.X - 2, customerPoint.Y - 2, 6, 6);
+                    }
+                    lastCustomer = customer;
+                  }
+
+                  graphics.DrawPolygon(pens[((currentTour >= pens.Length) ? (pens.Length - 1) : (currentTour))], tourPoints);
+                  currentTour++;
+                }
+              }               
             }
           }
+
+          for (int i = 0; i < pens.Length; i++)
+            pens[i].Dispose();
+
           pictureBox.Image = bitmap;
         }
       }

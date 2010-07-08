@@ -142,50 +142,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
       return vrpSolution.Tours.Count;
     }
 
-    private static double CalculateDistance(int start, int end, DoubleMatrix coordinates) {
-      double distance = 0.0;
-
-      distance =
-          Math.Sqrt(
-            Math.Pow(coordinates[start, 0] - coordinates[end, 0], 2) +
-            Math.Pow(coordinates[start, 1] - coordinates[end, 1], 2));
-
-      return distance;
-    }
-
-    private static DoubleMatrix CreateDistanceMatrix(DoubleMatrix coordinates) 
-    {
-      DoubleMatrix distanceMatrix = new DoubleMatrix(coordinates.Rows, coordinates.Rows);
-
-      for (int i = 0; i < distanceMatrix.Rows; i++) {
-        for (int j = i; j < distanceMatrix.Columns; j++) {
-          double distance = CalculateDistance(i, j, coordinates);
-
-          distanceMatrix[i, j] = distance;
-          distanceMatrix[j, i] = distance;
-        }
-      }
-
-      return distanceMatrix;
-    }
-
-    private static double GetDistance(int start, int end, 
-      DoubleMatrix coordinates, ILookupParameter<DoubleMatrix> distanceMatrix, BoolValue useDistanceMatrix) {
-      double distance = 0.0;
-
-      if (useDistanceMatrix.Value) {
-        if (distanceMatrix.ActualValue == null) {
-          distanceMatrix.ActualValue = CreateDistanceMatrix(coordinates);
-        }
-
-        distance = distanceMatrix.ActualValue[start, end];
-      } else {
-        distance = CalculateDistance(start, end, coordinates);
-      }
-
-      return distance;
-    }
-
     private static TourEvaluation EvaluateTour(Tour tour, DoubleArray dueTimeArray,
       DoubleArray serviceTimeArray, DoubleArray readyTimeArray, DoubleArray demandArray, DoubleValue capacity, 
       DoubleValue fleetUsageFactor, DoubleValue timeFactor, DoubleValue distanceFactor, DoubleValue overloadPenalty, DoubleValue tardinessPenalty,
@@ -209,7 +165,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
         int end = tour[i].Value;
 
         //drive there
-        double currentDistace = GetDistance(start, end, coordinates, distanceMatrix, useDistanceMatrix);
+        double currentDistace = VehicleRoutingProblem.GetDistance(start, end, coordinates, distanceMatrix, useDistanceMatrix);
         distance += currentDistace;
         time += currentDistace;
 

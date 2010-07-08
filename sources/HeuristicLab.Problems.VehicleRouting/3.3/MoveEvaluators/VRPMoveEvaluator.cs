@@ -144,9 +144,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
       MoveTardinessParameter.ActualValue = new DoubleValue(tourEval.Tardiness);
       MoveTravelTimeParameter.ActualValue = new DoubleValue(tourEval.TravelTime);
 
-      if (tourEval.Quality < tourEval.Distance) {
-      }
-
       return base.Apply();
     }
   }

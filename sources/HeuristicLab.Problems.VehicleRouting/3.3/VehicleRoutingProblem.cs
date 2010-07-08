@@ -221,6 +221,62 @@ namespace HeuristicLab.Problems.VehicleRouting {
       return clone;
     }
 
+    private static double CalculateDistance(int start, int end, DoubleMatrix coordinates) {
+      double distance = 0.0;
+
+      distance =
+          Math.Sqrt(
+            Math.Pow(coordinates[start, 0] - coordinates[end, 0], 2) +
+            Math.Pow(coordinates[start, 1] - coordinates[end, 1], 2));
+
+      return distance;
+    }
+
+    private static DoubleMatrix CreateDistanceMatrix(DoubleMatrix coordinates) {
+      DoubleMatrix distanceMatrix = new DoubleMatrix(coordinates.Rows, coordinates.Rows);
+
+      for (int i = 0; i < distanceMatrix.Rows; i++) {
+        for (int j = i; j < distanceMatrix.Columns; j++) {
+          double distance = CalculateDistance(i, j, coordinates);
+
+          distanceMatrix[i, j] = distance;
+          distanceMatrix[j, i] = distance;
+        }
+      }
+
+      return distanceMatrix;
+    }
+
+    public static double GetDistance(int start, int end,
+      DoubleMatrix coordinates, ILookupParameter<DoubleMatrix> distanceMatrix, BoolValue useDistanceMatrix) {
+      double distance = 0.0;
+
+      if (useDistanceMatrix.Value) {
+        if (distanceMatrix.ActualValue == null) {
+          distanceMatrix.ActualValue = CreateDistanceMatrix(coordinates);
+        }
+
+        distance = distanceMatrix.ActualValue[start, end];
+      } else {
+        distance = CalculateDistance(start, end, coordinates);
+      }
+
+      return distance;
+    }
+
+    public static double GetDistance(int start, int end,
+      DoubleMatrix coordinates, DoubleMatrix distanceMatrix, BoolValue useDistanceMatrix) {
+      double distance = 0.0;
+
+      if (useDistanceMatrix.Value) {
+        distance = distanceMatrix[start, end];
+      } else {
+        distance = CalculateDistance(start, end, coordinates);
+      }
+
+      return distance;
+    }
+
     public void ImportFromSolomon(string solomonFileName) {
       SolomonParser parser = new SolomonParser(solomonFileName);
       parser.Parse();

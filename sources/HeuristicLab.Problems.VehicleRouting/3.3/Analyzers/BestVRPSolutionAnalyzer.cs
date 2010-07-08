@@ -40,8 +40,23 @@ namespace HeuristicLab.Problems.VehicleRouting {
     public ScopeTreeLookupParameter<IVRPEncoding> VRPSolutionParameter {
       get { return (ScopeTreeLookupParameter<IVRPEncoding>)Parameters["VRPSolution"]; }
     }
+    public ILookupParameter<DoubleMatrix> DistanceMatrixParameter {
+      get { return (ILookupParameter<DoubleMatrix>)Parameters["DistanceMatrix"]; }
+    }
+    public ILookupParameter<BoolValue> UseDistanceMatrixParameter {
+      get { return (ILookupParameter<BoolValue>)Parameters["UseDistanceMatrix"]; }
+    }
     public LookupParameter<DoubleMatrix> CoordinatesParameter {
       get { return (LookupParameter<DoubleMatrix>)Parameters["Coordinates"]; }
+    }
+    public ILookupParameter<DoubleArray> ReadyTimeParameter {
+      get { return (ILookupParameter<DoubleArray>)Parameters["ReadyTime"]; }
+    }
+    public ILookupParameter<DoubleArray> DueTimeParameter {
+      get { return (ILookupParameter<DoubleArray>)Parameters["DueTime"]; }
+    }
+    public ILookupParameter<DoubleArray> ServiceTimeParameter {
+      get { return (ILookupParameter<DoubleArray>)Parameters["ServiceTime"]; }
     }
     public ScopeTreeLookupParameter<DoubleValue> QualityParameter {
       get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters["Quality"]; }
@@ -72,6 +87,12 @@ namespace HeuristicLab.Problems.VehicleRouting {
       : base() {
       Parameters.Add(new ScopeTreeLookupParameter<IVRPEncoding>("VRPSolution", "The VRP solutions which should be evaluated."));
       Parameters.Add(new LookupParameter<DoubleMatrix>("Coordinates", "The x- and y-Coordinates of the cities."));
+      Parameters.Add(new LookupParameter<DoubleMatrix>("DistanceMatrix", "The matrix which contains the distances between the cities."));
+      Parameters.Add(new LookupParameter<BoolValue>("UseDistanceMatrix", "True if a distance matrix should be calculated and used for evaluation, otherwise false."));
+      Parameters.Add(new LookupParameter<DoubleArray>("ReadyTime", "The ready time of each customer."));
+      Parameters.Add(new LookupParameter<DoubleArray>("DueTime", "The due time of each customer."));
+      Parameters.Add(new LookupParameter<DoubleArray>("ServiceTime", "The service time of each customer."));
+
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The qualities of the VRP solutions which should be analyzed."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Distance", "The distances of the VRP solutions which should be analyzed."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Overload", "The overloads of the VRP solutions which should be analyzed."));
@@ -100,7 +121,9 @@ namespace HeuristicLab.Problems.VehicleRouting {
       if (solution == null) {
         solution = new VRPSolution(coordinates, best.Clone() as IVRPEncoding, new DoubleValue(qualities[i].Value),
           new DoubleValue(distances[i].Value), new DoubleValue(overloads[i].Value), new DoubleValue(tardinesses[i].Value),
-          new DoubleValue(travelTimes[i].Value), new DoubleValue(vehiclesUtilizations[i].Value));
+          new DoubleValue(travelTimes[i].Value), new DoubleValue(vehiclesUtilizations[i].Value), 
+          DistanceMatrixParameter.ActualValue, UseDistanceMatrixParameter.ActualValue, 
+          ReadyTimeParameter.ActualValue, DueTimeParameter.ActualValue, ServiceTimeParameter.ActualValue);
         BestSolutionParameter.ActualValue = solution;
         results.Add(new Result("Best VRP Solution", solution));
       } else {
@@ -113,9 +136,11 @@ namespace HeuristicLab.Problems.VehicleRouting {
           solution.Tardiness.Value = tardinesses[i].Value;
           solution.TravelTime.Value = travelTimes[i].Value;
           solution.VehicleUtilization.Value = vehiclesUtilizations[i].Value;
-
-          if (solution.Quality.Value < solution.Distance.Value) {
-          }
+          solution.DistanceMatrix = DistanceMatrixParameter.ActualValue;
+          solution.UseDistanceMatrix = UseDistanceMatrixParameter.ActualValue;
+          solution.ReadyTime = ReadyTimeParameter.ActualValue;
+          solution.DueTime = DueTimeParameter.ActualValue;
+          solution.ServiceTime = ServiceTimeParameter.ActualValue;
         }
       }
 
