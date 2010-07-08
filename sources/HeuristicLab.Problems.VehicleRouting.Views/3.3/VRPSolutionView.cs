@@ -73,9 +73,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        qualityViewHost.Content = null;
         pictureBox.Image = null;
-        tourViewHost.Content = null;
       } else {
         qualityViewHost.Content = Content.Quality;
         distanceViewHost.Content = Content.Distance;
