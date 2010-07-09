@@ -34,47 +34,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [StorableClass]
   [Item("LaggedVariable", "Represents a variable value with a time offset.")]
   public sealed class LaggedVariable : Variable {
-    //#region Properties
-    //[Storable]
-    //private double weightNu;
-    //public double WeightNu {
-    //  get { return weightNu; }
-    //  set { weightNu = value; }
-    //}
-    //[Storable]
-    //private double weightSigma;
-    //public double WeightSigma {
-    //  get { return weightSigma; }
-    //  set {
-    //    if (weightSigma < 0.0) throw new ArgumentException("Negative sigma is not allowed.");
-    //    weightSigma = value;
-    //  }
-    //}
-    //[Storable]
-    //private double weightManipulatorNu;
-    //public double WeightManipulatorNu {
-    //  get { return weightManipulatorNu; }
-    //  set { weightManipulatorNu = value; }
-    //}
-    //[Storable]
-    //private double weightManipulatorSigma;
-    //public double WeightManipulatorSigma {
-    //  get { return weightManipulatorSigma; }
-    //  set {
-    //    if (weightManipulatorSigma < 0.0) throw new ArgumentException("Negative sigma is not allowed.");
-    //    weightManipulatorSigma = value;
-    //  }
-    //}
-    //private List<string> variableNames;
-    //[Storable]
-    //public IEnumerable<string> VariableNames {
-    //  get { return variableNames; }
-    //  set {
-    //    if (value == null) throw new ArgumentNullException();
-    //    variableNames.Clear();
-    //    variableNames.AddRange(value);
-    //  }
-    //}
     [Storable]
     private int minLag;
     public int MinLag {
@@ -87,14 +46,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
       get { return maxLag; }
       set { maxLag = value; }
     }
-    //#endregion
     public LaggedVariable()
       : base("LaggedVariable", "Represents a variable value with a time offset.") {
-      //weightNu = 1.0;
-      //weightSigma = 1.0;
-      //weightManipulatorNu = 0.0;
-      //weightManipulatorSigma = 1.0;
-      //variableNames = new List<string>();
       minLag = -1; maxLag = -1;
     }
 
@@ -104,11 +57,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
 
     public override IDeepCloneable Clone(Cloner cloner) {
       LaggedVariable clone = (LaggedVariable)base.Clone(cloner);
-      //clone.weightNu = weightNu;
-      //clone.weightSigma = weightSigma;
-      //clone.variableNames = new List<string>(variableNames);
-      //clone.weightManipulatorNu = weightManipulatorNu;
-      //clone.weightManipulatorSigma = weightManipulatorSigma;
       clone.minLag = minLag;
       clone.maxLag = maxLag;
       return clone;
