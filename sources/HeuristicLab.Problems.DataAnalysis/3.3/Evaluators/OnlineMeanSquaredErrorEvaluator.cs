@@ -47,6 +47,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Evaluators {
     }
 
     #region IOnlineEvaluator Members
+    public double Value {
+      get { return MeanSquaredError; }
+    }
     public void Reset() {
       n = 0;
       sse = 0.0;
@@ -55,7 +58,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Evaluators {
     public void Add(double original, double estimated) {
       if (double.IsNaN(estimated) || double.IsInfinity(estimated) ||
           double.IsNaN(original) || double.IsInfinity(original)) {
-            throw new ArgumentException("Mean squared error is not defined for NaN or infinity elements");
+        throw new ArgumentException("Mean squared error is not defined for NaN or infinity elements");
       } else {
         double error = estimated - original;
         sse += error * error;

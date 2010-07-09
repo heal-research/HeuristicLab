@@ -29,7 +29,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Random;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [StorableClass]
-  public sealed class VariableTreeNode : SymbolicExpressionTreeTerminalNode {
+  public class VariableTreeNode : SymbolicExpressionTreeTerminalNode {
     public new Variable Symbol {
       get { return (Variable)base.Symbol; }
     }
@@ -47,10 +47,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
     }
 
 
-    private VariableTreeNode() { }
+    protected VariableTreeNode() { }
 
     // copy constructor
-    private VariableTreeNode(VariableTreeNode original)
+    protected VariableTreeNode(VariableTreeNode original)
       : base(original) {
       weight = original.weight;
       variableName = original.variableName;

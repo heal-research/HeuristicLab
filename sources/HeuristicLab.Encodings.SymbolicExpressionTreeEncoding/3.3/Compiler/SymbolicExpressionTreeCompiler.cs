@@ -36,9 +36,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Compiler {
     public Instruction[] Compile(SymbolicExpressionTree tree, Func<SymbolicExpressionTreeNode, byte> opCodeMapper) {
       List<Instruction> code = new List<Instruction>();
       entryPoint.Clear();
-      // compile main body
-      code.AddRange(Compile(tree.Root.SubTrees[0].SubTrees[0], opCodeMapper));
-      // compile branches
+      // compile main body branches
+      foreach (var branch in tree.Root.SubTrees[0].SubTrees) {
+        code.AddRange(Compile(branch, opCodeMapper));
+      }      
+      // compile function branches
       var functionBranches = from node in tree.IterateNodesPrefix()
                              where node.Symbol is Defun
                              select node;

@@ -49,8 +49,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Evaluators {
     }
 
     public static double Calculate(IEnumerable<double> original, IEnumerable<double> estimated) {
-      double mse = SimpleMSEEvaluator.Calculate(original, estimated);
-      return mse / original.Variance();
+      OnlineNormalizedMeanSquaredErrorEvaluator nmseEvaluator = new OnlineNormalizedMeanSquaredErrorEvaluator();
+      var originalEnumerator = original.GetEnumerator();
+      var estimatedEnumerator = estimated.GetEnumerator();
+      while (originalEnumerator.MoveNext() & estimatedEnumerator.MoveNext()) {
+        nmseEvaluator.Add(originalEnumerator.Current, estimatedEnumerator.Current);
+      }
+      if (originalEnumerator.MoveNext() || estimatedEnumerator.MoveNext()) {
+        throw new ArgumentException("Number of elements in original and estimated enumerations doesn't match.");
+      }
+      return nmseEvaluator.NormalizedMeanSquaredError;
     }
   }
 }

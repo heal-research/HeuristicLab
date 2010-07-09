@@ -27,6 +27,7 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   public interface IOnlineEvaluator {
+    double Value { get; }
     void Reset();
     void Add(double original, double estimated);
   }

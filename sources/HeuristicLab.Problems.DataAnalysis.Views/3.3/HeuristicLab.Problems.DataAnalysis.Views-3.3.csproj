@@ -171,6 +171,12 @@
     <Compile Include="Symbolic\Symbols\ConstantView.Designer.cs">
       <DependentUpon>ConstantView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Symbolic\Symbols\LaggedVariableView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Symbolic\Symbols\LaggedVariableView.Designer.cs">
+      <DependentUpon>LaggedVariableView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Symbolic\Symbols\VariableView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -251,6 +257,11 @@
       <Project>{70DFD984-B1D9-46FE-8EB7-4DE92D71A9FC}</Project>
       <Name>HeuristicLab.Problems.DataAnalysis-3.3</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Symbolic\Symbols\LaggedVariableView.resx">
+      <DependentUpon>LaggedVariableView.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

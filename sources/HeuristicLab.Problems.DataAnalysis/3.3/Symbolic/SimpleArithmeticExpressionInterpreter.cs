@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Linq;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -96,6 +97,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private int row;
     private Instruction[] code;
     private int pc;
+    private double[] argumentStack = new double[ARGUMENT_STACK_SIZE];
+    private int argStackPointer;
 
     public override bool CanChangeName {
       get { return false; }
@@ -139,11 +142,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         throw new NotSupportedException("Symbol: " + treeNode.Symbol);
     }
 
-    private double[] argumentStack = new double[ARGUMENT_STACK_SIZE];
-    private int argStackPointer;
-
-    public double Evaluate() {
-      var currentInstr = code[pc++];
+    private double Evaluate() {
+      Instruction currentInstr = code[pc++];
       switch (currentInstr.opCode) {
         case OpCodes.Add: {
             double s = Evaluate();

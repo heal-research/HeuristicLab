@@ -29,44 +29,49 @@ using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.DataAnalysis.Evaluators {
-  public class OnlineMeanAbsolutePercentageErrorEvaluator : IOnlineEvaluator {
+  public class OnlineMeanAndVarianceCalculator {
 
-    private double sre;
+    private double m_oldM, m_newM, m_oldS, m_newS;
     private int n;
-    public double MeanAbsolutePercentageError {
+
+    public double Variance {
       get {
-        if (n < 1)
-          throw new InvalidOperationException("No elements");
-        else
-          return sre / n;
+        return (n > 1) ? m_newS / (n - 1) : 0.0;
       }
     }
 
-    public OnlineMeanAbsolutePercentageErrorEvaluator() {
+    public double Mean {
+      get {
+        return (n > 0) ? m_newM : 0.0;
+      }
+    }
+
+    public OnlineMeanAndVarianceCalculator() {
       Reset();
     }
 
-    #region IOnlineEvaluator Members
-    public double Value {
-      get { return MeanAbsolutePercentageError; }
-    }
     public void Reset() {
       n = 0;
-      sre = 0.0;
     }
 
-    public void Add(double original, double estimated) {
-      if (double.IsNaN(estimated) || double.IsInfinity(estimated) ||
-          double.IsNaN(original) || double.IsInfinity(original)) {
-        throw new ArgumentException("Relative error is not defined for variables with NaN or infinity values.");
+    public void Add(double x) {
+      if (double.IsNaN(x) || double.IsInfinity(x)) {
+        throw new ArgumentException("Mean and variance are not defined for NaN or infinity elements");
       } else {
-        if (!original.IsAlmost(0.0)) {
-          sre += Math.Abs((estimated - original) / original);
-          n++;
+        n++;
+        // See Knuth TAOCP vol 2, 3rd edition, page 232
+        if (n == 1) {
+          m_oldM = m_newM = x;
+          m_oldS = 0.0;
+        } else {
+          m_newM = m_oldM + (x - m_oldM) / n;
+          m_newS = m_oldS + (x - m_oldM) * (x - m_newM);
+
+          // set up for next iteration
+          m_oldM = m_newM;
+          m_oldS = m_newS;
         }
       }
     }
-
-    #endregion
   }
 }

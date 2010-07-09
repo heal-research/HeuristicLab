@@ -60,6 +60,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Evaluators {
     public OnlinePearsonsRSquaredEvaluator() { }
 
     #region IOnlineEvaluator Members
+    public double Value {
+      get { return RSquared; }
+    }
     public void Reset() {
       sum_sq_x = 0.0;
       sum_sq_y = 0.0;

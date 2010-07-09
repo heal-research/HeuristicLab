@@ -29,21 +29,9 @@ using HeuristicLab.Data;
 using HeuristicLab.Random;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [StorableClass]
-  public sealed class LaggedVariableTreeNode : SymbolicExpressionTreeTerminalNode {
+  public sealed class LaggedVariableTreeNode : VariableTreeNode {
     public new LaggedVariable Symbol {
       get { return (LaggedVariable)base.Symbol; }
-    }
-    [Storable]
-    private double weight;
-    public double Weight {
-      get { return weight; }
-      set { weight = value; }
-    }
-    [Storable]
-    private string variableName;
-    public string VariableName {
-      get { return variableName; }
-      set { variableName = value; }
     }
     [Storable]
     private int lag;
@@ -57,8 +45,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
     // copy constructor
     private LaggedVariableTreeNode(LaggedVariableTreeNode original)
       : base(original) {
-      weight = original.weight;
-      variableName = original.variableName;
       lag = original.lag;
     }
 
@@ -72,17 +58,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
 
     public override void ResetLocalParameters(IRandom random) {
       base.ResetLocalParameters(random);
-      weight = NormalDistributedRandom.NextDouble(random, Symbol.WeightNu, Symbol.WeightSigma);
-      variableName = Symbol.VariableNames.SelectRandom(random);
       lag = random.Next(Symbol.MinLag, Symbol.MaxLag + 1);
     }
 
     public override void ShakeLocalParameters(IRandom random, double shakingFactor) {
       base.ShakeLocalParameters(random, shakingFactor);
-      double x = NormalDistributedRandom.NextDouble(random, Symbol.WeightManipulatorNu, Symbol.WeightManipulatorSigma);
-      weight = weight + x * shakingFactor;
-      variableName = Symbol.VariableNames.SelectRandom(random);
-      lag = lag + random.Next(-1, 2);
+      lag = Math.Min(Symbol.MaxLag, Math.Max(Symbol.MinLag, lag + random.Next(-1, 2)));
     }
 
 
@@ -91,7 +72,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
     }
 
     public override string ToString() {
-      return weight.ToString("E4") + " " + variableName + " (t" + (lag > 0 ? "+" : "") + lag + ")";
+      return base.ToString() +
+        " (t" + (lag > 0 ? "+" : "") + lag + ")";
     }
   }
 }

@@ -33,7 +33,7 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [StorableClass]
   [Item("Variable", "Represents a variable value.")]
-  public sealed class Variable : Symbol {
+  public class Variable : Symbol {
     #region Properties
     [Storable]
     private double weightNu;
@@ -93,8 +93,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
       }
     }
     #endregion
-    public Variable()
-      : base("Variable", "Represents a variable value.") {
+    public Variable() : this("Variable", "Represents a variable value.") { }
+    public Variable(string name, string description)
+      : base(name, description) {
       weightNu = 1.0;
       weightSigma = 1.0;
       weightManipulatorNu = 0.0;

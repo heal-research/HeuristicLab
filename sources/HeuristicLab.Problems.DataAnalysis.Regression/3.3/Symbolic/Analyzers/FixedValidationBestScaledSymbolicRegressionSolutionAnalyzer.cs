@@ -245,7 +245,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
         ProblemData, trainingStart, trainingEnd, testStart, testEnd, Results);
 
       #region validation best model
-      int targetVariableIndex = ProblemData.Dataset.GetVariableIndex(ProblemData.TargetVariable.Value);
+      string targetVariable = ProblemData.TargetVariable.Value;
       int validationStart = ValidiationSamplesStart.Value;
       int validationEnd = ValidationSamplesEnd.Value;
       double upperEstimationLimit = UpperEstimationLimit != null ? UpperEstimationLimit.Value : double.PositiveInfinity;
@@ -256,18 +256,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
 
       OnlineMeanSquaredErrorEvaluator mseEvaluator = new OnlineMeanSquaredErrorEvaluator();
       foreach (var scaledTree in scaledTrees) {
-        mseEvaluator.Reset();
-        IEnumerable<double> estimatedValidationValues = SymbolicExpressionTreeInterpreter.GetSymbolicExpressionTreeValues(scaledTree, ProblemData.Dataset, Enumerable.Range(validationStart, validationEnd - validationStart));
-        IEnumerable<double> originalValidationValues = ProblemData.Dataset.GetEnumeratedVariableValues(targetVariableIndex, validationStart, validationEnd);
-        var estimatedEnumerator = estimatedValidationValues.GetEnumerator();
-        var originalEnumerator = originalValidationValues.GetEnumerator();
-        while (estimatedEnumerator.MoveNext() & originalEnumerator.MoveNext()) {
-          double estimated = estimatedEnumerator.Current;
-          if (double.IsNaN(estimated)) estimated = upperEstimationLimit;
-          else estimated = Math.Min(upperEstimationLimit, Math.Max(lowerEstimationLimit, estimated));
-          mseEvaluator.Add(originalEnumerator.Current, estimated);
-        }
-        double validationMse = mseEvaluator.MeanSquaredError;
+        double validationMse = SymbolicRegressionMeanSquaredErrorEvaluator.Calculate(SymbolicExpressionTreeInterpreter, scaledTree,
+          lowerEstimationLimit, upperEstimationLimit,
+          ProblemData.Dataset, targetVariable,
+          validationStart, validationEnd);
+
         if (validationMse < bestValidationMse) {
           bestValidationMse = validationMse;
           bestTree = scaledTree;

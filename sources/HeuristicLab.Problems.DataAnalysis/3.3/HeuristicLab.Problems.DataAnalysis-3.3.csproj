@@ -83,6 +83,8 @@
     <None Include="HeuristicLab.snk" />
     <None Include="HeuristicLabProblemsDataAnalysisPlugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.frame" />
+    <Compile Include="Evaluators\OnlineMeanAndVarianceCalculator.cs" />
+    <Compile Include="Evaluators\OnlineNormalizedMeanSquaredErrorEvaluator.cs" />
     <Compile Include="DataAnalysisSolution.cs" />
     <Compile Include="CsvFileParser.cs" />
     <Compile Include="DataAnalysisProblem.cs" />

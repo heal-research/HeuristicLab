@@ -29,44 +29,42 @@ using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.DataAnalysis.Evaluators {
-  public class OnlineMeanAbsolutePercentageErrorEvaluator : IOnlineEvaluator {
+  public class OnlineNormalizedMeanSquaredErrorEvaluator : IOnlineEvaluator {
+    private OnlineMeanAndVarianceCalculator meanSquaredErrorCalculator;
+    private OnlineMeanAndVarianceCalculator originalVarianceCalculator;
 
-    private double sre;
-    private int n;
-    public double MeanAbsolutePercentageError {
+    public double NormalizedMeanSquaredError {
       get {
-        if (n < 1)
-          throw new InvalidOperationException("No elements");
-        else
-          return sre / n;
+        return meanSquaredErrorCalculator.Mean / originalVarianceCalculator.Variance;
       }
     }
 
-    public OnlineMeanAbsolutePercentageErrorEvaluator() {
+    public OnlineNormalizedMeanSquaredErrorEvaluator() {
+      meanSquaredErrorCalculator = new OnlineMeanAndVarianceCalculator();
+      originalVarianceCalculator = new OnlineMeanAndVarianceCalculator();
       Reset();
     }
 
     #region IOnlineEvaluator Members
     public double Value {
-      get { return MeanAbsolutePercentageError; }
+      get { return NormalizedMeanSquaredError; }
     }
+
     public void Reset() {
-      n = 0;
-      sre = 0.0;
+      meanSquaredErrorCalculator.Reset();
+      originalVarianceCalculator.Reset();
     }
 
     public void Add(double original, double estimated) {
       if (double.IsNaN(estimated) || double.IsInfinity(estimated) ||
           double.IsNaN(original) || double.IsInfinity(original)) {
-        throw new ArgumentException("Relative error is not defined for variables with NaN or infinity values.");
+        throw new ArgumentException("Mean squared error is not defined for NaN or infinity elements");
       } else {
-        if (!original.IsAlmost(0.0)) {
-          sre += Math.Abs((estimated - original) / original);
-          n++;
-        }
+        double error = estimated - original;
+        meanSquaredErrorCalculator.Add(error * error);
+        originalVarianceCalculator.Add(original);
       }
     }
-
     #endregion
   }
 }

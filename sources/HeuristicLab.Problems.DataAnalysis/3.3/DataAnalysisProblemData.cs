@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private bool suppressEvents = false;
     #region default data
     // y = x^4 + x^3 + x^2 + x
-    private readonly double[,] kozaF1 = new double[,] {
+    private static double[,] kozaF1 = new double[,] {
 {2.017885919,	-1.449165046},
 {1.30060506,	-1.344523885},
 {1.147134798,	-1.317989331},
@@ -184,6 +184,25 @@ namespace HeuristicLab.Problems.DataAnalysis {
       RegisterParameterValueEventHandlers();
     }
 
+    public DataAnalysisProblemData(Dataset dataset, IEnumerable<string> inputVariables, string targetVariable,
+      int trainingSamplesStart, int trainingSamplesEnd, int testSamplesStart, int testSamplesEnd) {
+      var inputVariablesList = new CheckedItemList<StringValue>(inputVariables.Select(x => new StringValue(x)));
+      StringValue targetVariableValue = new StringValue(targetVariable);
+      var validTargetVariables = new ItemSet<StringValue>();
+      foreach (var variable in dataset.VariableNames)
+        if (variable != targetVariable)
+          validTargetVariables.Add(new StringValue(variable));
+      validTargetVariables.Add(targetVariableValue);
+      Parameters.Add(new ValueParameter<Dataset>("Dataset", dataset));
+      Parameters.Add(new ValueParameter<ICheckedItemList<StringValue>>("InputVariables", inputVariablesList.AsReadOnly()));
+      Parameters.Add(new ConstrainedValueParameter<StringValue>("TargetVariable", validTargetVariables, targetVariableValue));
+      Parameters.Add(new ValueParameter<IntValue>("TrainingSamplesStart", new IntValue(trainingSamplesStart)));
+      Parameters.Add(new ValueParameter<IntValue>("TrainingSamplesEnd", new IntValue(trainingSamplesEnd)));
+      Parameters.Add(new ValueParameter<IntValue>("TestSamplesStart", new IntValue(testSamplesStart)));
+      Parameters.Add(new ValueParameter<IntValue>("TestSamplesEnd", new IntValue(testSamplesEnd)));
+      RegisterParameterEventHandlers();
+      RegisterParameterValueEventHandlers();
+    }
 
     [StorableConstructor]
     private DataAnalysisProblemData(bool deserializing) : base() { }
