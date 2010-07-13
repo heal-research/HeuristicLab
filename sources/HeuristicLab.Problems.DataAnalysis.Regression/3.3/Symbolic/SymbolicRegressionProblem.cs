@@ -339,6 +339,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     private void InitializeOperators() {
       operators = new List<IOperator>();
       operators.AddRange(ApplicationManager.Manager.GetInstances<ISymbolicExpressionTreeOperator>().OfType<IOperator>());
+      operators.Add(new SymbolicRegressionTournamentPruning());
       operators.Add(new SymbolicRegressionVariableFrequencyAnalyzer());
       operators.Add(new FixedValidationBestScaledSymbolicRegressionSolutionAnalyzer());
       operators.Add(new MinAverageMaxSymbolicExpressionTreeSizeAnalyzer());
@@ -391,6 +392,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
         var varFreqAnalyzer = analyzer as SymbolicRegressionVariableFrequencyAnalyzer;
         if (varFreqAnalyzer != null) {
           varFreqAnalyzer.ProblemDataParameter.ActualName = DataAnalysisProblemDataParameter.Name;
+        }
+        var pruningOperator = analyzer as SymbolicRegressionTournamentPruning;
+        if (pruningOperator != null) {
+          pruningOperator.SamplesStartParameter.Value = TrainingSamplesStart;
+          pruningOperator.SamplesEndParameter.Value = TrainingSamplesEnd;
+          pruningOperator.DataAnalysisProblemDataParameter.ActualName = DataAnalysisProblemDataParameter.Name;
+          pruningOperator.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
+          pruningOperator.SymbolicExpressionTreeInterpreterParameter.ActualName = SymbolicExpressionTreeInterpreterParameter.Name;
+          pruningOperator.LowerEstimationLimitParameter.ActualName = LowerEstimationLimitParameter.Name;
+          pruningOperator.UpperEstimationLimitParameter.ActualName = UpperEstimationLimitParameter.Name;
         }
       }
       foreach (ISymbolicExpressionTreeAnalyzer analyzer in Operators.OfType<ISymbolicExpressionTreeAnalyzer>()) {
