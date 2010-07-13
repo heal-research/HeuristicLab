@@ -139,7 +139,7 @@ namespace HeuristicLab.Data.Views {
     #region DataGridView Events
     private void dataGridView_CellValidating(object sender, DataGridViewCellValidatingEventArgs e) {
       string errorMessage;
-      if (!Content.Validate(e.FormattedValue.ToString(), out errorMessage)) {
+      if (Content != null && !Content.Validate(e.FormattedValue.ToString(), out errorMessage)) {
         e.Cancel = true;
         dataGridView.Rows[e.RowIndex].ErrorText = errorMessage;
       }
