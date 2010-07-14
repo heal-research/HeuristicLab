@@ -40,7 +40,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     [StorableConstructor]
-    protected Dataset(bool deserializing)
+    private Dataset(bool deserializing)
       : base(deserializing) {
     }
 
@@ -109,11 +109,19 @@ namespace HeuristicLab.Problems.DataAnalysis {
       for (int i = 0; i < end - start; i++)
         yield return data[i + start, variableIndex];
     }
+    public IEnumerable<double> GetEnumeratedVariableValues(int variableIndex, IEnumerable<int> rows) {
+      foreach (int row in rows)
+        yield return data[row, variableIndex];
+    }
+
     public IEnumerable<double> GetEnumeratedVariableValues(string variableName) {
       return GetEnumeratedVariableValues(GetVariableIndex(variableName), 0, Rows);
     }
     public IEnumerable<double> GetEnumeratedVariableValues(string variableName, int start, int end) {
       return GetEnumeratedVariableValues(GetVariableIndex(variableName), start, end);
+    }
+    public IEnumerable<double> GetEnumeratedVariableValues(string variableName, IEnumerable<int> rows) {
+      return GetEnumeratedVariableValues(GetVariableIndex(variableName), rows);
     }
 
 
