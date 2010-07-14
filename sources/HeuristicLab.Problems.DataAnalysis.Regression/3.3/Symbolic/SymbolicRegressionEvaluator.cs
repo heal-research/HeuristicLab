@@ -39,12 +39,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [Item("SymbolicRegressionEvaluator", "Evaluates a symbolic regression solution.")]
   [StorableClass]
   public abstract class SymbolicRegressionEvaluator : SingleSuccessorOperator, ISymbolicRegressionEvaluator {
+    private const string RandomParameterName = "Random";
     private const string QualityParameterName = "Quality";
     private const string SymbolicExpressionTreeInterpreterParameterName = "SymbolicExpressionTreeInterpreter";
     private const string FunctionTreeParameterName = "FunctionTree";
     private const string RegressionProblemDataParameterName = "RegressionProblemData";
     private const string SamplesStartParameterName = "SamplesStart";
     private const string SamplesEndParameterName = "SamplesEnd";
+    private const string RelativeNumberOfEvaluatedSamplesParameterName = "RelativeNumberOfEvaluatedSamples";
     #region ISymbolicRegressionEvaluator Members
 
     public ILookupParameter<DoubleValue> QualityParameter {
@@ -71,8 +73,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       get { return (IValueLookupParameter<IntValue>)Parameters[SamplesEndParameterName]; }
     }
 
+    public IValueParameter<PercentValue> RelativeNumberOfEvaluatedSamplesParameter {
+      get { return (IValueParameter<PercentValue>)Parameters[RelativeNumberOfEvaluatedSamplesParameterName]; }
+    }
+
+    public ILookupParameter<IRandom> RandomParameter {
+      get { return (ILookupParameter<IRandom>)Parameters[RandomParameterName]; }
+    }
+
     #endregion
     #region properties
+    public IRandom Random {
+      get { return RandomParameter.ActualValue; }
+    }
     public ISymbolicExpressionTreeInterpreter SymbolicExpressionTreeInterpreter {
       get { return SymbolicExpressionTreeInterpreterParameter.ActualValue; }
     }
@@ -88,28 +101,63 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     public IntValue SamplesEnd {
       get { return SamplesEndParameter.ActualValue; }
     }
+
+    public PercentValue RelativeNumberOfEvaluatedSamples {
+      get { return RelativeNumberOfEvaluatedSamplesParameter.Value; }
+    }
     #endregion
 
     public SymbolicRegressionEvaluator()
       : base() {
+      Parameters.Add(new LookupParameter<IRandom>(RandomParameterName, "The random generator to use."));
       Parameters.Add(new LookupParameter<DoubleValue>(QualityParameterName, "The quality of the evaluated symbolic regression solution."));
       Parameters.Add(new LookupParameter<ISymbolicExpressionTreeInterpreter>(SymbolicExpressionTreeInterpreterParameterName, "The interpreter that should be used to calculate the output values of the symbolic expression tree."));
       Parameters.Add(new LookupParameter<SymbolicExpressionTree>(FunctionTreeParameterName, "The symbolic regression solution encoded as a symbolic expression tree."));
       Parameters.Add(new LookupParameter<DataAnalysisProblemData>(RegressionProblemDataParameterName, "The problem data on which the symbolic regression solution should be evaluated."));
       Parameters.Add(new ValueLookupParameter<IntValue>(SamplesStartParameterName, "The start index of the dataset partition on which the symbolic regression solution should be evaluated."));
       Parameters.Add(new ValueLookupParameter<IntValue>(SamplesEndParameterName, "The end index of the dataset partition on which the symbolic regression solution should be evaluated."));
+      Parameters.Add(new ValueParameter<PercentValue>(RelativeNumberOfEvaluatedSamplesParameterName, "The relative number of samples of the dataset partition, which should be randomly chosen for evaluation between the start and end index.", new PercentValue(1)));
+    }
+
+    [StorableConstructor]
+    protected SymbolicRegressionEvaluator(bool deserializing) : base(deserializing) { }
+    [StorableHook(Persistence.Default.CompositeSerializers.Storable.HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey(RelativeNumberOfEvaluatedSamplesParameterName))
+        Parameters.Add(new ValueParameter<PercentValue>(RelativeNumberOfEvaluatedSamplesParameterName, "The relative number of samples of the dataset partition, which should be randomly chosen for evaluation between the start and end index.", new PercentValue(1)));
+      if (!Parameters.ContainsKey(RandomParameterName))
+        Parameters.Add(new LookupParameter<IRandom>(RandomParameterName, "The random generator to use."));
     }
 
     public override IOperation Apply() {
-      QualityParameter.ActualValue = new DoubleValue(Evaluate(SymbolicExpressionTreeInterpreter, SymbolicExpressionTree, RegressionProblemData.Dataset,
-        RegressionProblemData.TargetVariable, SamplesStart, SamplesEnd));
+      IEnumerable<int> rows = GenerateRowsToEvaluate(RelativeNumberOfEvaluatedSamples.Value, SamplesStart.Value, SamplesEnd.Value);
+      double quality = Evaluate(SymbolicExpressionTreeInterpreter, SymbolicExpressionTree, RegressionProblemData.Dataset,
+        RegressionProblemData.TargetVariable, rows);
+      QualityParameter.ActualValue = new DoubleValue(quality);
       return base.Apply();
+    }
+
+
+    //algorithm taken from progamming pearls page 127
+    private IEnumerable<int> GenerateRowsToEvaluate(double relativeAmount, int start, int end) {
+      int count = (int)((end - start) * relativeAmount);
+      if (count == 0) count = 1;
+
+      int remaining = end - start;
+      for (int i = start; i < end && count > 0; i++) {
+        double probabilty = Random.NextDouble();
+        if (probabilty < ((double)count) / remaining) {
+          count--;
+          yield return i;
+        }
+        remaining--;
+      }
     }
 
     protected abstract double Evaluate(ISymbolicExpressionTreeInterpreter interpreter,
       SymbolicExpressionTree solution,
       Dataset dataset,
       StringValue targetVariable,
-      IntValue samplesStart, IntValue samplesEnd);
+      IEnumerable<int> rows);
   }
 }

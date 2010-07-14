@@ -259,7 +259,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
         double validationMse = SymbolicRegressionMeanSquaredErrorEvaluator.Calculate(SymbolicExpressionTreeInterpreter, scaledTree,
           lowerEstimationLimit, upperEstimationLimit,
           ProblemData.Dataset, targetVariable,
-          validationStart, validationEnd);
+         Enumerable.Range(validationStart, validationEnd - validationStart));
 
         if (validationMse < bestValidationMse) {
           bestValidationMse = validationMse;

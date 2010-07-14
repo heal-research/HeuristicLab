@@ -215,7 +215,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       IEnumerable<int> rows = Enumerable.Range(samplesStart, samplesEnd - samplesStart);
       int originalSize = tree.Size;
       double originalMse = SymbolicRegressionScaledMeanSquaredErrorEvaluator.Calculate(interpreter, tree,
-        lowerEstimationLimit, upperEstimationLimit, problemData.Dataset, problemData.TargetVariable.Value, samplesStart, samplesEnd);
+        lowerEstimationLimit, upperEstimationLimit, problemData.Dataset, problemData.TargetVariable.Value, Enumerable.Range(samplesStart, samplesEnd - samplesStart));
 
       int minPrunedSize = (int)(originalSize * (1 - maxPruningRatio));
 
@@ -251,7 +251,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
             selectedPrunePoint.Parent.InsertSubTree(selectedPrunePoint.SubTreeIndex, constNode);
 
             double prunedMse = SymbolicRegressionScaledMeanSquaredErrorEvaluator.Calculate(interpreter, clonedTree,
-        lowerEstimationLimit, upperEstimationLimit, problemData.Dataset, problemData.TargetVariable.Value, samplesStart, samplesEnd);
+        lowerEstimationLimit, upperEstimationLimit, problemData.Dataset, problemData.TargetVariable.Value, Enumerable.Range(samplesStart, samplesEnd - samplesStart));
             double prunedSize = clonedTree.Size;
             // MSE of the pruned tree is larger than the original tree in most cases
             // size of the pruned tree is always smaller than the size of the original tree

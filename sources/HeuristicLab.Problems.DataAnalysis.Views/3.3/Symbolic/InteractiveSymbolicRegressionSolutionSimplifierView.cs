@@ -90,10 +90,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic {
         SymbolicExpressionTreeNode start = new StartSymbol().CreateTreeNode();
         root.AddSubTree(start);
         start.AddSubTree(simplifiedExpressionTree.Root);
+        int samplesStart = Content.ProblemData.TrainingSamplesStart.Value;
+        int samplesEnd = Content.ProblemData.TrainingSamplesEnd.Value;
         double originalTrainingMeanSquaredError = SymbolicRegressionMeanSquaredErrorEvaluator.Calculate(
             Content.Model.Interpreter, new SymbolicExpressionTree(root), Content.LowerEstimationLimit, Content.UpperEstimationLimit,
             Content.ProblemData.Dataset, Content.ProblemData.TargetVariable.Value,
-            Content.ProblemData.TrainingSamplesStart.Value, Content.ProblemData.TrainingSamplesEnd.Value);
+            Enumerable.Range(samplesStart, samplesEnd - samplesStart));
 
         this.CalculateReplacementNodes();
 
@@ -111,7 +113,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic {
       root.AddSubTree(start);
       SymbolicExpressionTree tree = new SymbolicExpressionTree(root);
       foreach (SymbolicExpressionTreeNode node in this.simplifiedExpressionTree.IterateNodesPrefix()) {
-        while(start.SubTrees.Count > 0) start.RemoveSubTree(0);
+        while (start.SubTrees.Count > 0) start.RemoveSubTree(0);
         start.AddSubTree(node);
         double constantTreeNodeValue = interpreter.GetSymbolicExpressionTreeValues(tree, Content.ProblemData.Dataset, trainingSamples).Median();
         ConstantTreeNode constantTreeNode = MakeConstantTreeNode(constantTreeNodeValue);
@@ -122,11 +124,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic {
     private void CalculateNodeImpacts(SymbolicExpressionTree tree, SymbolicExpressionTreeNode currentTreeNode, double originalTrainingMeanSquaredError) {
       foreach (SymbolicExpressionTreeNode childNode in currentTreeNode.SubTrees.ToList()) {
         SwitchNode(currentTreeNode, childNode, replacementNodes[childNode]);
+        int samplesStart = Content.ProblemData.TrainingSamplesStart.Value;
+        int samplesEnd = Content.ProblemData.TrainingSamplesEnd.Value;
         double newTrainingMeanSquaredError = SymbolicRegressionMeanSquaredErrorEvaluator.Calculate(
           Content.Model.Interpreter, tree,
           Content.LowerEstimationLimit, Content.UpperEstimationLimit,
           Content.ProblemData.Dataset, Content.ProblemData.TargetVariable.Value,
-          Content.ProblemData.TrainingSamplesStart.Value, Content.ProblemData.TrainingSamplesEnd.Value);
+          Enumerable.Range(samplesStart, samplesEnd - samplesStart));
         nodeImpacts[childNode] = newTrainingMeanSquaredError / originalTrainingMeanSquaredError;
         SwitchNode(currentTreeNode, replacementNodes[childNode], childNode);
         CalculateNodeImpacts(tree, childNode, originalTrainingMeanSquaredError);
