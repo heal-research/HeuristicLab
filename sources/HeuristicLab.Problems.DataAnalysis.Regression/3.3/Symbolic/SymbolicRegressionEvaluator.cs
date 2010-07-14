@@ -140,6 +140,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
 
     //algorithm taken from progamming pearls page 127
     private IEnumerable<int> GenerateRowsToEvaluate(double relativeAmount, int start, int end) {
+      if (end < start) throw new ArgumentException("Start value is larger than end value.");
       int count = (int)((end - start) * relativeAmount);
       if (count == 0) count = 1;
 
