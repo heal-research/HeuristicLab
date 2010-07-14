@@ -54,7 +54,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     IParameter ISingleObjectiveProblem.MaximizationParameter {
       get { return MaximizationParameter; }
     }
-    public ValueParameter<SymbolicExpressionTreeCreator> SolutionCreatorParameter {
+    public override ValueParameter<SymbolicExpressionTreeCreator> SolutionCreatorParameter {
       get { return (ValueParameter<SymbolicExpressionTreeCreator>)Parameters["SolutionCreator"]; }
     }
     IParameter IProblem.SolutionCreatorParameter {
@@ -69,7 +69,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     public ValueParameter<ISymbolicExpressionTreeInterpreter> SymbolicExpressionTreeInterpreterParameter {
       get { return (ValueParameter<ISymbolicExpressionTreeInterpreter>)Parameters["SymbolicExpressionTreeInterpreter"]; }
     }
-    public ValueParameter<ISymbolicRegressionEvaluator> EvaluatorParameter {
+    public override ValueParameter<ISymbolicRegressionEvaluator> EvaluatorParameter {
       get { return (ValueParameter<ISymbolicRegressionEvaluator>)Parameters["Evaluator"]; }
     }
     IParameter IProblem.EvaluatorParameter {
@@ -115,7 +115,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       get { return MaxFunctionArgumentsParameter.Value; }
       set { MaxFunctionArgumentsParameter.Value = value; }
     }
-    public new SymbolicExpressionTreeCreator SolutionCreator {
+    public override SymbolicExpressionTreeCreator SolutionCreator {
       get { return SolutionCreatorParameter.Value; }
       set { SolutionCreatorParameter.Value = value; }
     }
@@ -135,7 +135,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       set { UpperEstimationLimitParameter.Value = value; }
     }
 
-    public new ISymbolicRegressionEvaluator Evaluator {
+    public override ISymbolicRegressionEvaluator Evaluator {
       get { return EvaluatorParameter.Value; }
       set { EvaluatorParameter.Value = value; }
     }
