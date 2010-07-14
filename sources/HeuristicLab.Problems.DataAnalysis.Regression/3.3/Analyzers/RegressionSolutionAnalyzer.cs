@@ -108,7 +108,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     }
 
     [StorableHook(HookType.AfterDeserialization)]
-    public void Initialize() {
+    private void Initialize() {
       // backwards compatibility
       if (!Parameters.ContainsKey(GenerationsParameterName)) {
         Parameters.Add(new LookupParameter<IntValue>(GenerationsParameterName, "The number of generations calculated so far."));
