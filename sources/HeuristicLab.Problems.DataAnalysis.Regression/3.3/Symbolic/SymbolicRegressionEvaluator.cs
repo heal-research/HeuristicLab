@@ -34,6 +34,7 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Operators;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [Item("SymbolicRegressionEvaluator", "Evaluates a symbolic regression solution.")]
@@ -130,7 +131,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
 
     public override IOperation Apply() {
-      IEnumerable<int> rows = GenerateRowsToEvaluate(RelativeNumberOfEvaluatedSamples.Value, SamplesStart.Value, SamplesEnd.Value);
+      uint seed = (uint)Random.Next();
+      IEnumerable<int> rows = GenerateRowsToEvaluate(seed, RelativeNumberOfEvaluatedSamples.Value, SamplesStart.Value, SamplesEnd.Value);
       double quality = Evaluate(SymbolicExpressionTreeInterpreter, SymbolicExpressionTree, RegressionProblemData.Dataset,
         RegressionProblemData.TargetVariable, rows);
       QualityParameter.ActualValue = new DoubleValue(quality);
@@ -139,14 +141,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
 
 
     //algorithm taken from progamming pearls page 127
-    private IEnumerable<int> GenerateRowsToEvaluate(double relativeAmount, int start, int end) {
+    //IMPORTANT because IEnumerables with yield are used the seed must best be specified to return always 
+    //the same sequence of numbers without caching the values.
+    private static IEnumerable<int> GenerateRowsToEvaluate(uint seed, double relativeAmount, int start, int end) {
       if (end < start) throw new ArgumentException("Start value is larger than end value.");
       int count = (int)((end - start) * relativeAmount);
       if (count == 0) count = 1;
 
       int remaining = end - start;
+      MersenneTwister random = new MersenneTwister(seed);
       for (int i = start; i < end && count > 0; i++) {
-        double probabilty = Random.NextDouble();
+        double probabilty = random.NextDouble();
         if (probabilty < ((double)count) / remaining) {
           count--;
           yield return i;
