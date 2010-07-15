@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.Optimization.Views {
+namespace HeuristicLab.Problems.DataAnalysis.Views {
   partial class RunCollectionVariableImpactView {
     /// <summary> 
     /// Required designer variable.
