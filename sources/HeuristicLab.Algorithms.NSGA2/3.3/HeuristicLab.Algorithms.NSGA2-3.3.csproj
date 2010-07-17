@@ -76,6 +76,7 @@
     <None Include="HeuristicLab.snk" />
     <None Include="HeuristicLabAlgorithmsNSGA2Plugin.cs.frame" />
     <Compile Include="CrowdedComparisonSorter.cs" />
+    <Compile Include="CrowdedTournamentSelector.cs" />
     <Compile Include="CrowdingDistanceAssignment.cs" />
     <Compile Include="FastNonDominatedSort.cs" />
     <Compile Include="HeuristicLabAlgorithmsNSGA2Plugin.cs" />
