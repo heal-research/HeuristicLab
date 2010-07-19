@@ -198,6 +198,7 @@ namespace HeuristicLab.Optimization.Views {
       this.chart.MouseUp += new System.Windows.Forms.MouseEventHandler(this.chart_MouseUp);
       this.chart.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chart_MouseMove);
       this.chart.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chart_MouseDown);
+      this.chart.AxisViewChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ViewEventArgs>(chart_AxisViewChanged);
       // 
       // zoomButton
       // 
@@ -292,9 +293,7 @@ namespace HeuristicLab.Optimization.Views {
       this.radioButtonGroup.PerformLayout();
       this.ResumeLayout(false);
       this.PerformLayout();
-
     }
-
     #endregion
 
     private System.Windows.Forms.Label xAxisLabel;

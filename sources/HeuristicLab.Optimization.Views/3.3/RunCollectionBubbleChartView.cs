@@ -136,7 +136,7 @@ namespace HeuristicLab.Optimization.Views {
           this.chart.Series[0].Points.Remove(point);
       } else
         AddDataPoint(run);
-        UpdateCursorInterval();
+      UpdateCursorInterval();
 
 
       if (this.chart.Series[0].Points.Count == 0)
@@ -274,13 +274,16 @@ namespace HeuristicLab.Optimization.Views {
 
         DoubleValue doubleValue = value as DoubleValue;
         IntValue intValue = value as IntValue;
+        TimeSpanValue timeSpanValue = value as TimeSpanValue;
         double? ret = null;
         if (doubleValue != null) {
           if (!double.IsNaN(doubleValue.Value) && !double.IsInfinity(doubleValue.Value))
             ret = doubleValue.Value;
         } else if (intValue != null)
           ret = intValue.Value;
-        else
+        else if (timeSpanValue != null) {
+          ret = timeSpanValue.Value.TotalSeconds;
+        } else
           ret = GetCategoricalValue(columnIndex, value.ToString());
 
         return ret;
@@ -338,14 +341,23 @@ namespace HeuristicLab.Optimization.Views {
 
       double xRange = xValues.Max() - xValues.Min();
       double yRange = yValues.Max() - yValues.Min();
-      if(xRange.IsAlmost(0.0)) xRange = 1.0;
-      if(yRange.IsAlmost(0.0)) yRange = 1.0;
+      if (xRange.IsAlmost(0.0)) xRange = 1.0;
+      if (yRange.IsAlmost(0.0)) yRange = 1.0;
       double xDigits = (int)Math.Log10(xRange) - 3;
       double yDigits = (int)Math.Log10(yRange) - 3;
       double xZoomInterval = Math.Pow(10, xDigits);
       double yZoomInterval = Math.Pow(10, yDigits);
       this.chart.ChartAreas[0].CursorX.Interval = xZoomInterval;
       this.chart.ChartAreas[0].CursorY.Interval = yZoomInterval;
+
+      //code to handle TimeSpanValues correct
+      int axisDimensionCount = Enum.GetNames(typeof(AxisDimension)).Count();
+      int columnIndex = xAxisComboBox.SelectedIndex - axisDimensionCount;
+      if (columnIndex >= 0 && Content.GetValue(0, columnIndex) is TimeSpanValue)
+        this.chart.ChartAreas[0].CursorX.Interval = 1;
+      columnIndex = yAxisComboBox.SelectedIndex - axisDimensionCount;
+      if (columnIndex >= 0 && Content.GetValue(0, columnIndex) is TimeSpanValue)
+        this.chart.ChartAreas[0].CursorY.Interval = 1;
     }
 
     #region drag and drop and tooltip
@@ -446,6 +458,19 @@ namespace HeuristicLab.Optimization.Views {
       string yString = yValue == null ? string.Empty : yValue.Value.ToString();
       string sizeString = sizeValue == null ? string.Empty : sizeValue.Value.ToString();
 
+      //code to handle TimeSpanValues correct
+      int axisDimensionCount = Enum.GetNames(typeof(AxisDimension)).Count();
+      int columnIndex = xAxisComboBox.SelectedIndex - axisDimensionCount;
+      if (xValue.HasValue && columnIndex > 0 && Content.GetValue(0, columnIndex) is TimeSpanValue) {
+        TimeSpan time = TimeSpan.FromSeconds(xValue.Value);
+        xString = string.Format("{0:00}:{1:00}:{2:00.00}", (int)time.TotalHours, time.Minutes, time.TotalSeconds);
+      }
+      columnIndex = yAxisComboBox.SelectedIndex - axisDimensionCount;
+      if (yValue.HasValue && columnIndex > 0 && Content.GetValue(0, columnIndex) is TimeSpanValue) {
+        TimeSpan time = TimeSpan.FromSeconds(yValue.Value);
+        yString = string.Format("{0:00}:{1:00}:{2:00.00}", (int)time.TotalHours, time.Minutes, time.TotalSeconds);
+      }
+
       tooltip += xAxisComboBox.SelectedItem + " : " + xString + Environment.NewLine;
       tooltip += yAxisComboBox.SelectedItem + " : " + yString + Environment.NewLine;
       tooltip += sizeComboBox.SelectedItem + " : " + sizeString + Environment.NewLine;
@@ -482,6 +507,11 @@ namespace HeuristicLab.Optimization.Views {
       SetCustomAxisLabels(xAxis, xAxisComboBox.SelectedIndex - axisDimensionCount);
       SetCustomAxisLabels(yAxis, yAxisComboBox.SelectedIndex - axisDimensionCount);
     }
+
+    private void chart_AxisViewChanged(object sender, System.Windows.Forms.DataVisualization.Charting.ViewEventArgs e) {
+      this.UpdateAxisLabels();
+    }
+
     private void SetCustomAxisLabels(Axis axis, int dimension) {
       axis.CustomLabels.Clear();
       if (categoricalMapping.ContainsKey(dimension)) {
@@ -497,6 +527,13 @@ namespace HeuristicLab.Optimization.Views {
         axis.LabelStyle.Enabled = true;
         axis.LabelStyle.Angle = 0;
         axis.LabelStyle.TruncatedLabels = true;
+      } else if (dimension > 0 && Content.GetValue(0, dimension) is TimeSpanValue) {
+        this.chart.ChartAreas[0].RecalculateAxesScale();
+        for (double i = axis.Minimum; i <= axis.Maximum; i += axis.LabelStyle.Interval) {
+          TimeSpan time = TimeSpan.FromSeconds(i);
+          string x = string.Format("{0:00}:{1:00}:{2:00.00}", (int)time.TotalHours, time.Minutes, time.TotalSeconds);
+          axis.CustomLabels.Add(i - 0.5, i + 0.5, x);
+        }
       }
     }
 
