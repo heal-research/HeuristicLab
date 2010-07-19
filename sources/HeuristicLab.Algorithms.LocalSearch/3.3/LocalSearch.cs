@@ -190,6 +190,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       UpdateMoveGenerator();
       UpdateMoveParameters();
       UpdateAnalyzers();
+      ParameterizeMoveGenerators();
       ParameterizeMoveEvaluators();
       ParameterizeMoveMakers();
       ParameterizeAnalyzers();
@@ -224,6 +225,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       UpdateMoveParameters();
       UpdateAnalyzers();
       ParameterizeMainLoop();
+      ParameterizeMoveGenerators();
       ParameterizeMoveEvaluators();
       ParameterizeMoveMakers();
       ParameterizeAnalyzers();
@@ -335,6 +337,12 @@ namespace HeuristicLab.Algorithms.LocalSearch {
     private void ParameterizeStochasticOperator(IOperator op) {
       if (op is IStochasticOperator)
         ((IStochasticOperator)op).RandomParameter.ActualName = RandomCreator.RandomParameter.ActualName;
+    }
+    private void ParameterizeMoveGenerators() {
+      if (Problem != null) {
+        foreach (IMultiMoveGenerator generator in Problem.Operators.OfType<IMultiMoveGenerator>())
+          generator.SampleSizeParameter.ActualName = SampleSizeParameter.Name;
+      }
     }
     private void ParameterizeMoveEvaluators() {
       foreach (ISingleObjectiveMoveEvaluator op in Problem.Operators.OfType<ISingleObjectiveMoveEvaluator>()) {
