@@ -83,11 +83,13 @@
     <None Include="HeuristicLabSelectionPlugin.cs.frame" />
     <Compile Include="BestSelector.cs" />
     <Compile Include="ConditionalSelector.cs" />
+    <Compile Include="LeftSelector.cs" />
     <Compile Include="RandomReplacer.cs" />
     <Compile Include="GenderSpecificSelector.cs" />
     <Compile Include="OffspringSelector.cs" />
     <Compile Include="Replacer.cs" />
     <Compile Include="RightChildReducer.cs" />
+    <Compile Include="RightSelector.cs" />
     <Compile Include="SingleObjectiveSelector.cs" />
     <Compile Include="LeftReducer.cs" />
     <Compile Include="MergingReducer.cs" />
