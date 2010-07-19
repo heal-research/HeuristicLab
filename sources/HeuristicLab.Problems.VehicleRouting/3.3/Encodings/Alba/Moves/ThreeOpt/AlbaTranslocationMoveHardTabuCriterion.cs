@@ -33,7 +33,7 @@ using HeuristicLab.Data;
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaTranslocationMoveHardTabuCriterion", "An operator which checks if translocation moves are tabu using a hard criterion.")]
   [StorableClass]
-  public sealed class AlbaTranslocationMoveHardTabuCriterion : AlbaMoveOperator, IPermutationTranslocationMoveOperator, ITabuChecker {
+  public sealed class AlbaTranslocationMoveHardTabuCriterion : AlbaMoveOperator, IAlbaTranslocationMoveOperator, ITabuChecker {
     private TranslocationMoveHardTabuCriterion tabuChecker;
     protected override IPermutationMoveOperator PermutationMoveOperatorParameter {
       get { return tabuChecker; }

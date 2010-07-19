@@ -33,7 +33,7 @@ using HeuristicLab.Data;
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaTranslocationMoveMaker", "An operator which makes translocation moves for the alba representation.")]
   [StorableClass]
-  public sealed class AlbaTranslocationMoveMaker : AlbaMoveMaker, IPermutationTranslocationMoveOperator, IMoveMaker {
+  public sealed class AlbaTranslocationMoveMaker : AlbaMoveMaker, IAlbaTranslocationMoveOperator, IMoveMaker {
     private TranslocationMoveMaker moveMaker;
     protected override IPermutationMoveOperator PermutationMoveOperatorParameter {
       get { return moveMaker; }

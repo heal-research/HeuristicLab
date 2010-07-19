@@ -85,6 +85,7 @@
   <ItemGroup>
     <Compile Include="Analyzers\BestVRPSolutionAnalyzer.cs" />
     <Compile Include="Encodings\Alba\Crossovers\AlbaPermutationCrossover.cs" />
+    <Compile Include="Encodings\Alba\Interfaces\IAlbaTranslocationMoveOperator.cs" />
     <Compile Include="Encodings\Alba\Manipulators\AlbaPermutationManipulator.cs" />
     <Compile Include="Encodings\Alba\Creators\AlbaPushForwardInsertionCreator.cs" />
     <Compile Include="Encodings\Alba\Moves\AlbaMoveOperator.cs" />

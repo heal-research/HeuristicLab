@@ -305,8 +305,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       }
     }
     private void UpdateMoveEvaluators() {
-      foreach (ITSPPathMoveEvaluator op in Operators.OfType<ITSPPathMoveEvaluator>().ToList())
-        operators.Remove(op);
+      operators.RemoveAll(x => x is ISingleObjectiveMoveEvaluator);
       foreach (ITSPPathMoveEvaluator op in ApplicationManager.Manager.GetInstances<ITSPPathMoveEvaluator>())
         if (op.EvaluatorType == Evaluator.GetType()) {
           operators.Add(op);

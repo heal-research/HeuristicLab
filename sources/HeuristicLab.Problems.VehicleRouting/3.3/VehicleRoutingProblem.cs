@@ -384,7 +384,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       InitializeMoveGenerators();
     }
     private void InitializeMoveGenerators() {
-      foreach (AlbaTranslocationMoveGenerator op in Operators.OfType<AlbaTranslocationMoveGenerator>()) {
+      foreach (IAlbaTranslocationMoveOperator op in Operators.OfType<IAlbaTranslocationMoveOperator>()) {
         if (op is IMoveGenerator) {
           op.TranslocationMoveParameter.ActualNameChanged += new EventHandler(TranslocationMoveParameter_ActualNameChanged);
         }
@@ -455,8 +455,8 @@ namespace HeuristicLab.Problems.VehicleRouting {
         op.OverloadPenalty.ActualName = OverloadPenalty.Name;
         op.TardinessPenalty.ActualName = TardinessPenalty.Name;
       }
-      string translocationMove = Operators.OfType<IMoveGenerator>().OfType<IPermutationTranslocationMoveOperator>().First().TranslocationMoveParameter.ActualName;
-      foreach (IPermutationTranslocationMoveOperator op in Operators.OfType<IPermutationTranslocationMoveOperator>())
+      string translocationMove = Operators.OfType<IMoveGenerator>().OfType<IAlbaTranslocationMoveOperator>().First().TranslocationMoveParameter.ActualName;
+      foreach (IAlbaTranslocationMoveOperator op in Operators.OfType<IAlbaTranslocationMoveOperator>())
         op.TranslocationMoveParameter.ActualName = translocationMove;
 
       foreach (IVRPCrossover op in Operators.OfType<IVRPCrossover>()) {

@@ -33,7 +33,7 @@ using HeuristicLab.Data;
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaTranslocationMoveGenerator", "An operator which generates translocation moves for the alba representation.")]
   [StorableClass]
-  public sealed class AlbaTranslocationMoveGenerator : AlbaMoveOperator, IPermutationTranslocationMoveOperator, IMultiMoveGenerator {
+  public sealed class AlbaTranslocationMoveGenerator : AlbaMoveOperator, IAlbaTranslocationMoveOperator, IMultiMoveGenerator {
     public IValueLookupParameter<TranslocationMoveGenerator> TranslocationMoveGeneratorParameter {
       get { return (IValueLookupParameter<TranslocationMoveGenerator>)Parameters["TranslocationMoveGenerator"]; }
     }
