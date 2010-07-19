@@ -46,6 +46,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Evaluators {
       }
     }
 
+    public int Count {
+      get { return n; }
+    }
+
     public OnlineMeanAndVarianceCalculator() {
       Reset();
     }
