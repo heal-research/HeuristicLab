@@ -38,11 +38,14 @@ namespace HeuristicLab.Algorithms.NSGA2 {
     public ValueLookupParameter<IRandom> RandomParameter {
       get { return (ValueLookupParameter<IRandom>)Parameters["Random"]; }
     }
-    public ValueLookupParameter<BoolValue> MaximizationParameter {
-      get { return (ValueLookupParameter<BoolValue>)Parameters["Maximization"]; }
+    public ValueLookupParameter<BoolArray> MaximizationParameter {
+      get { return (ValueLookupParameter<BoolArray>)Parameters["Maximization"]; }
     }
-    public ScopeTreeLookupParameter<DoubleValue> QualityParameter {
-      get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters["Quality"]; }
+    public ScopeTreeLookupParameter<DoubleArray> QualitiesParameter {
+      get { return (ScopeTreeLookupParameter<DoubleArray>)Parameters["Qualities"]; }
+    }
+    public ValueLookupParameter<IntValue> PopulationSizeParameter {
+      get { return (ValueLookupParameter<IntValue>)Parameters["PopulationSize"]; }
     }
     public ValueLookupParameter<IOperator> SelectorParameter {
       get { return (ValueLookupParameter<IOperator>)Parameters["Selector"]; }
@@ -83,8 +86,9 @@ namespace HeuristicLab.Algorithms.NSGA2 {
     private void Initialize() {
       #region Create parameters
       Parameters.Add(new ValueLookupParameter<IRandom>("Random", "A pseudo random number generator."));
-      Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, otherwise false."));
-      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The value which represents the quality of a solution."));
+      Parameters.Add(new ValueLookupParameter<BoolArray>("Maximization", "True if an objective should be maximized, or false if it should be minimized."));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleArray>("Qualities", "The vector of quality values."));
+      Parameters.Add(new ValueLookupParameter<IntValue>("PopulationSize", "The population size."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Selector", "The operator used to select solutions for reproduction."));
       Parameters.Add(new ValueLookupParameter<PercentValue>("CrossoverProbability", "The probability that the crossover operator is applied on a solution."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Crossover", "The operator used to cross solutions."));
@@ -104,15 +108,17 @@ namespace HeuristicLab.Algorithms.NSGA2 {
       SubScopesProcessor subScopesProcessor1 = new SubScopesProcessor();
       ChildrenCreator childrenCreator = new ChildrenCreator();
       UniformSubScopesProcessor uniformSubScopesProcessor = new UniformSubScopesProcessor();
+      StochasticBranch crossoverStochasticBranch = new StochasticBranch();
       Placeholder crossover = new Placeholder();
-      StochasticBranch stochasticBranch = new StochasticBranch();
+      DefaultCrossover noCrossover = new DefaultCrossover();
+      StochasticBranch mutationStochasticBranch = new StochasticBranch();
       Placeholder mutator = new Placeholder();
       Placeholder evaluator = new Placeholder();
       SubScopesRemover subScopesRemover = new SubScopesRemover();
-      SubScopesProcessor subScopesProcessor2 = new SubScopesProcessor();
-      BestSelector bestSelector = new BestSelector();
-      RightReducer rightReducer = new RightReducer();
       MergingReducer mergingReducer = new MergingReducer();
+      RankAndCrowdingSorter rankAndCrowdingSorter = new RankAndCrowdingSorter();
+      LeftSelector leftSelector = new LeftSelector();
+      RightReducer rightReducer = new RightReducer();
       IntCounter intCounter = new IntCounter();
       Comparator comparator = new Comparator();
       ResultsCollector resultsCollector2 = new ResultsCollector();
@@ -122,34 +128,41 @@ namespace HeuristicLab.Algorithms.NSGA2 {
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Generations", new IntValue(0)));
 
       resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Generations"));
-      resultsCollector1.ResultsParameter.ActualName = "Results";
+      resultsCollector1.ResultsParameter.ActualName = ResultsParameter.Name;
 
       analyzer1.Name = "Analyzer";
-      analyzer1.OperatorParameter.ActualName = "Analyzer";
+      analyzer1.OperatorParameter.ActualName = AnalyzerParameter.Name;
 
       selector.Name = "Selector";
-      selector.OperatorParameter.ActualName = "Selector";
+      selector.OperatorParameter.ActualName = SelectorParameter.Name;
 
       childrenCreator.ParentsPerChild = new IntValue(2);
 
-      crossover.Name = "Crossover";
-      crossover.OperatorParameter.ActualName = "Crossover";
+      crossoverStochasticBranch.ProbabilityParameter.ActualName = CrossoverProbabilityParameter.Name;
+      crossoverStochasticBranch.RandomParameter.ActualName = RandomParameter.Name;
 
-      stochasticBranch.ProbabilityParameter.ActualName = "MutationProbability";
-      stochasticBranch.RandomParameter.ActualName = "Random";
+      crossover.Name = "Crossover";
+      crossover.OperatorParameter.ActualName = CrossoverParameter.Name;
+
+      noCrossover.Name = "Clone parent";
+      noCrossover.RandomParameter.ActualName = RandomParameter.Name;
+
+      mutationStochasticBranch.ProbabilityParameter.ActualName = MutationProbabilityParameter.Name;
+      mutationStochasticBranch.RandomParameter.ActualName = RandomParameter.Name;
 
       mutator.Name = "Mutator";
-      mutator.OperatorParameter.ActualName = "Mutator";
+      mutator.OperatorParameter.ActualName = MutatorParameter.Name;
 
       evaluator.Name = "Evaluator";
-      evaluator.OperatorParameter.ActualName = "Evaluator";
+      evaluator.OperatorParameter.ActualName = EvaluatorParameter.Name;
 
       subScopesRemover.RemoveAllSubScopes = true;
 
-      bestSelector.CopySelected = new BoolValue(false);
-      bestSelector.MaximizationParameter.ActualName = "Maximization";
-      bestSelector.NumberOfSelectedSubScopesParameter.ActualName = "Elites";
-      bestSelector.QualityParameter.ActualName = "Quality";
+      rankAndCrowdingSorter.CrowdingDistanceParameter.ActualName = "CrowdingDistance";
+      rankAndCrowdingSorter.RankParameter.ActualName = "Rank";
+
+      leftSelector.CopySelected = new BoolValue(false);
+      leftSelector.NumberOfSelectedSubScopesParameter.ActualName = PopulationSizeParameter.Name;
 
       intCounter.Increment = new IntValue(1);
       intCounter.ValueParameter.ActualName = "Generations";
@@ -157,10 +170,10 @@ namespace HeuristicLab.Algorithms.NSGA2 {
       comparator.Comparison = new Comparison(ComparisonType.GreaterOrEqual);
       comparator.LeftSideParameter.ActualName = "Generations";
       comparator.ResultParameter.ActualName = "Terminate";
-      comparator.RightSideParameter.ActualName = "MaximumGenerations";
+      comparator.RightSideParameter.ActualName = MaximumGenerationsParameter.Name;
 
       resultsCollector2.CollectedValues.Add(new LookupParameter<IntValue>("Generations"));
-      resultsCollector2.ResultsParameter.ActualName = "Results";
+      resultsCollector2.ResultsParameter.ActualName = ResultsParameter.Name;
 
       analyzer2.Name = "Analyzer";
       analyzer2.OperatorParameter.ActualName = "Analyzer";
@@ -176,23 +189,25 @@ namespace HeuristicLab.Algorithms.NSGA2 {
       selector.Successor = subScopesProcessor1;
       subScopesProcessor1.Operators.Add(new EmptyOperator());
       subScopesProcessor1.Operators.Add(childrenCreator);
-      subScopesProcessor1.Successor = subScopesProcessor2;
+      subScopesProcessor1.Successor = mergingReducer;
       childrenCreator.Successor = uniformSubScopesProcessor;
-      uniformSubScopesProcessor.Operator = crossover;
+      uniformSubScopesProcessor.Operator = crossoverStochasticBranch;
       uniformSubScopesProcessor.Successor = null;
-      crossover.Successor = stochasticBranch;
-      stochasticBranch.FirstBranch = mutator;
-      stochasticBranch.SecondBranch = null;
-      stochasticBranch.Successor = evaluator;
+      crossoverStochasticBranch.FirstBranch = crossover;
+      crossoverStochasticBranch.SecondBranch = noCrossover;
+      crossoverStochasticBranch.Successor = mutationStochasticBranch;
+      crossover.Successor = null;
+      noCrossover.Successor = null;
+      mutationStochasticBranch.FirstBranch = mutator;
+      mutationStochasticBranch.SecondBranch = null;
+      mutationStochasticBranch.Successor = evaluator;
       mutator.Successor = null;
       evaluator.Successor = subScopesRemover;
       subScopesRemover.Successor = null;
-      subScopesProcessor2.Operators.Add(bestSelector);
-      subScopesProcessor2.Operators.Add(new EmptyOperator());
-      subScopesProcessor2.Successor = mergingReducer;
-      bestSelector.Successor = rightReducer;
-      rightReducer.Successor = null;
-      mergingReducer.Successor = intCounter;
+      mergingReducer.Successor = rankAndCrowdingSorter;
+      rankAndCrowdingSorter.Successor = leftSelector;
+      leftSelector.Successor = rightReducer;
+      rightReducer.Successor = intCounter;
       intCounter.Successor = comparator;
       comparator.Successor = resultsCollector2;
       resultsCollector2.Successor = analyzer2;
@@ -201,12 +216,6 @@ namespace HeuristicLab.Algorithms.NSGA2 {
       conditionalBranch.TrueBranch = null;
       conditionalBranch.Successor = null;
       #endregion
-    }
-
-    public override IOperation Apply() {
-      if (CrossoverParameter.ActualValue == null)
-        return null;
-      return base.Apply();
     }
   }
 }

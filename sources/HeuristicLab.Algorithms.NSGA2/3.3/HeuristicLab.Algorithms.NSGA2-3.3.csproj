@@ -78,11 +78,13 @@
     <Compile Include="CrowdedComparisonSorter.cs" />
     <Compile Include="CrowdedTournamentSelector.cs" />
     <Compile Include="CrowdingDistanceAssignment.cs" />
+    <Compile Include="DefaultCrossover.cs" />
     <Compile Include="FastNonDominatedSort.cs" />
     <Compile Include="HeuristicLabAlgorithmsNSGA2Plugin.cs" />
     <Compile Include="NSGA2.cs" />
     <Compile Include="NSGA2MainLoop.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RankAndCrowdingSorter.cs" />
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>

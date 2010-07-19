@@ -32,7 +32,18 @@ using HeuristicLab.Collections;
 
 namespace HeuristicLab.Algorithms.NSGA2 {
   public class CrowdedTournamentSelector : Selector, IMultiObjectiveSelector, IStochasticOperator {
-
+    public ILookupParameter<BoolArray> MaximizationParameter {
+      get { return (ILookupParameter<BoolArray>)Parameters["Maximization"]; }
+    }
+    public IValueLookupParameter<IntValue> NumberOfSelectedSubScopesParameter {
+      get { return (IValueLookupParameter<IntValue>)Parameters["NumberOfSelectedSubScopes"]; }
+    }
+    public IValueParameter<BoolValue> CopySelectedParameter {
+      get { return (IValueParameter<BoolValue>)Parameters["CopySelected"]; }
+    }
+    public ILookupParameter<IRandom> RandomParameter {
+      get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
+    }
     public ILookupParameter<ItemArray<DoubleArray>> QualitiesParameter {
       get { return (ILookupParameter<ItemArray<DoubleArray>>)Parameters["Qualities"]; }
     }
@@ -42,12 +53,6 @@ namespace HeuristicLab.Algorithms.NSGA2 {
     public IScopeTreeLookupParameter<DoubleValue> CrowdingDistanceParameter {
       get { return (IScopeTreeLookupParameter<DoubleValue>)Parameters["CrowdingDistance"]; }
     }
-    public IValueParameter<BoolValue> CopySelectedParameter {
-      get { return (IValueParameter<BoolValue>)Parameters["CopySelected"]; }
-    }
-    public ILookupParameter<IRandom> RandomParameter {
-      get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
-    }
     public IValueLookupParameter<IntValue> GroupSizeParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters["GroupSize"]; }
     }
@@ -55,10 +60,6 @@ namespace HeuristicLab.Algorithms.NSGA2 {
     public BoolValue CopySelected {
       get { return CopySelectedParameter.Value; }
       set { CopySelectedParameter.Value = value; }
-    }
-
-    public IValueLookupParameter<IntValue> NumberOfSelectedSubScopesParameter {
-      get { return (IValueLookupParameter<IntValue>)Parameters["NumberOfSelectedSubScopes"]; }
     }
 
     public CrowdedTournamentSelector()

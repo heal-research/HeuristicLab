@@ -38,8 +38,8 @@ Genetic Algorithm: NSGA-II"", IEEE Transactions On Evolutionary Computation, Vol
   public class FastNonDominatedSort : SingleSuccessorOperator {
     private enum DominationResult { Dominates, IsDominated, IsNonDominated };
 
-    public IValueLookupParameter<BoolArray> MaximizationsParameter {
-      get { return (IValueLookupParameter<BoolArray>)Parameters["Maximizations"]; }
+    public IValueLookupParameter<BoolArray> MaximizationParameter {
+      get { return (IValueLookupParameter<BoolArray>)Parameters["Maximization"]; }
     }
 
     public IScopeTreeLookupParameter<DoubleArray> QualitiesParameter {
@@ -51,13 +51,13 @@ Genetic Algorithm: NSGA-II"", IEEE Transactions On Evolutionary Computation, Vol
     }
 
     public FastNonDominatedSort() {
-      Parameters.Add(new ValueLookupParameter<BoolArray>("Maximizations", "Whether each objective is maximization or minimization."));
+      Parameters.Add(new ValueLookupParameter<BoolArray>("Maximization", "Whether each objective is maximization or minimization."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleArray>("Qualities", "The qualities of a solution.", 1));
       Parameters.Add(new ScopeTreeLookupParameter<IntValue>("Rank", "The rank of a solution.", 1));
     }
 
     public override IOperation Apply() {
-      BoolArray maximizations = MaximizationsParameter.ActualValue;
+      BoolArray maximization = MaximizationParameter.ActualValue;
       ItemArray<DoubleArray> qualities = QualitiesParameter.ActualValue;
       if (qualities == null) throw new InvalidOperationException(Name + ": No qualities found.");
 
@@ -73,7 +73,7 @@ Genetic Algorithm: NSGA-II"", IEEE Transactions On Evolutionary Computation, Vol
         IScope p = scope.SubScopes[pI];
         dominatedScopes[p] = new List<int>();
         for (int qI = pI + 1; qI < populationSize; qI++) {
-          DominationResult test = Dominates(qualities[pI], qualities[qI], maximizations);
+          DominationResult test = Dominates(qualities[pI], qualities[qI], maximization);
           if (test == DominationResult.Dominates) {
             dominatedScopes[p].Add(qI);
             dominationCounter[qI] += 1;
@@ -135,14 +135,6 @@ Genetic Algorithm: NSGA-II"", IEEE Transactions On Evolutionary Computation, Vol
       if (!leftIsBetter && rightIsBetter) return DominationResult.IsDominated;
       return DominationResult.IsNonDominated;
     }
-
-    /*private bool Dominates(DoubleArray left, DoubleArray right, BoolArray maximizations) {
-      for (int i = 0; i < left.Length; i++) {
-        if (IsDominated(left[i], right[i], maximizations[i]))
-          return false;
-      }
-      return true;
-    }*/
 
     private bool IsDominated(double left, double right, bool maximization) {
       return maximization && left < right

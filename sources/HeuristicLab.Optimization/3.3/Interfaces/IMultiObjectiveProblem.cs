@@ -19,11 +19,14 @@
  */
 #endregion
 
+using HeuristicLab.Core;
+
 namespace HeuristicLab.Optimization {
   /// <summary>
   /// An interface to represent a multi-objective optimization problem.
   /// </summary>
   public interface IMultiObjectiveProblem : IProblem {
+    IParameter MaximizationParameter { get; }
     new IMultiObjectiveEvaluator Evaluator { get; }
   }
 }

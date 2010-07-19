@@ -136,30 +136,24 @@ If the aspiration condition is activated, a move will not be considered tabu aga
               if (permutation.PermutationType == PermutationTypes.RelativeUndirected) {
                 if (attribute.Edge1Source == E3S && attribute.Edge1Target == E1T || attribute.Edge1Source == E1T && attribute.Edge1Target == E3S
                   || attribute.Edge1Source == E2S && attribute.Edge1Target == E3T || attribute.Edge1Source == E3T && attribute.Edge1Target == E2S
-                  || attribute.Edge1Source == E1S && attribute.Edge1Target == E2T || attribute.Edge1Source == E2T && attribute.Edge1Target == E1S
                   // if previously deleted Edge2Source-Target is readded
                   || attribute.Edge2Source == E3S && attribute.Edge2Target == E1T || attribute.Edge2Source == E1T && attribute.Edge2Target == E3S
                   || attribute.Edge2Source == E2S && attribute.Edge2Target == E3T || attribute.Edge2Source == E3T && attribute.Edge2Target == E2S
-                  || attribute.Edge2Source == E1S && attribute.Edge2Target == E2T || attribute.Edge2Source == E2T && attribute.Edge2Target == E1S
                   // if previously deleted Edge3Source-Target is readded
                   || attribute.Edge3Source == E3S && attribute.Edge3Target == E1T || attribute.Edge3Source == E1T && attribute.Edge3Target == E3S
-                  || attribute.Edge3Source == E2S && attribute.Edge3Target == E3T || attribute.Edge3Source == E3T && attribute.Edge3Target == E2S
-                  || attribute.Edge3Source == E1S && attribute.Edge3Target == E2T || attribute.Edge3Source == E2T && attribute.Edge3Target == E1S) {
+                  || attribute.Edge3Source == E2S && attribute.Edge3Target == E3T || attribute.Edge3Source == E3T && attribute.Edge3Target == E2S) {
                   isTabu = true;
                   break;
                 }
               } else {
                 if (attribute.Edge1Source == E3S && attribute.Edge1Target == E1T
                   || attribute.Edge1Source == E2S && attribute.Edge1Target == E3T
-                  || attribute.Edge1Source == E1S && attribute.Edge1Target == E2T
                   // if previously deleted Edge2Source-Target is readded
                   || attribute.Edge2Source == E3S && attribute.Edge2Target == E1T
                   || attribute.Edge2Source == E2S && attribute.Edge2Target == E3T
-                  || attribute.Edge2Source == E1S && attribute.Edge2Target == E2T
                   // if previously deleted Edge3Source-Target is readded
                   || attribute.Edge3Source == E3S && attribute.Edge3Target == E1T
-                  || attribute.Edge3Source == E2S && attribute.Edge3Target == E3T
-                  || attribute.Edge3Source == E1S && attribute.Edge3Target == E2T) {
+                  || attribute.Edge3Source == E2S && attribute.Edge3Target == E3T) {
                   isTabu = true;
                   break;
                 }

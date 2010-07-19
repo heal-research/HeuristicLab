@@ -111,6 +111,7 @@
     <Compile Include="Manipulators\TranslocationManipulator.cs" />
     <Compile Include="Moves\PermutationMoveAttribute.cs" />
     <Compile Include="Moves\ThreeIndexMove.cs" />
+    <Compile Include="Moves\ThreeOpt\StochasticSingleInsertionMoveGenerator.cs" />
     <Compile Include="Moves\ThreeOpt\TranslocationMoveAbsoluteAttribute.cs" />
     <Compile Include="Moves\ThreeOpt\ExhaustiveInsertionMoveGenerator.cs">
       <SubType>Code</SubType>
