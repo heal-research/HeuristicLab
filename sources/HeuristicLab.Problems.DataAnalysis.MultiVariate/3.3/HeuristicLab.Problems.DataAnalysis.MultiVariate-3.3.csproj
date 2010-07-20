@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{BDF86B1D-630E-4CE2-8A49-8C90B1BDE4C9}</ProjectGuid>
+    <ProjectGuid>{2B88DCD0-EE28-4DCA-90A8-2F4ECACFC515}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeuristicLab.Problems.DataAnalysis.Regression</RootNamespace>
-    <AssemblyName>HeuristicLab.Problems.DataAnalysis.Regression-3.3</AssemblyName>
+    <RootNamespace>HeuristicLab.Problems.DataAnalysis.MultiVariate</RootNamespace>
+    <AssemblyName>HeuristicLab.Problems.DataAnalysis.MultiVariate-3.3</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
@@ -81,52 +81,19 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
-    <None Include="HeuristicLabProblemsDataAnalysisRegressionPlugin.cs.frame" />
+    <None Include="HeuristicLabProblemsDataAnalysisMultiVariatePlugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.frame" />
-    <Compile Include="Analyzers\RegressionSolutionAnalyzer.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="HeuristicLabProblemsDataAnalysisRegressionPlugin.cs" />
-    <Compile Include="LinearRegression\LinearRegressionSolutionCreator.cs" />
-    <Compile Include="LinearRegression\LinearRegressionUtil.cs" />
-    <Compile Include="RandomEnumerable.cs" />
+    <Compile Include="HeuristicLabProblemsDataAnalysisMultiVariatePlugin.cs" />
+    <Compile Include="Interfaces\IMultiVariateDataAnalysisEvaluator.cs" />
+    <Compile Include="Interfaces\IMultiVariateDataAnalysisModel.cs" />
+    <Compile Include="Interfaces\IMultiVariateDataAnalysisSolution.cs" />
+    <Compile Include="Interfaces\IMultiVariateDataAnalysisProblem.cs" />
+    <Compile Include="MultiVariateDataAnalysisProblem.cs" />
+    <Compile Include="MultiVariateDataAnalysisProblemData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SupportVectorRegression\BestSupportVectorRegressionSolutionAnalyzer.cs" />
-    <Compile Include="SupportVectorRegression\SupportVectorRegressionSolution.cs" />
-    <Compile Include="Symbolic\Analyzers\BestSymbolicRegressionSolutionAnalyzer.cs" />
-    <Compile Include="Symbolic\Analyzers\FixedValidationBestScaledSymbolicRegressionSolutionAnalyzer.cs" />
-    <Compile Include="Symbolic\Analyzers\ISymbolicRegressionAnalyzer.cs" />
-    <Compile Include="Symbolic\Analyzers\SymbolicRegressionModelQualityAnalyzer.cs" />
-    <Compile Include="Symbolic\Analyzers\SymbolicRegressionModelQualityCalculator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Symbolic\Analyzers\SymbolicRegressionSolutionLinearScaler.cs" />
-    <Compile Include="Symbolic\Analyzers\SymbolicRegressionTournamentPruning.cs" />
-    <Compile Include="Symbolic\Analyzers\SymbolicRegressionVariableFrequencyAnalyzer.cs" />
-    <Compile Include="Symbolic\Analyzers\ValidationBestScaledSymbolicRegressionSolutionAnalyzer.cs" />
-    <Compile Include="Symbolic\SymbolicRegressionScaledMeanAndVarianceSquaredErrorEvaluator.cs" />
-    <Compile Include="Symbolic\SimpleSymbolicRegressionEvaluator.cs" />
-    <Compile Include="Symbolic\SymbolicRegressionScaledMeanSquaredErrorEvaluator.cs" />
-    <Compile Include="Symbolic\SymbolicRegressionSolution.cs" />
-    <Compile Include="Symbolic\SymbolicRegressionModel.cs" />
-    <Compile Include="Symbolic\ISymbolicRegressionEvaluator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Symbolic\SymbolicRegressionEvaluator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Symbolic\SymbolicRegressionMeanSquaredErrorEvaluator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Symbolic\SymbolicRegressionProblem.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Symbolic\MultiVariateExpressionGrammar.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
-      <Project>{887425B4-4348-49ED-A457-B7D2C26DDBF9}</Project>
-      <Name>HeuristicLab.Analysis-3.3</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
       <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
       <Name>HeuristicLab.Collections-3.3</Name>
@@ -147,37 +114,13 @@
       <Project>{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}</Project>
       <Name>HeuristicLab.Data-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Encodings.RealVectorEncoding\3.3\HeuristicLab.Encodings.RealVectorEncoding-3.3.csproj">
-      <Project>{BB6D334A-4BB6-4674-9883-31A6EBB32CAB}</Project>
-      <Name>HeuristicLab.Encodings.RealVectorEncoding-3.3</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding\3.3\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3.csproj">
       <Project>{125D3006-67F5-48CB-913E-73C0548F17FA}</Project>
       <Name>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\2.5.0\ALGLIB-2.5.0\ALGLIB-2.5.0.csproj">
-      <Project>{29E4B033-1FEF-4FE1-AE17-0A9319D7C54E}</Project>
-      <Name>ALGLIB-2.5.0</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\2.5.0\HeuristicLab.ALGLIB-2.5.0\HeuristicLab.ALGLIB-2.5.0.csproj">
-      <Project>{01BBCB5A-144A-4A7E-908E-079849E2F7CF}</Project>
-      <Name>HeuristicLab.ALGLIB-2.5.0</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.LibSVM\1.6.3\HeuristicLab.LibSVM-1.6.3\HeuristicLab.LibSVM-1.6.3.csproj">
-      <Project>{89B50302-9CEE-4D13-9779-633EADCAE624}</Project>
-      <Name>HeuristicLab.LibSVM-1.6.3 %28HeuristicLab.ExtLibs\HeuristicLab.LibSVM\HeuristicLab.LibSVM-1.6.3\HeuristicLab.LibSVM-1.6.3%29</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.LibSVM\1.6.3\LibSVM-1.6.3\LibSVM-1.6.3.csproj">
-      <Project>{A16F23B5-FB62-499E-A831-26953AA56FE2}</Project>
-      <Name>LibSVM-1.6.3</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
       <Project>{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}</Project>
       <Name>HeuristicLab.Operators-3.3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Optimization.Operators\3.3\HeuristicLab.Optimization.Operators-3.3.csproj">
-      <Project>{25087811-F74C-4128-BC86-8324271DA13E}</Project>
-      <Name>HeuristicLab.Optimization.Operators-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
       <Project>{14AB8D24-25BC-400C-A846-4627AA945192}</Project>
@@ -199,10 +142,6 @@
       <Project>{70DFD984-B1D9-46FE-8EB7-4DE92D71A9FC}</Project>
       <Name>HeuristicLab.Problems.DataAnalysis-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Problems.TestFunctions\3.3\HeuristicLab.Problems.TestFunctions-3.3.csproj">
-      <Project>{88B9B0E3-344E-4196-82A3-0F9732506FE8}</Project>
-      <Name>HeuristicLab.Problems.TestFunctions-3.3</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj">
       <Project>{F4539FB6-4708-40C9-BE64-0A1390AEA197}</Project>
       <Name>HeuristicLab.Random-3.3</Name>
@@ -223,6 +162,6 @@ set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
 call PreBuildEvent.cmd
-SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabProblemsDataAnalysisRegressionPlugin.cs.frame" "%25ProjectDir%25\HeuristicLabProblemsDataAnalysisRegressionPlugin.cs"</PreBuildEvent>
+SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabProblemsDataAnalysisMultiVariatePlugin.cs.frame" "%25ProjectDir%25\HeuristicLabProblemsDataAnalysisMultiVariatePlugin.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>

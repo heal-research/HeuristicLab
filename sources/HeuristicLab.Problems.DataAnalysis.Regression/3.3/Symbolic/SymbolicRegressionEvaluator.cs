@@ -140,24 +140,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
 
 
-    //algorithm taken from progamming pearls page 127
-    //IMPORTANT because IEnumerables with yield are used the seed must best be specified to return always 
-    //the same sequence of numbers without caching the values.
     private static IEnumerable<int> GenerateRowsToEvaluate(uint seed, double relativeAmount, int start, int end) {
       if (end < start) throw new ArgumentException("Start value is larger than end value.");
       int count = (int)((end - start) * relativeAmount);
       if (count == 0) count = 1;
-
-      int remaining = end - start;
-      MersenneTwister random = new MersenneTwister(seed);
-      for (int i = start; i < end && count > 0; i++) {
-        double probabilty = random.NextDouble();
-        if (probabilty < ((double)count) / remaining) {
-          count--;
-          yield return i;
-        }
-        remaining--;
-      }
+      return RandomEnumerable.SampleRandomNumbers(seed, start, end, count);
     }
 
     protected abstract double Evaluate(ISymbolicExpressionTreeInterpreter interpreter,
