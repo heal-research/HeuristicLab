@@ -34,7 +34,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
 
     public Defun() : base(Defun.DefunName, Defun.DefunDescription) { }
     [StorableConstructor]
-    protected Defun(bool deserializing) : base(deserializing) { }
+    private Defun(bool deserializing) : base(deserializing) { }
 
     public override SymbolicExpressionTreeNode CreateTreeNode() {
       return new DefunTreeNode(this);
