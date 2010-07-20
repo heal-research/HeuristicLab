@@ -64,12 +64,13 @@ namespace HeuristicLab.Algorithms.NSGA2 {
 
     public CrowdedTournamentSelector()
       : base() {
+      Parameters.Add(new LookupParameter<BoolArray>("Maximization", "For each objective determines whether it should be maximized or minimized."));
+      Parameters.Add(new ValueLookupParameter<IntValue>("NumberOfSelectedSubScopes", "The number of sub-scopes that should be selected."));
+      Parameters.Add(new ValueParameter<BoolValue>("CopySelected", "True if the selected scopes are to be copied (cloned) otherwise they're moved."));
+      Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleArray>("Qualities", "The solutions' qualities vector."));
       Parameters.Add(new ScopeTreeLookupParameter<IntValue>("Rank", "The solutions' domination rank."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("CrowdingDistance", "The solutions' crowding distance values."));
-      Parameters.Add(new ValueParameter<BoolValue>("CopySelected", "True if the selected scopes are to be copied (cloned) otherwise they're moved."));
-      Parameters.Add(new ValueLookupParameter<IntValue>("NumberOfSelectedSubScopes", "The number of sub-scopes that should be selected."));
-      Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator."));
       Parameters.Add(new ValueLookupParameter<IntValue>("GroupSize", "The size of the group from which the best will be chosen.", new IntValue(2)));
     }
 
