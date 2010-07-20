@@ -90,10 +90,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     private const string MeanSquaredErrorValuesParameterName = "Mean squared error";
     private const string RelativeErrorValuesParameterName = "Average relative error";
 
-    private const string TrainingSamplesStartParameterName = "TrainingSamplesStart";
-    private const string TrainingSamplesEndParameterName = "TrainingSamplesEnd";
-    private const string TestSamplesStartParameterName = "TestSamplesStart";
-    private const string TestSamplesEndParameterName = "TestSamplesEnd";
     private const string UpperEstimationLimitParameterName = "UpperEstimationLimit";
     private const string LowerEstimationLimitParameterName = "LowerEstimationLimit";
 
@@ -106,18 +102,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     }
     public IValueLookupParameter<DataAnalysisProblemData> ProblemDataParameter {
       get { return (IValueLookupParameter<DataAnalysisProblemData>)Parameters[ProblemDataParameterName]; }
-    }
-    public IValueLookupParameter<IntValue> TrainingSamplesStartParameter {
-      get { return (IValueLookupParameter<IntValue>)Parameters[TrainingSamplesStartParameterName]; }
-    }
-    public IValueLookupParameter<IntValue> TrainingSamplesEndParameter {
-      get { return (IValueLookupParameter<IntValue>)Parameters[TrainingSamplesEndParameterName]; }
-    }
-    public IValueLookupParameter<IntValue> TestSamplesStartParameter {
-      get { return (IValueLookupParameter<IntValue>)Parameters[TestSamplesStartParameterName]; }
-    }
-    public IValueLookupParameter<IntValue> TestSamplesEndParameter {
-      get { return (IValueLookupParameter<IntValue>)Parameters[TestSamplesEndParameterName]; }
     }
     public IValueLookupParameter<DoubleValue> UpperEstimationLimitParameter {
       get { return (IValueLookupParameter<DoubleValue>)Parameters[UpperEstimationLimitParameterName]; }
@@ -143,10 +127,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       Parameters.Add(new ScopeTreeLookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression trees to analyze."));
       Parameters.Add(new ValueLookupParameter<ISymbolicExpressionTreeInterpreter>(SymbolicExpressionTreeInterpreterParameterName, "The interpreter that should be used to calculate the output values of the symbolic expression tree."));
       Parameters.Add(new ValueLookupParameter<DataAnalysisProblemData>(ProblemDataParameterName, "The problem data containing the input varaibles for the symbolic regression problem."));
-      Parameters.Add(new ValueLookupParameter<IntValue>(TrainingSamplesStartParameterName, "The first index of the training data set partition on which the model quality values should be calculated."));
-      Parameters.Add(new ValueLookupParameter<IntValue>(TrainingSamplesEndParameterName, "The last index of the training data set partition on which the model quality values should be calculated."));
-      Parameters.Add(new ValueLookupParameter<IntValue>(TestSamplesStartParameterName, "The first index of the test data set partition on which the model quality values should be calculated."));
-      Parameters.Add(new ValueLookupParameter<IntValue>(TestSamplesEndParameterName, "The last index of the test data set partition on which the model quality values should be calculated."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>(UpperEstimationLimitParameterName, "The upper limit that should be used as cut off value for the output values of symbolic expression trees."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>(LowerEstimationLimitParameterName, "The lower limit that should be used as cut off value for the output values of symbolic expression trees."));
       Parameters.Add(new ValueLookupParameter<DataTable>(MeanSquaredErrorValuesParameterName, "The data table to collect mean squared error values."));
@@ -161,8 +141,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     public override IOperation Apply() {
       Analyze(SymbolicExpressionTreeParameter.ActualValue, SymbolicExpressionTreeInterpreterParameter.ActualValue,
         UpperEstimationLimit.Value, LowerEstimationLimit.Value, ProblemDataParameter.ActualValue,
-        TrainingSamplesStartParameter.ActualValue.Value, TrainingSamplesEndParameter.ActualValue.Value,
-        TestSamplesStartParameter.ActualValue.Value, TestSamplesEndParameter.ActualValue.Value,
+        ProblemDataParameter.ActualValue.TrainingSamplesStart.Value, ProblemDataParameter.ActualValue.TrainingSamplesEnd.Value,
+        ProblemDataParameter.ActualValue.TestSamplesStart.Value, ProblemDataParameter.ActualValue.TestSamplesEnd.Value,
         ResultsParameter.ActualValue);
       return base.Apply();
     }

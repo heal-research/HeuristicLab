@@ -220,7 +220,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserializationHook() {
-      Initialize();
+      RegisterParameterEvents();
+      RegisterParameterValueEvents();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -343,6 +344,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       operators.Add(new SymbolicRegressionVariableFrequencyAnalyzer());
       operators.Add(new FixedValidationBestScaledSymbolicRegressionSolutionAnalyzer());
       operators.Add(new MinAverageMaxSymbolicExpressionTreeSizeAnalyzer());
+      operators.Add(new SymbolicRegressionModelQualityAnalyzer());
       ParameterizeOperators();
       ParameterizeAnalyzers();
     }
@@ -388,6 +390,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
           bestValidationSolutionAnalyzer.ValidationSamplesEndParameter.Value = ValidationSamplesEnd;
           bestValidationSolutionAnalyzer.BestKnownQualityParameter.ActualName = BestKnownQualityParameter.Name;
           bestValidationSolutionAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
+        }
+        var symbolicRegressionModelQualityAnalyzer = analyzer as SymbolicRegressionModelQualityAnalyzer;
+        if (symbolicRegressionModelQualityAnalyzer != null) {
+          symbolicRegressionModelQualityAnalyzer.ProblemDataParameter.ActualName = DataAnalysisProblemDataParameter.Name;
+          symbolicRegressionModelQualityAnalyzer.UpperEstimationLimitParameter.ActualName = UpperEstimationLimitParameter.Name;
+          symbolicRegressionModelQualityAnalyzer.LowerEstimationLimitParameter.ActualName = LowerEstimationLimitParameter.Name;
+          symbolicRegressionModelQualityAnalyzer.SymbolicExpressionTreeInterpreterParameter.ActualName = SymbolicExpressionTreeInterpreterParameter.Name;
+          symbolicRegressionModelQualityAnalyzer.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
         }
         var varFreqAnalyzer = analyzer as SymbolicRegressionVariableFrequencyAnalyzer;
         if (varFreqAnalyzer != null) {

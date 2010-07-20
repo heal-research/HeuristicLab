@@ -235,16 +235,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
         scaledTrees = trees;
       }
 
-      int trainingStart = ProblemData.TrainingSamplesStart.Value;
-      int trainingEnd = ProblemData.TrainingSamplesEnd.Value;
-      int testStart = ProblemData.TestSamplesStart.Value;
-      int testEnd = ProblemData.TestSamplesEnd.Value;
-
-      SymbolicRegressionModelQualityAnalyzer.Analyze(scaledTrees, SymbolicExpressionTreeInterpreter,
-        UpperEstimationLimit.Value, LowerEstimationLimit.Value,
-        ProblemData, trainingStart, trainingEnd, testStart, testEnd, Results);
-
-      #region validation best model
       string targetVariable = ProblemData.TargetVariable.Value;
       int validationStart = ValidiationSamplesStart.Value;
       int validationEnd = ValidationSamplesEnd.Value;
@@ -266,7 +256,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
           bestTree = scaledTree;
         }
       }
-
 
       if (BestSolutionQualityParameter.ActualValue == null || BestSolutionQualityParameter.ActualValue.Value > bestValidationMse) {
         var model = new SymbolicRegressionModel((ISymbolicExpressionTreeInterpreter)SymbolicExpressionTreeInterpreter.Clone(),
@@ -292,7 +281,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       DataTable validationValues = (DataTable)Results[BestSolutionQualityValuesParameterName].Value;
       AddValue(validationValues, BestSolutionQualityParameter.ActualValue.Value, BestSolutionQualityParameterName, BestSolutionQualityParameterName);
       AddValue(validationValues, bestValidationMse, CurrentBestValidationQualityParameterName, CurrentBestValidationQualityParameterName);
-      #endregion
       return base.Apply();
     }
 

@@ -185,10 +185,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       modelQualityAnalyzer.UpperEstimationLimitParameter.ActualName = UpperEstimationLimitParameter.Name;
       modelQualityAnalyzer.LowerEstimationLimitParameter.ActualName = LowerEstimationLimitParameter.Name;
       modelQualityAnalyzer.SymbolicExpressionTreeInterpreterParameter.ActualName = SymbolicExpressionTreeInterpreterParameter.Name;
-      modelQualityAnalyzer.TrainingSamplesStartParameter.ActualName = TrainingSamplesStartParameter.Name;
-      modelQualityAnalyzer.TrainingSamplesEndParameter.ActualName = TrainingSamplesEndParameter.Name;
-      modelQualityAnalyzer.TestSamplesStartParameter.ActualName = TestSamplesStartParameter.Name;
-      modelQualityAnalyzer.TestSamplesEndParameter.ActualName = TestSamplesEndParameter.Name;
 
       validationMseEvaluator.LowerEstimationLimitParameter.ActualName = LowerEstimationLimitParameter.Name;
       validationMseEvaluator.UpperEstimationLimitParameter.ActualName = UpperEstimationLimitParameter.Name;
