@@ -22,17 +22,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using HeuristicLab.Optimization;
-using HeuristicLab.Operators;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Problems.DataAnalysis.Symbolic;
-using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
-using HeuristicLab.Parameters;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
+using HeuristicLab.Operators;
+using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.LinearRegression {
   /// <summary>
@@ -49,8 +47,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.LinearRegression {
     public LinearRegressionSolutionCreator() {
       Parameters.Add(new LookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The resulting solution encoded as a symbolic expression tree."));
       Parameters.Add(new LookupParameter<DataAnalysisProblemData>(DataAnalysisProblemDataParameterName, "The problem data on which the linear regression should be calculated."));
-      Parameters.Add(new ValueLookupParameter<IntValue>(SamplesStartParameterName,"The start of the samples on which the linear regression should be applied."));
-      Parameters.Add(new ValueLookupParameter<IntValue>(SamplesEndParameterName,"The end of the samples on which the linear regression should be applied."));
+      Parameters.Add(new ValueLookupParameter<IntValue>(SamplesStartParameterName, "The start of the samples on which the linear regression should be applied."));
+      Parameters.Add(new ValueLookupParameter<IntValue>(SamplesEndParameterName, "The end of the samples on which the linear regression should be applied."));
     }
     [StorableConstructor]
     public LinearRegressionSolutionCreator(bool deserializing)
@@ -93,7 +91,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.LinearRegression {
 
 
     public override IOperation Apply() {
-      SymbolicExpressionTree = CreateSymbolicExpressionTree(DataAnalysisProblemData.Dataset,DataAnalysisProblemData.TargetVariable.Value, DataAnalysisProblemData.InputVariables.CheckedItems.Select(x => x.Value.Value), SamplesStart.Value, SamplesEnd.Value);
+      SymbolicExpressionTree = CreateSymbolicExpressionTree(DataAnalysisProblemData.Dataset, DataAnalysisProblemData.TargetVariable.Value, DataAnalysisProblemData.InputVariables.CheckedItems.Select(x => x.Value.Value), SamplesStart.Value, SamplesEnd.Value);
       return base.Apply();
     }
 

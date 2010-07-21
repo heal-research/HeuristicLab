@@ -19,14 +19,11 @@
  */
 #endregion
 
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
-using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System;
 
 namespace HeuristicLab.Problems.OneMax {
   /// <summary>
@@ -53,7 +50,7 @@ namespace HeuristicLab.Problems.OneMax {
         moveQuality -= 1.0;
       else
         moveQuality += 1.0;
-      
+
       if (MoveQualityParameter.ActualValue == null) MoveQualityParameter.ActualValue = new DoubleValue(moveQuality);
       else MoveQualityParameter.ActualValue.Value = moveQuality;
       return base.Apply();

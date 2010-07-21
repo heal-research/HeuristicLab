@@ -21,15 +21,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Xml;
-using HeuristicLab.Core;
-using System.Globalization;
 using System.IO;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Common;
-using SVM;
 using System.Linq;
+using System.Text;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using SVM;
 
 namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
   /// <summary>

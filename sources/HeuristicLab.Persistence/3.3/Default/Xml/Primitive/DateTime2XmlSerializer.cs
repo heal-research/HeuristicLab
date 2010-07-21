@@ -21,7 +21,6 @@
 
 using System;
 using HeuristicLab.Persistence.Core;
-using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Default.Xml.Primitive {
 
@@ -34,7 +33,8 @@ namespace HeuristicLab.Persistence.Default.Xml.Primitive {
     public override DateTime Parse(XmlString x) {
       try {
         return new DateTime(long.Parse(x.Data));
-      } catch (Exception e) {
+      }
+      catch (Exception e) {
         throw new PersistenceException("Exception caugth while trying to reconstruct DateTime object.", e);
       }
     }

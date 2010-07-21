@@ -20,20 +20,14 @@
 #endregion
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
+using HeuristicLab.Data;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
-using HeuristicLab.Data.Views;
-using HeuristicLab.Data;
 using HeuristicLab.Problems.DataAnalysis.Evaluators;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
-  [Content(typeof(DataAnalysisSolution),false)]
+  [Content(typeof(DataAnalysisSolution), false)]
   [View("Results View")]
   public partial class ResultsView : AsynchronousContentView {
     private List<string> rowNames = new List<string>() { "MeanSquaredError", "CoefficientOfDetermination", "MeanAbsolutePercentageError" };

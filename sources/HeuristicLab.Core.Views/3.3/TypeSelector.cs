@@ -20,14 +20,14 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Common;
 using HeuristicLab.PluginInfrastructure;
-using System.Collections.Generic;
 
-namespace HeuristicLab.Core.Views { 
+namespace HeuristicLab.Core.Views {
   public partial class TypeSelector : UserControl {
     protected List<TreeNode> treeNodes;
     protected string currentSearchString;

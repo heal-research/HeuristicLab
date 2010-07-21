@@ -19,13 +19,11 @@
  */
 #endregion
 
-using System.Collections.Generic;
 using System;
-using HeuristicLab.Persistence.Interfaces;
-using HeuristicLab.Persistence.Core.Tokens;
+using System.Collections.Generic;
 using HeuristicLab.Persistence.Auxiliary;
-using HeuristicLab.Tracing;
-using System.Reflection;
+using HeuristicLab.Persistence.Core.Tokens;
+using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Core {
 
@@ -81,7 +79,7 @@ namespace HeuristicLab.Persistence.Core {
         compositeSerializer.Populate(Obj, customValues, type);
       }
     }
-    
+
     private readonly Dictionary<int, object> id2obj;
     private readonly Dictionary<Type, object> serializerMapping;
     private readonly Stack<Midwife> parentStack;
@@ -123,9 +121,11 @@ namespace HeuristicLab.Persistence.Core {
         else
           serializer = Activator.CreateInstance(serializerType, true);
         serializerMapping.Add(type, serializer);
-      } catch (PersistenceException) {
+      }
+      catch (PersistenceException) {
         throw;
-      } catch (Exception e) {
+      }
+      catch (Exception e) {
         throw new PersistenceException(string.Format(
           "Could not add type info for {0} ({1})",
           typeMapping.TypeName, typeMapping.Serializer), e);
@@ -180,7 +180,8 @@ namespace HeuristicLab.Persistence.Core {
       Type type = typeIds[(int)token.TypeId];
       try {
         parentStack.Push(new Midwife(type, (ICompositeSerializer)serializerMapping[type], token.Id));
-      } catch (Exception e) {
+      }
+      catch (Exception e) {
         if (e is InvalidCastException || e is KeyNotFoundException) {
           throw new PersistenceException(String.Format(
             "Invalid composite serializer configuration for type \"{0}\".",
@@ -209,7 +210,8 @@ namespace HeuristicLab.Persistence.Core {
         if (token.Id != null)
           id2obj[(int)token.Id] = value;
         SetValue(token.Name, value);
-      } catch (Exception e) {
+      }
+      catch (Exception e) {
         if (e is InvalidCastException || e is KeyNotFoundException) {
           throw new PersistenceException(String.Format(
             "Invalid primitive serializer configuration for type \"{0}\".",

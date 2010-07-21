@@ -19,12 +19,6 @@
  */
 #endregion
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace HeuristicLab.CodeEditor {
@@ -36,7 +30,8 @@ namespace HeuristicLab.CodeEditor {
       textEditorControl1.SetHighlighting("C#");
     }
 
-    public CodeViewer(string code) : this() {
+    public CodeViewer(string code)
+      : this() {
       textEditorControl1.Text = code;
     }
 

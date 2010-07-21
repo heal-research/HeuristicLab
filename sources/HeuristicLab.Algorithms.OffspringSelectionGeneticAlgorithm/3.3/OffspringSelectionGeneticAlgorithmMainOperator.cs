@@ -19,7 +19,6 @@
  */
 #endregion
 
-using HeuristicLab.Analysis;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -140,7 +139,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       RightReducer rightReducer = new RightReducer();
       LeftReducer leftReducer = new LeftReducer();
       MergingReducer mergingReducer = new MergingReducer();
-      
+
       selector.Name = "Selector (placeholder)";
       selector.OperatorParameter.ActualName = SelectorParameter.Name;
 

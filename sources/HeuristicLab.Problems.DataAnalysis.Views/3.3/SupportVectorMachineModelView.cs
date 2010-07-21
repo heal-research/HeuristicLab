@@ -19,21 +19,11 @@
  */
 #endregion
 using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
-using HeuristicLab.Common;
-using HeuristicLab.MainForm;
-using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.MainForm.WindowsForms;
-using System.Windows.Forms.DataVisualization.Charting;
-using HeuristicLab.Problems.DataAnalysis.SupportVectorMachine;
 using System.IO;
+using System.Windows.Forms;
+using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
+using HeuristicLab.Problems.DataAnalysis.SupportVectorMachine;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Support Vector Machine Model View")]

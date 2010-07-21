@@ -21,16 +21,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Core;
 using System.Drawing;
-using Netron.Diagramming.Core;
-using HeuristicLab.Collections;
 using HeuristicLab.Common;
+using Netron.Diagramming.Core;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
-  public interface IShapeInfo : IDeepCloneable{
+  public interface IShapeInfo : IDeepCloneable {
     Type ShapeType { get; }
     Point Location { get; set; }
 

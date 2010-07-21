@@ -19,21 +19,16 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Core;
-using HeuristicLab.Parameters;
 using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
-using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   [Item("AlbaTranslocationMoveEvaluator", "Evaluates a translocation or insertion move (3-opt) for the VRP.")]
   [StorableClass]
-  public sealed class AlbaTranslocationMoveEvaluator: VRPMoveEvaluator {
+  public sealed class AlbaTranslocationMoveEvaluator : VRPMoveEvaluator {
     public ILookupParameter<TranslocationMove> TranslocationMoveParameter {
       get { return (ILookupParameter<TranslocationMove>)Parameters["TranslocationMove"]; }
       set { Parameters["TranslocationMove"].ActualValue = value.ActualValue; }

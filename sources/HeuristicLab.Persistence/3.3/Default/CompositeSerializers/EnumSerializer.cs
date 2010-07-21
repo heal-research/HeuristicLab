@@ -20,10 +20,10 @@
 #endregion
 
 using System;
-using HeuristicLab.Persistence.Core;
-using HeuristicLab.Persistence.Interfaces;
 using System.Collections.Generic;
+using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Default.CompositeSerializers {
 
@@ -55,9 +55,11 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
       try {
         it.MoveNext();
         return Enum.Parse(t, (string)it.Current.Value);
-      } catch (InvalidOperationException e) {
+      }
+      catch (InvalidOperationException e) {
         throw new PersistenceException("not enough meta information to recstruct enum", e);
-      } catch (InvalidCastException e) {
+      }
+      catch (InvalidCastException e) {
         throw new PersistenceException("invalid meta information found while trying to reconstruct enum", e);
       }
     }

@@ -21,11 +21,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 using HeuristicLab.Collections;
-using HeuristicLab.Common;
-using HeuristicLab.Common.Resources;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
@@ -35,9 +31,10 @@ namespace HeuristicLab.Core {
     private CheckedItemList<T> CheckedItemList {
       get { return (CheckedItemList<T>)base.list; }
     }
-    
+
     public ReadOnlyCheckedItemList() : base(new CheckedItemList<T>()) { }
-    public ReadOnlyCheckedItemList(ICheckedItemList<T> list) : base(list) {
+    public ReadOnlyCheckedItemList(ICheckedItemList<T> list)
+      : base(list) {
       list.CheckedItemsChanged += new CollectionItemsChangedEventHandler<IndexedItem<T>>(list_CheckedItemsChanged);
     }
 
@@ -51,7 +48,7 @@ namespace HeuristicLab.Core {
       if (handler != null)
         handler(this, e);
     }
-    
+
     public IEnumerable<IndexedItem<T>> CheckedItems {
       get { return CheckedItemList.CheckedItems; }
     }

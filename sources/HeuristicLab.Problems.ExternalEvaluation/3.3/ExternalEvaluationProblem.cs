@@ -23,15 +23,15 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using HeuristicLab.Analysis;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
+using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Optimization.Operators;
-using HeuristicLab.Analysis;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("External Evaluation Problem", "A problem that is evaluated in a different process.")]

@@ -19,15 +19,10 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaPermutationCrossover", "An operator which crosses two alba VRP representations.")]
@@ -45,9 +40,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     public override IOperation Apply() {
       int cities = 0;
 
-      for(int i = 0; i < ParentsParameter.ActualValue.Length; i++) {
-         IVRPEncoding solution = ParentsParameter.ActualValue[i];
-         cities = solution.Cities;
+      for (int i = 0; i < ParentsParameter.ActualValue.Length; i++) {
+        IVRPEncoding solution = ParentsParameter.ActualValue[i];
+        cities = solution.Cities;
         if (!(solution is AlbaEncoding)) {
           ParentsParameter.ActualValue[i] = AlbaEncoding.ConvertFrom(solution);
         }

@@ -25,21 +25,15 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Analyzers;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Problems.DataAnalysis.Regression;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureManipulators;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Crossovers;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces;
-using HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Analyzers;
-using HeuristicLab.Problems.DataAnalysis.Regression.Symbolic;
 
 namespace HeuristicLab.Problems.DataAnalysis.MultiVariate.Regression.Symbolic {
   [StorableClass]

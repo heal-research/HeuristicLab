@@ -20,11 +20,9 @@
 #endregion
 
 
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.ArtificialAnt.Symbols {
   [StorableClass]
   [Item("Prog2", "Represents the sequence symbol with 2 sub-trees in a artificial ant expression.")]

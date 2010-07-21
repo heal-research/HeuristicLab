@@ -19,15 +19,13 @@
  */
 #endregion
 
-using System.Collections.Generic;
-using HeuristicLab.Common;
-using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
-using System.Linq;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Crossovers {
   /// <summary>

@@ -19,17 +19,13 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings {
-  public abstract class VRPCrossover: SingleSuccessorOperator, IVRPCrossover {
+  public abstract class VRPCrossover : SingleSuccessorOperator, IVRPCrossover {
     #region IVRPCrossover Members
 
     public ILookupParameter<ItemArray<IVRPEncoding>> ParentsParameter {
@@ -49,6 +45,6 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings {
       Parameters.Add(new LookupParameter<IVRPEncoding>("Child", "The child permutation resulting from the crossover."));
       ChildParameter.ActualName = "VRPSolution";
       Parameters.Add(new ValueLookupParameter<IntValue>("Cities", "The city count."));
-    } 
+    }
   }
 }

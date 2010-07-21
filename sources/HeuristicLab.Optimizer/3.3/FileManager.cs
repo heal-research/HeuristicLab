@@ -20,10 +20,8 @@
 #endregion
 
 using System;
-using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Common;
-using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.PluginInfrastructure;
 

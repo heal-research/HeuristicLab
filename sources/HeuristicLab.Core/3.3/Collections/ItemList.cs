@@ -20,16 +20,13 @@
 #endregion
 
 using System;
-using System.Linq;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
 using System.Drawing;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System.Linq;
+using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
-using HeuristicLab.Collections;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
   [StorableClass]

@@ -22,10 +22,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using HeuristicLab.PluginInfrastructure;
-using System.Diagnostics;
 using HeuristicLab.Common;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.MainForm {
   public static class MainFormManager {
@@ -161,7 +159,7 @@ namespace HeuristicLab.MainForm {
     }
 
     private static void CheckForContentType(Type contentType) {
-          if (!typeof(IContent).IsAssignableFrom(contentType))
+      if (!typeof(IContent).IsAssignableFrom(contentType))
         throw new ArgumentException("DefaultViews are only specified for types of IContent and not for " + contentType + ".");
     }
     private static void CheckForContentViewType(Type viewType) {

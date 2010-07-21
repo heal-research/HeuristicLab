@@ -20,11 +20,11 @@
 #endregion
 
 using System.Linq;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Data;
-using HeuristicLab.Core;
 
 namespace HeuristicLab.Algorithms.TabuSearch {
   public class TabuNeighborhoodAnalyzer : SingleSuccessorOperator, IAnalyzer {

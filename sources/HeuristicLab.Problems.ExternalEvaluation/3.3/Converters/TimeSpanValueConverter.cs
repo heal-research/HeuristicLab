@@ -20,12 +20,9 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Data;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("TimeSpanValueConverter", "Converts a TimeSpanValue and adds it to the SolutionMessage's StringVars. The format is d.hh:mm:ss, e.g. 1113.10:55:00 (1113 days 10 hours, 55 minutes, 0 seconds).")]
@@ -49,7 +46,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
         throw new ArgumentException(ItemName + ": Item is not of a supported type.", "item");
       }
     }
-    
+
     #endregion
 
   }

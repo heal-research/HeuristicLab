@@ -19,12 +19,9 @@
  */
 #endregion
 
-using System;
-using HeuristicLab.Persistence.Core;
-using HeuristicLab.Persistence.Interfaces;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Globalization;
+using HeuristicLab.Persistence.Core;
 
 
 namespace HeuristicLab.Persistence.Default.Xml.Primitive {

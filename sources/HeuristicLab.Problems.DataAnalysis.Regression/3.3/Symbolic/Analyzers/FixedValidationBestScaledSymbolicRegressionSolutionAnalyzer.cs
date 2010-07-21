@@ -19,24 +19,18 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using System.Linq;
-using HeuristicLab.Common;
+using HeuristicLab.Analysis;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Problems.DataAnalysis.Regression.Symbolic;
-using HeuristicLab.Problems.DataAnalysis.Symbolic;
-using System.Collections.Generic;
-using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
-using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.Analysis;
-using System;
-using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Problems.DataAnalysis.Evaluators;
+using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
   /// <summary>

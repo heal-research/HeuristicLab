@@ -21,7 +21,6 @@
 
 using System;
 using System.Windows.Forms;
-using HeuristicLab.Collections;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;

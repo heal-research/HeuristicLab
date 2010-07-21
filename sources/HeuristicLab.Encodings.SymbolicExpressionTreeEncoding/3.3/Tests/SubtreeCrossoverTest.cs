@@ -20,15 +20,13 @@
 #endregion
 
 using System;
-using System.Text;
 using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Random;
 using System.Diagnostics;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Crossovers;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Crossovers;
+using HeuristicLab.Random;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
   [TestClass]

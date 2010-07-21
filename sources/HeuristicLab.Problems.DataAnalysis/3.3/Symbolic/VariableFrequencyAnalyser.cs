@@ -23,11 +23,10 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using System;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Operators;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {

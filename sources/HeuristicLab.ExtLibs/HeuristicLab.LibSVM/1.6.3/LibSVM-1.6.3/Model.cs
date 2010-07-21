@@ -20,8 +20,6 @@
 
 using System;
 using System.IO;
-using System.Threading;
-using System.Globalization;
 
 namespace SVM {
   /// <summary>

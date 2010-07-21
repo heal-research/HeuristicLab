@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
+﻿using System.Collections.Generic;
 
 namespace HeuristicLab.Persistence.Auxiliary {
   /// <summary>
@@ -23,7 +19,7 @@ namespace HeuristicLab.Persistence.Auxiliary {
           if (i > startIdx) {
             yield return s.Substring(startIdx, i - startIdx);
           }
-          startIdx = i+1;
+          startIdx = i + 1;
         }
       }
       if (startIdx < s.Length)

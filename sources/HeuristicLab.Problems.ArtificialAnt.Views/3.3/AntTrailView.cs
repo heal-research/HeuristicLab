@@ -20,13 +20,12 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using HeuristicLab.Core.Views;
-using HeuristicLab.Data;
-using HeuristicLab.MainForm;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using System.Collections.Generic;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Problems.ArtificialAnt.Views {
   [View("AntTrail View")]

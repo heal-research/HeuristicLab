@@ -20,18 +20,13 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
-
-using HeuristicLab.PluginInfrastructure;
 using System.Collections;
-using WeifenLuo.WinFormsUI.Docking;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
 using HeuristicLab.Common;
+using HeuristicLab.PluginInfrastructure;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace HeuristicLab.MainForm.WindowsForms {
   public partial class MainForm : Form, IMainForm {

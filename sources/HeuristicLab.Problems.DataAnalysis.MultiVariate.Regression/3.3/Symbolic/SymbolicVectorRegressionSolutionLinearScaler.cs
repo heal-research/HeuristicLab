@@ -19,20 +19,15 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using System.Linq;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Operators;
-using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Problems.DataAnalysis.Regression.Symbolic;
-using HeuristicLab.Problems.DataAnalysis.Symbolic;
-using System.Collections.Generic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
-using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Problems.DataAnalysis.MultiVariate.Regression.Symbolic {
   /// <summary>
@@ -99,7 +94,7 @@ namespace HeuristicLab.Problems.DataAnalysis.MultiVariate.Regression.Symbolic {
       }
       return scaledTree;
     }
-   
+
     private static SymbolicExpressionTreeNode MakeSum(SymbolicExpressionTreeNode treeNode, double alpha) {
       var node = (new Addition()).CreateTreeNode();
       var alphaConst = MakeConstant(alpha);

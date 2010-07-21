@@ -20,17 +20,14 @@
 #endregion
 
 using System;
-using System.Linq;
-using HeuristicLab.Persistence.Interfaces;
-using HeuristicLab.Persistence.Core;
-using HeuristicLab.Persistence.Auxiliary;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Globalization;
-using System.Text;
+using System.Linq;
+using HeuristicLab.Persistence.Auxiliary;
+using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Persistence.Default.Xml.Primitive;
 using HeuristicLab.Persistence.Default.Xml;
+using HeuristicLab.Persistence.Default.Xml.Primitive;
+using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Default.CompositeSerializers {
 
@@ -62,7 +59,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
     };
 
     static Number2StringSerializer() {
-      numberSerializerMap = new Dictionary<Type,IPrimitiveSerializer>();
+      numberSerializerMap = new Dictionary<Type, IPrimitiveSerializer>();
       foreach (var s in numberSerializers) {
         numberSerializerMap[s.SourceType] = s;
       }
@@ -110,9 +107,11 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
     public object Parse(string stringValue, Type type) {
       try {
         return numberSerializerMap[type].Parse(new XmlString(stringValue));
-      } catch (FormatException e) {
+      }
+      catch (FormatException e) {
         throw new PersistenceException("Invalid element data during number parsing.", e);
-      } catch (OverflowException e) {
+      }
+      catch (OverflowException e) {
         throw new PersistenceException("Overflow during number parsing.", e);
       }
     }
@@ -165,11 +164,13 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
       try {
         it.MoveNext();
         return Parse((string)it.Current.Value, type);
-      } catch (InvalidOperationException e) {
+      }
+      catch (InvalidOperationException e) {
         throw new PersistenceException(
           String.Format("Insufficient meta information to reconstruct number of type {0}.",
           type.VersionInvariantName()), e);
-      } catch (InvalidCastException e) {
+      }
+      catch (InvalidCastException e) {
         throw new PersistenceException("Invalid meta information element type", e);
       }
     }

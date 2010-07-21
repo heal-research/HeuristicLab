@@ -20,17 +20,11 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
+using HeuristicLab.Core.Views;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
-using HeuristicLab.Core.Views;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
   [View("Symbol View")]

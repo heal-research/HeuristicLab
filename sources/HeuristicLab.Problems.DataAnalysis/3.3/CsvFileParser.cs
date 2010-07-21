@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using HeuristicLab.Data;
 using System.Text;
 
 namespace HeuristicLab.Problems.DataAnalysis {

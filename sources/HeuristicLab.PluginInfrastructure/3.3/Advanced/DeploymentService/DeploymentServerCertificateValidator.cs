@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Security.Cryptography.X509Certificates;
 using System.IdentityModel.Selectors;
 using System.IdentityModel.Tokens;
+using System.Security.Cryptography.X509Certificates;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced.DeploymentService {
   internal class DeploymentServerCertificateValidator : X509CertificateValidator {

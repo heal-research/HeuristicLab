@@ -20,12 +20,8 @@
 #endregion
 
 using System;
-using System.Linq;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Common;
-using HeuristicLab.Core;
 using System.Collections.Generic;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using System.Linq;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Compiler {
@@ -39,7 +35,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Compiler {
       // compile main body branches
       foreach (var branch in tree.Root.SubTrees[0].SubTrees) {
         code.AddRange(Compile(branch, opCodeMapper));
-      }      
+      }
       // compile function branches
       var functionBranches = from node in tree.IterateNodesPrefix()
                              where node.Symbol is Defun

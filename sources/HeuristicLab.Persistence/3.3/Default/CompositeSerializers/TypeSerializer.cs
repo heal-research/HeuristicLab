@@ -20,11 +20,11 @@
 #endregion
 
 using System;
-using HeuristicLab.Persistence.Core;
-using HeuristicLab.Persistence.Auxiliary;
-using HeuristicLab.Persistence.Interfaces;
 using System.Collections.Generic;
+using HeuristicLab.Persistence.Auxiliary;
+using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Default.CompositeSerializers {
 
@@ -56,14 +56,17 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
       IEnumerator<Tag> it = metaInfo.GetEnumerator();
       try {
         it.MoveNext();
-      } catch (InvalidOperationException e) {
+      }
+      catch (InvalidOperationException e) {
         throw new PersistenceException("Insufficient meta information to instantiate Type object", e);
       }
       try {
         return TypeLoader.Load((string)it.Current.Value);
-      } catch (InvalidCastException e) {
+      }
+      catch (InvalidCastException e) {
         throw new PersistenceException("Invalid meta information during reconstruction of Type object", e);
-      } catch (TypeLoadException e) {
+      }
+      catch (TypeLoadException e) {
         throw new PersistenceException(String.Format(
           "Cannot load Type {0}, make sure all required assemblies are available.",
           (string)it.Current.Value), e);

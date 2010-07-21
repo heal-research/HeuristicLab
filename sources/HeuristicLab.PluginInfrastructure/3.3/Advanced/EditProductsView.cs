@@ -22,13 +22,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
-using System.Windows.Forms;
 using System.ServiceModel;
-using HeuristicLab.PluginInfrastructure;
+using System.Windows.Forms;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
   internal partial class EditProductsView : InstallationManagerControl {

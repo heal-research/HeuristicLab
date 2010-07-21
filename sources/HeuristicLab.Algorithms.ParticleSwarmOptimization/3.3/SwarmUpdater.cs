@@ -19,14 +19,10 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Operators;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
+using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
@@ -77,7 +73,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       if (MaximizationParameter.ActualValue.Value) {
         if (CurrentQualityParameter.ActualValue.Value > LocalBestQualityParameter.ActualValue.Value) {
           LocalBestQualityParameter.ActualValue.Value = CurrentQualityParameter.ActualValue.Value;
-          BestLocalParameter.ActualValue = (RealVector) CurrentPositionParameter.ActualValue.Clone();
+          BestLocalParameter.ActualValue = (RealVector)CurrentPositionParameter.ActualValue.Clone();
         }
         if (CurrentQualityParameter.ActualValue.Value > GlobalBestQualityParameter.ActualValue.Value) {
           GlobalBestQualityParameter.ActualValue.Value = CurrentQualityParameter.ActualValue.Value;

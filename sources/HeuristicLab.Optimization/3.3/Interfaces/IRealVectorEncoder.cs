@@ -19,10 +19,8 @@
  */
 #endregion
 
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using System;
 
 namespace HeuristicLab.Optimization {
   public interface IRealVectorEncoder : IOperator {

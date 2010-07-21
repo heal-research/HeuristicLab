@@ -19,16 +19,13 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
-using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Parameters;
-using HeuristicLab.Data;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaTranslocationMoveGenerator", "An operator which generates translocation moves for the alba representation.")]
@@ -40,7 +37,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
 
     protected override IPermutationMoveOperator PermutationMoveOperatorParameter {
       get { return TranslocationMoveGeneratorParameter.Value; }
-      set { 
+      set {
         TranslocationMoveGeneratorParameter.Value = value as TranslocationMoveGenerator;
         if (TranslocationMoveGeneratorParameter.Value is IMultiMoveGenerator) {
           ((IMultiMoveGenerator)TranslocationMoveGeneratorParameter.Value).SampleSizeParameter.ActualName = SampleSizeParameter.Name;
@@ -70,8 +67,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       get { return (IValueLookupParameter<IntValue>)Parameters["SampleSize"]; }
     }
 
-    public AlbaTranslocationMoveGenerator(): base() {
-      Parameters.Add(new ValueLookupParameter<TranslocationMoveGenerator>("TranslocationMoveGenerator", "The move generator.", 
+    public AlbaTranslocationMoveGenerator()
+      : base() {
+      Parameters.Add(new ValueLookupParameter<TranslocationMoveGenerator>("TranslocationMoveGenerator", "The move generator.",
         new StochasticTranslocationMultiMoveGenerator()));
       Parameters.Add(new ValueLookupParameter<IntValue>("SampleSize", "The number of moves to generate."));
 
@@ -92,8 +90,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
 
           if (move != null) {
             bool criteria1 = true;
-            if(move.Index1 - 1 >= 0 && 
-              move.Index3 -1 >= 0)
+            if (move.Index1 - 1 >= 0 &&
+              move.Index3 - 1 >= 0)
               criteria1 = (permutation[move.Index1] >= cities &&
                 permutation[move.Index1 - 1] >= cities &&
                 permutation[move.Index3 - 1] >= cities);
@@ -106,7 +104,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
                 permutation[move.Index2 + 1] >= cities &&
                 permutation[index3] >= cities);
 
-            if(criteria1 && criteria2)
+            if (criteria1 && criteria2)
               toBeDeleted.Add(scope);
           }
         }

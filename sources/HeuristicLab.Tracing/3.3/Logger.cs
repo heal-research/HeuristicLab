@@ -20,11 +20,11 @@
 #endregion
 
 using System;
+using System.Diagnostics;
+using System.IO;
 using HeuristicLab.Tracing.Properties;
 using log4net;
-using System.Diagnostics;
 using log4net.Config;
-using System.IO;
 
 namespace HeuristicLab.Tracing {
 

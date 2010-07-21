@@ -19,15 +19,11 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Operators;
 using HeuristicLab.Core;
-using HeuristicLab.Selection;
-using HeuristicLab.Parameters;
 using HeuristicLab.Data;
+using HeuristicLab.Operators;
+using HeuristicLab.Parameters;
+using HeuristicLab.Selection;
 
 namespace HeuristicLab.Algorithms.NSGA2 {
   public class RankAndCrowdingSorter : AlgorithmOperator {

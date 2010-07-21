@@ -20,12 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
-using System.Text;
-using HeuristicLab;
-using HeuristicLab.PluginInfrastructure.Starter;
 
 namespace HeuristicLab {
   static class Program {

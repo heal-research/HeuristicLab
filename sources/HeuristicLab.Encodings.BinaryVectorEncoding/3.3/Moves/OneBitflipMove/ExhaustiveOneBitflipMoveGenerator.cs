@@ -19,11 +19,9 @@
  */
 #endregion
 
-using System;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Optimization;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [Item("ExhaustiveBitflipMoveGenerator", "Generates all possible one bitflip moves from a given binaryVector.")]
@@ -34,7 +32,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       int totalMoves = length;
       OneBitflipMove[] moves = new OneBitflipMove[totalMoves];
       for (int i = 0; i < length; i++)
-          moves[i] = new OneBitflipMove(i);
+        moves[i] = new OneBitflipMove(i);
 
       return moves;
     }

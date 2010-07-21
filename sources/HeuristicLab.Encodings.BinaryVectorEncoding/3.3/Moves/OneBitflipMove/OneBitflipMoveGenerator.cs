@@ -19,8 +19,6 @@
  */
 #endregion
 
-using System;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;

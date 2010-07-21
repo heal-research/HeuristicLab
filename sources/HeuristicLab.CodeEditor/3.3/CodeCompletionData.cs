@@ -7,17 +7,14 @@
  * Sie können diese Vorlage unter Extras > Optionen > Codeerstellung > Standardheader ändern.
  */
 
-using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Xml;
-using System.Linq;
-
 using ICSharpCode.SharpDevelop.Dom;
 using ICSharpCode.SharpDevelop.Dom.CSharp;
-using ICSharpCode.SharpDevelop.Dom.VBNet;
 using ICSharpCode.TextEditor.Gui.CompletionWindow;
-using System.Collections.Generic;
 
 namespace HeuristicLab.CodeEditor {
   /// <summary>
@@ -157,7 +154,8 @@ namespace HeuristicLab.CodeEditor {
           }
         }
         return b.ToString();
-      } catch (XmlException) {
+      }
+      catch (XmlException) {
         return xmlDoc;
       }
     }

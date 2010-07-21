@@ -19,9 +19,6 @@
  */
 #endregion
 
-using System;
-using System.Windows.Forms;
-using System.ComponentModel;
 
 namespace HeuristicLab.Core.Views {
   partial class NamedItemCollectionView<T> {

@@ -20,15 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Security.Policy;
-using System.Reflection;
-using System.Diagnostics;
-using System.Security.Permissions;
-using System.Security;
-using System.Linq;
-using HeuristicLab.PluginInfrastructure.Manager;
-using System.IO;
 
 namespace HeuristicLab.PluginInfrastructure {
 

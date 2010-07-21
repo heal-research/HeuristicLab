@@ -19,15 +19,15 @@
  */
 #endregion
 
-using System.Drawing;
-using System.Linq;
-using HeuristicLab.Common;
-using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 using HeuristicLab.Collections;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Analysis {
   /// <summary>

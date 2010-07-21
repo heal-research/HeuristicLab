@@ -21,24 +21,22 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Persistence.Interfaces;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using System.Reflection;
 using HeuristicLab.Persistence.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Default.CompositeSerializers {
 
   [StorableClass]
-  internal sealed class StructSerializer : ICompositeSerializer {    
+  internal sealed class StructSerializer : ICompositeSerializer {
 
     public int Priority {
       get { return 50; }
     }
 
     public bool CanSerialize(Type type) {
-      return type.IsValueType && !type.IsPrimitive && !type.IsEnum && type.IsSealed;      
+      return type.IsValueType && !type.IsPrimitive && !type.IsEnum && type.IsSealed;
     }
 
     public string JustifyRejection(Type type) {
@@ -62,7 +60,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
       Type t = obj.GetType();
       foreach (MemberInfo mi in t.GetMembers(AllInstanceMembers)) {
         if (mi.MemberType == MemberTypes.Field) {
-          string name = mi.Name.Replace("<", "&lt;").Replace(">", "&gt;");          
+          string name = mi.Name.Replace("<", "&lt;").Replace(">", "&gt;");
           yield return new Tag(name, ((FieldInfo)mi).GetValue(obj));
         }
       }
@@ -80,11 +78,11 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
           throw new PersistenceException("ambiguous struct member name " + name);
         MemberInfo mi = mis[0];
         if (mi.MemberType == MemberTypes.Field)
-          ((FieldInfo)mi).SetValue(instance, t.Value);        
+          ((FieldInfo)mi).SetValue(instance, t.Value);
         else
           throw new PersistenceException("invalid struct member type " + mi.MemberType.ToString());
       }
     }
-    
+
   }
 }

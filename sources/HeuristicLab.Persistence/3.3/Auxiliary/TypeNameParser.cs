@@ -20,10 +20,9 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Reflection.Emit;
-using System.Collections.Generic;
 
 namespace HeuristicLab.Persistence.Auxiliary {
 
@@ -120,7 +119,7 @@ namespace HeuristicLab.Persistence.Auxiliary {
           IsIdentifier = IdentifierRegex.IsMatch(value);
         }
       }
-      public static IEnumerable<Token> Tokenize(string s) {        
+      public static IEnumerable<Token> Tokenize(string s) {
         int pos = 0;
         foreach (Match m in TokenRegex.Matches(s)) {
           yield return new Token(m.Value, pos);
@@ -162,7 +161,8 @@ namespace HeuristicLab.Persistence.Auxiliary {
       TypeNameParser p = new TypeNameParser(s);
       try {
         return p.TransformTypeSpec();
-      } catch (ParseError x) {
+      }
+      catch (ParseError x) {
         if (p.Position > 0)
           throw new ParseError(String.Format(
             "Could not parse typename: {0}\n\"{1}====>{2}<===={3}",

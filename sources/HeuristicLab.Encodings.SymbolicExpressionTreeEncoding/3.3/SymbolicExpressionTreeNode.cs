@@ -20,16 +20,11 @@
 #endregion
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.Text;
-using HeuristicLab.Common;
+using System.Linq;
 using HeuristicLab.Core;
-using System.Xml;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
-using System.Diagnostics;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableClass]

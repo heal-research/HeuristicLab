@@ -21,16 +21,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using HeuristicLab.PluginInfrastructure.Manager;
-using System.IO;
-using System.ComponentModel;
+using System.Reflection;
 using System.Security;
 using System.Security.Permissions;
 using System.Security.Policy;
-using System.Reflection;
-using System.Diagnostics;
+using HeuristicLab.PluginInfrastructure.Manager;
 
 namespace HeuristicLab.PluginInfrastructure.Sandboxing {
   public class SandboxManager {
@@ -93,7 +90,7 @@ namespace HeuristicLab.PluginInfrastructure.Sandboxing {
       PluginDescription[] plugins = ApplicationManager.Manager.Plugins.Cast<PluginDescription>().ToArray();
       applicationManager.PrepareApplicationDomain(apps, plugins);
       //if (files != null && files.Count() > 0)
-        //applicationManager.LoadAssemblies(files);
+      //applicationManager.LoadAssemblies(files);
       return applicationDomain;
     }
 

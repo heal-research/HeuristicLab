@@ -19,11 +19,7 @@
  */
 #endregion
 
-using HeuristicLab.Common;
-using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.TestFunctions {
   public interface ISingleObjectiveTestFunctionAdditiveMoveEvaluator : ISingleObjectiveTestFunctionMoveEvaluator, IAdditiveRealVectorMoveOperator {

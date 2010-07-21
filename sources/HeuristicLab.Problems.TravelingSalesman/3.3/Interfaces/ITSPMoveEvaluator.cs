@@ -19,11 +19,8 @@
  */
 #endregion
 
-using HeuristicLab.Common;
-using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Optimization;
 using System;
+using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
   public interface ITSPMoveEvaluator : ISingleObjectiveMoveEvaluator, IMoveOperator {

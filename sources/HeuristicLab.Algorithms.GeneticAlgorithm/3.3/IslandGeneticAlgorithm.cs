@@ -20,8 +20,8 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -32,8 +32,6 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Random;
-using HeuristicLab.Selection;
-using HeuristicLab.Analysis;
 
 namespace HeuristicLab.Algorithms.GeneticAlgorithm {
   /// <summary>
@@ -216,7 +214,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       Parameters.Add(new ValueParameter<IntValue>("Elites", "The numer of elite solutions which are kept in each generation.", new IntValue(1)));
       Parameters.Add(new ValueParameter<MultiAnalyzer>("Analyzer", "The operator used to analyze the islands.", new MultiAnalyzer()));
       Parameters.Add(new ValueParameter<MultiAnalyzer>("IslandAnalyzer", "The operator used to analyze each island.", new MultiAnalyzer()));
-      
+
       RandomCreator randomCreator = new RandomCreator();
       SubScopesCreator populationCreator = new SubScopesCreator();
       UniformSubScopesProcessor ussp1 = new UniformSubScopesProcessor();

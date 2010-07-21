@@ -21,9 +21,8 @@
 
 using System;
 using System.Linq;
-using System.Windows.Forms;
 using System.Reflection;
-using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm.WindowsForms {
   public partial class View : UserControl, IView {

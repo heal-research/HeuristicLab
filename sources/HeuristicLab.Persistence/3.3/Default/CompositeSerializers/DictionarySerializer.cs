@@ -21,11 +21,11 @@
 
 using System;
 using System.Collections;
-using HeuristicLab.Persistence.Core;
-using HeuristicLab.Persistence.Interfaces;
 using System.Collections.Generic;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Persistence.Auxiliary;
+using HeuristicLab.Persistence.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Default.CompositeSerializers {
 
@@ -74,13 +74,17 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
           Tag value = iter.Current;
           dict.Add(key.Value, value.Value);
         }
-      } catch (InvalidOperationException e) {
+      }
+      catch (InvalidOperationException e) {
         throw new PersistenceException("Dictionaries must contain an even number of elements (key+value).", e);
-      } catch (NotSupportedException e) {
+      }
+      catch (NotSupportedException e) {
         throw new PersistenceException("The serialized dictionary type was read-only or had a fixed size and cannot be deserialized.", e);
-      } catch (ArgumentNullException e) {
+      }
+      catch (ArgumentNullException e) {
         throw new PersistenceException("Dictionary key was null.", e);
-      } catch (ArgumentException e) {
+      }
+      catch (ArgumentException e) {
         throw new PersistenceException("Duplicate dictionary key.", e);
       }
     }

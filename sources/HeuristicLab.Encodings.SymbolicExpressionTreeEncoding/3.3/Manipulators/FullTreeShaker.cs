@@ -19,10 +19,7 @@
  */
 #endregion
 
-using System.Linq;
 using HeuristicLab.Core;
-using HeuristicLab.Operators;
-using HeuristicLab.Random;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 

@@ -19,15 +19,12 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using HeuristicLab.Optimization;
-using HeuristicLab.Data;
 using HeuristicLab.Core;
-using HeuristicLab.Operators;
+using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
+using HeuristicLab.Operators;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -90,7 +87,7 @@ namespace HeuristicLab.Problems.OneMax {
         solution = new OneMaxSolution((BinaryVector)binaryVectors[i].Clone(), new DoubleValue(qualities[i].Value));
         BestSolutionParameter.ActualValue = solution;
         results.Add(new Result("Best OneMax Solution", solution));
-      }  else {
+      } else {
         if (max && qualities[i].Value > solution.Quality.Value ||
           !max && qualities[i].Value < solution.Quality.Value) {
           solution.BinaryVector = (BinaryVector)binaryVectors[i].Clone();

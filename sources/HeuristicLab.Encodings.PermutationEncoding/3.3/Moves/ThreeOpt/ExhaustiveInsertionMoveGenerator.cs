@@ -20,13 +20,9 @@
 #endregion
 
 using System;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Collections.Generic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("ExhaustiveInsertionMoveGenerator", "Generates all possible insertion moves (3-opt) from a given permutation.")]

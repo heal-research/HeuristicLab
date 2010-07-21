@@ -20,17 +20,13 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Operators;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Parameters;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Common;
 using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaPermutationCreator", "An operator which creates a new alba VRP representation.")]
@@ -45,7 +41,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
     #endregion
-    
+
     public AlbaPermutationCreator()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator."));
@@ -61,8 +57,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
       CitiesParameter.ValueChanged += new EventHandler(CitiesParameter_ValueChanged);
-      if(CitiesParameter.Value != null)
-        CitiesParameter.Value.ValueChanged += new EventHandler(CitiesValue_ValueChanged); 
+      if (CitiesParameter.Value != null)
+        CitiesParameter.Value.ValueChanged += new EventHandler(CitiesValue_ValueChanged);
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

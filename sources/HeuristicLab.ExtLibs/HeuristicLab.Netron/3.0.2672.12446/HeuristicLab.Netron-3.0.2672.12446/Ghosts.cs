@@ -29,11 +29,8 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Netron.Diagramming.Core;
 using System.Drawing;
+using Netron.Diagramming.Core;
 
 namespace HeuristicLab.Netron {
   internal static class GhostsFactory {
@@ -202,7 +199,7 @@ namespace HeuristicLab.Netron {
       get {
         return Rectangle.FromLTRB(Math.Min(mStart.X, mEnd.X), Math.Min(mStart.Y, mEnd.Y), Math.Max(mStart.X, mEnd.X), Math.Max(mStart.Y, mEnd.Y));
       }
-      set { 
+      set {
         //was orginally empty
         throw new NotImplementedException();
       }

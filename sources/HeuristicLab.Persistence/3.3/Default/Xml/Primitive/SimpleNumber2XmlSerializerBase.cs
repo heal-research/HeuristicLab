@@ -20,10 +20,8 @@
 #endregion
 
 using System;
-using HeuristicLab.Persistence.Core;
-using HeuristicLab.Persistence.Interfaces;
 using System.Reflection;
-using System.Globalization;
+using HeuristicLab.Persistence.Core;
 
 namespace HeuristicLab.Persistence.Default.Xml.Primitive {
 
@@ -45,7 +43,8 @@ namespace HeuristicLab.Persistence.Default.Xml.Primitive {
     public override T Parse(XmlString x) {
       try {
         return (T)ParseMethod.Invoke(null, new[] { x.Data });
-      } catch (Exception e) {
+      }
+      catch (Exception e) {
         throw new PersistenceException("Could not parse simple number.", e);
       }
     }

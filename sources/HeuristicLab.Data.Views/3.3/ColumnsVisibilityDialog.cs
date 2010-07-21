@@ -19,13 +19,7 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace HeuristicLab.Data.Views {
@@ -34,7 +28,8 @@ namespace HeuristicLab.Data.Views {
       InitializeComponent();
     }
 
-    public ColumnsVisibilityDialog(IEnumerable<DataGridViewColumn> columns) :this() {
+    public ColumnsVisibilityDialog(IEnumerable<DataGridViewColumn> columns)
+      : this() {
       this.Columns = columns;
     }
 

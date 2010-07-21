@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System;
 using Google.ProtocolBuffers;
 using HeuristicLab.Core;
 

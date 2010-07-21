@@ -19,15 +19,11 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Data;
-using HeuristicLab.Core;
 
 namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
   public class ParticleUpdater : SingleSuccessorOperator { // ParticleUpdater
@@ -71,17 +67,17 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     public override IOperation Apply() {
       double alpha = ((IRandom)RandomParameter.ActualValue).NextDouble();
       double beta = ((IRandom)RandomParameter.ActualValue).NextDouble();
-      RealVector velocity = (RealVector) VelocityParameter.ActualValue; 
+      RealVector velocity = (RealVector)VelocityParameter.ActualValue;
       for (int i = 0; i < velocity.Length; i++) {
         velocity[i] = velocity[i] + alpha * (BestLocalParameter.ActualValue[i] - CurrentPositionParameter.ActualValue[i]) + beta * (BestGlobalParameter.ActualValue[i] - CurrentPositionParameter.ActualValue[i]);
       }
       VelocityParameter.ActualValue = velocity;
       for (int i = 0; i < CurrentPositionParameter.ActualValue.Length; i++) {
         CurrentPositionParameter.ActualValue[i] = CurrentPositionParameter.ActualValue[i] + VelocityParameter.ActualValue[i];
-        if (CurrentPositionParameter.ActualValue[i] < BoundsParameter.ActualValue[0,0]) {
-          CurrentPositionParameter.ActualValue[i] = BoundsParameter.ActualValue[0, 0]; 
-        } else if (CurrentPositionParameter.ActualValue[i] > BoundsParameter.ActualValue[0,1]) {
-          CurrentPositionParameter.ActualValue[i] = BoundsParameter.ActualValue[0, 1]; 
+        if (CurrentPositionParameter.ActualValue[i] < BoundsParameter.ActualValue[0, 0]) {
+          CurrentPositionParameter.ActualValue[i] = BoundsParameter.ActualValue[0, 0];
+        } else if (CurrentPositionParameter.ActualValue[i] > BoundsParameter.ActualValue[0, 1]) {
+          CurrentPositionParameter.ActualValue[i] = BoundsParameter.ActualValue[0, 1];
         }
       }
       return base.Apply();

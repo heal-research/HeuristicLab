@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -77,7 +76,8 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
           i++;
           if (i >= length) i = 0;
         }
-      } catch (IndexOutOfRangeException) {
+      }
+      catch (IndexOutOfRangeException) {
         throw new InvalidOperationException("OrderCrossover: The permutation must consist of numbers in the interval [0;N) with N = length of the permutation.");
       }
       return new Permutation(parent1.PermutationType, result);

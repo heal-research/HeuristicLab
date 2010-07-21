@@ -21,9 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -33,7 +30,8 @@ namespace HeuristicLab.Core {
   public class NamedItemCollection<T> : KeyedItemCollection<string, T> where T : class, INamedItem {
     public NamedItemCollection() : base() { }
     public NamedItemCollection(int capacity) : base(capacity) { }
-    public NamedItemCollection(IEnumerable<T> collection) : base(collection) {
+    public NamedItemCollection(IEnumerable<T> collection)
+      : base(collection) {
       Initialize();
     }
     [StorableConstructor]

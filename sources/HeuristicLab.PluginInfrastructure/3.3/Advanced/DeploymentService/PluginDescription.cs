@@ -22,11 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using HeuristicLab.PluginInfrastructure.Manager;
-using System.IO;
-using System.ComponentModel;
-using System.Reflection;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced.DeploymentService {
   // extension of auto-generated DataContract class PluginDescription

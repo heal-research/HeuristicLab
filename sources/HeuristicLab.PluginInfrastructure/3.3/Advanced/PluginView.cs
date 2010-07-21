@@ -19,15 +19,9 @@
  */
 #endregion
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
-using HeuristicLab.PluginInfrastructure;
 using System.IO;
+using System.Linq;
+using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure.Manager;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {

@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System;
 
 namespace HeuristicLab.Core.Views {
   partial class ItemView {

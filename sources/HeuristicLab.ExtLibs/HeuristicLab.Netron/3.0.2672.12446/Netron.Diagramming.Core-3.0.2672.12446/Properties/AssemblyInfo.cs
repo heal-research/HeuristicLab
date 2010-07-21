@@ -1,7 +1,7 @@
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Resources;
 using System;
+using System.Reflection;
+using System.Resources;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Netron.Diagramming.Core")]
 [assembly: AssemblyDescription("Netron diagramming library v3.0")]

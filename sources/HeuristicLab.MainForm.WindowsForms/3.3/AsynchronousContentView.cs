@@ -20,15 +20,7 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
 using System.Threading;
-using HeuristicLab.Common;
 
 namespace HeuristicLab.MainForm.WindowsForms {
   public partial class AsynchronousContentView : ContentView {
@@ -61,8 +53,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
       // prevents blocking of worker thread in Invoke, if the control is disposed
       IAsyncResult result = BeginInvoke(method, args);
       result.AsyncWaitHandle.WaitOne(1000, false);
-      if (result.IsCompleted) try { EndInvoke(result); } catch (ObjectDisposedException) { }
-      else {
+      if (result.IsCompleted) try { EndInvoke(result); }
+        catch (ObjectDisposedException) { } else {
         ThreadPool.RegisterWaitForSingleObject(result.AsyncWaitHandle,
           new WaitOrTimerCallback((x, b) => { try { EndInvoke(result); } catch (ObjectDisposedException) { } }),
           null, -1, true);

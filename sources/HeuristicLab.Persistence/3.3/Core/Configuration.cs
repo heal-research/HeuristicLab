@@ -20,10 +20,9 @@
 #endregion
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Core {
 
@@ -76,9 +75,9 @@ namespace HeuristicLab.Persistence.Core {
             "primitive serializer's ({0}) serialized data type ({1}) " + Environment.NewLine +
             "is not compatible with selected format's ({2}) seriali data type ({3})",
             primitiveSerializers.GetType().FullName, primitiveSerializer.SerialDataType.FullName,
-            format.Name, format.SerialDataType.FullName));            
+            format.Name, format.SerialDataType.FullName));
         this.primitiveSerializers.Add(primitiveSerializer.SourceType, primitiveSerializer);
-      }      
+      }
     }
 
     /// <summary>

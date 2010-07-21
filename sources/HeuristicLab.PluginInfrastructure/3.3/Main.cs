@@ -21,11 +21,7 @@
 
 using System;
 using System.Windows.Forms;
-using System.Text;
-using System.Linq;
 using HeuristicLab.PluginInfrastructure.Starter;
-using System.IO;
-using HeuristicLab.PluginInfrastructure.Advanced;
 
 namespace HeuristicLab.PluginInfrastructure {
   /// <summary>

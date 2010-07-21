@@ -22,11 +22,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis.Evaluators {
   public class SimpleMeanAbsolutePercentageErrorEvaluator : SimpleEvaluator {

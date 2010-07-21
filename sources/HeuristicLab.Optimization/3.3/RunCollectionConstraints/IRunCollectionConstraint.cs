@@ -20,13 +20,10 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
-  public interface IRunCollectionConstraint : IConstraint{
+  public interface IRunCollectionConstraint : IConstraint {
     new RunCollection ConstrainedValue { get; set; }
     string ConstraintColumn { get; set; }
     event EventHandler ConstraintColumnChanged;

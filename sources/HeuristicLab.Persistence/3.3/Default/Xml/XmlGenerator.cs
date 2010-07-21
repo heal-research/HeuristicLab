@@ -19,17 +19,17 @@
  */
 #endregion
 
-using System.Collections.Generic;
 using System;
-using System.Text;
-using System.Linq;
-using HeuristicLab.Persistence.Interfaces;
-using HeuristicLab.Persistence.Core;
+using System.Collections.Generic;
 using System.IO;
-using ICSharpCode.SharpZipLib.Zip;
-using HeuristicLab.Tracing;
-using HeuristicLab.Persistence.Core.Tokens;
 using System.IO.Compression;
+using System.Linq;
+using System.Text;
+using HeuristicLab.Persistence.Core;
+using HeuristicLab.Persistence.Core.Tokens;
+using HeuristicLab.Persistence.Interfaces;
+using HeuristicLab.Tracing;
+using ICSharpCode.SharpZipLib.Zip;
 
 namespace HeuristicLab.Persistence.Default.Xml {
 
@@ -256,7 +256,8 @@ namespace HeuristicLab.Persistence.Default.Xml {
           {"id", lastTypeToken.Id.ToString()},
           {"typeName", lastTypeToken.TypeName },
           {"serializer", lastTypeToken.Serializer }});
-      } finally {
+      }
+      finally {
         lastTypeToken = null;
       }
     }
@@ -366,7 +367,8 @@ namespace HeuristicLab.Persistence.Default.Xml {
           (DateTime.Now - start).TotalSeconds, compression));
         File.Copy(tempfile, filename, true);
         File.Delete(tempfile);
-      } catch (Exception) {
+      }
+      catch (Exception) {
         Logger.Warn("Exception caught, no data has been written.");
         throw;
       }
@@ -412,9 +414,11 @@ namespace HeuristicLab.Persistence.Default.Xml {
           }
           writer.Flush();
         }
-      } catch (PersistenceException) {
+      }
+      catch (PersistenceException) {
         throw;
-      } catch (Exception e) {
+      }
+      catch (Exception e) {
         throw new PersistenceException("Unexpected exception during Serialization.", e);
       }
     }

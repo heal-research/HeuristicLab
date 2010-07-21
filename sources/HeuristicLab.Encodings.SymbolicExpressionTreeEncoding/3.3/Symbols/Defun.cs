@@ -19,9 +19,8 @@
  */
 #endregion
 
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
   /// <summary>
   /// Symbol for function defining branches

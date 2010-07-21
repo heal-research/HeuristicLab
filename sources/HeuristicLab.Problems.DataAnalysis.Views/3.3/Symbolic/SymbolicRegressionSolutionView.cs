@@ -20,12 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
 using HeuristicLab.Problems.DataAnalysis.Regression.Symbolic;
@@ -39,13 +33,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic {
     }
 
     protected new SymbolicRegressionSolution Content {
-      get { return  (SymbolicRegressionSolution)base.Content; }
-      set { base.Content = value;}
+      get { return (SymbolicRegressionSolution)base.Content; }
+      set { base.Content = value; }
     }
 
     private void btn_SimplifyModel_Click(object sender, EventArgs e) {
       InteractiveSymbolicRegressionSolutionSimplifierView view = new InteractiveSymbolicRegressionSolutionSimplifierView();
-      view.Content = (SymbolicRegressionSolution) this.Content.Clone();
+      view.Content = (SymbolicRegressionSolution)this.Content.Clone();
       view.Show();
     }
   }

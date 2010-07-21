@@ -20,9 +20,7 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -75,7 +73,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
         this.Changed(this, EventArgs.Empty);
     }
 
-    public override  IDeepCloneable Clone(Cloner cloner) {
+    public override IDeepCloneable Clone(Cloner cloner) {
       ConnectionInfo clone = (ConnectionInfo)base.Clone(cloner);
       clone.from = (IShapeInfo)cloner.Clone(this.from);
       clone.connectorFrom = this.ConnectorFrom;

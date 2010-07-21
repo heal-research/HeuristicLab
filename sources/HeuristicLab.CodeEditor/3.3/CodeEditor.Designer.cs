@@ -1,5 +1,4 @@
-﻿using System;
-namespace HeuristicLab.CodeEditor {
+﻿namespace HeuristicLab.CodeEditor {
   public partial class CodeEditor : System.Windows.Forms.UserControl {
     /// <summary>
     /// Designer variable used to keep track of non-visual components.

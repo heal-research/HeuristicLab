@@ -21,12 +21,11 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using HeuristicLab.Persistence.Core;
-using HeuristicLab.Persistence.Interfaces;
-using System.Collections.Generic;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.IO;
+using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Default.CompositeSerializers {
 
@@ -45,7 +44,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
     }
 
     public string JustifyRejection(Type type) {
-        return "not Stack or generic Stack<>";
+      return "not Stack or generic Stack<>";
     }
 
     public IEnumerable<Tag> CreateMetaInfo(object o) {
@@ -72,7 +71,8 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
       try {
         foreach (var tag in tags)
           addMethod.Invoke(instance, new[] { tag.Value });
-      } catch (Exception e) {
+      }
+      catch (Exception e) {
         throw new PersistenceException("Exception caught while trying to populate enumerable.", e);
       }
     }

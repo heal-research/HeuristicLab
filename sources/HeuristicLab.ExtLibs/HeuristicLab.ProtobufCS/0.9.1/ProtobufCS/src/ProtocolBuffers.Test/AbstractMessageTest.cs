@@ -35,8 +35,8 @@
 using System;
 using System.Collections.Generic;
 using Google.ProtocolBuffers.Descriptors;
-using NUnit.Framework;
 using Google.ProtocolBuffers.TestProtos;
+using NUnit.Framework;
 
 namespace Google.ProtocolBuffers {
   [TestFixture]
@@ -45,13 +45,13 @@ namespace Google.ProtocolBuffers {
     [Test]
     public void Clear() {
       AbstractMessageWrapper message = new AbstractMessageWrapper.Builder(TestAllTypes.CreateBuilder(TestUtil.GetAllSet())).Clear().Build();
-      TestUtil.AssertClear((TestAllTypes) message.WrappedMessage);
+      TestUtil.AssertClear((TestAllTypes)message.WrappedMessage);
     }
 
     [Test]
     public void Copy() {
       AbstractMessageWrapper message = new AbstractMessageWrapper.Builder(TestAllTypes.CreateBuilder()).MergeFrom(TestUtil.GetAllSet()).Build();
-      TestUtil.AssertAllFieldsSet((TestAllTypes) message.WrappedMessage);
+      TestUtil.AssertAllFieldsSet((TestAllTypes)message.WrappedMessage);
     }
 
     [Test]
@@ -72,8 +72,8 @@ namespace Google.ProtocolBuffers {
     [Test]
     public void Parsing() {
       IBuilder builder = new AbstractMessageWrapper.Builder(TestAllTypes.CreateBuilder());
-      AbstractMessageWrapper message = (AbstractMessageWrapper) builder.WeakMergeFrom(TestUtil.GetAllSet().ToByteString()).WeakBuild();
-      TestUtil.AssertAllFieldsSet((TestAllTypes) message.WrappedMessage);
+      AbstractMessageWrapper message = (AbstractMessageWrapper)builder.WeakMergeFrom(TestUtil.GetAllSet().ToByteString()).WeakBuild();
+      TestUtil.AssertAllFieldsSet((TestAllTypes)message.WrappedMessage);
     }
 
     [Test]
@@ -166,7 +166,7 @@ namespace Google.ProtocolBuffers {
 
     [Test]
     public void MergeFrom() {
-      AbstractMessageWrapper result = (AbstractMessageWrapper) 
+      AbstractMessageWrapper result = (AbstractMessageWrapper)
         new AbstractMessageWrapper.Builder(TestAllTypes.CreateBuilder(MergeDest))
             .MergeFrom(MergeSource)
             .Build();
@@ -176,7 +176,7 @@ namespace Google.ProtocolBuffers {
 
     // -----------------------------------------------------------------
     // Tests for equals and hashCode
-    
+
     [Test]
     public void EqualsAndHashCode() {
       TestAllTypes a = TestUtil.GetAllSet();
@@ -186,14 +186,14 @@ namespace Google.ProtocolBuffers {
       TestAllExtensions e = TestUtil.GetAllExtensionsSet();
       TestAllExtensions f = TestAllExtensions.CreateBuilder(e)
           .AddExtension(UnitTestProtoFile.RepeatedInt32Extension, 999).Build();
-        
+
       CheckEqualsIsConsistent(a);
       CheckEqualsIsConsistent(b);
       CheckEqualsIsConsistent(c);
       CheckEqualsIsConsistent(d);
       CheckEqualsIsConsistent(e);
       CheckEqualsIsConsistent(f);
-      
+
       CheckNotEqual(a, b);
       CheckNotEqual(a, c);
       CheckNotEqual(a, d);
@@ -225,14 +225,14 @@ namespace Google.ProtocolBuffers {
       TestEmptyMessage eUnknownFields2 = TestEmptyMessage.ParseFrom(e.ToByteArray());
       CheckEqualsIsConsistent(eUnknownFields, eUnknownFields2);
     }
-    
+
     /// <summary>
     /// Asserts that the given protos are equal and have the same hash code.
     /// </summary>
     private static void CheckEqualsIsConsistent(IMessage message) {
       // Object should be equal to itself.
       Assert.AreEqual(message, message);
-      
+
       // Object should be equal to a dynamic copy of itself.
       DynamicMessage dynamic = DynamicMessage.CreateBuilder(message).Build();
       CheckEqualsIsConsistent(message, dynamic);
@@ -297,7 +297,7 @@ namespace Google.ProtocolBuffers {
       public override bool HasField(FieldDescriptor field) {
         return wrappedMessage.HasField(field);
       }
-    
+
       public override object this[FieldDescriptor field] {
         get { return wrappedMessage[field]; }
       }
@@ -309,7 +309,7 @@ namespace Google.ProtocolBuffers {
       public override int GetRepeatedFieldCount(FieldDescriptor field) {
         return wrappedMessage.GetRepeatedFieldCount(field);
       }
-      
+
       public override UnknownFieldSet UnknownFields {
         get { return wrappedMessage.UnknownFields; }
       }
@@ -321,7 +321,7 @@ namespace Google.ProtocolBuffers {
       public override Builder ToBuilder() {
         return new Builder(wrappedMessage.WeakToBuilder());
       }
-      
+
       internal class Builder : AbstractBuilder<AbstractMessageWrapper, Builder> {
         private readonly IBuilder wrappedBuilder;
 

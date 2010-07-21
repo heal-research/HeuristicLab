@@ -26,7 +26,6 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
-using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Optimization.Views {
@@ -183,7 +182,7 @@ namespace HeuristicLab.Optimization.Views {
             if (error != null) throw error;
             IProblem problem = content as IProblem;
             if (problem == null)
-              Invoke(new Action(() => 
+              Invoke(new Action(() =>
                 MessageBox.Show(this, "The selected file does not contain a problem.", "Invalid File", MessageBoxButtons.OK, MessageBoxIcon.Error)));
             else if (!Content.ProblemType.IsInstanceOfType(problem))
               Invoke(new Action(() =>

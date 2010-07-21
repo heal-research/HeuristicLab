@@ -19,15 +19,11 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Problems.VehicleRouting.Encodings;
 using HeuristicLab.Core;
+using HeuristicLab.Problems.VehicleRouting.Encodings;
 
 namespace HeuristicLab.Problems.VehicleRouting {
-  public interface IVRPEncoding: IItem {
+  public interface IVRPEncoding : IItem {
     ItemList<Tour> Tours {
       get;
     }

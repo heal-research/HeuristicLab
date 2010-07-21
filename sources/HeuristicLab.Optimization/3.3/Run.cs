@@ -21,10 +21,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Drawing;
 
 namespace HeuristicLab.Optimization {
   /// <summary>

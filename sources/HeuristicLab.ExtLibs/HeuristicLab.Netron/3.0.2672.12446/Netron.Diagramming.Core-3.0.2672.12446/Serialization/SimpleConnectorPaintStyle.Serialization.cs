@@ -1,54 +1,45 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-
-using System.Drawing;
-using System.ComponentModel;
-using System.Runtime.Serialization;
-using System.Xml.Serialization;
 using System.Diagnostics;
+using System.Drawing;
+using System.Runtime.Serialization;
 using System.Xml.Schema;
-using System.Drawing.Drawing2D;
+using System.Xml.Serialization;
 
-namespace Netron.Diagramming.Core
-{
+namespace Netron.Diagramming.Core {
+  /// <summary>
+  /// Complementary partial class related to (de)serialization of a
+  /// SolidPaintStyle.
+  /// </summary>
+  [Serializable]
+  public partial class SimpleConnectorPaintStyle :
+     ISerializable,
+     IXmlSerializable,
+     IDeserializationCallback {
+    #region Deserialization constructor
     /// <summary>
-    /// Complementary partial class related to (de)serialization of a
-    /// SolidPaintStyle.
+    /// Deserialization constructor
     /// </summary>
-    [Serializable]
-    public partial class SimpleConnectorPaintStyle :
-       ISerializable,
-       IXmlSerializable,
-       IDeserializationCallback
-    {
-        #region Deserialization constructor
-        /// <summary>
-        /// Deserialization constructor
-        /// </summary>
-        /// <param name="info">The info.</param>
-        /// <param name="context">The context.</param>
-        protected SimpleConnectorPaintStyle(
-            SerializationInfo info, 
-            StreamingContext context)
-        {
+    /// <param name="info">The info.</param>
+    /// <param name="context">The context.</param>
+    protected SimpleConnectorPaintStyle(
+        SerializationInfo info,
+        StreamingContext context) {
 
-            if (Tracing.BinaryDeserializationSwitch.Enabled)
-            {
-                Trace.WriteLine(
-                    "Deserializing the fields of " +
-                    "'SimpleConnectorPaintStyle'.");
-            }
+      if (Tracing.BinaryDeserializationSwitch.Enabled) {
+        Trace.WriteLine(
+            "Deserializing the fields of " +
+            "'SimpleConnectorPaintStyle'.");
+      }
 
-            double version = 
-                info.GetDouble("SimpleConnectorPaintStyleVersion");
+      double version =
+          info.GetDouble("SimpleConnectorPaintStyleVersion");
 
-            mSolidColor = (Color)info.GetValue("SolidColor", typeof(Color));
-        }
-        #endregion
+      mSolidColor = (Color)info.GetValue("SolidColor", typeof(Color));
+    }
+    #endregion
 
-        #region Serialization events
-        /*
+    #region Serialization events
+    /*
         [OnSerializing]
         void OnSerializing(StreamingContext context)
         {
@@ -60,10 +51,10 @@ namespace Netron.Diagramming.Core
             Trace.WriteLine("...serialization of 'SolidPaintStyle' finished");
         }
         */
-        #endregion
+    #endregion
 
-        #region Deserialization events
-        /*
+    #region Deserialization events
+    /*
         [OnDeserializing]
         void OnDeserializing(StreamingContext context)
         {
@@ -77,74 +68,68 @@ namespace Netron.Diagramming.Core
              Trace.Unindent();
         }
        */
-        #endregion
+    #endregion
 
-        #region Serialization
-        /// <summary>
-        /// Populates a <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> with the data needed to serialize the target object.
-        /// </summary>
-        /// <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> to populate with data.</param>
-        /// <param name="context">The destination (see <see cref="T:System.Runtime.Serialization.StreamingContext"></see>) for this serialization.</param>
-        /// <exception cref="T:System.Security.SecurityException">The caller does not have the required permission. </exception>
-        public void GetObjectData(
-            SerializationInfo info, 
-            StreamingContext context)
-        {
-            if (Tracing.BinarySerializationSwitch.Enabled)
-                Trace.WriteLine("Serializing the fields of " +
-                    "'SimpleConnectorPaintStyle'.");
+    #region Serialization
+    /// <summary>
+    /// Populates a <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> with the data needed to serialize the target object.
+    /// </summary>
+    /// <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> to populate with data.</param>
+    /// <param name="context">The destination (see <see cref="T:System.Runtime.Serialization.StreamingContext"></see>) for this serialization.</param>
+    /// <exception cref="T:System.Security.SecurityException">The caller does not have the required permission. </exception>
+    public void GetObjectData(
+        SerializationInfo info,
+        StreamingContext context) {
+      if (Tracing.BinarySerializationSwitch.Enabled)
+        Trace.WriteLine("Serializing the fields of " +
+            "'SimpleConnectorPaintStyle'.");
 
-            info.AddValue(
-                "SimpleConnectorPaintStyleVersion",
-                simpleConnectorPaintStyleVersion);
+      info.AddValue(
+          "SimpleConnectorPaintStyleVersion",
+          simpleConnectorPaintStyleVersion);
 
-            info.AddValue("SolidColor", this.mSolidColor, typeof(Color));
-        }
-        #endregion
-
-        #region Xml serialization
-        /// <summary>
-        /// This property is reserved, apply the <see cref="T:System.Xml.Serialization.XmlSchemaProviderAttribute"></see> to the class instead.
-        /// </summary>
-        /// <returns>
-        /// An <see cref="T:System.Xml.Schema.XmlSchema"></see> that describes the XML representation of the object that is produced by the <see cref="M:System.Xml.Serialization.IXmlSerializable.WriteXml(System.Xml.XmlWriter)"></see> method and consumed by the <see cref="M:System.Xml.Serialization.IXmlSerializable.ReadXml(System.Xml.XmlReader)"></see> method.
-        /// </returns>
-        public XmlSchema GetSchema()
-        {
-            throw new NotImplementedException("The method or operation is not implemented.");
-        }
-
-        /// <summary>
-        /// Generates an object from its XML representation.
-        /// </summary>
-        /// <param name="reader">The <see cref="T:System.Xml.XmlReader"></see> stream from which the object is deserialized.</param>
-        public void ReadXml(System.Xml.XmlReader reader)
-        {
-            throw new NotImplementedException("The method or operation is not implemented.");
-        }
-
-        /// <summary>
-        /// Converts an object into its XML representation.
-        /// </summary>
-        /// <param name="writer">The <see cref="T:System.Xml.XmlWriter"></see> stream to which the object is serialized.</param>
-        public void WriteXml(System.Xml.XmlWriter writer)
-        {
-            throw new NotImplementedException("The method or operation is not implemented.");
-        }
-        #endregion
-
-        /// <summary>
-        /// Runs when the entire object graph has been deserialized.
-        /// </summary>
-        /// <param name="sender">The object that initiated the callback. The functionality for this parameter is not currently implemented.</param>
-        public void OnDeserialization(object sender)
-        {
-            if (Tracing.BinaryDeserializationSwitch.Enabled)
-            {
-                Trace.WriteLine(
-                    "IDeserializationCallback of " +
-                    "'SimpleConnectorPaintStyle' called.");
-            }
-        }
+      info.AddValue("SolidColor", this.mSolidColor, typeof(Color));
     }
+    #endregion
+
+    #region Xml serialization
+    /// <summary>
+    /// This property is reserved, apply the <see cref="T:System.Xml.Serialization.XmlSchemaProviderAttribute"></see> to the class instead.
+    /// </summary>
+    /// <returns>
+    /// An <see cref="T:System.Xml.Schema.XmlSchema"></see> that describes the XML representation of the object that is produced by the <see cref="M:System.Xml.Serialization.IXmlSerializable.WriteXml(System.Xml.XmlWriter)"></see> method and consumed by the <see cref="M:System.Xml.Serialization.IXmlSerializable.ReadXml(System.Xml.XmlReader)"></see> method.
+    /// </returns>
+    public XmlSchema GetSchema() {
+      throw new NotImplementedException("The method or operation is not implemented.");
+    }
+
+    /// <summary>
+    /// Generates an object from its XML representation.
+    /// </summary>
+    /// <param name="reader">The <see cref="T:System.Xml.XmlReader"></see> stream from which the object is deserialized.</param>
+    public void ReadXml(System.Xml.XmlReader reader) {
+      throw new NotImplementedException("The method or operation is not implemented.");
+    }
+
+    /// <summary>
+    /// Converts an object into its XML representation.
+    /// </summary>
+    /// <param name="writer">The <see cref="T:System.Xml.XmlWriter"></see> stream to which the object is serialized.</param>
+    public void WriteXml(System.Xml.XmlWriter writer) {
+      throw new NotImplementedException("The method or operation is not implemented.");
+    }
+    #endregion
+
+    /// <summary>
+    /// Runs when the entire object graph has been deserialized.
+    /// </summary>
+    /// <param name="sender">The object that initiated the callback. The functionality for this parameter is not currently implemented.</param>
+    public void OnDeserialization(object sender) {
+      if (Tracing.BinaryDeserializationSwitch.Enabled) {
+        Trace.WriteLine(
+            "IDeserializationCallback of " +
+            "'SimpleConnectorPaintStyle' called.");
+      }
+    }
+  }
 }

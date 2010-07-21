@@ -20,12 +20,11 @@
 #endregion
 
 using System;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
-namespace HeuristicLab.Operators.Views { 
+namespace HeuristicLab.Operators.Views {
   /// <summary>
   /// The base class for visual representations of items.
   /// </summary>

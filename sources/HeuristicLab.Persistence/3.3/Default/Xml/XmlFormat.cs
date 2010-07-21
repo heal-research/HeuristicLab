@@ -19,9 +19,8 @@
  */
 #endregion
 
-using HeuristicLab.Persistence.Interfaces;
-using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Default.Xml {
 

@@ -19,8 +19,8 @@
  */
 #endregion
 
-using HeuristicLab.Collections;
 using System.Collections.Generic;
+using HeuristicLab.Collections;
 
 namespace HeuristicLab.Core {
   public interface ICheckedItemCollection<T> : IItemCollection<T> where T : class, IItem {

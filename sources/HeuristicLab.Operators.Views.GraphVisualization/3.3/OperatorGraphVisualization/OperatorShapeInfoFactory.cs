@@ -19,14 +19,10 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Core;
-using Netron.Diagramming.Core;
 using System.Drawing;
-using System.Drawing.Drawing2D;
+using System.Linq;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
   internal static class OperatorShapeInfoFactory {

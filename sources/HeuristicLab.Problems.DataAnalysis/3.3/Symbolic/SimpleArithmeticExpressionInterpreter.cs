@@ -20,15 +20,13 @@
 #endregion
 
 using System;
-using System.Linq;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Common;
-using HeuristicLab.Core;
 using System.Collections.Generic;
+using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
-using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Compiler;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]

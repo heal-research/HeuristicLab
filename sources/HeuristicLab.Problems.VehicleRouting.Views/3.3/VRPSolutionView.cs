@@ -24,7 +24,6 @@ using System.Drawing;
 using System.Windows.Forms;
 using HeuristicLab.Core.Views;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.MainForm;
 using HeuristicLab.Problems.VehicleRouting.Encodings;
 
@@ -171,7 +170,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
                   graphics.DrawPolygon(pens[((currentTour >= pens.Length) ? (pens.Length - 1) : (currentTour))], tourPoints);
                   currentTour++;
                 }
-              }               
+              }
             }
           }
 

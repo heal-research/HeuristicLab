@@ -21,14 +21,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Security.Policy;
-using System.Reflection;
-using System.Diagnostics;
-using System.Security.Permissions;
-using System.Security;
-using System.Linq;
-using HeuristicLab.PluginInfrastructure.Manager;
 using System.IO;
+using System.Linq;
+using System.Reflection;
+using HeuristicLab.PluginInfrastructure.Manager;
 
 namespace HeuristicLab.PluginInfrastructure {
 
@@ -251,7 +247,8 @@ namespace HeuristicLab.PluginInfrastructure {
         try {
           if (type.IsAssignableFrom(other.GetGenericTypeDefinition().MakeGenericType(type.GetGenericArguments())))
             return true;
-        } catch (Exception) { }
+        }
+        catch (Exception) { }
       }
       return false;
     }

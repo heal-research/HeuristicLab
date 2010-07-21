@@ -21,12 +21,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
-using System.Diagnostics;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// <summary>
@@ -307,7 +307,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return a;
       } else if (IsConstant(b) && IsAddition(a)) {
         return a.SubTrees.Select(x => MakeMultiplication(x, b)).Aggregate((c, d) => MakeAddition(c, d));
-      } else if(IsDivision(a) && IsDivision(b)) {
+      } else if (IsDivision(a) && IsDivision(b)) {
         return MakeDivision(MakeMultiplication(a.SubTrees[0], b.SubTrees[0]), MakeMultiplication(a.SubTrees[1], b.SubTrees[1]));
       } else if (IsDivision(a)) {
         Trace.Assert(a.SubTrees.Count == 2);

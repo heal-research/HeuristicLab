@@ -19,14 +19,9 @@
  */
 #endregion
 
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using System;
-using System.Collections.Generic;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Random;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [StorableClass]
   public sealed class LaggedVariableTreeNode : VariableTreeNode {

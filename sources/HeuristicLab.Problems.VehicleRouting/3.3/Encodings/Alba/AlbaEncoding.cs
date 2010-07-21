@@ -19,20 +19,16 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaEncoding", "Represents an alba encoding of VRP solutions.")]
   [StorableClass]
-  class AlbaEncoding: Permutation, IVRPEncoding {
+  class AlbaEncoding : Permutation, IVRPEncoding {
     #region IVRPEncoding Members
     [Storable]
     private int cities;
@@ -45,7 +41,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       return clone;
     }
 
-    public AlbaEncoding(Permutation permutation, int cities): base(PermutationTypes.RelativeDirected) {
+    public AlbaEncoding(Permutation permutation, int cities)
+      : base(PermutationTypes.RelativeDirected) {
       this.array = new int[permutation.Length];
       for (int i = 0; i < array.Length; i++)
         this.array[i] = permutation[i];
@@ -75,7 +72,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
             }
           } else {
             tour.Add(new IntValue(this.array[i] + 1));
-          }       
+          }
         }
 
         if (tour.Count > 1) {
@@ -94,36 +91,36 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     #endregion
 
     public static AlbaEncoding ConvertFrom(IVRPEncoding encoding) {
-        ItemList<Tour> tours = encoding.Tours;
+      ItemList<Tour> tours = encoding.Tours;
 
-        int cities = 0;
-        foreach (Tour tour in tours) {
-          cities += tour.Count;
+      int cities = 0;
+      foreach (Tour tour in tours) {
+        cities += tour.Count;
+      }
+      int[] array = new int[cities + tours.Count - 2];
+      int delimiter = cities;
+      int arrayIndex = 0;
+
+      foreach (Tour tour in tours) {
+        foreach (IntValue city in tour) {
+          array[arrayIndex] = city.Value;
+
+          arrayIndex++;
         }
-        int[] array = new int[cities + tours.Count - 2];
-        int delimiter = cities;
-        int arrayIndex = 0;
 
-        foreach (Tour tour in tours) {
-          foreach(IntValue city in tour) {
-            array[arrayIndex] = city.Value;
-
-            arrayIndex++;
-          }
-
-          if (arrayIndex != array.Length) {
-            array[arrayIndex] = delimiter;
-            delimiter++;
-            arrayIndex++;
-          }
+        if (arrayIndex != array.Length) {
+          array[arrayIndex] = delimiter;
+          delimiter++;
+          arrayIndex++;
         }
+      }
 
       AlbaEncoding solution = new AlbaEncoding(new Permutation(PermutationTypes.RelativeUndirected), cities);
 
       return solution;
     }
 
-    
+
 
   }
 }

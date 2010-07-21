@@ -19,17 +19,15 @@
  */
 #endregion
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using HeuristicLab.Random;
 using System.Collections.Generic;
-using System.Text;
 using System.Diagnostics;
+using System.Linq;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
-using System.Linq;
+using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
+using HeuristicLab.Random;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace HeuristicLab.Problems.DataAnalysis.Tests {
   internal class Util {
 

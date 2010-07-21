@@ -19,10 +19,9 @@
  */
 #endregion
 
-using HeuristicLab.Common;
 using HeuristicLab.Core;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using HeuristicLab.Encodings.PermutationEncoding;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
   /// <summary>
@@ -88,7 +87,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
       TestRandom random = new TestRandom();
       PositionBasedCrossover_Accessor target = new PositionBasedCrossover_Accessor(
         new PrivateObject(typeof(PositionBasedCrossover)));
-     
+
       // perform a test with more than two parents
       random.Reset();
       bool exceptionFired = false;
@@ -130,7 +129,8 @@ namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
       bool exceptionFired = false;
       try {
         PositionBasedCrossover.Apply(random, new Permutation(PermutationTypes.RelativeUndirected, 8), new Permutation(PermutationTypes.RelativeUndirected, 6));
-      } catch (System.ArgumentException) {
+      }
+      catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);

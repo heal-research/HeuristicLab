@@ -26,21 +26,19 @@
 // OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Windows.Forms;
-using System.IO;
-using System.Threading;
-using HeuristicLab.Common.Resources;
-
-using NRefactory = ICSharpCode.NRefactory;
-using Dom = ICSharpCode.SharpDevelop.Dom;
-using ICSharpCode.TextEditor.Document;
 using System.CodeDom.Compiler;
-using ICSharpCode.TextEditor;
-using System.Reflection;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.Reflection;
+using System.Threading;
+using System.Windows.Forms;
+using HeuristicLab.Common.Resources;
+using ICSharpCode.TextEditor;
+using ICSharpCode.TextEditor.Document;
+using Dom = ICSharpCode.SharpDevelop.Dom;
+using NRefactory = ICSharpCode.NRefactory;
 
 namespace HeuristicLab.CodeEditor {
 
@@ -165,11 +163,16 @@ namespace HeuristicLab.CodeEditor {
         File.Delete(Path.Combine(persistencePath, "test.tmp"));
         // if we made it this far, enable on-disk parsing cache
         projectContentRegistry.ActivatePersistence(persistencePath);
-      } catch (NotSupportedException) {
-      } catch (IOException) {
-      } catch (System.Security.SecurityException) {
-      } catch (UnauthorizedAccessException) {
-      } catch (ArgumentException) {
+      }
+      catch (NotSupportedException) {
+      }
+      catch (IOException) {
+      }
+      catch (System.Security.SecurityException) {
+      }
+      catch (UnauthorizedAccessException) {
+      }
+      catch (ArgumentException) {
       }
       projectContent = new Dom.DefaultProjectContent();
       projectContent.Language = Dom.LanguageProperties.CSharp;
@@ -346,7 +349,8 @@ namespace HeuristicLab.CodeEditor {
         projectContent.UpdateCompilationUnit(lastCompilationUnit, newCompilationUnit, DummyFileName);
         lastCompilationUnit = newCompilationUnit;
         parseInformation.SetCompilationUnit(newCompilationUnit);
-      } catch { }
+      }
+      catch { }
     }
 
     Dom.ICompilationUnit ConvertCompilationUnit(NRefactory.Ast.CompilationUnit cu) {

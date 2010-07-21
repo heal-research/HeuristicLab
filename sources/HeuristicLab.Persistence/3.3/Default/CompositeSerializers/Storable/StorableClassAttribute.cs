@@ -20,11 +20,8 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
 
-namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {  
+namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
 
   /// <summary>
   /// Mark a class to be considered by the <c>StorableSerializer</c>.

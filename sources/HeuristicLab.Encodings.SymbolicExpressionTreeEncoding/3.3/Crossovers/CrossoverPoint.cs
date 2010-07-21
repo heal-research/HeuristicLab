@@ -19,15 +19,6 @@
  */
 #endregion
 
-using System.Collections.Generic;
-using HeuristicLab.Common;
-using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
-using System.Linq;
-using System;
-using HeuristicLab.Parameters;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Crossovers {
   public class CrossoverPoint {

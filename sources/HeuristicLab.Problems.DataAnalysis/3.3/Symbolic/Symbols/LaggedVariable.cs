@@ -19,17 +19,10 @@
  */
 #endregion
 
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Operators;
-using HeuristicLab.Random;
-using HeuristicLab.Data;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Parameters;
-using System.Collections.Generic;
-using System;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [StorableClass]
   [Item("LaggedVariable", "Represents a variable value with a time offset.")]

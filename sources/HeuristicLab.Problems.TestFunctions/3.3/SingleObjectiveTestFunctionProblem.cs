@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
 using HeuristicLab.Common;
@@ -382,7 +381,7 @@ namespace HeuristicLab.Problems.TestFunctions {
       foreach (IRealVectorPSOEncoder op in Operators.OfType<IRealVectorPSOEncoder>()) {
         ((ILookupParameter)op.OriginalRealVectorParameter).ActualName = SolutionCreator.RealVectorParameter.ActualName;
         op.BoundsParameter.Value = (DoubleMatrix)BoundsParameter.Value.Clone();
-        op.BoundsParameter.ActualName = "ParticleBounds"; 
+        op.BoundsParameter.ActualName = "ParticleBounds";
       }
     }
     private void UpdateStrategyVectorBounds() {

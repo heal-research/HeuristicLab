@@ -20,22 +20,16 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Random;
-using HeuristicLab.Analysis;
 using HeuristicLab.Problems.DataAnalysis;
+using HeuristicLab.Problems.DataAnalysis.Evaluators;
 using HeuristicLab.Problems.DataAnalysis.Regression.LinearRegression;
 using HeuristicLab.Problems.DataAnalysis.Regression.Symbolic;
-using HeuristicLab.Problems.DataAnalysis.Evaluators;
 using HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 

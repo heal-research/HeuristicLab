@@ -19,14 +19,11 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Drawing;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
-  public interface IOperatorShapeInfo : IShapeInfo{
+  public interface IOperatorShapeInfo : IShapeInfo {
     bool Collapsed { get; set; }
     string Title { get; set; }
     Color Color { get; set; }

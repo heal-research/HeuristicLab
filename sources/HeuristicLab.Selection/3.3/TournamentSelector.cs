@@ -21,7 +21,6 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
@@ -39,7 +38,8 @@ namespace HeuristicLab.Selection {
       get { return (ValueLookupParameter<IntValue>)Parameters["GroupSize"]; }
     }
 
-    public TournamentSelector() : base() {
+    public TournamentSelector()
+      : base() {
       Parameters.Add(new ValueLookupParameter<IntValue>("GroupSize", "The size of the tournament group.", new IntValue(2)));
     }
 

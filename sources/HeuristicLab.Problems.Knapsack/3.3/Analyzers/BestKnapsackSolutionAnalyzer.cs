@@ -19,15 +19,12 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using HeuristicLab.Optimization;
-using HeuristicLab.Data;
 using HeuristicLab.Core;
-using HeuristicLab.Operators;
+using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
+using HeuristicLab.Operators;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -92,7 +89,7 @@ namespace HeuristicLab.Problems.Knapsack {
       DoubleValue bestKnownQuality = BestKnownQualityParameter.ActualValue;
 
       int i = -1;
-      if (!max) 
+      if (!max)
         i = qualities.Select((x, index) => new { index, x.Value }).OrderBy(x => x.Value).First().index;
       else i = qualities.Select((x, index) => new { index, x.Value }).OrderByDescending(x => x.Value).First().index;
 
@@ -109,7 +106,7 @@ namespace HeuristicLab.Problems.Knapsack {
           KnapsackCapacityParameter.ActualValue, WeightsParameter.ActualValue, ValuesParameter.ActualValue);
         BestSolutionParameter.ActualValue = solution;
         results.Add(new Result("Best Knapsack Solution", solution));
-      }  else {
+      } else {
         if (max && qualities[i].Value > solution.Quality.Value ||
           !max && qualities[i].Value < solution.Quality.Value) {
           solution.BinaryVector = (BinaryVector)binaryVectors[i].Clone();

@@ -21,14 +21,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.PluginInfrastructure.Manager;
 using System.IO;
-using System.ComponentModel;
-using System.Reflection;
-using ICSharpCode.SharpZipLib.Zip;
+using System.Linq;
 using System.ServiceModel;
+using HeuristicLab.PluginInfrastructure.Manager;
+using ICSharpCode.SharpZipLib.Zip;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
   internal class InstallationManager {

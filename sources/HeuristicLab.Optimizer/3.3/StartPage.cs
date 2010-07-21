@@ -20,16 +20,15 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Windows.Forms;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.MainForm;
 using HeuristicLab.Persistence.Default.Xml;
-using System.Threading;
 
 namespace HeuristicLab.Optimizer {
   [View("Start Page")]

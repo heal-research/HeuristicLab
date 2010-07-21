@@ -19,10 +19,9 @@
  */
 #endregion
 
-using HeuristicLab.Common;
 using HeuristicLab.Core;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using HeuristicLab.Encodings.PermutationEncoding;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
   /// <summary>

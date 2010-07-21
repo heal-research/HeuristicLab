@@ -22,10 +22,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using HeuristicLab.Collections;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Collections;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("SolutionMessageBuilder", "Holds and uses a number of converters to translate HeuristicLab objects into appropriate fields of a solution message.")]

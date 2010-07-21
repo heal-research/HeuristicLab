@@ -19,14 +19,13 @@
  */
 #endregion
 
-using HeuristicLab.Common;
+using System;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Operators;
-using System;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.Knapsack {
   /// <summary>
@@ -50,7 +49,7 @@ namespace HeuristicLab.Problems.Knapsack {
     public ILookupParameter<DoubleValue> AppliedPenaltyParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["AppliedPenalty"]; }
     }
-    
+
     public ILookupParameter<BinaryVector> BinaryVectorParameter {
       get { return (ILookupParameter<BinaryVector>)Parameters["BinaryVector"]; }
     }
@@ -109,9 +108,9 @@ namespace HeuristicLab.Problems.Knapsack {
 
       if (weight > capacity.Value) {
         appliedPenalty = penalty.Value * (weight - capacity.Value);
-      } 
+      }
 
-      quality =  value - appliedPenalty;
+      quality = value - appliedPenalty;
 
       result.AppliedPenalty = new DoubleValue(appliedPenalty);
       result.SumWeights = new DoubleValue(weight);
@@ -125,9 +124,9 @@ namespace HeuristicLab.Problems.Knapsack {
       BinaryVector v = BinaryVectorParameter.ActualValue;
 
       KnapsackEvaluation evaluation = Apply(BinaryVectorParameter.ActualValue,
-        KnapsackCapacityParameter.ActualValue, 
-        PenaltyParameter.ActualValue, 
-        WeightsParameter.ActualValue, 
+        KnapsackCapacityParameter.ActualValue,
+        PenaltyParameter.ActualValue,
+        WeightsParameter.ActualValue,
         ValuesParameter.ActualValue);
 
       QualityParameter.ActualValue = evaluation.Quality;

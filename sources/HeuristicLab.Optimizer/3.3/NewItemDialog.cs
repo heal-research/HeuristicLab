@@ -23,7 +23,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.PluginInfrastructure;
 
@@ -59,7 +58,7 @@ namespace HeuristicLab.Optimizer {
           foreach (var creatable in category) {
             IItem i = (IItem)Activator.CreateInstance(creatable);
             items.Add(i);
-            ListViewItem item = new ListViewItem(new string[] { i.ItemName, i.ItemVersion.ToString(), i.ItemDescription}, group);
+            ListViewItem item = new ListViewItem(new string[] { i.ItemName, i.ItemVersion.ToString(), i.ItemDescription }, group);
             itemsListView.SmallImageList.Images.Add(i.ItemImage);
             item.ImageIndex = itemsListView.SmallImageList.Images.Count - 1;
             item.Tag = i;

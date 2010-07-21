@@ -20,14 +20,14 @@
 #endregion
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using HeuristicLab.Collections;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
-using System.Windows.Forms;
-using System.Drawing;
 
 namespace HeuristicLab.Analysis.Views {
   /// <summary>

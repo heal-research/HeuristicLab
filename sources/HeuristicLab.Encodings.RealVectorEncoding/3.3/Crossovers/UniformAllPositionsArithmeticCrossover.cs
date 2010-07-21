@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -81,7 +80,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// <param name="parents">The collection of parents (must be of size 2).</param>
     /// <returns>The vector resulting from the crossover.</returns>
     protected override RealVector Cross(IRandom random, ItemArray<RealVector> parents) {
- 	    if (parents.Length != 2) throw new ArgumentException("UniformAllPositionsArithmeticCrossover: There must be exactly two parents.", "parents");
+      if (parents.Length != 2) throw new ArgumentException("UniformAllPositionsArithmeticCrossover: There must be exactly two parents.", "parents");
       if (AlphaParameter.ActualValue == null) throw new InvalidOperationException("UniformAllPositionsArithmeticCrossover: Parameter " + AlphaParameter.ActualName + " could not be found.");
       return Apply(random, parents[0], parents[1], AlphaParameter.ActualValue);
     }

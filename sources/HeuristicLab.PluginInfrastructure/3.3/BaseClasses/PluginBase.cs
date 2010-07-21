@@ -19,12 +19,6 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Reflection;
-using System.Diagnostics;
-using System.Linq;
 
 namespace HeuristicLab.PluginInfrastructure {
   /// <summary>

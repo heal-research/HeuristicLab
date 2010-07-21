@@ -19,14 +19,12 @@
  */
 #endregion
 
-using HeuristicLab.Common;
+using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Collections.Generic;
-using System;
-using System.Linq;
 
 namespace HeuristicLab.Operators {
   /// <summary>

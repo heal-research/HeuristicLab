@@ -19,13 +19,11 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Selection;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Selection {
   [Item("ConditionalSelector", "Selects sub-scopes where a certain boolean variable is true.")]

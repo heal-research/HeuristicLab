@@ -22,13 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using HeuristicLab.PluginInfrastructure.Manager;
-using System.IO;
-using System.ComponentModel;
-using System.Reflection;
-using ICSharpCode.SharpZipLib.Zip;
-using System.ServiceModel;
 using System.Windows.Forms;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
@@ -38,7 +31,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       int headerSize = columnHeader.Width;
       columnHeader.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
       int contentSize = columnHeader.Width;
-      columnHeader.Width = Math.Max(headerSize, contentSize);      
+      columnHeader.Width = Math.Max(headerSize, contentSize);
     }
 
     internal static void ResizeColumns(IEnumerable<ColumnHeader> columnHeaders) {

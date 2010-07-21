@@ -20,14 +20,9 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Data;
-using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   /// <summary>
@@ -38,7 +33,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   /// </remarks>
   [Item("SinglePointCrossover", "Single point crossover for binary vectors. It is implemented based on the NPointCrossover.")]
   [StorableClass]
-  public class SinglePointCrossover: BinaryVectorCrossover {
+  public class SinglePointCrossover : BinaryVectorCrossover {
     /// <summary>
     /// Performs a single point crossover at a randomly chosen position of two 
     /// given parent binary vectors.

@@ -20,9 +20,7 @@
 #endregion
 
 using System;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
@@ -46,7 +44,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public static RealVector Apply(IRandom random, RealVector parent1, RealVector parent2) {
       if (parent1.Length != parent2.Length)
         throw new ArgumentException("LocalCrossover: the two parents are not of the same length");
-      
+
       double factor;
       int length = parent1.Length;
       double[] result = new double[length];

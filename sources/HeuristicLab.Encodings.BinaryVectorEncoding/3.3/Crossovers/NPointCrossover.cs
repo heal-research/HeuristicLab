@@ -21,13 +21,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   /// <summary>
@@ -38,7 +35,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   /// </remarks>
   [Item("NPointCrossover", "N point crossover for binary vectors. It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.")]
   [StorableClass]
-  public class NPointCrossover: BinaryVectorCrossover {
+  public class NPointCrossover : BinaryVectorCrossover {
     /// <summary>
     /// Number of crossover points.
     /// </summary>
@@ -79,7 +76,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
 
       //choose break points
       List<int> breakpointPool = new List<int>();
-           
+
       for (int i = 0; i < length; i++)
         breakpointPool.Add(i);
 
@@ -97,7 +94,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       bool firstParent = true;
 
       while (arrayIndex < length) {
-        if (breakPointIndex < breakpoints.Length && 
+        if (breakPointIndex < breakpoints.Length &&
           arrayIndex == breakpoints[breakPointIndex]) {
           breakPointIndex++;
           firstParent = !firstParent;

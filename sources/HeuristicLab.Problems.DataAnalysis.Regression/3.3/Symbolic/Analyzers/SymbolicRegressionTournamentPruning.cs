@@ -23,14 +23,12 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using System;
-using HeuristicLab.Operators;
-using HeuristicLab.Parameters;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Operators;
+using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
-using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
   public class SymbolicRegressionTournamentPruning : SingleSuccessorOperator, ISymbolicRegressionAnalyzer {

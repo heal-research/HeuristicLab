@@ -22,9 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using HeuristicLab.Core;
-using HeuristicLab.Common;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 

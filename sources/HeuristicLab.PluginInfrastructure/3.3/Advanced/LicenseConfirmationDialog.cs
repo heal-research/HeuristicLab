@@ -19,21 +19,17 @@
  */
 #endregion
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
   internal partial class LicenseConfirmationDialog : Form {
-    public LicenseConfirmationDialog() : base() {
+    public LicenseConfirmationDialog()
+      : base() {
       InitializeComponent();
     }
 
-    public LicenseConfirmationDialog(IPluginDescription plugin) : base() {
+    public LicenseConfirmationDialog(IPluginDescription plugin)
+      : base() {
       InitializeComponent();
       richTextBox.Text = plugin.LicenseText;
       this.Text = plugin.ToString();

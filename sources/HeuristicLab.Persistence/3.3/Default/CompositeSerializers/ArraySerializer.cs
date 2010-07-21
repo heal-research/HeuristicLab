@@ -20,11 +20,10 @@
 #endregion
 
 using System;
-using HeuristicLab.Persistence.Core;
-using HeuristicLab.Persistence.Interfaces;
 using System.Collections.Generic;
+using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Text;
+using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Default.CompositeSerializers {
 
@@ -95,9 +94,11 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
           lowerBounds[i] = (int)e.Current.Value;
         }
         return Array.CreateInstance(t.GetElementType(), lengths, lowerBounds);
-      } catch (InvalidOperationException x) {
+      }
+      catch (InvalidOperationException x) {
         throw new PersistenceException("Insufficient meta information to construct array instance.", x);
-      } catch (InvalidCastException x) {
+      }
+      catch (InvalidCastException x) {
         throw new PersistenceException("Invalid format of array metainfo.", x);
       }
     }
@@ -128,11 +129,14 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
             }
           }
         }
-      } catch (InvalidOperationException x) {
+      }
+      catch (InvalidOperationException x) {
         throw new PersistenceException("Insufficient data to fill array instance", x);
-      } catch (InvalidCastException x) {
+      }
+      catch (InvalidCastException x) {
         throw new PersistenceException("Invalid element data. Cannot fill array", x);
-      } catch (IndexOutOfRangeException x) {
+      }
+      catch (IndexOutOfRangeException x) {
         throw new PersistenceException("Too many elements during array deserialization", x);
       }
     }

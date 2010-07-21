@@ -19,18 +19,14 @@
  */
 #endregion
 
-using System.Collections.Generic;
-using System.Collections;
 using System;
-using System.Linq;
-using HeuristicLab.Persistence.Auxiliary;
-using HeuristicLab.Persistence.Interfaces;
-using HeuristicLab.Persistence.Core.Tokens;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Text;
+using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
-using System.IO;
-using System.Diagnostics;
+using System.Text;
+using HeuristicLab.Persistence.Auxiliary;
+using HeuristicLab.Persistence.Core.Tokens;
+using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Core {
 
@@ -93,7 +89,7 @@ namespace HeuristicLab.Persistence.Core {
         return externalTypeCache;
       }
     }
-    
+
     /// <summary>
     /// Contains a list of files (mostly assemblies) that are
     /// necessary to deserialize the object graph again.    
@@ -206,7 +202,7 @@ namespace HeuristicLab.Persistence.Core {
     private Stack<string> objectGraphTrace = new Stack<string>();
 
     private IEnumerator<ISerializationToken> Serialize(DataMemberAccessor accessor, object obj) {
-      
+
       object value = accessor.Get(obj);
       if (value == null)
         return NullReferenceEnumerator(accessor.Name);
@@ -243,8 +239,9 @@ namespace HeuristicLab.Persistence.Core {
             typeId,
             compositeSerializer.CreateMetaInfo(value),
             emitTypeInfo);
-        throw CreatePersistenceException(type, "Could not determine how to serialize a value.");      
-      } catch (Exception x) {
+        throw CreatePersistenceException(type, "Could not determine how to serialize a value.");
+      }
+      catch (Exception x) {
         if (isTestRun) {
           exceptions.Add(x);
           return new List<ISerializationToken>().GetEnumerator();
@@ -253,7 +250,8 @@ namespace HeuristicLab.Persistence.Core {
         } else {
           throw CreatePersistenceException(type, "Uncaught exception during serialization: " + x.Message);
         }
-      } finally {
+      }
+      finally {
         objectGraphTrace.Pop();
       }
     }

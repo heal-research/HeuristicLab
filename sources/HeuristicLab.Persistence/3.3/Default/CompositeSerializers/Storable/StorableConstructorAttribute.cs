@@ -20,11 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Reflection;
-using HeuristicLab.Persistence.Core;
 
 namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
 
@@ -38,5 +33,5 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
   /// set to <c>true</c> during deserialization.
   /// </summary>
   [AttributeUsage(AttributeTargets.Constructor, Inherited = false, AllowMultiple = false)]
-  public sealed class StorableConstructorAttribute : Attribute {  }
+  public sealed class StorableConstructorAttribute : Attribute { }
 }

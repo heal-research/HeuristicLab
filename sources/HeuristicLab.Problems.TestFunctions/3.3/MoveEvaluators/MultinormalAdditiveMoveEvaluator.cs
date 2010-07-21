@@ -19,14 +19,12 @@
  */
 #endregion
 
-using HeuristicLab.Common;
-using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Problems.TestFunctions.Evaluators;
-using HeuristicLab.Parameters;
-using HeuristicLab.Data;
 using System;
+using HeuristicLab.Core;
+using HeuristicLab.Encodings.RealVectorEncoding;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.TestFunctions.Evaluators;
 
 namespace HeuristicLab.Problems.TestFunctions {
   [Item("MultinormalAdditiveMoveEvaluator", "Class for evaluating an additive move on the multinormal function.")]
@@ -39,14 +37,14 @@ namespace HeuristicLab.Problems.TestFunctions {
     MultinormalEvaluator evaluator = new MultinormalEvaluator();
 
     public MultinormalAdditiveMoveEvaluator() {
-      Parameters.Add(new LookupParameter<ISingleObjectiveTestFunctionProblemEvaluator>("Evaluator", ""));      
+      Parameters.Add(new LookupParameter<ISingleObjectiveTestFunctionProblemEvaluator>("Evaluator", ""));
     }
 
     public override System.Type EvaluatorType {
       get { return typeof(MultinormalEvaluator); }
     }
 
-    protected override double Evaluate(double quality, RealVector point, AdditiveMove move) {      
+    protected override double Evaluate(double quality, RealVector point, AdditiveMove move) {
       RealVectorAdditiveMoveWrapper wrapper = new RealVectorAdditiveMoveWrapper(move, point);
       var eval = EvaluatorParameter.ActualValue as MultinormalEvaluator;
       if (eval != null)

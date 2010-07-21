@@ -20,15 +20,12 @@
 #endregion
 
 using System.Linq;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Problems.VehicleRouting;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   /// <summary>
@@ -121,8 +118,8 @@ namespace HeuristicLab.Problems.VehicleRouting {
       if (solution == null) {
         solution = new VRPSolution(coordinates, best.Clone() as IVRPEncoding, new DoubleValue(qualities[i].Value),
           new DoubleValue(distances[i].Value), new DoubleValue(overloads[i].Value), new DoubleValue(tardinesses[i].Value),
-          new DoubleValue(travelTimes[i].Value), new DoubleValue(vehiclesUtilizations[i].Value), 
-          DistanceMatrixParameter.ActualValue, UseDistanceMatrixParameter.ActualValue, 
+          new DoubleValue(travelTimes[i].Value), new DoubleValue(vehiclesUtilizations[i].Value),
+          DistanceMatrixParameter.ActualValue, UseDistanceMatrixParameter.ActualValue,
           ReadyTimeParameter.ActualValue, DueTimeParameter.ActualValue, ServiceTimeParameter.ActualValue);
         BestSolutionParameter.ActualValue = solution;
         results.Add(new Result("Best VRP Solution", solution));

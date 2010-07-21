@@ -22,18 +22,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Optimization;
 using HeuristicLab.Operators;
+using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Random;
-using HeuristicLab.Analysis;
 
 namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
   [Item("Particle Swarm Optimization", "A particle swarm optimization algorithm.")]
@@ -56,7 +55,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       get { return AnalyzerParameter.Value; }
       set { AnalyzerParameter.Value = value; }
     }
-    #endregion 
+    #endregion
 
     #region Parameter Properties
     private ValueParameter<IntValue> SeedParameter {
@@ -130,11 +129,11 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       randomCreator.SeedParameter.Value = null;
       randomCreator.SetSeedRandomlyParameter.ActualName = SetSeedRandomlyParameter.Name;
       randomCreator.SetSeedRandomlyParameter.Value = null;
-      
+
       solutionsCreator.NumberOfSolutionsParameter.ActualName = SwarmSizeParameter.Name;
-      
+
       encoder.OperatorParameter.ActualName = "Encoder";
-      
+
       velocityVectorCreator.BoundsParameter.ActualName = "ZeroBounds";
       velocityVectorCreator.RealVectorParameter.ActualName = "Velocity";
 
@@ -209,7 +208,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     protected override void OnProblemChanged() {
       UpdateEncoders();
       UpdateAnalyzers();
-      ParameterizeAnalyzers(); 
+      ParameterizeAnalyzers();
       bestLocalQualityInitalizer.RightSideParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       MainLoop.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;

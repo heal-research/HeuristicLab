@@ -19,17 +19,15 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.LinearRegression {
   public static class LinearRegressionUtil {
     public static double[,] PrepareInputMatrix(Dataset dataset, string targetVariable, IEnumerable<string> allowedInputVariables, int start, int end) {
       List<int> allowedRows = CalculateAllowedRows(dataset, targetVariable, allowedInputVariables, start, end);
 
-      double[,] matrix = new double[allowedRows.Count, allowedInputVariables.Count() +1];
+      double[,] matrix = new double[allowedRows.Count, allowedInputVariables.Count() + 1];
       for (int row = 0; row < allowedRows.Count; row++) {
         int col = 0;
         foreach (string column in allowedInputVariables) {

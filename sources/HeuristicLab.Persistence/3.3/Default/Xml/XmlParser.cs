@@ -19,16 +19,16 @@
  */
 #endregion
 
-using System.Xml;
-using System.Collections.Generic;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
+using System.Xml;
 using HeuristicLab.Persistence.Core;
+using HeuristicLab.Persistence.Core.Tokens;
 using HeuristicLab.Persistence.Interfaces;
 using ICSharpCode.SharpZipLib.Zip;
-using HeuristicLab.Persistence.Core.Tokens;
-using System.IO.Compression;
 
 namespace HeuristicLab.Persistence.Default.Xml {
 
@@ -74,7 +74,8 @@ namespace HeuristicLab.Persistence.Default.Xml {
         IEnumerator<ISerializationToken> iterator;
         try {
           iterator = handlers[reader.Name].Invoke();
-        } catch (KeyNotFoundException) {
+        }
+        catch (KeyNotFoundException) {
           throw new PersistenceException(String.Format(
             "Invalid XML tag \"{0}\" in persistence file.",
             reader.Name));
@@ -174,9 +175,11 @@ namespace HeuristicLab.Persistence.Default.Xml {
           }
         }
         return typeCache;
-      } catch (PersistenceException) {
+      }
+      catch (PersistenceException) {
         throw;
-      } catch (Exception e) {
+      }
+      catch (Exception e) {
         throw new PersistenceException("Unexpected exception during type cache parsing.", e);
       }
     }
@@ -192,7 +195,8 @@ namespace HeuristicLab.Persistence.Default.Xml {
         using (ZipFile file = new ZipFile(filename)) {
           return Deserialize(file);
         }
-      } finally {
+      }
+      finally {
         TimeSpan end = System.Diagnostics.Process.GetCurrentProcess().TotalProcessorTime;
         Tracing.Logger.Info(string.Format(
           "deserialization of {0} took {1} seconds",
@@ -223,9 +227,11 @@ namespace HeuristicLab.Persistence.Default.Xml {
           Deserializer deserializer = new Deserializer(new TypeMapping[] { });
           return deserializer.Deserialize(parser);
         }
-      } catch (PersistenceException) {
+      }
+      catch (PersistenceException) {
         throw;
-      } catch (Exception x) {
+      }
+      catch (Exception x) {
         throw new PersistenceException("Unexpected exception during deserialization", x);
       }
     }
@@ -254,9 +260,11 @@ namespace HeuristicLab.Persistence.Default.Xml {
         object result = deSerializer.Deserialize(parser);
         zipFile.Close();
         return result;
-      } catch (PersistenceException) {
+      }
+      catch (PersistenceException) {
         throw;
-      } catch (Exception e) {
+      }
+      catch (Exception e) {
         throw new PersistenceException("Unexpected exception during deserialization", e);
       }
     }

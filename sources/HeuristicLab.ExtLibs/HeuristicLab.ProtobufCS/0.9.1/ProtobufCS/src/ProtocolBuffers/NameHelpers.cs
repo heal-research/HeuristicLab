@@ -32,8 +32,8 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion
 
-using System.Text;
 using System.Globalization;
+using System.Text;
 
 namespace Google.ProtocolBuffers {
   /// <summary>

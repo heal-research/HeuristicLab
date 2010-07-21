@@ -20,7 +20,6 @@
 #endregion
 
 using HeuristicLab.Analysis;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -187,7 +186,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       tabuSelector.MaximizationParameter.ActualName = MaximizationParameter.Name;
       tabuSelector.MoveQualityParameter.ActualName = MoveQualityParameter.Name;
       tabuSelector.MoveTabuParameter.ActualName = MoveTabuParameter.Name;
-      
+
       moveMakingProcessor.Name = "MoveMaking processor (UniformSubScopesProcessor)";
 
       emptyNeighborhoodBranch1.Name = "Neighborhood empty?";

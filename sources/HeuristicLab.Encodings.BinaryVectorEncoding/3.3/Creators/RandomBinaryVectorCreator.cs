@@ -19,11 +19,6 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -34,7 +29,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   /// </summary>
   [Item("RandomBinaryVectorCreator", "An operator which creates a new random binary vector with each element randomly initialized.")]
   [StorableClass]
-  public class RandomBinaryVectorCreator: BinaryVectorCreator {
+  public class RandomBinaryVectorCreator : BinaryVectorCreator {
     /// <summary>
     /// Generates a new random binary vector with the given <paramref name="length"/>.
     /// </summary>

@@ -20,14 +20,13 @@
 #endregion
 
 using System;
-using HeuristicLab.Persistence.Interfaces;
-using HeuristicLab.Persistence.Core;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Globalization;
 using System.Text;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Persistence.Auxiliary;
+using HeuristicLab.Persistence.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Default.CompositeSerializers {
 
@@ -129,9 +128,11 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
         foreach (var value in stringValues) {
           addMethod.Invoke(instance, new[] { numberConverter.Parse(value, elementType) });
         }
-      } catch (InvalidOperationException e) {
+      }
+      catch (InvalidOperationException e) {
         throw new PersistenceException("Insufficient element data to reconstruct number enumerable", e);
-      } catch (InvalidCastException e) {
+      }
+      catch (InvalidCastException e) {
         throw new PersistenceException("Invalid element data during reconstruction of number enumerable", e);
       }
     }

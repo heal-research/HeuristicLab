@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System.Collections.Generic;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Core {
   [StorableClass]
@@ -60,10 +59,10 @@ namespace HeuristicLab.Core {
       return value;
     }
     public static bool operator ==(ConstraintOperation co1, ConstraintOperation co2) {
-      if(object.ReferenceEquals(co1,co2))
+      if (object.ReferenceEquals(co1, co2))
         return true;
-      
-      if((object)co1 == null || (object) co2 == null)
+
+      if ((object)co1 == null || (object)co2 == null)
         return false;
 
       return co1.value == co2.value;

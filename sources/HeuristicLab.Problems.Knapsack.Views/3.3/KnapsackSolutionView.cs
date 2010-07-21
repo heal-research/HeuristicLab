@@ -20,13 +20,10 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
-using HeuristicLab.Problems.Knapsack;
-using HeuristicLab.Data;
-using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.Knapsack.Views {
   /// <summary>

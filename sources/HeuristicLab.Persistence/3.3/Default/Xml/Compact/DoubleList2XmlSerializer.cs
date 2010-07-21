@@ -19,14 +19,12 @@
  */
 #endregion
 
-using System.Collections;
-using System.Collections.Generic;
 using System;
-using System.Linq;
-using HeuristicLab.Persistence.Core;
-using HeuristicLab.Persistence.Default.Xml.Primitive;
+using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Persistence.Auxiliary;
+using HeuristicLab.Persistence.Core;
+using HeuristicLab.Persistence.Default.Xml.Primitive;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
 
@@ -47,9 +45,11 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
           list.Add(Double2XmlSerializer.ParseG17(value));
         }
         return list;
-      } catch (InvalidCastException e) {
+      }
+      catch (InvalidCastException e) {
         throw new PersistenceException("Invalid element data during reconstruction of List<double>.", e);
-      } catch (OverflowException e) {
+      }
+      catch (OverflowException e) {
         throw new PersistenceException("Overflow during element parsing while trying to reconstruct List<double>.", e);
       }
     }

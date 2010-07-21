@@ -20,13 +20,10 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml;
 using System.Linq;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Common;
 using HeuristicLab.Collections;
+using HeuristicLab.Common;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
   /// <summary>
@@ -94,8 +91,8 @@ namespace HeuristicLab.Core {
     public event EventHandler DeserializationFinished;
     private void OnOperatorGraphDeserializationFinished() {
       EventHandler handler = DeserializationFinished;
-      if(handler != null)
-        handler(this,EventArgs.Empty);
+      if (handler != null)
+        handler(this, EventArgs.Empty);
     }
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {

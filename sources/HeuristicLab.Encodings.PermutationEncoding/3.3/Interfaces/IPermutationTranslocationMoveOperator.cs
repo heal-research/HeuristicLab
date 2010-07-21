@@ -19,9 +19,7 @@
  */
 #endregion
 
-using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   public interface IPermutationTranslocationMoveOperator : IPermutationMoveOperator {

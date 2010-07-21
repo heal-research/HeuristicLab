@@ -19,15 +19,9 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Drawing;
-using System.IO;
 using System.Drawing.Imaging;
-using System.Text.RegularExpressions;
-using HeuristicLab.Persistence.Core;
+using System.IO;
 using HeuristicLab.Persistence.Default.Xml.Compact;
 
 namespace HeuristicLab.Persistence.Default.Xml.Primitive {

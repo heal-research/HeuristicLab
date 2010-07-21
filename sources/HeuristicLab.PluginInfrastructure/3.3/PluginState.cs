@@ -20,8 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace HeuristicLab.PluginInfrastructure {
   /// <summary>
@@ -32,15 +30,15 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <summary>
     /// Undefined state is the default plugin state.
     /// </summary>
-    Undefined, 
+    Undefined,
     /// <summary>
     /// Enabled state means that the plugin has correct meta-data and can be loaded.
     /// </summary>
-    Enabled, 
+    Enabled,
     /// <summary>
     /// Disabled state means that the plugin has incorrect meta-data or missing dependencies and cannot be loaded.
     /// </summary>
-    Disabled, 
+    Disabled,
     /// <summary>
     /// Loaded means the plugin is currently loaded by an application.
     /// </summary>

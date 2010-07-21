@@ -20,9 +20,6 @@
 #endregion
 
 using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Reflection;
 using System.Text;
 
 namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
@@ -37,7 +34,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
   [AttributeUsage(
     AttributeTargets.Field | AttributeTargets.Property,
     AllowMultiple = false,
-    Inherited = false)]    
+    Inherited = false)]
   public class StorableAttribute : Attribute {
 
     /// <summary>

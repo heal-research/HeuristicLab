@@ -21,12 +21,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Security.Policy;
-using System.Reflection;
-using System.Diagnostics;
-using System.Security.Permissions;
-using System.Security;
 using System.Linq;
+using System.Reflection;
 
 namespace HeuristicLab.PluginInfrastructure.Manager {
 

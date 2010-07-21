@@ -21,18 +21,17 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
-using System.Text;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Data;
+using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Data;
-using HeuristicLab.Common;
-using System.Drawing;
-using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   [Item("Vehicle Routing Problem", "Represents a Vehicle Routing Problem.")]

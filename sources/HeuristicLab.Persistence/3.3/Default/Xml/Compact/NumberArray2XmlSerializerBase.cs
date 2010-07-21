@@ -19,15 +19,13 @@
  */
 #endregion
 
-using System.Collections;
-using System.Text;
-using HeuristicLab.Persistence.Interfaces;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Text;
+using HeuristicLab.Persistence.Auxiliary;
 using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Persistence.Auxiliary;
-using HeuristicLab.Tracing;
-using System.Collections.Generic;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
 
@@ -50,7 +48,7 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
         sb.Append(a.GetLength(i));
         lengths[i] = a.GetLength(i);
         nElements *= lengths[i];
-      }      
+      }
       sb.EnsureCapacity(sb.Length + nElements * 3);
       for (int i = 0; i < a.Rank; i++) {
         sb.Append(Separator);
@@ -70,7 +68,7 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
             break;
           }
         }
-      }      
+      }
       return new XmlString(sb.ToString());
     }
 
@@ -91,7 +89,7 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
         }
         Array a = Array.CreateInstance(this.SourceType.GetElementType(), lengths, lowerBounds);
         int[] positions = (int[])lowerBounds.Clone();
-        while (values.MoveNext()) {          
+        while (values.MoveNext()) {
           a.SetValue(ParseValue(values.Current), positions);
           positions[0] += 1;
           for (int i = 0; i < rank - 1; i++) {
@@ -106,11 +104,14 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
         if (positions[rank - 1] != lowerBounds[rank - 1] + lengths[rank - 1])
           throw new PersistenceException("Insufficient number of elements while trying to fill number array.");
         return (T)(object)a;
-      } catch (InvalidOperationException e) {
+      }
+      catch (InvalidOperationException e) {
         throw new PersistenceException("Insufficient information to rebuild number array.", e);
-      } catch (InvalidCastException e) {
+      }
+      catch (InvalidCastException e) {
         throw new PersistenceException("Invalid element data or meta data to reconstruct number array.", e);
-      } catch (OverflowException e) {
+      }
+      catch (OverflowException e) {
         throw new PersistenceException("Overflow during element parsing while trying to reconstruct number array.", e);
       }
     }

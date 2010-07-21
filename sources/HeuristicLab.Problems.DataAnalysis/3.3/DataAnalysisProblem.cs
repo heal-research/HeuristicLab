@@ -21,16 +21,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Parameters;
-using HeuristicLab.Data;
-using HeuristicLab.Problems.DataAnalysis;
-using System.Drawing;
-using System.IO;
 using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   [Item("Data Analysis Problem", "Represents a data analysis problem.")]

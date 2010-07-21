@@ -19,17 +19,13 @@
  */
 #endregion
 
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using System;
+using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Operators;
-using HeuristicLab.Random;
-using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Parameters;
-using System.Collections.Generic;
-using System;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [StorableClass]
   [Item("Variable", "Represents a variable value.")]

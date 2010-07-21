@@ -20,14 +20,8 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
-using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   /// <summary>
@@ -38,7 +32,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   /// </remarks>
   [Item("UniformCrossover", "Uniform crossover for binary vectors. It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.")]
   [StorableClass]
-  public class UniformCrossover: BinaryVectorCrossover {
+  public class UniformCrossover : BinaryVectorCrossover {
     /// <summary>
     /// Performs a uniform crossover between two binary vectors.
     /// </summary>
@@ -59,7 +53,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
         else
           result[i] = parent2[i];
       }
-      
+
       return new BinaryVector(result);
     }
 

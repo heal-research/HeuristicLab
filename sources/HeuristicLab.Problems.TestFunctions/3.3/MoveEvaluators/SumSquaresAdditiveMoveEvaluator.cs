@@ -19,10 +19,9 @@
  */
 #endregion
 
-using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Encodings.RealVectorEncoding;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.TestFunctions {
   [Item("SumSquaresAdditiveMoveEvaluator", "Class for evaluating an additive move on the SumSquares function.")]

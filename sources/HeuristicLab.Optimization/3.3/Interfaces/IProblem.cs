@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {

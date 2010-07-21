@@ -25,13 +25,11 @@
 // IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 // OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System;
 using System.Text;
 using ICSharpCode.SharpDevelop.Dom;
 using ICSharpCode.SharpDevelop.Dom.CSharp;
-using ICSharpCode.SharpDevelop.Dom.VBNet;
-using TextEditor = ICSharpCode.TextEditor;
 using NRefactoryResolver = ICSharpCode.SharpDevelop.Dom.NRefactoryResolver.NRefactoryResolver;
+using TextEditor = ICSharpCode.TextEditor;
 
 namespace HeuristicLab.CodeEditor {
   sealed class ToolTipProvider {
@@ -51,7 +49,7 @@ namespace HeuristicLab.CodeEditor {
     void OnToolTipRequest(object sender, TextEditor.ToolTipRequestEventArgs e) {
       if (e.InDocument && !e.ToolTipShown) {
         IExpressionFinder expressionFinder;
-        expressionFinder = new CSharpExpressionFinder(codeEditor.parseInformation);        
+        expressionFinder = new CSharpExpressionFinder(codeEditor.parseInformation);
         ExpressionResult expression = expressionFinder.FindFullExpression(
           editor.Text,
           editor.Document.PositionToOffset(e.LogicalPosition));

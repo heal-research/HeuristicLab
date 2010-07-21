@@ -24,8 +24,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using HeuristicLab.Core.Views;
 using HeuristicLab.Data;
-using HeuristicLab.MainForm;
 using HeuristicLab.Encodings.RealVectorEncoding;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Problems.TestFunctions.Views {
   /// <summary>
@@ -197,7 +197,7 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
       if (backgroundImage != null) backgroundImage.Dispose();
       backgroundImage = null;
       pictureBox.Image = null;
- 	    GenerateImage();
+      GenerateImage();
     }
 
     protected override void OnClosing(FormClosingEventArgs e) {

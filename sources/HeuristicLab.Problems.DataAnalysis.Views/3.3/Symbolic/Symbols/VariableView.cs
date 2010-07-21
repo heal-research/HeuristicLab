@@ -20,19 +20,11 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
-using HeuristicLab.Core.Views;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
   [View("Variable View")]

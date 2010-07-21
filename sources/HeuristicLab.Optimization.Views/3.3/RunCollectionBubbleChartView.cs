@@ -21,19 +21,15 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using HeuristicLab.MainForm.WindowsForms;
-using HeuristicLab.MainForm;
 using System.Windows.Forms.DataVisualization.Charting;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using System.Threading;
+using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Optimization.Views {
   [View("RunCollection BubbleChart")]

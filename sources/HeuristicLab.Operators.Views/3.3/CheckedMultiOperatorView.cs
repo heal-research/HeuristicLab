@@ -20,12 +20,11 @@
 #endregion
 
 using System;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
-namespace HeuristicLab.Operators.Views { 
+namespace HeuristicLab.Operators.Views {
   [View("CheckedMultiOperator View")]
   [Content(typeof(CheckedMultiOperator<>), true)]
   public partial class CheckedMultiOperatorView<T> : NamedItemView where T : class, IOperator {

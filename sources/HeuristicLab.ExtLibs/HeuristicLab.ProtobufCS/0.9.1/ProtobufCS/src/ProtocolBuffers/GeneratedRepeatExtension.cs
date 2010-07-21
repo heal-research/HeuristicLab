@@ -33,16 +33,17 @@
 #endregion
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Google.ProtocolBuffers.Descriptors;
-using System.Collections;
 
 namespace Google.ProtocolBuffers {
   /// <summary>
   /// Class used to represent repeat extensions in generated classes.
   /// </summary>
   public sealed class GeneratedRepeatExtension<TExtensionElement> : GeneratedExtensionBase<IList<TExtensionElement>> {
-    private GeneratedRepeatExtension(FieldDescriptor field) : base(field, typeof(TExtensionElement)) {
+    private GeneratedRepeatExtension(FieldDescriptor field)
+      : base(field, typeof(TExtensionElement)) {
     }
 
     public static GeneratedExtensionBase<IList<TExtensionElement>> CreateInstance(FieldDescriptor descriptor) {
@@ -64,8 +65,8 @@ namespace Google.ProtocolBuffers {
           Descriptor.MappedType == MappedType.Enum) {
         // Must convert the whole list.
         List<TExtensionElement> result = new List<TExtensionElement>();
-        foreach (object element in (IEnumerable) value) {
-          result.Add((TExtensionElement) SingularFromReflectionType(element));
+        foreach (object element in (IEnumerable)value) {
+          result.Add((TExtensionElement)SingularFromReflectionType(element));
         }
         return result;
       } else {

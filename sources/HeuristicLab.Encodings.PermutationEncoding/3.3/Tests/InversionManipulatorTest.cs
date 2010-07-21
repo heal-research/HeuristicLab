@@ -19,8 +19,8 @@
  */
 #endregion
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using HeuristicLab.Encodings.PermutationEncoding;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
   /// <summary>
@@ -89,7 +89,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
       random.IntNumbers = new int[] { 1, 4 };
       parent = new Permutation(PermutationTypes.RelativeUndirected, new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 });
       Assert.IsTrue(parent.Validate());
-      
+
       expected = new Permutation(PermutationTypes.RelativeUndirected, new int[] { 0, 4, 3, 2, 1, 5, 6, 7, 8 });
       Assert.IsTrue(expected.Validate());
       InversionManipulator.Apply(random, parent);

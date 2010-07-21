@@ -33,12 +33,12 @@
 #endregion
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
 using Google.ProtocolBuffers.Descriptors;
-using System.Collections;
 
 namespace Google.ProtocolBuffers {
   /// <summary>
@@ -86,7 +86,7 @@ namespace Google.ProtocolBuffers {
     internal static void PrintField(FieldDescriptor field, object value, TextGenerator generator) {
       if (field.IsRepeated) {
         // Repeated field.  Print each element.
-        foreach (object element in (IEnumerable) value) {
+        foreach (object element in (IEnumerable)value) {
           PrintSingleField(field, element, generator);
         }
       } else {
@@ -101,7 +101,7 @@ namespace Google.ProtocolBuffers {
         if (field.ContainingType.Options.MessageSetWireFormat
             && field.FieldType == FieldType.Message
             && field.IsOptional
-            // object equality (TODO(jonskeet): Work out what this comment means!)
+          // object equality (TODO(jonskeet): Work out what this comment means!)
             && field.ExtensionScope == field.MessageType) {
           generator.Print(field.MessageType.FullName);
         } else {
@@ -149,34 +149,34 @@ namespace Google.ProtocolBuffers {
         case FieldType.Fixed64:
           // The simple Object.ToString converts using the current culture.
           // We want to always use the invariant culture so it's predictable.
-          generator.Print(((IConvertible) value).ToString(CultureInfo.InvariantCulture));
+          generator.Print(((IConvertible)value).ToString(CultureInfo.InvariantCulture));
           break;
         case FieldType.Bool:
           // Explicitly use the Java true/false
-          generator.Print((bool) value ? "true" : "false");
+          generator.Print((bool)value ? "true" : "false");
           break;
 
         case FieldType.String:
           generator.Print("\"");
-          generator.Print(EscapeText((string) value));
+          generator.Print(EscapeText((string)value));
           generator.Print("\"");
           break;
 
         case FieldType.Bytes: {
-          generator.Print("\"");
-          generator.Print(EscapeBytes((ByteString) value));
-          generator.Print("\"");
-          break;
-        }
+            generator.Print("\"");
+            generator.Print(EscapeBytes((ByteString)value));
+            generator.Print("\"");
+            break;
+          }
 
         case FieldType.Enum: {
-          generator.Print(((EnumValueDescriptor) value).Name);
-          break;
-        }
+            generator.Print(((EnumValueDescriptor)value).Name);
+            break;
+          }
 
         case FieldType.Message:
         case FieldType.Group:
-          Print((IMessage) value, generator);
+          Print((IMessage)value, generator);
           break;
       }
     }
@@ -219,7 +219,7 @@ namespace Google.ProtocolBuffers {
     }
 
     internal static ulong ParseUInt64(string text) {
-      return (ulong) ParseInteger(text, false, true);
+      return (ulong)ParseInteger(text, false, true);
     }
 
     internal static long ParseInt64(string text) {
@@ -227,11 +227,11 @@ namespace Google.ProtocolBuffers {
     }
 
     internal static uint ParseUInt32(string text) {
-      return (uint) ParseInteger(text, false, false);
+      return (uint)ParseInteger(text, false, false);
     }
 
     internal static int ParseInt32(string text) {
-      return (int) ParseInteger(text, true, false);
+      return (int)ParseInteger(text, true, false);
     }
 
     internal static float ParseFloat(string text) {
@@ -268,7 +268,7 @@ namespace Google.ProtocolBuffers {
           return double.Parse(text, CultureInfo.InvariantCulture);
       }
     }
-    
+
     /// <summary>
     /// Parses an integer in hex (leading 0x), decimal (no prefix) or octal (leading 0).
     /// Only a negative sign is permitted, and it must come before the radix indicator.
@@ -297,7 +297,8 @@ namespace Google.ProtocolBuffers {
         // Workaround for https://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=278448
         // We should be able to use Convert.ToUInt64 for all cases.
         result = radix == 10 ? ulong.Parse(text) : Convert.ToUInt64(text, radix);
-      } catch (OverflowException) {
+      }
+      catch (OverflowException) {
         // Convert OverflowException to FormatException so there's a single exception type this method can throw.
         string numberDescription = string.Format("{0}-bit {1}signed integer", isLong ? 64 : 32, isSigned ? "" : "un");
         throw new FormatException("Number out of range for " + numberDescription + ": " + original);
@@ -309,16 +310,16 @@ namespace Google.ProtocolBuffers {
           string numberDescription = string.Format("{0}-bit signed integer", isLong ? 64 : 32);
           throw new FormatException("Number out of range for " + numberDescription + ": " + original);
         }
-        return -((long) result);
+        return -((long)result);
       } else {
-        ulong max = isSigned 
-            ? (isLong ? (ulong) long.MaxValue : int.MaxValue)
+        ulong max = isSigned
+            ? (isLong ? (ulong)long.MaxValue : int.MaxValue)
             : (isLong ? ulong.MaxValue : uint.MaxValue);
         if (result > max) {
           string numberDescription = string.Format("{0}-bit {1}signed integer", isLong ? 64 : 32, isSigned ? "" : "un");
           throw new FormatException("Number out of range for " + numberDescription + ": " + original);
         }
-        return (long) result;
+        return (long)result;
       }
     }
 
@@ -383,24 +384,24 @@ namespace Google.ProtocolBuffers {
       foreach (byte b in input) {
         switch (b) {
           // C# does not use \a or \v
-          case 0x07: builder.Append("\\a" ); break;
-          case (byte)'\b': builder.Append("\\b" ); break;
-          case (byte)'\f': builder.Append("\\f" ); break;
-          case (byte)'\n': builder.Append("\\n" ); break;
-          case (byte)'\r': builder.Append("\\r" ); break;
-          case (byte)'\t': builder.Append("\\t" ); break;
-          case 0x0b: builder.Append("\\v" ); break;
+          case 0x07: builder.Append("\\a"); break;
+          case (byte)'\b': builder.Append("\\b"); break;
+          case (byte)'\f': builder.Append("\\f"); break;
+          case (byte)'\n': builder.Append("\\n"); break;
+          case (byte)'\r': builder.Append("\\r"); break;
+          case (byte)'\t': builder.Append("\\t"); break;
+          case 0x0b: builder.Append("\\v"); break;
           case (byte)'\\': builder.Append("\\\\"); break;
           case (byte)'\'': builder.Append("\\\'"); break;
-          case (byte)'"' : builder.Append("\\\""); break;
+          case (byte)'"': builder.Append("\\\""); break;
           default:
             if (b >= 0x20 && b < 128) {
-              builder.Append((char) b);
+              builder.Append((char)b);
             } else {
               builder.Append('\\');
-              builder.Append((char) ('0' + ((b >> 6) & 3)));
-              builder.Append((char) ('0' + ((b >> 3) & 7)));
-              builder.Append((char) ('0' + (b & 7)));
+              builder.Append((char)('0' + ((b >> 6) & 3)));
+              builder.Append((char)('0' + ((b >> 3) & 7)));
+              builder.Append((char)('0' + (b & 7)));
             }
             break;
         }
@@ -420,7 +421,7 @@ namespace Google.ProtocolBuffers {
           throw new FormatException("Escaped string must only contain ASCII");
         }
         if (c != '\\') {
-          result[pos++] = (byte) c;
+          result[pos++] = (byte)c;
           continue;
         }
         if (i + 1 >= input.Length) {
@@ -432,38 +433,38 @@ namespace Google.ProtocolBuffers {
         if (c >= '0' && c <= '7') {
           // Octal escape. 
           int code = ParseDigit(c);
-          if (i + 1 < input.Length && IsOctal(input[i+1])) {
+          if (i + 1 < input.Length && IsOctal(input[i + 1])) {
             i++;
             code = code * 8 + ParseDigit(input[i]);
           }
-          if (i + 1 < input.Length && IsOctal(input[i+1])) {
+          if (i + 1 < input.Length && IsOctal(input[i + 1])) {
             i++;
             code = code * 8 + ParseDigit(input[i]);
           }
-          result[pos++] = (byte) code;
+          result[pos++] = (byte)code;
         } else {
           switch (c) {
             case 'a': result[pos++] = 0x07; break;
-            case 'b': result[pos++] = (byte) '\b'; break;
-            case 'f': result[pos++] = (byte) '\f'; break;
-            case 'n': result[pos++] = (byte) '\n'; break;
-            case 'r': result[pos++] = (byte) '\r'; break;
-            case 't': result[pos++] = (byte) '\t'; break;
+            case 'b': result[pos++] = (byte)'\b'; break;
+            case 'f': result[pos++] = (byte)'\f'; break;
+            case 'n': result[pos++] = (byte)'\n'; break;
+            case 'r': result[pos++] = (byte)'\r'; break;
+            case 't': result[pos++] = (byte)'\t'; break;
             case 'v': result[pos++] = 0x0b; break;
-            case '\\': result[pos++] = (byte) '\\'; break;
-            case '\'': result[pos++] = (byte) '\''; break;
-            case '"': result[pos++] = (byte) '\"'; break;
+            case '\\': result[pos++] = (byte)'\\'; break;
+            case '\'': result[pos++] = (byte)'\''; break;
+            case '"': result[pos++] = (byte)'\"'; break;
 
             case 'x':
               // hex escape
               int code;
-              if (i + 1 < input.Length && IsHex(input[i+1])) {
+              if (i + 1 < input.Length && IsHex(input[i + 1])) {
                 i++;
                 code = ParseDigit(input[i]);
               } else {
                 throw new FormatException("Invalid escape sequence: '\\x' with no digits");
               }
-              if (i + 1 < input.Length && IsHex(input[i+1])) {
+              if (i + 1 < input.Length && IsHex(input[i + 1])) {
                 ++i;
                 code = code * 16 + ParseDigit(input[i]);
               }
@@ -635,28 +636,28 @@ namespace Google.ProtocolBuffers {
             break;
 
           case FieldType.Enum: {
-            EnumDescriptor enumType = field.EnumType;
+              EnumDescriptor enumType = field.EnumType;
 
-            if (tokenizer.LookingAtInteger()) {
-              int number = tokenizer.ConsumeInt32();
-              value = enumType.FindValueByNumber(number);
-              if (value == null) {
-                throw tokenizer.CreateFormatExceptionPreviousToken(
-                  "Enum type \"" + enumType.FullName +
-                  "\" has no value with number " + number + ".");
+              if (tokenizer.LookingAtInteger()) {
+                int number = tokenizer.ConsumeInt32();
+                value = enumType.FindValueByNumber(number);
+                if (value == null) {
+                  throw tokenizer.CreateFormatExceptionPreviousToken(
+                    "Enum type \"" + enumType.FullName +
+                    "\" has no value with number " + number + ".");
+                }
+              } else {
+                String id = tokenizer.ConsumeIdentifier();
+                value = enumType.FindValueByName(id);
+                if (value == null) {
+                  throw tokenizer.CreateFormatExceptionPreviousToken(
+                    "Enum type \"" + enumType.FullName +
+                    "\" has no value named \"" + id + "\".");
+                }
               }
-            } else {
-              String id = tokenizer.ConsumeIdentifier();
-              value = enumType.FindValueByName(id);
-              if (value == null) {
-                throw tokenizer.CreateFormatExceptionPreviousToken(
-                  "Enum type \"" + enumType.FullName +
-                  "\" has no value named \"" + id + "\".");
-              }
+
+              break;
             }
-
-            break;
-          }
 
           case FieldType.Message:
           case FieldType.Group:

@@ -19,14 +19,13 @@
  */
 #endregion
 
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Operators;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Parameters;
+using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.ArtificialAnt {
   [Item("ArtificialAntEvaluator", "Evaluates an artificial ant solution.")]

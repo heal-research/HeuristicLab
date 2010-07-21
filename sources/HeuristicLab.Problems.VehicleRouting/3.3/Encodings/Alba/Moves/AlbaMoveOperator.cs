@@ -19,14 +19,9 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaMoveOperator", "A move operator for an alba VRP representation.")]
@@ -34,7 +29,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   public abstract class AlbaMoveOperator : VRPMoveOperator {
     [Storable]
     protected abstract IPermutationMoveOperator PermutationMoveOperatorParameter { get; set; }
-    
+
     public override IOperation Apply() {
       IVRPEncoding solution = VRPSolutionParameter.ActualValue;
       if (!(solution is AlbaEncoding)) {

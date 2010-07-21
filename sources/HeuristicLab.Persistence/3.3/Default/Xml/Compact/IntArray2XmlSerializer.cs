@@ -19,8 +19,6 @@
  */
 #endregion
 
-using System;
-using HeuristicLab.Persistence.Core;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
 

@@ -19,10 +19,6 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace HeuristicLab.MainForm {
   public class ViewShownEventArgs : ViewEventArgs {
@@ -32,7 +28,7 @@ namespace HeuristicLab.MainForm {
     }
 
     private bool firstTimeShown;
-    public bool  FirstTimeShown {
+    public bool FirstTimeShown {
       get { return this.firstTimeShown; }
     }
   }

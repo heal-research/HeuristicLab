@@ -19,11 +19,10 @@
  */
 #endregion
 
-using System.Collections.Generic;
-using HeuristicLab.Common;
-using HeuristicLab.Core;
-using System.Drawing;
 using System;
+using System.Collections.Generic;
+using System.Drawing;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
@@ -34,7 +33,7 @@ namespace HeuristicLab.Optimization {
     IDictionary<string, IItem> Parameters { get; }
     IDictionary<string, IItem> Results { get; }
 
-    Color Color {get;set;}
+    Color Color { get; set; }
     bool Visible { get; set; }
     event EventHandler Changed;
   }

@@ -37,8 +37,6 @@ using System.IO;
 using System.Text;
 using Google.ProtocolBuffers.TestProtos;
 using NUnit.Framework;
-using System.Globalization;
-using System.Threading;
 
 namespace Google.ProtocolBuffers {
   [TestFixture]
@@ -81,7 +79,7 @@ namespace Google.ProtocolBuffers {
       "[protobuf_unittest.TestMessageSetExtension2] {\n" +
       "  str: \"foo\"\n" +
       "}\n";
-    
+
     /// <summary>
     /// Print TestAllTypes and compare with golden file. 
     /// </summary>
@@ -165,20 +163,20 @@ namespace Google.ProtocolBuffers {
     /// </summary>
     private static ByteString Bytes(string str) {
       return ByteString.CopyFrom(Encoding.GetEncoding(28591).GetBytes(str));
-    }   
+    }
 
     [Test]
     public void PrintExotic() {
       IMessage message = TestAllTypes.CreateBuilder()
         // Signed vs. unsigned numbers.
-        .AddRepeatedInt32 (-1)
+        .AddRepeatedInt32(-1)
         .AddRepeatedUint32(uint.MaxValue)
-        .AddRepeatedInt64 (-1)
+        .AddRepeatedInt64(-1)
         .AddRepeatedUint64(ulong.MaxValue)
 
-        .AddRepeatedInt32 (1  << 31)
-        .AddRepeatedUint32(1U  << 31)
-        .AddRepeatedInt64 (1L << 63)
+        .AddRepeatedInt32(1 << 31)
+        .AddRepeatedUint32(1U << 31)
+        .AddRepeatedInt64(1L << 63)
         .AddRepeatedUint64(1UL << 63)
 
         // Floats of various precisions and exponents.
@@ -333,7 +331,8 @@ namespace Google.ProtocolBuffers {
       try {
         TextFormat.Merge(text, TestUtil.CreateExtensionRegistry(), builder);
         Assert.Fail("Expected parse exception.");
-      } catch (FormatException e) {
+      }
+      catch (FormatException e) {
         Assert.AreEqual(error, e.Message);
       }
     }
@@ -417,7 +416,8 @@ namespace Google.ProtocolBuffers {
       try {
         action();
         Assert.Fail("Should have thrown an exception.");
-      } catch (FormatException) {
+      }
+      catch (FormatException) {
         // success
       }
     }
@@ -450,39 +450,39 @@ namespace Google.ProtocolBuffers {
 
     [Test]
     public void ParseInteger() {
-      Assert.AreEqual(          0, TextFormat.ParseInt32(          "0"));
-      Assert.AreEqual(          1, TextFormat.ParseInt32(          "1"));
-      Assert.AreEqual(         -1, TextFormat.ParseInt32(         "-1"));
-      Assert.AreEqual(      12345, TextFormat.ParseInt32(      "12345"));
-      Assert.AreEqual(     -12345, TextFormat.ParseInt32(     "-12345"));
-      Assert.AreEqual( 2147483647, TextFormat.ParseInt32( "2147483647"));
+      Assert.AreEqual(0, TextFormat.ParseInt32("0"));
+      Assert.AreEqual(1, TextFormat.ParseInt32("1"));
+      Assert.AreEqual(-1, TextFormat.ParseInt32("-1"));
+      Assert.AreEqual(12345, TextFormat.ParseInt32("12345"));
+      Assert.AreEqual(-12345, TextFormat.ParseInt32("-12345"));
+      Assert.AreEqual(2147483647, TextFormat.ParseInt32("2147483647"));
       Assert.AreEqual(-2147483648, TextFormat.ParseInt32("-2147483648"));
 
-      Assert.AreEqual(          0, TextFormat.ParseUInt32(         "0"));
-      Assert.AreEqual(          1, TextFormat.ParseUInt32(         "1"));
-      Assert.AreEqual(      12345, TextFormat.ParseUInt32(     "12345"));
-      Assert.AreEqual( 2147483647, TextFormat.ParseUInt32("2147483647"));
+      Assert.AreEqual(0, TextFormat.ParseUInt32("0"));
+      Assert.AreEqual(1, TextFormat.ParseUInt32("1"));
+      Assert.AreEqual(12345, TextFormat.ParseUInt32("12345"));
+      Assert.AreEqual(2147483647, TextFormat.ParseUInt32("2147483647"));
       Assert.AreEqual(2147483648U, TextFormat.ParseUInt32("2147483648"));
       Assert.AreEqual(4294967295U, TextFormat.ParseUInt32("4294967295"));
 
-      Assert.AreEqual(          0L, TextFormat.ParseInt64(          "0"));
-      Assert.AreEqual(          1L, TextFormat.ParseInt64(          "1"));
-      Assert.AreEqual(         -1L, TextFormat.ParseInt64(         "-1"));
-      Assert.AreEqual(      12345L, TextFormat.ParseInt64(      "12345"));
-      Assert.AreEqual(     -12345L, TextFormat.ParseInt64(     "-12345"));
-      Assert.AreEqual( 2147483647L, TextFormat.ParseInt64( "2147483647"));
+      Assert.AreEqual(0L, TextFormat.ParseInt64("0"));
+      Assert.AreEqual(1L, TextFormat.ParseInt64("1"));
+      Assert.AreEqual(-1L, TextFormat.ParseInt64("-1"));
+      Assert.AreEqual(12345L, TextFormat.ParseInt64("12345"));
+      Assert.AreEqual(-12345L, TextFormat.ParseInt64("-12345"));
+      Assert.AreEqual(2147483647L, TextFormat.ParseInt64("2147483647"));
       Assert.AreEqual(-2147483648L, TextFormat.ParseInt64("-2147483648"));
-      Assert.AreEqual( 4294967295L, TextFormat.ParseInt64( "4294967295"));
-      Assert.AreEqual( 4294967296L, TextFormat.ParseInt64( "4294967296"));
+      Assert.AreEqual(4294967295L, TextFormat.ParseInt64("4294967295"));
+      Assert.AreEqual(4294967296L, TextFormat.ParseInt64("4294967296"));
       Assert.AreEqual(9223372036854775807L, TextFormat.ParseInt64("9223372036854775807"));
       Assert.AreEqual(-9223372036854775808L, TextFormat.ParseInt64("-9223372036854775808"));
 
-      Assert.AreEqual(          0L, TextFormat.ParseUInt64(          "0"));
-      Assert.AreEqual(          1L, TextFormat.ParseUInt64(          "1"));
-      Assert.AreEqual(      12345L, TextFormat.ParseUInt64(      "12345"));
-      Assert.AreEqual( 2147483647L, TextFormat.ParseUInt64( "2147483647"));
-      Assert.AreEqual( 4294967295L, TextFormat.ParseUInt64( "4294967295"));
-      Assert.AreEqual( 4294967296L, TextFormat.ParseUInt64( "4294967296"));
+      Assert.AreEqual(0L, TextFormat.ParseUInt64("0"));
+      Assert.AreEqual(1L, TextFormat.ParseUInt64("1"));
+      Assert.AreEqual(12345L, TextFormat.ParseUInt64("12345"));
+      Assert.AreEqual(2147483647L, TextFormat.ParseUInt64("2147483647"));
+      Assert.AreEqual(4294967295L, TextFormat.ParseUInt64("4294967295"));
+      Assert.AreEqual(4294967296L, TextFormat.ParseUInt64("4294967296"));
       Assert.AreEqual(9223372036854775807UL, TextFormat.ParseUInt64("9223372036854775807"));
       Assert.AreEqual(9223372036854775808UL, TextFormat.ParseUInt64("9223372036854775808"));
       Assert.AreEqual(18446744073709551615UL, TextFormat.ParseUInt64("18446744073709551615"));

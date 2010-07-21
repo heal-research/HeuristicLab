@@ -20,7 +20,6 @@
 #endregion
 
 using System.Collections;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;

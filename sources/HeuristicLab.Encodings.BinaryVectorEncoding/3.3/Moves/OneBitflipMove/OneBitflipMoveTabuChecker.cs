@@ -19,8 +19,6 @@
  */
 #endregion
 
-using System;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -40,7 +38,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     }
     public ILookupParameter<BinaryVector> BinaryVectorParameter {
       get { return (LookupParameter<BinaryVector>)Parameters["BinaryVector"]; }
-    }      
+    }
     public ILookupParameter<ItemList<IItem>> TabuListParameter {
       get { return (ILookupParameter<ItemList<IItem>>)Parameters["TabuList"]; }
     }

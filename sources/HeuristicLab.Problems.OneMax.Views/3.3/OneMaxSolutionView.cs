@@ -20,13 +20,8 @@
 #endregion
 
 using System;
-using System.Drawing;
 using System.Windows.Forms;
-using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
-using HeuristicLab.Problems.OneMax;
-using HeuristicLab.Data;
-using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.OneMax.Views {
   /// <summary>

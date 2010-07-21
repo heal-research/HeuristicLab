@@ -33,22 +33,22 @@
 #endregion
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Google.ProtocolBuffers.Collections;
 using Google.ProtocolBuffers.Descriptors;
 using Google.ProtocolBuffers.FieldAccess;
-using System.Collections;
 
 namespace Google.ProtocolBuffers {
-  
+
   /// <summary>
   /// All generated protocol message classes extend this class. It implements
   /// most of the IMessage interface using reflection. Users
   /// can ignore this class as an implementation detail.
   /// </summary>
   public abstract class GeneratedMessage<TMessage, TBuilder> : AbstractMessage<TMessage, TBuilder>
-      where TMessage : GeneratedMessage<TMessage, TBuilder> 
-      where TBuilder : GeneratedBuilder<TMessage, TBuilder> {
+    where TMessage : GeneratedMessage<TMessage, TBuilder>
+    where TBuilder : GeneratedBuilder<TMessage, TBuilder> {
 
     private UnknownFieldSet unknownFields = UnknownFieldSet.DefaultInstance;
 
@@ -99,13 +99,13 @@ namespace Google.ProtocolBuffers {
             if (field.IsRepeated) {
               // We know it's an IList<T>, but not the exact type - so
               // IEnumerable is the best we can do. (C# generics aren't covariant yet.)
-              foreach (IMessage element in (IEnumerable) this[field]) {
+              foreach (IMessage element in (IEnumerable)this[field]) {
                 if (!element.IsInitialized) {
                   return false;
                 }
               }
             } else {
-              if (HasField(field) && !((IMessage) this[field]).IsInitialized) {
+              if (HasField(field) && !((IMessage)this[field]).IsInitialized) {
                 return false;
               }
             }
@@ -147,6 +147,6 @@ namespace Google.ProtocolBuffers {
     /// </summary>
     internal void SetUnknownFields(UnknownFieldSet fieldSet) {
       unknownFields = fieldSet;
-    }    
+    }
   }
 }

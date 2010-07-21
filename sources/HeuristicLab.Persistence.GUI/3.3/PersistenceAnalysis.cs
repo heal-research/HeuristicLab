@@ -22,11 +22,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using HeuristicLab.Persistence.Core;
 using System.Windows.Forms;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Reflection;
+using HeuristicLab.Persistence.Core;
 
 namespace HeuristicLab.Persistence.GUI {
   public class PersistenceAnalysis {
@@ -62,10 +59,10 @@ namespace HeuristicLab.Persistence.GUI {
           assembly.FullName.StartsWith("Mono") ||
           assembly.FullName.StartsWith("Netron"))
           continue;
-        foreach (var type in assembly.GetTypes()) {          
+        foreach (var type in assembly.GetTypes()) {
           if (type.IsInterface || type.IsAbstract ||
               type.FullName.StartsWith("System.") ||
-              type.FullName.StartsWith("Microsoft.") ||              
+              type.FullName.StartsWith("Microsoft.") ||
               type.FullName.Contains("<") ||
               type.FullName.Contains(">") ||
               DerivesFrom(typeof(Exception), type) ||
@@ -73,14 +70,15 @@ namespace HeuristicLab.Persistence.GUI {
               DerivesFrom(typeof(System.EventArgs), type) ||
               DerivesFrom(typeof(System.Attribute), type) ||
               type.GetInterface("HeuristicLab.MainForm.IUserInterfaceItem") != null
-            )            
+            )
             continue;
           try {
             if (!IsSerializable(type, config))
               types.Add(type);
             /* if (!IsCorrectlyStorable(type))
               storableInconsistentcy.Add(type); */
-          } catch {
+          }
+          catch {
             types.Add(type);
           }
         }
@@ -97,6 +95,6 @@ namespace HeuristicLab.Persistence.GUI {
           return false;
       }
       return true;
-    }  */  
+    }  */
   }
 }

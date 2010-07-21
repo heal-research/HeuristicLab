@@ -19,15 +19,8 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
-using System.Linq;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
-using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
   [StorableClass]

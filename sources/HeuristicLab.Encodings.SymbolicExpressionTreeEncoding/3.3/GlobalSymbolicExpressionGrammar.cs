@@ -19,15 +19,10 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using System.Xml;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableClass]
@@ -37,7 +32,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     private int minFunctionDefinitions;
     public int MinFunctionDefinitions {
       get { return minFunctionDefinitions; }
-      set { 
+      set {
         minFunctionDefinitions = value;
         UpdateAdfConstraints();
       }
@@ -46,7 +41,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     private int maxFunctionDefinitions;
     public int MaxFunctionDefinitions {
       get { return maxFunctionDefinitions; }
-      set { 
+      set {
         maxFunctionDefinitions = value;
         UpdateAdfConstraints();
       }
@@ -55,7 +50,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     private int minFunctionArguments;
     public int MinFunctionArguments {
       get { return minFunctionArguments; }
-      set { 
+      set {
         minFunctionArguments = value;
       }
     }
@@ -63,7 +58,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     private int maxFunctionArguments;
     public int MaxFunctionArguments {
       get { return maxFunctionArguments; }
-      set { 
+      set {
         maxFunctionArguments = value;
       }
     }
@@ -73,7 +68,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
 
 
-    public GlobalSymbolicExpressionGrammar(ISymbolicExpressionGrammar mainBranchGrammar )
+    public GlobalSymbolicExpressionGrammar(ISymbolicExpressionGrammar mainBranchGrammar)
       : base() {
       maxFunctionArguments = 3;
       maxFunctionDefinitions = 3;
@@ -147,7 +142,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     private void UpdateAdfConstraints() {
       SetMinSubtreeCount(StartSymbol, minFunctionDefinitions + 1);
       SetMaxSubtreeCount(StartSymbol, maxFunctionDefinitions + 1);
-      
+
       // ADF branches maxFunctionDefinitions 
       for (int argumentIndex = 1; argumentIndex < maxFunctionDefinitions + 1; argumentIndex++) {
         SetAllowedChild(StartSymbol, defunSymbol, argumentIndex);

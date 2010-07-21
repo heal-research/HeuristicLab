@@ -22,13 +22,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
-using System.Windows.Forms;
-using HeuristicLab.MainForm;
 using HeuristicLab.Data;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Optimization.Views {
   [Content(typeof(RunCollectionComparisonConstraint), true)]
@@ -72,7 +68,7 @@ namespace HeuristicLab.Optimization.Views {
               this.cmbConstraintColumn.Items.Add(columnName);
           }
         }
-         if (!string.IsNullOrEmpty(Content.ConstraintColumn)) {
+        if (!string.IsNullOrEmpty(Content.ConstraintColumn)) {
           this.cmbConstraintColumn.SelectedItem = Content.ConstraintColumn;
           if (Content.ConstraintData != null)
             txtConstraintData.Text = Content.ConstraintData.GetValue();

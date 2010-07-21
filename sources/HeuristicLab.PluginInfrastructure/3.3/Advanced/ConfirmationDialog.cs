@@ -19,17 +19,12 @@
  */
 #endregion
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
   internal partial class ConfirmationDialog : Form {
-    public ConfirmationDialog() : base() {
+    public ConfirmationDialog()
+      : base() {
       InitializeComponent();
       icon.Image = System.Drawing.SystemIcons.Exclamation.ToBitmap();
       DialogResult = DialogResult.Cancel;

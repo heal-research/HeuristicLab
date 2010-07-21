@@ -19,9 +19,9 @@
  */
 #endregion
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.RealVectorEncoding;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
   /// <summary>

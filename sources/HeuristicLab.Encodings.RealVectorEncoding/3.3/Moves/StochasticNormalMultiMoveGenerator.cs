@@ -19,14 +19,11 @@
  */
 #endregion
 
-using System;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Optimization;
-using HeuristicLab.Operators;
-using HeuristicLab.Parameters;
 using HeuristicLab.Data;
+using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {

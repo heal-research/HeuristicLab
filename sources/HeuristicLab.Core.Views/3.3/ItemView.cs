@@ -19,10 +19,7 @@
  */
 #endregion
 
-using System;
-using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
-using System.Threading;
 
 namespace HeuristicLab.Core.Views {
   /// <summary>

@@ -22,11 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using HeuristicLab.PluginInfrastructure.Manager;
-using System.IO;
-using System.ComponentModel;
-using System.Reflection;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced.DeploymentService {
   // extension of auto-generated DataContract class ProductDescription
@@ -34,7 +29,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced.DeploymentService {
   /// Product description as provided by the deployment service.
   /// A product has a name, a version and a list of plugins that are part of the product.
   /// </summary>
-  public partial class ProductDescription  {
+  public partial class ProductDescription {
     /// <summary>
     /// Initializes a new instance of <see cref="ProductDescription" />
     /// </summary>

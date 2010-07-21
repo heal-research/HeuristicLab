@@ -33,8 +33,8 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 
@@ -90,11 +90,14 @@ namespace Google.ProtocolBuffers {
 
         return (Func<CodedInputStream, ExtensionRegistry, TMessage>)Delegate.CreateDelegate(
           typeof(Func<CodedInputStream, ExtensionRegistry, TMessage>), builderBuilder, buildMethod);
-      } catch (ArgumentException e) {
+      }
+      catch (ArgumentException e) {
         typeInitializationException = e;
-      } catch (InvalidOperationException e) {
+      }
+      catch (InvalidOperationException e) {
         typeInitializationException = e;
-      } catch (InvalidCastException e) {
+      }
+      catch (InvalidCastException e) {
         // Can't see why this would happen, but best to know about it.
         typeInitializationException = e;
       }
@@ -124,8 +127,8 @@ namespace Google.ProtocolBuffers {
       return builderType;
     }
 
-// This is only ever fetched by reflection, so the compiler may
-// complain that it's unused
+    // This is only ever fetched by reflection, so the compiler may
+    // complain that it's unused
 #pragma warning disable 0169
     /// <summary>
     /// Method we'll use to build messageReader, with the first parameter fixed to TMessage.CreateBuilder. Note that we
@@ -135,9 +138,9 @@ namespace Google.ProtocolBuffers {
     /// for every message; the implicit reference conversion will be fine. In practice, TMessage2 and TMessage will
     /// be the same type when we construct the generic method by reflection.
     /// </summary>
-    private static TMessage BuildImpl<TMessage2, TBuilder>(Func<TBuilder> builderBuilder, CodedInputStream input, ExtensionRegistry registry) 
-        where TBuilder : IBuilder<TMessage2, TBuilder>
-        where TMessage2 : TMessage, IMessage<TMessage2, TBuilder> {
+    private static TMessage BuildImpl<TMessage2, TBuilder>(Func<TBuilder> builderBuilder, CodedInputStream input, ExtensionRegistry registry)
+      where TBuilder : IBuilder<TMessage2, TBuilder>
+      where TMessage2 : TMessage, IMessage<TMessage2, TBuilder> {
       TBuilder builder = builderBuilder();
       input.ReadMessage(builder, registry);
       return builder.Build();
@@ -155,8 +158,8 @@ namespace Google.ProtocolBuffers {
       this.sizeLimit = sizeLimit;
     }
 
-    private MessageStreamIterator(StreamProvider streamProvider, ExtensionRegistry extensionRegistry) 
-      : this (streamProvider, extensionRegistry, CodedInputStream.DefaultSizeLimit) {
+    private MessageStreamIterator(StreamProvider streamProvider, ExtensionRegistry extensionRegistry)
+      : this(streamProvider, extensionRegistry, CodedInputStream.DefaultSizeLimit) {
     }
 
     /// <summary>

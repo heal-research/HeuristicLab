@@ -19,11 +19,8 @@
  */
 #endregion
 
-using System;
-using System.Linq;
-using HeuristicLab.Optimization;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
+using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.DataAnalysis.MultiVariate {
   public interface IMultiVariateDataAnalysisEvaluator : IEvaluator {

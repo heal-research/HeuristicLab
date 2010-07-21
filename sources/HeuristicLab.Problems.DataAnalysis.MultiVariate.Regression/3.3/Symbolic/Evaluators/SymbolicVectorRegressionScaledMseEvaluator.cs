@@ -19,24 +19,16 @@
  */
 #endregion
 
-using System;
+using System.Collections.Generic;
 using System.Linq;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Problems.DataAnalysis.SupportVectorMachine;
-using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.Problems.DataAnalysis.Evaluators;
-using HeuristicLab.Parameters;
-using HeuristicLab.Optimization;
-using HeuristicLab.Operators;
-using HeuristicLab.Problems.DataAnalysis.Regression.Symbolic;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Problems.DataAnalysis.Symbolic;
-using System.Collections.Generic;
-using HeuristicLab.Problems.DataAnalysis.Regression;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis.MultiVariate.Regression.Symbolic.Interfaces;
+using HeuristicLab.Problems.DataAnalysis.Regression.Symbolic;
+using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Problems.DataAnalysis.MultiVariate.Regression.Symbolic.Evaluators {
   [Item("SymbolicVectorRegressionScaledMseEvaluator", "Represents an operator that calculates the scaled mean squared error for all components independently.")]

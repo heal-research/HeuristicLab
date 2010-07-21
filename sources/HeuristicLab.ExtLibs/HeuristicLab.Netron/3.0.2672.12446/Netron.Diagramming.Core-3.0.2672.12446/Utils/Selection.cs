@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Collections;
-using System.Text;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 namespace Netron.Diagramming.Core {
@@ -152,7 +150,7 @@ namespace Netron.Diagramming.Core {
       g.Transform = mController.View.ViewMatrix;
       g.SmoothingMode = SmoothingMode.HighQuality;
       Bundle bundle = new Bundle(SelectedItems.Copy());
-      return ImageExporter.FromBundle(bundle,g);
+      return ImageExporter.FromBundle(bundle, g);
     }
 
     public IConnector FindConnector(Predicate<IConnector> predicate) {

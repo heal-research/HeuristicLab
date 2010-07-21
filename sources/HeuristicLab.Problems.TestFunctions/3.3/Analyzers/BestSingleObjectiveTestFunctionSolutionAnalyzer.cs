@@ -19,15 +19,12 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using HeuristicLab.Optimization;
-using HeuristicLab.Data;
 using HeuristicLab.Core;
-using HeuristicLab.Operators;
+using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
+using HeuristicLab.Operators;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 

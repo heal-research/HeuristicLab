@@ -19,13 +19,12 @@
  */
 #endregion
 
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Operators;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.OneMax {
   /// <summary>
@@ -37,7 +36,7 @@ namespace HeuristicLab.Problems.OneMax {
     public ILookupParameter<DoubleValue> QualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
-    
+
     public ILookupParameter<BinaryVector> BinaryVectorParameter {
       get { return (ILookupParameter<BinaryVector>)Parameters["BinaryVector"]; }
     }

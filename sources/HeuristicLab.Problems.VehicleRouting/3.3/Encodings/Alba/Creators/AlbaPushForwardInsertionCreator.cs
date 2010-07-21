@@ -21,16 +21,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Operators;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Parameters;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Common;
 using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaPushForwardCreator", "An operator which creates a new alba VRP representation using the push forward insertion heuristic.")]
@@ -194,8 +190,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       beta = N(Beta.Value.Value, Math.Sqrt(BetaVariance.Value.Value), RandomParameter.ActualValue);
       gamma = N(Gamma.Value.Value, Math.Sqrt(GammaVariance.Value.Value), RandomParameter.ActualValue);
 
-      double x0 = CoordinatesParameter.ActualValue[0,0];
-      double y0 = CoordinatesParameter.ActualValue[0,1];
+      double x0 = CoordinatesParameter.ActualValue[0, 0];
+      double y0 = CoordinatesParameter.ActualValue[0, 1];
       double distance = 0;
       double cost = 0;
       double minimumCost = double.MaxValue;
@@ -211,10 +207,10 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
        */
       for (int i = 1; i <= CitiesParameter.ActualValue.Value; i++) {
         distance = Distance(i, 0);
-        if (CoordinatesParameter.ActualValue[i,0] < x0) distance = -distance;
+        if (CoordinatesParameter.ActualValue[i, 0] < x0) distance = -distance;
         cost = -alpha * distance + // distance 0 <-> City[i]
                  beta * (DueTimeParameter.ActualValue[i]) + // latest arrival time
-                 gamma * (Math.Asin((CoordinatesParameter.ActualValue[i,1] - y0) / distance) / 360 * distance); // polar angle
+                 gamma * (Math.Asin((CoordinatesParameter.ActualValue[i, 1] - y0) / distance) / 360 * distance); // polar angle
 
         index = 0;
         while (index < costList.Count && costList[index] < cost) index++;

@@ -19,21 +19,15 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using HeuristicLab.Persistence.Interfaces;
-using HeuristicLab.Persistence.Default.Xml;
-using HeuristicLab.Persistence.Core;
-using HeuristicLab.Persistence.Core.Tokens;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Default.DebugString {
 
   /// <summary>
   /// Simple write-only format for debugging purposes.
   /// </summary>
-  [StorableClass]  
+  [StorableClass]
   public class DebugString : ISerialData {
 
     /// <summary>

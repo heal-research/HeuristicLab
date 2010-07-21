@@ -20,14 +20,14 @@
 #endregion
 
 using System;
-using System.Linq;
 using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Collections.Generic;
 
 namespace HeuristicLab.Data {
   [Item("StringArray", "Represents an array of strings.")]

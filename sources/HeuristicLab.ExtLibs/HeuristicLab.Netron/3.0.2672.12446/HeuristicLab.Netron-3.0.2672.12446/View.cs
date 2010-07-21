@@ -29,12 +29,8 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Netron.Diagramming.Core;
 using System.Drawing;
-using System.Drawing.Drawing2D;
+using Netron.Diagramming.Core;
 
 namespace HeuristicLab.Netron {
   public class View : ViewBase {

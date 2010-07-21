@@ -19,12 +19,9 @@
  */
 #endregion
 
+using HeuristicLab.Core;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using HeuristicLab.Common;
-using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding_33.Tests {
 
@@ -111,7 +108,8 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding_33.Tests {
       try {
         BinaryVector actual;
         actual = target.Cross(random, parents);
-      } catch (System.ArgumentException) {
+      }
+      catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);

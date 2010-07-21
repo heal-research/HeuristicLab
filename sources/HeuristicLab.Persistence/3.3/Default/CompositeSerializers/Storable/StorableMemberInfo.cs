@@ -20,12 +20,7 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using HeuristicLab.Persistence.Interfaces;
-using HeuristicLab.Persistence.Core;
 using System.Reflection;
-using HeuristicLab.Persistence.Auxiliary;
 using System.Text;
 
 namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
@@ -58,5 +53,5 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     public Type GetPropertyDeclaringBaseType() {
       return ((PropertyInfo)MemberInfo).GetGetMethod(true).GetBaseDefinition().DeclaringType;
     }
-  }  
+  }
 }

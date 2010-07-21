@@ -21,12 +21,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Netron.Diagramming.Core;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Linq;
 using HeuristicLab.Netron;
+using Netron.Diagramming.Core;
 
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
@@ -221,7 +220,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
 
       SizeF titleSize = g.MeasureString(this.Title, ArtPalette.DefaultBoldFont, Rectangle.Width - 45);
       if (titleSize.Height + 10 > Rectangle.Height) {
-        headerHeight =  (int)titleSize.Height + 10;
+        headerHeight = (int)titleSize.Height + 10;
         this.UpdateLabels();
       }
 

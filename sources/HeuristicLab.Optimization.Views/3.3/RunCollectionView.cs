@@ -19,17 +19,16 @@
  */
 #endregion
 
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Windows.Forms;
 using HeuristicLab.Collections;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
-using System.Windows.Forms;
-using System;
-using System.Drawing;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace HeuristicLab.Optimization.Views {
   [View("RunCollection View")]

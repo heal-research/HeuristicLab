@@ -19,10 +19,8 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace HeuristicLab.MainForm {
   public abstract class PositionableUserInterfaceItem : IPositionableUserInterfaceItem {
@@ -30,6 +28,6 @@ namespace HeuristicLab.MainForm {
 
     public virtual IEnumerable<string> Structure {
       get { return Enumerable.Empty<string>(); }
-    } 
+    }
   }
 }

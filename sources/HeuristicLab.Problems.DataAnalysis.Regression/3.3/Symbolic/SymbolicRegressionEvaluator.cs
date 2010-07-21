@@ -21,20 +21,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Drawing;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Optimization;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.Operators;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
-using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [Item("SymbolicRegressionEvaluator", "Evaluates a symbolic regression solution.")]

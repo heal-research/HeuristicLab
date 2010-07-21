@@ -22,12 +22,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using System.Xml;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// <summary>
@@ -107,10 +105,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     //copy constructor for cloning
-    protected DefaultSymbolicExpressionGrammar(DefaultSymbolicExpressionGrammar copy) :base() {
+    protected DefaultSymbolicExpressionGrammar(DefaultSymbolicExpressionGrammar copy)
+      : base() {
       this.minSubTreeCount = new Dictionary<string, int>(copy.minSubTreeCount);
       this.maxSubTreeCount = new Dictionary<string, int>(copy.maxSubTreeCount);
-      
+
       this.startSymbol = copy.startSymbol;
       this.allowedChildSymbols = new Dictionary<string, List<List<string>>>();
       foreach (var entry in copy.allowedChildSymbols) {

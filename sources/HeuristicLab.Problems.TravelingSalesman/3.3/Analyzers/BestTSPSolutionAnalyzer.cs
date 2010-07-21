@@ -20,7 +20,6 @@
 #endregion
 
 using System.Linq;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
@@ -85,7 +84,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       if (!max)
         i = qualities.Select((x, index) => new { index, x.Value }).OrderBy(x => x.Value).First().index;
       else i = qualities.Select((x, index) => new { index, x.Value }).OrderByDescending(x => x.Value).First().index;
-      
+
       if (bestKnownQuality == null ||
           max && qualities[i].Value > bestKnownQuality.Value ||
           !max && qualities[i].Value < bestKnownQuality.Value) {

@@ -20,20 +20,13 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using HeuristicLab.MainForm;
 using HeuristicLab.Core;
-using HeuristicLab.Core.Views;
-using Netron.Diagramming.Core;
-using HeuristicLab.Parameters;
+using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
-using HeuristicLab.Collections;
+using Netron.Diagramming.Core;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
   [View("OperatorGraph View (Chart)")]

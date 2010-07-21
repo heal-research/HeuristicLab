@@ -19,9 +19,6 @@
  */
 #endregion
 
-using System;
-using System.Linq;
-using HeuristicLab.Optimization;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Problems.DataAnalysis.MultiVariate {

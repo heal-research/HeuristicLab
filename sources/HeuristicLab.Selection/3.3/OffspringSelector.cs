@@ -20,8 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -106,7 +104,7 @@ namespace HeuristicLab.Selection {
         successfulOffspring = new IntValue(0);
         OffspringPopulationWinnersParameter.ActualValue = successfulOffspring;
       } else successfulOffspring = OffspringPopulationWinnersParameter.ActualValue;
-      
+
       int worseOffspringNeeded = (int)((1 - successRatio) * populationSize) - (population.Count - successfulOffspring.Value);
       int successfulOffspringAdded = 0;
 
@@ -149,7 +147,7 @@ namespace HeuristicLab.Selection {
         // more children required -> reduce left and start children generation again
         scope.SubScopes.Remove(parents);
         scope.SubScopes.Remove(offspring);
-        while(parents.SubScopes.Count > 0)
+        while (parents.SubScopes.Count > 0)
           scope.SubScopes.Add(parents.SubScopes[0]);
 
         IOperator moreOffspring = OffspringCreatorParameter.ActualValue as IOperator;

@@ -20,15 +20,12 @@
 #endregion
 
 using System;
-using System.Linq;
-using HeuristicLab.Persistence.Interfaces;
-using HeuristicLab.Persistence.Core;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Globalization;
 using System.Text;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Persistence.Auxiliary;
+using HeuristicLab.Persistence.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Default.CompositeSerializers {
 
@@ -142,9 +139,11 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
           }
         }
         return a;
-      } catch (InvalidOperationException e) {
+      }
+      catch (InvalidOperationException e) {
         throw new PersistenceException("Insuffictient data to deserialize compact array", e);
-      } catch (InvalidCastException e) {
+      }
+      catch (InvalidCastException e) {
         throw new PersistenceException("Invalid element data during compact array deserialization", e);
       }
     }

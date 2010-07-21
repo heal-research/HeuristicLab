@@ -1,6 +1,4 @@
 using System;
-using System.Diagnostics;
-using System.Collections;
 using System.Drawing;
 using System.Windows.Forms;
 

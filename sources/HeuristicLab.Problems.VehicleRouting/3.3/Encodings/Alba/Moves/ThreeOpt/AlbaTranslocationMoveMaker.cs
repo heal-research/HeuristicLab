@@ -19,16 +19,11 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
-using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Parameters;
-using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaTranslocationMoveMaker", "An operator which makes translocation moves for the alba representation.")]
@@ -56,7 +51,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       get { return moveMaker.PermutationParameter; }
     }
 
-    public AlbaTranslocationMoveMaker(): base() {
+    public AlbaTranslocationMoveMaker()
+      : base() {
       moveMaker = new TranslocationMoveMaker();
     }
   }

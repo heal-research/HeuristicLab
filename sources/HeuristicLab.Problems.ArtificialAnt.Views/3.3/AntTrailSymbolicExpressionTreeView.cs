@@ -20,21 +20,17 @@
 #endregion
 
 using System;
-using System.Drawing;
 using System.Windows.Forms;
 using HeuristicLab.Core.Views;
-using HeuristicLab.Data;
-using HeuristicLab.MainForm;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using System.Collections.Generic;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Problems.ArtificialAnt.Views {
   [View("Artificial Ant Symbolic Expression Tree View")]
   [Content(typeof(AntTrail), false)]
   public sealed partial class AntTrailSymbolicExpressionTreeView : ItemView {
     private GraphicalSymbolicExpressionTreeView treeView;
-    
+
     public new AntTrail Content {
       get { return (AntTrail)base.Content; }
       set { base.Content = value; }

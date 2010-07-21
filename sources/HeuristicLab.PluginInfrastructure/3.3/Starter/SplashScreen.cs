@@ -20,15 +20,11 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Drawing;
-using System.Windows.Forms;
-using System.Reflection;
-using System.Linq;
-using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.PluginInfrastructure.Manager;
 using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
+using System.Windows.Forms;
+using HeuristicLab.PluginInfrastructure.Manager;
 
 namespace HeuristicLab.PluginInfrastructure.Starter {
   internal partial class SplashScreen : Form {

@@ -36,7 +36,6 @@ using System;
 using System.IO;
 using Google.ProtocolBuffers.TestProtos;
 using NUnit.Framework;
-using System.Diagnostics;
 
 namespace Google.ProtocolBuffers {
   [TestFixture]
@@ -97,7 +96,8 @@ namespace Google.ProtocolBuffers {
       try {
         input.ReadRawVarint32();
         Assert.Fail("Should have thrown an exception.");
-      } catch (InvalidProtocolBufferException e) {
+      }
+      catch (InvalidProtocolBufferException e) {
         Assert.AreEqual(expected.Message, e.Message);
       }
 
@@ -105,7 +105,8 @@ namespace Google.ProtocolBuffers {
       try {
         input.ReadRawVarint64();
         Assert.Fail("Should have thrown an exception.");
-      } catch (InvalidProtocolBufferException e) {
+      }
+      catch (InvalidProtocolBufferException e) {
         Assert.AreEqual(expected.Message, e.Message);
       }
 
@@ -113,7 +114,8 @@ namespace Google.ProtocolBuffers {
       try {
         CodedInputStream.ReadRawVarint32(new MemoryStream(data));
         Assert.Fail("Should have thrown an exception.");
-      } catch (InvalidProtocolBufferException e) {
+      }
+      catch (InvalidProtocolBufferException e) {
         Assert.AreEqual(expected.Message, e.Message);
       }
     }
@@ -326,11 +328,12 @@ namespace Google.ProtocolBuffers {
       try {
         input.ReadBytes();
         Assert.Fail("Should have thrown an exception!");
-      } catch (InvalidProtocolBufferException) {
+      }
+      catch (InvalidProtocolBufferException) {
         // success.
       }
     }
-    
+
     private static TestRecursiveMessage MakeRecursiveMessage(int depth) {
       if (depth == 0) {
         return TestRecursiveMessage.CreateBuilder().SetI(5).Build();
@@ -360,7 +363,8 @@ namespace Google.ProtocolBuffers {
       try {
         TestRecursiveMessage.ParseFrom(data65);
         Assert.Fail("Should have thrown an exception!");
-      } catch (InvalidProtocolBufferException) {
+      }
+      catch (InvalidProtocolBufferException) {
         // success.
       }
 
@@ -369,7 +373,8 @@ namespace Google.ProtocolBuffers {
       try {
         TestRecursiveMessage.ParseFrom(input);
         Assert.Fail("Should have thrown an exception!");
-      } catch (InvalidProtocolBufferException) {
+      }
+      catch (InvalidProtocolBufferException) {
         // success.
       }
     }
@@ -385,7 +390,8 @@ namespace Google.ProtocolBuffers {
       try {
         TestAllTypes.ParseFrom(input);
         Assert.Fail("Should have thrown an exception!");
-      } catch (InvalidProtocolBufferException) {
+      }
+      catch (InvalidProtocolBufferException) {
         // success.
       }
     }
@@ -400,7 +406,8 @@ namespace Google.ProtocolBuffers {
       try {
         input.ReadRawByte();
         Assert.Fail("Should have thrown an exception!");
-      } catch (InvalidProtocolBufferException) {
+      }
+      catch (InvalidProtocolBufferException) {
         // Success.
       }
 
@@ -410,7 +417,8 @@ namespace Google.ProtocolBuffers {
       try {
         input.ReadRawBytes(16);  // Hits limit again.
         Assert.Fail("Should have thrown an exception!");
-      } catch (InvalidProtocolBufferException) {
+      }
+      catch (InvalidProtocolBufferException) {
         // Success.
       }
     }
@@ -421,7 +429,7 @@ namespace Google.ProtocolBuffers {
     /// "replacement character" U+FFFD.
     /// </summary>
     [Test]
-    public void ReadInvalidUtf8()  {
+    public void ReadInvalidUtf8() {
       MemoryStream ms = new MemoryStream();
       CodedOutputStream output = CodedOutputStream.CreateInstance(ms);
 

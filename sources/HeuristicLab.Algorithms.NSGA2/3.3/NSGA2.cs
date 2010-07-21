@@ -21,18 +21,16 @@
 
 using System;
 using System.Linq;
+using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
+using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Analysis;
-using HeuristicLab.Random;
-using HeuristicLab.Optimization.Operators;
 using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Selection;
-using HeuristicLab.Operators;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.NSGA2 {
   /// <summary>

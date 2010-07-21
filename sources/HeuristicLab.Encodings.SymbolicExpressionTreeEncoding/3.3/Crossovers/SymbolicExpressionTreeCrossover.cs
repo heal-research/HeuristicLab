@@ -19,16 +19,12 @@
  */
 #endregion
 
-using HeuristicLab.Common;
+using System;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Operators;
-using HeuristicLab.Optimization;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System;
-using System.Diagnostics;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Crossovers {
   /// <summary>
@@ -79,14 +75,14 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Crossovers {
       bool success;
       SymbolicExpressionTree result = Cross(random, parent0, parent1,
         MaxTreeSizeParameter.ActualValue, MaxTreeHeightParameter.ActualValue, out success);
-      
+
       if (!success) FailedCrossoverEvents.Value++;
 
       ChildParameter.ActualValue = result;
       return base.Apply();
     }
 
-    protected abstract SymbolicExpressionTree Cross(IRandom random, 
+    protected abstract SymbolicExpressionTree Cross(IRandom random,
       SymbolicExpressionTree parent0, SymbolicExpressionTree parent1,
       IntValue maxTreeSize, IntValue maxTreeHeight, out bool success);
   }

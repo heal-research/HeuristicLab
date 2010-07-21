@@ -26,12 +26,7 @@ using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Persistence.Auxiliary;
 using HeuristicLab.Persistence.Core;
-using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Persistence.Interfaces;
-using System.Text;
-using HeuristicLab.Persistence.Default.CompositeSerializers;
-using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Persistence.GUI {
 
@@ -58,7 +53,8 @@ namespace HeuristicLab.Persistence.GUI {
       try {
         ConfigurationService.Instance.LoadSettings(true);
         UpdateFromConfigurationService();
-      } catch (PersistenceException) {
+      }
+      catch (PersistenceException) {
         MessageBox.Show(
           "Persistence settings could not be loaded.\r\n" +
           "Default configurations will be used instead.",
@@ -454,6 +450,6 @@ namespace HeuristicLab.Persistence.GUI {
 
   }
 
-  
+
 
 }

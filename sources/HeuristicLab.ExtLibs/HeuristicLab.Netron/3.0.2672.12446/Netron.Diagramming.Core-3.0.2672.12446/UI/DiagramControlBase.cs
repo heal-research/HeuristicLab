@@ -1,12 +1,10 @@
 using System;
-using System.IO;
-using System.Collections.Generic;
-using System.Text;
+using System.Collections;
 using System.ComponentModel;
-using System.Windows.Forms;
 using System.Drawing;
 using System.Drawing.Printing;
-using System.Collections;
+using System.IO;
+using System.Windows.Forms;
 namespace Netron.Diagramming.Core {
   /// <summary>
   /// Abstract base class for the various diagram control representations 

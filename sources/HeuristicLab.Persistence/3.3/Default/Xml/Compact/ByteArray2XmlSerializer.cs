@@ -19,10 +19,6 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
   internal class ByteArray2XmlSerializer<T> : NumberArray2XmlSerializerBase<T> where T : class {

@@ -21,18 +21,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Optimization;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.Operators;
 using HeuristicLab.Problems.DataAnalysis.Evaluators;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
@@ -74,7 +68,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
 
     public static double Calculate(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, Dataset dataset, string targetVariable, IEnumerable<int> rows, out double beta, out double alpha) {
-      IEnumerable<double> originalValues = dataset.GetEnumeratedVariableValues(targetVariable,rows);
+      IEnumerable<double> originalValues = dataset.GetEnumeratedVariableValues(targetVariable, rows);
       IEnumerable<double> estimatedValues = interpreter.GetSymbolicExpressionTreeValues(solution, dataset, rows);
       CalculateScalingParameters(originalValues, estimatedValues, out beta, out alpha);
 

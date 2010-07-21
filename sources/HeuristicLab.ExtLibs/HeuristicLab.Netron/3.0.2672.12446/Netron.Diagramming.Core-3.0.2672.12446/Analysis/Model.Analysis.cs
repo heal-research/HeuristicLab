@@ -1,9 +1,6 @@
 using System;
-using System.Drawing;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Text;
 using Netron.Diagramming.Core.Analysis;
 namespace Netron.Diagramming.Core {
   public partial class Model : IGraph, ITree {

@@ -23,9 +23,7 @@ using System;
 using System.Windows.Forms;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
-using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Optimization.Views {

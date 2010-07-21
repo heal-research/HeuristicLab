@@ -19,22 +19,14 @@
  */
 #endregion
 
-using System.Linq;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Operators;
-using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Problems.DataAnalysis.Regression.Symbolic;
-using HeuristicLab.Problems.DataAnalysis.Symbolic;
-using System.Collections.Generic;
-using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
-using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.Analysis;
 using HeuristicLab.Problems.DataAnalysis.Evaluators;
+using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
   /// <summary>
@@ -101,7 +93,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       Parameters.Add(new ValueLookupParameter<DoubleValue>(MeanSquaredErrorQualityParameterName, "The mean squared error value of the output of the model."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>(RSQuaredQualityParameterName, "The R² correlation coefficient of the output of the model and the original target values."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>(RelativeErrorQualityParameterName, "The average relative percentage error of the output of the model."));
-      
+
       #region operator initialization
       SimpleSymbolicRegressionEvaluator simpleEvaluator = new SimpleSymbolicRegressionEvaluator();
       SimpleRSquaredEvaluator simpleR2Evalator = new SimpleRSquaredEvaluator();

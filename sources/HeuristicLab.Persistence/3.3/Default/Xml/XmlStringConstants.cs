@@ -19,15 +19,6 @@
  */
 #endregion
 
-using System.Collections.Generic;
-using System;
-using System.Text;
-using HeuristicLab.Persistence.Interfaces;
-using HeuristicLab.Persistence.Core;
-using System.IO;
-using ICSharpCode.SharpZipLib.Zip;
-using HeuristicLab.Tracing;
-using HeuristicLab.Persistence.Core.Tokens;
 
 namespace HeuristicLab.Persistence.Default.Xml {
 
@@ -40,5 +31,5 @@ namespace HeuristicLab.Persistence.Default.Xml {
     public const string TYPE = "TYPE";
     public const string METAINFO = "METAINFO";
   }
-  
+
 }

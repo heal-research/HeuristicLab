@@ -20,24 +20,23 @@
 #endregion
 
 using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using HeuristicLab.Persistence.Core;
 using System.Collections;
-using HeuristicLab.Persistence.Default.Xml;
-using HeuristicLab.Persistence.Default.DebugString;
-using System.IO;
-using System.Reflection;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Persistence.Interfaces;
-using HeuristicLab.Persistence.Default.Xml.Primitive;
-using HeuristicLab.Persistence.Default.CompositeSerializers;
-using HeuristicLab.Persistence.Auxiliary;
-using System.Text.RegularExpressions;
+using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Text.RegularExpressions;
+using HeuristicLab.Persistence.Auxiliary;
+using HeuristicLab.Persistence.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Persistence.Default.DebugString;
+using HeuristicLab.Persistence.Default.Xml;
+using HeuristicLab.Persistence.Default.Xml.Primitive;
+using HeuristicLab.Persistence.Interfaces;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Persistence_33.Tests {
 
@@ -606,7 +605,8 @@ namespace HeuristicLab.Persistence_33.Tests {
       try {
         XmlGenerator.Serialize(c, tempFile);
         Assert.Fail("Exception not thrown");
-      } catch (PersistenceException) {
+      }
+      catch (PersistenceException) {
       }
     }
 
@@ -618,7 +618,8 @@ namespace HeuristicLab.Persistence_33.Tests {
       try {
         XmlGenerator.Serialize(s, tempFile);
         Assert.Fail("Exception expected");
-      } catch (PersistenceException) { }
+      }
+      catch (PersistenceException) { }
       List<int> newList = (List<int>)XmlParser.Deserialize(tempFile);
       Assert.AreEqual(list[0], newList[0]);
       Assert.AreEqual(list[1], newList[1]);
@@ -657,7 +658,8 @@ namespace HeuristicLab.Persistence_33.Tests {
           tokens.Append(token.ToString());
         }
         Assert.Fail("Exception expected");
-      } catch (PersistenceException px) {
+      }
+      catch (PersistenceException px) {
         Assert.AreEqual(3, px.Data.Count);
       }
     }
@@ -685,7 +687,8 @@ namespace HeuristicLab.Persistence_33.Tests {
       try {
         d = new Deserializer(XmlParser.ParseTypeCache(new StringReader(newTypeString)));
         Assert.Fail("Exception expected");
-      } catch (PersistenceException x) {
+      }
+      catch (PersistenceException x) {
         Assert.IsTrue(x.Message.Contains("incompatible"));
       }
       newTypeString = Regex.Replace(typeString.ToString(),
@@ -694,7 +697,8 @@ namespace HeuristicLab.Persistence_33.Tests {
       try {
         d = new Deserializer(XmlParser.ParseTypeCache(new StringReader(newTypeString)));
         Assert.Fail("Exception expected");
-      } catch (PersistenceException x) {
+      }
+      catch (PersistenceException x) {
         Assert.IsTrue(x.Message.Contains("newer"));
       }
     }
@@ -861,7 +865,8 @@ namespace HeuristicLab.Persistence_33.Tests {
       try {
         ExplodingDefaultConstructor newX = (ExplodingDefaultConstructor)XmlParser.Deserialize(tempFile);
         Assert.Fail("Exception expected");
-      } catch (PersistenceException pe) {
+      }
+      catch (PersistenceException pe) {
         Assert.AreEqual(pe.InnerException.Message, "this constructor will always fail");
       }
     }
@@ -872,7 +877,8 @@ namespace HeuristicLab.Persistence_33.Tests {
       try {
         XmlGenerator.Serialize(ns, tempFile);
         Assert.Fail("PersistenceException expected");
-      } catch (PersistenceException x) {
+      }
+      catch (PersistenceException x) {
         Assert.IsTrue(x.Message.Contains(new StorableSerializer().JustifyRejection(typeof(NonSerializable))));
       }
     }

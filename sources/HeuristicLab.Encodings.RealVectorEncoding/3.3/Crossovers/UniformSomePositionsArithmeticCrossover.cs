@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -73,7 +72,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       if (length != parent2.Length) throw new ArgumentException("UniformSomePositionsArithmeticCrossover: The parent vectors are of different length.", "parent1");
       if (alpha.Value < 0 || alpha.Value > 1) throw new ArgumentException("UniformSomePositionsArithmeticCrossover: Parameter alpha must be in the range [0;1]", "alpha");
       if (probability.Value < 0 || probability.Value > 1) throw new ArgumentException("UniformSomePositionsArithmeticCrossover: Parameter probability must be in the range [0;1]", "probability");
-      
+
       RealVector result = new RealVector(length);
       for (int i = 0; i < length; i++) {
         if (random.NextDouble() < probability.Value)
@@ -91,7 +90,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// <param name="random">The random number generator.</param>
     /// <param name="parents">The collection of parents (must be of size 2).</param>
     /// <returns>The vector resulting from the crossover.</returns>
-    protected override RealVector  Cross(IRandom random, ItemArray<RealVector> parents) {
+    protected override RealVector Cross(IRandom random, ItemArray<RealVector> parents) {
       if (parents.Length != 2) throw new ArgumentException("UniformSomePositionsArithmeticCrossover: There must be exactly two parents.", "parents");
       if (AlphaParameter.ActualValue == null) throw new InvalidOperationException("UniformSomePositionsArithmeticCrossover: Parameter " + AlphaParameter.ActualName + " could not be found.");
       if (ProbabilityParameter.ActualValue == null) throw new InvalidOperationException("UniformSomePositionsArithmeticCrossover: Parameter " + ProbabilityParameter.ActualName + " could not be found.");

@@ -33,11 +33,11 @@
 #endregion
 
 using System.Collections.Generic;
-using System.Text;
-using Google.ProtocolBuffers.DescriptorProtos;
 using System.IO;
-using Google.ProtocolBuffers.Descriptors;
+using System.Text;
 using Google.ProtocolBuffers.Collections;
+using Google.ProtocolBuffers.DescriptorProtos;
+using Google.ProtocolBuffers.Descriptors;
 
 namespace Google.ProtocolBuffers.ProtoGen {
   /// <summary>
@@ -61,7 +61,7 @@ namespace Google.ProtocolBuffers.ProtoGen {
 
     public void Generate() {
       foreach (string inputFile in options.InputFiles) {
-        FileDescriptorSet descriptorProtos;       
+        FileDescriptorSet descriptorProtos;
         ExtensionRegistry extensionRegistry = ExtensionRegistry.CreateInstance();
         extensionRegistry.Add(CSharpOptions.CSharpFileOptions);
         extensionRegistry.Add(CSharpOptions.CSharpFieldOptions);

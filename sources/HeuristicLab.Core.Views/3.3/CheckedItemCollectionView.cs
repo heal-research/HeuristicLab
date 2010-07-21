@@ -19,13 +19,6 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Collections;
 using HeuristicLab.MainForm;
@@ -39,7 +32,7 @@ namespace HeuristicLab.Core.Views {
       get { return (ICheckedItemCollection<T>)base.Content; }
       set { base.Content = value; }
     }
-    
+
     public CheckedItemCollectionView()
       : base() {
       InitializeComponent();
@@ -98,7 +91,7 @@ namespace HeuristicLab.Core.Views {
           }
         }
       }
-    }      
+    }
     #endregion
   }
 }

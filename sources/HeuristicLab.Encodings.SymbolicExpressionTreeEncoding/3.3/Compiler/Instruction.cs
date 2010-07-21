@@ -19,13 +19,6 @@
  */
 #endregion
 
-using System;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Common;
-using HeuristicLab.Core;
-using System.Collections.Generic;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Compiler {
   // total size of this struct should be small to improve cache access while executing the code

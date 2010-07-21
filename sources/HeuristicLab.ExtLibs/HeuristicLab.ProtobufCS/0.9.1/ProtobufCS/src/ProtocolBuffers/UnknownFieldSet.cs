@@ -37,7 +37,6 @@ using System.Collections.Generic;
 using System.IO;
 using Google.ProtocolBuffers.Collections;
 using Google.ProtocolBuffers.Descriptors;
-using Google.ProtocolBuffers.DescriptorProtos;
 
 namespace Google.ProtocolBuffers {
   /// <summary>
@@ -120,14 +119,14 @@ namespace Google.ProtocolBuffers {
     /// <summary>
     /// Gets the number of bytes required to encode this set.
     /// </summary>
-    public int SerializedSize { 
+    public int SerializedSize {
       get {
         int result = 0;
         foreach (KeyValuePair<int, UnknownField> entry in fields) {
           result += entry.Value.GetSerializedSize(entry.Key);
         }
         return result;
-      } 
+      }
     }
 
     /// <summary>
@@ -240,8 +239,7 @@ namespace Google.ProtocolBuffers {
     /// <summary>
     /// Builder for UnknownFieldSets.
     /// </summary>
-    public sealed class Builder
-    {
+    public sealed class Builder {
       /// <summary>
       /// Mapping from number to field. Note that by using a SortedList we ensure
       /// that the fields will be serialized in ascending order.
@@ -319,7 +317,7 @@ namespace Google.ProtocolBuffers {
         lastField = null;
         return this;
       }
-      
+
       /// <summary>
       /// Parse an entire message from <paramref name="input"/> and merge
       /// its fields into this set.
@@ -334,13 +332,13 @@ namespace Google.ProtocolBuffers {
         return this;
       }
 
-        /// <summary>
-        /// Parse a single field from <paramref name="input"/> and merge it
-        /// into this set.
-        /// </summary>
-        /// <param name="tag">The field's tag number, which was already parsed.</param>
-        /// <param name="input">The coded input stream containing the field</param>
-        /// <returns>false if the tag is an "end group" tag, true otherwise</returns>
+      /// <summary>
+      /// Parse a single field from <paramref name="input"/> and merge it
+      /// into this set.
+      /// </summary>
+      /// <param name="tag">The field's tag number, which was already parsed.</param>
+      /// <param name="input">The coded input stream containing the field</param>
+      /// <returns>false if the tag is an "end group" tag, true otherwise</returns>
       [CLSCompliant(false)]
       public bool MergeFieldFrom(uint tag, CodedInputStream input) {
         int number = WireFormat.GetTagFieldNumber(tag);
@@ -355,11 +353,11 @@ namespace Google.ProtocolBuffers {
             GetFieldBuilder(number).AddLengthDelimited(input.ReadBytes());
             return true;
           case WireFormat.WireType.StartGroup: {
-            Builder subBuilder = CreateBuilder();
-            input.ReadUnknownGroup(number, subBuilder);
-            GetFieldBuilder(number).AddGroup(subBuilder.Build());
-            return true;
-          }
+              Builder subBuilder = CreateBuilder();
+              input.ReadUnknownGroup(number, subBuilder);
+              GetFieldBuilder(number).AddGroup(subBuilder.Build());
+              return true;
+            }
           case WireFormat.WireType.EndGroup:
             return false;
           case WireFormat.WireType.Fixed32:
@@ -427,7 +425,7 @@ namespace Google.ProtocolBuffers {
       /// </summary>
       public Builder MergeFrom(UnknownFieldSet other) {
         if (other != DefaultInstance) {
-          foreach(KeyValuePair<int, UnknownField> entry in other.fields) {
+          foreach (KeyValuePair<int, UnknownField> entry in other.fields) {
             MergeField(entry.Key, entry.Value);
           }
         }
@@ -485,7 +483,7 @@ namespace Google.ProtocolBuffers {
       /// <param name="builder">Builder to merge field into, if it's a known field</param>
       /// <param name="tag">The tag, which should already have been read from the input</param>
       /// <returns>true unless the tag is an end-group tag</returns>
-      internal bool MergeFieldFrom(CodedInputStream input, 
+      internal bool MergeFieldFrom(CodedInputStream input,
           ExtensionRegistry extensionRegistry, IBuilder builder, uint tag) {
 
         MessageDescriptor type = builder.DescriptorForType;

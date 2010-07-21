@@ -21,21 +21,17 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Common;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
-using HeuristicLab.MainForm;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views;
 using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Problems.DataAnalysis.Regression.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic {
   public partial class InteractiveSymbolicRegressionSolutionSimplifierView : AsynchronousContentView {

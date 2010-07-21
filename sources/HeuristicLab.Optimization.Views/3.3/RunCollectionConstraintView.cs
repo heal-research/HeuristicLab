@@ -20,17 +20,11 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Windows.Forms;
-using HeuristicLab.Core.Views;
 using HeuristicLab.Core;
+using HeuristicLab.Core.Views;
 using HeuristicLab.Data;
 using HeuristicLab.MainForm;
-using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Optimization.Views {
   [Content(typeof(IRunCollectionConstraint))]
@@ -105,7 +99,7 @@ namespace HeuristicLab.Optimization.Views {
     }
     private void cmbConstraintColumn_SelectedIndexChanged(object sender, EventArgs e) {
       if (Content.ConstrainedValue != null) {
-        Content.ConstraintColumn = (string) cmbConstraintColumn.SelectedItem;
+        Content.ConstraintColumn = (string)cmbConstraintColumn.SelectedItem;
       }
     }
 

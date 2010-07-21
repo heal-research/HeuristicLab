@@ -19,7 +19,6 @@
  */
 #endregion
 
-using HeuristicLab.Collections;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Core.Views {

@@ -20,13 +20,12 @@
 #endregion
 
 using System;
-using HeuristicLab.Common;
+using System.Collections.Generic;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Collections.Generic;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("StochasticInsertionMultiMoveGenerator", "Generates all possible insertion moves (3-opt) from a few numbers in a given permutation.")]
@@ -56,9 +55,9 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       int count = 0;
       HashSet<int> usedIndices = new HashSet<int>();
       while (count < sampleSize) {
-        
+
         int index = random.Next(length);
-        
+
         if (usedIndices.Count != length)
           while (usedIndices.Contains(index))
             index = random.Next(length);

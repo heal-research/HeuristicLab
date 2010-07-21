@@ -19,10 +19,7 @@
  */
 #endregion
 
-using System;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Common;
-using HeuristicLab.Core;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
   [StorableClass]
   public sealed class DefunTreeNode : SymbolicExpressionTreeTopLevelNode {

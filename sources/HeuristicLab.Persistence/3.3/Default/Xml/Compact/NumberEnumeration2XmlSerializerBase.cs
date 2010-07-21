@@ -19,13 +19,12 @@
  */
 #endregion
 
+using System;
 using System.Collections;
 using System.Text;
-using HeuristicLab.Persistence.Interfaces;
-using System;
+using HeuristicLab.Persistence.Auxiliary;
 using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Persistence.Auxiliary;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
 
@@ -54,9 +53,11 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
           Add(enumeration, ParseValue(value));
         }
         return (T)enumeration;
-      } catch (InvalidCastException e) {
+      }
+      catch (InvalidCastException e) {
         throw new PersistenceException("Invalid element data during reconstruction of number enumerable.", e);
-      } catch (OverflowException e) {
+      }
+      catch (OverflowException e) {
         throw new PersistenceException("Overflow during element parsing while trying to reconstruct number enumerable.", e);
       }
     }

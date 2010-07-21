@@ -19,16 +19,15 @@
  */
 #endregion
 
-using HeuristicLab.Common;
 using HeuristicLab.Core;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using HeuristicLab.Encodings.PermutationEncoding;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
-    /// <summary>
-    ///This is a test class for CosaCrossoverTest and is intended
-    ///to contain all CosaCrossoverTest Unit Tests
-    ///</summary>
+  /// <summary>
+  ///This is a test class for CosaCrossoverTest and is intended
+  ///to contain all CosaCrossoverTest Unit Tests
+  ///</summary>
   [TestClass()]
   public class CosaCrossoverTest {
 
@@ -86,7 +85,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
     [DeploymentItem("HeuristicLab.Encodings.PermutationEncoding-3.3.dll")]
     public void CosaCrossoverCrossTest() {
       TestRandom random = new TestRandom();
-      CosaCrossover_Accessor target = 
+      CosaCrossover_Accessor target =
         new CosaCrossover_Accessor(new PrivateObject(typeof(CosaCrossover)));
       // perform a test with more than two parents
       random.Reset();
@@ -94,7 +93,8 @@ namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
       try {
         target.Cross(random, new ItemArray<Permutation>(new Permutation[] { 
           new Permutation(PermutationTypes.RelativeUndirected, 4), new Permutation(PermutationTypes.RelativeUndirected, 4), new Permutation(PermutationTypes.RelativeUndirected, 4)}));
-      } catch (System.InvalidOperationException) {
+      }
+      catch (System.InvalidOperationException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);
@@ -143,13 +143,14 @@ namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
       actual = CosaCrossover.Apply(random, parent1, parent2);
       Assert.IsTrue(actual.Validate());
       Assert.IsTrue(Auxiliary.PermutationIsEqualByPosition(expected, actual));
-      
+
       // perform a test when the two permutations are of unequal length
       random.Reset();
       bool exceptionFired = false;
       try {
         CosaCrossover.Apply(random, new Permutation(PermutationTypes.RelativeUndirected, 8), new Permutation(PermutationTypes.RelativeUndirected, 6));
-      } catch (System.ArgumentException) {
+      }
+      catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);

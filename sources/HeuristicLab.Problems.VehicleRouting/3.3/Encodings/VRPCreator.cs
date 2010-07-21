@@ -19,13 +19,9 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Operators;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -35,7 +31,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     public override bool CanChangeName {
       get { return false; }
     }
-    
+
     #region IVRPCreator Members
     public IValueLookupParameter<IntValue> CitiesParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters["Cities"]; }

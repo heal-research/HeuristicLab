@@ -19,12 +19,8 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace HeuristicLab.MainForm {
-  public abstract class ToolBarSeparatorItem : PositionableUserInterfaceItem,IToolBarSeparatorItem {
+  public abstract class ToolBarSeparatorItem : PositionableUserInterfaceItem, IToolBarSeparatorItem {
   }
 }

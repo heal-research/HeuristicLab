@@ -20,9 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Globalization;
 
 namespace HeuristicLab.PluginInfrastructure {
   /// <summary>

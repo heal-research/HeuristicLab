@@ -19,17 +19,13 @@
  */
 #endregion
 
-using System.Collections.Generic;
-using System.Linq;
-using HeuristicLab.Common;
+using System;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Operators;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.PluginInfrastructure;
-using System;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Selection {
   [Item("GenderSpecificSelection", "Brings two parents together by sampling each with a different selection scheme (Wagner, S. and Affenzeller, M. 2005. SexualGA: Gender-Specific Selection for Genetic Algorithms. Proceedings of the 9th World Multi-Conference on Systemics, Cybernetics and Informatics (WMSCI), pp. 76-81).")]
@@ -105,7 +101,7 @@ namespace HeuristicLab.Selection {
       SubScopesMixer subScopesMixer = new SubScopesMixer();
 
       femaleSelector.OperatorParameter.ActualName = "FemaleSelector";
-      
+
       maleSelector.OperatorParameter.ActualName = "MaleSelector";
 
       subScopesMixer.Partitions = new IntValue(2);

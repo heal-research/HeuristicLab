@@ -20,7 +20,6 @@
 #endregion
 
 using System.Collections.Generic;
-using System.Windows.Forms;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Optimizer.MenuItems {

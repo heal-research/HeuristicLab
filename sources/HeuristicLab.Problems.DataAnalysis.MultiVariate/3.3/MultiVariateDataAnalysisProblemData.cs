@@ -20,16 +20,13 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Parameters;
 using HeuristicLab.Data;
-using HeuristicLab.Problems.DataAnalysis;
-using System.Drawing;
-using System.IO;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis.MultiVariate {
   [Item("MultiVariateDataAnalysisProblemData", "Represents an item containing all data defining a multi-variate data analysis problem.")]

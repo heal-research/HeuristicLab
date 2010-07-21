@@ -20,12 +20,9 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Data;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("StringConverter", "Converts a StringValue, StringArray, StringMatrix, IStringConvertibleValue, IStringConvertibleArray, or IStringConvertibleMatrix and adds it to the SolutionMessage's StringVars or StringArrayVars. A matrix is encoded as array by concatenating all rows and setting length as the length of a row.")]
@@ -34,7 +31,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     private static readonly Type[] itemTypes = new Type[] { typeof(StringValue), typeof(StringArray), typeof(StringMatrix), typeof(IStringConvertibleValue), typeof(IStringConvertibleArray), typeof(IStringConvertibleMatrix) };
 
     #region IItemToSolutionMessageConverter Members
-    
+
     public Type[] ItemTypes {
       get { return itemTypes; }
     }

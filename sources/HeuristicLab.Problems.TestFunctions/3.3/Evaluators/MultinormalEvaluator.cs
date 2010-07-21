@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Text;
+using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using System.Diagnostics;
-using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.TestFunctions.Evaluators {
   [Item("MultinormalFunction", "Evaluates a random multinormal function on a given point.")]
   [StorableClass]
   public class MultinormalEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
-    
+
     private ItemList<RealVector> centers {
       get { return (ItemList<RealVector>)Parameters["Centers"].ActualValue; }
       set { Parameters["Centers"].ActualValue = value; }
@@ -60,7 +59,7 @@ namespace HeuristicLab.Problems.TestFunctions.Evaluators {
     }
     private IEnumerable<double> GetSigma_2s(int nDim) {
       yield return 0.2;
-      for (int i = 1; i < (1 << nDim)-1; i++) {
+      for (int i = 1; i < (1 << nDim) - 1; i++) {
         yield return Random.NextDouble() * 0.5 + 0.75;
       }
       yield return 2;
@@ -73,7 +72,7 @@ namespace HeuristicLab.Problems.TestFunctions.Evaluators {
       centers = new ItemList<RealVector>();
       s_2s = new RealVector();
     }
-    
+
     private double FastFindOptimum(out RealVector bestSolution) {
       var optima = centers.Select((c, i) => new { f = EvaluateFunction(c), i }).OrderBy(v => v.f).ToList();
       if (optima.Count == 0) {
@@ -106,7 +105,7 @@ namespace HeuristicLab.Problems.TestFunctions.Evaluators {
     public override double BestKnownQuality {
       get {
         if (centers.Count == 0) {
-          return - 1 / (2 * Math.PI * 0.2);
+          return -1 / (2 * Math.PI * 0.2);
         } else {
           RealVector bestSolution;
           return FastFindOptimum(out bestSolution);

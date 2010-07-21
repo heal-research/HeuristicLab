@@ -19,19 +19,17 @@
  */
 #endregion
 
+using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Problems.TestFunctions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Data;
 
-namespace HeuristicLab.Problems.TestFunctions_33.Tests
-{
-    
-    
-    /// <summary>
-    ///This is a test class for BealeEvaluatorTest and is intended
-    ///to contain all BealeEvaluatorTest Unit Tests
-    ///</summary>
+namespace HeuristicLab.Problems.TestFunctions_33.Tests {
+
+
+  /// <summary>
+  ///This is a test class for BealeEvaluatorTest and is intended
+  ///to contain all BealeEvaluatorTest Unit Tests
+  ///</summary>
   [TestClass()]
   public class BealeEvaluatorTest {
 

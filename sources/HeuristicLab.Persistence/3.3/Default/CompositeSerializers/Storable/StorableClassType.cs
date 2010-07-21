@@ -19,10 +19,6 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
 
 namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
 
@@ -61,6 +57,6 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     /// accessors instead.
     /// </summary>    
     AllFieldsAndAllProperties
-  };  
+  };
 }
 

@@ -21,12 +21,10 @@
 
 using System;
 using System.Reflection;
-using HeuristicLab.Persistence.Core;
 using System.Reflection.Emit;
-using System.Collections.Generic;
 
 namespace HeuristicLab.Persistence.Core {
-  
+
   /// <summary>
   /// Encapsulation and abstraction for access a data member of an object
   /// regardless of it being a property or field. Additionally a

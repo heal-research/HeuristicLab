@@ -20,10 +20,7 @@
 #endregion
 
 using System;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
@@ -47,17 +44,17 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// <returns>The newly created real vector, resulting from the crossover operation.</returns>
     public static RealVector Apply(IRandom random, ItemArray<RealVector> parents) {
       int length = parents[0].Length;
-      
-      for (int i = 0; i < parents.Length; i++) { 
-        if(parents[i].Length != length)
+
+      for (int i = 0; i < parents.Length; i++) {
+        if (parents[i].Length != length)
           throw new ArgumentException("DiscreteCrossover: The parents' vectors are of different length.", "parents");
       }
-      
+
       RealVector result = new RealVector(length);
       for (int i = 0; i < length; i++) {
         result[i] = parents[random.Next(parents.Length)][i];
-      }        
-      
+      }
+
       return result;
     }
 

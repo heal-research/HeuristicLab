@@ -19,13 +19,8 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
   public class SupportVectorMachineUtil {

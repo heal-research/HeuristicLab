@@ -20,25 +20,21 @@
 #endregion
 
 using System;
+using System.CodeDom;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Text;
-using System.Xml;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.CodeDom;
-using System.CodeDom.Compiler;
-using Microsoft.CSharp;
+using System.Text;
 using System.Text.RegularExpressions;
+using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
-using System.Data.Linq;
-using System.Xml.XPath;
-using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Persistence.Auxiliary;
-using HeuristicLab.Collections;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
+using Microsoft.CSharp;
 
 namespace HeuristicLab.Operators.Programmable {
 
@@ -79,10 +75,10 @@ namespace HeuristicLab.Operators.Programmable {
 
     protected Dictionary<Assembly, bool> Assemblies;
 
-    [Storable(Name="SelectedAssemblies")]
+    [Storable(Name = "SelectedAssemblies")]
     private List<string> _selectedAssemblyNames_persistence {
       get {
-        return Assemblies.Where(a => a.Value).Select(a => a.Key.FullName).ToList();        
+        return Assemblies.Where(a => a.Value).Select(a => a.Key.FullName).ToList();
       }
       set {
         var selectedAssemblyNames = new HashSet<string>(value);
@@ -243,7 +239,8 @@ namespace HeuristicLab.Operators.Programmable {
           if (File.Exists(a.Location)) {
             assemblies.Add(a, false);
           }
-        } catch (NotSupportedException) {
+        }
+        catch (NotSupportedException) {
           // NotSupportedException is thrown while accessing 
           // the Location property of the anonymously hosted
           // dynamic methods assembly, which is related to

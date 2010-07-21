@@ -21,14 +21,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Core;
-using HeuristicLab.Common;
 using HeuristicLab.Collections;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
-  public interface IGraphVisualizationInfo : IDeepCloneable,IContent {
+  public interface IGraphVisualizationInfo : IDeepCloneable, IContent {
     IShapeInfo InitialShape { get; set; }
     event EventHandler InitialShapeChanged;
 

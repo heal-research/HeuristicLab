@@ -20,11 +20,7 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
@@ -46,7 +42,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     /// <param name="parent2">The second parent for the crossover operation.</param>
     /// <returns>The newly created integer vector, resulting from the crossover operation.</returns>
     public static IntegerVector Apply(IRandom random, IntegerVector parent1, IntegerVector parent2) {
-      if(parent1.Length != parent2.Length)
+      if (parent1.Length != parent2.Length)
         throw new ArgumentException("DiscreteCrossover: The parents are of different length.");
 
       int length = parent1.Length;

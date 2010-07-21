@@ -22,11 +22,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
   [StorableClass]
@@ -71,7 +69,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     }
     public virtual void RemoveShapeInfo(IShapeInfo shapeInfo) {
       this.shapeInfos.Remove(shapeInfo);
-      this.connectionInfos.RemoveWhere(c => c.From == shapeInfo); 
+      this.connectionInfos.RemoveWhere(c => c.From == shapeInfo);
       this.connectionInfos.RemoveWhere(c => c.To == shapeInfo);
     }
 

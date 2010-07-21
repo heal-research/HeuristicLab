@@ -19,7 +19,6 @@
  */
 #endregion
 
-using HeuristicLab.Common;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding_33.Tests {

@@ -21,23 +21,15 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Text;
 using System.Linq;
-using System.Windows.Forms;
-using HeuristicLab.Common;
-using HeuristicLab.Core;
-using HeuristicLab.Operators;
-using System.CodeDom.Compiler;
 using System.Reflection;
+using System.Text;
+using System.Windows.Forms;
 using HeuristicLab.CodeEditor;
+using HeuristicLab.Common.Resources;
 using HeuristicLab.Core.Views;
-using HeuristicLab.Operators.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Common.Resources;
 
 namespace HeuristicLab.Operators.Programmable {
   [View("ProgrammableOperator View")]
@@ -128,7 +120,8 @@ namespace HeuristicLab.Operators.Programmable {
       try {
         ProgrammableOperator.Compile();
         MessageBox.Show("Compilation successful", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-      } catch (Exception ex) {
+      }
+      catch (Exception ex) {
         ErrorHandling.ShowErrorDialog(this, ex);
       }
       OnContentChanged();

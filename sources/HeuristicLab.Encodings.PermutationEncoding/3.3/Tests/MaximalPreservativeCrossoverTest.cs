@@ -19,10 +19,9 @@
  */
 #endregion
 
-using HeuristicLab.Common;
 using HeuristicLab.Core;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using HeuristicLab.Encodings.PermutationEncoding;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
   /// <summary>
@@ -120,7 +119,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
       actual = MaximalPreservativeCrossover.Apply(random, parent1, parent2);
       Assert.IsTrue(actual.Validate());
       Assert.IsTrue(Auxiliary.PermutationIsEqualByPosition(expected, actual));
-     
+
       // perform a test when the two permutations are of unequal length
       random.Reset();
       bool exceptionFired = false;

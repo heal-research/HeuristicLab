@@ -32,9 +32,9 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion
 
+using System;
 using System.Collections.Generic;
 using Google.ProtocolBuffers.Descriptors;
-using System;
 
 namespace Google.ProtocolBuffers {
   /// <summary>
@@ -155,7 +155,7 @@ namespace Google.ProtocolBuffers {
     /// <summary>
     /// Add an extension from a generated file to the registry.
     /// </summary>
-    public void Add<TExtension> (GeneratedExtensionBase<TExtension> extension) {
+    public void Add<TExtension>(GeneratedExtensionBase<TExtension> extension) {
       if (extension.Descriptor.MappedType == MappedType.Message) {
         Add(new ExtensionInfo(extension.Descriptor, extension.MessageDefaultInstance));
       } else {

@@ -20,15 +20,9 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
+using System.Reflection;
 using System.Windows.Forms;
 using HeuristicLab.Common;
-using System.Reflection;
 
 namespace HeuristicLab.MainForm.WindowsForms {
   public partial class ContentView : View, IContentView {

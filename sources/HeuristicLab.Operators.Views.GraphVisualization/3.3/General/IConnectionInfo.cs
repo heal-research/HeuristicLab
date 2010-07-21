@@ -20,9 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {

@@ -19,16 +19,13 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using HeuristicLab.Selection;
-using HeuristicLab.Optimization;
-using HeuristicLab.Data;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
-using HeuristicLab.Collections;
+using HeuristicLab.Selection;
 
 namespace HeuristicLab.Algorithms.NSGA2 {
   public class CrowdedTournamentSelector : Selector, IMultiObjectiveSelector, IStochasticOperator {

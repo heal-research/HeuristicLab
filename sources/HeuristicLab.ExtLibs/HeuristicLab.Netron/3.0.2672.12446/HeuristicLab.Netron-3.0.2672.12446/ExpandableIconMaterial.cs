@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Netron.Diagramming.Core;
 using System.Drawing;
 using System.Windows.Forms;
+using Netron.Diagramming.Core;
 
 namespace HeuristicLab.Netron {
   public class ExpandableIconMaterial : IconMaterial, IMouseListener {
@@ -30,7 +27,7 @@ namespace HeuristicLab.Netron {
         if (value != this.collapsed) {
           if (value) {
             this.Icon = this.collapsedBitmap;
-          } else 
+          } else
             this.Icon = this.expandedBitmap;
           collapsed = value;
           RaiseOnExpand();

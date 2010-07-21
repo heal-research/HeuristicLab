@@ -19,16 +19,8 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core.Views;
-using HeuristicLab.Problems.ExternalEvaluation;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Problems.ExternalEvaluation.Views {

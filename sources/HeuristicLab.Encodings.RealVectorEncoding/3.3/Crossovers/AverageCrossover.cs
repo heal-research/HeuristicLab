@@ -20,9 +20,7 @@
 #endregion
 
 using System;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
@@ -57,7 +55,8 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
             avg += parents[j][i];
           result[i] = avg / (double)parentsCount;
         }
-      } catch (IndexOutOfRangeException) {
+      }
+      catch (IndexOutOfRangeException) {
         throw new ArgumentException("AverageCrossover: The parents' vectors are of different length.", "parents");
       }
 

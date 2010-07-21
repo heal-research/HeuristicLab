@@ -19,12 +19,9 @@
  */
 #endregion
 
+using HeuristicLab.Core;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using HeuristicLab.Common;
-using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding_33.Tests {
 
@@ -111,7 +108,8 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding_33.Tests {
       try {
         BinaryVector actual;
         actual = target.Cross(random, parents);
-      } catch (System.ArgumentException) {
+      }
+      catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);
@@ -130,7 +128,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding_33.Tests {
       random.DoubleNumbers = new double[] { 0.35, 0.62, 0.18, 0.42, 0.83, 0.76, 0.39, 0.51, 0.36 };
       parent1 = new BinaryVector(new bool[] { false, false, false, false, true, false, false, false, false });
       parent2 = new BinaryVector(new bool[] { true, true, false, true, false, false, false, false, true });
-      expected = new BinaryVector(new bool[] { false, true, false, false, false, false, false, false, false});
+      expected = new BinaryVector(new bool[] { false, true, false, false, false, false, false, false, false });
       actual = UniformCrossover.Apply(random, parent1, parent2);
       Assert.IsTrue(Auxiliary.BinaryVectorIsEqualByPosition(actual, expected));
 
@@ -142,7 +140,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding_33.Tests {
       expected = new BinaryVector(new bool[] { true, false, false, true, true, false, false, false, true });
       actual = UniformCrossover.Apply(random, parent1, parent2);
       Assert.IsTrue(Auxiliary.BinaryVectorIsEqualByPosition(actual, expected));
-      
+
       // The following test is not based on any published examples
       random.Reset();
       random.DoubleNumbers = new double[] { 0.35, 0.62, 0.18, 0.42, 0.83, 0.76, 0.39, 0.51, 0.36 };
@@ -151,7 +149,8 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding_33.Tests {
       exceptionFired = false;
       try {
         actual = UniformCrossover.Apply(random, parent1, parent2);
-      } catch (System.ArgumentException) {
+      }
+      catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);

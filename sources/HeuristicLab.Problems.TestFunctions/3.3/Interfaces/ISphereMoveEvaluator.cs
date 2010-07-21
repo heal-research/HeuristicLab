@@ -19,8 +19,6 @@
  */
 #endregion
 
-using HeuristicLab.Common;
-using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.TestFunctions {

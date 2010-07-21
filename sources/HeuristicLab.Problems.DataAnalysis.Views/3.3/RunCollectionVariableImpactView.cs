@@ -19,20 +19,14 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using HeuristicLab.MainForm;
-using HeuristicLab.MainForm.WindowsForms;
-using HeuristicLab.Core;
+using alglib;
 using HeuristicLab.Common;
 using HeuristicLab.Data;
-using alglib;
+using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
@@ -83,7 +77,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private DoubleMatrix CalculateVariableImpactMatrix() {
       DoubleMatrix matrix = null;
       if (Content != null) {
-        List<IRun> runsWithVariables = Content.Where(r => r.Results.ContainsKey(variableImpactResultName)).ToList() ;
+        List<IRun> runsWithVariables = Content.Where(r => r.Results.ContainsKey(variableImpactResultName)).ToList();
         IEnumerable<DoubleMatrix> variableImpacts = (from run in runsWithVariables
                                                      select run.Results[variableImpactResultName]).Cast<DoubleMatrix>();
         List<string> variableNames = (from varImpact in variableImpacts
@@ -99,7 +93,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         matrix.RowNames = variableNames;
         matrix.ColumnNames = columnNames;
 
-        for(int i = 0; i< runsWithVariables.Count; i++) {
+        for (int i = 0; i < runsWithVariables.Count; i++) {
           IRun run = runsWithVariables[i];
           DoubleMatrix runVariableImpacts = (DoubleMatrix)run.Results[variableImpactResultName];
           for (int j = 0; j < runVariableImpacts.Rows; j++) {

@@ -20,19 +20,14 @@
 #endregion
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 using System.Diagnostics;
-using HeuristicLab.PluginInfrastructure;
-using System.Threading;
-using HeuristicLab.PluginInfrastructure.Manager;
 using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure.Advanced;
+using HeuristicLab.PluginInfrastructure.Manager;
 
 namespace HeuristicLab.PluginInfrastructure.Starter {
   /// <summary>

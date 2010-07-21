@@ -21,12 +21,12 @@
 
 using System;
 using System.Collections;
-using System.Reflection;
-using HeuristicLab.Persistence.Core;
-using HeuristicLab.Persistence.Interfaces;
 using System.Collections.Generic;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System.Reflection;
 using HeuristicLab.Persistence.Auxiliary;
+using HeuristicLab.Persistence.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Default.CompositeSerializers {
 
@@ -52,7 +52,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
       if (type.GetInterface(typeof(IEnumerable).FullName) == null)
         return "interface IEnumerable not implemented";
       if (type.GetMethod("Add") == null)
-        return "no 'Add()' method";      
+        return "no 'Add()' method";
       return "no 'Add()' method with one argument";
     }
 
@@ -75,7 +75,8 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
       try {
         foreach (var tag in tags)
           addMethod.Invoke(instance, new[] { tag.Value });
-      } catch (Exception e) {
+      }
+      catch (Exception e) {
         throw new PersistenceException("Exception caught while trying to populate enumerable.", e);
       }
     }

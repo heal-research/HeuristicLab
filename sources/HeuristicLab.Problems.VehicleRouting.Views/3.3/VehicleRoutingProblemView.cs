@@ -20,15 +20,9 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
 using HeuristicLab.Optimization.Views;
-using HeuristicLab.Problems.VehicleRouting;
 
 namespace HeuristicLab.Problems.VehicleRouting.Views {
   [View("VehicleRouting Problem View")]
@@ -38,7 +32,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
       get { return (VehicleRoutingProblem)base.Content; }
       set { base.Content = value; }
     }
-    
+
     public VehicleRoutingProblemView() {
       InitializeComponent();
     }

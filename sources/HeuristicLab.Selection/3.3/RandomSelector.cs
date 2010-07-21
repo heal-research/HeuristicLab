@@ -20,7 +20,6 @@
 #endregion
 
 using System.Collections.Generic;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
@@ -45,8 +44,9 @@ namespace HeuristicLab.Selection {
       get { return CopySelectedParameter.Value; }
       set { CopySelectedParameter.Value = value; }
     }
-    
-    public RandomSelector() : base() {
+
+    public RandomSelector()
+      : base() {
       Parameters.Add(new ValueParameter<BoolValue>("CopySelected", "True if the selected sub-scopes should be copied, otherwise false.", new BoolValue(true)));
       Parameters.Add(new ValueLookupParameter<IntValue>("NumberOfSelectedSubScopes", "The number of sub-scopes which should be selected."));
     }

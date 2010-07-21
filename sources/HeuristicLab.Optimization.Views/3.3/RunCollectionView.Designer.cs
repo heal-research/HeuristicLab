@@ -21,7 +21,6 @@
 
 using System;
 using System.Windows.Forms;
-using System.ComponentModel;
 
 namespace HeuristicLab.Optimization.Views {
   partial class RunCollectionView {

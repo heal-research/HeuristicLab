@@ -19,24 +19,16 @@
  */
 #endregion
 
-using System;
+using System.Collections.Generic;
 using System.Linq;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Problems.DataAnalysis.SupportVectorMachine;
-using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.Problems.DataAnalysis.Evaluators;
-using HeuristicLab.Parameters;
-using HeuristicLab.Optimization;
-using HeuristicLab.Operators;
-using HeuristicLab.Problems.DataAnalysis.Regression.Symbolic;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Problems.DataAnalysis.Symbolic;
-using System.Collections.Generic;
-using HeuristicLab.Problems.DataAnalysis.Regression;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis.MultiVariate.Regression.Symbolic.Interfaces;
+using HeuristicLab.Problems.DataAnalysis.Regression.Symbolic;
+using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Problems.DataAnalysis.MultiVariate.Regression.Symbolic.Evaluators {
   [Item("SymbolicVectorRegressionScaledNormalizedMseEvaluator", "Represents an operator that calculates the sum of the normalized mean squared error over all components.")]
@@ -75,7 +67,7 @@ namespace HeuristicLab.Problems.DataAnalysis.MultiVariate.Regression.Symbolic.Ev
 
       // use only the i-th vector component
       List<SymbolicExpressionTreeNode> componentBranches = new List<SymbolicExpressionTreeNode>(tree.Root.SubTrees[0].SubTrees);
-      while (tree.Root.SubTrees[0].SubTrees.Count > 0) tree.Root.SubTrees[0].RemoveSubTree(0); 
+      while (tree.Root.SubTrees[0].SubTrees.Count > 0) tree.Root.SubTrees[0].RemoveSubTree(0);
       for (int i = 0; i < targetVariablesList.Count; i++) {
         tree.Root.SubTrees[0].AddSubTree(componentBranches[i]);
         double compAlpha;

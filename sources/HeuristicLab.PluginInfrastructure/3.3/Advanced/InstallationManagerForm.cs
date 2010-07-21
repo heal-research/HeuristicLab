@@ -21,14 +21,12 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using System.IO;
 using HeuristicLab.PluginInfrastructure.Manager;
-using System.Diagnostics;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
   internal partial class InstallationManagerForm : Form, IStatusView {
@@ -36,11 +34,12 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     private PluginManager pluginManager;
     private string pluginDir;
 
-    public InstallationManagerForm(PluginManager pluginManager) : base() {
+    public InstallationManagerForm(PluginManager pluginManager)
+      : base() {
       InitializeComponent();
       FileVersionInfo pluginInfrastructureVersion = FileVersionInfo.GetVersionInfo(GetType().Assembly.Location);
       Text = "HeuristicLab Plugin Manager " + pluginInfrastructureVersion.FileVersion;
-      
+
       this.pluginManager = pluginManager;
 
       pluginManager.PluginLoaded += pluginManager_PluginLoaded;
@@ -81,7 +80,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       pluginEditor.StatusView = this;
       pluginEditor.PluginManager = pluginManager;
 
-      productEditor.StatusView = this;      
+      productEditor.StatusView = this;
     }
 
 

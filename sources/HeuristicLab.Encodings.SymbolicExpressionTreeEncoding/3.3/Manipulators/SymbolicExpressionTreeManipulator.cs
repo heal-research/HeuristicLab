@@ -19,14 +19,11 @@
  */
 #endregion
 
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Operators;
-using HeuristicLab.Optimization;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators {
   /// <summary>

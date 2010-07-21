@@ -20,19 +20,13 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Operators;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Parameters;
 using HeuristicLab.Data;
-using HeuristicLab.Analysis;
-using HeuristicLab.Optimization.Operators;
-using HeuristicLab.Encodings.RealVectorEncoding;
+using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
+using HeuristicLab.Optimization.Operators;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
   /// <summary>
@@ -69,7 +63,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     #endregion
 
     [Storable]
-    private ParticleUpdater velocityUpdater; 
+    private ParticleUpdater velocityUpdater;
 
     [StorableConstructor]
     private ParticleSwarmOptimizationMainLoop(bool deserializing) : base() { }
@@ -97,11 +91,11 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       ResultsCollector resultsCollector1 = new ResultsCollector();
       IntCounter intCounter = new IntCounter();
       ConditionalBranch conditionalBranch = new ConditionalBranch();
-      velocityUpdater = new ParticleUpdater(); 
+      velocityUpdater = new ParticleUpdater();
       UniformSubScopesProcessor uniformSubScopesProcessor = new UniformSubScopesProcessor();
       UniformSubScopesProcessor uniformSubScopesProcessor2 = new UniformSubScopesProcessor();
       Placeholder encPlaceholder = new Placeholder();
-      Placeholder decPlaceholder = new Placeholder(); 
+      Placeholder decPlaceholder = new Placeholder();
       Placeholder evaluator = new Placeholder();
       Comparator comparator = new Comparator();
       SwarmUpdater swarmUpdater = new SwarmUpdater();
@@ -133,7 +127,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       // ToDo: Add correctly 
 
       encPlaceholder.OperatorParameter.ActualName = EncoderParameter.ActualName;
-      decPlaceholder.OperatorParameter.ActualName = DecoderParameter.ActualName; 
+      decPlaceholder.OperatorParameter.ActualName = DecoderParameter.ActualName;
 
       evaluator.Name = "Evaluator (placeholder)";
       evaluator.OperatorParameter.ActualName = EvaluatorParameter.Name;
@@ -158,7 +152,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       evaluator.Successor = swarmUpdater;
       swarmUpdater.Successor = null;
       intCounter.Successor = resultsCollector1;
-      resultsCollector1.Successor = analyzer1; 
+      resultsCollector1.Successor = analyzer1;
       analyzer1.Successor = comparator;
       #endregion
     }

@@ -23,14 +23,12 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
-using System.ServiceModel;
-using ICSharpCode.SharpZipLib.Zip;
 using System.IO;
+using System.Linq;
+using System.ServiceModel;
+using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure.Manager;
+using ICSharpCode.SharpZipLib.Zip;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
   internal partial class UploadPluginsView : InstallationManagerControl {

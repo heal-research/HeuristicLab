@@ -20,10 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Reflection;
 
 namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
 
@@ -38,12 +34,13 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     /// serializer starts decomposing the object.
     /// </summary>
     BeforeSerialization,
-    
+
     /// <summary>
     /// States that this hook should be called after the storable
     /// serializer hast complete re-assembled the object.
     /// </summary>
-    AfterDeserialization };
+    AfterDeserialization
+  };
 
 
   /// <summary>
@@ -51,7 +48,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
   /// serialization/deserialization by the <c>StorableSerializer</c>.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = true)]
-  public sealed class StorableHookAttribute : Attribute {    
+  public sealed class StorableHookAttribute : Attribute {
 
     private readonly HookType hookType;
     /// <summary>
@@ -69,6 +66,6 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     /// <param name="hookType">Type of the hook.</param>
     public StorableHookAttribute(HookType hookType) {
       this.hookType = hookType;
-    }    
+    }
   }
 }

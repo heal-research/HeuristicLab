@@ -21,14 +21,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Core;
 using System.Drawing;
-using Netron.Diagramming.Core;
-using HeuristicLab.Collections;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Common;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using Netron.Diagramming.Core;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
   [StorableClass]

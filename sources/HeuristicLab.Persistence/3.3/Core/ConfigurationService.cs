@@ -20,16 +20,14 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Tracing;
-using HeuristicLab.Persistence.Core.Tokens;
-using HeuristicLab.Persistence.Auxiliary;
 
 namespace HeuristicLab.Persistence.Core {
 
@@ -95,7 +93,8 @@ namespace HeuristicLab.Persistence.Core {
     public void LoadSettings(bool throwOnError) {
       try {
         TryLoadSettings();
-      } catch (Exception e) {
+      }
+      catch (Exception e) {
         if (throwOnError) {
           throw new PersistenceException("Could not load persistence settings.", e);
         } else {
@@ -162,7 +161,8 @@ namespace HeuristicLab.Persistence.Core {
         foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies())
           if (a != defaultAssembly)
             DiscoverFrom(a);
-      } catch (AppDomainUnloadedException x) {
+      }
+      catch (AppDomainUnloadedException x) {
         Logger.Warn("could not get list of assemblies, AppDomain has already been unloaded", x);
       }
       SortCompositeSerializers();
@@ -206,7 +206,8 @@ namespace HeuristicLab.Persistence.Core {
             Formats.Add(format);
           }
         }
-      } catch (ReflectionTypeLoadException e) {
+      }
+      catch (ReflectionTypeLoadException e) {
         Logger.Warn("could not analyse assembly: " + a.FullName, e);
       }
     }

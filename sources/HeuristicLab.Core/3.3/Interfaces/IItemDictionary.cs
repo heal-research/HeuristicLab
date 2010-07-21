@@ -19,9 +19,10 @@
  */
 #endregion
 
-using System.Collections.Generic;
 using HeuristicLab.Collections;
 
 namespace HeuristicLab.Core {
-  public interface IItemDictionary<TKey, TValue> : IObservableDictionary<TKey, TValue>, IItem where TKey : class, IItem where TValue : class, IItem { }
+  public interface IItemDictionary<TKey, TValue> : IObservableDictionary<TKey, TValue>, IItem
+    where TKey : class, IItem
+    where TValue : class, IItem { }
 }

@@ -19,17 +19,14 @@
  */
 #endregion
 
-using System.Collections.Generic;
 using System;
-using System.Text;
-using HeuristicLab.Persistence.Interfaces;
-using HeuristicLab.Persistence.Core;
+using System.Collections.Generic;
 using System.IO;
-using ICSharpCode.SharpZipLib.Zip;
-using HeuristicLab.Tracing;
-using HeuristicLab.Persistence.Core.Tokens;
-using System.IO.Compression;
 using HeuristicLab.Persistence.Auxiliary;
+using HeuristicLab.Persistence.Core;
+using HeuristicLab.Persistence.Core.Tokens;
+using HeuristicLab.Persistence.Interfaces;
+using HeuristicLab.Tracing;
 
 namespace HeuristicLab.Persistence.Default.Xml {
 
@@ -145,7 +142,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// <param name="obj">The object.</param>
     /// <param name="filename">The filename.</param>
     /// <param name="config">The configuration.</param>
-    public static void Serialize(object obj, string filename, Configuration config) {      
+    public static void Serialize(object obj, string filename, Configuration config) {
       try {
         string tempfile = Path.GetTempFileName();
         DateTime start = DateTime.Now;
@@ -156,7 +153,8 @@ namespace HeuristicLab.Persistence.Default.Xml {
           (DateTime.Now - start).TotalSeconds));
         File.Copy(tempfile, filename, true);
         File.Delete(tempfile);
-      } catch (Exception) {
+      }
+      catch (Exception) {
         Logger.Warn("Exception caught, no data has been written.");
         throw;
       }
@@ -179,7 +177,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// <param name="obj">The object.</param>
     /// <param name="stream">The stream.</param>
     /// <param name="config">The configuration.</param>
-    public static void Serialize(object obj, Stream stream, Configuration config) {      
+    public static void Serialize(object obj, Stream stream, Configuration config) {
       try {
         using (StreamWriter writer = new StreamWriter(stream)) {
           Serializer serializer = new Serializer(obj, config);
@@ -191,9 +189,11 @@ namespace HeuristicLab.Persistence.Default.Xml {
           }
           writer.Flush();
         }
-      } catch (PersistenceException) {
+      }
+      catch (PersistenceException) {
         throw;
-      } catch (Exception e) {
+      }
+      catch (Exception e) {
         throw new PersistenceException("Unexpected exception during Serialization.", e);
       }
     }

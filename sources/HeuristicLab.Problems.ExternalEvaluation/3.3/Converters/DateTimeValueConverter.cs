@@ -20,12 +20,9 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Data;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("DateTimeValueConverter", "Converts a DateTimeValue and adds it to the SolutionMessage's StringVars. The format is yyyy-MM-dd HH:mm:sszzz, e.g. 2010-05-31 19:15:33+01:00.")]
@@ -49,7 +46,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
         throw new ArgumentException(ItemName + ": Item is not of a supported type.", "item");
       }
     }
-    
+
     #endregion
 
   }

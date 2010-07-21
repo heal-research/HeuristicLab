@@ -21,6 +21,7 @@
 
 using System;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
@@ -29,7 +30,6 @@ using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
-using System.IO;
 
 namespace HeuristicLab.Optimizer {
   internal partial class OptimizerMainForm : DockingMainForm {

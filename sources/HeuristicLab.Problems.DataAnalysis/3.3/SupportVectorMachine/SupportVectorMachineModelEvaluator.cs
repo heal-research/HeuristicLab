@@ -19,16 +19,12 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using SVM;
 using HeuristicLab.Operators;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using SVM;
 
 namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
   [StorableClass]

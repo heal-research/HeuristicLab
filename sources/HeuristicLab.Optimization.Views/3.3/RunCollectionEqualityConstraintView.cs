@@ -20,17 +20,10 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Optimization.Views {
-  [Content(typeof(RunCollectionEqualityConstraint),true)]
+  [Content(typeof(RunCollectionEqualityConstraint), true)]
   public partial class RunCollectionEqualityConstraintView : RunCollectionConstraintView {
     public RunCollectionEqualityConstraintView() {
       InitializeComponent();
@@ -51,7 +44,7 @@ namespace HeuristicLab.Optimization.Views {
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
-      txtConstraintData.ReadOnly = Content == null || this.ReadOnly ;
+      txtConstraintData.ReadOnly = Content == null || this.ReadOnly;
     }
 
     private void txtConstraintData_TextChanged(object sender, EventArgs e) {

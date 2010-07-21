@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -43,7 +42,7 @@ namespace HeuristicLab.Optimization.Operators {
     }
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
-    } 
+    }
 
     public ProbabilisticQualityComparator()
       : base() {

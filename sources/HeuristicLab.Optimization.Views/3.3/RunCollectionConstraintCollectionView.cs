@@ -26,7 +26,6 @@ using HeuristicLab.Collections;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
-using HeuristicLab.Optimization;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Optimization.Views {

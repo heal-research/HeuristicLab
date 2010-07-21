@@ -19,17 +19,16 @@
  */
 #endregion
 
-using HeuristicLab.Persistence.Interfaces;
-using HeuristicLab.Persistence.Core;
 using System.Text;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Default.Xml {
 
   /// <summary>
   /// XML friendly encapsulation of string data.
   /// </summary>
-  [StorableClass]  
+  [StorableClass]
   public class XmlString : ISerialData {
 
     /// <summary>

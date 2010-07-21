@@ -19,19 +19,13 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Operators;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Parameters;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Collections;
+using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
   public class PermutationToRealVectorEncoder : SingleSuccessorOperator, IRealVectorEncoder {
@@ -57,7 +51,8 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       set { BoundsParameter.ActualValue = value; }
     }
 
-    public PermutationToRealVectorEncoder() : base() {
+    public PermutationToRealVectorEncoder()
+      : base() {
       Parameters.Add(new LookupParameter<Permutation>("Permutation", "The permutation to encode."));
       Parameters.Add(new LookupParameter<RealVector>("RealVector", "The resulting real vector."));
       Parameters.Add(new LookupParameter<IntValue>("Length", "Vector length."));
@@ -71,10 +66,10 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       double max = permutation.Length;
       for (int i = 0; i < permutation.Length; i++) {
         realVector[permutation[i]] = max;
-        max = max - 1; 
+        max = max - 1;
       }
       RealVectorParameter.ActualValue = realVector;
-      LengthParameter.ActualValue = new IntValue(realVector.Length); 
+      LengthParameter.ActualValue = new IntValue(realVector.Length);
       return base.Apply();
     }
 

@@ -19,9 +19,9 @@
  */
 #endregion
 
-using HeuristicLab.Persistence.Interfaces;
 using System.Reflection;
 using System.Text;
+using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Core.Tokens {
 

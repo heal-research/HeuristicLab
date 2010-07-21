@@ -19,12 +19,9 @@
  */
 #endregion
 
+using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using HeuristicLab.Common;
-using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
 
@@ -111,7 +108,8 @@ namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
       try {
         RealVector actual;
         actual = target.Cross(random, parents);
-      } catch (System.ArgumentException) {
+      }
+      catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);
@@ -135,13 +133,14 @@ namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
       Assert.IsTrue(Auxiliary.RealVectorIsAlmostEqualByPosition(actual, expected));
       // The following test is not based on published examples
       random.Reset();
-      random.DoubleNumbers = new double[] { 0.3, 0.1, 0.2, 0.4, 0.23, 0.5};
+      random.DoubleNumbers = new double[] { 0.3, 0.1, 0.2, 0.4, 0.23, 0.5 };
       parent1 = new RealVector(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1, 0.9 }); // this parent is longer
       parent2 = new RealVector(new double[] { 0.4, 0.1, 0.3, 0.2, 0.8 });
       exceptionFired = false;
       try {
         actual = LocalCrossover.Apply(random, parent1, parent2);
-      } catch (System.ArgumentException) {
+      }
+      catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);

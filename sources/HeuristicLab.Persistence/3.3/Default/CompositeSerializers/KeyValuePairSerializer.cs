@@ -20,12 +20,12 @@
 #endregion
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using HeuristicLab.Persistence.Core;
-using HeuristicLab.Persistence.Interfaces;
+using System.Linq;
 using System.Reflection;
+using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Default.CompositeSerializers {
 
@@ -41,12 +41,12 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
 
     public bool CanSerialize(Type type) {
       return type.IsGenericType &&
-             type.GetGenericTypeDefinition() == genericKeyValuePairType;             
+             type.GetGenericTypeDefinition() == genericKeyValuePairType;
     }
 
     public string JustifyRejection(Type type) {
       if (!type.IsGenericType)
-        return "not even generic";      
+        return "not even generic";
       return "not generic KeyValuePair<,>";
     }
 
@@ -59,13 +59,15 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
       Tag key, value;
       try {
         key = new Tag("key", t.GetProperty("Key").GetValue(o, null));
-      } catch (Exception e) {
+      }
+      catch (Exception e) {
         throw new PersistenceException("Exception caught during KeyValuePair decomposition", e);
       }
       yield return key;
       try {
         value = new Tag("value", t.GetProperty("Value").GetValue(o, null));
-      } catch (Exception e) {
+      }
+      catch (Exception e) {
         throw new PersistenceException("Exception caught during KeyValuePair decomposition", e);
       }
       yield return value;
@@ -84,9 +86,11 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
         iter.MoveNext();
         t.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
           .Single(fi => fi.Name == "value").SetValue(instance, iter.Current.Value);
-      } catch (InvalidOperationException e) {
+      }
+      catch (InvalidOperationException e) {
         throw new PersistenceException("Not enough components to populate KeyValuePair instance", e);
-      } catch (Exception e) {
+      }
+      catch (Exception e) {
         throw new PersistenceException("Exception caught during KeyValuePair reconstruction", e);
       }
     }

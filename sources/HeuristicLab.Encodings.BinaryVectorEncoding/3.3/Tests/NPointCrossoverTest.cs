@@ -19,12 +19,10 @@
  */
 #endregion
 
-using HeuristicLab.Encodings.BinaryVectorEncoding;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Parameters;
+using HeuristicLab.Encodings.BinaryVectorEncoding;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding_33.Tests {
 
@@ -111,7 +109,8 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding_33.Tests {
       try {
         BinaryVector actual;
         actual = target.Cross(random, parents);
-      } catch (System.ArgumentException) {
+      }
+      catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);
@@ -135,7 +134,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding_33.Tests {
       expected = new BinaryVector(new bool[] { false, false, false, false, false, false, false, false, true });
       actual = NPointCrossover.Apply(random, parent1, parent2, n);
       Assert.IsTrue(Auxiliary.BinaryVectorIsEqualByPosition(actual, expected));
-      
+
       // The following test is based on Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg, p. 48
       random.Reset();
       n = new IntValue(2);
@@ -164,7 +163,8 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding_33.Tests {
       exceptionFired = false;
       try {
         actual = NPointCrossover.Apply(random, parent1, parent2, n);
-      } catch (System.ArgumentException) {
+      }
+      catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);

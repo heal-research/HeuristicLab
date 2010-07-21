@@ -19,15 +19,9 @@
  */
 #endregion
 
-using System.Collections.Generic;
 using System;
-using System.Text;
-using HeuristicLab.Persistence.Interfaces;
-using HeuristicLab.Persistence.Core;
-using System.IO;
-using ICSharpCode.SharpZipLib.Zip;
-using HeuristicLab.Tracing;
 using HeuristicLab.Persistence.Core.Tokens;
+using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Core {
 

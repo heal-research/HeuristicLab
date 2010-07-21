@@ -19,7 +19,6 @@
  */
 #endregion
 
-using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.PluginInfrastructure.Starter {
   partial class SplashScreen {
     /// <summary>

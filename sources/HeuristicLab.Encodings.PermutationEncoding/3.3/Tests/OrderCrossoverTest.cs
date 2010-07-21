@@ -19,16 +19,15 @@
  */
 #endregion
 
-using HeuristicLab.Common;
 using HeuristicLab.Core;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using HeuristicLab.Encodings.PermutationEncoding;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
-    /// <summary>
-    ///This is a test class for OrderCrossoverTest and is intended
-    ///to contain all OrderCrossoverTest Unit Tests
-    ///</summary>
+  /// <summary>
+  ///This is a test class for OrderCrossoverTest and is intended
+  ///to contain all OrderCrossoverTest Unit Tests
+  ///</summary>
   [TestClass()]
   public class OrderCrossoverTest {
 
@@ -86,7 +85,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
     [DeploymentItem("HeuristicLab.Encodings.PermutationEncoding-3.3.dll")]
     public void OrderCrossoverCrossTest() {
       TestRandom random = new TestRandom();
-      OrderCrossover_Accessor target = 
+      OrderCrossover_Accessor target =
         new OrderCrossover_Accessor(new PrivateObject(typeof(OrderCrossover)));
       // perform a test with more than two parents
       random.Reset();
@@ -94,7 +93,8 @@ namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
       try {
         target.Cross(random, new ItemArray<Permutation>(new Permutation[] { 
           new Permutation(PermutationTypes.RelativeUndirected, 4), new Permutation(PermutationTypes.RelativeUndirected, 4), new Permutation(PermutationTypes.RelativeUndirected, 4)}));
-      } catch (System.InvalidOperationException) {
+      }
+      catch (System.InvalidOperationException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);
@@ -176,7 +176,8 @@ namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
       bool exceptionFired = false;
       try {
         OrderCrossover.Apply(random, new Permutation(PermutationTypes.RelativeUndirected, 8), new Permutation(PermutationTypes.RelativeUndirected, 6));
-      } catch (System.ArgumentException) {
+      }
+      catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);

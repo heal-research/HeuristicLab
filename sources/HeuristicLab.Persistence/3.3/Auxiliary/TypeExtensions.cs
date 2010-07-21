@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using System.Text;
 
 namespace HeuristicLab.Persistence.Auxiliary {
 

@@ -19,7 +19,6 @@
  */
 #endregion
 
-using HeuristicLab.Common;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding_33.Tests {

@@ -19,15 +19,13 @@
  */
 #endregion
 
-using System.Linq;
-using HeuristicLab.Core;
-using HeuristicLab.Operators;
-using HeuristicLab.Random;
-using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators {
   [StorableClass]

@@ -20,11 +20,9 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Reflection.Emit;
-using System.Collections.Generic;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Persistence.Auxiliary {
@@ -134,7 +132,7 @@ namespace HeuristicLab.Persistence.Auxiliary {
     /// <returns>
     /// A <see cref="System.String"/> that represents this instance.
     /// </returns>
-    public string ToString(bool full, bool includeAssembly) {      
+    public string ToString(bool full, bool includeAssembly) {
       StringBuilder sb = new StringBuilder();
       if (!string.IsNullOrEmpty(Namespace))
         sb.Append(Namespace).Append('.');
@@ -235,7 +233,8 @@ namespace HeuristicLab.Persistence.Auxiliary {
             return true;
         }
         return false;
-      } catch (KeyNotFoundException) {
+      }
+      catch (KeyNotFoundException) {
         throw new Exception("Could not extract version information from type string");
       }
     }
@@ -268,7 +267,8 @@ namespace HeuristicLab.Persistence.Auxiliary {
             return false;
         }
         return true;
-      } catch (KeyNotFoundException) {
+      }
+      catch (KeyNotFoundException) {
         throw new Exception("Could not extract version infomration from type string");
       }
     }

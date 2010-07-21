@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Text;
-using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Common;
-using System.Reflection;
 using HeuristicLab.MainForm.WindowsForms;
+using HeuristicLab.PluginInfrastructure;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.MainForm.WindowsForms_3._3.Tests {
   [TestClass]

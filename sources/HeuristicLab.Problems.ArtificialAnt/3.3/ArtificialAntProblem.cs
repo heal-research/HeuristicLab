@@ -21,23 +21,20 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Drawing;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Analyzers;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Crossovers;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureManipulators;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces;
 using HeuristicLab.Problems.ArtificialAnt.Analyzers;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Analyzers;
 
 namespace HeuristicLab.Problems.ArtificialAnt {
   [Item("Artificial Ant Problem", "Represents the Artificial Ant problem.")]

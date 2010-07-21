@@ -20,10 +20,10 @@
 #endregion
 
 using System;
-using System.Linq;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Data;
 using System.Collections.Generic;
+using System.Linq;
+using HeuristicLab.Data;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 using HeuristicLab.Problems.ArtificialAnt.Symbols;
 

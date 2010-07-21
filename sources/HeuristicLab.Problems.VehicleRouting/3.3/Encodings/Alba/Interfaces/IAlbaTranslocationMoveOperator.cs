@@ -19,13 +19,9 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Optimization;
-using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Core;
+using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   public interface IAlbaTranslocationMoveOperator : IMoveOperator {

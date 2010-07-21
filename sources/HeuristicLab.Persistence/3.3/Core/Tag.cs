@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System.Collections.Generic;
 
 namespace HeuristicLab.Persistence.Core {
 

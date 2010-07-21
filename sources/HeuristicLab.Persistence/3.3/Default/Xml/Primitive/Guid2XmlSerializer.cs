@@ -20,11 +20,8 @@
 #endregion
 
 using System;
-using HeuristicLab.Persistence.Core;
-using HeuristicLab.Persistence.Interfaces;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Globalization;
+using HeuristicLab.Persistence.Core;
 
 
 namespace HeuristicLab.Persistence.Default.Xml.Primitive {
@@ -38,9 +35,11 @@ namespace HeuristicLab.Persistence.Default.Xml.Primitive {
     public override Guid Parse(XmlString t) {
       try {
         return new Guid(t.Data);
-      } catch (FormatException x) {
+      }
+      catch (FormatException x) {
         throw new PersistenceException("Cannot parse Guid string representation.", x);
-      } catch (OverflowException x) {
+      }
+      catch (OverflowException x) {
         throw new PersistenceException("Overflow during Guid parsing.", x);
       }
     }

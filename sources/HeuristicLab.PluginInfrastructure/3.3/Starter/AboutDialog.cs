@@ -21,14 +21,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
-using System.Reflection;
 using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
+using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure.Advanced;
 
 namespace HeuristicLab.PluginInfrastructure.Starter {
@@ -56,7 +52,8 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
     /// Creates a new about dialog listing all plugins in the <paramref name="plugins"/> enumerable.
     /// </summary>
     /// <param name="plugins">Enumerable of plugins that should be listed.</param>
-    public AboutDialog(IEnumerable<IPluginDescription> plugins) : this() {
+    public AboutDialog(IEnumerable<IPluginDescription> plugins)
+      : this() {
       UpdatePluginList(plugins);
     }
 
@@ -100,7 +97,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
     }
 
     private void pluginListView_ItemActivate(object sender, EventArgs e) {
-      if(pluginListView.SelectedItems.Count > 0) {
+      if (pluginListView.SelectedItems.Count > 0) {
         PluginView view = new PluginView((IPluginDescription)pluginListView.SelectedItems[0].Tag);
         view.Show(this);
       }

@@ -21,9 +21,6 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using System;
-using HeuristicLab.Persistence.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Persistence.Default.Xml.Compact {
 

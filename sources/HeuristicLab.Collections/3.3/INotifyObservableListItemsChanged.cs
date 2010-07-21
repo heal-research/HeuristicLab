@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System.Collections.Generic;
 
 namespace HeuristicLab.Collections {
   public interface INotifyObservableListItemsChanged<T> : INotifyObservableCollectionItemsChanged<T> {

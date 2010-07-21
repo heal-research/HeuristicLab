@@ -32,8 +32,8 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion
 
-using NUnit.Framework;
 using Google.ProtocolBuffers.TestProtos;
+using NUnit.Framework;
 
 namespace Google.ProtocolBuffers.Descriptors {
 

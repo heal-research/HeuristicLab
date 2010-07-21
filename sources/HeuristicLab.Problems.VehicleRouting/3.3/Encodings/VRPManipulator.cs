@@ -19,16 +19,12 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings {
-  public abstract class VRPManipulator: SingleSuccessorOperator, IVRPManipulator {
+  public abstract class VRPManipulator : SingleSuccessorOperator, IVRPManipulator {
     #region IVRPManipulator Members
 
     public ILookupParameter<IVRPEncoding> VRPSolutionParameter {

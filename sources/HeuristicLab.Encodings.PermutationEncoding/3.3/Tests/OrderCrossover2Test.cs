@@ -20,14 +20,14 @@
 #endregion
 
 using HeuristicLab.Core;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using HeuristicLab.Encodings.PermutationEncoding;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
-    /// <summary>
-    ///This is a test class for OrderCrossover2Test and is intended
-    ///to contain all OrderCrossover2Test Unit Tests
-    ///</summary>
+  /// <summary>
+  ///This is a test class for OrderCrossover2Test and is intended
+  ///to contain all OrderCrossover2Test Unit Tests
+  ///</summary>
   [TestClass()]
   public class OrderCrossover2Test {
 
@@ -91,7 +91,8 @@ namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
       try {
         target.Cross(random, new ItemArray<Permutation>(new Permutation[] { 
           new Permutation(PermutationTypes.RelativeUndirected, 4), new Permutation(PermutationTypes.RelativeUndirected, 4), new Permutation(PermutationTypes.RelativeUndirected, 4)}));
-      } catch (System.InvalidOperationException) {
+      }
+      catch (System.InvalidOperationException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);
@@ -122,7 +123,8 @@ namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
       bool exceptionFired = false;
       try {
         OrderCrossover.Apply(random, new Permutation(PermutationTypes.RelativeUndirected, 8), new Permutation(PermutationTypes.RelativeUndirected, 6));
-      } catch (System.ArgumentException) {
+      }
+      catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);

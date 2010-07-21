@@ -29,7 +29,6 @@
 // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -49,8 +48,7 @@ namespace Google.ProtocolBuffers.Collections {
       if (left.Count != right.Count) {
         return false;
       }
-      foreach (KeyValuePair<TKey,TValue> leftEntry in left)
-      {
+      foreach (KeyValuePair<TKey, TValue> leftEntry in left) {
         TValue rightValue;
         if (!right.TryGetValue(leftEntry.Key, out rightValue)) {
           return false;
@@ -71,7 +69,7 @@ namespace Google.ProtocolBuffers.Collections {
       return true;
     }
 
-    public static IDictionary<TKey, TValue> AsReadOnly<TKey, TValue> (IDictionary<TKey, TValue> dictionary) {
+    public static IDictionary<TKey, TValue> AsReadOnly<TKey, TValue>(IDictionary<TKey, TValue> dictionary) {
       return dictionary.IsReadOnly ? dictionary : new ReadOnlyDictionary<TKey, TValue>(dictionary);
     }
 

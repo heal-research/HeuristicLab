@@ -19,11 +19,8 @@
  */
 #endregion
 
-using System.Collections.Generic;
 using System;
-using HeuristicLab.Persistence.Interfaces;
-using HeuristicLab.Persistence.Core.Tokens;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System.Collections.Generic;
 using System.Text;
 
 namespace HeuristicLab.Persistence.Core {
@@ -31,7 +28,7 @@ namespace HeuristicLab.Persistence.Core {
   /// <summary>
   /// Exception thrown by components inside the persistence framework.
   /// </summary>
-  [Serializable]  
+  [Serializable]
   public class PersistenceException : Exception {
 
     /// <summary>
@@ -86,5 +83,5 @@ namespace HeuristicLab.Persistence.Core {
       return sb.ToString();
     }
   }
-  
+
 }
