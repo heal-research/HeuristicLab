@@ -531,8 +531,8 @@ namespace HeuristicLab.Optimization.Views {
         this.chart.ChartAreas[0].RecalculateAxesScale();
         for (double i = axis.Minimum; i <= axis.Maximum; i += axis.LabelStyle.Interval) {
           TimeSpan time = TimeSpan.FromSeconds(i);
-          string x = string.Format("{0:00}:{1:00}:{2:00.00}", (int)time.TotalHours, time.Minutes, time.TotalSeconds);
-          axis.CustomLabels.Add(i - 0.5, i + 0.5, x);
+          string x = string.Format("{0:00}:{1:00}:{2:00}", (int)time.Hours, time.Minutes, time.Seconds);
+          axis.CustomLabels.Add(i - axis.LabelStyle.Interval / 2, i + axis.LabelStyle.Interval / 2, x);
         }
       }
     }
