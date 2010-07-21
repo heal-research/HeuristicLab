@@ -207,6 +207,7 @@ namespace HeuristicLab.Algorithms.NSGA2 {
       ParameterizeStochasticOperator(Problem.Evaluator);
       foreach (IOperator op in Problem.Operators) ParameterizeStochasticOperator(op);
       ParameterizeSolutionsCreator();
+      ParameterizeRankAndCrowdingSorter();
       ParameterizeMainLoop();
       ParameterizeSelectors();
       ParameterizeAnalyzers();
@@ -225,6 +226,7 @@ namespace HeuristicLab.Algorithms.NSGA2 {
     protected override void Problem_EvaluatorChanged(object sender, EventArgs e) {
       ParameterizeStochasticOperator(Problem.Evaluator);
       ParameterizeSolutionsCreator();
+      ParameterizeRankAndCrowdingSorter();
       ParameterizeMainLoop();
       ParameterizeSelectors();
       ParameterizeAnalyzers();
@@ -250,6 +252,7 @@ namespace HeuristicLab.Algorithms.NSGA2 {
       ParameterizeSelectors();
     }
     private void Evaluator_QualitiesParameter_ActualNameChanged(object sender, EventArgs e) {
+      ParameterizeRankAndCrowdingSorter();
       ParameterizeMainLoop();
       ParameterizeSelectors();
       ParameterizeAnalyzers();
@@ -268,6 +271,10 @@ namespace HeuristicLab.Algorithms.NSGA2 {
     private void ParameterizeSolutionsCreator() {
       SolutionsCreator.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
       SolutionsCreator.SolutionCreatorParameter.ActualName = Problem.SolutionCreatorParameter.Name;
+    }
+    private void ParameterizeRankAndCrowdingSorter() {
+      RankAndCrowdingSorter.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
+      RankAndCrowdingSorter.QualitiesParameter.ActualName = Problem.Evaluator.QualitiesParameter.ActualName;
     }
     private void ParameterizeMainLoop() {
       MainLoop.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;

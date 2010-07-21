@@ -71,7 +71,8 @@ Genetic Algorithm: NSGA-II"", IEEE Transactions On Evolutionary Computation, Vol
 
       for (int pI = 0; pI < populationSize - 1; pI++) {
         IScope p = scope.SubScopes[pI];
-        dominatedScopes[p] = new List<int>();
+        if (!dominatedScopes.ContainsKey(p))
+          dominatedScopes[p] = new List<int>();
         for (int qI = pI + 1; qI < populationSize; qI++) {
           DominationResult test = Dominates(qualities[pI], qualities[qI], maximization);
           if (test == DominationResult.Dominates) {
@@ -79,6 +80,8 @@ Genetic Algorithm: NSGA-II"", IEEE Transactions On Evolutionary Computation, Vol
             dominationCounter[qI] += 1;
           } else if (test == DominationResult.IsDominated) {
             dominationCounter[pI] += 1;
+            if (!dominatedScopes.ContainsKey(scope.SubScopes[qI]))
+              dominatedScopes.Add(scope.SubScopes[qI], new List<int>());
             dominatedScopes[scope.SubScopes[qI]].Add(pI);
           }
           if (pI == populationSize - 2
@@ -97,12 +100,14 @@ Genetic Algorithm: NSGA-II"", IEEE Transactions On Evolutionary Computation, Vol
       while (i < fronts.Count && fronts[i].Count > 0) {
         ScopeList nextFront = new ScopeList();
         foreach (IScope p in fronts[i]) {
-          for (int k = 0; k < dominatedScopes[p].Count; k++) {
-            int dominatedScope = dominatedScopes[p][k];
-            dominationCounter[k] -= 1;
-            if (dominationCounter[k] == 0) {
-              rank[k] = new IntValue(i + 1);
-              nextFront.Add(scope.SubScopes[k]);
+          if (dominatedScopes.ContainsKey(p)) {
+            for (int k = 0; k < dominatedScopes[p].Count; k++) {
+              int dominatedScope = dominatedScopes[p][k];
+              dominationCounter[dominatedScope] -= 1;
+              if (dominationCounter[dominatedScope] == 0) {
+                rank[dominatedScope] = new IntValue(i + 1);
+                nextFront.Add(scope.SubScopes[dominatedScope]);
+              }
             }
           }
         }

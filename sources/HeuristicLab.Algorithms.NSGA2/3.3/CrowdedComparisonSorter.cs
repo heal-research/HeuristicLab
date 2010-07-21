@@ -57,9 +57,8 @@ Genetic Algorithm: NSGA-II"", IEEE Transactions On Evolutionary Computation, Vol
       int size = ranks.Length;
       int[] indices = Enumerable.Range(0, size).ToArray();
 
-      Array.Sort(indices, new CustomComparer(ranks, distances));
       IScope[] scopes = ExecutionContext.Scope.SubScopes.ToArray();
-      Array.Sort(indices, scopes);
+      Array.Sort(indices, scopes, new CustomComparer(ranks, distances));
       ExecutionContext.Scope.SubScopes.Clear();
       ExecutionContext.Scope.SubScopes.AddRange(scopes);
       return base.Apply();

@@ -69,7 +69,7 @@ namespace HeuristicLab.Algorithms.NSGA2 {
 
         double minQuality = qualities[0][m];
         double maxQuality = qualities[populationSize - 1][m];
-        for (int i = 2; i < populationSize - 1; i++) {
+        for (int i = 1; i < populationSize - 1; i++) {
           distances[i].Value += (qualities[i + 1][m] - qualities[i - 1][m]) / (maxQuality - minQuality);
         }
       }
@@ -81,10 +81,11 @@ namespace HeuristicLab.Algorithms.NSGA2 {
       DoubleValue[] distances = new DoubleValue[populationSize];
       for (int i = 0; i < populationSize; i++)
         distances[i] = new DoubleValue(0);
+
+      CrowdingDistanceParameter.ActualValue = new ItemArray<DoubleValue>(distances);
       
       Apply(qualities, distances);
 
-      CrowdingDistanceParameter.ActualValue = new ItemArray<DoubleValue>(distances);
       return base.Apply();
     }
 
