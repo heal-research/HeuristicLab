@@ -69,6 +69,7 @@ namespace HeuristicLab.Problems.TestFunctions {
       get { return (ILookupParameter<DoubleMatrix>)Parameters["Bounds"]; }
     }
 
+    [StorableConstructor]
     protected BestSingleObjectiveTestFunctionSolutionAnalyzer(bool deserializing) : base(deserializing) { }
     public BestSingleObjectiveTestFunctionSolutionAnalyzer()
       : base() {

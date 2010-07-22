@@ -138,6 +138,9 @@ namespace HeuristicLab.Algorithms.NSGA2 {
     }
     #endregion
 
+    [Storable]
+    private BasicMultiObjectiveQualityAnalyzer basicMOQualityAnalyzer;
+
     [StorableConstructor]
     public NSGA2(bool deserializing) : base(deserializing) { }
     public NSGA2() {
@@ -156,6 +159,7 @@ namespace HeuristicLab.Algorithms.NSGA2 {
       SolutionsCreator solutionsCreator = new SolutionsCreator();
       RankAndCrowdingSorter rankAndCrowdingSorter = new RankAndCrowdingSorter();
       NSGA2MainLoop mainLoop = new NSGA2MainLoop();
+      
       OperatorGraph.InitialOperator = randomCreator;
 
       randomCreator.RandomParameter.ActualName = "Random";
@@ -189,6 +193,13 @@ namespace HeuristicLab.Algorithms.NSGA2 {
       if (tournamentSelector != null) SelectorParameter.Value = tournamentSelector;
 
       ParameterizeSelectors();
+
+      basicMOQualityAnalyzer = new BasicMultiObjectiveQualityAnalyzer();
+      basicMOQualityAnalyzer.RankParameter.ActualName = "Rank";
+      basicMOQualityAnalyzer.RankParameter.Depth = 1;
+      basicMOQualityAnalyzer.ResultsParameter.ActualName = "Results";
+      ParameterizeAnalyzers();
+      UpdateAnalyzers();
 
       AttachEventHandlers();
     }
@@ -297,7 +308,10 @@ namespace HeuristicLab.Algorithms.NSGA2 {
       }
     }
     private void ParameterizeAnalyzers() {
-      // TODO: Parameterize Analyzers
+      if (Problem != null) {
+        basicMOQualityAnalyzer.QualitiesParameter.ActualName = Problem.Evaluator.QualitiesParameter.ActualName;
+        basicMOQualityAnalyzer.QualitiesParameter.Depth = 1;
+      }
     }
     private void ParameterizeIterationBasedOperators() {
       if (Problem != null) {
@@ -336,6 +350,7 @@ namespace HeuristicLab.Algorithms.NSGA2 {
           Analyzer.Operators.Add(analyzer);
         }
       }
+      Analyzer.Operators.Add(basicMOQualityAnalyzer);
     }
     #endregion
   }
