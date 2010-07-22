@@ -91,11 +91,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.LinearRegression {
 
 
     public override IOperation Apply() {
-      SymbolicExpressionTree = CreateSymbolicExpressionTree(DataAnalysisProblemData.Dataset, DataAnalysisProblemData.TargetVariable.Value, DataAnalysisProblemData.InputVariables.CheckedItems.Select(x => x.Value.Value), SamplesStart.Value, SamplesEnd.Value);
+      double rmsError, cvRmsError;
+      SymbolicExpressionTree = CreateSymbolicExpressionTree(DataAnalysisProblemData.Dataset, DataAnalysisProblemData.TargetVariable.Value, DataAnalysisProblemData.InputVariables.CheckedItems.Select(x => x.Value.Value), SamplesStart.Value, SamplesEnd.Value, out rmsError, out cvRmsError);
       return base.Apply();
     }
 
-    public static SymbolicExpressionTree CreateSymbolicExpressionTree(Dataset dataset, string targetVariable, IEnumerable<string> allowedInputVariables, int start, int end) {
+    public static SymbolicExpressionTree CreateSymbolicExpressionTree(Dataset dataset, string targetVariable, IEnumerable<string> allowedInputVariables, int start, int end, out double rmsError, out double cvRmsError) {
       double[,] inputMatrix = LinearRegressionUtil.PrepareInputMatrix(dataset, targetVariable, allowedInputVariables, start, end);
 
       alglib.linreg.linearmodel lm = new alglib.linreg.linearmodel();
@@ -107,6 +108,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.LinearRegression {
       int retVal = 1;
       alglib.linreg.lrbuild(ref inputMatrix, nRows, nFeatures, ref retVal, ref lm, ref ar);
       if (retVal != 1) throw new ArgumentException("Error in calculation of linear regression model");
+      rmsError = ar.rmserror;
+      cvRmsError = ar.cvrmserror;
 
       for (int i = 0; i < nFeatures + 1; i++)
         coefficients[i] = lm.w[i + 4];

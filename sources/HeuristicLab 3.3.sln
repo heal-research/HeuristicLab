@@ -63,6 +63,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab-3.3", "Heurist
 		{489CFE09-FDF7-4C89-BAB5-BD09CADD61AD} = {489CFE09-FDF7-4C89-BAB5-BD09CADD61AD}
 		{72104A0B-90E7-42F3-9ABE-9BBBADD4B943} = {72104A0B-90E7-42F3-9ABE-9BBBADD4B943}
 		{3081630C-9521-47D7-8075-1777C12F212C} = {3081630C-9521-47D7-8075-1777C12F212C}
+		{7252890C-F207-4AD6-B3C9-764DF93F73CC} = {7252890C-F207-4AD6-B3C9-764DF93F73CC}
 		{25087811-F74C-4128-BC86-8324271DA13E} = {25087811-F74C-4128-BC86-8324271DA13E}
 		{662B4B15-8F4D-4AE5-B3EB-D91C215F5AF2} = {662B4B15-8F4D-4AE5-B3EB-D91C215F5AF2}
 		{BDF86B1D-630E-4CE2-8A49-8C90B1BDE4C9} = {BDF86B1D-630E-4CE2-8A49-8C90B1BDE4C9}
@@ -320,6 +321,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.DataAnalysis.MultiVariate.Regression-3.3", "HeuristicLab.Problems.DataAnalysis.MultiVariate.Regression\3.3\HeuristicLab.Problems.DataAnalysis.MultiVariate.Regression-3.3.csproj", "{6024D74F-E29C-4E6B-843E-8851831B8E14}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.DataAnalysis.MultiVariate.Views-3.3", "HeuristicLab.Problems.DataAnalysis.MultiVariate.Views\3.3\HeuristicLab.Problems.DataAnalysis.MultiVariate.Views-3.3.csproj", "{9B6EA19A-F894-4E00-B5A3-970514284772}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.DataAnalysis.FeatureSelection-3.3", "HeuristicLab.Problems.DataAnalysis.FeatureSelection\3.3\HeuristicLab.Problems.DataAnalysis.FeatureSelection-3.3.csproj", "{7252890C-F207-4AD6-B3C9-764DF93F73CC}"
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
@@ -2163,6 +2166,26 @@ Global
 		{9B6EA19A-F894-4E00-B5A3-970514284772}.Silverlight2|x64.ActiveCfg = Release|x86
 		{9B6EA19A-F894-4E00-B5A3-970514284772}.Silverlight2|x86.ActiveCfg = Release|x86
 		{9B6EA19A-F894-4E00-B5A3-970514284772}.Silverlight2|x86.Build.0 = Release|x86
+		{7252890C-F207-4AD6-B3C9-764DF93F73CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7252890C-F207-4AD6-B3C9-764DF93F73CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7252890C-F207-4AD6-B3C9-764DF93F73CC}.Debug|x64.ActiveCfg = Debug|x64
+		{7252890C-F207-4AD6-B3C9-764DF93F73CC}.Debug|x64.Build.0 = Debug|x64
+		{7252890C-F207-4AD6-B3C9-764DF93F73CC}.Debug|x86.ActiveCfg = Debug|x86
+		{7252890C-F207-4AD6-B3C9-764DF93F73CC}.Debug|x86.Build.0 = Debug|x86
+		{7252890C-F207-4AD6-B3C9-764DF93F73CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7252890C-F207-4AD6-B3C9-764DF93F73CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7252890C-F207-4AD6-B3C9-764DF93F73CC}.Release|x64.ActiveCfg = Release|x64
+		{7252890C-F207-4AD6-B3C9-764DF93F73CC}.Release|x64.Build.0 = Release|x64
+		{7252890C-F207-4AD6-B3C9-764DF93F73CC}.Release|x86.ActiveCfg = Release|x86
+		{7252890C-F207-4AD6-B3C9-764DF93F73CC}.Release|x86.Build.0 = Release|x86
+		{7252890C-F207-4AD6-B3C9-764DF93F73CC}.Services|Any CPU.ActiveCfg = Release|x86
+		{7252890C-F207-4AD6-B3C9-764DF93F73CC}.Services|x64.ActiveCfg = Release|x86
+		{7252890C-F207-4AD6-B3C9-764DF93F73CC}.Services|x86.ActiveCfg = Release|x86
+		{7252890C-F207-4AD6-B3C9-764DF93F73CC}.Services|x86.Build.0 = Release|x86
+		{7252890C-F207-4AD6-B3C9-764DF93F73CC}.Silverlight2|Any CPU.ActiveCfg = Release|x86
+		{7252890C-F207-4AD6-B3C9-764DF93F73CC}.Silverlight2|x64.ActiveCfg = Release|x86
+		{7252890C-F207-4AD6-B3C9-764DF93F73CC}.Silverlight2|x86.ActiveCfg = Release|x86
+		{7252890C-F207-4AD6-B3C9-764DF93F73CC}.Silverlight2|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
