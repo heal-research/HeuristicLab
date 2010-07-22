@@ -83,7 +83,7 @@ namespace HeuristicLab.Problems.DataAnalysis.FeatureSelection {
         double rmsError, cvRmsError;
         var tree = LinearRegressionSolutionCreator.CreateSymbolicExpressionTree(dataset, targetVariable, allowedInputVariables, start, end, out rmsError, out cvRmsError);
         featureCount = allowedInputVariables.Count;
-        mse = cvRmsError;
+        mse = rmsError;
       } else {
         featureCount = 0;
         // when zero features are selected the linear regression should produce a constant (the mean)
