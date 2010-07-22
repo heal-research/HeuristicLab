@@ -74,7 +74,7 @@ namespace HeuristicLab.Problems.DataAnalysis.MultiVariate.Regression.Symbolic.Ev
         double compBeta;
         double nmse = SymbolicRegressionScaledNormalizedMeanSquaredErrorEvaluator.Calculate(interpreter, tree,
           lowerEstimationBound[i], upperEstimationBound[i],
-          problemData.Dataset, targetVariablesList[i], rows, out compAlpha, out compBeta);
+          problemData.Dataset, targetVariablesList[i], rows, out compBeta, out compAlpha);
         alpha[i] = compAlpha;
         beta[i] = compBeta;
         nmseSum += nmse;

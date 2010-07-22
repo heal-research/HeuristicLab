@@ -110,6 +110,7 @@ namespace HeuristicLab.Problems.DataAnalysis.MultiVariate.Regression.Symbolic {
       BestKnownQualityParameter.Value = null;
       // paritions could be changed
       ParameterizeEvaluator();
+      ParameterizeAnalyzers();
     }
 
     protected override void OnSolutionParameterNameChanged(EventArgs e) {
