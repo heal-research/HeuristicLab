@@ -145,7 +145,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
           handler(this, EventArgs.Empty);
       }
     }
-    protected void PropagateStateChanges(Control control, Type type, PropertyInfo propertyInfo) {
+    protected virtual void PropagateStateChanges(Control control, Type type, PropertyInfo propertyInfo) {
       if (!type.GetProperties().Contains(propertyInfo))
         throw new ArgumentException("The specified type " + type + "implement the property " + propertyInfo.Name + ".");
       if (!type.IsAssignableFrom(this.GetType()))

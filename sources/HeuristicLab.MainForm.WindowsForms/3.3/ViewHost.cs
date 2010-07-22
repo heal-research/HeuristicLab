@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Common;
+using System.Reflection;
 
 namespace HeuristicLab.MainForm.WindowsForms {
   [Content(typeof(IContent))]
@@ -174,6 +175,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.SuspendRepaint();
       if (activeView != null) {
         UpdateActiveMenuItem();
+        this.ActiveView.ReadOnly = this.ReadOnly;
+        this.ActiveView.Locked = this.Locked;
         this.ActiveViewControl.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right;
         this.ActiveViewControl.Size = new System.Drawing.Size(this.Width - this.viewsLabel.Width - this.viewsLabel.Margin.Left - this.viewsLabel.Margin.Right, this.Height);
         this.ActiveViewChanged();
@@ -214,20 +217,24 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     #region forwarding of view events
-    protected override void OnReadOnlyChanged() {
-      this.SuspendRepaint();
-      base.OnReadOnlyChanged();
-      foreach (IContentView view in cachedViews.Values)
-        view.ReadOnly = this.ReadOnly;
-      this.ResumeRepaint(true);
+    protected override void PropagateStateChanges(Control control, Type type, System.Reflection.PropertyInfo propertyInfo) {
+      if (!type.GetProperties().Contains(propertyInfo))
+        throw new ArgumentException("The specified type " + type + "implement the property " + propertyInfo.Name + ".");
+      if (!type.IsAssignableFrom(this.GetType()))
+        throw new ArgumentException("The specified type " + type + "must be the same or a base class / interface of this object.");
+      if (!propertyInfo.CanWrite)
+        throw new ArgumentException("The specified property " + propertyInfo.Name + " must have a setter.");
+
+      if (activeView != null) {
+        Type controlType = activeView.GetType();
+        PropertyInfo controlPropertyInfo = controlType.GetProperty(propertyInfo.Name, propertyInfo.PropertyType);
+        if (type.IsAssignableFrom(controlType) && controlPropertyInfo != null) {
+          var thisValue = propertyInfo.GetValue(this, null);
+          controlPropertyInfo.SetValue(activeView, thisValue, null);
+        }
+      }
     }
-    protected override void OnLockedChanged() {
-      this.SuspendRepaint();
-      base.OnLockedChanged();
-      foreach (IContentView view in cachedViews.Values)
-        view.Locked = this.Locked;
-      this.ResumeRepaint(true);
-    }
+
     internal protected override void OnShown(ViewShownEventArgs e) {
       base.OnShown(e);
       View view = this.ActiveView as View;
