@@ -196,13 +196,15 @@ namespace HeuristicLab.Core.Views {
                              (Content != null) && !Content.IsReadOnly && !ReadOnly;
       AdjustListViewColumnSizes();
 
-      if (itemsListView.SelectedItems.Count == 1) {
-        T item = (T)itemsListView.SelectedItems[0].Tag;
-        detailsGroupBox.Enabled = true;
-        viewHost.Content = item;
-      } else {
-        viewHost.Content = null;
-        detailsGroupBox.Enabled = false;
+      if (showDetailsCheckBox.Checked) {
+        if (itemsListView.SelectedItems.Count == 1) {
+          T item = (T)itemsListView.SelectedItems[0].Tag;
+          detailsGroupBox.Enabled = true;
+          viewHost.Content = item;
+        } else {
+          viewHost.Content = null;
+          detailsGroupBox.Enabled = false;
+        }
       }
     }
 
@@ -296,6 +298,20 @@ namespace HeuristicLab.Core.Views {
       if (itemsListView.SelectedItems.Count > 0) {
         foreach (ListViewItem item in itemsListView.SelectedItems)
           Content.RemoveAt(item.Index);
+      }
+    }
+    #endregion
+
+    #region CheckBox Events
+    private class DummyContent : HeuristicLab.Common.IContent { }
+    protected void showDetailsCheckBox_CheckedChanged(object sender, EventArgs e) {
+      if (showDetailsCheckBox.Checked) {
+        splitContainer.Panel2Collapsed = false;
+        detailsGroupBox.Enabled = itemsListView.SelectedItems.Count == 1;
+        viewHost.Content = itemsListView.SelectedItems.Count == 1 ? (T)itemsListView.SelectedItems[0].Tag : null;
+      } else {
+        splitContainer.Panel2Collapsed = true;
+        viewHost.Content = new DummyContent();
       }
     }
     #endregion
