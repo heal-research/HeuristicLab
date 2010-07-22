@@ -48,6 +48,7 @@ HeuristicLab.Problems.ArtificialAnt.Views\3.3:HeuristicLab.Problems.ArtificialAn
 HeuristicLab.Problems.DataAnalysis\3.3:HeuristicLab.Problems.DataAnalysis-3.3.dll
 HeuristicLab.Problems.DataAnalysis.MultiVariate\3.3:HeuristicLab.Problems.DataAnalysis.MultiVariate-3.3.dll
 HeuristicLab.Problems.DataAnalysis.MultiVariate.Regression\3.3:HeuristicLab.Problems.DataAnalysis.MultiVariate.Regression-3.3.dll
+HeuristicLab.Problems.DataAnalysis.MultiVariate.Views\3.3:HeuristicLab.Problems.DataAnalysis.MultiVariate.Views-3.3.dll
 HeuristicLab.Problems.DataAnalysis.Regression\3.3:HeuristicLab.Problems.DataAnalysis.Regression-3.3.dll
 HeuristicLab.Problems.DataAnalysis.Views\3.3:HeuristicLab.Problems.DataAnalysis.Views-3.3.dll
 HeuristicLab.Problems.ExternalEvaluation\3.3:HeuristicLab.Problems.ExternalEvaluation-3.3.dll
