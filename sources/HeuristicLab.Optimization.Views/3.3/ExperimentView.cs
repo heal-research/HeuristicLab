@@ -50,6 +50,10 @@ namespace HeuristicLab.Optimization.Views {
       Content.ExceptionOccurred -= new EventHandler<EventArgs<Exception>>(Content_ExceptionOccurred);
       Content.ExecutionStateChanged -= new EventHandler(Content_ExecutionStateChanged);
       Content.ExecutionTimeChanged -= new EventHandler(Content_ExecutionTimeChanged);
+      Content.Prepared -= new EventHandler(Content_Prepared);
+      Content.Started -= new EventHandler(Content_Started);
+      Content.Paused -= new EventHandler(Content_Paused);
+      Content.Stopped -= new EventHandler(Content_Stopped);
       base.DeregisterContentEvents();
     }
     protected override void RegisterContentEvents() {
@@ -57,6 +61,10 @@ namespace HeuristicLab.Optimization.Views {
       Content.ExceptionOccurred += new EventHandler<EventArgs<Exception>>(Content_ExceptionOccurred);
       Content.ExecutionStateChanged += new EventHandler(Content_ExecutionStateChanged);
       Content.ExecutionTimeChanged += new EventHandler(Content_ExecutionTimeChanged);
+      Content.Prepared += new EventHandler(Content_Prepared);
+      Content.Started += new EventHandler(Content_Started);
+      Content.Paused += new EventHandler(Content_Paused);
+      Content.Stopped += new EventHandler(Content_Stopped);
     }
 
     protected override void OnContentChanged() {
@@ -89,10 +97,42 @@ namespace HeuristicLab.Optimization.Views {
     private void Content_ExecutionStateChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_ExecutionStateChanged), sender, e);
+      else
+        startButton.Enabled = pauseButton.Enabled = stopButton.Enabled = resetButton.Enabled = false;
+    }
+    private void Content_Prepared(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_Prepared), sender, e);
       else {
-        nameTextBox.Enabled = Content.ExecutionState != ExecutionState.Started;
-        descriptionTextBox.Enabled = Content.ExecutionState != ExecutionState.Started;
-        Locked = Content.ExecutionState == ExecutionState.Started;
+        nameTextBox.Enabled = descriptionTextBox.Enabled = true;
+        Locked = false;
+        SetEnabledStateOfExecutableButtons();
+      }
+    }
+    private void Content_Started(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_Started), sender, e);
+      else {
+        nameTextBox.Enabled = descriptionTextBox.Enabled = false;
+        Locked = true;
+        SetEnabledStateOfExecutableButtons();
+      }
+    }
+    private void Content_Paused(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_Paused), sender, e);
+      else {
+        nameTextBox.Enabled = descriptionTextBox.Enabled = true;
+        Locked = false;
+        SetEnabledStateOfExecutableButtons();
+      }
+    }
+    private void Content_Stopped(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_Stopped), sender, e);
+      else {
+        nameTextBox.Enabled = descriptionTextBox.Enabled = true;
+        Locked = false;
         SetEnabledStateOfExecutableButtons();
       }
     }

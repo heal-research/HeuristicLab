@@ -69,6 +69,9 @@ namespace HeuristicLab.Optimization.Views {
       Content.ExecutionStateChanged -= new EventHandler(Content_ExecutionStateChanged);
       Content.ExecutionTimeChanged -= new EventHandler(Content_ExecutionTimeChanged);
       Content.Prepared -= new EventHandler(Content_Prepared);
+      Content.Started -= new EventHandler(Content_Started);
+      Content.Paused -= new EventHandler(Content_Paused);
+      Content.Stopped -= new EventHandler(Content_Stopped);
       Content.ProblemChanged -= new EventHandler(Content_ProblemChanged);
       base.DeregisterContentEvents();
     }
@@ -78,6 +81,9 @@ namespace HeuristicLab.Optimization.Views {
       Content.ExecutionStateChanged += new EventHandler(Content_ExecutionStateChanged);
       Content.ExecutionTimeChanged += new EventHandler(Content_ExecutionTimeChanged);
       Content.Prepared += new EventHandler(Content_Prepared);
+      Content.Started += new EventHandler(Content_Started);
+      Content.Paused += new EventHandler(Content_Paused);
+      Content.Stopped += new EventHandler(Content_Stopped);
       Content.ProblemChanged += new EventHandler(Content_ProblemChanged);
     }
 
@@ -125,18 +131,42 @@ namespace HeuristicLab.Optimization.Views {
         problemViewHost.Content = Content.Problem;
       }
     }
-    protected virtual void Content_Prepared(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_Prepared), sender, e);
-      else
-        resultsView.Content = Content.Results.AsReadOnly();
-    }
     protected virtual void Content_ExecutionStateChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_ExecutionStateChanged), sender, e);
+      else
+        startButton.Enabled = pauseButton.Enabled = stopButton.Enabled = resetButton.Enabled = false;
+    }
+    protected virtual void Content_Prepared(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_Prepared), sender, e);
       else {
-        ReadOnly = Content.ExecutionState == ExecutionState.Started;
-        Locked = Content.ExecutionState == ExecutionState.Started;
+        resultsView.Content = Content.Results.AsReadOnly();
+        ReadOnly = Locked = false;
+        SetEnabledStateOfExecutableButtons();
+      }
+    }
+    protected virtual void Content_Started(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_Started), sender, e);
+      else {
+        ReadOnly = Locked = true;
+        SetEnabledStateOfExecutableButtons();
+      }
+    }
+    protected virtual void Content_Paused(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_Paused), sender, e);
+      else {
+        ReadOnly = Locked = false;
+        SetEnabledStateOfExecutableButtons();
+      }
+    }
+    protected virtual void Content_Stopped(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_Stopped), sender, e);
+      else {
+        ReadOnly = Locked = false;
         SetEnabledStateOfExecutableButtons();
       }
     }
