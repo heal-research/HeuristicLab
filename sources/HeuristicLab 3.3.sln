@@ -91,6 +91,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab-3.3", "Heurist
 		{3BD61258-31DA-4B09-89C0-4F71FEF5F05A} = {3BD61258-31DA-4B09-89C0-4F71FEF5F05A}
 		{01BBCB5A-144A-4A7E-908E-079849E2F7CF} = {01BBCB5A-144A-4A7E-908E-079849E2F7CF}
 		{96E5ED5B-187D-4012-9CDA-D85CDAD38342} = {96E5ED5B-187D-4012-9CDA-D85CDAD38342}
+		{E86E215D-E3CE-4244-978D-555D4E17AC09} = {E86E215D-E3CE-4244-978D-555D4E17AC09}
 		{C664305E-497C-4533-A140-967DEDB05C19} = {C664305E-497C-4533-A140-967DEDB05C19}
 		{8824925E-3E00-4543-8293-7DDACE4737F8} = {8824925E-3E00-4543-8293-7DDACE4737F8}
 		{E10F395F-C8A6-48AD-B470-9AA7A1F43809} = {E10F395F-C8A6-48AD-B470-9AA7A1F43809}
@@ -323,6 +324,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.DataAnalysis.MultiVariate.Views-3.3", "HeuristicLab.Problems.DataAnalysis.MultiVariate.Views\3.3\HeuristicLab.Problems.DataAnalysis.MultiVariate.Views-3.3.csproj", "{9B6EA19A-F894-4E00-B5A3-970514284772}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.DataAnalysis.FeatureSelection-3.3", "HeuristicLab.Problems.DataAnalysis.FeatureSelection\3.3\HeuristicLab.Problems.DataAnalysis.FeatureSelection-3.3.csproj", "{7252890C-F207-4AD6-B3C9-764DF93F73CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.ExternalEvaluation.GP-3.3", "HeuristicLab.Problems.ExternalEvaluation.GP\3.3\HeuristicLab.Problems.ExternalEvaluation.GP-3.3.csproj", "{E86E215D-E3CE-4244-978D-555D4E17AC09}"
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
@@ -2186,6 +2189,26 @@ Global
 		{7252890C-F207-4AD6-B3C9-764DF93F73CC}.Silverlight2|x64.ActiveCfg = Release|x86
 		{7252890C-F207-4AD6-B3C9-764DF93F73CC}.Silverlight2|x86.ActiveCfg = Release|x86
 		{7252890C-F207-4AD6-B3C9-764DF93F73CC}.Silverlight2|x86.Build.0 = Release|x86
+		{E86E215D-E3CE-4244-978D-555D4E17AC09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E86E215D-E3CE-4244-978D-555D4E17AC09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E86E215D-E3CE-4244-978D-555D4E17AC09}.Debug|x64.ActiveCfg = Debug|x64
+		{E86E215D-E3CE-4244-978D-555D4E17AC09}.Debug|x64.Build.0 = Debug|x64
+		{E86E215D-E3CE-4244-978D-555D4E17AC09}.Debug|x86.ActiveCfg = Debug|x86
+		{E86E215D-E3CE-4244-978D-555D4E17AC09}.Debug|x86.Build.0 = Debug|x86
+		{E86E215D-E3CE-4244-978D-555D4E17AC09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E86E215D-E3CE-4244-978D-555D4E17AC09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E86E215D-E3CE-4244-978D-555D4E17AC09}.Release|x64.ActiveCfg = Release|x64
+		{E86E215D-E3CE-4244-978D-555D4E17AC09}.Release|x64.Build.0 = Release|x64
+		{E86E215D-E3CE-4244-978D-555D4E17AC09}.Release|x86.ActiveCfg = Release|x86
+		{E86E215D-E3CE-4244-978D-555D4E17AC09}.Release|x86.Build.0 = Release|x86
+		{E86E215D-E3CE-4244-978D-555D4E17AC09}.Services|Any CPU.ActiveCfg = Release|x64
+		{E86E215D-E3CE-4244-978D-555D4E17AC09}.Services|x64.ActiveCfg = Release|x64
+		{E86E215D-E3CE-4244-978D-555D4E17AC09}.Services|x64.Build.0 = Release|x64
+		{E86E215D-E3CE-4244-978D-555D4E17AC09}.Services|x86.ActiveCfg = Release|x64
+		{E86E215D-E3CE-4244-978D-555D4E17AC09}.Silverlight2|Any CPU.ActiveCfg = Release|x64
+		{E86E215D-E3CE-4244-978D-555D4E17AC09}.Silverlight2|x64.ActiveCfg = Release|x64
+		{E86E215D-E3CE-4244-978D-555D4E17AC09}.Silverlight2|x64.Build.0 = Release|x64
+		{E86E215D-E3CE-4244-978D-555D4E17AC09}.Silverlight2|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
