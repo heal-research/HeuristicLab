@@ -76,7 +76,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
         }
       }
     }
-
     private Control ActiveViewControl {
       get { return ActiveView as Control; }
     }
@@ -102,6 +101,19 @@ namespace HeuristicLab.MainForm.WindowsForms {
         base.Enabled = value;
         this.viewsLabel.Enabled = value;
         this.ResumeRepaint(true);
+      }
+    }
+
+    public void ClearCache() {
+      foreach (var cachedView in cachedViews) {
+        if (cachedView.Value != activeView) {
+          Control c = cachedView.Value as Control;
+          if (c != null) {
+            this.Controls.Remove(c);
+            c.Dispose();
+          }
+          cachedViews.Remove(cachedView.Key);
+        }
       }
     }
 
@@ -184,17 +196,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.ResumeRepaint(true);
     }
 
-    protected override void OnSizeChanged(EventArgs e) {
-      //mkommend: solution to resizing issues. taken from http://support.microsoft.com/kb/953934
-      //not implemented with a panel to reduce the number of nested controls
-      if (this.Handle != null)
-        this.BeginInvoke((Action<EventArgs>)OnSizeChangedHelper, e);
-    }
-    private void OnSizeChangedHelper(EventArgs e) {
-      base.OnSizeChanged(e);
-      this.viewsLabel.Location = new System.Drawing.Point(this.Width - this.viewsLabel.Margin.Right - this.viewsLabel.Width, this.viewsLabel.Margin.Top);
-    }
-
     private void RegisterActiveViewEvents() {
       activeView.Changed += new EventHandler(activeView_Changed);
       activeView.CaptionChanged += new EventHandler(activeView_CaptionChanged);
@@ -214,6 +215,17 @@ namespace HeuristicLab.MainForm.WindowsForms {
         this.Caption = this.ActiveView.Caption;
         this.Locked = this.ActiveView.Locked;
       }
+    }
+
+    protected override void OnSizeChanged(EventArgs e) {
+      //mkommend: solution to resizing issues. taken from http://support.microsoft.com/kb/953934
+      //not implemented with a panel to reduce the number of nested controls
+      if (this.Handle != null)
+        this.BeginInvoke((Action<EventArgs>)OnSizeChangedHelper, e);
+    }
+    private void OnSizeChangedHelper(EventArgs e) {
+      base.OnSizeChanged(e);
+      this.viewsLabel.Location = new System.Drawing.Point(this.Width - this.viewsLabel.Margin.Right - this.viewsLabel.Width, this.viewsLabel.Margin.Top);
     }
 
     #region forwarding of view events
