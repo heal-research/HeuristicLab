@@ -73,7 +73,6 @@ namespace HeuristicLab.Optimization.Views {
       get { return (RunCollection)base.Content; }
       set { base.Content = value; }
     }
-
     public IStringConvertibleMatrix Matrix {
       get { return this.Content; }
     }
@@ -87,10 +86,6 @@ namespace HeuristicLab.Optimization.Views {
       Content.CollectionReset += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
       RegisterRunEvents(Content);
     }
-    protected virtual void RegisterRunEvents(IEnumerable<IRun> runs) {
-      foreach (IRun run in runs)
-        run.Changed += new EventHandler(run_Changed);
-    }
     protected override void DeregisterContentEvents() {
       base.DeregisterContentEvents();
       Content.Reset -= new EventHandler(Content_Reset);
@@ -99,6 +94,10 @@ namespace HeuristicLab.Optimization.Views {
       Content.ItemsRemoved -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
       Content.CollectionReset -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
       DeregisterRunEvents(Content);
+    }
+    protected virtual void RegisterRunEvents(IEnumerable<IRun> runs) {
+      foreach (IRun run in runs)
+        run.Changed += new EventHandler(run_Changed);
     }
     protected virtual void DeregisterRunEvents(IEnumerable<IRun> runs) {
       foreach (IRun run in runs)

@@ -124,6 +124,12 @@
     <Compile Include="BatchRunView.Designer.cs">
       <DependentUpon>BatchRunView.cs</DependentUpon>
     </Compile>
+    <Compile Include="RunCollectionBoxPlotView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="RunCollectionBoxPlotView.Designer.cs">
+      <DependentUpon>RunCollectionBoxPlotView.cs</DependentUpon>
+    </Compile>
     <Compile Include="RunCollectionComparisonConstraintView.cs">
       <SubType>UserControl</SubType>
     </Compile>

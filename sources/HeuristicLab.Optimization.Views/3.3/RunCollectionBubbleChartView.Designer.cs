@@ -37,7 +37,7 @@ namespace HeuristicLab.Optimization.Views {
       base.Dispose(disposing);
     }
 
-      #region Component Designer generated code
+    #region Component Designer generated code
 
     /// <summary> 
     /// Required method for Designer support - do not modify 
@@ -195,10 +195,10 @@ namespace HeuristicLab.Optimization.Views {
       this.chart.Size = new System.Drawing.Size(633, 248);
       this.chart.TabIndex = 16;
       this.chart.Text = "chart";
-      this.chart.MouseUp += new System.Windows.Forms.MouseEventHandler(this.chart_MouseUp);
-      this.chart.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chart_MouseMove);
+      this.chart.AxisViewChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ViewEventArgs>(this.chart_AxisViewChanged);
       this.chart.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chart_MouseDown);
-      this.chart.AxisViewChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ViewEventArgs>(chart_AxisViewChanged);
+      this.chart.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chart_MouseMove);
+      this.chart.MouseUp += new System.Windows.Forms.MouseEventHandler(this.chart_MouseUp);
       // 
       // zoomButton
       // 
@@ -252,6 +252,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // colorDialog
       // 
+      this.colorDialog.AllowFullOpen = false;
       this.colorDialog.FullOpen = true;
       // 
       // noRunsLabel
@@ -293,6 +294,7 @@ namespace HeuristicLab.Optimization.Views {
       this.radioButtonGroup.PerformLayout();
       this.ResumeLayout(false);
       this.PerformLayout();
+
     }
     #endregion
 
