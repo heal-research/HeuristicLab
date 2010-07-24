@@ -45,28 +45,28 @@ namespace HeuristicLab.Optimization.Views {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("Results", System.Windows.Forms.HorizontalAlignment.Left);
-      System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Parameters", System.Windows.Forms.HorizontalAlignment.Left);
+      System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Results", System.Windows.Forms.HorizontalAlignment.Left);
+      System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Parameters", System.Windows.Forms.HorizontalAlignment.Left);
       this.parametersResultsGroupBox = new System.Windows.Forms.GroupBox();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
       this.listView = new System.Windows.Forms.ListView();
-      this.nameColumnHeader = new System.Windows.Forms.ColumnHeader();
-      this.valueColumnHeader = new System.Windows.Forms.ColumnHeader();
+      this.nameColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+      this.valueColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.imageList = new System.Windows.Forms.ImageList(this.components);
       this.detailsGroupBox = new System.Windows.Forms.GroupBox();
       this.viewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.showAlgorithmButton = new System.Windows.Forms.Button();
       this.changeColorButton = new System.Windows.Forms.Button();
       this.colorLabel = new System.Windows.Forms.Label();
-      this.colorPictureBox = new System.Windows.Forms.PictureBox();
       this.colorDialog = new System.Windows.Forms.ColorDialog();
+      this.showDetailsCheckBox = new System.Windows.Forms.CheckBox();
+      this.colorArea = new System.Windows.Forms.Label();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.parametersResultsGroupBox.SuspendLayout();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
       this.splitContainer.SuspendLayout();
       this.detailsGroupBox.SuspendLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.colorPictureBox)).BeginInit();
       this.SuspendLayout();
       // 
       // nameTextBox
@@ -85,10 +85,10 @@ namespace HeuristicLab.Optimization.Views {
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.parametersResultsGroupBox.Controls.Add(this.splitContainer);
-      this.parametersResultsGroupBox.Location = new System.Drawing.Point(0, 79);
+      this.parametersResultsGroupBox.Location = new System.Drawing.Point(0, 82);
       this.parametersResultsGroupBox.Name = "parametersResultsGroupBox";
-      this.parametersResultsGroupBox.Size = new System.Drawing.Size(495, 245);
-      this.parametersResultsGroupBox.TabIndex = 4;
+      this.parametersResultsGroupBox.Size = new System.Drawing.Size(495, 242);
+      this.parametersResultsGroupBox.TabIndex = 8;
       this.parametersResultsGroupBox.TabStop = false;
       this.parametersResultsGroupBox.Text = "Parameters && Results";
       // 
@@ -105,7 +105,7 @@ namespace HeuristicLab.Optimization.Views {
       // splitContainer.Panel2
       // 
       this.splitContainer.Panel2.Controls.Add(this.detailsGroupBox);
-      this.splitContainer.Size = new System.Drawing.Size(489, 226);
+      this.splitContainer.Size = new System.Drawing.Size(489, 223);
       this.splitContainer.SplitterDistance = 177;
       this.splitContainer.TabIndex = 0;
       // 
@@ -118,27 +118,27 @@ namespace HeuristicLab.Optimization.Views {
             this.nameColumnHeader,
             this.valueColumnHeader});
       this.listView.FullRowSelect = true;
-      listViewGroup3.Header = "Results";
-      listViewGroup3.Name = "resultsGroup";
-      listViewGroup4.Header = "Parameters";
-      listViewGroup4.Name = "parametersGroup";
+      listViewGroup1.Header = "Results";
+      listViewGroup1.Name = "resultsGroup";
+      listViewGroup2.Header = "Parameters";
+      listViewGroup2.Name = "parametersGroup";
       this.listView.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup3,
-            listViewGroup4});
+            listViewGroup1,
+            listViewGroup2});
       this.listView.HideSelection = false;
       this.listView.Location = new System.Drawing.Point(3, 3);
       this.listView.MultiSelect = false;
       this.listView.Name = "listView";
       this.listView.ShowItemToolTips = true;
-      this.listView.Size = new System.Drawing.Size(171, 220);
+      this.listView.Size = new System.Drawing.Size(171, 217);
       this.listView.SmallImageList = this.imageList;
       this.listView.Sorting = System.Windows.Forms.SortOrder.Ascending;
       this.listView.TabIndex = 0;
       this.listView.UseCompatibleStateImageBehavior = false;
       this.listView.View = System.Windows.Forms.View.Details;
+      this.listView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.listView_ItemDrag);
       this.listView.SelectedIndexChanged += new System.EventHandler(this.listView_SelectedIndexChanged);
       this.listView.DoubleClick += new System.EventHandler(this.listView_DoubleClick);
-      this.listView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.listView_ItemDrag);
       // 
       // nameColumnHeader
       // 
@@ -162,7 +162,7 @@ namespace HeuristicLab.Optimization.Views {
       this.detailsGroupBox.Controls.Add(this.viewHost);
       this.detailsGroupBox.Location = new System.Drawing.Point(3, 3);
       this.detailsGroupBox.Name = "detailsGroupBox";
-      this.detailsGroupBox.Size = new System.Drawing.Size(302, 220);
+      this.detailsGroupBox.Size = new System.Drawing.Size(302, 217);
       this.detailsGroupBox.TabIndex = 0;
       this.detailsGroupBox.TabStop = false;
       this.detailsGroupBox.Text = "Details";
@@ -172,11 +172,12 @@ namespace HeuristicLab.Optimization.Views {
       this.viewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
+      this.viewHost.Caption = "View";
       this.viewHost.Content = null;
       this.viewHost.Location = new System.Drawing.Point(6, 19);
       this.viewHost.Name = "viewHost";
       this.viewHost.ReadOnly = true;
-      this.viewHost.Size = new System.Drawing.Size(290, 195);
+      this.viewHost.Size = new System.Drawing.Size(290, 192);
       this.viewHost.TabIndex = 0;
       this.viewHost.ViewType = null;
       // 
@@ -187,7 +188,7 @@ namespace HeuristicLab.Optimization.Views {
       this.showAlgorithmButton.Location = new System.Drawing.Point(0, 330);
       this.showAlgorithmButton.Name = "showAlgorithmButton";
       this.showAlgorithmButton.Size = new System.Drawing.Size(495, 23);
-      this.showAlgorithmButton.TabIndex = 5;
+      this.showAlgorithmButton.TabIndex = 9;
       this.showAlgorithmButton.Text = "&Show Algorithm";
       this.toolTip.SetToolTip(this.showAlgorithmButton, "Show the algorithm which produced these results");
       this.showAlgorithmButton.UseVisualStyleBackColor = true;
@@ -199,34 +200,51 @@ namespace HeuristicLab.Optimization.Views {
       this.changeColorButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
       this.changeColorButton.Location = new System.Drawing.Point(94, 52);
       this.changeColorButton.Name = "changeColorButton";
-      this.changeColorButton.Size = new System.Drawing.Size(64, 21);
-      this.changeColorButton.TabIndex = 21;
-      this.changeColorButton.Text = "Change";
+      this.changeColorButton.Size = new System.Drawing.Size(64, 24);
+      this.changeColorButton.TabIndex = 6;
+      this.changeColorButton.Text = "&Change...";
       this.changeColorButton.UseVisualStyleBackColor = true;
       this.changeColorButton.Click += new System.EventHandler(this.changeColorButton_Click);
       // 
       // colorLabel
       // 
       this.colorLabel.AutoSize = true;
-      this.colorLabel.Location = new System.Drawing.Point(3, 56);
+      this.colorLabel.Location = new System.Drawing.Point(3, 58);
       this.colorLabel.Name = "colorLabel";
       this.colorLabel.Size = new System.Drawing.Size(34, 13);
-      this.colorLabel.TabIndex = 22;
-      this.colorLabel.Text = "Color:";
+      this.colorLabel.TabIndex = 4;
+      this.colorLabel.Text = "C&olor:";
       // 
-      // colorPictureBox
+      // showDetailsCheckBox
       // 
-      this.colorPictureBox.Location = new System.Drawing.Point(73, 54);
-      this.colorPictureBox.Name = "colorPictureBox";
-      this.colorPictureBox.Size = new System.Drawing.Size(17, 17);
-      this.colorPictureBox.TabIndex = 23;
-      this.colorPictureBox.TabStop = false;
+      this.showDetailsCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.showDetailsCheckBox.Appearance = System.Windows.Forms.Appearance.Button;
+      this.showDetailsCheckBox.Checked = true;
+      this.showDetailsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.showDetailsCheckBox.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Properties;
+      this.showDetailsCheckBox.Location = new System.Drawing.Point(471, 52);
+      this.showDetailsCheckBox.Name = "showDetailsCheckBox";
+      this.showDetailsCheckBox.Size = new System.Drawing.Size(24, 24);
+      this.showDetailsCheckBox.TabIndex = 7;
+      this.toolTip.SetToolTip(this.showDetailsCheckBox, "Show/Hide Details");
+      this.showDetailsCheckBox.UseVisualStyleBackColor = true;
+      this.showDetailsCheckBox.CheckedChanged += new System.EventHandler(this.showDetailsCheckBox_CheckedChanged);
+      // 
+      // colorArea
+      // 
+      this.colorArea.BackColor = System.Drawing.Color.White;
+      this.colorArea.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+      this.colorArea.Location = new System.Drawing.Point(72, 56);
+      this.colorArea.Name = "colorArea";
+      this.colorArea.Size = new System.Drawing.Size(16, 16);
+      this.colorArea.TabIndex = 5;
       // 
       // RunView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.colorPictureBox);
+      this.Controls.Add(this.colorArea);
+      this.Controls.Add(this.showDetailsCheckBox);
       this.Controls.Add(this.colorLabel);
       this.Controls.Add(this.changeColorButton);
       this.Controls.Add(this.parametersResultsGroupBox);
@@ -241,14 +259,14 @@ namespace HeuristicLab.Optimization.Views {
       this.Controls.SetChildIndex(this.nameLabel, 0);
       this.Controls.SetChildIndex(this.changeColorButton, 0);
       this.Controls.SetChildIndex(this.colorLabel, 0);
-      this.Controls.SetChildIndex(this.colorPictureBox, 0);
+      this.Controls.SetChildIndex(this.showDetailsCheckBox, 0);
+      this.Controls.SetChildIndex(this.colorArea, 0);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.parametersResultsGroupBox.ResumeLayout(false);
       this.splitContainer.Panel1.ResumeLayout(false);
       this.splitContainer.Panel2.ResumeLayout(false);
       this.splitContainer.ResumeLayout(false);
       this.detailsGroupBox.ResumeLayout(false);
-      ((System.ComponentModel.ISupportInitialize)(this.colorPictureBox)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -267,8 +285,9 @@ namespace HeuristicLab.Optimization.Views {
     private System.Windows.Forms.Button showAlgorithmButton;
     private System.Windows.Forms.Label colorLabel;
     private System.Windows.Forms.Button changeColorButton;
-    private System.Windows.Forms.PictureBox colorPictureBox;
     private System.Windows.Forms.ColorDialog colorDialog;
+    private System.Windows.Forms.CheckBox showDetailsCheckBox;
+    private System.Windows.Forms.Label colorArea;
 
   }
 }

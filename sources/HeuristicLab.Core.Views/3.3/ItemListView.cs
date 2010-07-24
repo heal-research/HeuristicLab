@@ -303,15 +303,15 @@ namespace HeuristicLab.Core.Views {
     #endregion
 
     #region CheckBox Events
-    private class DummyContent : HeuristicLab.Common.IContent { }
-    protected void showDetailsCheckBox_CheckedChanged(object sender, EventArgs e) {
+    protected virtual void showDetailsCheckBox_CheckedChanged(object sender, EventArgs e) {
       if (showDetailsCheckBox.Checked) {
         splitContainer.Panel2Collapsed = false;
         detailsGroupBox.Enabled = itemsListView.SelectedItems.Count == 1;
         viewHost.Content = itemsListView.SelectedItems.Count == 1 ? (T)itemsListView.SelectedItems[0].Tag : null;
       } else {
         splitContainer.Panel2Collapsed = true;
-        viewHost.Content = new DummyContent();
+        viewHost.Content = null;
+        viewHost.ClearCache();
       }
     }
     #endregion

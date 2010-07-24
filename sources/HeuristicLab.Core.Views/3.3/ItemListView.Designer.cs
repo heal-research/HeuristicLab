@@ -105,7 +105,7 @@ namespace HeuristicLab.Core.Views {
       this.showDetailsCheckBox.Location = new System.Drawing.Point(123, 3);
       this.showDetailsCheckBox.Name = "showDetailsCheckBox";
       this.showDetailsCheckBox.Size = new System.Drawing.Size(24, 24);
-      this.showDetailsCheckBox.TabIndex = 5;
+      this.showDetailsCheckBox.TabIndex = 4;
       this.toolTip.SetToolTip(this.showDetailsCheckBox, "Show/Hide Details");
       this.showDetailsCheckBox.UseVisualStyleBackColor = true;
       this.showDetailsCheckBox.CheckedChanged += new System.EventHandler(this.showDetailsCheckBox_CheckedChanged);
@@ -161,7 +161,7 @@ namespace HeuristicLab.Core.Views {
       this.itemsListView.ShowItemToolTips = true;
       this.itemsListView.Size = new System.Drawing.Size(194, 286);
       this.itemsListView.SmallImageList = this.imageList;
-      this.itemsListView.TabIndex = 4;
+      this.itemsListView.TabIndex = 5;
       this.itemsListView.UseCompatibleStateImageBehavior = false;
       this.itemsListView.View = System.Windows.Forms.View.Details;
       this.itemsListView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.itemsListView_ItemDrag);

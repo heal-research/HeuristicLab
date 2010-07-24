@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using System.Drawing;
 using System.Windows.Forms;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -63,14 +62,14 @@ namespace HeuristicLab.Optimization.Views {
       if (InvokeRequired)
         this.Invoke(new EventHandler(Content_Changed), sender, e);
       else
-        UpdateColorPictureBox();
+        UpdateColor();
     }
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
       viewHost.Content = null;
       if (Content != null)
-        UpdateColorPictureBox();
+        UpdateColor();
       FillListView();
     }
 
@@ -87,18 +86,9 @@ namespace HeuristicLab.Optimization.Views {
         this.Content.Color = this.colorDialog.Color;
       }
     }
-    private void UpdateColorPictureBox() {
+    private void UpdateColor() {
       this.colorDialog.Color = this.Content.Color;
-      this.colorPictureBox.Image = this.GenerateImage(colorPictureBox.Width, colorPictureBox.Height, this.Content.Color);
-    }
-    private Image GenerateImage(int width, int height, Color fillColor) {
-      Image colorImage = new Bitmap(width, height);
-      using (Graphics gfx = Graphics.FromImage(colorImage)) {
-        using (SolidBrush brush = new SolidBrush(fillColor)) {
-          gfx.FillRectangle(brush, 0, 0, width, height);
-        }
-      }
-      return colorImage;
+      this.colorArea.BackColor = this.Content.Color;
     }
 
     private string selectedName;
@@ -131,10 +121,15 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void listView_SelectedIndexChanged(object sender, EventArgs e) {
-      if (listView.SelectedItems.Count == 1)
-        viewHost.Content = (IContent)listView.SelectedItems[0].Tag;
-      else
-        viewHost.Content = null;
+      if (showDetailsCheckBox.Checked) {
+        if (listView.SelectedItems.Count == 1) {
+          detailsGroupBox.Enabled = true;
+          viewHost.Content = listView.SelectedItems[0].Tag as IContent;
+        } else {
+          viewHost.Content = null;
+          detailsGroupBox.Enabled = false;
+        }
+      }
     }
     private void listView_DoubleClick(object sender, EventArgs e) {
       if (listView.SelectedItems.Count == 1) {
@@ -156,6 +151,17 @@ namespace HeuristicLab.Optimization.Views {
           data.SetData("Value", item);
           DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy);
         }
+      }
+    }
+    private void showDetailsCheckBox_CheckedChanged(object sender, EventArgs e) {
+      if (showDetailsCheckBox.Checked) {
+        splitContainer.Panel2Collapsed = false;
+        detailsGroupBox.Enabled = listView.SelectedItems.Count == 1;
+        viewHost.Content = listView.SelectedItems.Count == 1 ? (IContent)listView.SelectedItems[0].Tag : null;
+      } else {
+        splitContainer.Panel2Collapsed = true;
+        viewHost.Content = null;
+        viewHost.ClearCache();
       }
     }
     private void showAlgorithmButton_Click(object sender, EventArgs e) {

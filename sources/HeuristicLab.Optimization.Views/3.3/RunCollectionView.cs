@@ -186,13 +186,15 @@ namespace HeuristicLab.Optimization.Views {
     protected virtual void itemsListView_SelectedIndexChanged(object sender, EventArgs e) {
       removeButton.Enabled = itemsListView.SelectedItems.Count > 0 && (Content != null) && !Content.IsReadOnly && !ReadOnly;
       AdjustListViewColumnSizes();
-      if (itemsListView.SelectedItems.Count == 1) {
-        IRun item = (IRun)itemsListView.SelectedItems[0].Tag;
-        detailsGroupBox.Enabled = true;
-        viewHost.Content = item;
-      } else {
-        viewHost.Content = null;
-        detailsGroupBox.Enabled = false;
+      if (showDetailsCheckBox.Checked) {
+        if (itemsListView.SelectedItems.Count == 1) {
+          IRun item = (IRun)itemsListView.SelectedItems[0].Tag;
+          detailsGroupBox.Enabled = true;
+          viewHost.Content = item;
+        } else {
+          viewHost.Content = null;
+          detailsGroupBox.Enabled = false;
+        }
       }
     }
     protected virtual void itemsListView_KeyDown(object sender, KeyEventArgs e) {
@@ -268,6 +270,20 @@ namespace HeuristicLab.Optimization.Views {
     }
     protected virtual void clearButton_Click(object sender, EventArgs e) {
       Content.Clear();
+    }
+    #endregion
+
+    #region CheckBox Events
+    protected virtual void showDetailsCheckBox_CheckedChanged(object sender, EventArgs e) {
+      if (showDetailsCheckBox.Checked) {
+        splitContainer.Panel2Collapsed = false;
+        detailsGroupBox.Enabled = itemsListView.SelectedItems.Count == 1;
+        viewHost.Content = itemsListView.SelectedItems.Count == 1 ? (IRun)itemsListView.SelectedItems[0].Tag : null;
+      } else {
+        splitContainer.Panel2Collapsed = true;
+        viewHost.Content = null;
+        viewHost.ClearCache();
+      }
     }
     #endregion
 
@@ -374,4 +390,3 @@ namespace HeuristicLab.Optimization.Views {
     #endregion
   }
 }
-

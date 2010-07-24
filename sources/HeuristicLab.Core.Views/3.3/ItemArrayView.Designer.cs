@@ -55,17 +55,18 @@ namespace HeuristicLab.Core.Views {
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
+      this.addButton = new System.Windows.Forms.Button();
       this.moveUpButton = new System.Windows.Forms.Button();
+      this.removeButton = new System.Windows.Forms.Button();
       this.moveDownButton = new System.Windows.Forms.Button();
       this.itemsListView = new System.Windows.Forms.ListView();
-      this.listViewColumnHeader = new System.Windows.Forms.ColumnHeader();
+      this.listViewColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.imageList = new System.Windows.Forms.ImageList(this.components);
       this.detailsGroupBox = new System.Windows.Forms.GroupBox();
       this.viewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.itemsGroupBox = new System.Windows.Forms.GroupBox();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-      this.removeButton = new System.Windows.Forms.Button();
-      this.addButton = new System.Windows.Forms.Button();
+      this.showDetailsCheckBox = new System.Windows.Forms.CheckBox();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
       this.splitContainer.SuspendLayout();
@@ -82,6 +83,7 @@ namespace HeuristicLab.Core.Views {
       // 
       // splitContainer.Panel1
       // 
+      this.splitContainer.Panel1.Controls.Add(this.showDetailsCheckBox);
       this.splitContainer.Panel1.Controls.Add(this.addButton);
       this.splitContainer.Panel1.Controls.Add(this.moveUpButton);
       this.splitContainer.Panel1.Controls.Add(this.removeButton);
@@ -95,6 +97,18 @@ namespace HeuristicLab.Core.Views {
       this.splitContainer.SplitterDistance = 200;
       this.splitContainer.TabIndex = 0;
       // 
+      // addButton
+      // 
+      this.addButton.Enabled = false;
+      this.addButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Add;
+      this.addButton.Location = new System.Drawing.Point(3, 3);
+      this.addButton.Name = "addButton";
+      this.addButton.Size = new System.Drawing.Size(24, 24);
+      this.addButton.TabIndex = 0;
+      this.toolTip.SetToolTip(this.addButton, "Set");
+      this.addButton.UseVisualStyleBackColor = true;
+      this.addButton.Click += new System.EventHandler(this.addButton_Click);
+      // 
       // moveUpButton
       // 
       this.moveUpButton.Enabled = false;
@@ -106,6 +120,18 @@ namespace HeuristicLab.Core.Views {
       this.toolTip.SetToolTip(this.moveUpButton, "Move Up");
       this.moveUpButton.UseVisualStyleBackColor = true;
       this.moveUpButton.Click += new System.EventHandler(this.moveUpButton_Click);
+      // 
+      // removeButton
+      // 
+      this.removeButton.Enabled = false;
+      this.removeButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Remove;
+      this.removeButton.Location = new System.Drawing.Point(93, 3);
+      this.removeButton.Name = "removeButton";
+      this.removeButton.Size = new System.Drawing.Size(24, 24);
+      this.removeButton.TabIndex = 3;
+      this.toolTip.SetToolTip(this.removeButton, "Clear");
+      this.removeButton.UseVisualStyleBackColor = true;
+      this.removeButton.Click += new System.EventHandler(this.removeButton_Click);
       // 
       // moveDownButton
       // 
@@ -134,16 +160,16 @@ namespace HeuristicLab.Core.Views {
       this.itemsListView.ShowItemToolTips = true;
       this.itemsListView.Size = new System.Drawing.Size(194, 286);
       this.itemsListView.SmallImageList = this.imageList;
-      this.itemsListView.TabIndex = 4;
+      this.itemsListView.TabIndex = 5;
       this.itemsListView.UseCompatibleStateImageBehavior = false;
       this.itemsListView.View = System.Windows.Forms.View.Details;
+      this.itemsListView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.itemsListView_ItemDrag);
       this.itemsListView.SelectedIndexChanged += new System.EventHandler(this.itemsListView_SelectedIndexChanged);
-      this.itemsListView.DoubleClick += new System.EventHandler(this.itemsListView_DoubleClick);
       this.itemsListView.DragDrop += new System.Windows.Forms.DragEventHandler(this.itemsListView_DragDrop);
       this.itemsListView.DragEnter += new System.Windows.Forms.DragEventHandler(this.itemsListView_DragEnterOver);
-      this.itemsListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.itemsListView_KeyDown);
-      this.itemsListView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.itemsListView_ItemDrag);
       this.itemsListView.DragOver += new System.Windows.Forms.DragEventHandler(this.itemsListView_DragEnterOver);
+      this.itemsListView.DoubleClick += new System.EventHandler(this.itemsListView_DoubleClick);
+      this.itemsListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.itemsListView_KeyDown);
       // 
       // imageList
       // 
@@ -169,9 +195,11 @@ namespace HeuristicLab.Core.Views {
       this.viewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
+      this.viewHost.Caption = "View";
       this.viewHost.Content = null;
       this.viewHost.Location = new System.Drawing.Point(6, 19);
       this.viewHost.Name = "viewHost";
+      this.viewHost.ReadOnly = false;
       this.viewHost.Size = new System.Drawing.Size(271, 269);
       this.viewHost.TabIndex = 0;
       this.viewHost.ViewType = null;
@@ -187,29 +215,19 @@ namespace HeuristicLab.Core.Views {
       this.itemsGroupBox.TabStop = false;
       this.itemsGroupBox.Text = "Items";
       // 
-      // removeButton
+      // showDetailsCheckBox
       // 
-      this.removeButton.Enabled = false;
-      this.removeButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Remove;
-      this.removeButton.Location = new System.Drawing.Point(93, 3);
-      this.removeButton.Name = "removeButton";
-      this.removeButton.Size = new System.Drawing.Size(24, 24);
-      this.removeButton.TabIndex = 3;
-      this.toolTip.SetToolTip(this.removeButton, "Clear");
-      this.removeButton.UseVisualStyleBackColor = true;
-      this.removeButton.Click += new System.EventHandler(this.removeButton_Click);
-      // 
-      // addButton
-      // 
-      this.addButton.Enabled = false;
-      this.addButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Add;
-      this.addButton.Location = new System.Drawing.Point(3, 3);
-      this.addButton.Name = "addButton";
-      this.addButton.Size = new System.Drawing.Size(24, 24);
-      this.addButton.TabIndex = 0;
-      this.toolTip.SetToolTip(this.addButton, "Set");
-      this.addButton.UseVisualStyleBackColor = true;
-      this.addButton.Click += new System.EventHandler(this.addButton_Click);
+      this.showDetailsCheckBox.Appearance = System.Windows.Forms.Appearance.Button;
+      this.showDetailsCheckBox.Checked = true;
+      this.showDetailsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.showDetailsCheckBox.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Properties;
+      this.showDetailsCheckBox.Location = new System.Drawing.Point(123, 3);
+      this.showDetailsCheckBox.Name = "showDetailsCheckBox";
+      this.showDetailsCheckBox.Size = new System.Drawing.Size(24, 24);
+      this.showDetailsCheckBox.TabIndex = 4;
+      this.toolTip.SetToolTip(this.showDetailsCheckBox, "Show/Hide Details");
+      this.showDetailsCheckBox.UseVisualStyleBackColor = true;
+      this.showDetailsCheckBox.CheckedChanged += new System.EventHandler(this.showDetailsCheckBox_CheckedChanged);
       // 
       // ItemArrayView
       // 
@@ -240,5 +258,6 @@ namespace HeuristicLab.Core.Views {
     protected HeuristicLab.MainForm.WindowsForms.ViewHost viewHost;
     protected Button removeButton;
     protected Button addButton;
+    protected CheckBox showDetailsCheckBox;
   }
 }
