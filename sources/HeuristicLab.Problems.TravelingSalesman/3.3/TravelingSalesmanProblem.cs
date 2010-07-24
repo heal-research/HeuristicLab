@@ -119,7 +119,6 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       get { return BestKnownSolutionParameter.Value; }
       set { BestKnownSolutionParameter.Value = value; }
     }
-    private List<IOperator> operators;
     public IEnumerable<IOperator> Operators {
       get { return operators; }
     }
@@ -128,6 +127,11 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
     #endregion
 
+    [Storable]
+    private List<IOperator> operators;
+
+    [StorableConstructor]
+    private TravelingSalesmanProblem(bool deserializing) : base() { }
     public TravelingSalesmanProblem()
       : base() {
       RandomPermutationCreator creator = new RandomPermutationCreator();
@@ -154,47 +158,16 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       ParameterizeSolutionCreator();
       ParameterizeEvaluator();
 
-      Initialize();
+      InitializeOperators();
+      AttachEventHandlers();
     }
-    [StorableConstructor]
-    private TravelingSalesmanProblem(bool deserializing) : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       TravelingSalesmanProblem clone = (TravelingSalesmanProblem)base.Clone(cloner);
+      clone.operators = operators.Select(x => (IOperator)cloner.Clone(x)).ToList();
       clone.DistanceMatrixParameter.Value = DistanceMatrixParameter.Value;
-      clone.Initialize();
+      clone.AttachEventHandlers();
       return clone;
-    }
-
-    public void ImportFromTSPLIB(string tspFileName, string optimalTourFileName) {
-      TSPLIBParser tspParser = new TSPLIBParser(tspFileName);
-      tspParser.Parse();
-      Name = tspParser.Name + " TSP (imported from TSPLIB)";
-      if (!string.IsNullOrEmpty(tspParser.Comment)) Description = tspParser.Comment;
-      Coordinates = new DoubleMatrix(tspParser.Vertices);
-      if (tspParser.WeightType == TSPLIBParser.TSPLIBEdgeWeightType.EUC_2D) {
-        TSPRoundedEuclideanPathEvaluator evaluator = new TSPRoundedEuclideanPathEvaluator();
-        evaluator.QualityParameter.ActualName = "TSPTourLength";
-        Evaluator = evaluator;
-      } else if (tspParser.WeightType == TSPLIBParser.TSPLIBEdgeWeightType.GEO) {
-        TSPGeoPathEvaluator evaluator = new TSPGeoPathEvaluator();
-        evaluator.QualityParameter.ActualName = "TSPTourLength";
-        Evaluator = evaluator;
-      }
-      BestKnownQuality = null;
-      BestKnownSolution = null;
-
-      if (!string.IsNullOrEmpty(optimalTourFileName)) {
-        TSPLIBTourParser tourParser = new TSPLIBTourParser(optimalTourFileName);
-        tourParser.Parse();
-        if (tourParser.Tour.Length != Coordinates.Rows) throw new InvalidDataException("Length of optimal tour is not equal to number of cities.");
-        BestKnownSolution = new Permutation(PermutationTypes.RelativeUndirected, tourParser.Tour);
-      }
-      OnReset();
-    }
-    public void ImportFromTSPLIB(string tspFileName, string optimalTourFileName, double bestKnownQuality) {
-      ImportFromTSPLIB(tspFileName, optimalTourFileName);
-      BestKnownQuality = new DoubleValue(bestKnownQuality);
     }
 
     #region Events
@@ -272,8 +245,10 @@ namespace HeuristicLab.Problems.TravelingSalesman {
 
     #region Helpers
     [StorableHook(HookType.AfterDeserialization)]
-    private void Initialize() {
-      InitializeOperators();
+    private void AttachEventHandlers() {
+      // Start BackwardsCompatibility3.3 (remove with 3.4)
+      if (operators == null) InitializeOperators();
+      // End BackwardsCompatibility3.3
       CoordinatesParameter.ValueChanged += new EventHandler(CoordinatesParameter_ValueChanged);
       Coordinates.ItemChanged += new EventHandler<EventArgs<int, int>>(Coordinates_ItemChanged);
       Coordinates.Reset += new EventHandler(Coordinates_Reset);
@@ -366,5 +341,36 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       DistanceMatrixParameter.Value = null;
     }
     #endregion
+
+    public void ImportFromTSPLIB(string tspFileName, string optimalTourFileName) {
+      TSPLIBParser tspParser = new TSPLIBParser(tspFileName);
+      tspParser.Parse();
+      Name = tspParser.Name + " TSP (imported from TSPLIB)";
+      if (!string.IsNullOrEmpty(tspParser.Comment)) Description = tspParser.Comment;
+      Coordinates = new DoubleMatrix(tspParser.Vertices);
+      if (tspParser.WeightType == TSPLIBParser.TSPLIBEdgeWeightType.EUC_2D) {
+        TSPRoundedEuclideanPathEvaluator evaluator = new TSPRoundedEuclideanPathEvaluator();
+        evaluator.QualityParameter.ActualName = "TSPTourLength";
+        Evaluator = evaluator;
+      } else if (tspParser.WeightType == TSPLIBParser.TSPLIBEdgeWeightType.GEO) {
+        TSPGeoPathEvaluator evaluator = new TSPGeoPathEvaluator();
+        evaluator.QualityParameter.ActualName = "TSPTourLength";
+        Evaluator = evaluator;
+      }
+      BestKnownQuality = null;
+      BestKnownSolution = null;
+
+      if (!string.IsNullOrEmpty(optimalTourFileName)) {
+        TSPLIBTourParser tourParser = new TSPLIBTourParser(optimalTourFileName);
+        tourParser.Parse();
+        if (tourParser.Tour.Length != Coordinates.Rows) throw new InvalidDataException("Length of optimal tour is not equal to number of cities.");
+        BestKnownSolution = new Permutation(PermutationTypes.RelativeUndirected, tourParser.Tour);
+      }
+      OnReset();
+    }
+    public void ImportFromTSPLIB(string tspFileName, string optimalTourFileName, double bestKnownQuality) {
+      ImportFromTSPLIB(tspFileName, optimalTourFileName);
+      BestKnownQuality = new DoubleValue(bestKnownQuality);
+    }
   }
 }

@@ -80,12 +80,16 @@ namespace HeuristicLab.Problems.DataAnalysis.FeatureSelection {
     IEvaluator IProblem.Evaluator {
       get { return EvaluatorParameter.Value; }
     }
-    private List<IOperator> operators;
     public override IEnumerable<IOperator> Operators {
       get { return operators; }
     }
     #endregion
 
+    [Storable]
+    private List<IOperator> operators;
+
+    [StorableConstructor]
+    private FeatureSelectionProblem(bool deserializing) : base() { }
     public FeatureSelectionProblem()
       : base() {
       BinaryVectorCreator creator = new RandomBinaryVectorCreator();
@@ -100,11 +104,9 @@ namespace HeuristicLab.Problems.DataAnalysis.FeatureSelection {
       ParameterizeSolutionCreator();
       ParameterizeEvaluator();
 
-      Initialize();
+      InitializeOperators();
+      AttachEventHandlers();
     }
-
-    [StorableConstructor]
-    private FeatureSelectionProblem(bool deserializing) : base() { }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserializationHook() {
@@ -114,7 +116,8 @@ namespace HeuristicLab.Problems.DataAnalysis.FeatureSelection {
 
     public override IDeepCloneable Clone(Cloner cloner) {
       FeatureSelectionProblem clone = (FeatureSelectionProblem)base.Clone(cloner);
-      clone.Initialize();
+      clone.operators = operators.Select(x => (IOperator)cloner.Clone(x)).ToList();
+      clone.AttachEventHandlers();
       return clone;
     }
 
@@ -164,8 +167,10 @@ namespace HeuristicLab.Problems.DataAnalysis.FeatureSelection {
     #endregion
 
     #region Helpers
-    private void Initialize() {
-      InitializeOperators();
+    private void AttachEventHandlers() {
+      // Start BackwardsCompatibility3.3 (remove with 3.4)
+      if (operators == null) InitializeOperators();
+      // End BackwardsCompatibility3.3
       RegisterParameterEvents();
       RegisterParameterValueEvents();
     }

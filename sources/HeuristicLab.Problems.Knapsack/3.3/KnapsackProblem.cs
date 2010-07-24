@@ -125,7 +125,6 @@ namespace HeuristicLab.Problems.Knapsack {
       get { return BestKnownSolutionParameter.Value; }
       set { BestKnownSolutionParameter.Value = value; }
     }
-    private List<IOperator> operators;
     public IEnumerable<IOperator> Operators {
       get { return operators.Cast<IOperator>(); }
     }
@@ -134,28 +133,11 @@ namespace HeuristicLab.Problems.Knapsack {
     }
     #endregion
 
-    private void InitializeRandomKnapsackInstance() {
-      System.Random rand = new System.Random();
+    [Storable]
+    private List<IOperator> operators;
 
-      int itemCount = rand.Next(10, 100);
-      Weights = new IntArray(itemCount);
-      Values = new IntArray(itemCount);
-
-      double totalWeight = 0;
-
-      for (int i = 0; i < itemCount; i++ ) {
-        int value = rand.Next(1, 10);
-        int weight = rand.Next(1, 10);
-
-        Values[i] = value;
-        Weights[i] = weight;
-        totalWeight += weight;
-      }
-
-      int capacity = (int)Math.Round(0.7 * totalWeight);
-      KnapsackCapacity = new IntValue(capacity);
-    }
-
+    [StorableConstructor]
+    private KnapsackProblem(bool deserializing) : base() { }
     public KnapsackProblem()
       : base() {
       RandomBinaryVectorCreator creator = new RandomBinaryVectorCreator();
@@ -178,15 +160,14 @@ namespace HeuristicLab.Problems.Knapsack {
       ParameterizeSolutionCreator();
       ParameterizeEvaluator();
 
-      Initialize();
+      InitializeOperators();
+      AttachEventHandlers();
     }
-
-    [StorableConstructor]
-    private KnapsackProblem(bool deserializing) : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       KnapsackProblem clone = (KnapsackProblem)base.Clone(cloner);
-      clone.Initialize();
+      clone.operators = operators.Select(x => (IOperator)cloner.Clone(x)).ToList();
+      clone.AttachEventHandlers();
       return clone;
     }
 
@@ -273,8 +254,10 @@ namespace HeuristicLab.Problems.Knapsack {
 
     #region Helpers
     [StorableHook(HookType.AfterDeserialization)]
-    private void Initialize() {
-      InitializeOperators();
+    private void AttachEventHandlers() {
+      // Start BackwardsCompatibility3.3 (remove with 3.4)
+      if (operators == null) InitializeOperators();
+      // End BackwardsCompatibility3.3
       SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
       SolutionCreator.BinaryVectorParameter.ActualNameChanged += new EventHandler(SolutionCreator_BinaryVectorParameter_ActualNameChanged);
       EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
@@ -349,5 +332,27 @@ namespace HeuristicLab.Problems.Knapsack {
       }
     }
     #endregion
+
+    private void InitializeRandomKnapsackInstance() {
+      System.Random rand = new System.Random();
+
+      int itemCount = rand.Next(10, 100);
+      Weights = new IntArray(itemCount);
+      Values = new IntArray(itemCount);
+
+      double totalWeight = 0;
+
+      for (int i = 0; i < itemCount; i++) {
+        int value = rand.Next(1, 10);
+        int weight = rand.Next(1, 10);
+
+        Values[i] = value;
+        Weights[i] = weight;
+        totalWeight += weight;
+      }
+
+      int capacity = (int)Math.Round(0.7 * totalWeight);
+      KnapsackCapacity = new IntValue(capacity);
+    }
   }
 }

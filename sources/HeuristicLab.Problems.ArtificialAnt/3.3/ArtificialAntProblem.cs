@@ -41,6 +41,7 @@ namespace HeuristicLab.Problems.ArtificialAnt {
   [Creatable("Problems")]
   [StorableClass]
   public sealed class ArtificialAntProblem : ParameterizedNamedItem, ISingleObjectiveProblem {
+
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Type; }
     }
@@ -179,7 +180,6 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     public DoubleValue BestKnownQuality {
       get { return BestKnownQualityParameter.Value; }
     }
-    private List<IOperator> operators;
     public IEnumerable<IOperator> Operators {
       get { return operators; }
     }
@@ -189,6 +189,11 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     }
     #endregion
 
+    [Storable]
+    private List<IOperator> operators;
+
+    [StorableConstructor]
+    private ArtificialAntProblem(bool deserializing) : base() { }
     public ArtificialAntProblem()
       : base() {
       SymbolicExpressionTreeCreator creator = new ProbabilisticTreeCreator();
@@ -211,15 +216,14 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       evaluator.QualityParameter.ActualName = "FoodEaten";
       ParameterizeSolutionCreator();
       ParameterizeEvaluator();
-      Initialize();
+      InitializeOperators();
+      AttachEventHandlers();
     }
-
-    [StorableConstructor]
-    private ArtificialAntProblem(bool deserializing) : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       ArtificialAntProblem clone = (ArtificialAntProblem)base.Clone(cloner);
-      clone.Initialize();
+      clone.operators = operators.Select(x => (IOperator)cloner.Clone(x)).ToList();
+      clone.AttachEventHandlers();
       return clone;
     }
 
@@ -273,8 +277,10 @@ namespace HeuristicLab.Problems.ArtificialAnt {
 
     #region Helpers
     [StorableHook(HookType.AfterDeserialization)]
-    private void Initialize() {
-      InitializeOperators();
+    private void AttachEventHandlers() {
+      // Start BackwardsCompatibility3.3 (remove with 3.4)
+      if (operators == null) InitializeOperators();
+      // End BackwardsCompatibility3.3
       SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
       SolutionCreator.SymbolicExpressionTreeParameter.ActualNameChanged += new EventHandler(SolutionCreator_SymbolicExpressionTreeParameter_ActualNameChanged);
       EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);

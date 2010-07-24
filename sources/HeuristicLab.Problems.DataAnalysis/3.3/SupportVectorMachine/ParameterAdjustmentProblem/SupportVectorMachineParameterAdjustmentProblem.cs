@@ -106,7 +106,6 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine.ParameterAdjus
       get { return BestKnownQualityParameter.Value; }
       set { BestKnownQualityParameter.Value = value; }
     }
-    private List<IOperator> operators;
     public override IEnumerable<IOperator> Operators {
       get { return operators; }
     }
@@ -119,6 +118,8 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine.ParameterAdjus
       get { return new IntValue(DataAnalysisProblemData.TrainingSamplesEnd.Value); }
     }
 
+    [Storable]
+    private List<IOperator> operators;
     [Storable]
     private StdDevStrategyVectorCreator strategyVectorCreator;
     [Storable]
@@ -159,17 +160,28 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine.ParameterAdjus
       ParameterizeSolutionCreator();
       ParameterizeEvaluator();
 
-      Initialize();
+      InitializeOperators();
+      AttachEventHandlers();
       UpdateStrategyVectorBounds();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       SupportVectorMachineParameterAdjustmentProblem clone = (SupportVectorMachineParameterAdjustmentProblem)base.Clone(cloner);
+      clone.operators = operators.Where(x => IsNotFieldReferenced(x)).Select(x => (IOperator)cloner.Clone(x)).ToList();
       clone.strategyVectorCreator = (StdDevStrategyVectorCreator)cloner.Clone(strategyVectorCreator);
+      clone.operators.Add(clone.strategyVectorCreator);
       clone.strategyVectorCrossover = (StdDevStrategyVectorCrossover)cloner.Clone(strategyVectorCrossover);
+      clone.operators.Add(strategyVectorCrossover);
       clone.strategyVectorManipulator = (StdDevStrategyVectorManipulator)cloner.Clone(strategyVectorManipulator);
-      clone.Initialize();
+      clone.operators.Add(strategyVectorManipulator);
+      clone.AttachEventHandlers();
       return clone;
+    }
+
+    private bool IsNotFieldReferenced(IOperator x) {
+      return !(x == strategyVectorCreator
+        || x == strategyVectorCrossover
+        || x == strategyVectorManipulator);
     }
 
     protected override void OnDataAnalysisProblemChanged(EventArgs e) {
@@ -203,8 +215,10 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine.ParameterAdjus
 
     #region Helpers
     [StorableHook(HookType.AfterDeserialization)]
-    private void Initialize() {
-      InitializeOperators();
+    private void AttachEventHandlers() {
+      // Start BackwardsCompatibility3.3 (remove with 3.4)
+      if (operators == null) InitializeOperators();
+      // End BackwardsCompatibility3.3
       SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
       SolutionCreator.RealVectorParameter.ActualNameChanged += new EventHandler(SolutionCreator_RealVectorParameter_ActualNameChanged);
       EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);

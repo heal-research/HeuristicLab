@@ -89,6 +89,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     /// </summary>
     [StorableHook(HookType.AfterDeserialization)]
     private void CompatibilityMethod() {
+      // BackwardsCompatibility3.3
       // Bounds are introduced in 3.3.0.3894
       if (!Parameters.ContainsKey("Bounds"))
         Parameters.Add(new LookupParameter<DoubleMatrix>("Bounds", "The bounds of the function."));

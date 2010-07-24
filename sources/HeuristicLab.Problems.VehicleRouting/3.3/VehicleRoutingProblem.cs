@@ -169,7 +169,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
     IEvaluator IProblem.Evaluator {
       get { return EvaluatorParameter.Value; }
     }
-    private List<IOperator> operators;
     public IEnumerable<IOperator> Operators {
       get { return operators; }
     }
@@ -178,6 +177,11 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
     #endregion
 
+    [Storable]
+    private List<IOperator> operators;
+
+    [StorableConstructor]
+    private VehicleRoutingProblem(bool deserializing) : base() { }
     public VehicleRoutingProblem()
       : base() {
       IVRPCreator creator = new AlbaPermutationCreator();
@@ -208,89 +212,16 @@ namespace HeuristicLab.Problems.VehicleRouting {
       ParameterizeSolutionCreator();
       ParameterizeEvaluator();
 
-      Initialize();
+      InitializeOperators();
+      AttachEventHandlers();
     }
-    [StorableConstructor]
-    private VehicleRoutingProblem(bool deserializing) : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       VehicleRoutingProblem clone = (VehicleRoutingProblem)base.Clone(cloner);
+      clone.operators = operators.Select(x => (IOperator)cloner.Clone(x)).ToList();
       clone.DistanceMatrixParameter.Value = DistanceMatrixParameter.Value;
-      clone.Initialize();
+      clone.AttachEventHandlers();
       return clone;
-    }
-
-    private static double CalculateDistance(int start, int end, DoubleMatrix coordinates) {
-      double distance = 0.0;
-
-      distance =
-          Math.Sqrt(
-            Math.Pow(coordinates[start, 0] - coordinates[end, 0], 2) +
-            Math.Pow(coordinates[start, 1] - coordinates[end, 1], 2));
-
-      return distance;
-    }
-
-    private static DoubleMatrix CreateDistanceMatrix(DoubleMatrix coordinates) {
-      DoubleMatrix distanceMatrix = new DoubleMatrix(coordinates.Rows, coordinates.Rows);
-
-      for (int i = 0; i < distanceMatrix.Rows; i++) {
-        for (int j = i; j < distanceMatrix.Columns; j++) {
-          double distance = CalculateDistance(i, j, coordinates);
-
-          distanceMatrix[i, j] = distance;
-          distanceMatrix[j, i] = distance;
-        }
-      }
-
-      return distanceMatrix;
-    }
-
-    public static double GetDistance(int start, int end,
-      DoubleMatrix coordinates, ILookupParameter<DoubleMatrix> distanceMatrix, BoolValue useDistanceMatrix) {
-      double distance = 0.0;
-
-      if (useDistanceMatrix.Value) {
-        if (distanceMatrix.ActualValue == null) {
-          distanceMatrix.ActualValue = CreateDistanceMatrix(coordinates);
-        }
-
-        distance = distanceMatrix.ActualValue[start, end];
-      } else {
-        distance = CalculateDistance(start, end, coordinates);
-      }
-
-      return distance;
-    }
-
-    public static double GetDistance(int start, int end,
-      DoubleMatrix coordinates, DoubleMatrix distanceMatrix, BoolValue useDistanceMatrix) {
-      double distance = 0.0;
-
-      if (useDistanceMatrix.Value) {
-        distance = distanceMatrix[start, end];
-      } else {
-        distance = CalculateDistance(start, end, coordinates);
-      }
-
-      return distance;
-    }
-
-    public void ImportFromSolomon(string solomonFileName) {
-      SolomonParser parser = new SolomonParser(solomonFileName);
-      parser.Parse();
-
-      this.Name = parser.ProblemName;
-
-      Coordinates = new DoubleMatrix(parser.Coordinates);
-      Vehicles.Value = parser.Vehicles;
-      Capacity.Value = parser.Capacity;
-      Demand = new DoubleArray(parser.Demands);
-      ReadyTime = new DoubleArray(parser.Readytimes);
-      DueTime = new DoubleArray(parser.Duetimes);
-      ServiceTime = new DoubleArray(parser.Servicetimes);
-
-      OnReset();
     }
 
     #region Events
@@ -363,8 +294,10 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     #region Helpers
     [StorableHook(HookType.AfterDeserialization)]
-    private void Initialize() {
-      InitializeOperators();
+    private void AttachEventHandlers() {
+      // Start BackwardsCompatibility3.3 (remove with 3.4)
+      if (operators == null) InitializeOperators();
+      // End BackwardsCompatibility3.3
       CoordinatesParameter.ValueChanged += new EventHandler(CoordinatesParameter_ValueChanged);
       Vehicles.ValueChanged += new EventHandler(VehiclesValue_ValueChanged);
       Coordinates.ItemChanged += new EventHandler<EventArgs<int, int>>(Coordinates_ItemChanged);
@@ -470,5 +403,78 @@ namespace HeuristicLab.Problems.VehicleRouting {
       DistanceMatrixParameter.Value = null;
     }
     #endregion
+
+    private static double CalculateDistance(int start, int end, DoubleMatrix coordinates) {
+      double distance = 0.0;
+
+      distance =
+          Math.Sqrt(
+            Math.Pow(coordinates[start, 0] - coordinates[end, 0], 2) +
+            Math.Pow(coordinates[start, 1] - coordinates[end, 1], 2));
+
+      return distance;
+    }
+
+    private static DoubleMatrix CreateDistanceMatrix(DoubleMatrix coordinates) {
+      DoubleMatrix distanceMatrix = new DoubleMatrix(coordinates.Rows, coordinates.Rows);
+
+      for (int i = 0; i < distanceMatrix.Rows; i++) {
+        for (int j = i; j < distanceMatrix.Columns; j++) {
+          double distance = CalculateDistance(i, j, coordinates);
+
+          distanceMatrix[i, j] = distance;
+          distanceMatrix[j, i] = distance;
+        }
+      }
+
+      return distanceMatrix;
+    }
+
+    public static double GetDistance(int start, int end,
+      DoubleMatrix coordinates, ILookupParameter<DoubleMatrix> distanceMatrix, BoolValue useDistanceMatrix) {
+      double distance = 0.0;
+
+      if (useDistanceMatrix.Value) {
+        if (distanceMatrix.ActualValue == null) {
+          distanceMatrix.ActualValue = CreateDistanceMatrix(coordinates);
+        }
+
+        distance = distanceMatrix.ActualValue[start, end];
+      } else {
+        distance = CalculateDistance(start, end, coordinates);
+      }
+
+      return distance;
+    }
+
+    public static double GetDistance(int start, int end,
+      DoubleMatrix coordinates, DoubleMatrix distanceMatrix, BoolValue useDistanceMatrix) {
+      double distance = 0.0;
+
+      if (useDistanceMatrix.Value) {
+        distance = distanceMatrix[start, end];
+      } else {
+        distance = CalculateDistance(start, end, coordinates);
+      }
+
+      return distance;
+    }
+
+    public void ImportFromSolomon(string solomonFileName) {
+      SolomonParser parser = new SolomonParser(solomonFileName);
+      parser.Parse();
+
+      this.Name = parser.ProblemName;
+
+      Coordinates = new DoubleMatrix(parser.Coordinates);
+      Vehicles.Value = parser.Vehicles;
+      Capacity.Value = parser.Capacity;
+      Demand = new DoubleArray(parser.Demands);
+      ReadyTime = new DoubleArray(parser.Readytimes);
+      DueTime = new DoubleArray(parser.Duetimes);
+      ServiceTime = new DoubleArray(parser.Servicetimes);
+
+      OnReset();
+    }
   }
 }

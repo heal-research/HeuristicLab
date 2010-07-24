@@ -146,7 +146,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     public DoubleValue BestKnownQuality {
       get { return BestKnownQualityParameter.Value; }
     }
-    private List<IOperator> operators;
     public override IEnumerable<IOperator> Operators {
       get { return operators; }
     }
@@ -179,6 +178,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
     #endregion
 
+    [Storable]
+    private List<IOperator> operators;
+
+    [StorableConstructor]
+    private SymbolicRegressionProblem(bool deserializing) : base() { }
     public SymbolicRegressionProblem()
       : base() {
       SymbolicExpressionTreeCreator creator = new ProbabilisticTreeCreator();
@@ -207,21 +211,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
 
       UpdateGrammar();
       UpdateEstimationLimits();
-      Initialize();
-    }
-
-    [StorableConstructor]
-    private SymbolicRegressionProblem(bool deserializing) : base() { }
-
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserializationHook() {
-      RegisterParameterEvents();
-      RegisterParameterValueEvents();
+      InitializeOperators();
+      AttachEventHandlers();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       SymbolicRegressionProblem clone = (SymbolicRegressionProblem)base.Clone(cloner);
-      clone.Initialize();
+      clone.operators = operators.Select(x => (IOperator)cloner.Clone(x)).ToList();
+      clone.AttachEventHandlers();
       return clone;
     }
 
@@ -304,8 +301,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     #endregion
 
     #region Helpers
-    private void Initialize() {
-      InitializeOperators();
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AttachEventHandlers() {
+      // Start BackwardsCompatibility3.3 (remove with 3.4)
+      if (operators == null) InitializeOperators();
+      // End BackwardsCompatibility3.3
       RegisterParameterEvents();
       RegisterParameterValueEvents();
     }

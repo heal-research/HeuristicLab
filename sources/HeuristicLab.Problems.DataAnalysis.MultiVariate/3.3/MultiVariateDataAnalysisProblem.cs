@@ -49,15 +49,14 @@ namespace HeuristicLab.Problems.DataAnalysis.MultiVariate {
     }
     #endregion
 
+    [StorableConstructor]
+    private MultiVariateDataAnalysisProblem(bool deserializing) : base() { }
     public MultiVariateDataAnalysisProblem()
       : base() {
       Parameters.Add(new ValueParameter<MultiVariateDataAnalysisProblemData>(MultiVariateDataAnalysisProblemDataParameterName, "The data set, target variables and input variables of the multi-variate data analysis problem.", new MultiVariateDataAnalysisProblemData()));
       RegisterParameterEvents();
       RegisterParameterValueEvents();
     }
-
-    [StorableConstructor]
-    private MultiVariateDataAnalysisProblem(bool deserializing) : base() { }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserializationHook() {

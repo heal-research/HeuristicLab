@@ -96,7 +96,6 @@ namespace HeuristicLab.Problems.OneMax {
     public DoubleValue BestKnownQuality {
       get { return BestKnownQualityParameter.Value; }
     }
-    private List<IOperator> operators;
     public IEnumerable<IOperator> Operators {
       get { return operators.Cast<IOperator>(); }
     }
@@ -105,6 +104,11 @@ namespace HeuristicLab.Problems.OneMax {
     }
     #endregion
 
+    [Storable]
+    private List<IOperator> operators;
+
+    [StorableConstructor]
+    private OneMaxProblem(bool deserializing) : base() { }
     public OneMaxProblem()
       : base() {
       RandomBinaryVectorCreator creator = new RandomBinaryVectorCreator();
@@ -121,15 +125,14 @@ namespace HeuristicLab.Problems.OneMax {
       ParameterizeSolutionCreator();
       ParameterizeEvaluator();
 
-      Initialize();
+      InitializeOperators();
+      AttachEventHandlers();
     }
-
-    [StorableConstructor]
-    private OneMaxProblem(bool deserializing) : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       OneMaxProblem clone = (OneMaxProblem)base.Clone(cloner);
-      clone.Initialize();
+      clone.operators = operators.Select(x => (IOperator)cloner.Clone(x)).ToList();
+      clone.AttachEventHandlers();
       return clone;
     }
 
@@ -194,8 +197,10 @@ namespace HeuristicLab.Problems.OneMax {
 
     #region Helpers
     [StorableHook(HookType.AfterDeserialization)]
-    private void Initialize() {
-      InitializeOperators();
+    private void AttachEventHandlers() {
+      // Start BackwardsCompatibility3.3 (remove with 3.4)
+      if (operators == null) InitializeOperators();
+      // End BackwardsCompatibility3.3
       SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
       SolutionCreator.BinaryVectorParameter.ActualNameChanged += new EventHandler(SolutionCreator_BinaryVectorParameter_ActualNameChanged);
       EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);

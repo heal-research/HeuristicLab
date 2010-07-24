@@ -191,11 +191,6 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     #endregion
 
     #region Helpers
-    private void InitializeOperators() {
-      ItemList<IOperator> operators = OperatorsParameter.Value;
-      operators.Add(new BestScopeSolutionAnalyzer());
-      ParameterizeAnalyzers();
-    }
     [StorableHook(HookType.AfterDeserialization)]
     private void AttachEventHandlers() {
       SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
@@ -205,6 +200,11 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       OperatorsParameter.Value.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<IOperator>>(OperatorsParameter_Value_ItemsAdded);
       OperatorsParameter.Value.ItemsRemoved += new CollectionItemsChangedEventHandler<IndexedItem<IOperator>>(OperatorsParameter_Value_ItemsRemoved);
       OperatorsParameter.Value.CollectionReset += new CollectionItemsChangedEventHandler<IndexedItem<IOperator>>(OperatorsParameter_Value_CollectionReset);
+    }
+    private void InitializeOperators() {
+      ItemList<IOperator> operators = OperatorsParameter.Value;
+      operators.Add(new BestScopeSolutionAnalyzer());
+      ParameterizeAnalyzers();
     }
     private void ParameterizeAnalyzers() {
       BestScopeSolutionAnalyzer.ResultsParameter.ActualName = "Results";
