@@ -227,6 +227,7 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine.ParameterAdjus
     private void InitializeOperators() {
       operators = new List<IOperator>();
       operators.AddRange(ApplicationManager.Manager.GetInstances<IRealVectorOperator>().Cast<IOperator>());
+      operators.RemoveAll(x => x is IMoveOperator);
       operators.Add(new SupportVectorMachineParameterAdjustmentBestSolutionAnalyzer());
       operators.Add(strategyVectorCreator);
       operators.Add(strategyVectorCrossover);
