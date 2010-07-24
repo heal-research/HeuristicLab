@@ -65,9 +65,9 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       if (bounds != null) {
         for (int i = 0; i < moves.Length; i++) {
           AdditiveMove move = moves[i];
-          if (vector[move.Dimension] < bounds[move.Dimension % bounds.Rows, 0])
+          if (vector[move.Dimension] + move.MoveDistance < bounds[move.Dimension % bounds.Rows, 0])
             vector[move.Dimension] = bounds[move.Dimension % bounds.Rows, 0];
-          else if (vector[move.Dimension] > bounds[move.Dimension % bounds.Rows, 1])
+          else if (vector[move.Dimension] + move.MoveDistance > bounds[move.Dimension % bounds.Rows, 1])
             vector[move.Dimension] = bounds[move.Dimension % bounds.Rows, 1];
         }
       }
