@@ -22,9 +22,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 using HeuristicLab.Common;
-using System.Reflection;
 
 namespace HeuristicLab.MainForm.WindowsForms {
   [Content(typeof(IContent))]
@@ -105,7 +105,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     public void ClearCache() {
-      foreach (var cachedView in cachedViews) {
+      foreach (var cachedView in cachedViews.ToArray()) {
         if (cachedView.Value != activeView) {
           Control c = cachedView.Value as Control;
           if (c != null) {
@@ -115,6 +115,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
           cachedViews.Remove(cachedView.Key);
         }
       }
+      if (cachedViews.Count == 0) ViewType = null;
     }
 
     protected override void OnContentChanged() {
