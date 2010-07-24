@@ -87,7 +87,7 @@ namespace HeuristicLab.Core.Views {
         sortDescendingButton.Enabled = itemsListView.Items.Count > 1;
         removeButton.Enabled = !Content.IsReadOnly && !ReadOnly && itemsListView.SelectedItems.Count > 0;
         itemsListView.Enabled = true;
-        detailsGroupBox.Enabled = true;
+        detailsGroupBox.Enabled = itemsListView.SelectedItems.Count == 1;
       }
     }
 

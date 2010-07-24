@@ -76,6 +76,7 @@ namespace HeuristicLab.Optimization.Views {
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
       listView.Enabled = Content != null;
+      detailsGroupBox.Enabled = (Content != null) && (listView.SelectedItems.Count == 1);
       viewHost.Enabled = Content != null;
       changeColorButton.Enabled = Content != null;
       showAlgorithmButton.Enabled = Content != null && !Locked;

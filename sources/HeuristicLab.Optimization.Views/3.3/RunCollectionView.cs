@@ -135,7 +135,7 @@ namespace HeuristicLab.Optimization.Views {
         analyzeRunsToolStripDropDownButton.Enabled = itemsListView.Items.Count > 0;
         runCollectionConstraintCollectionView.ReadOnly = itemsListView.Items.Count == 0;
         itemsListView.Enabled = true;
-        detailsGroupBox.Enabled = true;
+        detailsGroupBox.Enabled = itemsListView.SelectedItems.Count == 1;
         removeButton.Enabled = itemsListView.SelectedItems.Count > 0 && !Content.IsReadOnly && !ReadOnly;
         clearButton.Enabled = itemsListView.Items.Count > 0 && !Content.IsReadOnly && !ReadOnly;
         viewHost.Enabled = true;

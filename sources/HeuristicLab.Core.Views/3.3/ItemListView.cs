@@ -122,7 +122,7 @@ namespace HeuristicLab.Core.Views {
         removeButton.Enabled = itemsListView.SelectedItems.Count > 0 &&
                                !Content.IsReadOnly && !ReadOnly;
         itemsListView.Enabled = true;
-        detailsGroupBox.Enabled = true;
+        detailsGroupBox.Enabled = itemsListView.SelectedItems.Count == 1;
       }
     }
 
