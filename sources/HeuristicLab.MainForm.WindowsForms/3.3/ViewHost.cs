@@ -71,7 +71,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
               ActiveViewControl.Visible = true;
               ActiveViewControl.BringToFront();
             }
-          }
+          } else viewType = null;
           OnActiveViewChanged();
         }
       }
@@ -115,7 +115,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
           cachedViews.Remove(cachedView.Key);
         }
       }
-      if (cachedViews.Count == 0) ViewType = null;
     }
 
     protected override void OnContentChanged() {
