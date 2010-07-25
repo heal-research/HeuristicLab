@@ -89,27 +89,30 @@ namespace HeuristicLab.Optimization {
       if (algorithm == null) throw new ArgumentNullException();
       name = algorithm.Name + " Run (" + algorithm.ExecutionTime.ToString() + ")";
       description = ItemDescription;
-      Initialize((IAlgorithm)algorithm.Clone());
+      Initialize(algorithm);
     }
     public Run(string name, IAlgorithm algorithm)
       : base(name) {
       if (algorithm == null) throw new ArgumentNullException();
       description = ItemDescription;
-      Initialize((IAlgorithm)algorithm.Clone());
+      Initialize(algorithm);
     }
     public Run(string name, string description, IAlgorithm algorithm)
       : base(name, description) {
       if (algorithm == null) throw new ArgumentNullException();
-      Initialize((IAlgorithm)algorithm.Clone());
+      Initialize(algorithm);
     }
 
     private void Initialize(IAlgorithm algorithm) {
-      this.algorithm = algorithm;
+      IAlgorithm clone = (IAlgorithm)algorithm.Clone();
       parameters = new Dictionary<string, IItem>();
       results = new Dictionary<string, IItem>();
-      this.algorithm.CollectParameterValues(parameters);
-      this.algorithm.CollectResultValues(results);
-      this.algorithm.Prepare(true);
+      clone.CollectParameterValues(parameters);
+      clone.CollectResultValues(results);
+      if (clone.StoreAlgorithmInEachRun) {
+        clone.Prepare(true);
+        this.algorithm = clone;
+      }
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

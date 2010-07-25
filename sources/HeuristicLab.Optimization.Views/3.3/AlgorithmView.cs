@@ -73,6 +73,7 @@ namespace HeuristicLab.Optimization.Views {
       Content.Paused -= new EventHandler(Content_Paused);
       Content.Stopped -= new EventHandler(Content_Stopped);
       Content.ProblemChanged -= new EventHandler(Content_ProblemChanged);
+      Content.StoreAlgorithmInEachRunChanged -= new EventHandler(Content_StoreAlgorithmInEachRunChanged);
       base.DeregisterContentEvents();
     }
     protected override void RegisterContentEvents() {
@@ -85,6 +86,7 @@ namespace HeuristicLab.Optimization.Views {
       Content.Paused += new EventHandler(Content_Paused);
       Content.Stopped += new EventHandler(Content_Stopped);
       Content.ProblemChanged += new EventHandler(Content_ProblemChanged);
+      Content.StoreAlgorithmInEachRunChanged += new EventHandler(Content_StoreAlgorithmInEachRunChanged);
     }
 
     protected override void OnContentChanged() {
@@ -94,6 +96,7 @@ namespace HeuristicLab.Optimization.Views {
         problemViewHost.Content = null;
         resultsView.Content = null;
         runsView.Content = null;
+        storeAlgorithmInEachRunCheckBox.Checked = true;
         executionTimeTextBox.Text = "-";
       } else {
         parameterCollectionView.Content = Content.Parameters;
@@ -101,6 +104,7 @@ namespace HeuristicLab.Optimization.Views {
         problemViewHost.Content = Content.Problem;
         resultsView.Content = Content.Results.AsReadOnly();
         runsView.Content = Content.Runs;
+        storeAlgorithmInEachRunCheckBox.Checked = Content.StoreAlgorithmInEachRun;
         executionTimeTextBox.Text = Content.ExecutionTime.ToString();
       }
     }
@@ -113,6 +117,7 @@ namespace HeuristicLab.Optimization.Views {
       problemViewHost.Enabled = Content != null;
       resultsView.Enabled = Content != null;
       runsView.Enabled = Content != null;
+      storeAlgorithmInEachRunCheckBox.Enabled = Content != null && !ReadOnly;
       executionTimeTextBox.Enabled = Content != null;
       SetEnabledStateOfExecutableButtons();
     }
@@ -136,6 +141,18 @@ namespace HeuristicLab.Optimization.Views {
         Invoke(new EventHandler(Content_ExecutionStateChanged), sender, e);
       else
         startButton.Enabled = pauseButton.Enabled = stopButton.Enabled = resetButton.Enabled = false;
+    }
+    protected virtual void Content_ExecutionTimeChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_ExecutionTimeChanged), sender, e);
+      else
+        executionTimeTextBox.Text = Content.ExecutionTime.ToString();
+    }
+    protected virtual void Content_StoreAlgorithmInEachRunChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_StoreAlgorithmInEachRunChanged), sender, e);
+      else
+        storeAlgorithmInEachRunCheckBox.Checked = Content.StoreAlgorithmInEachRun;
     }
     protected virtual void Content_Prepared(object sender, EventArgs e) {
       if (InvokeRequired)
@@ -169,12 +186,6 @@ namespace HeuristicLab.Optimization.Views {
         ReadOnly = Locked = false;
         SetEnabledStateOfExecutableButtons();
       }
-    }
-    protected virtual void Content_ExecutionTimeChanged(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_ExecutionTimeChanged), sender, e);
-      else
-        executionTimeTextBox.Text = Content.ExecutionTime.ToString();
     }
     protected virtual void Content_ExceptionOccurred(object sender, EventArgs<Exception> e) {
       if (InvokeRequired)
@@ -231,6 +242,9 @@ namespace HeuristicLab.Optimization.Views {
           }
         });
       }
+    }
+    protected virtual void storeAlgorithmInEachRunCheckBox_CheckedChanged(object sender, EventArgs e) {
+      if (Content != null) Content.StoreAlgorithmInEachRun = storeAlgorithmInEachRunCheckBox.Checked;
     }
     protected virtual void startButton_Click(object sender, EventArgs e) {
       Content.Start();

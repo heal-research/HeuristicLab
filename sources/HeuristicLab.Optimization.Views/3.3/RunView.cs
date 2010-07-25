@@ -79,7 +79,7 @@ namespace HeuristicLab.Optimization.Views {
       detailsGroupBox.Enabled = (Content != null) && (listView.SelectedItems.Count == 1);
       viewHost.Enabled = Content != null;
       changeColorButton.Enabled = Content != null;
-      showAlgorithmButton.Enabled = Content != null && !Locked;
+      showAlgorithmButton.Enabled = Content != null && Content.Algorithm != null && !Locked;
     }
 
     private void changeColorButton_Click(object sender, EventArgs e) {

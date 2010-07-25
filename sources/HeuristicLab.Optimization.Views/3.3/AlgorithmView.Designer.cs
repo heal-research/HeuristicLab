@@ -46,12 +46,12 @@ namespace HeuristicLab.Optimization.Views {
     /// </summary>
     private void InitializeComponent() {
       this.tabControl = new System.Windows.Forms.TabControl();
-      this.parametersTabPage = new System.Windows.Forms.TabPage();
-      this.parameterCollectionView = new HeuristicLab.Core.Views.ParameterCollectionView();
       this.problemTabPage = new System.Windows.Forms.TabPage();
       this.problemViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.openProblemButton = new System.Windows.Forms.Button();
       this.newProblemButton = new System.Windows.Forms.Button();
+      this.parametersTabPage = new System.Windows.Forms.TabPage();
+      this.parameterCollectionView = new HeuristicLab.Core.Views.ParameterCollectionView();
       this.resultsTabPage = new System.Windows.Forms.TabPage();
       this.resultsView = new HeuristicLab.Optimization.Views.ResultCollectionView();
       this.runsTabPage = new System.Windows.Forms.TabPage();
@@ -63,10 +63,11 @@ namespace HeuristicLab.Optimization.Views {
       this.executionTimeTextBox = new System.Windows.Forms.TextBox();
       this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
       this.stopButton = new System.Windows.Forms.Button();
+      this.storeAlgorithmInEachRunCheckBox = new System.Windows.Forms.CheckBox();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.tabControl.SuspendLayout();
-      this.parametersTabPage.SuspendLayout();
       this.problemTabPage.SuspendLayout();
+      this.parametersTabPage.SuspendLayout();
       this.resultsTabPage.SuspendLayout();
       this.runsTabPage.SuspendLayout();
       this.SuspendLayout();
@@ -96,28 +97,6 @@ namespace HeuristicLab.Optimization.Views {
       this.tabControl.Size = new System.Drawing.Size(679, 400);
       this.tabControl.TabIndex = 4;
       // 
-      // parametersTabPage
-      // 
-      this.parametersTabPage.Controls.Add(this.parameterCollectionView);
-      this.parametersTabPage.Location = new System.Drawing.Point(4, 22);
-      this.parametersTabPage.Name = "parametersTabPage";
-      this.parametersTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.parametersTabPage.Size = new System.Drawing.Size(671, 374);
-      this.parametersTabPage.TabIndex = 1;
-      this.parametersTabPage.Text = "Parameters";
-      this.parametersTabPage.UseVisualStyleBackColor = true;
-      // 
-      // parameterCollectionView
-      // 
-      this.parameterCollectionView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.parameterCollectionView.Content = null;
-      this.parameterCollectionView.Location = new System.Drawing.Point(6, 6);
-      this.parameterCollectionView.Name = "parameterCollectionView";
-      this.parameterCollectionView.Size = new System.Drawing.Size(659, 362);
-      this.parameterCollectionView.TabIndex = 0;
-      // 
       // problemTabPage
       // 
       this.problemTabPage.Controls.Add(this.problemViewHost);
@@ -134,18 +113,20 @@ namespace HeuristicLab.Optimization.Views {
       // problemViewHost
       // 
       this.problemViewHost.AllowDrop = true;
-      this.problemViewHost.Content = null;
       this.problemViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
+      this.problemViewHost.Caption = "View";
+      this.problemViewHost.Content = null;
       this.problemViewHost.Location = new System.Drawing.Point(6, 36);
       this.problemViewHost.Name = "problemViewHost";
+      this.problemViewHost.ReadOnly = false;
       this.problemViewHost.Size = new System.Drawing.Size(659, 332);
       this.problemViewHost.TabIndex = 3;
       this.problemViewHost.ViewType = null;
-      this.problemViewHost.DragOver += new System.Windows.Forms.DragEventHandler(this.problemViewHost_DragEnterOver);
       this.problemViewHost.DragDrop += new System.Windows.Forms.DragEventHandler(this.problemViewHost_DragDrop);
       this.problemViewHost.DragEnter += new System.Windows.Forms.DragEventHandler(this.problemViewHost_DragEnterOver);
+      this.problemViewHost.DragOver += new System.Windows.Forms.DragEventHandler(this.problemViewHost_DragEnterOver);
       // 
       // openProblemButton
       // 
@@ -169,6 +150,30 @@ namespace HeuristicLab.Optimization.Views {
       this.newProblemButton.UseVisualStyleBackColor = true;
       this.newProblemButton.Click += new System.EventHandler(this.newProblemButton_Click);
       // 
+      // parametersTabPage
+      // 
+      this.parametersTabPage.Controls.Add(this.parameterCollectionView);
+      this.parametersTabPage.Location = new System.Drawing.Point(4, 22);
+      this.parametersTabPage.Name = "parametersTabPage";
+      this.parametersTabPage.Padding = new System.Windows.Forms.Padding(3);
+      this.parametersTabPage.Size = new System.Drawing.Size(671, 374);
+      this.parametersTabPage.TabIndex = 1;
+      this.parametersTabPage.Text = "Parameters";
+      this.parametersTabPage.UseVisualStyleBackColor = true;
+      // 
+      // parameterCollectionView
+      // 
+      this.parameterCollectionView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.parameterCollectionView.Caption = "ParameterCollection View";
+      this.parameterCollectionView.Content = null;
+      this.parameterCollectionView.Location = new System.Drawing.Point(6, 6);
+      this.parameterCollectionView.Name = "parameterCollectionView";
+      this.parameterCollectionView.ReadOnly = false;
+      this.parameterCollectionView.Size = new System.Drawing.Size(659, 362);
+      this.parameterCollectionView.TabIndex = 0;
+      // 
       // resultsTabPage
       // 
       this.resultsTabPage.Controls.Add(this.resultsView);
@@ -185,14 +190,17 @@ namespace HeuristicLab.Optimization.Views {
       this.resultsView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
+      this.resultsView.Caption = "ResultCollection View";
       this.resultsView.Content = null;
       this.resultsView.Location = new System.Drawing.Point(6, 6);
       this.resultsView.Name = "resultsView";
+      this.resultsView.ReadOnly = true;
       this.resultsView.Size = new System.Drawing.Size(659, 362);
       this.resultsView.TabIndex = 0;
       // 
       // runsTabPage
       // 
+      this.runsTabPage.Controls.Add(this.storeAlgorithmInEachRunCheckBox);
       this.runsTabPage.Controls.Add(this.runsView);
       this.runsTabPage.Location = new System.Drawing.Point(4, 22);
       this.runsTabPage.Name = "runsTabPage";
@@ -207,9 +215,11 @@ namespace HeuristicLab.Optimization.Views {
       this.runsView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
+      this.runsView.Caption = "RunCollection View";
       this.runsView.Content = null;
       this.runsView.Location = new System.Drawing.Point(6, 6);
       this.runsView.Name = "runsView";
+      this.runsView.ReadOnly = false;
       this.runsView.Size = new System.Drawing.Size(659, 362);
       this.runsView.TabIndex = 0;
       // 
@@ -287,6 +297,22 @@ namespace HeuristicLab.Optimization.Views {
       this.stopButton.UseVisualStyleBackColor = true;
       this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
       // 
+      // storeAlgorithmInEachRunCheckBox
+      // 
+      this.storeAlgorithmInEachRunCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.storeAlgorithmInEachRunCheckBox.AutoSize = true;
+      this.storeAlgorithmInEachRunCheckBox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+      this.storeAlgorithmInEachRunCheckBox.Checked = true;
+      this.storeAlgorithmInEachRunCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.storeAlgorithmInEachRunCheckBox.Location = new System.Drawing.Point(503, 6);
+      this.storeAlgorithmInEachRunCheckBox.Name = "storeAlgorithmInEachRunCheckBox";
+      this.storeAlgorithmInEachRunCheckBox.Size = new System.Drawing.Size(161, 17);
+      this.storeAlgorithmInEachRunCheckBox.TabIndex = 1;
+      this.storeAlgorithmInEachRunCheckBox.Text = "&Store Algorithm in each Run:";
+      this.toolTip.SetToolTip(this.storeAlgorithmInEachRunCheckBox, "Check to store a copy of the algorithm in each run.");
+      this.storeAlgorithmInEachRunCheckBox.UseVisualStyleBackColor = true;
+      this.storeAlgorithmInEachRunCheckBox.CheckedChanged += new System.EventHandler(this.storeAlgorithmInEachRunCheckBox_CheckedChanged);
+      // 
       // AlgorithmView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -313,10 +339,11 @@ namespace HeuristicLab.Optimization.Views {
       this.Controls.SetChildIndex(this.descriptionTextBox, 0);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.tabControl.ResumeLayout(false);
-      this.parametersTabPage.ResumeLayout(false);
       this.problemTabPage.ResumeLayout(false);
+      this.parametersTabPage.ResumeLayout(false);
       this.resultsTabPage.ResumeLayout(false);
       this.runsTabPage.ResumeLayout(false);
+      this.runsTabPage.PerformLayout();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -342,5 +369,6 @@ namespace HeuristicLab.Optimization.Views {
     protected System.Windows.Forms.Button stopButton;
     protected System.Windows.Forms.TabPage runsTabPage;
     protected RunCollectionView runsView;
+    protected System.Windows.Forms.CheckBox storeAlgorithmInEachRunCheckBox;
   }
 }

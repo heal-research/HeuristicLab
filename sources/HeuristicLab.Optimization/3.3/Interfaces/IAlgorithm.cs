@@ -31,9 +31,11 @@ namespace HeuristicLab.Optimization {
     Type ProblemType { get; }
     IProblem Problem { get; set; }
     ResultCollection Results { get; }
+    bool StoreAlgorithmInEachRun { get; set; }
 
     void CollectResultValues(IDictionary<string, IItem> values);
 
     event EventHandler ProblemChanged;
+    event EventHandler StoreAlgorithmInEachRunChanged;
   }
 }

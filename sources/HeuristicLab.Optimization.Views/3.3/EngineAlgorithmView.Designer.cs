@@ -116,12 +116,10 @@ namespace HeuristicLab.Optimization.Views {
       // executionTimeLabel
       // 
       this.executionTimeLabel.Location = new System.Drawing.Point(487, 532);
-      this.executionTimeLabel.TabIndex = 9;
       // 
       // executionTimeTextBox
       // 
       this.executionTimeTextBox.Location = new System.Drawing.Point(576, 529);
-      this.executionTimeTextBox.TabIndex = 10;
       // 
       // resultsTabPage
       // 
@@ -144,9 +142,9 @@ namespace HeuristicLab.Optimization.Views {
       // 
       this.runsView.Size = new System.Drawing.Size(693, 429);
       // 
-      // problemPanel
+      // storeAlgorithmInEachRunCheckBox
       // 
-      this.problemViewHost.Size = new System.Drawing.Size(693, 399);
+      this.storeAlgorithmInEachRunCheckBox.Location = new System.Drawing.Point(530, 6);
       // 
       // nameTextBox
       // 
@@ -197,6 +195,7 @@ namespace HeuristicLab.Optimization.Views {
       this.engineViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
+      this.engineViewHost.Caption = "View";
       this.engineViewHost.Content = null;
       this.engineViewHost.Location = new System.Drawing.Point(6, 33);
       this.engineViewHost.Name = "engineViewHost";
@@ -244,6 +243,7 @@ namespace HeuristicLab.Optimization.Views {
       this.operatorGraphViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
+      this.operatorGraphViewHost.Caption = "View";
       this.operatorGraphViewHost.Content = null;
       this.operatorGraphViewHost.Location = new System.Drawing.Point(3, 33);
       this.operatorGraphViewHost.Name = "operatorGraphViewHost";
@@ -258,22 +258,12 @@ namespace HeuristicLab.Optimization.Views {
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Name = "EngineAlgorithmView";
       this.Size = new System.Drawing.Size(713, 549);
-      this.Controls.SetChildIndex(this.stopButton, 0);
-      this.Controls.SetChildIndex(this.resetButton, 0);
-      this.Controls.SetChildIndex(this.pauseButton, 0);
-      this.Controls.SetChildIndex(this.executionTimeLabel, 0);
-      this.Controls.SetChildIndex(this.executionTimeTextBox, 0);
-      this.Controls.SetChildIndex(this.startButton, 0);
-      this.Controls.SetChildIndex(this.tabControl, 0);
-      this.Controls.SetChildIndex(this.nameLabel, 0);
-      this.Controls.SetChildIndex(this.descriptionLabel, 0);
-      this.Controls.SetChildIndex(this.nameTextBox, 0);
-      this.Controls.SetChildIndex(this.descriptionTextBox, 0);
       this.tabControl.ResumeLayout(false);
       this.parametersTabPage.ResumeLayout(false);
       this.problemTabPage.ResumeLayout(false);
       this.resultsTabPage.ResumeLayout(false);
       this.runsTabPage.ResumeLayout(false);
+      this.runsTabPage.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.engineTabPage.ResumeLayout(false);
       this.engineTabPage.PerformLayout();
