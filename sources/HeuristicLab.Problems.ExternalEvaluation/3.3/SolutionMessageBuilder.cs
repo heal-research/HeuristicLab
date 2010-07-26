@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Collections;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -34,10 +35,16 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     public override bool CanChangeDescription { get { return false; } }
     private Dictionary<Type, Action<IItem, string, SolutionMessage.Builder>> dispatcher;
 
+    // BackwardsCompatibility3.3
+    #region Backwards compatible code, remove with 3.4
     [Storable]
+    [Obsolete]
     private CheckedItemCollection<IItemToSolutionMessageConverter> converters;
-    public CheckedItemCollection<IItemToSolutionMessageConverter> Converters {
-      get { return converters; }
+    #endregion
+    [Storable]
+    private CheckedItemList<IItemToSolutionMessageConverter> convertersList;
+    public CheckedItemList<IItemToSolutionMessageConverter> Converters {
+      get { return convertersList; }
     }
 
     [StorableConstructor]
@@ -46,19 +53,26 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       : base() {
       name = ItemName;
       description = ItemDescription;
-      converters = new CheckedItemCollection<IItemToSolutionMessageConverter>();
-      AttachEventHandlers();
+      convertersList = new CheckedItemList<IItemToSolutionMessageConverter>();
+      convertersList.Add(new BoolConverter());
+      convertersList.Add(new DateTimeValueConverter());
+      convertersList.Add(new DoubleConverter());
+      convertersList.Add(new IntegerConverter());
+      convertersList.Add(new StringConverter());
+      convertersList.Add(new TimeSpanValueConverter());
 
-      converters.Add(new BoolConverter());
-      converters.Add(new DateTimeValueConverter());
-      converters.Add(new DoubleConverter());
-      converters.Add(new IntegerConverter());
-      converters.Add(new StringConverter());
-      converters.Add(new TimeSpanValueConverter());
+      AttachEventHandlers();
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      SolutionMessageBuilder clone = (SolutionMessageBuilder)base.Clone(cloner);
+      clone.convertersList = (CheckedItemList<IItemToSolutionMessageConverter>)cloner.Clone(convertersList);
+      clone.AttachEventHandlers();
+      return clone;
     }
 
     public void AddToMessage(IItem item, string name, SolutionMessage.Builder builder) {
-      if (dispatcher == null) FillDispatcher();
+      if (dispatcher == null) BuildDispatcher();
       Type itemType = item.GetType();
       while (!dispatcher.ContainsKey(itemType)) {
         if (itemType.BaseType != null) itemType = itemType.BaseType;
@@ -74,51 +88,36 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AttachEventHandlers() {
-      converters.ItemsAdded += new CollectionItemsChangedEventHandler<IItemToSolutionMessageConverter>(converters_ItemsAdded);
-      converters.ItemsRemoved += new CollectionItemsChangedEventHandler<IItemToSolutionMessageConverter>(converters_ItemsRemoved);
-      converters.CheckedItemsChanged += new CollectionItemsChangedEventHandler<IItemToSolutionMessageConverter>(converters_CheckedItemsChanged);
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      #pragma warning disable 0612
+      if (converters != null) {
+        if (convertersList == null) convertersList = new CheckedItemList<IItemToSolutionMessageConverter>();
+        foreach (IItemToSolutionMessageConverter c in converters)
+          convertersList.Add(c);
+        converters.Clear();
+        converters = null;
+      }
+      #pragma warning restore 0612
+      #endregion
+      convertersList.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<IItemToSolutionMessageConverter>>(convertersList_Changed);
+      convertersList.ItemsRemoved += new CollectionItemsChangedEventHandler<IndexedItem<IItemToSolutionMessageConverter>>(convertersList_Changed);
+      convertersList.CheckedItemsChanged += new CollectionItemsChangedEventHandler<IndexedItem<IItemToSolutionMessageConverter>>(convertersList_Changed);
+      convertersList.ItemsMoved += new CollectionItemsChangedEventHandler<IndexedItem<IItemToSolutionMessageConverter>>(convertersList_Changed);
+      convertersList.ItemsReplaced += new CollectionItemsChangedEventHandler<IndexedItem<IItemToSolutionMessageConverter>>(convertersList_Changed);
     }
 
-    private void converters_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IItemToSolutionMessageConverter> e) {
-      AddToDispatcher(e.Items);
+    private void convertersList_Changed(object sender, CollectionItemsChangedEventArgs<IndexedItem<IItemToSolutionMessageConverter>> e) {
+      BuildDispatcher();
     }
 
-    private void converters_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IItemToSolutionMessageConverter> e) {
-      RemoveFromDispatcher(e.Items);
-    }
-
-    private void converters_CheckedItemsChanged(object sender, CollectionItemsChangedEventArgs<IItemToSolutionMessageConverter> e) {
-      FillDispatcher();
-    }
-
-    private void FillDispatcher() {
+    private void BuildDispatcher() {
       dispatcher = new Dictionary<Type, Action<IItem, string, SolutionMessage.Builder>>();
-      foreach (IItemToSolutionMessageConverter c in converters.CheckedItems) {
+      foreach (IItemToSolutionMessageConverter c in convertersList.CheckedItems.OrderBy(x => x.Index).Select(x => x.Value)) {
         Type[] types = c.ItemTypes;
         foreach (Type t in types) {
-          if (dispatcher.ContainsKey(t)) dispatcher.Remove(t);
-          dispatcher.Add(t, new Action<IItem, string, SolutionMessage.Builder>(c.AddItemToBuilder));
-        }
-      }
-    }
-
-    private void AddToDispatcher(IEnumerable<IItemToSolutionMessageConverter> items) {
-      if (dispatcher == null) FillDispatcher();
-      foreach (IItemToSolutionMessageConverter c in items) {
-        Type[] types = c.ItemTypes;
-        foreach (Type t in types) {
-          if (dispatcher.ContainsKey(t)) dispatcher.Remove(t);
-          dispatcher.Add(t, new Action<IItem, string, SolutionMessage.Builder>(c.AddItemToBuilder));
-        }
-      }
-    }
-
-    private void RemoveFromDispatcher(IEnumerable<IItemToSolutionMessageConverter> items) {
-      if (dispatcher == null) FillDispatcher();
-      foreach (IItemToSolutionMessageConverter c in items) {
-        Type[] types = c.ItemTypes;
-        foreach (Type t in types) {
-          if (dispatcher.ContainsKey(t)) dispatcher.Remove(t);
+          if (!dispatcher.ContainsKey(t))
+            dispatcher.Add(t, new Action<IItem, string, SolutionMessage.Builder>(c.AddItemToBuilder));
         }
       }
     }

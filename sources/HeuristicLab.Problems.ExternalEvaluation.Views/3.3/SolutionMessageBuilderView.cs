@@ -27,7 +27,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
   [View("Solution Message Builder View")]
   [Content(typeof(SolutionMessageBuilder), IsDefaultView = true)]
   public sealed partial class SolutionMessageBuilderView : NamedItemView {
-    CheckedItemCollectionView<IItemToSolutionMessageConverter> converterView;
+    CheckedItemListView<IItemToSolutionMessageConverter> converterView;
 
     public new SolutionMessageBuilder Content {
       get { return (SolutionMessageBuilder)base.Content; }
@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
 
     public SolutionMessageBuilderView() {
       InitializeComponent();
-      converterView = new CheckedItemCollectionView<IItemToSolutionMessageConverter>();
+      converterView = new CheckedItemListView<IItemToSolutionMessageConverter>();
       converterView.Dock = DockStyle.Fill;
       convertersGroupBox.Controls.Add(converterView);
     }

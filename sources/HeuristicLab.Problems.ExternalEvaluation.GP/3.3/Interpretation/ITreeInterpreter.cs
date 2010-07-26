@@ -25,6 +25,7 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.ExternalEvaluation.GP {
   public interface ISymbolicExpressionTreeInterpreter : IItem {
-    double InterpretTree(SymbolicExpressionTree tree, Dictionary<string, double> variables);
+    void Prepare(SymbolicExpressionTree tree);
+    double InterpretTree(Dictionary<string, double> variables);
   }
 }

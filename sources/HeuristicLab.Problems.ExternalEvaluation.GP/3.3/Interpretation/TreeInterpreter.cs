@@ -91,7 +91,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
     private Dictionary<string, double> variables;
     private Instruction[] code;
     private int pc;
-
+    
     public override bool CanChangeName {
       get { return false; }
     }
@@ -103,10 +103,13 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
       : base() {
     }
 
-    public double InterpretTree(SymbolicExpressionTree tree, Dictionary<string, double> variables) {
-      this.variables = variables;
+    public void Prepare(SymbolicExpressionTree tree) {
       var compiler = new SymbolicExpressionTreeCompiler();
       code = compiler.Compile(tree, MapSymbolToOpCode);
+    }
+
+    public double InterpretTree(Dictionary<string, double> variables) {
+      this.variables = variables;
       pc = 0;
       argStackPointer = 0;
       return Evaluate();
@@ -122,7 +125,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
     private double[] argumentStack = new double[ARGUMENT_STACK_SIZE];
     private int argStackPointer;
 
-    public double Evaluate() {
+    private double Evaluate() {
       var currentInstr = code[pc++];
       switch (currentInstr.opCode) {
         case OpCodes.Add: {
