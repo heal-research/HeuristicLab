@@ -89,16 +89,17 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Crossovers {
 
     private static bool IsMatchingPointType(SymbolicExpressionTreeNode parent, int replacedSubtreeIndex, SymbolicExpressionTreeNode branch) {
       // check syntax constraints of direct parent - child relation
-      if (!parent.Grammar.IsAllowedChild(parent.Symbol, branch.Symbol, replacedSubtreeIndex)) return false;
+      if (!parent.Grammar.ContainsSymbol(branch.Symbol) ||
+          !parent.Grammar.IsAllowedChild(parent.Symbol, branch.Symbol, replacedSubtreeIndex)) return false;
 
       bool result = true;
       // check point type for the whole branch
       branch.ForEachNodePostfix((n) => {
         result =
           result &&
+          parent.Grammar.ContainsSymbol(n.Symbol) &&
           n.SubTrees.Count >= parent.Grammar.GetMinSubtreeCount(n.Symbol) &&
-          n.SubTrees.Count <= parent.Grammar.GetMaxSubtreeCount(n.Symbol) &&
-          parent.Grammar.ContainsSymbol(n.Symbol);
+          n.SubTrees.Count <= parent.Grammar.GetMaxSubtreeCount(n.Symbol);
       });
       return result;
     }

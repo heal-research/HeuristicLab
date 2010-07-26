@@ -36,7 +36,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
     [Storable]
     private ISymbolicExpressionGrammar grammar;
-    internal override ISymbolicExpressionGrammar Grammar {
+    public override ISymbolicExpressionGrammar Grammar {
       get { return grammar; }
       set { grammar = value; }
     }

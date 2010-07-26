@@ -193,7 +193,7 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     private List<IOperator> operators;
 
     [StorableConstructor]
-    private ArtificialAntProblem(bool deserializing) : base() { }
+    private ArtificialAntProblem(bool deserializing) : base(deserializing) { }
     public ArtificialAntProblem()
       : base() {
       SymbolicExpressionTreeCreator creator = new ProbabilisticTreeCreator();

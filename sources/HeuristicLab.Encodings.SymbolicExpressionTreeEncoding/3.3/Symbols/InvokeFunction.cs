@@ -31,7 +31,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
   [Item(InvokeFunction.InvokeFunctionName, InvokeFunction.InvokeFunctionDescription)]
   public sealed class InvokeFunction : ReadOnlySymbol {
     public const string InvokeFunctionName = "InvokeFunction";
-    public const string InvokeFunctionDescription = "Symbol that the invokation of another function.";
+    public const string InvokeFunctionDescription = "Symbol that the invocation of another function.";
     public override bool CanChangeName {
       get {
         return false;
