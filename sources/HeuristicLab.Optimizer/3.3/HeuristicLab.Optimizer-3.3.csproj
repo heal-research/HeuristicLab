@@ -120,6 +120,7 @@
     <Compile Include="MenuItems\ClipboardMenuItem.cs" />
     <Compile Include="MenuItems\AboutMenuItem.cs" />
     <Compile Include="MenuItems\ConvertIntoUserDefinedAlgorithmMenuItem.cs" />
+    <Compile Include="MenuItems\CreateExperimentMenuItem.cs" />
     <Compile Include="MenuItems\CopyToClipboardMenuItem.cs" />
     <Compile Include="MenuItems\StartPageMenuItem.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
@@ -195,6 +196,10 @@
     <ProjectReference Include="..\..\HeuristicLab.MainForm\3.3\HeuristicLab.MainForm-3.3.csproj">
       <Project>{3BD61258-31DA-4B09-89C0-4F71FEF5F05A}</Project>
       <Name>HeuristicLab.MainForm-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Optimization.Views\3.3\HeuristicLab.Optimization.Views-3.3.csproj">
+      <Project>{662B4B15-8F4D-4AE5-B3EB-D91C215F5AF2}</Project>
+      <Name>HeuristicLab.Optimization.Views-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
       <Project>{14AB8D24-25BC-400C-A846-4627AA945192}</Project>
