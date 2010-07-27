@@ -67,7 +67,7 @@ namespace HeuristicLab.Problems.DataAnalysis.MultiVariate.Regression.Symbolic {
       DoubleArray alpha = AlphaParameter.ActualValue;
       DoubleArray beta = BetaParameter.ActualValue;
       if (alpha != null && beta != null) {
-        ScaledSymbolicExpressionTreeParameter.ActualValue = Scale(tree, alpha.ToArray(), beta.ToArray());
+        ScaledSymbolicExpressionTreeParameter.ActualValue = Scale(tree, beta.ToArray(), alpha.ToArray());
       } else {
         // alpha or beta parameter not available => do not scale tree
         ScaledSymbolicExpressionTreeParameter.ActualValue = tree;
@@ -76,7 +76,7 @@ namespace HeuristicLab.Problems.DataAnalysis.MultiVariate.Regression.Symbolic {
       return base.Apply();
     }
 
-    public static SymbolicExpressionTree Scale(SymbolicExpressionTree original, double[] alpha, double[] beta) {
+    public static SymbolicExpressionTree Scale(SymbolicExpressionTree original, double[] beta, double[] alpha) {
       List<SymbolicExpressionTreeNode> resultProducingBranches = new List<SymbolicExpressionTreeNode>(original.Root.SubTrees[0].SubTrees);
       // remove the main branch before cloning to prevent cloning of sub-trees
       while (original.Root.SubTrees[0].SubTrees.Count > 0)

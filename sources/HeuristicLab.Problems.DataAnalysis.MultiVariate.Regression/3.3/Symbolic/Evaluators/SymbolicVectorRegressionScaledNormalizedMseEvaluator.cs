@@ -86,7 +86,7 @@ namespace HeuristicLab.Problems.DataAnalysis.MultiVariate.Regression.Symbolic.Ev
       }
       AlphaParameter.ActualValue = alpha;
       BetaParameter.ActualValue = beta;
-      QualityParameter.ActualValue = new DoubleValue(nmseSum / targetVariables.Count());
+      QualityParameter.ActualValue = new DoubleValue(nmseSum);
     }
   }
 }

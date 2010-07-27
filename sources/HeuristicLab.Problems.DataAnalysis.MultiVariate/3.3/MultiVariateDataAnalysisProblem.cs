@@ -50,7 +50,7 @@ namespace HeuristicLab.Problems.DataAnalysis.MultiVariate {
     #endregion
 
     [StorableConstructor]
-    private MultiVariateDataAnalysisProblem(bool deserializing) : base() { }
+    protected MultiVariateDataAnalysisProblem(bool deserializing) : base(deserializing) { }
     public MultiVariateDataAnalysisProblem()
       : base() {
       Parameters.Add(new ValueParameter<MultiVariateDataAnalysisProblemData>(MultiVariateDataAnalysisProblemDataParameterName, "The data set, target variables and input variables of the multi-variate data analysis problem.", new MultiVariateDataAnalysisProblemData()));

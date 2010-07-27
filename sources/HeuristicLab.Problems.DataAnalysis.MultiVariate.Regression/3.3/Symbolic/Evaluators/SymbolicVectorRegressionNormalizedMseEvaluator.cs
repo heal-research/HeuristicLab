@@ -72,7 +72,7 @@ namespace HeuristicLab.Problems.DataAnalysis.MultiVariate.Regression.Symbolic.Ev
       foreach (var treeNode in componentBranches) {
         tree.Root.SubTrees[0].AddSubTree(treeNode);
       }
-      return nmseSum / targetVariablesList.Count;
+      return nmseSum;
     }
   }
 }

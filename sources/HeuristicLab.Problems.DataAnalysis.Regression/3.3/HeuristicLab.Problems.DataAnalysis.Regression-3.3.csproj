@@ -114,7 +114,6 @@
     <Compile Include="HeuristicLabProblemsDataAnalysisRegressionPlugin.cs" />
     <Compile Include="LinearRegression\LinearRegressionSolutionCreator.cs" />
     <Compile Include="LinearRegression\LinearRegressionUtil.cs" />
-    <Compile Include="RandomEnumerable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SupportVectorRegression\BestSupportVectorRegressionSolutionAnalyzer.cs" />
     <Compile Include="SupportVectorRegression\SupportVectorRegressionSolution.cs" />

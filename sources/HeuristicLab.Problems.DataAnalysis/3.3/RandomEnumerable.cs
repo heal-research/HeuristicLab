@@ -23,7 +23,7 @@ using System;
 using System.Collections.Generic;
 using HeuristicLab.Random;
 
-namespace HeuristicLab.Problems.DataAnalysis.Regression {
+namespace HeuristicLab.Problems.DataAnalysis {
   public class RandomEnumerable {
     public static IEnumerable<int> SampleRandomNumbers(int maxElement, int count) {
       return SampleRandomNumbers(((uint)DateTime.Now.Ticks), 0, maxElement, count);

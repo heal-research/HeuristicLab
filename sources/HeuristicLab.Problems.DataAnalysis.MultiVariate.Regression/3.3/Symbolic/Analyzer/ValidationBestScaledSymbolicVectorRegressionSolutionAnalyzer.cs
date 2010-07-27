@@ -144,7 +144,7 @@ namespace HeuristicLab.Problems.DataAnalysis.MultiVariate.Regression.Symbolic.An
       IEnumerable<SymbolicExpressionTree> scaledTrees;
       if (Alpha.Length == trees.Length) {
         scaledTrees = from i in Enumerable.Range(0, trees.Length)
-                      select SymbolicVectorRegressionSolutionLinearScaler.Scale(trees[i], Alpha[i].ToArray(), Beta[i].ToArray());
+                      select SymbolicVectorRegressionSolutionLinearScaler.Scale(trees[i], Beta[i].ToArray(), Alpha[i].ToArray());
       } else {
         scaledTrees = trees;
       }

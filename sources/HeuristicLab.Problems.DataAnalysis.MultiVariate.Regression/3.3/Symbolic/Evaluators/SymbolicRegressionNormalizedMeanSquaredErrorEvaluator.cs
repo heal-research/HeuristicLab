@@ -64,28 +64,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
 
     public static double Calculate(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, Dataset dataset, string targetVariable, IEnumerable<int> rows) {
-      int targetVariableIndex = dataset.GetVariableIndex(targetVariable);
-      var estimatedValues = interpreter.GetSymbolicExpressionTreeValues(solution, dataset, rows);
-      var originalValues = dataset.GetEnumeratedVariableValues(targetVariableIndex, rows);
-      IEnumerator<double> originalEnumerator = originalValues.GetEnumerator();
-      IEnumerator<double> estimatedEnumerator = estimatedValues.GetEnumerator();
-      OnlineNormalizedMeanSquaredErrorEvaluator mseEvaluator = new OnlineNormalizedMeanSquaredErrorEvaluator();
-
-      while (originalEnumerator.MoveNext() & estimatedEnumerator.MoveNext()) {
-        double estimated = estimatedEnumerator.Current;
-        double original = originalEnumerator.Current;
-        if (double.IsNaN(estimated))
-          estimated = upperEstimationLimit;
-        else
-          estimated = Math.Min(upperEstimationLimit, Math.Max(lowerEstimationLimit, estimated));
-        mseEvaluator.Add(original, estimated);
-      }
-
-      if (estimatedEnumerator.MoveNext() || originalEnumerator.MoveNext()) {
-        throw new ArgumentException("Number of elements in original and estimated enumeration doesn't match.");
-      } else {
-        return mseEvaluator.NormalizedMeanSquaredError;
-      }
+      return SymbolicRegressionScaledNormalizedMeanSquaredErrorEvaluator.CalculateWithScaling(interpreter, solution, lowerEstimationLimit, upperEstimationLimit, dataset, targetVariable, rows, 1.0, 0.0);
     }
   }
 }
