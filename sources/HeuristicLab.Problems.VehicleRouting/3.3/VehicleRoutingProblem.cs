@@ -181,7 +181,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     private List<IOperator> operators;
 
     [StorableConstructor]
-    private VehicleRoutingProblem(bool deserializing) : base() { }
+    private VehicleRoutingProblem(bool deserializing) : base(deserializing) { }
     public VehicleRoutingProblem()
       : base() {
       IVRPCreator creator = new AlbaPermutationCreator();
@@ -294,10 +294,15 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     #region Helpers
     [StorableHook(HookType.AfterDeserialization)]
-    private void AttachEventHandlers() {
-      // Start BackwardsCompatibility3.3 (remove with 3.4)
+    private void AfterDeserializationHook() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code (remove with 3.4)
       if (operators == null) InitializeOperators();
-      // End BackwardsCompatibility3.3
+      #endregion
+      AttachEventHandlers();
+    }
+
+    private void AttachEventHandlers() {
       CoordinatesParameter.ValueChanged += new EventHandler(CoordinatesParameter_ValueChanged);
       Vehicles.ValueChanged += new EventHandler(VehiclesValue_ValueChanged);
       Coordinates.ItemChanged += new EventHandler<EventArgs<int, int>>(Coordinates_ItemChanged);

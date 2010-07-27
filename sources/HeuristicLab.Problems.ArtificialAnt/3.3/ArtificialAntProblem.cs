@@ -277,10 +277,15 @@ namespace HeuristicLab.Problems.ArtificialAnt {
 
     #region Helpers
     [StorableHook(HookType.AfterDeserialization)]
-    private void AttachEventHandlers() {
-      // Start BackwardsCompatibility3.3 (remove with 3.4)
+    private void AfterDeserializationHook() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code (remove with 3.4)
       if (operators == null) InitializeOperators();
-      // End BackwardsCompatibility3.3
+      #endregion
+      AttachEventHandlers();
+    }
+
+    private void AttachEventHandlers() {
       SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
       SolutionCreator.SymbolicExpressionTreeParameter.ActualNameChanged += new EventHandler(SolutionCreator_SymbolicExpressionTreeParameter_ActualNameChanged);
       EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);

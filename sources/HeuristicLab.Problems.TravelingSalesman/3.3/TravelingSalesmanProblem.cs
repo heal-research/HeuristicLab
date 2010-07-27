@@ -131,7 +131,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     private List<IOperator> operators;
 
     [StorableConstructor]
-    private TravelingSalesmanProblem(bool deserializing) : base() { }
+    private TravelingSalesmanProblem(bool deserializing) : base(deserializing) { }
     public TravelingSalesmanProblem()
       : base() {
       RandomPermutationCreator creator = new RandomPermutationCreator();
@@ -245,10 +245,15 @@ namespace HeuristicLab.Problems.TravelingSalesman {
 
     #region Helpers
     [StorableHook(HookType.AfterDeserialization)]
-    private void AttachEventHandlers() {
-      // Start BackwardsCompatibility3.3 (remove with 3.4)
+    private void AfterDeserializationHook() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code (remove with 3.4)
       if (operators == null) InitializeOperators();
-      // End BackwardsCompatibility3.3
+      #endregion
+      AttachEventHandlers();
+    }
+
+    private void AttachEventHandlers() {
       CoordinatesParameter.ValueChanged += new EventHandler(CoordinatesParameter_ValueChanged);
       Coordinates.ItemChanged += new EventHandler<EventArgs<int, int>>(Coordinates_ItemChanged);
       Coordinates.Reset += new EventHandler(Coordinates_Reset);

@@ -182,7 +182,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     private List<IOperator> operators;
 
     [StorableConstructor]
-    private SymbolicRegressionProblem(bool deserializing) : base() { }
+    protected SymbolicRegressionProblem(bool deserializing) : base(deserializing) { }
     public SymbolicRegressionProblem()
       : base() {
       SymbolicExpressionTreeCreator creator = new ProbabilisticTreeCreator();
@@ -212,13 +212,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       UpdateGrammar();
       UpdateEstimationLimits();
       InitializeOperators();
-      AttachEventHandlers();
+      RegisterParameterEvents();
+      RegisterParameterValueEvents();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       SymbolicRegressionProblem clone = (SymbolicRegressionProblem)base.Clone(cloner);
       clone.operators = operators.Select(x => (IOperator)cloner.Clone(x)).ToList();
-      clone.AttachEventHandlers();
+      clone.RegisterParameterEvents();
+      clone.RegisterParameterValueEvents();
       return clone;
     }
 
@@ -302,10 +304,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
 
     #region Helpers
     [StorableHook(HookType.AfterDeserialization)]
-    private void AttachEventHandlers() {
-      // Start BackwardsCompatibility3.3 (remove with 3.4)
+    private void AfterDeserializationHook() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code (remove with 3.4)
       if (operators == null) InitializeOperators();
-      // End BackwardsCompatibility3.3
+      #endregion
       RegisterParameterEvents();
       RegisterParameterValueEvents();
     }

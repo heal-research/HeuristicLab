@@ -89,7 +89,7 @@ namespace HeuristicLab.Problems.DataAnalysis.FeatureSelection {
     private List<IOperator> operators;
 
     [StorableConstructor]
-    private FeatureSelectionProblem(bool deserializing) : base() { }
+    protected FeatureSelectionProblem(bool deserializing) : base(deserializing) { }
     public FeatureSelectionProblem()
       : base() {
       BinaryVectorCreator creator = new RandomBinaryVectorCreator();
@@ -105,11 +105,16 @@ namespace HeuristicLab.Problems.DataAnalysis.FeatureSelection {
       ParameterizeEvaluator();
 
       InitializeOperators();
-      AttachEventHandlers();
+      RegisterParameterEvents();
+      RegisterParameterValueEvents();
     }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserializationHook() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code (remove with 3.4)
+      if (operators == null) InitializeOperators();
+      #endregion
       RegisterParameterEvents();
       RegisterParameterValueEvents();
     }
@@ -117,7 +122,8 @@ namespace HeuristicLab.Problems.DataAnalysis.FeatureSelection {
     public override IDeepCloneable Clone(Cloner cloner) {
       FeatureSelectionProblem clone = (FeatureSelectionProblem)base.Clone(cloner);
       clone.operators = operators.Select(x => (IOperator)cloner.Clone(x)).ToList();
-      clone.AttachEventHandlers();
+      clone.RegisterParameterEvents();
+      clone.RegisterParameterValueEvents();
       return clone;
     }
 
@@ -167,14 +173,6 @@ namespace HeuristicLab.Problems.DataAnalysis.FeatureSelection {
     #endregion
 
     #region Helpers
-    private void AttachEventHandlers() {
-      // Start BackwardsCompatibility3.3 (remove with 3.4)
-      if (operators == null) InitializeOperators();
-      // End BackwardsCompatibility3.3
-      RegisterParameterEvents();
-      RegisterParameterValueEvents();
-    }
-
     private void InitializeOperators() {
       operators = new List<IOperator>();
       operators.AddRange(ApplicationManager.Manager.GetInstances<IBinaryVectorOperator>().OfType<IOperator>());

@@ -108,7 +108,7 @@ namespace HeuristicLab.Problems.OneMax {
     private List<IOperator> operators;
 
     [StorableConstructor]
-    private OneMaxProblem(bool deserializing) : base() { }
+    private OneMaxProblem(bool deserializing) : base(deserializing) { }
     public OneMaxProblem()
       : base() {
       RandomBinaryVectorCreator creator = new RandomBinaryVectorCreator();
@@ -197,18 +197,23 @@ namespace HeuristicLab.Problems.OneMax {
 
     #region Helpers
     [StorableHook(HookType.AfterDeserialization)]
-    private void AttachEventHandlers() {
-      // Start BackwardsCompatibility3.3 (remove with 3.4)
+    private void AfterDeserializationHook() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code (remove with 3.4)
       if (operators == null) InitializeOperators();
-      // End BackwardsCompatibility3.3
+      #endregion
+      AttachEventHandlers();
+    }
+
+    private void AttachEventHandlers() {
       SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
       SolutionCreator.BinaryVectorParameter.ActualNameChanged += new EventHandler(SolutionCreator_BinaryVectorParameter_ActualNameChanged);
       EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
       LengthParameter.ValueChanged += new EventHandler(LengthParameter_ValueChanged);
       LengthParameter.Value.ValueChanged += new EventHandler(Length_ValueChanged);
-      BestKnownQualityParameter.Value.Value = Length.Value;
       BestKnownQualityParameter.ValueChanged += new EventHandler(BestKnownQualityParameter_ValueChanged);
     }
+
     private void ParameterizeSolutionCreator() {
       SolutionCreator.LengthParameter.ActualName = LengthParameter.Name;
     }

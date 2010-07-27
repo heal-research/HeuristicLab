@@ -49,15 +49,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     #endregion
 
+    [StorableConstructor]
+    protected DataAnalysisProblem(bool deserializing) : base(deserializing) { }
     public DataAnalysisProblem()
       : base() {
       Parameters.Add(new ValueParameter<DataAnalysisProblemData>(DataAnalysisProblemDataParameterName, "The data set, target variable and input variables of the data analysis problem.", new DataAnalysisProblemData()));
       RegisterParameterEvents();
       RegisterParameterValueEvents();
     }
-
-    [StorableConstructor]
-    private DataAnalysisProblem(bool deserializing) : base() { }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserializationHook() {

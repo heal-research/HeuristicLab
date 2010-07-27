@@ -65,6 +65,8 @@ namespace HeuristicLab.Problems.DataAnalysis.MultiVariate.Regression.Symbolic {
     }
     #endregion
 
+    [StorableConstructor]
+    protected MultiObjectiveSymbolicVectorRegressionProblem(bool deserializing) : base(deserializing) { }
     public MultiObjectiveSymbolicVectorRegressionProblem()
       : base() {
       var evaluator = new SymbolicVectorRegressionScaledMseEvaluator();
@@ -74,10 +76,7 @@ namespace HeuristicLab.Problems.DataAnalysis.MultiVariate.Regression.Symbolic {
       ParameterizeEvaluator();
       Initialize();
     }
-
-    [StorableConstructor]
-    private MultiObjectiveSymbolicVectorRegressionProblem(bool deserializing) : base() { }
-
+    
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserializationHook() {
       Initialize();

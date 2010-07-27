@@ -118,7 +118,6 @@ namespace HeuristicLab.Problems.DataAnalysis.MultiVariate.Regression.Symbolic {
       set { FunctionTreeGrammarParameter.Value = value; }
     }
 
-    private List<IOperator> operators;
     public override IEnumerable<IOperator> Operators {
       get { return operators; }
     }
@@ -153,7 +152,11 @@ namespace HeuristicLab.Problems.DataAnalysis.MultiVariate.Regression.Symbolic {
 
     [Storable]
     private SymbolicVectorRegressionGrammar grammar;
+    [Storable]
+    private List<IOperator> operators;
 
+    [StorableConstructor]
+    protected SymbolicVectorRegressionProblem(bool deserializing) : base(deserializing) { }
     public SymbolicVectorRegressionProblem()
       : base() {
       SymbolicExpressionTreeCreator creator = new ProbabilisticTreeCreator();
@@ -174,20 +177,26 @@ namespace HeuristicLab.Problems.DataAnalysis.MultiVariate.Regression.Symbolic {
       ParameterizeSolutionCreator();
       UpdateGrammar();
       UpdateEstimationLimits();
-      Initialize();
+      InitializeOperators();
+      RegisterParameterEvents();
+      RegisterParameterValueEvents();
     }
-
-    [StorableConstructor]
-    private SymbolicVectorRegressionProblem(bool deserializing) : base() { }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserializationHook() {
-      Initialize();
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code (remove with 3.4)
+      if (operators == null) InitializeOperators();
+      #endregion
+      RegisterParameterEvents();
+      RegisterParameterValueEvents();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       SymbolicVectorRegressionProblem clone = (SymbolicVectorRegressionProblem)base.Clone(cloner);
-      clone.Initialize();
+      clone.operators = operators.Select(x => (IOperator)cloner.Clone(x)).ToList();
+      clone.RegisterParameterEvents();
+      clone.RegisterParameterValueEvents();
       return clone;
     }
 
@@ -253,12 +262,6 @@ namespace HeuristicLab.Problems.DataAnalysis.MultiVariate.Regression.Symbolic {
     #region Helpers
     protected void AddOperator(IOperator op) {
       operators.Add(op);
-    }
-
-    private void Initialize() {
-      InitializeOperators();
-      RegisterParameterEvents();
-      RegisterParameterValueEvents();
     }
 
     private void UpdateGrammar() {

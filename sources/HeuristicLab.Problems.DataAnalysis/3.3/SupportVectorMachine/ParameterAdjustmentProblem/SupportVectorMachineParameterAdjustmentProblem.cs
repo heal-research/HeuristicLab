@@ -128,7 +128,7 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine.ParameterAdjus
     private StdDevStrategyVectorManipulator strategyVectorManipulator;
 
     [StorableConstructor]
-    private SupportVectorMachineParameterAdjustmentProblem(bool deserializing) : base() { }
+    private SupportVectorMachineParameterAdjustmentProblem(bool deserializing) : base(deserializing) { }
     public SupportVectorMachineParameterAdjustmentProblem()
       : base() {
       UniformRandomRealVectorCreator creator = new UniformRandomRealVectorCreator();
@@ -215,10 +215,15 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine.ParameterAdjus
 
     #region Helpers
     [StorableHook(HookType.AfterDeserialization)]
-    private void AttachEventHandlers() {
-      // Start BackwardsCompatibility3.3 (remove with 3.4)
+    private void AfterDeserializationHook() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code (remove with 3.4)
       if (operators == null) InitializeOperators();
-      // End BackwardsCompatibility3.3
+      #endregion
+      AttachEventHandlers();
+    }
+
+    private void AttachEventHandlers() {
       SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
       SolutionCreator.RealVectorParameter.ActualNameChanged += new EventHandler(SolutionCreator_RealVectorParameter_ActualNameChanged);
       EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);

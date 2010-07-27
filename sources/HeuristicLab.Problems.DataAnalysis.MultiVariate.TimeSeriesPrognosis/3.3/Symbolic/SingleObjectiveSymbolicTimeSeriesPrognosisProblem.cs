@@ -84,7 +84,8 @@ namespace HeuristicLab.Problems.DataAnalysis.MultiVariate.TimeSeriesPrognosis.Sy
     }
     #endregion
 
-
+    [StorableConstructor]
+    protected SingleObjectiveSymbolicTimeSeriesPrognosisProblem(bool deserializing) : base(deserializing) { }
     public SingleObjectiveSymbolicTimeSeriesPrognosisProblem()
       : base() {
       var evaluator = new SymbolicTimeSeriesPrognosisScaledNormalizedMseEvaluator();
@@ -95,20 +96,18 @@ namespace HeuristicLab.Problems.DataAnalysis.MultiVariate.TimeSeriesPrognosis.Sy
 
       ParameterizeEvaluator();
 
-      Initialize();
+      InitializeOperators();
+      AttachEventHandlers();
     }
-
-    [StorableConstructor]
-    protected SingleObjectiveSymbolicTimeSeriesPrognosisProblem(bool deserializing) : base(deserializing) { }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserializationHook() {
-      Initialize();
+      AttachEventHandlers();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       SingleObjectiveSymbolicTimeSeriesPrognosisProblem clone = (SingleObjectiveSymbolicTimeSeriesPrognosisProblem)base.Clone(cloner);
-      clone.Initialize();
+      clone.AttachEventHandlers();
       return clone;
     }
 
@@ -134,8 +133,7 @@ namespace HeuristicLab.Problems.DataAnalysis.MultiVariate.TimeSeriesPrognosis.Sy
     #endregion
 
     #region Helpers
-    private void Initialize() {
-      InitializeOperators();
+    private void AttachEventHandlers() {
     }
 
     private void InitializeOperators() {

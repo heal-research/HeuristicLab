@@ -130,7 +130,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     private List<IOperator> operators;
 
     [StorableConstructor]
-    private SingleObjectiveTestFunctionProblem(bool deserializing) : base() { }
+    private SingleObjectiveTestFunctionProblem(bool deserializing) : base(deserializing) { }
     public SingleObjectiveTestFunctionProblem()
       : base() {
       UniformRandomRealVectorCreator creator = new UniformRandomRealVectorCreator();
@@ -296,10 +296,15 @@ namespace HeuristicLab.Problems.TestFunctions {
 
     #region Helpers
     [StorableHook(HookType.AfterDeserialization)]
-    private void AttachEventHandlers() {
-      // Start BackwardsCompatibility3.3 (remove with 3.4)
+    private void AfterDeserializationHook() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code (remove with 3.4)
       if (operators == null) InitializeOperators();
-      // End BackwardsCompatibility3.3
+      #endregion
+      AttachEventHandlers();
+    }
+
+    private void AttachEventHandlers() {
       ProblemSizeParameter.ValueChanged += new EventHandler(ProblemSizeParameter_ValueChanged);
       ProblemSize.ValueChanged += new EventHandler(ProblemSize_ValueChanged);
       BoundsParameter.ValueChanged += new EventHandler(BoundsParameter_ValueChanged);

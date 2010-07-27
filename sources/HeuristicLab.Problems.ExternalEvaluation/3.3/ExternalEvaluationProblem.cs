@@ -192,6 +192,10 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
 
     #region Helpers
     [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserializationHook() {
+      AttachEventHandlers();
+    }
+
     private void AttachEventHandlers() {
       SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
       EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);

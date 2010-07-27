@@ -121,7 +121,6 @@ namespace HeuristicLab.Problems.DataAnalysis.MultiVariate.TimeSeriesPrognosis.Sy
       get { return (ISymbolicExpressionGrammar)FunctionTreeGrammarParameter.Value; }
       set { FunctionTreeGrammarParameter.Value = value; }
     }
-    private List<IOperator> operators;
     public override IEnumerable<IOperator> Operators {
       get { return operators; }
     }
@@ -156,7 +155,11 @@ namespace HeuristicLab.Problems.DataAnalysis.MultiVariate.TimeSeriesPrognosis.Sy
 
     [Storable]
     private SymbolicTimeSeriesPrognosisGrammar grammar;
+    [Storable]
+    private List<IOperator> operators;
 
+    [StorableConstructor]
+    protected SymbolicTimeSeriesPrognosisProblem(bool deserializing) : base(deserializing) { }
     public SymbolicTimeSeriesPrognosisProblem()
       : base() {
       SymbolicExpressionTreeCreator creator = new ProbabilisticTreeCreator();
@@ -178,21 +181,27 @@ namespace HeuristicLab.Problems.DataAnalysis.MultiVariate.TimeSeriesPrognosis.Sy
       ParameterizeSolutionCreator();
 
       UpdateGrammar();
-      Initialize();
+      InitializeOperators();
+      RegisterParameterEvents();
+      RegisterParameterValueEvents();
     }
-
-    [StorableConstructor]
-    protected SymbolicTimeSeriesPrognosisProblem(bool deserializing) : base(deserializing) { }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserializationHook() {
-      Initialize();
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code (remove with 3.4)
+      if (operators == null) InitializeOperators();
+      #endregion
+      RegisterParameterEvents();
+      RegisterParameterValueEvents();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       SymbolicTimeSeriesPrognosisProblem clone = (SymbolicTimeSeriesPrognosisProblem)base.Clone(cloner);
+      clone.operators = operators.Select(x => (IOperator)cloner.Clone(x)).ToList();
       clone.grammar = (SymbolicTimeSeriesPrognosisGrammar)cloner.Clone(grammar);
-      clone.Initialize();
+      clone.RegisterParameterEvents();
+      clone.RegisterParameterValueEvents();
       return clone;
     }
 
@@ -252,12 +261,6 @@ namespace HeuristicLab.Problems.DataAnalysis.MultiVariate.TimeSeriesPrognosis.Sy
     #region Helpers
     protected void AddOperator(IOperator op) {
       operators.Add(op);
-    }
-
-    private void Initialize() {
-      InitializeOperators();
-      RegisterParameterEvents();
-      RegisterParameterValueEvents();
     }
 
     private void UpdateGrammar() {
