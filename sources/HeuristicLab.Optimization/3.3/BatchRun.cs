@@ -26,6 +26,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System.Collections.Generic;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
@@ -79,9 +80,17 @@ namespace HeuristicLab.Optimization {
       get { return algorithm; }
       set {
         if (algorithm != value) {
-          if (algorithm != null) DeregisterAlgorithmEvents();
+          if (algorithm != null) {
+            DeregisterAlgorithmEvents();
+            IEnumerable<IRun> runs = algorithm.Runs;
+            algorithm = null; //necessary to avoid removing the runs from the old algorithm
+            Runs.RemoveRange(runs);
+          }
           algorithm = value;
-          if (algorithm != null) RegisterAlgorithmEvents();
+          if (algorithm != null) {
+            RegisterAlgorithmEvents();
+            Runs.AddRange(algorithm.Runs);
+          }
           OnAlgorithmChanged();
           Prepare();
         }
@@ -323,10 +332,13 @@ namespace HeuristicLab.Optimization {
 
     private void RegisterRunsEvents() {
       runs.CollectionReset += new CollectionItemsChangedEventHandler<IRun>(Runs_CollectionReset);
+      runs.ItemsAdded += new CollectionItemsChangedEventHandler<IRun>(Runs_ItemsAdded);
       runs.ItemsRemoved += new CollectionItemsChangedEventHandler<IRun>(Runs_ItemsRemoved);
     }
+
     private void DeregisterRunsEvents() {
       runs.CollectionReset -= new CollectionItemsChangedEventHandler<IRun>(Runs_CollectionReset);
+      runs.ItemsAdded -= new CollectionItemsChangedEventHandler<IRun>(Runs_ItemsAdded);
       runs.ItemsRemoved -= new CollectionItemsChangedEventHandler<IRun>(Runs_ItemsRemoved);
     }
     private void Runs_CollectionReset(object sender, CollectionItemsChangedEventArgs<IRun> e) {
@@ -337,6 +349,14 @@ namespace HeuristicLab.Optimization {
         if (executionTime != null) ExecutionTime -= executionTime.Value;
       }
       if (Algorithm != null) Algorithm.Runs.RemoveRange(e.OldItems);
+      foreach (IRun run in e.Items) {
+        IItem item;
+        run.Results.TryGetValue("Execution Time", out item);
+        TimeSpanValue executionTime = item as TimeSpanValue;
+        if (executionTime != null) ExecutionTime += executionTime.Value;
+      }
+    }
+    private void Runs_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IRun> e) {
       foreach (IRun run in e.Items) {
         IItem item;
         run.Results.TryGetValue("Execution Time", out item);

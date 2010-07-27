@@ -239,9 +239,8 @@ namespace HeuristicLab.Optimization {
       Optimizers.ItemsReplaced -= new CollectionItemsChangedEventHandler<IndexedItem<IOptimizer>>(Optimizers_ItemsReplaced);
     }
     private void Optimizers_CollectionReset(object sender, CollectionItemsChangedEventArgs<IndexedItem<IOptimizer>> e) {
-      foreach (IndexedItem<IOptimizer> item in e.OldItems) {
-        DeregisterOptimizerEvents(item.Value);
-      }
+      foreach (IndexedItem<IOptimizer> item in e.OldItems)
+        RemoveOptimizer(item.Value);
       foreach (IndexedItem<IOptimizer> item in e.Items)
         AddOptimizer(item.Value);
     }
@@ -250,14 +249,12 @@ namespace HeuristicLab.Optimization {
         AddOptimizer(item.Value);
     }
     private void Optimizers_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<IOptimizer>> e) {
-      foreach (IndexedItem<IOptimizer> item in e.Items) {
-        DeregisterOptimizerEvents(item.Value);
-      }
+      foreach (IndexedItem<IOptimizer> item in e.Items)
+        RemoveOptimizer(item.Value);
     }
     private void Optimizers_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<IOptimizer>> e) {
-      foreach (IndexedItem<IOptimizer> item in e.OldItems) {
-        DeregisterOptimizerEvents(item.Value);
-      }
+      foreach (IndexedItem<IOptimizer> item in e.OldItems)
+        RemoveOptimizer(item.Value);
       foreach (IndexedItem<IOptimizer> item in e.Items)
         AddOptimizer(item.Value);
     }
@@ -265,6 +262,10 @@ namespace HeuristicLab.Optimization {
       RegisterOptimizerEvents(optimizer);
       Runs.AddRange(optimizer.Runs);
       optimizer.Prepare();
+    }
+    private void RemoveOptimizer(IOptimizer optimizer) {
+      DeregisterOptimizerEvents(optimizer);
+      Runs.RemoveRange(optimizer.Runs);
     }
 
     private void RegisterOptimizerEvents(IOptimizer optimizer) {
