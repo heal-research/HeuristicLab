@@ -242,16 +242,12 @@ namespace HeuristicLab.Optimization {
       foreach (IndexedItem<IOptimizer> item in e.OldItems) {
         DeregisterOptimizerEvents(item.Value);
       }
-      foreach (IndexedItem<IOptimizer> item in e.Items) {
-        RegisterOptimizerEvents(item.Value);
-        item.Value.Prepare();
-      }
+      foreach (IndexedItem<IOptimizer> item in e.Items)
+        AddOptimizer(item.Value);
     }
     private void Optimizers_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<IOptimizer>> e) {
-      foreach (IndexedItem<IOptimizer> item in e.Items) {
-        RegisterOptimizerEvents(item.Value);
-        item.Value.Prepare();
-      }
+      foreach (IndexedItem<IOptimizer> item in e.Items)
+        AddOptimizer(item.Value);
     }
     private void Optimizers_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<IOptimizer>> e) {
       foreach (IndexedItem<IOptimizer> item in e.Items) {
@@ -262,10 +258,13 @@ namespace HeuristicLab.Optimization {
       foreach (IndexedItem<IOptimizer> item in e.OldItems) {
         DeregisterOptimizerEvents(item.Value);
       }
-      foreach (IndexedItem<IOptimizer> item in e.Items) {
-        RegisterOptimizerEvents(item.Value);
-        item.Value.Prepare();
-      }
+      foreach (IndexedItem<IOptimizer> item in e.Items)
+        AddOptimizer(item.Value);
+    }
+    private void AddOptimizer(IOptimizer optimizer) {
+      RegisterOptimizerEvents(optimizer);
+      Runs.AddRange(optimizer.Runs);
+      optimizer.Prepare();
     }
 
     private void RegisterOptimizerEvents(IOptimizer optimizer) {
