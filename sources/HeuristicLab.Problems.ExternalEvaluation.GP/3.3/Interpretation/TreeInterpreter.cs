@@ -253,7 +253,9 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
           }
         case OpCodes.Variable: {
             var variableTreeNode = currentInstr.dynamicNode as VariableTreeNode;
-            return variables[variableTreeNode.VariableName] * variableTreeNode.Weight;
+            if (variables.ContainsKey(variableTreeNode.VariableName))
+              return variables[variableTreeNode.VariableName] * variableTreeNode.Weight;
+            else return -1.0 * variableTreeNode.Weight;
           }
         case OpCodes.Constant: {
             var constTreeNode = currentInstr.dynamicNode as ConstantTreeNode;

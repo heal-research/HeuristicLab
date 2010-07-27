@@ -107,6 +107,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="HeuristicLabProblemsExternalEvaluationViewsPlugin.cs.frame" />
     <Compile Include="EvaluationServiceClientView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -138,6 +139,10 @@
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
       <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
       <Name>HeuristicLab.Collections-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Common.Resources\3.3\HeuristicLab.Common.Resources-3.3.csproj">
+      <Project>{0E27A536-1C4A-4624-A65E-DC4F4F23E3E1}</Project>
+      <Name>HeuristicLab.Common.Resources-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Common\3.3\HeuristicLab.Common-3.3.csproj">
       <Project>{A9AD58B9-3EF9-4CC1-97E5-8D909039FF5C}</Project>
@@ -172,14 +177,8 @@
     <None Include="HeuristicLab.snk" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="EvaluationProcessChannelView.resx">
-      <DependentUpon>EvaluationProcessChannelView.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="EvaluationServiceClientView.resx">
       <DependentUpon>EvaluationServiceClientView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="EvaluationTCPChannelView.resx">
-      <DependentUpon>EvaluationTCPChannelView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SolutionMessageBuilderView.resx">
       <DependentUpon>SolutionMessageBuilderView.cs</DependentUpon>
@@ -203,6 +202,15 @@
     </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+set ProjectDir=$(ProjectDir)
+set SolutionDir=$(SolutionDir)
+set Outdir=$(Outdir)
+
+call PreBuildEvent.cmd
+SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabProblemsExternalEvaluationViewsPlugin.cs.frame" "%25ProjectDir%25\HeuristicLabProblemsExternalEvaluationViewsPlugin.cs"</PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

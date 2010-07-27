@@ -83,6 +83,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab-3.3", "Heurist
 		{BB994448-2B21-4564-BB2E-38D8FFF8CF18} = {BB994448-2B21-4564-BB2E-38D8FFF8CF18}
 		{C49CB749-8B24-4628-8003-E86475749410} = {C49CB749-8B24-4628-8003-E86475749410}
 		{BB6D334A-4BB6-4674-9883-31A6EBB32CAB} = {BB6D334A-4BB6-4674-9883-31A6EBB32CAB}
+		{1778134B-866B-4CB3-BFC0-52B2FAAA5777} = {1778134B-866B-4CB3-BFC0-52B2FAAA5777}
 		{A51DA44F-CB35-4F6F-99F5-2A2E904AB93B} = {A51DA44F-CB35-4F6F-99F5-2A2E904AB93B}
 		{2C36CD4F-E5F5-43A4-801A-201EA895FE17} = {2C36CD4F-E5F5-43A4-801A-201EA895FE17}
 		{6024D74F-E29C-4E6B-843E-8851831B8E14} = {6024D74F-E29C-4E6B-843E-8851831B8E14}
@@ -324,6 +325,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.DataAnalysis.MultiVariate.TimeSeriesPrognosis-3.3", "HeuristicLab.Problems.DataAnalysis.MultiVariate.TimeSeriesPrognosis\3.3\HeuristicLab.Problems.DataAnalysis.MultiVariate.TimeSeriesPrognosis-3.3.csproj", "{B3310CE1-0C05-410F-BA77-8DAD6CE3F803}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.DataAnalysis.MultiVariate.TimeSeriesPrognosis.Views-3.3", "HeuristicLab.Problems.DataAnalysis.MultiVariate.TimeSeriesPrognosis.Views\3.3\HeuristicLab.Problems.DataAnalysis.MultiVariate.TimeSeriesPrognosis.Views-3.3.csproj", "{C60DF094-ABC1-4313-AD82-E2EAD3FC8DF7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.ExternalEvaluation.GP.Views-3.3", "HeuristicLab.Problems.ExternalEvaluation.GP.Views\3.3\HeuristicLab.Problems.ExternalEvaluation.GP.Views-3.3.csproj", "{1778134B-866B-4CB3-BFC0-52B2FAAA5777}"
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
@@ -1907,12 +1910,17 @@ Global
 		{DD01ED24-3750-4567-9A23-1DB676A15610}.Silverlight2|x64.ActiveCfg = Silverlight2|Any CPU
 		{DD01ED24-3750-4567-9A23-1DB676A15610}.Silverlight2|x86.ActiveCfg = Silverlight2|Any CPU
 		{250ADE34-82FD-4BAE-86D5-985FBE589C4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{250ADE34-82FD-4BAE-86D5-985FBE589C4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{250ADE34-82FD-4BAE-86D5-985FBE589C4A}.Debug|x64.ActiveCfg = Debug|x64
+		{250ADE34-82FD-4BAE-86D5-985FBE589C4A}.Debug|x64.Build.0 = Debug|x64
 		{250ADE34-82FD-4BAE-86D5-985FBE589C4A}.Debug|x86.ActiveCfg = Debug|x86
 		{250ADE34-82FD-4BAE-86D5-985FBE589C4A}.Debug|x86.Build.0 = Debug|x86
 		{250ADE34-82FD-4BAE-86D5-985FBE589C4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{250ADE34-82FD-4BAE-86D5-985FBE589C4A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{250ADE34-82FD-4BAE-86D5-985FBE589C4A}.Release|x64.ActiveCfg = Release|x64
+		{250ADE34-82FD-4BAE-86D5-985FBE589C4A}.Release|x64.Build.0 = Release|x64
 		{250ADE34-82FD-4BAE-86D5-985FBE589C4A}.Release|x86.ActiveCfg = Release|x86
+		{250ADE34-82FD-4BAE-86D5-985FBE589C4A}.Release|x86.Build.0 = Release|x86
 		{250ADE34-82FD-4BAE-86D5-985FBE589C4A}.Services|Any CPU.ActiveCfg = Silverlight2|Any CPU
 		{250ADE34-82FD-4BAE-86D5-985FBE589C4A}.Services|Any CPU.Build.0 = Silverlight2|Any CPU
 		{250ADE34-82FD-4BAE-86D5-985FBE589C4A}.Services|x64.ActiveCfg = Silverlight2|Any CPU
@@ -2192,6 +2200,26 @@ Global
 		{C60DF094-ABC1-4313-AD82-E2EAD3FC8DF7}.Silverlight2|x64.ActiveCfg = Release|x86
 		{C60DF094-ABC1-4313-AD82-E2EAD3FC8DF7}.Silverlight2|x86.ActiveCfg = Release|x86
 		{C60DF094-ABC1-4313-AD82-E2EAD3FC8DF7}.Silverlight2|x86.Build.0 = Release|x86
+		{1778134B-866B-4CB3-BFC0-52B2FAAA5777}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1778134B-866B-4CB3-BFC0-52B2FAAA5777}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1778134B-866B-4CB3-BFC0-52B2FAAA5777}.Debug|x64.ActiveCfg = Debug|x64
+		{1778134B-866B-4CB3-BFC0-52B2FAAA5777}.Debug|x64.Build.0 = Debug|x64
+		{1778134B-866B-4CB3-BFC0-52B2FAAA5777}.Debug|x86.ActiveCfg = Debug|x86
+		{1778134B-866B-4CB3-BFC0-52B2FAAA5777}.Debug|x86.Build.0 = Debug|x86
+		{1778134B-866B-4CB3-BFC0-52B2FAAA5777}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1778134B-866B-4CB3-BFC0-52B2FAAA5777}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1778134B-866B-4CB3-BFC0-52B2FAAA5777}.Release|x64.ActiveCfg = Release|x64
+		{1778134B-866B-4CB3-BFC0-52B2FAAA5777}.Release|x64.Build.0 = Release|x64
+		{1778134B-866B-4CB3-BFC0-52B2FAAA5777}.Release|x86.ActiveCfg = Release|x86
+		{1778134B-866B-4CB3-BFC0-52B2FAAA5777}.Release|x86.Build.0 = Release|x86
+		{1778134B-866B-4CB3-BFC0-52B2FAAA5777}.Services|Any CPU.ActiveCfg = Release|x64
+		{1778134B-866B-4CB3-BFC0-52B2FAAA5777}.Services|x64.ActiveCfg = Release|x64
+		{1778134B-866B-4CB3-BFC0-52B2FAAA5777}.Services|x64.Build.0 = Release|x64
+		{1778134B-866B-4CB3-BFC0-52B2FAAA5777}.Services|x86.ActiveCfg = Release|x64
+		{1778134B-866B-4CB3-BFC0-52B2FAAA5777}.Silverlight2|Any CPU.ActiveCfg = Release|x64
+		{1778134B-866B-4CB3-BFC0-52B2FAAA5777}.Silverlight2|x64.ActiveCfg = Release|x64
+		{1778134B-866B-4CB3-BFC0-52B2FAAA5777}.Silverlight2|x64.Build.0 = Release|x64
+		{1778134B-866B-4CB3-BFC0-52B2FAAA5777}.Silverlight2|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

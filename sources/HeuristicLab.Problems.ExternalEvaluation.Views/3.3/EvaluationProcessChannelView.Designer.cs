@@ -44,6 +44,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EvaluationProcessChannelView));
       this.executableTextBox = new System.Windows.Forms.TextBox();
       this.browseExecutableButton = new System.Windows.Forms.Button();
       this.argumentsTextBox = new System.Windows.Forms.TextBox();
@@ -72,17 +73,17 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
       this.executableTextBox.Location = new System.Drawing.Point(72, 59);
       this.executableTextBox.Name = "executableTextBox";
       this.executableTextBox.ReadOnly = true;
-      this.executableTextBox.Size = new System.Drawing.Size(243, 20);
+      this.executableTextBox.Size = new System.Drawing.Size(284, 20);
       this.executableTextBox.TabIndex = 4;
       // 
       // browseExecutableButton
       // 
+      this.browseExecutableButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Open;
       this.browseExecutableButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.browseExecutableButton.Location = new System.Drawing.Point(321, 57);
+      this.browseExecutableButton.Location = new System.Drawing.Point(362, 57);
       this.browseExecutableButton.Name = "browseExecutableButton";
-      this.browseExecutableButton.Size = new System.Drawing.Size(67, 23);
+      this.browseExecutableButton.Size = new System.Drawing.Size(26, 23);
       this.browseExecutableButton.TabIndex = 5;
-      this.browseExecutableButton.Text = "Browse...";
       this.browseExecutableButton.UseVisualStyleBackColor = true;
       this.browseExecutableButton.Click += new System.EventHandler(this.browseExecutableButton_Click);
       // 
@@ -92,7 +93,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.argumentsTextBox.Location = new System.Drawing.Point(72, 85);
       this.argumentsTextBox.Name = "argumentsTextBox";
-      this.argumentsTextBox.Size = new System.Drawing.Size(243, 20);
+      this.argumentsTextBox.Size = new System.Drawing.Size(284, 20);
       this.argumentsTextBox.TabIndex = 6;
       this.argumentsTextBox.Validated += new System.EventHandler(this.argumentsTextBox_Validated);
       // 
@@ -121,42 +122,42 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
       // 
       // startButton
       // 
+      this.startButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Play;
       this.startButton.Location = new System.Drawing.Point(72, 111);
       this.startButton.Name = "startButton";
-      this.startButton.Size = new System.Drawing.Size(75, 23);
+      this.startButton.Size = new System.Drawing.Size(26, 23);
       this.startButton.TabIndex = 8;
-      this.startButton.Text = "Launch";
       this.startButton.UseVisualStyleBackColor = true;
       this.startButton.Click += new System.EventHandler(this.startButton_Click);
       // 
       // terminateButton
       // 
+      this.terminateButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Stop;
       this.terminateButton.Enabled = false;
-      this.terminateButton.Location = new System.Drawing.Point(153, 111);
+      this.terminateButton.Location = new System.Drawing.Point(104, 111);
       this.terminateButton.Name = "terminateButton";
-      this.terminateButton.Size = new System.Drawing.Size(75, 23);
+      this.terminateButton.Size = new System.Drawing.Size(26, 23);
       this.terminateButton.TabIndex = 8;
-      this.terminateButton.Text = "Terminate";
       this.terminateButton.UseVisualStyleBackColor = true;
       this.terminateButton.Click += new System.EventHandler(this.terminateButton_Click);
       // 
-      // ExternalEvaluationProcessDriverView
+      // EvaluationProcessChannelView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.executableTextBox);
       this.Controls.Add(this.argumentsLabel);
       this.Controls.Add(this.argumentsTextBox);
-      this.Controls.Add(this.browseExecutableButton);
       this.Controls.Add(this.startButton);
       this.Controls.Add(this.executableLabel);
+      this.Controls.Add(this.browseExecutableButton);
       this.Controls.Add(this.terminateButton);
-      this.Name = "ExternalEvaluationProcessDriverView";
+      this.Name = "EvaluationProcessChannelView";
       this.Size = new System.Drawing.Size(391, 139);
       this.Controls.SetChildIndex(this.terminateButton, 0);
+      this.Controls.SetChildIndex(this.browseExecutableButton, 0);
       this.Controls.SetChildIndex(this.executableLabel, 0);
       this.Controls.SetChildIndex(this.startButton, 0);
-      this.Controls.SetChildIndex(this.browseExecutableButton, 0);
       this.Controls.SetChildIndex(this.argumentsTextBox, 0);
       this.Controls.SetChildIndex(this.argumentsLabel, 0);
       this.Controls.SetChildIndex(this.executableTextBox, 0);

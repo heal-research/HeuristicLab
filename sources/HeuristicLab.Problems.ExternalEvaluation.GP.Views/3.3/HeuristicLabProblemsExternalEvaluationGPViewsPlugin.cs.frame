@@ -19,19 +19,22 @@
  */
 #endregion
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Problems.ExternalEvaluation.Views {
-  [Plugin("HeuristicLab.Problems.ExternalEvaluation.Views", "3.3.0.4108")]
-  [PluginFile("HeuristicLab.Problems.ExternalEvaluation.Views-3.3.dll", PluginFileType.Assembly)]
+namespace HeuristicLab.Problems.ExternalEvaluation.GP.Views {
+  [Plugin("HeuristicLab.Problems.ExternalEvaluation.GP.Views", "3.3.0.$WCREV$")]
+  [PluginFile("HeuristicLab.Problems.ExternalEvaluation.GP.Views-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
-  [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
   [PluginDependency("HeuristicLab.Core.Views", "3.3")]
   [PluginDependency("HeuristicLab.MainForm", "3.3")]
   [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.3")]
   [PluginDependency("HeuristicLab.Problems.ExternalEvaluation", "3.3")]
-  public class HeuristicLabProblemsExternalEvaluationViewsPlugin : PluginBase {
-  }
+  [PluginDependency("HeuristicLab.Encodings.SymbolicExpressionTreeEncoding", "3.3")]
+  public class HeuristicLabProblemsExternalEvaluationGPViewsPlugin : PluginBase { }
 }
