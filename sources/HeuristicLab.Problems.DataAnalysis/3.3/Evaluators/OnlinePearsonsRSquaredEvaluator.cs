@@ -24,30 +24,14 @@ using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis.Evaluators {
   public class OnlinePearsonsRSquaredEvaluator : IOnlineEvaluator {
-
-    private double sum_sq_x;
-    private double sum_sq_y;
-    private double sum_coproduct;
-    private double mean_x;
-    private double mean_y;
-    private int n;
+    private OnlineCovarianceEvaluator covEvaluator = new OnlineCovarianceEvaluator();
+    private OnlineMeanAndVarianceCalculator sxEvaluator = new OnlineMeanAndVarianceCalculator();
+    private OnlineMeanAndVarianceCalculator syEvaluator = new OnlineMeanAndVarianceCalculator();
 
     public double RSquared {
       get {
-        if (n < 1)
-          throw new InvalidOperationException("No elements");
-        else {
-          double pop_sd_x = Math.Sqrt(sum_sq_x / n);
-          double pop_sd_y = Math.Sqrt(sum_sq_y / n);
-          double cov_x_y = sum_coproduct / n;
-
-          if (pop_sd_x.IsAlmost(0.0) || pop_sd_y.IsAlmost(0.0))
-            return 0.0;
-          else {
-            double r = cov_x_y / (pop_sd_x * pop_sd_y);
-            return r * r;
-          }
-        }
+        double r = covEvaluator.Covariance / (Math.Sqrt(sxEvaluator.PopulationVariance) * Math.Sqrt(syEvaluator.PopulationVariance));
+        return r * r;
       }
     }
 
@@ -58,34 +42,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Evaluators {
       get { return RSquared; }
     }
     public void Reset() {
-      sum_sq_x = 0.0;
-      sum_sq_y = 0.0;
-      sum_coproduct = 0.0;
-      mean_x = 0.0;
-      mean_y = 0.0;
-      n = 0;
+      covEvaluator.Reset();
+      sxEvaluator.Reset();
+      syEvaluator.Reset();
     }
 
-    public void Add(double original, double estimated) {
-      // stable and iterative calculation of R²
-      if (IsInvalidValue(original) || IsInvalidValue(estimated)) {
+    public void Add(double x, double y) {
+      if (IsInvalidValue(x) || IsInvalidValue(y)) {
         throw new ArgumentException("R² is not defined for variables with NaN or infinity values.");
       }
-      if (n == 0) {
-        mean_x = original;
-        mean_y = estimated;
-        n = 1;
-      } else {
-        double sweep = (n - 1.0) / n;
-        double delta_x = original - mean_x;
-        double delta_y = estimated - mean_y;
-        sum_sq_x += delta_x * delta_x * sweep;
-        sum_sq_y += delta_y * delta_y * sweep;
-        sum_coproduct += delta_x * delta_y * sweep;
-        mean_x += delta_x / n;
-        mean_y += delta_y / n;
-        n++;
-      }
+      covEvaluator.Add(x, y);
+      sxEvaluator.Add(x);
+      syEvaluator.Add(y);
     }
 
     #endregion

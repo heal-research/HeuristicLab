@@ -33,6 +33,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Evaluators {
       }
     }
 
+    public double PopulationVariance {
+      get {
+        return (n > 0) ? m_newS / n : 0.0;
+      }
+    }
+
     public double Mean {
       get {
         return (n > 0) ? m_newM : 0.0;
