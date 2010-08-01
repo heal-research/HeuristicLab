@@ -28,6 +28,7 @@ using HeuristicLab.Data;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Optimization;
+using System;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [Content(typeof(RunCollection), false)]
@@ -78,46 +79,114 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       DoubleMatrix matrix = null;
       if (Content != null) {
         List<IRun> runsWithVariables = Content.Where(r => r.Results.ContainsKey(variableImpactResultName)).ToList();
-        IEnumerable<DoubleMatrix> variableImpacts = (from run in runsWithVariables
-                                                     select run.Results[variableImpactResultName]).Cast<DoubleMatrix>();
-        List<string> variableNames = (from varImpact in variableImpacts
-                                      from variableName in varImpact.RowNames
-                                      select variableName).Distinct().ToList();
-        List<string> statictics = new List<string> { "Mean", "Median", "StdDev", "pValue Mean<0", "pValue Median<0" };
+        IEnumerable<DoubleMatrix> allVariableImpacts = (from run in runsWithVariables
+                                                        select run.Results[variableImpactResultName]).Cast<DoubleMatrix>();
+        IEnumerable<string> variableNames = (from variableImpact in allVariableImpacts
+                                             from variableName in variableImpact.RowNames
+                                             select variableName)
+                                            .Distinct();
+        // filter variableNames: only include names that have at least one non-zero value in a run
+        List<string> variableNamesList = (from variableName in variableNames
+                                          where GetVariableImpacts(variableName, allVariableImpacts).Any(x => !x.IsAlmost(0.0))
+                                          select variableName)
+                                         .ToList();
+
+        List<string> statictics = new List<string> { "Median Rank", "pValue", "Mean", "StdDev", };
         List<string> columnNames = runsWithVariables.Select(r => r.Name).ToList();
         columnNames.AddRange(statictics);
         int runs = runsWithVariables.Count();
 
-        matrix = new DoubleMatrix(variableNames.Count, runs + statictics.Count);
+        matrix = new DoubleMatrix(variableNamesList.Count, runs + statictics.Count);
         matrix.SortableView = true;
-        matrix.RowNames = variableNames;
+        matrix.RowNames = variableNamesList;
         matrix.ColumnNames = columnNames;
 
         for (int i = 0; i < runsWithVariables.Count; i++) {
           IRun run = runsWithVariables[i];
           DoubleMatrix runVariableImpacts = (DoubleMatrix)run.Results[variableImpactResultName];
           for (int j = 0; j < runVariableImpacts.Rows; j++) {
-            int rowIndex = variableNames.FindIndex(s => s == runVariableImpacts.RowNames.ElementAt(j));
-            matrix[rowIndex, i] = runVariableImpacts[j, 0];
+            int rowIndex = variableNamesList.FindIndex(s => s == runVariableImpacts.RowNames.ElementAt(j));
+            if (rowIndex > -1) {
+              matrix[rowIndex, i] = runVariableImpacts[j, 0];
+            }
           }
         }
 
-        for (int variableIndex = 0; variableIndex < matrix.Rows; variableIndex++) {
-          List<double> impacts = new List<double>();
-          for (int runIndex = 0; runIndex < runs; runIndex++)
-            impacts.Add(matrix[variableIndex, runIndex]);
-          matrix[variableIndex, runs] = impacts.Average();
-          matrix[variableIndex, runs + 1] = impacts.Median();
-          matrix[variableIndex, runs + 2] = impacts.StandardDeviation();
-          double leftTail = 0; double rightTail = 0; double bothTails = 0;
-          double[] impactsArray = impacts.ToArray();
-          studentttests.studentttest1(ref impactsArray, impactsArray.Length, 0, ref bothTails, ref leftTail, ref rightTail);
-          matrix[variableIndex, runs + 3] = rightTail;
-          wsr.wilcoxonsignedranktest(impactsArray, impactsArray.Length, 0, ref bothTails, ref leftTail, ref rightTail);
-          matrix[variableIndex, runs + 4] = rightTail;
+        List<List<double>> variableImpactsOverRuns = (from variableName in variableNamesList
+                                                      select GetVariableImpacts(variableName, allVariableImpacts).ToList())
+                                                     .ToList();
+        List<List<double>> variableRanks = (from variableName in variableNamesList
+                                            select GetVariableImpactRanks(variableName, allVariableImpacts).ToList())
+                                        .ToList();
+        if (variableImpactsOverRuns.Count() > 0) {
+          // reference median is the worst median rank
+          double referenceMedian = (from impacts in variableRanks
+                                    let med = impacts.Median()
+                                    orderby med
+                                    select med)
+                                           .Last();
+          // for all variables
+          for (int row = 0; row < variableImpactsOverRuns.Count; row++) {
+            matrix[row, runs] = variableRanks[row].Median();
+
+            // check if the median of the ranks is significantly different to the reference median rank
+            double leftTail = 0; double rightTail = 0; double bothTails = 0;
+            double[] ranksArray = variableRanks[row].ToArray();
+
+            // wilcoxon signed rank test is used because the ranks of two variables in a single run are not independent
+            alglib.wsr.wilcoxonsignedranktest(ranksArray, ranksArray.Length, referenceMedian, ref bothTails, ref leftTail, ref rightTail);
+            matrix[row, runs + 1] = bothTails;
+
+            // also show mean and std.dev. of relative variable impacts to indicate the relative difference in impacts of variables
+            matrix[row, runs + 2] = variableImpactsOverRuns[row].Average();
+            matrix[row, runs + 3] = variableImpactsOverRuns[row].StandardDeviation();
+
+          }
         }
       }
       return matrix;
     }
+
+    private IEnumerable<double> GetVariableImpactRanks(string variableName, IEnumerable<DoubleMatrix> allVariableImpacts) {
+      foreach (DoubleMatrix runVariableImpacts in allVariableImpacts) {
+        // certainly not yet very efficient because ranks are computed multiple times for the same run
+        string[] variableNames = runVariableImpacts.RowNames.ToArray();
+        double[] values = (from row in Enumerable.Range(0, runVariableImpacts.Rows)
+                           select runVariableImpacts[row, 0] * -1)
+                          .ToArray();
+        Array.Sort(values, variableNames);
+        // calculate ranks
+        double[] ranks = new double[values.Length];
+        // check for tied ranks
+        int i = 0;
+        while (i < values.Length) {
+          ranks[i] = i + 1;
+          int j = i + 1;
+          while (j < values.Length && values[i].IsAlmost(values[j])) {
+            ranks[j] = ranks[i];
+            j++;
+          }
+          i = j;
+        }
+        int rankIndex = 0;
+        foreach (string rowVariableName in variableNames) {
+          if (rowVariableName == variableName)
+            yield return ranks[rankIndex];
+          rankIndex++;
+        }
+      }
+    }
+
+    private IEnumerable<double> GetVariableImpacts(string variableName, IEnumerable<DoubleMatrix> allVariableImpacts) {
+      foreach (DoubleMatrix runVariableImpacts in allVariableImpacts) {
+        int row = 0;
+        foreach (string rowName in runVariableImpacts.RowNames) {
+          if (rowName == variableName)
+            yield return runVariableImpacts[row, 0];
+          row++;
+        }
+      }
+    }
+
   }
 }
