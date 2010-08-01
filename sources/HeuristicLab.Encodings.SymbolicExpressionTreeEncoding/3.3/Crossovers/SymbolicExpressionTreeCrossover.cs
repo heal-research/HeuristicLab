@@ -65,13 +65,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Crossovers {
 
       IRandom random = RandomParameter.ActualValue;
 
-      // randomly swap parents to remove a possible bias from selection (e.g. when using gender-specific selection)
-      if (random.NextDouble() < 0.5) {
-        var tmp = parent0;
-        parent0 = parent1;
-        parent1 = tmp;
-      }
-
       bool success;
       SymbolicExpressionTree result = Cross(random, parent0, parent1,
         MaxTreeSizeParameter.ActualValue, MaxTreeHeightParameter.ActualValue, out success);
