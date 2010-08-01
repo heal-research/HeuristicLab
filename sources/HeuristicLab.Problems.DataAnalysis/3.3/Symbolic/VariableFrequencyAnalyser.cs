@@ -83,7 +83,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     public static IEnumerable<KeyValuePair<string, double>> CalculateVariableFrequencies(IEnumerable<SymbolicExpressionTree> trees, IEnumerable<string> inputVariables) {
-      int totalVariableReferences = 0;
       Dictionary<string, double> variableReferencesSum = new Dictionary<string, double>();
       Dictionary<string, double> variableFrequencies = new Dictionary<string, double>();
       foreach (var inputVariable in inputVariables)
@@ -93,35 +92,25 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         foreach (var pair in variableReferences) {
           variableReferencesSum[pair.Key] += pair.Value;
         }
-        totalVariableReferences += GetTotalVariableReferencesCount(tree);
       }
+      double totalVariableReferences = variableReferencesSum.Values.Sum();
       foreach (string inputVariable in inputVariables) {
-        double relFreq = variableReferencesSum[inputVariable] / (double)totalVariableReferences;
+        double relFreq = variableReferencesSum[inputVariable] / totalVariableReferences;
         variableFrequencies.Add(inputVariable, relFreq);
       }
       return variableFrequencies;
     }
 
-    private static int GetTotalVariableReferencesCount(SymbolicExpressionTree tree) {
-      return tree.IterateNodesPrefix().OfType<VariableTreeNode>().Count();
-    }
-
     private static IEnumerable<KeyValuePair<string, int>> GetVariableReferenceCount(SymbolicExpressionTree tree, IEnumerable<string> inputVariables) {
       Dictionary<string, int> references = new Dictionary<string, int>();
-      var groupedFuns = (from node in tree.IterateNodesPrefix().OfType<VariableTreeNode>()
-                         select node.VariableName)
-                         .GroupBy(x => x)
-                         .Select(g => new { Key = g.Key, Count = g.Count() })
-                         .ToArray();
+      var variableNames = from node in tree.IterateNodesPrefix().OfType<VariableTreeNode>()
+                          select node.VariableName;
 
-      foreach (var inputVariable in inputVariables) {
-        var matchingFuns = from g in groupedFuns
-                           where g.Key == inputVariable
-                           select g.Count;
-        if (matchingFuns.Count() == 0)
-          references.Add(inputVariable, 0);
-        else {
-          references.Add(inputVariable, matchingFuns.Single());
+      foreach (var variableName in variableNames) {
+        if (!references.ContainsKey(variableName)) {
+          references[variableName] = 1;
+        } else {
+          references[variableName] += 1;
         }
       }
       return references;

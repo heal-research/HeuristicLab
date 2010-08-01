@@ -123,15 +123,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
         int rowIndex = 0;
         foreach (var dataRow in variableFrequencies.Rows) {
           string variableName = dataRow.Name;
-          double integral = 0;
-          if (dataRow.Values.Count > 1) {
-            double baseline = dataRow.Values.First();
-            integral = (from value in dataRow.Values
-                        select value - baseline)
-                              .Sum();
-            integral /= dataRow.Values.Count;
-          }
-          impacts[rowIndex++, 0] = integral;
+          impacts[rowIndex++, 0] = dataRow.Values.Average();
         }
         return impacts;
       } else return new DoubleMatrix(1, 1);
