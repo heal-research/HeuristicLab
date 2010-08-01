@@ -30,8 +30,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Evaluators {
 
     public double RSquared {
       get {
-        double r = covEvaluator.Covariance / (Math.Sqrt(sxEvaluator.PopulationVariance) * Math.Sqrt(syEvaluator.PopulationVariance));
-        return r * r;
+        double xVar = sxEvaluator.PopulationVariance;
+        double yVar = syEvaluator.PopulationVariance;
+        if (xVar.IsAlmost(0.0) || yVar.IsAlmost(0.0)) {
+          return 0.0;
+        } else {
+          double r = covEvaluator.Covariance / (Math.Sqrt(xVar) * Math.Sqrt(yVar));
+          return r * r;
+        }
       }
     }
 
