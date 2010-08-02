@@ -32,7 +32,7 @@ using HeuristicLab.Problems.DataAnalysis.Symbolic;
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [Item("SymbolicRegressionPearsonsRSquaredEvaluator", "Calculates the pearson r² correlation coefficient of a symbolic regression solution.")]
   [StorableClass]
-  public class SymbolicRegressionPearsonsRSquaredEvaluator : SymbolicRegressionEvaluator {
+  public class SymbolicRegressionPearsonsRSquaredEvaluator : SingleObjectiveSymbolicRegressionEvaluator {
     private const string UpperEstimationLimitParameterName = "UpperEstimationLimit";
     private const string LowerEstimationLimitParameterName = "LowerEstimationLimit";
 

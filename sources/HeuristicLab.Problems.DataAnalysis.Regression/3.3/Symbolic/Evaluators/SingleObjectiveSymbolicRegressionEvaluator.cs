@@ -30,9 +30,9 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
-  [Item("SymbolicRegressionEvaluator", "Evaluates a symbolic regression solution.")]
+  [Item("SingleObjectiveSymbolicRegressionEvaluator", "Evaluates a symbolic regression solution.")]
   [StorableClass]
-  public abstract class SymbolicRegressionEvaluator : SingleSuccessorOperator, ISymbolicRegressionEvaluator {
+  public abstract class SingleObjectiveSymbolicRegressionEvaluator : SingleSuccessorOperator, ISymbolicRegressionEvaluator {
     private const string RandomParameterName = "Random";
     private const string QualityParameterName = "Quality";
     private const string SymbolicExpressionTreeInterpreterParameterName = "SymbolicExpressionTreeInterpreter";
@@ -101,7 +101,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
     #endregion
 
-    public SymbolicRegressionEvaluator()
+    public SingleObjectiveSymbolicRegressionEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>(RandomParameterName, "The random generator to use."));
       Parameters.Add(new LookupParameter<DoubleValue>(QualityParameterName, "The quality of the evaluated symbolic regression solution."));
@@ -114,7 +114,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
 
     [StorableConstructor]
-    protected SymbolicRegressionEvaluator(bool deserializing) : base(deserializing) { }
+    protected SingleObjectiveSymbolicRegressionEvaluator(bool deserializing) : base(deserializing) { }
     [StorableHook(Persistence.Default.CompositeSerializers.Storable.HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       if (!Parameters.ContainsKey(RelativeNumberOfEvaluatedSamplesParameterName))
@@ -133,7 +133,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
 
 
-    private static IEnumerable<int> GenerateRowsToEvaluate(uint seed, double relativeAmount, int start, int end) {
+    internal static IEnumerable<int> GenerateRowsToEvaluate(uint seed, double relativeAmount, int start, int end) {
       if (end < start) throw new ArgumentException("Start value is larger than end value.");
       int count = (int)((end - start) * relativeAmount);
       if (count == 0) count = 1;

@@ -128,22 +128,21 @@
     <Compile Include="Symbolic\Analyzers\SymbolicRegressionTournamentPruning.cs" />
     <Compile Include="Symbolic\Analyzers\SymbolicRegressionVariableFrequencyAnalyzer.cs" />
     <Compile Include="Symbolic\Analyzers\ValidationBestScaledSymbolicRegressionSolutionAnalyzer.cs" />
-    <Compile Include="Symbolic\SymbolicRegressionPearsonsRSquaredEvaluator.cs" />
-    <Compile Include="Symbolic\SymbolicRegressionScaledMeanAndVarianceSquaredErrorEvaluator.cs" />
+    <Compile Include="Symbolic\Evaluators\MultiObjectiveSymbolicRegressionEvaluator.cs" />
+    <Compile Include="Symbolic\Evaluators\MultiObjectiveSymbolicRegressionPearsonsRSquaredEvaluator.cs" />
+    <Compile Include="Symbolic\Evaluators\SingleObjectiveSymbolicRegressionEvaluator.cs" />
+    <Compile Include="Symbolic\Evaluators\SymbolicRegressionMeanSquaredErrorEvaluator.cs" />
+    <Compile Include="Symbolic\Evaluators\SymbolicRegressionPearsonsRSquaredEvaluator.cs" />
+    <Compile Include="Symbolic\Evaluators\SymbolicRegressionScaledMeanAndVarianceSquaredErrorEvaluator.cs" />
+    <Compile Include="Symbolic\Evaluators\SymbolicRegressionScaledMeanSquaredErrorEvaluator.cs" />
+    <Compile Include="Symbolic\Interfaces\IMultiObjectiveSymbolicRegressionEvaluator.cs" />
+    <Compile Include="Symbolic\Interfaces\ISymbolicRegressionEvaluator.cs" />
+    <Compile Include="Symbolic\SymbolicRegressionProblem.cs" />
+    <Compile Include="Symbolic\MultiObjectiveSymbolicRegressionProblem.cs" />
     <Compile Include="Symbolic\SimpleSymbolicRegressionEvaluator.cs" />
-    <Compile Include="Symbolic\SymbolicRegressionScaledMeanSquaredErrorEvaluator.cs" />
     <Compile Include="Symbolic\SymbolicRegressionSolution.cs" />
     <Compile Include="Symbolic\SymbolicRegressionModel.cs" />
-    <Compile Include="Symbolic\ISymbolicRegressionEvaluator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Symbolic\SymbolicRegressionEvaluator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Symbolic\SymbolicRegressionMeanSquaredErrorEvaluator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Symbolic\SymbolicRegressionProblem.cs">
+    <Compile Include="Symbolic\SymbolicRegressionProblemBase.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -250,6 +249,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

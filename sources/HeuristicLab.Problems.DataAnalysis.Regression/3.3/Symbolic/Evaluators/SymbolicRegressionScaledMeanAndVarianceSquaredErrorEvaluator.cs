@@ -36,8 +36,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   public class SymbolicRegressionScaledMeanAndVarianceSquaredErrorEvaluator : SymbolicRegressionMeanSquaredErrorEvaluator {
     private const string QualityVarianceParameterName = "QualityVariance";
     private const string QualitySamplesParameterName = "QualitySamples";
+    private const string DecompositionBiasParameterName = "QualityDecompositionBias";
+    private const string DecompositionVarianceParameterName = "QualityDecompositionVariance";
+    private const string DecompositionCovarianceParameterName = "QualityDecompositionCovariance";
+    private const string ApplyScalingParameterName = "ApplyScaling";
 
     #region parameter properties
+    public IValueLookupParameter<BoolValue> ApplyScalingParameter {
+      get { return (IValueLookupParameter<BoolValue>)Parameters[ApplyScalingParameterName]; }
+    }
     public ILookupParameter<DoubleValue> AlphaParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Alpha"]; }
     }
@@ -50,9 +57,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     public ILookupParameter<IntValue> QualitySamplesParameter {
       get { return (ILookupParameter<IntValue>)Parameters[QualitySamplesParameterName]; }
     }
+    public ILookupParameter<DoubleValue> DecompositionBiasParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters[DecompositionBiasParameterName]; }
+    }
+    public ILookupParameter<DoubleValue> DecompositionVarianceParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters[DecompositionVarianceParameterName]; }
+    }
+    public ILookupParameter<DoubleValue> DecompositionCovarianceParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters[DecompositionCovarianceParameterName]; }
+    }
 
     #endregion
     #region properties
+    public BoolValue ApplyScaling {
+      get { return ApplyScalingParameter.ActualValue; }
+    }
     public DoubleValue Alpha {
       get { return AlphaParameter.ActualValue; }
       set { AlphaParameter.ActualValue = value; }
@@ -72,38 +91,54 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     #endregion
     public SymbolicRegressionScaledMeanAndVarianceSquaredErrorEvaluator()
       : base() {
+      Parameters.Add(new ValueLookupParameter<BoolValue>(ApplyScalingParameterName, "Determines if the estimated values should be scaled.", new BoolValue(true)));
       Parameters.Add(new LookupParameter<DoubleValue>("Alpha", "Alpha parameter for linear scaling of the estimated values."));
       Parameters.Add(new LookupParameter<DoubleValue>("Beta", "Beta parameter for linear scaling of the estimated values."));
       Parameters.Add(new LookupParameter<DoubleValue>(QualityVarianceParameterName, "A parameter which stores the variance of the squared errors."));
       Parameters.Add(new LookupParameter<IntValue>(QualitySamplesParameterName, " The number of evaluated samples."));
+      Parameters.Add(new LookupParameter<DoubleValue>(DecompositionBiasParameterName, "A parameter which stores the relativ bias of the MSE."));
+      Parameters.Add(new LookupParameter<DoubleValue>(DecompositionVarianceParameterName, "A parameter which stores the relativ bias of the MSE."));
+      Parameters.Add(new LookupParameter<DoubleValue>(DecompositionCovarianceParameterName, "A parameter which stores the relativ bias of the MSE."));
     }
 
     protected override double Evaluate(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree solution, Dataset dataset, StringValue targetVariable, IEnumerable<int> rows) {
       double alpha, beta;
       double meanSE, varianceSE;
       int count;
-      double mse = Calculate(interpreter, solution, LowerEstimationLimit.Value, UpperEstimationLimit.Value, dataset, targetVariable.Value, rows, out beta, out alpha, out meanSE, out varianceSE, out count);
-      Alpha = new DoubleValue(alpha);
-      Beta = new DoubleValue(beta);
+      double bias, variance, covariance;
+      double mse;
+      if (ApplyScaling.Value) {
+        mse = Calculate(interpreter, solution, LowerEstimationLimit.Value, UpperEstimationLimit.Value, dataset, targetVariable.Value, rows, out beta, out alpha, out meanSE, out varianceSE, out count, out bias, out variance, out covariance);
+        Alpha = new DoubleValue(alpha);
+        Beta = new DoubleValue(beta);
+      } else {
+        mse = CalculateWithScaling(interpreter, solution, LowerEstimationLimit.Value, UpperEstimationLimit.Value, dataset, targetVariable.Value, rows, 1, 0, out meanSE, out varianceSE, out count, out bias, out variance, out covariance);
+      }
       QualityVariance = new DoubleValue(varianceSE);
       QualitySamples = new IntValue(count);
+      DecompositionBiasParameter.ActualValue = new DoubleValue(bias / meanSE);
+      DecompositionVarianceParameter.ActualValue = new DoubleValue(variance / meanSE);
+      DecompositionCovarianceParameter.ActualValue = new DoubleValue(covariance / meanSE);
       return mse;
     }
 
-    public static double Calculate(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, Dataset dataset, string targetVariable, IEnumerable<int> rows, out double beta, out double alpha, out double meanSE, out double varianceSE, out int count) {
+    public static double Calculate(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, Dataset dataset, string targetVariable, IEnumerable<int> rows, out double beta, out double alpha, out double meanSE, out double varianceSE, out int count, out double bias, out double variance, out double covariance) {
       IEnumerable<double> originalValues = dataset.GetEnumeratedVariableValues(targetVariable, rows);
       IEnumerable<double> estimatedValues = interpreter.GetSymbolicExpressionTreeValues(solution, dataset, rows);
       CalculateScalingParameters(originalValues, estimatedValues, out beta, out alpha);
 
-      return CalculateWithScaling(interpreter, solution, lowerEstimationLimit, upperEstimationLimit, dataset, targetVariable, rows, beta, alpha, out meanSE, out varianceSE, out count);
+      return CalculateWithScaling(interpreter, solution, lowerEstimationLimit, upperEstimationLimit, dataset, targetVariable, rows, beta, alpha, out meanSE, out varianceSE, out count, out bias, out variance, out covariance);
     }
 
-    public static double CalculateWithScaling(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, Dataset dataset, string targetVariable, IEnumerable<int> rows, double beta, double alpha, out double meanSE, out double varianceSE, out int count) {
+    public static double CalculateWithScaling(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, Dataset dataset, string targetVariable, IEnumerable<int> rows, double beta, double alpha, out double meanSE, out double varianceSE, out int count, out double bias, out double variance, out double covariance) {
       IEnumerable<double> estimatedValues = interpreter.GetSymbolicExpressionTreeValues(solution, dataset, rows);
       IEnumerable<double> originalValues = dataset.GetEnumeratedVariableValues(targetVariable, rows);
       IEnumerator<double> originalEnumerator = originalValues.GetEnumerator();
       IEnumerator<double> estimatedEnumerator = estimatedValues.GetEnumerator();
       OnlineMeanAndVarianceCalculator seEvaluator = new OnlineMeanAndVarianceCalculator();
+      OnlineMeanAndVarianceCalculator originalMeanEvaluator = new OnlineMeanAndVarianceCalculator();
+      OnlineMeanAndVarianceCalculator estimatedMeanEvaluator = new OnlineMeanAndVarianceCalculator();
+      OnlinePearsonsRSquaredEvaluator r2Evaluator = new OnlinePearsonsRSquaredEvaluator();
 
       while (originalEnumerator.MoveNext() & estimatedEnumerator.MoveNext()) {
         double estimated = estimatedEnumerator.Current * beta + alpha;
@@ -115,6 +150,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
         double error = estimated - original;
         error *= error;
         seEvaluator.Add(error);
+        originalMeanEvaluator.Add(original);
+        estimatedMeanEvaluator.Add(estimated);
+        r2Evaluator.Add(original, estimated);
       }
 
       if (estimatedEnumerator.MoveNext() || originalEnumerator.MoveNext()) {
@@ -123,6 +161,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
         meanSE = seEvaluator.Mean;
         varianceSE = seEvaluator.Variance;
         count = seEvaluator.Count;
+        bias = (originalMeanEvaluator.Mean - estimatedMeanEvaluator.Mean);
+        bias *= bias;
+
+        double sO = Math.Sqrt(originalMeanEvaluator.Variance);
+        double sE = Math.Sqrt(estimatedMeanEvaluator.Variance);
+        variance = sO - sE;
+        variance *= variance;
+        double r = Math.Sqrt(r2Evaluator.RSquared);
+        covariance = 2 * sO * sE * (1 - r);
         return seEvaluator.Mean;
       }
     }

@@ -28,11 +28,12 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis.Evaluators;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
+using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
-  [Item("SymbolicRegressionNormalizedMeanSquaredErrorEvaluator", "Calculates the normalized mean squared error of a symbolic regression solution.")]
+  [Item("MultiObjectiveSymbolicRegressionPearsonsRSquaredEvaluator", "Calculates the correlation coefficient r² and the number of variables of a symbolic regression solution.")]
   [StorableClass]
-  public class SymbolicRegressionNormalizedMeanSquaredErrorEvaluator : SingleObjectiveSymbolicRegressionEvaluator {
+  public class MultiObjectiveSymbolicRegressionPearsonsRSquaredEvaluator : MultiObjectiveSymbolicRegressionEvaluator {
     private const string UpperEstimationLimitParameterName = "UpperEstimationLimit";
     private const string LowerEstimationLimitParameterName = "LowerEstimationLimit";
 
@@ -52,19 +53,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       get { return LowerEstimationLimitParameter.ActualValue; }
     }
     #endregion
-    public SymbolicRegressionNormalizedMeanSquaredErrorEvaluator()
+    public MultiObjectiveSymbolicRegressionPearsonsRSquaredEvaluator()
       : base() {
       Parameters.Add(new ValueLookupParameter<DoubleValue>(UpperEstimationLimitParameterName, "The upper limit that should be used as cut off value for the output values of symbolic expression trees."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>(LowerEstimationLimitParameterName, "The lower limit that should be used as cut off value for the output values of symbolic expression trees."));
     }
 
-    protected override double Evaluate(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree solution, Dataset dataset, StringValue targetVariable, IEnumerable<int> rows) {
-      double nmse = Calculate(interpreter, solution, LowerEstimationLimit.Value, UpperEstimationLimit.Value, dataset, targetVariable.Value, rows);
-      return nmse;
-    }
-
-    public static double Calculate(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, Dataset dataset, string targetVariable, IEnumerable<int> rows) {
-      return SymbolicRegressionScaledNormalizedMeanSquaredErrorEvaluator.CalculateWithScaling(interpreter, solution, lowerEstimationLimit, upperEstimationLimit, dataset, targetVariable, rows, 1.0, 0.0);
+    protected override double[] Evaluate(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree solution, Dataset dataset, StringValue targetVariable, IEnumerable<int> rows) {
+      double r2 = SymbolicRegressionPearsonsRSquaredEvaluator.Calculate(interpreter, solution, LowerEstimationLimit.Value, UpperEstimationLimit.Value, dataset, targetVariable.Value, rows);
+      List<string> vars = new List<string>();
+      solution.Root.ForEachNodePostfix(n => {
+        var varNode = n as VariableTreeNode;
+        if (varNode != null && !vars.Contains(varNode.VariableName)) {
+          vars.Add(varNode.VariableName);
+        }
+      });
+      return new double[2] { r2, vars.Count };
     }
   }
 }

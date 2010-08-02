@@ -32,7 +32,7 @@ using HeuristicLab.Problems.DataAnalysis.Symbolic;
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [Item("SymbolicRegressionMeanSquaredErrorEvaluator", "Calculates the mean squared error of a symbolic regression solution.")]
   [StorableClass]
-  public class SymbolicRegressionMeanSquaredErrorEvaluator : SymbolicRegressionEvaluator {
+  public class SymbolicRegressionMeanSquaredErrorEvaluator : SingleObjectiveSymbolicRegressionEvaluator {
     private const string UpperEstimationLimitParameterName = "UpperEstimationLimit";
     private const string LowerEstimationLimitParameterName = "LowerEstimationLimit";
 
