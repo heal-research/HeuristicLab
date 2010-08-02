@@ -73,7 +73,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Operators {
 
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("RightSide", "The qualities of the parents."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("RightSideVariances", "The variances of the parents."));
-      Parameters.Add(new LookupParameter<IntValue>("RightSideSamples", "The number of samples used to calculate the quality of the parent."));
+      Parameters.Add(new ScopeTreeLookupParameter<IntValue>("RightSideSamples", "The number of samples used to calculate the quality of the parent."));
     }
 
     public override IOperation Apply() {
