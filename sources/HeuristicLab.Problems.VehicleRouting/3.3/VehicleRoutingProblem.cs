@@ -209,6 +209,9 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
       creator.VRPSolutionParameter.ActualName = "VRPSolution";
       evaluator.QualityParameter.ActualName = "VRPQuality";
+
+      InitializeRandomVRPInstance();
+
       ParameterizeSolutionCreator();
       ParameterizeEvaluator();
 
@@ -480,6 +483,38 @@ namespace HeuristicLab.Problems.VehicleRouting {
       ServiceTime = new DoubleArray(parser.Servicetimes);
 
       OnReset();
+    }
+
+    private void InitializeRandomVRPInstance() {
+      System.Random rand = new System.Random();
+
+      int cities = 100;
+
+      Coordinates = new DoubleMatrix(cities + 1, 2);
+      Demand = new DoubleArray(cities + 1);
+      DueTime = new DoubleArray(cities + 1);
+      ReadyTime = new DoubleArray(cities + 1);
+      ServiceTime = new DoubleArray(cities + 1);
+
+      Vehicles.Value = 100;
+      Capacity.Value = 200;
+
+      for (int i = 0; i <= cities; i++) {
+        Coordinates[i, 0] = rand.Next(0, 100);
+        Coordinates[i, 1] = rand.Next(0, 100);
+
+        if (i == 0) {
+          Demand[i] = 0;
+          DueTime[i] = Int16.MaxValue;
+          ReadyTime[i] = 0;
+          ServiceTime[i] = 0;
+        } else {
+          Demand[i] = rand.Next(10, 50);
+          DueTime[i] = rand.Next((int)Math.Ceiling(CalculateDistance(0, i, Coordinates)), 1200);
+          ReadyTime[i] = DueTime[i] - rand.Next(0, 100);
+          ServiceTime[i] = 90;
+        }
+      }
     }
   }
 }
