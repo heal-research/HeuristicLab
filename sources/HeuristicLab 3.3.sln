@@ -289,6 +289,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.LibSVM-1.6.3", "HeuristicLab.ExtLibs\HeuristicLab.LibSVM\1.6.3\HeuristicLab.LibSVM-1.6.3\HeuristicLab.LibSVM-1.6.3.csproj", "{89B50302-9CEE-4D13-9779-633EADCAE624}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.ExternalEvaluation-3.3", "HeuristicLab.Problems.ExternalEvaluation\3.3\HeuristicLab.Problems.ExternalEvaluation-3.3.csproj", "{25735DB4-8E54-4A2C-83E3-A60C76565E55}"
+	ProjectSection(ProjectDependencies) = postProject
+		{250ADE34-82FD-4BAE-86D5-985FBE589C4A} = {250ADE34-82FD-4BAE-86D5-985FBE589C4A}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Algorithms.DataAnalysis-3.3", "HeuristicLab.Algorithms.DataAnalysis\3.3\HeuristicLab.Algorithms.DataAnalysis-3.3.csproj", "{A8D5676D-9662-437A-B44D-ECB4046CDE12}"
 EndProject
