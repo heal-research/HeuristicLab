@@ -394,5 +394,11 @@ namespace HeuristicLab.Analysis.Views {
     private bool IsInvalidValue(double x) {
       return double.IsNaN(x) || x < (double)decimal.MinValue || x > (double)decimal.MaxValue;
     }
+
+    private void exportChartToolStripMenuItem_Click(object sender, EventArgs e) {
+      if (saveFileDialog.ShowDialog() == DialogResult.OK) {
+        chart.SaveImage(saveFileDialog.FileName, ChartImageFormat.EmfDual);
+      }
+    }
   }
 }

@@ -44,12 +44,17 @@ namespace HeuristicLab.Analysis.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.components = new System.ComponentModel.Container();
       System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
       System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
       System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
       this.chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
+      this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+      this.exportChartToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
+      this.contextMenuStrip.SuspendLayout();
       this.SuspendLayout();
       // 
       // nameTextBox
@@ -75,6 +80,7 @@ namespace HeuristicLab.Analysis.Views {
       chartArea1.CursorY.IsUserSelectionEnabled = true;
       chartArea1.Name = "ChartArea1";
       this.chart.ChartAreas.Add(chartArea1);
+      this.chart.ContextMenuStrip = this.contextMenuStrip;
       legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
       legend1.Name = "Legend1";
       this.chart.Legends.Add(legend1);
@@ -87,9 +93,28 @@ namespace HeuristicLab.Analysis.Views {
       this.chart.Size = new System.Drawing.Size(359, 222);
       this.chart.TabIndex = 4;
       this.chart.Text = "chart1";
-      this.chart.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chart_MouseMove);
-      this.chart.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chart_MouseDown);
       this.chart.CustomizeLegend += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CustomizeLegendEventArgs>(this.chart_CustomizeLegend);
+      this.chart.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chart_MouseDown);
+      this.chart.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chart_MouseMove);
+      // 
+      // contextMenuStrip
+      // 
+      this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.exportChartToolStripMenuItem});
+      this.contextMenuStrip.Name = "contextMenuStrip";
+      this.contextMenuStrip.Size = new System.Drawing.Size(153, 48);
+      // 
+      // exportChartToolStripMenuItem
+      // 
+      this.exportChartToolStripMenuItem.Name = "exportChartToolStripMenuItem";
+      this.exportChartToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.exportChartToolStripMenuItem.Text = "Export chart...";
+      this.exportChartToolStripMenuItem.Click += new System.EventHandler(this.exportChartToolStripMenuItem_Click);
+      // 
+      // saveFileDialog
+      // 
+      this.saveFileDialog.DefaultExt = "emf";
+      this.saveFileDialog.Filter = "EMF Files|*.emf";
       // 
       // DataTableView
       // 
@@ -105,6 +130,7 @@ namespace HeuristicLab.Analysis.Views {
       this.Controls.SetChildIndex(this.descriptionTextBox, 0);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.chart)).EndInit();
+      this.contextMenuStrip.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -113,6 +139,9 @@ namespace HeuristicLab.Analysis.Views {
     #endregion
 
     private System.Windows.Forms.DataVisualization.Charting.Chart chart;
+    private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
+    private System.Windows.Forms.ToolStripMenuItem exportChartToolStripMenuItem;
+    private System.Windows.Forms.SaveFileDialog saveFileDialog;
 
   }
 }
