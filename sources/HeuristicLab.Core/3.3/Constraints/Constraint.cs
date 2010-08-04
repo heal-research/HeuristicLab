@@ -184,7 +184,7 @@ namespace HeuristicLab.Core {
 
     public override IDeepCloneable Clone(HeuristicLab.Common.Cloner cloner) {
       Constraint clone = (Constraint)base.Clone(cloner);
-      clone.constrainedValue = null;  //mkommend: intentional set to null and must be reset in the clone
+      clone.constrainedValue = null;  //mkommend: intentionally set to null;
 
       IItem constraintDataItem = this.constraintData as IItem;
       ICloneable constraintDataCloneable = this.constraintData as ICloneable;
