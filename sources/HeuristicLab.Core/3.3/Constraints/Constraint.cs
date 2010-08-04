@@ -28,13 +28,13 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Core {
   [StorableClass]
   public abstract class Constraint : Item, IConstraint {
+    [StorableConstructor]
+    protected Constraint(bool deserializing) : base(deserializing) { }
+
     protected Constraint() {
       this.Active = false;
       if (AllowedConstraintOperations != null && AllowedConstraintOperations.Count() != 0)
         this.ConstraintOperation = AllowedConstraintOperations.ElementAt(0);
-    }
-    [StorableConstructor]
-    protected Constraint(bool deserializing) {
     }
     protected Constraint(IItem constrainedValue, ConstraintOperation constraintOperation, object constraintData)
       : this() {
@@ -114,6 +114,9 @@ namespace HeuristicLab.Core {
     protected virtual IItem GetConstrainedMember() {
       return this.constrainedValue;
     }
+    protected abstract bool Check(object constrainedMember);
+    protected abstract bool Check(object constrainedMember, out string errorMessage);
+
     public bool Check() {
       if (!Active)
         return true;
@@ -121,8 +124,6 @@ namespace HeuristicLab.Core {
       IItem constrainedMember = this.GetConstrainedMember();
       return this.Check(constrainedMember);
     }
-    protected abstract bool Check(object constrainedMember);
-
     public bool Check(out string errorMessage) {
       errorMessage = string.Empty;
       if (!Active)
@@ -131,8 +132,6 @@ namespace HeuristicLab.Core {
       IItem constrainedMember = this.GetConstrainedMember();
       return this.Check(constrainedMember, out errorMessage);
     }
-
-    protected abstract bool Check(object constrainedMember, out string errorMessage);
 
     #region events
     public event EventHandler ActiveChanged;

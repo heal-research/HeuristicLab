@@ -27,12 +27,10 @@ namespace HeuristicLab.Core {
   [StorableClass]
   [Item("EqualityConstraint", "A constraint which checks for equality.")]
   public class EqualityConstraint : Constraint {
-    public EqualityConstraint()
-      : base() {
-    }
     [StorableConstructor]
-    protected EqualityConstraint(bool deserializing) {
-    }
+    protected EqualityConstraint(bool deserializing) : base(deserializing) { }
+
+    public EqualityConstraint() : base() { }
     public EqualityConstraint(IItem constrainedValue, ConstraintOperation constraintOperation, object constraintData)
       : base(constrainedValue, constraintOperation, constraintData) {
     }

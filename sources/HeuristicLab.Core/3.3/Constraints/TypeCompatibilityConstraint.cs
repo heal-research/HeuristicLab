@@ -30,9 +30,7 @@ namespace HeuristicLab.Core {
     public TypeCompatibilityConstraint() {
     }
     [StorableConstructor]
-    protected TypeCompatibilityConstraint(bool deserializing)
-      : base() {
-    }
+    protected TypeCompatibilityConstraint(bool deserializing) : base(deserializing) { }
     public TypeCompatibilityConstraint(IItem constrainedValue, ConstraintOperation constraintOperation, Type constraintData)
       : base(constrainedValue, constraintOperation, constraintData) {
     }

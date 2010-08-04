@@ -38,8 +38,7 @@ namespace HeuristicLab.Core {
     private string name;
 
     [StorableConstructor]
-    protected ConstraintOperation(bool deserializing) {
-    }
+    protected ConstraintOperation(bool deserializing) { }
     protected ConstraintOperation(int value, string name) {
       this.value = value;
       this.name = name;

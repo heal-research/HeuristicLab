@@ -27,12 +27,10 @@ namespace HeuristicLab.Core {
   [StorableClass]
   [Item("ComparisonConstraint", "A constraint which checks for specified compare operation.")]
   public class ComparisonConstraint : Constraint {
-    public ComparisonConstraint()
-      : base() {
-    }
     [StorableConstructor]
-    protected ComparisonConstraint(bool deserializing) {
-    }
+    protected ComparisonConstraint(bool deserializing) : base(deserializing) { }
+
+    public ComparisonConstraint() : base() { }
     public ComparisonConstraint(IItem constrainedValue, ConstraintOperation comparisonOperation, object comparisonValue)
       : base(constrainedValue, comparisonOperation, comparisonValue) {
     }
