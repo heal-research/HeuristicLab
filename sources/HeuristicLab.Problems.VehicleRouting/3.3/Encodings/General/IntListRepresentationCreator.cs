@@ -19,21 +19,24 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Optimization;
+using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System.Collections.Generic;
 
-namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
-  [Item("AlbaPushForwardCreator", "An operator which creates a new alba VRP representation using the push forward insertion heuristic.")]
+namespace HeuristicLab.Problems.VehicleRouting {
   [StorableClass]
-  public sealed class AlbaPushForwardCreator : PushForwardCreator {
-    protected override IVRPEncoding CreateEncoding(List<int> route) {
-      return AlbaEncoding.ConvertFrom(route);
-    }
+  public abstract class IntListRepresentationCreator : VRPCreator {
+    protected abstract IVRPEncoding CreateEncoding(List<int> route);
+
+    protected abstract List<int> CreateSolution();
+
+    public override IOperation Apply() {
+      VRPSolutionParameter.ActualValue = CreateEncoding(CreateSolution());
+
+      return base.Apply();
+    }    
   }
 }

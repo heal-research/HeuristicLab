@@ -28,12 +28,12 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
-  [Item("AlbaPushForwardCreator", "An operator which creates a new alba VRP representation using the push forward insertion heuristic.")]
+namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
+  [Item("PotvinPushForwardCreator", "An operator which creates a new Potvin VRP representation using the push forward insertion heuristic.")]
   [StorableClass]
-  public sealed class AlbaPushForwardCreator : PushForwardCreator {
+  public sealed class PotvinPushForwardCreator : PushForwardCreator {
     protected override IVRPEncoding CreateEncoding(List<int> route) {
-      return AlbaEncoding.ConvertFrom(route);
+      return PotvinEncoding.ConvertFrom(route);
     }
   }
 }

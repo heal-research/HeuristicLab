@@ -19,21 +19,45 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
-  [Item("AlbaPushForwardCreator", "An operator which creates a new alba VRP representation using the push forward insertion heuristic.")]
   [StorableClass]
-  public sealed class AlbaPushForwardCreator : PushForwardCreator {
-    protected override IVRPEncoding CreateEncoding(List<int> route) {
-      return AlbaEncoding.ConvertFrom(route);
+  public abstract class AlbaCrossover : VRPCrossover {
+    public ILookupParameter<IntValue> VehiclesParameter {
+      get { return (ILookupParameter<IntValue>)Parameters["Vehicles"]; }
+    }
+
+    public AlbaCrossover()
+      : base() {
+        Parameters.Add(new LookupParameter<IntValue>("Vehicles", "The vehicles count."));
+    }
+    
+    protected virtual void Crossover() {
+    }
+
+    public override IOperation Apply() {
+      int cities = 0;
+
+      ItemArray<IVRPEncoding> parents = new ItemArray<IVRPEncoding>(ParentsParameter.ActualValue.Length);
+      for (int i = 0; i < ParentsParameter.ActualValue.Length; i++) {
+        IVRPEncoding solution = ParentsParameter.ActualValue[i];
+        cities = solution.Cities;
+        if (!(solution is AlbaEncoding)) {
+          parents[i] = AlbaEncoding.ConvertFrom(solution, VehiclesParameter.ActualValue.Value);
+        } else {
+          parents[i] = solution;
+        }
+      }
+      ParentsParameter.ActualValue = parents;
+
+      Crossover();
+
+      return base.Apply();
     }
   }
 }

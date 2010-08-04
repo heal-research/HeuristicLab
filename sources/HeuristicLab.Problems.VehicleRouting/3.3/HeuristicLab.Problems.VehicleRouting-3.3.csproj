@@ -106,10 +106,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Analyzers\BestVRPSolutionAnalyzer.cs" />
+    <Compile Include="Encodings\General\PushForwardInsertionCreator.cs" />
+    <Compile Include="Encodings\General\IntListRepresentationCreator.cs" />
     <Compile Include="Encodings\Alba\Crossovers\AlbaPermutationCrossover.cs" />
+    <Compile Include="Encodings\Alba\Crossovers\AlbaCrossover.cs" />
     <Compile Include="Encodings\Alba\Interfaces\IAlbaTranslocationMoveOperator.cs" />
     <Compile Include="Encodings\Alba\Manipulators\AlbaPermutationManipulator.cs" />
     <Compile Include="Encodings\Alba\Creators\AlbaPushForwardInsertionCreator.cs" />
+    <Compile Include="Encodings\Alba\Manipulators\AlbaManipulator.cs" />
     <Compile Include="Encodings\Alba\Moves\AlbaMoveOperator.cs" />
     <Compile Include="Encodings\Alba\Moves\AlbaMoveMaker.cs" />
     <Compile Include="Encodings\Alba\Moves\ThreeOpt\AlbaTranslocationMoveGenerator.cs" />
@@ -117,6 +121,8 @@
     <Compile Include="Encodings\Alba\Moves\ThreeOpt\AlbaTranslocationMoveTabuMaker.cs" />
     <Compile Include="Encodings\Alba\Moves\ThreeOpt\AlbaTranslocationMoveSoftTabuCriterion.cs" />
     <Compile Include="Encodings\Alba\Moves\ThreeOpt\AlbaTranslocationMoveHardTabuCriterion.cs" />
+    <Compile Include="Encodings\Potvin\Creators\PotvinPushForwardInsertionCreator.cs" />
+    <Compile Include="Encodings\Potvin\PotvinEncoding.cs" />
     <Compile Include="Encodings\VRPMoveOperator.cs" />
     <Compile Include="Encodings\VRPCrossover.cs" />
     <Compile Include="Encodings\VRPCreator.cs" />
@@ -212,6 +218,10 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Encodings\Potvin\Crossovers\" />
+    <Folder Include="Encodings\Potvin\Manipulators\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

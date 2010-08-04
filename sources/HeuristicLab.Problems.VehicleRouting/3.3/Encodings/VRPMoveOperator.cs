@@ -22,6 +22,7 @@
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings {
   public abstract class VRPMoveOperator : SingleSuccessorOperator, IVRPMoveOperator {
@@ -30,7 +31,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings {
     public ILookupParameter<IVRPEncoding> VRPSolutionParameter {
       get { return (ILookupParameter<IVRPEncoding>)Parameters["VRPSolution"]; }
     }
-
+   
     #endregion
 
     public VRPMoveOperator()

@@ -27,7 +27,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaPermutationCrossover", "An operator which crosses two alba VRP representations.")]
   [StorableClass]
-  public sealed class AlbaPermutationCrossover : VRPCrossover {
+  public sealed class AlbaPermutationCrossover : AlbaCrossover {
     public IValueLookupParameter<IPermutationCrossover> PermutationCrossoverParameter {
       get { return (IValueLookupParameter<IPermutationCrossover>)Parameters["PermutationCrossover"]; }
     }
@@ -37,30 +37,22 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       Parameters.Add(new ValueLookupParameter<IPermutationCrossover>("PermutationCrossover", "The permutation crossover.", new EdgeRecombinationCrossover()));
     }
 
-    public override IOperation Apply() {
-      int cities = 0;
-
-      for (int i = 0; i < ParentsParameter.ActualValue.Length; i++) {
-        IVRPEncoding solution = ParentsParameter.ActualValue[i];
-        cities = solution.Cities;
-        if (!(solution is AlbaEncoding)) {
-          ParentsParameter.ActualValue[i] = AlbaEncoding.ConvertFrom(solution);
-        }
-      }
+    protected override void Crossover() {
+      int cities = ParentsParameter.ActualValue[0].Cities;
 
       PermutationCrossoverParameter.ActualValue.ParentsParameter.ActualName = ParentsParameter.ActualName;
-      IAtomicOperation op = this.ExecutionContext.CreateOperation(PermutationCrossoverParameter.ActualValue);
+      IAtomicOperation op = this.ExecutionContext.CreateOperation(
+        PermutationCrossoverParameter.ActualValue, this.ExecutionContext.Scope);
       op.Operator.Execute((IExecutionContext)op);
 
-      if (ExecutionContext.Scope.Variables.ContainsKey("Permutation")) {
-        Permutation permutation = ExecutionContext.Scope.Variables["Permutation"].Value as Permutation;
-        ExecutionContext.Scope.Variables.Remove("Permutation");
+      string childName = PermutationCrossoverParameter.ActualValue.ChildParameter.ActualName;
+      if (ExecutionContext.Scope.Variables.ContainsKey(childName)) {
+        Permutation permutation = ExecutionContext.Scope.Variables[childName].Value as Permutation;
+        ExecutionContext.Scope.Variables.Remove(childName);
 
         ChildParameter.ActualValue = new AlbaEncoding(permutation, cities);
       } else
         ChildParameter.ActualValue = null;
-
-      return base.Apply();
     }
   }
 }

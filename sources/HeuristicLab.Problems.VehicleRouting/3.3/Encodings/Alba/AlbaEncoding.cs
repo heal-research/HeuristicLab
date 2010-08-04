@@ -24,14 +24,50 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaEncoding", "Represents an alba encoding of VRP solutions.")]
   [StorableClass]
   class AlbaEncoding : Permutation, IVRPEncoding {
-    #region IVRPEncoding Members
     [Storable]
     private int cities;
+    
+    #region IVRPEncoding Members
+    public ItemList<Tour> Tours {
+      get {
+        ItemList<Tour> result = new ItemList<Tour>();
+        
+        Tour tour = new Tour();
+        for (int i = 0; i < this.array.Length; i++) {
+          if (this.array[i] >= cities) {
+            if (tour.Count > 0) {
+              result.Add(tour);
+
+              tour = new Tour();
+            }
+          } else {
+            tour.Add(new IntValue(this.array[i] + 1));
+          }
+        }
+
+        if (tour.Count > 0) {
+          result.Add(tour);
+        }
+
+        return result;
+      }
+    }
+
+    public int Cities {
+      get { return cities; }
+    }
+
+    public int MaxVehicles {
+      get { return Length - Cities;  }
+    }
+
+    #endregion
 
     public override IDeepCloneable Clone(HeuristicLab.Common.Cloner cloner) {
       AlbaEncoding clone = new AlbaEncoding(
@@ -42,7 +78,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     }
 
     public AlbaEncoding(Permutation permutation, int cities)
-      : base(PermutationTypes.RelativeDirected) {
+      : base(PermutationTypes.RelativeUndirected) {
       this.array = new int[permutation.Length];
       for (int i = 0; i < array.Length; i++)
         this.array[i] = permutation[i];
@@ -55,57 +91,24 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       : base() {
     }
 
-    public ItemList<Tour> Tours {
-      get {
-        ItemList<Tour> result = new ItemList<Tour>();
-        Tour tour = new Tour();
-        tour.Add(new IntValue(0));
-
-        for (int i = 0; i < this.array.Length; i++) {
-          if (this.array[i] >= cities) {
-            if (tour.Count > 1) {
-              tour.Add(new IntValue(0));
-              result.Add(tour);
-
-              tour = new Tour();
-              tour.Add(new IntValue(0));
-            }
-          } else {
-            tour.Add(new IntValue(this.array[i] + 1));
-          }
-        }
-
-        if (tour.Count > 1) {
-          tour.Add(new IntValue(0));
-          result.Add(tour);
-        }
-
-        return result;
-      }
-    }
-
-    public int Cities {
-      get { return cities; }
-    }
-
-    #endregion
-
-    public static AlbaEncoding ConvertFrom(IVRPEncoding encoding) {
+    public static AlbaEncoding ConvertFrom(IVRPEncoding encoding, int vehicles) {
       ItemList<Tour> tours = encoding.Tours;
 
       int cities = 0;
       foreach (Tour tour in tours) {
         cities += tour.Count;
       }
-      int[] array = new int[cities + tours.Count - 2];
+
+      int emptyVehicles = vehicles - tours.Count;
+
+      int[] array = new int[cities + tours.Count + emptyVehicles - 1];
       int delimiter = cities;
       int arrayIndex = 0;
 
       foreach (Tour tour in tours) {
         foreach (IntValue city in tour) {
-          array[arrayIndex] = city.Value;
-
-          arrayIndex++;
+            array[arrayIndex] = city.Value - 1;
+            arrayIndex++;
         }
 
         if (arrayIndex != array.Length) {
@@ -115,12 +118,40 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
         }
       }
 
-      AlbaEncoding solution = new AlbaEncoding(new Permutation(PermutationTypes.RelativeUndirected), cities);
+      for (int i = 0; i < emptyVehicles - 1; i++) {
+        array[arrayIndex] = delimiter;
+        delimiter++;
+        arrayIndex++;
+      }
+            
+      AlbaEncoding solution = new AlbaEncoding(new Permutation(PermutationTypes.RelativeUndirected, new IntArray(array)), cities);
 
       return solution;
     }
 
+    public static AlbaEncoding ConvertFrom(List<int> routeParam) {
+      List<int> route = new List<int>(routeParam);
+      
+      int cities = 0;
+      for (int i = 0; i < route.Count; i++) {
+        if (route[i] != 0) {
+          cities++;
+        }
+      }
 
+      int vehicle = cities;
+      for (int i = 0; i < route.Count; i++) {
+        if (route[i] == 0) {
+          route[i] = vehicle;
+          vehicle++;
+        } else {
+          route[i] = route[i] - 1;
+        }
+      }
 
+      return new AlbaEncoding(
+        new Permutation(PermutationTypes.RelativeUndirected, route.ToArray()),
+        cities);
+    }
   }
 }

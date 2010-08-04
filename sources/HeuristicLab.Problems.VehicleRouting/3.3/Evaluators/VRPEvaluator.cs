@@ -156,9 +156,13 @@ namespace HeuristicLab.Problems.VehicleRouting {
       double tardiness = 0.0;
 
       //simulate a tour, start and end at depot
-      for (int i = 1; i < tour.Count; i++) {
-        int start = tour[i - 1].Value;
-        int end = tour[i].Value;
+      for (int i = 0; i <= tour.Count; i++) {
+        int start = 0;
+        if(i > 0)
+          start = tour[i - 1].Value;
+        int end = 0;
+        if(i < tour.Count)
+          end = tour[i].Value;
 
         //drive there
         double currentDistace = VehicleRoutingProblem.GetDistance(start, end, coordinates, distanceMatrix, useDistanceMatrix);

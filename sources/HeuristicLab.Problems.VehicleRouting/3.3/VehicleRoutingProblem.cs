@@ -377,6 +377,10 @@ namespace HeuristicLab.Problems.VehicleRouting {
       foreach (IVRPMoveOperator op in Operators.OfType<IVRPMoveOperator>()) {
         op.VRPSolutionParameter.ActualName = SolutionCreator.VRPSolutionParameter.ActualName;
       }
+      foreach (AlbaMoveOperator op in Operators.OfType<AlbaMoveOperator>()) {
+        op.VehiclesParameter.ActualName = VehiclesParameter.Name;
+      }
+
       foreach (IVRPMoveEvaluator op in Operators.OfType<IVRPMoveEvaluator>()) {
         op.CoordinatesParameter.ActualName = CoordinatesParameter.Name;
         op.DistanceMatrixParameter.ActualName = DistanceMatrixParameter.Name;
@@ -403,8 +407,15 @@ namespace HeuristicLab.Problems.VehicleRouting {
         op.ParentsParameter.ActualName = SolutionCreator.VRPSolutionParameter.ActualName;
         op.ChildParameter.ActualName = SolutionCreator.VRPSolutionParameter.ActualName;
       }
+      foreach (AlbaCrossover op in Operators.OfType<AlbaCrossover>()) {
+        op.VehiclesParameter.ActualName = VehiclesParameter.Name;
+      }
+
       foreach (IVRPManipulator op in Operators.OfType<IVRPManipulator>()) {
         op.VRPSolutionParameter.ActualName = SolutionCreator.VRPSolutionParameter.ActualName;
+      }
+      foreach (AlbaManipulator op in Operators.OfType<AlbaManipulator>()) {
+        op.VehiclesParameter.ActualName = VehiclesParameter.Name;
       }
     }
     private void ClearDistanceMatrix() {

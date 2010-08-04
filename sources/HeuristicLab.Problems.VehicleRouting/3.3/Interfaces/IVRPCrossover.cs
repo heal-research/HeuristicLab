@@ -21,6 +21,7 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   public interface IVRPCrossover : IVRPOperator, ICrossover {

@@ -22,18 +22,29 @@
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Data;
+using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaMoveOperator", "A move operator for an alba VRP representation.")]
   [StorableClass]
   public abstract class AlbaMoveOperator : VRPMoveOperator {
+    public ILookupParameter<IntValue> VehiclesParameter {
+      get { return (ILookupParameter<IntValue>)Parameters["Vehicles"]; }
+    }
+
+    public AlbaMoveOperator()
+      : base() {
+      Parameters.Add(new LookupParameter<IntValue>("Vehicles", "The vehicles count."));
+    }
+    
     [Storable]
     protected abstract IPermutationMoveOperator PermutationMoveOperatorParameter { get; set; }
 
     public override IOperation Apply() {
       IVRPEncoding solution = VRPSolutionParameter.ActualValue;
       if (!(solution is AlbaEncoding)) {
-        VRPSolutionParameter.ActualValue = AlbaEncoding.ConvertFrom(solution);
+        VRPSolutionParameter.ActualValue = AlbaEncoding.ConvertFrom(solution, VehiclesParameter.ActualValue.Value);
       }
 
       PermutationMoveOperatorParameter.PermutationParameter.ActualName = VRPSolutionParameter.ActualName;

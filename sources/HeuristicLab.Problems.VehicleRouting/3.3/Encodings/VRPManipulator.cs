@@ -22,6 +22,7 @@
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings {
   public abstract class VRPManipulator : SingleSuccessorOperator, IVRPManipulator {

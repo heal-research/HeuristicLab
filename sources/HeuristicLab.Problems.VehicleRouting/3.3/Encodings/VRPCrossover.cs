@@ -44,7 +44,6 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings {
       ParentsParameter.ActualName = "VRPSolution";
       Parameters.Add(new LookupParameter<IVRPEncoding>("Child", "The child permutation resulting from the crossover."));
       ChildParameter.ActualName = "VRPSolution";
-      Parameters.Add(new ValueLookupParameter<IntValue>("Cities", "The city count."));
     }
   }
 }
