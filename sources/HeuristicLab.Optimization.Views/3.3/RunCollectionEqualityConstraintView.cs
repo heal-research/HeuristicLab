@@ -48,7 +48,8 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void txtConstraintData_TextChanged(object sender, EventArgs e) {
-      Content.ConstraintData = txtConstraintData.Text;
+      if (Content != null)
+        Content.ConstraintData = txtConstraintData.Text;
     }
   }
 }

@@ -117,7 +117,8 @@ namespace HeuristicLab.Optimization.Views {
       this.ReadOnly = Content.Active;
     }
     protected virtual void chbActive_CheckedChanged(object sender, EventArgs e) {
-      Content.Active = chbActive.Checked;
+      if (Content != null)
+        Content.Active = chbActive.Checked;
     }
   }
 }
