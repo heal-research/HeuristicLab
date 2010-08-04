@@ -30,12 +30,12 @@ namespace HeuristicLab.Optimization {
   [StorableClass]
   [Item("RunCollectionEqualityConstraint", "A constraint which checks the members of the contained runs for equality to the constraint data.")]
   public class RunCollectionEqualityConstraint : EqualityConstraint, IRunCollectionConstraint {
+    [StorableConstructor]
+    protected RunCollectionEqualityConstraint(bool deserializing) : base(deserializing) { }
+
     public RunCollectionEqualityConstraint()
       : base() {
       this.ConstraintData = string.Empty;
-    }
-    [StorableConstructor]
-    protected RunCollectionEqualityConstraint(bool deserializing) {
     }
     public RunCollectionEqualityConstraint(RunCollection constrainedValue, ConstraintOperation constraintOperation, string constraintData)
       : base(constrainedValue, constraintOperation, constraintData) {
@@ -129,7 +129,6 @@ namespace HeuristicLab.Optimization {
 
     public override IDeepCloneable Clone(HeuristicLab.Common.Cloner cloner) {
       RunCollectionEqualityConstraint clone = (RunCollectionEqualityConstraint)base.Clone(cloner);
-      clone.ConstrainedValue = null;
       clone.ConstraintData = this.ConstraintData;
       clone.ConstraintOperation = this.ConstraintOperation;
       clone.constraintColumn = this.constraintColumn;

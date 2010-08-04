@@ -30,12 +30,10 @@ namespace HeuristicLab.Optimization {
   [StorableClass]
   [Item("RunCollectionComparisonConstraint", "A constraint which compares the members of the contained runs with the constraint data.")]
   public class RunCollectionComparisonConstraint : ComparisonConstraint, IRunCollectionConstraint {
-    public RunCollectionComparisonConstraint()
-      : base() {
-    }
     [StorableConstructor]
-    protected RunCollectionComparisonConstraint(bool deserializing) {
-    }
+    protected RunCollectionComparisonConstraint(bool deserializing) : base(deserializing) { }
+
+    public RunCollectionComparisonConstraint() : base() { }
     public RunCollectionComparisonConstraint(RunCollection constrainedValue, ConstraintOperation constraintOperation, object constraintData)
       : base(constrainedValue, constraintOperation, constraintData) {
     }
@@ -132,7 +130,6 @@ namespace HeuristicLab.Optimization {
 
     public override IDeepCloneable Clone(HeuristicLab.Common.Cloner cloner) {
       RunCollectionComparisonConstraint clone = (RunCollectionComparisonConstraint)base.Clone(cloner);
-      clone.ConstrainedValue = null;
 
       IItem constraintDataItem = this.ConstraintData as IItem;
       ICloneable constraintDataCloneable = this.ConstraintData as ICloneable;

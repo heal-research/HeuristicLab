@@ -122,7 +122,6 @@ namespace HeuristicLab.Optimization {
 
     public override IDeepCloneable Clone(HeuristicLab.Common.Cloner cloner) {
       RunCollectionTypeCompatibilityConstraint clone = (RunCollectionTypeCompatibilityConstraint)base.Clone(cloner);
-      clone.ConstrainedValue = null;
       clone.ConstraintData = this.ConstraintData;
       clone.ConstraintOperation = this.ConstraintOperation;
       clone.constraintColumn = this.constraintColumn;
