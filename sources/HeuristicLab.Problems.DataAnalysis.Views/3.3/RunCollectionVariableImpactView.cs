@@ -91,7 +91,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
                                           select variableName)
                                          .ToList();
 
-        List<string> statictics = new List<string> { "Median Rank", "pValue", "Mean", "StdDev", };
+        List<string> statictics = new List<string> { "Median Rank", "Mean", "StdDev", "pValue" };
         List<string> columnNames = runsWithVariables.Select(r => r.Name).ToList();
         columnNames.AddRange(statictics);
         int runs = runsWithVariables.Count();
@@ -119,28 +119,30 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
                                             select GetVariableImpactRanks(variableName, allVariableImpacts).ToList())
                                         .ToList();
         if (variableImpactsOverRuns.Count() > 0) {
-          // reference median is the worst median rank
-          double referenceMedian = (from impacts in variableRanks
-                                    let med = impacts.Median()
-                                    orderby med
-                                    select med)
-                                           .Last();
+          // the variable with the worst median impact value is chosen as the reference variable
+          // this is problematic if all variables are relevant, however works often in practice
+          List<double> referenceImpacts = (from impacts in variableImpactsOverRuns
+                                           let avg = impacts.Median()
+                                           orderby avg
+                                           select impacts)
+                                           .First();
           // for all variables
           for (int row = 0; row < variableImpactsOverRuns.Count; row++) {
+            // median rank
             matrix[row, runs] = variableRanks[row].Median();
-
-            // check if the median of the ranks is significantly different to the reference median rank
-            double leftTail = 0; double rightTail = 0; double bothTails = 0;
-            double[] ranksArray = variableRanks[row].ToArray();
-
-            // wilcoxon signed rank test is used because the ranks of two variables in a single run are not independent
-            alglib.wsr.wilcoxonsignedranktest(ranksArray, ranksArray.Length, referenceMedian, ref bothTails, ref leftTail, ref rightTail);
-            matrix[row, runs + 1] = bothTails;
-
             // also show mean and std.dev. of relative variable impacts to indicate the relative difference in impacts of variables
-            matrix[row, runs + 2] = variableImpactsOverRuns[row].Average();
-            matrix[row, runs + 3] = variableImpactsOverRuns[row].StandardDeviation();
+            matrix[row, runs + 1] = variableImpactsOverRuns[row].Average();
+            matrix[row, runs + 2] = variableImpactsOverRuns[row].StandardDeviation();
 
+            double leftTail = 0; double rightTail = 0; double bothTails = 0;
+            // calc differences of impacts for current variable and reference variable
+            double[] z = new double[referenceImpacts.Count];
+            for (int i = 0; i < z.Length; i++) {
+              z[i] = variableImpactsOverRuns[row][i] - referenceImpacts[i];
+            }
+            // wilcoxon signed rank test is used because the impact values of two variables in a single run are not independent
+            alglib.wsr.wilcoxonsignedranktest(z, z.Length, 0, ref bothTails, ref leftTail, ref rightTail);
+            matrix[row, runs + 3] = bothTails;
           }
         }
       }
