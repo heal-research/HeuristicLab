@@ -172,14 +172,15 @@ namespace HeuristicLab.MainForm.WindowsForms {
           view = MainFormManager.CreateView(viewType);
           view.ReadOnly = this.ReadOnly;
           view.Locked = this.Locked;
+          ActiveView = view; //necessary to allow the views to change the status of the viewhost
           view.Content = Content;
           cachedViews.Add(viewType, view);
           Control c = view as Control;
           if (c != null)
             this.Controls.Add(c);
-        }
+        } else
+          ActiveView = cachedViews[viewType];
         UpdateActiveMenuItem();
-        ActiveView = cachedViews[viewType];
       }
     }
 
@@ -191,7 +192,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
         this.ActiveView.Locked = this.Locked;
         this.ActiveViewControl.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right;
         this.ActiveViewControl.Size = new System.Drawing.Size(this.Width - this.viewsLabel.Width - this.viewsLabel.Margin.Left - this.viewsLabel.Margin.Right, this.Height);
-        this.ActiveViewChanged();
       }
       this.ResumeRepaint(true);
     }
@@ -213,6 +213,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     private void ActiveViewChanged() {
       if (ActiveView != null) {
         this.Caption = this.ActiveView.Caption;
+        this.ReadOnly = this.ActiveView.ReadOnly;
         this.Locked = this.ActiveView.Locked;
       }
     }
