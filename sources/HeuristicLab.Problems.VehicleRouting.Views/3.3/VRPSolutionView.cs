@@ -137,34 +137,39 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
                 int currentTour = 0;
                 foreach (Tour tour in Content.Solution.Tours) {
                   double t = 0.0;
-                  Point[] tourPoints = new Point[tour.Count];
+                  Point[] tourPoints = new Point[tour.Count + 2];
                   int lastCustomer = 0;
 
-                  for (int i = 0; i < tour.Count; i++) {
-                    int customer = tour[i].Value;
+                  for (int i = -1; i <= tour.Count; i++) {
+                    int location = 0;
 
-                    Point customerPoint = new Point(border + ((int)((coordinates[customer, 0] - xMin) * xStep)),
-                                    bitmap.Height - (border + ((int)((coordinates[customer, 1] - yMin) * yStep))));
-                    tourPoints[i] = customerPoint;
+                    if (i == -1 || i == tour.Count)
+                      location = 0; //depot
+                    else
+                      location = tour[i].Value;
 
-                    if (i > 0) {
+                    Point locationPoint = new Point(border + ((int)((coordinates[location, 0] - xMin) * xStep)),
+                                    bitmap.Height - (border + ((int)((coordinates[location, 1] - yMin) * yStep))));
+                    tourPoints[i + 1] = locationPoint;
+
+                    if (i != -1 && i != tour.Count) {
                       Brush customerBrush = Brushes.Black;
 
                       t += VehicleRoutingProblem.GetDistance(
-                        lastCustomer, customer, coordinates, distanceMatrix, useDistanceMatrix);
+                        lastCustomer, location, coordinates, distanceMatrix, useDistanceMatrix);
 
-                      if (t < readyTime[customer]) {
-                        t = readyTime[customer];
+                      if (t < readyTime[location]) {
+                        t = readyTime[location];
                         customerBrush = Brushes.Yellow;
-                      } else if (t > dueTime[customer]) {
+                      } else if (t > dueTime[location]) {
                         customerBrush = Brushes.Red;
                       }
 
-                      t += serviceTime[customer];
+                      t += serviceTime[location];
 
-                      graphics.FillRectangle(customerBrush, customerPoint.X - 2, customerPoint.Y - 2, 6, 6);
+                      graphics.FillRectangle(customerBrush, locationPoint.X - 2, locationPoint.Y - 2, 6, 6);
                     }
-                    lastCustomer = customer;
+                    lastCustomer = location;
                   }
 
                   graphics.DrawPolygon(pens[((currentTour >= pens.Length) ? (pens.Length - 1) : (currentTour))], tourPoints);
