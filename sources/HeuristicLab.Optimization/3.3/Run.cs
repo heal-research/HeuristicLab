@@ -49,7 +49,8 @@ namespace HeuristicLab.Optimization {
       get { return results; }
     }
 
-    private Color color = Color.Black;
+    [Storable]
+    private Color color;
     public Color Color {
       get { return this.color; }
       set {
@@ -76,10 +77,13 @@ namespace HeuristicLab.Optimization {
         handler(this, EventArgs.Empty);
     }
 
+    [StorableConstructor]
+    private Run(bool deserializing) : base(deserializing) { }
     public Run()
       : base() {
       name = ItemName;
       description = ItemDescription;
+      color = Color.Black;
       algorithm = null;
       parameters = new Dictionary<string, IItem>();
       results = new Dictionary<string, IItem>();
@@ -89,17 +93,20 @@ namespace HeuristicLab.Optimization {
       if (algorithm == null) throw new ArgumentNullException();
       name = algorithm.Name + " Run (" + algorithm.ExecutionTime.ToString() + ")";
       description = ItemDescription;
+      color = Color.Black;
       Initialize(algorithm);
     }
     public Run(string name, IAlgorithm algorithm)
       : base(name) {
       if (algorithm == null) throw new ArgumentNullException();
+      color = Color.Black;
       description = ItemDescription;
       Initialize(algorithm);
     }
     public Run(string name, string description, IAlgorithm algorithm)
       : base(name, description) {
       if (algorithm == null) throw new ArgumentNullException();
+      color = Color.Black;
       Initialize(algorithm);
     }
 
@@ -113,6 +120,11 @@ namespace HeuristicLab.Optimization {
         clone.Prepare(true);
         this.algorithm = clone;
       }
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserializationHook() {
+      if (color == Color.Empty) color = Color.Black;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
