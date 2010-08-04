@@ -25,7 +25,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings {
-  public abstract class VRPManipulator : SingleSuccessorOperator, IVRPManipulator {
+  public abstract class VRPManipulator : VRPOperator, IVRPManipulator {
     #region IVRPManipulator Members
 
     public ILookupParameter<IVRPEncoding> VRPSolutionParameter {

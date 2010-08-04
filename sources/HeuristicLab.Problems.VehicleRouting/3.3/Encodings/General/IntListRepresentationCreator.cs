@@ -25,8 +25,9 @@ using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using System.Collections.Generic;
+using HeuristicLab.Problems.VehicleRouting.Encodings;
 
-namespace HeuristicLab.Problems.VehicleRouting {
+namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [StorableClass]
   public abstract class IntListRepresentationCreator : VRPCreator {
     protected abstract IVRPEncoding CreateEncoding(List<int> route);

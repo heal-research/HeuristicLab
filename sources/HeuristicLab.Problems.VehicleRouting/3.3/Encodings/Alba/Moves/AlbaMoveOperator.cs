@@ -28,16 +28,7 @@ using HeuristicLab.Parameters;
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaMoveOperator", "A move operator for an alba VRP representation.")]
   [StorableClass]
-  public abstract class AlbaMoveOperator : VRPMoveOperator {
-    public ILookupParameter<IntValue> VehiclesParameter {
-      get { return (ILookupParameter<IntValue>)Parameters["Vehicles"]; }
-    }
-
-    public AlbaMoveOperator()
-      : base() {
-      Parameters.Add(new LookupParameter<IntValue>("Vehicles", "The vehicles count."));
-    }
-    
+  public abstract class AlbaMoveOperator : VRPMoveOperator {    
     [Storable]
     protected abstract IPermutationMoveOperator PermutationMoveOperatorParameter { get; set; }
 

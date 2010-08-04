@@ -106,6 +106,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Analyzers\BestVRPSolutionAnalyzer.cs" />
+    <Compile Include="VRPUtilities.cs" />
+    <Compile Include="VRPOperator.cs" />
     <Compile Include="Encodings\General\PushForwardInsertionCreator.cs" />
     <Compile Include="Encodings\General\IntListRepresentationCreator.cs" />
     <Compile Include="Encodings\Alba\Crossovers\AlbaPermutationCrossover.cs" />

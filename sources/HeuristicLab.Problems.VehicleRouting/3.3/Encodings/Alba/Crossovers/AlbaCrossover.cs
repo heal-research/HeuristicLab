@@ -27,26 +27,15 @@ using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [StorableClass]
-  public abstract class AlbaCrossover : VRPCrossover {
-    public ILookupParameter<IntValue> VehiclesParameter {
-      get { return (ILookupParameter<IntValue>)Parameters["Vehicles"]; }
-    }
-
-    public AlbaCrossover()
-      : base() {
-        Parameters.Add(new LookupParameter<IntValue>("Vehicles", "The vehicles count."));
-    }
-    
+  public abstract class AlbaCrossover : VRPCrossover {    
     protected virtual void Crossover() {
     }
 
     public override IOperation Apply() {
-      int cities = 0;
-
       ItemArray<IVRPEncoding> parents = new ItemArray<IVRPEncoding>(ParentsParameter.ActualValue.Length);
       for (int i = 0; i < ParentsParameter.ActualValue.Length; i++) {
         IVRPEncoding solution = ParentsParameter.ActualValue[i];
-        cities = solution.Cities;
+
         if (!(solution is AlbaEncoding)) {
           parents[i] = AlbaEncoding.ConvertFrom(solution, VehiclesParameter.ActualValue.Value);
         } else {

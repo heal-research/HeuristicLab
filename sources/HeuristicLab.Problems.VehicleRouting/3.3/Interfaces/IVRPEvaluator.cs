@@ -24,18 +24,9 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.VehicleRouting {
-  public interface IVRPEvaluator : ISingleObjectiveEvaluator {
+  public interface IVRPEvaluator : ISingleObjectiveEvaluator, IVRPOperator {
     ILookupParameter<IVRPEncoding> VRPSolutionParameter { get; }
-    ILookupParameter<DoubleMatrix> CoordinatesParameter { get; }
-    ILookupParameter<DoubleMatrix> DistanceMatrixParameter { get; }
-    ILookupParameter<BoolValue> UseDistanceMatrixParameter { get; }
-    ILookupParameter<IntValue> VehiclesParameter { get; }
-    ILookupParameter<DoubleValue> CapacityParameter { get; }
-    ILookupParameter<DoubleArray> DemandParameter { get; }
-    ILookupParameter<DoubleArray> ReadyTimeParameter { get; }
-    ILookupParameter<DoubleArray> DueTimeParameter { get; }
-    ILookupParameter<DoubleArray> ServiceTimeParameter { get; }
-
+    
     ILookupParameter<DoubleValue> VehcilesUtilizedParameter { get; }
     ILookupParameter<DoubleValue> TravelTimeParameter { get; }
     ILookupParameter<DoubleValue> DistanceParameter { get; }

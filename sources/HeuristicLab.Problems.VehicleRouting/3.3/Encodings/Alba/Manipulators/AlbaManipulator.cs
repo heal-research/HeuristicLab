@@ -27,16 +27,7 @@ using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [StorableClass]
-  public abstract class AlbaManipulator : VRPManipulator {
-    public ILookupParameter<IntValue> VehiclesParameter {
-      get { return (ILookupParameter<IntValue>)Parameters["Vehicles"]; }
-    }
-
-    public AlbaManipulator()
-      : base() {
-        Parameters.Add(new LookupParameter<IntValue>("Vehicles", "The vehicles count."));
-    }
-    
+  public abstract class AlbaManipulator : VRPManipulator {    
     protected virtual void Manipulate() {
     }
     

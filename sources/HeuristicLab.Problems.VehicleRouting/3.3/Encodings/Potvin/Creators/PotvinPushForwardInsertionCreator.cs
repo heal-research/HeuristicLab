@@ -27,6 +27,7 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinPushForwardCreator", "An operator which creates a new Potvin VRP representation using the push forward insertion heuristic.")]

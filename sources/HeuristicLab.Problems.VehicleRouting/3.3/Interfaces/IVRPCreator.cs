@@ -26,16 +26,6 @@ using HeuristicLab.Optimization;
 namespace HeuristicLab.Problems.VehicleRouting {
   public interface IVRPCreator : IVRPOperator, ISolutionCreator {
     IValueLookupParameter<IntValue> CitiesParameter { get; }
-    ILookupParameter<IntValue> VehiclesParameter { get; }
-    ILookupParameter<DoubleMatrix> CoordinatesParameter { get; }
-    ILookupParameter<DoubleMatrix> DistanceMatrixParameter { get; }
-    ILookupParameter<BoolValue> UseDistanceMatrixParameter { get; }
-    ILookupParameter<DoubleValue> CapacityParameter { get; }
-    ILookupParameter<DoubleArray> DemandParameter { get; }
-    ILookupParameter<DoubleArray> ReadyTimeParameter { get; }
-    ILookupParameter<DoubleArray> DueTimeParameter { get; }
-    ILookupParameter<DoubleArray> ServiceTimeParameter { get; }
-
     ILookupParameter<IVRPEncoding> VRPSolutionParameter { get; }
   }
 }

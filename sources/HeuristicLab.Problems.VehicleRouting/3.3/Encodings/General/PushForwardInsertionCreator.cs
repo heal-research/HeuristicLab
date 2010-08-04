@@ -28,7 +28,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Problems.VehicleRouting {
+namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [StorableClass]
   public abstract class PushForwardCreator : IntListRepresentationCreator, IStochasticOperator {
     #region IStochasticOperator Members
@@ -198,7 +198,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
        * generate cost list
        *-----------------------------------------------------------------------------
        */
-      for (int i = 1; i <= CitiesParameter.ActualValue.Value; i++) {
+      for (int i = 1; i <= Cities; i++) {
         distance = Distance(i, 0);
         if (CoordinatesParameter.ActualValue[i, 0] < x0) distance = -distance;
         cost = -alpha * distance + // distance 0 <-> City[i]

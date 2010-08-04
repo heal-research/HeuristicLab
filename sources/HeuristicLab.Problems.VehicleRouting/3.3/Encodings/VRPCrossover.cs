@@ -25,7 +25,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings {
-  public abstract class VRPCrossover : SingleSuccessorOperator, IVRPCrossover {
+  public abstract class VRPCrossover : VRPOperator, IVRPCrossover {
     #region IVRPCrossover Members
 
     public ILookupParameter<ItemArray<IVRPEncoding>> ParentsParameter {

@@ -155,7 +155,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
                     if (i != -1 && i != tour.Count) {
                       Brush customerBrush = Brushes.Black;
 
-                      t += VehicleRoutingProblem.GetDistance(
+                      t += VRPUtilities.GetDistance(
                         lastCustomer, location, coordinates, distanceMatrix, useDistanceMatrix);
 
                       if (t < readyTime[location]) {

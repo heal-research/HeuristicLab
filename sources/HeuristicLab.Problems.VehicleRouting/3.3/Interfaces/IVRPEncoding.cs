@@ -27,9 +27,5 @@ namespace HeuristicLab.Problems.VehicleRouting {
     ItemList<Tour> Tours {
       get;
     }
-
-    int Cities {
-      get;
-    }
   }
 }

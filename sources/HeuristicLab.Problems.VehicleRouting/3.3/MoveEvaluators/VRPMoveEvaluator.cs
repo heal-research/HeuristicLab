@@ -25,11 +25,12 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.VehicleRouting.Encodings;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   [Item("VRPMoveEvaluator", "A base class for operators which evaluate VRP moves.")]
   [StorableClass]
-  public abstract class VRPMoveEvaluator : SingleSuccessorOperator, IVRPMoveEvaluator, IMoveOperator {
+  public abstract class VRPMoveEvaluator : VRPOperator, IVRPMoveEvaluator, IMoveOperator {
     public override bool CanChangeName {
       get { return false; }
     }
@@ -37,33 +38,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     public ILookupParameter<IVRPEncoding> VRPSolutionParameter {
       get { return (ILookupParameter<IVRPEncoding>)Parameters["VRPSolution"]; }
     }
-    public ILookupParameter<DoubleMatrix> CoordinatesParameter {
-      get { return (ILookupParameter<DoubleMatrix>)Parameters["Coordinates"]; }
-    }
-    public ILookupParameter<DoubleMatrix> DistanceMatrixParameter {
-      get { return (ILookupParameter<DoubleMatrix>)Parameters["DistanceMatrix"]; }
-    }
-    public ILookupParameter<BoolValue> UseDistanceMatrixParameter {
-      get { return (ILookupParameter<BoolValue>)Parameters["UseDistanceMatrix"]; }
-    }
-    public ILookupParameter<IntValue> VehiclesParameter {
-      get { return (ILookupParameter<IntValue>)Parameters["Vehicles"]; }
-    }
-    public ILookupParameter<DoubleValue> CapacityParameter {
-      get { return (ILookupParameter<DoubleValue>)Parameters["Capacity"]; }
-    }
-    public ILookupParameter<DoubleArray> DemandParameter {
-      get { return (ILookupParameter<DoubleArray>)Parameters["Demand"]; }
-    }
-    public ILookupParameter<DoubleArray> ReadyTimeParameter {
-      get { return (ILookupParameter<DoubleArray>)Parameters["ReadyTime"]; }
-    }
-    public ILookupParameter<DoubleArray> DueTimeParameter {
-      get { return (ILookupParameter<DoubleArray>)Parameters["DueTime"]; }
-    }
-    public ILookupParameter<DoubleArray> ServiceTimeParameter {
-      get { return (ILookupParameter<DoubleArray>)Parameters["ServiceTime"]; }
-    }
+   
     public ILookupParameter<DoubleValue> FleetUsageFactor {
       get { return (ILookupParameter<DoubleValue>)Parameters["FleetUsageFactor"]; }
     }
@@ -112,15 +87,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
       Parameters.Add(new LookupParameter<DoubleValue>("MoveOverload", "The overload."));
       Parameters.Add(new LookupParameter<DoubleValue>("MoveTardiness", "The tardiness."));
       Parameters.Add(new LookupParameter<DoubleValue>("MoveQuality", "The evaluated quality of a move on a VRP solution."));
-      Parameters.Add(new LookupParameter<DoubleMatrix>("Coordinates", "The coordinates of the cities."));
-      Parameters.Add(new LookupParameter<DoubleMatrix>("DistanceMatrix", "The matrix which contains the distances between the cities."));
-      Parameters.Add(new LookupParameter<BoolValue>("UseDistanceMatrix", "True if a distance matrix should be calculated and used for evaluation, otherwise false."));
-      Parameters.Add(new LookupParameter<IntValue>("Vehicles", "The number of vehicles."));
-      Parameters.Add(new LookupParameter<DoubleValue>("Capacity", "The capacity of each vehicle."));
-      Parameters.Add(new LookupParameter<DoubleArray>("Demand", "The demand of each customer."));
-      Parameters.Add(new LookupParameter<DoubleArray>("ReadyTime", "The ready time of each customer."));
-      Parameters.Add(new LookupParameter<DoubleArray>("DueTime", "The due time of each customer."));
-      Parameters.Add(new LookupParameter<DoubleArray>("ServiceTime", "The service time of each customer."));
       Parameters.Add(new LookupParameter<DoubleValue>("FleetUsageFactor", "The fleet usage factor considered in the evaluation."));
       Parameters.Add(new LookupParameter<DoubleValue>("TimeFactor", "The time factor considered in the evaluation."));
       Parameters.Add(new LookupParameter<DoubleValue>("DistanceFactor", "The distance factor considered in the evaluation."));

@@ -374,30 +374,30 @@ namespace HeuristicLab.Problems.VehicleRouting {
       BestVRPSolutionAnalyzer.ResultsParameter.ActualName = "Results";
     }
     private void ParameterizeOperators() {
-      foreach (IVRPMoveOperator op in Operators.OfType<IVRPMoveOperator>()) {
-        op.VRPSolutionParameter.ActualName = SolutionCreator.VRPSolutionParameter.ActualName;
-      }
-      foreach (AlbaMoveOperator op in Operators.OfType<AlbaMoveOperator>()) {
-        op.VehiclesParameter.ActualName = VehiclesParameter.Name;
-      }
-
-      foreach (IVRPMoveEvaluator op in Operators.OfType<IVRPMoveEvaluator>()) {
+      foreach (IVRPOperator op in Operators.OfType<IVRPOperator>()) {
         op.CoordinatesParameter.ActualName = CoordinatesParameter.Name;
         op.DistanceMatrixParameter.ActualName = DistanceMatrixParameter.Name;
         op.UseDistanceMatrixParameter.ActualName = UseDistanceMatrixParameter.Name;
-        op.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
-        op.VRPSolutionParameter.ActualName = SolutionCreator.VRPSolutionParameter.ActualName;
         op.VehiclesParameter.ActualName = VehiclesParameter.Name;
         op.CapacityParameter.ActualName = CapacityParameter.Name;
         op.DemandParameter.ActualName = DemandParameter.Name;
         op.ReadyTimeParameter.ActualName = ReadyTimeParameter.Name;
         op.DueTimeParameter.ActualName = DueTimeParameter.Name;
         op.ServiceTimeParameter.ActualName = ServiceTimeParameter.Name;
+      }
+      
+      foreach (IVRPMoveOperator op in Operators.OfType<IVRPMoveOperator>()) {
+        op.VRPSolutionParameter.ActualName = SolutionCreator.VRPSolutionParameter.ActualName;
+      }
+
+      foreach (IVRPMoveEvaluator op in Operators.OfType<IVRPMoveEvaluator>()) {
         op.FleetUsageFactor.ActualName = FleetUsageFactor.Name;
         op.TimeFactor.ActualName = TimeFactor.Name;
         op.DistanceFactor.ActualName = DistanceFactor.Name;
         op.OverloadPenalty.ActualName = OverloadPenalty.Name;
         op.TardinessPenalty.ActualName = TardinessPenalty.Name;
+        op.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
+        op.VRPSolutionParameter.ActualName = SolutionCreator.VRPSolutionParameter.ActualName;
       }
       string translocationMove = Operators.OfType<IMoveGenerator>().OfType<IAlbaTranslocationMoveOperator>().First().TranslocationMoveParameter.ActualName;
       foreach (IAlbaTranslocationMoveOperator op in Operators.OfType<IAlbaTranslocationMoveOperator>())
@@ -407,77 +407,15 @@ namespace HeuristicLab.Problems.VehicleRouting {
         op.ParentsParameter.ActualName = SolutionCreator.VRPSolutionParameter.ActualName;
         op.ChildParameter.ActualName = SolutionCreator.VRPSolutionParameter.ActualName;
       }
-      foreach (AlbaCrossover op in Operators.OfType<AlbaCrossover>()) {
-        op.VehiclesParameter.ActualName = VehiclesParameter.Name;
-      }
 
       foreach (IVRPManipulator op in Operators.OfType<IVRPManipulator>()) {
         op.VRPSolutionParameter.ActualName = SolutionCreator.VRPSolutionParameter.ActualName;
-      }
-      foreach (AlbaManipulator op in Operators.OfType<AlbaManipulator>()) {
-        op.VehiclesParameter.ActualName = VehiclesParameter.Name;
       }
     }
     private void ClearDistanceMatrix() {
       DistanceMatrixParameter.Value = null;
     }
     #endregion
-
-    private static double CalculateDistance(int start, int end, DoubleMatrix coordinates) {
-      double distance = 0.0;
-
-      distance =
-          Math.Sqrt(
-            Math.Pow(coordinates[start, 0] - coordinates[end, 0], 2) +
-            Math.Pow(coordinates[start, 1] - coordinates[end, 1], 2));
-
-      return distance;
-    }
-
-    private static DoubleMatrix CreateDistanceMatrix(DoubleMatrix coordinates) {
-      DoubleMatrix distanceMatrix = new DoubleMatrix(coordinates.Rows, coordinates.Rows);
-
-      for (int i = 0; i < distanceMatrix.Rows; i++) {
-        for (int j = i; j < distanceMatrix.Columns; j++) {
-          double distance = CalculateDistance(i, j, coordinates);
-
-          distanceMatrix[i, j] = distance;
-          distanceMatrix[j, i] = distance;
-        }
-      }
-
-      return distanceMatrix;
-    }
-
-    public static double GetDistance(int start, int end,
-      DoubleMatrix coordinates, ILookupParameter<DoubleMatrix> distanceMatrix, BoolValue useDistanceMatrix) {
-      double distance = 0.0;
-
-      if (useDistanceMatrix.Value) {
-        if (distanceMatrix.ActualValue == null) {
-          distanceMatrix.ActualValue = CreateDistanceMatrix(coordinates);
-        }
-
-        distance = distanceMatrix.ActualValue[start, end];
-      } else {
-        distance = CalculateDistance(start, end, coordinates);
-      }
-
-      return distance;
-    }
-
-    public static double GetDistance(int start, int end,
-      DoubleMatrix coordinates, DoubleMatrix distanceMatrix, BoolValue useDistanceMatrix) {
-      double distance = 0.0;
-
-      if (useDistanceMatrix.Value) {
-        distance = distanceMatrix[start, end];
-      } else {
-        distance = CalculateDistance(start, end, coordinates);
-      }
-
-      return distance;
-    }
 
     public void ImportFromSolomon(string solomonFileName) {
       SolomonParser parser = new SolomonParser(solomonFileName);
@@ -521,7 +459,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
           ServiceTime[i] = 0;
         } else {
           Demand[i] = rand.Next(10, 50);
-          DueTime[i] = rand.Next((int)Math.Ceiling(CalculateDistance(0, i, Coordinates)), 1200);
+          DueTime[i] = rand.Next((int)Math.Ceiling(VRPUtilities.CalculateDistance(0, i, Coordinates)), 1200);
           ReadyTime[i] = DueTime[i] - rand.Next(0, 100);
           ServiceTime[i] = 90;
         }

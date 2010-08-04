@@ -25,61 +25,24 @@ using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Problems.VehicleRouting {
+namespace HeuristicLab.Problems.VehicleRouting.Encodings {
   [StorableClass]
-  public abstract class VRPCreator : SingleSuccessorOperator, IVRPCreator {
+  public abstract class VRPCreator : VRPOperator, IVRPCreator {
     public override bool CanChangeName {
       get { return false; }
     }
 
     #region IVRPCreator Members
-    public IValueLookupParameter<IntValue> CitiesParameter {
-      get { return (IValueLookupParameter<IntValue>)Parameters["Cities"]; }
-    }
     public ILookupParameter<IVRPEncoding> VRPSolutionParameter {
       get { return (ILookupParameter<IVRPEncoding>)Parameters["VRPSolution"]; }
     }
-    public ILookupParameter<DoubleMatrix> CoordinatesParameter {
-      get { return (ILookupParameter<DoubleMatrix>)Parameters["Coordinates"]; }
-    }
-    public ILookupParameter<DoubleMatrix> DistanceMatrixParameter {
-      get { return (ILookupParameter<DoubleMatrix>)Parameters["DistanceMatrix"]; }
-    }
-    public ILookupParameter<BoolValue> UseDistanceMatrixParameter {
-      get { return (ILookupParameter<BoolValue>)Parameters["UseDistanceMatrix"]; }
-    }
-    public ILookupParameter<IntValue> VehiclesParameter {
-      get { return (ILookupParameter<IntValue>)Parameters["Vehicles"]; }
-    }
-    public ILookupParameter<DoubleValue> CapacityParameter {
-      get { return (ILookupParameter<DoubleValue>)Parameters["Capacity"]; }
-    }
-    public ILookupParameter<DoubleArray> DemandParameter {
-      get { return (ILookupParameter<DoubleArray>)Parameters["Demand"]; }
-    }
-    public ILookupParameter<DoubleArray> ReadyTimeParameter {
-      get { return (ILookupParameter<DoubleArray>)Parameters["ReadyTime"]; }
-    }
-    public ILookupParameter<DoubleArray> DueTimeParameter {
-      get { return (ILookupParameter<DoubleArray>)Parameters["DueTime"]; }
-    }
-    public ILookupParameter<DoubleArray> ServiceTimeParameter {
-      get { return (ILookupParameter<DoubleArray>)Parameters["ServiceTime"]; }
-    }
+    
+      public IValueLookupParameter<IntValue> CitiesParameter {
+	      get { return (IValueLookupParameter<IntValue>)Parameters["Cities"]; }
+	    }
 
     public VRPCreator()
       : base() {
-      Parameters.Add(new ValueLookupParameter<IntValue>("Cities", "The city count."));
-      Parameters.Add(new LookupParameter<IntValue>("Vehicles", "The vehicles count."));
-      Parameters.Add(new LookupParameter<DoubleMatrix>("Coordinates", "The coordinates of the cities."));
-      Parameters.Add(new LookupParameter<DoubleMatrix>("DistanceMatrix", "The matrix which contains the distances between the cities."));
-      Parameters.Add(new LookupParameter<BoolValue>("UseDistanceMatrix", "True if a distance matrix should be calculated and used for evaluation, otherwise false."));
-      Parameters.Add(new LookupParameter<DoubleValue>("Capacity", "The capacity of each vehicle."));
-      Parameters.Add(new LookupParameter<DoubleArray>("Demand", "The demand of each customer."));
-      Parameters.Add(new LookupParameter<DoubleArray>("ReadyTime", "The ready time of each customer."));
-      Parameters.Add(new LookupParameter<DoubleArray>("DueTime", "The due time of each customer."));
-      Parameters.Add(new LookupParameter<DoubleArray>("ServiceTime", "The service time of each customer."));
-
       Parameters.Add(new LookupParameter<IVRPEncoding>("VRPSolution", "The new VRP solution."));
     }
 

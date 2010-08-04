@@ -38,8 +38,6 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     }
 
     protected override void Crossover() {
-      int cities = ParentsParameter.ActualValue[0].Cities;
-
       PermutationCrossoverParameter.ActualValue.ParentsParameter.ActualName = ParentsParameter.ActualName;
       IAtomicOperation op = this.ExecutionContext.CreateOperation(
         PermutationCrossoverParameter.ActualValue, this.ExecutionContext.Scope);
@@ -50,7 +48,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
         Permutation permutation = ExecutionContext.Scope.Variables[childName].Value as Permutation;
         ExecutionContext.Scope.Variables.Remove(childName);
 
-        ChildParameter.ActualValue = new AlbaEncoding(permutation, cities);
+        ChildParameter.ActualValue = new AlbaEncoding(permutation, Cities);
       } else
         ChildParameter.ActualValue = null;
     }
