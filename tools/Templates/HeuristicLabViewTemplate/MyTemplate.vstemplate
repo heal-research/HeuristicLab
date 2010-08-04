@@ -1,0 +1,19 @@
+<VSTemplate Version="3.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" Type="Item">
+  <TemplateData>
+    <DefaultName>HeuristicLabView.cs</DefaultName>
+    <Name>HeuristicLabViewTemplate</Name>
+    <Description>Creates a HL3.3 view</Description>
+    <ProjectType>CSharp</ProjectType>
+    <SortOrder>10</SortOrder>
+    <Icon>__TemplateIcon.ico</Icon>
+  </TemplateData>
+  <TemplateContent>
+    <References />
+    <ProjectItem SubType="UserControl" TargetFileName="$fileinputname$.cs" ReplaceParameters="true">DefaultView.cs</ProjectItem>
+    <ProjectItem SubType="" TargetFileName="$fileinputname$.Designer.cs" ReplaceParameters="true">DefaultView.Designer.cs</ProjectItem>
+  </TemplateContent>
+  <WizardExtension>
+    <Assembly>HeuristicLab.VS2010Wizards, Version=3.3.0.0, Culture=Neutral, PublicKeyToken=18a43a5d25a3c148</Assembly>
+    <FullClassName>HeuristicLab.VS2010Wizards.ViewWizard</FullClassName>
+  </WizardExtension>
+</VSTemplate>

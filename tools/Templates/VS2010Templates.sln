@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.VS2010Wizards", "VS2010Templates\HeuristicLab.VS2010Wizards.csproj", "{F1B37418-F66E-41C0-BC36-B9A02BBAF62D}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "VS2010TemplatesInstaller", "VS2010TemplatesInstaller\VS2010TemplatesInstaller.vdproj", "{F5024905-1600-4A7E-858C-019EEE75B56F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{28A05A91-A678-43B9-8573-0A7461E20F81}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HeuristicLabViewTemplate", "HeuristicLabViewTemplate", "{4BB6A8B2-416E-4577-A1D9-9EC3420B8EB2}"
+	ProjectSection(SolutionItems) = preProject
+		HeuristicLabViewTemplate\__TemplateIcon.ico = HeuristicLabViewTemplate\__TemplateIcon.ico
+		HeuristicLabViewTemplate\DefaultView.cs = HeuristicLabViewTemplate\DefaultView.cs
+		HeuristicLabViewTemplate\DefaultView.Designer.cs = HeuristicLabViewTemplate\DefaultView.Designer.cs
+		HeuristicLabViewTemplate\MyTemplate.vstemplate = HeuristicLabViewTemplate\MyTemplate.vstemplate
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F1B37418-F66E-41C0-BC36-B9A02BBAF62D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1B37418-F66E-41C0-BC36-B9A02BBAF62D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1B37418-F66E-41C0-BC36-B9A02BBAF62D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1B37418-F66E-41C0-BC36-B9A02BBAF62D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5024905-1600-4A7E-858C-019EEE75B56F}.Debug|Any CPU.ActiveCfg = Debug
+		{F5024905-1600-4A7E-858C-019EEE75B56F}.Release|Any CPU.ActiveCfg = Release
+		{F5024905-1600-4A7E-858C-019EEE75B56F}.Release|Any CPU.Build.0 = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4BB6A8B2-416E-4577-A1D9-9EC3420B8EB2} = {28A05A91-A678-43B9-8573-0A7461E20F81}
+	EndGlobalSection
+EndGlobal
