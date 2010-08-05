@@ -29,6 +29,7 @@ using HeuristicLab.Selection;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.NSGA2 {
+  [Item("CrowdedTournamentSelector", "Selects solutions using tournament selection by using the partial order defined in Deb et al. 2002. A Fast and Elitist Multiobjective Genetic Algorithm: NSGA-II. IEEE Transactions on Evolutionary Computation, 6(2), pp. 182-197.")]
   [StorableClass]
   public class CrowdedTournamentSelector : Selector, IMultiObjectiveSelector, IStochasticOperator {
     public ILookupParameter<BoolArray> MaximizationParameter {
