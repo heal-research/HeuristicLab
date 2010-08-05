@@ -128,6 +128,7 @@
     <Compile Include="Symbolic\Analyzers\SymbolicRegressionTournamentPruning.cs" />
     <Compile Include="Symbolic\Analyzers\SymbolicRegressionVariableFrequencyAnalyzer.cs" />
     <Compile Include="Symbolic\Analyzers\ValidationBestScaledSymbolicRegressionSolutionAnalyzer.cs" />
+    <Compile Include="Symbolic\Evaluators\MultiObjectiveSymbolicRegressionMeanSquaredErrorEvaluator.cs" />
     <Compile Include="Symbolic\Evaluators\MultiObjectiveSymbolicRegressionEvaluator.cs" />
     <Compile Include="Symbolic\Evaluators\MultiObjectiveSymbolicRegressionPearsonsRSquaredEvaluator.cs" />
     <Compile Include="Symbolic\Evaluators\SingleObjectiveSymbolicRegressionEvaluator.cs" />
