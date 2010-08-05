@@ -33,9 +33,6 @@ namespace HeuristicLab.Optimization.Views {
   [Content(typeof(RunCollectionConstraintCollection), true)]
   [Content(typeof(IItemCollection<IRunCollectionConstraint>), false)]
   public partial class RunCollectionConstraintCollectionView : ItemCollectionView<IRunCollectionConstraint> {
-    /// <summary>
-    /// Initializes a new instance of <see cref="VariablesScopeView"/> with caption "Variables Scope View".
-    /// </summary>
     public RunCollectionConstraintCollectionView() {
       InitializeComponent();
       itemsGroupBox.Text = "RunCollection Constraints";
@@ -60,6 +57,15 @@ namespace HeuristicLab.Optimization.Views {
       return null;
     }
 
+    protected override ListViewItem CreateListViewItem(IRunCollectionConstraint item) {
+      ListViewItem listViewItem = base.CreateListViewItem(item);
+      if (item.Active)
+        listViewItem.Font = new Font(listViewItem.Font, FontStyle.Bold);
+      else
+        listViewItem.Font = new Font(listViewItem.Font, FontStyle.Regular);
+      return listViewItem;
+    }
+
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       foreach (IRunCollectionConstraint constraint in Content)
@@ -74,6 +80,7 @@ namespace HeuristicLab.Optimization.Views {
       base.Content_ItemsAdded(sender, e);
       foreach (IRunCollectionConstraint constraint in e.Items)
         RegisterConstraintEvents(constraint);
+
     }
     protected override void Content_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IRunCollectionConstraint> e) {
       base.Content_ItemsRemoved(sender, e);
@@ -91,20 +98,16 @@ namespace HeuristicLab.Optimization.Views {
     protected virtual void RegisterConstraintEvents(IRunCollectionConstraint constraint) {
       constraint.ActiveChanged += new EventHandler(constraint_ActiveChanged);
     }
-
     protected virtual void DeregisterConstraintEvents(IRunCollectionConstraint constraint) {
       constraint.ActiveChanged -= new EventHandler(constraint_ActiveChanged);
     }
-
     protected virtual void constraint_ActiveChanged(object sender, EventArgs e) {
-      IRunCollectionConstraint constraint = sender as IRunCollectionConstraint;
-      if (constraint != null) {
-        foreach (ListViewItem listViewItem in GetListViewItemsForItem(constraint)) {
-          if (constraint.Active)
-            listViewItem.Font = new Font(listViewItem.Font, FontStyle.Bold);
-          else
-            listViewItem.Font = new Font(listViewItem.Font, FontStyle.Regular);
-        }
+      IRunCollectionConstraint constraint = (IRunCollectionConstraint)sender;
+      foreach (ListViewItem listViewItem in GetListViewItemsForItem(constraint)) {
+        if (constraint.Active)
+          listViewItem.Font = new Font(listViewItem.Font, FontStyle.Bold);
+        else
+          listViewItem.Font = new Font(listViewItem.Font, FontStyle.Regular);
       }
       this.AdjustListViewColumnSizes();
     }
