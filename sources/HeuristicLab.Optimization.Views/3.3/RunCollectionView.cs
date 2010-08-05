@@ -293,8 +293,10 @@ namespace HeuristicLab.Optimization.Views {
         Invoke(new CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded), sender, e);
       else {
         RegisterRunEvents(e.Items);
-        foreach (IRun item in e.Items)
+        foreach (IRun item in e.Items) {
           AddListViewItem(CreateListViewItem(item));
+          UpdateRun(item);
+        }
         analyzeRunsToolStripDropDownButton.Enabled = itemsListView.Items.Count > 0;
         clearButton.Enabled = itemsListView.Items.Count > 0 && !Content.IsReadOnly && !ReadOnly;
         runCollectionConstraintCollectionView.ReadOnly = itemsListView.Items.Count == 0;
@@ -328,8 +330,10 @@ namespace HeuristicLab.Optimization.Views {
           }
         }
         RegisterRunEvents(e.Items);
-        foreach (IRun item in e.Items)
+        foreach (IRun item in e.Items) {
           AddListViewItem(CreateListViewItem(item));
+          UpdateRun(item);
+        }
         analyzeRunsToolStripDropDownButton.Enabled = itemsListView.Items.Count > 0;
         clearButton.Enabled = itemsListView.Items.Count > 0 && !Content.IsReadOnly && !ReadOnly;
         runCollectionConstraintCollectionView.ReadOnly = itemsListView.Items.Count == 0;
