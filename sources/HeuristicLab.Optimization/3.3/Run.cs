@@ -129,6 +129,7 @@ namespace HeuristicLab.Optimization {
 
     public override IDeepCloneable Clone(Cloner cloner) {
       Run clone = (Run)base.Clone(cloner);
+      clone.color = this.color;
       clone.algorithm = (IAlgorithm)cloner.Clone(algorithm);
       foreach (string key in parameters.Keys)
         clone.parameters.Add(key, (IItem)cloner.Clone(parameters[key]));
