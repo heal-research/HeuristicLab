@@ -26,8 +26,10 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Selection;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.NSGA2 {
+  [StorableClass]
   public class CrowdedTournamentSelector : Selector, IMultiObjectiveSelector, IStochasticOperator {
     public ILookupParameter<BoolArray> MaximizationParameter {
       get { return (ILookupParameter<BoolArray>)Parameters["Maximization"]; }
