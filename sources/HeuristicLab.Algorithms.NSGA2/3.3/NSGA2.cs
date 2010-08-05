@@ -206,7 +206,8 @@ namespace HeuristicLab.Algorithms.NSGA2 {
 
     public override IDeepCloneable Clone(Cloner cloner) {
       NSGA2 clone = (NSGA2)base.Clone(cloner);
-      // TODO: Clone additional fields
+      clone.basicMOQualityAnalyzer = (BasicMultiObjectiveQualityAnalyzer)cloner.Clone(basicMOQualityAnalyzer);
+      clone.AttachEventHandlers();
       return clone;
     }
 
