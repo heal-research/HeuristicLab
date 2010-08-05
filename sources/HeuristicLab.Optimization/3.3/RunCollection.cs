@@ -33,6 +33,8 @@ namespace HeuristicLab.Optimization {
   [Creatable("Testing & Analysis")]
   [StorableClass]
   public class RunCollection : ItemCollection<IRun>, IStringConvertibleMatrix {
+    [StorableConstructor]
+    protected RunCollection(bool deserializing) : base(deserializing) { }
     public RunCollection() : base() { Initialize(); }
     public RunCollection(int capacity) : base(capacity) { Initialize(); }
     public RunCollection(IEnumerable<IRun> collection) : base(collection) { Initialize(); this.OnItemsAdded(collection); }
@@ -41,10 +43,9 @@ namespace HeuristicLab.Optimization {
       resultNames = new List<string>();
       dataTypes = new Dictionary<string, HashSet<Type>>();
       constraints = new RunCollectionConstraintCollection();
-      constraints.ItemsAdded += new CollectionItemsChangedEventHandler<IRunCollectionConstraint>(Constraints_ItemsAdded);
-      constraints.ItemsRemoved += new CollectionItemsChangedEventHandler<IRunCollectionConstraint>(Constraints_ItemsRemoved);
-      constraints.CollectionReset += new CollectionItemsChangedEventHandler<IRunCollectionConstraint>(Constraints_CollectionReset);
+      RegisterConstraintsEvents();
     }
+
     [Storable]
     private Dictionary<string, HashSet<Type>> dataTypes;
     public IEnumerable<Type> GetDataType(string columnName) {
@@ -52,6 +53,8 @@ namespace HeuristicLab.Optimization {
         return new Type[0];
       return dataTypes[columnName];
     }
+
+    [Storable]
     private RunCollectionConstraintCollection constraints;
     public RunCollectionConstraintCollection Constraints {
       get { return constraints; }
@@ -159,6 +162,12 @@ namespace HeuristicLab.Optimization {
       return value;
     }
 
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserializationHook() {
+      if (constraints == null) constraints = new RunCollectionConstraintCollection();
+      RegisterConstraintsEvents();
+      UpdateFiltering(true);
+    }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       RunCollection clone = (RunCollection)base.Clone(cloner);
@@ -167,6 +176,14 @@ namespace HeuristicLab.Optimization {
       clone.dataTypes = new Dictionary<string, HashSet<Type>>();
       foreach (string s in this.dataTypes.Keys)
         clone.dataTypes[s] = new HashSet<Type>(this.dataTypes[s]);
+
+      clone.constraints = new RunCollectionConstraintCollection(this.constraints.Select(x => (IRunCollectionConstraint)cloner.Clone(x)));
+      foreach (IRunCollectionConstraint constraint in clone.constraints)
+        constraint.ConstrainedValue = clone;
+      clone.RegisterConstraintsEvents();
+      clone.RegisterConstraintEvents(clone.constraints);
+
+      clone.UpdateFiltering(true);
       return clone;
     }
 
@@ -258,6 +275,12 @@ namespace HeuristicLab.Optimization {
         list.ForEach(r => r.Visible = true);
       foreach (IRunCollectionConstraint constraint in this.constraints)
         constraint.Check();
+    }
+
+    private void RegisterConstraintsEvents() {
+      constraints.ItemsAdded += new CollectionItemsChangedEventHandler<IRunCollectionConstraint>(Constraints_ItemsAdded);
+      constraints.ItemsRemoved += new CollectionItemsChangedEventHandler<IRunCollectionConstraint>(Constraints_ItemsRemoved);
+      constraints.CollectionReset += new CollectionItemsChangedEventHandler<IRunCollectionConstraint>(Constraints_CollectionReset);
     }
 
     protected virtual void RegisterConstraintEvents(IEnumerable<IRunCollectionConstraint> constraints) {
