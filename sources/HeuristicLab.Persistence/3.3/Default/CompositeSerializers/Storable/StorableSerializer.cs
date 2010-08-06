@@ -40,6 +40,13 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
   [StorableClass]
   public sealed class StorableSerializer : ICompositeSerializer {
 
+    public StorableSerializer() {
+      accessorListCache = new AccessorListCache();
+      accessorCache = new AccessorCache();
+      constructorCache = new Dictionary<Type, Constructor>();
+      hookCache = new Dictionary<HookDesignator, List<StorableReflection.Hook>>();
+    }
+
     #region ICompositeSerializer implementation
 
     /// <summary>
@@ -121,8 +128,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     public object CreateInstance(Type type, IEnumerable<Tag> metaInfo) {
       try {
         return GetConstructor(type)();
-      }
-      catch (TargetInvocationException x) {
+      } catch (TargetInvocationException x) {
         throw new PersistenceException(
           "Could not instantiate storable object: Encountered exception during constructor call",
           x.InnerException);
@@ -173,21 +179,16 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
 
     private sealed class AccessorListCache : Dictionary<Type, IEnumerable<DataMemberAccessor>> { }
     private sealed class AccessorCache : Dictionary<MemberInfo, DataMemberAccessor> { }
+    private delegate object Constructor();
 
     #endregion
 
     #region caches
 
-    private AccessorListCache accessorListCache = new AccessorListCache();
-    private AccessorCache accessorCache = new AccessorCache();
-
-    private delegate object Constructor();
-
-    private Dictionary<Type, Constructor> constructorCache =
-      new Dictionary<Type, Constructor>();
-
-    private Dictionary<HookDesignator, List<StorableReflection.Hook>> hookCache =
-      new Dictionary<HookDesignator, List<StorableReflection.Hook>>();
+    private AccessorListCache accessorListCache;
+    private AccessorCache accessorCache;
+    private Dictionary<Type, Constructor> constructorCache;
+    private Dictionary<HookDesignator, List<StorableReflection.Hook>> hookCache;
 
     #endregion
 

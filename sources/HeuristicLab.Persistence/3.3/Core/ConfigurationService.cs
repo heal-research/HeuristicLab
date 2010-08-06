@@ -93,8 +93,7 @@ namespace HeuristicLab.Persistence.Core {
     public void LoadSettings(bool throwOnError) {
       try {
         TryLoadSettings();
-      }
-      catch (Exception e) {
+      } catch (Exception e) {
         if (throwOnError) {
           throw new PersistenceException("Could not load persistence settings.", e);
         } else {
@@ -161,8 +160,7 @@ namespace HeuristicLab.Persistence.Core {
         foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies())
           if (a != defaultAssembly)
             DiscoverFrom(a);
-      }
-      catch (AppDomainUnloadedException x) {
+      } catch (AppDomainUnloadedException x) {
         Logger.Warn("could not get list of assemblies, AppDomain has already been unloaded", x);
       }
       SortCompositeSerializers();
@@ -206,8 +204,7 @@ namespace HeuristicLab.Persistence.Core {
             Formats.Add(format);
           }
         }
-      }
-      catch (ReflectionTypeLoadException e) {
+      } catch (ReflectionTypeLoadException e) {
         Logger.Warn("could not analyse assembly: " + a.FullName, e);
       }
     }
@@ -222,7 +219,7 @@ namespace HeuristicLab.Persistence.Core {
       if (PrimitiveSerializers.ContainsKey(format.SerialDataType)) {
         foreach (IPrimitiveSerializer f in PrimitiveSerializers[format.SerialDataType]) {
           if (!primitiveConfig.ContainsKey(f.SourceType))
-            primitiveConfig.Add(f.SourceType, f);
+            primitiveConfig.Add(f.SourceType, (IPrimitiveSerializer)Activator.CreateInstance(f.GetType()));
         }
       } else {
         Logger.Warn(String.Format(
@@ -233,7 +230,7 @@ namespace HeuristicLab.Persistence.Core {
       return new Configuration(
         format,
         primitiveConfig.Values,
-        CompositeSerializers.Where((d) => d.Priority > 0));
+        CompositeSerializers.Where((d) => d.Priority > 0).Select(d => (ICompositeSerializer)Activator.CreateInstance(d.GetType())));
     }
 
 

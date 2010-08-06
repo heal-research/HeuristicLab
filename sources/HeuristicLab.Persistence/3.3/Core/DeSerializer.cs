@@ -84,6 +84,7 @@ namespace HeuristicLab.Persistence.Core {
     private readonly Dictionary<Type, object> serializerMapping;
     private readonly Stack<Midwife> parentStack;
     private readonly Dictionary<int, Type> typeIds;
+    private Dictionary<Type, object> serializerInstances;
 
     /// <summary>
     /// Instantiates a new deserializer with the given type cache,
@@ -97,12 +98,11 @@ namespace HeuristicLab.Persistence.Core {
       parentStack = new Stack<Midwife>();
       typeIds = new Dictionary<int, Type>();
       serializerMapping = new Dictionary<Type, object>();
+      serializerInstances = new Dictionary<Type, object>();
       foreach (var typeMapping in typeCache) {
         AddTypeInfo(typeMapping);
       }
     }
-
-    private Dictionary<Type, object> serializerInstances = new Dictionary<Type, object>();
 
     /// <summary>
     /// Adds additionaly type information.
@@ -116,16 +116,16 @@ namespace HeuristicLab.Persistence.Core {
         typeIds.Add(typeMapping.Id, type);
         Type serializerType = TypeLoader.Load(typeMapping.Serializer);
         object serializer;
-        if (serializerInstances.ContainsKey(serializerType))
+        if (serializerInstances.ContainsKey(serializerType)) {
           serializer = serializerInstances[serializerType];
-        else
+        } else {
           serializer = Activator.CreateInstance(serializerType, true);
+          serializerInstances.Add(serializerType, serializer);
+        }
         serializerMapping.Add(type, serializer);
-      }
-      catch (PersistenceException) {
+      } catch (PersistenceException) {
         throw;
-      }
-      catch (Exception e) {
+      } catch (Exception e) {
         throw new PersistenceException(string.Format(
           "Could not add type info for {0} ({1})",
           typeMapping.TypeName, typeMapping.Serializer), e);
@@ -180,8 +180,7 @@ namespace HeuristicLab.Persistence.Core {
       Type type = typeIds[(int)token.TypeId];
       try {
         parentStack.Push(new Midwife(type, (ICompositeSerializer)serializerMapping[type], token.Id));
-      }
-      catch (Exception e) {
+      } catch (Exception e) {
         if (e is InvalidCastException || e is KeyNotFoundException) {
           throw new PersistenceException(String.Format(
             "Invalid composite serializer configuration for type \"{0}\".",
@@ -210,8 +209,7 @@ namespace HeuristicLab.Persistence.Core {
         if (token.Id != null)
           id2obj[(int)token.Id] = value;
         SetValue(token.Name, value);
-      }
-      catch (Exception e) {
+      } catch (Exception e) {
         if (e is InvalidCastException || e is KeyNotFoundException) {
           throw new PersistenceException(String.Format(
             "Invalid primitive serializer configuration for type \"{0}\".",
