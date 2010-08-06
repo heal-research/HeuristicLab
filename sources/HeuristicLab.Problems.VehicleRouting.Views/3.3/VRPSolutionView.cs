@@ -137,22 +137,22 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
                 int currentTour = 0;
                 foreach (Tour tour in Content.Solution.Tours) {
                   double t = 0.0;
-                  Point[] tourPoints = new Point[tour.Count + 2];
+                  Point[] tourPoints = new Point[tour.Cities.Count + 2];
                   int lastCustomer = 0;
 
-                  for (int i = -1; i <= tour.Count; i++) {
+                  for (int i = -1; i <= tour.Cities.Count; i++) {
                     int location = 0;
 
-                    if (i == -1 || i == tour.Count)
+                    if (i == -1 || i == tour.Cities.Count)
                       location = 0; //depot
                     else
-                      location = tour[i].Value;
+                      location = tour.Cities[i];
 
                     Point locationPoint = new Point(border + ((int)((coordinates[location, 0] - xMin) * xStep)),
                                     bitmap.Height - (border + ((int)((coordinates[location, 1] - yMin) * yStep))));
                     tourPoints[i + 1] = locationPoint;
 
-                    if (i != -1 && i != tour.Count) {
+                    if (i != -1 && i != tour.Cities.Count) {
                       Brush customerBrush = Brushes.Black;
 
                       t += VRPUtilities.GetDistance(

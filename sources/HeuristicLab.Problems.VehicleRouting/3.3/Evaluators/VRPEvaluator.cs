@@ -103,7 +103,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       return vrpSolution.Tours.Count;
     }
 
-    private static TourEvaluation EvaluateTour(Tour tour, DoubleArray dueTimeArray,
+    internal static TourEvaluation EvaluateTour(Tour tour, DoubleArray dueTimeArray,
       DoubleArray serviceTimeArray, DoubleArray readyTimeArray, DoubleArray demandArray, DoubleValue capacity,
       DoubleValue fleetUsageFactor, DoubleValue timeFactor, DoubleValue distanceFactor, DoubleValue overloadPenalty, DoubleValue tardinessPenalty,
       DoubleMatrix coordinates, ILookupParameter<DoubleMatrix> distanceMatrix, BoolValue useDistanceMatrix) {
@@ -121,13 +121,13 @@ namespace HeuristicLab.Problems.VehicleRouting {
       double tardiness = 0.0;
 
       //simulate a tour, start and end at depot
-      for (int i = 0; i <= tour.Count; i++) {
+      for (int i = 0; i <= tour.Cities.Count; i++) {
         int start = 0;
         if(i > 0)
-          start = tour[i - 1].Value;
+          start = tour.Cities[i - 1];
         int end = 0;
-        if(i < tour.Count)
-          end = tour[i].Value;
+        if (i < tour.Cities.Count)
+          end = tour.Cities[i];
 
         //drive there
         double currentDistace = VRPUtilities.GetDistance(start, end, coordinates, distanceMatrix, useDistanceMatrix);

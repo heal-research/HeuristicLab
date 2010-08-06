@@ -30,7 +30,7 @@ using System.Collections.Generic;
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinEncoding", "Represents a potvin encoding of VRP solutions.")]
   [StorableClass]
-  class PotvinEncoding : Item, IVRPEncoding {
+  public class PotvinEncoding : Item, IVRPEncoding {
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Class; }
     }
@@ -45,7 +45,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
         int cities = 0;
 
         foreach (Tour tour in Tours) {
-          cities += tour.Count;
+          cities += tour.Cities.Count;
         }
 
         return cities;
@@ -54,19 +54,19 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     #endregion
 
     [Storable]
-    public ItemList<IntValue> Unrouted { get; set; }
+    public List<int> Unrouted { get; set; }
 
     public override IDeepCloneable Clone(HeuristicLab.Common.Cloner cloner) {
       PotvinEncoding clone = new PotvinEncoding();
       cloner.RegisterClonedObject(this, clone);
       clone.Tours = (ItemList<Tour>)cloner.Clone(this.Tours);
-      clone.Unrouted = (ItemList<IntValue>)cloner.Clone(this.Unrouted);
+      clone.Unrouted = new List<int>(Unrouted);
       return clone;
     }
 
     public PotvinEncoding() {
       Tours = new ItemList<Tour>();
-      Unrouted = new ItemList<IntValue>();
+      Unrouted = new List<int>();
     }
     
     public static PotvinEncoding ConvertFrom(IVRPEncoding encoding) {
@@ -84,16 +84,53 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       Tour tour = new Tour();
       for (int i = 0; i < route.Count; i++) {
         if (route[i] == 0) {
-          if (tour.Count > 0) {
+          if (tour.Cities.Count > 0) {
             solution.Tours.Add(tour);
             tour = new Tour();
           }
         } else {
-          tour.Add(new IntValue(route[i]));
+          tour.Cities.Add(route[i]);
         }
       }
 
       return solution;
+    }
+
+    public bool FindInsertionPlace(
+      DoubleArray dueTimeArray,
+      DoubleArray serviceTimeArray, DoubleArray readyTimeArray, DoubleArray demandArray, DoubleValue capacity,
+      DoubleMatrix coordinates, ILookupParameter<DoubleMatrix> distanceMatrix, BoolValue useDistanceMatrix,
+      int city, int routeToAvoid, out int route, out int place) {
+      route = -1;
+      place = -1;
+      double minDetour = 0;
+
+      for (int tour = 0; tour < Tours.Count; tour++) {
+        if (tour != routeToAvoid) {
+          for (int i = 0; i <= Tours[tour].Cities.Count; i++) {
+            double length = Tours[tour].GetLength(coordinates, distanceMatrix, useDistanceMatrix);
+
+            Tours[tour].Cities.Insert(i, city);
+
+            if (Tours[tour].Feasible(dueTimeArray, serviceTimeArray, readyTimeArray, demandArray, 
+              capacity, coordinates, distanceMatrix, useDistanceMatrix)) {
+              double newLength = Tours[tour].GetLength(coordinates, distanceMatrix, useDistanceMatrix);
+
+              double detour = newLength - length;
+
+              if (route <= 0 || detour < minDetour) {
+                route = tour;
+                place = i;
+                minDetour = detour;
+              }
+            }
+
+            Tours[tour].Cities.RemoveAt(i);
+          }
+        }
+      }
+
+      return route >= 0 && place >= 0;
     }
   }
 }

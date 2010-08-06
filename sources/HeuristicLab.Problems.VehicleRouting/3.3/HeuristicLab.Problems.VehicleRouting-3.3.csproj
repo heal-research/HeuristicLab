@@ -106,6 +106,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Analyzers\BestVRPSolutionAnalyzer.cs" />
+    <Compile Include="Encodings\Potvin\Crossovers\PotvinSBXCrossover.cs" />
+    <Compile Include="Encodings\Potvin\Crossovers\PotvinCrossover.cs" />
+    <Compile Include="Encodings\Potvin\Manipulators\Potvin2MManipulator.cs" />
+    <Compile Include="Encodings\Potvin\Manipulators\Potvin1MManipulator.cs" />
+    <Compile Include="Encodings\Potvin\Manipulators\PotvinManipulator.cs" />
     <Compile Include="VRPUtilities.cs" />
     <Compile Include="VRPOperator.cs" />
     <Compile Include="Encodings\General\PushForwardInsertionCreator.cs" />
@@ -221,10 +226,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Encodings\Potvin\Crossovers\" />
-    <Folder Include="Encodings\Potvin\Manipulators\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

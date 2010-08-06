@@ -41,17 +41,17 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
         Tour tour = new Tour();
         for (int i = 0; i < this.array.Length; i++) {
           if (this.array[i] >= cities) {
-            if (tour.Count > 0) {
+            if (tour.Cities.Count > 0) {
               result.Add(tour);
 
               tour = new Tour();
             }
           } else {
-            tour.Add(new IntValue(this.array[i] + 1));
+            tour.Cities.Add(this.array[i] + 1);
           }
         }
 
-        if (tour.Count > 0) {
+        if (tour.Cities.Count > 0) {
           result.Add(tour);
         }
 
@@ -96,7 +96,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
 
       int cities = 0;
       foreach (Tour tour in tours) {
-        cities += tour.Count;
+        cities += tour.Cities.Count;
       }
 
       int emptyVehicles = vehicles - tours.Count;
@@ -106,8 +106,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       int arrayIndex = 0;
 
       foreach (Tour tour in tours) {
-        foreach (IntValue city in tour) {
-            array[arrayIndex] = city.Value - 1;
+        foreach (int city in tour.Cities) {
+            array[arrayIndex] = city - 1;
             arrayIndex++;
         }
 

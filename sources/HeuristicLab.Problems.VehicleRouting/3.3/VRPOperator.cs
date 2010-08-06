@@ -23,6 +23,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Data;
+using HeuristicLab.Problems.VehicleRouting.Encodings;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   public abstract class VRPOperator : SingleSuccessorOperator, IVRPOperator {
@@ -69,6 +70,25 @@ namespace HeuristicLab.Problems.VehicleRouting {
       Parameters.Add(new LookupParameter<DoubleArray>("ReadyTime", "The ready time of each customer."));
       Parameters.Add(new LookupParameter<DoubleArray>("DueTime", "The due time of each customer."));
       Parameters.Add(new LookupParameter<DoubleArray>("ServiceTime", "The service time of each customer."));
+    }
+
+    protected bool Feasible(Tour tour) {
+      return tour.Feasible(
+                  DueTimeParameter.ActualValue,
+                  ServiceTimeParameter.ActualValue,
+                  ReadyTimeParameter.ActualValue,
+                  DemandParameter.ActualValue,
+                  CapacityParameter.ActualValue,
+                  CoordinatesParameter.ActualValue,
+                  DistanceMatrixParameter,
+                  UseDistanceMatrixParameter.ActualValue);
+    }
+
+    protected double GetLength(Tour tour) {
+      return tour.GetLength(
+                CoordinatesParameter.ActualValue,
+                DistanceMatrixParameter,
+                UseDistanceMatrixParameter.ActualValue);
     }
   }
 }
