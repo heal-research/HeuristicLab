@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("HeuristicLab.VS2010Templates")]
+[assembly: AssemblyTitle("HeuristicLab.VS2010Wizards")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("HEAL")]
-[assembly: AssemblyProduct("HL3.3 VS2010Templates")]
+[assembly: AssemblyProduct("HL3.3 VS2010 Wizards")]
 [assembly: AssemblyCopyright("Copyright © HEAL 2002-2010")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

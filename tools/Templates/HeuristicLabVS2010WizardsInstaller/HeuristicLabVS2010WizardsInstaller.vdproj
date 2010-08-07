@@ -16,25 +16,25 @@
         "Entry"
         {
         "MsmKey" = "8:_102F3FAFA05819C62F87BFEFD5F1C0C9"
-        "OwnerKey" = "8:_9046107BAE774C82A03F00309C15C77B"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_9046107BAE774C82A03F00309C15C77B"
-        "OwnerKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_B51E170D986C45DD9BBEEC6B70686DC9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_B18E711B0E107FDA96359FC0783B671F"
-        "OwnerKey" = "8:_9046107BAE774C82A03F00309C15C77B"
+        "OwnerKey" = "8:_B51E170D986C45DD9BBEEC6B70686DC9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_B18E711B0E107FDA96359FC0783B671F"
         "OwnerKey" = "8:_102F3FAFA05819C62F87BFEFD5F1C0C9"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B51E170D986C45DD9BBEEC6B70686DC9"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -46,7 +46,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_9046107BAE774C82A03F00309C15C77B"
+        "OwnerKey" = "8:_B51E170D986C45DD9BBEEC6B70686DC9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -69,7 +69,7 @@
         "DisplayName" = "8:Debug"
         "IsDebugOnly" = "11:TRUE"
         "IsReleaseOnly" = "11:FALSE"
-        "OutputFilename" = "8:Debug\\VS2010TemplatesInstaller.msi"
+        "OutputFilename" = "8:Debug\\VS2010WizardsInstaller.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -86,6 +86,19 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.0,Profile=Client"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4 Client Profile (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.0,Profile=Client"
+                    }
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.3.1"
+                    {
+                    "Name" = "8:Windows Installer 3.1"
+                    "ProductCode" = "8:Microsoft.Windows.Installer.3.1"
+                    }
+                }
             }
         }
         "Release"
@@ -169,7 +182,7 @@
             "SourcePath" = "8:Microsoft.VisualStudio.TemplateWizardInterface.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
-            "Folder" = "8:_6C9F753281594A1483F7199C4F19C6D8"
+            "Folder" = "8:_7BCDA8FA05FB46E09F9715E4F125F191"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -200,7 +213,7 @@
             "SourcePath" = "8:envdte.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
-            "Folder" = "8:_6C9F753281594A1483F7199C4F19C6D8"
+            "Folder" = "8:_7BCDA8FA05FB46E09F9715E4F125F191"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -220,7 +233,7 @@
             "SourcePath" = "8:dte80a.olb"
             "TargetName" = "8:dte80a.olb"
             "Tag" = "8:"
-            "Folder" = "8:_6C9F753281594A1483F7199C4F19C6D8"
+            "Folder" = "8:_7BCDA8FA05FB46E09F9715E4F125F191"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -301,9 +314,9 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:VS2010TemplatesInstaller"
+        "ProductName" = "8:HeuristicLab 3.3 VS2010 Wizards"
         "ProductCode" = "8:{B99828C4-2D65-461D-B13C-CAB57EAB6AC1}"
-        "PackageCode" = "8:{8B99F4C9-0DBF-4E5A-BBA9-E0900F39BC90}"
+        "PackageCode" = "8:{A5414BAF-544C-469D-BAD3-302029AFF80E}"
         "UpgradeCode" = "8:{3AF928E8-1C64-4A5A-BC16-44CD128F21D3}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -314,9 +327,9 @@
         "Manufacturer" = "8:Microsoft"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
-        "Title" = "8:VS2010TemplatesInstaller"
+        "Title" = "8:HeuristicLab 3.3 VS2010 Wizards"
         "Subject" = "8:"
-        "ARPCONTACT" = "8:Microsoft"
+        "ARPCONTACT" = "8:HEAL"
         "Keywords" = "8:"
         "ARPCOMMENTS" = "8:"
         "ARPURLINFOABOUT" = "8:"
@@ -765,9 +778,9 @@
         }
         "ProjectOutput"
         {
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_9046107BAE774C82A03F00309C15C77B"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_B51E170D986C45DD9BBEEC6B70686DC9"
             {
-            "SourcePath" = "8:..\\VS2010Templates\\obj\\Release\\HeuristicLab.VS2010Wizards.dll"
+            "SourcePath" = "8:..\\HeuristicLab.VS2010Wizards\\obj\\Release\\HeuristicLab.VS2010Wizards.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_6C9F753281594A1483F7199C4F19C6D8"
@@ -777,7 +790,7 @@
             "ReadOnly" = "11:FALSE"
             "Hidden" = "11:FALSE"
             "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
+            "Permanent" = "11:TRUE"
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"

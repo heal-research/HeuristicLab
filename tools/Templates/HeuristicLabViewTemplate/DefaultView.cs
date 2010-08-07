@@ -47,10 +47,6 @@ namespace $rootnamespace$ {
       // TODO: Register your event handlers on the Content here
     }
     #endregion
-    
-    #region Content Event Handlers
-    // TODO: Put the event handlers on the content that you de/registered in this region
-    #endregion
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
@@ -67,7 +63,7 @@ namespace $rootnamespace$ {
     }
     
     #region Event Handlers
-    // TODO: Put event handlers on controls this view is owning here
+    // TODO: Put event handlers here
     #endregion
   }
 }

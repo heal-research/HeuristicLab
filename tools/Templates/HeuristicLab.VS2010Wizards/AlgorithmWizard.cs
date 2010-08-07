@@ -24,15 +24,13 @@ using EnvDTE;
 using Microsoft.VisualStudio.TemplateWizard;
 
 namespace HeuristicLab.VS2010Wizards {
-  public class ViewWizard : IWizard {
-    ViewWizardForm form;
-    bool shouldAddItem;
+  public class AlgorithmWizard : IWizard {
+    private bool shouldAddItem;
+    private AlgorithmWizardForm form;
 
-    public ViewWizard() {
-      form = new ViewWizardForm();
+    public AlgorithmWizard() {
+      form = new AlgorithmWizardForm();
     }
-
-    #region IWizard Members
 
     public void BeforeOpeningFile(ProjectItem projectItem) {
     }
@@ -48,9 +46,18 @@ namespace HeuristicLab.VS2010Wizards {
 
     public void RunStarted(object automationObject, Dictionary<string, string> replacementsDictionary, WizardRunKind runKind, object[] customParams) {
       if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-        replacementsDictionary.Add("$baseClass$", form.BaseClass);
-        replacementsDictionary.Add("$viewContentType$", form.ViewContentType);
-        replacementsDictionary.Add("$isDefaultView$", form.IsDefaultView.ToString().ToLower());
+        replacementsDictionary.Add("$algorithmName$", form.AlgorithmName);
+        replacementsDictionary.Add("$algorithmDescription$", form.AlgorithmDescription);
+        string problemType = @"public override Type ProblemType {
+      get { return typeof(IMultiObjectiveProblem); }
+    }
+    public new IMultiObjectiveProblem Problem {
+      get { return (IMultiObjectiveProblem)base.Problem; }
+      set { base.Problem = value; }
+    }";
+        replacementsDictionary.Add("$problemType$", problemType);
+        if (!form.IsMultiObjective)
+          replacementsDictionary["$problemType$"] = problemType.Replace("Multi", "Single");
         shouldAddItem = true;
       } else shouldAddItem = false;
     }
@@ -58,7 +65,5 @@ namespace HeuristicLab.VS2010Wizards {
     public bool ShouldAddProjectItem(string filePath) {
       return shouldAddItem;
     }
-
-    #endregion
   }
 }
