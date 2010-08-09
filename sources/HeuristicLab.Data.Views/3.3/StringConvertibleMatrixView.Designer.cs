@@ -75,9 +75,9 @@ namespace HeuristicLab.Data.Views {
       this.rowsTextBox.Name = "rowsTextBox";
       this.rowsTextBox.Size = new System.Drawing.Size(355, 20);
       this.rowsTextBox.TabIndex = 1;
-      this.rowsTextBox.Validated += new System.EventHandler(this.rowsTextBox_Validated);
       this.rowsTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.rowsTextBox_KeyDown);
       this.rowsTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.rowsTextBox_Validating);
+      this.rowsTextBox.Validated += new System.EventHandler(this.rowsTextBox_Validated);
       // 
       // dataGridView
       // 
@@ -87,6 +87,7 @@ namespace HeuristicLab.Data.Views {
       this.dataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
+      this.dataGridView.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.Disable;
       this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
       this.dataGridView.Location = new System.Drawing.Point(0, 52);
       this.dataGridView.Name = "dataGridView";
@@ -94,12 +95,12 @@ namespace HeuristicLab.Data.Views {
       this.dataGridView.Size = new System.Drawing.Size(424, 352);
       this.dataGridView.TabIndex = 4;
       this.dataGridView.VirtualMode = true;
-      this.dataGridView.Scroll += new System.Windows.Forms.ScrollEventHandler(this.dataGridView_Scroll);
-      this.dataGridView.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView_ColumnHeaderMouseClick);
-      this.dataGridView.CellValueNeeded += new System.Windows.Forms.DataGridViewCellValueEventHandler(this.dataGridView_CellValueNeeded);
+      this.dataGridView.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellEndEdit);
       this.dataGridView.CellParsing += new System.Windows.Forms.DataGridViewCellParsingEventHandler(this.dataGridView_CellParsing);
       this.dataGridView.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dataGridView_CellValidating);
-      this.dataGridView.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellEndEdit);
+      this.dataGridView.CellValueNeeded += new System.Windows.Forms.DataGridViewCellValueEventHandler(this.dataGridView_CellValueNeeded);
+      this.dataGridView.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView_ColumnHeaderMouseClick);
+      this.dataGridView.Scroll += new System.Windows.Forms.ScrollEventHandler(this.dataGridView_Scroll);
       this.dataGridView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dataGridView_KeyDown);
       this.dataGridView.Resize += new System.EventHandler(this.dataGridView_Resize);
       // 
@@ -116,9 +117,9 @@ namespace HeuristicLab.Data.Views {
       this.columnsTextBox.Name = "columnsTextBox";
       this.columnsTextBox.Size = new System.Drawing.Size(355, 20);
       this.columnsTextBox.TabIndex = 3;
-      this.columnsTextBox.Validated += new System.EventHandler(this.columnsTextBox_Validated);
       this.columnsTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.columnsTextBox_KeyDown);
       this.columnsTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.columnsTextBox_Validating);
+      this.columnsTextBox.Validated += new System.EventHandler(this.columnsTextBox_Validated);
       // 
       // columnsLabel
       // 
@@ -161,7 +162,6 @@ namespace HeuristicLab.Data.Views {
       this.PerformLayout();
 
     }
-
     #endregion
 
     protected System.Windows.Forms.Label rowsLabel;

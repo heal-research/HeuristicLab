@@ -51,5 +51,14 @@ namespace HeuristicLab.Data.Views {
     private void checkedListBox_ItemCheck(object sender, ItemCheckEventArgs e) {
       this.columns[e.Index].Visible = e.NewValue == CheckState.Checked;
     }
+
+    private void btnShowAll_Click(object sender, System.EventArgs e) {
+      for (int i = 0; i < checkedListBox.Items.Count; i++)
+        checkedListBox.SetItemChecked(i, true);
+    }
+    private void btnHideAll_Click(object sender, System.EventArgs e) {
+      for (int i = 0; i < checkedListBox.Items.Count; i++)
+        checkedListBox.SetItemChecked(i, false);
+    }
   }
 }

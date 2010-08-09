@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Common;
 using HeuristicLab.MainForm;
@@ -102,7 +103,7 @@ namespace HeuristicLab.Data.Views {
       rowsTextBox.Enabled = true;
       columnsTextBox.Text = Content.Columns.ToString();
       columnsTextBox.Enabled = true;
-      //DataGridViews with Rows but no columns are not allowed !
+      //DataGridViews with rows but no columns are not allowed !
       if (Content.Rows == 0 && dataGridView.RowCount != Content.Rows && !Content.ReadOnly)
         Content.Rows = dataGridView.RowCount;
       else
@@ -115,14 +116,11 @@ namespace HeuristicLab.Data.Views {
       UpdateRowHeaders();
       UpdateColumnHeaders();
       dataGridView.Enabled = true;
+      dataGridView.AutoResizeRowHeadersWidth(DataGridViewRowHeadersWidthSizeMode.AutoSizeToDisplayedHeaders);
     }
 
     private void UpdateColumnHeaders() {
-      int firstDisplayedColumnIndex = this.dataGridView.FirstDisplayedScrollingColumnIndex;
-      if (firstDisplayedColumnIndex == -1)
-        firstDisplayedColumnIndex = 0;
-      int lastDisplayedColumnIndex = firstDisplayedColumnIndex + dataGridView.DisplayedColumnCount(true);
-      for (int i = firstDisplayedColumnIndex; i < lastDisplayedColumnIndex; i++) {
+      for (int i = 0; i < dataGridView.ColumnCount; i++) {
         if (Content.ColumnNames.Count() != 0)
           dataGridView.Columns[i].HeaderText = Content.ColumnNames.ElementAt(i);
         else
@@ -136,13 +134,13 @@ namespace HeuristicLab.Data.Views {
       if (firstDisplayedRowIndex == -1)
         firstDisplayedRowIndex = 0;
       int lastDisplaydRowIndex = firstDisplayedRowIndex + dataGridView.DisplayedRowCount(true);
+
       for (int i = firstDisplayedRowIndex; i < lastDisplaydRowIndex; i++) {
         if (Content.RowNames.Count() != 0)
           dataGridView.Rows[i].HeaderCell.Value = Content.RowNames.ElementAt(virtualRowIndizes[i]);
         else
           dataGridView.Rows[i].HeaderCell.Value = "Row " + (i + 1);
       }
-      dataGridView.AutoResizeRowHeadersWidth(DataGridViewRowHeadersWidthSizeMode.AutoSizeToDisplayedHeaders);
     }
 
     private void Content_RowNamesChanged(object sender, EventArgs e) {
@@ -244,40 +242,100 @@ namespace HeuristicLab.Data.Views {
         e.Value = Content.GetValue(rowIndex, e.ColumnIndex);
       }
     }
-    private void dataGridView_Scroll(object sender, ScrollEventArgs e) {
-      UpdateRowHeaders();
-      UpdateColumnHeaders();
+
+    private void dataGridView_Scroll(object sender, System.Windows.Forms.ScrollEventArgs e) {
+      this.UpdateRowHeaders();
     }
     private void dataGridView_Resize(object sender, EventArgs e) {
-      UpdateRowHeaders();
-      UpdateColumnHeaders();
+      this.UpdateRowHeaders();
     }
 
     private void dataGridView_KeyDown(object sender, KeyEventArgs e) {
-      if (!ReadOnly && e.Control && e.KeyCode == Keys.V) { //shortcut for values paste
-        string[,] values = SplitClipboardString(Clipboard.GetText());
-
-        int rowIndex = 0;
-        int columnIndex = 0;
-        if (dataGridView.CurrentCell != null) {
-          rowIndex = dataGridView.CurrentCell.RowIndex;
-          columnIndex = dataGridView.CurrentCell.ColumnIndex;
-        }
-
-        for (int row = 0; row < values.GetLength(1); row++) {
-          if (row + rowIndex >= Content.Rows)
-            Content.Rows = Content.Rows + 1;
-          for (int col = 0; col < values.GetLength(0); col++) {
-            if (col + columnIndex >= Content.Columns)
-              Content.Columns = Content.Columns + 1;
-            Content.SetValue(values[col, row], row + rowIndex, col + columnIndex);
-          }
-        }
-
-        ClearSorting();
-      }
+      if (!ReadOnly && e.Control && e.KeyCode == Keys.V)
+        PasteValuesToDataGridView();
+      else if (e.Control && e.KeyCode == Keys.C)
+        CopyValuesFromDataGridView();
     }
 
+    private void CopyValuesFromDataGridView() {
+      if (dataGridView.SelectedCells.Count == 0) return;
+      StringBuilder s = new StringBuilder();
+      int minRowIndex = dataGridView.SelectedCells[0].RowIndex;
+      int maxRowIndex = dataGridView.SelectedCells[dataGridView.SelectedCells.Count - 1].RowIndex;
+      int minColIndex = dataGridView.SelectedCells[0].ColumnIndex;
+      int maxColIndex = dataGridView.SelectedCells[dataGridView.SelectedCells.Count - 1].ColumnIndex;
+
+      if (minRowIndex > maxRowIndex) {
+        int temp = minRowIndex;
+        minRowIndex = maxRowIndex;
+        maxRowIndex = temp;
+      }
+      if (minColIndex > maxColIndex) {
+        int temp = minColIndex;
+        minColIndex = maxColIndex;
+        maxColIndex = temp;
+      }
+
+      bool addColumnNames = Content.ColumnNames.Any() && minRowIndex == 0;
+      bool addRowNames = Content.RowNames.Any() && minColIndex == 0;
+
+      //add colum names
+      if (addColumnNames) {
+        if (addRowNames)
+          s.Append('\t');
+
+        DataGridViewColumn column = dataGridView.Columns.GetFirstColumn(DataGridViewElementStates.Visible);
+        while (column != null) {
+          s.Append(column.HeaderText);
+          s.Append('\t');
+          column = dataGridView.Columns.GetNextColumn(column, DataGridViewElementStates.Visible, DataGridViewElementStates.None);
+        }
+        s.Remove(s.Length - 1, 1); //remove last tab
+        s.Append(Environment.NewLine);
+      }
+
+      for (int i = minRowIndex; i <= maxRowIndex; i++) {
+        int rowIndex = this.virtualRowIndizes[i];
+        if (addRowNames) {
+          s.Append(Content.RowNames.ElementAt(rowIndex));
+          s.Append('\t');
+        }
+
+        DataGridViewColumn column = dataGridView.Columns.GetFirstColumn(DataGridViewElementStates.Visible);
+        while (column != null) {
+          DataGridViewCell cell = dataGridView[column.Index, i];
+          if (cell.Selected) {
+            s.Append(Content.GetValue(rowIndex, column.Index));
+          }
+          s.Append('\t');
+          column = dataGridView.Columns.GetNextColumn(column, DataGridViewElementStates.Visible, DataGridViewElementStates.None);
+        }
+        s.Remove(s.Length - 1, 1); //remove last tab
+        s.Append(Environment.NewLine);
+      }
+      Clipboard.SetText(s.ToString());
+    }
+
+    private void PasteValuesToDataGridView() {
+      string[,] values = SplitClipboardString(Clipboard.GetText());
+      int rowIndex = 0;
+      int columnIndex = 0;
+      if (dataGridView.CurrentCell != null) {
+        rowIndex = dataGridView.CurrentCell.RowIndex;
+        columnIndex = dataGridView.CurrentCell.ColumnIndex;
+      }
+
+      for (int row = 0; row < values.GetLength(1); row++) {
+        if (row + rowIndex >= Content.Rows)
+          Content.Rows = Content.Rows + 1;
+        for (int col = 0; col < values.GetLength(0); col++) {
+          if (col + columnIndex >= Content.Columns)
+            Content.Columns = Content.Columns + 1;
+          Content.SetValue(values[col, row], row + rowIndex, col + columnIndex);
+        }
+      }
+      ClearSorting();
+    }
     private string[,] SplitClipboardString(string clipboardText) {
       clipboardText = clipboardText.Remove(clipboardText.Length - Environment.NewLine.Length);  //remove last newline constant
       string[,] values = null;
