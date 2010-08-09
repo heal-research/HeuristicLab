@@ -29,7 +29,7 @@ namespace HeuristicLab.VS2010Wizards {
       IsMultiObjective = isMultiObjectiveCheckBox.Checked;
     }
 
-    private void okButton_Click(object sender, System.EventArgs e) {
+    private void finishButton_Click(object sender, System.EventArgs e) {
       DialogResult = System.Windows.Forms.DialogResult.OK;
       Close();
     }
@@ -49,6 +49,20 @@ namespace HeuristicLab.VS2010Wizards {
 
     private void isMultiObjectiveCheckBox_CheckedChanged(object sender, EventArgs e) {
       IsMultiObjective = isMultiObjectiveCheckBox.Checked;
+    }
+
+    private void nextButton_Click(object sender, EventArgs e) {
+      page1Panel.Visible = false;
+      page2Panel.Visible = true;
+      nextButton.Enabled = false;
+      previousButton.Enabled = true;
+    }
+
+    private void previousButton_Click(object sender, EventArgs e) {
+      page2Panel.Visible = false;
+      page1Panel.Visible = true;
+      previousButton.Enabled = false;
+      nextButton.Enabled = true;
     }
   }
 }

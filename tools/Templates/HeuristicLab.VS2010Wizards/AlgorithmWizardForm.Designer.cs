@@ -26,18 +26,32 @@
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AlgorithmWizardForm));
       this.label1 = new System.Windows.Forms.Label();
       this.label2 = new System.Windows.Forms.Label();
-      this.label3 = new System.Windows.Forms.Label();
       this.algorithmDescriptionTextBox = new System.Windows.Forms.TextBox();
       this.isMultiObjectiveCheckBox = new System.Windows.Forms.CheckBox();
       this.algorithmNameTextBox = new System.Windows.Forms.TextBox();
       this.cancelButton = new System.Windows.Forms.Button();
-      this.okButton = new System.Windows.Forms.Button();
+      this.finishButton = new System.Windows.Forms.Button();
+      this.panel1 = new System.Windows.Forms.Panel();
+      this.page2Panel = new System.Windows.Forms.Panel();
+      this.label3 = new System.Windows.Forms.Label();
+      this.label4 = new System.Windows.Forms.Label();
+      this.pictureBox1 = new System.Windows.Forms.PictureBox();
+      this.panel2 = new System.Windows.Forms.Panel();
+      this.nextButton = new System.Windows.Forms.Button();
+      this.previousButton = new System.Windows.Forms.Button();
+      this.page1Panel = new System.Windows.Forms.Panel();
+      this.parametersControl1 = new HeuristicLab.VS2010Wizards.ParametersControl();
+      this.panel1.SuspendLayout();
+      this.page2Panel.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+      this.page1Panel.SuspendLayout();
       this.SuspendLayout();
       // 
       // label1
       // 
+      this.label1.Anchor = System.Windows.Forms.AnchorStyles.None;
       this.label1.AutoSize = true;
-      this.label1.Location = new System.Drawing.Point(12, 12);
+      this.label1.Location = new System.Drawing.Point(100, 48);
       this.label1.Name = "label1";
       this.label1.Size = new System.Drawing.Size(38, 13);
       this.label1.TabIndex = 0;
@@ -45,90 +59,204 @@
       // 
       // label2
       // 
+      this.label2.Anchor = System.Windows.Forms.AnchorStyles.None;
       this.label2.AutoSize = true;
-      this.label2.Location = new System.Drawing.Point(12, 38);
+      this.label2.Location = new System.Drawing.Point(100, 96);
       this.label2.Name = "label2";
       this.label2.Size = new System.Drawing.Size(63, 13);
       this.label2.TabIndex = 2;
       this.label2.Text = "Description:";
       // 
-      // label3
-      // 
-      this.label3.AutoSize = true;
-      this.label3.Location = new System.Drawing.Point(12, 180);
-      this.label3.Name = "label3";
-      this.label3.Size = new System.Drawing.Size(80, 13);
-      this.label3.TabIndex = 4;
-      this.label3.Text = "Multi-Objective:";
-      // 
       // algorithmDescriptionTextBox
       // 
-      this.algorithmDescriptionTextBox.Location = new System.Drawing.Point(96, 35);
+      this.algorithmDescriptionTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.algorithmDescriptionTextBox.Location = new System.Drawing.Point(102, 112);
       this.algorithmDescriptionTextBox.Multiline = true;
       this.algorithmDescriptionTextBox.Name = "algorithmDescriptionTextBox";
-      this.algorithmDescriptionTextBox.Size = new System.Drawing.Size(277, 139);
+      this.algorithmDescriptionTextBox.Size = new System.Drawing.Size(469, 63);
       this.algorithmDescriptionTextBox.TabIndex = 3;
-      this.algorithmDescriptionTextBox.Text = "Description";
       this.algorithmDescriptionTextBox.TextChanged += new System.EventHandler(this.algorithmDescriptionTextBox_TextChanged);
       // 
       // isMultiObjectiveCheckBox
       // 
+      this.isMultiObjectiveCheckBox.Anchor = System.Windows.Forms.AnchorStyles.None;
       this.isMultiObjectiveCheckBox.AutoSize = true;
-      this.isMultiObjectiveCheckBox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-      this.isMultiObjectiveCheckBox.Location = new System.Drawing.Point(96, 180);
+      this.isMultiObjectiveCheckBox.Location = new System.Drawing.Point(102, 188);
       this.isMultiObjectiveCheckBox.Name = "isMultiObjectiveCheckBox";
-      this.isMultiObjectiveCheckBox.Size = new System.Drawing.Size(15, 14);
+      this.isMultiObjectiveCheckBox.Size = new System.Drawing.Size(96, 17);
       this.isMultiObjectiveCheckBox.TabIndex = 5;
+      this.isMultiObjectiveCheckBox.Text = "Multi-Objective";
       this.isMultiObjectiveCheckBox.UseVisualStyleBackColor = true;
       this.isMultiObjectiveCheckBox.CheckedChanged += new System.EventHandler(this.isMultiObjectiveCheckBox_CheckedChanged);
       // 
       // algorithmNameTextBox
       // 
-      this.algorithmNameTextBox.Location = new System.Drawing.Point(97, 9);
+      this.algorithmNameTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.algorithmNameTextBox.Location = new System.Drawing.Point(103, 64);
       this.algorithmNameTextBox.Name = "algorithmNameTextBox";
-      this.algorithmNameTextBox.Size = new System.Drawing.Size(276, 20);
+      this.algorithmNameTextBox.Size = new System.Drawing.Size(468, 20);
       this.algorithmNameTextBox.TabIndex = 1;
       this.algorithmNameTextBox.Text = "MyAlgorithm";
       this.algorithmNameTextBox.TextChanged += new System.EventHandler(this.algorithmNameTextBox_TextChanged);
       // 
       // cancelButton
       // 
-      this.cancelButton.Location = new System.Drawing.Point(97, 208);
+      this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.cancelButton.Location = new System.Drawing.Point(589, 391);
       this.cancelButton.Name = "cancelButton";
-      this.cancelButton.Size = new System.Drawing.Size(75, 23);
+      this.cancelButton.Size = new System.Drawing.Size(75, 25);
       this.cancelButton.TabIndex = 7;
       this.cancelButton.Text = "Cancel";
       this.cancelButton.UseVisualStyleBackColor = true;
       this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
       // 
-      // okButton
+      // finishButton
       // 
-      this.okButton.Location = new System.Drawing.Point(15, 208);
-      this.okButton.Name = "okButton";
-      this.okButton.Size = new System.Drawing.Size(75, 23);
-      this.okButton.TabIndex = 6;
-      this.okButton.Text = "Ok";
-      this.okButton.UseVisualStyleBackColor = true;
-      this.okButton.Click += new System.EventHandler(this.okButton_Click);
+      this.finishButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.finishButton.Location = new System.Drawing.Point(504, 391);
+      this.finishButton.Name = "finishButton";
+      this.finishButton.Size = new System.Drawing.Size(75, 25);
+      this.finishButton.TabIndex = 6;
+      this.finishButton.Text = "Finish";
+      this.finishButton.UseVisualStyleBackColor = true;
+      this.finishButton.Click += new System.EventHandler(this.finishButton_Click);
+      // 
+      // panel1
+      // 
+      this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.panel1.BackColor = System.Drawing.Color.White;
+      this.panel1.Controls.Add(this.label4);
+      this.panel1.Controls.Add(this.pictureBox1);
+      this.panel1.Location = new System.Drawing.Point(0, 0);
+      this.panel1.Name = "panel1";
+      this.panel1.Size = new System.Drawing.Size(676, 81);
+      this.panel1.TabIndex = 8;
+      // 
+      // page2Panel
+      // 
+      this.page2Panel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.page2Panel.Controls.Add(this.label3);
+      this.page2Panel.Controls.Add(this.parametersControl1);
+      this.page2Panel.Location = new System.Drawing.Point(0, 86);
+      this.page2Panel.Name = "page2Panel";
+      this.page2Panel.Size = new System.Drawing.Size(676, 289);
+      this.page2Panel.TabIndex = 10;
+      this.page2Panel.Visible = false;
+      // 
+      // label3
+      // 
+      this.label3.AutoSize = true;
+      this.label3.Location = new System.Drawing.Point(13, 10);
+      this.label3.Name = "label3";
+      this.label3.Size = new System.Drawing.Size(63, 13);
+      this.label3.TabIndex = 1;
+      this.label3.Text = "Parameters:";
+      // 
+      // label4
+      // 
+      this.label4.AutoSize = true;
+      this.label4.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.label4.Location = new System.Drawing.Point(96, 21);
+      this.label4.Name = "label4";
+      this.label4.Size = new System.Drawing.Size(311, 39);
+      this.label4.TabIndex = 1;
+      this.label4.Text = "New Algorithm Wizard";
+      // 
+      // pictureBox1
+      // 
+      this.pictureBox1.Image = global::HeuristicLab.VS2010Wizards.Properties.Resources.HL3_Logo;
+      this.pictureBox1.Location = new System.Drawing.Point(3, 3);
+      this.pictureBox1.Name = "pictureBox1";
+      this.pictureBox1.Size = new System.Drawing.Size(75, 75);
+      this.pictureBox1.TabIndex = 0;
+      this.pictureBox1.TabStop = false;
+      // 
+      // panel2
+      // 
+      this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.panel2.BackColor = System.Drawing.Color.White;
+      this.panel2.ForeColor = System.Drawing.SystemColors.ControlText;
+      this.panel2.Location = new System.Drawing.Point(0, 379);
+      this.panel2.Name = "panel2";
+      this.panel2.Size = new System.Drawing.Size(676, 2);
+      this.panel2.TabIndex = 8;
+      // 
+      // nextButton
+      // 
+      this.nextButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.nextButton.Location = new System.Drawing.Point(406, 391);
+      this.nextButton.Name = "nextButton";
+      this.nextButton.Size = new System.Drawing.Size(75, 25);
+      this.nextButton.TabIndex = 6;
+      this.nextButton.Text = "Next >";
+      this.nextButton.UseVisualStyleBackColor = true;
+      this.nextButton.Click += new System.EventHandler(this.nextButton_Click);
+      // 
+      // previousButton
+      // 
+      this.previousButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.previousButton.Enabled = false;
+      this.previousButton.Location = new System.Drawing.Point(321, 391);
+      this.previousButton.Name = "previousButton";
+      this.previousButton.Size = new System.Drawing.Size(75, 25);
+      this.previousButton.TabIndex = 6;
+      this.previousButton.Text = "< Previous";
+      this.previousButton.UseVisualStyleBackColor = true;
+      this.previousButton.Click += new System.EventHandler(this.previousButton_Click);
+      // 
+      // page1Panel
+      // 
+      this.page1Panel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.page1Panel.Controls.Add(this.label1);
+      this.page1Panel.Controls.Add(this.label2);
+      this.page1Panel.Controls.Add(this.algorithmDescriptionTextBox);
+      this.page1Panel.Controls.Add(this.algorithmNameTextBox);
+      this.page1Panel.Controls.Add(this.isMultiObjectiveCheckBox);
+      this.page1Panel.Location = new System.Drawing.Point(0, 86);
+      this.page1Panel.Name = "page1Panel";
+      this.page1Panel.Size = new System.Drawing.Size(676, 298);
+      this.page1Panel.TabIndex = 9;
+      // 
+      // parametersControl1
+      // 
+      this.parametersControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.parametersControl1.Location = new System.Drawing.Point(0, 33);
+      this.parametersControl1.Name = "parametersControl1";
+      this.parametersControl1.Size = new System.Drawing.Size(676, 256);
+      this.parametersControl1.TabIndex = 0;
       // 
       // AlgorithmWizardForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(385, 242);
-      this.Controls.Add(this.algorithmDescriptionTextBox);
-      this.Controls.Add(this.isMultiObjectiveCheckBox);
-      this.Controls.Add(this.algorithmNameTextBox);
+      this.ClientSize = new System.Drawing.Size(676, 428);
+      this.Controls.Add(this.panel1);
       this.Controls.Add(this.cancelButton);
-      this.Controls.Add(this.okButton);
-      this.Controls.Add(this.label3);
-      this.Controls.Add(this.label2);
-      this.Controls.Add(this.label1);
+      this.Controls.Add(this.previousButton);
+      this.Controls.Add(this.nextButton);
+      this.Controls.Add(this.finishButton);
+      this.Controls.Add(this.panel2);
+      this.Controls.Add(this.page1Panel);
+      this.Controls.Add(this.page2Panel);
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.Name = "AlgorithmWizardForm";
       this.Text = "New Algorithm Wizard";
+      this.panel1.ResumeLayout(false);
+      this.panel1.PerformLayout();
+      this.page2Panel.ResumeLayout(false);
+      this.page2Panel.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+      this.page1Panel.ResumeLayout(false);
+      this.page1Panel.PerformLayout();
       this.ResumeLayout(false);
-      this.PerformLayout();
 
     }
 
@@ -136,11 +264,20 @@
 
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.Label label2;
-    private System.Windows.Forms.Label label3;
     private System.Windows.Forms.TextBox algorithmDescriptionTextBox;
     private System.Windows.Forms.CheckBox isMultiObjectiveCheckBox;
     private System.Windows.Forms.TextBox algorithmNameTextBox;
     private System.Windows.Forms.Button cancelButton;
-    private System.Windows.Forms.Button okButton;
+    private System.Windows.Forms.Button finishButton;
+    private System.Windows.Forms.Panel panel1;
+    private System.Windows.Forms.PictureBox pictureBox1;
+    private System.Windows.Forms.Panel panel2;
+    private System.Windows.Forms.Label label4;
+    private System.Windows.Forms.Button nextButton;
+    private System.Windows.Forms.Button previousButton;
+    private System.Windows.Forms.Panel page1Panel;
+    private System.Windows.Forms.Panel page2Panel;
+    private ParametersControl parametersControl1;
+    private System.Windows.Forms.Label label3;
   }
 }

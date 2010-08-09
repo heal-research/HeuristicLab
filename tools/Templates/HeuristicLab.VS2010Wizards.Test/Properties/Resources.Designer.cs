@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace HeuristicLab.VS2010Wizards.Properties {
+namespace HeuristicLab.VS2010Wizards.Test.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace HeuristicLab.VS2010Wizards.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("HeuristicLab.VS2010Wizards.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("HeuristicLab.VS2010Wizards.Test.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -57,41 +57,6 @@ namespace HeuristicLab.VS2010Wizards.Properties {
             }
             set {
                 resourceCulture = value;
-            }
-        }
-        
-        internal static System.Drawing.Bitmap HL3_Logo {
-            get {
-                object obj = ResourceManager.GetObject("HL3_Logo", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap VS2008ImageLibrary_Actions_Delete {
-            get {
-                object obj = ResourceManager.GetObject("VS2008ImageLibrary_Actions_Delete", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap VS2008ImageLibrary_CommonElements_Actions_Add {
-            get {
-                object obj = ResourceManager.GetObject("VS2008ImageLibrary_CommonElements_Actions_Add", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap VS2008ImageLibrary_CommonElements_Objects_Arrow_Down {
-            get {
-                object obj = ResourceManager.GetObject("VS2008ImageLibrary_CommonElements_Objects_Arrow_Down", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap VS2008ImageLibrary_CommonElements_Objects_Arrow_Up {
-            get {
-                object obj = ResourceManager.GetObject("VS2008ImageLibrary_CommonElements_Objects_Arrow_Up", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }
