@@ -25,7 +25,7 @@ using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   public interface IVRPEvaluator : ISingleObjectiveEvaluator, IVRPOperator {
-    ILookupParameter<IVRPEncoding> VRPSolutionParameter { get; }
+    ILookupParameter<IVRPEncoding> VRPToursParameter { get; }
     
     ILookupParameter<DoubleValue> VehcilesUtilizedParameter { get; }
     ILookupParameter<DoubleValue> TravelTimeParameter { get; }

@@ -67,6 +67,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       get { return (IValueLookupParameter<IntValue>)Parameters["SampleSize"]; }
     }
 
+    [StorableConstructor]
+    private AlbaTranslocationMoveGenerator(bool deserializing) : base(deserializing) { }
+
     public AlbaTranslocationMoveGenerator()
       : base() {
       Parameters.Add(new ValueLookupParameter<TranslocationMoveGenerator>("TranslocationMoveGenerator", "The move generator.",
@@ -79,7 +82,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     public override IOperation Apply() {
       IOperation successor = base.Apply();
 
-      Permutation permutation = VRPSolutionParameter.ActualValue as Permutation;
+      Permutation permutation = VRPToursParameter.ActualValue as Permutation;
       string moveName = TranslocationMoveGeneratorParameter.ActualValue.TranslocationMoveParameter.Name;
 
       List<Scope> toBeDeleted = new List<Scope>();

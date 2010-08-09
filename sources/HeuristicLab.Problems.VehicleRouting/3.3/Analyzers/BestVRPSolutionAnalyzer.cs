@@ -34,8 +34,8 @@ namespace HeuristicLab.Problems.VehicleRouting {
   [Item("BestVRPSolutionAnalyzer", "An operator for analyzing the best solution of Vehicle Routing Problems.")]
   [StorableClass]
   public sealed class BestVRPSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer {
-    public ScopeTreeLookupParameter<IVRPEncoding> VRPSolutionParameter {
-      get { return (ScopeTreeLookupParameter<IVRPEncoding>)Parameters["VRPSolution"]; }
+    public ScopeTreeLookupParameter<IVRPEncoding> VRPToursParameter {
+      get { return (ScopeTreeLookupParameter<IVRPEncoding>)Parameters["VRPTours"]; }
     }
     public ILookupParameter<DoubleMatrix> DistanceMatrixParameter {
       get { return (ILookupParameter<DoubleMatrix>)Parameters["DistanceMatrix"]; }
@@ -80,9 +80,12 @@ namespace HeuristicLab.Problems.VehicleRouting {
       get { return (ValueLookupParameter<ResultCollection>)Parameters["Results"]; }
     }
 
+    [StorableConstructor]
+    private BestVRPSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+
     public BestVRPSolutionAnalyzer()
       : base() {
-      Parameters.Add(new ScopeTreeLookupParameter<IVRPEncoding>("VRPSolution", "The VRP solutions which should be evaluated."));
+        Parameters.Add(new ScopeTreeLookupParameter<IVRPEncoding>("VRPTours", "The VRP tours which should be evaluated."));
       Parameters.Add(new LookupParameter<DoubleMatrix>("Coordinates", "The x- and y-Coordinates of the cities."));
       Parameters.Add(new LookupParameter<DoubleMatrix>("DistanceMatrix", "The matrix which contains the distances between the cities."));
       Parameters.Add(new LookupParameter<BoolValue>("UseDistanceMatrix", "True if a distance matrix should be calculated and used for evaluation, otherwise false."));
@@ -102,7 +105,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     public override IOperation Apply() {
       DoubleMatrix coordinates = CoordinatesParameter.ActualValue;
-      ItemArray<IVRPEncoding> solutions = VRPSolutionParameter.ActualValue;
+      ItemArray<IVRPEncoding> solutions = VRPToursParameter.ActualValue;
       ItemArray<DoubleValue> qualities = QualityParameter.ActualValue;
       ItemArray<DoubleValue> overloads = OverloadParameter.ActualValue;
       ItemArray<DoubleValue> tardinesses = TardinessParameter.ActualValue;

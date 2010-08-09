@@ -153,5 +153,15 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
         new Permutation(PermutationTypes.RelativeUndirected, route.ToArray()),
         cities);
     }
+
+    internal static void RemoveUnusedParameters(ParameterCollection parameters) {
+      parameters.Remove("DistanceMatrix");
+      parameters.Remove("UseDistanceMatrix");
+      parameters.Remove("Capacity");
+      parameters.Remove("Demand");
+      parameters.Remove("ReadyTime");
+      parameters.Remove("DueTime");
+      parameters.Remove("ServiceTime");
+    }
   }
 }

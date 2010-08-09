@@ -23,20 +23,26 @@ using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Data;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings {
+  [Item("VRPManipulator", "A VRP manipulation operation.")]
+  [StorableClass]
   public abstract class VRPManipulator : VRPOperator, IVRPManipulator {
     #region IVRPManipulator Members
 
-    public ILookupParameter<IVRPEncoding> VRPSolutionParameter {
-      get { return (ILookupParameter<IVRPEncoding>)Parameters["VRPSolution"]; }
+    public ILookupParameter<IVRPEncoding> VRPToursParameter {
+      get { return (ILookupParameter<IVRPEncoding>)Parameters["VRPTours"]; }
     }
 
     #endregion
 
+    [StorableConstructor]
+    protected VRPManipulator(bool deserializing) : base(deserializing) { }
+
     public VRPManipulator()
       : base() {
-      Parameters.Add(new LookupParameter<IVRPEncoding>("VRPSolution", "The new VRP solution."));
+      Parameters.Add(new LookupParameter<IVRPEncoding>("VRPTours", "The new VRP tours."));
     }
   }
 }

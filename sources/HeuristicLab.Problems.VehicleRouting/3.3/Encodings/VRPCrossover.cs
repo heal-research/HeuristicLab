@@ -23,8 +23,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings {
+  [Item("VRPCreator", "A VRP crossover operation.")]
+  [StorableClass]
   public abstract class VRPCrossover : VRPOperator, IVRPCrossover {
     #region IVRPCrossover Members
 
@@ -38,12 +41,15 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings {
 
     #endregion
 
+    [StorableConstructor]
+    protected VRPCrossover(bool deserializing) : base(deserializing) { }
+
     public VRPCrossover()
       : base() {
       Parameters.Add(new ScopeTreeLookupParameter<IVRPEncoding>("Parents", "The parent permutations which should be crossed."));
-      ParentsParameter.ActualName = "VRPSolution";
+      ParentsParameter.ActualName = "VRPTours";
       Parameters.Add(new LookupParameter<IVRPEncoding>("Child", "The child permutation resulting from the crossover."));
-      ChildParameter.ActualName = "VRPSolution";
+      ChildParameter.ActualName = "VRPTours";
     }
   }
 }

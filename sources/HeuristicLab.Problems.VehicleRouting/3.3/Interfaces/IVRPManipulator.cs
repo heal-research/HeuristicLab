@@ -25,6 +25,6 @@ using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   public interface IVRPManipulator : IVRPOperator, IManipulator {
-    ILookupParameter<IVRPEncoding> VRPSolutionParameter { get; }
+    ILookupParameter<IVRPEncoding> VRPToursParameter { get; }
   }
 }

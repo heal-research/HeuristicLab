@@ -28,27 +28,32 @@ using HeuristicLab.Data;
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaManipulator", "An operator which manipulates an alba VRP representation.")]
   [StorableClass]
-  public sealed class AlbaManipulator : VRPManipulator {    
-    public IValueLookupParameter<IPermutationManipulator> PermutationManipulatorParameter {
-      get { return (IValueLookupParameter<IPermutationManipulator>)Parameters["PermutationManipulator"]; }
+  public sealed class AlbaManipulator : VRPManipulator {
+    public IValueLookupParameter<IPermutationManipulator> InnerManipulatorParameter {
+      get { return (IValueLookupParameter<IPermutationManipulator>)Parameters["InnerManipulator"]; }
     }
+
+    [StorableConstructor]
+    private AlbaManipulator(bool deserializing) : base(deserializing) { }
 
     public AlbaManipulator()
       : base() {
-      Parameters.Add(new ValueLookupParameter<IPermutationManipulator>("PermutationManipulator", "The permutation manipulator.", new TranslocationManipulator()));
+        Parameters.Add(new ValueLookupParameter<IPermutationManipulator>("InnerManipulator", "The permutation manipulator.", new TranslocationManipulator()));
+
+        AlbaEncoding.RemoveUnusedParameters(Parameters);
     }
 
     public override IOperation Apply() {
-      IVRPEncoding solution = VRPSolutionParameter.ActualValue;
+      IVRPEncoding solution = VRPToursParameter.ActualValue;
       if (!(solution is AlbaEncoding)) {
-        VRPSolutionParameter.ActualValue = AlbaEncoding.ConvertFrom(solution, VehiclesParameter.ActualValue.Value);
+        VRPToursParameter.ActualValue = AlbaEncoding.ConvertFrom(solution, VehiclesParameter.ActualValue.Value);
       }
       
       OperationCollection next = new OperationCollection(base.Apply());
 
-      IPermutationManipulator op = PermutationManipulatorParameter.ActualValue;
+      IPermutationManipulator op = InnerManipulatorParameter.ActualValue;
       if (op != null) {
-        op.PermutationParameter.ActualName = VRPSolutionParameter.ActualName;
+        op.PermutationParameter.ActualName = VRPToursParameter.ActualName;
         next.Insert(0, ExecutionContext.CreateOperation(op));
       }
 

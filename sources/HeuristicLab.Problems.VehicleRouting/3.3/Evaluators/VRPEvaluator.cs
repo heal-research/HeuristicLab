@@ -61,24 +61,24 @@ namespace HeuristicLab.Problems.VehicleRouting {
       get { return (ILookupParameter<DoubleValue>)Parameters["Tardiness"]; }
     }
 
-    public ILookupParameter<IVRPEncoding> VRPSolutionParameter {
-      get { return (ILookupParameter<IVRPEncoding>)Parameters["VRPSolution"]; }
+    public ILookupParameter<IVRPEncoding> VRPToursParameter {
+      get { return (ILookupParameter<IVRPEncoding>)Parameters["VRPTours"]; }
     }
    
     public ILookupParameter<DoubleValue> FleetUsageFactor {
-      get { return (ILookupParameter<DoubleValue>)Parameters["FleetUsageFactor"]; }
+      get { return (ILookupParameter<DoubleValue>)Parameters["EvalFleetUsageFactor"]; }
     }
     public ILookupParameter<DoubleValue> TimeFactor {
-      get { return (ILookupParameter<DoubleValue>)Parameters["TimeFactor"]; }
+      get { return (ILookupParameter<DoubleValue>)Parameters["EvalTimeFactor"]; }
     }
     public ILookupParameter<DoubleValue> DistanceFactor {
-      get { return (ILookupParameter<DoubleValue>)Parameters["DistanceFactor"]; }
+      get { return (ILookupParameter<DoubleValue>)Parameters["EvalDistanceFactor"]; }
     }
     public ILookupParameter<DoubleValue> OverloadPenalty {
-      get { return (ILookupParameter<DoubleValue>)Parameters["OverloadPenalty"]; }
+      get { return (ILookupParameter<DoubleValue>)Parameters["EvalOverloadPenalty"]; }
     }
     public ILookupParameter<DoubleValue> TardinessPenalty {
-      get { return (ILookupParameter<DoubleValue>)Parameters["TardinessPenalty"]; }
+      get { return (ILookupParameter<DoubleValue>)Parameters["EvalTardinessPenalty"]; }
     }
 
     public VRPEvaluator()
@@ -89,16 +89,16 @@ namespace HeuristicLab.Problems.VehicleRouting {
       Parameters.Add(new LookupParameter<DoubleValue>("Distance", "The distance."));
       Parameters.Add(new LookupParameter<DoubleValue>("Overload", "The overload."));
       Parameters.Add(new LookupParameter<DoubleValue>("Tardiness", "The tardiness."));
-      Parameters.Add(new LookupParameter<IVRPEncoding>("VRPSolution", "The VRP solution which should be evaluated."));
-      Parameters.Add(new LookupParameter<DoubleValue>("FleetUsageFactor", "The fleet usage factor considered in the evaluation."));
-      Parameters.Add(new LookupParameter<DoubleValue>("TimeFactor", "The time factor considered in the evaluation."));
-      Parameters.Add(new LookupParameter<DoubleValue>("DistanceFactor", "The distance factor considered in the evaluation."));
-      Parameters.Add(new LookupParameter<DoubleValue>("OverloadPenalty", "The overload penalty considered in the evaluation."));
-      Parameters.Add(new LookupParameter<DoubleValue>("TardinessPenalty", "The tardiness penalty considered in the evaluation."));
+      Parameters.Add(new LookupParameter<IVRPEncoding>("VRPTours", "The VRP tours which should be evaluated."));
+      Parameters.Add(new LookupParameter<DoubleValue>("EvalFleetUsageFactor", "The fleet usage factor considered in the evaluation."));
+      Parameters.Add(new LookupParameter<DoubleValue>("EvalTimeFactor", "The time factor considered in the evaluation."));
+      Parameters.Add(new LookupParameter<DoubleValue>("EvalDistanceFactor", "The distance factor considered in the evaluation."));
+      Parameters.Add(new LookupParameter<DoubleValue>("EvalOverloadPenalty", "The overload penalty considered in the evaluation."));
+      Parameters.Add(new LookupParameter<DoubleValue>("EvalTardinessPenalty", "The tardiness penalty considered in the evaluation."));
     }
 
     private double CalculateFleetUsage() {
-      IVRPEncoding vrpSolution = VRPSolutionParameter.ActualValue;
+      IVRPEncoding vrpSolution = VRPToursParameter.ActualValue;
 
       return vrpSolution.Tours.Count;
     }
@@ -205,7 +205,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     public sealed override IOperation Apply() {
-      IVRPEncoding solution = VRPSolutionParameter.ActualValue;
+      IVRPEncoding solution = VRPToursParameter.ActualValue;
 
       TourEvaluation sumEval = Evaluate(solution, DueTimeParameter.ActualValue, ServiceTimeParameter.ActualValue, ReadyTimeParameter.ActualValue,
         DemandParameter.ActualValue, CapacityParameter.ActualValue,

@@ -35,24 +35,24 @@ namespace HeuristicLab.Problems.VehicleRouting {
       get { return false; }
     }
 
-    public ILookupParameter<IVRPEncoding> VRPSolutionParameter {
-      get { return (ILookupParameter<IVRPEncoding>)Parameters["VRPSolution"]; }
+    public ILookupParameter<IVRPEncoding> VRPToursParameter {
+      get { return (ILookupParameter<IVRPEncoding>)Parameters["VRPTours"]; }
     }
    
     public ILookupParameter<DoubleValue> FleetUsageFactor {
-      get { return (ILookupParameter<DoubleValue>)Parameters["FleetUsageFactor"]; }
+      get { return (ILookupParameter<DoubleValue>)Parameters["EvalFleetUsageFactor"]; }
     }
     public ILookupParameter<DoubleValue> TimeFactor {
-      get { return (ILookupParameter<DoubleValue>)Parameters["TimeFactor"]; }
+      get { return (ILookupParameter<DoubleValue>)Parameters["EvalTimeFactor"]; }
     }
     public ILookupParameter<DoubleValue> DistanceFactor {
-      get { return (ILookupParameter<DoubleValue>)Parameters["DistanceFactor"]; }
+      get { return (ILookupParameter<DoubleValue>)Parameters["EvalDistanceFactor"]; }
     }
     public ILookupParameter<DoubleValue> OverloadPenalty {
-      get { return (ILookupParameter<DoubleValue>)Parameters["OverloadPenalty"]; }
+      get { return (ILookupParameter<DoubleValue>)Parameters["EvalOverloadPenalty"]; }
     }
     public ILookupParameter<DoubleValue> TardinessPenalty {
-      get { return (ILookupParameter<DoubleValue>)Parameters["TardinessPenalty"]; }
+      get { return (ILookupParameter<DoubleValue>)Parameters["EvalTardinessPenalty"]; }
     }
 
     public ILookupParameter<DoubleValue> QualityParameter {
@@ -77,9 +77,12 @@ namespace HeuristicLab.Problems.VehicleRouting {
       get { return (ILookupParameter<DoubleValue>)Parameters["MoveTardiness"]; }
     }
 
+    [StorableConstructor]
+    protected VRPMoveEvaluator(bool deserializing) : base(deserializing) { }
+
     protected VRPMoveEvaluator()
       : base() {
-      Parameters.Add(new LookupParameter<IVRPEncoding>("VRPSolution", "The VRP solution."));
+      Parameters.Add(new LookupParameter<IVRPEncoding>("VRPTours", "The VRP tours."));
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of a VRP solution."));
       Parameters.Add(new LookupParameter<DoubleValue>("MoveVehiclesUtilized", "The number of vehicles utilized."));
       Parameters.Add(new LookupParameter<DoubleValue>("MoveTravelTime", "The total travel time."));
@@ -87,11 +90,11 @@ namespace HeuristicLab.Problems.VehicleRouting {
       Parameters.Add(new LookupParameter<DoubleValue>("MoveOverload", "The overload."));
       Parameters.Add(new LookupParameter<DoubleValue>("MoveTardiness", "The tardiness."));
       Parameters.Add(new LookupParameter<DoubleValue>("MoveQuality", "The evaluated quality of a move on a VRP solution."));
-      Parameters.Add(new LookupParameter<DoubleValue>("FleetUsageFactor", "The fleet usage factor considered in the evaluation."));
-      Parameters.Add(new LookupParameter<DoubleValue>("TimeFactor", "The time factor considered in the evaluation."));
-      Parameters.Add(new LookupParameter<DoubleValue>("DistanceFactor", "The distance factor considered in the evaluation."));
-      Parameters.Add(new LookupParameter<DoubleValue>("OverloadPenalty", "The overload penalty considered in the evaluation."));
-      Parameters.Add(new LookupParameter<DoubleValue>("TardinessPenalty", "The tardiness penalty considered in the evaluation."));
+      Parameters.Add(new LookupParameter<DoubleValue>("EvalFleetUsageFactor", "The fleet usage factor considered in the evaluation."));
+      Parameters.Add(new LookupParameter<DoubleValue>("EvalTimeFactor", "The time factor considered in the evaluation."));
+      Parameters.Add(new LookupParameter<DoubleValue>("EvalDistanceFactor", "The distance factor considered in the evaluation."));
+      Parameters.Add(new LookupParameter<DoubleValue>("EvalOverloadPenalty", "The overload penalty considered in the evaluation."));
+      Parameters.Add(new LookupParameter<DoubleValue>("EvalTardinessPenalty", "The tardiness penalty considered in the evaluation."));
     }
 
     protected abstract TourEvaluation GetMoveQuality();

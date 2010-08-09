@@ -24,39 +24,91 @@ using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Data;
 using HeuristicLab.Problems.VehicleRouting.Encodings;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System;
 
 namespace HeuristicLab.Problems.VehicleRouting {
+  [Item("VRPOperator", "A VRP operator.")]
+  [StorableClass]
   public abstract class VRPOperator : SingleSuccessorOperator, IVRPOperator {
     public int Cities {
       get { return CoordinatesParameter.ActualValue.Rows - 1; }
     }
     public ILookupParameter<DoubleMatrix> CoordinatesParameter {
-      get { return (ILookupParameter<DoubleMatrix>)Parameters["Coordinates"]; }
+      get {
+        if (Parameters.ContainsKey("Coordinates"))
+          return (ILookupParameter<DoubleMatrix>)Parameters["Coordinates"];
+        else
+          return null;
+      }
     }
     public ILookupParameter<DoubleMatrix> DistanceMatrixParameter {
-      get { return (ILookupParameter<DoubleMatrix>)Parameters["DistanceMatrix"]; }
+      get {
+        if (Parameters.ContainsKey("DistanceMatrix"))
+          return (ILookupParameter<DoubleMatrix>)Parameters["DistanceMatrix"];
+        else
+          return null;
+      }
     }
     public ILookupParameter<BoolValue> UseDistanceMatrixParameter {
-      get { return (ILookupParameter<BoolValue>)Parameters["UseDistanceMatrix"]; }
+      get {
+        if (Parameters.ContainsKey("UseDistanceMatrix"))
+          return (ILookupParameter<BoolValue>)Parameters["UseDistanceMatrix"];
+        else
+          return null;
+      }
     }
     public ILookupParameter<IntValue> VehiclesParameter {
-      get { return (ILookupParameter<IntValue>)Parameters["Vehicles"]; }
+      get {
+        if (Parameters.ContainsKey("Vehicles"))
+          return (ILookupParameter<IntValue>)Parameters["Vehicles"];
+        else
+          return null;
+      }
     }
     public ILookupParameter<DoubleValue> CapacityParameter {
-      get { return (ILookupParameter<DoubleValue>)Parameters["Capacity"]; }
+      get {
+        if (Parameters.ContainsKey("Capacity"))
+          return (ILookupParameter<DoubleValue>)Parameters["Capacity"];
+        else
+          return null;
+      }
     }
     public ILookupParameter<DoubleArray> DemandParameter {
-      get { return (ILookupParameter<DoubleArray>)Parameters["Demand"]; }
+      get {
+        if (Parameters.ContainsKey("Demand"))
+          return (ILookupParameter<DoubleArray>)Parameters["Demand"];
+        else
+          return null;
+      }
     }
     public ILookupParameter<DoubleArray> ReadyTimeParameter {
-      get { return (ILookupParameter<DoubleArray>)Parameters["ReadyTime"]; }
+      get {
+        if (Parameters.ContainsKey("ReadyTime"))
+          return (ILookupParameter<DoubleArray>)Parameters["ReadyTime"];
+        else
+          return null;
+      }
     }
     public ILookupParameter<DoubleArray> DueTimeParameter {
-      get { return (ILookupParameter<DoubleArray>)Parameters["DueTime"]; }
+      get {
+        if (Parameters.ContainsKey("DueTime"))
+          return (ILookupParameter<DoubleArray>)Parameters["DueTime"];
+        else
+          return null;
+      }
     }
     public ILookupParameter<DoubleArray> ServiceTimeParameter {
-      get { return (ILookupParameter<DoubleArray>)Parameters["ServiceTime"]; }
+      get {
+        if (Parameters.ContainsKey("ServiceTime"))
+          return (ILookupParameter<DoubleArray>)Parameters["ServiceTime"];
+        else
+          return null;
+      }
     }
+
+    [StorableConstructor]
+    protected VRPOperator(bool deserializing) : base(deserializing) { }
 
     public VRPOperator()
       : base() {

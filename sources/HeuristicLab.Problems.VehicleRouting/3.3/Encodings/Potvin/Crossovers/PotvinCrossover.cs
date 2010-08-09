@@ -28,11 +28,15 @@ using HeuristicLab.Optimization;
 using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
+  [Item("PotvinCrossover", "A VRP crossover operation on a Potvin encoding.")]
   [StorableClass]
   public abstract class PotvinCrossover : VRPCrossover, IStochasticOperator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
+
+    [StorableConstructor]
+    protected PotvinCrossover(bool deserializing) : base(deserializing) { }
 
     public PotvinCrossover() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));

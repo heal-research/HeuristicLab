@@ -34,6 +34,9 @@ namespace HeuristicLab.Problems.VehicleRouting {
       set { Parameters["TranslocationMove"].ActualValue = value.ActualValue; }
     }
 
+    [StorableConstructor]
+    private AlbaTranslocationMoveEvaluator(bool deserializing) : base(deserializing) { }
+
     public AlbaTranslocationMoveEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<TranslocationMove>("TranslocationMove", "The move to evaluate."));
@@ -42,7 +45,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     protected override TourEvaluation GetMoveQuality() {
       TranslocationMove move = TranslocationMoveParameter.ActualValue;
       //perform move
-      AlbaEncoding newSolution = VRPSolutionParameter.ActualValue.Clone() as AlbaEncoding;
+      AlbaEncoding newSolution = VRPToursParameter.ActualValue.Clone() as AlbaEncoding;
       TranslocationManipulator.Apply(newSolution, move.Index1, move.Index2, move.Index3);
 
       return VRPEvaluator.Evaluate(

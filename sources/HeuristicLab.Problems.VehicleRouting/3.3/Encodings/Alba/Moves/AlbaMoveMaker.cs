@@ -60,6 +60,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       get { return (ILookupParameter<DoubleValue>)Parameters["Tardiness"]; }
     }
     
+    [StorableConstructor]
+    protected AlbaMoveMaker(bool deserializing) : base(deserializing) { }
 
     public AlbaMoveMaker()
       : base() {

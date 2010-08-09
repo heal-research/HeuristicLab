@@ -29,9 +29,9 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
+  [Item("PushForwardCreator", "The push forward insertion heuristic.  It is implemented as described in Sam, and Thangiah, R. (1999). A Hybrid Genetic Algorithms, Simulated Annealing and Tabu Search Heuristic for Vehicle Routing Problems with Time Windows. Practical Handbook of Genetic Algorithms, Volume III, pp 347–381.")]
   [StorableClass]
-  //The push forward insertion heuristic.  It is implemented as described in Sam, and Thangiah, R. (1999). A Hybrid Genetic Algorithms, Simulated Annealing and Tabu Search Heuristic for Vehicle Routing Problems with Time Windows. Practical Handbook of Genetic Algorithms, Volume III, pp 347–381.
-  public abstract class PushForwardCreator : IntListRepresentationCreator, IStochasticOperator {
+  public sealed class PushForwardCreator : DefaultRepresentationCreator, IStochasticOperator {
     #region IStochasticOperator Members
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
@@ -56,6 +56,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     public IValueParameter<DoubleValue> GammaVariance {
       get { return (IValueParameter<DoubleValue>)Parameters["GammaVariance"]; }
     }
+
+    [StorableConstructor]
+    private PushForwardCreator(bool deserializing) : base(deserializing) { }
 
     public PushForwardCreator()
       : base() {

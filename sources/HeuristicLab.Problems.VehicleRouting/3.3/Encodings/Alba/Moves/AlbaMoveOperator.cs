@@ -32,13 +32,21 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     [Storable]
     protected abstract IPermutationMoveOperator PermutationMoveOperatorParameter { get; set; }
 
+    [StorableConstructor]
+    protected AlbaMoveOperator(bool deserializing) : base(deserializing) { }
+
+    public AlbaMoveOperator() : base() 
+    {
+      AlbaEncoding.RemoveUnusedParameters(Parameters);
+    }
+
     public override IOperation Apply() {
-      IVRPEncoding solution = VRPSolutionParameter.ActualValue;
+      IVRPEncoding solution = VRPToursParameter.ActualValue;
       if (!(solution is AlbaEncoding)) {
-        VRPSolutionParameter.ActualValue = AlbaEncoding.ConvertFrom(solution, VehiclesParameter.ActualValue.Value);
+        VRPToursParameter.ActualValue = AlbaEncoding.ConvertFrom(solution, VehiclesParameter.ActualValue.Value);
       }
 
-      PermutationMoveOperatorParameter.PermutationParameter.ActualName = VRPSolutionParameter.ActualName;
+      PermutationMoveOperatorParameter.PermutationParameter.ActualName = VRPToursParameter.ActualName;
       IAtomicOperation op = this.ExecutionContext.CreateChildOperation(PermutationMoveOperatorParameter);
       op.Operator.Execute((IExecutionContext)op);
 

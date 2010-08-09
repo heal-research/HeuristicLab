@@ -106,22 +106,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Analyzers\BestVRPSolutionAnalyzer.cs" />
-    <Compile Include="Encodings\Alba\Creators\AlbaRandomCreator.cs" />
     <Compile Include="Encodings\General\RandomCreator.cs" />
-    <Compile Include="Encodings\Potvin\Creators\PotvinRandomCreator.cs" />
-    <Compile Include="Encodings\Potvin\Crossovers\PotvinSBXCrossover.cs" />
+    <Compile Include="Encodings\Potvin\Crossovers\SequenceBasedCrossover.cs" />
     <Compile Include="Encodings\Potvin\Crossovers\PotvinCrossover.cs" />
-    <Compile Include="Encodings\Potvin\Manipulators\Potvin2MManipulator.cs" />
-    <Compile Include="Encodings\Potvin\Manipulators\Potvin1MManipulator.cs" />
+    <Compile Include="Encodings\Potvin\Manipulators\TwoLevelExchangeManipulator.cs" />
+    <Compile Include="Encodings\Potvin\Manipulators\OneLevelExchangeManipulator.cs" />
     <Compile Include="Encodings\Potvin\Manipulators\PotvinManipulator.cs" />
     <Compile Include="Interfaces\IVRPMoveMaker.cs" />
     <Compile Include="VRPUtilities.cs" />
     <Compile Include="VRPOperator.cs" />
     <Compile Include="Encodings\General\PushForwardInsertionCreator.cs" />
-    <Compile Include="Encodings\General\IntListRepresentationCreator.cs" />
+    <Compile Include="Encodings\General\DefaultRepresentationCreator.cs" />
     <Compile Include="Encodings\Alba\Crossovers\AlbaCrossover.cs" />
     <Compile Include="Encodings\Alba\Interfaces\IAlbaTranslocationMoveOperator.cs" />
-    <Compile Include="Encodings\Alba\Creators\AlbaPushForwardInsertionCreator.cs" />
     <Compile Include="Encodings\Alba\Manipulators\AlbaManipulator.cs" />
     <Compile Include="Encodings\Alba\Moves\AlbaMoveOperator.cs" />
     <Compile Include="Encodings\Alba\Moves\AlbaMoveMaker.cs" />
@@ -130,12 +127,10 @@
     <Compile Include="Encodings\Alba\Moves\ThreeOpt\AlbaTranslocationMoveTabuMaker.cs" />
     <Compile Include="Encodings\Alba\Moves\ThreeOpt\AlbaTranslocationMoveSoftTabuCriterion.cs" />
     <Compile Include="Encodings\Alba\Moves\ThreeOpt\AlbaTranslocationMoveHardTabuCriterion.cs" />
-    <Compile Include="Encodings\Potvin\Creators\PotvinPushForwardInsertionCreator.cs" />
     <Compile Include="Encodings\Potvin\PotvinEncoding.cs" />
     <Compile Include="Encodings\VRPMoveOperator.cs" />
     <Compile Include="Encodings\VRPCrossover.cs" />
     <Compile Include="Encodings\VRPCreator.cs" />
-    <Compile Include="Encodings\Alba\Creators\AlbaPermutationCreator.cs" />
     <Compile Include="Encodings\Alba\AlbaEncoding.cs" />
     <Compile Include="Encodings\Tour.cs" />
     <Compile Include="Encodings\VRPManipulator.cs" />

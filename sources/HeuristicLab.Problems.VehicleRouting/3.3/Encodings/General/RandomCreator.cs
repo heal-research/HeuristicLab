@@ -29,13 +29,17 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
+  [Item("RandomCreator", "Creates a randomly initialized VRP solution.")]
   [StorableClass]
-  public abstract class RandomCreator : IntListRepresentationCreator, IStochasticOperator {
+  public sealed class RandomCreator : DefaultRepresentationCreator, IStochasticOperator {
     #region IStochasticOperator Members
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
     #endregion
+
+    [StorableConstructor]
+    private RandomCreator(bool deserializing) : base(deserializing) { }
 
     public RandomCreator()
       : base() {

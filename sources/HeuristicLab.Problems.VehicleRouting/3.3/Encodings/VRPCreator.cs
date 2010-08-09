@@ -26,6 +26,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings {
+  [Item("VRPCreator", "A VRP creator.")]
   [StorableClass]
   public abstract class VRPCreator : VRPOperator, IVRPCreator {
     public override bool CanChangeName {
@@ -33,17 +34,20 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings {
     }
 
     #region IVRPCreator Members
-    public ILookupParameter<IVRPEncoding> VRPSolutionParameter {
-      get { return (ILookupParameter<IVRPEncoding>)Parameters["VRPSolution"]; }
+    public ILookupParameter<IVRPEncoding> VRPToursParameter {
+      get { return (ILookupParameter<IVRPEncoding>)Parameters["VRPTours"]; }
     }
     
-      public IValueLookupParameter<IntValue> CitiesParameter {
-	      get { return (IValueLookupParameter<IntValue>)Parameters["Cities"]; }
-	    }
+    public IValueLookupParameter<IntValue> CitiesParameter {
+	    get { return (IValueLookupParameter<IntValue>)Parameters["Cities"]; }
+	  }
+
+    [StorableConstructor]
+    protected VRPCreator(bool deserializing) : base(deserializing) { }
 
     public VRPCreator()
       : base() {
-      Parameters.Add(new LookupParameter<IVRPEncoding>("VRPSolution", "The new VRP solution."));
+      Parameters.Add(new LookupParameter<IVRPEncoding>("VRPTours", "The new VRP tours."));
     }
 
     #endregion

@@ -51,6 +51,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       get { return moveMaker.PermutationParameter; }
     }
 
+    [StorableConstructor]
+    private AlbaTranslocationMoveMaker(bool deserializing) : base(deserializing) { }
+
     public AlbaTranslocationMoveMaker()
       : base() {
       moveMaker = new TranslocationMoveMaker();

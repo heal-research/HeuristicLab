@@ -27,11 +27,15 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
+  [Item("PotvinManipulator", "A VRP manipulation operation on a Potvin encoding.")]
   [StorableClass]
   public abstract class PotvinManipulator : VRPManipulator, IStochasticOperator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
+
+    [StorableConstructor]
+    protected PotvinManipulator(bool deserializing) : base(deserializing) { }
 
     public PotvinManipulator() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));
@@ -75,12 +79,12 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
     
     public override IOperation Apply() {
-      IVRPEncoding solution = VRPSolutionParameter.ActualValue;
+      IVRPEncoding solution = VRPToursParameter.ActualValue;
       if (!(solution is PotvinEncoding)) {
-        VRPSolutionParameter.ActualValue = PotvinEncoding.ConvertFrom(solution);
+        VRPToursParameter.ActualValue = PotvinEncoding.ConvertFrom(solution);
       }
       
-      Manipulate(RandomParameter.ActualValue, VRPSolutionParameter.ActualValue as PotvinEncoding);
+      Manipulate(RandomParameter.ActualValue, VRPToursParameter.ActualValue as PotvinEncoding);
 
       return base.Apply();
     }

@@ -55,6 +55,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       get { return tabuChecker.MaximizationParameter; }
     }
 
+    [StorableConstructor]
+    private AlbaTranslocationMoveHardTabuCriterion(bool deserializing) : base(deserializing) { }
+
     public AlbaTranslocationMoveHardTabuCriterion()
       : base() {
       tabuChecker = new TranslocationMoveHardTabuCriterion();

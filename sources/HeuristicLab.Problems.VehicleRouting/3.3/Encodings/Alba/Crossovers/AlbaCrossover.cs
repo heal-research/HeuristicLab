@@ -29,22 +29,30 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaCrossover", "An operator which crosses two Alba VRP representations.")]
   [StorableClass]
   public sealed class AlbaCrossover : VRPCrossover {    
-    public IValueLookupParameter<IPermutationCrossover> PermutationCrossoverParameter {
-      get { return (IValueLookupParameter<IPermutationCrossover>)Parameters["PermutationCrossover"]; }
+    public IValueLookupParameter<IPermutationCrossover> InnerCrossoverParameter {
+      get { return (IValueLookupParameter<IPermutationCrossover>)Parameters["InnerCrossover"]; }
     }
+
+    [StorableConstructor]
+    private AlbaCrossover(bool deserializing) : base(deserializing) { }
 
     public AlbaCrossover()
       : base() {
-      Parameters.Add(new ValueLookupParameter<IPermutationCrossover>("PermutationCrossover", "The permutation crossover.", new EdgeRecombinationCrossover()));
+      Parameters.Add(new ValueLookupParameter<IPermutationCrossover>("InnerCrossover", "The permutation crossover.", new EdgeRecombinationCrossover()));
+    
+      AlbaEncoding.RemoveUnusedParameters(Parameters);
     }
 
-    void Crossover() {
-      PermutationCrossoverParameter.ActualValue.ParentsParameter.ActualName = ParentsParameter.ActualName;
+    private void Crossover() {
+      //note - the inner crossover is called here and the result is converted to an alba representation
+      //some refactoring should be done here in the future - the crossover operation should be called directly
+
+      InnerCrossoverParameter.ActualValue.ParentsParameter.ActualName = ParentsParameter.ActualName;
       IAtomicOperation op = this.ExecutionContext.CreateOperation(
-        PermutationCrossoverParameter.ActualValue, this.ExecutionContext.Scope);
+        InnerCrossoverParameter.ActualValue, this.ExecutionContext.Scope);
       op.Operator.Execute((IExecutionContext)op);
 
-      string childName = PermutationCrossoverParameter.ActualValue.ChildParameter.ActualName;
+      string childName = InnerCrossoverParameter.ActualValue.ChildParameter.ActualName;
       if (ExecutionContext.Scope.Variables.ContainsKey(childName)) {
         Permutation permutation = ExecutionContext.Scope.Variables[childName].Value as Permutation;
         ExecutionContext.Scope.Variables.Remove(childName);
