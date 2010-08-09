@@ -30,6 +30,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [StorableClass]
+  //The push forward insertion heuristic.  It is implemented as described in Sam, and Thangiah, R. (1999). A Hybrid Genetic Algorithms, Simulated Annealing and Tabu Search Heuristic for Vehicle Routing Problems with Time Windows. Practical Handbook of Genetic Algorithms, Volume III, pp 347–381.
   public abstract class PushForwardCreator : IntListRepresentationCreator, IStochasticOperator {
     #region IStochasticOperator Members
     public ILookupParameter<IRandom> RandomParameter {

@@ -28,7 +28,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
-  [Item("AlbaTranslocationMoveGenerator", "An operator which generates translocation moves for the alba representation.")]
+  [Item("AlbaTranslocationMoveGenerator", "An operator which generates translocation moves for the Alba representation.")]
   [StorableClass]
   public sealed class AlbaTranslocationMoveGenerator : AlbaMoveOperator, IAlbaTranslocationMoveOperator, IMultiMoveGenerator {
     public IValueLookupParameter<TranslocationMoveGenerator> TranslocationMoveGeneratorParameter {

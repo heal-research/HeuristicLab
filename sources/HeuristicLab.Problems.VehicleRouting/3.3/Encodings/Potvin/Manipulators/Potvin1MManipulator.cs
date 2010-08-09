@@ -27,7 +27,7 @@ using HeuristicLab.Data;
 using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
-  [Item("Potvin1MMainpulator", "The one-level exchange operator which manipulates a Potvin VRP representation.")]
+  [Item("Potvin1MMainpulator", "The one-level exchange operator which manipulates a Potvin VRP representation.  It is implemented as described in Potvin, J.-Y. and Bengio, S. (1996). The Vehicle Routing Problem with Time Windows - Part II: Genetic Search. INFORMS Journal of Computing, 8:165–172.")]
   [StorableClass]
   public sealed class Potvin1MMainpulator : PotvinManipulator {
     protected override void Manipulate(IRandom random, PotvinEncoding individual) {

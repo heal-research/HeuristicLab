@@ -26,7 +26,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
 
 namespace HeuristicLab.Problems.VehicleRouting {
-  [Item("AlbaTranslocationMoveEvaluator", "Evaluates a translocation or insertion move (3-opt) for the VRP.")]
+  [Item("AlbaTranslocationMoveEvaluator", "Evaluates a translocation or insertion move (3-opt) for the Alba representation.")]
   [StorableClass]
   public sealed class AlbaTranslocationMoveEvaluator : VRPMoveEvaluator {
     public ILookupParameter<TranslocationMove> TranslocationMoveParameter {

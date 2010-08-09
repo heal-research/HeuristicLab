@@ -26,7 +26,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
-  [Item("AlbaMoveOperator", "A move operator for an alba VRP representation.")]
+  [Item("AlbaMoveOperator", "A move operator for an Alba VRP representation.")]
   [StorableClass]
   public abstract class AlbaMoveOperator : VRPMoveOperator {    
     [Storable]

@@ -19,22 +19,22 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
-using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 
-namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
-  [Item("PotvinPushForwardCreator", "An operator which creates a new Potvin VRP representation using the push forward insertion heuristic. It is implemented as described in Sam, and Thangiah, R. (1999). A Hybrid Genetic Algorithms, Simulated Annealing and Tabu Search Heuristic for Vehicle Routing Problems with Time Windows. Practical Handbook of Genetic Algorithms, Volume III, pp 347–381.")]
-  [StorableClass]
-  public sealed class PotvinPushForwardCreator : PushForwardCreator {
-    protected override IVRPEncoding CreateEncoding(List<int> route) {
-      return PotvinEncoding.ConvertFrom(route);
-    }
+namespace HeuristicLab.Problems.VehicleRouting {
+  public interface IVRPMoveMaker : IMoveMaker, IVRPMoveOperator {
+    ILookupParameter<DoubleValue> MoveVehcilesUtilizedParameter { get; }
+    ILookupParameter<DoubleValue> MoveTravelTimeParameter { get; }
+    ILookupParameter<DoubleValue> MoveDistanceParameter { get; }
+    ILookupParameter<DoubleValue> MoveOverloadParameter { get; }
+    ILookupParameter<DoubleValue> MoveTardinessParameter { get; }
+
+    ILookupParameter<DoubleValue> VehcilesUtilizedParameter { get; }
+    ILookupParameter<DoubleValue> TravelTimeParameter { get; }
+    ILookupParameter<DoubleValue> DistanceParameter { get; }
+    ILookupParameter<DoubleValue> OverloadParameter { get; }
+    ILookupParameter<DoubleValue> TardinessParameter {get; }
   }
 }

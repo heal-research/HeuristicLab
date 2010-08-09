@@ -28,7 +28,7 @@ using System.Drawing;
 using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
-  [Item("PotvinEncoding", "Represents a potvin encoding of VRP solutions.")]
+  [Item("PotvinEncoding", "Represents a potvin encoding of VRP solutions. It is implemented as described in Potvin, J.-Y. and Bengio, S. (1996). The Vehicle Routing Problem with Time Windows - Part II: Genetic Search. INFORMS Journal of Computing, 8:165–172.")]
   [StorableClass]
   public class PotvinEncoding : Item, IVRPEncoding {
     public override Image ItemImage {

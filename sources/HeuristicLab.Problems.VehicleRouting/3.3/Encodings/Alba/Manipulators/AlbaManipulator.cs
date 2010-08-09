@@ -26,20 +26,33 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
+  [Item("AlbaManipulator", "An operator which manipulates an alba VRP representation.")]
   [StorableClass]
-  public abstract class AlbaManipulator : VRPManipulator {    
-    protected virtual void Manipulate() {
+  public sealed class AlbaManipulator : VRPManipulator {    
+    public IValueLookupParameter<IPermutationManipulator> PermutationManipulatorParameter {
+      get { return (IValueLookupParameter<IPermutationManipulator>)Parameters["PermutationManipulator"]; }
     }
-    
+
+    public AlbaManipulator()
+      : base() {
+      Parameters.Add(new ValueLookupParameter<IPermutationManipulator>("PermutationManipulator", "The permutation manipulator.", new TranslocationManipulator()));
+    }
+
     public override IOperation Apply() {
       IVRPEncoding solution = VRPSolutionParameter.ActualValue;
       if (!(solution is AlbaEncoding)) {
         VRPSolutionParameter.ActualValue = AlbaEncoding.ConvertFrom(solution, VehiclesParameter.ActualValue.Value);
       }
       
-      Manipulate();
+      OperationCollection next = new OperationCollection(base.Apply());
 
-      return base.Apply();
+      IPermutationManipulator op = PermutationManipulatorParameter.ActualValue;
+      if (op != null) {
+        op.PermutationParameter.ActualName = VRPSolutionParameter.ActualName;
+        next.Insert(0, ExecutionContext.CreateOperation(op));
+      }
+
+      return next;
     }
   }
 }

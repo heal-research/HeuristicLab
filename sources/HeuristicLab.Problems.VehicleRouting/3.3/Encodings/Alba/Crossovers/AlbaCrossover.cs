@@ -26,9 +26,32 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
+  [Item("AlbaCrossover", "An operator which crosses two Alba VRP representations.")]
   [StorableClass]
-  public abstract class AlbaCrossover : VRPCrossover {    
-    protected virtual void Crossover() {
+  public sealed class AlbaCrossover : VRPCrossover {    
+    public IValueLookupParameter<IPermutationCrossover> PermutationCrossoverParameter {
+      get { return (IValueLookupParameter<IPermutationCrossover>)Parameters["PermutationCrossover"]; }
+    }
+
+    public AlbaCrossover()
+      : base() {
+      Parameters.Add(new ValueLookupParameter<IPermutationCrossover>("PermutationCrossover", "The permutation crossover.", new EdgeRecombinationCrossover()));
+    }
+
+    void Crossover() {
+      PermutationCrossoverParameter.ActualValue.ParentsParameter.ActualName = ParentsParameter.ActualName;
+      IAtomicOperation op = this.ExecutionContext.CreateOperation(
+        PermutationCrossoverParameter.ActualValue, this.ExecutionContext.Scope);
+      op.Operator.Execute((IExecutionContext)op);
+
+      string childName = PermutationCrossoverParameter.ActualValue.ChildParameter.ActualName;
+      if (ExecutionContext.Scope.Variables.ContainsKey(childName)) {
+        Permutation permutation = ExecutionContext.Scope.Variables[childName].Value as Permutation;
+        ExecutionContext.Scope.Variables.Remove(childName);
+
+        ChildParameter.ActualValue = new AlbaEncoding(permutation, Cities);
+      } else
+        ChildParameter.ActualValue = null;
     }
 
     public override IOperation Apply() {

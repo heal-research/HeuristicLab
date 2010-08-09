@@ -30,7 +30,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
-  [Item("AlbaPushForwardCreator", "An operator which creates a new alba VRP representation using the push forward insertion heuristic.")]
+  [Item("AlbaPushForwardCreator", "An operator which creates a new Alba VRP representation using the push forward insertion heuristic.  It is implemented as described in Sam, and Thangiah, R. (1999). A Hybrid Genetic Algorithms, Simulated Annealing and Tabu Search Heuristic for Vehicle Routing Problems with Time Windows. Practical Handbook of Genetic Algorithms, Volume III, pp 347–381.")]
   [StorableClass]
   public sealed class AlbaPushForwardCreator : PushForwardCreator {
     protected override IVRPEncoding CreateEncoding(List<int> route) {

@@ -29,7 +29,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
-  [Item("AlbaPermutationCreator", "An operator which creates a new alba VRP representation.")]
+  [Item("AlbaPermutationCreator", "An operator which creates a new Alba VRP representation.")]
   [StorableClass]
   public sealed class AlbaPermutationCreator : VRPCreator, IStochasticOperator {
     public IValueLookupParameter<IPermutationCreator> PermutationCreatorParameter {

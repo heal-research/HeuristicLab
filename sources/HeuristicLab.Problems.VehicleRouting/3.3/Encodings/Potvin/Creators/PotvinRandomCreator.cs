@@ -19,32 +19,22 @@
  */
 #endregion
 
+using System;
+using System.Collections.Generic;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 
-namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
-  [Item("AlbaPermutationManipulator", "An operator which manipulates an alba VRP representation.")]
+namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
+  [Item("PotvinRandomCreator", "An operator which creates a new random solution in the Potvin VRP representation.")]
   [StorableClass]
-  public sealed class AlbaPermutationManipulator : AlbaManipulator {
-    public IValueLookupParameter<IPermutationManipulator> PermutationManipulatorParameter {
-      get { return (IValueLookupParameter<IPermutationManipulator>)Parameters["PermutationManipulator"]; }
-    }
-
-    public AlbaPermutationManipulator()
-      : base() {
-      Parameters.Add(new ValueLookupParameter<IPermutationManipulator>("PermutationManipulator", "The permutation manipulator.", new TranslocationManipulator()));
-    }
-
-    public override IOperation Apply() {
-      OperationCollection next = new OperationCollection(base.Apply());
-      IPermutationManipulator op = PermutationManipulatorParameter.ActualValue;
-      if (op != null) {
-        op.PermutationParameter.ActualName = VRPSolutionParameter.ActualName;
-        next.Insert(0, ExecutionContext.CreateOperation(op));
-      }
-      return next;
+  public sealed class PotvinRandomCreator : RandomCreator {
+    protected override IVRPEncoding CreateEncoding(List<int> route) {
+      return PotvinEncoding.ConvertFrom(route);
     }
   }
 }
