@@ -126,12 +126,12 @@ namespace HeuristicLab.Problems.VehicleRouting {
           ReadyTimeParameter.ActualValue, DueTimeParameter.ActualValue, ServiceTimeParameter.ActualValue);
         BestSolutionParameter.ActualValue = solution;
         results.Add(new Result("Best VRP Solution", solution));
-        
+
+        results.Add(new Result("Best TravelTime", new DoubleValue(travelTimes[i].Value)));
         results.Add(new Result("Best Distance",  new DoubleValue(distances[i].Value)));
+        results.Add(new Result("Best VehicleUtilization", new DoubleValue(vehiclesUtilizations[i].Value)));
         results.Add(new Result("Best Overload",  new DoubleValue(overloads[i].Value)));
         results.Add(new Result("Best Tardiness",  new DoubleValue(tardinesses[i].Value)));
-        results.Add(new Result("Best TravelTime",  new DoubleValue(travelTimes[i].Value)));
-        results.Add(new Result("Best VehicleUtilization",  new DoubleValue(vehiclesUtilizations[i].Value)));
       } else {
         if (solution.Quality.Value > qualities[i].Value) {
           solution.Coordinates = coordinates;

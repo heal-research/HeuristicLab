@@ -44,27 +44,18 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
     /// </summary>
     public VRPSolutionView() {
       InitializeComponent();
+
+      ToolTip tt = new ToolTip();
+      tt.SetToolTip(pictureBox, "Legend: Blue = Depot, Black = City (OK), Orange = City (too early), Red = City (too late)");
     }
 
     protected override void DeregisterContentEvents() {
-      Content.QualityChanged -= new EventHandler(Content_QualityChanged);
-      Content.DistanceChanged -= new EventHandler(Content_DistanceChanged);
-      Content.OverloadChanged -= new EventHandler(Content_OverloadChanged);
-      Content.TardinessChanged -= new EventHandler(Content_TardinessChanged);
-      Content.TravelTimeChanged -= new EventHandler(Content_TravelTimeChanged);
-      Content.VehicleUtilizationChanged -= new EventHandler(Content_VehicleUtilizationChanged);
       Content.CoordinatesChanged -= new EventHandler(Content_CoordinatesChanged);
       Content.SolutionChanged -= new EventHandler(Content_SolutionChanged);
       base.DeregisterContentEvents();
     }
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      Content.QualityChanged += new EventHandler(Content_QualityChanged);
-      Content.DistanceChanged += new EventHandler(Content_DistanceChanged);
-      Content.OverloadChanged += new EventHandler(Content_OverloadChanged);
-      Content.TardinessChanged += new EventHandler(Content_TardinessChanged);
-      Content.TravelTimeChanged += new EventHandler(Content_TravelTimeChanged);
-      Content.VehicleUtilizationChanged += new EventHandler(Content_VehicleUtilizationChanged);
       Content.CoordinatesChanged += new EventHandler(Content_CoordinatesChanged);
       Content.SolutionChanged += new EventHandler(Content_SolutionChanged);
     }
@@ -74,13 +65,6 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
       if (Content == null) {
         pictureBox.Image = null;
       } else {
-        qualityViewHost.Content = Content.Quality;
-        distanceViewHost.Content = Content.Distance;
-        overloadViewHost.Content = Content.Overload;
-        tardinessViewHost.Content = Content.Tardiness;
-        travelTimeViewHost.Content = Content.TravelTime;
-        vehicleUtilizationViewHost.Content = Content.VehicleUtilization;
-
         GenerateImage();
         tourViewHost.Content = Content.Solution;
       }
@@ -93,7 +77,6 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
-      tableLayoutPanel1.Enabled = Content != null;
       pictureBox.Enabled = Content != null;
       tourGroupBox.Enabled = Content != null;
     }
@@ -138,6 +121,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
                 foreach (Tour tour in Content.Solution.Tours) {
                   double t = 0.0;
                   Point[] tourPoints = new Point[tour.Cities.Count + 2];
+                  Brush[] customerBrushes = new Brush[tour.Cities.Count];
                   int lastCustomer = 0;
 
                   for (int i = -1; i <= tour.Cities.Count; i++) {
@@ -160,21 +144,40 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
 
                       if (t < readyTime[location]) {
                         t = readyTime[location];
-                        customerBrush = Brushes.Yellow;
+                        customerBrush = Brushes.Orange;
                       } else if (t > dueTime[location]) {
                         customerBrush = Brushes.Red;
                       }
 
                       t += serviceTime[location];
-
-                      graphics.FillRectangle(customerBrush, locationPoint.X - 2, locationPoint.Y - 2, 6, 6);
+                      customerBrushes[i] = customerBrush;
                     }
                     lastCustomer = location;
                   }
 
                   graphics.DrawPolygon(pens[((currentTour >= pens.Length) ? (pens.Length - 1) : (currentTour))], tourPoints);
+
+                  for (int i = 0; i < tour.Cities.Count; i++) {
+                    graphics.FillRectangle(customerBrushes[i], tourPoints[i + 1].X - 3, tourPoints[i + 1].Y - 3, 6, 6);
+                  }
+
+                  graphics.FillEllipse(Brushes.Blue, tourPoints[0].X - 5, tourPoints[0].Y - 5, 10, 10);
+
                   currentTour++;
                 }
+              } else {
+                Point locationPoint;
+                //just draw customers
+                for (int i = 1; i < coordinates.Rows; i++) {
+                  locationPoint = new Point(border + ((int)((coordinates[i, 0] - xMin) * xStep)),
+                                  bitmap.Height - (border + ((int)((coordinates[i, 1] - yMin) * yStep))));
+
+                  graphics.FillRectangle(Brushes.Black, locationPoint.X - 3, locationPoint.Y - 3, 6, 6);
+                }
+
+                locationPoint = new Point(border + ((int)((coordinates[0, 0] - xMin) * xStep)),
+                                  bitmap.Height - (border + ((int)((coordinates[0, 1] - yMin) * yStep))));
+                graphics.FillEllipse(Brushes.Blue, locationPoint.X - 5, locationPoint.Y - 5, 10, 10);
               }
             }
           }
@@ -187,47 +190,11 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
       }
     }
 
-    private void Content_QualityChanged(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_QualityChanged), sender, e);
-      else
-        qualityViewHost.Content = Content.Quality;
-    }
-    void Content_DistanceChanged(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_DistanceChanged), sender, e);
-      else
-        distanceViewHost.Content = Content.Distance;
-    }
     private void Content_CoordinatesChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_CoordinatesChanged), sender, e);
       else
         GenerateImage();
-    }
-    void Content_OverloadChanged(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_OverloadChanged), sender, e);
-      else
-        overloadViewHost.Content = Content.Overload;
-    }
-    void Content_TardinessChanged(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_TardinessChanged), sender, e);
-      else
-        tardinessViewHost.Content = Content.Tardiness;
-    }
-    void Content_TravelTimeChanged(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_TravelTimeChanged), sender, e);
-      else
-        travelTimeViewHost.Content = Content.TravelTime;
-    }
-    void Content_VehicleUtilizationChanged(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_VehicleUtilizationChanged), sender, e);
-      else
-        vehicleUtilizationViewHost.Content = Content.VehicleUtilization;
     }
     private void Content_SolutionChanged(object sender, EventArgs e) {
       if (InvokeRequired)

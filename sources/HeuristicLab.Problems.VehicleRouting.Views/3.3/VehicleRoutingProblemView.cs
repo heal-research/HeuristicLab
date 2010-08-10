@@ -23,11 +23,13 @@ using System;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
 using HeuristicLab.Optimization.Views;
+using HeuristicLab.Core.Views;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.Problems.VehicleRouting.Views {
   [View("VehicleRouting Problem View")]
   [Content(typeof(VehicleRoutingProblem), true)]
-  public partial class VehicleRoutingProblemView : ProblemView {
+  public partial class VehicleRoutingProblemView : NamedItemView {
     public new VehicleRoutingProblem Content {
       get { return (VehicleRoutingProblem)base.Content; }
       set { base.Content = value; }
@@ -37,6 +39,33 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
       InitializeComponent();
     }
 
+    protected override void DeregisterContentEvents() {
+      Content.CoordinatesParameter.ValueChanged -= new EventHandler(CoordinatesParameter_ValueChanged);
+      base.DeregisterContentEvents();
+    }
+    protected override void RegisterContentEvents() {
+      base.RegisterContentEvents();
+      Content.CoordinatesParameter.ValueChanged += new EventHandler(CoordinatesParameter_ValueChanged);
+    }
+
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
+      if (Content == null) {
+        parameterCollectionView.Content = null;
+        vrpSolutionView.Content = null;
+      } else {
+        parameterCollectionView.Content = ((IParameterizedNamedItem)Content).Parameters;
+        vrpSolutionView.Content = new VRPSolution(Content.Coordinates);
+      }
+    }
+
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
+      parameterCollectionView.Enabled = Content != null;
+      vrpSolutionView.Enabled = Content != null;
+      importButton.Enabled = Content != null && !ReadOnly;
+    }
+
     private void importButton_Click(object sender, EventArgs e) {
       OpenFileDialog dialog = new OpenFileDialog();
       dialog.DefaultExt = "txt";
@@ -44,6 +73,10 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
       if (dialog.ShowDialog() == DialogResult.OK) {
         Content.ImportFromSolomon(dialog.FileName);
       }
+    }
+
+    private void CoordinatesParameter_ValueChanged(object sender, EventArgs e) {
+      vrpSolutionView.Content.Coordinates = Content.Coordinates;
     }
   }
 }

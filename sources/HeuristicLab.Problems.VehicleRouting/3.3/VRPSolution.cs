@@ -194,6 +194,10 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     public VRPSolution() : base() { }
 
+    public VRPSolution(DoubleMatrix coordinates): base() {
+      this.coordinates = coordinates;
+    }
+
     public VRPSolution(DoubleMatrix coordinates, IVRPEncoding solution, DoubleValue quality, 
       DoubleValue distance, DoubleValue overload, DoubleValue tardiness, DoubleValue travelTime, 
       DoubleValue vehicleUtilization, DoubleMatrix distanceMatrix, BoolValue useDistanceMatrix,
