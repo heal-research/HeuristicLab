@@ -136,6 +136,19 @@ namespace HeuristicLab.Problems.VehicleRouting {
                   UseDistanceMatrixParameter.ActualValue);
     }
 
+    protected bool Feasible(IVRPEncoding solution) {
+      bool feasible = true;
+
+      foreach (Tour tour in solution.Tours) {
+        if (!Feasible(tour)) {
+          feasible = false;
+          break;
+        }
+      }
+
+      return feasible;
+    }
+
     protected double GetLength(Tour tour) {
       return tour.GetLength(
                 CoordinatesParameter.ActualValue,

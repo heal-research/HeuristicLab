@@ -52,6 +52,19 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
         city, -1, out route, out place);
     }
 
+    protected Tour FindRoute(PotvinEncoding solution, int city) {
+      Tour found = null;
+
+      foreach (Tour tour in solution.Tours) {
+        if (tour.Cities.Contains(city)) {
+          found = tour;
+          break;
+        }
+      }
+
+      return found;
+    }
+
     protected bool Repair(IRandom random, PotvinEncoding solution, Tour newTour) {
       bool success = true;
       

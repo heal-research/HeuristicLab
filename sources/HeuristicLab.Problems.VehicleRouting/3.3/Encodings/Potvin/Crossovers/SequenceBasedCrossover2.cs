@@ -26,13 +26,13 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
-  [Item("SequenceBasedCrossover", "The SBX crossover for the Potvin VRP representations.  It is implemented as described in Potvin, J.-Y. and Bengio, S. (1996). The Vehicle Routing Problem with Time Windows - Part II: Genetic Search. INFORMS Journal of Computing, 8:165–172.")]
+  [Item("SequenceBasedCrossover2", "The SBX2 crossover for the Potvin VRP representations.  It a variant of the operator described in Potvin, J.-Y. and Bengio, S. (1996). The Vehicle Routing Problem with Time Windows - Part II: Genetic Search. INFORMS Journal of Computing, 8:165–172.")]
   [StorableClass]
-  public sealed class SequenceBasedCrossover : PotvinCrossover {
+  public sealed class SequenceBasedCrossover2 : PotvinCrossover {
     [StorableConstructor]
-    private SequenceBasedCrossover(bool deserializing) : base(deserializing) { }
+    private SequenceBasedCrossover2(bool deserializing) : base(deserializing) { }
 
-    public SequenceBasedCrossover()
+    public SequenceBasedCrossover2()
       : base() { }
         
     protected override PotvinEncoding Crossover(IRandom random, PotvinEncoding parent1, PotvinEncoding parent2) {
@@ -40,13 +40,13 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       Tour newTour = new Tour();
 
       int breakPoint1 = random.Next(1, Cities + 1);
+      int breakPoint2 = breakPoint1;
       Tour tour1 = FindRoute(child, breakPoint1);
       breakPoint1 = tour1.Cities.IndexOf(breakPoint1);
 
       for (int i = 0; i < breakPoint1; i++)
         newTour.Cities.Add(tour1.Cities[i]);
 
-      int breakPoint2 = random.Next(1, Cities + 1);
       Tour tour2 = FindRoute(parent2, breakPoint2);
       breakPoint2 = tour2.Cities.IndexOf(breakPoint2);
 
@@ -64,8 +64,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
         if (FindRoute(child, city) == null && !child.Unrouted.Contains(city))
           child.Unrouted.Add(city);
 
-      if (Feasible(newTour) &&
-          Repair(random, child, newTour)) {
+      if (Repair(random, child, newTour)) {
         return child;
       } else {
         if (random.NextDouble() < 0.5)

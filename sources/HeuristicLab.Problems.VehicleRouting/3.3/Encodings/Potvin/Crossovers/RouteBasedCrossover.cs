@@ -26,49 +26,35 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
-  [Item("SequenceBasedCrossover", "The SBX crossover for the Potvin VRP representations.  It is implemented as described in Potvin, J.-Y. and Bengio, S. (1996). The Vehicle Routing Problem with Time Windows - Part II: Genetic Search. INFORMS Journal of Computing, 8:165–172.")]
+  [Item("RouteBasedCrossover", "The RBX crossover for the Potvin VRP representations.  It is implemented as described in Potvin, J.-Y. and Bengio, S. (1996). The Vehicle Routing Problem with Time Windows - Part II: Genetic Search. INFORMS Journal of Computing, 8:165–172.")]
   [StorableClass]
-  public sealed class SequenceBasedCrossover : PotvinCrossover {
+  public sealed class RouteBasedCrossover : PotvinCrossover {
     [StorableConstructor]
-    private SequenceBasedCrossover(bool deserializing) : base(deserializing) { }
+    private RouteBasedCrossover(bool deserializing) : base(deserializing) { }
 
-    public SequenceBasedCrossover()
+    public RouteBasedCrossover()
       : base() { }
-        
+     
     protected override PotvinEncoding Crossover(IRandom random, PotvinEncoding parent1, PotvinEncoding parent2) {
-      PotvinEncoding child = parent1.Clone() as PotvinEncoding;
-      Tour newTour = new Tour();
+      PotvinEncoding child = parent2.Clone() as PotvinEncoding;
 
-      int breakPoint1 = random.Next(1, Cities + 1);
-      Tour tour1 = FindRoute(child, breakPoint1);
-      breakPoint1 = tour1.Cities.IndexOf(breakPoint1);
+      int tourParent1 = random.Next(parent1.Tours.Count);
+      Tour replacing = parent1.Tours[tourParent1].Clone() as Tour;
 
-      for (int i = 0; i < breakPoint1; i++)
-        newTour.Cities.Add(tour1.Cities[i]);
+      int tourParent2 = random.Next(child.Tours.Count);
+      Tour replaced = child.Tours[tourParent2];
 
-      int breakPoint2 = random.Next(1, Cities + 1);
-      Tour tour2 = FindRoute(parent2, breakPoint2);
-      breakPoint2 = tour2.Cities.IndexOf(breakPoint2);
+      child.Tours.Remove(replaced);
+      child.Tours.Add(replacing);
 
-      for (int i = breakPoint2; i < tour2.Cities.Count; i++)
-        newTour.Cities.Add(tour2.Cities[i]);
-
-      child.Tours.Remove(tour1);
-      child.Tours.Add(newTour);
-
-      foreach (int city in tour1.Cities)
+      foreach (int city in replaced.Cities)
         if (FindRoute(child, city) == null && !child.Unrouted.Contains(city))
           child.Unrouted.Add(city);
 
-      foreach (int city in tour2.Cities)
-        if (FindRoute(child, city) == null && !child.Unrouted.Contains(city))
-          child.Unrouted.Add(city);
-
-      if (Feasible(newTour) &&
-          Repair(random, child, newTour)) {
+      if (Repair(random, child, replacing))
         return child;
-      } else {
-        if (random.NextDouble() < 0.5)
+      else {
+        if(random.NextDouble() < 0.5)
           return parent1.Clone() as PotvinEncoding;
         else
           return parent2.Clone() as PotvinEncoding;

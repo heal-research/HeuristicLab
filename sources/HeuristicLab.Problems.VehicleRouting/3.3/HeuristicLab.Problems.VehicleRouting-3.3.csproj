@@ -109,8 +109,11 @@
     <Compile Include="Encodings\General\Crossovers\MultiVRPManipulator.cs" />
     <Compile Include="Encodings\General\Crossovers\MultiVRPCrossover.cs" />
     <Compile Include="Encodings\General\Creators\RandomCreator.cs" />
+    <Compile Include="Encodings\Potvin\Crossovers\SequenceBasedCrossover2.cs" />
+    <Compile Include="Encodings\Potvin\Crossovers\RouteBasedCrossover.cs" />
     <Compile Include="Encodings\Potvin\Crossovers\SequenceBasedCrossover.cs" />
     <Compile Include="Encodings\Potvin\Crossovers\PotvinCrossover.cs" />
+    <Compile Include="Encodings\Potvin\Manipulators\LocalSearchManipulator.cs" />
     <Compile Include="Encodings\Potvin\Manipulators\TwoLevelExchangeManipulator.cs" />
     <Compile Include="Encodings\Potvin\Manipulators\OneLevelExchangeManipulator.cs" />
     <Compile Include="Encodings\Potvin\Manipulators\PotvinManipulator.cs" />
