@@ -45,29 +45,13 @@ namespace $rootnamespace$ {
     #endregion
 
     #region Parameter Properties
-    private ValueParameter<IntValue> SeedParameter {
-      get { return (ValueParameter<IntValue>)Parameters["Seed"]; }
-    }
-    private ValueParameter<BoolValue> SetSeedRandomlyParameter {
-      get { return (ValueParameter<BoolValue>)Parameters["SetSeedRandomly"]; }
-    }
-    private ValueParameter<MultiAnalyzer> AnalyzerParameter {
-      get { return (ValueParameter<MultiAnalyzer>)Parameters["Analyzer"]; }
-    }
+    $parameterProperties$
     #endregion
 
     #region Properties
-    public IntValue Seed {
-      get { return SeedParameter.Value; }
-      set { SeedParameter.Value = value; }
-    }
-    public BoolValue SetSeedRandomly {
-      get { return SetSeedRandomlyParameter.Value; }
-      set { SetSeedRandomlyParameter.Value = value; }
-    }
-    public MultiAnalyzer Analyzer {
-      get { return AnalyzerParameter.Value; }
-      set { AnalyzerParameter.Value = value; }
+    $properties$
+    private RandomCreator RandomCreator {
+      get { return (RandomCreator)OperatorGraph.InitialOperator; }
     }
     #endregion
 
@@ -75,14 +59,21 @@ namespace $rootnamespace$ {
     private $safeitemname$(bool deserializing) : base(deserializing) { }
     public $safeitemname$()
       : base() {
-      Parameters.Add(new ValueParameter<IntValue>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
-      Parameters.Add(new ValueParameter<BoolValue>("SetSeedRandomly", "True if the random seed should be set to a random value, otherwise false.", new BoolValue(true)));
-      Parameters.Add(new ValueParameter<MultiAnalyzer>("Analyzer", "The operator used to analyze each iteration.", new MultiAnalyzer()));
+      $parameterInitializers$
       
-      // TODO: Create and assign OperatorGraph.InitialOperator
+      RandomCreator randomCreator = new RandomCreator();
+      OperatorGraph.InitialOperator = randomCreator;
 
-      // TODO: Build operator graph
+      randomCreator.RandomParameter.ActualName = "Random";
+      randomCreator.SeedParameter.ActualName = SeedParameter.Name;
+      randomCreator.SeedParameter.Value = null;
+      randomCreator.SetSeedRandomlyParameter.ActualName = SetSeedRandomlyParameter.Name;
+      randomCreator.SetSeedRandomlyParameter.Value = null;
+      randomCreator.Successor = null; // TODO: 
+
+      // TODO: Create further operators and build operator graph
       
+      UpdateAnalyzers();
       AttachEventHandlers();
     }
 
@@ -100,6 +91,7 @@ namespace $rootnamespace$ {
     #region Events
     protected override void OnProblemChanged() {
       // TODO: Initialize and parameterize operators
+      UpdateAnalyzers();
       base.OnProblemChanged();
     }
 
@@ -113,6 +105,7 @@ namespace $rootnamespace$ {
     }
     protected override void Problem_OperatorsChanged(object sender, EventArgs e) {
       // TODO: Parameterize operators
+      UpdateAnalyzers();
       base.Problem_OperatorsChanged(sender, e);
     }
     #endregion

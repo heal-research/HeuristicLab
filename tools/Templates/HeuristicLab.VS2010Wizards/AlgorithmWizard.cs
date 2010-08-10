@@ -58,6 +58,9 @@ namespace HeuristicLab.VS2010Wizards {
         replacementsDictionary.Add("$problemType$", problemType);
         if (!form.IsMultiObjective)
           replacementsDictionary["$problemType$"] = problemType.Replace("Multi", "Single");
+        replacementsDictionary.Add("$parameterProperties$", form.ParameterProperties);
+        replacementsDictionary.Add("$properties$", form.Properties);
+        replacementsDictionary.Add("$parameterInitializers$", form.ParameterInitializers);
         shouldAddItem = true;
       } else shouldAddItem = false;
     }

@@ -72,6 +72,8 @@ namespace HeuristicLab.VS2010Wizards {
       this.upButton = new System.Windows.Forms.Button();
       this.removeButton = new System.Windows.Forms.Button();
       this.addButton = new System.Windows.Forms.Button();
+      this.parameterTypeComboBox = new System.Windows.Forms.ComboBox();
+      this.customInputTextBox = new System.Windows.Forms.TextBox();
       this.SuspendLayout();
       // 
       // parametersListView
@@ -169,8 +171,38 @@ namespace HeuristicLab.VS2010Wizards {
       this.addButton.UseVisualStyleBackColor = true;
       this.addButton.Click += new System.EventHandler(this.addButton_Click);
       // 
+      // parameterTypeComboBox
+      // 
+      this.parameterTypeComboBox.FormattingEnabled = true;
+      this.parameterTypeComboBox.Items.AddRange(new object[] {
+            "",
+            "Value",
+            "Lookup",
+            "ValueLookup",
+            "ScopeTreeLookup"});
+      this.parameterTypeComboBox.Location = new System.Drawing.Point(3, 232);
+      this.parameterTypeComboBox.Name = "parameterTypeComboBox";
+      this.parameterTypeComboBox.Size = new System.Drawing.Size(26, 21);
+      this.parameterTypeComboBox.TabIndex = 5;
+      this.parameterTypeComboBox.Visible = false;
+      this.parameterTypeComboBox.SelectedIndexChanged += new System.EventHandler(this.parameterTypeComboBox_SelectedIndexChanged);
+      this.parameterTypeComboBox.KeyUp += new System.Windows.Forms.KeyEventHandler(this.parameterTypeComboBox_KeyUp);
+      this.parameterTypeComboBox.Leave += new System.EventHandler(this.parameterTypeComboBox_Leave);
+      // 
+      // customInputTextBox
+      // 
+      this.customInputTextBox.Location = new System.Drawing.Point(3, 206);
+      this.customInputTextBox.Name = "customInputTextBox";
+      this.customInputTextBox.Size = new System.Drawing.Size(26, 20);
+      this.customInputTextBox.TabIndex = 6;
+      this.customInputTextBox.Visible = false;
+      this.customInputTextBox.KeyUp += new System.Windows.Forms.KeyEventHandler(this.customInputTextBox_KeyUp);
+      this.customInputTextBox.Leave += new System.EventHandler(this.customInputTextBox_Leave);
+      // 
       // ParametersControl
       // 
+      this.Controls.Add(this.customInputTextBox);
+      this.Controls.Add(this.parameterTypeComboBox);
       this.Controls.Add(this.downButton);
       this.Controls.Add(this.upButton);
       this.Controls.Add(this.removeButton);
@@ -179,6 +211,7 @@ namespace HeuristicLab.VS2010Wizards {
       this.Name = "ParametersControl";
       this.Size = new System.Drawing.Size(740, 256);
       this.ResumeLayout(false);
+      this.PerformLayout();
 
     }
 
@@ -194,5 +227,7 @@ namespace HeuristicLab.VS2010Wizards {
     private System.Windows.Forms.Button downButton;
     private System.Windows.Forms.ColumnHeader descriptionColumnHeader;
     private System.Windows.Forms.ColumnHeader typeColumnHeader;
+    private System.Windows.Forms.ComboBox parameterTypeComboBox;
+    private System.Windows.Forms.TextBox customInputTextBox;
   }
 }

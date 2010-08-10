@@ -21,6 +21,18 @@ namespace HeuristicLab.VS2010Wizards {
       get;
       private set;
     }
+    public string ParameterProperties {
+      get;
+      private set;
+    }
+    public string Properties {
+      get;
+      private set;
+    }
+    public string ParameterInitializers {
+      get;
+      private set;
+    }
 
     public AlgorithmWizardForm() {
       InitializeComponent();
@@ -30,6 +42,7 @@ namespace HeuristicLab.VS2010Wizards {
     }
 
     private void finishButton_Click(object sender, System.EventArgs e) {
+      SetProperties();
       DialogResult = System.Windows.Forms.DialogResult.OK;
       Close();
     }
@@ -39,16 +52,13 @@ namespace HeuristicLab.VS2010Wizards {
       Close();
     }
 
-    private void algorithmNameTextBox_TextChanged(object sender, EventArgs e) {
+    private void SetProperties() {
       AlgorithmName = algorithmNameTextBox.Text;
-    }
-
-    private void algorithmDescriptionTextBox_TextChanged(object sender, EventArgs e) {
       AlgorithmDescription = algorithmDescriptionTextBox.Text;
-    }
-
-    private void isMultiObjectiveCheckBox_CheckedChanged(object sender, EventArgs e) {
       IsMultiObjective = isMultiObjectiveCheckBox.Checked;
+      ParameterProperties = parametersControl.GetParameterProperties("private");
+      Properties = parametersControl.GetProperties("public");
+      ParameterInitializers = parametersControl.GetInitializers();
     }
 
     private void nextButton_Click(object sender, EventArgs e) {
