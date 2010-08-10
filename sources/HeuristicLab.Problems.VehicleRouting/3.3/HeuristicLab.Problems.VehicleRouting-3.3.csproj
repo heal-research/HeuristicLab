@@ -106,7 +106,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Analyzers\BestVRPSolutionAnalyzer.cs" />
-    <Compile Include="Encodings\General\RandomCreator.cs" />
+    <Compile Include="Encodings\General\Crossovers\MultiVRPManipulator.cs" />
+    <Compile Include="Encodings\General\Crossovers\MultiVRPCrossover.cs" />
+    <Compile Include="Encodings\General\Creators\RandomCreator.cs" />
     <Compile Include="Encodings\Potvin\Crossovers\SequenceBasedCrossover.cs" />
     <Compile Include="Encodings\Potvin\Crossovers\PotvinCrossover.cs" />
     <Compile Include="Encodings\Potvin\Manipulators\TwoLevelExchangeManipulator.cs" />
@@ -115,8 +117,8 @@
     <Compile Include="Interfaces\IVRPMoveMaker.cs" />
     <Compile Include="VRPUtilities.cs" />
     <Compile Include="VRPOperator.cs" />
-    <Compile Include="Encodings\General\PushForwardInsertionCreator.cs" />
-    <Compile Include="Encodings\General\DefaultRepresentationCreator.cs" />
+    <Compile Include="Encodings\General\Creators\PushForwardInsertionCreator.cs" />
+    <Compile Include="Encodings\General\Creators\DefaultRepresentationCreator.cs" />
     <Compile Include="Encodings\Alba\Crossovers\AlbaCrossover.cs" />
     <Compile Include="Encodings\Alba\Interfaces\IAlbaTranslocationMoveOperator.cs" />
     <Compile Include="Encodings\Alba\Manipulators\AlbaManipulator.cs" />

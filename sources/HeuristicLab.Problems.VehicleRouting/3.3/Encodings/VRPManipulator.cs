@@ -42,7 +42,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings {
 
     public VRPManipulator()
       : base() {
-      Parameters.Add(new LookupParameter<IVRPEncoding>("VRPTours", "The new VRP tours."));
+      Parameters.Add(new LookupParameter<IVRPEncoding>("VRPTours", "The VRP tours to be manipulated."));
     }
   }
 }
