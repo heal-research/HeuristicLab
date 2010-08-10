@@ -34,6 +34,15 @@ namespace HeuristicLab.VS2010Wizards {
       InitializeComponent();
     }
 
+    public void AddParameter(string name, string type, string dataType, string description, string defaultValue) {
+      ListViewItem item = new ListViewItem(name);
+      item.SubItems.Add(type);
+      item.SubItems.Add(dataType);
+      item.SubItems.Add(description);
+      item.SubItems.Add(defaultValue);
+      parametersListView.Items.Add(item);
+    }
+
     public string GetParameterProperties(string accessModifier) {
       StringBuilder builder = new StringBuilder();
       foreach (ListViewItem item in parametersListView.Items) {

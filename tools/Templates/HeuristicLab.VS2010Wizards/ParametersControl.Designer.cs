@@ -44,24 +44,6 @@ namespace HeuristicLab.VS2010Wizards {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem(new string[] {
-            "SetSeedRandomly",
-            "Value",
-            "BoolValue",
-            "True if the random seed should be set to a random value, otherwise false.",
-            "new BoolValue(false)"}, -1);
-      System.Windows.Forms.ListViewItem listViewItem5 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Seed",
-            "Value",
-            "IntValue",
-            "The random seed used to initialize the new pseudo random number generator.",
-            ""}, -1);
-      System.Windows.Forms.ListViewItem listViewItem6 = new System.Windows.Forms.ListViewItem(new string[] {
-            "Analyzer",
-            "Value",
-            "MultiAnalyzer",
-            "The operator used to analyze each iteration.",
-            "new MultiAnalyzer()"}, -1);
       this.parametersListView = new System.Windows.Forms.ListView();
       this.nameColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.typeColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -90,10 +72,6 @@ namespace HeuristicLab.VS2010Wizards {
       this.parametersListView.FullRowSelect = true;
       this.parametersListView.GridLines = true;
       this.parametersListView.HideSelection = false;
-      this.parametersListView.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem4,
-            listViewItem5,
-            listViewItem6});
       this.parametersListView.Location = new System.Drawing.Point(35, 3);
       this.parametersListView.MultiSelect = false;
       this.parametersListView.Name = "parametersListView";

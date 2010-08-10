@@ -1,5 +1,5 @@
 ﻿namespace HeuristicLab.VS2010Wizards {
-  partial class AlgorithmWizardForm {
+  partial class ProblemWizardForm {
     /// <summary>
     /// Required designer variable.
     /// </summary>
@@ -23,12 +23,12 @@
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AlgorithmWizardForm));
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProblemWizardForm));
       this.label1 = new System.Windows.Forms.Label();
       this.label2 = new System.Windows.Forms.Label();
-      this.algorithmDescriptionTextBox = new System.Windows.Forms.TextBox();
+      this.problemDescriptionTextBox = new System.Windows.Forms.TextBox();
       this.isMultiObjectiveCheckBox = new System.Windows.Forms.CheckBox();
-      this.algorithmNameTextBox = new System.Windows.Forms.TextBox();
+      this.problemNameTextBox = new System.Windows.Forms.TextBox();
       this.cancelButton = new System.Windows.Forms.Button();
       this.finishButton = new System.Windows.Forms.Button();
       this.panel1 = new System.Windows.Forms.Panel();
@@ -67,14 +67,14 @@
       this.label2.TabIndex = 2;
       this.label2.Text = "Description:";
       // 
-      // algorithmDescriptionTextBox
+      // problemDescriptionTextBox
       // 
-      this.algorithmDescriptionTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.algorithmDescriptionTextBox.Location = new System.Drawing.Point(102, 112);
-      this.algorithmDescriptionTextBox.Multiline = true;
-      this.algorithmDescriptionTextBox.Name = "algorithmDescriptionTextBox";
-      this.algorithmDescriptionTextBox.Size = new System.Drawing.Size(469, 63);
-      this.algorithmDescriptionTextBox.TabIndex = 3;
+      this.problemDescriptionTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.problemDescriptionTextBox.Location = new System.Drawing.Point(102, 112);
+      this.problemDescriptionTextBox.Multiline = true;
+      this.problemDescriptionTextBox.Name = "problemDescriptionTextBox";
+      this.problemDescriptionTextBox.Size = new System.Drawing.Size(469, 63);
+      this.problemDescriptionTextBox.TabIndex = 3;
       // 
       // isMultiObjectiveCheckBox
       // 
@@ -87,14 +87,14 @@
       this.isMultiObjectiveCheckBox.Text = "Multi-Objective";
       this.isMultiObjectiveCheckBox.UseVisualStyleBackColor = true;
       // 
-      // algorithmNameTextBox
+      // problemNameTextBox
       // 
-      this.algorithmNameTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.algorithmNameTextBox.Location = new System.Drawing.Point(103, 64);
-      this.algorithmNameTextBox.Name = "algorithmNameTextBox";
-      this.algorithmNameTextBox.Size = new System.Drawing.Size(468, 20);
-      this.algorithmNameTextBox.TabIndex = 1;
-      this.algorithmNameTextBox.Text = "MyAlgorithm";
+      this.problemNameTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.problemNameTextBox.Location = new System.Drawing.Point(103, 64);
+      this.problemNameTextBox.Name = "problemNameTextBox";
+      this.problemNameTextBox.Size = new System.Drawing.Size(468, 20);
+      this.problemNameTextBox.TabIndex = 1;
+      this.problemNameTextBox.Text = "MyProblem";
       // 
       // cancelButton
       // 
@@ -136,9 +136,9 @@
       this.label4.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.label4.Location = new System.Drawing.Point(96, 21);
       this.label4.Name = "label4";
-      this.label4.Size = new System.Drawing.Size(311, 39);
+      this.label4.Size = new System.Drawing.Size(291, 39);
       this.label4.TabIndex = 1;
-      this.label4.Text = "New Algorithm Wizard";
+      this.label4.Text = "New Problem Wizard";
       // 
       // pictureBox1
       // 
@@ -222,15 +222,15 @@
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.page1Panel.Controls.Add(this.label1);
       this.page1Panel.Controls.Add(this.label2);
-      this.page1Panel.Controls.Add(this.algorithmDescriptionTextBox);
-      this.page1Panel.Controls.Add(this.algorithmNameTextBox);
+      this.page1Panel.Controls.Add(this.problemDescriptionTextBox);
+      this.page1Panel.Controls.Add(this.problemNameTextBox);
       this.page1Panel.Controls.Add(this.isMultiObjectiveCheckBox);
       this.page1Panel.Location = new System.Drawing.Point(0, 86);
       this.page1Panel.Name = "page1Panel";
       this.page1Panel.Size = new System.Drawing.Size(676, 298);
       this.page1Panel.TabIndex = 9;
       // 
-      // AlgorithmWizardForm
+      // ProblemWizardForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -241,11 +241,11 @@
       this.Controls.Add(this.nextButton);
       this.Controls.Add(this.finishButton);
       this.Controls.Add(this.panel2);
-      this.Controls.Add(this.page1Panel);
       this.Controls.Add(this.page2Panel);
+      this.Controls.Add(this.page1Panel);
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-      this.Name = "AlgorithmWizardForm";
-      this.Text = "New Algorithm Wizard";
+      this.Name = "ProblemWizardForm";
+      this.Text = "New Problem Wizard";
       this.panel1.ResumeLayout(false);
       this.panel1.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
@@ -261,9 +261,9 @@
 
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.Label label2;
-    private System.Windows.Forms.TextBox algorithmDescriptionTextBox;
+    private System.Windows.Forms.TextBox problemDescriptionTextBox;
     private System.Windows.Forms.CheckBox isMultiObjectiveCheckBox;
-    private System.Windows.Forms.TextBox algorithmNameTextBox;
+    private System.Windows.Forms.TextBox problemNameTextBox;
     private System.Windows.Forms.Button cancelButton;
     private System.Windows.Forms.Button finishButton;
     private System.Windows.Forms.Panel panel1;

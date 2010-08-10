@@ -8,12 +8,12 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace HeuristicLab.VS2010Wizards {
-  public partial class AlgorithmWizardForm : Form {
-    public string AlgorithmName {
+  public partial class ProblemWizardForm : Form {
+    public string ProblemName {
       get;
       private set;
     }
-    public string AlgorithmDescription {
+    public string ProblemDescription {
       get;
       private set;
     }
@@ -34,11 +34,8 @@ namespace HeuristicLab.VS2010Wizards {
       private set;
     }
 
-    public AlgorithmWizardForm() {
+    public ProblemWizardForm() {
       InitializeComponent();
-      parametersControl.AddParameter("SetSeedRandomly", "Value", "BoolValue", "True if the random seed should be set to a random value, otherwise false.", "new BoolValue(true)");
-      parametersControl.AddParameter("Seed", "Value", "IntValue", "The random seed used to initialize the new pseudo random number generator.", string.Empty);
-      parametersControl.AddParameter("Analyzer", "Value", "MultiAnalyzer", "The operator used to analyze each iteration.", "new MultiAnalyzer()");
     }
 
     private void finishButton_Click(object sender, System.EventArgs e) {
@@ -53,8 +50,8 @@ namespace HeuristicLab.VS2010Wizards {
     }
 
     private void SetProperties() {
-      AlgorithmName = algorithmNameTextBox.Text;
-      AlgorithmDescription = algorithmDescriptionTextBox.Text;
+      ProblemName = problemNameTextBox.Text;
+      ProblemDescription = problemDescriptionTextBox.Text;
       IsMultiObjective = isMultiObjectiveCheckBox.Checked;
       ParameterProperties = parametersControl.GetParameterProperties("private");
       Properties = parametersControl.GetProperties("public");
