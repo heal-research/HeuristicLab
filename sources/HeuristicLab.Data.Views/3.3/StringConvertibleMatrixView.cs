@@ -33,7 +33,7 @@ namespace HeuristicLab.Data.Views {
   [View("StringConvertibleMatrix View")]
   [Content(typeof(IStringConvertibleMatrix), true)]
   public partial class StringConvertibleMatrixView : AsynchronousContentView {
-    protected int[] virtualRowIndizes;
+    private int[] virtualRowIndizes;
     private List<KeyValuePair<int, SortOrder>> sortedColumnIndizes;
     private RowComparer rowComparer;
 
@@ -113,33 +113,35 @@ namespace HeuristicLab.Data.Views {
       else
         dataGridView.ColumnCount = Content.Columns;
 
-      UpdateRowHeaders();
       UpdateColumnHeaders();
-      dataGridView.Enabled = true;
+      UpdateRowHeaders();
+      dataGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.ColumnHeader);
       dataGridView.AutoResizeRowHeadersWidth(DataGridViewRowHeadersWidthSizeMode.AutoSizeToDisplayedHeaders);
+      dataGridView.Enabled = true;
     }
 
-    private void UpdateColumnHeaders() {
+    protected void UpdateColumnHeaders() {
       for (int i = 0; i < dataGridView.ColumnCount; i++) {
         if (Content.ColumnNames.Count() != 0)
           dataGridView.Columns[i].HeaderText = Content.ColumnNames.ElementAt(i);
         else
           dataGridView.Columns[i].HeaderText = "Column " + (i + 1);
       }
-      dataGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.ColumnHeader);
     }
+    protected void UpdateRowHeaders() {
+      int index = dataGridView.FirstDisplayedScrollingRowIndex;
+      if (index == -1) index = 0;
+      int updatedRows = 0;
+      int count = dataGridView.DisplayedRowCount(true);
 
-    private void UpdateRowHeaders() {
-      int firstDisplayedRowIndex = dataGridView.FirstDisplayedScrollingRowIndex;
-      if (firstDisplayedRowIndex == -1)
-        firstDisplayedRowIndex = 0;
-      int lastDisplaydRowIndex = firstDisplayedRowIndex + dataGridView.DisplayedRowCount(true);
-
-      for (int i = firstDisplayedRowIndex; i < lastDisplaydRowIndex; i++) {
+      while (updatedRows < count) {
         if (Content.RowNames.Count() != 0)
-          dataGridView.Rows[i].HeaderCell.Value = Content.RowNames.ElementAt(virtualRowIndizes[i]);
+          dataGridView.Rows[index].HeaderCell.Value = Content.RowNames.ElementAt(virtualRowIndizes[index]);
         else
-          dataGridView.Rows[i].HeaderCell.Value = "Row " + (i + 1);
+          dataGridView.Rows[index].HeaderCell.Value = "Row " + (index + 1);
+        if (dataGridView.Rows[index].Visible)
+          updatedRows++;
+        index++;
       }
     }
 
