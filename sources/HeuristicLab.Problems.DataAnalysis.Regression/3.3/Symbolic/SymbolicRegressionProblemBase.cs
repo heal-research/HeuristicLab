@@ -153,7 +153,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     public SymbolicRegressionProblemBase()
       : base() {
       SymbolicExpressionTreeCreator creator = new ProbabilisticTreeCreator();
-      var grammar = new BasicExpressionGrammar();
+      var grammar = new FullFunctionalExpressionGrammar();
       var globalGrammar = new GlobalSymbolicExpressionGrammar(grammar);
       var interpreter = new SimpleArithmeticExpressionInterpreter();
       Parameters.Add(new ValueParameter<SymbolicExpressionTreeCreator>("SolutionCreator", "The operator which should be used to create new symbolic regression solutions.", creator));
