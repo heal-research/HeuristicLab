@@ -26,59 +26,48 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators {
   [StorableClass]
-  [Item("ChangeNodeTypeManipulation", "Selects a random tree node and changes the symbol.")]
-  public class ChangeNodeTypeManipulation : SymbolicExpressionTreeManipulator {
+  [Item("ReplaceBranchManipulation", "Selects a branch of the tree randomly and replaces it with a newly initialized branch (using PTC2).")]
+  public class ReplaceBranchManipulation : SymbolicExpressionTreeManipulator {
 
-    public ChangeNodeTypeManipulation()
+    public ReplaceBranchManipulation()
       : base() {
     }
 
     protected override void Manipulate(IRandom random, SymbolicExpressionTree symbolicExpressionTree, ISymbolicExpressionGrammar grammar, IntValue maxTreeSize, IntValue maxTreeHeight, out bool success) {
-      ChangeNodeType(random, symbolicExpressionTree, grammar, maxTreeSize.Value, maxTreeHeight.Value, out success);
+      ReplaceRandomBranch(random, symbolicExpressionTree, grammar, maxTreeSize.Value, maxTreeHeight.Value, out success);
     }
 
-    public static void ChangeNodeType(IRandom random, SymbolicExpressionTree symbolicExpressionTree, ISymbolicExpressionGrammar grammar, int maxTreeSize, int maxTreeHeight, out bool success) {
-
+    public static void ReplaceRandomBranch(IRandom random, SymbolicExpressionTree symbolicExpressionTree, ISymbolicExpressionGrammar grammar, int maxTreeSize, int maxTreeHeight, out bool success) {
+      success = false;
       // select any node as parent (except the root node)
       var manipulationPoint = (from parent in symbolicExpressionTree.Root.IterateNodesPrefix().Skip(1)
                                from subtree in parent.SubTrees
                                select new { Parent = parent, Node = subtree, Index = parent.SubTrees.IndexOf(subtree) }).SelectRandom(random);
       // find possible symbols for the node (also considering the existing branches below it)
       var allowedSymbols = from symbol in manipulationPoint.Parent.GetAllowedSymbols(manipulationPoint.Index)
-                           where manipulationPoint.Node.SubTrees.Count <= manipulationPoint.Node.Grammar.GetMaxSubtreeCount(symbol)
-                           where manipulationPoint.Node.SubTrees.Count >= manipulationPoint.Node.Grammar.GetMinSubtreeCount(symbol)
                            select symbol;
 
       if (allowedSymbols.Count() <= 1) {
-        success = false;
         return;
       }
-      var node = manipulationPoint.Node;
-      // keep only symbols that are still possible considering the existing sub-trees
-      var constrainedSymbols = from symbol in allowedSymbols
-                               let disallowedSubtrees =
-                                     from subtree in node.SubTrees
-                                     where !node.Grammar.IsAllowedChild(symbol, subtree.Symbol, node.SubTrees.IndexOf(subtree))
-                                     select subtree
-                               where disallowedSubtrees.Count() == 0
-                               select symbol;
-      if (constrainedSymbols.Count() <= 1) {
-        success = false;
-        return;
-      }
-      var newSymbol = SelectRandomSymbol(random, constrainedSymbols);
+      var oldBranch = manipulationPoint.Node;
+      int oldBranchSize = manipulationPoint.Node.GetSize();
+
+      var seedSymbol = SelectRandomSymbol(random, allowedSymbols);
 
       // replace the old node with the new node
-      var newNode = newSymbol.CreateTreeNode();
-      if (newNode.HasLocalParameters)
-        newNode.ResetLocalParameters(random);
-      foreach (var subtree in node.SubTrees)
-        newNode.AddSubTree(subtree);
+      var seedNode = seedSymbol.CreateTreeNode();
+      if (seedNode.HasLocalParameters)
+        seedNode.ResetLocalParameters(random);
+
       manipulationPoint.Parent.RemoveSubTree(manipulationPoint.Index);
-      manipulationPoint.Parent.InsertSubTree(manipulationPoint.Index, newNode);
+      manipulationPoint.Parent.InsertSubTree(manipulationPoint.Index, seedNode);
+      int maxSize = Math.Max(oldBranchSize, seedNode.Grammar.GetMinExpressionLength(seedNode.Symbol)) * 2;
+      var bla = ProbabilisticTreeCreator.PTC2(random, seedNode, maxSize, maxSize, 0, 0);
       success = true;
     }
 

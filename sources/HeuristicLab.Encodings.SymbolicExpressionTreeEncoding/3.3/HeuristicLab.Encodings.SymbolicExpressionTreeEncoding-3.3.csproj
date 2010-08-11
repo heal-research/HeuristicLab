@@ -129,6 +129,7 @@
     <Compile Include="Interfaces\ISymbolicExpressionTreeCrossover.cs" />
     <Compile Include="Manipulators\ChangeNodeTypeManipulation.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionTreeManipulator.cs" />
+    <Compile Include="Manipulators\ReplaceBranchManipulation.cs" />
     <Compile Include="Manipulators\FullTreeShaker.cs" />
     <Compile Include="Manipulators\MultiSymbolicExpressionTreeManipulator.cs" />
     <Compile Include="Manipulators\OnePointShaker.cs" />

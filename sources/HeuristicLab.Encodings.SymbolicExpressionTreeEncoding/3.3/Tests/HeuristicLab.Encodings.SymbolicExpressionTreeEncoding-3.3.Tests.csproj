@@ -100,6 +100,8 @@
     <Compile Include="ArgumentDeleterTest.cs" />
     <Compile Include="ArgumentDuplicaterTest.cs" />
     <Compile Include="AllArchitectureAlteringOperatorsTest.cs" />
+    <Compile Include="ChangeNodeTypeManipulationTest.cs" />
+    <Compile Include="ReplaceBranchManipulationTest.cs" />
     <Compile Include="SubroutineDeleterTest.cs" />
     <Compile Include="SubroutineDuplicaterTest.cs" />
     <Compile Include="Grammars.cs" />

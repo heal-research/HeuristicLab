@@ -78,7 +78,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators {
 
         bool success = CreateFullTreeFromSeed(random, seedNode, seedNode.Grammar, treeSize, maxDepth, maxFunctionDefinitions, maxFunctionArguments);
 
-        // if successfull => check constraints and return the tree if everything looks ok        
+        // if successful => check constraints and return the tree if everything looks ok        
         if (success && seedNode.GetSize() <= maxTreeSize && seedNode.GetHeight() <= maxDepth) {
           return seedNode;
         } else {
