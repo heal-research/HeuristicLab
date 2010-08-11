@@ -33,33 +33,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [Item("SymbolicRegressionNormalizedMeanSquaredErrorEvaluator", "Calculates the normalized mean squared error of a symbolic regression solution.")]
   [StorableClass]
   public class SymbolicRegressionNormalizedMeanSquaredErrorEvaluator : SingleObjectiveSymbolicRegressionEvaluator {
-    private const string UpperEstimationLimitParameterName = "UpperEstimationLimit";
-    private const string LowerEstimationLimitParameterName = "LowerEstimationLimit";
-
-    #region parameter properties
-    public IValueLookupParameter<DoubleValue> UpperEstimationLimitParameter {
-      get { return (IValueLookupParameter<DoubleValue>)Parameters[UpperEstimationLimitParameterName]; }
-    }
-    public IValueLookupParameter<DoubleValue> LowerEstimationLimitParameter {
-      get { return (IValueLookupParameter<DoubleValue>)Parameters[LowerEstimationLimitParameterName]; }
-    }
-    #endregion
-    #region properties
-    public DoubleValue UpperEstimationLimit {
-      get { return UpperEstimationLimitParameter.ActualValue; }
-    }
-    public DoubleValue LowerEstimationLimit {
-      get { return LowerEstimationLimitParameter.ActualValue; }
-    }
-    #endregion
     public SymbolicRegressionNormalizedMeanSquaredErrorEvaluator()
       : base() {
-      Parameters.Add(new ValueLookupParameter<DoubleValue>(UpperEstimationLimitParameterName, "The upper limit that should be used as cut off value for the output values of symbolic expression trees."));
-      Parameters.Add(new ValueLookupParameter<DoubleValue>(LowerEstimationLimitParameterName, "The lower limit that should be used as cut off value for the output values of symbolic expression trees."));
     }
 
-    protected override double Evaluate(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree solution, Dataset dataset, StringValue targetVariable, IEnumerable<int> rows) {
-      double nmse = Calculate(interpreter, solution, LowerEstimationLimit.Value, UpperEstimationLimit.Value, dataset, targetVariable.Value, rows);
+    public override double Evaluate(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, Dataset dataset, string targetVariable, IEnumerable<int> rows) {
+      double nmse = Calculate(interpreter, solution, lowerEstimationLimit, upperEstimationLimit, dataset, targetVariable, rows);
       return nmse;
     }
 

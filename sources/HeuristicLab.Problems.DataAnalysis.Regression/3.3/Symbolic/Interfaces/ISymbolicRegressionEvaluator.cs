@@ -23,12 +23,22 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
+using HeuristicLab.Problems.DataAnalysis.Symbolic;
+using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   public interface ISymbolicRegressionEvaluator : ISingleObjectiveEvaluator {
+    ILookupParameter<ISymbolicExpressionTreeInterpreter> SymbolicExpressionTreeInterpreterParameter { get; }
     ILookupParameter<SymbolicExpressionTree> SymbolicExpressionTreeParameter { get; }
     ILookupParameter<DataAnalysisProblemData> RegressionProblemDataParameter { get; }
     IValueLookupParameter<IntValue> SamplesStartParameter { get; }
     IValueLookupParameter<IntValue> SamplesEndParameter { get; }
+    IValueLookupParameter<DoubleValue> UpperEstimationLimitParameter { get; }
+    IValueLookupParameter<DoubleValue> LowerEstimationLimitParameter { get; }
+
+
+    double Evaluate(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree tree,
+          double lowerEstimationLimit, double upperEstimationLimit,
+          Dataset dataset, string targetVariable, IEnumerable<int> rows);
   }
 }

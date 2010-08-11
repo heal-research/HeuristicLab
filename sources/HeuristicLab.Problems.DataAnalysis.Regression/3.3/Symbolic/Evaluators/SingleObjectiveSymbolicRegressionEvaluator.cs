@@ -38,11 +38,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     private const string SymbolicExpressionTreeInterpreterParameterName = "SymbolicExpressionTreeInterpreter";
     private const string FunctionTreeParameterName = "FunctionTree";
     private const string RegressionProblemDataParameterName = "RegressionProblemData";
+    private const string UpperEstimationLimitParameterName = "UpperEstimationLimit";
+    private const string LowerEstimationLimitParameterName = "LowerEstimationLimit";
     private const string SamplesStartParameterName = "SamplesStart";
     private const string SamplesEndParameterName = "SamplesEnd";
     private const string RelativeNumberOfEvaluatedSamplesParameterName = "RelativeNumberOfEvaluatedSamples";
     #region ISymbolicRegressionEvaluator Members
 
+    public ILookupParameter<IRandom> RandomParameter {
+      get { return (ILookupParameter<IRandom>)Parameters[RandomParameterName]; }
+    }
     public ILookupParameter<DoubleValue> QualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters[QualityParameterName]; }
     }
@@ -66,14 +71,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     public IValueLookupParameter<IntValue> SamplesEndParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters[SamplesEndParameterName]; }
     }
-
+    public IValueLookupParameter<DoubleValue> UpperEstimationLimitParameter {
+      get { return (IValueLookupParameter<DoubleValue>)Parameters[UpperEstimationLimitParameterName]; }
+    }
+    public IValueLookupParameter<DoubleValue> LowerEstimationLimitParameter {
+      get { return (IValueLookupParameter<DoubleValue>)Parameters[LowerEstimationLimitParameterName]; }
+    }
     public IValueParameter<PercentValue> RelativeNumberOfEvaluatedSamplesParameter {
       get { return (IValueParameter<PercentValue>)Parameters[RelativeNumberOfEvaluatedSamplesParameterName]; }
     }
 
-    public ILookupParameter<IRandom> RandomParameter {
-      get { return (ILookupParameter<IRandom>)Parameters[RandomParameterName]; }
-    }
 
     #endregion
     #region properties
@@ -95,7 +102,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     public IntValue SamplesEnd {
       get { return SamplesEndParameter.ActualValue; }
     }
-
+    public DoubleValue UpperEstimationLimit {
+      get { return UpperEstimationLimitParameter.ActualValue; }
+    }
+    public DoubleValue LowerEstimationLimit {
+      get { return LowerEstimationLimitParameter.ActualValue; }
+    }
     public PercentValue RelativeNumberOfEvaluatedSamples {
       get { return RelativeNumberOfEvaluatedSamplesParameter.Value; }
     }
@@ -110,6 +122,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       Parameters.Add(new LookupParameter<DataAnalysisProblemData>(RegressionProblemDataParameterName, "The problem data on which the symbolic regression solution should be evaluated."));
       Parameters.Add(new ValueLookupParameter<IntValue>(SamplesStartParameterName, "The start index of the dataset partition on which the symbolic regression solution should be evaluated."));
       Parameters.Add(new ValueLookupParameter<IntValue>(SamplesEndParameterName, "The end index of the dataset partition on which the symbolic regression solution should be evaluated."));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>(UpperEstimationLimitParameterName, "The upper limit that should be used as cut off value for the output values of symbolic expression trees."));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>(LowerEstimationLimitParameterName, "The lower limit that should be used as cut off value for the output values of symbolic expression trees."));
       Parameters.Add(new ValueParameter<PercentValue>(RelativeNumberOfEvaluatedSamplesParameterName, "The relative number of samples of the dataset partition, which should be randomly chosen for evaluation between the start and end index.", new PercentValue(1)));
     }
 
@@ -126,8 +140,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     public override IOperation Apply() {
       uint seed = (uint)Random.Next();
       IEnumerable<int> rows = GenerateRowsToEvaluate(seed, RelativeNumberOfEvaluatedSamples.Value, SamplesStart.Value, SamplesEnd.Value);
-      double quality = Evaluate(SymbolicExpressionTreeInterpreter, SymbolicExpressionTree, RegressionProblemData.Dataset,
-        RegressionProblemData.TargetVariable, rows);
+      double quality = Evaluate(SymbolicExpressionTreeInterpreter, SymbolicExpressionTree, LowerEstimationLimit.Value, UpperEstimationLimit.Value,
+        RegressionProblemData.Dataset,
+        RegressionProblemData.TargetVariable.Value, rows);
       QualityParameter.ActualValue = new DoubleValue(quality);
       return base.Apply();
     }
@@ -140,10 +155,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       return RandomEnumerable.SampleRandomNumbers(seed, start, end, count);
     }
 
-    protected abstract double Evaluate(ISymbolicExpressionTreeInterpreter interpreter,
-      SymbolicExpressionTree solution,
+    public abstract double Evaluate(ISymbolicExpressionTreeInterpreter interpreter,
+      SymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit,
       Dataset dataset,
-      StringValue targetVariable,
+      string targetVariable,
       IEnumerable<int> rows);
   }
 }

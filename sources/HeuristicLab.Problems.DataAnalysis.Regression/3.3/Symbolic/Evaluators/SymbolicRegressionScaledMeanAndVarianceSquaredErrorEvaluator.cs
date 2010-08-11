@@ -101,18 +101,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       Parameters.Add(new LookupParameter<DoubleValue>(DecompositionCovarianceParameterName, "A parameter which stores the relativ bias of the MSE."));
     }
 
-    protected override double Evaluate(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree solution, Dataset dataset, StringValue targetVariable, IEnumerable<int> rows) {
+    public override double Evaluate(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, Dataset dataset, string targetVariable, IEnumerable<int> rows) {
       double alpha, beta;
       double meanSE, varianceSE;
       int count;
       double bias, variance, covariance;
       double mse;
       if (ApplyScaling.Value) {
-        mse = Calculate(interpreter, solution, LowerEstimationLimit.Value, UpperEstimationLimit.Value, dataset, targetVariable.Value, rows, out beta, out alpha, out meanSE, out varianceSE, out count, out bias, out variance, out covariance);
+        mse = Calculate(interpreter, solution, LowerEstimationLimit.Value, UpperEstimationLimit.Value, dataset, targetVariable, rows, out beta, out alpha, out meanSE, out varianceSE, out count, out bias, out variance, out covariance);
         Alpha = new DoubleValue(alpha);
         Beta = new DoubleValue(beta);
       } else {
-        mse = CalculateWithScaling(interpreter, solution, LowerEstimationLimit.Value, UpperEstimationLimit.Value, dataset, targetVariable.Value, rows, 1, 0, out meanSE, out varianceSE, out count, out bias, out variance, out covariance);
+        mse = CalculateWithScaling(interpreter, solution, LowerEstimationLimit.Value, UpperEstimationLimit.Value, dataset, targetVariable, rows, 1, 0, out meanSE, out varianceSE, out count, out bias, out variance, out covariance);
       }
       QualityVariance = new DoubleValue(varianceSE);
       QualitySamples = new IntValue(count);
