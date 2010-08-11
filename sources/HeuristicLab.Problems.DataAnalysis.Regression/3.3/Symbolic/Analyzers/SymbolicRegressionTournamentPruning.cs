@@ -29,6 +29,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
   public class SymbolicRegressionTournamentPruning : SingleSuccessorOperator, ISymbolicRegressionAnalyzer {
@@ -37,6 +38,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     private const string DataAnalysisProblemDataParameterName = "DataAnalysisProblemData";
     private const string SamplesStartParameterName = "SamplesStart";
     private const string SamplesEndParameterName = "SamplesEnd";
+    private const string EvaluatorParameterName = "Evaluator";
+    private const string MaximizationParameterName = "Maximization";
     private const string SymbolicExpressionTreeInterpreterParameterName = "SymbolicExpressionTreeInterpreter";
     private const string UpperEstimationLimitParameterName = "UpperEstimationLimit";
     private const string LowerEstimationLimitParameterName = "LowerEstimationLimit";
@@ -75,6 +78,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     }
     public IValueLookupParameter<IntValue> SamplesEndParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters[SamplesEndParameterName]; }
+    }
+    public ILookupParameter<ISymbolicRegressionEvaluator> EvaluatorParameter {
+      get { return (ILookupParameter<ISymbolicRegressionEvaluator>)Parameters[EvaluatorParameterName]; }
+    }
+    public ILookupParameter<BoolValue> MaximizationParameter {
+      get { return (ILookupParameter<BoolValue>)Parameters[MaximizationParameterName]; }
     }
     public IValueLookupParameter<DoubleValue> MaxPruningRatioParameter {
       get { return (IValueLookupParameter<DoubleValue>)Parameters[MaxPruningRatioParameterName]; }
@@ -132,6 +141,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     public IntValue SamplesEnd {
       get { return SamplesEndParameter.ActualValue; }
     }
+    public ISymbolicRegressionEvaluator Evaluator {
+      get { return EvaluatorParameter.ActualValue; }
+    }
+    public BoolValue Maximization {
+      get { return MaximizationParameter.ActualValue; }
+    }
     public DoubleValue MaxPruningRatio {
       get { return MaxPruningRatioParameter.ActualValue; }
     }
@@ -160,6 +175,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       get { return GenerationParameter.ActualValue; }
     }
     #endregion
+    protected SymbolicRegressionTournamentPruning(bool deserializing) : base(deserializing) { }
     public SymbolicRegressionTournamentPruning()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>(RandomParameterName, "A random number generator."));
@@ -168,6 +184,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       Parameters.Add(new LookupParameter<ISymbolicExpressionTreeInterpreter>(SymbolicExpressionTreeInterpreterParameterName, "The interpreter to use for node impact evaluation"));
       Parameters.Add(new ValueLookupParameter<IntValue>(SamplesStartParameterName, "The first row index of the dataset partition to use for branch impact evaluation."));
       Parameters.Add(new ValueLookupParameter<IntValue>(SamplesEndParameterName, "The last row index of the dataset partition to use for branch impact evaluation."));
+      Parameters.Add(new LookupParameter<ISymbolicRegressionEvaluator>(EvaluatorParameterName, "The evaluator that should be used to determine which branches are not relevant."));
+      Parameters.Add(new LookupParameter<BoolValue>(MaximizationParameterName, "The direction of optimization."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>(MaxPruningRatioParameterName, "The maximal relative size of the pruned branch.", new DoubleValue(0.5)));
       Parameters.Add(new ValueLookupParameter<IntValue>(TournamentSizeParameterName, "The number of branches to compare for pruning", new IntValue(10)));
       Parameters.Add(new ValueLookupParameter<DoubleValue>(PopulationPercentileStartParameterName, "The start of the population percentile to consider for pruning.", new DoubleValue(0.25)));
@@ -180,6 +198,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       Parameters.Add(new ValueLookupParameter<IntValue>(PruningFrequencyParameterName, "The frequency of pruning operations (1: every generation, 2: every second generation...)", new IntValue(1)));
       Parameters.Add(new LookupParameter<IntValue>(GenerationParameterName, "The current generation."));
       Parameters.Add(new LookupParameter<ResultCollection>(ResultsParameterName, "The results collection."));
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      #region compatibility remove before releasing 3.3.1
+      if (!Parameters.ContainsKey(EvaluatorParameterName)) {
+        Parameters.Add(new LookupParameter<ISymbolicRegressionEvaluator>(EvaluatorParameterName, "The evaluator which should be used to evaluate the solution on the validation set."));
+      }
+      if (!Parameters.ContainsKey(MaximizationParameterName)) {
+        Parameters.Add(new LookupParameter<BoolValue>(MaximizationParameterName, "The direction of optimization."));
+      }
+      #endregion
     }
 
     public override IOperation Apply() {
@@ -197,7 +227,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
         foreach (var tree in trees) {
           Prune(Random, tree, Iterations.Value, TournamentSize.Value,
             DataAnalysisProblemData, SamplesStart.Value, SamplesEnd.Value,
-            SymbolicExpressionTreeInterpreter,
+            SymbolicExpressionTreeInterpreter, Evaluator, Maximization.Value,
             LowerEstimationLimit.Value, UpperEstimationLimit.Value,
             MaxPruningRatio.Value, QualityGainWeight.Value);
         }
@@ -207,13 +237,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
 
     public static void Prune(IRandom random, SymbolicExpressionTree tree, int iterations, int tournamentSize,
       DataAnalysisProblemData problemData, int samplesStart, int samplesEnd,
-      ISymbolicExpressionTreeInterpreter interpreter,
+      ISymbolicExpressionTreeInterpreter interpreter, ISymbolicRegressionEvaluator evaluator, bool maximization,
       double lowerEstimationLimit, double upperEstimationLimit,
       double maxPruningRatio, double qualityGainWeight) {
       IEnumerable<int> rows = Enumerable.Range(samplesStart, samplesEnd - samplesStart);
       int originalSize = tree.Size;
-      double originalMse = SymbolicRegressionScaledMeanSquaredErrorEvaluator.Calculate(interpreter, tree,
-        lowerEstimationLimit, upperEstimationLimit, problemData.Dataset, problemData.TargetVariable.Value, Enumerable.Range(samplesStart, samplesEnd - samplesStart));
+      double originalQuality = evaluator.Evaluate(interpreter, tree,
+        lowerEstimationLimit, upperEstimationLimit, problemData.Dataset, problemData.TargetVariable.Value, rows);
 
       int minPrunedSize = (int)(originalSize * (1 - maxPruningRatio));
 
@@ -248,13 +278,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
             var constNode = CreateConstant(branchMean);
             selectedPrunePoint.Parent.InsertSubTree(selectedPrunePoint.SubTreeIndex, constNode);
 
-            double prunedMse = SymbolicRegressionScaledMeanSquaredErrorEvaluator.Calculate(interpreter, clonedTree,
+            double prunedQuality = evaluator.Evaluate(interpreter, clonedTree,
         lowerEstimationLimit, upperEstimationLimit, problemData.Dataset, problemData.TargetVariable.Value, Enumerable.Range(samplesStart, samplesEnd - samplesStart));
             double prunedSize = clonedTree.Size;
-            // MSE of the pruned tree is larger than the original tree in most cases
+            // deteriation in quality:
+            // exp: MSE : newMse < origMse (improvement) => prefer the larger improvement
+            //      MSE : newMse > origMse (deteriation) => prefer the smaller deteriation
+            //      MSE : minimize: newMse / origMse
+            //      R²  : newR² > origR²   (improvment) => prefer the larger improvment
+            //      R²  : newR² < origR²   (deteriation) => prefer smaller deteriation
+            //      R²  : minimize: origR² / newR²
+            double qualityDeteriation = maximization ? originalQuality / prunedQuality : prunedQuality / originalQuality;
             // size of the pruned tree is always smaller than the size of the original tree
             // same change in quality => prefer pruning operation that removes a larger tree
-            double gain = ((prunedMse / originalMse) * qualityGainWeight) /
+            double gain = (qualityDeteriation * qualityGainWeight) /
                            (originalSize / prunedSize);
             if (gain < bestGain) {
               bestGain = gain;
