@@ -33,50 +33,6 @@ namespace HeuristicLab.Optimization {
   [Item("Run", "The parameters and results of an algorithm run.")]
   [StorableClass]
   public sealed class Run : NamedItem, IRun {
-    [Storable]
-    private IAlgorithm algorithm;
-    public IAlgorithm Algorithm {
-      get { return algorithm; }
-    }
-    [Storable]
-    private Dictionary<string, IItem> parameters;
-    public IDictionary<string, IItem> Parameters {
-      get { return parameters; }
-    }
-    [Storable]
-    private Dictionary<string, IItem> results;
-    public IDictionary<string, IItem> Results {
-      get { return results; }
-    }
-
-    [Storable]
-    private Color color;
-    public Color Color {
-      get { return this.color; }
-      set {
-        if (color != value) {
-          this.color = value;
-          this.OnChanged();
-        }
-      }
-    }
-    private bool visible = true;
-    public bool Visible {
-      get { return this.visible; }
-      set {
-        if (visible != value) {
-          this.visible = value;
-          this.OnChanged();
-        }
-      }
-    }
-    public event EventHandler Changed;
-    private void OnChanged() {
-      EventHandler handler = Changed;
-      if (handler != null)
-        handler(this, EventArgs.Empty);
-    }
-
     [StorableConstructor]
     private Run(bool deserializing) : base(deserializing) { }
     public Run()
@@ -121,10 +77,53 @@ namespace HeuristicLab.Optimization {
         this.algorithm = clone;
       }
     }
-
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserializationHook() {
       if (color == Color.Empty) color = Color.Black;
+    }
+
+    [Storable]
+    private IAlgorithm algorithm;
+    public IAlgorithm Algorithm {
+      get { return algorithm; }
+    }
+    [Storable]
+    private Dictionary<string, IItem> parameters;
+    public IDictionary<string, IItem> Parameters {
+      get { return parameters; }
+    }
+    [Storable]
+    private Dictionary<string, IItem> results;
+    public IDictionary<string, IItem> Results {
+      get { return results; }
+    }
+
+    [Storable]
+    private Color color;
+    public Color Color {
+      get { return this.color; }
+      set {
+        if (color != value) {
+          this.color = value;
+          this.OnChanged();
+        }
+      }
+    }
+    private bool visible = true;
+    public bool Visible {
+      get { return this.visible; }
+      set {
+        if (visible != value) {
+          this.visible = value;
+          this.OnChanged();
+        }
+      }
+    }
+    public event EventHandler Changed;
+    private void OnChanged() {
+      EventHandler handler = Changed;
+      if (handler != null)
+        handler(this, EventArgs.Empty);
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

@@ -71,7 +71,9 @@ namespace HeuristicLab.Optimization {
       }
       base.OnCollectionReset(items, oldItems);
       OnReset();
+      columnNameCache = null;
       OnColumnNamesChanged();
+      rowNamesCache = null;
       OnRowNamesChanged();
     }
     protected override void OnItemsAdded(IEnumerable<IRun> items) {
@@ -84,8 +86,11 @@ namespace HeuristicLab.Optimization {
       }
       base.OnItemsAdded(items);
       OnReset();
-      if (columnNamesChanged)
+      if (columnNamesChanged) {
+        columnNameCache = null;
         OnColumnNamesChanged();
+      }
+      rowNamesCache = null;
       OnRowNamesChanged();
       this.UpdateFiltering(false);
     }
@@ -99,8 +104,11 @@ namespace HeuristicLab.Optimization {
       }
       base.OnItemsRemoved(items);
       OnReset();
-      if (columnNamesChanged)
+      if (columnNamesChanged) {
+        columnNameCache = null;
         OnColumnNamesChanged();
+      }
+      rowNamesCache = null;
       OnRowNamesChanged();
     }
 
@@ -206,17 +214,25 @@ namespace HeuristicLab.Optimization {
       get { return parameterNames.Count + resultNames.Count; }
       set { throw new NotSupportedException(); }
     }
+    private List<string> columnNameCache;
     IEnumerable<string> IStringConvertibleMatrix.ColumnNames {
       get {
-        List<string> value = new List<string>(parameterNames);
-        value.AddRange(resultNames);
-        value.Sort();
-        return value;
+        if (columnNameCache == null) {
+          columnNameCache = new List<string>(parameterNames);
+          columnNameCache.AddRange(resultNames);
+          columnNameCache.Sort();
+        }
+        return columnNameCache;
       }
       set { throw new NotSupportedException(); }
     }
+    private List<string> rowNamesCache;
     IEnumerable<string> IStringConvertibleMatrix.RowNames {
-      get { return list.Select(x => x.Name).ToList(); }
+      get {
+        if (rowNamesCache == null)
+          rowNamesCache = list.Select(x => x.Name).ToList();
+        return rowNamesCache;
+      }
       set { throw new NotSupportedException(); }
     }
     bool IStringConvertibleMatrix.SortableView {

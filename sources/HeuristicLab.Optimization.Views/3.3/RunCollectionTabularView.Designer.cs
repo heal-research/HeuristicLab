@@ -45,6 +45,7 @@ namespace HeuristicLab.Optimization.Views {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
+      this.dataGridView.RowHeaderMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(dataGridView_RowHeaderMouseDoubleClick);
     }
 
     #endregion

@@ -30,10 +30,10 @@ using HeuristicLab.MainForm;
 namespace HeuristicLab.Optimization.Views {
   [View("RunCollection Tabular View")]
   [Content(typeof(RunCollection), false)]
-  public partial class RunCollectionTabularView : StringConvertibleMatrixView {
+  public sealed partial class RunCollectionTabularView : StringConvertibleMatrixView {
+    private int[] runToRowMapping;
     public RunCollectionTabularView() {
       InitializeComponent();
-      this.dataGridView.RowHeaderMouseDoubleClick += new DataGridViewCellMouseEventHandler(dataGridView_RowHeaderMouseDoubleClick);
       base.ReadOnly = true;
     }
 
@@ -50,11 +50,12 @@ namespace HeuristicLab.Optimization.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content != null) {
-        foreach (IRun run in Content)
-          UpdateRun(run);
+        runToRowMapping = Enumerable.Range(0, Content.Count).ToArray();
+        UpdateRowAttributes();
       }
     }
 
+    #region events
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.ItemsAdded += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
@@ -62,7 +63,7 @@ namespace HeuristicLab.Optimization.Views {
       Content.CollectionReset += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
       RegisterRunEvents(Content);
     }
-    protected virtual void RegisterRunEvents(IEnumerable<IRun> runs) {
+    private void RegisterRunEvents(IEnumerable<IRun> runs) {
       foreach (IRun run in runs)
         run.Changed += new EventHandler(run_Changed);
     }
@@ -73,13 +74,14 @@ namespace HeuristicLab.Optimization.Views {
       Content.CollectionReset -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
       DeregisterRunEvents(Content);
     }
-    protected virtual void DeregisterRunEvents(IEnumerable<IRun> runs) {
+    private void DeregisterRunEvents(IEnumerable<IRun> runs) {
       foreach (IRun run in runs)
         run.Changed -= new EventHandler(run_Changed);
     }
     private void Content_CollectionReset(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IRun> e) {
       DeregisterRunEvents(e.OldItems);
       RegisterRunEvents(e.Items);
+      OnContentChanged();
     }
     private void Content_ItemsRemoved(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IRun> e) {
       DeregisterRunEvents(e.Items);
@@ -95,18 +97,29 @@ namespace HeuristicLab.Optimization.Views {
         UpdateRun(run);
       }
     }
+    #endregion
 
     private void UpdateRun(IRun run) {
-      int rowIndex = Content.ToList().IndexOf(run);
-      rowIndex = virtualRowIndizes[rowIndex];
+      int runIndex = GetIndexOfRun(run);
+      int rowIndex = runToRowMapping[runIndex];
       this.dataGridView.Rows[rowIndex].Visible = run.Visible;
       this.dataGridView.Rows[rowIndex].DefaultCellStyle.ForeColor = run.Color;
-      this.rowsTextBox.Text = this.Content.Count(r => r.Visible).ToString();
+      this.UpdateRowHeaders();
+    }
+
+    private int GetIndexOfRun(IRun run) {
+      int i = 0;
+      foreach (IRun actualRun in Content) {
+        if (actualRun == run)
+          return i;
+        i++;
+      }
+      throw new ArgumentException("Run " + run.Name + "could not be found in the RunCollection.");
     }
 
     private void dataGridView_RowHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e) {
       if (e.RowIndex >= 0) {
-        IRun run = Content.ElementAt(virtualRowIndizes[e.RowIndex]);
+        IRun run = Content.ElementAt(runToRowMapping.ToList().IndexOf(e.RowIndex));
         IContentView view = MainFormManager.MainForm.ShowContent(run);
         if (view != null) {
           view.ReadOnly = this.ReadOnly;
@@ -123,7 +136,25 @@ namespace HeuristicLab.Optimization.Views {
         rowComparer.Matrix = Content;
         Array.Sort(newSortedIndex, rowComparer);
       }
+
+      runToRowMapping = new int[newSortedIndex.Length];
+      int i = 0;
+      foreach (int runIndex in newSortedIndex) {
+        runToRowMapping[runIndex] = i;
+        i++;
+      }
+      UpdateRowAttributes();
       return newSortedIndex;
+    }
+
+    private void UpdateRowAttributes() {
+      int runIndex = 0;
+      foreach (IRun run in Content) {
+        int rowIndex = this.runToRowMapping[runIndex];
+        this.dataGridView.Rows[rowIndex].Visible = run.Visible;
+        this.dataGridView.Rows[rowIndex].DefaultCellStyle.ForeColor = run.Color;
+        runIndex++;
+      }
     }
 
     public class RunCollectionRowComparer : IComparer<int> {

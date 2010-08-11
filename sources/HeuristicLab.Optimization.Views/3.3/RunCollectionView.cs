@@ -110,10 +110,10 @@ namespace HeuristicLab.Optimization.Views {
         foreach (IRun item in Content) {
           ListViewItem listViewItem = CreateListViewItem(item);
           AddListViewItem(listViewItem);
-          UpdateRun(item);
           if ((selectedName != null) && item.Name.Equals(selectedName))
             listViewItem.Selected = true;
         }
+        AdjustListViewColumnSizes();
       } else {
         runCollectionConstraintCollectionView.Content = null;
         if (tabControl.TabPages.Contains(constraintPage))
@@ -149,13 +149,20 @@ namespace HeuristicLab.Optimization.Views {
       itemsListView.SmallImageList.Images.Add(item.ItemImage);
       listViewItem.ImageIndex = itemsListView.SmallImageList.Images.Count - 1;
       listViewItem.Tag = item;
+
+      if (item.Visible) {
+        listViewItem.Font = new Font(listViewItem.Font, FontStyle.Regular);
+        listViewItem.ForeColor = item.Color;
+      } else {
+        listViewItem.Font = new Font(listViewItem.Font, FontStyle.Italic);
+        listViewItem.ForeColor = Color.LightGray;
+      }
       return listViewItem;
     }
     protected virtual void AddListViewItem(ListViewItem listViewItem) {
       itemsListView.Items.Add(listViewItem);
       ((IRun)listViewItem.Tag).ItemImageChanged += new EventHandler(Item_ItemImageChanged);
       ((IRun)listViewItem.Tag).ToStringChanged += new EventHandler(Item_ToStringChanged);
-      AdjustListViewColumnSizes();
     }
     protected virtual void RemoveListViewItem(ListViewItem listViewItem) {
       ((IRun)listViewItem.Tag).ItemImageChanged -= new EventHandler(Item_ItemImageChanged);
@@ -293,10 +300,10 @@ namespace HeuristicLab.Optimization.Views {
         Invoke(new CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded), sender, e);
       else {
         RegisterRunEvents(e.Items);
-        foreach (IRun item in e.Items) {
+        foreach (IRun item in e.Items)
           AddListViewItem(CreateListViewItem(item));
-          UpdateRun(item);
-        }
+
+        AdjustListViewColumnSizes();
         analyzeRunsToolStripDropDownButton.Enabled = itemsListView.Items.Count > 0;
         clearButton.Enabled = itemsListView.Items.Count > 0 && !Content.IsReadOnly && !ReadOnly;
         runCollectionConstraintCollectionView.ReadOnly = itemsListView.Items.Count == 0;
@@ -330,10 +337,10 @@ namespace HeuristicLab.Optimization.Views {
           }
         }
         RegisterRunEvents(e.Items);
-        foreach (IRun item in e.Items) {
+        foreach (IRun item in e.Items)
           AddListViewItem(CreateListViewItem(item));
-          UpdateRun(item);
-        }
+
+        AdjustListViewColumnSizes();
         analyzeRunsToolStripDropDownButton.Enabled = itemsListView.Items.Count > 0;
         clearButton.Enabled = itemsListView.Items.Count > 0 && !Content.IsReadOnly && !ReadOnly;
         runCollectionConstraintCollectionView.ReadOnly = itemsListView.Items.Count == 0;
