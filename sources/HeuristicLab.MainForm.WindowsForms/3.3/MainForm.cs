@@ -233,18 +233,13 @@ namespace HeuristicLab.MainForm.WindowsForms {
       IContentView view;
       if (this.ShowContentInViewHost) {
         ViewHost viewHost = new ViewHost();
-        viewHost.Content = content;
         viewHost.ViewType = viewType;
         view = viewHost;
-        view.Show();
-      } else {
+      } else
         view = MainFormManager.CreateView(viewType);
-        if (view != null) {
-          view.Content = content;
-          view.Show();
-        }
-      }
 
+      view.Content = content;
+      view.Show();
       return view;
     }
 
