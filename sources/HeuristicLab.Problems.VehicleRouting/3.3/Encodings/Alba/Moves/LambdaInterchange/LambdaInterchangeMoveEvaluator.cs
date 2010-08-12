@@ -24,6 +24,7 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   [Item("LambdaInterchangeMoveEvaluator", "Evaluates a lamnbda interchange move for the Alba representation.")]
@@ -41,18 +42,28 @@ namespace HeuristicLab.Problems.VehicleRouting {
       Parameters.Add(new LookupParameter<LambdaInterchangeMove>("LambdaInterchangeMove", "The move to evaluate."));
     }
 
-    protected override TourEvaluation GetMoveQuality() {
-      LambdaInterchangeMove move = LambdaInterchangeMoveParameter.ActualValue;
-      //perform move
-      AlbaEncoding newSolution = VRPToursParameter.ActualValue.Clone() as AlbaEncoding;
+    public static TourEvaluation GetMoveQuality(AlbaEncoding individual, LambdaInterchangeMove move, 
+      DoubleArray dueTimeArray, DoubleArray serviceTimeArray, DoubleArray readyTimeArray, 
+      DoubleArray demandArray, DoubleValue capacity, DoubleMatrix coordinates, 
+      DoubleValue fleetUsageFactor, DoubleValue timeFactor, DoubleValue distanceFactor, 
+      DoubleValue overloadPenalty, DoubleValue tardinessPenalty,
+      ILookupParameter<DoubleMatrix> distanceMatrix, Data.BoolValue useDistanceMatrix) {
+      AlbaEncoding newSolution = individual.Clone() as AlbaEncoding;
       LambdaInterchangeMoveMaker.Apply(newSolution, move);
 
       return VRPEvaluator.Evaluate(
-        newSolution,
+        newSolution, dueTimeArray, serviceTimeArray, readyTimeArray, 
+        demandArray, capacity, fleetUsageFactor, timeFactor, distanceFactor, 
+        overloadPenalty, tardinessPenalty, coordinates, distanceMatrix, useDistanceMatrix);
+    }
+
+    protected override TourEvaluation GetMoveQuality() {
+      return GetMoveQuality(
+        VRPToursParameter.ActualValue as AlbaEncoding, LambdaInterchangeMoveParameter.ActualValue, 
         DueTimeParameter.ActualValue, ServiceTimeParameter.ActualValue, ReadyTimeParameter.ActualValue,
-        DemandParameter.ActualValue, CapacityParameter.ActualValue,
-        FleetUsageFactor.ActualValue, TimeFactor.ActualValue, DistanceFactor.ActualValue, OverloadPenalty.ActualValue, TardinessPenalty.ActualValue,
-        CoordinatesParameter.ActualValue, DistanceMatrixParameter, UseDistanceMatrixParameter.ActualValue);
+        DemandParameter.ActualValue, CapacityParameter.ActualValue, CoordinatesParameter.ActualValue, 
+        FleetUsageFactor.ActualValue, TimeFactor.ActualValue, DistanceFactor.ActualValue, OverloadPenalty.ActualValue, 
+        TardinessPenalty.ActualValue, DistanceMatrixParameter, UseDistanceMatrixParameter.ActualValue);
     }
   }
 }

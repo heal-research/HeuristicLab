@@ -133,6 +133,12 @@
     <Compile Include="Encodings\General\Crossovers\MultiVRPManipulator.cs" />
     <Compile Include="Encodings\General\Crossovers\MultiVRPCrossover.cs" />
     <Compile Include="Encodings\General\Creators\RandomCreator.cs" />
+    <Compile Include="Encodings\General\Moves\Interfaces\IMultiVRPMoveGenerator.cs" />
+    <Compile Include="Encodings\General\Moves\Interfaces\IVRPMove.cs" />
+    <Compile Include="Encodings\General\Moves\Interfaces\IMultiVRPMoveOperator.cs" />
+    <Compile Include="Encodings\General\Moves\MultiVRPMoveOperator\MultiVRPMoveEvaluator.cs" />
+    <Compile Include="Encodings\General\Moves\MultiVRPMoveOperator\MultiVRPMoveMaker.cs" />
+    <Compile Include="Encodings\General\Moves\MultiVRPMoveOperator\MultiVRPMoveGenerator.cs" />
     <Compile Include="Encodings\Potvin\Crossovers\SequenceBasedCrossover2.cs" />
     <Compile Include="Encodings\Potvin\Crossovers\RouteBasedCrossover.cs" />
     <Compile Include="Encodings\Potvin\Crossovers\SequenceBasedCrossover.cs" />

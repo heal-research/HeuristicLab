@@ -24,11 +24,13 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Common;
 using System.Collections.Generic;
+using HeuristicLab.Problems.VehicleRouting.Encodings.General;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("InversionMove", "Item that describes a lambda move on an Alba VRP representation.")]
   [StorableClass]
-  public class LambdaInterchangeMove: Item {
+  public class LambdaInterchangeMove: Item, IVRPMove {
     [Storable]
     public int Tour1 { get; protected set; }
 
@@ -82,5 +84,26 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       cloner.RegisterClonedObject(this, clone);
       return clone;
     }
+
+    #region IVRPMove Members
+
+    public TourEvaluation GetMoveQuality(
+      IVRPEncoding individual, 
+      DoubleArray dueTimeArray, DoubleArray serviceTimeArray, DoubleArray readyTimeArray, 
+      DoubleArray demandArray, DoubleValue capacity, DoubleMatrix coordinates,
+      DoubleValue fleetUsageFactor, DoubleValue timeFactor, DoubleValue distanceFactor,
+      DoubleValue overloadPenalty, DoubleValue tardinessPenalty,
+      ILookupParameter<DoubleMatrix> distanceMatrix, Data.BoolValue useDistanceMatrix) {
+        return LambdaInterchangeMoveEvaluator.GetMoveQuality(individual as AlbaEncoding, this,
+          dueTimeArray, serviceTimeArray, readyTimeArray, demandArray, capacity,
+          coordinates, fleetUsageFactor, timeFactor, distanceFactor,
+          overloadPenalty, tardinessPenalty, distanceMatrix, useDistanceMatrix);
+    }
+
+    public void MakeMove(IRandom random, IVRPEncoding individual) {
+      LambdaInterchangeMoveMaker.Apply(individual as AlbaEncoding, this);
+    }
+
+    #endregion
   }
 }

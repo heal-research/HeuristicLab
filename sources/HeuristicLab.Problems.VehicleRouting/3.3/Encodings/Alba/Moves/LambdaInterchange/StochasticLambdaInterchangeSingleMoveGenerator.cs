@@ -26,11 +26,21 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
 using HeuristicLab.Parameters;
 using System.Collections.Generic;
+using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("StochasticLambdaInterchangeSingleMoveGenerator", "Generates one random lambda interchange move from a given Alba VRP encoding.")]
   [StorableClass]
-  public sealed class StochasticLambdaInterchangeSingleMoveGenerator : LambdaInterchangeMoveGenerator, IStochasticOperator, ISingleMoveGenerator, IAlbaLambdaInterchangeMoveOperator {
+  public sealed class StochasticLambdaInterchangeSingleMoveGenerator : LambdaInterchangeMoveGenerator,
+    IStochasticOperator, ISingleMoveGenerator, IAlbaLambdaInterchangeMoveOperator, IMultiVRPMoveGenerator {
+    #region IMultiVRPMoveOperator Members
+
+    public ILookupParameter VRPMoveParameter {
+      get { return (ILookupParameter)Parameters["LambdaInterchangeMove"]; }
+    }
+
+    #endregion
+    
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }

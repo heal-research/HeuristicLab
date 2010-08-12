@@ -26,11 +26,21 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
 using HeuristicLab.Parameters;
 using System.Collections.Generic;
+using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("StochasticSimpleLocalSearchSingleMoveGenerator", "Generates one random simple local search move from a given Alba VRP encoding.")]
   [StorableClass]
-  public sealed class StochasticSimpleLocalSearchSingleMoveGenerator : SimpleLocalSearchMoveGenerator, IStochasticOperator, ISingleMoveGenerator, IAlbaSimpleLocalSearchMoveOperator {
+  public sealed class StochasticSimpleLocalSearchSingleMoveGenerator : SimpleLocalSearchMoveGenerator,
+    IStochasticOperator, ISingleMoveGenerator, IAlbaSimpleLocalSearchMoveOperator, IMultiVRPMoveGenerator {
+    #region IMultiVRPMoveOperator Members
+
+    public ILookupParameter VRPMoveParameter {
+      get { return (ILookupParameter)Parameters["SimpleLocalSearchMove"]; }
+    }
+
+    #endregion
+    
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
