@@ -24,23 +24,38 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Data;
+using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
-  [Item("AlbaManipulator", "An operator which manipulates an alba VRP representation.")]
+  [Item("AlbaManipulator", "An operator which manipulates an Alba VRP representation.")]
   [StorableClass]
-  public sealed class AlbaManipulator : VRPManipulator {
-    public IValueLookupParameter<IPermutationManipulator> InnerManipulatorParameter {
-      get { return (IValueLookupParameter<IPermutationManipulator>)Parameters["InnerManipulator"]; }
+  public abstract class AlbaManipulator : VRPManipulator, IStochasticOperator {
+    public ILookupParameter<IRandom> RandomParameter {
+      get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
 
     [StorableConstructor]
-    private AlbaManipulator(bool deserializing) : base(deserializing) { }
+    protected AlbaManipulator(bool deserializing) : base(deserializing) { }
 
     public AlbaManipulator()
       : base() {
-        Parameters.Add(new ValueLookupParameter<IPermutationManipulator>("InnerManipulator", "The permutation manipulator.", new TranslocationManipulator()));
+        Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));
 
         AlbaEncoding.RemoveUnusedParameters(Parameters);
+    }
+
+    protected abstract void Manipulate(IRandom random, AlbaEncoding individual);
+
+    protected int FindCustomerLocation(int customer, AlbaEncoding individual) {
+      int pos = -1;
+      for (int i = 0; i < individual.Length; i++) {
+        if (individual[i] == customer) {
+          pos = i;
+          break;
+        }
+      }
+
+      return pos;
     }
 
     public override IOperation Apply() {
@@ -48,16 +63,10 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       if (!(solution is AlbaEncoding)) {
         VRPToursParameter.ActualValue = AlbaEncoding.ConvertFrom(solution, VehiclesParameter.ActualValue.Value);
       }
-      
-      OperationCollection next = new OperationCollection(base.Apply());
 
-      IPermutationManipulator op = InnerManipulatorParameter.ActualValue;
-      if (op != null) {
-        op.PermutationParameter.ActualName = VRPToursParameter.ActualName;
-        next.Insert(0, ExecutionContext.CreateOperation(op));
-      }
+      Manipulate(RandomParameter.ActualValue, VRPToursParameter.ActualValue as AlbaEncoding);
 
-      return next;
+      return base.Apply();
     }
   }
 }

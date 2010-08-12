@@ -26,27 +26,26 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
 
 namespace HeuristicLab.Problems.VehicleRouting {
-  [Item("AlbaTranslocationMoveEvaluator", "Evaluates a translocation or insertion move (3-opt) for the Alba representation.")]
+  [Item("LambdaInterchangeMoveEvaluator", "Evaluates a lamnbda interchange move for the Alba representation.")]
   [StorableClass]
-  public sealed class AlbaTranslocationMoveEvaluator : VRPMoveEvaluator, IAlbaTranslocationMoveOperator {
-    public ILookupParameter<TranslocationMove> TranslocationMoveParameter {
-      get { return (ILookupParameter<TranslocationMove>)Parameters["TranslocationMove"]; }
-      set { Parameters["TranslocationMove"].ActualValue = value.ActualValue; }
+  public sealed class LambdaInterchangeMoveEvaluator : VRPMoveEvaluator, IAlbaLambdaInterchangeMoveOperator {
+    public ILookupParameter<LambdaInterchangeMove> LambdaInterchangeMoveParameter {
+      get { return (ILookupParameter<LambdaInterchangeMove>)Parameters["LambdaInterchangeMove"]; }
     }
 
     [StorableConstructor]
-    private AlbaTranslocationMoveEvaluator(bool deserializing) : base(deserializing) { }
+    private LambdaInterchangeMoveEvaluator(bool deserializing) : base(deserializing) { }
 
-    public AlbaTranslocationMoveEvaluator()
+    public LambdaInterchangeMoveEvaluator()
       : base() {
-      Parameters.Add(new LookupParameter<TranslocationMove>("TranslocationMove", "The move to evaluate."));
+      Parameters.Add(new LookupParameter<LambdaInterchangeMove>("LambdaInterchangeMove", "The move to evaluate."));
     }
 
     protected override TourEvaluation GetMoveQuality() {
-      TranslocationMove move = TranslocationMoveParameter.ActualValue;
+      LambdaInterchangeMove move = LambdaInterchangeMoveParameter.ActualValue;
       //perform move
       AlbaEncoding newSolution = VRPToursParameter.ActualValue.Clone() as AlbaEncoding;
-      TranslocationManipulator.Apply(newSolution, move.Index1, move.Index2, move.Index3);
+      LambdaInterchangeMoveMaker.Apply(newSolution, move);
 
       return VRPEvaluator.Evaluate(
         newSolution,

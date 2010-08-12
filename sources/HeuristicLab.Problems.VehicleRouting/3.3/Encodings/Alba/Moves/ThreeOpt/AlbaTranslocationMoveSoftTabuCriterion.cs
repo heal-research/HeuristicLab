@@ -28,7 +28,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaTranslocationMoveSoftTabuCriterion", "An operator which checks if translocation moves are tabu using a soft criterion for the Alba representation.")]
   [StorableClass]
-  public sealed class AlbaTranslocationMoveSoftTabuCriterion : AlbaMoveOperator, IAlbaTranslocationMoveOperator, ITabuChecker {
+  public sealed class AlbaTranslocationMoveSoftTabuCriterion : PermutationMoveOperator, IAlbaTranslocationMoveOperator, ITabuChecker {
     private TranslocationMoveSoftTabuCriterion tabuChecker;
     protected override IPermutationMoveOperator PermutationMoveOperatorParameter {
       get { return tabuChecker; }

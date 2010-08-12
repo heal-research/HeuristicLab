@@ -24,7 +24,7 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
-  public interface IAlbaTranslocationMoveOperator : IMoveOperator {
-    ILookupParameter<TranslocationMove> TranslocationMoveParameter { get; }
+  public interface IAlbaLambdaInterchangeMoveOperator : IVRPMoveOperator {
+    ILookupParameter<LambdaInterchangeMove> LambdaInterchangeMoveParameter { get; }
   }
 }

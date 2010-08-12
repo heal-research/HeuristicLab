@@ -21,29 +21,33 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Data;
-using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
-  [Item("AlbaMoveOperator", "A move operator for an Alba VRP representation.")]
+  [Item("CustomerSwapManipualtor", "An operator which manipulates an Alba VRP representation by swapping two customers.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
   [StorableClass]
-  public abstract class AlbaMoveOperator : VRPMoveOperator {    
+  public sealed class CustomerSwapManipualtor : AlbaManipulator {
     [StorableConstructor]
-    protected AlbaMoveOperator(bool deserializing) : base(deserializing) { }
+    private CustomerSwapManipualtor(bool deserializing) : base(deserializing) { }
 
-    public AlbaMoveOperator() : base() 
-    {
-      AlbaEncoding.RemoveUnusedParameters(Parameters);
+    public CustomerSwapManipualtor()
+      : base() {
     }
 
-    public override IOperation Apply() {
-      IVRPEncoding solution = VRPToursParameter.ActualValue;
-      if (!(solution is AlbaEncoding)) {
-        VRPToursParameter.ActualValue = AlbaEncoding.ConvertFrom(solution, VehiclesParameter.ActualValue.Value);
-      }
+    protected override void Manipulate(IRandom random, AlbaEncoding individual) {
+      int index1, index2, temp;
 
-      return base.Apply();
+      int customer1 = random.Next(Cities);
+      index1 = FindCustomerLocation(customer1, individual);
+
+      int customer2 = random.Next(Cities);
+      index2 = FindCustomerLocation(customer2, individual);
+
+      temp = individual[index1];
+      individual[index1] = individual[index2];
+      individual[index2] = temp;
     }
   }
 }

@@ -106,6 +106,30 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Analyzers\BestVRPSolutionAnalyzer.cs" />
+    <Compile Include="Encodings\Alba\Crossovers\PermutationCrossover.cs" />
+    <Compile Include="Encodings\Alba\Manipulators\SimpleLocalSearchManipulator.cs" />
+    <Compile Include="Encodings\Alba\Manipulators\LambdaInterchangeManipulator.cs" />
+    <Compile Include="Encodings\Alba\Moves\Interfaces\IAlbaLambdaInterchangeMoveOperator.cs" />
+    <Compile Include="Encodings\Alba\Moves\Interfaces\IAlbaSimpleLocalSearchMoveOperator.cs" />
+    <Compile Include="Encodings\Alba\Manipulators\CustomerInversionManipulator.cs" />
+    <Compile Include="Encodings\Alba\Manipulators\CustomerSwapManipulator.cs" />
+    <Compile Include="Encodings\Alba\Manipulators\CustomerInsertionManipulator.cs" />
+    <Compile Include="Encodings\Alba\Manipulators\PermutationManipulator.cs" />
+    <Compile Include="Encodings\Alba\Moves\LambdaInterchange\ExhaustiveLambdaInterchangeMoveGenerator.cs" />
+    <Compile Include="Encodings\Alba\Moves\LambdaInterchange\LambdaInterchangeMove.cs" />
+    <Compile Include="Encodings\Alba\Moves\LambdaInterchange\LambdaInterchangeMoveGenerator.cs" />
+    <Compile Include="Encodings\Alba\Moves\LambdaInterchange\LambdaInterchangeMoveEvaluator.cs" />
+    <Compile Include="Encodings\Alba\Moves\LambdaInterchange\LambdaInterchangeMoveMaker.cs" />
+    <Compile Include="Encodings\Alba\Moves\LambdaInterchange\StochasticLambdaInterchangeSingleMoveGenerator.cs" />
+    <Compile Include="Encodings\Alba\Moves\LambdaInterchange\StochasticLambdaInterchangeMutliMoveGenerator.cs" />
+    <Compile Include="Encodings\Alba\Moves\PermutationMoveOperator.cs" />
+    <Compile Include="Encodings\Alba\Moves\SimpleLocalSearch\StochasticSimpleLocalSearchMutliMoveGenerator.cs" />
+    <Compile Include="Encodings\Alba\Moves\SimpleLocalSearch\StochasticSimpleLocalSearchSingleMoveGenerator.cs" />
+    <Compile Include="Encodings\Alba\Moves\SimpleLocalSearch\SimpleLocalSearchMoveGenerator.cs" />
+    <Compile Include="Encodings\Alba\Moves\SimpleLocalSearch\SimpleLocalSearchMoveEvaluator.cs" />
+    <Compile Include="Encodings\Alba\Moves\SimpleLocalSearch\ExhaustiveSimpleLocalSearchMoveGenerator.cs" />
+    <Compile Include="Encodings\Alba\Moves\SimpleLocalSearch\SimpleLocalSearchMoveMaker.cs" />
+    <Compile Include="Encodings\Alba\Moves\SimpleLocalSearch\SimpleLocalSearchMove.cs" />
     <Compile Include="Encodings\General\Crossovers\MultiVRPManipulator.cs" />
     <Compile Include="Encodings\General\Crossovers\MultiVRPCrossover.cs" />
     <Compile Include="Encodings\General\Creators\RandomCreator.cs" />
@@ -123,7 +147,7 @@
     <Compile Include="Encodings\General\Creators\PushForwardInsertionCreator.cs" />
     <Compile Include="Encodings\General\Creators\DefaultRepresentationCreator.cs" />
     <Compile Include="Encodings\Alba\Crossovers\AlbaCrossover.cs" />
-    <Compile Include="Encodings\Alba\Interfaces\IAlbaTranslocationMoveOperator.cs" />
+    <Compile Include="Encodings\Alba\Moves\Interfaces\IAlbaTranslocationMoveOperator.cs" />
     <Compile Include="Encodings\Alba\Manipulators\AlbaManipulator.cs" />
     <Compile Include="Encodings\Alba\Moves\AlbaMoveOperator.cs" />
     <Compile Include="Encodings\Alba\Moves\AlbaMoveMaker.cs" />

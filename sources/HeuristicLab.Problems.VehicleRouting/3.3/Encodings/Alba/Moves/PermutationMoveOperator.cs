@@ -26,24 +26,30 @@ using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
-  [Item("AlbaMoveOperator", "A move operator for an Alba VRP representation.")]
+  [Item("PermutationMoveOperator", "A move operator for an Alba VRP representation using an inner permutation move operator.")]
   [StorableClass]
-  public abstract class AlbaMoveOperator : VRPMoveOperator {    
-    [StorableConstructor]
-    protected AlbaMoveOperator(bool deserializing) : base(deserializing) { }
+  public abstract class PermutationMoveOperator : AlbaMoveOperator {    
+    [Storable]
+    protected abstract IPermutationMoveOperator PermutationMoveOperatorParameter { get; set; }
 
-    public AlbaMoveOperator() : base() 
+    [StorableConstructor]
+    protected PermutationMoveOperator(bool deserializing) : base(deserializing) { }
+
+    public PermutationMoveOperator()
+      : base() 
     {
-      AlbaEncoding.RemoveUnusedParameters(Parameters);
     }
 
     public override IOperation Apply() {
+      IOperation next = base.Apply();
+      
       IVRPEncoding solution = VRPToursParameter.ActualValue;
-      if (!(solution is AlbaEncoding)) {
-        VRPToursParameter.ActualValue = AlbaEncoding.ConvertFrom(solution, VehiclesParameter.ActualValue.Value);
-      }
 
-      return base.Apply();
+      PermutationMoveOperatorParameter.PermutationParameter.ActualName = VRPToursParameter.ActualName;
+      IAtomicOperation op = this.ExecutionContext.CreateChildOperation(PermutationMoveOperatorParameter);
+      op.Operator.Execute((IExecutionContext)op);
+
+      return next;
     }
   }
 }

@@ -30,10 +30,6 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [StorableClass]
   public sealed class AlbaTranslocationMoveMaker : AlbaMoveMaker, IAlbaTranslocationMoveOperator, IVRPMoveMaker {
     private TranslocationMoveMaker moveMaker;
-    protected override IPermutationMoveOperator PermutationMoveOperatorParameter {
-      get { return moveMaker; }
-      set { moveMaker = value as TranslocationMoveMaker; }
-    }
 
     public ILookupParameter<TranslocationMove> TranslocationMoveParameter {
       get { return moveMaker.TranslocationMoveParameter; }
@@ -57,6 +53,18 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     public AlbaTranslocationMoveMaker()
       : base() {
       moveMaker = new TranslocationMoveMaker();
+    }
+
+    public override IOperation Apply() {
+      IOperation next = base.Apply();
+
+      IVRPEncoding solution = VRPToursParameter.ActualValue;
+
+      moveMaker.PermutationParameter.ActualName = VRPToursParameter.ActualName;
+      IAtomicOperation op = this.ExecutionContext.CreateChildOperation(moveMaker);
+      op.Operator.Execute((IExecutionContext)op);
+
+      return next;
     }
   }
 }

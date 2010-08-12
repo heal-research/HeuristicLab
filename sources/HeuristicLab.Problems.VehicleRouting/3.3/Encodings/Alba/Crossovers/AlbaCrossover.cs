@@ -24,43 +24,27 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Data;
+using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaCrossover", "An operator which crosses two Alba VRP representations.")]
   [StorableClass]
-  public sealed class AlbaCrossover : VRPCrossover {    
-    public IValueLookupParameter<IPermutationCrossover> InnerCrossoverParameter {
-      get { return (IValueLookupParameter<IPermutationCrossover>)Parameters["InnerCrossover"]; }
+  public abstract class AlbaCrossover : VRPCrossover, IStochasticOperator {
+    public ILookupParameter<IRandom> RandomParameter {
+      get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
-
+    
     [StorableConstructor]
-    private AlbaCrossover(bool deserializing) : base(deserializing) { }
+    protected AlbaCrossover(bool deserializing) : base(deserializing) { }
 
     public AlbaCrossover()
       : base() {
-      Parameters.Add(new ValueLookupParameter<IPermutationCrossover>("InnerCrossover", "The permutation crossover.", new EdgeRecombinationCrossover()));
-    
+      Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));
+   
       AlbaEncoding.RemoveUnusedParameters(Parameters);
     }
 
-    private void Crossover() {
-      //note - the inner crossover is called here and the result is converted to an alba representation
-      //some refactoring should be done here in the future - the crossover operation should be called directly
-
-      InnerCrossoverParameter.ActualValue.ParentsParameter.ActualName = ParentsParameter.ActualName;
-      IAtomicOperation op = this.ExecutionContext.CreateOperation(
-        InnerCrossoverParameter.ActualValue, this.ExecutionContext.Scope);
-      op.Operator.Execute((IExecutionContext)op);
-
-      string childName = InnerCrossoverParameter.ActualValue.ChildParameter.ActualName;
-      if (ExecutionContext.Scope.Variables.ContainsKey(childName)) {
-        Permutation permutation = ExecutionContext.Scope.Variables[childName].Value as Permutation;
-        ExecutionContext.Scope.Variables.Remove(childName);
-
-        ChildParameter.ActualValue = new AlbaEncoding(permutation, Cities);
-      } else
-        ChildParameter.ActualValue = null;
-    }
+    protected abstract AlbaEncoding Crossover(IRandom random, AlbaEncoding parent1, AlbaEncoding parent2);
 
     public override IOperation Apply() {
       ItemArray<IVRPEncoding> parents = new ItemArray<IVRPEncoding>(ParentsParameter.ActualValue.Length);
@@ -75,7 +59,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       }
       ParentsParameter.ActualValue = parents;
 
-      Crossover();
+      ChildParameter.ActualValue = 
+        Crossover(RandomParameter.ActualValue, parents[0] as AlbaEncoding, parents[1] as AlbaEncoding);
 
       return base.Apply();
     }

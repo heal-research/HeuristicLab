@@ -29,7 +29,7 @@ using System.Collections.Generic;
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaEncoding", "Represents an Alba encoding of VRP solutions. It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
   [StorableClass]
-  class AlbaEncoding : Permutation, IVRPEncoding {
+  public class AlbaEncoding : Permutation, IVRPEncoding {
     [Storable]
     private int cities;
     

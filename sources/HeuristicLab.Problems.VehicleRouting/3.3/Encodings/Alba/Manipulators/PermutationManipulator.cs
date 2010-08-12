@@ -21,29 +21,32 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Data;
-using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
-  [Item("AlbaMoveOperator", "A move operator for an Alba VRP representation.")]
+  [Item("PermutationManipulator", "An operator which manipulates an Alba VRP representation by using a standard permutation manipulator.")]
   [StorableClass]
-  public abstract class AlbaMoveOperator : VRPMoveOperator {    
-    [StorableConstructor]
-    protected AlbaMoveOperator(bool deserializing) : base(deserializing) { }
-
-    public AlbaMoveOperator() : base() 
-    {
-      AlbaEncoding.RemoveUnusedParameters(Parameters);
+  public sealed class PermutationManipualtor : AlbaManipulator {
+    public IValueLookupParameter<IPermutationManipulator> InnerManipulatorParameter {
+      get { return (IValueLookupParameter<IPermutationManipulator>)Parameters["InnerManipulator"]; }
     }
 
-    public override IOperation Apply() {
-      IVRPEncoding solution = VRPToursParameter.ActualValue;
-      if (!(solution is AlbaEncoding)) {
-        VRPToursParameter.ActualValue = AlbaEncoding.ConvertFrom(solution, VehiclesParameter.ActualValue.Value);
-      }
+    [StorableConstructor]
+    private PermutationManipualtor(bool deserializing) : base(deserializing) { }
 
-      return base.Apply();
+    public PermutationManipualtor()
+      : base() {
+        Parameters.Add(new ValueLookupParameter<IPermutationManipulator>("InnerManipulator", "The permutation manipulator.", new TranslocationManipulator()));
+    }
+
+    protected override void Manipulate(IRandom random, AlbaEncoding individual) {
+      InnerManipulatorParameter.ActualValue.PermutationParameter.ActualName = VRPToursParameter.ActualName;
+
+      IAtomicOperation op = this.ExecutionContext.CreateOperation(
+        InnerManipulatorParameter.ActualValue, this.ExecutionContext.Scope);
+      op.Operator.Execute((IExecutionContext)op);
     }
   }
 }

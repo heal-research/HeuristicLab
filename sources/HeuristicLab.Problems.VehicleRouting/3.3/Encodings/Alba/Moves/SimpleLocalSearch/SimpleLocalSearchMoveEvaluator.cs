@@ -26,27 +26,26 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
 
 namespace HeuristicLab.Problems.VehicleRouting {
-  [Item("AlbaTranslocationMoveEvaluator", "Evaluates a translocation or insertion move (3-opt) for the Alba representation.")]
+  [Item("SimpleLocalSearchMoveEvaluator", "Evaluates a simple local search move for the Alba representation.")]
   [StorableClass]
-  public sealed class AlbaTranslocationMoveEvaluator : VRPMoveEvaluator, IAlbaTranslocationMoveOperator {
-    public ILookupParameter<TranslocationMove> TranslocationMoveParameter {
-      get { return (ILookupParameter<TranslocationMove>)Parameters["TranslocationMove"]; }
-      set { Parameters["TranslocationMove"].ActualValue = value.ActualValue; }
+  public sealed class SimpleLocalSearchMoveEvaluator : VRPMoveEvaluator, IAlbaSimpleLocalSearchMoveOperator {
+    public ILookupParameter<SimpleLocalSearchMove> SimpleLocalSearchMoveParameter {
+      get { return (ILookupParameter<SimpleLocalSearchMove>)Parameters["SimpleLocalSearchMove"]; }
     }
 
     [StorableConstructor]
-    private AlbaTranslocationMoveEvaluator(bool deserializing) : base(deserializing) { }
+    private SimpleLocalSearchMoveEvaluator(bool deserializing) : base(deserializing) { }
 
-    public AlbaTranslocationMoveEvaluator()
+    public SimpleLocalSearchMoveEvaluator()
       : base() {
-      Parameters.Add(new LookupParameter<TranslocationMove>("TranslocationMove", "The move to evaluate."));
+      Parameters.Add(new LookupParameter<SimpleLocalSearchMove>("SimpleLocalSearchMove", "The move to evaluate."));
     }
 
     protected override TourEvaluation GetMoveQuality() {
-      TranslocationMove move = TranslocationMoveParameter.ActualValue;
+      SimpleLocalSearchMove move = SimpleLocalSearchMoveParameter.ActualValue;
       //perform move
       AlbaEncoding newSolution = VRPToursParameter.ActualValue.Clone() as AlbaEncoding;
-      TranslocationManipulator.Apply(newSolution, move.Index1, move.Index2, move.Index3);
+      SimpleLocalSearchMoveMaker.Apply(newSolution, move);
 
       return VRPEvaluator.Evaluate(
         newSolution,

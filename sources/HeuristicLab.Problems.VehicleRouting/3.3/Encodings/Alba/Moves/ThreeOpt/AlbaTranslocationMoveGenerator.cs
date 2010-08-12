@@ -30,7 +30,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaTranslocationMoveGenerator", "An operator which generates translocation moves for the Alba representation.")]
   [StorableClass]
-  public sealed class AlbaTranslocationMoveGenerator : AlbaMoveOperator, IAlbaTranslocationMoveOperator, IMultiMoveGenerator {
+  public sealed class AlbaTranslocationMoveGenerator : PermutationMoveOperator, IAlbaTranslocationMoveOperator, IMultiMoveGenerator {
     public IValueLookupParameter<TranslocationMoveGenerator> TranslocationMoveGeneratorParameter {
       get { return (IValueLookupParameter<TranslocationMoveGenerator>)Parameters["TranslocationMoveGenerator"]; }
     }
@@ -84,37 +84,6 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
 
       Permutation permutation = VRPToursParameter.ActualValue as Permutation;
       string moveName = TranslocationMoveGeneratorParameter.ActualValue.TranslocationMoveParameter.Name;
-
-      List<Scope> toBeDeleted = new List<Scope>();
-      foreach (Scope scope in this.ExecutionContext.Scope.SubScopes) {
-        if (scope.Variables.ContainsKey(moveName)) {
-          TranslocationMove move = scope.Variables[moveName].Value as TranslocationMove;
-
-          if (move != null) {
-            bool criteria1 = true;
-            if (move.Index1 - 1 >= 0 &&
-              move.Index3 - 1 >= 0)
-              criteria1 = (permutation[move.Index1] >= Cities &&
-                permutation[move.Index1 - 1] >= Cities &&
-                permutation[move.Index3 - 1] >= Cities);
-
-            int index3 = move.Index3 + (move.Index2 - move.Index1) + 1;
-            bool criteria2 = true;
-            if (move.Index2 + 1 < permutation.Length &&
-              index3 < permutation.Length)
-              criteria2 = (permutation[move.Index2] >= Cities &&
-                permutation[move.Index2 + 1] >= Cities &&
-                permutation[index3] >= Cities);
-
-            if (criteria1 && criteria2)
-              toBeDeleted.Add(scope);
-          }
-        }
-      }
-
-      foreach (Scope scope in toBeDeleted) {
-        this.ExecutionContext.Scope.SubScopes.Remove(scope);
-      }
 
       return successor;
     }
