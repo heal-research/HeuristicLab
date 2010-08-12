@@ -315,10 +315,10 @@ namespace HeuristicLab.Optimization.Views {
       else {
         DeregisterRunEvents(e.Items);
         foreach (IRun item in e.Items) {
-          foreach (ListViewItem listViewItem in GetListViewItemsForItem(item)) {
-            RemoveListViewItem(listViewItem);
-            break;
-          }
+          //remove only the first matching ListViewItem, because the IRun could be contained multiple times in the ItemCollection
+          ListViewItem listviewItem = GetListViewItemsForItem(item).FirstOrDefault();
+          if (listviewItem != null)
+            RemoveListViewItem(listviewItem);
         }
         analyzeRunsToolStripDropDownButton.Enabled = itemsListView.Items.Count > 0;
         clearButton.Enabled = itemsListView.Items.Count > 0 && !Content.IsReadOnly && !ReadOnly;
@@ -331,10 +331,10 @@ namespace HeuristicLab.Optimization.Views {
       else {
         DeregisterRunEvents(e.OldItems);
         foreach (IRun item in e.OldItems) {
-          foreach (ListViewItem listViewItem in GetListViewItemsForItem(item)) {
-            RemoveListViewItem(listViewItem);
-            break;
-          }
+          //remove only the first matching ListViewItem, because the IRun could be contained multiple times in the ItemCollection
+          ListViewItem listviewItem = GetListViewItemsForItem(item).FirstOrDefault();
+          if (listviewItem != null)
+            RemoveListViewItem(listviewItem);
         }
         RegisterRunEvents(e.Items);
         foreach (IRun item in e.Items)

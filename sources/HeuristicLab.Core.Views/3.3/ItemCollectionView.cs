@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Collections;
 using HeuristicLab.MainForm;
@@ -270,10 +271,10 @@ namespace HeuristicLab.Core.Views {
         Invoke(new CollectionItemsChangedEventHandler<T>(Content_ItemsRemoved), sender, e);
       else {
         foreach (T item in e.Items) {
-          foreach (ListViewItem listViewItem in GetListViewItemsForItem(item)) {
-            RemoveListViewItem(listViewItem);
-            break;
-          }
+          //remove only the first matching ListViewItem, because the IItem could be contained multiple times in the ItemCollection
+          ListViewItem listviewItem = GetListViewItemsForItem(item).FirstOrDefault();
+          if (listviewItem != null)
+            RemoveListViewItem(listviewItem);
         }
       }
     }
@@ -282,10 +283,10 @@ namespace HeuristicLab.Core.Views {
         Invoke(new CollectionItemsChangedEventHandler<T>(Content_CollectionReset), sender, e);
       else {
         foreach (T item in e.OldItems) {
-          foreach (ListViewItem listViewItem in GetListViewItemsForItem(item)) {
-            RemoveListViewItem(listViewItem);
-            break;
-          }
+          //remove only the first matching ListViewItem, because the IItem could be contained multiple times in the ItemCollection
+          ListViewItem listviewItem = GetListViewItemsForItem(item).FirstOrDefault();
+          if (listviewItem != null)
+            RemoveListViewItem(listviewItem);
         }
         foreach (T item in e.Items)
           AddListViewItem(CreateListViewItem(item));
