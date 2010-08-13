@@ -28,7 +28,7 @@ using HeuristicLab.Parameters;
 using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
-  [Item("ExhaustiveLambdaInterchangeMoveGenerator", "Generates all possible lambda interchange moves from a given Alba VRP encoding.")]
+  [Item("ExhaustiveLambdaInterchangeMoveGenerator", "Generates all possible lambda interchange moves from a given VRP encoding.")]
   [StorableClass]
   public sealed class ExhaustiveLambdaInterchangeMoveGenerator : LambdaInterchangeMoveGenerator, IExhaustiveMoveGenerator, IAlbaLambdaInterchangeMoveOperator {
     [StorableConstructor]

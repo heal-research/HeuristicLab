@@ -27,7 +27,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
-  [Item("PotvinManipulator", "A VRP manipulation operation on a Potvin encoding.")]
+  [Item("PotvinManipulator", "A VRP manipulation operation.")]
   [StorableClass]
   public abstract class PotvinManipulator : VRPManipulator, IStochasticOperator {
     public ILookupParameter<IRandom> RandomParameter {

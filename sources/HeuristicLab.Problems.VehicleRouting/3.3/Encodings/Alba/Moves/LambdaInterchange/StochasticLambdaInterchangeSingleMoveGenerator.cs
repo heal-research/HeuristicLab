@@ -29,7 +29,7 @@ using System.Collections.Generic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
-  [Item("StochasticLambdaInterchangeSingleMoveGenerator", "Generates one random lambda interchange move from a given Alba VRP encoding.")]
+  [Item("StochasticLambdaInterchangeSingleMoveGenerator", "Generates one random lambda interchange move from a given VRP encoding.")]
   [StorableClass]
   public sealed class StochasticLambdaInterchangeSingleMoveGenerator : LambdaInterchangeMoveGenerator,
     IStochasticOperator, ISingleMoveGenerator, IAlbaLambdaInterchangeMoveOperator, IMultiVRPMoveGenerator {

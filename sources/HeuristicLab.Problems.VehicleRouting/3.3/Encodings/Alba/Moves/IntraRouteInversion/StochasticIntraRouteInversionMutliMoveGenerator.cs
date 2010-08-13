@@ -29,9 +29,9 @@ using System.Collections.Generic;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
-  [Item("StochasticLambdaInterchangeMultiMoveGenerator", "Generates multiple random lambda interchange moves from a given VRP encoding.")]
+  [Item("StochasticIntraRouteInversionMultiMoveGenerator", "Generates multiple random intra route inversion moves from a given VRP encoding.")]
   [StorableClass]
-  public sealed class StochasticLambdaInterchangeMultiMoveGenerator : LambdaInterchangeMoveGenerator, IStochasticOperator, IMultiMoveGenerator, IAlbaLambdaInterchangeMoveOperator {
+  public sealed class StochasticIntraRouteInversionMultiMoveGenerator : IntraRouteInversionMoveGenerator, IStochasticOperator, IMultiMoveGenerator, IAlbaIntraRouteInversionMoveOperator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
@@ -41,21 +41,21 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     }
     
     [StorableConstructor]
-    private StochasticLambdaInterchangeMultiMoveGenerator(bool deserializing) : base(deserializing) { }
+    private StochasticIntraRouteInversionMultiMoveGenerator(bool deserializing) : base(deserializing) { }
 
-    public StochasticLambdaInterchangeMultiMoveGenerator()
+    public StochasticIntraRouteInversionMultiMoveGenerator()
       : base() {
         Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator."));
         Parameters.Add(new ValueLookupParameter<IntValue>("SampleSize", "The number of moves to generate."));
     }
 
-    protected override LambdaInterchangeMove[] GenerateMoves(AlbaEncoding individual, int lambda) {
+    protected override IntraRouteInversionMove[] GenerateMoves(AlbaEncoding individual) {
       int sampleSize = SampleSizeParameter.ActualValue.Value;
 
-      LambdaInterchangeMove[] moves = new LambdaInterchangeMove[sampleSize];
+      IntraRouteInversionMove[] moves = new IntraRouteInversionMove[sampleSize];
       for (int i = 0; i < sampleSize; i++) {
-        moves[i] = StochasticLambdaInterchangeSingleMoveGenerator.Apply(
-          individual, Cities, lambda, RandomParameter.ActualValue);
+        moves[i] = StochasticIntraRouteInversionSingleMoveGenerator.Apply(
+          individual, Cities, RandomParameter.ActualValue);
       }
 
       return moves;

@@ -26,49 +26,39 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
 using HeuristicLab.Parameters;
 using System.Collections.Generic;
-using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
-  [Item("LambdaInterchangeMoveGenerator", "Generates lambda interchange moves from a given VRP encoding.")]
+  [Item("IntraRouteInversionMoveGenerator", "Generates intra route inversion moves from a given VRP encoding.")]
   [StorableClass]
-  public abstract class LambdaInterchangeMoveGenerator : AlbaMoveOperator, IExhaustiveMoveGenerator, IAlbaLambdaInterchangeMoveOperator {
-    #region IAlbaLambdaInterchangeMoveOperator Members
-
-    public ILookupParameter<LambdaInterchangeMove> LambdaInterchangeMoveParameter {
-      get { return (ILookupParameter<LambdaInterchangeMove>)Parameters["LambdaInterchangeMove"]; }
+  public abstract class IntraRouteInversionMoveGenerator : AlbaMoveOperator, IExhaustiveMoveGenerator, IAlbaIntraRouteInversionMoveOperator {
+    public ILookupParameter<IntraRouteInversionMove> IntraRouteInversionMoveParameter {
+      get { return (ILookupParameter<IntraRouteInversionMove>)Parameters["IntraRouteInversionMove"]; }
     }
 
     protected ScopeParameter CurrentScopeParameter {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }
     }
 
-    public IValueParameter<IntValue> LambdaParameter {
-      get { return (IValueParameter<IntValue>)Parameters["Lambda"]; }
-    }
-
-    #endregion
-
     [StorableConstructor]
-    protected LambdaInterchangeMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected IntraRouteInversionMoveGenerator(bool deserializing) : base(deserializing) { }
 
-    public LambdaInterchangeMoveGenerator()
+    public IntraRouteInversionMoveGenerator()
       : base() {
-        Parameters.Add(new LookupParameter<LambdaInterchangeMove>("LambdaInterchangeMove", "The moves that should be generated in subscopes."));
+        Parameters.Add(new LookupParameter<IntraRouteInversionMove>("IntraRouteInversionMove", "The moves that should be generated in subscopes."));
         Parameters.Add(new ScopeParameter("CurrentScope", "The current scope where the moves should be added as subscopes."));
-        Parameters.Add(new ValueParameter<IntValue>("Lambda", "The lambda value.", new IntValue(1)));
     }
 
-    protected abstract LambdaInterchangeMove[] GenerateMoves(AlbaEncoding individual, int lambda);
+    protected abstract IntraRouteInversionMove[] GenerateMoves(AlbaEncoding individual);
 
     public override IOperation Apply() {
       IOperation next = base.Apply();
 
       AlbaEncoding individual = VRPToursParameter.ActualValue as AlbaEncoding;
-      LambdaInterchangeMove[] moves = GenerateMoves(individual, LambdaParameter.Value.Value);
+      IntraRouteInversionMove[] moves = GenerateMoves(individual);
       Scope[] moveScopes = new Scope[moves.Length];
       for (int i = 0; i < moveScopes.Length; i++) {
         moveScopes[i] = new Scope(i.ToString());
-        moveScopes[i].Variables.Add(new Variable(LambdaInterchangeMoveParameter.ActualName, moves[i]));
+        moveScopes[i].Variables.Add(new Variable(IntraRouteInversionMoveParameter.ActualName, moves[i]));
       }
       CurrentScopeParameter.ActualValue.SubScopes.AddRange(moveScopes);
 

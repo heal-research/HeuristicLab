@@ -25,12 +25,11 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
-  [Item("LambdaInterchangeMoveMaker", "Peforms a lambda interchange moves on a given VRP encoding and updates the quality. It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
+  [Item("IntraRouteInversionMoveMaker", "Peforms the SLS move on a given VRP encoding and updates the quality.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
   [StorableClass]
-  public class LambdaInterchangeMoveMaker : AlbaMoveMaker, IAlbaLambdaInterchangeMoveOperator, IMoveMaker {
+  public class IntraRouteInversionMoveMaker : AlbaMoveMaker, IAlbaIntraRouteInversionMoveOperator, IMoveMaker {
     public override bool CanChangeName {
       get { return false; }
     }
@@ -40,25 +39,22 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     public ILookupParameter<DoubleValue> MoveQualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["MoveQuality"]; }
     }
-    public ILookupParameter<LambdaInterchangeMove> LambdaInterchangeMoveParameter {
-      get { return (ILookupParameter<LambdaInterchangeMove>)Parameters["LambdaInterchangeMove"]; }
+    public ILookupParameter<IntraRouteInversionMove> IntraRouteInversionMoveParameter {
+      get { return (ILookupParameter<IntraRouteInversionMove>)Parameters["IntraRouteInversionMove"]; }
     }
 
     [StorableConstructor]
-    private LambdaInterchangeMoveMaker(bool deserializing) : base(deserializing) { }
+    private IntraRouteInversionMoveMaker(bool deserializing) : base(deserializing) { }
 
-    public LambdaInterchangeMoveMaker()
+    public IntraRouteInversionMoveMaker()
       : base() {
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of the solution."));
-      Parameters.Add(new LookupParameter<LambdaInterchangeMove>("LambdaInterchangeMove", "The move to make."));
+      Parameters.Add(new LookupParameter<IntraRouteInversionMove>("IntraRouteInversionMove", "The move to make."));
       Parameters.Add(new LookupParameter<DoubleValue>("MoveQuality", "The relative quality of the move."));
     }
 
-    public static void Apply(AlbaEncoding solution, LambdaInterchangeMove move) {
-      LambdaInterchangeManipulator.Apply(
-        solution,
-        move.Tour1, move.Position1, move.Length1,
-        move.Tour2, move.Position2, move.Length2);
+    public static void Apply(AlbaEncoding solution, IntraRouteInversionMove move) {
+      IntraRouteInversionManipulator.Apply(solution, move.Index1, move.Index2);
     }
 
     public override IOperation Apply() {
@@ -66,7 +62,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       
       AlbaEncoding solution = VRPToursParameter.ActualValue as AlbaEncoding;
 
-      LambdaInterchangeMove move = LambdaInterchangeMoveParameter.ActualValue;
+      IntraRouteInversionMove move = IntraRouteInversionMoveParameter.ActualValue;
       DoubleValue moveQuality = MoveQualityParameter.ActualValue;
       DoubleValue quality = QualityParameter.ActualValue;
      

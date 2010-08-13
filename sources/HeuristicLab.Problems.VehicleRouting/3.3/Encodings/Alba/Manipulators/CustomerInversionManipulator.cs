@@ -27,13 +27,13 @@ using HeuristicLab.Data;
 using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
-  [Item("CustomerInversionManipualtor", "An operator which manipulates an Alba VRP representation by inverting the order the customers are visited.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
+  [Item("CustomerInversionManipulator", "An operator which manipulates a VRP representation by inverting the order the customers are visited.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
   [StorableClass]
-  public sealed class CustomerInversionManipualtor : AlbaManipulator {
+  public sealed class CustomerInversionManipulator : AlbaManipulator {
     [StorableConstructor]
-    private CustomerInversionManipualtor(bool deserializing) : base(deserializing) { }
+    private CustomerInversionManipulator(bool deserializing) : base(deserializing) { }
 
-    public CustomerInversionManipualtor()
+    public CustomerInversionManipulator()
       : base() {
     }
 

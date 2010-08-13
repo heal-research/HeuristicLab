@@ -27,7 +27,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
-  [Item("AlbaCrossover", "An operator which crosses two Alba VRP representations.")]
+  [Item("AlbaCrossover", "An operator which crosses two VRP representations.")]
   [StorableClass]
   public abstract class AlbaCrossover : VRPCrossover, IStochasticOperator {
     public ILookupParameter<IRandom> RandomParameter {

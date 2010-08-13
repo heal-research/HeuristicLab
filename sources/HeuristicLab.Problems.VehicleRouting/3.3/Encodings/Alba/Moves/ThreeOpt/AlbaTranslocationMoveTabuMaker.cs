@@ -26,7 +26,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
-  [Item("AlbaTranslocationMoveTabuMaker", "An operator which makes translocation moves tabu for the Alba representation.")]
+  [Item("AlbaTranslocationMoveTabuMaker", "An operator which makes translocation moves tabu for a VRP representation.")]
   [StorableClass]
   public sealed class AlbaTranslocationMoveTabuMaker : PermutationMoveOperator, IAlbaTranslocationMoveOperator, ITabuMaker {
     private TranslocationMoveTabuMaker moveTabuMaker;

@@ -28,7 +28,7 @@ using HeuristicLab.Optimization;
 using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
-  [Item("PotvinCrossover", "A VRP crossover operation on a Potvin encoding.")]
+  [Item("PotvinCrossover", "A VRP crossover operation.")]
   [StorableClass]
   public abstract class PotvinCrossover : VRPCrossover, IStochasticOperator {
     public ILookupParameter<IRandom> RandomParameter {

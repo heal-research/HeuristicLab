@@ -27,7 +27,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
-  [Item("AlbaManipulator", "An operator which manipulates an Alba VRP representation.")]
+  [Item("AlbaManipulator", "An operator which manipulates a VRP representation.")]
   [StorableClass]
   public abstract class AlbaManipulator : VRPManipulator, IStochasticOperator {
     public ILookupParameter<IRandom> RandomParameter {

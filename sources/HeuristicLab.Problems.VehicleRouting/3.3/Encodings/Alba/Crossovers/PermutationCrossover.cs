@@ -26,7 +26,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
-  [Item("PermutationCrossover", "An operator which crosses two Alba VRP representations using a standard permutation operator.")]
+  [Item("PermutationCrossover", "An operator which crosses two VRP representations using a standard permutation operator.")]
   [StorableClass]
   public sealed class PermutationCrossover : AlbaCrossover {    
     public IValueLookupParameter<IPermutationCrossover> InnerCrossoverParameter {

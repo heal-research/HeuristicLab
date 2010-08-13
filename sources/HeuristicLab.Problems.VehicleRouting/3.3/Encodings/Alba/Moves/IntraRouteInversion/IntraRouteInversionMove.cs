@@ -23,63 +23,31 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Common;
-using System.Collections.Generic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
-  [Item("InversionMove", "Item that describes a lambda move on a VRP representation.")]
+  [Item("InversionMove", "Item that describes an intra route inversion move on a VRP representation.")]
   [StorableClass]
-  public class LambdaInterchangeMove: Item, IVRPMove {
-    [Storable]
-    public int Tour1 { get; protected set; }
-
-    [Storable]
-    public int Position1 { get; protected set; }
-
-    [Storable]
-    public int Length1 { get; protected set; }
-
-    [Storable]
-    public int Tour2 { get; protected set; }
-
-    [Storable]
-    public int Position2 { get; protected set; }
-
-    [Storable]
-    public int Length2 { get; protected set; }
-    
-    public LambdaInterchangeMove(): base() {
-      Tour1 = -1;
-      Position1 = -1;
-      Length1 = -1;
-
-      Tour2 = -1;
-      Position2 = -1;
-      Length2 = -1;
+  public class IntraRouteInversionMove : TwoIndexMove, IVRPMove {
+    public IntraRouteInversionMove()
+      : base() {
     }
 
-    public LambdaInterchangeMove(int tour1, int position1, int length1, 
-      int tour2, int position2, int length2) {
-        Tour1 = tour1;
-        Position1 = position1;
-        Length1 = length1;
+    public IntraRouteInversionMove(int index1, int index2)
+      : base(index1, index2, null) {
+    }
 
-        Tour2 = tour2;
-        Position2 = position2;
-        Length2 = length2;
+    public IntraRouteInversionMove(int index1, int index2, AlbaEncoding permutation)
+      : base(index1, index2, permutation) {
     }
 
     public override IDeepCloneable Clone(HeuristicLab.Common.Cloner cloner) {
-      LambdaInterchangeMove clone = new LambdaInterchangeMove();
+      IntraRouteInversionMove clone = new IntraRouteInversionMove(
+        Index1, Index2);
 
-      clone.Tour1 = Tour1;
-      clone.Position1 = Position1;
-      clone.Length1 = Length1;
-
-      clone.Tour2 = Tour2;
-      clone.Position2 = Position2;
-      clone.Length2 = Length2;
+      if (Permutation != null)
+        clone.Permutation = (AlbaEncoding)cloner.Clone(Permutation);
 
       cloner.RegisterClonedObject(this, clone);
       return clone;
@@ -94,14 +62,14 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       DoubleValue fleetUsageFactor, DoubleValue timeFactor, DoubleValue distanceFactor,
       DoubleValue overloadPenalty, DoubleValue tardinessPenalty,
       ILookupParameter<DoubleMatrix> distanceMatrix, Data.BoolValue useDistanceMatrix) {
-        return LambdaInterchangeMoveEvaluator.GetMoveQuality(individual as AlbaEncoding, this,
+        return IntraRouteInversionMoveEvaluator.GetMoveQuality(individual as AlbaEncoding, this,
           dueTimeArray, serviceTimeArray, readyTimeArray, demandArray, capacity,
           coordinates, fleetUsageFactor, timeFactor, distanceFactor,
           overloadPenalty, tardinessPenalty, distanceMatrix, useDistanceMatrix);
     }
 
     public void MakeMove(IRandom random, IVRPEncoding individual) {
-      LambdaInterchangeMoveMaker.Apply(individual as AlbaEncoding, this);
+      IntraRouteInversionMoveMaker.Apply(individual as AlbaEncoding, this);
     }
 
     #endregion

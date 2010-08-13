@@ -27,7 +27,7 @@ using HeuristicLab.Data;
 using System;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
-  [Item("LambdaInterchangeManipulator", "An operator which applies the lambda interchange operation to an Alba VRP representation.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
+  [Item("LambdaInterchangeManipulator", "An operator which applies the lambda interchange operation to a VRP representation. It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
   [StorableClass]
   public sealed class LambdaInterchangeManipulator : AlbaManipulator {
     public IValueParameter<IntValue> LambdaParameter {

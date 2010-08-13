@@ -26,13 +26,13 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
-  [Item("CustomerSwapManipualtor", "An operator which manipulates an Alba VRP representation by swapping two customers.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
+  [Item("CustomerSwapManipulator", "An operator which manipulates a VRP representation by swapping two customers.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
   [StorableClass]
-  public sealed class CustomerSwapManipualtor : AlbaManipulator {
+  public sealed class CustomerSwapManipulator : AlbaManipulator {
     [StorableConstructor]
-    private CustomerSwapManipualtor(bool deserializing) : base(deserializing) { }
+    private CustomerSwapManipulator(bool deserializing) : base(deserializing) { }
 
-    public CustomerSwapManipualtor()
+    public CustomerSwapManipulator()
       : base() {
     }
 

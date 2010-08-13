@@ -27,7 +27,7 @@ using HeuristicLab.Data;
 using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
-  [Item("TwoLevelExchangeManipulator", "The 2M operator which manipulates a Potvin VRP representation.  It is implemented as described in Potvin, J.-Y. and Bengio, S. (1996). The Vehicle Routing Problem with Time Windows - Part II: Genetic Search. INFORMS Journal of Computing, 8:165–172.")]
+  [Item("TwoLevelExchangeManipulator", "The 2M operator which manipulates a VRP representation.  It is implemented as described in Potvin, J.-Y. and Bengio, S. (1996). The Vehicle Routing Problem with Time Windows - Part II: Genetic Search. INFORMS Journal of Computing, 8:165–172.")]
   [StorableClass]
   public sealed class TwoLevelExchangeManipulator : PotvinManipulator {
     [StorableConstructor]

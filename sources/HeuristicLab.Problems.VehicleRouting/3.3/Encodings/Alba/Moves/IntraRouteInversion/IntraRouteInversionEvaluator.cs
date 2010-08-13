@@ -27,42 +27,42 @@ using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting {
-  [Item("LambdaInterchangeMoveEvaluator", "Evaluates a lamnbda interchange move for a VRP representation.")]
+  [Item("IntraRouteInversionMoveEvaluator", "Evaluates a intra route inversion move for a VRP representation.")]
   [StorableClass]
-  public sealed class LambdaInterchangeMoveEvaluator : VRPMoveEvaluator, IAlbaLambdaInterchangeMoveOperator {
-    public ILookupParameter<LambdaInterchangeMove> LambdaInterchangeMoveParameter {
-      get { return (ILookupParameter<LambdaInterchangeMove>)Parameters["LambdaInterchangeMove"]; }
+  public sealed class IntraRouteInversionMoveEvaluator : VRPMoveEvaluator, IAlbaIntraRouteInversionMoveOperator {
+    public ILookupParameter<IntraRouteInversionMove> IntraRouteInversionMoveParameter {
+      get { return (ILookupParameter<IntraRouteInversionMove>)Parameters["IntraRouteInversionMove"]; }
     }
 
     [StorableConstructor]
-    private LambdaInterchangeMoveEvaluator(bool deserializing) : base(deserializing) { }
+    private IntraRouteInversionMoveEvaluator(bool deserializing) : base(deserializing) { }
 
-    public LambdaInterchangeMoveEvaluator()
+    public IntraRouteInversionMoveEvaluator()
       : base() {
-      Parameters.Add(new LookupParameter<LambdaInterchangeMove>("LambdaInterchangeMove", "The move to evaluate."));
+        Parameters.Add(new LookupParameter<IntraRouteInversionMove>("IntraRouteInversionMove", "The move to evaluate."));
     }
 
-    public static TourEvaluation GetMoveQuality(AlbaEncoding individual, LambdaInterchangeMove move, 
-      DoubleArray dueTimeArray, DoubleArray serviceTimeArray, DoubleArray readyTimeArray, 
-      DoubleArray demandArray, DoubleValue capacity, DoubleMatrix coordinates, 
-      DoubleValue fleetUsageFactor, DoubleValue timeFactor, DoubleValue distanceFactor, 
+    public static TourEvaluation GetMoveQuality(AlbaEncoding individual, IntraRouteInversionMove move,
+      DoubleArray dueTimeArray, DoubleArray serviceTimeArray, DoubleArray readyTimeArray,
+      DoubleArray demandArray, DoubleValue capacity, DoubleMatrix coordinates,
+      DoubleValue fleetUsageFactor, DoubleValue timeFactor, DoubleValue distanceFactor,
       DoubleValue overloadPenalty, DoubleValue tardinessPenalty,
       ILookupParameter<DoubleMatrix> distanceMatrix, Data.BoolValue useDistanceMatrix) {
       AlbaEncoding newSolution = individual.Clone() as AlbaEncoding;
-      LambdaInterchangeMoveMaker.Apply(newSolution, move);
+      IntraRouteInversionMoveMaker.Apply(newSolution, move);
 
       return VRPEvaluator.Evaluate(
-        newSolution, dueTimeArray, serviceTimeArray, readyTimeArray, 
-        demandArray, capacity, fleetUsageFactor, timeFactor, distanceFactor, 
+        newSolution, dueTimeArray, serviceTimeArray, readyTimeArray,
+        demandArray, capacity, fleetUsageFactor, timeFactor, distanceFactor,
         overloadPenalty, tardinessPenalty, coordinates, distanceMatrix, useDistanceMatrix);
     }
 
     protected override TourEvaluation GetMoveQuality() {
       return GetMoveQuality(
-        VRPToursParameter.ActualValue as AlbaEncoding, LambdaInterchangeMoveParameter.ActualValue, 
+        VRPToursParameter.ActualValue as AlbaEncoding, IntraRouteInversionMoveParameter.ActualValue,
         DueTimeParameter.ActualValue, ServiceTimeParameter.ActualValue, ReadyTimeParameter.ActualValue,
-        DemandParameter.ActualValue, CapacityParameter.ActualValue, CoordinatesParameter.ActualValue, 
-        FleetUsageFactor.ActualValue, TimeFactor.ActualValue, DistanceFactor.ActualValue, OverloadPenalty.ActualValue, 
+        DemandParameter.ActualValue, CapacityParameter.ActualValue, CoordinatesParameter.ActualValue,
+        FleetUsageFactor.ActualValue, TimeFactor.ActualValue, DistanceFactor.ActualValue, OverloadPenalty.ActualValue,
         TardinessPenalty.ActualValue, DistanceMatrixParameter, UseDistanceMatrixParameter.ActualValue);
     }
   }
