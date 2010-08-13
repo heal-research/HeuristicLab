@@ -139,7 +139,6 @@
     <Compile Include="Encodings\General\Moves\MultiVRPMoveOperator\MultiVRPMoveEvaluator.cs" />
     <Compile Include="Encodings\General\Moves\MultiVRPMoveOperator\MultiVRPMoveMaker.cs" />
     <Compile Include="Encodings\General\Moves\MultiVRPMoveOperator\MultiVRPMoveGenerator.cs" />
-    <Compile Include="Encodings\Potvin\Crossovers\SequenceBasedCrossover2.cs" />
     <Compile Include="Encodings\Potvin\Crossovers\RouteBasedCrossover.cs" />
     <Compile Include="Encodings\Potvin\Crossovers\SequenceBasedCrossover.cs" />
     <Compile Include="Encodings\Potvin\Crossovers\PotvinCrossover.cs" />
