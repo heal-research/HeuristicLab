@@ -102,6 +102,7 @@ namespace HeuristicLab.Data.Views {
       this.dataGridView.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView_ColumnHeaderMouseClick);
       this.dataGridView.Scroll += new System.Windows.Forms.ScrollEventHandler(this.dataGridView_Scroll);
       this.dataGridView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dataGridView_KeyDown);
+      this.dataGridView.MouseClick += new System.Windows.Forms.MouseEventHandler(dataGridView_MouseClick);
       this.dataGridView.Resize += new System.EventHandler(this.dataGridView_Resize);
       // 
       // errorProvider

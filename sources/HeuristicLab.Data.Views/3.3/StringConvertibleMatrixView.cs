@@ -377,9 +377,6 @@ namespace HeuristicLab.Data.Views {
             if (newSortOrder != SortOrder.None)
               sortedColumnIndizes.Add(new KeyValuePair<int, SortOrder>(e.ColumnIndex, newSortOrder));
           Sort();
-        } else if (e.Button == MouseButtons.Right) {
-          if (Content.ColumnNames.Count() != 0)
-            contextMenu.Show(MousePosition);
         }
       }
     }
@@ -464,6 +461,11 @@ namespace HeuristicLab.Data.Views {
       }
     }
 
+    private void dataGridView_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e) {
+      if (Content == null) return;
+      if (e.Button == MouseButtons.Right && Content.ColumnNames.Count() != 0)
+        contextMenu.Show(MousePosition);
+    }
     private void ShowHideColumns_Click(object sender, EventArgs e) {
       new ColumnsVisibilityDialog(this.dataGridView.Columns.Cast<DataGridViewColumn>()).ShowDialog();
     }
