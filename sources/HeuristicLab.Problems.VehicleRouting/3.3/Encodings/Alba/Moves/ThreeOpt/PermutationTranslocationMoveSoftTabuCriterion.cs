@@ -26,41 +26,41 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
-  [Item("AlbaTranslocationMoveTabuMaker", "An operator which makes translocation moves tabu for a VRP representation.")]
+  [Item("PermutationTranslocationMoveSoftTabuCriterion", "An operator which checks if translocation moves are tabu using a soft criterion for a VRP representation.")]
   [StorableClass]
-  public sealed class AlbaTranslocationMoveTabuMaker : PermutationMoveOperator, IAlbaTranslocationMoveOperator, ITabuMaker {
-    private TranslocationMoveTabuMaker moveTabuMaker;
+  public sealed class PermutationTranslocationMoveSoftTabuCriterion : PermutationMoveOperator, IAlbaTranslocationMoveOperator, ITabuChecker {
+    private TranslocationMoveSoftTabuCriterion tabuChecker;
     protected override IPermutationMoveOperator PermutationMoveOperatorParameter {
-      get { return moveTabuMaker; }
-      set { moveTabuMaker = value as TranslocationMoveTabuMaker; }
-    }
-
-    public ILookupParameter<Permutation> PermutationParameter {
-      get { return moveTabuMaker.PermutationParameter; }
+      get { return tabuChecker; }
+      set { tabuChecker = value as TranslocationMoveSoftTabuCriterion; }
     }
 
     public ILookupParameter<TranslocationMove> TranslocationMoveParameter {
-      get { return moveTabuMaker.TranslocationMoveParameter; }
+      get { return tabuChecker.TranslocationMoveParameter; }
+    }
+
+    public ILookupParameter<Permutation> PermutationParameter {
+      get { return tabuChecker.PermutationParameter; }
+    }
+
+    public ILookupParameter<BoolValue> MoveTabuParameter {
+      get { return tabuChecker.MoveTabuParameter; }
     }
 
     public ILookupParameter<DoubleValue> MoveQualityParameter {
-      get { return moveTabuMaker.MoveQualityParameter; }
-    }
-
-    public ILookupParameter<DoubleValue> QualityParameter {
-      get { return moveTabuMaker.QualityParameter; }
+      get { return tabuChecker.MoveQualityParameter; }
     }
 
     public IValueLookupParameter<BoolValue> MaximizationParameter {
-      get { return moveTabuMaker.MaximizationParameter; }
+      get { return tabuChecker.MaximizationParameter; }
     }
 
     [StorableConstructor]
-    private AlbaTranslocationMoveTabuMaker(bool deserializing) : base(deserializing) { }
+    private PermutationTranslocationMoveSoftTabuCriterion(bool deserializing) : base(deserializing) { }
 
-    public AlbaTranslocationMoveTabuMaker()
+    public PermutationTranslocationMoveSoftTabuCriterion()
       : base() {
-      moveTabuMaker = new TranslocationMoveTabuMaker();
+      tabuChecker = new TranslocationMoveSoftTabuCriterion();
     }
   }
 }

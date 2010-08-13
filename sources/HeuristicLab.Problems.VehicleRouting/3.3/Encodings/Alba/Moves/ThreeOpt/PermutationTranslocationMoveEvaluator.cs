@@ -26,18 +26,18 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
 
 namespace HeuristicLab.Problems.VehicleRouting {
-  [Item("AlbaTranslocationMoveEvaluator", "Evaluates a translocation or insertion move (3-opt) for a VRP representation.")]
+  [Item("PermutationTranslocationMoveEvaluator", "Evaluates a translocation or insertion move (3-opt) for a VRP representation.")]
   [StorableClass]
-  public sealed class AlbaTranslocationMoveEvaluator : VRPMoveEvaluator, IAlbaTranslocationMoveOperator {
+  public sealed class PermutationTranslocationMoveEvaluator : VRPMoveEvaluator, IAlbaTranslocationMoveOperator {
     public ILookupParameter<TranslocationMove> TranslocationMoveParameter {
       get { return (ILookupParameter<TranslocationMove>)Parameters["TranslocationMove"]; }
       set { Parameters["TranslocationMove"].ActualValue = value.ActualValue; }
     }
 
     [StorableConstructor]
-    private AlbaTranslocationMoveEvaluator(bool deserializing) : base(deserializing) { }
+    private PermutationTranslocationMoveEvaluator(bool deserializing) : base(deserializing) { }
 
-    public AlbaTranslocationMoveEvaluator()
+    public PermutationTranslocationMoveEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<TranslocationMove>("TranslocationMove", "The move to evaluate."));
     }

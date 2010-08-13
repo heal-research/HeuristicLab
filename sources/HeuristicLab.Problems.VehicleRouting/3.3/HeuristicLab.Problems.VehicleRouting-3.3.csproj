@@ -157,11 +157,11 @@
     <Compile Include="Encodings\Alba\Manipulators\AlbaManipulator.cs" />
     <Compile Include="Encodings\Alba\Moves\AlbaMoveOperator.cs" />
     <Compile Include="Encodings\Alba\Moves\AlbaMoveMaker.cs" />
-    <Compile Include="Encodings\Alba\Moves\ThreeOpt\AlbaTranslocationMoveGenerator.cs" />
-    <Compile Include="Encodings\Alba\Moves\ThreeOpt\AlbaTranslocationMoveMaker.cs" />
-    <Compile Include="Encodings\Alba\Moves\ThreeOpt\AlbaTranslocationMoveTabuMaker.cs" />
-    <Compile Include="Encodings\Alba\Moves\ThreeOpt\AlbaTranslocationMoveSoftTabuCriterion.cs" />
-    <Compile Include="Encodings\Alba\Moves\ThreeOpt\AlbaTranslocationMoveHardTabuCriterion.cs" />
+    <Compile Include="Encodings\Alba\Moves\ThreeOpt\PermutationTranslocationMoveGenerator.cs" />
+    <Compile Include="Encodings\Alba\Moves\ThreeOpt\PermutationTranslocationMoveMaker.cs" />
+    <Compile Include="Encodings\Alba\Moves\ThreeOpt\PermutationTranslocationMoveTabuMaker.cs" />
+    <Compile Include="Encodings\Alba\Moves\ThreeOpt\PermutationTranslocationMoveSoftTabuCriterion.cs" />
+    <Compile Include="Encodings\Alba\Moves\ThreeOpt\PermutationTranslocationMoveHardTabuCriterion.cs" />
     <Compile Include="Encodings\Potvin\PotvinEncoding.cs" />
     <Compile Include="Encodings\VRPMoveOperator.cs" />
     <Compile Include="Encodings\VRPCrossover.cs" />
@@ -179,7 +179,7 @@
     <Compile Include="Interfaces\IVRPMoveOperator.cs" />
     <Compile Include="Interfaces\IVRPCreator.cs" />
     <Compile Include="Interfaces\IVRPOperator.cs" />
-    <Compile Include="Encodings\Alba\Moves\ThreeOpt\AlbaTranslocationMoveEvaluator.cs" />
+    <Compile Include="Encodings\Alba\Moves\ThreeOpt\PermutationTranslocationMoveEvaluator.cs" />
     <Compile Include="MoveEvaluators\VRPMoveEvaluator.cs" />
     <Compile Include="VRPSolution.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
