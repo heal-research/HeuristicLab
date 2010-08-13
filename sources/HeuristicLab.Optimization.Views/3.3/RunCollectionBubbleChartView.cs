@@ -430,11 +430,14 @@ namespace HeuristicLab.Optimization.Views {
           this.draggedRun = null;
         }
       }
+
       string newTooltipText = string.Empty;
       string oldTooltipText;
       if (h.ChartElementType == ChartElementType.DataPoint) {
         IRun run = (IRun)((DataPoint)h.Object).Tag;
         newTooltipText = BuildTooltip(run);
+      } else if (h.ChartElementType == ChartElementType.AxisLabels) {
+        newTooltipText = ((CustomLabel)h.Object).ToolTip;
       }
 
       oldTooltipText = this.tooltip.GetToolTip(chart);
@@ -459,12 +462,12 @@ namespace HeuristicLab.Optimization.Views {
       int columnIndex = xAxisComboBox.SelectedIndex - axisDimensionCount;
       if (xValue.HasValue && columnIndex > 0 && Content.GetValue(0, columnIndex) is TimeSpanValue) {
         TimeSpan time = TimeSpan.FromSeconds(xValue.Value);
-        xString = string.Format("{0:00}:{1:00}:{2:00.00}", (int)time.TotalHours, time.Minutes, time.TotalSeconds);
+        xString = string.Format("{0:00}:{1:00}:{2:00.00}", (int)time.TotalHours, time.Minutes, time.Seconds);
       }
       columnIndex = yAxisComboBox.SelectedIndex - axisDimensionCount;
       if (yValue.HasValue && columnIndex > 0 && Content.GetValue(0, columnIndex) is TimeSpanValue) {
         TimeSpan time = TimeSpan.FromSeconds(yValue.Value);
-        yString = string.Format("{0:00}:{1:00}:{2:00.00}", (int)time.TotalHours, time.Minutes, time.TotalSeconds);
+        yString = string.Format("{0:00}:{1:00}:{2:00.00}", (int)time.TotalHours, time.Minutes, time.Seconds);
       }
 
       tooltip += xAxisComboBox.SelectedItem + " : " + xString + Environment.NewLine;
@@ -511,18 +514,18 @@ namespace HeuristicLab.Optimization.Views {
     private void SetCustomAxisLabels(Axis axis, int dimension) {
       axis.CustomLabels.Clear();
       if (categoricalMapping.ContainsKey(dimension)) {
-        CustomLabel label = null;
         foreach (var pair in categoricalMapping[dimension]) {
           string labelText = pair.Key.ToString();
+          CustomLabel label = new CustomLabel();
+          label.ToolTip = labelText;
           if (labelText.Length > 25)
             labelText = labelText.Substring(0, 25) + " ... ";
-          label = axis.CustomLabels.Add(pair.Value - 0.5, pair.Value + 0.5, labelText);
+          label.Text = labelText;
           label.GridTicks = GridTickTypes.TickMark;
+          label.FromPosition = pair.Value - 0.5;
+          label.ToPosition = pair.Value + 0.5;
+          axis.CustomLabels.Add(label);
         }
-        axis.IsLabelAutoFit = false;
-        axis.LabelStyle.Enabled = true;
-        axis.LabelStyle.Angle = 0;
-        axis.LabelStyle.TruncatedLabels = true;
       } else if (dimension > 0 && Content.GetValue(0, dimension) is TimeSpanValue) {
         this.chart.ChartAreas[0].RecalculateAxesScale();
         for (double i = axis.Minimum; i <= axis.Maximum; i += axis.LabelStyle.Interval) {
