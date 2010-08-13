@@ -213,9 +213,10 @@ namespace HeuristicLab.Optimization.Views {
 
         if (this.chart.Series[0].Points.Count == 0)
           noRunsLabel.Visible = true;
-        else
+        else {
           noRunsLabel.Visible = false;
-        UpdateCursorInterval();
+          UpdateCursorInterval();
+        }
       }
     }
     private void AddDataPoint(IRun run) {
