@@ -21,14 +21,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.MainForm;
@@ -45,12 +40,12 @@ namespace HeuristicLab.Optimization.Views {
     private string xAxisValue;
     private string yAxisValue;
     private Dictionary<int, Dictionary<object, double>> categoricalMapping;
-    private Dictionary<double, Series> seriesCache;
+    private SortedDictionary<double, Series> seriesCache;
 
     public RunCollectionBoxPlotView() {
       InitializeComponent();
       this.categoricalMapping = new Dictionary<int, Dictionary<object, double>>();
-      this.seriesCache = new Dictionary<double, Series>();
+      this.seriesCache = new SortedDictionary<double, Series>();
       this.chart.ChartAreas[0].Visible = false;
       this.chart.Series.Clear();
       this.chart.ChartAreas.Add(BoxPlotChartAreaName);
@@ -306,18 +301,18 @@ namespace HeuristicLab.Optimization.Views {
     private void SetCustomAxisLabels(Axis axis, int dimension) {
       axis.CustomLabels.Clear();
       if (categoricalMapping.ContainsKey(dimension)) {
-        CustomLabel label = null;
         foreach (var pair in categoricalMapping[dimension]) {
           string labelText = pair.Key.ToString();
+          CustomLabel label = new CustomLabel();
+          label.ToolTip = labelText;
           if (labelText.Length > 25)
             labelText = labelText.Substring(0, 25) + " ... ";
-          label = axis.CustomLabels.Add(pair.Value - 0.5, pair.Value + 0.5, labelText);
+          label.Text = labelText;
           label.GridTicks = GridTickTypes.TickMark;
+          label.FromPosition = pair.Value - 0.5;
+          label.ToPosition = pair.Value + 0.5;
+          axis.CustomLabels.Add(label);
         }
-        axis.IsLabelAutoFit = false;
-        axis.LabelStyle.Enabled = true;
-        axis.LabelStyle.Angle = 0;
-        axis.LabelStyle.TruncatedLabels = true;
       } else if (dimension > 0 && Content.GetValue(0, dimension) is TimeSpanValue) {
         this.chart.ChartAreas[0].RecalculateAxesScale();
         Axis correspondingAxis = this.chart.ChartAreas[0].Axes.Where(x => x.Name == axis.Name).SingleOrDefault();
@@ -327,6 +322,20 @@ namespace HeuristicLab.Optimization.Views {
           TimeSpan time = TimeSpan.FromSeconds(i);
           string x = string.Format("{0:00}:{1:00}:{2:00}", (int)time.Hours, time.Minutes, time.Seconds);
           axis.CustomLabels.Add(i - correspondingAxis.LabelStyle.Interval / 2, i + correspondingAxis.LabelStyle.Interval / 2, x);
+        }
+      } else if (chart.ChartAreas[BoxPlotChartAreaName].AxisX == axis) {
+        double position = 1.0;
+        foreach (Series series in chart.Series) {
+          if (series.Name != BoxPlotSeriesName) {
+            string labelText = series.Points[0].XValue.ToString();
+            CustomLabel label = new CustomLabel();
+            label.FromPosition = position - 0.5;
+            label.ToPosition = position + 0.5;
+            label.GridTicks = GridTickTypes.TickMark;
+            label.Text = labelText;
+            axis.CustomLabels.Add(label);
+            position++;
+          }
         }
       }
     }
