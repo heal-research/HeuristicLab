@@ -21,6 +21,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_A7EAC0AA402C433C8EEB32377FBD8490"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_B18E711B0E107FDA96359FC0783B671F"
         "OwnerKey" = "8:_B51E170D986C45DD9BBEEC6B70686DC9"
         "MsmSig" = "8:_UNDEFINED"
@@ -41,6 +47,18 @@
         {
         "MsmKey" = "8:_E00BEF57C142035FD3A58BB6E32FCCE9"
         "OwnerKey" = "8:_B18E711B0E107FDA96359FC0783B671F"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_EEA4153E99C54DF491CD580AFAB2A3E5"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_F06539B359D847A7BF0D49091E25A804"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -197,6 +215,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A7EAC0AA402C433C8EEB32377FBD8490"
+            {
+            "SourcePath" = "8:..\\HeuristicLabViewTemplate\\HeuristicLabViewTemplate.zip"
+            "TargetName" = "8:HeuristicLabViewTemplate.zip"
+            "Tag" = "8:"
+            "Folder" = "8:_E33A3941E42F482B99D2418470C8A183"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_B18E711B0E107FDA96359FC0783B671F"
             {
             "AssemblyRegister" = "3:1"
@@ -248,12 +286,107 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EEA4153E99C54DF491CD580AFAB2A3E5"
+            {
+            "SourcePath" = "8:..\\HeuristicLabAlgorithmTemplate\\HeuristicLabAlgorithmTemplate.zip"
+            "TargetName" = "8:HeuristicLabAlgorithmTemplate.zip"
+            "Tag" = "8:"
+            "Folder" = "8:_E33A3941E42F482B99D2418470C8A183"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F06539B359D847A7BF0D49091E25A804"
+            {
+            "SourcePath" = "8:..\\HeuristicLabProblemTemplate\\HeuristicLabProblemTemplate.zip"
+            "TargetName" = "8:HeuristicLabProblemTemplate.zip"
+            "Tag" = "8:"
+            "Folder" = "8:_E33A3941E42F482B99D2418470C8A183"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
         }
         "FileType"
         {
         }
         "Folder"
         {
+            "{1525181F-901A-416C-8A58-119130FE478E}:_649A6F09B3F74B58BBA4B49709E9B53B"
+            {
+            "Name" = "8:#1918"
+            "AlwaysCreate" = "11:FALSE"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Property" = "8:PersonalFolder"
+                "Folders"
+                {
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_3528FEA74E304553B6D8C57768528BBF"
+                    {
+                    "Name" = "8:Visual Studio 2010"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_F5ECF1FBDE2748D6A37E1E60AB8728C1"
+                        "Folders"
+                        {
+                            "{9EF0B969-E518-4E46-987F-47570745A589}:_FDF2A6CC43D547EA93DB127C4F03956E"
+                            {
+                            "Name" = "8:Templates"
+                            "AlwaysCreate" = "11:FALSE"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "Property" = "8:_21F61396CA2A45EF826387C986A27619"
+                                "Folders"
+                                {
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_39EF377865F94878B7F5EC5C5E3729F9"
+                                    {
+                                    "Name" = "8:ItemTemplates"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_2380D727BCFA40FD9639C8D800AF616D"
+                                        "Folders"
+                                        {
+                                            "{9EF0B969-E518-4E46-987F-47570745A589}:_E33A3941E42F482B99D2418470C8A183"
+                                            {
+                                            "Name" = "8:Visual C#"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_07FF9CBD97B84CC1B2E12624E17284EC"
+                                                "Folders"
+                                                {
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             "{C7E34266-2C30-44B9-A9A3-4E394ABD6E18}:_6C9F753281594A1483F7199C4F19C6D8"
             {
             "Name" = "8:#1927"
