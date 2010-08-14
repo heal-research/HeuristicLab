@@ -48,10 +48,10 @@ namespace HeuristicLab.VS2010Wizards {
       if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
         replacementsDictionary.Add("$problemName$", form.ProblemName);
         replacementsDictionary.Add("$problemDescription$", form.ProblemDescription);
-        replacementsDictionary.Add("$problemType$", ((form.IsMultiObjective) ? ("Multi") : ("Single")));
-        replacementsDictionary.Add("$maximizationParameterProperty$", "TODO");
-        replacementsDictionary.Add("$solutionCreatorParameterProperty$", "TODO");
-        replacementsDictionary.Add("$evaluatorParameterProperty$", "TODO");
+        replacementsDictionary.Add("$problemTypeImplementation$", form.ProblemTypeImplementation);
+        replacementsDictionary.Add("$problemSpecificParameterProperties$", form.ProblemSpecificParameterProperties);
+        replacementsDictionary.Add("$problemSpecificProperties$", form.ProblemSpecificProperties);
+        replacementsDictionary.Add("$problemSpecificParameterInitializers$", form.ProblemSpecificParameterInitializers);
         replacementsDictionary.Add("$parameterProperties$", form.ParameterProperties);
         replacementsDictionary.Add("$properties$", form.Properties);
         replacementsDictionary.Add("$parameterInitializers$", form.ParameterInitializers);

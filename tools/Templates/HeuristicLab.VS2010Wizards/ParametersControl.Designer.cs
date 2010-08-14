@@ -157,6 +157,9 @@ namespace HeuristicLab.VS2010Wizards {
             "Value",
             "Lookup",
             "ValueLookup",
+            "OptionalValue",
+            "ConstrainedValue",
+            "OptionalConstrainedValue",
             "ScopeTreeLookup"});
       this.parameterTypeComboBox.Location = new System.Drawing.Point(3, 232);
       this.parameterTypeComboBox.Name = "parameterTypeComboBox";

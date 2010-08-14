@@ -316,7 +316,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:HeuristicLab 3.3 VS2010 Wizards"
         "ProductCode" = "8:{B99828C4-2D65-461D-B13C-CAB57EAB6AC1}"
-        "PackageCode" = "8:{A5414BAF-544C-469D-BAD3-302029AFF80E}"
+        "PackageCode" = "8:{F12DCE28-7303-41AE-9C8D-231C0F1DA713}"
         "UpgradeCode" = "8:{3AF928E8-1C64-4A5A-BC16-44CD128F21D3}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -780,7 +780,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_B51E170D986C45DD9BBEEC6B70686DC9"
             {
-            "SourcePath" = "8:..\\HeuristicLab.VS2010Wizards\\obj\\Release\\HeuristicLab.VS2010Wizards.dll"
+            "SourcePath" = "8:..\\HeuristicLab.VS2010Wizards\\obj\\x86\\Release\\HeuristicLab.VS2010Wizards.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_6C9F753281594A1483F7199C4F19C6D8"
@@ -790,7 +790,7 @@
             "ReadOnly" = "11:FALSE"
             "Hidden" = "11:FALSE"
             "System" = "11:FALSE"
-            "Permanent" = "11:TRUE"
+            "Permanent" = "11:FALSE"
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"

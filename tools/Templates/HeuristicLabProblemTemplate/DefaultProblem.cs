@@ -37,40 +37,21 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   [Item("$problemName$", "$problemDescription$")]
   [Creatable("Problems")]
   [StorableClass]
-  public sealed class $safeitemname$ : ParameterizedNamedItem, I$problemType$ObjectiveProblem {
+  public sealed class $safeitemname$ : ParameterizedNamedItem, $problemTypeImplementation$ {
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Type; }
     }
 
     #region Parameter Properties
-    $maximizationParameterProperty$
-    IParameter I$problemType$ObjectiveProblem.MaximizationParameter {
-      get { return MaximizationParameter; }
-    }
-    $solutionCreatorParameterProperty$
-    IParameter IProblem.SolutionCreatorParameter {
-      get { return SolutionCreatorParameter; }
-    }
-    $evaluatorParameterProperty$
-    IParameter IProblem.EvaluatorParameter {
-      get { return EvaluatorParameter; }
-    }
+    $problemSpecificParameterProperties$
     $parameterProperties$
     #endregion
 
     #region Properties
+    $problemSpecificProperties$
     $properties$
     public IEnumerable<IOperator> Operators {
       get { return operators; }
-    }
-    ISolutionCreator IProblem.SolutionCreator {
-      get { return SolutionCreatorParameter.Value; }
-    }
-    I$problemType$ObjectiveEvaluator I$problemType$ObjectiveProblem.Evaluator {
-      get { return EvaluatorParameter.Value; }
-    }
-    IEvaluator IProblem.Evaluator {
-      get { return EvaluatorParameter.Value; }
     }
     #endregion
 
@@ -83,6 +64,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       : base() {
       // TODO: Create a new instance of evaluator and solution creator
 
+      $problemSpecificParameterInitializers$
       $parameterInitializers$
 
       ParameterizeSolutionCreator();
@@ -139,6 +121,12 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       operators = new List<IOperator>();
       // TODO: Add custom problem analyzer to the list
       // TODO: Add operators from the representation either by direct instantiation, or by using ApplicationManager.Manger.GetInstances<T>().Cast<IOperator>()
+    }
+    private void ParameterizeSolutionCreator() {
+      // TODO: Set the parameters of the solution creator
+    }
+    private void ParameterizeEvaluator() {
+      // TODO: Set the parameters of the evaluator
     }
     #endregion
   }
