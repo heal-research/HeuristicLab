@@ -146,7 +146,7 @@ namespace HeuristicLab.Optimization.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_ExecutionTimeChanged), sender, e);
       else
-        executionTimeTextBox.Text = Content.ExecutionTime.ToString();
+        executionTimeTextBox.Text = Content == null ? "-" : Content.ExecutionTime.ToString();
     }
     private void Content_ExceptionOccurred(object sender, EventArgs<Exception> e) {
       if (InvokeRequired)
