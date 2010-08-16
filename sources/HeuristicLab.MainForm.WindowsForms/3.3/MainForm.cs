@@ -112,8 +112,11 @@ namespace HeuristicLab.MainForm.WindowsForms {
     protected virtual void OnActiveViewChanged() {
       if (InvokeRequired)
         Invoke((MethodInvoker)OnActiveViewChanged);
-      else if (ActiveViewChanged != null)
-        ActiveViewChanged(this, EventArgs.Empty);
+      else {
+        EventHandler handler = ActiveViewChanged;
+        if (handler != null)
+          handler(this, EventArgs.Empty);
+      }
     }
 
     public event EventHandler<ViewEventArgs> ViewClosed;
@@ -225,22 +228,25 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     public IContentView ShowContent(IContent content, Type viewType) {
-      if (content == null)
-        throw new ArgumentNullException("Content cannot be null.");
-      if (viewType == null)
-        throw new ArgumentNullException("ViewType cannot be null.");
+      if (InvokeRequired) return (IContentView)Invoke((Func<IContent, Type, IContentView>)ShowContent, content, viewType);
+      else {
+        if (content == null)
+          throw new ArgumentNullException("Content cannot be null.");
+        if (viewType == null)
+          throw new ArgumentNullException("ViewType cannot be null.");
 
-      IContentView view;
-      if (this.ShowContentInViewHost) {
-        ViewHost viewHost = new ViewHost();
-        viewHost.ViewType = viewType;
-        view = viewHost;
-      } else
-        view = MainFormManager.CreateView(viewType);
+        IContentView view;
+        if (this.ShowContentInViewHost) {
+          ViewHost viewHost = new ViewHost();
+          viewHost.ViewType = viewType;
+          view = viewHost;
+        } else
+          view = MainFormManager.CreateView(viewType);
 
-      view.Content = content;
-      view.Show();
-      return view;
+        view.Content = content;
+        view.Show();
+        return view;
+      }
     }
 
     internal void ShowView(IView view) {
