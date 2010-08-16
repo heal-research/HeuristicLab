@@ -109,7 +109,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators {
         // insert a dummy sub-tree and add the pending extension to the list
         var dummy = new SymbolicExpressionTreeNode();
         root.AddSubTree(dummy);
-        extensionPoints.Add(new TreeExtensionPoint { Parent = root, ChildIndex = i, ExtensionPointDepth = 2 });
+        extensionPoints.Add(new TreeExtensionPoint { Parent = root, ChildIndex = i, ExtensionPointDepth = 0 });
       }
       // while there are pending extension points and we have not reached the limit of adding new extension points
       while (extensionPoints.Count > 0 && totalListMinSize + currentSize < size) {
