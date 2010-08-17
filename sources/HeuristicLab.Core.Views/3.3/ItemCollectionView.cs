@@ -69,6 +69,7 @@ namespace HeuristicLab.Core.Views {
         Caption += " (" + Content.GetType().Name + ")";
         foreach (T item in Content)
           AddListViewItem(CreateListViewItem(item));
+        AdjustListViewColumnSizes();
         SortItemsListView(SortOrder.Ascending);
       }
     }
@@ -123,7 +124,6 @@ namespace HeuristicLab.Core.Views {
       itemsListView.Items.Add(listViewItem);
       ((T)listViewItem.Tag).ItemImageChanged += new EventHandler(Item_ItemImageChanged);
       ((T)listViewItem.Tag).ToStringChanged += new EventHandler(Item_ToStringChanged);
-      AdjustListViewColumnSizes();
       sortAscendingButton.Enabled = itemsListView.Items.Count > 1;
       sortDescendingButton.Enabled = itemsListView.Items.Count > 1;
     }
@@ -262,9 +262,12 @@ namespace HeuristicLab.Core.Views {
     protected virtual void Content_ItemsAdded(object sender, CollectionItemsChangedEventArgs<T> e) {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<T>(Content_ItemsAdded), sender, e);
-      else
+      else {
         foreach (T item in e.Items)
           AddListViewItem(CreateListViewItem(item));
+        AdjustListViewColumnSizes();
+      }
+
     }
     protected virtual void Content_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<T> e) {
       if (InvokeRequired)
@@ -273,8 +276,7 @@ namespace HeuristicLab.Core.Views {
         foreach (T item in e.Items) {
           //remove only the first matching ListViewItem, because the IItem could be contained multiple times in the ItemCollection
           ListViewItem listviewItem = GetListViewItemsForItem(item).FirstOrDefault();
-          if (listviewItem != null)
-            RemoveListViewItem(listviewItem);
+          if (listviewItem != null) RemoveListViewItem(listviewItem);
         }
       }
     }
@@ -285,8 +287,7 @@ namespace HeuristicLab.Core.Views {
         foreach (T item in e.OldItems) {
           //remove only the first matching ListViewItem, because the IItem could be contained multiple times in the ItemCollection
           ListViewItem listviewItem = GetListViewItemsForItem(item).FirstOrDefault();
-          if (listviewItem != null)
-            RemoveListViewItem(listviewItem);
+          if (listviewItem != null) RemoveListViewItem(listviewItem);
         }
         foreach (T item in e.Items)
           AddListViewItem(CreateListViewItem(item));

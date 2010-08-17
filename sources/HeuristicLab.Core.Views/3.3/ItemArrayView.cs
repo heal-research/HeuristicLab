@@ -93,6 +93,7 @@ namespace HeuristicLab.Core.Views {
         Caption += " (" + Content.GetType().Name + ")";
         foreach (T item in Content)
           AddListViewItem(CreateListViewItem(item));
+        AdjustListViewColumnSizes();
         if ((selectedIndex != -1) && (selectedIndex < itemsListView.Items.Count))
           itemsListView.Items[selectedIndex].Selected = true;
       }
@@ -156,7 +157,6 @@ namespace HeuristicLab.Core.Views {
         ((T)listViewItem.Tag).ItemImageChanged += new EventHandler(Item_ItemImageChanged);
         ((T)listViewItem.Tag).ToStringChanged += new EventHandler(Item_ToStringChanged);
       }
-      AdjustListViewColumnSizes();
     }
     protected virtual void InsertListViewItem(int index, ListViewItem listViewItem) {
       itemsListView.Items.Insert(index, listViewItem);
@@ -164,7 +164,6 @@ namespace HeuristicLab.Core.Views {
         ((T)listViewItem.Tag).ItemImageChanged += new EventHandler(Item_ItemImageChanged);
         ((T)listViewItem.Tag).ToStringChanged += new EventHandler(Item_ToStringChanged);
       }
-      AdjustListViewColumnSizes();
     }
     protected virtual void RemoveListViewItem(ListViewItem listViewItem) {
       if (listViewItem.Tag != null) {
@@ -348,6 +347,7 @@ namespace HeuristicLab.Core.Views {
 
         foreach (IndexedItem<T> item in e.Items)
           InsertListViewItem(item.Index, CreateListViewItem(item.Value));
+        AdjustListViewColumnSizes();
 
         for (int i = 0; i < selected.Length; i++)
           itemsListView.Items[selected[i]].Selected = true;
@@ -377,6 +377,7 @@ namespace HeuristicLab.Core.Views {
 
         foreach (IndexedItem<T> item in e.Items)
           InsertListViewItem(item.Index, CreateListViewItem(item.Value));
+        AdjustListViewColumnSizes();
       }
     }
     #endregion
