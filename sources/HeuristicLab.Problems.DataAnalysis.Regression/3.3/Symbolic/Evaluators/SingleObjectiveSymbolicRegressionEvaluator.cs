@@ -138,7 +138,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
 
     public override IOperation Apply() {
-      uint seed = (uint)Random.Next();
+      int seed = Random.Next();
       IEnumerable<int> rows = GenerateRowsToEvaluate(seed, RelativeNumberOfEvaluatedSamples.Value, SamplesStart.Value, SamplesEnd.Value);
       double quality = Evaluate(SymbolicExpressionTreeInterpreter, SymbolicExpressionTree, LowerEstimationLimit.Value, UpperEstimationLimit.Value,
         RegressionProblemData.Dataset,
@@ -148,7 +148,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
 
 
-    internal static IEnumerable<int> GenerateRowsToEvaluate(uint seed, double relativeAmount, int start, int end) {
+    internal static IEnumerable<int> GenerateRowsToEvaluate(int seed, double relativeAmount, int start, int end) {
       if (end < start) throw new ArgumentException("Start value is larger than end value.");
       int count = (int)((end - start) * relativeAmount);
       if (count == 0) count = 1;

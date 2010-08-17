@@ -26,23 +26,19 @@ using HeuristicLab.Random;
 namespace HeuristicLab.Problems.DataAnalysis {
   public class RandomEnumerable {
     public static IEnumerable<int> SampleRandomNumbers(int maxElement, int count) {
-      return SampleRandomNumbers(((uint)DateTime.Now.Ticks), 0, maxElement, count);
+      return SampleRandomNumbers(Environment.TickCount, 0, maxElement, count);
     }
 
     public static IEnumerable<int> SampleRandomNumbers(int start, int end, int count) {
-      return SampleRandomNumbers(((uint)DateTime.Now.Ticks), start, end, count);
-    }
-
-    public static IEnumerable<int> SampleRandomNumbers(uint seed, int maxElement, int count) {
-      return SampleRandomNumbers(seed, 0, maxElement, count);
+      return SampleRandomNumbers(Environment.TickCount, start, end, count);
     }
 
     //algorithm taken from progamming pearls page 127
     //IMPORTANT because IEnumerables with yield are used the seed must best be specified to return always 
     //the same sequence of numbers without caching the values.
-    public static IEnumerable<int> SampleRandomNumbers(uint seed, int start, int end, int count) {
+    public static IEnumerable<int> SampleRandomNumbers(int seed, int start, int end, int count) {
       int remaining = end - start;
-      var mt = new MersenneTwister(seed);
+      var mt = new FastRandom(seed);
       for (int i = start; i < end && count > 0; i++) {
         double probability = mt.NextDouble();
         if (probability < ((double)count) / remaining) {

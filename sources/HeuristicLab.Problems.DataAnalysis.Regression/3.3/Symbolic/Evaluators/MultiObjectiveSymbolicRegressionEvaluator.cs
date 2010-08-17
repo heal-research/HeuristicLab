@@ -120,7 +120,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
 
     public override IOperation Apply() {
-      uint seed = (uint)Random.Next();
+      int seed = Random.Next();
       IEnumerable<int> rows = SingleObjectiveSymbolicRegressionEvaluator.GenerateRowsToEvaluate(seed, RelativeNumberOfEvaluatedSamples.Value, SamplesStart.Value, SamplesEnd.Value);
       double[] qualities = Evaluate(SymbolicExpressionTreeInterpreter, SymbolicExpressionTree, RegressionProblemData.Dataset,
         RegressionProblemData.TargetVariable, rows);

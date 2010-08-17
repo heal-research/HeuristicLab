@@ -249,7 +249,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       // select a random subset of rows in the validation set
       int validationStart = ValidiationSamplesStart.Value;
       int validationEnd = ValidationSamplesEnd.Value;
-      uint seed = (uint)Random.Next();
+      int seed = Random.Next();
       int count = (int)((validationEnd - validationStart) * RelativeNumberOfEvaluatedSamples.Value);
       if (count == 0) count = 1;
       IEnumerable<int> rows = RandomEnumerable.SampleRandomNumbers(seed, validationStart, validationEnd, count);
