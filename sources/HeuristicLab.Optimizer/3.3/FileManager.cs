@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Common;
 using HeuristicLab.MainForm;
@@ -41,7 +42,8 @@ namespace HeuristicLab.Optimizer {
       if (newItemDialog == null) newItemDialog = new NewItemDialog();
       if (newItemDialog.ShowDialog() == DialogResult.OK) {
         IView view = MainFormManager.MainForm.ShowContent(newItemDialog.Item);
-        if (view == null) MessageBox.Show("There is no view for the new item. It cannot be displayed.", "No View Available", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        if (view == null)
+          ErrorHandling.ShowErrorDialog("There is no view for the new item. It cannot be displayed.", new InvalidOperationException("No View Available"));
       }
     }
 
@@ -65,10 +67,9 @@ namespace HeuristicLab.Optimizer {
     private static void LoadingCompleted(IStorableContent content, Exception error) {
       try {
         if (error != null) throw error;
-        Invoke(delegate() {
-          IView view = MainFormManager.MainForm.ShowContent(content);
-          if (view == null) MessageBox.Show("There is no view for the loaded item. It cannot be displayed.", "No View Available", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        });
+        IView view = MainFormManager.MainForm.ShowContent(content);
+        if (view == null)
+          ErrorHandling.ShowErrorDialog("There is no view for the loaded item. It cannot be displayed.", new InvalidOperationException("No View Available"));
       }
       catch (Exception ex) {
         ErrorHandling.ShowErrorDialog((Control)MainFormManager.MainForm, "Cannot open file.", ex);
@@ -86,11 +87,14 @@ namespace HeuristicLab.Optimizer {
     }
     private static void Save(IContentView view) {
       IStorableContent content = view.Content as IStorableContent;
-      if (!view.Locked && (content != null)) {
+      if (!view.Locked && content != null) {
         if (string.IsNullOrEmpty(content.Filename))
           SaveAs(view);
         else {
           ((OptimizerMainForm)MainFormManager.MainForm).SetAppStartingCursor();
+          var views = MainFormManager.MainForm.Views.OfType<IContentView>().Where(v => v.Content == content).ToList();
+          views.ForEach(v => v.ReadOnly = true);
+          views.ForEach(v => v.Locked = true);
           ContentManager.SaveAsync(content, content.Filename, true, SavingCompleted);
         }
       }
@@ -103,7 +107,7 @@ namespace HeuristicLab.Optimizer {
     }
     public static void SaveAs(IContentView view) {
       IStorableContent content = view.Content as IStorableContent;
-      if (!view.Locked && (content != null)) {
+      if (!view.Locked && content != null) {
         if (saveFileDialog == null) {
           saveFileDialog = new SaveFileDialog();
           saveFileDialog.Title = "Save Item";
@@ -115,6 +119,9 @@ namespace HeuristicLab.Optimizer {
 
         if (saveFileDialog.ShowDialog() == DialogResult.OK) {
           ((OptimizerMainForm)MainFormManager.MainForm).SetAppStartingCursor();
+          var views = MainFormManager.MainForm.Views.OfType<IContentView>().Where(v => v.Content == content).ToList();
+          views.ForEach(v => v.ReadOnly = true);
+          views.ForEach(v => v.Locked = true);
           if (saveFileDialog.FilterIndex == 1) {
             ContentManager.SaveAsync(content, saveFileDialog.FileName, false, SavingCompleted);
           } else {
@@ -125,10 +132,11 @@ namespace HeuristicLab.Optimizer {
     }
     private static void SavingCompleted(IStorableContent content, Exception error) {
       try {
+        var views = MainFormManager.MainForm.Views.OfType<IContentView>().Where(v => v.Content == content).ToList();
+        views.ForEach(v => v.ReadOnly = false);
+        views.ForEach(v => v.Locked = false);
         if (error != null) throw error;
-        Invoke(delegate() {
-          ((OptimizerMainForm)MainFormManager.MainForm).UpdateTitle();
-        });
+        MainFormManager.GetMainForm<OptimizerMainForm>().UpdateTitle();
       }
       catch (Exception ex) {
         ErrorHandling.ShowErrorDialog((Control)MainFormManager.MainForm, "Cannot save file.", ex);
@@ -136,14 +144,6 @@ namespace HeuristicLab.Optimizer {
       finally {
         ((OptimizerMainForm)MainFormManager.MainForm).ResetAppStartingCursor();
       }
-    }
-
-    private static void Invoke(Action a) {
-      Form form = MainFormManager.MainForm as Form;
-      if (form.InvokeRequired)
-        form.Invoke(a);
-      else
-        a.Invoke();
     }
   }
 }
