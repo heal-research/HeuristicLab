@@ -294,7 +294,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     private void InitializeOperators() {
       operators = new List<IOperator>();
       operators.AddRange(ApplicationManager.Manager.GetInstances<ISymbolicExpressionTreeOperator>().OfType<IOperator>());
-      operators.Add(new SymbolicRegressionTournamentPruning());
       operators.Add(new SymbolicRegressionVariableFrequencyAnalyzer());
       operators.Add(new MinAverageMaxSymbolicExpressionTreeSizeAnalyzer());
       operators.Add(new SymbolicRegressionModelQualityAnalyzer());
