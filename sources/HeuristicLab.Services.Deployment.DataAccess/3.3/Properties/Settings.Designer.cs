@@ -26,7 +26,7 @@ namespace HeuristicLab.Services.Deployment.DataAccess.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Server=SERVDEV;Database=HeuristicLab.Deployment;Integrated Security=SSPI")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Server=SERVICES;Database=HeuristicLab.Deployment;Integrated Security=SSPI")]
         public string HeuristicLab_PluginStoreConnectionString {
             get {
                 return ((string)(this["HeuristicLab_PluginStoreConnectionString"]));
