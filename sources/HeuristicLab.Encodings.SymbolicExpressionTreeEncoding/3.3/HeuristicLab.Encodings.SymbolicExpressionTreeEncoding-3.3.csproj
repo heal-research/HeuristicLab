@@ -134,6 +134,7 @@
     <Compile Include="Manipulators\MultiSymbolicExpressionTreeManipulator.cs" />
     <Compile Include="Manipulators\OnePointShaker.cs" />
     <Compile Include="Manipulators\SymbolicExpressionTreeManipulator.cs" />
+    <Compile Include="SymbolicExpressionTreeGrammar.cs" />
     <Compile Include="SymbolicExpressionTreeStringFormatter.cs" />
     <Compile Include="SymbolicExpressionTreeTopLevelNode.cs" />
     <Compile Include="Crossovers\SubtreeCrossover.cs">

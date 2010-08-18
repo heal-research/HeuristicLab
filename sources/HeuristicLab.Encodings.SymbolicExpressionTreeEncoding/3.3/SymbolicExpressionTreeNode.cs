@@ -86,7 +86,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
     public virtual ISymbolicExpressionGrammar Grammar {
       get { return parent.Grammar; }
-      set { throw new NotSupportedException("Grammar can be set only for SymbolicExpressionTreeTopLevelNodes."); }
     }
 
     public int GetSize() {

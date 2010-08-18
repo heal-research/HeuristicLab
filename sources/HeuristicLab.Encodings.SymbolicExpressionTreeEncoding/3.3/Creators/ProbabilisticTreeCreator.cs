@@ -52,9 +52,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators {
       int maxFunctionDefinitions, int maxFunctionArguments
       ) {
       SymbolicExpressionTree tree = new SymbolicExpressionTree();
-      var rootNode = grammar.StartSymbol.CreateTreeNode();
+      var rootNode = (SymbolicExpressionTreeTopLevelNode)grammar.StartSymbol.CreateTreeNode();
       if (rootNode.HasLocalParameters) rootNode.ResetLocalParameters(random);
-      rootNode.Grammar = grammar;
+      rootNode.SetGrammar(new SymbolicExpressionTreeGrammar(grammar));
       tree.Root = PTC2(random, rootNode, maxTreeSize, maxTreeHeight, maxFunctionDefinitions, maxFunctionArguments);
       return tree;
     }
@@ -185,7 +185,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators {
       // NB it is assumed that defuns are only allowed as children of root and nowhere else
       // also assumes that newTree is already attached to root somewhere
       if (IsTopLevelBranch(root, newTree)) {
-        newTree.Grammar = (ISymbolicExpressionGrammar)root.Grammar.Clone();
+        ((SymbolicExpressionTreeTopLevelNode)newTree).SetGrammar((ISymbolicExpressionGrammar)root.Grammar.Clone());
 
         // allow invokes of existing ADFs with higher index
         int argIndex = root.SubTrees.IndexOf(newTree);

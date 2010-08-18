@@ -29,9 +29,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("ArithmeticExpressionGrammar", "Represents a grammar for functional expressions using only arithmetic operations.")]
   public class ArithmeticExpressionGrammar : DefaultSymbolicExpressionGrammar {
-    [Storable]
-    private HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols.Variable variableSymbol;
-
     public ArithmeticExpressionGrammar()
       : base() {
       Initialize();
@@ -48,7 +45,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var constant = new Constant();
       constant.MinValue = -20;
       constant.MaxValue = 20;
-      variableSymbol = new HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols.Variable();
+      var variableSymbol = new HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols.Variable();
 
       var allSymbols = new List<Symbol>() { add, sub, mul, div, constant, variableSymbol };
       var functionSymbols = new List<Symbol>() { add, sub, mul, div };

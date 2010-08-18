@@ -25,7 +25,6 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableClass]
   public class SymbolicExpressionTreeTopLevelNode : SymbolicExpressionTreeNode {
-
     public SymbolicExpressionTreeTopLevelNode()
       : base() {
     }
@@ -38,7 +37,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     private ISymbolicExpressionGrammar grammar;
     public override ISymbolicExpressionGrammar Grammar {
       get { return grammar; }
-      set { grammar = value; }
+    }
+    public void SetGrammar(ISymbolicExpressionGrammar grammar) {
+      this.grammar = grammar;
     }
 
     // copy constructor
@@ -46,6 +47,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       : base(original) {
       if (original.Grammar != null)
         grammar = (ISymbolicExpressionGrammar)original.Grammar.Clone();
+      //grammar = original.grammar;
     }
 
     public override object Clone() {

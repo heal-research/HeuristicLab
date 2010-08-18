@@ -110,7 +110,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureMani
       defunNode.AddSubTree(functionBody);
       symbolicExpressionTree.Root.AddSubTree(defunNode);
       // the grammar in the newly defined function is a clone of the grammar of the originating branch
-      defunNode.Grammar = (ISymbolicExpressionGrammar)selectedBody.Grammar.Clone();
+      defunNode.SetGrammar((ISymbolicExpressionGrammar)selectedBody.Grammar.Clone());
       // remove all argument symbols from grammar
       var oldArgumentSymbols = defunNode.Grammar.Symbols.OfType<Argument>().ToList();
       foreach (var oldArgSymb in oldArgumentSymbols)

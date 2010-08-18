@@ -89,40 +89,50 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
     public DefaultSymbolicExpressionGrammar()
       : base() {
-      minSubTreeCount = new Dictionary<string, int>();
-      maxSubTreeCount = new Dictionary<string, int>();
-      allowedChildSymbols = new Dictionary<string, List<List<string>>>();
-      allSymbols = new Dictionary<string, Symbol>();
+      this.minSubTreeCount = new Dictionary<string, int>();
+      this.maxSubTreeCount = new Dictionary<string, int>();
+      this.allowedChildSymbols = new Dictionary<string, List<List<string>>>();
+      this.allSymbols = new Dictionary<string, Symbol>();
+      this.cachedMinExpressionLength = new Dictionary<string, int>();
+      this.cachedMaxExpressionLength = new Dictionary<string, int>();
+      this.cachedMinExpressionDepth = new Dictionary<string, int>();
 
-      cachedMinExpressionLength = new Dictionary<string, int>();
-      cachedMaxExpressionLength = new Dictionary<string, int>();
-      cachedMinExpressionDepth = new Dictionary<string, int>();
-
-      startSymbol = new StartSymbol();
-      AddSymbol(startSymbol);
-      SetMinSubtreeCount(startSymbol, 1);
-      SetMaxSubtreeCount(startSymbol, 1);
+      this.startSymbol = new StartSymbol();
+      this.AddSymbol(startSymbol);
+      this.SetMinSubtreeCount(startSymbol, 1);
+      this.SetMaxSubtreeCount(startSymbol, 1);
     }
 
-    //copy constructor for cloning
-    protected DefaultSymbolicExpressionGrammar(DefaultSymbolicExpressionGrammar copy)
+    protected DefaultSymbolicExpressionGrammar(ISymbolicExpressionGrammar grammar)
       : base() {
-      this.minSubTreeCount = new Dictionary<string, int>(copy.minSubTreeCount);
-      this.maxSubTreeCount = new Dictionary<string, int>(copy.maxSubTreeCount);
+      Cloner cloner = new Cloner();
+      this.cachedMinExpressionLength = new Dictionary<string, int>();
+      this.cachedMaxExpressionLength = new Dictionary<string, int>();
+      this.cachedMinExpressionDepth = new Dictionary<string, int>();
 
-      this.startSymbol = copy.startSymbol;
+      this.minSubTreeCount = new Dictionary<string, int>();
+      this.maxSubTreeCount = new Dictionary<string, int>();
       this.allowedChildSymbols = new Dictionary<string, List<List<string>>>();
-      foreach (var entry in copy.allowedChildSymbols) {
-        this.allowedChildSymbols[entry.Key] = new List<List<string>>(entry.Value.Count);
-        foreach (var set in entry.Value) {
-          this.allowedChildSymbols[entry.Key].Add(new List<string>(set));
+      this.allSymbols = new Dictionary<string, Symbol>();
+
+      this.StartSymbol = (Symbol)cloner.Clone(grammar.StartSymbol);
+
+      foreach (Symbol symbol in grammar.Symbols) {
+        Symbol clonedSymbol = (Symbol)cloner.Clone(symbol);
+        this.AddSymbol(clonedSymbol);
+        this.SetMinSubtreeCount(clonedSymbol, grammar.GetMinSubtreeCount(symbol));
+        this.SetMaxSubtreeCount(clonedSymbol, grammar.GetMaxSubtreeCount(symbol));
+      }
+
+      foreach (Symbol parent in grammar.Symbols) {
+        for (int i = 0; i < grammar.GetMaxSubtreeCount(parent); i++) {
+          foreach (Symbol child in grammar.Symbols) {
+            if (grammar.IsAllowedChild(parent, child, i)) {
+              this.SetAllowedChild((Symbol)cloner.Clone(parent), (Symbol)cloner.Clone(child), i);
+            }
+          }
         }
       }
-      this.allSymbols = new Dictionary<string, Symbol>(copy.allSymbols);
-
-      cachedMinExpressionLength = new Dictionary<string, int>();
-      cachedMaxExpressionLength = new Dictionary<string, int>();
-      cachedMinExpressionDepth = new Dictionary<string, int>();
     }
 
     [StorableConstructor]
@@ -150,7 +160,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     #region ISymbolicExpressionGrammar Members
-
     public Symbol StartSymbol {
       get { return startSymbol; }
       set { startSymbol = value; }
@@ -271,7 +280,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       if (!ContainsSymbol(symbol)) throw new ArgumentException("Unknown symbol: " + symbol);
       return maxSubTreeCount[symbol.Name];
     }
-
     #endregion
 
     private void ClearCaches() {
@@ -281,9 +289,41 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      DefaultSymbolicExpressionGrammar clone = new DefaultSymbolicExpressionGrammar(this);
-      cloner.RegisterClonedObject(this, clone);
+      DefaultSymbolicExpressionGrammar clone = (DefaultSymbolicExpressionGrammar)base.Clone(cloner);
+
+      clone.minSubTreeCount = new Dictionary<string, int>(this.minSubTreeCount);
+      clone.maxSubTreeCount = new Dictionary<string, int>(this.maxSubTreeCount);
+
+      clone.allSymbols = new Dictionary<string, Symbol>();
+      foreach (Symbol symbol in this.allSymbols.Values.Select(s => cloner.Clone(s)))
+        clone.allSymbols.Add(symbol.Name, symbol);
+
+      clone.startSymbol = (Symbol)cloner.Clone(this.startSymbol);
+      clone.allowedChildSymbols = new Dictionary<string, List<List<string>>>();
+      foreach (var entry in this.allowedChildSymbols) {
+        clone.allowedChildSymbols[entry.Key] = new List<List<string>>(entry.Value.Count);
+        foreach (var set in entry.Value) {
+          clone.allowedChildSymbols[entry.Key].Add(new List<string>(set));
+        }
+      }
+
       return clone;
     }
+
+    protected void InitializeShallowClone(DefaultSymbolicExpressionGrammar clone) {
+      clone.minSubTreeCount = new Dictionary<string, int>(this.minSubTreeCount);
+      clone.maxSubTreeCount = new Dictionary<string, int>(this.maxSubTreeCount);
+
+      clone.allSymbols = new Dictionary<string, Symbol>(this.allSymbols);
+      clone.startSymbol = this.startSymbol;
+      clone.allowedChildSymbols = new Dictionary<string, List<List<string>>>(this.allowedChildSymbols.Count);
+      foreach (var entry in this.allowedChildSymbols) {
+        clone.allowedChildSymbols[entry.Key] = new List<List<string>>(entry.Value.Count);
+        foreach (var set in entry.Value) {
+          clone.allowedChildSymbols[entry.Key].Add(new List<string>(set));
+        }
+      }
+    }
+
   }
 }

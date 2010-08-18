@@ -29,9 +29,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("FullFunctionalExpressionGrammar", "Represents a grammar for functional expressions using all available functions.")]
   public class FullFunctionalExpressionGrammar : DefaultSymbolicExpressionGrammar {
-    [Storable]
-    private HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols.Variable variableSymbol;
-
     public FullFunctionalExpressionGrammar()
       : base() {
       Initialize();
@@ -59,12 +56,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var constant = new Constant();
       constant.MinValue = -20;
       constant.MaxValue = 20;
-      variableSymbol = new HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols.Variable();
+      var variableSymbol = new HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols.Variable();
+      var laggedVariable = new LaggedVariable();
+      laggedVariable.InitialFrequency = 0.0;
 
-      var allSymbols = new List<Symbol>() { add, sub, mul, div, mean, sin, cos, tan, log, exp, @if, gt, lt, and, or, not, constant, variableSymbol };
+      var allSymbols = new List<Symbol>() { add, sub, mul, div, mean, sin, cos, tan, log, exp, @if, gt, lt, and, or, not, constant, variableSymbol, laggedVariable };
       var unaryFunctionSymbols = new List<Symbol>() { sin, cos, tan, log, exp, not };
       var binaryFunctionSymbols = new List<Symbol>() { gt, lt };
       var functionSymbols = new List<Symbol>() { add, sub, mul, div, mean, and, or };
+      var terminalSymbols = new List<Symbol>() { variableSymbol, constant, laggedVariable };
 
       foreach (var symb in allSymbols)
         AddSymbol(symb);
@@ -82,12 +82,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         SetMaxSubtreeCount(funSymb, 2);
       }
 
+      foreach (var terminalSymbol in terminalSymbols) {
+        SetMinSubtreeCount(terminalSymbol, 0);
+        SetMaxSubtreeCount(terminalSymbol, 0);
+      }
+
       SetMinSubtreeCount(@if, 3);
       SetMaxSubtreeCount(@if, 3);
-      SetMinSubtreeCount(constant, 0);
-      SetMaxSubtreeCount(constant, 0);
-      SetMinSubtreeCount(variableSymbol, 0);
-      SetMaxSubtreeCount(variableSymbol, 0);
+
 
       // allow each symbol as child of the start symbol
       foreach (var symb in allSymbols) {

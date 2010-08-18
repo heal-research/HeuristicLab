@@ -19,6 +19,8 @@
  */
 #endregion
 
+using System;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
@@ -66,29 +68,47 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     [Storable]
     private Defun defunSymbol;
 
-
-
     public GlobalSymbolicExpressionGrammar(ISymbolicExpressionGrammar mainBranchGrammar)
-      : base() {
+      : base(mainBranchGrammar) {
       maxFunctionArguments = 3;
       maxFunctionDefinitions = 3;
-      Initialize(mainBranchGrammar);
+
+      ProgramRootSymbol programRootSymbol = Symbols.OfType<ProgramRootSymbol>().FirstOrDefault();
+      if (programRootSymbol == null) {
+        programRootSymbol = new ProgramRootSymbol();
+        AddSymbol(programRootSymbol);
+      }
+      StartSymbol = programRootSymbol;
+
+      defunSymbol = Symbols.OfType<Defun>().FirstOrDefault();
+      if (defunSymbol == null) {
+        defunSymbol = new Defun();
+        AddSymbol(defunSymbol);
+      }
+
+      SetMinSubtreeCount(StartSymbol, minFunctionDefinitions + 1);
+      SetMaxSubtreeCount(StartSymbol, maxFunctionDefinitions + 1);
+      SetMinSubtreeCount(defunSymbol, 1);
+      SetMaxSubtreeCount(defunSymbol, 1);
+
+      // the start symbol of the mainBranchGrammar is allowed as the result producing branch
+      SetAllowedChild(StartSymbol, Symbols.Where(s => s.Name == mainBranchGrammar.StartSymbol.Name).First(), 0);
+
+      // every symbol of the mainBranchGrammar that is allowed as child of the start symbol is also allowed as direct child of defun
+      foreach (var symb in mainBranchGrammar.Symbols) {
+        if (mainBranchGrammar.IsAllowedChild(mainBranchGrammar.StartSymbol, symb, 0))
+          SetAllowedChild(defunSymbol, Symbols.Where(s => s.Name == symb.Name).First(), 0);
+      }
     }
 
-    //copy constructor for cloning
-    protected GlobalSymbolicExpressionGrammar(GlobalSymbolicExpressionGrammar copy)
-      : base(copy) {
-      this.maxFunctionArguments = copy.maxFunctionArguments;
-      this.minFunctionArguments = copy.minFunctionArguments;
-      this.maxFunctionDefinitions = copy.maxFunctionDefinitions;
-      this.minFunctionDefinitions = copy.minFunctionDefinitions;
-    }
-
+    //ctor for cloning
+    protected GlobalSymbolicExpressionGrammar() : base() { }
     [StorableConstructor]
     protected GlobalSymbolicExpressionGrammar(bool deserializing)
       : base(deserializing) {
     }
 
+    [Obsolete]
     private void Initialize(ISymbolicExpressionGrammar mainBranchGrammar) {
       base.Clear();
 
@@ -150,8 +170,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      GlobalSymbolicExpressionGrammar clone = new GlobalSymbolicExpressionGrammar(this);
-      cloner.RegisterClonedObject(this, clone);
+      GlobalSymbolicExpressionGrammar clone = (GlobalSymbolicExpressionGrammar)base.Clone(cloner);
+      clone.defunSymbol = (Defun)cloner.Clone(this.defunSymbol);
+      clone.maxFunctionArguments = this.maxFunctionArguments;
+      clone.minFunctionArguments = this.minFunctionArguments;
+      clone.maxFunctionDefinitions = this.maxFunctionDefinitions;
+      clone.minFunctionDefinitions = this.minFunctionDefinitions;
       return clone;
     }
   }
