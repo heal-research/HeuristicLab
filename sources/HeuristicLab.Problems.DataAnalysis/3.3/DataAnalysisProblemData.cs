@@ -68,15 +68,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public IValueParameter<Dataset> DatasetParameter {
       get { return (IValueParameter<Dataset>)Parameters["Dataset"]; }
     }
-
     public IValueParameter<StringValue> TargetVariableParameter {
       get { return (IValueParameter<StringValue>)Parameters["TargetVariable"]; }
     }
-
     public IValueParameter<ICheckedItemList<StringValue>> InputVariablesParameter {
       get { return (IValueParameter<ICheckedItemList<StringValue>>)Parameters["InputVariables"]; }
     }
-
     public IValueParameter<IntValue> TrainingSamplesStartParameter {
       get { return (IValueParameter<IntValue>)Parameters["TrainingSamplesStart"]; }
     }
@@ -108,6 +105,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
           if (value == null) throw new ArgumentNullException();
           if (TargetVariable != null) DeregisterStringValueEventHandlers(TargetVariable);
           TargetVariableParameter.Value = value;
+          RegisterStringValueEventHandlers(TargetVariable);
         }
       }
     }
@@ -118,6 +116,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
           if (value == null) throw new ArgumentNullException();
           if (InputVariables != null) DeregisterInputVariablesEventHandlers();
           InputVariablesParameter.Value = value;
+          RegisterInputVariablesEventHandlers();
         }
       }
     }
@@ -128,6 +127,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
           if (value == null) throw new ArgumentNullException();
           if (TrainingSamplesStart != null) DeregisterValueTypeEventHandlers(TrainingSamplesStart);
           TrainingSamplesStartParameter.Value = value;
+          RegisterValueTypeEventHandlers(TrainingSamplesStart);
         }
       }
     }
@@ -138,6 +138,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
           if (value == null) throw new ArgumentNullException();
           if (TrainingSamplesEnd != null) DeregisterValueTypeEventHandlers(TrainingSamplesEnd);
           TrainingSamplesEndParameter.Value = value;
+          RegisterValueTypeEventHandlers(TrainingSamplesEnd);
         }
       }
     }
@@ -148,6 +149,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
           if (value == null) throw new ArgumentNullException();
           if (TestSamplesStart != null) DeregisterValueTypeEventHandlers(TestSamplesStart);
           TestSamplesStartParameter.Value = value;
+          RegisterValueTypeEventHandlers(TestSamplesStart);
         }
       }
     }
@@ -158,6 +160,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
           if (value == null) throw new ArgumentNullException();
           if (TestSamplesEnd != null) DeregisterValueTypeEventHandlers(TestSamplesEnd);
           TestSamplesEndParameter.Value = value;
+          RegisterValueTypeEventHandlers(TestSamplesEnd);
         }
       }
     }
@@ -241,33 +244,25 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
 
     #region parameter value changed event handlers
-    void DatasetParameter_ValueChanged(object sender, EventArgs e) {
+    private void DatasetParameter_ValueChanged(object sender, EventArgs e) {
       OnProblemDataChanged(EventArgs.Empty);
     }
-    void InputVariablesParameter_ValueChanged(object sender, EventArgs e) {
-      RegisterInputVariablesEventHandlers();
+    private void InputVariablesParameter_ValueChanged(object sender, EventArgs e) {
       OnProblemDataChanged(EventArgs.Empty);
     }
-    void TargetVariableParameter_ValueChanged(object sender, EventArgs e) {
-      if (TargetVariable != null) {
-        RegisterStringValueEventHandlers(TargetVariable);
-        OnProblemDataChanged(EventArgs.Empty);
-      }
+    private void TargetVariableParameter_ValueChanged(object sender, EventArgs e) {
+      if (TargetVariable != null) OnProblemDataChanged(EventArgs.Empty);
     }
-    void TrainingSamplesStartParameter_ValueChanged(object sender, EventArgs e) {
-      RegisterValueTypeEventHandlers(TrainingSamplesStart);
+    private void TrainingSamplesStartParameter_ValueChanged(object sender, EventArgs e) {
       OnProblemDataChanged(EventArgs.Empty);
     }
-    void TrainingSamplesEndParameter_ValueChanged(object sender, EventArgs e) {
-      RegisterValueTypeEventHandlers(TrainingSamplesEnd);
+    private void TrainingSamplesEndParameter_ValueChanged(object sender, EventArgs e) {
       OnProblemDataChanged(EventArgs.Empty);
     }
-    void TestSamplesStartParameter_ValueChanged(object sender, EventArgs e) {
-      RegisterValueTypeEventHandlers(TestSamplesStart);
+    private void TestSamplesStartParameter_ValueChanged(object sender, EventArgs e) {
       OnProblemDataChanged(EventArgs.Empty);
     }
-    void TestSamplesEndParameter_ValueChanged(object sender, EventArgs e) {
-      RegisterValueTypeEventHandlers(TestSamplesEnd);
+    private void TestSamplesEndParameter_ValueChanged(object sender, EventArgs e) {
       OnProblemDataChanged(EventArgs.Empty);
     }
     #endregion
@@ -277,8 +272,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
       InputVariables.ItemsAdded += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<HeuristicLab.Collections.IndexedItem<StringValue>>(InputVariables_ItemsAdded);
       InputVariables.ItemsRemoved += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<HeuristicLab.Collections.IndexedItem<StringValue>>(InputVariables_ItemsRemoved);
       InputVariables.CheckedItemsChanged += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<HeuristicLab.Collections.IndexedItem<StringValue>>(InputVariables_CheckedItemsChanged);
-      foreach (var item in InputVariables)
+      foreach (var item in InputVariables) {
         item.ValueChanged += new EventHandler(InputVariable_ValueChanged);
+      }
     }
 
     private void DeregisterInputVariablesEventHandlers() {
@@ -294,50 +290,42 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private void InputVariables_CheckedItemsChanged(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<HeuristicLab.Collections.IndexedItem<StringValue>> e) {
       OnProblemDataChanged(e);
     }
-
     private void InputVariables_ItemsRemoved(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<HeuristicLab.Collections.IndexedItem<StringValue>> e) {
       foreach (var indexedItem in e.Items)
         indexedItem.Value.ValueChanged -= new EventHandler(InputVariable_ValueChanged);
       OnProblemDataChanged(e);
     }
-
     private void InputVariables_ItemsAdded(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<HeuristicLab.Collections.IndexedItem<StringValue>> e) {
       foreach (var indexedItem in e.Items)
         indexedItem.Value.ValueChanged += new EventHandler(InputVariable_ValueChanged);
       OnProblemDataChanged(e);
     }
-
     private void InputVariables_CollectionReset(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<HeuristicLab.Collections.IndexedItem<StringValue>> e) {
       foreach (var indexedItem in e.OldItems)
         indexedItem.Value.ValueChanged -= new EventHandler(InputVariable_ValueChanged);
       OnProblemDataChanged(e);
     }
-
-    void InputVariable_ValueChanged(object sender, EventArgs e) {
+    private void InputVariable_ValueChanged(object sender, EventArgs e) {
       OnProblemDataChanged(e);
     }
-    #region helper
 
+    #region helper
     private void RegisterValueTypeEventHandlers<T>(ValueTypeValue<T> value) where T : struct {
       value.ValueChanged += new EventHandler(value_ValueChanged);
     }
-
     private void DeregisterValueTypeEventHandlers<T>(ValueTypeValue<T> value) where T : struct {
       value.ValueChanged -= new EventHandler(value_ValueChanged);
     }
-
-    void value_ValueChanged(object sender, EventArgs e) {
-      OnProblemDataChanged(e);
-    }
-
     private void RegisterStringValueEventHandlers(StringValue value) {
       value.ValueChanged += new EventHandler(value_ValueChanged);
     }
-
     private void DeregisterStringValueEventHandlers(StringValue value) {
       value.ValueChanged -= new EventHandler(value_ValueChanged);
     }
 
+    private void value_ValueChanged(object sender, EventArgs e) {
+      OnProblemDataChanged(e);
+    }
     #endregion
     #endregion
 

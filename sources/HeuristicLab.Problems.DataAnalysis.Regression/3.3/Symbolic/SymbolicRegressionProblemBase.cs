@@ -112,6 +112,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
 
     public ISymbolicExpressionGrammar FunctionTreeGrammar {
       get { return (ISymbolicExpressionGrammar)FunctionTreeGrammarParameter.Value; }
+      private set { FunctionTreeGrammarParameter.Value = value; }
     }
     public override IEnumerable<IOperator> Operators {
       get { return operators; }
@@ -189,6 +190,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       MaxFunctionArgumentsParameter.ValueChanged += new EventHandler(ArchitectureParameter_ValueChanged);
       MaxFunctionDefiningBranchesParameter.ValueChanged += new EventHandler(ArchitectureParameter_ValueChanged);
       SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
+      FunctionTreeGrammarParameter.ValueChanged += new EventHandler(FunctionTreeGrammarParameter_ValueChanged);
     }
 
     private void RegisterParameterEvents() {
@@ -210,7 +212,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     protected virtual void OnArchitectureParameterChanged(EventArgs e) {
       UpdateGrammar();
     }
-    protected virtual void OnGrammarChanged(EventArgs e) { }
+    protected virtual void OnGrammarChanged() { UpdateGrammar(); }
     protected virtual void OnOperatorsChanged(EventArgs e) { RaiseOperatorsChanged(e); }
     protected virtual void OnSolutionCreatorChanged(EventArgs e) {
       SolutionCreator.SymbolicExpressionTreeParameter.ActualNameChanged += new EventHandler(SolutionCreator_SymbolicExpressionTreeParameter_ActualNameChanged);
@@ -230,6 +232,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     #endregion
 
     #region event handlers
+    private void FunctionTreeGrammarParameter_ValueChanged(object sender, EventArgs e) {
+      if (!(FunctionTreeGrammar is GlobalSymbolicExpressionGrammar))
+        FunctionTreeGrammar = new GlobalSymbolicExpressionGrammar(FunctionTreeGrammar);
+      OnGrammarChanged();
+    }
+
     private void SolutionCreatorParameter_ValueChanged(object sender, EventArgs e) {
       OnSolutionCreatorChanged(e);
     }

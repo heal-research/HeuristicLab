@@ -20,21 +20,14 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Analyzers;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers;
-using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [Item("Symbolic Regression Problem (single objective)", "Represents a single objective symbolic regression problem.")]
@@ -83,12 +76,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     protected SymbolicRegressionProblem(bool deserializing) : base(deserializing) { }
     public SymbolicRegressionProblem()
       : base() {
-      var evaluator = new SymbolicRegressionScaledMeanSquaredErrorEvaluator();
-      Parameters.Add(new ValueParameter<BoolValue>("Maximization", "Set to false as the error of the regression model should be minimized.", (BoolValue)new BoolValue(false).AsReadOnly()));
+      var evaluator = new SymbolicRegressionPearsonsRSquaredEvaluator();
+      Parameters.Add(new ValueParameter<BoolValue>("Maximization", "Set to false as the error of the regression model should be minimized.", (BoolValue)new BoolValue(true)));
       Parameters.Add(new ValueParameter<ISymbolicRegressionEvaluator>("Evaluator", "The operator which should be used to evaluate symbolic regression solutions.", evaluator));
       Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The minimal error value that reached by symbolic regression solutions for the problem."));
 
-      evaluator.QualityParameter.ActualName = "TrainingMeanSquaredError";
+      evaluator.QualityParameter.ActualName = "TrainingPearsonR2";
 
       InitializeOperators();
       ParameterizeEvaluator();

@@ -25,6 +25,7 @@ using System.Drawing;
 using System.Linq;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   /// <summary>
@@ -49,9 +50,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
 
     protected override void RecalculateEstimatedValues() {
-      estimatedValues = (from x in Model.GetEstimatedValues(ProblemData, 0, ProblemData.Dataset.Rows)
-                         let boundedX = Math.Min(UpperEstimationLimit, Math.Max(LowerEstimationLimit, x))
-                         select double.IsNaN(boundedX) ? UpperEstimationLimit : boundedX).ToList();
+      int minLag = 0;
+      var laggedTreeNodes = Model.SymbolicExpressionTree.IterateNodesPrefix().OfType<LaggedVariableTreeNode>();
+      if (laggedTreeNodes.Any())
+        minLag = laggedTreeNodes.Min(node => node.Lag);
+      IEnumerable<double> calculatedValues =
+          from x in Model.GetEstimatedValues(ProblemData, 0 - minLag, ProblemData.Dataset.Rows)
+          let boundedX = Math.Min(UpperEstimationLimit, Math.Max(LowerEstimationLimit, x))
+          select double.IsNaN(boundedX) ? UpperEstimationLimit : boundedX;
+      estimatedValues = Enumerable.Repeat(double.NaN, Math.Abs(minLag)).Concat(calculatedValues).ToList();
       OnEstimatedValuesChanged();
     }
 
