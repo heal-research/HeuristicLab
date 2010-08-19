@@ -36,7 +36,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// </summary>
   [StorableClass]
   [Item("DefaultSymbolicExpressionGrammar", "Represents a grammar that defines the syntax of symbolic expression trees.")]
-  public class DefaultSymbolicExpressionGrammar : Item, ISymbolicExpressionGrammar {
+  public abstract class DefaultSymbolicExpressionGrammar : Item, ISymbolicExpressionGrammar {
 
     #region properties for separation between implementation and persistence
     [Storable]
@@ -87,7 +87,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     [Storable]
     private Symbol startSymbol;
 
-    public DefaultSymbolicExpressionGrammar()
+    protected DefaultSymbolicExpressionGrammar()
       : base() {
       this.minSubTreeCount = new Dictionary<string, int>();
       this.maxSubTreeCount = new Dictionary<string, int>();

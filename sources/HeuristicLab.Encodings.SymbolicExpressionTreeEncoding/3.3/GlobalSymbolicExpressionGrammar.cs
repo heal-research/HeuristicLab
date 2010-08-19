@@ -29,7 +29,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableClass]
   [Item("GlobalSymbolicExpressionGrammar", "Represents a grammar that defines the syntax of symbolic expression trees.")]
-  public class GlobalSymbolicExpressionGrammar : DefaultSymbolicExpressionGrammar {
+  public sealed class GlobalSymbolicExpressionGrammar : DefaultSymbolicExpressionGrammar {
     [Storable]
     private int minFunctionDefinitions;
     public int MinFunctionDefinitions {
@@ -102,9 +102,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     //ctor for cloning
-    protected GlobalSymbolicExpressionGrammar() : base() { }
+    private GlobalSymbolicExpressionGrammar() : base() { }
     [StorableConstructor]
-    protected GlobalSymbolicExpressionGrammar(bool deserializing)
+    private GlobalSymbolicExpressionGrammar(bool deserializing)
       : base(deserializing) {
     }
 
