@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using HeuristicLab.Collections;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
@@ -84,6 +85,7 @@ namespace HeuristicLab.Parameters.Views {
         viewHost.Content = null;
         FillValueComboBox();
       } else {
+        SetDataTypeTextBoxText();
         FillValueComboBox();
         viewHost.ViewType = null;
         viewHost.Content = Content.Value;
@@ -120,9 +122,10 @@ namespace HeuristicLab.Parameters.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_ValueChanged), sender, e);
       else {
-        valueComboBox.SelectedIndex = valueComboBoxItems.IndexOf(Content.Value);
+        SetDataTypeTextBoxText();
+        valueComboBox.SelectedIndex = valueComboBoxItems.IndexOf(Content != null ? Content.Value : null);
         viewHost.ViewType = null;
-        viewHost.Content = Content.Value;
+        viewHost.Content = Content != null ? Content.Value : null;
       }
     }
     private void ValidValues_ItemsAdded(object sender, CollectionItemsChangedEventArgs<T> e) {
@@ -149,5 +152,18 @@ namespace HeuristicLab.Parameters.Views {
       if (valueComboBox.SelectedIndex >= 0)
         Content.Value = valueComboBoxItems[valueComboBox.SelectedIndex];
     }
+
+    #region Helpers
+    protected void SetDataTypeTextBoxText() {
+      if (Content == null) {
+        dataTypeTextBox.Text = "-";
+      } else {
+        if ((Content.Value != null) && (Content.Value.GetType() != Content.DataType))
+          dataTypeTextBox.Text = Content.DataType.GetPrettyName() + " (" + Content.Value.GetType().GetPrettyName() + ")";
+        else
+          dataTypeTextBox.Text = Content.DataType.GetPrettyName();
+      }
+    }
+    #endregion
   }
 }

@@ -21,6 +21,7 @@
 
 using System;
 using System.Windows.Forms;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
@@ -78,6 +79,7 @@ namespace HeuristicLab.Parameters.Views {
         clearValueButton.Visible = true;
         valueViewHost.Content = null;
       } else {
+        SetDataTypeTextBoxText();
         clearValueButton.Visible = !(Content is ValueParameter<T>);
         valueViewHost.ViewType = null;
         valueViewHost.Content = Content.Value;
@@ -95,9 +97,10 @@ namespace HeuristicLab.Parameters.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_ValueChanged), sender, e);
       else {
-        clearValueButton.Enabled = Content.Value != null && !ReadOnly;
+        SetDataTypeTextBoxText();
+        clearValueButton.Enabled = Content != null && Content.Value != null && !ReadOnly;
         valueViewHost.ViewType = null;
-        valueViewHost.Content = Content.Value;
+        valueViewHost.Content = Content != null ? Content.Value : null;
       }
     }
 
@@ -137,5 +140,18 @@ namespace HeuristicLab.Parameters.Views {
         Content.Value = value;
       }
     }
+
+    #region Helpers
+    protected void SetDataTypeTextBoxText() {
+      if (Content == null) {
+        dataTypeTextBox.Text = "-";
+      } else {
+        if ((Content.Value != null) && (Content.Value.GetType() != Content.DataType))
+          dataTypeTextBox.Text = Content.DataType.GetPrettyName() + " (" + Content.Value.GetType().GetPrettyName() + ")";
+        else
+          dataTypeTextBox.Text = Content.DataType.GetPrettyName();
+      }
+    }
+    #endregion
   }
 }
