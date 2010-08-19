@@ -66,6 +66,8 @@ namespace HeuristicLab.Random {
       Parameters.Add(new ValueLookupParameter<DoubleValue>("Sigma", "Sigma parameter of the normal distribution (N(mu,sigma))."));
       Parameters.Add(new LookupParameter<DoubleValue>("Value", "The value that should be set to a random value."));
     }
+    [StorableConstructor]
+    protected NormalRandomizer(bool deserializing) : base(deserializing) { }
 
     /// <summary>
     /// Generates a new normally distributed random variable and assigns it to the specified variable.

@@ -1,4 +1,5 @@
 ﻿using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -42,7 +43,7 @@ namespace HeuristicLab.Random {
   ///   
   /// </summary>
   [StorableClass]
-  public class FastRandom : Item, IRandom {
+  public sealed class FastRandom : Item, IRandom {
     // The +1 ensures NextDouble doesn't generate 1.0
     private const double REAL_UNIT_INT = 1.0 / ((double)int.MaxValue + 1.0);
     private const double REAL_UNIT_UINT = 1.0 / ((double)uint.MaxValue + 1.0);
@@ -69,6 +70,13 @@ namespace HeuristicLab.Random {
     public FastRandom(int seed) {
       Reinitialise(seed);
     }
+
+    /// <summary>
+    /// Used by HeuristicLab.Persistence to initialize new instances during deserialization.
+    /// </summary>
+    /// <param name="deserializing">true, if the constructor is called during deserialization.</param>
+    [StorableConstructor]
+    private FastRandom(bool deserializing) : base(deserializing) { }
 
     #endregion
 
@@ -318,7 +326,7 @@ namespace HeuristicLab.Random {
         return (bitBuffer & bitMask) == 0;
       }
       return (bitBuffer & (bitMask >>= 1)) == 0;
-    }           
+    }
     // Buffer 32 bits in bitBuffer, return 1 at a time, keep track of how many have been returned
     // with bitBufferIdx.
     [Storable]
@@ -327,7 +335,7 @@ namespace HeuristicLab.Random {
     private uint bitMask = 1;
 
 
-    #endregion    
+    #endregion
 
     #region IRandom Members
 
@@ -339,9 +347,9 @@ namespace HeuristicLab.Random {
       Reinitialise(seed);
     }
 
-    #endregion   
+    #endregion
 
-    public override Common.IDeepCloneable Clone(Common.Cloner cloner) {
+    public override IDeepCloneable Clone(Cloner cloner) {
       FastRandom clone = (FastRandom)base.Clone(cloner);
       clone.x = x;
       clone.y = y;

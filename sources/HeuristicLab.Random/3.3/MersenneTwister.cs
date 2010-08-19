@@ -42,7 +42,7 @@ namespace HeuristicLab.Random {
   /// </summary>
   [Item("MersenneTwister", "A high-quality pseudo random number generator which creates uniformly distributed random numbers.")]
   [StorableClass]
-  public class MersenneTwister : Item, IRandom {
+  public sealed class MersenneTwister : Item, IRandom {
     private const int n = 624, m = 397;
 
     private object locker = new object();
@@ -77,6 +77,12 @@ namespace HeuristicLab.Random {
       seed(array);
       init = true;
     }
+    /// <summary>
+    /// Used by HeuristicLab.Persistence to initialize new instances during deserialization.
+    /// </summary>
+    /// <param name="deserializing">true, if the constructor is called during deserialization.</param>
+    [StorableConstructor]
+    private MersenneTwister(bool deserializing) : base(deserializing) { }
 
     /// <summary>
     /// Clones the current instance (deep clone).

@@ -33,7 +33,7 @@ namespace HeuristicLab.Random {
   /// </summary>
   [Item("NormalDistributedRandom", "A pseudo random number generator which uses the Ziggurat method to create normally distributed random numbers.")]
   [StorableClass]
-  public class NormalDistributedRandom : Item, IRandom {
+  public sealed class NormalDistributedRandom : Item, IRandom {
     [Storable]
     private double mu;
     /// <summary>
@@ -470,6 +470,12 @@ namespace HeuristicLab.Random {
       this.sigma = sigma;
       this.uniform = uniformRandom;
     }
+    /// <summary>
+    /// Used by HeuristicLab.Persistence to initialize new instances during deserialization.
+    /// </summary>
+    /// <param name="deserializing">true, if the constructor is called during deserialization.</param>
+    [StorableConstructor]
+    private NormalDistributedRandom(bool deserializing) : base(deserializing) { }
 
     #region IRandom Members
 

@@ -107,7 +107,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLabRandomPlugin.cs.frame" />
-    <Compile Include="FastRandomCreator.cs" />
     <Compile Include="FastRandom.cs" />
     <Compile Include="HeuristicLabRandomPlugin.cs" />
     <Compile Include="MersenneTwister.cs">

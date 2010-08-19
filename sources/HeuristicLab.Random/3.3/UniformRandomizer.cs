@@ -69,6 +69,8 @@ namespace HeuristicLab.Random {
       Parameters.Add(new ValueLookupParameter<DoubleValue>("Max", "The maximal allowed value (exclusive)"));
       Parameters.Add(new LookupParameter<DoubleValue>("Value", "The value that should be set to a random value."));
     }
+    [StorableConstructor]
+    protected UniformRandomizer(bool deserializing) : base(deserializing) { }
 
     /// <summary>
     /// Generates a new uniformly distributed random variable.

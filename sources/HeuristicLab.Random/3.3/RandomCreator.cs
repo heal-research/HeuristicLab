@@ -38,6 +38,9 @@ namespace HeuristicLab.Random {
     public ValueLookupParameter<IntValue> SeedParameter {
       get { return (ValueLookupParameter<IntValue>)Parameters["Seed"]; }
     }
+    public ValueParameter<IRandom> RandomTypeParameter {
+      get { return (ValueParameter<IRandom>)Parameters["RandomType"]; }
+    }
     public LookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
@@ -49,13 +52,29 @@ namespace HeuristicLab.Random {
       get { return SeedParameter.Value; }
       set { SeedParameter.Value = value; }
     }
+    public IRandom RandomType {
+      get { return RandomTypeParameter.Value; }
+      set { RandomTypeParameter.Value = value; }
+    }
 
     public RandomCreator()
       : base() {
       Parameters.Add(new ValueLookupParameter<BoolValue>("SetSeedRandomly", "True if the random seed should be set to a random value, otherwise false.", new BoolValue(true)));
       Parameters.Add(new ValueLookupParameter<IntValue>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
+      Parameters.Add(new ValueParameter<IRandom>("RandomType", "The type of pseudo random number generator which is created.", new MersenneTwister()));
       Parameters.Add(new LookupParameter<IRandom>("Random", "The new pseudo random number generator which is initialized with the given seed."));
     }
+    [StorableConstructor]
+    private RandomCreator(bool deserializing) : base(deserializing) { }
+
+    // BackwardsCompatibility3.3
+    #region Backwards compatible code (remove with 3.4)
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserializationHook() {
+      if (!Parameters.ContainsKey("RandomType"))
+        Parameters.Add(new ValueParameter<IRandom>("RandomType", "The type of pseudo random number generator which is created.", new MersenneTwister()));
+    }
+    #endregion
 
     public override IOperation Apply() {
       if (SetSeedRandomlyParameter.ActualValue == null) SetSeedRandomlyParameter.ActualValue = new BoolValue(true);
@@ -64,7 +83,9 @@ namespace HeuristicLab.Random {
       IntValue seed = SeedParameter.ActualValue;
 
       if (setSeedRandomly) seed.Value = new System.Random().Next();
-      RandomParameter.ActualValue = new MersenneTwister((uint)seed.Value);
+      IRandom random = (IRandom)RandomType.Clone();
+      random.Reset(seed.Value);
+      RandomParameter.ActualValue = random;
 
       return base.Apply();
     }
