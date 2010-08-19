@@ -429,6 +429,7 @@
     <None Include="Resources\HeuristicLab\HeuristicLabBanner.png" />
     <None Include="Resources\HeuristicLab\HeuristicLabLogo.png" />
     <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_ActualSize.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Disconnect.png" />
     <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Performance.ico" />
   </ItemGroup>
   <ItemGroup>
