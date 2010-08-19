@@ -114,6 +114,7 @@ namespace HeuristicLab.Core.Views {
             valid = valid && (ShowNotInstantiableTypes || !type.IsAbstract);
             valid = valid && (ShowNotInstantiableTypes || !type.IsInterface);
             valid = valid && (ShowNotInstantiableTypes || !type.HasElementType);
+            valid = valid && (ShowNotInstantiableTypes || type.GetConstructor(Type.EmptyTypes) != null); //check for public default ctor
             if (valid) {
               TreeNode typeNode = new TreeNode();
               string name = ItemAttribute.GetName(type);
