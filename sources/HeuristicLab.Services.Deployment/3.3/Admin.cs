@@ -19,29 +19,22 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.ServiceModel;
-using System.Text;
-using HeuristicLab.Services.Deployment.DataAccess;
 using System.Security.Permissions;
 
 namespace HeuristicLab.Services.Deployment {
   public class Admin : IAdmin {
     #region IAdmin Members
-    [PrincipalPermission(SecurityAction.Demand, Role = "Managers")]
+    [PrincipalPermission(SecurityAction.Demand, Role = "Deployment Administrator")]
     public void DeployProduct(ProductDescription product) {
       var store = new PluginStore();
       store.Persist(product);
     }
-    [PrincipalPermission(SecurityAction.Demand, Role = "Managers")]
+    [PrincipalPermission(SecurityAction.Demand, Role = "Deployment Administrator")]
     public void DeleteProduct(ProductDescription product) {
       var store = new PluginStore();
       store.Delete(product);
     }
-    [PrincipalPermission(SecurityAction.Demand, Role = "Managers")]
+    [PrincipalPermission(SecurityAction.Demand, Role = "Deployment Administrator")]
     public void DeployPlugin(PluginDescription plugin, byte[] zipFile) {
       var store = new PluginStore();
       store.Persist(plugin, zipFile);
