@@ -1,0 +1,527 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 13.375, 9.375" name="OKB">
+  <DataContextMoniker Name="/OKBDataContext" />
+  <nestedChildShapes>
+    <classShape Id="6abee4a0-9a54-4c51-bb1b-31061cb25f9f" absoluteBounds="10.625, 6.75, 2, 1.1939925130208344">
+      <DataClassMoniker Name="/OKBDataContext/User" />
+      <nestedChildShapes>
+        <elementListCompartment Id="b075afcd-344d-4a87-bd57-0ca2e20b82cc" absoluteBounds="10.64, 7.2100000000000009, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="e061f93d-509b-4bc6-901c-e6cfdfd69867" isExpanded="false" absoluteBounds="3.125, 4, 2, 0.45">
+      <DataClassMoniker Name="/OKBDataContext/Algorithm_Parameter" />
+      <nestedChildShapes>
+        <elementListCompartment Id="fb48507a-41f4-4588-bd7d-24ca5d51b7a5" absoluteBounds="3.1400000000000006, 4.4600000000000009, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="58c2dddf-6b8a-460e-b9f4-d04299b79210" absoluteBounds="0.625, 0.5, 2, 1.3862939453125023">
+      <DataClassMoniker Name="/OKBDataContext/AlgorithmClass" />
+      <nestedChildShapes>
+        <elementListCompartment Id="fc673d38-4fb9-40bf-8f93-e237d1a8fed2" absoluteBounds="0.64000000000000012, 0.96000000000000085, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="729912f6-fb7b-4447-ae25-ffb25578bd13" isExpanded="false" absoluteBounds="3.125, 3, 2, 0.45">
+      <DataClassMoniker Name="/OKBDataContext/AlgorithmData" />
+      <nestedChildShapes>
+        <elementListCompartment Id="96f34df2-e1d4-4700-8cf2-0437a1eb36be" absoluteBounds="3.1399999999999997, 3.4600000000000009, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="a9cd1c2f-1a1a-4c37-9fcf-646a051820f2" isExpanded="false" absoluteBounds="3.125, 8.25, 2, 0.45">
+      <DataClassMoniker Name="/OKBDataContext/BlobResultValue" />
+      <nestedChildShapes>
+        <elementListCompartment Id="e1513fbb-a565-4510-b66b-1f44476b1b19" absoluteBounds="3.1400000000000006, 8.71, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="a782534f-cc38-43ef-bf3a-297bfdf111d9" isExpanded="false" absoluteBounds="8.125, 4.75, 2, 0.45">
+      <DataClassMoniker Name="/OKBDataContext/CharParameterValue" />
+      <nestedChildShapes>
+        <elementListCompartment Id="48f55d6c-5249-40df-a509-98e14e61abc2" absoluteBounds="8.1400000005960464, 5.21000000089407, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="876ede77-da2a-4619-bef8-f84d73798bb7" isExpanded="false" absoluteBounds="8.125, 2.625, 2, 0.45">
+      <DataClassMoniker Name="/OKBDataContext/CharProblemCharacteristicValue" />
+      <nestedChildShapes>
+        <elementListCompartment Id="d381c2b0-f63b-4a56-9b0f-525ba0653ebf" absoluteBounds="8.14, 3.0850000000000009, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="9612fac1-ba28-43fc-83d4-5ff9fedef18d" isExpanded="false" absoluteBounds="3.125, 6.75, 2, 0.45">
+      <DataClassMoniker Name="/OKBDataContext/CharResultValue" />
+      <nestedChildShapes>
+        <elementListCompartment Id="803e3c30-2b15-4ed0-92f8-de2447ac8b51" absoluteBounds="3.1400000000000006, 7.2100000000000009, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="e2c62cf2-d077-43f5-9393-a88252e74941" absoluteBounds="0.875, 5.5, 2, 1.1939925130208344">
+      <DataClassMoniker Name="/OKBDataContext/Client" />
+      <nestedChildShapes>
+        <elementListCompartment Id="26d7b85f-b34c-44be-b935-4e4de55f93a2" absoluteBounds="0.89000000000000057, 5.9600000000000009, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="cf610b34-fb6c-487b-abfa-0f03eb70fb21" absoluteBounds="10.5, 0.5, 2, 1.3862939453124987">
+      <DataClassMoniker Name="/OKBDataContext/DataType" />
+      <nestedChildShapes>
+        <elementListCompartment Id="0d6b3052-c543-4dab-8da2-ac35d3c084dd" absoluteBounds="10.515, 0.96000000000000085, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="f91d981c-4c4c-407a-aedd-bc0091bdd664" absoluteBounds="5.5, 4.25, 2, 1.5785953776041666">
+      <DataClassMoniker Name="/OKBDataContext/Experiment" />
+      <nestedChildShapes>
+        <elementListCompartment Id="842b4ada-aadb-4e80-95e3-0d500b5cb14b" absoluteBounds="5.5150000000000006, 4.7100000000000009, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="12d4c13b-7509-49ae-998b-a0b43f160db7" absoluteBounds="8.125, 7.5, 2, 1.1939925130208309">
+      <DataClassMoniker Name="/OKBDataContext/ExperimentCreator" />
+      <nestedChildShapes>
+        <elementListCompartment Id="e4e83d65-2fb2-4364-8f61-64ce8440b3c4" absoluteBounds="8.14, 7.9600000000000009, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="51fb443c-2ed1-4364-9dc3-84a606c921f5" isExpanded="false" absoluteBounds="8.125, 4.25, 2, 0.45">
+      <DataClassMoniker Name="/OKBDataContext/FloatParameterValue" />
+      <nestedChildShapes>
+        <elementListCompartment Id="5bd13978-5901-4096-b65f-4d29a32bda70" absoluteBounds="8.14, 4.7100000000000009, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="c8ef7e44-7370-43e7-af01-97fa14c3b67d" isExpanded="false" absoluteBounds="8.125, 2.125, 2, 0.45">
+      <DataClassMoniker Name="/OKBDataContext/FloatProblemCharacteristicValue" />
+      <nestedChildShapes>
+        <elementListCompartment Id="d4d8ca79-8460-4dff-b5f1-d47f88338b75" absoluteBounds="8.1400000005960464, 2.5850000008940697, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="1ace6e41-a514-40d5-951e-3d776d4ead12" isExpanded="false" absoluteBounds="3.125, 7.25, 2, 0.45">
+      <DataClassMoniker Name="/OKBDataContext/FloatResultValue" />
+      <nestedChildShapes>
+        <elementListCompartment Id="f722f7f4-6e76-4b53-94ae-27f593ed870d" absoluteBounds="3.1400000000000006, 7.7100000000000009, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="2b634d14-6f55-4540-adf5-d208acc74946" isExpanded="false" absoluteBounds="8.125, 5.25, 2, 0.45">
+      <DataClassMoniker Name="/OKBDataContext/IntParameterValue" />
+      <nestedChildShapes>
+        <elementListCompartment Id="43baef29-fe49-4994-9154-1f9df4bc8af5" absoluteBounds="8.14, 5.7100000000000009, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="32c25111-3cda-4647-8ee9-74db3b80cac0" isExpanded="false" absoluteBounds="8.125, 3.125, 2, 0.45">
+      <DataClassMoniker Name="/OKBDataContext/IntProblemCharacteristicValue" />
+      <nestedChildShapes>
+        <elementListCompartment Id="3bc485ec-01ad-4615-a3ec-8c0e5f83b89c" absoluteBounds="8.14, 3.5850000000000009, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="35203392-27ea-40f6-8435-094df5ed122a" isExpanded="false" absoluteBounds="3.125, 7.75, 2, 0.45">
+      <DataClassMoniker Name="/OKBDataContext/IntResultValue" />
+      <nestedChildShapes>
+        <elementListCompartment Id="293f584e-8cf2-4cb0-9fb8-bb8356c309c9" absoluteBounds="3.1400000000000006, 8.21, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="6c3d2cbe-8fb3-49bd-9390-53177f3dc5fa" absoluteBounds="3.125, 0.5, 2, 1.3862939453125023">
+      <DataClassMoniker Name="/OKBDataContext/Platform" />
+      <nestedChildShapes>
+        <elementListCompartment Id="0b4552ba-a2ce-4a01-a7d7-04f919a43ddf" absoluteBounds="3.1400000005960464, 0.96000000089406967, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="367a45c9-887f-4faf-b038-d76007c4a052" absoluteBounds="5.5, 2.125, 2, 1.9631982421874952">
+      <DataClassMoniker Name="/OKBDataContext/Problem" />
+      <nestedChildShapes>
+        <elementListCompartment Id="df1447a5-c939-49d4-a0aa-4cac48de48a7" absoluteBounds="5.5150000000000006, 2.5850000000000009, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="bf075940-80da-477a-9706-a3dd0ffba1da" isExpanded="false" absoluteBounds="8.125, 3.625, 2, 0.45">
+      <DataClassMoniker Name="/OKBDataContext/Problem_Parameter" />
+      <nestedChildShapes>
+        <elementListCompartment Id="c15a3e7d-2a41-4767-8095-785fd6de190a" absoluteBounds="8.14, 4.0850000000000009, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="c2b4b1f9-1a1f-4393-af96-641a5dce3c4a" absoluteBounds="10.5, 2.125, 2, 1.5785953776041666">
+      <DataClassMoniker Name="/OKBDataContext/ProblemCharacteristic" />
+      <nestedChildShapes>
+        <elementListCompartment Id="20693bf3-9337-4668-9099-c429cdd9ae6d" absoluteBounds="10.515, 2.5850000000000009, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="ed58689e-36e3-4438-973b-afcb64f6bea9" absoluteBounds="5.5, 0.5, 2, 1.3862939453125023">
+      <DataClassMoniker Name="/OKBDataContext/ProblemClass" />
+      <nestedChildShapes>
+        <elementListCompartment Id="a43ec0b8-8db5-4945-a091-4237ebba1ab0" absoluteBounds="5.515, 0.96000000000000085, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="b9cb0cc6-e33f-43bb-8436-cbeeeec8616f" isExpanded="false" absoluteBounds="3.125, 3.5, 2, 0.45">
+      <DataClassMoniker Name="/OKBDataContext/ProblemData" />
+      <nestedChildShapes>
+        <elementListCompartment Id="18eee346-e9ca-4d10-9bc8-99762cf0f007" absoluteBounds="3.1400000000000006, 3.9600000000000009, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="c7b79b94-b667-47e5-bcbc-23e2ee1daefa" absoluteBounds="3.125, 4.625, 2, 1.3862939453125023">
+      <DataClassMoniker Name="/OKBDataContext/Project" />
+      <nestedChildShapes>
+        <elementListCompartment Id="dbf4b1b3-5533-41af-b31a-2a9964e8913a" absoluteBounds="3.1400000000000006, 5.0850000000000009, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="39967a3e-8ba4-4866-a63b-4c8d2fdb1e08" absoluteBounds="5.625, 6.75, 2, 1.7708968098958344">
+      <DataClassMoniker Name="/OKBDataContext/Run" />
+      <nestedChildShapes>
+        <elementListCompartment Id="68a49e84-2867-4be6-8945-54c36a1fd47d" absoluteBounds="5.6400000000000006, 7.2100000000000009, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="dd93cdce-fce0-4d14-96ac-e681aeca4fb5" absoluteBounds="8.125, 0.5, 2, 1.3862939453125023">
+      <DataClassMoniker Name="/OKBDataContext/SolutionRepresentation" />
+      <nestedChildShapes>
+        <elementListCompartment Id="d8275b46-9429-4c08-8631-7eb644ba9ec5" absoluteBounds="8.14, 0.96000000000000085, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(7.5 : 4.975); (8.125 : 4.975)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/Experiment/Experiment_CharParameterValue" />
+      <nodes>
+        <classShapeMoniker Id="f91d981c-4c4c-407a-aedd-bc0091bdd664" />
+        <classShapeMoniker Id="a782534f-cc38-43ef-bf3a-297bfdf111d9" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(7.07291666666667 : 5.82859537760417); (7.07291666666667 : 6.50172191879847); (7.82609398177643 : 6.50172191879847); (7.82609398177643 : 8.1875); (8.125 : 8.1875)]" manuallyRouted="true" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/Experiment/Experiment_ExperimentCreator" />
+      <nodes>
+        <classShapeMoniker Id="f91d981c-4c4c-407a-aedd-bc0091bdd664" />
+        <classShapeMoniker Id="12d4c13b-7509-49ae-998b-a0b43f160db7" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(10.625 : 7.30729140533756); (10.385 : 7.30729140533756); (10.385 : 8.26562470439823); (10.125 : 8.26562470439823)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/User/User_ExperimentCreator" />
+      <nodes>
+        <classShapeMoniker Id="6abee4a0-9a54-4c51-bb1b-31061cb25f9f" />
+        <classShapeMoniker Id="12d4c13b-7509-49ae-998b-a0b43f160db7" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(7.5 : 4.475); (8.125 : 4.475)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/Experiment/Experiment_FloatParameterValue" />
+      <nodes>
+        <classShapeMoniker Id="f91d981c-4c4c-407a-aedd-bc0091bdd664" />
+        <classShapeMoniker Id="51fb443c-2ed1-4364-9dc3-84a606c921f5" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(7.5 : 5.475); (8.125 : 5.475)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/Experiment/Experiment_IntParameterValue" />
+      <nodes>
+        <classShapeMoniker Id="f91d981c-4c4c-407a-aedd-bc0091bdd664" />
+        <classShapeMoniker Id="2b634d14-6f55-4540-adf5-d208acc74946" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(7.5 : 2.85); (8.125 : 2.85)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/Problem/Problem_CharProblemCharacteristicValue" />
+      <nodes>
+        <classShapeMoniker Id="367a45c9-887f-4faf-b038-d76007c4a052" />
+        <classShapeMoniker Id="876ede77-da2a-4619-bef8-f84d73798bb7" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(6.5 : 4.0881982421875); (6.5 : 4.25)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/Problem/Problem_Experiment" />
+      <nodes>
+        <classShapeMoniker Id="367a45c9-887f-4faf-b038-d76007c4a052" />
+        <classShapeMoniker Id="f91d981c-4c4c-407a-aedd-bc0091bdd664" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(7.5 : 2.39583324765166); (8.125 : 2.39583324765166)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/Problem/Problem_FloatProblemCharacteristicValue" />
+      <nodes>
+        <classShapeMoniker Id="367a45c9-887f-4faf-b038-d76007c4a052" />
+        <classShapeMoniker Id="c8ef7e44-7370-43e7-af01-97fa14c3b67d" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(7.5 : 3.35); (8.125 : 3.35)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/Problem/Problem_IntProblemCharacteristicValue" />
+      <nodes>
+        <classShapeMoniker Id="367a45c9-887f-4faf-b038-d76007c4a052" />
+        <classShapeMoniker Id="32c25111-3cda-4647-8ee9-74db3b80cac0" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(4.28854151329647 : 1.8862939453125); (4.28854151329647 : 2.58749990746379); (5.5 : 2.58749990746379)]" manuallyRouted="true" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/Platform/Platform_Problem" />
+      <nodes>
+        <classShapeMoniker Id="6c3d2cbe-8fb3-49bd-9390-53177f3dc5fa" />
+        <classShapeMoniker Id="367a45c9-887f-4faf-b038-d76007c4a052" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(7.5 : 3.86927069495743); (8.125 : 3.86927069495743)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/Problem/Problem_Problem_Parameter" />
+      <nodes>
+        <classShapeMoniker Id="367a45c9-887f-4faf-b038-d76007c4a052" />
+        <classShapeMoniker Id="bf075940-80da-477a-9706-a3dd0ffba1da" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(10.5 : 2.85); (10.125 : 2.85)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/ProblemCharacteristic/ProblemCharacteristic_CharProblemCharacteristicValue" />
+      <nodes>
+        <classShapeMoniker Id="c2b4b1f9-1a1f-4393-af96-641a5dce3c4a" />
+        <classShapeMoniker Id="876ede77-da2a-4619-bef8-f84d73798bb7" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(10.5 : 2.35); (10.125 : 2.35)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/ProblemCharacteristic/ProblemCharacteristic_FloatProblemCharacteristicValue" />
+      <nodes>
+        <classShapeMoniker Id="c2b4b1f9-1a1f-4393-af96-641a5dce3c4a" />
+        <classShapeMoniker Id="c8ef7e44-7370-43e7-af01-97fa14c3b67d" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(10.5 : 3.35); (10.125 : 3.35)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/ProblemCharacteristic/ProblemCharacteristic_IntProblemCharacteristicValue" />
+      <nodes>
+        <classShapeMoniker Id="c2b4b1f9-1a1f-4393-af96-641a5dce3c4a" />
+        <classShapeMoniker Id="32c25111-3cda-4647-8ee9-74db3b80cac0" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(11.5 : 1.8862939453125); (11.5 : 2.125)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/DataType/DataType_ProblemCharacteristic" />
+      <nodes>
+        <classShapeMoniker Id="cf610b34-fb6c-487b-abfa-0f03eb70fb21" />
+        <classShapeMoniker Id="c2b4b1f9-1a1f-4393-af96-641a5dce3c4a" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(6.5 : 1.8862939453125); (6.5 : 2.125)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/ProblemClass/ProblemClass_Problem" />
+      <nodes>
+        <classShapeMoniker Id="ed58689e-36e3-4438-973b-afcb64f6bea9" />
+        <classShapeMoniker Id="367a45c9-887f-4faf-b038-d76007c4a052" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(5.5 : 3.74947903257485); (5.125 : 3.74947903257485)]" manuallyRouted="true" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/Problem/Problem_ProblemData" />
+      <nodes>
+        <classShapeMoniker Id="367a45c9-887f-4faf-b038-d76007c4a052" />
+        <classShapeMoniker Id="b9cb0cc6-e33f-43bb-8436-cbeeeec8616f" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(5.125 : 5.43854147216927); (5.5 : 5.43854147216927)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/Project/Project_Experiment" />
+      <nodes>
+        <classShapeMoniker Id="c7b79b94-b667-47e5-bcbc-23e2ee1daefa" />
+        <classShapeMoniker Id="f91d981c-4c4c-407a-aedd-bc0091bdd664" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(5.625 : 8.38544840494792); (5.125 : 8.38544840494792)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/Run/Run_BlobResultValue" />
+      <nodes>
+        <classShapeMoniker Id="39967a3e-8ba4-4866-a63b-4c8d2fdb1e08" />
+        <classShapeMoniker Id="a9cd1c2f-1a1a-4c37-9fcf-646a051820f2" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(5.625 : 6.975); (5.125 : 6.975)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/Run/Run_CharResultValue" />
+      <nodes>
+        <classShapeMoniker Id="39967a3e-8ba4-4866-a63b-4c8d2fdb1e08" />
+        <classShapeMoniker Id="9612fac1-ba28-43fc-83d4-5ff9fedef18d" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(5.625 : 7.475); (5.125 : 7.475)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/Run/Run_FloatResultValue" />
+      <nodes>
+        <classShapeMoniker Id="39967a3e-8ba4-4866-a63b-4c8d2fdb1e08" />
+        <classShapeMoniker Id="1ace6e41-a514-40d5-951e-3d776d4ead12" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(5.625 : 7.975); (5.125 : 7.975)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/Run/Run_IntResultValue" />
+      <nodes>
+        <classShapeMoniker Id="39967a3e-8ba4-4866-a63b-4c8d2fdb1e08" />
+        <classShapeMoniker Id="35203392-27ea-40f6-8435-094df5ed122a" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(2.875 : 6.39010394260909); (6.15729144646477 : 6.39010394260909); (6.15729144646477 : 6.75)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/Client/Client_Run" />
+      <nodes>
+        <classShapeMoniker Id="e2c62cf2-d077-43f5-9393-a88252e74941" />
+        <classShapeMoniker Id="39967a3e-8ba4-4866-a63b-4c8d2fdb1e08" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(6.60052059728032 : 5.82859537760417); (6.60052059728032 : 6.75)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/Experiment/Experiment_Run" />
+      <nodes>
+        <classShapeMoniker Id="f91d981c-4c4c-407a-aedd-bc0091bdd664" />
+        <classShapeMoniker Id="39967a3e-8ba4-4866-a63b-4c8d2fdb1e08" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(11.6182287601071 : 7.94399251302083); (11.6182287601071 : 8.80701432355366); (6.64843726223336 : 8.80701432355366); (6.64843726223336 : 8.52089680989583)]" manuallyRouted="true" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/User/User_Run" />
+      <nodes>
+        <classShapeMoniker Id="6abee4a0-9a54-4c51-bb1b-31061cb25f9f" />
+        <classShapeMoniker Id="39967a3e-8ba4-4866-a63b-4c8d2fdb1e08" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(8.125 : 1.11585934274246); (7.781067940508 : 1.11585934274246); (7.781067940508 : 2.28802075150734); (7.5 : 2.28802075150734)]" manuallyRouted="true" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/SolutionRepresentation/SolutionRepresentation_Problem" />
+      <nodes>
+        <classShapeMoniker Id="dd93cdce-fce0-4d14-96ac-e681aeca4fb5" />
+        <classShapeMoniker Id="367a45c9-887f-4faf-b038-d76007c4a052" />
+      </nodes>
+    </associationConnector>
+    <classShape Id="f67e70d4-ab36-48d1-854c-6ff3af78316c" absoluteBounds="0.625, 2.125, 2, 1.7708968098958331">
+      <DataClassMoniker Name="/OKBDataContext/Algorithm" />
+      <nestedChildShapes>
+        <elementListCompartment Id="a4c4d782-8c7e-4348-931f-b78ea951dfc6" absoluteBounds="0.64000000000000012, 2.5850000000000009, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(2.11458333333333 : 3.89589680989583); (2.11458333333333 : 4.225); (3.125 : 4.225)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/Algorithm/Algorithm_Algorithm_Parameter" />
+      <nodes>
+        <classShapeMoniker Id="f67e70d4-ab36-48d1-854c-6ff3af78316c" />
+        <classShapeMoniker Id="e061f93d-509b-4bc6-901c-e6cfdfd69867" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(2.625 : 3.22239571809148); (3.125 : 3.22239571809148)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/Algorithm/Algorithm_AlgorithmData" />
+      <nodes>
+        <classShapeMoniker Id="f67e70d4-ab36-48d1-854c-6ff3af78316c" />
+        <classShapeMoniker Id="729912f6-fb7b-4447-ae25-ffb25578bd13" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(1.78125 : 3.89589680989583); (1.78125 : 4.55838574358545); (5.32760436244929 : 4.55838574358545); (5.32760436244929 : 5.03929768880208); (5.5 : 5.03929768880208)]" manuallyRouted="true" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/Algorithm/Algorithm_Experiment" />
+      <nodes>
+        <classShapeMoniker Id="f67e70d4-ab36-48d1-854c-6ff3af78316c" />
+        <classShapeMoniker Id="f91d981c-4c4c-407a-aedd-bc0091bdd664" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(1.5937475 : 1.8862939453125); (1.5937475 : 2.125)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/AlgorithmClass/AlgorithmClass_Algorithm" />
+      <nodes>
+        <classShapeMoniker Id="58c2dddf-6b8a-460e-b9f4-d04299b79210" />
+        <classShapeMoniker Id="f67e70d4-ab36-48d1-854c-6ff3af78316c" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(3.84531236248091 : 1.8862939453125); (3.84531236248091 : 2.57552074122553); (2.625 : 2.57552074122553)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/Platform/Platform_Algorithm" />
+      <nodes>
+        <classShapeMoniker Id="6c3d2cbe-8fb3-49bd-9390-53177f3dc5fa" />
+        <classShapeMoniker Id="f67e70d4-ab36-48d1-854c-6ff3af78316c" />
+      </nodes>
+    </associationConnector>
+    <classShape Id="8aec4d8c-1515-4c40-a919-d4f1fb6e628e" isExpanded="false" absoluteBounds="0.5, 4.75, 2, 0.45">
+      <DataClassMoniker Name="/OKBDataContext/Algorithm_Result" />
+      <nestedChildShapes>
+        <elementListCompartment Id="a1b54f52-89d9-4ee8-8e80-064346efaeb8" absoluteBounds="0.51500000000000012, 5.2100000000000009, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(1.51041666666667 : 3.89589680989583); (1.51041666666667 : 4.75)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/Algorithm/Algorithm_Algorithm_Result" />
+      <nodes>
+        <classShapeMoniker Id="f67e70d4-ab36-48d1-854c-6ff3af78316c" />
+        <classShapeMoniker Id="8aec4d8c-1515-4c40-a919-d4f1fb6e628e" />
+      </nodes>
+    </associationConnector>
+    <classShape Id="d65c7f25-b8f2-4a99-a007-7956d88e0136" absoluteBounds="0.5, 6.875, 2, 1.5785953776041666">
+      <DataClassMoniker Name="/OKBDataContext/Result" />
+      <nestedChildShapes>
+        <elementListCompartment Id="1f836c60-b998-4e30-a7e7-325d7ca235ba" absoluteBounds="0.51500000000000012, 7.3350000000000009, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(2.5 : 8.35179768880208); (3.125 : 8.35179768880208)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/Result/Result_BlobResultValue" />
+      <nodes>
+        <classShapeMoniker Id="d65c7f25-b8f2-4a99-a007-7956d88e0136" />
+        <classShapeMoniker Id="a9cd1c2f-1a1a-4c37-9fcf-646a051820f2" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(2.5 : 7.0375); (3.125 : 7.0375)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/Result/Result_CharResultValue" />
+      <nodes>
+        <classShapeMoniker Id="d65c7f25-b8f2-4a99-a007-7956d88e0136" />
+        <classShapeMoniker Id="9612fac1-ba28-43fc-83d4-5ff9fedef18d" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(2.5 : 7.475); (3.125 : 7.475)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/Result/Result_FloatResultValue" />
+      <nodes>
+        <classShapeMoniker Id="d65c7f25-b8f2-4a99-a007-7956d88e0136" />
+        <classShapeMoniker Id="1ace6e41-a514-40d5-951e-3d776d4ead12" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(2.5 : 7.975); (3.125 : 7.975)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/Result/Result_IntResultValue" />
+      <nodes>
+        <classShapeMoniker Id="d65c7f25-b8f2-4a99-a007-7956d88e0136" />
+        <classShapeMoniker Id="35203392-27ea-40f6-8435-094df5ed122a" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(0.65625 : 6.875); (0.65625 : 5.2)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/Result/Result_Algorithm_Result" />
+      <nodes>
+        <classShapeMoniker Id="d65c7f25-b8f2-4a99-a007-7956d88e0136" />
+        <classShapeMoniker Id="8aec4d8c-1515-4c40-a919-d4f1fb6e628e" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(12.5 : 1.09243584011652); (12.9287500578379 : 1.09243584011652); (12.9287500578379 : 8.86403544267509); (1.5 : 8.86403544267509); (1.5 : 8.4535953776042)]" manuallyRouted="true" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/DataType/DataType_Result" />
+      <nodes>
+        <classShapeMoniker Id="cf610b34-fb6c-487b-abfa-0f03eb70fb21" />
+        <classShapeMoniker Id="d65c7f25-b8f2-4a99-a007-7956d88e0136" />
+      </nodes>
+    </associationConnector>
+    <classShape Id="c3843138-a09c-4d9e-b5e2-89b1278cb6d9" absoluteBounds="8.125, 5.75, 2, 1.5785953776041666">
+      <DataClassMoniker Name="/OKBDataContext/OperatorParameterValue" />
+      <nestedChildShapes>
+        <elementListCompartment Id="2e8421ec-aebe-4496-b824-43d2151bd4a8" absoluteBounds="8.14, 6.21, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(12.5 : 1.2225692630771); (12.8857453324488 : 1.2225692630771); (12.8857453324488 : 6.57291666666667); (10.125 : 6.57291666666667)]" manuallyRouted="true" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/DataType/DataType_OperatorParameterValue" />
+      <nodes>
+        <classShapeMoniker Id="cf610b34-fb6c-487b-abfa-0f03eb70fb21" />
+        <classShapeMoniker Id="c3843138-a09c-4d9e-b5e2-89b1278cb6d9" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(7.5 : 5.69791666666667); (7.8 : 5.69791666666667); (7.8 : 6.17708333333333); (8.125 : 6.17708333333333)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/Experiment/Experiment_OperatorParameterValue" />
+      <nodes>
+        <classShapeMoniker Id="f91d981c-4c4c-407a-aedd-bc0091bdd664" />
+        <classShapeMoniker Id="c3843138-a09c-4d9e-b5e2-89b1278cb6d9" />
+      </nodes>
+    </associationConnector>
+    <classShape Id="1d1e6aa3-ddf1-4f64-921e-1326f3664cef" absoluteBounds="10.625, 4.375, 2, 1.5785953776041666">
+      <DataClassMoniker Name="/OKBDataContext/Parameter" />
+      <nestedChildShapes>
+        <elementListCompartment Id="ee2d06e4-4775-4c1e-85fa-26b0d9636fdf" absoluteBounds="10.64, 4.835, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(11.0927079366272 : 4.375); (11.0927079366272 : 4.18072901715215); (5.125 : 4.18072901715215)]" manuallyRouted="true" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/Parameter/Parameter_Algorithm_Parameter" />
+      <nodes>
+        <classShapeMoniker Id="1d1e6aa3-ddf1-4f64-921e-1326f3664cef" />
+        <classShapeMoniker Id="e061f93d-509b-4bc6-901c-e6cfdfd69867" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(10.625 : 4.975); (10.125 : 4.975)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/Parameter/Parameter_CharParameterValue" />
+      <nodes>
+        <classShapeMoniker Id="1d1e6aa3-ddf1-4f64-921e-1326f3664cef" />
+        <classShapeMoniker Id="a782534f-cc38-43ef-bf3a-297bfdf111d9" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(10.625 : 4.5375); (10.125 : 4.5375)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/Parameter/Parameter_FloatParameterValue" />
+      <nodes>
+        <classShapeMoniker Id="1d1e6aa3-ddf1-4f64-921e-1326f3664cef" />
+        <classShapeMoniker Id="51fb443c-2ed1-4364-9dc3-84a606c921f5" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(10.625 : 5.475); (10.125 : 5.475)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/Parameter/Parameter_IntParameterValue" />
+      <nodes>
+        <classShapeMoniker Id="1d1e6aa3-ddf1-4f64-921e-1326f3664cef" />
+        <classShapeMoniker Id="2b634d14-6f55-4540-adf5-d208acc74946" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(11.7395833333333 : 4.375); (11.7395833333333 : 3.88929818880208); (10.125 : 3.88929818880208)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/Parameter/Parameter_Problem_Parameter" />
+      <nodes>
+        <classShapeMoniker Id="1d1e6aa3-ddf1-4f64-921e-1326f3664cef" />
+        <classShapeMoniker Id="bf075940-80da-477a-9706-a3dd0ffba1da" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(10.625 : 5.74554968880208); (10.385 : 5.74554968880208); (10.385 : 6.21875); (10.125 : 6.21875)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/Parameter/Parameter_OperatorParameterValue" />
+      <nodes>
+        <classShapeMoniker Id="1d1e6aa3-ddf1-4f64-921e-1326f3664cef" />
+        <classShapeMoniker Id="c3843138-a09c-4d9e-b5e2-89b1278cb6d9" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(12.5 : 1.35955181356193); (12.8545080463062 : 1.35955181356193); (12.8545080463062 : 5.36855088795836); (12.625 : 5.36855088795836)]" manuallyRouted="true" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/OKBDataContext/DataType/DataType_Parameter" />
+      <nodes>
+        <classShapeMoniker Id="cf610b34-fb6c-487b-abfa-0f03eb70fb21" />
+        <classShapeMoniker Id="1d1e6aa3-ddf1-4f64-921e-1326f3664cef" />
+      </nodes>
+    </associationConnector>
+  </nestedChildShapes>
+</ordesignerObjectsDiagram>

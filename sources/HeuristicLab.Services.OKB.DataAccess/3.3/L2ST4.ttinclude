@@ -1,0 +1,853 @@
+﻿<#@ assembly name="System.Core"
+#><#@ assembly name="System.Data.Linq"
+#><#@ assembly name="EnvDTE"
+#><#@ assembly name="System.Xml"
+#><#@ assembly name="System.Xml.Linq"
+#><#@ import namespace="System"
+#><#@ import namespace="System.CodeDom"
+#><#@ import namespace="System.CodeDom.Compiler"
+#><#@ import namespace="System.Collections.Generic"
+#><#@ import namespace="System.Data.Linq"
+#><#@ import namespace="System.Data.Linq.Mapping"
+#><#@ import namespace="System.IO"
+#><#@ import namespace="System.Linq"
+#><#@ import namespace="System.Reflection"
+#><#@ import namespace="System.Text"
+#><#@ import namespace="System.Xml.Linq"
+#><#@ import namespace="Microsoft.VisualStudio.TextTemplating"
+#><#+
+// L2ST4 - LINQ to SQL templates for T4 v0.82 - http://www.codeplex.com/l2st4
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+// This source code is made available under the terms of the Microsoft Public License (MS-PL)
+
+// DBML Database element > code DataContext class
+class Data
+{
+	public XNamespace NS = "http://schemas.microsoft.com/linqtosql/dbml/2007";
+	public String BaseClassName { get; private set; }
+	public String ConnectSettingsObject { get; private set; }
+	public String ConnectSettingsProperty { get; private set; }
+	public String ContextName { get; private set; }
+	public String ContextNamespace { get; set; }
+	public String DatabaseName { get; private set; }
+	public String DbmlFileName { get; private set; }
+	public String EntityBase { get; private set; }
+	public String EntityNamespace { get; set; }
+	public List<Function> Functions { get; private set; }
+	public List<FunctionClass> FunctionClasses { get; private set; }
+	public bool Serialization { get; private set; }
+	public string SpecifiedContextNamespace { get; private set; }
+	public string SpecifiedEntityNamespace { get; private set; }
+	public TypeAttributes TypeAttributes { get; private set; }
+	public List<Table> Tables { get; private set; }
+	public List<TableClass> TableClasses { get; private set; }
+	
+	public Data(String dbmlFileName) {
+		DbmlFileName = dbmlFileName;
+		if (!File.Exists(DbmlFileName))
+			throw new Exception(String.Format("DBML file '{0}' could not be found.", DbmlFileName));
+		XElement xe = XDocument.Load(DbmlFileName).Root;
+		TableClasses = new List<TableClass>();
+		FunctionClasses = new List<FunctionClass>();
+		
+		foreach(XElement connection in xe.Elements(NS + "Connection")) {
+			ConnectSettingsObject = (String) connection.Attribute("SettingsObjectName");
+			ConnectSettingsProperty = (String) connection.Attribute("SettingsPropertyName");
+		}
+		BaseClassName = (String) xe.Attribute("BaseType") ?? "DataContext";
+		ContextName = (String) xe.Attribute("Class");
+		ContextNamespace = SpecifiedContextNamespace = (String) xe.Attribute("ContextNamespace");
+		DatabaseName = (String) xe.Attribute("Name") ?? "";
+		EntityBase = (String) xe.Attribute("EntityBase");
+		EntityNamespace = SpecifiedEntityNamespace = (String) xe.Attribute("EntityNamespace");
+		Serialization = (String) xe.Attribute("Serialization") == "Unidirectional";
+		TypeAttributes = Class.DecodeAccess((String) xe.Attribute("AccessModifier")) | Class.DecodeModifier((String) xe.Attribute("Modifier"));
+		Tables = (from t in xe.Elements(NS + "Table")
+			select new Table(this, t)).ToList();
+		Functions = (from f in xe.Elements(NS + "Function")
+			select new Function(this, f)).ToList();
+	}
+		
+	static internal Type GetType(String typeName, bool canBeNull) {
+		Type type = null;
+		switch(typeName) {
+			case "System.Xml.Linq.XElement": type = typeof(System.Xml.Linq.XElement); break;
+			case "System.Data.Linq.Binary": type = typeof(System.Data.Linq.Binary); break;
+			default: type = Type.GetType(typeName); break;
+		}
+		if (type == null)
+			type = new TypeStub(typeName);
+		if (type.IsValueType && canBeNull)
+			type = typeof(Nullable<>).MakeGenericType(type);
+		return type;
+	}
+}
+
+// DBML Table element > Base entity class, events & property on DataContext class
+class Table
+{
+	public TableClass BaseClass {
+		get { return Classes.First(); }
+	}
+	public IEnumerable<TableClass> Classes {
+		get { return Data.TableClasses.Where(c => c.Table == this); }
+	}
+	public Data Data { get; private set; }
+	private String member;
+	public String Member {
+		get { return member ?? Name; }
+		set { member = value; }
+	}
+	public String Name { get; set; }
+	public List<TableOperation> Operations { get; private set; }
+
+	public Table(Data data, XElement xe) {
+		Data = data;
+		Name = (String) xe.Attribute("Name");
+		Member = (String) xe.Attribute("Member");
+		Data.TableClasses.AddRange(from c in xe.Elements(Data.NS + "Type")
+			select new TableClass(this, c));
+		Operations = new List<TableOperation>();
+		foreach(OperationType operationType in Enum.GetValues(typeof(OperationType)))
+			Operations.AddRange((from o in xe.Elements(Data.NS + operationType.ToString() + "Function")
+				select new TableOperation(this, o)).ToList());
+	}
+}
+
+// DBML Type element > Entity class, subclasses or stored procedure return type
+class Class
+{
+	public Class SuperClass { get; protected set; }
+	public List<Column> Columns { get; private set; }
+	public Data Data {get; private set; }
+	public String Id { get; private set; }
+	public String InheritanceCode { get; private set; }
+	public Boolean IsInheritanceDefault { get; private set; }
+	public Boolean IsSerializable {
+		get { return (TypeAttributes & TypeAttributes.VisibilityMask) == TypeAttributes.Public; }
+	}
+	protected String name;
+	public virtual String Name {
+		get { return name; }
+		set { name = value; }
+	}
+	public String QualifiedName {
+		get { return (String.IsNullOrEmpty(Data.EntityNamespace) || (Data.EntityNamespace == Data.ContextNamespace))
+				? Name : Data.EntityNamespace + '.' + Name; }
+	}
+	public TypeAttributes TypeAttributes { get; private set; }
+	
+	public Class(Data data, XElement xe) {
+		Data = data;
+		Id = (String) xe.Attribute("Id");
+		InheritanceCode = (String) xe.Attribute("InheritanceCode");
+		IsInheritanceDefault = (Boolean ?) xe.Attribute("IsInheritanceDefault") ?? false;
+		Name = (String) xe.Attribute("Name");
+		TypeAttributes = DecodeAccess((String) xe.Attribute("AccessModifier")) | DecodeModifier((String) xe.Attribute("Modifier"));
+		Columns = (from c in xe.Elements(Data.NS + "Column")
+			select new Column(this, c)).ToList();
+	}
+	
+	internal static TypeAttributes DecodeAccess(String access) {
+		switch(access) {
+			case "Private": return TypeAttributes.NestedPrivate;
+			case "Internal": return TypeAttributes.NestedAssembly;
+			case "Protected": return TypeAttributes.NestedFamily;
+			case "ProtectedInternal": return TypeAttributes.NestedFamORAssem;
+			default: return TypeAttributes.Public;
+		}
+	}
+	
+	internal static TypeAttributes DecodeModifier(String modifier) {
+		switch(modifier) {
+			case "Abstract": return TypeAttributes.Abstract;
+			case "Sealed": return TypeAttributes.Sealed;
+			default: return TypeAttributes.Class;
+		}
+	}
+}
+
+// DBML Type element > Classes and subclasses that map to tables
+class TableClass : Class
+{
+	public List<Association> Associations { get; private set; }
+	public Boolean HasPrimaryKey {
+		get { return Columns.Any(c => c.IsPrimaryKey); }
+	}
+	public override String Name { get; set; }
+	public IList<Column> PrimaryKey {
+		get { return Columns.Where(c => c.IsPrimaryKey).ToList(); }
+	}
+	public MemberAttributes PropertyChangeAccess {
+		get { return ((TypeAttributes & TypeAttributes.Sealed) != 0) ? MemberAttributes.Private | MemberAttributes.Final : MemberAttributes.Public; }
+	}
+	public IEnumerable<TableClass> Subclasses {
+		get { return Table.Data.TableClasses.Where(c => c.SuperClass == this); }
+	}
+	public Table Table { get; private set; }
+
+	public TableClass(TableClass superClass, XElement xe) : this(superClass.Table, xe) {
+		SuperClass = superClass;
+	}
+
+	public TableClass(Table table, XElement xe) : base(table.Data, xe) {
+		Table = table;
+		Associations = (from a in xe.Elements(Data.NS + "Association")
+			select new Association(this, a)).ToList();
+		Table.Data.TableClasses.AddRange(from c in xe.Elements(Data.NS + "Type")
+			select new TableClass(this, c));
+	}
+}
+
+// DBML Type > Classes that map to stored procedure return types
+class FunctionClass : Class
+{
+	public Function Function { get; set; }
+	
+	public FunctionClass(Function function, XElement xe) : base(function.Data, xe) {
+		Function = function;
+	}
+}
+
+// DBML type Column > Properties on a class
+class Column
+{
+	private String member, typeName, storage;
+
+	private AutoSync autoSync;
+	public AutoSync AutoSync {
+		get {
+			if (IsDbGenerated)
+				if (IsPrimaryKey)
+					return AutoSync.OnInsert;
+				else
+					return AutoSync.Always;
+			return autoSync;
+		}
+		private set { autoSync = value; }
+	}
+	public Boolean CanBeNull { get; private set; }
+	public Class Class { get; private set; }
+	public String DbType { get; private set; }
+	public String Expression { get; private set; }
+	private Boolean isDbGenerated;
+	public Boolean IsDbGenerated {
+		get { return (!String.IsNullOrEmpty(Expression) || IsVersion) ? true : isDbGenerated;  }
+		private set { isDbGenerated = value; }
+	}
+	public Boolean IsDelayLoaded { get; private set; }
+	public Boolean IsDiscriminator { get; private set; }
+	public List<Association> ForeignKeyAssociations {
+		get {
+			if (Class is TableClass) {
+				return ((TableClass)Class).Associations.Where(a => a.ThisKey.Contains(this) && a.IsForeignKey).ToList();
+			}
+			else
+				return new List<Association>();
+		}
+	}
+	public Boolean IsPrimaryKey { get; private set; }
+	private Boolean isReadOnly;
+	public Boolean IsReadOnly {
+		get { return (Class.Data.Serialization) ? false : isReadOnly; }
+		private set { isReadOnly = value; }
+	}
+	public Boolean IsVersion { get; private set; }
+	public String Member {
+		get { return member + ((member == Class.Name) ? "1" : ""); }
+		set { member = value; }
+	}
+	public MemberAttributes MemberAttributes { get; private set; }
+	public String Name { get; private set; }
+	public String Storage {
+		get { return String.IsNullOrEmpty(storage) ? "_" + Member : storage; }
+		set { storage = value; }
+	}
+	public Type StorageType {
+		get { return (IsDelayLoaded) ? typeof(Link<>).MakeGenericType(Type) : Type; }
+	}
+	public String StorageValue {
+		get { return (IsDelayLoaded) ? Storage + ".Value" : Storage; }
+	}
+	public Type Type {
+		get { return Data.GetType(typeName, CanBeNull); }
+	}
+	private UpdateCheck updateCheck;
+	public UpdateCheck UpdateCheck {
+		get { return (IsReadOnly) ? UpdateCheck.Never : updateCheck; }
+		private set { updateCheck = value; }
+	}
+	
+	public Column(Class class1, XElement xe) {
+		Class = class1;
+		Name = (String) xe.Attribute("Name") ?? "";
+		Member = (String) xe.Attribute("Member") ?? Name;
+		typeName = xe.Attribute("Type").Value;
+		CanBeNull = (Boolean?) xe.Attribute("CanBeNull") ?? false;
+		DbType = (String) xe.Attribute("DbType") ?? "";
+		Expression = (String) xe.Attribute("Expression") ?? "";
+		IsDbGenerated = (Boolean?) xe.Attribute("IsDbGenerated") ?? (IsVersion);
+		IsDelayLoaded = (Boolean?) xe.Attribute("IsDelayLoaded") ?? false;
+		IsDiscriminator = (Boolean?) xe.Attribute("IsDiscriminator") ?? false;
+		IsPrimaryKey = (Boolean?) xe.Attribute("IsPrimaryKey") ?? false;
+		IsReadOnly = (Boolean?) xe.Attribute("IsReadOnly") ?? false;
+		IsVersion = (Boolean?) xe.Attribute("IsVersion") ?? false;
+		Storage = (String) xe.Attribute("Storage") ?? "";
+		AutoSync autoSyncDefault = (IsDbGenerated) ? AutoSync.OnInsert : AutoSync.Default;
+		AutoSync = Util.ParseEnum((String) xe.Attribute("AutoSync"), (IsVersion) ? AutoSync.Always : autoSyncDefault);
+		UpdateCheck = Util.ParseEnum((String) xe.Attribute("UpdateCheck"), (IsVersion || IsPrimaryKey) ? UpdateCheck.Never : UpdateCheck.Always);
+		MemberAttributes = Util.DecodeMemberAccess((String) xe.Attribute("AccessModifier")) | Util.DecodeMemberModifier((String) xe.Attribute("Modifier"));
+	}
+}
+
+// DBML Association element > EntitySet or EntityRef between two table-mapped classes
+class Association
+{
+	private TableClass thisClass;
+	private String typeName, storage;
+
+	public Association OtherSide {
+		get { return Type.Associations.Find(a => a.Name == Name && a != this); }
+	}
+	public Boolean DeleteOnNull { get; private set; }
+	public String DeleteRule { get; private set; }
+	public Boolean IsForeignKey { get; private set; }
+	public Boolean IsMany { get; private set; }
+	public Boolean IsSerializable {
+		get { return ((MemberAttributes & MemberAttributes.AccessMask) == MemberAttributes.Public); }
+	}
+	public Boolean IsUnique {
+		get { return (!IsMany && !IsForeignKey); }
+	}
+	public Boolean ManagesKeys {
+		get { return !(IsMany || (OtherSide == null) || !IsForeignKey); }
+	}
+	public String Member { get; private set; }
+	public MemberAttributes MemberAttributes { get; private set; }
+	public String Name { get; private set; }
+	public IList<Column> OtherKey {
+		get { return OtherKeyMembers.Select(o => Type.Columns.Single(c => c.Member == o)).ToList(); }
+	}
+	private String[] otherKeyMembers;
+	public String[] OtherKeyMembers {
+		get { return (otherKeyMembers != null) ? otherKeyMembers : Type.PrimaryKey.Select(p => p.Member).ToArray(); }
+		set { otherKeyMembers = value; }
+	}
+	public String Storage { get { return storage ?? "_" + Member; } }
+	public IList<Column> ThisKey {
+		get { return ThisKeyMembers.Select(o => thisClass.Columns.Single(c => c.Member == o)).ToList(); }
+	}
+	private String[] thisKeyMembers;
+	public String[] ThisKeyMembers {
+		get { return (thisKeyMembers != null) ? thisKeyMembers : thisClass.PrimaryKey.Select(p => p.Member).ToArray(); }
+		set { thisKeyMembers = value; }
+	}
+	public TableClass Type {
+		get { return thisClass.Table.Data.TableClasses.Find(c => c.Name == typeName); }
+	}
+	
+	public Association(TableClass thisClass, XElement xe) {
+		this.thisClass = thisClass;
+		typeName = (String) xe.Attribute("Type");
+		String thisKey = ((String) xe.Attribute("ThisKey"));
+		if (thisKey != null)
+			thisKeyMembers = thisKey.Split(',');
+		storage = (String) xe.Attribute("Storage");
+		String otherKey = ((String) xe.Attribute("OtherKey"));
+		if (otherKey != null)
+			otherKeyMembers = otherKey.Split(',');
+		DeleteOnNull = (Boolean?) xe.Attribute("DeleteOnNull") ?? false;
+		DeleteRule = (String) xe.Attribute("DeleteRule");
+		IsForeignKey = (xe.Attribute("IsForeignKey") != null);
+		Member = (String) xe.Attribute("Member");
+		MemberAttributes = Util.DecodeMemberAccess((String) xe.Attribute("AccessModifier")) | Util.DecodeMemberModifier((String) xe.Attribute("Modifier"));
+		Name = (String) xe.Attribute("Name");
+		String cardinality = (String) xe.Attribute("Cardinality");
+		IsMany = (cardinality == null) ? !IsForeignKey : (cardinality.Equals("Many"));
+	}
+}
+
+// DBML Function element (stored procedure) > Method on DataContext
+class Function
+{
+	public List<Class> Classes { get; private set; }
+	public Data Data { get; private set; }
+	private Boolean? hasMultipleResults = null;
+	public Boolean HasMultipleResults {
+		get { return (hasMultipleResults.HasValue) ? hasMultipleResults.Value : Classes.Count() > 1; }
+	}
+	public String ID { get; private set; }
+	public Boolean IsComposable { get; private set; }
+	public MemberAttributes MemberAttributes { get; private set; }
+	public String Method { get; private set; }
+	public String Name { get; private set; }
+	public List<Parameter> Parameters { get; private set; }
+	public Return Return { get; private set; }
+	public CodeTypeReference ReturnType {
+		get {
+			if (Return != null)
+				return new CodeTypeReference(Return.Type);
+			else
+				if (HasMultipleResults)
+					return new CodeTypeReference(typeof(IMultipleResults));
+				else {
+					CodeTypeReference typeRef = new CodeTypeReference(typeof(ISingleResult<>));
+					typeRef.TypeArguments.Add(new CodeTypeReference(Classes[0].QualifiedName));
+					return typeRef;
+				}
+		}
+	}
+	
+	public Function(Data data, XElement xe) {
+		Data = data;
+		String hasMultiResultsElement = (String) xe.Attribute("HasMultipleResults");
+		if (hasMultiResultsElement != null)
+			hasMultipleResults = Boolean.Parse(hasMultiResultsElement);
+		ID = (String) xe.Attribute("Id");
+		IsComposable = (Boolean ?) xe.Attribute("IsComposable") ?? false;
+		Name = (String) xe.Attribute("Name");
+		Method = (String) xe.Attribute("Method");
+		MemberAttributes = Util.DecodeMemberAccess((String) xe.Attribute("AccessModifier")) | Util.DecodeMemberModifier((String) xe.Attribute("Modifier"));
+		Parameters = (from p in xe.Elements(Data.NS + "Parameter")
+			select new Parameter(this, p)).ToList();
+		Return = (from r in xe.Elements(Data.NS + "Return")
+			select new Return(this, r)).SingleOrDefault();
+		Classes = new List<Class>();
+		foreach(XElement fxe in xe.Elements(Data.NS + "ElementType")) {
+			String idRef = (String) fxe.Attribute("IdRef");
+			if (idRef == null) {
+				var functionClass = new FunctionClass(this, fxe);
+				Classes.Add(functionClass);
+				Data.FunctionClasses.Add(functionClass);
+			}
+			else
+				Classes.Add(Data.TableClasses.Single(c => c.Id == idRef));
+		}
+	}
+}
+
+// Function return type -> Method return type
+class Return
+{
+	private String typeName;
+	public String DbType { get; private set; }
+	public Function Function { get; private set; }
+	public Type Type {
+		get { return Data.GetType(typeName, false); }
+	}
+	
+	public Return(Function function, XElement xe) {
+		Function = function;
+		DbType = (String) xe.Attribute("DbType");
+		typeName = (String) xe.Attribute("Type");
+	}
+}
+
+public enum ParameterDirection { In, Out, InOut };
+public enum OperationType { Insert, Update, Delete };
+public enum ArgumentVersion { Original, New };
+
+// Function parameter -> Method parameter
+class Parameter
+{
+	private String typeName;
+	public String DbType { get; private set; }
+	public Function Function { get; private set; }
+	public String Name { get; private set; }
+	public String DbName { get; private set; }
+	public ParameterDirection Direction { get; private set; }
+	public Type Type {
+		get { return Data.GetType(typeName, true); }
+	}
+	
+	public Parameter(Function function, XElement xe) {
+		Function = function;
+		DbName = (String) xe.Attribute("Name");
+		Name = (String) xe.Attribute("Parameter") ?? DbName;
+		DbType = (String) xe.Attribute("DbType");
+		typeName = (String) xe.Attribute("Type");
+		Direction = Util.ParseEnum((String) xe.Attribute("Direction"), ParameterDirection.In);
+	}
+}
+
+// Functions associated with a table's CUD operations
+class TableOperation
+{
+	private String functionID;
+	private Function function;
+	public List<Argument> Arguments { get; private set; }
+	public OperationType Type { get; private set; }
+	public Function Function {
+		get {
+			if ((function == null) && (!String.IsNullOrEmpty(functionID)))
+				function = Table.Data.Functions.Where(f => f.ID == functionID).SingleOrDefault();
+			return function;
+		}
+		set {
+			function = value;
+			functionID = null;
+		}
+	}
+	public Table Table { get; private set; }
+	public TableOperation(Table table, XElement xe) {
+		Table = table;
+		functionID = (String) xe.Attribute("FunctionId");
+		Type = (OperationType) Enum.Parse(typeof(OperationType), xe.Name.LocalName.Replace("Function",""));
+		Arguments = (from a in xe.Elements(Table.Data.NS + "Argument") select new Argument(this, a)).ToList();
+	}
+}
+
+// Argument to a function
+class Argument
+{
+	private String parameterName;
+	private Parameter parameter;
+	public TableOperation TableOperation;
+	public Parameter Parameter {
+		get {
+			if ((parameter == null) && (!String.IsNullOrEmpty(parameterName)))
+				parameter = TableOperation.Function.Parameters.Single(p => p.Name == parameterName);
+			return parameter;
+		}
+		set {
+			parameter = value;
+			parameterName = null;
+		}
+	}
+	public String Member { get; private set; }
+	public ArgumentVersion Version { get; private set; }
+	
+	public Argument(TableOperation tableOperation, XElement xe) {
+		TableOperation = tableOperation;
+		parameterName = (String) xe.Attribute("Parameter");
+		Member = (String) xe.Attribute("Member");
+		Version = Util.ParseEnum((String) xe.Attribute("Version"), ArgumentVersion.New);
+	}
+}
+
+abstract class CodeLanguage
+{
+	public CodeDomProvider CodeDomProvider { get; protected set; }
+	public abstract String GetAccess(MemberAttributes memberAttributes);
+	public abstract String GetAccess(TypeAttributes typeAttributes);
+	public abstract String GetModifier(MemberAttributes memberAttributes);
+	public abstract String GetModifier(TypeAttributes typeAttributes);
+	
+	public String Format(Type type) {
+		return Format(new CodeTypeReference(type));
+	}
+	
+	public virtual String ShortenTypeRef(String typeRef) {
+		return (typeRef.LastIndexOf('.') != 6) ? typeRef.Replace("System.Data.Linq.","") : typeRef.Replace("System.","");
+	}
+	
+	public String Format(CodeTypeReference codeTypeRef) {
+		return ShortenTypeRef(CodeDomProvider.GetTypeOutput(codeTypeRef));
+	}
+	
+	public abstract String Format(ParameterDirection direction);
+	
+	public String Format(MemberAttributes memberAttributes) {
+		return GetAccess(memberAttributes) + GetModifier(memberAttributes);
+	}
+
+	public String Format(TypeAttributes typeAttributes) {
+		return GetAccess(typeAttributes) + GetModifier(typeAttributes);
+	}
+}
+
+class CSharpCodeLanguage : CodeLanguage
+{
+	public CSharpCodeLanguage() {
+		CodeDomProvider = new Microsoft.CSharp.CSharpCodeProvider();
+	}
+	
+	public override String Format(ParameterDirection direction) {
+		switch(direction) {
+			case ParameterDirection.InOut: return "ref ";
+			case ParameterDirection.Out: return "out ";
+			default: return "";
+		}
+	}
+
+	public override String ShortenTypeRef(String typeRef) {
+		if (typeRef.StartsWith("System.Nullable<"))
+			typeRef = typeRef.Replace("System.Nullable<","").Replace(">","?");
+		return base.ShortenTypeRef(typeRef);
+	}
+
+	public override String GetAccess(MemberAttributes memberAttributes) {
+		switch(memberAttributes & MemberAttributes.AccessMask) {
+			case MemberAttributes.Private: return "private ";
+			case MemberAttributes.Public: return "public ";
+			case MemberAttributes.Family: return "protected ";
+			case MemberAttributes.Assembly: return "internal ";
+			case MemberAttributes.FamilyAndAssembly: return "protected internal ";
+			default: return memberAttributes.ToString();
+		}
+	}
+
+	public override String GetAccess(TypeAttributes typeAttributes) {
+		switch(typeAttributes & TypeAttributes.VisibilityMask) {
+			case TypeAttributes.NestedPrivate: return "private ";
+			case TypeAttributes.NestedAssembly: return "internal ";
+			case TypeAttributes.NestedFamily: return "protected ";
+			case TypeAttributes.NestedFamORAssem: return "protected internal ";
+			default: return "public ";
+		}
+	}
+
+	public override String GetModifier(MemberAttributes memberAttributes) {
+		switch(memberAttributes & MemberAttributes.ScopeMask) {
+			case MemberAttributes.Final: return "";
+			case MemberAttributes.Abstract: return "abstract ";
+			case MemberAttributes.Override: return "override ";
+			default: return "virtual ";
+		}
+	}
+	
+	public override String GetModifier(TypeAttributes typeAttributes) {
+		if ((typeAttributes & TypeAttributes.Abstract) != 0) return "abstract ";
+		if ((typeAttributes & TypeAttributes.Sealed) != 0) return "sealed ";
+		return "";
+	}
+}
+
+class VBCodeLanguage : CodeLanguage
+{
+	public VBCodeLanguage() {
+		CodeDomProvider = new Microsoft.VisualBasic.VBCodeProvider();
+	}
+	
+	public override String Format(ParameterDirection direction) {
+		switch(direction) {
+			case ParameterDirection.InOut: return "ByRef ";
+			case ParameterDirection.Out: return "ByRef ";
+			default: return "";
+		}
+	}
+
+	public override String GetAccess(MemberAttributes memberAttributes) {
+		switch(memberAttributes & MemberAttributes.AccessMask) {
+			case MemberAttributes.Private: return "Private ";
+			case MemberAttributes.Public: return "Public ";
+			case MemberAttributes.Family: return "Protected ";
+			case MemberAttributes.Assembly: return "Friend ";
+			case MemberAttributes.FamilyAndAssembly: return "Protected Friend ";
+			default: return memberAttributes.ToString();
+		}
+	}
+	
+	public override String GetAccess(TypeAttributes typeAttributes) {
+		switch(typeAttributes & TypeAttributes.VisibilityMask) {
+			case TypeAttributes.NestedPrivate: return "Private ";
+			case TypeAttributes.NestedAssembly: return "Friend ";
+			case TypeAttributes.NestedFamily: return "Protected ";
+			case TypeAttributes.NestedFamORAssem: return "protected internal ";
+			default: return "Public ";
+		}
+	}
+
+	public override String GetModifier(MemberAttributes memberAttributes) {
+		switch(memberAttributes & MemberAttributes.ScopeMask) {
+			case MemberAttributes.Final: return "";
+			case MemberAttributes.Abstract: return "MustOverride ";
+			case MemberAttributes.Override: return "Override ";
+			default: return "Overridable ";
+		}
+	}
+	
+	public override String GetModifier(TypeAttributes typeAttributes) {
+		if ((typeAttributes & TypeAttributes.Abstract) != 0) return "MustInherit ";
+		if ((typeAttributes & TypeAttributes.Sealed) != 0) return "NotInheritable ";
+		return "";
+	}
+}
+
+// Manager class records the various blocks so it can split them up
+class Manager
+{
+	private struct Block {
+		public String Name;
+		public int Start, Length;
+	}
+	
+	private List<Block> blocks = new List<Block>();
+	private Block currentBlock;
+	private Block footerBlock = new Block();
+	private Block headerBlock = new Block();
+	private ITextTemplatingEngineHost host;
+	private ManagementStrategy strategy;
+	private StringBuilder template;
+	public String OutputPath { get; set; }
+	
+	public Manager(ITextTemplatingEngineHost host, StringBuilder template, bool commonHeader) {
+		this.host = host;
+		this.template = template;
+		OutputPath = String.Empty;
+		strategy = ManagementStrategy.Create(host);		
+	}
+		
+	public void StartBlock(String name) {
+		currentBlock = new Block { Name = name, Start = template.Length };
+	}
+
+	public void StartFooter() {
+		footerBlock.Start = template.Length;
+	}
+	
+	public void EndFooter() {
+		footerBlock.Length = template.Length - footerBlock.Start;
+	}
+	
+	public void StartHeader() {
+		headerBlock.Start = template.Length;
+	}
+	
+	public void EndHeader() {
+		headerBlock.Length = template.Length - headerBlock.Start;
+	}	
+
+	public void EndBlock() {
+		currentBlock.Length = template.Length - currentBlock.Start;
+		blocks.Add(currentBlock);
+	}
+		
+	public void Process(bool split) {
+		String header = template.ToString(headerBlock.Start, headerBlock.Length);
+		String footer = template.ToString(footerBlock.Start, footerBlock.Length);
+		blocks.Reverse();		
+		foreach(Block block in blocks) {
+			String fileName = Path.Combine(OutputPath, block.Name);
+			if (split) {
+				String content = header + template.ToString(block.Start, block.Length) + footer;
+				strategy.CreateFile(fileName, content);
+				template.Remove(block.Start, block.Length);
+			} else {
+				strategy.DeleteFile(fileName);
+			}
+		}
+	}
+
+	public string GetCustomToolNamespace(string fileName) {
+		return strategy.GetCustomToolNamespace(fileName);
+	}
+	
+	public string DefaultProjectNamespace {
+		get { return strategy.DefaultProjectNamespace; }
+	}
+}
+
+class ManagementStrategy
+{
+	internal static ManagementStrategy Create(ITextTemplatingEngineHost host) {
+		return (host is IServiceProvider) ? new VSManagementStrategy(host) : new ManagementStrategy(host);
+	}
+
+	internal ManagementStrategy(ITextTemplatingEngineHost host) { }
+
+	internal virtual void CreateFile(String fileName, String content) {
+		File.WriteAllText(fileName, content);
+	}
+	
+	internal virtual void DeleteFile(String fileName) {
+		if (File.Exists(fileName))
+			File.Delete(fileName);
+	}
+	
+	internal virtual string DefaultProjectNamespace {
+		get { return null; }
+	}
+		
+	internal virtual string GetCustomToolNamespace(string fileName) {
+		return null;
+	}
+}
+
+class VSManagementStrategy : ManagementStrategy
+{
+	private EnvDTE.ProjectItem templateProjectItem;
+	private EnvDTE.DTE dte;
+	
+	internal VSManagementStrategy(ITextTemplatingEngineHost host) : base(host) {
+		IServiceProvider hostServiceProvider = (IServiceProvider)host;
+		if(hostServiceProvider == null)
+			throw new ArgumentNullException("Could not obtain hostServiceProvider");
+		
+		dte = (EnvDTE.DTE)hostServiceProvider.GetService(typeof(EnvDTE.DTE));
+		if(dte == null)
+			throw new ArgumentNullException("Could not obtain DTE from host");
+		
+		templateProjectItem = dte.Solution.FindProjectItem(host.TemplateFile);			
+	}
+	
+	internal override void CreateFile(String fileName, String content) {
+		base.CreateFile(fileName, content);
+		((EventHandler)delegate { templateProjectItem.ProjectItems.AddFromFile(fileName); }).BeginInvoke(null, null, null, null);
+	}
+	
+	internal override void DeleteFile(String fileName) {
+		((EventHandler)delegate { FindAndDeleteFile(fileName); }).BeginInvoke(null, null, null, null);
+	}
+	
+	private void FindAndDeleteFile(String fileName) {	
+		foreach(EnvDTE.ProjectItem projectItem in templateProjectItem.ProjectItems) {
+			if (projectItem.get_FileNames(0) == fileName) {
+				projectItem.Delete();
+				return;
+			}
+		}
+	}
+
+	internal override string DefaultProjectNamespace {
+		get { return templateProjectItem.ContainingProject.Properties.Item("DefaultNamespace").Value.ToString(); }
+	}
+	
+	internal override string GetCustomToolNamespace(string fileName) {
+		return dte.Solution.FindProjectItem(fileName).Properties.Item("CustomToolNamespace").Value.ToString();
+	}
+}
+
+// Methods that deserve a better home
+public static class Util
+{
+	public static T ParseEnum<T>(String value, T defaultValue) where T:struct {
+		try { return (T)Enum.Parse(typeof(T), value); }
+		catch { return defaultValue; }
+	}
+	
+	public static MemberAttributes DecodeMemberAccess(String access) {
+		switch(access) {
+			case "Private": return MemberAttributes.Private;
+			case "Internal": return MemberAttributes.Assembly;
+			case "Protected": return MemberAttributes.Family;
+			case "ProtectedInternal": return MemberAttributes.FamilyAndAssembly;
+			default: return MemberAttributes.Public;
+		}
+	}
+	
+	public static MemberAttributes DecodeMemberModifier(String modifier) {
+		switch(modifier) {
+			case "Virtual": return 0;
+			case "Override": return MemberAttributes.Override;
+			default: return MemberAttributes.Final;
+		}
+	}
+}
+
+class TypeStub : System.Reflection.TypeDelegator
+{
+	private String name;
+	
+	public TypeStub(String name) : base(typeof(System.Enum)) {
+		this.name = name;
+	}
+	
+	public override String Name {
+		get { return name; }
+	}
+	
+	public override String FullName {
+		get { return name; }
+	}
+}#>
