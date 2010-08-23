@@ -105,7 +105,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
           if (value == null) throw new ArgumentNullException();
           if (TargetVariable != null) DeregisterStringValueEventHandlers(TargetVariable);
           TargetVariableParameter.Value = value;
-          RegisterStringValueEventHandlers(TargetVariable);
         }
       }
     }
@@ -116,7 +115,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
           if (value == null) throw new ArgumentNullException();
           if (InputVariables != null) DeregisterInputVariablesEventHandlers();
           InputVariablesParameter.Value = value;
-          RegisterInputVariablesEventHandlers();
         }
       }
     }
@@ -127,7 +125,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
           if (value == null) throw new ArgumentNullException();
           if (TrainingSamplesStart != null) DeregisterValueTypeEventHandlers(TrainingSamplesStart);
           TrainingSamplesStartParameter.Value = value;
-          RegisterValueTypeEventHandlers(TrainingSamplesStart);
         }
       }
     }
@@ -138,7 +135,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
           if (value == null) throw new ArgumentNullException();
           if (TrainingSamplesEnd != null) DeregisterValueTypeEventHandlers(TrainingSamplesEnd);
           TrainingSamplesEndParameter.Value = value;
-          RegisterValueTypeEventHandlers(TrainingSamplesEnd);
         }
       }
     }
@@ -149,7 +145,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
           if (value == null) throw new ArgumentNullException();
           if (TestSamplesStart != null) DeregisterValueTypeEventHandlers(TestSamplesStart);
           TestSamplesStartParameter.Value = value;
-          RegisterValueTypeEventHandlers(TestSamplesStart);
         }
       }
     }
@@ -160,7 +155,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
           if (value == null) throw new ArgumentNullException();
           if (TestSamplesEnd != null) DeregisterValueTypeEventHandlers(TestSamplesEnd);
           TestSamplesEndParameter.Value = value;
-          RegisterValueTypeEventHandlers(TestSamplesEnd);
         }
       }
     }
@@ -206,7 +200,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     [StorableConstructor]
-    private DataAnalysisProblemData(bool deserializing) : base() { }
+    private DataAnalysisProblemData(bool deserializing) : base(deserializing) { }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserializationHook() {
@@ -248,21 +242,27 @@ namespace HeuristicLab.Problems.DataAnalysis {
       OnProblemDataChanged(EventArgs.Empty);
     }
     private void InputVariablesParameter_ValueChanged(object sender, EventArgs e) {
+      RegisterInputVariablesEventHandlers();
       OnProblemDataChanged(EventArgs.Empty);
     }
     private void TargetVariableParameter_ValueChanged(object sender, EventArgs e) {
+      RegisterStringValueEventHandlers(TargetVariable);
       if (TargetVariable != null) OnProblemDataChanged(EventArgs.Empty);
     }
     private void TrainingSamplesStartParameter_ValueChanged(object sender, EventArgs e) {
+      RegisterValueTypeEventHandlers(TrainingSamplesStart);
       OnProblemDataChanged(EventArgs.Empty);
     }
     private void TrainingSamplesEndParameter_ValueChanged(object sender, EventArgs e) {
+      RegisterValueTypeEventHandlers(TrainingSamplesEnd);
       OnProblemDataChanged(EventArgs.Empty);
     }
     private void TestSamplesStartParameter_ValueChanged(object sender, EventArgs e) {
+      RegisterValueTypeEventHandlers(TestSamplesStart);
       OnProblemDataChanged(EventArgs.Empty);
     }
     private void TestSamplesEndParameter_ValueChanged(object sender, EventArgs e) {
+      RegisterValueTypeEventHandlers(TestSamplesEnd);
       OnProblemDataChanged(EventArgs.Empty);
     }
     #endregion
