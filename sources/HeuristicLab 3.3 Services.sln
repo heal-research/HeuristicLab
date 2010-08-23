@@ -16,6 +16,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Services.Deplo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Services.OKB.DataAccess-3.3", "HeuristicLab.Services.OKB.DataAccess\3.3\HeuristicLab.Services.OKB.DataAccess-3.3.csproj", "{E36BE58F-F3CE-40BB-9AB3-9F9E30AD5CCF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Services.OKB.AttributeSelector-3.3", "HeuristicLab.Services.OKB.AttributeSelector\3.3\HeuristicLab.Services.OKB.AttributeSelector-3.3.csproj", "{E80A68DB-D6E1-4395-ABF0-AFE09E4DEF8B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -74,6 +76,18 @@ Global
 		{E36BE58F-F3CE-40BB-9AB3-9F9E30AD5CCF}.Release|x64.Build.0 = Release|x64
 		{E36BE58F-F3CE-40BB-9AB3-9F9E30AD5CCF}.Release|x86.ActiveCfg = Release|x86
 		{E36BE58F-F3CE-40BB-9AB3-9F9E30AD5CCF}.Release|x86.Build.0 = Release|x86
+		{E80A68DB-D6E1-4395-ABF0-AFE09E4DEF8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E80A68DB-D6E1-4395-ABF0-AFE09E4DEF8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E80A68DB-D6E1-4395-ABF0-AFE09E4DEF8B}.Debug|x64.ActiveCfg = Debug|x64
+		{E80A68DB-D6E1-4395-ABF0-AFE09E4DEF8B}.Debug|x64.Build.0 = Debug|x64
+		{E80A68DB-D6E1-4395-ABF0-AFE09E4DEF8B}.Debug|x86.ActiveCfg = Debug|x86
+		{E80A68DB-D6E1-4395-ABF0-AFE09E4DEF8B}.Debug|x86.Build.0 = Debug|x86
+		{E80A68DB-D6E1-4395-ABF0-AFE09E4DEF8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E80A68DB-D6E1-4395-ABF0-AFE09E4DEF8B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E80A68DB-D6E1-4395-ABF0-AFE09E4DEF8B}.Release|x64.ActiveCfg = Release|x64
+		{E80A68DB-D6E1-4395-ABF0-AFE09E4DEF8B}.Release|x64.Build.0 = Release|x64
+		{E80A68DB-D6E1-4395-ABF0-AFE09E4DEF8B}.Release|x86.ActiveCfg = Release|x86
+		{E80A68DB-D6E1-4395-ABF0-AFE09E4DEF8B}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
