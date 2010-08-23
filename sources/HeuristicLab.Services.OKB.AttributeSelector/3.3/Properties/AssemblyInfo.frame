@@ -26,8 +26,8 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("HeuristicLab.Services.OKB.AttributeSelector")]
-[assembly: AssemblyDescription("Attribute selector for HeuristicLab OKB service")]
+[assembly: AssemblyTitle("HeuristicLab.Services.OKB.AttributeSelection")]
+[assembly: AssemblyDescription("Attribute selection for HeuristicLab OKB services")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("HeuristicLab")]

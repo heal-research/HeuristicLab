@@ -29,7 +29,7 @@ using System.Linq.Expressions;
 using HeuristicLab.Services.OKB.DataAccess;
 
 
-namespace HeuristicLab.Services.OKB.AttributeSelector {
+namespace HeuristicLab.Services.OKB.AttributeSelection {
   public class DataSetBuilder : IEnumerable<DataRow> {
 
     public static DataSet GetDataSet(OKBDataContext okb, IEnumerable<RunAttributeSelector> selectors) {

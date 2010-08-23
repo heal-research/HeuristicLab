@@ -28,7 +28,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using HeuristicLab.Services.OKB.DataAccess;
 
-namespace HeuristicLab.Services.OKB.AttributeSelector {
+namespace HeuristicLab.Services.OKB.AttributeSelection {
 
   public class AttributeSpecifier {
     public string TableName { get; set; }

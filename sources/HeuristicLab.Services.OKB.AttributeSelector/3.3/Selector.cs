@@ -22,7 +22,7 @@
 using System;
 using System.Linq.Expressions;
 
-namespace HeuristicLab.Services.OKB.AttributeSelector {
+namespace HeuristicLab.Services.OKB.AttributeSelection {
 
   public class Selector {
     public Type Table { get; set; }

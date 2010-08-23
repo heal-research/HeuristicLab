@@ -26,8 +26,8 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("HeuristicLab.Services.OKB.DataAccess")]
-[assembly: AssemblyDescription("Data access layer for HeuristicLab OKB services")]
+[assembly: AssemblyTitle("HeuristicLab.Services.OKB")]
+[assembly: AssemblyDescription("HeuristicLab OKB services")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("HeuristicLab")]
@@ -41,7 +41,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("8a145a17-ce73-47da-b520-b4194835fb49")]
+[assembly: Guid("029c79a0-8bf0-460d-9499-3b3b9c7f1a93")]
 
 // Version information for an assembly consists of the following four values:
 //

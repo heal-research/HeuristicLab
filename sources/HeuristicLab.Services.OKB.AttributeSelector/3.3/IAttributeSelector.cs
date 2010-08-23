@@ -21,7 +21,7 @@
 
 using System.Collections.Generic;
 
-namespace HeuristicLab.Services.OKB.AttributeSelector {
+namespace HeuristicLab.Services.OKB.AttributeSelection {
 
   public interface IAttributeSelector {
     string TableName { get; }

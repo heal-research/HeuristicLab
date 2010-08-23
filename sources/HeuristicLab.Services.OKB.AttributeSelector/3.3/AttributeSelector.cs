@@ -27,7 +27,7 @@ using System.Linq.Expressions;
 using System.Text;
 using HeuristicLab.Services.OKB.DataAccess;
 
-namespace HeuristicLab.Services.OKB.AttributeSelector {
+namespace HeuristicLab.Services.OKB.AttributeSelection {
 
   public class AttributeSelector : IAttributeSelector {
 
