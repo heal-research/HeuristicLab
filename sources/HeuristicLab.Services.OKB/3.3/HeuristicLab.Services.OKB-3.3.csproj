@@ -193,9 +193,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\HeuristicLab.Services.OKB.AttributeSelector\3.3\HeuristicLab.Services.OKB.AttributeSelector-3.3.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Services.OKB.AttributeSelection\3.3\HeuristicLab.Services.OKB.AttributeSelection-3.3.csproj">
       <Project>{E80A68DB-D6E1-4395-ABF0-AFE09E4DEF8B}</Project>
-      <Name>HeuristicLab.Services.OKB.AttributeSelector-3.3</Name>
+      <Name>HeuristicLab.Services.OKB.AttributeSelection-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Services.OKB.DataAccess\3.3\HeuristicLab.Services.OKB.DataAccess-3.3.csproj">
       <Project>{E36BE58F-F3CE-40BB-9AB3-9F9E30AD5CCF}</Project>
