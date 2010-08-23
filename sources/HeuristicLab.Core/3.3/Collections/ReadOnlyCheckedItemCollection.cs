@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using HeuristicLab.Collections;
+using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
@@ -35,11 +36,21 @@ namespace HeuristicLab.Core {
     public ReadOnlyCheckedItemCollection() : base(new CheckedItemCollection<T>()) { }
     public ReadOnlyCheckedItemCollection(ICheckedItemCollection<T> collection)
       : base(collection) {
-      collection.CheckedItemsChanged += new CollectionItemsChangedEventHandler<T>(collection_CheckedItemsChanged);
+      CheckedItemCollection.CheckedItemsChanged += new CollectionItemsChangedEventHandler<T>(collection_CheckedItemsChanged);
     }
 
     [StorableConstructor]
     protected ReadOnlyCheckedItemCollection(bool deserializing) : base(deserializing) { }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserializationHook() {
+      CheckedItemCollection.CheckedItemsChanged += new CollectionItemsChangedEventHandler<T>(collection_CheckedItemsChanged);
+    }
+
+    public override IDeepCloneable Clone(Common.Cloner cloner) {
+      ReadOnlyCheckedItemCollection<T> clone = (ReadOnlyCheckedItemCollection<T>)base.Clone(cloner);
+      clone.CheckedItemCollection.CheckedItemsChanged += new CollectionItemsChangedEventHandler<T>(clone.collection_CheckedItemsChanged);
+      return clone;
+    }
 
     #region ReadOnlyCheckedItemCollection<T> Members
     public event CollectionItemsChangedEventHandler<T> CheckedItemsChanged;

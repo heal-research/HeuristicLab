@@ -35,11 +35,22 @@ namespace HeuristicLab.Core {
     public ReadOnlyCheckedItemList() : base(new CheckedItemList<T>()) { }
     public ReadOnlyCheckedItemList(ICheckedItemList<T> list)
       : base(list) {
-      list.CheckedItemsChanged += new CollectionItemsChangedEventHandler<IndexedItem<T>>(list_CheckedItemsChanged);
+      CheckedItemList.CheckedItemsChanged += new CollectionItemsChangedEventHandler<IndexedItem<T>>(list_CheckedItemsChanged);
     }
 
     [StorableConstructor]
     protected ReadOnlyCheckedItemList(bool deserializing) : base(deserializing) { }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserializationHook() {
+      CheckedItemList.CheckedItemsChanged += new CollectionItemsChangedEventHandler<IndexedItem<T>>(list_CheckedItemsChanged);
+    }
+
+    public override Common.IDeepCloneable Clone(Common.Cloner cloner) {
+      ReadOnlyCheckedItemList<T> clone = (ReadOnlyCheckedItemList<T>)base.Clone(cloner);
+      clone.CheckedItemList.CheckedItemsChanged += new CollectionItemsChangedEventHandler<IndexedItem<T>>(clone.list_CheckedItemsChanged);
+      return clone;
+    }
+
 
     #region ICheckedItemList<T> Members
     public event CollectionItemsChangedEventHandler<IndexedItem<T>> CheckedItemsChanged;
