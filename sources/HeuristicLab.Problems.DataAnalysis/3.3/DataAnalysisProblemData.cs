@@ -246,8 +246,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
       OnProblemDataChanged(EventArgs.Empty);
     }
     private void TargetVariableParameter_ValueChanged(object sender, EventArgs e) {
-      RegisterStringValueEventHandlers(TargetVariable);
-      if (TargetVariable != null) OnProblemDataChanged(EventArgs.Empty);
+      if (TargetVariable != null) {
+        RegisterStringValueEventHandlers(TargetVariable);
+        OnProblemDataChanged(EventArgs.Empty);
+      }
     }
     private void TrainingSamplesStartParameter_ValueChanged(object sender, EventArgs e) {
       RegisterValueTypeEventHandlers(TrainingSamplesStart);
