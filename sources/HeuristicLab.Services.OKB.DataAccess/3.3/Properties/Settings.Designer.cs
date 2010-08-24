@@ -26,7 +26,8 @@ namespace HeuristicLab.Services.OKB.DataAccess.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=localhost;Initial Catalog=HeuristicLab.OKB;Integrated Security=SSPI")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=.\\SQLEXPRESS;Integrated Security=SSPI;Initial Catalog=HeuristicLab.OK" +
+            "B")]
         public string OKBConnectionString {
             get {
                 return ((string)(this["OKBConnectionString"]));

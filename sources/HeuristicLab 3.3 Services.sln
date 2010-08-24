@@ -16,13 +16,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Services.Deplo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Services.OKB.DataAccess-3.3", "HeuristicLab.Services.OKB.DataAccess\3.3\HeuristicLab.Services.OKB.DataAccess-3.3.csproj", "{E36BE58F-F3CE-40BB-9AB3-9F9E30AD5CCF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Services.OKB-3.3", "HeuristicLab.Services.OKB\3.3\HeuristicLab.Services.OKB-3.3.csproj", "{C9ABB902-C6BD-41E2-B34C-06E5C50C8397}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Services.OKB.Server-3.3", "HeuristicLab.Services.OKB.Server\3.3\HeuristicLab.Services.OKB.Server-3.3.csproj", "{01AFC7D8-2A4B-42BA-91DC-750F561829BC}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Services.OKB.AttributeSelection-3.3", "HeuristicLab.Services.OKB.AttributeSelection\3.3\HeuristicLab.Services.OKB.AttributeSelection-3.3.csproj", "{E80A68DB-D6E1-4395-ABF0-AFE09E4DEF8B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Services.OKB-3.3Lib", "HeuristicLab.Services.OKB\3.3\HeuristicLab.Services.OKB-3.3Lib.csproj", "{766DA4B7-2A0E-4CDE-8F90-93D8B1AD62CF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Services.OKB-3.3", "HeuristicLab.Services.OKB\3.3\HeuristicLab.Services.OKB-3.3.csproj", "{766DA4B7-2A0E-4CDE-8F90-93D8B1AD62CF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -100,38 +96,6 @@ Global
 		{E36BE58F-F3CE-40BB-9AB3-9F9E30AD5CCF}.Release|x64.Build.0 = Release|x64
 		{E36BE58F-F3CE-40BB-9AB3-9F9E30AD5CCF}.Release|x86.ActiveCfg = Release|x86
 		{E36BE58F-F3CE-40BB-9AB3-9F9E30AD5CCF}.Release|x86.Build.0 = Release|x86
-		{C9ABB902-C6BD-41E2-B34C-06E5C50C8397}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C9ABB902-C6BD-41E2-B34C-06E5C50C8397}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C9ABB902-C6BD-41E2-B34C-06E5C50C8397}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{C9ABB902-C6BD-41E2-B34C-06E5C50C8397}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{C9ABB902-C6BD-41E2-B34C-06E5C50C8397}.Debug|x64.ActiveCfg = Debug|x64
-		{C9ABB902-C6BD-41E2-B34C-06E5C50C8397}.Debug|x64.Build.0 = Debug|x64
-		{C9ABB902-C6BD-41E2-B34C-06E5C50C8397}.Debug|x86.ActiveCfg = Debug|x86
-		{C9ABB902-C6BD-41E2-B34C-06E5C50C8397}.Debug|x86.Build.0 = Debug|x86
-		{C9ABB902-C6BD-41E2-B34C-06E5C50C8397}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C9ABB902-C6BD-41E2-B34C-06E5C50C8397}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C9ABB902-C6BD-41E2-B34C-06E5C50C8397}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{C9ABB902-C6BD-41E2-B34C-06E5C50C8397}.Release|Mixed Platforms.Build.0 = Release|x86
-		{C9ABB902-C6BD-41E2-B34C-06E5C50C8397}.Release|x64.ActiveCfg = Release|x64
-		{C9ABB902-C6BD-41E2-B34C-06E5C50C8397}.Release|x64.Build.0 = Release|x64
-		{C9ABB902-C6BD-41E2-B34C-06E5C50C8397}.Release|x86.ActiveCfg = Release|x86
-		{C9ABB902-C6BD-41E2-B34C-06E5C50C8397}.Release|x86.Build.0 = Release|x86
-		{01AFC7D8-2A4B-42BA-91DC-750F561829BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{01AFC7D8-2A4B-42BA-91DC-750F561829BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{01AFC7D8-2A4B-42BA-91DC-750F561829BC}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{01AFC7D8-2A4B-42BA-91DC-750F561829BC}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{01AFC7D8-2A4B-42BA-91DC-750F561829BC}.Debug|x64.ActiveCfg = Debug|x64
-		{01AFC7D8-2A4B-42BA-91DC-750F561829BC}.Debug|x64.Build.0 = Debug|x64
-		{01AFC7D8-2A4B-42BA-91DC-750F561829BC}.Debug|x86.ActiveCfg = Debug|x86
-		{01AFC7D8-2A4B-42BA-91DC-750F561829BC}.Debug|x86.Build.0 = Debug|x86
-		{01AFC7D8-2A4B-42BA-91DC-750F561829BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{01AFC7D8-2A4B-42BA-91DC-750F561829BC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{01AFC7D8-2A4B-42BA-91DC-750F561829BC}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{01AFC7D8-2A4B-42BA-91DC-750F561829BC}.Release|Mixed Platforms.Build.0 = Release|x86
-		{01AFC7D8-2A4B-42BA-91DC-750F561829BC}.Release|x64.ActiveCfg = Release|x64
-		{01AFC7D8-2A4B-42BA-91DC-750F561829BC}.Release|x64.Build.0 = Release|x64
-		{01AFC7D8-2A4B-42BA-91DC-750F561829BC}.Release|x86.ActiveCfg = Release|x86
-		{01AFC7D8-2A4B-42BA-91DC-750F561829BC}.Release|x86.Build.0 = Release|x86
 		{E80A68DB-D6E1-4395-ABF0-AFE09E4DEF8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E80A68DB-D6E1-4395-ABF0-AFE09E4DEF8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E80A68DB-D6E1-4395-ABF0-AFE09E4DEF8B}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
