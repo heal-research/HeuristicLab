@@ -84,7 +84,6 @@ namespace HeuristicLab.Services.OKB.AttributeSelection {
       { typeof(Client), typeof(Run) },
       { typeof(User), typeof(Run) },
       { typeof(Experiment), typeof(Run) },
-      { typeof(ExperimentCreator), typeof(Experiment) },
       { typeof(Project), typeof(Experiment) },
       { typeof(Algorithm), typeof(Experiment) },
       { typeof(AlgorithmClass), typeof(Algorithm) },
@@ -196,9 +195,6 @@ namespace HeuristicLab.Services.OKB.AttributeSelection {
         ExpressionTools.GetSelector(run => run.User, u => u.Name),
 
         ExpressionTools.GetSelector(run => run.Experiment, x => x.Id),
-
-        ExpressionTools.GetSelector(run => run.Experiment.ExperimentCreators.Single(), xc => xc.User.Id),
-        ExpressionTools.GetSelector(run => run.Experiment.ExperimentCreators.Single(), xc => xc.User.Name),
 
         ExpressionTools.GetSelector(run => run.Experiment.Project, p => p.Id),
         ExpressionTools.GetSelector(run => run.Experiment.Project, p => p.Name),

@@ -52,7 +52,7 @@ namespace HeuristicLab.Services.OKB {
       Console.ReadLine();
     }
 
-    static ILog logger = log4net.LogManager.GetLogger("HeuristicLab.OKB.Hoster");
+    static ILog logger = log4net.LogManager.GetLogger("HeuristicLab.Services.OKB.Hoster");
 
     static void UnhandledException(object sender, UnhandledExceptionEventArgs e) {
       logger.Warn("unhandled exception, e");
@@ -63,7 +63,7 @@ namespace HeuristicLab.Services.OKB {
     }
 
     private static void StartService(Type type) {
-      ServiceHost host = new CertificateServiceHost(type);
+      ServiceHost host = new ServiceHost(type);
       try {
         host.Open();
         PrintConfig(host);

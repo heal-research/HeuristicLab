@@ -68,12 +68,6 @@
         <elementListCompartment Id="842b4ada-aadb-4e80-95e3-0d500b5cb14b" absoluteBounds="5.5150000000000006, 4.7100000000000009, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="12d4c13b-7509-49ae-998b-a0b43f160db7" absoluteBounds="8.125, 7.5, 2, 1.1939925130208309">
-      <DataClassMoniker Name="/OKBDataContext/ExperimentCreator" />
-      <nestedChildShapes>
-        <elementListCompartment Id="e4e83d65-2fb2-4364-8f61-64ce8440b3c4" absoluteBounds="8.14, 7.9600000000000009, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
     <classShape Id="51fb443c-2ed1-4364-9dc3-84a606c921f5" isExpanded="false" absoluteBounds="8.125, 4.25, 2, 0.45">
       <DataClassMoniker Name="/OKBDataContext/FloatParameterValue" />
       <nestedChildShapes>
@@ -169,20 +163,6 @@
       <nodes>
         <classShapeMoniker Id="f91d981c-4c4c-407a-aedd-bc0091bdd664" />
         <classShapeMoniker Id="a782534f-cc38-43ef-bf3a-297bfdf111d9" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(7.07291666666667 : 5.82859537760417); (7.07291666666667 : 6.50172191879847); (7.82609398177643 : 6.50172191879847); (7.82609398177643 : 8.1875); (8.125 : 8.1875)]" manuallyRouted="true" fixedFrom="NotFixed" fixedTo="NotFixed">
-      <AssociationMoniker Name="/OKBDataContext/Experiment/Experiment_ExperimentCreator" />
-      <nodes>
-        <classShapeMoniker Id="f91d981c-4c4c-407a-aedd-bc0091bdd664" />
-        <classShapeMoniker Id="12d4c13b-7509-49ae-998b-a0b43f160db7" />
-      </nodes>
-    </associationConnector>
-    <associationConnector edgePoints="[(10.625 : 7.30729140533756); (10.385 : 7.30729140533756); (10.385 : 8.26562470439823); (10.125 : 8.26562470439823)]" fixedFrom="NotFixed" fixedTo="NotFixed">
-      <AssociationMoniker Name="/OKBDataContext/User/User_ExperimentCreator" />
-      <nodes>
-        <classShapeMoniker Id="6abee4a0-9a54-4c51-bb1b-31061cb25f9f" />
-        <classShapeMoniker Id="12d4c13b-7509-49ae-998b-a0b43f160db7" />
       </nodes>
     </associationConnector>
     <associationConnector edgePoints="[(7.5 : 4.475); (8.125 : 4.475)]" fixedFrom="NotFixed" fixedTo="NotFixed">

@@ -119,7 +119,6 @@
     <Reference Include="System.ServiceModel">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.ServiceModel.Activation" />
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -133,10 +132,8 @@
   <ItemGroup>
     <Compile Include="AdminService.cs" />
     <Compile Include="AttributeSelector.cs" />
-    <Compile Include="CertificateServiceHostFactory.cs" />
-    <Compile Include="CustomCertificateValidator.cs" />
-    <Compile Include="CertificateServiceHost.cs" />
     <Compile Include="DataService.cs" />
+    <Compile Include="ExperimentKit.cs" />
     <Compile Include="Interfaces\IDataService.cs" />
     <Compile Include="Interfaces\ITableService.cs" />
     <Compile Include="Interfaces\IQueryService.cs" />
@@ -156,8 +153,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <EmbeddedResource Include="client.cer" />
-    <EmbeddedResource Include="server.pfx" />
     <None Include="HeuristicLab.snk" />
   </ItemGroup>
   <ItemGroup>

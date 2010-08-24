@@ -55,7 +55,6 @@ namespace HeuristicLab.Services.OKB.AttributeSelection {
       typeof(Run).Name,
       typeof(Client).Name,
       typeof(User).Name,
-      typeof(ExperimentCreator).Name,
     };
 
     protected static readonly List<string> dynamicTables = new List<string>() {
@@ -76,8 +75,6 @@ namespace HeuristicLab.Services.OKB.AttributeSelection {
     public AttributeSelector(OKBDataContext okb, string tableName, string fieldName) {
       TableName = tableName;
       FieldName = fieldName;
-      if (tableName == typeof(ExperimentCreator).Name)
-        tableName = typeof(User).Name;
       TableType = GetTableType(tableName);
       ITable Table = GetTable(okb, tableName);
       if (staticTables.Contains(tableName)) {

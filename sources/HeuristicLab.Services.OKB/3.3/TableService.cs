@@ -65,7 +65,7 @@ namespace HeuristicLab.Services.OKB {
     /// <param name="tableName">Name of the table.</param>
     public void UpdateDataTable(DataTable updatedRows, string tableName) {
       logger.Info("updating table: " + tableName);
-      Type tableType = Assembly.GetAssembly(typeof(Run)).GetType("HeuristicLab.OKB." + tableName, true);
+      Type tableType = Assembly.GetAssembly(typeof(Run)).GetType("HeuristicLab.Services.OKB.DataAccess." + tableName, true);
       var properties = from p in tableType.GetProperties()
                        where SupportedTypes.Contains(p.PropertyType)
                        select p;
@@ -125,7 +125,7 @@ namespace HeuristicLab.Services.OKB {
     /// <param name="tableName">Name of the table.</param>
     public void DeleteTableRows(int[] ids, string tableName) {
       logger.Info("delete rows from table: " + tableName);
-      Type tableType = Assembly.GetAssembly(typeof(Run)).GetType("HeuristicLab.OKB." + tableName, true);
+      Type tableType = Assembly.GetAssembly(typeof(Run)).GetType("HeuristicLab.Services.OKB.DataAccess" + tableName, true);
       OKBDataContext okb = GetDataContext();
       ITable table = okb.GetTable(tableType);
       table.DeleteAllOnSubmit(DataSetBuilder.GetEntities(okb, tableType, ids));
@@ -147,7 +147,7 @@ namespace HeuristicLab.Services.OKB {
     /// </returns>
     public DataTable PrepareDataTable(string tableName, out int count) {
       logger.Info("preparing data table: " + tableName);
-      Type tableType = Assembly.GetAssembly(typeof(Run)).GetType("HeuristicLab.OKB." + tableName, true);
+      Type tableType = Assembly.GetAssembly(typeof(Run)).GetType("HeuristicLab.Services.OKB.DataAccess" + tableName, true);
       properties = from p in tableType.GetProperties()
                    where SupportedTypes.Contains(p.PropertyType)
                    select p;

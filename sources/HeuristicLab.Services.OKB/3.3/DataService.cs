@@ -71,34 +71,34 @@ namespace HeuristicLab.Services.OKB {
 
     private byte[] GetData(EntityType type, int id) {
       Log("loading data", type, id);
-      OKBDataContext okb = new OKBDataContext();
-      switch (type) {
-        case EntityType.Algorithm:
-          Algorithm algorithm = okb.Algorithms.Single(a => a.Id == id);
-          if (algorithm.AlgorithmData == null) {
-            algorithm.AlgorithmData = new AlgorithmData() {
-              AlgorithmId = algorithm.Id,
-              Data = new Binary(new byte[0])
-            };
-            okb.SubmitChanges();
-          }
-          return algorithm.AlgorithmData.Data.ToArray();
-          break;
-        case EntityType.Problem:
-          Problem problem = okb.Problems.Single(p => p.Id == id);
-          if (problem.ProblemData == null) {
-            problem.ProblemData = new ProblemData() {
-              ProblemId = problem.Id,
-              Data = new Binary(new byte[0])
-            };
-            okb.SubmitChanges();
-          }
-          return problem.ProblemData.Data.ToArray();
-          break;
-        default:
-          throw new FaultException("Unsupported EntityType");
+      using (OKBDataContext okb = new OKBDataContext()) {
+        switch (type) {
+          case EntityType.Algorithm:
+            Algorithm algorithm = okb.Algorithms.Single(a => a.Id == id);
+            if (algorithm.AlgorithmData == null) {
+              algorithm.AlgorithmData = new AlgorithmData() {
+                AlgorithmId = algorithm.Id,
+                Data = new Binary(new byte[0])
+              };
+              okb.SubmitChanges();
+            }
+            return algorithm.AlgorithmData.Data.ToArray();
+            break;
+          case EntityType.Problem:
+            Problem problem = okb.Problems.Single(p => p.Id == id);
+            if (problem.ProblemData == null) {
+              problem.ProblemData = new ProblemData() {
+                ProblemId = problem.Id,
+                Data = new Binary(new byte[0])
+              };
+              okb.SubmitChanges();
+            }
+            return problem.ProblemData.Data.ToArray();
+            break;
+          default:
+            throw new FaultException("Unsupported EntityType");
+        }
       }
-      okb.Dispose();
     }
 
     private void SetData(EntityType type, int id, byte[] data) {

@@ -1,10 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><Database Name="OKB" EntityNamespace="HeuristicLab.Services.OKB.DataAccess" ContextNamespace="HeuristicLab.Services.OKB.DataAccess" Class="OKBDataContext" Serialization="Unidirectional" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
-  <Connection Mode="AppSettings" ConnectionString="Data Source=localhost;Initial Catalog=OKB;Integrated Security=True" SettingsObjectName="HeuristicLab.Services.OKB.DataAccess.Properties.Settings" SettingsPropertyName="OKBConnectionString" Provider="System.Data.SqlClient" />
+  <Connection Mode="AppSettings" ConnectionString="Data Source=localhost;Initial Catalog=HeuristicLab.OKB;Integrated Security=True" SettingsObjectName="HeuristicLab.Services.OKB.DataAccess.Properties.Settings" SettingsPropertyName="OKBConnectionString" Provider="System.Data.SqlClient" />
   <Table Name="dbo.[User]" Member="Users">
     <Type Name="User">
       <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="VarChar(200) NOT NULL" CanBeNull="false" />
-      <Association Name="User_ExperimentCreator" Member="ExperimentCreators" ThisKey="Id" OtherKey="UserId" Type="ExperimentCreator" />
       <Association Name="User_Run" Member="Runs" ThisKey="Id" OtherKey="UserId" Type="Run" />
     </Type>
   </Table>
@@ -92,7 +91,6 @@
       <Column Name="AlgorithmId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="ProblemId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Association Name="Experiment_CharParameterValue" Member="CharParameterValues" ThisKey="Id" OtherKey="ExperimentId" Type="CharParameterValue" />
-      <Association Name="Experiment_ExperimentCreator" Member="ExperimentCreators" ThisKey="Id" OtherKey="ExperimentId" Type="ExperimentCreator" />
       <Association Name="Experiment_FloatParameterValue" Member="FloatParameterValues" ThisKey="Id" OtherKey="ExperimentId" Type="FloatParameterValue" />
       <Association Name="Experiment_IntParameterValue" Member="IntParameterValues" ThisKey="Id" OtherKey="ExperimentId" Type="IntParameterValue" />
       <Association Name="Experiment_Run" Member="Runs" ThisKey="Id" OtherKey="ExperimentId" Type="Run" />
@@ -100,14 +98,6 @@
       <Association Name="Problem_Experiment" Member="Problem" ThisKey="ProblemId" OtherKey="Id" Type="Problem" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
       <Association Name="Project_Experiment" Member="Project" ThisKey="ProjectId" OtherKey="Id" Type="Project" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
       <Association Name="Algorithm_Experiment" Member="Algorithm" ThisKey="AlgorithmId" OtherKey="Id" Type="Algorithm" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.ExperimentCreator" Member="ExperimentCreators">
-    <Type Name="ExperimentCreator">
-      <Column Name="ExperimentId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Association Name="Experiment_ExperimentCreator" Member="Experiment" ThisKey="ExperimentId" OtherKey="Id" Type="Experiment" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
-      <Association Name="User_ExperimentCreator" Member="User" ThisKey="UserId" OtherKey="Id" Type="User" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.FloatParameterValue" Member="FloatParameterValues">

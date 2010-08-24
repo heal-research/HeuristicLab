@@ -141,16 +141,14 @@ namespace HeuristicLab.Services.OKB {
     /// <param name="project">The project.</param>
     public void AddRun(Algorithm algorithm, Problem problem, Project project) {
       Log("adding run for {0}@{1}({2})[{3}, {4}]",
-        algorithm.Name, problem.Name, project.Name, authentication.User.Name, authentication.Client.Name);
+        algorithm.Name, problem.Name, project.Name, currentUser.Name, currentClient.Name);
       try {
         using (OKBDataContext okb = new OKBDataContext()) {
-          var user = okb.Users.Single(u => u.Id == authentication.User.Id);
-          var client = okb.Clients.Single(c => c.Id == authentication.Client.Id);
-          Experiment experiment = GetOrCreateExperiment(algorithm, problem, project, authentication.User, okb);
+          Experiment experiment = GetOrCreateExperiment(algorithm, problem, project, currentUser, okb);
           Run run = new Run() {
             Experiment = experiment,
-            UserId = authentication.User.Id,
-            ClientId = authentication.Client.Id,
+            UserId = currentUser.Id,
+            ClientId = currentClient.Id,
             FinishedDate = DateTime.Now,
             ResultValues = algorithm.ResultValues
           };
@@ -174,9 +172,6 @@ namespace HeuristicLab.Services.OKB {
           Log("Warning: duplicate experiment found");
         Log("reusing existing experiment");
         Experiment experiment = experimentQuery.First();
-        if (experiment.ExperimentCreators.Where(ec => ec.UserId == user.Id).Count() == 0) {
-          experiment.ExperimentCreators.Add(new ExperimentCreator() { UserId = user.Id });
-        }
         return experiment;
       } else {
         Log("creating new experiment");
@@ -186,7 +181,6 @@ namespace HeuristicLab.Services.OKB {
           ProjectId = project.Id,
           ParameterValues = algorithm.ParameterValues
         };
-        experiment.ExperimentCreators.Add(new ExperimentCreator() { UserId = user.Id });
         okb.Experiments.InsertOnSubmit(experiment);
         return experiment;
       }
@@ -291,13 +285,14 @@ namespace HeuristicLab.Services.OKB {
     /// Determines whether this instance is connected.
     /// </summary>
     /// <returns>
-    /// 	<c>true</c> if this instance is connected; otherwise, <c>false</c>.
+    ///   <c>true</c> if this instance is connected; otherwise, <c>false</c>.
     /// </returns>
     public bool IsConnected() {
-      return authentication != null;
+      return currentUser != null;
     }
 
-    Authentication authentication = null;
+    User currentUser = null;
+    Client currentClient = null;
 
     /// <summary>
     /// Logs the specified username in. In case the user or client
@@ -308,7 +303,7 @@ namespace HeuristicLab.Services.OKB {
     /// <param name="username">The username.</param>
     /// <param name="clientname">The clientname.</param>
     /// <returns>
-    /// 	<c>true</c> if the login was successful; <c>false</c> otherwise.
+    ///   <c>true</c> if the login was successful; <c>false</c> otherwise.
     /// </returns>
     public bool Login(string username, string clientname) {
       Log("Authenticating {0}@{1}", username, clientname);
@@ -319,23 +314,19 @@ namespace HeuristicLab.Services.OKB {
         return false;
       }
       using (OKBDataContext okb = new OKBDataContext()) {
-        authentication = new Authentication() {
-          User = okb.Users.SingleOrDefault(u => u.Name == username),
-          Client = okb.Clients.SingleOrDefault(c => c.Name == clientname)
-        };
-        if (authentication.User == null) {
-          User user = new User() { Name = username, Id = Guid.NewGuid() };
-          okb.Users.InsertOnSubmit(user);
-          authentication.User = user;
+        currentUser = okb.Users.SingleOrDefault(u => u.Name == username);
+        currentClient = okb.Clients.SingleOrDefault(c => c.Name == clientname);
+        if (currentUser == null) {
+          currentUser = new User() { Name = username, Id = Guid.NewGuid() };
+          okb.Users.InsertOnSubmit(currentUser);
           okb.SubmitChanges();
         }
-        if (authentication.Client == null) {
-          Client client = new Client() { Name = clientname, Id = Guid.NewGuid() };
-          okb.Clients.InsertOnSubmit(client);
-          authentication.Client = client;
+        if (currentClient == null) {
+          currentClient = new Client() { Name = clientname, Id = Guid.NewGuid() };
+          okb.Clients.InsertOnSubmit(currentClient);
           okb.SubmitChanges();
         }
-        Log("  auth = {0}", authentication);
+        Log("  user = {0}, client = {1}", currentUser, currentClient);
         return true;
       }
     }
@@ -345,7 +336,8 @@ namespace HeuristicLab.Services.OKB {
     /// </summary>
     public void Logout() {
       Log("Logging out");
-      authentication = null;
+      currentUser = null;
+      currentClient = null;
     }
 
     /// <summary>

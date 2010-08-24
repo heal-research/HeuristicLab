@@ -20,15 +20,30 @@
 #endregion
 
 using System.Runtime.Serialization;
+using HeuristicLab.Services.OKB.DataAccess;
 
-namespace HeuristicLab.Services.OKB.DataAccess {
-
+namespace HeuristicLab.Services.OKB {
+  /// <summary>
+  /// Contains an <see cref="Algorithm"/> and a <see cref="Problem"/> populated with all
+  /// required data to execute experiments.
+  /// </summary>
   [DataContract]
-  public class Authentication {
+  public class ExperimentKit {
+    /// <summary>
+    /// Gets an <see cref="Algorithm"/> populated with all required data to execute
+    /// experiments.
+    /// </summary>
+    /// <value>An <see cref="Algorithm"/>.</value>
     [DataMember]
-    public User User { get; set; }
+    public Algorithm Algorithm { get; set; }
+
+    /// <summary>
+    /// Gets a <see cref="Problem"/> populated with all required data to execute
+    /// experiments.
+    /// </summary>
+    /// <value>A <see cref="Problem"/>.</value>
     [DataMember]
-    public Client Client { get; set; }
+    public Problem Problem { get; set; }
   }
 
 }
