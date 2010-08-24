@@ -310,7 +310,6 @@ namespace HeuristicLab.Core.Views {
       } else {
         splitContainer.Panel2Collapsed = true;
         viewHost.Content = null;
-        viewHost.ClearCache();
       }
     }
     #endregion

@@ -162,7 +162,6 @@ namespace HeuristicLab.Optimization.Views {
       } else {
         splitContainer.Panel2Collapsed = true;
         viewHost.Content = null;
-        viewHost.ClearCache();
       }
     }
     private void showAlgorithmButton_Click(object sender, EventArgs e) {
