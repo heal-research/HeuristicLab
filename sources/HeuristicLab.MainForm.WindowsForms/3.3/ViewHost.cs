@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
 using HeuristicLab.Common;
 
@@ -31,7 +30,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
   public sealed partial class ViewHost : AsynchronousContentView {
     public ViewHost() {
       InitializeComponent();
-      cachedViews = new Dictionary<Type, IContentView>();
       startDragAndDrop = false;
       viewContextMenuStrip.IgnoredViewTypes = new List<Type>() { typeof(ViewHost) };
 
@@ -42,11 +40,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
       viewsLabel.Visible = false;
     }
 
-    private Dictionary<Type, IContentView> cachedViews;
-    public IEnumerable<IContentView> Views {
-      get { return cachedViews.Values; }
-    }
-
     private IContentView activeView;
     public IContentView ActiveView {
       get { return this.activeView; }
@@ -55,21 +48,20 @@ namespace HeuristicLab.MainForm.WindowsForms {
           if (activeView != null) {
             DeregisterActiveViewEvents();
             View view = activeView as View;
-            if (view != null)
+            if (view != null) {
               view.OnHidden(EventArgs.Empty);
-            if (ActiveViewControl != null)
-              ActiveViewControl.Visible = false;
+              Controls.Remove(view);
+              view.Dispose();
+            }
           }
           activeView = value;
           if (activeView != null) {
             viewType = activeView.GetType();
             RegisterActiveViewEvents();
             View view = activeView as View;
-            if (view != null)
+            if (view != null) {
               view.OnShown(new ViewShownEventArgs(view, false));
-            if (ActiveViewControl != null) {
-              ActiveViewControl.Visible = true;
-              ActiveViewControl.BringToFront();
+              Controls.Add(view);
             }
           } else viewType = null;
           OnActiveViewChanged();
@@ -97,59 +89,35 @@ namespace HeuristicLab.MainForm.WindowsForms {
     public new bool Enabled {
       get { return base.Enabled; }
       set {
-        this.SuspendRepaint();
         base.Enabled = value;
         this.viewsLabel.Enabled = value;
-        this.ResumeRepaint(true);
-      }
-    }
-
-    public void ClearCache() {
-      foreach (var cachedView in cachedViews.ToArray()) {
-        if (cachedView.Value != activeView) {
-          Control c = cachedView.Value as Control;
-          if (c != null) {
-            this.Controls.Remove(c);
-            c.Dispose();
-          }
-          cachedViews.Remove(cachedView.Key);
-        }
       }
     }
 
     protected override void OnContentChanged() {
       viewContextMenuStrip.Item = Content;
-      //remove cached views which cannot show the content
-      foreach (Type type in cachedViews.Keys.ToList()) {
-        if (!ViewCanShowContent(type, Content)) {
-          Control c = cachedViews[type] as Control;
-          if (c != null) {
-            this.Controls.Remove(c);
-            c.Dispose();
-          }
-          cachedViews.Remove(type);
-        }
-      }
-
       //change ViewType if view of ViewType can not show content or is null
-      if (Content != null && !ViewCanShowContent(viewType, Content)) {
-        Type defaultViewType = MainFormManager.GetDefaultViewType(Content.GetType());
-        if (defaultViewType != null)
-          ViewType = defaultViewType;
-        else if (viewContextMenuStrip.Items.Count > 0)  // create first available view if no default view is available
-          ViewType = (Type)viewContextMenuStrip.Items[0].Tag;
-        else
-          ViewType = null;
-      }
+      if (Content != null) {
+        if (!ViewCanShowContent(viewType, Content)) {
+          Type defaultViewType = MainFormManager.GetDefaultViewType(Content.GetType());
+          if (defaultViewType != null)
+            ViewType = defaultViewType;
+          else if (viewContextMenuStrip.Items.Count > 0)  // create first available view if no default view is available
+            ViewType = (Type)viewContextMenuStrip.Items[0].Tag;
+          else
+            ViewType = null;
+        }
+        if (ActiveView != null) {
+          ActiveView.Content = Content;
+          if (ActiveViewControl != null) ActiveViewControl.Visible = true;
+        }
+      } else if (ActiveViewControl != null)
+        ActiveViewControl.Visible = false;
 
-      foreach (IContentView view in cachedViews.Values)
-        view.Content = this.Content;
+      UpdateLabels();
+    }
 
-      if (Content != null && viewType != null)
-        ActiveView = cachedViews[viewType];
-      else
-        ActiveView = null;
-
+    private void UpdateLabels() {
       if (Content != null && viewContextMenuStrip.Items.Count > 0) {
         messageLabel.Visible = false;
         viewsLabel.Visible = true;
@@ -168,18 +136,12 @@ namespace HeuristicLab.MainForm.WindowsForms {
           throw new InvalidOperationException(string.Format("View \"{0}\" cannot display content \"{1}\".",
                                                             viewType, Content.GetType()));
         IContentView view;
-        if (!cachedViews.ContainsKey(ViewType)) {
-          view = MainFormManager.CreateView(viewType);
-          view.ReadOnly = this.ReadOnly;
-          view.Locked = this.Locked;
-          ActiveView = view; //necessary to allow the views to change the status of the viewhost
-          view.Content = Content;
-          cachedViews.Add(viewType, view);
-          Control c = view as Control;
-          if (c != null)
-            this.Controls.Add(c);
-        } else
-          ActiveView = cachedViews[viewType];
+        view = MainFormManager.CreateView(viewType);
+        view.ReadOnly = this.ReadOnly;
+        view.Locked = this.Locked;
+        ActiveView = view; //necessary to allow the views to change the status of the viewhost
+        view.Content = Content;
+
         UpdateActiveMenuItem();
       }
     }
@@ -230,24 +192,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     #region forwarding of view events
-    protected override void PropagateStateChanges(Control control, Type type, System.Reflection.PropertyInfo propertyInfo) {
-      if (!type.GetProperties().Contains(propertyInfo))
-        throw new ArgumentException("The specified type " + type + "implement the property " + propertyInfo.Name + ".");
-      if (!type.IsAssignableFrom(this.GetType()))
-        throw new ArgumentException("The specified type " + type + "must be the same or a base class / interface of this object.");
-      if (!propertyInfo.CanWrite)
-        throw new ArgumentException("The specified property " + propertyInfo.Name + " must have a setter.");
-
-      if (activeView != null) {
-        Type controlType = activeView.GetType();
-        PropertyInfo controlPropertyInfo = controlType.GetProperty(propertyInfo.Name, propertyInfo.PropertyType);
-        if (type.IsAssignableFrom(controlType) && controlPropertyInfo != null) {
-          var thisValue = propertyInfo.GetValue(this, null);
-          controlPropertyInfo.SetValue(activeView, thisValue, null);
-        }
-      }
-    }
-
     internal protected override void OnShown(ViewShownEventArgs e) {
       base.OnShown(e);
       View view = this.ActiveView as View;
@@ -262,12 +206,14 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
     internal protected override void OnClosing(FormClosingEventArgs e) {
       base.OnClosing(e);
-      foreach (View view in this.Views.OfType<View>())
+      View view = ActiveView as View;
+      if (view != null)
         view.OnClosing(e);
     }
     internal protected override void OnClosed(FormClosedEventArgs e) {
       base.OnClosed(e);
-      foreach (View view in this.Views.OfType<View>())
+      View view = ActiveView as View;
+      if (view != null)
         view.OnClosed(e);
     }
     #endregion
