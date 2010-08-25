@@ -104,8 +104,10 @@ namespace HeuristicLab.MainForm.WindowsForms {
             ViewType = defaultViewType;
           else if (viewContextMenuStrip.Items.Count > 0)  // create first available view if no default view is available
             ViewType = (Type)viewContextMenuStrip.Items[0].Tag;
-          else
+          else {
             ViewType = null;
+            ActiveView = null;
+          }
         }
         if (ActiveView != null) {
           ActiveView.Content = Content;
