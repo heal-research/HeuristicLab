@@ -32,16 +32,15 @@ namespace HeuristicLab.Services.OKB {
   public interface IRunnerService {
 
     /// <summary>
-    /// Logs the specified username in. In case the user or client
+    /// Logs the current user in. In case the user or client
     /// does not exist yet, they are created on the server. This
     /// method is currently not used for authentication but merely
     /// for auditing.
     /// </summary>
-    /// <param name="username">The username.</param>
     /// <param name="clientname">The clientname.</param>
     /// <returns><c>true</c> if the login was successful; <c>false</c> otherwise.</returns>
     [OperationContract(IsInitiating = true)]
-    bool Login(string username, string clientname);
+    bool Login(string clientname);
 
     /// <summary>
     /// Gets a <see cref="StarterKit"/>: A partially populated object

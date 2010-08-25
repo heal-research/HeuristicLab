@@ -305,7 +305,9 @@ namespace HeuristicLab.Services.OKB {
     /// <returns>
     ///   <c>true</c> if the login was successful; <c>false</c> otherwise.
     /// </returns>
-    public bool Login(string username, string clientname) {
+    public bool Login(string clientname) {
+      string username = ServiceSecurityContext.Current.PrimaryIdentity.Name;
+
       Log("Authenticating {0}@{1}", username, clientname);
       if (string.IsNullOrEmpty(username) ||
           string.IsNullOrEmpty(clientname) ||

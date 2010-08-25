@@ -147,7 +147,7 @@ namespace HeuristicLab.Services.OKB {
     /// </returns>
     public DataTable PrepareDataTable(string tableName, out int count) {
       logger.Info("preparing data table: " + tableName);
-      Type tableType = Assembly.GetAssembly(typeof(Run)).GetType("HeuristicLab.Services.OKB.DataAccess" + tableName, true);
+      Type tableType = Assembly.GetAssembly(typeof(Run)).GetType("HeuristicLab.Services.OKB.DataAccess." + tableName, true);
       properties = from p in tableType.GetProperties()
                    where SupportedTypes.Contains(p.PropertyType)
                    select p;
