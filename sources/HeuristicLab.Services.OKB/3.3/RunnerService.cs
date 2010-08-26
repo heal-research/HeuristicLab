@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Data.Linq;
 using System.Linq;
 using System.ServiceModel;
+using System.Web.Security;
 using HeuristicLab.Services.OKB.DataAccess;
 using log4net;
 
@@ -306,20 +307,20 @@ namespace HeuristicLab.Services.OKB {
     ///   <c>true</c> if the login was successful; <c>false</c> otherwise.
     /// </returns>
     public bool Login(string clientname) {
-      string username = ServiceSecurityContext.Current.PrimaryIdentity.Name;
+      MembershipUser user = Membership.GetUser();
 
-      Log("Authenticating {0}@{1}", username, clientname);
-      if (string.IsNullOrEmpty(username) ||
+      Log("Authenticating {0}@{1}", user.UserName, clientname);
+      if (user == null ||
           string.IsNullOrEmpty(clientname) ||
           ServiceSecurityContext.Current.IsAnonymous) {
         Log("rejecting anonymous login");
         return false;
       }
       using (OKBDataContext okb = new OKBDataContext()) {
-        currentUser = okb.Users.SingleOrDefault(u => u.Name == username);
+        currentUser = okb.Users.SingleOrDefault(u => u.Id == (Guid)user.ProviderUserKey);
         currentClient = okb.Clients.SingleOrDefault(c => c.Name == clientname);
         if (currentUser == null) {
-          currentUser = new User() { Name = username, Id = Guid.NewGuid() };
+          currentUser = new User() { Name = user.UserName, Id = (Guid)user.ProviderUserKey };
           okb.Users.InsertOnSubmit(currentUser);
           okb.SubmitChanges();
         }
