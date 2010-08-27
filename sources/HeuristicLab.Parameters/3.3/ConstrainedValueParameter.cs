@@ -42,11 +42,19 @@ namespace HeuristicLab.Parameters {
 
     public ConstrainedValueParameter() : base() { }
     public ConstrainedValueParameter(string name) : base(name) { }
+    public ConstrainedValueParameter(string name, bool getsCollected) : base(name, getsCollected) { }
     public ConstrainedValueParameter(string name, ItemSet<T> validValues) : base(name, validValues) { }
+    public ConstrainedValueParameter(string name, ItemSet<T> validValues, bool getsCollected) : base(name, validValues, getsCollected) { }
     public ConstrainedValueParameter(string name, ItemSet<T> validValues, T value) : base(name, validValues, value) { }
+    public ConstrainedValueParameter(string name, ItemSet<T> validValues, T value, bool getsCollected) : base(name, validValues, value, getsCollected) { }
     public ConstrainedValueParameter(string name, string description) : base(name, description) { }
+    public ConstrainedValueParameter(string name, string description, bool getsCollected) : base(name, description, getsCollected) { }
     public ConstrainedValueParameter(string name, string description, ItemSet<T> validValues) : base(name, description, validValues) { }
+    public ConstrainedValueParameter(string name, string description, ItemSet<T> validValues, bool getsCollected) : base(name, description, validValues, getsCollected) { }
     public ConstrainedValueParameter(string name, string description, ItemSet<T> validValues, T value) : base(name, description, validValues, value) { }
+    public ConstrainedValueParameter(string name, string description, ItemSet<T> validValues, T value, bool getsCollected) : base(name, description, validValues, value, getsCollected) { }
+    [StorableConstructor]
+    protected ConstrainedValueParameter(bool deserializing) : base(deserializing) { }
 
     protected override void ValidValues_ItemsAdded(object sender, CollectionItemsChangedEventArgs<T> e) {
       if (Value == null) Value = ValidValues.First();

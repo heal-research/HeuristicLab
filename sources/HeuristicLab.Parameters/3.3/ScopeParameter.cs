@@ -43,6 +43,8 @@ namespace HeuristicLab.Parameters {
     public ScopeParameter(string name, string description)
       : base(name, description, typeof(IScope)) {
     }
+    [StorableConstructor]
+    protected ScopeParameter(bool deserializing) : base(deserializing) { }
 
     public override string ToString() {
       return Name;

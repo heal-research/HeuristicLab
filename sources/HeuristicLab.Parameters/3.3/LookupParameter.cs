@@ -172,9 +172,9 @@ namespace HeuristicLab.Parameters {
     }
 
     public event EventHandler ActualNameChanged;
-    private void OnActualNameChanged() {
-      if (ActualNameChanged != null)
-        ActualNameChanged(this, EventArgs.Empty);
+    protected virtual void OnActualNameChanged() {
+      EventHandler handler = ActualNameChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
       OnToStringChanged();
     }
   }

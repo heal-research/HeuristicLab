@@ -24,7 +24,9 @@ using System;
 namespace HeuristicLab.Core {
   public interface IValueParameter : IParameter {
     IItem Value { get; set; }
+    bool GetsCollected { get; set; }
     event EventHandler ValueChanged;
+    event EventHandler GetsCollectedChanged;
   }
 
   public interface IValueParameter<T> : IValueParameter where T : class, IItem {

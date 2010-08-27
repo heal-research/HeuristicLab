@@ -45,15 +45,12 @@ namespace HeuristicLab.Parameters.Views {
     /// </summary>
     private void InitializeComponent() {
       this.valueGroupBox = new System.Windows.Forms.GroupBox();
+      this.showInRunCheckBox = new System.Windows.Forms.CheckBox();
       this.viewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.valueComboBox = new System.Windows.Forms.ComboBox();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.valueGroupBox.SuspendLayout();
       this.SuspendLayout();
-      // 
-      // dataTypeLabel
-      // 
-      this.dataTypeLabel.Location = new System.Drawing.Point(3, 55);
       // 
       // dataTypeTextBox
       // 
@@ -77,6 +74,7 @@ namespace HeuristicLab.Parameters.Views {
       this.valueGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
+      this.valueGroupBox.Controls.Add(this.showInRunCheckBox);
       this.valueGroupBox.Controls.Add(this.viewHost);
       this.valueGroupBox.Controls.Add(this.valueComboBox);
       this.valueGroupBox.Location = new System.Drawing.Point(0, 78);
@@ -86,16 +84,34 @@ namespace HeuristicLab.Parameters.Views {
       this.valueGroupBox.TabStop = false;
       this.valueGroupBox.Text = "Value";
       // 
+      // showInRunCheckBox
+      // 
+      this.showInRunCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.showInRunCheckBox.AutoSize = true;
+      this.showInRunCheckBox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+      this.showInRunCheckBox.Checked = true;
+      this.showInRunCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.showInRunCheckBox.Location = new System.Drawing.Point(290, 21);
+      this.showInRunCheckBox.Name = "showInRunCheckBox";
+      this.showInRunCheckBox.Size = new System.Drawing.Size(90, 17);
+      this.showInRunCheckBox.TabIndex = 1;
+      this.showInRunCheckBox.Text = "&Show in Run:";
+      this.toolTip.SetToolTip(this.showInRunCheckBox, "Check to show the value of this parameter in each run.");
+      this.showInRunCheckBox.UseVisualStyleBackColor = true;
+      this.showInRunCheckBox.CheckedChanged += new System.EventHandler(this.showInRunCheckBox_CheckedChanged);
+      // 
       // viewHost
       // 
       this.viewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
+      this.viewHost.Caption = "View";
       this.viewHost.Content = null;
       this.viewHost.Location = new System.Drawing.Point(6, 46);
       this.viewHost.Name = "viewHost";
+      this.viewHost.ReadOnly = false;
       this.viewHost.Size = new System.Drawing.Size(374, 185);
-      this.viewHost.TabIndex = 0;
+      this.viewHost.TabIndex = 2;
       this.viewHost.ViewType = null;
       // 
       // valueComboBox
@@ -106,8 +122,8 @@ namespace HeuristicLab.Parameters.Views {
       this.valueComboBox.FormattingEnabled = true;
       this.valueComboBox.Location = new System.Drawing.Point(6, 19);
       this.valueComboBox.Name = "valueComboBox";
-      this.valueComboBox.Size = new System.Drawing.Size(374, 21);
-      this.valueComboBox.TabIndex = 1;
+      this.valueComboBox.Size = new System.Drawing.Size(278, 21);
+      this.valueComboBox.TabIndex = 0;
       this.toolTip.SetToolTip(this.valueComboBox, "Selected Value");
       this.valueComboBox.SelectedIndexChanged += new System.EventHandler(this.valueComboBox_SelectedIndexChanged);
       // 
@@ -127,6 +143,7 @@ namespace HeuristicLab.Parameters.Views {
       this.Controls.SetChildIndex(this.valueGroupBox, 0);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.valueGroupBox.ResumeLayout(false);
+      this.valueGroupBox.PerformLayout();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -137,5 +154,6 @@ namespace HeuristicLab.Parameters.Views {
     protected System.Windows.Forms.GroupBox valueGroupBox;
     protected HeuristicLab.MainForm.WindowsForms.ViewHost viewHost;
     protected System.Windows.Forms.ComboBox valueComboBox;
+    protected System.Windows.Forms.CheckBox showInRunCheckBox;
   }
 }

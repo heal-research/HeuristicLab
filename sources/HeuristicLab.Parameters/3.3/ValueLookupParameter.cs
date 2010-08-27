@@ -65,30 +65,74 @@ namespace HeuristicLab.Parameters {
       }
     }
 
+    [Storable(DefaultValue = true)]
+    private bool getsCollected;
+    public bool GetsCollected {
+      get { return getsCollected; }
+      set {
+        if (value != getsCollected) {
+          getsCollected = value;
+          OnGetsCollectedChanged();
+        }
+      }
+    }
+
+    #region Constructors
     public ValueLookupParameter()
       : base() {
+      this.getsCollected = true;
     }
     public ValueLookupParameter(string name)
       : base(name) {
+      this.getsCollected = true;
+    }
+    public ValueLookupParameter(string name, bool getsCollected)
+      : base(name) {
+      this.getsCollected = getsCollected;
     }
     public ValueLookupParameter(string name, T value)
       : base(name) {
       this.value = value;
+      this.getsCollected = true;
+      Initialize();
+    }
+    public ValueLookupParameter(string name, T value, bool getsCollected)
+      : base(name) {
+      this.value = value;
+      this.getsCollected = getsCollected;
       Initialize();
     }
     public ValueLookupParameter(string name, string description)
       : base(name, description) {
+      this.getsCollected = true;
+    }
+    public ValueLookupParameter(string name, string description, bool getsCollected)
+      : base(name, description) {
+      this.getsCollected = getsCollected;
     }
     public ValueLookupParameter(string name, string description, T value)
       : base(name, description) {
       this.value = value;
+      this.getsCollected = true;
+      Initialize();
+    }
+    public ValueLookupParameter(string name, string description, T value, bool getsCollected)
+      : base(name, description) {
+      this.value = value;
+      this.getsCollected = getsCollected;
       Initialize();
     }
     public ValueLookupParameter(string name, string description, string actualName)
       : base(name, description, actualName) {
+      this.getsCollected = true;
+    }
+    public ValueLookupParameter(string name, string description, string actualName, bool getsCollected)
+      : base(name, description, actualName) {
+      this.getsCollected = getsCollected;
     }
     [StorableConstructor]
     protected ValueLookupParameter(bool deserializing) : base(deserializing) { }
+    #endregion
 
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
@@ -98,6 +142,7 @@ namespace HeuristicLab.Parameters {
     public override IDeepCloneable Clone(Cloner cloner) {
       ValueLookupParameter<T> clone = (ValueLookupParameter<T>)base.Clone(cloner);
       clone.value = (T)cloner.Clone(value);
+      clone.getsCollected = getsCollected;
       clone.Initialize();
       return clone;
     }
@@ -112,11 +157,16 @@ namespace HeuristicLab.Parameters {
     }
 
     public event EventHandler ValueChanged;
-    private void OnValueChanged() {
-      if (ValueChanged != null)
-        ValueChanged(this, EventArgs.Empty);
+    protected virtual void OnValueChanged() {
+      EventHandler handler = ValueChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
       OnItemImageChanged();
       OnToStringChanged();
+    }
+    public event EventHandler GetsCollectedChanged;
+    protected virtual void OnGetsCollectedChanged() {
+      EventHandler handler = GetsCollectedChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
 
     private void RegisterValueEvents() {

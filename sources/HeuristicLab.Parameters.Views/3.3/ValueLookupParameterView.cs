@@ -60,6 +60,7 @@ namespace HeuristicLab.Parameters.Views {
     /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void DeregisterContentEvents() {
       Content.ActualNameChanged -= new EventHandler(Content_ActualNameChanged);
+      Content.GetsCollectedChanged -= new EventHandler(Content_GetsCollectedChanged);
       Content.ValueChanged -= new EventHandler(Content_ValueChanged);
       base.DeregisterContentEvents();
     }
@@ -71,6 +72,7 @@ namespace HeuristicLab.Parameters.Views {
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.ActualNameChanged += new EventHandler(Content_ActualNameChanged);
+      Content.GetsCollectedChanged += new EventHandler(Content_GetsCollectedChanged);
       Content.ValueChanged += new EventHandler(Content_ValueChanged);
     }
 
@@ -78,10 +80,12 @@ namespace HeuristicLab.Parameters.Views {
       base.OnContentChanged();
       if (Content == null) {
         actualNameTextBox.Text = "-";
+        showInRunCheckBox.Checked = false;
         valueViewHost.Content = null;
       } else {
         SetDataTypeTextBoxText();
         actualNameTextBox.Text = Content.ActualName;
+        showInRunCheckBox.Checked = Content.GetsCollected;
         valueViewHost.ViewType = null;
         valueViewHost.Content = Content.Value;
       }
@@ -93,6 +97,7 @@ namespace HeuristicLab.Parameters.Views {
       actualNameTextBox.ReadOnly = ReadOnly;
       setValueButton.Enabled = Content != null && !ReadOnly;
       clearValueButton.Enabled = Content != null && Content.Value != null && !ReadOnly;
+      showInRunCheckBox.Enabled = Content != null && !ReadOnly;
       valueGroupBox.Enabled = Content != null;
     }
 
@@ -111,6 +116,12 @@ namespace HeuristicLab.Parameters.Views {
         valueViewHost.ViewType = null;
         valueViewHost.Content = Content != null ? Content.Value : null;
       }
+    }
+    protected virtual void Content_GetsCollectedChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_GetsCollectedChanged), sender, e);
+      else
+        showInRunCheckBox.Checked = Content != null && Content.GetsCollected;
     }
 
     protected virtual void actualNameTextBox_Validated(object sender, EventArgs e) {
@@ -133,6 +144,9 @@ namespace HeuristicLab.Parameters.Views {
     }
     protected virtual void clearValueButton_Click(object sender, EventArgs e) {
       Content.Value = null;
+    }
+    protected virtual void showInRunCheckBox_CheckedChanged(object sender, EventArgs e) {
+      if (Content != null) Content.GetsCollected = showInRunCheckBox.Checked;
     }
     protected virtual void valueViewHostPanel_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;

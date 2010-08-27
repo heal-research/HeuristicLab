@@ -85,7 +85,7 @@ namespace HeuristicLab.Core {
 
     public virtual void CollectParameterValues(IDictionary<string, IItem> values) {
       foreach (IValueParameter param in parameters.OfType<IValueParameter>()) {
-        values.Add(param.Name, param.Value);
+        if (param.GetsCollected && param.Value != null) values.Add(param.Name, param.Value);
         if (param.Value is IParameterizedItem) {
           Dictionary<string, IItem> children = new Dictionary<string, IItem>();
           ((IParameterizedItem)param.Value).CollectParameterValues(children);

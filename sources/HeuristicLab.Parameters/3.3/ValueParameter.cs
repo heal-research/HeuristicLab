@@ -40,8 +40,14 @@ namespace HeuristicLab.Parameters {
 
     public ValueParameter() : base() { }
     public ValueParameter(string name) : base(name) { }
+    public ValueParameter(string name, bool getsCollected) : base(name, getsCollected) { }
     public ValueParameter(string name, T value) : base(name, value) { }
+    public ValueParameter(string name, T value, bool getsCollected) : base(name, value, getsCollected) { }
     public ValueParameter(string name, string description) : base(name, description) { }
+    public ValueParameter(string name, string description, bool getsCollected) : base(name, description, getsCollected) { }
     public ValueParameter(string name, string description, T value) : base(name, description, value) { }
+    public ValueParameter(string name, string description, T value, bool getsCollected) : base(name, description, value, getsCollected) { }
+    [StorableConstructor]
+    protected ValueParameter(bool deserializing) : base(deserializing) { }
   }
 }

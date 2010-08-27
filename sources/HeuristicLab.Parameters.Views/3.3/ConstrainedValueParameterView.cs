@@ -60,6 +60,7 @@ namespace HeuristicLab.Parameters.Views {
     /// </summary>
     /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void DeregisterContentEvents() {
+      Content.GetsCollectedChanged -= new EventHandler(Content_GetsCollectedChanged);
       Content.ValidValues.ItemsAdded -= new CollectionItemsChangedEventHandler<T>(ValidValues_ItemsAdded);
       Content.ValidValues.ItemsRemoved -= new CollectionItemsChangedEventHandler<T>(ValidValues_ItemsRemoved);
       Content.ValidValues.CollectionReset -= new CollectionItemsChangedEventHandler<T>(ValidValues_CollectionReset);
@@ -73,6 +74,7 @@ namespace HeuristicLab.Parameters.Views {
     /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
+      Content.GetsCollectedChanged += new EventHandler(Content_GetsCollectedChanged);
       Content.ValidValues.ItemsAdded += new CollectionItemsChangedEventHandler<T>(ValidValues_ItemsAdded);
       Content.ValidValues.ItemsRemoved += new CollectionItemsChangedEventHandler<T>(ValidValues_ItemsRemoved);
       Content.ValidValues.CollectionReset += new CollectionItemsChangedEventHandler<T>(ValidValues_CollectionReset);
@@ -82,11 +84,13 @@ namespace HeuristicLab.Parameters.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
+        showInRunCheckBox.Checked = false;
         viewHost.Content = null;
         FillValueComboBox();
       } else {
         SetDataTypeTextBoxText();
         FillValueComboBox();
+        showInRunCheckBox.Checked = Content.GetsCollected;
         viewHost.ViewType = null;
         viewHost.Content = Content.Value;
       }
@@ -96,9 +100,10 @@ namespace HeuristicLab.Parameters.Views {
       base.SetEnabledStateOfControls();
       valueGroupBox.Enabled = Content != null;
       valueComboBox.Enabled = (valueComboBox.Items.Count > 0) && !ReadOnly;
+      showInRunCheckBox.Enabled = Content != null && !ReadOnly;
     }
 
-    private void FillValueComboBox() {
+    protected virtual void FillValueComboBox() {
       valueComboBox.SelectedIndexChanged -= new EventHandler(valueComboBox_SelectedIndexChanged);
       valueComboBoxItems.Clear();
       valueComboBox.Items.Clear();
@@ -118,7 +123,7 @@ namespace HeuristicLab.Parameters.Views {
     }
 
     #region Content Events
-    private void Content_ValueChanged(object sender, EventArgs e) {
+    protected virtual void Content_ValueChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_ValueChanged), sender, e);
       else {
@@ -128,29 +133,38 @@ namespace HeuristicLab.Parameters.Views {
         viewHost.Content = Content != null ? Content.Value : null;
       }
     }
-    private void ValidValues_ItemsAdded(object sender, CollectionItemsChangedEventArgs<T> e) {
+    protected virtual void ValidValues_ItemsAdded(object sender, CollectionItemsChangedEventArgs<T> e) {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<T>(ValidValues_ItemsAdded), sender, e);
       else
         FillValueComboBox();
     }
-    private void ValidValues_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<T> e) {
+    protected virtual void ValidValues_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<T> e) {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<T>(ValidValues_ItemsRemoved), sender, e);
       else
         FillValueComboBox();
     }
-    private void ValidValues_CollectionReset(object sender, CollectionItemsChangedEventArgs<T> e) {
+    protected virtual void ValidValues_CollectionReset(object sender, CollectionItemsChangedEventArgs<T> e) {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<T>(ValidValues_CollectionReset), sender, e);
       else
         FillValueComboBox();
     }
+    protected virtual void Content_GetsCollectedChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_GetsCollectedChanged), sender, e);
+      else
+        showInRunCheckBox.Checked = Content != null && Content.GetsCollected;
+    }
     #endregion
 
-    private void valueComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+    protected virtual void valueComboBox_SelectedIndexChanged(object sender, EventArgs e) {
       if (valueComboBox.SelectedIndex >= 0)
         Content.Value = valueComboBoxItems[valueComboBox.SelectedIndex];
+    }
+    protected virtual void showInRunCheckBox_CheckedChanged(object sender, EventArgs e) {
+      if (Content != null) Content.GetsCollected = showInRunCheckBox.Checked;
     }
 
     #region Helpers

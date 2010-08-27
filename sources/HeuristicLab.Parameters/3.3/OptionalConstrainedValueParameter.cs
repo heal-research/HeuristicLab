@@ -60,7 +60,6 @@ namespace HeuristicLab.Parameters {
         }
       }
     }
-
     IItem IValueParameter.Value {
       get { return Value; }
       set {
@@ -74,45 +73,104 @@ namespace HeuristicLab.Parameters {
       }
     }
 
+    [Storable(DefaultValue = true)]
+    private bool getsCollected;
+    public bool GetsCollected {
+      get { return getsCollected; }
+      set {
+        if (value != getsCollected) {
+          getsCollected = value;
+          OnGetsCollectedChanged();
+        }
+      }
+    }
+
+    #region Constructors
     public OptionalConstrainedValueParameter()
       : base("Anonymous", typeof(T)) {
       this.validValues = new ItemSet<T>();
+      this.getsCollected = true;
       Initialize();
     }
     public OptionalConstrainedValueParameter(string name)
       : base(name, typeof(T)) {
       this.validValues = new ItemSet<T>();
+      this.getsCollected = true;
+      Initialize();
+    }
+    public OptionalConstrainedValueParameter(string name, bool getsCollected)
+      : base(name, typeof(T)) {
+      this.validValues = new ItemSet<T>();
+      this.getsCollected = getsCollected;
       Initialize();
     }
     public OptionalConstrainedValueParameter(string name, ItemSet<T> validValues)
       : base(name, typeof(T)) {
       this.validValues = validValues;
+      this.getsCollected = true;
+      Initialize();
+    }
+    public OptionalConstrainedValueParameter(string name, ItemSet<T> validValues, bool getsCollected)
+      : base(name, typeof(T)) {
+      this.validValues = validValues;
+      this.getsCollected = getsCollected;
       Initialize();
     }
     public OptionalConstrainedValueParameter(string name, ItemSet<T> validValues, T value)
       : base(name, typeof(T)) {
       this.validValues = validValues;
       this.value = value;
+      this.getsCollected = true;
+      Initialize();
+    }
+    public OptionalConstrainedValueParameter(string name, ItemSet<T> validValues, T value, bool getsCollected)
+      : base(name, typeof(T)) {
+      this.validValues = validValues;
+      this.value = value;
+      this.getsCollected = getsCollected;
       Initialize();
     }
     public OptionalConstrainedValueParameter(string name, string description)
       : base(name, description, typeof(T)) {
       this.validValues = new ItemSet<T>();
+      this.getsCollected = true;
+      Initialize();
+    }
+    public OptionalConstrainedValueParameter(string name, string description, bool getsCollected)
+      : base(name, description, typeof(T)) {
+      this.validValues = new ItemSet<T>();
+      this.getsCollected = getsCollected;
       Initialize();
     }
     public OptionalConstrainedValueParameter(string name, string description, ItemSet<T> validValues)
       : base(name, description, typeof(T)) {
       this.validValues = validValues;
+      this.getsCollected = true;
+      Initialize();
+    }
+    public OptionalConstrainedValueParameter(string name, string description, ItemSet<T> validValues, bool getsCollected)
+      : base(name, description, typeof(T)) {
+      this.validValues = validValues;
+      this.getsCollected = getsCollected;
       Initialize();
     }
     public OptionalConstrainedValueParameter(string name, string description, ItemSet<T> validValues, T value)
       : base(name, description, typeof(T)) {
       this.validValues = validValues;
       this.value = value;
+      this.getsCollected = true;
+      Initialize();
+    }
+    public OptionalConstrainedValueParameter(string name, string description, ItemSet<T> validValues, T value, bool getsCollected)
+      : base(name, description, typeof(T)) {
+      this.validValues = validValues;
+      this.value = value;
+      this.getsCollected = getsCollected;
       Initialize();
     }
     [StorableConstructor]
     protected OptionalConstrainedValueParameter(bool deserializing) : base(deserializing) { }
+    #endregion
 
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
@@ -124,6 +182,7 @@ namespace HeuristicLab.Parameters {
       OptionalConstrainedValueParameter<T> clone = (OptionalConstrainedValueParameter<T>)base.Clone(cloner);
       clone.validValues = (ItemSet<T>)cloner.Clone(validValues);
       clone.value = (T)cloner.Clone(value);
+      clone.getsCollected = getsCollected;
       clone.Initialize();
       return clone;
     }
@@ -141,10 +200,15 @@ namespace HeuristicLab.Parameters {
 
     public event EventHandler ValueChanged;
     protected virtual void OnValueChanged() {
-      if (ValueChanged != null)
-        ValueChanged(this, EventArgs.Empty);
+      EventHandler handler = ValueChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
       OnItemImageChanged();
       OnToStringChanged();
+    }
+    public event EventHandler GetsCollectedChanged;
+    protected virtual void OnGetsCollectedChanged() {
+      EventHandler handler = GetsCollectedChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
 
     private void RegisterValidValuesEvents() {

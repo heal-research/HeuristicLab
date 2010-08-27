@@ -29,22 +29,16 @@ namespace HeuristicLab.Parameters {
   [Item("OperatorParameter", "A parameter which represents an operator.")]
   [StorableClass]
   public class OperatorParameter : OptionalValueParameter<IOperator> {
-    public OperatorParameter()
-      : base("Anonymous") {
-    }
-    public OperatorParameter(string name)
-      : base(name) {
-    }
-    public OperatorParameter(string name, IOperator value)
-      : base(name, value) {
-      Value = value;
-    }
-    public OperatorParameter(string name, string description)
-      : base(name, description) {
-    }
-    public OperatorParameter(string name, string description, IOperator value)
-      : base(name, description, value) {
-      Value = value;
-    }
+    public OperatorParameter() : base("Anonymous") { }
+    public OperatorParameter(string name) : base(name) { }
+    public OperatorParameter(string name, bool getsCollected) : base(name, getsCollected) { }
+    public OperatorParameter(string name, IOperator value) : base(name, value) { }
+    public OperatorParameter(string name, IOperator value, bool getsCollected) : base(name, value, getsCollected) { }
+    public OperatorParameter(string name, string description) : base(name, description) { }
+    public OperatorParameter(string name, string description, bool getsCollected) : base(name, description, getsCollected) { }
+    public OperatorParameter(string name, string description, IOperator value) : base(name, description, value) { }
+    public OperatorParameter(string name, string description, IOperator value, bool getsCollected) : base(name, description, value, getsCollected) { }
+    [StorableConstructor]
+    protected OperatorParameter(bool deserializing) : base(deserializing) { }
   }
 }

@@ -60,6 +60,7 @@ namespace HeuristicLab.Parameters.Views {
     /// </summary>
     /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void DeregisterContentEvents() {
+      Content.GetsCollectedChanged -= new EventHandler(Content_GetsCollectedChanged);
       Content.ValueChanged -= new EventHandler(Content_ValueChanged);
       base.DeregisterContentEvents();
     }
@@ -70,17 +71,18 @@ namespace HeuristicLab.Parameters.Views {
     /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
+      Content.GetsCollectedChanged += new EventHandler(Content_GetsCollectedChanged);
       Content.ValueChanged += new EventHandler(Content_ValueChanged);
     }
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        clearValueButton.Visible = true;
+        showInRunCheckBox.Checked = false;
         valueViewHost.Content = null;
       } else {
         SetDataTypeTextBoxText();
-        clearValueButton.Visible = !(Content is ValueParameter<T>);
+        showInRunCheckBox.Checked = Content.GetsCollected;
         valueViewHost.ViewType = null;
         valueViewHost.Content = Content.Value;
       }
@@ -89,7 +91,8 @@ namespace HeuristicLab.Parameters.Views {
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
       setValueButton.Enabled = Content != null && !ReadOnly;
-      clearValueButton.Enabled = Content != null && Content.Value != null && !ReadOnly;
+      clearValueButton.Enabled = Content != null && Content.Value != null && !(Content is ValueParameter<T>) && !ReadOnly;
+      showInRunCheckBox.Enabled = Content != null && !ReadOnly;
       valueGroupBox.Enabled = Content != null;
     }
 
@@ -98,13 +101,19 @@ namespace HeuristicLab.Parameters.Views {
         Invoke(new EventHandler(Content_ValueChanged), sender, e);
       else {
         SetDataTypeTextBoxText();
-        clearValueButton.Enabled = Content != null && Content.Value != null && !ReadOnly;
+        clearValueButton.Enabled = Content != null && Content.Value != null && !(Content is ValueParameter<T>) && !ReadOnly;
         valueViewHost.ViewType = null;
         valueViewHost.Content = Content != null ? Content.Value : null;
       }
     }
+    protected virtual void Content_GetsCollectedChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_GetsCollectedChanged), sender, e);
+      else
+        showInRunCheckBox.Checked = Content != null && Content.GetsCollected;
+    }
 
-    protected virtual void changeValueButton_Click(object sender, EventArgs e) {
+    protected virtual void setValueButton_Click(object sender, EventArgs e) {
       if (typeSelectorDialog == null) {
         typeSelectorDialog = new TypeSelectorDialog();
         typeSelectorDialog.Caption = "Select Value";
@@ -119,8 +128,11 @@ namespace HeuristicLab.Parameters.Views {
         }
       }
     }
-    protected virtual void setValueButton_Click(object sender, EventArgs e) {
+    protected virtual void clearValueButton_Click(object sender, EventArgs e) {
       Content.Value = null;
+    }
+    protected virtual void showInRunCheckBox_CheckedChanged(object sender, EventArgs e) {
+      if (Content != null) Content.GetsCollected = showInRunCheckBox.Checked;
     }
     protected virtual void valueViewHost_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
