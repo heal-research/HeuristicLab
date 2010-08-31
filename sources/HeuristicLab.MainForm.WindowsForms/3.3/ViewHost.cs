@@ -109,13 +109,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
             ActiveView = null;
           }
         }
-        if (ActiveView != null) {
-          ActiveView.Content = Content;
-          if (ActiveViewControl != null) ActiveViewControl.Visible = true;
-        }
-      } else if (ActiveViewControl != null)
-        ActiveViewControl.Visible = false;
-
+        if (ActiveView != null) ActiveView.Content = Content;
+      } else ActiveView = null;
       UpdateLabels();
     }
 
