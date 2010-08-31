@@ -200,7 +200,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     [StorableConstructor]
-    private DataAnalysisProblemData(bool deserializing) : base(deserializing) { }
+    protected DataAnalysisProblemData(bool deserializing) : base(deserializing) { }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserializationHook() {
