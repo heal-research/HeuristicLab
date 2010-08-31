@@ -196,7 +196,6 @@ namespace HeuristicLab.Core {
         clone.constraintData = constraintData;
 
       clone.constraintOperation = this.constraintOperation;
-      clone.active = this.active;
 
       return clone;
     }
