@@ -26,13 +26,13 @@ using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   public interface IVRPMove : IItem {
-    TourEvaluation GetMoveQuality(IVRPEncoding individual, 
+    TourEvaluation GetMoveQuality(IntValue vehicles,
         DoubleArray dueTimeArray, DoubleArray serviceTimeArray, DoubleArray readyTimeArray, DoubleArray demandArray, 
         DoubleValue capacity,DoubleMatrix coordinates,
       DoubleValue fleetUsageFactor, DoubleValue timeFactor, DoubleValue distanceFactor,
       DoubleValue overloadPenalty, DoubleValue tardinessPenalty,
       ILookupParameter<DoubleMatrix> distanceMatrix, BoolValue useDistanceMatrix);
 
-    void MakeMove(IRandom random, IVRPEncoding individual);
+    IVRPEncoding MakeMove();
   }
 }

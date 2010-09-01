@@ -128,7 +128,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
         IVRPEncoding solution = ParentsParameter.ActualValue[i];
 
         if (!(solution is PotvinEncoding)) {
-          parents[i] = PotvinEncoding.ConvertFrom(solution);
+          parents[i] = PotvinEncoding.ConvertFrom(solution, DistanceMatrixParameter);
         } else {
           parents[i] = solution;
         }

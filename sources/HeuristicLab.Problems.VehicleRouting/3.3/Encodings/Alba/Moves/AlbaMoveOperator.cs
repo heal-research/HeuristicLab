@@ -40,7 +40,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     public override IOperation Apply() {
       IVRPEncoding solution = VRPToursParameter.ActualValue;
       if (!(solution is AlbaEncoding)) {
-        VRPToursParameter.ActualValue = AlbaEncoding.ConvertFrom(solution, VehiclesParameter.ActualValue.Value);
+        VRPToursParameter.ActualValue = AlbaEncoding.ConvertFrom(solution, VehiclesParameter.ActualValue.Value, 
+          DistanceMatrixParameter);
       }
 
       return base.Apply();

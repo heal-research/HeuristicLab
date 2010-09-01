@@ -117,7 +117,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
       Parameters.Add(new LookupParameter<IVRPEncoding>("VRPTours", "The VRP tours."));
       Parameters.Add(new LookupParameter<IVRPMove>("VRPMove", "The generated moves."));
 
-      foreach (Type type in ApplicationManager.Manager.GetTypes(typeof(IMultiVRPMoveGenerator))) {
+      foreach (Type type in ApplicationManager.Manager.GetTypes(typeof(IMultiVRPMoveGenerator)).OrderBy(op => op.Name)) {
         if (!typeof(MultiOperator<IMultiVRPMoveGenerator>).IsAssignableFrom(type))
           Operators.Add((IMultiVRPMoveGenerator)Activator.CreateInstance(type), true);
       }

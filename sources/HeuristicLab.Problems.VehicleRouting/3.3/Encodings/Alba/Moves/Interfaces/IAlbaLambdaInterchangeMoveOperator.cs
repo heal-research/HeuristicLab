@@ -25,6 +25,6 @@ using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   public interface IAlbaLambdaInterchangeMoveOperator : IVRPMoveOperator {
-    ILookupParameter<LambdaInterchangeMove> LambdaInterchangeMoveParameter { get; }
+    ILookupParameter<AlbaLambdaInterchangeMove> LambdaInterchangeMoveParameter { get; }
   }
 }

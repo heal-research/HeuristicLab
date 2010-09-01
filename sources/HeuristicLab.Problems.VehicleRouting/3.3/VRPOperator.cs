@@ -112,7 +112,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     public VRPOperator()
       : base() {
-      Parameters.Add(new ValueLookupParameter<IntValue>("Cities", "The city count."));
       Parameters.Add(new LookupParameter<DoubleMatrix>("Coordinates", "The coordinates of the cities."));
       Parameters.Add(new LookupParameter<DoubleMatrix>("DistanceMatrix", "The matrix which contains the distances between the cities."));
       Parameters.Add(new LookupParameter<BoolValue>("UseDistanceMatrix", "True if a distance matrix should be calculated and used for evaluation, otherwise false."));
@@ -139,7 +138,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     protected bool Feasible(IVRPEncoding solution) {
       bool feasible = true;
 
-      foreach (Tour tour in solution.Tours) {
+      foreach (Tour tour in solution.GetTours(DistanceMatrixParameter)) {
         if (!Feasible(tour)) {
           feasible = false;
           break;

@@ -25,6 +25,6 @@ using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   public interface IAlbaIntraRouteInversionMoveOperator : IVRPMoveOperator {
-    ILookupParameter<IntraRouteInversionMove> IntraRouteInversionMoveParameter { get; }
+    ILookupParameter<AlbaIntraRouteInversionMove> IntraRouteInversionMoveParameter { get; }
   }
 }

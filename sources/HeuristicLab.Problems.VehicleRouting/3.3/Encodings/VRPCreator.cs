@@ -38,10 +38,6 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings {
       get { return (ILookupParameter<IVRPEncoding>)Parameters["VRPTours"]; }
     }
     
-    public IValueLookupParameter<IntValue> CitiesParameter {
-	    get { return (IValueLookupParameter<IntValue>)Parameters["Cities"]; }
-	  }
-
     [StorableConstructor]
     protected VRPCreator(bool deserializing) : base(deserializing) { }
 

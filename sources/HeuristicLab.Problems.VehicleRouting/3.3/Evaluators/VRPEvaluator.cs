@@ -100,7 +100,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     private double CalculateFleetUsage() {
       IVRPEncoding vrpSolution = VRPToursParameter.ActualValue;
 
-      return vrpSolution.Tours.Count;
+      return vrpSolution.GetTours(DistanceMatrixParameter, VehiclesParameter.ActualValue.Value).Count;
     }
 
     internal static TourEvaluation EvaluateTour(Tour tour, DoubleArray dueTimeArray,
@@ -177,7 +177,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       return eval;
     }
 
-    public static TourEvaluation Evaluate(IVRPEncoding solution, DoubleArray dueTimeArray,
+    public static TourEvaluation Evaluate(IVRPEncoding solution, IntValue vehicles, DoubleArray dueTimeArray, 
       DoubleArray serviceTimeArray, DoubleArray readyTimeArray, DoubleArray demandArray, DoubleValue capacity,
       DoubleValue fleetUsageFactor, DoubleValue timeFactor, DoubleValue distanceFactor, DoubleValue overloadPenalty, DoubleValue tardinessPenalty,
       DoubleMatrix coordinates, ILookupParameter<DoubleMatrix> distanceMatrix, BoolValue useDistanceMatrix) {
@@ -189,7 +189,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       sumEval.Overload = 0;
       sumEval.Tardiness = 0;
 
-      foreach (Tour tour in solution.Tours) {
+      foreach (Tour tour in solution.GetTours(distanceMatrix)) {
         TourEvaluation eval = EvaluateTour(tour, dueTimeArray, serviceTimeArray, readyTimeArray, demandArray, capacity,
           fleetUsageFactor, timeFactor, distanceFactor, overloadPenalty, tardinessPenalty,
           coordinates, distanceMatrix, useDistanceMatrix);
@@ -207,7 +207,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     public sealed override IOperation Apply() {
       IVRPEncoding solution = VRPToursParameter.ActualValue;
 
-      TourEvaluation sumEval = Evaluate(solution, DueTimeParameter.ActualValue, ServiceTimeParameter.ActualValue, ReadyTimeParameter.ActualValue,
+      TourEvaluation sumEval = Evaluate(solution, VehiclesParameter.ActualValue, DueTimeParameter.ActualValue, ServiceTimeParameter.ActualValue, ReadyTimeParameter.ActualValue,
         DemandParameter.ActualValue, CapacityParameter.ActualValue,
         FleetUsageFactor.ActualValue, TimeFactor.ActualValue, DistanceFactor.ActualValue, OverloadPenalty.ActualValue, TardinessPenalty.ActualValue,
         CoordinatesParameter.ActualValue, DistanceMatrixParameter, UseDistanceMatrixParameter.ActualValue);

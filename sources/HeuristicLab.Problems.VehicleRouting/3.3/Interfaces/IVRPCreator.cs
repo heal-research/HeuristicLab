@@ -25,7 +25,6 @@ using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   public interface IVRPCreator : IVRPOperator, ISolutionCreator {
-    IValueLookupParameter<IntValue> CitiesParameter { get; }
     ILookupParameter<IVRPEncoding> VRPToursParameter { get; }
   }
 }

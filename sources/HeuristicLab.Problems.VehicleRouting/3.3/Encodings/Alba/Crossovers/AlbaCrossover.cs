@@ -52,7 +52,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
         IVRPEncoding solution = ParentsParameter.ActualValue[i];
 
         if (!(solution is AlbaEncoding)) {
-          parents[i] = AlbaEncoding.ConvertFrom(solution, VehiclesParameter.ActualValue.Value);
+          parents[i] = AlbaEncoding.ConvertFrom(solution, VehiclesParameter.ActualValue.Value,
+            DistanceMatrixParameter);
         } else {
           parents[i] = solution;
         }

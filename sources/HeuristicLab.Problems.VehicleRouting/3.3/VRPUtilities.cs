@@ -59,11 +59,16 @@ namespace HeuristicLab.Problems.VehicleRouting {
       double distance = 0.0;
 
       if (useDistanceMatrix.Value) {
-        if (distanceMatrix.ActualValue == null) {
-          distanceMatrix.ActualValue = CreateDistanceMatrix(coordinates);
-        }
+        if (distanceMatrix is IValueLookupParameter<DoubleMatrix> &&
+          (distanceMatrix as IValueLookupParameter<DoubleMatrix>).Value != null) {
+            distance = (distanceMatrix as IValueLookupParameter<DoubleMatrix>).Value[start, end];
+        } else {
+          if (distanceMatrix.ActualValue == null) {
+            distanceMatrix.ActualValue = CreateDistanceMatrix(coordinates);
+          }
 
-        distance = distanceMatrix.ActualValue[start, end];
+          distance = distanceMatrix.ActualValue[start, end];
+        }       
       } else {
         distance = CalculateDistance(start, end, coordinates);
       }

@@ -127,21 +127,22 @@ namespace HeuristicLab.Problems.VehicleRouting {
         BestSolutionParameter.ActualValue = solution;
         results.Add(new Result("Best VRP Solution", solution));
 
-        results.Add(new Result("Best TravelTime", new DoubleValue(travelTimes[i].Value)));
-        results.Add(new Result("Best Distance",  new DoubleValue(distances[i].Value)));
-        results.Add(new Result("Best VehicleUtilization", new DoubleValue(vehiclesUtilizations[i].Value)));
-        results.Add(new Result("Best Overload",  new DoubleValue(overloads[i].Value)));
-        results.Add(new Result("Best Tardiness",  new DoubleValue(tardinesses[i].Value)));
+        results.Add(new Result("Best VRP Solution TravelTime", new DoubleValue(travelTimes[i].Value)));
+        results.Add(new Result("Best VRP Solution Distance", new DoubleValue(distances[i].Value)));
+        results.Add(new Result("Best VRP Solution VehicleUtilization", new DoubleValue(vehiclesUtilizations[i].Value)));
+        results.Add(new Result("Best VRP Solution Overload", new DoubleValue(overloads[i].Value)));
+        results.Add(new Result("Best VRP Solution Tardiness", new DoubleValue(tardinesses[i].Value)));
+
       } else {
-        if (solution.Quality.Value > qualities[i].Value) {
+        if (qualities[i].Value <= solution.Quality.Value) {
           solution.Coordinates = coordinates;
           solution.Solution = best.Clone() as IVRPEncoding;
           solution.Quality.Value = qualities[i].Value;
-          solution.Distance.Value = (results["Best Distance"].Value as DoubleValue).Value = distances[i].Value;
-          solution.Overload.Value = (results["Best Overload"].Value as DoubleValue).Value = overloads[i].Value;
-          solution.Tardiness.Value = (results["Best Tardiness"].Value as DoubleValue).Value = tardinesses[i].Value;
-          solution.TravelTime.Value = (results["Best TravelTime"].Value as DoubleValue).Value = travelTimes[i].Value;
-          solution.VehicleUtilization.Value = (results["Best VehicleUtilization"].Value as DoubleValue).Value = vehiclesUtilizations[i].Value;
+          solution.Distance.Value = (results["Best VRP Solution Distance"].Value as DoubleValue).Value = distances[i].Value;
+          solution.Overload.Value = (results["Best VRP Solution Overload"].Value as DoubleValue).Value = overloads[i].Value;
+          solution.Tardiness.Value = (results["Best VRP Solution Tardiness"].Value as DoubleValue).Value = tardinesses[i].Value;
+          solution.TravelTime.Value = (results["Best VRP Solution TravelTime"].Value as DoubleValue).Value = travelTimes[i].Value;
+          solution.VehicleUtilization.Value = (results["Best VRP Solution VehicleUtilization"].Value as DoubleValue).Value = vehiclesUtilizations[i].Value;
           solution.DistanceMatrix = DistanceMatrixParameter.ActualValue;
           solution.UseDistanceMatrix = UseDistanceMatrixParameter.ActualValue;
           solution.ReadyTime = ReadyTimeParameter.ActualValue;

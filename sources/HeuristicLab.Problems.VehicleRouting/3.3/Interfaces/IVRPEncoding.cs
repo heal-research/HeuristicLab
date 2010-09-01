@@ -21,11 +21,11 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Problems.VehicleRouting.Encodings;
+using System.Collections.Generic;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   public interface IVRPEncoding : IItem {
-    ItemList<Tour> Tours {
-      get;
-    }
+    List<Tour> GetTours(ILookupParameter<DoubleMatrix> distanceMatrix, int maxVehicles = int.MaxValue);
   }
 }

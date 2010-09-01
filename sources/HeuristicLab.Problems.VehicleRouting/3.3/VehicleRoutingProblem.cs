@@ -33,6 +33,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
+using HeuristicLab.Problems.VehicleRouting.Encodings.Prins;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   [Item("Vehicle Routing Problem", "Represents a Vehicle Routing Problem.")]
@@ -176,6 +177,9 @@ namespace HeuristicLab.Problems.VehicleRouting {
     private BestVRPSolutionAnalyzer BestVRPSolutionAnalyzer {
       get { return operators.OfType<BestVRPSolutionAnalyzer>().FirstOrDefault(); }
     }
+    private BestAverageWorstVRPToursAnalyzer BestAverageWorstVRPToursAnalyzer {
+      get { return operators.OfType<BestAverageWorstVRPToursAnalyzer>().FirstOrDefault(); }
+    }
     #endregion
 
     [Storable]
@@ -313,8 +317,9 @@ namespace HeuristicLab.Problems.VehicleRouting {
     private void InitializeOperators() {
       operators = new List<IOperator>();
       operators.Add(new BestVRPSolutionAnalyzer());
+      operators.Add(new BestAverageWorstVRPToursAnalyzer());
       ParameterizeAnalyzer();
-      operators.AddRange(ApplicationManager.Manager.GetInstances<IVRPOperator>().Cast<IOperator>());
+      operators.AddRange(ApplicationManager.Manager.GetInstances<IVRPOperator>().Cast<IOperator>().OrderBy(op => op.Name));
       ParameterizeOperators();
       UpdateMoveEvaluators();
       InitializeMoveGenerators();
@@ -332,7 +337,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
       OnOperatorsChanged();
     }
     private void ParameterizeSolutionCreator() {
-      SolutionCreator.CitiesParameter.Value = new IntValue(Coordinates.Rows - 1);
       SolutionCreator.VehiclesParameter.ActualName = VehiclesParameter.Name;
       SolutionCreator.CoordinatesParameter.ActualName = CoordinatesParameter.Name;
       Evaluator.DistanceMatrixParameter.ActualName = DistanceMatrixParameter.Name;
@@ -366,8 +370,17 @@ namespace HeuristicLab.Problems.VehicleRouting {
       BestVRPSolutionAnalyzer.DistanceParameter.ActualName = Evaluator.DistanceParameter.ActualName;
       BestVRPSolutionAnalyzer.OverloadParameter.ActualName = Evaluator.OverloadParameter.ActualName;
       BestVRPSolutionAnalyzer.TardinessParameter.ActualName = Evaluator.TardinessParameter.ActualName;
+      BestVRPSolutionAnalyzer.TravelTimeParameter.ActualName = Evaluator.TravelTimeParameter.ActualName;
+      BestVRPSolutionAnalyzer.VehiclesUtilizedParameter.ActualName = Evaluator.VehcilesUtilizedParameter.ActualName;
       BestVRPSolutionAnalyzer.VRPToursParameter.ActualName = SolutionCreator.VRPToursParameter.ActualName;
       BestVRPSolutionAnalyzer.ResultsParameter.ActualName = "Results";
+
+      BestAverageWorstVRPToursAnalyzer.DistanceParameter.ActualName = Evaluator.DistanceParameter.ActualName;
+      BestAverageWorstVRPToursAnalyzer.OverloadParameter.ActualName = Evaluator.OverloadParameter.ActualName;
+      BestAverageWorstVRPToursAnalyzer.TardinessParameter.ActualName = Evaluator.TardinessParameter.ActualName;
+      BestAverageWorstVRPToursAnalyzer.TravelTimeParameter.ActualName = Evaluator.TravelTimeParameter.ActualName;
+      BestAverageWorstVRPToursAnalyzer.VehiclesUtilizedParameter.ActualName = Evaluator.VehcilesUtilizedParameter.ActualName;
+      BestAverageWorstVRPToursAnalyzer.ResultsParameter.ActualName = "Results";
     }
     private void ParameterizeOperators() {
       foreach (IVRPOperator op in Operators.OfType<IVRPOperator>()) {
@@ -384,6 +397,14 @@ namespace HeuristicLab.Problems.VehicleRouting {
       
       foreach (IVRPMoveOperator op in Operators.OfType<IVRPMoveOperator>()) {
         op.VRPToursParameter.ActualName = SolutionCreator.VRPToursParameter.ActualName;
+      }
+
+      foreach (IPrinsOperator op in Operators.OfType<IPrinsOperator>()) {
+        op.FleetUsageFactor.ActualName = FleetUsageFactor.Name;
+        op.TimeFactor.ActualName = TimeFactor.Name;
+        op.DistanceFactor.ActualName = DistanceFactor.Name;
+        op.OverloadPenalty.ActualName = OverloadPenalty.Name;
+        op.TardinessPenalty.ActualName = TardinessPenalty.Name;
       }
 
       foreach (IVRPMoveEvaluator op in Operators.OfType<IVRPMoveEvaluator>()) {
@@ -426,6 +447,72 @@ namespace HeuristicLab.Problems.VehicleRouting {
       ReadyTime = new DoubleArray(parser.Readytimes);
       DueTime = new DoubleArray(parser.Duetimes);
       ServiceTime = new DoubleArray(parser.Servicetimes);
+
+      OnReset();
+    }
+
+    public void ImportFromTSPLib(string tspFileName) {
+      TSPLIBParser parser = new TSPLIBParser(tspFileName);
+      parser.Parse();
+
+      this.Name = parser.Name;
+
+      int problemSize = parser.Demands.Length;
+
+      Coordinates = new DoubleMatrix(parser.Vertices);
+      if (parser.Vehicles != -1)
+        Vehicles.Value = parser.Vehicles;
+      else 
+        Vehicles.Value = problemSize - 1;
+      Capacity.Value = parser.Capacity;
+      Demand = new DoubleArray(parser.Demands);
+      ReadyTime = new DoubleArray(problemSize);
+      DueTime = new DoubleArray(problemSize);
+      ServiceTime = new DoubleArray(problemSize);
+
+      for (int i = 0; i < problemSize; i++) {
+        ReadyTime[i] = 0;
+        DueTime[i] = int.MaxValue;
+        ServiceTime[i] = 0;
+      }
+
+      if (parser.Distance != -1) {
+        DueTime[0] = parser.Distance;
+      }
+
+      if (parser.Depot != 1)
+        throw new Exception("Invalid depot specification");
+
+      if (parser.WeightType != TSPLIBParser.TSPLIBEdgeWeightType.EUC_2D)
+        throw new Exception("Invalid weight type");
+
+      OnReset();
+    }
+
+    public void ImportFromORLib(string orFileName) {
+      ORLIBParser parser = new ORLIBParser(orFileName);
+      parser.Parse();
+
+      this.Name = parser.Name;
+      int problemSize = parser.Demands.Length;
+
+      Coordinates = new DoubleMatrix(parser.Vertices);
+      Vehicles.Value = problemSize - 1;
+      Capacity.Value = parser.Capacity;
+      Demand = new DoubleArray(parser.Demands);
+      ReadyTime = new DoubleArray(problemSize);
+      DueTime = new DoubleArray(problemSize);
+      ServiceTime = new DoubleArray(problemSize);
+
+      ReadyTime[0] = 0;
+      DueTime[0] = parser.MaxRouteTime;
+      ServiceTime[0] = 0;
+
+      for (int i = 1; i < problemSize; i++) {
+        ReadyTime[i] = 0;
+        DueTime[i] = int.MaxValue;
+        ServiceTime[i] = parser.ServiceTime;
+      }
 
       OnReset();
     }

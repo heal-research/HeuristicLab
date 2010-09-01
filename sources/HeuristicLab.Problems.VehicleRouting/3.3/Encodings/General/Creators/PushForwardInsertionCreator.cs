@@ -224,7 +224,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
       int c;
       int customer = -1;
       int subTourCount = 1;
-      List<int> route = new List<int>(CitiesParameter.ActualValue.Value + VehiclesParameter.ActualValue.Value - 1);
+      List<int> route = new List<int>(Cities + VehiclesParameter.ActualValue.Value - 1);
       minimumCost = double.MaxValue;
       indexOfMinimumCost = -1;
       route.Add(0);
@@ -270,7 +270,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
         indexOfCustomer = -1;
         customer = -1;
       } while (unroutedList.Count > 0);
-      while (route.Count < CitiesParameter.ActualValue.Value + VehiclesParameter.ActualValue.Value - 1)
+      while (route.Count < Cities + VehiclesParameter.ActualValue.Value - 1)
         route.Add(0);
 
       return route;

@@ -113,7 +113,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General{
       DoubleValue quality = QualityParameter.ActualValue;
      
       //perform move
-      move.MakeMove(RandomParameter.ActualValue, VRPToursParameter.ActualValue);
+      VRPToursParameter.ActualValue = move.MakeMove();
 
       quality.Value = moveQuality.Value;
       VehcilesUtilizedParameter.ActualValue = MoveVehcilesUtilizedParameter.ActualValue;

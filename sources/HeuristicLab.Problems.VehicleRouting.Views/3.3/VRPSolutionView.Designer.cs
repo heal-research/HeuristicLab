@@ -49,12 +49,13 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
       this.pictureBox = new System.Windows.Forms.PictureBox();
       this.valueTabPage = new System.Windows.Forms.TabPage();
       this.tourGroupBox = new System.Windows.Forms.GroupBox();
-      this.tourViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
+      this.tourGridView = new System.Windows.Forms.DataGridView();
       this.tabControl.SuspendLayout();
       this.visualizationTabPage.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
       this.valueTabPage.SuspendLayout();
       this.tourGroupBox.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.tourGridView)).BeginInit();
       this.SuspendLayout();
       // 
       // tabControl
@@ -99,35 +100,30 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
       this.valueTabPage.Location = new System.Drawing.Point(4, 22);
       this.valueTabPage.Name = "valueTabPage";
       this.valueTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.valueTabPage.Size = new System.Drawing.Size(415, 398);
+      this.valueTabPage.Size = new System.Drawing.Size(415, 532);
       this.valueTabPage.TabIndex = 1;
       this.valueTabPage.Text = "Value";
       this.valueTabPage.UseVisualStyleBackColor = true;
       // 
       // tourGroupBox
       // 
-      this.tourGroupBox.Controls.Add(this.tourViewHost);
+      this.tourGroupBox.Controls.Add(this.tourGridView);
       this.tourGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
       this.tourGroupBox.Location = new System.Drawing.Point(3, 3);
       this.tourGroupBox.Name = "tourGroupBox";
-      this.tourGroupBox.Size = new System.Drawing.Size(409, 392);
+      this.tourGroupBox.Size = new System.Drawing.Size(409, 526);
       this.tourGroupBox.TabIndex = 0;
       this.tourGroupBox.TabStop = false;
       this.tourGroupBox.Text = "Tour";
       // 
-      // tourViewHost
+      // tourGridView
       // 
-      this.tourViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.tourViewHost.Caption = "View";
-      this.tourViewHost.Content = null;
-      this.tourViewHost.Location = new System.Drawing.Point(6, 19);
-      this.tourViewHost.Name = "tourViewHost";
-      this.tourViewHost.ReadOnly = false;
-      this.tourViewHost.Size = new System.Drawing.Size(397, 367);
-      this.tourViewHost.TabIndex = 0;
-      this.tourViewHost.ViewType = null;
+      this.tourGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+      this.tourGridView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.tourGridView.Location = new System.Drawing.Point(3, 16);
+      this.tourGridView.Name = "tourGridView";
+      this.tourGridView.Size = new System.Drawing.Size(403, 507);
+      this.tourGridView.TabIndex = 0;
       // 
       // VRPSolutionView
       // 
@@ -141,6 +137,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
       this.valueTabPage.ResumeLayout(false);
       this.tourGroupBox.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.tourGridView)).EndInit();
       this.ResumeLayout(false);
 
     }
@@ -152,7 +149,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
     private System.Windows.Forms.PictureBox pictureBox;
     private System.Windows.Forms.TabPage valueTabPage;
     private System.Windows.Forms.GroupBox tourGroupBox;
-    private MainForm.WindowsForms.ViewHost tourViewHost;
+    private System.Windows.Forms.DataGridView tourGridView;
 
 
 

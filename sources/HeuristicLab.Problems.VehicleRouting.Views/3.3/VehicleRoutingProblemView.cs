@@ -63,20 +63,38 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
       base.SetEnabledStateOfControls();
       parameterCollectionView.Enabled = Content != null;
       vrpSolutionView.Enabled = Content != null;
-      importButton.Enabled = Content != null && !ReadOnly;
+      importButton.Enabled = importButton2.Enabled = importButton3.Enabled = Content != null && !ReadOnly;
     }
 
     private void importButton_Click(object sender, EventArgs e) {
       OpenFileDialog dialog = new OpenFileDialog();
-      dialog.DefaultExt = "txt";
+      dialog.Filter = "Solomon files (*.txt)|*.txt";
 
       if (dialog.ShowDialog() == DialogResult.OK) {
         Content.ImportFromSolomon(dialog.FileName);
       }
     }
 
+    private void importButton2_Click(object sender, EventArgs e) {
+      OpenFileDialog dialog = new OpenFileDialog();
+      dialog.Filter = "TSPLib files (*.vrp)|*.vrp";
+
+      if (dialog.ShowDialog() == DialogResult.OK) {
+        Content.ImportFromTSPLib(dialog.FileName);
+      }
+    }
+
+    private void importButton3_Click(object sender, EventArgs e) {
+      OpenFileDialog dialog = new OpenFileDialog();
+      dialog.Filter = "ORLib files (*.txt)|*.txt";
+
+      if (dialog.ShowDialog() == DialogResult.OK) {
+        Content.ImportFromORLib(dialog.FileName);
+      }
+    }  
+
     private void CoordinatesParameter_ValueChanged(object sender, EventArgs e) {
       vrpSolutionView.Content.Coordinates = Content.Coordinates;
-    }
+    }  
   }
 }

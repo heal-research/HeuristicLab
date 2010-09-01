@@ -25,38 +25,37 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using System.Collections.Generic;
+using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaEncoding", "Represents an Alba encoding of VRP solutions. It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
   [StorableClass]
-  public class AlbaEncoding : Permutation, IVRPEncoding {
+  public class AlbaEncoding : PermutationEncoding {
     [Storable]
     private int cities;
     
     #region IVRPEncoding Members
-    public ItemList<Tour> Tours {
-      get {
-        ItemList<Tour> result = new ItemList<Tour>();
-        
-        Tour tour = new Tour();
-        for (int i = 0; i < this.array.Length; i++) {
-          if (this.array[i] >= cities) {
-            if (tour.Cities.Count > 0) {
-              result.Add(tour);
+    public override List<Tour> GetTours(ILookupParameter<DoubleMatrix> distanceMatrix = null, int maxVehicles = int.MaxValue) {
+      List<Tour> result = new List<Tour>();
 
-              tour = new Tour();
-            }
-          } else {
-            tour.Cities.Add(this.array[i] + 1);
+      Tour tour = new Tour();
+      for (int i = 0; i < this.array.Length; i++) {
+        if (this.array[i] >= cities) {
+          if (tour.Cities.Count > 0) {
+            result.Add(tour);
+
+            tour = new Tour();
           }
+        } else {
+          tour.Cities.Add(this.array[i] + 1);
         }
-
-        if (tour.Cities.Count > 0) {
-          result.Add(tour);
-        }
-
-        return result;
       }
+
+      if (tour.Cities.Count > 0) {
+        result.Add(tour);
+      }
+
+      return result;
     }
 
     public int Cities {
@@ -64,7 +63,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     }
 
     public int MaxVehicles {
-      get { return Length - Cities;  }
+      get { return Length - Cities + 1;  }
     }
 
     #endregion
@@ -78,21 +77,17 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     }
 
     public AlbaEncoding(Permutation permutation, int cities)
-      : base(PermutationTypes.RelativeUndirected) {
-      this.array = new int[permutation.Length];
-      for (int i = 0; i < array.Length; i++)
-        this.array[i] = permutation[i];
-
+      : base(permutation) {
       this.cities = cities;
     }
 
     [StorableConstructor]
     private AlbaEncoding(bool serializing)
-      : base() {
+      : base(serializing) {
     }
 
-    public static AlbaEncoding ConvertFrom(IVRPEncoding encoding, int vehicles) {
-      ItemList<Tour> tours = encoding.Tours;
+    public static AlbaEncoding ConvertFrom(IVRPEncoding encoding, int vehicles, ILookupParameter<DoubleMatrix> distanceMatrix) {
+      List<Tour> tours = encoding.GetTours(distanceMatrix, vehicles);
 
       int cities = 0;
       foreach (Tour tour in tours) {
@@ -131,6 +126,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
 
     public static AlbaEncoding ConvertFrom(List<int> routeParam) {
       List<int> route = new List<int>(routeParam);
+      route.RemoveAt(routeParam.Count - 1);
       
       int cities = 0;
       for (int i = 0; i < route.Count; i++) {
@@ -155,7 +151,6 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     }
 
     internal static void RemoveUnusedParameters(ParameterCollection parameters) {
-      parameters.Remove("DistanceMatrix");
       parameters.Remove("UseDistanceMatrix");
       parameters.Remove("Capacity");
       parameters.Remove("Demand");

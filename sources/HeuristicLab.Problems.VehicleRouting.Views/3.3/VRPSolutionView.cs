@@ -26,6 +26,8 @@ using HeuristicLab.Core.Views;
 using HeuristicLab.Data;
 using HeuristicLab.MainForm;
 using HeuristicLab.Problems.VehicleRouting.Encodings;
+using HeuristicLab.Parameters;
+using System.Linq;
 
 namespace HeuristicLab.Problems.VehicleRouting.Views {
   /// <summary>
@@ -66,7 +68,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
         pictureBox.Image = null;
       } else {
         GenerateImage();
-        tourViewHost.Content = Content.Solution;
+        UpdateTourView();
       }
     }
 
@@ -79,6 +81,22 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
       base.SetEnabledStateOfControls();
       pictureBox.Enabled = Content != null;
       tourGroupBox.Enabled = Content != null;
+    }
+
+    private void UpdateTourView() {
+      tourGridView.Rows.Clear();
+      tourGridView.ColumnCount = Content.Coordinates.Rows - 1;
+
+      if (Content != null && Content.Solution != null) {
+        foreach (Tour tour in Content.Solution.GetTours(new ValueLookupParameter<DoubleMatrix>("DistanceMatrix", Content.DistanceMatrix))) {
+          int row = tourGridView.Rows.Add();
+          int cell = 0;
+          foreach (int city in tour.Cities) {
+            tourGridView.Rows[row].Cells[cell].Value = city;
+            cell++;
+          }
+        }
+      }
     }
 
     private void GenerateImage() {
@@ -118,7 +136,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
             using (Graphics graphics = Graphics.FromImage(bitmap)) {
               if (Content.Solution != null) {
                 int currentTour = 0;
-                foreach (Tour tour in Content.Solution.Tours) {
+                foreach (Tour tour in Content.Solution.GetTours(new ValueLookupParameter<DoubleMatrix>("DistanceMatrix", distanceMatrix))) {
                   double t = 0.0;
                   Point[] tourPoints = new Point[tour.Cities.Count + 2];
                   Brush[] customerBrushes = new Brush[tour.Cities.Count];
@@ -201,7 +219,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
         Invoke(new EventHandler(Content_SolutionChanged), sender, e);
       else {
         GenerateImage();
-        tourViewHost.Content = Content.Solution;
+        UpdateTourView();
       }
     }
     private void pictureBox_SizeChanged(object sender, EventArgs e) {

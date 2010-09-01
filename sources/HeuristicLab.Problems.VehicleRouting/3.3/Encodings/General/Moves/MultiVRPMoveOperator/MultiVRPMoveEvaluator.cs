@@ -45,7 +45,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       IVRPMove move = VRPMoveParameter.ActualValue as IVRPMove;
 
       return move.GetMoveQuality(
-        VRPToursParameter.ActualValue,
+        VehiclesParameter.ActualValue,
         DueTimeParameter.ActualValue,
         ServiceTimeParameter.ActualValue,
         ReadyTimeParameter.ActualValue,

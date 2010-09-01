@@ -81,7 +81,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     public override IOperation Apply() {
       IVRPEncoding solution = VRPToursParameter.ActualValue;
       if (!(solution is PotvinEncoding)) {
-        VRPToursParameter.ActualValue = PotvinEncoding.ConvertFrom(solution);
+        VRPToursParameter.ActualValue = PotvinEncoding.ConvertFrom(solution, DistanceMatrixParameter);
       }
       
       Manipulate(RandomParameter.ActualValue, VRPToursParameter.ActualValue as PotvinEncoding);
