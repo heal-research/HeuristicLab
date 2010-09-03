@@ -20,6 +20,7 @@
 #endregion
 
 using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
@@ -38,6 +39,17 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
     }
 
     private void Initialize() {
+      var originalStart = StartSymbol;
+      if (!(originalStart is ProgramRootSymbol)) {
+        var root = new ProgramRootSymbol();
+        AddSymbol(root);
+        SetMinSubtreeCount(root, 1);
+        SetMaxSubtreeCount(root, 1);
+        SetAllowedChild(root, originalStart, 0);
+
+        StartSymbol = root;
+      }
+
       var add = new Addition();
       var sub = new Subtraction();
       var mul = new Multiplication();
@@ -89,7 +101,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
 
       // allow each symbol as child of the start symbol
       foreach (var symb in allSymbols) {
-        SetAllowedChild(StartSymbol, symb, 0);
+        SetAllowedChild(originalStart, symb, 0);
       }
 
       // allow each symbol as child of every other symbol (except for terminals that have maxSubtreeCount == 0)
