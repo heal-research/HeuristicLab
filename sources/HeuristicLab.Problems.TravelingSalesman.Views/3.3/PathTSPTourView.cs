@@ -29,7 +29,7 @@ using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Problems.TravelingSalesman.Views {
   /// <summary>
-  /// The base class for visual representations of items.
+  /// The base class for visual representations of a path tour for a TSP.
   /// </summary>
   [View("PathTSPTour View")]
   [Content(typeof(PathTSPTour), true)]
@@ -40,7 +40,7 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
     }
 
     /// <summary>
-    /// Initializes a new instance of <see cref="ItemBaseView"/>.
+    /// Initializes a new instance of <see cref="PathTSPTourView"/>.
     /// </summary>
     public PathTSPTourView() {
       InitializeComponent();

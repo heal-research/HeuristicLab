@@ -48,7 +48,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     private MultiPermutationManipulator(bool deserializing) : base(deserializing) { }
     public MultiPermutationManipulator()
       : base() {
-      Parameters.Add(new LookupParameter<Permutation>("Permutation", "The permutation that is being manipulating."));
+      Parameters.Add(new LookupParameter<Permutation>("Permutation", "The permutation that is being manipulated."));
 
       foreach (Type type in ApplicationManager.Manager.GetTypes(typeof(IPermutationManipulator))) {
         if (!typeof(MultiOperator<IPermutationManipulator>).IsAssignableFrom(type))
@@ -70,8 +70,8 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       foreach (IPermutationManipulator manipulator in Operators.OfType<IPermutationManipulator>()) {
         manipulator.PermutationParameter.ActualName = PermutationParameter.Name;
       }
-      foreach (IStochasticOperator crossover in Operators.OfType<IStochasticOperator>()) {
-        crossover.RandomParameter.ActualName = RandomParameter.Name;
+      foreach (IStochasticOperator op in Operators.OfType<IStochasticOperator>()) {
+        op.RandomParameter.ActualName = RandomParameter.Name;
       }
     }
 
