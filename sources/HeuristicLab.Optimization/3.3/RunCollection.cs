@@ -174,6 +174,7 @@ namespace HeuristicLab.Optimization {
     private void AfterDeserializationHook() {
       if (constraints == null) constraints = new RunCollectionConstraintCollection();
       RegisterConstraintsEvents();
+      RegisterConstraintEvents(constraints);
       UpdateFiltering(true);
     }
 
