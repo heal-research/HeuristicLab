@@ -105,7 +105,6 @@
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -143,13 +142,6 @@
     <None Include="app.config" />
     <None Include="HeuristicLab.snk" />
     <None Include="Properties\AssemblyInfo.frame" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="libs\debug\log4net.dll" />
-    <None Include="libs\debug\log4net.pdb" />
-    <None Include="libs\debug\log4net.xml" />
-    <None Include="libs\release\log4net.dll" />
-    <None Include="libs\release\log4net.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Services.OKB.AttributeSelection\3.3\HeuristicLab.Services.OKB.AttributeSelection-3.3.csproj">
