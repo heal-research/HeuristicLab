@@ -1,315 +1,392 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><Database Name="OKB" EntityNamespace="HeuristicLab.Services.OKB.DataAccess" ContextNamespace="HeuristicLab.Services.OKB.DataAccess" Class="OKBDataContext" Serialization="Unidirectional" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
-  <Connection Mode="AppSettings" ConnectionString="Data Source=localhost;Initial Catalog=HeuristicLab.OKB;Integrated Security=True" SettingsObjectName="HeuristicLab.Services.OKB.DataAccess.Properties.Settings" SettingsPropertyName="OKBConnectionString" Provider="System.Data.SqlClient" />
-  <Table Name="dbo.[User]" Member="Users">
-    <Type Name="User">
-      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="Name" Type="System.String" DbType="VarChar(200) NOT NULL" CanBeNull="false" />
-      <Association Name="User_Run" Member="Runs" ThisKey="Id" OtherKey="UserId" Type="Run" />
-    </Type>
-  </Table>
-  <Table Name="dbo.Algorithm_Parameter" Member="Algorithm_Parameters">
-    <Type Name="Algorithm_Parameter">
-      <Column Name="AlgorithmId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="ParameterId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Association Name="Parameter_Algorithm_Parameter" Member="Parameter" ThisKey="ParameterId" OtherKey="Id" Type="Parameter" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
-      <Association Name="Algorithm_Algorithm_Parameter" Member="Algorithm" ThisKey="AlgorithmId" OtherKey="Id" Type="Algorithm" IsForeignKey="true" />
-    </Type>
-  </Table>
+  <Connection Mode="AppSettings" ConnectionString="Data Source=.\SQLEXPRESS;Initial Catalog=HeuristicLab.OKB;Integrated Security=True" SettingsObjectName="HeuristicLab.Services.OKB.DataAccess.Properties.Settings" SettingsPropertyName="OKBConnectionString" Provider="System.Data.SqlClient" />
   <Table Name="dbo.AlgorithmClass" Member="AlgorithmClasses">
     <Type Name="AlgorithmClass">
-      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="Name" Type="System.String" DbType="VarChar(200) NOT NULL" CanBeNull="false" />
-      <Column Name="Description" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(200) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
       <Association Name="AlgorithmClass_Algorithm" Member="Algorithms" ThisKey="Id" OtherKey="AlgorithmClassId" Type="Algorithm" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Algorithm" Member="Algorithms">
+    <Type Name="Algorithm">
+      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="AlgorithmClassId" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="PlatformId" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(200) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Association Name="Algorithm_Experiment" Member="Experiments" ThisKey="Id" OtherKey="AlgorithmId" Type="Experiment" />
+      <Association Name="Algorithm_AlgorithmParameter" Member="AlgorithmParameters" ThisKey="Id" OtherKey="AlgorithmId" Type="AlgorithmParameter" />
+      <Association Name="Algorithm_AlgorithmData" Member="AlgorithmData" ThisKey="Id" OtherKey="AlgorithmId" Type="AlgorithmData" Cardinality="One" />
+      <Association Name="Algorithm_AlgorithmUser" Member="AlgorithmUsers" ThisKey="Id" OtherKey="AlgorithmId" Type="AlgorithmUser" />
+      <Association Name="Algorithm_Result" Member="Results" ThisKey="Id" OtherKey="AlgorithmId" Type="Result" />
+      <Association Name="AlgorithmClass_Algorithm" Member="AlgorithmClass" ThisKey="AlgorithmClassId" OtherKey="Id" Type="AlgorithmClass" IsForeignKey="true" />
+      <Association Name="Platform_Algorithm" Member="Platform" ThisKey="PlatformId" OtherKey="Id" Type="Platform" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Problem" Member="Problems">
+    <Type Name="Problem">
+      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ProblemClassId" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="PlatformId" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="SolutionRepresentationId" Storage="_SolutionRepresentationid" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(200) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Association Name="Problem_Experiment" Member="Experiments" ThisKey="Id" OtherKey="ProblemId" Type="Experiment" />
+      <Association Name="Problem_ProblemParameter" Member="ProblemParameters" ThisKey="Id" OtherKey="ProblemId" Type="ProblemParameter" />
+      <Association Name="Problem_ProblemData" Member="ProblemData" ThisKey="Id" OtherKey="ProblemId" Type="ProblemData" Cardinality="One" />
+      <Association Name="Problem_ProblemUser" Member="ProblemUsers" ThisKey="Id" OtherKey="ProblemId" Type="ProblemUser" />
+      <Association Name="Problem_ProblemCharacteristicFloatValue" Member="ProblemCharacteristicFloatValues" ThisKey="Id" OtherKey="ProblemId" Type="ProblemCharacteristicFloatValue" />
+      <Association Name="Problem_ProblemCharacteristicIntValue" Member="ProblemCharacteristicIntValues" ThisKey="Id" OtherKey="ProblemId" Type="ProblemCharacteristicIntValue" />
+      <Association Name="Problem_ProblemCharacteristicStringValue" Member="ProblemCharacteristicStringValues" ThisKey="Id" OtherKey="ProblemId" Type="ProblemCharacteristicStringValue" />
+      <Association Name="ProblemClass_Problem" Member="ProblemClass" ThisKey="ProblemClassId" OtherKey="Id" Type="ProblemClass" IsForeignKey="true" />
+      <Association Name="Platform_Problem" Member="Platform" ThisKey="PlatformId" OtherKey="Id" Type="Platform" IsForeignKey="true" />
+      <Association Name="SolutionRepresentation_Problem" Member="SolutionRepresentation" ThisKey="SolutionRepresentationId" OtherKey="Id" Type="SolutionRepresentation" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ProblemClass" Member="ProblemClasses">
+    <Type Name="ProblemClass">
+      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(200) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Association Name="ProblemClass_Problem" Member="Problems" ThisKey="Id" OtherKey="ProblemClassId" Type="Problem" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Experiment" Member="Experiments">
+    <Type Name="Experiment">
+      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="AlgorithmId" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="ProblemId" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Association Name="Experiment_AlgorithmParameterBlobValue" Member="AlgorithmParameterBlobValues" ThisKey="Id" OtherKey="ExperimentId" Type="AlgorithmParameterBlobValue" />
+      <Association Name="Experiment_ProblemParameterBlobValue" Member="ProblemParameterBlobValues" ThisKey="Id" OtherKey="ExperimentId" Type="ProblemParameterBlobValue" />
+      <Association Name="Experiment_AlgorithmParameterBoolValue" Member="AlgorithmParameterBoolValues" ThisKey="Id" OtherKey="ExperimentId" Type="AlgorithmParameterBoolValue" />
+      <Association Name="Experiment_AlgorithmParameterFloatValue" Member="AlgorithmParameterFloatValues" ThisKey="Id" OtherKey="ExperimentId" Type="AlgorithmParameterFloatValue" />
+      <Association Name="Experiment_AlgorithmParameterIntValue" Member="AlgorithmParameterIntValues" ThisKey="Id" OtherKey="ExperimentId" Type="AlgorithmParameterIntValue" />
+      <Association Name="Experiment_AlgorithmParameterStringValue" Member="AlgorithmParameterStringValues" ThisKey="Id" OtherKey="ExperimentId" Type="AlgorithmParameterStringValue" />
+      <Association Name="Experiment_ProblemParameterBoolValue" Member="ProblemParameterBoolValues" ThisKey="Id" OtherKey="ExperimentId" Type="ProblemParameterBoolValue" />
+      <Association Name="Experiment_ProblemParameterFloatValue" Member="ProblemParameterFloatValues" ThisKey="Id" OtherKey="ExperimentId" Type="ProblemParameterFloatValue" />
+      <Association Name="Experiment_ProblemParameterIntValue" Member="ProblemParameterIntValues" ThisKey="Id" OtherKey="ExperimentId" Type="ProblemParameterIntValue" />
+      <Association Name="Experiment_ProblemParameterStringValue" Member="ProblemParameterStringValues" ThisKey="Id" OtherKey="ExperimentId" Type="ProblemParameterStringValue" />
+      <Association Name="Experiment_Run" Member="Runs" ThisKey="Id" OtherKey="ExperimentId" Type="Run" />
+      <Association Name="Problem_Experiment" Member="Problem" ThisKey="ProblemId" OtherKey="Id" Type="Problem" IsForeignKey="true" />
+      <Association Name="Algorithm_Experiment" Member="Algorithm" ThisKey="AlgorithmId" OtherKey="Id" Type="Algorithm" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.AlgorithmParameter" Member="AlgorithmParameters">
+    <Type Name="AlgorithmParameter">
+      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="AlgorithmId" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(200) NOT NULL" CanBeNull="false" />
+      <Column Name="Alias" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="DataTypeId" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Association Name="AlgorithmParameter_AlgorithmParameterBlobValue" Member="AlgorithmParameterBlobValues" ThisKey="Id" OtherKey="AlgorithmParameterId" Type="AlgorithmParameterBlobValue" />
+      <Association Name="AlgorithmParameter_AlgorithmParameterBoolValue" Member="AlgorithmParameterBoolValues" ThisKey="Id" OtherKey="AlgorithmParameterId" Type="AlgorithmParameterBoolValue" />
+      <Association Name="AlgorithmParameter_AlgorithmParameterFloatValue" Member="AlgorithmParameterFloatValues" ThisKey="Id" OtherKey="AlgorithmParameterId" Type="AlgorithmParameterFloatValue" />
+      <Association Name="AlgorithmParameter_AlgorithmParameterIntValue" Member="AlgorithmParameterIntValues" ThisKey="Id" OtherKey="AlgorithmParameterId" Type="AlgorithmParameterIntValue" />
+      <Association Name="AlgorithmParameter_AlgorithmParameterStringValue" Member="AlgorithmParameterStringValues" ThisKey="Id" OtherKey="AlgorithmParameterId" Type="AlgorithmParameterStringValue" />
+      <Association Name="Algorithm_AlgorithmParameter" Member="Algorithm" ThisKey="AlgorithmId" OtherKey="Id" Type="Algorithm" IsForeignKey="true" />
+      <Association Name="DataType_AlgorithmParameter" Member="DataType" ThisKey="DataTypeId" OtherKey="Id" Type="DataType" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ProblemParameter" Member="ProblemParameters">
+    <Type Name="ProblemParameter">
+      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ProblemId" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(200) NOT NULL" CanBeNull="false" />
+      <Column Name="Alias" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="DataTypeId" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Association Name="ProblemParameter_ProblemParameterBlobValue" Member="ProblemParameterBlobValues" ThisKey="Id" OtherKey="ProblemParameterId" Type="ProblemParameterBlobValue" />
+      <Association Name="ProblemParameter_ProblemParameterBoolValue" Member="ProblemParameterBoolValues" ThisKey="Id" OtherKey="ProblemParameterId" Type="ProblemParameterBoolValue" />
+      <Association Name="ProblemParameter_ProblemParameterFloatValue" Member="ProblemParameterFloatValues" ThisKey="Id" OtherKey="ProblemParameterId" Type="ProblemParameterFloatValue" />
+      <Association Name="ProblemParameter_ProblemParameterIntValue" Member="ProblemParameterIntValues" ThisKey="Id" OtherKey="ProblemParameterId" Type="ProblemParameterIntValue" />
+      <Association Name="ProblemParameter_ProblemParameterStringValue" Member="ProblemParameterStringValues" ThisKey="Id" OtherKey="ProblemParameterId" Type="ProblemParameterStringValue" />
+      <Association Name="Problem_ProblemParameter" Member="Problem" ThisKey="ProblemId" OtherKey="Id" Type="Problem" IsForeignKey="true" />
+      <Association Name="DataType_ProblemParameter" Member="DataType" ThisKey="DataTypeId" OtherKey="Id" Type="DataType" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.AlgorithmParameterBlobValue" Member="AlgorithmParameterBlobValues">
+    <Type Name="AlgorithmParameterBlobValue">
+      <Column Name="AlgorithmParameterId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ExperimentId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Value" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX) NOT NULL" CanBeNull="false" UpdateCheck="Never" />
+      <Association Name="AlgorithmParameter_AlgorithmParameterBlobValue" Member="AlgorithmParameter" ThisKey="AlgorithmParameterId" OtherKey="Id" Type="AlgorithmParameter" IsForeignKey="true" />
+      <Association Name="Experiment_AlgorithmParameterBlobValue" Member="Experiment" ThisKey="ExperimentId" OtherKey="Id" Type="Experiment" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ProblemParameterBlobValue" Member="ProblemParameterBlobValues">
+    <Type Name="ProblemParameterBlobValue">
+      <Column Name="ProblemParameterId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ExperimentId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Value" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX) NOT NULL" CanBeNull="false" UpdateCheck="Never" />
+      <Association Name="Experiment_ProblemParameterBlobValue" Member="Experiment" ThisKey="ExperimentId" OtherKey="Id" Type="Experiment" IsForeignKey="true" />
+      <Association Name="ProblemParameter_ProblemParameterBlobValue" Member="ProblemParameter" ThisKey="ProblemParameterId" OtherKey="Id" Type="ProblemParameter" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.AlgorithmParameterBoolValue" Member="AlgorithmParameterBoolValues">
+    <Type Name="AlgorithmParameterBoolValue">
+      <Column Name="AlgorithmParameterId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ExperimentId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Value" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="AlgorithmParameter_AlgorithmParameterBoolValue" Member="AlgorithmParameter" ThisKey="AlgorithmParameterId" OtherKey="Id" Type="AlgorithmParameter" IsForeignKey="true" />
+      <Association Name="Experiment_AlgorithmParameterBoolValue" Member="Experiment" ThisKey="ExperimentId" OtherKey="Id" Type="Experiment" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.AlgorithmParameterFloatValue" Member="AlgorithmParameterFloatValues">
+    <Type Name="AlgorithmParameterFloatValue">
+      <Column Name="AlgorithmParameterId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ExperimentId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Value" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Association Name="AlgorithmParameter_AlgorithmParameterFloatValue" Member="AlgorithmParameter" ThisKey="AlgorithmParameterId" OtherKey="Id" Type="AlgorithmParameter" IsForeignKey="true" />
+      <Association Name="Experiment_AlgorithmParameterFloatValue" Member="Experiment" ThisKey="ExperimentId" OtherKey="Id" Type="Experiment" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.AlgorithmParameterIntValue" Member="AlgorithmParameterIntValues">
+    <Type Name="AlgorithmParameterIntValue">
+      <Column Name="AlgorithmParameterId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ExperimentId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Value" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="AlgorithmParameter_AlgorithmParameterIntValue" Member="AlgorithmParameter" ThisKey="AlgorithmParameterId" OtherKey="Id" Type="AlgorithmParameter" IsForeignKey="true" />
+      <Association Name="Experiment_AlgorithmParameterIntValue" Member="Experiment" ThisKey="ExperimentId" OtherKey="Id" Type="Experiment" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.AlgorithmParameterStringValue" Member="AlgorithmParameterStringValues">
+    <Type Name="AlgorithmParameterStringValue">
+      <Column Name="AlgorithmParameterId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ExperimentId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Value" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Association Name="AlgorithmParameter_AlgorithmParameterStringValue" Member="AlgorithmParameter" ThisKey="AlgorithmParameterId" OtherKey="Id" Type="AlgorithmParameter" IsForeignKey="true" />
+      <Association Name="Experiment_AlgorithmParameterStringValue" Member="Experiment" ThisKey="ExperimentId" OtherKey="Id" Type="Experiment" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ProblemParameterBoolValue" Member="ProblemParameterBoolValues">
+    <Type Name="ProblemParameterBoolValue">
+      <Column Name="ProblemParameterId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ExperimentId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Value" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="Experiment_ProblemParameterBoolValue" Member="Experiment" ThisKey="ExperimentId" OtherKey="Id" Type="Experiment" IsForeignKey="true" />
+      <Association Name="ProblemParameter_ProblemParameterBoolValue" Member="ProblemParameter" ThisKey="ProblemParameterId" OtherKey="Id" Type="ProblemParameter" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ProblemParameterFloatValue" Member="ProblemParameterFloatValues">
+    <Type Name="ProblemParameterFloatValue">
+      <Column Name="ProblemParameterId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ExperimentId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Value" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Association Name="Experiment_ProblemParameterFloatValue" Member="Experiment" ThisKey="ExperimentId" OtherKey="Id" Type="Experiment" IsForeignKey="true" />
+      <Association Name="ProblemParameter_ProblemParameterFloatValue" Member="ProblemParameter" ThisKey="ProblemParameterId" OtherKey="Id" Type="ProblemParameter" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ProblemParameterIntValue" Member="ProblemParameterIntValues">
+    <Type Name="ProblemParameterIntValue">
+      <Column Name="ProblemParameterId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ExperimentId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Value" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Experiment_ProblemParameterIntValue" Member="Experiment" ThisKey="ExperimentId" OtherKey="Id" Type="Experiment" IsForeignKey="true" />
+      <Association Name="ProblemParameter_ProblemParameterIntValue" Member="ProblemParameter" ThisKey="ProblemParameterId" OtherKey="Id" Type="ProblemParameter" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ProblemParameterStringValue" Member="ProblemParameterStringValues">
+    <Type Name="ProblemParameterStringValue">
+      <Column Name="ProblemParameterId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ExperimentId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Value" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Association Name="Experiment_ProblemParameterStringValue" Member="Experiment" ThisKey="ExperimentId" OtherKey="Id" Type="Experiment" IsForeignKey="true" />
+      <Association Name="ProblemParameter_ProblemParameterStringValue" Member="ProblemParameter" ThisKey="ProblemParameterId" OtherKey="Id" Type="ProblemParameter" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.AlgorithmData" Member="AlgorithmDatas">
     <Type Name="AlgorithmData">
-      <Column Name="AlgorithmId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="AlgorithmId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="Data" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX) NOT NULL" CanBeNull="false" UpdateCheck="Never" />
-      <Association Name="Algorithm_AlgorithmData" Member="Algorithm" ThisKey="AlgorithmId" OtherKey="Id" Type="Algorithm" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+      <Association Name="Algorithm_AlgorithmData" Member="Algorithm" ThisKey="AlgorithmId" OtherKey="Id" Type="Algorithm" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.BlobResultValue" Member="BlobResultValues">
-    <Type Name="BlobResultValue">
-      <Column Name="ResultId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="RunId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+  <Table Name="dbo.[User]" Member="Users">
+    <Type Name="User">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(200) NOT NULL" CanBeNull="false" />
+      <Association Name="User_AlgorithmUser" Member="AlgorithmUsers" ThisKey="Id" OtherKey="UserId" Type="AlgorithmUser" />
+      <Association Name="User_ProblemUser" Member="ProblemUsers" ThisKey="Id" OtherKey="UserId" Type="ProblemUser" />
+      <Association Name="User_Run" Member="Runs" ThisKey="Id" OtherKey="UserId" Type="Run" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ProblemData" Member="ProblemDatas">
+    <Type Name="ProblemData">
+      <Column Name="ProblemId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Data" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX) NOT NULL" CanBeNull="false" UpdateCheck="Never" />
+      <Association Name="Problem_ProblemData" Member="Problem" ThisKey="ProblemId" OtherKey="Id" Type="Problem" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.AlgorithmUser" Member="AlgorithmUsers">
+    <Type Name="AlgorithmUser">
+      <Column Name="AlgorithmId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Association Name="Algorithm_AlgorithmUser" Member="Algorithm" ThisKey="AlgorithmId" OtherKey="Id" Type="Algorithm" IsForeignKey="true" />
+      <Association Name="User_AlgorithmUser" Member="User" ThisKey="UserId" OtherKey="Id" Type="User" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ProblemUser" Member="ProblemUsers">
+    <Type Name="ProblemUser">
+      <Column Name="ProblemId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Association Name="Problem_ProblemUser" Member="Problem" ThisKey="ProblemId" OtherKey="Id" Type="Problem" IsForeignKey="true" />
+      <Association Name="User_ProblemUser" Member="User" ThisKey="UserId" OtherKey="Id" Type="User" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Platform" Member="Platforms">
+    <Type Name="Platform">
+      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(200) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Association Name="Platform_Algorithm" Member="Algorithms" ThisKey="Id" OtherKey="PlatformId" Type="Algorithm" />
+      <Association Name="Platform_Problem" Member="Problems" ThisKey="Id" OtherKey="PlatformId" Type="Problem" />
+    </Type>
+  </Table>
+  <Table Name="dbo.SolutionRepresentation" Member="SolutionRepresentations">
+    <Type Name="SolutionRepresentation">
+      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(200) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Association Name="SolutionRepresentation_Problem" Member="Problems" ThisKey="Id" OtherKey="SolutionRepresentationId" Type="Problem" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Run" Member="Runs">
+    <Type Name="Run">
+      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ExperimentId" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="RandomSeed" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="FinishedDate" Type="System.DateTime" DbType="DateTime2" CanBeNull="true" />
+      <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="ClientId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Association Name="Run_ResultBlobValue" Member="ResultBlobValues" ThisKey="Id" OtherKey="RunId" Type="ResultBlobValue" />
+      <Association Name="Run_ResultBoolValue" Member="ResultBoolValues" ThisKey="Id" OtherKey="RunId" Type="ResultBoolValue" />
+      <Association Name="Run_ResultFloatValue" Member="ResultFloatValues" ThisKey="Id" OtherKey="RunId" Type="ResultFloatValue" />
+      <Association Name="Run_ResultIntValue" Member="ResultIntValues" ThisKey="Id" OtherKey="RunId" Type="ResultIntValue" />
+      <Association Name="Run_ResultStringValue" Member="ResultStringValues" ThisKey="Id" OtherKey="RunId" Type="ResultStringValue" />
+      <Association Name="Experiment_Run" Member="Experiment" ThisKey="ExperimentId" OtherKey="Id" Type="Experiment" IsForeignKey="true" />
+      <Association Name="User_Run" Member="User" ThisKey="UserId" OtherKey="Id" Type="User" IsForeignKey="true" />
+      <Association Name="Client_Run" Member="Client" ThisKey="ClientId" OtherKey="Id" Type="Client" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Result" Member="Results">
+    <Type Name="Result">
+      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="AlgorithmId" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(200) NOT NULL" CanBeNull="false" />
+      <Column Name="Alias" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="DataTypeId" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Association Name="Result_ResultBlobValue" Member="ResultBlobValues" ThisKey="Id" OtherKey="ResultId" Type="ResultBlobValue" />
+      <Association Name="Result_ResultBoolValue" Member="ResultBoolValues" ThisKey="Id" OtherKey="ResultId" Type="ResultBoolValue" />
+      <Association Name="Result_ResultFloatValue" Member="ResultFloatValues" ThisKey="Id" OtherKey="ResultId" Type="ResultFloatValue" />
+      <Association Name="Result_ResultIntValue" Member="ResultIntValues" ThisKey="Id" OtherKey="ResultId" Type="ResultIntValue" />
+      <Association Name="Result_ResultStringValue" Member="ResultStringValues" ThisKey="Id" OtherKey="ResultId" Type="ResultStringValue" />
+      <Association Name="Algorithm_Result" Member="Algorithm" ThisKey="AlgorithmId" OtherKey="Id" Type="Algorithm" IsForeignKey="true" />
+      <Association Name="DataType_Result" Member="DataType" ThisKey="DataTypeId" OtherKey="Id" Type="DataType" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ResultBlobValue" Member="ResultBlobValues">
+    <Type Name="ResultBlobValue">
+      <Column Name="ResultId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="RunId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="Value" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX) NOT NULL" CanBeNull="false" UpdateCheck="Never" />
-      <Association Name="Run_BlobResultValue" Member="Run" ThisKey="RunId" OtherKey="Id" Type="Run" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
-      <Association Name="Result_BlobResultValue" Member="Result" ThisKey="ResultId" OtherKey="Id" Type="Result" IsForeignKey="true" />
+      <Association Name="Result_ResultBlobValue" Member="Result" ThisKey="ResultId" OtherKey="Id" Type="Result" IsForeignKey="true" />
+      <Association Name="Run_ResultBlobValue" Member="Run" ThisKey="RunId" OtherKey="Id" Type="Run" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.CharParameterValue" Member="CharParameterValues">
-    <Type Name="CharParameterValue">
-      <Column Name="ParameterId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="ExperimentId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="Value" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
-      <Association Name="Experiment_CharParameterValue" Member="Experiment" ThisKey="ExperimentId" OtherKey="Id" Type="Experiment" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
-      <Association Name="Parameter_CharParameterValue" Member="Parameter" ThisKey="ParameterId" OtherKey="Id" Type="Parameter" IsForeignKey="true" />
+  <Table Name="dbo.ResultBoolValue" Member="ResultBoolValues">
+    <Type Name="ResultBoolValue">
+      <Column Name="ResultId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="RunId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Value" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="Result_ResultBoolValue" Member="Result" ThisKey="ResultId" OtherKey="Id" Type="Result" IsForeignKey="true" />
+      <Association Name="Run_ResultBoolValue" Member="Run" ThisKey="RunId" OtherKey="Id" Type="Run" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.CharProblemCharacteristicValue" Member="CharProblemCharacteristicValues">
-    <Type Name="CharProblemCharacteristicValue">
-      <Column Name="ProblemCharacteristicId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="ProblemId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="Value" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
-      <Association Name="Problem_CharProblemCharacteristicValue" Member="Problem" ThisKey="ProblemId" OtherKey="Id" Type="Problem" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
-      <Association Name="ProblemCharacteristic_CharProblemCharacteristicValue" Member="ProblemCharacteristic" ThisKey="ProblemCharacteristicId" OtherKey="Id" Type="ProblemCharacteristic" IsForeignKey="true" />
+  <Table Name="dbo.ResultFloatValue" Member="ResultFloatValues">
+    <Type Name="ResultFloatValue">
+      <Column Name="ResultId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="RunId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Value" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Association Name="Result_ResultFloatValue" Member="Result" ThisKey="ResultId" OtherKey="Id" Type="Result" IsForeignKey="true" />
+      <Association Name="Run_ResultFloatValue" Member="Run" ThisKey="RunId" OtherKey="Id" Type="Run" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.CharResultValue" Member="CharResultValues">
-    <Type Name="CharResultValue">
-      <Column Name="ResultId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="RunId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="Value" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
-      <Association Name="Run_CharResultValue" Member="Run" ThisKey="RunId" OtherKey="Id" Type="Run" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
-      <Association Name="Result_CharResultValue" Member="Result" ThisKey="ResultId" OtherKey="Id" Type="Result" IsForeignKey="true" />
+  <Table Name="dbo.ResultIntValue" Member="ResultIntValues">
+    <Type Name="ResultIntValue">
+      <Column Name="ResultId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="RunId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Value" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Result_ResultIntValue" Member="Result" ThisKey="ResultId" OtherKey="Id" Type="Result" IsForeignKey="true" />
+      <Association Name="Run_ResultIntValue" Member="Run" ThisKey="RunId" OtherKey="Id" Type="Run" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ResultStringValue" Member="ResultStringValues">
+    <Type Name="ResultStringValue">
+      <Column Name="ResultId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="RunId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Value" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Association Name="Result_ResultStringValue" Member="Result" ThisKey="ResultId" OtherKey="Id" Type="Result" IsForeignKey="true" />
+      <Association Name="Run_ResultStringValue" Member="Run" ThisKey="RunId" OtherKey="Id" Type="Run" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.Client" Member="Clients">
     <Type Name="Client">
       <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="Name" Type="System.String" DbType="VarChar(200) NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(200) NOT NULL" CanBeNull="false" />
       <Association Name="Client_Run" Member="Runs" ThisKey="Id" OtherKey="ClientId" Type="Run" />
     </Type>
   </Table>
   <Table Name="dbo.DataType" Member="DataTypes">
     <Type Name="DataType">
-      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="SqlName" Type="System.String" DbType="VarChar(200) NOT NULL" CanBeNull="false" />
-      <Column Name="ClrName" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
-      <Association Name="DataType_ProblemCharacteristic" Member="ProblemCharacteristics" ThisKey="Id" OtherKey="DataTypeId" Type="ProblemCharacteristic" />
+      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="SqlName" Type="System.String" DbType="NVarChar(200) NOT NULL" CanBeNull="false" />
+      <Column Name="ClrName" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Association Name="DataType_AlgorithmParameter" Member="AlgorithmParameters" ThisKey="Id" OtherKey="DataTypeId" Type="AlgorithmParameter" />
+      <Association Name="DataType_ProblemParameter" Member="ProblemParameters" ThisKey="Id" OtherKey="DataTypeId" Type="ProblemParameter" />
       <Association Name="DataType_Result" Member="Results" ThisKey="Id" OtherKey="DataTypeId" Type="Result" />
-      <Association Name="DataType_OperatorParameterValue" Member="OperatorParameterValues" ThisKey="Id" OtherKey="DataTypeId" Type="OperatorParameterValue" />
-      <Association Name="DataType_Parameter" Member="Parameters" ThisKey="Id" OtherKey="DataTypeId" Type="Parameter" />
-    </Type>
-  </Table>
-  <Table Name="dbo.Experiment" Member="Experiments">
-    <Type Name="Experiment">
-      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="ProjectId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="AlgorithmId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="ProblemId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="Experiment_CharParameterValue" Member="CharParameterValues" ThisKey="Id" OtherKey="ExperimentId" Type="CharParameterValue" />
-      <Association Name="Experiment_FloatParameterValue" Member="FloatParameterValues" ThisKey="Id" OtherKey="ExperimentId" Type="FloatParameterValue" />
-      <Association Name="Experiment_IntParameterValue" Member="IntParameterValues" ThisKey="Id" OtherKey="ExperimentId" Type="IntParameterValue" />
-      <Association Name="Experiment_Run" Member="Runs" ThisKey="Id" OtherKey="ExperimentId" Type="Run" />
-      <Association Name="Experiment_OperatorParameterValue" Member="OperatorParameterValues" ThisKey="Id" OtherKey="ExperimentId" Type="OperatorParameterValue" />
-      <Association Name="Problem_Experiment" Member="Problem" ThisKey="ProblemId" OtherKey="Id" Type="Problem" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
-      <Association Name="Project_Experiment" Member="Project" ThisKey="ProjectId" OtherKey="Id" Type="Project" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
-      <Association Name="Algorithm_Experiment" Member="Algorithm" ThisKey="AlgorithmId" OtherKey="Id" Type="Algorithm" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.FloatParameterValue" Member="FloatParameterValues">
-    <Type Name="FloatParameterValue">
-      <Column Name="ParameterId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="ExperimentId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="Value" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
-      <Association Name="Experiment_FloatParameterValue" Member="Experiment" ThisKey="ExperimentId" OtherKey="Id" Type="Experiment" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
-      <Association Name="Parameter_FloatParameterValue" Member="Parameter" ThisKey="ParameterId" OtherKey="Id" Type="Parameter" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.FloatProblemCharacteristicValue" Member="FloatProblemCharacteristicValues">
-    <Type Name="FloatProblemCharacteristicValue">
-      <Column Name="ProblemCharacteristicId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="ProblemId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="Value" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
-      <Association Name="Problem_FloatProblemCharacteristicValue" Member="Problem" ThisKey="ProblemId" OtherKey="Id" Type="Problem" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
-      <Association Name="ProblemCharacteristic_FloatProblemCharacteristicValue" Member="ProblemCharacteristic" ThisKey="ProblemCharacteristicId" OtherKey="Id" Type="ProblemCharacteristic" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.FloatResultValue" Member="FloatResultValues">
-    <Type Name="FloatResultValue">
-      <Column Name="ResultId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="RunId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="Value" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
-      <Association Name="Run_FloatResultValue" Member="Run" ThisKey="RunId" OtherKey="Id" Type="Run" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
-      <Association Name="Result_FloatResultValue" Member="Result" ThisKey="ResultId" OtherKey="Id" Type="Result" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.IntParameterValue" Member="IntParameterValues">
-    <Type Name="IntParameterValue">
-      <Column Name="ParameterId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="ExperimentId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="Value" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="Experiment_IntParameterValue" Member="Experiment" ThisKey="ExperimentId" OtherKey="Id" Type="Experiment" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
-      <Association Name="Parameter_IntParameterValue" Member="Parameter" ThisKey="ParameterId" OtherKey="Id" Type="Parameter" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.IntProblemCharacteristicValue" Member="IntProblemCharacteristicValues">
-    <Type Name="IntProblemCharacteristicValue">
-      <Column Name="ProblemCharacteristicId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="ProblemId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="Value" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="Problem_IntProblemCharacteristicValue" Member="Problem" ThisKey="ProblemId" OtherKey="Id" Type="Problem" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
-      <Association Name="ProblemCharacteristic_IntProblemCharacteristicValue" Member="ProblemCharacteristic" ThisKey="ProblemCharacteristicId" OtherKey="Id" Type="ProblemCharacteristic" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.IntResultValue" Member="IntResultValues">
-    <Type Name="IntResultValue">
-      <Column Name="ResultId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="RunId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="Value" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="Run_IntResultValue" Member="Run" ThisKey="RunId" OtherKey="Id" Type="Run" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
-      <Association Name="Result_IntResultValue" Member="Result" ThisKey="ResultId" OtherKey="Id" Type="Result" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.Platform" Member="Platforms">
-    <Type Name="Platform">
-      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="Name" Type="System.String" DbType="VarChar(200) NOT NULL" CanBeNull="false" />
-      <Column Name="Description" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
-      <Association Name="Platform_Problem" Member="Problems" ThisKey="Id" OtherKey="PlatformId" Type="Problem" />
-      <Association Name="Platform_Algorithm" Member="Algorithms" ThisKey="Id" OtherKey="PlatformId" Type="Algorithm" />
-    </Type>
-  </Table>
-  <Table Name="dbo.Problem" Member="Problems">
-    <Type Name="Problem">
-      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="ProblemClassId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="PlatformId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="SolutionRepresentationId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="Name" Type="System.String" DbType="VarChar(200) NOT NULL" CanBeNull="false" />
-      <Column Name="Description" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
-      <Association Name="Problem_CharProblemCharacteristicValue" Member="CharProblemCharacteristicValues" ThisKey="Id" OtherKey="ProblemId" Type="CharProblemCharacteristicValue" />
-      <Association Name="Problem_Experiment" Member="Experiments" ThisKey="Id" OtherKey="ProblemId" Type="Experiment" />
-      <Association Name="Problem_FloatProblemCharacteristicValue" Member="FloatProblemCharacteristicValues" ThisKey="Id" OtherKey="ProblemId" Type="FloatProblemCharacteristicValue" />
-      <Association Name="Problem_IntProblemCharacteristicValue" Member="IntProblemCharacteristicValues" ThisKey="Id" OtherKey="ProblemId" Type="IntProblemCharacteristicValue" />
-      <Association Name="Problem_Problem_Parameter" Member="Problem_Parameters" ThisKey="Id" OtherKey="ProblemId" Type="Problem_Parameter" />
-      <Association Name="Problem_ProblemData" Member="ProblemData" ThisKey="Id" OtherKey="ProblemId" Type="ProblemData" Cardinality="One" />
-      <Association Name="Platform_Problem" Member="Platform" ThisKey="PlatformId" OtherKey="Id" Type="Platform" IsForeignKey="true" />
-      <Association Name="ProblemClass_Problem" Member="ProblemClass" ThisKey="ProblemClassId" OtherKey="Id" Type="ProblemClass" IsForeignKey="true" />
-      <Association Name="SolutionRepresentation_Problem" Member="SolutionRepresentation" ThisKey="SolutionRepresentationId" OtherKey="Id" Type="SolutionRepresentation" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.Problem_Parameter" Member="Problem_Parameters">
-    <Type Name="Problem_Parameter">
-      <Column Name="ProblemId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="ParameterId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Association Name="Parameter_Problem_Parameter" Member="Parameter" ThisKey="ParameterId" OtherKey="Id" Type="Parameter" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
-      <Association Name="Problem_Problem_Parameter" Member="Problem" ThisKey="ProblemId" OtherKey="Id" Type="Problem" IsForeignKey="true" />
+      <Association Name="DataType_ProblemCharacteristic" Member="ProblemCharacteristics" ThisKey="Id" OtherKey="DataTypeId" Type="ProblemCharacteristic" />
     </Type>
   </Table>
   <Table Name="dbo.ProblemCharacteristic" Member="ProblemCharacteristics">
     <Type Name="ProblemCharacteristic">
-      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="Name" Type="System.String" DbType="VarChar(200) NOT NULL" CanBeNull="false" />
-      <Column Name="Description" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
-      <Column Name="DataTypeId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="ProblemCharacteristic_CharProblemCharacteristicValue" Member="CharProblemCharacteristicValues" ThisKey="Id" OtherKey="ProblemCharacteristicId" Type="CharProblemCharacteristicValue" />
-      <Association Name="ProblemCharacteristic_FloatProblemCharacteristicValue" Member="FloatProblemCharacteristicValues" ThisKey="Id" OtherKey="ProblemCharacteristicId" Type="FloatProblemCharacteristicValue" />
-      <Association Name="ProblemCharacteristic_IntProblemCharacteristicValue" Member="IntProblemCharacteristicValues" ThisKey="Id" OtherKey="ProblemCharacteristicId" Type="IntProblemCharacteristicValue" />
-      <Association Name="DataType_ProblemCharacteristic" Member="DataType" ThisKey="DataTypeId" OtherKey="Id" Type="DataType" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(200) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="DataTypeId" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Association Name="ProblemCharacteristic_ProblemCharacteristicFloatValue" Member="ProblemCharacteristicFloatValues" ThisKey="Id" OtherKey="ProblemCharacteristicId" Type="ProblemCharacteristicFloatValue" />
+      <Association Name="ProblemCharacteristic_ProblemCharacteristicIntValue" Member="ProblemCharacteristicIntValues" ThisKey="Id" OtherKey="ProblemCharacteristicId" Type="ProblemCharacteristicIntValue" />
+      <Association Name="ProblemCharacteristic_ProblemCharacteristicStringValue" Member="ProblemCharacteristicStringValues" ThisKey="Id" OtherKey="ProblemCharacteristicId" Type="ProblemCharacteristicStringValue" />
+      <Association Name="DataType_ProblemCharacteristic" Member="DataType" ThisKey="DataTypeId" OtherKey="Id" Type="DataType" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.ProblemClass" Member="ProblemClasses">
-    <Type Name="ProblemClass">
-      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="Name" Type="System.String" DbType="VarChar(200) NOT NULL" CanBeNull="false" />
-      <Column Name="Description" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
-      <Association Name="ProblemClass_Problem" Member="Problems" ThisKey="Id" OtherKey="ProblemClassId" Type="Problem" />
+  <Table Name="dbo.ProblemCharacteristicFloatValue" Member="ProblemCharacteristicFloatValues">
+    <Type Name="ProblemCharacteristicFloatValue">
+      <Column Name="ProblemCharacteristicId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ProblemId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Value" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Association Name="Problem_ProblemCharacteristicFloatValue" Member="Problem" ThisKey="ProblemId" OtherKey="Id" Type="Problem" IsForeignKey="true" />
+      <Association Name="ProblemCharacteristic_ProblemCharacteristicFloatValue" Member="ProblemCharacteristic" ThisKey="ProblemCharacteristicId" OtherKey="Id" Type="ProblemCharacteristic" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.ProblemData" Member="ProblemDatas">
-    <Type Name="ProblemData">
-      <Column Name="ProblemId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="Data" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX) NOT NULL" CanBeNull="false" UpdateCheck="Never" />
-      <Association Name="Problem_ProblemData" Member="Problem" ThisKey="ProblemId" OtherKey="Id" Type="Problem" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+  <Table Name="dbo.ProblemCharacteristicIntValue" Member="ProblemCharacteristicIntValues">
+    <Type Name="ProblemCharacteristicIntValue">
+      <Column Name="ProblemCharacteristicId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ProblemId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Value" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Problem_ProblemCharacteristicIntValue" Member="Problem" ThisKey="ProblemId" OtherKey="Id" Type="Problem" IsForeignKey="true" />
+      <Association Name="ProblemCharacteristic_ProblemCharacteristicIntValue" Member="ProblemCharacteristic" ThisKey="ProblemCharacteristicId" OtherKey="Id" Type="ProblemCharacteristic" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.Project" Member="Projects">
-    <Type Name="Project">
-      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="Name" Type="System.String" DbType="VarChar(200) NOT NULL" CanBeNull="false" />
-      <Column Name="Description" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
-      <Association Name="Project_Experiment" Member="Experiments" ThisKey="Id" OtherKey="ProjectId" Type="Experiment" />
-    </Type>
-  </Table>
-  <Table Name="dbo.Run" Member="Runs">
-    <Type Name="Run">
-      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="ExperimentId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="FinishedDate" Type="System.DateTime" DbType="DateTime2" CanBeNull="true" />
-      <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
-      <Column Name="ClientId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
-      <Association Name="Run_BlobResultValue" Member="BlobResultValues" ThisKey="Id" OtherKey="RunId" Type="BlobResultValue" />
-      <Association Name="Run_CharResultValue" Member="CharResultValues" ThisKey="Id" OtherKey="RunId" Type="CharResultValue" />
-      <Association Name="Run_FloatResultValue" Member="FloatResultValues" ThisKey="Id" OtherKey="RunId" Type="FloatResultValue" />
-      <Association Name="Run_IntResultValue" Member="IntResultValues" ThisKey="Id" OtherKey="RunId" Type="IntResultValue" />
-      <Association Name="Client_Run" Member="Client" ThisKey="ClientId" OtherKey="Id" Type="Client" IsForeignKey="true" />
-      <Association Name="Experiment_Run" Member="Experiment" ThisKey="ExperimentId" OtherKey="Id" Type="Experiment" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
-      <Association Name="User_Run" Member="User" ThisKey="UserId" OtherKey="Id" Type="User" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.SolutionRepresentation" Member="SolutionRepresentations">
-    <Type Name="SolutionRepresentation">
-      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="Name" Type="System.String" DbType="VarChar(200) NOT NULL" CanBeNull="false" />
-      <Column Name="Description" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
-      <Association Name="SolutionRepresentation_Problem" Member="Problems" ThisKey="Id" OtherKey="SolutionRepresentationId" Type="Problem" />
-    </Type>
-  </Table>
-  <Table Name="dbo.Algorithm" Member="Algorithms">
-    <Type Name="Algorithm">
-      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="AlgorithmClassId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="PlatformId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="Name" Type="System.String" DbType="VarChar(200) NOT NULL" CanBeNull="false" />
-      <Column Name="Description" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
-      <Association Name="Algorithm_Algorithm_Parameter" Member="Algorithm_Parameters" ThisKey="Id" OtherKey="AlgorithmId" Type="Algorithm_Parameter" />
-      <Association Name="Algorithm_AlgorithmData" Member="AlgorithmData" ThisKey="Id" OtherKey="AlgorithmId" Type="AlgorithmData" Cardinality="One" />
-      <Association Name="Algorithm_Experiment" Member="Experiments" ThisKey="Id" OtherKey="AlgorithmId" Type="Experiment" />
-      <Association Name="Algorithm_Algorithm_Result" Member="Algorithm_Results" ThisKey="Id" OtherKey="AlgorithmId" Type="Algorithm_Result" />
-      <Association Name="AlgorithmClass_Algorithm" Member="AlgorithmClass" ThisKey="AlgorithmClassId" OtherKey="Id" Type="AlgorithmClass" IsForeignKey="true" />
-      <Association Name="Platform_Algorithm" Member="Platform" ThisKey="PlatformId" OtherKey="Id" Type="Platform" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.Algorithm_Result" Member="Algorithm_Results">
-    <Type Name="Algorithm_Result">
-      <Column Name="AlgorithmId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="ResultId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Association Name="Algorithm_Algorithm_Result" Member="Algorithm" ThisKey="AlgorithmId" OtherKey="Id" Type="Algorithm" IsForeignKey="true" />
-      <Association Name="Result_Algorithm_Result" Member="Result" ThisKey="ResultId" OtherKey="Id" Type="Result" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.Result" Member="Results">
-    <Type Name="Result">
-      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="Name" Type="System.String" DbType="VarChar(200) NOT NULL" CanBeNull="false" />
-      <Column Name="Description" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
-      <Column Name="DataTypeId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="Result_BlobResultValue" Member="BlobResultValues" ThisKey="Id" OtherKey="ResultId" Type="BlobResultValue" />
-      <Association Name="Result_CharResultValue" Member="CharResultValues" ThisKey="Id" OtherKey="ResultId" Type="CharResultValue" />
-      <Association Name="Result_FloatResultValue" Member="FloatResultValues" ThisKey="Id" OtherKey="ResultId" Type="FloatResultValue" />
-      <Association Name="Result_IntResultValue" Member="IntResultValues" ThisKey="Id" OtherKey="ResultId" Type="IntResultValue" />
-      <Association Name="Result_Algorithm_Result" Member="Algorithm_Results" ThisKey="Id" OtherKey="ResultId" Type="Algorithm_Result" />
-      <Association Name="DataType_Result" Member="DataType" ThisKey="DataTypeId" OtherKey="Id" Type="DataType" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.OperatorParameterValue" Member="OperatorParameterValues">
-    <Type Name="OperatorParameterValue">
-      <Column Name="ParameterId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="ExperimentId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="Value" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX) NOT NULL" CanBeNull="false" UpdateCheck="Never" />
-      <Column Name="DataTypeId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="DataType_OperatorParameterValue" Member="DataType" ThisKey="DataTypeId" OtherKey="Id" Type="DataType" IsForeignKey="true" />
-      <Association Name="Experiment_OperatorParameterValue" Member="Experiment" ThisKey="ExperimentId" OtherKey="Id" Type="Experiment" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
-      <Association Name="Parameter_OperatorParameterValue" Member="Parameter" ThisKey="ParameterId" OtherKey="Id" Type="Parameter" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.Parameter" Member="Parameters">
-    <Type Name="Parameter">
-      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="Name" Type="System.String" DbType="VarChar(200) NOT NULL" CanBeNull="false" />
-      <Column Name="Description" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
-      <Column Name="DataTypeId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="Parameter_Algorithm_Parameter" Member="Algorithm_Parameters" ThisKey="Id" OtherKey="ParameterId" Type="Algorithm_Parameter" />
-      <Association Name="Parameter_CharParameterValue" Member="CharParameterValues" ThisKey="Id" OtherKey="ParameterId" Type="CharParameterValue" />
-      <Association Name="Parameter_FloatParameterValue" Member="FloatParameterValues" ThisKey="Id" OtherKey="ParameterId" Type="FloatParameterValue" />
-      <Association Name="Parameter_IntParameterValue" Member="IntParameterValues" ThisKey="Id" OtherKey="ParameterId" Type="IntParameterValue" />
-      <Association Name="Parameter_Problem_Parameter" Member="Problem_Parameters" ThisKey="Id" OtherKey="ParameterId" Type="Problem_Parameter" />
-      <Association Name="Parameter_OperatorParameterValue" Member="OperatorParameterValues" ThisKey="Id" OtherKey="ParameterId" Type="OperatorParameterValue" />
-      <Association Name="DataType_Parameter" Member="DataType" ThisKey="DataTypeId" OtherKey="Id" Type="DataType" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+  <Table Name="dbo.ProblemCharacteristicStringValue" Member="ProblemCharacteristicStringValues">
+    <Type Name="ProblemCharacteristicStringValue">
+      <Column Name="ProblemCharacteristicId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ProblemId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Value" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Association Name="Problem_ProblemCharacteristicStringValue" Member="Problem" ThisKey="ProblemId" OtherKey="Id" Type="Problem" IsForeignKey="true" />
+      <Association Name="ProblemCharacteristic_ProblemCharacteristicStringValue" Member="ProblemCharacteristic" ThisKey="ProblemCharacteristicId" OtherKey="Id" Type="ProblemCharacteristic" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

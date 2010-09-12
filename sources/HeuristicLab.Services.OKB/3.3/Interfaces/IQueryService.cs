@@ -24,13 +24,11 @@ using System.Net.Security;
 using System.ServiceModel;
 
 namespace HeuristicLab.Services.OKB {
-
   /// <summary>
   /// Service interface for downloading selected information about <see cref="Experiment"/> <see cref="Run"/>s.
   /// </summary>
   [ServiceContract(SessionMode = SessionMode.Required, ProtectionLevel = ProtectionLevel.EncryptAndSign)]
   public interface IQueryService {
-
     /// <summary>
     /// Gets a list of all possible attribute selectors.
     /// </summary>

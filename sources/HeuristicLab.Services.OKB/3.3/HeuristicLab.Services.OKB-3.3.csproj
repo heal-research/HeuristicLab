@@ -127,11 +127,15 @@
     <Compile Include="Interfaces\IAdminService.cs" />
     <Compile Include="Interfaces\IDataService.cs" />
     <Compile Include="Interfaces\IQueryService.cs" />
-    <Compile Include="Interfaces\IRunnerService.cs" />
+    <Compile Include="Interfaces\IRunnerService.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Interfaces\ITableService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryService.cs" />
-    <Compile Include="RunnerService.cs" />
+    <Compile Include="RunnerService.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="StarterKit.cs" />
     <Compile Include="TableService.cs" />
   </ItemGroup>

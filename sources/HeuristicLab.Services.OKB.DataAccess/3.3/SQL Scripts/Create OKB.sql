@@ -1,7 +1,7 @@
 USE [master]
 GO
 
-/****** Object:  Database [HeuristicLab.OKB]    Script Date: 07/01/2009 13:11:18 ******/
+/****** Object:  Database [HeuristicLab.OKB]    Script Date: 09/12/2010 00:57:17 ******/
 IF  EXISTS (SELECT name FROM sys.databases WHERE name = N'HeuristicLab.OKB')
 DROP DATABASE [HeuristicLab.OKB]
 GO
@@ -9,13 +9,11 @@ GO
 USE [master]
 GO
 
-/****** Object:  Database [HeuristicLab.OKB]    Script Date: 07/01/2009 13:11:18 ******/
+/****** Object:  Database [HeuristicLab.OKB]    Script Date: 09/12/2010 00:57:17 ******/
 CREATE DATABASE [HeuristicLab.OKB] ON  PRIMARY 
-( NAME = N'HeuristicLab.OKB', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL10.HeuristicLab.OKB\MSSQL\DATA\HeuristicLab.OKB.mdf' , SIZE = 3072KB , MAXSIZE = UNLIMITED, FILEGROWTH = 1024KB ), 
- FILEGROUP [DATA] 
-( NAME = N'HeuristicLab.OKB_DATA', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL10.HeuristicLab.OKB\MSSQL\DATA\HeuristicLab.OKB_DATA.ndf' , SIZE = 3072KB , MAXSIZE = UNLIMITED, FILEGROWTH = 1024KB )
+( NAME = N'HeuristicLab.OKB', FILENAME = N'c:\Program Files\Microsoft SQL Server\MSSQL.1\MSSQL\DATA\HeuristicLab.OKB.mdf' , SIZE = 3072KB , MAXSIZE = UNLIMITED, FILEGROWTH = 1024KB )
  LOG ON 
-( NAME = N'HeuristicLab.OKB_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL10.HeuristicLab.OKB\MSSQL\DATA\HeuristicLab.OKB_log.ldf' , SIZE = 1024KB , MAXSIZE = 2048GB , FILEGROWTH = 10%)
+( NAME = N'HeuristicLab.OKB_log', FILENAME = N'c:\Program Files\Microsoft SQL Server\MSSQL.1\MSSQL\DATA\HeuristicLab.OKB_log.ldf' , SIZE = 1024KB , MAXSIZE = 2048GB , FILEGROWTH = 10%)
 GO
 
 ALTER DATABASE [HeuristicLab.OKB] SET COMPATIBILITY_LEVEL = 100
@@ -99,7 +97,7 @@ GO
 ALTER DATABASE [HeuristicLab.OKB] SET  READ_WRITE 
 GO
 
-ALTER DATABASE [HeuristicLab.OKB] SET RECOVERY FULL 
+ALTER DATABASE [HeuristicLab.OKB] SET RECOVERY SIMPLE 
 GO
 
 ALTER DATABASE [HeuristicLab.OKB] SET  MULTI_USER 

@@ -26,37 +26,13 @@ using System.Linq;
 using System.ServiceModel;
 using HeuristicLab.Services.OKB.AttributeSelection;
 using HeuristicLab.Services.OKB.DataAccess;
-using log4net;
 
 namespace HeuristicLab.Services.OKB {
-
   /// <summary>
   /// Implementation of the <see cref="IQueryService"/>.
   /// </summary>
   [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerSession, IncludeExceptionDetailInFaults = true)]
   public class QueryService : IQueryService, IDisposable {
-
-    private Guid sessionID;
-    private static ILog logger = LogManager.GetLogger(typeof(QueryService));
-
-    private void Log(string message, params object[] args) {
-      using (log4net.ThreadContext.Stacks["NDC"].Push(sessionID.ToString())) {
-        logger.Info(String.Format(message, args));
-      }
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="QueryService"/> class.
-    /// </summary>
-    public QueryService() {
-      sessionID = Guid.NewGuid();
-      Log("Instantiating new service");
-    }
-
-    private OKBDataContext GetDataContext() {
-      return new OKBDataContext();
-    }
-
     /// <summary>
     /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
     /// </summary>
@@ -75,14 +51,8 @@ namespace HeuristicLab.Services.OKB {
     /// An array of <see cref="Server.AttributeSelector"/>s
     /// </returns>
     public AttributeSelector[] GetAllAttributeSelectors() {
-      Log("retrieving all attribute specifiers");
-      try {
-        OKBDataContext okb = GetDataContext();
+      using (OKBDataContext okb = new OKBDataContext()) {
         return RunAttributeSelector.GetAllAttributeSelectors(okb).Select(s => new AttributeSelector(s)).ToArray();
-      }
-      catch (Exception x) {
-        Log("exception caught: " + x.ToString());
-        throw;
       }
     }
 
@@ -94,16 +64,15 @@ namespace HeuristicLab.Services.OKB {
     /// An empty <see cref="DataTable"/> containing only the column headers.
     /// </returns>
     public DataTable PrepareQuery(AttributeSelector[] selectors) {
-      okb = GetDataContext();
-      Log("validating new query");
-      if (selectors.Length == 0)
-        throw new FaultException("No columns selected");
-      IEnumerable<RunAttributeSelector> checkedSelectors =
-        selectors.Select(s => new RunAttributeSelector(new OKBDataContext(okb.Connection.ConnectionString), s)).ToList();
-      Log("preparing query:\n  {0}", string.Join("\n  ", checkedSelectors.Select(s => s.ToString()).ToArray()));
-      dataSetBuilder = new DataSetBuilder(okb, checkedSelectors);
-      dataEnumerator = dataSetBuilder.GetEnumerator();
-      return dataSetBuilder.Runs;
+      using (OKBDataContext okb = new OKBDataContext()) {
+        if (selectors.Length == 0)
+          throw new FaultException("No columns selected");
+        IEnumerable<RunAttributeSelector> checkedSelectors =
+          selectors.Select(s => new RunAttributeSelector(new OKBDataContext(okb.Connection.ConnectionString), s)).ToList();
+        dataSetBuilder = new DataSetBuilder(okb, checkedSelectors);
+        dataEnumerator = dataSetBuilder.GetEnumerator();
+        return dataSetBuilder.Runs;
+      }
     }
 
     /// <summary>
@@ -136,19 +105,15 @@ namespace HeuristicLab.Services.OKB {
     /// Terminates the session and closes the connection.
     /// </summary>
     public void Terminate() {
-      Log("Terminating session");
       dataSetBuilder = null;
       if (dataEnumerator != null) {
-        Log("disposing data enumerate");
         dataEnumerator.Dispose();
         dataEnumerator = null;
       }
       if (okb != null) {
-        Log("disposing data context");
         okb.Dispose();
         okb = null;
       }
     }
-
   }
 }

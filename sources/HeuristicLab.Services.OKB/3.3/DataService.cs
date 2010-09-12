@@ -25,52 +25,26 @@ using System.IO;
 using System.Linq;
 using System.ServiceModel;
 using HeuristicLab.Services.OKB.DataAccess;
-using log4net;
 
 namespace HeuristicLab.Services.OKB {
-
   /// <summary>
   /// Implementation of the <see cref="IDataService"/>.
   /// </summary>
-  [ServiceBehavior(
-    InstanceContextMode = InstanceContextMode.PerSession,
-    IncludeExceptionDetailInFaults = true,
-    ConcurrencyMode = ConcurrencyMode.Multiple)]
+  [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerSession, IncludeExceptionDetailInFaults = true)]
   class DataService : IDisposable, IDataService {
-
     private enum Mode { Request, Submit, None };
 
     private Mode mode = Mode.None;
-
     private EntityType type;
     private int id = -1;
     private MemoryStream dataStream;
 
-    private Guid sessionID;
-    private static ILog logger = LogManager.GetLogger(typeof(DataService));
-
-    private void Log(string message, params object[] args) {
-      using (log4net.ThreadContext.Stacks["NDC"].Push(sessionID.ToString())) {
-        logger.Info(String.Format(message, args));
-      }
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DataService"/> class.
-    /// </summary>
-    public DataService() {
-      sessionID = Guid.NewGuid();
-      Log("Instantiating new service");
-    }
-
     private void EnsureInit() {
       if (mode != Mode.None)
-        throw new FaultException(String.Format(
-          "Cannot service new request while processing another {0}-Operation", mode));
+        throw new FaultException(String.Format("Cannot service new request while processing another {0}-Operation.", mode));
     }
 
     private byte[] GetData(EntityType type, int id) {
-      Log("loading data", type, id);
       using (OKBDataContext okb = new OKBDataContext()) {
         switch (type) {
           case EntityType.Algorithm:
@@ -83,7 +57,6 @@ namespace HeuristicLab.Services.OKB {
               okb.SubmitChanges();
             }
             return algorithm.AlgorithmData.Data.ToArray();
-            break;
           case EntityType.Problem:
             Problem problem = okb.Problems.Single(p => p.Id == id);
             if (problem.ProblemData == null) {
@@ -94,45 +67,42 @@ namespace HeuristicLab.Services.OKB {
               okb.SubmitChanges();
             }
             return problem.ProblemData.Data.ToArray();
-            break;
           default:
-            throw new FaultException("Unsupported EntityType");
+            throw new FaultException("Unsupported EntityType.");
         }
       }
     }
 
     private void SetData(EntityType type, int id, byte[] data) {
-      Log("saving data", type, id, data.Length);
-      OKBDataContext okb = new OKBDataContext();
-      switch (type) {
-        case EntityType.Algorithm:
-          Algorithm algorithm = okb.Algorithms.Single(a => a.Id == id);
-          if (algorithm.AlgorithmData == null)
-            algorithm.AlgorithmData = new AlgorithmData() {
-              AlgorithmId = algorithm.Id,
-              Data = new Binary(new byte[0])
-            };
-          algorithm.AlgorithmData.Data = new Binary(data);
-          okb.SubmitChanges();
-          break;
-        case EntityType.Problem:
-          Problem problem = okb.Problems.Single(p => p.Id == id);
-          if (problem.ProblemData == null)
-            problem.ProblemData = new ProblemData() {
-              ProblemId = problem.Id,
-              Data = new Binary(new byte[0])
-            };
-          problem.ProblemData.Data = new Binary(data);
-          okb.SubmitChanges();
-          break;
-        default:
-          throw new FaultException("Unsupported EntityType");
+      using (OKBDataContext okb = new OKBDataContext()) {
+        switch (type) {
+          case EntityType.Algorithm:
+            Algorithm algorithm = okb.Algorithms.Single(a => a.Id == id);
+            if (algorithm.AlgorithmData == null)
+              algorithm.AlgorithmData = new AlgorithmData() {
+                AlgorithmId = algorithm.Id,
+                Data = new Binary(new byte[0])
+              };
+            algorithm.AlgorithmData.Data = new Binary(data);
+            okb.SubmitChanges();
+            break;
+          case EntityType.Problem:
+            Problem problem = okb.Problems.Single(p => p.Id == id);
+            if (problem.ProblemData == null)
+              problem.ProblemData = new ProblemData() {
+                ProblemId = problem.Id,
+                Data = new Binary(new byte[0])
+              };
+            problem.ProblemData.Data = new Binary(data);
+            okb.SubmitChanges();
+            break;
+          default:
+            throw new FaultException("Unsupported EntityType.");
+        }
       }
-      okb.Dispose();
     }
 
     #region IDataService Members
-
     /// <summary>
     /// Request the specified <see cref="Algorithm"/> or <see cref="Problem"/>.
     /// </summary>
@@ -140,7 +110,6 @@ namespace HeuristicLab.Services.OKB {
     /// <param name="id">The entity id.</param>
     /// <returns>The size of the data blob.</returns>
     public int Request(EntityType type, int id) {
-      Log("requesting data", type, id);
       EnsureInit();
       dataStream = new MemoryStream(GetData(type, id));
       mode = Mode.Request;
@@ -154,7 +123,7 @@ namespace HeuristicLab.Services.OKB {
     /// <returns>An array of bytes.</returns>
     public byte[] GetNextChunk(int size) {
       if (dataStream == null || mode != Mode.Request)
-        throw new FaultException("No data has been prepared, call Request first");
+        throw new FaultException("No data has been prepared, call Request first.");
       byte[] chunk = new byte[Math.Min(size, dataStream.Length - dataStream.Position)];
       dataStream.Read(chunk, 0, chunk.Length);
       return chunk;
@@ -166,7 +135,6 @@ namespace HeuristicLab.Services.OKB {
     /// <param name="type">The entity type.</param>
     /// <param name="id">The entity id.</param>
     public void Submit(EntityType type, int id) {
-      Log("Submitting", type, id);
       EnsureInit();
       GetData(type, id);
       this.type = type;
@@ -188,7 +156,6 @@ namespace HeuristicLab.Services.OKB {
     /// the connection.
     /// </summary>
     public void TransferDone() {
-      Log("commiting transfer");
       if (mode == Mode.Submit)
         SetData(type, id, dataStream.ToArray());
       Dispose();
@@ -200,21 +167,17 @@ namespace HeuristicLab.Services.OKB {
     public void AbortTransfer() {
       Dispose();
     }
-
     #endregion
 
     #region IDisposable Members
-
     /// <summary>
     /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
     /// </summary>
     public void Dispose() {
-      Log("disposing");
       mode = Mode.None;
       if (dataStream != null)
         dataStream.Dispose();
     }
-
     #endregion
   }
 }

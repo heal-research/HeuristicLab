@@ -49,13 +49,6 @@ namespace HeuristicLab.Services.OKB {
     /// <value>The problem classes.</value>
     [DataMember]
     public IEnumerable<ProblemClass> ProblemClasses { get; set; }
-
-    /// <summary>
-    /// Gets a list of all available projects.
-    /// </summary>
-    /// <value>The projects.</value>
-    [DataMember]
-    public IEnumerable<Project> Projects { get; set; }
   }
 
 }

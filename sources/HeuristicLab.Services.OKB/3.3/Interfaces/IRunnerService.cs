@@ -30,7 +30,6 @@ namespace HeuristicLab.Services.OKB {
   /// </summary>
   [ServiceContract(SessionMode = SessionMode.Required, ProtectionLevel = ProtectionLevel.EncryptAndSign)]
   public interface IRunnerService {
-
     /// <summary>
     /// Logs the current user in. In case the user or client
     /// does not exist yet, they are created on the server. This
@@ -85,7 +84,7 @@ namespace HeuristicLab.Services.OKB {
     /// <param name="problem">The problem.</param>
     /// <param name="project">The project.</param>
     [OperationContract(IsInitiating = false)]
-    void AddRun(Algorithm algorithm, Problem problem, Project project);
+    void AddRun(Algorithm algorithm, Problem problem);
 
     /// <summary>
     /// Determines whether this instance is connected.
@@ -102,5 +101,4 @@ namespace HeuristicLab.Services.OKB {
     [OperationContract(IsInitiating = false, IsTerminating = true, IsOneWay = true)]
     void Logout();
   }
-
 }

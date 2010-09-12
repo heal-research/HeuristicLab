@@ -130,7 +130,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="OKB_Methods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\AssemblyInfo.frame" />
     <Compile Include="Properties\Settings.Designer.cs">

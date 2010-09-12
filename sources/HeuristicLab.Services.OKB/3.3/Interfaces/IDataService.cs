@@ -23,13 +23,12 @@ using System.Net.Security;
 using System.ServiceModel;
 
 namespace HeuristicLab.Services.OKB {
-
   /// <summary>
   /// Choose between <see cref="Algorithm"/> or <see cref="Problem"/>.
   /// </summary>
   public enum EntityType {
     /// <summary>
-    /// Selects <see cref="Algorithm"/> as entity type.
+    /// Use <see cref="Algorithm"/> as entity type.
     /// </summary>
     Algorithm,
     /// <summary>
@@ -92,5 +91,4 @@ namespace HeuristicLab.Services.OKB {
     [OperationContract(IsInitiating = false, IsTerminating = true)]
     void AbortTransfer();
   }
-
 }

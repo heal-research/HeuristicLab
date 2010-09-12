@@ -24,7 +24,6 @@ using System.Net.Security;
 using System.ServiceModel;
 
 namespace HeuristicLab.Services.OKB {
-
   /// <summary>
   /// Service interface for downloading and uploading data tables.
   /// </summary>
@@ -74,5 +73,4 @@ namespace HeuristicLab.Services.OKB {
     [OperationContract(IsInitiating = true, IsTerminating = true)]
     void DeleteTableRows(int[] ids, string tableName);
   }
-
 }

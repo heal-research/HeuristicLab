@@ -24,7 +24,6 @@ using System.ServiceModel;
 using HeuristicLab.Services.OKB.DataAccess;
 
 namespace HeuristicLab.Services.OKB {
-
   /// <summary>
   /// Allows updating the implementation of algorithms and problems. All
   /// other entities can be modified using the <see cref="TableService"/>
@@ -37,7 +36,7 @@ namespace HeuristicLab.Services.OKB {
     /// </summary>
     /// <returns>A list of <see cref="Platform"/>s.</returns>
     [OperationContract]
-    Platform[] GetPlatformNames();
+    Platform[] GetPlatforms();
 
     /// <summary>
     /// Gets the complete algorithm object graph up to the following entities:
@@ -108,6 +107,5 @@ namespace HeuristicLab.Services.OKB {
     /// <param name="problem">The problem.</param>
     [OperationContract]
     void UpdateCompleteProblem(Problem problem);
-
   }
 }
