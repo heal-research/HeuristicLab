@@ -19,16 +19,15 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using alglib;
 using HeuristicLab.Common;
 using HeuristicLab.Data;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Optimization;
-using System;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [Content(typeof(RunCollection), false)]
@@ -78,7 +77,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private DoubleMatrix CalculateVariableImpactMatrix() {
       DoubleMatrix matrix = null;
       if (Content != null) {
-        List<IRun> runsWithVariables = Content.Where(r => r.Results.ContainsKey(variableImpactResultName)).ToList();
+        List<IRun> runsWithVariables = Content.Where(r => r.Visible && r.Results.ContainsKey(variableImpactResultName)).ToList();
         IEnumerable<DoubleMatrix> allVariableImpacts = (from run in runsWithVariables
                                                         select run.Results[variableImpactResultName]).Cast<DoubleMatrix>();
         IEnumerable<string> variableNames = (from variableImpact in allVariableImpacts
