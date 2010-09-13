@@ -125,6 +125,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>OKB.dbml</DependentUpon>
     </None>
+    <Compile Include="Extensions.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="OKB.generated.cs">
       <DependentUpon>OKB.tt</DependentUpon>
       <AutoGen>True</AutoGen>

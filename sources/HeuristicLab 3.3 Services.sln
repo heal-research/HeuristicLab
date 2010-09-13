@@ -5,7 +5,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		ConfigMerger.exe = ConfigMerger.exe
 		..\documentation\License\gpl-3.0.txt = ..\documentation\License\gpl-3.0.txt
+		HeuristicLab 3.3 Services.vsmdi = HeuristicLab 3.3 Services.vsmdi
+		Local.testsettings = Local.testsettings
 		PreBuildEvent.cmd = PreBuildEvent.cmd
+		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Services.Deployment-3.3", "HeuristicLab.Services.Deployment\3.3\HeuristicLab.Services.Deployment-3.3.csproj", "{30D8C5F1-CD3A-4EC1-907F-430177A03FBE}"
@@ -20,7 +23,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Services.OKB.A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Services.OKB-3.3", "HeuristicLab.Services.OKB\3.3\HeuristicLab.Services.OKB-3.3.csproj", "{766DA4B7-2A0E-4CDE-8F90-93D8B1AD62CF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Services.OKB.DataAccess-3.3.Tests", "HeuristicLab.Services.OKB.DataAccess\3.3\Tests\HeuristicLab.Services.OKB.DataAccess-3.3.Tests.csproj", "{89234006-FE1B-4A15-AFEC-91CB3526F0A5}"
+EndProject
 Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = HeuristicLab 3.3 Services.vsmdi
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
@@ -102,6 +110,14 @@ Global
 		{766DA4B7-2A0E-4CDE-8F90-93D8B1AD62CF}.Release|x64.Build.0 = Release|x64
 		{766DA4B7-2A0E-4CDE-8F90-93D8B1AD62CF}.Release|x86.ActiveCfg = Release|x86
 		{766DA4B7-2A0E-4CDE-8F90-93D8B1AD62CF}.Release|x86.Build.0 = Release|x86
+		{89234006-FE1B-4A15-AFEC-91CB3526F0A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89234006-FE1B-4A15-AFEC-91CB3526F0A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89234006-FE1B-4A15-AFEC-91CB3526F0A5}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{89234006-FE1B-4A15-AFEC-91CB3526F0A5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{89234006-FE1B-4A15-AFEC-91CB3526F0A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89234006-FE1B-4A15-AFEC-91CB3526F0A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89234006-FE1B-4A15-AFEC-91CB3526F0A5}.Release|x64.ActiveCfg = Release|Any CPU
+		{89234006-FE1B-4A15-AFEC-91CB3526F0A5}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
