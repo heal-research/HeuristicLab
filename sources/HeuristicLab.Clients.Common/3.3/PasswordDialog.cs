@@ -19,29 +19,30 @@
  */
 #endregion
 
-using System.Collections.Generic;
+using System;
 using System.Windows.Forms;
-using HeuristicLab.MainForm;
-using HeuristicLab.PluginInfrastructure.Starter;
+using HeuristicLab.Clients.Common.Properties;
 
-namespace HeuristicLab.Optimizer.MenuItems {
-  internal class AboutMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItem, IOptimizerUserInterfaceItemProvider {
-    private AboutDialog aboutDialog;
-
-    public override string Name {
-      get { return "&About..."; }
-    }
-    public override IEnumerable<string> Structure {
-      get { return new string[] { "&Help" }; }
-    }
-    public override int Position {
-      get { return 9100; }
+namespace HeuristicLab.Clients.Common {
+  public partial class PasswordDialog : Form {
+    public PasswordDialog() {
+      InitializeComponent();
     }
 
-    public override void Execute() {
-      if (aboutDialog == null)
-        aboutDialog = new AboutDialog();
-      aboutDialog.ShowDialog((IWin32Window)MainFormManager.MainForm);
+    private void PasswordDialog_Load(object sender, EventArgs e) {
+      usernameTextBox.Text = Settings.Default.UserName;
+      passwordTextBox.Text = Settings.Default.Password;
+      savePasswordCheckBox.Checked = Settings.Default.SavePassword;
+    }
+
+    private void okButton_Click(object sender, EventArgs e) {
+      Settings.Default.UserName = usernameTextBox.Text;
+      Settings.Default.SavePassword = savePasswordCheckBox.Checked;
+      Settings.Default.Password = string.Empty;
+      Settings.Default.Save();
+      Settings.Default.Password = passwordTextBox.Text;
+      if (savePasswordCheckBox.Checked)
+        Settings.Default.Save();
     }
   }
 }

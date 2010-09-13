@@ -21,27 +21,28 @@
 
 using System.Collections.Generic;
 using System.Windows.Forms;
+using HeuristicLab.Clients.Common;
 using HeuristicLab.MainForm;
-using HeuristicLab.PluginInfrastructure.Starter;
 
 namespace HeuristicLab.Optimizer.MenuItems {
-  internal class AboutMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItem, IOptimizerUserInterfaceItemProvider {
-    private AboutDialog aboutDialog;
-
+  internal class UserNamePasswordMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItem, IOptimizerUserInterfaceItemProvider {
     public override string Name {
-      get { return "&About..."; }
+      get { return "Set &Username / Password..."; }
     }
     public override IEnumerable<string> Structure {
-      get { return new string[] { "&Help" }; }
+      get { return new string[] { "&Services" }; }
     }
     public override int Position {
-      get { return 9100; }
+      get { return 4100; }
+    }
+    public override string ToolTipText {
+      get { return "Set username and password for accessing HeuristicLab services"; }
     }
 
     public override void Execute() {
-      if (aboutDialog == null)
-        aboutDialog = new AboutDialog();
-      aboutDialog.ShowDialog((IWin32Window)MainFormManager.MainForm);
+      using (PasswordDialog dialog = new PasswordDialog()) {
+        dialog.ShowDialog((IWin32Window)MainFormManager.MainForm);
+      }
     }
   }
 }
