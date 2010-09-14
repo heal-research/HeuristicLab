@@ -206,5 +206,35 @@ namespace HeuristicLab.Services.OKB {
         });
       }
     }
+
+
+    public AlgorithmClass[] GetAlgorithmClasses() {
+      using (OKBDataContext okb = new OKBDataContext()) {
+        return okb.AlgorithmClasses.ToArray();
+      }
+    }
+
+    public void UpdateAlgorithmClass(AlgorithmClass algorithmClass) {
+      using (OKBDataContext okb = new OKBDataContext()) {
+        okb.AlgorithmClasses.Attach(algorithmClass);
+        okb.SubmitChanges();
+      }
+    }
+
+    public void UpdateAlgorithmClasses(AlgorithmClass[] algorithmClasses) {
+      using (OKBDataContext okb = new OKBDataContext()) {
+        foreach (AlgorithmClass a in algorithmClasses) {
+          AlgorithmClass original = okb.AlgorithmClasses.FirstOrDefault(x => x.Id == a.Id);
+          if (original != null) {
+            original.Name = a.Name;
+            original.Description = a.Description;
+          } else {
+            okb.AlgorithmClasses.InsertOnSubmit(a);
+          }
+        }
+        okb.SubmitChanges();
+      }
+    }
+
   }
 }

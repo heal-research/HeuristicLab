@@ -107,5 +107,18 @@ namespace HeuristicLab.Services.OKB {
     /// <param name="problem">The problem.</param>
     [OperationContract]
     void UpdateCompleteProblem(Problem problem);
+
+
+
+    [OperationContract]
+    AlgorithmClass[] GetAlgorithmClasses();
+
+    [OperationContract]
+    void UpdateAlgorithmClass(AlgorithmClass algorithmClass);
+
+    [OperationContract]
+    void UpdateAlgorithmClasses(AlgorithmClass[] algorithmClasses);
+
+
   }
 }
