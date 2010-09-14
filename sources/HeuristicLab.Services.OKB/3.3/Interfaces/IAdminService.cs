@@ -111,14 +111,16 @@ namespace HeuristicLab.Services.OKB {
 
 
     [OperationContract]
+    void AddAlgorithmClass(AlgorithmClass algorithmClass);
+
+    [OperationContract]
     AlgorithmClass[] GetAlgorithmClasses();
 
     [OperationContract]
     void UpdateAlgorithmClass(AlgorithmClass algorithmClass);
 
     [OperationContract]
-    void UpdateAlgorithmClasses(AlgorithmClass[] algorithmClasses);
-
+    void DeleteAlgorithmClass(long algorithmClassId);
 
   }
 }

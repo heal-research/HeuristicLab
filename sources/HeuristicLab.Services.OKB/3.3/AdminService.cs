@@ -208,6 +208,13 @@ namespace HeuristicLab.Services.OKB {
     }
 
 
+    public void AddAlgorithmClass(AlgorithmClass algorithmClass) {
+      using (OKBDataContext okb = new OKBDataContext()) {
+        okb.AlgorithmClasses.InsertOnSubmit(new AlgorithmClass() { Name = algorithmClass.Name, Description = algorithmClass.Description });
+        okb.SubmitChanges();
+      }
+    }
+
     public AlgorithmClass[] GetAlgorithmClasses() {
       using (OKBDataContext okb = new OKBDataContext()) {
         return okb.AlgorithmClasses.ToArray();
@@ -216,22 +223,16 @@ namespace HeuristicLab.Services.OKB {
 
     public void UpdateAlgorithmClass(AlgorithmClass algorithmClass) {
       using (OKBDataContext okb = new OKBDataContext()) {
-        okb.AlgorithmClasses.Attach(algorithmClass);
+        AlgorithmClass original = okb.AlgorithmClasses.First(a => a.Id == algorithmClass.Id);
+        original.Name = algorithmClass.Name;
+        original.Description = algorithmClass.Description;
         okb.SubmitChanges();
       }
     }
 
-    public void UpdateAlgorithmClasses(AlgorithmClass[] algorithmClasses) {
+    public void DeleteAlgorithmClass(long algorithmClassId) {
       using (OKBDataContext okb = new OKBDataContext()) {
-        foreach (AlgorithmClass a in algorithmClasses) {
-          AlgorithmClass original = okb.AlgorithmClasses.FirstOrDefault(x => x.Id == a.Id);
-          if (original != null) {
-            original.Name = a.Name;
-            original.Description = a.Description;
-          } else {
-            okb.AlgorithmClasses.InsertOnSubmit(a);
-          }
-        }
+        okb.AlgorithmClasses.DeleteOnSubmit(okb.AlgorithmClasses.First(a => a.Id == algorithmClassId));
         okb.SubmitChanges();
       }
     }
