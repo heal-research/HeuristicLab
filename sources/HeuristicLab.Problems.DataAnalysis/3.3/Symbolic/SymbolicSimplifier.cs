@@ -258,6 +258,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return a;
       } else if (IsAddition(a) && IsConstant(b)) {
         return a.SubTrees
+          .Select(x => GetSimplifiedTree(x))
          .Select(x => MakeFraction(x, b))
          .Aggregate((c, d) => MakeSum(c, d));
       } else if (IsMultiplication(a) && IsConstant(b)) {
