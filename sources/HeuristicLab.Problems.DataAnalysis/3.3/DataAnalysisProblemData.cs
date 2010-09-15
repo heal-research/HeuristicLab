@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [Item("DataAnalysisProblemData", "Represents an item containing all data defining a data analysis problem.")]
   [StorableClass]
   public class DataAnalysisProblemData : ParameterizedNamedItem {
-    private bool suppressEvents = false;
+    protected bool suppressEvents = false;
     #region default data
     // y = x^4 + x^3 + x^2 + x
     private static double[,] kozaF1 = new double[,] {
@@ -181,7 +181,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public DataAnalysisProblemData(Dataset dataset, IEnumerable<string> inputVariables, string targetVariable,
       int trainingSamplesStart, int trainingSamplesEnd, int testSamplesStart, int testSamplesEnd) {
-      var inputVariablesList = new CheckedItemList<StringValue>(inputVariables.Select(x => new StringValue(x)));
+      var inputVariablesList = new CheckedItemList<StringValue>(inputVariables.Select(x => new StringValue(x)).ToList());
       StringValue targetVariableValue = new StringValue(targetVariable);
       var validTargetVariables = new ItemSet<StringValue>();
       foreach (var variable in dataset.VariableNames)
