@@ -36,7 +36,9 @@ namespace HeuristicLab.Problems.TestFunctions {
   [Item("Single Objective Test Function", "Test function with real valued inputs and a single objective.")]
   [StorableClass]
   [Creatable("Problems")]
-  public sealed class SingleObjectiveTestFunctionProblem : ParameterizedNamedItem, ISingleObjectiveProblem {
+  public sealed class SingleObjectiveTestFunctionProblem : ParameterizedNamedItem, ISingleObjectiveProblem, IStorableContent {
+    public string Filename { get; set; }
+
     [Storable]
     private StdDevStrategyVectorCreator strategyVectorCreator;
     [Storable]

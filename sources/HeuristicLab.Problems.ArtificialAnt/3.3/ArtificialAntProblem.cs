@@ -40,7 +40,8 @@ namespace HeuristicLab.Problems.ArtificialAnt {
   [Item("Artificial Ant Problem", "Represents the Artificial Ant problem.")]
   [Creatable("Problems")]
   [StorableClass]
-  public sealed class ArtificialAntProblem : ParameterizedNamedItem, ISingleObjectiveProblem {
+  public sealed class ArtificialAntProblem : ParameterizedNamedItem, ISingleObjectiveProblem, IStorableContent {
+    public string Filename { get; set; }
 
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Type; }

@@ -31,7 +31,9 @@ namespace HeuristicLab.Optimization {
   /// </summary>
   [Item("Result", "A result which has a name and a data type and holds an IItem.")]
   [StorableClass]
-  public sealed class Result : NamedItem, IResult {
+  public sealed class Result : NamedItem, IResult, IStorableContent {
+    public string Filename { get; set; }
+
     public override Image ItemImage {
       get {
         if (value != null) return value.ItemImage;

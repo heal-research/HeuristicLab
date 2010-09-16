@@ -29,7 +29,9 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Core {
   [Item("Log", "A log for logging string messages.")]
   [StorableClass]
-  public class Log : Item, ILog {
+  public class Log : Item, ILog, IStorableContent {
+    public string Filename { get; set; }
+
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.File; }
     }

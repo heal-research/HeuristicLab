@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -28,7 +29,9 @@ namespace HeuristicLab.Operators {
   /// </summary>
   [Item("CombinedOperator", "An operator which contains an operator graph.")]
   [StorableClass]
-  public sealed class CombinedOperator : AlgorithmOperator, IParameterizedItem {
+  public sealed class CombinedOperator : AlgorithmOperator, IParameterizedItem, IStorableContent {
+    public string Filename { get; set; }
+
     public override bool CanChangeDescription {
       get { return true; }
     }

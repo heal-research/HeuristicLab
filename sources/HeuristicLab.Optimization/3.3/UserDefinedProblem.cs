@@ -37,7 +37,9 @@ namespace HeuristicLab.Optimization {
   [Item("User-Defined Problem", "A problem which can be defined by the user.")]
   [Creatable("Problems")]
   [StorableClass]
-  public sealed class UserDefinedProblem : ParameterizedNamedItem, ISingleObjectiveProblem {
+  public sealed class UserDefinedProblem : ParameterizedNamedItem, ISingleObjectiveProblem, IStorableContent {
+    public string Filename { get; set; }
+
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Type; }
     }

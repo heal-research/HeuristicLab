@@ -32,7 +32,9 @@ namespace HeuristicLab.Optimization {
   /// </summary>
   [Item("Run", "The parameters and results of an algorithm run.")]
   [StorableClass]
-  public sealed class Run : NamedItem, IRun {
+  public sealed class Run : NamedItem, IRun, IStorableContent {
+    public string Filename { get; set; }
+
     [StorableConstructor]
     private Run(bool deserializing) : base(deserializing) { }
     public Run()

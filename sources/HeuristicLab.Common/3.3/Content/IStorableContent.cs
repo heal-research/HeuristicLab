@@ -22,9 +22,7 @@
 using System;
 
 namespace HeuristicLab.Common {
-  public interface IStorableContent : IContent, IDeepCloneable {
+  public interface IStorableContent : IContent {
     string Filename { get; set; }
-
-    event EventHandler FilenameChanged;
   }
 }

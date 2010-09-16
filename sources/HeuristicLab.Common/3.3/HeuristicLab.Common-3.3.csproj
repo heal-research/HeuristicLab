@@ -115,7 +115,6 @@
     <Compile Include="Cloner.cs" />
     <Compile Include="Content\ContentManager.cs" />
     <Compile Include="Content\IStorableContent.cs" />
-    <Compile Include="Content\StorableContent.cs" />
     <Compile Include="DeepCloneable.cs" />
     <Compile Include="Content\IContent.cs" />
     <Compile Include="EnumerableStatisticExtensions.cs" />

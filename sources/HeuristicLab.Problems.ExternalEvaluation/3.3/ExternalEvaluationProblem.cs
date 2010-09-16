@@ -37,10 +37,13 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("External Evaluation Problem", "A problem that is evaluated in a different process.")]
   [Creatable("Problems")]
   [StorableClass]
-  public sealed class ExternalEvaluationProblem : ParameterizedNamedItem, ISingleObjectiveProblem {
+  public sealed class ExternalEvaluationProblem : ParameterizedNamedItem, ISingleObjectiveProblem, IStorableContent {
+    public string Filename { get; set; }
+
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Type; }
     }
+
     public new ParameterCollection Parameters {
       get { return base.Parameters; }
     }

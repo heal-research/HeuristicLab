@@ -137,18 +137,5 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding_33.Tests {
     }
 
     #endregion
-
-    #region IStorableContent Members
-
-    public string Filename {
-      get { throw new NotImplementedException(); }
-      set { throw new NotImplementedException(); }
-    }
-
-#pragma warning disable 67
-    public event EventHandler FilenameChanged;
-#pragma warning restore 67
-
-    #endregion
   }
 }

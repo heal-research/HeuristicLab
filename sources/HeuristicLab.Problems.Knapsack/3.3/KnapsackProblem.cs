@@ -36,7 +36,9 @@ namespace HeuristicLab.Problems.Knapsack {
   [Item("Knapsack Problem", "Represents a Knapsack Problem.")]
   [Creatable("Problems")]
   [StorableClass]
-  public sealed class KnapsackProblem : ParameterizedNamedItem, ISingleObjectiveProblem {
+  public sealed class KnapsackProblem : ParameterizedNamedItem, ISingleObjectiveProblem, IStorableContent {
+    public string Filename { get; set; }
+
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Type; }
     }

@@ -24,7 +24,6 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
   [StorableClass]
-  [Creatable("Algorithm Design")]
   [Item("Operator Collection", "Represents a collection of operators.")]
   public class OperatorCollection : ItemCollection<IOperator> {
     public OperatorCollection() : base() { }

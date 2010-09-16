@@ -35,7 +35,9 @@ namespace HeuristicLab.Optimization {
   [Item("Batch Run", "A run in which an algorithm is executed a given number of times.")]
   [Creatable("Testing & Analysis")]
   [StorableClass]
-  public sealed class BatchRun : NamedItem, IOptimizer {
+  public sealed class BatchRun : NamedItem, IOptimizer, IStorableContent {
+    public string Filename { get; set; }
+
     public override Image ItemImage {
       get {
         if (ExecutionState == ExecutionState.Prepared) return HeuristicLab.Common.Resources.VS2008ImageLibrary.ExecutablePrepared;

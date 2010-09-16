@@ -30,9 +30,10 @@ namespace HeuristicLab.Core {
   /// Represents a graph of operators.
   /// </summary>
   [Item("Operator Graph", "Represents a graph of operators.")]
-  [Creatable("Algorithm Design")]
   [StorableClass]
-  public class OperatorGraph : Item {
+  public class OperatorGraph : Item, IStorableContent {
+    public string Filename { get; set; }
+
     [Storable]
     private OperatorSet operators;
     /// <summary>

@@ -40,9 +40,11 @@ namespace HeuristicLab.Operators.Programmable {
 
   [Item("ProgrammableOperator", "An operator that can be programmed for arbitrary needs.")]
   [StorableClass]
-  public class ProgrammableOperator : Operator, IParameterizedNamedItem {
+  public class ProgrammableOperator : Operator, IParameterizedNamedItem, IStorableContent {
 
     #region Fields & Properties
+
+    public string Filename { get; set; }
 
     public new ParameterCollection Parameters {
       get { return base.Parameters; }

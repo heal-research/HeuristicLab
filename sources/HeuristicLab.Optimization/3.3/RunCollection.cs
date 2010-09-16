@@ -32,7 +32,9 @@ namespace HeuristicLab.Optimization {
   [Item("Run Collection", "Represents a collection of runs.")]
   [Creatable("Testing & Analysis")]
   [StorableClass]
-  public class RunCollection : ItemCollection<IRun>, IStringConvertibleMatrix {
+  public class RunCollection : ItemCollection<IRun>, IStringConvertibleMatrix, IStorableContent {
+    public string Filename { get; set; }
+
     [StorableConstructor]
     protected RunCollection(bool deserializing) : base(deserializing) { }
     public RunCollection() : base() { Initialize(); }

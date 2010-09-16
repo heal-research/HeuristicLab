@@ -20,12 +20,12 @@
 #endregion
 
 using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization {
   [Item("Optimizer List", "Represents a list of optimizers.")]
-  [Creatable("Testing & Analysis")]
   [StorableClass]
   public class OptimizerList : ItemList<IOptimizer> {
     public OptimizerList() : base() { }

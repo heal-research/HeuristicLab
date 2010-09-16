@@ -32,8 +32,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [Item("Data Analysis Problem", "Represents a data analysis problem.")]
   [Creatable("Problems")]
   [StorableClass]
-  public class DataAnalysisProblem : ParameterizedNamedItem, IDataAnalysisProblem {
+  public class DataAnalysisProblem : ParameterizedNamedItem, IDataAnalysisProblem, IStorableContent {
     private const string DataAnalysisProblemDataParameterName = "DataAnalysisProblemData";
+
+    public string Filename { get; set; }
+
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Type; }
     }

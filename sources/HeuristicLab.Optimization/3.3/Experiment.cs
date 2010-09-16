@@ -34,7 +34,9 @@ namespace HeuristicLab.Optimization {
   [Item("Experiment", "An experiment which contains multiple batch runs of algorithms.")]
   [Creatable("Testing & Analysis")]
   [StorableClass]
-  public sealed class Experiment : NamedItem, IOptimizer {
+  public sealed class Experiment : NamedItem, IOptimizer, IStorableContent {
+    public string Filename { get; set; }
+
     public override Image ItemImage {
       get {
         if (ExecutionState == ExecutionState.Prepared) return HeuristicLab.Common.Resources.VS2008ImageLibrary.ExecutablePrepared;

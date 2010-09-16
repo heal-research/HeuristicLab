@@ -32,18 +32,6 @@ namespace HeuristicLab.Core {
   [StorableClass]
   [Item("ItemSet", "Represents a set of items.")]
   public class ItemSet<T> : ObservableSet<T>, IItemSet<T> where T : class, IItem {
-    private string filename;
-    public string Filename {
-      get { return filename; }
-      set {
-        if (value == null) throw new ArgumentNullException();
-        if ((filename == null) || !filename.Equals(value)) {
-          filename = value;
-          OnFilenameChanged();
-        }
-      }
-    }
-
     public virtual string ItemName {
       get { return ItemAttribute.GetName(this.GetType()); }
     }
@@ -80,11 +68,6 @@ namespace HeuristicLab.Core {
       return ItemName;
     }
 
-    public event EventHandler FilenameChanged;
-    protected virtual void OnFilenameChanged() {
-      EventHandler handler = FilenameChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
     public event EventHandler ItemImageChanged;
     protected virtual void OnItemImageChanged() {
       EventHandler handler = ItemImageChanged;

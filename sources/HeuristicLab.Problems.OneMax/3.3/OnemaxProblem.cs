@@ -36,7 +36,9 @@ namespace HeuristicLab.Problems.OneMax {
   [Item("OneMax Problem", "Represents a OneMax Problem.")]
   [Creatable("Problems")]
   [StorableClass]
-  public sealed class OneMaxProblem : ParameterizedNamedItem, ISingleObjectiveProblem {
+  public sealed class OneMaxProblem : ParameterizedNamedItem, ISingleObjectiveProblem, IStorableContent {
+    public string Filename { get; set; }
+
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Type; }
     }
