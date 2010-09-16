@@ -25,17 +25,17 @@ using HeuristicLab.Clients.Common.Properties;
 
 namespace HeuristicLab.Clients.Common {
   public static class ClientFactory {
-    public static I CreateClient<T, I>()
+    public static T CreateClient<T, I>()
       where T : ClientBase<I>, I
       where I : class {
       return CreateClient<T, I>(null, null);
     }
-    public static I CreateClient<T, I>(string endpointConfigurationName)
+    public static T CreateClient<T, I>(string endpointConfigurationName)
       where T : ClientBase<I>, I
       where I : class {
       return CreateClient<T, I>(endpointConfigurationName, null);
     }
-    public static I CreateClient<T, I>(string endpointConfigurationName, string remoteAddress)
+    public static T CreateClient<T, I>(string endpointConfigurationName, string remoteAddress)
       where T : ClientBase<I>, I
       where I : class {
       T client;
@@ -52,7 +52,7 @@ namespace HeuristicLab.Clients.Common {
       client.ClientCredentials.UserName.UserName = Settings.Default.UserName;
       client.ClientCredentials.UserName.Password = Settings.Default.Password;
       client.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
-      return (I)client;
+      return client;
     }
   }
 }
