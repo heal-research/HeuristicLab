@@ -28,7 +28,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General{
-  [Item("MultiVRPMoveMaker", "Peforms a lambda interchange moves on a given VRP encoding and updates the quality.")]
+  [Item("MultiVRPMoveMaker", "Peforms multiple moves on a given VRP encoding and updates the quality.")]
   [StorableClass]
   public class LambdaInterchangeMoveMaker : VRPMoveOperator, IMoveMaker, IMultiVRPMoveOperator {
     public override bool CanChangeName {

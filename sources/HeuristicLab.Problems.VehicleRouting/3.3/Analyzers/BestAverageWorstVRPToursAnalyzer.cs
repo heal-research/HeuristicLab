@@ -348,7 +348,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     void VehiclesUtilizedParameter_DepthChanged(object sender, EventArgs e) {
       BestAverageWorstCalculator.VehiclesUtilizedParameter.Depth = VehiclesUtilizedParameter.Depth;
-      BestMemorizer.VehiclesUtilizedParameter.Depth = DistanceParameter.Depth;
+      BestMemorizer.VehiclesUtilizedParameter.Depth = VehiclesUtilizedParameter.Depth;
     }
   }
 }

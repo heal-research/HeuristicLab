@@ -26,7 +26,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
-  [Item("PermutationManipulator", "An operator which manipulates a VRP representation by using a standard permutation manipulator.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
+  [Item("AlbaPermutationManipulator", "An operator which manipulates a VRP representation by using a standard permutation manipulator.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
   [StorableClass]
   public sealed class AlbaPermutationManipualtor : AlbaManipulator {
     public IValueLookupParameter<IPermutationManipulator> InnerManipulatorParameter {
