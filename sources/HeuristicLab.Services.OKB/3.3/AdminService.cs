@@ -30,6 +30,68 @@ namespace HeuristicLab.Services.OKB {
   /// </summary>
   [ServiceBehavior(IncludeExceptionDetailInFaults = true)]
   public class AdminService : IAdminService {
+    public void AddAlgorithmClass(AlgorithmClass algorithmClass) {
+      using (OKBDataContext okb = new OKBDataContext()) {
+        okb.AlgorithmClasses.InsertOnSubmit(new AlgorithmClass() {
+          Name = algorithmClass.Name,
+          Description = algorithmClass.Description
+        });
+        okb.SubmitChanges();
+      }
+    }
+    public AlgorithmClass[] GetAlgorithmClasses() {
+      using (OKBDataContext okb = new OKBDataContext()) {
+        return okb.AlgorithmClasses.ToArray();
+      }
+    }
+    public void UpdateAlgorithmClass(AlgorithmClass algorithmClass) {
+      using (OKBDataContext okb = new OKBDataContext()) {
+        AlgorithmClass original = okb.AlgorithmClasses.First(a => a.Id == algorithmClass.Id);
+        original.Name = algorithmClass.Name;
+        original.Description = algorithmClass.Description;
+        okb.SubmitChanges();
+      }
+    }
+    public void DeleteAlgorithmClass(long algorithmClassId) {
+      using (OKBDataContext okb = new OKBDataContext()) {
+        okb.AlgorithmClasses.DeleteOnSubmit(okb.AlgorithmClasses.First(a => a.Id == algorithmClassId));
+        okb.SubmitChanges();
+      }
+    }
+
+    public void AddAlgorithm(Algorithm algorithm) {
+      using (OKBDataContext okb = new OKBDataContext()) {
+        okb.Algorithms.InsertOnSubmit(new Algorithm() {
+          AlgorithmClassId = algorithm.AlgorithmClassId,
+          PlatformId = algorithm.PlatformId,
+          Name = algorithm.Name,
+          Description = algorithm.Description
+        });
+        okb.SubmitChanges();
+      }
+    }
+    public Algorithm[] GetAlgorithms() {
+      using (OKBDataContext okb = new OKBDataContext()) {
+        return okb.Algorithms.ToArray();
+      }
+    }
+    public void UpdateAlgorithm(Algorithm algorithm) {
+      using (OKBDataContext okb = new OKBDataContext()) {
+        Algorithm original = okb.Algorithms.First(a => a.Id == algorithm.Id);
+        original.AlgorithmClassId = algorithm.AlgorithmClassId;
+        original.PlatformId = algorithm.PlatformId;
+        original.Name = algorithm.Name;
+        original.Description = algorithm.Description;
+        okb.SubmitChanges();
+      }
+    }
+    public void DeleteAlgorithm(long algorithmId) {
+      using (OKBDataContext okb = new OKBDataContext()) {
+        okb.Algorithms.DeleteOnSubmit(okb.Algorithms.First(a => a.Id == algorithmId));
+        okb.SubmitChanges();
+      }
+    }
+
     /// <summary>
     /// Gets all available platforms.
     /// </summary>
@@ -79,17 +141,9 @@ namespace HeuristicLab.Services.OKB {
       using (OKBDataContext okb = new OKBDataContext()) {
         var dlo = new DataLoadOptions();
         dlo.LoadWith<Problem>(p => p.ProblemClass);
-        dlo.LoadWith<Problem>(p => p.SolutionRepresentation);
         dlo.LoadWith<Problem>(p => p.Platform);
         dlo.LoadWith<Problem>(p => p.ProblemUsers);
         dlo.LoadWith<ProblemUser>(u => u.User);
-        dlo.LoadWith<Problem>(p => p.ProblemCharacteristicIntValues);
-        dlo.LoadWith<Problem>(p => p.ProblemCharacteristicFloatValues);
-        dlo.LoadWith<Problem>(p => p.ProblemCharacteristicStringValues);
-        dlo.LoadWith<ProblemCharacteristicIntValue>(ipcv => ipcv.ProblemCharacteristic);
-        dlo.LoadWith<ProblemCharacteristicFloatValue>(fpcv => fpcv.ProblemCharacteristic);
-        dlo.LoadWith<ProblemCharacteristicStringValue>(cpcv => cpcv.ProblemCharacteristic);
-        dlo.LoadWith<ProblemCharacteristic>(pc => pc.DataType);
         okb.LoadOptions = dlo;
         return okb.Problems.Single(p => p.Id == id);
       }
@@ -142,7 +196,6 @@ namespace HeuristicLab.Services.OKB {
       using (OKBDataContext okb = new OKBDataContext()) {
         Problem originalProblem = okb.Problems.Single(p => p.Id == problem.Id);
         UpdateProblemData(problem, originalProblem, okb);
-        UpdateProblemCharacteristics(problem, originalProblem, okb);
         okb.SubmitChanges();
       }
     }
@@ -177,65 +230,5 @@ namespace HeuristicLab.Services.OKB {
         });
       }
     }
-    private static void UpdateProblemCharacteristics(Problem problem, Problem original, OKBDataContext okb) {
-      okb.ProblemCharacteristicIntValues.DeleteAllOnSubmit(original.ProblemCharacteristicIntValues);
-      okb.ProblemCharacteristicFloatValues.DeleteAllOnSubmit(original.ProblemCharacteristicFloatValues);
-      okb.ProblemCharacteristicStringValues.DeleteAllOnSubmit(original.ProblemCharacteristicStringValues);
-      original.ProblemCharacteristicIntValues.Clear();
-      original.ProblemCharacteristicFloatValues.Clear();
-      original.ProblemCharacteristicStringValues.Clear();
-      foreach (var ipc in problem.ProblemCharacteristicIntValues) {
-        original.ProblemCharacteristicIntValues.Add(new ProblemCharacteristicIntValue() {
-          ProblemId = original.Id,
-          ProblemCharacteristicId = ipc.ProblemCharacteristicId,
-          Value = ipc.Value,
-        });
-      }
-      foreach (var fpc in problem.ProblemCharacteristicFloatValues) {
-        original.ProblemCharacteristicFloatValues.Add(new ProblemCharacteristicFloatValue() {
-          ProblemId = original.Id,
-          ProblemCharacteristicId = fpc.ProblemCharacteristicId,
-          Value = fpc.Value,
-        });
-      }
-      foreach (var cpc in problem.ProblemCharacteristicStringValues) {
-        original.ProblemCharacteristicStringValues.Add(new ProblemCharacteristicStringValue() {
-          ProblemId = original.Id,
-          ProblemCharacteristicId = cpc.ProblemCharacteristicId,
-          Value = cpc.Value,
-        });
-      }
-    }
-
-
-    public void AddAlgorithmClass(AlgorithmClass algorithmClass) {
-      using (OKBDataContext okb = new OKBDataContext()) {
-        okb.AlgorithmClasses.InsertOnSubmit(new AlgorithmClass() { Name = algorithmClass.Name, Description = algorithmClass.Description });
-        okb.SubmitChanges();
-      }
-    }
-
-    public AlgorithmClass[] GetAlgorithmClasses() {
-      using (OKBDataContext okb = new OKBDataContext()) {
-        return okb.AlgorithmClasses.ToArray();
-      }
-    }
-
-    public void UpdateAlgorithmClass(AlgorithmClass algorithmClass) {
-      using (OKBDataContext okb = new OKBDataContext()) {
-        AlgorithmClass original = okb.AlgorithmClasses.First(a => a.Id == algorithmClass.Id);
-        original.Name = algorithmClass.Name;
-        original.Description = algorithmClass.Description;
-        okb.SubmitChanges();
-      }
-    }
-
-    public void DeleteAlgorithmClass(long algorithmClassId) {
-      using (OKBDataContext okb = new OKBDataContext()) {
-        okb.AlgorithmClasses.DeleteOnSubmit(okb.AlgorithmClasses.First(a => a.Id == algorithmClassId));
-        okb.SubmitChanges();
-      }
-    }
-
   }
 }

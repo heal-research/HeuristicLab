@@ -25,11 +25,31 @@ using HeuristicLab.Services.OKB.DataAccess;
 
 namespace HeuristicLab.Services.OKB {
   /// <summary>
-  /// Allows updating the implementation of algorithms and problems. All
-  /// other entities can be modified using the <see cref="TableService"/>
+  /// Service of administrating the OKB.
   /// </summary>  
   [ServiceContract(ProtectionLevel = ProtectionLevel.EncryptAndSign)]
   public interface IAdminService {
+    [OperationContract]
+    void AddAlgorithmClass(AlgorithmClass algorithmClass);
+    [OperationContract]
+    AlgorithmClass[] GetAlgorithmClasses();
+    [OperationContract]
+    void UpdateAlgorithmClass(AlgorithmClass algorithmClass);
+    [OperationContract]
+    void DeleteAlgorithmClass(long algorithmClassId);
+
+    [OperationContract]
+    void AddAlgorithm(Algorithm algorithm);
+    [OperationContract]
+    Algorithm[] GetAlgorithms();
+    [OperationContract]
+    void UpdateAlgorithm(Algorithm algorithm);
+    [OperationContract]
+    void DeleteAlgorithm(long algorithmId);
+
+
+
+
 
     /// <summary>
     /// Gets all available platforms.
@@ -107,20 +127,5 @@ namespace HeuristicLab.Services.OKB {
     /// <param name="problem">The problem.</param>
     [OperationContract]
     void UpdateCompleteProblem(Problem problem);
-
-
-
-    [OperationContract]
-    void AddAlgorithmClass(AlgorithmClass algorithmClass);
-
-    [OperationContract]
-    AlgorithmClass[] GetAlgorithmClasses();
-
-    [OperationContract]
-    void UpdateAlgorithmClass(AlgorithmClass algorithmClass);
-
-    [OperationContract]
-    void DeleteAlgorithmClass(long algorithmClassId);
-
   }
 }
