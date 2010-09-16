@@ -44,6 +44,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       this.inputVariables = tree.IterateNodesPrefix().OfType<VariableTreeNode>().Select(var => var.VariableName).Distinct().ToList();
     }
 
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserializationHook() {
+      if (inputVariables == null)
+        this.inputVariables = tree.IterateNodesPrefix().OfType<VariableTreeNode>().Select(var => var.VariableName).Distinct().ToList();
+    }
+
     [Storable]
     private SymbolicExpressionTree tree;
     public SymbolicExpressionTree SymbolicExpressionTree {

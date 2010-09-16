@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   /// </summary>
   [Item("SymbolicRegressionSolution", "Represents a solution for a symbolic regression problem which can be visualized in the GUI.")]
   [StorableClass]
-  public sealed class SymbolicRegressionSolution : DataAnalysisSolution {
+  public class SymbolicRegressionSolution : DataAnalysisSolution {
     public SymbolicRegressionSolution() : base() { }
     public SymbolicRegressionSolution(DataAnalysisProblemData problemData, SymbolicRegressionModel model, double lowerEstimationLimit, double upperEstimationLimit)
       : base(problemData, lowerEstimationLimit, upperEstimationLimit) {
@@ -62,7 +62,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       OnEstimatedValuesChanged();
     }
 
-    private List<double> estimatedValues;
+    protected List<double> estimatedValues;
     public override IEnumerable<double> EstimatedValues {
       get {
         if (estimatedValues == null) RecalculateEstimatedValues();

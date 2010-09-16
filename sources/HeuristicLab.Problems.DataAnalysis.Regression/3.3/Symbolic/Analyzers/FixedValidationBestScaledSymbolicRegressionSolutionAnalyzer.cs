@@ -29,7 +29,6 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Problems.DataAnalysis.Evaluators;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
@@ -59,46 +58,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     private const string BestKnownQualityParameterName = "BestKnownQuality";
     private const string GenerationsParameterName = "Generations";
     private const string RelativeNumberOfEvaluatedSamplesParameterName = "RelativeNumberOfEvaluatedSamples";
-
-    private const string TrainingMeanSquaredErrorQualityParameterName = "Mean squared error (training)";
-    private const string MinTrainingMeanSquaredErrorQualityParameterName = "Min mean squared error (training)";
-    private const string MaxTrainingMeanSquaredErrorQualityParameterName = "Max mean squared error (training)";
-    private const string AverageTrainingMeanSquaredErrorQualityParameterName = "Average mean squared error (training)";
-    private const string BestTrainingMeanSquaredErrorQualityParameterName = "Best mean squared error (training)";
-
-    private const string TrainingAverageRelativeErrorQualityParameterName = "Average relative error (training)";
-    private const string MinTrainingAverageRelativeErrorQualityParameterName = "Min average relative error (training)";
-    private const string MaxTrainingAverageRelativeErrorQualityParameterName = "Max average relative error (training)";
-    private const string AverageTrainingAverageRelativeErrorQualityParameterName = "Average average relative error (training)";
-    private const string BestTrainingAverageRelativeErrorQualityParameterName = "Best average relative error (training)";
-
-    private const string TrainingRSquaredQualityParameterName = "R² (training)";
-    private const string MinTrainingRSquaredQualityParameterName = "Min R² (training)";
-    private const string MaxTrainingRSquaredQualityParameterName = "Max R² (training)";
-    private const string AverageTrainingRSquaredQualityParameterName = "Average R² (training)";
-    private const string BestTrainingRSquaredQualityParameterName = "Best R² (training)";
-
-    private const string TestMeanSquaredErrorQualityParameterName = "Mean squared error (test)";
-    private const string MinTestMeanSquaredErrorQualityParameterName = "Min mean squared error (test)";
-    private const string MaxTestMeanSquaredErrorQualityParameterName = "Max mean squared error (test)";
-    private const string AverageTestMeanSquaredErrorQualityParameterName = "Average mean squared error (test)";
-    private const string BestTestMeanSquaredErrorQualityParameterName = "Best mean squared error (test)";
-
-    private const string TestAverageRelativeErrorQualityParameterName = "Average relative error (test)";
-    private const string MinTestAverageRelativeErrorQualityParameterName = "Min average relative error (test)";
-    private const string MaxTestAverageRelativeErrorQualityParameterName = "Max average relative error (test)";
-    private const string AverageTestAverageRelativeErrorQualityParameterName = "Average average relative error (test)";
-    private const string BestTestAverageRelativeErrorQualityParameterName = "Best average relative error (test)";
-
-    private const string TestRSquaredQualityParameterName = "R² (test)";
-    private const string MinTestRSquaredQualityParameterName = "Min R² (test)";
-    private const string MaxTestRSquaredQualityParameterName = "Max R² (test)";
-    private const string AverageTestRSquaredQualityParameterName = "Average R² (test)";
-    private const string BestTestRSquaredQualityParameterName = "Best R² (test)";
-
-    private const string RSquaredValuesParameterName = "R²";
-    private const string MeanSquaredErrorValuesParameterName = "Mean squared error";
-    private const string RelativeErrorValuesParameterName = "Average relative error";
 
     #region parameter properties
     public ILookupParameter<IRandom> RandomParameter {
