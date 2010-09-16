@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Runtime.Serialization;
 
 namespace HeuristicLab.Persistence.Core {
 
@@ -63,6 +64,8 @@ namespace HeuristicLab.Persistence.Core {
         this.Data.Add("Inner Exception " + i, x);
       }
     }
+
+    protected PersistenceException(SerializationInfo info, StreamingContext context) : base(info, context) { }
 
     /// <summary>
     /// Returns a <see cref="System.String"/> that represents this instance.
