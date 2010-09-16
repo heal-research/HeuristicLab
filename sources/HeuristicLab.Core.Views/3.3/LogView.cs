@@ -87,8 +87,11 @@ namespace HeuristicLab.Core.Views {
     protected virtual void Content_MessageAdded(object sender, EventArgs<string> e) {
       if (InvokeRequired)
         Invoke(new EventHandler<EventArgs<string>>(Content_MessageAdded), sender, e);
-      else
+      else {
         logTextBox.Text = Content.Messages.Aggregate((x, y) => x + Environment.NewLine + y);
+        logTextBox.SelectionStart = logTextBox.Text.Length;
+        logTextBox.ScrollToCaret();
+      }
     }
 
     protected virtual void Content_Cleared(object sender, EventArgs e) {
