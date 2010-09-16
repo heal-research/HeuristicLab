@@ -23,14 +23,14 @@ using System;
 
 namespace HeuristicLab.PluginInfrastructure.Manager {
   [Serializable]
-  internal sealed class PluginInfrastructureEventArgs : EventArgs {
-    internal object Entity { get; private set; }
-    internal PluginInfrastructureEventArgs(object entity) {
+  public sealed class PluginInfrastructureEventArgs : EventArgs {
+    public object Entity { get; private set; }
+    public PluginInfrastructureEventArgs(object entity) {
       this.Entity = entity;
     }
 
     private static PluginInfrastructureEventArgs emptyArgs = new PluginInfrastructureEventArgs(string.Empty);
-    internal new static PluginInfrastructureEventArgs Empty {
+    public new static PluginInfrastructureEventArgs Empty {
       get { return emptyArgs; }
     }
   }

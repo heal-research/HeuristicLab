@@ -30,13 +30,13 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
   /// <summary>
   /// Class to manage different plugins.
   /// </summary>
-  internal sealed class PluginManager : MarshalByRefObject {
-    internal event EventHandler<PluginInfrastructureEventArgs> PluginLoaded;
-    internal event EventHandler<PluginInfrastructureEventArgs> PluginUnloaded;
-    internal event EventHandler<PluginInfrastructureEventArgs> Initializing;
-    internal event EventHandler<PluginInfrastructureEventArgs> Initialized;
-    internal event EventHandler<PluginInfrastructureEventArgs> ApplicationStarting;
-    internal event EventHandler<PluginInfrastructureEventArgs> ApplicationStarted;
+  public sealed class PluginManager : MarshalByRefObject {
+    public event EventHandler<PluginInfrastructureEventArgs> PluginLoaded;
+    public event EventHandler<PluginInfrastructureEventArgs> PluginUnloaded;
+    public event EventHandler<PluginInfrastructureEventArgs> Initializing;
+    public event EventHandler<PluginInfrastructureEventArgs> Initialized;
+    public event EventHandler<PluginInfrastructureEventArgs> ApplicationStarting;
+    public event EventHandler<PluginInfrastructureEventArgs> ApplicationStarted;
 
     private string pluginDir;
 
@@ -44,7 +44,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     /// <summary>
     /// Gets all installed plugins.
     /// </summary>
-    internal IEnumerable<PluginDescription> Plugins {
+    public IEnumerable<PluginDescription> Plugins {
       get { return plugins; }
     }
 
@@ -59,7 +59,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     private object locker = new object();
     private bool initialized;
 
-    internal PluginManager(string pluginDir) {
+    public PluginManager(string pluginDir) {
       this.pluginDir = pluginDir;
       plugins = new List<PluginDescription>();
       applications = new List<ApplicationDescription>();
@@ -69,7 +69,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     /// <summary>
     /// Determines installed plugins and checks if all plugins are loadable.
     /// </summary>
-    internal void DiscoverAndCheckPlugins() {
+    public void DiscoverAndCheckPlugins() {
       OnInitializing(PluginInfrastructureEventArgs.Empty);
       AppDomainSetup setup = AppDomain.CurrentDomain.SetupInformation;
       setup.PrivateBinPath = pluginDir;
