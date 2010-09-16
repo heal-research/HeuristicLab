@@ -112,6 +112,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
         if (ActiveView != null) ActiveView.Content = Content;
       } else ActiveView = null;
       UpdateLabels();
+      UpdateActiveMenuItem();
     }
 
     private void UpdateLabels() {
@@ -146,7 +147,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
     private void OnActiveViewChanged() {
       this.SuspendRepaint();
       if (activeView != null) {
-        UpdateActiveMenuItem();
         this.ActiveView.ReadOnly = this.ReadOnly;
         this.ActiveView.Locked = this.Locked;
         this.ActiveViewControl.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right;
