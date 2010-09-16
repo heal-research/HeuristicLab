@@ -45,7 +45,6 @@ HeuristicLab.Persistence.GUI\3.3:HeuristicLab.Persistence.GUI-3.3.dll
 HeuristicLab.Problems.ArtificialAnt\3.3:HeuristicLab.Problems.ArtificialAnt-3.3.dll
 HeuristicLab.Problems.ArtificialAnt.Views\3.3:HeuristicLab.Problems.ArtificialAnt.Views-3.3.dll
 HeuristicLab.Problems.DataAnalysis\3.3:HeuristicLab.Problems.DataAnalysis-3.3.dll
-HeuristicLab.Problems.DataAnalysis.FeatureSelection\3.3:HeuristicLab.Problems.DataAnalysis.FeatureSelection-3.3.dll
 HeuristicLab.Problems.DataAnalysis.Regression\3.3:HeuristicLab.Problems.DataAnalysis.Regression-3.3.dll
 HeuristicLab.Problems.DataAnalysis.Views\3.3:HeuristicLab.Problems.DataAnalysis.Views-3.3.dll
 HeuristicLab.Problems.ExternalEvaluation\3.3:HeuristicLab.Problems.ExternalEvaluation-3.3.dll
