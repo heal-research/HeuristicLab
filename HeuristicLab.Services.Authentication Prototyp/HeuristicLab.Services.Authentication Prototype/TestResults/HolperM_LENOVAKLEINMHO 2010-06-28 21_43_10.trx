@@ -1,0 +1,639 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TestRun id="12416fcb-61f4-47b5-af3c-59d86d59f1d9" name="HolperM@LENOVAKLEINMHO 2010-06-28 21:43:10" runUser="COMPAX\HolperM" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2006">
+  <TestRunConfiguration name="Lokaler Testlauf" id="3cde0e70-9e75-4b76-a987-9e1d702958f0">
+    <Description>Dies ist eine standardmäßige Testlaufkonfiguration für einen lokalen Testlauf.</Description>
+    <Deployment runDeploymentRoot="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\TestResults\HolperM_LENOVAKLEINMHO 2010-06-28 21_43_10">
+      <DeploymentItem filename="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\Service\bin\Debug\Service.dll" />
+      <DeploymentItem filename="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\Persistence\bin\Debug\Persistence.dll" />
+    </Deployment>
+    <TestTypeSpecific />
+  </TestRunConfiguration>
+  <ResultSummary outcome="Error">
+    <Counters total="60" executed="1" error="0" failed="0" timeout="0" aborted="1" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="59" disconnected="0" warning="0" passed="0" completed="0" inProgress="0" pending="0" />
+    <RunInfos>
+      <RunInfo computerName="LENOVAKLEINMHO" outcome="Error" timestamp="2010-06-28T21:43:27.2552741+02:00">
+        <Text>Test host process exited unexpectedly.</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+  <Times creation="2010-06-28T21:43:10.9866474+02:00" queuing="2010-06-28T21:43:18.7924279+02:00" start="2010-06-28T21:43:19.2534740+02:00" finish="2010-06-28T21:43:27.2672753+02:00" />
+  <TestDefinitions>
+    <UnitTest name="DeleteRoleTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="bd2b2af4-a196-8696-fdfe-6f8c91dee0ed">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabRoleProviderTest, UnitTests" name="DeleteRoleTest" />
+    </UnitTest>
+    <UnitTest name="IsUserInRoleTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="a4af587f-4c98-aebc-558f-715a35c3cd41">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabRoleProviderTest, UnitTests" name="IsUserInRoleTest" />
+    </UnitTest>
+    <UnitTest name="GetPasswordTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="d2c8a683-ac68-bded-8e0e-22e2473daa15">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabUserTest, UnitTests" name="GetPasswordTest" />
+    </UnitTest>
+    <UnitTest name="UnlockUserTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="85f2b15c-762a-ab3f-9a51-770c5fc59348">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabUserTest, UnitTests" name="UnlockUserTest" />
+    </UnitTest>
+    <UnitTest name="CommentTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="e3413b57-3027-8e7d-3f25-67842a5c6986">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabUserTest, UnitTests" name="CommentTest" />
+    </UnitTest>
+    <UnitTest name="GetAllUsersTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="246f0e92-203a-6927-8ab4-9db7e34680d4">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabMembershipProviderTest, UnitTests" name="GetAllUsersTest" />
+    </UnitTest>
+    <UnitTest name="CreateRoleTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="3463a5ed-c3f1-6729-be85-dc5e0d4df6bd">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabRoleProviderTest, UnitTests" name="CreateRoleTest" />
+    </UnitTest>
+    <UnitTest name="PasswordFormatTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="fa9b10a7-b01f-af0c-9493-103479586615">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabMembershipProviderTest, UnitTests" name="PasswordFormatTest" />
+    </UnitTest>
+    <UnitTest name="ValidateUserTestEncrypted" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="4ab8b61c-5e68-9600-3bda-b62c1be6a59b">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabMembershipProviderTest, UnitTests" name="ValidateUserTestEncrypted" />
+    </UnitTest>
+    <UnitTest name="ValidateUserTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="8da47073-95eb-4ffc-5a69-67901dba3a5a">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabMembershipProviderTest, UnitTests" name="ValidateUserTest" />
+    </UnitTest>
+    <UnitTest name="ToStringTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="537e2ce5-1968-64c1-932a-0aff7f0ea564">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabUserTest, UnitTests" name="ToStringTest" />
+    </UnitTest>
+    <UnitTest name="ChangePasswordQuestionAndAnswerTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="ce8163d5-a5c1-2a43-04b4-3afe6a0140c3">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabUserTest, UnitTests" name="ChangePasswordQuestionAndAnswerTest" />
+    </UnitTest>
+    <UnitTest name="HeuristicLabRoleProviderConstructorTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="b076f1b4-7085-972e-6b44-f9169d06d257">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabRoleProviderTest, UnitTests" name="HeuristicLabRoleProviderConstructorTest" />
+    </UnitTest>
+    <UnitTest name="PasswordAnswerTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="ecaca427-086c-9493-06af-9887f2d8184f">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabUserTest, UnitTests" name="PasswordAnswerTest" />
+    </UnitTest>
+    <UnitTest name="ChangePasswordTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="b7f66205-f4ec-95fe-a1c6-8d6c8149d406">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabMembershipProviderTest, UnitTests" name="ChangePasswordTest" />
+    </UnitTest>
+    <UnitTest name="EmailTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="23131c03-ebe9-6d64-7d73-52214a9dac7d">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabUserTest, UnitTests" name="EmailTest" />
+    </UnitTest>
+    <UnitTest name="EnablePasswordResetTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="8e1fa22e-f5c4-2a2f-90b3-46292accf35d">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabMembershipProviderTest, UnitTests" name="EnablePasswordResetTest" />
+    </UnitTest>
+    <UnitTest name="HeuristicLabUserConstructorTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="5c113ee8-ae71-cf76-5bf1-608203739eeb">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabUserTest, UnitTests" name="HeuristicLabUserConstructorTest" />
+    </UnitTest>
+    <UnitTest name="ChangePasswordTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="c94ce8a9-0db1-d5f7-0d29-a5b40ed93b8f">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabUserTest, UnitTests" name="ChangePasswordTest" />
+    </UnitTest>
+    <UnitTest name="ResetPasswordTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="5d0b1e42-2e2d-902a-310a-eaf3e0c7cfed">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabMembershipProviderTest, UnitTests" name="ResetPasswordTest" />
+    </UnitTest>
+    <UnitTest name="ResetPasswordTest1" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="760cee90-ae54-277d-b10b-28dcbd0d3e2b">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabUserTest, UnitTests" name="ResetPasswordTest1" />
+    </UnitTest>
+    <UnitTest name="RequiresQuestionAndAnswerTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="34b4b356-297a-e42a-ac92-da02d0a2448d">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabMembershipProviderTest, UnitTests" name="RequiresQuestionAndAnswerTest" />
+    </UnitTest>
+    <UnitTest name="GetPasswordTest1" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="e0e05989-bce3-7e2f-d85f-30efe28be806">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabUserTest, UnitTests" name="GetPasswordTest1" />
+    </UnitTest>
+    <UnitTest name="UserNameTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="799ee04a-e351-af4d-61c5-344e29aaace3">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabUserTest, UnitTests" name="UserNameTest" />
+    </UnitTest>
+    <UnitTest name="HeuristicLabMembershipProviderConstructorTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="b7653734-bdb9-3ff1-e139-577afa69ace4">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabMembershipProviderTest, UnitTests" name="HeuristicLabMembershipProviderConstructorTest" />
+    </UnitTest>
+    <UnitTest name="GetUserNameByEmailTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="803d2869-a377-25bf-a71b-c84dc77d1def">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabMembershipProviderTest, UnitTests" name="GetUserNameByEmailTest" />
+    </UnitTest>
+    <UnitTest name="DeleteUserTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="e74d08fa-1da6-67aa-e264-44883b102ee0">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabMembershipProviderTest, UnitTests" name="DeleteUserTest" />
+    </UnitTest>
+    <UnitTest name="RequiresUniqueEmailTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="24471274-db41-b60d-7d2b-8acb20f60d91">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabMembershipProviderTest, UnitTests" name="RequiresUniqueEmailTest" />
+    </UnitTest>
+    <UnitTest name="FindUsersByNameTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="ec4d0dbb-e9d0-921a-60b8-4d5c777c22bb">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabMembershipProviderTest, UnitTests" name="FindUsersByNameTest" />
+    </UnitTest>
+    <UnitTest name="UnlockUserTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="c7ef239d-570f-ed53-091f-9cd716bc6e21">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabMembershipProviderTest, UnitTests" name="UnlockUserTest" />
+    </UnitTest>
+    <UnitTest name="RoleExistsTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="903719dc-469b-6714-449e-0d776b005bcf">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabRoleProviderTest, UnitTests" name="RoleExistsTest" />
+    </UnitTest>
+    <UnitTest name="ApplicationNameTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="ff6c5d3e-5e1e-1081-124b-2fcac551aca7">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabRoleProviderTest, UnitTests" name="ApplicationNameTest" />
+    </UnitTest>
+    <UnitTest name="SendPropertyChangingTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="920ccadf-67ff-cedc-abbd-141366a2cb4b">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <DeploymentItems>
+        <DeploymentItem filename="Persistence.dll" />
+      </DeploymentItems>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabUserTest, UnitTests" name="SendPropertyChangingTest" />
+    </UnitTest>
+    <UnitTest name="GetUserTest1" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="18d3553b-a209-8cdc-c401-5eb3991d6309">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabMembershipProviderTest, UnitTests" name="GetUserTest1" />
+    </UnitTest>
+    <UnitTest name="RemoveUsersFromRolesTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="ac003d48-3914-cbfc-71f8-06b626d85e48">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <Execution id="75d9c6bd-8233-46c7-940e-f9f6cd68c5f7" />
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabRoleProviderTest, UnitTests" name="RemoveUsersFromRolesTest" />
+    </UnitTest>
+    <UnitTest name="AddUsersToRolesTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="870dcd03-5cb1-7419-38c6-922aadba3d83">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <Execution id="fc8fb8f0-94b7-4bac-a22f-e7e98b8e4c1a" />
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabRoleProviderTest, UnitTests" name="AddUsersToRolesTest" />
+    </UnitTest>
+    <UnitTest name="GetNumberOfUsersOnlineTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="f5257092-3544-c359-b761-ec70163dda25">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabMembershipProviderTest, UnitTests" name="GetNumberOfUsersOnlineTest" />
+    </UnitTest>
+    <UnitTest name="PasswordQuestionTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="5a5bdb37-43b0-c6f1-1b5b-7df4fecd3b8f">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabUserTest, UnitTests" name="PasswordQuestionTest" />
+    </UnitTest>
+    <UnitTest name="ChangePasswordQuestionAndAnswerTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="87879d13-77ad-9ad4-016a-e00a2c9ad877">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabMembershipProviderTest, UnitTests" name="ChangePasswordQuestionAndAnswerTest" />
+    </UnitTest>
+    <UnitTest name="PasswordAttemptWindowTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="2db4d6ab-4cd3-a886-2ac5-fe07d2068721">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabMembershipProviderTest, UnitTests" name="PasswordAttemptWindowTest" />
+    </UnitTest>
+    <UnitTest name="GetUsersInRoleTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="eecd2021-d6b1-6674-2ae0-91a9d3d810e9">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <Execution id="ee7fe060-db95-4e2f-9d73-c2164fa8a4ff" />
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabRoleProviderTest, UnitTests" name="GetUsersInRoleTest" />
+    </UnitTest>
+    <UnitTest name="GetRolesForUserTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="0bede7a2-34a9-e4a1-876d-340d270063a8">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabRoleProviderTest, UnitTests" name="GetRolesForUserTest" />
+    </UnitTest>
+    <UnitTest name="GetAllRolesTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="6af0f397-4c32-7395-eef2-8ad544b236ba">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabRoleProviderTest, UnitTests" name="GetAllRolesTest" />
+    </UnitTest>
+    <UnitTest name="MaxInvalidPasswordAttemptsTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="9d907fe3-9c12-249c-3602-aec229273f9f">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabMembershipProviderTest, UnitTests" name="MaxInvalidPasswordAttemptsTest" />
+    </UnitTest>
+    <UnitTest name="GetPasswordTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="648cc85e-1d3a-2c11-c6a4-5294b54ce207">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabMembershipProviderTest, UnitTests" name="GetPasswordTest" />
+    </UnitTest>
+    <UnitTest name="GetUserTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="379524a8-162e-5351-9f98-90379ad7555c">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabMembershipProviderTest, UnitTests" name="GetUserTest" />
+    </UnitTest>
+    <UnitTest name="ResetPasswordTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="ce5df924-ff5f-962d-94e4-cbd375c40951">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabUserTest, UnitTests" name="ResetPasswordTest" />
+    </UnitTest>
+    <UnitTest name="CreateUserTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="7a4e1dba-1d39-2948-7d98-a24768e0c9b0">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabMembershipProviderTest, UnitTests" name="CreateUserTest" />
+    </UnitTest>
+    <UnitTest name="PasswordStrengthRegularExpressionTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="60c35d4e-9d54-9209-b000-7c6659d31139">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabMembershipProviderTest, UnitTests" name="PasswordStrengthRegularExpressionTest" />
+    </UnitTest>
+    <UnitTest name="PasswordTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="b6e6a789-8f4e-329c-38ef-d9e19bd14e55">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabUserTest, UnitTests" name="PasswordTest" />
+    </UnitTest>
+    <UnitTest name="LastPasswordChangedDateTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="2b5d5229-e68f-6a88-fb76-73fa5d493613">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabUserTest, UnitTests" name="LastPasswordChangedDateTest" />
+    </UnitTest>
+    <UnitTest name="EnablePasswordRetrievalTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="fe3e4486-b8ea-6337-b8f2-a28969469a9c">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabMembershipProviderTest, UnitTests" name="EnablePasswordRetrievalTest" />
+    </UnitTest>
+    <UnitTest name="SendPropertyChangedTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="1283b551-ef2d-94af-d70d-8e0a3cbed26f">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <DeploymentItems>
+        <DeploymentItem filename="Persistence.dll" />
+      </DeploymentItems>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabUserTest, UnitTests" name="SendPropertyChangedTest" />
+    </UnitTest>
+    <UnitTest name="ApplicationNameTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="988929ee-6387-989d-0f13-4e62dd431895">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabMembershipProviderTest, UnitTests" name="ApplicationNameTest" />
+    </UnitTest>
+    <UnitTest name="UpdateUserTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="9c0dd09c-2020-7eaa-5fa5-6a929596dff0">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabMembershipProviderTest, UnitTests" name="UpdateUserTest" />
+    </UnitTest>
+    <UnitTest name="FindUsersInRoleTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="3d3010a0-a276-ccc1-237e-3b333b8c922e">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabRoleProviderTest, UnitTests" name="FindUsersInRoleTest" />
+    </UnitTest>
+    <UnitTest name="MinRequiredPasswordLengthTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="3adf5992-1e01-e5fc-4289-d84b0c245a46">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabMembershipProviderTest, UnitTests" name="MinRequiredPasswordLengthTest" />
+    </UnitTest>
+    <UnitTest name="modifyUserTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="4452b5de-b1d7-2a87-17cf-5bcef24a98ba">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabUserTest, UnitTests" name="modifyUserTest" />
+    </UnitTest>
+    <UnitTest name="FindUsersByEmailTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="f2bc074f-6cf0-8bb3-8fdb-2bb731b072df">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabMembershipProviderTest, UnitTests" name="FindUsersByEmailTest" />
+    </UnitTest>
+    <UnitTest name="MinRequiredNonAlphanumericCharactersTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="52486394-92df-3a60-6fc5-02aa93a756ce">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabMembershipProviderTest, UnitTests" name="MinRequiredNonAlphanumericCharactersTest" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <TestEntries>
+    <TestEntry testId="0bede7a2-34a9-e4a1-876d-340d270063a8" executionId="865ad15e-6dc1-4f8c-a54c-af3b72c953e5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1283b551-ef2d-94af-d70d-8e0a3cbed26f" executionId="2c7dd1a4-b419-4346-89d9-c5df6250684c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="18d3553b-a209-8cdc-c401-5eb3991d6309" executionId="fc9e4e83-dffd-4233-9b92-b2637cf06f11" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="23131c03-ebe9-6d64-7d73-52214a9dac7d" executionId="e7574a21-cbe4-4ad3-8941-0b43ac9e9139" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="24471274-db41-b60d-7d2b-8acb20f60d91" executionId="e4f47f65-2515-4529-945b-12a6976df7ad" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="246f0e92-203a-6927-8ab4-9db7e34680d4" executionId="d7f1ba40-1547-4177-a752-04343a8b31a0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2b5d5229-e68f-6a88-fb76-73fa5d493613" executionId="c7349600-dfa1-4b65-afe0-0b5e672f0883" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2db4d6ab-4cd3-a886-2ac5-fe07d2068721" executionId="7aee7ce9-e0b7-48a3-9d84-4cd8d11c6260" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3463a5ed-c3f1-6729-be85-dc5e0d4df6bd" executionId="ccfd9eb6-8fd6-447d-8180-4817b59a806f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="34b4b356-297a-e42a-ac92-da02d0a2448d" executionId="eb3d5378-0834-4d94-a815-54eb33042d83" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="379524a8-162e-5351-9f98-90379ad7555c" executionId="6755015d-d7eb-40ee-9a9f-627feba59877" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3adf5992-1e01-e5fc-4289-d84b0c245a46" executionId="f76dff19-20d4-48b4-b76f-5229bb953548" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3d3010a0-a276-ccc1-237e-3b333b8c922e" executionId="6396f45d-7219-45cd-bbcd-fd63dec4eb8b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4452b5de-b1d7-2a87-17cf-5bcef24a98ba" executionId="9917d7a3-3916-49e8-b49d-e695da9df6ab" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4ab8b61c-5e68-9600-3bda-b62c1be6a59b" executionId="cd73e1ca-98b0-4380-ac74-ddab35f5edaf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="52486394-92df-3a60-6fc5-02aa93a756ce" executionId="c3845df3-e58b-4a0b-be3a-1af134818dd1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="537e2ce5-1968-64c1-932a-0aff7f0ea564" executionId="f5bf2112-8a9f-44a9-9bf8-c2650d05e331" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5a5bdb37-43b0-c6f1-1b5b-7df4fecd3b8f" executionId="4dc6dabc-99d9-4475-b890-45bc76094591" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5c113ee8-ae71-cf76-5bf1-608203739eeb" executionId="ebedf8c0-3c7c-4e14-bf71-a341cda24262" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5d0b1e42-2e2d-902a-310a-eaf3e0c7cfed" executionId="37bee73b-f6dc-4d0b-93f3-4cd7c6549e39" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="60c35d4e-9d54-9209-b000-7c6659d31139" executionId="8ef9702b-6e16-449d-9cc5-ebce0929350d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="648cc85e-1d3a-2c11-c6a4-5294b54ce207" executionId="5c8deebd-474c-479c-aa33-d27c42db06ed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6af0f397-4c32-7395-eef2-8ad544b236ba" executionId="183bc40f-33f5-4e5e-9db8-bf2be1468dd7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="760cee90-ae54-277d-b10b-28dcbd0d3e2b" executionId="a31c7ce4-a3af-4490-afc0-f45f658f8b0e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="799ee04a-e351-af4d-61c5-344e29aaace3" executionId="db8c01da-da30-4eee-aa62-eadcf185cad4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7a4e1dba-1d39-2948-7d98-a24768e0c9b0" executionId="03c5bcbb-6016-45fb-b5a2-ecb05c3483f4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="803d2869-a377-25bf-a71b-c84dc77d1def" executionId="1fa0431b-9c4b-4017-b349-6b63da036e02" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="85f2b15c-762a-ab3f-9a51-770c5fc59348" executionId="f5d76d61-11fb-471c-9034-18df03a65d77" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="870dcd03-5cb1-7419-38c6-922aadba3d83" executionId="3e6590e6-b70a-4e3a-81bd-55406241aa8d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="87879d13-77ad-9ad4-016a-e00a2c9ad877" executionId="dcdec057-ede7-4b1a-ada9-21333a1db478" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8da47073-95eb-4ffc-5a69-67901dba3a5a" executionId="16fe1465-b72d-400d-b9bb-d1cd91b2e5af" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8e1fa22e-f5c4-2a2f-90b3-46292accf35d" executionId="96fb02fe-d615-4c05-8a85-1286856d4c0f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="903719dc-469b-6714-449e-0d776b005bcf" executionId="90c9fd1b-88d1-4dbf-a40f-ef4bff656b2a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="920ccadf-67ff-cedc-abbd-141366a2cb4b" executionId="4239c4d1-66c1-4525-9658-bc2e50d5a8cc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="988929ee-6387-989d-0f13-4e62dd431895" executionId="2d932ea5-2d32-4c37-95cc-8603c4439614" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9c0dd09c-2020-7eaa-5fa5-6a929596dff0" executionId="dd9c5157-c800-4c0a-b981-89b87047a998" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9d907fe3-9c12-249c-3602-aec229273f9f" executionId="cce46ab8-30aa-4ada-9a48-b134b5eec276" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a4af587f-4c98-aebc-558f-715a35c3cd41" executionId="2704d9d4-807e-416f-a48d-a4ae6658f08c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ac003d48-3914-cbfc-71f8-06b626d85e48" executionId="e8864afd-88bd-4629-b017-c1d58f4d81ee" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b076f1b4-7085-972e-6b44-f9169d06d257" executionId="553a1e1a-d245-4fdd-9279-63cf93d60e2a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b6e6a789-8f4e-329c-38ef-d9e19bd14e55" executionId="c7ef5008-9d51-42d0-94ce-4aa40ea7e631" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b7653734-bdb9-3ff1-e139-577afa69ace4" executionId="73b4c020-9b3c-4fd7-b3b4-ad99affa595b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b7f66205-f4ec-95fe-a1c6-8d6c8149d406" executionId="cf4e21eb-6cea-48c9-abb5-ae9f9d64fcba" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bd2b2af4-a196-8696-fdfe-6f8c91dee0ed" executionId="ef16b986-fcb3-4b05-b9fe-8e2d86a600a3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c7ef239d-570f-ed53-091f-9cd716bc6e21" executionId="e7dec181-42b7-4d0c-9165-5437401d3e6e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c94ce8a9-0db1-d5f7-0d29-a5b40ed93b8f" executionId="3f1e4ee2-ca8e-40d4-8732-191d10f952cd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ce5df924-ff5f-962d-94e4-cbd375c40951" executionId="a988e658-39d3-4734-a30d-128415e539bd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ce8163d5-a5c1-2a43-04b4-3afe6a0140c3" executionId="fb9ec412-392e-424f-b56c-1f7182fdbf34" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d2c8a683-ac68-bded-8e0e-22e2473daa15" executionId="14d612e4-76fb-470f-848a-6d4fd71e6653" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e0e05989-bce3-7e2f-d85f-30efe28be806" executionId="752e6d0c-4bec-4ec2-80e3-6e1ad7e48fae" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e3413b57-3027-8e7d-3f25-67842a5c6986" executionId="1fde4a30-c89b-4cd9-9c77-b7e36ca19937" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e74d08fa-1da6-67aa-e264-44883b102ee0" executionId="3135a411-fbeb-40b8-bc06-3d1fc437795e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ec4d0dbb-e9d0-921a-60b8-4d5c777c22bb" executionId="cf986c0b-c7bf-49fc-8609-f937b0d59460" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ecaca427-086c-9493-06af-9887f2d8184f" executionId="603fe9e4-adc4-4cf1-8c6b-b18bccfd7b5f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="eecd2021-d6b1-6674-2ae0-91a9d3d810e9" executionId="80303fcc-445c-4360-8585-7c22c34bb4fd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f2bc074f-6cf0-8bb3-8fdb-2bb731b072df" executionId="4b4f294d-a8ea-45ba-856e-3abca01160ca" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f5257092-3544-c359-b761-ec70163dda25" executionId="3f012b29-15d4-4e6e-8554-27822c35e211" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fa9b10a7-b01f-af0c-9493-103479586615" executionId="262bca74-ddd8-4cc8-ac20-9ddf2ac0473c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fe3e4486-b8ea-6337-b8f2-a28969469a9c" executionId="2eb87553-b6cf-4422-b2d4-059bb25b9ecd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ff6c5d3e-5e1e-1081-124b-2fcac551aca7" executionId="116735e7-5f9e-4a39-8275-1b16a81be00a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <Results>
+    <UnitTestResult executionId="865ad15e-6dc1-4f8c-a54c-af3b72c953e5" testId="0bede7a2-34a9-e4a1-876d-340d270063a8" testName="GetRolesForUserTest" computerName="LENOVAKLEINMHO" duration="00:00:07.7797779" startTime="2010-06-28T21:43:19.4764963+02:00" endTime="2010-06-28T21:43:27.2562742+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Aborted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="2c7dd1a4-b419-4346-89d9-c5df6250684c" testId="1283b551-ef2d-94af-d70d-8e0a3cbed26f" testName="SendPropertyChangedTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="fc9e4e83-dffd-4233-9b92-b2637cf06f11" testId="18d3553b-a209-8cdc-c401-5eb3991d6309" testName="GetUserTest1" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="e7574a21-cbe4-4ad3-8941-0b43ac9e9139" testId="23131c03-ebe9-6d64-7d73-52214a9dac7d" testName="EmailTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="e4f47f65-2515-4529-945b-12a6976df7ad" testId="24471274-db41-b60d-7d2b-8acb20f60d91" testName="RequiresUniqueEmailTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="d7f1ba40-1547-4177-a752-04343a8b31a0" testId="246f0e92-203a-6927-8ab4-9db7e34680d4" testName="GetAllUsersTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="c7349600-dfa1-4b65-afe0-0b5e672f0883" testId="2b5d5229-e68f-6a88-fb76-73fa5d493613" testName="LastPasswordChangedDateTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="7aee7ce9-e0b7-48a3-9d84-4cd8d11c6260" testId="2db4d6ab-4cd3-a886-2ac5-fe07d2068721" testName="PasswordAttemptWindowTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="ccfd9eb6-8fd6-447d-8180-4817b59a806f" testId="3463a5ed-c3f1-6729-be85-dc5e0d4df6bd" testName="CreateRoleTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="eb3d5378-0834-4d94-a815-54eb33042d83" testId="34b4b356-297a-e42a-ac92-da02d0a2448d" testName="RequiresQuestionAndAnswerTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="6755015d-d7eb-40ee-9a9f-627feba59877" testId="379524a8-162e-5351-9f98-90379ad7555c" testName="GetUserTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="f76dff19-20d4-48b4-b76f-5229bb953548" testId="3adf5992-1e01-e5fc-4289-d84b0c245a46" testName="MinRequiredPasswordLengthTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="6396f45d-7219-45cd-bbcd-fd63dec4eb8b" testId="3d3010a0-a276-ccc1-237e-3b333b8c922e" testName="FindUsersInRoleTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="9917d7a3-3916-49e8-b49d-e695da9df6ab" testId="4452b5de-b1d7-2a87-17cf-5bcef24a98ba" testName="modifyUserTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="cd73e1ca-98b0-4380-ac74-ddab35f5edaf" testId="4ab8b61c-5e68-9600-3bda-b62c1be6a59b" testName="ValidateUserTestEncrypted" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="c3845df3-e58b-4a0b-be3a-1af134818dd1" testId="52486394-92df-3a60-6fc5-02aa93a756ce" testName="MinRequiredNonAlphanumericCharactersTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="f5bf2112-8a9f-44a9-9bf8-c2650d05e331" testId="537e2ce5-1968-64c1-932a-0aff7f0ea564" testName="ToStringTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="4dc6dabc-99d9-4475-b890-45bc76094591" testId="5a5bdb37-43b0-c6f1-1b5b-7df4fecd3b8f" testName="PasswordQuestionTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="ebedf8c0-3c7c-4e14-bf71-a341cda24262" testId="5c113ee8-ae71-cf76-5bf1-608203739eeb" testName="HeuristicLabUserConstructorTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="37bee73b-f6dc-4d0b-93f3-4cd7c6549e39" testId="5d0b1e42-2e2d-902a-310a-eaf3e0c7cfed" testName="ResetPasswordTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="8ef9702b-6e16-449d-9cc5-ebce0929350d" testId="60c35d4e-9d54-9209-b000-7c6659d31139" testName="PasswordStrengthRegularExpressionTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="5c8deebd-474c-479c-aa33-d27c42db06ed" testId="648cc85e-1d3a-2c11-c6a4-5294b54ce207" testName="GetPasswordTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="183bc40f-33f5-4e5e-9db8-bf2be1468dd7" testId="6af0f397-4c32-7395-eef2-8ad544b236ba" testName="GetAllRolesTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="a31c7ce4-a3af-4490-afc0-f45f658f8b0e" testId="760cee90-ae54-277d-b10b-28dcbd0d3e2b" testName="ResetPasswordTest1" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="db8c01da-da30-4eee-aa62-eadcf185cad4" testId="799ee04a-e351-af4d-61c5-344e29aaace3" testName="UserNameTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="03c5bcbb-6016-45fb-b5a2-ecb05c3483f4" testId="7a4e1dba-1d39-2948-7d98-a24768e0c9b0" testName="CreateUserTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="1fa0431b-9c4b-4017-b349-6b63da036e02" testId="803d2869-a377-25bf-a71b-c84dc77d1def" testName="GetUserNameByEmailTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="f5d76d61-11fb-471c-9034-18df03a65d77" testId="85f2b15c-762a-ab3f-9a51-770c5fc59348" testName="UnlockUserTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="3e6590e6-b70a-4e3a-81bd-55406241aa8d" testId="870dcd03-5cb1-7419-38c6-922aadba3d83" testName="AddUsersToRolesTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="dcdec057-ede7-4b1a-ada9-21333a1db478" testId="87879d13-77ad-9ad4-016a-e00a2c9ad877" testName="ChangePasswordQuestionAndAnswerTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="16fe1465-b72d-400d-b9bb-d1cd91b2e5af" testId="8da47073-95eb-4ffc-5a69-67901dba3a5a" testName="ValidateUserTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="96fb02fe-d615-4c05-8a85-1286856d4c0f" testId="8e1fa22e-f5c4-2a2f-90b3-46292accf35d" testName="EnablePasswordResetTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="90c9fd1b-88d1-4dbf-a40f-ef4bff656b2a" testId="903719dc-469b-6714-449e-0d776b005bcf" testName="RoleExistsTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="4239c4d1-66c1-4525-9658-bc2e50d5a8cc" testId="920ccadf-67ff-cedc-abbd-141366a2cb4b" testName="SendPropertyChangingTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="2d932ea5-2d32-4c37-95cc-8603c4439614" testId="988929ee-6387-989d-0f13-4e62dd431895" testName="ApplicationNameTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="dd9c5157-c800-4c0a-b981-89b87047a998" testId="9c0dd09c-2020-7eaa-5fa5-6a929596dff0" testName="UpdateUserTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="cce46ab8-30aa-4ada-9a48-b134b5eec276" testId="9d907fe3-9c12-249c-3602-aec229273f9f" testName="MaxInvalidPasswordAttemptsTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="2704d9d4-807e-416f-a48d-a4ae6658f08c" testId="a4af587f-4c98-aebc-558f-715a35c3cd41" testName="IsUserInRoleTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="e8864afd-88bd-4629-b017-c1d58f4d81ee" testId="ac003d48-3914-cbfc-71f8-06b626d85e48" testName="RemoveUsersFromRolesTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="553a1e1a-d245-4fdd-9279-63cf93d60e2a" testId="b076f1b4-7085-972e-6b44-f9169d06d257" testName="HeuristicLabRoleProviderConstructorTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="c7ef5008-9d51-42d0-94ce-4aa40ea7e631" testId="b6e6a789-8f4e-329c-38ef-d9e19bd14e55" testName="PasswordTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="73b4c020-9b3c-4fd7-b3b4-ad99affa595b" testId="b7653734-bdb9-3ff1-e139-577afa69ace4" testName="HeuristicLabMembershipProviderConstructorTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="cf4e21eb-6cea-48c9-abb5-ae9f9d64fcba" testId="b7f66205-f4ec-95fe-a1c6-8d6c8149d406" testName="ChangePasswordTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="ef16b986-fcb3-4b05-b9fe-8e2d86a600a3" testId="bd2b2af4-a196-8696-fdfe-6f8c91dee0ed" testName="DeleteRoleTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="e7dec181-42b7-4d0c-9165-5437401d3e6e" testId="c7ef239d-570f-ed53-091f-9cd716bc6e21" testName="UnlockUserTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="3f1e4ee2-ca8e-40d4-8732-191d10f952cd" testId="c94ce8a9-0db1-d5f7-0d29-a5b40ed93b8f" testName="ChangePasswordTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="a988e658-39d3-4734-a30d-128415e539bd" testId="ce5df924-ff5f-962d-94e4-cbd375c40951" testName="ResetPasswordTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="fb9ec412-392e-424f-b56c-1f7182fdbf34" testId="ce8163d5-a5c1-2a43-04b4-3afe6a0140c3" testName="ChangePasswordQuestionAndAnswerTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="14d612e4-76fb-470f-848a-6d4fd71e6653" testId="d2c8a683-ac68-bded-8e0e-22e2473daa15" testName="GetPasswordTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="752e6d0c-4bec-4ec2-80e3-6e1ad7e48fae" testId="e0e05989-bce3-7e2f-d85f-30efe28be806" testName="GetPasswordTest1" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="1fde4a30-c89b-4cd9-9c77-b7e36ca19937" testId="e3413b57-3027-8e7d-3f25-67842a5c6986" testName="CommentTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="3135a411-fbeb-40b8-bc06-3d1fc437795e" testId="e74d08fa-1da6-67aa-e264-44883b102ee0" testName="DeleteUserTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="cf986c0b-c7bf-49fc-8609-f937b0d59460" testId="ec4d0dbb-e9d0-921a-60b8-4d5c777c22bb" testName="FindUsersByNameTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="603fe9e4-adc4-4cf1-8c6b-b18bccfd7b5f" testId="ecaca427-086c-9493-06af-9887f2d8184f" testName="PasswordAnswerTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="80303fcc-445c-4360-8585-7c22c34bb4fd" testId="eecd2021-d6b1-6674-2ae0-91a9d3d810e9" testName="GetUsersInRoleTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="4b4f294d-a8ea-45ba-856e-3abca01160ca" testId="f2bc074f-6cf0-8bb3-8fdb-2bb731b072df" testName="FindUsersByEmailTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="3f012b29-15d4-4e6e-8554-27822c35e211" testId="f5257092-3544-c359-b761-ec70163dda25" testName="GetNumberOfUsersOnlineTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="262bca74-ddd8-4cc8-ac20-9ddf2ac0473c" testId="fa9b10a7-b01f-af0c-9493-103479586615" testName="PasswordFormatTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="2eb87553-b6cf-4422-b2d4-059bb25b9ecd" testId="fe3e4486-b8ea-6337-b8f2-a28969469a9c" testName="EnablePasswordRetrievalTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+    <UnitTestResult executionId="116735e7-5f9e-4a39-8275-1b16a81be00a" testId="ff6c5d3e-5e1e-1081-124b-2fcac551aca7" testName="ApplicationNameTest" computerName="LENOVAKLEINMHO" duration="00:00:00" startTime="0001-01-01T01:00:00.0000000+01:00" endTime="0001-01-01T01:00:00.0000000+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+    </UnitTestResult>
+  </Results>
+</TestRun>

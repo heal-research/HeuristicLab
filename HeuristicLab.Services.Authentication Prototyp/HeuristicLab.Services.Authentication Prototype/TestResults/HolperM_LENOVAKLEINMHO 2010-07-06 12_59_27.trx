@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TestRun id="302d8819-f556-400b-83a1-76db9fe9f461" name="HolperM@LENOVAKLEINMHO 2010-07-06 12:59:27" runUser="COMPAX\HolperM" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2006">
+  <TestRunConfiguration name="Lokaler Testlauf" id="3cde0e70-9e75-4b76-a987-9e1d702958f0">
+    <Description>Dies ist eine standardmäßige Testlaufkonfiguration für einen lokalen Testlauf.</Description>
+    <Deployment runDeploymentRoot="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\TestResults\HolperM_LENOVAKLEINMHO 2010-07-06 12_59_27">
+      <DeploymentItem filename="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\Service\bin\Debug\Service.dll" />
+      <DeploymentItem filename="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\Persistence\bin\Debug\Persistence.dll" />
+    </Deployment>
+    <TestTypeSpecific />
+  </TestRunConfiguration>
+  <ResultSummary outcome="Completed">
+    <Counters total="1" executed="1" passed="1" error="0" failed="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+  </ResultSummary>
+  <Times creation="2010-07-06T12:59:27.7528910+02:00" queuing="2010-07-06T12:59:31.1920878+02:00" start="2010-07-06T12:59:31.2480910+02:00" finish="2010-07-06T12:59:33.6242269+02:00" />
+  <TestDefinitions>
+    <UnitTest name="NoDuplicateRoleTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="507879f3-78ea-dbf3-86f4-ab641c928ba6">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <Execution id="ec32be61-ecd0-4c03-8cd2-3504a6858e1d" />
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabRoleProviderTest, UnitTests" name="NoDuplicateRoleTest" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <TestEntries>
+    <TestEntry testId="507879f3-78ea-dbf3-86f4-ab641c928ba6" executionId="ec32be61-ecd0-4c03-8cd2-3504a6858e1d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <Results>
+    <UnitTestResult executionId="ec32be61-ecd0-4c03-8cd2-3504a6858e1d" testId="507879f3-78ea-dbf3-86f4-ab641c928ba6" testName="NoDuplicateRoleTest" computerName="LENOVAKLEINMHO" duration="00:00:01.6290032" startTime="2010-07-06T12:59:31.5221066+02:00" endTime="2010-07-06T12:59:33.5252212+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+      <Output>
+      </Output>
+    </UnitTestResult>
+  </Results>
+</TestRun>

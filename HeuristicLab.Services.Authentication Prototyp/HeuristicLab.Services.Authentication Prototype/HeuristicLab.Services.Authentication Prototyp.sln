@@ -1,0 +1,44 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence", "Persistence\Persistence.csproj", "{0B9535EE-DB1E-4174-B6C3-692DE1D8D841}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "Service\Service.csproj", "{E10132CA-5E9E-41F4-A855-45E5E759790A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{90873656-FC76-4759-A451-F0FCDA35CAA4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{960808E8-A742-4E78-8B29-9FADD65899A7}"
+	ProjectSection(SolutionItems) = preProject
+		HeuristicLab.Services.Authentication Prototyp.vsmdi = HeuristicLab.Services.Authentication Prototyp.vsmdi
+		HeuristicLab.Services.Authentication Prototyp1.vsmdi = HeuristicLab.Services.Authentication Prototyp1.vsmdi
+		HeuristicLab.Services.Authentication Prototyp2.vsmdi = HeuristicLab.Services.Authentication Prototyp2.vsmdi
+		HeuristicLab.Services.Authentication Prototyp4.vsmdi = HeuristicLab.Services.Authentication Prototyp4.vsmdi
+		LocalTestRun.testrunconfig = LocalTestRun.testrunconfig
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = HeuristicLab.Services.Authentication Prototyp4.vsmdi
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0B9535EE-DB1E-4174-B6C3-692DE1D8D841}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B9535EE-DB1E-4174-B6C3-692DE1D8D841}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B9535EE-DB1E-4174-B6C3-692DE1D8D841}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B9535EE-DB1E-4174-B6C3-692DE1D8D841}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E10132CA-5E9E-41F4-A855-45E5E759790A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E10132CA-5E9E-41F4-A855-45E5E759790A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E10132CA-5E9E-41F4-A855-45E5E759790A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E10132CA-5E9E-41F4-A855-45E5E759790A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90873656-FC76-4759-A451-F0FCDA35CAA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90873656-FC76-4759-A451-F0FCDA35CAA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90873656-FC76-4759-A451-F0FCDA35CAA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90873656-FC76-4759-A451-F0FCDA35CAA4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

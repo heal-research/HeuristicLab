@@ -1,0 +1,8 @@
+C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\Service\bin\Debug\Service.dll.config
+C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\Service\bin\Debug\Service.dll
+C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\Service\bin\Debug\Service.pdb
+C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\Service\bin\Debug\Persistence.dll
+C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\Service\bin\Debug\Persistence.pdb
+C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\Service\obj\Debug\ResolveAssemblyReference.cache
+C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\Service\obj\Debug\Service.dll
+C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\Service\obj\Debug\Service.pdb

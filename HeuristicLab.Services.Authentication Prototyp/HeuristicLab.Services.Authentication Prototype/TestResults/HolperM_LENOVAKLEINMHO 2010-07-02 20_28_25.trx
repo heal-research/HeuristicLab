@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TestRun id="9eeb0e1a-a056-42a5-80d6-91b8be0c9203" name="HolperM@LENOVAKLEINMHO 2010-07-02 20:28:25" runUser="COMPAX\HolperM" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2006">
+  <TestRunConfiguration name="Lokaler Testlauf" id="3cde0e70-9e75-4b76-a987-9e1d702958f0">
+    <Description>Dies ist eine standardmäßige Testlaufkonfiguration für einen lokalen Testlauf.</Description>
+    <Deployment runDeploymentRoot="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\TestResults\HolperM_LENOVAKLEINMHO 2010-07-02 20_28_25">
+      <DeploymentItem filename="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\Service\bin\Debug\Service.dll" />
+      <DeploymentItem filename="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\Persistence\bin\Debug\Persistence.dll" />
+    </Deployment>
+    <TestTypeSpecific />
+  </TestRunConfiguration>
+  <ResultSummary outcome="Failed">
+    <Counters total="1" executed="1" error="0" failed="1" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" passed="0" completed="0" inProgress="0" pending="0" />
+  </ResultSummary>
+  <Times creation="2010-07-02T20:28:25.0466661+02:00" queuing="2010-07-02T20:28:38.6624449+02:00" start="2010-07-02T20:28:38.8774572+02:00" finish="2010-07-02T20:28:42.2996529+02:00" />
+  <TestDefinitions>
+    <UnitTest name="DeleteRoleTest" storage="c:\projekte\spr-fh\svn\heuristiclab\heuristiclab.services.authentication prototyp\heuristiclab.services.authentication prototype\unittests\bin\debug\unittests.dll" id="bd2b2af4-a196-8696-fdfe-6f8c91dee0ed">
+      <Css projectStructure="" iteration="" />
+      <Owners>
+        <Owner name="" />
+      </Owners>
+      <Execution id="f431bb99-5224-4720-989c-7a1f744dea52" />
+      <TestMethod codeBase="C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\bin\Debug\UnitTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="UnitTests.HeuristicLabRoleProviderTest, UnitTests" name="DeleteRoleTest" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <TestEntries>
+    <TestEntry testId="bd2b2af4-a196-8696-fdfe-6f8c91dee0ed" executionId="f431bb99-5224-4720-989c-7a1f744dea52" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <Results>
+    <UnitTestResult executionId="f431bb99-5224-4720-989c-7a1f744dea52" testId="bd2b2af4-a196-8696-fdfe-6f8c91dee0ed" testName="DeleteRoleTest" computerName="LENOVAKLEINMHO" duration="00:00:02.6640958" startTime="2010-07-02T20:28:39.1014700+02:00" endTime="2010-07-02T20:28:42.2586506+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+      <Output>
+        <ErrorInfo>
+          <Message>Test method UnitTests.HeuristicLabRoleProviderTest.DeleteRoleTest threw exception:  System.IndexOutOfRangeException: Der Index war außerhalb des Arraybereichs..</Message>
+          <StackTrace>    bei System.Array.GetLength(Int32 dimension)
+   bei UnitTests.HeuristicLabRoleProviderTest.DeleteRoleTest() in C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\UnitTests\HeuristicLabRoleProviderTest.cs:Zeile 303.
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+</TestRun>

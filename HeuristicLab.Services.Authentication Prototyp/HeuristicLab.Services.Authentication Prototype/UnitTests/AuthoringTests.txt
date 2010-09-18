@@ -1,0 +1,134 @@
+﻿==========================================================================
+    Visual Studio Team System: Übersicht über das Erstellen und Durchführen von Tests    
+==========================================================================
+
+In dieser Übersicht werden die Features zum Erstellen und Durchführen von Tests in 
+Visual Studio Team System und Visual Studio Team Edition for Software Testers beschrieben.
+
+Öffnen von Tests
+-------------
+Wenn Sie einen Test öffnen möchten, öffnen Sie ein Testprojekt oder eine
+Testmetadatendatei (eine Datei mit der Erweiterung .vsmdi), die die Definition des Tests enthält. Sie finden Testprojekte und
+Metadatendateien im Projektmappen-Explorer.
+
+Anzeigen von Tests
+-------------
+Um anzuzeigen, welche Tests verfügbar sind, öffnen Sie das Fenster "Testansicht". Oderwenn Sie Team Edition for Software Testers installiert haben, können Sie auch
+das Testlisten-Editorfenster zum Anzeigen der Tests öffnen.
+
+Klicken Sie zum Öffnen des Fensters "Testansicht" auf das Menü "Test", zeigen Sie auf "Windows", und
+klicken Sie dann auf "Testansicht". Klicken Sie zum Öffnen des Fensters "Testlisten-Editor" (sofern Sie
+Team Edition for Software Testers installiert haben) auf "Test", zeigen Sie auf "Windows",
+und klicken Sie dann auf "Testlisten-Editor".
+
+Durchführen von Tests
+-------------
+Sie können Tests im Fenster "Testansicht" und im Fenster "Testlisten-Editor" durchführen.
+Anweisungen zum Öffnen dieser Fenster finden Sie unter "Anzeigen von Tests". Wenn ein oder mehrere im Fenster
+"Testansicht" angezeigte Tests durchgeführt werden sollen, markieren Sie diese Tests zunächst in
+diesem Fenster. Wenn Sie mehrere Tests markieren möchten, klicken Sie bei gedrückter UMSCHALT- oder STRG-TASTE
+auf die Tests. Klicken Sie anschließend auf der Symbolleiste im Fenster "Testansicht" auf die
+Schaltfläche "Tests durchführen".
+
+Wenn Sie Visual Studio Team Edition for Software Testers installiert haben, können Sie auch
+das Fenster "Testlisten-Editor" zum Durchführen von Tests verwenden. Wenn Sie Tests im Testlisten-Editor ausführen möchten,
+aktivieren Sie das Kontrollkästchen neben dem jeweils durchzuführenden Test. Klicken Sie anschließend
+auf der Symbolleiste im Fenster "Testlisten-Editor" auf die Schaltfläche "Tests durchführen".
+
+Anzeigen von Testergebnissen
+--------------------
+Wenn Sie einen oder mehrere Tests durchführen, werden die Ergebnisse der durchgeführten Tests
+im Fenster "Testergebnisse" angezeigt. Jeder einzelne Test wird in einer separaten
+Zeile angezeigt, sodass sein Status erkennbar ist. In der oberen Hälfte des Fensters
+befindet sich eine eingebettete Statusleiste. Die Leiste enthält
+eine Zusammenfassung von Details zum gesamten Testlauf.
+
+Zum Anzeigen von ausführlicheren Informationen zu einem bestimmten Testergebnis doppelklicken Sie im
+Fenster "Testergebnisse" auf das Ergebnis. Hierdurch wird ein Fenster geöffnet, in dem weitere Informationen
+zu dem bestimmten Testergebnis angezeigt werden, z. B. alle im Test zurückgegebenen
+Fehlermeldungen.
+
+Ändern der Art der Testdurchführung
+-----------------------------------
+Beim Durchführen eines oder mehrerer Tests wird eine Reihe von Einstellungen verwendet,
+die bestimmen, auf welche Weise diese Tests durchgeführt werden. Diese Einstellungen sind in einer Konfigurationsdatei für Testläufe
+enthalten.
+
+Im Folgenden ist eine Liste mit einigen der Änderungen aufgeführt, die an einer Testlauf-Konfigurationsdatei vorgenommen 
+werden können:
+
+ – Ändern des Benennungsschemas für jeden Testlauf.
+ – Ändern des Testcontrollers, auf dem die Tests durchgeführt werden, sodass Tests
+   remote durchgeführt werden können.
+ – Erfassen von Codeabdeckungsdaten für den zu testenden Code, sodass ersichtlich wird,
+   welche Codezeilen durch die Tests abgedeckt werden.
+ - Aktivieren und Deaktivieren der Testbereitstellung. 
+ – Angeben zusätzlicher, vor dem Ausführen der Tests bereitzustellender Dateien.
+ – Auswählen eines anderen Hosts (ASP.NET) zum Durchführen von ASP.NET-Komponententests.
+ – Auswählen eines anderen Hosts, des Testhosts für intelligente Geräte, zum Durchführen von Komponententests für intelligente Geräte.
+ – Festlegen verschiedener Eigenschaften für die Test-Agents, die die Tests durchführen.
+ – Ausführen benutzerdefinierter Skripts zum Anfang und Ende jedes Testlaufs, sodass die
+   Testumgebung für jeden Testlauf genau nach Wunsch eingerichtet werden kann.
+ – Festlegen von Zeitlimits für Tests und Testläufe.
+ – Festlegen der verwendbaren Browser und der Anzahl der Wiederholungen von Webtests im
+   Testlauf.
+
+Standardmäßig wird eine Konfigurationsdatei für Testläufe immer dann erstellt, wenn Sie ein
+neues Testprojekt erstellen. Änderungen an dieser Datei können Sie vornehmen, indem Sie im 
+Projektmappen-Explorer auf die Datei doppelklicken und dann die Einstellungen ändern. (Konfigurationsdateien für Testläufe
+besitzen die Erweiterung ".testrunconfig".)
+
+Eine Projektmappe kann mehrere Konfigurationsdateien für Testläufe enthalten. Nur in einer dieser
+Dateien (der "aktiven" Konfigurationsdatei für Testläufe) werden
+die Einstellungen bestimmt, die gegenwärtig für Testläufe verwendet werden. Sie wählen
+die aktive Konfigurationsdatei für Testläufe aus, indem Sie im Menü "Test" auf 
+"Aktive Testlaufkonfiguration auswählen" klicken.
+
+-------------------------------------------------------------------------------
+
+Testtypen
+----------
+Bei Verwendung von Visual Studio Team Edition for Software Testers können Sie verschiedene
+Testtypen erstellen:
+
+Komponententest: Erstellen Sie mithilfe eines Komponententests einen programmgesteuerten Test in C++, Visual C# oder
+Visual Basic, der Quellcode ausführt. Ein Komponententest ruft die Methoden einer
+Klasse auf, übergibt passende Parameter und überprüft, ob der zurückgegebene Wert
+Ihren Erwartungen entspricht.
+Es stehen drei spezielle Varianten von Komponententests zur Verfügung:
+ – Datengesteuerte Komponententests werden erstellt, wenn Sie einen Komponententest so konfigurieren, dass er
+   für jede Zeile einer Datenquelle erneut aufgerufen wird. Die Daten jeder Zeile
+   werden für den Komponententest als Eingabedaten verwendet.
+ – ASP.NET-Komponententests sind Komponententests, bei denen Code in einer ASP.NET-Webanwendung
+   ausgeführt wird.
+ - Komponententests für intelligente Geräte sind Komponententests, die für ein intelligentes Gerät
+   oder einen Emulator bereitgestellt werden und dann vom Testhost für intelligente Geräte ausgeführt werden.  
+
+Webtest: Webtests bestehen aus einer geordneten Folge von HTTP-Anforderungen, die
+in einer Browsersitzung von Microsoft Internet Explorer aufgezeichnet werden. Sie können festlegen, dass
+der Test über bestimmte Details zu den angeforderten Seiten oder Websites informiert, beispielsweise
+ob eine bestimmte Seite eine angegebene Zeichenfolge enthält.
+
+Auslastungstest: Ein Auslastungstest wird zum Kapseln von nicht manuellen Tests wie
+Komponententests, Webtests und generischen Tests sowie zum anschließenden Durchführen der Tests durch
+virtuelle Benutzer verwendet. Beim Durchführen dieser Tests unter Last werden Testergebnisse,
+einschließlich Leistungsindikatoren und weiterer Indikatoren, in Tabellen und Diagrammen generiert.
+
+Generischer Test: Ein generischer Test ist ein vorhandenes Programm, das umschlossen ist, damit es
+in Visual Studio als Test funktioniert. Im Folgenden sind Beispiele für Tests oder Programme aufgeführt, die
+in generische Tests umgewandelt werden können:
+ – Ein vorhandener Test, der mithilfe von Prozessbeendigungscodes darüber informiert, ob der
+   Test erfolgreich war. 0 (null) bedeutet, dass der Test erfolgreich war. Jeder andere Wert bedeutet,
+   dass ein Fehler aufgetreten ist.
+ – Ein allgemeines Programm, durch das während eines Testszenarios bestimmte Funktionen verfügbar sind.
+ – Ein Test oder Programm, bei dem eine spezielle XML-Datei (eine "Ergebniszusammenfassungsdatei") verwendet wird,
+   um detaillierte Ergebnisse zu übermitteln.
+
+Manueller Test: Dieser Testtyp wird verwendet, wenn die Testaufgaben
+von einem Testingenieur durchgeführt werden sollen und nicht von einem automatischen Skript.
+
+Testreihe: Verwenden Sie eine Testreihe zum Durchführen mehrerer Tests in einer
+von Ihnen angegebenen Reihenfolge.
+
+-------------------------------------------------------------------------------
+
