@@ -1,6 +1,0 @@
-C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\Persistence\bin\Debug\Persistence.dll
-C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\Persistence\bin\Debug\Persistence.pdb
-C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\Persistence\obj\Debug\ResolveAssemblyReference.cache
-C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\Persistence\obj\Debug\Persistence.dll
-C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\Persistence\obj\Debug\Persistence.pdb
-C:\Projekte\SPR-FH\svn\HeuristicLab\HeuristicLab.Services.Authentication Prototyp\HeuristicLab.Services.Authentication Prototype\Persistence\bin\Debug\Persistence.dll.config
