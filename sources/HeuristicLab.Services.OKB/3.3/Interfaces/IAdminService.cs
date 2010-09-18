@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using System.Net.Security;
 using System.ServiceModel;
 using HeuristicLab.Services.OKB.DataAccess;
@@ -30,20 +31,20 @@ namespace HeuristicLab.Services.OKB {
   [ServiceContract(ProtectionLevel = ProtectionLevel.EncryptAndSign)]
   public interface IAdminService {
     [OperationContract]
-    void AddAlgorithmClass(AlgorithmClass algorithmClass);
+    AlgorithmClass GetAlgorithmClass(long algorithmClassId);
     [OperationContract]
-    AlgorithmClass[] GetAlgorithmClasses();
+    IEnumerable<AlgorithmClass> GetAlgorithmClasses();
     [OperationContract]
-    void UpdateAlgorithmClass(AlgorithmClass algorithmClass);
+    void StoreAlgorithmClass(AlgorithmClass algorithmClass);
     [OperationContract]
     void DeleteAlgorithmClass(long algorithmClassId);
 
     [OperationContract]
-    void AddAlgorithm(Algorithm algorithm);
+    Algorithm GetAlgorithm(long algorithmId);
     [OperationContract]
-    Algorithm[] GetAlgorithms();
+    IEnumerable<Algorithm> GetAlgorithms();
     [OperationContract]
-    void UpdateAlgorithm(Algorithm algorithm);
+    void StoreAlgorithm(Algorithm algorithm);
     [OperationContract]
     void DeleteAlgorithm(long algorithmId);
 

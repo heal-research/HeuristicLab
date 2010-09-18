@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using System.Data.Linq;
 using System.Linq;
 using System.ServiceModel;
@@ -30,25 +31,28 @@ namespace HeuristicLab.Services.OKB {
   /// </summary>
   [ServiceBehavior(IncludeExceptionDetailInFaults = true)]
   public class AdminService : IAdminService {
-    public void AddAlgorithmClass(AlgorithmClass algorithmClass) {
+    public AlgorithmClass GetAlgorithmClass(long algorithmClassId) {
       using (OKBDataContext okb = new OKBDataContext()) {
-        okb.AlgorithmClasses.InsertOnSubmit(new AlgorithmClass() {
-          Name = algorithmClass.Name,
-          Description = algorithmClass.Description
-        });
-        okb.SubmitChanges();
+        return okb.AlgorithmClasses.FirstOrDefault(a => a.Id == algorithmClassId);
       }
     }
-    public AlgorithmClass[] GetAlgorithmClasses() {
+    public IEnumerable<AlgorithmClass> GetAlgorithmClasses() {
       using (OKBDataContext okb = new OKBDataContext()) {
         return okb.AlgorithmClasses.ToArray();
       }
     }
-    public void UpdateAlgorithmClass(AlgorithmClass algorithmClass) {
+    public void StoreAlgorithmClass(AlgorithmClass algorithmClass) {
       using (OKBDataContext okb = new OKBDataContext()) {
-        AlgorithmClass original = okb.AlgorithmClasses.First(a => a.Id == algorithmClass.Id);
-        original.Name = algorithmClass.Name;
-        original.Description = algorithmClass.Description;
+        AlgorithmClass original = okb.AlgorithmClasses.FirstOrDefault(a => a.Id == algorithmClass.Id);
+        if (original == null) {
+          okb.AlgorithmClasses.InsertOnSubmit(new AlgorithmClass() {
+            Name = algorithmClass.Name,
+            Description = algorithmClass.Description
+          });
+        } else {
+          original.Name = algorithmClass.Name;
+          original.Description = algorithmClass.Description;
+        }
         okb.SubmitChanges();
       }
     }
@@ -59,29 +63,28 @@ namespace HeuristicLab.Services.OKB {
       }
     }
 
-    public void AddAlgorithm(Algorithm algorithm) {
+    public Algorithm GetAlgorithm(long algorithmId) {
       using (OKBDataContext okb = new OKBDataContext()) {
-        okb.Algorithms.InsertOnSubmit(new Algorithm() {
-          AlgorithmClassId = algorithm.AlgorithmClassId,
-          PlatformId = algorithm.PlatformId,
-          Name = algorithm.Name,
-          Description = algorithm.Description
-        });
-        okb.SubmitChanges();
+        return okb.Algorithms.FirstOrDefault(a => a.Id == algorithmId);
       }
     }
-    public Algorithm[] GetAlgorithms() {
+    public IEnumerable<Algorithm> GetAlgorithms() {
       using (OKBDataContext okb = new OKBDataContext()) {
         return okb.Algorithms.ToArray();
       }
     }
-    public void UpdateAlgorithm(Algorithm algorithm) {
+    public void StoreAlgorithm(Algorithm algorithm) {
       using (OKBDataContext okb = new OKBDataContext()) {
-        Algorithm original = okb.Algorithms.First(a => a.Id == algorithm.Id);
-        original.AlgorithmClassId = algorithm.AlgorithmClassId;
-        original.PlatformId = algorithm.PlatformId;
-        original.Name = algorithm.Name;
-        original.Description = algorithm.Description;
+        Algorithm original = okb.Algorithms.FirstOrDefault(a => a.Id == algorithm.Id);
+        if (original == null) {
+          okb.Algorithms.InsertOnSubmit(new Algorithm() {
+            Name = algorithm.Name,
+            Description = algorithm.Description
+          });
+        } else {
+          original.Name = algorithm.Name;
+          original.Description = algorithm.Description;
+        }
         okb.SubmitChanges();
       }
     }
