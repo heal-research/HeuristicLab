@@ -38,7 +38,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("Support Vector Machine", "Support vector machine data analysis algorithm.")]
   [Creatable("Data Analysis")]
   [StorableClass]
-  public sealed class SupportVectorMachine : EngineAlgorithm {
+  public sealed class SupportVectorMachine : EngineAlgorithm, IStorableContent {
     private const string TrainingSamplesStartParameterName = "Training start";
     private const string TrainingSamplesEndParameterName = "Training end";
     private const string DataAnalysisProblemDataParameterName = "DataAnalysisProblemData";
@@ -48,8 +48,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private const string NuParameterName = "Nu";
     private const string GammaParameterName = "Gamma";
     private const string EpsilonParameterName = "Epsilon";
-
     private const string ModelParameterName = "SupportVectorMachineModel";
+
+    public string Filename { get; set; }
+
     #region Problem Properties
     public override Type ProblemType {
       get { return typeof(DataAnalysisProblem); }

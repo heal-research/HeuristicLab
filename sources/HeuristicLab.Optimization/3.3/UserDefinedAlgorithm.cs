@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -29,7 +30,9 @@ namespace HeuristicLab.Optimization {
   [Item("User-Defined Algorithm", "An algorithm which can be defined by the user.")]
   [Creatable("Algorithms")]
   [StorableClass]
-  public sealed class UserDefinedAlgorithm : EngineAlgorithm, IParameterizedItem {
+  public sealed class UserDefinedAlgorithm : EngineAlgorithm, IParameterizedItem, IStorableContent {
+    public string Filename { get; set; }
+
     public new ParameterCollection Parameters {
       get { return base.Parameters; }
     }

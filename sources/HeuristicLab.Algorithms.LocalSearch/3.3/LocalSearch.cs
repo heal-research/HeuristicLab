@@ -36,7 +36,9 @@ namespace HeuristicLab.Algorithms.LocalSearch {
   [Item("Local Search", "A local search algorithm.")]
   [Creatable("Algorithms")]
   [StorableClass]
-  public sealed class LocalSearch : EngineAlgorithm {
+  public sealed class LocalSearch : EngineAlgorithm, IStorableContent {
+    public string Filename { get; set; }
+
     #region Problem Properties
     public override Type ProblemType {
       get { return typeof(ISingleObjectiveProblem); }

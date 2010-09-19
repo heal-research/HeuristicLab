@@ -36,7 +36,9 @@ namespace HeuristicLab.Algorithms.TabuSearch {
   [Item("Tabu Search", "A tabu search algorithm.")]
   [Creatable("Algorithms")]
   [StorableClass]
-  public sealed class TabuSearch : EngineAlgorithm {
+  public sealed class TabuSearch : EngineAlgorithm, IStorableContent {
+    public string Filename { get; set; }
+
     #region Problem Properties
     public override Type ProblemType {
       get { return typeof(ISingleObjectiveProblem); }

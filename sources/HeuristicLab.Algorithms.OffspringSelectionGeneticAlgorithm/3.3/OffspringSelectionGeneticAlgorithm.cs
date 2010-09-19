@@ -39,7 +39,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
   [Item("Offspring Selection Genetic Algorithm", "An offspring selection genetic algorithm (Affenzeller, M. et al. 2009. Genetic Algorithms and Genetic Programming - Modern Concepts and Practical Applications. CRC Press).")]
   [Creatable("Algorithms")]
   [StorableClass]
-  public sealed class OffspringSelectionGeneticAlgorithm : EngineAlgorithm {
+  public sealed class OffspringSelectionGeneticAlgorithm : EngineAlgorithm, IStorableContent {
+    public string Filename { get; set; }
+
     #region Problem Properties
     public override Type ProblemType {
       get { return typeof(ISingleObjectiveProblem); }

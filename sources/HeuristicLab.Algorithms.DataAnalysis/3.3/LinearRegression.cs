@@ -40,12 +40,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("Linear Regression", "Linear regression data analysis algorithm.")]
   [Creatable("Data Analysis")]
   [StorableClass]
-  public sealed class LinearRegression : EngineAlgorithm {
+  public sealed class LinearRegression : EngineAlgorithm, IStorableContent {
     private const string TrainingSamplesStartParameterName = "Training start";
     private const string TrainingSamplesEndParameterName = "Training end";
     private const string LinearRegressionModelParameterName = "LinearRegressionModel";
     private const string ModelInterpreterParameterName = "Model interpreter";
 
+    public string Filename { get; set; }
 
     #region Problem Properties
     public override Type ProblemType {

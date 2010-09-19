@@ -39,7 +39,9 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
   [Item("Genetic Algorithm", "A genetic algorithm.")]
   [Creatable("Algorithms")]
   [StorableClass]
-  public sealed class GeneticAlgorithm : EngineAlgorithm {
+  public sealed class GeneticAlgorithm : EngineAlgorithm, IStorableContent {
+    public string Filename { get; set; }
+
     #region Problem Properties
     public override Type ProblemType {
       get { return typeof(ISingleObjectiveProblem); }

@@ -40,7 +40,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
   [Item("Island Offspring Selection Genetic Algorithm", "An island offspring selection genetic algorithm.")]
   [Creatable("Algorithms")]
   [StorableClass]
-  public sealed class IslandOffspringSelectionGeneticAlgorithm : EngineAlgorithm {
+  public sealed class IslandOffspringSelectionGeneticAlgorithm : EngineAlgorithm, IStorableContent {
+    public string Filename { get; set; }
 
     #region Problem Properties
     public override Type ProblemType {

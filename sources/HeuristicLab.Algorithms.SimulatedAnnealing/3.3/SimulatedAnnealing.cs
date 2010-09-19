@@ -37,7 +37,9 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
   [Item("Simulated Annealing", "A simulated annealing algorithm.")]
   [Creatable("Algorithms")]
   [StorableClass]
-  public sealed class SimulatedAnnealing : EngineAlgorithm {
+  public sealed class SimulatedAnnealing : EngineAlgorithm, IStorableContent {
+    public string Filename { get; set; }
+
     #region Problem Properties
     public override Type ProblemType {
       get { return typeof(ISingleObjectiveProblem); }

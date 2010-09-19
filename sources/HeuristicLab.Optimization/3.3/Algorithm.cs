@@ -34,9 +34,7 @@ namespace HeuristicLab.Optimization {
   /// </summary>
   [Item("Algorithm", "A base class for algorithms.")]
   [StorableClass]
-  public abstract class Algorithm : ParameterizedNamedItem, IAlgorithm, IStorableContent {
-    public string Filename { get; set; }
-
+  public abstract class Algorithm : ParameterizedNamedItem, IAlgorithm {
     public override Image ItemImage {
       get {
         if (ExecutionState == ExecutionState.Prepared) return HeuristicLab.Common.Resources.VS2008ImageLibrary.ExecutablePrepared;
