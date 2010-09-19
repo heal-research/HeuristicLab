@@ -58,8 +58,11 @@ namespace HeuristicLab.Services.OKB {
     }
     public void DeleteAlgorithmClass(long algorithmClassId) {
       using (OKBDataContext okb = new OKBDataContext()) {
-        okb.AlgorithmClasses.DeleteOnSubmit(okb.AlgorithmClasses.First(a => a.Id == algorithmClassId));
-        okb.SubmitChanges();
+        AlgorithmClass algorithmClass = okb.AlgorithmClasses.FirstOrDefault(a => a.Id == algorithmClassId);
+        if (algorithmClass != null) {
+          okb.AlgorithmClasses.DeleteOnSubmit(algorithmClass);
+          okb.SubmitChanges();
+        }
       }
     }
 
@@ -90,8 +93,11 @@ namespace HeuristicLab.Services.OKB {
     }
     public void DeleteAlgorithm(long algorithmId) {
       using (OKBDataContext okb = new OKBDataContext()) {
-        okb.Algorithms.DeleteOnSubmit(okb.Algorithms.First(a => a.Id == algorithmId));
-        okb.SubmitChanges();
+        Algorithm algorithm = okb.Algorithms.FirstOrDefault(a => a.Id == algorithmId);
+        if (algorithm != null) {
+          okb.Algorithms.DeleteOnSubmit(algorithm);
+          okb.SubmitChanges();
+        }
       }
     }
 
