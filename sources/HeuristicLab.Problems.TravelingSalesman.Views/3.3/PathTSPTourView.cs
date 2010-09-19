@@ -72,11 +72,6 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
       }
     }
 
-    protected override void OnReadOnlyChanged() {
-      base.OnReadOnlyChanged();
-      SetEnabledStateOfControls();
-    }
-
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
       qualityGroupBox.Enabled = Content != null;

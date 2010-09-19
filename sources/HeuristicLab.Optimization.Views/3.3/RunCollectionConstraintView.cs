@@ -82,8 +82,8 @@ namespace HeuristicLab.Optimization.Views {
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
-      cmbConstraintColumn.Enabled = !this.ReadOnly && !this.Locked && Content != null;
-      cmbConstraintOperation.Enabled = !this.ReadOnly && !this.Locked && Content != null;
+      cmbConstraintColumn.Enabled = !this.ReadOnly && Content != null;
+      cmbConstraintOperation.Enabled = !this.ReadOnly && Content != null;
       chbActive.Enabled = !this.Locked && Content != null;
     }
 

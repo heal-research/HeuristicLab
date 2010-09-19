@@ -60,11 +60,12 @@ namespace HeuristicLab.MainForm.WindowsForms {
             RegisterActiveViewEvents();
             View view = activeView as View;
             if (view != null) {
+              view.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right;
+              view.Size = new System.Drawing.Size(this.Width - this.viewsLabel.Width - this.viewsLabel.Margin.Left - this.viewsLabel.Margin.Right, this.Height);
               view.OnShown(new ViewShownEventArgs(view, false));
               Controls.Add(view);
             }
           } else viewType = null;
-          OnActiveViewChanged();
         }
       }
     }
@@ -83,14 +84,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
           viewType = value;
           OnViewTypeChanged();
         }
-      }
-    }
-
-    public new bool Enabled {
-      get { return base.Enabled; }
-      set {
-        base.Enabled = value;
-        this.viewsLabel.Enabled = value;
       }
     }
 
@@ -135,8 +128,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
                                                             viewType, Content.GetType()));
         IContentView view;
         view = MainFormManager.CreateView(viewType);
-        view.ReadOnly = this.ReadOnly;
         view.Locked = this.Locked;
+        view.ReadOnly = this.ReadOnly;
         ActiveView = view; //necessary to allow the views to change the status of the viewhost
         view.Content = Content;
 
@@ -144,37 +137,19 @@ namespace HeuristicLab.MainForm.WindowsForms {
       }
     }
 
-    private void OnActiveViewChanged() {
-      this.SuspendRepaint();
-      if (activeView != null) {
-        this.ActiveView.ReadOnly = this.ReadOnly;
-        this.ActiveView.Locked = this.Locked;
-        this.ActiveViewControl.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right;
-        this.ActiveViewControl.Size = new System.Drawing.Size(this.Width - this.viewsLabel.Width - this.viewsLabel.Margin.Left - this.viewsLabel.Margin.Right, this.Height);
-      }
-      this.ResumeRepaint(true);
-    }
-
     private void RegisterActiveViewEvents() {
-      activeView.Changed += new EventHandler(activeView_Changed);
       activeView.CaptionChanged += new EventHandler(activeView_CaptionChanged);
+      activeView.LockedChanged += new EventHandler(activeView_LockedChanged);
     }
     private void DeregisterActiveViewEvents() {
-      activeView.Changed -= new EventHandler(activeView_Changed);
-      activeView.CaptionChanged -= new EventHandler(activeView_CaptionChanged);
+      activeView.CaptionChanged += new EventHandler(activeView_CaptionChanged);
+      activeView.LockedChanged += new EventHandler(activeView_LockedChanged);
     }
     private void activeView_CaptionChanged(object sender, EventArgs e) {
-      this.ActiveViewChanged();
+      this.Caption = activeView.Caption;
     }
-    private void activeView_Changed(object sender, EventArgs e) {
-      this.ActiveViewChanged();
-    }
-    private void ActiveViewChanged() {
-      if (ActiveView != null) {
-        this.Caption = this.ActiveView.Caption;
-        this.ReadOnly = this.ActiveView.ReadOnly;
-        this.Locked = this.ActiveView.Locked;
-      }
+    private void activeView_LockedChanged(object sender, EventArgs e) {
+      this.Locked = activeView.Locked;
     }
 
     protected override void OnSizeChanged(EventArgs e) {

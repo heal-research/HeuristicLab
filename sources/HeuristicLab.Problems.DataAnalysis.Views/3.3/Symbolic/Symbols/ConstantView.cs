@@ -57,9 +57,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
       minValueTextBox.Enabled = Content != null;
+      minValueTextBox.ReadOnly = ReadOnly;
       maxValueTextBox.Enabled = Content != null;
+      maxValueTextBox.ReadOnly = ReadOnly;
       valueChangeNuTextBox.Enabled = Content != null;
+      valueChangeNuTextBox.ReadOnly = ReadOnly;
       valueChangeSigmaTextBox.Enabled = Content != null;
+      valueChangeSigmaTextBox.ReadOnly = ReadOnly;
     }
 
     #region content event handlers

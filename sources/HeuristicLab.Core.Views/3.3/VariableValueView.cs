@@ -76,11 +76,6 @@ namespace HeuristicLab.Core.Views {
       }
     }
 
-    protected override void SetEnabledStateOfControls() {
-      base.SetEnabledStateOfControls();
-      valuePanel.Enabled = Content != null;
-    }
-
     protected virtual void Content_ValueChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_ValueChanged), sender, e);

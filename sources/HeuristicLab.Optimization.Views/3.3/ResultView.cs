@@ -44,7 +44,7 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     public override bool ReadOnly {
-      get { return base.ReadOnly; }
+      get { return true; }
       set { /*not needed because results are always readonly */}
     }
 
@@ -53,7 +53,6 @@ namespace HeuristicLab.Optimization.Views {
     /// </summary>
     public ResultView() {
       InitializeComponent();
-      base.ReadOnly = true;
     }
 
     /// <summary>
@@ -90,6 +89,7 @@ namespace HeuristicLab.Optimization.Views {
       base.SetEnabledStateOfControls();
       dataTypeTextBox.Enabled = Content != null;
       viewHost.Enabled = Content != null;
+      viewHost.ReadOnly = this.ReadOnly;
     }
 
     private void Content_ValueChanged(object sender, EventArgs e) {

@@ -56,7 +56,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
       minTimeOffsetTextBox.Enabled = Content != null;
+      minTimeOffsetTextBox.ReadOnly = ReadOnly;
       maxTimeOffsetTextBox.Enabled = Content != null;
+      maxTimeOffsetTextBox.ReadOnly = ReadOnly;
     }
 
     #region content event handlers

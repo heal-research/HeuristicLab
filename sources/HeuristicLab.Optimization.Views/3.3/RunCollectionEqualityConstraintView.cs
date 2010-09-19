@@ -44,7 +44,8 @@ namespace HeuristicLab.Optimization.Views {
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
-      txtConstraintData.ReadOnly = Content == null || this.ReadOnly;
+      txtConstraintData.Enabled = Content != null;
+      txtConstraintData.ReadOnly = ReadOnly;
     }
 
     private void txtConstraintData_TextChanged(object sender, EventArgs e) {

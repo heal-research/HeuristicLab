@@ -76,7 +76,7 @@ namespace HeuristicLab.Operators.Views {
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
-      breakpointCheckBox.Enabled = Content != null && !Locked;
+      breakpointCheckBox.Enabled = Content != null && !ReadOnly;
       collectedValuesView.Enabled = Content != null;
       parameterCollectionView.Enabled = Content != null;
     }

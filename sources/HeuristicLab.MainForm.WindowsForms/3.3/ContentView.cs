@@ -66,14 +66,12 @@ namespace HeuristicLab.MainForm.WindowsForms {
           Invoke(action, value);
         } else {
           if (value != locked) {
-            this.SuspendRepaint();
             locked = value;
             OnLockedChanged();
-            this.SetEnabledStateOfControls();
+            SetEnabledStateOfControls();
             PropertyInfo prop = typeof(IContentView).GetProperty("Locked");
             PropagateStateChanges(this, typeof(IContentView), prop);
             OnChanged();
-            this.ResumeRepaint(true);
           }
         }
       }
@@ -110,6 +108,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
     /// This method is called if the ReadyOnly, Locked or Content property of the ContentView changes to update the controls of the view.
     /// </summary>
     protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
+      Enabled = Content != null;
     }
   }
 }

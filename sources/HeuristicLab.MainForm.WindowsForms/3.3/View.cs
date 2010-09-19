@@ -64,17 +64,34 @@ namespace HeuristicLab.MainForm.WindowsForms {
           Invoke(action, value);
         } else {
           if (value != readOnly) {
-            this.SuspendRepaint();
             this.readOnly = value;
-            this.OnReadOnlyChanged();
-            this.SetEnabledStateOfControls();
+            OnReadOnlyChanged();
+            SetEnabledStateOfControls();
             PropertyInfo prop = typeof(IView).GetProperty("ReadOnly");
             PropagateStateChanges(this, typeof(IView), prop);
-            this.ResumeRepaint(true);
+            OnChanged();
           }
         }
       }
     }
+
+    bool IView.Enabled {
+      get { return base.Enabled; }
+      set {
+        if (base.Enabled != value) {
+          this.SuspendRepaint();
+          base.Enabled = value;
+          bool isTopLevelView = MainFormManager.MainForm.Views.Contains(this);
+          this.ResumeRepaint(isTopLevelView);
+        }
+      }
+    }
+
+    protected override void OnEnabledChanged(EventArgs e) {
+      base.OnEnabledChanged(e);
+      if (Enabled) SetEnabledStateOfControls();
+    }
+
     /// <summary>
     /// This method is called if the ReadyOnly property of the View changes to update the controls of the view.
     /// </summary>
@@ -159,8 +176,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
         if (type.IsAssignableFrom(controlType) && controlPropertyInfo != null) {
           var thisValue = propertyInfo.GetValue(this, null);
           controlPropertyInfo.SetValue(c, thisValue, null);
-        } else
-          PropagateStateChanges(c, type, propertyInfo);
+        } else PropagateStateChanges(c, type, propertyInfo);
       }
     }
     public event EventHandler Changed;
@@ -225,14 +241,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
     protected virtual void OnInitialized(EventArgs e) {
     }
 
-    public new bool Enabled {
-      get { return base.Enabled; }
-      set {
-        SuspendRepaint();
-        base.Enabled = value;
-        ResumeRepaint(true);
-      }
-    }
 
     public void SuspendRepaint() {
       if (InvokeRequired)

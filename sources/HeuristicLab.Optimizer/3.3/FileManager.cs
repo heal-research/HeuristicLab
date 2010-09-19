@@ -92,9 +92,7 @@ namespace HeuristicLab.Optimizer {
           SaveAs(view);
         else {
           ((OptimizerMainForm)MainFormManager.MainForm).SetAppStartingCursor();
-          var views = MainFormManager.MainForm.Views.OfType<IContentView>().Where(v => v.Content == content).ToList();
-          views.ForEach(v => v.ReadOnly = true);
-          views.ForEach(v => v.Locked = true);
+          SetEnabledStateOfContentViews(content, false);
           ContentManager.SaveAsync(content, content.Filename, true, SavingCompleted);
         }
       }
@@ -119,9 +117,7 @@ namespace HeuristicLab.Optimizer {
 
         if (saveFileDialog.ShowDialog() == DialogResult.OK) {
           ((OptimizerMainForm)MainFormManager.MainForm).SetAppStartingCursor();
-          var views = MainFormManager.MainForm.Views.OfType<IContentView>().Where(v => v.Content == content).ToList();
-          views.ForEach(v => v.ReadOnly = true);
-          views.ForEach(v => v.Locked = true);
+          SetEnabledStateOfContentViews(content, false);
           if (saveFileDialog.FilterIndex == 1) {
             ContentManager.SaveAsync(content, saveFileDialog.FileName, false, SavingCompleted);
           } else {
@@ -132,9 +128,7 @@ namespace HeuristicLab.Optimizer {
     }
     private static void SavingCompleted(IStorableContent content, Exception error) {
       try {
-        var views = MainFormManager.MainForm.Views.OfType<IContentView>().Where(v => v.Content == content).ToList();
-        views.ForEach(v => v.ReadOnly = false);
-        views.ForEach(v => v.Locked = false);
+        SetEnabledStateOfContentViews(content, true);
         if (error != null) throw error;
         MainFormManager.GetMainForm<OptimizerMainForm>().UpdateTitle();
       }
@@ -143,6 +137,16 @@ namespace HeuristicLab.Optimizer {
       }
       finally {
         ((OptimizerMainForm)MainFormManager.MainForm).ResetAppStartingCursor();
+      }
+    }
+
+    private static void SetEnabledStateOfContentViews(IStorableContent content, bool enabled) {
+      OptimizerMainForm mainForm = MainFormManager.GetMainForm<OptimizerMainForm>();
+      if (mainForm.InvokeRequired)
+        mainForm.Invoke((Action<IStorableContent, bool>)SetEnabledStateOfContentViews, content, enabled);
+      else {
+        var views = MainFormManager.MainForm.Views.OfType<IContentView>().Where(v => v.Content == content).ToList();
+        views.ForEach(v => v.Enabled = enabled);
       }
     }
   }

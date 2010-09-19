@@ -181,6 +181,7 @@ namespace HeuristicLab.Core.Views {
       foreach (T item in items) {
         try {
           i++;
+          SetEnabledStateOfContentViews(item, false);
           XmlGenerator.Serialize(item, ItemsPath + Path.DirectorySeparatorChar + i.ToString("00000000") + ".hl", 9);
           OnItemSaved(item, progressBar.Maximum / listView.Items.Count);
         }
@@ -191,9 +192,11 @@ namespace HeuristicLab.Core.Views {
     private void OnItemSaved(T item, int progress) {
       if (item != null) {
         if (InvokeRequired)
-          Invoke(new Action<T, int>(OnItemLoaded), item, progress);
-        else
+          Invoke(new Action<T, int>(OnItemSaved), item, progress);
+        else {
           progressBar.Value += progress;
+          SetEnabledStateOfContentViews(item, true);
+        }
       }
     }
     private void OnAllItemsSaved() {
@@ -202,6 +205,15 @@ namespace HeuristicLab.Core.Views {
       else {
         Enabled = true;
         infoPanel.Visible = false;
+      }
+    }
+
+    private void SetEnabledStateOfContentViews(IItem item, bool enabled) {
+      if (InvokeRequired)
+        Invoke((Action<IItem, bool>)SetEnabledStateOfContentViews, item, enabled);
+      else {
+        var views = MainFormManager.MainForm.Views.OfType<IContentView>().Where(v => v.Content == item).ToList();
+        views.ForEach(v => v.Enabled = enabled);
       }
     }
     #endregion

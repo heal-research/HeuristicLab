@@ -85,7 +85,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
         zoomOutButton.Enabled = true;
         screenshotButton.Enabled = true;
         detailsViewHost.Enabled = true;
-        connectButton.Enabled = !ReadOnly && !Locked;
+        connectButton.Enabled = !ReadOnly;
       }
     }
 
@@ -167,7 +167,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
         this.initialToolStripMenuItem.Checked = this.Content.InitialOperator == op;
         this.initialToolStripMenuItem.Enabled = !ReadOnly && !Locked;
         this.breakPointToolStripMenuItem.Checked = op.Breakpoint;
-        this.breakPointToolStripMenuItem.Enabled = !Locked;
+        this.breakPointToolStripMenuItem.Enabled = !ReadOnly && !Locked;
       }
     }
 

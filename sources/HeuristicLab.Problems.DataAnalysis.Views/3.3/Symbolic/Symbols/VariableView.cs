@@ -57,9 +57,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
       weightNuTextBox.Enabled = Content != null;
+      weightNuTextBox.ReadOnly = ReadOnly;
       weightSigmaTextBox.Enabled = Content != null;
+      weightSigmaTextBox.ReadOnly = ReadOnly;
       weightChangeNuTextBox.Enabled = Content != null;
+      weightChangeNuTextBox.ReadOnly = ReadOnly;
       weightChangeSigmaTextBox.Enabled = Content != null;
+      weightChangeSigmaTextBox.ReadOnly = ReadOnly;
     }
 
     #region content event handlers

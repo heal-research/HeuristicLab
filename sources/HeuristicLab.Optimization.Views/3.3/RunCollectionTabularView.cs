@@ -34,11 +34,10 @@ namespace HeuristicLab.Optimization.Views {
     private int[] runToRowMapping;
     public RunCollectionTabularView() {
       InitializeComponent();
-      base.ReadOnly = true;
     }
 
     public override bool ReadOnly {
-      get { return base.ReadOnly; }
+      get { return true; }
       set { /*not needed because results are always readonly */}
     }
 
