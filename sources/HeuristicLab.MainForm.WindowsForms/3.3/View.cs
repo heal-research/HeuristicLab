@@ -239,6 +239,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     protected virtual void OnInitialized(EventArgs e) {
+      SetEnabledStateOfControls();
     }
 
 
