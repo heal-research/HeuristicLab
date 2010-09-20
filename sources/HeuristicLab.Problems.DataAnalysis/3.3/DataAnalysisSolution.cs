@@ -32,7 +32,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
   /// </summary>
   [Item("DataAnalysisSolution", "Represents a solution for a data analysis problem which can be visualized in the GUI.")]
   [StorableClass]
-  public abstract class DataAnalysisSolution : NamedItem {
+  public abstract class DataAnalysisSolution : NamedItem, IStorableContent {
+    #region IStorableContent Members
+    public string Filename { get; set; }
+    #endregion
+    
     protected DataAnalysisSolution()
       : base() { }
     protected DataAnalysisSolution(DataAnalysisProblemData problemData) : this(problemData, double.NegativeInfinity, double.PositiveInfinity) { }

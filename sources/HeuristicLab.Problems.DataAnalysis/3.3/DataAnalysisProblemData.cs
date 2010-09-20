@@ -32,7 +32,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.DataAnalysis {
   [Item("DataAnalysisProblemData", "Represents an item containing all data defining a data analysis problem.")]
   [StorableClass]
-  public class DataAnalysisProblemData : ParameterizedNamedItem {
+  public class DataAnalysisProblemData : ParameterizedNamedItem, IStorableContent {
     protected bool suppressEvents = false;
     #region default data
     // y = x^4 + x^3 + x^2 + x
@@ -158,6 +158,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
         }
       }
     }
+    #endregion
+
+    #region IStorableContent Members
+    public string Filename { get; set; }
     #endregion
 
     public DataAnalysisProblemData()
