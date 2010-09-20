@@ -179,6 +179,13 @@ namespace HeuristicLab.Common.Resources {
             }
         }
         
+        public static System.Drawing.Bitmap DatabaseModified {
+            get {
+                object obj = ResourceManager.GetObject("DatabaseModified", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         public static System.Drawing.Bitmap Delegate {
             get {
                 object obj = ResourceManager.GetObject("Delegate", resourceCulture);

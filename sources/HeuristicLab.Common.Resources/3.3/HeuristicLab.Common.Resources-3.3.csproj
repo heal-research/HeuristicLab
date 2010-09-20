@@ -432,6 +432,7 @@
     <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Disconnect.png" />
     <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_PublishToWeb.png" />
     <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Refresh.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Database_Modified.png" />
     <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Performance.ico" />
   </ItemGroup>
   <ItemGroup>
