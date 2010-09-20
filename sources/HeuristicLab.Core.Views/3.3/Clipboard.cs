@@ -177,7 +177,12 @@ namespace HeuristicLab.Core.Views {
       }
 
       int i = 0;
-      T[] items = itemListViewItemTable.Keys.ToArray();
+      var query = from item in itemListViewItemTable.Keys
+                  let views = MainFormManager.MainForm.Views.OfType<IContentView>().Where(v => v.Content == item)
+                  where !views.Any(v => v.Locked)
+                  select item;
+      T[] items = query.ToArray();
+
       foreach (T item in items) {
         try {
           i++;
@@ -186,6 +191,9 @@ namespace HeuristicLab.Core.Views {
           OnItemSaved(item, progressBar.Maximum / listView.Items.Count);
         }
         catch (Exception) { }
+        finally {
+          SetEnabledStateOfContentViews(item, true);
+        }
       }
       OnAllItemsSaved();
     }
@@ -195,7 +203,6 @@ namespace HeuristicLab.Core.Views {
           Invoke(new Action<T, int>(OnItemSaved), item, progress);
         else {
           progressBar.Value += progress;
-          SetEnabledStateOfContentViews(item, true);
         }
       }
     }
@@ -313,6 +320,14 @@ namespace HeuristicLab.Core.Views {
       }
     }
     private void saveButton_Click(object sender, EventArgs e) {
+      var query = (from item in itemListViewItemTable.Keys
+                   let views = MainFormManager.MainForm.Views.OfType<IContentView>().Where(v => v.Content == item)
+                   where views.Any(v => v.Locked)
+                   select item.ToString()).ToArray();
+      if (query.Length != 0) {
+        string itemNames = string.Join(Environment.NewLine, query);
+        MessageBox.Show("Could not save the following items, because they are locked (e.g. used in a running algorithm). All other items will be saved." + Environment.NewLine + itemNames);
+      }
       Save();
     }
     #endregion
