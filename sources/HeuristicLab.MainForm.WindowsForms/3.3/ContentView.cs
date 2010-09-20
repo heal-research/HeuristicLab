@@ -109,7 +109,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
     /// </summary>
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
-      Enabled = Content != null;
     }
   }
 }
