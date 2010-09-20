@@ -31,6 +31,15 @@ namespace HeuristicLab.Services.OKB {
   [ServiceContract(ProtectionLevel = ProtectionLevel.EncryptAndSign)]
   public interface IAdminService {
     [OperationContract]
+    Platform GetPlatform(long platformId);
+    [OperationContract]
+    IEnumerable<Platform> GetPlatforms();
+    [OperationContract]
+    void StorePlatform(Platform platform);
+    [OperationContract]
+    void DeletePlatform(long platformId);
+
+    [OperationContract]
     AlgorithmClass GetAlgorithmClass(long algorithmClassId);
     [OperationContract]
     IEnumerable<AlgorithmClass> GetAlgorithmClasses();
@@ -49,15 +58,6 @@ namespace HeuristicLab.Services.OKB {
     void DeleteAlgorithm(long algorithmId);
 
 
-
-
-
-    /// <summary>
-    /// Gets all available platforms.
-    /// </summary>
-    /// <returns>A list of <see cref="Platform"/>s.</returns>
-    [OperationContract]
-    Platform[] GetPlatforms();
 
     /// <summary>
     /// Gets the complete algorithm object graph up to the following entities:

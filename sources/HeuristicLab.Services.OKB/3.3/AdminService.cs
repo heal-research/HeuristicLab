@@ -31,6 +31,44 @@ namespace HeuristicLab.Services.OKB {
   /// </summary>
   [ServiceBehavior(IncludeExceptionDetailInFaults = true)]
   public class AdminService : IAdminService {
+    #region Platform Methods
+    public Platform GetPlatform(long platformId) {
+      using (OKBDataContext okb = new OKBDataContext()) {
+        return okb.Platforms.FirstOrDefault(p => p.Id == platformId);
+      }
+    }
+    public IEnumerable<Platform> GetPlatforms() {
+      using (OKBDataContext okb = new OKBDataContext()) {
+        return okb.Platforms.ToArray();
+      }
+    }
+    public void StorePlatform(Platform platform) {
+      using (OKBDataContext okb = new OKBDataContext()) {
+        Platform original = okb.Platforms.FirstOrDefault(p => p.Id == platform.Id);
+        if (original == null) {
+          okb.Platforms.InsertOnSubmit(new Platform() {
+            Name = platform.Name,
+            Description = platform.Description
+          });
+        } else {
+          original.Name = platform.Name;
+          original.Description = platform.Description;
+        }
+        okb.SubmitChanges();
+      }
+    }
+    public void DeletePlatform(long platformId) {
+      using (OKBDataContext okb = new OKBDataContext()) {
+        Platform platform = okb.Platforms.FirstOrDefault(p => p.Id == platformId);
+        if (platform != null) {
+          okb.Platforms.DeleteOnSubmit(platform);
+          okb.SubmitChanges();
+        }
+      }
+    }
+    #endregion
+
+    #region AlgorithmClass Methods
     public AlgorithmClass GetAlgorithmClass(long algorithmClassId) {
       using (OKBDataContext okb = new OKBDataContext()) {
         return okb.AlgorithmClasses.FirstOrDefault(a => a.Id == algorithmClassId);
@@ -65,7 +103,9 @@ namespace HeuristicLab.Services.OKB {
         }
       }
     }
+    #endregion
 
+    #region Algorithm Methods
     public Algorithm GetAlgorithm(long algorithmId) {
       using (OKBDataContext okb = new OKBDataContext()) {
         return okb.Algorithms.FirstOrDefault(a => a.Id == algorithmId);
@@ -82,11 +122,15 @@ namespace HeuristicLab.Services.OKB {
         if (original == null) {
           okb.Algorithms.InsertOnSubmit(new Algorithm() {
             Name = algorithm.Name,
-            Description = algorithm.Description
+            Description = algorithm.Description,
+            PlatformId = algorithm.PlatformId,
+            AlgorithmClassId = algorithm.AlgorithmClassId
           });
         } else {
           original.Name = algorithm.Name;
           original.Description = algorithm.Description;
+          original.PlatformId = algorithm.PlatformId;
+          original.AlgorithmClassId = algorithm.AlgorithmClassId;
         }
         okb.SubmitChanges();
       }
@@ -100,16 +144,7 @@ namespace HeuristicLab.Services.OKB {
         }
       }
     }
-
-    /// <summary>
-    /// Gets all available platforms.
-    /// </summary>
-    /// <returns>A list of <see cref="Platform"/>s.</returns>
-    public Platform[] GetPlatforms() {
-      using (OKBDataContext okb = new OKBDataContext()) {
-        return okb.Platforms.ToArray();
-      }
-    }
+    #endregion
 
     /// <summary>
     /// Gets the complete algorithm object graph up to the following entities:
