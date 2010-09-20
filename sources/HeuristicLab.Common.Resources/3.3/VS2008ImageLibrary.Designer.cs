@@ -368,6 +368,13 @@ namespace HeuristicLab.Common.Resources {
             }
         }
         
+        public static System.Drawing.Bitmap HighPriorityLarge {
+            get {
+                object obj = ResourceManager.GetObject("HighPriorityLarge", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         public static System.Drawing.Bitmap Image {
             get {
                 object obj = ResourceManager.GetObject("Image", resourceCulture);
