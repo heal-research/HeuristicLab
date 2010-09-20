@@ -52,6 +52,7 @@ namespace HeuristicLab.Core.Views {
       this.viewHost.Caption = "View";
       this.viewHost.Content = null;
       this.viewHost.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.viewHost.Enabled = false;
       this.viewHost.Location = new System.Drawing.Point(0, 0);
       this.viewHost.Name = "viewHost";
       this.viewHost.ReadOnly = false;
@@ -66,6 +67,9 @@ namespace HeuristicLab.Core.Views {
       this.Controls.Add(this.viewHost);
       this.Name = "VariableValueView";
       this.Size = new System.Drawing.Size(359, 274);
+      this.DragDrop += new System.Windows.Forms.DragEventHandler(this.VariableValueView_DragDrop);
+      this.DragEnter += new System.Windows.Forms.DragEventHandler(this.VariableValueView_DragEnterOver);
+      this.DragOver += new System.Windows.Forms.DragEventHandler(this.VariableValueView_DragEnterOver);
       this.ResumeLayout(false);
 
     }

@@ -85,7 +85,7 @@ namespace HeuristicLab.Core.Views {
       }
     }
 
-    protected virtual void valuePanel_DragEnterOver(object sender, DragEventArgs e) {
+    protected virtual void VariableValueView_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
       Type type = e.Data.GetData("Type") as Type;
       if (!ReadOnly && (type != null) && (typeof(IItem).IsAssignableFrom(type))) {
@@ -96,7 +96,7 @@ namespace HeuristicLab.Core.Views {
         else if ((e.AllowedEffect & DragDropEffects.Link) == DragDropEffects.Link) e.Effect = DragDropEffects.Link;
       }
     }
-    protected virtual void valuePanel_DragDrop(object sender, DragEventArgs e) {
+    protected virtual void VariableValueView_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
         IItem item = e.Data.GetData("Value") as IItem;
         if ((e.Effect & DragDropEffects.Copy) == DragDropEffects.Copy) item = (IItem)item.Clone();
