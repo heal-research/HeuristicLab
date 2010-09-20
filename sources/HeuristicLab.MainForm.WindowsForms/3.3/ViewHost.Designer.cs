@@ -45,6 +45,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ViewHost));
       this.messageLabel = new System.Windows.Forms.Label();
       this.viewsLabel = new System.Windows.Forms.Label();
       this.viewContextMenuStrip = new HeuristicLab.MainForm.WindowsForms.ViewContextMenuStrip();
@@ -67,18 +68,19 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.viewsLabel.ContextMenuStrip = this.viewContextMenuStrip;
       this.viewsLabel.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Windows;
       this.viewsLabel.Location = new System.Drawing.Point(211, 0);
-      this.viewsLabel.Margin = new System.Windows.Forms.Padding(3);
+      this.viewsLabel.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
       this.viewsLabel.Name = "viewsLabel";
       this.viewsLabel.Size = new System.Drawing.Size(16, 16);
       this.viewsLabel.TabIndex = 0;
       this.toolTip.SetToolTip(this.viewsLabel, "Double-click to open a new window of the current view.\r\nRight-click to change cur" +
               "rent view.\r\nDrag icon to copy or link content to another view.");
-      this.viewsLabel.MouseLeave += new System.EventHandler(this.viewsLabel_MouseLeave);
       this.viewsLabel.DoubleClick += new System.EventHandler(this.viewsLabel_DoubleClick);
       this.viewsLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.viewsLabel_MouseDown);
+      this.viewsLabel.MouseLeave += new System.EventHandler(this.viewsLabel_MouseLeave);
       // 
       // viewContextMenuStrip
       // 
+      this.viewContextMenuStrip.IgnoredViewTypes = System.Linq.Enumerable.Empty<System.Type>();
       this.viewContextMenuStrip.Item = null;
       this.viewContextMenuStrip.Name = "viewContextMenuStrip";
       this.viewContextMenuStrip.Size = new System.Drawing.Size(61, 4);
@@ -93,6 +95,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.Name = "ViewHost";
       this.Size = new System.Drawing.Size(227, 184);
       this.ResumeLayout(false);
+
     }
 
     #endregion

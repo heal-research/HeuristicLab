@@ -177,11 +177,7 @@ namespace HeuristicLab.Core.Views {
       }
 
       int i = 0;
-      var query = from item in itemListViewItemTable.Keys
-                  let views = MainFormManager.MainForm.Views.OfType<IContentView>().Where(v => v.Content == item)
-                  where !views.Any(v => v.Locked)
-                  select item;
-      T[] items = query.ToArray();
+      T[] items = GetStorableItems(itemListViewItemTable.Keys);
 
       foreach (T item in items) {
         try {
@@ -197,6 +193,7 @@ namespace HeuristicLab.Core.Views {
       }
       OnAllItemsSaved();
     }
+
     private void OnItemSaved(T item, int progress) {
       if (item != null) {
         if (InvokeRequired)
@@ -222,6 +219,17 @@ namespace HeuristicLab.Core.Views {
         var views = MainFormManager.MainForm.Views.OfType<IContentView>().Where(v => v.Content == item).ToList();
         views.ForEach(v => v.Enabled = enabled);
       }
+    }
+
+    private static T[] GetStorableItems(IEnumerable<T> items) {
+      var query = from item in items
+                  let executeable = item as IExecutable
+                  let views = MainFormManager.MainForm.Views.OfType<IContentView>().Where(v => v.Content == item)
+                  where executeable == null || executeable.ExecutionState != ExecutionState.Started
+                  where !views.Any(v => v.Locked)
+                  select item;
+      T[] itemArray = query.ToArray();
+      return itemArray;
     }
     #endregion
 
@@ -320,13 +328,11 @@ namespace HeuristicLab.Core.Views {
       }
     }
     private void saveButton_Click(object sender, EventArgs e) {
-      var query = (from item in itemListViewItemTable.Keys
-                   let views = MainFormManager.MainForm.Views.OfType<IContentView>().Where(v => v.Content == item)
-                   where views.Any(v => v.Locked)
-                   select item.ToString()).ToArray();
-      if (query.Length != 0) {
-        string itemNames = string.Join(Environment.NewLine, query);
-        MessageBox.Show("Could not save the following items, because they are locked (e.g. used in a running algorithm). All other items will be saved." + Environment.NewLine + itemNames);
+      IEnumerable<T> items = itemListViewItemTable.Keys.Except(GetStorableItems(itemListViewItemTable.Keys));
+      if (items.Any()) {
+        string itemNames = string.Join(Environment.NewLine, items.Select(item => item.ToString()).ToArray());
+        MessageBox.Show("The following items could not be saved, because they are locked (e.g. used in a running algorithm). All other items will be saved." +
+          Environment.NewLine + itemNames, "Could not save all items", MessageBoxButtons.OK, MessageBoxIcon.Warning);
       }
       Save();
     }
