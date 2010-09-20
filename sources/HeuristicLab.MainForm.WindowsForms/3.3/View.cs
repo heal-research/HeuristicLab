@@ -75,16 +75,20 @@ namespace HeuristicLab.MainForm.WindowsForms {
       }
     }
 
-    bool IView.Enabled {
+    public new bool Enabled {
       get { return base.Enabled; }
       set {
         if (base.Enabled != value) {
           this.SuspendRepaint();
           base.Enabled = value;
-          bool isTopLevelView = MainFormManager.MainForm.Views.Contains(this);
-          this.ResumeRepaint(isTopLevelView);
+          this.ResumeRepaint(true);
         }
       }
+    }
+
+    bool IView.Enabled {
+      get { return Enabled; }
+      set { Enabled = value; }
     }
 
     protected override void OnEnabledChanged(EventArgs e) {
