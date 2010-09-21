@@ -22,111 +22,39 @@
 using System.Collections.Generic;
 using System.Net.Security;
 using System.ServiceModel;
-using HeuristicLab.Services.OKB.DataAccess;
+using HeuristicLab.Services.OKB.DataTransfer;
 
 namespace HeuristicLab.Services.OKB {
   /// <summary>
-  /// Service of administrating the OKB.
-  /// </summary>  
+  /// Interface of the OKB administration service.
+  /// </summary>
   [ServiceContract(ProtectionLevel = ProtectionLevel.EncryptAndSign)]
   public interface IAdminService {
     [OperationContract]
-    Platform GetPlatform(long platformId);
+    Platform GetPlatform(long id);
     [OperationContract]
     IEnumerable<Platform> GetPlatforms();
     [OperationContract]
-    void StorePlatform(Platform platform);
+    void StorePlatform(Platform dto);
     [OperationContract]
-    void DeletePlatform(long platformId);
+    void DeletePlatform(long id);
 
     [OperationContract]
-    AlgorithmClass GetAlgorithmClass(long algorithmClassId);
+    AlgorithmClass GetAlgorithmClass(long id);
     [OperationContract]
     IEnumerable<AlgorithmClass> GetAlgorithmClasses();
     [OperationContract]
-    void StoreAlgorithmClass(AlgorithmClass algorithmClass);
+    void StoreAlgorithmClass(AlgorithmClass dto);
     [OperationContract]
-    void DeleteAlgorithmClass(long algorithmClassId);
+    void DeleteAlgorithmClass(long id);
 
     [OperationContract]
-    Algorithm GetAlgorithm(long algorithmId);
+    Algorithm GetAlgorithm(long id);
     [OperationContract]
     IEnumerable<Algorithm> GetAlgorithms();
     [OperationContract]
-    void StoreAlgorithm(Algorithm algorithm);
+    void StoreAlgorithm(Algorithm dto);
     [OperationContract]
-    void DeleteAlgorithm(long algorithmId);
-
-
-
-    /// <summary>
-    /// Gets the complete algorithm object graph up to the following entities:
-    /// <list type="bullet">
-    /// <item>Parameter</item>
-    /// <item>Algorithm_Paramters.Parameter.DataType</item>
-    /// <item>Algorithm_Results.Result.DataType</item>
-    /// </list>
-    /// </summary>
-    /// <param name="id">The algorithm id.</param>
-    /// <returns>An <see cref="Algorithm"/></returns>
-    [OperationContract]
-    Algorithm GetCompleteAlgorithm(int id);
-
-    /// <summary>
-    /// Gets the complete problem object graph up to the following entities:
-    /// <list type="bullet">
-    /// <item>Platform</item>
-    /// <item>SolutionRepresentation</item>
-    /// <item>Problem_Parameters.Parameter</item>
-    /// <item>IntProblemCharacteristicValues.ProblemCharacteristic.DataType</item>
-    /// <item>FloatProblemCharacteristicValues.ProblemCharacteristic.DataType</item>
-    /// <item>CharProblemCharacteristicValues.ProblemCharacteristic.DataType</item>
-    /// </list>
-    /// </summary>
-    /// <param name="id">The problem id.</param>
-    /// <returns>A <see cref="Problem"/></returns>
-    [OperationContract]
-    Problem GetCompleteProblem(int id);
-
-    /// <summary>
-    /// Updates the algorithm object graph including the following properties and linked entitites:
-    /// <list type="bullet">
-    /// <item>Name</item>
-    /// <item>Description</item>
-    /// <item>AlgorithmClassId</item>
-    /// <item>PlatformId</item>
-    /// <item>Algorithm_Parameters</item>
-    /// <item>Algorithm_Results</item>
-    /// </list>
-    /// <remarks>
-    /// New <see cref="Parameter"/>s or <see cref="Result"/>s will not be
-    /// created but have to be pre-existing.
-    /// </remarks>
-    /// </summary>
-    /// <param name="algorithm">The algorithm.</param>
-    [OperationContract]
-    void UpdateCompleteAlgorithm(Algorithm algorithm);
-
-    /// <summary>
-    /// Updates the problem object graph including the following properties and linked entities:
-    /// <list type="bullet">
-    /// <item>Name</item>
-    /// <item>Description</item>
-    /// <item>ProblemClassId</item>
-    /// <item>PlatformId</item>
-    /// <item>SolutionRepresentationId</item>
-    /// <item>IntProblemCharacteristicValues.Value</item>
-    /// <item>FloatProblemCharacteristicValues.Value</item>
-    /// <item>CharProblemCharacteristicValues.Value</item>
-    /// <item>Problem_Parameters</item>
-    /// </list>
-    /// <remarks>
-    /// New <see cref="ProblemCharacteristic"/>s or <see cref="Parameter"/>s will
-    /// not be created but have to be pre-existing.
-    /// </remarks>
-    /// </summary>
-    /// <param name="problem">The problem.</param>
-    [OperationContract]
-    void UpdateCompleteProblem(Problem problem);
+    void DeleteAlgorithm(long id);
   }
 }

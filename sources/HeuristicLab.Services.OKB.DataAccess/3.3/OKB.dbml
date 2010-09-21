@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?><Database Name="HeuristicLab.OKB" EntityNamespace="HeuristicLab.Services.OKB.DataAccess" ContextNamespace="HeuristicLab.Services.OKB.DataAccess" Class="OKBDataContext" Serialization="Unidirectional" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="HeuristicLab.OKB" EntityNamespace="HeuristicLab.Services.OKB.DataAccess" ContextNamespace="HeuristicLab.Services.OKB.DataAccess" Class="OKBDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
   <Connection Mode="AppSettings" ConnectionString="Data Source=.\SQLEXPRESS;Initial Catalog=HeuristicLab.OKB;Integrated Security=True" SettingsObjectName="HeuristicLab.Services.OKB.DataAccess.Properties.Settings" SettingsPropertyName="OKBConnectionString" Provider="System.Data.SqlClient" />
   <Table Name="dbo.AlgorithmClass" Member="AlgorithmClasses">
     <Type Name="AlgorithmClass">
@@ -17,9 +17,9 @@
       <Column Name="Description" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
       <Association Name="Algorithm_Experiment" Member="Experiments" ThisKey="Id" OtherKey="AlgorithmId" Type="Experiment" />
       <Association Name="Algorithm_AlgorithmParameter" Member="AlgorithmParameters" ThisKey="Id" OtherKey="AlgorithmId" Type="AlgorithmParameter" />
-      <Association Name="Algorithm_AlgorithmData" Member="AlgorithmData" ThisKey="Id" OtherKey="AlgorithmId" Type="AlgorithmData" Cardinality="One" />
       <Association Name="Algorithm_AlgorithmUser" Member="AlgorithmUsers" ThisKey="Id" OtherKey="AlgorithmId" Type="AlgorithmUser" />
       <Association Name="Algorithm_Result" Member="Results" ThisKey="Id" OtherKey="AlgorithmId" Type="Result" />
+      <Association Name="Algorithm_AlgorithmData" Member="AlgorithmData" ThisKey="Id" OtherKey="AlgorithmId" Type="AlgorithmData" Cardinality="One" />
       <Association Name="AlgorithmClass_Algorithm" Member="AlgorithmClass" ThisKey="AlgorithmClassId" OtherKey="Id" Type="AlgorithmClass" IsForeignKey="true" />
       <Association Name="Platform_Algorithm" Member="Platform" ThisKey="PlatformId" OtherKey="Id" Type="Platform" IsForeignKey="true" />
     </Type>
@@ -34,8 +34,8 @@
       <Column Name="Description" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
       <Association Name="Problem_Experiment" Member="Experiments" ThisKey="Id" OtherKey="ProblemId" Type="Experiment" />
       <Association Name="Problem_ProblemParameter" Member="ProblemParameters" ThisKey="Id" OtherKey="ProblemId" Type="ProblemParameter" />
-      <Association Name="Problem_ProblemData" Member="ProblemData" ThisKey="Id" OtherKey="ProblemId" Type="ProblemData" Cardinality="One" />
       <Association Name="Problem_ProblemUser" Member="ProblemUsers" ThisKey="Id" OtherKey="ProblemId" Type="ProblemUser" />
+      <Association Name="Problem_ProblemData" Member="ProblemData" ThisKey="Id" OtherKey="ProblemId" Type="ProblemData" Cardinality="One" />
       <Association Name="ProblemClass_Problem" Member="ProblemClass" ThisKey="ProblemClassId" OtherKey="Id" Type="ProblemClass" IsForeignKey="true" />
       <Association Name="Platform_Problem" Member="Platform" ThisKey="PlatformId" OtherKey="Id" Type="Platform" IsForeignKey="true" />
     </Type>
@@ -102,13 +102,6 @@
       <Association Name="DataType_ProblemParameter" Member="DataType" ThisKey="DataTypeId" OtherKey="Id" Type="DataType" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.AlgorithmData" Member="AlgorithmDatas">
-    <Type Name="AlgorithmData">
-      <Column Name="AlgorithmId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="Data" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX) NOT NULL" CanBeNull="false" UpdateCheck="Never" />
-      <Association Name="Algorithm_AlgorithmData" Member="Algorithm" ThisKey="AlgorithmId" OtherKey="Id" Type="Algorithm" IsForeignKey="true" />
-    </Type>
-  </Table>
   <Table Name="dbo.[User]" Member="Users">
     <Type Name="User">
       <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
@@ -116,13 +109,6 @@
       <Association Name="User_AlgorithmUser" Member="AlgorithmUsers" ThisKey="Id" OtherKey="UserId" Type="AlgorithmUser" />
       <Association Name="User_ProblemUser" Member="ProblemUsers" ThisKey="Id" OtherKey="UserId" Type="ProblemUser" />
       <Association Name="User_Run" Member="Runs" ThisKey="Id" OtherKey="UserId" Type="Run" />
-    </Type>
-  </Table>
-  <Table Name="dbo.ProblemData" Member="ProblemDatas">
-    <Type Name="ProblemData">
-      <Column Name="ProblemId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="Data" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX) NOT NULL" CanBeNull="false" UpdateCheck="Never" />
-      <Association Name="Problem_ProblemData" Member="Problem" ThisKey="ProblemId" OtherKey="Id" Type="Problem" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.AlgorithmUser" Member="AlgorithmUsers">
@@ -228,6 +214,8 @@
       <Association Name="DataType_ResultFloatValue" Member="ResultFloatValues" ThisKey="Id" OtherKey="DataTypeId" Type="ResultFloatValue" />
       <Association Name="DataType_ResultIntValue" Member="ResultIntValues" ThisKey="Id" OtherKey="DataTypeId" Type="ResultIntValue" />
       <Association Name="DataType_ResultStringValue" Member="ResultStringValues" ThisKey="Id" OtherKey="DataTypeId" Type="ResultStringValue" />
+      <Association Name="DataType_AlgorithmData" Member="AlgorithmDatas" ThisKey="Id" OtherKey="DataTypeId" Type="AlgorithmData" />
+      <Association Name="DataType_ProblemData" Member="ProblemDatas" ThisKey="Id" OtherKey="DataTypeId" Type="ProblemData" />
       <Association Name="Platform_DataType" Member="Platform" ThisKey="PlatformId" OtherKey="Id" Type="Platform" IsForeignKey="true" />
     </Type>
   </Table>
@@ -383,6 +371,24 @@
       <Association Name="DataType_ResultStringValue" Member="DataType" ThisKey="DataTypeId" OtherKey="Id" Type="DataType" IsForeignKey="true" />
       <Association Name="Result_ResultStringValue" Member="Result" ThisKey="ResultId" OtherKey="Id" Type="Result" IsForeignKey="true" />
       <Association Name="Run_ResultStringValue" Member="Run" ThisKey="RunId" OtherKey="Id" Type="Run" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.AlgorithmData" Member="AlgorithmDatas">
+    <Type Name="AlgorithmData">
+      <Column Name="AlgorithmId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="DataTypeId" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="Data" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX) NOT NULL" CanBeNull="false" UpdateCheck="Never" />
+      <Association Name="Algorithm_AlgorithmData" Member="Algorithm" ThisKey="AlgorithmId" OtherKey="Id" Type="Algorithm" IsForeignKey="true" />
+      <Association Name="DataType_AlgorithmData" Member="DataType" ThisKey="DataTypeId" OtherKey="Id" Type="DataType" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ProblemData" Member="ProblemDatas">
+    <Type Name="ProblemData">
+      <Column Name="ProblemId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="DataTypeId" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="Data" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX) NOT NULL" CanBeNull="false" UpdateCheck="Never" />
+      <Association Name="DataType_ProblemData" Member="DataType" ThisKey="DataTypeId" OtherKey="Id" Type="DataType" IsForeignKey="true" />
+      <Association Name="Problem_ProblemData" Member="Problem" ThisKey="ProblemId" OtherKey="Id" Type="Problem" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

@@ -20,131 +20,101 @@
 #endregion
 
 using System.Collections.Generic;
-using System.Data.Linq;
 using System.Linq;
 using System.ServiceModel;
 using HeuristicLab.Services.OKB.DataAccess;
 
 namespace HeuristicLab.Services.OKB {
   /// <summary>
-  /// Implementation of <see cref="IAdminService"/>
+  /// Implementation of the OKB administration service (interface <see cref="IAdminService"/>).
   /// </summary>
   [ServiceBehavior(IncludeExceptionDetailInFaults = true)]
   public class AdminService : IAdminService {
     #region Platform Methods
-    public Platform GetPlatform(long platformId) {
+    public DataTransfer.Platform GetPlatform(long id) {
       using (OKBDataContext okb = new OKBDataContext()) {
-        return okb.Platforms.FirstOrDefault(p => p.Id == platformId);
+        return Convert.ToDto(okb.Platforms.FirstOrDefault(x => x.Id == id));
       }
     }
-    public IEnumerable<Platform> GetPlatforms() {
+    public IEnumerable<DataTransfer.Platform> GetPlatforms() {
       using (OKBDataContext okb = new OKBDataContext()) {
-        return okb.Platforms.ToArray();
+        return okb.Platforms.Select(x => Convert.ToDto(x)).ToArray();
       }
     }
-    public void StorePlatform(Platform platform) {
+    public void StorePlatform(DataTransfer.Platform dto) {
       using (OKBDataContext okb = new OKBDataContext()) {
-        Platform original = okb.Platforms.FirstOrDefault(p => p.Id == platform.Id);
-        if (original == null) {
-          okb.Platforms.InsertOnSubmit(new Platform() {
-            Name = platform.Name,
-            Description = platform.Description
-          });
-        } else {
-          original.Name = platform.Name;
-          original.Description = platform.Description;
-        }
+        DataAccess.Platform entity = okb.Platforms.FirstOrDefault(x => x.Id == dto.Id);
+        if (entity == null) okb.Platforms.InsertOnSubmit(Convert.ToEntity(dto));
+        else Convert.ToEntity(dto, entity);
         okb.SubmitChanges();
       }
     }
-    public void DeletePlatform(long platformId) {
+    public void DeletePlatform(long id) {
       using (OKBDataContext okb = new OKBDataContext()) {
-        Platform platform = okb.Platforms.FirstOrDefault(p => p.Id == platformId);
-        if (platform != null) {
-          okb.Platforms.DeleteOnSubmit(platform);
-          okb.SubmitChanges();
-        }
+        DataAccess.Platform entity = okb.Platforms.FirstOrDefault(x => x.Id == id);
+        if (entity != null) okb.Platforms.DeleteOnSubmit(entity);
+        okb.SubmitChanges();
       }
     }
     #endregion
 
     #region AlgorithmClass Methods
-    public AlgorithmClass GetAlgorithmClass(long algorithmClassId) {
+    public DataTransfer.AlgorithmClass GetAlgorithmClass(long id) {
       using (OKBDataContext okb = new OKBDataContext()) {
-        return okb.AlgorithmClasses.FirstOrDefault(a => a.Id == algorithmClassId);
+        return Convert.ToDto(okb.AlgorithmClasses.FirstOrDefault(x => x.Id == id));
       }
     }
-    public IEnumerable<AlgorithmClass> GetAlgorithmClasses() {
+    public IEnumerable<DataTransfer.AlgorithmClass> GetAlgorithmClasses() {
       using (OKBDataContext okb = new OKBDataContext()) {
-        return okb.AlgorithmClasses.ToArray();
+        return okb.AlgorithmClasses.Select(x => Convert.ToDto(x)).ToArray();
       }
     }
-    public void StoreAlgorithmClass(AlgorithmClass algorithmClass) {
+    public void StoreAlgorithmClass(DataTransfer.AlgorithmClass dto) {
       using (OKBDataContext okb = new OKBDataContext()) {
-        AlgorithmClass original = okb.AlgorithmClasses.FirstOrDefault(a => a.Id == algorithmClass.Id);
-        if (original == null) {
-          okb.AlgorithmClasses.InsertOnSubmit(new AlgorithmClass() {
-            Name = algorithmClass.Name,
-            Description = algorithmClass.Description
-          });
-        } else {
-          original.Name = algorithmClass.Name;
-          original.Description = algorithmClass.Description;
-        }
+        DataAccess.AlgorithmClass entity = okb.AlgorithmClasses.FirstOrDefault(x => x.Id == dto.Id);
+        if (entity == null) okb.AlgorithmClasses.InsertOnSubmit(Convert.ToEntity(dto));
+        else Convert.ToEntity(dto, entity);
         okb.SubmitChanges();
       }
     }
-    public void DeleteAlgorithmClass(long algorithmClassId) {
+    public void DeleteAlgorithmClass(long id) {
       using (OKBDataContext okb = new OKBDataContext()) {
-        AlgorithmClass algorithmClass = okb.AlgorithmClasses.FirstOrDefault(a => a.Id == algorithmClassId);
-        if (algorithmClass != null) {
-          okb.AlgorithmClasses.DeleteOnSubmit(algorithmClass);
-          okb.SubmitChanges();
-        }
+        DataAccess.AlgorithmClass entity = okb.AlgorithmClasses.FirstOrDefault(x => x.Id == id);
+        if (entity != null) okb.AlgorithmClasses.DeleteOnSubmit(entity);
+        okb.SubmitChanges();
       }
     }
     #endregion
 
     #region Algorithm Methods
-    public Algorithm GetAlgorithm(long algorithmId) {
+    public DataTransfer.Algorithm GetAlgorithm(long id) {
       using (OKBDataContext okb = new OKBDataContext()) {
-        return okb.Algorithms.FirstOrDefault(a => a.Id == algorithmId);
+        return Convert.ToDto(okb.Algorithms.FirstOrDefault(x => x.Id == id));
       }
     }
-    public IEnumerable<Algorithm> GetAlgorithms() {
+    public IEnumerable<DataTransfer.Algorithm> GetAlgorithms() {
       using (OKBDataContext okb = new OKBDataContext()) {
-        return okb.Algorithms.ToArray();
+        return okb.Algorithms.Select(x => Convert.ToDto(x)).ToArray();
       }
     }
-    public void StoreAlgorithm(Algorithm algorithm) {
+    public void StoreAlgorithm(DataTransfer.Algorithm dto) {
       using (OKBDataContext okb = new OKBDataContext()) {
-        Algorithm original = okb.Algorithms.FirstOrDefault(a => a.Id == algorithm.Id);
-        if (original == null) {
-          okb.Algorithms.InsertOnSubmit(new Algorithm() {
-            Name = algorithm.Name,
-            Description = algorithm.Description,
-            PlatformId = algorithm.PlatformId,
-            AlgorithmClassId = algorithm.AlgorithmClassId
-          });
-        } else {
-          original.Name = algorithm.Name;
-          original.Description = algorithm.Description;
-          original.PlatformId = algorithm.PlatformId;
-          original.AlgorithmClassId = algorithm.AlgorithmClassId;
-        }
+        DataAccess.Algorithm entity = okb.Algorithms.FirstOrDefault(x => x.Id == dto.Id);
+        if (entity == null) okb.Algorithms.InsertOnSubmit(Convert.ToEntity(dto));
+        else Convert.ToEntity(dto, entity);
         okb.SubmitChanges();
       }
     }
-    public void DeleteAlgorithm(long algorithmId) {
+    public void DeleteAlgorithm(long id) {
       using (OKBDataContext okb = new OKBDataContext()) {
-        Algorithm algorithm = okb.Algorithms.FirstOrDefault(a => a.Id == algorithmId);
-        if (algorithm != null) {
-          okb.Algorithms.DeleteOnSubmit(algorithm);
-          okb.SubmitChanges();
-        }
+        DataAccess.Algorithm entity = okb.Algorithms.FirstOrDefault(x => x.Id == id);
+        if (entity != null) okb.Algorithms.DeleteOnSubmit(entity);
+        okb.SubmitChanges();
       }
     }
     #endregion
+
+    /*
 
     /// <summary>
     /// Gets the complete algorithm object graph up to the following entities:
@@ -273,6 +243,6 @@ namespace HeuristicLab.Services.OKB {
           UserId = u.UserId
         });
       }
-    }
+    }*/
   }
 }

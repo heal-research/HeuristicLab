@@ -120,11 +120,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdminService.cs" />
+    <Compile Include="Convert.cs" />
     <Compile Include="Interfaces\IAdminService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="HeuristicLab.snk" />
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
@@ -132,6 +135,10 @@
     <ProjectReference Include="..\..\HeuristicLab.Services.OKB.DataAccess\3.3\HeuristicLab.Services.OKB.DataAccess-3.3.csproj">
       <Project>{E36BE58F-F3CE-40BB-9AB3-9F9E30AD5CCF}</Project>
       <Name>HeuristicLab.Services.OKB.DataAccess-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Services.OKB.DataTransfer\3.3\HeuristicLab.Services.OKB.DataTransfer-3.3.csproj">
+      <Project>{209FD7A1-DFB2-4B9F-9268-B95E886B2F7A}</Project>
+      <Name>HeuristicLab.Services.OKB.DataTransfer-3.3</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

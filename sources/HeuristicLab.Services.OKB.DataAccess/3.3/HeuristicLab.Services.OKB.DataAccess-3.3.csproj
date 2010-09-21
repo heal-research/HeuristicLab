@@ -120,15 +120,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="OKB.designer.cs">
+    <Compile Include="OKB.designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>OKB.dbml</DependentUpon>
-    </None>
-    <Compile Include="OKB.generated.cs">
-      <DependentUpon>OKB.tt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\AssemblyInfo.frame" />
@@ -143,7 +138,6 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="HeuristicLab.snk" />
-    <None Include="L2ST4.ttinclude" />
     <None Include="OKB.dbml">
       <Generator>MSLinqToSQLGenerator</Generator>
       <LastGenOutput>OKB.designer.cs</LastGenOutput>
@@ -153,10 +147,6 @@
   <ItemGroup>
     <None Include="OKB.dbml.layout">
       <DependentUpon>OKB.dbml</DependentUpon>
-    </None>
-    <None Include="OKB.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>OKB.generated.cs</LastGenOutput>
     </None>
     <None Include="Properties\Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>
@@ -190,6 +180,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="SQL Scripts\Create OKB.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Services.OKB.DataTransfer\3.3\HeuristicLab.Services.OKB.DataTransfer-3.3.csproj">
+      <Project>{209FD7A1-DFB2-4B9F-9268-B95E886B2F7A}</Project>
+      <Name>HeuristicLab.Services.OKB.DataTransfer-3.3</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
