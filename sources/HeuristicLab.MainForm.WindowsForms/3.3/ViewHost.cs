@@ -56,6 +56,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
           }
           activeView = value;
           if (activeView != null) {
+            this.Caption = activeView.Caption;
             viewType = activeView.GetType();
             RegisterActiveViewEvents();
             View view = activeView as View;
