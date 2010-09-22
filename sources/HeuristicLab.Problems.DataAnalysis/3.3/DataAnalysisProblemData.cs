@@ -247,7 +247,16 @@ namespace HeuristicLab.Problems.DataAnalysis {
     #region events
     public event EventHandler ProblemDataChanged;
     protected virtual void OnProblemDataChanged(EventArgs e) {
-      if (!suppressEvents) {
+      if (TrainingSamplesStart.Value < 0) TrainingSamplesStart.Value = 0;
+      else if (TestSamplesStart.Value < 0) TestSamplesStart.Value = 0;
+      else if (TrainingSamplesEnd.Value > Dataset.Rows - 1) TrainingSamplesEnd.Value = Dataset.Rows - 1;
+      else if (TestSamplesEnd.Value > Dataset.Rows - 1) TestSamplesEnd.Value = Dataset.Rows - 1;
+      else if (TrainingSamplesStart.Value > TrainingSamplesEnd.Value) TrainingSamplesStart.Value = TestSamplesEnd.Value;
+      else if (TestSamplesStart.Value > TestSamplesEnd.Value) TestSamplesStart.Value = TestSamplesEnd.Value;
+      else if (ValidationPercentage.Value < 0) ValidationPercentage.Value = 0;
+      else if (ValidationPercentage.Value > 1) ValidationPercentage.Value = 1;
+      else if (!TrainingIndizes.Any()) throw new ArgumentException("No training samples are available.");
+      else if (!suppressEvents) {
         var listeners = ProblemDataChanged;
         if (listeners != null) listeners(this, e);
       }
