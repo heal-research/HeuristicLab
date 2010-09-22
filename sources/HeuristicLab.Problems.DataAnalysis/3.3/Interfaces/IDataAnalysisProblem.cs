@@ -23,5 +23,6 @@ using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   public interface IDataAnalysisProblem : IProblem {
+    DataAnalysisProblemData DataAnalysisProblemData { get; }
   }
 }
