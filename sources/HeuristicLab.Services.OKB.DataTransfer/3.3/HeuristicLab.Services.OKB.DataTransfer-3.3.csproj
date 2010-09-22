@@ -49,6 +49,9 @@
   <ItemGroup>
     <Compile Include="AlgorithmClass.cs" />
     <Compile Include="Algorithm.cs" />
+    <Compile Include="AlgorithmData.cs" />
+    <Compile Include="DataType.cs" />
+    <Compile Include="User.cs" />
     <Compile Include="NamedOKBItem.cs" />
     <Compile Include="OKBItem.cs" />
     <Compile Include="Platform.cs" />

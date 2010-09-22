@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Data.Linq;
 using DA = HeuristicLab.Services.OKB.DataAccess;
 using DT = HeuristicLab.Services.OKB.DataTransfer;
 
@@ -57,6 +58,30 @@ namespace HeuristicLab.Services.OKB {
     }
     public static void ToEntity(DT.Algorithm source, DA.Algorithm target) {
       target.Id = source.Id; target.Name = source.Name; target.Description = source.Description; target.PlatformId = source.PlatformId; target.AlgorithmClassId = source.AlgorithmClassId;
+    }
+    #endregion
+
+    #region AlgorithmData
+    public static DT.AlgorithmData ToDto(DA.AlgorithmData source) {
+      return new DT.AlgorithmData { AlgorithmId = source.AlgorithmId, DataTypeId = source.DataTypeId, Data = source.Data.ToArray() };
+    }
+    public static DA.AlgorithmData ToEntity(DT.AlgorithmData source) {
+      return new DA.AlgorithmData { AlgorithmId = source.AlgorithmId, DataTypeId = source.DataTypeId, Data = new Binary(source.Data) };
+    }
+    public static void ToEntity(DT.AlgorithmData source, DA.AlgorithmData target) {
+      target.AlgorithmId = source.AlgorithmId; target.DataTypeId = source.DataTypeId; target.Data = new Binary(source.Data);
+    }
+    #endregion
+
+    #region DataType
+    public static DT.DataType ToDto(DA.DataType source) {
+      return new DT.DataType { Id = source.Id, Name = source.Name, SqlName = source.SqlName, PlatformId = source.PlatformId };
+    }
+    public static DA.DataType ToEntity(DT.DataType source) {
+      return new DA.DataType { Id = source.Id, Name = source.Name, SqlName = source.SqlName, PlatformId = source.PlatformId };
+    }
+    public static void ToEntity(DT.DataType source, DA.DataType target) {
+      target.Id = source.Id; target.Name = source.Name; target.SqlName = source.SqlName; target.PlatformId = source.PlatformId;
     }
     #endregion
   }

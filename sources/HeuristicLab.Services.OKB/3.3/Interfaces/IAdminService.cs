@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Net.Security;
 using System.ServiceModel;
@@ -30,6 +31,7 @@ namespace HeuristicLab.Services.OKB {
   /// </summary>
   [ServiceContract(ProtectionLevel = ProtectionLevel.EncryptAndSign)]
   public interface IAdminService {
+    #region Platform Methods
     [OperationContract]
     Platform GetPlatform(long id);
     [OperationContract]
@@ -38,7 +40,9 @@ namespace HeuristicLab.Services.OKB {
     void StorePlatform(Platform dto);
     [OperationContract]
     void DeletePlatform(long id);
+    #endregion
 
+    #region AlgorithmClass Methods
     [OperationContract]
     AlgorithmClass GetAlgorithmClass(long id);
     [OperationContract]
@@ -47,7 +51,9 @@ namespace HeuristicLab.Services.OKB {
     void StoreAlgorithmClass(AlgorithmClass dto);
     [OperationContract]
     void DeleteAlgorithmClass(long id);
+    #endregion
 
+    #region Algorithm Methods
     [OperationContract]
     Algorithm GetAlgorithm(long id);
     [OperationContract]
@@ -56,5 +62,28 @@ namespace HeuristicLab.Services.OKB {
     void StoreAlgorithm(Algorithm dto);
     [OperationContract]
     void DeleteAlgorithm(long id);
+    [OperationContract]
+    IEnumerable<Guid> GetAlgorithmUsers(long algorithmId);
+    [OperationContract]
+    void StoreAlgorithmUsers(long algorithmId, IEnumerable<Guid> users);
+    #endregion
+
+    #region AlgorithmData Methods
+    [OperationContract]
+    AlgorithmData GetAlgorithmData(long algorithmId);
+    [OperationContract]
+    void StoreAlgorithmData(AlgorithmData dto);
+    #endregion
+
+    #region DataType Methods
+    [OperationContract]
+    DataType GetDataType(long id);
+    [OperationContract]
+    IEnumerable<DataType> GetDataTypes();
+    [OperationContract]
+    void StoreDataType(DataType dto);
+    [OperationContract]
+    void DeleteDataType(long id);
+    #endregion
   }
 }

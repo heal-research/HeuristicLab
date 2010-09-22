@@ -121,6 +121,8 @@
   <ItemGroup>
     <Compile Include="AdminService.cs" />
     <Compile Include="Convert.cs" />
+    <Compile Include="AuthenticationService.cs" />
+    <Compile Include="Interfaces\IAuthenticationService.cs" />
     <Compile Include="Interfaces\IAdminService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

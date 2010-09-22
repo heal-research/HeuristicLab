@@ -102,21 +102,11 @@
       <Association Name="DataType_ProblemParameter" Member="DataType" ThisKey="DataTypeId" OtherKey="Id" Type="DataType" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.[User]" Member="Users">
-    <Type Name="User">
-      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="Name" Type="System.String" DbType="NVarChar(200) NOT NULL" CanBeNull="false" />
-      <Association Name="User_AlgorithmUser" Member="AlgorithmUsers" ThisKey="Id" OtherKey="UserId" Type="AlgorithmUser" />
-      <Association Name="User_ProblemUser" Member="ProblemUsers" ThisKey="Id" OtherKey="UserId" Type="ProblemUser" />
-      <Association Name="User_Run" Member="Runs" ThisKey="Id" OtherKey="UserId" Type="Run" />
-    </Type>
-  </Table>
   <Table Name="dbo.AlgorithmUser" Member="AlgorithmUsers">
     <Type Name="AlgorithmUser">
       <Column Name="AlgorithmId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Association Name="Algorithm_AlgorithmUser" Member="Algorithm" ThisKey="AlgorithmId" OtherKey="Id" Type="Algorithm" IsForeignKey="true" />
-      <Association Name="User_AlgorithmUser" Member="User" ThisKey="UserId" OtherKey="Id" Type="User" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.ProblemUser" Member="ProblemUsers">
@@ -124,7 +114,6 @@
       <Column Name="ProblemId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Association Name="Problem_ProblemUser" Member="Problem" ThisKey="ProblemId" OtherKey="Id" Type="Problem" IsForeignKey="true" />
-      <Association Name="User_ProblemUser" Member="User" ThisKey="UserId" OtherKey="Id" Type="User" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.Platform" Member="Platforms">
@@ -151,7 +140,6 @@
       <Association Name="Run_ResultIntValue" Member="ResultIntValues" ThisKey="Id" OtherKey="RunId" Type="ResultIntValue" />
       <Association Name="Run_ResultStringValue" Member="ResultStringValues" ThisKey="Id" OtherKey="RunId" Type="ResultStringValue" />
       <Association Name="Experiment_Run" Member="Experiment" ThisKey="ExperimentId" OtherKey="Id" Type="Experiment" IsForeignKey="true" />
-      <Association Name="User_Run" Member="User" ThisKey="UserId" OtherKey="Id" Type="User" IsForeignKey="true" />
       <Association Name="Client_Run" Member="Client" ThisKey="ClientId" OtherKey="Id" Type="Client" IsForeignKey="true" />
     </Type>
   </Table>

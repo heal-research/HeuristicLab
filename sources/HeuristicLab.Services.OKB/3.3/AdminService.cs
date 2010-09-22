@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
@@ -109,6 +110,62 @@ namespace HeuristicLab.Services.OKB {
       using (OKBDataContext okb = new OKBDataContext()) {
         DataAccess.Algorithm entity = okb.Algorithms.FirstOrDefault(x => x.Id == id);
         if (entity != null) okb.Algorithms.DeleteOnSubmit(entity);
+        okb.SubmitChanges();
+      }
+    }
+    public IEnumerable<Guid> GetAlgorithmUsers(long algorithmId) {
+      using (OKBDataContext okb = new OKBDataContext()) {
+        return okb.AlgorithmUsers.Where(x => x.AlgorithmId == algorithmId).Select(x => x.UserId).ToArray();
+      }
+    }
+    public void StoreAlgorithmUsers(long algorithmId, IEnumerable<Guid> users) {
+      using (OKBDataContext okb = new OKBDataContext()) {
+        okb.AlgorithmUsers.DeleteAllOnSubmit(okb.AlgorithmUsers.Where(x => x.AlgorithmId == algorithmId));
+        okb.AlgorithmUsers.InsertAllOnSubmit(users.Select(x => new DataAccess.AlgorithmUser { AlgorithmId = algorithmId, UserId = x }));
+        okb.SubmitChanges();
+      }
+    }
+    #endregion
+
+    #region AlgorithmData Methods
+    public DataTransfer.AlgorithmData GetAlgorithmData(long algorithmId) {
+      using (OKBDataContext okb = new OKBDataContext()) {
+        return Convert.ToDto(okb.AlgorithmDatas.FirstOrDefault(x => x.AlgorithmId == algorithmId));
+      }
+    }
+    public void StoreAlgorithmData(DataTransfer.AlgorithmData dto) {
+      using (OKBDataContext okb = new OKBDataContext()) {
+        DataAccess.AlgorithmData entity = okb.AlgorithmDatas.FirstOrDefault(x => x.AlgorithmId == dto.AlgorithmId);
+        if (entity == null) okb.AlgorithmDatas.InsertOnSubmit(Convert.ToEntity(dto));
+        else Convert.ToEntity(dto, entity);
+        okb.SubmitChanges();
+      }
+    }
+    #endregion
+
+    #region DataType Methods
+    public DataTransfer.DataType GetDataType(long id) {
+      using (OKBDataContext okb = new OKBDataContext()) {
+        return Convert.ToDto(okb.DataTypes.FirstOrDefault(x => x.Id == id));
+      }
+    }
+    public IEnumerable<DataTransfer.DataType> GetDataTypes() {
+      using (OKBDataContext okb = new OKBDataContext()) {
+        return okb.DataTypes.Select(x => Convert.ToDto(x)).ToArray();
+      }
+    }
+    public void StoreDataType(DataTransfer.DataType dto) {
+      using (OKBDataContext okb = new OKBDataContext()) {
+        DataAccess.DataType entity = okb.DataTypes.FirstOrDefault(x => x.Id == dto.Id);
+        if (entity == null) okb.DataTypes.InsertOnSubmit(Convert.ToEntity(dto));
+        else Convert.ToEntity(dto, entity);
+        okb.SubmitChanges();
+      }
+    }
+    public void DeleteDataType(long id) {
+      using (OKBDataContext okb = new OKBDataContext()) {
+        DataAccess.DataType entity = okb.DataTypes.FirstOrDefault(x => x.Id == id);
+        if (entity != null) okb.DataTypes.DeleteOnSubmit(entity);
         okb.SubmitChanges();
       }
     }
