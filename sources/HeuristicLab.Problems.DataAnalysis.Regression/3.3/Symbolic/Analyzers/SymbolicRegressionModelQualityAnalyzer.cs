@@ -136,18 +136,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     public override IOperation Apply() {
       Analyze(SymbolicExpressionTreeParameter.ActualValue, SymbolicExpressionTreeInterpreterParameter.ActualValue,
         UpperEstimationLimit.Value, LowerEstimationLimit.Value, ProblemDataParameter.ActualValue,
-        ProblemDataParameter.ActualValue.TrainingSamplesStart.Value, ProblemDataParameter.ActualValue.TrainingSamplesEnd.Value,
-        ProblemDataParameter.ActualValue.TestSamplesStart.Value, ProblemDataParameter.ActualValue.TestSamplesEnd.Value,
         ResultsParameter.ActualValue);
       return base.Apply();
     }
 
     public static void Analyze(IEnumerable<SymbolicExpressionTree> trees, ISymbolicExpressionTreeInterpreter interpreter,
       double upperEstimationLimit, double lowerEstimationLimit,
-      DataAnalysisProblemData problemData, int trainingStart, int trainingEnd, int testStart, int testEnd, ResultCollection results) {
+      DataAnalysisProblemData problemData, ResultCollection results) {
       int targetVariableIndex = problemData.Dataset.GetVariableIndex(problemData.TargetVariable.Value);
-      IEnumerable<double> originalTrainingValues = problemData.Dataset.GetEnumeratedVariableValues(targetVariableIndex, trainingStart, trainingEnd);
-      IEnumerable<double> originalTestValues = problemData.Dataset.GetEnumeratedVariableValues(targetVariableIndex, testStart, testEnd);
+      IEnumerable<double> originalTrainingValues = problemData.Dataset.GetEnumeratedVariableValues(targetVariableIndex, problemData.TrainingIndizes);
+      IEnumerable<double> originalTestValues = problemData.Dataset.GetEnumeratedVariableValues(targetVariableIndex, problemData.TestIndizes);
       List<double> trainingMse = new List<double>();
       List<double> trainingR2 = new List<double>();
       List<double> trainingRelErr = new List<double>();
@@ -161,7 +159,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
 
       foreach (var tree in trees) {
         #region training
-        var estimatedTrainingValues = interpreter.GetSymbolicExpressionTreeValues(tree, problemData.Dataset, Enumerable.Range(trainingStart, trainingEnd - trainingStart));
+        var estimatedTrainingValues = interpreter.GetSymbolicExpressionTreeValues(tree, problemData.Dataset, problemData.TrainingIndizes);
         mseEvaluator.Reset();
         r2Evaluator.Reset();
         relErrEvaluator.Reset();
@@ -183,7 +181,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
         trainingRelErr.Add(relErrEvaluator.MeanAbsolutePercentageError);
         #endregion
         #region test
-        var estimatedTestValues = interpreter.GetSymbolicExpressionTreeValues(tree, problemData.Dataset, Enumerable.Range(testStart, testEnd - testStart));
+        var estimatedTestValues = interpreter.GetSymbolicExpressionTreeValues(tree, problemData.Dataset, problemData.TestIndizes);
 
         mseEvaluator.Reset();
         r2Evaluator.Reset();

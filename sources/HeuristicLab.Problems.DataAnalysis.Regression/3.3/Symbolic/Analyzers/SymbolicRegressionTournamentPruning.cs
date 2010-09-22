@@ -27,9 +27,9 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
   public class SymbolicRegressionTournamentPruning : SingleSuccessorOperator, ISymbolicRegressionAnalyzer {
@@ -240,7 +240,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       ISymbolicExpressionTreeInterpreter interpreter, ISymbolicRegressionEvaluator evaluator, bool maximization,
       double lowerEstimationLimit, double upperEstimationLimit,
       double maxPruningRatio, double qualityGainWeight) {
-      IEnumerable<int> rows = Enumerable.Range(samplesStart, samplesEnd - samplesStart);
+        IEnumerable<int> rows = Enumerable.Range(samplesStart, samplesEnd - samplesStart)
+          .Where(i => i < problemData.TestSamplesStart.Value || problemData.TestSamplesEnd.Value <= i);
       int originalSize = tree.Size;
       double originalQuality = evaluator.Evaluate(interpreter, tree,
         lowerEstimationLimit, upperEstimationLimit, problemData.Dataset, problemData.TargetVariable.Value, rows);

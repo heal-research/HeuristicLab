@@ -120,17 +120,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     public static void UpdateBestSolutionResults(DataAnalysisSolution bestSolution, DataAnalysisProblemData problemData, ResultCollection results, IntValue CurrentGeneration) {
       var solution = bestSolution;
       #region update R2,MSE, Rel Error
-      IEnumerable<double> trainingValues = problemData.Dataset.GetEnumeratedVariableValues(
-        problemData.TargetVariable.Value,
-        problemData.TrainingSamplesStart.Value,
-        problemData.TrainingSamplesEnd.Value);
-      IEnumerable<double> testValues = problemData.Dataset.GetEnumeratedVariableValues(
-        problemData.TargetVariable.Value,
-        problemData.TestSamplesStart.Value,
-        problemData.TestSamplesEnd.Value);
+      IEnumerable<double> trainingValues = problemData.Dataset.GetEnumeratedVariableValues(problemData.TargetVariable.Value, problemData.TrainingIndizes);
+      IEnumerable<double> testValues = problemData.Dataset.GetEnumeratedVariableValues(problemData.TargetVariable.Value, problemData.TestIndizes);
       OnlineMeanSquaredErrorEvaluator mseEvaluator = new OnlineMeanSquaredErrorEvaluator();
       OnlineMeanAbsolutePercentageErrorEvaluator relErrorEvaluator = new OnlineMeanAbsolutePercentageErrorEvaluator();
       OnlinePearsonsRSquaredEvaluator r2Evaluator = new OnlinePearsonsRSquaredEvaluator();
+
       #region training
       var originalEnumerator = trainingValues.GetEnumerator();
       var estimatedEnumerator = solution.EstimatedTrainingValues.GetEnumerator();
@@ -143,9 +138,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       double trainingMse = mseEvaluator.MeanSquaredError;
       double trainingRelError = relErrorEvaluator.MeanAbsolutePercentageError;
       #endregion
+
       mseEvaluator.Reset();
       relErrorEvaluator.Reset();
       r2Evaluator.Reset();
+
       #region test
       originalEnumerator = testValues.GetEnumerator();
       estimatedEnumerator = solution.EstimatedTestValues.GetEnumerator();
@@ -158,6 +155,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       double testMse = mseEvaluator.MeanSquaredError;
       double testRelError = relErrorEvaluator.MeanAbsolutePercentageError;
       #endregion
+
       if (results.ContainsKey(BestSolutionResultName)) {
         results[BestSolutionResultName].Value = solution;
         results[BestSolutionTrainingRSquared].Value = new DoubleValue(trainingR2);

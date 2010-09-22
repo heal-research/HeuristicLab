@@ -67,7 +67,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
 
     public IEnumerable<double> GetEstimatedValues(DataAnalysisProblemData problemData, int start, int end) {
-      return interpreter.GetSymbolicExpressionTreeValues(tree, problemData.Dataset, Enumerable.Range(start, end - start));
+      return GetEstimatedValues(problemData, Enumerable.Range(start, end - start));
+    }
+    public IEnumerable<double> GetEstimatedValues(DataAnalysisProblemData problemData, IEnumerable<int> rows) {
+      return interpreter.GetSymbolicExpressionTreeValues(tree, problemData.Dataset, rows);
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

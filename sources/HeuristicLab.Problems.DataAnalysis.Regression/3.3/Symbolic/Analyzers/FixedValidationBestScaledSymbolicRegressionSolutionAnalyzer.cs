@@ -211,7 +211,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       int seed = Random.Next();
       int count = (int)((validationEnd - validationStart) * RelativeNumberOfEvaluatedSamples.Value);
       if (count == 0) count = 1;
-      IEnumerable<int> rows = RandomEnumerable.SampleRandomNumbers(seed, validationStart, validationEnd, count);
+      IEnumerable<int> rows = RandomEnumerable.SampleRandomNumbers(seed, validationStart, validationEnd, count)
+        .Where(row => row < ProblemData.TestSamplesStart.Value || ProblemData.TestSamplesEnd.Value <= row);
 
       double upperEstimationLimit = UpperEstimationLimit != null ? UpperEstimationLimit.Value : double.PositiveInfinity;
       double lowerEstimationLimit = LowerEstimationLimit != null ? LowerEstimationLimit.Value : double.NegativeInfinity;
@@ -240,19 +241,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       if (newBest) {
         // calculate scaling parameters and only for the best tree using the full training set
         double alpha, beta;
-        int trainingStart = ProblemData.TrainingSamplesStart.Value;
-        int trainingEnd = ProblemData.TrainingSamplesEnd.Value;
-        IEnumerable<int> trainingRows = Enumerable.Range(trainingStart, trainingEnd - trainingStart);
         SymbolicRegressionScaledMeanSquaredErrorEvaluator.Calculate(SymbolicExpressionTreeInterpreter, bestTree,
           lowerEstimationLimit, upperEstimationLimit,
           ProblemData.Dataset, targetVariable,
-          trainingRows, out beta, out alpha);
+          ProblemData.TrainingIndizes, out beta, out alpha);
 
         // scale tree for solution
         var scaledTree = SymbolicRegressionSolutionLinearScaler.Scale(bestTree, alpha, beta);
         var model = new SymbolicRegressionModel((ISymbolicExpressionTreeInterpreter)SymbolicExpressionTreeInterpreter.Clone(),
           scaledTree);
-        var solution = new SymbolicRegressionSolution(ProblemData, model, lowerEstimationLimit, upperEstimationLimit);
+        var solution = new SymbolicRegressionSolution((DataAnalysisProblemData)ProblemData.Clone(), model, lowerEstimationLimit, upperEstimationLimit);
         solution.Name = BestSolutionParameterName;
         solution.Description = "Best solution on validation partition found over the whole run.";
 

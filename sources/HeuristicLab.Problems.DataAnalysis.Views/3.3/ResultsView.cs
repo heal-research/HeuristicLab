@@ -76,8 +76,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         matrix.ColumnNames = columnNames;
         matrix.SortableView = false;
 
-        IEnumerable<double> originalTrainingValues = Content.ProblemData.Dataset.GetVariableValues(Content.ProblemData.TargetVariable.Value, Content.ProblemData.TrainingSamplesStart.Value, Content.ProblemData.TrainingSamplesEnd.Value);
-        IEnumerable<double> originalTestValues = Content.ProblemData.Dataset.GetVariableValues(Content.ProblemData.TargetVariable.Value, Content.ProblemData.TestSamplesStart.Value, Content.ProblemData.TestSamplesEnd.Value);
+        IEnumerable<double> originalTrainingValues = Content.ProblemData.Dataset.GetEnumeratedVariableValues(Content.ProblemData.TargetVariable.Value, Content.ProblemData.TrainingIndizes);
+        IEnumerable<double> originalTestValues = Content.ProblemData.Dataset.GetEnumeratedVariableValues(Content.ProblemData.TargetVariable.Value, Content.ProblemData.TestIndizes);
         matrix[0, 0] = SimpleMSEEvaluator.Calculate(originalTrainingValues, Content.EstimatedTrainingValues);
         matrix[0, 1] = SimpleMSEEvaluator.Calculate(originalTestValues, Content.EstimatedTestValues);
         matrix[1, 0] = SimpleRSquaredEvaluator.Calculate(originalTrainingValues, Content.EstimatedTrainingValues);

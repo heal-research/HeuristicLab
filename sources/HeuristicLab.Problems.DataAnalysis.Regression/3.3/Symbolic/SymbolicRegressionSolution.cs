@@ -66,26 +66,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     public override IEnumerable<double> EstimatedValues {
       get {
         if (estimatedValues == null) RecalculateEstimatedValues();
-        return estimatedValues.AsEnumerable();
+        return estimatedValues;
       }
     }
 
     public override IEnumerable<double> EstimatedTrainingValues {
-      get {
-        if (estimatedValues == null) RecalculateEstimatedValues();
-        int start = ProblemData.TrainingSamplesStart.Value;
-        int n = ProblemData.TrainingSamplesEnd.Value - start;
-        return estimatedValues.Skip(start).Take(n).ToList();
-      }
+      get { return GetEstimatedValues(ProblemData.TrainingIndizes); }
     }
 
     public override IEnumerable<double> EstimatedTestValues {
-      get {
-        if (estimatedValues == null) RecalculateEstimatedValues();
-        int start = ProblemData.TestSamplesStart.Value;
-        int n = ProblemData.TestSamplesEnd.Value - start;
-        return estimatedValues.Skip(start).Take(n).ToList();
-      }
+      get { return GetEstimatedValues(ProblemData.TestIndizes); }
+    }
+
+    public virtual IEnumerable<double> GetEstimatedValues(IEnumerable<int> rows) {
+      if (estimatedValues == null) RecalculateEstimatedValues();
+      foreach (int row in rows)
+        yield return estimatedValues[row];
     }
   }
 }

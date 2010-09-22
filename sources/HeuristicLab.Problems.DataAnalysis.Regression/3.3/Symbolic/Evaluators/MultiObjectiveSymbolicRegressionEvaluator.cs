@@ -19,8 +19,8 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
@@ -121,7 +121,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
 
     public override IOperation Apply() {
       int seed = Random.Next();
-      IEnumerable<int> rows = SingleObjectiveSymbolicRegressionEvaluator.GenerateRowsToEvaluate(seed, RelativeNumberOfEvaluatedSamples.Value, SamplesStart.Value, SamplesEnd.Value);
+      IEnumerable<int> rows = SingleObjectiveSymbolicRegressionEvaluator.GenerateRowsToEvaluate(seed, RelativeNumberOfEvaluatedSamples.Value, SamplesStart.Value, SamplesEnd.Value)
+         .Where(i => i < RegressionProblemData.TestSamplesStart.Value || RegressionProblemData.TestSamplesEnd.Value <= i);
       double[] qualities = Evaluate(SymbolicExpressionTreeInterpreter, SymbolicExpressionTree, RegressionProblemData.Dataset,
         RegressionProblemData.TargetVariable, rows);
       QualitiesParameter.ActualValue = new DoubleArray(qualities);

@@ -90,12 +90,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       if (BestSolutionQualityParameter.ActualValue == null || BestSolutionQualityParameter.ActualValue.Value > Quality[i].Value) {
         var model = new SymbolicRegressionModel((ISymbolicExpressionTreeInterpreter)SymbolicExpressionTreeInterpreter.Clone(),
           SymbolicExpressionTree[i]);
-        var solution = new SymbolicRegressionSolution(ProblemData, model, lowerEstimationLimit, upperEstimationLimit);
+        DataAnalysisProblemData problemDataClone = (DataAnalysisProblemData)ProblemData.Clone();
+        var solution = new SymbolicRegressionSolution(problemDataClone, model, lowerEstimationLimit, upperEstimationLimit);
         solution.Name = BestSolutionParameterName;
         solution.Description = "Best solution on validation partition found over the whole run.";
         BestSolutionParameter.ActualValue = solution;
         BestSolutionQualityParameter.ActualValue = Quality[i];
-        BestSymbolicRegressionSolutionAnalyzer.UpdateSymbolicRegressionBestSolutionResults(solution, ProblemData, Results, VariableFrequencies);
+        BestSymbolicRegressionSolutionAnalyzer.UpdateSymbolicRegressionBestSolutionResults(solution, problemDataClone, Results, VariableFrequencies);
       }
       return BestSolutionParameter.ActualValue;
     }

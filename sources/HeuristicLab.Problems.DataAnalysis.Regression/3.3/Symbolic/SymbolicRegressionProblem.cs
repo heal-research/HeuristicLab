@@ -169,6 +169,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
           fixedBestValidationSolutionAnalyzer.ValidationSamplesEndParameter.Value = ValidationSamplesEnd;
           fixedBestValidationSolutionAnalyzer.BestKnownQualityParameter.ActualName = BestKnownQualityParameter.Name;
         }
+
         var bestValidationSolutionAnalyzer = analyzer as ValidationBestScaledSymbolicRegressionSolutionAnalyzer;
         if (bestValidationSolutionAnalyzer != null) {
           bestValidationSolutionAnalyzer.ProblemDataParameter.ActualName = DataAnalysisProblemDataParameter.Name;

@@ -126,19 +126,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       else {
         string targetVariableName = Content.ProblemData.TargetVariable.Value;
         Dataset dataset = Content.ProblemData.Dataset;
-        int trainingStart = Content.ProblemData.TrainingSamplesStart.Value;
-        int trainingEnd = Content.ProblemData.TrainingSamplesEnd.Value;
-        int testStart = Content.ProblemData.TestSamplesStart.Value;
-        int testEnd = Content.ProblemData.TestSamplesEnd.Value;
         if (this.chart.Series[ALL_SERIES].Points.Count > 0)
           this.chart.Series[ALL_SERIES].Points.DataBindXY(Content.EstimatedValues.ToArray(), "",
             dataset.GetVariableValues(targetVariableName), "");
         if (this.chart.Series[TRAINING_SERIES].Points.Count > 0)
           this.chart.Series[TRAINING_SERIES].Points.DataBindXY(Content.EstimatedTrainingValues.ToArray(), "",
-            dataset.GetVariableValues(targetVariableName, trainingStart, trainingEnd), "");
+            dataset.GetEnumeratedVariableValues(targetVariableName, Content.ProblemData.TrainingIndizes).ToArray(), "");
         if (this.chart.Series[TEST_SERIES].Points.Count > 0)
           this.chart.Series[TEST_SERIES].Points.DataBindXY(Content.EstimatedTestValues.ToArray(), "",
-            dataset.GetVariableValues(targetVariableName, testStart, testEnd), "");
+           dataset.GetEnumeratedVariableValues(targetVariableName, Content.ProblemData.TestIndizes).ToArray(), "");
 
         double max = Math.Max(Content.EstimatedValues.Max(), dataset.GetVariableValues(targetVariableName).Max());
         double min = Math.Min(Content.EstimatedValues.Min(), dataset.GetVariableValues(targetVariableName).Min());
@@ -167,26 +163,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         }
       } else if (Content != null) {
         string targetVariableName = Content.ProblemData.TargetVariable.Value;
-        Dataset dataset = Content.ProblemData.Dataset;
-        int trainingStart = Content.ProblemData.TrainingSamplesStart.Value;
-        int trainingEnd = Content.ProblemData.TrainingSamplesEnd.Value;
-        int testStart = Content.ProblemData.TestSamplesStart.Value;
-        int testEnd = Content.ProblemData.TestSamplesEnd.Value;
 
         IEnumerable<double> predictedValues = null;
         IEnumerable<double> targetValues = null;
         switch (series.Name) {
           case ALL_SERIES:
-            predictedValues = Content.EstimatedValues;
-            targetValues = dataset.GetVariableValues(targetVariableName);
+            predictedValues = Content.EstimatedValues.ToArray();
+            targetValues = Content.ProblemData.Dataset.GetVariableValues(targetVariableName);
             break;
           case TRAINING_SERIES:
-            predictedValues = Content.EstimatedTrainingValues;
-            targetValues = dataset.GetVariableValues(targetVariableName, trainingStart, trainingEnd);
+            predictedValues = Content.EstimatedTrainingValues.ToArray();
+            targetValues = Content.ProblemData.Dataset.GetEnumeratedVariableValues(targetVariableName, Content.ProblemData.TrainingIndizes).ToArray();
             break;
           case TEST_SERIES:
-            predictedValues = Content.EstimatedTestValues;
-            targetValues = dataset.GetVariableValues(targetVariableName, testStart, testEnd);
+            predictedValues = Content.EstimatedTestValues.ToArray();
+            targetValues = Content.ProblemData.Dataset.GetEnumeratedVariableValues(targetVariableName, Content.ProblemData.TestIndizes).ToArray();
             break;
         }
         series.Points.DataBindXY(predictedValues, "", targetValues, "");

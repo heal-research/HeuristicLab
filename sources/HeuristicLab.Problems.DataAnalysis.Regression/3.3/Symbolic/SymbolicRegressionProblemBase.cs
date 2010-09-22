@@ -124,19 +124,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       get { return new DoubleValue(10.0); }
     }
     public IntValue TrainingSamplesStart {
-      get { return new IntValue(DataAnalysisProblemData.TrainingSamplesStart.Value); }
+      get { return new IntValue(DataAnalysisProblemData.TrainingIndizes.First()); }
     }
     public IntValue TrainingSamplesEnd {
       get {
-        return new IntValue((DataAnalysisProblemData.TrainingSamplesStart.Value +
-          DataAnalysisProblemData.TrainingSamplesEnd.Value) / 2);
+        int endIndex = (int)(DataAnalysisProblemData.TrainingIndizes.Count() * (1.0 - DataAnalysisProblemData.ValidationPercentage.Value));
+        return new IntValue(DataAnalysisProblemData.TrainingIndizes.ElementAt(endIndex));
       }
     }
     public IntValue ValidationSamplesStart {
       get { return TrainingSamplesEnd; }
     }
     public IntValue ValidationSamplesEnd {
-      get { return new IntValue(DataAnalysisProblemData.TrainingSamplesEnd.Value); }
+      get { return new IntValue(DataAnalysisProblemData.TrainingIndizes.Last() + 1); }
     }
     public IntValue TestSamplesStart {
       get { return DataAnalysisProblemData.TestSamplesStart; }

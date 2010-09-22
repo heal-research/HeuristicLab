@@ -34,6 +34,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
   public class DataAnalysisProblemData : ParameterizedNamedItem, IStorableContent {
     protected bool suppressEvents = false;
+    #region IStorableContent Members
+    public string Filename { get; set; }
+    #endregion
     #region default data
     // y = x^4 + x^3 + x^2 + x
     private static double[,] kozaF1 = new double[,] {
@@ -86,11 +89,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public IValueParameter<IntValue> TestSamplesEndParameter {
       get { return (IValueParameter<IntValue>)Parameters["TestSamplesEnd"]; }
     }
+    public IValueParameter<PercentValue> ValidationPercentageParameter {
+      get { return (IValueParameter<PercentValue>)Parameters["ValidationPercentage"]; }
+    }
     #endregion
 
     #region properties
     public Dataset Dataset {
-      get { return (Dataset)DatasetParameter.Value; }
+      get { return DatasetParameter.Value; }
       set {
         if (value != Dataset) {
           if (value == null) throw new ArgumentNullException();
@@ -99,7 +105,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
     public StringValue TargetVariable {
-      get { return (StringValue)TargetVariableParameter.Value; }
+      get { return TargetVariableParameter.Value; }
       set {
         if (value != TargetVariableParameter.Value) {
           if (value == null) throw new ArgumentNullException();
@@ -109,7 +115,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
     public ICheckedItemList<StringValue> InputVariables {
-      get { return (ICheckedItemList<StringValue>)InputVariablesParameter.Value; }
+      get { return InputVariablesParameter.Value; }
       set {
         if (value != InputVariables) {
           if (value == null) throw new ArgumentNullException();
@@ -119,7 +125,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
     public IntValue TrainingSamplesStart {
-      get { return (IntValue)TrainingSamplesStartParameter.Value; }
+      get { return TrainingSamplesStartParameter.Value; }
       set {
         if (value != TrainingSamplesStart) {
           if (value == null) throw new ArgumentNullException();
@@ -129,7 +135,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
     public IntValue TrainingSamplesEnd {
-      get { return (IntValue)TrainingSamplesEndParameter.Value; }
+      get { return TrainingSamplesEndParameter.Value; }
       set {
         if (value != TrainingSamplesEnd) {
           if (value == null) throw new ArgumentNullException();
@@ -139,7 +145,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
     public IntValue TestSamplesStart {
-      get { return (IntValue)TestSamplesStartParameter.Value; }
+      get { return TestSamplesStartParameter.Value; }
       set {
         if (value != TestSamplesStart) {
           if (value == null) throw new ArgumentNullException();
@@ -149,7 +155,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
     public IntValue TestSamplesEnd {
-      get { return (IntValue)TestSamplesEndParameter.Value; }
+      get { return TestSamplesEndParameter.Value; }
       set {
         if (value != TestSamplesEnd) {
           if (value == null) throw new ArgumentNullException();
@@ -158,11 +164,32 @@ namespace HeuristicLab.Problems.DataAnalysis {
         }
       }
     }
+    public PercentValue ValidationPercentage {
+      get { return ValidationPercentageParameter.Value; }
+      set {
+        if (value != ValidationPercentage) {
+          if (value == null) throw new ArgumentNullException();
+          if (value.Value < 0 || value.Value > 1) throw new ArgumentException("ValidationPercentage must be between 0 and 1.");
+          if (ValidationPercentage != null) DeregisterValueTypeEventHandlers(ValidationPercentage);
+          ValidationPercentageParameter.Value = value;
+        }
+      }
+    }
+
+    public IEnumerable<int> TrainingIndizes {
+      get {
+        return Enumerable.Range(TrainingSamplesStart.Value, TrainingSamplesEnd.Value - TrainingSamplesStart.Value)
+                         .Where(i => i > 0 && i < Dataset.Rows && (i < TestSamplesStart.Value || TestSamplesEnd.Value <= i));
+      }
+    }
+    public IEnumerable<int> TestIndizes {
+      get {
+        return Enumerable.Range(TestSamplesStart.Value, TestSamplesEnd.Value - TestSamplesStart.Value)
+           .Where(i => i > 0 && i < Dataset.Rows);
+      }
+    }
     #endregion
 
-    #region IStorableContent Members
-    public string Filename { get; set; }
-    #endregion
 
     public DataAnalysisProblemData()
       : base() {
@@ -179,6 +206,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Parameters.Add(new ValueParameter<IntValue>("TrainingSamplesEnd", new IntValue(15)));
       Parameters.Add(new ValueParameter<IntValue>("TestSamplesStart", new IntValue(15)));
       Parameters.Add(new ValueParameter<IntValue>("TestSamplesEnd", new IntValue(25)));
+      Parameters.Add(new ValueParameter<PercentValue>("ValidationPercentage", "The relative amount of the training samples that should be used as validation set.", new PercentValue(0.5)));
       RegisterParameterEventHandlers();
       RegisterParameterValueEventHandlers();
     }
@@ -199,6 +227,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Parameters.Add(new ValueParameter<IntValue>("TrainingSamplesEnd", new IntValue(trainingSamplesEnd)));
       Parameters.Add(new ValueParameter<IntValue>("TestSamplesStart", new IntValue(testSamplesStart)));
       Parameters.Add(new ValueParameter<IntValue>("TestSamplesEnd", new IntValue(testSamplesEnd)));
+      Parameters.Add(new ValueParameter<PercentValue>("ValidationPercentage", "The relative amount of the training samples that should be used as validation set.", new PercentValue(0.5)));
       RegisterParameterEventHandlers();
       RegisterParameterValueEventHandlers();
     }
@@ -208,6 +237,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserializationHook() {
+      if (!Parameters.ContainsKey("ValidationPercentage"))
+        Parameters.Add(new ValueParameter<PercentValue>("ValidationPercentage", "The relative amount of the training samples that should be used as validation set.", new PercentValue(0.5)));
+
       RegisterParameterEventHandlers();
       RegisterParameterValueEventHandlers();
     }
@@ -229,6 +261,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       TrainingSamplesEndParameter.ValueChanged += new EventHandler(TrainingSamplesEndParameter_ValueChanged);
       TestSamplesStartParameter.ValueChanged += new EventHandler(TestSamplesStartParameter_ValueChanged);
       TestSamplesEndParameter.ValueChanged += new EventHandler(TestSamplesEndParameter_ValueChanged);
+      ValidationPercentageParameter.ValueChanged += new EventHandler(ValidationPercentageParameter_ValueChanged);
     }
 
     private void RegisterParameterValueEventHandlers() {
@@ -238,6 +271,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       RegisterValueTypeEventHandlers(TrainingSamplesEnd);
       RegisterValueTypeEventHandlers(TestSamplesStart);
       RegisterValueTypeEventHandlers(TestSamplesEnd);
+      RegisterValueTypeEventHandlers(ValidationPercentage);
     }
 
 
@@ -269,6 +303,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     private void TestSamplesEndParameter_ValueChanged(object sender, EventArgs e) {
       RegisterValueTypeEventHandlers(TestSamplesEnd);
+      OnProblemDataChanged(EventArgs.Empty);
+    }
+    private void ValidationPercentageParameter_ValueChanged(object sender, EventArgs e) {
+      RegisterValueTypeEventHandlers(ValidationPercentage);
       OnProblemDataChanged(EventArgs.Empty);
     }
     #endregion

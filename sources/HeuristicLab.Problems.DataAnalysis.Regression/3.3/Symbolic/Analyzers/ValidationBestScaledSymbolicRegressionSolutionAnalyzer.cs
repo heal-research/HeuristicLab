@@ -38,6 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
   /// </summary>
   [Item("ValidationBestScaledSymbolicRegressionSolutionAnalyzer", "An operator that analyzes the validation best scaled symbolic regression solution.")]
   [StorableClass]
+  [Obsolete("This class should not be used anymore because of performance reasons and will therefore not be updated.")]
   public sealed class ValidationBestScaledSymbolicRegressionSolutionAnalyzer : AlgorithmOperator, ISymbolicRegressionAnalyzer {
     private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
     private const string ScaledSymbolicExpressionTreeParameterName = "ScaledSymbolicExpressionTree";
