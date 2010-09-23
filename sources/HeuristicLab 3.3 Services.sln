@@ -17,16 +17,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Services.Deplo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Services.Deployment-3.3.Tests", "HeuristicLab.Services.Deployment\3.3\Tests\HeuristicLab.Services.Deployment-3.3.Tests.csproj", "{421D9CCA-5A48-4813-AB9C-ED7025F9CC35}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Services.OKB.DataAccess-3.3", "HeuristicLab.Services.OKB.DataAccess\3.3\HeuristicLab.Services.OKB.DataAccess-3.3.csproj", "{E36BE58F-F3CE-40BB-9AB3-9F9E30AD5CCF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Services.OKB.AttributeSelection-3.3", "HeuristicLab.Services.OKB.AttributeSelection\3.3\HeuristicLab.Services.OKB.AttributeSelection-3.3.csproj", "{E80A68DB-D6E1-4395-ABF0-AFE09E4DEF8B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Services.OKB-3.3", "HeuristicLab.Services.OKB\3.3\HeuristicLab.Services.OKB-3.3.csproj", "{766DA4B7-2A0E-4CDE-8F90-93D8B1AD62CF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Services.OKB.DataAccess-3.3.Tests", "HeuristicLab.Services.OKB.DataAccess\3.3\Tests\HeuristicLab.Services.OKB.DataAccess-3.3.Tests.csproj", "{89234006-FE1B-4A15-AFEC-91CB3526F0A5}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Services.OKB.DataTransfer-3.3", "HeuristicLab.Services.OKB.DataTransfer\3.3\HeuristicLab.Services.OKB.DataTransfer-3.3.csproj", "{209FD7A1-DFB2-4B9F-9268-B95E886B2F7A}"
-EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = HeuristicLab 3.3 Services.vsmdi
@@ -76,58 +66,6 @@ Global
 		{421D9CCA-5A48-4813-AB9C-ED7025F9CC35}.Release|x64.Build.0 = Release|x64
 		{421D9CCA-5A48-4813-AB9C-ED7025F9CC35}.Release|x86.ActiveCfg = Release|x86
 		{421D9CCA-5A48-4813-AB9C-ED7025F9CC35}.Release|x86.Build.0 = Release|x86
-		{E36BE58F-F3CE-40BB-9AB3-9F9E30AD5CCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E36BE58F-F3CE-40BB-9AB3-9F9E30AD5CCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E36BE58F-F3CE-40BB-9AB3-9F9E30AD5CCF}.Debug|x64.ActiveCfg = Debug|x64
-		{E36BE58F-F3CE-40BB-9AB3-9F9E30AD5CCF}.Debug|x64.Build.0 = Debug|x64
-		{E36BE58F-F3CE-40BB-9AB3-9F9E30AD5CCF}.Debug|x86.ActiveCfg = Debug|x86
-		{E36BE58F-F3CE-40BB-9AB3-9F9E30AD5CCF}.Debug|x86.Build.0 = Debug|x86
-		{E36BE58F-F3CE-40BB-9AB3-9F9E30AD5CCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E36BE58F-F3CE-40BB-9AB3-9F9E30AD5CCF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E36BE58F-F3CE-40BB-9AB3-9F9E30AD5CCF}.Release|x64.ActiveCfg = Release|x64
-		{E36BE58F-F3CE-40BB-9AB3-9F9E30AD5CCF}.Release|x64.Build.0 = Release|x64
-		{E36BE58F-F3CE-40BB-9AB3-9F9E30AD5CCF}.Release|x86.ActiveCfg = Release|x86
-		{E36BE58F-F3CE-40BB-9AB3-9F9E30AD5CCF}.Release|x86.Build.0 = Release|x86
-		{E80A68DB-D6E1-4395-ABF0-AFE09E4DEF8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E80A68DB-D6E1-4395-ABF0-AFE09E4DEF8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E80A68DB-D6E1-4395-ABF0-AFE09E4DEF8B}.Debug|x64.ActiveCfg = Debug|x64
-		{E80A68DB-D6E1-4395-ABF0-AFE09E4DEF8B}.Debug|x64.Build.0 = Debug|x64
-		{E80A68DB-D6E1-4395-ABF0-AFE09E4DEF8B}.Debug|x86.ActiveCfg = Debug|x86
-		{E80A68DB-D6E1-4395-ABF0-AFE09E4DEF8B}.Debug|x86.Build.0 = Debug|x86
-		{E80A68DB-D6E1-4395-ABF0-AFE09E4DEF8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E80A68DB-D6E1-4395-ABF0-AFE09E4DEF8B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E80A68DB-D6E1-4395-ABF0-AFE09E4DEF8B}.Release|x64.ActiveCfg = Release|x64
-		{E80A68DB-D6E1-4395-ABF0-AFE09E4DEF8B}.Release|x64.Build.0 = Release|x64
-		{E80A68DB-D6E1-4395-ABF0-AFE09E4DEF8B}.Release|x86.ActiveCfg = Release|x86
-		{E80A68DB-D6E1-4395-ABF0-AFE09E4DEF8B}.Release|x86.Build.0 = Release|x86
-		{766DA4B7-2A0E-4CDE-8F90-93D8B1AD62CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{766DA4B7-2A0E-4CDE-8F90-93D8B1AD62CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{766DA4B7-2A0E-4CDE-8F90-93D8B1AD62CF}.Debug|x64.ActiveCfg = Debug|x64
-		{766DA4B7-2A0E-4CDE-8F90-93D8B1AD62CF}.Debug|x64.Build.0 = Debug|x64
-		{766DA4B7-2A0E-4CDE-8F90-93D8B1AD62CF}.Debug|x86.ActiveCfg = Debug|x86
-		{766DA4B7-2A0E-4CDE-8F90-93D8B1AD62CF}.Debug|x86.Build.0 = Debug|x86
-		{766DA4B7-2A0E-4CDE-8F90-93D8B1AD62CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{766DA4B7-2A0E-4CDE-8F90-93D8B1AD62CF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{766DA4B7-2A0E-4CDE-8F90-93D8B1AD62CF}.Release|x64.ActiveCfg = Release|x64
-		{766DA4B7-2A0E-4CDE-8F90-93D8B1AD62CF}.Release|x64.Build.0 = Release|x64
-		{766DA4B7-2A0E-4CDE-8F90-93D8B1AD62CF}.Release|x86.ActiveCfg = Release|x86
-		{766DA4B7-2A0E-4CDE-8F90-93D8B1AD62CF}.Release|x86.Build.0 = Release|x86
-		{89234006-FE1B-4A15-AFEC-91CB3526F0A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{89234006-FE1B-4A15-AFEC-91CB3526F0A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{89234006-FE1B-4A15-AFEC-91CB3526F0A5}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{89234006-FE1B-4A15-AFEC-91CB3526F0A5}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{89234006-FE1B-4A15-AFEC-91CB3526F0A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{89234006-FE1B-4A15-AFEC-91CB3526F0A5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{89234006-FE1B-4A15-AFEC-91CB3526F0A5}.Release|x64.ActiveCfg = Release|Any CPU
-		{89234006-FE1B-4A15-AFEC-91CB3526F0A5}.Release|x86.ActiveCfg = Release|Any CPU
-		{209FD7A1-DFB2-4B9F-9268-B95E886B2F7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{209FD7A1-DFB2-4B9F-9268-B95E886B2F7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{209FD7A1-DFB2-4B9F-9268-B95E886B2F7A}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{209FD7A1-DFB2-4B9F-9268-B95E886B2F7A}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{209FD7A1-DFB2-4B9F-9268-B95E886B2F7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{209FD7A1-DFB2-4B9F-9268-B95E886B2F7A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{209FD7A1-DFB2-4B9F-9268-B95E886B2F7A}.Release|x64.ActiveCfg = Release|Any CPU
-		{209FD7A1-DFB2-4B9F-9268-B95E886B2F7A}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
