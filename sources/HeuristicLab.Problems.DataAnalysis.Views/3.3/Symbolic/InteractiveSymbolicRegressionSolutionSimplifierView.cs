@@ -82,21 +82,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic {
       if (Content != null && Content.Model != null && Content.ProblemData != null) {
         SymbolicSimplifier simplifier = new SymbolicSimplifier();
         simplifiedExpressionTree = simplifier.Simplify(Content.Model.SymbolicExpressionTree);
-        SymbolicExpressionTreeNode root = new ProgramRootSymbol().CreateTreeNode();
-        SymbolicExpressionTreeNode start = new StartSymbol().CreateTreeNode();
-        root.AddSubTree(start);
-        start.AddSubTree(simplifiedExpressionTree.Root);
         int samplesStart = Content.ProblemData.TrainingSamplesStart.Value;
         int samplesEnd = Content.ProblemData.TrainingSamplesEnd.Value;
         double originalTrainingMeanSquaredError = SymbolicRegressionMeanSquaredErrorEvaluator.Calculate(
-            Content.Model.Interpreter, new SymbolicExpressionTree(root), Content.LowerEstimationLimit, Content.UpperEstimationLimit,
+            Content.Model.Interpreter, simplifiedExpressionTree, Content.LowerEstimationLimit, Content.UpperEstimationLimit,
             Content.ProblemData.Dataset, Content.ProblemData.TargetVariable.Value,
             Enumerable.Range(samplesStart, samplesEnd - samplesStart));
 
         this.CalculateReplacementNodes();
 
-        this.CalculateNodeImpacts(new SymbolicExpressionTree(root), start, originalTrainingMeanSquaredError);
-        this.treeChart.Tree = simplifiedExpressionTree;
+        this.CalculateNodeImpacts(simplifiedExpressionTree, simplifiedExpressionTree.Root.SubTrees[0], originalTrainingMeanSquaredError);
+        // show only interesting part of solution
+        this.treeChart.Tree = new SymbolicExpressionTree(simplifiedExpressionTree.Root.SubTrees[0].SubTrees[0]);
         this.PaintNodeImpacts();
       }
     }
@@ -109,11 +106,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic {
       root.AddSubTree(start);
       SymbolicExpressionTree tree = new SymbolicExpressionTree(root);
       foreach (SymbolicExpressionTreeNode node in this.simplifiedExpressionTree.IterateNodesPrefix()) {
-        while (start.SubTrees.Count > 0) start.RemoveSubTree(0);
-        start.AddSubTree(node);
-        double constantTreeNodeValue = interpreter.GetSymbolicExpressionTreeValues(tree, Content.ProblemData.Dataset, trainingSamples).Median();
-        ConstantTreeNode constantTreeNode = MakeConstantTreeNode(constantTreeNodeValue);
-        replacementNodes[node] = constantTreeNode;
+        if (!(node.Symbol is ProgramRootSymbol || node.Symbol is StartSymbol)) {
+          while (start.SubTrees.Count > 0) start.RemoveSubTree(0);
+          start.AddSubTree(node);
+          double constantTreeNodeValue = interpreter.GetSymbolicExpressionTreeValues(tree, Content.ProblemData.Dataset, trainingSamples).Median();
+          ConstantTreeNode constantTreeNode = MakeConstantTreeNode(constantTreeNodeValue);
+          replacementNodes[node] = constantTreeNode;
+        }
       }
     }
 
@@ -168,13 +167,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic {
           }
         }
       }
-      this.treeChart.Tree = simplifiedExpressionTree;
 
-      SymbolicExpressionTreeNode root = new ProgramRootSymbol().CreateTreeNode();
-      SymbolicExpressionTreeNode start = new StartSymbol().CreateTreeNode();
-      root.AddSubTree(start);
-      SymbolicExpressionTree tree = new SymbolicExpressionTree(root);
-      start.AddSubTree(simplifiedExpressionTree.Root);
+      // show only interesting part of solution
+      this.treeChart.Tree = new SymbolicExpressionTree(simplifiedExpressionTree.Root.SubTrees[0].SubTrees[0]);
+
+      SymbolicExpressionTree tree = (SymbolicExpressionTree)simplifiedExpressionTree.Clone();
 
       this.Content.ModelChanged -= new EventHandler(Content_ModelChanged);
       this.Content.Model = new SymbolicRegressionModel(Content.Model.Interpreter, tree);
@@ -188,7 +185,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic {
       double max = impacts.Max();
       double min = impacts.Min();
       foreach (SymbolicExpressionTreeNode treeNode in simplifiedExpressionTree.IterateNodesPostfix()) {
-        if (!(treeNode is ConstantTreeNode)) {
+        if (!(treeNode is ConstantTreeNode) && nodeImpacts.ContainsKey(treeNode)) {
           double impact = this.nodeImpacts[treeNode];
           double replacementValue = this.replacementNodes[treeNode].Value;
           VisualSymbolicExpressionTreeNode visualTree = treeChart.GetVisualSymbolicExpressionTreeNode(treeNode);
@@ -210,8 +207,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic {
       foreach (SymbolicExpressionTreeNode treeNode in simplifiedExpressionTree.IterateNodesPostfix()) {
         if (treeNode is ConstantTreeNode && replacementNodes.ContainsValue((ConstantTreeNode)treeNode))
           this.treeChart.GetVisualSymbolicExpressionTreeNode(treeNode).LineColor = Color.DarkOrange;
-        else
-          this.treeChart.GetVisualSymbolicExpressionTreeNode(treeNode).LineColor = Color.Black;
+        else {
+          VisualSymbolicExpressionTreeNode visNode = treeChart.GetVisualSymbolicExpressionTreeNode(treeNode);
+          if (visNode != null)
+            visNode.LineColor = Color.Black;
+        }
       }
     }
 

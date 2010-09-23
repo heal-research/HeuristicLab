@@ -60,7 +60,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
      {10,5,5,3,6,7,7,10,1,4} 
       };
 
-    [TestMethod()]
+    [TestMethod]
     public void CalculateMeanAndVarianceTest() {
       System.Random random = new System.Random(31415);
 
@@ -91,7 +91,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
       }
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void CalculatePearsonsRSquaredTest() {
       System.Random random = new System.Random(31415);
       int n = testData.GetLength(0);

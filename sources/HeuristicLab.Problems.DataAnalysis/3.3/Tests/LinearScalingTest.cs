@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
   [TestClass()]
   public class LinearScalingTest {
-    [TestMethod()]
+    [TestMethod]
     public void CalculateScalingParametersTest() {
       var testData = new double[,] {
      {5,1,1,1,2,1,3,1,1,2},

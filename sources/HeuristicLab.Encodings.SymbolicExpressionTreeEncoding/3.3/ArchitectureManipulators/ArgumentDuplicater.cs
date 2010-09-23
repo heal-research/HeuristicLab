@@ -78,10 +78,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureMani
         }
       }
       // find invocations of the functions and duplicate the matching argument branch
-      var invocationNodes = from node in symbolicExpressionTree.IterateNodesPrefix().OfType<InvokeFunctionTreeNode>()
-                            where node.Symbol.FunctionName == selectedDefunBranch.FunctionName
-                            where node.SubTrees.Count == selectedDefunBranch.NumberOfArguments
-                            select node;
+      var invocationNodes = (from node in symbolicExpressionTree.IterateNodesPrefix().OfType<InvokeFunctionTreeNode>()
+                             where node.Symbol.FunctionName == selectedDefunBranch.FunctionName
+                             where node.SubTrees.Count == selectedDefunBranch.NumberOfArguments
+                             select node).ToList();
       // do this repeatedly until no matching invocations are found      
       while (invocationNodes.Count() > 0) {
         List<SymbolicExpressionTreeNode> newlyAddedBranches = new List<SymbolicExpressionTreeNode>();
@@ -91,11 +91,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureMani
           invokeNode.InsertSubTree(newArgumentIndex, clonedArgumentBranch);
           newlyAddedBranches.Add(clonedArgumentBranch);
         }
-        invocationNodes = from newlyAddedBranch in newlyAddedBranches
-                          from node in newlyAddedBranch.IterateNodesPrefix().OfType<InvokeFunctionTreeNode>()
-                          where node.Symbol.FunctionName == selectedDefunBranch.FunctionName
-                          where node.SubTrees.Count == selectedDefunBranch.NumberOfArguments
-                          select node;
+        invocationNodes = (from newlyAddedBranch in newlyAddedBranches
+                           from node in newlyAddedBranch.IterateNodesPrefix().OfType<InvokeFunctionTreeNode>()
+                           where node.Symbol.FunctionName == selectedDefunBranch.FunctionName
+                           where node.SubTrees.Count == selectedDefunBranch.NumberOfArguments
+                           select node).ToList();
       }
       // register the new argument symbol and increase the number of arguments of the ADF
       selectedDefunBranch.Grammar.AddSymbol(newArgSymbol);

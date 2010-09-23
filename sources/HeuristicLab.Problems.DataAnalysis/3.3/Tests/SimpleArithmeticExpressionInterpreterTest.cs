@@ -69,8 +69,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
       randomTrees = Util.CreateRandomTrees(twister, dataset, grammar, N, 1, 100, 0, 0);
     }
 
-
-    [TestMethod()]
+    [TestMethod]
     public void SimpleArithmeticExpressionInterpreterPerformanceTest() {
       double[] estimation = new double[Rows];
       foreach (SymbolicExpressionTree tree in randomTrees) {
@@ -84,7 +83,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
     /// <summary>
     ///A test for Evaluate
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
     public void SimpleArithmeticExpressionInterpreterEvaluateTest() {
 
       Dataset ds = new Dataset(new string[] { "Y", "A", "B" }, new double[,] {

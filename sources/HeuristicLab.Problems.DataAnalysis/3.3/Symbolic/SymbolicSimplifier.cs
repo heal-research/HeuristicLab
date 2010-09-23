@@ -43,7 +43,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var clone = (SymbolicExpressionTreeNode)originalTree.Root.Clone();
       // macro expand (initially no argument trees)
       var macroExpandedTree = MacroExpand(clone, clone.SubTrees[0], new List<SymbolicExpressionTreeNode>());
-      return new SymbolicExpressionTree(GetSimplifiedTree(macroExpandedTree));
+      SymbolicExpressionTreeNode rootNode = (new ProgramRootSymbol()).CreateTreeNode();
+      rootNode.AddSubTree(GetSimplifiedTree(macroExpandedTree));
+      return new SymbolicExpressionTree(rootNode);
     }
 
     // the argumentTrees list contains already expanded trees used as arguments for invocations
@@ -62,8 +64,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var argSym = node.Symbol as Argument;
         // return the correct argument sub-tree (already macro-expanded)
         return (SymbolicExpressionTreeNode)argumentTrees[argSym.ArgumentIndex].Clone();
-      } else if (node.Symbol is StartSymbol) {
-        return MacroExpand(root, subtrees[0], argumentTrees);
       } else {
         // recursive application
         foreach (var subtree in subtrees) {

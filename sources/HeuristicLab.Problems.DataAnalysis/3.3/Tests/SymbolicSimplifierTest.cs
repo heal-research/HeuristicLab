@@ -39,13 +39,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
   [TestClass()]
   public class SymbolicSimplifierTest {
-    [TestMethod()]
     [DeploymentItem(@"RegressionSolution01.hl")]
     [DeploymentItem(@"RegressionSolution02.hl")]
     [DeploymentItem(@"RegressionSolution03.hl")]
     [DeploymentItem(@"RegressionSolution04.hl")]
     [DeploymentItem(@"RegressionSolution05.hl")]
     [DeploymentItem(@"RegressionSolution06.hl")]
+    [TestMethod]
     public void SimplifyRegressionSolutionsTest() {
       ContentManager.Initialize(new PersistenceContentManager());
 
@@ -97,12 +97,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     private SymbolicRegressionSolution SimplifySolution(SymbolicRegressionSolution original) {
       SymbolicSimplifier simplifier = new SymbolicSimplifier();
-      SymbolicExpressionTree simplifiedExpression = simplifier.Simplify(original.Model.SymbolicExpressionTree);
-      SymbolicExpressionTreeNode root = new ProgramRootSymbol().CreateTreeNode();
-      SymbolicExpressionTreeNode start = new StartSymbol().CreateTreeNode();
-      root.AddSubTree(start);
-      start.AddSubTree(simplifiedExpression.Root);
-      SymbolicExpressionTree simplifiedTree = new SymbolicExpressionTree(root);
+      SymbolicExpressionTree simplifiedTree = simplifier.Simplify(original.Model.SymbolicExpressionTree);
       SymbolicRegressionModel simplifiedModel = new SymbolicRegressionModel(original.Model.Interpreter, simplifiedTree);
       return new SymbolicRegressionSolution(original.ProblemData, simplifiedModel, original.LowerEstimationLimit, original.UpperEstimationLimit);
     }

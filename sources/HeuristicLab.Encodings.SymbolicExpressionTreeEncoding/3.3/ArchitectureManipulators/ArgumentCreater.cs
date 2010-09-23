@@ -84,10 +84,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureMani
       selectedCutPoint.Parent.InsertSubTree(selectedCutPoint.ReplacedChildIndex, newArgNode);
 
       // find all invocations of the selected ADF and attach a cloned version of the replaced branch (with all argument-nodes expanded)
-      var invocationNodes = from node in symbolicExpressionTree.IterateNodesPrefix().OfType<InvokeFunctionTreeNode>()
-                            where node.Symbol.FunctionName == selectedDefunBranch.FunctionName
-                            where node.SubTrees.Count == selectedDefunBranch.NumberOfArguments
-                            select node;
+      var invocationNodes = (from node in symbolicExpressionTree.IterateNodesPrefix().OfType<InvokeFunctionTreeNode>()
+                             where node.Symbol.FunctionName == selectedDefunBranch.FunctionName
+                             where node.SubTrees.Count == selectedDefunBranch.NumberOfArguments
+                             select node).ToList();
       // do this repeatedly until no matching invocations are found      
       while (invocationNodes.Count() > 0) {
         List<SymbolicExpressionTreeNode> newlyAddedBranches = new List<SymbolicExpressionTreeNode>();
@@ -98,11 +98,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureMani
           invocationNode.InsertSubTree(newArgumentIndex, clonedBranch);
           newlyAddedBranches.Add(clonedBranch);
         }
-        invocationNodes = from newlyAddedBranch in newlyAddedBranches
-                          from node in newlyAddedBranch.IterateNodesPrefix().OfType<InvokeFunctionTreeNode>()
-                          where node.Symbol.FunctionName == selectedDefunBranch.FunctionName
-                          where node.SubTrees.Count == selectedDefunBranch.NumberOfArguments
-                          select node;
+        invocationNodes = (from newlyAddedBranch in newlyAddedBranches
+                           from node in newlyAddedBranch.IterateNodesPrefix().OfType<InvokeFunctionTreeNode>()
+                           where node.Symbol.FunctionName == selectedDefunBranch.FunctionName
+                           where node.SubTrees.Count == selectedDefunBranch.NumberOfArguments
+                           select node).ToList();
       }
       // increase expected number of arguments of function defining branch
       // it's possible that the number of actually referenced arguments was reduced (all references were replaced by a single new argument)

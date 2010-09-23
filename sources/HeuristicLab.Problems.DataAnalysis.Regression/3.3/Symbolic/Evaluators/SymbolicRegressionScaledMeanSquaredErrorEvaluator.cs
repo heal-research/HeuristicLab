@@ -130,10 +130,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
         alpha = 0;
         beta = 1;
       } else {
-        if (yVarianceCalculator.Variance.IsAlmost(0.0))
+        if (yVarianceCalculator.PopulationVariance.IsAlmost(0.0))
           beta = 1;
         else
-          beta = ytCovarianceEvaluator.Covariance / yVarianceCalculator.Variance;
+          beta = ytCovarianceEvaluator.Covariance / yVarianceCalculator.PopulationVariance;
 
         alpha = tMeanCalculator.Mean - beta * yVarianceCalculator.Mean;
       }
