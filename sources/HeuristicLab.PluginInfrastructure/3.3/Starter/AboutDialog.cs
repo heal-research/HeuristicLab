@@ -39,7 +39,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       InitializeComponent();
       var curAssembly = this.GetType().Assembly;
       productTextBox.Text = GetProduct(curAssembly);
-      versionTextBox.Text = GetVersion(curAssembly);
+      versionTextBox.Text = GetVersion();
       copyrightTextBox.Text = GetCopyright(curAssembly);
       imageList.Images.Add(HeuristicLab.PluginInfrastructure.Resources.Plugin);
       pictureBox.Image = HeuristicLab.PluginInfrastructure.Resources.HeuristicLabLogo;
@@ -78,7 +78,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       return attribute.Copyright;
     }
 
-    private string GetVersion(Assembly asm) {
+    private string GetVersion() {
       FileVersionInfo pluginInfrastructureVersion = FileVersionInfo.GetVersionInfo(GetType().Assembly.Location);
       return pluginInfrastructureVersion.FileVersion;
     }

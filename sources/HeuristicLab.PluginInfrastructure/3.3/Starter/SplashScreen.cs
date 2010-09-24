@@ -31,7 +31,6 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
     private const int FADE_INTERVAL = 50;
     private Timer fadeTimer;
     private int initialInterval;
-    private PluginManager manager;
 
     internal SplashScreen() {
       InitializeComponent();
@@ -40,7 +39,6 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
     internal SplashScreen(PluginManager manager, int initialInterval)
       : this() {
       this.initialInterval = initialInterval;
-      this.manager = manager;
 
       manager.ApplicationStarted += new EventHandler<PluginInfrastructureEventArgs>(manager_ApplicationStarted);
       manager.ApplicationStarting += new EventHandler<PluginInfrastructureEventArgs>(manager_ApplicationStarting);

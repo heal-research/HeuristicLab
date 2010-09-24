@@ -300,7 +300,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       }
     }
 
-    private string ReadLicenseFiles(IEnumerable<PluginFile> pluginFiles) {
+    private static string ReadLicenseFiles(IEnumerable<PluginFile> pluginFiles) {
       // combine the contents of all plugin files 
       var licenseFiles = from file in pluginFiles
                          where file.Type == PluginFileType.License
@@ -431,7 +431,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     /// <param name="available">The available version which should be compared to <paramref name="requested"/>.</param>
     /// <param name="requested">The requested version that must be matched.</param>
     /// <returns></returns>
-    private bool IsCompatiblePluginVersion(Version available, Version requested) {
+    private static bool IsCompatiblePluginVersion(Version available, Version requested) {
       // this condition must be removed after all plugins have been updated to declare plugin and dependency versions
       if (
         (requested.Major == 0 && requested.Minor == 0) ||

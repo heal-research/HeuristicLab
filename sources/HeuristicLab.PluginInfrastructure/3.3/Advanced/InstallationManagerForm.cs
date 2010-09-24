@@ -31,7 +31,6 @@ using HeuristicLab.PluginInfrastructure.Manager;
 namespace HeuristicLab.PluginInfrastructure.Advanced {
   internal partial class InstallationManagerForm : Form, IStatusView {
     private InstallationManager installationManager;
-    private PluginManager pluginManager;
     private string pluginDir;
 
     public InstallationManagerForm(PluginManager pluginManager)
@@ -39,8 +38,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       InitializeComponent();
       FileVersionInfo pluginInfrastructureVersion = FileVersionInfo.GetVersionInfo(GetType().Assembly.Location);
       Text = "HeuristicLab Plugin Manager " + pluginInfrastructureVersion.FileVersion;
-
-      this.pluginManager = pluginManager;
 
       pluginManager.PluginLoaded += pluginManager_PluginLoaded;
       pluginManager.PluginUnloaded += pluginManager_PluginUnloaded;
@@ -141,7 +138,9 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
 
     #region button events
     private void connectionSettingsToolStripMenuItem_Click(object sender, EventArgs e) {
-      new ConnectionSetupView().ShowDialog(this);
+      using (var conSetupView = new ConnectionSetupView()) {
+        conSetupView.ShowDialog(this);
+      }
     }
     private void tabControl_SelectedIndexChanged(object sender, EventArgs e) {
       toolStripStatusLabel.Text = string.Empty;
@@ -156,7 +155,9 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
           strBuilder.AppendLine(Path.GetFileName(file.Name));
         }
       }
-      return (new ConfirmationDialog("Confirm Delete", "Do you want to delete following files?", strBuilder.ToString())).ShowDialog(this) == DialogResult.OK;
+      using (var confirmationDialog = new ConfirmationDialog("Confirm Delete", "Do you want to delete following files?", strBuilder.ToString())) {
+        return (confirmationDialog.ShowDialog(this)) == DialogResult.OK;
+      }
     }
 
     private bool ConfirmUpdateAction(IEnumerable<IPluginDescription> plugins) {
@@ -164,15 +165,18 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       foreach (var plugin in plugins) {
         strBuilder.AppendLine(plugin.ToString());
       }
-      return (new ConfirmationDialog("Confirm Update", "Do you want to update following plugins?", strBuilder.ToString())).ShowDialog(this) == DialogResult.OK;
+      using (var confirmationDialog = new ConfirmationDialog("Confirm Update", "Do you want to update following plugins?", strBuilder.ToString())) {
+        return (confirmationDialog.ShowDialog(this)) == DialogResult.OK;
+      }
     }
 
     private bool ConfirmInstallAction(IEnumerable<IPluginDescription> plugins) {
       foreach (var plugin in plugins) {
         if (!string.IsNullOrEmpty(plugin.LicenseText)) {
-          var licenseConfirmationBox = new LicenseConfirmationDialog(plugin);
-          if (licenseConfirmationBox.ShowDialog(this) != DialogResult.OK)
-            return false;
+          using (var licenseConfirmationBox = new LicenseConfirmationDialog(plugin)) {
+            if (licenseConfirmationBox.ShowDialog(this) != DialogResult.OK)
+              return false;
+          }
         }
       }
       return true;
@@ -206,7 +210,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     #region IStatusView Members
 
     public void ShowProgressIndicator(double percentProgress) {
-      if (percentProgress < 0.0 || percentProgress > 1.0) throw new ArgumentException();
+      if (percentProgress < 0.0 || percentProgress > 1.0) throw new ArgumentException("percentProgress");
       toolStripProgressBar.Visible = true;
       toolStripProgressBar.Style = ProgressBarStyle.Continuous;
       int range = toolStripProgressBar.Maximum - toolStripProgressBar.Minimum;
@@ -223,7 +227,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     }
 
     public void ShowMessage(string message) {
-      if (toolStripStatusLabel.Text == string.Empty)
+      if (string.IsNullOrEmpty(toolStripStatusLabel.Text))
         toolStripStatusLabel.Text = message;
       else
         toolStripStatusLabel.Text += "; " + message;

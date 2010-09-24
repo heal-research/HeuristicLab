@@ -68,11 +68,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced.DeploymentService {
       get { return string.Empty; }
     }
 
-    [Obsolete]
-    public DateTime BuildDate {
-      get { throw new NotImplementedException(); }
-    }
-
     /// <summary>
     /// Gets an enumerable of dependencies of the plugin
     /// </summary>

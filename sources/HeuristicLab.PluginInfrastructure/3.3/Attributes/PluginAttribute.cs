@@ -52,9 +52,6 @@ namespace HeuristicLab.PluginInfrastructure {
       get { return version; }
     }
 
-    [Obsolete]
-    public PluginAttribute(string name) : this(name, "0.0.0.0") { }
-
     /// <summary>
     /// Initializes a new instance of <see cref="PluginAttribute"/>.
     /// <param name="name">Name of the plugin</param>
@@ -73,7 +70,7 @@ namespace HeuristicLab.PluginInfrastructure {
     public PluginAttribute(string name, string description, string version) {
       if (string.IsNullOrEmpty(name)) throw new ArgumentException("Plugin name is null or empty.");
       if (description == null) throw new ArgumentNullException("description");
-      if (string.IsNullOrEmpty(version)) new ArgumentException("Version string is null or empty.");
+      if (string.IsNullOrEmpty(version)) throw new ArgumentException("Version string is null or empty.");
       this.name = name;
       this.description = description;
       this.version = new Version(version); // throws format exception if the version string can't be parsed

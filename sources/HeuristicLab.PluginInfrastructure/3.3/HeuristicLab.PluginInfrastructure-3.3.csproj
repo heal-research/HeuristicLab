@@ -177,7 +177,6 @@
     <Compile Include="Advanced\DeploymentService\AdminClientFactory.cs" />
     <Compile Include="Advanced\DeploymentService\DeploymentService.cs" />
     <Compile Include="Advanced\DeploymentService\UpdateClientFactory.cs" />
-    <Compile Include="Advanced\InstallationManagerConsole.cs" />
     <Compile Include="Advanced\InstallationManager.cs" />
     <Compile Include="Advanced\InstallationManagerForm.cs">
       <SubType>Form</SubType>
@@ -211,7 +210,6 @@
       <DependentUpon>PluginView.cs</DependentUpon>
     </Compile>
     <Compile Include="Attributes\ApplicationAttribute.cs" />
-    <Compile Include="Attributes\AssemblyBuildDateAttribute.cs" />
     <Compile Include="Attributes\ContactInformationAttribute.cs" />
     <Compile Include="Attributes\PluginAttribute.cs" />
     <Compile Include="Attributes\PluginDependencyAttribute.cs" />

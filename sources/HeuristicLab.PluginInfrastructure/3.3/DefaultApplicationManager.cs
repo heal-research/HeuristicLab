@@ -309,6 +309,7 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <param name="type">The type of interest.</param>
     /// <returns>The description of the plugin that declares the given type or null if the type has not been declared by a known plugin.</returns>
     public IPluginDescription GetDeclaringPlugin(Type type) {
+      if (type == null) throw new ArgumentNullException("type");
       foreach (PluginDescription info in Plugins) {
         if (info.AssemblyLocations.Contains(Path.GetFullPath(type.Assembly.Location))) return info;
       }

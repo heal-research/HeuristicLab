@@ -45,15 +45,6 @@ namespace HeuristicLab.PluginInfrastructure {
     }
 
     /// <summary>
-    /// Initializes a new instance of <see cref="PluginDependencyAttribute"/>.
-    /// <param name="dependency">The name of the plugin that is needed to load a plugin.</param>
-    /// </summary>
-    [Obsolete]
-    public PluginDependencyAttribute(string dependency)
-      : this(dependency, "0.0.0.0") {
-    }
-
-    /// <summary>
     /// Initializes a new instance of <see cref="PluginDependencyAttribute" />.
     /// </summary>
     /// <param name="dependency">Name of the plugin dependency.</param>

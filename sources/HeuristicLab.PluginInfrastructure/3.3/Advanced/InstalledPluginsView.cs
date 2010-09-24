@@ -119,7 +119,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       pluginManager.DiscoverAndCheckPlugins();
     }
 
-    private bool IsNewerThan(IPluginDescription plugin1, IPluginDescription plugin2) {
+    private static bool IsNewerThan(IPluginDescription plugin1, IPluginDescription plugin2) {
       // newer: build version is higher, or if build version is the same revision is higher
       if (plugin1.Version.Build < plugin2.Version.Build) return false;
       else if (plugin1.Version.Build > plugin2.Version.Build) return true;
@@ -152,7 +152,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       itemsToRemove.ForEach(item => localPluginsListView.Items.Remove(item));
     }
 
-    private ListViewItem CreateListViewItem(PluginDescription plugin) {
+    private static ListViewItem CreateListViewItem(PluginDescription plugin) {
       ListViewItem item = new ListViewItem(new string[] { plugin.Name, plugin.Version.ToString(), plugin.Description });
       item.Tag = plugin;
       item.ImageIndex = 0;
@@ -189,7 +189,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       } else {
         List<ListViewItem> modifiedItems = new List<ListViewItem>();
         foreach (ListViewItem item in localPluginsListView.SelectedItems) {
-          var plugin = (IPluginDescription)item.Tag;
           modifiedItems.Add(item);
         }
         localPluginsListView.UncheckItems(modifiedItems);

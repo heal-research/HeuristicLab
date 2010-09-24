@@ -57,16 +57,6 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       get { return version; }
       internal set { version = value; }
     }
-    [Obsolete]
-    private DateTime buildDate;
-    /// <summary>
-    /// Gets the build date of the plugin.
-    /// </summary>
-    [Obsolete]
-    public DateTime BuildDate {
-      get { return buildDate; }
-      internal set { buildDate = value; }
-    }
 
     private string contactName;
     /// <summary>

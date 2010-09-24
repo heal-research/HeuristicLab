@@ -92,8 +92,9 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
           } else {
             try {
               Cursor = Cursors.AppStarting;
-              InstallationManagerForm form = new InstallationManagerForm(pluginManager);
-              form.ShowDialog(this);
+              using (InstallationManagerForm form = new InstallationManagerForm(pluginManager)) {
+                form.ShowDialog(this);
+              }
               UpdateApplicationsList();
             }
             finally {
@@ -179,8 +180,9 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
 
     private void aboutButton_Click(object sender, EventArgs e) {
       List<IPluginDescription> plugins = new List<IPluginDescription>(pluginManager.Plugins.OfType<IPluginDescription>());
-      var dialog = new AboutDialog(plugins);
-      dialog.ShowDialog();
+      using (var dialog = new AboutDialog(plugins)) {
+        dialog.ShowDialog();
+      }
     }
   }
 }

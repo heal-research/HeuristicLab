@@ -32,6 +32,9 @@ using HeuristicLab.PluginInfrastructure.Manager;
 namespace HeuristicLab.PluginInfrastructure.Sandboxing {
   public class SandboxManager {
 
+    // static class
+    private SandboxManager() { }
+
     private static StrongName CreateStrongName(Assembly assembly) {
       if (assembly == null)
         throw new ArgumentNullException("assembly");

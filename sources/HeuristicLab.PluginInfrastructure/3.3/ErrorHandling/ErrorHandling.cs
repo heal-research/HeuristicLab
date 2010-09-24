@@ -56,6 +56,7 @@ namespace HeuristicLab.PluginInfrastructure {
       }
     }
     public static void ShowErrorDialog(Control owner, string message, Exception exception) {
+      if (owner == null) throw new ArgumentNullException("owner");
       if (owner.InvokeRequired) {
         owner.Invoke(new Action<Control, string, Exception>(ShowErrorDialog), owner, message, exception);
       } else {

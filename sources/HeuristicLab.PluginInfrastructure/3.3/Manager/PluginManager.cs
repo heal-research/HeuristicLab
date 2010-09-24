@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Security.Permissions;
 
 namespace HeuristicLab.PluginInfrastructure.Manager {
 
@@ -203,6 +204,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     /// Make sure that the plugin manager is never disposed (necessary for cross-app-domain events)
     /// </summary>
     /// <returns><c>null</c>.</returns>
+    [SecurityPermission(SecurityAction.LinkDemand, Flags=SecurityPermissionFlag.Infrastructure)]
     public override object InitializeLifetimeService() {
       return null;
     }

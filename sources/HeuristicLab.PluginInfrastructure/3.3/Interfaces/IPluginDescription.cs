@@ -40,11 +40,6 @@ namespace HeuristicLab.PluginInfrastructure {
     /// </summary>
     string Description { get; }
     /// <summary>
-    /// Gets the build date of the plugin.
-    /// </summary>
-    [Obsolete]
-    DateTime BuildDate { get; }
-    /// <summary>
     /// Gets the dependencies of the plugin.
     /// </summary>
     IEnumerable<IPluginDescription> Dependencies { get; }

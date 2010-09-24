@@ -21,6 +21,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using System;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
   internal partial class MultiSelectListView : ListView {
@@ -42,6 +43,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     // item check is raised for each selected item that was not directly clicked (those should be ignored)
     // and then one the item whose checkbox was clicked
     protected override void OnItemCheck(ItemCheckEventArgs ice) {
+      if (ice == null) throw new ArgumentNullException("ice");
       // don't change the checked state of items that were not clicked directly
       if (inhibitAutoCheck) {
         ice.NewValue = ice.CurrentValue;

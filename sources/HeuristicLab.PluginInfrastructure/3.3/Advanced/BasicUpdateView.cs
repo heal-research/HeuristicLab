@@ -86,7 +86,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       }
     }
 
-    private bool IsNewerThan(IPluginDescription plugin1, IPluginDescription plugin2) {
+    private static bool IsNewerThan(IPluginDescription plugin1, IPluginDescription plugin2) {
       // newer: build version is higher, or if build version is the same revision is higher
       if (plugin1.Version.Build < plugin2.Version.Build) return false;
       else if (plugin1.Version.Build > plugin2.Version.Build) return true;

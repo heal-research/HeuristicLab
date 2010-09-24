@@ -28,6 +28,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     public InstallationManagerException() : base() { }
     public InstallationManagerException(string msg) : base(msg) { }
     public InstallationManagerException(string msg, Exception e) : base(msg, e) { }
-    public InstallationManagerException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+    protected InstallationManagerException(SerializationInfo info, StreamingContext context) : base(info, context) { }
   }
 }

@@ -259,7 +259,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       }
     }
 
-    private byte[] CreateZipPackage(IPluginDescription plugin) {
+    private static byte[] CreateZipPackage(IPluginDescription plugin) {
       using (MemoryStream stream = new MemoryStream()) {
         ZipFile zipFile = new ZipFile(stream);
         zipFile.BeginUpdate();

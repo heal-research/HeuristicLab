@@ -256,7 +256,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
         versionTextBox.Text = activeProduct.Version.ToString();
 
         // populate plugins list view
-        ListViewItem activeItem = (ListViewItem)productsListView.SelectedItems[0];
         pluginListView.SuppressItemCheckedEvents = true;
         foreach (var plugin in plugins.OfType<IPluginDescription>()) {
           pluginListView.Items.Add(CreateListViewItem(plugin));

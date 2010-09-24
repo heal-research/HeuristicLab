@@ -32,6 +32,14 @@ namespace HeuristicLab.PluginInfrastructure {
   /// functionality in unit tests.
   /// </summary>
   internal sealed class LightweightApplicationManager : IApplicationManager {
+    internal LightweightApplicationManager() {
+      AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
+    }
+
+    Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args) {
+      return null;
+    }
+
 
     #region IApplicationManager Members
     /// <summary>
@@ -101,10 +109,20 @@ namespace HeuristicLab.PluginInfrastructure {
     /// (interfaces, abstract classes...  are not returned)</param>
     /// <returns>Enumerable of the discovered types.</returns>
     private static IEnumerable<Type> GetTypes(Type type, Assembly assembly, bool onlyInstantiable) {
-      return from t in assembly.GetTypes()
-             where CheckTypeCompatibility(type, t)
-             where onlyInstantiable == false || (!t.IsAbstract && !t.IsInterface && !t.HasElementType)
-             select BuildType(t, type);
+      try {
+        var assemblyTypes = assembly.GetTypes();
+
+        return from t in assemblyTypes
+               where CheckTypeCompatibility(type, t)
+               where onlyInstantiable == false || (!t.IsAbstract && !t.IsInterface && !t.HasElementType)
+               select BuildType(t, type);
+      }
+      catch (TypeLoadException) {
+        return Enumerable.Empty<Type>();
+      }
+      catch (ReflectionTypeLoadException) {
+        return Enumerable.Empty<Type>();
+      }
     }
 
     private static bool CheckTypeCompatibility(Type type, Type other) {
