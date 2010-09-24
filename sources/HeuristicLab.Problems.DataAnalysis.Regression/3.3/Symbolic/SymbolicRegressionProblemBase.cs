@@ -128,7 +128,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
     public IntValue TrainingSamplesEnd {
       get {
-        int endIndex = (int)(DataAnalysisProblemData.TrainingIndizes.Count() * (1.0 - DataAnalysisProblemData.ValidationPercentage.Value));
+        int endIndex = (int)(DataAnalysisProblemData.TrainingIndizes.Count() * (1.0 - DataAnalysisProblemData.ValidationPercentage.Value) - 1);
+        if (endIndex < 0) endIndex = 0; 
         return new IntValue(DataAnalysisProblemData.TrainingIndizes.ElementAt(endIndex));
       }
     }

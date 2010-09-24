@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Linq;
+using HeuristicLab.Common;
+using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.PluginInfrastructure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using HeuristicLab.Common;
 
-namespace HeuristicLab.MainForm.WindowsForms_3._3.Tests {
+namespace HeuristicLab_3._3.Tests {
   [TestClass]
   public class ContentViewTests {
     public ContentViewTests() {
@@ -34,25 +35,7 @@ namespace HeuristicLab.MainForm.WindowsForms_3._3.Tests {
     // Use ClassInitialize to run code before running the first test in the class
     [ClassInitialize()]
     public static void MyClassInitialize(TestContext testContext) {
-      //needed to load all assemblies in the current appdomain
-      new HeuristicLab.Analysis.Views.HeuristicLabAnalysisViewsPlugin();
-      new HeuristicLab.Core.Views.HeuristicLabCoreViewsPlugin();
-      new HeuristicLab.Data.Views.HeuristicLabDataViewsPlugin();
-      new HeuristicLab.Encodings.PermutationEncoding.Views.HeuristicLabEncodingsPermutationEncodingViewsPlugin();
-      new HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views.HeuristicLabEncodingsSymbolicExpressionTreeEncodingViewsPlugin();
-      new HeuristicLab.MainForm.HeuristicLabMainFormPlugin();
-      new HeuristicLab.MainForm.WindowsForms.HeuristicLabMainFormPlugin();
-      new HeuristicLab.Operators.Views.HeuristicLabOperatorsViewsPlugin();
-      new HeuristicLab.Operators.Views.GraphVisualization.HeuristicLabOperatorsViewsGraphVisualizationPlugin();
-      new HeuristicLab.Parameters.Views.HeuristicLabParametersViewsPlugin();
-      new HeuristicLab.Problems.ArtificialAnt.Views.HeuristicLabProblemsArtificialAntViewsPlugin();
-      new HeuristicLab.Problems.DataAnalysis.Views.HeuristicLabProblemsDataAnalysisViewsPlugin();
-      new HeuristicLab.Problems.ExternalEvaluation.Views.HeuristicLabProblemsExternalEvaluationViewsPlugin();
-      new HeuristicLab.Problems.Knapsack.Views.HeuristicLabProblemsKnapsackViewsPlugin();
-      new HeuristicLab.Problems.OneMax.Views.HeuristicLabProblemsKnapsackViewsPlugin();
-      new HeuristicLab.Problems.TestFunctions.Views.HeuristicLabProblemsTestFunctionsViewsPlugin();
-      new HeuristicLab.Problems.TravelingSalesman.Views.HeuristicLabProblemsTravelingSalesmanViewsPlugin();
-      new HeuristicLab.Problems.VehicleRouting.Views.HeuristicLabProblemsVehicleRoutingViewsPlugin();
+      PluginLoader.LoadPluginsIntoAppDomain();
     }
 
     // Use ClassCleanup to run code after all tests in a class have run
