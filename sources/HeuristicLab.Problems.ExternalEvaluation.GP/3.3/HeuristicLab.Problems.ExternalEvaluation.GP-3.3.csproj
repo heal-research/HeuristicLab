@@ -152,6 +152,10 @@
       <Project>{125D3006-67F5-48CB-913E-73C0548F17FA}</Project>
       <Name>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.ProtobufCS\0.9.1\HeuristicLab.ProtobufCS\HeuristicLab.ProtobufCS-0.9.1.csproj">
+      <Project>{236459CE-80CF-4991-972F-DE74C826BCCC}</Project>
+      <Name>HeuristicLab.ProtobufCS-0.9.1 %28HeuristicLab.ExtLibs\HeuristicLab.ProtobufCS\HeuristicLab.ProtobufCS-0.9.1\HeuristicLab.ProtobufCS-0.9.1%29</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.ProtobufCS\0.9.1\ProtobufCS\src\ProtocolBuffers\ProtocolBuffers.csproj">
       <Project>{6908BDCE-D925-43F3-94AC-A531E6DF2591}</Project>
       <Name>ProtocolBuffers</Name>

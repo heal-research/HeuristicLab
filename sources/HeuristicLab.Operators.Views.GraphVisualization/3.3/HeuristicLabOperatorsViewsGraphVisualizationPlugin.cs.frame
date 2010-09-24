@@ -32,12 +32,14 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
   [PluginFile("HeuristicLab.Operators.Views.GraphVisualization-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
+  [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
   [PluginDependency("HeuristicLab.Core.Views", "3.3")]
   [PluginDependency("HeuristicLab.MainForm", "3.3")]
   [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.3")]
   [PluginDependency("HeuristicLab.Netron", "3.0")]
   [PluginDependency("HeuristicLab.Operators", "3.3")]
+  [PluginDependency("HeuristicLab.Persistence", "3.3")]
   public class HeuristicLabOperatorsViewsGraphVisualizationPlugin : PluginBase {
   }
 }
