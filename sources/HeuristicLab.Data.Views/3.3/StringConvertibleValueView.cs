@@ -42,6 +42,11 @@ namespace HeuristicLab.Data.Views {
       set { base.ReadOnly = value; }
     }
 
+    public bool LabelVisible {
+      get { return valueLabel.Visible; }
+      set { valueLabel.Visible = value; }
+    }
+
     public StringConvertibleValueView() {
       InitializeComponent();
       errorProvider.SetIconAlignment(valueTextBox, ErrorIconAlignment.MiddleLeft);
@@ -100,5 +105,13 @@ namespace HeuristicLab.Data.Views {
       errorProvider.SetError(valueTextBox, string.Empty);
       valueTextBox.Text = Content.GetValue();
     }
+
+    private void valueLabel_VisibleChanged(object sender, EventArgs e) {
+      if (valueLabel.Visible)
+        valueTextBox.Dock = DockStyle.None;
+      else
+        valueTextBox.Dock = DockStyle.Fill;
+    }
+
   }
 }

@@ -59,9 +59,9 @@ namespace HeuristicLab.Data.Views {
       this.valueTextBox.Name = "valueTextBox";
       this.valueTextBox.Size = new System.Drawing.Size(194, 20);
       this.valueTextBox.TabIndex = 1;
-      this.valueTextBox.Validated += new System.EventHandler(this.valueTextBox_Validated);
       this.valueTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.valueTextBox_KeyDown);
       this.valueTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.valueTextBox_Validating);
+      this.valueTextBox.Validated += new System.EventHandler(this.valueTextBox_Validated);
       // 
       // errorProvider
       // 
@@ -76,6 +76,7 @@ namespace HeuristicLab.Data.Views {
       this.valueLabel.Size = new System.Drawing.Size(37, 13);
       this.valueLabel.TabIndex = 0;
       this.valueLabel.Text = "&Value:";
+      this.valueLabel.VisibleChanged += new System.EventHandler(this.valueLabel_VisibleChanged);
       // 
       // StringConvertibleValueView
       // 
@@ -84,7 +85,7 @@ namespace HeuristicLab.Data.Views {
       this.Controls.Add(this.valueLabel);
       this.Controls.Add(this.valueTextBox);
       this.Name = "StringConvertibleValueView";
-      this.Size = new System.Drawing.Size(250, 38);
+      this.Size = new System.Drawing.Size(250, 22);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
