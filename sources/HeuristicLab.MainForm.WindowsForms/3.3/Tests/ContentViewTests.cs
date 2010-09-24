@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
-using HeuristicLab.Common;
 using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.PluginInfrastructure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.MainForm.WindowsForms_3._3.Tests {
   [TestClass]
@@ -82,7 +82,12 @@ namespace HeuristicLab.MainForm.WindowsForms_3._3.Tests {
         //check if view can handle null as content by calling OnContentChanged
         IContentView view = (IContentView)Activator.CreateInstance(viewType);
         ContentView_Accessor accessor = new ContentView_Accessor(new PrivateObject(view));
-        accessor.OnContentChanged();
+        try {
+          accessor.OnContentChanged();
+        }
+        catch (Exception ex) {
+          Assert.Fail(viewType.ToString() + Environment.NewLine + ex.Message);
+        }
       }
     }
   }
