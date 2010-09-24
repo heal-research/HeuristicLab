@@ -68,7 +68,7 @@ namespace HeuristicLab.Optimization.Operators {
       }
 
       // reduce number of villages by 1 and partition the population again
-      scope.SubScopes.Remove(scope.SubScopes[scope.SubScopes.Count - 1]);
+      scope.SubScopes.RemoveAt(scope.SubScopes.Count - 1);
       villageCount--;
       int populationPerVillage = population.Count / villageCount;
       for (int i = 0; i < villageCount; i++) {

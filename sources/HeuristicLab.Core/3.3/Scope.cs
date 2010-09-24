@@ -41,11 +41,7 @@ namespace HeuristicLab.Core {
       get { return parent; }
       set {
         if (parent != value) {
-          IScope oldParent = parent;
-          parent = null;
-          if (oldParent != null) oldParent.SubScopes.Remove(this);
           parent = value;
-          if ((parent != null) && !parent.SubScopes.Contains(this)) parent.SubScopes.Add(this);
         }
       }
     }

@@ -54,8 +54,11 @@ namespace HeuristicLab.Selection {
         IScope leftRightChild = leftChild.SubScopes[leftChild.SubScopes.Count - 1];
 
         // merge right children
-        while (leftRightChild.SubScopes.Count > 0)
-          rightChild.SubScopes.Add(leftRightChild.SubScopes[0]);
+        while (leftRightChild.SubScopes.Count > 0) {
+          IScope leftRightChildChild = leftRightChild.SubScopes[0];
+          leftRightChild.SubScopes.RemoveAt(0);
+          rightChild.SubScopes.Add(leftRightChildChild);
+        }
 
         leftChild = leftChild.SubScopes[0];
       }

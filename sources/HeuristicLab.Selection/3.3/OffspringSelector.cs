@@ -147,8 +147,11 @@ namespace HeuristicLab.Selection {
         // more children required -> reduce left and start children generation again
         scope.SubScopes.Remove(parents);
         scope.SubScopes.Remove(offspring);
-        while (parents.SubScopes.Count > 0)
-          scope.SubScopes.Add(parents.SubScopes[0]);
+        while (parents.SubScopes.Count > 0) {
+          IScope parent = parents.SubScopes[0];
+          parents.SubScopes.RemoveAt(0);
+          scope.SubScopes.Add(parent);
+        }
 
         IOperator moreOffspring = OffspringCreatorParameter.ActualValue as IOperator;
         if (moreOffspring == null) throw new InvalidOperationException(Name + ": More offspring are required, but no operator specified for creating them.");
