@@ -77,7 +77,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
 
     void refreshPluginsWorker_DoWork(object sender, DoWorkEventArgs e) {
       // refresh available plugins
-      var client = DeploymentService.UpdateClientFactory.CreateClient();
+      var client = DeploymentService.UpdateServiceClientFactory.CreateClient();
       try {
         e.Result = client.GetPlugins();
         client.Close();
@@ -114,7 +114,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     void pluginUploadWorker_DoWork(object sender, DoWorkEventArgs e) {
       // upload plugins
       var selectedPlugins = (IEnumerable<IPluginDescription>)e.Argument;
-      DeploymentService.AdminClient adminClient = DeploymentService.AdminClientFactory.CreateClient();
+      DeploymentService.AdminServiceClient adminClient = DeploymentService.AdminServiceClientFactory.CreateClient();
       Dictionary<IPluginDescription, DeploymentService.PluginDescription> cachedPluginDescriptions =
         new Dictionary<IPluginDescription, DeploymentService.PluginDescription>();
       try {
@@ -136,7 +136,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
         throw;
       }
       // refresh available plugins
-      var client = DeploymentService.UpdateClientFactory.CreateClient();
+      var client = DeploymentService.UpdateServiceClientFactory.CreateClient();
       try {
         e.Result = client.GetPlugins();
         client.Close();

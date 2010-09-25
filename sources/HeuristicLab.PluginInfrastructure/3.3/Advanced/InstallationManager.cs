@@ -48,7 +48,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     /// </summary>
     /// <returns></returns>
     public IEnumerable<IPluginDescription> GetRemotePluginList() {
-      var client = DeploymentService.UpdateClientFactory.CreateClient();
+      var client = DeploymentService.UpdateServiceClientFactory.CreateClient();
       try {
         List<IPluginDescription> plugins = new List<IPluginDescription>(client.GetPlugins());
         client.Close();
@@ -73,7 +73,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     /// </summary>
     /// <returns></returns>
     public IEnumerable<DeploymentService.ProductDescription> GetRemoteProductList() {
-      var client = DeploymentService.UpdateClientFactory.CreateClient();
+      var client = DeploymentService.UpdateServiceClientFactory.CreateClient();
       try {
         List<DeploymentService.ProductDescription> products = new List<DeploymentService.ProductDescription>(client.GetProducts());
         client.Close();
@@ -101,7 +101,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       var args = new PluginInfrastructureCancelEventArgs(plugins);
       OnPreInstall(args);
       if (!args.Cancel) {
-        var client = DeploymentService.UpdateClientFactory.CreateClient();
+        var client = DeploymentService.UpdateServiceClientFactory.CreateClient();
         try {
           foreach (DeploymentService.PluginDescription plugin in plugins) {
             byte[] zippedPackage = client.GetPlugin(plugin);
@@ -133,7 +133,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       PluginInfrastructureCancelEventArgs args = new PluginInfrastructureCancelEventArgs(plugins);
       OnPreUpdate(args);
       if (!args.Cancel) {
-        var client = DeploymentService.UpdateClientFactory.CreateClient();
+        var client = DeploymentService.UpdateServiceClientFactory.CreateClient();
         try {
           foreach (DeploymentService.PluginDescription plugin in plugins) {
             byte[] zippedPackage = client.GetPlugin(plugin);

@@ -25,18 +25,6 @@ namespace HeuristicLab.PluginInfrastructure.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://services.heuristiclab.com/Deployment-3.3/Update.svc")]
-        public string UpdateLocation {
-            get {
-                return ((string)(this["UpdateLocation"]));
-            }
-            set {
-                this["UpdateLocation"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("anonymous")]
         public string UpdateLocationUserName {
             get {
@@ -61,18 +49,6 @@ namespace HeuristicLab.PluginInfrastructure.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://services.heuristiclab.com/Deployment-3.3/Admin.svc")]
-        public string UpdateLocationAdministrationAddress {
-            get {
-                return ((string)(this["UpdateLocationAdministrationAddress"]));
-            }
-            set {
-                this["UpdateLocationAdministrationAddress"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool ShowPluginUploadControls {
             get {
@@ -80,6 +56,30 @@ namespace HeuristicLab.PluginInfrastructure.Properties {
             }
             set {
                 this["ShowPluginUploadControls"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://services.heuristiclab.com/Deployment-3.3/UpdateService.svc")]
+        public string UpdateLocation {
+            get {
+                return ((string)(this["UpdateLocation"]));
+            }
+            set {
+                this["UpdateLocation"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://services.heuristiclab.com/Deployment-3.3/AdminService.svc")]
+        public string UpdateLocationAdministrationAddress {
+            get {
+                return ((string)(this["UpdateLocationAdministrationAddress"]));
+            }
+            set {
+                this["UpdateLocationAdministrationAddress"] = value;
             }
         }
     }

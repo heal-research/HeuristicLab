@@ -141,7 +141,10 @@
     <Compile Include="Advanced\ConnectionSetupView.Designer.cs">
       <DependentUpon>ConnectionSetupView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Advanced\DeploymentService\AdminServiceClientFactory.cs" />
     <Compile Include="Advanced\DeploymentService\DeploymentServerCertificateValidator.cs" />
+    <Compile Include="Advanced\DeploymentService\ServiceClients.cs" />
+    <Compile Include="Advanced\DeploymentService\UpdateServiceClientFactory.cs" />
     <Compile Include="Advanced\EditProductsView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -174,9 +177,6 @@
       <DependentUpon>InstallationManagerControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Advanced\InstallationManagerException.cs" />
-    <Compile Include="Advanced\DeploymentService\AdminClientFactory.cs" />
-    <Compile Include="Advanced\DeploymentService\DeploymentService.cs" />
-    <Compile Include="Advanced\DeploymentService\UpdateClientFactory.cs" />
     <Compile Include="Advanced\InstallationManager.cs" />
     <Compile Include="Advanced\InstallationManagerForm.cs">
       <SubType>Form</SubType>
@@ -247,6 +247,7 @@
     <Compile Include="PluginState.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="Advanced\DeploymentService\GenerateServiceClients.cmd" />
     <None Include="app.config" />
     <None Include="HeuristicLab.snk" />
     <None Include="Properties\AssemblyInfo.frame" />
@@ -318,7 +319,6 @@
     <None Include="Resources\VS2008ImageLibrary_Objects_Internet.png" />
     <None Include="Resources\VS2008ImageLibrary_Objects_Install.png" />
     <None Include="Resources\VS2008ImageLibrary_Objects_Assembly.png" />
-    <None Include="Advanced\DeploymentService\RegenerateServiceClasses.cmd" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

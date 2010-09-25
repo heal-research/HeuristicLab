@@ -64,7 +64,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     #region event handlers for delete product background worker
     void deleteProductWorker_DoWork(object sender, DoWorkEventArgs e) {
       var products = (IEnumerable<DeploymentService.ProductDescription>)e.Argument;
-      var adminClient = DeploymentService.AdminClientFactory.CreateClient();
+      var adminClient = DeploymentService.AdminServiceClientFactory.CreateClient();
       // upload
       try {
         foreach (var product in products) {
@@ -85,7 +85,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
         throw;
       }
       // refresh      
-      var updateClient = DeploymentService.UpdateClientFactory.CreateClient();
+      var updateClient = DeploymentService.UpdateServiceClientFactory.CreateClient();
       try {
         e.Result = new object[] { updateClient.GetProducts(), updateClient.GetPlugins() };
         updateClient.Close();
@@ -130,7 +130,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     #region event handlers for upload products background worker
     private void uploadChangedProductsWorker_DoWork(object sender, DoWorkEventArgs e) {
       var products = (IEnumerable<DeploymentService.ProductDescription>)e.Argument;
-      var adminClient = DeploymentService.AdminClientFactory.CreateClient();
+      var adminClient = DeploymentService.AdminServiceClientFactory.CreateClient();
       // upload
       try {
         foreach (var product in products) {
@@ -151,7 +151,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
         throw;
       }
       // refresh      
-      var updateClient = DeploymentService.UpdateClientFactory.CreateClient();
+      var updateClient = DeploymentService.UpdateServiceClientFactory.CreateClient();
       try {
         e.Result = new object[] { updateClient.GetProducts(), updateClient.GetPlugins() };
         updateClient.Close();
@@ -195,7 +195,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
 
     #region event handlers for refresh products background worker
     private void refreshProductsWorker_DoWork(object sender, DoWorkEventArgs e) {
-      var updateClient = DeploymentService.UpdateClientFactory.CreateClient();
+      var updateClient = DeploymentService.UpdateServiceClientFactory.CreateClient();
       try {
         e.Result = new object[] { updateClient.GetProducts(), updateClient.GetPlugins() };
         updateClient.Close();
