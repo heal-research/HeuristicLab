@@ -21,11 +21,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Data.Common;
-using System.Transactions;
 using System.Data.SqlClient;
+using System.Linq;
+using System.Transactions;
 using HeuristicLab.Services.Deployment.DataAccess;
 
 namespace HeuristicLab.Services.Deployment {
@@ -37,7 +35,7 @@ namespace HeuristicLab.Services.Deployment {
     #region context creating members
     public IEnumerable<ProductDescription> Products {
       get {
-        using (var ctx = new PluginStoreClassesDataContext()) {
+        using (var ctx = new DeploymentDataContext()) {
           return (from p in ctx.Products
                   let plugins = from pair in ctx.ProductPlugins
                                 from plugin in ctx.Plugins
@@ -51,7 +49,7 @@ namespace HeuristicLab.Services.Deployment {
 
     public IEnumerable<PluginDescription> Plugins {
       get {
-        using (var ctx = new PluginStoreClassesDataContext()) {
+        using (var ctx = new DeploymentDataContext()) {
           return (from plugin in ctx.Plugins
                   select MakePluginDescription(ctx, plugin)).ToList();
         }
@@ -59,13 +57,13 @@ namespace HeuristicLab.Services.Deployment {
     }
 
     public byte[] PluginFile(PluginDescription pluginDescription) {
-      using (var ctx = new PluginStoreClassesDataContext()) {
+      using (var ctx = new DeploymentDataContext()) {
         return GetExistingPlugin(ctx, pluginDescription.Name, pluginDescription.Version).PluginPackage.Data.ToArray();
       }
     }
 
     public void Persist(PluginDescription pluginDescription, byte[] pluginPackage) {
-      using (var ctx = new PluginStoreClassesDataContext()) {
+      using (var ctx = new DeploymentDataContext()) {
         try {
           using (var transaction = new TransactionScope()) {
             Plugin pluginEntity = InsertOrUpdatePlugin(ctx, pluginDescription);
@@ -90,7 +88,7 @@ namespace HeuristicLab.Services.Deployment {
     }
 
     public void Persist(ProductDescription productDescription) {
-      using (var ctx = new PluginStoreClassesDataContext()) {
+      using (var ctx = new DeploymentDataContext()) {
         try {
           using (var transaction = new TransactionScope()) {
             foreach (var plugin in productDescription.Plugins) {
@@ -111,7 +109,7 @@ namespace HeuristicLab.Services.Deployment {
       }
     }
     public void Delete(ProductDescription productDescription) {
-      using (var ctx = new PluginStoreClassesDataContext()) {
+      using (var ctx = new DeploymentDataContext()) {
         try {
           using (var transaction = new TransactionScope()) {
             var productEntity = GetExistingProduct(ctx, productDescription.Name, productDescription.Version);
@@ -135,7 +133,7 @@ namespace HeuristicLab.Services.Deployment {
     #endregion
 
     #region insert/update/delete product
-    private void InsertOrUpdateProduct(PluginStoreClassesDataContext ctx, ProductDescription product) {
+    private void InsertOrUpdateProduct(DeploymentDataContext ctx, ProductDescription product) {
       var productEntity = (from p in ctx.Products
                            where p.Name == product.Name
                            where p.Version == product.Version.ToString()
@@ -157,7 +155,7 @@ namespace HeuristicLab.Services.Deployment {
       }
     }
 
-    private void DeleteProductPlugins(PluginStoreClassesDataContext ctx, Product productEntity) {
+    private void DeleteProductPlugins(DeploymentDataContext ctx, Product productEntity) {
       var oldPlugins = (from p in ctx.ProductPlugins
                         where p.ProductId == productEntity.Id
                         select p).ToList();
@@ -167,7 +165,7 @@ namespace HeuristicLab.Services.Deployment {
     #endregion
 
     #region insert/update plugins
-    private Plugin InsertOrUpdatePlugin(PluginStoreClassesDataContext ctx, PluginDescription pluginDescription) {
+    private Plugin InsertOrUpdatePlugin(DeploymentDataContext ctx, PluginDescription pluginDescription) {
       var pluginEntity = (from p in ctx.Plugins
                           where p.Name == pluginDescription.Name
                           where p.Version == pluginDescription.Version.ToString()
@@ -182,7 +180,7 @@ namespace HeuristicLab.Services.Deployment {
       return pluginEntity;
     }
 
-    private void UpdatePlugin(PluginStoreClassesDataContext ctx, Plugin pluginEntity, PluginDescription pluginDescription) {
+    private void UpdatePlugin(DeploymentDataContext ctx, Plugin pluginEntity, PluginDescription pluginDescription) {
       // update plugin data
       pluginEntity.License = pluginDescription.LicenseText;
       pluginEntity.ContactName = pluginDescription.ContactName;
@@ -204,7 +202,7 @@ namespace HeuristicLab.Services.Deployment {
 
 
 
-    private void DeleteOldDependencies(PluginStoreClassesDataContext ctx, Plugin pluginEntity) {
+    private void DeleteOldDependencies(DeploymentDataContext ctx, Plugin pluginEntity) {
       var oldDependencies = (from dep in ctx.Dependencies
                              where dep.PluginId == pluginEntity.Id
                              select dep).ToList();
@@ -215,7 +213,7 @@ namespace HeuristicLab.Services.Deployment {
     #endregion
 
     #region product <-> productDescription transformation
-    private ProductDescription MakeProductDescription(PluginStoreClassesDataContext ctx, Product p, IEnumerable<Plugin> plugins) {
+    private ProductDescription MakeProductDescription(DeploymentDataContext ctx, Product p, IEnumerable<Plugin> plugins) {
       var desc = new ProductDescription(p.Name, new Version(p.Version), from plugin in plugins
                                                                         select MakePluginDescription(ctx, plugin));
       return desc;
@@ -231,7 +229,7 @@ namespace HeuristicLab.Services.Deployment {
     #region plugin <-> pluginDescription transformation
     // cache for plugin descriptions
     private Dictionary<long, PluginDescription> pluginDescriptions = new Dictionary<long, PluginDescription>();
-    private PluginDescription MakePluginDescription(PluginStoreClassesDataContext ctx, Plugin plugin) {
+    private PluginDescription MakePluginDescription(DeploymentDataContext ctx, Plugin plugin) {
       if (!pluginDescriptions.ContainsKey(plugin.Id)) {
         // no cached description -> create new
         var desc = new PluginDescription(plugin.Name, new Version(plugin.Version));
@@ -266,21 +264,21 @@ namespace HeuristicLab.Services.Deployment {
     #endregion
 
     #region helper queries
-    private Plugin GetExistingPlugin(PluginStoreClassesDataContext ctx, string name, Version version) {
+    private Plugin GetExistingPlugin(DeploymentDataContext ctx, string name, Version version) {
       return (from p in ctx.Plugins
               where p.Name == name
               where p.Version == version.ToString()
               select p).Single();
     }
 
-    private Product GetExistingProduct(PluginStoreClassesDataContext ctx, string name, Version version) {
+    private Product GetExistingProduct(DeploymentDataContext ctx, string name, Version version) {
       return (from p in ctx.Products
               where p.Name == name
               where p.Version == version.ToString()
               select p).Single();
     }
 
-    private IEnumerable<Plugin> GetDependencies(PluginStoreClassesDataContext ctx, Plugin plugin) {
+    private IEnumerable<Plugin> GetDependencies(DeploymentDataContext ctx, Plugin plugin) {
       return from pair in ctx.Dependencies
              from dependency in ctx.Plugins
              where pair.PluginId == plugin.Id

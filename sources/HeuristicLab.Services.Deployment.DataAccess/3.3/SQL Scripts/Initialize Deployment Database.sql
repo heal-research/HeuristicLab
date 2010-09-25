@@ -1,8 +1,5 @@
 USE [HeuristicLab.Deployment]
 GO
-/****** Object:  User [DeploymentService]    Script Date: 03/22/2010 15:57:21 ******/
-CREATE USER [DeploymentService] FOR LOGIN [SERVDEV\DeploymentService] WITH DEFAULT_SCHEMA=[dbo]
-GO
 /****** Object:  Table [dbo].[Plugin]    Script Date: 03/22/2010 15:57:25 ******/
 SET ANSI_NULLS ON
 GO

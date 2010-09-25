@@ -97,9 +97,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Admin.cs" />
-    <Compile Include="IAdmin.cs" />
-    <Compile Include="IUpdate.cs" />
+    <Compile Include="AdminService.cs" />
+    <Compile Include="IAdminService.cs" />
+    <Compile Include="IUpdateService.cs" />
     <Compile Include="PluginDescription.cs" />
     <Compile Include="PluginStore.cs" />
     <Compile Include="ProductDescription.cs" />
@@ -109,7 +109,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Update.cs" />
+    <Compile Include="UpdateService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

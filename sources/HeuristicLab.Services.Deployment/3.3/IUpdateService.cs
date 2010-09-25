@@ -19,17 +19,12 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
 using System.ServiceModel;
-using System.Text;
-using HeuristicLab.Services.Deployment.DataAccess;
 
 namespace HeuristicLab.Services.Deployment {
   [ServiceContract]
-  public interface IUpdate {
+  public interface IUpdateService {
     [OperationContract]
     byte[] GetPlugin(PluginDescription description);
 

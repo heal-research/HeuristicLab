@@ -19,27 +19,27 @@
  */
 #endregion
 
-using System.Security.Permissions;
+using System.Collections.Generic;
 
 namespace HeuristicLab.Services.Deployment {
-  public class Admin : IAdmin {
-    #region IAdmin Members
-    [PrincipalPermission(SecurityAction.Demand, Role = "Deployment Administrator")]
-    public void DeployProduct(ProductDescription product) {
-      var store = new PluginStore();
-      store.Persist(product);
-    }
-    [PrincipalPermission(SecurityAction.Demand, Role = "Deployment Administrator")]
-    public void DeleteProduct(ProductDescription product) {
-      var store = new PluginStore();
-      store.Delete(product);
-    }
-    [PrincipalPermission(SecurityAction.Demand, Role = "Deployment Administrator")]
-    public void DeployPlugin(PluginDescription plugin, byte[] zipFile) {
-      var store = new PluginStore();
-      store.Persist(plugin, zipFile);
+  public class UpdateService : IUpdateService {
+    #region IUpdateService Members
+
+    public byte[] GetPlugin(PluginDescription description) {
+      PluginStore store = new PluginStore();
+      return store.PluginFile(description);
     }
 
+
+    public IEnumerable<ProductDescription> GetProducts() {
+      PluginStore store = new PluginStore();
+      return store.Products;
+    }
+
+    public IEnumerable<PluginDescription> GetPlugins() {
+      PluginStore store = new PluginStore();
+      return store.Plugins;
+    }
     #endregion
   }
 }

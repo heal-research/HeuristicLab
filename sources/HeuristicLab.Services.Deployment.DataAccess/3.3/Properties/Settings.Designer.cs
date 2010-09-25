@@ -26,10 +26,11 @@ namespace HeuristicLab.Services.Deployment.DataAccess.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Server=SERVICES;Database=HeuristicLab.Deployment;Integrated Security=SSPI")]
-        public string HeuristicLab_PluginStoreConnectionString {
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=.\\SQLEXPRESS;Initial Catalog=HeuristicLab.Deployment;Integrated Secur" +
+            "ity=SSPI")]
+        public string HeuristicLab_DeploymentConnectionString {
             get {
-                return ((string)(this["HeuristicLab_PluginStoreConnectionString"]));
+                return ((string)(this["HeuristicLab_DeploymentConnectionString"]));
             }
         }
     }

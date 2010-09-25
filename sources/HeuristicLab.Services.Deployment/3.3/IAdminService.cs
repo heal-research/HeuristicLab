@@ -19,33 +19,18 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
 using System.ServiceModel;
-using System.Text;
-using HeuristicLab.Services.Deployment.DataAccess;
 
 namespace HeuristicLab.Services.Deployment {
-  public class Update : IUpdate {
-    #region IUpdate Members
+  [ServiceContract]
+  public interface IAdminService {
+    [OperationContract]
+    void DeployProduct(ProductDescription product);
 
-    public byte[] GetPlugin(PluginDescription description) {
-      PluginStore store = new PluginStore();
-      return store.PluginFile(description);
-    }
+    [OperationContract]
+    void DeleteProduct(ProductDescription product);
 
-
-    public IEnumerable<ProductDescription> GetProducts() {
-      PluginStore store = new PluginStore();
-      return store.Products;
-    }
-
-    public IEnumerable<PluginDescription> GetPlugins() {
-      PluginStore store = new PluginStore();
-      return store.Plugins;
-    }
-    #endregion
+    [OperationContract]
+    void DeployPlugin(PluginDescription plugin, byte[] zipFile);
   }
 }

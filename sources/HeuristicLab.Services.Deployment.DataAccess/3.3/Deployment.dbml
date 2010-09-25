@@ -1,6 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Database Name="HeuristicLab.PluginStore" Class="PluginStoreClassesDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
-  <Connection Mode="AppSettings" ConnectionString="Data Source=HEUREKA01\SQLEXPRESS;Initial Catalog=HeuristicLab.PluginStore;Integrated Security=True" SettingsObjectName="HeuristicLab.Services.Deployment.DataAccess.Properties.Settings" SettingsPropertyName="HeuristicLab_PluginStoreConnectionString" Provider="System.Data.SqlClient" />
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="HeuristicLab.PluginStore" Class="DeploymentDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=.\SQLEXPRESS;Initial Catalog=HeuristicLab.Deployment;Integrated Security=SSPI" SettingsObjectName="HeuristicLab.Services.Deployment.DataAccess.Properties.Settings" SettingsPropertyName="HeuristicLab_DeploymentConnectionString" Provider="System.Data.SqlClient" />
   <Table Name="dbo.Dependencies" Member="Dependencies">
     <Type Name="Dependency">
       <Column Name="PluginId" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
