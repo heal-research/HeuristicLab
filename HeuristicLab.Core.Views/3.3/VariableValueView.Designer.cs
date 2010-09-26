@@ -64,6 +64,7 @@ namespace HeuristicLab.Core.Views {
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AllowDrop = true;
       this.Controls.Add(this.viewHost);
       this.Name = "VariableValueView";
       this.Size = new System.Drawing.Size(359, 274);
