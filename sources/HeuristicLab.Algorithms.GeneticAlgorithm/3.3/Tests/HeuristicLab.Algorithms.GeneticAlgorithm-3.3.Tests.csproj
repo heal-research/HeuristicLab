@@ -131,6 +131,10 @@
       <Project>{DBECB8B0-B166-4133-BAF1-ED67C3FD7FCA}</Project>
       <Name>HeuristicLab.Encodings.PermutationEncoding-3.3</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\HeuristicLab.Operators.Views.GraphVisualization\3.3\HeuristicLab.Operators.Views.GraphVisualization-3.3.csproj">
+      <Project>{57F38579-409D-4DD8-AB19-3F2C4A665126}</Project>
+      <Name>HeuristicLab.Operators.Views.GraphVisualization-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
       <Project>{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}</Project>
       <Name>HeuristicLab.Operators-3.3</Name>
