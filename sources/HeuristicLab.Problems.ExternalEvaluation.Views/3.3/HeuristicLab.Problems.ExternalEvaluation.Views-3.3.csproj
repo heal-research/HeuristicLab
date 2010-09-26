@@ -128,6 +128,7 @@
     </Compile>
     <Compile Include="HeuristicLabProblemsExternalEvaluationViewsPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="Properties\AssemblyInfo.frame" />
     <Compile Include="SolutionMessageBuilderView.cs">
       <SubType>UserControl</SubType>
     </Compile>
