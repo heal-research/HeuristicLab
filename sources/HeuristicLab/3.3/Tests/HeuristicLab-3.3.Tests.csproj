@@ -9,7 +9,7 @@
     <ProjectGuid>{66DABFD5-5BD2-4478-8DF9-C589F569F7A2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeuristicLab_3._3.Tests</RootNamespace>
+    <RootNamespace>HeuristicLab_33.Tests</RootNamespace>
     <AssemblyName>HeuristicLab-3.3.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -125,6 +125,7 @@
     <Compile Include="PluginDependenciesTest.cs" />
     <Compile Include="PluginLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="GeneticAlgorithmTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\HeuristicLab.Algorithms.DataAnalysis\3.3\HeuristicLab.Algorithms.DataAnalysis-3.3.csproj">
@@ -434,6 +435,11 @@
   </ItemGroup>
   <ItemGroup>
     <Shadow Include="Test References\HeuristicLab.MainForm.WindowsForms-3.3.accessor" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="GA_TSP.hl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

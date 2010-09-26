@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab_3._3.Tests {
+namespace HeuristicLab_33.Tests {
   internal static class PluginLoader {
     public const string AssemblyExtension = ".dll";
     public static List<Assembly> pluginAssemblies;
