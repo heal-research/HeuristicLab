@@ -156,6 +156,9 @@
     </Content>
     <Content Include="Files.x86.txt">
     </Content>
+    <None Include="HeuristicLab 3.3 License.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <Content Include="HeuristicLab.ico" />
   </ItemGroup>
   <ItemGroup>
