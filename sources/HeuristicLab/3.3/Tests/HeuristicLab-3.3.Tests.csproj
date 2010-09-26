@@ -93,7 +93,22 @@
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ICSharpCode.NRefactory">
+      <HintPath>..\..\..\HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327\ICSharpCode.NRefactory.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpDevelop.Dom">
+      <HintPath>..\..\..\HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327\ICSharpCode.SharpDevelop.Dom.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.TextEditor">
+      <HintPath>..\..\..\HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327\ICSharpCode.TextEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\..\..\HeuristicLab.ExtLibs\HeuristicLab.log4net\1.2.10.0\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Mono.Cecil">
+      <HintPath>..\..\..\HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327\Mono.Cecil.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -212,6 +227,10 @@
       <Project>{125D3006-67F5-48CB-913E-73C0548F17FA}</Project>
       <Name>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\2.5.0\ALGLIB-2.5.0\ALGLIB-2.5.0.csproj">
+      <Project>{29E4B033-1FEF-4FE1-AE17-0A9319D7C54E}</Project>
+      <Name>ALGLIB-2.5.0</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\2.5.0\HeuristicLab.ALGLIB-2.5.0\HeuristicLab.ALGLIB-2.5.0.csproj">
       <Project>{01BBCB5A-144A-4A7E-908E-079849E2F7CF}</Project>
       <Name>HeuristicLab.ALGLIB-2.5.0 %28HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\HeuristicLab.ALGLIB-2.5.0\HeuristicLab.ALGLIB-2.5.0%29</Name>
@@ -219,6 +238,10 @@
     <ProjectReference Include="..\..\..\HeuristicLab.ExtLibs\HeuristicLab.LibSVM\1.6.3\HeuristicLab.LibSVM-1.6.3\HeuristicLab.LibSVM-1.6.3.csproj">
       <Project>{89B50302-9CEE-4D13-9779-633EADCAE624}</Project>
       <Name>HeuristicLab.LibSVM-1.6.3 %28HeuristicLab.ExtLibs\HeuristicLab.LibSVM\HeuristicLab.LibSVM-1.6.3\HeuristicLab.LibSVM-1.6.3%29</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\HeuristicLab.ExtLibs\HeuristicLab.LibSVM\1.6.3\LibSVM-1.6.3\LibSVM-1.6.3.csproj">
+      <Project>{A16F23B5-FB62-499E-A831-26953AA56FE2}</Project>
+      <Name>LibSVM-1.6.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\HeuristicLab.ExtLibs\HeuristicLab.log4net\1.2.10.0\HeuristicLab.log4net-1.2.10.0.csproj">
       <Project>{1B3063DB-D71C-4A6A-A359-883E8F53A140}</Project>
@@ -228,9 +251,21 @@
       <Project>{BB994448-2B21-4564-BB2E-38D8FFF8CF18}</Project>
       <Name>HeuristicLab.Netron-3.0.2672.12446 %28HeuristicLab.ExtLibs\HeuristicLab.Netron\HeuristicLab.Netron-3.0.2672.12446\HeuristicLab.Netron-3.0.2672.12446%29</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\HeuristicLab.ExtLibs\HeuristicLab.Netron\3.0.2672.12446\Netron.Diagramming.Core-3.0.2672.12446\Netron.Diagramming.Core-3.0.2672.12446.csproj">
+      <Project>{96AEBBEE-4203-45F3-BCF5-7B73BF256BDA}</Project>
+      <Name>Netron.Diagramming.Core-3.0.2672.12446</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\HeuristicLab.ExtLibs\HeuristicLab.ProtobufCS\0.9.1\HeuristicLab.ProtobufCS\HeuristicLab.ProtobufCS-0.9.1.csproj">
       <Project>{236459CE-80CF-4991-972F-DE74C826BCCC}</Project>
       <Name>HeuristicLab.ProtobufCS-0.9.1 %28HeuristicLab.ExtLibs\HeuristicLab.ProtobufCS\HeuristicLab.ProtobufCS-0.9.1\HeuristicLab.ProtobufCS-0.9.1%29</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\HeuristicLab.ExtLibs\HeuristicLab.ProtobufCS\0.9.1\ProtobufCS\src\ProtocolBuffers\ProtocolBuffers.csproj">
+      <Project>{6908BDCE-D925-43F3-94AC-A531E6DF2591}</Project>
+      <Name>ProtocolBuffers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\HeuristicLab.ExtLibs\HeuristicLab.ProtobufCS\0.9.1\ProtobufCS\src\ProtoGen\ProtoGen.csproj">
+      <Project>{250ADE34-82FD-4BAE-86D5-985FBE589C4A}</Project>
+      <Name>ProtoGen</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327\HeuristicLab.SharpDevelop-3.1.1.5327.csproj">
       <Project>{4ABA047D-46DD-4608-9E4A-41C5F92FDBB1}</Project>
@@ -239,6 +274,10 @@
     <ProjectReference Include="..\..\..\HeuristicLab.ExtLibs\HeuristicLab.WinFormsUI\2.3.1\HeuristicLab.WinFormsUI-2.3.1\HeuristicLab.WinFormsUI-2.3.1.csproj">
       <Project>{678E2145-8152-4E19-9646-07D439D00301}</Project>
       <Name>HeuristicLab.WinFormsUI-2.3.1 %28HeuristicLab.ExtLibs\HeuristicLab.WinFormsUI\HeuristicLab.WinFormsUI-2.3.1\HeuristicLab.WinFormsUI-2.3.1%29</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\HeuristicLab.ExtLibs\HeuristicLab.WinFormsUI\2.3.1\WinFormsUI-2.3.1\WinFormsUI-2.3.1.csproj">
+      <Project>{1849A92E-DCFC-4E05-BB0A-D7B7A3DAFCFB}</Project>
+      <Name>WinFormsUI-2.3.1</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\HeuristicLab.MainForm.WindowsForms\3.3\HeuristicLab.MainForm.WindowsForms-3.3.csproj">
       <Project>{AB687BBE-1BFE-476B-906D-44237135431D}</Project>
