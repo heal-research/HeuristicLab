@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Common;
@@ -40,43 +41,49 @@ namespace HeuristicLab.MainForm.WindowsForms {
       viewsLabel.Visible = false;
     }
 
+    private IContentView cachedView;
     private IContentView activeView;
     public IContentView ActiveView {
-      get { return this.activeView; }
+      get { return activeView; }
       private set {
         if (activeView != value) {
           if (activeView != null) {
+            cachedView = activeView;
             DeregisterActiveViewEvents();
-            View view = activeView as View;
-            if (view != null) {
-              view.OnHidden(EventArgs.Empty);
-              Controls.Remove(view);
-              view.Dispose();
+            View cached = cachedView as View;
+            if (cached != null) {
+              cached.OnHidden(EventArgs.Empty);
+              cached.Visible = false;
             }
           }
           activeView = value;
           if (activeView != null) {
+            View cached = cachedView as View;
+            if (cached != null && activeView != cached) {
+              Controls.Remove(cached);
+              cached.Dispose();
+            }
+            cachedView = null;
+
             this.Caption = activeView.Caption;
             viewType = activeView.GetType();
             RegisterActiveViewEvents();
             View view = activeView as View;
             if (view != null) {
+              view.Visible = true;
               view.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right;
-              view.Size = new System.Drawing.Size(this.Width - this.viewsLabel.Width - this.viewsLabel.Margin.Left - this.viewsLabel.Margin.Right, this.Height);
+              view.Size = new Size(Width - this.viewsLabel.Width - this.viewsLabel.Margin.Left - this.viewsLabel.Margin.Right, this.Height);
               view.OnShown(new ViewShownEventArgs(view, false));
-              Controls.Add(view);
+              if (!Controls.Contains((view))) Controls.Add(view);
             }
           } else viewType = null;
         }
       }
     }
-    private Control ActiveViewControl {
-      get { return ActiveView as Control; }
-    }
 
     private Type viewType;
     public Type ViewType {
-      get { return this.viewType; }
+      get { return viewType; }
       set {
         if (viewType != value) {
           if (value != null && Content != null && !ViewCanShowContent(value, Content))
@@ -88,13 +95,19 @@ namespace HeuristicLab.MainForm.WindowsForms {
       }
     }
 
+    protected override void SetEnabledStateOfControls() {
+      Enabled = Content != null;
+    }
+
     protected override void OnContentChanged() {
       viewContextMenuStrip.Item = Content;
       //change ViewType if view of ViewType can not show content or is null
       if (Content != null) {
         if (!ViewCanShowContent(viewType, Content)) {
           Type defaultViewType = MainFormManager.GetDefaultViewType(Content.GetType());
-          if (defaultViewType != null)
+          if (cachedView != null && cachedView.GetType() == defaultViewType)
+            ActiveView = cachedView;
+          else if (defaultViewType != null)
             ViewType = defaultViewType;
           else if (viewContextMenuStrip.Items.Count > 0)  // create first available view if no default view is available
             ViewType = (Type)viewContextMenuStrip.Items[0].Tag;
@@ -127,10 +140,9 @@ namespace HeuristicLab.MainForm.WindowsForms {
         if (!ViewCanShowContent(viewType, Content))
           throw new InvalidOperationException(string.Format("View \"{0}\" cannot display content \"{1}\".",
                                                             viewType, Content.GetType()));
-        IContentView view;
-        view = MainFormManager.CreateView(viewType);
-        view.Locked = this.Locked;
-        view.ReadOnly = this.ReadOnly;
+        IContentView view = MainFormManager.CreateView(viewType);
+        view.Locked = Locked;
+        view.ReadOnly = ReadOnly;
         ActiveView = view; //necessary to allow the views to change the status of the viewhost
         view.Content = Content;
 
@@ -147,33 +159,33 @@ namespace HeuristicLab.MainForm.WindowsForms {
       activeView.LockedChanged += new EventHandler(activeView_LockedChanged);
     }
     private void activeView_CaptionChanged(object sender, EventArgs e) {
-      this.Caption = activeView.Caption;
+      Caption = activeView.Caption;
     }
     private void activeView_LockedChanged(object sender, EventArgs e) {
-      this.Locked = activeView.Locked;
+      Locked = activeView.Locked;
     }
 
     protected override void OnSizeChanged(EventArgs e) {
       //mkommend: solution to resizing issues. taken from http://support.microsoft.com/kb/953934
       //not implemented with a panel to reduce the number of nested controls
-      if (this.Handle != null)
+      if (Handle != null)
         this.BeginInvoke((Action<EventArgs>)OnSizeChangedHelper, e);
     }
     private void OnSizeChangedHelper(EventArgs e) {
       base.OnSizeChanged(e);
-      this.viewsLabel.Location = new System.Drawing.Point(this.Width - this.viewsLabel.Margin.Right - this.viewsLabel.Width, this.viewsLabel.Margin.Top);
+      viewsLabel.Location = new Point(Width - viewsLabel.Margin.Right - viewsLabel.Width, viewsLabel.Margin.Top);
     }
 
     #region forwarding of view events
     internal protected override void OnShown(ViewShownEventArgs e) {
       base.OnShown(e);
-      View view = this.ActiveView as View;
+      View view = ActiveView as View;
       if (view != null)
         view.OnShown(e);
     }
     internal protected override void OnHidden(EventArgs e) {
       base.OnHidden(e);
-      View view = this.ActiveView as View;
+      View view = ActiveView as View;
       if (view != null)
         view.OnHidden(e);
     }
