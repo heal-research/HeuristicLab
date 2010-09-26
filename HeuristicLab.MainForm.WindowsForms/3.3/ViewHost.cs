@@ -155,8 +155,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
       activeView.LockedChanged += new EventHandler(activeView_LockedChanged);
     }
     private void DeregisterActiveViewEvents() {
-      activeView.CaptionChanged += new EventHandler(activeView_CaptionChanged);
-      activeView.LockedChanged += new EventHandler(activeView_LockedChanged);
+      activeView.CaptionChanged -= new EventHandler(activeView_CaptionChanged);
+      activeView.LockedChanged -= new EventHandler(activeView_LockedChanged);
     }
     private void activeView_CaptionChanged(object sender, EventArgs e) {
       Caption = activeView.Caption;
