@@ -331,8 +331,8 @@ namespace HeuristicLab.Core.Views {
       IEnumerable<T> items = itemListViewItemTable.Keys.Except(GetStorableItems(itemListViewItemTable.Keys));
       if (items.Any()) {
         string itemNames = string.Join(Environment.NewLine, items.Select(item => item.ToString()).ToArray());
-        MessageBox.Show("The following items could not be saved, because they are locked (e.g. used in a running algorithm). All other items will be saved." +
-          Environment.NewLine + itemNames, "Could not save all items", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        MessageBox.Show("The following items are not saved, because they are locked (e.g. used in a running algorithm):" + Environment.NewLine + Environment.NewLine +
+          itemNames + Environment.NewLine + Environment.NewLine + "All other items will be saved.", "Cannot save all items", MessageBoxButtons.OK, MessageBoxIcon.Warning);
       }
       Save();
     }
