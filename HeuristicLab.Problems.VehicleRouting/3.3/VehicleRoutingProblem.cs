@@ -1,0 +1,554 @@
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
+using HeuristicLab.Problems.VehicleRouting.Encodings.General;
+using HeuristicLab.Problems.VehicleRouting.Encodings.Prins;
+
+namespace HeuristicLab.Problems.VehicleRouting {
+  [Item("Vehicle Routing Problem", "Represents a Vehicle Routing Problem.")]
+  [Creatable("Problems")]
+  [StorableClass]
+  public sealed class VehicleRoutingProblem : ParameterizedNamedItem, ISingleObjectiveProblem, IStorableContent {
+    public string Filename { get; set; }
+
+    public override Image ItemImage {
+      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Type; }
+    }
+
+    #region Parameter Properties
+    public ValueParameter<BoolValue> MaximizationParameter {
+      get { return (ValueParameter<BoolValue>)Parameters["Maximization"]; }
+    }
+    IParameter ISingleObjectiveProblem.MaximizationParameter {
+      get { return MaximizationParameter; }
+    }
+    public ValueParameter<DoubleMatrix> CoordinatesParameter {
+      get { return (ValueParameter<DoubleMatrix>)Parameters["Coordinates"]; }
+    }
+    public OptionalValueParameter<DoubleMatrix> DistanceMatrixParameter {
+      get { return (OptionalValueParameter<DoubleMatrix>)Parameters["DistanceMatrix"]; }
+    }
+    public ValueParameter<BoolValue> UseDistanceMatrixParameter {
+      get { return (ValueParameter<BoolValue>)Parameters["UseDistanceMatrix"]; }
+    }
+    public ValueParameter<IntValue> VehiclesParameter {
+      get { return (ValueParameter<IntValue>)Parameters["Vehicles"]; }
+    }
+    public ValueParameter<DoubleValue> CapacityParameter {
+      get { return (ValueParameter<DoubleValue>)Parameters["Capacity"]; }
+    }
+    public ValueParameter<DoubleArray> DemandParameter {
+      get { return (ValueParameter<DoubleArray>)Parameters["Demand"]; }
+    }
+    public ValueParameter<DoubleArray> ReadyTimeParameter {
+      get { return (ValueParameter<DoubleArray>)Parameters["ReadyTime"]; }
+    }
+    public ValueParameter<DoubleArray> DueTimeParameter {
+      get { return (ValueParameter<DoubleArray>)Parameters["DueTime"]; }
+    }
+    public ValueParameter<DoubleArray> ServiceTimeParameter {
+      get { return (ValueParameter<DoubleArray>)Parameters["ServiceTime"]; }
+    }
+    ValueParameter<IVRPCreator> SolutionCreatorParameter {
+      get { return (ValueParameter<IVRPCreator>)Parameters["SolutionCreator"]; }
+    }
+    IParameter IProblem.SolutionCreatorParameter {
+      get { return SolutionCreatorParameter; }
+    }
+    ValueParameter<IVRPEvaluator> EvaluatorParameter {
+      get { return (ValueParameter<IVRPEvaluator>)Parameters["Evaluator"]; }
+    }
+    IParameter IProblem.EvaluatorParameter {
+      get { return EvaluatorParameter; }
+    }
+    public IValueParameter<DoubleValue> FleetUsageFactor {
+      get { return (IValueParameter<DoubleValue>)Parameters["EvalFleetUsageFactor"]; }
+    }
+    public IValueParameter<DoubleValue> TimeFactor {
+      get { return (IValueParameter<DoubleValue>)Parameters["EvalTimeFactor"]; }
+    }
+    public IValueParameter<DoubleValue> DistanceFactor {
+      get { return (IValueParameter<DoubleValue>)Parameters["EvalDistanceFactor"]; }
+    }
+    public IValueParameter<DoubleValue> OverloadPenalty {
+      get { return (IValueParameter<DoubleValue>)Parameters["EvalOverloadPenalty"]; }
+    }
+    public IValueParameter<DoubleValue> TardinessPenalty {
+      get { return (IValueParameter<DoubleValue>)Parameters["EvalTardinessPenalty"]; }
+    }
+    public OptionalValueParameter<DoubleValue> BestKnownQualityParameter {
+      get { return (OptionalValueParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
+    }
+    IParameter ISingleObjectiveProblem.BestKnownQualityParameter {
+      get { return BestKnownQualityParameter; }
+    }
+    #endregion
+
+    #region Properties
+    public DoubleMatrix Coordinates {
+      get { return CoordinatesParameter.Value; }
+      set { CoordinatesParameter.Value = value; }
+    }
+    public DoubleMatrix DistanceMatrix {
+      get { return DistanceMatrixParameter.Value; }
+      set { DistanceMatrixParameter.Value = value; }
+    }
+    public BoolValue UseDistanceMatrix {
+      get { return UseDistanceMatrixParameter.Value; }
+      set { UseDistanceMatrixParameter.Value = value; }
+    }
+    public IntValue Vehicles {
+      get { return VehiclesParameter.Value; }
+      set { VehiclesParameter.Value = value; }
+    }
+    public DoubleValue Capacity {
+      get { return CapacityParameter.Value; }
+      set { CapacityParameter.Value = value; }
+    }
+    public DoubleArray Demand {
+      get { return DemandParameter.Value; }
+      set { DemandParameter.Value = value; }
+    }
+    public DoubleArray ReadyTime {
+      get { return ReadyTimeParameter.Value; }
+      set { ReadyTimeParameter.Value = value; }
+    }
+    public DoubleArray DueTime {
+      get { return DueTimeParameter.Value; }
+      set { DueTimeParameter.Value = value; }
+    }
+    public DoubleArray ServiceTime {
+      get { return ServiceTimeParameter.Value; }
+      set { ServiceTimeParameter.Value = value; }
+    }
+    public DoubleValue BestKnownQuality {
+      get { return BestKnownQualityParameter.Value; }
+      set { BestKnownQualityParameter.Value = value; }
+    }
+    IVRPCreator SolutionCreator {
+      get { return SolutionCreatorParameter.Value; }
+      set { SolutionCreatorParameter.Value = value; }
+    }
+    ISolutionCreator IProblem.SolutionCreator {
+      get { return SolutionCreatorParameter.Value; }
+    }
+    IVRPEvaluator Evaluator {
+      get { return EvaluatorParameter.Value; }
+      set { EvaluatorParameter.Value = value; }
+    }
+    ISingleObjectiveEvaluator ISingleObjectiveProblem.Evaluator {
+      get { return EvaluatorParameter.Value; }
+    }
+    IEvaluator IProblem.Evaluator {
+      get { return EvaluatorParameter.Value; }
+    }
+    public IEnumerable<IOperator> Operators {
+      get { return operators; }
+    }
+    private BestVRPSolutionAnalyzer BestVRPSolutionAnalyzer {
+      get { return operators.OfType<BestVRPSolutionAnalyzer>().FirstOrDefault(); }
+    }
+    private BestAverageWorstVRPToursAnalyzer BestAverageWorstVRPToursAnalyzer {
+      get { return operators.OfType<BestAverageWorstVRPToursAnalyzer>().FirstOrDefault(); }
+    }
+    #endregion
+
+    [Storable]
+    private List<IOperator> operators;
+
+    [StorableConstructor]
+    private VehicleRoutingProblem(bool deserializing) : base(deserializing) { }
+    public VehicleRoutingProblem()
+      : base() {
+      IVRPCreator creator = new RandomCreator();
+      IVRPEvaluator evaluator = new VRPEvaluator();
+
+      Parameters.Add(new ValueParameter<BoolValue>("Maximization", "Set to false as the Vehicle Routing Problem is a minimization problem.", new BoolValue(false)));
+      Parameters.Add(new ValueParameter<DoubleMatrix>("Coordinates", "The x- and y-Coordinates of the cities.", new DoubleMatrix()));
+      Parameters.Add(new OptionalValueParameter<DoubleMatrix>("DistanceMatrix", "The matrix which contains the distances between the cities."));
+      Parameters.Add(new ValueParameter<BoolValue>("UseDistanceMatrix", "True if a distance matrix should be calculated and used for evaluation, otherwise false.", new BoolValue(true)));
+      Parameters.Add(new ValueParameter<IntValue>("Vehicles", "The number of vehicles.", new IntValue(0)));
+      Parameters.Add(new ValueParameter<DoubleValue>("Capacity", "The capacity of each vehicle.", new DoubleValue(0)));
+      Parameters.Add(new ValueParameter<DoubleArray>("Demand", "The demand of each customer.", new DoubleArray()));
+      Parameters.Add(new ValueParameter<DoubleArray>("ReadyTime", "The ready time of each customer.", new DoubleArray()));
+      Parameters.Add(new ValueParameter<DoubleArray>("DueTime", "The due time of each customer.", new DoubleArray()));
+      Parameters.Add(new ValueParameter<DoubleArray>("ServiceTime", "The service time of each customer.", new DoubleArray()));
+      Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this VRP instance."));
+      Parameters.Add(new ValueParameter<DoubleValue>("EvalFleetUsageFactor", "The fleet usage factor considered in the evaluation.", new DoubleValue(100)));
+      Parameters.Add(new ValueParameter<DoubleValue>("EvalTimeFactor", "The time factor considered in the evaluation.", new DoubleValue(0)));
+      Parameters.Add(new ValueParameter<DoubleValue>("EvalDistanceFactor", "The distance factor considered in the evaluation.", new DoubleValue(1)));
+      Parameters.Add(new ValueParameter<DoubleValue>("EvalOverloadPenalty", "The overload penalty considered in the evaluation.", new DoubleValue(100)));
+      Parameters.Add(new ValueParameter<DoubleValue>("EvalTardinessPenalty", "The tardiness penalty considered in the evaluation.", new DoubleValue(100)));
+
+      Parameters.Add(new ValueParameter<IVRPCreator>("SolutionCreator", "The operator which should be used to create new VRP solutions.", creator));
+      Parameters.Add(new ValueParameter<IVRPEvaluator>("Evaluator", "The operator which should be used to evaluate VRP solutions.", evaluator));
+
+      creator.VRPToursParameter.ActualName = "VRPTours";
+      evaluator.QualityParameter.ActualName = "VRPQuality";
+
+      InitializeRandomVRPInstance();
+
+      ParameterizeSolutionCreator();
+      ParameterizeEvaluator();
+
+      InitializeOperators();
+      AttachEventHandlers();
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      VehicleRoutingProblem clone = (VehicleRoutingProblem)base.Clone(cloner);
+      clone.operators = operators.Select(x => (IOperator)cloner.Clone(x)).ToList();
+      clone.DistanceMatrixParameter.Value = DistanceMatrixParameter.Value;
+      clone.AttachEventHandlers();
+      return clone;
+    }
+
+    #region Events
+    public event EventHandler SolutionCreatorChanged;
+    private void OnSolutionCreatorChanged() {
+      EventHandler handler = SolutionCreatorChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
+    public event EventHandler EvaluatorChanged;
+    private void OnEvaluatorChanged() {
+      EventHandler handler = EvaluatorChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
+    public event EventHandler OperatorsChanged;
+    private void OnOperatorsChanged() {
+      EventHandler handler = OperatorsChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
+    public event EventHandler Reset;
+    private void OnReset() {
+      EventHandler handler = Reset;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
+    void VehiclesValue_ValueChanged(object sender, EventArgs e) {
+      ParameterizeSolutionCreator();
+    }
+    private void CoordinatesParameter_ValueChanged(object sender, EventArgs e) {
+      Coordinates.ItemChanged += new EventHandler<EventArgs<int, int>>(Coordinates_ItemChanged);
+      Coordinates.Reset += new EventHandler(Coordinates_Reset);
+      ParameterizeSolutionCreator();
+      ClearDistanceMatrix();
+    }
+    private void Coordinates_ItemChanged(object sender, EventArgs<int, int> e) {
+      ClearDistanceMatrix();
+    }
+    private void Coordinates_Reset(object sender, EventArgs e) {
+      ParameterizeSolutionCreator();
+      ClearDistanceMatrix();
+    }
+    private void SolutionCreatorParameter_ValueChanged(object sender, EventArgs e) {
+      ParameterizeSolutionCreator();
+      ParameterizeEvaluator();
+      ParameterizeAnalyzer();
+      ParameterizeOperators();
+      OnSolutionCreatorChanged();
+    }
+    private void SolutionCreator_PermutationParameter_ActualNameChanged(object sender, EventArgs e) {
+      ParameterizeEvaluator();
+      ParameterizeAnalyzer();
+      ParameterizeOperators();
+    }
+    private void EvaluatorParameter_ValueChanged(object sender, EventArgs e) {
+      Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
+      ParameterizeEvaluator();
+      UpdateMoveEvaluators();
+      ParameterizeAnalyzer();
+      OnEvaluatorChanged();
+    }
+    private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
+      ParameterizeAnalyzer();
+    }
+    private void TranslocationMoveParameter_ActualNameChanged(object sender, EventArgs e) {
+      string name = ((ILookupParameter<TranslocationMove>)sender).ActualName;
+      foreach (IPermutationTranslocationMoveOperator op in Operators.OfType<IPermutationTranslocationMoveOperator>()) {
+        op.TranslocationMoveParameter.ActualName = name;
+      }
+    }
+    #endregion
+
+    #region Helpers
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserializationHook() {
+      AttachEventHandlers();
+    }
+
+    private void AttachEventHandlers() {
+      CoordinatesParameter.ValueChanged += new EventHandler(CoordinatesParameter_ValueChanged);
+      Vehicles.ValueChanged += new EventHandler(VehiclesValue_ValueChanged);
+      Coordinates.ItemChanged += new EventHandler<EventArgs<int, int>>(Coordinates_ItemChanged);
+      Coordinates.Reset += new EventHandler(Coordinates_Reset);
+      SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
+      EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
+      Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
+    }
+    private void InitializeOperators() {
+      operators = new List<IOperator>();
+      operators.Add(new BestVRPSolutionAnalyzer());
+      operators.Add(new BestAverageWorstVRPToursAnalyzer());
+      ParameterizeAnalyzer();
+      operators.AddRange(ApplicationManager.Manager.GetInstances<IVRPOperator>().Cast<IOperator>().OrderBy(op => op.Name));
+      ParameterizeOperators();
+      UpdateMoveEvaluators();
+      InitializeMoveGenerators();
+    }
+    private void InitializeMoveGenerators() {
+      foreach (IAlbaTranslocationMoveOperator op in Operators.OfType<IAlbaTranslocationMoveOperator>()) {
+        if (op is IMoveGenerator) {
+          op.TranslocationMoveParameter.ActualNameChanged += new EventHandler(TranslocationMoveParameter_ActualNameChanged);
+        }
+      }
+
+    }
+    private void UpdateMoveEvaluators() {
+      ParameterizeOperators();
+      OnOperatorsChanged();
+    }
+    private void ParameterizeSolutionCreator() {
+      SolutionCreator.VehiclesParameter.ActualName = VehiclesParameter.Name;
+      SolutionCreator.CoordinatesParameter.ActualName = CoordinatesParameter.Name;
+      Evaluator.DistanceMatrixParameter.ActualName = DistanceMatrixParameter.Name;
+      Evaluator.UseDistanceMatrixParameter.ActualName = UseDistanceMatrixParameter.Name;
+      SolutionCreator.CapacityParameter.ActualName = CapacityParameter.Name;
+      SolutionCreator.DemandParameter.ActualName = DemandParameter.Name;
+      SolutionCreator.ReadyTimeParameter.ActualName = ReadyTimeParameter.Name;
+      SolutionCreator.DueTimeParameter.ActualName = DueTimeParameter.Name;
+      SolutionCreator.ServiceTimeParameter.ActualName = ServiceTimeParameter.Name;
+    }
+    private void ParameterizeEvaluator() {
+      Evaluator.VRPToursParameter.ActualName = SolutionCreator.VRPToursParameter.ActualName;
+      Evaluator.CoordinatesParameter.ActualName = CoordinatesParameter.Name;
+      Evaluator.DistanceMatrixParameter.ActualName = DistanceMatrixParameter.Name;
+      Evaluator.UseDistanceMatrixParameter.ActualName = UseDistanceMatrixParameter.Name;
+      Evaluator.VehiclesParameter.ActualName = VehiclesParameter.Name;
+      Evaluator.CapacityParameter.ActualName = CapacityParameter.Name;
+      Evaluator.DemandParameter.ActualName = DemandParameter.Name;
+      Evaluator.ReadyTimeParameter.ActualName = ReadyTimeParameter.Name;
+      Evaluator.DueTimeParameter.ActualName = DueTimeParameter.Name;
+      Evaluator.ServiceTimeParameter.ActualName = ServiceTimeParameter.Name;
+      Evaluator.FleetUsageFactor.ActualName = FleetUsageFactor.Name;
+      Evaluator.TimeFactor.ActualName = TimeFactor.Name;
+      Evaluator.DistanceFactor.ActualName = DistanceFactor.Name;
+      Evaluator.OverloadPenalty.ActualName = OverloadPenalty.Name;
+      Evaluator.TardinessPenalty.ActualName = TardinessPenalty.Name;
+    }
+    private void ParameterizeAnalyzer() {
+      BestVRPSolutionAnalyzer.CoordinatesParameter.ActualName = CoordinatesParameter.Name;
+      BestVRPSolutionAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
+      BestVRPSolutionAnalyzer.DistanceParameter.ActualName = Evaluator.DistanceParameter.ActualName;
+      BestVRPSolutionAnalyzer.OverloadParameter.ActualName = Evaluator.OverloadParameter.ActualName;
+      BestVRPSolutionAnalyzer.TardinessParameter.ActualName = Evaluator.TardinessParameter.ActualName;
+      BestVRPSolutionAnalyzer.TravelTimeParameter.ActualName = Evaluator.TravelTimeParameter.ActualName;
+      BestVRPSolutionAnalyzer.VehiclesUtilizedParameter.ActualName = Evaluator.VehcilesUtilizedParameter.ActualName;
+      BestVRPSolutionAnalyzer.VRPToursParameter.ActualName = SolutionCreator.VRPToursParameter.ActualName;
+      BestVRPSolutionAnalyzer.ResultsParameter.ActualName = "Results";
+
+      BestAverageWorstVRPToursAnalyzer.DistanceParameter.ActualName = Evaluator.DistanceParameter.ActualName;
+      BestAverageWorstVRPToursAnalyzer.OverloadParameter.ActualName = Evaluator.OverloadParameter.ActualName;
+      BestAverageWorstVRPToursAnalyzer.TardinessParameter.ActualName = Evaluator.TardinessParameter.ActualName;
+      BestAverageWorstVRPToursAnalyzer.TravelTimeParameter.ActualName = Evaluator.TravelTimeParameter.ActualName;
+      BestAverageWorstVRPToursAnalyzer.VehiclesUtilizedParameter.ActualName = Evaluator.VehcilesUtilizedParameter.ActualName;
+      BestAverageWorstVRPToursAnalyzer.ResultsParameter.ActualName = "Results";
+    }
+    private void ParameterizeOperators() {
+      foreach (IVRPOperator op in Operators.OfType<IVRPOperator>()) {
+        if(op.CoordinatesParameter != null) op.CoordinatesParameter.ActualName = CoordinatesParameter.Name;
+        if(op.DistanceMatrixParameter != null) op.DistanceMatrixParameter.ActualName = DistanceMatrixParameter.Name;
+        if(op.UseDistanceMatrixParameter != null) op.UseDistanceMatrixParameter.ActualName = UseDistanceMatrixParameter.Name;
+        if(op.VehiclesParameter != null) op.VehiclesParameter.ActualName = VehiclesParameter.Name;
+        if(op.CapacityParameter != null) op.CapacityParameter.ActualName = CapacityParameter.Name;
+        if(op.DemandParameter != null) op.DemandParameter.ActualName = DemandParameter.Name;
+        if(op.ReadyTimeParameter != null) op.ReadyTimeParameter.ActualName = ReadyTimeParameter.Name;
+        if(op.DueTimeParameter != null) op.DueTimeParameter.ActualName = DueTimeParameter.Name;
+        if(op.ServiceTimeParameter != null) op.ServiceTimeParameter.ActualName = ServiceTimeParameter.Name;
+      }
+      
+      foreach (IVRPMoveOperator op in Operators.OfType<IVRPMoveOperator>()) {
+        op.VRPToursParameter.ActualName = SolutionCreator.VRPToursParameter.ActualName;
+      }
+
+      foreach (IPrinsOperator op in Operators.OfType<IPrinsOperator>()) {
+        op.FleetUsageFactor.ActualName = FleetUsageFactor.Name;
+        op.TimeFactor.ActualName = TimeFactor.Name;
+        op.DistanceFactor.ActualName = DistanceFactor.Name;
+        op.OverloadPenalty.ActualName = OverloadPenalty.Name;
+        op.TardinessPenalty.ActualName = TardinessPenalty.Name;
+      }
+
+      foreach (IVRPMoveEvaluator op in Operators.OfType<IVRPMoveEvaluator>()) {
+        op.FleetUsageFactor.ActualName = FleetUsageFactor.Name;
+        op.TimeFactor.ActualName = TimeFactor.Name;
+        op.DistanceFactor.ActualName = DistanceFactor.Name;
+        op.OverloadPenalty.ActualName = OverloadPenalty.Name;
+        op.TardinessPenalty.ActualName = TardinessPenalty.Name;
+        op.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
+        op.VRPToursParameter.ActualName = SolutionCreator.VRPToursParameter.ActualName;
+      }
+      string translocationMove = Operators.OfType<IMoveGenerator>().OfType<IAlbaTranslocationMoveOperator>().First().TranslocationMoveParameter.ActualName;
+      foreach (IAlbaTranslocationMoveOperator op in Operators.OfType<IAlbaTranslocationMoveOperator>())
+        op.TranslocationMoveParameter.ActualName = translocationMove;
+
+      foreach (IVRPCrossover op in Operators.OfType<IVRPCrossover>()) {
+        op.ParentsParameter.ActualName = SolutionCreator.VRPToursParameter.ActualName;
+        op.ChildParameter.ActualName = SolutionCreator.VRPToursParameter.ActualName;
+      }
+
+      foreach (IVRPManipulator op in Operators.OfType<IVRPManipulator>()) {
+        op.VRPToursParameter.ActualName = SolutionCreator.VRPToursParameter.ActualName;
+      }
+    }
+    private void ClearDistanceMatrix() {
+      DistanceMatrixParameter.Value = null;
+    }
+    #endregion
+
+    public void ImportFromSolomon(string solomonFileName) {
+      SolomonParser parser = new SolomonParser(solomonFileName);
+      parser.Parse();
+
+      this.Name = parser.ProblemName;
+
+      Coordinates = new DoubleMatrix(parser.Coordinates);
+      Vehicles.Value = parser.Vehicles;
+      Capacity.Value = parser.Capacity;
+      Demand = new DoubleArray(parser.Demands);
+      ReadyTime = new DoubleArray(parser.Readytimes);
+      DueTime = new DoubleArray(parser.Duetimes);
+      ServiceTime = new DoubleArray(parser.Servicetimes);
+
+      OnReset();
+    }
+
+    public void ImportFromTSPLib(string tspFileName) {
+      TSPLIBParser parser = new TSPLIBParser(tspFileName);
+      parser.Parse();
+
+      this.Name = parser.Name;
+
+      int problemSize = parser.Demands.Length;
+
+      Coordinates = new DoubleMatrix(parser.Vertices);
+      if (parser.Vehicles != -1)
+        Vehicles.Value = parser.Vehicles;
+      else 
+        Vehicles.Value = problemSize - 1;
+      Capacity.Value = parser.Capacity;
+      Demand = new DoubleArray(parser.Demands);
+      ReadyTime = new DoubleArray(problemSize);
+      DueTime = new DoubleArray(problemSize);
+      ServiceTime = new DoubleArray(problemSize);
+
+      for (int i = 0; i < problemSize; i++) {
+        ReadyTime[i] = 0;
+        DueTime[i] = int.MaxValue;
+        ServiceTime[i] = 0;
+      }
+
+      if (parser.Distance != -1) {
+        DueTime[0] = parser.Distance;
+      }
+
+      if (parser.Depot != 1)
+        throw new Exception("Invalid depot specification");
+
+      if (parser.WeightType != TSPLIBParser.TSPLIBEdgeWeightType.EUC_2D)
+        throw new Exception("Invalid weight type");
+
+      OnReset();
+    }
+
+    public void ImportFromORLib(string orFileName) {
+      ORLIBParser parser = new ORLIBParser(orFileName);
+      parser.Parse();
+
+      this.Name = parser.Name;
+      int problemSize = parser.Demands.Length;
+
+      Coordinates = new DoubleMatrix(parser.Vertices);
+      Vehicles.Value = problemSize - 1;
+      Capacity.Value = parser.Capacity;
+      Demand = new DoubleArray(parser.Demands);
+      ReadyTime = new DoubleArray(problemSize);
+      DueTime = new DoubleArray(problemSize);
+      ServiceTime = new DoubleArray(problemSize);
+
+      ReadyTime[0] = 0;
+      DueTime[0] = parser.MaxRouteTime;
+      ServiceTime[0] = 0;
+
+      for (int i = 1; i < problemSize; i++) {
+        ReadyTime[i] = 0;
+        DueTime[i] = int.MaxValue;
+        ServiceTime[i] = parser.ServiceTime;
+      }
+
+      OnReset();
+    }
+
+    private void InitializeRandomVRPInstance() {
+      System.Random rand = new System.Random();
+
+      int cities = 100;
+
+      Coordinates = new DoubleMatrix(cities + 1, 2);
+      Demand = new DoubleArray(cities + 1);
+      DueTime = new DoubleArray(cities + 1);
+      ReadyTime = new DoubleArray(cities + 1);
+      ServiceTime = new DoubleArray(cities + 1);
+
+      Vehicles.Value = 100;
+      Capacity.Value = 200;
+
+      for (int i = 0; i <= cities; i++) {
+        Coordinates[i, 0] = rand.Next(0, 100);
+        Coordinates[i, 1] = rand.Next(0, 100);
+
+        if (i == 0) {
+          Demand[i] = 0;
+          DueTime[i] = Int16.MaxValue;
+          ReadyTime[i] = 0;
+          ServiceTime[i] = 0;
+        } else {
+          Demand[i] = rand.Next(10, 50);
+          DueTime[i] = rand.Next((int)Math.Ceiling(VRPUtilities.CalculateDistance(0, i, Coordinates)), 1200);
+          ReadyTime[i] = DueTime[i] - rand.Next(0, 100);
+          ServiceTime[i] = 90;
+        }
+      }
+    }
+  }
+}
