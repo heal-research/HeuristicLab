@@ -21,23 +21,16 @@
 
 using System;
 using System.Threading;
+using HeuristicLab.Algorithms.GeneticAlgorithm;
 using HeuristicLab.Common;
 using HeuristicLab.Data;
-using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Algorithms.GeneticAlgorithm_33.Tests {
-  /// <summary>
-  /// Summary description for UnitTest
-  /// </summary>
+namespace HeuristicLab_33.Tests {
   [TestClass]
-  public class UnitTest {
-    public UnitTest() {
-      //
-      // TODO: Add constructor logic here
-      //
-    }
+  public class GeneticAlgorithmTest {
+    public GeneticAlgorithmTest() { }
 
     private TestContext testContextInstance;
 
@@ -83,31 +76,34 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm_33.Tests {
     [DeploymentItem(@"GA_TSP.hl")]
     public void GeneticAlgorithmPerformanceTest() {
       ex = null;
-      IAlgorithm ga = (IAlgorithm)XmlParser.Deserialize("GA_TSP.hl");
+      GeneticAlgorithm ga = (GeneticAlgorithm)XmlParser.Deserialize("GA_TSP.hl");
       ga.ExceptionOccurred += new EventHandler<EventArgs<Exception>>(ga_ExceptionOccurred);
       ga.Stopped += new EventHandler(ga_Stopped);
+      ga.SetSeedRandomly.Value = false;
+      ga.Seed.Value = 0;
+
       ga.Prepare();
       ga.Start();
       trigger.WaitOne();
+      if (ex != null) throw ex;
+
       TestContext.WriteLine("Runtime: {0}", ga.ExecutionTime.ToString());
 
       double expectedBestQuality = 12332.0;
       double expectedAverageQuality = 13123.2;
       double expectedWorstQuality = 14538.0;
-      double bestQuality = (ga.Results["Current Best Quality"].Value as DoubleValue).Value;
-      double averageQuality = (ga.Results["Current Average Quality"].Value as DoubleValue).Value;
-      double worstQuality = (ga.Results["Current Worst Quality"].Value as DoubleValue).Value;
+      double bestQuality = (ga.Results["CurrentBestQuality"].Value as DoubleValue).Value;
+      double averageQuality = (ga.Results["CurrentAverageQuality"].Value as DoubleValue).Value;
+      double worstQuality = (ga.Results["CurrentWorstQuality"].Value as DoubleValue).Value;
 
       TestContext.WriteLine("");
-      TestContext.WriteLine("Current Best Quality: {0} (should be {1})", bestQuality, expectedBestQuality);
-      TestContext.WriteLine("Current Average Quality: {0} (should be {1})", averageQuality, expectedAverageQuality);
-      TestContext.WriteLine("Current Worst Quality: {0} (should be {1})", worstQuality, expectedWorstQuality);
+      TestContext.WriteLine("CurrentBestQuality: {0} (should be {1})", bestQuality, expectedBestQuality);
+      TestContext.WriteLine("CurrentAverageQuality: {0} (should be {1})", averageQuality, expectedAverageQuality);
+      TestContext.WriteLine("CurrentWorstQuality: {0} (should be {1})", worstQuality, expectedWorstQuality);
 
       Assert.AreEqual(bestQuality, expectedBestQuality);
       Assert.AreEqual(averageQuality, expectedAverageQuality);
       Assert.AreEqual(worstQuality, expectedWorstQuality);
-
-      if (ex != null) throw ex;
     }
 
     private void ga_ExceptionOccurred(object sender, EventArgs<Exception> e) {

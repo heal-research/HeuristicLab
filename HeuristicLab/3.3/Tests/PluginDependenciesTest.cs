@@ -27,7 +27,7 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab_3._3.Tests {
+namespace HeuristicLab_33.Tests {
   [TestClass]
   public class PluginDependenciesTest {
     private static Dictionary<Assembly, Type> loadedPlugins;
