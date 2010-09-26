@@ -109,6 +109,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Documents\GA_VRP.hl" />
     <None Include="HeuristicLabOptimizerPlugin.cs.frame" />
     <Compile Include="FileManager.cs" />
     <Compile Include="ChartControlsWarning.cs">
