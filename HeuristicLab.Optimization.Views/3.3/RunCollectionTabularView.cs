@@ -131,6 +131,7 @@ namespace HeuristicLab.Optimization.Views {
       runToRowMapping = new int[Content.Count];
       for (int i = 0; i < runToRowMapping.Length; i++)
         runToRowMapping[i] = i;
+      UpdateRowAttributes();
     }
 
     protected override int[] Sort(IEnumerable<KeyValuePair<int, SortOrder>> sortedColumns) {

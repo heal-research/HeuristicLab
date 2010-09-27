@@ -98,7 +98,7 @@ namespace HeuristicLab.Data.Views {
     }
 
     private void UpdateData() {
-      ClearSorting();
+
       rowsTextBox.Text = Content.Rows.ToString();
       rowsTextBox.Enabled = true;
       columnsTextBox.Text = Content.Columns.ToString();
@@ -112,6 +112,7 @@ namespace HeuristicLab.Data.Views {
         Content.Columns = dataGridView.ColumnCount;
       else
         dataGridView.ColumnCount = Content.Columns;
+      ClearSorting();
 
       UpdateColumnHeaders();
       UpdateRowHeaders();
