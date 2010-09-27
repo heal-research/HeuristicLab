@@ -71,12 +71,13 @@ namespace HeuristicLab.Optimization {
         foreach (KeyValuePair<string, IItem> result in run.Results)
           AddResult(result.Key, result.Value);
       }
-      base.OnCollectionReset(items, oldItems);
-      OnReset();
       columnNameCache = null;
       OnColumnNamesChanged();
       rowNamesCache = null;
+      base.OnCollectionReset(items, oldItems);
       OnRowNamesChanged();
+      OnReset();
+      UpdateFiltering(false);
     }
     protected override void OnItemsAdded(IEnumerable<IRun> items) {
       bool columnNamesChanged = false;
@@ -86,15 +87,15 @@ namespace HeuristicLab.Optimization {
         foreach (KeyValuePair<string, IItem> result in run.Results)
           columnNamesChanged |= AddResult(result.Key, result.Value);
       }
-      base.OnItemsAdded(items);
-      OnReset();
       if (columnNamesChanged) {
         columnNameCache = null;
         OnColumnNamesChanged();
       }
       rowNamesCache = null;
+      base.OnItemsAdded(items);
       OnRowNamesChanged();
-      this.UpdateFiltering(false);
+      OnReset();
+      UpdateFiltering(false);
     }
     protected override void OnItemsRemoved(IEnumerable<IRun> items) {
       bool columnNamesChanged = false;
@@ -104,14 +105,14 @@ namespace HeuristicLab.Optimization {
         foreach (string resultName in run.Results.Keys)
           columnNamesChanged |= RemoveResultName(resultName);
       }
-      base.OnItemsRemoved(items);
-      OnReset();
       if (columnNamesChanged) {
         columnNameCache = null;
         OnColumnNamesChanged();
       }
       rowNamesCache = null;
+      base.OnItemsRemoved(items);
       OnRowNamesChanged();
+      OnReset();
     }
 
     private bool AddParameter(string name, IItem value) {

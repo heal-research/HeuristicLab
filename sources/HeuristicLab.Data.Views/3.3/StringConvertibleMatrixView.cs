@@ -278,8 +278,8 @@ namespace HeuristicLab.Data.Views {
         maxColIndex = temp;
       }
 
-      bool addColumnNames = Content.ColumnNames.Any() && minRowIndex == 0;
-      bool addRowNames = Content.RowNames.Any() && minColIndex == 0;
+      bool addRowNames = dataGridView.AreAllCellsSelected(false);
+      bool addColumnNames = dataGridView.AreAllCellsSelected(false);
 
       //add colum names
       if (addColumnNames) {
@@ -381,7 +381,7 @@ namespace HeuristicLab.Data.Views {
       }
     }
 
-    protected void ClearSorting() {
+    protected virtual void ClearSorting() {
       virtualRowIndizes = Enumerable.Range(0, Content.Rows).ToArray();
       sortedColumnIndizes.Clear();
       UpdateSortGlyph();
