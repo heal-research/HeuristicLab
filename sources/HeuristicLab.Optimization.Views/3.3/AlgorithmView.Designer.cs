@@ -102,6 +102,7 @@ namespace HeuristicLab.Optimization.Views {
       this.problemTabPage.Controls.Add(this.problemViewHost);
       this.problemTabPage.Controls.Add(this.openProblemButton);
       this.problemTabPage.Controls.Add(this.newProblemButton);
+      this.problemTabPage.AllowDrop = true;
       this.problemTabPage.Location = new System.Drawing.Point(4, 22);
       this.problemTabPage.Name = "problemTabPage";
       this.problemTabPage.Padding = new System.Windows.Forms.Padding(3);
@@ -109,10 +110,12 @@ namespace HeuristicLab.Optimization.Views {
       this.problemTabPage.TabIndex = 0;
       this.problemTabPage.Text = "Problem";
       this.problemTabPage.UseVisualStyleBackColor = true;
+      this.problemTabPage.DragDrop += new System.Windows.Forms.DragEventHandler(this.problemTabPage_DragDrop);
+      this.problemTabPage.DragEnter += new System.Windows.Forms.DragEventHandler(this.problemTabPage_DragEnterOver);
+      this.problemTabPage.DragOver += new System.Windows.Forms.DragEventHandler(this.problemTabPage_DragEnterOver);
       // 
       // problemViewHost
       // 
-      this.problemViewHost.AllowDrop = true;
       this.problemViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
@@ -124,9 +127,6 @@ namespace HeuristicLab.Optimization.Views {
       this.problemViewHost.Size = new System.Drawing.Size(659, 332);
       this.problemViewHost.TabIndex = 3;
       this.problemViewHost.ViewType = null;
-      this.problemViewHost.DragDrop += new System.Windows.Forms.DragEventHandler(this.problemViewHost_DragDrop);
-      this.problemViewHost.DragEnter += new System.Windows.Forms.DragEventHandler(this.problemViewHost_DragEnterOver);
-      this.problemViewHost.DragOver += new System.Windows.Forms.DragEventHandler(this.problemViewHost_DragEnterOver);
       // 
       // openProblemButton
       // 

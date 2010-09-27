@@ -258,7 +258,7 @@ namespace HeuristicLab.Optimization.Views {
     protected virtual void resetButton_Click(object sender, EventArgs e) {
       Content.Prepare(false);
     }
-    protected virtual void problemViewHost_DragEnterOver(object sender, DragEventArgs e) {
+    protected virtual void problemTabPage_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
       Type type = e.Data.GetData("Type") as Type;
       if ((type != null) && (Content.ProblemType.IsAssignableFrom(type))) {
@@ -269,7 +269,7 @@ namespace HeuristicLab.Optimization.Views {
         else if ((e.AllowedEffect & DragDropEffects.Link) == DragDropEffects.Link) e.Effect = DragDropEffects.Link;
       }
     }
-    protected virtual void problemViewHost_DragDrop(object sender, DragEventArgs e) {
+    protected virtual void problemTabPage_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
         IProblem problem = e.Data.GetData("Value") as IProblem;
         if ((e.Effect & DragDropEffects.Copy) == DragDropEffects.Copy) problem = (IProblem)problem.Clone();

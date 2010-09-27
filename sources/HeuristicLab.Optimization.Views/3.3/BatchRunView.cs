@@ -233,7 +233,7 @@ namespace HeuristicLab.Optimization.Views {
     private void resetButton_Click(object sender, EventArgs e) {
       Content.Prepare(false);
     }
-    private void algorithmViewHost_DragEnterOver(object sender, DragEventArgs e) {
+    private void algorithmTabPage_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
       if (ReadOnly)
         return;
@@ -246,7 +246,7 @@ namespace HeuristicLab.Optimization.Views {
         else if ((e.AllowedEffect & DragDropEffects.Link) == DragDropEffects.Link) e.Effect = DragDropEffects.Link;
       }
     }
-    private void algorithmViewHost_DragDrop(object sender, DragEventArgs e) {
+    private void algorithmTabPage_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
         IAlgorithm algorithm = e.Data.GetData("Value") as IAlgorithm;
         if ((e.Effect & DragDropEffects.Copy) == DragDropEffects.Copy) algorithm = (IAlgorithm)algorithm.Clone();

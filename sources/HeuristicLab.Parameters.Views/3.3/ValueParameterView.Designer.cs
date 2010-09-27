@@ -73,6 +73,7 @@ namespace HeuristicLab.Parameters.Views {
       // 
       // valueGroupBox
       // 
+      this.valueGroupBox.AllowDrop = true;
       this.valueGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
@@ -86,6 +87,9 @@ namespace HeuristicLab.Parameters.Views {
       this.valueGroupBox.TabIndex = 6;
       this.valueGroupBox.TabStop = false;
       this.valueGroupBox.Text = "Value";
+      this.valueGroupBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.valueGroupBox_DragDrop);
+      this.valueGroupBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.valueGroupBox_DragEnterOver);
+      this.valueGroupBox.DragOver += new System.Windows.Forms.DragEventHandler(this.valueGroupBox_DragEnterOver);
       // 
       // showInRunCheckBox
       // 
@@ -115,10 +119,7 @@ namespace HeuristicLab.Parameters.Views {
       this.valueViewHost.ReadOnly = false;
       this.valueViewHost.Size = new System.Drawing.Size(374, 182);
       this.valueViewHost.TabIndex = 3;
-      this.valueViewHost.ViewType = null;
-      this.valueViewHost.DragDrop += new System.Windows.Forms.DragEventHandler(this.valueViewHost_DragDrop);
-      this.valueViewHost.DragEnter += new System.Windows.Forms.DragEventHandler(this.valueViewHost_DragEnterOver);
-      this.valueViewHost.DragOver += new System.Windows.Forms.DragEventHandler(this.valueViewHost_DragEnterOver);
+      this.valueViewHost.ViewType = null;   
       // 
       // clearValueButton
       // 
