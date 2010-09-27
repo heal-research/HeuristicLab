@@ -114,6 +114,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
     }
 
     public static void IsValid(SymbolicExpressionTree tree) {
+      int reportedSize = tree.Size;
+      int actualSize = tree.IterateNodesPostfix().Count();
+      Assert.AreEqual(actualSize, reportedSize);
+
       foreach (var defunTreeNode in tree.Root.SubTrees.OfType<DefunTreeNode>()) {
         int arity = defunTreeNode.NumberOfArguments;
         var invoke = new InvokeFunction(defunTreeNode.FunctionName);
