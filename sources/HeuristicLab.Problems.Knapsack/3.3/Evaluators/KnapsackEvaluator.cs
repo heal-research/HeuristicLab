@@ -29,7 +29,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.Knapsack {
   /// <summary>
-  /// A base class for operators which evaluates Knapsack solutions given in BinaryVector encoding.
+  /// A base class for operators which evaluate Knapsack solutions given in BinaryVector encoding.
   /// </summary>
   [Item("KnapsackEvaluator", "Evaluates solutions for the Knapsack problem.")]
   [StorableClass]

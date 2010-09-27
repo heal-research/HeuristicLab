@@ -28,7 +28,7 @@ using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.TravelingSalesman.Views {
   /// <summary>
-  /// The base class for visual representations of items.
+  /// A view for a Traveling Salesman Problem instance.
   /// </summary>
   [View("Traveling Salesman Problem View")]
   [Content(typeof(TravelingSalesmanProblem), true)]
@@ -41,7 +41,7 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
     }
 
     /// <summary>
-    /// Initializes a new instance of <see cref="ItemBaseView"/>.
+    /// Initializes a new instance of <see cref="TravelingSalesmanProblemView"/>.
     /// </summary>
     public TravelingSalesmanProblemView() {
       InitializeComponent();

@@ -33,7 +33,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.Knapsack {
-  [Item("Knapsack Problem", "Represents a Knapsack Problem.")]
+  [Item("Knapsack Problem", "Represents a Knapsack problem.")]
   [Creatable("Problems")]
   [StorableClass]
   public sealed class KnapsackProblem : ParameterizedNamedItem, ISingleObjectiveProblem, IStorableContent {

@@ -31,7 +31,7 @@ namespace HeuristicLab.Problems.Knapsack {
   /// <summary>
   /// Represents a knapsack solution which can be visualized in the GUI.
   /// </summary>
-  [Item("KnapsackSolution", "Represents a knapsack solution which can be visualized in the GUI.")]
+  [Item("KnapsackSolution", "Represents a Knapsack solution which can be visualized in the GUI.")]
   [StorableClass]
   public class KnapsackSolution : Item {
     public override Image ItemImage {

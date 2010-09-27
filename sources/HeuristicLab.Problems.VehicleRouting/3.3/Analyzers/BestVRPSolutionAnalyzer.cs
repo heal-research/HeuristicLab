@@ -99,7 +99,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Tardiness", "The tardiness of the VRP solutions which should be analyzed."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("TravelTime", "The travel times of the VRP solutions which should be analyzed."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("VehiclesUtilized", "The utilized vehicles of the VRP solutions which should be analyzed."));
-      Parameters.Add(new LookupParameter<VRPSolution>("BestSolution", "The best TSP solution."));
+      Parameters.Add(new LookupParameter<VRPSolution>("BestSolution", "The best VRP solution."));
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the best VRP solution should be stored."));
     }
 
