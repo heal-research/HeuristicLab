@@ -66,9 +66,9 @@ namespace HeuristicLab.MainForm.WindowsForms {
           if (value != readOnly) {
             this.readOnly = value;
             OnReadOnlyChanged();
-            SetEnabledStateOfControls();
             PropertyInfo prop = typeof(IView).GetProperty("ReadOnly");
             PropagateStateChanges(this, typeof(IView), prop);
+            SetEnabledStateOfControls();
             OnChanged();
           }
         }
