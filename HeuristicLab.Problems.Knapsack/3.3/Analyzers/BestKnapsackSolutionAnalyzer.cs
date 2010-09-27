@@ -30,9 +30,9 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.Knapsack {
   /// <summary>
-  /// An operator for analyzing the best solution for a knapsack problem.
+  /// An operator for analyzing the best solution for a Knapsack problem.
   /// </summary>
-  [Item("BestKnapsackSolutionAnalyzer", "An operator for analyzing the best solution for a knapsack problem.")]
+  [Item("BestKnapsackSolutionAnalyzer", "An operator for analyzing the best solution for a Knapsack problem.")]
   [StorableClass]
   class BestKnapsackSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer {
     public LookupParameter<BoolValue> MaximizationParameter {
@@ -69,13 +69,13 @@ namespace HeuristicLab.Problems.Knapsack {
     public BestKnapsackSolutionAnalyzer()
       : base() {
       Parameters.Add(new LookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem."));
-      Parameters.Add(new ScopeTreeLookupParameter<BinaryVector>("BinaryVector", "The knapsack solutions from which the best solution should be visualized."));
+      Parameters.Add(new ScopeTreeLookupParameter<BinaryVector>("BinaryVector", "The Knapsack solutions from which the best solution should be visualized."));
       Parameters.Add(new LookupParameter<IntValue>("KnapsackCapacity", "Capacity of the Knapsack."));
       Parameters.Add(new LookupParameter<IntArray>("Weights", "The weights of the items."));
       Parameters.Add(new LookupParameter<IntArray>("Values", "The values of the items."));
 
-      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The qualities of the knapsack solutions which should be visualized."));
-      Parameters.Add(new LookupParameter<KnapsackSolution>("BestSolution", "The best knapsack solution."));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The qualities of the Knapsack solutions which should be visualized."));
+      Parameters.Add(new LookupParameter<KnapsackSolution>("BestSolution", "The best Knapsack solution."));
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the knapsack solution should be stored."));
       Parameters.Add(new LookupParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution."));
       Parameters.Add(new LookupParameter<BinaryVector>("BestKnownSolution", "The best known solution."));

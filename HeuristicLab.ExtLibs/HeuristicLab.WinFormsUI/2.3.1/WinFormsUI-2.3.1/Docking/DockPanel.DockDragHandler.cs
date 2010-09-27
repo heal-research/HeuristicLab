@@ -135,14 +135,13 @@ namespace WeifenLuo.WinFormsUI.Docking {
           private static Bitmap _bitmapPaneDiamondFill = Resources.DockIndicator_PaneDiamond_Fill;
           private static Bitmap _bitmapPaneDiamondHotSpot = Resources.DockIndicator_PaneDiamond_HotSpot;
           private static Bitmap _bitmapPaneDiamondHotSpotIndex = Resources.DockIndicator_PaneDiamond_HotSpotIndex;
-          private static HotSpotIndex[] _hotSpots = new HotSpotIndex[]
-			{
-				new HotSpotIndex(1, 0, DockStyle.Top),
-				new HotSpotIndex(0, 1, DockStyle.Left),
-				new HotSpotIndex(1, 1, DockStyle.Fill),
-				new HotSpotIndex(2, 1, DockStyle.Right),
-				new HotSpotIndex(1, 2, DockStyle.Bottom)
-			};
+          private static HotSpotIndex[] _hotSpots = new HotSpotIndex[] {
+            new HotSpotIndex(1, 0, DockStyle.Top),
+            new HotSpotIndex(0, 1, DockStyle.Left),
+            new HotSpotIndex(1, 1, DockStyle.Fill),
+            new HotSpotIndex(2, 1, DockStyle.Right),
+            new HotSpotIndex(1, 2, DockStyle.Bottom)
+          };
           private static GraphicsPath _displayingGraphicsPath = DrawHelper.CalculateGraphicsPathFromBitmap(_bitmapPaneDiamond);
 
           public PaneIndicator() {

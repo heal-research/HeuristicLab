@@ -27,7 +27,7 @@ using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Problems.Knapsack.Views {
   /// <summary>
-  /// A view for a knapsack solution.
+  /// A view for a Knapsack solution.
   /// </summary>
   [View("Knapsack View")]
   [Content(typeof(KnapsackSolution), true)]
