@@ -31,6 +31,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
     private const int FADE_INTERVAL = 50;
     private Timer fadeTimer;
     private int initialInterval;
+    private PluginManager pluginManager;
 
     internal SplashScreen() {
       InitializeComponent();
@@ -39,13 +40,9 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
     internal SplashScreen(PluginManager manager, int initialInterval)
       : this() {
       this.initialInterval = initialInterval;
+      this.pluginManager = manager;
 
-      manager.ApplicationStarted += new EventHandler<PluginInfrastructureEventArgs>(manager_ApplicationStarted);
-      manager.ApplicationStarting += new EventHandler<PluginInfrastructureEventArgs>(manager_ApplicationStarting);
-      manager.Initializing += new EventHandler<PluginInfrastructureEventArgs>(manager_Initializing);
-      manager.Initialized += new EventHandler<PluginInfrastructureEventArgs>(manager_Initialized);
-      manager.PluginLoaded += new EventHandler<PluginInfrastructureEventArgs>(manager_PluginLoaded);
-      manager.PluginUnloaded += new EventHandler<PluginInfrastructureEventArgs>(manager_PluginUnloaded);
+      RegisterPluginManagerEventHandlers();
 
       FileVersionInfo pluginInfrastructureVersion = FileVersionInfo.GetVersionInfo(GetType().Assembly.Location);
       versionLabel.Text = "Version " + pluginInfrastructureVersion.FileVersion;
@@ -59,29 +56,62 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       fadeTimer.Interval = initialInterval;
     }
 
-    void manager_PluginUnloaded(object sender, PluginInfrastructureEventArgs e) {
-      UpdateMessage("Unloaded " + e.Entity);
+    #region events
+    private void RegisterPluginManagerEventHandlers() {
+      pluginManager.ApplicationStarted += new EventHandler<PluginInfrastructureEventArgs>(manager_ApplicationStarted);
+      pluginManager.ApplicationStarting += new EventHandler<PluginInfrastructureEventArgs>(manager_ApplicationStarting);
+      pluginManager.Initializing += new EventHandler<PluginInfrastructureEventArgs>(manager_Initializing);
+      pluginManager.Initialized += new EventHandler<PluginInfrastructureEventArgs>(manager_Initialized);
+      pluginManager.PluginLoaded += new EventHandler<PluginInfrastructureEventArgs>(manager_PluginLoaded);
+      pluginManager.PluginUnloaded += new EventHandler<PluginInfrastructureEventArgs>(manager_PluginUnloaded);
     }
 
-    void manager_PluginLoaded(object sender, PluginInfrastructureEventArgs e) {
-      UpdateMessage("Loaded " + e.Entity);
+    private void DeregisterPluginManagerEventHandlers() {
+      pluginManager.ApplicationStarted -= new EventHandler<PluginInfrastructureEventArgs>(manager_ApplicationStarted);
+      pluginManager.ApplicationStarting -= new EventHandler<PluginInfrastructureEventArgs>(manager_ApplicationStarting);
+      pluginManager.Initializing -= new EventHandler<PluginInfrastructureEventArgs>(manager_Initializing);
+      pluginManager.Initialized -= new EventHandler<PluginInfrastructureEventArgs>(manager_Initialized);
+      pluginManager.PluginLoaded -= new EventHandler<PluginInfrastructureEventArgs>(manager_PluginLoaded);
+      pluginManager.PluginUnloaded -= new EventHandler<PluginInfrastructureEventArgs>(manager_PluginUnloaded);
     }
 
-    void manager_Initialized(object sender, PluginInfrastructureEventArgs e) {
-      UpdateMessage("Initialized");
+    private void manager_PluginUnloaded(object sender, PluginInfrastructureEventArgs e) {
+      SafeUpdateMessage("Unloaded " + e.Entity);
     }
 
-    void manager_Initializing(object sender, PluginInfrastructureEventArgs e) {
-      UpdateMessage("Initializing");
+    private void manager_PluginLoaded(object sender, PluginInfrastructureEventArgs e) {
+      SafeUpdateMessage("Loaded " + e.Entity);
     }
 
-    void manager_ApplicationStarting(object sender, PluginInfrastructureEventArgs e) {
-      UpdateMessage("Starting " + e.Entity);
+    private void manager_Initialized(object sender, PluginInfrastructureEventArgs e) {
+      SafeUpdateMessage("Initialized");
     }
 
-    void manager_ApplicationStarted(object sender, PluginInfrastructureEventArgs e) {
-      UpdateMessage("Started " + e.Entity);
+    private void manager_Initializing(object sender, PluginInfrastructureEventArgs e) {
+      SafeUpdateMessage("Initializing");
     }
+
+    private void manager_ApplicationStarting(object sender, PluginInfrastructureEventArgs e) {
+      SafeUpdateMessage("Starting " + e.Entity);
+    }
+
+    private void manager_ApplicationStarted(object sender, PluginInfrastructureEventArgs e) {
+      SafeUpdateMessage("Started " + e.Entity);
+    }
+    // called from event handlers
+    private void SafeUpdateMessage(string msg) {
+      try {
+        Invoke((Action<string>)UpdateMessage, msg);
+      }
+      catch (ObjectDisposedException) { }
+    }
+
+    // each tick of the timer reduce opacity and restart timer
+    private void fadeTimer_Elapsed(object sender, EventArgs e) {
+      // only called from local timer: no need to invoke here
+      FadeOut();
+    }
+    #endregion
 
     public void Show(string initialText) {
       if (InvokeRequired) Invoke((Action<string>)Show, initialText);
@@ -94,7 +124,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
     }
 
     public void Show(IWin32Window owner, string initialText) {
-      if (InvokeRequired) Invoke((Action<string>)Show, initialText);
+      if (InvokeRequired) Invoke((Action<IWin32Window, string>)Show, owner, initialText);
       else {
         Opacity = 1;
         infoLabel.Text = initialText;
@@ -110,27 +140,10 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       fadeTimer.Start();
     }
 
-
-    private void SetInfoText(string text) {
-      if (InvokeRequired) Invoke((Action<string>)SetInfoText, text);
-      else {
-        infoLabel.Text = text;
-      }
-    }
-
     private void UpdateMessage(string msg) {
-      if (InvokeRequired) {
-        Invoke((Action<string>)UpdateMessage, msg);
-      } else {
-        ResetFadeTimer();
-        SetInfoText(msg);
-        Application.DoEvents(); // force immediate update of splash screen control
-      }
-    }
-
-    // each tick of the timer reduce opacity and restart timer
-    private void fadeTimer_Elapsed(object sender, EventArgs e) {
-      FadeOut();
+      ResetFadeTimer();
+      infoLabel.Text = msg;
+      Application.DoEvents(); // force immediate update of splash screen control
     }
 
     // reduces opacity of the splashscreen one step and restarts the fade-timer
@@ -145,6 +158,12 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
         fadeTimer.Stop();
         Hide();
       }
+    }
+
+    protected override void OnClosing(System.ComponentModel.CancelEventArgs e) {
+      // deregister events when form is closing
+      DeregisterPluginManagerEventHandlers();
+      base.OnClosing(e);
     }
   }
 }

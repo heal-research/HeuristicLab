@@ -175,6 +175,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
     }
 
     private void MainForm_FormClosing(object sender, FormClosingEventArgs e) {
+      splashScreen.Close();
       abortRequested = true;
     }
 
