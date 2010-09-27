@@ -25,6 +25,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using System.Collections.Generic;
+using System;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureManipulators {
   /// <summary>
@@ -86,6 +87,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureMani
       while (invocationNodes.Count() > 0) {
         List<SymbolicExpressionTreeNode> newlyAddedBranches = new List<SymbolicExpressionTreeNode>();
         foreach (var invokeNode in invocationNodes) {
+          // check that the invocation node really has the correct number of arguments
+          if (invokeNode.SubTrees.Count != selectedDefunBranch.NumberOfArguments) throw new InvalidOperationException();
           var argumentBranch = invokeNode.SubTrees[selectedArgumentSymbol.ArgumentIndex];
           var clonedArgumentBranch = (SymbolicExpressionTreeNode)argumentBranch.Clone();
           invokeNode.InsertSubTree(newArgumentIndex, clonedArgumentBranch);

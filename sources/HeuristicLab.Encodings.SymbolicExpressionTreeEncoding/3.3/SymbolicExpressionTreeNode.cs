@@ -93,7 +93,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       else {
         size = 1;
         if (SubTrees != null) {
-          for (int i = 0; i < SubTrees.Count; i++) size += (short)SubTrees[i].GetSize();
+          for (int i = 0; i < SubTrees.Count; i++) {
+            checked { size += (short)SubTrees[i].GetSize(); }
+          }
         }
         return size;
       }
