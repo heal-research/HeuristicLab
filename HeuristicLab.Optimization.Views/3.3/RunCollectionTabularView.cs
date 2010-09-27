@@ -80,7 +80,6 @@ namespace HeuristicLab.Optimization.Views {
     private void Content_CollectionReset(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IRun> e) {
       DeregisterRunEvents(e.OldItems);
       RegisterRunEvents(e.Items);
-      OnContentChanged();
     }
     private void Content_ItemsRemoved(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IRun> e) {
       DeregisterRunEvents(e.Items);
@@ -125,6 +124,13 @@ namespace HeuristicLab.Optimization.Views {
           view.Locked = this.Locked;
         }
       }
+    }
+
+    protected override void ClearSorting() {
+      base.ClearSorting();
+      runToRowMapping = new int[Content.Count];
+      for (int i = 0; i < runToRowMapping.Length; i++)
+        runToRowMapping[i] = i;
     }
 
     protected override int[] Sort(IEnumerable<KeyValuePair<int, SortOrder>> sortedColumns) {
