@@ -98,7 +98,6 @@ namespace HeuristicLab.Parameters.Views {
       setValueButton.Enabled = Content != null && !ReadOnly;
       clearValueButton.Enabled = Content != null && Content.Value != null && !ReadOnly;
       showInRunCheckBox.Enabled = Content != null && !ReadOnly;
-      valueGroupBox.Enabled = Content != null;
     }
 
     protected virtual void Content_ActualNameChanged(object sender, EventArgs e) {
@@ -148,7 +147,7 @@ namespace HeuristicLab.Parameters.Views {
     protected virtual void showInRunCheckBox_CheckedChanged(object sender, EventArgs e) {
       if (Content != null) Content.GetsCollected = showInRunCheckBox.Checked;
     }
-    protected virtual void valueViewHostPanel_DragEnterOver(object sender, DragEventArgs e) {
+    protected virtual void valueGroupBox_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
       Type type = e.Data.GetData("Type") as Type;
       if (!ReadOnly && (type != null) && (Content.DataType.IsAssignableFrom(type))) {
@@ -159,7 +158,7 @@ namespace HeuristicLab.Parameters.Views {
         else if ((e.AllowedEffect & DragDropEffects.Link) == DragDropEffects.Link) e.Effect = DragDropEffects.Link;
       }
     }
-    protected virtual void valueViewHost_DragDrop(object sender, DragEventArgs e) {
+    protected virtual void valueGroupBox_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
         T value = e.Data.GetData("Value") as T;
         if ((e.Effect & DragDropEffects.Copy) == DragDropEffects.Copy) value = (T)value.Clone();

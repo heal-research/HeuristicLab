@@ -93,6 +93,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // algorithmTabPage
       // 
+      this.algorithmTabPage.AllowDrop = true;
       this.algorithmTabPage.Controls.Add(this.algorithmViewHost);
       this.algorithmTabPage.Controls.Add(this.openAlgorithmButton);
       this.algorithmTabPage.Controls.Add(this.newAlgorithmButton);
@@ -103,11 +104,13 @@ namespace HeuristicLab.Optimization.Views {
       this.algorithmTabPage.TabIndex = 1;
       this.algorithmTabPage.Text = "Algorithm";
       this.algorithmTabPage.UseVisualStyleBackColor = true;
+      this.algorithmTabPage.DragOver += new System.Windows.Forms.DragEventHandler(this.algorithmTabPage_DragEnterOver);
+      this.algorithmTabPage.DragDrop += new System.Windows.Forms.DragEventHandler(this.algorithmTabPage_DragDrop);
+      this.algorithmTabPage.DragEnter += new System.Windows.Forms.DragEventHandler(this.algorithmTabPage_DragEnterOver);
       // 
       // algorithmViewHost
       // 
       this.algorithmViewHost.Content = null;
-      this.algorithmViewHost.AllowDrop = true;
       this.algorithmViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
@@ -116,9 +119,6 @@ namespace HeuristicLab.Optimization.Views {
       this.algorithmViewHost.Size = new System.Drawing.Size(659, 306);
       this.algorithmViewHost.TabIndex = 3;
       this.algorithmViewHost.ViewType = null;
-      this.algorithmViewHost.DragOver += new System.Windows.Forms.DragEventHandler(this.algorithmViewHost_DragEnterOver);
-      this.algorithmViewHost.DragDrop += new System.Windows.Forms.DragEventHandler(this.algorithmViewHost_DragDrop);
-      this.algorithmViewHost.DragEnter += new System.Windows.Forms.DragEventHandler(this.algorithmViewHost_DragEnterOver);
       // 
       // openAlgorithmButton
       // 
