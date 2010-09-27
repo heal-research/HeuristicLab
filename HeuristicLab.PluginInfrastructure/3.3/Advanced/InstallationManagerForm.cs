@@ -82,39 +82,39 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
 
 
     #region plugin manager event handlers
-    void pluginManager_Initialized(object sender, PluginInfrastructureEventArgs e) {
+    private void pluginManager_Initialized(object sender, PluginInfrastructureEventArgs e) {
       SetStatusStrip("Initialized PluginInfrastructure");
     }
 
-    void pluginManager_Initializing(object sender, PluginInfrastructureEventArgs e) {
+    private void pluginManager_Initializing(object sender, PluginInfrastructureEventArgs e) {
       SetStatusStrip("Initializing PluginInfrastructure");
     }
 
-    void pluginManager_PluginUnloaded(object sender, PluginInfrastructureEventArgs e) {
+    private void pluginManager_PluginUnloaded(object sender, PluginInfrastructureEventArgs e) {
       SetStatusStrip("Unloaded " + e.Entity);
     }
 
-    void pluginManager_PluginLoaded(object sender, PluginInfrastructureEventArgs e) {
+    private void pluginManager_PluginLoaded(object sender, PluginInfrastructureEventArgs e) {
       SetStatusStrip("Loaded " + e.Entity);
     }
     #endregion
 
     #region installation manager event handlers
-    void installationManager_PreUpdatePlugin(object sender, PluginInfrastructureCancelEventArgs e) {
+    private void installationManager_PreUpdatePlugin(object sender, PluginInfrastructureCancelEventArgs e) {
       if (e.Plugins.Count() > 0) {
-        e.Cancel = ConfirmUpdateAction(e.Plugins) == false;
+        e.Cancel = (bool)Invoke((Func<IEnumerable<IPluginDescription>, bool>)ConfirmUpdateAction, e.Plugins) == false;
       }
     }
 
-    void installationManager_PreRemovePlugin(object sender, PluginInfrastructureCancelEventArgs e) {
+    private void installationManager_PreRemovePlugin(object sender, PluginInfrastructureCancelEventArgs e) {
       if (e.Plugins.Count() > 0) {
-        e.Cancel = ConfirmRemoveAction(e.Plugins) == false;
+        e.Cancel = (bool)Invoke((Func<IEnumerable<IPluginDescription>, bool>)ConfirmRemoveAction, e.Plugins) == false;
       }
     }
 
-    void installationManager_PreInstallPlugin(object sender, PluginInfrastructureCancelEventArgs e) {
+    private void installationManager_PreInstallPlugin(object sender, PluginInfrastructureCancelEventArgs e) {
       if (e.Plugins.Count() > 0)
-        if (ConfirmInstallAction(e.Plugins) == true) {
+        if ((bool)Invoke((Func<IEnumerable<IPluginDescription>, bool>)ConfirmInstallAction, e.Plugins) == true) {
           SetStatusStrip("Installing " + e.Plugins.Aggregate("", (a, b) => a.ToString() + "; " + b.ToString()));
           e.Cancel = false;
         } else {
@@ -123,15 +123,15 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
         }
     }
 
-    void installationManager_PluginUpdated(object sender, PluginInfrastructureEventArgs e) {
+    private void installationManager_PluginUpdated(object sender, PluginInfrastructureEventArgs e) {
       SetStatusStrip("Updated " + e.Entity);
     }
 
-    void installationManager_PluginRemoved(object sender, PluginInfrastructureEventArgs e) {
+    private void installationManager_PluginRemoved(object sender, PluginInfrastructureEventArgs e) {
       SetStatusStrip("Removed " + e.Entity);
     }
 
-    void installationManager_PluginInstalled(object sender, PluginInfrastructureEventArgs e) {
+    private void installationManager_PluginInstalled(object sender, PluginInfrastructureEventArgs e) {
       SetStatusStrip("Installed " + e.Entity);
     }
     #endregion
