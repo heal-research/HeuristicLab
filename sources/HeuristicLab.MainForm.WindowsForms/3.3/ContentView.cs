@@ -68,9 +68,9 @@ namespace HeuristicLab.MainForm.WindowsForms {
           if (value != locked) {
             locked = value;
             OnLockedChanged();
-            SetEnabledStateOfControls();
             PropertyInfo prop = typeof(IContentView).GetProperty("Locked");
             PropagateStateChanges(this, typeof(IContentView), prop);
+            SetEnabledStateOfControls();
             OnChanged();
           }
         }
