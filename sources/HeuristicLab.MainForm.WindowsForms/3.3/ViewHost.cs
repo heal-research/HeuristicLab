@@ -56,14 +56,21 @@ namespace HeuristicLab.MainForm.WindowsForms {
               cached.Visible = false;
             }
           }
+
           activeView = value;
+
           if (activeView != null) {
-            View cached = cachedView as View;
-            if (cached != null && activeView != cached) {
-              Controls.Remove(cached);
-              cached.Dispose();
+            #region disposed cachedView
+            if (activeView != cachedView) {
+              if (cachedView != null) cachedView.Content = null;  //needed to deregister events
+              View cached = cachedView as View;
+              if (cached != null) {
+                Controls.Remove(cached);
+                cached.Dispose();
+              }
+              cachedView = null;
             }
-            cachedView = null;
+            #endregion
 
             this.Caption = activeView.Caption;
             viewType = activeView.GetType();
