@@ -30,7 +30,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
   [Content(typeof(DataAnalysisSolution), false)]
   [View("Results View")]
   public partial class ResultsView : AsynchronousContentView {
-    private List<string> rowNames = new List<string>() { "MeanSquaredError", "CoefficientOfDetermination", "MeanAbsolutePercentageError" };
+    private List<string> rowNames = new List<string>() { "Mean squared error", "Pearson's R²", "Average relative error" };
     private List<string> columnNames = new List<string>() { "Training", "Test" };
 
     public ResultsView() {
