@@ -82,6 +82,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
           this.SuspendRepaint();
           base.Enabled = value;
           this.ResumeRepaint(true);
+          OnChanged();
         }
       }
     }
