@@ -20,13 +20,13 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Collections.Generic;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
@@ -311,7 +311,6 @@ namespace HeuristicLab.Optimization {
         OnStarted();
     }
     private void Algorithm_Stopped(object sender, EventArgs e) {
-      ExecutionTime += Algorithm.ExecutionTime;
       repetitionsCounter++;
 
       if (!stopPending && (repetitionsCounter < repetitions)) {
