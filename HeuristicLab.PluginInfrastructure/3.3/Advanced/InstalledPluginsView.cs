@@ -97,6 +97,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       }
       StatusView.RemoveMessage(CheckingPluginsMessage);
       StatusView.HideProgressIndicator();
+      UpdateControl();
       StatusView.UnlockUI();
     }
 
