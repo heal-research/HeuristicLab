@@ -134,7 +134,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.rejectRadioButton.Name = "rejectRadioButton";
       this.rejectRadioButton.Size = new System.Drawing.Size(264, 17);
       this.rejectRadioButton.TabIndex = 1;
-      this.rejectRadioButton.TabStop = true;
       this.rejectRadioButton.Text = "I do not accept the terms in the license agreement.";
       this.rejectRadioButton.UseVisualStyleBackColor = true;
       this.rejectRadioButton.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
@@ -142,6 +141,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // acceptRadioButton
       // 
       this.acceptRadioButton.AutoSize = true;
+      this.acceptRadioButton.Checked = true;
       this.acceptRadioButton.Location = new System.Drawing.Point(6, 19);
       this.acceptRadioButton.Name = "acceptRadioButton";
       this.acceptRadioButton.Size = new System.Drawing.Size(231, 17);
@@ -176,7 +176,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.Controls.Add(this.label1);
       this.Controls.Add(this.licenseLabel);
       this.Controls.Add(this.richTextBox);
-      this.Icon = HeuristicLab.PluginInfrastructure.Resources.HeuristicLab;
+      this.Icon = global::HeuristicLab.PluginInfrastructure.Resources.HeuristicLab;
       this.MaximizeBox = false;
       this.MinimizeBox = false;
       this.Name = "LicenseConfirmationDialog";
