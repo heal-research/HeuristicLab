@@ -175,8 +175,14 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // otherwise install a new plugin
       var pluginsToInstall = selectedProduct.Plugins.Except(pluginsToUpdate);
 
-      updateOrInstallInfo.PluginsToInstall = (IEnumerable<IPluginDescription>)pluginsToInstall.ToList();
-      updateOrInstallInfo.PluginsToUpdate = (IEnumerable<IPluginDescription>)pluginsToUpdate.ToList();
+      updateOrInstallInfo.PluginsToInstall = 
+        pluginsToInstall
+        .Cast<IPluginDescription>()
+        .ToList();
+      updateOrInstallInfo.PluginsToUpdate = 
+        pluginsToUpdate
+        .Cast<IPluginDescription>()
+        .ToList();
       updateOrInstallPluginsBackgroundWorker.RunWorkerAsync(updateOrInstallInfo);
     }
 
