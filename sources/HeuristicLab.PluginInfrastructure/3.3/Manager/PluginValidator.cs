@@ -120,14 +120,17 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       // disable plugins with missing or disabled dependencies
       CheckPluginDependencies(pluginDescriptions);
 
+      // test full loading (in contrast to reflection only loading) of plugins
+      // disables plugins that are not loaded correctly
+      CheckExecutionContextLoad(pluginDescriptions);
+
       // mark all plugins as enabled that were not disabled in CheckPluginFiles, CheckPluginAssemblies, 
-      // CheckCircularDependencies, or CheckPluginDependencies
+      // CheckCircularDependencies, CheckPluginDependencies and CheckExecutionContextLoad
       foreach (var desc in pluginDescriptions)
         if (desc.PluginState != PluginState.Disabled)
           desc.Enable();
 
-      // test full loading (in contrast to reflection only loading) of plugins
-      // disables plugins that are not loaded correctly
+      // load the enabled plugins
       LoadPlugins(pluginDescriptions);
 
       plugins = pluginDescriptions;
@@ -489,30 +492,61 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       return disabledPlugins.Count > 0;
     }
 
-    private void LoadPlugins(IEnumerable<PluginDescription> pluginDescriptions) {
+    // tries to load all plugin assemblies into the execution context
+    // if an assembly of a plugin cannot be loaded the plugin is disabled
+    private void CheckExecutionContextLoad(IEnumerable<PluginDescription> pluginDescriptions) {
       // load all loadable plugins (all dependencies available) into the execution context
       foreach (var desc in PluginDescriptionIterator.IterateDependenciesBottomUp(pluginDescriptions
                                                                                 .Where(x => x.PluginState != PluginState.Disabled))) {
-        List<Type> types = new List<Type>();
         foreach (string assemblyLocation in desc.AssemblyLocations) {
-          // now load the assemblies into the execution context
-          var asm = Assembly.LoadFrom(assemblyLocation);
-          foreach (Type t in asm.GetTypes()) {
-            if (typeof(IPlugin).IsAssignableFrom(t)) {
-              types.Add(t);
-            }
+          try {
+            // now load the assemblies into the execution context  
+            // this can still lead to an exception
+            // even when the assembly was successfully loaded into the reflection only context before 
+            var asm = Assembly.LoadFrom(assemblyLocation);
+          }
+          catch (BadImageFormatException) {
+            desc.Disable(Path.GetFileName(assemblyLocation) + " is not a valid assembly.");
+          }
+          catch (FileLoadException) {
+            desc.Disable("Can't load file " + Path.GetFileName(assemblyLocation));
+          }
+          catch (FileNotFoundException) {
+            desc.Disable("File " + Path.GetFileName(assemblyLocation) + " is missing.");
+          }
+          catch (SecurityException) {
+            desc.Disable("File " + Path.GetFileName(assemblyLocation) + " can't be loaded because of security constraints.");
           }
         }
-
-        foreach (Type pluginType in types) {
-          if (!pluginType.IsAbstract && !pluginType.IsInterface && !pluginType.HasElementType) {
-            IPlugin plugin = (IPlugin)Activator.CreateInstance(pluginType);
-            plugin.OnLoad();
-            OnPluginLoaded(new PluginInfrastructureEventArgs(desc));
-          }
-        }
-        desc.Load();
       }
+    }
+
+    // assumes that all plugin assemblies have been loaded into the execution context via CheckExecutionContextLoad
+    // for each enabled plugin:
+    // calls OnLoad method of the plugin 
+    // and raises the PluginLoaded event
+    private void LoadPlugins(IEnumerable<PluginDescription> pluginDescriptions) {
+      List<Assembly> assemblies = new List<Assembly>(AppDomain.CurrentDomain.GetAssemblies());
+      foreach (var desc in pluginDescriptions) {
+        if (desc.PluginState == PluginState.Enabled) {
+          // cannot use ApplicationManager to retrieve types because it is not yet instantiated
+          foreach (string assemblyLocation in desc.AssemblyLocations) {
+            var asm = (from assembly in assemblies
+                      where string.Equals(Path.GetFullPath(assembly.Location), Path.GetFullPath(assemblyLocation), StringComparison.CurrentCultureIgnoreCase)
+                      select assembly)
+                      .Single();
+
+            foreach (Type pluginType in asm.GetTypes()) {
+              if (typeof(IPlugin).IsAssignableFrom(pluginType) && !pluginType.IsAbstract && !pluginType.IsInterface && !pluginType.HasElementType) {
+                IPlugin plugin = (IPlugin)Activator.CreateInstance(pluginType);
+                plugin.OnLoad();
+                OnPluginLoaded(new PluginInfrastructureEventArgs(desc));
+              }
+            }
+          } // end foreach assembly in plugin
+          desc.Load();
+        }
+      } // end foreach plugin description
     }
 
     // checks if all declared plugin files are actually available and disables plugins with missing files
