@@ -74,6 +74,7 @@ namespace HeuristicLab.Optimization.Views {
         runsViewHost.Content = null;
         executionTimeTextBox.Text = "-";
       } else {
+        Locked = ReadOnly = Content.ExecutionState == ExecutionState.Started;
         optimizerListView.Content = Content.Optimizers;
         runsViewHost.Content = Content.Runs;
         executionTimeTextBox.Text = Content.ExecutionTime.ToString();

@@ -81,6 +81,7 @@ namespace HeuristicLab.Optimization.Views {
         runsView.Content = null;
         executionTimeTextBox.Text = "-";
       } else {
+        Locked = ReadOnly = Content.ExecutionState == ExecutionState.Started;
         repetitionsNumericUpDown.Value = Content.Repetitions;
         algorithmViewHost.Content = Content.Algorithm;
         runsView.Content = Content.Runs;

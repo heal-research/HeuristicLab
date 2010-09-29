@@ -99,6 +99,7 @@ namespace HeuristicLab.Optimization.Views {
         storeAlgorithmInEachRunCheckBox.Checked = true;
         executionTimeTextBox.Text = "-";
       } else {
+        Locked = ReadOnly = Content.ExecutionState == ExecutionState.Started;
         parameterCollectionView.Content = Content.Parameters;
         problemViewHost.ViewType = null;
         problemViewHost.Content = Content.Problem;
