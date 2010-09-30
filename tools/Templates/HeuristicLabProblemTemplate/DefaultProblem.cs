@@ -27,13 +27,12 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Problems.TravelingSalesman {
+namespace $rootnamespace$ {
   [Item("$problemName$", "$problemDescription$")]
   [Creatable("Problems")]
   [StorableClass]
