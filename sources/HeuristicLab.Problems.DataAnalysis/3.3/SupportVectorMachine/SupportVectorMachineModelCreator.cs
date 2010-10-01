@@ -26,6 +26,8 @@ using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using SVM;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
   /// <summary>
@@ -124,8 +126,14 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
     }
 
     public override IOperation Apply() {
+      int start = SamplesStart.Value;
+      int end = SamplesEnd.Value;
+      IEnumerable<int> rows = 
+        Enumerable.Range(start, end-start)
+        .Where(i => i < DataAnalysisProblemData.TestSamplesStart.Value || DataAnalysisProblemData.TestSamplesEnd.Value <= i);
+
       SupportVectorMachineModel model = TrainModel(DataAnalysisProblemData,
-                             SamplesStart.Value, SamplesEnd.Value,
+                             rows,
                              SvmType.Value, KernelType.Value,
                              Cost.Value, Nu.Value, Gamma.Value, Epsilon.Value);
       SupportVectorMachineModelParameter.ActualValue = model;
@@ -137,12 +145,12 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
       DataAnalysisProblemData problemData,
       string svmType, string kernelType,
       double cost, double nu, double gamma, double epsilon) {
-      return TrainModel(problemData, problemData.TrainingSamplesStart.Value, problemData.TrainingSamplesEnd.Value, svmType, kernelType, cost, nu, gamma, epsilon);
+      return TrainModel(problemData, problemData.TrainingIndizes, svmType, kernelType, cost, nu, gamma, epsilon);
     }
 
     public static SupportVectorMachineModel TrainModel(
       DataAnalysisProblemData problemData,
-      int start, int end,
+      IEnumerable<int> trainingIndizes,
       string svmType, string kernelType,
       double cost, double nu, double gamma, double epsilon) {
       int targetVariableIndex = problemData.Dataset.GetVariableIndex(problemData.TargetVariable.Value);
@@ -159,7 +167,7 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
       parameter.Probability = false;
 
 
-      SVM.Problem problem = SupportVectorMachineUtil.CreateSvmProblem(problemData, start, end);
+      SVM.Problem problem = SupportVectorMachineUtil.CreateSvmProblem(problemData, trainingIndizes);
       SVM.RangeTransform rangeTransform = SVM.RangeTransform.Compute(problem);
       SVM.Problem scaledProblem = Scaling.Scale(rangeTransform, problem);
       var model = new SupportVectorMachineModel();

@@ -28,28 +28,29 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
     /// Transforms <paramref name="problemData"/> into a data structure as needed by libSVM.
     /// </summary>
     /// <param name="problemData">The problem data to transform</param>
-    /// <param name="start">The index of the first row of <paramref name="problemData"/> to copy to the output.</param>
-    /// <param name="end">The last of the first row of <paramref name="problemData"/> to copy to the output.</param>
+    /// <param name="rowIndices">The rows of the dataset that should be contained in the resulting SVM-problem</param>
     /// <returns>A problem data type that can be used to train a support vector machine.</returns>
-    public static SVM.Problem CreateSvmProblem(DataAnalysisProblemData problemData, int start, int end) {
-      int rowCount = end - start;
-      var targetVector = problemData.Dataset.GetVariableValues(problemData.TargetVariable.Value, start, end);
+    public static SVM.Problem CreateSvmProblem(DataAnalysisProblemData problemData, IEnumerable<int> rowIndices) {
+      double[] targetVector =
+        problemData.Dataset.GetEnumeratedVariableValues(problemData.TargetVariable.Value, rowIndices)
+        .ToArray();
 
       SVM.Node[][] nodes = new SVM.Node[targetVector.Length][];
       List<SVM.Node> tempRow;
       int maxNodeIndex = 0;
-      for (int row = 0; row < rowCount; row++) {
+      int svmProblemRowIndex = 0;
+      foreach (int row in rowIndices) {
         tempRow = new List<SVM.Node>();
         foreach (var inputVariable in problemData.InputVariables.CheckedItems) {
           int col = problemData.Dataset.GetVariableIndex(inputVariable.Value.Value);
-          double value = problemData.Dataset[start + row, col];
+          double value = problemData.Dataset[row, col];
           if (!double.IsNaN(value)) {
-            int nodeIndex = col + 1; // make sure the smallest nodeIndex = 1
+            int nodeIndex = col + 1; // make sure the smallest nodeIndex is 1 (libSVM convention)
             tempRow.Add(new SVM.Node(nodeIndex, value));
             if (nodeIndex > maxNodeIndex) maxNodeIndex = nodeIndex;
           }
         }
-        nodes[row] = tempRow.OrderBy(x => x.Index).ToArray(); // make sure the values are sorted by node index
+        nodes[svmProblemRowIndex++] = tempRow.OrderBy(x => x.Index).ToArray(); // make sure the values are sorted by node index
       }
 
       return new SVM.Problem(targetVector.Length, targetVector, nodes, maxNodeIndex);

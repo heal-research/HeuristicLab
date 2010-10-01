@@ -179,13 +179,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public IEnumerable<int> TrainingIndizes {
       get {
         return Enumerable.Range(TrainingSamplesStart.Value, TrainingSamplesEnd.Value - TrainingSamplesStart.Value)
-                         .Where(i => i > 0 && i < Dataset.Rows && (i < TestSamplesStart.Value || TestSamplesEnd.Value <= i));
+                         .Where(i => i >= 0 && i < Dataset.Rows && (i < TestSamplesStart.Value || TestSamplesEnd.Value <= i));
       }
     }
     public IEnumerable<int> TestIndizes {
       get {
         return Enumerable.Range(TestSamplesStart.Value, TestSamplesEnd.Value - TestSamplesStart.Value)
-           .Where(i => i > 0 && i < Dataset.Rows);
+           .Where(i => i >= 0 && i < Dataset.Rows);
       }
     }
     #endregion

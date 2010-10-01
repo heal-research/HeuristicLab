@@ -72,7 +72,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.SupportVectorRegression 
     }
 
     protected override void RecalculateEstimatedValues() {
-      SVM.Problem problem = SupportVectorMachineUtil.CreateSvmProblem(ProblemData, 0, ProblemData.Dataset.Rows);
+      SVM.Problem problem = SupportVectorMachineUtil.CreateSvmProblem(ProblemData, Enumerable.Range(0, ProblemData.Dataset.Rows));
       SVM.Problem scaledProblem = Scaling.Scale(Model.RangeTransform, problem);
 
       estimatedValues = (from row in Enumerable.Range(0, scaledProblem.Count)
@@ -86,26 +86,26 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.SupportVectorRegression 
     public override IEnumerable<double> EstimatedValues {
       get {
         if (estimatedValues == null) RecalculateEstimatedValues();
-        return estimatedValues.AsEnumerable();
+        return estimatedValues;
       }
     }
 
     public override IEnumerable<double> EstimatedTrainingValues {
       get {
-        if (estimatedValues == null) RecalculateEstimatedValues();
-        int start = ProblemData.TrainingSamplesStart.Value;
-        int n = ProblemData.TrainingSamplesEnd.Value - start;
-        return estimatedValues.Skip(start).Take(n).ToList();
+        return GetEstimatedValues(ProblemData.TrainingIndizes);
       }
     }
 
     public override IEnumerable<double> EstimatedTestValues {
       get {
-        if (estimatedValues == null) RecalculateEstimatedValues();
-        int start = ProblemData.TestSamplesStart.Value;
-        int n = ProblemData.TestSamplesEnd.Value - start;
-        return estimatedValues.Skip(start).Take(n).ToList();
+        return GetEstimatedValues(ProblemData.TestIndizes);
       }
+    }
+
+    private IEnumerable<double> GetEstimatedValues(IEnumerable<int> rows) {
+      if (estimatedValues == null) RecalculateEstimatedValues();
+      foreach (int row in rows)
+        yield return estimatedValues[row];
     }
   }
 }

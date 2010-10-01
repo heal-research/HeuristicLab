@@ -67,7 +67,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.SupportVectorRegression 
         IEnumerable<string> inputVariables = from var in ProblemData.InputVariables
                                              where ProblemData.InputVariables.ItemChecked(var)
                                              select var.Value;
-        var solution = new SupportVectorRegressionSolution(ProblemData, SupportVectorMachineModel[i], inputVariables, lowerEstimationLimit, upperEstimationLimit);
+        var solution = new SupportVectorRegressionSolution((DataAnalysisProblemData)ProblemData.Clone(), SupportVectorMachineModel[i], inputVariables, lowerEstimationLimit, upperEstimationLimit);
 
         BestSolutionParameter.ActualValue = solution;
         BestSolutionQualityParameter.ActualValue = Quality[i];

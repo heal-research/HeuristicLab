@@ -28,6 +28,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using SVM;
+using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
   /// <summary>
@@ -142,16 +143,24 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
     }
 
     public override IOperation Apply() {
-      double reductionRatio = 1.0;
+      double reductionRatio = 1.0; // TODO: make parameter
       if (ActualSamplesParameter.ActualValue != null)
         reductionRatio = ActualSamplesParameter.ActualValue.Value;
+      IEnumerable<int> rows = 
+        Enumerable.Range(SamplesStart.Value, SamplesEnd.Value - SamplesStart.Value)
+        .Where(i => i < DataAnalysisProblemData.TestSamplesStart.Value || DataAnalysisProblemData.TestSamplesEnd.Value <= i);
 
-      int reducedRows = (int)((SamplesEnd.Value - SamplesStart.Value) * reductionRatio);
+      // create a new DataAnalysisProblemData instance
       DataAnalysisProblemData reducedProblemData = (DataAnalysisProblemData)DataAnalysisProblemData.Clone();
-      reducedProblemData.Dataset = CreateReducedDataset(RandomParameter.ActualValue, reducedProblemData.Dataset, reductionRatio, SamplesStart.Value, SamplesEnd.Value);
+      reducedProblemData.Dataset = 
+        CreateReducedDataset(RandomParameter.ActualValue, reducedProblemData.Dataset, rows, reductionRatio);
+      reducedProblemData.TrainingSamplesStart.Value = 0;
+      reducedProblemData.TrainingSamplesEnd.Value = reducedProblemData.Dataset.Rows;
+      reducedProblemData.TestSamplesStart.Value = reducedProblemData.Dataset.Rows;
+      reducedProblemData.TestSamplesEnd.Value = reducedProblemData.Dataset.Rows;
+      reducedProblemData.ValidationPercentage.Value = 0;
 
       double quality = PerformCrossValidation(reducedProblemData,
-                             SamplesStart.Value, SamplesStart.Value + reducedRows,
                              SvmType.Value, KernelType.Value,
                              Cost.Value, Nu.Value, Gamma.Value, Epsilon.Value, NumberOfFolds.Value);
 
@@ -159,34 +168,38 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
       return base.Apply();
     }
 
-    private Dataset CreateReducedDataset(IRandom random, Dataset dataset, double reductionRatio, int start, int end) {
-      int n = (int)((end - start) * reductionRatio);
+    private Dataset CreateReducedDataset(IRandom random, Dataset dataset, IEnumerable<int> rowIndices, double reductionRatio) {
+      
       // must not make a fink:
       // => select n rows randomly from start..end
       // => sort the selected rows by index
       // => move rows to beginning of partition (start)
 
       // all possible rowIndexes from start..end
-      int[] rowIndexes = Enumerable.Range(start, end - start).ToArray();
+      int[] rowIndexArr = rowIndices.ToArray();
+      int n = (int)Math.Max(1.0, rowIndexArr.Length * reductionRatio);
 
       // knuth shuffle
-      for (int i = rowIndexes.Length - 1; i > 0; i--) {
+      for (int i = rowIndexArr.Length - 1; i > 0; i--) {
         int j = random.Next(0, i);
         // swap
-        int tmp = rowIndexes[i];
-        rowIndexes[i] = rowIndexes[j];
-        rowIndexes[j] = tmp;
+        int tmp = rowIndexArr[i];
+        rowIndexArr[i] = rowIndexArr[j];
+        rowIndexArr[j] = tmp;
       }
 
       // take the first n indexes (selected n rowIndexes from start..end)
       // now order by index
-      var orderedRandomIndexes = rowIndexes.Take(n).OrderBy(x => x).ToArray();
+      int[] orderedRandomIndexes = 
+        rowIndexArr.Take(n)
+        .OrderBy(x => x)
+        .ToArray();
 
-      // now build a dataset collecting the rows from orderedRandomIndexes into the dataset starting at index start
-      double[,] reducedData = dataset.GetClonedData();
+      // now build a dataset containing only rows from orderedRandomIndexes 
+      double[,] reducedData = new double[n, dataset.Columns];
       for (int i = 0; i < n; i++) {
         for (int column = 0; column < dataset.Columns; column++) {
-          reducedData[start + i, column] = dataset[orderedRandomIndexes[i], column];
+          reducedData[i, column] = dataset[orderedRandomIndexes[i], column];
         }
       }
       return new Dataset(dataset.VariableNames, reducedData);
@@ -197,12 +210,12 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
       string svmType, string kernelType,
       double cost, double nu, double gamma, double epsilon,
       int nFolds) {
-      return PerformCrossValidation(problemData, problemData.TrainingSamplesStart.Value, problemData.TrainingSamplesEnd.Value, svmType, kernelType, cost, nu, gamma, epsilon, nFolds);
+      return PerformCrossValidation(problemData, problemData.TrainingIndizes, svmType, kernelType, cost, nu, gamma, epsilon, nFolds);
     }
 
     public static double PerformCrossValidation(
       DataAnalysisProblemData problemData,
-      int start, int end,
+      IEnumerable<int> rowIndices,
       string svmType, string kernelType,
       double cost, double nu, double gamma, double epsilon,
       int nFolds) {
@@ -220,7 +233,7 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
       parameter.Probability = false;
 
 
-      SVM.Problem problem = SupportVectorMachineUtil.CreateSvmProblem(problemData, start, end);
+      SVM.Problem problem = SupportVectorMachineUtil.CreateSvmProblem(problemData, rowIndices);
       SVM.RangeTransform rangeTransform = SVM.RangeTransform.Compute(problem);
       SVM.Problem scaledProblem = Scaling.Scale(rangeTransform, problem);
 

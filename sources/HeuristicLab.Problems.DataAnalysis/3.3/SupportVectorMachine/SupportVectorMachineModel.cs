@@ -71,11 +71,12 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
     }
 
     public IEnumerable<double> GetEstimatedValues(DataAnalysisProblemData problemData, int start, int end) {
-      SVM.Problem problem = SupportVectorMachineUtil.CreateSvmProblem(problemData, start, end);
+      SVM.Problem problem = SupportVectorMachineUtil.CreateSvmProblem(problemData, Enumerable.Range(start, end - start));
       SVM.Problem scaledProblem = Scaling.Scale(RangeTransform, problem);
 
       return (from row in Enumerable.Range(0, scaledProblem.Count)
-              select SVM.Prediction.Predict(Model, scaledProblem.X[row])).ToList();
+              select SVM.Prediction.Predict(Model, scaledProblem.X[row]))
+              .ToList();
     }
 
     #region events

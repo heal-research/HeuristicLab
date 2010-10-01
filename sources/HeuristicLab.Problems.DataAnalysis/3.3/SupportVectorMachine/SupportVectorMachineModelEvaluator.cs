@@ -25,6 +25,8 @@ using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using SVM;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
   [StorableClass]
@@ -79,20 +81,25 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
     public override IOperation Apply() {
       int start = SamplesStart.Value;
       int end = SamplesEnd.Value;
+      IEnumerable<int> rows =
+        Enumerable.Range(start, end - start)
+        .Where(i => i < DataAnalysisProblemData.TestSamplesStart.Value || DataAnalysisProblemData.TestSamplesEnd.Value <= i);
 
-      ValuesParameter.ActualValue = new DoubleMatrix(Evaluate(SupportVectorMachineModel, DataAnalysisProblemData, start, end));
+      ValuesParameter.ActualValue = new DoubleMatrix(Evaluate(SupportVectorMachineModel, DataAnalysisProblemData, rows));
       return base.Apply();
     }
 
-    public static double[,] Evaluate(SupportVectorMachineModel model, DataAnalysisProblemData problemData, int start, int end) {
-      SVM.Problem problem = SupportVectorMachineUtil.CreateSvmProblem(problemData, start, end);
+    public static double[,] Evaluate(SupportVectorMachineModel model, DataAnalysisProblemData problemData, IEnumerable<int> rowIndices) {
+      SVM.Problem problem = SupportVectorMachineUtil.CreateSvmProblem(problemData, rowIndices);
       SVM.Problem scaledProblem = model.RangeTransform.Scale(problem);
 
       int targetVariableIndex = problemData.Dataset.GetVariableIndex(problemData.TargetVariable.Value);
 
       double[,] values = new double[scaledProblem.Count, 2];
+      var rowEnumerator = rowIndices.GetEnumerator();
       for (int i = 0; i < scaledProblem.Count; i++) {
-        values[i, 0] = problemData.Dataset[start + i, targetVariableIndex];
+        rowEnumerator.MoveNext();
+        values[i, 0] = problemData.Dataset[rowEnumerator.Current, targetVariableIndex];
         values[i, 1] = SVM.Prediction.Predict(model.Model, scaledProblem.X[i]);
       }
 
