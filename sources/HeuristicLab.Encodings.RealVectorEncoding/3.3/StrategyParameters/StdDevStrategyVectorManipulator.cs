@@ -74,6 +74,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// <param name="vector">The strategy vector to manipulate.</param>
     /// <param name="generalLearningRate">The general learning rate dampens the mutation over all dimensions.</param>
     /// <param name="learningRate">The learning rate dampens the mutation in each dimension.</param>
+    /// <param name="bounds">The minimal and maximal value for each component, bounds are cycled if the length of bounds is smaller than the length of vector</param>
     public static void Apply(IRandom random, RealVector vector, double generalLearningRate, double learningRate, DoubleMatrix bounds) {
       NormalDistributedRandom N = new NormalDistributedRandom(random, 0.0, 1.0);
       double generalMultiplier = Math.Exp(generalLearningRate * N.NextDouble());

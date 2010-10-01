@@ -199,7 +199,7 @@ namespace SVM {
     /// <summary>
     /// Reads a Model from the provided stream.
     /// </summary>
-    /// <param name="stream">The stream from which to read the Model.</param>
+    /// <param name="input">The stream from which to read the Model.</param>
     /// <returns>the Model</returns>
     public static Model Read(TextReader input) {
       TemporaryCulture.Start();

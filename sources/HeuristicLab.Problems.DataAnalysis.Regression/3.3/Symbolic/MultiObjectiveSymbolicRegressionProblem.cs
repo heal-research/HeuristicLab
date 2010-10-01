@@ -111,7 +111,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       ParameterizeEvaluator();
     }
 
-    protected virtual void OnEvaluatorChanged(EventArgs e) {
+    protected override void OnEvaluatorChanged(EventArgs e) {
+      base.OnEvaluatorChanged(e);
       ParameterizeEvaluator();
       RaiseEvaluatorChanged(e);
     }

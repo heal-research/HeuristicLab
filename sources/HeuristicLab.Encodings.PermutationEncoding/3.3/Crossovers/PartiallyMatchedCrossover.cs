@@ -26,7 +26,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.PermutationEncoding {
   /// <summary>
   /// An operator which performs the partially matched crossover on two permutations.
-  /// </summar>
+  /// </summary>
   /// <remarks>
   /// It is implemented as described in Fogel, D.B. 1988. An Evolutionary Approach to the Traveling Salesman Problem. Biological Cybernetics, 60, pp. 139-144, Springer-Verlag.
   /// which references Goldberg, D.E., and Lingle, R. 1985. Alleles, loci, and the traveling salesman problem. Proceedings of an International Conference on Genetic Algorithms and their Applications. Carnegie-Mellon University, pp. 154-159.
@@ -88,7 +88,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     /// <summary>
-    /// Checks number of parents and calls <see cref="Apply(Apply(IRandom, Permutation, Permutation)"/>.
+    /// Checks number of parents and calls <see cref="Apply(IRandom, Permutation, Permutation)"/>.
     /// </summary>
     /// <exception cref="InvalidOperationException">Thrown if there are not exactly two permutations in <paramref name="parents"/>.</exception>
     /// <param name="random">A random number generator.</param>

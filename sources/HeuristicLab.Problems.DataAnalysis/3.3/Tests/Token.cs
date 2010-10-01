@@ -39,6 +39,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
       return other.StringValue == this.StringValue;
     }
 
+    public override int GetHashCode() {
+      return Symbol.GetHashCode() & StringValue.GetHashCode();
+    }
+
     public static Token Parse(string strToken) {
       strToken = strToken.Trim();
       Token t = new Token();
