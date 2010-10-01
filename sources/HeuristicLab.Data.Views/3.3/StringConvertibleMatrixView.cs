@@ -279,8 +279,8 @@ namespace HeuristicLab.Data.Views {
         maxColIndex = temp;
       }
 
-      bool addRowNames = dataGridView.AreAllCellsSelected(false);
-      bool addColumnNames = dataGridView.AreAllCellsSelected(false);
+      bool addRowNames = dataGridView.AreAllCellsSelected(false) && Content.RowNames.Count() > 0;
+      bool addColumnNames = dataGridView.AreAllCellsSelected(false) && Content.ColumnNames.Count() > 0;
 
       //add colum names
       if (addColumnNames) {
