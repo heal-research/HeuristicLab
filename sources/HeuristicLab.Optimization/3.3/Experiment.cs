@@ -264,10 +264,14 @@ namespace HeuristicLab.Optimization {
       RegisterOptimizerEvents(optimizer);
       Runs.AddRange(optimizer.Runs);
       optimizer.Prepare();
+      if (ExecutionState == ExecutionState.Stopped && optimizer.ExecutionState == ExecutionState.Prepared)
+        OnPrepared();
     }
     private void RemoveOptimizer(IOptimizer optimizer) {
       DeregisterOptimizerEvents(optimizer);
       Runs.RemoveRange(optimizer.Runs);
+      if (ExecutionState == ExecutionState.Prepared && !optimizers.Any(opt => opt.ExecutionState == ExecutionState.Prepared))
+        OnStopped();
     }
 
     private void RegisterOptimizerEvents(IOptimizer optimizer) {
