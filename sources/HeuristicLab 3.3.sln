@@ -305,6 +305,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Clients.Common
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab-3.3.Tests", "HeuristicLab\3.3\Tests\HeuristicLab-3.3.Tests.csproj", "{66DABFD5-5BD2-4478-8DF9-C589F569F7A2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.DataAnalysis.Classification-3.3", "HeuristicLab.Problems.DataAnalysis.Classification\3.3\HeuristicLab.Problems.DataAnalysis.Classification-3.3.csproj", "{D35FD6DB-D704-4BEA-BDAE-C40ABFB5B13E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.DataAnalysis.Classification.Views-3.3", "HeuristicLab.Problems.DataAnalysis.Classification.Views\3.3\HeuristicLab.Problems.DataAnalysis.Classification.Views-3.3.csproj", "{7F038E9A-B91E-4F49-8C27-D47BC86F1220}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = HeuristicLab 3.3.vsmdi
@@ -1374,6 +1378,30 @@ Global
 		{66DABFD5-5BD2-4478-8DF9-C589F569F7A2}.Release|x64.Build.0 = Release|x64
 		{66DABFD5-5BD2-4478-8DF9-C589F569F7A2}.Release|x86.ActiveCfg = Release|x86
 		{66DABFD5-5BD2-4478-8DF9-C589F569F7A2}.Release|x86.Build.0 = Release|x86
+		{D35FD6DB-D704-4BEA-BDAE-C40ABFB5B13E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D35FD6DB-D704-4BEA-BDAE-C40ABFB5B13E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D35FD6DB-D704-4BEA-BDAE-C40ABFB5B13E}.Debug|x64.ActiveCfg = Debug|x64
+		{D35FD6DB-D704-4BEA-BDAE-C40ABFB5B13E}.Debug|x64.Build.0 = Debug|x64
+		{D35FD6DB-D704-4BEA-BDAE-C40ABFB5B13E}.Debug|x86.ActiveCfg = Debug|x86
+		{D35FD6DB-D704-4BEA-BDAE-C40ABFB5B13E}.Debug|x86.Build.0 = Debug|x86
+		{D35FD6DB-D704-4BEA-BDAE-C40ABFB5B13E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D35FD6DB-D704-4BEA-BDAE-C40ABFB5B13E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D35FD6DB-D704-4BEA-BDAE-C40ABFB5B13E}.Release|x64.ActiveCfg = Release|x64
+		{D35FD6DB-D704-4BEA-BDAE-C40ABFB5B13E}.Release|x64.Build.0 = Release|x64
+		{D35FD6DB-D704-4BEA-BDAE-C40ABFB5B13E}.Release|x86.ActiveCfg = Release|x86
+		{D35FD6DB-D704-4BEA-BDAE-C40ABFB5B13E}.Release|x86.Build.0 = Release|x86
+		{7F038E9A-B91E-4F49-8C27-D47BC86F1220}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F038E9A-B91E-4F49-8C27-D47BC86F1220}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F038E9A-B91E-4F49-8C27-D47BC86F1220}.Debug|x64.ActiveCfg = Debug|x64
+		{7F038E9A-B91E-4F49-8C27-D47BC86F1220}.Debug|x64.Build.0 = Debug|x64
+		{7F038E9A-B91E-4F49-8C27-D47BC86F1220}.Debug|x86.ActiveCfg = Debug|x86
+		{7F038E9A-B91E-4F49-8C27-D47BC86F1220}.Debug|x86.Build.0 = Debug|x86
+		{7F038E9A-B91E-4F49-8C27-D47BC86F1220}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F038E9A-B91E-4F49-8C27-D47BC86F1220}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F038E9A-B91E-4F49-8C27-D47BC86F1220}.Release|x64.ActiveCfg = Release|x64
+		{7F038E9A-B91E-4F49-8C27-D47BC86F1220}.Release|x64.Build.0 = Release|x64
+		{7F038E9A-B91E-4F49-8C27-D47BC86F1220}.Release|x86.ActiveCfg = Release|x86
+		{7F038E9A-B91E-4F49-8C27-D47BC86F1220}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
