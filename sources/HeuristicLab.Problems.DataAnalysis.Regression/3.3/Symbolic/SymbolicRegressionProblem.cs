@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [Item("Symbolic Regression Problem (single objective)", "Represents a single objective symbolic regression problem.")]
   [Creatable("Problems")]
   [StorableClass]
-  public class SymbolicRegressionProblem : SymbolicRegressionProblemBase, ISingleObjectiveProblem {
+  public class SymbolicRegressionProblem : SymbolicRegressionProblemBase, ISingleObjectiveDataAnalysisProblem {
 
     #region Parameter Properties
     public ValueParameter<BoolValue> MaximizationParameter {

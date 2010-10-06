@@ -128,6 +128,7 @@
     <Compile Include="Evaluators\SimpleRSquaredEvaluator.cs" />
     <Compile Include="Evaluators\SimpleVarianceAccountedForEvaluator.cs" />
     <Compile Include="HeuristicLabProblemsDataAnalysisPlugin.cs" />
+    <Compile Include="Interfaces\ISingleObjectiveDataAnalysisProblem.cs" />
     <Compile Include="Interfaces\IDataAnalysisModel.cs" />
     <Compile Include="Interfaces\IDataAnalysisProblem.cs" />
     <Compile Include="Interfaces\IOnlineEvaluator.cs" />
