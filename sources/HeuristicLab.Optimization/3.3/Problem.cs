@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -59,7 +58,7 @@ namespace HeuristicLab.Optimization {
 
     public override IDeepCloneable Clone(Cloner cloner) {
       Problem<T, U> clone = (Problem<T, U>)base.Clone(cloner);
-      clone.operators = new OperatorCollection(operators.Select(x => (IOperator)cloner.Clone(x)));
+      clone.operators = (OperatorCollection)cloner.Clone(operators);
       clone.RegisterEventHandlers();
       return clone;
     }
