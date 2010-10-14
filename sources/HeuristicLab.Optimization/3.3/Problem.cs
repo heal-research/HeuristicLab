@@ -30,7 +30,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization {
-  [Item("Problem", "Represents a the base class for a problem.")]
+  [Item("Problem", "Represents the base class for a problem.")]
   [StorableClass]
   public abstract class Problem<T, U> : ParameterizedNamedItem, IProblem
     where T : class,IEvaluator

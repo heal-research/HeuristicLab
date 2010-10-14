@@ -25,7 +25,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization {
-  [Item("Single Objective Problem", "Represents a the base class for a single objective problem.")]
+  [Item("Single Objective Problem", "Represents the base class for a single objective problem.")]
   [StorableClass]
   public abstract class SingleObjectiveProblem<T, U> : Problem<T, U>, ISingleObjectiveProblem
     where T : class, ISingleObjectiveEvaluator
@@ -35,8 +35,8 @@ namespace HeuristicLab.Optimization {
 
     protected SingleObjectiveProblem()
       : base() {
-      Parameters.Add(new ValueParameter<BoolValue>(MaximizationParameterName));
-      Parameters.Add(new ValueParameter<DoubleValue>(BestKnownQualityParameterName));
+      Parameters.Add(new ValueParameter<BoolValue>(MaximizationParameterName, "Set to false if the problem should be minimized."));
+      Parameters.Add(new ValueParameter<DoubleValue>(BestKnownQualityParameterName, "The quality of the best known solution of this problem."));
     }
     [StorableConstructor]
     protected SingleObjectiveProblem(bool deserializing) : base(deserializing) { }
