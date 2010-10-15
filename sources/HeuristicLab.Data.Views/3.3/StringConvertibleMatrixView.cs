@@ -309,8 +309,9 @@ namespace HeuristicLab.Data.Views {
           DataGridViewCell cell = dataGridView[column.Index, i];
           if (cell.Selected) {
             s.Append(Content.GetValue(rowIndex, column.Index));
+            s.Append('\t');
           }
-          s.Append('\t');
+
           column = dataGridView.Columns.GetNextColumn(column, DataGridViewElementStates.Visible, DataGridViewElementStates.None);
         }
         s.Remove(s.Length - 1, 1); //remove last tab
