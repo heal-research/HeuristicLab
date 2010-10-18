@@ -69,6 +69,7 @@ HeuristicLab.Selection\3.3:HeuristicLab.Selection-3.3.dll
 HeuristicLab.SequentialEngine\3.3:HeuristicLab.SequentialEngine-3.3.dll
 HeuristicLab.Tracing\3.3:HeuristicLab.Tracing-3.3.dll
 HeuristicLab.Tracing\3.3:HeuristicLab.log4net.xml
+HeuristicLab.Visualization.ChartControlsExtensions\3.3:HeuristicLab.Visualization.ChartControlsExtensions-3.3.dll
 
 ;External Libraries
 HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\2.5.0\ALGLIB-2.5.0:ALGLIB-2.5.0.dll
