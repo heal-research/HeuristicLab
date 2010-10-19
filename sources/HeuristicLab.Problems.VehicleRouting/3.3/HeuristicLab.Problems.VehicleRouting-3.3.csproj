@@ -109,6 +109,7 @@
     <Compile Include="Analyzers\BestAverageWorstVRPToursCalculator.cs" />
     <Compile Include="Analyzers\BestVRPToursMemorizer.cs" />
     <Compile Include="Analyzers\BestVRPSolutionAnalyzer.cs" />
+    <Compile Include="SolutionParser.cs" />
     <Compile Include="Encodings\Alba\Crossovers\AlbaPermutationCrossover.cs" />
     <Compile Include="Encodings\Alba\Manipulators\AlbaIntraRouteInversionManipulator.cs" />
     <Compile Include="Encodings\Alba\Manipulators\AlbaLambdaInterchangeManipulator.cs" />

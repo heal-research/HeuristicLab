@@ -122,6 +122,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
       this.tourGridView.Dock = System.Windows.Forms.DockStyle.Fill;
       this.tourGridView.Location = new System.Drawing.Point(3, 16);
       this.tourGridView.Name = "tourGridView";
+      this.tourGridView.ReadOnly = true;
       this.tourGridView.Size = new System.Drawing.Size(403, 507);
       this.tourGridView.TabIndex = 0;
       // 

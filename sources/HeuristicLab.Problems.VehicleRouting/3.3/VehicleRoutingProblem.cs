@@ -92,19 +92,19 @@ namespace HeuristicLab.Problems.VehicleRouting {
     IParameter IProblem.EvaluatorParameter {
       get { return EvaluatorParameter; }
     }
-    public IValueParameter<DoubleValue> FleetUsageFactor {
+    public IValueParameter<DoubleValue> FleetUsageFactorParameter {
       get { return (IValueParameter<DoubleValue>)Parameters["EvalFleetUsageFactor"]; }
     }
-    public IValueParameter<DoubleValue> TimeFactor {
+    public IValueParameter<DoubleValue> TimeFactorParameter {
       get { return (IValueParameter<DoubleValue>)Parameters["EvalTimeFactor"]; }
     }
-    public IValueParameter<DoubleValue> DistanceFactor {
+    public IValueParameter<DoubleValue> DistanceFactorParameter {
       get { return (IValueParameter<DoubleValue>)Parameters["EvalDistanceFactor"]; }
     }
-    public IValueParameter<DoubleValue> OverloadPenalty {
+    public IValueParameter<DoubleValue> OverloadPenaltyParameter {
       get { return (IValueParameter<DoubleValue>)Parameters["EvalOverloadPenalty"]; }
     }
-    public IValueParameter<DoubleValue> TardinessPenalty {
+    public IValueParameter<DoubleValue> TardinessPenaltyParameter {
       get { return (IValueParameter<DoubleValue>)Parameters["EvalTardinessPenalty"]; }
     }
     public OptionalValueParameter<DoubleValue> BestKnownQualityParameter {
@@ -112,6 +112,9 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
     IParameter ISingleObjectiveProblem.BestKnownQualityParameter {
       get { return BestKnownQualityParameter; }
+    }
+    public OptionalValueParameter<IVRPEncoding> BestKnownSolutionParameter {
+      get { return (OptionalValueParameter<IVRPEncoding>)Parameters["BestKnownSolution"]; }
     }
     #endregion
 
@@ -156,6 +159,10 @@ namespace HeuristicLab.Problems.VehicleRouting {
       get { return BestKnownQualityParameter.Value; }
       set { BestKnownQualityParameter.Value = value; }
     }
+    public IVRPEncoding BestKnownSolution {
+      get { return BestKnownSolutionParameter.Value; }
+      set { BestKnownSolutionParameter.Value = value; }
+    }
     IVRPCreator SolutionCreator {
       get { return SolutionCreatorParameter.Value; }
       set { SolutionCreatorParameter.Value = value; }
@@ -189,6 +196,16 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     [StorableConstructor]
     private VehicleRoutingProblem(bool deserializing) : base(deserializing) { }
+
+    #region Backwards Compatibility
+    [StorableHook(Persistence.Default.CompositeSerializers.Storable.HookType.AfterDeserialization)]
+    private void CheckParameters() {
+      if (!Parameters.ContainsKey("BestKnownSolution")) {
+        Parameters.Add(new OptionalValueParameter<IVRPEncoding>("BestKnownSolution", "The best known solution of this TSP instance."));
+      }
+    }
+    #endregion
+
     public VehicleRoutingProblem()
       : base() {
       IVRPCreator creator = new RandomCreator();
@@ -205,6 +222,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       Parameters.Add(new ValueParameter<DoubleArray>("DueTime", "The due time of each customer.", new DoubleArray()));
       Parameters.Add(new ValueParameter<DoubleArray>("ServiceTime", "The service time of each customer.", new DoubleArray()));
       Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this VRP instance."));
+      Parameters.Add(new OptionalValueParameter<IVRPEncoding>("BestKnownSolution", "The best known solution of this TSP instance."));
       Parameters.Add(new ValueParameter<DoubleValue>("EvalFleetUsageFactor", "The fleet usage factor considered in the evaluation.", new DoubleValue(100)));
       Parameters.Add(new ValueParameter<DoubleValue>("EvalTimeFactor", "The time factor considered in the evaluation.", new DoubleValue(0)));
       Parameters.Add(new ValueParameter<DoubleValue>("EvalDistanceFactor", "The distance factor considered in the evaluation.", new DoubleValue(1)));
@@ -263,13 +281,22 @@ namespace HeuristicLab.Problems.VehicleRouting {
       Coordinates.Reset += new EventHandler(Coordinates_Reset);
       ParameterizeSolutionCreator();
       ClearDistanceMatrix();
+
+      BestKnownSolution = null;
+      BestKnownQuality = null;
     }
     private void Coordinates_ItemChanged(object sender, EventArgs<int, int> e) {
       ClearDistanceMatrix();
+
+      BestKnownSolution = null;
+      BestKnownQuality = null;
     }
     private void Coordinates_Reset(object sender, EventArgs e) {
       ParameterizeSolutionCreator();
       ClearDistanceMatrix();
+
+      BestKnownSolution = null;
+      BestKnownQuality = null;
     }
     private void SolutionCreatorParameter_ValueChanged(object sender, EventArgs e) {
       ParameterizeSolutionCreator();
@@ -299,6 +326,135 @@ namespace HeuristicLab.Problems.VehicleRouting {
         op.TranslocationMoveParameter.ActualName = name;
       }
     }
+
+    void DistanceFactor_ValueChanged(object sender, EventArgs e) {
+      DistanceFactorParameter.Value.ValueChanged += new EventHandler(DistanceFactorValue_ValueChanged);
+      EvalBestKnownSolution();
+    }
+    void DistanceFactorValue_ValueChanged(object sender, EventArgs e) {
+      EvalBestKnownSolution();
+    }
+    void FleetUsageFactor_ValueChanged(object sender, EventArgs e) {
+      FleetUsageFactorParameter.Value.ValueChanged += new EventHandler(FleetUsageFactorValue_ValueChanged);
+      EvalBestKnownSolution();
+    }
+    void FleetUsageFactorValue_ValueChanged(object sender, EventArgs e) {
+      EvalBestKnownSolution();
+    }
+    void OverloadPenalty_ValueChanged(object sender, EventArgs e) {
+      OverloadPenaltyParameter.Value.ValueChanged += new EventHandler(OverloadPenaltyValue_ValueChanged);
+      EvalBestKnownSolution();
+    }
+    void OverloadPenaltyValue_ValueChanged(object sender, EventArgs e) {
+      EvalBestKnownSolution();
+    }
+    void TardinessPenalty_ValueChanged(object sender, EventArgs e) {
+      TardinessPenaltyParameter.Value.ValueChanged += new EventHandler(TardinessPenaltyValue_ValueChanged);
+      EvalBestKnownSolution();
+    }
+    void TardinessPenaltyValue_ValueChanged(object sender, EventArgs e) {
+      EvalBestKnownSolution();
+    }
+    void TimeFactor_ValueChanged(object sender, EventArgs e) {
+      TimeFactorParameter.Value.ValueChanged += new EventHandler(TimeFactorValue_ValueChanged);
+      EvalBestKnownSolution();
+    }
+    void TimeFactorValue_ValueChanged(object sender, EventArgs e) {
+      EvalBestKnownSolution();
+    }
+    void DistanceMatrixParameter_ValueChanged(object sender, EventArgs e) {
+      DistanceMatrix.ItemChanged += new EventHandler<EventArgs<int, int>>(DistanceMatrix_ItemChanged);
+      DistanceMatrix.Reset += new EventHandler(DistanceMatrix_Reset);
+      EvalBestKnownSolution();
+    }
+    void DistanceMatrix_Reset(object sender, EventArgs e) {
+      EvalBestKnownSolution();
+    }
+    void DistanceMatrix_ItemChanged(object sender, EventArgs<int, int> e) {
+      EvalBestKnownSolution();
+    }
+    void UseDistanceMatrixParameter_ValueChanged(object sender, EventArgs e) {
+      UseDistanceMatrix.ValueChanged += new EventHandler(UseDistanceMatrix_ValueChanged);
+      EvalBestKnownSolution();
+    }
+    void UseDistanceMatrix_ValueChanged(object sender, EventArgs e) {
+      EvalBestKnownSolution();
+    }
+    void CapacityParameter_ValueChanged(object sender, EventArgs e) {
+      Capacity.ValueChanged += new EventHandler(Capacity_ValueChanged);
+      BestKnownSolution = null;
+      BestKnownQuality = null;
+    }
+    void Capacity_ValueChanged(object sender, EventArgs e) {
+      BestKnownSolution = null;
+      BestKnownQuality = null;
+    }
+    void DemandParameter_ValueChanged(object sender, EventArgs e) {
+      Demand.ItemChanged += new EventHandler<EventArgs<int>>(Demand_ItemChanged);
+      Demand.Reset += new EventHandler(Demand_Reset);
+
+      BestKnownSolution = null;
+      BestKnownQuality = null;
+    }
+    void Demand_Reset(object sender, EventArgs e) {
+      BestKnownSolution = null;
+      BestKnownQuality = null;
+    }
+    void Demand_ItemChanged(object sender, EventArgs<int> e) {
+      BestKnownSolution = null;
+      BestKnownQuality = null;
+    }
+    void DueTimeParameter_ValueChanged(object sender, EventArgs e) {
+      DueTime.ItemChanged += new EventHandler<EventArgs<int>>(DueTime_ItemChanged);
+      DueTime.Reset += new EventHandler(DueTime_Reset);
+      BestKnownSolution = null;
+      BestKnownQuality = null;
+    }
+    void DueTime_Reset(object sender, EventArgs e) {
+      BestKnownSolution = null;
+      BestKnownQuality = null;
+    }
+    void DueTime_ItemChanged(object sender, EventArgs<int> e) {
+      BestKnownSolution = null;
+      BestKnownQuality = null;
+    }
+    void ReadyTimeParameter_ValueChanged(object sender, EventArgs e) {
+      ReadyTime.ItemChanged += new EventHandler<EventArgs<int>>(ReadyTime_ItemChanged);
+      ReadyTime.Reset += new EventHandler(ReadyTime_Reset);
+      BestKnownSolution = null;
+      BestKnownQuality = null;
+    }
+    void ReadyTime_Reset(object sender, EventArgs e) {
+      BestKnownSolution = null;
+      BestKnownQuality = null;
+    }
+    void ReadyTime_ItemChanged(object sender, EventArgs<int> e) {
+      BestKnownSolution = null;
+      BestKnownQuality = null;
+    }
+    void ServiceTimeParameter_ValueChanged(object sender, EventArgs e) {
+      ServiceTime.ItemChanged += new EventHandler<EventArgs<int>>(ServiceTime_ItemChanged);
+      ServiceTime.Reset += new EventHandler(ServiceTime_Reset);
+      BestKnownSolution = null;
+      BestKnownQuality = null;
+    }
+    void ServiceTime_Reset(object sender, EventArgs e) {
+      BestKnownSolution = null;
+      BestKnownQuality = null;
+    }
+    void ServiceTime_ItemChanged(object sender, EventArgs<int> e) {
+      BestKnownSolution = null;
+      BestKnownQuality = null;
+    }
+    void VehiclesParameter_ValueChanged(object sender, EventArgs e) {
+      Vehicles.ValueChanged += new EventHandler(Vehicles_ValueChanged);
+      BestKnownSolution = null;
+      BestKnownQuality = null;
+    }
+    void Vehicles_ValueChanged(object sender, EventArgs e) {
+      BestKnownSolution = null;
+      BestKnownQuality = null;
+    }
     #endregion
 
     #region Helpers
@@ -309,13 +465,49 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     private void AttachEventHandlers() {
       CoordinatesParameter.ValueChanged += new EventHandler(CoordinatesParameter_ValueChanged);
-      Vehicles.ValueChanged += new EventHandler(VehiclesValue_ValueChanged);
       Coordinates.ItemChanged += new EventHandler<EventArgs<int, int>>(Coordinates_ItemChanged);
       Coordinates.Reset += new EventHandler(Coordinates_Reset);
+
+      Vehicles.ValueChanged += new EventHandler(VehiclesValue_ValueChanged);
+
       SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
+      
       EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
       Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
+
+      DistanceFactorParameter.ValueChanged += new EventHandler(DistanceFactor_ValueChanged);
+      DistanceFactorParameter.Value.ValueChanged += new EventHandler(DistanceFactorValue_ValueChanged);
+      FleetUsageFactorParameter.ValueChanged += new EventHandler(FleetUsageFactor_ValueChanged);
+      FleetUsageFactorParameter.Value.ValueChanged += new EventHandler(FleetUsageFactorValue_ValueChanged);
+      OverloadPenaltyParameter.ValueChanged += new EventHandler(OverloadPenalty_ValueChanged);
+      OverloadPenaltyParameter.Value.ValueChanged += new EventHandler(OverloadPenaltyValue_ValueChanged);
+      TardinessPenaltyParameter.ValueChanged += new EventHandler(TardinessPenalty_ValueChanged);
+      TardinessPenaltyParameter.Value.ValueChanged += new EventHandler(TardinessPenaltyValue_ValueChanged);
+      TimeFactorParameter.ValueChanged += new EventHandler(TimeFactor_ValueChanged);
+      TimeFactorParameter.Value.ValueChanged += new EventHandler(TimeFactorValue_ValueChanged);
+
+      DistanceMatrixParameter.ValueChanged += new EventHandler(DistanceMatrixParameter_ValueChanged);
+      UseDistanceMatrixParameter.ValueChanged += new EventHandler(UseDistanceMatrixParameter_ValueChanged);
+      UseDistanceMatrix.ValueChanged += new EventHandler(UseDistanceMatrix_ValueChanged);
+
+      CapacityParameter.ValueChanged += new EventHandler(CapacityParameter_ValueChanged);
+      Capacity.ValueChanged += new EventHandler(Capacity_ValueChanged);
+      DemandParameter.ValueChanged += new EventHandler(DemandParameter_ValueChanged);
+      Demand.ItemChanged += new EventHandler<EventArgs<int>>(Demand_ItemChanged);
+      Demand.Reset += new EventHandler(Demand_Reset);
+      DueTimeParameter.ValueChanged += new EventHandler(DueTimeParameter_ValueChanged);
+      DueTime.ItemChanged += new EventHandler<EventArgs<int>>(DueTime_ItemChanged);
+      DueTime.Reset += new EventHandler(DueTime_Reset);
+      ReadyTimeParameter.ValueChanged += new EventHandler(ReadyTimeParameter_ValueChanged);
+      ReadyTime.ItemChanged += new EventHandler<EventArgs<int>>(ReadyTime_ItemChanged);
+      ReadyTime.Reset += new EventHandler(ReadyTime_Reset);
+      ServiceTimeParameter.ValueChanged += new EventHandler(ServiceTimeParameter_ValueChanged);
+      ServiceTime.ItemChanged += new EventHandler<EventArgs<int>>(ServiceTime_ItemChanged);
+      ServiceTime.Reset += new EventHandler(ServiceTime_Reset);
+      VehiclesParameter.ValueChanged += new EventHandler(VehiclesParameter_ValueChanged);
+      Vehicles.ValueChanged += new EventHandler(Vehicles_ValueChanged);
     }
+
     private void InitializeOperators() {
       operators = new List<IOperator>();
       operators.Add(new BestVRPSolutionAnalyzer());
@@ -360,11 +552,11 @@ namespace HeuristicLab.Problems.VehicleRouting {
       Evaluator.ReadyTimeParameter.ActualName = ReadyTimeParameter.Name;
       Evaluator.DueTimeParameter.ActualName = DueTimeParameter.Name;
       Evaluator.ServiceTimeParameter.ActualName = ServiceTimeParameter.Name;
-      Evaluator.FleetUsageFactor.ActualName = FleetUsageFactor.Name;
-      Evaluator.TimeFactor.ActualName = TimeFactor.Name;
-      Evaluator.DistanceFactor.ActualName = DistanceFactor.Name;
-      Evaluator.OverloadPenalty.ActualName = OverloadPenalty.Name;
-      Evaluator.TardinessPenalty.ActualName = TardinessPenalty.Name;
+      Evaluator.FleetUsageFactor.ActualName = FleetUsageFactorParameter.Name;
+      Evaluator.TimeFactor.ActualName = TimeFactorParameter.Name;
+      Evaluator.DistanceFactor.ActualName = DistanceFactorParameter.Name;
+      Evaluator.OverloadPenalty.ActualName = OverloadPenaltyParameter.Name;
+      Evaluator.TardinessPenalty.ActualName = TardinessPenaltyParameter.Name;
     }
     private void ParameterizeAnalyzer() {
       BestVRPSolutionAnalyzer.CoordinatesParameter.ActualName = CoordinatesParameter.Name;
@@ -402,19 +594,19 @@ namespace HeuristicLab.Problems.VehicleRouting {
       }
 
       foreach (IPrinsOperator op in Operators.OfType<IPrinsOperator>()) {
-        op.FleetUsageFactor.ActualName = FleetUsageFactor.Name;
-        op.TimeFactor.ActualName = TimeFactor.Name;
-        op.DistanceFactor.ActualName = DistanceFactor.Name;
-        op.OverloadPenalty.ActualName = OverloadPenalty.Name;
-        op.TardinessPenalty.ActualName = TardinessPenalty.Name;
+        op.FleetUsageFactor.ActualName = FleetUsageFactorParameter.Name;
+        op.TimeFactor.ActualName = TimeFactorParameter.Name;
+        op.DistanceFactor.ActualName = DistanceFactorParameter.Name;
+        op.OverloadPenalty.ActualName = OverloadPenaltyParameter.Name;
+        op.TardinessPenalty.ActualName = TardinessPenaltyParameter.Name;
       }
 
       foreach (IVRPMoveEvaluator op in Operators.OfType<IVRPMoveEvaluator>()) {
-        op.FleetUsageFactor.ActualName = FleetUsageFactor.Name;
-        op.TimeFactor.ActualName = TimeFactor.Name;
-        op.DistanceFactor.ActualName = DistanceFactor.Name;
-        op.OverloadPenalty.ActualName = OverloadPenalty.Name;
-        op.TardinessPenalty.ActualName = TardinessPenalty.Name;
+        op.FleetUsageFactor.ActualName = FleetUsageFactorParameter.Name;
+        op.TimeFactor.ActualName = TimeFactorParameter.Name;
+        op.DistanceFactor.ActualName = DistanceFactorParameter.Name;
+        op.OverloadPenalty.ActualName = OverloadPenaltyParameter.Name;
+        op.TardinessPenalty.ActualName = TardinessPenaltyParameter.Name;
         op.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
         op.VRPToursParameter.ActualName = SolutionCreator.VRPToursParameter.ActualName;
       }
@@ -489,6 +681,59 @@ namespace HeuristicLab.Problems.VehicleRouting {
         throw new Exception("Invalid weight type");
 
       OnReset();
+    }
+
+    private void EvalBestKnownSolution() {
+      if (BestKnownSolution != null) {
+        //call evaluator
+        IValueLookupParameter<DoubleMatrix> distMatrix = new ValueLookupParameter<DoubleMatrix>("DistMatrix",
+          DistanceMatrix);
+
+        TourEvaluation eval = VRPEvaluator.Evaluate(
+          BestKnownSolution,
+          Vehicles,
+          DueTime,
+          ServiceTime,
+          ReadyTime,
+          Demand,
+          Capacity,
+          FleetUsageFactorParameter.Value,
+          TimeFactorParameter.Value,
+          DistanceFactorParameter.Value,
+          OverloadPenaltyParameter.Value,
+          TardinessPenaltyParameter.Value,
+          Coordinates,
+          distMatrix,
+          UseDistanceMatrix);
+
+        DistanceMatrix = distMatrix.Value;
+
+        BestKnownQuality = new DoubleValue(eval.Quality);
+      } else {
+        BestKnownQuality = null;
+      }
+    }
+
+    public void ImportSolution(string solutionFileName) {
+      SolutionParser parser = new SolutionParser(solutionFileName);
+      parser.Parse();
+
+      HeuristicLab.Problems.VehicleRouting.Encodings.Potvin.PotvinEncoding encoding = new Encodings.Potvin.PotvinEncoding();
+
+      int cities = 0;
+      foreach (List<int> route in parser.Routes) {
+        Encodings.Tour tour = new Encodings.Tour();
+        tour.Cities.AddRange(route);
+        cities += tour.Cities.Count;
+
+        encoding.Tours.Add(tour);
+      }
+
+      if (cities != Coordinates.Rows - 1)
+        throw new Exception("Invalid solution");
+
+      BestKnownSolutionParameter.Value = encoding;
+      EvalBestKnownSolution();
     }
 
     public void ImportFromORLib(string orFileName) {

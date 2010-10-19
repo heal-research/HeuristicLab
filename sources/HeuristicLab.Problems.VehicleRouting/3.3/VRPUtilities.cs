@@ -55,20 +55,23 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     public static double GetDistance(int start, int end,
-      DoubleMatrix coordinates, ILookupParameter<DoubleMatrix> distanceMatrix, BoolValue useDistanceMatrix) {
+      DoubleMatrix coordinates, IParameter distanceMatrix, BoolValue useDistanceMatrix) {
       double distance = 0.0;
 
       if (useDistanceMatrix.Value) {
-        if (distanceMatrix is IValueLookupParameter<DoubleMatrix> &&
-          (distanceMatrix as IValueLookupParameter<DoubleMatrix>).Value != null) {
-            distance = (distanceMatrix as IValueLookupParameter<DoubleMatrix>).Value[start, end];
+        if (distanceMatrix is IValueLookupParameter<DoubleMatrix>) {
+          if ((distanceMatrix as IValueLookupParameter<DoubleMatrix>).Value == null) {
+            (distanceMatrix as IValueLookupParameter<DoubleMatrix>).Value = CreateDistanceMatrix(coordinates);
+          }
+          
+          distance = (distanceMatrix as IValueLookupParameter<DoubleMatrix>).Value[start, end];
         } else {
           if (distanceMatrix.ActualValue == null) {
             distanceMatrix.ActualValue = CreateDistanceMatrix(coordinates);
           }
 
-          distance = distanceMatrix.ActualValue[start, end];
-        }       
+          distance = (distanceMatrix.ActualValue as DoubleMatrix)[start, end];
+        }     
       } else {
         distance = CalculateDistance(start, end, coordinates);
       }

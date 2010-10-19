@@ -25,6 +25,8 @@ using HeuristicLab.MainForm;
 using HeuristicLab.Optimization.Views;
 using HeuristicLab.Core.Views;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.VehicleRouting.Views {
   [View("VehicleRouting Problem View")]
@@ -41,11 +43,13 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
 
     protected override void DeregisterContentEvents() {
       Content.CoordinatesParameter.ValueChanged -= new EventHandler(CoordinatesParameter_ValueChanged);
+      Content.BestKnownQualityParameter.ValueChanged -= new EventHandler(BestKnownQualityParameter_ValueChanged);
       base.DeregisterContentEvents();
     }
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.CoordinatesParameter.ValueChanged += new EventHandler(CoordinatesParameter_ValueChanged);
+      Content.BestKnownQualityParameter.ValueChanged += new EventHandler(BestKnownQualityParameter_ValueChanged);
     }
 
     protected override void OnContentChanged() {
@@ -55,7 +59,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
         vrpSolutionView.Content = null;
       } else {
         parameterCollectionView.Content = ((IParameterizedNamedItem)Content).Parameters;
-        vrpSolutionView.Content = new VRPSolution(Content.Coordinates);
+        UpdateSolution();
       }
     }
 
@@ -63,7 +67,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
       base.SetEnabledStateOfControls();
       parameterCollectionView.Enabled = Content != null;
       vrpSolutionView.Enabled = Content != null;
-      importButton.Enabled = importButton2.Enabled = importButton3.Enabled = Content != null && !ReadOnly;
+      importBestButton.Enabled = importButton.Enabled = importButton2.Enabled = importButton3.Enabled = Content != null && !ReadOnly;
     }
 
     private void importButton_Click(object sender, EventArgs e) {
@@ -84,6 +88,15 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
       }
     }
 
+    private void importBestButton_Click(object sender, EventArgs e) {
+      OpenFileDialog dialog = new OpenFileDialog();
+      dialog.Filter = "VRP solution files (*.opt)|*.opt";
+
+      if (dialog.ShowDialog() == DialogResult.OK) {
+        Content.ImportSolution(dialog.FileName);
+      }
+    }
+
     private void importButton3_Click(object sender, EventArgs e) {
       OpenFileDialog dialog = new OpenFileDialog();
       dialog.Filter = "ORLib files (*.txt)|*.txt";
@@ -95,6 +108,53 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
 
     private void CoordinatesParameter_ValueChanged(object sender, EventArgs e) {
       vrpSolutionView.Content.Coordinates = Content.Coordinates;
-    }  
+    }
+
+    private void UpdateSolution() {
+      if (Content.BestKnownSolution == null)
+        vrpSolutionView.Content = new VRPSolution(Content.Coordinates);
+      else {
+        //call evaluator
+        IValueLookupParameter<DoubleMatrix> distMatrix = new ValueLookupParameter<DoubleMatrix>("DistMatrix",
+          Content.DistanceMatrix);
+
+        TourEvaluation eval = VRPEvaluator.Evaluate(
+          Content.BestKnownSolution,
+          Content.Vehicles,
+          Content.DueTime,
+          Content.ServiceTime,
+          Content.ReadyTime,
+          Content.Demand,
+          Content.Capacity,
+          Content.FleetUsageFactorParameter.Value,
+          Content.TimeFactorParameter.Value,
+          Content.DistanceFactorParameter.Value,
+          Content.OverloadPenaltyParameter.Value,
+          Content.TardinessPenaltyParameter.Value,
+          Content.Coordinates,
+          distMatrix,
+          Content.UseDistanceMatrix);
+
+        Content.DistanceMatrix = distMatrix.Value;
+
+        vrpSolutionView.Content = new VRPSolution(Content.Coordinates,
+          Content.BestKnownSolution,
+          new DoubleValue(eval.Quality),
+          new DoubleValue(eval.Distance),
+          new DoubleValue(eval.Overload),
+          new DoubleValue(eval.Tardiness),
+          new DoubleValue(eval.TravelTime),
+          new DoubleValue(eval.VehcilesUtilized),
+          Content.DistanceMatrix,
+          Content.UseDistanceMatrix,
+          Content.ReadyTime,
+          Content.DueTime,
+          Content.ServiceTime);
+      }
+    }
+
+   void BestKnownQualityParameter_ValueChanged(object sender, EventArgs e) {
+      UpdateSolution();
+    }
   }
 }
