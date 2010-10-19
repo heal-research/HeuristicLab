@@ -283,20 +283,17 @@ namespace HeuristicLab.Problems.VehicleRouting {
       ClearDistanceMatrix();
 
       BestKnownSolution = null;
-      BestKnownQuality = null;
     }
     private void Coordinates_ItemChanged(object sender, EventArgs<int, int> e) {
       ClearDistanceMatrix();
 
       BestKnownSolution = null;
-      BestKnownQuality = null;
     }
     private void Coordinates_Reset(object sender, EventArgs e) {
       ParameterizeSolutionCreator();
       ClearDistanceMatrix();
 
       BestKnownSolution = null;
-      BestKnownQuality = null;
     }
     private void SolutionCreatorParameter_ValueChanged(object sender, EventArgs e) {
       ParameterizeSolutionCreator();
@@ -383,77 +380,63 @@ namespace HeuristicLab.Problems.VehicleRouting {
     void CapacityParameter_ValueChanged(object sender, EventArgs e) {
       Capacity.ValueChanged += new EventHandler(Capacity_ValueChanged);
       BestKnownSolution = null;
-      BestKnownQuality = null;
     }
     void Capacity_ValueChanged(object sender, EventArgs e) {
       BestKnownSolution = null;
-      BestKnownQuality = null;
     }
     void DemandParameter_ValueChanged(object sender, EventArgs e) {
       Demand.ItemChanged += new EventHandler<EventArgs<int>>(Demand_ItemChanged);
       Demand.Reset += new EventHandler(Demand_Reset);
-
       BestKnownSolution = null;
-      BestKnownQuality = null;
     }
     void Demand_Reset(object sender, EventArgs e) {
       BestKnownSolution = null;
-      BestKnownQuality = null;
     }
     void Demand_ItemChanged(object sender, EventArgs<int> e) {
       BestKnownSolution = null;
-      BestKnownQuality = null;
     }
     void DueTimeParameter_ValueChanged(object sender, EventArgs e) {
       DueTime.ItemChanged += new EventHandler<EventArgs<int>>(DueTime_ItemChanged);
       DueTime.Reset += new EventHandler(DueTime_Reset);
       BestKnownSolution = null;
-      BestKnownQuality = null;
     }
     void DueTime_Reset(object sender, EventArgs e) {
       BestKnownSolution = null;
-      BestKnownQuality = null;
     }
     void DueTime_ItemChanged(object sender, EventArgs<int> e) {
       BestKnownSolution = null;
-      BestKnownQuality = null;
     }
     void ReadyTimeParameter_ValueChanged(object sender, EventArgs e) {
       ReadyTime.ItemChanged += new EventHandler<EventArgs<int>>(ReadyTime_ItemChanged);
       ReadyTime.Reset += new EventHandler(ReadyTime_Reset);
       BestKnownSolution = null;
-      BestKnownQuality = null;
     }
     void ReadyTime_Reset(object sender, EventArgs e) {
       BestKnownSolution = null;
-      BestKnownQuality = null;
     }
     void ReadyTime_ItemChanged(object sender, EventArgs<int> e) {
       BestKnownSolution = null;
-      BestKnownQuality = null;
     }
     void ServiceTimeParameter_ValueChanged(object sender, EventArgs e) {
       ServiceTime.ItemChanged += new EventHandler<EventArgs<int>>(ServiceTime_ItemChanged);
       ServiceTime.Reset += new EventHandler(ServiceTime_Reset);
       BestKnownSolution = null;
-      BestKnownQuality = null;
     }
     void ServiceTime_Reset(object sender, EventArgs e) {
       BestKnownSolution = null;
-      BestKnownQuality = null;
     }
     void ServiceTime_ItemChanged(object sender, EventArgs<int> e) {
       BestKnownSolution = null;
-      BestKnownQuality = null;
     }
     void VehiclesParameter_ValueChanged(object sender, EventArgs e) {
       Vehicles.ValueChanged += new EventHandler(Vehicles_ValueChanged);
       BestKnownSolution = null;
-      BestKnownQuality = null;
     }
     void Vehicles_ValueChanged(object sender, EventArgs e) {
       BestKnownSolution = null;
-      BestKnownQuality = null;
+    }
+    void BestKnownSolutionParameter_ValueChanged(object sender, EventArgs e) {
+      EvalBestKnownSolution();
     }
     #endregion
 
@@ -506,6 +489,8 @@ namespace HeuristicLab.Problems.VehicleRouting {
       ServiceTime.Reset += new EventHandler(ServiceTime_Reset);
       VehiclesParameter.ValueChanged += new EventHandler(VehiclesParameter_ValueChanged);
       Vehicles.ValueChanged += new EventHandler(Vehicles_ValueChanged);
+
+      BestKnownSolutionParameter.ValueChanged += new EventHandler(BestKnownSolutionParameter_ValueChanged);
     }
 
     private void InitializeOperators() {
@@ -733,7 +718,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
         throw new Exception("Invalid solution");
 
       BestKnownSolutionParameter.Value = encoding;
-      EvalBestKnownSolution();
     }
 
     public void ImportFromORLib(string orFileName) {
