@@ -35,7 +35,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("Cross Validation", "Cross Validation wrapper for data analysis algorithms.")]
   [Creatable("Data Analysis")]
   [StorableClass]
-  public sealed class CrossValidation : ParameterizedNamedItem, IAlgorithm {
+  public sealed class CrossValidation : ParameterizedNamedItem, IAlgorithm, IStorableContent {
     public CrossValidation()
       : base() {
       name = ItemName;
@@ -58,6 +58,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       RegisterEvents();
     }
+
+    public string Filename { get; set; }
 
     #region persistence and cloning
     [StorableConstructor]
