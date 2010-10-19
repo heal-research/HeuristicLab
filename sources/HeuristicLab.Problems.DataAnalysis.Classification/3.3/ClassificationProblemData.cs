@@ -211,6 +211,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserializationHook() {
       RegisterParameterEvents();
+      RegisterParameterValueEvents();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -218,13 +219,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
       clone.RegisterParameterEvents();
       clone.UpdateClassValues();
       return clone;
-    }
-
-    protected override void OnProblemDataChanged(System.EventArgs e) {
-      if (!suppressEvents) {
-        UpdateClassValues();
-        base.OnProblemDataChanged(e);
-      }
     }
 
     public override void ImportFromFile(string fileName) {
@@ -253,6 +247,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
       TrainingSamplesEnd = new IntValue(middle);
       TestSamplesStart = new IntValue(middle);
       TestSamplesEnd = new IntValue(csvFileParser.Rows);
+      UpdateClassValues();
       suppressEvents = false;
       OnProblemDataChanged(EventArgs.Empty);
     }
@@ -309,7 +304,5 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
       MisclassificationMatrix.RowNames = ClassNames.Select(name => "Estimated " + name);
       MisclassificationMatrix.ColumnNames = ClassNames.Select(name => "Actual " + name);
     }
-
-
   }
 }
