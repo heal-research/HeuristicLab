@@ -26,7 +26,7 @@
       this.components = new System.ComponentModel.Container();
       this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.saveImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.copyImageToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.copyImageToClipboardBitmapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.contextMenuStrip.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
       this.SuspendLayout();
@@ -35,23 +35,27 @@
       // 
       this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.saveImageToolStripMenuItem,
-            this.copyImageToClipboardToolStripMenuItem});
+            this.copyImageToClipboardBitmapToolStripMenuItem});
       this.contextMenuStrip.Name = "contextMenuStrip";
-      this.contextMenuStrip.Size = new System.Drawing.Size(208, 48);
+      this.contextMenuStrip.Size = new System.Drawing.Size(257, 70);
       // 
       // saveImageToolStripMenuItem
       // 
       this.saveImageToolStripMenuItem.Name = "saveImageToolStripMenuItem";
-      this.saveImageToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
+      this.saveImageToolStripMenuItem.Size = new System.Drawing.Size(256, 22);
       this.saveImageToolStripMenuItem.Text = "Save Image";
       this.saveImageToolStripMenuItem.Click += new System.EventHandler(this.saveImageToolStripMenuItem_Click);
       // 
-      // copyImageToClipboardToolStripMenuItem
+      // copyImageToClipboardBitmapToolStripMenuItem
       // 
-      this.copyImageToClipboardToolStripMenuItem.Name = "copyImageToClipboardToolStripMenuItem";
-      this.copyImageToClipboardToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
-      this.copyImageToClipboardToolStripMenuItem.Text = "Copy Image to Clipboard";
-      this.copyImageToClipboardToolStripMenuItem.Click += new System.EventHandler(this.copyImageToClipboardToolStripMenuItem_Click);
+      this.copyImageToClipboardBitmapToolStripMenuItem.Name = "copyImageToClipboardBitmapToolStripMenuItem";
+      this.copyImageToClipboardBitmapToolStripMenuItem.Size = new System.Drawing.Size(256, 22);
+      this.copyImageToClipboardBitmapToolStripMenuItem.Text = "Copy Image to Clipboard (Bitmap)";
+      this.copyImageToClipboardBitmapToolStripMenuItem.Click += new System.EventHandler(this.copyImageToClipboardBitmapToolStripMenuItem_Click);
+      // 
+      // EnhancedChart
+      // 
+      this.ContextMenuStrip = this.contextMenuStrip;
       this.contextMenuStrip.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
       this.ResumeLayout(false);
@@ -62,6 +66,6 @@
 
     private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
     private System.Windows.Forms.ToolStripMenuItem saveImageToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem copyImageToClipboardToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem copyImageToClipboardBitmapToolStripMenuItem;
   }
 }

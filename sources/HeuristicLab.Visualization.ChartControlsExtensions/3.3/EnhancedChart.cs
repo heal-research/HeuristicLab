@@ -25,10 +25,9 @@ using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 namespace HeuristicLab.Visualization.ChartControlsExtensions {
   public partial class EnhancedChart : Chart {
-
-
     public EnhancedChart()
       : base() {
+      InitializeComponent();
       EnableDoubleClickResetsZoom = true;
       EnableMiddleClickPanning = true;
     }
@@ -41,10 +40,10 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
 
     public void InitializeChartAreas() {
       ChartAreas.Clear();
-      ChartAreas.Add(GetDefaultChartArea("ChartArea"));
+      ChartAreas.Add(CreateDefaultChartArea("ChartArea"));
     }
 
-    public static ChartArea GetDefaultChartArea(string name) {
+    public static ChartArea CreateDefaultChartArea(string name) {
       ChartArea chartArea = new ChartArea(name);
       chartArea.AxisX.MajorGrid.LineColor = SystemColors.GradientInactiveCaption;
       chartArea.AxisY.MajorGrid.LineColor = SystemColors.GradientInactiveCaption;
@@ -85,7 +84,6 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
     #region panning
 
     private class PanningSupport {
-
       public ChartArea ChartArea { get; private set; }
 
       private Point PixelStartPosition;
@@ -149,7 +147,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       // Sets the current file name filter string, which determines 
       // the choices that appear in the "Save as file type" or 
       // "Files of type" box in the dialog box.
-      saveFileDialog.Filter = "Bitmap (*.bmp)|*.bmp|JPEG (*.jpg)|*.jpg|EMF (*.emf)|*.emf|PNG (*.png)|*.png|SVG (*.svg)|*.svg|GIF (*.gif)|*.gif|TIFF (*.tif)|*.tif";
+      saveFileDialog.Filter = "Bitmap (*.bmp)|*.bmp|JPEG (*.jpg)|*.jpg|EMF (*.emf)|*.emf|PNG (*.png)|*.png|GIF (*.gif)|*.gif|TIFF (*.tif)|*.tif";
       saveFileDialog.FilterIndex = 2;
       saveFileDialog.RestoreDirectory = true;
 
@@ -176,7 +174,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       }
     }
 
-    private void copyImageToClipboardToolStripMenuItem_Click(object sender, System.EventArgs e) {
+    private void copyImageToClipboardBitmapToolStripMenuItem_Click(object sender, System.EventArgs e) {
       System.IO.MemoryStream stream = new System.IO.MemoryStream();
       SaveImage(stream, System.Drawing.Imaging.ImageFormat.Bmp);
       Bitmap bmp = new Bitmap(stream);
