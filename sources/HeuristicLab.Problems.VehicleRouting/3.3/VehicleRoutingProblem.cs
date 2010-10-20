@@ -197,15 +197,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
     [StorableConstructor]
     private VehicleRoutingProblem(bool deserializing) : base(deserializing) { }
 
-    #region Backwards Compatibility
-    [StorableHook(Persistence.Default.CompositeSerializers.Storable.HookType.AfterDeserialization)]
-    private void CheckParameters() {
-      if (!Parameters.ContainsKey("BestKnownSolution")) {
-        Parameters.Add(new OptionalValueParameter<IVRPEncoding>("BestKnownSolution", "The best known solution of this TSP instance."));
-      }
-    }
-    #endregion
-
     public VehicleRoutingProblem()
       : base() {
       IVRPCreator creator = new RandomCreator();
@@ -443,6 +434,12 @@ namespace HeuristicLab.Problems.VehicleRouting {
     #region Helpers
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserializationHook() {
+      #region Backwards Compatibility
+      if (!Parameters.ContainsKey("BestKnownSolution")) {
+        Parameters.Add(new OptionalValueParameter<IVRPEncoding>("BestKnownSolution", "The best known solution of this TSP instance."));
+      }
+      #endregion
+
       AttachEventHandlers();
     }
 
