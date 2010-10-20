@@ -351,8 +351,10 @@ namespace HeuristicLab.Problems.VehicleRouting {
       EvalBestKnownSolution();
     }
     void DistanceMatrixParameter_ValueChanged(object sender, EventArgs e) {
-      DistanceMatrix.ItemChanged += new EventHandler<EventArgs<int, int>>(DistanceMatrix_ItemChanged);
-      DistanceMatrix.Reset += new EventHandler(DistanceMatrix_Reset);
+      if (DistanceMatrix != null) {
+        DistanceMatrix.ItemChanged += new EventHandler<EventArgs<int, int>>(DistanceMatrix_ItemChanged);
+        DistanceMatrix.Reset += new EventHandler(DistanceMatrix_Reset);
+      }
       EvalBestKnownSolution();
     }
     void DistanceMatrix_Reset(object sender, EventArgs e) {
