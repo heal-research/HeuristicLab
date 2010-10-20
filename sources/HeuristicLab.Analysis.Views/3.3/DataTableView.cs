@@ -331,7 +331,8 @@ namespace HeuristicLab.Analysis.Views {
       }
     }
     #endregion
-    #region chart events
+
+    #region Chart Events
     private void chart_MouseDown(object sender, MouseEventArgs e) {
       HitTestResult result = chart.HitTest(e.X, e.Y);
       if (result.ChartElementType == ChartElementType.LegendItem) {

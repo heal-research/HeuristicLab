@@ -19,22 +19,20 @@
  */
 #endregion
 
-using HeuristicLab.PluginInfrastructure;
+using System.Collections.Generic;
+using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Analysis.Views {
+namespace HeuristicLab.Analysis {
   /// <summary>
-  /// Plugin class for HeuristicLab.Analysis.Views plugin.
+  /// Represents an array of allele frequencies.
   /// </summary>
-  [Plugin("HeuristicLab.Analysis.Views", "3.3.1.$WCREV$")]
-  [PluginFile("HeuristicLab.Analysis.Views-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Analysis", "3.3")]
-  [PluginDependency("HeuristicLab.Collections", "3.3")]
-  [PluginDependency("HeuristicLab.Common", "3.3")]
-  [PluginDependency("HeuristicLab.Core", "3.3")]
-  [PluginDependency("HeuristicLab.Core.Views", "3.3")]
-  [PluginDependency("HeuristicLab.Data", "3.3")]
-  [PluginDependency("HeuristicLab.MainForm", "3.3")]
-  [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.3")]
-  public class HeuristicLabAnalysisViewsPlugin : PluginBase {
+  [Item("AlleleFrequencyArray", "Represents an array of allele frequencies.")]
+  [StorableClass]
+  public class AlleleFrequencyArray : ReadOnlyItemArray<AlleleFrequency> {
+    public AlleleFrequencyArray() : base() { }
+    public AlleleFrequencyArray(IEnumerable<AlleleFrequency> frequencies) : base(new ItemArray<AlleleFrequency>(frequencies)) { }
+    [StorableConstructor]
+    protected AlleleFrequencyArray(bool deserializing) : base(deserializing) { }
   }
 }
