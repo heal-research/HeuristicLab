@@ -40,7 +40,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
 
     public void InitializeChartAreas() {
       ChartAreas.Clear();
-      ChartAreas.Add(CreateDefaultChartArea("ChartArea"));
+      ChartAreas.Add(CreateDefaultChartArea("ChartArea1"));
     }
 
     public static ChartArea CreateDefaultChartArea(string name) {
@@ -75,7 +75,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
         HitTestResult result = HitTest(e.X, e.Y);
         if (result.ChartArea != null && result.ChartElementType == ChartElementType.PlottingArea) {
           foreach (var axis in result.ChartArea.Axes)
-            axis.ScaleView.ZoomReset();
+            axis.ScaleView.ZoomReset(int.MaxValue);
         }
       }
       base.OnMouseDoubleClick(e);
