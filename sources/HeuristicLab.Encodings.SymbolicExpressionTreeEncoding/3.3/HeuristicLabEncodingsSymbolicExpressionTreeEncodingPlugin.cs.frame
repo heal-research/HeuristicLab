@@ -37,7 +37,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [PluginDependency("HeuristicLab.Optimization", "3.3.1.0")]
   [PluginDependency("HeuristicLab.Parameters", "3.3.1.0")]
   [PluginDependency("HeuristicLab.Persistence", "3.3.1.0")]
-  [PluginDependency("HeuristicLab.Random", "3.3.1.0")]
   public class HeuristicLabEncodingsSymbolicExpressionTreeEncodingPlugin : PluginBase {
   }
 }

@@ -27,7 +27,6 @@ namespace HeuristicLab.Problems.Knapsack.Views {
   /// </summary>
   [Plugin("HeuristicLab.Problems.Knapsack.Views", "3.3.1.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.Knapsack.Views-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
   [PluginDependency("HeuristicLab.Core.Views", "3.3")]
   [PluginDependency("HeuristicLab.Data", "3.3")]
