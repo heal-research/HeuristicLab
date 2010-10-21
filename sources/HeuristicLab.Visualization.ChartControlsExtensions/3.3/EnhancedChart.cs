@@ -83,7 +83,6 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
 
       private Point PixelStartPosition;
       private PointF ChartStartPosition;
-      private SizeF Pixel2ChartScale;
 
       public PanningSupport(Point pixelStartPos, ChartArea chartArea, Size size) {
         PixelStartPosition = pixelStartPos;
@@ -91,18 +90,17 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
         ChartStartPosition = new PointF(
           (float)chartArea.AxisX.ScaleView.Position,
           (float)chartArea.AxisY.ScaleView.Position);
-        Pixel2ChartScale = new SizeF(
-          (float)chartArea.AxisX.ScaleView.Size /
-            (size.Width * chartArea.Position.Width * chartArea.InnerPlotPosition.Width / 100 / 100),
-          (float)chartArea.AxisY.ScaleView.Size /
-            (size.Height * chartArea.Position.Height * chartArea.InnerPlotPosition.Height / 100 / 100));
       }
 
-      public double ChartX(double pixelX) {
-        return ChartStartPosition.X - (pixelX - PixelStartPosition.X) * Pixel2ChartScale.Width;
+      public double ChartX(double pixelX, int width) {
+        return ChartStartPosition.X - (pixelX - PixelStartPosition.X) * 
+          (ChartArea.AxisX.ScaleView.ViewMaximum - ChartArea.AxisX.ScaleView.ViewMinimum) /
+            (width * ChartArea.Position.Width * ChartArea.InnerPlotPosition.Width / 100 / 100);
       }
-      public double ChartY(double pixelY) {
-        return ChartStartPosition.Y + (pixelY - PixelStartPosition.Y) * Pixel2ChartScale.Height;
+      public double ChartY(double pixelY, int height) {
+        return ChartStartPosition.Y + (pixelY - PixelStartPosition.Y) * 
+          (ChartArea.AxisY.ScaleView.ViewMaximum - ChartArea.AxisY.ScaleView.ViewMinimum) /
+            (height * ChartArea.Position.Height * ChartArea.InnerPlotPosition.Height / 100 / 100);
       }
     }
 
@@ -125,8 +123,8 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
 
     protected override void OnMouseMove(MouseEventArgs e) {
       if (panning != null) {
-        double x = panning.ChartX(e.Location.X);
-        double y = panning.ChartY(e.Location.Y);
+        double x = panning.ChartX(e.Location.X, Width);
+        double y = panning.ChartY(e.Location.Y, Height);
         if (panning.ChartArea.CursorX.Interval > 0) {
           x = Math.Round(x * panning.ChartArea.CursorX.Interval) / panning.ChartArea.CursorX.Interval;
           y = Math.Round(y * panning.ChartArea.CursorY.Interval) / panning.ChartArea.CursorY.Interval;
