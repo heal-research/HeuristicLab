@@ -53,20 +53,22 @@ namespace HeuristicLab.Optimization.Views {
     public RunCollectionBubbleChartView() {
       InitializeComponent();
 
-      this.categoricalMapping = new Dictionary<int, Dictionary<object, double>>();
-      this.xJitter = new Dictionary<IRun, double>();
-      this.yJitter = new Dictionary<IRun, double>();
-      this.random = new Random();
-      this.colorDialog.Color = Color.Black;
-      this.colorButton.Image = this.GenerateImage(16, 16, this.colorDialog.Color);
-      this.isSelecting = false;
+      categoricalMapping = new Dictionary<int, Dictionary<object, double>>();
+      xJitter = new Dictionary<IRun, double>();
+      yJitter = new Dictionary<IRun, double>();
+      random = new Random();
+      colorDialog.Color = Color.Black;
+      colorButton.Image = this.GenerateImage(16, 16, this.colorDialog.Color);
+      isSelecting = false;
 
-      this.chart.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
-      this.chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = true;
-      this.chart.ChartAreas[0].CursorX.Interval = 1;
-      this.chart.ChartAreas[0].CursorY.Interval = 1;
-      this.chart.ChartAreas[0].AxisX.ScaleView.Zoomable = !this.isSelecting;
-      this.chart.ChartAreas[0].AxisY.ScaleView.Zoomable = !this.isSelecting;
+      chart.CustomizeChartAreas();
+      chart.EnableMiddleClickPanning = false;
+      chart.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
+      chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = true;
+      chart.ChartAreas[0].CursorX.Interval = 1;
+      chart.ChartAreas[0].CursorY.Interval = 1;
+      chart.ChartAreas[0].AxisX.ScaleView.Zoomable = !this.isSelecting;
+      chart.ChartAreas[0].AxisY.ScaleView.Zoomable = !this.isSelecting;
     }
 
     public new RunCollection Content {
@@ -505,6 +507,10 @@ namespace HeuristicLab.Optimization.Views {
       int axisDimensionCount = Enum.GetNames(typeof(AxisDimension)).Count();
       SetCustomAxisLabels(xAxis, xAxisComboBox.SelectedIndex - axisDimensionCount);
       SetCustomAxisLabels(yAxis, yAxisComboBox.SelectedIndex - axisDimensionCount);
+      if (xAxisComboBox.SelectedItem != null)
+        xAxis.Title = xAxisComboBox.SelectedItem.ToString();
+      if (yAxisComboBox.SelectedItem != null)
+        yAxis.Title = yAxisComboBox.SelectedItem.ToString();
     }
 
     private void chart_AxisViewChanged(object sender, System.Windows.Forms.DataVisualization.Charting.ViewEventArgs e) {

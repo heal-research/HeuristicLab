@@ -57,7 +57,7 @@ namespace HeuristicLab.Optimization.Views {
       this.yTrackBar = new System.Windows.Forms.TrackBar();
       this.sizeComboBox = new System.Windows.Forms.ComboBox();
       this.sizeLabel = new System.Windows.Forms.Label();
-      this.chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
+      this.chart = new HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart();
       this.zoomButton = new System.Windows.Forms.RadioButton();
       this.selectButton = new System.Windows.Forms.RadioButton();
       this.radioButtonGroup = new System.Windows.Forms.GroupBox();
@@ -308,7 +308,7 @@ namespace HeuristicLab.Optimization.Views {
     private System.Windows.Forms.Label yJitterLabel;
     private System.Windows.Forms.ComboBox sizeComboBox;
     private System.Windows.Forms.Label sizeLabel;
-    private System.Windows.Forms.DataVisualization.Charting.Chart chart;
+    private HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart chart;
     private System.Windows.Forms.RadioButton zoomButton;
     private System.Windows.Forms.RadioButton selectButton;
     private System.Windows.Forms.GroupBox radioButtonGroup;
