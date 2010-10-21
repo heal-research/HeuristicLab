@@ -43,14 +43,20 @@ namespace HeuristicLab.Analysis {
     public ScopeTreeLookupParameter<DoubleValue> QualityParameter {
       get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
-    public ValueLookupParameter<ResultCollection> ResultsParameter {
-      get { return (ValueLookupParameter<ResultCollection>)Parameters["Results"]; }
-    }
     public LookupParameter<T> BestKnownSolutionParameter {
       get { return (LookupParameter<T>)Parameters["BestKnownSolution"]; }
     }
-    public LookupParameter<AlleleFrequencyArray> AlleleFrequenciesParameter {
-      get { return (LookupParameter<AlleleFrequencyArray>)Parameters["AlleleFrequencies"]; }
+    public ValueLookupParameter<ResultCollection> ResultsParameter {
+      get { return (ValueLookupParameter<ResultCollection>)Parameters["Results"]; }
+    }
+    public ValueParameter<BoolValue> StoreAlleleFrequenciesHistoryParameter {
+      get { return (ValueParameter<BoolValue>)Parameters["StoreAlleleFrequenciesHistory"]; }
+    }
+    public ValueParameter<IntValue> UpdateIntervalParameter {
+      get { return (ValueParameter<IntValue>)Parameters["UpdateInterval"]; }
+    }
+    public LookupParameter<IntValue> UpdateCounterParameter {
+      get { return (LookupParameter<IntValue>)Parameters["UpdateCounter"]; }
     }
 
     public AlleleFrequencyAnalyzer()
@@ -58,44 +64,89 @@ namespace HeuristicLab.Analysis {
       Parameters.Add(new LookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem."));
       Parameters.Add(new ScopeTreeLookupParameter<T>("Solution", "The solutions whose alleles should be analyzed."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The qualities of the solutions which should be analyzed."));
-      Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the allele frequency analysis results should be stored."));
       Parameters.Add(new LookupParameter<T>("BestKnownSolution", "The best known solution."));
-      Parameters.Add(new LookupParameter<AlleleFrequencyArray>("AlleleFrequencies", "The frequencies of the alleles in the current iteration."));
+      Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the allele frequency analysis results should be stored."));
+      Parameters.Add(new ValueParameter<BoolValue>("StoreAlleleFrequenciesHistory", "True if the history of all allele frequencies should be stored.", new BoolValue(false)));
+      Parameters.Add(new ValueParameter<IntValue>("UpdateInterval", "The interval in which the allele frequency analysis should be applied.", new IntValue(1)));
+      Parameters.Add(new LookupParameter<IntValue>("UpdateCounter", "The value which counts how many times the operator was called since the last update."));
     }
 
     public override IOperation Apply() {
-      bool max = MaximizationParameter.ActualValue.Value;
-      ItemArray<T> solutions = SolutionParameter.ActualValue;
-      ItemArray<DoubleValue> qualities = QualityParameter.ActualValue;
-      ResultCollection results = ResultsParameter.ActualValue;
-      T bestKnownSolution = BestKnownSolutionParameter.ActualValue;
+      int updateInterval = UpdateIntervalParameter.Value.Value;
+      IntValue updateCounter = UpdateCounterParameter.ActualValue;
+      if (updateCounter == null) {
+        updateCounter = new IntValue(updateInterval);
+        UpdateCounterParameter.ActualValue = updateCounter;
+      } else updateCounter.Value++;
 
-      int bestIndex = -1;
-      if (!max) bestIndex = qualities.Select((x, index) => new { index, x.Value }).OrderBy(x => x.Value).First().index;
-      else bestIndex = qualities.Select((x, index) => new { index, x.Value }).OrderByDescending(x => x.Value).First().index;
+      if (updateCounter.Value == updateInterval) {
+        updateCounter.Value = 0;
 
-      Allele[] bestAlleles = CalculateAlleles(solutions[bestIndex]);
-      Allele[] bestKnownAlleles = null;
-      if (bestKnownSolution != null) {
-        bestKnownAlleles = CalculateAlleles(bestKnownSolution);
+        bool max = MaximizationParameter.ActualValue.Value;
+        ItemArray<T> solutions = SolutionParameter.ActualValue;
+        ItemArray<DoubleValue> qualities = QualityParameter.ActualValue;
+        T bestKnownSolution = BestKnownSolutionParameter.ActualValue;
+        bool storeHistory = StoreAlleleFrequenciesHistoryParameter.Value.Value;
+
+        // calculate index of current best solution
+        int bestIndex = -1;
+        if (!max) bestIndex = qualities.Select((x, index) => new { index, x.Value }).OrderBy(x => x.Value).First().index;
+        else bestIndex = qualities.Select((x, index) => new { index, x.Value }).OrderByDescending(x => x.Value).First().index;
+
+        // calculate allels of current best and (if available) best known solution
+        Allele[] bestAlleles = CalculateAlleles(solutions[bestIndex]);
+        Allele[] bestKnownAlleles = null;
+        if (bestKnownSolution != null)
+          bestKnownAlleles = CalculateAlleles(bestKnownSolution);
+
+        // calculate allele frequencies
+        var frequencies = solutions.SelectMany((s, index) => CalculateAlleles(s).Select(a => new { Allele = a, Quality = qualities[index] })).
+                          GroupBy(x => x.Allele.Id).
+                          Select(x => new AlleleFrequency(x.Key,
+                                                          x.Count() / ((double)solutions.Length),
+                                                          x.Average(a => a.Allele.Impact),
+                                                          x.Average(a => a.Quality.Value),
+                                                          bestKnownAlleles == null ? false : bestKnownAlleles.Any(a => a.Id == x.Key),
+                                                          bestAlleles.Any(a => a.Id == x.Key)));
+
+        // fetch results collection
+        ResultCollection results;
+        if (!ResultsParameter.ActualValue.ContainsKey("Allele Frequency Analysis Results")) {
+          results = new ResultCollection();
+          ResultsParameter.ActualValue.Add(new Result("Allele Frequency Analysis Results", results));
+        } else {
+          results = (ResultCollection)ResultsParameter.ActualValue["Allele Frequency Analysis Results"].Value;
+        }
+
+        // store allele frequencies
+        AlleleFrequencyArray frequenciesArray = new AlleleFrequencyArray(frequencies);
+        if (!results.ContainsKey("Allele Frequencies"))
+          results.Add(new Result("Allele Frequencies", frequenciesArray));
+        else
+          results["Allele Frequencies"].Value = frequenciesArray;
+
+        // store allele frequencies history
+        if (storeHistory) {
+          if (!results.ContainsKey("Allele Frequencies History")) {
+            ItemCollection<AlleleFrequencyArray> history = new ItemCollection<AlleleFrequencyArray>();
+            history.Add(frequenciesArray);
+            results.Add(new Result("Allele Frequencies History", history));
+          } else {
+            ((ItemCollection<AlleleFrequencyArray>)results["Allele Frequencies History"].Value).Add(frequenciesArray);
+          }
+        }
+
+        // store alleles data table
+        DataTable allelesTable;
+        if (!results.ContainsKey("Alleles")) {
+          allelesTable = new DataTable("Alleles");
+          results.Add(new Result("Alleles", allelesTable));
+          allelesTable.Rows.Add(new DataRow("Unique Alleles"));
+        } else {
+          allelesTable = (DataTable)results["Alleles"].Value;
+        }
+        allelesTable.Rows["Unique Alleles"].Values.Add(frequenciesArray.Length);
       }
-
-      var frequencies = solutions.SelectMany((s, index) => CalculateAlleles(s).Select(a => new { Allele = a, Quality = qualities[index] })).
-                        GroupBy(x => x.Allele.Id).
-                        Select(x => new AlleleFrequency(x.Key,
-                                                        x.Count() / ((double)solutions.Length),
-                                                        x.Average(a => a.Allele.Impact),
-                                                        x.Average(a => a.Quality.Value),
-                                                        bestKnownAlleles == null ? false : bestKnownAlleles.Any(a => a.Id == x.Key),
-                                                        bestAlleles.Any(a => a.Id == x.Key)));
-
-      AlleleFrequencyArray frequenciesArray = new AlleleFrequencyArray(frequencies.OrderBy(x => x.AverageImpact));
-      AlleleFrequenciesParameter.ActualValue = frequenciesArray;
-      if (results.ContainsKey("Allele Frequencies"))
-        results["Allele Frequencies"].Value = frequenciesArray;
-      else
-        results.Add(new Result("Allele Frequencies", frequenciesArray));
-
       return base.Apply();
     }
 

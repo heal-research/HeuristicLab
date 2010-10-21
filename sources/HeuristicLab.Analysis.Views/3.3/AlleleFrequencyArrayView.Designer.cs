@@ -46,8 +46,8 @@ namespace HeuristicLab.Analysis.Views {
     private void InitializeComponent() {
       System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
       System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-      System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-      this.chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
+      System.Windows.Forms.DataVisualization.Charting.Title title1 = new System.Windows.Forms.DataVisualization.Charting.Title();
+      this.chart = new HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart();
       ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
       this.SuspendLayout();
       // 
@@ -58,24 +58,34 @@ namespace HeuristicLab.Analysis.Views {
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.chart.BorderlineColor = System.Drawing.Color.Black;
       this.chart.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
+      chartArea1.AxisX.IntervalAutoMode = System.Windows.Forms.DataVisualization.Charting.IntervalAutoMode.VariableCount;
+      chartArea1.AxisX.LabelAutoFitStyle = ((System.Windows.Forms.DataVisualization.Charting.LabelAutoFitStyles)((System.Windows.Forms.DataVisualization.Charting.LabelAutoFitStyles.IncreaseFont | System.Windows.Forms.DataVisualization.Charting.LabelAutoFitStyles.DecreaseFont)));
+      chartArea1.AxisX.LabelStyle.Angle = 90;
+      chartArea1.AxisX.Title = "Alleles";
+      chartArea1.AxisY.Maximum = 1D;
+      chartArea1.AxisY.Minimum = 0D;
+      chartArea1.AxisY.Title = "Relative Frequency";
+      chartArea1.AxisY2.Title = "Average Solution Quality";
       chartArea1.CursorX.IsUserEnabled = true;
       chartArea1.CursorX.IsUserSelectionEnabled = true;
       chartArea1.CursorY.IsUserEnabled = true;
       chartArea1.CursorY.IsUserSelectionEnabled = true;
-      chartArea1.Name = "ChartArea1";
+      chartArea1.Name = "Default";
       this.chart.ChartAreas.Add(chartArea1);
       legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
-      legend1.Name = "Legend1";
+      legend1.Name = "Default";
       this.chart.Legends.Add(legend1);
       this.chart.Location = new System.Drawing.Point(0, 0);
       this.chart.Name = "chart";
-      series1.ChartArea = "ChartArea1";
-      series1.Legend = "Legend1";
-      series1.Name = "Series1";
-      this.chart.Series.Add(series1);
       this.chart.Size = new System.Drawing.Size(498, 359);
-      this.chart.TabIndex = 4;
-      this.chart.Text = "chart1";
+      this.chart.TabIndex = 0;
+      this.chart.Text = "chart";
+      title1.Name = "Default";
+      title1.Text = "Allele Frequencies";
+      this.chart.Titles.Add(title1);
+      this.chart.CustomizeLegend += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CustomizeLegendEventArgs>(this.chart_CustomizeLegend);
+      this.chart.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chart_MouseDown);
+      this.chart.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chart_MouseMove);
       // 
       // AlleleFrequencyArrayView
       // 
@@ -91,7 +101,7 @@ namespace HeuristicLab.Analysis.Views {
 
     #endregion
 
-    private System.Windows.Forms.DataVisualization.Charting.Chart chart;
+    protected HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart chart;
 
   }
 }

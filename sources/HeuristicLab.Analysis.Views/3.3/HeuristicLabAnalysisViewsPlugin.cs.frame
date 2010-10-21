@@ -35,6 +35,7 @@ namespace HeuristicLab.Analysis.Views {
   [PluginDependency("HeuristicLab.Data", "3.3")]
   [PluginDependency("HeuristicLab.MainForm", "3.3")]
   [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.3")]
+  [PluginDependency("HeuristicLab.Visualization.ChartControlsExtensions", "3.3")]
   public class HeuristicLabAnalysisViewsPlugin : PluginBase {
   }
 }
