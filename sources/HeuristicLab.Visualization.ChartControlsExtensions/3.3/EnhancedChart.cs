@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
@@ -30,7 +31,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       InitializeComponent();
       EnableDoubleClickResetsZoom = true;
       EnableMiddleClickPanning = true;
-      CustomizeChartAreas();
+      CustomizeAllChartAreas();
     }
 
     [DefaultValue(true)]
@@ -38,25 +39,30 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
     [DefaultValue(true)]
     public bool EnableMiddleClickPanning { get; set; }
 
-    public void CustomizeChartAreas() {
-      foreach (ChartArea chartArea in ChartAreas) {
-        foreach (Axis axis in chartArea.Axes) {
-          axis.MajorGrid.LineColor = SystemColors.GradientInactiveCaption;
-          axis.MajorTickMark.TickMarkStyle = TickMarkStyle.AcrossAxis;
-          axis.ScrollBar.BackColor = Color.Transparent;
-          axis.ScrollBar.LineColor = Color.Transparent;
-          axis.ScrollBar.ButtonColor = SystemColors.GradientInactiveCaption;
-          axis.ScrollBar.ButtonStyle = ScrollBarButtonStyles.SmallScroll;
-          axis.ScrollBar.Size = 12;
-          axis.TitleFont = new Font(axis.TitleFont.FontFamily, 12);
-        }
+    public static void CustomizeChartArea(ChartArea chartArea) {
+      foreach (Axis axis in chartArea.Axes) {
+        axis.MajorGrid.LineColor = SystemColors.GradientInactiveCaption;
+        axis.MajorTickMark.TickMarkStyle = TickMarkStyle.AcrossAxis;
+        axis.ScrollBar.BackColor = Color.Transparent;
+        axis.ScrollBar.LineColor = Color.Transparent;
+        axis.ScrollBar.ButtonColor = SystemColors.GradientInactiveCaption;
+        axis.ScrollBar.ButtonStyle = ScrollBarButtonStyles.SmallScroll;
+        axis.ScrollBar.Size = 12;
+        axis.TitleFont = new Font(axis.TitleFont.FontFamily, 10);
+      }
+      chartArea.CursorX.Interval = 0;
+      chartArea.CursorY.Interval = 0;
+      chartArea.CursorX.IsUserSelectionEnabled = true;
+      chartArea.CursorY.IsUserSelectionEnabled = true;
+      chartArea.CursorX.IsUserEnabled = false;
+      chartArea.CursorY.IsUserEnabled = false;
+      chartArea.CursorX.SelectionColor = SystemColors.GradientActiveCaption;
+      chartArea.CursorY.SelectionColor = SystemColors.GradientActiveCaption;
+    }
 
-        chartArea.CursorX.Interval = 0;
-        chartArea.CursorY.Interval = 0;
-        chartArea.CursorX.IsUserSelectionEnabled = true;
-        chartArea.CursorY.IsUserSelectionEnabled = true;
-        chartArea.CursorX.SelectionColor = SystemColors.GradientActiveCaption;
-        chartArea.CursorY.SelectionColor = SystemColors.GradientActiveCaption;
+    public void CustomizeAllChartAreas() {
+      foreach (ChartArea chartArea in ChartAreas) {
+        CustomizeChartArea(chartArea);
       }
     }
 
@@ -121,8 +127,14 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
 
     protected override void OnMouseMove(MouseEventArgs e) {
       if (panning != null) {
-        panning.ChartArea.AxisX.ScaleView.Scroll(panning.ChartX(e.Location.X));
-        panning.ChartArea.AxisY.ScaleView.Scroll(panning.ChartY(e.Location.Y));
+        double x = panning.ChartX(e.Location.X);
+        double y = panning.ChartY(e.Location.Y);
+        if (panning.ChartArea.CursorX.Interval > 0) {
+          x = Math.Round(x * panning.ChartArea.CursorX.Interval) / panning.ChartArea.CursorX.Interval;
+          y = Math.Round(y * panning.ChartArea.CursorY.Interval) / panning.ChartArea.CursorY.Interval;
+        }
+        panning.ChartArea.AxisX.ScaleView.Scroll(x);
+        panning.ChartArea.AxisY.ScaleView.Scroll(y);
       }
       base.OnMouseMove(e);
     }

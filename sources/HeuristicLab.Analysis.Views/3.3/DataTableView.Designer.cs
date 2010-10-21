@@ -48,7 +48,7 @@ namespace HeuristicLab.Analysis.Views {
       System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
       System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
       System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-      this.chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
+      this.chart = new HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart();
       this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.exportChartToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
@@ -69,9 +69,9 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // chart
       // 
-      this.chart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.chart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.chart.BorderlineColor = System.Drawing.Color.Black;
       this.chart.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
       chartArea1.CursorX.IsUserEnabled = true;
@@ -84,6 +84,8 @@ namespace HeuristicLab.Analysis.Views {
       legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
       legend1.Name = "Legend1";
       this.chart.Legends.Add(legend1);
+      this.chart.EnableDoubleClickResetsZoom = true;
+      this.chart.EnableMiddleClickPanning = true;
       this.chart.Location = new System.Drawing.Point(0, 52);
       this.chart.Name = "chart";
       series1.ChartArea = "ChartArea1";
@@ -138,7 +140,7 @@ namespace HeuristicLab.Analysis.Views {
 
     #endregion
 
-    private System.Windows.Forms.DataVisualization.Charting.Chart chart;
+    private HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart chart;
     private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
     private System.Windows.Forms.ToolStripMenuItem exportChartToolStripMenuItem;
     private System.Windows.Forms.SaveFileDialog saveFileDialog;

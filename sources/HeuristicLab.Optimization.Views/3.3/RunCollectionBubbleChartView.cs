@@ -60,11 +60,7 @@ namespace HeuristicLab.Optimization.Views {
       colorDialog.Color = Color.Black;
       colorButton.Image = this.GenerateImage(16, 16, this.colorDialog.Color);
       isSelecting = false;
-
-      chart.CustomizeChartAreas();
-      chart.EnableMiddleClickPanning = false;
-      chart.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
-      chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = true;
+      chart.CustomizeAllChartAreas();
       chart.ChartAreas[0].CursorX.Interval = 1;
       chart.ChartAreas[0].CursorY.Interval = 1;
       chart.ChartAreas[0].AxisX.ScaleView.Zoomable = !this.isSelecting;

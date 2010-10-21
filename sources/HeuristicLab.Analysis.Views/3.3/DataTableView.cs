@@ -55,6 +55,8 @@ namespace HeuristicLab.Analysis.Views {
       InitializeComponent();
       valuesRowsTable = new Dictionary<IObservableList<double>, DataRow>();
       invisibleSeries = new List<Series>();
+      chart.CustomizeAllChartAreas();
+      chart.ChartAreas[0].CursorX.Interval = 1;
     }
 
     /// <summary>
