@@ -48,6 +48,7 @@ namespace HeuristicLab.Analysis.Views {
       System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
       System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
       System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+      System.Windows.Forms.DataVisualization.Charting.Title title1 = new System.Windows.Forms.DataVisualization.Charting.Title();
       this.chart = new HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart();
       this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.exportChartToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -69,9 +70,9 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // chart
       // 
-      this.chart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+      this.chart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.chart.BorderlineColor = System.Drawing.Color.Black;
       this.chart.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
       chartArea1.CursorX.IsUserEnabled = true;
@@ -81,11 +82,10 @@ namespace HeuristicLab.Analysis.Views {
       chartArea1.Name = "ChartArea1";
       this.chart.ChartAreas.Add(chartArea1);
       this.chart.ContextMenuStrip = this.contextMenuStrip;
+      legend1.Alignment = System.Drawing.StringAlignment.Center;
       legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
       legend1.Name = "Legend1";
       this.chart.Legends.Add(legend1);
-      this.chart.EnableDoubleClickResetsZoom = true;
-      this.chart.EnableMiddleClickPanning = true;
       this.chart.Location = new System.Drawing.Point(0, 52);
       this.chart.Name = "chart";
       series1.ChartArea = "ChartArea1";
@@ -95,6 +95,10 @@ namespace HeuristicLab.Analysis.Views {
       this.chart.Size = new System.Drawing.Size(359, 222);
       this.chart.TabIndex = 4;
       this.chart.Text = "chart1";
+      title1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      title1.Name = "Default";
+      title1.Text = "Title";
+      this.chart.Titles.Add(title1);
       this.chart.CustomizeLegend += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CustomizeLegendEventArgs>(this.chart_CustomizeLegend);
       this.chart.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chart_MouseDown);
       this.chart.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chart_MouseMove);

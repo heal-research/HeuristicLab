@@ -24,6 +24,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+
 namespace HeuristicLab.Visualization.ChartControlsExtensions {
   public partial class EnhancedChart : Chart {
     public EnhancedChart()
@@ -44,20 +45,18 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
         axis.MajorGrid.LineColor = SystemColors.GradientInactiveCaption;
         axis.MajorTickMark.TickMarkStyle = TickMarkStyle.AcrossAxis;
         axis.ScrollBar.BackColor = Color.Transparent;
-        axis.ScrollBar.LineColor = Color.Transparent;
+        axis.ScrollBar.LineColor = Color.Gray;
         axis.ScrollBar.ButtonColor = SystemColors.GradientInactiveCaption;
-        axis.ScrollBar.ButtonStyle = ScrollBarButtonStyles.SmallScroll;
+        axis.ScrollBar.ButtonStyle = ScrollBarButtonStyles.All;
         axis.ScrollBar.Size = 12;
         axis.TitleFont = new Font(axis.TitleFont.FontFamily, 10);
       }
-      chartArea.CursorX.Interval = 0;
-      chartArea.CursorY.Interval = 0;
       chartArea.CursorX.IsUserSelectionEnabled = true;
       chartArea.CursorY.IsUserSelectionEnabled = true;
       chartArea.CursorX.IsUserEnabled = false;
       chartArea.CursorY.IsUserEnabled = false;
-      chartArea.CursorX.SelectionColor = SystemColors.GradientActiveCaption;
-      chartArea.CursorY.SelectionColor = SystemColors.GradientActiveCaption;
+      chartArea.CursorX.SelectionColor = Color.Gray;
+      chartArea.CursorY.SelectionColor = Color.Gray;
     }
 
     public void CustomizeAllChartAreas() {
@@ -66,12 +65,11 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       }
     }
 
-    #region Mouse event ehancements
-
+    #region Mouse Event Ehancements
     protected override void OnMouseDoubleClick(MouseEventArgs e) {
       if (EnableDoubleClickResetsZoom) {
         HitTestResult result = HitTest(e.X, e.Y);
-        if (result.ChartArea != null && result.ChartElementType == ChartElementType.PlottingArea) {
+        if (result.ChartArea != null && (result.ChartElementType == ChartElementType.PlottingArea || result.ChartElementType == ChartElementType.Gridlines)) {
           foreach (var axis in result.ChartArea.Axes)
             axis.ScaleView.ZoomReset(int.MaxValue);
         }
@@ -79,7 +77,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       base.OnMouseDoubleClick(e);
     }
 
-    #region panning
+    #region Panning
     private class PanningSupport {
       public ChartArea ChartArea { get; private set; }
 
@@ -139,7 +137,6 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       base.OnMouseMove(e);
     }
     #endregion
-
     #endregion
 
     private void saveImageToolStripMenuItem_Click(object sender, System.EventArgs e) {

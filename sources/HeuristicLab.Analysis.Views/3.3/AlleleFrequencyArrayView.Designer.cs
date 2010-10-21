@@ -72,6 +72,7 @@ namespace HeuristicLab.Analysis.Views {
       chartArea1.CursorY.IsUserSelectionEnabled = true;
       chartArea1.Name = "Default";
       this.chart.ChartAreas.Add(chartArea1);
+      legend1.Alignment = System.Drawing.StringAlignment.Center;
       legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
       legend1.Name = "Default";
       this.chart.Legends.Add(legend1);
@@ -80,6 +81,7 @@ namespace HeuristicLab.Analysis.Views {
       this.chart.Size = new System.Drawing.Size(498, 359);
       this.chart.TabIndex = 0;
       this.chart.Text = "chart";
+      title1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       title1.Name = "Default";
       title1.Text = "Allele Frequencies";
       this.chart.Titles.Add(title1);

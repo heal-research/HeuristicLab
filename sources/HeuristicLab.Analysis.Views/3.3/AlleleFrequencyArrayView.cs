@@ -41,6 +41,7 @@ namespace HeuristicLab.Analysis.Views {
     public AlleleFrequencyArrayView() {
       InitializeComponent();
       invisibleSeries = new List<Series>();
+      chart.CustomizeAllChartAreas();
     }
 
     protected override void OnContentChanged() {

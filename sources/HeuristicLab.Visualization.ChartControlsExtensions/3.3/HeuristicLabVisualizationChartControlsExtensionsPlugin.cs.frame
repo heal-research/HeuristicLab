@@ -21,13 +21,11 @@
 
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Tracing {
-
+namespace HeuristicLab.Visualization.ChartControlsExtensions {
   /// <summary>
-  /// HeuristicLab Visualization ChartControls Extensions Plugin
+  /// Plugin class for HeuristicLab.Visualization.ChartControlsExtensions plugin
   /// </summary>  
-  [Plugin("HeuristicLab.Visualization.ChartControlsExtensions", "3.3.1.$WCREV$")]
+  [Plugin("HeuristicLab.Visualization.ChartControlsExtensions", "3.3.2.$WCREV$")]
   [PluginFile("HeuristicLab.Visualization.ChartControlsExtensions-3.3.dll", PluginFileType.Assembly)]
-  public class HeuristicLabVisualizationChartControlsExtensions : PluginBase {}
-
+  public class HeuristicLabVisualizationChartControlsExtensionsPlugin : PluginBase { }
 }

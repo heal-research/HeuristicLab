@@ -90,10 +90,10 @@ namespace HeuristicLab.Analysis.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       invisibleSeries.Clear();
-      chart.Titles.Clear();
+      chart.Titles[0].Text = string.Empty;
       chart.Series.Clear();
       if (Content != null) {
-        chart.Titles.Add(new Title(Content.Name, Docking.Top));
+        chart.Titles[0].Text = Content.Name;
         foreach (DataRow row in Content.Rows)
           AddDataRow(row);
       }

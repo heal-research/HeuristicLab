@@ -27,7 +27,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("HeuristicLab.Visualization.ChartControlsExtensions")]
-[assembly: AssemblyDescription("Extensions for the Microsoft ChartControls framework .")]
+[assembly: AssemblyDescription("Extensions for the Microsoft Chart Controls.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("HeuristicLab")]
