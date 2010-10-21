@@ -32,13 +32,22 @@ namespace HeuristicLab_33.Tests {
   public class PluginDependenciesTest {
     private static Dictionary<Assembly, Type> loadedPlugins;
     private static Dictionary<string, string> pluginNames;
+    private static HashSet<string> extLibPluginNames;
 
     // Use ClassInitialize to run code before running the first test in the class
     [ClassInitialize]
     public static void MyClassInitialize(TestContext testContext) {
       loadedPlugins = PluginLoader.pluginAssemblies.ToDictionary(a => a, GetPluginFromAssembly);
-      pluginNames = loadedPlugins.ToDictionary(a => a.Key.GetName().FullName,
-                                                                          a => GetPluginName(a.Value));
+      pluginNames = loadedPlugins.ToDictionary(a => a.Key.GetName().FullName, a => GetPluginName(a.Value));
+
+      extLibPluginNames = new HashSet<string>();
+      extLibPluginNames.Add("HeuristicLab.ALGLIB");
+      extLibPluginNames.Add("HeuristicLab.LibSVM");
+      extLibPluginNames.Add("HeuristicLab.log4net");
+      extLibPluginNames.Add("HeuristicLab.Netron");
+      extLibPluginNames.Add("HeuristicLab.ProtobufCS");
+      extLibPluginNames.Add("HeuristicLab.SharpDevelop");
+      extLibPluginNames.Add("HeuristicLab.WinFormsUI");
     }
 
     [TestMethod]
@@ -68,8 +77,10 @@ namespace HeuristicLab_33.Tests {
 
         foreach (PluginDependencyAttribute attribute in pluginDependencies.Keys) {
           string pluginDependencyName = pluginDependencies[attribute];
-          if (pluginAssembly.GetReferencedAssemblies()
-            .All(a => pluginNames.ContainsKey(a.FullName) && pluginNames[a.FullName] != pluginDependencyName)) {
+          //do not check extlib plugins, because the transport assemblies are never referenced in the assemblies
+          if (extLibPluginNames.Contains(pluginDependencyName)) continue;
+          if (pluginAssembly.GetReferencedAssemblies().Where(a => pluginNames.ContainsKey(a.FullName))
+            .All(a => pluginNames[a.FullName] != pluginDependencyName)) {
             errorMessage.AppendLine("Unnecessary plugin dependency in " + GetPluginName(plugin) + " to " + pluginDependencyName + ".");
           }
         }
