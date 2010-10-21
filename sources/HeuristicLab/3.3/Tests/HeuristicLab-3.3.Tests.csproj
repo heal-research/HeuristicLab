@@ -128,6 +128,10 @@
     <Compile Include="GeneticAlgorithmTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\HeuristicLab.Algorithms.DataAnalysis.Views\3.3\HeuristicLab.Algorithms.DataAnalysis.Views-3.3.csproj">
+      <Project>{C3E69936-0DB5-42A4-B1B4-12E9700B080E}</Project>
+      <Name>HeuristicLab.Algorithms.DataAnalysis.Views-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\HeuristicLab.Algorithms.DataAnalysis\3.3\HeuristicLab.Algorithms.DataAnalysis-3.3.csproj">
       <Project>{A8D5676D-9662-437A-B44D-ECB4046CDE12}</Project>
       <Name>HeuristicLab.Algorithms.DataAnalysis-3.3</Name>
@@ -348,6 +352,14 @@
       <Project>{F5C0ECAC-EDBA-4024-872A-1F74AFCB20B4}</Project>
       <Name>HeuristicLab.Problems.ArtificialAnt-3.3</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\HeuristicLab.Problems.DataAnalysis.Classification.Views\3.3\HeuristicLab.Problems.DataAnalysis.Classification.Views-3.3.csproj">
+      <Project>{7F038E9A-B91E-4F49-8C27-D47BC86F1220}</Project>
+      <Name>HeuristicLab.Problems.DataAnalysis.Classification.Views-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\HeuristicLab.Problems.DataAnalysis.Classification\3.3\HeuristicLab.Problems.DataAnalysis.Classification-3.3.csproj">
+      <Project>{D35FD6DB-D704-4BEA-BDAE-C40ABFB5B13E}</Project>
+      <Name>HeuristicLab.Problems.DataAnalysis.Classification-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\HeuristicLab.Problems.DataAnalysis.Regression\3.3\HeuristicLab.Problems.DataAnalysis.Regression-3.3.csproj">
       <Project>{BDF86B1D-630E-4CE2-8A49-8C90B1BDE4C9}</Project>
       <Name>HeuristicLab.Problems.DataAnalysis.Regression-3.3</Name>
@@ -431,6 +443,10 @@
     <ProjectReference Include="..\..\..\HeuristicLab.Tracing\3.3\HeuristicLab.Tracing-3.3.csproj">
       <Project>{EE2034D9-6E27-48A1-B855-42D45F69A4FC}</Project>
       <Name>HeuristicLab.Tracing-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\HeuristicLab.Visualization.ChartControlsExtensions\3.3\HeuristicLab.Visualization.ChartControlsExtensions-3.3.csproj">
+      <Project>{315BDA09-3F4F-49B3-9790-B37CFC1C5750}</Project>
+      <Name>HeuristicLab.Visualization.ChartControlsExtensions-3.3</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
