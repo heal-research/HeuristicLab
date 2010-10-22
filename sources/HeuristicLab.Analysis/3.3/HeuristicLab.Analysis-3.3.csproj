@@ -109,13 +109,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLabAnalysisPlugin.cs.frame" />
+    <Compile Include="AlleleFrequencyCollection.cs" />
     <Compile Include="BestAverageWorstQualityAnalyzer.cs" />
     <Compile Include="BestAverageWorstQualityCalculator.cs" />
     <Compile Include="BestScopeSolutionAnalyzer.cs" />
     <Compile Include="BestQualityMemorizer.cs" />
     <Compile Include="Allele.cs" />
     <Compile Include="AlleleFrequency.cs" />
-    <Compile Include="AlleleFrequencyArray.cs" />
+    <Compile Include="AlleleFrequencyCollectionCollection.cs" />
     <Compile Include="QualityAnalyzer.cs" />
     <Compile Include="MinAverageMaxValueAnalyzer.cs" />
     <Compile Include="MinAverageMaxValueCalculator.cs" />

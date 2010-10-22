@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -28,17 +29,17 @@ using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Analysis.Views {
-  [View("AlleleFrequencyArray View")]
-  [Content(typeof(AlleleFrequencyArray), true)]
-  public partial class AlleleFrequencyArrayView : ItemView {
+  [View("AlleleFrequencyCollection View")]
+  [Content(typeof(AlleleFrequencyCollection), true)]
+  public partial class AlleleFrequencyCollectionView : ItemView {
     private List<Series> invisibleSeries;
 
-    public new AlleleFrequencyArray Content {
-      get { return (AlleleFrequencyArray)base.Content; }
+    public new AlleleFrequencyCollection Content {
+      get { return (AlleleFrequencyCollection)base.Content; }
       set { base.Content = value; }
     }
 
-    public AlleleFrequencyArrayView() {
+    public AlleleFrequencyCollectionView() {
       InitializeComponent();
       invisibleSeries = new List<Series>();
       chart.CustomizeAllChartAreas();
@@ -48,17 +49,9 @@ namespace HeuristicLab.Analysis.Views {
       base.OnContentChanged();
       if (Content == null) {
         chart.Series.Clear();
-        chart.DataSource = null;
         invisibleSeries.Clear();
       } else {
         if (chart.Series.Count == 0) CreateSeries();
-        chart.DataSource = Content.Select(x => new {
-          Id = x.Id,
-          BestKnownFrequency = x.ContainedInBestKnownSolution ? x.Frequency : 0,
-          Frequency = !x.ContainedInBestKnownSolution ? x.Frequency : 0,
-          Quality = x.AverageSolutionQuality,
-          Impact = x.AverageImpact
-        }).OrderBy(x => x.Impact).ToArray();
         UpdateSeries();
       }
     }
@@ -70,64 +63,79 @@ namespace HeuristicLab.Analysis.Views {
 
     protected virtual void CreateSeries() {
       Series bestKnown = new Series("Alleles of Best Known Solution");
-      bestKnown.ChartType = SeriesChartType.StackedColumn;
-      bestKnown.XValueMember = "Id";
+      bestKnown.ChartType = SeriesChartType.Column;
       bestKnown.XValueType = ChartValueType.String;
-      bestKnown.YValueMembers = "BestKnownFrequency";
       bestKnown.YValueType = ChartValueType.Double;
       bestKnown.YAxisType = AxisType.Primary;
-      bestKnown.ToolTip = "X = #LABEL, Y = #VAL";
       chart.Series.Add(bestKnown);
 
       Series others = new Series("Other Alleles");
-      others.ChartType = SeriesChartType.StackedColumn;
-      others.XValueMember = "Id";
+      others.ChartType = SeriesChartType.Column;
       others.XValueType = ChartValueType.String;
-      others.YValueMembers = "Frequency";
       others.YValueType = ChartValueType.Double;
       others.YAxisType = AxisType.Primary;
-      others.ToolTip = "X = #LABEL, Y = #VAL";
       chart.Series.Add(others);
+      invisibleSeries.Add(others);
 
       Series qualities = new Series("Average Solution Qualities");
-      qualities.ChartType = SeriesChartType.FastLine;
-      qualities.XValueMember = "Id";
+      qualities.ChartType = SeriesChartType.FastPoint;
       qualities.XValueType = ChartValueType.String;
-      qualities.YValueMembers = "Quality";
       qualities.YValueType = ChartValueType.Double;
       qualities.YAxisType = AxisType.Secondary;
-      qualities.ToolTip = "X = #LABEL, Y = #VAL";
+      qualities.ToolTip = "#VAL";
       chart.Series.Add(qualities);
 
       Series impacts = new Series("Average Impact");
-      impacts.ChartType = SeriesChartType.FastLine;
-      impacts.XValueMember = "Id";
+      impacts.ChartType = SeriesChartType.FastPoint;
       impacts.XValueType = ChartValueType.String;
-      impacts.YValueMembers = "Impact";
       impacts.YValueType = ChartValueType.Double;
       impacts.YAxisType = AxisType.Secondary;
-      impacts.ToolTip = "X = #LABEL, Y = #VAL";
+      impacts.ToolTip = "#VAL";
       chart.Series.Add(impacts);
     }
 
     protected virtual void UpdateSeries() {
-      chart.DataBind();
+      int index = 1;
+      Series bestKnown = chart.Series["Alleles of Best Known Solution"];
+      Series others = chart.Series["Other Alleles"];
+      Series qualities = chart.Series["Average Solution Qualities"];
+      Series impacts = chart.Series["Average Impact"];
+      bestKnown.Points.Clear();
+      others.Points.Clear();
+      qualities.Points.Clear();
+      impacts.Points.Clear();
 
-      if (invisibleSeries.Contains(chart.Series["Alleles of Best Known Solution"]))
-        chart.Series["Alleles of Best Known Solution"].Points.Clear();
-      chart.DataManipulator.Filter(CompareMethod.EqualTo, 0, chart.Series["Alleles of Best Known Solution"]);
+      if (!invisibleSeries.Contains(bestKnown)) {
+        foreach (AlleleFrequency af in Content.Where(x => x.ContainedInBestKnownSolution).OrderBy(x => x.AverageImpact)) {
+          bestKnown.Points.Add(CreateFrequencyDataPoint(index, af));
+          if (!invisibleSeries.Contains(qualities)) qualities.Points.AddXY(index, af.AverageSolutionQuality);
+          if (!invisibleSeries.Contains(impacts)) impacts.Points.AddXY(index, af.AverageImpact);
+          index++;
+        }
+      }
+      if (!invisibleSeries.Contains(others)) {
+        foreach (AlleleFrequency af in Content.Where(x => !x.ContainedInBestKnownSolution).OrderBy(x => x.AverageImpact)) {
+          others.Points.Add(CreateFrequencyDataPoint(index, af));
+          if (!invisibleSeries.Contains(qualities)) qualities.Points.AddXY(index, af.AverageSolutionQuality);
+          if (!invisibleSeries.Contains(impacts)) impacts.Points.AddXY(index, af.AverageImpact);
+          index++;
+        }
+      }
+    }
 
-      if (invisibleSeries.Contains(chart.Series["Other Alleles"]))
-        chart.Series["Other Alleles"].Points.Clear();
-      chart.DataManipulator.Filter(CompareMethod.EqualTo, 0, chart.Series["Other Alleles"]);
+    protected virtual DataPoint CreateFrequencyDataPoint(int index, AlleleFrequency af) {
+      string nl = Environment.NewLine;
 
-      if (invisibleSeries.Contains(chart.Series["Average Solution Qualities"]))
-        chart.Series["Average Solution Qualities"].Points.Clear();
-      chart.DataManipulator.Filter(CompareMethod.EqualTo, 0, chart.Series["Average Solution Qualities"]);
-
-      if (invisibleSeries.Contains(chart.Series["Average Impact"]))
-        chart.Series["Average Impact"].Points.Clear();
-      chart.DataManipulator.Filter(CompareMethod.EqualTo, 0, chart.Series["Average Impact"]);
+      DataPoint p = new DataPoint(index, af.Frequency);
+      p.AxisLabel = af.Id;
+      p.ToolTip = string.Format("Id: {0}" + nl +
+                                "Relative Frequency: {1}" + nl +
+                                "Average Solution Quality: {2}" + nl +
+                                "Average Impact: {3}" + nl +
+                                "Contained in Best Known Solution: {4}" + nl +
+                                "Contained in Best Solution: {5}",
+                                af.Id, af.Frequency, af.AverageSolutionQuality, af.AverageImpact, af.ContainedInBestKnownSolution, af.ContainedInBestSolution);
+      return p;
     }
 
     #region Chart Events

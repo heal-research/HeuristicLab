@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Analysis.Views {
-  partial class AlleleFrequencyArrayView {
+  partial class AlleleFrequencyCollectionView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -60,12 +60,11 @@ namespace HeuristicLab.Analysis.Views {
       this.chart.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
       chartArea1.AxisX.IntervalAutoMode = System.Windows.Forms.DataVisualization.Charting.IntervalAutoMode.VariableCount;
       chartArea1.AxisX.LabelAutoFitStyle = ((System.Windows.Forms.DataVisualization.Charting.LabelAutoFitStyles)((System.Windows.Forms.DataVisualization.Charting.LabelAutoFitStyles.IncreaseFont | System.Windows.Forms.DataVisualization.Charting.LabelAutoFitStyles.DecreaseFont)));
-      chartArea1.AxisX.LabelStyle.Angle = 90;
       chartArea1.AxisX.Title = "Alleles";
       chartArea1.AxisY.Maximum = 1D;
       chartArea1.AxisY.Minimum = 0D;
       chartArea1.AxisY.Title = "Relative Frequency";
-      chartArea1.AxisY2.Title = "Average Solution Quality";
+      chartArea1.AxisY2.Title = "Average Solution Quality / Average Impact";
       chartArea1.CursorX.IsUserEnabled = true;
       chartArea1.CursorX.IsUserSelectionEnabled = true;
       chartArea1.CursorY.IsUserEnabled = true;
@@ -89,12 +88,12 @@ namespace HeuristicLab.Analysis.Views {
       this.chart.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chart_MouseDown);
       this.chart.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chart_MouseMove);
       // 
-      // AlleleFrequencyArrayView
+      // AlleleFrequencyCollectionView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.chart);
-      this.Name = "AlleleFrequencyArrayView";
+      this.Name = "AlleleFrequencyCollectionView";
       this.Size = new System.Drawing.Size(498, 359);
       ((System.ComponentModel.ISupportInitialize)(this.chart)).EndInit();
       this.ResumeLayout(false);

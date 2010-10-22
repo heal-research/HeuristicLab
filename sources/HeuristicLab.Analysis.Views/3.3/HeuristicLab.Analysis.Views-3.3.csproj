@@ -116,11 +116,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLabAnalysisViewsPlugin.cs.frame" />
-    <Compile Include="AlleleFrequencyArrayView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="AlleleFrequencyArrayView.Designer.cs">
-      <DependentUpon>AlleleFrequencyArrayView.cs</DependentUpon>
+    <Compile Include="AlleleFrequencyCollectionView.cs" />
+    <Compile Include="AlleleFrequencyCollectionView.Designer.cs">
+      <DependentUpon>AlleleFrequencyCollectionView.cs</DependentUpon>
     </Compile>
     <Compile Include="HeuristicLabAnalysisViewsPlugin.cs" />
     <Compile Include="AlleleFrequencyView.cs">

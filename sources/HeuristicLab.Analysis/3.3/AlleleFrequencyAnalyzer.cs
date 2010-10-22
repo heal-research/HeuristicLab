@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -71,6 +72,15 @@ namespace HeuristicLab.Analysis {
       Parameters.Add(new LookupParameter<IntValue>("UpdateCounter", "The value which counts how many times the operator was called since the last update."));
     }
 
+    private class AlleleFrequencyEqualityComparer : IEqualityComparer<AlleleFrequency> {
+      public bool Equals(AlleleFrequency x, AlleleFrequency y) {
+        return x.Id == y.Id;
+      }
+      public int GetHashCode(AlleleFrequency obj) {
+        return obj.GetHashCode();
+      }
+    }
+
     public override IOperation Apply() {
       int updateInterval = UpdateIntervalParameter.Value.Value;
       IntValue updateCounter = UpdateCounterParameter.ActualValue;
@@ -109,6 +119,9 @@ namespace HeuristicLab.Analysis {
                                                           bestKnownAlleles == null ? false : bestKnownAlleles.Any(a => a.Id == x.Key),
                                                           bestAlleles.Any(a => a.Id == x.Key)));
 
+        // calculate dummy allele frequencies of alleles of best known solution which did not occur
+        var bestKnownFrequencies = bestKnownAlleles.Select(x => new AlleleFrequency(x.Id, 0, x.Impact, 0, true, false)).Except(frequencies, new AlleleFrequencyEqualityComparer());
+
         // fetch results collection
         ResultCollection results;
         if (!ResultsParameter.ActualValue.ContainsKey("Allele Frequency Analysis Results")) {
@@ -119,20 +132,20 @@ namespace HeuristicLab.Analysis {
         }
 
         // store allele frequencies
-        AlleleFrequencyArray frequenciesArray = new AlleleFrequencyArray(frequencies);
+        AlleleFrequencyCollection frequenciesCollection = new AlleleFrequencyCollection(bestKnownFrequencies.Concat(frequencies));
         if (!results.ContainsKey("Allele Frequencies"))
-          results.Add(new Result("Allele Frequencies", frequenciesArray));
+          results.Add(new Result("Allele Frequencies", frequenciesCollection));
         else
-          results["Allele Frequencies"].Value = frequenciesArray;
+          results["Allele Frequencies"].Value = frequenciesCollection;
 
         // store allele frequencies history
         if (storeHistory) {
           if (!results.ContainsKey("Allele Frequencies History")) {
-            ItemCollection<AlleleFrequencyArray> history = new ItemCollection<AlleleFrequencyArray>();
-            history.Add(frequenciesArray);
+            AlleleFrequencyCollectionCollection history = new AlleleFrequencyCollectionCollection();
+            history.Add(frequenciesCollection);
             results.Add(new Result("Allele Frequencies History", history));
           } else {
-            ((ItemCollection<AlleleFrequencyArray>)results["Allele Frequencies History"].Value).Add(frequenciesArray);
+            ((AlleleFrequencyCollectionCollection)results["Allele Frequencies History"].Value).Add(frequenciesCollection);
           }
         }
 
@@ -145,7 +158,7 @@ namespace HeuristicLab.Analysis {
         } else {
           allelesTable = (DataTable)results["Alleles"].Value;
         }
-        allelesTable.Rows["Unique Alleles"].Values.Add(frequenciesArray.Length);
+        allelesTable.Rows["Unique Alleles"].Values.Add(frequenciesCollection.Count);
       }
       return base.Apply();
     }
