@@ -82,7 +82,6 @@ namespace HeuristicLab.Analysis.Views {
       qualities.XValueType = ChartValueType.String;
       qualities.YValueType = ChartValueType.Double;
       qualities.YAxisType = AxisType.Secondary;
-      qualities.ToolTip = "#VAL";
       chart.Series.Add(qualities);
 
       Series impacts = new Series("Average Impact");
@@ -90,8 +89,8 @@ namespace HeuristicLab.Analysis.Views {
       impacts.XValueType = ChartValueType.String;
       impacts.YValueType = ChartValueType.Double;
       impacts.YAxisType = AxisType.Secondary;
-      impacts.ToolTip = "#VAL";
       chart.Series.Add(impacts);
+      invisibleSeries.Add(impacts);
     }
 
     protected virtual void UpdateSeries() {
@@ -105,29 +104,34 @@ namespace HeuristicLab.Analysis.Views {
       qualities.Points.Clear();
       impacts.Points.Clear();
 
+      if (!invisibleSeries.Contains(qualities) && !invisibleSeries.Contains(impacts))
+        chart.ChartAreas["Default"].AxisY2.Title = "Average Solution Quality / Average Impact";
+      else if (!invisibleSeries.Contains(qualities))
+        chart.ChartAreas["Default"].AxisY2.Title = "Average Solution Quality";
+      else if (!invisibleSeries.Contains(impacts))
+        chart.ChartAreas["Default"].AxisY2.Title = "Average Impact";
+
       if (!invisibleSeries.Contains(bestKnown)) {
         foreach (AlleleFrequency af in Content.Where(x => x.ContainedInBestKnownSolution).OrderBy(x => x.AverageImpact)) {
-          bestKnown.Points.Add(CreateFrequencyDataPoint(index, af));
-          if (!invisibleSeries.Contains(qualities)) qualities.Points.AddXY(index, af.AverageSolutionQuality);
-          if (!invisibleSeries.Contains(impacts)) impacts.Points.AddXY(index, af.AverageImpact);
+          bestKnown.Points.Add(CreateDataPoint(index, af.Frequency, af));
+          if (!invisibleSeries.Contains(qualities)) qualities.Points.Add(CreateDataPoint(index, af.AverageSolutionQuality, af));
+          if (!invisibleSeries.Contains(impacts)) impacts.Points.Add(CreateDataPoint(index, af.AverageImpact, af));
           index++;
         }
       }
       if (!invisibleSeries.Contains(others)) {
         foreach (AlleleFrequency af in Content.Where(x => !x.ContainedInBestKnownSolution).OrderBy(x => x.AverageImpact)) {
-          others.Points.Add(CreateFrequencyDataPoint(index, af));
-          if (!invisibleSeries.Contains(qualities)) qualities.Points.AddXY(index, af.AverageSolutionQuality);
-          if (!invisibleSeries.Contains(impacts)) impacts.Points.AddXY(index, af.AverageImpact);
+          others.Points.Add(CreateDataPoint(index, af.Frequency, af));
+          if (!invisibleSeries.Contains(qualities)) qualities.Points.Add(CreateDataPoint(index, af.AverageSolutionQuality, af));
+          if (!invisibleSeries.Contains(impacts)) impacts.Points.Add(CreateDataPoint(index, af.AverageImpact, af));
           index++;
         }
       }
     }
 
-    protected virtual DataPoint CreateFrequencyDataPoint(int index, AlleleFrequency af) {
+    protected virtual DataPoint CreateDataPoint(int index, double value, AlleleFrequency af) {
       string nl = Environment.NewLine;
-
-      DataPoint p = new DataPoint(index, af.Frequency);
-      p.AxisLabel = af.Id;
+      DataPoint p = new DataPoint(index, value);
       p.ToolTip = string.Format("Id: {0}" + nl +
                                 "Relative Frequency: {1}" + nl +
                                 "Average Solution Quality: {2}" + nl +
@@ -135,6 +139,7 @@ namespace HeuristicLab.Analysis.Views {
                                 "Contained in Best Known Solution: {4}" + nl +
                                 "Contained in Best Solution: {5}",
                                 af.Id, af.Frequency, af.AverageSolutionQuality, af.AverageImpact, af.ContainedInBestKnownSolution, af.ContainedInBestSolution);
+      p.IsEmpty = value == 0;
       return p;
     }
 

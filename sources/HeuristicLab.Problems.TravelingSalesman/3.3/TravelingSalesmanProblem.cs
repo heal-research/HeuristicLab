@@ -314,20 +314,24 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       }
     }
     private void ParameterizeAnalyzers() {
-      BestTSPSolutionAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
-      BestTSPSolutionAnalyzer.CoordinatesParameter.ActualName = CoordinatesParameter.Name;
-      BestTSPSolutionAnalyzer.PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
-      BestTSPSolutionAnalyzer.ResultsParameter.ActualName = "Results";
-      BestTSPSolutionAnalyzer.BestKnownQualityParameter.ActualName = BestKnownQualityParameter.Name;
-      BestTSPSolutionAnalyzer.BestKnownSolutionParameter.ActualName = BestKnownSolutionParameter.Name;
-      BestTSPSolutionAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
+      if (BestTSPSolutionAnalyzer != null) {
+        BestTSPSolutionAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
+        BestTSPSolutionAnalyzer.CoordinatesParameter.ActualName = CoordinatesParameter.Name;
+        BestTSPSolutionAnalyzer.PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
+        BestTSPSolutionAnalyzer.ResultsParameter.ActualName = "Results";
+        BestTSPSolutionAnalyzer.BestKnownQualityParameter.ActualName = BestKnownQualityParameter.Name;
+        BestTSPSolutionAnalyzer.BestKnownSolutionParameter.ActualName = BestKnownSolutionParameter.Name;
+        BestTSPSolutionAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
+      }
 
-      TSPAlleleFrequencyAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
-      TSPAlleleFrequencyAnalyzer.CoordinatesParameter.ActualName = CoordinatesParameter.Name;
-      TSPAlleleFrequencyAnalyzer.SolutionParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
-      TSPAlleleFrequencyAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
-      TSPAlleleFrequencyAnalyzer.BestKnownSolutionParameter.ActualName = BestKnownSolutionParameter.Name;
-      TSPAlleleFrequencyAnalyzer.ResultsParameter.ActualName = "Results";
+      if (TSPAlleleFrequencyAnalyzer != null) {
+        TSPAlleleFrequencyAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
+        TSPAlleleFrequencyAnalyzer.CoordinatesParameter.ActualName = CoordinatesParameter.Name;
+        TSPAlleleFrequencyAnalyzer.SolutionParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
+        TSPAlleleFrequencyAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
+        TSPAlleleFrequencyAnalyzer.BestKnownSolutionParameter.ActualName = BestKnownSolutionParameter.Name;
+        TSPAlleleFrequencyAnalyzer.ResultsParameter.ActualName = "Results";
+      }
     }
     private void ParameterizeOperators() {
       foreach (IPermutationCrossover op in Operators.OfType<IPermutationCrossover>()) {

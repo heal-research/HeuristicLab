@@ -53,7 +53,7 @@ namespace HeuristicLab.Analysis {
     public MultiAnalyzer()
       : base() {
       Parameters.Add(new ValueLookupParameter<IntValue>("UpdateInterval", "The interval in which the contained analyzers should be applied.", new IntValue(1)));
-      Parameters.Add(new LookupParameter<IntValue>("UpdateCounter", "The value which counts how many times the MultiAnalyzer was called since the last update."));
+      Parameters.Add(new LookupParameter<IntValue>("UpdateCounter", "The value which counts how many times the MultiAnalyzer was called since the last update.", "MultiAnalyzerUpdateCounter"));
     }
     [StorableConstructor]
     protected MultiAnalyzer(bool deserializing) : base(deserializing) { }

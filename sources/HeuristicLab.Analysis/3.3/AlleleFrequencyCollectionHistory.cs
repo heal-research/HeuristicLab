@@ -25,14 +25,14 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
-  /// Represents a collection of allele frequencies collections.
+  /// Represents history values of allele frequencies collections.
   /// </summary>
-  [Item("AlleleFrequencyCollectionCollection", "Represents a collection of allele frequencies collections.")]
+  [Item("AlleleFrequencyCollectionHistory", "Represents history values of allele frequencies collections.")]
   [StorableClass]
-  public class AlleleFrequencyCollectionCollection : ItemCollection<AlleleFrequencyCollection> {
-    public AlleleFrequencyCollectionCollection() : base() { }
-    public AlleleFrequencyCollectionCollection(IEnumerable<AlleleFrequencyCollection> collections) : base(new ItemCollection<AlleleFrequencyCollection>(collections)) { }
+  public class AlleleFrequencyCollectionHistory : ItemCollection<AlleleFrequencyCollection> {
+    public AlleleFrequencyCollectionHistory() : base() { }
+    public AlleleFrequencyCollectionHistory(IEnumerable<AlleleFrequencyCollection> collections) : base(new ItemCollection<AlleleFrequencyCollection>(collections)) { }
     [StorableConstructor]
-    protected AlleleFrequencyCollectionCollection(bool deserializing) : base(deserializing) { }
+    protected AlleleFrequencyCollectionHistory(bool deserializing) : base(deserializing) { }
   }
 }

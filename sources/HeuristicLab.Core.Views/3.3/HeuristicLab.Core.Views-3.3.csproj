@@ -129,6 +129,12 @@
     <Compile Include="CheckedItemListView.Designer.cs">
       <DependentUpon>CheckedItemListView.cs</DependentUpon>
     </Compile>
+    <Compile Include="MovieView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MovieView.Designer.cs">
+      <DependentUpon>MovieView.cs</DependentUpon>
+    </Compile>
     <Compile Include="LogView.cs">
       <SubType>UserControl</SubType>
     </Compile>
