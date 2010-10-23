@@ -459,6 +459,34 @@ namespace HeuristicLab.Common.Resources {
             }
         }
         
+        public static System.Drawing.Bitmap MoveFirst {
+            get {
+                object obj = ResourceManager.GetObject("MoveFirst", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        public static System.Drawing.Bitmap MoveLast {
+            get {
+                object obj = ResourceManager.GetObject("MoveLast", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        public static System.Drawing.Bitmap MoveNext {
+            get {
+                object obj = ResourceManager.GetObject("MoveNext", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        public static System.Drawing.Bitmap MovePrevious {
+            get {
+                object obj = ResourceManager.GetObject("MovePrevious", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         public static System.Drawing.Bitmap Namespace {
             get {
                 object obj = ResourceManager.GetObject("Namespace", resourceCulture);

@@ -436,6 +436,10 @@
     <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Annotations&amp;Buttons_HighPriority_Large.png" />
     <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Graph.png" />
     <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_PieChart.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_MoveFirst.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_MoveLast.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_MoveNext.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_MovePrevious.png" />
     <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Performance.ico" />
   </ItemGroup>
   <ItemGroup>
