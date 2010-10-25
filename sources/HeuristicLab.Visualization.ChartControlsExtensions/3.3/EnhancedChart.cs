@@ -126,8 +126,8 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
         double x = panning.ChartX(e.Location.X, Width);
         double y = panning.ChartY(e.Location.Y, Height);
         if (panning.ChartArea.CursorX.Interval > 0) {
-          x = Math.Round(x * panning.ChartArea.CursorX.Interval) / panning.ChartArea.CursorX.Interval;
-          y = Math.Round(y * panning.ChartArea.CursorY.Interval) / panning.ChartArea.CursorY.Interval;
+          x = Math.Round(x / panning.ChartArea.CursorX.Interval) * panning.ChartArea.CursorX.Interval;
+          y = Math.Round(y / panning.ChartArea.CursorY.Interval) * panning.ChartArea.CursorY.Interval;
         }
         panning.ChartArea.AxisX.ScaleView.Scroll(x);
         panning.ChartArea.AxisY.ScaleView.Scroll(y);
