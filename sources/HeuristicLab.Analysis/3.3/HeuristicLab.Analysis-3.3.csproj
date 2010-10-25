@@ -117,6 +117,7 @@
     <Compile Include="BestQualityMemorizer.cs" />
     <Compile Include="Allele.cs" />
     <Compile Include="AlleleFrequency.cs" />
+    <Compile Include="DataRowVisualProperties.cs" />
     <Compile Include="QualityAnalyzer.cs" />
     <Compile Include="MinAverageMaxValueAnalyzer.cs" />
     <Compile Include="MinAverageMaxValueCalculator.cs" />

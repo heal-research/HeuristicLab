@@ -106,7 +106,24 @@ namespace HeuristicLab.Analysis.Views {
 
     private void AddDataRow(DataRow row) {
       Series series = new Series(row.Name);
-      series.ChartType = SeriesChartType.FastLine;
+      switch (row.VisualProperties.ChartType) {
+        case DataRowVisualProperties.DataRowChartType.Line:
+          series.ChartType = SeriesChartType.FastLine;
+          break;
+        case DataRowVisualProperties.DataRowChartType.Bars:
+          series.ChartType = SeriesChartType.Bar;
+          break;
+        case DataRowVisualProperties.DataRowChartType.Columns:
+          series.ChartType = SeriesChartType.Column;
+          break;
+        case DataRowVisualProperties.DataRowChartType.Points:
+          series.ChartType = SeriesChartType.FastPoint;
+          break;
+        default:
+          series.ChartType = SeriesChartType.FastPoint;
+          break;
+      }
+      series.YAxisType = row.VisualProperties.SecondYAxis ? AxisType.Secondary : AxisType.Primary;
       series.ToolTip = row.Name + " X = #INDEX, Y = #VAL";
       FillSeriesWithRowValues(series, row);
       chart.Series.Add(series);
@@ -141,6 +158,7 @@ namespace HeuristicLab.Analysis.Views {
     #region Content Events
     private void RegisterDataRowEvents(DataRow row) {
       row.NameChanged += new EventHandler(Row_NameChanged);
+      row.VisualPropertiesChanged += new EventHandler(Row_VisualPropertiesChanged);
       valuesRowsTable.Add(row.Values, row);
       row.Values.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<double>>(Values_ItemsAdded);
       row.Values.ItemsRemoved += new CollectionItemsChangedEventHandler<IndexedItem<double>>(Values_ItemsRemoved);
@@ -155,6 +173,7 @@ namespace HeuristicLab.Analysis.Views {
       row.Values.ItemsMoved -= new CollectionItemsChangedEventHandler<IndexedItem<double>>(Values_ItemsMoved);
       row.Values.CollectionReset -= new CollectionItemsChangedEventHandler<IndexedItem<double>>(Values_CollectionReset);
       valuesRowsTable.Remove(row.Values);
+      row.VisualPropertiesChanged -= new EventHandler(Row_VisualPropertiesChanged);
       row.NameChanged -= new EventHandler(Row_NameChanged);
     }
     protected override void Content_NameChanged(object sender, EventArgs e) {
@@ -211,6 +230,31 @@ namespace HeuristicLab.Analysis.Views {
           AddDataRow(row);
           RegisterDataRowEvents(row);
         }
+      }
+    }
+    private void Row_VisualPropertiesChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Row_VisualPropertiesChanged), sender, e);
+      else {
+        DataRow row = (DataRow)sender;
+        switch (row.VisualProperties.ChartType) {
+          case DataRowVisualProperties.DataRowChartType.Line:
+            chart.Series[row.Name].ChartType = SeriesChartType.FastLine;
+            break;
+          case DataRowVisualProperties.DataRowChartType.Bars:
+            chart.Series[row.Name].ChartType = SeriesChartType.Bar;
+            break;
+          case DataRowVisualProperties.DataRowChartType.Columns:
+            chart.Series[row.Name].ChartType = SeriesChartType.Column;
+            break;
+          case DataRowVisualProperties.DataRowChartType.Points:
+            chart.Series[row.Name].ChartType = SeriesChartType.FastPoint;
+            break;
+          default:
+            chart.Series[row.Name].ChartType = SeriesChartType.FastPoint;
+            break;
+        }
+        chart.Series[row.Name].YAxisType = row.VisualProperties.SecondYAxis ? AxisType.Secondary : AxisType.Primary;
       }
     }
     private void Row_NameChanged(object sender, EventArgs e) {

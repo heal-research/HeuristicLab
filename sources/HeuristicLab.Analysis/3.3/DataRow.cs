@@ -19,6 +19,9 @@
  */
 #endregion
 
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -31,30 +34,84 @@ namespace HeuristicLab.Analysis {
   [Item("DataRow", "A row of data values.")]
   [StorableClass]
   public sealed class DataRow : NamedItem {
-    [Storable]
+    private DataRowVisualProperties visualProperties;
+    public DataRowVisualProperties VisualProperties {
+      get { return visualProperties; }
+      set {
+        if (visualProperties != value) {
+          if (value == null) throw new ArgumentNullException("VisualProperties");
+          if (visualProperties != null) visualProperties.PropertyChanged -= new PropertyChangedEventHandler(VisualProperties_PropertyChanged);
+          visualProperties = value;
+          visualProperties.PropertyChanged += new PropertyChangedEventHandler(VisualProperties_PropertyChanged);
+          OnVisualPropertiesChanged();
+        }
+      }
+    }
     private ObservableList<double> values;
     public IObservableList<double> Values {
       get { return values; }
     }
 
+    #region Persistence Properties
+    [Storable(Name = "VisualProperties")]
+    private DataRowVisualProperties StorableVisualProperties {
+      get { return VisualProperties; }
+      set { VisualProperties = value; }
+    }
+    [Storable(Name = "values")]
+    private IEnumerable<double> StorableValues {
+      get { return values; }
+      set { values = new ObservableList<double>(value); }
+    }
+    #endregion
+
     public DataRow()
       : base() {
+      VisualProperties = new DataRowVisualProperties();
       values = new ObservableList<double>();
     }
     public DataRow(string name)
       : base(name) {
+      VisualProperties = new DataRowVisualProperties();
       values = new ObservableList<double>();
     }
     public DataRow(string name, string description)
       : base(name, description) {
+      VisualProperties = new DataRowVisualProperties();
       values = new ObservableList<double>();
     }
+    public DataRow(string name, string description, DataRowVisualProperties visualProperties)
+      : base(name, description) {
+      VisualProperties = visualProperties;
+      values = new ObservableList<double>();
+    }
+    [StorableConstructor]
+    private DataRow(bool deserializing) { }
+
+    // BackwardsCompatibility3.3
+    #region Backwards compatible code, remove with 3.4
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (VisualProperties == null) VisualProperties = new DataRowVisualProperties();
+    }
+    #endregion
 
     public override IDeepCloneable Clone(Cloner cloner) {
       DataRow clone = new DataRow(Name, Description);
       cloner.RegisterClonedObject(this, clone);
+      clone.VisualProperties = (DataRowVisualProperties)cloner.Clone(visualProperties);
       clone.values.AddRange(values);
       return clone;
+    }
+
+    public event EventHandler VisualPropertiesChanged;
+    private void OnVisualPropertiesChanged() {
+      EventHandler handler = VisualPropertiesChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
+
+    private void VisualProperties_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+      OnVisualPropertiesChanged();
     }
   }
 }
