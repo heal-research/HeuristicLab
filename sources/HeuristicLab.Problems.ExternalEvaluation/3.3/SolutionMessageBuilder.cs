@@ -80,7 +80,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       }
       if (itemType.BaseType == null && !dispatcher.ContainsKey(itemType)) {
         IEnumerable<Type> interfaces = item.GetType().GetInterfaces().Where(x => dispatcher.ContainsKey(x));
-        if (interfaces.Count() != 1) throw new ArgumentException(Name + ": No converter for type + " + itemType.FullName + " defined.", "item");
+        if (interfaces.Count() != 1) throw new ArgumentException(Name + ": No converter for type " + itemType.FullName + " defined.", "item");
         else itemType = interfaces.Single();
       }
       dispatcher[itemType](item, name, builder);
