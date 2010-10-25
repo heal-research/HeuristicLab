@@ -122,7 +122,10 @@ namespace HeuristicLab.Analysis {
                                                           bestAlleles.Any(a => a.Id == x.Key)));
 
         // calculate dummy allele frequencies of alleles of best known solution which did not occur
-        var bestKnownFrequencies = bestKnownAlleles.Select(x => new AlleleFrequency(x.Id, 0, x.Impact, 0, true, false)).Except(frequencies, new AlleleFrequencyIdEqualityComparer());
+        if (bestKnownAlleles != null) {
+          var bestKnownFrequencies = bestKnownAlleles.Select(x => new AlleleFrequency(x.Id, 0, x.Impact, 0, true, false)).Except(frequencies, new AlleleFrequencyIdEqualityComparer());
+          frequencies = frequencies.Concat(bestKnownFrequencies);
+        }
 
         // fetch results collection
         ResultCollection results;
@@ -134,7 +137,7 @@ namespace HeuristicLab.Analysis {
         }
 
         // store allele frequencies
-        AlleleFrequencyCollection frequenciesCollection = new AlleleFrequencyCollection(bestKnownFrequencies.Concat(frequencies));
+        AlleleFrequencyCollection frequenciesCollection = new AlleleFrequencyCollection(frequencies);
         if (!results.ContainsKey("Allele Frequencies"))
           results.Add(new Result("Allele Frequencies", frequenciesCollection));
         else
@@ -157,10 +160,28 @@ namespace HeuristicLab.Analysis {
           allelesTable = new DataTable("Alleles");
           results.Add(new Result("Alleles", allelesTable));
           allelesTable.Rows.Add(new DataRow("Unique Alleles"));
+          DataRowVisualProperties visualProperties = new DataRowVisualProperties();
+          visualProperties.ChartType = DataRowVisualProperties.DataRowChartType.Line;
+          visualProperties.SecondYAxis = true;
+          allelesTable.Rows.Add(new DataRow("Unique Alleles of Best Known Solution", null, visualProperties));
+          allelesTable.Rows.Add(new DataRow("Fixed Alleles", null, visualProperties));
+          allelesTable.Rows.Add(new DataRow("Fixed Alleles of Best Known Solution", null, visualProperties));
+          allelesTable.Rows.Add(new DataRow("Lost Alleles of Best Known Solution", null, visualProperties));
         } else {
           allelesTable = (DataTable)results["Alleles"].Value;
         }
+
+        int fixedAllelesCount = frequenciesCollection.Where(x => x.Frequency == 1).Count();
+        var relevantAlleles = frequenciesCollection.Where(x => x.ContainedInBestKnownSolution);
+        int relevantAllelesCount = relevantAlleles.Count();
+        int fixedRelevantAllelesCount = relevantAlleles.Where(x => x.Frequency == 1).Count();
+        int lostRelevantAllelesCount = relevantAlleles.Where(x => x.Frequency == 0).Count();
+        int uniqueRelevantAllelesCount = relevantAllelesCount - lostRelevantAllelesCount;
         allelesTable.Rows["Unique Alleles"].Values.Add(frequenciesCollection.Count);
+        allelesTable.Rows["Unique Alleles of Best Known Solution"].Values.Add(uniqueRelevantAllelesCount);
+        allelesTable.Rows["Fixed Alleles"].Values.Add(fixedAllelesCount);
+        allelesTable.Rows["Fixed Alleles of Best Known Solution"].Values.Add(fixedRelevantAllelesCount);
+        allelesTable.Rows["Lost Alleles of Best Known Solution"].Values.Add(lostRelevantAllelesCount);
       }
       return base.Apply();
     }
