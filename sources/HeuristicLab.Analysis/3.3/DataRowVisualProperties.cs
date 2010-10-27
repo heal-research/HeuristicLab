@@ -22,6 +22,7 @@
 using System.ComponentModel;
 using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System.Drawing;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
@@ -38,7 +39,6 @@ namespace HeuristicLab.Analysis {
     }
     #endregion
 
-    [Storable(DefaultValue = DataRowChartType.Line)]
     private DataRowChartType chartType;
     public DataRowChartType ChartType {
       get { return chartType; }
@@ -49,7 +49,6 @@ namespace HeuristicLab.Analysis {
         }
       }
     }
-    [Storable(DefaultValue = false)]
     private bool secondYAxis;
     public bool SecondYAxis {
       get { return secondYAxis; }
@@ -60,14 +59,61 @@ namespace HeuristicLab.Analysis {
         }
       }
     }
+    private Color color;
+    public Color Color {
+      get { return color; }
+      set {
+        if (color != value) {
+          color = value;
+          OnPropertyChanged("Color");
+        }
+      }
+    }
+    private bool startIndexZero;
+    public bool StartIndexZero {
+      get { return startIndexZero; }
+      set {
+        if (startIndexZero != value) {
+          startIndexZero = value;
+          OnPropertyChanged("StartIndexZero");
+        }
+      }
+    }
+
+    #region Persistence Properties
+    [Storable(Name = "ChartType")]
+    private DataRowChartType StorableChartType {
+      get { return chartType; }
+      set { chartType = value; }
+    }
+    [Storable(Name = "SecondYAxis")]
+    private bool StorableSecondYAxis {
+      get { return secondYAxis; }
+      set { secondYAxis = value; }
+    }
+    [Storable(Name = "Color")]
+    private Color StorableColor {
+      get { return color; }
+      set { color = value; }
+    }
+    [Storable(Name = "StartIndexZero")]
+    private bool StorableStartIndexZero {
+      get { return startIndexZero; }
+      set { startIndexZero = value; }
+    }
+    #endregion
 
     public DataRowVisualProperties() {
       chartType = DataRowChartType.Line;
       secondYAxis = false;
+      color = Color.Empty;
+      startIndexZero = false;
     }
-    public DataRowVisualProperties(DataRowChartType chartType, bool secondYAxis) {
+    public DataRowVisualProperties(DataRowChartType chartType, bool secondYAxis, Color color, bool startIndexZero) {
       this.chartType = chartType;
       this.secondYAxis = secondYAxis;
+      this.color = color;
+      this.startIndexZero = startIndexZero;
     }
     [StorableConstructor]
     protected DataRowVisualProperties(bool deserializing) { }
@@ -76,6 +122,8 @@ namespace HeuristicLab.Analysis {
       DataRowVisualProperties clone = (DataRowVisualProperties)base.Clone(cloner);
       clone.chartType = chartType;
       clone.secondYAxis = secondYAxis;
+      clone.color = color;
+      clone.startIndexZero = startIndexZero;
       return clone;
     }
 

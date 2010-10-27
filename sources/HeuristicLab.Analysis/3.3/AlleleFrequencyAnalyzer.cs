@@ -163,6 +163,7 @@ namespace HeuristicLab.Analysis {
           DataRowVisualProperties visualProperties = new DataRowVisualProperties();
           visualProperties.ChartType = DataRowVisualProperties.DataRowChartType.Line;
           visualProperties.SecondYAxis = true;
+          visualProperties.StartIndexZero = true;
           allelesTable.Rows.Add(new DataRow("Unique Alleles of Best Known Solution", null, visualProperties));
           allelesTable.Rows.Add(new DataRow("Fixed Alleles", null, visualProperties));
           allelesTable.Rows.Add(new DataRow("Fixed Alleles of Best Known Solution", null, visualProperties));

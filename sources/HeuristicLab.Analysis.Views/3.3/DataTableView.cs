@@ -124,6 +124,7 @@ namespace HeuristicLab.Analysis.Views {
           break;
       }
       series.YAxisType = row.VisualProperties.SecondYAxis ? AxisType.Secondary : AxisType.Primary;
+      if (row.VisualProperties.Color != Color.Empty) series.Color = row.VisualProperties.Color;
       series.ToolTip = row.Name + " X = #INDEX, Y = #VAL";
       FillSeriesWithRowValues(series, row);
       chart.Series.Add(series);
@@ -255,6 +256,7 @@ namespace HeuristicLab.Analysis.Views {
             break;
         }
         chart.Series[row.Name].YAxisType = row.VisualProperties.SecondYAxis ? AxisType.Secondary : AxisType.Primary;
+        if (row.VisualProperties.Color != Color.Empty) chart.Series[row.Name].Color = row.VisualProperties.Color;
       }
     }
     private void Row_NameChanged(object sender, EventArgs e) {
