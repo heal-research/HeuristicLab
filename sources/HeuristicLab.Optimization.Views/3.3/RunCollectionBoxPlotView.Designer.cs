@@ -208,9 +208,9 @@ namespace HeuristicLab.Optimization.Views {
     #endregion
 
     private System.Windows.Forms.Label xAxisLabel;
-    private System.Windows.Forms.ComboBox xAxisComboBox;
+    internal System.Windows.Forms.ComboBox xAxisComboBox;
     private System.Windows.Forms.Label yAxisLabel;
-    private System.Windows.Forms.ComboBox yAxisComboBox;
+    internal System.Windows.Forms.ComboBox yAxisComboBox;
     private HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart chart;
     private System.Windows.Forms.Label noRunsLabel;
     private System.Windows.Forms.SplitContainer splitContainer;

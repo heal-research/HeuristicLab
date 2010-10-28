@@ -45,8 +45,8 @@ namespace HeuristicLab.Optimization.Views {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-      System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+      System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
       this.yJitterLabel = new System.Windows.Forms.Label();
       this.xJitterlabel = new System.Windows.Forms.Label();
       this.xTrackBar = new System.Windows.Forms.TrackBar();
@@ -65,6 +65,7 @@ namespace HeuristicLab.Optimization.Views {
       this.colorDialog = new System.Windows.Forms.ColorDialog();
       this.tooltip = new System.Windows.Forms.ToolTip(this.components);
       this.noRunsLabel = new System.Windows.Forms.Label();
+      this.openBoxPlotViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       ((System.ComponentModel.ISupportInitialize)(this.xTrackBar)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.yTrackBar)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
@@ -180,18 +181,18 @@ namespace HeuristicLab.Optimization.Views {
       this.chart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      chartArea1.Name = "ChartArea1";
-      this.chart.ChartAreas.Add(chartArea1);
+      chartArea2.Name = "ChartArea1";
+      this.chart.ChartAreas.Add(chartArea2);
       this.chart.Location = new System.Drawing.Point(6, 30);
       this.chart.Name = "chart";
-      series1.ChartArea = "ChartArea1";
-      series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Bubble;
-      series1.CustomProperties = "BubbleMinSize=2, BubbleMaxSize=7";
-      series1.IsVisibleInLegend = false;
-      series1.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
-      series1.Name = "Bubbles";
-      series1.YValuesPerPoint = 2;
-      this.chart.Series.Add(series1);
+      series2.ChartArea = "ChartArea1";
+      series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Bubble;
+      series2.CustomProperties = "BubbleMinSize=2, BubbleMaxSize=7";
+      series2.IsVisibleInLegend = false;
+      series2.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
+      series2.Name = "Bubbles";
+      series2.YValuesPerPoint = 2;
+      this.chart.Series.Add(series2);
       this.chart.Size = new System.Drawing.Size(633, 248);
       this.chart.TabIndex = 16;
       this.chart.Text = "chart";
@@ -265,6 +266,14 @@ namespace HeuristicLab.Optimization.Views {
       this.noRunsLabel.TabIndex = 21;
       this.noRunsLabel.Text = "No runs could be displayed.";
       // 
+      // openBoxPlotViewToolStripMenuItem
+      // 
+      this.chart.ContextMenuStrip.Items.Add(openBoxPlotViewToolStripMenuItem);
+      this.openBoxPlotViewToolStripMenuItem.Name = "openBoxPlotViewToolStripMenuItem";
+      this.openBoxPlotViewToolStripMenuItem.Size = new System.Drawing.Size(256, 22);
+      this.openBoxPlotViewToolStripMenuItem.Text = "Open BoxPlot View";
+      this.openBoxPlotViewToolStripMenuItem.Click += new System.EventHandler(this.openBoxPlotViewToolStripMenuItem_Click);
+      // 
       // RunCollectionBubbleChartView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -316,5 +325,6 @@ namespace HeuristicLab.Optimization.Views {
     private System.Windows.Forms.ColorDialog colorDialog;
     private System.Windows.Forms.ToolTip tooltip;
     private System.Windows.Forms.Label noRunsLabel;
+    private System.Windows.Forms.ToolStripMenuItem openBoxPlotViewToolStripMenuItem;
   }
 }

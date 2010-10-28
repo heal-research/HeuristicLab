@@ -559,6 +559,14 @@ namespace HeuristicLab.Optimization.Views {
       }
       return colorImage;
     }
+
+    private void openBoxPlotViewToolStripMenuItem_Click(object sender, EventArgs e) {
+      RunCollectionBoxPlotView boxplotView = new RunCollectionBoxPlotView();
+      boxplotView.Content = this.Content;
+      boxplotView.xAxisComboBox.SelectedItem = xAxisComboBox.SelectedItem;
+      boxplotView.yAxisComboBox.SelectedItem = yAxisComboBox.SelectedItem;
+      boxplotView.Show();
+    }
     #endregion
   }
 }
