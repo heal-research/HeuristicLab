@@ -25,7 +25,7 @@
     private void InitializeComponent() {
       System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
       System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-      this.chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
+      this.chart = new HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart();
       this.JitterTrackBar = new System.Windows.Forms.TrackBar();
       this.label1 = new System.Windows.Forms.Label();
       ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
@@ -94,7 +94,7 @@
 
     #endregion
 
-    private System.Windows.Forms.DataVisualization.Charting.Chart chart;
+    private HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart chart;
     private System.Windows.Forms.TrackBar JitterTrackBar;
     private System.Windows.Forms.Label label1;
   }

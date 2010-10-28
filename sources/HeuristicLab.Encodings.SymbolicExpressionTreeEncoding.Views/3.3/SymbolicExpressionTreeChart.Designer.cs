@@ -46,18 +46,37 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+      this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+      this.saveImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.contextMenuStrip.SuspendLayout();
       this.SuspendLayout();
+      // 
+      // contextMenuStrip
+      // 
+      this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.saveImageToolStripMenuItem});
+      this.contextMenuStrip.Name = "contextMenuStrip";
+      this.contextMenuStrip.Size = new System.Drawing.Size(135, 26);
+      // 
+      // saveImageToolStripMenuItem
+      // 
+      this.saveImageToolStripMenuItem.Name = "saveImageToolStripMenuItem";
+      this.saveImageToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.saveImageToolStripMenuItem.Text = "Save Image";
+      this.saveImageToolStripMenuItem.Click += new System.EventHandler(this.saveImageToolStripMenuItem_Click);
       // 
       // SymbolicExpressionTreeChart
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.ContextMenuStrip = this.contextMenuStrip;
       this.Name = "SymbolicExpressionTreeChart";
-      this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.SymbolicExpressionTreeChart_MouseMove);
-      this.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.SymbolicExpressionTreeChart_MouseDoubleClick);
       this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.SymbolicExpressionTreeChart_MouseClick);
+      this.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.SymbolicExpressionTreeChart_MouseDoubleClick);
       this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.SymbolicExpressionTreeChart_MouseDown);
+      this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.SymbolicExpressionTreeChart_MouseMove);
       this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.SymbolicExpressionTreeChart_MouseUp);
+      this.contextMenuStrip.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }
@@ -65,5 +84,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     #endregion
 
     private System.Windows.Forms.ToolTip toolTip;
+    private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
+    private System.Windows.Forms.ToolStripMenuItem saveImageToolStripMenuItem;
   }
 }

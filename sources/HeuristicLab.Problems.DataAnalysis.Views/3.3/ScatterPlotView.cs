@@ -60,7 +60,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.chart.TextAntiAliasingQuality = TextAntiAliasingQuality.High;
       this.chart.AxisViewChanged += new EventHandler<System.Windows.Forms.DataVisualization.Charting.ViewEventArgs>(chart_AxisViewChanged);
 
-      //configure axis                  
+      //configure axis 
+      this.chart.CustomizeAllChartAreas();
       this.chart.ChartAreas[0].AxisX.Title = "Estimated Values";
       this.chart.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
       this.chart.ChartAreas[0].AxisX.ScaleView.Zoomable = true;

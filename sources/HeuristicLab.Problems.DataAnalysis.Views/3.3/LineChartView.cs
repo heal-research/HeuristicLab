@@ -42,6 +42,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       : base() {
       InitializeComponent();
       //configure axis
+      this.chart.CustomizeAllChartAreas();
       this.chart.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
       this.chart.ChartAreas[0].AxisX.ScaleView.Zoomable = true;
       this.chart.ChartAreas[0].CursorX.Interval = 1;

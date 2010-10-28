@@ -26,7 +26,7 @@
       this.components = new System.ComponentModel.Container();
       System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
       System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-      this.chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
+      this.chart = new HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart();
       this.label1 = new System.Windows.Forms.Label();
       this.cmbSamples = new System.Windows.Forms.ComboBox();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
@@ -89,7 +89,7 @@
 
     #endregion
 
-    private System.Windows.Forms.DataVisualization.Charting.Chart chart;
+    private HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart chart;
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.ComboBox cmbSamples;
     private System.Windows.Forms.ToolTip toolTip;

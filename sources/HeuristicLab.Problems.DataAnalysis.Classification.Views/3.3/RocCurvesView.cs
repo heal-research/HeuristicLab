@@ -48,6 +48,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification.Views {
       cmbSamples.Items.Add(TestSamples);
       cmbSamples.SelectedIndex = 0;
 
+      chart.CustomizeAllChartAreas();
       chart.ChartAreas[0].AxisX.Minimum = 0.0;
       chart.ChartAreas[0].AxisX.Maximum = 1.0;
       chart.ChartAreas[0].AxisX.MajorGrid.Interval = 0.2;

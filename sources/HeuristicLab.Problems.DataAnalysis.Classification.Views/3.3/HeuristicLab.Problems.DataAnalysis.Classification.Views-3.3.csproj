@@ -173,6 +173,10 @@
       <Project>{70DFD984-B1D9-46FE-8EB7-4DE92D71A9FC}</Project>
       <Name>HeuristicLab.Problems.DataAnalysis-3.3</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Visualization.ChartControlsExtensions\3.3\HeuristicLab.Visualization.ChartControlsExtensions-3.3.csproj">
+      <Project>{315BDA09-3F4F-49B3-9790-B37CFC1C5750}</Project>
+      <Name>HeuristicLab.Visualization.ChartControlsExtensions-3.3</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

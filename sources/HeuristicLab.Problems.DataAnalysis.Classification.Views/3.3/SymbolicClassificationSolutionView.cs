@@ -56,6 +56,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification.Views {
       random = new Random();
       updateInProgress = false;
 
+      this.chart.CustomizeAllChartAreas();
       this.chart.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
       this.chart.ChartAreas[0].AxisX.ScaleView.Zoomable = true;
       this.chart.ChartAreas[0].AxisX.Minimum = TrainingAxisValue - TrainingTestBorder;

@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Windows.Forms;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
@@ -284,6 +285,49 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
         xBoundaries[i + 1] = (int)(xBoundaries[i] + (width * (double)node.SubTrees[i].GetSize()) / (node.GetSize() - 1));
         DrawFunctionTree(node.SubTrees[i], graphics, xBoundaries[i], y + height,
           xBoundaries[i + 1] - xBoundaries[i], height, connectFrom);
+      }
+    }
+    #endregion
+
+    #region save image
+    private void saveImageToolStripMenuItem_Click(object sender, EventArgs e) {
+      SaveFileDialog saveFileDialog = new SaveFileDialog();
+
+      // Sets the current file name filter string, which determines 
+      // the choices that appear in the "Save as file type" or 
+      // "Files of type" box in the dialog box.
+      saveFileDialog.Filter = "Bitmap (*.bmp)|*.bmp|EMF (*.emf)|*.emf";
+      saveFileDialog.FilterIndex = 1;
+      saveFileDialog.RestoreDirectory = true;
+
+      if (saveFileDialog.ShowDialog() == DialogResult.OK) {
+        string filename = saveFileDialog.FileName.ToLower();
+        if (filename.EndsWith("bmp")) SaveImageAsBitmap(filename);
+        else if (filename.EndsWith("emf")) SaveImageAsEmf(filename);
+        else SaveImageAsBitmap(filename);
+      }
+    }
+
+    private void SaveImageAsBitmap(string filename) {
+      if (tree == null) return;
+      Image image = new Bitmap(Width, Height);
+      using (Graphics g = Graphics.FromImage(image)) {
+        int height = this.Height / tree.Height;
+        DrawFunctionTree(tree, g, 0, 0, Width, height);
+      }
+      image.Save(filename);
+    }
+
+    private void SaveImageAsEmf(string filename) {
+      if (tree == null) return;
+      using (Graphics g = CreateGraphics()) {
+        using (Metafile file = new Metafile(filename, g.GetHdc())) {
+          using (Graphics emfFile = Graphics.FromImage(file)) {
+            int height = this.Height / tree.Height;
+            DrawFunctionTree(tree, emfFile, 0, 0, Width, height);
+          }
+        }
+        g.ReleaseHdc();
       }
     }
     #endregion

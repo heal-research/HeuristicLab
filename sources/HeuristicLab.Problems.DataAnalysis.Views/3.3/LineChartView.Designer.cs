@@ -45,7 +45,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private void InitializeComponent() {
       System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
       System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-      this.chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
+      this.chart = new HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart();
       ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
       this.SuspendLayout();
       // 
@@ -78,6 +78,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     #endregion
 
-    private System.Windows.Forms.DataVisualization.Charting.Chart chart;
+    private HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart chart;
   }
 }
