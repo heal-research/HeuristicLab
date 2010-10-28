@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.Optimization.Views {
+namespace HeuristicLab.Optimizer {
   partial class CreateExperimentDialog {
     /// <summary>
     /// Required designer variable.

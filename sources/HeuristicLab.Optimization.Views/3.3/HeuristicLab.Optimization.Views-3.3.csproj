@@ -124,12 +124,6 @@
     <Compile Include="BatchRunView.Designer.cs">
       <DependentUpon>BatchRunView.cs</DependentUpon>
     </Compile>
-    <Compile Include="CreateExperimentDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CreateExperimentDialog.Designer.cs">
-      <DependentUpon>CreateExperimentDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="RunCollectionBoxPlotView.cs">
       <SubType>UserControl</SubType>
     </Compile>

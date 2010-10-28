@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
 using HeuristicLab.Optimization;
-using HeuristicLab.Optimization.Views;
 
 namespace HeuristicLab.Optimizer.MenuItems {
   internal class CreateExperimentMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItem, IOptimizerUserInterfaceItemProvider {

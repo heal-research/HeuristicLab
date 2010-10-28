@@ -27,8 +27,9 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using HeuristicLab.Optimization;
 
-namespace HeuristicLab.Optimization.Views {
+namespace HeuristicLab.Optimizer {
   public partial class CreateExperimentDialog : Form {
     private IAlgorithm algorithm;
     public IAlgorithm Algorithm {
