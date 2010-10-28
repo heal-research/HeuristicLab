@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -50,8 +51,20 @@ namespace HeuristicLab.Data.Views {
       set { base.ReadOnly = value; }
     }
 
+    private bool showRowsAndColumnsTextBox;
+    public bool ShowRowsAndColumnsTextBox {
+      get { return showRowsAndColumnsTextBox; }
+      set {
+        if (value != showRowsAndColumnsTextBox) {
+          showRowsAndColumnsTextBox = value;
+          UpdateVisibilityOfTextBoxes();
+        }
+      }
+    }
+
     public StringConvertibleMatrixView() {
       InitializeComponent();
+      showRowsAndColumnsTextBox = true;
       errorProvider.SetIconAlignment(rowsTextBox, ErrorIconAlignment.MiddleLeft);
       errorProvider.SetIconPadding(rowsTextBox, 2);
       errorProvider.SetIconAlignment(columnsTextBox, ErrorIconAlignment.MiddleLeft);
@@ -98,7 +111,6 @@ namespace HeuristicLab.Data.Views {
     }
 
     private void UpdateData() {
-
       rowsTextBox.Text = Content.Rows.ToString();
       rowsTextBox.Enabled = true;
       columnsTextBox.Text = Content.Columns.ToString();
@@ -470,6 +482,18 @@ namespace HeuristicLab.Data.Views {
     }
     private void ShowHideColumns_Click(object sender, EventArgs e) {
       new ColumnsVisibilityDialog(this.dataGridView.Columns.Cast<DataGridViewColumn>()).ShowDialog();
+    }
+
+    private void UpdateVisibilityOfTextBoxes() {
+      rowsTextBox.Visible = columnsTextBox.Visible = showRowsAndColumnsTextBox;
+      rowsLabel.Visible = columnsLabel.Visible = showRowsAndColumnsTextBox;
+
+      int headerSize = columnsTextBox.Location.Y + columnsTextBox.Size.Height +
+        columnsTextBox.Margin.Bottom + dataGridView.Margin.Top;
+
+      int offset = showRowsAndColumnsTextBox ? headerSize : 0;
+      dataGridView.Location = new Point(0, offset);
+      dataGridView.Size = new Size(Size.Width, Size.Height - offset);
     }
   }
 }

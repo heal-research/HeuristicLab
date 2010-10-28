@@ -130,6 +130,7 @@ namespace HeuristicLab.Optimization.Views {
       } else
         AddDataPoint(run);
       UpdateCursorInterval();
+      chart.ChartAreas[0].RecalculateAxesScale();
 
 
       if (this.chart.Series[0].Points.Count == 0)

@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.MainForm;
@@ -49,6 +50,7 @@ namespace HeuristicLab.Optimization.Views {
       this.chart.ChartAreas[0].Visible = false;
       this.chart.Series.Clear();
       this.chart.ChartAreas.Add(BoxPlotChartAreaName);
+      this.chart.CustomizeAllChartAreas();
     }
 
     public new RunCollection Content {
@@ -167,6 +169,7 @@ namespace HeuristicLab.Optimization.Views {
         foreach (Series s in this.seriesCache.Values)
           this.chart.Series.Add(s);
 
+        UpdateStatistics();
         if (seriesCache.Count > 0) {
           Series boxPlotSeries = CreateBoxPlotSeries();
           this.chart.Series.Add(boxPlotSeries);
@@ -175,6 +178,47 @@ namespace HeuristicLab.Optimization.Views {
         UpdateAxisLabels();
       }
       UpdateNoRunsVisibleLabel();
+    }
+
+    private void UpdateStatistics() {
+      DoubleMatrix matrix = new DoubleMatrix(6, seriesCache.Count);
+      matrix.SortableView = false;
+      List<string> columnNames = new List<string>();
+      foreach (Series series in seriesCache.Values) {
+        DataPoint datapoint = series.Points.FirstOrDefault();
+        if (datapoint != null) {
+          IRun run = (IRun)datapoint.Tag;
+          string selectedAxis = (string)xAxisComboBox.SelectedItem;
+          IItem value = null;
+
+          if (Enum.IsDefined(typeof(AxisDimension), selectedAxis)) {
+            AxisDimension axisDimension = (AxisDimension)Enum.Parse(typeof(AxisDimension), selectedAxis);
+            switch (axisDimension) {
+              case AxisDimension.Color: value = new StringValue(run.Color.ToString());
+                break;
+            }
+          } else value = Content.GetValue(run, selectedAxis);
+          string columnName = string.Empty;
+          if (value is DoubleValue || value is IntValue)
+            columnName = selectedAxis + ": ";
+          columnName += value.ToString();
+          columnNames.Add(columnName);
+        }
+      }
+      matrix.ColumnNames = columnNames;
+      matrix.RowNames = new string[] { "Mean", "Median", "Standard deviation", "Variance", "25th percentile", "75th percentile" };
+
+      for (int i = 0; i < seriesCache.Count; i++) {
+        Series series = seriesCache.ElementAt(i).Value;
+        double[] seriesValues = series.Points.Select(p => p.YValues[0]).OrderBy(d => d).ToArray();
+        matrix[0, i] = seriesValues.Average();
+        matrix[1, i] = seriesValues.Median();
+        matrix[2, i] = seriesValues.StandardDeviation();
+        matrix[3, i] = seriesValues.Variance();
+        matrix[4, i] = seriesValues.Percentile(0.25);
+        matrix[5, i] = seriesValues.Percentile(0.75);
+      }
+      statisticsMatrixView.Content = matrix;
     }
 
     private Series CreateBoxPlotSeries() {
@@ -213,6 +257,7 @@ namespace HeuristicLab.Optimization.Views {
 
         Series series = seriesCache[xValue.Value];
         DataPoint point = new DataPoint(xValue.Value, yValue.Value);
+        point.Tag = run;
         series.Points.Add(point);
       }
     }
@@ -292,6 +337,10 @@ namespace HeuristicLab.Optimization.Views {
       int axisDimensionCount = Enum.GetNames(typeof(AxisDimension)).Count();
       SetCustomAxisLabels(xAxis, xAxisComboBox.SelectedIndex - axisDimensionCount);
       SetCustomAxisLabels(yAxis, yAxisComboBox.SelectedIndex - axisDimensionCount);
+      if (xAxisComboBox.SelectedItem != null)
+        xAxis.Title = xAxisComboBox.SelectedItem.ToString();
+      if (yAxisComboBox.SelectedItem != null)
+        yAxis.Title = yAxisComboBox.SelectedItem.ToString();
     }
 
     private void chart_AxisViewChanged(object sender, System.Windows.Forms.DataVisualization.Charting.ViewEventArgs e) {
@@ -339,6 +388,20 @@ namespace HeuristicLab.Optimization.Views {
         }
       }
     }
+
+    private void chart_MouseMove(object sender, MouseEventArgs e) {
+      string newTooltipText = string.Empty;
+      string oldTooltipText;
+      HitTestResult h = this.chart.HitTest(e.X, e.Y);
+      if (h.ChartElementType == ChartElementType.AxisLabels) {
+        newTooltipText = ((CustomLabel)h.Object).ToolTip;
+      }
+
+      oldTooltipText = this.tooltip.GetToolTip(chart);
+      if (newTooltipText != oldTooltipText)
+        this.tooltip.SetToolTip(chart, newTooltipText);
+    }
     #endregion
+
   }
 }

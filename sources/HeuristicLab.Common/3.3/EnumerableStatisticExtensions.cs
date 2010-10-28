@@ -86,5 +86,25 @@ namespace HeuristicLab.Common {
       }
       return ((m_n > 1) ? m_newS / (m_n - 1) : 0.0);
     }
+
+    /// <summary>
+    /// Calculates the pth percentile of the values.
+    /// </summary
+    public static double Percentile(this IEnumerable<double> values, double p) {
+      if (values.Count() == 0) throw new InvalidOperationException("Enumeration contains no elements.");
+      if (values.Count() == 1) return values.ElementAt(0);
+
+      double[] sortedValues = values.ToArray();
+      Array.Sort(sortedValues);
+
+      int n = sortedValues.Length;
+      if (p.IsAlmost(0.0)) return sortedValues[0];
+      if (p.IsAlmost(1.0)) return sortedValues[n - 1];
+
+      double t = p * (n - 1);
+      int index = (int)Math.Floor(t);
+      double percentage = t - index;
+      return sortedValues[index] * (1 - percentage) + sortedValues[index + 1] * percentage;
+    }
   }
 }
