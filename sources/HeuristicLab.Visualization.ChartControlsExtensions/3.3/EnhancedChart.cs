@@ -93,12 +93,12 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       }
 
       public double ChartX(double pixelX, int width) {
-        return ChartStartPosition.X - (pixelX - PixelStartPosition.X) * 
+        return ChartStartPosition.X - (pixelX - PixelStartPosition.X) *
           (ChartArea.AxisX.ScaleView.ViewMaximum - ChartArea.AxisX.ScaleView.ViewMinimum) /
             (width * ChartArea.Position.Width * ChartArea.InnerPlotPosition.Width / 100 / 100);
       }
       public double ChartY(double pixelY, int height) {
-        return ChartStartPosition.Y + (pixelY - PixelStartPosition.Y) * 
+        return ChartStartPosition.Y + (pixelY - PixelStartPosition.Y) *
           (ChartArea.AxisY.ScaleView.ViewMaximum - ChartArea.AxisY.ScaleView.ViewMinimum) /
             (height * ChartArea.Position.Height * ChartArea.InnerPlotPosition.Height / 100 / 100);
       }
@@ -137,16 +137,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
     #endregion
     #endregion
 
-    private void saveImageToolStripMenuItem_Click(object sender, System.EventArgs e) {
-      SaveFileDialog saveFileDialog = new SaveFileDialog();
-
-      // Sets the current file name filter string, which determines 
-      // the choices that appear in the "Save as file type" or 
-      // "Files of type" box in the dialog box.
-      saveFileDialog.Filter = "Bitmap (*.bmp)|*.bmp|JPEG (*.jpg)|*.jpg|EMF (*.emf)|*.emf|PNG (*.png)|*.png|GIF (*.gif)|*.gif|TIFF (*.tif)|*.tif";
-      saveFileDialog.FilterIndex = 2;
-      saveFileDialog.RestoreDirectory = true;
-
+    private void exportChartToolStripMenuItem_Click(object sender, System.EventArgs e) {
       // Set image file format
       if (saveFileDialog.ShowDialog() == DialogResult.OK) {
         ChartImageFormat format = ChartImageFormat.Bmp;
