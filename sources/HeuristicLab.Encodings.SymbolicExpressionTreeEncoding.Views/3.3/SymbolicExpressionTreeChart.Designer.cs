@@ -48,6 +48,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.saveImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
       this.contextMenuStrip.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -61,9 +62,13 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       // saveImageToolStripMenuItem
       // 
       this.saveImageToolStripMenuItem.Name = "saveImageToolStripMenuItem";
-      this.saveImageToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.saveImageToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
       this.saveImageToolStripMenuItem.Text = "Save Image";
       this.saveImageToolStripMenuItem.Click += new System.EventHandler(this.saveImageToolStripMenuItem_Click);
+      // 
+      // saveFileDialog
+      // 
+      this.saveFileDialog.Filter = "\"Bitmap (*.bmp)|*.bmp|EMF (*.emf)|*.emf\"";
       // 
       // SymbolicExpressionTreeChart
       // 
@@ -86,5 +91,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     private System.Windows.Forms.ToolTip toolTip;
     private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
     private System.Windows.Forms.ToolStripMenuItem saveImageToolStripMenuItem;
+    private System.Windows.Forms.SaveFileDialog saveFileDialog;
   }
 }

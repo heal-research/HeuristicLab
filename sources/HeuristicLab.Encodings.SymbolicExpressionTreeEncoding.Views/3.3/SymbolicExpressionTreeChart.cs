@@ -291,15 +291,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
 
     #region save image
     private void saveImageToolStripMenuItem_Click(object sender, EventArgs e) {
-      SaveFileDialog saveFileDialog = new SaveFileDialog();
-
-      // Sets the current file name filter string, which determines 
-      // the choices that appear in the "Save as file type" or 
-      // "Files of type" box in the dialog box.
-      saveFileDialog.Filter = "Bitmap (*.bmp)|*.bmp|EMF (*.emf)|*.emf";
-      saveFileDialog.FilterIndex = 1;
-      saveFileDialog.RestoreDirectory = true;
-
       if (saveFileDialog.ShowDialog() == DialogResult.OK) {
         string filename = saveFileDialog.FileName.ToLower();
         if (filename.EndsWith("bmp")) SaveImageAsBitmap(filename);
