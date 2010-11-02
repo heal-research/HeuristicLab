@@ -116,6 +116,13 @@ namespace HeuristicLab.Common.Resources {
             }
         }
         
+        public static System.Drawing.Bitmap Cab {
+            get {
+                object obj = ResourceManager.GetObject("Cab", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         public static System.Drawing.Bitmap Class {
             get {
                 object obj = ResourceManager.GetObject("Class", resourceCulture);
@@ -214,6 +221,13 @@ namespace HeuristicLab.Common.Resources {
             }
         }
         
+        public static System.Drawing.Bitmap DisplayInColor {
+            get {
+                object obj = ResourceManager.GetObject("DisplayInColor", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         public static System.Drawing.Bitmap Document {
             get {
                 object obj = ResourceManager.GetObject("Document", resourceCulture);
@@ -231,6 +245,13 @@ namespace HeuristicLab.Common.Resources {
         public static System.Drawing.Bitmap Edit {
             get {
                 object obj = ResourceManager.GetObject("Edit", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        public static System.Drawing.Bitmap EditBrightnessContrast {
+            get {
+                object obj = ResourceManager.GetObject("EditBrightnessContrast", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -364,6 +385,13 @@ namespace HeuristicLab.Common.Resources {
         public static System.Drawing.Bitmap Function {
             get {
                 object obj = ResourceManager.GetObject("Function", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        public static System.Drawing.Bitmap Gradient {
+            get {
+                object obj = ResourceManager.GetObject("Gradient", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -564,10 +592,10 @@ namespace HeuristicLab.Common.Resources {
             }
         }
         
-        public static System.Drawing.Icon Performance {
+        public static System.Drawing.Bitmap Performance {
             get {
                 object obj = ResourceManager.GetObject("Performance", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -623,6 +651,13 @@ namespace HeuristicLab.Common.Resources {
         public static System.Drawing.Bitmap PublishToWeb {
             get {
                 object obj = ResourceManager.GetObject("PublishToWeb", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        public static System.Drawing.Bitmap RadialChart {
+            get {
+                object obj = ResourceManager.GetObject("RadialChart", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -697,6 +732,13 @@ namespace HeuristicLab.Common.Resources {
             }
         }
         
+        public static System.Drawing.Bitmap Statistics {
+            get {
+                object obj = ResourceManager.GetObject("Statistics", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         public static System.Drawing.Bitmap Stop {
             get {
                 object obj = ResourceManager.GetObject("Stop", resourceCulture);
@@ -728,6 +770,13 @@ namespace HeuristicLab.Common.Resources {
         public static System.Drawing.Bitmap Timer {
             get {
                 object obj = ResourceManager.GetObject("Timer", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        public static System.Drawing.Bitmap TrackBar {
+            get {
+                object obj = ResourceManager.GetObject("TrackBar", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -425,6 +425,14 @@
     <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Executable_Stopped.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Cab.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Gradient.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_EditBrightnessContrast.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_DisplayInColor.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_TrackBar.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_RadialChart.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Statistics.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Performance.png" />
     <None Include="Resources\HeuristicLab\HeuristicLab.ico" />
     <None Include="Resources\HeuristicLab\HeuristicLabBanner.png" />
     <None Include="Resources\HeuristicLab\HeuristicLabLogo.png" />
@@ -440,7 +448,6 @@
     <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_MoveLast.png" />
     <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_MoveNext.png" />
     <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_MovePrevious.png" />
-    <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Performance.ico" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
