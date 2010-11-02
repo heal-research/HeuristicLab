@@ -122,6 +122,24 @@
     <Compile Include="AlleleFrequencyCollectionView.Designer.cs">
       <DependentUpon>AlleleFrequencyCollectionView.cs</DependentUpon>
     </Compile>
+    <Compile Include="HeatMapHistoryView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="HeatMapHistoryView.Designer.cs">
+      <DependentUpon>HeatMapHistoryView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataTableHistoryView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DataTableHistoryView.Designer.cs">
+      <DependentUpon>DataTableHistoryView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HeatMapView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="HeatMapView.Designer.cs">
+      <DependentUpon>HeatMapView.cs</DependentUpon>
+    </Compile>
     <Compile Include="HeuristicLabAnalysisViewsPlugin.cs" />
     <Compile Include="AlleleFrequencyView.cs">
       <SubType>UserControl</SubType>
@@ -209,6 +227,11 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="HeatMapView.resx">
+      <DependentUpon>HeatMapView.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

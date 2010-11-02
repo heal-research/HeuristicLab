@@ -48,7 +48,7 @@ namespace HeuristicLab.Analysis {
       }
     }
     private ObservableList<double> values;
-    public IObservableList<double> Values {
+    public ObservableList<double> Values {
       get { return values; }
     }
 

@@ -130,6 +130,9 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     private TSPAlleleFrequencyAnalyzer TSPAlleleFrequencyAnalyzer {
       get { return operators.OfType<TSPAlleleFrequencyAnalyzer>().FirstOrDefault(); }
     }
+    private TSPPopulationDiversityAnalyzer TSPPopulationDiversityAnalyzer {
+      get { return operators.OfType<TSPPopulationDiversityAnalyzer>().FirstOrDefault(); }
+    }
     #endregion
 
     [Storable]
@@ -272,6 +275,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       operators = new List<IOperator>();
       operators.Add(new BestTSPSolutionAnalyzer());
       operators.Add(new TSPAlleleFrequencyAnalyzer());
+      operators.Add(new TSPPopulationDiversityAnalyzer());
       ParameterizeAnalyzers();
       operators.AddRange(ApplicationManager.Manager.GetInstances<IPermutationOperator>().Cast<IOperator>());
       ParameterizeOperators();
@@ -331,6 +335,13 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         TSPAlleleFrequencyAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
         TSPAlleleFrequencyAnalyzer.BestKnownSolutionParameter.ActualName = BestKnownSolutionParameter.Name;
         TSPAlleleFrequencyAnalyzer.ResultsParameter.ActualName = "Results";
+      }
+
+      if (TSPPopulationDiversityAnalyzer != null) {
+        TSPPopulationDiversityAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
+        TSPPopulationDiversityAnalyzer.SolutionParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
+        TSPPopulationDiversityAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
+        TSPPopulationDiversityAnalyzer.ResultsParameter.ActualName = "Results";
       }
     }
     private void ParameterizeOperators() {
