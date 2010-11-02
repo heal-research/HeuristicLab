@@ -68,8 +68,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       // 
       // saveFileDialog
       // 
-      this.saveFileDialog.Filter = "\"Bitmap (*.bmp)|*.bmp|EMF (*.emf)|*.emf\"";
-      // 
+      this.saveFileDialog.Filter = "Bitmap (*.bmp)|*.bmp|EMF (*.emf)|*.emf";
+      this.saveFileDialog.FilterIndex = 1;      
       // SymbolicExpressionTreeChart
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
