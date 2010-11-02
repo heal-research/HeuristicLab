@@ -50,8 +50,8 @@ namespace HeuristicLab.Analysis {
     public ValueLookupParameter<ResultCollection> ResultsParameter {
       get { return (ValueLookupParameter<ResultCollection>)Parameters["Results"]; }
     }
-    public ValueParameter<BoolValue> StoreAlleleFrequenciesHistoryParameter {
-      get { return (ValueParameter<BoolValue>)Parameters["StoreAlleleFrequenciesHistory"]; }
+    public ValueParameter<BoolValue> StoreHistoryParameter {
+      get { return (ValueParameter<BoolValue>)Parameters["StoreHistory"]; }
     }
     public ValueParameter<IntValue> UpdateIntervalParameter {
       get { return (ValueParameter<IntValue>)Parameters["UpdateInterval"]; }
@@ -60,6 +60,8 @@ namespace HeuristicLab.Analysis {
       get { return (LookupParameter<IntValue>)Parameters["UpdateCounter"]; }
     }
 
+    [StorableConstructor]
+    protected AlleleFrequencyAnalyzer(bool deserializing) : base(deserializing) { }
     public AlleleFrequencyAnalyzer()
       : base() {
       Parameters.Add(new LookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem."));
@@ -67,7 +69,7 @@ namespace HeuristicLab.Analysis {
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The qualities of the solutions which should be analyzed."));
       Parameters.Add(new LookupParameter<T>("BestKnownSolution", "The best known solution."));
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the allele frequency analysis results should be stored."));
-      Parameters.Add(new ValueParameter<BoolValue>("StoreAlleleFrequenciesHistory", "True if the history of all allele frequencies should be stored.", new BoolValue(false)));
+      Parameters.Add(new ValueParameter<BoolValue>("StoreHistory", "True if the history of the allele frequency analysis should be stored.", new BoolValue(false)));
       Parameters.Add(new ValueParameter<IntValue>("UpdateInterval", "The interval in which the allele frequency analysis should be applied.", new IntValue(1)));
       Parameters.Add(new LookupParameter<IntValue>("UpdateCounter", "The value which counts how many times the operator was called since the last update.", "AlleleFrequencyAnalyzerUpdateCounter"));
     }
@@ -98,7 +100,7 @@ namespace HeuristicLab.Analysis {
         ItemArray<T> solutions = SolutionParameter.ActualValue;
         ItemArray<DoubleValue> qualities = QualityParameter.ActualValue;
         T bestKnownSolution = BestKnownSolutionParameter.ActualValue;
-        bool storeHistory = StoreAlleleFrequenciesHistoryParameter.Value.Value;
+        bool storeHistory = StoreHistoryParameter.Value.Value;
 
         // calculate index of current best solution
         int bestIndex = -1;

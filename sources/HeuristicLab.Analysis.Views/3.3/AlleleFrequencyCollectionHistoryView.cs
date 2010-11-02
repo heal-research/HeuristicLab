@@ -27,9 +27,6 @@ namespace HeuristicLab.Analysis.Views {
   [View("AlleleFrequencyCollectionHistory View")]
   [Content(typeof(AlleleFrequencyCollectionHistory), true)]
   public partial class AlleleFrequencyCollectionHistoryView : MovieView<AlleleFrequencyCollection> {
-    /// <summary>
-    /// Initializes a new instance of <see cref="VariablesScopeView"/> with caption "Variables Scope View".
-    /// </summary>
     public AlleleFrequencyCollectionHistoryView() {
       InitializeComponent();
       itemsGroupBox.Text = "Allele Frequencies";

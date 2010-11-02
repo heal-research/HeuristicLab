@@ -38,6 +38,8 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       get { return (LookupParameter<DoubleMatrix>)Parameters["Coordinates"]; }
     }
 
+    [StorableConstructor]
+    private TSPAlleleFrequencyAnalyzer(bool deserializing) : base(deserializing) { }
     public TSPAlleleFrequencyAnalyzer()
       : base() {
       Parameters.Add(new LookupParameter<DoubleMatrix>("Coordinates", "The x- and y-Coordinates of the cities."));

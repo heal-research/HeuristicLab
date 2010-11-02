@@ -20,6 +20,7 @@
 #endregion
 
 using System.Collections.Generic;
+using System.Drawing;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -30,6 +31,10 @@ namespace HeuristicLab.Analysis {
   [Item("AlleleFrequencyCollectionHistory", "Represents history values of allele frequencies collections.")]
   [StorableClass]
   public class AlleleFrequencyCollectionHistory : ItemCollection<AlleleFrequencyCollection> {
+    public override Image ItemImage {
+      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Cab; }
+    }
+
     public AlleleFrequencyCollectionHistory() : base() { }
     public AlleleFrequencyCollectionHistory(IEnumerable<AlleleFrequencyCollection> collections) : base(new ItemCollection<AlleleFrequencyCollection>(collections)) { }
     [StorableConstructor]
