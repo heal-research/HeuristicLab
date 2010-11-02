@@ -55,16 +55,24 @@ namespace HeuristicLab.Data.Views {
     public bool ShowRowsAndColumnsTextBox {
       get { return showRowsAndColumnsTextBox; }
       set {
-        if (value != showRowsAndColumnsTextBox) {
-          showRowsAndColumnsTextBox = value;
-          UpdateVisibilityOfTextBoxes();
-        }
+        showRowsAndColumnsTextBox = value;
+        UpdateVisibilityOfTextBoxes();
+      }
+    }
+
+    private bool showStatisticalInformation;
+    public bool ShowStatisticalInformation {
+      get { return showStatisticalInformation; }
+      set {
+        showStatisticalInformation = value;
+        UpdateVisibilityOfStatisticalInformation();
       }
     }
 
     public StringConvertibleMatrixView() {
       InitializeComponent();
-      showRowsAndColumnsTextBox = true;
+      ShowRowsAndColumnsTextBox = true;
+      ShowStatisticalInformation = false;
       errorProvider.SetIconAlignment(rowsTextBox, ErrorIconAlignment.MiddleLeft);
       errorProvider.SetIconPadding(rowsTextBox, 2);
       errorProvider.SetIconAlignment(columnsTextBox, ErrorIconAlignment.MiddleLeft);
@@ -495,13 +503,43 @@ namespace HeuristicLab.Data.Views {
     private void UpdateVisibilityOfTextBoxes() {
       rowsTextBox.Visible = columnsTextBox.Visible = showRowsAndColumnsTextBox;
       rowsLabel.Visible = columnsLabel.Visible = showRowsAndColumnsTextBox;
+      UpdateDataGridViewSizeAndLocation();
+    }
 
+    private void UpdateVisibilityOfStatisticalInformation() {
+      statusStrip.Visible = showStatisticalInformation;
+      UpdateDataGridViewSizeAndLocation();
+    }
+
+    private void UpdateDataGridViewSizeAndLocation() {
       int headerSize = columnsTextBox.Location.Y + columnsTextBox.Size.Height +
-        columnsTextBox.Margin.Bottom + dataGridView.Margin.Top;
+       columnsTextBox.Margin.Bottom + dataGridView.Margin.Top;
 
       int offset = showRowsAndColumnsTextBox ? headerSize : 0;
       dataGridView.Location = new Point(0, offset);
-      dataGridView.Size = new Size(Size.Width, Size.Height - offset);
+
+      int statusStripHeight = showStatisticalInformation ? statusStrip.Height : 0;
+      dataGridView.Size = new Size(Size.Width, Size.Height - offset - statusStripHeight);
+    }
+
+    private void dataGridView_SelectionChanged(object sender, EventArgs e) {
+      toolStripStatusLabel.Text = string.Empty;
+      if (dataGridView.SelectedCells.Count > 1) {
+        List<double> selectedValues = new List<double>();
+        foreach (DataGridViewCell cell in dataGridView.SelectedCells) {
+          double value;
+          if (!double.TryParse(cell.Value.ToString(), out value)) return;
+          selectedValues.Add(value);
+        }
+        if (selectedValues.Count > 1) {
+          StringBuilder labelText = new StringBuilder();
+          labelText.Append("Average: " + selectedValues.Average() + "    ");
+          labelText.Append("StdDev: " + selectedValues.StandardDeviation() + "    ");
+          labelText.Append("Sum: " + selectedValues.Sum() + "    ");
+          labelText.Append("Count: " + selectedValues.Count + "    ");
+          toolStripStatusLabel.Text = labelText.ToString();
+        }
+      }
     }
   }
 }

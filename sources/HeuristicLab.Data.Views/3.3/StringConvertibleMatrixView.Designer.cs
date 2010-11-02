@@ -53,9 +53,12 @@ namespace HeuristicLab.Data.Views {
       this.columnsLabel = new System.Windows.Forms.Label();
       this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.ShowHideColumns = new System.Windows.Forms.ToolStripMenuItem();
+      this.statusStrip = new System.Windows.Forms.StatusStrip();
+      this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
       ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.contextMenu.SuspendLayout();
+      this.statusStrip.SuspendLayout();
       this.SuspendLayout();
       // 
       // rowsLabel
@@ -92,7 +95,7 @@ namespace HeuristicLab.Data.Views {
       this.dataGridView.Location = new System.Drawing.Point(0, 52);
       this.dataGridView.Name = "dataGridView";
       this.dataGridView.RowHeadersWidth = 160;
-      this.dataGridView.Size = new System.Drawing.Size(424, 352);
+      this.dataGridView.Size = new System.Drawing.Size(424, 327);
       this.dataGridView.TabIndex = 4;
       this.dataGridView.VirtualMode = true;
       this.dataGridView.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellEndEdit);
@@ -101,8 +104,9 @@ namespace HeuristicLab.Data.Views {
       this.dataGridView.CellValueNeeded += new System.Windows.Forms.DataGridViewCellValueEventHandler(this.dataGridView_CellValueNeeded);
       this.dataGridView.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView_ColumnHeaderMouseClick);
       this.dataGridView.Scroll += new System.Windows.Forms.ScrollEventHandler(this.dataGridView_Scroll);
+      this.dataGridView.SelectionChanged += new System.EventHandler(this.dataGridView_SelectionChanged);
       this.dataGridView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dataGridView_KeyDown);
-      this.dataGridView.MouseClick += new System.Windows.Forms.MouseEventHandler(dataGridView_MouseClick);
+      this.dataGridView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.dataGridView_MouseClick);
       this.dataGridView.Resize += new System.EventHandler(this.dataGridView_Resize);
       // 
       // errorProvider
@@ -145,10 +149,27 @@ namespace HeuristicLab.Data.Views {
       this.ShowHideColumns.Text = "Show / Hide Columns";
       this.ShowHideColumns.Click += new System.EventHandler(this.ShowHideColumns_Click);
       // 
+      // statusStrip1
+      // 
+      this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel});
+      this.statusStrip.Location = new System.Drawing.Point(0, 382);
+      this.statusStrip.Name = "statusStrip1";
+      this.statusStrip.Size = new System.Drawing.Size(424, 22);
+      this.statusStrip.TabIndex = 5;
+      this.statusStrip.Text = "statusStrip1";
+      // 
+      // toolStripStatusLabel
+      // 
+      this.toolStripStatusLabel.Name = "toolStripStatusLabel";
+      this.toolStripStatusLabel.Size = new System.Drawing.Size(378, 17);
+      this.toolStripStatusLabel.Spring = true;
+      // 
       // StringConvertibleMatrixView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.statusStrip);
       this.Controls.Add(this.dataGridView);
       this.Controls.Add(this.columnsTextBox);
       this.Controls.Add(this.rowsTextBox);
@@ -159,6 +180,8 @@ namespace HeuristicLab.Data.Views {
       ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.contextMenu.ResumeLayout(false);
+      this.statusStrip.ResumeLayout(false);
+      this.statusStrip.PerformLayout();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -173,6 +196,8 @@ namespace HeuristicLab.Data.Views {
     protected System.Windows.Forms.ContextMenuStrip contextMenu;
     protected System.Windows.Forms.ToolStripMenuItem ShowHideColumns;
     protected System.Windows.Forms.DataGridView dataGridView;
+    private System.Windows.Forms.StatusStrip statusStrip;
+    private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
 
   }
 }

@@ -44,8 +44,27 @@ namespace HeuristicLab.Optimization.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.components = new System.ComponentModel.Container();
-      this.dataGridView.RowHeaderMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(dataGridView_RowHeaderMouseDoubleClick);
+      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
+      this.SuspendLayout();
+      // 
+      // rowsTextBox
+      // 
+      this.errorProvider.SetIconAlignment(this.rowsTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
+      this.errorProvider.SetIconPadding(this.rowsTextBox, 2);
+      // 
+      // RunCollectionTabularView
+      // 
+      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+      this.Name = "RunCollectionTabularView";
+      this.ShowStatisticalInformation = true;
+      this.Controls.SetChildIndex(this.rowsLabel, 0);
+      this.Controls.SetChildIndex(this.columnsLabel, 0);
+      this.Controls.SetChildIndex(this.rowsTextBox, 0);
+      this.Controls.SetChildIndex(this.columnsTextBox, 0);
+      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
+      this.ResumeLayout(false);
+      this.PerformLayout();
+
     }
 
     #endregion

@@ -45,8 +45,8 @@ namespace HeuristicLab.Optimization.Views {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-      System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+      System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
       this.xAxisLabel = new System.Windows.Forms.Label();
       this.xAxisComboBox = new System.Windows.Forms.ComboBox();
       this.yAxisLabel = new System.Windows.Forms.Label();
@@ -55,8 +55,8 @@ namespace HeuristicLab.Optimization.Views {
       this.noRunsLabel = new System.Windows.Forms.Label();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
       this.statisticsGroupBox = new System.Windows.Forms.GroupBox();
-      this.statisticsMatrixView = new HeuristicLab.Data.Views.StringConvertibleMatrixView();
       this.tooltip = new System.Windows.Forms.ToolTip(this.components);
+      this.statisticsMatrixView = new HeuristicLab.Data.Views.StringConvertibleMatrixView();
       ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
@@ -111,17 +111,17 @@ namespace HeuristicLab.Optimization.Views {
       this.chart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      chartArea1.Name = "ChartArea1";
-      this.chart.ChartAreas.Add(chartArea1);
+      chartArea2.Name = "ChartArea1";
+      this.chart.ChartAreas.Add(chartArea2);
       this.chart.Location = new System.Drawing.Point(6, 30);
       this.chart.Name = "chart";
-      series1.ChartArea = "ChartArea1";
-      series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.BoxPlot;
-      series1.IsVisibleInLegend = false;
-      series1.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
-      series1.Name = "DataSeries";
-      series1.YValuesPerPoint = 6;
-      this.chart.Series.Add(series1);
+      series2.ChartArea = "ChartArea1";
+      series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.BoxPlot;
+      series2.IsVisibleInLegend = false;
+      series2.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
+      series2.Name = "DataSeries";
+      series2.YValuesPerPoint = 6;
+      this.chart.Series.Add(series2);
       this.chart.Size = new System.Drawing.Size(534, 217);
       this.chart.TabIndex = 17;
       this.chart.Text = "chart";
@@ -183,6 +183,7 @@ namespace HeuristicLab.Optimization.Views {
       this.statisticsMatrixView.Name = "statisticsMatrixView";
       this.statisticsMatrixView.ReadOnly = true;
       this.statisticsMatrixView.ShowRowsAndColumnsTextBox = false;
+      this.statisticsMatrixView.ShowStatisticalInformation = false;
       this.statisticsMatrixView.Size = new System.Drawing.Size(528, 110);
       this.statisticsMatrixView.TabIndex = 0;
       // 
