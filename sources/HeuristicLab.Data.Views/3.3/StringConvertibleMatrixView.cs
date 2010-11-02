@@ -115,6 +115,7 @@ namespace HeuristicLab.Data.Views {
       rowsTextBox.Enabled = true;
       columnsTextBox.Text = Content.Columns.ToString();
       columnsTextBox.Enabled = true;
+
       //DataGridViews with rows but no columns are not allowed !
       if (Content.Rows == 0 && dataGridView.RowCount != Content.Rows && !Content.ReadOnly)
         Content.Rows = dataGridView.RowCount;
@@ -128,18 +129,25 @@ namespace HeuristicLab.Data.Views {
 
       UpdateColumnHeaders();
       UpdateRowHeaders();
+
       dataGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.ColumnHeader);
       dataGridView.AutoResizeRowHeadersWidth(DataGridViewRowHeadersWidthSizeMode.AutoSizeToDisplayedHeaders);
       dataGridView.Enabled = true;
     }
 
     protected void UpdateColumnHeaders() {
+      HashSet<string> visibleColumnNames = new HashSet<string>(dataGridView.Columns.OfType<DataGridViewColumn>()
+          .Where(c => c.Visible && !string.IsNullOrEmpty(c.HeaderText)).Select(c => c.HeaderText));
+
       for (int i = 0; i < dataGridView.ColumnCount; i++) {
-        if (Content.ColumnNames.Count() != 0)
+        if (i < Content.ColumnNames.Count())
           dataGridView.Columns[i].HeaderText = Content.ColumnNames.ElementAt(i);
         else
           dataGridView.Columns[i].HeaderText = "Column " + (i + 1);
       }
+
+      foreach (DataGridViewColumn column in dataGridView.Columns)
+        column.Visible = visibleColumnNames.Contains(column.HeaderText) || visibleColumnNames.Count == 0;
     }
     protected void UpdateRowHeaders() {
       int index = dataGridView.FirstDisplayedScrollingRowIndex;
@@ -148,7 +156,7 @@ namespace HeuristicLab.Data.Views {
       int count = dataGridView.DisplayedRowCount(true);
 
       while (updatedRows < count) {
-        if (Content.RowNames.Count() != 0)
+        if (virtualRowIndizes[index] < Content.RowNames.Count())
           dataGridView.Rows[index].HeaderCell.Value = Content.RowNames.ElementAt(virtualRowIndizes[index]);
         else
           dataGridView.Rows[index].HeaderCell.Value = "Row " + (index + 1);

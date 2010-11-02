@@ -87,14 +87,12 @@ namespace HeuristicLab.Optimization {
         foreach (KeyValuePair<string, IItem> result in run.Results)
           columnNamesChanged |= AddResult(result.Key, result.Value);
       }
-      if (columnNamesChanged) {
-        columnNameCache = null;
-        OnColumnNamesChanged();
-      }
+      if (columnNamesChanged) columnNameCache = null;
       rowNamesCache = null;
       base.OnItemsAdded(items);
-      OnRowNamesChanged();
       OnReset();
+      OnRowNamesChanged();
+      if (columnNamesChanged) OnColumnNamesChanged();
       UpdateFiltering(false);
     }
     protected override void OnItemsRemoved(IEnumerable<IRun> items) {
@@ -105,14 +103,12 @@ namespace HeuristicLab.Optimization {
         foreach (string resultName in run.Results.Keys)
           columnNamesChanged |= RemoveResultName(resultName);
       }
-      if (columnNamesChanged) {
-        columnNameCache = null;
-        OnColumnNamesChanged();
-      }
+      if (columnNamesChanged) columnNameCache = null;
       rowNamesCache = null;
       base.OnItemsRemoved(items);
-      OnRowNamesChanged();
       OnReset();
+      OnRowNamesChanged();
+      if (columnNamesChanged) OnColumnNamesChanged();
     }
 
     private bool AddParameter(string name, IItem value) {
