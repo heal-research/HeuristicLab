@@ -185,6 +185,32 @@ namespace HeuristicLab.Analysis {
         allelesTable.Rows["Fixed Alleles"].Values.Add(fixedAllelesCount);
         allelesTable.Rows["Fixed Alleles of Best Known Solution"].Values.Add(fixedRelevantAllelesCount);
         allelesTable.Rows["Lost Alleles of Best Known Solution"].Values.Add(lostRelevantAllelesCount);
+
+        // store alleles values
+        if (!results.ContainsKey("Unique Alleles"))
+          results.Add(new Result("Unique Alleles", new DoubleValue(frequenciesCollection.Count)));
+        else
+          ((DoubleValue)results["Unique Alleles"].Value).Value = frequenciesCollection.Count;
+
+        if (!results.ContainsKey("Unique Alleles of Best Known Solution"))
+          results.Add(new Result("Unique Alleles of Best Known Solution", new DoubleValue(uniqueRelevantAllelesCount)));
+        else
+          ((DoubleValue)results["Unique Alleles of Best Known Solution"].Value).Value = uniqueRelevantAllelesCount;
+
+        if (!results.ContainsKey("Fixed Alleles"))
+          results.Add(new Result("Fixed Alleles", new DoubleValue(fixedAllelesCount)));
+        else
+          ((DoubleValue)results["Fixed Alleles"].Value).Value = fixedAllelesCount;
+
+        if (!results.ContainsKey("Fixed Alleles of Best Known Solution"))
+          results.Add(new Result("Fixed Alleles of Best Known Solution", new DoubleValue(fixedRelevantAllelesCount)));
+        else
+          ((DoubleValue)results["Fixed Alleles of Best Known Solution"].Value).Value = fixedRelevantAllelesCount;
+
+        if (!results.ContainsKey("Lost Alleles of Best Known Solution"))
+          results.Add(new Result("Lost Alleles of Best Known Solution", new DoubleValue(lostRelevantAllelesCount)));
+        else
+          ((DoubleValue)results["Lost Alleles of Best Known Solution"].Value).Value = lostRelevantAllelesCount;
       }
       return base.Apply();
     }
