@@ -52,5 +52,9 @@ namespace HeuristicLab.Analysis {
       clone.readOnly = readOnly;
       return clone;
     }
+
+    public override string ToString() {
+      return ItemName;
+    }
   }
 }

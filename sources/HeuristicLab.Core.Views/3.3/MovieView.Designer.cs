@@ -48,12 +48,15 @@ namespace HeuristicLab.Core.Views {
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
       this.itemsGroupBox = new System.Windows.Forms.GroupBox();
+      this.indexLabel = new System.Windows.Forms.Label();
+      this.delayComboBox = new System.Windows.Forms.ComboBox();
       this.stopButton = new System.Windows.Forms.Button();
+      this.nextButton = new System.Windows.Forms.Button();
       this.lastButton = new System.Windows.Forms.Button();
       this.playButton = new System.Windows.Forms.Button();
+      this.previousButton = new System.Windows.Forms.Button();
       this.firstButton = new System.Windows.Forms.Button();
       this.maximumLabel = new System.Windows.Forms.Label();
-      this.indexLabel = new System.Windows.Forms.Label();
       this.minimumLabel = new System.Windows.Forms.Label();
       this.trackBar = new System.Windows.Forms.TrackBar();
       this.viewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
@@ -68,12 +71,15 @@ namespace HeuristicLab.Core.Views {
       this.itemsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
+      this.itemsGroupBox.Controls.Add(this.indexLabel);
+      this.itemsGroupBox.Controls.Add(this.delayComboBox);
       this.itemsGroupBox.Controls.Add(this.stopButton);
+      this.itemsGroupBox.Controls.Add(this.nextButton);
       this.itemsGroupBox.Controls.Add(this.lastButton);
       this.itemsGroupBox.Controls.Add(this.playButton);
+      this.itemsGroupBox.Controls.Add(this.previousButton);
       this.itemsGroupBox.Controls.Add(this.firstButton);
       this.itemsGroupBox.Controls.Add(this.maximumLabel);
-      this.itemsGroupBox.Controls.Add(this.indexLabel);
       this.itemsGroupBox.Controls.Add(this.minimumLabel);
       this.itemsGroupBox.Controls.Add(this.trackBar);
       this.itemsGroupBox.Controls.Add(this.viewHost);
@@ -84,17 +90,51 @@ namespace HeuristicLab.Core.Views {
       this.itemsGroupBox.TabStop = false;
       this.itemsGroupBox.Text = "Items";
       // 
+      // indexLabel
+      // 
+      this.indexLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.indexLabel.Location = new System.Drawing.Point(173, 364);
+      this.indexLabel.Name = "indexLabel";
+      this.indexLabel.Size = new System.Drawing.Size(186, 13);
+      this.indexLabel.TabIndex = 9;
+      this.indexLabel.Text = "0";
+      this.indexLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+      // 
+      // delayComboBox
+      // 
+      this.delayComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.delayComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.delayComboBox.FormattingEnabled = true;
+      this.delayComboBox.Location = new System.Drawing.Point(472, 355);
+      this.delayComboBox.Name = "delayComboBox";
+      this.delayComboBox.Size = new System.Drawing.Size(54, 21);
+      this.delayComboBox.TabIndex = 11;
+      this.toolTip.SetToolTip(this.delayComboBox, "Visualization Delay");
+      this.delayComboBox.SelectedIndexChanged += new System.EventHandler(this.delayComboBox_SelectedIndexChanged);
+      // 
       // stopButton
       // 
-      this.stopButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.stopButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.stopButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Stop;
-      this.stopButton.Location = new System.Drawing.Point(502, 355);
+      this.stopButton.Location = new System.Drawing.Point(36, 355);
       this.stopButton.Name = "stopButton";
       this.stopButton.Size = new System.Drawing.Size(24, 24);
-      this.stopButton.TabIndex = 5;
+      this.stopButton.TabIndex = 7;
       this.toolTip.SetToolTip(this.stopButton, "Stop");
       this.stopButton.UseVisualStyleBackColor = true;
       this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
+      // 
+      // nextButton
+      // 
+      this.nextButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.nextButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.MoveNext;
+      this.nextButton.Location = new System.Drawing.Point(472, 325);
+      this.nextButton.Name = "nextButton";
+      this.nextButton.Size = new System.Drawing.Size(24, 24);
+      this.nextButton.TabIndex = 4;
+      this.nextButton.UseVisualStyleBackColor = true;
+      this.nextButton.Click += new System.EventHandler(this.nextButton_Click);
       // 
       // lastButton
       // 
@@ -103,7 +143,7 @@ namespace HeuristicLab.Core.Views {
       this.lastButton.Location = new System.Drawing.Point(502, 325);
       this.lastButton.Name = "lastButton";
       this.lastButton.Size = new System.Drawing.Size(24, 24);
-      this.lastButton.TabIndex = 3;
+      this.lastButton.TabIndex = 5;
       this.toolTip.SetToolTip(this.lastButton, "Move to Last");
       this.lastButton.UseVisualStyleBackColor = true;
       this.lastButton.Click += new System.EventHandler(this.lastButton_Click);
@@ -115,10 +155,21 @@ namespace HeuristicLab.Core.Views {
       this.playButton.Location = new System.Drawing.Point(6, 355);
       this.playButton.Name = "playButton";
       this.playButton.Size = new System.Drawing.Size(24, 24);
-      this.playButton.TabIndex = 4;
+      this.playButton.TabIndex = 6;
       this.toolTip.SetToolTip(this.playButton, "Play");
       this.playButton.UseVisualStyleBackColor = true;
       this.playButton.Click += new System.EventHandler(this.playButton_Click);
+      // 
+      // previousButton
+      // 
+      this.previousButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.previousButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.MovePrevious;
+      this.previousButton.Location = new System.Drawing.Point(36, 325);
+      this.previousButton.Name = "previousButton";
+      this.previousButton.Size = new System.Drawing.Size(24, 24);
+      this.previousButton.TabIndex = 2;
+      this.previousButton.UseVisualStyleBackColor = true;
+      this.previousButton.Click += new System.EventHandler(this.previousButton_Click);
       // 
       // firstButton
       // 
@@ -135,31 +186,20 @@ namespace HeuristicLab.Core.Views {
       // maximumLabel
       // 
       this.maximumLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.maximumLabel.Location = new System.Drawing.Point(388, 364);
+      this.maximumLabel.Location = new System.Drawing.Point(351, 364);
       this.maximumLabel.Name = "maximumLabel";
       this.maximumLabel.Size = new System.Drawing.Size(108, 13);
-      this.maximumLabel.TabIndex = 8;
+      this.maximumLabel.TabIndex = 10;
       this.maximumLabel.Text = "10";
       this.maximumLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-      // 
-      // indexLabel
-      // 
-      this.indexLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.indexLabel.Location = new System.Drawing.Point(173, 364);
-      this.indexLabel.Name = "indexLabel";
-      this.indexLabel.Size = new System.Drawing.Size(186, 13);
-      this.indexLabel.TabIndex = 7;
-      this.indexLabel.Text = "0";
-      this.indexLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
       // 
       // minimumLabel
       // 
       this.minimumLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.minimumLabel.Location = new System.Drawing.Point(36, 364);
+      this.minimumLabel.Location = new System.Drawing.Point(73, 364);
       this.minimumLabel.Name = "minimumLabel";
       this.minimumLabel.Size = new System.Drawing.Size(38, 13);
-      this.minimumLabel.TabIndex = 6;
+      this.minimumLabel.TabIndex = 8;
       this.minimumLabel.Text = "0";
       this.minimumLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
@@ -168,10 +208,10 @@ namespace HeuristicLab.Core.Views {
       this.trackBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.trackBar.LargeChange = 1;
-      this.trackBar.Location = new System.Drawing.Point(36, 316);
+      this.trackBar.Location = new System.Drawing.Point(66, 316);
       this.trackBar.Name = "trackBar";
-      this.trackBar.Size = new System.Drawing.Size(460, 45);
-      this.trackBar.TabIndex = 2;
+      this.trackBar.Size = new System.Drawing.Size(400, 45);
+      this.trackBar.TabIndex = 3;
       this.trackBar.TickStyle = System.Windows.Forms.TickStyle.Both;
       this.trackBar.ValueChanged += new System.EventHandler(this.trackBar_ValueChanged);
       // 
@@ -223,5 +263,8 @@ namespace HeuristicLab.Core.Views {
     protected Label indexLabel;
     protected Label minimumLabel;
     protected System.ComponentModel.BackgroundWorker backgroundWorker;
+    protected Button nextButton;
+    protected Button previousButton;
+    protected ComboBox delayComboBox;
   }
 }

@@ -74,7 +74,7 @@ namespace HeuristicLab.Core.Views {
     }
     protected override ListViewItem CreateListViewItem(T item) {
       ListViewItem listViewItem = base.CreateListViewItem(item);
-      listViewItem.ToolTipText = item.ItemName + ": " + item.Description;
+      listViewItem.ToolTipText = string.IsNullOrEmpty(item.Description) ? item.ItemName : item.ItemName + ": " + item.Description;
       return listViewItem;
     }
     protected override void AddListViewItem(ListViewItem listViewItem) {

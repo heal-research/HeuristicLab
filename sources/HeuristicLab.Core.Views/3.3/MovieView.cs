@@ -30,6 +30,24 @@ using HeuristicLab.MainForm.WindowsForms;
 namespace HeuristicLab.Core.Views {
   [View("Movie View")]
   public partial class MovieView<T> : ItemView where T : class, IItem {
+    #region Delay
+    protected class Delay {
+      public string Text { get; private set; }
+      public int Milliseconds { get; private set; }
+
+      public Delay(string text, int milliseconds) {
+        Text = text;
+        Milliseconds = milliseconds;
+      }
+
+      public override string ToString() {
+        return Text;
+      }
+    }
+    #endregion
+
+    protected int delay;
+
     public new IItemCollection<T> Content {
       get { return (IItemCollection<T>)base.Content; }
       set { base.Content = value; }
@@ -37,6 +55,16 @@ namespace HeuristicLab.Core.Views {
 
     public MovieView() {
       InitializeComponent();
+
+      delayComboBox.Items.Add(new Delay("5s", 5000));
+      delayComboBox.Items.Add(new Delay("2s", 2000));
+      delayComboBox.Items.Add(new Delay("1s", 1000));
+      delayComboBox.Items.Add(new Delay("0.5s", 500));
+      delayComboBox.Items.Add(new Delay("0.1s", 100));
+      delayComboBox.Items.Add(new Delay("0.05s", 50));
+      delayComboBox.Items.Add(new Delay("0.01s", 10));
+      delayComboBox.SelectedIndex = 4;
+      delay = 100;
     }
 
     protected override void DeregisterContentEvents() {
@@ -69,11 +97,14 @@ namespace HeuristicLab.Core.Views {
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
-      firstButton.Enabled = (Content != null) && (Content.Count > 0) && (!backgroundWorker.IsBusy);
+      firstButton.Enabled = (Content != null) && (Content.Count > 0) && (trackBar.Value != trackBar.Minimum) && (!backgroundWorker.IsBusy);
+      previousButton.Enabled = (Content != null) && (Content.Count > 0) && (trackBar.Value != trackBar.Minimum) && (!backgroundWorker.IsBusy);
       trackBar.Enabled = (Content != null) && (Content.Count > 0) && (!backgroundWorker.IsBusy);
-      lastButton.Enabled = (Content != null) && (Content.Count > 0) && (!backgroundWorker.IsBusy);
+      nextButton.Enabled = (Content != null) && (Content.Count > 0) && (trackBar.Value != trackBar.Maximum) && (!backgroundWorker.IsBusy);
+      lastButton.Enabled = (Content != null) && (Content.Count > 0) && (trackBar.Value != trackBar.Maximum) && (!backgroundWorker.IsBusy);
       playButton.Enabled = (Content != null) && (Content.Count > 0) && (!backgroundWorker.IsBusy);
       stopButton.Enabled = (Content != null) && (backgroundWorker.IsBusy);
+      delayComboBox.Enabled = (Content != null) && (Content.Count > 0);
     }
 
     protected override void OnClosed(FormClosedEventArgs e) {
@@ -88,10 +119,8 @@ namespace HeuristicLab.Core.Views {
       else {
         trackBar.Maximum = Content.Count - 1;
         maximumLabel.Text = trackBar.Maximum.ToString();
-        if (viewHost.Content == null) {
-          viewHost.Content = Content.FirstOrDefault();
-          SetEnabledStateOfControls();
-        }
+        if (viewHost.Content == null) viewHost.Content = Content.FirstOrDefault();
+        SetEnabledStateOfControls();
       }
     }
     protected virtual void Content_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<T> e) {
@@ -104,8 +133,8 @@ namespace HeuristicLab.Core.Views {
           trackBar.Value = 0;
           viewHost.Content = Content.FirstOrDefault();
           UpdateLables();
-          SetEnabledStateOfControls();
         }
+        SetEnabledStateOfControls();
       }
     }
     protected virtual void Content_CollectionReset(object sender, CollectionItemsChangedEventArgs<T> e) {
@@ -123,25 +152,39 @@ namespace HeuristicLab.Core.Views {
 
     #region Control Events
     protected virtual void trackBar_ValueChanged(object sender, EventArgs e) {
-      indexLabel.Text = trackBar.Value.ToString();
       viewHost.Content = Content == null ? null : Content.ElementAtOrDefault(trackBar.Value);
+      indexLabel.Text = trackBar.Value.ToString();
+      SetEnabledStateOfControls();
     }
     protected virtual void firstButton_Click(object sender, EventArgs e) {
-      trackBar.Value = trackBar.Minimum;
+      if (trackBar.Value != trackBar.Minimum) trackBar.Value = trackBar.Minimum;
+    }
+    protected virtual void previousButton_Click(object sender, EventArgs e) {
+      if (trackBar.Value != trackBar.Minimum) trackBar.Value--;
+    }
+    protected virtual void nextButton_Click(object sender, EventArgs e) {
+      if (trackBar.Value != trackBar.Maximum) trackBar.Value++;
     }
     protected virtual void lastButton_Click(object sender, EventArgs e) {
-      trackBar.Value = trackBar.Maximum;
+      if (trackBar.Value != trackBar.Maximum) trackBar.Value = trackBar.Maximum;
     }
     protected virtual void playButton_Click(object sender, EventArgs e) {
       firstButton.Enabled = false;
+      previousButton.Enabled = false;
       trackBar.Enabled = false;
+      nextButton.Enabled = false;
       lastButton.Enabled = false;
       playButton.Enabled = false;
       stopButton.Enabled = true;
       backgroundWorker.RunWorkerAsync();
     }
     protected virtual void stopButton_Click(object sender, EventArgs e) {
+      stopButton.Enabled = false;
       backgroundWorker.CancelAsync();
+    }
+    protected virtual void delayComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+      Delay selected = delayComboBox.SelectedItem as Delay;
+      if (selected != null) delay = selected.Milliseconds;
     }
     #endregion
 
@@ -153,12 +196,14 @@ namespace HeuristicLab.Core.Views {
           if (trackBar.Value < trackBar.Maximum) trackBar.Value++;
           terminate = trackBar.Value == trackBar.Maximum;
         });
-        Thread.Sleep(100);
+        Thread.Sleep(delay);
       }
     }
     protected virtual void backgroundWorker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
       firstButton.Enabled = true;
+      previousButton.Enabled = true;
       trackBar.Enabled = true;
+      nextButton.Enabled = true;
       lastButton.Enabled = true;
       playButton.Enabled = true;
       stopButton.Enabled = false;
