@@ -146,6 +146,8 @@ namespace HeuristicLab.Data.Views {
     protected void UpdateColumnHeaders() {
       HashSet<string> visibleColumnNames = new HashSet<string>(dataGridView.Columns.OfType<DataGridViewColumn>()
           .Where(c => c.Visible && !string.IsNullOrEmpty(c.HeaderText)).Select(c => c.HeaderText));
+      if (!visibleColumnNames.Intersect(Content.ColumnNames).Any())
+        visibleColumnNames.Clear();
 
       for (int i = 0; i < dataGridView.ColumnCount; i++) {
         if (i < Content.ColumnNames.Count())

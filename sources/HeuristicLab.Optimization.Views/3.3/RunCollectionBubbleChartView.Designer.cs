@@ -268,7 +268,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // openBoxPlotViewToolStripMenuItem
       // 
-      this.chart.ContextMenuStrip.Items.Add(openBoxPlotViewToolStripMenuItem);
+      this.chart.ContextMenuStrip.Items.Insert(0, openBoxPlotViewToolStripMenuItem);
       this.openBoxPlotViewToolStripMenuItem.Name = "openBoxPlotViewToolStripMenuItem";
       this.openBoxPlotViewToolStripMenuItem.Size = new System.Drawing.Size(256, 22);
       this.openBoxPlotViewToolStripMenuItem.Text = "Open BoxPlot View";
