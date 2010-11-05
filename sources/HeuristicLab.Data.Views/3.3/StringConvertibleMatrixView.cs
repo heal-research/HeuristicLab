@@ -72,7 +72,7 @@ namespace HeuristicLab.Data.Views {
     public StringConvertibleMatrixView() {
       InitializeComponent();
       ShowRowsAndColumnsTextBox = true;
-      ShowStatisticalInformation = false;
+      ShowStatisticalInformation = true;
       errorProvider.SetIconAlignment(rowsTextBox, ErrorIconAlignment.MiddleLeft);
       errorProvider.SetIconPadding(rowsTextBox, 2);
       errorProvider.SetIconAlignment(columnsTextBox, ErrorIconAlignment.MiddleLeft);
@@ -535,10 +535,13 @@ namespace HeuristicLab.Data.Views {
         }
         if (selectedValues.Count > 1) {
           StringBuilder labelText = new StringBuilder();
-          labelText.Append("Average: " + selectedValues.Average() + "    ");
-          labelText.Append("StdDev: " + selectedValues.StandardDeviation() + "    ");
-          labelText.Append("Sum: " + selectedValues.Sum() + "    ");
           labelText.Append("Count: " + selectedValues.Count + "    ");
+          labelText.Append("Sum: " + selectedValues.Sum() + "    ");
+          labelText.Append("Min: " + selectedValues.Min() + "    ");
+          labelText.Append("Max: " + selectedValues.Max() + "    ");
+          labelText.Append("Average: " + selectedValues.Average() + "    ");
+          labelText.Append("Standard Deviation: " + selectedValues.StandardDeviation() + "    ");
+
           toolStripStatusLabel.Text = labelText.ToString();
         }
       }
