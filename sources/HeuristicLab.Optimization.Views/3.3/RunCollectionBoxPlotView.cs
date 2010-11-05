@@ -181,7 +181,7 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void UpdateStatistics() {
-      DoubleMatrix matrix = new DoubleMatrix(6, seriesCache.Count);
+      DoubleMatrix matrix = new DoubleMatrix(7, seriesCache.Count);
       matrix.SortableView = false;
       List<string> columnNames = new List<string>();
       foreach (Series series in seriesCache.Values) {
@@ -206,17 +206,18 @@ namespace HeuristicLab.Optimization.Views {
         }
       }
       matrix.ColumnNames = columnNames;
-      matrix.RowNames = new string[] { "Mean", "Median", "Standard deviation", "Variance", "25th percentile", "75th percentile" };
+      matrix.RowNames = new string[] { "Count", "Average", "Median", "Standard Deviation", "Variance", "25th Percentile", "75th Percentile" };
 
       for (int i = 0; i < seriesCache.Count; i++) {
         Series series = seriesCache.ElementAt(i).Value;
         double[] seriesValues = series.Points.Select(p => p.YValues[0]).OrderBy(d => d).ToArray();
-        matrix[0, i] = seriesValues.Average();
-        matrix[1, i] = seriesValues.Median();
-        matrix[2, i] = seriesValues.StandardDeviation();
-        matrix[3, i] = seriesValues.Variance();
-        matrix[4, i] = seriesValues.Percentile(0.25);
-        matrix[5, i] = seriesValues.Percentile(0.75);
+        matrix[0, i] = seriesValues.Length;
+        matrix[1, i] = seriesValues.Average();
+        matrix[2, i] = seriesValues.Median();
+        matrix[3, i] = seriesValues.StandardDeviation();
+        matrix[4, i] = seriesValues.Variance();
+        matrix[5, i] = seriesValues.Percentile(0.25);
+        matrix[6, i] = seriesValues.Percentile(0.75);
       }
       statisticsMatrixView.Content = matrix;
     }
@@ -402,6 +403,10 @@ namespace HeuristicLab.Optimization.Views {
         this.tooltip.SetToolTip(chart, newTooltipText);
     }
     #endregion
+
+    private void showStatisticsCheckBox_CheckedChanged(object sender, EventArgs e) {
+      splitContainer.Panel2Collapsed = !showStatisticsCheckBox.Checked;
+    }
 
   }
 }
