@@ -79,6 +79,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       runsCounter = original.runsCounter;
       algorithm = cloner.Clone(original.algorithm);
       clonedAlgorithms = cloner.Clone(original.clonedAlgorithms);
+      results = cloner.Clone(original.results);
+
       folds = cloner.Clone(original.folds);
       numberOfWorkers = cloner.Clone(original.numberOfWorkers);
       samplesStart = cloner.Clone(original.samplesStart);
