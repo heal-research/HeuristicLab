@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -32,7 +33,17 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   /// </remarks>
   [Item("UniformCrossover", "Uniform crossover for binary vectors. It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.")]
   [StorableClass]
-  public class UniformCrossover : BinaryVectorCrossover {
+  public sealed class UniformCrossover : BinaryVectorCrossover {
+
+    [StorableConstructor]
+    private UniformCrossover(bool deserializing) : base(deserializing) { }
+    private UniformCrossover(UniformCrossover original, Cloner cloner) : base(original, cloner) { }
+    public UniformCrossover() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new UniformCrossover(this, cloner);
+    }
+
     /// <summary>
     /// Performs a uniform crossover between two binary vectors.
     /// </summary>

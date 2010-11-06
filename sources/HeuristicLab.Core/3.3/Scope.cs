@@ -58,6 +58,19 @@ namespace HeuristicLab.Core {
       get { return subScopes; }
     }
 
+    [StorableConstructor]
+    private Scope(bool deserializing) : base(deserializing) { }
+    private Scope(Scope original, Cloner cloner)
+      : base(original, cloner) {
+      if (original.variables.Count > 0) variables = cloner.Clone(original.variables);
+      else variables = new VariableCollection();
+      if (original.subScopes.Count > 0) {
+        subScopes = cloner.Clone(original.subScopes);
+        foreach (IScope child in SubScopes)
+          child.Parent = this;
+      } else subScopes = new ScopeList();
+      RegisterSubScopesEvents();
+    }
     /// <summary>
     /// Initializes a new instance of <see cref="Scope"/> having "Anonymous" as default name.
     /// </summary>
@@ -66,7 +79,7 @@ namespace HeuristicLab.Core {
       parent = null;
       variables = new VariableCollection();
       subScopes = new ScopeList();
-      Initialize();
+      RegisterSubScopesEvents();
     }
     /// <summary>
     /// Initializes a new instance of <see cref="Scope"/> with the given <paramref name="name"/>.
@@ -77,20 +90,18 @@ namespace HeuristicLab.Core {
       parent = null;
       variables = new VariableCollection();
       subScopes = new ScopeList();
-      Initialize();
+      RegisterSubScopesEvents();
     }
     public Scope(string name, string description)
       : base(name, description) {
       parent = null;
       variables = new VariableCollection();
       subScopes = new ScopeList();
-      Initialize();
+      RegisterSubScopesEvents();
     }
-    [StorableConstructor]
-    private Scope(bool deserializing) : base(deserializing) { }
 
     [StorableHook(HookType.AfterDeserialization)]
-    private void Initialize() {
+    private void AfterDeserialization() {
       RegisterSubScopesEvents();
     }
 
@@ -102,18 +113,7 @@ namespace HeuristicLab.Core {
 
     /// <inheritdoc/>
     public override IDeepCloneable Clone(Cloner cloner) {
-      Scope clone = new Scope();
-      cloner.RegisterClonedObject(this, clone);
-      clone.name = name;
-      clone.description = description;
-      if (variables.Count > 0) clone.variables = (VariableCollection)cloner.Clone(variables);
-      if (subScopes.Count > 0) {
-        clone.subScopes = (ScopeList)cloner.Clone(subScopes);
-        foreach (IScope child in clone.SubScopes)
-          child.Parent = clone;
-        clone.Initialize();
-      }
-      return clone;
+      return new Scope(this, cloner);
     }
 
     #region SubScopes Events

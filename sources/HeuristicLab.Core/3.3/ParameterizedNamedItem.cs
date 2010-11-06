@@ -44,6 +44,13 @@ namespace HeuristicLab.Core {
       }
     }
 
+    [StorableConstructor]
+    protected ParameterizedNamedItem(bool deserializing) : base(deserializing) { }
+    protected ParameterizedNamedItem(ParameterizedNamedItem original, Cloner cloner)
+      : base(original, cloner) {
+      parameters = cloner.Clone(original.parameters);
+      readOnlyParameters = null;
+    }
     protected ParameterizedNamedItem()
       : base() {
       name = ItemName;
@@ -72,15 +79,6 @@ namespace HeuristicLab.Core {
       : base(name, description) {
       this.parameters = parameters;
       readOnlyParameters = null;
-    }
-    [StorableConstructor]
-    protected ParameterizedNamedItem(bool deserializing) : base(deserializing) { }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      ParameterizedNamedItem clone = (ParameterizedNamedItem)base.Clone(cloner);
-      clone.parameters = (ParameterCollection)cloner.Clone(parameters);
-      clone.readOnlyParameters = null;
-      return clone;
     }
 
     public virtual void CollectParameterValues(IDictionary<string, IItem> values) {

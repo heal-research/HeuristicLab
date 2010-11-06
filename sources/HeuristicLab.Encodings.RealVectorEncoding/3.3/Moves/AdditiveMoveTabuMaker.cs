@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
@@ -35,10 +36,17 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       get { return (ILookupParameter<RealVector>)Parameters["RealVector"]; }
     }
 
+    [StorableConstructor]
+    protected AdditiveMoveTabuMaker(bool deserializing) : base(deserializing) { }
+    protected AdditiveMoveTabuMaker(AdditiveMoveTabuMaker original, Cloner cloner) : base(original, cloner) { }
     public AdditiveMoveTabuMaker()
       : base() {
       Parameters.Add(new LookupParameter<AdditiveMove>("AdditiveMove", "The move to evaluate."));
       Parameters.Add(new LookupParameter<RealVector>("RealVector", "The solution as permutation."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new AdditiveMoveTabuMaker(this, cloner);
     }
 
     protected override IItem GetTabuAttribute(bool maximization, double quality, double moveQuality) {

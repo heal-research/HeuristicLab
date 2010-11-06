@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Compiler;
@@ -91,7 +92,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
     private Dictionary<string, double> variables;
     private Instruction[] code;
     private int pc;
-    
+
     public override bool CanChangeName {
       get { return false; }
     }
@@ -99,9 +100,14 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
       get { return false; }
     }
 
-    public TreeInterpreter()
-      : base() {
+
+    [StorableConstructor]
+    protected TreeInterpreter(bool deserializing) : base(deserializing) { }
+    protected TreeInterpreter(TreeInterpreter original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new TreeInterpreter(this, cloner);
     }
+    public TreeInterpreter() : base() { }
 
     public void Prepare(SymbolicExpressionTree tree) {
       var compiler = new SymbolicExpressionTreeCompiler();

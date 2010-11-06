@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -32,7 +33,7 @@ namespace HeuristicLab.Random {
   [StorableClass]
   [Item("UniformRandomizer", "Initializes the value of variable 'Value' to a random value uniformly distributed between 'Min' and 'Max'")]
   public class UniformRandomizer : SingleSuccessorOperator {
-    #region parameter properties
+    #region Parameter Properties
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
@@ -46,6 +47,7 @@ namespace HeuristicLab.Random {
       get { return (ILookupParameter<DoubleValue>)Parameters["Value"]; }
     }
     #endregion
+
     #region Properties
     public DoubleValue Min {
       get { return MinParameter.ActualValue; }
@@ -57,6 +59,9 @@ namespace HeuristicLab.Random {
     }
     #endregion
 
+    [StorableConstructor]
+    protected UniformRandomizer(bool deserializing) : base(deserializing) { }
+    protected UniformRandomizer(UniformRandomizer original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="UniformRandomizer"/> with four variable infos 
     /// (<c>Value</c>, <c>Random</c>, <c>Max</c> and <c>Min</c>), being a random number generator 
@@ -69,8 +74,10 @@ namespace HeuristicLab.Random {
       Parameters.Add(new ValueLookupParameter<DoubleValue>("Max", "The maximal allowed value (exclusive)"));
       Parameters.Add(new LookupParameter<DoubleValue>("Value", "The value that should be set to a random value."));
     }
-    [StorableConstructor]
-    protected UniformRandomizer(bool deserializing) : base(deserializing) { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new UniformRandomizer(this, cloner);
+    }
 
     /// <summary>
     /// Generates a new uniformly distributed random variable.

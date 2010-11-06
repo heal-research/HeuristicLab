@@ -140,6 +140,15 @@ namespace HeuristicLab.Problems.TravelingSalesman {
 
     [StorableConstructor]
     private TravelingSalesmanProblem(bool deserializing) : base(deserializing) { }
+    private TravelingSalesmanProblem(TravelingSalesmanProblem original, Cloner cloner)
+      : base(original, cloner) {
+      this.operators = original.operators.Select(x => (IOperator)cloner.Clone(x)).ToList();
+      this.DistanceMatrixParameter.Value = original.DistanceMatrixParameter.Value;
+      AttachEventHandlers();
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new TravelingSalesmanProblem(this, cloner);
+    }
     public TravelingSalesmanProblem()
       : base() {
       RandomPermutationCreator creator = new RandomPermutationCreator();
@@ -168,14 +177,6 @@ namespace HeuristicLab.Problems.TravelingSalesman {
 
       InitializeOperators();
       AttachEventHandlers();
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      TravelingSalesmanProblem clone = (TravelingSalesmanProblem)base.Clone(cloner);
-      clone.operators = operators.Select(x => (IOperator)cloner.Clone(x)).ToList();
-      clone.DistanceMatrixParameter.Value = DistanceMatrixParameter.Value;
-      clone.AttachEventHandlers();
-      return clone;
     }
 
     #region Events
@@ -253,7 +254,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
 
     #region Helpers
     [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserializationHook() {
+    private void AfterDeserialization() {
       // BackwardsCompatibility3.3
       #region Backwards compatible code (remove with 3.4)
       if (operators == null) InitializeOperators();

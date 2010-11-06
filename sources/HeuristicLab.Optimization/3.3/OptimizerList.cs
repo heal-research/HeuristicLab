@@ -31,5 +31,13 @@ namespace HeuristicLab.Optimization {
     public OptimizerList() : base() { }
     public OptimizerList(int capacity) : base(capacity) { }
     public OptimizerList(IEnumerable<IOptimizer> collection) : base(collection) { }
+    [StorableConstructor]
+    protected OptimizerList(bool deserializing) : base(deserializing) { }
+    protected OptimizerList(OptimizerList original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OptimizerList(this, cloner);
+    }
   }
 }

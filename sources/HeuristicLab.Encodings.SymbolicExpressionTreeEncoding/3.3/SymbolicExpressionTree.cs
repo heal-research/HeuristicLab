@@ -62,10 +62,13 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       }
     }
 
-    public SymbolicExpressionTree()
-      : base() {
+    [StorableConstructor]
+    protected SymbolicExpressionTree(bool deserializing) : base(deserializing) { }
+    protected SymbolicExpressionTree(SymbolicExpressionTree original, Cloner cloner)
+      : base(original, cloner) {
+      root = cloner.Clone(original.Root);
     }
-
+    public SymbolicExpressionTree() : base() { }
     public SymbolicExpressionTree(SymbolicExpressionTreeNode root)
       : base() {
       this.Root = root;
@@ -83,11 +86,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      SymbolicExpressionTree clone = new SymbolicExpressionTree();
-      cloner.RegisterClonedObject(this, clone);
-      if (root != null)
-        clone.root = (SymbolicExpressionTreeNode)this.root.Clone();
-      return clone;
+      return new SymbolicExpressionTree(this, cloner);
     }
   }
 }

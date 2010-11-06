@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -26,16 +27,15 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("InversionMove", "Item that describes an inversion move (2-opt).")]
   [StorableClass]
   public class InversionMove : TwoIndexMove {
-    public InversionMove()
-      : base() {
-    }
+    [StorableConstructor]
+    protected InversionMove(bool deserializing) : base(deserializing) { }
+    protected InversionMove(InversionMove original, Cloner cloner) : base(original, cloner) { }
+    public InversionMove() : base() { }
+    public InversionMove(int index1, int index2) : base(index1, index2, null) { }
+    public InversionMove(int index1, int index2, Permutation permutation) : base(index1, index2, permutation) { }
 
-    public InversionMove(int index1, int index2)
-      : base(index1, index2, null) {
-    }
-
-    public InversionMove(int index1, int index2, Permutation permutation)
-      : base(index1, index2, permutation) {
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new InversionMove(this, cloner);
     }
   }
 }

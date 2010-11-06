@@ -46,6 +46,12 @@ namespace HeuristicLab.Parameters {
       }
     }
 
+    [StorableConstructor]
+    protected ScopeTreeLookupParameter(bool deserializing) : base(deserializing) { }
+    protected ScopeTreeLookupParameter(ScopeTreeLookupParameter<T> original, Cloner cloner)
+      : base(original, cloner) {
+      depth = original.depth;
+    }
     public ScopeTreeLookupParameter()
       : base() {
       depth = 1;
@@ -74,13 +80,9 @@ namespace HeuristicLab.Parameters {
       : base(name, description, actualName) {
       this.depth = depth;
     }
-    [StorableConstructor]
-    protected ScopeTreeLookupParameter(bool deserializing) : base(deserializing) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      ScopeTreeLookupParameter<T> clone = (ScopeTreeLookupParameter<T>)base.Clone(cloner);
-      clone.depth = depth;
-      return clone;
+      return new ScopeTreeLookupParameter<T>(this, cloner);
     }
 
     protected override IItem GetActualValue() {

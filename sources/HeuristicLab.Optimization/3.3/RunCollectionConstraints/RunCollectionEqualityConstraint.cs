@@ -33,6 +33,16 @@ namespace HeuristicLab.Optimization {
     [StorableConstructor]
     protected RunCollectionEqualityConstraint(bool deserializing) : base(deserializing) { }
 
+    protected RunCollectionEqualityConstraint(RunCollectionEqualityConstraint original, Cloner cloner)
+      : base(original, cloner) {
+      ConstraintData = original.ConstraintData;
+      ConstraintOperation = original.ConstraintOperation;
+      constraintColumn = original.constraintColumn;
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new RunCollectionEqualityConstraint(this, cloner);
+    }
+
     public RunCollectionEqualityConstraint()
       : base() {
       this.ConstraintData = string.Empty;
@@ -125,15 +135,6 @@ namespace HeuristicLab.Optimization {
         s += "null";
 
       return s;
-    }
-
-    public override IDeepCloneable Clone(HeuristicLab.Common.Cloner cloner) {
-      RunCollectionEqualityConstraint clone = (RunCollectionEqualityConstraint)base.Clone(cloner);
-      clone.ConstraintData = this.ConstraintData;
-      clone.ConstraintOperation = this.ConstraintOperation;
-      clone.constraintColumn = this.constraintColumn;
-
-      return clone;
     }
   }
 }

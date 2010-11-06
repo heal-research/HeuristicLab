@@ -30,11 +30,21 @@ namespace HeuristicLab.Optimization {
   [StorableClass]
   [Item("RunCollectionTypeCompatibilityConstraint", "A constraint which checks the members of the contained runs for type compabitiliby to the constraint data.")]
   public class RunCollectionTypeCompatibilityConstraint : TypeCompatibilityConstraint, IRunCollectionConstraint {
-    public RunCollectionTypeCompatibilityConstraint()
-      : base() {
-    }
     [StorableConstructor]
     protected RunCollectionTypeCompatibilityConstraint(bool deserializing) {
+    }
+    protected RunCollectionTypeCompatibilityConstraint(RunCollectionTypeCompatibilityConstraint original, Cloner cloner)
+      : base(original, cloner) {
+      ConstraintData = original.ConstraintData;
+      ConstraintOperation = original.ConstraintOperation;
+      constraintColumn = original.constraintColumn;
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new RunCollectionTypeCompatibilityConstraint(this, cloner);
+    }
+
+    public RunCollectionTypeCompatibilityConstraint()
+      : base() {
     }
     public RunCollectionTypeCompatibilityConstraint(RunCollection constrainedValue, ConstraintOperation constraintOperation, Type constraintData)
       : base(constrainedValue, constraintOperation, constraintData) {
@@ -118,15 +128,6 @@ namespace HeuristicLab.Optimization {
         s += "null";
 
       return s;
-    }
-
-    public override IDeepCloneable Clone(HeuristicLab.Common.Cloner cloner) {
-      RunCollectionTypeCompatibilityConstraint clone = (RunCollectionTypeCompatibilityConstraint)base.Clone(cloner);
-      clone.ConstraintData = this.ConstraintData;
-      clone.ConstraintOperation = this.ConstraintOperation;
-      clone.constraintColumn = this.constraintColumn;
-
-      return clone;
     }
   }
 }

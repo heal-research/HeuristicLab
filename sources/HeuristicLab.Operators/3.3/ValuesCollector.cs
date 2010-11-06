@@ -37,26 +37,28 @@ namespace HeuristicLab.Operators {
       get { return collectedValues; }
     }
 
+    [StorableConstructor]
+    protected ValuesCollector(bool deserializing) : base(deserializing) { }
+    protected ValuesCollector(ValuesCollector original, Cloner cloner)
+      : base(original, cloner) {
+      this.collectedValues = cloner.Clone<ParameterCollection>(original.collectedValues);
+      Initialize();
+    }
     public ValuesCollector()
       : base() {
       collectedValues = new ParameterCollection();
       Initialize();
     }
-    [StorableConstructor]
-    protected ValuesCollector(bool deserializing) : base(deserializing) { }
 
     [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      Initialize();
+    }
+
     private void Initialize() {
       collectedValues.ItemsAdded += new CollectionItemsChangedEventHandler<IParameter>(collectedValues_ItemsAdded);
       collectedValues.ItemsRemoved += new CollectionItemsChangedEventHandler<IParameter>(collectedValues_ItemsRemoved);
       collectedValues.CollectionReset += new CollectionItemsChangedEventHandler<IParameter>(collectedValues_CollectionReset);
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      ValuesCollector clone = (ValuesCollector)base.Clone(cloner);
-      clone.collectedValues = (ParameterCollection)cloner.Clone(collectedValues);
-      clone.Initialize();
-      return clone;
     }
 
     private void collectedValues_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IParameter> e) {

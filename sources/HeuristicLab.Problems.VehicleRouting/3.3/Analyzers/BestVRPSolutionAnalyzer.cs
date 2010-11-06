@@ -20,6 +20,7 @@
 #endregion
 
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -82,7 +83,9 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     [StorableConstructor]
     private BestVRPSolutionAnalyzer(bool deserializing) : base(deserializing) { }
-
+    private BestVRPSolutionAnalyzer(BestVRPSolutionAnalyzer original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public BestVRPSolutionAnalyzer()
       : base() {
         Parameters.Add(new ScopeTreeLookupParameter<IVRPEncoding>("VRPTours", "The VRP tours which should be evaluated."));
@@ -101,6 +104,10 @@ namespace HeuristicLab.Problems.VehicleRouting {
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("VehiclesUtilized", "The utilized vehicles of the VRP solutions which should be analyzed."));
       Parameters.Add(new LookupParameter<VRPSolution>("BestSolution", "The best VRP solution."));
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the best VRP solution should be stored."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new BestVRPSolutionAnalyzer(this, cloner);
     }
 
     public override IOperation Apply() {

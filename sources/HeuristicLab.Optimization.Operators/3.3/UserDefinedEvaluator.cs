@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -32,9 +33,16 @@ namespace HeuristicLab.Optimization.Operators {
       get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
 
+    [StorableConstructor]
+    protected UserDefinedEvaluator(bool deserializing) : base(deserializing) { }
+    protected UserDefinedEvaluator(UserDefinedEvaluator original, Cloner cloner) : base(original, cloner) { }
     public UserDefinedEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality value of the solution."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new UserDefinedEvaluator(this, cloner);
     }
   }
 }

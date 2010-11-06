@@ -8,12 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace HeuristicLab.PluginInfrastructure.Advanced.DeploymentService
-{
-    using System.Runtime.Serialization;
-    
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
+namespace HeuristicLab.PluginInfrastructure.Advanced.DeploymentService {
+
+
+  [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="PluginDescription", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.Deployment", IsReference=true)]
     public partial class PluginDescription : object, System.Runtime.Serialization.IExtensibleDataObject

@@ -49,6 +49,19 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
 
     [StorableConstructor]
     protected SolutionMessageBuilder(bool deserializing) : base(deserializing) { }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      AttachEventHandlers();
+    }
+
+    protected SolutionMessageBuilder(SolutionMessageBuilder original, Cloner cloner)
+      : base(original, cloner) {
+      convertersList = cloner.Clone(original.convertersList);
+      AttachEventHandlers();
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SolutionMessageBuilder(this, cloner);
+    }
     public SolutionMessageBuilder()
       : base() {
       name = ItemName;
@@ -62,13 +75,6 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       convertersList.Add(new TimeSpanValueConverter());
 
       AttachEventHandlers();
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      SolutionMessageBuilder clone = (SolutionMessageBuilder)base.Clone(cloner);
-      clone.convertersList = (CheckedItemList<IItemToSolutionMessageConverter>)cloner.Clone(convertersList);
-      clone.AttachEventHandlers();
-      return clone;
     }
 
     public void AddToMessage(IItem item, string name, SolutionMessage.Builder builder) {
@@ -86,11 +92,10 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       dispatcher[itemType](item, name, builder);
     }
 
-    [StorableHook(HookType.AfterDeserialization)]
     private void AttachEventHandlers() {
       // BackwardsCompatibility3.3
       #region Backwards compatible code, remove with 3.4
-      #pragma warning disable 0612
+#pragma warning disable 0612
       if (converters != null) {
         if (convertersList == null) convertersList = new CheckedItemList<IItemToSolutionMessageConverter>();
         foreach (IItemToSolutionMessageConverter c in converters)
@@ -98,7 +103,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
         converters.Clear();
         converters = null;
       }
-      #pragma warning restore 0612
+#pragma warning restore 0612
       #endregion
       convertersList.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<IItemToSolutionMessageConverter>>(convertersList_Changed);
       convertersList.ItemsRemoved += new CollectionItemsChangedEventHandler<IndexedItem<IItemToSolutionMessageConverter>>(convertersList_Changed);

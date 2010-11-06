@@ -57,18 +57,22 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     }
     private Socket socket;
 
+    [StorableConstructor]
+    protected EvaluationTCPChannel(bool deserializing) : base(deserializing) { }
+    protected EvaluationTCPChannel(EvaluationTCPChannel original, Cloner cloner)
+      : base(original, cloner) {
+      ipAddress = original.ipAddress;
+      port = original.port;
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new EvaluationTCPChannel(this, cloner);
+    }
+
     public EvaluationTCPChannel() : this(String.Empty, 0) { }
     public EvaluationTCPChannel(string ip, int port)
       : base() {
       this.ipAddress = ip;
       this.port = port;
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      EvaluationTCPChannel clone = (EvaluationTCPChannel)base.Clone(cloner);
-      clone.ipAddress = ipAddress;
-      clone.port = port;
-      return clone;
     }
 
     #region IExternalEvaluationChannel Members
@@ -86,10 +90,12 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       try {
         byte[] buffer = EncodeDelimited(message);
         socket.Send(buffer);
-      } catch (SocketException) {
+      }
+      catch (SocketException) {
         Close();
         throw;
-      } catch (ObjectDisposedException) {
+      }
+      catch (ObjectDisposedException) {
         socket = null;
         Close();
         throw;
@@ -121,10 +127,12 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       try {
         byte[] buffer = GetMessageBuffer();
         return builder.WeakMergeFrom(ByteString.CopyFrom(buffer)).WeakBuild();
-      } catch (SocketException) {
+      }
+      catch (SocketException) {
         Close();
         throw;
-      } catch (ObjectDisposedException) {
+      }
+      catch (ObjectDisposedException) {
         socket = null;
         Close();
         throw;
@@ -163,7 +171,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
           if (socket.Connected)
             socket.Disconnect(false);
           socket.Close();
-        } catch { }
+        }
+        catch { }
         socket = null;
       }
       bool wasInitialized = IsInitialized;

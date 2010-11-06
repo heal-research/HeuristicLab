@@ -19,14 +19,12 @@
  */
 #endregion
 
-using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
-using HeuristicLab.Parameters;
-using System.Collections.Generic;
 using HeuristicLab.Data;
+using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaStochasticIntraRouteInversionMultiMoveGenerator", "Generates multiple random intra route inversion moves from a given VRP encoding.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
@@ -39,14 +37,18 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     public IValueLookupParameter<IntValue> SampleSizeParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters["SampleSize"]; }
     }
-    
+
     [StorableConstructor]
     private AlbaStochasticIntraRouteInversionMultiMoveGenerator(bool deserializing) : base(deserializing) { }
-
+    private AlbaStochasticIntraRouteInversionMultiMoveGenerator(AlbaStochasticIntraRouteInversionMultiMoveGenerator original, Cloner cloner) : base(original, cloner) { }
     public AlbaStochasticIntraRouteInversionMultiMoveGenerator()
       : base() {
-        Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator."));
-        Parameters.Add(new ValueLookupParameter<IntValue>("SampleSize", "The number of moves to generate."));
+      Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator."));
+      Parameters.Add(new ValueLookupParameter<IntValue>("SampleSize", "The number of moves to generate."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new AlbaStochasticIntraRouteInversionMultiMoveGenerator(this, cloner);
     }
 
     protected override AlbaIntraRouteInversionMove[] GenerateMoves(AlbaEncoding individual) {

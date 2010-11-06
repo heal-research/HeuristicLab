@@ -19,11 +19,9 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaCustomerSwapManipulator", "An operator which manipulates a VRP representation by swapping two customers.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
@@ -31,9 +29,12 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   public sealed class AlbaCustomerSwapManipulator : AlbaManipulator {
     [StorableConstructor]
     private AlbaCustomerSwapManipulator(bool deserializing) : base(deserializing) { }
-
+    private AlbaCustomerSwapManipulator(AlbaCustomerSwapManipulator original, Cloner cloner) : base(original, cloner) { }
     public AlbaCustomerSwapManipulator()
       : base() {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new AlbaCustomerSwapManipulator(this, cloner);
     }
 
     protected override void Manipulate(IRandom random, AlbaEncoding individual) {

@@ -134,6 +134,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     [Storable]
     private ResultsCollector resultsCollector;
 
+    [StorableConstructor]
+    private ValidationBestScaledSymbolicRegressionSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    private ValidationBestScaledSymbolicRegressionSolutionAnalyzer(ValidationBestScaledSymbolicRegressionSolutionAnalyzer original, Cloner cloner)
+      : base(original, cloner) {
+      Initialize();
+    }
     public ValidationBestScaledSymbolicRegressionSolutionAnalyzer()
       : base() {
       Parameters.Add(new ScopeTreeLookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression trees to analyze."));
@@ -248,19 +254,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       Initialize();
     }
 
-    [StorableConstructor]
-    private ValidationBestScaledSymbolicRegressionSolutionAnalyzer(bool deserializing) : base() { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ValidationBestScaledSymbolicRegressionSolutionAnalyzer(this, cloner);
+    }
 
     [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      Initialize();
+    }
     private void Initialize() {
       SymbolicExpressionTreeParameter.DepthChanged += new EventHandler(SymbolicExpressionTreeParameter_DepthChanged);
     }
 
-    public override IDeepCloneable Clone(Cloner cloner) {
-      ValidationBestScaledSymbolicRegressionSolutionAnalyzer clone = (ValidationBestScaledSymbolicRegressionSolutionAnalyzer)base.Clone(cloner);
-      clone.Initialize();
-      return clone;
-    }
 
     private void SymbolicExpressionTreeParameter_DepthChanged(object sender, EventArgs e) {
       subScopesProcessor.Depth.Value = SymbolicExpressionTreeParameter.Depth;

@@ -21,6 +21,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
@@ -34,6 +35,15 @@ namespace HeuristicLab.Selection {
   [StorableClass]
   public sealed class BestSelector : SingleObjectiveSelector, ISingleObjectiveSelector {
     public BestSelector() : base() { }
+    [StorableConstructor]
+    private BestSelector(bool deserializing) : base(deserializing) { }
+    private BestSelector(BestSelector original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new BestSelector(this, cloner);
+    }
+
 
     protected override IScope[] Select(List<IScope> scopes) {
       int count = NumberOfSelectedSubScopesParameter.ActualValue.Value;

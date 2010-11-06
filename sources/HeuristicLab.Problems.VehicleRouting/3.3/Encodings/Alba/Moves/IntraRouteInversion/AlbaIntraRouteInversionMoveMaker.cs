@@ -19,9 +19,9 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -44,13 +44,17 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     }
 
     [StorableConstructor]
-    private AlbaIntraRouteInversionMoveMaker(bool deserializing) : base(deserializing) { }
-
+    protected AlbaIntraRouteInversionMoveMaker(bool deserializing) : base(deserializing) { }
+    protected AlbaIntraRouteInversionMoveMaker(AlbaIntraRouteInversionMoveMaker original, Cloner cloner) : base(original, cloner) { }
     public AlbaIntraRouteInversionMoveMaker()
       : base() {
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of the solution."));
       Parameters.Add(new LookupParameter<AlbaIntraRouteInversionMove>("AlbaIntraRouteInversionMove", "The move to make."));
       Parameters.Add(new LookupParameter<DoubleValue>("MoveQuality", "The relative quality of the move."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new AlbaIntraRouteInversionMoveMaker(this, cloner);
     }
 
     public static void Apply(AlbaEncoding solution, AlbaIntraRouteInversionMove move) {

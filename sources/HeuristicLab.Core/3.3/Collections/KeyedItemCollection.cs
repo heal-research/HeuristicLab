@@ -43,24 +43,23 @@ namespace HeuristicLab.Core {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Class; }
     }
 
+    [StorableConstructor]
+    protected KeyedItemCollection(bool deserializing) : base(deserializing) { }
+    protected KeyedItemCollection(KeyedItemCollection<TKey, TItem> original, Cloner cloner) {
+      cloner.RegisterClonedObject(original, this);
+      foreach (TItem item in original.dict.Values) {
+        TItem clonedItem = cloner.Clone(item);
+        dict.Add(GetKeyForItem(clonedItem), clonedItem);
+      }
+    }
     protected KeyedItemCollection() : base() { }
     protected KeyedItemCollection(int capacity) : base(capacity) { }
     protected KeyedItemCollection(IEnumerable<TItem> collection) : base(collection) { }
-    [StorableConstructor]
-    protected KeyedItemCollection(bool deserializing) : base(deserializing) { }
 
     public object Clone() {
       return Clone(new Cloner());
     }
-    public virtual IDeepCloneable Clone(Cloner cloner) {
-      KeyedItemCollection<TKey, TItem> clone = (KeyedItemCollection<TKey, TItem>)Activator.CreateInstance(this.GetType());
-      cloner.RegisterClonedObject(this, clone);
-      foreach (TItem item in dict.Values) {
-        TItem clonedItem = (TItem)cloner.Clone(item);
-        clone.dict.Add(GetKeyForItem(clonedItem), clonedItem);
-      }
-      return clone;
-    }
+    public abstract IDeepCloneable Clone(Cloner cloner);
 
     public new ReadOnlyKeyedItemCollection<TKey, TItem> AsReadOnly() {
       return new ReadOnlyKeyedItemCollection<TKey, TItem>(this);

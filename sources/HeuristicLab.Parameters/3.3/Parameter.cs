@@ -76,6 +76,13 @@ namespace HeuristicLab.Parameters {
       }
     }
 
+    [StorableConstructor]
+    protected Parameter(bool deserializing) : base(deserializing) { }
+    protected Parameter(Parameter original, Cloner cloner)
+      : base(original, cloner) {
+      dataType = original.dataType;
+      executionContext = cloner.Clone(original.executionContext);
+    }
     protected Parameter()
       : base("Anonymous") {
       dataType = typeof(IItem);
@@ -89,15 +96,6 @@ namespace HeuristicLab.Parameters {
       : base(name, description) {
       if (dataType == null) throw new ArgumentNullException();
       this.dataType = dataType;
-    }
-    [StorableConstructor]
-    protected Parameter(bool deserializing) : base(deserializing) { }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      Parameter clone = (Parameter)base.Clone(cloner);
-      clone.dataType = dataType;
-      clone.executionContext = (IExecutionContext)cloner.Clone(executionContext);
-      return clone;
     }
 
     public override string ToString() {

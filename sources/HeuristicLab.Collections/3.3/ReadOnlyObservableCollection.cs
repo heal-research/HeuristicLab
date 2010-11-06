@@ -50,6 +50,11 @@ namespace HeuristicLab.Collections {
     }
     [StorableConstructor]
     protected ReadOnlyObservableCollection(bool deserializing) { }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      RegisterEvents();
+    }
     #endregion
 
     #region Access
@@ -88,7 +93,6 @@ namespace HeuristicLab.Collections {
     #endregion
 
     #region Events
-    [StorableHook(HookType.AfterDeserialization)]
     protected void RegisterEvents() {
       collection.ItemsAdded += new CollectionItemsChangedEventHandler<T>(collection_ItemsAdded);
       collection.ItemsRemoved += new CollectionItemsChangedEventHandler<T>(collection_ItemsRemoved);

@@ -124,6 +124,18 @@ namespace HeuristicLab.Algorithms.LocalSearch {
 
     [StorableConstructor]
     private LocalSearch(bool deserializing) : base(deserializing) { }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      Initialize();
+    }
+    private LocalSearch(LocalSearch original, Cloner cloner)
+      : base(original, cloner) {
+      moveQualityAnalyzer = cloner.Clone(original.moveQualityAnalyzer);
+      Initialize();
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new LocalSearch(this, cloner);
+    }
     public LocalSearch()
       : base() {
       Parameters.Add(new ValueParameter<IntValue>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
@@ -163,13 +175,6 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       UpdateAnalyzers();
 
       Initialize();
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      LocalSearch clone = (LocalSearch)base.Clone(cloner);
-      clone.moveQualityAnalyzer = (BestAverageWorstQualityAnalyzer)cloner.Clone(moveQualityAnalyzer);
-      clone.Initialize();
-      return clone;
     }
 
     public override void Prepare() {
@@ -255,7 +260,6 @@ namespace HeuristicLab.Algorithms.LocalSearch {
     #endregion
 
     #region Helpers
-    [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
       if (Problem != null) {
         Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);

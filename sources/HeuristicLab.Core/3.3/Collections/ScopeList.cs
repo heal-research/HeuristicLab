@@ -28,17 +28,18 @@ namespace HeuristicLab.Core {
   [StorableClass]
   [Item("ScopeList", "Represents a list of scopes.")]
   public sealed class ScopeList : ItemList<IScope> {
+    [StorableConstructor]
+    private ScopeList(bool deserializing) : base(deserializing) { }
+    private ScopeList(ScopeList original, Cloner cloner)
+      : base(original, cloner) {
+      list = new List<IScope>(original.Select(x => cloner.Clone(x)));
+    }
     public ScopeList() : base() { }
     public ScopeList(int capacity) : base(capacity) { }
     public ScopeList(IEnumerable<IScope> collection) : base(collection) { }
-    [StorableConstructor]
-    private ScopeList(bool deserializing) : base(deserializing) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      ScopeList clone = new ScopeList();
-      cloner.RegisterClonedObject(this, clone);
-      clone.list = new List<IScope>(this.Select(x => (IScope)cloner.Clone(x)));
-      return clone;
+      return new ScopeList(this, cloner);
     }
   }
 }

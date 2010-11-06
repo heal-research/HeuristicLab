@@ -33,23 +33,25 @@ namespace HeuristicLab.Core {
       get { return (CheckedItemCollection<T>)base.collection; }
     }
 
+    [StorableConstructor]
+    protected ReadOnlyCheckedItemCollection(bool deserializing) : base(deserializing) { }
+    protected ReadOnlyCheckedItemCollection(ReadOnlyCheckedItemCollection<T> original, Cloner cloner)
+      : base(original, cloner) {
+      CheckedItemCollection.CheckedItemsChanged += new CollectionItemsChangedEventHandler<T>(collection_CheckedItemsChanged);
+    }
     public ReadOnlyCheckedItemCollection() : base(new CheckedItemCollection<T>()) { }
     public ReadOnlyCheckedItemCollection(ICheckedItemCollection<T> collection)
       : base(collection) {
       CheckedItemCollection.CheckedItemsChanged += new CollectionItemsChangedEventHandler<T>(collection_CheckedItemsChanged);
     }
 
-    [StorableConstructor]
-    protected ReadOnlyCheckedItemCollection(bool deserializing) : base(deserializing) { }
     [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserializationHook() {
+    private void AfterDeserialization() {
       CheckedItemCollection.CheckedItemsChanged += new CollectionItemsChangedEventHandler<T>(collection_CheckedItemsChanged);
     }
 
-    public override IDeepCloneable Clone(Common.Cloner cloner) {
-      ReadOnlyCheckedItemCollection<T> clone = (ReadOnlyCheckedItemCollection<T>)base.Clone(cloner);
-      clone.CheckedItemCollection.CheckedItemsChanged += new CollectionItemsChangedEventHandler<T>(clone.collection_CheckedItemsChanged);
-      return clone;
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ReadOnlyCheckedItemCollection<T>(this, cloner);
     }
 
     #region ReadOnlyCheckedItemCollection<T> Members

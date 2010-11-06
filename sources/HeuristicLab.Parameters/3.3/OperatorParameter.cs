@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -29,6 +30,9 @@ namespace HeuristicLab.Parameters {
   [Item("OperatorParameter", "A parameter which represents an operator.")]
   [StorableClass]
   public class OperatorParameter : OptionalValueParameter<IOperator> {
+    [StorableConstructor]
+    protected OperatorParameter(bool deserializing) : base(deserializing) { }
+    protected OperatorParameter(OperatorParameter original, Cloner cloner) : base(original, cloner) { }
     public OperatorParameter() : base("Anonymous") { }
     public OperatorParameter(string name) : base(name) { }
     public OperatorParameter(string name, bool getsCollected) : base(name, getsCollected) { }
@@ -38,7 +42,9 @@ namespace HeuristicLab.Parameters {
     public OperatorParameter(string name, string description, bool getsCollected) : base(name, description, getsCollected) { }
     public OperatorParameter(string name, string description, IOperator value) : base(name, description, value) { }
     public OperatorParameter(string name, string description, IOperator value, bool getsCollected) : base(name, description, value, getsCollected) { }
-    [StorableConstructor]
-    protected OperatorParameter(bool deserializing) : base(deserializing) { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OperatorParameter(this, cloner);
+    }
   }
 }

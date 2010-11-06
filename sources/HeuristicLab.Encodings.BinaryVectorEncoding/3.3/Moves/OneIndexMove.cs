@@ -32,12 +32,15 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     [Storable]
     public BinaryVector BinaryVector { get; protected set; }
 
-    public OneIndexMove()
-      : base() {
-      Index = -1;
-      BinaryVector = null;
+    [StorableConstructor]
+    protected OneIndexMove(bool deserializing) : base(deserializing) { }
+    protected OneIndexMove(OneIndexMove original, Cloner cloner)
+      : base(original, cloner) {
+      this.Index = original.Index;
+      if (original.BinaryVector != null)
+        this.BinaryVector = cloner.Clone(original.BinaryVector);
     }
-
+    public OneIndexMove() : this(-1, null) { }
     public OneIndexMove(int index, BinaryVector binaryVector)
       : base() {
       Index = index;
@@ -45,11 +48,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      OneIndexMove clone = (OneIndexMove)base.Clone(cloner);
-      clone.Index = Index;
-      if (BinaryVector != null)
-        clone.BinaryVector = (BinaryVector)BinaryVector.Clone(cloner);
-      return clone;
+      return new OneIndexMove(this, cloner);
     }
   }
 }

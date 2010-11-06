@@ -133,6 +133,16 @@ namespace HeuristicLab.Data {
       get { return readOnly; }
     }
 
+    [StorableConstructor]
+    protected StringMatrix(bool deserializing) : base(deserializing) { }
+    protected StringMatrix(StringMatrix original, Cloner cloner)
+      : base(original, cloner) {
+      this.matrix = (string[,])original.matrix.Clone();
+      this.columnNames = new List<string>(original.columnNames);
+      this.rowNames = new List<string>(original.rowNames);
+      this.sortableView = original.sortableView;
+      this.readOnly = original.readOnly;
+    }
     public StringMatrix() {
       matrix = new string[0, 0];
       columnNames = new List<string>();
@@ -181,14 +191,7 @@ namespace HeuristicLab.Data {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      StringMatrix clone = new StringMatrix();
-      cloner.RegisterClonedObject(this, clone);
-      clone.matrix = (string[,])matrix.Clone();
-      clone.columnNames = new List<string>(columnNames);
-      clone.rowNames = new List<string>(rowNames);
-      clone.sortableView = sortableView;
-      clone.readOnly = readOnly;
-      return clone;
+      return new StringMatrix(this, cloner);
     }
 
     public virtual StringMatrix AsReadOnly() {

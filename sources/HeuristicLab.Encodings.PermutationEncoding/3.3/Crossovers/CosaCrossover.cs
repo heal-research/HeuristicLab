@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -36,6 +37,15 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("CosaCrossover", "An operator which performs the crossover described in the COSA optimization method. It is implemented as described in Wendt, O. 1994. COSA: COoperative Simulated Annealing - Integration von Genetischen Algorithmen und Simulated Annealing am Beispiel der Tourenplanung. Dissertation Thesis. IWI Frankfurt.")]
   [StorableClass]
   public class CosaCrossover : PermutationCrossover {
+    [StorableConstructor]
+    protected CosaCrossover(bool deserializing) : base(deserializing) { }
+    protected CosaCrossover(CosaCrossover original, Cloner cloner) : base(original, cloner) { }
+    public CosaCrossover() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new CosaCrossover(this, cloner);
+    }
+
     /// <summary>
     /// The operator actually performs a 2-opt mutation on the first parent, but it uses the second parent to determine which new edge should be inserted.
     /// Thus the mutation is not random as the second breakpoint depends on the information that is encoded in other members of the population.

@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
@@ -34,7 +35,9 @@ namespace HeuristicLab.Selection {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
-
+    [StorableConstructor]
+    protected StochasticSingleObjectiveSelector(bool deserializing) : base(deserializing) { }
+    protected StochasticSingleObjectiveSelector(StochasticSingleObjectiveSelector original, Cloner cloner) : base(original, cloner) { }
     protected StochasticSingleObjectiveSelector()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator used for stochastic selection."));

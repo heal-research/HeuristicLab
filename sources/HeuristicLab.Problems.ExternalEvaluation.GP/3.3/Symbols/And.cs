@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -27,7 +28,14 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
   [StorableClass]
   [Item("And", "Symbol that represents the boolean AND operator.")]
   public sealed class And : Symbol {
-
+    [StorableConstructor]
+    private And(bool deserializing) : base(deserializing) { }
+    private And(And original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new And(this, cloner);
+    }
     public And()
       : base("&&", "Symbol that represents the boolean AND operator.") {
     }

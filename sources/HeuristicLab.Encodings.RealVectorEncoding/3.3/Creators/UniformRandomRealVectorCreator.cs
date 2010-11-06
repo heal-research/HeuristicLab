@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
@@ -32,6 +33,15 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("UniformRandomRealVectorCreator", "An operator which creates a new random real vector with each element uniformly distributed in a specified range.")]
   [StorableClass]
   public class UniformRandomRealVectorCreator : RealVectorCreator, IStrategyParameterCreator {
+    [StorableConstructor]
+    protected UniformRandomRealVectorCreator(bool deserializing) : base(deserializing) { }
+    protected UniformRandomRealVectorCreator(UniformRandomRealVectorCreator original, Cloner cloner) : base(original, cloner) { }
+    public UniformRandomRealVectorCreator() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new UniformRandomRealVectorCreator(this, cloner);
+    }
+    
     /// <summary>
     /// Generates a new random real vector with the given <paramref name="length"/> and in the interval [min,max).
     /// </summary>

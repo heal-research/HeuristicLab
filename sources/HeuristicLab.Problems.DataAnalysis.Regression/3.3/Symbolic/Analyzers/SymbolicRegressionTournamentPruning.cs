@@ -21,6 +21,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
@@ -32,7 +33,7 @@ using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
-  public class SymbolicRegressionTournamentPruning : SingleSuccessorOperator, ISymbolicRegressionAnalyzer {
+  public sealed class SymbolicRegressionTournamentPruning : SingleSuccessorOperator, ISymbolicRegressionAnalyzer {
     private const string RandomParameterName = "Random";
     private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
     private const string DataAnalysisProblemDataParameterName = "DataAnalysisProblemData";
@@ -175,7 +176,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       get { return GenerationParameter.ActualValue; }
     }
     #endregion
-    protected SymbolicRegressionTournamentPruning(bool deserializing) : base(deserializing) { }
+
+    [StorableConstructor]
+    private SymbolicRegressionTournamentPruning(bool deserializing) : base(deserializing) { }
+    private SymbolicRegressionTournamentPruning(SymbolicRegressionTournamentPruning original, Cloner cloner) : base(original, cloner) { }
     public SymbolicRegressionTournamentPruning()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>(RandomParameterName, "A random number generator."));
@@ -198,6 +202,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       Parameters.Add(new ValueLookupParameter<IntValue>(PruningFrequencyParameterName, "The frequency of pruning operations (1: every generation, 2: every second generation...)", new IntValue(1)));
       Parameters.Add(new LookupParameter<IntValue>(GenerationParameterName, "The current generation."));
       Parameters.Add(new LookupParameter<ResultCollection>(ResultsParameterName, "The results collection."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SymbolicRegressionTournamentPruning(this, cloner);
     }
 
     [StorableHook(HookType.AfterDeserialization)]
@@ -240,8 +248,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       ISymbolicExpressionTreeInterpreter interpreter, ISymbolicRegressionEvaluator evaluator, bool maximization,
       double lowerEstimationLimit, double upperEstimationLimit,
       double maxPruningRatio, double qualityGainWeight) {
-        IEnumerable<int> rows = Enumerable.Range(samplesStart, samplesEnd - samplesStart)
-          .Where(i => i < problemData.TestSamplesStart.Value || problemData.TestSamplesEnd.Value <= i);
+      IEnumerable<int> rows = Enumerable.Range(samplesStart, samplesEnd - samplesStart)
+        .Where(i => i < problemData.TestSamplesStart.Value || problemData.TestSamplesEnd.Value <= i);
       int originalSize = tree.Size;
       double originalQuality = evaluator.Evaluate(interpreter, tree,
         lowerEstimationLimit, upperEstimationLimit, problemData.Dataset, problemData.TargetVariable.Value, rows);

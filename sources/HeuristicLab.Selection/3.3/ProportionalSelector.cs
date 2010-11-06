@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
@@ -44,6 +45,14 @@ namespace HeuristicLab.Selection {
       set { WindowingParameter.Value = value; }
     }
 
+    [StorableConstructor]
+    private ProportionalSelector(bool deserializing) : base(deserializing) { }
+    private ProportionalSelector(ProportionalSelector original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ProportionalSelector(this, cloner);
+    }
     public ProportionalSelector()
       : base() {
       Parameters.Add(new ValueParameter<BoolValue>("Windowing", "Apply windowing strategy (selection probability is proportional to the quality differences and not to the total quality).", new BoolValue(true)));

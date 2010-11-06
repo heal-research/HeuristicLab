@@ -140,6 +140,14 @@ namespace HeuristicLab.Problems.Knapsack {
 
     [StorableConstructor]
     private KnapsackProblem(bool deserializing) : base(deserializing) { }
+    private KnapsackProblem(KnapsackProblem original, Cloner cloner)
+      : base(original, cloner) {
+      this.operators = original.operators.Select(x => (IOperator)cloner.Clone(x)).ToList();
+      AttachEventHandlers();
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new KnapsackProblem(this, cloner);
+    }
     public KnapsackProblem()
       : base() {
       RandomBinaryVectorCreator creator = new RandomBinaryVectorCreator();
@@ -164,13 +172,6 @@ namespace HeuristicLab.Problems.Knapsack {
 
       InitializeOperators();
       AttachEventHandlers();
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      KnapsackProblem clone = (KnapsackProblem)base.Clone(cloner);
-      clone.operators = operators.Select(x => (IOperator)cloner.Clone(x)).ToList();
-      clone.AttachEventHandlers();
-      return clone;
     }
 
     #region Events
@@ -256,7 +257,7 @@ namespace HeuristicLab.Problems.Knapsack {
 
     #region Helpers
     [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserializationHook() {
+    private void AfterDeserialization() {
       // BackwardsCompatibility3.3
       #region Backwards compatible code (remove with 3.4)
       if (operators == null) InitializeOperators();

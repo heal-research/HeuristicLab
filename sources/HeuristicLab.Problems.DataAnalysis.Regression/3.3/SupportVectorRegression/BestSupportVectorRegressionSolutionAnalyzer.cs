@@ -21,6 +21,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
@@ -51,10 +52,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.SupportVectorRegression 
     }
     #endregion
 
+    [StorableConstructor]
+    private BestSupportVectorRegressionSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    private BestSupportVectorRegressionSolutionAnalyzer(BestSupportVectorRegressionSolutionAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public BestSupportVectorRegressionSolutionAnalyzer()
       : base() {
       Parameters.Add(new ScopeTreeLookupParameter<SupportVectorMachineModel>(SupportVectorRegressionModelParameterName, "The support vector regression models to analyze."));
       Parameters.Add(new LookupParameter<SupportVectorRegressionSolution>(BestSolutionParameterName, "The best support vector regression solution."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new BestSupportVectorRegressionSolutionAnalyzer(this, cloner);
     }
 
     protected override DataAnalysisSolution UpdateBestSolution() {

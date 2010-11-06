@@ -21,6 +21,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
@@ -33,6 +34,14 @@ namespace HeuristicLab.Selection {
   [Item("LinearRankSelector", "A linear rank selection operator which considers the rank based on a single double quality value for selection.")]
   [StorableClass]
   public sealed class LinearRankSelector : StochasticSingleObjectiveSelector, ISingleObjectiveSelector {
+    [StorableConstructor]
+    private LinearRankSelector(bool deserializing) : base(deserializing) { }
+    private LinearRankSelector(LinearRankSelector original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new LinearRankSelector(this, cloner);
+    }
     public LinearRankSelector() : base() { }
 
     protected override IScope[] Select(List<IScope> scopes) {

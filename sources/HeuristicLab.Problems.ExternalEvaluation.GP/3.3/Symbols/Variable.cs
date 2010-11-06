@@ -90,6 +90,21 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
       }
     }
     #endregion
+
+    [StorableConstructor]
+    private Variable(bool deserializing) : base(deserializing) { }
+    private Variable(Variable original, Cloner cloner)
+      : base(original, cloner) {
+      weightNu = original.weightNu;
+      weightSigma = original.weightSigma;
+      variableNames = new List<string>(original.variableNames);
+      weightManipulatorNu = original.weightManipulatorNu;
+      weightManipulatorSigma = original.weightManipulatorSigma;
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Variable(this, cloner);
+    }
+
     public Variable()
       : base("Variable", "Represents a variable value.") {
       weightNu = 1.0;
@@ -101,16 +116,6 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
 
     public override SymbolicExpressionTreeNode CreateTreeNode() {
       return new VariableTreeNode(this);
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      Variable clone = (Variable)base.Clone(cloner);
-      clone.weightNu = weightNu;
-      clone.weightSigma = weightSigma;
-      clone.variableNames = new List<string>(variableNames);
-      clone.weightManipulatorNu = weightManipulatorNu;
-      clone.weightManipulatorSigma = weightManipulatorSigma;
-      return clone;
     }
   }
 }

@@ -20,11 +20,8 @@
 #endregion
 
 using System;
-using System.Drawing;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   public sealed class VRPUtilities {

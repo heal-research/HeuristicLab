@@ -19,13 +19,12 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaLambdaInterchangeMoveMaker", "Peforms a lambda interchange moves on a given VRP encoding and updates the quality. It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
@@ -45,13 +44,19 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     }
 
     [StorableConstructor]
-    private AlbaLambdaInterchangeMoveMaker(bool deserializing) : base(deserializing) { }
-
+    protected AlbaLambdaInterchangeMoveMaker(bool deserializing) : base(deserializing) { }
+    protected AlbaLambdaInterchangeMoveMaker(AlbaLambdaInterchangeMoveMaker original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public AlbaLambdaInterchangeMoveMaker()
       : base() {
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of the solution."));
       Parameters.Add(new LookupParameter<AlbaLambdaInterchangeMove>("AlbaLambdaInterchangeMove", "The move to make."));
       Parameters.Add(new LookupParameter<DoubleValue>("MoveQuality", "The relative quality of the move."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new AlbaLambdaInterchangeMoveMaker(this, cloner);
     }
 
     public static void Apply(AlbaEncoding solution, AlbaLambdaInterchangeMove move) {
@@ -63,11 +68,11 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
 
     public override IOperation Apply() {
       IOperation next = base.Apply();
-      
+
       AlbaLambdaInterchangeMove move = LambdaInterchangeMoveParameter.ActualValue;
       DoubleValue moveQuality = MoveQualityParameter.ActualValue;
       DoubleValue quality = QualityParameter.ActualValue;
-     
+
       //perform move
       VRPToursParameter.ActualValue = move.MakeMove();
 

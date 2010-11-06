@@ -21,6 +21,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
@@ -36,6 +37,13 @@ namespace HeuristicLab.Selection {
   public sealed class TournamentSelector : StochasticSingleObjectiveSelector, ISingleObjectiveSelector {
     public ValueLookupParameter<IntValue> GroupSizeParameter {
       get { return (ValueLookupParameter<IntValue>)Parameters["GroupSize"]; }
+    }
+
+    [StorableConstructor]
+    private TournamentSelector(bool deserializing) : base(deserializing) { }
+    private TournamentSelector(TournamentSelector original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new TournamentSelector(this, cloner);
     }
 
     public TournamentSelector()

@@ -28,15 +28,17 @@ namespace HeuristicLab.Data {
   [Item("DoubleArray", "Represents an array of double values.")]
   [StorableClass]
   public class DoubleArray : ValueTypeArray<double>, IStringConvertibleArray {
+    [StorableConstructor]
+    protected DoubleArray(bool deserializing) : base(deserializing) { }
+    protected DoubleArray(DoubleArray original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public DoubleArray() : base() { }
     public DoubleArray(int length) : base(length) { }
     public DoubleArray(double[] elements) : base(elements) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      DoubleArray clone = new DoubleArray(array);
-      cloner.RegisterClonedObject(this, clone);
-      clone.readOnly = readOnly;
-      return clone;
+      return new DoubleArray(this, cloner);
     }
 
     protected virtual bool Validate(string value, out string errorMessage) {

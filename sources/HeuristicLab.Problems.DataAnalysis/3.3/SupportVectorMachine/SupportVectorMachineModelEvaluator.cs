@@ -19,14 +19,15 @@
  */
 #endregion
 
+using System.Collections.Generic;
+using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using SVM;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
   [StorableClass]
@@ -69,6 +70,13 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
       get { return SamplesEndParameter.ActualValue; }
     }
     #endregion
+
+    [StorableConstructor]
+    protected SupportVectorMachineModelEvaluator(bool deserializing) : base(deserializing) { }
+    protected SupportVectorMachineModelEvaluator(SupportVectorMachineModelEvaluator original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SupportVectorMachineModelEvaluator(this, cloner);
+    }
     public SupportVectorMachineModelEvaluator()
       : base() {
       Parameters.Add(new ValueLookupParameter<DataAnalysisProblemData>(DataAnalysisProblemDataParameterName, "The data analysis problem data to use for training."));

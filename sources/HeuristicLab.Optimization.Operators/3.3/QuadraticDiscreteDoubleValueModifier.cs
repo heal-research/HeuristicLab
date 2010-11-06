@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -29,6 +30,15 @@ namespace HeuristicLab.Optimization.Operators {
   [Item("QuadraticDiscreteDoubleValueModifier", "Modifies the value by quadratic fall (slow fall initially, fast fall to the end) or rise (slow rise initally, fast rise to the end).")]
   [StorableClass]
   public class QuadraticDiscreteDoubleValueModifier : DiscreteDoubleValueModifier {
+    [StorableConstructor]
+    protected QuadraticDiscreteDoubleValueModifier(bool deserializing) : base(deserializing) { }
+    protected QuadraticDiscreteDoubleValueModifier(QuadraticDiscreteDoubleValueModifier original, Cloner cloner) : base(original, cloner) { }
+    public QuadraticDiscreteDoubleValueModifier() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new QuadraticDiscreteDoubleValueModifier(this, cloner);
+    }
+
     protected override double Modify(double value, double startValue, double endValue, int index, int startIndex, int endIndex) {
       double a = (endValue - startValue) / ((endIndex - startIndex) * (endIndex - startIndex));
       return a * (index - startIndex) * (index - startIndex) + startValue;

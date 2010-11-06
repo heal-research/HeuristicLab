@@ -19,13 +19,14 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureManipulators {
   /// <summary>
@@ -35,6 +36,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureMani
   [Item("ArgumentCreater", "Manipulates a symbolic expression by creating a new argument within one function-defining branch.")]
   [StorableClass]
   public sealed class ArgumentCreater : SymbolicExpressionTreeArchitectureManipulator {
+    [StorableConstructor]
+    private ArgumentCreater(bool deserializing) : base(deserializing) { }
+    private ArgumentCreater(ArgumentCreater original, Cloner cloner) : base(original, cloner) { }
+    public ArgumentCreater() : base() { }
     public override sealed void ModifyArchitecture(
       IRandom random,
       SymbolicExpressionTree symbolicExpressionTree,
@@ -43,6 +48,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureMani
       IntValue maxFunctionDefiningBranches, IntValue maxFunctionArguments,
       out bool success) {
       success = CreateNewArgument(random, symbolicExpressionTree, grammar, maxTreeSize.Value, maxTreeHeight.Value, maxFunctionDefiningBranches.Value, maxFunctionArguments.Value);
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ArgumentCreater(this, cloner);
     }
 
     public static bool CreateNewArgument(
@@ -90,7 +99,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureMani
         return false;
       }
     }
-
 
     private static bool CreateNewArgumentForDefun(IRandom random, SymbolicExpressionTree tree, DefunTreeNode defunBranch, ArgumentTreeNode newArgumentNode) {
       // select a random cut point in the function defining branch

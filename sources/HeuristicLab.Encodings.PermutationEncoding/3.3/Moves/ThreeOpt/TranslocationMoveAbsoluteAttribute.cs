@@ -35,13 +35,13 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     public int NewPosition { get; private set; }
 
     [StorableConstructor]
-    private TranslocationMoveAbsoluteAttribute(bool deserializing)
-      : base() {
+    protected TranslocationMoveAbsoluteAttribute(bool deserializing) : base(deserializing) { }
+    protected TranslocationMoveAbsoluteAttribute(TranslocationMoveAbsoluteAttribute original, Cloner cloner)
+      : base(original, cloner) {
+      this.Number = (int[])original.Number.Clone();
+      this.OldPosition = original.OldPosition;
+      this.NewPosition = original.NewPosition;
     }
-
-    public TranslocationMoveAbsoluteAttribute()
-      : this(null, -1, -1, -1) { }
-
     public TranslocationMoveAbsoluteAttribute(int[] number, int oldPosition, int newPosition, double moveQuality)
       : base(moveQuality) {
       Number = number;
@@ -50,11 +50,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      TranslocationMoveAbsoluteAttribute clone = (TranslocationMoveAbsoluteAttribute)base.Clone(cloner);
-      clone.Number = Number;
-      clone.OldPosition = OldPosition;
-      clone.NewPosition = NewPosition;
-      return clone;
+      return new TranslocationMoveAbsoluteAttribute(this, cloner);
     }
   }
 }

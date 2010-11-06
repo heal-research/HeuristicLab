@@ -20,6 +20,7 @@
 #endregion
 
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
@@ -34,7 +35,7 @@ namespace HeuristicLab.Problems.OneMax {
   /// </summary>
   [Item("BestOneMaxSolutionAnalyzer", "An operator for analyzing the best solution for a OneMax problem.")]
   [StorableClass]
-  class BestOneMaxSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer {
+  public class BestOneMaxSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer {
     public LookupParameter<BoolValue> MaximizationParameter {
       get { return (LookupParameter<BoolValue>)Parameters["Maximization"]; }
     }
@@ -54,6 +55,9 @@ namespace HeuristicLab.Problems.OneMax {
       get { return (LookupParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
     }
 
+    [StorableConstructor]
+    protected BestOneMaxSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    protected BestOneMaxSolutionAnalyzer(BestOneMaxSolutionAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public BestOneMaxSolutionAnalyzer()
       : base() {
       Parameters.Add(new LookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem."));
@@ -62,6 +66,10 @@ namespace HeuristicLab.Problems.OneMax {
       Parameters.Add(new LookupParameter<OneMaxSolution>("BestSolution", "The best Onemax solution."));
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the Onemax solution should be stored."));
       Parameters.Add(new LookupParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new BestOneMaxSolutionAnalyzer(this, cloner);
     }
 
     public override IOperation Apply() {

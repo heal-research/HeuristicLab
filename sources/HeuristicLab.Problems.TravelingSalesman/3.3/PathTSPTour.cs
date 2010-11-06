@@ -78,6 +78,15 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       }
     }
 
+    [StorableConstructor]
+    private PathTSPTour(bool deserializing) : base(deserializing) { }
+    private PathTSPTour(PathTSPTour original, Cloner cloner)
+      : base(original, cloner) {
+      this.coordinates = cloner.Clone(original.coordinates);
+      this.permutation = cloner.Clone(original.permutation);
+      this.quality = cloner.Clone(original.quality);
+      Initialize();
+    }
     public PathTSPTour() : base() { }
     public PathTSPTour(DoubleMatrix coordinates)
       : base() {
@@ -97,24 +106,20 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       this.quality = quality;
       Initialize();
     }
-    [StorableConstructor]
-    private PathTSPTour(bool deserializing) : base(deserializing) { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new PathTSPTour(this, cloner);
+    }
 
     [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      Initialize();
+    }
+
     private void Initialize() {
       if (coordinates != null) RegisterCoordinatesEvents();
       if (permutation != null) RegisterPermutationEvents();
       if (quality != null) RegisterQualityEvents();
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      PathTSPTour clone = new PathTSPTour();
-      cloner.RegisterClonedObject(this, clone);
-      clone.coordinates = (DoubleMatrix)cloner.Clone(coordinates);
-      clone.permutation = (Permutation)cloner.Clone(permutation);
-      clone.quality = (DoubleValue)cloner.Clone(quality);
-      clone.Initialize();
-      return clone;
     }
 
     #region Events

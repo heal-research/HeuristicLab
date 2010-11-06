@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -28,7 +29,6 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Analysis;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   /// <summary>
@@ -149,14 +149,14 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     public BestAverageWorstVRPToursAnalyzer()
       : base() {
-      #region Create parameters     
+      #region Create parameters
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Overload", "The overloads of the VRP solutions which should be analyzed."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("BestOverload", "The best overload value."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("CurrentBestOverload", "The current best overload value."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("CurrentAverageOverload", "The current average overload value of all solutions."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("CurrentWorstOverload", "The current worst overload value of all solutions."));
       Parameters.Add(new ValueLookupParameter<DataTable>("Overloads", "The data table to store the current best, current average, current worst, best and best known overload value."));
- 
+
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Tardiness", "The tardiness of the VRP solutions which should be analyzed."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("BestTardiness", "The best tardiness value."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("CurrentBestTardiness", "The current best tardiness value."));
@@ -310,8 +310,18 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
     [StorableConstructor]
     private BestAverageWorstVRPToursAnalyzer(bool deserializing) : base() { }
+    private BestAverageWorstVRPToursAnalyzer(BestAverageWorstVRPToursAnalyzer original, Cloner cloner)
+      : base(original, cloner) {
+      Initialize();
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new BestAverageWorstVRPToursAnalyzer(this, cloner);
+    }
 
     [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      Initialize();
+    }
     private void Initialize() {
       OverloadParameter.DepthChanged += new EventHandler(OverloadParameter_DepthChanged);
       TardinessParameter.DepthChanged += new EventHandler(TardinessParameter_DepthChanged);
@@ -320,11 +330,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
       VehiclesUtilizedParameter.DepthChanged += new EventHandler(VehiclesUtilizedParameter_DepthChanged);
     }
 
-    public override IDeepCloneable Clone(Cloner cloner) {
-      BestAverageWorstVRPToursAnalyzer clone = (BestAverageWorstVRPToursAnalyzer)base.Clone(cloner);
-      clone.Initialize();
-      return clone;
-    }
 
     void OverloadParameter_DepthChanged(object sender, EventArgs e) {
       BestAverageWorstCalculator.OverloadParameter.Depth = OverloadParameter.Depth;

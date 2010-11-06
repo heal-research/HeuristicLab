@@ -20,7 +20,9 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -28,7 +30,6 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using SVM;
-using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
   /// <summary>
@@ -125,6 +126,12 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
     }
     #endregion
 
+    [StorableConstructor]
+    protected SupportVectorMachineCrossValidationEvaluator(bool deserializing) : base(deserializing) { }
+
+    protected SupportVectorMachineCrossValidationEvaluator(SupportVectorMachineCrossValidationEvaluator original,
+      Cloner cloner)
+      : base(original, cloner) { }
     public SupportVectorMachineCrossValidationEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>(RandomParameterName, "The random generator to use."));
@@ -142,17 +149,21 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
       Parameters.Add(new LookupParameter<DoubleValue>(QualityParameterName, "The cross validation quality reached with the given parameters."));
     }
 
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SupportVectorMachineCrossValidationEvaluator(this, cloner);
+    }
+
     public override IOperation Apply() {
       double reductionRatio = 1.0; // TODO: make parameter
       if (ActualSamplesParameter.ActualValue != null)
         reductionRatio = ActualSamplesParameter.ActualValue.Value;
-      IEnumerable<int> rows = 
+      IEnumerable<int> rows =
         Enumerable.Range(SamplesStart.Value, SamplesEnd.Value - SamplesStart.Value)
         .Where(i => i < DataAnalysisProblemData.TestSamplesStart.Value || DataAnalysisProblemData.TestSamplesEnd.Value <= i);
 
       // create a new DataAnalysisProblemData instance
       DataAnalysisProblemData reducedProblemData = (DataAnalysisProblemData)DataAnalysisProblemData.Clone();
-      reducedProblemData.Dataset = 
+      reducedProblemData.Dataset =
         CreateReducedDataset(RandomParameter.ActualValue, reducedProblemData.Dataset, rows, reductionRatio);
       reducedProblemData.TrainingSamplesStart.Value = 0;
       reducedProblemData.TrainingSamplesEnd.Value = reducedProblemData.Dataset.Rows;
@@ -169,7 +180,7 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
     }
 
     private Dataset CreateReducedDataset(IRandom random, Dataset dataset, IEnumerable<int> rowIndices, double reductionRatio) {
-      
+
       // must not make a fink:
       // => select n rows randomly from start..end
       // => sort the selected rows by index
@@ -190,7 +201,7 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
 
       // take the first n indexes (selected n rowIndexes from start..end)
       // now order by index
-      int[] orderedRandomIndexes = 
+      int[] orderedRandomIndexes =
         rowIndexArr.Take(n)
         .OrderBy(x => x)
         .ToArray();

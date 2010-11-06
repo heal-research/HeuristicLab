@@ -19,12 +19,11 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
-using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaManipulator", "An operator which manipulates a VRP representation.")]
@@ -36,12 +35,12 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
 
     [StorableConstructor]
     protected AlbaManipulator(bool deserializing) : base(deserializing) { }
-
+    protected AlbaManipulator(AlbaManipulator original, Cloner cloner) : base(original, cloner) { }
     public AlbaManipulator()
       : base() {
-        Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));
+      Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));
 
-        AlbaEncoding.RemoveUnusedParameters(Parameters);
+      AlbaEncoding.RemoveUnusedParameters(Parameters);
     }
 
     protected abstract void Manipulate(IRandom random, AlbaEncoding individual);

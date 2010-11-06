@@ -20,15 +20,19 @@
 #endregion
 
 using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
   [StorableClass]
   [Item("Operator Collection", "Represents a collection of operators.")]
   public class OperatorCollection : ItemCollection<IOperator> {
-    public OperatorCollection() : base() { }
-    public OperatorCollection(IEnumerable<IOperator> collection) : base(collection) { }
     [StorableConstructor]
     protected OperatorCollection(bool deserializing) : base(deserializing) { }
+    protected OperatorCollection(OperatorCollection original, Cloner cloner) : base(original, cloner) { }
+    public OperatorCollection() : base() { }
+    public OperatorCollection(IEnumerable<IOperator> collection) : base(collection) { }
+
+    public override IDeepCloneable Clone(Cloner cloner) { return new OperatorCollection(this, cloner); }
   }
 }

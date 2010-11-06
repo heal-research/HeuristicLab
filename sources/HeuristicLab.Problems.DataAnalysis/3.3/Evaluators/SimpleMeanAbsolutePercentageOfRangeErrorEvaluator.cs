@@ -26,6 +26,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis.Evaluators {
   public class SimpleMeanAbsolutePercentageOfRangeErrorEvaluator : SimpleEvaluator {
@@ -34,6 +35,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Evaluators {
       get { return (ILookupParameter<PercentValue>)Parameters["AveragePercentageOfRangeError"]; }
     }
 
+    [StorableConstructor]
+    protected SimpleMeanAbsolutePercentageOfRangeErrorEvaluator(bool deserializing) : base(deserializing) { }
+    protected SimpleMeanAbsolutePercentageOfRangeErrorEvaluator(SimpleMeanAbsolutePercentageOfRangeErrorEvaluator original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public SimpleMeanAbsolutePercentageOfRangeErrorEvaluator() {
       Parameters.Add(new LookupParameter<PercentValue>("AveragePercentageOfRangeError", "The average relative (percentage of range) error of estimated values."));
     }
@@ -44,6 +50,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Evaluators {
       var estimated = from i in Enumerable.Range(0, values.Rows)
                       select values[i, ESTIMATION_INDEX];
       AveragePercentageOfRangeErrorParameter.ActualValue = new PercentValue(Calculate(original, estimated));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SimpleMeanAbsolutePercentageOfRangeErrorEvaluator(this, cloner);
     }
 
     public static double Calculate(IEnumerable<double> original, IEnumerable<double> estimated) {

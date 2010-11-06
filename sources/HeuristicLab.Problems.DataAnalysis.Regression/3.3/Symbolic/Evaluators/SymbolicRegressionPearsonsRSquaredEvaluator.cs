@@ -21,10 +21,9 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis.Evaluators;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
@@ -33,10 +32,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [Item("SymbolicRegressionPearsonsRSquaredEvaluator", "Calculates the pearson r² correlation coefficient of a symbolic regression solution.")]
   [StorableClass]
   public class SymbolicRegressionPearsonsRSquaredEvaluator : SingleObjectiveSymbolicRegressionEvaluator {
-    public SymbolicRegressionPearsonsRSquaredEvaluator()
-      : base() {
+    [StorableConstructor]
+    protected SymbolicRegressionPearsonsRSquaredEvaluator(bool deserializing) : base(deserializing) { }
+    protected SymbolicRegressionPearsonsRSquaredEvaluator(SymbolicRegressionPearsonsRSquaredEvaluator original, Cloner cloner)
+      : base(original, cloner) {
     }
+    public SymbolicRegressionPearsonsRSquaredEvaluator() : base() { }
 
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SymbolicRegressionPearsonsRSquaredEvaluator(this, cloner);
+    }
     public override double Evaluate(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, Dataset dataset, string targetVariable, IEnumerable<int> rows) {
       double mse = Calculate(interpreter, solution, lowerEstimationLimit, upperEstimationLimit, dataset, targetVariable, rows);
       return mse;

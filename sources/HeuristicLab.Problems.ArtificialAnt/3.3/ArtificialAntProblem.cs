@@ -195,6 +195,23 @@ namespace HeuristicLab.Problems.ArtificialAnt {
 
     [StorableConstructor]
     private ArtificialAntProblem(bool deserializing) : base(deserializing) { }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code (remove with 3.4)
+      if (operators == null) InitializeOperators();
+      #endregion
+      AttachEventHandlers();
+    }
+
+    private ArtificialAntProblem(ArtificialAntProblem original, Cloner cloner)
+      : base(original, cloner) {
+      operators = original.operators.Select(x => cloner.Clone(x)).ToList();
+      AttachEventHandlers();
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ArtificialAntProblem(this, cloner);
+    }
     public ArtificialAntProblem()
       : base() {
       SymbolicExpressionTreeCreator creator = new ProbabilisticTreeCreator();
@@ -219,13 +236,6 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       ParameterizeEvaluator();
       InitializeOperators();
       AttachEventHandlers();
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      ArtificialAntProblem clone = (ArtificialAntProblem)base.Clone(cloner);
-      clone.operators = operators.Select(x => (IOperator)cloner.Clone(x)).ToList();
-      clone.AttachEventHandlers();
-      return clone;
     }
 
     #region Events
@@ -277,15 +287,6 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     #endregion
 
     #region Helpers
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserializationHook() {
-      // BackwardsCompatibility3.3
-      #region Backwards compatible code (remove with 3.4)
-      if (operators == null) InitializeOperators();
-      #endregion
-      AttachEventHandlers();
-    }
-
     private void AttachEventHandlers() {
       SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
       SolutionCreator.SymbolicExpressionTreeParameter.ActualNameChanged += new EventHandler(SolutionCreator_SymbolicExpressionTreeParameter_ActualNameChanged);

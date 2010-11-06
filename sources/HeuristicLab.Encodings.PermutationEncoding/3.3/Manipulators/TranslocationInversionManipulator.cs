@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -33,6 +34,15 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("TranslocationInversionManipulator", "An operator which inverts a randomly chosen part of a permutation and inserts it at a random position. It is implemented as described in Fogel, D.B. 1993. Applying Evolutionary Programming to Selected TSP Problems, Cybernetics and Systems, 22, pp. 27-36.")]
   [StorableClass]
   public class TranslocationInversionManipulator : PermutationManipulator {
+    [StorableConstructor]
+    protected TranslocationInversionManipulator(bool deserializing) : base(deserializing) { }
+    protected TranslocationInversionManipulator(TranslocationInversionManipulator original, Cloner cloner) : base(original, cloner) { }
+    public TranslocationInversionManipulator() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new TranslocationInversionManipulator(this, cloner);
+    }
+
     /// <summary>
     /// Moves a randomly chosen interval of elements to another (randomly chosen) position in the given
     /// <paramref name="permutation"/> array and reverses it.

@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -35,6 +36,15 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("SinglePointCrossover", "Breaks both parent chromosomes at a randomly chosen point and assembles a child by taking one part of the first parent and the other part of the second pard. It is implemented as described in Michalewicz, Z. 1999. Genetic Algorithms + Data Structures = Evolution Programs. Third, Revised and Extended Edition, Spring-Verlag Berlin Heidelberg.")]
   [StorableClass]
   public class SinglePointCrossover : RealVectorCrossover {
+    [StorableConstructor]
+    protected SinglePointCrossover(bool deserializing) : base(deserializing) { }
+    protected SinglePointCrossover(SinglePointCrossover original, Cloner cloner) : base(original, cloner) { }
+    public SinglePointCrossover() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SinglePointCrossover(this, cloner);
+    }
+    
     /// <summary>
     /// Performs the single point crossover for real vectors. The implementation is similar to the single point crossover for binary vectors.
     /// After a breakpoint is randomly chosen in the interval [1,N-1) with N = length of the vector, the first part is copied from parent1 the other part copied from parent2.

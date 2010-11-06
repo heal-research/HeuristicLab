@@ -20,6 +20,7 @@
 #endregion
 
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -27,10 +28,14 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators {
   [StorableClass]
   [Item("OnePointShaker", "Selects a random node with local parameters and manipulates the selected node.")]
-  public class OnePointShaker : SymbolicExpressionTreeManipulator {
+  public sealed class OnePointShaker : SymbolicExpressionTreeManipulator {
+    [StorableConstructor]
+    private OnePointShaker(bool deserializing) : base(deserializing) { }
+    private OnePointShaker(OnePointShaker original, Cloner cloner) : base(original, cloner) { }
+    public OnePointShaker() : base() { }
 
-    public OnePointShaker()
-      : base() {
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OnePointShaker(this, cloner);
     }
 
     protected override void Manipulate(IRandom random, SymbolicExpressionTree symbolicExpressionTree, ISymbolicExpressionGrammar grammar, IntValue maxTreeSize, IntValue maxTreeHeight, out bool success) {

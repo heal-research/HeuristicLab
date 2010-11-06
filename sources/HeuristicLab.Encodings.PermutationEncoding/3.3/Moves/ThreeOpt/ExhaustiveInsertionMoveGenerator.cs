@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -28,6 +29,15 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("ExhaustiveInsertionMoveGenerator", "Generates all possible insertion moves (3-opt) from a given permutation.")]
   [StorableClass]
   public class ExhaustiveInsertionMoveGenerator : TranslocationMoveGenerator, IExhaustiveMoveGenerator {
+    [StorableConstructor]
+    protected ExhaustiveInsertionMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected ExhaustiveInsertionMoveGenerator(ExhaustiveInsertionMoveGenerator original, Cloner cloner) : base(original, cloner) { }
+    public ExhaustiveInsertionMoveGenerator() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ExhaustiveInsertionMoveGenerator(this, cloner);
+    }
+
     public static TranslocationMove[] Apply(Permutation permutation) {
       int length = permutation.Length;
       if (length == 1) throw new ArgumentException("ExhaustiveInsertionMoveGenerator: There cannot be an insertion move given a permutation of length 1.", "permutation");

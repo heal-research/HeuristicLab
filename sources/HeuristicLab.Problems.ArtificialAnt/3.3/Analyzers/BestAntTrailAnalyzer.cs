@@ -20,6 +20,7 @@
 #endregion
 
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
@@ -62,6 +63,15 @@ namespace HeuristicLab.Problems.ArtificialAnt.Analyzers {
       Parameters.Add(new LookupParameter<AntTrail>("BestSolution", "The visual representation of the best ant trail."));
       Parameters.Add(new LookupParameter<IntValue>("MaxTimeSteps", "The maximal time steps that the artificial ant has available to collect all food items."));
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the best artificial ant solution should be stored."));
+    }
+
+    [StorableConstructor]
+    private BestAntTrailAnalyzer(bool deserializing) : base(deserializing) { }
+    private BestAntTrailAnalyzer(BestAntTrailAnalyzer original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new BestAntTrailAnalyzer(this, cloner);
     }
 
     public override IOperation Apply() {

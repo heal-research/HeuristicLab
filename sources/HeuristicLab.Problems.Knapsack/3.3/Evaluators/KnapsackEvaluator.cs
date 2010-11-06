@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
@@ -67,6 +68,9 @@ namespace HeuristicLab.Problems.Knapsack {
       get { return (ILookupParameter<IntArray>)Parameters["Values"]; }
     }
 
+    [StorableConstructor]
+    protected KnapsackEvaluator(bool deserializing) : base(deserializing) { }
+    protected KnapsackEvaluator(KnapsackEvaluator original, Cloner cloner) : base(original, cloner) { }
     public KnapsackEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The evaluated quality of the OneMax solution."));
@@ -78,6 +82,10 @@ namespace HeuristicLab.Problems.Knapsack {
       Parameters.Add(new LookupParameter<IntArray>("Weights", "The weights of the items."));
       Parameters.Add(new LookupParameter<IntArray>("Values", "The values of the items."));
       Parameters.Add(new LookupParameter<DoubleValue>("Penalty", "The penalty value for each unit of overweight."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new KnapsackEvaluator(this, cloner);
     }
 
     public struct KnapsackEvaluation {

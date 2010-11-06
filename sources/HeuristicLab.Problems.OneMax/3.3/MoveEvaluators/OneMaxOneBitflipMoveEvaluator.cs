@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
@@ -36,9 +37,16 @@ namespace HeuristicLab.Problems.OneMax {
       get { return (ILookupParameter<OneBitflipMove>)Parameters["OneBitflipMove"]; }
     }
 
+    [StorableConstructor]
+    protected OneMaxOneBitflipMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected OneMaxOneBitflipMoveEvaluator(OneMaxOneBitflipMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     public OneMaxOneBitflipMoveEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<OneBitflipMove>("OneBitflipMove", "The move to evaluate."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OneMaxOneBitflipMoveEvaluator(this, cloner);
     }
 
     public override IOperation Apply() {

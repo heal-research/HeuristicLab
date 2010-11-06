@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -107,7 +108,13 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     #endregion
 
     [StorableConstructor]
-    private SASEGASAMainLoop(bool deserializing) : base() { }
+    private SASEGASAMainLoop(bool deserializing) : base(deserializing) { }
+    private SASEGASAMainLoop(SASEGASAMainLoop original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SASEGASAMainLoop(this, cloner);
+    }
     public SASEGASAMainLoop()
       : base() {
       #region Create parameters

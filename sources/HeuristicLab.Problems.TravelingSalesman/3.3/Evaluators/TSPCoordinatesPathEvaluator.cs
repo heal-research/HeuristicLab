@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
@@ -45,6 +46,9 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       get { return (ILookupParameter<BoolValue>)Parameters["UseDistanceMatrix"]; }
     }
 
+    [StorableConstructor]
+    protected TSPCoordinatesPathEvaluator(bool deserializing) : base(deserializing) { }
+    protected TSPCoordinatesPathEvaluator(TSPCoordinatesPathEvaluator original, Cloner cloner) : base(original, cloner) { }
     protected TSPCoordinatesPathEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<Permutation>("Permutation", "The TSP solution given in path representation which should be evaluated."));

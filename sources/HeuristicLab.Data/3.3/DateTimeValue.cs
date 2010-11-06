@@ -28,14 +28,16 @@ namespace HeuristicLab.Data {
   [Item("DateTimeValue", "Represents a date and time value.")]
   [StorableClass]
   public class DateTimeValue : ValueTypeValue<DateTime>, IComparable, IStringConvertibleValue {
+    [StorableConstructor]
+    protected DateTimeValue(bool deserializing) : base(deserializing) { }
+    protected DateTimeValue(DateTimeValue original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public DateTimeValue() : base() { }
     public DateTimeValue(DateTime value) : base(value) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      DateTimeValue clone = new DateTimeValue(value);
-      cloner.RegisterClonedObject(this, clone);
-      clone.readOnly = readOnly;
-      return clone;
+      return new DateTimeValue(this, cloner);
     }
 
     public override string ToString() {

@@ -43,15 +43,15 @@ namespace HeuristicLab.Operators {
       get { return operatorGraph; }
     }
 
+    [StorableConstructor]
+    protected AlgorithmOperator(bool deserializing) : base(deserializing) { }
+    protected AlgorithmOperator(AlgorithmOperator original, Cloner cloner)
+      : base(original, cloner) {
+      this.operatorGraph = cloner.Clone<OperatorGraph>(original.operatorGraph);
+    }
     protected AlgorithmOperator()
       : base() {
       operatorGraph = new OperatorGraph();
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      AlgorithmOperator clone = (AlgorithmOperator)base.Clone(cloner);
-      clone.operatorGraph = (OperatorGraph)cloner.Clone(operatorGraph);
-      return clone;
     }
 
     public override IOperation Apply() {

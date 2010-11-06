@@ -19,11 +19,9 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
   [Item("GVRInversionManipulator", "An operator which manipulates a GVR representation by inverting a subroute. It is implemented as described in Pereira, F.B. et al (2002). GVR: a New Genetic Representation for the Vehicle Routing Problem. AICS 2002, LNAI 2464, pp. 95-102.")]
@@ -31,10 +29,11 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
   public sealed class GVRInversionManipulator : GVRManipulator {
     [StorableConstructor]
     private GVRInversionManipulator(bool deserializing) : base(deserializing) { }
-
-    public GVRInversionManipulator()
-      : base() {
+    private GVRInversionManipulator(GVRInversionManipulator original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new GVRInversionManipulator(this, cloner);
     }
+    public GVRInversionManipulator() : base() { }
 
     protected override void Manipulate(IRandom random, GVREncoding individual) {
       Tour tour = individual.Tours[random.Next(individual.Tours.Count)];

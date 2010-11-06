@@ -33,7 +33,7 @@ using HeuristicLab.Problems.DataAnalysis.Symbolic;
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [Item("SymbolicRegressionScaledMeanSquaredErrorEvaluator", "Calculates the mean squared error of a linearly scaled symbolic regression solution.")]
   [StorableClass]
-  public class SymbolicRegressionScaledMeanSquaredErrorEvaluator : SymbolicRegressionMeanSquaredErrorEvaluator {
+  public sealed class SymbolicRegressionScaledMeanSquaredErrorEvaluator : SymbolicRegressionMeanSquaredErrorEvaluator {
 
     #region parameter properties
     public ILookupParameter<DoubleValue> AlphaParameter {
@@ -53,10 +53,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       set { BetaParameter.ActualValue = value; }
     }
     #endregion
+    [StorableConstructor]
+    private SymbolicRegressionScaledMeanSquaredErrorEvaluator(bool deserializing) : base(deserializing) { }
+    private SymbolicRegressionScaledMeanSquaredErrorEvaluator(SymbolicRegressionScaledMeanSquaredErrorEvaluator original, Cloner cloner) : base(original, cloner) { }
     public SymbolicRegressionScaledMeanSquaredErrorEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<DoubleValue>("Alpha", "Alpha parameter for linear scaling of the estimated values."));
       Parameters.Add(new LookupParameter<DoubleValue>("Beta", "Beta parameter for linear scaling of the estimated values."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SymbolicRegressionScaledMeanSquaredErrorEvaluator(this, cloner);
     }
 
     public override double Evaluate(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, Dataset dataset, string targetVariable, IEnumerable<int> rows) {

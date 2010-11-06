@@ -19,13 +19,15 @@
  */
 #endregion
 
-using System;
 
 namespace HeuristicLab.Common {
   /// <summary>
   /// Represents a base class for all deeply cloneable objects.
   /// </summary>
   public abstract class DeepCloneable : IDeepCloneable {
+    protected DeepCloneable(DeepCloneable original, Cloner cloner) {
+      cloner.RegisterClonedObject(original, this);
+    }
     protected DeepCloneable() { }
 
     /// <summary>
@@ -47,10 +49,6 @@ namespace HeuristicLab.Common {
     /// <param name="cloner">The cloner which is responsible for keeping track of all already
     /// cloned objects.</param>
     /// <returns>A clone of this instance.</returns>
-    public virtual IDeepCloneable Clone(Cloner cloner) {
-      DeepCloneable clone = (DeepCloneable)Activator.CreateInstance(this.GetType(),true);
-      cloner.RegisterClonedObject(this, clone);
-      return clone;
-    }
+    public abstract IDeepCloneable Clone(Cloner cloner);
   }
 }

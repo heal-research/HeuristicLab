@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces;
@@ -53,6 +54,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators {
     }
     #endregion
 
+    [StorableConstructor]
+    protected SymbolicExpressionTreeManipulator(bool deserializing) : base(deserializing) { }
+    protected SymbolicExpressionTreeManipulator(SymbolicExpressionTreeManipulator original, Cloner cloner) : base(original, cloner) { }
     public SymbolicExpressionTreeManipulator()
       : base() {
       Parameters.Add(new ValueParameter<IntValue>(FailedManipulationEventsParameterName, "The number of failed manipulation events.", new IntValue()));

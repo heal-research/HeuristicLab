@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -42,10 +43,19 @@ namespace HeuristicLab.Operators {
       set { IncrementParameter.Value = value; }
     }
 
+    [StorableConstructor]
+    private DoubleCounter(bool deserializing) : base(deserializing) { }
+    private DoubleCounter(DoubleCounter original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public DoubleCounter()
       : base() {
       Parameters.Add(new LookupParameter<DoubleValue>("Value", "The value which should be incremented."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("Increment", "The increment which is added to the value.", new DoubleValue(1)));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new DoubleCounter(this, cloner);
     }
 
     public override IOperation Apply() {

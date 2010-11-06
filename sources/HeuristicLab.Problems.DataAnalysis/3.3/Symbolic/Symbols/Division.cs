@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -26,6 +27,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [StorableClass]
   [Item("Division", "Symbol that represents the / operator.")]
   public sealed class Division : Symbol {
+    [StorableConstructor]
+    private Division(bool deserializing) : base(deserializing) { }
+    private Division(Division original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Division(this, cloner);
+    }
     public Division() : base("Division", "Symbol that represents the / operator.") { }
   }
 }

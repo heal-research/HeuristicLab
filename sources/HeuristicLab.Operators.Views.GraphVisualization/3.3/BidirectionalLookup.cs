@@ -31,6 +31,9 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     [Storable]
     private Dictionary<TSecond, TFirst> secondToFirst;
 
+    [StorableConstructor]
+    protected BidirectionalLookup(bool deserializing) : base() { }
+
     public BidirectionalLookup() {
       this.firstToSecond = new Dictionary<TFirst, TSecond>();
       this.secondToFirst = new Dictionary<TSecond, TFirst>();

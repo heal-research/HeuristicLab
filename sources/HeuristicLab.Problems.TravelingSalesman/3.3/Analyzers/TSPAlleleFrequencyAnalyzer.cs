@@ -21,6 +21,7 @@
 
 using System;
 using HeuristicLab.Analysis;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
@@ -40,9 +41,14 @@ namespace HeuristicLab.Problems.TravelingSalesman {
 
     [StorableConstructor]
     private TSPAlleleFrequencyAnalyzer(bool deserializing) : base(deserializing) { }
+    private TSPAlleleFrequencyAnalyzer(TSPAlleleFrequencyAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public TSPAlleleFrequencyAnalyzer()
       : base() {
       Parameters.Add(new LookupParameter<DoubleMatrix>("Coordinates", "The x- and y-Coordinates of the cities."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new TSPAlleleFrequencyAnalyzer(this, cloner);
     }
 
     protected override Allele[] CalculateAlleles(Permutation solution) {

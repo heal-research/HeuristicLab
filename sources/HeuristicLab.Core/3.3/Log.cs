@@ -42,17 +42,19 @@ namespace HeuristicLab.Core {
       get { return messages; }
     }
 
+    [StorableConstructor]
+    protected Log(bool deserializing) : base(deserializing) { }
+    protected Log(Log original, Cloner cloner)
+      : base(original, cloner) {
+      messages = new List<string>(original.messages);
+    }
     public Log()
       : base() {
       messages = new List<string>();
     }
-    [StorableConstructor]
-    protected Log(bool deserializing) : base(deserializing) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      Log clone = (Log)base.Clone(cloner);
-      clone.messages = new List<string>(messages);
-      return clone;
+      return new Log(this, cloner);
     }
 
     public virtual void Clear() {

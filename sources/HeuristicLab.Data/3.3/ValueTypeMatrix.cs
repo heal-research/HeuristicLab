@@ -131,6 +131,16 @@ namespace HeuristicLab.Data {
       get { return readOnly; }
     }
 
+    [StorableConstructor]
+    protected ValueTypeMatrix(bool deserializing) : base(deserializing) { }
+    protected ValueTypeMatrix(ValueTypeMatrix<T> original, Cloner cloner)
+      : base(original, cloner) {
+      this.matrix = (T[,])original.matrix.Clone();
+      this.columnNames = new List<string>(original.columnNames);
+      this.rowNames = new List<string>(original.rowNames);
+      this.sortableView = original.sortableView;
+      this.readOnly = original.readOnly;
+    }
     protected ValueTypeMatrix() {
       matrix = new T[0, 0];
       columnNames = new List<string>();
@@ -168,16 +178,6 @@ namespace HeuristicLab.Data {
     protected ValueTypeMatrix(T[,] elements, IEnumerable<string> columnNames, IEnumerable<string> rowNames)
       : this(elements,columnNames) {
       RowNames = rowNames;
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      ValueTypeMatrix<T> clone = (ValueTypeMatrix<T>)base.Clone(cloner);
-      clone.matrix = (T[,])matrix.Clone();
-      clone.columnNames = new List<string>(columnNames);
-      clone.rowNames = new List<string>(rowNames);
-      clone.sortableView = sortableView;
-      clone.readOnly = readOnly;
-      return clone;
     }
 
     public virtual ValueTypeMatrix<T> AsReadOnly() {

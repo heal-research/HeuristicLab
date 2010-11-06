@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -38,13 +39,16 @@ namespace HeuristicLab.Operators {
       set { SuccessorParameter.Value = value; }
     }
 
+    [StorableConstructor]
+    protected SingleSuccessorOperator(bool deserializing) : base(deserializing) { }
+    protected SingleSuccessorOperator(SingleSuccessorOperator original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public SingleSuccessorOperator()
       : base() {
       Parameters.Add(new OperatorParameter("Successor", "Operator which is executed next."));
     }
-    [StorableConstructor]
-    protected SingleSuccessorOperator(bool deserializing) : base(deserializing) { }
-
+    
     public override IOperation Apply() {
       if (Successor != null)
         return ExecutionContext.CreateOperation(Successor);

@@ -42,6 +42,15 @@ namespace HeuristicLab.Operators {
       get { return Parameters; }
     }
 
+    [StorableConstructor]
+    private CombinedOperator(bool deserializing) : base(deserializing) { }
+    private CombinedOperator(CombinedOperator original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public CombinedOperator() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new CombinedOperator(this, cloner);
+    }
   }
 }

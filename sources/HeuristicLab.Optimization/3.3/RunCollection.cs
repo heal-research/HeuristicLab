@@ -37,6 +37,26 @@ namespace HeuristicLab.Optimization {
 
     [StorableConstructor]
     protected RunCollection(bool deserializing) : base(deserializing) { }
+
+    protected RunCollection(RunCollection original, Cloner cloner)
+      : base(original, cloner) {
+      resultNames = new List<string>(original.resultNames);
+      parameterNames = new List<string>(original.parameterNames);
+      dataTypes = new Dictionary<string, HashSet<Type>>();
+      foreach (string s in original.dataTypes.Keys)
+        dataTypes[s] = new HashSet<Type>(original.dataTypes[s]);
+
+      constraints = new RunCollectionConstraintCollection(original.constraints.Select(x => cloner.Clone(x)));
+      foreach (IRunCollectionConstraint constraint in constraints)
+        constraint.ConstrainedValue = this;
+      RegisterConstraintsEvents();
+      RegisterConstraintEvents(constraints);
+
+      UpdateFiltering(true);
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new RunCollection(this, cloner);
+    }
     public RunCollection() : base() { Initialize(); }
     public RunCollection(int capacity) : base(capacity) { Initialize(); }
     public RunCollection(IEnumerable<IRun> collection) : base(collection) { Initialize(); this.OnItemsAdded(collection); }
@@ -170,29 +190,11 @@ namespace HeuristicLab.Optimization {
     }
 
     [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserializationHook() {
+    private void AfterDeserialization() {
       if (constraints == null) constraints = new RunCollectionConstraintCollection();
       RegisterConstraintsEvents();
       RegisterConstraintEvents(constraints);
       UpdateFiltering(true);
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      RunCollection clone = (RunCollection)base.Clone(cloner);
-      clone.resultNames = new List<string>(this.resultNames);
-      clone.parameterNames = new List<string>(this.parameterNames);
-      clone.dataTypes = new Dictionary<string, HashSet<Type>>();
-      foreach (string s in this.dataTypes.Keys)
-        clone.dataTypes[s] = new HashSet<Type>(this.dataTypes[s]);
-
-      clone.constraints = new RunCollectionConstraintCollection(this.constraints.Select(x => (IRunCollectionConstraint)cloner.Clone(x)));
-      foreach (IRunCollectionConstraint constraint in clone.constraints)
-        constraint.ConstrainedValue = clone;
-      clone.RegisterConstraintsEvents();
-      clone.RegisterConstraintEvents(clone.constraints);
-
-      clone.UpdateFiltering(true);
-      return clone;
     }
 
     #region IStringConvertibleMatrix Members
@@ -252,33 +254,30 @@ namespace HeuristicLab.Optimization {
 
     public event EventHandler<EventArgs<int, int>> ItemChanged;
     protected virtual void OnItemChanged(int rowIndex, int columnIndex) {
-      if (ItemChanged != null)
-        ItemChanged(this, new EventArgs<int, int>(rowIndex, columnIndex));
+      EventHandler<EventArgs<int, int>> handler = ItemChanged;
+      if (handler != null) handler(this, new EventArgs<int, int>(rowIndex, columnIndex));
       OnToStringChanged();
     }
     public event EventHandler Reset;
     protected virtual void OnReset() {
-      if (Reset != null)
-        Reset(this, EventArgs.Empty);
+      EventHandler handler = Reset;
+      if (handler != null) handler(this, EventArgs.Empty);
       OnToStringChanged();
     }
     public event EventHandler ColumnNamesChanged;
     protected virtual void OnColumnNamesChanged() {
       EventHandler handler = ColumnNamesChanged;
-      if (handler != null)
-        handler(this, EventArgs.Empty);
+      if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler RowNamesChanged;
     protected virtual void OnRowNamesChanged() {
       EventHandler handler = RowNamesChanged;
-      if (handler != null)
-        handler(this, EventArgs.Empty);
+      if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler SortableViewChanged;
     protected virtual void OnSortableViewChanged() {
       EventHandler handler = SortableViewChanged;
-      if (handler != null)
-        handler(this, EventArgs.Empty);
+      if (handler != null) handler(this, EventArgs.Empty);
     }
 
     public bool Validate(string value, out string errorMessage) { throw new NotSupportedException(); }

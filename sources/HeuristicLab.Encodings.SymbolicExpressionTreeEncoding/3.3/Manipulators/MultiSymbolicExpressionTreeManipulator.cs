@@ -22,6 +22,7 @@
 using System;
 using System.Linq;
 using HeuristicLab.Collections;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces;
@@ -34,7 +35,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators {
   [Item("MultiSymbolicExpressionTreeManipulator", "Randomly selects and applies one of its manipulators every time it is called.")]
   [StorableClass]
-  public class MultiSymbolicExpressionTreeManipulator : StochasticMultiBranch<ISymbolicExpressionTreeManipulator>, ISymbolicExpressionTreeManipulator, IStochasticOperator {
+  public sealed class MultiSymbolicExpressionTreeManipulator : StochasticMultiBranch<ISymbolicExpressionTreeManipulator>, ISymbolicExpressionTreeManipulator, IStochasticOperator {
     private const string MaxTreeSizeParameterName = "MaxTreeSize";
     private const string MaxTreeHeightParameterName = "MaxTreeHeight";
     private const string SymbolicExpressionGrammarParameterName = "SymbolicExpressionGrammar";
@@ -65,9 +66,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators {
     }
     #endregion
 
-
     [StorableConstructor]
     private MultiSymbolicExpressionTreeManipulator(bool deserializing) : base(deserializing) { }
+    private MultiSymbolicExpressionTreeManipulator(MultiSymbolicExpressionTreeManipulator original, Cloner cloner) : base(original, cloner) { }
     public MultiSymbolicExpressionTreeManipulator()
       : base() {
       Parameters.Add(new LookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression tree on which the operator should be applied."));
@@ -79,6 +80,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators {
         if (!typeof(MultiOperator<ISymbolicExpressionTreeManipulator>).IsAssignableFrom(type) && !typeof(ISymbolicExpressionTreeArchitectureManipulator).IsAssignableFrom(type))
           Operators.Add((ISymbolicExpressionTreeManipulator)Activator.CreateInstance(type), true);
       }
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MultiSymbolicExpressionTreeManipulator(this, cloner);
     }
 
     protected override void Operators_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<ISymbolicExpressionTreeManipulator>> e) {

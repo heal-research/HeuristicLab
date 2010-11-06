@@ -20,6 +20,7 @@
 #endregion
 
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -27,6 +28,12 @@ namespace HeuristicLab.Problems.ArtificialAnt.Symbols {
   [StorableClass]
   [Item("Prog2", "Represents the sequence symbol with 2 sub-trees in a artificial ant expression.")]
   public sealed class Prog2 : Symbol {
+    [StorableConstructor]
+    private Prog2(bool deserializing) : base(deserializing) { }
+    private Prog2(Prog2 original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Prog2(this, cloner);
+    }
     public Prog2() : base("Prog2", "Represents the sequence symbol with 2 sub-trees in a artificial ant expression.") { }
   }
 }

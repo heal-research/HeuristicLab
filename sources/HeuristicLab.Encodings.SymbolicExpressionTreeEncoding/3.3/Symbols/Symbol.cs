@@ -46,6 +46,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
     }
     #endregion
 
+    [StorableConstructor]
+    protected Symbol(bool deserializing) : base(deserializing) { }
+    protected Symbol(Symbol original, Cloner cloner)
+      : base(original, cloner) {
+      initialFrequency = original.initialFrequency;
+    }
     protected Symbol()
       : base() {
       initialFrequency = 1.0;
@@ -56,17 +62,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
       initialFrequency = 1.0;
     }
 
-    [StorableConstructor]
-    protected Symbol(bool deserializing) : base(deserializing) { }
 
     public virtual SymbolicExpressionTreeNode CreateTreeNode() {
       return new SymbolicExpressionTreeNode(this);
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      Symbol clone = (Symbol)base.Clone(cloner);
-      clone.initialFrequency = initialFrequency;
-      return clone;
     }
 
     #region events

@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
@@ -35,10 +36,17 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       get { return (LookupParameter<InversionMove>)Parameters["InversionMove"]; }
     }
 
+    [StorableConstructor]
+    protected InversionMoveTabuMaker(bool deserializing) : base(deserializing) { }
+    protected InversionMoveTabuMaker(InversionMoveTabuMaker original, Cloner cloner) : base(original, cloner) { }
     public InversionMoveTabuMaker()
       : base() {
       Parameters.Add(new LookupParameter<InversionMove>("InversionMove", "The move that was made."));
       Parameters.Add(new LookupParameter<Permutation>("Permutation", "The solution as permutation."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new InversionMoveTabuMaker(this, cloner);
     }
 
     protected override IItem GetTabuAttribute(bool maximization, double quality, double moveQuality) {

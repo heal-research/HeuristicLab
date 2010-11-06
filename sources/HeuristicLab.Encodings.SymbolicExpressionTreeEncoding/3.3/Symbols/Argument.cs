@@ -42,8 +42,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
     }
 
     [StorableConstructor]
-    private Argument() : base() { }
-
+    private Argument(bool deserializing) : base(deserializing) { }
+    private Argument(Argument original, Cloner cloner)
+      : base(original, cloner) {
+      argumentIndex = original.argumentIndex;
+      name = "ARG" + original.argumentIndex;
+    }
     public Argument(int argumentIndex)
       : base("ARG" + argumentIndex, Argument.ArgumentDescription) {
       this.argumentIndex = argumentIndex;
@@ -55,10 +59,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      Argument clone = (Argument)base.Clone(cloner);
-      clone.argumentIndex = argumentIndex;
-      clone.name = "ARG" + argumentIndex;
-      return clone;
+      return new Argument(this, cloner);
     }
   }
 }

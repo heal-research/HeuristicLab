@@ -21,6 +21,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
@@ -33,6 +34,12 @@ namespace HeuristicLab.Selection {
   [Item("WorstSelector", "A selection operator which considers a single double quality value and selects the worst.")]
   [StorableClass]
   public sealed class WorstSelector : SingleObjectiveSelector, ISingleObjectiveSelector {
+    [StorableConstructor]
+    private WorstSelector(bool deserializing) : base(deserializing) { }
+    private WorstSelector(WorstSelector original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new WorstSelector(this, cloner);
+    }
     public WorstSelector() : base() { }
 
     protected override IScope[] Select(List<IScope> scopes) {

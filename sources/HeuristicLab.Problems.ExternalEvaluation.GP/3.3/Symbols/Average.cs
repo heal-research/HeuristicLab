@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -27,7 +28,14 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
   [StorableClass]
   [Item("Average", "Symbol that represents the average (arithmetic mean) function.")]
   public sealed class Average : Symbol {
-
+    [StorableConstructor]
+    private Average(bool deserializing) : base(deserializing) { }
+    private Average(Average original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Average(this, cloner);
+    }
     public Average()
       : base("avg", "Symbol that represents the average (arithmetic mean) function.") {
     }

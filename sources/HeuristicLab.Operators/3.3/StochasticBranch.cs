@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -52,12 +53,21 @@ namespace HeuristicLab.Operators {
       set { SecondBranchParameter.Value = value; }
     }
 
+    [StorableConstructor]
+    protected StochasticBranch(bool deserializing) : base(deserializing) { }
+    protected StochasticBranch(StochasticBranch original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public StochasticBranch()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "A pseudo random number generator."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("Probability", "The probability to execute the first branch."));
       Parameters.Add(new OperatorParameter("FirstBranch", "The operator which is executed with the given probability."));
       Parameters.Add(new OperatorParameter("SecondBranch", "The operator which is executed if the first branch is not executed."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new StochasticBranch(this, cloner);
     }
 
     public override IOperation Apply() {

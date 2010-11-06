@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -47,12 +48,20 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public ValueLookupParameter<DoubleValue> AlphaParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["Alpha"]; }
     }
+
+    [StorableConstructor]
+    protected BlendAlphaCrossover(bool deserializing) : base(deserializing) { }
+    protected BlendAlphaCrossover(BlendAlphaCrossover original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="BlendAlphaCrossover"/> with one parameter (<c>Alpha</c>).
     /// </summary>
     public BlendAlphaCrossover()
       : base() {
       Parameters.Add(new ValueLookupParameter<DoubleValue>("Alpha", "The Alpha parameter controls the extension of the range beyond the two parents. It must be >= 0. A value of 0.5 means that half the range is added to both sides of the intervals.", new DoubleValue(0.5)));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new BlendAlphaCrossover(this, cloner);
     }
 
     /// <summary>

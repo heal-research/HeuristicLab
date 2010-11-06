@@ -46,6 +46,18 @@ namespace HeuristicLab.Analysis {
       get { return rows; }
     }
 
+    #region Storing & Cloning
+    [StorableConstructor]
+    private DataTable(bool deserializing) : base(deserializing) { }
+    private DataTable(DataTable original, Cloner cloner)
+      : base(original, cloner) {
+      this.rows = cloner.Clone(original.rows);
+      this.RegisterRowsEvents();
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new DataTable(this, cloner);
+    }
+    #endregion
     public DataTable()
       : base() {
       rows = new NamedItemCollection<DataRow>();
@@ -126,13 +138,6 @@ namespace HeuristicLab.Analysis {
     }
     private void Values_CollectionReset(object sender, CollectionItemsChangedEventArgs<IndexedItem<double>> e) {
       this.OnReset();
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      DataTable clone = new DataTable(Name, Description);
-      cloner.RegisterClonedObject(this, clone);
-      clone.rows = (NamedItemCollection<DataRow>)cloner.Clone(rows);
-      return clone;
     }
 
     #region IStringConvertibleMatrix Members

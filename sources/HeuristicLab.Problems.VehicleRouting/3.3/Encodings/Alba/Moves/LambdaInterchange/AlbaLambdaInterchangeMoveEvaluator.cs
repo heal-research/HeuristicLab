@@ -19,12 +19,12 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
-using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   [Item("AlbaLambdaInterchangeMoveEvaluator", "Evaluates a lamnbda interchange move for a VRP representation.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
@@ -36,12 +36,17 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     [StorableConstructor]
     private AlbaLambdaInterchangeMoveEvaluator(bool deserializing) : base(deserializing) { }
-
+    private AlbaLambdaInterchangeMoveEvaluator(AlbaLambdaInterchangeMoveEvaluator original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public AlbaLambdaInterchangeMoveEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<AlbaLambdaInterchangeMove>("AlbaLambdaInterchangeMove", "The move to evaluate."));
     }
 
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new AlbaLambdaInterchangeMoveEvaluator(this, cloner);
+    }
     public static TourEvaluation GetMoveQuality(AlbaEncoding individual, AlbaLambdaInterchangeMove move, 
       IntValue vehicles, 
       DoubleArray dueTimeArray, DoubleArray serviceTimeArray, DoubleArray readyTimeArray, 

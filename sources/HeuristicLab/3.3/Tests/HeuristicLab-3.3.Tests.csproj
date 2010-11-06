@@ -121,11 +121,13 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CloningConstructorTest.cs" />
     <Compile Include="ContentViewTests.cs" />
     <Compile Include="PluginDependenciesTest.cs" />
     <Compile Include="PluginLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GeneticAlgorithmTest.cs" />
+    <Compile Include="StorableConstructorTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\HeuristicLab.Algorithms.DataAnalysis.Views\3.3\HeuristicLab.Algorithms.DataAnalysis.Views-3.3.csproj">

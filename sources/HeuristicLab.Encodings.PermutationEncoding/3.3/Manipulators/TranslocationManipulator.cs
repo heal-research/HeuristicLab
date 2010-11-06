@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -33,6 +34,15 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("TranslocationManipulator", "An operator which Manipulates a permutation array by moving a randomly chosen interval of elements to another (randomly chosen) position in the array. It is implemented as described in Michalewicz, Z. 1992. Genetic Algorithms + Data Structures = Evolution Programs, Springer Verlag, Berlin Heidelberg.")]
   [StorableClass]
   public class TranslocationManipulator : PermutationManipulator {
+    [StorableConstructor]
+    protected TranslocationManipulator(bool deserializing) : base(deserializing) { }
+    protected TranslocationManipulator(TranslocationManipulator original, Cloner cloner) : base(original, cloner) { }
+    public TranslocationManipulator() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new TranslocationManipulator(this, cloner);
+    }
+
     /// <summary>
     /// Moves a randomly chosen interval of elements to another (randomly chosen) position in the given
     /// <paramref name="permutation"/> array.

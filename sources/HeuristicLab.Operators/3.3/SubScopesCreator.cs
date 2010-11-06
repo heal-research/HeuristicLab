@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -41,10 +42,19 @@ namespace HeuristicLab.Operators {
       get { return CurrentScopeParameter.ActualValue; }
     }
 
+    [StorableConstructor]
+    protected SubScopesCreator(bool deserializing) : base(deserializing) { }
+    protected SubScopesCreator(SubScopesCreator original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public SubScopesCreator()
       : base() {
       Parameters.Add(new ValueLookupParameter<IntValue>("NumberOfSubScopes", "The number of new and empty sub-scopes which should be added to the current scope."));
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope to which the new and empty sub-scopes are added."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SubScopesCreator(this, cloner);
     }
 
     public override IOperation Apply() {

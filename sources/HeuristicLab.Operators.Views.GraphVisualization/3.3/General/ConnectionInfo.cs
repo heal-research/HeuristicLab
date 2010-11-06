@@ -27,10 +27,20 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Operators.Views.GraphVisualization {
   [StorableClass]
   public class ConnectionInfo : DeepCloneable, IConnectionInfo {
-    private ConnectionInfo() {
+    [StorableConstructor]
+    protected ConnectionInfo(bool deserializing) : base() { }
+    protected ConnectionInfo(ConnectionInfo original, Cloner cloner)
+      : base(original, cloner) {
+      from = cloner.Clone(original.from);
+      connectorFrom = original.ConnectorFrom;
+      to = cloner.Clone(original.To);
+      connectorTo = original.ConnectorTo;
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ConnectionInfo(this, cloner);
     }
     public ConnectionInfo(IShapeInfo from, string connectorFrom, IShapeInfo to, string connectorTo)
-      : this() {
+      : base() {
       if (from == to)
         throw new ArgumentException("Could not create connections between the same shape info.");
       if (!from.Connectors.Contains(connectorFrom) || !to.Connectors.Contains(connectorTo))
@@ -69,17 +79,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     public event EventHandler Changed;
     protected virtual void OnChanged() {
       EventHandler handler = this.Changed;
-      if (handler != null)
-        this.Changed(this, EventArgs.Empty);
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      ConnectionInfo clone = (ConnectionInfo)base.Clone(cloner);
-      clone.from = (IShapeInfo)cloner.Clone(this.from);
-      clone.connectorFrom = this.ConnectorFrom;
-      clone.to = (IShapeInfo)cloner.Clone(this.To);
-      clone.connectorTo = this.ConnectorTo;
-      return clone;
+      if (handler != null) this.Changed(this, EventArgs.Empty);
     }
   }
 }

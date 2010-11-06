@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -59,10 +60,10 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     public ILookupParameter<DoubleValue> TardinessParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Tardiness"]; }
     }
-    
+
     [StorableConstructor]
     protected AlbaMoveMaker(bool deserializing) : base(deserializing) { }
-
+    protected AlbaMoveMaker(AlbaMoveMaker original, Cloner cloner) : base(original, cloner) { }
     public AlbaMoveMaker()
       : base() {
       Parameters.Add(new LookupParameter<DoubleValue>("MoveVehiclesUtilized", "The number of vehicles utilized."));

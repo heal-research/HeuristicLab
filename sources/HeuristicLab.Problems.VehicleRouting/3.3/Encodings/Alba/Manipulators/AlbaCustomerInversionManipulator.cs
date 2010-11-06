@@ -19,12 +19,10 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
 using System.Collections.Generic;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaCustomerInversionManipulator", "An operator which manipulates a VRP representation by inverting the order the customers are visited.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
@@ -32,11 +30,16 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   public sealed class AlbaCustomerInversionManipulator : AlbaManipulator {
     [StorableConstructor]
     private AlbaCustomerInversionManipulator(bool deserializing) : base(deserializing) { }
-
+    private AlbaCustomerInversionManipulator(AlbaCustomerInversionManipulator original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public AlbaCustomerInversionManipulator()
       : base() {
     }
 
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new AlbaCustomerInversionManipulator(this, cloner);
+    }
     protected override void Manipulate(IRandom random, AlbaEncoding individual) {
       int breakPoint1, breakPoint2;
 

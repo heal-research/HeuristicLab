@@ -22,13 +22,14 @@
 using System;
 using System.Linq;
 using HeuristicLab.Collections;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("MultiVRPSolutionCrossover", "Randomly selects and applies one of its crossovers every time it is called.")]
@@ -81,10 +82,14 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     }
 
     [StorableConstructor]
-    private MultiVRPSolutionCrossover(bool deserializing) : base(deserializing) { }
+    protected MultiVRPSolutionCrossover(bool deserializing) : base(deserializing) { }
+    protected MultiVRPSolutionCrossover(MultiVRPSolutionCrossover original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MultiVRPSolutionCrossover(this, cloner);
+    }
     public MultiVRPSolutionCrossover()
       : base() {
-       Parameters.Add(new ScopeTreeLookupParameter<IVRPEncoding>("Parents", "The parent permutations which should be crossed."));
+      Parameters.Add(new ScopeTreeLookupParameter<IVRPEncoding>("Parents", "The parent permutations which should be crossed."));
       ParentsParameter.ActualName = "VRPTours";
       Parameters.Add(new LookupParameter<IVRPEncoding>("Child", "The child permutation resulting from the crossover."));
       ChildParameter.ActualName = "VRPTours";

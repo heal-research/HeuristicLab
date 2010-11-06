@@ -19,13 +19,14 @@
  */
 #endregion
 
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Collections.Generic;
-using System;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureManipulators {
   /// <summary>
@@ -35,6 +36,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureMani
   [Item("ArgumentDuplicater", "Manipulates a symbolic expression by duplicating an existing argument node of a function-defining branch.")]
   [StorableClass]
   public sealed class ArgumentDuplicater : SymbolicExpressionTreeArchitectureManipulator {
+    [StorableConstructor]
+    private ArgumentDuplicater(bool deserializing) : base(deserializing) { }
+    private ArgumentDuplicater(ArgumentDuplicater original, Cloner cloner) : base(original, cloner) { }
+    public ArgumentDuplicater() : base() { }
+
     public override sealed void ModifyArchitecture(
       IRandom random,
       SymbolicExpressionTree symbolicExpressionTree,
@@ -43,6 +49,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureMani
       IntValue maxFunctionDefiningBranches, IntValue maxFunctionArguments,
       out bool success) {
       success = DuplicateArgument(random, symbolicExpressionTree, grammar, maxTreeSize.Value, maxTreeHeight.Value, maxFunctionDefiningBranches.Value, maxFunctionArguments.Value);
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ArgumentDuplicater(this, cloner);
     }
 
     public static bool DuplicateArgument(

@@ -19,10 +19,12 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis.Evaluators {
   public abstract class SimpleEvaluator : SingleSuccessorOperator {
@@ -31,6 +33,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Evaluators {
 
     public ILookupParameter<DoubleMatrix> ValuesParameter {
       get { return (ILookupParameter<DoubleMatrix>)Parameters["Values"]; }
+    }
+    [StorableConstructor]
+    protected SimpleEvaluator(bool deserializing) : base(deserializing) { }
+    protected SimpleEvaluator(SimpleEvaluator original, Cloner cloner)
+      : base(original, cloner) {
     }
     public SimpleEvaluator()
       : base() {

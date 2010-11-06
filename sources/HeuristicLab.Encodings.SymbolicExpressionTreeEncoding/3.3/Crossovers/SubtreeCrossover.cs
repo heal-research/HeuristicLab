@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -36,14 +37,20 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Crossovers {
   /// </summary>  
   [Item("SubtreeCrossover", "An operator which performs subtree swapping crossover.")]
   [StorableClass]
-  public class SubtreeCrossover : SymbolicExpressionTreeCrossover {
+  public sealed class SubtreeCrossover : SymbolicExpressionTreeCrossover {
     public IValueLookupParameter<PercentValue> InternalCrossoverPointProbabilityParameter {
       get { return (IValueLookupParameter<PercentValue>)Parameters["InternalCrossoverPointProbability"]; }
     }
-
+    [StorableConstructor]
+    private SubtreeCrossover(bool deserializing) : base(deserializing) { }
+    private SubtreeCrossover(SubtreeCrossover original, Cloner cloner) : base(original, cloner) { }
     public SubtreeCrossover()
       : base() {
       Parameters.Add(new ValueLookupParameter<PercentValue>("InternalCrossoverPointProbability", "The probability to select an internal crossover point (instead of a leaf node).", new PercentValue(0.9)));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SubtreeCrossover(this, cloner);
     }
 
     protected override SymbolicExpressionTree Cross(IRandom random,

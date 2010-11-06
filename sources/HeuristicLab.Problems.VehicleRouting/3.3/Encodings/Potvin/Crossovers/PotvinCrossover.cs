@@ -19,13 +19,12 @@
  */
 #endregion
 
+using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
-using HeuristicLab.Optimization;
-using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinCrossover", "A VRP crossover operation.")]
@@ -37,6 +36,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
 
     [StorableConstructor]
     protected PotvinCrossover(bool deserializing) : base(deserializing) { }
+    protected PotvinCrossover(PotvinCrossover original, Cloner cloner)
+      : base(original, cloner) {
+    }
 
     public PotvinCrossover() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));
@@ -67,7 +69,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
 
     protected bool Repair(IRandom random, PotvinEncoding solution, Tour newTour) {
       bool success = true;
-      
+
       //remove duplicates from new tour      
       for (int i = 0; i < newTour.Cities.Count; i++) {
         for (int j = 0; j < newTour.Cities.Count; j++) {
@@ -79,7 +81,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
           }
         }
       }
-      while(newTour.Cities.Contains(0))
+      while (newTour.Cities.Contains(0))
         newTour.Cities.Remove(0);
 
       //remove duplicates from old tours
@@ -107,7 +109,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
         int unrouted = solution.Unrouted[index];
 
         int route, place;
-        if(FindInsertionPlace(solution, unrouted, out route, out place)) {
+        if (FindInsertionPlace(solution, unrouted, out route, out place)) {
           solution.Tours[route].Cities.Insert(place, unrouted);
         } else {
           success = false;

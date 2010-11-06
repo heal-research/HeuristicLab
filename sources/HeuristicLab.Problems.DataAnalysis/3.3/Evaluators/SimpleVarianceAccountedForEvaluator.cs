@@ -26,6 +26,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis.Evaluators {
   /// <summary>
@@ -39,6 +40,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Evaluators {
       get { return (ILookupParameter<DoubleValue>)Parameters["VarianceAccountedFor"]; }
     }
 
+    [StorableConstructor]
+    protected SimpleVarianceAccountedForEvaluator(bool deserializing) : base(deserializing) { }
+    protected SimpleVarianceAccountedForEvaluator(SimpleVarianceAccountedForEvaluator original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SimpleVarianceAccountedForEvaluator(this, cloner);
+    }
     public SimpleVarianceAccountedForEvaluator() {
       Parameters.Add(new LookupParameter<DoubleValue>("VarianceAccountedFor", "The variance of the original values accounted for by the estimated values (VAF(y,y') = 1 - var(y-y') / var(y) )."));
     }

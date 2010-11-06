@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -34,9 +35,18 @@ namespace HeuristicLab.Operators {
       get { return (LookupParameter<IOperator>)Parameters["Operator"]; }
     }
 
+    [StorableConstructor]
+    private Placeholder(bool deserializing) : base(deserializing) { }
+    private Placeholder(Placeholder original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public Placeholder()
       : base() {
       Parameters.Add(new LookupParameter<IOperator>("Operator", "The operator which is retrieved from the scope or a parent execution context and applied on the current scope."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Placeholder(this, cloner);
     }
 
     public override IOperation Apply() {

@@ -21,9 +21,9 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -59,6 +59,10 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
 
     [StorableConstructor]
     private PushForwardCreator(bool deserializing) : base(deserializing) { }
+    private PushForwardCreator(PushForwardCreator original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new PushForwardCreator(this, cloner);
+    }
 
     public PushForwardCreator()
       : base() {

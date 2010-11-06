@@ -22,13 +22,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableClass]
-  public class SymbolicExpressionTreeNode : ICloneable {
+  public class SymbolicExpressionTreeNode : DeepCloneable {
     [Storable]
     private IList<SymbolicExpressionTreeNode> subTrees;
     [Storable]
@@ -50,27 +51,37 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       set { parent = value; }
     }
 
-    internal SymbolicExpressionTreeNode() {
+    [StorableConstructor]
+    protected SymbolicExpressionTreeNode(bool deserializing) { }
+    protected SymbolicExpressionTreeNode(SymbolicExpressionTreeNode original, Cloner cloner)
+      : base() {
+      symbol = original.symbol; // symbols are reused
+      subTrees = new List<SymbolicExpressionTreeNode>(original.SubTrees.Count);
+      foreach (var subtree in original.SubTrees) {
+        var clonedSubTree = cloner.Clone(subtree);
+        subTrees.Add(clonedSubTree);
+        clonedSubTree.Parent = this;
+      }
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SymbolicExpressionTreeNode(this, cloner);
+    }
+
+    internal SymbolicExpressionTreeNode()
+      : base() {
       // don't allocate subtrees list here!
       // because we don't want to allocate it in terminal nodes
     }
 
-    public SymbolicExpressionTreeNode(Symbol symbol) {
+    public SymbolicExpressionTreeNode(Symbol symbol)
+      : base() {
       subTrees = new List<SymbolicExpressionTreeNode>(3);
       this.symbol = symbol;
     }
 
-    // copy constructor
-    protected SymbolicExpressionTreeNode(SymbolicExpressionTreeNode original) {
-      symbol = original.symbol;
-      subTrees = new List<SymbolicExpressionTreeNode>(original.SubTrees.Count);
-      foreach (var subtree in original.SubTrees) {
-        AddSubTree((SymbolicExpressionTreeNode)subtree.Clone());
-      }
-    }
 
     [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserializationHook() {
+    private void AfterDeserialization() {
       foreach (var subtree in SubTrees) {
         subtree.Parent = this;
       }
@@ -172,15 +183,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     public int GetMaxSubtreeCount() {
       return Grammar.GetMaxSubtreeCount(Symbol);
     }
-
-    #region ICloneable Members
-
-    public virtual object Clone() {
-      return new SymbolicExpressionTreeNode(this);
-    }
-
-    #endregion
-
     public override string ToString() {
       return Symbol.Name;
     }

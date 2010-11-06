@@ -22,9 +22,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis.Evaluators {
   public class SimpleMeanAbsolutePercentageErrorEvaluator : SimpleEvaluator {
@@ -32,6 +34,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Evaluators {
       get { return (ILookupParameter<PercentValue>)Parameters["AverageRelativeError"]; }
     }
 
+    [StorableConstructor]
+    protected SimpleMeanAbsolutePercentageErrorEvaluator(bool deserializing) : base(deserializing) { }
+    protected SimpleMeanAbsolutePercentageErrorEvaluator(SimpleMeanAbsolutePercentageErrorEvaluator original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public SimpleMeanAbsolutePercentageErrorEvaluator() {
       Parameters.Add(new LookupParameter<PercentValue>("AverageRelativeError", "The average relative error of estimated values."));
     }
@@ -42,6 +49,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Evaluators {
       var estimated = from i in Enumerable.Range(0, values.Rows)
                       select values[i, ESTIMATION_INDEX];
       AverageRelativeErrorParameter.ActualValue = new PercentValue(Calculate(original, estimated));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SimpleMeanAbsolutePercentageErrorEvaluator(this, cloner);
     }
 
     public static double Calculate(IEnumerable<double> original, IEnumerable<double> estimated) {

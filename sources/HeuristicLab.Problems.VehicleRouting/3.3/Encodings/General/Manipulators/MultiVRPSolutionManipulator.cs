@@ -22,13 +22,14 @@
 using System;
 using System.Linq;
 using HeuristicLab.Collections;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("MultiVRPSolutionManipulator", "Randomly selects and applies one of its manipulators every time it is called.")]
@@ -77,7 +78,11 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     }
 
     [StorableConstructor]
-    private MultiVRPSolutionManipulator(bool deserializing) : base(deserializing) { }
+    protected MultiVRPSolutionManipulator(bool deserializing) : base(deserializing) { }
+    protected MultiVRPSolutionManipulator(MultiVRPSolutionManipulator original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MultiVRPSolutionManipulator(this, cloner);
+    }
     public MultiVRPSolutionManipulator()
       : base() {
       Parameters.Add(new LookupParameter<IVRPEncoding>("VRPTours", "The VRP tours to be manipulated."));
@@ -96,8 +101,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
       foreach (Type type in ApplicationManager.Manager.GetTypes(typeof(IVRPManipulator)).OrderBy(op => op.Name)) {
         if (!typeof(MultiOperator<IVRPManipulator>).IsAssignableFrom(type)) {
           IVRPManipulator op = (IVRPManipulator)Activator.CreateInstance(type);
-          bool operatorChecked = true; 
-          if(op is HeuristicLab.Problems.VehicleRouting.Encodings.Potvin.PotvinLocalSearchManipulator || 
+          bool operatorChecked = true;
+          if (op is HeuristicLab.Problems.VehicleRouting.Encodings.Potvin.PotvinLocalSearchManipulator ||
             op is HeuristicLab.Problems.VehicleRouting.Encodings.Prins.PrinsLSManipulator)
             operatorChecked = false;
           Operators.Add(op, operatorChecked);

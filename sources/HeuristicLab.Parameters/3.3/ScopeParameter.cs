@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -34,6 +35,9 @@ namespace HeuristicLab.Parameters {
       get { return ExecutionContext.Scope; }
     }
 
+    [StorableConstructor]
+    protected ScopeParameter(bool deserializing) : base(deserializing) { }
+    protected ScopeParameter(ScopeParameter original, Cloner cloner) : base(original, cloner) { }
     public ScopeParameter()
       : base("Anonymous", typeof(IScope)) {
     }
@@ -43,8 +47,10 @@ namespace HeuristicLab.Parameters {
     public ScopeParameter(string name, string description)
       : base(name, description, typeof(IScope)) {
     }
-    [StorableConstructor]
-    protected ScopeParameter(bool deserializing) : base(deserializing) { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ScopeParameter(this, cloner);
+    }
 
     public override string ToString() {
       return Name;

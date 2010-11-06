@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -53,6 +54,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public IValueLookupParameter<DoubleMatrix> BoundsParameter {
       get { return (IValueLookupParameter<DoubleMatrix>)Parameters["Bounds"]; }
     }
+
+    [StorableConstructor]
+    protected StdDevStrategyVectorManipulator(bool deserializing) : base(deserializing) { }
+    protected StdDevStrategyVectorManipulator(StdDevStrategyVectorManipulator original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="StrategyVectorManipulator"/> with four 
     /// parameters (<c>Random</c>, <c>StrategyVector</c>, <c>GeneralLearningRate</c> and
@@ -65,6 +70,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       Parameters.Add(new ValueLookupParameter<DoubleValue>("GeneralLearningRate", "The general learning rate (tau0)."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("LearningRate", "The learning rate (tau)."));
       Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "A 2 column matrix specifying the lower and upper bound for each dimension. If there are less rows than dimension the bounds vector is cycled.", new DoubleMatrix(new double[,] { { 0, 5 } })));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new StdDevStrategyVectorManipulator(this, cloner);
     }
 
     /// <summary>

@@ -21,10 +21,9 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis.Evaluators;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
@@ -34,8 +33,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [StorableClass]
   public class SymbolicRegressionMeanSquaredErrorEvaluator : SingleObjectiveSymbolicRegressionEvaluator {
 
-    public SymbolicRegressionMeanSquaredErrorEvaluator()
-      : base() {
+    [StorableConstructor]
+    protected SymbolicRegressionMeanSquaredErrorEvaluator(bool deserializing) : base(deserializing) { }
+    protected SymbolicRegressionMeanSquaredErrorEvaluator(SymbolicRegressionMeanSquaredErrorEvaluator original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public SymbolicRegressionMeanSquaredErrorEvaluator() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SymbolicRegressionMeanSquaredErrorEvaluator(this, cloner);
     }
 
     public override double Evaluate(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, Dataset dataset, string targetVariable, IEnumerable<int> rows) {

@@ -33,7 +33,7 @@ using HeuristicLab.Problems.DataAnalysis.Symbolic;
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [Item("SymbolicRegressionScaledMeanAndVarianceSquaredErrorEvaluator", "Calculates the mean and the variance of the squared errors of a linearly scaled symbolic regression solution.")]
   [StorableClass]
-  public class SymbolicRegressionScaledMeanAndVarianceSquaredErrorEvaluator : SymbolicRegressionMeanSquaredErrorEvaluator {
+  public sealed class SymbolicRegressionScaledMeanAndVarianceSquaredErrorEvaluator : SymbolicRegressionMeanSquaredErrorEvaluator {
     private const string QualityVarianceParameterName = "QualityVariance";
     private const string QualitySamplesParameterName = "QualitySamples";
     private const string DecompositionBiasParameterName = "QualityDecompositionBias";
@@ -89,6 +89,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       set { QualitySamplesParameter.ActualValue = value; }
     }
     #endregion
+    [StorableConstructor]
+    private SymbolicRegressionScaledMeanAndVarianceSquaredErrorEvaluator(bool deserializing) : base(deserializing) { }
+    private SymbolicRegressionScaledMeanAndVarianceSquaredErrorEvaluator(SymbolicRegressionScaledMeanAndVarianceSquaredErrorEvaluator original, Cloner cloner) : base(original, cloner) { }
     public SymbolicRegressionScaledMeanAndVarianceSquaredErrorEvaluator()
       : base() {
       Parameters.Add(new ValueLookupParameter<BoolValue>(ApplyScalingParameterName, "Determines if the estimated values should be scaled.", new BoolValue(true)));
@@ -99,6 +102,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       Parameters.Add(new LookupParameter<DoubleValue>(DecompositionBiasParameterName, "A parameter which stores the relativ bias of the MSE."));
       Parameters.Add(new LookupParameter<DoubleValue>(DecompositionVarianceParameterName, "A parameter which stores the relativ bias of the MSE."));
       Parameters.Add(new LookupParameter<DoubleValue>(DecompositionCovarianceParameterName, "A parameter which stores the relativ bias of the MSE."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SymbolicRegressionScaledMeanAndVarianceSquaredErrorEvaluator(this, cloner);
     }
 
     public override double Evaluate(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, Dataset dataset, string targetVariable, IEnumerable<int> rows) {

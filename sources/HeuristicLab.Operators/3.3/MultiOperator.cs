@@ -50,16 +50,24 @@ namespace HeuristicLab.Operators {
       }
     }
 
+    [StorableConstructor]
+    protected MultiOperator(bool deserializing) : base(deserializing) { }
+    protected MultiOperator(MultiOperator<T> original, Cloner cloner)
+      : base(original, cloner) {
+      this.operators = cloner.Clone<IItemList<T>>(original.operators);
+      Initialize();
+    }
     public MultiOperator()
       : base() {
       this.operators = new ItemList<T>();
       Initialize();
     }
 
-    [StorableConstructor]
-    protected MultiOperator(bool deserializing) : base(deserializing) { }
-
     [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      Initialize();
+    }
+    
     private void Initialize() {
       if (operators != null) RegisterOperatorsEvents();
       operatorParameters = new List<IValueParameter<T>>();
@@ -68,13 +76,6 @@ namespace HeuristicLab.Operators {
         operatorParameters.Add(opParam);
         opParam.ValueChanged += new EventHandler(opParam_ValueChanged);
       }
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      MultiOperator<T> clone = (MultiOperator<T>)base.Clone(cloner);
-      clone.operators = (IItemList<T>)cloner.Clone(operators);
-      clone.Initialize();
-      return clone;
     }
 
     private void UpdateOperatorParameters() {

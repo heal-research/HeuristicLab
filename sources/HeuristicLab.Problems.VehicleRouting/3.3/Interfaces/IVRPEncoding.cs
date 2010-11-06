@@ -19,10 +19,10 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Problems.VehicleRouting.Encodings;
 using System.Collections.Generic;
+using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Problems.VehicleRouting.Encodings;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   public interface IVRPEncoding : IItem {

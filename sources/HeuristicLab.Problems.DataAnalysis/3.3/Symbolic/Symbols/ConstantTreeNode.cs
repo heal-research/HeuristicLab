@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -37,14 +38,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
       set { constantValue = value; }
     }
 
-    private ConstantTreeNode() : base() { }
+    [StorableConstructor]
+    private ConstantTreeNode(bool deserializing) : base(deserializing) { }
 
-    // copy constructor
-    private ConstantTreeNode(ConstantTreeNode original)
-      : base(original) {
+    private ConstantTreeNode(ConstantTreeNode original, Cloner cloner)
+      : base(original, cloner) {
       constantValue = original.constantValue;
     }
 
+    private ConstantTreeNode() : base() { }
     public ConstantTreeNode(Constant constantSymbol) : base(constantSymbol) { }
 
     public override bool HasLocalParameters {
@@ -64,8 +66,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
       Value = Value + x * shakingFactor;
     }
 
-    public override object Clone() {
-      return new ConstantTreeNode(this);
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ConstantTreeNode(this, cloner);
     }
 
     public override string ToString() {

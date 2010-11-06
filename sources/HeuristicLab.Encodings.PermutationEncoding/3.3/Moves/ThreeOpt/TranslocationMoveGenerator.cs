@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
@@ -42,6 +43,9 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }
     }
 
+    [StorableConstructor]
+    protected TranslocationMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected TranslocationMoveGenerator(TranslocationMoveGenerator original, Cloner cloner) : base(original, cloner) { }
     public TranslocationMoveGenerator()
       : base() {
       Parameters.Add(new LookupParameter<Permutation>("Permutation", "The permutation for which moves should be generated."));

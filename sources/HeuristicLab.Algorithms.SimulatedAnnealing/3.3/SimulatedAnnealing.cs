@@ -142,6 +142,18 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
 
     [StorableConstructor]
     private SimulatedAnnealing(bool deserializing) : base(deserializing) { }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      Initialize();
+    }
+    private SimulatedAnnealing(SimulatedAnnealing original, Cloner cloner)
+      : base(original, cloner) {
+      qualityAnalyzer = cloner.Clone(original.qualityAnalyzer);
+      Initialize();
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SimulatedAnnealing(this, cloner);
+    }
     public SimulatedAnnealing()
       : base() {
       Parameters.Add(new ValueParameter<IntValue>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
@@ -191,13 +203,6 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       UpdateAnalyzers();
 
       Initialize();
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      SimulatedAnnealing clone = (SimulatedAnnealing)base.Clone(cloner);
-      clone.qualityAnalyzer = (QualityAnalyzer)cloner.Clone(qualityAnalyzer);
-      clone.Initialize();
-      return clone;
     }
 
     public override void Prepare() {
@@ -281,7 +286,6 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     #endregion
 
     #region Helpers
-    [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
       if (Problem != null) {
         Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);

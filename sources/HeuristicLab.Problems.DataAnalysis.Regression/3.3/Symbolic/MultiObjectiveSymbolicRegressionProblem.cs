@@ -20,21 +20,12 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Analyzers;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers;
-using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [Item("Symbolic Regression Problem (multi objective)", "Represents a multi objective symbolic regression problem.")]
@@ -70,9 +61,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
     #endregion
 
-
     [StorableConstructor]
     protected MultiObjectiveSymbolicRegressionProblem(bool deserializing) : base(deserializing) { }
+    protected MultiObjectiveSymbolicRegressionProblem(MultiObjectiveSymbolicRegressionProblem original, Cloner cloner)
+      : base(original, cloner) {
+      RegisterParameterEvents();
+      RegisterParameterValueEvents();
+    }
     public MultiObjectiveSymbolicRegressionProblem()
       : base() {
       var evaluator = new MultiObjectiveSymbolicRegressionMeanSquaredErrorEvaluator();
@@ -88,10 +83,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      MultiObjectiveSymbolicRegressionProblem clone = (MultiObjectiveSymbolicRegressionProblem)base.Clone(cloner);
-      clone.RegisterParameterEvents();
-      clone.RegisterParameterValueEvents();
-      return clone;
+      return new MultiObjectiveSymbolicRegressionProblem(this, cloner);
     }
 
     private void RegisterParameterValueEvents() {

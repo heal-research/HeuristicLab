@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -43,12 +44,19 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["Alpha"]; }
     }
 
+    [StorableConstructor]
+    protected UniformAllPositionsArithmeticCrossover(bool deserializing) : base(deserializing) { }
+    protected UniformAllPositionsArithmeticCrossover(UniformAllPositionsArithmeticCrossover original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance with one parameter (<c>Alpha</c>).
     /// </summary>
     public UniformAllPositionsArithmeticCrossover()
       : base() {
       Parameters.Add(new ValueLookupParameter<DoubleValue>("Alpha", "The alpha value in the range [0;1]", new DoubleValue(0.33)));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new UniformAllPositionsArithmeticCrossover(this, cloner);
     }
 
     /// <summary>

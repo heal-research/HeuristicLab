@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
@@ -36,6 +37,17 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureMani
   [Item("SubroutineDuplicater", "Manipulates a symbolic expression by duplicating a preexisting function-defining branch.")]
   [StorableClass]
   public sealed class SubroutineDuplicater : SymbolicExpressionTreeArchitectureManipulator {
+    [StorableConstructor]
+    private SubroutineDuplicater(bool deserializing) : base(deserializing) { }
+    private SubroutineDuplicater(SubroutineDuplicater original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public SubroutineDuplicater() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SubroutineDuplicater(this, cloner);
+    }
+
     public override sealed void ModifyArchitecture(
       IRandom random,
       SymbolicExpressionTree symbolicExpressionTree,

@@ -19,21 +19,20 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Problems.DataAnalysis.Evaluators;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [Item("MultiObjectiveSymbolicRegressionMeanSquaredErrorEvaluator", "Calculates the mean squared error and the number of variables of a symbolic regression solution.")]
   [StorableClass]
-  public class MultiObjectiveSymbolicRegressionMeanSquaredErrorEvaluator : MultiObjectiveSymbolicRegressionEvaluator {
+  public sealed class MultiObjectiveSymbolicRegressionMeanSquaredErrorEvaluator : MultiObjectiveSymbolicRegressionEvaluator {
     private const string UpperEstimationLimitParameterName = "UpperEstimationLimit";
     private const string LowerEstimationLimitParameterName = "LowerEstimationLimit";
 
@@ -53,10 +52,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       get { return LowerEstimationLimitParameter.ActualValue; }
     }
     #endregion
+    [StorableConstructor]
+    private MultiObjectiveSymbolicRegressionMeanSquaredErrorEvaluator(bool deserializing) : base(deserializing) { }
+    private MultiObjectiveSymbolicRegressionMeanSquaredErrorEvaluator(MultiObjectiveSymbolicRegressionMeanSquaredErrorEvaluator original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public MultiObjectiveSymbolicRegressionMeanSquaredErrorEvaluator()
       : base() {
       Parameters.Add(new ValueLookupParameter<DoubleValue>(UpperEstimationLimitParameterName, "The upper limit that should be used as cut off value for the output values of symbolic expression trees."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>(LowerEstimationLimitParameterName, "The lower limit that should be used as cut off value for the output values of symbolic expression trees."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MultiObjectiveSymbolicRegressionMeanSquaredErrorEvaluator(this, cloner);
     }
 
     protected override double[] Evaluate(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree solution, Dataset dataset, StringValue targetVariable, IEnumerable<int> rows) {

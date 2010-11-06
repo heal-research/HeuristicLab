@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -26,6 +27,12 @@ namespace HeuristicLab.Problems.ArtificialAnt.Symbols {
   [StorableClass]
   [Item("Move", "Represents the move-forward symbol in a artificial ant expression.")]
   public sealed class Move : Symbol {
+    [StorableConstructor]
+    private Move(bool deserializing) : base(deserializing) { }
+    private Move(Move original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Move(this, cloner);
+    }
     public Move() : base("Move", "Represents the move-forward symbol in a artificial ant expression.") { }
   }
 }

@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
@@ -38,21 +39,24 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.LinearRegression {
   /// </summary>
   [Item("LinearRegressionSolutionCreator", "Uses linear regression to create a structure tree.")]
   [StorableClass]
-  public class LinearRegressionSolutionCreator : SingleSuccessorOperator, ISolutionCreator {
+  public sealed class LinearRegressionSolutionCreator : SingleSuccessorOperator, ISolutionCreator {
     private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
     private const string DataAnalysisProblemDataParameterName = "DataAnalysisProblemData";
     private const string SamplesStartParameterName = "SamplesStart";
     private const string SamplesEndParameterName = "SamplesEnd";
 
+    [StorableConstructor]
+    private LinearRegressionSolutionCreator(bool deserializing) : base(deserializing) { }
+    private LinearRegressionSolutionCreator(LinearRegressionSolutionCreator original, Cloner cloner) : base(original, cloner) { }
     public LinearRegressionSolutionCreator() {
       Parameters.Add(new LookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The resulting solution encoded as a symbolic expression tree."));
       Parameters.Add(new LookupParameter<DataAnalysisProblemData>(DataAnalysisProblemDataParameterName, "The problem data on which the linear regression should be calculated."));
       Parameters.Add(new ValueLookupParameter<IntValue>(SamplesStartParameterName, "The start of the samples on which the linear regression should be applied."));
       Parameters.Add(new ValueLookupParameter<IntValue>(SamplesEndParameterName, "The end of the samples on which the linear regression should be applied."));
     }
-    [StorableConstructor]
-    public LinearRegressionSolutionCreator(bool deserializing)
-      : base(deserializing) {
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new LinearRegressionSolutionCreator(this, cloner);
     }
 
     #region parameter properties

@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -32,6 +33,15 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("InsertionManipulator", "An operator which moves randomly one element to another position in the permutation (Insertion is a special case of Translocation). It is implemented as described in Fogel, D.B. (1988). An Evolutionary Approach to the Traveling Salesman Problem, Biological Cybernetics, 60, pp. 139-144.")]
   [StorableClass]
   public class InsertionManipulator : PermutationManipulator {
+    [StorableConstructor]
+    protected InsertionManipulator(bool deserializing) : base(deserializing) { }
+    protected InsertionManipulator(InsertionManipulator original, Cloner cloner) : base(original, cloner) { }
+    public InsertionManipulator() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new InsertionManipulator(this, cloner);
+    }
+
     /// <summary>
     /// Moves an randomly chosen element in the specified <paramref name="permutation"/> array 
     /// to another randomly generated position.

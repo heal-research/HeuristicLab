@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces;
@@ -49,6 +50,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Crossovers {
     public IntValue FailedCrossoverEvents {
       get { return FailedCrossoverEventsParameter.Value; }
     }
+    [StorableConstructor]
+    protected SymbolicExpressionTreeCrossover(bool deserializing) : base(deserializing) { }
+    protected SymbolicExpressionTreeCrossover(SymbolicExpressionTreeCrossover original, Cloner cloner) : base(original, cloner) { }
     protected SymbolicExpressionTreeCrossover()
       : base() {
       Parameters.Add(new ScopeTreeLookupParameter<SymbolicExpressionTree>(ParentsParameterName, "The parent symbolic expression trees which should be crossed."));

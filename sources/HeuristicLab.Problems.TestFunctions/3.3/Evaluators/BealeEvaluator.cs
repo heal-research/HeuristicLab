@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
@@ -62,6 +63,15 @@ namespace HeuristicLab.Problems.TestFunctions {
     /// </summary>
     public override int MaximumProblemSize {
       get { return 2; }
+    }
+
+    [StorableConstructor]
+    protected BealeEvaluator(bool deserializing) : base(deserializing) { }
+    protected BealeEvaluator(BealeEvaluator original, Cloner cloner) : base(original, cloner) { }
+    public BealeEvaluator() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new BealeEvaluator(this, cloner);
     }
 
     public override RealVector GetBestKnownSolution(int dimension) {

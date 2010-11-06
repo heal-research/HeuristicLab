@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -26,6 +27,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [StorableClass]
   [Item("Cosine", "Symbol that represents the cosine function.")]
   public sealed class Cosine : Symbol {
+    [StorableConstructor]
+    private Cosine(bool deserializing) : base(deserializing) { }
+    private Cosine(Cosine original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Cosine(this, cloner);
+    }
     public Cosine() : base("Cosine", "Symbol that represents the cosine function.") { }
   }
 }

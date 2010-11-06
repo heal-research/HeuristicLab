@@ -20,6 +20,7 @@
 #endregion
 
 using HeuristicLab.Collections;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -50,13 +51,19 @@ namespace HeuristicLab.Analysis {
       set { UpdateIntervalParameter.Value = value; }
     }
 
+    #region Storing & Cloning
+    [StorableConstructor]
+    protected MultiAnalyzer(bool deserializing) : base(deserializing) { }
+    protected MultiAnalyzer(MultiAnalyzer original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MultiAnalyzer(this, cloner);
+    }
+    #endregion
     public MultiAnalyzer()
       : base() {
       Parameters.Add(new ValueLookupParameter<IntValue>("UpdateInterval", "The interval in which the contained analyzers should be applied.", new IntValue(1)));
       Parameters.Add(new LookupParameter<IntValue>("UpdateCounter", "The value which counts how many times the MultiAnalyzer was called since the last update.", "MultiAnalyzerUpdateCounter"));
     }
-    [StorableConstructor]
-    protected MultiAnalyzer(bool deserializing) : base(deserializing) { }
 
     public override IOperation Apply() {
       IntValue interval = UpdateIntervalParameter.ActualValue;

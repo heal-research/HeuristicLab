@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
@@ -37,10 +38,17 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       get { return (IValueLookupParameter<IntValue>)Parameters["SampleSize"]; }
     }
 
+    [StorableConstructor]
+    protected StochasticNormalMultiMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected StochasticNormalMultiMoveGenerator(StochasticNormalMultiMoveGenerator original, Cloner cloner) : base(original, cloner) { }
     public StochasticNormalMultiMoveGenerator()
       : base() {
       Parameters.Add(new ValueLookupParameter<DoubleValue>("Sigma", "The standard deviation of the normal distribution.", new DoubleValue(1)));
       Parameters.Add(new ValueLookupParameter<IntValue>("SampleSize", "The number of moves that should be generated."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new StochasticNormalMultiMoveGenerator(this, cloner);
     }
 
     public static AdditiveMove[] Apply(IRandom random, RealVector realVector, double sigma, int sampleSize) {

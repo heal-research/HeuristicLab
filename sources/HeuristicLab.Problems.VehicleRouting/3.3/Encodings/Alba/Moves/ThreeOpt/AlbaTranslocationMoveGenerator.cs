@@ -19,7 +19,7 @@
  */
 #endregion
 
-using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
@@ -69,7 +69,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
 
     [StorableConstructor]
     private AlbaTranslocationMoveGenerator(bool deserializing) : base(deserializing) { }
-
+    private AlbaTranslocationMoveGenerator(AlbaTranslocationMoveGenerator original, Cloner cloner) : base(original, cloner) { }
     public AlbaTranslocationMoveGenerator()
       : base() {
       Parameters.Add(new ValueLookupParameter<TranslocationMoveGenerator>("TranslocationMoveGenerator", "The move generator.",
@@ -77,6 +77,10 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       Parameters.Add(new ValueLookupParameter<IntValue>("SampleSize", "The number of moves to generate."));
 
       ((IMultiMoveGenerator)TranslocationMoveGeneratorParameter.Value).SampleSizeParameter.ActualName = SampleSizeParameter.Name;
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new AlbaTranslocationMoveGenerator(this, cloner);
     }
 
     public override IOperation Apply() {

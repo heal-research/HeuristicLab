@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
@@ -46,6 +47,9 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       get { return (ILookupParameter<Permutation>)Parameters["Child"]; }
     }
 
+    [StorableConstructor]
+    protected PermutationCrossover(bool deserializing) : base(deserializing) { }
+    protected PermutationCrossover(PermutationCrossover original, Cloner cloner) : base(original, cloner) { }
     protected PermutationCrossover()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic crossover operators."));

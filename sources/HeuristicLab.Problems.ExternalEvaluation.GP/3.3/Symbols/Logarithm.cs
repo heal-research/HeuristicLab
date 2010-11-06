@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -27,7 +28,14 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
   [StorableClass]
   [Item("Logarithm", "Symbol that represents the logarithm function.")]
   public sealed class Logarithm : Symbol {
-
+    [StorableConstructor]
+    private Logarithm(bool deserializing) : base(deserializing) { }
+    private Logarithm(Logarithm original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Logarithm(this, cloner);
+    }
     public Logarithm()
       : base("ln", "Symbol that represents the logarithm function.") {
     }

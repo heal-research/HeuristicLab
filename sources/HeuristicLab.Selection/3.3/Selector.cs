@@ -20,6 +20,7 @@
 #endregion
 
 using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
@@ -42,6 +43,10 @@ namespace HeuristicLab.Selection {
     public IScope CurrentScope {
       get { return CurrentScopeParameter.ActualValue; }
     }
+
+    [StorableConstructor]
+    protected Selector(bool deserializing) : base(deserializing) { }
+    protected Selector(Selector original, Cloner cloner) : base(original, cloner) { }
 
     protected Selector()
       : base() {

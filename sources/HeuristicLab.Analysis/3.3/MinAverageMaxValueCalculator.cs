@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -45,6 +46,14 @@ namespace HeuristicLab.Analysis {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["MaxValue"]; }
     }
 
+    #region Storing & Cloning
+    [StorableConstructor]
+    private MinAverageMaxValueCalculator(bool deserializing) : base(deserializing) { }
+    private MinAverageMaxValueCalculator(MinAverageMaxValueCalculator original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MinAverageMaxValueCalculator(this, cloner);
+    }
+    #endregion
     public MinAverageMaxValueCalculator()
       : base() {
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Value", "The value contained in the scope tree for which the minimum, average and maximum should be calculated."));

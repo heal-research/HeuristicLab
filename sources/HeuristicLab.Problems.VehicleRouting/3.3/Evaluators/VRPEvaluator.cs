@@ -19,9 +19,9 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.VehicleRouting.Encodings;
@@ -81,6 +81,11 @@ namespace HeuristicLab.Problems.VehicleRouting {
       get { return (ILookupParameter<DoubleValue>)Parameters["EvalTardinessPenalty"]; }
     }
 
+    [StorableConstructor]
+    private VRPEvaluator(bool deserializing) : base(deserializing) { }
+    private VRPEvaluator(VRPEvaluator original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public VRPEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The evaluated quality of the VRP solution."));
@@ -95,6 +100,10 @@ namespace HeuristicLab.Problems.VehicleRouting {
       Parameters.Add(new LookupParameter<DoubleValue>("EvalDistanceFactor", "The distance factor considered in the evaluation."));
       Parameters.Add(new LookupParameter<DoubleValue>("EvalOverloadPenalty", "The overload penalty considered in the evaluation."));
       Parameters.Add(new LookupParameter<DoubleValue>("EvalTardinessPenalty", "The tardiness penalty considered in the evaluation."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new VRPEvaluator(this, cloner);
     }
 
     private double CalculateFleetUsage() {

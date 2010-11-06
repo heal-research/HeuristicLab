@@ -20,9 +20,7 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -32,6 +30,13 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
   [StorableClass]
   public abstract class SymbolicExpressionTreeConverter : Item, IItemToSolutionMessageConverter {
     private static readonly Type[] itemTypes = new Type[] { typeof(SymbolicExpressionTree) };
+
+    [StorableConstructor]
+    protected SymbolicExpressionTreeConverter(bool deserializing) : base(deserializing) { }
+    protected SymbolicExpressionTreeConverter(SymbolicExpressionTreeConverter original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public SymbolicExpressionTreeConverter() : base() { }
 
     #region IItemToSolutionMessageConverter Members
 

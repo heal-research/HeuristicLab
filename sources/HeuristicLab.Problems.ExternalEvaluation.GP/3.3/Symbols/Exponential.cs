@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -27,7 +28,14 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
   [StorableClass]
   [Item("Exponential", "Symbol that represents the exponential function.")]
   public sealed class Exponential : Symbol {
-
+    [StorableConstructor]
+    private Exponential(bool deserializing) : base(deserializing) { }
+    private Exponential(Exponential original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Exponential(this, cloner);
+    }
     public Exponential()
       : base("exp", "Symbol that represents the exponential function.") {
     }

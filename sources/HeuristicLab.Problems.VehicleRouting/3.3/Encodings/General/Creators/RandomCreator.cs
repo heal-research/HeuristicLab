@@ -19,11 +19,9 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -40,6 +38,10 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
 
     [StorableConstructor]
     private RandomCreator(bool deserializing) : base(deserializing) { }
+    private RandomCreator(RandomCreator original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new RandomCreator(this, cloner);
+    }
 
     public RandomCreator()
       : base() {

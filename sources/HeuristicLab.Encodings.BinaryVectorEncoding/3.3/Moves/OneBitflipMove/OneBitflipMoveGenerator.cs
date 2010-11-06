@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
@@ -42,6 +43,9 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }
     }
 
+    [StorableConstructor]
+    protected OneBitflipMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected OneBitflipMoveGenerator(OneBitflipMoveGenerator original, Cloner cloner) : base(original, cloner) { }
     public OneBitflipMoveGenerator()
       : base() {
       Parameters.Add(new LookupParameter<BinaryVector>("BinaryVector", "The BinaryVector for which moves should be generated."));

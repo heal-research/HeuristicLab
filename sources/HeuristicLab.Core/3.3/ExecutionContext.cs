@@ -49,6 +49,14 @@ namespace HeuristicLab.Core {
       get { return scope; }
     }
 
+    [StorableConstructor]
+    private ExecutionContext(bool deserializing) { }
+    private ExecutionContext(ExecutionContext original, Cloner cloner)
+      : base(original, cloner) {
+      parent = cloner.Clone(original.parent);
+      parameterizedItem = cloner.Clone(original.parameterizedItem);
+      scope = cloner.Clone(original.scope);
+    }
     private ExecutionContext() {
       parent = null;
       parameterizedItem = null;
@@ -62,12 +70,7 @@ namespace HeuristicLab.Core {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      ExecutionContext clone = new ExecutionContext();
-      cloner.RegisterClonedObject(this, clone);
-      clone.parent = (IExecutionContext)cloner.Clone(parent);
-      clone.parameterizedItem = (IParameterizedItem)cloner.Clone(parameterizedItem);
-      clone.scope = (IScope)cloner.Clone(scope);
-      return clone;
+      return new ExecutionContext(this, cloner);
     }
 
     public IAtomicOperation CreateOperation(IOperator op) {

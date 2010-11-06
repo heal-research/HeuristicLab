@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -33,6 +34,15 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("RandomConvexCrossover", "The random convex crossover acts like the local crossover, but with just one randomly chosen alpha for all crossed positions. It is implementes as described in Dumitrescu, D. et al. (2000), Evolutionary computation, CRC Press, Boca Raton, FL, pp. 193 - 194.")]
   [StorableClass]
   public class RandomConvexCrossover : RealVectorCrossover {
+    [StorableConstructor]
+    protected RandomConvexCrossover(bool deserializing) : base(deserializing) { }
+    protected RandomConvexCrossover(RandomConvexCrossover original, Cloner cloner) : base(original, cloner) { }
+    public RandomConvexCrossover() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new RandomConvexCrossover(this, cloner);
+    }
+    
     /// <summary>
     /// Performs a random convex crossover on the two given parents.
     /// </summary>

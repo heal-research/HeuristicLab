@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -82,7 +83,13 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     #endregion
 
     [StorableConstructor]
-    private SimulatedAnnealingMainLoop(bool deserializing) : base() { }
+    private SimulatedAnnealingMainLoop(bool deserializing) : base(deserializing) { }
+    private SimulatedAnnealingMainLoop(SimulatedAnnealingMainLoop original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SimulatedAnnealingMainLoop(this, cloner);
+    }
     public SimulatedAnnealingMainLoop()
       : base() {
       Initialize();

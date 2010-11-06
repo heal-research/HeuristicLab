@@ -61,18 +61,16 @@ namespace HeuristicLab.Core {
       }
     }
 
+    [StorableConstructor]
+    protected Executable(bool deserializing) : base(deserializing) { }
+    protected Executable(Executable original, Cloner cloner)
+      : base(original, cloner) {
+      executionState = original.executionState;
+      executionTime = original.executionTime;
+    }
     protected Executable() {
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
-    }
-    [StorableConstructor]
-    protected Executable(bool deserializing) : base(deserializing) { }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      Executable clone = (Executable)base.Clone(cloner);
-      clone.executionState = executionState;
-      clone.executionTime = executionTime;
-      return clone;
     }
 
     public virtual void Prepare() {

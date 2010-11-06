@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -41,6 +42,9 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       get { return (ValueLookupParameter<DoubleMatrix>)Parameters["Bounds"]; }
     }
 
+    [StorableConstructor]
+    protected BoundsChecker(bool deserializing) : base(deserializing) { }
+    protected BoundsChecker(BoundsChecker original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="BoundsChecker"/> with two parameters
     /// (<c>RealVector</c>, <c>Bounds</c>).
@@ -49,6 +53,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       : base() {
       Parameters.Add(new LookupParameter<RealVector>("RealVector", "The real-valued vector for which the bounds should be checked."));
       Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "The lower and upper bound (1st and 2nd column) of the positions in the vector. If there are less rows than dimensions, the rows are cycled."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new BoundsChecker(this, cloner);
     }
 
     /// <summary>

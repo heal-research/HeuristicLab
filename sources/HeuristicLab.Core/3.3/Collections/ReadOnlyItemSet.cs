@@ -43,20 +43,21 @@ namespace HeuristicLab.Core {
       get { return VS2008ImageLibrary.Class; }
     }
 
-    public ReadOnlyItemSet() : base(new ItemSet<T>()) { }
-    public ReadOnlyItemSet(IItemSet<T> set) : base(set) { }
     [StorableConstructor]
     protected ReadOnlyItemSet(bool deserializing) : base(deserializing) { }
+    protected ReadOnlyItemSet(ReadOnlyItemSet<T> original, Cloner cloner) {
+      cloner.RegisterClonedObject(original, this);
+      set = cloner.Clone((IItemSet<T>)original.set);
+      RegisterEvents();
+    }
+    public ReadOnlyItemSet() : base(new ItemSet<T>()) { }
+    public ReadOnlyItemSet(IItemSet<T> set) : base(set) { }
 
     public object Clone() {
       return Clone(new Cloner());
     }
     public virtual IDeepCloneable Clone(Cloner cloner) {
-      ReadOnlyItemSet<T> clone = (ReadOnlyItemSet<T>)Activator.CreateInstance(this.GetType());
-      cloner.RegisterClonedObject(this, clone);
-      clone.set = (IItemSet<T>)((IItemSet<T>)set).Clone(cloner);
-      clone.RegisterEvents();
-      return clone;
+      return new ReadOnlyItemSet<T>(this, cloner);
     }
 
     public override string ToString() {

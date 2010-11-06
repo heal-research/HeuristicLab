@@ -61,6 +61,12 @@ namespace HeuristicLab.Parameters {
       }
     }
 
+    [StorableConstructor]
+    protected LookupParameter(bool deserializing) : base(deserializing) { }
+    protected LookupParameter(LookupParameter<T> original, Cloner cloner)
+      : base(original, cloner) {
+      actualName = original.actualName;
+    }
     public LookupParameter()
       : base("Anonymous", typeof(T)) {
       this.actualName = Name;
@@ -77,13 +83,9 @@ namespace HeuristicLab.Parameters {
       : base(name, description, typeof(T)) {
       this.actualName = actualName == null ? string.Empty : actualName;
     }
-    [StorableConstructor]
-    protected LookupParameter(bool deserializing) : base(deserializing) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      LookupParameter<T> clone = (LookupParameter<T>)base.Clone(cloner);
-      clone.actualName = actualName;
-      return clone;
+      return new LookupParameter<T>(this, cloner);
     }
 
     public override string ToString() {

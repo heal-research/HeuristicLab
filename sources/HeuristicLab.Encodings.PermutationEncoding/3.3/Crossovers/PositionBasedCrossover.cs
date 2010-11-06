@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -33,6 +34,15 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("PositionBasedCrossover", "An operator which performs the position based crossover on two permutations. It is implemented as described in Syswerda, G. (1991). Schedule Optimization Using Genetic Algorithms. In Davis, L. (Ed.) Handbook of Genetic Algorithms, Van Nostrand Reinhold, New York, pp 332-349.")]
   [StorableClass]
   public class PositionBasedCrossover : PermutationCrossover {
+    [StorableConstructor]
+    protected PositionBasedCrossover(bool deserializing) : base(deserializing) { }
+    protected PositionBasedCrossover(PositionBasedCrossover original, Cloner cloner) : base(original, cloner) { }
+    public PositionBasedCrossover() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new PositionBasedCrossover(this, cloner);
+    }
+
     /// <summary>
     /// Performs a cross over permutation of <paramref name="parent1"/> and <paramref name="parent2"/>
     /// based on randomly chosen positions to define which position to take from where.

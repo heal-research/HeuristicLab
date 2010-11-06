@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
@@ -82,6 +83,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     }
     #endregion
 
+    [StorableConstructor]
+    private SymbolicRegressionModelQualityCalculator(bool deserializing) : base(deserializing) { }
+    private SymbolicRegressionModelQualityCalculator(SymbolicRegressionModelQualityCalculator original, Cloner cloner) : base(original, cloner) { }
     public SymbolicRegressionModelQualityCalculator()
       : base() {
       Parameters.Add(new LookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression tree to analyze."));
@@ -136,6 +140,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       clearValues.Successor = null;
       #endregion
 
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SymbolicRegressionModelQualityCalculator(this, cloner);
     }
   }
 }

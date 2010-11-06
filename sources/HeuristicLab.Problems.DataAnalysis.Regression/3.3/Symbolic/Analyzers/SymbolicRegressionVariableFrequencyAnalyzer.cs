@@ -21,6 +21,7 @@
 
 using System.Linq;
 using HeuristicLab.Analysis;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Operators;
@@ -59,12 +60,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     }
     #endregion
 
+    [StorableConstructor]
+    private SymbolicRegressionVariableFrequencyAnalyzer(bool deserializing) : base(deserializing) { }
+    private SymbolicRegressionVariableFrequencyAnalyzer(SymbolicRegressionVariableFrequencyAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public SymbolicRegressionVariableFrequencyAnalyzer()
       : base() {
       Parameters.Add(new ScopeTreeLookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression trees to analyze."));
       Parameters.Add(new LookupParameter<DataAnalysisProblemData>(ProblemDataParameterName, "The problem data containing the input varaibles for the symbolic regression problem."));
       Parameters.Add(new ValueLookupParameter<DataTable>(VariableFrequenciesParameterName, "The data table to store the variable frequencies."));
       Parameters.Add(new LookupParameter<ResultCollection>(ResultsParameterName, "The result collection where the best symbolic regression solution should be stored."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SymbolicRegressionVariableFrequencyAnalyzer(this, cloner);
     }
 
     public override IOperation Apply() {

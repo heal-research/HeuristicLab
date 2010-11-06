@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -46,6 +47,9 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       get { return (IValueLookupParameter<IntValue>)Parameters["Length"]; }
     }
 
+    [StorableConstructor]
+    protected BinaryVectorCreator(bool deserializing) : base(deserializing) { }
+    protected BinaryVectorCreator(BinaryVectorCreator original, Cloner cloner) : base(original, cloner) { }
     protected BinaryVectorCreator()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));

@@ -37,13 +37,15 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     public int Number2 { get; private set; }
 
     [StorableConstructor]
-    private InversionMoveAbsoluteAttribute(bool deserializing)
-      : base() {
+    protected InversionMoveAbsoluteAttribute(bool deserializing) : base(deserializing) { }
+    protected InversionMoveAbsoluteAttribute(InversionMoveAbsoluteAttribute original, Cloner cloner)
+      : base(original, cloner) {
+      this.Index1 = original.Index1;
+      this.Number1 = original.Number1;
+      this.Index2 = original.Index2;
+      this.Number2 = original.Number2;
     }
-
-    public InversionMoveAbsoluteAttribute()
-      : this(-1, -1, -1, -1, -1) { }
-
+    public InversionMoveAbsoluteAttribute() : this(-1, -1, -1, -1, -1) { }
     public InversionMoveAbsoluteAttribute(int index1, int number1, int index2, int number2, double moveQuality)
       : base(moveQuality) {
       Index1 = index1;
@@ -53,12 +55,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      InversionMoveAbsoluteAttribute clone = (InversionMoveAbsoluteAttribute)base.Clone(cloner);
-      clone.Index1 = Index1;
-      clone.Number1 = Number1;
-      clone.Index2 = Index2;
-      clone.Number2 = Number2;
-      return clone;
+      return new InversionMoveAbsoluteAttribute(this, cloner);
     }
   }
 }

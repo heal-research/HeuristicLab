@@ -19,13 +19,12 @@
  */
 #endregion
 
+using System.Collections.Generic;
+using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Drawing;
-using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("TourEncoding", "Represents a base class for tour encodings of VRP solutions.")]
@@ -34,7 +33,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Class; }
     }
-    
+
     #region IVRPEncoding Members
     public virtual List<Tour> GetTours(ILookupParameter<DoubleMatrix> distanceMatrix = null, int maxVehicles = int.MaxValue) {
       List<Tour> result = new List<Tour>(Tours);
@@ -50,8 +49,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     }
 
     public int Cities {
-      get 
-      {
+      get {
         int cities = 0;
 
         foreach (Tour tour in Tours) {
@@ -74,6 +72,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     protected TourEncoding(bool serializing)
       : base() {
     }
+    protected TourEncoding(TourEncoding original, Cloner cloner)
+      : base(original, cloner) {
+    }
 
     public static void ConvertFrom(IVRPEncoding encoding, TourEncoding solution, ILookupParameter<DoubleMatrix> distanceMatrix) {
       solution.Tours = new ItemList<Tour>(encoding.GetTours(distanceMatrix));
@@ -81,7 +82,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
 
     public static void ConvertFrom(List<int> route, TourEncoding solution) {
       solution.Tours = new ItemList<Tour>();
-      
+
       Tour tour = new Tour();
       for (int i = 0; i < route.Count; i++) {
         if (route[i] == 0) {

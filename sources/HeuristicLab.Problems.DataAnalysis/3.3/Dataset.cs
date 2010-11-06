@@ -31,16 +31,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [Item("Dataset", "Represents a dataset containing data that should be analyzed.")]
   [StorableClass]
   public sealed class Dataset : NamedItem, IStringConvertibleMatrix {
-    // empty constructor for cloning
-    private Dataset()
-      : base() {
-    }
-
     [StorableConstructor]
-    private Dataset(bool deserializing)
-      : base(deserializing) {
+    private Dataset(bool deserializing) : base(deserializing) { }
+    private Dataset(Dataset original, Cloner cloner)
+      : base(original, cloner) {
+      variableNames = original.variableNames;
+      data = original.data;
     }
-
     public Dataset(IEnumerable<string> variableNames, double[,] data)
       : base() {
       Name = "-";
@@ -121,8 +118,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
       return GetEnumeratedVariableValues(GetVariableIndex(variableName), rows);
     }
 
-
-
     public string GetVariableName(int variableIndex) {
       return variableNames[variableIndex];
     }
@@ -139,10 +134,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      Dataset clone = (Dataset)base.Clone(cloner);
-      clone.variableNames = variableNames;
-      clone.data = data;
-      return clone;
+      return new Dataset(this, cloner);
     }
 
     public event EventHandler Reset;
@@ -196,26 +188,27 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public event EventHandler ColumnNamesChanged;
     private void OnColumnNamesChanged() {
-      EventHandler handler = ColumnNamesChanged;
-      if (handler != null)
-        handler(this, EventArgs.Empty);
+      EventHandler listeners = ColumnNamesChanged;
+      if (listeners != null)
+        listeners(this, EventArgs.Empty);
     }
     public event EventHandler RowNamesChanged;
     private void OnRowNamesChanged() {
-      EventHandler handler = RowNamesChanged;
-      if (handler != null)
-        handler(this, EventArgs.Empty);
+      EventHandler listeners = RowNamesChanged;
+      if (listeners != null)
+        listeners(this, EventArgs.Empty);
     }
     public event EventHandler SortableViewChanged;
     private void OnSortableViewChanged() {
-      EventHandler handler = SortableViewChanged;
-      if (handler != null)
-        handler(this, EventArgs.Empty);
+      EventHandler listeners = SortableViewChanged;
+      if (listeners != null)
+        listeners(this, EventArgs.Empty);
     }
     public event EventHandler<EventArgs<int, int>> ItemChanged;
     private void OnItemChanged(int rowIndex, int columnIndex) {
-      if (ItemChanged != null)
-        ItemChanged(this, new EventArgs<int, int>(rowIndex, columnIndex));
+      var listeners = ItemChanged;
+      if (listeners != null)
+        listeners(this, new EventArgs<int, int>(rowIndex, columnIndex));
       OnToStringChanged();
     }
     #endregion

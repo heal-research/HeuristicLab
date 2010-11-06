@@ -20,6 +20,7 @@
 #endregion
 
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
@@ -34,7 +35,7 @@ namespace HeuristicLab.Problems.Knapsack {
   /// </summary>
   [Item("BestKnapsackSolutionAnalyzer", "An operator for analyzing the best solution for a Knapsack problem.")]
   [StorableClass]
-  class BestKnapsackSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer {
+  public class BestKnapsackSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer {
     public LookupParameter<BoolValue> MaximizationParameter {
       get { return (LookupParameter<BoolValue>)Parameters["Maximization"]; }
     }
@@ -66,6 +67,9 @@ namespace HeuristicLab.Problems.Knapsack {
       get { return (LookupParameter<BinaryVector>)Parameters["BestKnownSolution"]; }
     }
 
+    [StorableConstructor]
+    protected BestKnapsackSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    protected BestKnapsackSolutionAnalyzer(BestKnapsackSolutionAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public BestKnapsackSolutionAnalyzer()
       : base() {
       Parameters.Add(new LookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem."));
@@ -79,6 +83,10 @@ namespace HeuristicLab.Problems.Knapsack {
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the knapsack solution should be stored."));
       Parameters.Add(new LookupParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution."));
       Parameters.Add(new LookupParameter<BinaryVector>("BestKnownSolution", "The best known solution."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new BestKnapsackSolutionAnalyzer(this, cloner);
     }
 
     public override IOperation Apply() {

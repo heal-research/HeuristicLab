@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureManipulators;
@@ -32,11 +33,15 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators {
   [StorableClass]
   [Item("ProbabilisticTreeCreator", "An operator that creates new symbolic expression trees with uniformly distributed size")]
-  public class ProbabilisticTreeCreator : SymbolicExpressionTreeCreator {
+  public sealed class ProbabilisticTreeCreator : SymbolicExpressionTreeCreator {
     private const int MAX_TRIES = 100;
+    [StorableConstructor]
+    private ProbabilisticTreeCreator(bool deserializing) : base(deserializing) { }
+    private ProbabilisticTreeCreator(ProbabilisticTreeCreator original, Cloner cloner) : base(original, cloner) { }
+    public ProbabilisticTreeCreator() : base() { }
 
-    public ProbabilisticTreeCreator()
-      : base() {
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ProbabilisticTreeCreator(this, cloner);
     }
 
     protected override SymbolicExpressionTree Create(

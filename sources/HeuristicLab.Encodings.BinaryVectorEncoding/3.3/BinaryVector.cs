@@ -28,6 +28,9 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [StorableClass]
   [Item("BinaryVector", "Represents a vector of binary values.")]
   public class BinaryVector : BoolArray {
+    [StorableConstructor]
+    protected BinaryVector(bool deserializing) : base(deserializing) { }
+    protected BinaryVector(BinaryVector original, Cloner cloner) : base(original, cloner) { }
     public BinaryVector() : base() { }
     public BinaryVector(int length) : base(length) { }
     public BinaryVector(int length, IRandom random)
@@ -42,10 +45,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      BinaryVector clone = new BinaryVector(array);
-      cloner.RegisterClonedObject(this, clone);
-      clone.readOnly = readOnly;
-      return clone;
+      return new BinaryVector(this, cloner);
     }
 
     public virtual void Randomize(IRandom random, int startIndex, int length) {

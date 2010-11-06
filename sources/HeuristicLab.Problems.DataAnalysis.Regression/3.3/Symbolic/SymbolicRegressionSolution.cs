@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
@@ -34,12 +35,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [Item("SymbolicRegressionSolution", "Represents a solution for a symbolic regression problem which can be visualized in the GUI.")]
   [StorableClass]
   public class SymbolicRegressionSolution : DataAnalysisSolution {
-    public SymbolicRegressionSolution() : base() { }
-    public SymbolicRegressionSolution(DataAnalysisProblemData problemData, SymbolicRegressionModel model, double lowerEstimationLimit, double upperEstimationLimit)
-      : base(problemData, lowerEstimationLimit, upperEstimationLimit) {
-      this.Model = model;
-    }
-
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Function; }
     }
@@ -47,19 +42,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     public new SymbolicRegressionModel Model {
       get { return (SymbolicRegressionModel)base.Model; }
       set { base.Model = value; }
-    }
-
-    protected override void RecalculateEstimatedValues() {
-      int minLag = 0;
-      var laggedTreeNodes = Model.SymbolicExpressionTree.IterateNodesPrefix().OfType<LaggedVariableTreeNode>();
-      if (laggedTreeNodes.Any())
-        minLag = laggedTreeNodes.Min(node => node.Lag);
-      IEnumerable<double> calculatedValues =
-          from x in Model.GetEstimatedValues(ProblemData, 0 - minLag, ProblemData.Dataset.Rows)
-          let boundedX = Math.Min(UpperEstimationLimit, Math.Max(LowerEstimationLimit, x))
-          select double.IsNaN(boundedX) ? UpperEstimationLimit : boundedX;
-      estimatedValues = Enumerable.Repeat(double.NaN, Math.Abs(minLag)).Concat(calculatedValues).ToList();
-      OnEstimatedValuesChanged();
     }
 
     protected List<double> estimatedValues;
@@ -76,6 +58,33 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
 
     public override IEnumerable<double> EstimatedTestValues {
       get { return GetEstimatedValues(ProblemData.TestIndizes); }
+    }
+
+    [StorableConstructor]
+    protected SymbolicRegressionSolution(bool deserializing) : base(deserializing) { }
+    protected SymbolicRegressionSolution(SymbolicRegressionSolution original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public SymbolicRegressionSolution(DataAnalysisProblemData problemData, SymbolicRegressionModel model, double lowerEstimationLimit, double upperEstimationLimit)
+      : base(problemData, lowerEstimationLimit, upperEstimationLimit) {
+      this.Model = model;
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SymbolicRegressionSolution(this, cloner);
+    }
+
+    protected override void RecalculateEstimatedValues() {
+      int minLag = 0;
+      var laggedTreeNodes = Model.SymbolicExpressionTree.IterateNodesPrefix().OfType<LaggedVariableTreeNode>();
+      if (laggedTreeNodes.Any())
+        minLag = laggedTreeNodes.Min(node => node.Lag);
+      IEnumerable<double> calculatedValues =
+          from x in Model.GetEstimatedValues(ProblemData, 0 - minLag, ProblemData.Dataset.Rows)
+          let boundedX = Math.Min(UpperEstimationLimit, Math.Max(LowerEstimationLimit, x))
+          select double.IsNaN(boundedX) ? UpperEstimationLimit : boundedX;
+      estimatedValues = Enumerable.Repeat(double.NaN, Math.Abs(minLag)).Concat(calculatedValues).ToList();
+      OnEstimatedValuesChanged();
     }
 
     public virtual IEnumerable<double> GetEstimatedValues(IEnumerable<int> rows) {

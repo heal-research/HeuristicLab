@@ -21,6 +21,7 @@
 
 using System.Collections.Generic;
 using System.Drawing;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -35,9 +36,14 @@ namespace HeuristicLab.Analysis {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Cab; }
     }
 
-    public DataTableHistory() : base() { }
-    public DataTableHistory(IEnumerable<DataTable> collection) : base(new ItemCollection<DataTable>(collection)) { }
     [StorableConstructor]
     protected DataTableHistory(bool deserializing) : base(deserializing) { }
+    protected DataTableHistory(DataTableHistory original, Cloner cloner) : base(original, cloner) { }
+    public DataTableHistory() : base() { }
+    public DataTableHistory(IEnumerable<DataTable> collection) : base(new ItemCollection<DataTable>(collection)) { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new DataTableHistory(this, cloner);
+    }
   }
 }

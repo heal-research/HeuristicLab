@@ -20,9 +20,9 @@
 #endregion
 
 using System.ComponentModel;
+using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Drawing;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
@@ -103,6 +103,20 @@ namespace HeuristicLab.Analysis {
     }
     #endregion
 
+    #region Storing & Cloning
+    [StorableConstructor]
+    protected DataRowVisualProperties(bool deserializing) : base() { }
+    protected DataRowVisualProperties(DataRowVisualProperties original, Cloner cloner)
+      : base(original, cloner) {
+      this.chartType = original.chartType;
+      this.secondYAxis = original.secondYAxis;
+      this.color = original.color;
+      this.startIndexZero = original.startIndexZero;
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new DataRowVisualProperties(this, cloner);
+    }
+    #endregion
     public DataRowVisualProperties() {
       chartType = DataRowChartType.Line;
       secondYAxis = false;
@@ -114,17 +128,6 @@ namespace HeuristicLab.Analysis {
       this.secondYAxis = secondYAxis;
       this.color = color;
       this.startIndexZero = startIndexZero;
-    }
-    [StorableConstructor]
-    protected DataRowVisualProperties(bool deserializing) { }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      DataRowVisualProperties clone = (DataRowVisualProperties)base.Clone(cloner);
-      clone.chartType = chartType;
-      clone.secondYAxis = secondYAxis;
-      clone.color = color;
-      clone.startIndexZero = startIndexZero;
-      return clone;
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

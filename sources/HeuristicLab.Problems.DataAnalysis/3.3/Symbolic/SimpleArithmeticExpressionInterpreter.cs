@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Compiler;
@@ -32,7 +33,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("SimpleArithmeticExpressionInterpreter", "Interpreter for arithmetic symbolic expression trees including function calls.")]
   // not thread safe!
-  public class SimpleArithmeticExpressionInterpreter : NamedItem, ISymbolicExpressionTreeInterpreter {
+  public sealed class SimpleArithmeticExpressionInterpreter : NamedItem, ISymbolicExpressionTreeInterpreter {
     private class OpCodes {
       public const byte Add = 1;
       public const byte Sub = 2;
@@ -103,6 +104,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
     public override bool CanChangeDescription {
       get { return false; }
+    }
+
+    [StorableConstructor]
+    private SimpleArithmeticExpressionInterpreter(bool deserializing) : base(deserializing) { }
+    private SimpleArithmeticExpressionInterpreter(SimpleArithmeticExpressionInterpreter original, Cloner cloner) : base(original, cloner) { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SimpleArithmeticExpressionInterpreter(this, cloner);
     }
 
     public SimpleArithmeticExpressionInterpreter()
@@ -285,7 +294,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     // skips a whole branch
-    protected void SkipBakedCode() {
+    private void SkipBakedCode() {
       int i = 1;
       while (i > 0) {
         i += code[pc++].nArguments;

@@ -21,6 +21,7 @@
 
 using System.Collections.Generic;
 using System.Drawing;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -35,9 +36,14 @@ namespace HeuristicLab.Analysis {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Cab; }
     }
 
-    public HeatMapHistory() : base() { }
-    public HeatMapHistory(IEnumerable<HeatMap> collection) : base(new ItemCollection<HeatMap>(collection)) { }
     [StorableConstructor]
     protected HeatMapHistory(bool deserializing) : base(deserializing) { }
+    protected HeatMapHistory(HeatMapHistory original, Cloner cloner) : base(original, cloner) { }
+    public HeatMapHistory() : base() { }
+    public HeatMapHistory(IEnumerable<HeatMap> collection) : base(new ItemCollection<HeatMap>(collection)) { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new HeatMapHistory(this, cloner);
+    }
   }
 }

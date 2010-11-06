@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -33,6 +34,15 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("CyclicCrossover", "An operator which performs the cyclic crossover on two permutations. It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.")]
   [StorableClass]
   public class CyclicCrossover : PermutationCrossover {
+    [StorableConstructor]
+    protected CyclicCrossover(bool deserializing) : base(deserializing) { }
+    protected CyclicCrossover(CyclicCrossover original, Cloner cloner) : base(original, cloner) { }
+    public CyclicCrossover() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new CyclicCrossover(this, cloner);
+    }
+
     /// <summary>
     /// Performs the cyclic crossover on <paramref name="parent1"/> and <paramref name="parent2"/>.
     /// </summary>

@@ -71,21 +71,24 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       RegisterEvents();
     }
 
-    public override IDeepCloneable Clone(Cloner cloner) {
-      CrossValidation clone = (CrossValidation)base.Clone(cloner);
-      clone.executionState = executionState;
-      clone.storeAlgorithmInEachRun = storeAlgorithmInEachRun;
-      clone.runs = (RunCollection)cloner.Clone(runs);
-      clone.runsCounter = runsCounter;
-      clone.algorithm = (IAlgorithm)cloner.Clone(algorithm);
-      clone.clonedAlgorithms = (ItemCollection<IAlgorithm>)cloner.Clone(clonedAlgorithms);
-      clone.folds = (IntValue)cloner.Clone(folds);
-      clone.numberOfWorkers = (IntValue)cloner.Clone(numberOfWorkers);
-      clone.samplesStart = (IntValue)cloner.Clone(samplesStart);
-      clone.samplesEnd = (IntValue)cloner.Clone(samplesEnd);
-      clone.RegisterEvents();
-      return clone;
+    private CrossValidation(CrossValidation original, Cloner cloner)
+      : base(original, cloner) {
+      executionState = original.executionState;
+      storeAlgorithmInEachRun = original.storeAlgorithmInEachRun;
+      runs = cloner.Clone(original.runs);
+      runsCounter = original.runsCounter;
+      algorithm = cloner.Clone(original.algorithm);
+      clonedAlgorithms = cloner.Clone(original.clonedAlgorithms);
+      folds = cloner.Clone(original.folds);
+      numberOfWorkers = cloner.Clone(original.numberOfWorkers);
+      samplesStart = cloner.Clone(original.samplesStart);
+      samplesEnd = cloner.Clone(original.samplesEnd);
+      RegisterEvents();
     }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new CrossValidation(this, cloner);
+    }
+
     #endregion
 
     #region properties

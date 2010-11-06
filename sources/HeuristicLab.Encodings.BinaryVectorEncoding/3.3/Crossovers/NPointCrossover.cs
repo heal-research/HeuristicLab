@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -35,7 +36,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   /// </remarks>
   [Item("NPointCrossover", "N point crossover for binary vectors. It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.")]
   [StorableClass]
-  public class NPointCrossover : BinaryVectorCrossover {
+  public sealed class NPointCrossover : BinaryVectorCrossover {
     /// <summary>
     /// Number of crossover points.
     /// </summary>
@@ -43,11 +44,19 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       get { return (ValueLookupParameter<IntValue>)Parameters["N"]; }
     }
 
+    [StorableConstructor]
+    private NPointCrossover(bool deserializing) : base(deserializing) { }
+    private NPointCrossover(NPointCrossover original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="NPointCrossover"/>
     /// </summary>
-    public NPointCrossover() {
+    public NPointCrossover()
+      : base() {
       Parameters.Add(new ValueLookupParameter<IntValue>("N", "Number of crossover points", new IntValue(2)));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new NPointCrossover(this, cloner);
     }
 
     /// <summary>

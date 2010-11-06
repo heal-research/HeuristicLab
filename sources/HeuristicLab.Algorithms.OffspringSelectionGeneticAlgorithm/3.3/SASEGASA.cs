@@ -228,6 +228,21 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
 
     [StorableConstructor]
     private SASEGASA(bool deserializing) : base(deserializing) { }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      Initialize();
+    }
+    private SASEGASA(SASEGASA original, Cloner cloner)
+      : base(original, cloner) {
+      qualityAnalyzer = cloner.Clone(original.qualityAnalyzer);
+      villageQualityAnalyzer = cloner.Clone(original.villageQualityAnalyzer);
+      selectionPressureAnalyzer = cloner.Clone(original.selectionPressureAnalyzer);
+      villageSelectionPressureAnalyzer = cloner.Clone(original.villageSelectionPressureAnalyzer);
+      Initialize();
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SASEGASA(this, cloner);
+    }
     public SASEGASA()
       : base() {
       Parameters.Add(new ValueParameter<IntValue>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
@@ -315,16 +330,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Initialize();
     }
 
-    public override IDeepCloneable Clone(Cloner cloner) {
-      SASEGASA clone = (SASEGASA)base.Clone(cloner);
-      clone.qualityAnalyzer = (BestAverageWorstQualityAnalyzer)cloner.Clone(qualityAnalyzer);
-      clone.villageQualityAnalyzer = (BestAverageWorstQualityAnalyzer)cloner.Clone(villageQualityAnalyzer);
-      clone.selectionPressureAnalyzer = (ValueAnalyzer)cloner.Clone(selectionPressureAnalyzer);
-      clone.villageSelectionPressureAnalyzer = (ValueAnalyzer)cloner.Clone(villageSelectionPressureAnalyzer);
-      clone.Initialize();
-      return clone;
-    }
-
     public override void Prepare() {
       if (Problem != null) base.Prepare();
     }
@@ -407,7 +412,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     #endregion
 
     #region Helpers
-    [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
       NumberOfVillagesParameter.ValueChanged += new EventHandler(NumberOfVillagesParameter_ValueChanged);
       NumberOfVillages.ValueChanged += new EventHandler(NumberOfVillages_ValueChanged);

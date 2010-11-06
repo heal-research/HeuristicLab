@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
@@ -28,9 +29,14 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
     public const string StartSymbolName = "StartSymbol";
     public const string StartSymbolDescription = "Special symbol that represents the starting node of the result producing branch of a symbolic expression tree.";
 
-    public StartSymbol() : base(StartSymbol.StartSymbolName, StartSymbol.StartSymbolDescription) { }
     [StorableConstructor]
     private StartSymbol(bool deserializing) : base(deserializing) { }
+    private StartSymbol(StartSymbol original, Cloner cloner) : base(original, cloner) { }
+    public StartSymbol() : base(StartSymbol.StartSymbolName, StartSymbol.StartSymbolDescription) { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new StartSymbol(this, cloner);
+    }
 
     public override SymbolicExpressionTreeNode CreateTreeNode() {
       return new SymbolicExpressionTreeTopLevelNode(this);

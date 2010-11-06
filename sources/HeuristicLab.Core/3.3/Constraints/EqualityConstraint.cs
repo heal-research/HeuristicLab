@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
@@ -29,7 +30,7 @@ namespace HeuristicLab.Core {
   public class EqualityConstraint : Constraint {
     [StorableConstructor]
     protected EqualityConstraint(bool deserializing) : base(deserializing) { }
-
+    protected EqualityConstraint(EqualityConstraint original, Cloner cloner) : base(original, cloner) { }
     public EqualityConstraint() : base() { }
     public EqualityConstraint(IItem constrainedValue, ConstraintOperation constraintOperation, object constraintData)
       : base(constrainedValue, constraintOperation, constraintData) {
@@ -40,6 +41,10 @@ namespace HeuristicLab.Core {
 
     public override IEnumerable<ConstraintOperation> AllowedConstraintOperations {
       get { return new ConstraintOperation[2] { ConstraintOperation.Equal, ConstraintOperation.NotEqual }; }
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new EqualityConstraint(this, cloner);
     }
 
     protected override bool Check(object constrainedMember) {

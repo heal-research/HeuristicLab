@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
@@ -64,6 +65,15 @@ namespace HeuristicLab.Problems.TestFunctions {
 
     public override RealVector GetBestKnownSolution(int dimension) {
       return new RealVector(dimension);
+    }
+
+    [StorableConstructor]
+    protected ZakharovEvaluator(bool deserializing) : base(deserializing) { }
+    protected ZakharovEvaluator(ZakharovEvaluator original, Cloner cloner) : base(original, cloner) { }
+    public ZakharovEvaluator() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ZakharovEvaluator(this, cloner);
     }
 
     /// <summary>

@@ -78,6 +78,14 @@ namespace HeuristicLab.Parameters {
     }
 
     #region Constructors
+    [StorableConstructor]
+    protected OptionalValueParameter(bool deserializing) : base(deserializing) { }
+    protected OptionalValueParameter(OptionalValueParameter<T> original, Cloner cloner)
+      : base(original, cloner) {
+      value = cloner.Clone(original.value);
+      getsCollected = original.getsCollected;
+      RegisterValueEvents();
+    }
     public OptionalValueParameter()
       : base("Anonymous", typeof(T)) {
       this.getsCollected = true;
@@ -94,13 +102,13 @@ namespace HeuristicLab.Parameters {
       : base(name, typeof(T)) {
       this.value = value;
       this.getsCollected = true;
-      Initialize();
+      RegisterValueEvents();
     }
     public OptionalValueParameter(string name, T value, bool getsCollected)
       : base(name, typeof(T)) {
       this.value = value;
       this.getsCollected = getsCollected;
-      Initialize();
+      RegisterValueEvents();
     }
     public OptionalValueParameter(string name, string description)
       : base(name, description, typeof(T)) {
@@ -114,29 +122,23 @@ namespace HeuristicLab.Parameters {
       : base(name, description, typeof(T)) {
       this.value = value;
       this.getsCollected = true;
-      Initialize();
+      RegisterValueEvents();
     }
     public OptionalValueParameter(string name, string description, T value, bool getsCollected)
       : base(name, description, typeof(T)) {
       this.value = value;
       this.getsCollected = getsCollected;
-      Initialize();
+      RegisterValueEvents();
     }
-    [StorableConstructor]
-    protected OptionalValueParameter(bool deserializing) : base(deserializing) { }
     #endregion
 
     [StorableHook(HookType.AfterDeserialization)]
-    private void Initialize() {
+    private void AfterDeserialization() {
       RegisterValueEvents();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      OptionalValueParameter<T> clone = (OptionalValueParameter<T>)base.Clone(cloner);
-      clone.value = (T)cloner.Clone(value);
-      clone.getsCollected = getsCollected;
-      clone.Initialize();
-      return clone;
+      return new OptionalValueParameter<T>(this, cloner);
     }
 
     public override string ToString() {

@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -36,6 +37,15 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("EdgeRecombinationCrossover", "An operator which performs the edge recombination crossover on two permutations. It is implemented as described in Whitley et.al. 1991, The Traveling Salesman and Sequence Scheduling, in Davis, L. (Ed.), Handbook of Genetic Algorithms, New York, pp. 350-372.")]
   [StorableClass]
   public class EdgeRecombinationCrossover : PermutationCrossover {
+    [StorableConstructor]
+    protected EdgeRecombinationCrossover(bool deserializing) : base(deserializing) { }
+    protected EdgeRecombinationCrossover(EdgeRecombinationCrossover original, Cloner cloner) : base(original, cloner) { }
+    public EdgeRecombinationCrossover() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new EdgeRecombinationCrossover(this, cloner);
+    }
+
     /// <summary>
     /// Performs a cross over permutation of <paramref name="parent1"/> and <paramref name="2"/>
     /// by calculating the edges of each element. Starts at a randomly chosen position, 

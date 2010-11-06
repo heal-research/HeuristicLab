@@ -28,15 +28,17 @@ namespace HeuristicLab.Data {
   [Item("BoolArray", "Represents an array of boolean values.")]
   [StorableClass]
   public class BoolArray : ValueTypeArray<bool>, IStringConvertibleArray {
+    [StorableConstructor]
+    protected BoolArray(bool deserializing) : base(deserializing) { }
+    protected BoolArray(BoolArray original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public BoolArray() : base() { }
     public BoolArray(int length) : base(length) { }
     public BoolArray(bool[] elements) : base(elements) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      BoolArray clone = new BoolArray(array);
-      cloner.RegisterClonedObject(this, clone);
-      clone.readOnly = readOnly;
-      return clone;
+      return new BoolArray(this, cloner);
     }
 
     protected virtual bool Validate(string value, out string errorMessage) {

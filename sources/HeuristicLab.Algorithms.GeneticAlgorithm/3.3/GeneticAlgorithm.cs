@@ -191,12 +191,18 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     }
     [StorableConstructor]
     private GeneticAlgorithm(bool deserializing) : base(deserializing) { }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      Initialize();
+    }
 
+    private GeneticAlgorithm(GeneticAlgorithm original, Cloner cloner)
+      : base(original, cloner) {
+      qualityAnalyzer = cloner.Clone(original.qualityAnalyzer);
+      Initialize();
+    }
     public override IDeepCloneable Clone(Cloner cloner) {
-      GeneticAlgorithm clone = (GeneticAlgorithm)base.Clone(cloner);
-      clone.qualityAnalyzer = (BestAverageWorstQualityAnalyzer)cloner.Clone(qualityAnalyzer);
-      clone.Initialize();
-      return clone;
+      return new GeneticAlgorithm(this, cloner);
     }
 
     public override void Prepare() {
@@ -264,7 +270,6 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     #endregion
 
     #region Helpers
-    [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
       PopulationSizeParameter.ValueChanged += new EventHandler(PopulationSizeParameter_ValueChanged);
       PopulationSize.ValueChanged += new EventHandler(PopulationSize_ValueChanged);

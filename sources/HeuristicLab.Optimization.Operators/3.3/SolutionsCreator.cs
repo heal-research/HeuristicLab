@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -52,12 +53,19 @@ namespace HeuristicLab.Optimization.Operators {
       set { NumberOfSolutionsParameter.Value = value; }
     }
 
+    [StorableConstructor]
+    private SolutionsCreator(bool deserializing) : base(deserializing) { }
+    private SolutionsCreator(SolutionsCreator original, Cloner cloner) : base(original, cloner) { }
     public SolutionsCreator()
       : base() {
       Parameters.Add(new ValueLookupParameter<IntValue>("NumberOfSolutions", "The number of solutions that should be created."));
       Parameters.Add(new ValueLookupParameter<IOperator>("SolutionCreator", "The operator which is used to create new solutions."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Evaluator", "The operator which is used to evaluate new solutions."));
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope to which the new solutions are added as sub-scopes."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SolutionsCreator(this, cloner);
     }
 
     public override IOperation Apply() {

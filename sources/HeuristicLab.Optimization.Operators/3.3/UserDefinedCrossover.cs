@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -26,5 +27,13 @@ namespace HeuristicLab.Optimization.Operators {
   [Item("UserDefinedCrossover", "A crossover that can be customized with operators which it will execute one after another.")]
   [StorableClass]
   public class UserDefinedCrossover : UserDefinedOperator, ICrossover {
+    [StorableConstructor]
+    protected UserDefinedCrossover(bool deserializing) : base(deserializing) { }
+    protected UserDefinedCrossover(UserDefinedCrossover original, Cloner cloner) : base(original, cloner) { }
+    public UserDefinedCrossover() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new UserDefinedCrossover(this, cloner);
+    }
   }
 }

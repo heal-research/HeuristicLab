@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -27,7 +28,14 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
   [StorableClass]
   [Item("Not", "Symbol that represents the boolean NOT operator.")]
   public sealed class Not : Symbol {
-
+    [StorableConstructor]
+    private Not(bool deserializing) : base(deserializing) { }
+    private Not(Not original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Not(this, cloner);
+    }
     public Not()
       : base("!", "Symbol that represents the boolean NOT operator.") {
     }

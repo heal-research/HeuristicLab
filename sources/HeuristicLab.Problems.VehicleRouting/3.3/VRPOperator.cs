@@ -19,13 +19,13 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Data;
-using HeuristicLab.Problems.VehicleRouting.Encodings;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System;
+using HeuristicLab.Problems.VehicleRouting.Encodings;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   [Item("VRPOperator", "A VRP operator.")]
@@ -109,7 +109,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     [StorableConstructor]
     protected VRPOperator(bool deserializing) : base(deserializing) { }
-
+    protected VRPOperator(VRPOperator original, Cloner cloner) : base(original, cloner) { }
     public VRPOperator()
       : base() {
       Parameters.Add(new LookupParameter<DoubleMatrix>("Coordinates", "The coordinates of the cities."));

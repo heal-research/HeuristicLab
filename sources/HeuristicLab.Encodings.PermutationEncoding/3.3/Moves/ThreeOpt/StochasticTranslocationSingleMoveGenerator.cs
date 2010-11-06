@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
@@ -33,9 +34,16 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
 
+    [StorableConstructor]
+    protected StochasticTranslocationSingleMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected StochasticTranslocationSingleMoveGenerator(StochasticTranslocationSingleMoveGenerator original, Cloner cloner) : base(original, cloner) { }
     public StochasticTranslocationSingleMoveGenerator()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new StochasticTranslocationSingleMoveGenerator(this, cloner);
     }
 
     public static TranslocationMove Apply(Permutation permutation, IRandom random) {

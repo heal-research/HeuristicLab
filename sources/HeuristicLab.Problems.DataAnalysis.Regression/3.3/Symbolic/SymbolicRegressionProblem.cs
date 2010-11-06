@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [Item("Symbolic Regression Problem (single objective)", "Represents a single objective symbolic regression problem.")]
   [Creatable("Problems")]
   [StorableClass]
-  public class SymbolicRegressionProblem : SymbolicRegressionProblemBase, ISingleObjectiveDataAnalysisProblem {
+  public sealed class SymbolicRegressionProblem : SymbolicRegressionProblemBase, ISingleObjectiveDataAnalysisProblem {
 
     #region Parameter Properties
     public ValueParameter<BoolValue> MaximizationParameter {
@@ -73,7 +73,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     #endregion
 
     [StorableConstructor]
-    protected SymbolicRegressionProblem(bool deserializing) : base(deserializing) { }
+    private SymbolicRegressionProblem(bool deserializing) : base(deserializing) { }
+    private SymbolicRegressionProblem(SymbolicRegressionProblem original, Cloner cloner)
+      : base(original, cloner) {
+      RegisterParameterEvents();
+      RegisterParameterValueEvents();
+    }
+
     public SymbolicRegressionProblem()
       : base() {
       var evaluator = new SymbolicRegressionPearsonsRSquaredEvaluator();
@@ -91,10 +97,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      SymbolicRegressionProblem clone = (SymbolicRegressionProblem)base.Clone(cloner);
-      clone.RegisterParameterEvents();
-      clone.RegisterParameterValueEvents();
-      return clone;
+      return new SymbolicRegressionProblem(this, cloner);
     }
 
     private void RegisterParameterValueEvents() {

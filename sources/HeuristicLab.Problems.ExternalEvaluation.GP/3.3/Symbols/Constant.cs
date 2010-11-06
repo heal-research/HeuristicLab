@@ -77,6 +77,19 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
       }
     }
     #endregion
+
+    [StorableConstructor]
+    private Constant(bool deserializing) : base(deserializing) { }
+    private Constant(Constant original, Cloner cloner)
+      : base(original, cloner) {
+      minValue = original.minValue;
+      maxValue = original.maxValue;
+      manipulatorNu = original.manipulatorNu;
+      manipulatorSigma = original.manipulatorSigma;
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Constant(this, cloner);
+    }
     public Constant()
       : base("Constant", "Represents a constant value.") {
       manipulatorNu = 0.0;
@@ -87,15 +100,6 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
 
     public override SymbolicExpressionTreeNode CreateTreeNode() {
       return new ConstantTreeNode(this);
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      Constant clone = (Constant)base.Clone(cloner);
-      clone.minValue = minValue;
-      clone.maxValue = maxValue;
-      clone.manipulatorNu = manipulatorNu;
-      clone.manipulatorSigma = manipulatorSigma;
-      return clone;
     }
   }
 }

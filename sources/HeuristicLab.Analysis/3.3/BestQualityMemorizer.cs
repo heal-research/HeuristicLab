@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -42,6 +43,14 @@ namespace HeuristicLab.Analysis {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["BestQuality"]; }
     }
 
+    #region Storing & Cloning
+    [StorableConstructor]
+    protected BestQualityMemorizer(bool deserializing) : base(deserializing) { }
+    protected BestQualityMemorizer(BestQualityMemorizer original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new BestQualityMemorizer(this, cloner);
+    }
+    #endregion
     public BestQualityMemorizer()
       : base() {
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the current problem is a maximization problem, otherwise false."));

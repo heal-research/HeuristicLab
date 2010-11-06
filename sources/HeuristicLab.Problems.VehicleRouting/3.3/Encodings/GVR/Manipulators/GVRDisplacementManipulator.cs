@@ -19,12 +19,10 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
 using System.Collections.Generic;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
   [Item("GVRDisplacementManipulator", "An operator which manipulates a GVR representation by applying a displacement operation. It is implemented as described in Pereira, F.B. et al (2002). GVR: a New Genetic Representation for the Vehicle Routing Problem. AICS 2002, LNAI 2464, pp. 95-102.")]
@@ -32,7 +30,10 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
   public sealed class GVRDisplacementManipulator : GVRManipulator {
     [StorableConstructor]
     private GVRDisplacementManipulator(bool deserializing) : base(deserializing) { }
-
+    private GVRDisplacementManipulator(GVRDisplacementManipulator original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new GVRDisplacementManipulator(this, cloner);
+    }
     public GVRDisplacementManipulator()
       : base() {
     }

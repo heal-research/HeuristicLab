@@ -22,16 +22,25 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis.Evaluators {
   public class SimpleRSquaredEvaluator : SimpleEvaluator {
     public ILookupParameter<DoubleValue> RSquaredParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["RSquared"]; }
     }
-
+    [StorableConstructor]
+    protected SimpleRSquaredEvaluator(bool deserializing) : base(deserializing) { }
+    protected SimpleRSquaredEvaluator(SimpleRSquaredEvaluator original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SimpleRSquaredEvaluator(this, cloner);
+    }
     public SimpleRSquaredEvaluator() {
       Parameters.Add(new LookupParameter<DoubleValue>("RSquared", "The squared Pearson's Product Moment Correlation (R²) of estimated values and original values."));
     }

@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -26,6 +27,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [StorableClass]
   [Item("Or", "Symbol that represents the boolean OR operator.")]
   public sealed class Or : Symbol {
+    [StorableConstructor]
+    private Or(bool deserializing) : base(deserializing) { }
+    private Or(Or original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Or(this, cloner);
+    }
     public Or() : base("Or", "Symbol that represents the boolean OR operator.") { }
   }
 }

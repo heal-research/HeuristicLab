@@ -19,28 +19,26 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
-using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaMoveOperator", "A move operator for an Alba VRP representation.")]
   [StorableClass]
-  public abstract class AlbaMoveOperator : VRPMoveOperator {    
+  public abstract class AlbaMoveOperator : VRPMoveOperator {
     [StorableConstructor]
     protected AlbaMoveOperator(bool deserializing) : base(deserializing) { }
-
-    public AlbaMoveOperator() : base() 
-    {
+    protected AlbaMoveOperator(AlbaMoveOperator original, Cloner cloner) : base(original, cloner) { }
+    public AlbaMoveOperator()
+      : base() {
       AlbaEncoding.RemoveUnusedParameters(Parameters);
     }
 
     public override IOperation Apply() {
       IVRPEncoding solution = VRPToursParameter.ActualValue;
       if (!(solution is AlbaEncoding)) {
-        VRPToursParameter.ActualValue = AlbaEncoding.ConvertFrom(solution, VehiclesParameter.ActualValue.Value, 
+        VRPToursParameter.ActualValue = AlbaEncoding.ConvertFrom(solution, VehiclesParameter.ActualValue.Value,
           DistanceMatrixParameter);
       }
 

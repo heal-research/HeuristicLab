@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -33,6 +34,15 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("AverageCrossover", "The average crossover (intermediate recombination) produces a new offspring by calculating in each position the average of a number of parents. It is implemented as described by Beyer, H.-G. and Schwefel, H.-P. 2002. Evolution Strategies - A Comprehensive Introduction Natural Computing, 1, pp. 3-52.")]
   [StorableClass]
   public class AverageCrossover : RealVectorCrossover {
+    [StorableConstructor]
+    protected AverageCrossover(bool deserializing) : base(deserializing) { }
+    protected AverageCrossover(AverageCrossover original, Cloner cloner) : base(original, cloner) { }
+    public AverageCrossover() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new AverageCrossover(this, cloner);
+    }
+    
     /// <summary>
     /// Performs the average crossover (intermediate recombination) on a list of parents.
     /// </summary>

@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -27,7 +28,14 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
   [StorableClass]
   [Item("Multiplication", "Symbol that represents the * operator.")]
   public sealed class Multiplication : Symbol {
-
+    [StorableConstructor]
+    private Multiplication(bool deserializing) : base(deserializing) { }
+    private Multiplication(Multiplication original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Multiplication(this, cloner);
+    }
     public Multiplication()
       : base("*", "Symbol that represents the * operator.") {
     }

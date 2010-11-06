@@ -21,6 +21,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -38,6 +39,14 @@ namespace HeuristicLab.Analysis {
       get { return (ValueLookupParameter<DataTable>)Parameters["DataTable"]; }
     }
 
+    #region Storing & Cloning
+    [StorableConstructor]
+    protected DataTableValuesCollector(bool deserializing) : base(deserializing) { }
+    protected DataTableValuesCollector(DataTableValuesCollector original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new DataTableValuesCollector(this, cloner);
+    }
+    #endregion
     public DataTableValuesCollector()
       : base() {
       Parameters.Add(new ValueLookupParameter<DataTable>("DataTable", "The table of data values where the collected values should be stored."));

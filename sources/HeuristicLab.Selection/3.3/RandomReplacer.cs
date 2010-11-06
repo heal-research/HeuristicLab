@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
@@ -48,6 +49,12 @@ namespace HeuristicLab.Selection {
 
     [StorableConstructor]
     private RandomReplacer(bool deserializing) : base(deserializing) { }
+    private RandomReplacer(RandomReplacer original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new RandomReplacer(this, cloner);
+    }
     public RandomReplacer()
       : base() {
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The quality of a solution."));

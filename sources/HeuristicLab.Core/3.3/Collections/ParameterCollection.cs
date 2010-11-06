@@ -20,16 +20,20 @@
 #endregion
 
 using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
   [StorableClass]
   [Item("ParameterCollection", "Represents a collection of parameters.")]
   public class ParameterCollection : NamedItemCollection<IParameter> {
+    [StorableConstructor]
+    protected ParameterCollection(bool deserializing) : base(deserializing) { }
+    protected ParameterCollection(ParameterCollection original, Cloner cloner) : base(original, cloner) { }
     public ParameterCollection() : base() { }
     public ParameterCollection(int capacity) : base(capacity) { }
     public ParameterCollection(IEnumerable<IParameter> collection) : base(collection) { }
-    [StorableConstructor]
-    protected ParameterCollection(bool deserializing) : base(deserializing) { }
+
+    public override IDeepCloneable Clone(Cloner cloner) { return new ParameterCollection(this, cloner); }
   }
 }

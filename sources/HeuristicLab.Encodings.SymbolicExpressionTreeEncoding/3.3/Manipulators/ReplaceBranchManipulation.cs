@@ -22,19 +22,24 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators {
   [StorableClass]
   [Item("ReplaceBranchManipulation", "Selects a branch of the tree randomly and replaces it with a newly initialized branch (using PTC2).")]
-  public class ReplaceBranchManipulation : SymbolicExpressionTreeManipulator {
+  public sealed class ReplaceBranchManipulation : SymbolicExpressionTreeManipulator {
+    [StorableConstructor]
+    private ReplaceBranchManipulation(bool deserializing) : base(deserializing) { }
+    private ReplaceBranchManipulation(ReplaceBranchManipulation original, Cloner cloner) : base(original, cloner) { }
+    public ReplaceBranchManipulation() : base() { }
 
-    public ReplaceBranchManipulation()
-      : base() {
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ReplaceBranchManipulation(this, cloner);
     }
 
     protected override void Manipulate(IRandom random, SymbolicExpressionTree symbolicExpressionTree, ISymbolicExpressionGrammar grammar, IntValue maxTreeSize, IntValue maxTreeHeight, out bool success) {

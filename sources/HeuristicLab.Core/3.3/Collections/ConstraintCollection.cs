@@ -20,16 +20,20 @@
 #endregion
 
 using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
   [StorableClass]
   [Item("ConstraintCollection", "Represents a collection of constraints.")]
   public class ConstraintCollection : ItemCollection<IConstraint> {
+    [StorableConstructor]
+    protected ConstraintCollection(bool deserializing) : base(deserializing) { }
+    protected ConstraintCollection(ConstraintCollection original, Cloner cloner) : base(original, cloner) { }
     public ConstraintCollection() : base() { }
     public ConstraintCollection(int capacity) : base(capacity) { }
     public ConstraintCollection(IEnumerable<IConstraint> collection) : base(collection) { }
-    [StorableConstructor]
-    protected ConstraintCollection(bool deserializing) : base(deserializing) { }
+
+    public override IDeepCloneable Clone(Cloner cloner) { return new ConstraintCollection(this, cloner); }
   }
 }

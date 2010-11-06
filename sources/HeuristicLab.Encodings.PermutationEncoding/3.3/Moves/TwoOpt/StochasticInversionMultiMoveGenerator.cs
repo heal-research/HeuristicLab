@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
@@ -41,10 +42,17 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       set { SampleSizeParameter.Value = value; }
     }
 
+    [StorableConstructor]
+    protected StochasticInversionMultiMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected StochasticInversionMultiMoveGenerator(StochasticInversionMultiMoveGenerator original, Cloner cloner) : base(original, cloner) { }
     public StochasticInversionMultiMoveGenerator()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator."));
       Parameters.Add(new ValueLookupParameter<IntValue>("SampleSize", "The number of moves to generate."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new StochasticInversionMultiMoveGenerator(this, cloner);
     }
 
     public static InversionMove[] Apply(Permutation permutation, IRandom random, int sampleSize) {

@@ -21,16 +21,17 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
   [StorableClass]
   [Item("TypeCompatibilityConstraint", "A constraint that checks for compatible types.")]
   public class TypeCompatibilityConstraint : Constraint {
-    public TypeCompatibilityConstraint() {
-    }
     [StorableConstructor]
     protected TypeCompatibilityConstraint(bool deserializing) : base(deserializing) { }
+    protected TypeCompatibilityConstraint(TypeCompatibilityConstraint original, Cloner cloner) : base(original, cloner) { }
+    public TypeCompatibilityConstraint() : base() { }
     public TypeCompatibilityConstraint(IItem constrainedValue, ConstraintOperation constraintOperation, Type constraintData)
       : base(constrainedValue, constraintOperation, constraintData) {
     }
@@ -45,6 +46,10 @@ namespace HeuristicLab.Core {
 
     public override IEnumerable<ConstraintOperation> AllowedConstraintOperations {
       get { return new ConstraintOperation[2] { ConstraintOperation.IsTypeCompatible, ConstraintOperation.IsTypeNotCompatible }; }
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new TypeCompatibilityConstraint(this, cloner);
     }
 
     protected override bool Check(object constrainedMember) {

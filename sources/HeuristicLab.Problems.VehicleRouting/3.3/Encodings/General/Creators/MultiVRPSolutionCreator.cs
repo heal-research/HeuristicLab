@@ -22,13 +22,14 @@
 using System;
 using System.Linq;
 using HeuristicLab.Collections;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("MultiVRPSolutionCreator", "Randomly selects and applies one of its creator every time it is called.")]
@@ -77,25 +78,30 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     }
 
     [StorableConstructor]
-    private MultiVRPSolutionCreator(bool deserializing) : base(deserializing) { }
+    protected MultiVRPSolutionCreator(bool deserializing) : base(deserializing) { }
+    protected MultiVRPSolutionCreator(MultiVRPSolutionCreator original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MultiVRPSolutionCreator(this, cloner);
+    }
+
     public MultiVRPSolutionCreator()
       : base() {
-        Parameters.Add(new LookupParameter<IVRPEncoding>("VRPTours", "The new VRP tours."));
+      Parameters.Add(new LookupParameter<IVRPEncoding>("VRPTours", "The new VRP tours."));
 
-        Parameters.Add(new ValueLookupParameter<IntValue>("Cities", "The city count."));
-        Parameters.Add(new LookupParameter<DoubleMatrix>("Coordinates", "The coordinates of the cities."));
-        Parameters.Add(new LookupParameter<DoubleMatrix>("DistanceMatrix", "The matrix which contains the distances between the cities."));
-        Parameters.Add(new LookupParameter<BoolValue>("UseDistanceMatrix", "True if a distance matrix should be calculated and used for evaluation, otherwise false."));
-        Parameters.Add(new LookupParameter<IntValue>("Vehicles", "The number of vehicles."));
-        Parameters.Add(new LookupParameter<DoubleValue>("Capacity", "The capacity of each vehicle."));
-        Parameters.Add(new LookupParameter<DoubleArray>("Demand", "The demand of each customer."));
-        Parameters.Add(new LookupParameter<DoubleArray>("ReadyTime", "The ready time of each customer."));
-        Parameters.Add(new LookupParameter<DoubleArray>("DueTime", "The due time of each customer."));
-        Parameters.Add(new LookupParameter<DoubleArray>("ServiceTime", "The service time of each customer."));
+      Parameters.Add(new ValueLookupParameter<IntValue>("Cities", "The city count."));
+      Parameters.Add(new LookupParameter<DoubleMatrix>("Coordinates", "The coordinates of the cities."));
+      Parameters.Add(new LookupParameter<DoubleMatrix>("DistanceMatrix", "The matrix which contains the distances between the cities."));
+      Parameters.Add(new LookupParameter<BoolValue>("UseDistanceMatrix", "True if a distance matrix should be calculated and used for evaluation, otherwise false."));
+      Parameters.Add(new LookupParameter<IntValue>("Vehicles", "The number of vehicles."));
+      Parameters.Add(new LookupParameter<DoubleValue>("Capacity", "The capacity of each vehicle."));
+      Parameters.Add(new LookupParameter<DoubleArray>("Demand", "The demand of each customer."));
+      Parameters.Add(new LookupParameter<DoubleArray>("ReadyTime", "The ready time of each customer."));
+      Parameters.Add(new LookupParameter<DoubleArray>("DueTime", "The due time of each customer."));
+      Parameters.Add(new LookupParameter<DoubleArray>("ServiceTime", "The service time of each customer."));
 
-        foreach (Type type in ApplicationManager.Manager.GetTypes(typeof(IVRPCreator)).OrderBy(op => op.Name)) {
-          if (!typeof(MultiOperator<IVRPCreator>).IsAssignableFrom(type))
-            Operators.Add((IVRPCreator)Activator.CreateInstance(type), true);
+      foreach (Type type in ApplicationManager.Manager.GetTypes(typeof(IVRPCreator)).OrderBy(op => op.Name)) {
+        if (!typeof(MultiOperator<IVRPCreator>).IsAssignableFrom(type))
+          Operators.Add((IVRPCreator)Activator.CreateInstance(type), true);
       }
     }
 

@@ -29,6 +29,11 @@ namespace HeuristicLab.Data {
   [Item("IntMatrix", "Represents a matrix of integer values.")]
   [StorableClass]
   public class IntMatrix : ValueTypeMatrix<int>, IStringConvertibleMatrix {
+    [StorableConstructor]
+    protected IntMatrix(bool deserializing) : base(deserializing) { }
+    protected IntMatrix(IntMatrix original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public IntMatrix() : base() { }
     public IntMatrix(int rows, int columns) : base(rows, columns) { }
     public IntMatrix(int rows, int columns, IEnumerable<string> columnNames) : base(rows, columns, columnNames) { }
@@ -38,14 +43,7 @@ namespace HeuristicLab.Data {
     public IntMatrix(int[,] elements, IEnumerable<string> columnNames, IEnumerable<string> rowNames) : base(elements,columnNames,rowNames) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      IntMatrix clone = new IntMatrix();
-      cloner.RegisterClonedObject(this, clone);
-      clone.matrix = (int[,])matrix.Clone();
-      clone.columnNames = new List<string>(columnNames);
-      clone.rowNames = new List<string>(rowNames);
-      clone.sortableView = sortableView;
-      clone.readOnly = readOnly;
-      return clone;
+      return new IntMatrix(this, cloner);
     }
 
     protected virtual bool Validate(string value, out string errorMessage) {

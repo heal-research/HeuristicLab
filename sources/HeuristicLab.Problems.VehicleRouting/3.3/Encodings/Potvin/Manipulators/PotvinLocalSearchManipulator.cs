@@ -19,12 +19,12 @@
  */
 #endregion
 
+using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
-using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinLocalSearchManipulator", "The LSM operator which manipulates a VRP representation.  It is implemented as described in Potvin, J.-Y. and Bengio, S. (1996). The Vehicle Routing Problem with Time Windows - Part II: Genetic Search. INFORMS Journal of Computing, 8:165–172.")]
@@ -36,8 +36,14 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
 
     [StorableConstructor]
     private PotvinLocalSearchManipulator(bool deserializing) : base(deserializing) { }
-
-    public PotvinLocalSearchManipulator() : base() {
+    private PotvinLocalSearchManipulator(PotvinLocalSearchManipulator original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new PotvinLocalSearchManipulator(this, cloner);
+    }
+    public PotvinLocalSearchManipulator()
+      : base() {
       Parameters.Add(new ValueParameter<IntValue>("Iterations", "The number of max iterations.", new IntValue(100)));
     }
 
@@ -70,7 +76,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
             }
           }
           individual.Tours[currentTour].Cities.RemoveRange(currentCity, length);
-          
+
           currentCity++;
         }
         currentTour++;
@@ -105,7 +111,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
                   individual.Tours[tour].Cities.RemoveRange(city, length);
                   individual.Tours[insertionTour].Cities.InsertRange(
                     insertionPlace,
-                    toBeInserted); 
+                    toBeInserted);
                 }
                 city++;
               }
@@ -114,7 +120,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
             length--;
           }
           iterations++;
-        } while (insertionFound && 
+        } while (insertionFound &&
           iterations < Iterations.Value.Value);
 
         IList<Tour> toBeRemoved = new List<Tour>();

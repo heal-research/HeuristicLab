@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -61,7 +62,9 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       set { UseAspirationCriterionParameter.Value = value; }
     }
 
-
+    [StorableConstructor]
+    protected AdditiveMoveTabuChecker(bool deserializing) : base(deserializing) { }
+    protected AdditiveMoveTabuChecker(AdditiveMoveTabuChecker original, Cloner cloner) : base(original, cloner) { }
     public AdditiveMoveTabuChecker()
       : base() {
       Parameters.Add(new LookupParameter<AdditiveMove>("AdditiveMove", "The move to evaluate."));
@@ -71,6 +74,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       Parameters.Add(new ValueParameter<BoolValue>("UseAspirationCriterion", "Whether to use the aspiration criterion or not.", new BoolValue(true)));
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, else if it is a minimization problem."));
       Parameters.Add(new LookupParameter<DoubleValue>("MoveQuality", "The quality of the current move."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new AdditiveMoveTabuChecker(this, cloner);
     }
 
     public override IOperation Apply() {

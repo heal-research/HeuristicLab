@@ -82,6 +82,19 @@ namespace HeuristicLab.Analysis {
     #endregion
     [Storable]
     private ResultsCollector resultsCollector;
+
+    #region Storing & Cloning
+    [StorableConstructor]
+    private MinAverageMaxValueAnalyzer(bool deserializing) : base(deserializing) { }
+    private MinAverageMaxValueAnalyzer(MinAverageMaxValueAnalyzer original, Cloner cloner)
+      : base(original, cloner) {
+      resultsCollector = cloner.Clone(original.resultsCollector);
+      Initialize();
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MinAverageMaxValueAnalyzer(this, cloner);
+    }
+    #endregion
     public MinAverageMaxValueAnalyzer()
       : base() {
       #region Create parameters
@@ -131,54 +144,73 @@ namespace HeuristicLab.Analysis {
 
       Initialize();
     }
-    [StorableConstructor]
-    private MinAverageMaxValueAnalyzer(bool deserializing) : base() { }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
       ValueParameter.DepthChanged += new EventHandler(ValueParameter_DepthChanged);
       CollectMinValueInResultsParameter.ValueChanged += new EventHandler(CollectMinValueInResultsParameter_ValueChanged);
-      CollectMinValueInResultsParameter.Value.ValueChanged += new EventHandler(CollectMinValueInResultsParameter_ValueChanged);
+      CollectMinValueInResultsParameter.Value.ValueChanged += new EventHandler(CollectMinValueInResultsParameter_Value_ValueChanged);
       CollectMaxValueInResultsParameter.ValueChanged += new EventHandler(CollectMaxValueInResultsParameter_ValueChanged);
-      CollectMaxValueInResultsParameter.Value.ValueChanged += new EventHandler(CollectMaxValueInResultsParameter_ValueChanged);
+      CollectMaxValueInResultsParameter.Value.ValueChanged += new EventHandler(CollectMaxValueInResultsParameter_Value_ValueChanged);
       CollectAverageValueInResultsParameter.ValueChanged += new EventHandler(CollectAverageValueInResultsParameter_ValueChanged);
-      CollectAverageValueInResultsParameter.Value.ValueChanged += new EventHandler(CollectAverageValueInResultsParameter_ValueChanged);
+      CollectAverageValueInResultsParameter.Value.ValueChanged += new EventHandler(CollectAverageValueInResultsParameter_Value_ValueChanged);
     }
 
     private void CollectAverageValueInResultsParameter_ValueChanged(object sender, EventArgs e) {
-      if (CollectAverageValueInResults.Value)
+      IParameter avgValueParameter;
+      resultsCollector.CollectedValues.TryGetValue("AverageValue", out avgValueParameter);
+      if (CollectAverageValueInResults.Value && avgValueParameter == null)
         resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("AverageValue", null, AverageValueParameter.Name));
-      else {
-        IParameter avgValueParameter;
-        resultsCollector.CollectedValues.TryGetValue("AverageValue", out avgValueParameter);
+      else if (!CollectAverageValueInResults.Value && avgValueParameter != null)
         resultsCollector.CollectedValues.Remove(avgValueParameter);
-      }
+      CollectAverageValueInResultsParameter.Value.ValueChanged += new EventHandler(CollectAverageValueInResultsParameter_Value_ValueChanged);
+    }
+
+    private void CollectAverageValueInResultsParameter_Value_ValueChanged(object sender, EventArgs e) {
+      IParameter avgValueParameter;
+      resultsCollector.CollectedValues.TryGetValue("AverageValue", out avgValueParameter);
+      if (CollectAverageValueInResults.Value && avgValueParameter == null)
+        resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("AverageValue", null, AverageValueParameter.Name));
+      else if (!CollectAverageValueInResults.Value && avgValueParameter != null)
+        resultsCollector.CollectedValues.Remove(avgValueParameter);
     }
 
     private void CollectMaxValueInResultsParameter_ValueChanged(object sender, EventArgs e) {
-      if (CollectMaxValueInResults.Value)
+      IParameter maxValueParameter;
+      resultsCollector.CollectedValues.TryGetValue("MaxValue", out maxValueParameter);
+      if (CollectMaxValueInResults.Value && maxValueParameter == null)
         resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("MaxValue", null, MaxValueParameter.Name));
-      else {
-        IParameter maxValueParameter;
-        resultsCollector.CollectedValues.TryGetValue("MaxValue", out maxValueParameter);
+      else if (!CollectMaxValueInResults.Value && maxValueParameter != null)
+        resultsCollector.CollectedValues.Remove(maxValueParameter);
+      CollectMaxValueInResultsParameter.Value.ValueChanged += new EventHandler(CollectMaxValueInResultsParameter_Value_ValueChanged);
+    }
+
+    private void CollectMaxValueInResultsParameter_Value_ValueChanged(object sender, EventArgs e) {
+      IParameter maxValueParameter;
+      resultsCollector.CollectedValues.TryGetValue("MaxValue", out maxValueParameter);
+      if (CollectMaxValueInResults.Value && maxValueParameter == null)
+        resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("MaxValue", null, MaxValueParameter.Name));
+      else if (!CollectMaxValueInResults.Value && maxValueParameter != null)
         resultsCollector.CollectedValues.Remove(maxValueParameter);
       }
-    }
 
     private void CollectMinValueInResultsParameter_ValueChanged(object sender, EventArgs e) {
-      if (CollectMinValueInResults.Value)
+      IParameter minValueParameter;
+      resultsCollector.CollectedValues.TryGetValue("MinValue", out minValueParameter);
+      if (CollectMinValueInResults.Value && minValueParameter == null)
         resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("MinValue", null, MinValueParameter.Name));
-      else {
-        IParameter minValueParameter;
-        resultsCollector.CollectedValues.TryGetValue("MinValue", out minValueParameter);
+      else if (!CollectMinValueInResults.Value && minValueParameter != null)
         resultsCollector.CollectedValues.Remove(minValueParameter);
-      }
+      CollectMinValueInResultsParameter.Value.ValueChanged += new EventHandler(CollectMinValueInResultsParameter_Value_ValueChanged);
     }
 
-    public override IDeepCloneable Clone(Cloner cloner) {
-      MinAverageMaxValueAnalyzer clone = (MinAverageMaxValueAnalyzer)base.Clone(cloner);
-      clone.Initialize();
-      return clone;
+    private void CollectMinValueInResultsParameter_Value_ValueChanged(object sender, EventArgs e) {
+      IParameter minValueParameter;
+      resultsCollector.CollectedValues.TryGetValue("MinValue", out minValueParameter);
+      if (CollectMinValueInResults.Value && minValueParameter == null)
+        resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("MinValue", null, MinValueParameter.Name));
+      else if (!CollectMinValueInResults.Value && minValueParameter != null)
+        resultsCollector.CollectedValues.Remove(minValueParameter);
     }
 
     private void ValueParameter_DepthChanged(object sender, System.EventArgs e) {

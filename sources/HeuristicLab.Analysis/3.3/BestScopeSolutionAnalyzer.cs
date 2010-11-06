@@ -21,6 +21,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -54,6 +55,14 @@ namespace HeuristicLab.Analysis {
       get { return (IValueLookupParameter<ResultCollection>)Parameters["Results"]; }
     }
 
+    #region Storing & Cloning
+    [StorableConstructor]
+    protected BestScopeSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    protected BestScopeSolutionAnalyzer(BestScopeSolutionAnalyzer original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new BestScopeSolutionAnalyzer(this, cloner);
+    }
+    #endregion
     public BestScopeSolutionAnalyzer()
       : base() {
       Parameters.Add(new LookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem."));

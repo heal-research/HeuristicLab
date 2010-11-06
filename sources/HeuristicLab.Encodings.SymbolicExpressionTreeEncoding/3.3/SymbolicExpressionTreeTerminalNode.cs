@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -28,15 +29,26 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableClass]
   public abstract class SymbolicExpressionTreeTerminalNode : SymbolicExpressionTreeNode {
     private static List<SymbolicExpressionTreeNode> emptyList = new List<SymbolicExpressionTreeNode>();
-
-    protected SymbolicExpressionTreeTerminalNode() : base() { }
-    // don't call  base constructors to prevent allocation of sub-trees list in base!
-    protected SymbolicExpressionTreeTerminalNode(Symbol symbol) {
-      this.Symbol = symbol;
+    public override IList<SymbolicExpressionTreeNode> SubTrees {
+      get {
+        return SymbolicExpressionTreeTerminalNode.emptyList;
+      }
     }
-    // don't call  base constructors to prevent allocation of sub-trees list in base!
-    protected SymbolicExpressionTreeTerminalNode(SymbolicExpressionTreeTerminalNode original) {
+
+    [StorableConstructor]
+    protected SymbolicExpressionTreeTerminalNode(bool deserializing) : base(deserializing) { }
+    // don't call storable constructor of base to prevent allocation of sub-trees list in base!
+    protected SymbolicExpressionTreeTerminalNode(SymbolicExpressionTreeTerminalNode original, Cloner cloner)
+      : base() {
+      // symbols are reused
       this.Symbol = original.Symbol;
+    }
+    protected SymbolicExpressionTreeTerminalNode() : base() { }
+
+    protected SymbolicExpressionTreeTerminalNode(Symbol symbol)
+      : base() {
+      // symbols are reused
+      this.Symbol = symbol;
     }
 
     public override void AddSubTree(SymbolicExpressionTreeNode tree) {
@@ -47,11 +59,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
     public override void RemoveSubTree(int index) {
       throw new NotSupportedException();
-    }
-    public override IList<SymbolicExpressionTreeNode> SubTrees {
-      get {
-        return SymbolicExpressionTreeTerminalNode.emptyList;
-      }
     }
   }
 }

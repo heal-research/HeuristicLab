@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -40,10 +41,18 @@ namespace HeuristicLab.Optimization.Operators {
       get { return (LookupParameter<IntValue>)Parameters["VillageCount"]; }
     }
 
+    [StorableConstructor]
+    protected SASEGASAReunificator(bool deserializing) : base(deserializing) { }
+    protected SASEGASAReunificator(SASEGASAReunificator original, Cloner cloner) : base(original, cloner) { }
     public SASEGASAReunificator()
       : base() {
       Parameters.Add(new LookupParameter<IntValue>("VillageCount", "The number of villages left after the reunification."));
     }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SASEGASAReunificator(this, cloner);
+    }
+
     /// <summary>
     /// Joins all sub sub scopes of the given <paramref name="scope"/>, reduces the number of sub 
     /// scopes by 1 and uniformly partitions the sub sub scopes again, maintaining the order.

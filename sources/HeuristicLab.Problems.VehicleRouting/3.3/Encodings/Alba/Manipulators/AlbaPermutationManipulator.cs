@@ -19,11 +19,11 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaPermutationManipulator", "An operator which manipulates a VRP representation by using a standard permutation manipulator.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
@@ -35,10 +35,14 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
 
     [StorableConstructor]
     private AlbaPermutationManipualtor(bool deserializing) : base(deserializing) { }
-
+    private AlbaPermutationManipualtor(AlbaPermutationManipualtor original, Cloner cloner) : base(original, cloner) { }
     public AlbaPermutationManipualtor()
       : base() {
-        Parameters.Add(new ValueLookupParameter<IPermutationManipulator>("InnerManipulator", "The permutation manipulator.", new TranslocationManipulator()));
+      Parameters.Add(new ValueLookupParameter<IPermutationManipulator>("InnerManipulator", "The permutation manipulator.", new TranslocationManipulator()));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new AlbaPermutationManipualtor(this, cloner);
     }
 
     protected override void Manipulate(IRandom random, AlbaEncoding individual) {

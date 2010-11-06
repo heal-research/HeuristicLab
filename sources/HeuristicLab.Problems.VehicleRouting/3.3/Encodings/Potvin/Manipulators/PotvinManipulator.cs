@@ -19,12 +19,11 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
-using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinManipulator", "A VRP manipulation operation.")]
@@ -36,7 +35,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
 
     [StorableConstructor]
     protected PotvinManipulator(bool deserializing) : base(deserializing) { }
-
+    protected PotvinManipulator(PotvinManipulator original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public PotvinManipulator() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));
     }
@@ -72,18 +73,18 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
 
     protected bool FindInsertionPlace(PotvinEncoding individual, int city, int routeToAvoid, out int route, out int place) {
       return individual.FindInsertionPlace(
-        DueTimeParameter.ActualValue, ServiceTimeParameter.ActualValue, ReadyTimeParameter.ActualValue, 
-        DemandParameter.ActualValue, CapacityParameter.ActualValue, CoordinatesParameter.ActualValue, 
+        DueTimeParameter.ActualValue, ServiceTimeParameter.ActualValue, ReadyTimeParameter.ActualValue,
+        DemandParameter.ActualValue, CapacityParameter.ActualValue, CoordinatesParameter.ActualValue,
         DistanceMatrixParameter, UseDistanceMatrixParameter.ActualValue,
         city, routeToAvoid, out route, out place);
     }
-    
+
     public override IOperation Apply() {
       IVRPEncoding solution = VRPToursParameter.ActualValue;
       if (!(solution is PotvinEncoding)) {
         VRPToursParameter.ActualValue = PotvinEncoding.ConvertFrom(solution, DistanceMatrixParameter);
       }
-      
+
       Manipulate(RandomParameter.ActualValue, VRPToursParameter.ActualValue as PotvinEncoding);
 
       return base.Apply();

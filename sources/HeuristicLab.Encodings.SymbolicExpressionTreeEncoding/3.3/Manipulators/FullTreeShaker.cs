@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -26,10 +27,15 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators {
   [StorableClass]
   [Item("FullTreeShaker", "Manipulates all nodes that have local parameters.")]
-  public class FullTreeShaker : SymbolicExpressionTreeManipulator {
+  public sealed class FullTreeShaker : SymbolicExpressionTreeManipulator {
 
-    public FullTreeShaker()
-      : base() {
+    [StorableConstructor]
+    private FullTreeShaker(bool deserializing) : base(deserializing) { }
+    private FullTreeShaker(FullTreeShaker original, Cloner cloner) : base(original, cloner) { }
+    public FullTreeShaker() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new FullTreeShaker(this, cloner);
     }
 
     protected override void Manipulate(IRandom random, SymbolicExpressionTree symbolicExpressionTree, ISymbolicExpressionGrammar grammar, IntValue maxTreeSize, IntValue maxTreeHeight, out bool success) {

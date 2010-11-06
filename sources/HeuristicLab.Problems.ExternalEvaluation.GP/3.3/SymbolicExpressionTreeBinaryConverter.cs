@@ -19,20 +19,26 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using System.IO;
 using Google.ProtocolBuffers;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.ExternalEvaluation.GP {
   [Item("SymbolicExpressionTreeBinaryConverter", "Converts a symbolic expression tree into a binary representation by iterating over all nodes in a prefix way. The binary format is defined in HeuristicLab.Persistence.")]
   [StorableClass]
   public class SymbolicExpressionTreeBinaryConverter : SymbolicExpressionTreeConverter {
+    [StorableConstructor]
+    protected SymbolicExpressionTreeBinaryConverter(bool deserializing) : base(deserializing) { }
+    protected SymbolicExpressionTreeBinaryConverter(SymbolicExpressionTreeBinaryConverter original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SymbolicExpressionTreeBinaryConverter(this, cloner);
+    }
+    public SymbolicExpressionTreeBinaryConverter() : base() { }
 
     protected override void ConvertSymbolicExpressionTree(SymbolicExpressionTree tree, string name, SolutionMessage.Builder builder) {
       using (MemoryStream memoryStream = new MemoryStream()) {

@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -32,7 +33,7 @@ namespace HeuristicLab.Random {
   [StorableClass]
   [Item("NormalRandomizer", "Initializes the value of variable 'Value' to a random value normally distributed with parameters 'Mu' and 'Sigma'")]
   public class NormalRandomizer : SingleSuccessorOperator {
-    #region parameter properties
+    #region Parameter Properties
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
@@ -46,6 +47,7 @@ namespace HeuristicLab.Random {
       get { return (ILookupParameter<DoubleValue>)Parameters["Value"]; }
     }
     #endregion
+
     #region Properties
     public DoubleValue Mu {
       get { return MuParameter.ActualValue; }
@@ -56,6 +58,10 @@ namespace HeuristicLab.Random {
       set { SigmaParameter.ActualValue = value; }
     }
     #endregion
+
+    [StorableConstructor]
+    protected NormalRandomizer(bool deserializing) : base(deserializing) { }
+    protected NormalRandomizer(NormalRandomizer original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="NormalRandomizer"/> with four variable infos
     /// (<c>Mu</c>, <c>Sigma</c>, <c>Value</c> and <c>Random</c>).
@@ -66,8 +72,10 @@ namespace HeuristicLab.Random {
       Parameters.Add(new ValueLookupParameter<DoubleValue>("Sigma", "Sigma parameter of the normal distribution (N(mu,sigma))."));
       Parameters.Add(new LookupParameter<DoubleValue>("Value", "The value that should be set to a random value."));
     }
-    [StorableConstructor]
-    protected NormalRandomizer(bool deserializing) : base(deserializing) { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new NormalRandomizer(this, cloner);
+    }
 
     /// <summary>
     /// Generates a new normally distributed random variable and assigns it to the specified variable.

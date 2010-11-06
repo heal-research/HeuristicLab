@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -38,6 +39,9 @@ namespace HeuristicLab.Parameters {
       }
     }
 
+    [StorableConstructor]
+    protected ValueParameter(bool deserializing) : base(deserializing) { }
+    protected ValueParameter(ValueParameter<T> original, Cloner cloner) : base(original, cloner) { }
     public ValueParameter() : base() { }
     public ValueParameter(string name) : base(name) { }
     public ValueParameter(string name, bool getsCollected) : base(name, getsCollected) { }
@@ -47,7 +51,9 @@ namespace HeuristicLab.Parameters {
     public ValueParameter(string name, string description, bool getsCollected) : base(name, description, getsCollected) { }
     public ValueParameter(string name, string description, T value) : base(name, description, value) { }
     public ValueParameter(string name, string description, T value, bool getsCollected) : base(name, description, value, getsCollected) { }
-    [StorableConstructor]
-    protected ValueParameter(bool deserializing) : base(deserializing) { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ValueParameter<T>(this, cloner);
+    }
   }
 }

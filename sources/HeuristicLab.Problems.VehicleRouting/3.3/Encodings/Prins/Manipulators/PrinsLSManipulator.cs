@@ -19,12 +19,12 @@
  */
 #endregion
 
+using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
-using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
   [Item("PrinsLSManipulator", "An operator which manipulates a VRP representation by using the Prins local search.  It is implemented as described in Prins, C. (2004). A simple and effective evolutionary algorithm for the vehicle routing problem. Computers & Operations Research, 12:1985-2002.")]
@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
         
     [StorableConstructor]
     protected PrinsLSManipulator(bool deserializing) : base(deserializing) { }
-
+    protected PrinsLSManipulator(PrinsLSManipulator original, Cloner cloner) : base(original, cloner) { }
     public PrinsLSManipulator()
       : base() {
       Parameters.Add(new ValueParameter<IntValue>("Iterations", "The number of max iterations.", new IntValue(5)));

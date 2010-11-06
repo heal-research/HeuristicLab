@@ -37,17 +37,15 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public double MoveQuality { get; protected set; }
 
     [StorableConstructor]
-    private AdditiveMoveTabuAttribute(bool deserializing)
-      : base() {
+    protected AdditiveMoveTabuAttribute(bool deserializing) : base(deserializing) { }
+    protected AdditiveMoveTabuAttribute(AdditiveMoveTabuAttribute original, Cloner cloner)
+      : base(original, cloner) {
+      this.Dimension = original.Dimension;
+      this.OriginalPosition = original.OriginalPosition;
+      this.MovedPosition = original.MovedPosition;
+      this.MoveQuality = original.MoveQuality;
     }
-    public AdditiveMoveTabuAttribute()
-      : base() {
-      Dimension = -1;
-      OriginalPosition = 0;
-      MovedPosition = 0;
-      MoveQuality = 0;
-    }
-
+    public AdditiveMoveTabuAttribute() : this(-1, 0, 0, 0) { }
     public AdditiveMoveTabuAttribute(int dimension, double originalPosition, double movedPosition, double moveQuality)
       : base() {
       Dimension = dimension;
@@ -57,12 +55,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      AdditiveMoveTabuAttribute clone = (AdditiveMoveTabuAttribute)base.Clone(cloner);
-      clone.Dimension = Dimension;
-      clone.OriginalPosition = OriginalPosition;
-      clone.MovedPosition = MovedPosition;
-      clone.MoveQuality = MoveQuality;
-      return clone;
+      return new AdditiveMoveTabuAttribute(this, cloner);
     }
   }
 }

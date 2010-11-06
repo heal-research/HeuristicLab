@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -30,7 +31,17 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
   public class SymbolicExpressionTreeStringConverter : SymbolicExpressionTreeConverter {
     SymbolicExpressionTreeStringFormatter formatter;
 
-    public SymbolicExpressionTreeStringConverter() {
+    [StorableConstructor]
+    protected SymbolicExpressionTreeStringConverter(bool deserializing) : base(deserializing) { }
+    protected SymbolicExpressionTreeStringConverter(SymbolicExpressionTreeStringConverter original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SymbolicExpressionTreeStringConverter(this, cloner);
+    }
+
+    public SymbolicExpressionTreeStringConverter()
+      : base() {
       formatter = new SymbolicExpressionTreeStringFormatter();
       formatter.Indent = false;
     }

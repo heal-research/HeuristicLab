@@ -22,6 +22,7 @@
 using System;
 using System.IO;
 using Google.ProtocolBuffers;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -32,6 +33,13 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
 
     private Stream input;
     private Stream output;
+
+    [StorableConstructor]
+    protected EvaluationStreamChannel(bool deserializing) : base(deserializing) { }
+    protected EvaluationStreamChannel(EvaluationStreamChannel original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new EvaluationStreamChannel(this, cloner);
+    }
 
     public EvaluationStreamChannel() : base() { }
     public EvaluationStreamChannel(Stream input, Stream output)

@@ -19,24 +19,25 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
-using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaIntraRouteInversionManipulator", "An operator which applies the SLS operation to a VRP representation. It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
   [StorableClass]
-  public sealed class AlbaIntraRouteInversionManipulator : AlbaManipulator {   
+  public sealed class AlbaIntraRouteInversionManipulator : AlbaManipulator {
     [StorableConstructor]
     private AlbaIntraRouteInversionManipulator(bool deserializing) : base(deserializing) { }
-
+    private AlbaIntraRouteInversionManipulator(AlbaIntraRouteInversionManipulator original, Cloner cloner) : base(original, cloner) { }
     public AlbaIntraRouteInversionManipulator()
       : base() {
-     }
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new AlbaIntraRouteInversionManipulator(this, cloner);
+    }
 
     public static void Apply(AlbaEncoding individual, int index1, int index2) {
       if (index1 != -1 && index2 != -1) {
@@ -71,7 +72,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
         }
 
         int currentTourEnd = currentTourStart;
-        while (currentTourEnd < individual.Length && 
+        while (currentTourEnd < individual.Length &&
           individual[currentTourEnd] < individual.Cities) {
           currentTourEnd++;
         }

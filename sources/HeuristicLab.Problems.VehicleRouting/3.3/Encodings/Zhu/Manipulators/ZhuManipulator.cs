@@ -19,12 +19,11 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
-using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
   [Item("ZhuManipulator", "An operator which manipulates a VRP representation.")]
@@ -33,9 +32,12 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
-
     [StorableConstructor]
     protected ZhuManipulator(bool deserializing) : base(deserializing) { }
+    protected ZhuManipulator(ZhuManipulator original, Cloner cloner)
+      : base(original, cloner) {
+    }
+
 
     public ZhuManipulator()
       : base() {
@@ -48,7 +50,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
       IVRPEncoding solution = VRPToursParameter.ActualValue;
       if (!(solution is ZhuEncoding)) {
         VRPToursParameter.ActualValue = ZhuEncoding.ConvertFrom(solution,
-            Cities, 
+            Cities,
             DueTimeParameter.ActualValue,
             ServiceTimeParameter.ActualValue,
             ReadyTimeParameter.ActualValue,

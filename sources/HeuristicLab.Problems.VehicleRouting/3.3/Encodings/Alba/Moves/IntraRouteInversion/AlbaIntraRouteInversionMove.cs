@@ -19,19 +19,25 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Common;
-using HeuristicLab.Problems.VehicleRouting.Encodings.General;
+using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("InversionMove", "Item that describes an intra route inversion move on a VRP representation.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
   [StorableClass]
   public class AlbaIntraRouteInversionMove : TwoIndexMove, IVRPMove {
     public IVRPEncoding Individual { get { return Permutation as AlbaEncoding; } }
-    
+
+    [StorableConstructor]
+    protected AlbaIntraRouteInversionMove(bool deserializing) : base(deserializing) { }
+    protected AlbaIntraRouteInversionMove(AlbaIntraRouteInversionMove original, Cloner cloner)
+      : base(original, cloner) {
+      Permutation = cloner.Clone(original.Permutation);
+    }
     public AlbaIntraRouteInversionMove()
       : base() {
     }
@@ -42,33 +48,26 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
 
     public AlbaIntraRouteInversionMove(int index1, int index2, AlbaEncoding permutation)
       : base(index1, index2, permutation) {
-        this.Permutation = permutation.Clone() as AlbaEncoding;
+      this.Permutation = permutation.Clone() as AlbaEncoding;
     }
 
-    public override IDeepCloneable Clone(HeuristicLab.Common.Cloner cloner) {
-      AlbaIntraRouteInversionMove clone = new AlbaIntraRouteInversionMove(
-        Index1, Index2);
-
-      if (Permutation != null)
-        clone.Permutation = (AlbaEncoding)cloner.Clone(Permutation);
-
-      cloner.RegisterClonedObject(this, clone);
-      return clone;
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new AlbaIntraRouteInversionMove(this, cloner);
     }
 
     #region IVRPMove Members
 
     public TourEvaluation GetMoveQuality(
       IntValue vehicles,
-      DoubleArray dueTimeArray, DoubleArray serviceTimeArray, DoubleArray readyTimeArray, 
+      DoubleArray dueTimeArray, DoubleArray serviceTimeArray, DoubleArray readyTimeArray,
       DoubleArray demandArray, DoubleValue capacity, DoubleMatrix coordinates,
       DoubleValue fleetUsageFactor, DoubleValue timeFactor, DoubleValue distanceFactor,
       DoubleValue overloadPenalty, DoubleValue tardinessPenalty,
       ILookupParameter<DoubleMatrix> distanceMatrix, Data.BoolValue useDistanceMatrix) {
-        return AlbaIntraRouteInversionMoveEvaluator.GetMoveQuality(Permutation as AlbaEncoding, this, vehicles,
-          dueTimeArray, serviceTimeArray, readyTimeArray, demandArray, capacity,
-          coordinates, fleetUsageFactor, timeFactor, distanceFactor,
-          overloadPenalty, tardinessPenalty, distanceMatrix, useDistanceMatrix);
+      return AlbaIntraRouteInversionMoveEvaluator.GetMoveQuality(Permutation as AlbaEncoding, this, vehicles,
+        dueTimeArray, serviceTimeArray, readyTimeArray, demandArray, capacity,
+        coordinates, fleetUsageFactor, timeFactor, distanceFactor,
+        overloadPenalty, tardinessPenalty, distanceMatrix, useDistanceMatrix);
     }
 
     public IVRPEncoding MakeMove() {

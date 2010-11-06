@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -30,6 +31,15 @@ namespace HeuristicLab.Optimization.Operators {
   [Item("ExponentialDiscreteDoubleValueModifier", "Modifies the value by exponential fall (steep fall initially, slow fall to the end) or rise (slow rise initially, fast rise to the end).")]
   [StorableClass]
   public class ExponentialDiscreteDoubleValueModifier : DiscreteDoubleValueModifier {
+    [StorableConstructor]
+    protected ExponentialDiscreteDoubleValueModifier(bool deserializing) : base(deserializing) { }
+    protected ExponentialDiscreteDoubleValueModifier(ExponentialDiscreteDoubleValueModifier original, Cloner cloner) : base(original, cloner) { }
+    public ExponentialDiscreteDoubleValueModifier() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ExponentialDiscreteDoubleValueModifier(this, cloner);
+    }
+
     /// <summary>
     /// Calculates a new value based on exponential decay or growth.
     /// </summary>

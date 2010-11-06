@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
@@ -82,12 +83,19 @@ namespace HeuristicLab.Problems.TestFunctions {
       return new RealVector(dimension);
     }
 
+    [StorableConstructor]
+    protected RastriginEvaluator(bool deserializing) : base(deserializing) { }
+    protected RastriginEvaluator(RastriginEvaluator original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of the RastriginEvaluator with one parameter (<c>A</c>).
     /// </summary>
     public RastriginEvaluator()
       : base() {
       Parameters.Add(new ValueParameter<DoubleValue>("A", "The parameter A is a parameter of the objective function y = Sum((x_i)^2 + A * (1 - Cos(2pi*x_i))). Default is A = 10.", new DoubleValue(10)));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new RastriginEvaluator(this, cloner);
     }
 
     /// <summary>

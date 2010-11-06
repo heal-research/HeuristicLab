@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
@@ -45,6 +46,9 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       get { return (ILookupParameter<BoolValue>)Parameters["UseDistanceMatrix"]; }
     }
 
+    [StorableConstructor]
+    protected TSPPathMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected TSPPathMoveEvaluator(TSPPathMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     protected TSPPathMoveEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<Permutation>("Permutation", "The solution as permutation."));

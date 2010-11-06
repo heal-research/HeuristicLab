@@ -21,6 +21,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -62,6 +63,7 @@ namespace HeuristicLab.Analysis {
 
     [StorableConstructor]
     protected AlleleFrequencyAnalyzer(bool deserializing) : base(deserializing) { }
+    protected AlleleFrequencyAnalyzer(AlleleFrequencyAnalyzer<T> original, Cloner cloner) : base(original, cloner) { }
     public AlleleFrequencyAnalyzer()
       : base() {
       Parameters.Add(new LookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem."));

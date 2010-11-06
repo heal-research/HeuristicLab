@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Analysis;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
@@ -117,6 +118,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     }
     #endregion
 
+    [StorableConstructor]
+    private SymbolicRegressionModelQualityAnalyzer(bool deserializing) : base(deserializing) { }
+    private SymbolicRegressionModelQualityAnalyzer(SymbolicRegressionModelQualityAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public SymbolicRegressionModelQualityAnalyzer()
       : base() {
       Parameters.Add(new ScopeTreeLookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression trees to analyze."));
@@ -130,8 +134,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       Parameters.Add(new LookupParameter<ResultCollection>(ResultsParameterName, "The result collection where the best symbolic regression solution should be stored."));
     }
 
-    [StorableConstructor]
-    private SymbolicRegressionModelQualityAnalyzer(bool deserializing) : base() { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SymbolicRegressionModelQualityAnalyzer(this, cloner);
+    }
 
     public override IOperation Apply() {
       Analyze(SymbolicExpressionTreeParameter.ActualValue, SymbolicExpressionTreeInterpreterParameter.ActualValue,

@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -53,6 +54,9 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["MaximumManipulation"]; }
     }
 
+    [StorableConstructor]
+    protected PolynomialAllPositionManipulator(bool deserializing) : base(deserializing) { }
+    protected PolynomialAllPositionManipulator(PolynomialAllPositionManipulator original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="PolynomialAllPositionManipulator"/> with two parameters
     /// (<c>Contiguity</c> and <c>MaximumManipulation</c>).
@@ -61,6 +65,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       : base() {
       Parameters.Add(new ValueLookupParameter<DoubleValue>("Contiguity", "Specifies whether the manipulation should produce far stretching (small value) or close (large value) manipulations with higher probability. Valid values must be greater or equal to 0.", new DoubleValue(2)));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("MaximumManipulation", "Specifies the maximum value that should be added or subtracted by the manipulation. If this value is set to 0 no mutation will be performed.", new DoubleValue(1)));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new PolynomialAllPositionManipulator(this, cloner);
     }
 
     /// <summary>

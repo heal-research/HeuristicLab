@@ -20,6 +20,7 @@
 #endregion
 
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -62,6 +63,11 @@ namespace HeuristicLab.Problems.VehicleRouting {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["BestVehiclesUtilized"]; }
     }
 
+    [StorableConstructor]
+    protected BestVRPToursMemorizer(bool deserializing) : base(deserializing) { }
+    protected BestVRPToursMemorizer(BestVRPToursMemorizer original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public BestVRPToursMemorizer()
       : base() {
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Distance", "The distances of the VRP solutions which should be analyzed."));
@@ -76,6 +82,10 @@ namespace HeuristicLab.Problems.VehicleRouting {
       Parameters.Add(new ValueLookupParameter<DoubleValue>("BestTravelTime", "The best travel time found so far."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("BestVehiclesUtilized", "The best vehicles utilized found so far."));
  
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new BestVRPToursMemorizer(this, cloner);
     }
 
     public override IOperation Apply() {

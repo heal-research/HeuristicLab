@@ -84,6 +84,14 @@ namespace HeuristicLab.Operators {
       }
     }
 
+    [StorableConstructor]
+    protected Operator(bool deserializing) : base(deserializing) { }
+    protected Operator(Operator original, Cloner cloner)
+      : base(original, cloner) {
+      this.canceled = original.canceled;
+      this.breakpoint = original.breakpoint;
+      this.executionContext = cloner.Clone<IExecutionContext>(original.executionContext);
+    }
     /// <summary>
     /// Initializes a new instance of <see cref="OperatorBase"/> setting the breakpoint flag and 
     /// the canceled flag to <c>false</c> and the name of the operator to the type name. 
@@ -112,22 +120,6 @@ namespace HeuristicLab.Operators {
       : base(name, description, parameters) {
       canceled = false;
       breakpoint = false;
-    }
-    [StorableConstructor]
-    protected Operator(bool deserializing) : base(deserializing) { }
-
-    /// <summary>
-    /// Clones the current instance (deep clone).
-    /// </summary>
-    /// <remarks>Clones also sub operators, variables and variable infos.</remarks>
-    /// <param name="clonedObjects">Dictionary of all already cloned objects. (Needed to avoid cycles.)</param>
-    /// <returns>The cloned object as <see cref="OperatorBase"/>.</returns>
-    public override IDeepCloneable Clone(Cloner cloner) {
-      Operator clone = (Operator)base.Clone(cloner);
-      clone.canceled = canceled;
-      clone.breakpoint = breakpoint;
-      clone.executionContext = (IExecutionContext)cloner.Clone(executionContext);
-      return clone;
     }
 
     /// <inheritdoc/>

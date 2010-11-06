@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -34,6 +35,15 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("Swap3Manipulator", "An operator which manipulates a permutation array by swaping three randomly chosen elements. It is implemented such that first 3 positions are randomly chosen in the interval [0;N) with N = length of the permutation with all positions being distinct from each other. Then position 1 is put in place of position 3, position 2 is put in place of position 1 and position 3 is put in place of position 2.")]
   [StorableClass]
   public class Swap3Manipulator : PermutationManipulator {
+    [StorableConstructor]
+    protected Swap3Manipulator(bool deserializing) : base(deserializing) { }
+    protected Swap3Manipulator(Swap3Manipulator original, Cloner cloner) : base(original, cloner) { }
+    public Swap3Manipulator() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Swap3Manipulator(this, cloner);
+    }
+
     /// <summary>
     /// Swaps three randomly chosen elements of the given <paramref name="permutation"/> array.
     /// </summary>

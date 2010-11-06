@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -29,6 +30,15 @@ namespace HeuristicLab.Optimization.Operators {
   [Item("LinearDiscreteDoubleValueModifier", "Modifies the value by linear (constant) fall or rise.")]
   [StorableClass]
   public class LinearDiscreteDoubleValueModifier : DiscreteDoubleValueModifier {
+    [StorableConstructor]
+    protected LinearDiscreteDoubleValueModifier(bool deserializing) : base(deserializing) { }
+    protected LinearDiscreteDoubleValueModifier(LinearDiscreteDoubleValueModifier original, Cloner cloner) : base(original, cloner) { }
+    public LinearDiscreteDoubleValueModifier() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new LinearDiscreteDoubleValueModifier(this, cloner);
+    }
+
     protected override double Modify(double value, double startValue, double endValue, int index, int startIndex, int endIndex) {
       double k = (endValue - startValue) / (endIndex - startIndex);
       double x = index - startIndex;

@@ -252,6 +252,21 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
 
     [StorableConstructor]
     private IslandOffspringSelectionGeneticAlgorithm(bool deserializing) : base(deserializing) { }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      Initialize();
+    }
+    private IslandOffspringSelectionGeneticAlgorithm(IslandOffspringSelectionGeneticAlgorithm original, Cloner cloner)
+      : base(original, cloner) {
+      islandQualityAnalyzer = cloner.Clone(original.islandQualityAnalyzer);
+      qualityAnalyzer = cloner.Clone(original.qualityAnalyzer);
+      islandSelectionPressureAnalyzer = cloner.Clone(original.islandSelectionPressureAnalyzer);
+      selectionPressureAnalyzer = cloner.Clone(original.selectionPressureAnalyzer);
+      Initialize();
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new IslandOffspringSelectionGeneticAlgorithm(this, cloner);
+    }
     public IslandOffspringSelectionGeneticAlgorithm()
       : base() {
       Parameters.Add(new ValueParameter<IntValue>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
@@ -356,17 +371,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
 
       Initialize();
     }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      IslandOffspringSelectionGeneticAlgorithm clone = (IslandOffspringSelectionGeneticAlgorithm)base.Clone(cloner);
-      clone.islandQualityAnalyzer = (BestAverageWorstQualityAnalyzer)cloner.Clone(islandQualityAnalyzer);
-      clone.qualityAnalyzer = (BestAverageWorstQualityAnalyzer)cloner.Clone(qualityAnalyzer);
-      clone.islandSelectionPressureAnalyzer = (ValueAnalyzer)cloner.Clone(islandSelectionPressureAnalyzer);
-      clone.selectionPressureAnalyzer = (ValueAnalyzer)cloner.Clone(selectionPressureAnalyzer);
-      clone.Initialize();
-      return clone;
-    }
-
     public override void Prepare() {
       if (Problem != null) base.Prepare();
     }
@@ -453,7 +457,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     #endregion
 
     #region Helpers
-    [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
       PopulationSizeParameter.ValueChanged += new EventHandler(PopulationSizeParameter_ValueChanged);
       PopulationSize.ValueChanged += new EventHandler(PopulationSize_ValueChanged);

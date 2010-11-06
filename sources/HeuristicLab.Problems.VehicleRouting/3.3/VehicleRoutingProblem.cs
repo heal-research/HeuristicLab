@@ -196,7 +196,12 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     [StorableConstructor]
     private VehicleRoutingProblem(bool deserializing) : base(deserializing) { }
-
+    private VehicleRoutingProblem(VehicleRoutingProblem original, Cloner cloner)
+      : base(original, cloner) {
+      operators = original.operators.Select(x => (IOperator)cloner.Clone(x)).ToList();
+      DistanceMatrixParameter.Value = DistanceMatrixParameter.Value;
+      AttachEventHandlers();
+    }
     public VehicleRoutingProblem()
       : base() {
       IVRPCreator creator = new RandomCreator();
@@ -236,11 +241,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      VehicleRoutingProblem clone = (VehicleRoutingProblem)base.Clone(cloner);
-      clone.operators = operators.Select(x => (IOperator)cloner.Clone(x)).ToList();
-      clone.DistanceMatrixParameter.Value = DistanceMatrixParameter.Value;
-      clone.AttachEventHandlers();
-      return clone;
+      return new VehicleRoutingProblem(this, cloner);
     }
 
     #region Events
@@ -453,7 +454,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       Vehicles.ValueChanged += new EventHandler(VehiclesValue_ValueChanged);
 
       SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
-      
+
       EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
       Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
 
@@ -562,17 +563,17 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
     private void ParameterizeOperators() {
       foreach (IVRPOperator op in Operators.OfType<IVRPOperator>()) {
-        if(op.CoordinatesParameter != null) op.CoordinatesParameter.ActualName = CoordinatesParameter.Name;
-        if(op.DistanceMatrixParameter != null) op.DistanceMatrixParameter.ActualName = DistanceMatrixParameter.Name;
-        if(op.UseDistanceMatrixParameter != null) op.UseDistanceMatrixParameter.ActualName = UseDistanceMatrixParameter.Name;
-        if(op.VehiclesParameter != null) op.VehiclesParameter.ActualName = VehiclesParameter.Name;
-        if(op.CapacityParameter != null) op.CapacityParameter.ActualName = CapacityParameter.Name;
-        if(op.DemandParameter != null) op.DemandParameter.ActualName = DemandParameter.Name;
-        if(op.ReadyTimeParameter != null) op.ReadyTimeParameter.ActualName = ReadyTimeParameter.Name;
-        if(op.DueTimeParameter != null) op.DueTimeParameter.ActualName = DueTimeParameter.Name;
-        if(op.ServiceTimeParameter != null) op.ServiceTimeParameter.ActualName = ServiceTimeParameter.Name;
+        if (op.CoordinatesParameter != null) op.CoordinatesParameter.ActualName = CoordinatesParameter.Name;
+        if (op.DistanceMatrixParameter != null) op.DistanceMatrixParameter.ActualName = DistanceMatrixParameter.Name;
+        if (op.UseDistanceMatrixParameter != null) op.UseDistanceMatrixParameter.ActualName = UseDistanceMatrixParameter.Name;
+        if (op.VehiclesParameter != null) op.VehiclesParameter.ActualName = VehiclesParameter.Name;
+        if (op.CapacityParameter != null) op.CapacityParameter.ActualName = CapacityParameter.Name;
+        if (op.DemandParameter != null) op.DemandParameter.ActualName = DemandParameter.Name;
+        if (op.ReadyTimeParameter != null) op.ReadyTimeParameter.ActualName = ReadyTimeParameter.Name;
+        if (op.DueTimeParameter != null) op.DueTimeParameter.ActualName = DueTimeParameter.Name;
+        if (op.ServiceTimeParameter != null) op.ServiceTimeParameter.ActualName = ServiceTimeParameter.Name;
       }
-      
+
       foreach (IVRPMoveOperator op in Operators.OfType<IVRPMoveOperator>()) {
         op.VRPToursParameter.ActualName = SolutionCreator.VRPToursParameter.ActualName;
       }
@@ -640,7 +641,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       Coordinates = new DoubleMatrix(parser.Vertices);
       if (parser.Vehicles != -1)
         Vehicles.Value = parser.Vehicles;
-      else 
+      else
         Vehicles.Value = problemSize - 1;
       Capacity.Value = parser.Capacity;
       Demand = new DoubleArray(parser.Demands);

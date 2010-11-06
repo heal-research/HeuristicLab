@@ -29,6 +29,11 @@ namespace HeuristicLab.Data {
   [Item("DoubleMatrix", "Represents a matrix of double values.")]
   [StorableClass]
   public class DoubleMatrix : ValueTypeMatrix<double>, IStringConvertibleMatrix {
+    [StorableConstructor]
+    protected DoubleMatrix(bool deserializing) : base(deserializing) { }
+    protected DoubleMatrix(DoubleMatrix original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public DoubleMatrix() : base() { }
     public DoubleMatrix(int rows, int columns) : base(rows, columns) { }
     public DoubleMatrix(int rows, int columns, IEnumerable<string> columnNames) : base(rows, columns, columnNames) { }
@@ -38,14 +43,7 @@ namespace HeuristicLab.Data {
     public DoubleMatrix(double[,] elements, IEnumerable<string> columnNames, IEnumerable<string> rowNames) : base(elements, columnNames, rowNames) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      DoubleMatrix clone = new DoubleMatrix();
-      cloner.RegisterClonedObject(this, clone);
-      clone.matrix = (double[,])matrix.Clone();
-      clone.columnNames = new List<string>(columnNames);
-      clone.rowNames = new List<string>(rowNames);
-      clone.sortableView = sortableView;
-      clone.readOnly = readOnly;
-      return clone;
+      return new DoubleMatrix(this, cloner);
     }
 
     protected virtual bool Validate(string value, out string errorMessage) {

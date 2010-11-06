@@ -29,14 +29,16 @@ namespace HeuristicLab.Data {
   [Item("TimeSpanValue", "Represents a duration of time.")]
   [StorableClass]
   public class TimeSpanValue : ValueTypeValue<TimeSpan>, IComparable, IStringConvertibleValue {
+    [StorableConstructor]
+    protected TimeSpanValue(bool deserializing) : base(deserializing) { }
+    protected TimeSpanValue(TimeSpanValue original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public TimeSpanValue() : base() { }
     public TimeSpanValue(TimeSpan value) : base(value) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      TimeSpanValue clone = new TimeSpanValue(value);
-      cloner.RegisterClonedObject(this, clone);
-      clone.readOnly = readOnly;
-      return clone;
+      return new TimeSpanValue(this, cloner);
     }
 
     public virtual int CompareTo(object obj) {

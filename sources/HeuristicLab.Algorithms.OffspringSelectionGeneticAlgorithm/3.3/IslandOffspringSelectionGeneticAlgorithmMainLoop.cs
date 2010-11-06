@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -125,7 +126,13 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     #endregion
 
     [StorableConstructor]
-    private IslandOffspringSelectionGeneticAlgorithmMainLoop(bool deserializing) : base() { }
+    private IslandOffspringSelectionGeneticAlgorithmMainLoop(bool deserializing) : base(deserializing) { }
+    private IslandOffspringSelectionGeneticAlgorithmMainLoop(IslandOffspringSelectionGeneticAlgorithmMainLoop original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new IslandOffspringSelectionGeneticAlgorithmMainLoop(this, cloner);
+    }
     public IslandOffspringSelectionGeneticAlgorithmMainLoop()
       : base() {
       #region Create parameters

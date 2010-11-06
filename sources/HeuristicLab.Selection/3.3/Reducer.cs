@@ -20,6 +20,7 @@
 #endregion
 
 using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
@@ -40,6 +41,11 @@ namespace HeuristicLab.Selection {
       get { return CurrentScopeParameter.ActualValue; }
     }
 
+    [StorableConstructor]
+    protected Reducer(bool deserializing) : base(deserializing) { }
+    protected Reducer(Reducer original, Cloner cloner)
+      : base(original, cloner) {
+    }
     protected Reducer()
       : base() {
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope from which sub-scopes should be selected."));

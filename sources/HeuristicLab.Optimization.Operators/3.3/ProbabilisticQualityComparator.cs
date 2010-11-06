@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -44,10 +45,17 @@ namespace HeuristicLab.Optimization.Operators {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
 
+    [StorableConstructor]
+    protected ProbabilisticQualityComparator(bool deserializing) : base(deserializing) { }
+    protected ProbabilisticQualityComparator(ProbabilisticQualityComparator original, Cloner cloner) : base(original, cloner) { }
     public ProbabilisticQualityComparator()
       : base() {
       Parameters.Add(new LookupParameter<DoubleValue>("Dampening", "The dampening factor that influences the probability."));
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ProbabilisticQualityComparator(this, cloner);
     }
 
     protected override bool Compare(bool maximization, double left, double right) {

@@ -19,14 +19,14 @@
  */
 #endregion
 
+using System;
+using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Collections.Generic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
-using System;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
   [Item("ZhuEncoding", "Represents a Zhu encoding of VRP solutions. It is implemented as described in Zhu, K.Q. (2000). A New Genetic Algorithm For VRPTW. Proceedings of the International Conference on Artificial Intelligence.")]
@@ -43,13 +43,13 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
 
     [Storable]
     DoubleArray dueTimeArray;
-    
+
     [Storable]
     DoubleArray serviceTimeArray;
 
     [Storable]
     DoubleArray readyTimeArray;
-    
+
     [Storable]
     DoubleArray demandArray;
 
@@ -74,12 +74,12 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
           coordinates,
           distanceMatrix,
           useDistanceMatrix)) {
-            newTour.Cities.Remove(city);
-            if (newTour.Cities.Count > 0)
-              result.Add(newTour);
+          newTour.Cities.Remove(city);
+          if (newTour.Cities.Count > 0)
+            result.Add(newTour);
 
-            newTour = new Tour();
-            newTour.Cities.Add(city);
+          newTour = new Tour();
+          newTour.Cities.Add(city);
         }
       }
 
@@ -123,34 +123,35 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
     }
     #endregion
 
-    public override IDeepCloneable Clone(HeuristicLab.Common.Cloner cloner) {
-      ZhuEncoding clone = new ZhuEncoding(
-        new Permutation(this.PermutationType, this.array), cities, 
-        dueTimeArray, serviceTimeArray, readyTimeArray, demandArray, capacity,
-        coordinates, useDistanceMatrix);
-
-      cloner.RegisterClonedObject(this, clone);
-      clone.readOnly = readOnly;
-      return clone;
-    }
-
-    public ZhuEncoding(Permutation permutation, int cities,
-      DoubleArray dueTimeArray, DoubleArray serviceTimeArray, DoubleArray readyTimeArray, DoubleArray demandArray, DoubleValue capacity,
-      DoubleMatrix coordinates, BoolValue useDistanceMatrix)
-      : base(permutation) {
-        this.cities = cities;
-        this.dueTimeArray = dueTimeArray;
-        this.serviceTimeArray = serviceTimeArray;
-        this.readyTimeArray = readyTimeArray;
-        this.demandArray = demandArray;
-        this.capacity = capacity;
-        this.coordinates = coordinates;
-        this.useDistanceMatrix = useDistanceMatrix;
-    }
-
     [StorableConstructor]
-    private ZhuEncoding(bool serializing)
-      : base(serializing) {
+    protected ZhuEncoding(bool deserializing) : base(deserializing) { }
+    protected ZhuEncoding(ZhuEncoding original, Cloner cloner)
+      : base(original, cloner) {
+      this.cities = original.cities;
+      this.dueTimeArray = original.dueTimeArray;
+      this.serviceTimeArray = original.serviceTimeArray;
+      this.readyTimeArray = original.readyTimeArray;
+      this.demandArray = original.demandArray;
+      this.capacity = original.capacity;
+      this.coordinates = original.coordinates;
+      this.useDistanceMatrix = original.useDistanceMatrix;
+    }
+    public ZhuEncoding(Permutation permutation, int cities,
+     DoubleArray dueTimeArray, DoubleArray serviceTimeArray, DoubleArray readyTimeArray, DoubleArray demandArray, DoubleValue capacity,
+     DoubleMatrix coordinates, BoolValue useDistanceMatrix)
+      : base(permutation) {
+      this.cities = cities;
+      this.dueTimeArray = dueTimeArray;
+      this.serviceTimeArray = serviceTimeArray;
+      this.readyTimeArray = readyTimeArray;
+      this.demandArray = demandArray;
+      this.capacity = capacity;
+      this.coordinates = coordinates;
+      this.useDistanceMatrix = useDistanceMatrix;
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ZhuEncoding(this, cloner);
     }
 
     public static ZhuEncoding ConvertFrom(IVRPEncoding encoding, int cities,
@@ -170,7 +171,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
         coordinates, useDistanceMatrix);
     }
 
-    public static ZhuEncoding ConvertFrom(List<int> routeParam, int cities, 
+    public static ZhuEncoding ConvertFrom(List<int> routeParam, int cities,
       DoubleArray dueTimeArray, DoubleArray serviceTimeArray, DoubleArray readyTimeArray, DoubleArray demandArray, DoubleValue capacity,
       DoubleMatrix coordinates, BoolValue useDistanceMatrix) {
       List<int> route = new List<int>(routeParam);
@@ -182,7 +183,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
         route[i]--;
 
       return new ZhuEncoding(
-        new Permutation(PermutationTypes.RelativeUndirected, route.ToArray()), cities, 
+        new Permutation(PermutationTypes.RelativeUndirected, route.ToArray()), cities,
         dueTimeArray, serviceTimeArray, readyTimeArray, demandArray, capacity,
         coordinates, useDistanceMatrix);
     }

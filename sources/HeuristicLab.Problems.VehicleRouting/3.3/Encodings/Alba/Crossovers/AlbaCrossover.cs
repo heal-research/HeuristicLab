@@ -19,12 +19,11 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
-using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaCrossover", "An operator which crosses two VRP representations.")]
@@ -33,14 +32,14 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
-    
+
     [StorableConstructor]
     protected AlbaCrossover(bool deserializing) : base(deserializing) { }
-
+    protected AlbaCrossover(AlbaCrossover original, Cloner cloner) : base(original, cloner) { }
     public AlbaCrossover()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));
-   
+
       AlbaEncoding.RemoveUnusedParameters(Parameters);
     }
 
@@ -60,7 +59,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       }
       ParentsParameter.ActualValue = parents;
 
-      ChildParameter.ActualValue = 
+      ChildParameter.ActualValue =
         Crossover(RandomParameter.ActualValue, parents[0] as AlbaEncoding, parents[1] as AlbaEncoding);
 
       return base.Apply();

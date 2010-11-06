@@ -27,14 +27,16 @@ namespace HeuristicLab.Data {
   [Item("PercentValue", "Represents a double value in percent.")]
   [StorableClass]
   public class PercentValue : DoubleValue {
+    [StorableConstructor]
+    protected PercentValue(bool deserializing) : base(deserializing) { }
+    protected PercentValue(PercentValue original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public PercentValue() : base() { }
     public PercentValue(double value) : base(value) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      PercentValue clone = new PercentValue(value);
-      cloner.RegisterClonedObject(this, clone);
-      clone.readOnly = readOnly;
-      return clone;
+      return new PercentValue(this, cloner);
     }
 
     public override string ToString() {

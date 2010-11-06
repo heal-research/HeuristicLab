@@ -19,27 +19,38 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Encodings.RealVectorEncoding;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
   /// This wrapper disguises as real vector for use in the evaluation functions.
   /// </summary>
-  internal class RealVectorAdditiveMoveWrapper : RealVector {
+  internal sealed class RealVectorAdditiveMoveWrapper : RealVector {
     private int dimension;
     private double moveDistance;
     private RealVector vector;
 
+    private RealVectorAdditiveMoveWrapper(bool deserializing) : base(deserializing) { }
+    private RealVectorAdditiveMoveWrapper(RealVectorAdditiveMoveWrapper original, Cloner cloner)
+      : base(original, cloner) {
+      this.dimension = original.dimension;
+      this.moveDistance = original.moveDistance;
+      this.vector = cloner.Clone(vector);
+    }
     public RealVectorAdditiveMoveWrapper() {
       dimension = -1;
       moveDistance = 0;
       this.vector = new RealVector();
     }
-
     public RealVectorAdditiveMoveWrapper(AdditiveMove move, RealVector vector) {
       dimension = move.Dimension;
       moveDistance = move.MoveDistance;
       this.vector = vector;
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new RealVectorAdditiveMoveWrapper(this, cloner);
     }
 
     public override double this[int index] {

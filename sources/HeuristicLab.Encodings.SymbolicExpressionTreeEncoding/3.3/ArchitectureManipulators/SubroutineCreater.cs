@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
@@ -38,6 +39,15 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureMani
   [StorableClass]
   public sealed class SubroutineCreater : SymbolicExpressionTreeArchitectureManipulator {
     private const double ARGUMENT_CUTOFF_PROBABILITY = 0.05;
+
+    [StorableConstructor]
+    private SubroutineCreater(bool deserializing) : base(deserializing) { }
+    private SubroutineCreater(SubroutineCreater original, Cloner cloner) : base(original, cloner) { }
+    public SubroutineCreater() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SubroutineCreater(this, cloner);
+    }
 
     public override sealed void ModifyArchitecture(
       IRandom random,

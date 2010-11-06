@@ -195,6 +195,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
       get { return sortedClassValues.Count; }
     }
 
+    [StorableConstructor]
+    protected ClassificationProblemData(bool deserializing) : base(deserializing) { }
+    protected ClassificationProblemData(ClassificationProblemData original, Cloner cloner)
+      : base(original, cloner) {
+      RegisterParameterEvents();
+      UpdateClassValues();
+    }
     public ClassificationProblemData()
       : base(new Dataset(defaultInputs, defaultData), defaultInputs, defaultInputs[defaultInputs.Length - 1], 0, 60, 60, 120) {
       Parameters.Add(new ValueParameter<StringArray>(ClassNamesParameterName, "An array of the names for all class values."));
@@ -206,19 +213,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
       UpdateClassValues();
     }
 
-    [StorableConstructor]
-    protected ClassificationProblemData(bool deserializing) : base(deserializing) { }
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserializationHook() {
-      RegisterParameterEvents();
-      RegisterParameterValueEvents();
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ClassificationProblemData(this, cloner);
     }
 
-    public override IDeepCloneable Clone(Cloner cloner) {
-      ClassificationProblemData clone = (ClassificationProblemData)base.Clone(cloner);
-      clone.RegisterParameterEvents();
-      clone.UpdateClassValues();
-      return clone;
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      RegisterParameterEvents();
+      RegisterParameterValueEvents();
     }
 
     public override void ImportFromFile(string fileName) {

@@ -19,13 +19,13 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaLambdaInterchangeManipulator", "An operator which applies the lambda interchange operation to a VRP representation. It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
@@ -34,16 +34,20 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     public IValueParameter<IntValue> LambdaParameter {
       get { return (IValueParameter<IntValue>)Parameters["Lambda"]; }
     }
-    
+
     [StorableConstructor]
     private AlbaLambdaInterchangeManipulator(bool deserializing) : base(deserializing) { }
-
+    private AlbaLambdaInterchangeManipulator(AlbaLambdaInterchangeManipulator original, Cloner cloner) : base(original, cloner) { }
     public AlbaLambdaInterchangeManipulator()
       : base() {
-        Parameters.Add(new ValueParameter<IntValue>("Lambda", "The lambda value.", new IntValue(1)));
-     }
+      Parameters.Add(new ValueParameter<IntValue>("Lambda", "The lambda value.", new IntValue(1)));
+    }
 
-    public static void Apply(AlbaEncoding individual, int tour1Index, int position1, int length1, 
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new AlbaLambdaInterchangeManipulator(this, cloner);
+    }
+
+    public static void Apply(AlbaEncoding individual, int tour1Index, int position1, int length1,
       int tour2Index, int position2, int length2) {
       List<Tour> tours = individual.GetTours();
 

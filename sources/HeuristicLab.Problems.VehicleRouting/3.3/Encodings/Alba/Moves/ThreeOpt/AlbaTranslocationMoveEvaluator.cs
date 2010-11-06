@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
@@ -36,10 +37,14 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     [StorableConstructor]
     private AlbaTranslocationMoveEvaluator(bool deserializing) : base(deserializing) { }
-
+    private AlbaTranslocationMoveEvaluator(AlbaTranslocationMoveEvaluator original, Cloner cloner)      : base(original, cloner) {    }
     public AlbaTranslocationMoveEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<TranslocationMove>("TranslocationMove", "The move to evaluate."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new AlbaTranslocationMoveEvaluator(this, cloner);
     }
 
     protected override TourEvaluation GetMoveQuality() {

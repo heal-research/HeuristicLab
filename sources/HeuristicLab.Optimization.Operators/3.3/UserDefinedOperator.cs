@@ -20,6 +20,7 @@
 #endregion
 
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -28,6 +29,11 @@ namespace HeuristicLab.Optimization.Operators {
   [Item("UserDefinedOperator", "An operator that can be parameterized with multiple operators which will be executed one after another.")]
   [StorableClass]
   public abstract class UserDefinedOperator : CheckedMultiOperator<IOperator> {
+    [StorableConstructor]
+    protected UserDefinedOperator(bool deserializing) : base(deserializing) { }
+    protected UserDefinedOperator(UserDefinedOperator original, Cloner cloner) : base(original, cloner) { }
+    public UserDefinedOperator() : base() { }
+
     public override IOperation Apply() {
       OperationCollection result = new OperationCollection();
       foreach (IOperator op in Operators.CheckedItems.OrderBy(x => x.Index).Select(x => x.Value)) {

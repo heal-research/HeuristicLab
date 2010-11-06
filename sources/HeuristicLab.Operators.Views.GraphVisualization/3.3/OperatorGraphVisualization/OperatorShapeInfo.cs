@@ -32,6 +32,24 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     [Storable]
     private List<string> labels;
 
+    [StorableConstructor]
+    protected OperatorShapeInfo(bool deserializing) : base(deserializing) { }
+    protected OperatorShapeInfo(OperatorShapeInfo original, Cloner cloner)
+      : base(original, cloner) {
+      collapsed = original.collapsed;
+      color = original.color;
+      lineColor = original.lineColor;
+      lineWidth = original.lineWidth;
+      title = original.title;
+      if (original.icon != null) icon = (Bitmap)original.icon.Clone();
+
+      connectorNames = new List<string>(original.connectorNames);
+      labels = new List<string>(original.labels);
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OperatorShapeInfo(this, cloner);
+    }
+
     public OperatorShapeInfo()
       : base(typeof(OperatorShape)) {
       this.connectorNames = new List<string>();
@@ -214,21 +232,6 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       this.Collapsed = operatorShape.Collapsed;
 
       //TODO update Connector and labels;
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      OperatorShapeInfo clone = (OperatorShapeInfo)base.Clone(cloner);
-      clone.collapsed = this.collapsed;
-      clone.color = this.color;
-      clone.lineColor = this.lineColor;
-      clone.lineWidth = this.lineWidth;
-      clone.title = this.title;
-      clone.icon = (Bitmap)this.icon.Clone();
-
-      clone.connectorNames = new List<string>(this.connectorNames);
-      clone.labels = new List<string>(this.labels);
-
-      return clone;
     }
   }
 }

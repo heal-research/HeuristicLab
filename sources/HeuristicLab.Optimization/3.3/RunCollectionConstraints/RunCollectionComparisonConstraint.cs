@@ -33,6 +33,14 @@ namespace HeuristicLab.Optimization {
     [StorableConstructor]
     protected RunCollectionComparisonConstraint(bool deserializing) : base(deserializing) { }
 
+    protected RunCollectionComparisonConstraint(RunCollectionComparisonConstraint original, Cloner cloner)
+      : base(original, cloner) {
+      constraintColumn = original.constraintColumn;
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new RunCollectionComparisonConstraint(this, cloner);
+    }
+
     public RunCollectionComparisonConstraint() : base() { }
     public RunCollectionComparisonConstraint(RunCollection constrainedValue, ConstraintOperation constraintOperation, object constraintData)
       : base(constrainedValue, constraintOperation, constraintData) {
@@ -126,24 +134,6 @@ namespace HeuristicLab.Optimization {
         s += "null";
 
       return s;
-    }
-
-    public override IDeepCloneable Clone(HeuristicLab.Common.Cloner cloner) {
-      RunCollectionComparisonConstraint clone = (RunCollectionComparisonConstraint)base.Clone(cloner);
-
-      IItem constraintDataItem = this.ConstraintData as IItem;
-      ICloneable constraintDataCloneable = this.ConstraintData as ICloneable;
-      if (constraintDataItem != null)
-        clone.ConstraintData = (IStringConvertibleValue)cloner.Clone(constraintDataItem);
-      else if (constraintDataCloneable != null)
-        clone.ConstraintData = (IStringConvertibleValue)constraintDataCloneable.Clone();
-      else
-        clone.ConstraintData = this.ConstraintData;
-
-      clone.ConstraintOperation = this.ConstraintOperation;
-      clone.constraintColumn = this.constraintColumn;
-
-      return clone;
     }
   }
 }

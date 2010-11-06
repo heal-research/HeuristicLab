@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.OneMax {
   /// </summary>
   [Item("OneMaxSolution", "Represents a OneMax solution.")]
   [StorableClass]
-  public class OneMaxSolution : Item {
+  public sealed class OneMaxSolution : Item {
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Image; }
     }
@@ -66,6 +66,17 @@ namespace HeuristicLab.Problems.OneMax {
       }
     }
 
+    [StorableConstructor]
+    private OneMaxSolution(bool deserializing) : base(deserializing) { }
+    private OneMaxSolution(OneMaxSolution original, Cloner cloner)
+      : base(original, cloner) {
+      binaryVector = cloner.Clone(original.binaryVector);
+      quality = cloner.Clone(original.quality);
+      Initialize();
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OneMaxSolution(this, cloner);
+    }
     public OneMaxSolution() : base() { }
     public OneMaxSolution(BinaryVector binaryVector, DoubleValue quality)
       : base() {
@@ -73,22 +84,15 @@ namespace HeuristicLab.Problems.OneMax {
       this.quality = quality;
       Initialize();
     }
-    [StorableConstructor]
-    private OneMaxSolution(bool deserializing) : base(deserializing) { }
 
     [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      Initialize();
+    }
+
     private void Initialize() {
       if (binaryVector != null) RegisterBinaryVectorEvents();
       if (quality != null) RegisterQualityEvents();
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      OneMaxSolution clone = new OneMaxSolution();
-      cloner.RegisterClonedObject(this, clone);
-      clone.binaryVector = (BinaryVector)cloner.Clone(binaryVector);
-      clone.quality = (DoubleValue)cloner.Clone(quality);
-      clone.Initialize();
-      return clone;
     }
 
     #region Events

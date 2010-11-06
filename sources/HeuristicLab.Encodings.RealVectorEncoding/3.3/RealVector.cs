@@ -28,6 +28,9 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   [StorableClass]
   [Item("RealVector", "Represents a vector of real values.")]
   public class RealVector : DoubleArray {
+    [StorableConstructor]
+    protected RealVector(bool deserializing) : base(deserializing) { }
+    protected RealVector(RealVector original, Cloner cloner) : base(original, cloner) { }
     public RealVector() : base() { }
     public RealVector(int length) : base(length) { }
     public RealVector(int length, IRandom random, double min, double max)
@@ -42,10 +45,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      RealVector clone = new RealVector(array);
-      cloner.RegisterClonedObject(this, clone);
-      clone.readOnly = readOnly;
-      return clone;
+      return new RealVector(this, cloner);
     }
 
     public virtual void Randomize(IRandom random, int startIndex, int length, double min, double max) {

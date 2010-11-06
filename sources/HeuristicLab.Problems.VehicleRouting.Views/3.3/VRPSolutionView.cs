@@ -25,9 +25,8 @@ using System.Windows.Forms;
 using HeuristicLab.Core.Views;
 using HeuristicLab.Data;
 using HeuristicLab.MainForm;
-using HeuristicLab.Problems.VehicleRouting.Encodings;
 using HeuristicLab.Parameters;
-using System.Linq;
+using HeuristicLab.Problems.VehicleRouting.Encodings;
 
 namespace HeuristicLab.Problems.VehicleRouting.Views {
   /// <summary>

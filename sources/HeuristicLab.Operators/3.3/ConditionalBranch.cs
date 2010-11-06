@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -49,11 +50,20 @@ namespace HeuristicLab.Operators {
       set { FalseBranchParameter.Value = value; }
     }
 
+    [StorableConstructor]
+    protected ConditionalBranch(bool deserializing) : base(deserializing) { }
+    protected ConditionalBranch(ConditionalBranch original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public ConditionalBranch()
       : base() {
       Parameters.Add(new LookupParameter<BoolValue>("Condition", "A boolean variable which defines which branch is executed."));
       Parameters.Add(new OperatorParameter("TrueBranch", "The operator which is executed if the condition is true."));
       Parameters.Add(new OperatorParameter("FalseBranch", "The operator which is executed if the condition is false."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ConditionalBranch(this, cloner);
     }
 
     public override IOperation Apply() {

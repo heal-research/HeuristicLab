@@ -27,19 +27,15 @@ namespace HeuristicLab.Core {
   [StorableClass]
   [Item("VariableCollection", "Represents a collection of variables.")]
   public sealed class VariableCollection : NamedItemCollection<IVariable> {
+    [StorableConstructor]
+    private VariableCollection(bool deserializing) : base(deserializing) { }
+    private VariableCollection(VariableCollection original, Cloner cloner) : base(original, cloner) { }
     public VariableCollection() : base() { }
     public VariableCollection(int capacity) : base(capacity) { }
     public VariableCollection(IEnumerable<IVariable> collection) : base(collection) { }
-    [StorableConstructor]
-    private VariableCollection(bool deserializing) : base(deserializing) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      VariableCollection clone = new VariableCollection();
-      cloner.RegisterClonedObject(this, clone);
-      foreach (string key in dict.Keys)
-        clone.dict.Add(key, (IVariable)cloner.Clone(dict[key]));
-      clone.Initialize();
-      return clone;
+      return new VariableCollection(this, cloner);
     }
   }
 }

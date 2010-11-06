@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
@@ -36,9 +37,16 @@ namespace HeuristicLab.Problems.Knapsack {
       get { return (ILookupParameter<OneBitflipMove>)Parameters["OneBitflipMove"]; }
     }
 
+    [StorableConstructor]
+    protected KnapsackOneBitflipMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected KnapsackOneBitflipMoveEvaluator(KnapsackOneBitflipMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     public KnapsackOneBitflipMoveEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<OneBitflipMove>("OneBitflipMove", "The move to evaluate."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new KnapsackOneBitflipMoveEvaluator(this, cloner);
     }
 
     public override IOperation Apply() {

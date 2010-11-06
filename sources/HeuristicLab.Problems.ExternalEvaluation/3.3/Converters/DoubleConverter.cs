@@ -21,6 +21,7 @@
 
 using System;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -31,8 +32,16 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   public class DoubleConverter : Item, IItemToSolutionMessageConverter {
     private static readonly Type[] itemTypes = new Type[] { typeof(ValueTypeValue<double>), typeof(ValueTypeArray<double>), typeof(ValueTypeMatrix<double>) };
 
+    [StorableConstructor]
+    protected DoubleConverter(bool deserializing) : base(deserializing) { }
+    protected DoubleConverter(DoubleConverter original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new DoubleConverter(this, cloner);
+    }
+    public DoubleConverter() : base() { }
+
     #region IItemToSolutionMessageConverter Members
-    
+
     public Type[] ItemTypes {
       get { return itemTypes; }
     }

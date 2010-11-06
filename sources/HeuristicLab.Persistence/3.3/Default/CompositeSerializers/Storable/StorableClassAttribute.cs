@@ -50,6 +50,16 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     /// </summary>
     public StorableClassAttribute() { }
 
+    /// <summary>
+    ///  Checks if the <see cref="StorableClassAttribute"/> is present on a type.
+    /// </summary>
+    /// <param name="type">The type which should be checked for the <see cref="StorableClassAttribute"/></param>
+    /// <returns></returns>
+    public static bool IsStorableClass(Type type) {
+      object[] attribs = type.GetCustomAttributes(typeof(StorableClassAttribute), false);
+      return attribs.Length > 0;
+    }
+
   }
 }
 

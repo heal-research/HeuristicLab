@@ -22,9 +22,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis.Evaluators {
   public class SimpleMSEEvaluator : SimpleEvaluator {
@@ -33,6 +35,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Evaluators {
       get { return (ILookupParameter<DoubleValue>)Parameters["MeanSquaredError"]; }
     }
 
+    [StorableConstructor]
+    protected SimpleMSEEvaluator(bool deserializing) : base(deserializing) { }
+    protected SimpleMSEEvaluator(SimpleMSEEvaluator original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SimpleMSEEvaluator(this, cloner);
+    }
     public SimpleMSEEvaluator() {
       Parameters.Add(new LookupParameter<DoubleValue>("MeanSquaredError", "The mean squared error of estimated values."));
     }

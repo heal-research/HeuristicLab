@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -28,6 +29,15 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("ExhaustiveInversionMoveGenerator", "Generates all possible inversion moves (2-opt) from a given permutation.")]
   [StorableClass]
   public class ExhaustiveInversionMoveGenerator : InversionMoveGenerator, IExhaustiveMoveGenerator {
+    [StorableConstructor]
+    protected ExhaustiveInversionMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected ExhaustiveInversionMoveGenerator(ExhaustiveInversionMoveGenerator original, Cloner cloner) : base(original, cloner) { }
+    public ExhaustiveInversionMoveGenerator() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ExhaustiveInversionMoveGenerator(this, cloner);
+    }
+
     public static InversionMove[] Apply(Permutation permutation) {
       int length = permutation.Length;
       if (length == 1) throw new ArgumentException("ExhaustiveInversionMoveGenerator: There cannot be an inversion move given a permutation of length 1.", "permutation");

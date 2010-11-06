@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -35,6 +36,15 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("PartiallyMatchedCrossover", "An operator which performs the partially matched crossover on two permutations. It is implemented as described in Fogel, D.B. 1988. An Evolutionary Approach to the Traveling Salesman Problem. Biological Cybernetics, 60, pp. 139-144, Springer-Verlag.")]
   [StorableClass]
   public class PartiallyMatchedCrossover : PermutationCrossover {
+    [StorableConstructor]
+    protected PartiallyMatchedCrossover(bool deserializing) : base(deserializing) { }
+    protected PartiallyMatchedCrossover(PartiallyMatchedCrossover original, Cloner cloner) : base(original, cloner) { }
+    public PartiallyMatchedCrossover() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new PartiallyMatchedCrossover(this, cloner);
+    }
+
     /// <summary>
     /// Performs the partially matched crossover on <paramref name="parent1"/> and <paramref name="parent2"/>.
     /// </summary>

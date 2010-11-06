@@ -20,6 +20,7 @@
 #endregion
 
 using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -41,6 +42,14 @@ namespace HeuristicLab.Selection {
       set { CopySelectedParameter.Value = value; }
     }
 
+    [StorableConstructor]
+    protected ConditionalSelector(bool deserializing) : base(deserializing) { }
+    protected ConditionalSelector(ConditionalSelector original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ConditionalSelector(this, cloner);
+    }
     public ConditionalSelector()
       : base() {
       Parameters.Add(new ScopeTreeLookupParameter<BoolValue>("Condition", "The boolean variable based on which the scopes are selected into a true scope-branch and a false scope-branch."));

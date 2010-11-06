@@ -189,13 +189,18 @@ namespace HeuristicLab.Algorithms.TabuSearch {
     }
     [StorableConstructor]
     private TabuSearch(bool deserializing) : base(deserializing) { }
-
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      Initialize();
+    }
+    private TabuSearch(TabuSearch original, Cloner cloner)
+      : base(original, cloner) {
+      moveQualityAnalyzer = cloner.Clone(original.moveQualityAnalyzer);
+      tabuNeighborhoodAnalyzer = cloner.Clone(original.tabuNeighborhoodAnalyzer);
+      Initialize();
+    }
     public override IDeepCloneable Clone(Cloner cloner) {
-      TabuSearch clone = (TabuSearch)base.Clone(cloner);
-      clone.moveQualityAnalyzer = (BestAverageWorstQualityAnalyzer)cloner.Clone(moveQualityAnalyzer);
-      clone.tabuNeighborhoodAnalyzer = (TabuNeighborhoodAnalyzer)cloner.Clone(tabuNeighborhoodAnalyzer);
-      clone.Initialize();
-      return clone;
+      return new TabuSearch(this, cloner);
     }
 
     public override void Prepare() {
@@ -312,7 +317,6 @@ namespace HeuristicLab.Algorithms.TabuSearch {
     #endregion
 
     #region Helpers
-    [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
       if (Problem != null) {
         Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);

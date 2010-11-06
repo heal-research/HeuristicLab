@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -50,10 +51,19 @@ namespace HeuristicLab.Operators {
       set { DepthParameter.Value = value; }
     }
 
+    [StorableConstructor]
+    private SubScopesProcessor(bool deserializing) : base(deserializing) { }
+    private SubScopesProcessor(SubScopesProcessor original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public SubScopesProcessor()
       : base() {
       Parameters.Add(new ValueLookupParameter<BoolValue>("Parallel", "True if the operators should be applied in parallel on the sub-scopes, otherwise false.", new BoolValue(false)));
       Parameters.Add(new ValueParameter<IntValue>("Depth", "The number of steps to descend in the scope tree before applying operator.", new IntValue(1)));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SubScopesProcessor(this, cloner);
     }
 
     public override IOperation Apply() {

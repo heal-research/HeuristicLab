@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -94,6 +95,11 @@ namespace HeuristicLab.Problems.VehicleRouting {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["WorstVehiclesUtilized"]; }
     }
 
+    [StorableConstructor]
+    private BestAverageWorstVRPToursCalculator(bool deserializing) : base(deserializing) { }
+    private BestAverageWorstVRPToursCalculator(BestAverageWorstVRPToursCalculator original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public BestAverageWorstVRPToursCalculator()
       : base() {
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Distance", "The distances of the VRP solutions which should be analyzed."));
@@ -120,6 +126,10 @@ namespace HeuristicLab.Problems.VehicleRouting {
       Parameters.Add(new ValueLookupParameter<DoubleValue>("BestVehiclesUtilized", "The best utilized vehicles value."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("AverageVehiclesUtilized", "The average utilized vehicles value of all solutions."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("WorstVehiclesUtilized", "The worst utilized vehicles value of all solutions."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new BestAverageWorstVRPToursCalculator(this, cloner);
     }
 
     private void UpdateOverloads() {

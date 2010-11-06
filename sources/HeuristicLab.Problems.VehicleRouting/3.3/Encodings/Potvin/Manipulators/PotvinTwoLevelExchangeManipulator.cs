@@ -19,12 +19,9 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
-using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinTwoLevelExchangeManipulator", "The 2M operator which manipulates a VRP representation.  It is implemented as described in Potvin, J.-Y. and Bengio, S. (1996). The Vehicle Routing Problem with Time Windows - Part II: Genetic Search. INFORMS Journal of Computing, 8:165–172.")]
@@ -32,9 +29,12 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   public sealed class PotvinTwoLevelExchangeManipulator : PotvinManipulator {
     [StorableConstructor]
     private PotvinTwoLevelExchangeManipulator(bool deserializing) : base(deserializing) { }
-
+    private PotvinTwoLevelExchangeManipulator(PotvinTwoLevelExchangeManipulator original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new PotvinTwoLevelExchangeManipulator(this, cloner);
+    }
     public PotvinTwoLevelExchangeManipulator() : base() { }
-    
+
     protected override void Manipulate(IRandom random, PotvinEncoding individual) {
       int selectedIndex = SelectRandomTourBiasedByLength(random, individual);
       Tour route1 =
@@ -53,7 +53,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
                 int route, place;
                 if (FindInsertionPlace(individual,
                   customer2, selectedIndex, out route, out place)) {
-                    individual.Tours[route].Cities.Insert(place, customer2);
+                  individual.Tours[route].Cities.Insert(place, customer2);
                   route1.Cities.RemoveAt(customer1Position);
 
                   if (route1.Cities.Count == 0)

@@ -52,6 +52,18 @@ namespace HeuristicLab.Analysis {
     }
     #endregion
 
+    #region Storing & Cloning
+    [StorableConstructor]
+    protected Allele(bool deserializing) : base(deserializing) { }
+    protected Allele(Allele original, Cloner cloner)
+      : base(original, cloner) {
+      this.id = original.id;
+      this.impact = original.impact;
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Allele(this, cloner);
+    }
+    #endregion
     public Allele()
       : base() {
       this.id = string.Empty;
@@ -66,15 +78,6 @@ namespace HeuristicLab.Analysis {
       : base() {
       this.id = id;
       this.impact = impact;
-    }
-    [StorableConstructor]
-    protected Allele(bool deserializing) : base(deserializing) { }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      Allele clone = (Allele)base.Clone(cloner);
-      clone.id = id;
-      clone.impact = impact;
-      return clone;
     }
 
     public override string ToString() {

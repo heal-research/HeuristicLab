@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -33,13 +34,18 @@ namespace HeuristicLab.Optimization {
     private const string MaximizationParameterName = "Maximization";
     private const string BestKnownQualityParameterName = "BestKnownQuality";
 
+    [StorableConstructor]
+    protected SingleObjectiveProblem(bool deserializing) : base(deserializing) { }
+    protected SingleObjectiveProblem(SingleObjectiveProblem<T, U> original, Cloner cloner)
+      : base(original, cloner) {
+    }
+
     protected SingleObjectiveProblem()
       : base() {
       Parameters.Add(new ValueParameter<BoolValue>(MaximizationParameterName, "Set to false if the problem should be minimized."));
       Parameters.Add(new ValueParameter<DoubleValue>(BestKnownQualityParameterName, "The quality of the best known solution of this problem."));
     }
-    [StorableConstructor]
-    protected SingleObjectiveProblem(bool deserializing) : base(deserializing) { }
+
 
     #region properties
     ISingleObjectiveEvaluator ISingleObjectiveProblem.Evaluator { get { return Evaluator; } }

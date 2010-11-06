@@ -20,7 +20,7 @@
 #endregion
 
 using System.Collections.Generic;
-using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
@@ -32,6 +32,12 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
   public class FullFunctionalExpressionGrammar : DefaultSymbolicExpressionGrammar {
     [Storable]
     private HeuristicLab.Problems.ExternalEvaluation.GP.Variable variableSymbol;
+    [StorableConstructor]
+    protected FullFunctionalExpressionGrammar(bool deserializing) : base(deserializing) { }
+    protected FullFunctionalExpressionGrammar(FullFunctionalExpressionGrammar original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new FullFunctionalExpressionGrammar(this, cloner);
+    }
 
     public FullFunctionalExpressionGrammar()
       : base() {
@@ -74,7 +80,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
       var allSymbols = new List<Symbol>() { add, sub, mul, div, mean, sin, cos, tan, log, exp, @if, gt, lt, and, or, not, constant, variableSymbol };
       var unaryFunctionSymbols = new List<Symbol>() { sin, cos, tan, log, exp, not };
       var binaryFunctionSymbols = new List<Symbol>() { gt, lt };
-      var functionSymbols = new List<Symbol>() { add, sub, mul, div, mean, and, or};
+      var functionSymbols = new List<Symbol>() { add, sub, mul, div, mean, and, or };
 
       foreach (var symb in allSymbols)
         AddSymbol(symb);

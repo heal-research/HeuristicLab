@@ -29,14 +29,17 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
     [StorableConstructor]
     private SymbolicExpressionTreeGrammar(bool deserializing) : base(deserializing) { }
-    //default ctor for cloning
-    private SymbolicExpressionTreeGrammar() : base(false) { }
+    // don't call storable ctor of base class to prevent full cloning
+    // instead use storable ctor to initialize an empty grammar and fill with InizializeShallowClone
+    private SymbolicExpressionTreeGrammar(SymbolicExpressionTreeGrammar original, Cloner cloner)
+      : base(false) {
+      cloner.RegisterClonedObject(original, this);
+      InitializeShallowClone(original);
+    }
+    private SymbolicExpressionTreeGrammar() : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      SymbolicExpressionTreeGrammar clone = new SymbolicExpressionTreeGrammar();
-      cloner.RegisterClonedObject(this, clone);
-      InitializeShallowClone(clone);
-      return clone;
+      return new SymbolicExpressionTreeGrammar(this, cloner);
     }
   }
 }

@@ -52,6 +52,13 @@ namespace HeuristicLab.Data {
       get { return readOnly; }
     }
 
+    [StorableConstructor]
+    protected ValueTypeValue(bool deserializing) : base(deserializing) { }
+    protected ValueTypeValue(ValueTypeValue<T> original, Cloner cloner)
+      : base(original, cloner) {
+      this.value = original.value;
+      this.readOnly = original.readOnly;
+    }
     protected ValueTypeValue() {
       this.value = default(T);
       this.readOnly = false;
@@ -59,13 +66,6 @@ namespace HeuristicLab.Data {
     protected ValueTypeValue(T value) {
       this.value = value;
       this.readOnly = false;
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      ValueTypeValue<T> clone = (ValueTypeValue<T>)base.Clone(cloner);
-      clone.value = value;
-      clone.readOnly = readOnly;
-      return clone;
     }
 
     public virtual ValueTypeValue<T> AsReadOnly() {

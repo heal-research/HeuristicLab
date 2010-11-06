@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -69,6 +70,9 @@ namespace HeuristicLab.Optimization.Operators {
       get { return (IValueLookupParameter<IntValue>)Parameters["EndIndex"]; }
     }
 
+    [StorableConstructor]
+    protected DiscreteDoubleValueModifier(bool deserializing) : base(deserializing) { }
+    protected DiscreteDoubleValueModifier(DiscreteDoubleValueModifier original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="DiscreteDoubleValueModifier"/> with 6 parameters
     /// (<c>Value</c>, <c>StartValue</c>, <c>EndValue</c>, <c>Index</c>, <c>StartIndex</c>, <c>EndIndex</c>).

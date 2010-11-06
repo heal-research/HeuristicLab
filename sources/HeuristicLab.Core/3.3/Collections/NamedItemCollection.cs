@@ -28,24 +28,26 @@ namespace HeuristicLab.Core {
   [Item("NamedItemCollection", "Represents a collection of named items.")]
   [StorableClass]
   public class NamedItemCollection<T> : KeyedItemCollection<string, T> where T : class, INamedItem {
+    [StorableConstructor]
+    protected NamedItemCollection(bool deserializing) : base(deserializing) { }
+    protected NamedItemCollection(NamedItemCollection<T> original, Cloner cloner)
+      : base(original, cloner) {
+      RegisterItemEvents(this);
+    }
     public NamedItemCollection() : base() { }
     public NamedItemCollection(int capacity) : base(capacity) { }
     public NamedItemCollection(IEnumerable<T> collection)
       : base(collection) {
-      Initialize();
+      RegisterItemEvents(this);
     }
-    [StorableConstructor]
-    protected NamedItemCollection(bool deserializing) : base(deserializing) { }
 
     [StorableHook(HookType.AfterDeserialization)]
-    protected void Initialize() {
+    private void AfterDeserialization() {
       RegisterItemEvents(this);
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      NamedItemCollection<T> clone = (NamedItemCollection<T>)base.Clone(cloner);
-      clone.Initialize();
-      return clone;
+      return new NamedItemCollection<T>(this, cloner);
     }
 
     protected override string GetKeyForItem(T item) {
@@ -72,7 +74,7 @@ namespace HeuristicLab.Core {
       base.OnCollectionReset(items, oldItems);
     }
 
-    private void RegisterItemEvents(IEnumerable<T> items) {
+    protected void RegisterItemEvents(IEnumerable<T> items) {
       foreach (T item in items) {
         if (item != null) {
           item.NameChanging += new EventHandler<CancelEventArgs<string>>(Item_NameChanging);

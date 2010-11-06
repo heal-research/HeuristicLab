@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
@@ -60,6 +61,15 @@ namespace HeuristicLab.Problems.TestFunctions {
     /// </summary>
     public override int MaximumProblemSize {
       get { return int.MaxValue; }
+    }
+
+    [StorableConstructor]
+    protected SumSquaresEvaluator(bool deserializing) : base(deserializing) { }
+    protected SumSquaresEvaluator(SumSquaresEvaluator original, Cloner cloner) : base(original, cloner) { }
+    public SumSquaresEvaluator() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SumSquaresEvaluator(this, cloner);
     }
 
     public override RealVector GetBestKnownSolution(int dimension) {

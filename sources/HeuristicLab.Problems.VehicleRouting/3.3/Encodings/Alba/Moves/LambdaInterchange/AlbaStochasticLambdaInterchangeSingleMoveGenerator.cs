@@ -20,12 +20,12 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
 using HeuristicLab.Parameters;
-using System.Collections.Generic;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
@@ -40,17 +40,23 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     }
 
     #endregion
-    
+
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
-    
+
     [StorableConstructor]
     private AlbaStochasticLambdaInterchangeSingleMoveGenerator(bool deserializing) : base(deserializing) { }
-
+    private AlbaStochasticLambdaInterchangeSingleMoveGenerator(AlbaStochasticLambdaInterchangeSingleMoveGenerator original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public AlbaStochasticLambdaInterchangeSingleMoveGenerator()
       : base() {
-        Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator."));
+      Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new AlbaStochasticLambdaInterchangeSingleMoveGenerator(this, cloner);
     }
 
     public static AlbaLambdaInterchangeMove Apply(AlbaEncoding individual, int cities, int lambda, IRandom rand) {
@@ -80,7 +86,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       List<AlbaLambdaInterchangeMove> moves = new List<AlbaLambdaInterchangeMove>();
 
       AlbaLambdaInterchangeMove move = Apply(individual, Cities, lambda, RandomParameter.ActualValue);
-      if(move != null)
+      if (move != null)
         moves.Add(move);
 
       return moves.ToArray();

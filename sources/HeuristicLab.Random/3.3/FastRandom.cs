@@ -53,6 +53,27 @@ namespace HeuristicLab.Random {
     private uint x, y, z, w;
 
     #region Constructors
+    /// <summary>
+    /// Used by HeuristicLab.Persistence to initialize new instances during deserialization.
+    /// </summary>
+    /// <param name="deserializing">true, if the constructor is called during deserialization.</param>
+    [StorableConstructor]
+    private FastRandom(bool deserializing) : base(deserializing) { }
+
+    /// <summary>
+    /// Initializes a new instance from an existing one (copy constructor).
+    /// </summary>
+    /// <param name="original">The original <see cref="FastRandom"/> instance which is used to initialize the new instance.</param>
+    /// <param name="cloner">A <see cref="Cloner"/> which is used to track all already cloned objects in order to avoid cycles.</param>
+    private FastRandom(FastRandom original, Cloner cloner)
+      : base(original, cloner) {
+      x = original.x;
+      y = original.y;
+      z = original.z;
+      w = original.w;
+      bitBuffer = original.bitBuffer;
+      bitMask = original.bitMask;
+    }
 
     /// <summary>
     /// Initialises a new instance using time dependent seed.
@@ -70,14 +91,6 @@ namespace HeuristicLab.Random {
     public FastRandom(int seed) {
       Reinitialise(seed);
     }
-
-    /// <summary>
-    /// Used by HeuristicLab.Persistence to initialize new instances during deserialization.
-    /// </summary>
-    /// <param name="deserializing">true, if the constructor is called during deserialization.</param>
-    [StorableConstructor]
-    private FastRandom(bool deserializing) : base(deserializing) { }
-
     #endregion
 
     #region Public Methods [Reinitialisation]
@@ -350,14 +363,7 @@ namespace HeuristicLab.Random {
     #endregion
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      FastRandom clone = (FastRandom)base.Clone(cloner);
-      clone.x = x;
-      clone.y = y;
-      clone.z = z;
-      clone.w = w;
-      clone.bitBuffer = bitBuffer;
-      clone.bitMask = bitMask;
-      return clone;
+      return new FastRandom(this, cloner);
     }
   }
 }

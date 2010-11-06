@@ -22,6 +22,7 @@
 using System;
 using System.Linq;
 using HeuristicLab.Collections;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
@@ -49,7 +50,8 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     }
 
     [StorableConstructor]
-    private MultiIntegerVectorCrossover(bool deserializing) : base(deserializing) { }
+    protected MultiIntegerVectorCrossover(bool deserializing) : base(deserializing) { }
+    protected MultiIntegerVectorCrossover(MultiIntegerVectorCrossover original, Cloner cloner) : base(original, cloner) { }
     public MultiIntegerVectorCrossover()
       : base() {
       Parameters.Add(new ScopeTreeLookupParameter<IntegerVector>("Parents", "The parent integer vector which should be crossed."));
@@ -61,6 +63,10 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
         if (!typeof(MultiOperator<IIntegerVectorCrossover>).IsAssignableFrom(type))
           Operators.Add((IIntegerVectorCrossover)Activator.CreateInstance(type), true);
       }
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MultiIntegerVectorCrossover(this, cloner);
     }
 
     protected override void Operators_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<IIntegerVectorCrossover>> e) {

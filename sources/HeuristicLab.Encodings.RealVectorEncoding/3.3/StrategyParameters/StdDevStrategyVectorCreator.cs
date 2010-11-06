@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -46,12 +47,19 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       get { return (IValueLookupParameter<DoubleMatrix>)Parameters["Bounds"]; }
     }
 
+    [StorableConstructor]
+    protected StdDevStrategyVectorCreator(bool deserializing) : base(deserializing) { }
+    protected StdDevStrategyVectorCreator(StdDevStrategyVectorCreator original, Cloner cloner) : base(original, cloner) { }
     public StdDevStrategyVectorCreator()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));
       Parameters.Add(new LookupParameter<RealVector>("StrategyParameter", "The crossed strategy parameter."));
       Parameters.Add(new ValueLookupParameter<IntValue>("Length", "The length of the vector."));
       Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "A 2 column matrix specifying the lower and upper bound for each dimension. If there are less rows than dimension the bounds vector is cycled.", new DoubleMatrix(new double[,] { { 0, 5 } })));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new StdDevStrategyVectorCreator(this, cloner);
     }
 
     public override IOperation Apply() {

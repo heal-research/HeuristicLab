@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
@@ -56,6 +57,9 @@ namespace HeuristicLab.Problems.Knapsack {
       get { return (ILookupParameter<IntArray>)Parameters["Values"]; }
     }
 
+    [StorableConstructor]
+    protected KnapsackMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected KnapsackMoveEvaluator(KnapsackMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     protected KnapsackMoveEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of a Knapsack solution."));

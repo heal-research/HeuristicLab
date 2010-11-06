@@ -121,6 +121,18 @@ namespace HeuristicLab.Problems.TestFunctions {
       }
     }
 
+    [StorableConstructor]
+    protected SingleObjectiveTestFunctionSolution(bool deserializing) : base(deserializing) { }
+    protected SingleObjectiveTestFunctionSolution(SingleObjectiveTestFunctionSolution original, Cloner cloner)
+      : base(original, cloner) {
+      bestKnownRealVector = cloner.Clone(original.bestKnownRealVector);
+      bestRealVector = cloner.Clone(original.bestRealVector);
+      bestQuality = cloner.Clone(original.bestQuality);
+      population = cloner.Clone(original.population);
+      evaluator = cloner.Clone(original.evaluator);
+      bounds = cloner.Clone(original.bounds);
+      Initialize();
+    }
     public SingleObjectiveTestFunctionSolution() : base() { }
     public SingleObjectiveTestFunctionSolution(RealVector realVector, DoubleValue quality, ISingleObjectiveTestFunctionProblemEvaluator evaluator)
       : base() {
@@ -129,10 +141,12 @@ namespace HeuristicLab.Problems.TestFunctions {
       this.evaluator = evaluator;
       Initialize();
     }
-    [StorableConstructor]
-    private SingleObjectiveTestFunctionSolution(bool deserializing) : base(deserializing) { }
 
     [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      Initialize();
+    }
+
     private void Initialize() {
       if (bestKnownRealVector != null) RegisterBestKnownRealVectorEvents();
       if (bestRealVector != null) RegisterBestRealVectorEvents();
@@ -142,16 +156,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      SingleObjectiveTestFunctionSolution clone = new SingleObjectiveTestFunctionSolution();
-      cloner.RegisterClonedObject(this, clone);
-      clone.bestKnownRealVector = (RealVector)cloner.Clone(bestKnownRealVector);
-      clone.bestRealVector = (RealVector)cloner.Clone(bestRealVector);
-      clone.bestQuality = (DoubleValue)cloner.Clone(bestQuality);
-      clone.population = (ItemArray<RealVector>)cloner.Clone(population);
-      clone.evaluator = (ISingleObjectiveTestFunctionProblemEvaluator)cloner.Clone(evaluator);
-      clone.bounds = (DoubleMatrix)cloner.Clone(bounds);
-      clone.Initialize();
-      return clone;
+      return new SingleObjectiveTestFunctionSolution(this, cloner);
     }
 
     #region Events

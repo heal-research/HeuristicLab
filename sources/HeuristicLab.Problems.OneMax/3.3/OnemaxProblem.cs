@@ -111,6 +111,11 @@ namespace HeuristicLab.Problems.OneMax {
 
     [StorableConstructor]
     private OneMaxProblem(bool deserializing) : base(deserializing) { }
+    private OneMaxProblem(OneMaxProblem original, Cloner cloner)
+      : base(original, cloner) {
+      operators = original.operators.Select(x => (IOperator)cloner.Clone(x)).ToList();
+      AttachEventHandlers();
+    }
     public OneMaxProblem()
       : base() {
       RandomBinaryVectorCreator creator = new RandomBinaryVectorCreator();
@@ -132,10 +137,7 @@ namespace HeuristicLab.Problems.OneMax {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      OneMaxProblem clone = (OneMaxProblem)base.Clone(cloner);
-      clone.operators = operators.Select(x => (IOperator)cloner.Clone(x)).ToList();
-      clone.AttachEventHandlers();
-      return clone;
+      return new OneMaxProblem(this, cloner);
     }
 
     #region Events
@@ -199,7 +201,7 @@ namespace HeuristicLab.Problems.OneMax {
 
     #region Helpers
     [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserializationHook() {
+    private void AfterDeserialization() {
       // BackwardsCompatibility3.3
       #region Backwards compatible code (remove with 3.4)
       if (operators == null) InitializeOperators();

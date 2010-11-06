@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -39,6 +40,15 @@ namespace HeuristicLab.Algorithms.EvolutionStrategy {
     }
     public IValueLookupParameter<IntValue> ParentsPerChildParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters["ParentsPerChild"]; }
+    }
+
+    [StorableConstructor]
+    protected WithoutRepeatingBatchedRandomSelector(bool deserializing) : base(deserializing) { }
+    protected WithoutRepeatingBatchedRandomSelector(WithoutRepeatingBatchedRandomSelector original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new WithoutRepeatingBatchedRandomSelector(this, cloner);
     }
 
     public WithoutRepeatingBatchedRandomSelector()

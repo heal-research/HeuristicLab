@@ -78,6 +78,14 @@ namespace HeuristicLab.Parameters {
     }
 
     #region Constructors
+    [StorableConstructor]
+    protected ValueLookupParameter(bool deserializing) : base(deserializing) { }
+    protected ValueLookupParameter(ValueLookupParameter<T> original, Cloner cloner)
+      : base(original, cloner) {
+      value = cloner.Clone(original.value);
+      getsCollected = original.getsCollected;
+      RegisterValueEvents();
+    }
     public ValueLookupParameter()
       : base() {
       this.getsCollected = true;
@@ -94,13 +102,13 @@ namespace HeuristicLab.Parameters {
       : base(name) {
       this.value = value;
       this.getsCollected = true;
-      Initialize();
+      RegisterValueEvents();
     }
     public ValueLookupParameter(string name, T value, bool getsCollected)
       : base(name) {
       this.value = value;
       this.getsCollected = getsCollected;
-      Initialize();
+      RegisterValueEvents();
     }
     public ValueLookupParameter(string name, string description)
       : base(name, description) {
@@ -114,13 +122,13 @@ namespace HeuristicLab.Parameters {
       : base(name, description) {
       this.value = value;
       this.getsCollected = true;
-      Initialize();
+      RegisterValueEvents();
     }
     public ValueLookupParameter(string name, string description, T value, bool getsCollected)
       : base(name, description) {
       this.value = value;
       this.getsCollected = getsCollected;
-      Initialize();
+      RegisterValueEvents();
     }
     public ValueLookupParameter(string name, string description, string actualName)
       : base(name, description, actualName) {
@@ -130,21 +138,15 @@ namespace HeuristicLab.Parameters {
       : base(name, description, actualName) {
       this.getsCollected = getsCollected;
     }
-    [StorableConstructor]
-    protected ValueLookupParameter(bool deserializing) : base(deserializing) { }
     #endregion
 
     [StorableHook(HookType.AfterDeserialization)]
-    private void Initialize() {
+    private void AfterDeserialization() {
       RegisterValueEvents();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      ValueLookupParameter<T> clone = (ValueLookupParameter<T>)base.Clone(cloner);
-      clone.value = (T)cloner.Clone(value);
-      clone.getsCollected = getsCollected;
-      clone.Initialize();
-      return clone;
+      return new ValueLookupParameter<T>(this, cloner);
     }
 
     public override string ToString() {

@@ -19,13 +19,11 @@
  */
 #endregion
 
-using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
 using HeuristicLab.Parameters;
-using System.Collections.Generic;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaIntraRouteInversionMoveGenerator", "Generates intra route inversion moves from a given VRP encoding.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
@@ -41,11 +39,11 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
 
     [StorableConstructor]
     protected AlbaIntraRouteInversionMoveGenerator(bool deserializing) : base(deserializing) { }
-
+    protected AlbaIntraRouteInversionMoveGenerator(AlbaIntraRouteInversionMoveGenerator original, Cloner cloner) : base(original, cloner) { }
     public AlbaIntraRouteInversionMoveGenerator()
       : base() {
-        Parameters.Add(new LookupParameter<AlbaIntraRouteInversionMove>("AlbaIntraRouteInversionMove", "The moves that should be generated in subscopes."));
-        Parameters.Add(new ScopeParameter("CurrentScope", "The current scope where the moves should be added as subscopes."));
+      Parameters.Add(new LookupParameter<AlbaIntraRouteInversionMove>("AlbaIntraRouteInversionMove", "The moves that should be generated in subscopes."));
+      Parameters.Add(new ScopeParameter("CurrentScope", "The current scope where the moves should be added as subscopes."));
     }
 
     protected abstract AlbaIntraRouteInversionMove[] GenerateMoves(AlbaEncoding individual);

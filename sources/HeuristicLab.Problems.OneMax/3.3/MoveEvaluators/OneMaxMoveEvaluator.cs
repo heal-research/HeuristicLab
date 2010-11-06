@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
@@ -44,6 +45,9 @@ namespace HeuristicLab.Problems.OneMax {
       get { return (ILookupParameter<BinaryVector>)Parameters["BinaryVector"]; }
     }
 
+    [StorableConstructor]
+    protected OneMaxMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected OneMaxMoveEvaluator(OneMaxMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     protected OneMaxMoveEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of a OneMax solution."));

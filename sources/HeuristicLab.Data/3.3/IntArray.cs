@@ -28,15 +28,17 @@ namespace HeuristicLab.Data {
   [Item("IntArray", "Represents an array of integer values.")]
   [StorableClass]
   public class IntArray : ValueTypeArray<int>, IStringConvertibleArray {
+    [StorableConstructor]
+    protected IntArray(bool deserializing) : base(deserializing) { }
+    protected IntArray(IntArray original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public IntArray() : base() { }
     public IntArray(int length) : base(length) { }
     public IntArray(int[] elements) : base(elements) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      IntArray clone = new IntArray(array);
-      cloner.RegisterClonedObject(this, clone);
-      clone.readOnly = readOnly;
-      return clone;
+      return new IntArray(this, cloner);
     }
 
     protected virtual bool Validate(string value, out string errorMessage) {

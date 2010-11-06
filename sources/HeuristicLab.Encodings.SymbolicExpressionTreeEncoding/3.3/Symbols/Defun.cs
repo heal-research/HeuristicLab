@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
@@ -31,9 +32,14 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
     public const string DefunName = "Defun";
     public const string DefunDescription = "Symbol that represents a function defining node.";
 
-    public Defun() : base(Defun.DefunName, Defun.DefunDescription) { }
     [StorableConstructor]
     private Defun(bool deserializing) : base(deserializing) { }
+    private Defun(Defun original, Cloner cloner) : base(original, cloner) { }
+    public Defun() : base(Defun.DefunName, Defun.DefunDescription) { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Defun(this, cloner);
+    }
 
     public override SymbolicExpressionTreeNode CreateTreeNode() {
       return new DefunTreeNode(this);

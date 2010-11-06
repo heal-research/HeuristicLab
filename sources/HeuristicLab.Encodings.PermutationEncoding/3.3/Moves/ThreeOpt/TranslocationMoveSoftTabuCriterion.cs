@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -63,6 +64,9 @@ If the aspiration condition is activated, a move will not be considered tabu aga
       set { UseAspirationCriterionParameter.Value = value; }
     }
 
+    [StorableConstructor]
+    protected TranslocationMoveSoftTabuCriterion(bool deserializing) : base(deserializing) { }
+    protected TranslocationMoveSoftTabuCriterion(TranslocationMoveSoftTabuCriterion original, Cloner cloner) : base(original, cloner) { }
     public TranslocationMoveSoftTabuCriterion()
       : base() {
       Parameters.Add(new LookupParameter<TranslocationMove>("TranslocationMove", "The move to evaluate."));
@@ -72,6 +76,10 @@ If the aspiration condition is activated, a move will not be considered tabu aga
       Parameters.Add(new ValueParameter<BoolValue>("UseAspirationCriterion", "Whether to use the aspiration criterion or not.", new BoolValue(true)));
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, else if it is a minimization problem."));
       Parameters.Add(new LookupParameter<DoubleValue>("MoveQuality", "The quality of the current move."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new TranslocationMoveSoftTabuCriterion(this, cloner);
     }
 
     public override IOperation Apply() {

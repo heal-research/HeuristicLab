@@ -54,6 +54,13 @@ namespace HeuristicLab.Core {
       }
     }
 
+    [StorableConstructor]
+    private Variable(bool deserializing) : base(deserializing) { }
+    private Variable(Variable original, Cloner cloner)
+      : base(original, cloner) {
+      value = cloner.Clone(original.value);
+      RegisterValueEvents();
+    }
     /// <summary>
     /// Initializes a new instance of <see cref="Variable"/> with name <c>Anonymous</c> 
     /// and value <c>null</c>.
@@ -79,18 +86,16 @@ namespace HeuristicLab.Core {
     public Variable(string name, IItem value)
       : base(name) {
       this.value = value;
-      Initialize();
+      RegisterValueEvents();
     }
     public Variable(string name, string description, IItem value)
       : base(name, description) {
       this.value = value;
-      Initialize();
+      RegisterValueEvents();
     }
-    [StorableConstructor]
-    private Variable(bool deserializing) : base(deserializing) { }
 
     [StorableHook(HookType.AfterDeserialization)]
-    private void Initialize() {
+    private void AfterDeserialization() {
       RegisterValueEvents();
     }
 
@@ -100,11 +105,7 @@ namespace HeuristicLab.Core {
     /// <param name="clonedObjects">Dictionary of all already cloned objects. (Needed to avoid cycles.)</param>
     /// <returns>The cloned object as <see cref="Variable"/>.</returns>
     public override IDeepCloneable Clone(Cloner cloner) {
-      Variable clone = new Variable(Name, Description);
-      cloner.RegisterClonedObject(this, clone);
-      clone.value = (IItem)cloner.Clone(value);
-      clone.Initialize();
-      return clone;
+      return new Variable(this, cloner);
     }
 
     /// <summary>
@@ -124,8 +125,8 @@ namespace HeuristicLab.Core {
     /// Fires a new <c>ValueChanged</c> even.
     /// </summary>
     private void OnValueChanged() {
-      if (ValueChanged != null)
-        ValueChanged(this, EventArgs.Empty);
+      var handler = ValueChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
       OnItemImageChanged();
       OnToStringChanged();
     }

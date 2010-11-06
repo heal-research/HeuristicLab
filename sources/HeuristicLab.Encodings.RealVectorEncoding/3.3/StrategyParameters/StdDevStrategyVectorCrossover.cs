@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
@@ -42,12 +43,19 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       get { return (ILookupParameter<RealVector>)Parameters["StrategyParameter"]; }
     }
 
+    [StorableConstructor]
+    protected StdDevStrategyVectorCrossover(bool deserializing) : base(deserializing) { }
+    protected StdDevStrategyVectorCrossover(StdDevStrategyVectorCrossover original, Cloner cloner) : base(original, cloner) { }
     public StdDevStrategyVectorCrossover()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));
       Parameters.Add(new ScopeTreeLookupParameter<RealVector>("ParentStrategyParameter", "The strategy parameters to cross."));
       Parameters.Add(new LookupParameter<RealVector>("StrategyParameter", "The crossed strategy parameter."));
       ParentsParameter.ActualName = "StrategyParameter";
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new StdDevStrategyVectorCrossover(this, cloner);
     }
 
     public override IOperation Apply() {

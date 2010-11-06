@@ -88,6 +88,22 @@ namespace HeuristicLab.Analysis {
     }
     #endregion
 
+    #region Storing & Cloning
+    [StorableConstructor]
+    protected AlleleFrequency(bool deserializing) : base(deserializing) { }
+    protected AlleleFrequency(AlleleFrequency original, Cloner cloner)
+      : base(original, cloner) {
+      this.id = original.id;
+      this.frequency = original.frequency;
+      this.averageImpact = original.averageImpact;
+      this.averageSolutionQuality = original.averageSolutionQuality;
+      this.containedInBestKnownSolution = original.containedInBestKnownSolution;
+      this.containedInBestSolution = original.containedInBestSolution;
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new AlleleFrequency(this, cloner);
+    }
+    #endregion
     public AlleleFrequency()
       : base() {
       id = string.Empty;
@@ -105,19 +121,6 @@ namespace HeuristicLab.Analysis {
       this.averageSolutionQuality = averageSolutionQuality;
       this.containedInBestKnownSolution = containedInBestKnownSolution;
       this.containedInBestSolution = containedInBestSolution;
-    }
-    [StorableConstructor]
-    protected AlleleFrequency(bool deserializing) : base(deserializing) { }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      AlleleFrequency clone = (AlleleFrequency)base.Clone(cloner);
-      clone.id = id;
-      clone.frequency = frequency;
-      clone.averageImpact = averageImpact;
-      clone.averageSolutionQuality = averageSolutionQuality;
-      clone.containedInBestKnownSolution = containedInBestKnownSolution;
-      clone.containedInBestSolution = containedInBestSolution;
-      return clone;
     }
 
     public override string ToString() {

@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -27,7 +28,14 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
   [StorableClass]
   [Item("IfThenElse", "Symbol that represents a conditional operator.")]
   public sealed class IfThenElse : Symbol {
-
+    [StorableConstructor]
+    private IfThenElse(bool deserializing) : base(deserializing) { }
+    private IfThenElse(IfThenElse original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new IfThenElse(this, cloner);
+    }
     public IfThenElse()
       : base("if", "Symbol that represents a conditional operator.") {
     }

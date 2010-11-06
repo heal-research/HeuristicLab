@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
   [StorableClass]
@@ -33,17 +34,13 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
       }
     }
 
-    private InvokeFunctionTreeNode() : base() { }
-
-    // copy constructor
-    private InvokeFunctionTreeNode(InvokeFunctionTreeNode original)
-      : base(original) {
-    }
-
+    [StorableConstructor]
+    private InvokeFunctionTreeNode(bool deserializing) : base(deserializing) { }
+    private InvokeFunctionTreeNode(InvokeFunctionTreeNode original, Cloner cloner) : base(original, cloner) { }
     public InvokeFunctionTreeNode(InvokeFunction invokeSymbol) : base(invokeSymbol) { }
 
-    public override object Clone() {
-      return new InvokeFunctionTreeNode(this);
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new InvokeFunctionTreeNode(this, cloner);
     }
   }
 }

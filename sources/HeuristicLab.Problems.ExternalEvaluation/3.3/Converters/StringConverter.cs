@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -29,6 +30,14 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [StorableClass]
   public class StringConverter : Item, IItemToSolutionMessageConverter {
     private static readonly Type[] itemTypes = new Type[] { typeof(StringValue), typeof(StringArray), typeof(StringMatrix), typeof(IStringConvertibleValue), typeof(IStringConvertibleArray), typeof(IStringConvertibleMatrix) };
+
+    [StorableConstructor]
+    protected StringConverter(bool deserializing) : base(deserializing) { }
+    protected StringConverter(StringConverter original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new StringConverter(this, cloner);
+    }
+    public StringConverter() : base() { }
 
     #region IItemToSolutionMessageConverter Members
 

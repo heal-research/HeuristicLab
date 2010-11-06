@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -77,6 +78,15 @@ namespace HeuristicLab.Algorithms.TabuSearch {
     public BoolValue CopySelected {
       get { return CopySelectedParameter.Value; }
       set { CopySelectedParameter.Value = value; }
+    }
+
+    [StorableConstructor]
+    protected TabuSelector(bool deserializing) : base(deserializing) { }
+    protected TabuSelector(TabuSelector original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new TabuSelector(this, cloner);
     }
 
     /// <summary>

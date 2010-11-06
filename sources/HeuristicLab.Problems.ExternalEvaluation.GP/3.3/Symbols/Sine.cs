@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -27,7 +28,14 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
   [StorableClass]
   [Item("Sine", "Symbol that represents the sine function.")]
   public sealed class Sine : Symbol {
-
+      [StorableConstructor]
+    private Sine(bool deserializing) : base(deserializing) { }
+    private Sine(Sine original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Sine(this, cloner);
+    }
     public Sine()
       : base("sin", "Symbol that represents the sine function.") {
     }

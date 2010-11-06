@@ -19,13 +19,12 @@
  */
 #endregion
 
+using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
-using HeuristicLab.Optimization;
-using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
   [Item("GVRCrossover", "The GVR crossover operation. It is implemented as described in Pereira, F.B. et al (2002). GVR: a New Genetic Representation for the Vehicle Routing Problem. AICS 2002, LNAI 2464, pp. 95-102.")]
@@ -37,10 +36,12 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
 
     [StorableConstructor]
     private GVRCrossover(bool deserializing) : base(deserializing) { }
-
+    private GVRCrossover(GVRCrossover original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new GVRCrossover(this, cloner);
+    }
     public GVRCrossover() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));
-
       //remove unused parameters
       Parameters.Remove("ReadyTime");
       Parameters.Remove("DueTime");

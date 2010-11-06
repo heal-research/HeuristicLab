@@ -19,19 +19,22 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
   [Item("ZhuMergeCrossover1", "The Zhu Merge Crossover (Version 1). It is implemented as described in Zhu, K.Q. (2000). A New Genetic Algorithm For VRPTW. Proceedings of the International Conference on Artificial Intelligence.")]
   [StorableClass]
-  public sealed class ZhuMergeCrossover1 : ZhuCrossover {    
+  public sealed class ZhuMergeCrossover1 : ZhuCrossover {
     [StorableConstructor]
     private ZhuMergeCrossover1(bool deserializing) : base(deserializing) { }
-
+    private ZhuMergeCrossover1(ZhuMergeCrossover1 original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ZhuMergeCrossover1(this, cloner);
+    }
     public ZhuMergeCrossover1()
       : base() {
     }

@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -30,6 +31,16 @@ namespace HeuristicLab.Problems.TestFunctions {
     public override System.Type EvaluatorType {
       get { return typeof(SchwefelEvaluator); }
     }
+
+    [StorableConstructor]
+    protected SchwefelAdditiveMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected SchwefelAdditiveMoveEvaluator(SchwefelAdditiveMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
+    public SchwefelAdditiveMoveEvaluator() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SchwefelAdditiveMoveEvaluator(this, cloner);
+    }
+
     protected override double Evaluate(double quality, RealVector point, AdditiveMove move) {
       RealVectorAdditiveMoveWrapper wrapper = new RealVectorAdditiveMoveWrapper(move, point);
       return SchwefelEvaluator.Apply(wrapper);

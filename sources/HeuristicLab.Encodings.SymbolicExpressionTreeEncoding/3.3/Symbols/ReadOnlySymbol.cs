@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -26,14 +27,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
   [StorableClass]
   [Item("ReadOnlySymbol", "Represents a symbol in a symbolic function tree that cannot be modified.")]
   public abstract class ReadOnlySymbol : Symbol {
-    //#region Properties
-    //[Storable]
-    //private double initialFrequency;
-    //public double InitialFrequency {
-    //  get { return initialFrequency; }
-    //  set { throw new NotSupportedException(); }
-    //}
-    //#endregion
 
     public override bool CanChangeName {
       get { return false; }
@@ -42,9 +35,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
       get { return false; }
     }
 
-    protected ReadOnlySymbol() : base() { }
-    protected ReadOnlySymbol(string name, string description) : base(name, description) { }
     [StorableConstructor]
     protected ReadOnlySymbol(bool deserializing) : base(deserializing) { }
+    protected ReadOnlySymbol(ReadOnlySymbol original, Cloner cloner) : base(original, cloner) { }
+    protected ReadOnlySymbol(string name, string description) : base(name, description) { }
   }
 }

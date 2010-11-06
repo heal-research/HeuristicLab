@@ -19,8 +19,8 @@
  */
 #endregion
 
-using HeuristicLab.Core;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Random;
@@ -43,16 +43,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
       set { variableName = value; }
     }
 
-
-    protected VariableTreeNode() { }
-
-    // copy constructor
-    protected VariableTreeNode(VariableTreeNode original)
-      : base(original) {
+    [StorableConstructor]
+    protected VariableTreeNode(bool deserializing) : base(deserializing) { }
+    protected VariableTreeNode(VariableTreeNode original, Cloner cloner)
+      : base(original, cloner) {
       weight = original.weight;
       variableName = original.variableName;
     }
-
+    protected VariableTreeNode() { }
     public VariableTreeNode(Variable variableSymbol) : base(variableSymbol) { }
 
     public override bool HasLocalParameters {
@@ -74,9 +72,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
       variableName = Symbol.VariableNames.SelectRandom(random);
     }
 
-
-    public override object Clone() {
-      return new VariableTreeNode(this);
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new VariableTreeNode(this, cloner);
     }
 
     public override string ToString() {

@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
@@ -60,9 +61,16 @@ namespace HeuristicLab.Problems.TestFunctions {
       get { return typeof(SphereEvaluator); }
     }
 
+    [StorableConstructor]
+    protected SphereAdditiveMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected SphereAdditiveMoveEvaluator(SphereAdditiveMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     public SphereAdditiveMoveEvaluator() {
       Parameters.Add(new ValueParameter<DoubleValue>("C", "The parameter C modifies the steepness of the objective function y = C * ||X||^Alpha. Default is C = 1.", new DoubleValue(1)));
       Parameters.Add(new ValueParameter<DoubleValue>("Alpha", "The parameter Alpha modifies the steepness of the objective function y = C * ||X||^Alpha. Default is Alpha = 2.", new DoubleValue(2)));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SphereAdditiveMoveEvaluator(this, cloner);
     }
 
     protected override double Evaluate(double quality, RealVector point, AdditiveMove move) {

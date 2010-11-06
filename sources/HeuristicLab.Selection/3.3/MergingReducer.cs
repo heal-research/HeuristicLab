@@ -20,6 +20,7 @@
 #endregion
 
 using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -31,6 +32,14 @@ namespace HeuristicLab.Selection {
   [Item("MergingReducer", "An operator which reduces to the sub-scopes of all sub-scopes of the current scope.")]
   [StorableClass]
   public sealed class MergingReducer : Reducer, IReducer {
+    [StorableConstructor]
+    private MergingReducer(bool deserializing) : base(deserializing) { }
+    private MergingReducer(MergingReducer original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MergingReducer(this, cloner);
+    }
     public MergingReducer() : base() { }
 
     protected override List<IScope> Reduce(List<IScope> scopes) {

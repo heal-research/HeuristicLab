@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
@@ -36,6 +37,9 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       get { return (ILookupParameter<TranslocationMove>)Parameters["TranslocationMove"]; }
     }
 
+    [StorableConstructor]
+    protected TSPTranslocationMovePathEvaluator(bool deserializing) : base(deserializing) { }
+    protected TSPTranslocationMovePathEvaluator(TSPTranslocationMovePathEvaluator original, Cloner cloner) : base(original, cloner) { }
     public TSPTranslocationMovePathEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<TranslocationMove>("TranslocationMove", "The move to evaluate."));

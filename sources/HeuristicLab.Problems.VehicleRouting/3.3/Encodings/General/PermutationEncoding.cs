@@ -19,14 +19,13 @@
  */
 #endregion
 
+using System;
+using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Collections.Generic;
-using HeuristicLab.Problems.VehicleRouting.Encodings.General;
-using System;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("PermutationEncoding", "Represents a base class for permutation encodings of VRP solutions.")]
@@ -47,6 +46,10 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     protected PermutationEncoding(bool serializing)
       : base() {
     }
+    protected PermutationEncoding(PermutationEncoding original, Cloner cloner)
+      : base(original, cloner) {
+    }
+
 
     public int IndexOf(int city) {
       return Array.IndexOf(this.array, city);

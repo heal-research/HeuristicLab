@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
@@ -61,6 +62,15 @@ namespace HeuristicLab.Problems.TestFunctions {
     /// </summary>
     public override int MaximumProblemSize {
       get { return 2; }
+    }
+
+    [StorableConstructor]
+    protected MatyasEvaluator(bool deserializing) : base(deserializing) { }
+    protected MatyasEvaluator(MatyasEvaluator original, Cloner cloner) : base(original, cloner) { }
+    public MatyasEvaluator() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MatyasEvaluator(this, cloner);
     }
 
     public override RealVector GetBestKnownSolution(int dimension) {

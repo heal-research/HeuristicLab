@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -43,6 +44,9 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["Contiguity"]; }
     }
 
+    [StorableConstructor]
+    protected SimulatedBinaryCrossover(bool deserializing) : base(deserializing) { }
+    protected SimulatedBinaryCrossover(SimulatedBinaryCrossover original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="SimulatedBinaryCrossover"/> with one 
     /// parameter (<c>Contiguity</c>).
@@ -50,6 +54,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public SimulatedBinaryCrossover()
       : base() {
       Parameters.Add(new ValueLookupParameter<DoubleValue>("Contiguity", "Specifies whether the crossover should produce very different (small value) or very similar (large value) children. Valid values must be greater or equal to 0.", new DoubleValue(2)));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SimulatedBinaryCrossover(this, cloner);
     }
 
     /// <summary>

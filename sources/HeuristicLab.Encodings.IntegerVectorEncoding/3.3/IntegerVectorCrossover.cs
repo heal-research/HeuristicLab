@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
@@ -45,6 +46,9 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
       get { return (ILookupParameter<IntegerVector>)Parameters["Child"]; }
     }
 
+    [StorableConstructor]
+    protected IntegerVectorCrossover(bool deserializing) : base(deserializing) { }
+    protected IntegerVectorCrossover(IntegerVectorCrossover original, Cloner cloner) : base(original, cloner) { }
     protected IntegerVectorCrossover()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic crossover operators."));

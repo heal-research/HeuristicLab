@@ -37,6 +37,23 @@ namespace HeuristicLab.Optimization {
 
     [StorableConstructor]
     private Run(bool deserializing) : base(deserializing) { }
+    private Run(Run original, Cloner cloner)
+      : base(original, cloner) {
+      color = original.color;
+      algorithm = cloner.Clone(original.algorithm);
+
+      parameters = new Dictionary<string, IItem>();
+      foreach (string key in original.parameters.Keys)
+        parameters.Add(key, cloner.Clone(original.parameters[key]));
+
+      results = new Dictionary<string, IItem>();
+      foreach (string key in original.results.Keys)
+        results.Add(key, cloner.Clone(original.results[key]));
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Run(this, cloner);
+    }
+
     public Run()
       : base() {
       name = ItemName;
@@ -80,7 +97,7 @@ namespace HeuristicLab.Optimization {
       }
     }
     [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserializationHook() {
+    private void AfterDeserialization() {
       if (color == Color.Empty) color = Color.Black;
     }
 
@@ -126,17 +143,6 @@ namespace HeuristicLab.Optimization {
       EventHandler handler = Changed;
       if (handler != null)
         handler(this, EventArgs.Empty);
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      Run clone = (Run)base.Clone(cloner);
-      clone.color = this.color;
-      clone.algorithm = (IAlgorithm)cloner.Clone(algorithm);
-      foreach (string key in parameters.Keys)
-        clone.parameters.Add(key, (IItem)cloner.Clone(parameters[key]));
-      foreach (string key in results.Keys)
-        clone.results.Add(key, (IItem)cloner.Clone(results[key]));
-      return clone;
     }
   }
 }

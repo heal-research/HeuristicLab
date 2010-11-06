@@ -19,10 +19,10 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
@@ -49,12 +49,16 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
 
     [StorableConstructor]
     private AlbaTranslocationMoveMaker(bool deserializing) : base(deserializing) { }
-
+    private AlbaTranslocationMoveMaker(AlbaTranslocationMoveMaker original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public AlbaTranslocationMoveMaker()
       : base() {
       moveMaker = new TranslocationMoveMaker();
     }
-
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new AlbaTranslocationMoveMaker(this, cloner);
+    }
     public override IOperation Apply() {
       IOperation next = base.Apply();
 

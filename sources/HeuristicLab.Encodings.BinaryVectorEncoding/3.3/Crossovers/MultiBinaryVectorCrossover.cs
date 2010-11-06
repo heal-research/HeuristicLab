@@ -22,6 +22,7 @@
 using System;
 using System.Linq;
 using HeuristicLab.Collections;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
@@ -49,7 +50,8 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     }
 
     [StorableConstructor]
-    private MultiBinaryVectorCrossover(bool deserializing) : base(deserializing) { }
+    protected MultiBinaryVectorCrossover(bool deserializing) : base(deserializing) { }
+    protected MultiBinaryVectorCrossover(MultiBinaryVectorCrossover original, Cloner cloner) : base(original, cloner) { }
     public MultiBinaryVectorCrossover()
       : base() {
       Parameters.Add(new ScopeTreeLookupParameter<BinaryVector>("Parents", "The parent binary vector which should be crossed."));
@@ -61,6 +63,10 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
         if (!typeof(MultiOperator<IBinaryVectorCrossover>).IsAssignableFrom(type))
           Operators.Add((IBinaryVectorCrossover)Activator.CreateInstance(type), true);
       }
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MultiBinaryVectorCrossover(this, cloner);
     }
 
     protected override void Operators_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<IBinaryVectorCrossover>> e) {

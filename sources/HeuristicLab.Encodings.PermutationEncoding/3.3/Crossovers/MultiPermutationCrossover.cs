@@ -22,6 +22,7 @@
 using System;
 using System.Linq;
 using HeuristicLab.Collections;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
@@ -49,7 +50,8 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     [StorableConstructor]
-    private MultiPermutationCrossover(bool deserializing) : base(deserializing) { }
+    protected MultiPermutationCrossover(bool deserializing) : base(deserializing) { }
+    protected MultiPermutationCrossover(MultiPermutationCrossover original, Cloner cloner) : base(original, cloner) { }
     public MultiPermutationCrossover()
       : base() {
       Parameters.Add(new ScopeTreeLookupParameter<Permutation>("Parents", "The parent permutations which should be crossed."));
@@ -61,6 +63,10 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
         if (!typeof(MultiOperator<IPermutationCrossover>).IsAssignableFrom(type))
           Operators.Add((IPermutationCrossover)Activator.CreateInstance(type), true);
       }
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MultiPermutationCrossover(this, cloner);
     }
 
     protected override void Operators_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<IPermutationCrossover>> e) {

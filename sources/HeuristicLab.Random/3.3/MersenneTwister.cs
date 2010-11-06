@@ -54,6 +54,23 @@ namespace HeuristicLab.Random {
     private bool init = false;
 
     /// <summary>
+    /// Used by HeuristicLab.Persistence to initialize new instances during deserialization.
+    /// </summary>
+    /// <param name="deserializing">true, if the constructor is called during deserialization.</param>
+    [StorableConstructor]
+    private MersenneTwister(bool deserializing) : base(deserializing) { }
+    /// <summary>
+    /// Initializes a new instance from an existing one (copy constructor).
+    /// </summary>
+    /// <param name="original">The original <see cref="MersenneTwister"/> instance which is used to initialize the new instance.</param>
+    /// <param name="cloner">A <see cref="Cloner"/> which is used to track all already cloned objects in order to avoid cycles.</param>
+    private MersenneTwister(MersenneTwister original, Cloner cloner)
+      : base(original, cloner) {
+      state = (uint[])original.state.Clone();
+      p = original.p;
+      init = original.init;
+    }
+    /// <summary>
     /// Initializes a new instance of <see cref="MersenneTwister"/>.
     /// </summary>
     public MersenneTwister() {
@@ -77,12 +94,6 @@ namespace HeuristicLab.Random {
       seed(array);
       init = true;
     }
-    /// <summary>
-    /// Used by HeuristicLab.Persistence to initialize new instances during deserialization.
-    /// </summary>
-    /// <param name="deserializing">true, if the constructor is called during deserialization.</param>
-    [StorableConstructor]
-    private MersenneTwister(bool deserializing) : base(deserializing) { }
 
     /// <summary>
     /// Clones the current instance (deep clone).
@@ -90,11 +101,7 @@ namespace HeuristicLab.Random {
     /// <param name="clonedObjects">Dictionary of all already cloned objects. (Needed to avoid cycles.)</param>
     /// <returns>The cloned object as <see cref="MersenneTwister"/>.</returns>
     public override IDeepCloneable Clone(Cloner cloner) {
-      MersenneTwister clone = (MersenneTwister)base.Clone(cloner);
-      clone.state = (uint[])state.Clone();
-      clone.p = p;
-      clone.init = init;
-      return clone;
+      return new MersenneTwister(this, cloner);
     }
 
     /// <summary>

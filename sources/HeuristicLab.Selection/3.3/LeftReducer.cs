@@ -20,6 +20,7 @@
 #endregion
 
 using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -31,6 +32,12 @@ namespace HeuristicLab.Selection {
   [Item("LeftReducer", "An operator which reduces to the sub-scopes of the leftmost sub-scope of the current scope.")]
   [StorableClass]
   public sealed class LeftReducer : Reducer, IReducer {
+    [StorableConstructor]
+    private LeftReducer(bool deserializing) : base(deserializing) { }
+    private LeftReducer(LeftReducer original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new LeftReducer(this, cloner);
+    }
     public LeftReducer() : base() { }
 
     protected override List<IScope> Reduce(List<IScope> scopes) {

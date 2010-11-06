@@ -64,6 +64,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Analyzers {
     private UniformSubScopesProcessor subScopesProcessor;
 
     #endregion
+    [StorableConstructor]
+    private MinAverageMaxSymbolicExpressionTreeSizeAnalyzer(bool deserializing) : base() { }
+    private MinAverageMaxSymbolicExpressionTreeSizeAnalyzer(MinAverageMaxSymbolicExpressionTreeSizeAnalyzer original, Cloner cloner)
+      : base(original, cloner) {
+      AfterDeserialization();
+    }
     public MinAverageMaxSymbolicExpressionTreeSizeAnalyzer()
       : base() {
       Parameters.Add(new ScopeTreeLookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression tree whose size should be calculated."));
@@ -94,22 +100,18 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Analyzers {
       subScopesProcessor.Successor = valueAnalyzer;
       valueAnalyzer.Successor = null;
 
-      Initialize();
+      AfterDeserialization();
     }
 
-    [StorableConstructor]
-    private MinAverageMaxSymbolicExpressionTreeSizeAnalyzer(bool deserializing) : base() { }
 
     [StorableHook(HookType.AfterDeserialization)]
-    private void Initialize() {
+    private void AfterDeserialization() {
       SymbolicExpressionTreeParameter.DepthChanged += new EventHandler(SymbolicExpressionTreeParameter_DepthChanged);
       SymbolicExpressionTreeSizeParameter.DepthChanged += new EventHandler(SymbolicExpressionTreeSizeParameter_DepthChanged);
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      MinAverageMaxSymbolicExpressionTreeSizeAnalyzer clone = (MinAverageMaxSymbolicExpressionTreeSizeAnalyzer)base.Clone(cloner);
-      clone.Initialize();
-      return clone;
+      return new MinAverageMaxSymbolicExpressionTreeSizeAnalyzer(this, cloner);
     }
 
     private void SymbolicExpressionTreeParameter_DepthChanged(object sender, EventArgs e) {

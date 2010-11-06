@@ -196,6 +196,20 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
 
     [StorableConstructor]
     private IslandGeneticAlgorithm(bool deserializing) : base(deserializing) { }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      Initialize();
+    }
+    private IslandGeneticAlgorithm(IslandGeneticAlgorithm original, Cloner cloner)
+      : base(original, cloner) {
+      islandQualityAnalyzer = cloner.Clone(original.islandQualityAnalyzer);
+      qualityAnalyzer = cloner.Clone(original.qualityAnalyzer);
+      Initialize();
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new IslandGeneticAlgorithm(this, cloner);
+    }
+
     public IslandGeneticAlgorithm()
       : base() {
       Parameters.Add(new ValueParameter<IntValue>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
@@ -281,14 +295,6 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       Initialize();
     }
 
-    public override IDeepCloneable Clone(Cloner cloner) {
-      IslandGeneticAlgorithm clone = (IslandGeneticAlgorithm)base.Clone(cloner);
-      clone.islandQualityAnalyzer = (BestAverageWorstQualityAnalyzer)cloner.Clone(islandQualityAnalyzer);
-      clone.qualityAnalyzer = (BestAverageWorstQualityAnalyzer)cloner.Clone(qualityAnalyzer);
-      clone.Initialize();
-      return clone;
-    }
-
     public override void Prepare() {
       if (Problem != null) base.Prepare();
     }
@@ -361,7 +367,6 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     #endregion
 
     #region Helpers
-    [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
       PopulationSizeParameter.ValueChanged += new EventHandler(PopulationSizeParameter_ValueChanged);
       PopulationSize.ValueChanged += new EventHandler(PopulationSize_ValueChanged);

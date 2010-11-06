@@ -22,6 +22,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Analysis;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
@@ -164,6 +165,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
 
     #endregion
 
+    [StorableConstructor]
+    private FixedValidationBestScaledSymbolicRegressionSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    private FixedValidationBestScaledSymbolicRegressionSolutionAnalyzer(FixedValidationBestScaledSymbolicRegressionSolutionAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public FixedValidationBestScaledSymbolicRegressionSolutionAnalyzer()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>(RandomParameterName, "The random generator to use."));
@@ -185,8 +189,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       Parameters.Add(new LookupParameter<DataTable>(VariableFrequenciesParameterName, "The variable frequencies table to use for the calculation of variable impacts"));
     }
 
-    [StorableConstructor]
-    private FixedValidationBestScaledSymbolicRegressionSolutionAnalyzer(bool deserializing) : base() { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new FixedValidationBestScaledSymbolicRegressionSolutionAnalyzer(this, cloner);
+    }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {

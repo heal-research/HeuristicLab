@@ -48,25 +48,24 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
 
     [StorableConstructor]
     protected SingleObjectiveClassificationProblem(bool deserializing) : base(deserializing) { }
+    protected SingleObjectiveClassificationProblem(SingleObjectiveClassificationProblem<T, U> original, Cloner cloner)
+      : base(original, cloner) {
+      Initialize();
+    }
     public SingleObjectiveClassificationProblem()
       : base() {
       Parameters.Add(new ValueParameter<ClassificationProblemData>(ClassificationProblemDataParameterName, "The data set, target variable and input variables of the data analysis problem."));
       ClassificationProblemData = new ClassificationProblemData();
-      RegisterParameterEvents();
-      RegisterParameterValueEvents();
+      Initialize();
     }
 
     [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserializationHook() {
+    private void AfterDeserialization() {
+      Initialize();
+    }
+    private void Initialize() {
       RegisterParameterEvents();
       RegisterParameterValueEvents();
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      SingleObjectiveClassificationProblem<T, U> clone = (SingleObjectiveClassificationProblem<T, U>)base.Clone(cloner);
-      clone.RegisterParameterEvents();
-      clone.RegisterParameterValueEvents();
-      return clone;
     }
 
     private void RegisterParameterEvents() {

@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -26,7 +27,16 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [Item("ExhaustiveBitflipMoveGenerator", "Generates all possible one bitflip moves from a given binaryVector.")]
   [StorableClass]
-  public class ExhaustiveOneBitflipMoveGenerator : OneBitflipMoveGenerator, IExhaustiveMoveGenerator {
+  public sealed class ExhaustiveOneBitflipMoveGenerator : OneBitflipMoveGenerator, IExhaustiveMoveGenerator {
+    [StorableConstructor]
+    private ExhaustiveOneBitflipMoveGenerator(bool deserializing) : base(deserializing) { }
+    private ExhaustiveOneBitflipMoveGenerator(ExhaustiveOneBitflipMoveGenerator original, Cloner cloner) : base(original, cloner) { }
+    public ExhaustiveOneBitflipMoveGenerator() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ExhaustiveOneBitflipMoveGenerator(this, cloner);
+    }
+
     public static OneBitflipMove[] Apply(BinaryVector binaryVector) {
       int length = binaryVector.Length;
       int totalMoves = length;

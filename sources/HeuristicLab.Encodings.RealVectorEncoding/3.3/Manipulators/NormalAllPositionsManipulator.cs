@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
@@ -51,6 +52,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     IParameter ISelfAdaptiveManipulator.StrategyParameterParameter {
       get { return StrategyParameterParameter; }
     }
+
+    [StorableConstructor]
+    protected NormalAllPositionsManipulator(bool deserializing) : base(deserializing) { }
+    protected NormalAllPositionsManipulator(NormalAllPositionsManipulator original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="NormalAllPositionsManipulator"/> with one
     /// parameter (<c>StrategyVector</c>).
@@ -58,6 +63,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public NormalAllPositionsManipulator()
       : base() {
       Parameters.Add(new ValueLookupParameter<RealVector>("StrategyParameter", "The vector containing the endogenous strategy parameters."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new NormalAllPositionsManipulator(this, cloner);
     }
 
     /// <summary>

@@ -21,6 +21,7 @@
 
 using System;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators;
@@ -35,6 +36,15 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureMani
   [Item("SubroutineDeleter", "Manipulates a symbolic expression by deleting a preexisting function-defining branch.")]
   [StorableClass]
   public sealed class SubroutineDeleter : SymbolicExpressionTreeArchitectureManipulator {
+    [StorableConstructor]
+    private SubroutineDeleter(bool deserializing) : base(deserializing) { }
+    private SubroutineDeleter(SubroutineDeleter original, Cloner cloner) : base(original, cloner) { }
+    public SubroutineDeleter() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SubroutineDeleter(this, cloner);
+    }
+
     public override sealed void ModifyArchitecture(
       IRandom random,
       SymbolicExpressionTree symbolicExpressionTree,

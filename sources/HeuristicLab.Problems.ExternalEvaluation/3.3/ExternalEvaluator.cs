@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -45,6 +46,12 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       get { return MessageBuilderParameter.Value; }
     }
 
+    [StorableConstructor]
+    protected ExternalEvaluator(bool deserializing) : base(deserializing) { }
+    protected ExternalEvaluator(ExternalEvaluator original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ExternalEvaluator(this, cloner);
+    }
     public ExternalEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of the current solution."));
@@ -63,7 +70,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
           string name = lookupParam != null ? lookupParam.TranslatedName : param.Name;
           try {
             MessageBuilder.AddToMessage(value, name, protobufBuilder);
-          } catch (ArgumentException ex) {
+          }
+          catch (ArgumentException ex) {
             throw new InvalidOperationException("ERROR in " + Name + ": Parameter " + name + " cannot be added to the message.", ex);
           }
         }

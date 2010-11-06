@@ -54,6 +54,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     [StorableConstructor]
     protected DataAnalysisProblem(bool deserializing) : base(deserializing) { }
+    protected DataAnalysisProblem(DataAnalysisProblem original, Cloner cloner)
+      : base(original, cloner) {
+      RegisterParameterEvents();
+      RegisterParameterValueEvents();
+    }
+
     public DataAnalysisProblem()
       : base() {
       Parameters.Add(new ValueParameter<DataAnalysisProblemData>(DataAnalysisProblemDataParameterName, "The data set, target variable and input variables of the data analysis problem.", new DataAnalysisProblemData()));
@@ -62,7 +68,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserializationHook() {
+    private void AfterDeserialization() {
       RegisterParameterEvents();
       RegisterParameterValueEvents();
     }
@@ -90,10 +96,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     #endregion
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      DataAnalysisProblem clone = (DataAnalysisProblem)base.Clone(cloner);
-      clone.RegisterParameterEvents();
-      clone.RegisterParameterValueEvents();
-      return clone;
+      return new DataAnalysisProblem(this, cloner);
     }
 
     #region IProblem Members

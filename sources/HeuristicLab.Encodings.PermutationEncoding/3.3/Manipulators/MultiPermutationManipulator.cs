@@ -22,6 +22,7 @@
 using System;
 using System.Linq;
 using HeuristicLab.Collections;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
@@ -45,7 +46,8 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     [StorableConstructor]
-    private MultiPermutationManipulator(bool deserializing) : base(deserializing) { }
+    protected MultiPermutationManipulator(bool deserializing) : base(deserializing) { }
+    protected MultiPermutationManipulator(MultiPermutationManipulator original, Cloner cloner) : base(original, cloner) { }
     public MultiPermutationManipulator()
       : base() {
       Parameters.Add(new LookupParameter<Permutation>("Permutation", "The permutation that is being manipulated."));
@@ -54,6 +56,10 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
         if (!typeof(MultiOperator<IPermutationManipulator>).IsAssignableFrom(type))
           Operators.Add((IPermutationManipulator)Activator.CreateInstance(type), true);
       }
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MultiPermutationManipulator(this, cloner);
     }
 
     protected override void Operators_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<IPermutationManipulator>> e) {

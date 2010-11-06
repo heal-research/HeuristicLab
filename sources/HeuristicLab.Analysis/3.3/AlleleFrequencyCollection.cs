@@ -21,6 +21,7 @@
 
 using System.Collections.Generic;
 using System.Drawing;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -35,9 +36,14 @@ namespace HeuristicLab.Analysis {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Statistics; }
     }
 
-    public AlleleFrequencyCollection() : base() { }
-    public AlleleFrequencyCollection(IEnumerable<AlleleFrequency> frequencies) : base(new ItemCollection<AlleleFrequency>(frequencies)) { }
     [StorableConstructor]
     protected AlleleFrequencyCollection(bool deserializing) : base(deserializing) { }
+    protected AlleleFrequencyCollection(AlleleFrequencyCollection original, Cloner cloner) : base(original, cloner) { }
+    public AlleleFrequencyCollection() : base() { }
+    public AlleleFrequencyCollection(IEnumerable<AlleleFrequency> frequencies) : base(new ItemCollection<AlleleFrequency>(frequencies)) { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new AlleleFrequencyCollection(this, cloner);
+    }
   }
 }

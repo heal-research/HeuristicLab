@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -64,6 +65,9 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["Beta"]; }
     }
 
+    [StorableConstructor]
+    protected BlendAlphaBetaCrossover(bool deserializing) : base(deserializing) { }
+    protected BlendAlphaBetaCrossover(BlendAlphaBetaCrossover original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="BlendAlphaBetaCrossover"/> with four additional parameters
     /// (<c>Maximization</c>, <c>Quality</c>, <c>Alpha</c> and <c>Beta</c>).
@@ -74,6 +78,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The quality values of the parents."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("Alpha", "The Alpha parameter controls the extension of the range beyond the better parent. The value must be >= 0 and does not depend on Beta.", new DoubleValue(0.75)));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("Beta", "The Beta parameter controls the extension of the range beyond the worse parent. The value must be >= 0 and does not depend on Alpha.", new DoubleValue(0.25)));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new BlendAlphaBetaCrossover(this, cloner);
     }
 
     /// <summary>

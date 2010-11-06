@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -48,6 +49,9 @@ namespace HeuristicLab.Optimization.Operators {
       get { return (IValueLookupParameter<BoolValue>)Parameters["Maximization"]; }
     }
 
+    [StorableConstructor]
+    protected TabuMaker(bool deserializing) : base(deserializing) { }
+    protected TabuMaker(TabuMaker original, Cloner cloner) : base(original, cloner) { }
     protected TabuMaker()
       : base() {
       Parameters.Add(new LookupParameter<ItemList<IItem>>("TabuList", "The tabu list where move attributes are stored."));

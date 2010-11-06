@@ -164,40 +164,26 @@ namespace HeuristicLab.Optimization {
       : base(deserializing) {
       storeAlgorithmInEachRun = true;
     }
-
     [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      Initialize();
+    }
+
+    protected Algorithm(Algorithm original, Cloner cloner)
+      : base(original, cloner) {
+      if (ExecutionState == ExecutionState.Started) throw new InvalidOperationException(string.Format("Clone not allowed in execution state \"{0}\".", ExecutionState));
+      executionState = original.executionState;
+      executionTime = original.executionTime;
+      problem = cloner.Clone(original.problem);
+      storeAlgorithmInEachRun = original.storeAlgorithmInEachRun;
+      runsCounter = original.runsCounter;
+      runs = cloner.Clone(original.runs);
+      Initialize();
+    }
+
     private void Initialize() {
       if (problem != null) RegisterProblemEvents();
       if (runs != null) RegisterRunsEvents();
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      if (ExecutionState == ExecutionState.Started) throw new InvalidOperationException(string.Format("Clone not allowed in execution state \"{0}\".", ExecutionState));
-      Algorithm clone = (Algorithm)base.Clone(cloner);
-      clone.executionState = executionState;
-      clone.executionTime = executionTime;
-      clone.problem = (IProblem)cloner.Clone(problem);
-      clone.storeAlgorithmInEachRun = storeAlgorithmInEachRun;
-      clone.runsCounter = runsCounter;
-      clone.runs = (RunCollection)cloner.Clone(runs);
-      clone.Initialize();
-      return clone;
-    }
-    protected virtual void Clone(IDeepCloneable clone, Cloner cloner) {
-      Algorithm algorithm = clone as Algorithm;
-      if (algorithm != null) {
-        algorithm.name = name;
-        algorithm.description = description;
-        foreach (IParameter param in Parameters)
-          algorithm.Parameters.Add((IParameter)cloner.Clone(param));
-        algorithm.executionState = executionState;
-        algorithm.executionTime = executionTime;
-        algorithm.problem = (IProblem)cloner.Clone(problem);
-        algorithm.storeAlgorithmInEachRun = storeAlgorithmInEachRun;
-        algorithm.runsCounter = runsCounter;
-        algorithm.runs = (RunCollection)cloner.Clone(runs);
-        algorithm.Initialize();
-      }
     }
 
     public virtual void Prepare() {

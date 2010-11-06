@@ -43,6 +43,12 @@ namespace HeuristicLab.Optimization {
 
     [StorableConstructor]
     protected Problem(bool deserializing) : base(deserializing) { }
+    protected Problem(Problem<T, U> original, Cloner cloner)
+      : base(original, cloner) {
+      operators = cloner.Clone(original.operators);
+      RegisterEventHandlers();
+    }
+
     protected Problem()
       : base() {
       operators = new OperatorCollection();
@@ -54,13 +60,6 @@ namespace HeuristicLab.Optimization {
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       RegisterEventHandlers();
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      Problem<T, U> clone = (Problem<T, U>)base.Clone(cloner);
-      clone.operators = (OperatorCollection)cloner.Clone(operators);
-      clone.RegisterEventHandlers();
-      return clone;
     }
 
     private void RegisterEventHandlers() {

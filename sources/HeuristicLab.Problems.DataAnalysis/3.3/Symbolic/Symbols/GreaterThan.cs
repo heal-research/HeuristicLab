@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -26,6 +27,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [StorableClass]
   [Item("GreaterThan", "Symbol that represents a greater than relation.")]
   public sealed class GreaterThan : Symbol {
+    [StorableConstructor]
+    private GreaterThan(bool deserializing) : base(deserializing) { }
+    private GreaterThan(GreaterThan original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new GreaterThan(this, cloner);
+    }
     public GreaterThan() : base("GreaterThan", "Symbol that represents a greater than relation.") { }
   }
 }

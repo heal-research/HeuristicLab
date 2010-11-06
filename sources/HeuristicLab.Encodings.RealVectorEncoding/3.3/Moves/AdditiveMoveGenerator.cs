@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -49,6 +50,9 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       get { return (IValueLookupParameter<DoubleMatrix>)Parameters["Bounds"]; }
     }
 
+    [StorableConstructor]
+    protected AdditiveMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected AdditiveMoveGenerator(AdditiveMoveGenerator original, Cloner cloner) : base(original, cloner) { }
     public AdditiveMoveGenerator()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator."));

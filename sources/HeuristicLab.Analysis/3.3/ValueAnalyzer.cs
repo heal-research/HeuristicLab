@@ -57,6 +57,17 @@ namespace HeuristicLab.Analysis {
     }
     #endregion
 
+    #region Storing & Cloning
+    [StorableConstructor]
+    private ValueAnalyzer(bool deserializing) : base(deserializing) { }
+    private ValueAnalyzer(ValueAnalyzer original, Cloner cloner)
+      : base(original, cloner) {
+        Initialize();
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ValueAnalyzer(this, cloner);
+    }
+    #endregion
     public ValueAnalyzer()
       : base() {
       #region Create parameters
@@ -87,18 +98,14 @@ namespace HeuristicLab.Analysis {
 
       Initialize();
     }
-    [StorableConstructor]
-    private ValueAnalyzer(bool deserializing) : base() { }
 
     [StorableHook(HookType.AfterDeserialization)]
-    private void Initialize() {
-      ValueParameter.DepthChanged += new EventHandler(ValueParameter_DepthChanged);
+    private void AfterDeserialization() {
+      Initialize();
     }
 
-    public override IDeepCloneable Clone(Cloner cloner) {
-      ValueAnalyzer clone = (ValueAnalyzer)base.Clone(cloner);
-      clone.Initialize();
-      return clone;
+    private void Initialize() {
+      ValueParameter.DepthChanged += new EventHandler(ValueParameter_DepthChanged);
     }
 
     private void ValueParameter_DepthChanged(object sender, System.EventArgs e) {

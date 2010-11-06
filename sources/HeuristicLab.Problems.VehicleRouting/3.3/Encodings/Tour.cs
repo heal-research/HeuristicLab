@@ -19,11 +19,11 @@
  */
 #endregion
 
+using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using System.Collections.Generic;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings {
   [StorableClass]
@@ -31,15 +31,18 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings {
     [Storable]
     public List<int> Cities { get; private set; }
 
+    [StorableConstructor]
+    protected Tour(bool deserializing) : base(deserializing) { }
+    protected Tour(Tour original, Cloner cloner)
+      : base(original, cloner) {
+      Cities = new List<int>(original.Cities);
+    }
     public Tour() {
       Cities = new List<int>();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      Tour clone = base.Clone(cloner) as Tour;
-      clone.Cities = new List<int>(Cities);
-
-      return clone;
+      return new Tour(this, cloner);
     }
 
     public bool Feasible(DoubleArray dueTimeArray,
@@ -62,9 +65,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings {
 
       return eval.Overload < double.Epsilon && eval.Tardiness < double.Epsilon;
     }
-    
-    public double GetLength(DoubleMatrix coordinates, 
-      ILookupParameter<DoubleMatrix> distanceMatrix, 
+
+    public double GetLength(DoubleMatrix coordinates,
+      ILookupParameter<DoubleMatrix> distanceMatrix,
       BoolValue useDistanceMatrix) {
       double length = 0;
 
@@ -78,7 +81,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings {
 
         for (int i = 1; i < cities.Count; i++) {
           length += VRPUtilities.GetDistance(
-            cities[i - 1], cities[i], coordinates, distanceMatrix, useDistanceMatrix); 
+            cities[i - 1], cities[i], coordinates, distanceMatrix, useDistanceMatrix);
         }
       }
 

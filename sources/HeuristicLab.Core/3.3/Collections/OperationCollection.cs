@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
@@ -38,6 +37,13 @@ namespace HeuristicLab.Core {
       set { parallel = value; }
     }
 
+    [StorableConstructor]
+    private OperationCollection(bool deserializing) { }
+    private OperationCollection(OperationCollection original, Cloner cloner)
+      : base(original, cloner) {
+      operations = new List<IOperation>(original.Select(x => cloner.Clone(x)));
+      parallel = original.parallel;
+    }
     public OperationCollection() {
       operations = new List<IOperation>();
       parallel = false;
@@ -50,15 +56,9 @@ namespace HeuristicLab.Core {
       operations = new List<IOperation>(list.Where(e => e != null));
       parallel = false;
     }
-    [StorableConstructor]
-    private OperationCollection(bool deserializing) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      OperationCollection clone = (OperationCollection)Activator.CreateInstance(this.GetType());
-      cloner.RegisterClonedObject(this, clone);
-      clone.operations = new List<IOperation>(this.Select(x => (IOperation)cloner.Clone(x)));
-      clone.parallel = parallel;
-      return clone;
+      return new OperationCollection(this, cloner);
     }
 
     #region IList<IOperation> Members

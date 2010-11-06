@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis.Regression.Symbolic;
@@ -26,13 +27,18 @@ using HeuristicLab.Problems.DataAnalysis.Regression.Symbolic;
 namespace HeuristicLab.Problems.DataAnalysis.Classification {
   [Item("SymbolicClassificationPearsonRSquaredEvaluator", "Calculates the pearson R² correlation coefficient of a symbolic classification solution.")]
   [StorableClass]
-  public class SymbolicClassificationPearsonRSquaredEvaluator : SymbolicRegressionPearsonsRSquaredEvaluator, ISymbolicClassificationEvaluator {
+  public sealed class SymbolicClassificationPearsonRSquaredEvaluator : SymbolicRegressionPearsonsRSquaredEvaluator, ISymbolicClassificationEvaluator {
     public ClassificationProblemData ClassificationProblemData {
       get { return (ClassificationProblemData)RegressionProblemData; }
     }
 
-    public SymbolicClassificationPearsonRSquaredEvaluator()
-      : base() {
+    [StorableConstructor]
+    private SymbolicClassificationPearsonRSquaredEvaluator(bool deserializing) : base(deserializing) { }
+    private SymbolicClassificationPearsonRSquaredEvaluator(SymbolicClassificationPearsonRSquaredEvaluator original, Cloner cloner) : base(original, cloner) { }
+    public SymbolicClassificationPearsonRSquaredEvaluator() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SymbolicClassificationPearsonRSquaredEvaluator(this, cloner);
     }
   }
 }

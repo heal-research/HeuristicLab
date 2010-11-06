@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
@@ -46,8 +47,15 @@ namespace HeuristicLab.Problems.TestFunctions {
       set { if (value != null) AParameter.Value = value; }
     }
 
+    [StorableConstructor]
+    protected RastriginAdditiveMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected RastriginAdditiveMoveEvaluator(RastriginAdditiveMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     public RastriginAdditiveMoveEvaluator() {
       Parameters.Add(new ValueParameter<DoubleValue>("A", "The parameter A is a parameter of the objective function y = Sum((x_i)^2 + A * (1 - Cos(2pi*x_i))). Default is A = 10.", new DoubleValue(10)));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new RastriginAdditiveMoveEvaluator(this, cloner);
     }
 
     protected override double Evaluate(double quality, RealVector point, AdditiveMove move) {

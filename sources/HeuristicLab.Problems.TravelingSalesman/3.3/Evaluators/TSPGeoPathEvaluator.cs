@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -32,6 +33,16 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   public sealed class TSPGeoPathEvaluator : TSPCoordinatesPathEvaluator {
     private const double PI = 3.141592;
     private const double RADIUS = 6378.388;
+
+    [StorableConstructor]
+    private TSPGeoPathEvaluator(bool deserializing) : base(deserializing) { }
+    private TSPGeoPathEvaluator(TSPGeoPathEvaluator original, Cloner cloner) : base(original, cloner) { }
+    public TSPGeoPathEvaluator() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new TSPGeoPathEvaluator(this, cloner);
+    }
+    
 
     /// <summary>
     /// Calculates the distance between two points using the GEO distance metric (globe coordinates).

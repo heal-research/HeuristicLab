@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
@@ -35,13 +36,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
       set { lag = value; }
     }
 
-    private LaggedVariableTreeNode() { }
-
-    // copy constructor
-    private LaggedVariableTreeNode(LaggedVariableTreeNode original)
-      : base(original) {
+    [StorableConstructor]
+    private LaggedVariableTreeNode(bool deserializing) : base(deserializing) { }
+    private LaggedVariableTreeNode(LaggedVariableTreeNode original, Cloner cloner)
+      : base(original, cloner) {
       lag = original.lag;
     }
+    private LaggedVariableTreeNode() { }
 
     public LaggedVariableTreeNode(LaggedVariable variableSymbol) : base(variableSymbol) { }
 
@@ -61,9 +62,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
       lag = Math.Min(Symbol.MaxLag, Math.Max(Symbol.MinLag, lag + random.Next(-1, 2)));
     }
 
-
-    public override object Clone() {
-      return new LaggedVariableTreeNode(this);
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new LaggedVariableTreeNode(this, cloner);
     }
 
     public override string ToString() {

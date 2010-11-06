@@ -22,6 +22,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Analysis;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
@@ -179,6 +180,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
     }
     #endregion
 
+    [StorableConstructor]
+    protected ValidationBestSymbolicClassificationSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    protected ValidationBestSymbolicClassificationSolutionAnalyzer(ValidationBestSymbolicClassificationSolutionAnalyzer original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public ValidationBestSymbolicClassificationSolutionAnalyzer()
       : base() {
       Parameters.Add(new LookupParameter<BoolValue>(MaximizationParameterName, "The direction of optimization."));
@@ -203,8 +209,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
       Parameters.Add(new LookupParameter<DoubleValue>(BestSolutionAccuracyTestParameterName, "The test accuracy of the best solution."));
     }
 
-    [StorableConstructor]
-    private ValidationBestSymbolicClassificationSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ValidationBestSymbolicClassificationSolutionAnalyzer(this, cloner);
+    }
 
     public override IOperation Apply() {
       var trees = SymbolicExpressionTree;
@@ -303,6 +310,5 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
         BestSolutionAccuracyTest.Value = testAccuracy;
       }
     }
-
   }
 }

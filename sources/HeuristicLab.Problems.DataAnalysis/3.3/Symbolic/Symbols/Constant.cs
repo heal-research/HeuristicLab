@@ -76,6 +76,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
       }
     }
     #endregion
+    [StorableConstructor]
+    private Constant(bool deserializing) : base(deserializing) { }
+    private Constant(Constant original, Cloner cloner)
+      : base(original, cloner) {
+      minValue = original.minValue;
+      maxValue = original.maxValue;
+      manipulatorNu = original.manipulatorNu;
+      manipulatorSigma = original.manipulatorSigma;
+    }
     public Constant()
       : base("Constant", "Represents a constant value.") {
       manipulatorNu = 0.0;
@@ -89,12 +98,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      Constant clone = (Constant)base.Clone(cloner);
-      clone.minValue = minValue;
-      clone.maxValue = maxValue;
-      clone.manipulatorNu = manipulatorNu;
-      clone.manipulatorSigma = manipulatorSigma;
-      return clone;
+      return new Constant(this, cloner);
     }
   }
 }

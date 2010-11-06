@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -39,7 +40,11 @@ namespace HeuristicLab.Selection {
     }
 
     [StorableConstructor]
-    protected Replacer(bool deserializing) : base() { }
+    protected Replacer(bool deserializing) : base(deserializing) { }
+    protected Replacer(Replacer original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Replacer(this, cloner);
+    }
     public Replacer() {
       Parameters.Add(new ValueLookupParameter<ISelector>("ReplacedSelector", "The selection operator to select those scopes that are to be replaced."));
       Parameters.Add(new ValueLookupParameter<ISelector>("SelectedSelector", "The selection operator to select those scopes that are replacing the others."));
@@ -73,10 +78,10 @@ namespace HeuristicLab.Selection {
       if (ExecutionContext.Scope.SubScopes.Count != 2) throw new InvalidOperationException(Name + ": There must be two sub-scopes which should be replaced/merged.");
       int remaining = ExecutionContext.Scope.SubScopes[0].SubScopes.Count;
       int selected = ExecutionContext.Scope.SubScopes[1].SubScopes.Count;
-      
+
       ISelector replacedSelector = ReplacedSelectorParameter.ActualValue;
       ISelector selectedSelector = SelectedSelectorParameter.ActualValue;
-      
+
       if (replacedSelector != null) {
         replacedSelector.CopySelected = new BoolValue(false);
         replacedSelector.NumberOfSelectedSubScopesParameter.Value = new IntValue(Math.Min(remaining, selected));

@@ -19,14 +19,14 @@
  */
 #endregion
 
+using System;
+using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Collections.Generic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
-using System;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
   [Item("PrinsEncoding", "Represents an Prins encoding of VRP solutions. It is implemented as described in Prins, C. (2004). A simple and effective evolutionary algorithm for the vehicle routing problem. Computers & Operations Research, 12:1985-2002.")]
@@ -177,19 +177,28 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
       return result;
     }
     #endregion
-
-    public override IDeepCloneable Clone(HeuristicLab.Common.Cloner cloner) {
-      PrinsEncoding clone = new PrinsEncoding(
-        new Permutation(this.PermutationType, this.array), cities, 
-        dueTimeArray, serviceTimeArray, readyTimeArray, demandArray, capacity,
-        fleetUsageFactor, timeFactor, distanceFactor, overloadPenalty, tardinessPenalty,
-        coordinates, useDistanceMatrix);
-
-      cloner.RegisterClonedObject(this, clone);
-      clone.readOnly = readOnly;
-      return clone;
+    
+    [StorableConstructor]
+    protected PrinsEncoding(bool deserializing) : base(deserializing) { }
+    protected PrinsEncoding(PrinsEncoding original, Cloner cloner)
+      : base(original, cloner) {
+      this.cities = original.cities;
+      this.dueTimeArray = original.dueTimeArray;
+      this.serviceTimeArray = original.serviceTimeArray;
+      this.readyTimeArray = original.readyTimeArray;
+      this.demandArray = original.demandArray;
+      this.capacity = original.capacity;
+      this.fleetUsageFactor = original.fleetUsageFactor;
+      this.timeFactor = original.timeFactor;
+      this.distanceFactor = original.distanceFactor;
+      this.overloadPenalty = original.overloadPenalty;
+      this.tardinessPenalty = original.tardinessPenalty;
+      this.coordinates = original.coordinates;
+      this.useDistanceMatrix = original.useDistanceMatrix;
     }
-
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new PrinsEncoding(this, cloner);
+    }
     public PrinsEncoding(Permutation permutation, int cities,
       DoubleArray dueTimeArray, DoubleArray serviceTimeArray, DoubleArray readyTimeArray, DoubleArray demandArray, DoubleValue capacity,
       DoubleValue fleetUsageFactor, DoubleValue timeFactor, DoubleValue distanceFactor, DoubleValue overloadPenalty, DoubleValue tardinessPenalty,
@@ -208,11 +217,6 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
         this.distanceFactor = distanceFactor;
         this.overloadPenalty = overloadPenalty;
         this.tardinessPenalty = tardinessPenalty;
-    }
-
-    [StorableConstructor]
-    private PrinsEncoding(bool serializing)
-      : base(serializing) {
     }
 
     public static PrinsEncoding ConvertFrom(IVRPEncoding encoding, int cities,

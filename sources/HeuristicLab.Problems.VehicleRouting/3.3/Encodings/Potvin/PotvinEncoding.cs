@@ -19,39 +19,36 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Drawing;
-using System.Collections.Generic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinEncoding", "Represents a potvin encoding of VRP solutions. It is implemented as described in Potvin, J.-Y. and Bengio, S. (1996). The Vehicle Routing Problem with Time Windows - Part II: Genetic Search. INFORMS Journal of Computing, 8:165–172.")]
   [StorableClass]
-  public class PotvinEncoding : TourEncoding {   
+  public class PotvinEncoding : TourEncoding {
     [Storable]
     public List<int> Unrouted { get; set; }
 
-    public override IDeepCloneable Clone(HeuristicLab.Common.Cloner cloner) {
-      PotvinEncoding clone = new PotvinEncoding();
-      cloner.RegisterClonedObject(this, clone);
-      clone.Tours = (ItemList<Tour>)cloner.Clone(this.Tours);
-      clone.Unrouted = new List<int>(Unrouted);
-      return clone;
+    [StorableConstructor]
+    protected PotvinEncoding(bool deserializing) : base(deserializing) { }
+    protected PotvinEncoding(PotvinEncoding original, Cloner cloner)
+      : base(original, cloner) {
+      Tours = cloner.Clone(original.Tours);
+      Unrouted = new List<int>(original.Unrouted);
     }
-
-    public PotvinEncoding(): base() {
+    public PotvinEncoding()
+      : base() {
       Unrouted = new List<int>();
     }
 
-    [StorableConstructor]
-    private PotvinEncoding(bool serializing)
-      : base() {
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new PotvinEncoding(this, cloner);
     }
-    
+
     public static PotvinEncoding ConvertFrom(IVRPEncoding encoding, ILookupParameter<DoubleMatrix> distanceMatrix) {
       PotvinEncoding solution = new PotvinEncoding();
 
@@ -84,9 +81,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
 
             Tours[tour].Cities.Insert(i, city);
 
-            if (Tours[tour].Feasible(dueTimeArray, serviceTimeArray, readyTimeArray, demandArray, 
+            if (Tours[tour].Feasible(dueTimeArray, serviceTimeArray, readyTimeArray, demandArray,
               capacity, coordinates, distanceMatrix, useDistanceMatrix)) {
-                double newLength = Tours[tour].GetLength(coordinates, distanceMatrix, useDistanceMatrix);
+              double newLength = Tours[tour].GetLength(coordinates, distanceMatrix, useDistanceMatrix);
 
               double detour = newLength - length;
 

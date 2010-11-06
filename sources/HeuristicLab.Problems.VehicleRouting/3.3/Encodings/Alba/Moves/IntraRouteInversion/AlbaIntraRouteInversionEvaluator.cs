@@ -19,12 +19,12 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
-using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   [Item("AlbaIntraRouteInversionMoveEvaluator", "Evaluates a intra route inversion move for a VRP representation.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
@@ -36,10 +36,14 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     [StorableConstructor]
     private AlbaIntraRouteInversionMoveEvaluator(bool deserializing) : base(deserializing) { }
-
+    private AlbaIntraRouteInversionMoveEvaluator(AlbaIntraRouteInversionMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     public AlbaIntraRouteInversionMoveEvaluator()
       : base() {
-        Parameters.Add(new LookupParameter<AlbaIntraRouteInversionMove>("AlbaIntraRouteInversionMove", "The move to evaluate."));
+      Parameters.Add(new LookupParameter<AlbaIntraRouteInversionMove>("AlbaIntraRouteInversionMove", "The move to evaluate."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new AlbaIntraRouteInversionMoveEvaluator(this, cloner);
     }
 
     public static TourEvaluation GetMoveQuality(AlbaEncoding individual, AlbaIntraRouteInversionMove move,

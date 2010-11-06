@@ -19,12 +19,12 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
-using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   public interface ISymbolicRegressionEvaluator : ISingleObjectiveEvaluator {

@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -32,6 +33,7 @@ namespace HeuristicLab.Random {
   [Item("RandomCreator", "An operator which creates a new Mersenne Twister pseudo random number generator.")]
   [StorableClass]
   public sealed class RandomCreator : SingleSuccessorOperator {
+    #region Parameter Properties
     public ValueLookupParameter<BoolValue> SetSeedRandomlyParameter {
       get { return (ValueLookupParameter<BoolValue>)Parameters["SetSeedRandomly"]; }
     }
@@ -44,6 +46,9 @@ namespace HeuristicLab.Random {
     public LookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
+    #endregion
+
+    #region Properties
     public BoolValue SetSeedRandomly {
       get { return SetSeedRandomlyParameter.Value; }
       set { SetSeedRandomlyParameter.Value = value; }
@@ -56,7 +61,11 @@ namespace HeuristicLab.Random {
       get { return RandomTypeParameter.Value; }
       set { RandomTypeParameter.Value = value; }
     }
+    #endregion
 
+    [StorableConstructor]
+    private RandomCreator(bool deserializing) : base(deserializing) { }
+    private RandomCreator(RandomCreator original, Cloner cloner) : base(original, cloner) { }
     public RandomCreator()
       : base() {
       Parameters.Add(new ValueLookupParameter<BoolValue>("SetSeedRandomly", "True if the random seed should be set to a random value, otherwise false.", new BoolValue(true)));
@@ -64,17 +73,19 @@ namespace HeuristicLab.Random {
       Parameters.Add(new ValueParameter<IRandom>("RandomType", "The type of pseudo random number generator which is created.", new MersenneTwister()));
       Parameters.Add(new LookupParameter<IRandom>("Random", "The new pseudo random number generator which is initialized with the given seed."));
     }
-    [StorableConstructor]
-    private RandomCreator(bool deserializing) : base(deserializing) { }
 
     // BackwardsCompatibility3.3
     #region Backwards compatible code (remove with 3.4)
     [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserializationHook() {
+    private void AfterDeserialization() {
       if (!Parameters.ContainsKey("RandomType"))
         Parameters.Add(new ValueParameter<IRandom>("RandomType", "The type of pseudo random number generator which is created.", new MersenneTwister()));
     }
     #endregion
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new RandomCreator(this, cloner);
+    }
 
     public override IOperation Apply() {
       if (SetSeedRandomlyParameter.ActualValue == null) SetSeedRandomlyParameter.ActualValue = new BoolValue(true);

@@ -19,11 +19,9 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
   [Item("GVRInsertionManipulator", "An operator which manipulates a GVR representation by inserting a customer at another location. It is implemented as described in Pereira, F.B. et al (2002). GVR: a New Genetic Representation for the Vehicle Routing Problem. AICS 2002, LNAI 2464, pp. 95-102.")]
@@ -31,10 +29,11 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
   public sealed class GVRInsertionManipulator : GVRManipulator {
     [StorableConstructor]
     private GVRInsertionManipulator(bool deserializing) : base(deserializing) { }
-
-    public GVRInsertionManipulator()
-      : base() {
+    private GVRInsertionManipulator(GVRInsertionManipulator original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new GVRInsertionManipulator(this, cloner);
     }
+    public GVRInsertionManipulator() : base() { }
 
     protected override void Manipulate(IRandom random, GVREncoding individual) {
       int customer = random.Next(1, individual.Cities + 1);

@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -26,5 +27,13 @@ namespace HeuristicLab.Optimization.Operators {
   [Item("UserDefinedSolutionCreator", "A solution creator that can be customized with operators which it will execute one after another.")]
   [StorableClass]
   public class UserDefinedSolutionCreator : UserDefinedOperator, ISolutionCreator {
+    [StorableConstructor]
+    protected UserDefinedSolutionCreator(bool deserializing) : base(deserializing) { }
+    protected UserDefinedSolutionCreator(UserDefinedSolutionCreator original, Cloner cloner) : base(original, cloner) { }
+    public UserDefinedSolutionCreator() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new UserDefinedSolutionCreator(this, cloner);
+    }
   }
 }

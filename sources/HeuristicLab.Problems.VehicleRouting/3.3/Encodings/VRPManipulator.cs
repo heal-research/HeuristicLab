@@ -19,10 +19,9 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings {
@@ -39,7 +38,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings {
 
     [StorableConstructor]
     protected VRPManipulator(bool deserializing) : base(deserializing) { }
-
+    protected VRPManipulator(VRPManipulator original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public VRPManipulator()
       : base() {
       Parameters.Add(new LookupParameter<IVRPEncoding>("VRPTours", "The VRP tours to be manipulated."));

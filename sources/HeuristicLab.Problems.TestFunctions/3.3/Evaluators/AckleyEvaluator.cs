@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
@@ -62,6 +63,15 @@ namespace HeuristicLab.Problems.TestFunctions {
     /// </summary>
     public override int MaximumProblemSize {
       get { return int.MaxValue; }
+    }
+
+    [StorableConstructor]
+    protected AckleyEvaluator(bool deserializing) : base(deserializing) { }
+    protected AckleyEvaluator(AckleyEvaluator original, Cloner cloner) : base(original, cloner) { }
+    public AckleyEvaluator() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new AckleyEvaluator(this, cloner);
     }
 
     public override RealVector GetBestKnownSolution(int dimension) {

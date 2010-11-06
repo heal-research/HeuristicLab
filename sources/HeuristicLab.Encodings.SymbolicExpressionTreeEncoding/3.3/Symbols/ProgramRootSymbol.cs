@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
@@ -28,10 +29,14 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
     public const string ProgramRootSymbolName = "ProgramRootSymbol";
     public const string ProgramRootSymbolDescription = "Special symbol that represents the program root node of a symbolic expression tree.";
 
-    public ProgramRootSymbol() : base(ProgramRootSymbol.ProgramRootSymbolName, ProgramRootSymbol.ProgramRootSymbolDescription) { }
     [StorableConstructor]
     private ProgramRootSymbol(bool deserializing) : base(deserializing) { }
+    private ProgramRootSymbol(ProgramRootSymbol original, Cloner cloner) : base(original, cloner) { }
+    public ProgramRootSymbol() : base(ProgramRootSymbol.ProgramRootSymbolName, ProgramRootSymbol.ProgramRootSymbolDescription) { }
 
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ProgramRootSymbol(this, cloner);
+    }
     public override SymbolicExpressionTreeNode CreateTreeNode() {
       return new SymbolicExpressionTreeTopLevelNode(this);
     }

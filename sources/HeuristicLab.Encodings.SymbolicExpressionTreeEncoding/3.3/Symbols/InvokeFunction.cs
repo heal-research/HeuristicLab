@@ -49,6 +49,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
 
     [StorableConstructor]
     private InvokeFunction(bool deserializing) : base(deserializing) { }
+    private InvokeFunction(InvokeFunction original, Cloner cloner)
+      : base(original, cloner) {
+      functionName = original.functionName;
+      name = "Invoke: " + original.functionName;
+    }
     public InvokeFunction(string functionName)
       : base("Invoke: " + functionName, InvokeFunction.InvokeFunctionDescription) {
       this.FunctionName = functionName;
@@ -59,10 +64,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      InvokeFunction clone = (InvokeFunction)base.Clone(cloner);
-      clone.functionName = functionName;
-      clone.name = "Invoke: " + functionName;
-      return clone;
+      return new InvokeFunction(this, cloner);
     }
   }
 }

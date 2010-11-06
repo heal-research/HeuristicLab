@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces;
@@ -60,6 +61,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators {
     }
 
     #endregion
+    [StorableConstructor]
+    protected SymbolicExpressionTreeCreator(bool deserializing) : base(deserializing) { }
+    protected SymbolicExpressionTreeCreator(SymbolicExpressionTreeCreator original, Cloner cloner) : base(original, cloner) { }
     protected SymbolicExpressionTreeCreator()
       : base() {
       Parameters.Add(new ValueLookupParameter<IntValue>(MaxFunctionDefinitionsParameterName, "Maximal number of function definitions in the symbolic expression tree."));
@@ -70,7 +74,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators {
     public sealed override IOperation Apply() {
       SymbolicExpressionTree = Create(Random, SymbolicExpressionGrammar,
         MaxTreeSize, MaxTreeHeight, MaxFunctionDefinitions, MaxFunctionArguments);
-      return null;
+      return base.Apply();
     }
 
     protected abstract SymbolicExpressionTree Create(

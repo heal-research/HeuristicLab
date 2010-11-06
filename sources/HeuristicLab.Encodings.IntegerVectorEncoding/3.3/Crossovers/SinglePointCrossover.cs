@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -33,6 +34,15 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [Item("SinglePointCrossover", "Single point crossover for integer vectors. It is implemented as described in Michalewicz, Z. 1999. Genetic Algorithms + Data Structures = Evolution Programs. Third, Revised and Extended Edition, Spring-Verlag Berlin Heidelberg.")]
   [StorableClass]
   public class SinglePointCrossover : IntegerVectorCrossover {
+    [StorableConstructor]
+    protected SinglePointCrossover(bool deserializing) : base(deserializing) { }
+    protected SinglePointCrossover(SinglePointCrossover original, Cloner cloner) : base(original, cloner) { }
+    public SinglePointCrossover() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SinglePointCrossover(this, cloner);
+    }
+
     /// <summary>
     /// Performs a single point crossover at a randomly chosen position of the two 
     /// given parent integer vectors.

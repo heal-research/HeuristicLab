@@ -190,7 +190,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     #endregion
 
-
+    [StorableConstructor]
+    protected DataAnalysisProblemData(bool deserializing) : base(deserializing) { }
+    protected DataAnalysisProblemData(DataAnalysisProblemData original, Cloner cloner)
+      : base(original, cloner) {
+      RegisterParameterEventHandlers();
+      RegisterParameterValueEventHandlers();
+    }
     public DataAnalysisProblemData()
       : base() {
       var inputVariables = new CheckedItemList<StringValue>();
@@ -232,11 +238,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
       RegisterParameterValueEventHandlers();
     }
 
-    [StorableConstructor]
-    protected DataAnalysisProblemData(bool deserializing) : base(deserializing) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new DataAnalysisProblemData(this, cloner);
+    }
 
     [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserializationHook() {
+    private void AfterDeserialization() {
       if (!Parameters.ContainsKey("ValidationPercentage"))
         Parameters.Add(new ValueParameter<PercentValue>("ValidationPercentage", "The relative amount of the training samples that should be used as validation set.", new PercentValue(0.5)));
 
@@ -403,13 +410,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
       TestSamplesEnd = new IntValue(csvFileParser.Rows);
       suppressEvents = false;
       OnProblemDataChanged(EventArgs.Empty);
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      DataAnalysisProblemData clone = (DataAnalysisProblemData)base.Clone(cloner);
-      clone.RegisterParameterEventHandlers();
-      clone.RegisterParameterValueEventHandlers();
-      return clone;
     }
   }
 }

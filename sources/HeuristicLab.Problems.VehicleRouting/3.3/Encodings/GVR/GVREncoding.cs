@@ -19,13 +19,11 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Drawing;
-using System.Collections.Generic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
@@ -74,24 +72,22 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
 
       return tours;
     }
-    
-    public override IDeepCloneable Clone(HeuristicLab.Common.Cloner cloner) {
-      GVREncoding clone = new GVREncoding(capacity, demand);
-      cloner.RegisterClonedObject(this, clone);
-      clone.Tours = (ItemList<Tour>)cloner.Clone(this.Tours);
-     
-      return clone;
-    }
 
+    [StorableConstructor]
+    protected GVREncoding(bool deserializing) : base(deserializing) { }
+    protected GVREncoding(GVREncoding original, Cloner cloner)
+      : base(original, cloner) {
+      this.capacity = original.capacity;
+      this.demand = original.demand;
+      this.Tours = cloner.Clone(original.Tours);
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new GVREncoding(this, cloner);
+    }
     public GVREncoding(DoubleValue capacity, DoubleArray demand)
       : base() {
         this.capacity = capacity;
         this.demand = demand;
-    }
-
-    [StorableConstructor]
-    private GVREncoding(bool serializing)
-      : base() {
     }
 
     public static GVREncoding ConvertFrom(IVRPEncoding encoding, DoubleValue capacity, DoubleArray demand, 

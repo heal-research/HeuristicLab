@@ -133,6 +133,17 @@ namespace HeuristicLab.Problems.TestFunctions {
 
     [StorableConstructor]
     private SingleObjectiveTestFunctionProblem(bool deserializing) : base(deserializing) { }
+    private SingleObjectiveTestFunctionProblem(SingleObjectiveTestFunctionProblem original, Cloner cloner)
+      : base(original, cloner) {
+      operators = original.operators.Where(x => original.IsNotFieldReferenced(x)).Select(x => cloner.Clone(x)).ToList();
+      strategyVectorCreator = cloner.Clone(original.strategyVectorCreator);
+      operators.Add(strategyVectorCreator);
+      strategyVectorCrossover = cloner.Clone(original.strategyVectorCrossover);
+      operators.Add(strategyVectorCrossover);
+      strategyVectorManipulator = cloner.Clone(original.strategyVectorManipulator);
+      operators.Add(strategyVectorManipulator);
+      AttachEventHandlers();
+    }
     public SingleObjectiveTestFunctionProblem()
       : base() {
       UniformRandomRealVectorCreator creator = new UniformRandomRealVectorCreator();
@@ -163,16 +174,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      SingleObjectiveTestFunctionProblem clone = (SingleObjectiveTestFunctionProblem)base.Clone(cloner);
-      clone.operators = operators.Where(x => IsNotFieldReferenced(x)).Select(x => (IOperator)cloner.Clone(x)).ToList();
-      clone.strategyVectorCreator = (StdDevStrategyVectorCreator)cloner.Clone(strategyVectorCreator);
-      clone.operators.Add(clone.strategyVectorCreator);
-      clone.strategyVectorCrossover = (StdDevStrategyVectorCrossover)cloner.Clone(strategyVectorCrossover);
-      clone.operators.Add(strategyVectorCrossover);
-      clone.strategyVectorManipulator = (StdDevStrategyVectorManipulator)cloner.Clone(strategyVectorManipulator);
-      clone.operators.Add(strategyVectorManipulator);
-      clone.AttachEventHandlers();
-      return clone;
+      return new SingleObjectiveTestFunctionProblem(this, cloner);
     }
 
     private bool IsNotFieldReferenced(IOperator x) {
@@ -298,7 +300,7 @@ namespace HeuristicLab.Problems.TestFunctions {
 
     #region Helpers
     [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserializationHook() {
+    private void AfterDeserialization() {
       // BackwardsCompatibility3.3
       #region Backwards compatible code (remove with 3.4)
       if (operators == null) InitializeOperators();

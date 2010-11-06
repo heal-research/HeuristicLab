@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -36,6 +37,15 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("MaximalPreservativeCrossover", "An operator which performs the maximal preservative crossover on two permutations. It is implemented as described in Mühlenbein, H. 1991. Evolution in time and space - the parallel genetic algorithm. FOUNDATIONS OF GENETIC ALGORITHMS, pp. 316-337. Morgan Kaufmann.")]
   [StorableClass]
   public class MaximalPreservativeCrossover : PermutationCrossover {
+    [StorableConstructor]
+    protected MaximalPreservativeCrossover(bool deserializing) : base(deserializing) { }
+    protected MaximalPreservativeCrossover(MaximalPreservativeCrossover original, Cloner cloner) : base(original, cloner) { }
+    public MaximalPreservativeCrossover() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MaximalPreservativeCrossover(this, cloner);
+    }
+
     /// <summary>
     /// Performs the maximal preservative crossover on <paramref name="parent1"/> and <paramref name="parent2"/>
     /// by preserving a large number of edges in both parents.

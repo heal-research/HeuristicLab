@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -40,6 +41,9 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
 
+    [StorableConstructor]
+    protected TSPEvaluator(bool deserializing) : base(deserializing) { }
+    protected TSPEvaluator(TSPEvaluator original, Cloner cloner) : base(original, cloner) { }
     protected TSPEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The evaluated quality of the TSP solution."));

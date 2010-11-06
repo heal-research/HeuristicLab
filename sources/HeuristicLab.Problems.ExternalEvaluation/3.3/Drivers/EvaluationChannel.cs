@@ -20,6 +20,7 @@
 #endregion
 
 using Google.ProtocolBuffers;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -32,6 +33,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
 
     [StorableConstructor]
     protected EvaluationChannel(bool deserializing) : base(deserializing) { }
+    protected EvaluationChannel(EvaluationChannel original, Cloner cloner) : base(original, cloner) { }
     protected EvaluationChannel()
       : base() {
       name = ItemName;

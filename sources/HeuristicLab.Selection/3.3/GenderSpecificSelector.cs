@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -79,7 +80,12 @@ namespace HeuristicLab.Selection {
     #endregion
 
     [StorableConstructor]
-    private GenderSpecificSelector(bool deserializing) : base() { }
+    protected GenderSpecificSelector(bool deserializing) : base(deserializing) { }
+    protected GenderSpecificSelector(GenderSpecificSelector original, Cloner cloner)
+      : base(original, cloner) {
+      Initialize();
+    }
+
     public GenderSpecificSelector()
       : base() {
       #region Create parameters
@@ -119,6 +125,15 @@ namespace HeuristicLab.Selection {
       Initialize();
     }
 
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new GenderSpecificSelector(this, cloner);
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      Initialize();
+    }
+
     /// <summary>
     /// Sets how many sub-scopes male and female selectors should select.
     /// </summary>
@@ -141,7 +156,6 @@ namespace HeuristicLab.Selection {
     #endregion
 
     #region Helpers
-    [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
       FemaleSelectorParameter.ValueChanged += new EventHandler(SelectorParameter_ValueChanged);
       MaleSelectorParameter.ValueChanged += new EventHandler(SelectorParameter_ValueChanged);

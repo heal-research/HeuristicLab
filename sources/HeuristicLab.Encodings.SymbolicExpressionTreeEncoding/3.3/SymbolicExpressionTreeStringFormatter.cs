@@ -20,14 +20,13 @@
 #endregion
 
 using System.Text;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
-  [StorableClass]
+  
   public class SymbolicExpressionTreeStringFormatter {
-    [Storable]
+    
     public bool Indent { get; set; }
-
+    
     public SymbolicExpressionTreeStringFormatter()
       : base() {
       Indent = true;

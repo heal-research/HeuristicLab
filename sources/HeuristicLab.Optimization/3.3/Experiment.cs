@@ -127,25 +127,29 @@ namespace HeuristicLab.Optimization {
       : base(deserializing) {
       stopPending = false;
     }
-
     [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      Initialize();
+    }
+    private Experiment(Experiment original, Cloner cloner)
+      : base(original, cloner) {
+      executionState = original.executionState;
+      executionTime = original.executionTime;
+      optimizers = cloner.Clone(original.optimizers);
+      runs = cloner.Clone(original.runs);
+      stopPending = original.stopPending;
+      Initialize();
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      if (ExecutionState == ExecutionState.Started) throw new InvalidOperationException(string.Format("Clone not allowed in execution state \"{0}\".", ExecutionState));
+      return new Experiment(this, cloner);
+    }
+
     private void Initialize() {
       RegisterOptimizersEvents();
       foreach (IOptimizer optimizer in optimizers)
         RegisterOptimizerEvents(optimizer);
       if (runs != null) RegisterRunsEvents();
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      if (ExecutionState == ExecutionState.Started) throw new InvalidOperationException(string.Format("Clone not allowed in execution state \"{0}\".", ExecutionState));
-      Experiment clone = (Experiment)base.Clone(cloner);
-      clone.executionState = executionState;
-      clone.executionTime = executionTime;
-      clone.optimizers = (OptimizerList)cloner.Clone(optimizers);
-      clone.runs = (RunCollection)cloner.Clone(runs);
-      clone.stopPending = stopPending;
-      clone.Initialize();
-      return clone;
     }
 
     public void Prepare() {

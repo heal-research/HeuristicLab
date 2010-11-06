@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Collections;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -55,6 +56,9 @@ namespace HeuristicLab.Operators {
 
     [StorableConstructor]
     protected StochasticMultiBranch(bool deserializing) : base(deserializing) { }
+    protected StochasticMultiBranch(StochasticMultiBranch<T> original, Cloner cloner)
+      : base(original, cloner) {
+    }
     /// <summary>
     /// Initializes a new instance of <see cref="StochasticMultiOperator"/> with two parameters
     /// (<c>Probabilities</c> and <c>Random</c>).
@@ -142,6 +146,17 @@ namespace HeuristicLab.Operators {
   [Item("StochasticMultiBranch", "Selects one of its branches (if there are any) given a list of relative probabilities.")]
   [StorableClass]
   public class StochasticMultiBranch : StochasticMultiBranch<IOperator> {
+    [StorableConstructor]
+    protected StochasticMultiBranch(bool deserializing) : base(deserializing) { }
+    protected StochasticMultiBranch(StochasticMultiBranch original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public StochasticMultiBranch() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new StochasticMultiBranch(this, cloner);
+    }
+
     protected override bool CreateChildOperation {
       get { return false; }
     }

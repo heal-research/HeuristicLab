@@ -45,15 +45,6 @@ namespace HeuristicLab.Core {
     private DateTime lastUpdateTime;
     private System.Timers.Timer timer;
 
-    protected Engine()
-      : base() {
-      log = new Log();
-      executionStack = new Stack<IOperation>();
-      pausePending = stopPending = false;
-      timer = new System.Timers.Timer(100);
-      timer.AutoReset = true;
-      timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_Elapsed);
-    }
     [StorableConstructor]
     protected Engine(bool deserializing)
       : base(deserializing) {
@@ -62,17 +53,28 @@ namespace HeuristicLab.Core {
       timer.AutoReset = true;
       timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_Elapsed);
     }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      if (ExecutionState == ExecutionState.Started) throw new InvalidOperationException(string.Format("Clone not allowed in execution state \"{0}\".", ExecutionState));
-      Engine clone = (Engine)base.Clone(cloner);
-      clone.log = (ILog)cloner.Clone(log);
-      IOperation[] contexts = executionStack.ToArray();
+    protected Engine(Engine original, Cloner cloner)
+      : base(original, cloner) {
+      if (original.ExecutionState == ExecutionState.Started) throw new InvalidOperationException(string.Format("Clone not allowed in execution state \"{0}\".", ExecutionState));
+      log = cloner.Clone(original.log);
+      executionStack = new Stack<IOperation>();
+      IOperation[] contexts = original.executionStack.ToArray();
       for (int i = contexts.Length - 1; i >= 0; i--)
-        clone.executionStack.Push((IOperation)cloner.Clone(contexts[i]));
-      clone.pausePending = pausePending;
-      clone.stopPending = stopPending;
-      return clone;
+        executionStack.Push(cloner.Clone(contexts[i]));
+      pausePending = original.pausePending;
+      stopPending = original.stopPending;
+      timer = new System.Timers.Timer(100);
+      timer.AutoReset = true;
+      timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_Elapsed);
+    }
+    protected Engine()
+      : base() {
+      log = new Log();
+      executionStack = new Stack<IOperation>();
+      pausePending = stopPending = false;
+      timer = new System.Timers.Timer(100);
+      timer.AutoReset = true;
+      timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_Elapsed);
     }
 
     public sealed override void Prepare() {

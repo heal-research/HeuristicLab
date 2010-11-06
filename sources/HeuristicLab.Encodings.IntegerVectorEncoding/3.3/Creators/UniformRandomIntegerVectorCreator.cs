@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -30,6 +31,15 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [Item("UniformRandomIntegerVectorCreator", "An operator which creates a new random int vector with each element uniformly distributed in a specified range.")]
   [StorableClass]
   public class UniformRandomIntegerVectorCreator : IntegerVectorCreator {
+    [StorableConstructor]
+    protected UniformRandomIntegerVectorCreator(bool deserializing) : base(deserializing) { }
+    protected UniformRandomIntegerVectorCreator(UniformRandomIntegerVectorCreator original, Cloner cloner) : base(original, cloner) { }
+    public UniformRandomIntegerVectorCreator() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new UniformRandomIntegerVectorCreator(this, cloner);
+    }
+
     /// <summary>
     /// Generates a new random integer vector with the given <paramref name="length"/>.
     /// </summary>

@@ -19,20 +19,13 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableClass]
   public class SymbolicExpressionTreeTopLevelNode : SymbolicExpressionTreeNode {
-    public SymbolicExpressionTreeTopLevelNode()
-      : base() {
-    }
-
-    public SymbolicExpressionTreeTopLevelNode(Symbol symbol)
-      : base(symbol) {
-    }
-
     [Storable]
     private ISymbolicExpressionGrammar grammar;
     public override ISymbolicExpressionGrammar Grammar {
@@ -42,16 +35,18 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       this.grammar = grammar;
     }
 
-    // copy constructor
-    protected SymbolicExpressionTreeTopLevelNode(SymbolicExpressionTreeTopLevelNode original)
-      : base(original) {
-      if (original.Grammar != null)
-        grammar = (ISymbolicExpressionGrammar)original.Grammar.Clone();
-      //grammar = original.grammar;
+    [StorableConstructor]
+    protected SymbolicExpressionTreeTopLevelNode(bool deserializing) : base(deserializing) { }
+    protected SymbolicExpressionTreeTopLevelNode(SymbolicExpressionTreeTopLevelNode original, Cloner cloner)
+      : base(original, cloner) {
+      grammar = cloner.Clone(original.Grammar);
     }
+    public SymbolicExpressionTreeTopLevelNode() : base() { }
+    public SymbolicExpressionTreeTopLevelNode(Symbol symbol) : base(symbol) { }
 
-    public override object Clone() {
-      return new SymbolicExpressionTreeTopLevelNode(this);
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SymbolicExpressionTreeTopLevelNode(this, cloner);
     }
   }
 }

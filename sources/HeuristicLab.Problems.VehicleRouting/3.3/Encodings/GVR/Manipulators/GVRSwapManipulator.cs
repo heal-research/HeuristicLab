@@ -19,11 +19,9 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
   [Item("GVRSwapManipulator", "An operator which manipulates a GVR representation by swapping two customers. It is implemented as described in Pereira, F.B. et al (2002). GVR: a New Genetic Representation for the Vehicle Routing Problem. AICS 2002, LNAI 2464, pp. 95-102.")]
@@ -31,7 +29,10 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
   public sealed class GVRSwapManipulator : GVRManipulator {
     [StorableConstructor]
     private GVRSwapManipulator(bool deserializing) : base(deserializing) { }
-
+    private GVRSwapManipulator(GVRSwapManipulator original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new GVRSwapManipulator(this, cloner);
+    }
     public GVRSwapManipulator()
       : base() {
     }

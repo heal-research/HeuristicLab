@@ -19,11 +19,11 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
   [Item("PrinsPermutationCrossover", "An operator which crosses two VRP representations using a standard permutation operator.  It is implemented as described in Prins, C. (2004). A simple and effective evolutionary algorithm for the vehicle routing problem. Computers & Operations Research, 12:1985-2002.")]
@@ -35,7 +35,10 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
 
     [StorableConstructor]
     private PrinsPermutationCrossover(bool deserializing) : base(deserializing) { }
-
+    private PrinsPermutationCrossover(PrinsPermutationCrossover original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new PrinsPermutationCrossover(this, cloner);
+    }
     public PrinsPermutationCrossover()
       : base() {
       Parameters.Add(new ValueLookupParameter<IPermutationCrossover>("InnerCrossover", "The permutation crossover.", new OrderCrossover()));

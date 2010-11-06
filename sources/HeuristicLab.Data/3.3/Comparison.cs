@@ -33,14 +33,16 @@ namespace HeuristicLab.Data {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Enum; }
     }
 
+    [StorableConstructor]
+    protected Comparison(bool deserializing) : base(deserializing) { }
+    protected Comparison(Comparison original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public Comparison() : base() { }
     public Comparison(ComparisonType value) : base(value) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      Comparison clone = new Comparison(value);
-      cloner.RegisterClonedObject(this, clone);
-      clone.readOnly = readOnly;
-      return clone;
+      return new Comparison(this, cloner);
     }
 
     public virtual int CompareTo(object obj) {

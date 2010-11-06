@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
@@ -41,10 +42,17 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       set { SampleSizeParameter.Value = value; }
     }
 
+    [StorableConstructor]
+    protected StochasticOneBitflipMultiMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected StochasticOneBitflipMultiMoveGenerator(StochasticOneBitflipMultiMoveGenerator original, Cloner cloner) : base(original, cloner) { }
     public StochasticOneBitflipMultiMoveGenerator()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator."));
       Parameters.Add(new ValueLookupParameter<IntValue>("SampleSize", "The number of moves to generate."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new StochasticOneBitflipMultiMoveGenerator(this, cloner);
     }
 
     public static OneBitflipMove[] Apply(BinaryVector binaryVector, IRandom random, int sampleSize) {

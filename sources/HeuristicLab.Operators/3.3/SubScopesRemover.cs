@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -49,11 +50,20 @@ namespace HeuristicLab.Operators {
       get { return CurrentScopeParameter.ActualValue; }
     }
 
+    [StorableConstructor]
+    private SubScopesRemover(bool deserializing) : base(deserializing) { }
+    private SubScopesRemover(SubScopesRemover original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public SubScopesRemover()
       : base() {
       Parameters.Add(new ValueParameter<BoolValue>("RemoveAllSubScopes", "True if all sub-scopes of the current scope should be removed, otherwise false.", new BoolValue(true)));
       Parameters.Add(new ValueLookupParameter<IntValue>("SubScopeIndex", "The index of the sub-scope which should be removed. This parameter is ignored, if RemoveAllSubScopes is true."));
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope from which one or all sub-scopes should be removed."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SubScopesRemover(this, cloner);
     }
 
     public override IOperation Apply() {

@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
@@ -52,12 +53,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       get { return (ILookupParameter<DoubleValue>)Parameters[BetaParameterName]; }
     }
 
+    [StorableConstructor]
+    private SymbolicRegressionSolutionLinearScaler(bool deserializing) : base(deserializing) { }
+    private SymbolicRegressionSolutionLinearScaler(SymbolicRegressionSolutionLinearScaler original, Cloner cloner) : base(original, cloner) { }
     public SymbolicRegressionSolutionLinearScaler()
       : base() {
       Parameters.Add(new LookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression trees to transform."));
       Parameters.Add(new LookupParameter<SymbolicExpressionTree>(ScaledSymbolicExpressionTreeParameterName, "The resulting symbolic expression trees after transformation."));
       Parameters.Add(new LookupParameter<DoubleValue>(AlphaParameterName, "Alpha parameter for linear transformation."));
       Parameters.Add(new LookupParameter<DoubleValue>(BetaParameterName, "Beta parameter for linear transformation."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SymbolicRegressionSolutionLinearScaler(this, cloner);
     }
 
     public override IOperation Apply() {

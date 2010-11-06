@@ -21,6 +21,7 @@
 
 
 using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -35,6 +36,10 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     }
     [StorableConstructor]
     protected ArtificialAntExpressionGrammar(bool deserializing) : base(deserializing) { }
+    protected ArtificialAntExpressionGrammar(ArtificialAntExpressionGrammar original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ArtificialAntExpressionGrammar(this, cloner);
+    }
 
     private void Initialize() {
       var ifFoodAhead = new IfFoodAhead();

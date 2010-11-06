@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -47,11 +48,20 @@ namespace HeuristicLab.Operators {
       get { return CurrentScopeParameter.ActualValue; }
     }
 
+    [StorableConstructor]
+    private SubScopesSorter(bool deserializing) : base(deserializing) { }
+    private SubScopesSorter(SubScopesSorter original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public SubScopesSorter()
       : base() {
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Value", "The values contained in each sub-scope acording which the sub-scopes of the current scope are sorted."));
       Parameters.Add(new ValueLookupParameter<BoolValue>("Descending", "True if the sub-scopes should be sorted in descending order, otherwise false."));
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope whose sub-scopes are sorted."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SubScopesSorter(this, cloner);
     }
 
     public override IOperation Apply() {

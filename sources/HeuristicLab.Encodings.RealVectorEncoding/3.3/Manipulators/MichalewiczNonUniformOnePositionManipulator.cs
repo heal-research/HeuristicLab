@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
@@ -56,6 +57,9 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["IterationDependency"]; }
     }
 
+    [StorableConstructor]
+    protected MichalewiczNonUniformOnePositionManipulator(bool deserializing) : base(deserializing) { }
+    protected MichalewiczNonUniformOnePositionManipulator(MichalewiczNonUniformOnePositionManipulator original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="MichalewiczNonUniformOnePositionManipulator"/> with three 
     /// parameters (<c>Iterations</c>, <c>MaximumIterations</c> and <c>IterationDependency</c>).
@@ -65,6 +69,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       Parameters.Add(new LookupParameter<IntValue>("Iterations", "Current iteration of the algorithm."));
       Parameters.Add(new ValueLookupParameter<IntValue>("MaximumIterations", "Maximum number of iterations."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("IterationDependency", "Specifies the degree of dependency on the number of iterations. A value of 0 means no dependency and the higher the value the stronger the progress towards maximum iterations will be taken into account by sampling closer around the current position. Value must be >= 0.", new DoubleValue(5)));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MichalewiczNonUniformOnePositionManipulator(this, cloner);
     }
 
     /// <summary>

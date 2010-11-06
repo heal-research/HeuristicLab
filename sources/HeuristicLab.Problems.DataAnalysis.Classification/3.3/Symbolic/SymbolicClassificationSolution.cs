@@ -34,14 +34,48 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
   [Item("SymbolicClassificationSolution", "Represents a solution for a symbolic classification problem which can be visualized in the GUI.")]
   [StorableClass]
   public class SymbolicClassificationSolution : SymbolicRegressionSolution, IClassificationSolution {
-    private SymbolicClassificationSolution() : base() { }
+    public new ClassificationProblemData ProblemData {
+      get { return (ClassificationProblemData)base.ProblemData; }
+      set { base.ProblemData = value; }
+    }
+
+    #region properties
+    private List<double> optimalThresholds;
+    private List<double> actualThresholds;
+    public IEnumerable<double> Thresholds {
+      get {
+        if (actualThresholds == null) RecalculateEstimatedValues();
+        return actualThresholds;
+      }
+      set {
+        if (actualThresholds != null && actualThresholds.SequenceEqual(value))
+          return;
+        actualThresholds = new List<double>(value);
+        OnThresholdsChanged();
+      }
+    }
+
+    public IEnumerable<double> EstimatedClassValues {
+      get { return GetEstimatedClassValues(Enumerable.Range(0, ProblemData.Dataset.Rows)); }
+    }
+
+    public IEnumerable<double> EstimatedTrainingClassValues {
+      get { return GetEstimatedClassValues(ProblemData.TrainingIndizes); }
+    }
+
+    public IEnumerable<double> EstimatedTestClassValues {
+      get { return GetEstimatedClassValues(ProblemData.TestIndizes); }
+    }
+
+    [StorableConstructor]
+    protected SymbolicClassificationSolution(bool deserializing) : base(deserializing) { }
+    protected SymbolicClassificationSolution(SymbolicClassificationSolution original, Cloner cloner) : base(original, cloner) { }
     public SymbolicClassificationSolution(ClassificationProblemData problemData, SymbolicRegressionModel model, double lowerEstimationLimit, double upperEstimationLimit)
       : base(problemData, model, lowerEstimationLimit, upperEstimationLimit) {
     }
 
-    public new ClassificationProblemData ProblemData {
-      get { return (ClassificationProblemData)base.ProblemData; }
-      set { base.ProblemData = value; }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SymbolicClassificationSolution(this, cloner);
     }
 
     protected override void RecalculateEstimatedValues() {
@@ -111,34 +145,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
       }
       this.optimalThresholds = new List<double>(thresholds);
       this.actualThresholds = optimalThresholds;
-    }
-
-    #region properties
-    private List<double> optimalThresholds;
-    private List<double> actualThresholds;
-    public IEnumerable<double> Thresholds {
-      get {
-        if (actualThresholds == null) RecalculateEstimatedValues();
-        return actualThresholds;
-      }
-      set {
-        if (actualThresholds != null && actualThresholds.SequenceEqual(value))
-          return;
-        actualThresholds = new List<double>(value);
-        OnThresholdsChanged();
-      }
-    }
-
-    public IEnumerable<double> EstimatedClassValues {
-      get { return GetEstimatedClassValues(Enumerable.Range(0, ProblemData.Dataset.Rows)); }
-    }
-
-    public IEnumerable<double> EstimatedTrainingClassValues {
-      get { return GetEstimatedClassValues(ProblemData.TrainingIndizes); }
-    }
-
-    public IEnumerable<double> EstimatedTestClassValues {
-      get { return GetEstimatedClassValues(ProblemData.TestIndizes); }
     }
 
     public IEnumerable<double> GetEstimatedClassValues(IEnumerable<int> rows) {

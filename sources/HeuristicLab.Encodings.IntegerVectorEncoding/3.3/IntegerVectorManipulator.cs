@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
@@ -42,6 +43,9 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
       get { return (ILookupParameter<IntegerVector>)Parameters["IntegerVector"]; }
     }
 
+    [StorableConstructor]
+    protected IntegerVectorManipulator(bool deserializing) : base(deserializing) { }
+    protected IntegerVectorManipulator(IntegerVectorManipulator original, Cloner cloner) : base(original, cloner) { }
     protected IntegerVectorManipulator()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));

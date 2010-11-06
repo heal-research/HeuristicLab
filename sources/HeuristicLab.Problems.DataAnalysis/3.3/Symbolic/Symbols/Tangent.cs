@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -26,6 +27,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [StorableClass]
   [Item("Tangent", "Symbol that represents the tangent trigonometric function.")]
   public sealed class Tangent : Symbol {
+    [StorableConstructor]
+    private Tangent(bool deserializing) : base(deserializing) { }
+    private Tangent(Tangent original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Tangent(this, cloner);
+    }
     public Tangent() : base("Tangent", "Symbol that represents the tangent trigonometric function.") { }
   }
 }

@@ -194,12 +194,13 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     public VRPSolution() : base() { }
 
-    public VRPSolution(DoubleMatrix coordinates): base() {
+    public VRPSolution(DoubleMatrix coordinates)
+      : base() {
       this.coordinates = coordinates;
     }
 
-    public VRPSolution(DoubleMatrix coordinates, IVRPEncoding solution, DoubleValue quality, 
-      DoubleValue distance, DoubleValue overload, DoubleValue tardiness, DoubleValue travelTime, 
+    public VRPSolution(DoubleMatrix coordinates, IVRPEncoding solution, DoubleValue quality,
+      DoubleValue distance, DoubleValue overload, DoubleValue tardiness, DoubleValue travelTime,
       DoubleValue vehicleUtilization, DoubleMatrix distanceMatrix, BoolValue useDistanceMatrix,
       DoubleArray readyTime, DoubleArray dueTime, DoubleArray serviceTime)
       : base() {
@@ -221,7 +222,28 @@ namespace HeuristicLab.Problems.VehicleRouting {
     [StorableConstructor]
     private VRPSolution(bool deserializing) : base(deserializing) { }
 
+    private VRPSolution(VRPSolution original, Cloner cloner)
+      : base(original, cloner) {
+      coordinates = cloner.Clone(original.coordinates);
+      solution = cloner.Clone(original.solution);
+      quality = cloner.Clone(original.quality);
+      distance = cloner.Clone(original.distance);
+      overload = cloner.Clone(original.overload);
+      tardiness = cloner.Clone(original.tardiness);
+      travelTime = cloner.Clone(original.travelTime);
+      vehicleUtilization = cloner.Clone(original.vehicleUtilization);
+      distanceMatrix = cloner.Clone(original.distanceMatrix);
+      useDistanceMatrix = cloner.Clone(original.useDistanceMatrix);
+      readyTime = cloner.Clone(original.readyTime);
+      dueTime = cloner.Clone(original.dueTime);
+      serviceTime = cloner.Clone(original.serviceTime);
+      Initialize();
+    }
+
     [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      Initialize();
+    }
     private void Initialize() {
       if (coordinates != null) RegisterCoordinatesEvents();
       if (solution != null) RegisterSolutionEvents();
@@ -234,23 +256,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      VRPSolution clone = new VRPSolution();
-      cloner.RegisterClonedObject(this, clone);
-      clone.coordinates = (DoubleMatrix)cloner.Clone(coordinates);
-      clone.solution = (IVRPEncoding)cloner.Clone(solution);
-      clone.quality = (DoubleValue)cloner.Clone(quality);
-      clone.distance = (DoubleValue)cloner.Clone(distance);
-      clone.overload = (DoubleValue)cloner.Clone(overload);
-      clone.tardiness = (DoubleValue)cloner.Clone(tardiness);
-      clone.travelTime = (DoubleValue)cloner.Clone(travelTime);
-      clone.vehicleUtilization = (DoubleValue)cloner.Clone(vehicleUtilization);
-      clone.distanceMatrix = (DoubleMatrix)cloner.Clone(distanceMatrix);
-      clone.useDistanceMatrix = (BoolValue)cloner.Clone(useDistanceMatrix);
-      clone.readyTime = (DoubleArray)cloner.Clone(readyTime);
-      clone.dueTime = (DoubleArray)cloner.Clone(dueTime);
-      clone.serviceTime = (DoubleArray)cloner.Clone(serviceTime);
-      clone.Initialize();
-      return clone;
+      return new VRPSolution(this, cloner);
     }
 
     #region Events

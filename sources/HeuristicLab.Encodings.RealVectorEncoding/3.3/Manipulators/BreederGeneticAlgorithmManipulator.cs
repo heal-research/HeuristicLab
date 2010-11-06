@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -40,6 +41,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public ValueLookupParameter<DoubleValue> SearchIntervalFactorParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["SearchIntervalFactor"]; }
     }
+
+    [StorableConstructor]
+    protected BreederGeneticAlgorithmManipulator(bool deserializing) : base(deserializing) { }
+    protected BreederGeneticAlgorithmManipulator(BreederGeneticAlgorithmManipulator original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="BreederGeneticAlgorithmManipulator"/> with two
     /// parameters (<c>Bounds</c> and <c>SearchIntervalFactor</c>).
@@ -47,6 +52,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public BreederGeneticAlgorithmManipulator()
       : base() {
       Parameters.Add(new ValueLookupParameter<DoubleValue>("SearchIntervalFactor", "The factor determining the size of the search interval, that will be added/removed to/from the allele selected for manipulation. E.g. a value of 0.1 means 10% of the range will be maximally added/removed.", new DoubleValue(0.1)));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new BreederGeneticAlgorithmManipulator(this, cloner);
     }
 
     /// <summary>

@@ -39,6 +39,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
       get { return maxLag; }
       set { maxLag = value; }
     }
+    [StorableConstructor]
+    private LaggedVariable(bool deserializing) : base(deserializing) { }
+    private LaggedVariable(LaggedVariable original, Cloner cloner)
+      : base(original, cloner) {
+      minLag = original.minLag;
+      maxLag = original.maxLag;
+    }
     public LaggedVariable()
       : base("LaggedVariable", "Represents a variable value with a time offset.") {
       minLag = -1; maxLag = -1;
@@ -49,10 +56,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      LaggedVariable clone = (LaggedVariable)base.Clone(cloner);
-      clone.minLag = minLag;
-      clone.maxLag = maxLag;
-      return clone;
+      return new LaggedVariable(this, cloner);
     }
   }
 }

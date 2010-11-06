@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -49,12 +50,21 @@ namespace HeuristicLab.Operators {
       set { ComparisonParameter.Value = value; }
     }
 
+    [StorableConstructor]
+    private Comparator(bool deserializing) : base(deserializing) { }
+    private Comparator(Comparator original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public Comparator()
       : base() {
       Parameters.Add(new LookupParameter<IItem>("LeftSide", "The left side of the comparison."));
       Parameters.Add(new ValueLookupParameter<IItem>("RightSide", "The right side of the comparison."));
       Parameters.Add(new ValueParameter<Comparison>("Comparison", "The type of comparison.", new Comparison(Data.ComparisonType.Equal)));
       Parameters.Add(new LookupParameter<BoolValue>("Result", "The result of the comparison."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Comparator(this, cloner);
     }
 
     public override IOperation Apply() {

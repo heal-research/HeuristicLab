@@ -75,6 +75,15 @@ namespace HeuristicLab.Core {
       }
     }
 
+    [StorableConstructor]
+    protected OperatorGraph(bool deserializing) : base(deserializing) { }
+    protected OperatorGraph(OperatorGraph original, Cloner cloner)
+      : base(original, cloner) {
+      operators = cloner.Clone(original.operators);
+      initialOperator = cloner.Clone(original.initialOperator);
+      visualizationInfo = cloner.Clone(original.visualizationInfo);
+      Initialize();
+    }
     /// <summary>
     /// Initializes a new instance of <see cref="OperatorGraph"/>.
     /// </summary>
@@ -84,18 +93,19 @@ namespace HeuristicLab.Core {
       visualizationInfo = null;
       Initialize();
     }
-    [StorableConstructor]
-    protected OperatorGraph(bool deserializing) : base(deserializing) { }
 
     //mkommend: IMPORTANT DO NOT REMOVE THIS PRIVATE EVENT
     //needed to register OperatorGraph events in GraphVisualizationInfo
     public event EventHandler DeserializationFinished;
     private void OnOperatorGraphDeserializationFinished() {
       EventHandler handler = DeserializationFinished;
-      if (handler != null)
-        handler(this, EventArgs.Empty);
+      if (handler != null) handler(this, EventArgs.Empty);
     }
+
     [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      Initialize();
+    }
     private void Initialize() {
       RegisterOperatorsEvents();
       OnOperatorGraphDeserializationFinished();
@@ -109,12 +119,7 @@ namespace HeuristicLab.Core {
     /// <param name="clonedObjects">Dictionary of all already cloned objects. (Needed to avoid cycles.)</param>
     /// <returns>The cloned object as <see cref="OperatorGraph"/>.</returns>
     public override IDeepCloneable Clone(Cloner cloner) {
-      OperatorGraph clone = (OperatorGraph)base.Clone(cloner);
-      clone.operators = (OperatorSet)cloner.Clone(operators);
-      clone.initialOperator = (IOperator)cloner.Clone(initialOperator);
-      clone.visualizationInfo = cloner.Clone(visualizationInfo);
-      clone.Initialize();
-      return clone;
+      return new OperatorGraph(this, cloner);
     }
 
     /// <inheritdoc/>
@@ -123,8 +128,8 @@ namespace HeuristicLab.Core {
     /// Fires a new <c>InitialOperatorChanged</c> event.
     /// </summary>
     protected virtual void OnInitialOperatorChanged() {
-      if (InitialOperatorChanged != null)
-        InitialOperatorChanged(this, EventArgs.Empty);
+      var handler = InitialOperatorChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
 
     #region Operators Events

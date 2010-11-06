@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
@@ -63,6 +64,15 @@ namespace HeuristicLab.Problems.TestFunctions {
     /// </summary>
     public override int MaximumProblemSize {
       get { return int.MaxValue; }
+    }
+
+    [StorableConstructor]
+    protected GriewankEvaluator(bool deserializing) : base(deserializing) { }
+    protected GriewankEvaluator(GriewankEvaluator original, Cloner cloner) : base(original, cloner) { }
+    public GriewankEvaluator() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new GriewankEvaluator(this, cloner);
     }
 
     public override RealVector GetBestKnownSolution(int dimension) {

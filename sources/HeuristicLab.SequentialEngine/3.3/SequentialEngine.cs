@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -32,6 +33,15 @@ namespace HeuristicLab.SequentialEngine {
   [Item("Sequential Engine", "Engine for sequential execution of algorithms.")]
   public class SequentialEngine : Engine {
     private IOperator currentOperator;
+
+    [StorableConstructor]
+    protected SequentialEngine(bool deserializing) : base(deserializing) { }
+    protected SequentialEngine(SequentialEngine original, Cloner cloner) : base(original, cloner) { }
+    public SequentialEngine() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SequentialEngine(this, cloner);
+    }
 
     /// <summary>
     /// Deals with the next operation, if it is an <see cref="AtomicOperation"/> it is executed,

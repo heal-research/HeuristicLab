@@ -24,7 +24,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
-  [Item("OneBitflipMoveAttribute", "Base class for specifying a move attribute.")]
+  [Item("OneBitflipMoveAttribute", "Describes the attributes (move quality and index) of a single bitflip move.")]
   [StorableClass]
   public class OneBitflipMoveAttribute : Item {
     [Storable]
@@ -32,10 +32,14 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     [Storable]
     public int Index { get; protected set; }
 
-    public OneBitflipMoveAttribute()
-      : this(-1, 0) {
+    [StorableConstructor]
+    protected OneBitflipMoveAttribute(bool deserializing) : base(deserializing) { }
+    protected OneBitflipMoveAttribute(OneBitflipMoveAttribute original, Cloner cloner)
+      : base(original, cloner) {
+      this.MoveQuality = original.MoveQuality;
+      this.Index = original.Index;
     }
-
+    public OneBitflipMoveAttribute() : this(-1, 0) { }
     public OneBitflipMoveAttribute(int index, double moveQuality)
       : base() {
       Index = index;
@@ -43,10 +47,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      OneBitflipMoveAttribute clone = (OneBitflipMoveAttribute)base.Clone(cloner);
-      clone.MoveQuality = MoveQuality;
-      clone.Index = Index;
-      return clone;
+      return new OneBitflipMoveAttribute(this, cloner);
     }
   }
 }

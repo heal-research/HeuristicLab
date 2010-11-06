@@ -19,13 +19,12 @@
  */
 #endregion
 
-using System;
+using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
 using HeuristicLab.Parameters;
-using System.Collections.Generic;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
@@ -40,17 +39,21 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     }
 
     #endregion
-    
+
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
-    
+
     [StorableConstructor]
     private AlbaStochasticIntraRouteInversionSingleMoveGenerator(bool deserializing) : base(deserializing) { }
-
+    private AlbaStochasticIntraRouteInversionSingleMoveGenerator(AlbaStochasticIntraRouteInversionSingleMoveGenerator original, Cloner cloner) : base(original, cloner) { }
     public AlbaStochasticIntraRouteInversionSingleMoveGenerator()
       : base() {
-        Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator."));
+      Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new AlbaStochasticIntraRouteInversionSingleMoveGenerator(this, cloner);
     }
 
     public static AlbaIntraRouteInversionMove Apply(AlbaEncoding individual, int cities, IRandom rand) {
@@ -74,7 +77,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
         }
 
         int currentTourEnd = currentTourStart;
-        while (currentTourEnd < individual.Length && 
+        while (currentTourEnd < individual.Length &&
           individual[currentTourEnd] < individual.Cities) {
           currentTourEnd++;
         }
@@ -92,7 +95,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       List<AlbaIntraRouteInversionMove> moves = new List<AlbaIntraRouteInversionMove>();
 
       AlbaIntraRouteInversionMove move = Apply(individual, Cities, RandomParameter.ActualValue);
-      if(move != null)
+      if (move != null)
         moves.Add(move);
 
       return moves.ToArray();

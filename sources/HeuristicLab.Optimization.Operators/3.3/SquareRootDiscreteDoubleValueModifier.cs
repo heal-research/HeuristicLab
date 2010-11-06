@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -30,6 +31,15 @@ namespace HeuristicLab.Optimization.Operators {
   [Item("SquareRootDiscreteDoubleValueModifier", "Modifies the value by square rooted fall (fast fall initially, slow fall to the end) or rise (fast rise initially, slow rise to the end).")]
   [StorableClass]
   public class SquareRootDiscreteDoubleValueModifier : DiscreteDoubleValueModifier {
+    [StorableConstructor]
+    protected SquareRootDiscreteDoubleValueModifier(bool deserializing) : base(deserializing) { }
+    protected SquareRootDiscreteDoubleValueModifier(SquareRootDiscreteDoubleValueModifier original, Cloner cloner) : base(original, cloner) { }
+    public SquareRootDiscreteDoubleValueModifier() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SquareRootDiscreteDoubleValueModifier(this, cloner);
+    }
+
     protected override double Modify(double value, double startValue, double endValue, int index, int startIndex, int endIndex) {
       double a = (endValue - startValue) / Math.Sqrt(endIndex - startIndex);
       return a * Math.Sqrt(index - startIndex) + startValue;

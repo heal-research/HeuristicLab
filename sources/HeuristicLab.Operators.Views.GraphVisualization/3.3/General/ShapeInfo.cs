@@ -29,7 +29,12 @@ using Netron.Diagramming.Core;
 namespace HeuristicLab.Operators.Views.GraphVisualization {
   [StorableClass]
   public abstract class ShapeInfo : DeepCloneable, IShapeInfo {
-    private ShapeInfo() {
+    [StorableConstructor]
+    protected ShapeInfo(bool deserializing) : base() { }
+    protected ShapeInfo(ShapeInfo original, Cloner cloner)
+      : base(original, cloner) {
+      shapeType = original.shapeType;
+      location = original.location;
     }
 
     protected ShapeInfo(Type shapeType) {
@@ -61,8 +66,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     public event EventHandler Changed;
     protected virtual void OnChanged() {
       EventHandler handler = this.Changed;
-      if (handler != null)
-        this.Changed(this, EventArgs.Empty);
+      if (handler != null) this.Changed(this, EventArgs.Empty);
     }
 
     public virtual IShape CreateShape() {
@@ -78,13 +82,6 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
 
     public virtual void UpdateShapeInfo(IShape shape) {
       this.Location = shape.Location;
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      ShapeInfo clone = (ShapeInfo)base.Clone(cloner);
-      clone.shapeType = this.shapeType;
-      clone.location = this.location;
-      return clone;
     }
   }
 }

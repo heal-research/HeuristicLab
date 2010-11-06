@@ -20,8 +20,6 @@
 #endregion
 
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   public interface IAlbaIntraRouteInversionMoveOperator : IVRPMoveOperator {

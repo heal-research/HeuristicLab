@@ -36,7 +36,17 @@ namespace HeuristicLab.Problems.DataAnalysis {
     #region IStorableContent Members
     public string Filename { get; set; }
     #endregion
-    
+
+    [StorableConstructor]
+    protected DataAnalysisSolution(bool deserializing) : base(deserializing) { }
+    protected DataAnalysisSolution(DataAnalysisSolution original, Cloner cloner)
+      : base(original, cloner) {
+      problemData = (DataAnalysisProblemData)cloner.Clone(original.problemData);
+      model = (IDataAnalysisModel)cloner.Clone(original.model);
+      lowerEstimationLimit = original.lowerEstimationLimit;
+      upperEstimationLimit = original.upperEstimationLimit;
+      AfterDeserialization();
+    }
     protected DataAnalysisSolution()
       : base() { }
     protected DataAnalysisSolution(DataAnalysisProblemData problemData) : this(problemData, double.NegativeInfinity, double.PositiveInfinity) { }
@@ -45,13 +55,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
       this.problemData = problemData;
       this.lowerEstimationLimit = lowerEstimationLimit;
       this.upperEstimationLimit = upperEstimationLimit;
-      Initialize();
+      AfterDeserialization();
     }
 
-    [StorableConstructor]
-    private DataAnalysisSolution(bool deserializing) : base(deserializing) { }
     [StorableHook(HookType.AfterDeserialization)]
-    private void Initialize() {
+    private void AfterDeserialization() {
       if (problemData != null)
         RegisterProblemDataEvents();
     }
@@ -139,9 +147,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public event EventHandler ModelChanged;
     protected virtual void OnModelChanged() {
-      EventHandler handler = ModelChanged;
-      if (handler != null)
-        handler(this, EventArgs.Empty);
+      EventHandler listeners = ModelChanged;
+      if (listeners != null)
+        listeners(this, EventArgs.Empty);
     }
 
     public event EventHandler EstimatedValuesChanged;
@@ -152,15 +160,5 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     #endregion
 
-    public override IDeepCloneable Clone(Cloner cloner) {
-      DataAnalysisSolution clone = (DataAnalysisSolution)base.Clone(cloner);
-      clone.problemData = (DataAnalysisProblemData)cloner.Clone(problemData);
-      clone.model = (IDataAnalysisModel)cloner.Clone(model);
-      clone.lowerEstimationLimit = lowerEstimationLimit;
-      clone.upperEstimationLimit = upperEstimationLimit;
-      clone.Initialize();
-
-      return clone;
-    }
   }
 }

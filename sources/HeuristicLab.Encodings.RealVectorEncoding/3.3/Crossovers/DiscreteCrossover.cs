@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -35,6 +36,15 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("DiscreteCrossover", "Discrete crossover for real vectors: Creates a new offspring by combining the alleles in the parents such that each allele is randomly selected from one parent. It is implemented as described in Beyer, H.-G. and Schwefel, H.-P. 2002. Evolution Strategies - A Comprehensive Introduction Natural Computing, 1, pp. 3-52.")]
   [StorableClass]
   public class DiscreteCrossover : RealVectorCrossover {
+    [StorableConstructor]
+    protected DiscreteCrossover(bool deserializing) : base(deserializing) { }
+    protected DiscreteCrossover(DiscreteCrossover original, Cloner cloner) : base(original, cloner) { }
+    public DiscreteCrossover() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new DiscreteCrossover(this, cloner);
+    }
+    
     /// <summary>
     /// Performs a discrete crossover operation on multiple parents.
     /// </summary>

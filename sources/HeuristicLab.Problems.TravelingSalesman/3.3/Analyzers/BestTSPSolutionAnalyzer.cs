@@ -20,6 +20,7 @@
 #endregion
 
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
@@ -60,6 +61,12 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       get { return (LookupParameter<Permutation>)Parameters["BestKnownSolution"]; }
     }
 
+    [StorableConstructor]
+    private BestTSPSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    private BestTSPSolutionAnalyzer(BestTSPSolutionAnalyzer original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new BestTSPSolutionAnalyzer(this, cloner);
+    }
     public BestTSPSolutionAnalyzer()
       : base() {
       Parameters.Add(new LookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem."));

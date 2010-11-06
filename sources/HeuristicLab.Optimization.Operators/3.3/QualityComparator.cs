@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -42,12 +43,19 @@ namespace HeuristicLab.Optimization.Operators {
       get { return (IValueLookupParameter<BoolValue>)Parameters["Maximization"]; }
     }
 
+    [StorableConstructor]
+    protected QualityComparator(bool deserializing) : base(deserializing) { }
+    protected QualityComparator(QualityComparator original, Cloner cloner) : base(original, cloner) { }
     public QualityComparator()
       : base() {
       Parameters.Add(new LookupParameter<DoubleValue>("LeftSide", "The left side of the comparison."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("RightSide", "The right side of the comparison."));
       Parameters.Add(new LookupParameter<BoolValue>("Result", "The result of the comparison."));
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, otherwise false."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new QualityComparator(this, cloner);
     }
 
     public override IOperation Apply() {

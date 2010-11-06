@@ -34,14 +34,17 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     [Storable]
     public RealVector RealVector { get; protected set; }
 
-    public AdditiveMove()
-      : this(-1, 0, null) {
+    [StorableConstructor]
+    protected AdditiveMove(bool deserializing) : base(deserializing) { }
+    protected AdditiveMove(AdditiveMove original, Cloner cloner)
+      : base(original, cloner) {
+      this.Dimension = original.Dimension;
+      this.MoveDistance = original.MoveDistance;
+      if (original.RealVector != null)
+        this.RealVector = cloner.Clone(original.RealVector);
     }
-
-    public AdditiveMove(int dimension, double moveDistance)
-      : this(dimension, moveDistance, null) {
-    }
-
+    public AdditiveMove() : this(-1, 0, null) { }
+    public AdditiveMove(int dimension, double moveDistance) : this(dimension, moveDistance, null) { }
     public AdditiveMove(int dimension, double moveDistance, RealVector realVector)
       : base() {
       Dimension = dimension;
@@ -50,12 +53,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      AdditiveMove clone = (AdditiveMove)base.Clone(cloner);
-      clone.Dimension = Dimension;
-      clone.MoveDistance = MoveDistance;
-      if (RealVector != null)
-        clone.RealVector = (RealVector)RealVector.Clone(cloner);
-      return clone;
+      return new AdditiveMove(this, cloner);
     }
   }
 }

@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -26,6 +27,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [StorableClass]
   [Item("Addition", "Symbol that represents the + operator.")]
   public sealed class Addition : Symbol {
+    [StorableConstructor]
+    private Addition(bool deserializing) : base(deserializing) { }
+    private Addition(Addition original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Addition(this, cloner);
+    }
     public Addition() : base("Addition", "Symbol that represents the + operator.") { }
   }
 }

@@ -20,6 +20,7 @@
 #endregion
 
 using HeuristicLab.Analysis;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -33,7 +34,12 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   public sealed class TSPPopulationDiversityAnalyzer : PopulationDiversityAnalyzer<Permutation> {
     [StorableConstructor]
     private TSPPopulationDiversityAnalyzer(bool deserializing) : base(deserializing) { }
+    private TSPPopulationDiversityAnalyzer(TSPPopulationDiversityAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public TSPPopulationDiversityAnalyzer() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new TSPPopulationDiversityAnalyzer(this, cloner);
+    }
 
     protected override double[,] CalculateSimilarities(Permutation[] solutions) {
       int count = solutions.Length;

@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -54,6 +55,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Analyzers {
     }
     #endregion
 
+    [StorableConstructor]
+    private SymbolicExpressionTreeSizeCalculator(bool deserializing) : base(deserializing) { }
+    private SymbolicExpressionTreeSizeCalculator(SymbolicExpressionTreeSizeCalculator original, Cloner cloner) : base(original, cloner) { }
     public SymbolicExpressionTreeSizeCalculator()
       : base() {
       Parameters.Add(new LookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression tree whose size should be calculated."));
@@ -64,6 +68,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Analyzers {
       SymbolicExpressionTree tree = SymbolicExpressionTree;
       SymbolicExpressionTreeSize = new DoubleValue(tree.Size);
       return base.Apply();
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SymbolicExpressionTreeSizeCalculator(this, cloner);
     }
   }
 }

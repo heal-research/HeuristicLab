@@ -19,11 +19,13 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.TestFunctions {
   public class RealVectorToRealVectorEncoder : SingleSuccessorOperator, IRealVectorPSOEncoder, IRealVectorOperator {
@@ -54,6 +56,9 @@ namespace HeuristicLab.Problems.TestFunctions {
       get { return CurrentScopeParameter.ActualValue; }
     }
 
+    [StorableConstructor]
+    protected RealVectorToRealVectorEncoder(bool deserializing) : base(deserializing) { }
+    protected RealVectorToRealVectorEncoder(RealVectorToRealVectorEncoder original, Cloner cloner) : base(original, cloner) { }
     public RealVectorToRealVectorEncoder()
       : base() {
       Parameters.Add(new LookupParameter<RealVector>("OriginalRealVector", "The original real vector."));
@@ -61,6 +66,10 @@ namespace HeuristicLab.Problems.TestFunctions {
       Parameters.Add(new LookupParameter<IntValue>("Length", "Vector length."));
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope bounds matrix should be cloned."));
       Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "The lower and upper bounds in each dimension."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new RealVectorToRealVectorEncoder(this, cloner);
     }
 
     public override IOperation Apply() {

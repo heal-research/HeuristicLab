@@ -20,6 +20,7 @@
 #endregion
 
 using HeuristicLab.Analysis;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -84,10 +85,16 @@ namespace HeuristicLab.Algorithms.TabuSearch {
     #endregion
 
     [StorableConstructor]
-    private TabuSearchMainLoop(bool deserializing) : base() { }
+    private TabuSearchMainLoop(bool deserializing) : base(deserializing) { }
     public TabuSearchMainLoop()
       : base() {
       Initialize();
+    }
+    private TabuSearchMainLoop(TabuSearchMainLoop original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new TabuSearchMainLoop(this, cloner);
     }
 
     private void Initialize() {

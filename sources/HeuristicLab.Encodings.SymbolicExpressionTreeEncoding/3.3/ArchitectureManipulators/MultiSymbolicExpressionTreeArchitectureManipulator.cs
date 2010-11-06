@@ -22,6 +22,7 @@
 using System;
 using System.Linq;
 using HeuristicLab.Collections;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces;
@@ -34,7 +35,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureManipulators {
   [Item("MultiSymbolicExpressionTreeArchitectureManipulator", "Randomly selects and applies one of its architecture manipulators every time it is called.")]
   [StorableClass]
-  public class MultiSymbolicExpressionTreeArchitectureManipulator : StochasticMultiBranch<ISymbolicExpressionTreeArchitectureManipulator>, ISymbolicExpressionTreeArchitectureManipulator, IStochasticOperator {
+  public sealed class MultiSymbolicExpressionTreeArchitectureManipulator : StochasticMultiBranch<ISymbolicExpressionTreeArchitectureManipulator>, ISymbolicExpressionTreeArchitectureManipulator, IStochasticOperator {
     private const string MaxTreeSizeParameterName = "MaxTreeSize";
     private const string MaxTreeHeightParameterName = "MaxTreeHeight";
     private const string SymbolicExpressionGrammarParameterName = "SymbolicExpressionGrammar";
@@ -57,7 +58,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureMani
     }
     #endregion
 
-
     #region ISymbolicExpressionTreeManipulator Members
     public ILookupParameter<SymbolicExpressionTree> SymbolicExpressionTreeParameter {
       get { return (ILookupParameter<SymbolicExpressionTree>)Parameters[SymbolicExpressionTreeParameterName]; }
@@ -79,6 +79,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureMani
 
     [StorableConstructor]
     private MultiSymbolicExpressionTreeArchitectureManipulator(bool deserializing) : base(deserializing) { }
+    private MultiSymbolicExpressionTreeArchitectureManipulator(MultiSymbolicExpressionTreeArchitectureManipulator original, Cloner cloner) : base(original, cloner) { }
     public MultiSymbolicExpressionTreeArchitectureManipulator()
       : base() {
       Parameters.Add(new LookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression tree on which the operator should be applied."));
@@ -92,6 +93,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureMani
         if (!typeof(MultiOperator<ISymbolicExpressionTreeArchitectureManipulator>).IsAssignableFrom(type))
           Operators.Add((ISymbolicExpressionTreeArchitectureManipulator)Activator.CreateInstance(type), true);
       }
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MultiSymbolicExpressionTreeArchitectureManipulator(this, cloner);
     }
 
     protected override void Operators_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<ISymbolicExpressionTreeArchitectureManipulator>> e) {

@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
@@ -65,6 +66,15 @@ It is implemented as generalized Rosenbrock function for which the 2 dimensional
     /// </summary>
     public override int MaximumProblemSize {
       get { return int.MaxValue; }
+    }
+
+    [StorableConstructor]
+    protected RosenbrockEvaluator(bool deserializing) : base(deserializing) { }
+    protected RosenbrockEvaluator(RosenbrockEvaluator original, Cloner cloner) : base(original, cloner) { }
+    public RosenbrockEvaluator() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new RosenbrockEvaluator(this, cloner);
     }
 
     public override RealVector GetBestKnownSolution(int dimension) {

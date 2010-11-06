@@ -23,7 +23,6 @@ using System;
 using System.Windows.Forms;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
-using HeuristicLab.Common.Resources;
 
 namespace HeuristicLab.Problems.ExternalEvaluation.Views {
   [View("Process-Channel View")]

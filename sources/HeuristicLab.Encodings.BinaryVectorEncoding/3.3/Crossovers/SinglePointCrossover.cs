@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -33,7 +34,17 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   /// </remarks>
   [Item("SinglePointCrossover", "Single point crossover for binary vectors. It is implemented based on the NPointCrossover.")]
   [StorableClass]
-  public class SinglePointCrossover : BinaryVectorCrossover {
+  public sealed class SinglePointCrossover : BinaryVectorCrossover {
+
+    [StorableConstructor]
+    private SinglePointCrossover(bool deserializing) : base(deserializing) { }
+    private SinglePointCrossover(SinglePointCrossover original, Cloner cloner) : base(original, cloner) { }
+    public SinglePointCrossover() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SinglePointCrossover(this, cloner);
+    }
+
     /// <summary>
     /// Performs a single point crossover at a randomly chosen position of two 
     /// given parent binary vectors.

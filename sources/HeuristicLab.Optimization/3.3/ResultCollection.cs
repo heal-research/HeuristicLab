@@ -20,6 +20,7 @@
 #endregion
 
 using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -30,5 +31,13 @@ namespace HeuristicLab.Optimization {
     public ResultCollection() : base() { }
     public ResultCollection(int capacity) : base(capacity) { }
     public ResultCollection(IEnumerable<IResult> collection) : base(collection) { }
+    [StorableConstructor]
+    protected ResultCollection(bool deserializing) : base(deserializing) { }
+    protected ResultCollection(ResultCollection original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ResultCollection(this, cloner);
+    }
   }
 }

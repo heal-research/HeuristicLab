@@ -29,6 +29,11 @@ namespace HeuristicLab.Data {
   [Item("BoolMatrix", "Represents a matrix of boolean values.")]
   [StorableClass]
   public class BoolMatrix : ValueTypeMatrix<bool>, IStringConvertibleMatrix {
+    [StorableConstructor]
+    protected BoolMatrix(bool deserializing) : base(deserializing) { }
+    protected BoolMatrix(BoolMatrix original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public BoolMatrix() : base() { }
     public BoolMatrix(int rows, int columns) : base(rows, columns) { }
     public BoolMatrix(int rows, int columns, IEnumerable<string> columnNames) : base(rows, columns, columnNames) { }
@@ -38,14 +43,7 @@ namespace HeuristicLab.Data {
     public BoolMatrix(bool[,] elements, IEnumerable<string> columnNames, IEnumerable<string> rowNames) : base(elements, columnNames, rowNames) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      BoolMatrix clone = new BoolMatrix();
-      cloner.RegisterClonedObject(this, clone);
-      clone.matrix = (bool[,])matrix.Clone();
-      clone.columnNames = new List<string>(columnNames);
-      clone.rowNames = new List<string>(rowNames);
-      clone.sortableView = sortableView;
-      clone.readOnly = readOnly;
-      return clone;
+      return new BoolMatrix(this, cloner);
     }
 
     protected virtual bool Validate(string value, out string errorMessage) {

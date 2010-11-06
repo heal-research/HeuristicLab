@@ -19,12 +19,12 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
   [Item("PrinsManipulator", "An operator which manipulates a VRP representation.")]
@@ -52,7 +52,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
 
     [StorableConstructor]
     protected PrinsManipulator(bool deserializing) : base(deserializing) { }
-
+    protected PrinsManipulator(PrinsManipulator original, Cloner cloner) : base(original, cloner) { }
     public PrinsManipulator()
       : base() {
       Parameters.Add(new LookupParameter<DoubleValue>("EvalFleetUsageFactor", "The fleet usage factor considered in the evaluation."));
@@ -60,7 +60,6 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
       Parameters.Add(new LookupParameter<DoubleValue>("EvalDistanceFactor", "The distance factor considered in the evaluation."));
       Parameters.Add(new LookupParameter<DoubleValue>("EvalOverloadPenalty", "The overload penalty considered in the evaluation."));
       Parameters.Add(new LookupParameter<DoubleValue>("EvalTardinessPenalty", "The tardiness penalty considered in the evaluation."));
-
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));
     }
 

@@ -116,6 +116,10 @@ namespace HeuristicLab.Optimization {
 
     [StorableConstructor]
     private UserDefinedProblem(bool deserializing) : base(deserializing) { }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      AttachEventHandlers();
+    }
     public UserDefinedProblem()
       : base() {
       Parameters.Add(new ValueParameter<ISingleObjectiveEvaluator>("Evaluator", "The evaluator that collects the values to exchange.", new EmptyUserDefinedProblemEvaluator()));
@@ -128,10 +132,12 @@ namespace HeuristicLab.Optimization {
       AttachEventHandlers();
     }
 
+    private UserDefinedProblem(UserDefinedProblem original, Cloner cloner)
+      : base(original, cloner) {
+      AttachEventHandlers();
+    }
     public override IDeepCloneable Clone(Cloner cloner) {
-      UserDefinedProblem clone = (UserDefinedProblem)base.Clone(cloner);
-      clone.AttachEventHandlers();
-      return clone;
+      return new UserDefinedProblem(this, cloner);
     }
 
     #region Events
@@ -185,7 +191,6 @@ namespace HeuristicLab.Optimization {
     #endregion
 
     #region Helpers
-    [StorableHook(HookType.AfterDeserialization)]
     private void AttachEventHandlers() {
       SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
       EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
@@ -215,7 +220,17 @@ namespace HeuristicLab.Optimization {
 
     [Item("EmptyUserDefinedProblemEvaluator", "A dummy evaluator that will throw an exception when executed.")]
     [StorableClass]
-    private class EmptyUserDefinedProblemEvaluator : ParameterizedNamedItem, ISingleObjectiveEvaluator {
+    private sealed class EmptyUserDefinedProblemEvaluator : ParameterizedNamedItem, ISingleObjectiveEvaluator {
+
+      [StorableConstructor]
+      private EmptyUserDefinedProblemEvaluator(bool deserializing) : base(deserializing) { }
+      private EmptyUserDefinedProblemEvaluator(EmptyUserDefinedProblemEvaluator original, Cloner cloner)
+        : base(original, cloner) {
+      }
+      public override IDeepCloneable Clone(Cloner cloner) {
+        return new EmptyUserDefinedProblemEvaluator(this, cloner);
+      }
+
       #region ISingleObjectiveEvaluator Members
 
       public ILookupParameter<DoubleValue> QualityParameter {
@@ -230,10 +245,7 @@ namespace HeuristicLab.Optimization {
 
       #region IOperator Members
 
-      public bool Breakpoint {
-        get;
-        set;
-      }
+      public bool Breakpoint { get; set; }
 
       public IOperation Execute(IExecutionContext context) {
         throw new InvalidOperationException("Please choose an appropriate evaluation operator.");
@@ -243,17 +255,17 @@ namespace HeuristicLab.Optimization {
         throw new InvalidOperationException("Please choose an appropriate evaluation operator.");
       }
 
-      #pragma warning disable 67
+#pragma warning disable 67
       public event EventHandler BreakpointChanged;
 
       public event EventHandler Executed;
-      #pragma warning restore 67
+#pragma warning restore 67
 
       #endregion
 
       public override Image ItemImage {
         get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Method; }
       }
-    } 
+    }
   }
 }

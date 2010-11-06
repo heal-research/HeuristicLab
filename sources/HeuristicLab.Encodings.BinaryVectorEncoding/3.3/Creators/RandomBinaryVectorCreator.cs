@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -29,7 +30,16 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   /// </summary>
   [Item("RandomBinaryVectorCreator", "An operator which creates a new random binary vector with each element randomly initialized.")]
   [StorableClass]
-  public class RandomBinaryVectorCreator : BinaryVectorCreator {
+  public sealed class RandomBinaryVectorCreator : BinaryVectorCreator {
+    [StorableConstructor]
+    private RandomBinaryVectorCreator(bool deserializing) : base(deserializing) { }
+    private RandomBinaryVectorCreator(RandomBinaryVectorCreator original, Cloner cloner) : base(original, cloner) { }
+    public RandomBinaryVectorCreator() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new RandomBinaryVectorCreator(this, cloner);
+    }
+
     /// <summary>
     /// Generates a new random binary vector with the given <paramref name="length"/>.
     /// </summary>

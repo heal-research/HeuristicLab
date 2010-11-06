@@ -113,8 +113,19 @@ namespace HeuristicLab.Optimization {
     }
     [StorableConstructor]
     protected EngineAlgorithm(bool deserializing) : base(deserializing) { }
-
     [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      Initialize();
+    }
+
+    protected EngineAlgorithm(EngineAlgorithm original, Cloner cloner)
+      : base(original, cloner) {
+      globalScope = cloner.Clone(original.globalScope);
+      engine = cloner.Clone(original.engine);
+      operatorGraph = cloner.Clone(original.operatorGraph);
+      Initialize();
+    }
+
     private void Initialize() {
       operatorGraph.InitialOperatorChanged += new EventHandler(OperatorGraph_InitialOperatorChanged);
       if (engine == null) {
@@ -126,31 +137,8 @@ namespace HeuristicLab.Optimization {
       if (engine != null) RegisterEngineEvents();
     }
 
-    public override IDeepCloneable Clone(Cloner cloner) {
-      EngineAlgorithm clone = (EngineAlgorithm)base.Clone(cloner);
-      clone.globalScope = (IScope)cloner.Clone(globalScope);
-      clone.engine = (IEngine)cloner.Clone(engine);
-      clone.operatorGraph = (OperatorGraph)cloner.Clone(operatorGraph);
-      clone.Initialize();
-      return clone;
-    }
-    protected override void Clone(IDeepCloneable clone, Cloner cloner) {
-      base.Clone(clone, cloner);
-      EngineAlgorithm algorithm = clone as EngineAlgorithm;
-      if (algorithm != null) {
-        algorithm.globalScope = (IScope)cloner.Clone(globalScope);
-        algorithm.engine = (IEngine)cloner.Clone(engine);
-        algorithm.operatorGraph = (OperatorGraph)cloner.Clone(operatorGraph);
-        algorithm.Initialize();
-      }
-    }
-
     public virtual IAlgorithm CreateUserDefinedAlgorithm() {
-      UserDefinedAlgorithm algorithm = new UserDefinedAlgorithm();
-      Cloner cloner = new Cloner();
-      cloner.RegisterClonedObject(this, algorithm);
-      Clone(algorithm, cloner);
-      return algorithm;
+      return new UserDefinedAlgorithm(this, new Cloner());
     }
 
     public override void Prepare() {
@@ -182,8 +170,8 @@ namespace HeuristicLab.Optimization {
     #region Events
     public event EventHandler EngineChanged;
     protected virtual void OnEngineChanged() {
-      if (EngineChanged != null)
-        EngineChanged(this, EventArgs.Empty);
+      EventHandler handler = EngineChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler OperatorGraphChanged;
     protected virtual void OnOperatorGraphChanged() {

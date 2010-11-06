@@ -68,6 +68,17 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     [Storable]
     private Defun defunSymbol;
 
+    [StorableConstructor]
+    private GlobalSymbolicExpressionGrammar(bool deserializing) : base(deserializing) { }
+    private GlobalSymbolicExpressionGrammar(GlobalSymbolicExpressionGrammar original, Cloner cloner)
+      : base(original, cloner) {
+      defunSymbol = (Defun)cloner.Clone(original.defunSymbol);
+      maxFunctionArguments = original.maxFunctionArguments;
+      minFunctionArguments = original.minFunctionArguments;
+      maxFunctionDefinitions = original.maxFunctionDefinitions;
+      minFunctionDefinitions = original.minFunctionDefinitions;
+    }
+
     public GlobalSymbolicExpressionGrammar(ISymbolicExpressionGrammar mainBranchGrammar)
       : base(mainBranchGrammar) {
       maxFunctionArguments = 3;
@@ -99,13 +110,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         if (mainBranchGrammar.IsAllowedChild(mainBranchGrammar.StartSymbol, symb, 0))
           SetAllowedChild(defunSymbol, Symbols.Where(s => s.Name == symb.Name).First(), 0);
       }
-    }
-
-    //ctor for cloning
-    private GlobalSymbolicExpressionGrammar() : base() { }
-    [StorableConstructor]
-    private GlobalSymbolicExpressionGrammar(bool deserializing)
-      : base(deserializing) {
     }
 
     [Obsolete]
@@ -170,13 +174,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      GlobalSymbolicExpressionGrammar clone = (GlobalSymbolicExpressionGrammar)base.Clone(cloner);
-      clone.defunSymbol = (Defun)cloner.Clone(this.defunSymbol);
-      clone.maxFunctionArguments = this.maxFunctionArguments;
-      clone.minFunctionArguments = this.minFunctionArguments;
-      clone.maxFunctionDefinitions = this.maxFunctionDefinitions;
-      clone.minFunctionDefinitions = this.minFunctionDefinitions;
-      return clone;
+      return new GlobalSymbolicExpressionGrammar(this, cloner);
     }
   }
 }

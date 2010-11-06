@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -37,10 +38,19 @@ namespace HeuristicLab.Operators {
       get { return (ValueLookupParameter<IItem>)Parameters["RightSide"]; }
     }
 
+    [StorableConstructor]
+    private Assigner(bool deserializing) : base(deserializing) { }
+    private Assigner(Assigner original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public Assigner()
       : base() {
       Parameters.Add(new LookupParameter<IItem>("LeftSide", "The parameter whose value gets assigned with a clone of the other parameter's value."));
       Parameters.Add(new ValueLookupParameter<IItem>("RightSide", "The parameter whose value is cloned and assigned to the value of the other parameter."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Assigner(this, cloner);
     }
 
     public override IOperation Apply() {

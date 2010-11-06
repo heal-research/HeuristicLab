@@ -20,12 +20,11 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
-using HeuristicLab.Parameters;
-using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaExhaustiveLambdaInterchangeMoveGenerator", "Generates all possible lambda interchange moves from a given VRP encoding.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
@@ -33,9 +32,10 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   public sealed class AlbaExhaustiveLambdaInterchangeMoveGenerator : AlbaLambdaInterchangeMoveGenerator, IExhaustiveMoveGenerator, IAlbaLambdaInterchangeMoveOperator {
     [StorableConstructor]
     private AlbaExhaustiveLambdaInterchangeMoveGenerator(bool deserializing) : base(deserializing) { }
-
-    public AlbaExhaustiveLambdaInterchangeMoveGenerator()
-      : base() {
+    private AlbaExhaustiveLambdaInterchangeMoveGenerator(AlbaExhaustiveLambdaInterchangeMoveGenerator original, Cloner cloner) : base(original, cloner) { }
+    public AlbaExhaustiveLambdaInterchangeMoveGenerator() : base() { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new AlbaExhaustiveLambdaInterchangeMoveGenerator(this, cloner);
     }
 
     protected override AlbaLambdaInterchangeMove[] GenerateMoves(AlbaEncoding individual, int lambda) {
@@ -49,11 +49,11 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
           Tour tour2 = tours[tour2Index];
 
           for (int length1 = 0; length1 <= Math.Min(lambda, tour1.Cities.Count); length1++) {
-            for(int length2 = 0; length2 <= Math.Min(lambda, tour2.Cities.Count); length2++) {
-              if(length1 != 0 || length2 != 0) {
-                for(int index1 = 0; index1 < tour1.Cities.Count - length1 + 1; index1++) {
-                  for(int index2 = 0; index2 < tour2.Cities.Count - length2 + 1; index2++) {
-                    moves.Add(new AlbaLambdaInterchangeMove(tour1Index, index1, length1, 
+            for (int length2 = 0; length2 <= Math.Min(lambda, tour2.Cities.Count); length2++) {
+              if (length1 != 0 || length2 != 0) {
+                for (int index1 = 0; index1 < tour1.Cities.Count - length1 + 1; index1++) {
+                  for (int index2 = 0; index2 < tour2.Cities.Count - length2 + 1; index2++) {
+                    moves.Add(new AlbaLambdaInterchangeMove(tour1Index, index1, length1,
                       tour2Index, index2, length2, individual));
                   }
                 }

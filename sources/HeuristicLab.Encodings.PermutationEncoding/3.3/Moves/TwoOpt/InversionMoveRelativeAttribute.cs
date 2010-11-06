@@ -37,13 +37,15 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     public int Edge2Target { get; private set; }
 
     [StorableConstructor]
-    private InversionMoveRelativeAttribute(bool deserializing)
-      : base() {
+    protected InversionMoveRelativeAttribute(bool deserializing) : base(deserializing) { }
+    protected InversionMoveRelativeAttribute(InversionMoveRelativeAttribute original, Cloner cloner)
+      : base(original, cloner) {
+      this.Edge1Source = original.Edge1Source;
+      this.Edge1Target = original.Edge1Target;
+      this.Edge2Source = original.Edge2Source;
+      this.Edge2Target = original.Edge2Target;
     }
-
-    public InversionMoveRelativeAttribute()
-      : this(-1, -1, -1, -1, -1) { }
-
+    public InversionMoveRelativeAttribute() : this(-1, -1, -1, -1, -1) { }
     public InversionMoveRelativeAttribute(int edge1Source, int edge1Target, int edge2Source, int edge2Target, double moveQuality)
       : base(moveQuality) {
       Edge1Source = edge1Source;
@@ -53,12 +55,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      InversionMoveRelativeAttribute clone = (InversionMoveRelativeAttribute)base.Clone(cloner);
-      clone.Edge1Source = Edge1Source;
-      clone.Edge1Target = Edge1Target;
-      clone.Edge2Source = Edge2Source;
-      clone.Edge2Target = Edge2Target;
-      return clone;
+      return new InversionMoveRelativeAttribute(this, cloner);
     }
   }
 }

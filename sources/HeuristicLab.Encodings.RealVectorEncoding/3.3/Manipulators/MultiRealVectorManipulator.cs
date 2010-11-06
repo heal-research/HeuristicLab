@@ -22,6 +22,7 @@
 using System;
 using System.Linq;
 using HeuristicLab.Collections;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -49,7 +50,8 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     [StorableConstructor]
-    private MultiRealVectorManipulator(bool deserializing) : base(deserializing) { }
+    protected MultiRealVectorManipulator(bool deserializing) : base(deserializing) { }
+    protected MultiRealVectorManipulator(MultiRealVectorManipulator original, Cloner cloner) : base(original, cloner) { }
     public MultiRealVectorManipulator()
       : base() {
       Parameters.Add(new LookupParameter<RealVector>("RealVector", "The real vector that is being manipulating."));
@@ -59,6 +61,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
         if (!typeof(MultiOperator<IRealVectorManipulator>).IsAssignableFrom(type))
           Operators.Add((IRealVectorManipulator)Activator.CreateInstance(type), true);
       }
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MultiRealVectorManipulator(this, cloner);
     }
 
     protected override void Operators_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<IRealVectorManipulator>> e) {

@@ -129,7 +129,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     public IntValue TrainingSamplesEnd {
       get {
         int endIndex = (int)(DataAnalysisProblemData.TrainingIndizes.Count() * (1.0 - DataAnalysisProblemData.ValidationPercentage.Value) - 1);
-        if (endIndex < 0) endIndex = 0; 
+        if (endIndex < 0) endIndex = 0;
         return new IntValue(DataAnalysisProblemData.TrainingIndizes.ElementAt(endIndex));
       }
     }
@@ -152,6 +152,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
 
     [StorableConstructor]
     protected SymbolicRegressionProblemBase(bool deserializing) : base(deserializing) { }
+    protected SymbolicRegressionProblemBase(SymbolicRegressionProblemBase original, Cloner cloner)
+      : base(original, cloner) {
+      operators = original.operators.Select(x => (IOperator)cloner.Clone(x)).ToList();
+      RegisterParameterEvents();
+      RegisterParameterValueEvents();
+    }
     public SymbolicRegressionProblemBase()
       : base() {
       SymbolicExpressionTreeCreator creator = new ProbabilisticTreeCreator();
@@ -177,14 +183,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       InitializeOperators();
       RegisterParameterEvents();
       RegisterParameterValueEvents();
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      SymbolicRegressionProblemBase clone = (SymbolicRegressionProblemBase)base.Clone(cloner);
-      clone.operators = operators.Select(x => (IOperator)cloner.Clone(x)).ToList();
-      clone.RegisterParameterEvents();
-      clone.RegisterParameterValueEvents();
-      return clone;
     }
 
     private void RegisterParameterValueEvents() {

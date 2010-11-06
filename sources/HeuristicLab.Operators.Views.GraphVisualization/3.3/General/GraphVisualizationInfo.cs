@@ -29,7 +29,19 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Operators.Views.GraphVisualization {
   [StorableClass]
   public class GraphVisualizationInfo : DeepCloneable, IGraphVisualizationInfo {
-    public GraphVisualizationInfo() {
+    [StorableConstructor]
+    protected GraphVisualizationInfo(bool deserializing) : base() { }
+    protected GraphVisualizationInfo(GraphVisualizationInfo original, Cloner cloner)
+      : base(original, cloner) {
+      shapeInfos = new ObservableSet<IShapeInfo>(original.shapeInfos.Select(x => cloner.Clone(x)));
+      connectionInfos = new ObservableSet<IConnectionInfo>(original.connectionInfos.Select(x => cloner.Clone(x)));
+      initialShape = cloner.Clone(original.initialShape);
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new GraphVisualizationInfo(this, cloner);
+    }
+    public GraphVisualizationInfo()
+      : base() {
       this.shapeInfos = new ObservableSet<IShapeInfo>();
       this.connectionInfos = new ObservableSet<IConnectionInfo>();
     }
@@ -95,14 +107,5 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
         this.InitialShapeChanged(this, EventArgs.Empty);
     }
     #endregion
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      GraphVisualizationInfo clone = (GraphVisualizationInfo)base.Clone(cloner);
-      clone.shapeInfos = new ObservableSet<IShapeInfo>(this.shapeInfos.Select(x => (IShapeInfo)cloner.Clone(x)));
-      clone.connectionInfos = new ObservableSet<IConnectionInfo>(this.connectionInfos.Select(x => (IConnectionInfo)cloner.Clone(x)));
-      if (this.initialShape != null)
-        clone.initialShape = (IShapeInfo)this.initialShape.Clone(cloner);
-      return clone;
-    }
   }
 }

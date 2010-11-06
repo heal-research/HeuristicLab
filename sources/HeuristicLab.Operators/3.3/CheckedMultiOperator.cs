@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -36,6 +37,12 @@ namespace HeuristicLab.Operators {
       get { return (ICheckedItemList<T>)base.Operators; }
       protected set { base.Operators = value; }
     }
+
+    [StorableConstructor]
+    protected CheckedMultiOperator(bool deserializing) : base(deserializing) { }
+    protected CheckedMultiOperator(CheckedMultiOperator<T> original, Cloner cloner)
+      : base(original, cloner) {
+    }
     /// <summary>
     /// Creates a new instance of CheckedMultiOperator
     /// </summary>
@@ -43,7 +50,5 @@ namespace HeuristicLab.Operators {
       : base() {
       Operators = new CheckedItemList<T>();
     }
-    [StorableConstructor]
-    protected CheckedMultiOperator(bool deserializing) : base(deserializing) { }
   }
 }

@@ -41,7 +41,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
   [Item("Classification Problem", "Represents a classfication problem.")]
   [StorableClass]
   [Creatable("Problems")]
-  public class SymbolicClassificationProblem : SingleObjectiveClassificationProblem<ISymbolicClassificationEvaluator, ISymbolicExpressionTreeCreator>, IStorableContent {
+  public sealed class SymbolicClassificationProblem : SingleObjectiveClassificationProblem<ISymbolicClassificationEvaluator, ISymbolicExpressionTreeCreator>, IStorableContent {
     private const string SymbolicExpressionTreeInterpreterParameterName = "SymbolicExpressionTreeInterpreter";
     private const string FunctionTreeGrammarParameterName = "FunctionTreeGrammar";
     private const string MaxExpressionLengthParameterName = "MaxExpressionLength";
@@ -56,7 +56,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
 
     public ISymbolicExpressionTreeInterpreter SymbolicExpressionTreeInterpreter {
       get { return SymbolicExpressionTreeInterpreterParameter.Value; }
-      protected set { SymbolicExpressionTreeInterpreterParameter.Value = value; }
+      private set { SymbolicExpressionTreeInterpreterParameter.Value = value; }
     }
     public IValueParameter<ISymbolicExpressionTreeInterpreter> SymbolicExpressionTreeInterpreterParameter {
       get { return (IValueParameter<ISymbolicExpressionTreeInterpreter>)Parameters[SymbolicExpressionTreeInterpreterParameterName]; }
@@ -64,7 +64,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
 
     public ISymbolicExpressionGrammar FunctionTreeGrammar {
       get { return (ISymbolicExpressionGrammar)FunctionTreeGrammarParameter.Value; }
-      protected set { FunctionTreeGrammarParameter.Value = value; }
+      private set { FunctionTreeGrammarParameter.Value = value; }
     }
     public IValueParameter<ISymbolicExpressionGrammar> FunctionTreeGrammarParameter {
       get { return (IValueParameter<ISymbolicExpressionGrammar>)Parameters[FunctionTreeGrammarParameterName]; }
@@ -72,7 +72,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
 
     public IntValue MaxExpressionLength {
       get { return MaxExpressionLengthParameter.Value; }
-      protected set { MaxExpressionLengthParameter.Value = value; }
+      private set { MaxExpressionLengthParameter.Value = value; }
     }
     public IValueParameter<IntValue> MaxExpressionLengthParameter {
       get { return (IValueParameter<IntValue>)Parameters[MaxExpressionLengthParameterName]; }
@@ -80,7 +80,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
 
     public IntValue MaxExpressionDepth {
       get { return MaxExpressionDepthParameter.Value; }
-      protected set { MaxExpressionDepthParameter.Value = value; }
+      private set { MaxExpressionDepthParameter.Value = value; }
     }
     public ValueParameter<IntValue> MaxExpressionDepthParameter {
       get { return (ValueParameter<IntValue>)Parameters[MaxExpressionDepthParameterName]; }
@@ -88,7 +88,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
 
     public DoubleValue UpperEstimationLimit {
       get { return UpperEstimationLimitParameter.Value; }
-      protected set { UpperEstimationLimitParameter.Value = value; }
+      private set { UpperEstimationLimitParameter.Value = value; }
     }
     public IValueParameter<DoubleValue> UpperEstimationLimitParameter {
       get { return (IValueParameter<DoubleValue>)Parameters[UpperEstimationLimitParameterName]; }
@@ -96,7 +96,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
 
     public DoubleValue LowerEstimationLimit {
       get { return LowerEstimationLimitParameter.Value; }
-      protected set { LowerEstimationLimitParameter.Value = value; }
+      private set { LowerEstimationLimitParameter.Value = value; }
     }
     public IValueParameter<DoubleValue> LowerEstimationLimitParameter {
       get { return (IValueParameter<DoubleValue>)Parameters[LowerEstimationLimitParameterName]; }
@@ -104,7 +104,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
 
     public IntValue MaxFunctionDefiningBranches {
       get { return MaxFunctionDefiningBranchesParameter.Value; }
-      protected set { MaxFunctionDefiningBranchesParameter.Value = value; }
+      private set { MaxFunctionDefiningBranchesParameter.Value = value; }
     }
     public IValueParameter<IntValue> MaxFunctionDefiningBranchesParameter {
       get { return (IValueParameter<IntValue>)Parameters[MaxFunctionDefiningBranchensParameterName]; }
@@ -112,7 +112,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
 
     public IntValue MaxFunctionArguments {
       get { return MaxFunctionArgumentsParameter.Value; }
-      protected set { MaxFunctionArgumentsParameter.Value = value; }
+      private set { MaxFunctionArgumentsParameter.Value = value; }
     }
     public IValueParameter<IntValue> MaxFunctionArgumentsParameter {
       get { return (IValueParameter<IntValue>)Parameters[MaxFunctionArgumentsParameterName]; }
@@ -132,7 +132,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
     #endregion
 
     [StorableConstructor]
-    protected SymbolicClassificationProblem(bool deserializing) : base(deserializing) { }
+    private SymbolicClassificationProblem(bool deserializing) : base(deserializing) { }
+    private SymbolicClassificationProblem(SymbolicClassificationProblem original, Cloner cloner)
+      : base(original, cloner) {
+      RegisterParameterEvents();
+
+      UpdateEstimationLimits();
+      ParameterizeEvaluator();
+      ParameterizeSolutionCreator();
+      ParameterizeGrammar();
+      ParameterizeOperators();
+      ParameterizeAnalyzers();
+    }
     public SymbolicClassificationProblem()
       : base() {
       Parameters.Add(new ValueParameter<ISymbolicExpressionTreeInterpreter>(SymbolicExpressionTreeInterpreterParameterName, "The interpreter that should be used to evaluate the symbolic expression tree."));
@@ -166,10 +177,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
       ParameterizeAnalyzers();
     }
 
-
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SymbolicClassificationProblem(this, cloner);
     }
 
     private void RegisterParameterEvents() {
@@ -212,7 +221,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
         FunctionTreeGrammar = new GlobalSymbolicExpressionGrammar(FunctionTreeGrammar);
       OnGrammarChanged();
     }
-    protected virtual void OnGrammarChanged() {
+    private void OnGrammarChanged() {
       ParameterizeGrammar();
     }
 
@@ -224,11 +233,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
     private void ArchitectureParameterValue_ValueChanged(object sender, EventArgs e) {
       OnArchitectureParameterChanged();
     }
-    protected virtual void OnArchitectureParameterChanged() {
+    private void OnArchitectureParameterChanged() {
       ParameterizeGrammar();
     }
 
-    protected virtual void InitializeOperators() {
+    private void InitializeOperators() {
       Operators.AddRange(ApplicationManager.Manager.GetInstances<ISymbolicExpressionTreeOperator>().OfType<IOperator>());
       Operators.Add(new MinAverageMaxSymbolicExpressionTreeSizeAnalyzer());
       Operators.Add(new SymbolicRegressionVariableFrequencyAnalyzer());

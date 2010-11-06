@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -49,6 +50,9 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
 
+    [StorableConstructor]
+    protected HeuristicCrossover(bool deserializing) : base(deserializing) { }
+    protected HeuristicCrossover(HeuristicCrossover original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="HeuristicCrossover"/> with two variable infos
     /// (<c>Maximization</c> and <c>Quality</c>).
@@ -57,6 +61,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       : base() {
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "Whether the problem is a maximization problem or not."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The quality values of the parents."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new HeuristicCrossover(this, cloner);
     }
 
     /// <summary>

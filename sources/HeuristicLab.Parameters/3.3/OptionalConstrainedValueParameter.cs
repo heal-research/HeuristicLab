@@ -86,6 +86,15 @@ namespace HeuristicLab.Parameters {
     }
 
     #region Constructors
+    [StorableConstructor]
+    protected OptionalConstrainedValueParameter(bool deserializing) : base(deserializing) { }
+    protected OptionalConstrainedValueParameter(OptionalConstrainedValueParameter<T> original, Cloner cloner)
+      : base(original, cloner) {
+      validValues = cloner.Clone(original.validValues);
+      value = cloner.Clone(original.value);
+      getsCollected = original.getsCollected;
+      Initialize();
+    }
     public OptionalConstrainedValueParameter()
       : base("Anonymous", typeof(T)) {
       this.validValues = new ItemSet<T>();
@@ -168,23 +177,20 @@ namespace HeuristicLab.Parameters {
       this.getsCollected = getsCollected;
       Initialize();
     }
-    [StorableConstructor]
-    protected OptionalConstrainedValueParameter(bool deserializing) : base(deserializing) { }
     #endregion
 
     [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      Initialize();
+    }
+
     private void Initialize() {
       RegisterValidValuesEvents();
       RegisterValueEvents();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      OptionalConstrainedValueParameter<T> clone = (OptionalConstrainedValueParameter<T>)base.Clone(cloner);
-      clone.validValues = (ItemSet<T>)cloner.Clone(validValues);
-      clone.value = (T)cloner.Clone(value);
-      clone.getsCollected = getsCollected;
-      clone.Initialize();
-      return clone;
+      return new OptionalConstrainedValueParameter<T>(this, cloner);
     }
 
     public override string ToString() {

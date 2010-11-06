@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using HeuristicLab.Collections;
+using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
@@ -32,23 +33,25 @@ namespace HeuristicLab.Core {
       get { return (CheckedItemList<T>)base.list; }
     }
 
+    [StorableConstructor]
+    protected ReadOnlyCheckedItemList(bool deserializing) : base(deserializing) { }
+    protected ReadOnlyCheckedItemList(ReadOnlyCheckedItemList<T> original, Cloner cloner)
+      : base(original, cloner) {
+      CheckedItemList.CheckedItemsChanged += new CollectionItemsChangedEventHandler<IndexedItem<T>>(list_CheckedItemsChanged);
+    }
     public ReadOnlyCheckedItemList() : base(new CheckedItemList<T>()) { }
     public ReadOnlyCheckedItemList(ICheckedItemList<T> list)
       : base(list) {
       CheckedItemList.CheckedItemsChanged += new CollectionItemsChangedEventHandler<IndexedItem<T>>(list_CheckedItemsChanged);
     }
 
-    [StorableConstructor]
-    protected ReadOnlyCheckedItemList(bool deserializing) : base(deserializing) { }
     [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserializationHook() {
+    private void AfterDeserialization() {
       CheckedItemList.CheckedItemsChanged += new CollectionItemsChangedEventHandler<IndexedItem<T>>(list_CheckedItemsChanged);
     }
 
-    public override Common.IDeepCloneable Clone(Common.Cloner cloner) {
-      ReadOnlyCheckedItemList<T> clone = (ReadOnlyCheckedItemList<T>)base.Clone(cloner);
-      clone.CheckedItemList.CheckedItemsChanged += new CollectionItemsChangedEventHandler<IndexedItem<T>>(clone.list_CheckedItemsChanged);
-      return clone;
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ReadOnlyCheckedItemList<T>(this, cloner);
     }
 
 

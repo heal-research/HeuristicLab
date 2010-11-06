@@ -20,6 +20,7 @@
 #endregion
 
 using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
@@ -45,6 +46,14 @@ namespace HeuristicLab.Selection {
       set { CopySelectedParameter.Value = value; }
     }
 
+    [StorableConstructor]
+    private RandomSelector(bool deserializing) : base(deserializing) { }
+    private RandomSelector(RandomSelector original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new RandomSelector(this, cloner);
+    }
     public RandomSelector()
       : base() {
       Parameters.Add(new ValueParameter<BoolValue>("CopySelected", "True if the selected sub-scopes should be copied, otherwise false.", new BoolValue(true)));

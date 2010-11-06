@@ -20,6 +20,7 @@
 #endregion
 
 using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -31,6 +32,15 @@ namespace HeuristicLab.Optimization.Operators {
   [Item("UnidirectionalRingMigrator", "Migrates the selected sub scopes in each subscope in an unidirectional ring.")]
   [StorableClass]
   public class UnidirectionalRingMigrator : SingleSuccessorOperator, IMigrator {
+    [StorableConstructor]
+    protected UnidirectionalRingMigrator(bool deserializing) : base(deserializing) { }
+    protected UnidirectionalRingMigrator(UnidirectionalRingMigrator original, Cloner cloner) : base(original, cloner) { }
+    public UnidirectionalRingMigrator() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new UnidirectionalRingMigrator(this, cloner);
+    }
+
     /// <summary>
     /// Migrates every first sub scope of each child to its left neighbour (like a ring).
     /// <pre>                                                               

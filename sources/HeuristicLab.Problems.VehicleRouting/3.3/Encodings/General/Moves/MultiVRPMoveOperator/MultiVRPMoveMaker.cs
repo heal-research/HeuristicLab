@@ -19,15 +19,14 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Collections.Generic;
 
-namespace HeuristicLab.Problems.VehicleRouting.Encodings.General{
+namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("MultiVRPMoveMaker", "Peforms multiple moves on a given VRP encoding and updates the quality.")]
   [StorableClass]
   public class LambdaInterchangeMoveMaker : VRPMoveOperator, IMoveMaker, IMultiVRPMoveOperator {
@@ -80,7 +79,11 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General{
     }
 
     [StorableConstructor]
-    private LambdaInterchangeMoveMaker(bool deserializing) : base(deserializing) { }
+    protected LambdaInterchangeMoveMaker(bool deserializing) : base(deserializing) { }
+    protected LambdaInterchangeMoveMaker(LambdaInterchangeMoveMaker original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new LambdaInterchangeMoveMaker(this, cloner);
+    }
 
     public LambdaInterchangeMoveMaker()
       : base() {
@@ -111,7 +114,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General{
       IVRPMove move = VRPMoveParameter.ActualValue as IVRPMove;
       DoubleValue moveQuality = MoveQualityParameter.ActualValue;
       DoubleValue quality = QualityParameter.ActualValue;
-     
+
       //perform move
       VRPToursParameter.ActualValue = move.MakeMove();
 

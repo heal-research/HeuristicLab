@@ -54,5 +54,14 @@ namespace HeuristicLab.Optimization {
     public UserDefinedAlgorithm(string name, string description) : base(name, description) { }
     [StorableConstructor]
     private UserDefinedAlgorithm(bool deserializing) : base(deserializing) { }
+    private UserDefinedAlgorithm(UserDefinedAlgorithm original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    internal UserDefinedAlgorithm(EngineAlgorithm original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new UserDefinedAlgorithm(this, cloner);
+    }
   }
 }

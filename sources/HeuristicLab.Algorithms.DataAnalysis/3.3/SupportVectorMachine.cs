@@ -144,15 +144,21 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     [StorableConstructor]
     private SupportVectorMachine(bool deserializing) : base(deserializing) { }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      Initialize();
+    }
 
+    private SupportVectorMachine(SupportVectorMachine original, Cloner cloner)
+      : base(original, cloner) {
+      solutionCreator = cloner.Clone(original.solutionCreator);
+      evaluator = cloner.Clone(original.evaluator);
+      mseEvaluator = cloner.Clone(original.mseEvaluator);
+      analyzer = cloner.Clone(original.analyzer);
+      Initialize();
+    }
     public override IDeepCloneable Clone(Cloner cloner) {
-      SupportVectorMachine clone = (SupportVectorMachine)base.Clone(cloner);
-      clone.solutionCreator = (SupportVectorMachineModelCreator)cloner.Clone(solutionCreator);
-      clone.evaluator = (SupportVectorMachineModelEvaluator)cloner.Clone(evaluator);
-      clone.mseEvaluator = (SimpleMSEEvaluator)cloner.Clone(mseEvaluator);
-      clone.analyzer = (BestSupportVectorRegressionSolutionAnalyzer)cloner.Clone(analyzer);
-      clone.Initialize();
-      return clone;
+      return new SupportVectorMachine(this, cloner);
     }
 
     public override void Prepare() {
@@ -177,7 +183,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #endregion
 
     #region Helpers
-    [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
       solutionCreator.SvmTypeParameter.ActualName = SvmTypeParameter.Name;
       solutionCreator.KernelTypeParameter.ActualName = KernelTypeParameter.Name;

@@ -89,6 +89,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
       }
     }
     #endregion
+    [StorableConstructor]
+    protected Variable(bool deserializing) : base(deserializing) {
+      variableNames = new List<string>();
+    }
+    protected Variable(Variable original, Cloner cloner)
+      : base(original, cloner) {
+      weightNu = original.weightNu;
+      weightSigma = original.weightSigma;
+      variableNames = new List<string>(original.variableNames);
+      weightManipulatorNu = original.weightManipulatorNu;
+      weightManipulatorSigma = original.weightManipulatorSigma;
+    }
     public Variable() : this("Variable", "Represents a variable value.") { }
     public Variable(string name, string description)
       : base(name, description) {
@@ -104,13 +116,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      Variable clone = (Variable)base.Clone(cloner);
-      clone.weightNu = weightNu;
-      clone.weightSigma = weightSigma;
-      clone.variableNames = new List<string>(variableNames);
-      clone.weightManipulatorNu = weightManipulatorNu;
-      clone.weightManipulatorSigma = weightManipulatorSigma;
-      return clone;
+      return new Variable(this, cloner);
     }
   }
 }

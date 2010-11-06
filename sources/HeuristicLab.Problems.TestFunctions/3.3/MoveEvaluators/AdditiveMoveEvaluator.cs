@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
@@ -50,6 +51,9 @@ namespace HeuristicLab.Problems.TestFunctions {
       get { return (ILookupParameter<AdditiveMove>)Parameters["AdditiveMove"]; }
     }
 
+    [StorableConstructor]
+    protected AdditiveMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected AdditiveMoveEvaluator(AdditiveMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     protected AdditiveMoveEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of a test function solution."));

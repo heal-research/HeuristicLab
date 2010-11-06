@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
@@ -65,6 +66,10 @@ namespace HeuristicLab.Problems.TestFunctions {
       get { return int.MaxValue; }
     }
 
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SphereEvaluator(this, cloner);
+    }
+
     public override RealVector GetBestKnownSolution(int dimension) {
       return new RealVector(dimension);
     }
@@ -96,6 +101,9 @@ namespace HeuristicLab.Problems.TestFunctions {
       set { if (value != null) AlphaParameter.Value = value; }
     }
 
+    [StorableConstructor]
+    protected SphereEvaluator(bool deserializing) : base(deserializing) { }
+    protected SphereEvaluator(SphereEvaluator original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of the SphereEvaluator with two parameters (<c>C</c> and <c>Alpha</c>).
     /// </summary>

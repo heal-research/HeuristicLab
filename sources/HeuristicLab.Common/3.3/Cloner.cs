@@ -49,6 +49,19 @@ namespace HeuristicLab.Common {
         return obj.Clone(this);
     }
     /// <summary>
+    /// Creates a deep clone of a given deeply cloneable object.
+    /// </summary>
+    /// <param name="item">The object which should be cloned.</param>
+    /// <returns>A clone of the given object.</returns>
+    public T Clone<T>(T obj) where T : class, IDeepCloneable {
+      if (obj == null) return null;
+      IDeepCloneable clone;
+      if (mapping.TryGetValue(obj, out clone))
+        return (T)clone;
+      else
+        return (T)obj.Clone(this);
+    }
+    /// <summary>
     /// Registers a new clone for a given deeply cloneable object.
     /// </summary>
     /// <param name="item">The original object.</param>

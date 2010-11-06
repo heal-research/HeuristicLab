@@ -47,6 +47,20 @@ namespace HeuristicLab.Core {
                select new IndexedItem<T>(i, list[i]);
       }
     }
+
+    /// <summary>
+    /// Instantiates a new CheckedItemList for deserialization.
+    /// </summary>
+    /// <param name="deserializing"></param>
+    [StorableConstructor]
+    protected CheckedItemList(bool deserializing) : base(deserializing) { }
+    protected CheckedItemList(CheckedItemList<T> original, Cloner cloner)
+      : base(original, cloner) {
+      list = new List<T>(original.Select(x => (T)cloner.Clone(x)));
+      checkedState = new Dictionary<T, bool>();
+      foreach (var pair in original.checkedState)
+        checkedState.Add(cloner.Clone(pair.Key), pair.Value);
+    }
     /// <summary>
     /// Instantiates an empty CheckedItemList.
     /// </summary>
@@ -74,12 +88,6 @@ namespace HeuristicLab.Core {
           checkedState.Add(item, true);
       }
     }
-    /// <summary>
-    /// Instantiates a new CheckedItemList for deserialization.
-    /// </summary>
-    /// <param name="deserializing"></param>
-    [StorableConstructor]
-    protected CheckedItemList(bool deserializing) : base(deserializing) { }
 
     /// <summary>
     /// Gets the checked state of <paramref name="item"/>.
@@ -227,13 +235,7 @@ namespace HeuristicLab.Core {
     /// <param name="cloner"></param>
     /// <returns>A deep clone of the CheckedItemList</returns>
     public override IDeepCloneable Clone(Cloner cloner) {
-      CheckedItemList<T> clone = (CheckedItemList<T>)Activator.CreateInstance(this.GetType());
-      cloner.RegisterClonedObject(this, clone);
-      clone.list = new List<T>(this.Select(x => (T)cloner.Clone(x)));
-      clone.checkedState = new Dictionary<T, bool>();
-      foreach (var pair in checkedState)
-        clone.checkedState.Add((T)cloner.Clone(pair.Key), pair.Value);
-      return clone;
+      return new CheckedItemList<T>(this, cloner);
     }
   }
 }

@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
@@ -46,6 +47,10 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       get { return (ILookupParameter<IntValue>)Parameters["MaxTimeSteps"]; }
     }
 
+    [StorableConstructor]
+    protected Evaluator(bool deserializing) : base(deserializing) { }
+    protected Evaluator(Evaluator original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) { return new Evaluator(this, cloner); }
     public Evaluator()
       : base() {
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of the evaluated artificial ant solution."));

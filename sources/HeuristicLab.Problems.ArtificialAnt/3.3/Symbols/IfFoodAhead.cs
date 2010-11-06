@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -26,6 +27,13 @@ namespace HeuristicLab.Problems.ArtificialAnt.Symbols {
   [StorableClass]
   [Item("IfFoodAhead", "Represents the if-food-ahead symbol in a artificial ant expression.")]
   public sealed class IfFoodAhead : Symbol {
+    [StorableConstructor]
+    private IfFoodAhead(bool deserializing) : base(deserializing) { }
+    private IfFoodAhead(IfFoodAhead original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new IfFoodAhead(this, cloner);
+    }
+
     public IfFoodAhead() : base("IfFoodAhead", "Represents the if-food-ahead symbol in a artificial ant expression.") { }
   }
 }

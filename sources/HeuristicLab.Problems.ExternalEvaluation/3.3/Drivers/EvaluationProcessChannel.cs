@@ -57,18 +57,22 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     }
     private EvaluationStreamChannel streamingChannel;
 
+    [StorableConstructor]
+    protected EvaluationProcessChannel(bool deserializing) : base(deserializing) { }
+    protected EvaluationProcessChannel(EvaluationProcessChannel original, Cloner cloner)
+      : base(original, cloner) {
+      executable = original.executable;
+      arguments = original.arguments;
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new EvaluationProcessChannel(this, cloner);
+    }
+
     public EvaluationProcessChannel() : this(String.Empty, String.Empty) { }
     public EvaluationProcessChannel(string executable, string arguments)
       : base() {
       this.executable = executable;
       this.arguments = arguments;
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      EvaluationProcessChannel clone = (EvaluationProcessChannel)base.Clone(cloner);
-      clone.executable = executable;
-      clone.arguments = arguments;
-      return clone;
     }
 
     #region IExternalEvaluationChannel Members
@@ -95,7 +99,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     public override void Send(IMessage message) {
       try {
         streamingChannel.Send(message);
-      } catch {
+      }
+      catch {
         Close();
         throw;
       }
@@ -104,7 +109,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     public override IMessage Receive(IBuilder builder) {
       try {
         return streamingChannel.Receive(builder);
-      } catch {
+      }
+      catch {
         Close();
         throw;
       }
@@ -120,7 +126,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
               process.CloseMainWindow();
               process.WaitForExit(1000);
               process.Close();
-            } catch { }
+            }
+            catch { }
           }
           // for some reasons the event process_Exited does not fire
           OnProcessExited();

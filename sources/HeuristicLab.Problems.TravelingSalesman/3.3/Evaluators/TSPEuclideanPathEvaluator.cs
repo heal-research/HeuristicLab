@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -30,6 +31,15 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   [Item("TSPEuclideanPathEvaluator", "An operator which evaluates TSP solutions given in path representation using the Euclidean distance metric.")]
   [StorableClass]
   public sealed class TSPEuclideanPathEvaluator : TSPCoordinatesPathEvaluator {
+    [StorableConstructor]
+    private TSPEuclideanPathEvaluator(bool deserializing) : base(deserializing) { }
+    private TSPEuclideanPathEvaluator(TSPEuclideanPathEvaluator original, Cloner cloner) : base(original, cloner) { }
+    public TSPEuclideanPathEvaluator() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new TSPEuclideanPathEvaluator(this, cloner);
+    }
+    
     /// <summary>
     /// Calculates the distance between two points using the Euclidean distance metric.
     /// </summary>

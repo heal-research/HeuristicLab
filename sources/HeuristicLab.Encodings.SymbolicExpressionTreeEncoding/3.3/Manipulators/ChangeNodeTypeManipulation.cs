@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
@@ -30,10 +31,15 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators {
   [StorableClass]
   [Item("ChangeNodeTypeManipulation", "Selects a random tree node and changes the symbol.")]
-  public class ChangeNodeTypeManipulation : SymbolicExpressionTreeManipulator {
+  public sealed class ChangeNodeTypeManipulation : SymbolicExpressionTreeManipulator {
 
-    public ChangeNodeTypeManipulation()
-      : base() {
+    [StorableConstructor]
+    private ChangeNodeTypeManipulation(bool deserializing) : base(deserializing) { }
+    private ChangeNodeTypeManipulation(ChangeNodeTypeManipulation original, Cloner cloner) : base(original, cloner) { }
+    public ChangeNodeTypeManipulation() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ChangeNodeTypeManipulation(this, cloner);
     }
 
     protected override void Manipulate(IRandom random, SymbolicExpressionTree symbolicExpressionTree, ISymbolicExpressionGrammar grammar, IntValue maxTreeSize, IntValue maxTreeHeight, out bool success) {

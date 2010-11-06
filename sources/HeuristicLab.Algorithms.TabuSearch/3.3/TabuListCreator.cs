@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
@@ -36,6 +37,15 @@ namespace HeuristicLab.Algorithms.TabuSearch {
     }
     public IScope CurrentScope {
       get { return CurrentScopeParameter.ActualValue; }
+    }
+
+    [StorableConstructor]
+    protected TabuListCreator(bool deserializing) : base(deserializing) { }
+    protected TabuListCreator(TabuListCreator original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new TabuListCreator(this, cloner);
     }
 
     public TabuListCreator()

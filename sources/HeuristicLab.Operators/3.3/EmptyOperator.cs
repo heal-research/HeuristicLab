@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -29,8 +30,17 @@ namespace HeuristicLab.Operators {
   [Item("EmptyOperator", "An operator which represents an empty statement.")]
   [StorableClass]
   public sealed class EmptyOperator : SingleSuccessorOperator {
+    [StorableConstructor]
+    private EmptyOperator(bool deserializing) : base(deserializing) { }
+    private EmptyOperator(EmptyOperator original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public EmptyOperator()
       : base() {
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new EmptyOperator(this, cloner);
     }
   }
 }

@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Parameters;
@@ -34,10 +35,15 @@ namespace HeuristicLab.Problems.TestFunctions {
       get { return (LookupParameter<ISingleObjectiveTestFunctionProblemEvaluator>)Parameters["Evaluator"]; }
     }
 
-    MultinormalEvaluator evaluator = new MultinormalEvaluator();
-
+    [StorableConstructor]
+    protected MultinormalAdditiveMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected MultinormalAdditiveMoveEvaluator(MultinormalAdditiveMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
     public MultinormalAdditiveMoveEvaluator() {
       Parameters.Add(new LookupParameter<ISingleObjectiveTestFunctionProblemEvaluator>("Evaluator", ""));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MultinormalAdditiveMoveEvaluator(this, cloner);
     }
 
     public override System.Type EvaluatorType {

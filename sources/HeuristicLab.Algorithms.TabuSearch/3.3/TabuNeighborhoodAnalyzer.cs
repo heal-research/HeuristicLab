@@ -20,13 +20,17 @@
 #endregion
 
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.TabuSearch {
+  [StorableClass]
+  [Item("TabuNeighborhoodAnalyzer", "Analyzes the tabu neighborhood")]
   public class TabuNeighborhoodAnalyzer : SingleSuccessorOperator, IAnalyzer {
     public ScopeTreeLookupParameter<BoolValue> IsTabuParameter {
       get { return (ScopeTreeLookupParameter<BoolValue>)Parameters["IsTabu"]; }
@@ -38,6 +42,14 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       get { return (LookupParameter<ResultCollection>)Parameters["Results"]; }
     }
 
+    [StorableConstructor]
+    protected TabuNeighborhoodAnalyzer(bool deserializing) : base(deserializing) { }
+    protected TabuNeighborhoodAnalyzer(TabuNeighborhoodAnalyzer original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new TabuNeighborhoodAnalyzer(this, cloner);
+    }
     public TabuNeighborhoodAnalyzer()
       : base() {
       Parameters.Add(new ScopeTreeLookupParameter<BoolValue>("IsTabu", "A value that determines if a move is tabu or not."));

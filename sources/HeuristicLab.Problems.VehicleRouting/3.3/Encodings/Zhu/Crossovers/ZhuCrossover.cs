@@ -19,12 +19,11 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
-using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
   [Item("ZhuCrossover", "An operator which crosses two VRP representations.")]
@@ -33,9 +32,12 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
-    
+
     [StorableConstructor]
     protected ZhuCrossover(bool deserializing) : base(deserializing) { }
+    protected ZhuCrossover(ZhuCrossover original, Cloner cloner)
+      : base(original, cloner) {
+    }
 
     public ZhuCrossover()
       : base() {
@@ -51,7 +53,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
 
         if (!(solution is ZhuEncoding)) {
           parents[i] = ZhuEncoding.ConvertFrom(solution,
-            Cities, 
+            Cities,
             DueTimeParameter.ActualValue,
             ServiceTimeParameter.ActualValue,
             ReadyTimeParameter.ActualValue,

@@ -21,11 +21,10 @@
 
 using System;
 using System.Windows.Forms;
-using HeuristicLab.MainForm;
-using HeuristicLab.Optimization.Views;
-using HeuristicLab.Core.Views;
 using HeuristicLab.Core;
+using HeuristicLab.Core.Views;
 using HeuristicLab.Data;
+using HeuristicLab.MainForm;
 using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.VehicleRouting.Views {

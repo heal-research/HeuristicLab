@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -32,6 +33,15 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("ScrambleManipulator", "An operator which manipulates a permutation array by randomly scrambling the elements in a randomly chosen interval. It is implemented as described in Syswerda, G. (1991). Schedule Optimization Using Genetic Algorithms. In Davis, L. (Ed.) Handbook of Genetic Algorithms, Van Nostrand Reinhold, New York, pp 332-349.")]
   [StorableClass]
   public class ScrambleManipulator : PermutationManipulator {
+    [StorableConstructor]
+    protected ScrambleManipulator(bool deserializing) : base(deserializing) { }
+    protected ScrambleManipulator(ScrambleManipulator original, Cloner cloner) : base(original, cloner) { }
+    public ScrambleManipulator() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ScrambleManipulator(this, cloner);
+    }
+
     /// <summary>
     /// Mixes the elements of the given <paramref name="permutation"/> randomly 
     /// in a randomly chosen interval.

@@ -20,21 +20,57 @@
 #endregion
 
 using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
   public static class Grammars {
-    private class Addition : Symbol { public Addition() : base("Addition", "") { } }
-    private class Subtraction : Symbol { public Subtraction() : base("Subtraction", "") { } }
-    private class Multiplication : Symbol { public Multiplication() : base("Multiplication", "") { } }
-    private class Division : Symbol { public Division() : base("Division", "") { } }
-    private class Terminal : Symbol { public Terminal() : base("Terminal", "") { } }
+    private class Addition : Symbol {
+      protected Addition(Addition original, Cloner cloner) : base(original, cloner) { }
+      public Addition() : base("Addition", "") { }
+      public override IDeepCloneable Clone(Cloner cloner) {
+        return new Addition(this, cloner);
+      }
+    }
+    private class Subtraction : Symbol {
+      protected Subtraction(Subtraction original, Cloner cloner) : base(original, cloner) { }
+      public Subtraction() : base("Subtraction", "") { }
+      public override IDeepCloneable Clone(Cloner cloner) {
+        return new Subtraction(this, cloner);
+      }
+    }
+    private class Multiplication : Symbol {
+      protected Multiplication(Multiplication original, Cloner cloner) : base(original, cloner) { }
+      public Multiplication() : base("Multiplication", "") { }
+      public override IDeepCloneable Clone(Cloner cloner) {
+        return new Multiplication(this, cloner);
+      }
+    }
+    private class Division : Symbol {
+      protected Division(Division original, Cloner cloner) : base(original, cloner) { }
+      public Division() : base("Division", "") { }
+      public override IDeepCloneable Clone(Cloner cloner) {
+        return new Division(this, cloner);
+      }
+    }
+    private class Terminal : Symbol {
+      protected Terminal(Terminal original, Cloner cloner) : base(original, cloner) { }
+      public Terminal() : base("Terminal", "") { }
+      public override IDeepCloneable Clone(Cloner cloner) {
+        return new Terminal(this, cloner);
+      }
+    }
 
     private class SimpleArithmeticGrammar : DefaultSymbolicExpressionGrammar {
+      protected SimpleArithmeticGrammar(SimpleArithmeticGrammar original, Cloner cloner) : base(original, cloner) { }
       public SimpleArithmeticGrammar()
         : base() {
         Initialize();
+      }
+
+      public override IDeepCloneable Clone(Cloner cloner) {
+        return new SimpleArithmeticGrammar(this, cloner);
       }
 
       private void Initialize() {

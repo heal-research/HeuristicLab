@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
@@ -43,9 +44,16 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       set { SampleSizeParameter.Value = value; }
     }
 
-    public StochasticInsertionMultiMoveGenerator() {
+    [StorableConstructor]
+    protected StochasticInsertionMultiMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected StochasticInsertionMultiMoveGenerator(StochasticInsertionMultiMoveGenerator original, Cloner cloner) : base(original, cloner) { }
+    public StochasticInsertionMultiMoveGenerator() : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));
       Parameters.Add(new ValueLookupParameter<IntValue>("SampleSize", "The number of moves to generate."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new StochasticInsertionMultiMoveGenerator(this, cloner);
     }
 
     public static TranslocationMove[] Apply(Permutation permutation, IRandom random, int sampleSize) {

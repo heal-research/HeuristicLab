@@ -37,13 +37,16 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       get { return permutationType; }
     }
 
-    public Permutation() : base() {
-      permutationType = PermutationTypes.RelativeUndirected;
+    [StorableConstructor]
+    protected Permutation(bool deserializing) : base(deserializing) { }
+    protected Permutation(Permutation original, Cloner cloner)
+      : base(original, cloner) {
+      this.permutationType = original.permutationType;
     }
+    public Permutation() : this(PermutationTypes.RelativeUndirected) { }
     public Permutation(PermutationTypes type) : base() {
       permutationType = type;
     }
-
     public Permutation(PermutationTypes type, int length)
       : base(length) {
       for (int i = 0; i < length; i++)
@@ -63,10 +66,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      Permutation clone = new Permutation(permutationType, array);
-      cloner.RegisterClonedObject(this, clone);
-      clone.readOnly = readOnly;
-      return clone;
+      return new Permutation(this, cloner);
     }
 
     public virtual bool Validate() {

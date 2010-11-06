@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -26,16 +27,15 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [Item("OneBitflipMove", "Item that describes a one bitflip move.")]
   [StorableClass]
   public class OneBitflipMove : OneIndexMove {
-    public OneBitflipMove()
-      : base() {
-    }
+    [StorableConstructor]
+    protected OneBitflipMove(bool deserializing) : base(deserializing) { }
+    protected OneBitflipMove(OneBitflipMove original, Cloner cloner) : base(original, cloner) { }
+    public OneBitflipMove() : base() { }
+    public OneBitflipMove(int index) : this(index, null) { }
+    public OneBitflipMove(int index, BinaryVector binaryVector) : base(index, binaryVector) { }
 
-    public OneBitflipMove(int index)
-      : base(index, null) {
-    }
-
-    public OneBitflipMove(int index, BinaryVector binaryVector)
-      : base(index, binaryVector) {
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OneBitflipMove(this, cloner);
     }
   }
 }

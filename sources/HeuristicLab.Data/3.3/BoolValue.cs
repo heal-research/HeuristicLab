@@ -34,14 +34,20 @@ namespace HeuristicLab.Data {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Field; }
     }
 
+    protected BoolValue(BoolValue original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public BoolValue() : base() { }
-    public BoolValue(bool value) : base(value) { }
+    [StorableConstructor]
+    public BoolValue(bool value)
+      : base(value) {
+      //mkommend: Be aware that the base call refers to the storable ctor => the value is set explicitly in the ctor body.
+      //          This should not affect the persistence, because first the ctor is called and afterwards the values are set by reflection.
+      this.value = value;
+    }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      BoolValue clone = new BoolValue(value);
-      cloner.RegisterClonedObject(this, clone);
-      clone.readOnly = readOnly;
-      return clone;
+      return new BoolValue(this, cloner);
     }
 
     public virtual int CompareTo(object obj) {

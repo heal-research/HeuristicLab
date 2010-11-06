@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -48,6 +49,10 @@ namespace HeuristicLab.Selection {
       get { return CopySelectedParameter.Value; }
       set { CopySelectedParameter.Value = value; }
     }
+
+    [StorableConstructor]
+    protected SingleObjectiveSelector(bool deserializing) : base(deserializing) { }
+    protected SingleObjectiveSelector(SingleObjectiveSelector original, Cloner cloner) : base(original, cloner) { }
 
     protected SingleObjectiveSelector()
       : base() {

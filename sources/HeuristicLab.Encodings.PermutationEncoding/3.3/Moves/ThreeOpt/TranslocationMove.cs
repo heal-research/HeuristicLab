@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -26,16 +27,15 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("TranslocationMove", "A move that changes three edges by performing a translocation.")]
   [StorableClass]
   public class TranslocationMove : ThreeIndexMove {
-    public TranslocationMove()
-      : base() {
-    }
+    [StorableConstructor]
+    protected TranslocationMove(bool deserializing) : base(deserializing) { }
+    protected TranslocationMove(TranslocationMove original, Cloner cloner) : base(original, cloner) { }
+    public TranslocationMove() : base() { }
+    public TranslocationMove(int index1, int index2, int index3) : base(index1, index2, index3, null) { }
+    public TranslocationMove(int index1, int index2, int index3, Permutation permutation) : base(index1, index2, index3, permutation) { }
 
-    public TranslocationMove(int index1, int index2, int index3)
-      : base(index1, index2, index3, null) {
-    }
-
-    public TranslocationMove(int index1, int index2, int index3, Permutation permutation)
-      : base(index1, index2, index3, permutation) {
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new TranslocationMove(this, cloner);
     }
   }
 }

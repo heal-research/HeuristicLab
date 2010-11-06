@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -27,7 +28,14 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
   [StorableClass]
   [Item("Subtraction", "Symbol that represents the - operator.")]
   public sealed class Subtraction : Symbol {
-
+    [StorableConstructor]
+    private Subtraction(bool deserializing) : base(deserializing) { }
+    private Subtraction(Subtraction original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Subtraction(this, cloner);
+    }
     public Subtraction()
       : base("-", "Symbol that represents the - operator.") {
     }

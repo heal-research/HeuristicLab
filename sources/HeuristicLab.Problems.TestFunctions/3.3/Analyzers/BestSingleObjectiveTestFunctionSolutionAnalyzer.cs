@@ -20,6 +20,7 @@
 #endregion
 
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
@@ -71,6 +72,7 @@ namespace HeuristicLab.Problems.TestFunctions {
 
     [StorableConstructor]
     protected BestSingleObjectiveTestFunctionSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    protected BestSingleObjectiveTestFunctionSolutionAnalyzer(BestSingleObjectiveTestFunctionSolutionAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public BestSingleObjectiveTestFunctionSolutionAnalyzer()
       : base() {
       Parameters.Add(new LookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem."));
@@ -88,11 +90,15 @@ namespace HeuristicLab.Problems.TestFunctions {
     /// This method can simply be removed when the plugin version is > 3.3
     /// </summary>
     [StorableHook(HookType.AfterDeserialization)]
-    private void CompatibilityMethod() {
+    private void AfterDeserialization() {
       // BackwardsCompatibility3.3
       // Bounds are introduced in 3.3.0.3894
       if (!Parameters.ContainsKey("Bounds"))
         Parameters.Add(new LookupParameter<DoubleMatrix>("Bounds", "The bounds of the function."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new BestSingleObjectiveTestFunctionSolutionAnalyzer(this, cloner);
     }
 
     public override IOperation Apply() {

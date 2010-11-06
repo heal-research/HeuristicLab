@@ -19,14 +19,10 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Operators;
-using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using System.Collections.Generic;
-using HeuristicLab.Problems.VehicleRouting.Encodings;
-using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Potvin;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
@@ -37,6 +33,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
 
     [StorableConstructor]
     protected DefaultRepresentationCreator(bool deserializing) : base(deserializing) { }
+    protected DefaultRepresentationCreator(DefaultRepresentationCreator original, Cloner cloner) : base(original, cloner) { }
 
     public DefaultRepresentationCreator() : base() { }
 
@@ -45,6 +42,6 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
       VRPToursParameter.ActualValue = PotvinEncoding.ConvertFrom(CreateSolution());
 
       return base.Apply();
-    }    
+    }
   }
 }

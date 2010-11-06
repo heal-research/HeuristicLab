@@ -65,6 +65,13 @@ namespace HeuristicLab.Core {
       get { return true; }
     }
 
+    [StorableConstructor]
+    protected NamedItem(bool deserializing) : base(deserializing) { }
+    protected NamedItem(NamedItem original, Cloner cloner)
+      : base(original, cloner) {
+      name = original.name;
+      description = original.description;
+    }
     /// <summary>
     /// Initializes a new instance of <see cref="Variable"/> with name <c>Anonymous</c> 
     /// and value <c>null</c>.
@@ -90,20 +97,6 @@ namespace HeuristicLab.Core {
       if (description == null) this.description = string.Empty;
       else this.description = description;
     }
-    [StorableConstructor]
-    protected NamedItem(bool deserializing) : base(deserializing) { }
-
-    /// <summary>
-    /// Clones the current instance (deep clone).
-    /// </summary>
-    /// <param name="clonedObjects">Dictionary of all already cloned objects. (Needed to avoid cycles.)</param>
-    /// <returns>The cloned object as <see cref="Variable"/>.</returns>
-    public override IDeepCloneable Clone(Cloner cloner) {
-      NamedItem clone = (NamedItem)base.Clone(cloner);
-      clone.name = name;
-      clone.description = description;
-      return clone;
-    }
 
     /// <summary>
     /// Gets the string representation of the current instance in the format: <c>Name: [null|Value]</c>.
@@ -120,8 +113,8 @@ namespace HeuristicLab.Core {
     /// </summary>
     /// <param name="e">The event arguments of the changing.</param>
     protected virtual void OnNameChanging(CancelEventArgs<string> e) {
-      if (NameChanging != null)
-        NameChanging(this, e);
+      var handler = NameChanging;
+      if (handler != null) handler(this, e);
     }
     /// <inheritdoc/>
     public event EventHandler NameChanged;
@@ -130,8 +123,8 @@ namespace HeuristicLab.Core {
     /// </summary>
     /// <remarks>Calls <see cref="ItemBase.OnChanged"/>.</remarks>
     protected virtual void OnNameChanged() {
-      if (NameChanged != null)
-        NameChanged(this, EventArgs.Empty);
+      var handler = NameChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
       OnToStringChanged();
     }
     /// <inheritdoc/>
@@ -141,8 +134,8 @@ namespace HeuristicLab.Core {
     /// </summary>
     /// <remarks>Calls <see cref="ItemBase.OnChanged"/>.</remarks>
     protected virtual void OnDescriptionChanged() {
-      if (DescriptionChanged != null)
-        DescriptionChanged(this, EventArgs.Empty);
+      var handler = DescriptionChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
   }
 }

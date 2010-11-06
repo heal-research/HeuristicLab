@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -37,9 +38,18 @@ namespace HeuristicLab.Operators {
       get { return CurrentScopeParameter.ActualValue; }
     }
 
+    [StorableConstructor]
+    private ScopeCleaner(bool deserializing) : base(deserializing) { }
+    private ScopeCleaner(ScopeCleaner original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public ScopeCleaner()
       : base() {
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope whose variables and sub-scopes should be removed."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ScopeCleaner(this, cloner);
     }
 
     public override IOperation Apply() {

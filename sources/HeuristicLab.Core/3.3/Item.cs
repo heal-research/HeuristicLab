@@ -44,18 +44,17 @@ namespace HeuristicLab.Core {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Class; }
     }
 
-    protected Item() { }
     [StorableConstructor]
     protected Item(bool deserializing) { }
+    protected Item(Item original, Cloner cloner) {
+      cloner.RegisterClonedObject(original, this);
+    }
+    protected Item() { }
 
     public object Clone() {
       return Clone(new Cloner());
     }
-    public virtual IDeepCloneable Clone(Cloner cloner) {
-      Item clone = (Item)Activator.CreateInstance(this.GetType(), true);
-      cloner.RegisterClonedObject(this, clone);
-      return clone;
-    }
+    public abstract IDeepCloneable Clone(Cloner cloner);
 
     /// <summary>
     /// Gets the string representation of the current instance.

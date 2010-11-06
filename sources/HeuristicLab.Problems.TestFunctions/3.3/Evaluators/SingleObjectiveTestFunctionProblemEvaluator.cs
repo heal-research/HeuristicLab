@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
@@ -66,11 +67,16 @@ namespace HeuristicLab.Problems.TestFunctions {
     public ILookupParameter<RealVector> PointParameter {
       get { return (ILookupParameter<RealVector>)Parameters["Point"]; }
     }
+
+    [StorableConstructor]
+    protected SingleObjectiveTestFunctionProblemEvaluator(bool deserializing) : base(deserializing) { }
+    protected SingleObjectiveTestFunctionProblemEvaluator(SingleObjectiveTestFunctionProblemEvaluator original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="SingleObjectiveTestFunctionEvaluator"/> with two parameters
     /// (<c>Quality</c> and <c>Point</c>).
     /// </summary>
-    public SingleObjectiveTestFunctionProblemEvaluator() {
+    public SingleObjectiveTestFunctionProblemEvaluator()
+      : base() {
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "Result of the evaluation of a solution."));
       Parameters.Add(new LookupParameter<RealVector>("Point", "The point at which the function should be evaluated."));
     }

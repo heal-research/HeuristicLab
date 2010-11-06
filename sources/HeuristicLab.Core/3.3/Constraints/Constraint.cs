@@ -30,7 +30,21 @@ namespace HeuristicLab.Core {
   public abstract class Constraint : Item, IConstraint {
     [StorableConstructor]
     protected Constraint(bool deserializing) : base(deserializing) { }
+    protected Constraint(Constraint original, Cloner cloner)
+      : base(original, cloner) {
+      constrainedValue = null;  //mkommend: intentionally set to null;
 
+      IDeepCloneable constraintDataDeepCloneable = original.constraintData as IDeepCloneable;
+      ICloneable constraintDataCloneable = original.constraintData as ICloneable;
+      if (constraintDataDeepCloneable != null)
+        constraintData = cloner.Clone(constraintDataDeepCloneable);
+      else if (constraintDataCloneable != null)
+        constraintData = constraintDataCloneable.Clone();
+      else
+        constraintData = original.constraintData;
+
+      constraintOperation = original.constraintOperation;
+    }
     protected Constraint() {
       this.Active = false;
       if (AllowedConstraintOperations != null && AllowedConstraintOperations.Count() != 0)
@@ -137,29 +151,25 @@ namespace HeuristicLab.Core {
     public event EventHandler ActiveChanged;
     protected virtual void OnActiveChanged() {
       EventHandler handler = ActiveChanged;
-      if (handler != null)
-        handler(this, EventArgs.Empty);
+      if (handler != null) handler(this, EventArgs.Empty);
     }
 
     public event EventHandler ConstrainedValueChanged;
     protected virtual void OnConstrainedValueChanged() {
       EventHandler handler = ConstrainedValueChanged;
-      if (handler != null)
-        handler(this, EventArgs.Empty);
+      if (handler != null) handler(this, EventArgs.Empty);
     }
 
     public event EventHandler ConstraintDataChanged;
     protected virtual void OnConstraintDataChanged() {
       EventHandler handler = ConstraintDataChanged;
-      if (handler != null)
-        handler(this, EventArgs.Empty);
+      if (handler != null) handler(this, EventArgs.Empty);
     }
 
     public event EventHandler ConstraintOperationChanged;
     protected virtual void OnConstraintOperationChanged() {
       EventHandler handler = ConstraintOperationChanged;
-      if (handler != null)
-        handler(this, EventArgs.Empty);
+      if (handler != null) handler(this, EventArgs.Empty);
     }
     #endregion
 
@@ -180,24 +190,6 @@ namespace HeuristicLab.Core {
 
       s += ".";
       return s;
-    }
-
-    public override IDeepCloneable Clone(HeuristicLab.Common.Cloner cloner) {
-      Constraint clone = (Constraint)base.Clone(cloner);
-      clone.constrainedValue = null;  //mkommend: intentionally set to null;
-
-      IItem constraintDataItem = this.constraintData as IItem;
-      ICloneable constraintDataCloneable = this.constraintData as ICloneable;
-      if (constraintDataItem != null)
-        clone.constraintData = cloner.Clone(constraintDataItem);
-      else if (constraintDataCloneable != null)
-        clone.constraintData = constraintDataCloneable.Clone();
-      else
-        clone.constraintData = constraintData;
-
-      clone.constraintOperation = this.constraintOperation;
-
-      return clone;
     }
     #endregion
   }

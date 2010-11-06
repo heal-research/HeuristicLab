@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
@@ -114,6 +115,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
     #endregion
 
+    [StorableConstructor]
+    protected SingleObjectiveSymbolicRegressionEvaluator(bool deserializing) : base(deserializing) { }
+    protected SingleObjectiveSymbolicRegressionEvaluator(SingleObjectiveSymbolicRegressionEvaluator original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public SingleObjectiveSymbolicRegressionEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>(RandomParameterName, "The random generator to use."));
@@ -128,8 +134,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       Parameters.Add(new ValueParameter<PercentValue>(RelativeNumberOfEvaluatedSamplesParameterName, "The relative number of samples of the dataset partition, which should be randomly chosen for evaluation between the start and end index.", new PercentValue(1)));
     }
 
-    [StorableConstructor]
-    protected SingleObjectiveSymbolicRegressionEvaluator(bool deserializing) : base(deserializing) { }
+
     [StorableHook(Persistence.Default.CompositeSerializers.Storable.HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       if (!Parameters.ContainsKey(RelativeNumberOfEvaluatedSamplesParameterName))

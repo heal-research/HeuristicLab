@@ -19,12 +19,10 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
 using System.Collections.Generic;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinOneLevelExchangeMainpulator", "The 1M operator which manipulates a VRP representation.  It is implemented as described in Potvin, J.-Y. and Bengio, S. (1996). The Vehicle Routing Problem with Time Windows - Part II: Genetic Search. INFORMS Journal of Computing, 8:165–172.")]
@@ -32,9 +30,14 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   public sealed class PotvinOneLevelExchangeMainpulator : PotvinManipulator {
     [StorableConstructor]
     private PotvinOneLevelExchangeMainpulator(bool deserializing) : base(deserializing) { }
-
+    private PotvinOneLevelExchangeMainpulator(PotvinOneLevelExchangeMainpulator original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new PotvinOneLevelExchangeMainpulator(this, cloner);
+    }
     public PotvinOneLevelExchangeMainpulator() : base() { }
-    
+
     protected override void Manipulate(IRandom random, PotvinEncoding individual) {
       int selectedIndex = SelectRandomTourBiasedByLength(random, individual);
       Tour route1 =
@@ -51,9 +54,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       }
 
       route1.Cities.RemoveAll(
-        new System.Predicate<int>( 
+        new System.Predicate<int>(
           delegate(int val) {
-            return (replaced.Contains(val)); 
+            return (replaced.Contains(val));
           }
         )
       );

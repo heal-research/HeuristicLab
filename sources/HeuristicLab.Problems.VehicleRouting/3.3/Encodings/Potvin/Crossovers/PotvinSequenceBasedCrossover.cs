@@ -19,11 +19,9 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinSequenceBasedCrossover", "The SBX crossover for a VRP representations.  It is implemented as described in Potvin, J.-Y. and Bengio, S. (1996). The Vehicle Routing Problem with Time Windows - Part II: Genetic Search. INFORMS Journal of Computing, 8:165–172.")]
@@ -31,10 +29,16 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   public sealed class PotvinSequenceBasedCrossover : PotvinCrossover {
     [StorableConstructor]
     private PotvinSequenceBasedCrossover(bool deserializing) : base(deserializing) { }
+    private PotvinSequenceBasedCrossover(PotvinSequenceBasedCrossover original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new PotvinSequenceBasedCrossover(this, cloner);
+    }
 
     public PotvinSequenceBasedCrossover()
       : base() { }
-        
+
     protected override PotvinEncoding Crossover(IRandom random, PotvinEncoding parent1, PotvinEncoding parent2) {
       PotvinEncoding child = parent1.Clone() as PotvinEncoding;
       Tour newTour = new Tour();

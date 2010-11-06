@@ -103,18 +103,21 @@ namespace HeuristicLab.Optimization {
     }
     [StorableConstructor]
     private Result(bool deserializing) : base(deserializing) { }
-
     [StorableHook(HookType.AfterDeserialization)]
-    private void Initialize() {
-      RegisterValueEvents();
+    private void AfterDeserialization() {
+      Initialize();
+    }
+    private Result(Result original, Cloner cloner)
+      : base(original, cloner) {
+      value = cloner.Clone(original.value);
+      Initialize();
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Result(this, cloner);
     }
 
-    public override IDeepCloneable Clone(Cloner cloner) {
-      Result clone = new Result(Name, Description, DataType);
-      cloner.RegisterClonedObject(this, clone);
-      clone.value = (IItem)cloner.Clone(value);
-      clone.Initialize();
-      return clone;
+    private void Initialize() {
+      RegisterValueEvents();
     }
 
     public override string ToString() {

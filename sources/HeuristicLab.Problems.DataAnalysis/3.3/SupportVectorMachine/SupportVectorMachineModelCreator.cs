@@ -20,14 +20,15 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using SVM;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
   /// <summary>
@@ -35,7 +36,7 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
   /// </summary>
   [StorableClass]
   [Item("SupportVectorMachineModelCreator", "Represents an operator that creates a support vector machine model.")]
-  public class SupportVectorMachineModelCreator : SingleSuccessorOperator {
+  public sealed class SupportVectorMachineModelCreator : SingleSuccessorOperator {
     private const string DataAnalysisProblemDataParameterName = "DataAnalysisProblemData";
     private const string SvmTypeParameterName = "SvmType";
     private const string KernelTypeParameterName = "KernelType";
@@ -109,6 +110,12 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
     }
     #endregion
 
+    [StorableConstructor]
+    private SupportVectorMachineModelCreator(bool deserializing) : base(deserializing) { }
+    private SupportVectorMachineModelCreator(SupportVectorMachineModelCreator original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SupportVectorMachineModelCreator(this, cloner);
+    }
     public SupportVectorMachineModelCreator()
       : base() {
       StringValue nuSvrType = new StringValue("NU_SVR").AsReadOnly();
@@ -128,8 +135,8 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
     public override IOperation Apply() {
       int start = SamplesStart.Value;
       int end = SamplesEnd.Value;
-      IEnumerable<int> rows = 
-        Enumerable.Range(start, end-start)
+      IEnumerable<int> rows =
+        Enumerable.Range(start, end - start)
         .Where(i => i < DataAnalysisProblemData.TestSamplesStart.Value || DataAnalysisProblemData.TestSamplesEnd.Value <= i);
 
       SupportVectorMachineModel model = TrainModel(DataAnalysisProblemData,

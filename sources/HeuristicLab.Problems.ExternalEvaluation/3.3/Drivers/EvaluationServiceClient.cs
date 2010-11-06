@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -43,6 +44,13 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       get { return ChannelParameter.Value; }
     }
 
+
+    [StorableConstructor]
+    protected EvaluationServiceClient(bool deserializing) : base(deserializing) { }
+    protected EvaluationServiceClient(EvaluationServiceClient original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new EvaluationServiceClient(this, cloner);
+    }
     public EvaluationServiceClient()
       : base() {
       Parameters.Add(new ValueParameter<IEvaluationChannel>("Channel", "The channel over which to call the remote function."));

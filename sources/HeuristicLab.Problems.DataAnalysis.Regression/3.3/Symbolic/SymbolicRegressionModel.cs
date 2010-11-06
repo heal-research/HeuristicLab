@@ -31,12 +31,16 @@ using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [StorableClass]
   [Item("SymbolicRegressionModel", "A symbolic regression model represents an entity that provides estimated values based on input values.")]
-  public class SymbolicRegressionModel : NamedItem, IDataAnalysisModel {
-    private SymbolicRegressionModel() : base() { } // for cloning
+  public sealed class SymbolicRegressionModel : NamedItem, IDataAnalysisModel {
     [StorableConstructor]
-    protected SymbolicRegressionModel(bool deserializing)
-      : base(deserializing) {
+    private SymbolicRegressionModel(bool deserializing) : base(deserializing) { }
+    private SymbolicRegressionModel(SymbolicRegressionModel original, Cloner cloner)
+      : base(original, cloner) {
+      tree = (SymbolicExpressionTree)cloner.Clone(original.tree);
+      interpreter = (ISymbolicExpressionTreeInterpreter)cloner.Clone(original.interpreter);
+      inputVariables = new List<string>(original.inputVariables);
     }
+
     public SymbolicRegressionModel(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree tree)
       : base() {
       this.tree = tree;
@@ -44,8 +48,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       this.inputVariables = tree.IterateNodesPrefix().OfType<VariableTreeNode>().Select(var => var.VariableName).Distinct().ToList();
     }
 
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SymbolicRegressionModel(this, cloner);
+    }
+
     [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserializationHook() {
+    private void AfterDeserialization() {
       if (inputVariables == null)
         this.inputVariables = tree.IterateNodesPrefix().OfType<VariableTreeNode>().Select(var => var.VariableName).Distinct().ToList();
     }
@@ -71,14 +79,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
     public IEnumerable<double> GetEstimatedValues(DataAnalysisProblemData problemData, IEnumerable<int> rows) {
       return interpreter.GetSymbolicExpressionTreeValues(tree, problemData.Dataset, rows);
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      var clone = (SymbolicRegressionModel)base.Clone(cloner);
-      clone.tree = (SymbolicExpressionTree)cloner.Clone(tree);
-      clone.interpreter = (ISymbolicExpressionTreeInterpreter)cloner.Clone(interpreter);
-      clone.inputVariables = new List<string>(inputVariables);
-      return clone;
     }
   }
 }

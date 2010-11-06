@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -36,6 +37,15 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("OrderCrossover", "An operator which performs an order crossover of two permutations. It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.")]
   [StorableClass]
   public class OrderCrossover : PermutationCrossover {
+    [StorableConstructor]
+    protected OrderCrossover(bool deserializing) : base(deserializing) { }
+    protected OrderCrossover(OrderCrossover original, Cloner cloner) : base(original, cloner) { }
+    public OrderCrossover() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OrderCrossover(this, cloner);
+    }
+
     /// <summary>
     /// Performs the order crossover of two permutations.
     /// </summary>

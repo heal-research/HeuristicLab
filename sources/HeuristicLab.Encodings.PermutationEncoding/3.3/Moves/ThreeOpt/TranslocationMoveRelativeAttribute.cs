@@ -41,13 +41,17 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     public int Edge3Target { get; private set; }
 
     [StorableConstructor]
-    private TranslocationMoveRelativeAttribute(bool deserializing)
-      : base() {
+    protected TranslocationMoveRelativeAttribute(bool deserializing) : base(deserializing) { }
+    protected TranslocationMoveRelativeAttribute(TranslocationMoveRelativeAttribute original, Cloner cloner)
+      : base(original, cloner) {
+      this.Edge1Source = original.Edge1Source;
+      this.Edge1Target = original.Edge1Target;
+      this.Edge2Source = original.Edge2Source;
+      this.Edge2Target = original.Edge2Target;
+      this.Edge3Source = original.Edge3Source;
+      this.Edge3Target = original.Edge3Target;
     }
-
-    public TranslocationMoveRelativeAttribute()
-      : this(-1, -1, -1, -1, -1, -1, -1) { }
-
+    public TranslocationMoveRelativeAttribute() : this(-1, -1, -1, -1, -1, -1, -1) { }
     public TranslocationMoveRelativeAttribute(int edge1Source, int edge1Target, int edge2Source, int edge2Target, int edge3Source, int edge3Target, double moveQuality)
       : base(moveQuality) {
       Edge1Source = edge1Source;
@@ -59,14 +63,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      TranslocationMoveRelativeAttribute clone = (TranslocationMoveRelativeAttribute)base.Clone(cloner);
-      clone.Edge1Source = Edge1Source;
-      clone.Edge1Target = Edge1Target;
-      clone.Edge2Source = Edge2Source;
-      clone.Edge2Target = Edge2Target;
-      clone.Edge3Source = Edge3Source;
-      clone.Edge3Target = Edge3Target;
-      return clone;
+      return new TranslocationMoveRelativeAttribute(this, cloner);
     }
   }
 }

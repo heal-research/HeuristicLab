@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -55,12 +56,19 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       set { PermutationTypeParameter.Value.Value = value; }
     }
 
+    [StorableConstructor]
+    private RandomPermutationCreator(bool deserializing) : base(deserializing) { }
+    private RandomPermutationCreator(RandomPermutationCreator original, Cloner cloner) : base(original, cloner) { }
     public RandomPermutationCreator()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used to initialize the new random permutation."));
       Parameters.Add(new ValueLookupParameter<IntValue>("Length", "The length of the new random permutation."));
       Parameters.Add(new LookupParameter<Permutation>("Permutation", "The new random permutation."));
       Parameters.Add(new ValueParameter<PermutationType>("PermutationType", "The type of the permutation.", new PermutationType(PermutationTypes.RelativeUndirected)));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new RandomPermutationCreator(this, cloner);
     }
 
     public override IOperation Apply() {

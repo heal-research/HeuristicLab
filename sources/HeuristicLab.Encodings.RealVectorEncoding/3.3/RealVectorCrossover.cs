@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -50,6 +51,9 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       get { return (IValueLookupParameter<DoubleMatrix>)Parameters["Bounds"]; }
     }
 
+    [StorableConstructor]
+    protected RealVectorCrossover(bool deserializing) : base(deserializing) { }
+    protected RealVectorCrossover(RealVectorCrossover original, Cloner cloner) : base(original, cloner) { }
     protected RealVectorCrossover()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic crossover operators."));

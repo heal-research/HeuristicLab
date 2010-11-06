@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis.SupportVectorMachine;
@@ -35,12 +36,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.SupportVectorRegression 
   [Item("SupportVectorRegressionSolution", "Represents a support vector solution for a regression problem which can be visualized in the GUI.")]
   [StorableClass]
   public sealed class SupportVectorRegressionSolution : DataAnalysisSolution {
-    public SupportVectorRegressionSolution() : base() { }
-    public SupportVectorRegressionSolution(DataAnalysisProblemData problemData, SupportVectorMachineModel model, IEnumerable<string> inputVariables, double lowerEstimationLimit, double upperEstimationLimit)
-      : base(problemData, lowerEstimationLimit, upperEstimationLimit) {
-      this.Model = model;
-    }
-
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Function; }
     }
@@ -52,6 +47,39 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.SupportVectorRegression 
 
     public Dataset SupportVectors {
       get { return CalculateSupportVectors(); }
+    }
+
+    private List<double> estimatedValues;
+    public override IEnumerable<double> EstimatedValues {
+      get {
+        if (estimatedValues == null) RecalculateEstimatedValues();
+        return estimatedValues;
+      }
+    }
+
+    public override IEnumerable<double> EstimatedTrainingValues {
+      get {
+        return GetEstimatedValues(ProblemData.TrainingIndizes);
+      }
+    }
+
+    public override IEnumerable<double> EstimatedTestValues {
+      get {
+        return GetEstimatedValues(ProblemData.TestIndizes);
+      }
+    }
+
+    [StorableConstructor]
+    private SupportVectorRegressionSolution(bool deserializing) : base(deserializing) { }
+    private SupportVectorRegressionSolution(SupportVectorRegressionSolution original, Cloner cloner) : base(original, cloner) { }
+    public SupportVectorRegressionSolution() : base() { }
+    public SupportVectorRegressionSolution(DataAnalysisProblemData problemData, SupportVectorMachineModel model, IEnumerable<string> inputVariables, double lowerEstimationLimit, double upperEstimationLimit)
+      : base(problemData, lowerEstimationLimit, upperEstimationLimit) {
+      this.Model = model;
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SupportVectorRegressionSolution(this, cloner);
     }
 
     protected override void OnProblemDataChanged() {
@@ -82,25 +110,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.SupportVectorRegression 
       OnEstimatedValuesChanged();
     }
 
-    private List<double> estimatedValues;
-    public override IEnumerable<double> EstimatedValues {
-      get {
-        if (estimatedValues == null) RecalculateEstimatedValues();
-        return estimatedValues;
-      }
-    }
-
-    public override IEnumerable<double> EstimatedTrainingValues {
-      get {
-        return GetEstimatedValues(ProblemData.TrainingIndizes);
-      }
-    }
-
-    public override IEnumerable<double> EstimatedTestValues {
-      get {
-        return GetEstimatedValues(ProblemData.TestIndizes);
-      }
-    }
 
     private IEnumerable<double> GetEstimatedValues(IEnumerable<int> rows) {
       if (estimatedValues == null) RecalculateEstimatedValues();

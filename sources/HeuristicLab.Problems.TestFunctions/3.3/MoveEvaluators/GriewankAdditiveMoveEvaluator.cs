@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -30,6 +31,16 @@ namespace HeuristicLab.Problems.TestFunctions {
     public override System.Type EvaluatorType {
       get { return typeof(GriewankEvaluator); }
     }
+
+    [StorableConstructor]
+    protected GriewankAdditiveMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected GriewankAdditiveMoveEvaluator(GriewankAdditiveMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
+    public GriewankAdditiveMoveEvaluator() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new GriewankAdditiveMoveEvaluator(this, cloner);
+    }
+
     protected override double Evaluate(double quality, RealVector point, AdditiveMove move) {
       RealVectorAdditiveMoveWrapper wrapper = new RealVectorAdditiveMoveWrapper(move, point);
       return GriewankEvaluator.Apply(wrapper);

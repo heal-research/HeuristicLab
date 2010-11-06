@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -29,6 +30,14 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [StorableClass]
   public class TimeSpanValueConverter : Item, IItemToSolutionMessageConverter {
     private static readonly Type[] itemTypes = new Type[] { typeof(TimeSpanValue) };
+
+    [StorableConstructor]
+    protected TimeSpanValueConverter(bool deserializing) : base(deserializing) { }
+    protected TimeSpanValueConverter(TimeSpanValueConverter original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new TimeSpanValueConverter(this, cloner);
+    }
+    public TimeSpanValueConverter() : base() { }
 
     #region IItemToSolutionMessageConverter Members
 

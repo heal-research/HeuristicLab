@@ -98,15 +98,21 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     [StorableConstructor]
     private LinearRegression(bool deserializing) : base(deserializing) { }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      Initialize();
+    }
 
+    private LinearRegression(LinearRegression original, Cloner cloner)
+      : base(original, cloner) {
+      solutionCreator = cloner.Clone(original.solutionCreator);
+      evaluator = cloner.Clone(original.evaluator);
+      mseEvaluator = cloner.Clone(original.mseEvaluator);
+      analyzer = cloner.Clone(original.analyzer);
+      Initialize();
+    }
     public override IDeepCloneable Clone(Cloner cloner) {
-      LinearRegression clone = (LinearRegression)base.Clone(cloner);
-      clone.solutionCreator = (LinearRegressionSolutionCreator)cloner.Clone(solutionCreator);
-      clone.evaluator = (SimpleSymbolicRegressionEvaluator)cloner.Clone(evaluator);
-      clone.mseEvaluator = (SimpleMSEEvaluator)cloner.Clone(mseEvaluator);
-      clone.analyzer = (BestSymbolicRegressionSolutionAnalyzer)cloner.Clone(analyzer);
-      clone.Initialize();
-      return clone;
+      return new LinearRegression(this, cloner);
     }
 
     public override void Prepare() {
@@ -132,7 +138,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #endregion
 
     #region Helpers
-    [StorableHook(HookType.AfterDeserialization)]
     private void Initialize() {
       solutionCreator.SamplesStartParameter.ActualName = TrainingSamplesStartParameter.Name;
       solutionCreator.SamplesEndParameter.ActualName = TrainingSamplesEndParameter.Name;

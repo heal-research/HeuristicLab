@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -33,7 +34,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   /// </remarks>
   [Item("SomePositionsBitflipManipulator", "Flips some bits of a binary vector, each position is flipped with a probability of pm. It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg, p. 43.")]
   [StorableClass]
-  public class SomePositionsBitflipManipulator : BinaryVectorManipulator {
+  public sealed class SomePositionsBitflipManipulator : BinaryVectorManipulator {
     /// <summary>
     /// Mmutation probability for each position.
     /// </summary>
@@ -41,11 +42,19 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["MutationProbability"]; }
     }
 
+    [StorableConstructor]
+    private SomePositionsBitflipManipulator(bool deserializing) : base(deserializing) { }
+    private SomePositionsBitflipManipulator(SomePositionsBitflipManipulator original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="NPointCrossover"/>
     /// </summary>
-    public SomePositionsBitflipManipulator() {
+    public SomePositionsBitflipManipulator()
+      : base() {
       Parameters.Add(new ValueLookupParameter<DoubleValue>("MutationProbability", "The mutation probability for each position", new DoubleValue(0.2)));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SomePositionsBitflipManipulator(this, cloner);
     }
 
     /// <summary>

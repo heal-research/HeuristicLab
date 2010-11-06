@@ -34,13 +34,16 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     [Storable]
     public Permutation Permutation { get; protected set; }
 
-    public TwoIndexMove()
-      : base() {
-      Index1 = -1;
-      Index2 = -1;
-      Permutation = null;
+    [StorableConstructor]
+    protected TwoIndexMove(bool deserializing) : base(deserializing) { }
+    protected TwoIndexMove(TwoIndexMove original, Cloner cloner)
+      : base(original, cloner) {
+      this.Index1 = original.Index1;
+      this.Index2 = original.Index2;
+      if (original.Permutation != null)
+        this.Permutation = cloner.Clone(original.Permutation);
     }
-
+    public TwoIndexMove() : this(-1, -1, null) { }
     public TwoIndexMove(int index1, int index2, Permutation permutation)
       : base() {
       Index1 = index1;
@@ -49,12 +52,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      TwoIndexMove clone = (TwoIndexMove)base.Clone(cloner);
-      clone.Index1 = Index1;
-      clone.Index2 = Index2;
-      if (Permutation != null)
-        clone.Permutation = (Permutation)Permutation.Clone(cloner);
-      return clone;
+      return new TwoIndexMove(this, cloner);
     }
   }
 }

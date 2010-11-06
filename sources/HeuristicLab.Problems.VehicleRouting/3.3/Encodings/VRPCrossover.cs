@@ -19,9 +19,8 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -43,7 +42,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings {
 
     [StorableConstructor]
     protected VRPCrossover(bool deserializing) : base(deserializing) { }
-
+    protected VRPCrossover(VRPCrossover original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public VRPCrossover()
       : base() {
       Parameters.Add(new ScopeTreeLookupParameter<IVRPEncoding>("Parents", "The parent permutations which should be crossed."));

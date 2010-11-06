@@ -20,8 +20,10 @@
 #endregion
 
 using System;
+using System.Runtime.Serialization;
 
 namespace HeuristicLab.Problems.DataAnalysis {
+  [Serializable]
   public class DataFormatException : Exception {
     private int line;
     public int Line {
@@ -36,5 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       this.token = token;
       this.line = line;
     }
+
+    public DataFormatException(SerializationInfo info, StreamingContext context) : base(info, context) { }
   }
 }

@@ -45,20 +45,21 @@ namespace HeuristicLab.Core {
       get { return VS2008ImageLibrary.Class; }
     }
 
+    [StorableConstructor]
+    protected ItemList(bool deserializing) : base(deserializing) { }
+    protected ItemList(ItemList<T> original, Cloner cloner) {
+      cloner.RegisterClonedObject(original, this);
+      list = new List<T>(original.Select(x => cloner.Clone(x)));
+    }
     public ItemList() : base() { }
     public ItemList(int capacity) : base(capacity) { }
     public ItemList(IEnumerable<T> collection) : base(collection) { }
-    [StorableConstructor]
-    protected ItemList(bool deserializing) : base(deserializing) { }
 
     public object Clone() {
       return Clone(new Cloner());
     }
     public virtual IDeepCloneable Clone(Cloner cloner) {
-      ItemList<T> clone = (ItemList<T>)Activator.CreateInstance(this.GetType());
-      cloner.RegisterClonedObject(this, clone);
-      clone.list = new List<T>(this.Select(x => (T)cloner.Clone(x)));
-      return clone;
+      return new ItemList<T>(this, cloner);
     }
 
     public new ReadOnlyItemList<T> AsReadOnly() {

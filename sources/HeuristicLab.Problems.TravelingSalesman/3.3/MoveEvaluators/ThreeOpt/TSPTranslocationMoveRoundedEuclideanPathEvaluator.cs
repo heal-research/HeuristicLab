@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -30,6 +31,15 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   [Item("TSPTranslocationMoveRoundedEuclideanPathEvaluator", "Operator for evaluating a translocation or insertion move (3-opt) based on rounded euclidean distances.")]
   [StorableClass]
   public class TSPTranslocationMoveRoundedEuclideanPathEvaluator : TSPTranslocationMovePathEvaluator {
+    [StorableConstructor]
+    protected TSPTranslocationMoveRoundedEuclideanPathEvaluator(bool deserializing) : base(deserializing) { }
+    protected TSPTranslocationMoveRoundedEuclideanPathEvaluator(TSPTranslocationMoveRoundedEuclideanPathEvaluator original, Cloner cloner) : base(original, cloner) { }
+    public TSPTranslocationMoveRoundedEuclideanPathEvaluator() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new TSPTranslocationMoveRoundedEuclideanPathEvaluator(this, cloner);
+    }
+    
     public override Type EvaluatorType {
       get { return typeof(TSPRoundedEuclideanPathEvaluator); }
     }

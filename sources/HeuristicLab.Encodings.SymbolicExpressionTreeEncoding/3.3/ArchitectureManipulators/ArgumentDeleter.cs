@@ -20,6 +20,7 @@
 #endregion
 
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
@@ -32,6 +33,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureMani
   [Item("ArgumentDeleter", "Manipulates a symbolic expression by deleting an argument from an existing function defining branch.")]
   [StorableClass]
   public sealed class ArgumentDeleter : SymbolicExpressionTreeArchitectureManipulator {
+    [StorableConstructor]
+    private ArgumentDeleter(bool deserializing) : base(deserializing) { }
+    private ArgumentDeleter(ArgumentDeleter original, Cloner cloner) : base(original, cloner) { }
+    public ArgumentDeleter() : base() { }
+
     public override sealed void ModifyArchitecture(
       IRandom random,
       SymbolicExpressionTree symbolicExpressionTree,
@@ -40,6 +46,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureMani
       IntValue maxFunctionDefiningBranches, IntValue maxFunctionArguments,
       out bool success) {
       success = DeleteArgument(random, symbolicExpressionTree, grammar, maxTreeSize.Value, maxTreeHeight.Value, maxFunctionDefiningBranches.Value, maxFunctionArguments.Value);
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ArgumentDeleter(this, cloner);
     }
 
     public static bool DeleteArgument(

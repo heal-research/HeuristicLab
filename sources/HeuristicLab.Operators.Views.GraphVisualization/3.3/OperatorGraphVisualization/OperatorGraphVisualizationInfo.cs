@@ -45,9 +45,51 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
 
     [StorableConstructor]
     private OperatorGraphVisualizationInfo(bool deserializing)
-      : base() {
+      : base(deserializing) {
       this.operatorParameterCollectionMapping = new BidirectionalLookup<IOperator, IKeyedItemCollection<string, IParameter>>();
       this.parameterOperatorMapping = new Dictionary<IParameter, IOperator>();
+    }
+    private OperatorGraphVisualizationInfo(OperatorGraphVisualizationInfo original, Cloner cloner)
+      : base(original, cloner) {
+      operatorShapeInfoMapping = new BidirectionalLookup<IOperator, IOperatorShapeInfo>();
+      operatorParameterCollectionMapping = new BidirectionalLookup<IOperator, IKeyedItemCollection<string, IParameter>>();
+      parameterOperatorMapping = new Dictionary<IParameter, IOperator>();
+
+      operatorGraph = cloner.Clone(original.operatorGraph);
+      RegisterOperatorGraphEvents();
+      oldInitialShape = cloner.Clone(original.oldInitialShape);
+      oldInitialShapeColor = original.oldInitialShapeColor;
+
+      foreach (KeyValuePair<IOperator, IOperatorShapeInfo> pair in original.operatorShapeInfoMapping.FirstEnumerable) {
+        IOperator op = cloner.Clone(pair.Key);
+        IOperatorShapeInfo shapeInfo = cloner.Clone(pair.Value);
+        RegisterOperatorEvents(op);
+        operatorParameterCollectionMapping.Add(op, pair.Key.Parameters);
+        operatorShapeInfoMapping.Add(op, shapeInfo);
+      }
+
+      foreach (IOperator oper in operatorShapeInfoMapping.FirstValues) {
+        foreach (IParameter param in oper.Parameters) {
+          parameterOperatorMapping.Add(param, oper);
+          IValueParameter opParam = param as IValueParameter;
+          if (opParam != null && typeof(IOperator).IsAssignableFrom(param.DataType))
+            RegisterOperatorParameterEvents(opParam);
+          else
+            RegisterParameterEvents(param);
+        }
+      }
+      if (original.operatorGraph.InitialOperator != null) {
+        IOperatorShapeInfo newInitialShapeInfo = original.operatorShapeInfoMapping.GetByFirst(original.operatorGraph.InitialOperator);
+        if (newInitialShapeInfo != null) {
+          oldInitialShapeColor = newInitialShapeInfo.Color;
+          newInitialShapeInfo.Color = Color.LightGreen;
+        }
+        oldInitialShape = InitialShape;
+        OnInitialShapeChanged();
+      }
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OperatorGraphVisualizationInfo(this, cloner);
     }
 
     public OperatorGraphVisualizationInfo(OperatorGraph operatorGraph)
@@ -63,7 +105,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     }
 
     [StorableHook(HookType.AfterDeserialization)]
-    private void DeserializationHook() {
+    private void AfterDeserialization() {
       this.operatorGraph.DeserializationFinished += new EventHandler(operatorGraph_DeserializationFinished);
 
       IOperator op;
@@ -100,45 +142,6 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
         this.OnInitialShapeChanged();
       }
       this.operatorGraph.DeserializationFinished -= new EventHandler(operatorGraph_DeserializationFinished);
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      OperatorGraphVisualizationInfo clone = (OperatorGraphVisualizationInfo)base.Clone(cloner);
-      clone.operatorGraph = (OperatorGraph)cloner.Clone(this.operatorGraph);
-      clone.RegisterOperatorGraphEvents();
-      clone.oldInitialShape = (IOperatorShapeInfo)cloner.Clone(this.oldInitialShape);
-      clone.oldInitialShapeColor = this.oldInitialShapeColor;
-
-      IOperator op;
-      IOperatorShapeInfo shapeInfo;
-      foreach (KeyValuePair<IOperator, IOperatorShapeInfo> pair in this.operatorShapeInfoMapping.FirstEnumerable) {
-        op = (IOperator)cloner.Clone(pair.Key);
-        shapeInfo = (IOperatorShapeInfo)cloner.Clone(pair.Value);
-        clone.RegisterOperatorEvents(op);
-        clone.operatorParameterCollectionMapping.Add(op, pair.Key.Parameters);
-        clone.operatorShapeInfoMapping.Add(op, shapeInfo);
-      }
-
-      foreach (IOperator oper in clone.operatorShapeInfoMapping.FirstValues) {
-        foreach (IParameter param in oper.Parameters) {
-          clone.parameterOperatorMapping.Add(param, oper);
-          IValueParameter opParam = param as IValueParameter;
-          if (opParam != null && typeof(IOperator).IsAssignableFrom(param.DataType))
-            clone.RegisterOperatorParameterEvents(opParam);
-          else
-            clone.RegisterParameterEvents(param);
-        }
-      }
-      if (this.operatorGraph.InitialOperator != null) {
-        IOperatorShapeInfo newInitialShapeInfo = this.operatorShapeInfoMapping.GetByFirst(this.operatorGraph.InitialOperator);
-        if (newInitialShapeInfo != null) {
-          oldInitialShapeColor = newInitialShapeInfo.Color;
-          newInitialShapeInfo.Color = Color.LightGreen;
-        }
-        oldInitialShape = this.InitialShape;
-        this.OnInitialShapeChanged();
-      }
-      return clone;
     }
 
     internal IOperator GetOperatorForShapeInfo(IOperatorShapeInfo shapeInfo) {

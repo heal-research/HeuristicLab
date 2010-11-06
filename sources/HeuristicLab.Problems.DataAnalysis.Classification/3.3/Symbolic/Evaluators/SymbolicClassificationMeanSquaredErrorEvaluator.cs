@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis.Regression.Symbolic;
@@ -26,13 +27,17 @@ using HeuristicLab.Problems.DataAnalysis.Regression.Symbolic;
 namespace HeuristicLab.Problems.DataAnalysis.Classification {
   [Item("SymbolicClassificationMeanSquaredErrorEvaluator", "Calculates the mean squared error of a symbolic classification solution.")]
   [StorableClass]
-  public class SymbolicClassifacitionMeanSquaredErrorEvaluator : SymbolicRegressionMeanSquaredErrorEvaluator, ISymbolicClassificationEvaluator {
+  public sealed class SymbolicClassifacitionMeanSquaredErrorEvaluator : SymbolicRegressionMeanSquaredErrorEvaluator, ISymbolicClassificationEvaluator {
     public ClassificationProblemData ClassificationProblemData {
       get { return (ClassificationProblemData)RegressionProblemData; }
     }
 
-    public SymbolicClassifacitionMeanSquaredErrorEvaluator()
-      : base() {
+    [StorableConstructor]
+    private SymbolicClassifacitionMeanSquaredErrorEvaluator(bool deserializing) : base(deserializing) { }
+    private SymbolicClassifacitionMeanSquaredErrorEvaluator(SymbolicClassifacitionMeanSquaredErrorEvaluator original, Cloner cloner) : base(original, cloner) { }
+    public SymbolicClassifacitionMeanSquaredErrorEvaluator() : base() { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SymbolicClassifacitionMeanSquaredErrorEvaluator(this, cloner);
     }
   }
 }

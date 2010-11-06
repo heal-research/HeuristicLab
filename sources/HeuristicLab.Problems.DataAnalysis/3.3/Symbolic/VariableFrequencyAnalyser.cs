@@ -21,6 +21,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
@@ -60,6 +61,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       set { VariableFrequenciesParameter.ActualValue = value; }
     }
     #endregion
+    [StorableConstructor]
+    protected VariableFrequencyAnalyser(bool deserializing) : base(deserializing) { }
+    protected VariableFrequencyAnalyser(VariableFrequencyAnalyser original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public VariableFrequencyAnalyser()
       : base() {
       Parameters.Add(new ScopeTreeLookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression trees that should be analyzed."));
@@ -79,7 +85,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         int columnIndex = columnNames.IndexOf(pair.Key);
         VariableFrequencies[lastRowIndex, columnIndex] = pair.Value;
       }
-      return null;
+      return base.Apply();
     }
 
     public static IEnumerable<KeyValuePair<string, double>> CalculateVariableFrequencies(IEnumerable<SymbolicExpressionTree> trees, IEnumerable<string> inputVariables) {

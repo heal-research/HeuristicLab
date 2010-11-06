@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces;
@@ -50,6 +51,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureMani
     public IntValue MaxFunctionArguments {
       get { return MaxFunctionArgumentsParameter.ActualValue; }
     }
+    [StorableConstructor]
+    protected SymbolicExpressionTreeArchitectureManipulator(bool deserializing) : base(deserializing) { }
+    protected SymbolicExpressionTreeArchitectureManipulator(SymbolicExpressionTreeArchitectureManipulator original, Cloner cloner) : base(original, cloner) { }
     public SymbolicExpressionTreeArchitectureManipulator()
       : base() {
       Parameters.Add(new ValueLookupParameter<IntValue>(MaxFunctionDefiningBranchesParameterName, "The maximal allowed number of function defining branches."));

@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -41,6 +42,11 @@ namespace HeuristicLab.Operators {
       set { PartitionsParameter.Value = value; }
     }
 
+    [StorableConstructor]
+    protected SubScopesMixer(bool deserializing) : base(deserializing) { }
+    protected SubScopesMixer(SubScopesMixer original, Cloner cloner)
+      : base(original, cloner) {
+    }
     /// <summary>
     /// Initializes a new instance of <see cref="SubScopesMixer"/> with one variable infos 
     /// (<c>Partitions</c>) and the <c>Local</c> flag set to <c>true</c>.
@@ -48,6 +54,10 @@ namespace HeuristicLab.Operators {
     public SubScopesMixer()
       : base() {
       Parameters.Add(new ValueParameter<IntValue>("Partitions", "The number of equal-sized partitions.", new IntValue(2)));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SubScopesMixer(this, cloner);
     }
 
     /// <summary>

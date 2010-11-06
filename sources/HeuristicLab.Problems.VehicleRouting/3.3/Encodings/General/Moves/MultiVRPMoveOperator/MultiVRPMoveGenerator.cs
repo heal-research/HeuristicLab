@@ -20,21 +20,22 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Collections;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Data;
-using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("MultiVRPMoveGenerator", "Randomly selects and applies its move generators.")]
   [StorableClass]
-  public class MultiVRPMoveGenerator : CheckedMultiOperator<IMultiVRPMoveGenerator>, IMultiVRPMoveOperator, 
+  public class MultiVRPMoveGenerator : CheckedMultiOperator<IMultiVRPMoveGenerator>, IMultiVRPMoveOperator,
     IStochasticOperator, IMultiMoveGenerator {
     public override bool CanChangeName {
       get { return false; }
@@ -96,7 +97,11 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     }
 
     [StorableConstructor]
-    private MultiVRPMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected MultiVRPMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected MultiVRPMoveGenerator(MultiVRPMoveGenerator original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MultiVRPMoveGenerator(this, cloner);
+    }
     public MultiVRPMoveGenerator()
       : base() {
       Parameters.Add(new ValueLookupParameter<IntValue>("SampleSize", "The number of moves to generate."));

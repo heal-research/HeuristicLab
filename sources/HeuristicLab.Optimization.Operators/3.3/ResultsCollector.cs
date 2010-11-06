@@ -20,6 +20,7 @@
 #endregion
 
 using System.Collections;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -45,10 +46,17 @@ namespace HeuristicLab.Optimization.Operators {
       set { CopyValueParameter.Value = value; }
     }
 
+    [StorableConstructor]
+    protected ResultsCollector(bool deserializing) : base(deserializing) { }
+    protected ResultsCollector(ResultsCollector original, Cloner cloner) : base(original, cloner) { }
     public ResultsCollector()
       : base() {
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the collected values should be stored."));
       Parameters.Add(new ValueParameter<BoolValue>("CopyValue", "True if the collected result value should be copied, otherwise false.", new BoolValue(false)));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ResultsCollector(this, cloner);
     }
 
     public override IOperation Apply() {

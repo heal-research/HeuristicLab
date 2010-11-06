@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -45,6 +46,14 @@ namespace HeuristicLab.Analysis {
       get { return (IValueLookupParameter<PercentValue>)Parameters["RelativeDifference"]; }
     }
 
+    #region Storing & Cloning
+    [StorableConstructor]
+    protected QualityDifferenceCalculator(bool deserializing) : base(deserializing) { }
+    protected QualityDifferenceCalculator(QualityDifferenceCalculator original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new QualityDifferenceCalculator(this, cloner);
+    }
+    #endregion
     public QualityDifferenceCalculator()
       : base() {
       Parameters.Add(new ValueLookupParameter<DoubleValue>("FirstQuality", "The first quality value from which the difference to the second quality value is calculated."));

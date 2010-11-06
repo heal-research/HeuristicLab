@@ -19,10 +19,9 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
-using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings {
@@ -34,12 +33,12 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings {
     public ILookupParameter<IVRPEncoding> VRPToursParameter {
       get { return (ILookupParameter<IVRPEncoding>)Parameters["VRPTours"]; }
     }
-   
+
     #endregion
 
     [StorableConstructor]
     protected VRPMoveOperator(bool deserializing) : base(deserializing) { }
-
+    protected VRPMoveOperator(VRPMoveOperator original, Cloner cloner) : base(original, cloner) { }
     public VRPMoveOperator()
       : base() {
       Parameters.Add(new LookupParameter<IVRPEncoding>("VRPTours", "The VRP tours."));

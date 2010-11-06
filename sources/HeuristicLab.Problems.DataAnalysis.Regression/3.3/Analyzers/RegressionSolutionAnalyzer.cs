@@ -20,6 +20,7 @@
 #endregion
 
 using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -88,6 +89,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     }
     #endregion
 
+
+    [StorableConstructor]
+    protected RegressionSolutionAnalyzer(bool deserializing) : base(deserializing) { }
+    protected RegressionSolutionAnalyzer(RegressionSolutionAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public RegressionSolutionAnalyzer()
       : base() {
       Parameters.Add(new ValueLookupParameter<DataAnalysisProblemData>(ProblemDataParameterName, "The problem data for which the symbolic expression tree is a solution."));
@@ -100,7 +105,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     }
 
     [StorableHook(HookType.AfterDeserialization)]
-    private void Initialize() {
+    private void AfterDeserialization() {
       // backwards compatibility
       if (!Parameters.ContainsKey(GenerationsParameterName)) {
         Parameters.Add(new LookupParameter<IntValue>(GenerationsParameterName, "The number of generations calculated so far."));

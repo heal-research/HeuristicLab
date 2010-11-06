@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -26,5 +27,13 @@ namespace HeuristicLab.Optimization.Operators {
   [Item("UserDefinedManipulator", "A manipulator that can be customized with operators which it will execute one after another.")]
   [StorableClass]
   public class UserDefinedManipulator : UserDefinedOperator, IManipulator {
+    [StorableConstructor]
+    protected UserDefinedManipulator(bool deserializing) : base(deserializing) { }
+    protected UserDefinedManipulator(UserDefinedManipulator original, Cloner cloner) : base(original, cloner) { }
+    public UserDefinedManipulator() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new UserDefinedManipulator(this, cloner);
+    }
   }
 }

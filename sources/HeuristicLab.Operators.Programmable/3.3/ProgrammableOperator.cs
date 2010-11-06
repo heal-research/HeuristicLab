@@ -159,6 +159,26 @@ namespace HeuristicLab.Operators.Programmable {
     #endregion
 
     #region Construction & Initialization
+    [StorableConstructor]
+    protected ProgrammableOperator(bool deserializing) : base(deserializing) { }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      RegisterEvents();
+    }
+
+    protected ProgrammableOperator(ProgrammableOperator original, Cloner cloner)
+      : base(original, cloner) {
+      code = original.Code;
+      executeMethod = original.executeMethod;
+      Assemblies = original.Assemblies.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+      namespaces = original.namespaces;
+      CompilationUnitCode = original.CompilationUnitCode;
+      CompileErrors = original.CompileErrors;
+      RegisterEvents();
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ProgrammableOperator(this, cloner);
+    }
 
     public ProgrammableOperator() {
       code = "";
@@ -170,7 +190,7 @@ namespace HeuristicLab.Operators.Programmable {
       RegisterEvents();
     }
 
-    [StorableHook(HookType.AfterDeserialization)]
+
     private void RegisterEvents() {
       Parameters.ItemsAdded += Parameters_Changed;
       Parameters.ItemsRemoved += Parameters_Changed;
@@ -184,8 +204,7 @@ namespace HeuristicLab.Operators.Programmable {
 
     protected void OnSignatureChanged() {
       EventHandler handler = SignatureChanged;
-      if (handler != null)
-        handler(this, EventArgs.Empty);
+      if (handler != null) handler(this, EventArgs.Empty);
     }
 
     private static void StaticInitialize() {
@@ -425,27 +444,10 @@ namespace HeuristicLab.Operators.Programmable {
 
     public event EventHandler CodeChanged;
     protected virtual void OnCodeChanged() {
-      if (CodeChanged != null)
-        CodeChanged(this, new EventArgs());
+      EventHandler handler = CodeChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
 
     #endregion
-
-    #region Cloning
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      ProgrammableOperator clone = (ProgrammableOperator)base.Clone(cloner);
-      clone.code = Code;
-      clone.executeMethod = executeMethod;
-      clone.Assemblies = Assemblies.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-      clone.namespaces = namespaces;
-      clone.CompilationUnitCode = CompilationUnitCode;
-      clone.CompileErrors = CompileErrors;
-      clone.RegisterEvents();
-      return clone;
-    }
-
-    #endregion
-
   }
 }

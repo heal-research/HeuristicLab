@@ -19,14 +19,12 @@
  */
 #endregion
 
-using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
-using HeuristicLab.Parameters;
-using System.Collections.Generic;
 using HeuristicLab.Data;
+using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaLambdaInterchangeMoveGenerator", "Generates lambda interchange moves from a given VRP encoding.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
@@ -50,12 +48,14 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
 
     [StorableConstructor]
     protected AlbaLambdaInterchangeMoveGenerator(bool deserializing) : base(deserializing) { }
-
+    protected AlbaLambdaInterchangeMoveGenerator(AlbaLambdaInterchangeMoveGenerator original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public AlbaLambdaInterchangeMoveGenerator()
       : base() {
-        Parameters.Add(new LookupParameter<AlbaLambdaInterchangeMove>("AlbaLambdaInterchangeMove", "The moves that should be generated in subscopes."));
-        Parameters.Add(new ScopeParameter("CurrentScope", "The current scope where the moves should be added as subscopes."));
-        Parameters.Add(new ValueParameter<IntValue>("Lambda", "The lambda value.", new IntValue(1)));
+      Parameters.Add(new LookupParameter<AlbaLambdaInterchangeMove>("AlbaLambdaInterchangeMove", "The moves that should be generated in subscopes."));
+      Parameters.Add(new ScopeParameter("CurrentScope", "The current scope where the moves should be added as subscopes."));
+      Parameters.Add(new ValueParameter<IntValue>("Lambda", "The lambda value.", new IntValue(1)));
     }
 
     protected abstract AlbaLambdaInterchangeMove[] GenerateMoves(AlbaEncoding individual, int lambda);

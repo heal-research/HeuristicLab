@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -52,10 +53,17 @@ namespace HeuristicLab.Optimization.Operators {
       set { ParentsPerChildParameter.Value = value; }
     }
 
+    [StorableConstructor]
+    private ChildrenCreator(bool deserializing) : base(deserializing) { }
+    private ChildrenCreator(ChildrenCreator original, Cloner cloner) : base(original, cloner) { }
     public ChildrenCreator()
       : base() {
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope whose sub-scopes represent the parents."));
       Parameters.Add(new ValueLookupParameter<IntValue>("ParentsPerChild", "The number of parents that should be crossed per child. Note that some of the typical crossover operators require exactly two parents.", new IntValue(2)));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ChildrenCreator(this, cloner);
     }
 
     public override IOperation Apply() {

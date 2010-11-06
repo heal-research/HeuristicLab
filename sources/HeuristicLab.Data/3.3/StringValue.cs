@@ -54,6 +54,13 @@ namespace HeuristicLab.Data {
       get { return readOnly; }
     }
 
+    [StorableConstructor]
+    protected StringValue(bool deserializing) : base(deserializing) { }
+    protected StringValue(StringValue original, Cloner cloner)
+      : base(original, cloner) {
+      this.value = original.value != null ? original.value : string.Empty;
+      this.readOnly = original.readOnly;
+    }
     public StringValue() {
       this.value = string.Empty;
       this.readOnly = false;
@@ -64,10 +71,7 @@ namespace HeuristicLab.Data {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      StringValue clone = new StringValue(value);
-      cloner.RegisterClonedObject(this, clone);
-      clone.readOnly = readOnly;
-      return clone;
+      return new StringValue(this, cloner);
     }
 
     public virtual StringValue AsReadOnly() {

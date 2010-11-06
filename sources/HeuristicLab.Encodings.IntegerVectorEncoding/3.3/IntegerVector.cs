@@ -28,6 +28,9 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [StorableClass]
   [Item("IntegerVector", "Represents a vector of integer values.")]
   public class IntegerVector : IntArray {
+    [StorableConstructor]
+    protected IntegerVector(bool deserializing) : base(deserializing) { }
+    protected IntegerVector(IntegerVector original, Cloner cloner) : base(original, cloner) { }
     public IntegerVector() : base() { }
     public IntegerVector(int length) : base(length) { }
     public IntegerVector(int length, IRandom random, int min, int max)
@@ -42,10 +45,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      IntegerVector clone = new IntegerVector(array);
-      cloner.RegisterClonedObject(this, clone);
-      clone.readOnly = readOnly;
-      return clone;
+      return new IntegerVector(this, cloner);
     }
 
     public virtual void Randomize(IRandom random, int startIndex, int length, int min, int max) {

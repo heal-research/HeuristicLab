@@ -166,25 +166,30 @@ namespace HeuristicLab.Optimization {
       : base(deserializing) {
       stopPending = false;
     }
-
     [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      Initialize();
+    }
+
+    private BatchRun(BatchRun original, Cloner cloner)
+      : base(original, cloner) {
+      executionState = original.executionState;
+      executionTime = original.executionTime;
+      algorithm = cloner.Clone(original.algorithm);
+      repetitions = original.repetitions;
+      repetitionsCounter = original.repetitionsCounter;
+      runs = cloner.Clone(original.runs);
+      stopPending = original.stopPending;
+      Initialize();
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      if (ExecutionState == ExecutionState.Started) throw new InvalidOperationException(string.Format("Clone not allowed in execution state \"{0}\".", ExecutionState));
+      return new BatchRun(this, cloner);
+    }
+
     private void Initialize() {
       if (algorithm != null) RegisterAlgorithmEvents();
       if (runs != null) RegisterRunsEvents();
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      if (ExecutionState == ExecutionState.Started) throw new InvalidOperationException(string.Format("Clone not allowed in execution state \"{0}\".", ExecutionState));
-      BatchRun clone = (BatchRun)base.Clone(cloner);
-      clone.executionState = executionState;
-      clone.executionTime = executionTime;
-      clone.algorithm = (IAlgorithm)cloner.Clone(algorithm);
-      clone.repetitions = repetitions;
-      clone.repetitionsCounter = repetitionsCounter;
-      clone.runs = (RunCollection)cloner.Clone(runs);
-      clone.stopPending = stopPending;
-      clone.Initialize();
-      return clone;
     }
 
     public void Prepare() {

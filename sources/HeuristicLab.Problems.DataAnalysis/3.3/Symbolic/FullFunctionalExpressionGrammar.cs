@@ -20,6 +20,7 @@
 #endregion
 
 using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
@@ -29,12 +30,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("FullFunctionalExpressionGrammar", "Represents a grammar for functional expressions using all available functions.")]
   public class FullFunctionalExpressionGrammar : DefaultSymbolicExpressionGrammar {
+    [StorableConstructor]
+    protected FullFunctionalExpressionGrammar(bool deserializing) : base(deserializing) { }
+    protected FullFunctionalExpressionGrammar(FullFunctionalExpressionGrammar original, Cloner cloner) : base(original, cloner) { }
     public FullFunctionalExpressionGrammar()
       : base() {
       Initialize();
     }
-    [StorableConstructor]
-    protected FullFunctionalExpressionGrammar(bool deserializing) : base(deserializing) { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new FullFunctionalExpressionGrammar(this, cloner);
+    }
 
     private void Initialize() {
       var add = new Addition();

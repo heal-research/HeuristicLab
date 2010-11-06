@@ -33,13 +33,14 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Enum; }
     }
 
+    [StorableConstructor]
+    protected PermutationType(bool deserializing) : base(deserializing) { }
+    protected PermutationType(PermutationType original, Cloner cloner) : base(original, cloner) { }
     public PermutationType() : base() { }
     public PermutationType(PermutationTypes type) : base(type) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      PermutationType clone = new PermutationType(value);
-      cloner.RegisterClonedObject(this, clone);
-      return clone;
+      return new PermutationType(this, cloner);
     }
   }
 }

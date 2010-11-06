@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -33,6 +34,15 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [Item("DiscreteCrossover", "Discrete crossover for integer vectors. It is implemented as described in Gwiazda, T.D. 2006. Genetic algorithms reference Volume I Crossover for single-objective numerical optimization problems, p.17.")]
   [StorableClass]
   public class DiscreteCrossover : IntegerVectorCrossover {
+    [StorableConstructor]
+    protected DiscreteCrossover(bool deserializing) : base(deserializing) { }
+    protected DiscreteCrossover(DiscreteCrossover original, Cloner cloner) : base(original, cloner) { }
+    public DiscreteCrossover() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new DiscreteCrossover(this, cloner);
+    }
+
     /// <summary>
     /// Performs a discrete crossover operation of the two given parents.
     /// </summary>

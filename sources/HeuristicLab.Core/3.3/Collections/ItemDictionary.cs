@@ -47,21 +47,22 @@ namespace HeuristicLab.Core {
       get { return VS2008ImageLibrary.Class; }
     }
 
+    [StorableConstructor]
+    protected ItemDictionary(bool deserializing) : base(deserializing) { }
+    protected ItemDictionary(ItemDictionary<TKey, TValue> original, Cloner cloner) {
+      cloner.RegisterClonedObject(original, this);
+      foreach (TKey key in dict.Keys)
+        dict.Add(cloner.Clone(key), cloner.Clone(dict[key]));
+    }
     public ItemDictionary() : base() { }
     public ItemDictionary(int capacity) : base(capacity) { }
     public ItemDictionary(IDictionary<TKey, TValue> dictionary) : base(dictionary) { }
-    [StorableConstructor]
-    protected ItemDictionary(bool deserializing) : base(deserializing) { }
 
     public object Clone() {
       return Clone(new Cloner());
     }
     public virtual IDeepCloneable Clone(Cloner cloner) {
-      ItemDictionary<TKey, TValue> clone = (ItemDictionary<TKey, TValue>)Activator.CreateInstance(this.GetType());
-      cloner.RegisterClonedObject(this, clone);
-      foreach (TKey key in dict.Keys)
-        clone.dict.Add((TKey)cloner.Clone(key), (TValue)cloner.Clone(dict[key]));
-      return clone;
+      return new ItemDictionary<TKey, TValue>(this, cloner);
     }
 
     public new ReadOnlyItemDictionary<TKey, TValue> AsReadOnly() {

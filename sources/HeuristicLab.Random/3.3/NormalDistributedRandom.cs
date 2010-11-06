@@ -449,6 +449,25 @@ namespace HeuristicLab.Random {
     };
 
     /// <summary>
+    /// Used by HeuristicLab.Persistence to initialize new instances during deserialization.
+    /// </summary>
+    /// <param name="deserializing">true, if the constructor is called during deserialization.</param>
+    [StorableConstructor]
+    private NormalDistributedRandom(bool deserializing) : base(deserializing) { }
+
+    /// <summary>
+    /// Initializes a new instance from an existing one (copy constructor).
+    /// </summary>
+    /// <param name="original">The original <see cref="NormalDistributedRandom"/> instance which is used to initialize the new instance.</param>
+    /// <param name="cloner">A <see cref="Cloner"/> which is used to track all already cloned objects in order to avoid cycles.</param>
+    private NormalDistributedRandom(NormalDistributedRandom original, Cloner cloner)
+      : base(original, cloner) {
+      uniform = cloner.Clone(original.uniform);
+      mu = original.mu;
+      sigma = original.sigma;
+    }
+
+    /// <summary>
     /// Initializes a new instance of <see cref="NormalDistributedRandom"/> with µ = 0 and sigma = 1
     /// and a new random number generator.
     /// </summary>
@@ -470,12 +489,6 @@ namespace HeuristicLab.Random {
       this.sigma = sigma;
       this.uniform = uniformRandom;
     }
-    /// <summary>
-    /// Used by HeuristicLab.Persistence to initialize new instances during deserialization.
-    /// </summary>
-    /// <param name="deserializing">true, if the constructor is called during deserialization.</param>
-    [StorableConstructor]
-    private NormalDistributedRandom(bool deserializing) : base(deserializing) { }
 
     #region IRandom Members
 
@@ -528,11 +541,7 @@ namespace HeuristicLab.Random {
     /// <param name="clonedObjects">Dictionary of all already cloned objects. (Needed to avoid cycles.)</param>
     /// <returns>The cloned object as <see cref="NormalDistributedRandom"/>.</returns>
     public override IDeepCloneable Clone(Cloner cloner) {
-      NormalDistributedRandom clone = (NormalDistributedRandom)base.Clone(cloner);
-      clone.uniform = (IRandom)cloner.Clone(uniform);
-      clone.mu = mu;
-      clone.sigma = sigma;
-      return clone;
+      return new NormalDistributedRandom(this, cloner);
     }
 
     public static double NextDouble(IRandom uniformRandom, double mu, double sigma) {

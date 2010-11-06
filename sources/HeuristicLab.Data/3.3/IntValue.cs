@@ -34,14 +34,16 @@ namespace HeuristicLab.Data {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Field; }
     }
 
+    [StorableConstructor]
+    protected IntValue(bool deserializing) : base(deserializing) { }
+    protected IntValue(IntValue original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public IntValue() : base() { }
     public IntValue(int value) : base(value) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      IntValue clone = new IntValue(value);
-      cloner.RegisterClonedObject(this, clone);
-      clone.readOnly = readOnly;
-      return clone;
+      return new IntValue(this, cloner);
     }
 
     public virtual int CompareTo(object obj) {

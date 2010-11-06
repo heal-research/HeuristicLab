@@ -19,12 +19,11 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
-using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
   [Item("GVRManipulator", "A VRP manipulation operation.")]
@@ -36,7 +35,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
 
     [StorableConstructor]
     protected GVRManipulator(bool deserializing) : base(deserializing) { }
-
+    protected GVRManipulator(GVRManipulator original, Cloner cloner) : base(original, cloner) { }
     public GVRManipulator() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));
 

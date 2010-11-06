@@ -81,6 +81,17 @@ namespace HeuristicLab.Analysis {
     }
     #endregion
 
+    #region Storing & Cloning
+    [StorableConstructor]
+    private BestAverageWorstQualityAnalyzer(bool deserializing) : base(deserializing) { }
+    private BestAverageWorstQualityAnalyzer(BestAverageWorstQualityAnalyzer original, Cloner cloner)
+      : base(original, cloner) {
+      Initialize();
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new BestAverageWorstQualityAnalyzer(this, cloner);
+    }
+    #endregion
     public BestAverageWorstQualityAnalyzer()
       : base() {
       #region Create parameters
@@ -150,18 +161,14 @@ namespace HeuristicLab.Analysis {
 
       Initialize();
     }
-    [StorableConstructor]
-    private BestAverageWorstQualityAnalyzer(bool deserializing) : base() { }
 
     [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      Initialize();
+    }
+    
     private void Initialize() {
       QualityParameter.DepthChanged += new EventHandler(QualityParameter_DepthChanged);
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      BestAverageWorstQualityAnalyzer clone = (BestAverageWorstQualityAnalyzer)base.Clone(cloner);
-      clone.Initialize();
-      return clone;
     }
 
     private void QualityParameter_DepthChanged(object sender, System.EventArgs e) {

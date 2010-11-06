@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -48,13 +49,21 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
       get { return (ValueLookupParameter<IntValue>)Parameters["Maximum"]; }
     }
 
+    [StorableConstructor]
+    protected UniformOnePositionManipulator(bool deserializing) : base(deserializing) { }
+    protected UniformOnePositionManipulator(UniformOnePositionManipulator original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="UniformOnePositionManipulator"/> with two parameters
     /// (<c>Minimum</c> and <c>Maximum</c>).
     /// </summary>
-    public UniformOnePositionManipulator() {
+    public UniformOnePositionManipulator()
+      : base() {
       Parameters.Add(new ValueLookupParameter<IntValue>("Minimum", "Minimum of the sampling range for the vector element (included)"));
       Parameters.Add(new ValueLookupParameter<IntValue>("Maximum", "Maximum of the sampling range for the vector element (excluded)"));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new UniformOnePositionManipulator(this, cloner);
     }
 
     /// <summary>

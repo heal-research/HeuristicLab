@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -46,12 +47,19 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       get { return (ILookupParameter<Permutation>)Parameters["Permutation"]; }
     }
 
+    [StorableConstructor]
+    protected TranslocationMoveMaker(bool deserializing) : base(deserializing) { }
+    protected TranslocationMoveMaker(TranslocationMoveMaker original, Cloner cloner) : base(original, cloner) { }
     public TranslocationMoveMaker()
       : base() {
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of the solution."));
       Parameters.Add(new LookupParameter<TranslocationMove>("TranslocationMove", "The move to evaluate."));
       Parameters.Add(new LookupParameter<DoubleValue>("MoveQuality", "The relative quality of the move."));
       Parameters.Add(new LookupParameter<Permutation>("Permutation", "The solution as permutation."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new TranslocationMoveMaker(this, cloner);
     }
 
     public override IOperation Apply() {

@@ -22,6 +22,7 @@
 using System;
 using System.Linq;
 using HeuristicLab.Collections;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -52,7 +53,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     [StorableConstructor]
-    private MultiRealVectorCrossover(bool deserializing) : base(deserializing) { }
+    protected MultiRealVectorCrossover(bool deserializing) : base(deserializing) { }
+    protected MultiRealVectorCrossover(MultiRealVectorCrossover original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public MultiRealVectorCrossover()
       : base() {
       Parameters.Add(new ScopeTreeLookupParameter<RealVector>("Parents", "The parent real vector which should be crossed."));
@@ -65,6 +69,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
         if (!typeof(MultiOperator<IRealVectorCrossover>).IsAssignableFrom(type))
           Operators.Add((IRealVectorCrossover)Activator.CreateInstance(type), true);
       }
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MultiRealVectorCrossover(this, cloner);
     }
 
     protected override void Operators_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<IRealVectorCrossover>> e) {

@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -30,7 +31,6 @@ namespace HeuristicLab.Selection {
   [Item("OffspringSelector", "Selects among the offspring population those that are designated successful and discards the unsuccessful offspring, except for some lucky losers. It expects the parent scopes to be below the first sub-scope, and offspring scopes to be below the second sub-scope separated again in two sub-scopes, the first with the failed offspring and the second with successful offspring.")]
   [StorableClass]
   public class OffspringSelector : SingleSuccessorOperator {
-
     public ValueLookupParameter<DoubleValue> MaximumSelectionPressureParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["MaximumSelectionPressure"]; }
     }
@@ -61,6 +61,12 @@ namespace HeuristicLab.Selection {
       set { OffspringCreatorParameter.Value = value; }
     }
 
+    [StorableConstructor]
+    protected OffspringSelector(bool deserializing) : base(deserializing) { }
+    protected OffspringSelector(OffspringSelector original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OffspringSelector(this, cloner);
+    }
     public OffspringSelector()
       : base() {
       Parameters.Add(new ValueLookupParameter<DoubleValue>("MaximumSelectionPressure", "The maximum selection pressure which prematurely terminates the offspring selection step."));

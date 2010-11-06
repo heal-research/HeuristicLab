@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -30,6 +31,16 @@ namespace HeuristicLab.Problems.TestFunctions {
     public override System.Type EvaluatorType {
       get { return typeof(RosenbrockEvaluator); }
     }
+
+    [StorableConstructor]
+    protected RosenbrockAdditiveMoveEvaluator(bool deserializing) : base(deserializing) { }
+    protected RosenbrockAdditiveMoveEvaluator(RosenbrockAdditiveMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
+    public RosenbrockAdditiveMoveEvaluator() : base() { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new RosenbrockAdditiveMoveEvaluator(this, cloner);
+    }
+
     protected override double Evaluate(double quality, RealVector point, AdditiveMove move) {
       RealVectorAdditiveMoveWrapper wrapper = new RealVectorAdditiveMoveWrapper(move, point);
       return RosenbrockEvaluator.Apply(wrapper);

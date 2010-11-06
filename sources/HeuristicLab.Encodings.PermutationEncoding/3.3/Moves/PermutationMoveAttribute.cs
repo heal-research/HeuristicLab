@@ -30,20 +30,20 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     [Storable]
     public double MoveQuality { get; protected set; }
 
-    public PermutationMoveAttribute()
-      : base() {
-      MoveQuality = 0;
+    [StorableConstructor]
+    protected PermutationMoveAttribute(bool deserializing) : base(deserializing) { }
+    protected PermutationMoveAttribute(PermutationMoveAttribute original, Cloner cloner)
+      : base(original, cloner) {
+      this.MoveQuality = original.MoveQuality;
     }
-
+    public PermutationMoveAttribute() : this(0) { }
     public PermutationMoveAttribute(double moveQuality)
       : base() {
       MoveQuality = moveQuality;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      PermutationMoveAttribute clone = (PermutationMoveAttribute)base.Clone(cloner);
-      clone.MoveQuality = MoveQuality;
-      return clone;
+      return new PermutationMoveAttribute(this, cloner);
     }
   }
 }

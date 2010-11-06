@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
@@ -35,10 +36,17 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       get { return (LookupParameter<OneBitflipMove>)Parameters["OneBitflipMove"]; }
     }
 
+    [StorableConstructor]
+    protected OneBitflipMoveTabuMaker(bool deserializing) : base(deserializing) { }
+    protected OneBitflipMoveTabuMaker(OneBitflipMoveTabuMaker original, Cloner cloner) : base(original, cloner) { }
     public OneBitflipMoveTabuMaker()
       : base() {
       Parameters.Add(new LookupParameter<BinaryVector>("BinaryVector", "The solution as BinaryVector."));
       Parameters.Add(new LookupParameter<OneBitflipMove>("OneBitflipMove", "The move that was made."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new OneBitflipMoveTabuMaker(this, cloner);
     }
 
     protected override IItem GetTabuAttribute(bool maximization, double quality, double moveQuality) {

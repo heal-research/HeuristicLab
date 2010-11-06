@@ -19,10 +19,7 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
@@ -38,6 +35,11 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General.Crossovers {
 
     [StorableConstructor]
     private RandomParentCloneCrossover(bool deserializing) : base(deserializing) { }
+    private RandomParentCloneCrossover(RandomParentCloneCrossover original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new RandomParentCloneCrossover(this, cloner);
+    }
+
 
     public RandomParentCloneCrossover()
       : base() {
@@ -53,7 +55,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General.Crossovers {
       Parameters.Remove("DueTime");
       Parameters.Remove("ServiceTime");
     }
-    
+
     public override IOperation Apply() {
       if (RandomParameter.ActualValue.Next() < 0.5)
         ChildParameter.ActualValue = ParentsParameter.ActualValue[0].Clone() as IVRPEncoding;

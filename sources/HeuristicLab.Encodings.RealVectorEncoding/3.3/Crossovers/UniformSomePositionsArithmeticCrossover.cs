@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
@@ -49,6 +50,9 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["Probability"]; }
     }
 
+    [StorableConstructor]
+    protected UniformSomePositionsArithmeticCrossover(bool deserializing) : base(deserializing) { }
+    protected UniformSomePositionsArithmeticCrossover(UniformSomePositionsArithmeticCrossover original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance with two parameters (<c>Alpha</c> and <c>Probability</c>).
     /// </summary>
@@ -56,6 +60,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       : base() {
       Parameters.Add(new ValueLookupParameter<DoubleValue>("Alpha", "The alpha value in the range [0;1] that defines whether the point should be close to parent1 (=1) or parent2 (=0)", new DoubleValue(0.5)));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("Probability", "The probability for crossing a position in the range [0;1]", new DoubleValue(0.5)));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new UniformSomePositionsArithmeticCrossover(this, cloner);
     }
 
     /// <summary>

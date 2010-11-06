@@ -108,6 +108,20 @@ namespace HeuristicLab.Problems.Knapsack {
       }
     }
 
+    [StorableConstructor]
+    protected KnapsackSolution(bool deserializing) : base(deserializing) { }
+    protected KnapsackSolution(KnapsackSolution original, Cloner cloner)
+      : base(original, cloner) {
+      this.binaryVector = cloner.Clone(original.binaryVector);
+      this.quality = cloner.Clone(original.quality);
+      this.capacity = cloner.Clone(original.capacity);
+      this.weights = cloner.Clone(original.weights);
+      this.values = cloner.Clone(original.values);
+      Initialize();
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new KnapsackSolution(this, cloner);
+    }
     public KnapsackSolution() : base() { }
     public KnapsackSolution(BinaryVector binaryVector, DoubleValue quality, IntValue capacity, IntArray weights, IntArray values)
       : base() {
@@ -118,28 +132,18 @@ namespace HeuristicLab.Problems.Knapsack {
       this.quality = quality;
       Initialize();
     }
-    [StorableConstructor]
-    private KnapsackSolution(bool deserializing) : base(deserializing) { }
 
     [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      Initialize();
+    }
+
     private void Initialize() {
       if (binaryVector != null) RegisterBinaryVectorEvents();
       if (quality != null) RegisterQualityEvents();
       if (capacity != null) RegisterCapacityEvents();
       if (weights != null) RegisterWeightsEvents();
       if (values != null) RegisterValuesEvents();
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      KnapsackSolution clone = new KnapsackSolution();
-      cloner.RegisterClonedObject(this, clone);
-      clone.binaryVector = (BinaryVector)cloner.Clone(binaryVector);
-      clone.quality = (DoubleValue)cloner.Clone(quality);
-      clone.capacity = (IntValue)cloner.Clone(capacity);
-      clone.weights = (IntArray)cloner.Clone(weights);
-      clone.values = (IntArray)cloner.Clone(values);
-      clone.Initialize();
-      return clone;
     }
 
     #region Events

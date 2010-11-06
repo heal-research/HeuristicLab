@@ -19,11 +19,11 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
   [Item("ZhuPermutationManipulator", "An operator which manipulates a VRP representation by using a standard permutation manipulator. It is implemented as described in Zhu, K.Q. (2000). A New Genetic Algorithm For VRPTW. Proceedings of the International Conference on Artificial Intelligence.")]
@@ -35,10 +35,15 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
 
     [StorableConstructor]
     private ZhuPermutationManipulator(bool deserializing) : base(deserializing) { }
-
+    private ZhuPermutationManipulator(ZhuPermutationManipulator original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ZhuPermutationManipulator(this, cloner);
+    }
     public ZhuPermutationManipulator()
       : base() {
-        Parameters.Add(new ValueLookupParameter<IPermutationManipulator>("InnerManipulator", "The permutation manipulator.", new TranslocationManipulator()));
+      Parameters.Add(new ValueLookupParameter<IPermutationManipulator>("InnerManipulator", "The permutation manipulator.", new TranslocationManipulator()));
     }
 
     protected override void Manipulate(IRandom random, ZhuEncoding individual) {

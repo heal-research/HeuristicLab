@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
@@ -46,11 +47,18 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       get { return (IValueLookupParameter<IntValue>)Parameters["SampleSize"]; }
     }
 
+    [StorableConstructor]
+    protected StochasticPolynomialMultiMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected StochasticPolynomialMultiMoveGenerator(StochasticPolynomialMultiMoveGenerator original, Cloner cloner) : base(original, cloner) { }
     public StochasticPolynomialMultiMoveGenerator()
       : base() {
       Parameters.Add(new ValueLookupParameter<DoubleValue>("Contiguity", "Specifies whether the manipulation should produce far stretching (small value) or close (large value) manipulations with higher probability. Valid values must be greater or equal to 0.", new DoubleValue(2)));
       Parameters.Add(new ValueLookupParameter<IntValue>("SampleSize", "The number of moves that should be generated."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("MaximumManipulation", "Specifies the maximum value that should be added or subtracted by the manipulation. If this value is set to 0 no mutation will be performed.", new DoubleValue(1)));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new StochasticPolynomialMultiMoveGenerator(this, cloner);
     }
 
     public static AdditiveMove[] Apply(IRandom random, RealVector realVector, double contiguity, int sampleSize, double maxManipulation) {

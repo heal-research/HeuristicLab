@@ -35,10 +35,16 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
   /// </summary>
   [StorableClass]
   [Item("SupportVectorMachineModel", "Represents a support vector machine model.")]
-  public class SupportVectorMachineModel : NamedItem, IDataAnalysisModel {
-    public SupportVectorMachineModel()
-      : base() {
+  public sealed class SupportVectorMachineModel : NamedItem, IDataAnalysisModel {
+    [StorableConstructor]
+    private SupportVectorMachineModel(bool deserializing) : base(deserializing) { }
+    private SupportVectorMachineModel(SupportVectorMachineModel original, Cloner cloner)
+      : base(original, cloner) {
+      // only using a shallow copy here! (gkronber)
+      this.model = original.model;
+      this.rangeTransform = original.rangeTransform;
     }
+    public SupportVectorMachineModel() : base() { }
 
     private SVM.Model model;
     /// <summary>
@@ -130,11 +136,7 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
     #endregion
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      SupportVectorMachineModel clone = (SupportVectorMachineModel)base.Clone(cloner);
-      // beware we are only using a shallow copy here! (gkronber)
-      clone.model = model;
-      clone.rangeTransform = rangeTransform;
-      return clone;
+      return new SupportVectorMachineModel(this, cloner);
     }
 
     /// <summary>

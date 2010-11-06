@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
@@ -57,10 +58,15 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
 
     [StorableConstructor]
     private AlbaTranslocationMoveHardTabuCriterion(bool deserializing) : base(deserializing) { }
-
+    private AlbaTranslocationMoveHardTabuCriterion(AlbaTranslocationMoveHardTabuCriterion original, Cloner cloner)
+      : base(original, cloner) {
+    }
     public AlbaTranslocationMoveHardTabuCriterion()
       : base() {
       tabuChecker = new TranslocationMoveHardTabuCriterion();
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new AlbaTranslocationMoveHardTabuCriterion(this, cloner);
     }
   }
 }

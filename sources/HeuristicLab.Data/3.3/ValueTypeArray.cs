@@ -67,6 +67,13 @@ namespace HeuristicLab.Data {
       get { return readOnly; }
     }
 
+    [StorableConstructor]
+    protected ValueTypeArray(bool deserializing) : base(deserializing) { }
+    protected ValueTypeArray(ValueTypeArray<T> original, Cloner cloner)
+      : base(original, cloner) {
+      this.array = (T[])original.array.Clone();
+      this.readOnly = original.readOnly;
+    }
     protected ValueTypeArray() {
       array = new T[0];
       readOnly = false;
@@ -79,13 +86,6 @@ namespace HeuristicLab.Data {
       if (elements == null) throw new ArgumentNullException();
       array = (T[])elements.Clone();
       readOnly = false;
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      ValueTypeArray<T> clone = (ValueTypeArray<T>)base.Clone(cloner);
-      clone.array = (T[])array.Clone();
-      clone.readOnly = readOnly;
-      return clone;
     }
 
     public virtual ValueTypeArray<T> AsReadOnly() {

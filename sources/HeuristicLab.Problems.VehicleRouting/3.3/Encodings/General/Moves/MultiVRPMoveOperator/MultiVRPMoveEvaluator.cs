@@ -19,8 +19,8 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
@@ -35,10 +35,14 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     [StorableConstructor]
     private MultiVRPMoveEvaluator(bool deserializing) : base(deserializing) { }
+    private MultiVRPMoveEvaluator(MultiVRPMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MultiVRPMoveEvaluator(this, cloner);
+    }
 
     public MultiVRPMoveEvaluator()
       : base() {
-        Parameters.Add(new LookupParameter<IVRPMove>("VRPMove", "The generated moves."));
+      Parameters.Add(new LookupParameter<IVRPMove>("VRPMove", "The generated moves."));
     }
 
     protected override TourEvaluation GetMoveQuality() {
@@ -52,10 +56,10 @@ namespace HeuristicLab.Problems.VehicleRouting {
         DemandParameter.ActualValue,
         CapacityParameter.ActualValue,
         CoordinatesParameter.ActualValue,
-        FleetUsageFactor.ActualValue, 
-        TimeFactor.ActualValue, 
-        DistanceFactor.ActualValue, 
-        OverloadPenalty.ActualValue, 
+        FleetUsageFactor.ActualValue,
+        TimeFactor.ActualValue,
+        DistanceFactor.ActualValue,
+        OverloadPenalty.ActualValue,
         TardinessPenalty.ActualValue,
         DistanceMatrixParameter,
         UseDistanceMatrixParameter.ActualValue);

@@ -88,44 +88,45 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       this.maxTimeSteps = maxTimeSteps;
       Initialize();
     }
+
     [StorableConstructor]
     private AntTrail(bool deserializing) : base(deserializing) { }
-
     [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      Initialize();
+    }
+    private AntTrail(AntTrail original, Cloner cloner)
+      : base(original, cloner) {
+      expression = cloner.Clone(original.expression);
+      world = cloner.Clone(original.world);
+      maxTimeSteps = cloner.Clone(original.maxTimeSteps);
+      Initialize();
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new AntTrail(this, cloner);
+    }
+
     private void Initialize() {
       //if (expression != null) RegisterSymbolicExpressionTreeEvents();
       if (world != null) RegisterWorldEvents();
       if (maxTimeSteps != null) RegisterMaxTimeStepsEvents();
     }
 
-    public override IDeepCloneable Clone(Cloner cloner) {
-      AntTrail clone = new AntTrail();
-      cloner.RegisterClonedObject(this, clone);
-      clone.expression = (SymbolicExpressionTree)cloner.Clone(expression);
-      clone.world = (BoolMatrix)cloner.Clone(world);
-      clone.maxTimeSteps = (IntValue)cloner.Clone(maxTimeSteps);
-      clone.Initialize();
-      return clone;
-    }
-
     #region Events
     public event EventHandler SymbolicExpressionTreeChanged;
     private void OnSymbolicExpressionTreeChanged() {
       var changed = SymbolicExpressionTreeChanged;
-      if (changed != null)
-        changed(this, EventArgs.Empty);
+      if (changed != null) changed(this, EventArgs.Empty);
     }
     public event EventHandler WorldChanged;
     private void OnWorldChanged() {
       var changed = WorldChanged;
-      if (changed != null)
-        changed(this, EventArgs.Empty);
+      if (changed != null) changed(this, EventArgs.Empty);
     }
     public event EventHandler MaxTimeStepsChanged;
     private void OnMaxTimeStepsChanged() {
       var changed = MaxTimeStepsChanged;
-      if (changed != null)
-        changed(this, EventArgs.Empty);
+      if (changed != null) changed(this, EventArgs.Empty);
     }
 
     //private void RegisterSymbolicExpressionTreeEvents() {
