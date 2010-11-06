@@ -74,6 +74,14 @@ namespace HeuristicLab.Optimization {
       }
     }
 
+    [StorableConstructor]
+    private Result(bool deserializing) : base(deserializing) { }
+    private Result(Result original, Cloner cloner)
+      : base(original, cloner) {
+      dataType = original.dataType;
+      value = cloner.Clone(original.value);
+      Initialize();
+    }
     public Result()
       : base("Anonymous") {
       this.dataType = typeof(IItem);
@@ -101,17 +109,12 @@ namespace HeuristicLab.Optimization {
       this.value = value;
       Initialize();
     }
-    [StorableConstructor]
-    private Result(bool deserializing) : base(deserializing) { }
+
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       Initialize();
     }
-    private Result(Result original, Cloner cloner)
-      : base(original, cloner) {
-      value = cloner.Clone(original.value);
-      Initialize();
-    }
+
     public override IDeepCloneable Clone(Cloner cloner) {
       return new Result(this, cloner);
     }
