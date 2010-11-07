@@ -92,7 +92,9 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
     #endregion
 
     [StorableConstructor]
-    private Variable(bool deserializing) : base(deserializing) { }
+    private Variable(bool deserializing) : base(deserializing) {
+      variableNames = new List<string>();
+    }
     private Variable(Variable original, Cloner cloner)
       : base(original, cloner) {
       weightNu = original.weightNu;
