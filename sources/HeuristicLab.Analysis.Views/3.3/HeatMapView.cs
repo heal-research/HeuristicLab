@@ -30,35 +30,26 @@ namespace HeuristicLab.Analysis.Views {
   [View("HeatMap View")]
   [Content(typeof(HeatMap), true)]
   public partial class HeatMapView : ItemView {
+    protected static Color[] colors = new Color[256];
+    protected static Color[] grayscaleColors = new Color[256];
 
-    private static Color[] Colors;
-    private static int ColorsCount = 500;
-    private static Color[] GrayscaleColors = new Color[256];
-
-    #region InitializeColors
+    #region Initialize Colors
     static HeatMapView() {
-      int stepWidth = (255 * 6) / ColorsCount;
-      Color[] colors = new Color[ColorsCount];
+      int stepWidth = (256 * 4) / colors.Length;
       int currentValue;
       int currentClass;
-      for (int i = 0; i < ColorsCount; i++) {
-        currentValue = (i * stepWidth) % 255;
-        currentClass = (i * stepWidth) / 255;
+      for (int i = 0; i < colors.Length; i++) {
+        currentValue = (i * stepWidth) % 256;
+        currentClass = (i * stepWidth) / 256;
         switch (currentClass) {
-          case 0: { colors[i] = Color.FromArgb(255, currentValue, 0); break; }
-          case 1: { colors[i] = Color.FromArgb(255 - currentValue, 255, 0); break; }
-          case 2: { colors[i] = Color.FromArgb(0, 255, currentValue); break; }
-          case 3: { colors[i] = Color.FromArgb(0, 255 - currentValue, 255); break; }
-          case 4: { colors[i] = Color.FromArgb(currentValue, 0, 255); break; }
-          case 5: { colors[i] = Color.FromArgb(255, 0, 255 - currentValue); break; }
+          case 0: { colors[i] = Color.FromArgb(0, currentValue, 255); break; }        // blue -> cyan
+          case 1: { colors[i] = Color.FromArgb(0, 255, 255 - currentValue); break; }  // cyan -> green
+          case 2: { colors[i] = Color.FromArgb(currentValue, 255, 0); break; }        // green -> yellow
+          case 3: { colors[i] = Color.FromArgb(255, 255 - currentValue, 0); break; }  // yellow -> red
         }
       }
-      int n = (int)(ColorsCount * 0.7);
-      Colors = new Color[n];
-      for (int i = 0; i < n; i++)
-        Colors[i] = colors[i];
       for (int i = 0; i < 256; i++)
-        GrayscaleColors[i] = Color.FromArgb(i, i, i);
+        grayscaleColors[i] = Color.FromArgb(255 - i, 255 - i, 255 - i);  // white -> black
     }
     #endregion
 
@@ -72,59 +63,107 @@ namespace HeuristicLab.Analysis.Views {
       chart.CustomizeAllChartAreas();
     }
 
+    protected override void DeregisterContentEvents() {
+      Content.TitleChanged -= new EventHandler(Content_TitleChanged);
+      Content.MinimumChanged -= new EventHandler(Content_MinimumChanged);
+      Content.MaximumChanged -= new EventHandler(Content_MaximumChanged);
+      base.DeregisterContentEvents();
+    }
+    protected override void RegisterContentEvents() {
+      base.RegisterContentEvents();
+      Content.TitleChanged += new EventHandler(Content_TitleChanged);
+      Content.MinimumChanged += new EventHandler(Content_MinimumChanged);
+      Content.MaximumChanged += new EventHandler(Content_MaximumChanged);
+    }
+
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
         chart.Series.Clear();
+        chart.Titles[0].Text = "Heat Map";
+        minimumLabel.Text = "0.0";
+        maximumLabel.Text = "1.0";
       } else {
-        UpdateChart();
+        chart.Titles[0].Text = Content.Title;
+        minimumLabel.Text = Content.Minimum.ToString();
+        maximumLabel.Text = Content.Maximum.ToString();
+        UpdatePoints();
       }
     }
 
-    private void UpdateChart() {
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
+      chart.Enabled = Content != null;
+      grayscaleCheckBox.Enabled = Content != null;
+    }
+
+    protected virtual void UpdatePoints() {
       chart.Series.Clear();
       Series series = new Series();
       series.ChartType = SeriesChartType.Point;
       series.XValueType = ChartValueType.Int32;
       series.YValueType = ChartValueType.Int32;
       series.YAxisType = AxisType.Primary;
-      for (int i = 0; i < Content.Rows; i++)
-        for (int j = 0; j < Content.Columns; j++)
-          series.Points.Add(CreateDataPoint(i, j, Content[i, j]));
+      for (int i = 1; i < Content.Rows + 1; i++)
+        for (int j = 1; j < Content.Columns + 1; j++)
+          series.Points.Add(CreateDataPoint(j, i, Content[i - 1, j - 1]));
+      chart.ChartAreas[0].AxisX.Minimum = 0;
+      chart.ChartAreas[0].AxisX.Maximum = Content.Columns + 1;
       chart.ChartAreas[0].AxisY.Minimum = 0;
-      chart.ChartAreas[0].AxisY.Maximum = Content.Rows;
+      chart.ChartAreas[0].AxisY.Maximum = Content.Rows + 1;
       chart.Series.Add(series);
-      chart.Legends.Clear();
     }
 
-    private DataPoint CreateDataPoint(int index1, int index2, double value) {
-      bool grayScaleModus = grayscaledImagesCheckBox.Checked;
-      int n = grayScaleModus ? GrayscaleColors.Length : Colors.Length;
-      int colorIndex = (int)((n - 1) * value);
-      if (colorIndex >= n) colorIndex = n - 1;
-      if (colorIndex < 0) colorIndex = 0;
-      // invert so that red is 1, blue 0 / black is 1, white 0
-      colorIndex = n - colorIndex - 1;
-      Color color = grayScaleModus ? GrayscaleColors[colorIndex] : Colors[colorIndex];
-
+    protected virtual DataPoint CreateDataPoint(int index1, int index2, double value) {
       DataPoint p = new DataPoint(index1, index2);
-      p.Color = color;
+      p.Color = GetDataPointColor(value, Content.Minimum, Content.Maximum, grayscaleCheckBox.Checked);
       p.MarkerStyle = MarkerStyle.Square;
-      p.ToolTip = string.Format("Solution {0} vs. solution {1}: {2}",
-                                index1, index2, value);
+      //p.MarkerSize = 10;
+      //string nl = Environment.NewLine;
+      //p.ToolTip = string.Format("Row: {0}{3}Column: {1}{3}Value: {2}", index2, index1, value, nl);
       return p;
     }
 
-    #region Chart Events
-
-    private void grayscaledImagesCheckBox_CheckedChanged(object sender, EventArgs e) {
-      GrayscalesPictureBox.Visible = grayscaledImagesCheckBox.Checked;
-      ColorsPictureBox.Visible = !grayscaledImagesCheckBox.Checked;
-      UpdateChart();
+    protected virtual Color GetDataPointColor(double value, double min, double max, bool grayscale) {
+      int count = grayscale ? grayscaleColors.Length : colors.Length;
+      int index = (int)((count - 1) * (value - min) / (max - min));
+      if (index >= count) index = count - 1;
+      if (index < 0) index = 0;
+      return grayscale ? grayscaleColors[index] : colors[index];
     }
 
+    #region Content Events
+    protected virtual void Content_TitleChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_TitleChanged), sender, e);
+      else {
+        chart.Titles[0].Text = Content.Title;
+      }
+    }
+    protected virtual void Content_MinimumChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_MinimumChanged), sender, e);
+      else {
+        minimumLabel.Text = Content.Minimum.ToString();
+        UpdatePoints();
+      }
+    }
+    protected virtual void Content_MaximumChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_MaximumChanged), sender, e);
+      else {
+        maximumLabel.Text = Content.Maximum.ToString();
+        UpdatePoints();
+      }
+    }
     #endregion
 
+    #region Control Events
+    protected virtual void grayscaledImagesCheckBox_CheckedChanged(object sender, EventArgs e) {
+      grayscalesPictureBox.Visible = grayscaleCheckBox.Checked;
+      colorsPictureBox.Visible = !grayscaleCheckBox.Checked;
+      UpdatePoints();
+    }
+    #endregion
   }
-
 }

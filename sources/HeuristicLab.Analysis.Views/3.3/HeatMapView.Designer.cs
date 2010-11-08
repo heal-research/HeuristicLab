@@ -45,18 +45,17 @@ namespace HeuristicLab.Analysis.Views {
     /// </summary>
     private void InitializeComponent() {
       System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-      System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-      System.Windows.Forms.DataVisualization.Charting.Title title1= new System.Windows.Forms.DataVisualization.Charting.Title();
+      System.Windows.Forms.DataVisualization.Charting.Title title1 = new System.Windows.Forms.DataVisualization.Charting.Title();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HeatMapView));
       this.chart = new HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart();
-      this.ColorsPictureBox = new System.Windows.Forms.PictureBox();
-      this.ZeroLabel = new System.Windows.Forms.Label();
-      this.OneLabel = new System.Windows.Forms.Label();
-      this.GrayscalesPictureBox = new System.Windows.Forms.PictureBox();
-      this.grayscaledImagesCheckBox = new System.Windows.Forms.CheckBox();
+      this.colorsPictureBox = new System.Windows.Forms.PictureBox();
+      this.minimumLabel = new System.Windows.Forms.Label();
+      this.maximumLabel = new System.Windows.Forms.Label();
+      this.grayscalesPictureBox = new System.Windows.Forms.PictureBox();
+      this.grayscaleCheckBox = new System.Windows.Forms.CheckBox();
       ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)(this.ColorsPictureBox)).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)(this.GrayscalesPictureBox)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.colorsPictureBox)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.grayscalesPictureBox)).BeginInit();
       this.SuspendLayout();
       // 
       // chart
@@ -68,104 +67,100 @@ namespace HeuristicLab.Analysis.Views {
       this.chart.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
       chartArea1.AxisX.IntervalAutoMode = System.Windows.Forms.DataVisualization.Charting.IntervalAutoMode.VariableCount;
       chartArea1.AxisX.LabelAutoFitStyle = ((System.Windows.Forms.DataVisualization.Charting.LabelAutoFitStyles)((System.Windows.Forms.DataVisualization.Charting.LabelAutoFitStyles.IncreaseFont | System.Windows.Forms.DataVisualization.Charting.LabelAutoFitStyles.DecreaseFont)));
-      chartArea1.AxisX.Title = "Solution Index";
-      chartArea1.AxisY.Title = "Solution Index";
+      chartArea1.AxisX.Title = "Column Index";
+      chartArea1.AxisY.Title = "Row Index";
       chartArea1.CursorX.IsUserEnabled = true;
       chartArea1.CursorX.IsUserSelectionEnabled = true;
       chartArea1.CursorY.IsUserEnabled = true;
       chartArea1.CursorY.IsUserSelectionEnabled = true;
       chartArea1.Name = "Default";
       this.chart.ChartAreas.Add(chartArea1);
-      legend1.Alignment = System.Drawing.StringAlignment.Center;
-      legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
-      legend1.Name = "Default";
-      this.chart.Legends.Add(legend1);
       this.chart.Location = new System.Drawing.Point(0, 0);
       this.chart.Name = "chart";
-      this.chart.Size = new System.Drawing.Size(403, 335);
+      this.chart.Size = new System.Drawing.Size(406, 463);
       this.chart.TabIndex = 0;
       this.chart.Text = "chart";
       title1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       title1.Name = "Default";
-      title1.Text = "Solution Similarities";
+      title1.Text = "Heat Map";
       this.chart.Titles.Add(title1);
       // 
-      // ColorsPictureBox
+      // colorsPictureBox
       // 
-      this.ColorsPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+      this.colorsPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.ColorsPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-      this.ColorsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("ColorsPictureBox.Image")));
-      this.ColorsPictureBox.Location = new System.Drawing.Point(409, 23);
-      this.ColorsPictureBox.Name = "ColorsPictureBox";
-      this.ColorsPictureBox.Size = new System.Drawing.Size(35, 312);
-      this.ColorsPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-      this.ColorsPictureBox.TabIndex = 11;
-      this.ColorsPictureBox.TabStop = false;
+      this.colorsPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+      this.colorsPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("colorsPictureBox.Image")));
+      this.colorsPictureBox.Location = new System.Drawing.Point(430, 28);
+      this.colorsPictureBox.Name = "colorsPictureBox";
+      this.colorsPictureBox.Size = new System.Drawing.Size(35, 393);
+      this.colorsPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+      this.colorsPictureBox.TabIndex = 11;
+      this.colorsPictureBox.TabStop = false;
       // 
-      // ZeroLabel
+      // minimumLabel
       // 
-      this.ZeroLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.ZeroLabel.AutoSize = true;
-      this.ZeroLabel.BackColor = System.Drawing.Color.Transparent;
-      this.ZeroLabel.Location = new System.Drawing.Point(416, 342);
-      this.ZeroLabel.Name = "ZeroLabel";
-      this.ZeroLabel.Size = new System.Drawing.Size(22, 13);
-      this.ZeroLabel.TabIndex = 14;
-      this.ZeroLabel.Text = "0.0";
+      this.minimumLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.minimumLabel.BackColor = System.Drawing.Color.Transparent;
+      this.minimumLabel.Location = new System.Drawing.Point(412, 424);
+      this.minimumLabel.Name = "minimumLabel";
+      this.minimumLabel.Size = new System.Drawing.Size(73, 19);
+      this.minimumLabel.TabIndex = 2;
+      this.minimumLabel.Text = "0.0";
+      this.minimumLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
       // 
-      // OneLabel
+      // maximumLabel
       // 
-      this.OneLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.OneLabel.AutoSize = true;
-      this.OneLabel.BackColor = System.Drawing.Color.Transparent;
-      this.OneLabel.Location = new System.Drawing.Point(416, 3);
-      this.OneLabel.Name = "OneLabel";
-      this.OneLabel.Size = new System.Drawing.Size(22, 13);
-      this.OneLabel.TabIndex = 13;
-      this.OneLabel.Text = "1.0";
+      this.maximumLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.maximumLabel.BackColor = System.Drawing.Color.Transparent;
+      this.maximumLabel.Location = new System.Drawing.Point(412, 0);
+      this.maximumLabel.Name = "maximumLabel";
+      this.maximumLabel.Size = new System.Drawing.Size(73, 25);
+      this.maximumLabel.TabIndex = 1;
+      this.maximumLabel.Text = "1.0";
+      this.maximumLabel.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
       // 
-      // GrayscalesPictureBox
+      // grayscalesPictureBox
       // 
-      this.GrayscalesPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+      this.grayscalesPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.GrayscalesPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-      this.GrayscalesPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("GrayscalesPictureBox.Image")));
-      this.GrayscalesPictureBox.Location = new System.Drawing.Point(409, 23);
-      this.GrayscalesPictureBox.Name = "GrayscalesPictureBox";
-      this.GrayscalesPictureBox.Size = new System.Drawing.Size(35, 312);
-      this.GrayscalesPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-      this.GrayscalesPictureBox.TabIndex = 15;
-      this.GrayscalesPictureBox.TabStop = false;
-      this.GrayscalesPictureBox.Visible = false;
+      this.grayscalesPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+      this.grayscalesPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("grayscalesPictureBox.Image")));
+      this.grayscalesPictureBox.Location = new System.Drawing.Point(430, 28);
+      this.grayscalesPictureBox.Name = "grayscalesPictureBox";
+      this.grayscalesPictureBox.Size = new System.Drawing.Size(35, 393);
+      this.grayscalesPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+      this.grayscalesPictureBox.TabIndex = 15;
+      this.grayscalesPictureBox.TabStop = false;
+      this.grayscalesPictureBox.Visible = false;
       // 
-      // grayscaledImagesCheckBox
+      // grayscaleCheckBox
       // 
-      this.grayscaledImagesCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.grayscaledImagesCheckBox.AutoSize = true;
-      this.grayscaledImagesCheckBox.Location = new System.Drawing.Point(0, 338);
-      this.grayscaledImagesCheckBox.Name = "grayscaledImagesCheckBox";
-      this.grayscaledImagesCheckBox.Size = new System.Drawing.Size(115, 17);
-      this.grayscaledImagesCheckBox.TabIndex = 16;
-      this.grayscaledImagesCheckBox.Text = "Grayscaled images";
-      this.grayscaledImagesCheckBox.UseVisualStyleBackColor = true;
-      this.grayscaledImagesCheckBox.CheckedChanged += new System.EventHandler(this.grayscaledImagesCheckBox_CheckedChanged);
+      this.grayscaleCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.grayscaleCheckBox.AutoSize = true;
+      this.grayscaleCheckBox.Location = new System.Drawing.Point(412, 446);
+      this.grayscaleCheckBox.Name = "grayscaleCheckBox";
+      this.grayscaleCheckBox.Size = new System.Drawing.Size(73, 17);
+      this.grayscaleCheckBox.TabIndex = 3;
+      this.grayscaleCheckBox.Text = "Grayscale";
+      this.grayscaleCheckBox.UseVisualStyleBackColor = true;
+      this.grayscaleCheckBox.CheckedChanged += new System.EventHandler(this.grayscaledImagesCheckBox_CheckedChanged);
       // 
-      // HeatmapView
+      // HeatMapView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.grayscaledImagesCheckBox);
-      this.Controls.Add(this.ZeroLabel);
-      this.Controls.Add(this.OneLabel);
-      this.Controls.Add(this.ColorsPictureBox);
+      this.Controls.Add(this.grayscaleCheckBox);
+      this.Controls.Add(this.minimumLabel);
+      this.Controls.Add(this.maximumLabel);
+      this.Controls.Add(this.colorsPictureBox);
       this.Controls.Add(this.chart);
-      this.Controls.Add(this.GrayscalesPictureBox);
-      this.Name = "HeatmapView";
-      this.Size = new System.Drawing.Size(444, 358);
+      this.Controls.Add(this.grayscalesPictureBox);
+      this.Name = "HeatMapView";
+      this.Size = new System.Drawing.Size(485, 463);
       ((System.ComponentModel.ISupportInitialize)(this.chart)).EndInit();
-      ((System.ComponentModel.ISupportInitialize)(this.ColorsPictureBox)).EndInit();
-      ((System.ComponentModel.ISupportInitialize)(this.GrayscalesPictureBox)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.colorsPictureBox)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.grayscalesPictureBox)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -173,11 +168,11 @@ namespace HeuristicLab.Analysis.Views {
 
     #endregion
 
-    private HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart chart;
-    private System.Windows.Forms.PictureBox ColorsPictureBox;
-    private System.Windows.Forms.Label ZeroLabel;
-    private System.Windows.Forms.Label OneLabel;
-    private System.Windows.Forms.PictureBox GrayscalesPictureBox;
-    private System.Windows.Forms.CheckBox grayscaledImagesCheckBox;
+    protected HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart chart;
+    protected System.Windows.Forms.PictureBox colorsPictureBox;
+    protected System.Windows.Forms.Label minimumLabel;
+    protected System.Windows.Forms.Label maximumLabel;
+    protected System.Windows.Forms.PictureBox grayscalesPictureBox;
+    protected System.Windows.Forms.CheckBox grayscaleCheckBox;
   }
 }

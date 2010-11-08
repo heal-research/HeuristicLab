@@ -77,7 +77,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       // 
       // saveFileDialog
       // 
-      this.saveFileDialog.Filter = "\"Bitmap (*.bmp)|*.bmp|JPEG (*.jpg)|*.jpg|EMF (*.emf)|*.emf|PNG (*.png)|*.png|GIF " +
+      this.saveFileDialog.Filter = "Bitmap (*.bmp)|*.bmp|JPEG (*.jpg)|*.jpg|EMF (*.emf)|*.emf|PNG (*.png)|*.png|GIF " +
           "(*.gif)|*.gif|TIFF (*.tif)|*.tif\"";
       this.saveFileDialog.FilterIndex = 2;
       // 

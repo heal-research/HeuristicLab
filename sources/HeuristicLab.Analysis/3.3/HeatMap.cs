@@ -19,7 +19,7 @@
  */
 #endregion
 
-using System.Collections.Generic;
+using System;
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -34,23 +34,125 @@ namespace HeuristicLab.Analysis {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Gradient; }
     }
 
+    private string title;
+    public string Title {
+      get { return title; }
+      set {
+        if (!(title.Equals(value) || (value == null) && (title == string.Empty))) {
+          title = value == null ? string.Empty : value;
+          OnTitleChanged();
+        }
+      }
+    }
+    private double minimum;
+    public double Minimum {
+      get { return minimum; }
+      set {
+        if (minimum != value) {
+          minimum = value;
+          if (minimum >= maximum) Maximum = minimum + 1.0;
+          OnMinimumChanged();
+        }
+      }
+    }
+    private double maximum;
+    public double Maximum {
+      get { return maximum; }
+      set {
+        if (maximum != value) {
+          maximum = value;
+          if (maximum <= minimum) Minimum = maximum - 1.0;
+          OnMaximumChanged();
+        }
+      }
+    }
+
+    #region Storable Properties
+    [Storable(Name = "Title")]
+    private string StorableTitle {
+      get { return title; }
+      set { title = value; }
+    }
+    [Storable(Name = "Minimum")]
+    private double StorableMinimum {
+      get { return minimum; }
+      set { minimum = value; }
+    }
+    [Storable(Name = "Maximum")]
+    private double StorableMaximum {
+      get { return maximum; }
+      set { maximum = value; }
+    }
+    #endregion
+
     [StorableConstructor]
     protected HeatMap(bool deserializing) : base(deserializing) { }
-    protected HeatMap(HeatMap original, Cloner cloner) : base(original, cloner) { }
-    public HeatMap() : base() { }
-    public HeatMap(int rows, int columns) : base(rows, columns) { }
-    public HeatMap(int rows, int columns, IEnumerable<string> columnNames) : base(rows, columns, columnNames) { }
-    public HeatMap(int rows, int columns, IEnumerable<string> columnNames, IEnumerable<string> rowNames) : base(rows, columns, columnNames, rowNames) { }
-    public HeatMap(double[,] elements) : base(elements) { }
-    public HeatMap(double[,] elements, IEnumerable<string> columnNames) : base(elements, columnNames) { }
-    public HeatMap(double[,] elements, IEnumerable<string> columnNames, IEnumerable<string> rowNames) : base(elements, columnNames, rowNames) { }
+    protected HeatMap(HeatMap original, Cloner cloner)
+      : base(original, cloner) {
+      this.title = original.title;
+      this.minimum = original.minimum;
+      this.maximum = original.maximum;
+    }
+    public HeatMap()
+      : base() {
+      this.title = "Heat Map";
+      this.minimum = 0.0;
+      this.maximum = 1.0;
+    }
+    public HeatMap(int rows, int columns)
+      : base(rows, columns) {
+      this.title = "Heat Map";
+      this.minimum = 0.0;
+      this.maximum = 1.0;
+    }
+    public HeatMap(int rows, int columns, string title)
+      : base(rows, columns) {
+      this.title = title == null ? string.Empty : title;
+      this.minimum = 0.0;
+      this.maximum = 1.0;
+    }
+    public HeatMap(double[,] elements)
+      : base(elements) {
+      this.title = "Heat Map";
+      this.minimum = 0.0;
+      this.maximum = 1.0;
+    }
+    public HeatMap(double[,] elements, string title)
+      : base(elements) {
+      this.title = title == null ? string.Empty : title;
+      this.minimum = 0.0;
+      this.maximum = 1.0;
+    }
+    public HeatMap(double[,] elements, string title, double minimum, double maximum)
+      : base(elements) {
+      this.title = title == null ? string.Empty : title;
+      if (minimum >= maximum) throw new ArgumentException("Minimum is larger than or equal to maximum");
+      this.minimum = minimum;
+      this.maximum = maximum;
+    }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new HeatMap(this, cloner);
     }
 
     public override string ToString() {
-      return ItemName;
+      return Title;
+    }
+
+    public event EventHandler TitleChanged;
+    protected virtual void OnTitleChanged() {
+      var handler = TitleChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
+    public event EventHandler MinimumChanged;
+    protected virtual void OnMinimumChanged() {
+      var handler = MinimumChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
+    public event EventHandler MaximumChanged;
+    protected virtual void OnMaximumChanged() {
+      var handler = MaximumChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
   }
 }
