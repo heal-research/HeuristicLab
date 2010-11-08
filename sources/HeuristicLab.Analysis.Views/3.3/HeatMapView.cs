@@ -118,9 +118,6 @@ namespace HeuristicLab.Analysis.Views {
       DataPoint p = new DataPoint(index1, index2);
       p.Color = GetDataPointColor(value, Content.Minimum, Content.Maximum, grayscaleCheckBox.Checked);
       p.MarkerStyle = MarkerStyle.Square;
-      //p.MarkerSize = 10;
-      //string nl = Environment.NewLine;
-      //p.ToolTip = string.Format("Row: {0}{3}Column: {1}{3}Value: {2}", index2, index1, value, nl);
       return p;
     }
 

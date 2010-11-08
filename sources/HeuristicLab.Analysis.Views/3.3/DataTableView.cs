@@ -128,6 +128,7 @@ namespace HeuristicLab.Analysis.Views {
       series.ToolTip = row.Name + " X = #INDEX, Y = #VAL";
       FillSeriesWithRowValues(series, row);
       chart.Series.Add(series);
+      chart.ChartAreas[0].RecalculateAxesScale();
       UpdateYCursorInterval();
     }
 
@@ -154,6 +155,7 @@ namespace HeuristicLab.Analysis.Views {
       chart.Series.Remove(series);
       if (invisibleSeries.Contains(series))
         invisibleSeries.Remove(series);
+      chart.ChartAreas[0].RecalculateAxesScale();
     }
 
     #region Content Events
@@ -257,6 +259,7 @@ namespace HeuristicLab.Analysis.Views {
         }
         chart.Series[row.Name].YAxisType = row.VisualProperties.SecondYAxis ? AxisType.Secondary : AxisType.Primary;
         if (row.VisualProperties.Color != Color.Empty) chart.Series[row.Name].Color = row.VisualProperties.Color;
+        chart.ChartAreas[0].RecalculateAxesScale();
       }
     }
     private void Row_NameChanged(object sender, EventArgs e) {
