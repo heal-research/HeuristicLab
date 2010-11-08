@@ -97,13 +97,21 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         AddSymbol(defunSymbol);
       }
 
-      SetMinSubtreeCount(StartSymbol, minFunctionDefinitions + 1);
-      SetMaxSubtreeCount(StartSymbol, maxFunctionDefinitions + 1);
-      SetMinSubtreeCount(defunSymbol, 1);
+      SetMinSubtreeCount(StartSymbol, minFunctionDefinitions + 1); // min number of ADF + 1 for RPB
+      SetMaxSubtreeCount(StartSymbol, maxFunctionDefinitions + 1); // max number of ADF + 1 for RPB
+      // defun can have only one child
+      SetMinSubtreeCount(defunSymbol, 1); 
       SetMaxSubtreeCount(defunSymbol, 1);
+
 
       // the start symbol of the mainBranchGrammar is allowed as the result producing branch
       SetAllowedChild(StartSymbol, Symbols.Where(s => s.Name == mainBranchGrammar.StartSymbol.Name).First(), 0);
+
+      // defuns are allowed as children on the same level and after RPB
+      for (int i = 0; i < maxFunctionDefinitions; i++) {
+        // +1 because RPB has index 0
+        SetAllowedChild(StartSymbol, defunSymbol, i + 1); 
+      }
 
       // every symbol of the mainBranchGrammar that is allowed as child of the start symbol is also allowed as direct child of defun
       foreach (var symb in mainBranchGrammar.Symbols) {
