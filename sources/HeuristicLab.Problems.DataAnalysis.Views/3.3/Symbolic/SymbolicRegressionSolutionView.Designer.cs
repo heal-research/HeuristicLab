@@ -62,6 +62,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic {
       // 
       this.modelTabPage.Size = new System.Drawing.Size(372, 207);
       // 
+      // dataViewHost
+      // 
+      this.dataViewHost.Size = new System.Drawing.Size(360, 195);
+      // 
       // modelViewHost
       // 
       this.modelViewHost.Size = new System.Drawing.Size(360, 195);

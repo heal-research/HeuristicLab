@@ -44,11 +44,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     /// </summary>
     private void InitializeComponent() {
       this.dataTabPage = new System.Windows.Forms.TabPage();
-      this.modelTabPage = new System.Windows.Forms.TabPage();
-      this.tabControl = new System.Windows.Forms.TabControl();
-      this.modelViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
-      this.viewHost1 = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.dataViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
+      this.modelTabPage = new System.Windows.Forms.TabPage();
+      this.modelViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
+      this.tabControl = new System.Windows.Forms.TabControl();
       this.dataTabPage.SuspendLayout();
       this.modelTabPage.SuspendLayout();
       this.tabControl.SuspendLayout();
@@ -65,6 +64,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.dataTabPage.Text = "Data";
       this.dataTabPage.UseVisualStyleBackColor = true;
       // 
+      // dataViewHost
+      // 
+      this.dataViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.dataViewHost.Caption = "DataAnalysisSolution Data View";
+      this.dataViewHost.Content = null;
+      this.dataViewHost.Enabled = false;
+      this.dataViewHost.Location = new System.Drawing.Point(6, 6);
+      this.dataViewHost.Name = "dataViewHost";
+      this.dataViewHost.ReadOnly = false;
+      this.dataViewHost.Size = new System.Drawing.Size(360, 224);
+      this.dataViewHost.TabIndex = 2;
+      this.dataViewHost.ViewType = null;
+      // 
       // modelTabPage
       // 
       this.modelTabPage.Controls.Add(this.modelViewHost);
@@ -75,6 +89,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.modelTabPage.TabIndex = 0;
       this.modelTabPage.Text = "Model";
       this.modelTabPage.UseVisualStyleBackColor = true;
+      // 
+      // modelViewHost
+      // 
+      this.modelViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.modelViewHost.Caption = "DataAnalysisSolution Model View";
+      this.modelViewHost.Content = null;
+      this.modelViewHost.Enabled = false;
+      this.modelViewHost.Location = new System.Drawing.Point(6, 6);
+      this.modelViewHost.Name = "modelViewHost";
+      this.modelViewHost.ReadOnly = false;
+      this.modelViewHost.Size = new System.Drawing.Size(360, 224);
+      this.modelViewHost.TabIndex = 1;
+      this.modelViewHost.ViewType = null;
       // 
       // tabControl
       // 
@@ -88,45 +117,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.tabControl.SelectedIndex = 0;
       this.tabControl.Size = new System.Drawing.Size(380, 262);
       this.tabControl.TabIndex = 1;
-      // 
-      // modelViewHost
-      // 
-      this.modelViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.modelViewHost.Caption = "DataAnalysisSolution Model View";
-      this.modelViewHost.Content = null;
-      this.modelViewHost.Location = new System.Drawing.Point(6, 6);
-      this.modelViewHost.Name = "modelViewHost";
-      this.modelViewHost.ReadOnly = false;
-      this.modelViewHost.Size = new System.Drawing.Size(360, 224);
-      this.modelViewHost.TabIndex = 1;
-      this.modelViewHost.ViewType = null;
-      // 
-      // viewHost1
-      // 
-      this.viewHost1.Caption = "View";
-      this.viewHost1.Content = null;
-      this.viewHost1.Location = new System.Drawing.Point(6, 6);
-      this.viewHost1.Name = "viewHost1";
-      this.viewHost1.ReadOnly = false;
-      this.viewHost1.Size = new System.Drawing.Size(360, 224);
-      this.viewHost1.TabIndex = 1;
-      this.viewHost1.ViewType = null;
-      // 
-      // dataViewHost
-      // 
-      this.dataViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.dataViewHost.Caption = "DataAnalysisSolution Data View";
-      this.dataViewHost.Content = null;
-      this.dataViewHost.Location = new System.Drawing.Point(6, 6);
-      this.dataViewHost.Name = "dataViewHost";
-      this.dataViewHost.ReadOnly = false;
-      this.dataViewHost.Size = new System.Drawing.Size(360, 224);
-      this.dataViewHost.TabIndex = 2;
-      this.dataViewHost.ViewType = null;
       // 
       // DataAnalysisSolutionView
       // 
@@ -148,7 +138,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     protected System.Windows.Forms.TabPage dataTabPage;
     protected System.Windows.Forms.TabPage modelTabPage;
     protected HeuristicLab.MainForm.WindowsForms.ViewHost dataViewHost;
-    private HeuristicLab.MainForm.WindowsForms.ViewHost viewHost1;
     protected HeuristicLab.MainForm.WindowsForms.ViewHost modelViewHost;
   }
 }
