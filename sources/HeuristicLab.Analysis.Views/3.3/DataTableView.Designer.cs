@@ -44,18 +44,13 @@ namespace HeuristicLab.Analysis.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.components = new System.ComponentModel.Container();
       System.Windows.Forms.DataVisualization.Charting.ChartArea defaultChartArea = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
       System.Windows.Forms.DataVisualization.Charting.Legend defaultLegend = new System.Windows.Forms.DataVisualization.Charting.Legend();
       System.Windows.Forms.DataVisualization.Charting.Series defaultSeries = new System.Windows.Forms.DataVisualization.Charting.Series();
       System.Windows.Forms.DataVisualization.Charting.Title defaultTitle = new System.Windows.Forms.DataVisualization.Charting.Title();
       this.chart = new HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart();
-      this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-      this.exportChartToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
-      this.contextMenuStrip.SuspendLayout();
       this.SuspendLayout();
       // 
       // nameTextBox
@@ -81,7 +76,6 @@ namespace HeuristicLab.Analysis.Views {
       defaultChartArea.CursorY.IsUserSelectionEnabled = true;
       defaultChartArea.Name = "Default";
       this.chart.ChartAreas.Add(defaultChartArea);
-      this.chart.ContextMenuStrip = this.contextMenuStrip;
       defaultLegend.Alignment = System.Drawing.StringAlignment.Center;
       defaultLegend.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
       defaultLegend.Name = "Default";
@@ -103,25 +97,6 @@ namespace HeuristicLab.Analysis.Views {
       this.chart.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chart_MouseDown);
       this.chart.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chart_MouseMove);
       // 
-      // contextMenuStrip
-      // 
-      this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.exportChartToolStripMenuItem});
-      this.contextMenuStrip.Name = "contextMenuStrip";
-      this.contextMenuStrip.Size = new System.Drawing.Size(153, 48);
-      // 
-      // exportChartToolStripMenuItem
-      // 
-      this.exportChartToolStripMenuItem.Name = "exportChartToolStripMenuItem";
-      this.exportChartToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-      this.exportChartToolStripMenuItem.Text = "Export chart...";
-      this.exportChartToolStripMenuItem.Click += new System.EventHandler(this.exportChartToolStripMenuItem_Click);
-      // 
-      // saveFileDialog
-      // 
-      this.saveFileDialog.DefaultExt = "emf";
-      this.saveFileDialog.Filter = "EMF Files|*.emf";
-      // 
       // DataTableView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -136,7 +111,6 @@ namespace HeuristicLab.Analysis.Views {
       this.Controls.SetChildIndex(this.descriptionTextBox, 0);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.chart)).EndInit();
-      this.contextMenuStrip.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -145,9 +119,6 @@ namespace HeuristicLab.Analysis.Views {
     #endregion
 
     private HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart chart;
-    private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
-    private System.Windows.Forms.ToolStripMenuItem exportChartToolStripMenuItem;
-    private System.Windows.Forms.SaveFileDialog saveFileDialog;
 
   }
 }
