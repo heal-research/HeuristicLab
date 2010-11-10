@@ -181,7 +181,7 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void UpdateStatistics() {
-      DoubleMatrix matrix = new DoubleMatrix(7, seriesCache.Count);
+      DoubleMatrix matrix = new DoubleMatrix(9, seriesCache.Count);
       matrix.SortableView = false;
       List<string> columnNames = new List<string>();
       foreach (Series series in seriesCache.Values) {
@@ -206,18 +206,20 @@ namespace HeuristicLab.Optimization.Views {
         }
       }
       matrix.ColumnNames = columnNames;
-      matrix.RowNames = new string[] { "Count", "Average", "Median", "Standard Deviation", "Variance", "25th Percentile", "75th Percentile" };
+      matrix.RowNames = new string[] { "Count", "Minimum", "Maximum", "Average", "Median", "Standard Deviation", "Variance", "25th Percentile", "75th Percentile" };
 
       for (int i = 0; i < seriesCache.Count; i++) {
         Series series = seriesCache.ElementAt(i).Value;
         double[] seriesValues = series.Points.Select(p => p.YValues[0]).OrderBy(d => d).ToArray();
         matrix[0, i] = seriesValues.Length;
-        matrix[1, i] = seriesValues.Average();
-        matrix[2, i] = seriesValues.Median();
-        matrix[3, i] = seriesValues.StandardDeviation();
-        matrix[4, i] = seriesValues.Variance();
-        matrix[5, i] = seriesValues.Percentile(0.25);
-        matrix[6, i] = seriesValues.Percentile(0.75);
+        matrix[1, i] = seriesValues.Min();
+        matrix[2, i] = seriesValues.Max();
+        matrix[3, i] = seriesValues.Average();
+        matrix[4, i] = seriesValues.Median();
+        matrix[5, i] = seriesValues.StandardDeviation();
+        matrix[6, i] = seriesValues.Variance();
+        matrix[7, i] = seriesValues.Percentile(0.25);
+        matrix[8, i] = seriesValues.Percentile(0.75);
       }
       statisticsMatrixView.Content = matrix;
     }
