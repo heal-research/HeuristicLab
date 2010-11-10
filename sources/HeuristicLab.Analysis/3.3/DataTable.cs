@@ -185,32 +185,29 @@ namespace HeuristicLab.Analysis {
 
     public event EventHandler<EventArgs<int, int>> ItemChanged;
     private void OnItemChanged(int rowIndex, int columnIndex) {
-      if (ItemChanged != null)
-        ItemChanged(this, new EventArgs<int, int>(rowIndex, columnIndex));
+      var handler = ItemChanged;
+      if (handler != null) handler(this, new EventArgs<int, int>(rowIndex, columnIndex));
       OnToStringChanged();
     }
     public event EventHandler Reset;
     private void OnReset() {
-      if (Reset != null)
-        Reset(this, EventArgs.Empty);
+      var handler = Reset;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler ColumnNamesChanged;
     private void OnColumnNamesChanged() {
-      EventHandler handler = ColumnNamesChanged;
-      if (handler != null)
-        handler(this, EventArgs.Empty);
+      var handler = ColumnNamesChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler RowNamesChanged;
     private void OnRowNamesChanged() {
-      EventHandler handler = RowNamesChanged;
-      if (handler != null)
-        handler(this, EventArgs.Empty);
+      var handler = RowNamesChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler SortableViewChanged;
     private void OnSortableViewChanged() {
-      EventHandler handler = SortableViewChanged;
-      if (handler != null)
-        handler(this, EventArgs.Empty);
+      var handler = SortableViewChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
     #endregion
   }

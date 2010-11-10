@@ -129,8 +129,8 @@ namespace HeuristicLab.Optimization {
 
     public event EventHandler ValueChanged;
     private void OnValueChanged() {
-      if (ValueChanged != null)
-        ValueChanged(this, EventArgs.Empty);
+      var handler = ValueChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
       OnItemImageChanged();
       OnToStringChanged();
     }
