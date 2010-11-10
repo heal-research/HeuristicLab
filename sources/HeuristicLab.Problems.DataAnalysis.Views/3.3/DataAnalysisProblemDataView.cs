@@ -39,6 +39,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       InitializeComponent();
     }
 
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
+      importButton.Enabled = Enabled && !ReadOnly && !Locked;
+    }
+
     private void importButton_Click(object sender, EventArgs e) {
       if (openFileDialog == null) openFileDialog = new OpenFileDialog();
 
@@ -51,5 +56,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         }
       }
     }
+
+
   }
 }
