@@ -175,7 +175,8 @@ namespace HeuristicLab.Operators.Programmable {
       Plugins = original.Plugins.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
       namespaces = new HashSet<string>(original.namespaces);
       CompilationUnitCode = original.CompilationUnitCode;
-      CompileErrors = new CompilerErrorCollection(original.CompileErrors);
+      if (original.CompileErrors != null)
+        CompileErrors = new CompilerErrorCollection(original.CompileErrors);
       RegisterEvents();
     }
 
