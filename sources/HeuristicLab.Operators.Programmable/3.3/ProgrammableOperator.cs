@@ -74,7 +74,6 @@ namespace HeuristicLab.Operators.Programmable {
     private static Dictionary<Assembly, bool> defaultAssemblyDict;
 
     public readonly Dictionary<string, List<Assembly>> Plugins;
-
     protected Dictionary<Assembly, bool> Assemblies;
 
     [Storable(Name = "SelectedAssemblies")]
@@ -159,11 +158,13 @@ namespace HeuristicLab.Operators.Programmable {
     #endregion
 
     #region Construction & Initialization
+
     [StorableConstructor]
-    protected ProgrammableOperator(bool deserializing) : base(deserializing) { }
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-      RegisterEvents();
+    protected ProgrammableOperator(bool deserializing)
+      : base(deserializing) {
+      ProgrammableOperator.StaticInitialize();
+      Assemblies = defaultAssemblyDict.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+      Plugins = defaultPluginDict.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToList());
     }
 
     protected ProgrammableOperator(ProgrammableOperator original, Cloner cloner)
@@ -171,13 +172,11 @@ namespace HeuristicLab.Operators.Programmable {
       code = original.Code;
       executeMethod = original.executeMethod;
       Assemblies = original.Assemblies.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-      namespaces = original.namespaces;
+      Plugins = original.Plugins.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+      namespaces = new HashSet<string>(original.namespaces);
       CompilationUnitCode = original.CompilationUnitCode;
-      CompileErrors = original.CompileErrors;
+      CompileErrors = new CompilerErrorCollection(original.CompileErrors);
       RegisterEvents();
-    }
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new ProgrammableOperator(this, cloner);
     }
 
     public ProgrammableOperator() {
@@ -190,6 +189,14 @@ namespace HeuristicLab.Operators.Programmable {
       RegisterEvents();
     }
 
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      RegisterEvents();
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ProgrammableOperator(this, cloner);
+    }
 
     private void RegisterEvents() {
       Parameters.ItemsAdded += Parameters_Changed;
@@ -260,8 +267,7 @@ namespace HeuristicLab.Operators.Programmable {
           if (File.Exists(a.Location)) {
             assemblies.Add(a, false);
           }
-        }
-        catch (NotSupportedException) {
+        } catch (NotSupportedException) {
           // NotSupportedException is thrown while accessing 
           // the Location property of the anonymously hosted
           // dynamic methods assembly, which is related to
