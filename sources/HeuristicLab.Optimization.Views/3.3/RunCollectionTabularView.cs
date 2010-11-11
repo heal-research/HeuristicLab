@@ -34,6 +34,7 @@ namespace HeuristicLab.Optimization.Views {
     private int[] runToRowMapping;
     public RunCollectionTabularView() {
       InitializeComponent();
+      dataGridView.RowHeaderMouseDoubleClick += new DataGridViewCellMouseEventHandler(dataGridView_RowHeaderMouseDoubleClick);
     }
 
     public override bool ReadOnly {
