@@ -143,7 +143,7 @@ namespace HeuristicLab.Analysis {
     #region IStringConvertibleMatrix Members
 
     int IStringConvertibleMatrix.Rows {
-      get { return rows.Max(r => r.Values.Count); }
+      get { return rows.Count == 0 ? 0 : rows.Max(r => r.Values.Count); }
       set { throw new NotSupportedException(); }
     }
     int IStringConvertibleMatrix.Columns {
