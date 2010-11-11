@@ -136,10 +136,10 @@
     <Content Include="ICSharpCode.TextEditor.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="SharpDevelop License.txt">
+    <Content Include="Mono Cecil License.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Mono License.txt">
+    <Content Include="SharpDevelop License.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Mono.Cecil.dll">

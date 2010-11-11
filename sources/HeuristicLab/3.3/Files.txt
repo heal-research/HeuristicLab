@@ -96,7 +96,7 @@ HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327:ICSharpCode.NRefactory
 HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327:ICSharpCode.SharpDevelop.Dom.dll
 HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327:ICSharpCode.TextEditor.dll
 HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327:Mono.Cecil.dll
-HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327:Mono License.txt
+HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327:Mono Cecil License.txt
 HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327:SharpDevelop License.txt
 
 HeuristicLab.ExtLibs\HeuristicLab.WinFormsUI\2.3.1\WinFormsUI-2.3.1:WeifenLuo.WinFormsUI.Docking-2.3.1.dll

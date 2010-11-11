@@ -150,6 +150,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="GNU General Public License.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <Content Include="Files.txt">
     </Content>
     <Content Include="Files.x64.txt">
