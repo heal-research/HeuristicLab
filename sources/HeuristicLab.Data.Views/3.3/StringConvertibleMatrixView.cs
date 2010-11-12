@@ -509,7 +509,7 @@ namespace HeuristicLab.Data.Views {
     }
 
     private void UpdateVisibilityOfStatisticalInformation() {
-      statusStrip.Visible = showStatisticalInformation;
+      statisticsTextBox.Visible = showStatisticalInformation;
       UpdateDataGridViewSizeAndLocation();
     }
 
@@ -520,12 +520,13 @@ namespace HeuristicLab.Data.Views {
       int offset = showRowsAndColumnsTextBox ? headerSize : 0;
       dataGridView.Location = new Point(0, offset);
 
-      int statusStripHeight = showStatisticalInformation ? statusStrip.Height : 0;
-      dataGridView.Size = new Size(Size.Width, Size.Height - offset - statusStripHeight);
+      int statisticsTextBoxHeight = showStatisticalInformation ? statisticsTextBox.Height + statisticsTextBox.Margin.Top + statisticsTextBox.Margin.Bottom : 0;
+      dataGridView.Size = new Size(Size.Width, Size.Height - offset - statisticsTextBoxHeight);
     }
 
     private void dataGridView_SelectionChanged(object sender, EventArgs e) {
-      toolStripStatusLabel.Text = string.Empty;
+      string stringFormat = "{0,20:0.0000}";
+      statisticsTextBox.Text = string.Empty;
       if (dataGridView.SelectedCells.Count > 1) {
         List<double> selectedValues = new List<double>();
         foreach (DataGridViewCell cell in dataGridView.SelectedCells) {
@@ -535,14 +536,14 @@ namespace HeuristicLab.Data.Views {
         }
         if (selectedValues.Count > 1) {
           StringBuilder labelText = new StringBuilder();
-          labelText.Append("Count: " + selectedValues.Count + "    ");
-          labelText.Append("Sum: " + selectedValues.Sum() + "    ");
-          labelText.Append("Min: " + selectedValues.Min() + "    ");
-          labelText.Append("Max: " + selectedValues.Max() + "    ");
-          labelText.Append("Average: " + selectedValues.Average() + "    ");
-          labelText.Append("Standard Deviation: " + selectedValues.StandardDeviation() + "    ");
+          labelText.Append("Count: " + string.Format(stringFormat, selectedValues.Count) + "    ");
+          labelText.Append("Sum: " + string.Format(stringFormat, selectedValues.Sum()) + "    ");
+          labelText.Append("Min: " + string.Format(stringFormat, selectedValues.Min()) + "    ");
+          labelText.Append("Max: " + string.Format(stringFormat, selectedValues.Max()) + "    ");
+          labelText.Append("Average: " + string.Format(stringFormat, selectedValues.Average()) + "    ");
+          labelText.Append("Standard Deviation: " + string.Format(stringFormat, selectedValues.StandardDeviation()) + "    ");
 
-          toolStripStatusLabel.Text = labelText.ToString();
+          statisticsTextBox.Text = labelText.ToString();
         }
       }
     }
