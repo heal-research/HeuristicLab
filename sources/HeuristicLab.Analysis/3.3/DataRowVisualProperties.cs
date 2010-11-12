@@ -103,7 +103,6 @@ namespace HeuristicLab.Analysis {
     }
     #endregion
 
-    #region Storing & Cloning
     [StorableConstructor]
     protected DataRowVisualProperties(bool deserializing) : base() { }
     protected DataRowVisualProperties(DataRowVisualProperties original, Cloner cloner)
@@ -113,10 +112,6 @@ namespace HeuristicLab.Analysis {
       this.color = original.color;
       this.startIndexZero = original.startIndexZero;
     }
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new DataRowVisualProperties(this, cloner);
-    }
-    #endregion
     public DataRowVisualProperties() {
       chartType = DataRowChartType.Line;
       secondYAxis = false;
@@ -128,6 +123,10 @@ namespace HeuristicLab.Analysis {
       this.secondYAxis = secondYAxis;
       this.color = color;
       this.startIndexZero = startIndexZero;
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new DataRowVisualProperties(this, cloner);
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

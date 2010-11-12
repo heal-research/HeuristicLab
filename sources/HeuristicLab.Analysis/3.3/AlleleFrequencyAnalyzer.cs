@@ -163,15 +163,24 @@ namespace HeuristicLab.Analysis {
         if (!results.ContainsKey("Alleles")) {
           allelesTable = new DataTable("Alleles");
           results.Add(new Result("Alleles", allelesTable));
+
           allelesTable.Rows.Add(new DataRow("Unique Alleles"));
-          DataRowVisualProperties visualProperties = new DataRowVisualProperties();
-          visualProperties.ChartType = DataRowVisualProperties.DataRowChartType.Line;
-          visualProperties.SecondYAxis = true;
-          visualProperties.StartIndexZero = true;
-          allelesTable.Rows.Add(new DataRow("Unique Alleles of Best Known Solution", null, visualProperties));
-          allelesTable.Rows.Add(new DataRow("Fixed Alleles", null, visualProperties));
-          allelesTable.Rows.Add(new DataRow("Fixed Alleles of Best Known Solution", null, visualProperties));
-          allelesTable.Rows.Add(new DataRow("Lost Alleles of Best Known Solution", null, visualProperties));
+
+          allelesTable.Rows.Add(new DataRow("Unique Alleles of Best Known Solution", null));
+          allelesTable.Rows["Unique Alleles of Best Known Solution"].VisualProperties.SecondYAxis = true;
+          allelesTable.Rows["Unique Alleles of Best Known Solution"].VisualProperties.StartIndexZero = true;
+
+          allelesTable.Rows.Add(new DataRow("Fixed Alleles", null));
+          allelesTable.Rows["Fixed Alleles"].VisualProperties.SecondYAxis = true;
+          allelesTable.Rows["Fixed Alleles"].VisualProperties.StartIndexZero = true;
+
+          allelesTable.Rows.Add(new DataRow("Fixed Alleles of Best Known Solution", null));
+          allelesTable.Rows["Fixed Alleles of Best Known Solution"].VisualProperties.SecondYAxis = true;
+          allelesTable.Rows["Fixed Alleles of Best Known Solution"].VisualProperties.StartIndexZero = true;
+
+          allelesTable.Rows.Add(new DataRow("Lost Alleles of Best Known Solution", null));
+          allelesTable.Rows["Lost Alleles of Best Known Solution"].VisualProperties.SecondYAxis = true;
+          allelesTable.Rows["Lost Alleles of Best Known Solution"].VisualProperties.StartIndexZero = true;
         } else {
           allelesTable = (DataTable)results["Alleles"].Value;
         }

@@ -170,12 +170,12 @@ namespace HeuristicLab.Analysis {
           if (!results.ContainsKey("Average Minimum/Average/Maximum Solution Similarity")) {
             minAvgMaxSimilarityDataTable = new DataTable("Average Minimum/Average/Maximum Solution Similarity");
             results.Add(new Result("Average Minimum/Average/Maximum Solution Similarity", minAvgMaxSimilarityDataTable));
-            DataRowVisualProperties visualProperties = new DataRowVisualProperties();
-            visualProperties.ChartType = DataRowVisualProperties.DataRowChartType.Line;
-            visualProperties.StartIndexZero = true;
-            minAvgMaxSimilarityDataTable.Rows.Add(new DataRow("Average Minimum Solution Similarity", null, visualProperties));
-            minAvgMaxSimilarityDataTable.Rows.Add(new DataRow("Average Average Solution Similarity", null, visualProperties));
-            minAvgMaxSimilarityDataTable.Rows.Add(new DataRow("Average Maximum Solution Similarity", null, visualProperties));
+            minAvgMaxSimilarityDataTable.Rows.Add(new DataRow("Average Minimum Solution Similarity", null));
+            minAvgMaxSimilarityDataTable.Rows["Average Minimum Solution Similarity"].VisualProperties.StartIndexZero = true;
+            minAvgMaxSimilarityDataTable.Rows.Add(new DataRow("Average Average Solution Similarity", null));
+            minAvgMaxSimilarityDataTable.Rows["Average Average Solution Similarity"].VisualProperties.StartIndexZero = true;
+            minAvgMaxSimilarityDataTable.Rows.Add(new DataRow("Average Maximum Solution Similarity", null));
+            minAvgMaxSimilarityDataTable.Rows["Average Maximum Solution Similarity"].VisualProperties.StartIndexZero = true;
           } else {
             minAvgMaxSimilarityDataTable = (DataTable)results["Average Minimum/Average/Maximum Solution Similarity"].Value;
           }
@@ -185,15 +185,12 @@ namespace HeuristicLab.Analysis {
 
           // store minimum, average, maximum similarities data table
           DataTable minAvgMaxSimilaritiesDataTable = new DataTable("Minimum/Average/Maximum Solution Similarities");
-          minAvgMaxSimilaritiesDataTable.Rows.Add(new DataRow("Minimum Solution Similarity"));
+          minAvgMaxSimilaritiesDataTable.Rows.Add(new DataRow("Minimum Solution Similarity", null, minSimilarities));
           minAvgMaxSimilaritiesDataTable.Rows["Minimum Solution Similarity"].VisualProperties.ChartType = DataRowVisualProperties.DataRowChartType.Points;
-          minAvgMaxSimilaritiesDataTable.Rows["Minimum Solution Similarity"].Values.AddRange(minSimilarities);
-          minAvgMaxSimilaritiesDataTable.Rows.Add(new DataRow("Average Solution Similarity"));
+          minAvgMaxSimilaritiesDataTable.Rows.Add(new DataRow("Average Solution Similarity", null, avgSimilarities));
           minAvgMaxSimilaritiesDataTable.Rows["Average Solution Similarity"].VisualProperties.ChartType = DataRowVisualProperties.DataRowChartType.Points;
-          minAvgMaxSimilaritiesDataTable.Rows["Average Solution Similarity"].Values.AddRange(avgSimilarities);
-          minAvgMaxSimilaritiesDataTable.Rows.Add(new DataRow("Maximum Solution Similarity"));
+          minAvgMaxSimilaritiesDataTable.Rows.Add(new DataRow("Maximum Solution Similarity", null, maxSimilarities));
           minAvgMaxSimilaritiesDataTable.Rows["Maximum Solution Similarity"].VisualProperties.ChartType = DataRowVisualProperties.DataRowChartType.Points;
-          minAvgMaxSimilaritiesDataTable.Rows["Maximum Solution Similarity"].Values.AddRange(maxSimilarities);
           if (!results.ContainsKey("Minimum/Average/Maximum Solution Similarities")) {
             results.Add(new Result("Minimum/Average/Maximum Solution Similarities", minAvgMaxSimilaritiesDataTable));
           } else {

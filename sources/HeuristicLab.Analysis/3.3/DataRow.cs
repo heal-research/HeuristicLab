@@ -65,7 +65,6 @@ namespace HeuristicLab.Analysis {
     }
     #endregion
 
-    #region Storing & Cloning
     [StorableConstructor]
     private DataRow(bool deserializing) : base(deserializing) { }
     private DataRow(DataRow original, Cloner cloner)
@@ -73,10 +72,6 @@ namespace HeuristicLab.Analysis {
       this.VisualProperties = (DataRowVisualProperties)cloner.Clone(original.visualProperties);
       this.values = new ObservableList<double>(original.values);
     }
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new DataRow(this, cloner);
-    }
-    #endregion
     public DataRow()
       : base() {
       VisualProperties = new DataRowVisualProperties();
@@ -92,10 +87,10 @@ namespace HeuristicLab.Analysis {
       VisualProperties = new DataRowVisualProperties();
       values = new ObservableList<double>();
     }
-    public DataRow(string name, string description, DataRowVisualProperties visualProperties)
+    public DataRow(string name, string description, IEnumerable<double> values)
       : base(name, description) {
-      VisualProperties = visualProperties;
-      values = new ObservableList<double>();
+      VisualProperties = new DataRowVisualProperties();
+      this.values = new ObservableList<double>(values);
     }
 
     // BackwardsCompatibility3.3
@@ -105,6 +100,10 @@ namespace HeuristicLab.Analysis {
       if (VisualProperties == null) VisualProperties = new DataRowVisualProperties();
     }
     #endregion
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new DataRow(this, cloner);
+    }
 
     public event EventHandler VisualPropertiesChanged;
     private void OnVisualPropertiesChanged() {
