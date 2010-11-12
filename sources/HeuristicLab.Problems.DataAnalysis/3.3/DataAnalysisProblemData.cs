@@ -404,10 +404,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
       InputVariables = new CheckedItemList<StringValue>(variableNames).AsReadOnly();
       InputVariables.SetItemCheckedState(variableNames.First(), false);
       int middle = (int)(csvFileParser.Rows * 0.5);
-      TrainingSamplesStart = new IntValue(0);
       TrainingSamplesEnd = new IntValue(middle);
-      TestSamplesStart = new IntValue(middle);
+      TrainingSamplesStart = new IntValue(0);
       TestSamplesEnd = new IntValue(csvFileParser.Rows);
+      TestSamplesStart = new IntValue(middle);
       suppressEvents = false;
       OnProblemDataChanged(EventArgs.Empty);
     }

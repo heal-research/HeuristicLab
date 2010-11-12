@@ -254,6 +254,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
       OnProblemDataChanged(EventArgs.Empty);
     }
 
+    protected override void OnProblemDataChanged(EventArgs e) {
+      base.OnProblemDataChanged(e);
+      UpdateClassValues();
+    }
+
     private void UpdateClassValues() {
       sortedClassValues = Dataset.GetVariableValues(TargetVariable.Value).Distinct().ToList();
       sortedClassValues.Sort();
@@ -270,6 +275,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
         i++;
       }
       ClassNames = array;
+      UpdateMisclassifciationMatrixHeaders();
       RegisterParameterValueEvents();
     }
 
@@ -303,8 +309,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
     }
 
     private void UpdateMisclassifciationMatrixHeaders() {
-      MisclassificationMatrix.RowNames = ClassNames.Select(name => "Estimated " + name);
-      MisclassificationMatrix.ColumnNames = ClassNames.Select(name => "Actual " + name);
+      MisclassificationMatrix.RowNames = ClassNames.Select(name => "Estimated " + name).ToList() ;
+      MisclassificationMatrix.ColumnNames = ClassNames.Select(name => "Actual " + name).ToList();
     }
   }
 }
