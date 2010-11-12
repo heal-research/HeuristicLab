@@ -245,10 +245,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
       InputVariables = new CheckedItemList<StringValue>(variableNames).AsReadOnly();
       InputVariables.SetItemCheckedState(validTargetVariables.First(), false);
       int middle = (int)(csvFileParser.Rows * 0.5);
-      TrainingSamplesStart = new IntValue(0);
       TrainingSamplesEnd = new IntValue(middle);
-      TestSamplesStart = new IntValue(middle);
+      TrainingSamplesStart = new IntValue(0);
       TestSamplesEnd = new IntValue(csvFileParser.Rows);
+      TestSamplesStart = new IntValue(middle);
+
       UpdateClassValues();
       suppressEvents = false;
       OnProblemDataChanged(EventArgs.Empty);
@@ -256,7 +257,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
 
     protected override void OnProblemDataChanged(EventArgs e) {
       base.OnProblemDataChanged(e);
-      UpdateClassValues();
+      if (!suppressEvents)
+        UpdateClassValues();
     }
 
     private void UpdateClassValues() {
@@ -309,7 +311,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
     }
 
     private void UpdateMisclassifciationMatrixHeaders() {
-      MisclassificationMatrix.RowNames = ClassNames.Select(name => "Estimated " + name).ToList() ;
+      MisclassificationMatrix.RowNames = ClassNames.Select(name => "Estimated " + name).ToList();
       MisclassificationMatrix.ColumnNames = ClassNames.Select(name => "Actual " + name).ToList();
     }
   }
