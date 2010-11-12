@@ -70,6 +70,7 @@ namespace HeuristicLab.Analysis.Views {
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.chart.BorderlineColor = System.Drawing.Color.Black;
       this.chart.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
+      defaultChartArea.AxisX.Minimum = 0;
       defaultChartArea.CursorX.IsUserEnabled = true;
       defaultChartArea.CursorX.IsUserSelectionEnabled = true;
       defaultChartArea.CursorY.IsUserEnabled = true;

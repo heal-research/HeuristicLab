@@ -279,16 +279,18 @@ namespace HeuristicLab.Analysis.Views {
         if (row != null) {
           Series rowSeries = chart.Series[row.Name];
           if (!invisibleSeries.Contains(rowSeries)) {
-            foreach (IndexedItem<double> item in e.Items) {
-              var value = item.Value;
-              if (IsInvalidValue(item.Value)) {
-                DataPoint point = new DataPoint();
-                point.IsEmpty = true;
-                rowSeries.Points.Insert(item.Index, point);
-              } else {
-                rowSeries.Points.InsertY(item.Index, value);
-              }
-            }
+            rowSeries.Points.Clear();
+            FillSeriesWithRowValues(rowSeries, row);
+            //foreach (IndexedItem<double> item in e.Items) {
+            //  var value = item.Value;
+            //  DataPoint point = new DataPoint();
+            //  point.XValue = row.VisualProperties.StartIndexZero ? item.Index : item.Index + 1;
+            //  if (IsInvalidValue(item.Value))
+            //    point.IsEmpty = true;
+            //  else
+            //    point.YValues = new double[] { value };
+            //  rowSeries.Points.Add(point);
+            //}
             UpdateYCursorInterval();
           }
         }
@@ -303,11 +305,13 @@ namespace HeuristicLab.Analysis.Views {
         if (row != null) {
           Series rowSeries = chart.Series[row.Name];
           if (!invisibleSeries.Contains(rowSeries)) {
-            List<DataPoint> points = new List<DataPoint>();
-            foreach (IndexedItem<double> item in e.Items)
-              points.Add(rowSeries.Points[item.Index]);
-            foreach (DataPoint point in points)
-              rowSeries.Points.Remove(point);
+            rowSeries.Points.Clear();
+            FillSeriesWithRowValues(rowSeries, row);
+            //List<DataPoint> points = new List<DataPoint>();
+            //foreach (IndexedItem<double> item in e.Items)
+            //  points.Add(rowSeries.Points[item.Index]);
+            //foreach (DataPoint point in points)
+            //  rowSeries.Points.Remove(point);
             UpdateYCursorInterval();
           }
         }
@@ -344,14 +348,8 @@ namespace HeuristicLab.Analysis.Views {
         if (row != null) {
           Series rowSeries = chart.Series[row.Name];
           if (!invisibleSeries.Contains(rowSeries)) {
-            foreach (IndexedItem<double> item in e.Items) {
-              if (IsInvalidValue(item.Value))
-                rowSeries.Points[item.Index].IsEmpty = true;
-              else {
-                rowSeries.Points[item.Index].YValues = new double[] { item.Value };
-                rowSeries.Points[item.Index].IsEmpty = false;
-              }
-            }
+            rowSeries.Points.Clear();
+            FillSeriesWithRowValues(rowSeries, row);
             UpdateYCursorInterval();
           }
         }
@@ -368,16 +366,9 @@ namespace HeuristicLab.Analysis.Views {
           Series rowSeries = chart.Series[row.Name];
           if (!invisibleSeries.Contains(rowSeries)) {
             rowSeries.Points.Clear();
-            foreach (IndexedItem<double> item in e.Items) {
-              if (IsInvalidValue(item.Value))
-                rowSeries.Points[item.Index].IsEmpty = true;
-              else {
-                rowSeries.Points[item.Index].YValues = new double[] { item.Value };
-                rowSeries.Points[item.Index].IsEmpty = false;
-              }
-            }
+            FillSeriesWithRowValues(rowSeries, row);
+            UpdateYCursorInterval();
           }
-          UpdateYCursorInterval();
         }
       }
     }
@@ -412,13 +403,13 @@ namespace HeuristicLab.Analysis.Views {
     private void FillSeriesWithRowValues(Series series, DataRow row) {
       for (int i = 0; i < row.Values.Count; i++) {
         var value = row.Values[i];
-        if (IsInvalidValue(value)) {
-          DataPoint point = new DataPoint();
+        DataPoint point = new DataPoint();
+        point.XValue = row.VisualProperties.StartIndexZero ? i : i + 1;
+        if (IsInvalidValue(value))
           point.IsEmpty = true;
-          series.Points.Add(point);
-        } else {
-          series.Points.Add(value);
-        }
+        else
+          point.YValues = new double[] { value };
+        series.Points.Add(point);
       }
     }
 

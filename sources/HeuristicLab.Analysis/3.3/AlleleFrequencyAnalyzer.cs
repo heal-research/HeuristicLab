@@ -165,6 +165,7 @@ namespace HeuristicLab.Analysis {
           results.Add(new Result("Alleles", allelesTable));
 
           allelesTable.Rows.Add(new DataRow("Unique Alleles"));
+          allelesTable.Rows["Unique Alleles"].VisualProperties.StartIndexZero = true;
 
           allelesTable.Rows.Add(new DataRow("Unique Alleles of Best Known Solution", null));
           allelesTable.Rows["Unique Alleles of Best Known Solution"].VisualProperties.SecondYAxis = true;
