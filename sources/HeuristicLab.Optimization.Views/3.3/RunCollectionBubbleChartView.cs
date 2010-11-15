@@ -42,6 +42,7 @@ namespace HeuristicLab.Optimization.Views {
     private string yAxisValue;
     private string sizeAxisValue;
 
+    private Dictionary<IRun, DataPoint> runToDataPointMapping;
     private Dictionary<int, Dictionary<object, double>> categoricalMapping;
     private Dictionary<IRun, double> xJitter;
     private Dictionary<IRun, double> yJitter;
@@ -53,6 +54,7 @@ namespace HeuristicLab.Optimization.Views {
     public RunCollectionBubbleChartView() {
       InitializeComponent();
 
+      runToDataPointMapping = new Dictionary<IRun, DataPoint>();
       categoricalMapping = new Dictionary<int, Dictionary<object, double>>();
       xJitter = new Dictionary<IRun, double>();
       yJitter = new Dictionary<IRun, double>();
@@ -122,15 +124,20 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void UpdateRun(IRun run) {
-      DataPoint point = this.chart.Series[0].Points.Where(p => p.Tag == run).SingleOrDefault();
+      DataPoint point = runToDataPointMapping[run];
       if (point != null) {
         point.Color = run.Color;
-        if (!run.Visible)
+        if (!run.Visible) {
           this.chart.Series[0].Points.Remove(point);
-      } else
+          runToDataPointMapping.Remove(run);
+          UpdateCursorInterval();
+          chart.ChartAreas[0].RecalculateAxesScale();
+        }
+      } else {
         AddDataPoint(run);
-      UpdateCursorInterval();
-      chart.ChartAreas[0].RecalculateAxesScale();
+        UpdateCursorInterval();
+        chart.ChartAreas[0].RecalculateAxesScale();
+      }
 
 
       if (this.chart.Series[0].Points.Count == 0)
@@ -200,6 +207,7 @@ namespace HeuristicLab.Optimization.Views {
     private void UpdateDataPoints() {
       Series series = this.chart.Series[0];
       series.Points.Clear();
+      runToDataPointMapping.Clear();
       if (Content != null) {
         foreach (IRun run in this.Content)
           this.AddDataPoint(run);
@@ -248,6 +256,7 @@ namespace HeuristicLab.Optimization.Views {
           point.Tag = run;
           point.Color = run.Color;
           series.Points.Add(point);
+          runToDataPointMapping[run] = point;
         }
       }
     }
@@ -566,6 +575,54 @@ namespace HeuristicLab.Optimization.Views {
       boxplotView.xAxisComboBox.SelectedItem = xAxisComboBox.SelectedItem;
       boxplotView.yAxisComboBox.SelectedItem = yAxisComboBox.SelectedItem;
       boxplotView.Show();
+    }
+    #endregion
+
+    #region automatic coloring
+    private static Color[] colors;
+    protected static Color[] Colors {
+      get {
+        if (colors == null) InitializeColors();
+        return colors;
+      }
+    }
+    private static void InitializeColors() {
+      colors = new Color[256];
+      int stepWidth = (256 * 4) / colors.Length;
+      int currentValue;
+      int currentClass;
+      for (int i = 0; i < colors.Length; i++) {
+        currentValue = (i * stepWidth) % 256;
+        currentClass = (i * stepWidth) / 256;
+        switch (currentClass) {
+          case 0: { colors[i] = Color.FromArgb(0, currentValue, 255); break; }        // blue -> cyan
+          case 1: { colors[i] = Color.FromArgb(0, 255, 255 - currentValue); break; }  // cyan -> green
+          case 2: { colors[i] = Color.FromArgb(currentValue, 255, 0); break; }        // green -> yellow
+          case 3: { colors[i] = Color.FromArgb(255, 255 - currentValue, 0); break; }  // yellow -> red
+        }
+      }
+    }
+
+    private void colorXAxisButton_Click(object sender, EventArgs e) {
+      double minValue = chart.Series[0].Points.Min(p => p.XValue);
+      double maxValue = chart.Series[0].Points.Max(p => p.XValue);
+      foreach (DataPoint point in chart.Series[0].Points) {
+        int colorIndex = (int)((Colors.Length - 1) * (point.XValue - minValue) / (maxValue - minValue));
+        IRun run = point.Tag as IRun;
+        if (run != null)
+          run.Color = Colors[colorIndex];
+      }
+    }
+
+    private void colorYAxisButton_Click(object sender, EventArgs e) {
+      double minValue = chart.Series[0].Points.Min(p => p.YValues[0]);
+      double maxValue = chart.Series[0].Points.Max(p => p.YValues[0]);
+      foreach (DataPoint point in chart.Series[0].Points) {
+        int colorIndex = (int)((Colors.Length - 1) * (point.YValues[0] - minValue) / (maxValue - minValue));
+        IRun run = point.Tag as IRun;
+        if (run != null)
+          run.Color = Colors[colorIndex];
+      }
     }
     #endregion
   }
