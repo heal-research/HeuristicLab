@@ -83,7 +83,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
           from x in Model.GetEstimatedValues(ProblemData, 0 - minLag, ProblemData.Dataset.Rows)
           let boundedX = Math.Min(UpperEstimationLimit, Math.Max(LowerEstimationLimit, x))
           select double.IsNaN(boundedX) ? UpperEstimationLimit : boundedX;
-      estimatedValues = Enumerable.Repeat(double.NaN, Math.Abs(minLag)).Concat(calculatedValues).ToList();
+      estimatedValues = Enumerable.Repeat(UpperEstimationLimit, Math.Abs(minLag)).Concat(calculatedValues).ToList();
       OnEstimatedValuesChanged();
     }
 
