@@ -133,6 +133,7 @@ namespace HeuristicLab.Data.Views {
         Content.Columns = dataGridView.ColumnCount;
       else
         dataGridView.ColumnCount = Content.Columns;
+
       ClearSorting();
 
       UpdateColumnHeaders();
@@ -144,20 +145,16 @@ namespace HeuristicLab.Data.Views {
     }
 
     protected void UpdateColumnHeaders() {
-      HashSet<string> visibleColumnNames = new HashSet<string>(dataGridView.Columns.OfType<DataGridViewColumn>()
-          .Where(c => c.Visible && !string.IsNullOrEmpty(c.HeaderText)).Select(c => c.HeaderText));
-      if (!visibleColumnNames.Intersect(Content.ColumnNames).Any())
-        visibleColumnNames.Clear();
+      HashSet<string> invisibleColumnNames = new HashSet<string>(dataGridView.Columns.OfType<DataGridViewColumn>()
+      .Where(c => !c.Visible && !string.IsNullOrEmpty(c.HeaderText)).Select(c => c.HeaderText));
 
       for (int i = 0; i < dataGridView.ColumnCount; i++) {
         if (i < Content.ColumnNames.Count())
           dataGridView.Columns[i].HeaderText = Content.ColumnNames.ElementAt(i);
         else
           dataGridView.Columns[i].HeaderText = "Column " + (i + 1);
+        dataGridView.Columns[i].Visible = !invisibleColumnNames.Contains(dataGridView.Columns[i].HeaderText);
       }
-
-      foreach (DataGridViewColumn column in dataGridView.Columns)
-        column.Visible = visibleColumnNames.Contains(column.HeaderText) || visibleColumnNames.Count == 0;
     }
     protected void UpdateRowHeaders() {
       int index = dataGridView.FirstDisplayedScrollingRowIndex;
