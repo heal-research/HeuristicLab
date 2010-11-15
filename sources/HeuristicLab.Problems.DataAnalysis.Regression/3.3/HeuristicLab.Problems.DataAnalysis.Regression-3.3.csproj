@@ -125,9 +125,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Symbolic\Analyzers\SymbolicRegressionSolutionLinearScaler.cs" />
-    <Compile Include="Symbolic\Analyzers\SymbolicRegressionTournamentPruning.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Symbolic\Analyzers\SymbolicRegressionVariableFrequencyAnalyzer.cs" />
     <Compile Include="Symbolic\Analyzers\ValidationBestScaledSymbolicRegressionSolutionAnalyzer.cs" />
     <Compile Include="Symbolic\Evaluators\MultiObjectiveSymbolicRegressionMeanSquaredErrorEvaluator.cs" />
