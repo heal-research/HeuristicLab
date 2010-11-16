@@ -37,6 +37,9 @@ namespace HeuristicLab.Optimizer.MenuItems {
     public override int Position {
       get { return 1600; }
     }
+    public override Keys ShortCutKeys {
+      get { return Keys.Control | Keys.Shift | Keys.W; }
+    }
 
     protected override void OnToolStripItemSet(EventArgs e) {
       ToolStripItem.Enabled = MainFormManager.MainForm.Views.Any<IView>(v => v.IsShown && !(v is Sidebar));
