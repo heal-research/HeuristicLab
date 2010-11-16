@@ -36,11 +36,15 @@ namespace HeuristicLab.Persistence.Interfaces {
     /// </summary>
     /// <value>The format's name.</value>
     public abstract string Name { get; }
-    
+
     /// <summary>
     /// Datatype that describes the atoms used for serialization serialization.
     /// </summary>
     public Type SerialDataType { get { return typeof(SerialDataFormat); } }
+
+    [StorableConstructor]
+    protected FormatBase(bool deserializing) { }
+    protected FormatBase() { }
 
     /// <summary>
     /// Compares formats by name.

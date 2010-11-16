@@ -37,6 +37,8 @@ namespace HeuristicLab.Persistence.Default.DebugString {
     [Storable]
     public string Data { get; set; }
 
+    [StorableConstructor]
+    protected DebugString(bool deserializing) { }
     private DebugString() { }
 
     /// <summary>

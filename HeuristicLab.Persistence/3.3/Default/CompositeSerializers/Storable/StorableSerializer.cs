@@ -46,6 +46,8 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       constructorCache = new Dictionary<Type, Constructor>();
       hookCache = new Dictionary<HookDesignator, List<StorableReflection.Hook>>();
     }
+    [StorableConstructor]
+    private StorableSerializer(bool deserializing) : this() { }
 
     #region ICompositeSerializer implementation
 
@@ -128,7 +130,8 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     public object CreateInstance(Type type, IEnumerable<Tag> metaInfo) {
       try {
         return GetConstructor(type)();
-      } catch (TargetInvocationException x) {
+      }
+      catch (TargetInvocationException x) {
         throw new PersistenceException(
           "Could not instantiate storable object: Encountered exception during constructor call",
           x.InnerException);

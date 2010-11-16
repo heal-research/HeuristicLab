@@ -42,6 +42,10 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
   [StorableClass]
   public sealed class Number2StringSerializer : ICompositeSerializer {
 
+    [StorableConstructor]
+    private Number2StringSerializer(bool deserializing) { }
+    public Number2StringSerializer() { }
+
     private static readonly Dictionary<Type, IPrimitiveSerializer> numberSerializerMap;
     private static readonly List<IPrimitiveSerializer> numberSerializers = new List<IPrimitiveSerializer> {
       new Bool2XmlSerializer(),

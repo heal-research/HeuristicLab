@@ -31,6 +31,10 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
   [StorableClass]
   internal sealed class StructSerializer : ICompositeSerializer {
 
+    [StorableConstructor]
+    private StructSerializer(bool deserializing) { }
+    public StructSerializer() { }
+
     public int Priority {
       get { return 50; }
     }
