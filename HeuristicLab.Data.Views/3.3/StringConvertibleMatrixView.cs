@@ -144,7 +144,7 @@ namespace HeuristicLab.Data.Views {
       dataGridView.Enabled = true;
     }
 
-    protected void UpdateColumnHeaders() {
+    protected virtual void UpdateColumnHeaders() {
       HashSet<string> invisibleColumnNames = new HashSet<string>(dataGridView.Columns.OfType<DataGridViewColumn>()
       .Where(c => !c.Visible && !string.IsNullOrEmpty(c.HeaderText)).Select(c => c.HeaderText));
 

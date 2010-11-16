@@ -98,6 +98,19 @@ namespace HeuristicLab.Optimization.Views {
     }
     #endregion
 
+    protected override void UpdateColumnHeaders() {
+      HashSet<string> visibleColumnNames = new HashSet<string>(dataGridView.Columns.OfType<DataGridViewColumn>()
+       .Where(c => c.Visible && !string.IsNullOrEmpty(c.HeaderText)).Select(c => c.HeaderText));
+
+      for (int i = 0; i < dataGridView.ColumnCount; i++) {
+        if (i < base.Content.ColumnNames.Count())
+          dataGridView.Columns[i].HeaderText = base.Content.ColumnNames.ElementAt(i);
+        else
+          dataGridView.Columns[i].HeaderText = "Column " + (i + 1);
+        dataGridView.Columns[i].Visible = visibleColumnNames.Count == 0 || visibleColumnNames.Contains(dataGridView.Columns[i].HeaderText);
+      }
+    }
+
     private void UpdateRun(IRun run) {
       int runIndex = GetIndexOfRun(run);
       int rowIndex = runToRowMapping[runIndex];
