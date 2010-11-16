@@ -504,6 +504,9 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void AxisComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+      bool axisSelected = xAxisComboBox.SelectedIndex != -1 && yAxisComboBox.SelectedIndex != -1;
+      xTrackBar.Enabled = yTrackBar.Enabled = axisSelected;
+      colorXAxisButton.Enabled = colorYAxisButton.Enabled = axisSelected;
       UpdateDataPoints();
       UpdateAxisLabels();
     }
