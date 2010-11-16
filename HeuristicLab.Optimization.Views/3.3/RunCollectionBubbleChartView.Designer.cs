@@ -97,6 +97,7 @@ namespace HeuristicLab.Optimization.Views {
       // xTrackBar
       // 
       this.xTrackBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.xTrackBar.Enabled = false;
       this.xTrackBar.Location = new System.Drawing.Point(673, 313);
       this.xTrackBar.Maximum = 100;
       this.xTrackBar.Name = "xTrackBar";
@@ -149,6 +150,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // yTrackBar
       // 
+      this.yTrackBar.Enabled = false;
       this.yTrackBar.Location = new System.Drawing.Point(388, 3);
       this.yTrackBar.Maximum = 100;
       this.yTrackBar.Name = "yTrackBar";
@@ -269,6 +271,7 @@ namespace HeuristicLab.Optimization.Views {
       // colorXAxisButton
       // 
       this.colorXAxisButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.colorXAxisButton.Enabled = false;
       this.colorXAxisButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.DisplayInColor;
       this.colorXAxisButton.Location = new System.Drawing.Point(605, 313);
       this.colorXAxisButton.Name = "colorXAxisButton";
@@ -290,6 +293,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // colorYAxisButton
       // 
+      this.colorYAxisButton.Enabled = false;
       this.colorYAxisButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.DisplayInColor;
       this.colorYAxisButton.Location = new System.Drawing.Point(251, 3);
       this.colorYAxisButton.Name = "colorYAxisButton";
