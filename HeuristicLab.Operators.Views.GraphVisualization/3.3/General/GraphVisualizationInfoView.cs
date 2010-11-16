@@ -48,7 +48,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       PasteTool pasteTool = (PasteTool)this.Controller.Tools.Where(t => t.Name == ControllerBase.PasteToolName).FirstOrDefault();
       CopyTool copyTool = (CopyTool)this.Controller.Tools.Where(t => t.Name == ControllerBase.CopyToolName).FirstOrDefault();
       HeuristicLab.Netron.Controller controller = this.Controller as HeuristicLab.Netron.Controller;
-      if (Controller != null) {
+      if (controller != null) {
         if (pasteTool != null) controller.RemoveTool(pasteTool);
         if (copyTool != null) controller.RemoveTool(copyTool);
       }
