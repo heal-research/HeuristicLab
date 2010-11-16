@@ -97,6 +97,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -112,6 +113,7 @@
   <ItemGroup>
     <Compile Include="CancelEventArgs.cs" />
     <None Include="HeuristicLabCommonPlugin.cs.frame" />
+    <Compile Include="ColorGradient.cs" />
     <Compile Include="Cloner.cs" />
     <Compile Include="Content\ContentManager.cs" />
     <Compile Include="Content\IStorableContent.cs" />

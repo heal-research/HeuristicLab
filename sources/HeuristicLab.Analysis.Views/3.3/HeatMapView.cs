@@ -20,9 +20,11 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using HeuristicLab.Common;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
@@ -31,28 +33,6 @@ namespace HeuristicLab.Analysis.Views {
   [Content(typeof(HeatMap), true)]
   public partial class HeatMapView : ItemView {
     protected static Color[] colors = new Color[256];
-    protected static Color[] grayscaleColors = new Color[256];
-
-    #region Initialize Colors
-    static HeatMapView() {
-      int stepWidth = (256 * 4) / colors.Length;
-      int currentValue;
-      int currentClass;
-      for (int i = 0; i < colors.Length; i++) {
-        currentValue = (i * stepWidth) % 256;
-        currentClass = (i * stepWidth) / 256;
-        switch (currentClass) {
-          case 0: { colors[i] = Color.FromArgb(0, currentValue, 255); break; }        // blue -> cyan
-          case 1: { colors[i] = Color.FromArgb(0, 255, 255 - currentValue); break; }  // cyan -> green
-          case 2: { colors[i] = Color.FromArgb(currentValue, 255, 0); break; }        // green -> yellow
-          case 3: { colors[i] = Color.FromArgb(255, 255 - currentValue, 0); break; }  // yellow -> red
-        }
-      }
-      for (int i = 0; i < 256; i++)
-        grayscaleColors[i] = Color.FromArgb(255 - i, 255 - i, 255 - i);  // white -> black
-    }
-    #endregion
-
     public new HeatMap Content {
       get { return (HeatMap)base.Content; }
       set { base.Content = value; }
@@ -122,11 +102,11 @@ namespace HeuristicLab.Analysis.Views {
     }
 
     protected virtual Color GetDataPointColor(double value, double min, double max, bool grayscale) {
-      int count = grayscale ? grayscaleColors.Length : colors.Length;
-      int index = (int)((count - 1) * (value - min) / (max - min));
-      if (index >= count) index = count - 1;
+      IList<Color> colors = grayscale ? ColorGradient.GrayscaledColors : ColorGradient.Colors;
+      int index = (int)((colors.Count - 1) * (value - min) / (max - min));
+      if (index >= colors.Count) index = colors.Count - 1;
       if (index < 0) index = 0;
-      return grayscale ? grayscaleColors[index] : colors[index];
+      return colors[index];
     }
 
     #region Content Events
