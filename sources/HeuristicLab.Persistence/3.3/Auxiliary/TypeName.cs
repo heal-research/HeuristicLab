@@ -95,7 +95,8 @@ namespace HeuristicLab.Persistence.Auxiliary {
     public bool IsReference { get; internal set; }
 
 
-
+    [StorableConstructor]
+    protected TypeName(bool deserializing) { }
     /// <summary>
     /// Initializes a new instance of the <see cref="TypeName"/> class.
     /// </summary>

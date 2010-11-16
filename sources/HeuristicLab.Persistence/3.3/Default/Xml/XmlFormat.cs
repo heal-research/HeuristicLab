@@ -35,6 +35,10 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// </summary>
     /// <value>The format's name.</value>
     public override string Name { get { return "XML"; } }
+
+    [StorableConstructor]
+    protected XmlFormat(bool deserializing) : base(deserializing) { }
+    public XmlFormat() { }
   }
 
 }

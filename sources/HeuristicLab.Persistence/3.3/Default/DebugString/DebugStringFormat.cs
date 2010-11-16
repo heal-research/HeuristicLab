@@ -34,6 +34,10 @@ namespace HeuristicLab.Persistence.Default.DebugString {
     /// </summary>
     /// <value>The format's name.</value>
     public override string Name { get { return "DebugString"; } }
+
+    [StorableConstructor]
+    protected DebugStringFormat(bool deserializing) : base(deserializing) { }
+    public DebugStringFormat() { }
   }
 
 }

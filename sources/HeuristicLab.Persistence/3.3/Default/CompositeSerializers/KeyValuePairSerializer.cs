@@ -32,6 +32,10 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
   [StorableClass]
   internal sealed class KeyValuePairSerializer : ICompositeSerializer {
 
+    [StorableConstructor]
+    private KeyValuePairSerializer(bool deserializing) { }
+    public KeyValuePairSerializer() { }
+
     public int Priority {
       get { return 100; }
     }

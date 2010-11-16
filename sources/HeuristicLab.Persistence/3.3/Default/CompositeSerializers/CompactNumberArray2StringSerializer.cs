@@ -80,6 +80,10 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
       }
     }
 
+    [StorableConstructor]
+    private CompactNumberArray2StringSerializer(bool deserializing) { }
+    public CompactNumberArray2StringSerializer() { }
+
     public const int SPLIT_THRESHOLD = 1024 * 1024;
 
     public int Priority {
@@ -182,9 +186,11 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
           }
         }
         return a;
-      } catch (InvalidOperationException e) {
+      }
+      catch (InvalidOperationException e) {
         throw new PersistenceException("Insuffictient data to deserialize compact array", e);
-      } catch (InvalidCastException e) {
+      }
+      catch (InvalidCastException e) {
         throw new PersistenceException("Invalid element data during compact array deserialization", e);
       }
     }

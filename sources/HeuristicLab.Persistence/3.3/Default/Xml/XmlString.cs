@@ -39,6 +39,8 @@ namespace HeuristicLab.Persistence.Default.Xml {
     [Storable]
     public string Data { get; private set; }
 
+    [StorableConstructor]
+    protected XmlString(bool deserializing) { }
     private XmlString() { }
 
     /// <summary>

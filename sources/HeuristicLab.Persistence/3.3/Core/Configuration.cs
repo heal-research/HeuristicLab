@@ -49,7 +49,7 @@ namespace HeuristicLab.Persistence.Core {
     public IFormat Format { get; private set; }
 
     [StorableConstructor]
-    private Configuration(bool isDeserializing) {
+    protected Configuration(bool isDeserializing) {
       compositeSerializerCache = new Dictionary<Type, ICompositeSerializer>();
       if (isDeserializing)
         return;
