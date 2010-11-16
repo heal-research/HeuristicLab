@@ -121,7 +121,6 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       UniformSubScopesProcessor moveEvaluationProcessor = new UniformSubScopesProcessor();
       Placeholder moveEvaluator = new Placeholder();
       IntCounter evaluatedMovesCounter = new IntCounter();
-      Placeholder moveAnalyzer = new Placeholder();
       BestSelector bestSelector = new BestSelector();
       SubScopesProcessor moveMakingProcessor = new SubScopesProcessor();
       UniformSubScopesProcessor selectedMoveMakingProcessor = new UniformSubScopesProcessor();
@@ -221,10 +220,9 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       mainProcessor.Successor = iterationsCounter;
       moveGenerator.Successor = moveEvaluationProcessor;
       moveEvaluationProcessor.Operator = moveEvaluator;
-      moveEvaluationProcessor.Successor = moveAnalyzer;
+      moveEvaluationProcessor.Successor = bestSelector;
       moveEvaluator.Successor = evaluatedMovesCounter;
       evaluatedMovesCounter.Successor = null;
-      moveAnalyzer.Successor = bestSelector;
       bestSelector.Successor = moveMakingProcessor;
       moveMakingProcessor.Operators.Add(new EmptyOperator());
       moveMakingProcessor.Operators.Add(selectedMoveMakingProcessor);
