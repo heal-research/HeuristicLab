@@ -39,8 +39,8 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     public ILookupParameter<DoubleMatrix> CoordinatesParameter {
       get { return (ILookupParameter<DoubleMatrix>)Parameters["Coordinates"]; }
     }
-    public ILookupParameter<DoubleMatrix> DistanceMatrixParameter {
-      get { return (ILookupParameter<DoubleMatrix>)Parameters["DistanceMatrix"]; }
+    public ILookupParameter<DistanceMatrix> DistanceMatrixParameter {
+      get { return (ILookupParameter<DistanceMatrix>)Parameters["DistanceMatrix"]; }
     }
     public ILookupParameter<BoolValue> UseDistanceMatrixParameter {
       get { return (ILookupParameter<BoolValue>)Parameters["UseDistanceMatrix"]; }
@@ -53,24 +53,37 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       : base() {
       Parameters.Add(new LookupParameter<Permutation>("Permutation", "The TSP solution given in path representation which should be evaluated."));
       Parameters.Add(new LookupParameter<DoubleMatrix>("Coordinates", "The x- and y-Coordinates of the cities."));
-      Parameters.Add(new LookupParameter<DoubleMatrix>("DistanceMatrix", "The matrix which contains the distances between the cities."));
+      Parameters.Add(new LookupParameter<DistanceMatrix>("DistanceMatrix", "The matrix which contains the distances between the cities."));
       Parameters.Add(new LookupParameter<BoolValue>("UseDistanceMatrix", "True if a distance matrix should be calculated and used for evaluation, otherwise false."));
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code (remove with 3.4)
+      LookupParameter<DoubleMatrix> oldDistanceMatrixParameter = Parameters["DistanceMatrix"] as LookupParameter<DoubleMatrix>;
+      if (oldDistanceMatrixParameter != null) {
+        Parameters.Remove(oldDistanceMatrixParameter);
+        Parameters.Add(new LookupParameter<DistanceMatrix>("DistanceMatrix", "The matrix which contains the distances between the cities."));
+        DistanceMatrixParameter.ActualName = oldDistanceMatrixParameter.ActualName;
+      }
+      #endregion
     }
 
     public sealed override IOperation Apply() {
       if (UseDistanceMatrixParameter.ActualValue.Value) {
         Permutation p = PermutationParameter.ActualValue;
-        DoubleMatrix dm = DistanceMatrixParameter.ActualValue;
+        DistanceMatrix dm = DistanceMatrixParameter.ActualValue;
 
         if (dm == null) {  // calculate distance matrix
           DoubleMatrix c = CoordinatesParameter.ActualValue;
 
-          dm = new DoubleMatrix(c.Rows, c.Rows);
+          dm = new DistanceMatrix(c.Rows, c.Rows);
           for (int i = 0; i < dm.Rows; i++) {
             for (int j = 0; j < dm.Columns; j++)
               dm[i, j] = CalculateDistance(c[i, 0], c[i, 1], c[j, 0], c[j, 1]);
           }
-          DistanceMatrixParameter.ActualValue = (DoubleMatrix)dm.AsReadOnly();
+          DistanceMatrixParameter.ActualValue = (DistanceMatrix)dm.AsReadOnly();
         }
 
         double length = 0;

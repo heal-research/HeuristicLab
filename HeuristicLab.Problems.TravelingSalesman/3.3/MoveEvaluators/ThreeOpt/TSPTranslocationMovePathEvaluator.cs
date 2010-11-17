@@ -81,7 +81,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       return moveQuality;
     }
 
-    protected override double EvaluateByDistanceMatrix(Permutation permutation, DoubleMatrix distanceMatrix) {
+    protected override double EvaluateByDistanceMatrix(Permutation permutation, DistanceMatrix distanceMatrix) {
       TranslocationMove move = TranslocationMoveParameter.ActualValue;
       int edge1source = permutation.GetCircular(move.Index1 - 1);
       int edge1target = permutation[move.Index1];

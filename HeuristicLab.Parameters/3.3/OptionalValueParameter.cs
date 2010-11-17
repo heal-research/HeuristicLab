@@ -77,6 +77,28 @@ namespace HeuristicLab.Parameters {
       }
     }
 
+    [Storable(DefaultValue = true)]
+    private bool reactOnValueToStringChangedAndValueItemImageChanged;
+    /// <summary>
+    ///   True if this parameter should react on the ToStringChanged and ItemImageChanged events of its value, otherwise false.
+    /// </summary>
+    /// <remarks>
+    ///   In some rare cases when the value of the parameter is not deeply cloned, this property has to be set to false
+    ///   to avoid a memory leak (cf. ticket #1268). In all other cases this property should always be true.
+    /// </remarks>
+    public bool ReactOnValueToStringChangedAndValueItemImageChanged {
+      get { return reactOnValueToStringChangedAndValueItemImageChanged; }
+      set {
+        if (value != reactOnValueToStringChangedAndValueItemImageChanged) {
+          reactOnValueToStringChangedAndValueItemImageChanged = value;
+          if (reactOnValueToStringChangedAndValueItemImageChanged)
+            RegisterValueEvents();
+          else
+            DeregisterValueEvents();
+        }
+      }
+    }
+
     #region Constructors
     [StorableConstructor]
     protected OptionalValueParameter(bool deserializing) : base(deserializing) { }
@@ -84,50 +106,60 @@ namespace HeuristicLab.Parameters {
       : base(original, cloner) {
       value = cloner.Clone(original.value);
       getsCollected = original.getsCollected;
+      reactOnValueToStringChangedAndValueItemImageChanged = original.reactOnValueToStringChangedAndValueItemImageChanged;
       RegisterValueEvents();
     }
     public OptionalValueParameter()
       : base("Anonymous", typeof(T)) {
       this.getsCollected = true;
+      this.reactOnValueToStringChangedAndValueItemImageChanged = true;
     }
     public OptionalValueParameter(string name)
       : base(name, typeof(T)) {
       this.getsCollected = true;
+      this.reactOnValueToStringChangedAndValueItemImageChanged = true;
     }
     public OptionalValueParameter(string name, bool getsCollected)
       : base(name, typeof(T)) {
       this.getsCollected = getsCollected;
+      this.reactOnValueToStringChangedAndValueItemImageChanged = true;
     }
     public OptionalValueParameter(string name, T value)
       : base(name, typeof(T)) {
       this.value = value;
       this.getsCollected = true;
+      this.reactOnValueToStringChangedAndValueItemImageChanged = true;
       RegisterValueEvents();
     }
     public OptionalValueParameter(string name, T value, bool getsCollected)
       : base(name, typeof(T)) {
       this.value = value;
       this.getsCollected = getsCollected;
+      this.reactOnValueToStringChangedAndValueItemImageChanged = true;
       RegisterValueEvents();
     }
     public OptionalValueParameter(string name, string description)
       : base(name, description, typeof(T)) {
       this.getsCollected = true;
+      this.reactOnValueToStringChangedAndValueItemImageChanged = true;
     }
     public OptionalValueParameter(string name, string description, bool getsCollected)
       : base(name, description, typeof(T)) {
       this.getsCollected = getsCollected;
+      this.reactOnValueToStringChangedAndValueItemImageChanged = true;
     }
     public OptionalValueParameter(string name, string description, T value)
       : base(name, description, typeof(T)) {
       this.value = value;
       this.getsCollected = true;
+      this.reactOnValueToStringChangedAndValueItemImageChanged = true;
       RegisterValueEvents();
     }
     public OptionalValueParameter(string name, string description, T value, bool getsCollected)
       : base(name, description, typeof(T)) {
       this.value = value;
       this.getsCollected = getsCollected;
+      this.reactOnValueToStringChangedAndValueItemImageChanged = true;
       RegisterValueEvents();
     }
     #endregion
@@ -142,7 +174,10 @@ namespace HeuristicLab.Parameters {
     }
 
     public override string ToString() {
-      return Name + ": " + (Value != null ? Value.ToString() : "null");
+      if (reactOnValueToStringChangedAndValueItemImageChanged)
+        return Name + ": " + (Value != null ? Value.ToString() : "null");
+      else
+        return Name;
     }
 
     protected override IItem GetActualValue() {
@@ -166,7 +201,7 @@ namespace HeuristicLab.Parameters {
     }
 
     private void RegisterValueEvents() {
-      if (value != null) {
+      if ((value != null) && reactOnValueToStringChangedAndValueItemImageChanged) {
         value.ItemImageChanged += new EventHandler(Value_ItemImageChanged);
         value.ToStringChanged += new EventHandler(Value_ToStringChanged);
       }
