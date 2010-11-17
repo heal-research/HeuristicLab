@@ -54,8 +54,8 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     public ValueParameter<DoubleMatrix> CoordinatesParameter {
       get { return (ValueParameter<DoubleMatrix>)Parameters["Coordinates"]; }
     }
-    public OptionalValueParameter<DoubleMatrix> DistanceMatrixParameter {
-      get { return (OptionalValueParameter<DoubleMatrix>)Parameters["DistanceMatrix"]; }
+    public OptionalValueParameter<DistanceMatrix> DistanceMatrixParameter {
+      get { return (OptionalValueParameter<DistanceMatrix>)Parameters["DistanceMatrix"]; }
     }
     public ValueParameter<BoolValue> UseDistanceMatrixParameter {
       get { return (ValueParameter<BoolValue>)Parameters["UseDistanceMatrix"]; }
@@ -88,7 +88,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       get { return CoordinatesParameter.Value; }
       set { CoordinatesParameter.Value = value; }
     }
-    public DoubleMatrix DistanceMatrix {
+    public DistanceMatrix DistanceMatrix {
       get { return DistanceMatrixParameter.Value; }
       set { DistanceMatrixParameter.Value = value; }
     }
@@ -143,7 +143,6 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     private TravelingSalesmanProblem(TravelingSalesmanProblem original, Cloner cloner)
       : base(original, cloner) {
       this.operators = original.operators.Select(x => (IOperator)cloner.Clone(x)).ToList();
-      this.DistanceMatrixParameter.Value = original.DistanceMatrixParameter.Value;
       AttachEventHandlers();
     }
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -156,12 +155,14 @@ namespace HeuristicLab.Problems.TravelingSalesman {
 
       Parameters.Add(new ValueParameter<BoolValue>("Maximization", "Set to false as the Traveling Salesman Problem is a minimization problem.", new BoolValue(false)));
       Parameters.Add(new ValueParameter<DoubleMatrix>("Coordinates", "The x- and y-Coordinates of the cities."));
-      Parameters.Add(new OptionalValueParameter<DoubleMatrix>("DistanceMatrix", "The matrix which contains the distances between the cities."));
+      Parameters.Add(new OptionalValueParameter<DistanceMatrix>("DistanceMatrix", "The matrix which contains the distances between the cities."));
       Parameters.Add(new ValueParameter<BoolValue>("UseDistanceMatrix", "True if a distance matrix should be calculated and used for evaluation, otherwise false.", new BoolValue(true)));
       Parameters.Add(new ValueParameter<IPermutationCreator>("SolutionCreator", "The operator which should be used to create new TSP solutions.", creator));
       Parameters.Add(new ValueParameter<ITSPEvaluator>("Evaluator", "The operator which should be used to evaluate TSP solutions.", evaluator));
       Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this TSP instance."));
       Parameters.Add(new OptionalValueParameter<Permutation>("BestKnownSolution", "The best known solution of this TSP instance."));
+
+      DistanceMatrixParameter.ReactOnValueToStringChangedAndValueItemImageChanged = false;
 
       Coordinates = new DoubleMatrix(new double[,] {
         { 100, 100 }, { 100, 200 }, { 100, 300 }, { 100, 400 },
@@ -257,6 +258,23 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     private void AfterDeserialization() {
       // BackwardsCompatibility3.3
       #region Backwards compatible code (remove with 3.4)
+      OptionalValueParameter<DoubleMatrix> oldDistanceMatrixParameter = Parameters["DistanceMatrix"] as OptionalValueParameter<DoubleMatrix>;
+      if (oldDistanceMatrixParameter != null) {
+        Parameters.Remove(oldDistanceMatrixParameter);
+        Parameters.Add(new OptionalValueParameter<DistanceMatrix>("DistanceMatrix", "The matrix which contains the distances between the cities."));
+        DistanceMatrixParameter.GetsCollected = oldDistanceMatrixParameter.GetsCollected;
+        DistanceMatrixParameter.ReactOnValueToStringChangedAndValueItemImageChanged = false;
+        if (oldDistanceMatrixParameter.Value != null) {
+          DoubleMatrix oldDM = oldDistanceMatrixParameter.Value;
+          DistanceMatrix newDM = new DistanceMatrix(oldDM.Rows, oldDM.Columns, oldDM.ColumnNames, oldDM.RowNames);
+          newDM.SortableView = oldDM.SortableView;
+          for (int i = 0; i < newDM.Rows; i++)
+            for (int j = 0; j < newDM.Columns; j++)
+              newDM[i, j] = oldDM[i, j];
+          DistanceMatrixParameter.Value = (DistanceMatrix)newDM.AsReadOnly();
+        }
+      }
+
       if (operators == null) InitializeOperators();
       #endregion
       AttachEventHandlers();

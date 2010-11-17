@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -86,14 +87,21 @@ namespace HeuristicLab.Optimization {
     }
 
     private void Initialize(IAlgorithm algorithm) {
-      IAlgorithm clone = (IAlgorithm)algorithm.Clone();
       parameters = new Dictionary<string, IItem>();
       results = new Dictionary<string, IItem>();
-      clone.CollectParameterValues(parameters);
-      clone.CollectResultValues(results);
-      if (clone.StoreAlgorithmInEachRun) {
+
+      if (algorithm.StoreAlgorithmInEachRun) {
+        IAlgorithm clone = (IAlgorithm)algorithm.Clone();
+        clone.CollectParameterValues(parameters);
+        clone.CollectResultValues(results);
         clone.Prepare(true);
         this.algorithm = clone;
+      } else {
+        algorithm.CollectParameterValues(parameters);
+        algorithm.CollectResultValues(results);
+        Cloner cloner = new Cloner();
+        parameters = parameters.Select(x => new KeyValuePair<string, IItem>(x.Key, (IItem)x.Value.Clone(cloner))).ToDictionary(x => x.Key, x => x.Value);
+        results = results.Select(x => new KeyValuePair<string, IItem>(x.Key, (IItem)x.Value.Clone(cloner))).ToDictionary(x => x.Key, x => x.Value);
       }
     }
     [StorableHook(HookType.AfterDeserialization)]

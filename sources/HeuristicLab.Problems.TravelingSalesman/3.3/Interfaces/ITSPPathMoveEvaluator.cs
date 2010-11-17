@@ -26,7 +26,7 @@ using HeuristicLab.Encodings.PermutationEncoding;
 namespace HeuristicLab.Problems.TravelingSalesman {
   public interface ITSPPathMoveEvaluator : ITSPMoveEvaluator, IPermutationMoveOperator {
     ILookupParameter<DoubleMatrix> CoordinatesParameter { get; }
-    ILookupParameter<DoubleMatrix> DistanceMatrixParameter { get; }
+    ILookupParameter<DistanceMatrix> DistanceMatrixParameter { get; }
     ILookupParameter<BoolValue> UseDistanceMatrixParameter { get; }
   }
 }

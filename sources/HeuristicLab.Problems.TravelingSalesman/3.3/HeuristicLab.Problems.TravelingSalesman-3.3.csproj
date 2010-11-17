@@ -108,6 +108,7 @@
     <Compile Include="Analyzers\BestTSPSolutionAnalyzer.cs" />
     <Compile Include="Analyzers\TSPPopulationDiversityAnalyzer.cs" />
     <Compile Include="Analyzers\TSPAlleleFrequencyAnalyzer.cs" />
+    <Compile Include="DistanceMatrix.cs" />
     <Compile Include="Evaluators\TSPEuclideanPathEvaluator.cs" />
     <Compile Include="Evaluators\TSPGeoPathEvaluator.cs" />
     <Compile Include="HeuristicLabProblemsTravelingSalesmanPlugin.cs" />
