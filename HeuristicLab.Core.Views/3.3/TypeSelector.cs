@@ -128,8 +128,7 @@ namespace HeuristicLab.Core.Views {
                   IItem item = (IItem)Activator.CreateInstance(type);
                   imageList.Images.Add(type.FullName, item.ItemImage);
                   typeNode.ImageIndex = imageList.Images.IndexOfKey(type.FullName);
-                }
-                catch (Exception) { }
+                } catch (Exception) { }
               }
               typeNode.SelectedImageIndex = typeNode.ImageIndex;
               typeNode.Tag = type;
@@ -153,17 +152,21 @@ namespace HeuristicLab.Core.Views {
         Invoke(new Action<string>(Filter), searchString);
       else {
         searchString = searchString.ToLower();
-        typesTreeView.BeginUpdate();
+
         if (!searchString.Contains(currentSearchString)) {
+          typesTreeView.BeginUpdate();
           // expand search -> restore all tree nodes
           TreeNode selectedNode = typesTreeView.SelectedNode;
           typesTreeView.Nodes.Clear();
           foreach (TreeNode node in treeNodes)
             typesTreeView.Nodes.Add((TreeNode)node.Clone());
           RestoreSelectedNode(selectedNode);
+          typesTreeView.EndUpdate();
         }
 
+
         // remove nodes
+        typesTreeView.BeginUpdate();
         int i = 0;
         while (i < typesTreeView.Nodes.Count) {
           int j = 0;
