@@ -211,6 +211,7 @@ namespace HeuristicLab.Operators.Programmable {
     }
 
     protected void OnSignatureChanged() {
+      executeMethod = null;
       EventHandler handler = SignatureChanged;
       if (handler != null) handler(this, EventArgs.Empty);
     }
