@@ -9,6 +9,20 @@ namespace HeuristicLab.Operators.Programmable {
   [StorableClass]
   public class ProgrammableSingleSuccessorOperator : ProgrammableOperator {
 
+    public IOperator Successor {
+      get {
+        IParameter parameter;
+        Parameters.TryGetValue("Successor", out parameter);
+        OperatorParameter successorParameter = parameter as OperatorParameter;
+        if (successorParameter == null)
+          return null;
+        return successorParameter.Value;
+      }
+      set {
+        ((OperatorParameter)Parameters["Successor"]).Value = value;
+      }
+    }
+
     [StorableConstructor]
     protected ProgrammableSingleSuccessorOperator(bool deserializing) : base(deserializing) { }
     protected ProgrammableSingleSuccessorOperator(ProgrammableSingleSuccessorOperator original, Cloner cloner)
@@ -23,17 +37,8 @@ namespace HeuristicLab.Operators.Programmable {
       return new ProgrammableSingleSuccessorOperator(this, cloner);
     }
 
-    public override IOperation Apply() {
-      IOperation operation = base.Apply();
-      if (operation != null)
-        return operation;
-      IParameter parameter;
-      Parameters.TryGetValue("Successor", out parameter);
-      OperatorParameter successorParameter = parameter as OperatorParameter;
-      if (successorParameter != null && successorParameter.Value != null)
-        return ExecutionContext.CreateOperation(successorParameter.Value);
-      else
-        return null;
+    public override string MethodSuffix {
+      get { return "return op.Successor == null ? null : context.CreateOperation(op.Successor);"; }
     }
   }
 }
