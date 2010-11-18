@@ -231,11 +231,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
       Dataset = new Dataset(csvFileParser.VariableNames, csvFileParser.Values);
       Dataset.Name = Path.GetFileName(fileName);
       var variableNames = Dataset.VariableNames.Select(x => new StringValue(x).AsReadOnly()).ToList();
-      var validTargetVariables = variableNames.Select(variable => new { Variable = variable, DistinctValues = Dataset.GetVariableValues(variable.Value, 0, 50).Distinct().Count() })
-         .OrderBy(x => x.DistinctValues).Where(x => x.DistinctValues <= MaximumClasses).Select(x => x.Variable);
+
+      var validTargetVariables = from v in variableNames
+                                 let DistinctValues = Dataset.Rows > 50 ? Dataset.GetVariableValues(v.Value, 0, 50).Distinct().Count()
+                                                                        : Dataset.GetVariableValues(v.Value).Distinct().Count()
+                                 where DistinctValues < MaximumClasses
+                                 select v;
+
       if (!validTargetVariables.Any())
         throw new ArgumentException("Import of classification problem data was not successfull, because no target variable was found." +
-          " A target varialbe must have at most " + MaximumClasses + " distinct values to be applicable to classification.");
+          " A target variable must have at most " + MaximumClasses + " distinct values to be applicable to classification.");
 
       ((ConstrainedValueParameter<StringValue>)TargetVariableParameter).ValidValues.Clear();
       foreach (var variableName in validTargetVariables)
@@ -243,7 +248,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
       TargetVariable = validTargetVariables.FirstOrDefault();
 
       InputVariables = new CheckedItemList<StringValue>(variableNames).AsReadOnly();
-      InputVariables.SetItemCheckedState(validTargetVariables.First(), false);
+      if (TargetVariable != null) InputVariables.SetItemCheckedState(TargetVariable, false);
       int middle = (int)(csvFileParser.Rows * 0.5);
       TrainingSamplesEnd = new IntValue(middle);
       TrainingSamplesStart = new IntValue(0);
