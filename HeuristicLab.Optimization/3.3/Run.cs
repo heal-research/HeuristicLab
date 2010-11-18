@@ -100,8 +100,8 @@ namespace HeuristicLab.Optimization {
         algorithm.CollectParameterValues(parameters);
         algorithm.CollectResultValues(results);
         Cloner cloner = new Cloner();
-        parameters = parameters.Select(x => new KeyValuePair<string, IItem>(x.Key, (IItem)x.Value.Clone(cloner))).ToDictionary(x => x.Key, x => x.Value);
-        results = results.Select(x => new KeyValuePair<string, IItem>(x.Key, (IItem)x.Value.Clone(cloner))).ToDictionary(x => x.Key, x => x.Value);
+        parameters = parameters.Select(x => new KeyValuePair<string, IItem>(x.Key, cloner.Clone(x.Value))).ToDictionary(x => x.Key, x => x.Value);
+        results = results.Select(x => new KeyValuePair<string, IItem>(x.Key, cloner.Clone(x.Value))).ToDictionary(x => x.Key, x => x.Value);
       }
     }
     [StorableHook(HookType.AfterDeserialization)]
