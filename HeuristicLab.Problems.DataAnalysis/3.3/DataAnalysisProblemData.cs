@@ -68,8 +68,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
     };
     #endregion
     #region parameter properties
-    public IValueParameter<Dataset> DatasetParameter {
-      get { return (IValueParameter<Dataset>)Parameters["Dataset"]; }
+    public ValueParameter<Dataset> DatasetParameter {
+      get { return (ValueParameter<Dataset>)Parameters["Dataset"]; }
     }
     public IValueParameter<StringValue> TargetVariableParameter {
       get { return (IValueParameter<StringValue>)Parameters["TargetVariable"]; }
@@ -213,6 +213,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Parameters.Add(new ValueParameter<IntValue>("TestSamplesStart", new IntValue(15)));
       Parameters.Add(new ValueParameter<IntValue>("TestSamplesEnd", new IntValue(25)));
       Parameters.Add(new ValueParameter<PercentValue>("ValidationPercentage", "The relative amount of the training samples that should be used as validation set.", new PercentValue(0.5)));
+
+      DatasetParameter.ReactOnValueToStringChangedAndValueItemImageChanged = false;
       RegisterParameterEventHandlers();
       RegisterParameterValueEventHandlers();
     }
@@ -234,6 +236,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Parameters.Add(new ValueParameter<IntValue>("TestSamplesStart", new IntValue(testSamplesStart)));
       Parameters.Add(new ValueParameter<IntValue>("TestSamplesEnd", new IntValue(testSamplesEnd)));
       Parameters.Add(new ValueParameter<PercentValue>("ValidationPercentage", "The relative amount of the training samples that should be used as validation set.", new PercentValue(0.5)));
+
+      DatasetParameter.ReactOnValueToStringChangedAndValueItemImageChanged = false;
       RegisterParameterEventHandlers();
       RegisterParameterValueEventHandlers();
     }
@@ -247,6 +251,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       if (!Parameters.ContainsKey("ValidationPercentage"))
         Parameters.Add(new ValueParameter<PercentValue>("ValidationPercentage", "The relative amount of the training samples that should be used as validation set.", new PercentValue(0.5)));
 
+      DatasetParameter.ReactOnValueToStringChangedAndValueItemImageChanged = false;
       RegisterParameterEventHandlers();
       RegisterParameterValueEventHandlers();
     }
