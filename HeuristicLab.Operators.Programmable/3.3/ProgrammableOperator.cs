@@ -192,6 +192,10 @@ namespace HeuristicLab.Operators.Programmable {
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      // ensure default namespaces and assemblies are present if deserializing old operators
+      namespaces.Add("HeuristicLab.Operators.Programmable");
+      Assemblies[typeof(HeuristicLab.Operators.Operator).Assembly] = true;
+      Assemblies[typeof(HeuristicLab.Operators.Programmable.ProgrammableOperator).Assembly] = true;
       RegisterEvents();
     }
 
@@ -253,13 +257,14 @@ namespace HeuristicLab.Operators.Programmable {
       typeof(System.Collections.Generic.List<>).Assembly,
       typeof(System.Text.StringBuilder).Assembly,
       typeof(System.Data.Linq.DataContext).Assembly,
+      typeof(System.ComponentModel.INotifyPropertyChanged).Assembly,
       typeof(HeuristicLab.Common.IDeepCloneable).Assembly,
       typeof(HeuristicLab.Core.Item).Assembly,
       typeof(HeuristicLab.Data.IntValue).Assembly,
       typeof(HeuristicLab.Parameters.ValueParameter<IItem>).Assembly,
       typeof(HeuristicLab.Collections.ObservableList<IItem>).Assembly,
-      typeof(System.ComponentModel.INotifyPropertyChanged).Assembly,
-
+      typeof(HeuristicLab.Operators.Operator).Assembly,
+      typeof(HeuristicLab.Operators.Programmable.ProgrammableOperator).Assembly,
     };
 
     protected static Dictionary<Assembly, bool> DiscoverAssemblies() {
@@ -292,6 +297,7 @@ namespace HeuristicLab.Operators.Programmable {
         "HeuristicLab.Core",
         "HeuristicLab.Data",
         "HeuristicLab.Parameters",
+        "HeuristicLab.Operators.Programmable",
         "System",
         "System.Collections.Generic",
         "System.Text",
@@ -398,7 +404,7 @@ namespace HeuristicLab.Operators.Programmable {
       get {
         var sb = new StringBuilder()
         .Append("public static IOperation Execute(")
-        .Append(TypeNameParser.Parse(typeof(IOperator).FullName).GetTypeNameInCode(namespaces))
+        .Append(TypeNameParser.Parse(GetType().FullName).GetTypeNameInCode(namespaces))
         .Append(" op, ")
         .Append(TypeNameParser.Parse(typeof(IExecutionContext).FullName).GetTypeNameInCode(namespaces))
         .Append(" context");
@@ -420,7 +426,7 @@ namespace HeuristicLab.Operators.Programmable {
       method.Name = "Execute";
       method.ReturnType = new CodeTypeReference(typeof(IOperation));
       method.Attributes = MemberAttributes.Public | MemberAttributes.Static;
-      method.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IOperator), "op"));
+      method.Parameters.Add(new CodeParameterDeclarationExpression(GetType(), "op"));
       method.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IExecutionContext), "context"));
       foreach (var param in Parameters)
         method.Parameters.Add(new CodeParameterDeclarationExpression(param.GetType(), param.Name));
@@ -428,10 +434,12 @@ namespace HeuristicLab.Operators.Programmable {
       for (int i = 0; i < codeLines.Length; i++) {
         codeLines[i] = string.Format("#line {0} \"ProgrammableOperator\"{1}{2}", i + 1, "\r\n", codeLines[i]);
       }
-      method.Statements.Add(new CodeSnippetStatement(
-        string.Join("\r\n", codeLines) +
-        "\r\nreturn null;"));
+      method.Statements.Add(new CodeSnippetStatement(string.Join("\r\n", codeLines) + MethodSuffix));
       return method;
+    }
+
+    public virtual string MethodSuffix {
+      get { return "return null;"; }
     }
 
     #endregion

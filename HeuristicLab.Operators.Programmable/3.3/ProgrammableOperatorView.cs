@@ -70,9 +70,7 @@ namespace HeuristicLab.Operators.Programmable {
         parameterCollectionView.Content = null;
       } else {
         codeEditor.Prefix = GetGeneratedPrefix();
-        codeEditor.Suffix = @"    return null;
-  }
-}";
+        codeEditor.Suffix = String.Format("    {0}\n  }}\n}}", ProgrammableOperator.MethodSuffix);
         codeEditor.UserCode = ProgrammableOperator.Code;
         if (codeEditor.UserCode == "")
           codeEditor.UserCode = "    \n    \n    \n    \n";
@@ -120,8 +118,7 @@ namespace HeuristicLab.Operators.Programmable {
       try {
         ProgrammableOperator.Compile();
         MessageBox.Show("Compilation successful", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-      }
-      catch (Exception ex) {
+      } catch (Exception ex) {
         ErrorHandling.ShowErrorDialog(this, ex);
       }
       OnContentChanged();
