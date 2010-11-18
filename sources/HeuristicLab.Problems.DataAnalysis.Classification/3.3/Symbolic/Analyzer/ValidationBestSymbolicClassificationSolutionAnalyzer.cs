@@ -268,6 +268,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
           BestValidationQuality = new DoubleValue(bestQuality);
         } else {
           BestValidationSolution.Model = model;
+          BestValidationQuality.Value = bestQuality;
         }
 
         UpdateBestSolutionResults();
