@@ -111,9 +111,9 @@
     <PlatformTarget>x86</PlatformTarget>
     <CodeAnalysisRules>
     </CodeAnalysisRules>
-    <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>Migrated rules for Netron.Diagramming.Core-3.0.2672.12446.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -563,8 +563,6 @@
     <None Include="Docs\View.cd" />
     <None Include="ForUnitTestingPurposesOnly.snk" />
     <None Include="HeuristicLab.snk" />
-    <None Include="Migrated rules for Netron.Diagramming.Core-3.0.2672.12446 %282%29.ruleset" />
-    <None Include="Migrated rules for Netron.Diagramming.Core-3.0.2672.12446.ruleset" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
