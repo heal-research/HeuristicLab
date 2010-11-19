@@ -44,7 +44,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     private TSPAlleleFrequencyAnalyzer(TSPAlleleFrequencyAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public TSPAlleleFrequencyAnalyzer()
       : base() {
-      Parameters.Add(new LookupParameter<DoubleMatrix>("Coordinates", "The x- and y-Coordinates of the cities."));
+      Parameters.Add(new LookupParameter<DoubleMatrix>("Coordinates", "The x- and y-coordinates of the cities."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
