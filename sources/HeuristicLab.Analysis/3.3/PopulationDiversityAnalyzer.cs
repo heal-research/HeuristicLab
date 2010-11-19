@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -122,6 +123,10 @@ namespace HeuristicLab.Analysis {
             for (int j = 0; j < count; j++) {
               if (i != j) {
                 similarity = similarities[i, j];
+
+                if ((similarity < 0) || (similarity > 1))
+                  throw new InvalidOperationException("Solution similarities have to be in the interval [0;1].");
+
                 if (minSimilarities[i] > similarity) minSimilarities[i] = similarity;
                 avgSimilarities[i] += similarity;
                 if (maxSimilarities[i] < similarity) maxSimilarities[i] = similarity;
