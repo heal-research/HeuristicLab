@@ -83,8 +83,8 @@ namespace HeuristicLab.Problems.VehicleRouting {
     public LookupParameter<DoubleValue> BestKnownQualityParameter {
       get { return (LookupParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
     }
-    public LookupParameter<VRPSolution> BestKnownSolutionParameter {
-      get { return (LookupParameter<VRPSolution>)Parameters["BestKnownSolution"]; }
+    public LookupParameter<IVRPEncoding> BestKnownSolutionParameter {
+      get { return (LookupParameter<IVRPEncoding>)Parameters["BestKnownSolution"]; }
     }
 
     [StorableConstructor]
@@ -103,7 +103,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       Parameters.Add(new LookupParameter<DoubleArray>("ServiceTime", "The service time of each customer."));
 
       Parameters.Add(new LookupParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this VRP instance."));
-      Parameters.Add(new LookupParameter<VRPSolution>("BestKnownSolution", "The best known solution of this VRP instance."));
+      Parameters.Add(new LookupParameter<IVRPEncoding>("BestKnownSolution", "The best known solution of this VRP instance."));
 
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The qualities of the VRP solutions which should be analyzed."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Distance", "The distances of the VRP solutions which should be analyzed."));
@@ -126,7 +126,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
         Parameters.Add(new LookupParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this VRP instance."));
       }
       if (!Parameters.ContainsKey("BestKnownSolution")) {
-        Parameters.Add(new LookupParameter<VRPSolution>("BestKnownSolution", "The best known solution of this VRP instance."));
+        Parameters.Add(new LookupParameter<IVRPEncoding>("BestKnownSolution", "The best known solution of this VRP instance."));
       }
       #endregion
     }
@@ -184,7 +184,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       if (bestKnownQuality == null ||
           qualities[i].Value < bestKnownQuality.Value) {
         BestKnownQualityParameter.ActualValue = new DoubleValue(qualities[i].Value);
-        BestKnownSolutionParameter.ActualValue = (VRPSolution)solution.Clone();
+        BestKnownSolutionParameter.ActualValue = (IVRPEncoding)best.Clone();
       }
 
       return base.Apply();
