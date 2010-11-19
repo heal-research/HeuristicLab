@@ -281,16 +281,6 @@ namespace HeuristicLab.Analysis.Views {
           if (!invisibleSeries.Contains(rowSeries)) {
             rowSeries.Points.Clear();
             FillSeriesWithRowValues(rowSeries, row);
-            //foreach (IndexedItem<double> item in e.Items) {
-            //  var value = item.Value;
-            //  DataPoint point = new DataPoint();
-            //  point.XValue = row.VisualProperties.StartIndexZero ? item.Index : item.Index + 1;
-            //  if (IsInvalidValue(item.Value))
-            //    point.IsEmpty = true;
-            //  else
-            //    point.YValues = new double[] { value };
-            //  rowSeries.Points.Add(point);
-            //}
             UpdateYCursorInterval();
           }
         }
@@ -307,11 +297,6 @@ namespace HeuristicLab.Analysis.Views {
           if (!invisibleSeries.Contains(rowSeries)) {
             rowSeries.Points.Clear();
             FillSeriesWithRowValues(rowSeries, row);
-            //List<DataPoint> points = new List<DataPoint>();
-            //foreach (IndexedItem<double> item in e.Items)
-            //  points.Add(rowSeries.Points[item.Index]);
-            //foreach (DataPoint point in points)
-            //  rowSeries.Points.Remove(point);
             UpdateYCursorInterval();
           }
         }

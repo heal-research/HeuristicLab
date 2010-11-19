@@ -106,8 +106,17 @@ namespace HeuristicLab.Analysis {
 
         // calculate index of current best solution
         int bestIndex = -1;
-        if (!max) bestIndex = qualities.Select((x, index) => new { index, x.Value }).OrderBy(x => x.Value).First().index;
-        else bestIndex = qualities.Select((x, index) => new { index, x.Value }).OrderByDescending(x => x.Value).First().index;
+        if (!max) {
+          bestIndex = qualities
+            .Select((x, index) => new { index, x.Value })
+            .OrderBy(x => x.Value)
+            .First().index;
+        } else {
+          bestIndex = qualities
+            .Select((x, index) => new { index, x.Value })
+            .OrderByDescending(x => x.Value)
+            .First().index;
+        }
 
         // calculate allels of current best and (if available) best known solution
         Allele[] bestAlleles = CalculateAlleles(solutions[bestIndex]);
