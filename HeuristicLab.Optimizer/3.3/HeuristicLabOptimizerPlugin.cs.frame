@@ -23,7 +23,7 @@ using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Optimizer {
-  [Plugin("HeuristicLab.Optimizer", "3.3.1.$WCREV$")]
+  [Plugin("HeuristicLab.Optimizer", "3.3.2.$WCREV$")]
   [PluginFile("HeuristicLab.Optimizer-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Clients.Common", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
