@@ -123,19 +123,29 @@ namespace HeuristicLab.Data.Views {
       rowsTextBox.Enabled = true;
       columnsTextBox.Text = Content.Columns.ToString();
       columnsTextBox.Enabled = true;
+      virtualRowIndizes = Enumerable.Range(0, Content.Rows).ToArray();
+
+      if (Content.Columns == 0 && dataGridView.ColumnCount != Content.Columns && !Content.ReadOnly)
+        Content.Columns = dataGridView.ColumnCount;
+      else {
+        DataGridViewColumn[] columns = new DataGridViewColumn[Content.Columns];
+        for (int i = 0; i < columns.Length; ++i) {
+          var column = new DataGridViewTextBoxColumn();
+          column.FillWeight = 1;
+          columns[i] = column;
+        }
+        dataGridView.Columns.Clear();
+        dataGridView.Columns.AddRange(columns);
+      }
 
       //DataGridViews with rows but no columns are not allowed !
       if (Content.Rows == 0 && dataGridView.RowCount != Content.Rows && !Content.ReadOnly)
         Content.Rows = dataGridView.RowCount;
       else
         dataGridView.RowCount = Content.Rows;
-      if (Content.Columns == 0 && dataGridView.ColumnCount != Content.Columns && !Content.ReadOnly)
-        Content.Columns = dataGridView.ColumnCount;
-      else
-        dataGridView.ColumnCount = Content.Columns;
+
 
       ClearSorting();
-
       UpdateColumnHeaders();
       UpdateRowHeaders();
 
