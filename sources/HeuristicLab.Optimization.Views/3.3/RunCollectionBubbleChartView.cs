@@ -231,18 +231,10 @@ namespace HeuristicLab.Optimization.Views {
       double? yValue;
       double? sizeValue;
       Series series = this.chart.Series[0];
-      int row = this.Content.ToList().IndexOf(run);
 
-      if (!xAxisComboBox.DroppedDown)
-        this.xAxisValue = (string)xAxisComboBox.SelectedItem;
-      if (!yAxisComboBox.DroppedDown)
-        this.yAxisValue = (string)yAxisComboBox.SelectedItem;
-      if (!sizeComboBox.DroppedDown)
-        this.sizeAxisValue = (string)sizeComboBox.SelectedItem;
-
-      xValue = GetValue(run, this.xAxisValue);
-      yValue = GetValue(run, this.yAxisValue);
-      sizeValue = GetValue(run, this.sizeAxisValue);
+      xValue = GetValue(run, xAxisValue);
+      yValue = GetValue(run, yAxisValue);
+      sizeValue = GetValue(run, sizeAxisValue);
 
       if (xValue.HasValue && yValue.HasValue && sizeValue.HasValue) {
         xValue = xValue.Value;
@@ -507,6 +499,14 @@ namespace HeuristicLab.Optimization.Views {
       bool axisSelected = xAxisComboBox.SelectedIndex != -1 && yAxisComboBox.SelectedIndex != -1;
       xTrackBar.Enabled = yTrackBar.Enabled = axisSelected;
       colorXAxisButton.Enabled = colorYAxisButton.Enabled = axisSelected;
+
+      if (!xAxisComboBox.DroppedDown)
+        xAxisValue = (string)xAxisComboBox.SelectedItem;
+      if (!yAxisComboBox.DroppedDown)
+        yAxisValue = (string)yAxisComboBox.SelectedItem;
+      if (!sizeComboBox.DroppedDown)
+        sizeAxisValue = (string)sizeComboBox.SelectedItem;
+
       UpdateDataPoints();
       UpdateAxisLabels();
     }
@@ -583,22 +583,23 @@ namespace HeuristicLab.Optimization.Views {
 
     #region automatic coloring
     private void colorXAxisButton_Click(object sender, EventArgs e) {
-      double minValue = chart.Series[0].Points.Min(p => p.XValue);
-      double maxValue = chart.Series[0].Points.Max(p => p.XValue);
-      foreach (DataPoint point in chart.Series[0].Points) {
-        int colorIndex = (int)((ColorGradient.Colors.Count - 1) * (point.XValue - minValue) / (maxValue - minValue));
-        IRun run = point.Tag as IRun;
-        if (run != null) run.Color = ColorGradient.Colors[colorIndex];
-      }
+      ColorRuns(xAxisValue);
     }
 
     private void colorYAxisButton_Click(object sender, EventArgs e) {
-      double minValue = chart.Series[0].Points.Min(p => p.YValues[0]);
-      double maxValue = chart.Series[0].Points.Max(p => p.YValues[0]);
-      foreach (DataPoint point in chart.Series[0].Points) {
-        int colorIndex = (int)((ColorGradient.Colors.Count - 1) * (point.YValues[0] - minValue) / (maxValue - minValue));
-        IRun run = point.Tag as IRun;
-        if (run != null) run.Color = ColorGradient.Colors[colorIndex];
+      ColorRuns(yAxisValue);
+    }
+
+    private void ColorRuns(string axisValue) {
+      var runs = Content.Select(r => new { Run = r, Value = GetValue(r, axisValue) }).Where(r => r.Value.HasValue);
+      double minValue = runs.Min(r => r.Value.Value);
+      double maxValue = runs.Max(r => r.Value.Value);
+      double range = maxValue - minValue;
+
+      foreach (var r in runs) {
+        int colorIndex = 0;
+        if (!range.IsAlmost(0)) colorIndex = (int)((ColorGradient.Colors.Count - 1) * (r.Value.Value - minValue) / (maxValue - minValue));
+        r.Run.Color = ColorGradient.Colors[colorIndex];
       }
     }
     #endregion
