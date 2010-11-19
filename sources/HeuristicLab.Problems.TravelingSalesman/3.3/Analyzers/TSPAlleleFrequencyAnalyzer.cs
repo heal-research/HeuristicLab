@@ -38,6 +38,9 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     public LookupParameter<DoubleMatrix> CoordinatesParameter {
       get { return (LookupParameter<DoubleMatrix>)Parameters["Coordinates"]; }
     }
+    public LookupParameter<DistanceMatrix> DistanceMatrixParameter {
+      get { return (LookupParameter<DistanceMatrix>)Parameters["DistanceMatrix"]; }
+    }
 
     [StorableConstructor]
     private TSPAlleleFrequencyAnalyzer(bool deserializing) : base(deserializing) { }
@@ -45,6 +48,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     public TSPAlleleFrequencyAnalyzer()
       : base() {
       Parameters.Add(new LookupParameter<DoubleMatrix>("Coordinates", "The x- and y-coordinates of the cities."));
+      Parameters.Add(new LookupParameter<DistanceMatrix>("DistanceMatrix", "The matrix which contains the distances between the cities."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -54,23 +58,24 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     protected override Allele[] CalculateAlleles(Permutation solution) {
       Allele[] alleles = new Allele[solution.Length];
       DoubleMatrix coords = CoordinatesParameter.ActualValue;
+      DistanceMatrix dm = DistanceMatrixParameter.ActualValue;
+      int source, target, h;
+      double impact;
 
-      for (int i = 0; i < solution.Length - 1; i++)
-        alleles[i] = CreateAllele(solution[i], solution[i + 1], coords);
-      alleles[alleles.Length - 1] = CreateAllele(solution[solution.Length - 1], solution[0], coords);
+      for (int i = 0; i < solution.Length - 1; i++) {
+        source = solution[i];
+        target = solution[i + 1];
+        if (source > target) { h = source; source = target; target = h; }
+        impact = dm != null ? dm[source, target] : CalculateLength(coords[source, 0], coords[source, 1], coords[target, 0], coords[target, 1]);
+        alleles[i] = new Allele(source.ToString() + "-" + target.ToString(), impact);
+      }
+      source = solution[solution.Length - 1];
+      target = solution[0];
+      if (source > target) { h = source; source = target; target = h; }
+      impact = dm != null ? dm[source, target] : CalculateLength(coords[source, 0], coords[source, 1], coords[target, 0], coords[target, 1]);
+      alleles[alleles.Length - 1] = new Allele(source.ToString() + "-" + target.ToString(), impact);
 
       return alleles;
-    }
-
-    private Allele CreateAllele(int source, int target, DoubleMatrix coords) {
-      if (source > target) {
-        int h = source;
-        source = target;
-        target = h;
-      }
-
-      return new Allele(source.ToString() + "-" + target.ToString(),
-                        CalculateLength(coords[source, 0], coords[source, 1], coords[target, 0], coords[target, 1]));
     }
 
     private double CalculateLength(double x1, double y1, double x2, double y2) {
