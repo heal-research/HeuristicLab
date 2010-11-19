@@ -38,8 +38,9 @@ namespace HeuristicLab.Analysis {
     public string Title {
       get { return title; }
       set {
-        if (!(title.Equals(value) || (value == null) && (title == string.Empty))) {
-          title = value == null ? string.Empty : value;
+        if (value == null) value = string.Empty;
+        if (title != value) {
+          title = value;
           OnTitleChanged();
         }
       }

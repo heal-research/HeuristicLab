@@ -74,11 +74,14 @@ namespace HeuristicLab.Analysis {
     public override IOperation Apply() {
       int updateInterval = UpdateIntervalParameter.Value.Value;
       IntValue updateCounter = UpdateCounterParameter.ActualValue;
+      // if counter does not yet exist then initialize it with update interval 
+      // to make sure the solutions are analyzed on the first application of this operator
       if (updateCounter == null) {
         updateCounter = new IntValue(updateInterval);
         UpdateCounterParameter.ActualValue = updateCounter;
       } else updateCounter.Value++;
 
+      //analyze solutions only every 'updateInterval' times
       if (updateCounter.Value == updateInterval) {
         updateCounter.Value = 0;
 
@@ -92,18 +95,26 @@ namespace HeuristicLab.Analysis {
           // sort solutions by quality
           T[] sortedSolutions = null;
           if (max)
-            sortedSolutions = solutions.Select((x, index) => new { Solution = x, Quality = qualities[index] }).OrderByDescending(x => x.Quality).Select(x => x.Solution).ToArray();
+            sortedSolutions = solutions
+              .Select((x, index) => new { Solution = x, Quality = qualities[index] })
+              .OrderByDescending(x => x.Quality)
+              .Select(x => x.Solution)
+              .ToArray();
           else
-            sortedSolutions = solutions.Select((x, index) => new { Solution = x, Quality = qualities[index] }).OrderBy(x => x.Quality).Select(x => x.Solution).ToArray();
+            sortedSolutions = solutions
+              .Select((x, index) => new { Solution = x, Quality = qualities[index] })
+              .OrderBy(x => x.Quality)
+              .Select(x => x.Solution)
+              .ToArray();
 
           // calculate solution similarities
           double[,] similarities = CalculateSimilarities(sortedSolutions);
 
           // calculate minimum, average and maximum similarities
           double similarity;
-          double[] minSimilarities = new double[sortedSolutions.Length];
-          double[] avgSimilarities = new double[sortedSolutions.Length];
-          double[] maxSimilarities = new double[sortedSolutions.Length];
+          double[] minSimilarities = new double[count];
+          double[] avgSimilarities = new double[count];
+          double[] maxSimilarities = new double[count];
           for (int i = 0; i < count; i++) {
             minSimilarities[i] = 1;
             avgSimilarities[i] = 0;
