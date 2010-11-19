@@ -113,8 +113,8 @@ namespace HeuristicLab.Problems.VehicleRouting {
     IParameter ISingleObjectiveProblem.BestKnownQualityParameter {
       get { return BestKnownQualityParameter; }
     }
-    public OptionalValueParameter<IVRPEncoding> BestKnownSolutionParameter {
-      get { return (OptionalValueParameter<IVRPEncoding>)Parameters["BestKnownSolution"]; }
+    public OptionalValueParameter<VRPSolution> BestKnownSolutionParameter {
+      get { return (OptionalValueParameter<VRPSolution>)Parameters["BestKnownSolution"]; }
     }
     #endregion
 
@@ -159,7 +159,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       get { return BestKnownQualityParameter.Value; }
       set { BestKnownQualityParameter.Value = value; }
     }
-    public IVRPEncoding BestKnownSolution {
+    public VRPSolution BestKnownSolution {
       get { return BestKnownSolutionParameter.Value; }
       set { BestKnownSolutionParameter.Value = value; }
     }
@@ -218,7 +218,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       Parameters.Add(new ValueParameter<DoubleArray>("DueTime", "The due time of each customer.", new DoubleArray()));
       Parameters.Add(new ValueParameter<DoubleArray>("ServiceTime", "The service time of each customer.", new DoubleArray()));
       Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this VRP instance."));
-      Parameters.Add(new OptionalValueParameter<IVRPEncoding>("BestKnownSolution", "The best known solution of this TSP instance."));
+      Parameters.Add(new OptionalValueParameter<VRPSolution>("BestKnownSolution", "The best known solution of this VRP instance."));
       Parameters.Add(new ValueParameter<DoubleValue>("EvalFleetUsageFactor", "The fleet usage factor considered in the evaluation.", new DoubleValue(100)));
       Parameters.Add(new ValueParameter<DoubleValue>("EvalTimeFactor", "The time factor considered in the evaluation.", new DoubleValue(0)));
       Parameters.Add(new ValueParameter<DoubleValue>("EvalDistanceFactor", "The distance factor considered in the evaluation.", new DoubleValue(1)));
@@ -439,7 +439,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     private void AfterDeserializationHook() {
       #region Backwards Compatibility
       if (!Parameters.ContainsKey("BestKnownSolution")) {
-        Parameters.Add(new OptionalValueParameter<IVRPEncoding>("BestKnownSolution", "The best known solution of this TSP instance."));
+        Parameters.Add(new OptionalValueParameter<VRPSolution>("BestKnownSolution", "The best known solution of this TSP instance."));
       }
       #endregion
 
@@ -672,11 +672,11 @@ namespace HeuristicLab.Problems.VehicleRouting {
     private void EvalBestKnownSolution() {
       if (BestKnownSolution != null) {
         //call evaluator
-        IValueParameter<DoubleMatrix> distMatrix = new ValueParameter<DoubleMatrix>("DistMatrix",
+        IValueLookupParameter<DoubleMatrix> distMatrix = new ValueLookupParameter<DoubleMatrix>("DistMatrix",
           DistanceMatrix);
 
         TourEvaluation eval = VRPEvaluator.Evaluate(
-          BestKnownSolution,
+          BestKnownSolution.Solution,
           Vehicles,
           DueTime,
           ServiceTime,
@@ -693,6 +693,14 @@ namespace HeuristicLab.Problems.VehicleRouting {
           UseDistanceMatrix);
 
         DistanceMatrix = distMatrix.Value;
+
+        BestKnownSolution.DistanceMatrix = DistanceMatrix;
+        BestKnownSolution.Distance = new DoubleValue(eval.Distance);
+        BestKnownSolution.Overload = new DoubleValue(eval.Overload);
+        BestKnownSolution.Quality = new DoubleValue(eval.Quality);
+        BestKnownSolution.Tardiness = new DoubleValue(eval.Tardiness);
+        BestKnownSolution.TravelTime = new DoubleValue(eval.TravelTime);
+        BestKnownSolution.VehicleUtilization = new DoubleValue(eval.VehcilesUtilized);
 
         BestKnownQuality = new DoubleValue(eval.Quality);
       } else {
@@ -716,9 +724,19 @@ namespace HeuristicLab.Problems.VehicleRouting {
       }
 
       if (cities != Coordinates.Rows - 1)
-        ErrorHandling.ShowErrorDialog(new Exception("Invalid solution"));
-      else
-        BestKnownSolutionParameter.Value = encoding;
+        ErrorHandling.ShowErrorDialog(new Exception("The optimal solution does not seem to correspond  with the problem data."));
+      else {
+        VRPSolution solution = new VRPSolution();
+        solution.Solution = encoding;
+        solution.Coordinates = Coordinates;
+        solution.DistanceMatrix = DistanceMatrix;
+        solution.ReadyTime = ReadyTime;
+        solution.DueTime = DueTime;
+        solution.ServiceTime = ServiceTime;
+        solution.UseDistanceMatrix = UseDistanceMatrix;
+
+        BestKnownSolutionParameter.Value = solution;
+      }
     }
 
     public void ImportFromORLib(string orFileName) {

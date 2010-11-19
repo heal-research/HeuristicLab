@@ -56,6 +56,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
         vrpFileName = openVRPFileDialog.FileName;
         okButton.Enabled = true;
 
+        tourFileTextBox.Text = string.Empty;
+        tourFileName = string.Empty;
+
         format = (VRPFormat)(openVRPFileDialog.FilterIndex);
       }
     }

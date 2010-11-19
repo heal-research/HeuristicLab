@@ -80,6 +80,12 @@ namespace HeuristicLab.Problems.VehicleRouting {
     public ValueLookupParameter<ResultCollection> ResultsParameter {
       get { return (ValueLookupParameter<ResultCollection>)Parameters["Results"]; }
     }
+    public LookupParameter<DoubleValue> BestKnownQualityParameter {
+      get { return (LookupParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
+    }
+    public LookupParameter<VRPSolution> BestKnownSolutionParameter {
+      get { return (LookupParameter<VRPSolution>)Parameters["BestKnownSolution"]; }
+    }
 
     [StorableConstructor]
     private BestVRPSolutionAnalyzer(bool deserializing) : base(deserializing) { }
@@ -96,6 +102,9 @@ namespace HeuristicLab.Problems.VehicleRouting {
       Parameters.Add(new LookupParameter<DoubleArray>("DueTime", "The due time of each customer."));
       Parameters.Add(new LookupParameter<DoubleArray>("ServiceTime", "The service time of each customer."));
 
+      Parameters.Add(new LookupParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this VRP instance."));
+      Parameters.Add(new LookupParameter<VRPSolution>("BestKnownSolution", "The best known solution of this VRP instance."));
+
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The qualities of the VRP solutions which should be analyzed."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Distance", "The distances of the VRP solutions which should be analyzed."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Overload", "The overloads of the VRP solutions which should be analyzed."));
@@ -110,6 +119,18 @@ namespace HeuristicLab.Problems.VehicleRouting {
       return new BestVRPSolutionAnalyzer(this, cloner);
     }
 
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserializationHook() {
+      #region Backwards Compatibility
+      if (!Parameters.ContainsKey("BestKnownQuality")) {
+        Parameters.Add(new LookupParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this VRP instance."));
+      }
+      if (!Parameters.ContainsKey("BestKnownSolution")) {
+        Parameters.Add(new LookupParameter<VRPSolution>("BestKnownSolution", "The best known solution of this VRP instance."));
+      }
+      #endregion
+    }
+
     public override IOperation Apply() {
       DoubleMatrix coordinates = CoordinatesParameter.ActualValue;
       ItemArray<IVRPEncoding> solutions = VRPToursParameter.ActualValue;
@@ -120,6 +141,8 @@ namespace HeuristicLab.Problems.VehicleRouting {
       ItemArray<DoubleValue> distances = DistanceParameter.ActualValue;
       ItemArray<DoubleValue> travelTimes = TravelTimeParameter.ActualValue;
       ItemArray<DoubleValue> vehiclesUtilizations = VehiclesUtilizedParameter.ActualValue;
+
+      DoubleValue bestKnownQuality = BestKnownQualityParameter.ActualValue;
 
       int i = qualities.Select((x, index) => new { index, x.Value }).OrderBy(x => x.Value).First().index;
 
@@ -156,6 +179,12 @@ namespace HeuristicLab.Problems.VehicleRouting {
           solution.DueTime = DueTimeParameter.ActualValue;
           solution.ServiceTime = ServiceTimeParameter.ActualValue;
         }
+      }
+
+      if (bestKnownQuality == null ||
+          qualities[i].Value < bestKnownQuality.Value) {
+        BestKnownQualityParameter.ActualValue = new DoubleValue(qualities[i].Value);
+        BestKnownSolutionParameter.ActualValue = (VRPSolution)solution.Clone();
       }
 
       return base.Apply();
