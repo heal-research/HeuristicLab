@@ -25,6 +25,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System.Text;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("TourEncoding", "Represents a base class for tour encodings of VRP solutions.")]
@@ -66,6 +67,12 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
 
     public TourEncoding() {
       Tours = new ItemList<Tour>();
+
+      Tours.ToStringChanged += new System.EventHandler(Tours_ToStringChanged);
+    }
+
+    void Tours_ToStringChanged(object sender, System.EventArgs e) {
+      this.OnToStringChanged();
     }
 
     [StorableConstructor]
@@ -94,6 +101,21 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
           tour.Cities.Add(route[i]);
         }
       }
+    }
+
+    public override string ToString() {
+      StringBuilder sb = new StringBuilder();
+
+      foreach (Tour tour in Tours) {
+        foreach (int city in tour.Cities) {
+          sb.Append(city);
+          sb.Append(" ");
+        }
+
+        sb.AppendLine();
+      }
+
+      return sb.ToString(); 
     }
   }
 }

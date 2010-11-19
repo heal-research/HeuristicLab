@@ -110,6 +110,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="VRPEncodingView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VRPEncodingView.Designer.cs">
+      <DependentUpon>VRPEncodingView.cs</DependentUpon>
+    </Compile>
     <Compile Include="HeuristicLabProblemsVehicleRoutingViewsPlugin.cs" />
     <Compile Include="VRPImportDialog.cs">
       <SubType>Form</SubType>

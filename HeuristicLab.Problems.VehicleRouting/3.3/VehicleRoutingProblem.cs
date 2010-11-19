@@ -199,7 +199,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
     private VehicleRoutingProblem(VehicleRoutingProblem original, Cloner cloner)
       : base(original, cloner) {
       operators = original.operators.Select(x => (IOperator)cloner.Clone(x)).ToList();
-      DistanceMatrixParameter.Value = DistanceMatrixParameter.Value;
       AttachEventHandlers();
     }
     public VehicleRoutingProblem()
