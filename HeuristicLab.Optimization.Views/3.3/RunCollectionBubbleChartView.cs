@@ -53,15 +53,18 @@ namespace HeuristicLab.Optimization.Views {
 
     public RunCollectionBubbleChartView() {
       InitializeComponent();
+      chart.ContextMenuStrip.Items.Insert(0, openBoxPlotViewToolStripMenuItem);
 
       runToDataPointMapping = new Dictionary<IRun, DataPoint>();
       categoricalMapping = new Dictionary<int, Dictionary<object, double>>();
       xJitter = new Dictionary<IRun, double>();
       yJitter = new Dictionary<IRun, double>();
       random = new Random();
+
       colorDialog.Color = Color.Black;
       colorButton.Image = this.GenerateImage(16, 16, this.colorDialog.Color);
       isSelecting = false;
+
       chart.CustomizeAllChartAreas();
       chart.ChartAreas[0].CursorX.Interval = 1;
       chart.ChartAreas[0].CursorY.Interval = 1;
