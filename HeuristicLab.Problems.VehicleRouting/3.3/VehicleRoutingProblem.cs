@@ -619,6 +619,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
       this.Name = parser.ProblemName;
 
+      BestKnownSolution = null;
       Coordinates = new DoubleMatrix(parser.Coordinates);
       Vehicles.Value = parser.Vehicles;
       Capacity.Value = parser.Capacity;
@@ -635,9 +636,9 @@ namespace HeuristicLab.Problems.VehicleRouting {
       parser.Parse();
 
       this.Name = parser.Name;
-
       int problemSize = parser.Demands.Length;
 
+      BestKnownSolution = null;
       Coordinates = new DoubleMatrix(parser.Vertices);
       if (parser.Vehicles != -1)
         Vehicles.Value = parser.Vehicles;
@@ -660,10 +661,10 @@ namespace HeuristicLab.Problems.VehicleRouting {
       }
 
       if (parser.Depot != 1)
-        throw new Exception("Invalid depot specification");
+        ErrorHandling.ShowErrorDialog(new Exception("Invalid depot specification"));
 
       if (parser.WeightType != TSPLIBParser.TSPLIBEdgeWeightType.EUC_2D)
-        throw new Exception("Invalid weight type");
+        ErrorHandling.ShowErrorDialog(new Exception("Invalid weight type"));
 
       OnReset();
     }
@@ -671,7 +672,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     private void EvalBestKnownSolution() {
       if (BestKnownSolution != null) {
         //call evaluator
-        IValueLookupParameter<DoubleMatrix> distMatrix = new ValueLookupParameter<DoubleMatrix>("DistMatrix",
+        IValueParameter<DoubleMatrix> distMatrix = new ValueParameter<DoubleMatrix>("DistMatrix",
           DistanceMatrix);
 
         TourEvaluation eval = VRPEvaluator.Evaluate(
@@ -715,9 +716,9 @@ namespace HeuristicLab.Problems.VehicleRouting {
       }
 
       if (cities != Coordinates.Rows - 1)
-        throw new Exception("Invalid solution");
-
-      BestKnownSolutionParameter.Value = encoding;
+        ErrorHandling.ShowErrorDialog(new Exception("Invalid solution"));
+      else
+        BestKnownSolutionParameter.Value = encoding;
     }
 
     public void ImportFromORLib(string orFileName) {
@@ -727,6 +728,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       this.Name = parser.Name;
       int problemSize = parser.Demands.Length;
 
+      BestKnownSolution = null;
       Coordinates = new DoubleMatrix(parser.Vertices);
       Vehicles.Value = problemSize - 1;
       Capacity.Value = parser.Capacity;

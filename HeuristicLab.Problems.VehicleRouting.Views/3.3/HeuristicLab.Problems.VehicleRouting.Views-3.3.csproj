@@ -111,6 +111,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HeuristicLabProblemsVehicleRoutingViewsPlugin.cs" />
+    <Compile Include="VRPImportDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VRPImportDialog.Designer.cs">
+      <DependentUpon>VRPImportDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="VRPSolutionView.cs">
       <SubType>UserControl</SubType>
     </Compile>

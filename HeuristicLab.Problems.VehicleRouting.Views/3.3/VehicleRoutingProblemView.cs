@@ -26,11 +26,14 @@ using HeuristicLab.Core.Views;
 using HeuristicLab.Data;
 using HeuristicLab.MainForm;
 using HeuristicLab.Parameters;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.VehicleRouting.Views {
   [View("VehicleRouting Problem View")]
   [Content(typeof(VehicleRoutingProblem), true)]
   public partial class VehicleRoutingProblemView : NamedItemView {
+    private VRPImportDialog vrpImportDialog;
+    
     public new VehicleRoutingProblem Content {
       get { return (VehicleRoutingProblem)base.Content; }
       set { base.Content = value; }
@@ -66,44 +69,36 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
       base.SetEnabledStateOfControls();
       parameterCollectionView.Enabled = Content != null;
       vrpSolutionView.Enabled = Content != null;
-      importBestButton.Enabled = importButton.Enabled = importButton2.Enabled = importButton3.Enabled = Content != null && !ReadOnly;
+      importButton.Enabled = Content != null && !ReadOnly;
     }
 
     private void importButton_Click(object sender, EventArgs e) {
-      OpenFileDialog dialog = new OpenFileDialog();
-      dialog.Filter = "Solomon files (*.txt)|*.txt";
+      if (vrpImportDialog == null) vrpImportDialog = new VRPImportDialog();
 
-      if (dialog.ShowDialog() == DialogResult.OK) {
-        Content.ImportFromSolomon(dialog.FileName);
+      if (vrpImportDialog.ShowDialog(this) == DialogResult.OK) {
+        try {
+          switch (vrpImportDialog.Format) {
+            case VRPFormat.TSPLib:
+              Content.ImportFromTSPLib(vrpImportDialog.VRPFileName);
+              break;
+
+            case VRPFormat.Solomon:
+              Content.ImportFromSolomon(vrpImportDialog.VRPFileName);
+              break;
+
+            case VRPFormat.ORLib:
+              Content.ImportFromORLib(vrpImportDialog.VRPFileName);
+              break;
+          }
+
+          if(!string.IsNullOrEmpty(vrpImportDialog.TourFileName))
+            Content.ImportSolution(vrpImportDialog.TourFileName);
+         }
+        catch (Exception ex) {
+          ErrorHandling.ShowErrorDialog(this, ex);
+        }
       }
     }
-
-    private void importButton2_Click(object sender, EventArgs e) {
-      OpenFileDialog dialog = new OpenFileDialog();
-      dialog.Filter = "TSPLib files (*.vrp)|*.vrp";
-
-      if (dialog.ShowDialog() == DialogResult.OK) {
-        Content.ImportFromTSPLib(dialog.FileName);
-      }
-    }
-
-    private void importBestButton_Click(object sender, EventArgs e) {
-      OpenFileDialog dialog = new OpenFileDialog();
-      dialog.Filter = "VRP solution files (*.opt)|*.opt";
-
-      if (dialog.ShowDialog() == DialogResult.OK) {
-        Content.ImportSolution(dialog.FileName);
-      }
-    }
-
-    private void importButton3_Click(object sender, EventArgs e) {
-      OpenFileDialog dialog = new OpenFileDialog();
-      dialog.Filter = "ORLib files (*.txt)|*.txt";
-
-      if (dialog.ShowDialog() == DialogResult.OK) {
-        Content.ImportFromORLib(dialog.FileName);
-      }
-    }  
 
     private void CoordinatesParameter_ValueChanged(object sender, EventArgs e) {
       vrpSolutionView.Content.Coordinates = Content.Coordinates;

@@ -115,7 +115,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     internal static TourEvaluation EvaluateTour(Tour tour, DoubleArray dueTimeArray,
       DoubleArray serviceTimeArray, DoubleArray readyTimeArray, DoubleArray demandArray, DoubleValue capacity,
       DoubleValue fleetUsageFactor, DoubleValue timeFactor, DoubleValue distanceFactor, DoubleValue overloadPenalty, DoubleValue tardinessPenalty,
-      DoubleMatrix coordinates, ILookupParameter<DoubleMatrix> distanceMatrix, BoolValue useDistanceMatrix) {
+      DoubleMatrix coordinates, IParameter distanceMatrix, BoolValue useDistanceMatrix) {
       TourEvaluation eval = new TourEvaluation();
 
       double quality = 0.0;
@@ -189,7 +189,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     public static TourEvaluation Evaluate(IVRPEncoding solution, IntValue vehicles, DoubleArray dueTimeArray, 
       DoubleArray serviceTimeArray, DoubleArray readyTimeArray, DoubleArray demandArray, DoubleValue capacity,
       DoubleValue fleetUsageFactor, DoubleValue timeFactor, DoubleValue distanceFactor, DoubleValue overloadPenalty, DoubleValue tardinessPenalty,
-      DoubleMatrix coordinates, ILookupParameter<DoubleMatrix> distanceMatrix, BoolValue useDistanceMatrix) {
+      DoubleMatrix coordinates, IParameter distanceMatrix, BoolValue useDistanceMatrix) {
       TourEvaluation sumEval = new TourEvaluation();
       sumEval.Distance = 0;
       sumEval.Quality = 0;
@@ -198,7 +198,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       sumEval.Overload = 0;
       sumEval.Tardiness = 0;
 
-      foreach (Tour tour in solution.GetTours(distanceMatrix)) {
+      foreach (Tour tour in solution.GetTours(distanceMatrix as ILookupParameter<DoubleMatrix>)) {
         TourEvaluation eval = EvaluateTour(tour, dueTimeArray, serviceTimeArray, readyTimeArray, demandArray, capacity,
           fleetUsageFactor, timeFactor, distanceFactor, overloadPenalty, tardinessPenalty,
           coordinates, distanceMatrix, useDistanceMatrix);
