@@ -108,7 +108,42 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
       if (Content.BestKnownSolution == null)
         vrpSolutionView.Content = new VRPSolution(Content.Coordinates);
       else {
-        vrpSolutionView.Content = Content.BestKnownSolution;
+        //call evaluator
+        IValueLookupParameter<DoubleMatrix> distMatrix = new ValueLookupParameter<DoubleMatrix>("DistMatrix",
+          Content.DistanceMatrix);
+
+        TourEvaluation eval = VRPEvaluator.Evaluate(
+          Content.BestKnownSolution,
+          Content.Vehicles,
+          Content.DueTime,
+          Content.ServiceTime,
+          Content.ReadyTime,
+          Content.Demand,
+          Content.Capacity,
+          Content.FleetUsageFactorParameter.Value,
+          Content.TimeFactorParameter.Value,
+          Content.DistanceFactorParameter.Value,
+          Content.OverloadPenaltyParameter.Value,
+          Content.TardinessPenaltyParameter.Value,
+          Content.Coordinates,
+          distMatrix,
+          Content.UseDistanceMatrix);
+
+        Content.DistanceMatrix = distMatrix.Value;
+
+        vrpSolutionView.Content = new VRPSolution(Content.Coordinates,
+          Content.BestKnownSolution,
+          new DoubleValue(eval.Quality),
+          new DoubleValue(eval.Distance),
+          new DoubleValue(eval.Overload),
+          new DoubleValue(eval.Tardiness),
+          new DoubleValue(eval.TravelTime),
+          new DoubleValue(eval.VehcilesUtilized),
+          Content.DistanceMatrix,
+          Content.UseDistanceMatrix,
+          Content.ReadyTime,
+          Content.DueTime,
+          Content.ServiceTime);
       }
     }
 
