@@ -217,7 +217,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       Parameters.Add(new ValueParameter<DoubleArray>("DueTime", "The due time of each customer.", new DoubleArray()));
       Parameters.Add(new ValueParameter<DoubleArray>("ServiceTime", "The service time of each customer.", new DoubleArray()));
       Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this VRP instance."));
-      Parameters.Add(new OptionalValueParameter<IVRPEncoding>("BestKnownSolution", "The best known solution of this TSP instance."));
+      Parameters.Add(new OptionalValueParameter<IVRPEncoding>("BestKnownSolution", "The best known solution of this VRP instance."));
       Parameters.Add(new ValueParameter<DoubleValue>("EvalFleetUsageFactor", "The fleet usage factor considered in the evaluation.", new DoubleValue(100)));
       Parameters.Add(new ValueParameter<DoubleValue>("EvalTimeFactor", "The time factor considered in the evaluation.", new DoubleValue(0)));
       Parameters.Add(new ValueParameter<DoubleValue>("EvalDistanceFactor", "The distance factor considered in the evaluation.", new DoubleValue(1)));
@@ -715,7 +715,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       }
 
       if (cities != Coordinates.Rows - 1)
-        ErrorHandling.ShowErrorDialog(new Exception("Invalid solution"));
+        ErrorHandling.ShowErrorDialog(new Exception("The optimal solution does not seem to correspond  with the problem data."));
       else
         BestKnownSolutionParameter.Value = encoding;
     }
