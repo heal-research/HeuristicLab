@@ -110,6 +110,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Documents\GA_VRP.hl" />
+    <EmbeddedResource Include="Documents\SGP-SymbolicClassification-Mammographic.hl" />
     <None Include="HeuristicLabOptimizerPlugin.cs.frame" />
     <Compile Include="CreateExperimentDialog.cs">
       <SubType>Form</SubType>
