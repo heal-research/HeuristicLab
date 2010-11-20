@@ -4,6 +4,11 @@ SET /A COUNT=0
 FOR /F "tokens=*" %%A IN ('dir /B *.sln') DO (
   CALL :forloopbody "%%A")
 
+IF "%COUNT%"=="1" (
+  SET SELECTED=%SOLUTIONS.1%
+  ECHO Building %SOLUTIONS.1% as it is the only solution that was found ...
+  GOTO :config_platform_selection)
+
 ECHO Found the following solutions:
 FOR /F "tokens=2* delims=.=" %%A IN ('SET SOLUTIONS.') DO ECHO %%A = %%B
 ECHO.
@@ -15,13 +20,15 @@ IF "%%A"=="%SOLUTIONINDEX%" SET SELECTED=%%B)
 
 IF %SELECTED%=="" GOTO :eof
 
+:config_platform_selection
 SET /P CONFIGURATION=Which configuration to build [Debug]: 
 IF "%CONFIGURATION%"=="" SET CONFIGURATION=Debug
 SET /P PLATFORM=Which platform to build [Any CPU]: 
 IF "%PLATFORM%"=="" SET PLATFORM=Any CPU
 
 REM First find the path to the msbuild.exe by performing a registry query
-FOR /F "tokens=1,3 delims=	 " %%A IN ('REG QUERY "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\MSBuild\ToolsVersions\4.0"') DO IF "%%A"=="MSBuildToolsPath" SET MSBUILDPATH=%%B
+FOR /F "tokens=1,3 delims=	 " %%A IN ('REG QUERY "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\MSBuild\ToolsVersions\4.0"') DO (
+  IF "%%A"=="MSBuildToolsPath" SET MSBUILDPATH=%%B)
 
 REM Then execute msbuild to clean and build the solution
 REM Disable that msbuild creates a cache file of the solution
