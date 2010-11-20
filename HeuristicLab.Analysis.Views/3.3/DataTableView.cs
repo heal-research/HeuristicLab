@@ -66,6 +66,7 @@ namespace HeuristicLab.Analysis.Views {
     protected override void DeregisterContentEvents() {
       foreach (DataRow row in Content.Rows)
         DeregisterDataRowEvents(row);
+      Content.VisualPropertiesChanged -= new EventHandler(Content_VisualPropertiesChanged);
       Content.Rows.ItemsAdded -= new CollectionItemsChangedEventHandler<DataRow>(Rows_ItemsAdded);
       Content.Rows.ItemsRemoved -= new CollectionItemsChangedEventHandler<DataRow>(Rows_ItemsRemoved);
       Content.Rows.ItemsReplaced -= new CollectionItemsChangedEventHandler<DataRow>(Rows_ItemsReplaced);
@@ -79,6 +80,7 @@ namespace HeuristicLab.Analysis.Views {
     /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
+      Content.VisualPropertiesChanged += new EventHandler(Content_VisualPropertiesChanged);
       Content.Rows.ItemsAdded += new CollectionItemsChangedEventHandler<DataRow>(Rows_ItemsAdded);
       Content.Rows.ItemsRemoved += new CollectionItemsChangedEventHandler<DataRow>(Rows_ItemsRemoved);
       Content.Rows.ItemsReplaced += new CollectionItemsChangedEventHandler<DataRow>(Rows_ItemsReplaced);
@@ -91,11 +93,17 @@ namespace HeuristicLab.Analysis.Views {
       base.OnContentChanged();
       invisibleSeries.Clear();
       chart.Titles[0].Text = string.Empty;
+      chart.ChartAreas[0].AxisX.Title = string.Empty;
+      chart.ChartAreas[0].AxisY.Title = string.Empty;
+      chart.ChartAreas[0].AxisY2.Title = string.Empty;
       chart.Series.Clear();
       if (Content != null) {
         chart.Titles[0].Text = Content.Name;
         foreach (DataRow row in Content.Rows)
           AddDataRow(row);
+        chart.ChartAreas[0].AxisX.Title = Content.VisualProperties.XAxisTitle;
+        chart.ChartAreas[0].AxisY.Title = Content.VisualProperties.YAxisTitle;
+        chart.ChartAreas[0].AxisY2.Title = Content.VisualProperties.SecondYAxisTitle;
       }
     }
 
@@ -185,6 +193,15 @@ namespace HeuristicLab.Analysis.Views {
       else {
         chart.Titles[0].Text = Content.Name;
         base.Content_NameChanged(sender, e);
+      }
+    }
+    private void Content_VisualPropertiesChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_VisualPropertiesChanged), sender, e);
+      else {
+        chart.ChartAreas[0].AxisX.Title = Content.VisualProperties.XAxisTitle;
+        chart.ChartAreas[0].AxisY.Title = Content.VisualProperties.YAxisTitle;
+        chart.ChartAreas[0].AxisY2.Title = Content.VisualProperties.SecondYAxisTitle;
       }
     }
     private void Rows_ItemsAdded(object sender, CollectionItemsChangedEventArgs<DataRow> e) {

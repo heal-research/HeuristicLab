@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using HeuristicLab.Collections;
@@ -40,38 +41,85 @@ namespace HeuristicLab.Analysis {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Performance; }
     }
 
-    [Storable]
+    private DataTableVisualProperties visualProperties;
+    public DataTableVisualProperties VisualProperties {
+      get { return visualProperties; }
+      set {
+        if (visualProperties != value) {
+          if (value == null) throw new ArgumentNullException("VisualProperties");
+          if (visualProperties != null) visualProperties.PropertyChanged -= new PropertyChangedEventHandler(VisualProperties_PropertyChanged);
+          visualProperties = value;
+          visualProperties.PropertyChanged += new PropertyChangedEventHandler(VisualProperties_PropertyChanged);
+          OnVisualPropertiesChanged();
+        }
+      }
+    }
+
     private NamedItemCollection<DataRow> rows;
     public NamedItemCollection<DataRow> Rows {
       get { return rows; }
     }
 
-    #region Storing & Cloning
+    #region Persistence Properties
+    [Storable(Name = "VisualProperties")]
+    private DataTableVisualProperties StorableVisualProperties {
+      get { return VisualProperties; }
+      set { VisualProperties = value; }
+    }
+    [Storable(Name = "rows")]
+    private IEnumerable<DataRow> StorableRows {
+      get { return rows; }
+      set { rows = new NamedItemCollection<DataRow>(value); }
+    }
+    #endregion
+
     [StorableConstructor]
     private DataTable(bool deserializing) : base(deserializing) { }
     private DataTable(DataTable original, Cloner cloner)
       : base(original, cloner) {
+      this.VisualProperties = (DataTableVisualProperties)cloner.Clone(original.visualProperties);
       this.rows = cloner.Clone(original.rows);
       this.RegisterRowsEvents();
     }
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new DataTable(this, cloner);
-    }
-    #endregion
     public DataTable()
       : base() {
+      VisualProperties = new DataTableVisualProperties();
       rows = new NamedItemCollection<DataRow>();
       this.RegisterRowsEvents();
     }
     public DataTable(string name)
       : base(name) {
+      VisualProperties = new DataTableVisualProperties();
       rows = new NamedItemCollection<DataRow>();
       this.RegisterRowsEvents();
     }
     public DataTable(string name, string description)
       : base(name, description) {
+      VisualProperties = new DataTableVisualProperties();
       rows = new NamedItemCollection<DataRow>();
       this.RegisterRowsEvents();
+    }
+
+    // BackwardsCompatibility3.3
+    #region Backwards compatible code, remove with 3.4
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (VisualProperties == null) VisualProperties = new DataTableVisualProperties();
+    }
+    #endregion
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new DataTable(this, cloner);
+    }
+
+    public event EventHandler VisualPropertiesChanged;
+    private void OnVisualPropertiesChanged() {
+      EventHandler handler = VisualPropertiesChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
+
+    private void VisualProperties_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+      OnVisualPropertiesChanged();
     }
 
     private void RegisterRowsEvents() {
