@@ -118,12 +118,6 @@ namespace HeuristicLab.Analysis {
       color = Color.Empty;
       startIndexZero = false;
     }
-    public DataRowVisualProperties(DataRowChartType chartType, bool secondYAxis, Color color, bool startIndexZero) {
-      this.chartType = chartType;
-      this.secondYAxis = secondYAxis;
-      this.color = color;
-      this.startIndexZero = startIndexZero;
-    }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new DataRowVisualProperties(this, cloner);

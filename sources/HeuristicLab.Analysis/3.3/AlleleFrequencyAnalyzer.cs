@@ -171,7 +171,9 @@ namespace HeuristicLab.Analysis {
         DataTable allelesTable;
         if (!results.ContainsKey("Alleles")) {
           allelesTable = new DataTable("Alleles");
-          results.Add(new Result("Alleles", allelesTable));
+          allelesTable.VisualProperties.XAxisTitle = "Iteration";
+          allelesTable.VisualProperties.YAxisTitle = "Number of Alleles";
+          allelesTable.VisualProperties.SecondYAxisTitle = "Number of Alleles";
 
           allelesTable.Rows.Add(new DataRow("Unique Alleles"));
           allelesTable.Rows["Unique Alleles"].VisualProperties.StartIndexZero = true;
@@ -191,6 +193,8 @@ namespace HeuristicLab.Analysis {
           allelesTable.Rows.Add(new DataRow("Lost Alleles of Best Known Solution", null));
           allelesTable.Rows["Lost Alleles of Best Known Solution"].VisualProperties.SecondYAxis = true;
           allelesTable.Rows["Lost Alleles of Best Known Solution"].VisualProperties.StartIndexZero = true;
+
+          results.Add(new Result("Alleles", allelesTable));
         } else {
           allelesTable = (DataTable)results["Alleles"].Value;
         }
