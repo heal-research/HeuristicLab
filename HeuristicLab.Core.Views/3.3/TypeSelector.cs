@@ -128,7 +128,8 @@ namespace HeuristicLab.Core.Views {
                   IItem item = (IItem)Activator.CreateInstance(type);
                   imageList.Images.Add(type.FullName, item.ItemImage);
                   typeNode.ImageIndex = imageList.Images.IndexOfKey(type.FullName);
-                } catch (Exception) { }
+                }
+                catch (Exception) { }
               }
               typeNode.SelectedImageIndex = typeNode.ImageIndex;
               typeNode.Tag = type;

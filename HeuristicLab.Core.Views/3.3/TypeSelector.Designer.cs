@@ -46,7 +46,6 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TypeSelector));
       this.typesTreeView = new System.Windows.Forms.TreeView();
       this.imageList = new System.Windows.Forms.ImageList(this.components);
       this.typesGroupBox = new System.Windows.Forms.GroupBox();
@@ -57,9 +56,9 @@ namespace HeuristicLab.Core.Views {
       this.typeParametersGroupBox = new System.Windows.Forms.GroupBox();
       this.setTypeParameterButton = new System.Windows.Forms.Button();
       this.typeParametersListView = new System.Windows.Forms.ListView();
+      this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.descriptionTextBox = new System.Windows.Forms.TextBox();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-      this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
       this.typesGroupBox.SuspendLayout();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
@@ -83,10 +82,10 @@ namespace HeuristicLab.Core.Views {
       this.typesTreeView.SelectedImageIndex = 0;
       this.typesTreeView.ShowNodeToolTips = true;
       this.typesTreeView.Size = new System.Drawing.Size(219, 287);
-      this.typesTreeView.TabIndex = 0;
-      this.typesTreeView.VisibleChanged += new System.EventHandler(this.typesTreeView_VisibleChanged);
-      this.typesTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.typesTreeView_AfterSelect);
+      this.typesTreeView.TabIndex = 2;
       this.typesTreeView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.typesTreeView_ItemDrag);
+      this.typesTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.typesTreeView_AfterSelect);
+      this.typesTreeView.VisibleChanged += new System.EventHandler(this.typesTreeView_VisibleChanged);
       // 
       // imageList
       // 
@@ -121,7 +120,7 @@ namespace HeuristicLab.Core.Views {
       this.splitContainer.Panel2.Controls.Add(this.descriptionTextBox);
       this.splitContainer.Size = new System.Drawing.Size(225, 595);
       this.splitContainer.SplitterDistance = 471;
-      this.splitContainer.TabIndex = 2;
+      this.splitContainer.TabIndex = 0;
       // 
       // typeParametersSplitContainer
       // 
@@ -151,7 +150,7 @@ namespace HeuristicLab.Core.Views {
       this.searchLabel.Location = new System.Drawing.Point(3, 3);
       this.searchLabel.Name = "searchLabel";
       this.searchLabel.Size = new System.Drawing.Size(20, 20);
-      this.searchLabel.TabIndex = 1;
+      this.searchLabel.TabIndex = 0;
       this.toolTip.SetToolTip(this.searchLabel, "Enter string to search for types");
       // 
       // searchTextBox
@@ -161,7 +160,7 @@ namespace HeuristicLab.Core.Views {
       this.searchTextBox.Location = new System.Drawing.Point(29, 3);
       this.searchTextBox.Name = "searchTextBox";
       this.searchTextBox.Size = new System.Drawing.Size(193, 20);
-      this.searchTextBox.TabIndex = 2;
+      this.searchTextBox.TabIndex = 1;
       this.toolTip.SetToolTip(this.searchTextBox, "Enter string to search for types");
       this.searchTextBox.TextChanged += new System.EventHandler(this.searchTextBox_TextChanged);
       // 
