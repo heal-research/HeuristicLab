@@ -78,7 +78,7 @@ namespace HeuristicLab.Core.Views {
       this.typeSelector.Location = new System.Drawing.Point(12, 12);
       this.typeSelector.Name = "typeSelector";
       this.typeSelector.Size = new System.Drawing.Size(584, 520);
-      this.typeSelector.TabIndex = 3;
+      this.typeSelector.TabIndex = 0;
       this.typeSelector.SelectedTypeChanged += new System.EventHandler(this.typeSelector_SelectedTypeChanged);
       // 
       // TypeSelectorDialog
