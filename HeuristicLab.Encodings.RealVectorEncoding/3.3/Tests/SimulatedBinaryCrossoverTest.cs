@@ -97,8 +97,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
       try {
         RealVector actual;
         actual = target.Cross(random, parents);
-      }
-      catch (System.ArgumentException) {
+      } catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);
@@ -109,8 +108,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
       try {
         RealVector actual;
         actual = target.Cross(random, parents);
-      }
-      catch (System.ArgumentException) {
+      } catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);
@@ -131,7 +129,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
       contiguity = new DoubleValue(0.3);
       parent1 = new RealVector(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1 });
       parent2 = new RealVector(new double[] { 0.4, 0.1, 0.3, 0.2, 0.8 });
-      expected = new RealVector(new double[] { 1.11032829834638, -0.0145477755417797, 0.3, 0.5, 0.1 });
+      expected = new RealVector(new double[] { 0.644880972204315, 0.0488239539275703, 0.3, 0.5, 0.1 });
       actual = SimulatedBinaryCrossover.Apply(random, parent1, parent2, contiguity);
       Assert.IsTrue(Auxiliary.RealVectorIsAlmostEqualByPosition(actual, expected));
       // The following test is not based on published examples
@@ -143,8 +141,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
       exceptionFired = false;
       try {
         actual = SimulatedBinaryCrossover.Apply(random, parent1, parent2, contiguity);
-      }
-      catch (System.ArgumentException) {
+      } catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);
@@ -157,8 +154,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
       exceptionFired = false;
       try {
         actual = SimulatedBinaryCrossover.Apply(random, parent1, parent2, contiguity);
-      }
-      catch (System.ArgumentException) {
+      } catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);
