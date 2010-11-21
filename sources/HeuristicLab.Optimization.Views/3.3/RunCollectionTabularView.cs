@@ -23,15 +23,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using HeuristicLab.Core;
+using HeuristicLab.Common;
 using HeuristicLab.Data.Views;
 using HeuristicLab.MainForm;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization.Views {
   [View("RunCollection Tabular View")]
   [Content(typeof(RunCollection), false)]
   public sealed partial class RunCollectionTabularView : StringConvertibleMatrixView {
     private int[] runToRowMapping;
+    private bool suppressUpdates = false;
     public RunCollectionTabularView() {
       InitializeComponent();
       dataGridView.RowHeaderMouseDoubleClick += new DataGridViewCellMouseEventHandler(dataGridView_RowHeaderMouseDoubleClick);
@@ -61,6 +63,7 @@ namespace HeuristicLab.Optimization.Views {
       Content.ItemsAdded += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
       Content.ItemsRemoved += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
       Content.CollectionReset += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
+      Content.UpdateOfRunsInProgress += new EventHandler<EventArgs<bool>>(Content_UpdateOfRunsInProgress);
       RegisterRunEvents(Content);
     }
     private void RegisterRunEvents(IEnumerable<IRun> runs) {
@@ -72,6 +75,7 @@ namespace HeuristicLab.Optimization.Views {
       Content.ItemsAdded -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
       Content.ItemsRemoved -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
       Content.CollectionReset -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
+      Content.UpdateOfRunsInProgress -= new EventHandler<EventArgs<bool>>(Content_UpdateOfRunsInProgress);
       DeregisterRunEvents(Content);
     }
     private void DeregisterRunEvents(IEnumerable<IRun> runs) {
@@ -112,21 +116,31 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void UpdateRun(IRun run) {
-      int runIndex = GetIndexOfRun(run);
-      int rowIndex = runToRowMapping[runIndex];
-      this.dataGridView.Rows[rowIndex].Visible = run.Visible;
-      this.dataGridView.Rows[rowIndex].DefaultCellStyle.ForeColor = run.Color;
+      foreach (int runIndex in GetIndexOfRun(run)) {
+        int rowIndex = runToRowMapping[runIndex];
+        this.dataGridView.Rows[rowIndex].Visible = run.Visible;
+        this.dataGridView.Rows[rowIndex].DefaultCellStyle.ForeColor = run.Color;
+      }
       this.UpdateRowHeaders();
     }
 
-    private int GetIndexOfRun(IRun run) {
+
+    private void Content_UpdateOfRunsInProgress(object sender, Common.EventArgs<bool> e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler<EventArgs<bool>>(Content_UpdateOfRunsInProgress), sender, e);
+      else {
+        suppressUpdates = e.Value;
+        if (!suppressUpdates) UpdateRowAttributes();
+      }
+    }
+
+    private IEnumerable<int> GetIndexOfRun(IRun run) {
       int i = 0;
       foreach (IRun actualRun in Content) {
         if (actualRun == run)
-          return i;
+          yield return i;
         i++;
       }
-      throw new ArgumentException("Run " + run.Name + "could not be found in the RunCollection.");
     }
 
     private void dataGridView_RowHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e) {
@@ -142,9 +156,7 @@ namespace HeuristicLab.Optimization.Views {
 
     protected override void ClearSorting() {
       base.ClearSorting();
-      runToRowMapping = new int[Content.Count];
-      for (int i = 0; i < runToRowMapping.Length; i++)
-        runToRowMapping[i] = i;
+      runToRowMapping = Enumerable.Range(0, Content.Count).ToArray();
       UpdateRowAttributes();
     }
 
@@ -175,6 +187,7 @@ namespace HeuristicLab.Optimization.Views {
         this.dataGridView.Rows[rowIndex].DefaultCellStyle.ForeColor = run.Color;
         runIndex++;
       }
+      UpdateRowHeaders();
     }
 
     public class RunCollectionRowComparer : IComparer<int> {

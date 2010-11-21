@@ -38,6 +38,7 @@ namespace HeuristicLab.Optimization.Views {
     private const string BoxPlotSeriesName = "BoxPlotSeries";
     private const string BoxPlotChartAreaName = "BoxPlotChartArea";
 
+    private bool suppressUpdates = false;
     private string xAxisValue;
     private string yAxisValue;
     private Dictionary<int, Dictionary<object, double>> categoricalMapping;
@@ -45,12 +46,12 @@ namespace HeuristicLab.Optimization.Views {
 
     public RunCollectionBoxPlotView() {
       InitializeComponent();
-      this.categoricalMapping = new Dictionary<int, Dictionary<object, double>>();
-      this.seriesCache = new SortedDictionary<double, Series>();
-      this.chart.ChartAreas[0].Visible = false;
-      this.chart.Series.Clear();
-      this.chart.ChartAreas.Add(BoxPlotChartAreaName);
-      this.chart.CustomizeAllChartAreas();
+      categoricalMapping = new Dictionary<int, Dictionary<object, double>>();
+      seriesCache = new SortedDictionary<double, Series>();
+      chart.ChartAreas[0].Visible = false;
+      chart.Series.Clear();
+      chart.ChartAreas.Add(BoxPlotChartAreaName);
+      chart.CustomizeAllChartAreas();
     }
 
     public new RunCollection Content {
@@ -69,6 +70,7 @@ namespace HeuristicLab.Optimization.Views {
       Content.ItemsAdded += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
       Content.ItemsRemoved += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
       Content.CollectionReset += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
+      Content.UpdateOfRunsInProgress += new EventHandler<EventArgs<bool>>(Content_UpdateOfRunsInProgress);
       RegisterRunEvents(Content);
     }
     protected override void DeregisterContentEvents() {
@@ -78,6 +80,7 @@ namespace HeuristicLab.Optimization.Views {
       Content.ItemsAdded -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
       Content.ItemsRemoved -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
       Content.CollectionReset -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
+      Content.UpdateOfRunsInProgress -= new EventHandler<EventArgs<bool>>(Content_UpdateOfRunsInProgress);
       DeregisterRunEvents(Content);
     }
 
@@ -100,6 +103,14 @@ namespace HeuristicLab.Optimization.Views {
     private void Content_ItemsAdded(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IRun> e) {
       RegisterRunEvents(e.Items);
     }
+    private void Content_UpdateOfRunsInProgress(object sender, EventArgs<bool> e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler<EventArgs<bool>>(Content_UpdateOfRunsInProgress), sender, e);
+      else {
+        suppressUpdates = e.Value;
+        if (!suppressUpdates) UpdateDataPoints();
+      }
+    }
 
     private void Content_Reset(object sender, EventArgs e) {
       if (InvokeRequired)
@@ -119,7 +130,7 @@ namespace HeuristicLab.Optimization.Views {
     private void run_Changed(object sender, EventArgs e) {
       if (InvokeRequired)
         this.Invoke(new EventHandler(run_Changed), sender, e);
-      else {
+      else if (!suppressUpdates) {
         IRun run = (IRun)sender;
         UpdateDataPoints();
       }
@@ -325,10 +336,13 @@ namespace HeuristicLab.Optimization.Views {
 
     #region GUI events
     private void UpdateNoRunsVisibleLabel() {
-      if (this.chart.Series.Count > 0)
+      if (this.chart.Series.Count > 0) {
         noRunsLabel.Visible = false;
-      else
+        splitContainer.Panel2Collapsed = !showStatisticsCheckBox.Checked;
+      } else {
         noRunsLabel.Visible = true;
+        splitContainer.Panel2Collapsed = true;
+      }
     }
 
     private void AxisComboBox_SelectedIndexChanged(object sender, EventArgs e) {

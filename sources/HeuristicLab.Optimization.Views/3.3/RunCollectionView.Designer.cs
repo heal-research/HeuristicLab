@@ -301,22 +301,22 @@ namespace HeuristicLab.Optimization.Views {
 
     #endregion
 
-    protected System.Windows.Forms.SplitContainer splitContainer;
-    protected System.Windows.Forms.ColumnHeader columnHeader1;
-    protected GroupBox itemsGroupBox;
-    protected ListView itemsListView;
-    protected GroupBox detailsGroupBox;
-    protected Button removeButton;
-    protected ToolTip toolTip;
-    protected ImageList imageList;
-    protected HeuristicLab.MainForm.WindowsForms.ViewHost viewHost;
-    protected ToolStrip toolStrip;
-    protected ToolStripDropDownButton analyzeRunsToolStripDropDownButton;
-    protected TabControl tabControl;
-    protected TabPage runPage;
-    protected TabPage constraintPage;
-    protected RunCollectionConstraintCollectionView runCollectionConstraintCollectionView;
-    protected Button clearButton;
-    protected CheckBox showDetailsCheckBox;
+    private System.Windows.Forms.SplitContainer splitContainer;
+    private System.Windows.Forms.ColumnHeader columnHeader1;
+    private GroupBox itemsGroupBox;
+    private ListView itemsListView;
+    private GroupBox detailsGroupBox;
+    private Button removeButton;
+    private ToolTip toolTip;
+    private ImageList imageList;
+    private HeuristicLab.MainForm.WindowsForms.ViewHost viewHost;
+    private ToolStrip toolStrip;
+    private ToolStripDropDownButton analyzeRunsToolStripDropDownButton;
+    private TabControl tabControl;
+    private TabPage runPage;
+    private TabPage constraintPage;
+    private RunCollectionConstraintCollectionView runCollectionConstraintCollectionView;
+    private Button clearButton;
+    private CheckBox showDetailsCheckBox;
   }
 }

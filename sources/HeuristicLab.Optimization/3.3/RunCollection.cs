@@ -284,12 +284,22 @@ namespace HeuristicLab.Optimization {
     public bool SetValue(string value, int rowIndex, int columnIndex) { throw new NotSupportedException(); }
     #endregion
 
+    #region
+    public event EventHandler<EventArgs<bool>> UpdateOfRunsInProgress;
+    public void OnUpdateOfRunsInProgress(bool inProgress) {
+      var handler = UpdateOfRunsInProgress;
+      if (handler != null) handler(this, new EventArgs<bool>(inProgress));
+    }
+    #endregion
+
     #region filtering
     private void UpdateFiltering(bool reset) {
+      OnUpdateOfRunsInProgress(true);
       if (reset)
         list.ForEach(r => r.Visible = true);
       foreach (IRunCollectionConstraint constraint in this.constraints)
         constraint.Check();
+      OnUpdateOfRunsInProgress(false);
     }
 
     private void RegisterConstraintsEvents() {
