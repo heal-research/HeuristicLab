@@ -34,7 +34,9 @@ namespace HeuristicLab.Optimization.Views {
   [View("RunCollection View")]
   [Content(typeof(RunCollection), true)]
   [Content(typeof(IItemCollection<IRun>), false)]
-  public partial class RunCollectionView : ItemView {
+  public sealed partial class RunCollectionView : ItemView {
+    private Dictionary<IRun, List<ListViewItem>> runListViewItemMapping;
+
     public new IItemCollection<IRun> Content {
       get { return (IItemCollection<IRun>)base.Content; }
       set { base.Content = value; }
@@ -51,6 +53,7 @@ namespace HeuristicLab.Optimization.Views {
     public RunCollectionView() {
       InitializeComponent();
       itemsGroupBox.Text = "Runs";
+      runListViewItemMapping = new Dictionary<IRun, List<ListViewItem>>();
     }
 
     protected override void DeregisterContentEvents() {
@@ -67,11 +70,11 @@ namespace HeuristicLab.Optimization.Views {
       Content.CollectionReset += new CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
       RegisterRunEvents(Content);
     }
-    protected virtual void RegisterRunEvents(IEnumerable<IRun> runs) {
+    private void RegisterRunEvents(IEnumerable<IRun> runs) {
       foreach (IRun run in runs)
         run.Changed += new EventHandler(Run_Changed);
     }
-    protected virtual void DeregisterRunEvents(IEnumerable<IRun> runs) {
+    private void DeregisterRunEvents(IEnumerable<IRun> runs) {
       foreach (IRun run in runs)
         run.Changed -= new EventHandler(Run_Changed);
     }
@@ -142,7 +145,7 @@ namespace HeuristicLab.Optimization.Views {
       }
     }
 
-    protected virtual ListViewItem CreateListViewItem(IRun item) {
+    private ListViewItem CreateListViewItem(IRun item) {
       ListViewItem listViewItem = new ListViewItem();
       listViewItem.Text = item.ToString();
       listViewItem.ToolTipText = item.ItemName + ": " + item.ItemDescription;
@@ -159,38 +162,48 @@ namespace HeuristicLab.Optimization.Views {
       }
       return listViewItem;
     }
-    protected virtual void AddListViewItem(ListViewItem listViewItem) {
+    private void AddListViewItem(ListViewItem listViewItem) {
       itemsListView.Items.Add(listViewItem);
-      ((IRun)listViewItem.Tag).ItemImageChanged += new EventHandler(Item_ItemImageChanged);
-      ((IRun)listViewItem.Tag).ToStringChanged += new EventHandler(Item_ToStringChanged);
+      IRun run = listViewItem.Tag as IRun;
+      if (run != null) {
+        if (!runListViewItemMapping.ContainsKey(run))
+          runListViewItemMapping.Add(run, new List<ListViewItem>());
+        runListViewItemMapping[run].Add(listViewItem);
+        run.ItemImageChanged += new EventHandler(Item_ItemImageChanged);
+        run.ToStringChanged += new EventHandler(Item_ToStringChanged);
+      }
     }
-    protected virtual void RemoveListViewItem(ListViewItem listViewItem) {
-      ((IRun)listViewItem.Tag).ItemImageChanged -= new EventHandler(Item_ItemImageChanged);
-      ((IRun)listViewItem.Tag).ToStringChanged -= new EventHandler(Item_ToStringChanged);
+    private void RemoveListViewItem(ListViewItem listViewItem) {
+      IRun run = listViewItem.Tag as IRun;
+      if (run != null) {
+        runListViewItemMapping[run].Remove(listViewItem);
+        if (runListViewItemMapping[run].Count == 0) {
+          runListViewItemMapping.Remove(run);
+          run.ItemImageChanged -= new EventHandler(Item_ItemImageChanged);
+          run.ToStringChanged -= new EventHandler(Item_ToStringChanged);
+        }
+      }
       listViewItem.Remove();
       foreach (ListViewItem other in itemsListView.Items)
         if (other.ImageIndex > listViewItem.ImageIndex) other.ImageIndex--;
       itemsListView.SmallImageList.Images.RemoveAt(listViewItem.ImageIndex);
     }
-    protected virtual void UpdateListViewItemImage(ListViewItem listViewItem) {
+    private void UpdateListViewItemImage(ListViewItem listViewItem) {
       int i = listViewItem.ImageIndex;
       listViewItem.ImageList.Images[i] = ((IRun)listViewItem.Tag).ItemImage;
       listViewItem.ImageIndex = -1;
       listViewItem.ImageIndex = i;
     }
-    protected virtual void UpdateListViewItemText(ListViewItem listViewItem) {
+    private void UpdateListViewItemText(ListViewItem listViewItem) {
       if (!listViewItem.Text.Equals(listViewItem.Tag.ToString()))
         listViewItem.Text = listViewItem.Tag.ToString();
     }
-    protected virtual IEnumerable<ListViewItem> GetListViewItemsForItem(IRun item) {
-      foreach (ListViewItem listViewItem in itemsListView.Items) {
-        if (((IRun)listViewItem.Tag) == item)
-          yield return listViewItem;
-      }
+    private IEnumerable<ListViewItem> GetListViewItemsForItem(IRun run) {
+      return runListViewItemMapping[run];
     }
 
     #region ListView Events
-    protected virtual void itemsListView_SelectedIndexChanged(object sender, EventArgs e) {
+    private void itemsListView_SelectedIndexChanged(object sender, EventArgs e) {
       removeButton.Enabled = itemsListView.SelectedItems.Count > 0 && (Content != null) && !Content.IsReadOnly && !ReadOnly;
       AdjustListViewColumnSizes();
       if (showDetailsCheckBox.Checked) {
@@ -204,7 +217,7 @@ namespace HeuristicLab.Optimization.Views {
         }
       }
     }
-    protected virtual void itemsListView_KeyDown(object sender, KeyEventArgs e) {
+    private void itemsListView_KeyDown(object sender, KeyEventArgs e) {
       if (e.KeyCode == Keys.Delete) {
         if ((itemsListView.SelectedItems.Count > 0) && !Content.IsReadOnly && !ReadOnly) {
           foreach (ListViewItem item in itemsListView.SelectedItems)
@@ -212,7 +225,7 @@ namespace HeuristicLab.Optimization.Views {
         }
       }
     }
-    protected virtual void itemsListView_DoubleClick(object sender, EventArgs e) {
+    private void itemsListView_DoubleClick(object sender, EventArgs e) {
       if (itemsListView.SelectedItems.Count == 1) {
         IRun item = (IRun)itemsListView.SelectedItems[0].Tag;
         IContentView view = MainFormManager.MainForm.ShowContent(item);
@@ -222,7 +235,7 @@ namespace HeuristicLab.Optimization.Views {
         }
       }
     }
-    protected virtual void itemsListView_ItemDrag(object sender, ItemDragEventArgs e) {
+    private void itemsListView_ItemDrag(object sender, ItemDragEventArgs e) {
       if (!Locked) {
         ListViewItem listViewItem = (ListViewItem)e.Item;
         IRun item = (IRun)listViewItem.Tag;
@@ -238,7 +251,7 @@ namespace HeuristicLab.Optimization.Views {
         }
       }
     }
-    protected virtual void itemsListView_DragEnterOver(object sender, DragEventArgs e) {
+    private void itemsListView_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
       Type type = e.Data.GetData("Type") as Type;
       if (!Content.IsReadOnly && !ReadOnly && (type != null) && (typeof(IRun).IsAssignableFrom(type))) {
@@ -249,7 +262,7 @@ namespace HeuristicLab.Optimization.Views {
         else if ((e.AllowedEffect & DragDropEffects.Link) == DragDropEffects.Link) e.Effect = DragDropEffects.Link;
       }
     }
-    protected virtual void itemsListView_DragDrop(object sender, DragEventArgs e) {
+    private void itemsListView_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
         IRun item = e.Data.GetData("Value") as IRun;
         if ((e.Effect & DragDropEffects.Copy) == DragDropEffects.Copy) item = (IRun)item.Clone();
@@ -259,7 +272,7 @@ namespace HeuristicLab.Optimization.Views {
     #endregion
 
     #region Button Events
-    protected virtual void menuItem_Click(object sender, EventArgs e) {
+    private void menuItem_Click(object sender, EventArgs e) {
       ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
       Type viewType = (Type)menuItem.Tag;
       IContentView view = MainFormManager.MainForm.ShowContent(Content, viewType);
@@ -268,20 +281,20 @@ namespace HeuristicLab.Optimization.Views {
         view.ReadOnly = ReadOnly;
       }
     }
-    protected virtual void removeButton_Click(object sender, EventArgs e) {
+    private void removeButton_Click(object sender, EventArgs e) {
       if (itemsListView.SelectedItems.Count > 0) {
         foreach (ListViewItem item in itemsListView.SelectedItems)
           Content.Remove((IRun)item.Tag);
         itemsListView.SelectedItems.Clear();
       }
     }
-    protected virtual void clearButton_Click(object sender, EventArgs e) {
+    private void clearButton_Click(object sender, EventArgs e) {
       Content.Clear();
     }
     #endregion
 
     #region CheckBox Events
-    protected virtual void showDetailsCheckBox_CheckedChanged(object sender, EventArgs e) {
+    private void showDetailsCheckBox_CheckedChanged(object sender, EventArgs e) {
       if (showDetailsCheckBox.Checked) {
         splitContainer.Panel2Collapsed = false;
         detailsGroupBox.Enabled = itemsListView.SelectedItems.Count == 1;
@@ -294,7 +307,7 @@ namespace HeuristicLab.Optimization.Views {
     #endregion
 
     #region Content Events
-    protected virtual void Content_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IRun> e) {
+    private void Content_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IRun> e) {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded), sender, e);
       else {
@@ -308,32 +321,29 @@ namespace HeuristicLab.Optimization.Views {
         runCollectionConstraintCollectionView.ReadOnly = itemsListView.Items.Count == 0;
       }
     }
-    protected virtual void Content_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IRun> e) {
+    private void Content_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IRun> e) {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved), sender, e);
       else {
         DeregisterRunEvents(e.Items);
         foreach (IRun item in e.Items) {
           //remove only the first matching ListViewItem, because the IRun could be contained multiple times in the ItemCollection
-          ListViewItem listviewItem = GetListViewItemsForItem(item).FirstOrDefault();
-          if (listviewItem != null)
-            RemoveListViewItem(listviewItem);
+          ListViewItem listViewItem = GetListViewItemsForItem(item).FirstOrDefault();
+          if (listViewItem != null) RemoveListViewItem(listViewItem);
         }
         analyzeRunsToolStripDropDownButton.Enabled = itemsListView.Items.Count > 0;
         clearButton.Enabled = itemsListView.Items.Count > 0 && !Content.IsReadOnly && !ReadOnly;
         runCollectionConstraintCollectionView.ReadOnly = itemsListView.Items.Count == 0;
       }
     }
-    protected virtual void Content_CollectionReset(object sender, CollectionItemsChangedEventArgs<IRun> e) {
+    private void Content_CollectionReset(object sender, CollectionItemsChangedEventArgs<IRun> e) {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset), sender, e);
       else {
         DeregisterRunEvents(e.OldItems);
         foreach (IRun item in e.OldItems) {
-          //remove only the first matching ListViewItem, because the IRun could be contained multiple times in the ItemCollection
-          ListViewItem listviewItem = GetListViewItemsForItem(item).FirstOrDefault();
-          if (listviewItem != null)
-            RemoveListViewItem(listviewItem);
+          ListViewItem listViewItem = GetListViewItemsForItem(item).FirstOrDefault();
+          if (listViewItem != null) RemoveListViewItem(listViewItem);
         }
         RegisterRunEvents(e.Items);
         foreach (IRun item in e.Items)
@@ -348,7 +358,7 @@ namespace HeuristicLab.Optimization.Views {
     #endregion
 
     #region Item Events
-    protected virtual void Item_ItemImageChanged(object sender, EventArgs e) {
+    private void Item_ItemImageChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Item_ItemImageChanged), sender, e);
       else {
@@ -357,7 +367,7 @@ namespace HeuristicLab.Optimization.Views {
           UpdateListViewItemImage(listViewItem);
       }
     }
-    protected virtual void Item_ToStringChanged(object sender, EventArgs e) {
+    private void Item_ToStringChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Item_ToStringChanged), sender, e);
       else {
@@ -367,7 +377,7 @@ namespace HeuristicLab.Optimization.Views {
         AdjustListViewColumnSizes();
       }
     }
-    protected virtual void Run_Changed(object sender, EventArgs e) {
+    private void Run_Changed(object sender, EventArgs e) {
       if (InvokeRequired)
         this.Invoke(new EventHandler(Run_Changed), sender, e);
       else {
@@ -376,7 +386,7 @@ namespace HeuristicLab.Optimization.Views {
       }
     }
 
-    protected virtual void UpdateRun(IRun run) {
+    private void UpdateRun(IRun run) {
       foreach (ListViewItem listViewItem in GetListViewItemsForItem(run)) {
         if (run.Visible) {
           listViewItem.Font = new Font(listViewItem.Font, FontStyle.Regular);
@@ -390,7 +400,7 @@ namespace HeuristicLab.Optimization.Views {
     #endregion
 
     #region Helpers
-    protected virtual void AdjustListViewColumnSizes() {
+    private void AdjustListViewColumnSizes() {
       if (itemsListView.Items.Count > 0) {
         for (int i = 0; i < itemsListView.Columns.Count; i++) {
           itemsListView.Columns[i].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);

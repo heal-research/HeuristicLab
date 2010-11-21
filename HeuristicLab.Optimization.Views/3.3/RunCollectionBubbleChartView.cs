@@ -42,7 +42,7 @@ namespace HeuristicLab.Optimization.Views {
     private string yAxisValue;
     private string sizeAxisValue;
 
-    private Dictionary<IRun, DataPoint> runToDataPointMapping;
+    private Dictionary<IRun, List<DataPoint>> runToDataPointMapping;
     private Dictionary<int, Dictionary<object, double>> categoricalMapping;
     private Dictionary<IRun, double> xJitter;
     private Dictionary<IRun, double> yJitter;
@@ -50,12 +50,13 @@ namespace HeuristicLab.Optimization.Views {
     private double yJitterFactor = 0.0;
     private Random random;
     private bool isSelecting = false;
+    private bool suppressUpdates = false;
 
     public RunCollectionBubbleChartView() {
       InitializeComponent();
       chart.ContextMenuStrip.Items.Insert(0, openBoxPlotViewToolStripMenuItem);
 
-      runToDataPointMapping = new Dictionary<IRun, DataPoint>();
+      runToDataPointMapping = new Dictionary<IRun, List<DataPoint>>();
       categoricalMapping = new Dictionary<int, Dictionary<object, double>>();
       xJitter = new Dictionary<IRun, double>();
       yJitter = new Dictionary<IRun, double>();
@@ -87,6 +88,7 @@ namespace HeuristicLab.Optimization.Views {
       Content.ItemsAdded += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
       Content.ItemsRemoved += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
       Content.CollectionReset += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
+      Content.UpdateOfRunsInProgress += new EventHandler<EventArgs<bool>>(Content_UpdateOfRunsInProgress);
       RegisterRunEvents(Content);
     }
     protected override void DeregisterContentEvents() {
@@ -96,6 +98,7 @@ namespace HeuristicLab.Optimization.Views {
       Content.ItemsAdded -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
       Content.ItemsRemoved -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
       Content.CollectionReset -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
+      Content.UpdateOfRunsInProgress -= new EventHandler<EventArgs<bool>>(Content_UpdateOfRunsInProgress);
       DeregisterRunEvents(Content);
     }
     protected virtual void RegisterRunEvents(IEnumerable<IRun> runs) {
@@ -127,26 +130,28 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void UpdateRun(IRun run) {
-      DataPoint point = runToDataPointMapping[run];
-      if (point != null) {
-        point.Color = run.Color;
-        if (!run.Visible) {
-          this.chart.Series[0].Points.Remove(point);
-          runToDataPointMapping.Remove(run);
+      if (!suppressUpdates) {
+        if (runToDataPointMapping.ContainsKey(run)) {
+          foreach (DataPoint point in runToDataPointMapping[run]) {
+            point.Color = run.Color;
+            if (!run.Visible) {
+              this.chart.Series[0].Points.Remove(point);
+              UpdateCursorInterval();
+              chart.ChartAreas[0].RecalculateAxesScale();
+            }
+          }
+          if (!run.Visible) runToDataPointMapping.Remove(run);
+        } else {
+          AddDataPoint(run);
           UpdateCursorInterval();
           chart.ChartAreas[0].RecalculateAxesScale();
         }
-      } else {
-        AddDataPoint(run);
-        UpdateCursorInterval();
-        chart.ChartAreas[0].RecalculateAxesScale();
+
+        if (this.chart.Series[0].Points.Count == 0)
+          noRunsLabel.Visible = true;
+        else
+          noRunsLabel.Visible = false;
       }
-
-
-      if (this.chart.Series[0].Points.Count == 0)
-        noRunsLabel.Visible = true;
-      else
-        noRunsLabel.Visible = false;
     }
 
     protected override void OnContentChanged() {
@@ -195,6 +200,16 @@ namespace HeuristicLab.Optimization.Views {
         }
         if (changed)
           UpdateDataPoints();
+      }
+    }
+
+
+    private void Content_UpdateOfRunsInProgress(object sender, EventArgs<bool> e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler<EventArgs<bool>>(Content_UpdateOfRunsInProgress), sender, e);
+      else {
+        suppressUpdates = e.Value;
+        if (!suppressUpdates) UpdateDataPoints();
       }
     }
 
@@ -251,7 +266,9 @@ namespace HeuristicLab.Optimization.Views {
           point.Tag = run;
           point.Color = run.Color;
           series.Points.Add(point);
-          runToDataPointMapping[run] = point;
+
+          if (!runToDataPointMapping.ContainsKey(run)) runToDataPointMapping.Add(run, new List<DataPoint>());
+          runToDataPointMapping[run].Add(point);
         }
       }
     }
@@ -594,6 +611,7 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void ColorRuns(string axisValue) {
+      Content.OnUpdateOfRunsInProgress(true);
       var runs = Content.Select(r => new { Run = r, Value = GetValue(r, axisValue) }).Where(r => r.Value.HasValue);
       double minValue = runs.Min(r => r.Value.Value);
       double maxValue = runs.Max(r => r.Value.Value);
@@ -604,6 +622,7 @@ namespace HeuristicLab.Optimization.Views {
         if (!range.IsAlmost(0)) colorIndex = (int)((ColorGradient.Colors.Count - 1) * (r.Value.Value - minValue) / (maxValue - minValue));
         r.Run.Color = ColorGradient.Colors[colorIndex];
       }
+      Content.OnUpdateOfRunsInProgress(false);
     }
     #endregion
   }
