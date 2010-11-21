@@ -109,32 +109,32 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLabAnalysisPlugin.cs.frame" />
-    <Compile Include="AlleleFrequencyCollection.cs" />
-    <Compile Include="AlleleFrequencyCollectionHistory.cs" />
-    <Compile Include="BestAverageWorstQualityAnalyzer.cs" />
-    <Compile Include="BestAverageWorstQualityCalculator.cs" />
+    <Compile Include="AlleleFrequencyAnalysis\Allele.cs" />
+    <Compile Include="AlleleFrequencyAnalysis\AlleleFrequency.cs" />
+    <Compile Include="AlleleFrequencyAnalysis\AlleleFrequencyAnalyzer.cs" />
+    <Compile Include="AlleleFrequencyAnalysis\AlleleFrequencyCollection.cs" />
+    <Compile Include="AlleleFrequencyAnalysis\AlleleFrequencyCollectionHistory.cs" />
     <Compile Include="BestScopeSolutionAnalyzer.cs" />
-    <Compile Include="BestQualityMemorizer.cs" />
-    <Compile Include="Allele.cs" />
-    <Compile Include="AlleleFrequency.cs" />
-    <Compile Include="DataTableVisualProperties.cs" />
-    <Compile Include="DataTableHistory.cs" />
-    <Compile Include="HeatMapHistory.cs" />
-    <Compile Include="HeatMap.cs" />
-    <Compile Include="PopulationDiversityAnalyzer.cs" />
-    <Compile Include="DataRowVisualProperties.cs" />
-    <Compile Include="QualityAnalyzer.cs" />
-    <Compile Include="MinAverageMaxValueAnalyzer.cs" />
-    <Compile Include="MinAverageMaxValueCalculator.cs" />
+    <Compile Include="DataVisualization\DataRow.cs" />
+    <Compile Include="DataVisualization\DataRowVisualProperties.cs" />
+    <Compile Include="DataVisualization\DataTable.cs" />
+    <Compile Include="DataVisualization\DataTableHistory.cs" />
+    <Compile Include="DataVisualization\DataTableValuesCollector.cs" />
+    <Compile Include="DataVisualization\DataTableVisualProperties.cs" />
+    <Compile Include="DataVisualization\HeatMap.cs" />
+    <Compile Include="DataVisualization\HeatMapHistory.cs" />
+    <Compile Include="PopulationDiversityAnalysis\PopulationDiversityAnalyzer.cs" />
+    <Compile Include="QualityAnalysis\BestAverageWorstQualityAnalyzer.cs" />
+    <Compile Include="QualityAnalysis\BestAverageWorstQualityCalculator.cs" />
+    <Compile Include="QualityAnalysis\BestQualityMemorizer.cs" />
+    <Compile Include="QualityAnalysis\QualityAnalyzer.cs" />
+    <Compile Include="QualityAnalysis\QualityDifferenceCalculator.cs" />
     <Compile Include="MultiAnalyzer.cs" />
-    <Compile Include="QualityDifferenceCalculator.cs" />
-    <Compile Include="DataRow.cs" />
     <Compile Include="HeuristicLabAnalysisPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="DataTable.cs" />
-    <Compile Include="DataTableValuesCollector.cs" />
-    <Compile Include="AlleleFrequencyAnalyzer.cs" />
-    <Compile Include="ValueAnalyzer.cs" />
+    <Compile Include="ValueAnalysis\MinAverageMaxValueAnalyzer.cs" />
+    <Compile Include="ValueAnalysis\MinAverageMaxValueCalculator.cs" />
+    <Compile Include="ValueAnalysis\ValueAnalyzer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
