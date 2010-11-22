@@ -27,6 +27,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
   /// </summary>
   [Plugin("HeuristicLab.Problems.VehicleRouting.Views", "3.3.2.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.VehicleRouting.Views-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
   [PluginDependency("HeuristicLab.Core.Views", "3.3")]
   [PluginDependency("HeuristicLab.Data", "3.3")]
