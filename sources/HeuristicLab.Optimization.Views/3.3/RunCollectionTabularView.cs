@@ -23,10 +23,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using HeuristicLab.Common;
+using HeuristicLab.Core;
 using HeuristicLab.Data.Views;
 using HeuristicLab.MainForm;
-using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization.Views {
   [View("RunCollection Tabular View")]
@@ -63,7 +62,7 @@ namespace HeuristicLab.Optimization.Views {
       Content.ItemsAdded += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
       Content.ItemsRemoved += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
       Content.CollectionReset += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
-      Content.UpdateOfRunsInProgress += new EventHandler<EventArgs<bool>>(Content_UpdateOfRunsInProgress);
+      Content.UpdateOfRunsInProgressChanged += new EventHandler(Content_UpdateOfRunsInProgressChanged);
       RegisterRunEvents(Content);
     }
     private void RegisterRunEvents(IEnumerable<IRun> runs) {
@@ -75,7 +74,7 @@ namespace HeuristicLab.Optimization.Views {
       Content.ItemsAdded -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
       Content.ItemsRemoved -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
       Content.CollectionReset -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
-      Content.UpdateOfRunsInProgress -= new EventHandler<EventArgs<bool>>(Content_UpdateOfRunsInProgress);
+      Content.UpdateOfRunsInProgressChanged -= new EventHandler(Content_UpdateOfRunsInProgressChanged);
       DeregisterRunEvents(Content);
     }
     private void DeregisterRunEvents(IEnumerable<IRun> runs) {
@@ -125,11 +124,11 @@ namespace HeuristicLab.Optimization.Views {
     }
 
 
-    private void Content_UpdateOfRunsInProgress(object sender, Common.EventArgs<bool> e) {
+    private void Content_UpdateOfRunsInProgressChanged(object sender, EventArgs e) {
       if (InvokeRequired)
-        Invoke(new EventHandler<EventArgs<bool>>(Content_UpdateOfRunsInProgress), sender, e);
+        Invoke(new EventHandler(Content_UpdateOfRunsInProgressChanged), sender, e);
       else {
-        suppressUpdates = e.Value;
+        suppressUpdates = Content.UpdateOfRunsInProgress;
         if (!suppressUpdates) UpdateRowAttributes();
       }
     }

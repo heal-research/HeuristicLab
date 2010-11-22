@@ -70,7 +70,7 @@ namespace HeuristicLab.Optimization.Views {
       Content.ItemsAdded += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
       Content.ItemsRemoved += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
       Content.CollectionReset += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
-      Content.UpdateOfRunsInProgress += new EventHandler<EventArgs<bool>>(Content_UpdateOfRunsInProgress);
+      Content.UpdateOfRunsInProgressChanged += new EventHandler(Content_UpdateOfRunsInProgressChanged);
       RegisterRunEvents(Content);
     }
     protected override void DeregisterContentEvents() {
@@ -80,7 +80,7 @@ namespace HeuristicLab.Optimization.Views {
       Content.ItemsAdded -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
       Content.ItemsRemoved -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
       Content.CollectionReset -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
-      Content.UpdateOfRunsInProgress -= new EventHandler<EventArgs<bool>>(Content_UpdateOfRunsInProgress);
+      Content.UpdateOfRunsInProgressChanged -= new EventHandler(Content_UpdateOfRunsInProgressChanged);
       DeregisterRunEvents(Content);
     }
 
@@ -103,11 +103,11 @@ namespace HeuristicLab.Optimization.Views {
     private void Content_ItemsAdded(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IRun> e) {
       RegisterRunEvents(e.Items);
     }
-    private void Content_UpdateOfRunsInProgress(object sender, EventArgs<bool> e) {
+    private void Content_UpdateOfRunsInProgressChanged(object sender, EventArgs e) {
       if (InvokeRequired)
-        Invoke(new EventHandler<EventArgs<bool>>(Content_UpdateOfRunsInProgress), sender, e);
+        Invoke(new EventHandler(Content_UpdateOfRunsInProgressChanged), sender, e);
       else {
-        suppressUpdates = e.Value;
+        suppressUpdates = Content.UpdateOfRunsInProgress;
         if (!suppressUpdates) UpdateDataPoints();
       }
     }
@@ -338,9 +338,11 @@ namespace HeuristicLab.Optimization.Views {
     private void UpdateNoRunsVisibleLabel() {
       if (this.chart.Series.Count > 0) {
         noRunsLabel.Visible = false;
+        showStatisticsCheckBox.Enabled = true;
         splitContainer.Panel2Collapsed = !showStatisticsCheckBox.Checked;
       } else {
         noRunsLabel.Visible = true;
+        showStatisticsCheckBox.Enabled = false;
         splitContainer.Panel2Collapsed = true;
       }
     }
