@@ -128,7 +128,6 @@
     <Compile Include="MenuItems\ClipboardMenuItem.cs" />
     <Compile Include="MenuItems\AboutMenuItem.cs" />
     <Compile Include="MenuItems\ConvertIntoUserDefinedAlgorithmMenuItem.cs" />
-    <Compile Include="MenuItems\UsernamePasswordMenuItem.cs" />
     <Compile Include="MenuItems\CreateExperimentMenuItem.cs" />
     <Compile Include="MenuItems\CopyToClipboardMenuItem.cs" />
     <Compile Include="MenuItems\StartPageMenuItem.cs" />
@@ -182,10 +181,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\HeuristicLab.Clients.Common\3.3\HeuristicLab.Clients.Common-3.3.csproj">
-      <Project>{730A9104-D4D1-4360-966B-E49B7571DDA3}</Project>
-      <Name>HeuristicLab.Clients.Common-3.3</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
       <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
       <Name>HeuristicLab.Collections-3.3</Name>
