@@ -88,7 +88,7 @@ namespace HeuristicLab.Optimization.Views {
       Content.ItemsAdded += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
       Content.ItemsRemoved += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
       Content.CollectionReset += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
-      Content.UpdateOfRunsInProgress += new EventHandler<EventArgs<bool>>(Content_UpdateOfRunsInProgress);
+      Content.UpdateOfRunsInProgressChanged += new EventHandler(Content_UpdateOfRunsInProgressChanged);
       RegisterRunEvents(Content);
     }
     protected override void DeregisterContentEvents() {
@@ -98,7 +98,7 @@ namespace HeuristicLab.Optimization.Views {
       Content.ItemsAdded -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
       Content.ItemsRemoved -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
       Content.CollectionReset -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
-      Content.UpdateOfRunsInProgress -= new EventHandler<EventArgs<bool>>(Content_UpdateOfRunsInProgress);
+      Content.UpdateOfRunsInProgressChanged -= new EventHandler(Content_UpdateOfRunsInProgressChanged);
       DeregisterRunEvents(Content);
     }
     protected virtual void RegisterRunEvents(IEnumerable<IRun> runs) {
@@ -204,11 +204,11 @@ namespace HeuristicLab.Optimization.Views {
     }
 
 
-    private void Content_UpdateOfRunsInProgress(object sender, EventArgs<bool> e) {
+    private void Content_UpdateOfRunsInProgressChanged(object sender, EventArgs e) {
       if (InvokeRequired)
-        Invoke(new EventHandler<EventArgs<bool>>(Content_UpdateOfRunsInProgress), sender, e);
+        Invoke(new EventHandler(Content_UpdateOfRunsInProgressChanged), sender, e);
       else {
-        suppressUpdates = e.Value;
+        suppressUpdates = Content.UpdateOfRunsInProgress;
         if (!suppressUpdates) UpdateDataPoints();
       }
     }
@@ -376,7 +376,7 @@ namespace HeuristicLab.Optimization.Views {
         this.chart.ChartAreas[0].CursorY.Interval = 1;
     }
 
-    #region drag and drop and tooltip
+    #region Drag & drop and tooltip
     private IRun draggedRun;
     private void chart_MouseDown(object sender, MouseEventArgs e) {
       HitTestResult h = this.chart.HitTest(e.X, e.Y);
@@ -397,6 +397,7 @@ namespace HeuristicLab.Optimization.Views {
 
     private void chart_MouseUp(object sender, MouseEventArgs e) {
       if (isSelecting) {
+        Content.UpdateOfRunsInProgress = true;
         System.Windows.Forms.DataVisualization.Charting.Cursor xCursor = chart.ChartAreas[0].CursorX;
         System.Windows.Forms.DataVisualization.Charting.Cursor yCursor = chart.ChartAreas[0].CursorY;
 
@@ -428,6 +429,7 @@ namespace HeuristicLab.Optimization.Views {
         }
         this.chart.ChartAreas[0].CursorX.SelectionStart = this.chart.ChartAreas[0].CursorX.SelectionEnd;
         this.chart.ChartAreas[0].CursorY.SelectionStart = this.chart.ChartAreas[0].CursorY.SelectionEnd;
+        Content.UpdateOfRunsInProgress = false;
       }
     }
 
@@ -601,7 +603,7 @@ namespace HeuristicLab.Optimization.Views {
     }
     #endregion
 
-    #region automatic coloring
+    #region Automatic coloring
     private void colorXAxisButton_Click(object sender, EventArgs e) {
       ColorRuns(xAxisValue);
     }
@@ -611,7 +613,7 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void ColorRuns(string axisValue) {
-      Content.OnUpdateOfRunsInProgress(true);
+      Content.UpdateOfRunsInProgress = true;
       var runs = Content.Select(r => new { Run = r, Value = GetValue(r, axisValue) }).Where(r => r.Value.HasValue);
       double minValue = runs.Min(r => r.Value.Value);
       double maxValue = runs.Max(r => r.Value.Value);
@@ -622,7 +624,7 @@ namespace HeuristicLab.Optimization.Views {
         if (!range.IsAlmost(0)) colorIndex = (int)((ColorGradient.Colors.Count - 1) * (r.Value.Value - minValue) / (maxValue - minValue));
         r.Run.Color = ColorGradient.Colors[colorIndex];
       }
-      Content.OnUpdateOfRunsInProgress(false);
+      Content.UpdateOfRunsInProgress = false;
     }
     #endregion
   }

@@ -36,10 +36,13 @@ namespace HeuristicLab.Optimization {
     public string Filename { get; set; }
 
     [StorableConstructor]
-    protected RunCollection(bool deserializing) : base(deserializing) { }
-
+    protected RunCollection(bool deserializing)
+      : base(deserializing) {
+      updateOfRunsInProgress = false;
+    }
     protected RunCollection(RunCollection original, Cloner cloner)
       : base(original, cloner) {
+      updateOfRunsInProgress = false;
       resultNames = new List<string>(original.resultNames);
       parameterNames = new List<string>(original.parameterNames);
       dataTypes = new Dictionary<string, HashSet<Type>>();
@@ -54,13 +57,11 @@ namespace HeuristicLab.Optimization {
 
       UpdateFiltering(true);
     }
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new RunCollection(this, cloner);
-    }
     public RunCollection() : base() { Initialize(); }
     public RunCollection(int capacity) : base(capacity) { Initialize(); }
     public RunCollection(IEnumerable<IRun> collection) : base(collection) { Initialize(); this.OnItemsAdded(collection); }
     private void Initialize() {
+      updateOfRunsInProgress = false;
       parameterNames = new List<string>();
       resultNames = new List<string>();
       dataTypes = new Dictionary<string, HashSet<Type>>();
@@ -80,6 +81,35 @@ namespace HeuristicLab.Optimization {
     private RunCollectionConstraintCollection constraints;
     public RunCollectionConstraintCollection Constraints {
       get { return constraints; }
+    }
+
+    private bool updateOfRunsInProgress;
+    public bool UpdateOfRunsInProgress {
+      get { return updateOfRunsInProgress; }
+      set {
+        if (updateOfRunsInProgress != value) {
+          updateOfRunsInProgress = value;
+          OnUpdateOfRunsInProgressChanged();
+        }
+      }
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (constraints == null) constraints = new RunCollectionConstraintCollection();
+      RegisterConstraintsEvents();
+      RegisterConstraintEvents(constraints);
+      UpdateFiltering(true);
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new RunCollection(this, cloner);
+    }
+
+    public event EventHandler UpdateOfRunsInProgressChanged;
+    protected virtual void OnUpdateOfRunsInProgressChanged() {
+      var handler = UpdateOfRunsInProgressChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
 
     protected override void OnCollectionReset(IEnumerable<IRun> items, IEnumerable<IRun> oldItems) {
@@ -189,14 +219,6 @@ namespace HeuristicLab.Optimization {
       return value;
     }
 
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-      if (constraints == null) constraints = new RunCollectionConstraintCollection();
-      RegisterConstraintsEvents();
-      RegisterConstraintEvents(constraints);
-      UpdateFiltering(true);
-    }
-
     #region IStringConvertibleMatrix Members
     [Storable]
     private List<string> parameterNames;
@@ -284,22 +306,14 @@ namespace HeuristicLab.Optimization {
     public bool SetValue(string value, int rowIndex, int columnIndex) { throw new NotSupportedException(); }
     #endregion
 
-    #region
-    public event EventHandler<EventArgs<bool>> UpdateOfRunsInProgress;
-    public void OnUpdateOfRunsInProgress(bool inProgress) {
-      var handler = UpdateOfRunsInProgress;
-      if (handler != null) handler(this, new EventArgs<bool>(inProgress));
-    }
-    #endregion
-
-    #region filtering
+    #region Filtering
     private void UpdateFiltering(bool reset) {
-      OnUpdateOfRunsInProgress(true);
+      UpdateOfRunsInProgress = true;
       if (reset)
         list.ForEach(r => r.Visible = true);
       foreach (IRunCollectionConstraint constraint in this.constraints)
         constraint.Check();
-      OnUpdateOfRunsInProgress(false);
+      UpdateOfRunsInProgress = false;
     }
 
     private void RegisterConstraintsEvents() {
