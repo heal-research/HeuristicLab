@@ -38,7 +38,7 @@ namespace HeuristicLab.Optimizer {
   public class HeuristicLabOptimizerPlugin : PluginBase {
   }
 
-  [Application("Optimizer", "HeuristicLab Optimizer 3.3.1.$WCREV$")]
+  [Application("Optimizer", "HeuristicLab Optimizer 3.3.2.$WCREV$")]
   internal class HeuristicLabOptimizerApplication : ApplicationBase {
     public override void Run() {
       OptimizerMainForm mainForm = new OptimizerMainForm(typeof(IOptimizerUserInterfaceItemProvider));

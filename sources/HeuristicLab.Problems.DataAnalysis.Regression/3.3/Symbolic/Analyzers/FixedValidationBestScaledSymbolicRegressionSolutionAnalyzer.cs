@@ -195,7 +195,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
-      #region compatibility remove before releasing 3.3.1
+      #region compatibility remove before releasing 3.4
       if (!Parameters.ContainsKey(EvaluatorParameterName)) {
         Parameters.Add(new LookupParameter<ISymbolicRegressionEvaluator>(EvaluatorParameterName, "The evaluator which should be used to evaluate the solution on the validation set."));
       }
