@@ -32,16 +32,24 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
     SymbolicExpressionTreeStringFormatter formatter;
 
     [StorableConstructor]
-    protected SymbolicExpressionTreeStringConverter(bool deserializing) : base(deserializing) { }
+    protected SymbolicExpressionTreeStringConverter(bool deserializing)
+      : base(deserializing) {
+      Initialize();
+    }
     protected SymbolicExpressionTreeStringConverter(SymbolicExpressionTreeStringConverter original, Cloner cloner)
       : base(original, cloner) {
+      Initialize();
     }
+    public SymbolicExpressionTreeStringConverter()
+      : base() {
+      Initialize();
+    }
+
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SymbolicExpressionTreeStringConverter(this, cloner);
     }
 
-    public SymbolicExpressionTreeStringConverter()
-      : base() {
+    private void Initialize() {
       formatter = new SymbolicExpressionTreeStringFormatter();
       formatter.Indent = false;
     }
