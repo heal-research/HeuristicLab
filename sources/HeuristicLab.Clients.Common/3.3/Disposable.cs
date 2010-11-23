@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -19,15 +19,33 @@
  */
 #endregion
 
-using HeuristicLab.PluginInfrastructure;
+using System;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Clients.Common {
-  /// <summary>
-  /// Plugin class for HeuristicLab.Clients.Common plugin.
-  /// </summary>
-  [Plugin("HeuristicLab.Clients.Common", "3.3.2.$WCREV$")]
-  [PluginFile("HeuristicLab.Clients.Common-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Common", "3.3")]
-  public class HeuristicLabClientsCommonPlugin : PluginBase {
+  public class Disposable : IDisposable {
+    protected object obj;
+    public object Obj {
+      get { return obj; }
+    }
+
+    public Disposable(object obj) {
+      this.obj = obj;
+    }
+
+    public void Dispose() {
+      if (OnDisposing != null)
+        OnDisposing(this, new EventArgs<object>(obj));
+    }
+
+    public event EventHandler<EventArgs<object>> OnDisposing;
+  }
+
+  public sealed class Disposable<T> : Disposable {
+    public new T Obj {
+      get { return (T)base.obj; }
+    }
+
+    public Disposable(T obj) : base(obj) { }
   }
 }
