@@ -29,16 +29,14 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
   [Item("SymbolicExpressionTreeStringConverter", "Converts a symbolic expression tree into a string representation by iterating over all nodes in a prefix way. The string is added to the SolutionMessage's StringVars.")]
   [StorableClass]
   public class SymbolicExpressionTreeStringConverter : SymbolicExpressionTreeConverter {
-    SymbolicExpressionTreeStringFormatter formatter;
+    private SymbolicExpressionTreeStringFormatter formatter;
 
     [StorableConstructor]
-    protected SymbolicExpressionTreeStringConverter(bool deserializing)
-      : base(deserializing) {
-      Initialize();
-    }
+    protected SymbolicExpressionTreeStringConverter(bool deserializing) : base(deserializing) { }
     protected SymbolicExpressionTreeStringConverter(SymbolicExpressionTreeStringConverter original, Cloner cloner)
       : base(original, cloner) {
-      Initialize();
+      formatter = new SymbolicExpressionTreeStringFormatter();
+      formatter.Indent = original.formatter.Indent;
     }
     public SymbolicExpressionTreeStringConverter()
       : base() {
@@ -47,6 +45,11 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SymbolicExpressionTreeStringConverter(this, cloner);
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      Initialize();
     }
 
     private void Initialize() {
