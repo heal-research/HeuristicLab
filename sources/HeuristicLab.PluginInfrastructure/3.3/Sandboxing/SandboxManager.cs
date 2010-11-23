@@ -54,13 +54,7 @@ namespace HeuristicLab.PluginInfrastructure.Sandboxing {
     }
 
     #region ISandboxManager Members
-
     public static AppDomain CreateAndInitSandbox(string name) {
-      return CreateAndInitSandbox(name, Enumerable.Empty<byte[]>());
-    }
-
-
-    public static AppDomain CreateAndInitSandbox(string name, IEnumerable<byte[]> files) {
       PermissionSet pset;
 
       #region permission set for sandbox
@@ -91,14 +85,11 @@ namespace HeuristicLab.PluginInfrastructure.Sandboxing {
         (DefaultApplicationManager)applicationDomain.CreateInstanceAndUnwrap(applicationManagerType.Assembly.FullName, applicationManagerType.FullName, true, BindingFlags.NonPublic | BindingFlags.Instance, null, null, null, null, null);
       PluginManager pm = new PluginManager(name);
       pm.DiscoverAndCheckPlugins();
-      ApplicationDescription[] apps = ApplicationManager.Manager.Applications.Cast<ApplicationDescription>().ToArray();
-      PluginDescription[] plugins = ApplicationManager.Manager.Plugins.Cast<PluginDescription>().ToArray();
+      ApplicationDescription[] apps = pm.Applications.Cast<ApplicationDescription>().ToArray();
+      PluginDescription[] plugins = pm.Plugins.Cast<PluginDescription>().ToArray();
       applicationManager.PrepareApplicationDomain(apps, plugins);
-      //if (files != null && files.Count() > 0)
-      //applicationManager.LoadAssemblies(files);
       return applicationDomain;
     }
-
     #endregion
   }
 }
