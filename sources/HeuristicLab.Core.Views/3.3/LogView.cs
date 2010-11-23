@@ -80,7 +80,7 @@ namespace HeuristicLab.Core.Views {
       } else {
         logTextBox.Enabled = true;
         if (Content.Messages.FirstOrDefault() != null)
-          logTextBox.Text = Content.Messages.Aggregate((x, y) => x + Environment.NewLine + y);
+          logTextBox.Text = string.Join(Environment.NewLine, Content.Messages.ToArray());
       }
     }
 
@@ -88,7 +88,7 @@ namespace HeuristicLab.Core.Views {
       if (InvokeRequired)
         Invoke(new EventHandler<EventArgs<string>>(Content_MessageAdded), sender, e);
       else {
-        logTextBox.Text = Content.Messages.Aggregate((x, y) => x + Environment.NewLine + y);
+        logTextBox.Text = string.Join(Environment.NewLine, Content.Messages.ToArray());
         logTextBox.SelectionStart = logTextBox.Text.Length;
         logTextBox.ScrollToCaret();
       }
