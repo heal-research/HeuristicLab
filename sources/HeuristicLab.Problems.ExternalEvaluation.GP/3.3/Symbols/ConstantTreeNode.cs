@@ -43,6 +43,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
     private ConstantTreeNode(bool deserializing) : base(deserializing) { }
     private ConstantTreeNode(ConstantTreeNode original, Cloner cloner)
       : base(original, cloner) {
+        this.constantValue = original.constantValue;
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ConstantTreeNode(this, cloner);
