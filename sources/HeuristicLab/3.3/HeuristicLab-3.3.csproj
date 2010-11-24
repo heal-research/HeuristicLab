@@ -127,8 +127,8 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="app.config" />
-    <None Include="CopyAssemblies.cmd" />
     <None Include="CustomPostBuild.cmd" />
+    <None Include="CopyAssemblies.cmd" />
     <None Include="CustomPostBuildTemplate_UpdateLocalInstallation.cmd" />
     <None Include="HeuristicLab.snk" />
     <None Include="MergeConfigs.cmd" />

@@ -78,7 +78,8 @@ namespace HeuristicLab.PluginInfrastructure.Sandboxing {
 
       AppDomainSetup setup = AppDomain.CurrentDomain.SetupInformation;
       //setup.PrivateBinPath = pluginDir;
-      setup.ApplicationBase = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
+      setup.ApplicationBase = name;
+      setup.ConfigurationFile = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
       AppDomain applicationDomain = AppDomain.CreateDomain(name, AppDomain.CurrentDomain.Evidence, setup, pset, CreateStrongName(Assembly.GetExecutingAssembly()));
       Type applicationManagerType = typeof(DefaultApplicationManager);
       DefaultApplicationManager applicationManager =
