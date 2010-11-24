@@ -72,9 +72,14 @@ REM Disable that msbuild creates a cache file of the solution
 SET MSBuildUseNoSolutionCache=1
 REM Run msbuild to clean and then build
 IF "%CLEANBEFOREBUILD%"=="1" (
-  %MSBUILDPATH%msbuild.exe %SELECTED% /target:Clean /p:Configuration="%CONFIGURATION%",Platform="%PLATFORM%" /nologo
+  ECHO Cleaning ...
+  %MSBUILDPATH%msbuild.exe %SELECTED% /target:Clean /p:Configuration="%CONFIGURATION%",Platform="%PLATFORM%" /m:2 /nologo /verbosity:m
 )
-%MSBUILDPATH%msbuild.exe %SELECTED% /target:Build /p:Configuration="%CONFIGURATION%",Platform="%PLATFORM%" /nologo
+ECHO Building ...
+%MSBUILDPATH%msbuild.exe %SELECTED% /target:Build /p:Configuration="%CONFIGURATION%",Platform="%PLATFORM%" /m:2 /nologo /verbosity:m
+
+ECHO.
+ECHO DONE.
 
 :end
 
