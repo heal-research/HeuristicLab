@@ -73,10 +73,10 @@ SET MSBuildUseNoSolutionCache=1
 REM Run msbuild to clean and then build
 IF "%CLEANBEFOREBUILD%"=="1" (
   ECHO Cleaning ...
-  %MSBUILDPATH%msbuild.exe %SELECTED% /target:Clean /p:Configuration="%CONFIGURATION%",Platform="%PLATFORM%" /m:2 /nologo /verbosity:m
+  %MSBUILDPATH%msbuild.exe %SELECTED% /target:Clean /p:Configuration="%CONFIGURATION%",Platform="%PLATFORM%" /m:2 /nologo /verbosity:q /clp:ErrorsOnly
 )
 ECHO Building ...
-%MSBUILDPATH%msbuild.exe %SELECTED% /target:Build /p:Configuration="%CONFIGURATION%",Platform="%PLATFORM%" /m:2 /nologo /verbosity:m
+%MSBUILDPATH%msbuild.exe %SELECTED% /target:Build /p:Configuration="%CONFIGURATION%",Platform="%PLATFORM%" /m:2 /nologo /verbosity:q /clp:ErrorsOnly
 
 ECHO.
 ECHO DONE.
