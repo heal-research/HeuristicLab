@@ -32,7 +32,7 @@ using HeuristicLab.Optimization;
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [Content(typeof(RunCollection), false)]
   [View("RunCollection Variable Impact View")]
-  public partial class RunCollectionVariableImpactView : AsynchronousContentView {
+  public sealed partial class RunCollectionVariableImpactView : AsynchronousContentView {
     private const string variableImpactResultName = "Integrated variable frequencies";
     public RunCollectionVariableImpactView() {
       InitializeComponent();
@@ -43,30 +43,54 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       set { base.Content = value; }
     }
 
+    #region events
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      this.Content.ItemsAdded += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
-      this.Content.ItemsRemoved += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
-      this.Content.CollectionReset += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
+      Content.UpdateOfRunsInProgressChanged += new EventHandler(Content_UpdateOfRunsInProgressChanged);
+      Content.ItemsAdded += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
+      Content.ItemsRemoved += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
+      Content.CollectionReset += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
+      RegisterRunEvents(Content);
     }
     protected override void DeregisterContentEvents() {
       base.RegisterContentEvents();
-      this.Content.ItemsAdded -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
-      this.Content.ItemsRemoved -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
-      this.Content.CollectionReset -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
+      Content.UpdateOfRunsInProgressChanged -= new EventHandler(Content_UpdateOfRunsInProgressChanged);
+      Content.ItemsAdded -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
+      Content.ItemsRemoved -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
+      Content.CollectionReset -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
+      DeregisterRunEvents(Content);
     }
+    private void RegisterRunEvents(IEnumerable<IRun> runs) {
+      foreach (IRun run in runs)
+        run.Changed += new EventHandler(Run_Changed);
+    }
+    private void DeregisterRunEvents(IEnumerable<IRun> runs) {
+      foreach (IRun run in runs)
+        run.Changed -= new EventHandler(Run_Changed);
+    }
+    private void Content_ItemsAdded(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IRun> e) {
+      RegisterRunEvents(e.Items);
+      UpdateData();
+    }
+    private void Content_ItemsRemoved(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IRun> e) {
+      DeregisterRunEvents(e.Items);
+      UpdateData();
+    }
+    private void Content_CollectionReset(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IRun> e) {
+      DeregisterRunEvents(e.OldItems);
+      RegisterRunEvents(e.Items);
+      UpdateData();
+    }
+    private void Content_UpdateOfRunsInProgressChanged(object sender, EventArgs e) {
+      if (!Content.UpdateOfRunsInProgress) UpdateData();
+    }
+    private void Run_Changed(object sender, EventArgs e) {
+      if (!Content.UpdateOfRunsInProgress) UpdateData();
+    }
+    #endregion
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      this.UpdateData();
-    }
-    private void Content_ItemsAdded(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IRun> e) {
-      this.UpdateData();
-    }
-    private void Content_ItemsRemoved(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IRun> e) {
-      this.UpdateData();
-    }
-    private void Content_CollectionReset(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IRun> e) {
       this.UpdateData();
     }
 
