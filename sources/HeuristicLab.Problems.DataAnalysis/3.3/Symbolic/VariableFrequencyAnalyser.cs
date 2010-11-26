@@ -74,7 +74,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     public override IOperation Apply() {
-      var inputVariables = DataAnalysisProblemData.InputVariables.Select(x => x.Value);
+      var inputVariables = DataAnalysisProblemData.InputVariables.CheckedItems.Select(x => x.Value.Value);
       if (VariableFrequencies == null) {
         VariableFrequencies = new DoubleMatrix(0, 1, inputVariables);
       }

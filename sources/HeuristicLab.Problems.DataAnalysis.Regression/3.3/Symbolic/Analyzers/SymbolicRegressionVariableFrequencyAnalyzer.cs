@@ -78,14 +78,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     public override IOperation Apply() {
       ItemArray<SymbolicExpressionTree> expressions = SymbolicExpressionTreeParameter.ActualValue;
       DataAnalysisProblemData problemData = ProblemDataParameter.ActualValue;
-      var inputVariables = problemData.InputVariables.Select(x => x.Value);
+      var inputVariables = problemData.InputVariables.CheckedItems.Select(x => x.Value.Value);
       ResultCollection results = ResultsParameter.ActualValue;
 
       if (VariableFrequencies == null) {
         VariableFrequencies = new DataTable("Variable frequencies", "Relative frequency of variable references aggregated over the whole population.");
+        VariableFrequencies.VisualProperties.XAxisTitle = "Generations";
+        VariableFrequencies.VisualProperties.YAxisTitle = "Relative Variable Frequencies";
         // add a data row for each input variable
-        foreach (var inputVariable in inputVariables)
-          VariableFrequencies.Rows.Add(new DataRow(inputVariable));
+        foreach (var inputVariable in inputVariables) {
+          DataRow row = new DataRow(inputVariable);
+          row.VisualProperties.StartIndexZero = true;
+          VariableFrequencies.Rows.Add(row);
+        }
         results.Add(new Result("Variable frequencies", VariableFrequencies));
       }
       foreach (var pair in VariableFrequencyAnalyser.CalculateVariableFrequencies(expressions, inputVariables)) {
