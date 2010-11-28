@@ -140,8 +140,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         double max = Math.Max(Content.EstimatedValues.Max(), dataset.GetVariableValues(targetVariableName).Max());
         double min = Math.Min(Content.EstimatedValues.Min(), dataset.GetVariableValues(targetVariableName).Min());
 
-        max = Math.Ceiling(max) * 1.2;
-        min = Math.Floor(min) * 0.8;
+        max = max + 0.2 * Math.Abs(max);
+        min = min - 0.2 * Math.Abs(min);
+
+        double interestingValuesRange = max - min;
+        int digits = Math.Max(0, 3 - (int)Math.Log10(interestingValuesRange));
+
+        max = Math.Round(max, digits);
+        min = Math.Round(min, digits);
 
         this.chart.ChartAreas[0].AxisX.Maximum = max;
         this.chart.ChartAreas[0].AxisX.Minimum = min;
