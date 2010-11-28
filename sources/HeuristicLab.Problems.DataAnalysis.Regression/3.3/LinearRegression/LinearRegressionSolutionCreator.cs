@@ -110,7 +110,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.LinearRegression {
       double[] coefficients = new double[nFeatures + 1]; //last coefficient is for the constant
 
       int retVal = 1;
-      alglib.linreg.lrbuild(ref inputMatrix, nRows, nFeatures, ref retVal, ref lm, ref ar);
+      alglib.linreg.lrbuild(inputMatrix, nRows, nFeatures, ref retVal, lm, ar);
       if (retVal != 1) throw new ArgumentException("Error in calculation of linear regression model");
       rmsError = ar.rmserror;
       cvRmsError = ar.cvrmserror;

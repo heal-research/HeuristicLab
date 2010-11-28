@@ -68,7 +68,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
           mean_alglib = variance_alglib = 0.0;
           double tmp = 0;
 
-          alglib.descriptivestatistics.calculatemoments(ref xs, n, ref mean_alglib, ref variance_alglib, ref tmp, ref tmp);
+          alglib.samplemoments(xs, n, out  mean_alglib, out variance_alglib, out tmp, out tmp);
 
           var calculator = new OnlineMeanAndVarianceCalculator();
           for (int i = 0; i < n; i++) {
@@ -99,7 +99,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
                                     select testData[rows, c2] * c2Scale;
             double[] xs = x.ToArray();
             double[] ys = y.ToArray();
-            double r2_alglib = alglib.correlation.pearsoncorrelation(ref xs, ref ys, n);
+            double r2_alglib = alglib.pearsoncorrelation(xs, ys, n);
             r2_alglib *= r2_alglib;
 
             var r2Calculator = new OnlinePearsonsRSquaredEvaluator();
