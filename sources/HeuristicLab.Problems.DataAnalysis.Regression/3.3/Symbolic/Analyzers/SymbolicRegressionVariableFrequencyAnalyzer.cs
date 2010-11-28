@@ -83,8 +83,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
 
       if (VariableFrequencies == null) {
         VariableFrequencies = new DataTable("Variable frequencies", "Relative frequency of variable references aggregated over the whole population.");
-        VariableFrequencies.VisualProperties.XAxisTitle = "Generations";
-        VariableFrequencies.VisualProperties.YAxisTitle = "Relative Variable Frequencies";
+        VariableFrequencies.VisualProperties.XAxisTitle = "Generation";
+        VariableFrequencies.VisualProperties.YAxisTitle = "Relative Variable Frequency";
         // add a data row for each input variable
         foreach (var inputVariable in inputVariables) {
           DataRow row = new DataRow(inputVariable);
