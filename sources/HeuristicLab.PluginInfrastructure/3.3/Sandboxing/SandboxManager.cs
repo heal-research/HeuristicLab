@@ -54,7 +54,7 @@ namespace HeuristicLab.PluginInfrastructure.Sandboxing {
     }
 
     #region ISandboxManager Members
-    public static AppDomain CreateAndInitSandbox(string name) {
+    public static AppDomain CreateAndInitSandbox(string appDomainName, string applicationBase) {
       PermissionSet pset;
 
       #region permission set for sandbox
@@ -78,13 +78,13 @@ namespace HeuristicLab.PluginInfrastructure.Sandboxing {
 
       AppDomainSetup setup = AppDomain.CurrentDomain.SetupInformation;
       //setup.PrivateBinPath = pluginDir;
-      setup.ApplicationBase = name;
+      setup.ApplicationBase = applicationBase;
       setup.ConfigurationFile = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
-      AppDomain applicationDomain = AppDomain.CreateDomain(name, AppDomain.CurrentDomain.Evidence, setup, pset, CreateStrongName(Assembly.GetExecutingAssembly()));
+      AppDomain applicationDomain = AppDomain.CreateDomain(appDomainName, AppDomain.CurrentDomain.Evidence, setup, pset, CreateStrongName(Assembly.GetExecutingAssembly()));
       Type applicationManagerType = typeof(DefaultApplicationManager);
       DefaultApplicationManager applicationManager =
         (DefaultApplicationManager)applicationDomain.CreateInstanceAndUnwrap(applicationManagerType.Assembly.FullName, applicationManagerType.FullName, true, BindingFlags.NonPublic | BindingFlags.Instance, null, null, null, null, null);
-      PluginManager pm = new PluginManager(name);
+      PluginManager pm = new PluginManager(appDomainName);
       pm.DiscoverAndCheckPlugins();
       ApplicationDescription[] apps = pm.Applications.Cast<ApplicationDescription>().ToArray();
       PluginDescription[] plugins = pm.Plugins.Cast<PluginDescription>().ToArray();
