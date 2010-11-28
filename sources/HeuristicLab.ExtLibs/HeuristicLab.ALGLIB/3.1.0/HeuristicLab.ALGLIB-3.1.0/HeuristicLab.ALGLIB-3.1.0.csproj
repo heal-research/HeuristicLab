@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{01BBCB5A-144A-4A7E-908E-079849E2F7CF}</ProjectGuid>
+    <ProjectGuid>{DE69A359-A5B8-4D3D-BA8D-D5780D7F96D6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.ALGLIB</RootNamespace>
-    <AssemblyName>HeuristicLab.ALGLIB-2.5.0</AssemblyName>
+    <AssemblyName>HeuristicLab.ALGLIB-3.1.0</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
@@ -112,20 +112,15 @@
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ALGLIB-2.5.0\ALGLIB-2.5.0.csproj">
-      <Project>{29E4B033-1FEF-4FE1-AE17-0A9319D7C54E}</Project>
-      <Name>ALGLIB-2.5.0</Name>
+    <ProjectReference Include="..\ALGLIB-3.1.0\ALGLIB-3.1.0.csproj">
+      <Project>{FC841674-62A7-4055-BE91-E41944B6C606}</Project>
+      <Name>ALGLIB-3.1.0</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
     <None Include="HeuristicLabALGLIBPlugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.frame" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="ALGLIB License-2.5.0.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -143,6 +138,11 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ALGLIB License-3.1.0.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

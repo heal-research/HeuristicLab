@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{29E4B033-1FEF-4FE1-AE17-0A9319D7C54E}</ProjectGuid>
+    <ProjectGuid>{FC841674-62A7-4055-BE91-E41944B6C606}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ALGLIB</RootNamespace>
-    <AssemblyName>ALGLIB-2.5.0</AssemblyName>
+    <AssemblyName>ALGLIB-3.1.0</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
@@ -104,108 +104,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ablas.cs" />
-    <Compile Include="ablasf.cs" />
-    <Compile Include="airyf.cs" />
+    <Compile Include="alglibinternal.cs" />
+    <Compile Include="alglibmisc.cs" />
     <Compile Include="ap.cs" />
-    <Compile Include="autogk.cs" />
-    <Compile Include="bdss.cs" />
-    <Compile Include="bdsvd.cs" />
-    <Compile Include="bessel.cs" />
-    <Compile Include="betaf.cs" />
-    <Compile Include="binomialdistr.cs" />
-    <Compile Include="blas.cs" />
-    <Compile Include="chebyshev.cs" />
-    <Compile Include="chisquaredistr.cs" />
-    <Compile Include="conv.cs" />
-    <Compile Include="corr.cs" />
-    <Compile Include="correlation.cs" />
-    <Compile Include="correlationtests.cs" />
-    <Compile Include="creflections.cs" />
-    <Compile Include="dawson.cs" />
-    <Compile Include="densesolver.cs" />
-    <Compile Include="descriptivestatistics.cs" />
-    <Compile Include="dforest.cs" />
-    <Compile Include="elliptic.cs" />
-    <Compile Include="estnorm.cs" />
-    <Compile Include="evd.cs" />
-    <Compile Include="expintegrals.cs" />
-    <Compile Include="fdistr.cs" />
-    <Compile Include="fft.cs" />
-    <Compile Include="fht.cs" />
-    <Compile Include="fresnel.cs" />
-    <Compile Include="ftbase.cs" />
-    <Compile Include="gammafunc.cs" />
-    <Compile Include="gkq.cs" />
-    <Compile Include="gq.cs" />
-    <Compile Include="hblas.cs" />
-    <Compile Include="hermite.cs" />
-    <Compile Include="hqrnd.cs" />
-    <Compile Include="hsschur.cs" />
-    <Compile Include="ibetaf.cs" />
-    <Compile Include="idwint.cs" />
-    <Compile Include="igammaf.cs" />
-    <Compile Include="inverseupdate.cs" />
-    <Compile Include="jacobianelliptic.cs" />
-    <Compile Include="jarquebera.cs" />
-    <Compile Include="kmeans.cs" />
-    <Compile Include="laguerre.cs" />
-    <Compile Include="lda.cs" />
-    <Compile Include="ldlt.cs" />
-    <Compile Include="legendre.cs" />
-    <Compile Include="linmin.cs" />
-    <Compile Include="linreg.cs" />
-    <Compile Include="logit.cs" />
-    <Compile Include="lsfit.cs" />
-    <Compile Include="mannwhitneyu.cs" />
-    <Compile Include="matdet.cs" />
-    <Compile Include="matgen.cs" />
-    <Compile Include="matinv.cs" />
-    <Compile Include="minasa.cs" />
-    <Compile Include="mincg.cs" />
-    <Compile Include="minlbfgs.cs" />
-    <Compile Include="minlm.cs" />
-    <Compile Include="mlpbase.cs" />
-    <Compile Include="mlpe.cs" />
-    <Compile Include="mlptrain.cs" />
-    <Compile Include="nearestneighbor.cs" />
-    <Compile Include="nearunityunit.cs" />
-    <Compile Include="normaldistr.cs" />
-    <Compile Include="odesolver.cs" />
-    <Compile Include="ortfac.cs" />
-    <Compile Include="pca.cs" />
-    <Compile Include="poissondistr.cs" />
-    <Compile Include="polint.cs" />
+    <Compile Include="dataanalysis.cs" />
+    <Compile Include="diffequations.cs" />
+    <Compile Include="fasttransforms.cs" />
+    <Compile Include="integration.cs" />
+    <Compile Include="interpolation.cs" />
+    <Compile Include="linalg.cs" />
+    <Compile Include="optimization.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="psif.cs" />
-    <Compile Include="ratint.cs" />
-    <Compile Include="ratinterpolation.cs" />
-    <Compile Include="rcond.cs" />
-    <Compile Include="reflections.cs" />
-    <Compile Include="rotations.cs" />
-    <Compile Include="safesolve.cs" />
-    <Compile Include="sblas.cs" />
-    <Compile Include="schur.cs" />
-    <Compile Include="sdet.cs" />
-    <Compile Include="sinverse.cs" />
-    <Compile Include="spdgevd.cs" />
-    <Compile Include="spline1d.cs" />
-    <Compile Include="spline2d.cs" />
-    <Compile Include="spline3.cs" />
-    <Compile Include="srcond.cs" />
-    <Compile Include="ssolve.cs" />
-    <Compile Include="stest.cs" />
-    <Compile Include="studenttdistr.cs" />
-    <Compile Include="studentttests.cs" />
-    <Compile Include="svd.cs" />
-    <Compile Include="taskgen.cs" />
-    <Compile Include="trfac.cs" />
-    <Compile Include="trigintegrals.cs" />
-    <Compile Include="trlinsolve.cs" />
-    <Compile Include="tsort.cs" />
-    <Compile Include="variancetests.cs" />
-    <Compile Include="wsr.cs" />
-    <Compile Include="xblas.cs" />
+    <Compile Include="solvers.cs" />
+    <Compile Include="specialfunctions.cs" />
+    <Compile Include="statistics.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="ALGLIB License.txt" />
