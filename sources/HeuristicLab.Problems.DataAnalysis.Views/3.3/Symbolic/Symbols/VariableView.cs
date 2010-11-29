@@ -56,12 +56,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
-      weightNuTextBox.Enabled = Content != null;
-      weightNuTextBox.ReadOnly = ReadOnly;
+      weightMuTextBox.Enabled = Content != null;
+      weightMuTextBox.ReadOnly = ReadOnly;
       weightSigmaTextBox.Enabled = Content != null;
       weightSigmaTextBox.ReadOnly = ReadOnly;
-      weightChangeNuTextBox.Enabled = Content != null;
-      weightChangeNuTextBox.ReadOnly = ReadOnly;
+      weightChangeMuTextBox.Enabled = Content != null;
+      weightChangeMuTextBox.ReadOnly = ReadOnly;
       weightChangeSigmaTextBox.Enabled = Content != null;
       weightChangeSigmaTextBox.ReadOnly = ReadOnly;
     }
@@ -75,11 +75,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
     #region control event handlers
     private void weightNuTextBox_TextChanged(object sender, EventArgs e) {
       double nu;
-      if (double.TryParse(weightNuTextBox.Text, out nu)) {
-        Content.WeightNu = nu;
-        errorProvider.SetError(weightNuTextBox, string.Empty);
+      if (double.TryParse(weightMuTextBox.Text, out nu)) {
+        Content.WeightMu = nu;
+        errorProvider.SetError(weightMuTextBox, string.Empty);
       } else {
-        errorProvider.SetError(weightNuTextBox, "Invalid value");
+        errorProvider.SetError(weightMuTextBox, "Invalid value");
       }
     }
     private void weightSigmaTextBox_TextChanged(object sender, EventArgs e) {
@@ -94,11 +94,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
 
     private void weightChangeNuTextBox_TextChanged(object sender, EventArgs e) {
       double nu;
-      if (double.TryParse(weightChangeNuTextBox.Text, out nu)) {
-        Content.WeightManipulatorNu = nu;
-        errorProvider.SetError(weightChangeNuTextBox, string.Empty);
+      if (double.TryParse(weightChangeMuTextBox.Text, out nu)) {
+        Content.WeightManipulatorMu = nu;
+        errorProvider.SetError(weightChangeMuTextBox, string.Empty);
       } else {
-        errorProvider.SetError(weightChangeNuTextBox, "Invalid value");
+        errorProvider.SetError(weightChangeMuTextBox, "Invalid value");
       }
     }
 
@@ -116,14 +116,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
     #region helpers
     private void UpdateControl() {
       if (Content == null) {
-        weightNuTextBox.Text = string.Empty;
+        weightMuTextBox.Text = string.Empty;
         weightSigmaTextBox.Text = string.Empty;
-        weightNuTextBox.Text = string.Empty;
+        weightMuTextBox.Text = string.Empty;
         weightChangeSigmaTextBox.Text = string.Empty;
       } else {
-        weightNuTextBox.Text = Content.WeightNu.ToString();
+        weightMuTextBox.Text = Content.WeightMu.ToString();
         weightSigmaTextBox.Text = Content.WeightSigma.ToString();
-        weightChangeNuTextBox.Text = Content.WeightManipulatorNu.ToString();
+        weightChangeMuTextBox.Text = Content.WeightManipulatorMu.ToString();
         weightChangeSigmaTextBox.Text = Content.WeightManipulatorSigma.ToString();
       }
       SetEnabledStateOfControls();

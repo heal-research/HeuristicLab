@@ -62,7 +62,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
 
     public override void ShakeLocalParameters(IRandom random, double shakingFactor) {
       base.ShakeLocalParameters(random, shakingFactor);
-      double x = NormalDistributedRandom.NextDouble(random, Symbol.ManipulatorNu, Symbol.ManipulatorSigma);
+      double x = NormalDistributedRandom.NextDouble(random, Symbol.ManipulatorMu, Symbol.ManipulatorSigma);
       Value = Value + x * shakingFactor;
     }
 

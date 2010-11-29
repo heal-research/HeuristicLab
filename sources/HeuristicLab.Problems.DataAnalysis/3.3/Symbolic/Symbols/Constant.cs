@@ -53,12 +53,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
       }
     }
     [Storable]
-    private double manipulatorNu;
-    public double ManipulatorNu {
-      get { return manipulatorNu; }
+    private double manipulatorMu;
+    public double ManipulatorMu {
+      get { return manipulatorMu; }
       set {
-        if (value != manipulatorNu) {
-          manipulatorNu = value;
+        if (value != manipulatorMu) {
+          manipulatorMu = value;
           OnChanged(EventArgs.Empty);
         }
       }
@@ -82,12 +82,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
       : base(original, cloner) {
       minValue = original.minValue;
       maxValue = original.maxValue;
-      manipulatorNu = original.manipulatorNu;
+      manipulatorMu = original.manipulatorMu;
       manipulatorSigma = original.manipulatorSigma;
     }
     public Constant()
       : base("Constant", "Represents a constant value.") {
-      manipulatorNu = 0.0;
+      manipulatorMu = 0.0;
       manipulatorSigma = 1.0;
       minValue = -20.0;
       maxValue = 20.0;

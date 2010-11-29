@@ -53,7 +53,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
       this.stdDevWeightChangeLabel = new System.Windows.Forms.Label();
       this.valueChangeSigmaTextBox = new System.Windows.Forms.TextBox();
       this.meanWeightChangeLabel = new System.Windows.Forms.Label();
-      this.valueChangeNuTextBox = new System.Windows.Forms.TextBox();
+      this.valueChangeMuTextBox = new System.Windows.Forms.TextBox();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.initializationGroupBox.SuspendLayout();
       this.mutationGroupBox.SuspendLayout();
@@ -145,7 +145,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
       this.mutationGroupBox.Controls.Add(this.stdDevWeightChangeLabel);
       this.mutationGroupBox.Controls.Add(this.valueChangeSigmaTextBox);
       this.mutationGroupBox.Controls.Add(this.meanWeightChangeLabel);
-      this.mutationGroupBox.Controls.Add(this.valueChangeNuTextBox);
+      this.mutationGroupBox.Controls.Add(this.valueChangeMuTextBox);
       this.mutationGroupBox.Location = new System.Drawing.Point(3, 158);
       this.mutationGroupBox.Name = "mutationGroupBox";
       this.mutationGroupBox.Size = new System.Drawing.Size(320, 73);
@@ -182,22 +182,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
       this.meanWeightChangeLabel.AutoSize = true;
       this.meanWeightChangeLabel.Location = new System.Drawing.Point(6, 22);
       this.meanWeightChangeLabel.Name = "meanWeightChangeLabel";
-      this.meanWeightChangeLabel.Size = new System.Drawing.Size(97, 13);
+      this.meanWeightChangeLabel.Size = new System.Drawing.Size(99, 13);
       this.meanWeightChangeLabel.TabIndex = 6;
-      this.meanWeightChangeLabel.Text = "Value change (nu):";
-      this.toolTip.SetToolTip(this.meanWeightChangeLabel, "The nu (mean) parameter for the normal distribution to sample the value change.");
+      this.meanWeightChangeLabel.Text = "Value change (mu):";
+      this.toolTip.SetToolTip(this.meanWeightChangeLabel, "The mu (mean) parameter for the normal distribution to sample the value change.");
       // 
-      // valueChangeNuTextBox
+      // valueChangeMuTextBox
       // 
-      this.valueChangeNuTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.valueChangeMuTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.errorProvider.SetIconAlignment(this.valueChangeNuTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
-      this.valueChangeNuTextBox.Location = new System.Drawing.Point(136, 19);
-      this.valueChangeNuTextBox.Name = "valueChangeNuTextBox";
-      this.valueChangeNuTextBox.Size = new System.Drawing.Size(178, 20);
-      this.valueChangeNuTextBox.TabIndex = 7;
-      this.toolTip.SetToolTip(this.valueChangeNuTextBox, "The nu (mean) parameter for the normal distribution to sample the value change.");
-      this.valueChangeNuTextBox.TextChanged += new System.EventHandler(this.valueChangeNuTextBox_TextChanged);
+      this.errorProvider.SetIconAlignment(this.valueChangeMuTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
+      this.valueChangeMuTextBox.Location = new System.Drawing.Point(136, 19);
+      this.valueChangeMuTextBox.Name = "valueChangeMuTextBox";
+      this.valueChangeMuTextBox.Size = new System.Drawing.Size(178, 20);
+      this.valueChangeMuTextBox.TabIndex = 7;
+      this.toolTip.SetToolTip(this.valueChangeMuTextBox, "The mu (mean) parameter for the normal distribution to sample the value change.");
+      this.valueChangeMuTextBox.TextChanged += new System.EventHandler(this.valueChangeNuTextBox_TextChanged);
       // 
       // ConstantView
       // 
@@ -236,7 +236,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
     private System.Windows.Forms.Label stdDevWeightChangeLabel;
     private System.Windows.Forms.TextBox valueChangeSigmaTextBox;
     private System.Windows.Forms.Label meanWeightChangeLabel;
-    private System.Windows.Forms.TextBox valueChangeNuTextBox;
+    private System.Windows.Forms.TextBox valueChangeMuTextBox;
 
   }
 }

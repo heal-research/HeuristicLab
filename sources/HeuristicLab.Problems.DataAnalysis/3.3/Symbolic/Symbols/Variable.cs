@@ -32,12 +32,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   public class Variable : Symbol {
     #region Properties
     [Storable]
-    private double weightNu;
-    public double WeightNu {
-      get { return weightNu; }
+    private double weightMu;
+    public double WeightMu {
+      get { return weightMu; }
       set {
-        if (value != weightNu) {
-          weightNu = value;
+        if (value != weightMu) {
+          weightMu = value;
           OnChanged(EventArgs.Empty);
         }
       }
@@ -55,12 +55,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
       }
     }
     [Storable]
-    private double weightManipulatorNu;
-    public double WeightManipulatorNu {
-      get { return weightManipulatorNu; }
+    private double weightManipulatorMu;
+    public double WeightManipulatorMu {
+      get { return weightManipulatorMu; }
       set {
-        if (value != weightManipulatorNu) {
-          weightManipulatorNu = value;
+        if (value != weightManipulatorMu) {
+          weightManipulatorMu = value;
           OnChanged(EventArgs.Empty);
         }
       }
@@ -95,18 +95,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
     }
     protected Variable(Variable original, Cloner cloner)
       : base(original, cloner) {
-      weightNu = original.weightNu;
+      weightMu = original.weightMu;
       weightSigma = original.weightSigma;
       variableNames = new List<string>(original.variableNames);
-      weightManipulatorNu = original.weightManipulatorNu;
+      weightManipulatorMu = original.weightManipulatorMu;
       weightManipulatorSigma = original.weightManipulatorSigma;
     }
     public Variable() : this("Variable", "Represents a variable value.") { }
     public Variable(string name, string description)
       : base(name, description) {
-      weightNu = 1.0;
+      weightMu = 1.0;
       weightSigma = 1.0;
-      weightManipulatorNu = 0.0;
+      weightManipulatorMu = 0.0;
       weightManipulatorSigma = 1.0;
       variableNames = new List<string>();
     }

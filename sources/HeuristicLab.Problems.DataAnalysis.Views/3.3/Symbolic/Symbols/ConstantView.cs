@@ -60,8 +60,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
       minValueTextBox.ReadOnly = ReadOnly;
       maxValueTextBox.Enabled = Content != null;
       maxValueTextBox.ReadOnly = ReadOnly;
-      valueChangeNuTextBox.Enabled = Content != null;
-      valueChangeNuTextBox.ReadOnly = ReadOnly;
+      valueChangeMuTextBox.Enabled = Content != null;
+      valueChangeMuTextBox.ReadOnly = ReadOnly;
       valueChangeSigmaTextBox.Enabled = Content != null;
       valueChangeSigmaTextBox.ReadOnly = ReadOnly;
     }
@@ -94,11 +94,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
 
     private void valueChangeNuTextBox_TextChanged(object sender, EventArgs e) {
       double nu;
-      if (double.TryParse(valueChangeNuTextBox.Text, out nu)) {
-        Content.ManipulatorNu = nu;
-        errorProvider.SetError(valueChangeNuTextBox, string.Empty);
+      if (double.TryParse(valueChangeMuTextBox.Text, out nu)) {
+        Content.ManipulatorMu = nu;
+        errorProvider.SetError(valueChangeMuTextBox, string.Empty);
       } else {
-        errorProvider.SetError(valueChangeNuTextBox, "Invalid value");
+        errorProvider.SetError(valueChangeMuTextBox, "Invalid value");
       }
     }
 
@@ -123,7 +123,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
       } else {
         minValueTextBox.Text = Content.MinValue.ToString();
         maxValueTextBox.Text = Content.MaxValue.ToString();
-        valueChangeNuTextBox.Text = Content.ManipulatorNu.ToString();
+        valueChangeMuTextBox.Text = Content.ManipulatorMu.ToString();
         valueChangeSigmaTextBox.Text = Content.ManipulatorSigma.ToString();
       }
       SetEnabledStateOfControls();
