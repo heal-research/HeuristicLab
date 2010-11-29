@@ -99,7 +99,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
       this.weightMuTextBox.TabIndex = 7;
       this.toolTip.SetToolTip(this.weightMuTextBox, "The mu (mean) parameter of the normal distribution from which to sample the initi" +
               "al weights.");
-      this.weightMuTextBox.TextChanged += new System.EventHandler(this.weightNuTextBox_TextChanged);
+      this.weightMuTextBox.TextChanged += new System.EventHandler(this.weightMuTextBox_TextChanged);
       // 
       // initializationGroupBox
       // 
@@ -197,7 +197,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
       this.weightChangeMuTextBox.TabIndex = 7;
       this.toolTip.SetToolTip(this.weightChangeMuTextBox, "The mu (mean) parameter for the normal distribution to sample the change in weigh" +
               "t.");
-      this.weightChangeMuTextBox.TextChanged += new System.EventHandler(this.weightChangeNuTextBox_TextChanged);
+      this.weightChangeMuTextBox.TextChanged += new System.EventHandler(this.weightChangeMuTextBox_TextChanged);
       // 
       // VariableView
       // 

@@ -73,7 +73,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
     #endregion
 
     #region control event handlers
-    private void weightNuTextBox_TextChanged(object sender, EventArgs e) {
+    private void weightMuTextBox_TextChanged(object sender, EventArgs e) {
       double nu;
       if (double.TryParse(weightMuTextBox.Text, out nu)) {
         Content.WeightMu = nu;
@@ -92,7 +92,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
       }
     }
 
-    private void weightChangeNuTextBox_TextChanged(object sender, EventArgs e) {
+    private void weightChangeMuTextBox_TextChanged(object sender, EventArgs e) {
       double nu;
       if (double.TryParse(weightChangeMuTextBox.Text, out nu)) {
         Content.WeightManipulatorMu = nu;

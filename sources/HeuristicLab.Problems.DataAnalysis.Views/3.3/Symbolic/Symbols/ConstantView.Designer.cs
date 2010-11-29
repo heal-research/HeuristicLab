@@ -197,7 +197,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
       this.valueChangeMuTextBox.Size = new System.Drawing.Size(178, 20);
       this.valueChangeMuTextBox.TabIndex = 7;
       this.toolTip.SetToolTip(this.valueChangeMuTextBox, "The mu (mean) parameter for the normal distribution to sample the value change.");
-      this.valueChangeMuTextBox.TextChanged += new System.EventHandler(this.valueChangeNuTextBox_TextChanged);
+      this.valueChangeMuTextBox.TextChanged += new System.EventHandler(this.valueChangeMuTextBox_TextChanged);
       // 
       // ConstantView
       // 

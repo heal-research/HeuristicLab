@@ -92,7 +92,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
       }
     }
 
-    private void valueChangeNuTextBox_TextChanged(object sender, EventArgs e) {
+    private void valueChangeMuTextBox_TextChanged(object sender, EventArgs e) {
       double nu;
       if (double.TryParse(valueChangeMuTextBox.Text, out nu)) {
         Content.ManipulatorMu = nu;
