@@ -142,11 +142,11 @@ namespace HeuristicLab.Analysis {
 
         // fetch results collection
         ResultCollection results;
-        if (!ResultsParameter.ActualValue.ContainsKey("Allele Frequency Analysis Results")) {
+        if (!ResultsParameter.ActualValue.ContainsKey(Name + " Results")) {
           results = new ResultCollection();
-          ResultsParameter.ActualValue.Add(new Result("Allele Frequency Analysis Results", results));
+          ResultsParameter.ActualValue.Add(new Result(Name + " Results", results));
         } else {
-          results = (ResultCollection)ResultsParameter.ActualValue["Allele Frequency Analysis Results"].Value;
+          results = (ResultCollection)ResultsParameter.ActualValue[Name + " Results"].Value;
         }
 
         // store allele frequencies

@@ -140,11 +140,11 @@ namespace HeuristicLab.Analysis {
 
           // fetch results collection
           ResultCollection results;
-          if (!ResultsParameter.ActualValue.ContainsKey("Population Diversity Analysis Results")) {
+          if (!ResultsParameter.ActualValue.ContainsKey(Name + " Results")) {
             results = new ResultCollection();
-            ResultsParameter.ActualValue.Add(new Result("Population Diversity Analysis Results", results));
+            ResultsParameter.ActualValue.Add(new Result(Name + " Results", results));
           } else {
-            results = (ResultCollection)ResultsParameter.ActualValue["Population Diversity Analysis Results"].Value;
+            results = (ResultCollection)ResultsParameter.ActualValue[Name + " Results"].Value;
           }
 
           // store similarities
