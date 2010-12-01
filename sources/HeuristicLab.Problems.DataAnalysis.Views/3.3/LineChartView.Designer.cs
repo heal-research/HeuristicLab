@@ -62,14 +62,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.chart.Name = "chart";
       this.chart.Size = new System.Drawing.Size(358, 225);
       this.chart.TabIndex = 0;
+      this.chart.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Chart_MouseDoubleClick);
       // 
-      // QualityLineChart
+      // LineChartView
       // 
       this.AllowDrop = true;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.chart);
-      this.Name = "QualityLineChart";
+      this.Name = "LineChartView";
       this.Size = new System.Drawing.Size(358, 225);
       ((System.ComponentModel.ISupportInitialize)(this.chart)).EndInit();
       this.ResumeLayout(false);

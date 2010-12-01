@@ -120,6 +120,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         }
       }
     }
+
+    private void Chart_MouseDoubleClick(object sender, MouseEventArgs e) {
+      HitTestResult result = chart.HitTest(e.X, e.Y);
+      if (result.ChartArea != null && (result.ChartElementType == ChartElementType.PlottingArea ||
+                                       result.ChartElementType == ChartElementType.Gridlines) ||
+                                       result.ChartElementType == ChartElementType.StripLines) {
+        foreach (var axis in result.ChartArea.Axes)
+          axis.ScaleView.ZoomReset(int.MaxValue);
+      }
+    }
     #endregion
 
     private void UpdateStripLines() {
