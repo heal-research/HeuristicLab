@@ -42,17 +42,18 @@ namespace HeuristicLab.Optimization.Views {
       base.OnContentChanged();
       cmbConstraintColumn.Items.Clear();
       cmbConstraintOperation.Items.Clear();
-      chbActive.Checked = false;
+
       if (Content != null) {
         cmbConstraintOperation.Items.AddRange(Content.AllowedConstraintOperations.ToArray());
         if (Content.ConstraintOperation != null)
           cmbConstraintOperation.SelectedItem = Content.ConstraintOperation;
         else if (cmbConstraintOperation.Items.Count != 0)
           cmbConstraintOperation.SelectedIndex = 0;
-        this.UpdateColumnComboBox();
+        UpdateColumnComboBox();
         chbActive.Checked = Content.Active;
-        this.ReadOnly = Content.Active;
-      }
+        ReadOnly = Content.Active;
+      } else
+        chbActive.Checked = false;
     }
 
     protected virtual void UpdateColumnComboBox() {
