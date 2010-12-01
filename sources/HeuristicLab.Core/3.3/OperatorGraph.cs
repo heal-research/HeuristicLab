@@ -94,7 +94,7 @@ namespace HeuristicLab.Core {
       Initialize();
     }
 
-    //mkommend: IMPORTANT DO NOT REMOVE THIS PRIVATE EVENT
+    //mkommend: IMPORTANT DO NOT REMOVE THIS EVENT
     //needed to register OperatorGraph events in GraphVisualizationInfo
     public event EventHandler DeserializationFinished;
     private void OnOperatorGraphDeserializationFinished() {
@@ -105,10 +105,10 @@ namespace HeuristicLab.Core {
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       Initialize();
+      OnOperatorGraphDeserializationFinished();
     }
     private void Initialize() {
       RegisterOperatorsEvents();
-      OnOperatorGraphDeserializationFinished();
     }
 
     /// <summary>

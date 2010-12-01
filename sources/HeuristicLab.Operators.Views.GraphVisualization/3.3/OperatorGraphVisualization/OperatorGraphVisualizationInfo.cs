@@ -78,15 +78,6 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
             RegisterParameterEvents(param);
         }
       }
-      if (original.operatorGraph.InitialOperator != null) {
-        IOperatorShapeInfo newInitialShapeInfo = original.operatorShapeInfoMapping.GetByFirst(original.operatorGraph.InitialOperator);
-        if (newInitialShapeInfo != null) {
-          oldInitialShapeColor = newInitialShapeInfo.Color;
-          newInitialShapeInfo.Color = Color.LightGreen;
-        }
-        oldInitialShape = InitialShape;
-        OnInitialShapeChanged();
-      }
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new OperatorGraphVisualizationInfo(this, cloner);
@@ -107,6 +98,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       this.operatorGraph.DeserializationFinished += new EventHandler(operatorGraph_DeserializationFinished);
+      if (oldInitialShapeColor.IsEmpty) oldInitialShapeColor = Color.LightBlue;
 
       IOperator op;
       IOperatorShapeInfo shapeInfo;
@@ -132,15 +124,6 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
 
     private void operatorGraph_DeserializationFinished(object sender, EventArgs e) {
       this.RegisterOperatorGraphEvents();
-      if (this.operatorGraph.InitialOperator != null) {
-        IOperatorShapeInfo newInitialShapeInfo = this.operatorShapeInfoMapping.GetByFirst(this.operatorGraph.InitialOperator);
-        if (newInitialShapeInfo != null) {
-          oldInitialShapeColor = newInitialShapeInfo.Color;
-          newInitialShapeInfo.Color = Color.LightGreen;
-        }
-        oldInitialShape = this.InitialShape;
-        this.OnInitialShapeChanged();
-      }
       this.operatorGraph.DeserializationFinished -= new EventHandler(operatorGraph_DeserializationFinished);
     }
 
@@ -168,18 +151,19 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     }
 
     private IShapeInfo oldInitialShape;
+    [Storable]
     private Color oldInitialShapeColor;
     public override IShapeInfo InitialShape {
       get {
         IOperator op = this.operatorGraph.InitialOperator;
-        if (op == null)
-          return null;
+        if (op == null) return null;
         return this.operatorShapeInfoMapping.GetByFirst(op);
       }
       set {
         if (value == null)
           this.OperatorGraph.InitialOperator = null;
         else {
+          this.oldInitialShape = InitialShape;
           IOperatorShapeInfo shapeInfo = (IOperatorShapeInfo)value;
           this.OperatorGraph.InitialOperator = this.operatorShapeInfoMapping.GetBySecond(shapeInfo);
         }
