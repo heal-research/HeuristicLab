@@ -150,8 +150,10 @@ namespace HeuristicLab.Operators.Programmable {
     }
 
     private IEnumerable<string> GetNamespaceHierachy(string ns) {
-      for (int i = ns.Length; i != -1; i = ns.LastIndexOf('.', i - 1)) {
-        yield return ns.Substring(0, i);
+      if (ns != null) {
+        for (int i = ns.Length; i != -1; i = ns.LastIndexOf('.', i - 1)) {
+          yield return ns.Substring(0, i);
+        }
       }
     }
 
