@@ -39,6 +39,20 @@ namespace HeuristicLab.MainForm.WindowsForms {
       Content = null;
       messageLabel.Visible = false;
       viewsLabel.Visible = false;
+      viewsLabelVisible = true;
+    }
+
+    private bool viewsLabelVisible;
+    public bool ViewsLabelVisible {
+      get { return viewsLabelVisible; }
+      set {
+        if (viewsLabelVisible != value) {
+          viewsLabelVisible = value;
+          viewsLabel.Visible = value;
+          View view = activeView as View;
+          if (view != null) view.Dock = viewsLabelVisible ? DockStyle.None : DockStyle.Fill;
+        }
+      }
     }
 
     private IContentView cachedView;
@@ -80,6 +94,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
               view.Visible = true;
               view.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right;
               view.Size = new Size(Width - this.viewsLabel.Width - this.viewsLabel.Margin.Left - this.viewsLabel.Margin.Right, this.Height);
+              view.Dock = viewsLabelVisible ? DockStyle.None : DockStyle.Fill;
               view.OnShown(new ViewShownEventArgs(view, false));
               if (!Controls.Contains((view))) Controls.Add(view);
             }
@@ -132,7 +147,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     private void UpdateLabels() {
       if (Content != null && viewContextMenuStrip.Items.Count > 0) {
         messageLabel.Visible = false;
-        viewsLabel.Visible = true;
+        viewsLabel.Visible = viewsLabelVisible;
       } else if (Content != null) {
         messageLabel.Visible = true;
         viewsLabel.Visible = false;
