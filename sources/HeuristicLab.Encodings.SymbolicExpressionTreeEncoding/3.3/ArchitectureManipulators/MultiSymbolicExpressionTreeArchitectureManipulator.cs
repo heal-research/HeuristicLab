@@ -115,7 +115,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureMani
         manipulator.MaxTreeHeightParameter.ActualName = MaxTreeHeightParameter.Name;
         manipulator.SymbolicExpressionGrammarParameter.ActualName = SymbolicExpressionGrammarParameter.Name;
         manipulator.SymbolicExpressionTreeParameter.ActualName = SymbolicExpressionTreeParameter.Name;
-        manipulator.MaxFunctionDefinitionsParameter.ActualName = MaxFunctionArgumentsParameter.Name;
+        manipulator.MaxFunctionDefinitionsParameter.ActualName = MaxFunctionDefinitionsParameter.Name;
         manipulator.MaxFunctionArgumentsParameter.ActualName = MaxFunctionArgumentsParameter.Name;
       }
 

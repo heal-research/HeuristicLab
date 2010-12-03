@@ -56,7 +56,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators {
       int maxSize = maxTreeSize - symbolicExpressionTree.Size + manipulationPoint.Node.GetSize();
       int maxHeight = maxTreeHeight - symbolicExpressionTree.Height + manipulationPoint.Node.GetHeight();
       // find possible symbols for the node (also considering the existing branches below it)
-      var allowedSymbols = from symbol in manipulationPoint.Parent.GetAllowedSymbols(manipulationPoint.Index, maxHeight)
+      var allowedSymbols = from symbol in manipulationPoint.Parent.GetAllowedSymbols(manipulationPoint.Index)
+                           where manipulationPoint.Node.Grammar.GetMinExpressionDepth(symbol) <= maxHeight
+                           where manipulationPoint.Node.Grammar.GetMinExpressionLength(symbol) <= maxSize
                            select symbol;
       if (allowedSymbols.Count() <= 1) return;
 

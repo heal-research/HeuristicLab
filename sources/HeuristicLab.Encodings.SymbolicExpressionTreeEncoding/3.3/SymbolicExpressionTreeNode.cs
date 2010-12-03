@@ -177,9 +177,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     public IEnumerable<Symbol> GetAllowedSymbols(int argumentIndex) {
       return Grammar.Symbols.Where(s => Grammar.IsAllowedChild(Symbol, s, argumentIndex));
     }
-    public IEnumerable<Symbol> GetAllowedSymbols(int argumentIndex, int maxExpressionDepth) {
-      return Grammar.Symbols.Where(s => Grammar.IsAllowedChild(Symbol, s, argumentIndex) && Grammar.GetMinExpressionDepth(s) <= maxExpressionDepth);
-    }
 
     public int GetMinSubtreeCount() {
       return Grammar.GetMinSubtreeCount(Symbol);
