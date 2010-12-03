@@ -65,7 +65,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Crossovers {
       // select a random crossover point in the first parent 
       SymbolicExpressionTreeNode crossoverPoint0;
       int replacedSubtreeIndex;
-      SelectCrossoverPoint(random, parent0, internalCrossoverPointProbability, maxTreeSize - 1, maxTreeHeight - 1, out crossoverPoint0, out replacedSubtreeIndex);
+      SelectCrossoverPoint(random, parent0, internalCrossoverPointProbability, maxTreeSize, maxTreeHeight, out crossoverPoint0, out replacedSubtreeIndex);
 
       // calculate the max size and height that the inserted branch can have 
       int maxInsertedBranchSize = maxTreeSize - (parent0.Size - crossoverPoint0.SubTrees[replacedSubtreeIndex].GetSize());

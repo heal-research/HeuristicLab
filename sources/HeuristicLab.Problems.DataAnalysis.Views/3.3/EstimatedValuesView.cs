@@ -46,6 +46,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       : base() {
       InitializeComponent();
       matrixView = new StringConvertibleMatrixView();
+      matrixView.ShowRowsAndColumnsTextBox = false;
+      matrixView.ShowStatisticalInformation = false;
       matrixView.Dock = DockStyle.Fill;
       this.Controls.Add(matrixView);
     }
@@ -81,12 +83,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       else {
         DoubleMatrix matrix = null;
         if (Content != null) {
-          double[,] values =
-          MatrixExtensions<double>.Create(
-            Content.ProblemData.Dataset.GetVariableValues(Content.ProblemData.TargetVariable.Value),
-            Content.EstimatedValues.ToArray());
+          double[,] values = new double[Content.ProblemData.Dataset.Rows, 4];
+
+          double[] target = Content.ProblemData.Dataset.GetVariableValues(Content.ProblemData.TargetVariable.Value);
+          double[] estimated = Content.EstimatedValues.ToArray();
+          for (int row = 0; row < target.Length; row++) {
+            values[row, 0] = target[row];
+            values[row, 1] = estimated[row];
+            values[row, 2] = estimated[row] - target[row];
+            values[row, 3] = estimated[row] / target[row] - 1;
+          }
+
           matrix = new DoubleMatrix(values);
-          matrix.ColumnNames = new string[] { "Original", "Estimated" };
+          matrix.ColumnNames = new string[] { "Original", "Estimated", "Error", "Rel. Error" };
         }
         matrixView.Content = matrix;
       }

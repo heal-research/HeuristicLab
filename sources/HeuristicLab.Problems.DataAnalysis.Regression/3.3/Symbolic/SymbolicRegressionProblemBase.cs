@@ -155,8 +155,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     protected SymbolicRegressionProblemBase(SymbolicRegressionProblemBase original, Cloner cloner)
       : base(original, cloner) {
       operators = original.operators.Select(x => (IOperator)cloner.Clone(x)).ToList();
-      RegisterParameterEvents();
       RegisterParameterValueEvents();
+      RegisterParameterEvents();
     }
     public SymbolicRegressionProblemBase()
       : base() {
@@ -170,7 +170,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       Parameters.Add(new ValueParameter<DoubleValue>("UpperEstimationLimit", "The upper limit for the estimated value that can be returned by the symbolic regression model.", new DoubleValue(double.PositiveInfinity)));
       Parameters.Add(new ValueParameter<ISymbolicExpressionGrammar>("FunctionTreeGrammar", "The grammar that should be used for symbolic regression models.", globalGrammar));
       Parameters.Add(new ValueParameter<IntValue>("MaxExpressionLength", "Maximal length of the symbolic expression.", new IntValue(100)));
-      Parameters.Add(new ValueParameter<IntValue>("MaxExpressionDepth", "Maximal depth of the symbolic expression.", new IntValue(10)));
+      Parameters.Add(new ValueParameter<IntValue>("MaxExpressionDepth", "Maximal depth of the symbolic expression. The minimum depth needed for the algorithm is 3 because two levels are reserved for the ProgramRoot and the Start symbol.", new IntValue(10)));
       Parameters.Add(new ValueParameter<IntValue>("MaxFunctionDefiningBranches", "Maximal number of automatically defined functions.", (IntValue)new IntValue(0).AsReadOnly()));
       Parameters.Add(new ValueParameter<IntValue>("MaxFunctionArguments", "Maximal number of arguments of automatically defined functions.", (IntValue)new IntValue(0).AsReadOnly()));
 
@@ -181,21 +181,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       UpdateGrammar();
       UpdateEstimationLimits();
       InitializeOperators();
-      RegisterParameterEvents();
       RegisterParameterValueEvents();
-    }
-
-    private void RegisterParameterValueEvents() {
-      MaxFunctionArgumentsParameter.ValueChanged += new EventHandler(ArchitectureParameter_ValueChanged);
-      MaxFunctionDefiningBranchesParameter.ValueChanged += new EventHandler(ArchitectureParameter_ValueChanged);
-      SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
-      FunctionTreeGrammarParameter.ValueChanged += new EventHandler(FunctionTreeGrammarParameter_ValueChanged);
+      RegisterParameterEvents();
     }
 
     private void RegisterParameterEvents() {
+      MaxFunctionArgumentsParameter.ValueChanged += new EventHandler(ArchitectureParameter_ValueChanged);
+      MaxFunctionDefiningBranchesParameter.ValueChanged += new EventHandler(ArchitectureParameter_ValueChanged);
+      MaxExpressionDepthParameter.ValueChanged += new EventHandler(MaxExpressionDepthParameter_ValueChanged);
+      SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
+      FunctionTreeGrammarParameter.ValueChanged += new EventHandler(FunctionTreeGrammarParameter_ValueChanged);
+      SolutionCreator.SymbolicExpressionTreeParameter.ActualNameChanged += new EventHandler(SolutionCreator_SymbolicExpressionTreeParameter_ActualNameChanged);
+    }
+
+    private void RegisterParameterValueEvents() {
       MaxFunctionArgumentsParameter.Value.ValueChanged += new EventHandler(ArchitectureParameterValue_ValueChanged);
       MaxFunctionDefiningBranchesParameter.Value.ValueChanged += new EventHandler(ArchitectureParameterValue_ValueChanged);
-      SolutionCreator.SymbolicExpressionTreeParameter.ActualNameChanged += new EventHandler(SolutionCreator_SymbolicExpressionTreeParameter_ActualNameChanged);
+      MaxExpressionDepthParameter.Value.ValueChanged += new EventHandler(MaxExpressionDepthParameterValue_ValueChanged);
     }
 
     #region event handling
@@ -251,6 +253,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     private void ArchitectureParameterValue_ValueChanged(object sender, EventArgs e) {
       OnArchitectureParameterChanged(e);
     }
+
+    private void MaxExpressionDepthParameter_ValueChanged(object sender, EventArgs e) {
+      MaxExpressionDepthParameterValue_ValueChanged(sender, e);
+      MaxExpressionDepthParameter.Value.ValueChanged += MaxExpressionDepthParameterValue_ValueChanged;
+    }
+    private void MaxExpressionDepthParameterValue_ValueChanged(object sender, EventArgs e) {
+      if (MaxExpressionDepth != null && MaxExpressionDepth.Value < 3)
+        MaxExpressionDepth.Value = 3;
+    }
     #endregion
 
     #region Helpers
@@ -260,8 +271,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       #region Backwards compatible code (remove with 3.4)
       if (operators == null) InitializeOperators();
       #endregion
-      RegisterParameterEvents();
       RegisterParameterValueEvents();
+      RegisterParameterEvents();
     }
 
     protected void AddOperator(IOperator op) {

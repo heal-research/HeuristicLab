@@ -52,27 +52,22 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators {
       var manipulationPoint = (from parent in symbolicExpressionTree.Root.IterateNodesPrefix().Skip(1)
                                from subtree in parent.SubTrees
                                select new { Parent = parent, Node = subtree, Index = parent.SubTrees.IndexOf(subtree) }).SelectRandom(random);
+
+      int maxSize = maxTreeSize - symbolicExpressionTree.Size + manipulationPoint.Node.GetSize();
+      int maxHeight = maxTreeHeight - symbolicExpressionTree.Height + manipulationPoint.Node.GetHeight();
       // find possible symbols for the node (also considering the existing branches below it)
-      var allowedSymbols = from symbol in manipulationPoint.Parent.GetAllowedSymbols(manipulationPoint.Index)
+      var allowedSymbols = from symbol in manipulationPoint.Parent.GetAllowedSymbols(manipulationPoint.Index, maxHeight)
                            select symbol;
+      if (allowedSymbols.Count() <= 1) return;
 
-      if (allowedSymbols.Count() <= 1) {
-        return;
-      }
-      var oldBranch = manipulationPoint.Node;
-      int oldBranchSize = manipulationPoint.Node.GetSize();
-
-      var seedSymbol = SelectRandomSymbol(random, allowedSymbols);
-
-      // replace the old node with the new node
+      var seedSymbol = SelectRandomSymbol(random, allowedSymbols);  // replace the old node with the new node
       var seedNode = seedSymbol.CreateTreeNode();
       if (seedNode.HasLocalParameters)
         seedNode.ResetLocalParameters(random);
 
       manipulationPoint.Parent.RemoveSubTree(manipulationPoint.Index);
       manipulationPoint.Parent.InsertSubTree(manipulationPoint.Index, seedNode);
-      int maxSize = Math.Max(oldBranchSize, seedNode.Grammar.GetMinExpressionLength(seedNode.Symbol)) * 2;
-      var bla = ProbabilisticTreeCreator.PTC2(random, seedNode, maxSize, maxSize, 0, 0);
+      seedNode = ProbabilisticTreeCreator.PTC2(random, seedNode, maxSize, maxHeight, 0, 0);
       success = true;
     }
 
