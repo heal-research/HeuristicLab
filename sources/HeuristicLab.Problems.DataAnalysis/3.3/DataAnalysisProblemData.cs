@@ -395,7 +395,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     #endregion
 
     public virtual void ImportFromFile(string fileName) {
-      var csvFileParser = new CsvFileParser();
+      var csvFileParser = new TableFileParser();
       csvFileParser.Parse(fileName);
       suppressEvents = true;
       Name = "Data imported from " + Path.GetFileName(fileName);

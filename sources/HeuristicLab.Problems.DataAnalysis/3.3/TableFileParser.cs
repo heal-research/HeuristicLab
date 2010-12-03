@@ -27,7 +27,9 @@ using System.Linq;
 using System.Text;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class CsvFileParser {
+  public class TableFileParser {
+    private const int BUFFER_SIZE = 1024;
+    private readonly char[] POSSIBLE_SEPARATORS = new char[] { ',', ';', '\t' };
     private const string VARIABLENAMES = "VARIABLENAMES";
     private Tokenizer tokenizer;
     private List<string> variableNames;
@@ -65,7 +67,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
-    public CsvFileParser() {
+    public TableFileParser() {
       rowValues = new List<List<double>>();
       variableNames = new List<string>();
     }
@@ -76,7 +78,15 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public void Parse(string fileName) {
-      TryParse(fileName);
+      NumberFormatInfo numberFormat;
+      char separator;
+      DetermineFileFormat(fileName, out numberFormat, out separator);
+      using (StreamReader reader = new StreamReader(fileName)) {
+        tokenizer = new Tokenizer(reader, numberFormat, separator);
+        // parse the file
+        Parse();
+      }
+
       // translate the list of samples into a DoubleMatrixData item
       rows = rowValues.Count;
       columns = rowValues[0].Count;
@@ -93,24 +103,72 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
-    private void TryParse(string fileName) {
-      Exception lastEx = null;
-      NumberFormatInfo[] possibleFormats = new NumberFormatInfo[] { CultureInfo.InvariantCulture.NumberFormat };
-      foreach (NumberFormatInfo numberFormat in possibleFormats) {
-        using (StreamReader reader = new StreamReader(fileName)) {
-          tokenizer = new Tokenizer(reader, numberFormat);
-          try {
-            // parse the file
-            Parse();
-            return; // parsed without errors -> return;
+    private void DetermineFileFormat(string fileName, out NumberFormatInfo numberFormat, out char separator) {
+      using (StreamReader reader = new StreamReader(fileName)) {
+        // skip first line
+        reader.ReadLine();
+        // read a block
+        char[] buffer = new char[BUFFER_SIZE];
+        int charsRead = reader.ReadBlock(buffer, 0, BUFFER_SIZE);
+        // count frequency of special characters
+        Dictionary<char, int> charCounts = buffer.Take(charsRead)
+          .GroupBy(c => c)
+          .ToDictionary(g => g.Key, g => g.Count());
+
+        // depending on the characters occuring in the block 
+        // we distinghish a number of different cases based on the the following rules:
+        // many points => it must be English number format, the other frequently occuring char is the separator
+        // no points but many commas => this is the problematic case. Either German format (real numbers) or English format (only integer numbers) with ',' as separator
+        //   => check the line in more detail:
+        //            English: 0, 0, 0, 0
+        //            German:  0,0 0,0 0,0 ...
+        //            => if commas are followed by space => English format
+        // no points no commas => English format (only integer numbers) use the other frequently occuring char as separator
+        // in all cases only treat ' ' as separator if no other separator is possible (spaces can also occur additionally to separators)
+        if (OccurrencesOf(charCounts, '.') > 10) {
+          numberFormat = NumberFormatInfo.InvariantInfo;
+          separator = POSSIBLE_SEPARATORS
+            .Where(c => OccurrencesOf(charCounts, c) > 10)
+            .OrderBy(c => -OccurrencesOf(charCounts, c))
+            .DefaultIfEmpty(' ')
+            .First();
+        } else if (OccurrencesOf(charCounts, ',') > 10) {
+          // no points and many commas
+          int countCommaNonDigitPairs = 0;
+          for (int i = 0; i < charsRead - 1; i++) {
+            if (buffer[i] == ',' && !Char.IsDigit(buffer[i + 1])) {
+              countCommaNonDigitPairs++;
+            }
           }
-          catch (DataFormatException ex) {
-            lastEx = ex;
+          if (countCommaNonDigitPairs > 10) {
+            // English format (only integer values) with ',' as separator
+            numberFormat = NumberFormatInfo.InvariantInfo;
+            separator = ',';
+          } else {
+            char[] disallowedSeparators = new char[] { ',' };
+            // German format (real values)
+            numberFormat = NumberFormatInfo.GetInstance(new CultureInfo("de"));
+            separator = POSSIBLE_SEPARATORS
+              .Except(disallowedSeparators)
+              .Where(c => OccurrencesOf(charCounts, c) > 10)
+              .OrderBy(c => -OccurrencesOf(charCounts, c))
+              .DefaultIfEmpty(' ')
+              .First();
           }
+        } else {
+          // no points and no commas => English format
+          numberFormat = NumberFormatInfo.InvariantInfo;
+          separator = POSSIBLE_SEPARATORS
+            .Where(c => OccurrencesOf(charCounts, c) > 10)
+            .OrderBy(c => -OccurrencesOf(charCounts, c))
+            .DefaultIfEmpty(' ')
+            .First();
         }
       }
-      // all number formats threw an exception -> rethrow the last exception
-      throw lastEx;
+    }
+
+    private int OccurrencesOf(Dictionary<char, int> charCounts, char c) {
+      return charCounts.ContainsKey(c) ? charCounts[c] : 0;
     }
 
     #region tokenizer
@@ -139,6 +197,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       private StreamReader reader;
       private List<Token> tokens;
       private NumberFormatInfo numberFormatInfo;
+      private char separator;
+      private const string INTERNAL_SEPARATOR = "#";
 
       private int currentLineNumber = 0;
       public int CurrentLineNumber {
@@ -165,13 +225,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
       public Tokenizer(StreamReader reader, NumberFormatInfo numberFormatInfo, char separator) {
         this.reader = reader;
         this.numberFormatInfo = numberFormatInfo;
-        separatorToken = new Token(TokenTypeEnum.Separator, separator.ToString());
+        this.separator = separator;
+        separatorToken = new Token(TokenTypeEnum.Separator, INTERNAL_SEPARATOR);
         newlineToken = new Token(TokenTypeEnum.NewLine, Environment.NewLine);
         tokens = new List<Token>();
         ReadNextTokens();
-      }
-      public Tokenizer(StreamReader reader, NumberFormatInfo numberFormatInfo)
-        : this(reader, numberFormatInfo, ';') {
       }
 
       private void ReadNextTokens() {
@@ -180,7 +238,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
           var newTokens = from str in Split(CurrentLine)
                           let trimmedStr = str.Trim()
                           where !string.IsNullOrEmpty(trimmedStr)
-                          select MakeToken(trimmedStr.Trim());
+                          select MakeToken(trimmedStr);
 
           tokens.AddRange(newTokens);
           tokens.Add(NewlineToken);
@@ -191,10 +249,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
       private IEnumerable<string> Split(string line) {
         StringBuilder subStr = new StringBuilder();
         foreach (char c in line) {
-          if (c == ';') {
+          if (c == separator) {
             yield return subStr.ToString();
             subStr = new StringBuilder();
-            yield return c.ToString();
+            // all separator characters are transformed to the internally used separator character
+            yield return INTERNAL_SEPARATOR;
           } else {
             subStr.Append(c);
           }
@@ -204,7 +263,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
       private Token MakeToken(string strToken) {
         Token token = new Token(TokenTypeEnum.String, strToken);
-        if (strToken.Equals(SeparatorToken.stringValue)) {
+        if (strToken.Equals(INTERNAL_SEPARATOR)) {
           return SeparatorToken;
         } else if (double.TryParse(strToken, NumberStyles.Float, numberFormatInfo, out token.doubleValue)) {
           token.type = TokenTypeEnum.Double;

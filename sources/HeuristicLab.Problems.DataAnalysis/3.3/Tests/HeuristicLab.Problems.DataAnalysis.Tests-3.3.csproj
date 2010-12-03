@@ -108,6 +108,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TableFileParserTest.cs" />
     <Compile Include="SymbolicSimplifierTest.cs" />
     <Compile Include="StatisticCalculatorsTest.cs" />
     <Compile Include="LinearScalingTest.cs" />
