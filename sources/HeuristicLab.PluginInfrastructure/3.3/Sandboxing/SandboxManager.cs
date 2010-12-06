@@ -54,7 +54,7 @@ namespace HeuristicLab.PluginInfrastructure.Sandboxing {
     }
 
     #region ISandboxManager Members
-    public static AppDomain CreateAndInitSandbox(string appDomainName, string applicationBase) {
+    public static AppDomain CreateAndInitSandbox(string appDomainName, string applicationBase, string configFilePath) {
       PermissionSet pset;
 
       #region permission set for sandbox
@@ -77,9 +77,10 @@ namespace HeuristicLab.PluginInfrastructure.Sandboxing {
       #endregion
 
       AppDomainSetup setup = AppDomain.CurrentDomain.SetupInformation;
-      //setup.PrivateBinPath = pluginDir;
+      setup.PrivateBinPath = applicationBase;
       setup.ApplicationBase = applicationBase;
-      setup.ConfigurationFile = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
+      setup.ConfigurationFile = configFilePath;
+
       AppDomain applicationDomain = AppDomain.CreateDomain(appDomainName, AppDomain.CurrentDomain.Evidence, setup, pset, CreateStrongName(Assembly.GetExecutingAssembly()));
       Type applicationManagerType = typeof(DefaultApplicationManager);
       DefaultApplicationManager applicationManager =
