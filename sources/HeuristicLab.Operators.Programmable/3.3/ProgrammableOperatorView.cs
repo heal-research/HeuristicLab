@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -32,6 +33,7 @@ using HeuristicLab.MainForm;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Operators.Programmable {
+
   [View("ProgrammableOperator View")]
   [Content(typeof(ProgrammableOperator), true)]
   public partial class ProgrammableOperatorView : NamedItemView {
@@ -54,13 +56,27 @@ namespace HeuristicLab.Operators.Programmable {
       base.RegisterContentEvents();
       ProgrammableOperator.CodeChanged += ProgrammableOperator_CodeChanged;
       ProgrammableOperator.SignatureChanged += ProgrammableOperator_SignatureChanged;
+      ProgrammableOperator.BreakpointChanged += ProgrammableOperator_BreakpointChanged;
     }
 
     protected override void DeregisterContentEvents() {
       ProgrammableOperator.CodeChanged -= ProgrammableOperator_CodeChanged;
       ProgrammableOperator.SignatureChanged -= ProgrammableOperator_SignatureChanged;
+      ProgrammableOperator.BreakpointChanged -= ProgrammableOperator_BreakpointChanged;
       base.DeregisterContentEvents();
     }
+
+    #region Content event handlers
+    void ProgrammableOperator_BreakpointChanged(object sender, EventArgs e) {
+      breakpointCheckBox.Checked = ProgrammableOperator.Breakpoint;
+    }
+    private void ProgrammableOperator_CodeChanged(object sender, EventArgs e) {
+      codeEditor.Text = ProgrammableOperator.Code;
+    }
+    private void ProgrammableOperator_SignatureChanged(object sender, EventArgs args) {
+      codeEditor.Prefix = GetGeneratedPrefix();
+    }
+    #endregion
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
@@ -85,6 +101,17 @@ namespace HeuristicLab.Operators.Programmable {
           ProgrammableOperator.CompilationUnitCode != null &&
           ProgrammableOperator.CompilationUnitCode.Length > 0;
         parameterCollectionView.Content = ProgrammableOperator.Parameters;
+        if (ProgrammableOperator.CompileErrors == null) {
+          compilationLabel.ForeColor = SystemColors.ControlDarkDark;
+          compilationLabel.Text = "not compiled";
+        } else if (ProgrammableOperator.CompileErrors.HasErrors) {
+          compilationLabel.ForeColor = Color.DarkRed;
+          compilationLabel.Text = "compilation failed";
+        } else {
+          compilationLabel.ForeColor = Color.DarkGreen;
+          compilationLabel.Text = "compilation successful";
+        }
+
       }
     }
 
@@ -95,49 +122,22 @@ namespace HeuristicLab.Operators.Programmable {
       namespacesTreeView.Enabled = Content != null && !ReadOnly;
       compileButton.Enabled = Content != null && !ReadOnly;
       codeEditor.Enabled = Content != null && !ReadOnly;
+      showCodeButton.Enabled = Content != null && !string.IsNullOrEmpty(ProgrammableOperator.CompilationUnitCode) && !ReadOnly;
     }
 
-
-    private string GetGeneratedPrefix() {
-      StringBuilder prefix = new StringBuilder();
-      foreach (var ns in ProgrammableOperator.GetSelectedAndValidNamespaces()) {
-        prefix.Append("using ").Append(ns).AppendLine(";");
-      }
-      prefix.AppendLine();
-      prefix.Append("public class ").Append(ProgrammableOperator.CompiledTypeName).AppendLine(" {");
-      prefix.Append("  ").Append(ProgrammableOperator.Signature).AppendLine(" {");
-      return prefix.ToString();
-    }
-
-    private void codeEditor_Validated(object sender, EventArgs e) {
-      ProgrammableOperator.Code = codeEditor.UserCode;
-    }
-
-    private void Recompile() {
-      this.Enabled = false;
-      try {
-        ProgrammableOperator.Compile();
-        MessageBox.Show("Compilation successful", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-      } catch (Exception ex) {
-        ErrorHandling.ShowErrorDialog(this, ex);
-      }
-      OnContentChanged();
-      this.Enabled = true;
-    }
-
+    #region Child Control event handlers
     private void compileButton_Click(object sender, EventArgs e) {
       Recompile();
     }
-
-    #region ProgrammableOperator Events
-    private void ProgrammableOperator_CodeChanged(object sender, EventArgs e) {
-      codeEditor.Text = ProgrammableOperator.Code;
+    private void breakpointCheckBox_CheckedChanged(object sender, EventArgs e) {
+      if (ProgrammableOperator != null) ProgrammableOperator.Breakpoint = breakpointCheckBox.Checked;
     }
-    private void ProgrammableOperator_SignatureChanged(object sender, EventArgs args) {
-      codeEditor.Prefix = GetGeneratedPrefix();
+    private void showCodeButton_Click(object sender, EventArgs e) {
+      new CodeViewer(ProgrammableOperator.CompilationUnitCode).ShowDialog(this);
     }
-    #endregion
-
+    private void codeEditor_Validated(object sender, EventArgs e) {
+      ProgrammableOperator.Code = codeEditor.UserCode;
+    }
     private void assembliesTreeView_AfterCheck(object sender, TreeViewEventArgs e) {
       if (initializing)
         return;
@@ -157,6 +157,55 @@ namespace HeuristicLab.Operators.Programmable {
       }
       InitializeNamespacesList();
       codeEditor.Prefix = GetGeneratedPrefix();
+    }
+    private void namespacesTreeView_AfterCheck(object sender, TreeViewEventArgs e) {
+      if (initializing)
+        return;
+      if (e.Node.Checked) {
+        ProgrammableOperator.SelectNamespace(e.Node.FullPath);
+      } else {
+        ProgrammableOperator.UnselectNamespace(e.Node.FullPath);
+      }
+      codeEditor.Prefix = GetGeneratedPrefix();
+    }
+    #endregion
+
+    #region global HotKeys
+    protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
+      if (keyData == Keys.F6) {
+        Control activeControl = ActiveControl;
+        compileButton.Focus();
+        Recompile();
+        if (activeControl != null)
+          activeControl.Focus();
+        return true;
+      }
+      return base.ProcessCmdKey(ref msg, keyData);
+    }
+    #endregion
+
+    #region Auxiliary functions
+
+    private string GetGeneratedPrefix() {
+      StringBuilder prefix = new StringBuilder();
+      foreach (var ns in ProgrammableOperator.GetSelectedAndValidNamespaces()) {
+        prefix.Append("using ").Append(ns).AppendLine(";");
+      }
+      prefix.AppendLine();
+      prefix.Append("public class ").Append(ProgrammableOperator.CompiledTypeName).AppendLine(" {");
+      prefix.Append("  ").Append(ProgrammableOperator.Signature).AppendLine(" {");
+      return prefix.ToString();
+    }
+
+    private void Recompile() {
+      this.Enabled = false;
+      try {
+        ProgrammableOperator.Compile();
+      } catch (Exception ex) {
+        ErrorHandling.ShowErrorDialog(this, ex);
+      }
+      OnContentChanged();
+      this.Enabled = true;
     }
 
     private bool initializing = false;
@@ -264,19 +313,6 @@ namespace HeuristicLab.Operators.Programmable {
       return node;
     }
 
-    private void namespacesTreeView_AfterCheck(object sender, TreeViewEventArgs e) {
-      if (initializing)
-        return;
-      if (e.Node.Checked) {
-        ProgrammableOperator.SelectNamespace(e.Node.FullPath);
-      } else {
-        ProgrammableOperator.UnselectNamespace(e.Node.FullPath);
-      }
-      codeEditor.Prefix = GetGeneratedPrefix();
-    }
-
-    private void showCodeButton_Click(object sender, EventArgs e) {
-      new CodeViewer(ProgrammableOperator.CompilationUnitCode).ShowDialog(this);
-    }
+    #endregion
   }
 }

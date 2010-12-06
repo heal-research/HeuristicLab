@@ -58,6 +58,9 @@ namespace HeuristicLab.Operators.Programmable {
       this.tabControl1 = new System.Windows.Forms.TabControl();
       this.tabPage1 = new System.Windows.Forms.TabPage();
       this.parameterCollectionView = new HeuristicLab.Core.Views.ParameterCollectionView();
+      this.breakpointCheckBox = new System.Windows.Forms.CheckBox();
+      this.breakpointLabel = new System.Windows.Forms.Label();
+      this.compilationLabel = new System.Windows.Forms.Label();
       tabPage2 = new System.Windows.Forms.TabPage();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       tabPage2.SuspendLayout();
@@ -89,7 +92,7 @@ namespace HeuristicLab.Operators.Programmable {
       tabPage2.Location = new System.Drawing.Point(4, 22);
       tabPage2.Name = "tabPage2";
       tabPage2.Padding = new System.Windows.Forms.Padding(3);
-      tabPage2.Size = new System.Drawing.Size(977, 619);
+      tabPage2.Size = new System.Drawing.Size(977, 596);
       tabPage2.TabIndex = 1;
       tabPage2.Text = "Code";
       tabPage2.UseVisualStyleBackColor = true;
@@ -102,6 +105,7 @@ namespace HeuristicLab.Operators.Programmable {
       // 
       // splitContainer1.Panel1
       // 
+      this.splitContainer1.Panel1.Controls.Add(this.compilationLabel);
       this.splitContainer1.Panel1.Controls.Add(this.splitContainer2);
       this.splitContainer1.Panel1.Controls.Add(this.showCodeButton);
       this.splitContainer1.Panel1.Controls.Add(this.compileButton);
@@ -109,15 +113,15 @@ namespace HeuristicLab.Operators.Programmable {
       // splitContainer1.Panel2
       // 
       this.splitContainer1.Panel2.Controls.Add(this.codeEditor);
-      this.splitContainer1.Size = new System.Drawing.Size(971, 613);
+      this.splitContainer1.Size = new System.Drawing.Size(971, 590);
       this.splitContainer1.SplitterDistance = 244;
       this.splitContainer1.TabIndex = 0;
       // 
       // splitContainer2
       // 
-      this.splitContainer2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.splitContainer2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.splitContainer2.Location = new System.Drawing.Point(0, 33);
       this.splitContainer2.Name = "splitContainer2";
       this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
@@ -129,8 +133,8 @@ namespace HeuristicLab.Operators.Programmable {
       // splitContainer2.Panel2
       // 
       this.splitContainer2.Panel2.Controls.Add(this.namespacesBox);
-      this.splitContainer2.Size = new System.Drawing.Size(242, 583);
-      this.splitContainer2.SplitterDistance = 290;
+      this.splitContainer2.Size = new System.Drawing.Size(242, 560);
+      this.splitContainer2.SplitterDistance = 278;
       this.splitContainer2.TabIndex = 2;
       // 
       // assembliesBox
@@ -139,7 +143,7 @@ namespace HeuristicLab.Operators.Programmable {
       this.assembliesBox.Dock = System.Windows.Forms.DockStyle.Fill;
       this.assembliesBox.Location = new System.Drawing.Point(0, 0);
       this.assembliesBox.Name = "assembliesBox";
-      this.assembliesBox.Size = new System.Drawing.Size(242, 290);
+      this.assembliesBox.Size = new System.Drawing.Size(242, 278);
       this.assembliesBox.TabIndex = 1;
       this.assembliesBox.TabStop = false;
       this.assembliesBox.Text = "Assemblies";
@@ -150,7 +154,7 @@ namespace HeuristicLab.Operators.Programmable {
       this.assembliesTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
       this.assembliesTreeView.Location = new System.Drawing.Point(3, 16);
       this.assembliesTreeView.Name = "assembliesTreeView";
-      this.assembliesTreeView.Size = new System.Drawing.Size(236, 271);
+      this.assembliesTreeView.Size = new System.Drawing.Size(236, 259);
       this.assembliesTreeView.TabIndex = 0;
       this.assembliesTreeView.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.assembliesTreeView_AfterCheck);
       // 
@@ -160,7 +164,7 @@ namespace HeuristicLab.Operators.Programmable {
       this.namespacesBox.Dock = System.Windows.Forms.DockStyle.Fill;
       this.namespacesBox.Location = new System.Drawing.Point(0, 0);
       this.namespacesBox.Name = "namespacesBox";
-      this.namespacesBox.Size = new System.Drawing.Size(242, 289);
+      this.namespacesBox.Size = new System.Drawing.Size(242, 278);
       this.namespacesBox.TabIndex = 1;
       this.namespacesBox.TabStop = false;
       this.namespacesBox.Text = "Namespaces";
@@ -172,13 +176,13 @@ namespace HeuristicLab.Operators.Programmable {
       this.namespacesTreeView.Location = new System.Drawing.Point(3, 16);
       this.namespacesTreeView.Name = "namespacesTreeView";
       this.namespacesTreeView.PathSeparator = ".";
-      this.namespacesTreeView.Size = new System.Drawing.Size(236, 270);
+      this.namespacesTreeView.Size = new System.Drawing.Size(236, 259);
       this.namespacesTreeView.TabIndex = 0;
       this.namespacesTreeView.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.namespacesTreeView_AfterCheck);
       // 
       // showCodeButton
       // 
-      this.showCodeButton.Image = ((System.Drawing.Image)(resources.GetObject("showCodeButton.Image")));
+      this.showCodeButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.PrintPreview;
       this.showCodeButton.Location = new System.Drawing.Point(33, 3);
       this.showCodeButton.Name = "showCodeButton";
       this.showCodeButton.Size = new System.Drawing.Size(24, 24);
@@ -190,7 +194,7 @@ namespace HeuristicLab.Operators.Programmable {
       // 
       // compileButton
       // 
-      this.compileButton.Image = ((System.Drawing.Image)(resources.GetObject("compileButton.Image")));
+      this.compileButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Script;
       this.compileButton.Location = new System.Drawing.Point(3, 3);
       this.compileButton.Name = "compileButton";
       this.compileButton.Size = new System.Drawing.Size(24, 24);
@@ -206,7 +210,7 @@ namespace HeuristicLab.Operators.Programmable {
       this.codeEditor.Location = new System.Drawing.Point(0, 0);
       this.codeEditor.Name = "codeEditor";
       this.codeEditor.Prefix = "";
-      this.codeEditor.Size = new System.Drawing.Size(723, 613);
+      this.codeEditor.Size = new System.Drawing.Size(723, 590);
       this.codeEditor.Suffix = "";
       this.codeEditor.TabIndex = 0;
       this.codeEditor.UserCode = "";
@@ -214,15 +218,15 @@ namespace HeuristicLab.Operators.Programmable {
       // 
       // tabControl1
       // 
-      this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl1.Controls.Add(this.tabPage1);
       this.tabControl1.Controls.Add(tabPage2);
-      this.tabControl1.Location = new System.Drawing.Point(0, 52);
+      this.tabControl1.Location = new System.Drawing.Point(0, 75);
       this.tabControl1.Name = "tabControl1";
       this.tabControl1.SelectedIndex = 0;
-      this.tabControl1.Size = new System.Drawing.Size(985, 645);
+      this.tabControl1.Size = new System.Drawing.Size(985, 622);
       this.tabControl1.TabIndex = 7;
       // 
       // tabPage1
@@ -231,7 +235,7 @@ namespace HeuristicLab.Operators.Programmable {
       this.tabPage1.Location = new System.Drawing.Point(4, 22);
       this.tabPage1.Name = "tabPage1";
       this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage1.Size = new System.Drawing.Size(977, 619);
+      this.tabPage1.Size = new System.Drawing.Size(977, 596);
       this.tabPage1.TabIndex = 0;
       this.tabPage1.Text = "Parameters";
       this.tabPage1.UseVisualStyleBackColor = true;
@@ -244,16 +248,49 @@ namespace HeuristicLab.Operators.Programmable {
       this.parameterCollectionView.Location = new System.Drawing.Point(3, 3);
       this.parameterCollectionView.Name = "parameterCollectionView";
       this.parameterCollectionView.ReadOnly = false;
-      this.parameterCollectionView.Size = new System.Drawing.Size(971, 613);
+      this.parameterCollectionView.Size = new System.Drawing.Size(971, 590);
       this.parameterCollectionView.TabIndex = 0;
+      // 
+      // breakpointCheckBox
+      // 
+      this.breakpointCheckBox.AutoSize = true;
+      this.breakpointCheckBox.Location = new System.Drawing.Point(72, 52);
+      this.breakpointCheckBox.Name = "breakpointCheckBox";
+      this.breakpointCheckBox.Size = new System.Drawing.Size(15, 14);
+      this.breakpointCheckBox.TabIndex = 8;
+      this.breakpointCheckBox.UseVisualStyleBackColor = true;
+      this.breakpointCheckBox.CheckedChanged += new System.EventHandler(this.breakpointCheckBox_CheckedChanged);
+      // 
+      // breakpointLabel
+      // 
+      this.breakpointLabel.AutoSize = true;
+      this.breakpointLabel.Location = new System.Drawing.Point(3, 52);
+      this.breakpointLabel.Name = "breakpointLabel";
+      this.breakpointLabel.Size = new System.Drawing.Size(61, 13);
+      this.breakpointLabel.TabIndex = 9;
+      this.breakpointLabel.Text = "Breakpoint:";
+      // 
+      // compilationLabel
+      // 
+      this.compilationLabel.AutoSize = true;
+      this.compilationLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+      this.compilationLabel.Location = new System.Drawing.Point(63, 9);
+      this.compilationLabel.Name = "compilationLabel";
+      this.compilationLabel.Size = new System.Drawing.Size(67, 13);
+      this.compilationLabel.TabIndex = 3;
+      this.compilationLabel.Text = "not compiled";
       // 
       // ProgrammableOperatorView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.tabControl1);
+      this.Controls.Add(this.breakpointCheckBox);
+      this.Controls.Add(this.breakpointLabel);
       this.Name = "ProgrammableOperatorView";
       this.Size = new System.Drawing.Size(985, 697);
+      this.Controls.SetChildIndex(this.breakpointLabel, 0);
+      this.Controls.SetChildIndex(this.breakpointCheckBox, 0);
       this.Controls.SetChildIndex(this.tabControl1, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
@@ -262,6 +299,7 @@ namespace HeuristicLab.Operators.Programmable {
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       tabPage2.ResumeLayout(false);
       this.splitContainer1.Panel1.ResumeLayout(false);
+      this.splitContainer1.Panel1.PerformLayout();
       this.splitContainer1.Panel2.ResumeLayout(false);
       this.splitContainer1.ResumeLayout(false);
       this.splitContainer2.Panel1.ResumeLayout(false);
@@ -290,5 +328,8 @@ namespace HeuristicLab.Operators.Programmable {
     private System.Windows.Forms.TreeView namespacesTreeView;
     private System.Windows.Forms.GroupBox assembliesBox;
     private System.Windows.Forms.GroupBox namespacesBox;
+    private System.Windows.Forms.CheckBox breakpointCheckBox;
+    private System.Windows.Forms.Label compilationLabel;
+    private System.Windows.Forms.Label breakpointLabel;
   }
 }

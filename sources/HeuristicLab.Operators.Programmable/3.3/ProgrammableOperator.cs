@@ -30,6 +30,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
+using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Auxiliary;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -49,6 +50,8 @@ namespace HeuristicLab.Operators.Programmable {
     public new ParameterCollection Parameters {
       get { return base.Parameters; }
     }
+
+    public override System.Drawing.Image ItemImage { get { return VS2008ImageLibrary.Script; } }
 
     private MethodInfo executeMethod;
     public CompilerErrorCollection CompileErrors { get; private set; }
@@ -341,8 +344,8 @@ namespace HeuristicLab.Operators.Programmable {
     public virtual void Compile() {
       var results = DoCompile();
       executeMethod = null;
+      CompileErrors = results.Errors;
       if (results.Errors.HasErrors) {
-        CompileErrors = results.Errors;
         StringBuilder sb = new StringBuilder();
         foreach (CompilerError error in results.Errors) {
           sb.Append(error.Line).Append(':')
@@ -354,7 +357,6 @@ namespace HeuristicLab.Operators.Programmable {
           Name, Environment.NewLine,
           sb.ToString()));
       } else {
-        CompileErrors = null;
         Assembly assembly = results.CompiledAssembly;
         Type[] types = assembly.GetTypes();
         executeMethod = types[0].GetMethod("Execute");
