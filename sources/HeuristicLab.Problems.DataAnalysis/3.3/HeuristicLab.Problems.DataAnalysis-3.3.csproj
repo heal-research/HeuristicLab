@@ -190,10 +190,6 @@
       <Project>{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}</Project>
       <Name>HeuristicLab.Data-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Encodings.RealVectorEncoding\3.3\HeuristicLab.Encodings.RealVectorEncoding-3.3.csproj">
-      <Project>{BB6D334A-4BB6-4674-9883-31A6EBB32CAB}</Project>
-      <Name>HeuristicLab.Encodings.RealVectorEncoding-3.3</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding\3.3\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3.csproj">
       <Project>{125D3006-67F5-48CB-913E-73C0548F17FA}</Project>
       <Name>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3</Name>
