@@ -67,6 +67,10 @@ namespace HeuristicLab.Core.Views {
       Content.ItemsReplaced -= new CollectionItemsChangedEventHandler<IndexedItem<T>>(Content_ItemsReplaced);
       Content.ItemsMoved -= new CollectionItemsChangedEventHandler<IndexedItem<T>>(Content_ItemsMoved);
       Content.CollectionReset -= new CollectionItemsChangedEventHandler<IndexedItem<T>>(Content_CollectionReset);
+      foreach (T item in Content) {
+        item.ItemImageChanged -= new EventHandler(Item_ItemImageChanged);
+        item.ToStringChanged -= new EventHandler(Item_ToStringChanged);
+      }
       base.DeregisterContentEvents();
     }
 
@@ -135,8 +139,7 @@ namespace HeuristicLab.Core.Views {
       if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
         try {
           return (T)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
           ErrorHandling.ShowErrorDialog(this, ex);
         }
       }
