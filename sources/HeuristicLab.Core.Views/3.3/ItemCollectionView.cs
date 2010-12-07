@@ -54,6 +54,10 @@ namespace HeuristicLab.Core.Views {
       Content.ItemsAdded -= new CollectionItemsChangedEventHandler<T>(Content_ItemsAdded);
       Content.ItemsRemoved -= new CollectionItemsChangedEventHandler<T>(Content_ItemsRemoved);
       Content.CollectionReset -= new CollectionItemsChangedEventHandler<T>(Content_CollectionReset);
+      foreach (T item in listViewItemMapping.Keys) {
+        item.ItemImageChanged -= new EventHandler(Item_ItemImageChanged);
+        item.ToStringChanged -= new EventHandler(Item_ToStringChanged);
+      }
       base.DeregisterContentEvents();
     }
     protected override void RegisterContentEvents() {
@@ -125,10 +129,11 @@ namespace HeuristicLab.Core.Views {
     protected virtual void AddListViewItem(ListViewItem listViewItem) {
       T item = (listViewItem.Tag as T);
       itemsListView.Items.Add(listViewItem);
-      item.ItemImageChanged += new EventHandler(Item_ItemImageChanged);
-      item.ToStringChanged += new EventHandler(Item_ToStringChanged);
-      if (!listViewItemMapping.ContainsKey(item))
+      if (!listViewItemMapping.ContainsKey(item)) {
+        item.ItemImageChanged += new EventHandler(Item_ItemImageChanged);
+        item.ToStringChanged += new EventHandler(Item_ToStringChanged);
         listViewItemMapping.Add(item, new List<ListViewItem>());
+      }
       listViewItemMapping[item].Add(listViewItem);
       sortAscendingButton.Enabled = itemsListView.Items.Count > 1;
       sortDescendingButton.Enabled = itemsListView.Items.Count > 1;
