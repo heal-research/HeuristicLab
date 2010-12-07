@@ -38,11 +38,6 @@ namespace HeuristicLab.Problems.TestFunctions {
       this.moveDistance = original.moveDistance;
       this.vector = cloner.Clone(vector);
     }
-    public RealVectorAdditiveMoveWrapper() {
-      dimension = -1;
-      moveDistance = 0;
-      this.vector = new RealVector();
-    }
     public RealVectorAdditiveMoveWrapper(AdditiveMove move, RealVector vector) {
       dimension = move.Dimension;
       moveDistance = move.MoveDistance;
