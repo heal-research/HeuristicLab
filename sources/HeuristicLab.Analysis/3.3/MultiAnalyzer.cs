@@ -34,7 +34,7 @@ namespace HeuristicLab.Analysis {
   /// </summary>
   [Item("MultiAnalyzer", "An analyzer which applies arbitrary many other analyzers.")]
   [StorableClass]
-  public class MultiAnalyzer : CheckedMultiOperator<IAnalyzer>, IAnalyzer {
+  public class MultiAnalyzer : CheckedMultiOperator<IAnalyzer>, IMultiAnalyzer {
     public override bool CanChangeName {
       get { return false; }
     }

@@ -33,7 +33,7 @@ namespace HeuristicLab.Operators {
   /// </summary>
   [Item("MultiOperator", "A base class for operators which apply arbitrary many other operators of a specific type.")]
   [StorableClass]
-  public abstract class MultiOperator<T> : SingleSuccessorOperator where T : class, IOperator {
+  public abstract class MultiOperator<T> : SingleSuccessorOperator, IMultiOperator<T> where T : class, IOperator {
     private List<IValueParameter<T>> operatorParameters;
 
     [Storable]
@@ -67,7 +67,7 @@ namespace HeuristicLab.Operators {
     private void AfterDeserialization() {
       Initialize();
     }
-    
+
     private void Initialize() {
       if (operators != null) RegisterOperatorsEvents();
       operatorParameters = new List<IValueParameter<T>>();

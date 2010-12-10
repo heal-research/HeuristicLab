@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -49,6 +50,17 @@ namespace HeuristicLab.Optimization {
       get { return base.GlobalScope; }
     }
 
+    private IValueParameter AnalyzerParameter {
+      get { return (IValueParameter)Parameters["Analyzer"]; }
+    }
+    private IMultiAnalyzer Analyzer {
+      get {
+        if (AnalyzerParameter != null)
+          return AnalyzerParameter.Value as IMultiAnalyzer;
+        return null;
+      }
+    }
+
     public UserDefinedAlgorithm() : base() { }
     public UserDefinedAlgorithm(string name) : base(name) { }
     public UserDefinedAlgorithm(string name, string description) : base(name, description) { }
@@ -63,5 +75,36 @@ namespace HeuristicLab.Optimization {
     public override IDeepCloneable Clone(Cloner cloner) {
       return new UserDefinedAlgorithm(this, cloner);
     }
+
+    #region update of problem specific analyzers
+    protected override void OnProblemChanged() {
+      AddProblemAnalyzer();
+      base.OnProblemChanged();
+    }
+    protected override void Problem_OperatorsChanged(object sender, System.EventArgs e) {
+      RemoveProblemAnalyzers();
+      AddProblemAnalyzer();
+      base.Problem_OperatorsChanged(sender, e);
+    }
+
+    protected override void DeregisterProblemEvents() {
+      RemoveProblemAnalyzers();
+      base.DeregisterProblemEvents();
+    }
+
+    private void RemoveProblemAnalyzers() {
+      if (Analyzer != null) {
+        foreach (var analyzer in Problem.Operators.OfType<IAnalyzer>())
+          Analyzer.Operators.Remove(analyzer);
+      }
+    }
+    private void AddProblemAnalyzer() {
+      if (Analyzer != null && Problem != null) {
+        foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>()) {
+          Analyzer.Operators.Add(analyzer);
+        }
+      }
+    }
+    #endregion
   }
 }

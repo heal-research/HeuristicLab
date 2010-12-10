@@ -142,6 +142,7 @@
     <Compile Include="Constraints\EqualityConstraint.cs" />
     <Compile Include="Constraints\IConstraint.cs" />
     <Compile Include="Constraints\TypeCompatibilityConstraint.cs" />
+    <Compile Include="Interfaces\IMultiOperator.cs" />
     <Compile Include="OperatorExecutionException.cs" />
     <Compile Include="Interfaces\IScopeTreeLookupParameter.cs" />
     <Compile Include="Interfaces\ICheckedItemList.cs" />
