@@ -371,7 +371,7 @@
                                             "{9EF0B969-E518-4E46-987F-47570745A589}:_E33A3941E42F482B99D2418470C8A183"
                                             {
                                             "Name" = "8:Visual C#"
-                                            "AlwaysCreate" = "11:FALSE"
+                                            "AlwaysCreate" = "11:TRUE"
                                             "Condition" = "8:"
                                             "Transitive" = "11:FALSE"
                                             "Property" = "8:_07FF9CBD97B84CC1B2E12624E17284EC"
@@ -569,6 +569,20 @@
         }
         "Shortcut"
         {
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_640D4F41D6084D93A4C87B88C633E382"
+            {
+            "Name" = "8:Visual C# Templates"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_E33A3941E42F482B99D2418470C8A183"
+            "Folder" = "8:_EB8295E99C2A46578D53F50F3B4F5A64"
+            "WorkingFolder" = "8:_E33A3941E42F482B99D2418470C8A183"
+            "Icon" = "8:"
+            "Feature" = "8:"
+            }
         }
         "UserInterface"
         {
