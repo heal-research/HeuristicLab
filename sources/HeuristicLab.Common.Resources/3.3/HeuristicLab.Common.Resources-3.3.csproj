@@ -425,6 +425,7 @@
     <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Executable_Stopped.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Clone.png" />
     <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Cab.png" />
     <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Gradient.png" />
     <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_EditBrightnessContrast.png" />
