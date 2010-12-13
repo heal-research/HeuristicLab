@@ -147,7 +147,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
           } else {
             char[] disallowedSeparators = new char[] { ',' };
             // German format (real values)
-            numberFormat = NumberFormatInfo.GetInstance(new CultureInfo("de"));
+            numberFormat = NumberFormatInfo.GetInstance(new CultureInfo("de-DE"));
             separator = POSSIBLE_SEPARATORS
               .Except(disallowedSeparators)
               .Where(c => OccurrencesOf(charCounts, c) > 10)
