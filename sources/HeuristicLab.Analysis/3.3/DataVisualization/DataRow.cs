@@ -33,7 +33,8 @@ namespace HeuristicLab.Analysis {
   /// </summary>
   [Item("DataRow", "A row of data values.")]
   [StorableClass]
-  public sealed class DataRow : NamedItem {
+  public class DataRow : NamedItem {
+    [Storable(Name = "VisualProperties")]
     private DataRowVisualProperties visualProperties;
     public DataRowVisualProperties VisualProperties {
       get { return visualProperties; }
@@ -53,11 +54,6 @@ namespace HeuristicLab.Analysis {
     }
 
     #region Persistence Properties
-    [Storable(Name = "VisualProperties")]
-    private DataRowVisualProperties StorableVisualProperties {
-      get { return VisualProperties; }
-      set { VisualProperties = value; }
-    }
     [Storable(Name = "values")]
     private IEnumerable<double> StorableValues {
       get { return values; }
@@ -66,8 +62,8 @@ namespace HeuristicLab.Analysis {
     #endregion
 
     [StorableConstructor]
-    private DataRow(bool deserializing) : base(deserializing) { }
-    private DataRow(DataRow original, Cloner cloner)
+    protected DataRow(bool deserializing) : base(deserializing) { }
+    protected DataRow(DataRow original, Cloner cloner)
       : base(original, cloner) {
       this.VisualProperties = (DataRowVisualProperties)cloner.Clone(original.visualProperties);
       this.values = new ObservableList<double>(original.values);
@@ -106,7 +102,7 @@ namespace HeuristicLab.Analysis {
     }
 
     public event EventHandler VisualPropertiesChanged;
-    private void OnVisualPropertiesChanged() {
+    protected virtual void OnVisualPropertiesChanged() {
       EventHandler handler = VisualPropertiesChanged;
       if (handler != null) handler(this, EventArgs.Empty);
     }

@@ -119,7 +119,7 @@ namespace HeuristicLab.Analysis.Views {
 
     #endregion
 
-    private HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart chart;
+    protected HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart chart;
 
   }
 }

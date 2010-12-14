@@ -36,11 +36,12 @@ namespace HeuristicLab.Analysis {
   /// </summary>
   [Item("DataTable", "A table of data values.")]
   [StorableClass]
-  public sealed class DataTable : NamedItem, IStringConvertibleMatrix {
+  public class DataTable : NamedItem, IStringConvertibleMatrix {
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Performance; }
     }
 
+    [Storable(Name = "VisualProperties")]
     private DataTableVisualProperties visualProperties;
     public DataTableVisualProperties VisualProperties {
       get { return visualProperties; }
@@ -61,11 +62,6 @@ namespace HeuristicLab.Analysis {
     }
 
     #region Persistence Properties
-    [Storable(Name = "VisualProperties")]
-    private DataTableVisualProperties StorableVisualProperties {
-      get { return VisualProperties; }
-      set { VisualProperties = value; }
-    }
     [Storable(Name = "rows")]
     private IEnumerable<DataRow> StorableRows {
       get { return rows; }
@@ -74,8 +70,8 @@ namespace HeuristicLab.Analysis {
     #endregion
 
     [StorableConstructor]
-    private DataTable(bool deserializing) : base(deserializing) { }
-    private DataTable(DataTable original, Cloner cloner)
+    protected DataTable(bool deserializing) : base(deserializing) { }
+    protected DataTable(DataTable original, Cloner cloner)
       : base(original, cloner) {
       this.VisualProperties = (DataTableVisualProperties)cloner.Clone(original.visualProperties);
       this.rows = cloner.Clone(original.rows);
@@ -113,7 +109,7 @@ namespace HeuristicLab.Analysis {
     }
 
     public event EventHandler VisualPropertiesChanged;
-    private void OnVisualPropertiesChanged() {
+    protected virtual void OnVisualPropertiesChanged() {
       EventHandler handler = VisualPropertiesChanged;
       if (handler != null) handler(this, EventArgs.Empty);
     }
@@ -122,7 +118,7 @@ namespace HeuristicLab.Analysis {
       OnVisualPropertiesChanged();
     }
 
-    private void RegisterRowsEvents() {
+    protected virtual void RegisterRowsEvents() {
       rows.ItemsAdded += new CollectionItemsChangedEventHandler<DataRow>(rows_ItemsAdded);
       rows.ItemsRemoved += new CollectionItemsChangedEventHandler<DataRow>(rows_ItemsRemoved);
       rows.ItemsReplaced += new CollectionItemsChangedEventHandler<DataRow>(rows_ItemsReplaced);
@@ -157,14 +153,14 @@ namespace HeuristicLab.Analysis {
       this.OnReset();
     }
 
-    private void RegisterRowEvents(DataRow row) {
+    protected virtual void RegisterRowEvents(DataRow row) {
       row.Values.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<double>>(Values_ItemsAdded);
       row.Values.ItemsMoved += new CollectionItemsChangedEventHandler<IndexedItem<double>>(Values_ItemsMoved);
       row.Values.ItemsRemoved += new CollectionItemsChangedEventHandler<IndexedItem<double>>(Values_ItemsRemoved);
       row.Values.ItemsReplaced += new CollectionItemsChangedEventHandler<IndexedItem<double>>(Values_ItemsReplaced);
       row.Values.CollectionReset += new CollectionItemsChangedEventHandler<IndexedItem<double>>(Values_CollectionReset);
     }
-    private void DeregisterRowEvents(DataRow row) {
+    protected virtual void DeregisterRowEvents(DataRow row) {
       row.Values.ItemsAdded -= new CollectionItemsChangedEventHandler<IndexedItem<double>>(Values_ItemsAdded);
       row.Values.ItemsMoved -= new CollectionItemsChangedEventHandler<IndexedItem<double>>(Values_ItemsMoved);
       row.Values.ItemsRemoved -= new CollectionItemsChangedEventHandler<IndexedItem<double>>(Values_ItemsRemoved);
@@ -232,28 +228,28 @@ namespace HeuristicLab.Analysis {
     }
 
     public event EventHandler<EventArgs<int, int>> ItemChanged;
-    private void OnItemChanged(int rowIndex, int columnIndex) {
+    protected virtual void OnItemChanged(int rowIndex, int columnIndex) {
       var handler = ItemChanged;
       if (handler != null) handler(this, new EventArgs<int, int>(rowIndex, columnIndex));
       OnToStringChanged();
     }
     public event EventHandler Reset;
-    private void OnReset() {
+    protected virtual void OnReset() {
       var handler = Reset;
       if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler ColumnNamesChanged;
-    private void OnColumnNamesChanged() {
+    protected virtual void OnColumnNamesChanged() {
       var handler = ColumnNamesChanged;
       if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler RowNamesChanged;
-    private void OnRowNamesChanged() {
+    protected virtual void OnRowNamesChanged() {
       var handler = RowNamesChanged;
       if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler SortableViewChanged;
-    private void OnSortableViewChanged() {
+    protected virtual void OnSortableViewChanged() {
       var handler = SortableViewChanged;
       if (handler != null) handler(this, EventArgs.Empty);
     }

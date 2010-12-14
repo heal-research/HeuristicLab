@@ -35,9 +35,9 @@ namespace HeuristicLab.Analysis.Views {
   /// </summary>
   [View("DataTable View")]
   [Content(typeof(DataTable), true)]
-  public sealed partial class DataTableView : NamedItemView {
-    private List<Series> invisibleSeries;
-    private Dictionary<IObservableList<double>, DataRow> valuesRowsTable;
+  public partial class DataTableView : NamedItemView {
+    protected List<Series> invisibleSeries;
+    protected Dictionary<IObservableList<double>, DataRow> valuesRowsTable;
     /// <summary>
     /// Gets or sets the variable to represent visually.
     /// </summary>
@@ -112,7 +112,12 @@ namespace HeuristicLab.Analysis.Views {
       chart.Enabled = Content != null;
     }
 
-    private void AddDataRow(DataRow row) {
+
+    /// <summary>
+    /// Add the DataRow as a series to the chart.
+    /// </summary>
+    /// <param name="row">DataRow to add as series to the chart.</param>
+    protected virtual void AddDataRow(DataRow row) {
       Series series = new Series(row.Name);
       switch (row.VisualProperties.ChartType) {
         case DataRowVisualProperties.DataRowChartType.Line:
@@ -140,7 +145,11 @@ namespace HeuristicLab.Analysis.Views {
       UpdateYCursorInterval();
     }
 
-    private void UpdateYCursorInterval() {
+
+    /// <summary>
+    /// Set the Y Cursor interval to visible points of enabled series.
+    /// </summary>
+    protected virtual void UpdateYCursorInterval() {
       double interestingValuesRange = (from series in chart.Series
                                        where series.Enabled
                                        let values = (from point in series.Points
@@ -158,7 +167,12 @@ namespace HeuristicLab.Analysis.Views {
       this.chart.ChartAreas[0].CursorY.Interval = yZoomInterval;
     }
 
-    private void RemoveDataRow(DataRow row) {
+
+    /// <summary>
+    /// Remove the corresponding series for a certain DataRow.
+    /// </summary>
+    /// <param name="row">DataRow which series should be removed.</param>
+    protected virtual void RemoveDataRow(DataRow row) {
       Series series = chart.Series[row.Name];
       chart.Series.Remove(series);
       if (invisibleSeries.Contains(series))
@@ -167,7 +181,12 @@ namespace HeuristicLab.Analysis.Views {
     }
 
     #region Content Events
-    private void RegisterDataRowEvents(DataRow row) {
+    /// <summary>
+    /// Automatically called for every existing data row and whenever a data row is added
+    /// to the data table. Do not call this method directly.
+    /// </summary>
+    /// <param name="row">The DataRow that was added.</param>
+    protected virtual void RegisterDataRowEvents(DataRow row) {
       row.NameChanged += new EventHandler(Row_NameChanged);
       row.VisualPropertiesChanged += new EventHandler(Row_VisualPropertiesChanged);
       valuesRowsTable.Add(row.Values, row);
@@ -177,7 +196,13 @@ namespace HeuristicLab.Analysis.Views {
       row.Values.ItemsMoved += new CollectionItemsChangedEventHandler<IndexedItem<double>>(Values_ItemsMoved);
       row.Values.CollectionReset += new CollectionItemsChangedEventHandler<IndexedItem<double>>(Values_CollectionReset);
     }
-    private void DeregisterDataRowEvents(DataRow row) {
+
+    /// <summary>
+    /// Automatically called for every data row that is removed from the DataTable. Do
+    /// not directly call this method.
+    /// </summary>
+    /// <param name="row">The DataRow that was removed.</param>
+    protected virtual void DeregisterDataRowEvents(DataRow row) {
       row.Values.ItemsAdded -= new CollectionItemsChangedEventHandler<IndexedItem<double>>(Values_ItemsAdded);
       row.Values.ItemsRemoved -= new CollectionItemsChangedEventHandler<IndexedItem<double>>(Values_ItemsRemoved);
       row.Values.ItemsReplaced -= new CollectionItemsChangedEventHandler<IndexedItem<double>>(Values_ItemsReplaced);
@@ -435,7 +460,14 @@ namespace HeuristicLab.Analysis.Views {
     }
     #endregion
 
-    private bool IsInvalidValue(double x) {
+
+    /// <summary>
+    /// Determines whether a double value can be displayed (converted to Decimal and not an NaN).
+    /// </summary>
+    /// <param name="x">The number to check.</param>
+    /// <returns><code>true</code> if the value can be safely shwon in the chart,
+    /// <code>false</code> otherwise.</returns>
+    protected static bool IsInvalidValue(double x) {
       return double.IsNaN(x) || x < (double)decimal.MinValue || x > (double)decimal.MaxValue;
     }
   }
