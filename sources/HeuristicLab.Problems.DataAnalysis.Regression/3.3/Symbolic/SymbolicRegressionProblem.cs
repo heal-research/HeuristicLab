@@ -87,8 +87,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       Parameters.Add(new ValueParameter<ISymbolicRegressionEvaluator>("Evaluator", "The operator which should be used to evaluate symbolic regression solutions.", evaluator));
       Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The minimal error value that reached by symbolic regression solutions for the problem."));
 
-      evaluator.QualityParameter.ActualName = "TrainingPearsonR2";
-
       InitializeOperators();
       ParameterizeEvaluator();
 

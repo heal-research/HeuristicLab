@@ -174,8 +174,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       Parameters.Add(new ValueParameter<IntValue>("MaxFunctionDefiningBranches", "Maximal number of automatically defined functions.", (IntValue)new IntValue(0).AsReadOnly()));
       Parameters.Add(new ValueParameter<IntValue>("MaxFunctionArguments", "Maximal number of arguments of automatically defined functions.", (IntValue)new IntValue(0).AsReadOnly()));
 
-      creator.SymbolicExpressionTreeParameter.ActualName = "SymbolicRegressionModel";
-
       ParameterizeSolutionCreator();
 
       UpdateGrammar();
