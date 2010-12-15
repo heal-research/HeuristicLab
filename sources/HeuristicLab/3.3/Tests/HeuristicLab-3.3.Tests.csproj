@@ -206,6 +206,10 @@
       <Project>{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}</Project>
       <Name>HeuristicLab.Data-3.3</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\HeuristicLab.DebugEngine\3.3\HeuristicLab.DebugEngine-3.3.csproj">
+      <Project>{49F28045-7B5F-411B-8D59-16C846FA26E0}</Project>
+      <Name>HeuristicLab.DebugEngine-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\HeuristicLab.Encodings.BinaryVectorEncoding\3.3\HeuristicLab.Encodings.BinaryVectorEncoding-3.3.csproj">
       <Project>{66D249C3-A01D-42A8-82A2-919BC8EC3D83}</Project>
       <Name>HeuristicLab.Encodings.BinaryVectorEncoding-3.3</Name>
