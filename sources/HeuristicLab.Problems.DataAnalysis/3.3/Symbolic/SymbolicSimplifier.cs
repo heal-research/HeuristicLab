@@ -481,12 +481,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         variableTree.Weight *= -1.0;
       } else if (IsAddition(x)) {
         // (x0 + x1 + .. + xn) * -1 => (-x0 + -x1 + .. + -xn)        
-        foreach (var subTree in x.SubTrees) {
-          Negate(subTree);
-        }
+        for (int i = 0; i < x.SubTrees.Count; i++)
+          x.SubTrees[i] = Negate(x.SubTrees[i]);
       } else if (IsMultiplication(x) || IsDivision(x)) {
         // x0 * x1 * .. * xn * -1 => x0 * x1 * .. * -xn
-        Negate(x.SubTrees.Last()); // last is maybe a constant, prefer to negate the constant
+        x.SubTrees[x.SubTrees.Count - 1] = Negate(x.SubTrees.Last()); // last is maybe a constant, prefer to negate the constant
       } else {
         // any other function
         return MakeProduct(x, MakeConstant(-1));
