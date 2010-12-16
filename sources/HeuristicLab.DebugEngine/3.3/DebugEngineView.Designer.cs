@@ -76,9 +76,9 @@ namespace HeuristicLab.DebugEngine {
       // 
       // executionStackView
       // 
-      this.executionStackView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.executionStackView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.executionStackView.Caption = "Execution Stack View";
       this.executionStackView.Content = null;
       this.executionStackView.Location = new System.Drawing.Point(0, 0);
@@ -123,6 +123,8 @@ namespace HeuristicLab.DebugEngine {
       // 
       this.skipStackOpsCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.skipStackOpsCheckBox.AutoSize = true;
+      this.skipStackOpsCheckBox.Checked = true;
+      this.skipStackOpsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
       this.skipStackOpsCheckBox.Location = new System.Drawing.Point(63, 516);
       this.skipStackOpsCheckBox.Name = "skipStackOpsCheckBox";
       this.skipStackOpsCheckBox.Size = new System.Drawing.Size(78, 17);
@@ -145,9 +147,9 @@ namespace HeuristicLab.DebugEngine {
       // 
       // splitContainer3
       // 
-      this.splitContainer3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.splitContainer3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.splitContainer3.Location = new System.Drawing.Point(0, 0);
       this.splitContainer3.Name = "splitContainer3";
       // 

@@ -160,9 +160,9 @@ namespace HeuristicLab.DebugEngine {
       OnStarted();
       lastUpdateTime = DateTime.Now;
       timer.Start();
-      ProcessNextOperation();
+      ProcessNextOperation(true);
       while (skipStackOperations && !(CurrentOperation is IAtomicOperation) && CanContinue)
-        ProcessNextOperation();
+        ProcessNextOperation(true);
       timer.Stop();
       ExecutionTime += DateTime.Now - lastUpdateTime;
       OnPaused();
@@ -214,9 +214,9 @@ namespace HeuristicLab.DebugEngine {
       lastUpdateTime = DateTime.Now;
       timer.Start();
       if (!pausePending && !stopPending && CanContinue)
-        ProcessNextOperation();
+        ProcessNextOperation(false);
       while (!pausePending && !stopPending && CanContinue && !IsAtBreakpoint)
-        ProcessNextOperation();
+        ProcessNextOperation(false);
       timer.Stop();
       ExecutionTime += DateTime.Now - lastUpdateTime;
 
@@ -246,7 +246,7 @@ namespace HeuristicLab.DebugEngine {
     /// <remarks>If an error occurs during the execution the operation is aborted and the operation
     /// is pushed on the stack again.<br/>
     /// If the execution was successful <see cref="EngineBase.OnOperationExecuted"/> is called.</remarks>
-    protected virtual void ProcessNextOperation() {
+    protected virtual void ProcessNextOperation(bool logOperations) {
       try {
         IAtomicOperation atomicOperation = CurrentOperation as IAtomicOperation;
         OperationCollection operations = CurrentOperation as OperationCollection;
@@ -254,18 +254,22 @@ namespace HeuristicLab.DebugEngine {
           throw new InvalidOperationException("Current operation is both atomic and an operation collection");
 
         if (atomicOperation != null) {
-          Log.LogMessage(string.Format("Performing atomic operation {0}", Utils.Name(atomicOperation)));
+          if (logOperations)
+            Log.LogMessage(string.Format("Performing atomic operation {0}", Utils.Name(atomicOperation)));
           PerformAtomicOperation(atomicOperation);
         } else if (operations != null) {
-          Log.LogMessage("Expanding operation collection");
+          if (logOperations)
+            Log.LogMessage("Expanding operation collection");
           ExecutionStack.AddRange(operations.Reverse());
           CurrentOperation = null;
         } else if (ExecutionStack.Count > 0) {
-          Log.LogMessage("Popping execution stack");
+          if (logOperations)
+            Log.LogMessage("Popping execution stack");
           CurrentOperation = ExecutionStack.Last();
           ExecutionStack.RemoveAt(ExecutionStack.Count - 1);
         } else {
-          Log.LogMessage("Nothing to do");
+          if (logOperations)
+            Log.LogMessage("Nothing to do");
         }
         OperatorTrace.Regenerate(CurrentAtomicOperation);
       } catch (Exception x) {

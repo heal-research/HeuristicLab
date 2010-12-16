@@ -35,6 +35,9 @@ namespace HeuristicLab.DebugEngine {
 
     [Storable]
     protected Dictionary<IAtomicOperation, IAtomicOperation> parents;
+
+    [Storable]
+    protected bool isEnabled;
     #endregion
 
     #region Constructors & Cloning
@@ -89,6 +92,8 @@ namespace HeuristicLab.DebugEngine {
     #region Parent Tracing
 
     public virtual void RegisterParenthood(IAtomicOperation parent, IOperation children) {
+      if (!isEnabled)
+        return;
       OperationCollection operations = children as OperationCollection;
       if (operations != null)
         foreach (var op in operations)
@@ -114,6 +119,17 @@ namespace HeuristicLab.DebugEngine {
         operation = parent;
       }
       ReplaceAll(trace);
+    }
+
+    public bool IsEnabled {
+      get { return isEnabled; }
+      set {
+        if (isEnabled == value)
+          return;
+        isEnabled = value;
+        if (!isEnabled)
+          Reset();
+      }
     }
 
     #endregion

@@ -49,11 +49,13 @@ namespace HeuristicLab.DebugEngine {
       this.listView = new System.Windows.Forms.ListView();
       this.listViewColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.imageList = new System.Windows.Forms.ImageList(this.components);
+      this.isEnabledCheckbox = new System.Windows.Forms.CheckBox();
       this.operatorTraceGroupBox.SuspendLayout();
       this.SuspendLayout();
       // 
       // operatorTraceGroupBox
       // 
+      this.operatorTraceGroupBox.Controls.Add(this.isEnabledCheckbox);
       this.operatorTraceGroupBox.Controls.Add(this.listView);
       this.operatorTraceGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
       this.operatorTraceGroupBox.Location = new System.Drawing.Point(0, 0);
@@ -72,10 +74,10 @@ namespace HeuristicLab.DebugEngine {
             this.listViewColumnHeader});
       this.listView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
       this.listView.HideSelection = false;
-      this.listView.Location = new System.Drawing.Point(6, 19);
+      this.listView.Location = new System.Drawing.Point(6, 43);
       this.listView.Name = "listView";
       this.listView.ShowItemToolTips = true;
-      this.listView.Size = new System.Drawing.Size(140, 464);
+      this.listView.Size = new System.Drawing.Size(140, 440);
       this.listView.SmallImageList = this.imageList;
       this.listView.TabIndex = 0;
       this.listView.UseCompatibleStateImageBehavior = false;
@@ -88,6 +90,17 @@ namespace HeuristicLab.DebugEngine {
       this.imageList.ImageSize = new System.Drawing.Size(16, 16);
       this.imageList.TransparentColor = System.Drawing.Color.Transparent;
       // 
+      // isEnabledCheckbox
+      // 
+      this.isEnabledCheckbox.AutoSize = true;
+      this.isEnabledCheckbox.Location = new System.Drawing.Point(7, 20);
+      this.isEnabledCheckbox.Name = "isEnabledCheckbox";
+      this.isEnabledCheckbox.Size = new System.Drawing.Size(65, 17);
+      this.isEnabledCheckbox.TabIndex = 1;
+      this.isEnabledCheckbox.Text = "Enabled";
+      this.isEnabledCheckbox.UseVisualStyleBackColor = true;
+      this.isEnabledCheckbox.CheckedChanged += new System.EventHandler(this.isEnabledCheckbox_CheckedChanged);
+      // 
       // OperatorTraceView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -96,6 +109,7 @@ namespace HeuristicLab.DebugEngine {
       this.Name = "OperatorTraceView";
       this.Size = new System.Drawing.Size(152, 489);
       this.operatorTraceGroupBox.ResumeLayout(false);
+      this.operatorTraceGroupBox.PerformLayout();
       this.ResumeLayout(false);
 
     }
@@ -106,5 +120,6 @@ namespace HeuristicLab.DebugEngine {
     private System.Windows.Forms.ListView listView;
     private System.Windows.Forms.ImageList imageList;
     private System.Windows.Forms.ColumnHeader listViewColumnHeader;
+    private System.Windows.Forms.CheckBox isEnabledCheckbox;
   }
 }
