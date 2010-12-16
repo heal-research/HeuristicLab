@@ -136,14 +136,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
     private SymbolicClassificationProblem(SymbolicClassificationProblem original, Cloner cloner)
       : base(original, cloner) {
       RegisterParameterEvents();
-
-      UpdateEstimationLimits();
-      ParameterizeEvaluator();
-      ParameterizeSolutionCreator();
-      ParameterizeGrammar();
-      ParameterizeOperators();
-      ParameterizeAnalyzers();
     }
+
     public SymbolicClassificationProblem()
       : base() {
       Parameters.Add(new ValueParameter<ISymbolicExpressionTreeInterpreter>(SymbolicExpressionTreeInterpreterParameterName, "The interpreter that should be used to evaluate the symbolic expression tree."));
