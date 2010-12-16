@@ -46,23 +46,31 @@ namespace HeuristicLab.DebugEngine {
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
       this.treeView = new System.Windows.Forms.TreeView();
-      this.groupBox = new System.Windows.Forms.GroupBox();
       this.imageList = new System.Windows.Forms.ImageList(this.components);
+      this.groupBox = new System.Windows.Forms.GroupBox();
       this.groupBox.SuspendLayout();
       this.SuspendLayout();
       // 
       // treeView
       // 
-      this.treeView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.treeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.treeView.ImageIndex = 0;
       this.treeView.ImageList = this.imageList;
-      this.treeView.Location = new System.Drawing.Point(3, 16);
+      this.treeView.Location = new System.Drawing.Point(6, 19);
       this.treeView.Name = "treeView";
       this.treeView.SelectedImageIndex = 0;
       this.treeView.ShowNodeToolTips = true;
-      this.treeView.Size = new System.Drawing.Size(303, 261);
+      this.treeView.Size = new System.Drawing.Size(297, 255);
       this.treeView.TabIndex = 0;
       this.treeView.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView_NodeMouseDoubleClick);
+      // 
+      // imageList
+      // 
+      this.imageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
+      this.imageList.ImageSize = new System.Drawing.Size(16, 16);
+      this.imageList.TransparentColor = System.Drawing.Color.Transparent;
       // 
       // groupBox
       // 
@@ -74,12 +82,6 @@ namespace HeuristicLab.DebugEngine {
       this.groupBox.TabIndex = 1;
       this.groupBox.TabStop = false;
       this.groupBox.Text = "Execution Stack";
-      // 
-      // imageList
-      // 
-      this.imageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
-      this.imageList.ImageSize = new System.Drawing.Size(16, 16);
-      this.imageList.TransparentColor = System.Drawing.Color.Transparent;
       // 
       // ExecutionStackView
       // 

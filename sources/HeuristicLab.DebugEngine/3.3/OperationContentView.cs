@@ -47,22 +47,16 @@ namespace HeuristicLab.DebugEngine {
       base.OnContentChanged();
       if (Content == null) {
         nameTextBox.Text = "";
-        contextLabel.ForeColor = SystemColors.ControlDark;
-        atomicLabel.ForeColor = SystemColors.ControlDark;
-        collectionLabel.ForeColor = SystemColors.ControlDark;
         scopeTreeView.Nodes.Clear();
         executionContextTreeView.Nodes.Clear();
       } else {
-        contextLabel.ForeColor = Content.IsContext ? Color.Black : SystemColors.ControlDark;
-        atomicLabel.ForeColor = Content.IsAtomic ? Color.Black : SystemColors.ControlDark;
-        collectionLabel.ForeColor = Content.IsCollection ? Color.Black : SystemColors.ControlDark;
         nameTextBox.Text = Content.Name;
         UpdateScopeTree();
         UpdateExecutionContext();
       }
     }
 
-    private object GetParameterValue(IParameter param, IExecutionContext context) {
+    private object GetParameterValue(IParameter param, IExecutionContext context, out string actualName) {
       param = (IParameter)param.Clone();
       param.ExecutionContext = context;
       object value = null;
@@ -71,6 +65,11 @@ namespace HeuristicLab.DebugEngine {
       } catch (Exception x) {
         value = x.Message;
       }
+      ILookupParameter lookupParam = param as ILookupParameter;
+      if (lookupParam != null)
+        actualName = lookupParam.ActualName;
+      else
+        actualName = null;
       return value;
     }
 
@@ -145,8 +144,12 @@ namespace HeuristicLab.DebugEngine {
       node.ImageIndex = 0;
       node.SelectedImageIndex = 0;
       foreach (var param in executionContext.Parameters) {
-        TreeNode paramNode = node.Nodes.Add(string.Format("{0}={1}",
-          param.Name, GetParameterValue(param, executionContext)));
+        string actualName = null;
+        object value = GetParameterValue(param, executionContext, out actualName);
+        string label = actualName != null && actualName != param.Name ?
+          string.Format("{0}({1})={2}", param.Name, actualName, value) :
+          string.Format("{0}={1}", param.Name, value);
+        TreeNode paramNode = node.Nodes.Add(label);
         paramNode.Tag = param;
         executionContextTreeView.ImageList.Images.Add(param.ItemImage ?? VS2008ImageLibrary.Nothing);
         paramNode.ImageIndex = executionContextTreeView.ImageList.Images.Count - 1;
@@ -179,6 +182,7 @@ namespace HeuristicLab.DebugEngine {
 
     private TreeNode selectedScopeNode = null;
     private void executionContextTreeView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e) {
+      scopeTreeView.BeginUpdate();
       if (selectedScopeNode != null) {
         if (Content.IsAtomic && Content.AtomicOperation.Scope == selectedScopeNode.Tag) {
           selectedScopeNode.BackColor = Color.Crimson;
@@ -209,6 +213,7 @@ namespace HeuristicLab.DebugEngine {
           }
         }
       }
+      scopeTreeView.EndUpdate();
     }
 
     private TreeNode FindScopeNode(IScope scope, TreeNodeCollection nodes) {
@@ -233,20 +238,26 @@ namespace HeuristicLab.DebugEngine {
       if (executionContextTreeView.SelectedNode == null)
         return;
       IParameter param = executionContextTreeView.SelectedNode.Tag as IParameter;
+      string actualName = null;
       if (param != null)
-        MainFormManager.MainForm.ShowContent(GetParameterValue(param, Content.ExecutionContext) as IContent);
+        MainFormManager.MainForm.ShowContent(GetParameterValue(param, Content.ExecutionContext, out actualName) as IContent);
     }
-
-    #endregion
 
     private void executionContextConextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e) {
       IParameter param = executionContextTreeView.SelectedNode.Tag as IParameter;
+      string actualName = null;
       if (param != null)
-        showValueToolStripMenuItem.Enabled = GetParameterValue(param, Content.ExecutionContext) is IContent;
+        showValueToolStripMenuItem.Enabled = GetParameterValue(param, Content.ExecutionContext, out actualName) is IContent;
       else
         e.Cancel = true;
     }
 
+    private void executionContextTreeView_MouseDown(object sender, MouseEventArgs e) {
+      if (e.Button == System.Windows.Forms.MouseButtons.Right)
+        executionContextTreeView.SelectedNode = executionContextTreeView.GetNodeAt(e.Location);
+    }
+
+    #endregion
 
 
   }

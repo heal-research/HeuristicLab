@@ -65,15 +65,17 @@ namespace HeuristicLab.DebugEngine {
       // 
       // listView
       // 
+      this.listView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.listView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.listViewColumnHeader});
-      this.listView.Dock = System.Windows.Forms.DockStyle.Fill;
       this.listView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
       this.listView.HideSelection = false;
-      this.listView.Location = new System.Drawing.Point(3, 16);
+      this.listView.Location = new System.Drawing.Point(6, 19);
       this.listView.Name = "listView";
       this.listView.ShowItemToolTips = true;
-      this.listView.Size = new System.Drawing.Size(146, 470);
+      this.listView.Size = new System.Drawing.Size(140, 464);
       this.listView.SmallImageList = this.imageList;
       this.listView.TabIndex = 0;
       this.listView.UseCompatibleStateImageBehavior = false;

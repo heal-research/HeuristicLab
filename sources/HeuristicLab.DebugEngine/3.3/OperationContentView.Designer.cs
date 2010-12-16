@@ -49,33 +49,27 @@ namespace HeuristicLab.DebugEngine {
       this.splitContainer1 = new System.Windows.Forms.SplitContainer();
       this.executionContextGroupBox = new System.Windows.Forms.GroupBox();
       this.executionContextTreeView = new System.Windows.Forms.TreeView();
+      this.executionContextConextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+      this.showValueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.executionContextImageList = new System.Windows.Forms.ImageList(this.components);
       this.scopeGroupBox = new System.Windows.Forms.GroupBox();
       this.scopeTreeView = new System.Windows.Forms.TreeView();
       this.scopeImageList = new System.Windows.Forms.ImageList(this.components);
       this.nameTextBox = new System.Windows.Forms.TextBox();
-      this.contextLabel = new System.Windows.Forms.Label();
-      this.atomicLabel = new System.Windows.Forms.Label();
-      this.collectionLabel = new System.Windows.Forms.Label();
       this.parametersImageList = new System.Windows.Forms.ImageList(this.components);
-      this.executionContextConextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-      this.showValueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.groupBox.SuspendLayout();
       this.splitContainer1.Panel1.SuspendLayout();
       this.splitContainer1.Panel2.SuspendLayout();
       this.splitContainer1.SuspendLayout();
       this.executionContextGroupBox.SuspendLayout();
-      this.scopeGroupBox.SuspendLayout();
       this.executionContextConextMenu.SuspendLayout();
+      this.scopeGroupBox.SuspendLayout();
       this.SuspendLayout();
       // 
       // groupBox
       // 
       this.groupBox.Controls.Add(this.splitContainer1);
       this.groupBox.Controls.Add(this.nameTextBox);
-      this.groupBox.Controls.Add(this.contextLabel);
-      this.groupBox.Controls.Add(this.atomicLabel);
-      this.groupBox.Controls.Add(this.collectionLabel);
       this.groupBox.Dock = System.Windows.Forms.DockStyle.Fill;
       this.groupBox.Location = new System.Drawing.Point(0, 0);
       this.groupBox.Name = "groupBox";
@@ -116,18 +110,38 @@ namespace HeuristicLab.DebugEngine {
       // 
       // executionContextTreeView
       // 
+      this.executionContextTreeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.executionContextTreeView.ContextMenuStrip = this.executionContextConextMenu;
-      this.executionContextTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
       this.executionContextTreeView.ImageIndex = 0;
       this.executionContextTreeView.ImageList = this.executionContextImageList;
-      this.executionContextTreeView.Location = new System.Drawing.Point(3, 16);
+      this.executionContextTreeView.Location = new System.Drawing.Point(6, 19);
       this.executionContextTreeView.Name = "executionContextTreeView";
       this.executionContextTreeView.SelectedImageIndex = 0;
       this.executionContextTreeView.ShowNodeToolTips = true;
-      this.executionContextTreeView.Size = new System.Drawing.Size(236, 342);
+      this.executionContextTreeView.Size = new System.Drawing.Size(230, 336);
       this.executionContextTreeView.TabIndex = 0;
       this.executionContextTreeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.executionContextTreeView_NodeMouseClick);
       this.executionContextTreeView.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.executionContextTreeView_NodeMouseDoubleClick);
+      this.executionContextTreeView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.executionContextTreeView_MouseDown);
+      // 
+      // executionContextConextMenu
+      // 
+      this.executionContextConextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.showValueToolStripMenuItem});
+      this.executionContextConextMenu.Name = "executionContextConextMenu";
+      this.executionContextConextMenu.Size = new System.Drawing.Size(173, 26);
+      this.executionContextConextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.executionContextConextMenu_Opening);
+      // 
+      // showValueToolStripMenuItem
+      // 
+      this.showValueToolStripMenuItem.Name = "showValueToolStripMenuItem";
+      this.showValueToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+      this.showValueToolStripMenuItem.Text = "Show Actual Value";
+      this.showValueToolStripMenuItem.ToolTipText = "Try to obtain the parameter\'s actual value in the current execution context and o" +
+    "pen it in a new view.";
+      this.showValueToolStripMenuItem.Click += new System.EventHandler(this.ShowValue_Click);
       // 
       // executionContextImageList
       // 
@@ -148,14 +162,16 @@ namespace HeuristicLab.DebugEngine {
       // 
       // scopeTreeView
       // 
-      this.scopeTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.scopeTreeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.scopeTreeView.ImageIndex = 0;
       this.scopeTreeView.ImageList = this.scopeImageList;
-      this.scopeTreeView.Location = new System.Drawing.Point(3, 16);
+      this.scopeTreeView.Location = new System.Drawing.Point(6, 19);
       this.scopeTreeView.Name = "scopeTreeView";
       this.scopeTreeView.SelectedImageIndex = 0;
       this.scopeTreeView.ShowNodeToolTips = true;
-      this.scopeTreeView.Size = new System.Drawing.Size(299, 342);
+      this.scopeTreeView.Size = new System.Drawing.Size(293, 336);
       this.scopeTreeView.TabIndex = 0;
       this.scopeTreeView.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.scopeTreeView_NodeMouseDoubleClick);
       // 
@@ -173,65 +189,15 @@ namespace HeuristicLab.DebugEngine {
       this.nameTextBox.Location = new System.Drawing.Point(6, 19);
       this.nameTextBox.Name = "nameTextBox";
       this.nameTextBox.ReadOnly = true;
-      this.nameTextBox.Size = new System.Drawing.Size(395, 20);
+      this.nameTextBox.Size = new System.Drawing.Size(551, 20);
       this.nameTextBox.TabIndex = 3;
       this.nameTextBox.DoubleClick += new System.EventHandler(this.nameTextBox_DoubleClick);
-      // 
-      // contextLabel
-      // 
-      this.contextLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.contextLabel.AutoSize = true;
-      this.contextLabel.ForeColor = System.Drawing.SystemColors.ControlDark;
-      this.contextLabel.Location = new System.Drawing.Point(407, 22);
-      this.contextLabel.Name = "contextLabel";
-      this.contextLabel.Size = new System.Drawing.Size(43, 13);
-      this.contextLabel.TabIndex = 2;
-      this.contextLabel.Text = "Context";
-      // 
-      // atomicLabel
-      // 
-      this.atomicLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.atomicLabel.AutoSize = true;
-      this.atomicLabel.ForeColor = System.Drawing.SystemColors.ControlDark;
-      this.atomicLabel.Location = new System.Drawing.Point(456, 22);
-      this.atomicLabel.Name = "atomicLabel";
-      this.atomicLabel.Size = new System.Drawing.Size(39, 13);
-      this.atomicLabel.TabIndex = 1;
-      this.atomicLabel.Text = "Atomic";
-      // 
-      // collectionLabel
-      // 
-      this.collectionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.collectionLabel.AutoSize = true;
-      this.collectionLabel.ForeColor = System.Drawing.SystemColors.ControlDark;
-      this.collectionLabel.Location = new System.Drawing.Point(501, 22);
-      this.collectionLabel.Name = "collectionLabel";
-      this.collectionLabel.Size = new System.Drawing.Size(53, 13);
-      this.collectionLabel.TabIndex = 0;
-      this.collectionLabel.Text = "Collection";
       // 
       // parametersImageList
       // 
       this.parametersImageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
       this.parametersImageList.ImageSize = new System.Drawing.Size(16, 16);
       this.parametersImageList.TransparentColor = System.Drawing.Color.Transparent;
-      // 
-      // executionContextConextMenu
-      // 
-      this.executionContextConextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.showValueToolStripMenuItem});
-      this.executionContextConextMenu.Name = "executionContextConextMenu";
-      this.executionContextConextMenu.Size = new System.Drawing.Size(169, 48);
-      this.executionContextConextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.executionContextConextMenu_Opening);
-      // 
-      // showValueToolStripMenuItem
-      // 
-      this.showValueToolStripMenuItem.Name = "showValueToolStripMenuItem";
-      this.showValueToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
-      this.showValueToolStripMenuItem.Text = "show actual value";
-      this.showValueToolStripMenuItem.ToolTipText = "Try to obtain the parameter\'s actual value in the current execution context and o" +
-    "pen it in a new view.";
-      this.showValueToolStripMenuItem.Click += new System.EventHandler(this.ShowValue_Click);
       // 
       // OperationContentView
       // 
@@ -246,8 +212,8 @@ namespace HeuristicLab.DebugEngine {
       this.splitContainer1.Panel2.ResumeLayout(false);
       this.splitContainer1.ResumeLayout(false);
       this.executionContextGroupBox.ResumeLayout(false);
-      this.scopeGroupBox.ResumeLayout(false);
       this.executionContextConextMenu.ResumeLayout(false);
+      this.scopeGroupBox.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }
@@ -256,9 +222,6 @@ namespace HeuristicLab.DebugEngine {
 
     private System.Windows.Forms.GroupBox groupBox;
     private System.Windows.Forms.TextBox nameTextBox;
-    private System.Windows.Forms.Label contextLabel;
-    private System.Windows.Forms.Label atomicLabel;
-    private System.Windows.Forms.Label collectionLabel;
     private System.Windows.Forms.SplitContainer splitContainer1;
     private System.Windows.Forms.TreeView scopeTreeView;
     private System.Windows.Forms.GroupBox scopeGroupBox;
