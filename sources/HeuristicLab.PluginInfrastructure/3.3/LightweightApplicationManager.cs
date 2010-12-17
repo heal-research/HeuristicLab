@@ -71,8 +71,14 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <param name="type">Most general type.</param>
     /// <returns>Enumerable of the created instances.</returns>
     public IEnumerable<object> GetInstances(Type type) {
-      return from t in GetTypes(type, true)
-             select Activator.CreateInstance(t);
+      List<object> instances = new List<object>();
+      foreach (Type t in GetTypes(type, true)) {
+        object instance = null;
+        try { instance = Activator.CreateInstance(t); }
+        catch { }
+        if (instance != null) instances.Add(instance);
+      }
+      return instances;
     }
 
 

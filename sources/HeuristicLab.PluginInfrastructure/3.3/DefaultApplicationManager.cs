@@ -157,8 +157,14 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <typeparam name="T">Most general type.</typeparam>
     /// <returns>Enumerable of the created instances.</returns>
     internal static IEnumerable<T> GetInstances<T>(IPluginDescription plugin) where T : class {
-      return from t in GetTypes(typeof(T), plugin, true)
-             select (T)Activator.CreateInstance(t);
+      List<T> instances = new List<T>();
+      foreach (Type t in GetTypes(typeof(T), plugin, true)) {
+        T instance = null;
+        try { instance = (T)Activator.CreateInstance(t); }
+        catch { }
+        if (instance != null) instances.Add(instance);
+      }
+      return instances;
     }
     /// <summary>
     /// Creates an instance of all types declared in assembly <paramref name="asm"/> that are subtypes or the same type of the specified <typeparamref name="type"/>. 
@@ -167,8 +173,14 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <param name="asm">Declaring assembly.</param>
     /// <returns>Enumerable of the created instances.</returns>
     private static IEnumerable<T> GetInstances<T>(Assembly asm) where T : class {
-      return from t in GetTypes(typeof(T), asm, true)
-             select (T)Activator.CreateInstance(t);
+      List<T> instances = new List<T>();
+      foreach (Type t in GetTypes(typeof(T), asm, true)) {
+        T instance = null;
+        try { instance = (T)Activator.CreateInstance(t); }
+        catch { }
+        if (instance != null) instances.Add(instance);
+      }
+      return instances;
     }
     /// <summary>
     /// Creates an instance of all types that are subtypes or the same type of the specified type
@@ -186,8 +198,14 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <param name="type">Most general type.</param>
     /// <returns>Enumerable of the created instances.</returns>
     internal static IEnumerable<object> GetInstances(Type type) {
-      return (from t in GetTypes(type, true)
-              select Activator.CreateInstance(t)).ToList();
+      List<object> instances = new List<object>();
+      foreach (Type t in GetTypes(type, true)) {
+        object instance = null;
+        try { instance = Activator.CreateInstance(t); }
+        catch { }
+        if (instance != null) instances.Add(instance);
+      }
+      return instances;
     }
 
     /// <summary>
