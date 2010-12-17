@@ -57,6 +57,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       storeAlgorithmInEachRun = false;
 
       RegisterEvents();
+      if (Algorithm != null) RegisterAlgorithmEvents();
     }
 
     public string Filename { get; set; }
@@ -69,6 +70,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       RegisterEvents();
+      if (Algorithm != null) RegisterAlgorithmEvents();
     }
 
     private CrossValidation(CrossValidation original, Cloner cloner)
@@ -86,6 +88,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       samplesStart = cloner.Clone(original.samplesStart);
       samplesEnd = cloner.Clone(original.samplesEnd);
       RegisterEvents();
+      if (Algorithm != null) RegisterAlgorithmEvents();
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new CrossValidation(this, cloner);
