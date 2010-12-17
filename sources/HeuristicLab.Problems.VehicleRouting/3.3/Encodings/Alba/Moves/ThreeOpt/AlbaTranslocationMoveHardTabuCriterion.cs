@@ -30,6 +30,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaTranslocationMoveHardTabuCriterion", "An operator which checks if translocation moves are tabu using a hard criterion for a VRP representation.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
   [StorableClass]
   public sealed class AlbaTranslocationMoveHardTabuCriterion : AlbaPermutationMoveOperator, IAlbaTranslocationMoveOperator, ITabuChecker {
+    [Storable]
     private TranslocationMoveHardTabuCriterion tabuChecker;
     protected override IPermutationMoveOperator PermutationMoveOperatorParameter {
       get { return tabuChecker; }
