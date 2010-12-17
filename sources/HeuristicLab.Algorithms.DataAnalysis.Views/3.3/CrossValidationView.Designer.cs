@@ -344,6 +344,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // 
       // algorithmProblemTabPage
       // 
+      this.algorithmProblemTabPage.AllowDrop = true;
       this.algorithmProblemTabPage.Controls.Add(this.openProblemButton);
       this.algorithmProblemTabPage.Controls.Add(this.algorithmProblemViewHost);
       this.algorithmProblemTabPage.Controls.Add(this.newProblemButton);
