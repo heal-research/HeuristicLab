@@ -238,17 +238,20 @@ namespace HeuristicLab.DebugEngine {
       if (executionContextTreeView.SelectedNode == null)
         return;
       IParameter param = executionContextTreeView.SelectedNode.Tag as IParameter;
-      string actualName = null;
-      if (param != null)
-        MainFormManager.MainForm.ShowContent(GetParameterValue(param, Content.ExecutionContext, out actualName) as IContent);
+      if (param != null) {
+        string actualName = null;
+        IExecutionContext context = executionContextTreeView.SelectedNode.Parent as IExecutionContext ?? Content.ExecutionContext;
+        MainFormManager.MainForm.ShowContent(GetParameterValue(param, context, out actualName) as IContent);
+      }
     }
 
     private void executionContextConextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e) {
       IParameter param = executionContextTreeView.SelectedNode.Tag as IParameter;
-      string actualName = null;
-      if (param != null)
-        showValueToolStripMenuItem.Enabled = GetParameterValue(param, Content.ExecutionContext, out actualName) is IContent;
-      else
+      if (param != null) {
+        string actualName = null;
+        IExecutionContext context = executionContextTreeView.SelectedNode.Parent.Tag as IExecutionContext ?? Content.ExecutionContext;
+        showValueToolStripMenuItem.Enabled = GetParameterValue(param, context, out actualName) is IContent;
+      } else
         e.Cancel = true;
     }
 
