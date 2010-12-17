@@ -240,7 +240,7 @@ namespace HeuristicLab.DebugEngine {
       IParameter param = executionContextTreeView.SelectedNode.Tag as IParameter;
       if (param != null) {
         string actualName = null;
-        IExecutionContext context = executionContextTreeView.SelectedNode.Parent as IExecutionContext ?? Content.ExecutionContext;
+        IExecutionContext context = executionContextTreeView.SelectedNode.Parent.Tag as IExecutionContext ?? Content.ExecutionContext;
         MainFormManager.MainForm.ShowContent(GetParameterValue(param, context, out actualName) as IContent);
       }
     }
