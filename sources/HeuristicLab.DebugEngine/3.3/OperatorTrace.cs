@@ -109,6 +109,10 @@ namespace HeuristicLab.DebugEngine {
     }
 
     public virtual void Regenerate(IAtomicOperation operation) {
+      if (!isEnabled) {
+        Reset();
+        return;
+      }
       if (operation == null)
         return;
       Stack<IOperator> trace = new Stack<IOperator>();
