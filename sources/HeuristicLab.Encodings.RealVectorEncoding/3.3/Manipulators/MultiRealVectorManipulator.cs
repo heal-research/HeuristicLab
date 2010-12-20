@@ -29,7 +29,6 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("MultiRealVectorManipulator", "Randomly selects and applies one of its manipulators every time it is called.")]
@@ -57,10 +56,11 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       Parameters.Add(new LookupParameter<RealVector>("RealVector", "The real vector that is being manipulating."));
       Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "The lower and upper bounds for each dimension of the vector."));
 
-      foreach (Type type in ApplicationManager.Manager.GetTypes(typeof(IRealVectorManipulator))) {
-        if (!typeof(MultiOperator<IRealVectorManipulator>).IsAssignableFrom(type))
-          Operators.Add((IRealVectorManipulator)Activator.CreateInstance(type), true);
-      }
+      Operators.Add(new BreederGeneticAlgorithmManipulator());
+      Operators.Add(new NormalAllPositionsManipulator());
+      Operators.Add(new PolynomialAllPositionManipulator());
+      Operators.Add(new PolynomialOnePositionManipulator());
+      Operators.Add(new UniformOnePositionManipulator());
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
