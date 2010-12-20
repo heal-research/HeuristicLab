@@ -23,7 +23,7 @@
 using HeuristicLab.Core;
 namespace HeuristicLab.Optimization {
   /// <summary>
-  /// An interface which represents an multi analysis operator.
+  /// An interface which represents a multi analysis operator.
   /// </summary>
   public interface IMultiAnalyzer : IMultiOperator<IAnalyzer>, IAnalyzer { }
 }
