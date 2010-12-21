@@ -109,26 +109,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="DisposeViewTest.resx">
-      <DependentUpon>DisposeViewTest.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Documents\GA_VRP.hl" />
     <EmbeddedResource Include="Documents\SGP_SymbClass_Mammographic.hl" />
-    <EmbeddedResource Include="ImageTestView.resx">
-      <DependentUpon>ImageTestView.cs</DependentUpon>
-    </EmbeddedResource>
     <None Include="HeuristicLabOptimizerPlugin.cs.frame" />
     <Compile Include="CreateExperimentDialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="CreateExperimentDialog.Designer.cs">
       <DependentUpon>CreateExperimentDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="DisposeViewTest.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="DisposeViewTest.Designer.cs">
-      <DependentUpon>DisposeViewTest.cs</DependentUpon>
     </Compile>
     <Compile Include="FileManager.cs" />
     <Compile Include="ChartControlsWarning.cs">
@@ -137,17 +125,9 @@
     <Compile Include="ChartControlsWarning.Designer.cs">
       <DependentUpon>ChartControlsWarning.cs</DependentUpon>
     </Compile>
-    <Compile Include="ImageTest.cs" />
-    <Compile Include="ImageTestView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ImageTestView.Designer.cs">
-      <DependentUpon>ImageTestView.cs</DependentUpon>
-    </Compile>
     <Compile Include="MenuItems\ClipboardMenuItem.cs" />
     <Compile Include="MenuItems\AboutMenuItem.cs" />
     <Compile Include="MenuItems\ConvertIntoUserDefinedAlgorithmMenuItem.cs" />
-    <Compile Include="MenuItems\ImageTestMenuItem.cs" />
     <Compile Include="MenuItems\UsernamePasswordMenuItem.cs" />
     <Compile Include="MenuItems\CreateExperimentMenuItem.cs" />
     <Compile Include="MenuItems\CopyToClipboardMenuItem.cs" />
@@ -157,7 +137,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="SimpleItem.cs" />
     <Compile Include="StartPage.cs">
       <SubType>UserControl</SubType>
     </Compile>
