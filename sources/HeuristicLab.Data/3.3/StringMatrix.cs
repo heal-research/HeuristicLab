@@ -52,6 +52,7 @@ namespace HeuristicLab.Data {
           throw new ArgumentException("A column name must be specified for each column .");
         else
           columnNames = new List<string>(value);
+        OnColumnNamesChanged();
       }
     }
     [Storable]
@@ -66,6 +67,7 @@ namespace HeuristicLab.Data {
           throw new ArgumentException("A row name must be specified for each row.");
         else
           rowNames = new List<string>(value);
+        OnRowNamesChanged();
       }
     }
     [Storable]
@@ -93,6 +95,8 @@ namespace HeuristicLab.Data {
             rowNames.RemoveAt(rowNames.Count - 1);
           while (rowNames.Count < value)
             rowNames.Add("Row " + rowNames.Count);
+          OnRowsChanged();
+          OnRowNamesChanged();
           OnReset();
         }
       }
@@ -110,6 +114,8 @@ namespace HeuristicLab.Data {
             columnNames.RemoveAt(columnNames.Count - 1);
           while (columnNames.Count < value)
             columnNames.Add("Column " + columnNames.Count);
+          OnColumnsChanged();
+          OnColumnNamesChanged();
           OnReset();
         }
       }
@@ -166,7 +172,7 @@ namespace HeuristicLab.Data {
       ColumnNames = columnNames;
     }
     protected StringMatrix(int rows, int columns, IEnumerable<string> columnNames, IEnumerable<string> rowNames)
-      : this(rows, columns,columnNames) {
+      : this(rows, columns, columnNames) {
       RowNames = rowNames;
     }
     public StringMatrix(string[,] elements) {
@@ -185,8 +191,8 @@ namespace HeuristicLab.Data {
       : this(elements) {
       ColumnNames = columnNames;
     }
-    protected StringMatrix(string[,] elements, IEnumerable<string> columnNames,IEnumerable<string> rowNames)
-      : this(elements,columnNames) {
+    protected StringMatrix(string[,] elements, IEnumerable<string> columnNames, IEnumerable<string> rowNames)
+      : this(elements, columnNames) {
       RowNames = rowNames;
     }
 
@@ -244,6 +250,19 @@ namespace HeuristicLab.Data {
       }
     }
 
+    #region events
+    public event EventHandler ColumnsChanged;
+    protected virtual void OnColumnsChanged() {
+      EventHandler handler = ColumnsChanged;
+      if (handler != null)
+        handler(this, EventArgs.Empty);
+    }
+    public event EventHandler RowsChanged;
+    protected virtual void OnRowsChanged() {
+      EventHandler handler = RowsChanged;
+      if (handler != null)
+        handler(this, EventArgs.Empty);
+    }
     public event EventHandler ColumnNamesChanged;
     protected virtual void OnColumnNamesChanged() {
       EventHandler handler = ColumnNamesChanged;
@@ -274,6 +293,7 @@ namespace HeuristicLab.Data {
         Reset(this, EventArgs.Empty);
       OnToStringChanged();
     }
+    #endregion
 
     #region IStringConvertibleMatrix Members
     int IStringConvertibleMatrix.Rows {

@@ -122,43 +122,52 @@ namespace HeuristicLab.Optimization {
           AddResult(result.Key, result.Value);
       }
       columnNameCache = null;
+      OnColumnsChanged();
       OnColumnNamesChanged();
       rowNamesCache = null;
       base.OnCollectionReset(items, oldItems);
+      OnRowsChanged();
       OnRowNamesChanged();
       OnReset();
       UpdateFiltering(false);
     }
     protected override void OnItemsAdded(IEnumerable<IRun> items) {
-      bool columnNamesChanged = false;
+      bool columnsChanged = false;
       foreach (IRun run in items) {
         foreach (KeyValuePair<string, IItem> parameter in run.Parameters)
-          columnNamesChanged |= AddParameter(parameter.Key, parameter.Value);
+          columnsChanged |= AddParameter(parameter.Key, parameter.Value);
         foreach (KeyValuePair<string, IItem> result in run.Results)
-          columnNamesChanged |= AddResult(result.Key, result.Value);
+          columnsChanged |= AddResult(result.Key, result.Value);
       }
-      if (columnNamesChanged) columnNameCache = null;
+      if (columnsChanged) columnNameCache = null;
       rowNamesCache = null;
       base.OnItemsAdded(items);
       OnReset();
+      OnRowsChanged();
       OnRowNamesChanged();
-      if (columnNamesChanged) OnColumnNamesChanged();
+      if (columnsChanged) {
+        OnColumnsChanged();
+        OnColumnNamesChanged();
+      }
       UpdateFiltering(false);
     }
     protected override void OnItemsRemoved(IEnumerable<IRun> items) {
-      bool columnNamesChanged = false;
+      bool columnsChanged = false;
       foreach (IRun run in items) {
         foreach (string parameterName in run.Parameters.Keys)
-          columnNamesChanged |= RemoveParameterName(parameterName);
+          columnsChanged |= RemoveParameterName(parameterName);
         foreach (string resultName in run.Results.Keys)
-          columnNamesChanged |= RemoveResultName(resultName);
+          columnsChanged |= RemoveResultName(resultName);
       }
-      if (columnNamesChanged) columnNameCache = null;
+      if (columnsChanged) columnNameCache = null;
       rowNamesCache = null;
       base.OnItemsRemoved(items);
       OnReset();
       OnRowNamesChanged();
-      if (columnNamesChanged) OnColumnNamesChanged();
+      if (columnsChanged) {
+        OnColumnsChanged();
+        OnColumnNamesChanged();
+      }
     }
 
     private bool AddParameter(string name, IItem value) {
@@ -285,6 +294,16 @@ namespace HeuristicLab.Optimization {
       EventHandler handler = Reset;
       if (handler != null) handler(this, EventArgs.Empty);
       OnToStringChanged();
+    }
+    public event EventHandler ColumnsChanged;
+    protected virtual void OnColumnsChanged() {
+      var handler = ColumnsChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
+    public event EventHandler RowsChanged;
+    protected virtual void OnRowsChanged() {
+      var handler = RowsChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler ColumnNamesChanged;
     protected virtual void OnColumnNamesChanged() {

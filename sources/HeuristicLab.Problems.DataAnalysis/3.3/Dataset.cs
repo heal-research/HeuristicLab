@@ -186,6 +186,16 @@ namespace HeuristicLab.Problems.DataAnalysis {
       throw new NotSupportedException();
     }
 
+    public event EventHandler ColumnsChanged;
+    private void OnColumnsChanged() {
+      var handler = ColumnsChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
+    public event EventHandler RowsChanged;
+    private void OnRowsChanged() {
+      var handler = RowsChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
     public event EventHandler ColumnNamesChanged;
     private void OnColumnNamesChanged() {
       EventHandler listeners = ColumnNamesChanged;

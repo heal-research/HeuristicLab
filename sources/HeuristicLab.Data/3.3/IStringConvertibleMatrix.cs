@@ -37,10 +37,13 @@ namespace HeuristicLab.Data {
     string GetValue(int rowIndex, int columnIndex);
     bool SetValue(string value, int rowIndex, int columnIndex);
 
+    event EventHandler ColumnsChanged;
+    event EventHandler RowsChanged;
     event EventHandler ColumnNamesChanged;
     event EventHandler RowNamesChanged;
     event EventHandler SortableViewChanged;
     event EventHandler<EventArgs<int, int>> ItemChanged;
     event EventHandler Reset;
+
   }
 }

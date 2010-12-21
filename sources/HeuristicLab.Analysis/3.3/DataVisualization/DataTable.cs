@@ -127,12 +127,16 @@ namespace HeuristicLab.Analysis {
     private void rows_ItemsAdded(object sender, CollectionItemsChangedEventArgs<DataRow> e) {
       foreach (DataRow row in e.Items)
         this.RegisterRowEvents(row);
+
+      this.OnColumnsChanged();
       this.OnColumnNamesChanged();
       this.OnReset();
     }
     private void rows_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<DataRow> e) {
       foreach (DataRow row in e.Items)
         this.DeregisterRowEvents(row);
+
+      this.OnColumnsChanged();
       this.OnColumnNamesChanged();
       this.OnReset();
     }
@@ -141,6 +145,8 @@ namespace HeuristicLab.Analysis {
         this.DeregisterRowEvents(row);
       foreach (DataRow row in e.Items)
         this.RegisterRowEvents(row);
+
+      this.OnColumnsChanged();
       this.OnColumnNamesChanged();
       this.OnReset();
     }
@@ -149,6 +155,9 @@ namespace HeuristicLab.Analysis {
         this.DeregisterRowEvents(row);
       foreach (DataRow row in e.Items)
         this.RegisterRowEvents(row);
+
+      if (e.OldItems.Count() != e.Items.Count())
+        this.OnColumnsChanged();
       this.OnColumnNamesChanged();
       this.OnReset();
     }
@@ -236,6 +245,16 @@ namespace HeuristicLab.Analysis {
     public event EventHandler Reset;
     protected virtual void OnReset() {
       var handler = Reset;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
+    public event EventHandler ColumnsChanged;
+    protected virtual void OnColumnsChanged() {
+      var handler = ColumnsChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
+    public event EventHandler RowsChanged;
+    protected virtual void OnRowsChanged() {
+      var handler = RowsChanged;
       if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler ColumnNamesChanged;
