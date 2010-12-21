@@ -24,6 +24,9 @@ namespace HeuristicLab_33.Tests {
 
       foreach (Type storableType in ApplicationManager.Manager.GetTypes(typeof(object))
         .Where(t => StorableClassAttribute.IsStorableClass(t))) {
+        //test only types contained in HL plugin assemblies
+        if (!PluginLoader.pluginAssemblies.Contains(storableType.Assembly)) break;
+
         IEnumerable<ConstructorInfo> ctors = storableType.GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
         ConstructorInfo storableConstructor = ctors.Where(c => c.GetParameters().Count() == 1 && c.GetParameters().First().ParameterType == typeof(bool)).FirstOrDefault();
         if (storableConstructor == null) errorMessage.Append(Environment.NewLine + storableType.ToString() + ": No storable constructor is defined.");

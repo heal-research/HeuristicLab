@@ -20,6 +20,9 @@ namespace HeuristicLab_33.Tests {
       StringBuilder errorMessage = new StringBuilder();
 
       foreach (Type deepCloneableType in ApplicationManager.Manager.GetTypes(typeof(IDeepCloneable))) {
+        //test only types contained in HL plugin assemblies
+        if (!PluginLoader.pluginAssemblies.Contains(deepCloneableType.Assembly)) break;
+
         bool found = false;
         foreach (ConstructorInfo constructor in deepCloneableType.GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)) {
           ParameterInfo[] parameters = constructor.GetParameters();

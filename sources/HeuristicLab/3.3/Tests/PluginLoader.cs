@@ -9,11 +9,13 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab_33.Tests {
   internal static class PluginLoader {
     public const string AssemblyExtension = ".dll";
+    public const string TestAccessorAssemblyExtension = "_Accessor.dll";
+    public const string TestAssemblyExtension = ".test.dll";
     public static List<Assembly> pluginAssemblies;
 
     static PluginLoader() {
       foreach (string path in Directory.EnumerateFiles(Environment.CurrentDirectory)
-        .Where(s => s.EndsWith(AssemblyExtension)))
+        .Where(s => s.EndsWith(AssemblyExtension) && !s.EndsWith(TestAccessorAssemblyExtension) && !s.EndsWith(TestAssemblyExtension)))
         Assembly.LoadFrom(path);
 
       pluginAssemblies = AppDomain.CurrentDomain.GetAssemblies().Where(IsPluginAssembly).ToList();
