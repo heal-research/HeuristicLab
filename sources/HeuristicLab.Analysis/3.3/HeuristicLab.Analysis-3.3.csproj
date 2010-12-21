@@ -123,6 +123,8 @@
     <Compile Include="DataVisualization\DataTableVisualProperties.cs" />
     <Compile Include="DataVisualization\HeatMap.cs" />
     <Compile Include="DataVisualization\HeatMapHistory.cs" />
+    <Compile Include="MultiObjective\RankBasedParetoFrontAnalyzer.cs" />
+    <Compile Include="MultiObjective\ParetoFrontAnalyzer.cs" />
     <Compile Include="PopulationDiversityAnalysis\PopulationDiversityAnalyzer.cs" />
     <Compile Include="QualityAnalysis\BestAverageWorstQualityAnalyzer.cs" />
     <Compile Include="QualityAnalysis\BestAverageWorstQualityCalculator.cs" />

@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -21,21 +21,21 @@
 
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Optimization.Operators {
-  /// <summary>
-  /// Plugin class for HeuristicLab.Optimization.Operators plugin.
-  /// </summary>
-  [Plugin("HeuristicLab.Optimization.Operators", "3.3.2.$WCREV$")]
-  [PluginFile("HeuristicLab.Optimization.Operators-3.3.dll", PluginFileType.Assembly)]
+namespace HeuristicLab.Algorithms.NSGA2 {
+  [Plugin("HeuristicLab.Algorithms.NSGA2", "Provides the non-dominated sorting genetic algorithm (NSGA-II) as described in Deb et al. 2002. A Fast and Elitist Multiobjective Genetic Algorithm: NSGA-II. IEEE Transactions on Evolutionary Computation, 6(2), pp. 182-197.", "3.3.2.$WCREV$")]
+  [PluginFile("HeuristicLab.Algorithms.NSGA2-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Analysis", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
   [PluginDependency("HeuristicLab.Data", "3.3")]
   [PluginDependency("HeuristicLab.Operators", "3.3")]
-  [PluginDependency("HeuristicLab.Optimization","3.3")]
+  [PluginDependency("HeuristicLab.Optimization", "3.3")]
+  [PluginDependency("HeuristicLab.Optimization.Operators", "3.3")]
   [PluginDependency("HeuristicLab.Parameters", "3.3")]
   [PluginDependency("HeuristicLab.Persistence", "3.3")]
+  [PluginDependency("HeuristicLab.Random", "3.3")]
   [PluginDependency("HeuristicLab.Selection", "3.3")]
-  public class HeuristicLabOptimizationOperatorsPlugin : PluginBase {
+  public class HeuristicLabAlgorithmsNSGA2Plugin : PluginBase {
   }
 }

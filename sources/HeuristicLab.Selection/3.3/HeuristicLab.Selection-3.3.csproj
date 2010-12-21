@@ -105,6 +105,7 @@
     <None Include="HeuristicLabSelectionPlugin.cs.frame" />
     <Compile Include="BestSelector.cs" />
     <Compile Include="ConditionalSelector.cs" />
+    <Compile Include="CrowdedTournamentSelector.cs" />
     <Compile Include="LeftSelector.cs" />
     <Compile Include="RandomReplacer.cs" />
     <Compile Include="GenderSpecificSelector.cs" />
