@@ -57,6 +57,7 @@ namespace HeuristicLab.DebugEngine {
       this.scopeImageList = new System.Windows.Forms.ImageList(this.components);
       this.nameTextBox = new System.Windows.Forms.TextBox();
       this.parametersImageList = new System.Windows.Forms.ImageList(this.components);
+      this.iconBox = new System.Windows.Forms.PictureBox();
       this.groupBox.SuspendLayout();
       this.splitContainer1.Panel1.SuspendLayout();
       this.splitContainer1.Panel2.SuspendLayout();
@@ -64,10 +65,12 @@ namespace HeuristicLab.DebugEngine {
       this.executionContextGroupBox.SuspendLayout();
       this.executionContextConextMenu.SuspendLayout();
       this.scopeGroupBox.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.iconBox)).BeginInit();
       this.SuspendLayout();
       // 
       // groupBox
       // 
+      this.groupBox.Controls.Add(this.iconBox);
       this.groupBox.Controls.Add(this.splitContainer1);
       this.groupBox.Controls.Add(this.nameTextBox);
       this.groupBox.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -186,10 +189,10 @@ namespace HeuristicLab.DebugEngine {
       this.nameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.nameTextBox.Cursor = System.Windows.Forms.Cursors.Default;
-      this.nameTextBox.Location = new System.Drawing.Point(6, 19);
+      this.nameTextBox.Location = new System.Drawing.Point(32, 19);
       this.nameTextBox.Name = "nameTextBox";
       this.nameTextBox.ReadOnly = true;
-      this.nameTextBox.Size = new System.Drawing.Size(551, 20);
+      this.nameTextBox.Size = new System.Drawing.Size(525, 20);
       this.nameTextBox.TabIndex = 3;
       this.nameTextBox.DoubleClick += new System.EventHandler(this.nameTextBox_DoubleClick);
       // 
@@ -198,6 +201,14 @@ namespace HeuristicLab.DebugEngine {
       this.parametersImageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
       this.parametersImageList.ImageSize = new System.Drawing.Size(16, 16);
       this.parametersImageList.TransparentColor = System.Drawing.Color.Transparent;
+      // 
+      // iconBox
+      // 
+      this.iconBox.Location = new System.Drawing.Point(6, 19);
+      this.iconBox.Name = "iconBox";
+      this.iconBox.Size = new System.Drawing.Size(20, 20);
+      this.iconBox.TabIndex = 5;
+      this.iconBox.TabStop = false;
       // 
       // OperationContentView
       // 
@@ -214,6 +225,7 @@ namespace HeuristicLab.DebugEngine {
       this.executionContextGroupBox.ResumeLayout(false);
       this.executionContextConextMenu.ResumeLayout(false);
       this.scopeGroupBox.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.iconBox)).EndInit();
       this.ResumeLayout(false);
 
     }
@@ -232,5 +244,6 @@ namespace HeuristicLab.DebugEngine {
     private System.Windows.Forms.TreeView executionContextTreeView;
     private System.Windows.Forms.ContextMenuStrip executionContextConextMenu;
     private System.Windows.Forms.ToolStripMenuItem showValueToolStripMenuItem;
+    private System.Windows.Forms.PictureBox iconBox;
   }
 }

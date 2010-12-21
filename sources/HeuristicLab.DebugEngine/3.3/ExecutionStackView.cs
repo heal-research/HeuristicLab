@@ -80,6 +80,7 @@ namespace HeuristicLab.DebugEngine {
         treeView.ImageList.Images.Clear();
         treeView.ImageList.Images.Add(VS2008ImageLibrary.Method);
         treeView.ImageList.Images.Add(VS2008ImageLibrary.Module);
+        treeView.ImageList.Images.Add(VS2008ImageLibrary.BreakpointActive);
         int totalNodes = AddStackOperations(treeView.Nodes, ((IEnumerable<IOperation>)Content).Reverse());
         if (treeView.Nodes.Count > 0)
           treeView.TopNode = treeView.Nodes[0];
@@ -110,10 +111,14 @@ namespace HeuristicLab.DebugEngine {
           node.ToolTipText = string.Format("{0}{1}{1}{2}",
             Utils.TypeName(atom.Operator), Environment.NewLine,
             Utils.Wrap(atom.Operator.Description ?? atom.Operator.ItemDescription, 60));
-          node.ImageIndex = 0;
-          node.SelectedImageIndex = 0;
-          if (atom.Operator.Breakpoint)
+          if (atom.Operator.Breakpoint) {
             node.ForeColor = Color.Red;
+            node.ImageIndex = 2;
+            node.SelectedImageIndex = 2;
+          } else {
+            node.ImageIndex = 0;
+            node.SelectedImageIndex = 0;
+          }
           count++;
         } else if (op is OperationCollection) {
           OperationCollection ops = op as OperationCollection;

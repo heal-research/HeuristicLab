@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 using HeuristicLab.Collections;
 using HeuristicLab.Common.Resources;
@@ -76,13 +77,19 @@ namespace HeuristicLab.DebugEngine {
       listView.SmallImageList.Images.Clear();
       listView.SmallImageList.Images.Add(VS2008ImageLibrary.Method);
       listView.SmallImageList.Images.Add(VS2008ImageLibrary.Module);
+      listView.SmallImageList.Images.Add(VS2008ImageLibrary.BreakpointActive);
       foreach (var item in Content) {
         var viewItem = listView.Items.Add(item.Name ?? item.ItemName);
         viewItem.ToolTipText = string.Format("{0}{1}{1}{2}",
           Utils.TypeName(item), Environment.NewLine,
           Utils.Wrap(item.Description, 60));
         viewItem.Tag = item;
-        viewItem.ImageIndex = item is CombinedOperator ? 1 : 0;
+        if (item.Breakpoint) {
+          viewItem.ForeColor = Color.Red;
+          viewItem.ImageIndex = 2;
+        } else {
+          viewItem.ImageIndex = item is CombinedOperator ? 1 : 0;
+        }
       }
       if (listView.Items.Count > 0) {
         for (int i = 0; i < listView.Columns.Count; i++)

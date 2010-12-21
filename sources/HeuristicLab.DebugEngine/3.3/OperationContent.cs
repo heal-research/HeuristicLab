@@ -19,7 +19,9 @@
  */
 #endregion
 
+using System.Drawing;
 using HeuristicLab.Common;
+using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.DebugEngine {
@@ -30,6 +32,7 @@ namespace HeuristicLab.DebugEngine {
     public IAtomicOperation AtomicOperation { get; private set; }
     public ExecutionContext ExecutionContext { get; private set; }
     public string Name { get; private set; }
+    public Image Icon { get; private set; }
 
     public OperationContent(IOperation operation) {
       Operation = operation;
@@ -38,10 +41,17 @@ namespace HeuristicLab.DebugEngine {
       ExecutionContext = operation as ExecutionContext;
       if (AtomicOperation != null) {
         Name = Utils.Name(AtomicOperation);
+        if (AtomicOperation.Operator != null && AtomicOperation.Operator.Breakpoint) {
+          Icon = VS2008ImageLibrary.BreakpointActive;
+        } else {
+          Icon = VS2008ImageLibrary.Method;
+        }
       } else if (Collection != null) {
         Name = string.Format("{0} Operations", Collection.Count);
+        Icon = VS2008ImageLibrary.Module;
       } else {
         Name = "";
+        Icon = VS2008ImageLibrary.Nothing;
       }
     }
 

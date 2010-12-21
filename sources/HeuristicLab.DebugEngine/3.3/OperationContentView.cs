@@ -49,10 +49,12 @@ namespace HeuristicLab.DebugEngine {
         nameTextBox.Text = "";
         scopeTreeView.Nodes.Clear();
         executionContextTreeView.Nodes.Clear();
+        iconBox.Image = null;
       } else {
         nameTextBox.Text = Content.Name;
         UpdateScopeTree();
         UpdateExecutionContext();
+        iconBox.Image = Content.Icon;
       }
     }
 
