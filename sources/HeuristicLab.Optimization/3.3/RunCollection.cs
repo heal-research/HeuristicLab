@@ -163,6 +163,7 @@ namespace HeuristicLab.Optimization {
       rowNamesCache = null;
       base.OnItemsRemoved(items);
       OnReset();
+      OnRowsChanged();
       OnRowNamesChanged();
       if (columnsChanged) {
         OnColumnsChanged();
