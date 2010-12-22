@@ -21,7 +21,6 @@
 
 using System;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
@@ -87,30 +86,6 @@ namespace HeuristicLab.Optimizer {
       }
 
       WindowState = Properties.Settings.Default.ShowMaximized ? FormWindowState.Maximized : FormWindowState.Normal;
-    }
-
-    private static string CHARTCONTROLASSEMBLY = "System.Windows.Forms.DataVisualization, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35";
-    private bool CheckChartControls() {
-      try {
-        Assembly chartControlsAssembly = Assembly.Load(CHARTCONTROLASSEMBLY);
-        if (chartControlsAssembly != null)
-          return true;
-      }
-      catch (FileNotFoundException) {
-      }
-      catch (FileLoadException) {
-      }
-      catch (BadImageFormatException) {
-      }
-      return false;
-    }
-
-    protected override void OnShown(EventArgs e) {
-      base.OnShown(e);
-      if (!CheckChartControls()) {
-        ChartControlsWarning dlg = new ChartControlsWarning();
-        dlg.ShowDialog(this);
-      }
     }
 
     protected override void OnClosing(CancelEventArgs e) {
