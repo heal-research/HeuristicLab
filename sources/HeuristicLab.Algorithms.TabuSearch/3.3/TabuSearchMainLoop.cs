@@ -99,7 +99,8 @@ namespace HeuristicLab.Algorithms.TabuSearch {
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
-      #region Backwards compatible code
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
       VariableCreator variableCreator = OperatorGraph.InitialOperator as VariableCreator;
 
       if (variableCreator != null) {
