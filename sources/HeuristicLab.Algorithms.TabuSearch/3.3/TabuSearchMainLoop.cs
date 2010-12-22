@@ -97,6 +97,19 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       return new TabuSearchMainLoop(this, cloner);
     }
 
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      #region Backwards compatible code
+      VariableCreator variableCreator = OperatorGraph.InitialOperator as VariableCreator;
+
+      if (variableCreator != null) {
+        if (!variableCreator.CollectedValues.ContainsKey("Memories")) {
+          variableCreator.CollectedValues.Add(new ValueParameter<VariableCollection>("Memories", new VariableCollection()));
+        }
+      }
+      #endregion
+    }
+
     private void Initialize() {
       #region Create parameters
       Parameters.Add(new ValueLookupParameter<IRandom>("Random", "A pseudo random number generator."));
@@ -152,6 +165,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("EvaluatedMoves", new IntValue(0)));
       variableCreator.CollectedValues.Add(new ValueParameter<BoolValue>("EmptyNeighborhood", new BoolValue(false)));
       variableCreator.CollectedValues.Add(new ValueParameter<ItemList<IItem>>("TabuList", new ItemList<IItem>()));
+      variableCreator.CollectedValues.Add(new ValueParameter<VariableCollection>("Memories", new VariableCollection()));
       variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("BestQuality", new DoubleValue(0)));
 
       bestQualityInitializer.Name = "Initialize BestQuality";
