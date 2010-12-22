@@ -10,7 +10,8 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Google.ProtocolBuffers.ProtoGen</RootNamespace>
     <AssemblyName>Google.ProtocolBuffers.ProtoGen.Test</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile></TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>Properties\Google.ProtocolBuffers.ProtoGen.Test.snk</AssemblyOriginatorKeyFile>
