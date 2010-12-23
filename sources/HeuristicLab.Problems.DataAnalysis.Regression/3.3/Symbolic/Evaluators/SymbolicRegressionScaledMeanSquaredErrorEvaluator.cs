@@ -69,8 +69,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     public override double Evaluate(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, Dataset dataset, string targetVariable, IEnumerable<int> rows) {
       double alpha, beta;
       double mse = Calculate(interpreter, solution, lowerEstimationLimit, upperEstimationLimit, dataset, targetVariable, rows, out beta, out alpha);
-      AlphaParameter.ActualValue = new DoubleValue(alpha);
-      BetaParameter.ActualValue = new DoubleValue(beta);
+      if (ExecutionContext != null) {
+        AlphaParameter.ActualValue = new DoubleValue(alpha);
+        BetaParameter.ActualValue = new DoubleValue(beta);
+      }
       return mse;
     }
 

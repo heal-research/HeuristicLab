@@ -114,18 +114,26 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       int count;
       double bias, variance, covariance;
       double mse;
-      if (ApplyScaling.Value) {
-        mse = Calculate(interpreter, solution, LowerEstimationLimit.Value, UpperEstimationLimit.Value, dataset, targetVariable, rows, out beta, out alpha, out meanSE, out varianceSE, out count, out bias, out variance, out covariance);
-        Alpha = new DoubleValue(alpha);
-        Beta = new DoubleValue(beta);
+      if (ExecutionContext != null) {
+        if (ApplyScaling.Value) {
+          mse = Calculate(interpreter, solution, lowerEstimationLimit, upperEstimationLimit, dataset, targetVariable, rows, out beta, out alpha, out meanSE, out varianceSE, out count, out bias, out variance, out covariance);
+          Alpha = new DoubleValue(alpha);
+          Beta = new DoubleValue(beta);
+        } else {
+          mse = CalculateWithScaling(interpreter, solution,lowerEstimationLimit, upperEstimationLimit, dataset, targetVariable, rows, 1, 0, out meanSE, out varianceSE, out count, out bias, out variance, out covariance);
+        }
+        QualityVariance = new DoubleValue(varianceSE);
+        QualitySamples = new IntValue(count);
+        DecompositionBiasParameter.ActualValue = new DoubleValue(bias / meanSE);
+        DecompositionVarianceParameter.ActualValue = new DoubleValue(variance / meanSE);
+        DecompositionCovarianceParameter.ActualValue = new DoubleValue(covariance / meanSE);
       } else {
-        mse = CalculateWithScaling(interpreter, solution, LowerEstimationLimit.Value, UpperEstimationLimit.Value, dataset, targetVariable, rows, 1, 0, out meanSE, out varianceSE, out count, out bias, out variance, out covariance);
+        if (ApplyScalingParameter.Value != null && ApplyScalingParameter.Value.Value)
+          mse = Calculate(interpreter, solution, lowerEstimationLimit, upperEstimationLimit, dataset, targetVariable, rows, out beta, out alpha, out meanSE, out varianceSE, out count, out bias, out variance, out covariance);
+        else
+          mse = CalculateWithScaling(interpreter, solution, lowerEstimationLimit, upperEstimationLimit, dataset, targetVariable, rows, 1, 0, out meanSE, out varianceSE, out count, out bias, out variance, out covariance);
       }
-      QualityVariance = new DoubleValue(varianceSE);
-      QualitySamples = new IntValue(count);
-      DecompositionBiasParameter.ActualValue = new DoubleValue(bias / meanSE);
-      DecompositionVarianceParameter.ActualValue = new DoubleValue(variance / meanSE);
-      DecompositionCovarianceParameter.ActualValue = new DoubleValue(covariance / meanSE);
+
       return mse;
     }
 
