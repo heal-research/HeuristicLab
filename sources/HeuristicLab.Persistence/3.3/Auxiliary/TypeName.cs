@@ -234,8 +234,7 @@ namespace HeuristicLab.Persistence.Auxiliary {
             return true;
         }
         return false;
-      }
-      catch (KeyNotFoundException) {
+      } catch (KeyNotFoundException) {
         throw new Exception("Could not extract version information from type string");
       }
     }
@@ -257,8 +256,12 @@ namespace HeuristicLab.Persistence.Auxiliary {
           throw new Exception("Cannot compare versions of different types");
         Version thisVersion = new Version(this.AssemblyAttribues["Version"]);
         Version tVersion = new Version(typeName.AssemblyAttribues["Version"]);
-        if (thisVersion.Major != tVersion.Major ||
-          thisVersion.Minor != tVersion.Minor)
+        if (this.AssemblyName == "mscorlib" &&
+          (thisVersion.Major == 2 || thisVersion.Major == 4) &&
+          (tVersion.Major == 2 || tVersion.Major == 4)) {
+          // skip version check
+        } else if (thisVersion.Major != tVersion.Major ||
+                   thisVersion.Minor != tVersion.Minor)
           return false;
         IEnumerator<TypeName> thisIt = this.GenericArgs.GetEnumerator();
         IEnumerator<TypeName> tIt = typeName.GenericArgs.GetEnumerator();
@@ -268,8 +271,7 @@ namespace HeuristicLab.Persistence.Auxiliary {
             return false;
         }
         return true;
-      }
-      catch (KeyNotFoundException) {
+      } catch (KeyNotFoundException) {
         throw new Exception("Could not extract version infomration from type string");
       }
     }
