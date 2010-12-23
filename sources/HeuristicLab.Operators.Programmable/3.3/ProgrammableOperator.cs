@@ -201,6 +201,7 @@ namespace HeuristicLab.Operators.Programmable {
       namespaces.Add("HeuristicLab.Operators.Programmable");
       Assemblies[typeof(HeuristicLab.Operators.Operator).Assembly] = true;
       Assemblies[typeof(HeuristicLab.Operators.Programmable.ProgrammableOperator).Assembly] = true;
+      Assemblies[typeof(System.Threading.Barrier).Assembly] = true; // ensure new System assembly is selected (4.0.0.0)
       RegisterEvents();
     }
 
