@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Collections;
@@ -38,6 +39,15 @@ namespace HeuristicLab.DebugEngine {
 
     [Storable]
     protected bool isEnabled;
+    #endregion
+
+    #region events
+    public event EventHandler IsEnabledChanged;
+    protected virtual void OnIsEnabledChanged() {
+      EventHandler handler = IsEnabledChanged;
+      if (handler != null)
+        handler(this, EventArgs.Empty);
+    }
     #endregion
 
     #region Constructors & Cloning
@@ -133,6 +143,7 @@ namespace HeuristicLab.DebugEngine {
         isEnabled = value;
         if (!isEnabled)
           Reset();
+        OnIsEnabledChanged();
       }
     }
 

@@ -50,6 +50,7 @@ namespace HeuristicLab.DebugEngine {
       Content.ItemsMoved -= Content_CollectionChanged;
       Content.ItemsRemoved -= Content_CollectionChanged;
       Content.ItemsReplaced -= Content_CollectionChanged;
+      Content.IsEnabledChanged -= Content_IsEnabledChanged;
       base.DeregisterContentEvents();
     }
 
@@ -60,6 +61,7 @@ namespace HeuristicLab.DebugEngine {
       Content.ItemsMoved += Content_CollectionChanged;
       Content.ItemsRemoved += Content_CollectionChanged;
       Content.ItemsReplaced += Content_CollectionChanged;
+      Content.IsEnabledChanged += Content_IsEnabledChanged;
     }
 
     #region Event Handlers (Content)
@@ -68,6 +70,12 @@ namespace HeuristicLab.DebugEngine {
         Invoke(new EventHandler<CollectionItemsChangedEventArgs<IndexedItem<IOperator>>>(Content_CollectionChanged), sender, e);
       else
         UpdateOperatorTrace();
+    }
+    void Content_IsEnabledChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_IsEnabledChanged), sender, e);
+      else
+        isEnabledCheckbox.Checked = Content.IsEnabled;
     }
     #endregion
 
@@ -102,8 +110,10 @@ namespace HeuristicLab.DebugEngine {
       base.OnContentChanged();
       if (Content == null) {
         listView.Items.Clear();
+        isEnabledCheckbox.Checked = false;
       } else {
         UpdateOperatorTrace();
+        isEnabledCheckbox.Checked = Content.IsEnabled;
       }
     }
 
@@ -121,11 +131,13 @@ namespace HeuristicLab.DebugEngine {
         }
       }
     }
+    private void isEnabledCheckbox_CheckedChanged(object sender, EventArgs e) {
+      if (Content != null)
+        Content.IsEnabled = isEnabledCheckbox.Checked;
+    }
     #endregion
 
-    private void isEnabledCheckbox_CheckedChanged(object sender, EventArgs e) {
-      Content.IsEnabled = isEnabledCheckbox.Checked;
-    }
+    
   }
 
 }
