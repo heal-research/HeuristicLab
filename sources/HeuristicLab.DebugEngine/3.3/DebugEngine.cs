@@ -22,6 +22,7 @@
 using System;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -37,7 +38,6 @@ namespace HeuristicLab.DebugEngine {
     [StorableConstructor]
     protected DebugEngine(bool deserializing)
       : base(deserializing) {
-      pausePending = stopPending = false;
       InitializeTimer();
     }
 
@@ -47,18 +47,14 @@ namespace HeuristicLab.DebugEngine {
       Log = cloner.Clone(original.Log);
       ExecutionStack = cloner.Clone(original.ExecutionStack);
       OperatorTrace = cloner.Clone(original.OperatorTrace);
-      pausePending = original.pausePending;
-      stopPending = original.stopPending;
       InitializeTimer();
       currentOperation = cloner.Clone(original.currentOperation);
-      currentOperator = cloner.Clone(original.currentOperator);
     }
     public DebugEngine()
       : base() {
       Log = new Log();
       ExecutionStack = new ExecutionStack();
       OperatorTrace = new OperatorTrace();
-      pausePending = stopPending = false;
       InitializeTimer();
     }
 
@@ -85,12 +81,10 @@ namespace HeuristicLab.DebugEngine {
     [Storable]
     public OperatorTrace OperatorTrace { get; private set; }
 
-    private bool pausePending, stopPending;
+    private CancellationTokenSource cancellationTokenSource;
+    private bool stopPending;
     private DateTime lastUpdateTime;
     private System.Timers.Timer timer;
-
-    [Storable]
-    private IOperator currentOperator;
 
     [Storable]
     private IOperation currentOperation;
@@ -158,19 +152,52 @@ namespace HeuristicLab.DebugEngine {
 
     public virtual void Step(bool skipStackOperations) {
       OnStarted();
+      cancellationTokenSource = new CancellationTokenSource();
+      stopPending = false;
       lastUpdateTime = DateTime.Now;
       timer.Start();
-      ProcessNextOperation(true);
-      while (skipStackOperations && !(CurrentOperation is IAtomicOperation) && CanContinue)
-        ProcessNextOperation(true);
+      try {
+        ProcessNextOperation(true, cancellationTokenSource.Token);
+        while (skipStackOperations && !(CurrentOperation is IAtomicOperation) && CanContinue)
+          ProcessNextOperation(true, cancellationTokenSource.Token);
+      }
+      catch (Exception ex) {
+        OnExceptionOccurred(ex);
+      }
       timer.Stop();
       ExecutionTime += DateTime.Now - lastUpdateTime;
-      OnPaused();
+      cancellationTokenSource.Dispose();
+      cancellationTokenSource = null;
+      if (stopPending) ExecutionStack.Clear();
+      if (stopPending || !CanContinue) OnStopped();
+      else OnPaused();
     }
 
     public override void Start() {
       base.Start();
-      ThreadPool.QueueUserWorkItem(new WaitCallback(Run), null);
+      cancellationTokenSource = new CancellationTokenSource();
+      stopPending = false;
+      Task task = Task.Factory.StartNew(Run, cancellationTokenSource.Token, cancellationTokenSource.Token);
+      task.ContinueWith(t => {
+        try {
+          t.Wait();
+        }
+        catch (AggregateException ex) {
+          try {
+            ex.Flatten().Handle(x => x is OperationCanceledException);
+          }
+          catch (AggregateException remaining) {
+            if (remaining.InnerExceptions.Count == 1) OnExceptionOccurred(remaining.InnerExceptions[0]);
+            else OnExceptionOccurred(remaining);
+          }
+        }
+        cancellationTokenSource.Dispose();
+        cancellationTokenSource = null;
+
+        if (stopPending) ExecutionStack.Clear();
+        if (stopPending || !CanContinue) OnStopped();
+        else OnPaused();
+      });
     }
 
     protected override void OnStarted() {
@@ -180,8 +207,7 @@ namespace HeuristicLab.DebugEngine {
 
     public override void Pause() {
       base.Pause();
-      pausePending = true;
-      if (currentOperator != null) currentOperator.Abort();
+      cancellationTokenSource.Cancel();
     }
 
     protected override void OnPaused() {
@@ -192,9 +218,13 @@ namespace HeuristicLab.DebugEngine {
     public override void Stop() {
       CurrentOperation = null;
       base.Stop();
-      stopPending = true;
-      if (currentOperator != null) currentOperator.Abort();
-      if (ExecutionState == ExecutionState.Paused) OnStopped();
+      if (ExecutionState == ExecutionState.Paused) {
+        ExecutionStack.Clear();
+        OnStopped();
+      } else {
+        stopPending = true;
+        cancellationTokenSource.Cancel();
+      }
     }
 
     protected override void OnStopped() {
@@ -208,24 +238,25 @@ namespace HeuristicLab.DebugEngine {
     }
 
     private void Run(object state) {
-      OnStarted();
-      pausePending = stopPending = false;
+      CancellationToken cancellationToken = (CancellationToken)state;
 
+      OnStarted();
       lastUpdateTime = DateTime.Now;
       timer.Start();
-      if (!pausePending && !stopPending && CanContinue)
-        ProcessNextOperation(false);
-      while (!pausePending && !stopPending && CanContinue && !IsAtBreakpoint)
-        ProcessNextOperation(false);
-      timer.Stop();
-      ExecutionTime += DateTime.Now - lastUpdateTime;
+      try {
+        if (!cancellationToken.IsCancellationRequested && CanContinue)
+          ProcessNextOperation(false, cancellationToken);
+        while (!cancellationToken.IsCancellationRequested && CanContinue && !IsAtBreakpoint)
+          ProcessNextOperation(false, cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
+      }
+      finally {
+        timer.Stop();
+        ExecutionTime += DateTime.Now - lastUpdateTime;
 
-      if (IsAtBreakpoint)
-        Log.LogMessage(string.Format("Breaking before: {0}", CurrentAtomicOperation.Operator.Name));
-      if (pausePending || IsAtBreakpoint)
-        OnPaused();
-      else
-        OnStopped();
+        if (IsAtBreakpoint)
+          Log.LogMessage(string.Format("Breaking before: {0}", CurrentAtomicOperation.Operator.Name));
+      }
     }
 
     private void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
@@ -246,51 +277,46 @@ namespace HeuristicLab.DebugEngine {
     /// <remarks>If an error occurs during the execution the operation is aborted and the operation
     /// is pushed on the stack again.<br/>
     /// If the execution was successful <see cref="EngineBase.OnOperationExecuted"/> is called.</remarks>
-    protected virtual void ProcessNextOperation(bool logOperations) {
-      try {
-        IAtomicOperation atomicOperation = CurrentOperation as IAtomicOperation;
-        OperationCollection operations = CurrentOperation as OperationCollection;
-        if (atomicOperation != null && operations != null)
-          throw new InvalidOperationException("Current operation is both atomic and an operation collection");
+    protected virtual void ProcessNextOperation(bool logOperations, CancellationToken cancellationToken) {
+      IAtomicOperation atomicOperation = CurrentOperation as IAtomicOperation;
+      OperationCollection operations = CurrentOperation as OperationCollection;
+      if (atomicOperation != null && operations != null)
+        throw new InvalidOperationException("Current operation is both atomic and an operation collection");
 
-        if (atomicOperation != null) {
-          if (logOperations)
-            Log.LogMessage(string.Format("Performing atomic operation {0}", Utils.Name(atomicOperation)));
-          PerformAtomicOperation(atomicOperation);
-        } else if (operations != null) {
-          if (logOperations)
-            Log.LogMessage("Expanding operation collection");
-          ExecutionStack.AddRange(operations.Reverse());
-          CurrentOperation = null;
-        } else if (ExecutionStack.Count > 0) {
-          if (logOperations)
-            Log.LogMessage("Popping execution stack");
-          CurrentOperation = ExecutionStack.Last();
-          ExecutionStack.RemoveAt(ExecutionStack.Count - 1);
-        } else {
-          if (logOperations)
-            Log.LogMessage("Nothing to do");
-        }
-        OperatorTrace.Regenerate(CurrentAtomicOperation);
-      } catch (Exception x) {
-        OnExceptionOccurred(x);
+      if (atomicOperation != null) {
+        if (logOperations)
+          Log.LogMessage(string.Format("Performing atomic operation {0}", Utils.Name(atomicOperation)));
+        PerformAtomicOperation(atomicOperation, cancellationToken);
+      } else if (operations != null) {
+        if (logOperations)
+          Log.LogMessage("Expanding operation collection");
+        ExecutionStack.AddRange(operations.Reverse());
+        CurrentOperation = null;
+      } else if (ExecutionStack.Count > 0) {
+        if (logOperations)
+          Log.LogMessage("Popping execution stack");
+        CurrentOperation = ExecutionStack.Last();
+        ExecutionStack.RemoveAt(ExecutionStack.Count - 1);
+      } else {
+        if (logOperations)
+          Log.LogMessage("Nothing to do");
       }
+      OperatorTrace.Regenerate(CurrentAtomicOperation);
     }
 
-    protected virtual void PerformAtomicOperation(IAtomicOperation operation) {
+    protected virtual void PerformAtomicOperation(IAtomicOperation operation, CancellationToken cancellationToken) {
       if (operation != null) {
         try {
-          currentOperator = operation.Operator;
-          IOperation successor = operation.Operator.Execute((IExecutionContext)operation);
+          IOperation successor = operation.Operator.Execute((IExecutionContext)operation, cancellationToken);
           if (successor != null) {
             OperatorTrace.RegisterParenthood(operation, successor);
             ExecutionStack.Add(successor);
           }
-          currentOperator = null;
           CurrentOperation = null;
-        } catch (Exception ex) {
-          OnExceptionOccurred(new OperatorExecutionException(operation.Operator, ex));
-          Pause();
+        }
+        catch (Exception ex) {
+          if (ex is OperationCanceledException) throw ex;
+          else throw new OperatorExecutionException(operation.Operator, ex);
         }
       }
     }

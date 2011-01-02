@@ -28,7 +28,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
   [Item("PrinsPermutationCrossover", "An operator which crosses two VRP representations using a standard permutation operator.  It is implemented as described in Prins, C. (2004). A simple and effective evolutionary algorithm for the vehicle routing problem. Computers & Operations Research, 12:1985-2002.")]
   [StorableClass]
-  public sealed class PrinsPermutationCrossover : PrinsCrossover, IPrinsOperator {    
+  public sealed class PrinsPermutationCrossover : PrinsCrossover, IPrinsOperator {
     public IValueLookupParameter<IPermutationCrossover> InnerCrossoverParameter {
       get { return (IValueLookupParameter<IPermutationCrossover>)Parameters["InnerCrossover"]; }
     }
@@ -51,7 +51,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
       InnerCrossoverParameter.ActualValue.ParentsParameter.ActualName = ParentsParameter.ActualName;
       IAtomicOperation op = this.ExecutionContext.CreateOperation(
         InnerCrossoverParameter.ActualValue, this.ExecutionContext.Scope);
-      op.Operator.Execute((IExecutionContext)op);
+      op.Operator.Execute((IExecutionContext)op, CancellationToken);
 
       string childName = InnerCrossoverParameter.ActualValue.ChildParameter.ActualName;
       if (ExecutionContext.Scope.Variables.ContainsKey(childName)) {

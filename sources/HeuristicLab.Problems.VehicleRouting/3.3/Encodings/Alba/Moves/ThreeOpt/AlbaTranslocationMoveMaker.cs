@@ -67,7 +67,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
 
       moveMaker.PermutationParameter.ActualName = VRPToursParameter.ActualName;
       IAtomicOperation op = this.ExecutionContext.CreateChildOperation(moveMaker);
-      op.Operator.Execute((IExecutionContext)op);
+      op.Operator.Execute((IExecutionContext)op, CancellationToken);
 
       return next;
     }

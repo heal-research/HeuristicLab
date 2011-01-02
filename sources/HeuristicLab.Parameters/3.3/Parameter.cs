@@ -21,6 +21,7 @@
 
 using System;
 using System.Drawing;
+using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -52,50 +53,60 @@ namespace HeuristicLab.Parameters {
     public Type DataType {
       get { return dataType; }
     }
-    protected IItem cachedActualValue;
+
+    private Lazy<ThreadLocal<IItem>> cachedActualValues;
     public IItem ActualValue {
       get {
-        if (cachedActualValue == null) cachedActualValue = GetActualValue();
-        return cachedActualValue;
+        if (cachedActualValues.Value.Value == null) cachedActualValues.Value.Value = GetActualValue();
+        return cachedActualValues.Value.Value;
       }
       set {
-        cachedActualValue = value;
+        cachedActualValues.Value.Value = value;
         SetActualValue(value);
       }
     }
-    [Storable]
-    private IExecutionContext executionContext;
+    private Lazy<ThreadLocal<IExecutionContext>> executionContexts;
     public IExecutionContext ExecutionContext {
-      get { return executionContext; }
+      get { return executionContexts.Value.Value; }
       set {
-        if (value != executionContext) {
-          executionContext = value;
-          cachedActualValue = null;
-          OnExecutionContextChanged();
+        if (value != executionContexts.Value.Value) {
+          executionContexts.Value.Value = value;
+          cachedActualValues.Value.Value = null;
         }
       }
     }
 
     [StorableConstructor]
-    protected Parameter(bool deserializing) : base(deserializing) { }
+    protected Parameter(bool deserializing)
+      : base(deserializing) {
+      cachedActualValues = new Lazy<ThreadLocal<IItem>>(() => { return new ThreadLocal<IItem>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
+      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
+    }
     protected Parameter(Parameter original, Cloner cloner)
       : base(original, cloner) {
       dataType = original.dataType;
-      executionContext = cloner.Clone(original.executionContext);
+      cachedActualValues = new Lazy<ThreadLocal<IItem>>(() => { return new ThreadLocal<IItem>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
+      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
     }
     protected Parameter()
       : base("Anonymous") {
       dataType = typeof(IItem);
+      cachedActualValues = new Lazy<ThreadLocal<IItem>>(() => { return new ThreadLocal<IItem>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
+      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
     }
     protected Parameter(string name, Type dataType)
       : base(name) {
       if (dataType == null) throw new ArgumentNullException();
       this.dataType = dataType;
+      cachedActualValues = new Lazy<ThreadLocal<IItem>>(() => { return new ThreadLocal<IItem>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
+      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
     }
     protected Parameter(string name, string description, Type dataType)
       : base(name, description) {
       if (dataType == null) throw new ArgumentNullException();
       this.dataType = dataType;
+      cachedActualValues = new Lazy<ThreadLocal<IItem>>(() => { return new ThreadLocal<IItem>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
+      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
     }
 
     public override string ToString() {
@@ -104,7 +115,5 @@ namespace HeuristicLab.Parameters {
 
     protected abstract IItem GetActualValue();
     protected abstract void SetActualValue(IItem value);
-
-    protected virtual void OnExecutionContextChanged() { }
   }
 }

@@ -29,6 +29,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System.Threading;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
@@ -247,11 +248,7 @@ namespace HeuristicLab.Optimization {
 
       public bool Breakpoint { get; set; }
 
-      public IOperation Execute(IExecutionContext context) {
-        throw new InvalidOperationException("Please choose an appropriate evaluation operator.");
-      }
-
-      public void Abort() {
+      public IOperation Execute(IExecutionContext context, CancellationToken cancellationToken) {
         throw new InvalidOperationException("Please choose an appropriate evaluation operator.");
       }
 

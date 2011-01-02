@@ -51,14 +51,8 @@ namespace HeuristicLab.Parameters {
       }
     }
     public new T ActualValue {
-      get {
-        if (cachedActualValue == null) cachedActualValue = GetActualValue();
-        return (T)cachedActualValue;
-      }
-      set {
-        cachedActualValue = value;
-        SetActualValue(value);
-      }
+      get { return (T)base.ActualValue; }
+      set { base.ActualValue = value; }
     }
 
     [StorableConstructor]

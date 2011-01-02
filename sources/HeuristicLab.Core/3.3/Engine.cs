@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -41,18 +42,14 @@ namespace HeuristicLab.Core {
       get { return executionStack; }
     }
 
-    private bool pausePending, stopPending;
+    #region Variables for communication between threads
+    private CancellationTokenSource cancellationTokenSource;
+    private bool stopPending;
     private DateTime lastUpdateTime;
-    private System.Timers.Timer timer;
+    #endregion
 
     [StorableConstructor]
-    protected Engine(bool deserializing)
-      : base(deserializing) {
-      pausePending = stopPending = false;
-      timer = new System.Timers.Timer(100);
-      timer.AutoReset = true;
-      timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_Elapsed);
-    }
+    protected Engine(bool deserializing) : base(deserializing) { }
     protected Engine(Engine original, Cloner cloner)
       : base(original, cloner) {
       if (original.ExecutionState == ExecutionState.Started) throw new InvalidOperationException(string.Format("Clone not allowed in execution state \"{0}\".", ExecutionState));
@@ -61,20 +58,11 @@ namespace HeuristicLab.Core {
       IOperation[] contexts = original.executionStack.ToArray();
       for (int i = contexts.Length - 1; i >= 0; i--)
         executionStack.Push(cloner.Clone(contexts[i]));
-      pausePending = original.pausePending;
-      stopPending = original.stopPending;
-      timer = new System.Timers.Timer(100);
-      timer.AutoReset = true;
-      timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_Elapsed);
     }
     protected Engine()
       : base() {
       log = new Log();
       executionStack = new Stack<IOperation>();
-      pausePending = stopPending = false;
-      timer = new System.Timers.Timer(100);
-      timer.AutoReset = true;
-      timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_Elapsed);
     }
 
     public sealed override void Prepare() {
@@ -96,7 +84,28 @@ namespace HeuristicLab.Core {
 
     public override void Start() {
       base.Start();
-      ThreadPool.QueueUserWorkItem(new WaitCallback(Run), null);
+      cancellationTokenSource = new CancellationTokenSource();
+      stopPending = false;
+      Task task = Task.Factory.StartNew(Run, cancellationTokenSource.Token, cancellationTokenSource.Token);
+      task.ContinueWith(t => {
+        try {
+          t.Wait();
+        }
+        catch (AggregateException ex) {
+          try {
+            ex.Flatten().Handle(x => x is OperationCanceledException);
+          }
+          catch (AggregateException remaining) {
+            if (remaining.InnerExceptions.Count == 1) OnExceptionOccurred(remaining.InnerExceptions[0]);
+            else OnExceptionOccurred(remaining);
+          }
+        }
+        cancellationTokenSource.Dispose();
+        cancellationTokenSource = null;
+        if (stopPending) executionStack.Clear();
+        if (executionStack.Count == 0) OnStopped();
+        else OnPaused();
+      });
     }
     protected override void OnStarted() {
       Log.LogMessage("Engine started");
@@ -105,7 +114,7 @@ namespace HeuristicLab.Core {
 
     public override void Pause() {
       base.Pause();
-      pausePending = true;
+      cancellationTokenSource.Cancel();
     }
     protected override void OnPaused() {
       Log.LogMessage("Engine paused");
@@ -114,8 +123,13 @@ namespace HeuristicLab.Core {
 
     public override void Stop() {
       base.Stop();
-      stopPending = true;
-      if (ExecutionState == ExecutionState.Paused) OnStopped();
+      if (ExecutionState == ExecutionState.Paused) {
+        executionStack.Clear();
+        OnStopped();
+      } else {
+        stopPending = true;
+        cancellationTokenSource.Cancel();
+      }
     }
     protected override void OnStopped() {
       Log.LogMessage("Engine stopped");
@@ -128,22 +142,26 @@ namespace HeuristicLab.Core {
     }
 
     private void Run(object state) {
+      CancellationToken cancellationToken = (CancellationToken)state;
+
       OnStarted();
-      pausePending = stopPending = false;
-
       lastUpdateTime = DateTime.Now;
+      System.Timers.Timer timer = new System.Timers.Timer(100);
+      timer.AutoReset = true;
+      timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_Elapsed);
       timer.Start();
-      while (!pausePending && !stopPending && (executionStack.Count > 0)) {
-        ProcessNextOperation();
+      try {
+        Run(cancellationToken);
       }
-      timer.Stop();
-      ExecutionTime += DateTime.Now - lastUpdateTime;
+      finally {
+        timer.Stop();
+        timer.Dispose();
+        ExecutionTime += DateTime.Now - lastUpdateTime;
+      }
 
-      if (pausePending) OnPaused();
-      else OnStopped();
+      cancellationToken.ThrowIfCancellationRequested();
     }
-
-    protected abstract void ProcessNextOperation();
+    protected abstract void Run(CancellationToken cancellationToken);
 
     private void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
       DateTime now = DateTime.Now;

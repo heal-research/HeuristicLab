@@ -41,7 +41,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
     }
     public PrinsPermutationManipulator()
       : base() {
-        Parameters.Add(new ValueLookupParameter<IPermutationManipulator>("InnerManipulator", "The permutation manipulator.", new TranslocationManipulator()));
+      Parameters.Add(new ValueLookupParameter<IPermutationManipulator>("InnerManipulator", "The permutation manipulator.", new TranslocationManipulator()));
     }
 
     protected override void Manipulate(IRandom random, PrinsEncoding individual) {
@@ -49,7 +49,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
 
       IAtomicOperation op = this.ExecutionContext.CreateOperation(
         InnerManipulatorParameter.ActualValue, this.ExecutionContext.Scope);
-      op.Operator.Execute((IExecutionContext)op);
+      op.Operator.Execute((IExecutionContext)op, CancellationToken);
     }
   }
 }

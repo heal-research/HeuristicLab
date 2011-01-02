@@ -53,7 +53,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       InnerCrossoverParameter.ActualValue.ParentsParameter.ActualName = ParentsParameter.ActualName;
       IAtomicOperation op = this.ExecutionContext.CreateOperation(
         InnerCrossoverParameter.ActualValue, this.ExecutionContext.Scope);
-      op.Operator.Execute((IExecutionContext)op);
+      op.Operator.Execute((IExecutionContext)op, CancellationToken);
 
       string childName = InnerCrossoverParameter.ActualValue.ChildParameter.ActualName;
       if (ExecutionContext.Scope.Variables.ContainsKey(childName)) {

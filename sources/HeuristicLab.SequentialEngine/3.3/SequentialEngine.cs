@@ -20,20 +20,18 @@
 #endregion
 
 using System;
+using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.SequentialEngine {
   /// <summary>
-  /// Represents an engine that executes its steps sequentially, also if they could be executed 
-  /// in parallel.
+  /// Engine for sequential execution of algorithms.
   /// </summary>
   [StorableClass]
   [Item("Sequential Engine", "Engine for sequential execution of algorithms.")]
   public class SequentialEngine : Engine {
-    private IOperator currentOperator;
-
     [StorableConstructor]
     protected SequentialEngine(bool deserializing) : base(deserializing) { }
     protected SequentialEngine(SequentialEngine original, Cloner cloner) : base(original, cloner) { }
@@ -43,48 +41,37 @@ namespace HeuristicLab.SequentialEngine {
       return new SequentialEngine(this, cloner);
     }
 
-    /// <summary>
-    /// Deals with the next operation, if it is an <see cref="AtomicOperation"/> it is executed,
-    /// if it is a <see cref="CompositeOperation"/> its single operations are pushed on the execution stack.
-    /// </summary>
-    /// <remarks>If an error occurs during the execution the operation is aborted and the operation
-    /// is pushed on the stack again.<br/>
-    /// If the execution was successful <see cref="EngineBase.OnOperationExecuted"/> is called.</remarks>
-    protected override void ProcessNextOperation() {
-      currentOperator = null;
-      IOperation next = ExecutionStack.Pop();
-      OperationCollection coll = next as OperationCollection;
-      while (coll != null) {
-        for (int i = coll.Count - 1; i >= 0; i--)
-          ExecutionStack.Push(coll[i]);
-        next = ExecutionStack.Count > 0 ? ExecutionStack.Pop() : null;
-        coll = next as OperationCollection;
-      }
-      IAtomicOperation operation = next as IAtomicOperation;
-      if (operation != null) {
-        try {
-          currentOperator = operation.Operator;
-          ExecutionStack.Push(operation.Operator.Execute((IExecutionContext)operation));
-        }
-        catch (Exception ex) {
-          ExecutionStack.Push(operation);
-          OnExceptionOccurred(new OperatorExecutionException(operation.Operator, ex));
-          Pause();
-        }
-        if (operation.Operator.Breakpoint) {
-          Log.LogMessage(string.Format("Breakpoint: {0}", operation.Operator.Name != string.Empty ? operation.Operator.Name : operation.Operator.ItemName));
-          Pause();
-        }
-      }
-    }
+    protected override void Run(CancellationToken cancellationToken) {
+      IOperation next;
+      OperationCollection coll;
+      IAtomicOperation operation;
 
-    public override void Pause() {
-      base.Pause();
-      if (currentOperator != null) currentOperator.Abort();
-    }
-    public override void Stop() {
-      base.Stop();
-      if (currentOperator != null) currentOperator.Abort();
+      while (ExecutionStack.Count > 0) {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        next = ExecutionStack.Pop();
+        if (next is OperationCollection) {
+          coll = (OperationCollection)next;
+          for (int i = coll.Count - 1; i >= 0; i--)
+            if (coll[i] != null) ExecutionStack.Push(coll[i]);
+        } else if (next is IAtomicOperation) {
+          operation = (IAtomicOperation)next;
+          try {
+            next = operation.Operator.Execute((IExecutionContext)operation, cancellationToken);
+          }
+          catch (Exception ex) {
+            ExecutionStack.Push(operation);
+            if (ex is OperationCanceledException) throw ex;
+            else throw new OperatorExecutionException(operation.Operator, ex);
+          }
+          if (next != null) ExecutionStack.Push(next);
+
+          if (operation.Operator.Breakpoint) {
+            Log.LogMessage(string.Format("Breakpoint: {0}", operation.Operator.Name != string.Empty ? operation.Operator.Name : operation.Operator.ItemName));
+            Pause();
+          }
+        }
+      }
     }
   }
 }

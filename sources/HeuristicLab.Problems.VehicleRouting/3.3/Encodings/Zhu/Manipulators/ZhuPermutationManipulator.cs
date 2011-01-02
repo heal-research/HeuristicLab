@@ -51,7 +51,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
 
       IAtomicOperation op = this.ExecutionContext.CreateOperation(
         InnerManipulatorParameter.ActualValue, this.ExecutionContext.Scope);
-      op.Operator.Execute((IExecutionContext)op);
+      op.Operator.Execute((IExecutionContext)op, CancellationToken);
     }
   }
 }

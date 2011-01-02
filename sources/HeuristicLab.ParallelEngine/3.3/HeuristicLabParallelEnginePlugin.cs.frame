@@ -20,18 +20,19 @@
 #endregion
 
 using System;
-using System.Threading;
+using System.Collections.Generic;
+using System.Text;
+using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Core {
+namespace HeuristicLab.ParallelEngine {
   /// <summary>
-  /// Interface to represent an operator.
+  /// Plugin class for HeuristicLab.ParallelEngine plugin.
   /// </summary>
-  public interface IOperator : IParameterizedNamedItem {
-    bool Breakpoint { get; set; }
-
-    IOperation Execute(IExecutionContext context, CancellationToken cancellationToken);
-
-    event EventHandler BreakpointChanged;
-    event EventHandler Executed;
+  [Plugin("HeuristicLab.ParallelEngine", "3.3.2.$WCREV$")]
+  [PluginFile("HeuristicLab.ParallelEngine-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Common", "3.3")]
+  [PluginDependency("HeuristicLab.Core", "3.3")]
+  [PluginDependency("HeuristicLab.Persistence", "3.3")]
+  public class HeuristicLabParallelEnginePlugin : PluginBase {
   }
 }

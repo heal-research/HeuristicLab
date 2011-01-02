@@ -21,13 +21,14 @@
 
 using System;
 using System.Drawing;
+using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators {
   /// <summary>
-  /// The base class for all operators.
+  /// Base class for operators.
   /// </summary>
   [Item("Operator", "Base class for operators.")]
   [StorableClass]
@@ -42,37 +43,22 @@ namespace HeuristicLab.Operators {
       get { return false; }
     }
 
-    [Storable]
-    private IExecutionContext executionContext;
+    private Lazy<ThreadLocal<IExecutionContext>> executionContexts;
     protected IExecutionContext ExecutionContext {
-      get { return executionContext; }
+      get { return executionContexts.Value.Value; }
       private set {
-        if (value != executionContext) {
-          executionContext = value;
-          OnExecutionContextChanged();
+        if (value != executionContexts.Value.Value) {
+          executionContexts.Value.Value = value;
         }
       }
     }
-
-    /// <summary>
-    /// Flag whether the current instance has been canceled.
-    /// </summary>
-    private bool canceled;
-    /// <inheritdoc/>
-    protected bool Canceled {
-      get { return canceled; }
-      private set {
-        if (value != canceled) {
-          canceled = value;
-          OnCanceledChanged();
-        }
-      }
+    private CancellationToken cancellationToken;
+    protected CancellationToken CancellationToken {
+      get { return cancellationToken; }
     }
 
     [Storable]
     private bool breakpoint;
-    /// <inheritdoc/>
-    /// <remarks>Calls <see cref="OnBreakpointChanged"/> in the setter.</remarks>
     public bool Breakpoint {
       get { return breakpoint; }
       set {
@@ -85,48 +71,45 @@ namespace HeuristicLab.Operators {
     }
 
     [StorableConstructor]
-    protected Operator(bool deserializing) : base(deserializing) { }
+    protected Operator(bool deserializing)
+      : base(deserializing) {
+      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
+    }
     protected Operator(Operator original, Cloner cloner)
       : base(original, cloner) {
-      this.canceled = original.canceled;
+      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
       this.breakpoint = original.breakpoint;
-      this.executionContext = cloner.Clone<IExecutionContext>(original.executionContext);
     }
-    /// <summary>
-    /// Initializes a new instance of <see cref="OperatorBase"/> setting the breakpoint flag and 
-    /// the canceled flag to <c>false</c> and the name of the operator to the type name. 
-    /// </summary>
     protected Operator()
       : base() {
-      canceled = false;
+      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
       breakpoint = false;
     }
     protected Operator(string name)
       : base(name) {
-      canceled = false;
+      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
       breakpoint = false;
     }
     protected Operator(string name, ParameterCollection parameters)
       : base(name, parameters) {
-      canceled = false;
+      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
       breakpoint = false;
     }
     protected Operator(string name, string description)
       : base(name, description) {
-      canceled = false;
+      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
       breakpoint = false;
     }
     protected Operator(string name, string description, ParameterCollection parameters)
       : base(name, description, parameters) {
-      canceled = false;
+      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
       breakpoint = false;
     }
 
-    /// <inheritdoc/>
-    public virtual IOperation Execute(IExecutionContext context) {
+    public virtual IOperation Execute(IExecutionContext context, CancellationToken cancellationToken) {
       try {
-        Canceled = false;
         ExecutionContext = context;
+        this.cancellationToken = cancellationToken;
         foreach (IParameter param in Parameters)
           param.ExecutionContext = context;
         IOperation next = Apply();
@@ -139,35 +122,15 @@ namespace HeuristicLab.Operators {
         ExecutionContext = null;
       }
     }
-    /// <inheritdoc/>
-    /// <remarks>Sets property <see cref="Canceled"/> to <c>true</c>.</remarks>
-    public void Abort() {
-      Canceled = true;
-    }
-    /// <summary>
-    /// Performs the current operator on the specified <paramref name="scope"/>.
-    /// </summary>
-    /// <param name="scope">The scope where to execute the operator</param>
-    /// <returns><c>null</c>.</returns>
     public abstract IOperation Apply();
 
-    protected virtual void OnExecutionContextChanged() { }
-    protected virtual void OnCanceledChanged() { }
-    /// <inheritdoc/>
     public event EventHandler BreakpointChanged;
-    /// <summary>
-    /// Fires a new <c>BreakpointChanged</c> event.
-    /// </summary>
     protected virtual void OnBreakpointChanged() {
       if (BreakpointChanged != null) {
         BreakpointChanged(this, EventArgs.Empty);
       }
     }
-    /// <inheritdoc/>
     public event EventHandler Executed;
-    /// <summary>
-    /// Fires a new <c>Executed</c> event.
-    /// </summary>
     protected virtual void OnExecuted() {
       if (Executed != null) {
         Executed(this, EventArgs.Empty);
