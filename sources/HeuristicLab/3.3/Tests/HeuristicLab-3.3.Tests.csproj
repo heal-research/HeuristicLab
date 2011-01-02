@@ -238,14 +238,6 @@
       <Project>{125D3006-67F5-48CB-913E-73C0548F17FA}</Project>
       <Name>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\2.5.0\ALGLIB-2.5.0\ALGLIB-2.5.0.csproj">
-      <Project>{29E4B033-1FEF-4FE1-AE17-0A9319D7C54E}</Project>
-      <Name>ALGLIB-2.5.0</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\2.5.0\HeuristicLab.ALGLIB-2.5.0\HeuristicLab.ALGLIB-2.5.0.csproj">
-      <Project>{01BBCB5A-144A-4A7E-908E-079849E2F7CF}</Project>
-      <Name>HeuristicLab.ALGLIB-2.5.0 %28HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\HeuristicLab.ALGLIB-2.5.0\HeuristicLab.ALGLIB-2.5.0%29</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.1.0\ALGLIB-3.1.0\ALGLIB-3.1.0.csproj">
       <Project>{FC841674-62A7-4055-BE91-E41944B6C606}</Project>
       <Name>ALGLIB-3.1.0</Name>
