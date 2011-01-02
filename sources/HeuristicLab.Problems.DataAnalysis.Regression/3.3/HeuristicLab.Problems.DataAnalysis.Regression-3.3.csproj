@@ -11,7 +11,8 @@
     <RootNamespace>HeuristicLab.Problems.DataAnalysis.Regression</RootNamespace>
     <AssemblyName>HeuristicLab.Problems.DataAnalysis.Regression-3.3</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile></TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
@@ -125,6 +126,7 @@
     <Compile Include="Symbolic\Analyzers\SymbolicRegressionModelQualityCalculator.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Symbolic\Analyzers\SymbolicRegressionOverfittingAnalyzer.cs" />
     <Compile Include="Symbolic\Analyzers\SymbolicRegressionSolutionLinearScaler.cs" />
     <Compile Include="Symbolic\Analyzers\SymbolicRegressionVariableFrequencyAnalyzer.cs" />
     <Compile Include="Symbolic\Analyzers\ValidationBestScaledSymbolicRegressionSolutionAnalyzer.cs" />
