@@ -156,8 +156,10 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
               graphics.DrawLine(cross, a - 4, b - 4, a + 4, b + 4);
               graphics.DrawLine(cross, a - 4, b + 4, a + 4, b - 4);
             }
-            foreach (RealVector vector in Content.Population)
-              graphics.FillEllipse(Brushes.Blue, (float)((vector[0] - xMin) * xStep - 4), (float)((vector[1] - yMin) * yStep - 4), 8.0f, 8.0f);
+            if (Content.Population != null) {
+              foreach (RealVector vector in Content.Population)
+                graphics.FillEllipse(Brushes.Blue, (float)((vector[0] - xMin) * xStep - 4), (float)((vector[1] - yMin) * yStep - 4), 8.0f, 8.0f);
+            }
             if (Content.BestRealVector != null) {
               graphics.FillEllipse(Brushes.Green, (float)((Content.BestRealVector[0] - xMin) * xStep - 5), (float)((Content.BestRealVector[1] - yMin) * yStep - 5), 10.0f, 10.0f);
             }

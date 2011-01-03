@@ -108,7 +108,9 @@ namespace HeuristicLab.Problems.TestFunctions {
       DoubleValue bestKnownQuality = BestKnownQualityParameter.ActualValue;
       SingleObjectiveTestFunctionSolution solution = BestSolutionParameter.ActualValue;
 
-      int i = qualities.Select((x, index) => new { index, x.Value }).OrderBy(x => x.Value).First().index;
+      int i = -1;
+      if (!max) i = qualities.Select((x, index) => new { index, x.Value }).OrderBy(x => x.Value).First().index;
+      else i = qualities.Select((x, index) => new { index, x.Value }).OrderByDescending(x => x.Value).First().index;
 
       if (bestKnownQuality == null ||
           max && qualities[i].Value > bestKnownQuality.Value
@@ -122,7 +124,7 @@ namespace HeuristicLab.Problems.TestFunctions {
       if (solution == null) {
         ResultCollection results = ResultsParameter.ActualValue;
         solution = new SingleObjectiveTestFunctionSolution(realVectors[i], qualities[i], EvaluatorParameter.ActualValue);
-        solution.Population = realVectors;
+        solution.Population = realVectors[i].Length == 2 ? realVectors : null;
         solution.BestKnownRealVector = BestKnownSolutionParameter.ActualValue;
         solution.Bounds = BoundsParameter.ActualValue;
         BestSolutionParameter.ActualValue = solution;
@@ -133,7 +135,7 @@ namespace HeuristicLab.Problems.TestFunctions {
           solution.BestRealVector = realVectors[i];
           solution.BestQuality = qualities[i];
         }
-        solution.Population = realVectors;
+        solution.Population = realVectors[i].Length == 2 ? realVectors : null;
       }
 
       return base.Apply();
