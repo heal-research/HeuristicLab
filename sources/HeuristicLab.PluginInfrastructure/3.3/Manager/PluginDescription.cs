@@ -144,27 +144,27 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
 
     internal void Disable(string loadingErrorInformation) {
       if (pluginState != PluginState.Undefined)
-        throw new InvalidOperationException("Can't disabled a plugin in state " + pluginState);
+        throw new InvalidOperationException("Cannot disable a plugin in state " + pluginState);
       pluginState = PluginState.Disabled;
       this.loadingErrorInformation = loadingErrorInformation;
     }
 
     internal void Enable() {
       if (pluginState != PluginState.Undefined)
-        throw new InvalidOperationException("Can't enabled a plugin in state " + pluginState);
+        throw new InvalidOperationException("Cannot enable a plugin in state " + pluginState);
       pluginState = PluginState.Enabled;
     }
 
     internal void Load() {
       if (!(pluginState == PluginState.Enabled || pluginState == PluginState.Loaded))
-        throw new InvalidOperationException("Can't load a plugin in state " + pluginState);
+        throw new InvalidOperationException("Cannot load a plugin in state " + pluginState);
       pluginState = PluginState.Loaded;
       nTimesLoaded++;
     }
 
     internal void Unload() {
       if (pluginState != PluginState.Loaded)
-        throw new InvalidOperationException("Can't unload a plugin in state " + pluginState);
+        throw new InvalidOperationException("Cannot unload a plugin in state " + pluginState);
       nTimesLoaded--;
       if (nTimesLoaded == 0) pluginState = PluginState.Enabled;
     }
