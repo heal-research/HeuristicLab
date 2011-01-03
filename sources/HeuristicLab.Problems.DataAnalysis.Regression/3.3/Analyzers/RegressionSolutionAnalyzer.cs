@@ -39,7 +39,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     private const string BestSolutionQualityParameterName = "BestSolutionQuality";
     private const string GenerationsParameterName = "Generations";
     private const string ResultsParameterName = "Results";
-    private const string BestSolutionResultName = "Best solution (on validiation set)";
+    private const string BestSolutionResultName = "Best solution (on validation set)";
     private const string BestSolutionTrainingRSquared = "Best solution R² (training)";
     private const string BestSolutionTestRSquared = "Best solution R² (test)";
     private const string BestSolutionTrainingMse = "Best solution mean squared error (training)";
