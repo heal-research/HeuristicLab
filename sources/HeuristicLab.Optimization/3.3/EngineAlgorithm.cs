@@ -116,6 +116,16 @@ namespace HeuristicLab.Optimization {
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       Initialize();
+
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code (remove with 3.4)
+      // clear global scope if it contains any sub-scopes or additional variables
+      if ((ExecutionState == Core.ExecutionState.Stopped) && ((globalScope.SubScopes.Count > 0) || (globalScope.Variables.Count > 1))) {
+        ResultCollection results = Results;
+        globalScope.Clear();
+        globalScope.Variables.Add(new Variable("Results", results));
+      }
+      #endregion
     }
 
     protected EngineAlgorithm(EngineAlgorithm original, Cloner cloner)
@@ -211,6 +221,9 @@ namespace HeuristicLab.Optimization {
       OnStarted();
     }
     private void Engine_Stopped(object sender, EventArgs e) {
+      ResultCollection results = Results;
+      globalScope.Clear();
+      globalScope.Variables.Add(new Variable("Results", results));
       OnStopped();
     }
 

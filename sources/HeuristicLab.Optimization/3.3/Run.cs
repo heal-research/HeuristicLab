@@ -94,7 +94,7 @@ namespace HeuristicLab.Optimization {
         IAlgorithm clone = (IAlgorithm)algorithm.Clone();
         clone.CollectParameterValues(parameters);
         clone.CollectResultValues(results);
-        clone.Prepare(true);
+        clone.Runs.Clear();
         this.algorithm = clone;
       } else {
         algorithm.CollectParameterValues(parameters);
