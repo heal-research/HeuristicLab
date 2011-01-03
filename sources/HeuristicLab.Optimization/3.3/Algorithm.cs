@@ -123,7 +123,7 @@ namespace HeuristicLab.Optimization {
       : base() {
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
-      storeAlgorithmInEachRun = true;
+      storeAlgorithmInEachRun = false;
       runsCounter = 0;
       Runs = new RunCollection();
     }
@@ -131,7 +131,7 @@ namespace HeuristicLab.Optimization {
       : base(name) {
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
-      storeAlgorithmInEachRun = true;
+      storeAlgorithmInEachRun = false;
       runsCounter = 0;
       Runs = new RunCollection();
     }
@@ -139,7 +139,7 @@ namespace HeuristicLab.Optimization {
       : base(name, parameters) {
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
-      storeAlgorithmInEachRun = true;
+      storeAlgorithmInEachRun = false;
       runsCounter = 0;
       Runs = new RunCollection();
     }
@@ -147,7 +147,7 @@ namespace HeuristicLab.Optimization {
       : base(name, description) {
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
-      storeAlgorithmInEachRun = true;
+      storeAlgorithmInEachRun = false;
       runsCounter = 0;
       Runs = new RunCollection();
     }
@@ -155,15 +155,12 @@ namespace HeuristicLab.Optimization {
       : base(name, description, parameters) {
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
-      storeAlgorithmInEachRun = true;
+      storeAlgorithmInEachRun = false;
       runsCounter = 0;
       Runs = new RunCollection();
     }
     [StorableConstructor]
-    protected Algorithm(bool deserializing)
-      : base(deserializing) {
-      storeAlgorithmInEachRun = true;
-    }
+    protected Algorithm(bool deserializing) : base(deserializing) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       Initialize();
