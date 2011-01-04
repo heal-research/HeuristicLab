@@ -33,6 +33,8 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   [Item("TSPCoordinatesPathEvaluator", "A base class for operators which evaluate TSP solutions given in path representation using city coordinates.")]
   [StorableClass]
   public abstract class TSPCoordinatesPathEvaluator : TSPEvaluator, ITSPCoordinatesPathEvaluator {
+    private object locker = new object();
+
     public ILookupParameter<Permutation> PermutationParameter {
       get { return (ILookupParameter<Permutation>)Parameters["Permutation"]; }
     }
@@ -76,14 +78,18 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         DistanceMatrix dm = DistanceMatrixParameter.ActualValue;
 
         if (dm == null) {  // calculate distance matrix
-          DoubleMatrix c = CoordinatesParameter.ActualValue;
-
-          dm = new DistanceMatrix(c.Rows, c.Rows);
-          for (int i = 0; i < dm.Rows; i++) {
-            for (int j = 0; j < dm.Columns; j++)
-              dm[i, j] = CalculateDistance(c[i, 0], c[i, 1], c[j, 0], c[j, 1]);
+          lock (locker) {
+            dm = DistanceMatrixParameter.ActualValue;
+            if (dm == null) {  // check again to avoid race condition
+              DoubleMatrix c = CoordinatesParameter.ActualValue;
+              dm = new DistanceMatrix(c.Rows, c.Rows);
+              for (int i = 0; i < dm.Rows; i++) {
+                for (int j = 0; j < dm.Columns; j++)
+                  dm[i, j] = CalculateDistance(c[i, 0], c[i, 1], c[j, 0], c[j, 1]);
+              }
+              DistanceMatrixParameter.ActualValue = (DistanceMatrix)dm.AsReadOnly();
+            }
           }
-          DistanceMatrixParameter.ActualValue = (DistanceMatrix)dm.AsReadOnly();
         }
 
         double length = 0;
