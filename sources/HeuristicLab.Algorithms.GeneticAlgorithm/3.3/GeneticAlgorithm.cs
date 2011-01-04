@@ -248,12 +248,19 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       UpdateAnalyzers();
       base.Problem_OperatorsChanged(sender, e);
     }
+    void ElitesParameter_ValueChanging(object sender, EventArgs e) {
+      Elites.ValueChanged -= new EventHandler(Elites_ValueChanged);
+    }
     private void ElitesParameter_ValueChanged(object sender, EventArgs e) {
       Elites.ValueChanged += new EventHandler(Elites_ValueChanged);
       ParameterizeSelectors();
     }
     private void Elites_ValueChanged(object sender, EventArgs e) {
       ParameterizeSelectors();
+    }
+
+    void PopulationSizeParameter_ValueChanging(object sender, EventArgs e) {
+      PopulationSize.ValueChanged -= new EventHandler(PopulationSize_ValueChanged);
     }
     private void PopulationSizeParameter_ValueChanged(object sender, EventArgs e) {
       PopulationSize.ValueChanged += new EventHandler(PopulationSize_ValueChanged);
@@ -271,8 +278,10 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
 
     #region Helpers
     private void Initialize() {
+      PopulationSizeParameter.ValueChanging += new EventHandler(PopulationSizeParameter_ValueChanging);
       PopulationSizeParameter.ValueChanged += new EventHandler(PopulationSizeParameter_ValueChanged);
       PopulationSize.ValueChanged += new EventHandler(PopulationSize_ValueChanged);
+      ElitesParameter.ValueChanging += new EventHandler(ElitesParameter_ValueChanging);
       ElitesParameter.ValueChanged += new EventHandler(ElitesParameter_ValueChanged);
       Elites.ValueChanged += new EventHandler(Elites_ValueChanged);
       if (Problem != null) {

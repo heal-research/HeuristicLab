@@ -25,6 +25,7 @@ namespace HeuristicLab.Core {
   public interface IValueParameter : IParameter {
     IItem Value { get; set; }
     bool GetsCollected { get; set; }
+    event EventHandler ValueChanging;
     event EventHandler ValueChanged;
     event EventHandler GetsCollectedChanged;
   }
