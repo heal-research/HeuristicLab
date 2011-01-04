@@ -108,7 +108,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Parameters.Add(new ValueLookupParameter<IOperator>("Crossover", "The operator used to cross solutions."));
       Parameters.Add(new ValueLookupParameter<PercentValue>("MutationProbability", "The probability that the mutation operator is applied on a solution."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Mutator", "The operator used to mutate solutions."));
-      Parameters.Add(new ValueLookupParameter<IOperator>("Evaluator", "The operator used to evaluate solutions."));
+      Parameters.Add(new ValueLookupParameter<IOperator>("Evaluator", "The operator used to evaluate solutions. This operator is executed in parallel, if an engine is used which supports parallelization."));
       Parameters.Add(new LookupParameter<IntValue>("EvaluatedSolutions", "The number of evaluated solutions."));
       Parameters.Add(new ValueLookupParameter<IntValue>("Elites", "The numer of elite solutions which are kept in each generation."));
       Parameters.Add(new LookupParameter<DoubleValue>("ComparisonFactor", "The comparison factor is used to determine whether the offspring should be compared to the better parent, the worse parent or a quality value linearly interpolated between them. It is in the range [0;1]."));
@@ -123,40 +123,54 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Placeholder selector = new Placeholder();
       SubScopesProcessor subScopesProcessor1 = new SubScopesProcessor();
       ChildrenCreator childrenCreator = new ChildrenCreator();
-      UniformSubScopesProcessor uniformSubScopesProcessor = new UniformSubScopesProcessor();
-      Placeholder crossover = new Placeholder();
       ConditionalBranch osBeforeMutationBranch = new ConditionalBranch();
+      UniformSubScopesProcessor uniformSubScopesProcessor1 = new UniformSubScopesProcessor();
+      Placeholder crossover1 = new Placeholder();
+      UniformSubScopesProcessor uniformSubScopesProcessor2 = new UniformSubScopesProcessor();
       Placeholder evaluator1 = new Placeholder();
       IntCounter evaluationCounter1 = new IntCounter();
       WeightedParentsQualityComparator qualityComparer1 = new WeightedParentsQualityComparator();
+      SubScopesRemover subScopesRemover1 = new SubScopesRemover();
+      UniformSubScopesProcessor uniformSubScopesProcessor3 = new UniformSubScopesProcessor();
       StochasticBranch mutationBranch1 = new StochasticBranch();
       Placeholder mutator1 = new Placeholder();
+      VariableCreator variableCreator1 = new VariableCreator();
+      VariableCreator variableCreator2 = new VariableCreator();
+      ConditionalSelector conditionalSelector = new ConditionalSelector();
+      SubScopesProcessor subScopesProcessor2 = new SubScopesProcessor();
+      UniformSubScopesProcessor uniformSubScopesProcessor4 = new UniformSubScopesProcessor();
       Placeholder evaluator2 = new Placeholder();
       IntCounter evaluationCounter2 = new IntCounter();
+      MergingReducer mergingReducer1 = new MergingReducer();
+      UniformSubScopesProcessor uniformSubScopesProcessor5 = new UniformSubScopesProcessor();
+      Placeholder crossover2 = new Placeholder();
       StochasticBranch mutationBranch2 = new StochasticBranch();
       Placeholder mutator2 = new Placeholder();
+      UniformSubScopesProcessor uniformSubScopesProcessor6 = new UniformSubScopesProcessor();
       Placeholder evaluator3 = new Placeholder();
       IntCounter evaluationCounter3 = new IntCounter();
       WeightedParentsQualityComparator qualityComparer2 = new WeightedParentsQualityComparator();
-      SubScopesRemover subScopesRemover = new SubScopesRemover();
+      SubScopesRemover subScopesRemover2 = new SubScopesRemover();
       OffspringSelector offspringSelector = new OffspringSelector();
-      SubScopesProcessor subScopesProcessor2 = new SubScopesProcessor();
+      SubScopesProcessor subScopesProcessor3 = new SubScopesProcessor();
       BestSelector bestSelector = new BestSelector();
       WorstSelector worstSelector = new WorstSelector();
       RightReducer rightReducer = new RightReducer();
       LeftReducer leftReducer = new LeftReducer();
-      MergingReducer mergingReducer = new MergingReducer();
+      MergingReducer mergingReducer2 = new MergingReducer();
 
       selector.Name = "Selector (placeholder)";
       selector.OperatorParameter.ActualName = SelectorParameter.Name;
 
       childrenCreator.ParentsPerChild = new IntValue(2);
 
-      crossover.Name = "Crossover (placeholder)";
-      crossover.OperatorParameter.ActualName = CrossoverParameter.Name;
-
       osBeforeMutationBranch.Name = "Apply OS before mutation?";
       osBeforeMutationBranch.ConditionParameter.ActualName = OffspringSelectionBeforeMutationParameter.Name;
+
+      crossover1.Name = "Crossover (placeholder)";
+      crossover1.OperatorParameter.ActualName = CrossoverParameter.Name;
+
+      uniformSubScopesProcessor2.Parallel.Value = true;
 
       evaluator1.Name = "Evaluator (placeholder)";
       evaluator1.OperatorParameter.ActualName = EvaluatorParameter.Name;
@@ -171,11 +185,25 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       qualityComparer1.RightSideParameter.ActualName = QualityParameter.Name;
       qualityComparer1.ResultParameter.ActualName = "SuccessfulOffspring";
 
+      subScopesRemover1.RemoveAllSubScopes = true;
+
       mutationBranch1.ProbabilityParameter.ActualName = MutationProbabilityParameter.Name;
       mutationBranch1.RandomParameter.ActualName = RandomParameter.Name;
 
       mutator1.Name = "Mutator (placeholder)";
       mutator1.OperatorParameter.ActualName = MutatorParameter.Name;
+
+      variableCreator1.Name = "MutatedOffspring = true";
+      variableCreator1.CollectedValues.Add(new ValueParameter<BoolValue>("MutatedOffspring", null, new BoolValue(true), false));
+
+      variableCreator2.Name = "MutatedOffspring = false";
+      variableCreator2.CollectedValues.Add(new ValueParameter<BoolValue>("MutatedOffspring", null, new BoolValue(false), false));
+
+      conditionalSelector.ConditionParameter.ActualName = "MutatedOffspring";
+      conditionalSelector.ConditionParameter.Depth = 1;
+      conditionalSelector.CopySelected.Value = false;
+
+      uniformSubScopesProcessor4.Parallel.Value = true;
 
       evaluator2.Name = "Evaluator (placeholder)";
       evaluator2.OperatorParameter.ActualName = EvaluatorParameter.Name;
@@ -184,11 +212,16 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       evaluationCounter2.Increment = new IntValue(1);
       evaluationCounter2.ValueParameter.ActualName = EvaluatedSolutionsParameter.Name;
 
+      crossover2.Name = "Crossover (placeholder)";
+      crossover2.OperatorParameter.ActualName = CrossoverParameter.Name;
+
       mutationBranch2.ProbabilityParameter.ActualName = MutationProbabilityParameter.Name;
       mutationBranch2.RandomParameter.ActualName = RandomParameter.Name;
 
       mutator2.Name = "Mutator (placeholder)";
       mutator2.OperatorParameter.ActualName = MutatorParameter.Name;
+
+      uniformSubScopesProcessor6.Parallel.Value = true;
 
       evaluator3.Name = "Evaluator (placeholder)";
       evaluator3.OperatorParameter.ActualName = EvaluatorParameter.Name;
@@ -203,7 +236,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       qualityComparer2.RightSideParameter.ActualName = QualityParameter.Name;
       qualityComparer2.ResultParameter.ActualName = "SuccessfulOffspring";
 
-      subScopesRemover.RemoveAllSubScopes = true;
+      subScopesRemover2.RemoveAllSubScopes = true;
 
       offspringSelector.CurrentSuccessRatioParameter.ActualName = CurrentSuccessRatioParameter.Name;
       offspringSelector.MaximumSelectionPressureParameter.ActualName = MaximumSelectionPressureParameter.Name;
@@ -230,39 +263,59 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       subScopesProcessor1.Operators.Add(new EmptyOperator());
       subScopesProcessor1.Operators.Add(childrenCreator);
       subScopesProcessor1.Successor = offspringSelector;
-      childrenCreator.Successor = uniformSubScopesProcessor;
-      uniformSubScopesProcessor.Operator = crossover;
-      uniformSubScopesProcessor.Successor = null;
-      crossover.Successor = osBeforeMutationBranch;
-      osBeforeMutationBranch.TrueBranch = evaluator1;
-      osBeforeMutationBranch.FalseBranch = mutationBranch2;
-      osBeforeMutationBranch.Successor = subScopesRemover;
+      childrenCreator.Successor = osBeforeMutationBranch;
+      osBeforeMutationBranch.TrueBranch = uniformSubScopesProcessor1;
+      osBeforeMutationBranch.FalseBranch = uniformSubScopesProcessor5;
+      osBeforeMutationBranch.Successor = null;
+      uniformSubScopesProcessor1.Operator = crossover1;
+      uniformSubScopesProcessor1.Successor = uniformSubScopesProcessor2;
+      crossover1.Successor = null;
+      uniformSubScopesProcessor2.Operator = evaluator1;
+      uniformSubScopesProcessor2.Successor = uniformSubScopesProcessor3;
       evaluator1.Successor = evaluationCounter1;
       evaluationCounter1.Successor = qualityComparer1;
-      qualityComparer1.Successor = mutationBranch1;
+      qualityComparer1.Successor = subScopesRemover1;
+      subScopesRemover1.Successor = null;
+      uniformSubScopesProcessor3.Operator = mutationBranch1;
+      uniformSubScopesProcessor3.Successor = conditionalSelector;
       mutationBranch1.FirstBranch = mutator1;
-      mutationBranch1.SecondBranch = null;
+      mutationBranch1.SecondBranch = variableCreator2;
       mutationBranch1.Successor = null;
-      mutator1.Successor = evaluator2;
+      mutator1.Successor = variableCreator1;
+      variableCreator1.Successor = null;
+      variableCreator2.Successor = null;
+      conditionalSelector.Successor = subScopesProcessor2;
+      subScopesProcessor2.Operators.Add(new EmptyOperator());
+      subScopesProcessor2.Operators.Add(uniformSubScopesProcessor4);
+      subScopesProcessor2.Successor = mergingReducer1;
+      uniformSubScopesProcessor4.Operator = evaluator2;
+      uniformSubScopesProcessor4.Successor = null;
       evaluator2.Successor = evaluationCounter2;
       evaluationCounter2.Successor = null;
+      mergingReducer1.Successor = null;
+      uniformSubScopesProcessor5.Operator = crossover2;
+      uniformSubScopesProcessor5.Successor = uniformSubScopesProcessor6;
+      crossover2.Successor = mutationBranch2;
       mutationBranch2.FirstBranch = mutator2;
       mutationBranch2.SecondBranch = null;
-      mutationBranch2.Successor = evaluator3;
+      mutationBranch2.Successor = null;
       mutator2.Successor = null;
+      uniformSubScopesProcessor6.Operator = evaluator3;
+      uniformSubScopesProcessor6.Successor = null;
       evaluator3.Successor = evaluationCounter3;
       evaluationCounter3.Successor = qualityComparer2;
-      subScopesRemover.Successor = null;
+      qualityComparer2.Successor = subScopesRemover2;
+      subScopesRemover2.Successor = null;
       offspringSelector.OffspringCreator = selector;
-      offspringSelector.Successor = subScopesProcessor2;
-      subScopesProcessor2.Operators.Add(bestSelector);
-      subScopesProcessor2.Operators.Add(worstSelector);
-      subScopesProcessor2.Successor = mergingReducer;
+      offspringSelector.Successor = subScopesProcessor3;
+      subScopesProcessor3.Operators.Add(bestSelector);
+      subScopesProcessor3.Operators.Add(worstSelector);
+      subScopesProcessor3.Successor = mergingReducer2;
       bestSelector.Successor = rightReducer;
       rightReducer.Successor = null;
       worstSelector.Successor = leftReducer;
       leftReducer.Successor = null;
-      mergingReducer.Successor = null;
+      mergingReducer2.Successor = null;
       #endregion
     }
 

@@ -103,7 +103,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       Parameters.Add(new ValueLookupParameter<IOperator>("Crossover", "The operator used to cross solutions."));
       Parameters.Add(new ValueLookupParameter<PercentValue>("MutationProbability", "The probability that the mutation operator is applied on a solution."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Mutator", "The operator used to mutate solutions."));
-      Parameters.Add(new ValueLookupParameter<IOperator>("Evaluator", "The operator used to evaluate solutions."));
+      Parameters.Add(new ValueLookupParameter<IOperator>("Evaluator", "The operator used to evaluate solutions. This operator is executed in parallel, if an engine is used which supports parallelization."));
       Parameters.Add(new ValueLookupParameter<IntValue>("Elites", "The numer of elite solutions which are kept in each generation."));
       Parameters.Add(new ValueLookupParameter<IntValue>("MaximumGenerations", "The maximum number of generations which should be processed."));
       Parameters.Add(new ValueLookupParameter<VariableCollection>("Results", "The variable collection where results should be stored."));
@@ -118,12 +118,13 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       Placeholder selector = new Placeholder();
       SubScopesProcessor subScopesProcessor1 = new SubScopesProcessor();
       ChildrenCreator childrenCreator = new ChildrenCreator();
-      UniformSubScopesProcessor uniformSubScopesProcessor = new UniformSubScopesProcessor();
+      UniformSubScopesProcessor uniformSubScopesProcessor1 = new UniformSubScopesProcessor();
       Placeholder crossover = new Placeholder();
       StochasticBranch stochasticBranch = new StochasticBranch();
       Placeholder mutator = new Placeholder();
-      Placeholder evaluator = new Placeholder();
       SubScopesRemover subScopesRemover = new SubScopesRemover();
+      UniformSubScopesProcessor uniformSubScopesProcessor2 = new UniformSubScopesProcessor();
+      Placeholder evaluator = new Placeholder();
       SubScopesProcessor subScopesProcessor2 = new SubScopesProcessor();
       BestSelector bestSelector = new BestSelector();
       RightReducer rightReducer = new RightReducer();
@@ -156,10 +157,12 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       mutator.Name = "Mutator";
       mutator.OperatorParameter.ActualName = "Mutator";
 
+      subScopesRemover.RemoveAllSubScopes = true;
+
+      uniformSubScopesProcessor2.Parallel.Value = true;
+
       evaluator.Name = "Evaluator";
       evaluator.OperatorParameter.ActualName = "Evaluator";
-
-      subScopesRemover.RemoveAllSubScopes = true;
 
       bestSelector.CopySelected = new BoolValue(false);
       bestSelector.MaximizationParameter.ActualName = "Maximization";
@@ -192,16 +195,18 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       subScopesProcessor1.Operators.Add(new EmptyOperator());
       subScopesProcessor1.Operators.Add(childrenCreator);
       subScopesProcessor1.Successor = subScopesProcessor2;
-      childrenCreator.Successor = uniformSubScopesProcessor;
-      uniformSubScopesProcessor.Operator = crossover;
-      uniformSubScopesProcessor.Successor = null;
+      childrenCreator.Successor = uniformSubScopesProcessor1;
+      uniformSubScopesProcessor1.Operator = crossover;
+      uniformSubScopesProcessor1.Successor = uniformSubScopesProcessor2;
       crossover.Successor = stochasticBranch;
       stochasticBranch.FirstBranch = mutator;
       stochasticBranch.SecondBranch = null;
-      stochasticBranch.Successor = evaluator;
+      stochasticBranch.Successor = subScopesRemover;
       mutator.Successor = null;
-      evaluator.Successor = subScopesRemover;
       subScopesRemover.Successor = null;
+      uniformSubScopesProcessor2.Operator = evaluator;
+      uniformSubScopesProcessor2.Successor = null;
+      evaluator.Successor = null;
       subScopesProcessor2.Operators.Add(bestSelector);
       subScopesProcessor2.Operators.Add(new EmptyOperator());
       subScopesProcessor2.Successor = mergingReducer;

@@ -28,9 +28,9 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization.Operators {
   /// <summary>
-  /// An operator which creates new solutions.
+  /// An operator which creates new solutions. Evaluation of the new solutions is executed in parallel, if an engine is used which supports parallelization.
   /// </summary>
-  [Item("SolutionsCreator", "An operator which creates new solutions.")]
+  [Item("SolutionsCreator", "An operator which creates new solutions. Evaluation of the new solutions is executed in parallel, if an engine is used which supports parallelization.")]
   [StorableClass]
   public sealed class SolutionsCreator : SingleSuccessorOperator {
     public ValueLookupParameter<IntValue> NumberOfSolutionsParameter {
@@ -60,7 +60,7 @@ namespace HeuristicLab.Optimization.Operators {
       : base() {
       Parameters.Add(new ValueLookupParameter<IntValue>("NumberOfSolutions", "The number of solutions that should be created."));
       Parameters.Add(new ValueLookupParameter<IOperator>("SolutionCreator", "The operator which is used to create new solutions."));
-      Parameters.Add(new ValueLookupParameter<IOperator>("Evaluator", "The operator which is used to evaluate new solutions."));
+      Parameters.Add(new ValueLookupParameter<IOperator>("Evaluator", "The operator which is used to evaluate new solutions. This operator is executed in parallel, if an engine is used which supports parallelization."));
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope to which the new solutions are added as sub-scopes."));
     }
 
@@ -77,11 +77,15 @@ namespace HeuristicLab.Optimization.Operators {
       for (int i = 0; i < count; i++)
         CurrentScope.SubScopes.Add(new Scope((current + i).ToString()));
 
-      OperationCollection next = new OperationCollection();
+      OperationCollection creation = new OperationCollection();
+      OperationCollection evaluation = new OperationCollection() { Parallel = true };
       for (int i = 0; i < count; i++) {
-        if (creator != null) next.Add(ExecutionContext.CreateOperation(creator, CurrentScope.SubScopes[current + i]));
-        if (evaluator != null) next.Add(ExecutionContext.CreateOperation(evaluator, CurrentScope.SubScopes[current + i]));
+        if (creator != null) creation.Add(ExecutionContext.CreateOperation(creator, CurrentScope.SubScopes[current + i]));
+        if (evaluator != null) evaluation.Add(ExecutionContext.CreateOperation(evaluator, CurrentScope.SubScopes[current + i]));
       }
+      OperationCollection next = new OperationCollection();
+      next.Add(creation);
+      next.Add(evaluation);
       next.Add(base.Apply());
       return next;
     }

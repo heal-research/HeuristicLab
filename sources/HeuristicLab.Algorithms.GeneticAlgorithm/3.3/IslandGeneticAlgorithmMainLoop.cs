@@ -129,7 +129,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       Parameters.Add(new ValueLookupParameter<IOperator>("Crossover", "The operator used to cross solutions."));
       Parameters.Add(new ValueLookupParameter<PercentValue>("MutationProbability", "The probability that the mutation operator is applied on a solution."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Mutator", "The operator used to mutate solutions."));
-      Parameters.Add(new ValueLookupParameter<IOperator>("Evaluator", "The operator used to evaluate solutions."));
+      Parameters.Add(new ValueLookupParameter<IOperator>("Evaluator", "The operator used to evaluate solutions. This operator is executed in parallel, if an engine is used which supports parallelization."));
       Parameters.Add(new ValueLookupParameter<IntValue>("Elites", "The numer of elite solutions which are kept in each generation."));
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The results collection to store the results."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Analyzer", "The operator used to the analyze the islands."));
@@ -152,8 +152,9 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       Placeholder crossover = new Placeholder();
       StochasticBranch stochasticBranch = new StochasticBranch();
       Placeholder mutator = new Placeholder();
-      Placeholder evaluator = new Placeholder();
       SubScopesRemover subScopesRemover = new SubScopesRemover();
+      UniformSubScopesProcessor uniformSubScopesProcessor3 = new UniformSubScopesProcessor();
+      Placeholder evaluator = new Placeholder();
       SubScopesProcessor subScopesProcessor2 = new SubScopesProcessor();
       BestSelector bestSelector = new BestSelector();
       RightReducer rightReducer = new RightReducer();
@@ -165,10 +166,10 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       ConditionalBranch migrationBranch = new ConditionalBranch();
       Assigner resetGenerationsSinceLastMigrationAssigner = new Assigner();
       IntCounter migrationsCounter = new IntCounter();
-      UniformSubScopesProcessor uniformSubScopesProcessor3 = new UniformSubScopesProcessor();
+      UniformSubScopesProcessor uniformSubScopesProcessor4 = new UniformSubScopesProcessor();
       Placeholder emigrantsSelector = new Placeholder();
       Placeholder migrator = new Placeholder();
-      UniformSubScopesProcessor uniformSubScopesProcessor4 = new UniformSubScopesProcessor();
+      UniformSubScopesProcessor uniformSubScopesProcessor5 = new UniformSubScopesProcessor();
       Placeholder immigrationReplacer = new Placeholder();
       Comparator generationsComparator = new Comparator();
       Placeholder analyzer2 = new Placeholder();
@@ -210,10 +211,12 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       mutator.Name = "Mutator (placeholder)";
       mutator.OperatorParameter.ActualName = MutatorParameter.Name;
 
+      subScopesRemover.RemoveAllSubScopes = true;
+
+      uniformSubScopesProcessor3.Parallel.Value = true;
+
       evaluator.Name = "Evaluator (placeholder)";
       evaluator.OperatorParameter.ActualName = EvaluatorParameter.Name;
-
-      subScopesRemover.RemoveAllSubScopes = true;
 
       bestSelector.CopySelected = new BoolValue(false);
       bestSelector.MaximizationParameter.ActualName = MaximizationParameter.Name;
@@ -292,14 +295,16 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       subScopesProcessor1.Successor = subScopesProcessor2;
       childrenCreator.Successor = uniformSubScopesProcessor2;
       uniformSubScopesProcessor2.Operator = crossover;
-      uniformSubScopesProcessor2.Successor = null;
+      uniformSubScopesProcessor2.Successor = uniformSubScopesProcessor3;
       crossover.Successor = stochasticBranch;
       stochasticBranch.FirstBranch = mutator;
       stochasticBranch.SecondBranch = null;
-      stochasticBranch.Successor = evaluator;
+      stochasticBranch.Successor = subScopesRemover;
       mutator.Successor = null;
-      evaluator.Successor = subScopesRemover;
       subScopesRemover.Successor = null;
+      uniformSubScopesProcessor3.Operator = evaluator;
+      uniformSubScopesProcessor3.Successor = null;
+      evaluator.Successor = null;
       subScopesProcessor2.Operators.Add(bestSelector);
       subScopesProcessor2.Operators.Add(new EmptyOperator());
       subScopesProcessor2.Successor = mergingReducer;
@@ -314,12 +319,12 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       migrationBranch.FalseBranch = null;
       migrationBranch.Successor = generationsComparator;
       resetGenerationsSinceLastMigrationAssigner.Successor = migrationsCounter;
-      migrationsCounter.Successor = uniformSubScopesProcessor3;
-      uniformSubScopesProcessor3.Operator = emigrantsSelector;
-      uniformSubScopesProcessor3.Successor = migrator;
-      migrator.Successor = uniformSubScopesProcessor4;
-      uniformSubScopesProcessor4.Operator = immigrationReplacer;
-      uniformSubScopesProcessor4.Successor = null;
+      migrationsCounter.Successor = uniformSubScopesProcessor4;
+      uniformSubScopesProcessor4.Operator = emigrantsSelector;
+      uniformSubScopesProcessor4.Successor = migrator;
+      migrator.Successor = uniformSubScopesProcessor5;
+      uniformSubScopesProcessor5.Operator = immigrationReplacer;
+      uniformSubScopesProcessor5.Successor = null;
       generationsComparator.Successor = analyzer2;
       analyzer2.Successor = resultsCollector3;
       resultsCollector3.Successor = generationsTerminationCondition;

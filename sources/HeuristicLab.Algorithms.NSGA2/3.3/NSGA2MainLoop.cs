@@ -19,6 +19,7 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -26,7 +27,6 @@ using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Selection;
-using HeuristicLab.Common;
 
 namespace HeuristicLab.Algorithms.NSGA2 {
   /// <summary>
@@ -96,7 +96,7 @@ namespace HeuristicLab.Algorithms.NSGA2 {
       Parameters.Add(new ValueLookupParameter<IOperator>("Crossover", "The operator used to cross solutions."));
       Parameters.Add(new ValueLookupParameter<PercentValue>("MutationProbability", "The probability that the mutation operator is applied on a solution."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Mutator", "The operator used to mutate solutions."));
-      Parameters.Add(new ValueLookupParameter<IOperator>("Evaluator", "The operator used to evaluate solutions."));
+      Parameters.Add(new ValueLookupParameter<IOperator>("Evaluator", "The operator used to evaluate solutions. This operator is executed in parallel, if an engine is used which supports parallelization."));
       Parameters.Add(new ValueLookupParameter<IntValue>("MaximumGenerations", "The maximum number of generations which should be processed."));
       Parameters.Add(new ValueLookupParameter<VariableCollection>("Results", "The variable collection where results should be stored."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Analyzer", "The operator used to analyze each generation."));
@@ -109,14 +109,15 @@ namespace HeuristicLab.Algorithms.NSGA2 {
       Placeholder selector = new Placeholder();
       SubScopesProcessor subScopesProcessor1 = new SubScopesProcessor();
       ChildrenCreator childrenCreator = new ChildrenCreator();
-      UniformSubScopesProcessor uniformSubScopesProcessor = new UniformSubScopesProcessor();
+      UniformSubScopesProcessor uniformSubScopesProcessor1 = new UniformSubScopesProcessor();
       StochasticBranch crossoverStochasticBranch = new StochasticBranch();
       Placeholder crossover = new Placeholder();
       ParentCopyCrossover noCrossover = new ParentCopyCrossover();
       StochasticBranch mutationStochasticBranch = new StochasticBranch();
       Placeholder mutator = new Placeholder();
-      Placeholder evaluator = new Placeholder();
       SubScopesRemover subScopesRemover = new SubScopesRemover();
+      UniformSubScopesProcessor uniformSubScopesProcessor2 = new UniformSubScopesProcessor();
+      Placeholder evaluator = new Placeholder();
       MergingReducer mergingReducer = new MergingReducer();
       RankAndCrowdingSorter rankAndCrowdingSorter = new RankAndCrowdingSorter();
       LeftSelector leftSelector = new LeftSelector();
@@ -155,10 +156,12 @@ namespace HeuristicLab.Algorithms.NSGA2 {
       mutator.Name = "Mutator";
       mutator.OperatorParameter.ActualName = MutatorParameter.Name;
 
+      subScopesRemover.RemoveAllSubScopes = true;
+
+      uniformSubScopesProcessor2.Parallel.Value = true;
+
       evaluator.Name = "Evaluator";
       evaluator.OperatorParameter.ActualName = EvaluatorParameter.Name;
-
-      subScopesRemover.RemoveAllSubScopes = true;
 
       rankAndCrowdingSorter.CrowdingDistanceParameter.ActualName = "CrowdingDistance";
       rankAndCrowdingSorter.RankParameter.ActualName = "Rank";
@@ -192,9 +195,9 @@ namespace HeuristicLab.Algorithms.NSGA2 {
       subScopesProcessor1.Operators.Add(new EmptyOperator());
       subScopesProcessor1.Operators.Add(childrenCreator);
       subScopesProcessor1.Successor = mergingReducer;
-      childrenCreator.Successor = uniformSubScopesProcessor;
-      uniformSubScopesProcessor.Operator = crossoverStochasticBranch;
-      uniformSubScopesProcessor.Successor = null;
+      childrenCreator.Successor = uniformSubScopesProcessor1;
+      uniformSubScopesProcessor1.Operator = crossoverStochasticBranch;
+      uniformSubScopesProcessor1.Successor = uniformSubScopesProcessor2;
       crossoverStochasticBranch.FirstBranch = crossover;
       crossoverStochasticBranch.SecondBranch = noCrossover;
       crossoverStochasticBranch.Successor = mutationStochasticBranch;
@@ -202,10 +205,12 @@ namespace HeuristicLab.Algorithms.NSGA2 {
       noCrossover.Successor = null;
       mutationStochasticBranch.FirstBranch = mutator;
       mutationStochasticBranch.SecondBranch = null;
-      mutationStochasticBranch.Successor = evaluator;
+      mutationStochasticBranch.Successor = subScopesRemover;
       mutator.Successor = null;
-      evaluator.Successor = subScopesRemover;
       subScopesRemover.Successor = null;
+      uniformSubScopesProcessor2.Operator = evaluator;
+      uniformSubScopesProcessor2.Successor = null;
+      evaluator.Successor = null;
       mergingReducer.Successor = rankAndCrowdingSorter;
       rankAndCrowdingSorter.Successor = leftSelector;
       leftSelector.Successor = rightReducer;
