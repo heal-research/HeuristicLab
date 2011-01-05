@@ -72,33 +72,18 @@ namespace HeuristicLab.DebugEngine {
 
 
     private void UpdateExecutionStack() {
-      if (suspended) {
-        groupBox.Text = string.Format("Execution Stack ({0})", CountOperations(Content));
-      } else {
-        treeView.BeginUpdate();
-        treeView.Nodes.Clear();
-        treeView.ImageList.Images.Clear();
-        treeView.ImageList.Images.Add(VS2008ImageLibrary.Method);
-        treeView.ImageList.Images.Add(VS2008ImageLibrary.Module);
-        treeView.ImageList.Images.Add(VS2008ImageLibrary.BreakpointActive);
-        int totalNodes = AddStackOperations(treeView.Nodes, ((IEnumerable<IOperation>)Content).Reverse());
-        if (treeView.Nodes.Count > 0)
-          treeView.TopNode = treeView.Nodes[0];
-        treeView.ExpandAll();
-        treeView.EndUpdate();
-        groupBox.Text = string.Format("Execution Stack ({0})", totalNodes);
-      }
-    }
-
-    private int CountOperations(IEnumerable<IOperation> operations) {
-      int count = 0;
-      foreach (IOperation op in operations) {
-        count++;
-        OperationCollection ops = op as OperationCollection;
-        if (ops != null)
-          count += CountOperations(ops);
-      }
-      return count;
+      treeView.BeginUpdate();
+      treeView.Nodes.Clear();
+      treeView.ImageList.Images.Clear();
+      treeView.ImageList.Images.Add(VS2008ImageLibrary.Method);
+      treeView.ImageList.Images.Add(VS2008ImageLibrary.Module);
+      treeView.ImageList.Images.Add(VS2008ImageLibrary.BreakpointActive);
+      int totalNodes = AddStackOperations(treeView.Nodes, ((IEnumerable<IOperation>)Content).Reverse());
+      if (treeView.Nodes.Count > 0)
+        treeView.TopNode = treeView.Nodes[0];
+      treeView.ExpandAll();
+      treeView.EndUpdate();
+      groupBox.Text = string.Format("Execution Stack ({0})", totalNodes);
     }
 
     private int AddStackOperations(TreeNodeCollection nodes, IEnumerable<IOperation> operations) {
@@ -122,8 +107,12 @@ namespace HeuristicLab.DebugEngine {
           count++;
         } else if (op is OperationCollection) {
           OperationCollection ops = op as OperationCollection;
-          TreeNode node = treeView.Nodes.Add(
-            string.Format("{0} Operation{1}", ops.Count, ops.Count == 1 ? string.Empty : "s"));
+          TreeNode node = nodes.Add(
+            string.Format("{0} {2}Operation{1}",
+            ops.Count,
+            ops.Count == 1 ? string.Empty : "s",
+            ops.Parallel ? "Parallel " : string.Empty
+            ));
           node.Tag = op;
           node.ToolTipText = Utils.TypeName(ops);
           node.ImageIndex = 1;
@@ -156,20 +145,6 @@ namespace HeuristicLab.DebugEngine {
         if (op != null)
           MainFormManager.MainForm.ShowContent(op.Operator);
       }
-    }
-    #endregion
-
-    #region Suspension
-    private bool suspended = false;
-    public virtual void SuspendUpdate() {
-      suspended = true;
-      treeView.Nodes.Clear();
-    }
-
-    public virtual void ResumeUpdate() {
-      suspended = false;
-      if (Content != null)
-        UpdateExecutionStack();
     }
     #endregion
   }
