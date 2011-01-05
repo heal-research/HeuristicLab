@@ -120,6 +120,7 @@ namespace HeuristicLab.DebugEngine {
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
       isEnabledCheckbox.Enabled = Content != null;
+      listView.Enabled = Content != null && Content.IsEnabled;
     }
 
     #region Event Handlers (child controls)
@@ -134,6 +135,7 @@ namespace HeuristicLab.DebugEngine {
     private void isEnabledCheckbox_CheckedChanged(object sender, EventArgs e) {
       if (Content != null)
         Content.IsEnabled = isEnabledCheckbox.Checked;
+      SetEnabledStateOfControls();
     }
     #endregion
 
