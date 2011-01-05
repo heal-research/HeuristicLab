@@ -200,7 +200,7 @@ namespace HeuristicLab.Operators.Programmable {
       this.compileButton.Size = new System.Drawing.Size(24, 24);
       this.compileButton.TabIndex = 1;
       this.compileButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-      this.toolTip.SetToolTip(this.compileButton, "Compile");
+      this.toolTip.SetToolTip(this.compileButton, "Compile (F6)");
       this.compileButton.UseVisualStyleBackColor = true;
       this.compileButton.Click += new System.EventHandler(this.compileButton_Click);
       // 
@@ -278,7 +278,7 @@ namespace HeuristicLab.Operators.Programmable {
       this.compilationLabel.Name = "compilationLabel";
       this.compilationLabel.Size = new System.Drawing.Size(67, 13);
       this.compilationLabel.TabIndex = 3;
-      this.compilationLabel.Text = "not compiled";
+      this.compilationLabel.Text = "Not compiled";
       // 
       // ProgrammableOperatorView
       // 

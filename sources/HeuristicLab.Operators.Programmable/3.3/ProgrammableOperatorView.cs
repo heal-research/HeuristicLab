@@ -103,13 +103,13 @@ namespace HeuristicLab.Operators.Programmable {
         parameterCollectionView.Content = ProgrammableOperator.Parameters;
         if (ProgrammableOperator.CompileErrors == null) {
           compilationLabel.ForeColor = SystemColors.ControlDarkDark;
-          compilationLabel.Text = "not compiled";
+          compilationLabel.Text = "Not compiled";
         } else if (ProgrammableOperator.CompileErrors.HasErrors) {
           compilationLabel.ForeColor = Color.DarkRed;
-          compilationLabel.Text = "compilation failed";
+          compilationLabel.Text = "Compilation failed";
         } else {
           compilationLabel.ForeColor = Color.DarkGreen;
-          compilationLabel.Text = "compilation successful";
+          compilationLabel.Text = "Compilation successful";
         }
 
       }

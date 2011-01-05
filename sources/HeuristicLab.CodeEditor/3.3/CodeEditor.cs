@@ -244,7 +244,7 @@ namespace HeuristicLab.CodeEditor {
         return;
       foreach (CompilerError error in compilerErrors) {
         if (!error.FileName.EndsWith(filename)) {
-          errorLabel.Text = "error in generated code";
+          errorLabel.Text = "Error in generated code";
           errorLabel.ToolTipText = string.Format("{0}{1}:{2} -> {3}",
             errorLabel.ToolTipText != null ? (errorLabel.ToolTipText + "\n\n") : "",
             error.Line, error.Column,
