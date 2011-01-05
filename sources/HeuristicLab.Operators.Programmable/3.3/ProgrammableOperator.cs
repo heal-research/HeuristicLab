@@ -263,7 +263,6 @@ namespace HeuristicLab.Operators.Programmable {
       typeof(System.ComponentModel.INotifyPropertyChanged).Assembly, // System.dll
       typeof(System.Linq.Enumerable).Assembly,  // System.Core.dll
       typeof(System.Data.Linq.DataContext).Assembly, // System.Data.Linq.dll
-      typeof(System.Text.StringBuilder).Assembly,
       typeof(HeuristicLab.Common.IDeepCloneable).Assembly,
       typeof(HeuristicLab.Core.Item).Assembly,
       typeof(HeuristicLab.Data.IntValue).Assembly,
