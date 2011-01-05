@@ -24,6 +24,7 @@ using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
+using System.ComponentModel;
 namespace HeuristicLab.DebugEngine {
 
   /// <summary>
@@ -123,9 +124,18 @@ namespace HeuristicLab.DebugEngine {
 
     private bool stepping = false;
     private void stepButton_Click(object sender, EventArgs e) {
+      BackgroundWorker worker = new BackgroundWorker();
+      bool skipStackops = skipStackOpsCheckBox.Checked;
+      worker.DoWork += (s, a) => {
+        Content.Step(skipStackops);
+      };
+      worker.RunWorkerCompleted += (s, a) => {
+        stepping = false;
+        SetEnabledStateOfControls();
+      };
       stepping = true;
-      Content.Step(skipStackOpsCheckBox.Checked);
-      stepping = false;
+      stepButton.Enabled = false;
+      worker.RunWorkerAsync();
     }
 
     private void refreshButton_Click(object sender, EventArgs e) {
