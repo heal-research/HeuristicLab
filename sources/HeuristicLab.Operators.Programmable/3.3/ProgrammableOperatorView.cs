@@ -117,6 +117,7 @@ namespace HeuristicLab.Operators.Programmable {
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
+      breakpointCheckBox.Enabled = Content != null && !Locked;
       parameterCollectionView.Enabled = Content != null;
       assembliesTreeView.Enabled = Content != null && !ReadOnly;
       namespacesTreeView.Enabled = Content != null && !ReadOnly;
@@ -201,7 +202,8 @@ namespace HeuristicLab.Operators.Programmable {
       this.Enabled = false;
       try {
         ProgrammableOperator.Compile();
-      } catch (Exception ex) {
+      }
+      catch (Exception ex) {
         ErrorHandling.ShowErrorDialog(this, ex);
       }
       OnContentChanged();
