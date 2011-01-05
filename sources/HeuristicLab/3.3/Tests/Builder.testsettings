@@ -27,7 +27,6 @@
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views-3.3.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Tracing-3.3.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Encodings.BinaryVectorEncoding-3.3.dll" />
-    <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.ALGLIB-2.5.0.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\ICSharpCode.SharpDevelop.Dom.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Algorithms.TabuSearch-3.3.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\Netron.Diagramming.Core-3.0.2672.12446.dll" />
@@ -67,7 +66,6 @@
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Parameters.Views-3.3.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Collections-3.3.dll" />
-    <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\ALGLIB-2.5.0.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Common.Resources-3.3.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Analysis-3.3.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Problems.TravelingSalesman.Views-3.3.dll" />

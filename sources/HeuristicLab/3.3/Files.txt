@@ -75,9 +75,6 @@ HeuristicLab.Tracing\3.3:HeuristicLab.log4net.xml
 HeuristicLab.Visualization.ChartControlsExtensions\3.3:HeuristicLab.Visualization.ChartControlsExtensions-3.3.dll
 
 ;External Libraries
-HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\2.5.0\ALGLIB-2.5.0:ALGLIB-2.5.0.dll
-HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\2.5.0\HeuristicLab.ALGLIB-2.5.0:HeuristicLab.ALGLIb-2.5.0.dll
-HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\2.5.0\HeuristicLab.ALGLIB-2.5.0:ALGLIB License-2.5.0.txt
 HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.1.0\ALGLIB-3.1.0:ALGLIB-3.1.0.dll
 HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.1.0\HeuristicLab.ALGLIB-3.1.0:HeuristicLab.ALGLIB-3.1.0.dll
 HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.1.0\HeuristicLab.ALGLIB-3.1.0:ALGLIB License-3.1.0.txt
