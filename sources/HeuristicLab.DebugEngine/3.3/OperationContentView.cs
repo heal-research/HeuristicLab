@@ -98,7 +98,7 @@ namespace HeuristicLab.DebugEngine {
       node.ImageIndex = 0;
       node.SelectedImageIndex = 0;
       foreach (var var in scope.Variables) {
-        TreeNode varNode = node.Nodes.Add(string.Format("{0}={1}", var.Name, var.Value));
+        TreeNode varNode = node.Nodes.Add(string.Format("{0} = {1}", var.Name, var.Value));
         varNode.Tag = var.Value;
         varNode.ToolTipText = string.Format("{0}{1}{1}{2}",
           Utils.TypeName(var.Value), Environment.NewLine,
@@ -148,9 +148,11 @@ namespace HeuristicLab.DebugEngine {
       foreach (var param in executionContext.Parameters) {
         string actualName = null;
         object value = GetParameterValue(param, executionContext, out actualName);
+        if (value == null)
+          value = "null";
         string label = actualName != null && actualName != param.Name ?
-          string.Format("{0}({1})={2}", param.Name, actualName, value) :
-          string.Format("{0}={1}", param.Name, value);
+          string.Format("{0} ({1}) = {2}", param.Name, actualName, value) :
+          string.Format("{0} = {1}", param.Name, value);
         TreeNode paramNode = node.Nodes.Add(label);
         paramNode.Tag = param;
         executionContextTreeView.ImageList.Images.Add(param.ItemImage ?? VS2008ImageLibrary.Nothing);
@@ -263,7 +265,6 @@ namespace HeuristicLab.DebugEngine {
     }
 
     #endregion
-
 
   }
 }
