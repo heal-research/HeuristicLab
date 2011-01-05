@@ -32,7 +32,6 @@ using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("SimpleArithmeticExpressionInterpreter", "Interpreter for arithmetic symbolic expression trees including function calls.")]
-  // not thread safe!
   public sealed class SimpleArithmeticExpressionInterpreter : NamedItem, ISymbolicExpressionTreeInterpreter {
     private class OpCodes {
       public const byte Add = 1;
@@ -92,13 +91,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     };
     private const int ARGUMENT_STACK_SIZE = 1024;
 
-    private Dataset dataset;
-    private int row;
-    private Instruction[] code;
-    private int pc;
-    private double[] argumentStack = new double[ARGUMENT_STACK_SIZE];
-    private int argStackPointer;
-
     public override bool CanChangeName {
       get { return false; }
     }
@@ -109,7 +101,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     [StorableConstructor]
     private SimpleArithmeticExpressionInterpreter(bool deserializing) : base(deserializing) { }
     private SimpleArithmeticExpressionInterpreter(SimpleArithmeticExpressionInterpreter original, Cloner cloner) : base(original, cloner) { }
-
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SimpleArithmeticExpressionInterpreter(this, cloner);
     }
@@ -119,133 +110,128 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     public IEnumerable<double> GetSymbolicExpressionTreeValues(SymbolicExpressionTree tree, Dataset dataset, IEnumerable<int> rows) {
-      this.dataset = dataset;
       var compiler = new SymbolicExpressionTreeCompiler();
-      compiler.AddInstructionPostProcessingHook(PostProcessInstruction);
-      code = compiler.Compile(tree, MapSymbolToOpCode);
-      foreach (var row in rows) {
-        this.row = row;
-        pc = 0;
-        argStackPointer = 0;
-        yield return Evaluate();
+      Instruction[] code = compiler.Compile(tree, MapSymbolToOpCode);
+
+      for (int i = 0; i < code.Length; i++) {
+        Instruction instr = code[i];
+        if (instr.opCode == OpCodes.Variable) {
+          var variableTreeNode = instr.dynamicNode as VariableTreeNode;
+          instr.iArg0 = (ushort)dataset.GetVariableIndex(variableTreeNode.VariableName);
+          code[i] = instr;
+        } else if (instr.opCode == OpCodes.LagVariable) {
+          var variableTreeNode = instr.dynamicNode as LaggedVariableTreeNode;
+          instr.iArg0 = (ushort)dataset.GetVariableIndex(variableTreeNode.VariableName);
+          code[i] = instr;
+        }
+      }
+
+      double[] argumentStack = new double[ARGUMENT_STACK_SIZE];
+      foreach (var rowEnum in rows) {
+        int row = rowEnum;
+        int pc = 0;
+        int argStackPointer = 0;
+        yield return Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
       }
     }
 
-    private Instruction PostProcessInstruction(Instruction instr) {
-      if (instr.opCode == OpCodes.Variable) {
-        var variableTreeNode = instr.dynamicNode as VariableTreeNode;
-        instr.iArg0 = (ushort)dataset.GetVariableIndex(variableTreeNode.VariableName);
-      } else if (instr.opCode == OpCodes.LagVariable) {
-        var variableTreeNode = instr.dynamicNode as LaggedVariableTreeNode;
-        instr.iArg0 = (ushort)dataset.GetVariableIndex(variableTreeNode.VariableName);
-      }
-      return instr;
-    }
-
-    private byte MapSymbolToOpCode(SymbolicExpressionTreeNode treeNode) {
-      if (symbolToOpcode.ContainsKey(treeNode.Symbol.GetType()))
-        return symbolToOpcode[treeNode.Symbol.GetType()];
-      else
-        throw new NotSupportedException("Symbol: " + treeNode.Symbol);
-    }
-
-    private double Evaluate() {
+    private double Evaluate(Dataset dataset, ref int row, Instruction[] code, ref int pc, double[] argumentStack, ref int argStackPointer) {
       Instruction currentInstr = code[pc++];
       switch (currentInstr.opCode) {
         case OpCodes.Add: {
-            double s = Evaluate();
+            double s = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
             for (int i = 1; i < currentInstr.nArguments; i++) {
-              s += Evaluate();
+              s += Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
             }
             return s;
           }
         case OpCodes.Sub: {
-            double s = Evaluate();
+            double s = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
             for (int i = 1; i < currentInstr.nArguments; i++) {
-              s -= Evaluate();
+              s -= Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
             }
             if (currentInstr.nArguments == 1) s = -s;
             return s;
           }
         case OpCodes.Mul: {
-            double p = Evaluate();
+            double p = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
             for (int i = 1; i < currentInstr.nArguments; i++) {
-              p *= Evaluate();
+              p *= Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
             }
             return p;
           }
         case OpCodes.Div: {
-            double p = Evaluate();
+            double p = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
             for (int i = 1; i < currentInstr.nArguments; i++) {
-              p /= Evaluate();
+              p /= Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
             }
             if (currentInstr.nArguments == 1) p = 1.0 / p;
             return p;
           }
         case OpCodes.Average: {
-            double sum = Evaluate();
+            double sum = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
             for (int i = 1; i < currentInstr.nArguments; i++) {
-              sum += Evaluate();
+              sum += Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
             }
             return sum / currentInstr.nArguments;
           }
         case OpCodes.Cos: {
-            return Math.Cos(Evaluate());
+            return Math.Cos(Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer));
           }
         case OpCodes.Sin: {
-            return Math.Sin(Evaluate());
+            return Math.Sin(Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer));
           }
         case OpCodes.Tan: {
-            return Math.Tan(Evaluate());
+            return Math.Tan(Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer));
           }
         case OpCodes.Exp: {
-            return Math.Exp(Evaluate());
+            return Math.Exp(Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer));
           }
         case OpCodes.Log: {
-            return Math.Log(Evaluate());
+            return Math.Log(Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer));
           }
         case OpCodes.IfThenElse: {
-            double condition = Evaluate();
+            double condition = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
             double result;
             if (condition > 0.0) {
-              result = Evaluate(); SkipBakedCode();
+              result = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer); SkipBakedCode(code, ref pc);
             } else {
-              SkipBakedCode(); result = Evaluate();
+              SkipBakedCode(code, ref pc); result = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
             }
             return result;
           }
         case OpCodes.AND: {
-            double result = Evaluate();
+            double result = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
             for (int i = 1; i < currentInstr.nArguments; i++) {
-              if (result <= 0.0) SkipBakedCode();
+              if (result <= 0.0) SkipBakedCode(code, ref pc);
               else {
-                result = Evaluate();
+                result = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
               }
             }
             return result <= 0.0 ? -1.0 : 1.0;
           }
         case OpCodes.OR: {
-            double result = Evaluate();
+            double result = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
             for (int i = 1; i < currentInstr.nArguments; i++) {
-              if (result > 0.0) SkipBakedCode();
+              if (result > 0.0) SkipBakedCode(code, ref pc);
               else {
-                result = Evaluate();
+                result = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
               }
             }
             return result > 0.0 ? 1.0 : -1.0;
           }
         case OpCodes.NOT: {
-            return -Evaluate();
+            return -Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
           }
         case OpCodes.GT: {
-            double x = Evaluate();
-            double y = Evaluate();
+            double x = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
+            double y = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
             if (x > y) return 1.0;
             else return -1.0;
           }
         case OpCodes.LT: {
-            double x = Evaluate();
-            double y = Evaluate();
+            double x = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
+            double y = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
             if (x < y) return 1.0;
             else return -1.0;
           }
@@ -253,7 +239,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             // evaluate sub-trees
             // push on argStack in reverse order 
             for (int i = 0; i < currentInstr.nArguments; i++) {
-              argumentStack[argStackPointer + currentInstr.nArguments - i] = Evaluate();
+              argumentStack[argStackPointer + currentInstr.nArguments - i] = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
             }
             argStackPointer += currentInstr.nArguments;
 
@@ -262,7 +248,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             // set pc to start of function  
             pc = currentInstr.iArg0;
             // evaluate the function
-            double v = Evaluate();
+            double v = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
 
             // decrease the argument stack pointer by the number of arguments pushed
             // to set the argStackPointer back to the original location
@@ -280,10 +266,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             return dataset[row, currentInstr.iArg0] * variableTreeNode.Weight;
           }
         case OpCodes.LagVariable: {
-            var lagVariableTreeNode = currentInstr.dynamicNode as LaggedVariableTreeNode;
-            int actualRow = row + lagVariableTreeNode.Lag;
+            var laggedVariableTreeNode = currentInstr.dynamicNode as LaggedVariableTreeNode;
+            int actualRow = row + laggedVariableTreeNode.Lag;
             if (actualRow < 0 || actualRow >= dataset.Rows) throw new ArgumentException("Out of range access to dataset row: " + row);
-            return dataset[actualRow, currentInstr.iArg0] * lagVariableTreeNode.Weight;
+            return dataset[actualRow, currentInstr.iArg0] * laggedVariableTreeNode.Weight;
           }
         case OpCodes.Constant: {
             var constTreeNode = currentInstr.dynamicNode as ConstantTreeNode;
@@ -293,8 +279,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
+    private byte MapSymbolToOpCode(SymbolicExpressionTreeNode treeNode) {
+      if (symbolToOpcode.ContainsKey(treeNode.Symbol.GetType()))
+        return symbolToOpcode[treeNode.Symbol.GetType()];
+      else
+        throw new NotSupportedException("Symbol: " + treeNode.Symbol);
+    }
+
     // skips a whole branch
-    private void SkipBakedCode() {
+    private void SkipBakedCode(Instruction[] code, ref int pc) {
       int i = 1;
       while (i > 0) {
         i += code[pc++].nArguments;
