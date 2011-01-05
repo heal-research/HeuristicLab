@@ -37,7 +37,10 @@ namespace HeuristicLab.Parameters {
       get { return actualName; }
       set {
         if (value == null) throw new ArgumentNullException();
-        if (!actualName.Equals(value)) {
+        if (string.IsNullOrWhiteSpace(value)) {
+          actualName = Name;
+          OnActualNameChanged();
+        } else if (!actualName.Equals(value)) {
           actualName = value;
           OnActualNameChanged();
         }
@@ -75,7 +78,7 @@ namespace HeuristicLab.Parameters {
     }
     public LookupParameter(string name, string description, string actualName)
       : base(name, description, typeof(T)) {
-      this.actualName = actualName == null ? string.Empty : actualName;
+      this.actualName = string.IsNullOrWhiteSpace(actualName) ? Name : actualName;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
