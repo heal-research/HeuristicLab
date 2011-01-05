@@ -167,7 +167,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
         this.initialToolStripMenuItem.Checked = this.Content.InitialOperator == op;
         this.initialToolStripMenuItem.Enabled = !ReadOnly && !Locked;
         this.breakPointToolStripMenuItem.Checked = op.Breakpoint;
-        this.breakPointToolStripMenuItem.Enabled = !ReadOnly;
+        this.breakPointToolStripMenuItem.Enabled = !Locked;
       }
     }
 

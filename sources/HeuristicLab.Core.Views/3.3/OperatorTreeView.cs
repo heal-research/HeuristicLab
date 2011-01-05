@@ -343,7 +343,7 @@ namespace HeuristicLab.Core.Views {
             viewToolStripMenuItem.Enabled = true;
             viewToolStripMenuItem.Tag = op;
           }
-          breakpointToolStripMenuItem.Enabled = true;
+          breakpointToolStripMenuItem.Enabled = !Locked;
           breakpointToolStripMenuItem.Tag = op;
           if (op.Breakpoint)
             breakpointToolStripMenuItem.Checked = true;
