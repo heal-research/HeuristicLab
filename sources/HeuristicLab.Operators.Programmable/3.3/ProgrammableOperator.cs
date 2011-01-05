@@ -259,11 +259,11 @@ namespace HeuristicLab.Operators.Programmable {
     }
 
     protected static List<Assembly> defaultAssemblies = new List<Assembly>() {
-      typeof(System.Linq.Enumerable).Assembly,  // add reference to version 3.5 of System.dll
-      typeof(System.Collections.Generic.List<>).Assembly,
+      // mscorlib automatically included (would cause duplicate)
+      typeof(System.ComponentModel.INotifyPropertyChanged).Assembly, // System.dll
+      typeof(System.Linq.Enumerable).Assembly,  // System.Core.dll
+      typeof(System.Data.Linq.DataContext).Assembly, // System.Data.Linq.dll
       typeof(System.Text.StringBuilder).Assembly,
-      typeof(System.Data.Linq.DataContext).Assembly,
-      typeof(System.ComponentModel.INotifyPropertyChanged).Assembly,
       typeof(HeuristicLab.Common.IDeepCloneable).Assembly,
       typeof(HeuristicLab.Core.Item).Assembly,
       typeof(HeuristicLab.Data.IntValue).Assembly,
