@@ -113,6 +113,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Documents\GA_VRP.hl" />
     <EmbeddedResource Include="Documents\SGP_SymbClass_Mammographic.hl" />
+    <EmbeddedResource Include="Documents\SGP_SymbReg.hl" />
     <None Include="HeuristicLabOptimizerPlugin.cs.frame" />
     <Compile Include="CreateExperimentDialog.cs">
       <SubType>Form</SubType>
@@ -227,7 +228,6 @@
     <EmbeddedResource Include="Documents\GA_TSP.hl" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Documents\GP_SymbReg.hl" />
     <EmbeddedResource Include="Documents\ES_Griewank.hl" />
     <None Include="Documents\Images\New.png" />
     <None Include="Documents\Images\Open.png" />
