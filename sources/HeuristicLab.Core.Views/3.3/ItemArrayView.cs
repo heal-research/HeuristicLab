@@ -206,7 +206,15 @@ namespace HeuristicLab.Core.Views {
       listViewItem.ToolTipText = item == null ? string.Empty : item.ItemName + ": " + item.ItemDescription;
     }
     protected virtual IEnumerable<ListViewItem> GetListViewItemsForItem(T item) {
-      return itemListViewItemMapping[item];
+      if (item == null) {
+        List<ListViewItem> listViewItems = new List<ListViewItem>();
+        foreach (ListViewItem listViewItem in itemsListView.Items) {
+          if (listViewItem.Tag == null) listViewItems.Add(listViewItem);
+        }
+        return listViewItems;
+      } else {
+        return itemListViewItemMapping[item];
+      }
     }
 
     #region ListView Events
