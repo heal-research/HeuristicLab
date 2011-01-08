@@ -40,8 +40,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
   [StorableClass]
   public sealed class FixedValidationBestScaledSymbolicRegressionSolutionAnalyzer : SymbolicRegressionValidationAnalyzer, ISymbolicRegressionAnalyzer {
     private const string MaximizationParameterName = "Maximization";
+    private const string CalculateSolutionComplexityParameterName = "CalculateSolutionComplexity";
     private const string BestSolutionParameterName = "Best solution (validation)";
     private const string BestSolutionQualityParameterName = "Best solution quality (validation)";
+    private const string BestSolutionLengthParameterName = "Best solution length (validation)";
+    private const string BestSolutionHeightParameterName = "Best solution height (validiation)";
     private const string CurrentBestValidationQualityParameterName = "Current best validation quality";
     private const string BestSolutionQualityValuesParameterName = "Validation Quality";
     private const string ResultsParameterName = "Results";
@@ -53,6 +56,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     public ILookupParameter<BoolValue> MaximizationParameter {
       get { return (ILookupParameter<BoolValue>)Parameters[MaximizationParameterName]; }
     }
+    public IValueParameter<BoolValue> CalculateSolutionComplexityParameter {
+      get { return (IValueParameter<BoolValue>)Parameters[CalculateSolutionComplexityParameterName]; }
+    }
     public ILookupParameter<SymbolicRegressionSolution> BestSolutionParameter {
       get { return (ILookupParameter<SymbolicRegressionSolution>)Parameters[BestSolutionParameterName]; }
     }
@@ -61,6 +67,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     }
     public ILookupParameter<DoubleValue> BestSolutionQualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters[BestSolutionQualityParameterName]; }
+    }
+    public ILookupParameter<IntValue> BestSolutionLengthParameter {
+      get { return (ILookupParameter<IntValue>)Parameters[BestSolutionLengthParameterName]; }
+    }
+    public ILookupParameter<IntValue> BestSolutionHeightParameter {
+      get { return (ILookupParameter<IntValue>)Parameters[BestSolutionHeightParameterName]; }
     }
     public ILookupParameter<ResultCollection> ResultsParameter {
       get { return (ILookupParameter<ResultCollection>)Parameters[ResultsParameterName]; }
@@ -77,6 +89,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     public BoolValue Maximization {
       get { return MaximizationParameter.ActualValue; }
     }
+    public BoolValue CalculateSolutionComplexity {
+      get { return CalculateSolutionComplexityParameter.Value; }
+      set { CalculateSolutionComplexityParameter.Value = value; }
+    }
     public ResultCollection Results {
       get { return ResultsParameter.ActualValue; }
     }
@@ -89,6 +105,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     public DoubleValue BestSolutionQuality {
       get { return BestSolutionQualityParameter.ActualValue; }
     }
+    public IntValue BestSolutionLength {
+      get { return BestSolutionLengthParameter.ActualValue; }
+      set { BestSolutionLengthParameter.ActualValue = value; }
+    }
+    public IntValue BestSolutionHeight {
+      get { return BestSolutionHeightParameter.ActualValue; }
+      set { BestSolutionHeightParameter.ActualValue = value; }
+    }
 
     #endregion
 
@@ -98,9 +122,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     public FixedValidationBestScaledSymbolicRegressionSolutionAnalyzer()
       : base() {
       Parameters.Add(new LookupParameter<BoolValue>(MaximizationParameterName, "The direction of optimization."));
+      Parameters.Add(new ValueParameter<BoolValue>(CalculateSolutionComplexityParameterName, "Determines if the length and height of the validation best solution should be calculated.", new BoolValue(false)));
       Parameters.Add(new LookupParameter<SymbolicRegressionSolution>(BestSolutionParameterName, "The best symbolic regression solution."));
       Parameters.Add(new LookupParameter<IntValue>(GenerationsParameterName, "The number of generations calculated so far."));
       Parameters.Add(new LookupParameter<DoubleValue>(BestSolutionQualityParameterName, "The quality of the best symbolic regression solution."));
+      Parameters.Add(new LookupParameter<IntValue>(BestSolutionLengthParameterName, "The length of the best symbolic regression solution."));
+      Parameters.Add(new LookupParameter<IntValue>(BestSolutionHeightParameterName, "The height of the best symbolic regression solution."));
       Parameters.Add(new LookupParameter<ResultCollection>(ResultsParameterName, "The result collection where the best symbolic regression solution should be stored."));
       Parameters.Add(new LookupParameter<DoubleValue>(BestKnownQualityParameterName, "The best known (validation) quality achieved on the data set."));
       Parameters.Add(new LookupParameter<DataTable>(VariableFrequenciesParameterName, "The variable frequencies table to use for the calculation of variable impacts"));
@@ -119,14 +146,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       if (!Parameters.ContainsKey(MaximizationParameterName)) {
         Parameters.Add(new LookupParameter<BoolValue>(MaximizationParameterName, "The direction of optimization."));
       }
+      if (!Parameters.ContainsKey(CalculateSolutionComplexityParameterName)) {
+        Parameters.Add(new ValueParameter<BoolValue>(CalculateSolutionComplexityParameterName, "Determines if the length and height of the validation best solution should be calculated.", new BoolValue(false)));
+      }
+      if (!Parameters.ContainsKey(BestSolutionLengthParameterName)) {
+        Parameters.Add(new LookupParameter<IntValue>(BestSolutionLengthParameterName, "The length of the best symbolic regression solution."));
+      }
+      if (!Parameters.ContainsKey(BestSolutionHeightParameterName)) {
+        Parameters.Add(new LookupParameter<IntValue>(BestSolutionHeightParameterName, "The height of the best symbolic regression solution."));
+      }
       #endregion
     }
-    
+
     protected override void Analyze(SymbolicExpressionTree[] trees, double[] validationQuality) {
       double bestQuality = Maximization.Value ? double.NegativeInfinity : double.PositiveInfinity;
       SymbolicExpressionTree bestTree = null;
 
-      for(int i=0;i<trees.Length;i++) {
+      for (int i = 0; i < trees.Length; i++) {
         double quality = validationQuality[i];
         if ((Maximization.Value && quality > bestQuality) ||
             (!Maximization.Value && quality < bestQuality)) {
@@ -163,9 +199,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
         BestSolutionParameter.ActualValue = solution;
         BestSolutionQualityParameter.ActualValue = new DoubleValue(bestQuality);
 
+        if (CalculateSolutionComplexity.Value) {
+          BestSolutionLength = new IntValue(solution.Model.SymbolicExpressionTree.Size);
+          BestSolutionHeight = new IntValue(solution.Model.SymbolicExpressionTree.Height);
+          if (!Results.ContainsKey(BestSolutionLengthParameterName)) {
+            Results.Add(new Result(BestSolutionLengthParameterName, "Length of the best solution on the validation set", new IntValue()));
+            Results.Add(new Result(BestSolutionHeightParameterName, "Height of the best solution on the validation set", new IntValue()));
+          }
+          Results[BestSolutionLengthParameterName].Value = BestSolutionLength;
+          Results[BestSolutionHeightParameterName].Value = BestSolutionHeight;
+        }
+
         BestSymbolicRegressionSolutionAnalyzer.UpdateBestSolutionResults(solution, ProblemData, Results, Generations, VariableFrequencies);
       }
-
 
       if (!Results.ContainsKey(BestSolutionQualityValuesParameterName)) {
         Results.Add(new Result(BestSolutionQualityValuesParameterName, new DataTable(BestSolutionQualityValuesParameterName, BestSolutionQualityValuesParameterName)));

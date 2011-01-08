@@ -109,17 +109,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       return BestSolutionParameter.ActualValue;
     }
 
-    public static void UpdateBestSolutionResults(SymbolicRegressionSolution bestSolution, DataAnalysisProblemData problemData, ResultCollection results, IntValue currentGeneration, DataTable variableFrequencies) {
-      RegressionSolutionAnalyzer.UpdateBestSolutionResults(bestSolution, problemData, results, currentGeneration);
-      UpdateSymbolicRegressionBestSolutionResults(bestSolution, problemData, results, variableFrequencies);
+    public static void UpdateBestSolutionResults(SymbolicRegressionSolution solution, DataAnalysisProblemData problemData, ResultCollection results, IntValue currentGeneration, DataTable variableFrequencies) {
+      RegressionSolutionAnalyzer.UpdateBestSolutionResults(solution, problemData, results, currentGeneration);
+      UpdateSymbolicRegressionBestSolutionResults(solution, problemData, results, variableFrequencies);
     }
 
-    private static void UpdateSymbolicRegressionBestSolutionResults(SymbolicRegressionSolution bestSolution, DataAnalysisProblemData problemData, ResultCollection results, DataTable variableFrequencies) {
+    private static void UpdateSymbolicRegressionBestSolutionResults(SymbolicRegressionSolution solution, DataAnalysisProblemData problemData, ResultCollection results, DataTable variableFrequencies) {
       if (results.ContainsKey(BestSolutionInputvariableCountResultName)) {
-        results[BestSolutionInputvariableCountResultName].Value = new IntValue(bestSolution.Model.InputVariables.Count());
+        results[BestSolutionInputvariableCountResultName].Value = new IntValue(solution.Model.InputVariables.Count());
         results[VariableImpactsResultName].Value = CalculateVariableImpacts(variableFrequencies);
       } else {
-        results.Add(new Result(BestSolutionInputvariableCountResultName, new IntValue(bestSolution.Model.InputVariables.Count())));
+        results.Add(new Result(BestSolutionInputvariableCountResultName, new IntValue(solution.Model.InputVariables.Count())));
         results.Add(new Result(VariableImpactsResultName, CalculateVariableImpacts(variableFrequencies)));
       }
     }

@@ -122,8 +122,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       return base.Apply();
     }
 
-    public static void UpdateBestSolutionResults(DataAnalysisSolution bestSolution, DataAnalysisProblemData problemData, ResultCollection results, IntValue CurrentGeneration) {
-      var solution = bestSolution;
+    public static void UpdateBestSolutionResults(DataAnalysisSolution solution, DataAnalysisProblemData problemData, ResultCollection results, IntValue generation) {
       #region update R2,MSE, Rel Error
       IEnumerable<double> trainingValues = problemData.Dataset.GetEnumeratedVariableValues(problemData.TargetVariable.Value, problemData.TrainingIndizes);
       IEnumerable<double> testValues = problemData.Dataset.GetEnumeratedVariableValues(problemData.TargetVariable.Value, problemData.TestIndizes);
@@ -169,8 +168,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
         results[BestSolutionTestMse].Value = new DoubleValue(testMse);
         results[BestSolutionTrainingRelativeError].Value = new DoubleValue(trainingRelError);
         results[BestSolutionTestRelativeError].Value = new DoubleValue(testRelError);
-        if (CurrentGeneration != null) // this check is needed because linear regression solutions do not have a generations parameter
-          results[BestSolutionGeneration].Value = new IntValue(CurrentGeneration.Value);
+        if (generation != null) // this check is needed because linear regression solutions do not have a generations parameter
+          results[BestSolutionGeneration].Value = new IntValue(generation.Value);
       } else {
         results.Add(new Result(BestSolutionResultName, solution));
         results.Add(new Result(BestSolutionTrainingRSquared, new DoubleValue(trainingR2)));
@@ -179,8 +178,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
         results.Add(new Result(BestSolutionTestMse, new DoubleValue(testMse)));
         results.Add(new Result(BestSolutionTrainingRelativeError, new DoubleValue(trainingRelError)));
         results.Add(new Result(BestSolutionTestRelativeError, new DoubleValue(testRelError)));
-        if (CurrentGeneration != null)
-          results.Add(new Result(BestSolutionGeneration, new IntValue(CurrentGeneration.Value)));
+        if (generation != null)
+          results.Add(new Result(BestSolutionGeneration, new IntValue(generation.Value)));
       }
       #endregion
     }
