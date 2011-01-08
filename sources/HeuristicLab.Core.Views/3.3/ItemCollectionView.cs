@@ -33,7 +33,7 @@ namespace HeuristicLab.Core.Views {
   [Content(typeof(ItemCollection<>), true)]
   [Content(typeof(IItemCollection<>), false)]
   public partial class ItemCollectionView<T> : ItemView where T : class, IItem {
-    private Dictionary<T, List<ListViewItem>> listViewItemMapping;
+    protected Dictionary<T, List<ListViewItem>> itemListViewItemMapping;
     protected TypeSelectorDialog typeSelectorDialog;
 
     public new IItemCollection<T> Content {
@@ -47,16 +47,23 @@ namespace HeuristicLab.Core.Views {
 
     public ItemCollectionView() {
       InitializeComponent();
-      listViewItemMapping = new Dictionary<T, List<ListViewItem>>();
+      itemListViewItemMapping = new Dictionary<T, List<ListViewItem>>();
+    }
+
+    protected override void Dispose(bool disposing) {
+      if (disposing) {
+        if (typeSelectorDialog != null) typeSelectorDialog.Dispose();
+        if (components != null) components.Dispose();
+      }
+      base.Dispose(disposing);
     }
 
     protected override void DeregisterContentEvents() {
       Content.ItemsAdded -= new CollectionItemsChangedEventHandler<T>(Content_ItemsAdded);
       Content.ItemsRemoved -= new CollectionItemsChangedEventHandler<T>(Content_ItemsRemoved);
       Content.CollectionReset -= new CollectionItemsChangedEventHandler<T>(Content_CollectionReset);
-      foreach (T item in listViewItemMapping.Keys) {
-        item.ItemImageChanged -= new EventHandler(Item_ItemImageChanged);
-        item.ToStringChanged -= new EventHandler(Item_ToStringChanged);
+      foreach (T item in itemListViewItemMapping.Keys) {
+        DeregisterItemEvents(item);
       }
       base.DeregisterContentEvents();
     }
@@ -66,10 +73,19 @@ namespace HeuristicLab.Core.Views {
       Content.ItemsRemoved += new CollectionItemsChangedEventHandler<T>(Content_ItemsRemoved);
       Content.CollectionReset += new CollectionItemsChangedEventHandler<T>(Content_CollectionReset);
     }
+    protected virtual void DeregisterItemEvents(T item) {
+      item.ItemImageChanged -= new EventHandler(Item_ItemImageChanged);
+      item.ToStringChanged -= new EventHandler(Item_ToStringChanged);
+    }
+    protected virtual void RegisterItemEvents(T item) {
+      item.ItemImageChanged += new EventHandler(Item_ItemImageChanged);
+      item.ToStringChanged += new EventHandler(Item_ToStringChanged);
+    }
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      while (itemsListView.Items.Count > 0) RemoveListViewItem(itemsListView.Items[0]);
+      itemsListView.Items.Clear();
+      itemListViewItemMapping.Clear();
       RebuildImageList();
       viewHost.Content = null;
       if (Content != null) {
@@ -111,7 +127,8 @@ namespace HeuristicLab.Core.Views {
       if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
         try {
           return (T)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
           ErrorHandling.ShowErrorDialog(this, ex);
         }
       }
@@ -119,49 +136,67 @@ namespace HeuristicLab.Core.Views {
     }
     protected virtual ListViewItem CreateListViewItem(T item) {
       ListViewItem listViewItem = new ListViewItem();
-      listViewItem.Text = item.ToString();
-      listViewItem.ToolTipText = item.ItemName + ": " + item.ItemDescription;
-      listViewItem.Tag = item;
-      itemsListView.SmallImageList.Images.Add(item.ItemImage);
-      listViewItem.ImageIndex = itemsListView.SmallImageList.Images.Count - 1;
+      if (item == null) {
+        listViewItem.Text = "null";
+        itemsListView.SmallImageList.Images.Add(HeuristicLab.Common.Resources.VS2008ImageLibrary.Nothing);
+        listViewItem.ImageIndex = itemsListView.SmallImageList.Images.Count - 1;
+      } else {
+        listViewItem.Text = item.ToString();
+        listViewItem.ToolTipText = item.ItemName + ": " + item.ItemDescription;
+        itemsListView.SmallImageList.Images.Add(item.ItemImage);
+        listViewItem.ImageIndex = itemsListView.SmallImageList.Images.Count - 1;
+        listViewItem.Tag = item;
+      }
       return listViewItem;
     }
     protected virtual void AddListViewItem(ListViewItem listViewItem) {
       T item = (listViewItem.Tag as T);
       itemsListView.Items.Add(listViewItem);
-      if (!listViewItemMapping.ContainsKey(item)) {
-        item.ItemImageChanged += new EventHandler(Item_ItemImageChanged);
-        item.ToStringChanged += new EventHandler(Item_ToStringChanged);
-        listViewItemMapping.Add(item, new List<ListViewItem>());
+      if (item != null) {
+        if (!itemListViewItemMapping.ContainsKey(item)) {
+          RegisterItemEvents(item);
+          itemListViewItemMapping.Add(item, new List<ListViewItem>());
+        }
+        itemListViewItemMapping[item].Add(listViewItem);
       }
-      listViewItemMapping[item].Add(listViewItem);
       sortAscendingButton.Enabled = itemsListView.Items.Count > 1;
       sortDescendingButton.Enabled = itemsListView.Items.Count > 1;
     }
     protected virtual void RemoveListViewItem(ListViewItem listViewItem) {
       T item = (listViewItem.Tag as T);
-      listViewItemMapping[item].Remove(listViewItem);
-      if (listViewItemMapping[item].Count == 0) {
-        listViewItemMapping.Remove(item);
-        item.ItemImageChanged -= new EventHandler(Item_ItemImageChanged);
-        item.ToStringChanged -= new EventHandler(Item_ToStringChanged);
+      if (item != null) {
+        itemListViewItemMapping[item].Remove(listViewItem);
+        if (itemListViewItemMapping[item].Count == 0) {
+          itemListViewItemMapping.Remove(item);
+          DeregisterItemEvents(item);
+        }
       }
       listViewItem.Remove();
       sortAscendingButton.Enabled = itemsListView.Items.Count > 1;
       sortDescendingButton.Enabled = itemsListView.Items.Count > 1;
     }
     protected virtual void UpdateListViewItemImage(ListViewItem listViewItem) {
+      T item = listViewItem.Tag as T;
       int i = listViewItem.ImageIndex;
-      listViewItem.ImageList.Images[i] = ((T)listViewItem.Tag).ItemImage;
+      listViewItem.ImageList.Images[i] = item == null ? HeuristicLab.Common.Resources.VS2008ImageLibrary.Nothing : item.ItemImage;
       listViewItem.ImageIndex = -1;
       listViewItem.ImageIndex = i;
     }
     protected virtual void UpdateListViewItemText(ListViewItem listViewItem) {
-      if (!listViewItem.Text.Equals(listViewItem.Tag.ToString()))
-        listViewItem.Text = listViewItem.Tag.ToString();
+      T item = listViewItem.Tag as T;
+      listViewItem.Text = item == null ? "null" : item.ToString();
+      listViewItem.ToolTipText = item == null ? string.Empty : item.ItemName + ": " + item.ItemDescription;
     }
     protected virtual IEnumerable<ListViewItem> GetListViewItemsForItem(T item) {
-      return listViewItemMapping[item];
+      if (item == null) {
+        List<ListViewItem> listViewItems = new List<ListViewItem>();
+        foreach (ListViewItem listViewItem in itemsListView.Items) {
+          if (listViewItem.Tag == null) listViewItems.Add(listViewItem);
+        }
+        return listViewItems;
+      } else {
+        return itemListViewItemMapping[item];
+      }
     }
 
     #region ListView Events
@@ -189,27 +224,31 @@ namespace HeuristicLab.Core.Views {
     }
     protected virtual void itemsListView_DoubleClick(object sender, EventArgs e) {
       if (itemsListView.SelectedItems.Count == 1) {
-        T item = (T)itemsListView.SelectedItems[0].Tag;
-        IContentView view = MainFormManager.MainForm.ShowContent(item);
-        if (view != null) {
-          view.ReadOnly = ReadOnly;
-          view.Locked = Locked;
+        T item = itemsListView.SelectedItems[0].Tag as T;
+        if (item != null) {
+          IContentView view = MainFormManager.MainForm.ShowContent(item);
+          if (view != null) {
+            view.ReadOnly = ReadOnly;
+            view.Locked = Locked;
+          }
         }
       }
     }
     protected virtual void itemsListView_ItemDrag(object sender, ItemDragEventArgs e) {
       if (!Locked) {
         ListViewItem listViewItem = (ListViewItem)e.Item;
-        T item = (T)listViewItem.Tag;
-        DataObject data = new DataObject();
-        data.SetData("Type", item.GetType());
-        data.SetData("Value", item);
-        if (Content.IsReadOnly || ReadOnly) {
-          DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
-        } else {
-          DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link | DragDropEffects.Move);
-          if ((result & DragDropEffects.Move) == DragDropEffects.Move)
-            Content.Remove(item);
+        T item = listViewItem.Tag as T;
+        if (item != null) {
+          DataObject data = new DataObject();
+          data.SetData("Type", item.GetType());
+          data.SetData("Value", item);
+          if (Content.IsReadOnly || ReadOnly) {
+            DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
+          } else {
+            DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link | DragDropEffects.Move);
+            if ((result & DragDropEffects.Move) == DragDropEffects.Move)
+              Content.Remove(item);
+          }
         }
       }
     }

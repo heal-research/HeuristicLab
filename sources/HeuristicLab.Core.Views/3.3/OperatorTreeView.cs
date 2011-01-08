@@ -29,9 +29,6 @@ using HeuristicLab.Collections;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Core.Views {
-  /// <summary>
-  /// The visual representation of an <see cref="OperatorGraph"/>.
-  /// </summary>
   [View("Operator View (Successors)")]
   [Content(typeof(IOperator), false)]
   public sealed partial class OperatorTreeView : ItemView {
@@ -39,11 +36,6 @@ namespace HeuristicLab.Core.Views {
     private Dictionary<IOperator, List<TreeNode>> operatorNodeTable;
     private Dictionary<IKeyedItemCollection<string, IParameter>, IOperator> parametersOperatorTable;
 
-    /// <summary>
-    /// Gets or sets the operator graph to represent visually.
-    /// </summary>
-    /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
-    /// No own data storage present.</remarks>
     public new IOperator Content {
       get { return (IOperator)base.Content; }
       set { base.Content = value; }
@@ -60,9 +52,6 @@ namespace HeuristicLab.Core.Views {
       }
     }
 
-    /// <summary>
-    /// Initializes a new instance of <see cref="OperatorGraphView"/> with caption "Operator Graph".
-    /// </summary>
     public OperatorTreeView() {
       InitializeComponent();
       graphTreeView.Sorted = true;
@@ -71,10 +60,17 @@ namespace HeuristicLab.Core.Views {
       parametersOperatorTable = new Dictionary<IKeyedItemCollection<string, IParameter>, IOperator>();
     }
 
-    /// <summary>
-    /// Updates all controls with the latest data of the model.
-    /// </summary>
-    /// <remarks>Calls <see cref="ViewBase.UpdateControls"/> of base class <see cref="ViewBase"/>.</remarks>
+    protected override void Dispose(bool disposing) {
+      if (disposing) {
+        if (graphTreeView.Nodes.Count > 0) {
+          RemoveTreeNode(graphTreeView.Nodes[0]);
+          graphTreeView.Nodes.Clear();
+        }
+        if (components != null) components.Dispose();
+      }
+      base.Dispose(disposing);
+    }
+
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (graphTreeView.Nodes.Count > 0)

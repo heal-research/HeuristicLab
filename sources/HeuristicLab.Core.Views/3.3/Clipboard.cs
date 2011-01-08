@@ -33,7 +33,7 @@ namespace HeuristicLab.Core.Views {
   [View("Clipboard")]
   public sealed partial class Clipboard<T> : HeuristicLab.MainForm.WindowsForms.Sidebar where T : class, IItem {
     private TypeSelectorDialog typeSelectorDialog;
-    private Dictionary<T, ListViewItem> itemListViewItemTable;
+    private Dictionary<T, ListViewItem> itemListViewItemMapping;
 
     private string itemsPath;
     public string ItemsPath {
@@ -61,12 +61,24 @@ namespace HeuristicLab.Core.Views {
       InitializeComponent();
       ItemsPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
                   Path.DirectorySeparatorChar + "HeuristicLab" + Path.DirectorySeparatorChar + "Clipboard";
-      itemListViewItemTable = new Dictionary<T, ListViewItem>();
+      itemListViewItemMapping = new Dictionary<T, ListViewItem>();
     }
     public Clipboard(string itemsPath) {
       InitializeComponent();
       ItemsPath = itemsPath;
-      itemListViewItemTable = new Dictionary<T, ListViewItem>();
+      itemListViewItemMapping = new Dictionary<T, ListViewItem>();
+    }
+
+    protected override void Dispose(bool disposing) {
+      if (disposing) {
+        if (typeSelectorDialog != null) typeSelectorDialog.Dispose();
+        foreach (T item in itemListViewItemMapping.Keys) {
+          item.ItemImageChanged -= new EventHandler(Item_ItemImageChanged);
+          item.ToStringChanged -= new EventHandler(Item_ToStringChanged);
+        }
+        if (components != null) components.Dispose();
+      }
+      base.Dispose(disposing);
     }
 
     protected override void OnInitialized(EventArgs e) {
@@ -90,14 +102,15 @@ namespace HeuristicLab.Core.Views {
       if (InvokeRequired)
         Invoke(new Action<T>(AddItem), item);
       else {
-        if (!itemListViewItemTable.ContainsKey(item)) {
+        if (item == null) throw new ArgumentNullException("item", "Cannot add null item to clipboard.");
+        if (!itemListViewItemMapping.ContainsKey(item)) {
           ListViewItem listViewItem = new ListViewItem(item.ToString());
           listViewItem.ToolTipText = item.ItemName + ": " + item.ItemDescription;
           listView.SmallImageList.Images.Add(item.ItemImage);
           listViewItem.ImageIndex = listView.SmallImageList.Images.Count - 1;
           listViewItem.Tag = item;
           listView.Items.Add(listViewItem);
-          itemListViewItemTable.Add(item, listViewItem);
+          itemListViewItemMapping.Add(item, listViewItem);
           item.ItemImageChanged += new EventHandler(Item_ItemImageChanged);
           item.ToStringChanged += new EventHandler(Item_ToStringChanged);
           sortAscendingButton.Enabled = sortDescendingButton.Enabled = listView.Items.Count > 1;
@@ -110,15 +123,12 @@ namespace HeuristicLab.Core.Views {
       if (InvokeRequired)
         Invoke(new Action<T>(RemoveItem), item);
       else {
-        if (itemListViewItemTable.ContainsKey(item)) {
+        if (itemListViewItemMapping.ContainsKey(item)) {
           item.ItemImageChanged -= new EventHandler(Item_ItemImageChanged);
           item.ToStringChanged -= new EventHandler(Item_ToStringChanged);
-          ListViewItem listViewItem = itemListViewItemTable[item];
+          ListViewItem listViewItem = itemListViewItemMapping[item];
           listViewItem.Remove();
-          foreach (ListViewItem other in listView.Items)
-            if (other.ImageIndex > listViewItem.ImageIndex) other.ImageIndex--;
-          listView.SmallImageList.Images.RemoveAt(listViewItem.ImageIndex);
-          itemListViewItemTable.Remove(item);
+          itemListViewItemMapping.Remove(item);
           sortAscendingButton.Enabled = sortDescendingButton.Enabled = listView.Items.Count > 1;
         }
       }
@@ -177,7 +187,7 @@ namespace HeuristicLab.Core.Views {
       }
 
       int i = 0;
-      T[] items = GetStorableItems(itemListViewItemTable.Keys);
+      T[] items = GetStorableItems(itemListViewItemMapping.Keys);
 
       foreach (T item in items) {
         try {
@@ -242,6 +252,7 @@ namespace HeuristicLab.Core.Views {
         if (!ReadOnly && (listView.SelectedItems.Count > 0)) {
           foreach (ListViewItem item in listView.SelectedItems)
             RemoveItem((T)item.Tag);
+          RebuildImageList();
         }
       }
     }
@@ -270,8 +281,10 @@ namespace HeuristicLab.Core.Views {
         DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
       } else {
         DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link | DragDropEffects.Move);
-        if ((result & DragDropEffects.Move) == DragDropEffects.Move)
+        if ((result & DragDropEffects.Move) == DragDropEffects.Move) {
           RemoveItem(item);
+          RebuildImageList();
+        }
       }
     }
     private void listView_DragEnterOver(object sender, DragEventArgs e) {
@@ -280,17 +293,22 @@ namespace HeuristicLab.Core.Views {
       T item = e.Data.GetData("Value") as T;
       if (!ReadOnly && (type != null) && (item != null)) {
         if ((e.KeyState & 32) == 32) e.Effect = DragDropEffects.Link;  // ALT key
-        else if (((e.KeyState & 4) == 4) && !itemListViewItemTable.ContainsKey(item)) e.Effect = DragDropEffects.Move;  // SHIFT key
+        else if (((e.KeyState & 4) == 4) && !itemListViewItemMapping.ContainsKey(item)) e.Effect = DragDropEffects.Move;  // SHIFT key
         else if ((e.AllowedEffect & DragDropEffects.Copy) == DragDropEffects.Copy) e.Effect = DragDropEffects.Copy;
-        else if (((e.AllowedEffect & DragDropEffects.Move) == DragDropEffects.Move) && !itemListViewItemTable.ContainsKey(item)) e.Effect = DragDropEffects.Move;
-        else if (((e.AllowedEffect & DragDropEffects.Link) == DragDropEffects.Link) && !itemListViewItemTable.ContainsKey(item)) e.Effect = DragDropEffects.Link;
+        else if (((e.AllowedEffect & DragDropEffects.Move) == DragDropEffects.Move) && !itemListViewItemMapping.ContainsKey(item)) e.Effect = DragDropEffects.Move;
+        else if (((e.AllowedEffect & DragDropEffects.Link) == DragDropEffects.Link) && !itemListViewItemMapping.ContainsKey(item)) e.Effect = DragDropEffects.Link;
       }
     }
     private void listView_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
         T item = e.Data.GetData("Value") as T;
         if ((e.Effect & DragDropEffects.Copy) == DragDropEffects.Copy) item = (T)item.Clone();
-        AddItem(item);
+        try {
+          AddItem(item);
+        }
+        catch (Exception ex) {
+          ErrorHandling.ShowErrorDialog(this, ex);
+        }
       }
     }
     #endregion
@@ -325,10 +343,11 @@ namespace HeuristicLab.Core.Views {
       if (listView.SelectedItems.Count > 0) {
         foreach (ListViewItem item in listView.SelectedItems)
           RemoveItem((T)item.Tag);
+        RebuildImageList();
       }
     }
     private void saveButton_Click(object sender, EventArgs e) {
-      IEnumerable<T> items = itemListViewItemTable.Keys.Except(GetStorableItems(itemListViewItemTable.Keys));
+      IEnumerable<T> items = itemListViewItemMapping.Keys.Except(GetStorableItems(itemListViewItemMapping.Keys));
       if (items.Any()) {
         string itemNames = string.Join(Environment.NewLine, items.Select(item => item.ToString()).ToArray());
         MessageBox.Show("The following items are not saved, because they are locked (e.g. used in a running algorithm):" + Environment.NewLine + Environment.NewLine +
@@ -344,7 +363,7 @@ namespace HeuristicLab.Core.Views {
         Invoke(new EventHandler(Item_ItemImageChanged), sender, e);
       else {
         T item = (T)sender;
-        ListViewItem listViewItem = itemListViewItemTable[item];
+        ListViewItem listViewItem = itemListViewItemMapping[item];
         int i = listViewItem.ImageIndex;
         listViewItem.ImageList.Images[i] = item.ItemImage;
         listViewItem.ImageIndex = -1;
@@ -356,7 +375,7 @@ namespace HeuristicLab.Core.Views {
         Invoke(new EventHandler(Item_ToStringChanged), sender, e);
       else {
         T item = (T)sender;
-        itemListViewItemTable[item].Text = item.ToString();
+        itemListViewItemMapping[item].Text = item.ToString();
         listView.Sort();
         AdjustListViewColumnSizes();
       }
@@ -368,6 +387,13 @@ namespace HeuristicLab.Core.Views {
       if (listView.Items.Count > 0) {
         for (int i = 0; i < listView.Columns.Count; i++)
           listView.Columns[i].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+      }
+    }
+    private void RebuildImageList() {
+      listView.SmallImageList.Images.Clear();
+      foreach (ListViewItem item in listView.Items) {
+        listView.SmallImageList.Images.Add(((T)item.Tag).ItemImage);
+        item.ImageIndex = listView.SmallImageList.Images.Count - 1;
       }
     }
     #endregion

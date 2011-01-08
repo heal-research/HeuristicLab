@@ -50,6 +50,14 @@ namespace HeuristicLab.Optimization.Views {
       InitializeComponent();
     }
 
+    protected override void Dispose(bool disposing) {
+      if (disposing) {
+        if (problemTypeSelectorDialog != null) problemTypeSelectorDialog.Dispose();
+        if (components != null) components.Dispose();
+      }
+      base.Dispose(disposing);
+    }
+
     protected override void OnInitialized(EventArgs e) {
       // Set order of tab pages according to z order.
       // NOTE: This is required due to a bug in the VS designer.

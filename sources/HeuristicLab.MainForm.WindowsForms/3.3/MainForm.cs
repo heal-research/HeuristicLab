@@ -429,7 +429,12 @@ namespace HeuristicLab.MainForm.WindowsForms {
 
     private void ToolStripItemClicked(object sender, EventArgs e) {
       System.Windows.Forms.ToolStripItem item = (System.Windows.Forms.ToolStripItem)sender;
-      ((IActionUserInterfaceItem)item.Tag).Execute();
+      try {
+        ((IActionUserInterfaceItem)item.Tag).Execute();
+      }
+      catch (Exception ex) {
+        ErrorHandling.ShowErrorDialog((Control)MainFormManager.MainForm, ex);
+      }
     }
     #endregion
   }

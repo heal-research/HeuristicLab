@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System.Collections.Generic;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
 
@@ -33,32 +32,8 @@ namespace HeuristicLab.Core.Views {
       set { base.Content = value; }
     }
 
-    private Dictionary<T, ListViewItem> listViewItemDictionary;
-    protected Dictionary<T, ListViewItem> ListViewItemDictionary {
-      get { return listViewItemDictionary; }
-    }
-
     public ItemSetView() {
-      listViewItemDictionary = new Dictionary<T, ListViewItem>();
       InitializeComponent();
-    }
-
-    protected override void OnContentChanged() {
-      base.OnContentChanged();
-      if (Content != null)
-        Caption += " (" + Content.GetType().Name + ")";
-    }
-
-    protected override void AddListViewItem(ListViewItem listViewItem) {
-      ListViewItemDictionary.Add((T)listViewItem.Tag, listViewItem);
-      base.AddListViewItem(listViewItem);
-    }
-    protected override void RemoveListViewItem(ListViewItem listViewItem) {
-      base.RemoveListViewItem(listViewItem);
-      ListViewItemDictionary.Remove((T)listViewItem.Tag);
-    }
-    protected override IEnumerable<ListViewItem> GetListViewItemsForItem(T item) {
-      return new ListViewItem[] { listViewItemDictionary[item] };
     }
   }
 }

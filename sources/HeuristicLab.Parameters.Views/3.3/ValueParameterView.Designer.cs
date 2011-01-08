@@ -26,18 +26,6 @@ namespace HeuristicLab.Parameters.Views {
     /// </summary>
     private System.ComponentModel.IContainer components = null;
 
-    /// <summary> 
-    /// Clean up any resources being used.
-    /// </summary>
-    /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-    protected override void Dispose(bool disposing) {
-      if (disposing) {
-        if (typeSelectorDialog != null) typeSelectorDialog.Dispose();
-        if (components != null) components.Dispose();
-      }
-      base.Dispose(disposing);
-    }
-
     #region Component Designer generated code
 
     /// <summary> 
@@ -119,7 +107,7 @@ namespace HeuristicLab.Parameters.Views {
       this.valueViewHost.ReadOnly = false;
       this.valueViewHost.Size = new System.Drawing.Size(374, 182);
       this.valueViewHost.TabIndex = 3;
-      this.valueViewHost.ViewType = null;   
+      this.valueViewHost.ViewType = null;
       // 
       // clearValueButton
       // 

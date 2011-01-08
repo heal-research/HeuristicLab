@@ -29,23 +29,6 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     private System.ComponentModel.IContainer components = null;
 
-    /// <summary>
-    /// Clean up any resources being used.
-    /// </summary>
-    /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-    protected override void Dispose(bool disposing) {
-      if (disposing) {
-        if (typeSelectorDialog != null) typeSelectorDialog.Dispose();
-        foreach (ListViewItem listViewItem in itemsListView.Items) {
-          T item = listViewItem.Tag as T;
-          if (item != null) item.ItemImageChanged -= new EventHandler(Item_ItemImageChanged);
-          if (item != null) item.ToStringChanged -= new EventHandler(Item_ToStringChanged);
-        }
-        if (components != null) components.Dispose();
-      }
-      base.Dispose(disposing);
-    }
-
     #region Windows Form Designer generated code
 
     /// <summary>

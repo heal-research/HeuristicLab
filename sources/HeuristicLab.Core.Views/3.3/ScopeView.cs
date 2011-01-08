@@ -56,6 +56,20 @@ namespace HeuristicLab.Core.Views {
       subScopesScopeTable = new Dictionary<ScopeList, IScope>();
     }
 
+    /// <summary> 
+    /// Clean up any resources being used.
+    /// </summary>
+    /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+    protected override void Dispose(bool disposing) {
+      if (disposing) {
+        if (scopesTreeView.Nodes.Count > 0) {
+          ClearTreeNode(scopesTreeView.Nodes[0]);
+        }
+        if (components != null) components.Dispose();
+      }
+      base.Dispose(disposing);
+    }
+
     /// <summary>
     /// Updates all controls with the latest data of the model.
     /// </summary>

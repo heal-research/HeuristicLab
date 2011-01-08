@@ -37,6 +37,14 @@ namespace HeuristicLab.Core.Views {
       itemsGroupBox.Text = "Parameters";
     }
 
+    protected override void Dispose(bool disposing) {
+      if (disposing) {
+        if (createParameterDialog != null) createParameterDialog.Dispose();
+        if (components != null) components.Dispose();
+      }
+      base.Dispose(disposing);
+    }
+
     protected override IValueParameter CreateItem() {
       if (createParameterDialog == null) {
         createParameterDialog = new CreateParameterDialog();

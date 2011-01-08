@@ -75,6 +75,14 @@ namespace HeuristicLab.Core.Views {
       selectedType = null;
     }
 
+    protected override void Dispose(bool disposing) {
+      if (disposing) {
+        if (typeSelectorDialog != null) typeSelectorDialog.Dispose();
+        if (components != null) components.Dispose();
+      }
+      base.Dispose(disposing);
+    }
+
     public virtual void Configure(Type baseType, bool showNotInstantiableTypes, bool showGenericTypes) {
       if (baseType == null) throw new ArgumentNullException();
       if (InvokeRequired)

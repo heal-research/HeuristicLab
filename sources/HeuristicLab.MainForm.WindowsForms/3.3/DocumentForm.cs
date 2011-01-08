@@ -49,6 +49,15 @@ namespace HeuristicLab.MainForm.WindowsForms {
       }
     }
 
+    protected override void Dispose(bool disposing) {
+      if (view != null)
+        view.CaptionChanged -= new System.EventHandler(View_CaptionChanged);
+      if (disposing && (components != null)) {
+        components.Dispose();
+      }
+      base.Dispose(disposing);
+    }
+
     private void UpdateText() {
       if (InvokeRequired)
         Invoke(new MethodInvoker(UpdateText));

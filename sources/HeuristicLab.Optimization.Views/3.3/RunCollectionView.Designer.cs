@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System;
 using System.Windows.Forms;
 
 namespace HeuristicLab.Optimization.Views {
@@ -35,10 +34,6 @@ namespace HeuristicLab.Optimization.Views {
     /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
     protected override void Dispose(bool disposing) {
       if (disposing) {
-        foreach (ListViewItem item in itemsListView.Items) {
-          ((IRun)item.Tag).ItemImageChanged -= new EventHandler(Item_ItemImageChanged);
-          ((IRun)item.Tag).ToStringChanged -= new EventHandler(Item_ToStringChanged);
-        }
         if (components != null) components.Dispose();
       }
       base.Dispose(disposing);

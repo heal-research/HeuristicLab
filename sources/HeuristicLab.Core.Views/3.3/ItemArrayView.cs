@@ -29,20 +29,13 @@ using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Core.Views {
-  /// <summary>
-  /// The visual representation of all variables in a specified scope.
-  /// </summary>
   [View("ItemArray View")]
   [Content(typeof(ItemArray<>), true)]
   [Content(typeof(IItemArray<>), false)]
   public partial class ItemArrayView<T> : ItemView where T : class, IItem {
+    protected Dictionary<T, List<ListViewItem>> itemListViewItemMapping;
     protected TypeSelectorDialog typeSelectorDialog;
 
-    /// <summary>
-    /// Gets or sets the scope whose variables to represent visually.
-    /// </summary>
-    /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
-    /// No won data storage present.</remarks>
     public new IItemArray<T> Content {
       get { return (IItemArray<T>)base.Content; }
       set { base.Content = value; }
@@ -52,37 +45,41 @@ namespace HeuristicLab.Core.Views {
       get { return itemsListView; }
     }
 
-    /// <summary>
-    /// Initializes a new instance of <see cref="VariablesScopeView"/> with caption "Variables Scope View".
-    /// </summary>
     public ItemArrayView() {
       InitializeComponent();
+      itemListViewItemMapping = new Dictionary<T, List<ListViewItem>>();
     }
 
-    /// <summary>
-    /// Removes the eventhandlers from the underlying <see cref="IScope"/>.
-    /// </summary>
-    /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
+    protected override void Dispose(bool disposing) {
+      if (disposing) {
+        if (typeSelectorDialog != null) typeSelectorDialog.Dispose();
+        if (components != null) components.Dispose();
+      }
+      base.Dispose(disposing);
+    }
+
     protected override void DeregisterContentEvents() {
       Content.ItemsReplaced -= new CollectionItemsChangedEventHandler<IndexedItem<T>>(Content_ItemsReplaced);
       Content.ItemsMoved -= new CollectionItemsChangedEventHandler<IndexedItem<T>>(Content_ItemsMoved);
       Content.CollectionReset -= new CollectionItemsChangedEventHandler<IndexedItem<T>>(Content_CollectionReset);
-      foreach (T item in Content) {
-        item.ItemImageChanged -= new EventHandler(Item_ItemImageChanged);
-        item.ToStringChanged -= new EventHandler(Item_ToStringChanged);
+      foreach (T item in itemListViewItemMapping.Keys) {
+        DeregisterItemEvents(item);
       }
       base.DeregisterContentEvents();
     }
-
-    /// <summary>
-    /// Adds eventhandlers to the underlying <see cref="IScope"/>.
-    /// </summary>
-    /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.ItemsReplaced += new CollectionItemsChangedEventHandler<IndexedItem<T>>(Content_ItemsReplaced);
       Content.ItemsMoved += new CollectionItemsChangedEventHandler<IndexedItem<T>>(Content_ItemsMoved);
       Content.CollectionReset += new CollectionItemsChangedEventHandler<IndexedItem<T>>(Content_CollectionReset);
+    }
+    protected virtual void DeregisterItemEvents(T item) {
+      item.ItemImageChanged -= new EventHandler(Item_ItemImageChanged);
+      item.ToStringChanged -= new EventHandler(Item_ToStringChanged);
+    }
+    protected virtual void RegisterItemEvents(T item) {
+      item.ItemImageChanged += new EventHandler(Item_ItemImageChanged);
+      item.ToStringChanged += new EventHandler(Item_ToStringChanged);
     }
 
     protected override void OnContentChanged() {
@@ -91,7 +88,9 @@ namespace HeuristicLab.Core.Views {
       int selectedIndex = -1;
       if (itemsListView.SelectedItems.Count == 1) selectedIndex = itemsListView.SelectedIndices[0];
 
-      while (itemsListView.Items.Count > 0) RemoveListViewItem(itemsListView.Items[0]);
+      itemsListView.Items.Clear();
+      itemListViewItemMapping.Clear();
+      RebuildImageList();
       viewHost.Content = null;
       if (Content != null) {
         Caption += " (" + Content.GetType().Name + ")";
@@ -139,7 +138,8 @@ namespace HeuristicLab.Core.Views {
       if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
         try {
           return (T)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
           ErrorHandling.ShowErrorDialog(this, ex);
         }
       }
@@ -147,36 +147,51 @@ namespace HeuristicLab.Core.Views {
     }
     protected virtual ListViewItem CreateListViewItem(T item) {
       ListViewItem listViewItem = new ListViewItem();
-      listViewItem.Text = item == null ? "null" : item.ToString();
-      listViewItem.ToolTipText = item == null ? string.Empty : item.ItemName + ": " + item.ItemDescription;
-      itemsListView.SmallImageList.Images.Add(item == null ? HeuristicLab.Common.Resources.VS2008ImageLibrary.Nothing : item.ItemImage);
-      listViewItem.ImageIndex = itemsListView.SmallImageList.Images.Count - 1;
-      listViewItem.Tag = item;
+      if (item == null) {
+        listViewItem.Text = "null";
+        itemsListView.SmallImageList.Images.Add(HeuristicLab.Common.Resources.VS2008ImageLibrary.Nothing);
+        listViewItem.ImageIndex = itemsListView.SmallImageList.Images.Count - 1;
+      } else {
+        listViewItem.Text = item.ToString();
+        listViewItem.ToolTipText = item.ItemName + ": " + item.ItemDescription;
+        itemsListView.SmallImageList.Images.Add(item.ItemImage);
+        listViewItem.ImageIndex = itemsListView.SmallImageList.Images.Count - 1;
+        listViewItem.Tag = item;
+      }
       return listViewItem;
     }
     protected virtual void AddListViewItem(ListViewItem listViewItem) {
+      T item = (listViewItem.Tag as T);
       itemsListView.Items.Add(listViewItem);
-      if (listViewItem.Tag != null) {
-        ((T)listViewItem.Tag).ItemImageChanged += new EventHandler(Item_ItemImageChanged);
-        ((T)listViewItem.Tag).ToStringChanged += new EventHandler(Item_ToStringChanged);
+      if (item != null) {
+        if (!itemListViewItemMapping.ContainsKey(item)) {
+          RegisterItemEvents(item);
+          itemListViewItemMapping.Add(item, new List<ListViewItem>());
+        }
+        itemListViewItemMapping[item].Add(listViewItem);
       }
     }
     protected virtual void InsertListViewItem(int index, ListViewItem listViewItem) {
+      T item = (listViewItem.Tag as T);
       itemsListView.Items.Insert(index, listViewItem);
-      if (listViewItem.Tag != null) {
-        ((T)listViewItem.Tag).ItemImageChanged += new EventHandler(Item_ItemImageChanged);
-        ((T)listViewItem.Tag).ToStringChanged += new EventHandler(Item_ToStringChanged);
+      if (item != null) {
+        if (!itemListViewItemMapping.ContainsKey(item)) {
+          RegisterItemEvents(item);
+          itemListViewItemMapping.Add(item, new List<ListViewItem>());
+        }
+        itemListViewItemMapping[item].Add(listViewItem);
       }
     }
     protected virtual void RemoveListViewItem(ListViewItem listViewItem) {
-      if (listViewItem.Tag != null) {
-        ((T)listViewItem.Tag).ItemImageChanged -= new EventHandler(Item_ItemImageChanged);
-        ((T)listViewItem.Tag).ToStringChanged -= new EventHandler(Item_ToStringChanged);
+      T item = (listViewItem.Tag as T);
+      if (item != null) {
+        itemListViewItemMapping[item].Remove(listViewItem);
+        if (itemListViewItemMapping[item].Count == 0) {
+          itemListViewItemMapping.Remove(item);
+          DeregisterItemEvents(item);
+        }
       }
       listViewItem.Remove();
-      foreach (ListViewItem other in itemsListView.Items)
-        if (other.ImageIndex > listViewItem.ImageIndex) other.ImageIndex--;
-      itemsListView.SmallImageList.Images.RemoveAt(listViewItem.ImageIndex);
     }
     protected virtual void UpdateListViewItemImage(ListViewItem listViewItem) {
       T item = listViewItem.Tag as T;
@@ -189,6 +204,9 @@ namespace HeuristicLab.Core.Views {
       T item = listViewItem.Tag as T;
       listViewItem.Text = item == null ? "null" : item.ToString();
       listViewItem.ToolTipText = item == null ? string.Empty : item.ItemName + ": " + item.ItemDescription;
+    }
+    protected virtual IEnumerable<ListViewItem> GetListViewItemsForItem(T item) {
+      return itemListViewItemMapping[item];
     }
 
     #region ListView Events
@@ -346,6 +364,7 @@ namespace HeuristicLab.Core.Views {
           listViewItems.Add(itemsListView.Items[item.Index]);
         foreach (ListViewItem listViewItem in listViewItems)
           RemoveListViewItem(listViewItem);
+        RebuildImageList();
 
         foreach (IndexedItem<T> item in e.Items)
           InsertListViewItem(item.Index, CreateListViewItem(item.Value));
@@ -376,6 +395,7 @@ namespace HeuristicLab.Core.Views {
           listViewItems.Add(itemsListView.Items[item.Index]);
         foreach (ListViewItem listViewItem in listViewItems)
           RemoveListViewItem(listViewItem);
+        RebuildImageList();
 
         foreach (IndexedItem<T> item in e.Items)
           InsertListViewItem(item.Index, CreateListViewItem(item.Value));
@@ -390,10 +410,8 @@ namespace HeuristicLab.Core.Views {
         Invoke(new EventHandler(Item_ItemImageChanged), sender, e);
       else {
         T item = (T)sender;
-        foreach (ListViewItem listViewItem in itemsListView.Items) {
-          if (((T)listViewItem.Tag) == item)
-            UpdateListViewItemImage(listViewItem);
-        }
+        foreach (ListViewItem listViewItem in GetListViewItemsForItem(item))
+          UpdateListViewItemImage(listViewItem);
       }
     }
     protected virtual void Item_ToStringChanged(object sender, EventArgs e) {
@@ -401,10 +419,8 @@ namespace HeuristicLab.Core.Views {
         Invoke(new EventHandler(Item_ToStringChanged), sender, e);
       else {
         T item = (T)sender;
-        foreach (ListViewItem listViewItem in itemsListView.Items) {
-          if (((T)listViewItem.Tag) == item)
-            UpdateListViewItemText(listViewItem);
-        }
+        foreach (ListViewItem listViewItem in GetListViewItemsForItem(item))
+          UpdateListViewItemText(listViewItem);
       }
     }
     #endregion
@@ -414,6 +430,13 @@ namespace HeuristicLab.Core.Views {
       if (itemsListView.Items.Count > 0) {
         for (int i = 0; i < itemsListView.Columns.Count; i++)
           itemsListView.Columns[i].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+      }
+    }
+    private void RebuildImageList() {
+      itemsListView.SmallImageList.Images.Clear();
+      foreach (ListViewItem item in itemsListView.Items) {
+        itemsListView.SmallImageList.Images.Add(((T)item.Tag).ItemImage);
+        item.ImageIndex = itemsListView.SmallImageList.Images.Count - 1;
       }
     }
     #endregion

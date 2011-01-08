@@ -35,7 +35,7 @@ namespace HeuristicLab.Optimization.Views {
   [Content(typeof(RunCollection), true)]
   [Content(typeof(IItemCollection<IRun>), false)]
   public sealed partial class RunCollectionView : ItemView {
-    private Dictionary<IRun, List<ListViewItem>> runListViewItemMapping;
+    private Dictionary<IRun, List<ListViewItem>> itemListViewItemMapping;
 
     public new IItemCollection<IRun> Content {
       get { return (IItemCollection<IRun>)base.Content; }
@@ -53,14 +53,16 @@ namespace HeuristicLab.Optimization.Views {
     public RunCollectionView() {
       InitializeComponent();
       itemsGroupBox.Text = "Runs";
-      runListViewItemMapping = new Dictionary<IRun, List<ListViewItem>>();
+      itemListViewItemMapping = new Dictionary<IRun, List<ListViewItem>>();
     }
 
     protected override void DeregisterContentEvents() {
       Content.ItemsAdded -= new CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
       Content.ItemsRemoved -= new CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
       Content.CollectionReset -= new CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
-      DeregisterRunEvents(Content);
+      foreach (IRun run in itemListViewItemMapping.Keys) {
+        DeregisterItemEvents(run);
+      }
       base.DeregisterContentEvents();
     }
     protected override void RegisterContentEvents() {
@@ -68,15 +70,16 @@ namespace HeuristicLab.Optimization.Views {
       Content.ItemsAdded += new CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
       Content.ItemsRemoved += new CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
       Content.CollectionReset += new CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
-      RegisterRunEvents(Content);
     }
-    private void RegisterRunEvents(IEnumerable<IRun> runs) {
-      foreach (IRun run in runs)
-        run.Changed += new EventHandler(Run_Changed);
+    private void DeregisterItemEvents(IRun item) {
+      item.ItemImageChanged -= new EventHandler(Item_ItemImageChanged);
+      item.ToStringChanged -= new EventHandler(Item_ToStringChanged);
+      item.Changed -= new EventHandler(Item_Changed);
     }
-    private void DeregisterRunEvents(IEnumerable<IRun> runs) {
-      foreach (IRun run in runs)
-        run.Changed -= new EventHandler(Run_Changed);
+    private void RegisterItemEvents(IRun item) {
+      item.ItemImageChanged += new EventHandler(Item_ItemImageChanged);
+      item.ToStringChanged += new EventHandler(Item_ToStringChanged);
+      item.Changed += new EventHandler(Item_Changed);
     }
 
     protected override void OnInitialized(EventArgs e) {
@@ -100,7 +103,9 @@ namespace HeuristicLab.Optimization.Views {
       if ((itemsListView.SelectedItems.Count == 1) && (itemsListView.SelectedItems[0].Tag != null))
         selectedName = ((IRun)itemsListView.SelectedItems[0].Tag).Name;
 
-      while (itemsListView.Items.Count > 0) RemoveListViewItem(itemsListView.Items[0]);
+      itemsListView.Items.Clear();
+      itemListViewItemMapping.Clear();
+      RebuildImageList();
       viewHost.Content = null;
 
       if (Content != null) {
@@ -147,18 +152,24 @@ namespace HeuristicLab.Optimization.Views {
 
     private ListViewItem CreateListViewItem(IRun item) {
       ListViewItem listViewItem = new ListViewItem();
-      listViewItem.Text = item.ToString();
-      listViewItem.ToolTipText = item.ItemName + ": " + item.ItemDescription;
-      itemsListView.SmallImageList.Images.Add(item.ItemImage);
-      listViewItem.ImageIndex = itemsListView.SmallImageList.Images.Count - 1;
-      listViewItem.Tag = item;
-
-      if (item.Visible) {
-        listViewItem.Font = new Font(listViewItem.Font, FontStyle.Regular);
-        listViewItem.ForeColor = item.Color;
+      if (item == null) {
+        listViewItem.Text = "null";
+        itemsListView.SmallImageList.Images.Add(HeuristicLab.Common.Resources.VS2008ImageLibrary.Nothing);
+        listViewItem.ImageIndex = itemsListView.SmallImageList.Images.Count - 1;
       } else {
-        listViewItem.Font = new Font(listViewItem.Font, FontStyle.Italic);
-        listViewItem.ForeColor = Color.LightGray;
+        listViewItem.Text = item.ToString();
+        listViewItem.ToolTipText = item.ItemName + ": " + item.ItemDescription;
+        itemsListView.SmallImageList.Images.Add(item.ItemImage);
+        listViewItem.ImageIndex = itemsListView.SmallImageList.Images.Count - 1;
+        listViewItem.Tag = item;
+
+        if (item.Visible) {
+          listViewItem.Font = new Font(listViewItem.Font, FontStyle.Regular);
+          listViewItem.ForeColor = item.Color;
+        } else {
+          listViewItem.Font = new Font(listViewItem.Font, FontStyle.Italic);
+          listViewItem.ForeColor = Color.LightGray;
+        }
       }
       return listViewItem;
     }
@@ -166,40 +177,46 @@ namespace HeuristicLab.Optimization.Views {
       itemsListView.Items.Add(listViewItem);
       IRun run = listViewItem.Tag as IRun;
       if (run != null) {
-        if (!runListViewItemMapping.ContainsKey(run))
-          runListViewItemMapping.Add(run, new List<ListViewItem>());
-        runListViewItemMapping[run].Add(listViewItem);
-        run.ItemImageChanged += new EventHandler(Item_ItemImageChanged);
-        run.ToStringChanged += new EventHandler(Item_ToStringChanged);
+        if (!itemListViewItemMapping.ContainsKey(run)) {
+          itemListViewItemMapping.Add(run, new List<ListViewItem>());
+          RegisterItemEvents(run);
+        }
+        itemListViewItemMapping[run].Add(listViewItem);
       }
     }
     private void RemoveListViewItem(ListViewItem listViewItem) {
       IRun run = listViewItem.Tag as IRun;
       if (run != null) {
-        runListViewItemMapping[run].Remove(listViewItem);
-        if (runListViewItemMapping[run].Count == 0) {
-          runListViewItemMapping.Remove(run);
-          run.ItemImageChanged -= new EventHandler(Item_ItemImageChanged);
-          run.ToStringChanged -= new EventHandler(Item_ToStringChanged);
+        itemListViewItemMapping[run].Remove(listViewItem);
+        if (itemListViewItemMapping[run].Count == 0) {
+          DeregisterItemEvents(run);
+          itemListViewItemMapping.Remove(run);
         }
       }
       listViewItem.Remove();
-      foreach (ListViewItem other in itemsListView.Items)
-        if (other.ImageIndex > listViewItem.ImageIndex) other.ImageIndex--;
-      itemsListView.SmallImageList.Images.RemoveAt(listViewItem.ImageIndex);
     }
     private void UpdateListViewItemImage(ListViewItem listViewItem) {
+      IRun item = listViewItem.Tag as IRun;
       int i = listViewItem.ImageIndex;
-      listViewItem.ImageList.Images[i] = ((IRun)listViewItem.Tag).ItemImage;
+      listViewItem.ImageList.Images[i] = item == null ? HeuristicLab.Common.Resources.VS2008ImageLibrary.Nothing : item.ItemImage;
       listViewItem.ImageIndex = -1;
       listViewItem.ImageIndex = i;
     }
     private void UpdateListViewItemText(ListViewItem listViewItem) {
-      if (!listViewItem.Text.Equals(listViewItem.Tag.ToString()))
-        listViewItem.Text = listViewItem.Tag.ToString();
+      IRun item = listViewItem.Tag as IRun;
+      listViewItem.Text = item == null ? "null" : item.ToString();
+      listViewItem.ToolTipText = item == null ? string.Empty : item.ItemName + ": " + item.ItemDescription;
     }
-    private IEnumerable<ListViewItem> GetListViewItemsForItem(IRun run) {
-      return runListViewItemMapping[run];
+    private IEnumerable<ListViewItem> GetListViewItemsForItem(IRun item) {
+      if (item == null) {
+        List<ListViewItem> listViewItems = new List<ListViewItem>();
+        foreach (ListViewItem listViewItem in itemsListView.Items) {
+          if (listViewItem.Tag == null) listViewItems.Add(listViewItem);
+        }
+        return listViewItems;
+      } else {
+        return itemListViewItemMapping[item];
+      }
     }
 
     #region ListView Events
@@ -227,27 +244,31 @@ namespace HeuristicLab.Optimization.Views {
     }
     private void itemsListView_DoubleClick(object sender, EventArgs e) {
       if (itemsListView.SelectedItems.Count == 1) {
-        IRun item = (IRun)itemsListView.SelectedItems[0].Tag;
-        IContentView view = MainFormManager.MainForm.ShowContent(item);
-        if (view != null) {
-          view.ReadOnly = ReadOnly;
-          view.Locked = Locked;
+        IRun item = itemsListView.SelectedItems[0].Tag as IRun;
+        if (item != null) {
+          IContentView view = MainFormManager.MainForm.ShowContent(item);
+          if (view != null) {
+            view.ReadOnly = ReadOnly;
+            view.Locked = Locked;
+          }
         }
       }
     }
     private void itemsListView_ItemDrag(object sender, ItemDragEventArgs e) {
       if (!Locked) {
         ListViewItem listViewItem = (ListViewItem)e.Item;
-        IRun item = (IRun)listViewItem.Tag;
-        DataObject data = new DataObject();
-        data.SetData("Type", item.GetType());
-        data.SetData("Value", item);
-        if (Content.IsReadOnly || ReadOnly) {
-          DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
-        } else {
-          DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link | DragDropEffects.Move);
-          if ((result & DragDropEffects.Move) == DragDropEffects.Move)
-            Content.Remove(item);
+        IRun item = listViewItem.Tag as IRun;
+        if (item != null) {
+          DataObject data = new DataObject();
+          data.SetData("Type", item.GetType());
+          data.SetData("Value", item);
+          if (Content.IsReadOnly || ReadOnly) {
+            DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
+          } else {
+            DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link | DragDropEffects.Move);
+            if ((result & DragDropEffects.Move) == DragDropEffects.Move)
+              Content.Remove(item);
+          }
         }
       }
     }
@@ -311,7 +332,6 @@ namespace HeuristicLab.Optimization.Views {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded), sender, e);
       else {
-        RegisterRunEvents(e.Items);
         foreach (IRun item in e.Items)
           AddListViewItem(CreateListViewItem(item));
 
@@ -325,12 +345,12 @@ namespace HeuristicLab.Optimization.Views {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved), sender, e);
       else {
-        DeregisterRunEvents(e.Items);
         foreach (IRun item in e.Items) {
           //remove only the first matching ListViewItem, because the IRun could be contained multiple times in the ItemCollection
           ListViewItem listViewItem = GetListViewItemsForItem(item).FirstOrDefault();
           if (listViewItem != null) RemoveListViewItem(listViewItem);
         }
+        RebuildImageList();
         analyzeRunsToolStripDropDownButton.Enabled = itemsListView.Items.Count > 0;
         clearButton.Enabled = itemsListView.Items.Count > 0 && !Content.IsReadOnly && !ReadOnly;
         runCollectionConstraintCollectionView.ReadOnly = itemsListView.Items.Count == 0;
@@ -340,12 +360,12 @@ namespace HeuristicLab.Optimization.Views {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset), sender, e);
       else {
-        DeregisterRunEvents(e.OldItems);
         foreach (IRun item in e.OldItems) {
+          //remove only the first matching ListViewItem, because the IRun could be contained multiple times in the ItemCollection
           ListViewItem listViewItem = GetListViewItemsForItem(item).FirstOrDefault();
           if (listViewItem != null) RemoveListViewItem(listViewItem);
         }
-        RegisterRunEvents(e.Items);
+        RebuildImageList();
         foreach (IRun item in e.Items)
           AddListViewItem(CreateListViewItem(item));
 
@@ -377,9 +397,9 @@ namespace HeuristicLab.Optimization.Views {
         AdjustListViewColumnSizes();
       }
     }
-    private void Run_Changed(object sender, EventArgs e) {
+    private void Item_Changed(object sender, EventArgs e) {
       if (InvokeRequired)
-        this.Invoke(new EventHandler(Run_Changed), sender, e);
+        this.Invoke(new EventHandler(Item_Changed), sender, e);
       else {
         IRun run = (IRun)sender;
         UpdateRun(run);
@@ -405,6 +425,13 @@ namespace HeuristicLab.Optimization.Views {
         for (int i = 0; i < itemsListView.Columns.Count; i++) {
           itemsListView.Columns[i].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
         }
+      }
+    }
+    private void RebuildImageList() {
+      itemsListView.SmallImageList.Images.Clear();
+      foreach (ListViewItem item in itemsListView.Items) {
+        itemsListView.SmallImageList.Images.Add(((IRun)item.Tag).ItemImage);
+        item.ImageIndex = itemsListView.SmallImageList.Images.Count - 1;
       }
     }
     #endregion

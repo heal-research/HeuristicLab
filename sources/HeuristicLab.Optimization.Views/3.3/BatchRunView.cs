@@ -48,6 +48,14 @@ namespace HeuristicLab.Optimization.Views {
       InitializeComponent();
     }
 
+    protected override void Dispose(bool disposing) {
+      if (disposing) {
+        if (algorithmTypeSelectorDialog != null) algorithmTypeSelectorDialog.Dispose();
+        if (components != null) components.Dispose();
+      }
+      base.Dispose(disposing);
+    }
+
     protected override void DeregisterContentEvents() {
       Content.AlgorithmChanged -= new EventHandler(Content_AlgorithmChanged);
       Content.ExceptionOccurred -= new EventHandler<EventArgs<Exception>>(Content_ExceptionOccurred);

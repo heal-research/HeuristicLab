@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System.Collections.Generic;
 using System.Windows.Forms;
 using HeuristicLab.Collections;
 using HeuristicLab.MainForm;
@@ -33,13 +32,7 @@ namespace HeuristicLab.Core.Views {
       set { base.Content = value; }
     }
 
-    private Dictionary<T, ListViewItem> listViewItemDictionary;
-    protected Dictionary<T, ListViewItem> ListViewItemDictionary {
-      get { return listViewItemDictionary; }
-    }
-
     public NamedItemCollectionView() {
-      listViewItemDictionary = new Dictionary<T, ListViewItem>();
       InitializeComponent();
     }
 
@@ -74,22 +67,10 @@ namespace HeuristicLab.Core.Views {
     }
     protected override ListViewItem CreateListViewItem(T item) {
       ListViewItem listViewItem = base.CreateListViewItem(item);
-      listViewItem.ToolTipText = string.IsNullOrEmpty(item.Description) ? item.ItemName : item.ItemName + ": " + item.Description;
+      if ((item != null) && !string.IsNullOrEmpty(item.Description)) {
+        listViewItem.ToolTipText = item.ItemName + ": " + item.Description;
+      }
       return listViewItem;
-    }
-    protected override void AddListViewItem(ListViewItem listViewItem) {
-      ListViewItemDictionary.Add((T)listViewItem.Tag, listViewItem);
-      base.AddListViewItem(listViewItem);
-    }
-    protected override void RemoveListViewItem(ListViewItem listViewItem) {
-      base.RemoveListViewItem(listViewItem);
-      ListViewItemDictionary.Remove((T)listViewItem.Tag);
-    }
-    protected override IEnumerable<ListViewItem> GetListViewItemsForItem(T item) {
-      ListViewItem listViewItem = null;
-      listViewItemDictionary.TryGetValue(item, out listViewItem);
-      if (listViewItem != null) return new ListViewItem[] { listViewItem };
-      else return new ListViewItem[0];
     }
 
     #region ListView Events

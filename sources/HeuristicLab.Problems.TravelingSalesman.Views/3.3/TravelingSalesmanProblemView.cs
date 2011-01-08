@@ -47,6 +47,14 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
       InitializeComponent();
     }
 
+    protected override void Dispose(bool disposing) {
+      if (disposing) {
+        if (tsplibImportDialog != null) tsplibImportDialog.Dispose();
+        if (components != null) components.Dispose();
+      }
+      base.Dispose(disposing);
+    }
+
     protected override void DeregisterContentEvents() {
       Content.CoordinatesParameter.ValueChanged -= new EventHandler(CoordinatesParameter_ValueChanged);
       Content.BestKnownQualityParameter.ValueChanged -= new EventHandler(BestKnownQualityParameter_ValueChanged);

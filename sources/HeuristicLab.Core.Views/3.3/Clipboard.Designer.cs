@@ -19,8 +19,6 @@
  */
 #endregion
 
-using System;
-using System.Windows.Forms;
 
 namespace HeuristicLab.Core.Views {
   partial class Clipboard<T> {
@@ -28,22 +26,6 @@ namespace HeuristicLab.Core.Views {
     /// Required designer variable.
     /// </summary>
     private System.ComponentModel.IContainer components = null;
-
-    /// <summary> 
-    /// Clean up any resources being used.
-    /// </summary>
-    /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-    protected override void Dispose(bool disposing) {
-      if (disposing) {
-        if (typeSelectorDialog != null) typeSelectorDialog.Dispose();
-        foreach (ListViewItem item in listView.Items) {
-          ((T)item.Tag).ItemImageChanged -= new EventHandler(Item_ItemImageChanged);
-          ((T)item.Tag).ToStringChanged -= new EventHandler(Item_ToStringChanged);
-        }
-        if (components != null) components.Dispose();
-      }
-      base.Dispose(disposing);
-    }
 
     #region Component Designer generated code
 

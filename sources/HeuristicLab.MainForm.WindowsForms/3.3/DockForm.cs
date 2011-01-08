@@ -72,6 +72,16 @@ namespace HeuristicLab.MainForm.WindowsForms {
         viewPanel.Controls.Add(errorLabel);
       }
     }
+
+    protected override void Dispose(bool disposing) {
+      if (View != null)
+        View.CaptionChanged -= new System.EventHandler(View_CaptionChanged);
+      if (disposing && (components != null)) {
+        components.Dispose();
+      }
+      base.Dispose(disposing);
+    }
+
     private IView view;
     public IView View {
       get { return this.view; }
