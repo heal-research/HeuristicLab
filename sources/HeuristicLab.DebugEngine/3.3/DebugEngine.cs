@@ -63,7 +63,7 @@ namespace HeuristicLab.DebugEngine {
     }
 
     private void InitializeTimer() {
-      timer = new System.Timers.Timer(100);
+      timer = new System.Timers.Timer(250);
       timer.AutoReset = true;
       timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_Elapsed);
     }
@@ -260,9 +260,12 @@ namespace HeuristicLab.DebugEngine {
     }
 
     private void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
+      System.Timers.Timer timer = (System.Timers.Timer)sender;
+      timer.Enabled = false;
       DateTime now = DateTime.Now;
       ExecutionTime += now - lastUpdateTime;
       lastUpdateTime = now;
+      timer.Enabled = true;
     }
     #endregion
 

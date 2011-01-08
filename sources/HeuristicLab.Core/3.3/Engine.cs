@@ -146,7 +146,7 @@ namespace HeuristicLab.Core {
 
       OnStarted();
       lastUpdateTime = DateTime.Now;
-      System.Timers.Timer timer = new System.Timers.Timer(100);
+      System.Timers.Timer timer = new System.Timers.Timer(250);
       timer.AutoReset = true;
       timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_Elapsed);
       timer.Start();
@@ -164,9 +164,12 @@ namespace HeuristicLab.Core {
     protected abstract void Run(CancellationToken cancellationToken);
 
     private void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
+      System.Timers.Timer timer = (System.Timers.Timer)sender;
+      timer.Enabled = false;
       DateTime now = DateTime.Now;
       ExecutionTime += now - lastUpdateTime;
       lastUpdateTime = now;
+      timer.Enabled = true;
     }
   }
 }
