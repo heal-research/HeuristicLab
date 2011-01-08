@@ -146,6 +146,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
 
     private void InitializeOperators() {
       AddOperator(new FixedValidationBestScaledSymbolicRegressionSolutionAnalyzer());
+      AddOperator(new SymbolicRegressionOverfittingAnalyzer());
       ParameterizeAnalyzers();
     }
 
@@ -159,15 +160,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     private void ParameterizeAnalyzers() {
       foreach (var analyzer in Analyzers) {
         analyzer.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
+        var validationSolutionAnalyzer = analyzer as SymbolicRegressionValidationAnalyzer;
+        if (validationSolutionAnalyzer != null) {
+          validationSolutionAnalyzer.ProblemDataParameter.ActualName = DataAnalysisProblemDataParameter.Name;
+          validationSolutionAnalyzer.UpperEstimationLimitParameter.ActualName = UpperEstimationLimitParameter.Name;
+          validationSolutionAnalyzer.LowerEstimationLimitParameter.ActualName = LowerEstimationLimitParameter.Name;
+          validationSolutionAnalyzer.SymbolicExpressionTreeInterpreterParameter.ActualName = SymbolicExpressionTreeInterpreterParameter.Name;
+          validationSolutionAnalyzer.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
+          validationSolutionAnalyzer.ValidationSamplesStartParameter.Value = ValidationSamplesStart;
+          validationSolutionAnalyzer.ValidationSamplesEndParameter.Value = ValidationSamplesEnd;
+        }
+
         var fixedBestValidationSolutionAnalyzer = analyzer as FixedValidationBestScaledSymbolicRegressionSolutionAnalyzer;
         if (fixedBestValidationSolutionAnalyzer != null) {
-          fixedBestValidationSolutionAnalyzer.ProblemDataParameter.ActualName = DataAnalysisProblemDataParameter.Name;
-          fixedBestValidationSolutionAnalyzer.UpperEstimationLimitParameter.ActualName = UpperEstimationLimitParameter.Name;
-          fixedBestValidationSolutionAnalyzer.LowerEstimationLimitParameter.ActualName = LowerEstimationLimitParameter.Name;
-          fixedBestValidationSolutionAnalyzer.SymbolicExpressionTreeInterpreterParameter.ActualName = SymbolicExpressionTreeInterpreterParameter.Name;
-          fixedBestValidationSolutionAnalyzer.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
-          fixedBestValidationSolutionAnalyzer.ValidationSamplesStartParameter.Value = ValidationSamplesStart;
-          fixedBestValidationSolutionAnalyzer.ValidationSamplesEndParameter.Value = ValidationSamplesEnd;
           fixedBestValidationSolutionAnalyzer.BestKnownQualityParameter.ActualName = BestKnownQualityParameter.Name;
         }
 
