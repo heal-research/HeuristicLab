@@ -378,11 +378,12 @@ namespace HeuristicLab.Core.Views {
           itemsListView.Columns[i].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
       }
     }
-    private void RebuildImageList() {
+    protected virtual void RebuildImageList() {
       itemsListView.SmallImageList.Images.Clear();
-      foreach (ListViewItem item in itemsListView.Items) {
-        itemsListView.SmallImageList.Images.Add(((T)item.Tag).ItemImage);
-        item.ImageIndex = itemsListView.SmallImageList.Images.Count - 1;
+      foreach (ListViewItem listViewItem in itemsListView.Items) {
+        T item = listViewItem.Tag as T;
+        itemsListView.SmallImageList.Images.Add(item == null ? HeuristicLab.Common.Resources.VS2008ImageLibrary.Nothing : item.ItemImage);
+        listViewItem.ImageIndex = itemsListView.SmallImageList.Images.Count - 1;
       }
     }
     #endregion

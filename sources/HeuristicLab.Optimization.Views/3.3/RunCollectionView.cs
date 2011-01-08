@@ -429,9 +429,10 @@ namespace HeuristicLab.Optimization.Views {
     }
     private void RebuildImageList() {
       itemsListView.SmallImageList.Images.Clear();
-      foreach (ListViewItem item in itemsListView.Items) {
-        itemsListView.SmallImageList.Images.Add(((IRun)item.Tag).ItemImage);
-        item.ImageIndex = itemsListView.SmallImageList.Images.Count - 1;
+      foreach (ListViewItem listViewItem in itemsListView.Items) {
+        IRun item = listViewItem.Tag as IRun;
+        itemsListView.SmallImageList.Images.Add(item == null ? HeuristicLab.Common.Resources.VS2008ImageLibrary.Nothing : item.ItemImage);
+        listViewItem.ImageIndex = itemsListView.SmallImageList.Images.Count - 1;
       }
     }
     #endregion
