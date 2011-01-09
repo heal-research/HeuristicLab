@@ -41,7 +41,6 @@ namespace HeuristicLab.Analysis {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Performance; }
     }
 
-    [Storable(Name = "VisualProperties")]
     private DataTableVisualProperties visualProperties;
     public DataTableVisualProperties VisualProperties {
       get { return visualProperties; }
@@ -62,6 +61,14 @@ namespace HeuristicLab.Analysis {
     }
 
     #region Persistence Properties
+    [Storable(Name = "VisualProperties")]
+    private DataTableVisualProperties StorableVisualProperties {
+      get { return visualProperties; }
+      set {
+        visualProperties = value;
+        visualProperties.PropertyChanged += new PropertyChangedEventHandler(VisualProperties_PropertyChanged);
+      }
+    }
     [Storable(Name = "rows")]
     private IEnumerable<DataRow> StorableRows {
       get { return rows; }

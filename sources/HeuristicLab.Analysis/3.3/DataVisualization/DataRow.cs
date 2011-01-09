@@ -34,7 +34,6 @@ namespace HeuristicLab.Analysis {
   [Item("DataRow", "A row of data values.")]
   [StorableClass]
   public class DataRow : NamedItem {
-    [Storable(Name = "VisualProperties")]
     private DataRowVisualProperties visualProperties;
     public DataRowVisualProperties VisualProperties {
       get { return visualProperties; }
@@ -54,6 +53,14 @@ namespace HeuristicLab.Analysis {
     }
 
     #region Persistence Properties
+    [Storable(Name = "VisualProperties")]
+    private DataRowVisualProperties StorableVisualProperties {
+      get { return visualProperties; }
+      set {
+        visualProperties = value;
+        visualProperties.PropertyChanged += new PropertyChangedEventHandler(VisualProperties_PropertyChanged);
+      }
+    }
     [Storable(Name = "values")]
     private IEnumerable<double> StorableValues {
       get { return values; }
