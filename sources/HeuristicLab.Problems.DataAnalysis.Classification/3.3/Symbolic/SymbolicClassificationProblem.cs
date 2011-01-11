@@ -122,12 +122,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
     public DoubleValue PunishmentFactor {
       get { return new DoubleValue(10.0); }
     }
-    public IntValue TrainingSamplesStart { get { return new IntValue(ClassificationProblemData.TrainingSamplesStart.Value); } }
+    public IntValue TrainingSamplesStart { get { return new IntValue(ClassificationProblemData.TrainingIndizes.First()); } }
     public IntValue TrainingSamplesEnd {
-      get { return new IntValue((ClassificationProblemData.TrainingSamplesStart.Value + ClassificationProblemData.TrainingSamplesEnd.Value) / 2); }
+      get {
+        int endIndex = (int)(ClassificationProblemData.TrainingIndizes.Count() * (1.0 - ClassificationProblemData.ValidationPercentage.Value) - 1);
+        if (endIndex < 0) endIndex = 0;
+        return new IntValue(ClassificationProblemData.TrainingIndizes.ElementAt(endIndex));
+      }
     }
     public IntValue ValidationSamplesStart { get { return TrainingSamplesEnd; } }
-    public IntValue ValidationSamplesEnd { get { return new IntValue(ClassificationProblemData.TrainingSamplesEnd.Value); } }
+    public IntValue ValidationSamplesEnd { get { return new IntValue(ClassificationProblemData.TrainingIndizes.Last() + 1); } }
     public IntValue TestSamplesStart { get { return ClassificationProblemData.TestSamplesStart; } }
     public IntValue TestSamplesEnd { get { return ClassificationProblemData.TestSamplesEnd; } }
     #endregion
