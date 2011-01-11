@@ -10,7 +10,7 @@ namespace HeuristicLab_33.Tests {
   internal static class PluginLoader {
     public const string AssemblyExtension = ".dll";
     public const string TestAccessorAssemblyExtension = "_Accessor.dll";
-    public const string TestAssemblyExtension = ".test.dll";
+    public const string TestAssemblyExtension = ".Tests.dll";
     public static List<Assembly> pluginAssemblies;
 
     static PluginLoader() {
