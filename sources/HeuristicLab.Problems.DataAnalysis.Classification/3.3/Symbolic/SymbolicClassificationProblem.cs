@@ -36,6 +36,7 @@ using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
+using HeuristicLab.Problems.DataAnalysis.Classification.Symbolic.Analyzers;
 
 namespace HeuristicLab.Problems.DataAnalysis.Classification {
   [Item("Classification Problem", "Represents a classfication problem.")]

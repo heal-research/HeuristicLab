@@ -33,14 +33,16 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Evaluators;
 using HeuristicLab.Problems.DataAnalysis.Classification;
+using HeuristicLab.Problems.DataAnalysis.Regression.Symbolic;
+using HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers;
 
-namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
+namespace HeuristicLab.Problems.DataAnalysis.Classification.Symbolic.Analyzers {
   /// <summary>
-  /// An operator that analyzes the training best scaled symbolic regression solution.
+  /// An operator that analyzes the training best scaled symbolic classification solution.
   /// </summary>
-  [Item("TrainingBestScaledSymbolicRegressionSolutionAnalyzer", "An operator that analyzes the training best scaled symbolic regression solution.")]
+  [Item("TrainingBestSymbolicClassificationSolutionAnalyzer", "An operator that analyzes the training best scaled symbolic classification solution.")]
   [StorableClass]
-  public sealed class TrainingBestSymbolicClassificationSolutionAnalyzer : SingleSuccessorOperator, ISymbolicRegressionAnalyzer {
+  public sealed class TrainingBestSymbolicClassificationSolutionAnalyzer : SingleSuccessorOperator, ISymbolicClassificationAnalyzer {
     private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
     private const string QualityParameterName = "Quality";
     private const string MaximizationParameterName = "Maximization";
@@ -55,6 +57,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     private const string BestSolutionLengthParameterName = "Best training solution length";
     private const string BestSolutionHeightParameterName = "Best training solution height";
     private const string BestSolutionVariablesParameterName = "Best training solution variables";
+    private const string BestSolutionTrainingRSquaredParameterName = "Best training solution R� (training)";
+    private const string BestSolutionTestRSquaredParameterName = "Best training solution R� (test)";
+    private const string BestSolutionTrainingMseParameterName = "Best training solution mean squared error (training)";
+    private const string BestSolutionTestMseParameterName = "Best training solution mean squared error (test)";
+    private const string BestSolutionTrainingRelativeErrorParameterName = "Best training solution relative error (training)";
+    private const string BestSolutionTestRelativeErrorParameterName = "Best training solution relative error (test)";
     private const string BestSolutionAccuracyTrainingParameterName = "Best training solution accuracy (training)";
     private const string BestSolutionAccuracyTestParameterName = "Best training solution accuracy (test)";
     private const string ResultsParameterName = "Results";
@@ -102,6 +110,24 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     }
     public ILookupParameter<IntValue> BestSolutionVariablesParameter {
       get { return (ILookupParameter<IntValue>)Parameters[BestSolutionVariablesParameterName]; }
+    }
+    public ILookupParameter<DoubleValue> BestSolutionTrainingRSquaredParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters[BestSolutionTrainingRSquaredParameterName]; }
+    }
+    public ILookupParameter<DoubleValue> BestSolutionTestRSquaredParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters[BestSolutionTestRSquaredParameterName]; }
+    }
+    public ILookupParameter<DoubleValue> BestSolutionTrainingMseParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters[BestSolutionTrainingMseParameterName]; }
+    }
+    public ILookupParameter<DoubleValue> BestSolutionTestMseParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters[BestSolutionTestMseParameterName]; }
+    }
+    public ILookupParameter<DoubleValue> BestSolutionTrainingRelativeErrorParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters[BestSolutionTrainingRelativeErrorParameterName]; }
+    }
+    public ILookupParameter<DoubleValue> BestSolutionTestRelativeErrorParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters[BestSolutionTestRelativeErrorParameterName]; }
     }
     public ILookupParameter<DoubleValue> BestSolutionTrainingAccuracyParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters[BestSolutionAccuracyTrainingParameterName]; }
@@ -166,6 +192,30 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       get { return BestSolutionVariablesParameter.ActualValue; }
       set { BestSolutionVariablesParameter.ActualValue = value; }
     }
+    public DoubleValue BestSolutionTrainingRSquared {
+      get { return BestSolutionTrainingRSquaredParameter.ActualValue; }
+      set { BestSolutionTrainingRSquaredParameter.ActualValue = value; }
+    }
+    public DoubleValue BestSolutionTestRSquared {
+      get { return BestSolutionTestRSquaredParameter.ActualValue; }
+      set { BestSolutionTestRSquaredParameter.ActualValue = value; }
+    }
+    public DoubleValue BestSolutionTrainingMse {
+      get { return BestSolutionTrainingMseParameter.ActualValue; }
+      set { BestSolutionTrainingMseParameter.ActualValue = value; }
+    }
+    public DoubleValue BestSolutionTestMse {
+      get { return BestSolutionTestMseParameter.ActualValue; }
+      set { BestSolutionTestMseParameter.ActualValue = value; }
+    }
+    public DoubleValue BestSolutionTrainingRelativeError {
+      get { return BestSolutionTrainingRelativeErrorParameter.ActualValue; }
+      set { BestSolutionTrainingRelativeErrorParameter.ActualValue = value; }
+    }
+    public DoubleValue BestSolutionTestRelativeError {
+      get { return BestSolutionTestRelativeErrorParameter.ActualValue; }
+      set { BestSolutionTestRelativeErrorParameter.ActualValue = value; }
+    }
     public DoubleValue BestSolutionTrainingAccuracy {
       get { return BestSolutionTrainingAccuracyParameter.ActualValue; }
       set { BestSolutionTrainingAccuracyParameter.ActualValue = value; }
@@ -195,9 +245,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       Parameters.Add(new LookupParameter<IntValue>(BestSolutionLengthParameterName, "The length of the best symbolic classification solution."));
       Parameters.Add(new LookupParameter<IntValue>(BestSolutionHeightParameterName, "The height of the best symbolic classfication solution."));
       Parameters.Add(new LookupParameter<IntValue>(BestSolutionVariablesParameterName, "The number of variables used by the best symbolic classification solution."));
+      Parameters.Add(new LookupParameter<DoubleValue>(BestSolutionTrainingRSquaredParameterName, "The R� value on the training set of the best symbolic classification solution."));
+      Parameters.Add(new LookupParameter<DoubleValue>(BestSolutionTestRSquaredParameterName, "The R� value on the test set of the best symbolic classification solution."));
+      Parameters.Add(new LookupParameter<DoubleValue>(BestSolutionTrainingMseParameterName, "The mean squared error on the training set of the best symbolic classification solution."));
+      Parameters.Add(new LookupParameter<DoubleValue>(BestSolutionTestMseParameterName, "The mean squared error value on the test set of the best symbolic classification solution."));
+      Parameters.Add(new LookupParameter<DoubleValue>(BestSolutionTrainingRelativeErrorParameterName, "The relative error on the training set of the best symbolic classification solution."));
+      Parameters.Add(new LookupParameter<DoubleValue>(BestSolutionTestRelativeErrorParameterName, "The relative error value on the test set of the best symbolic classification solution."));
       Parameters.Add(new LookupParameter<DoubleValue>(BestSolutionAccuracyTrainingParameterName, "The accuracy on the training set of the best symbolic classification  solution."));
       Parameters.Add(new LookupParameter<DoubleValue>(BestSolutionAccuracyTestParameterName, "The accuracy on the test set of the best symbolic classification  solution."));
-      Parameters.Add(new LookupParameter<ResultCollection>(ResultsParameterName, "The result collection where the best symbolic regression solution should be stored."));
+      Parameters.Add(new LookupParameter<ResultCollection>(ResultsParameterName, "The result collection where the best symbolic classification solution should be stored."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -271,33 +327,69 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
           IEnumerable<double> trainingValues = ProblemData.Dataset.GetEnumeratedVariableValues(ProblemData.TargetVariable.Value, ProblemData.TrainingIndizes);
           IEnumerable<double> testValues = ProblemData.Dataset.GetEnumeratedVariableValues(ProblemData.TargetVariable.Value, ProblemData.TestIndizes);
           OnlineAccuracyEvaluator accuracyEvaluator = new OnlineAccuracyEvaluator();
+          OnlineMeanSquaredErrorEvaluator mseEvaluator = new OnlineMeanSquaredErrorEvaluator();
+          OnlineMeanAbsolutePercentageErrorEvaluator relErrorEvaluator = new OnlineMeanAbsolutePercentageErrorEvaluator();
+          OnlinePearsonsRSquaredEvaluator r2Evaluator = new OnlinePearsonsRSquaredEvaluator();
 
           #region training
           var originalEnumerator = trainingValues.GetEnumerator();
-          var estimatedEnumerator = solution.EstimatedTrainingValues.GetEnumerator();
+          var estimatedEnumerator = solution.EstimatedTrainingClassValues.GetEnumerator();
           while (originalEnumerator.MoveNext() & estimatedEnumerator.MoveNext()) {
             accuracyEvaluator.Add(originalEnumerator.Current, estimatedEnumerator.Current);
+            mseEvaluator.Add(originalEnumerator.Current, estimatedEnumerator.Current);
+            r2Evaluator.Add(originalEnumerator.Current, estimatedEnumerator.Current);
+            relErrorEvaluator.Add(originalEnumerator.Current, estimatedEnumerator.Current);
           }
           double trainingAccuracy = accuracyEvaluator.Accuracy;
+          double trainingR2 = r2Evaluator.RSquared;
+          double trainingMse = mseEvaluator.MeanSquaredError;
+          double trainingRelError = relErrorEvaluator.MeanAbsolutePercentageError;
           #endregion
 
           accuracyEvaluator.Reset();
+          mseEvaluator.Reset();
+          relErrorEvaluator.Reset();
+          r2Evaluator.Reset();
 
           #region test
           originalEnumerator = testValues.GetEnumerator();
-          estimatedEnumerator = solution.EstimatedTestValues.GetEnumerator();
+          estimatedEnumerator = solution.EstimatedTestClassValues.GetEnumerator();
           while (originalEnumerator.MoveNext() & estimatedEnumerator.MoveNext()) {
             accuracyEvaluator.Add(originalEnumerator.Current, estimatedEnumerator.Current);
+            mseEvaluator.Add(originalEnumerator.Current, estimatedEnumerator.Current);
+            r2Evaluator.Add(originalEnumerator.Current, estimatedEnumerator.Current);
+            relErrorEvaluator.Add(originalEnumerator.Current, estimatedEnumerator.Current);
           }
           double testAccuracy = accuracyEvaluator.Accuracy;
+          double testR2 = r2Evaluator.RSquared;
+          double testMse = mseEvaluator.MeanSquaredError;
+          double testRelError = relErrorEvaluator.MeanAbsolutePercentageError;
           #endregion
           BestSolutionTrainingAccuracy = new DoubleValue(trainingAccuracy);
           BestSolutionTestAccuracy = new DoubleValue(testAccuracy);
+          BestSolutionTrainingRSquared = new DoubleValue(trainingR2);
+          BestSolutionTestRSquared = new DoubleValue(testR2);
+          BestSolutionTrainingMse = new DoubleValue(trainingMse);
+          BestSolutionTestMse = new DoubleValue(testMse);
+          BestSolutionTrainingRelativeError = new DoubleValue(trainingRelError);
+          BestSolutionTestRelativeError = new DoubleValue(testRelError);
 
           if (!Results.ContainsKey(BestSolutionAccuracyTrainingParameterName)) {
+            Results.Add(new Result(BestSolutionTrainingRSquaredParameterName, BestSolutionTrainingRSquared));
+            Results.Add(new Result(BestSolutionTestRSquaredParameterName, BestSolutionTestRSquared));
+            Results.Add(new Result(BestSolutionTrainingMseParameterName, BestSolutionTrainingMse));
+            Results.Add(new Result(BestSolutionTestMseParameterName, BestSolutionTestMse));
+            Results.Add(new Result(BestSolutionTrainingRelativeErrorParameterName, BestSolutionTrainingRelativeError));
+            Results.Add(new Result(BestSolutionTestRelativeErrorParameterName, BestSolutionTestRelativeError));
             Results.Add(new Result(BestSolutionAccuracyTrainingParameterName, BestSolutionTrainingAccuracy));
             Results.Add(new Result(BestSolutionAccuracyTestParameterName, BestSolutionTestAccuracy));
           } else {
+            Results[BestSolutionTrainingRSquaredParameterName].Value = BestSolutionTrainingRSquared;
+            Results[BestSolutionTestRSquaredParameterName].Value = BestSolutionTestRSquared;
+            Results[BestSolutionTrainingMseParameterName].Value = BestSolutionTrainingMse;
+            Results[BestSolutionTestMseParameterName].Value = BestSolutionTestMse;
+            Results[BestSolutionTrainingRelativeErrorParameterName].Value = BestSolutionTrainingRelativeError;
+            Results[BestSolutionTestRelativeErrorParameterName].Value = BestSolutionTestRelativeError;
             Results[BestSolutionAccuracyTrainingParameterName].Value = BestSolutionTrainingAccuracy;
             Results[BestSolutionAccuracyTestParameterName].Value = BestSolutionTestAccuracy;
           }
