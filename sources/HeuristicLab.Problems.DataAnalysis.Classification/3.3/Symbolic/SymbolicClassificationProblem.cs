@@ -236,6 +236,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
       Operators.Add(new MinAverageMaxSymbolicExpressionTreeSizeAnalyzer());
       Operators.Add(new SymbolicRegressionVariableFrequencyAnalyzer());
       Operators.Add(new ValidationBestSymbolicClassificationSolutionAnalyzer());
+      Operators.Add(new TrainingBestSymbolicClassificationSolutionAnalyzer());
     }
 
     #region operator parameterization
@@ -312,6 +313,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
           bestValidationSolutionAnalyzer.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
           bestValidationSolutionAnalyzer.ValidationSamplesStartParameter.Value = ValidationSamplesStart;
           bestValidationSolutionAnalyzer.ValidationSamplesEndParameter.Value = ValidationSamplesEnd;
+        }
+        var bestTrainingSolutionAnalyzer = analyzer as TrainingBestSymbolicClassificationSolutionAnalyzer;
+        if (bestTrainingSolutionAnalyzer != null) {
+          bestTrainingSolutionAnalyzer.ProblemDataParameter.ActualName = ClassificationProblemDataParameter.Name;
+          bestTrainingSolutionAnalyzer.UpperEstimationLimitParameter.ActualName = UpperEstimationLimitParameter.Name;
+          bestTrainingSolutionAnalyzer.LowerEstimationLimitParameter.ActualName = LowerEstimationLimitParameter.Name;
+          bestTrainingSolutionAnalyzer.SymbolicExpressionTreeInterpreterParameter.ActualName = SymbolicExpressionTreeInterpreterParameter.Name;
+          bestTrainingSolutionAnalyzer.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
         }
         var varFreqAnalyzer = analyzer as SymbolicRegressionVariableFrequencyAnalyzer;
         if (varFreqAnalyzer != null) {

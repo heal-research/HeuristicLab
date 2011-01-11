@@ -51,12 +51,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
     private const string RelativeNumberOfEvaluatedSamplesParameterName = "RelativeNumberOfEvaluatedSamples";
     private const string UpperEstimationLimitParameterName = "UpperEstimationLimit";
     private const string LowerEstimationLimitParameterName = "LowerEstimationLimit";
+    private const string CalculateSolutionComplexityParameterName = "CalculateSolutionComplexity";
 
     private const string ResultsParameterName = "Results";
     private const string BestValidationQualityParameterName = "Best validation quality";
     private const string BestValidationSolutionParameterName = "Best validation solution";
     private const string BestSolutionAccuracyTrainingParameterName = "Best solution accuracy (training)";
     private const string BestSolutionAccuracyTestParameterName = "Best solution accuracy (test)";
+    private const string BestSolutionLengthParameterName = "Best solution length (validation)";
+    private const string BestSolutionHeightParameterName = "Best solution height (validiation)";
     private const string VariableFrequenciesParameterName = "VariableFrequencies";
 
     #region parameter properties
@@ -100,7 +103,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
     public ILookupParameter<DataTable> VariableFrequenciesParameter {
       get { return (ILookupParameter<DataTable>)Parameters[VariableFrequenciesParameterName]; }
     }
-
+    public IValueParameter<BoolValue> CalculateSolutionComplexityParameter {
+      get { return (IValueParameter<BoolValue>)Parameters[CalculateSolutionComplexityParameterName]; }
+    }
     public ILookupParameter<ResultCollection> ResultsParameter {
       get { return (ILookupParameter<ResultCollection>)Parameters[ResultsParameterName]; }
     }
@@ -115,6 +120,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
     }
     public ILookupParameter<DoubleValue> BestSolutionAccuracyTestParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters[BestSolutionAccuracyTestParameterName]; }
+    }
+    public ILookupParameter<IntValue> BestSolutionLengthParameter {
+      get { return (ILookupParameter<IntValue>)Parameters[BestSolutionLengthParameterName]; }
+    }
+    public ILookupParameter<IntValue> BestSolutionHeightParameter {
+      get { return (ILookupParameter<IntValue>)Parameters[BestSolutionHeightParameterName]; }
     }
     #endregion
     #region properties
@@ -158,6 +169,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
     public DataTable VariableFrequencies {
       get { return VariableFrequenciesParameter.ActualValue; }
     }
+    public BoolValue CalculateSolutionComplexity {
+      get { return CalculateSolutionComplexityParameter.Value; }
+      set { CalculateSolutionComplexityParameter.Value = value; }
+    }
 
     public ResultCollection Results {
       get { return ResultsParameter.ActualValue; }
@@ -177,6 +192,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
     public DoubleValue BestSolutionAccuracyTest {
       get { return BestSolutionAccuracyTestParameter.ActualValue; }
       protected set { BestSolutionAccuracyTestParameter.ActualValue = value; }
+    }
+    public IntValue BestSolutionLength {
+      get { return BestSolutionLengthParameter.ActualValue; }
+      set { BestSolutionLengthParameter.ActualValue = value; }
+    }
+    public IntValue BestSolutionHeight {
+      get { return BestSolutionHeightParameter.ActualValue; }
+      set { BestSolutionHeightParameter.ActualValue = value; }
     }
     #endregion
 
@@ -201,12 +224,27 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
       Parameters.Add(new ValueLookupParameter<DoubleValue>(UpperEstimationLimitParameterName, "The upper estimation limit that was set for the evaluation of the symbolic expression trees."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>(LowerEstimationLimitParameterName, "The lower estimation limit that was set for the evaluation of the symbolic expression trees."));
       Parameters.Add(new LookupParameter<DataTable>(VariableFrequenciesParameterName, "The variable frequencies table to use for the calculation of variable impacts"));
-
+      Parameters.Add(new ValueParameter<BoolValue>(CalculateSolutionComplexityParameterName, "Determines if the length and height of the validation best solution should be calculated.", new BoolValue(true)));
       Parameters.Add(new ValueLookupParameter<ResultCollection>(ResultsParameterName, "The results collection where the analysis values should be stored."));
       Parameters.Add(new LookupParameter<DoubleValue>(BestValidationQualityParameterName, "The validation quality of the best solution in the current run."));
       Parameters.Add(new LookupParameter<SymbolicClassificationSolution>(BestValidationSolutionParameterName, "The best solution on the validation data found in the current run."));
       Parameters.Add(new LookupParameter<DoubleValue>(BestSolutionAccuracyTrainingParameterName, "The training accuracy of the best solution."));
       Parameters.Add(new LookupParameter<DoubleValue>(BestSolutionAccuracyTestParameterName, "The test accuracy of the best solution."));
+      Parameters.Add(new LookupParameter<IntValue>(BestSolutionLengthParameterName, "The length of the best symbolic classification solution."));
+      Parameters.Add(new LookupParameter<IntValue>(BestSolutionHeightParameterName, "The height of the best symbolic classification solution."));
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey(CalculateSolutionComplexityParameterName)) {
+        Parameters.Add(new ValueParameter<BoolValue>(CalculateSolutionComplexityParameterName, "Determines if the length and height of the validation best solution should be calculated.", new BoolValue(true)));
+      }
+      if (!Parameters.ContainsKey(BestSolutionLengthParameterName)) {
+        Parameters.Add(new LookupParameter<IntValue>(BestSolutionLengthParameterName, "The length of the best symbolic classification solution."));
+      }
+      if (!Parameters.ContainsKey(BestSolutionHeightParameterName)) {
+        Parameters.Add(new LookupParameter<IntValue>(BestSolutionHeightParameterName, "The height of the best symbolic classification solution."));
+      }
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -277,6 +315,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
     }
 
     private void UpdateBestSolutionResults() {
+      if (CalculateSolutionComplexity.Value) {
+        BestSolutionLength = new IntValue(BestValidationSolution.Model.SymbolicExpressionTree.Size);
+        BestSolutionHeight = new IntValue(BestValidationSolution.Model.SymbolicExpressionTree.Height);
+        if (!Results.ContainsKey(BestSolutionLengthParameterName)) {
+          Results.Add(new Result(BestSolutionLengthParameterName, "Length of the best solution on the validation set", new IntValue()));
+          Results.Add(new Result(BestSolutionHeightParameterName, "Height of the best solution on the validation set", new IntValue()));
+        }
+        Results[BestSolutionLengthParameterName].Value = BestSolutionLength;
+        Results[BestSolutionHeightParameterName].Value = BestSolutionHeight;
+      }
+
       BestSymbolicRegressionSolutionAnalyzer.UpdateBestSolutionResults(BestValidationSolution, ClassificationProblemData, Results, Generations, VariableFrequencies);
 
       IEnumerable<double> trainingValues = ClassificationProblemData.Dataset.GetEnumeratedVariableValues(
