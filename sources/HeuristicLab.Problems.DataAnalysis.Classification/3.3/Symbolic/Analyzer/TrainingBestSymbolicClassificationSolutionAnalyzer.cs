@@ -336,6 +336,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification.Symbolic.Analyzers {
           var estimatedEnumerator = solution.EstimatedTrainingClassValues.GetEnumerator();
           while (originalEnumerator.MoveNext() & estimatedEnumerator.MoveNext()) {
             accuracyEvaluator.Add(originalEnumerator.Current, estimatedEnumerator.Current);
+          }
+          originalEnumerator = trainingValues.GetEnumerator();
+          estimatedEnumerator = solution.EstimatedTrainingValues.GetEnumerator();
+          while (originalEnumerator.MoveNext() & estimatedEnumerator.MoveNext()) {
             mseEvaluator.Add(originalEnumerator.Current, estimatedEnumerator.Current);
             r2Evaluator.Add(originalEnumerator.Current, estimatedEnumerator.Current);
             relErrorEvaluator.Add(originalEnumerator.Current, estimatedEnumerator.Current);
@@ -356,6 +360,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification.Symbolic.Analyzers {
           estimatedEnumerator = solution.EstimatedTestClassValues.GetEnumerator();
           while (originalEnumerator.MoveNext() & estimatedEnumerator.MoveNext()) {
             accuracyEvaluator.Add(originalEnumerator.Current, estimatedEnumerator.Current);
+          }
+          originalEnumerator = testValues.GetEnumerator();
+          estimatedEnumerator = solution.EstimatedTestValues.GetEnumerator();
+          while (originalEnumerator.MoveNext() & estimatedEnumerator.MoveNext()) {
             mseEvaluator.Add(originalEnumerator.Current, estimatedEnumerator.Current);
             r2Evaluator.Add(originalEnumerator.Current, estimatedEnumerator.Current);
             relErrorEvaluator.Add(originalEnumerator.Current, estimatedEnumerator.Current);
