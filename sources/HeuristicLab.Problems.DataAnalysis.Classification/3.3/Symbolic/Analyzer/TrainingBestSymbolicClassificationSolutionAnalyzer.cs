@@ -260,19 +260,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification.Symbolic.Analyzers {
       return new TrainingBestSymbolicClassificationSolutionAnalyzer(this, cloner);
     }
 
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-      if (!Parameters.ContainsKey(BestSolutionAccuracyTrainingParameterName)) {
-        Parameters.Add(new LookupParameter<DoubleValue>(BestSolutionAccuracyTrainingParameterName, "The accuracy on the training set of the best symbolic classification  solution."));
-      }
-      if (!Parameters.ContainsKey(BestSolutionAccuracyTestParameterName)) {
-        Parameters.Add(new LookupParameter<DoubleValue>(BestSolutionAccuracyTestParameterName, "The accuracy on the test set of the best symbolic classification  solution."));
-      }
-      if (Parameters.ContainsKey("DataAnalysisProblemData")) {
-        Parameters["DataAnalysisProblemData"].Name = ProblemDataParameterName;
-      }
-    }
-
     public override IOperation Apply() {
       #region find best tree
       double bestQuality = Maximization.Value ? double.NegativeInfinity : double.PositiveInfinity;
