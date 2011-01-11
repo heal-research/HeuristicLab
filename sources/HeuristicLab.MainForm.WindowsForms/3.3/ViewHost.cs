@@ -107,7 +107,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     public Type ViewType {
       get { return viewType; }
       set {
-        if (viewType != value) {
+        if (viewType != value && value.GetType() != typeof(ViewHost)) {
           if (value != null && Content != null && !ViewCanShowContent(value, Content))
             throw new ArgumentException(string.Format("View \"{0}\" cannot display content \"{1}\".",
                                                       value, Content.GetType()));

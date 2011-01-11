@@ -38,6 +38,7 @@ namespace HeuristicLab.MainForm {
     event EventHandler<ViewEventArgs> ViewHidden;
 
     IContentView ShowContent(IContent content);
+    IContentView ShowContent<T>(T content, bool reuseExistingView, IEqualityComparer<T> comparer = null) where T : class,IContent;
     IContentView ShowContent(IContent content, Type viewType);
 
     Type UserInterfaceItemType { get; }

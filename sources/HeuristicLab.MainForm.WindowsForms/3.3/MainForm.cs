@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
@@ -219,29 +218,39 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     public IContentView ShowContent(IContent content) {
-      if (content == null)
-        throw new ArgumentNullException("Content cannot be null.");
+      if (content == null) throw new ArgumentNullException("Content cannot be null.");
       Type viewType = MainFormManager.GetDefaultViewType(content.GetType());
-      if (viewType != null)
-        return ShowContent(content, viewType);
+      if (viewType != null) return ShowContent(content, viewType);
       return null;
+    }
+
+    public IContentView ShowContent<T>(T content, bool reuseExistingView, IEqualityComparer<T> comparer = null) where T : class,IContent {
+      if (content == null) throw new ArgumentNullException("Content cannot be null.");
+      if (!reuseExistingView) return ShowContent(content);
+
+      IContentView view = null;
+      if (comparer == null) view = Views.OfType<IContentView>().Where(v => (v.Content as T) == content).FirstOrDefault();
+      else view = Views.OfType<IContentView>().Where(v => comparer.Equals((v.Content as T), content)).FirstOrDefault();
+
+      if (view == null) view = ShowContent(content);
+      else view.Show();
+
+      return view;
     }
 
     public IContentView ShowContent(IContent content, Type viewType) {
       if (InvokeRequired) return (IContentView)Invoke((Func<IContent, Type, IContentView>)ShowContent, content, viewType);
       else {
-        if (content == null)
-          throw new ArgumentNullException("Content cannot be null.");
-        if (viewType == null)
-          throw new ArgumentNullException("ViewType cannot be null.");
+        if (content == null) throw new ArgumentNullException("Content cannot be null.");
+        if (viewType == null) throw new ArgumentNullException("ViewType cannot be null.");
 
-        IContentView view;
-        if (this.ShowContentInViewHost) {
+        IContentView view = null;
+        if (ShowContentInViewHost) {
           ViewHost viewHost = new ViewHost();
           viewHost.ViewType = viewType;
           view = viewHost;
-        } else
-          view = MainFormManager.CreateView(viewType);
+
+        } else view = MainFormManager.CreateView(viewType);
 
         view.Content = content;
         view.Show();
