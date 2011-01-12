@@ -112,7 +112,7 @@ namespace HeuristicLab.Parameters.Views {
       // clearValueButton
       // 
       this.clearValueButton.Enabled = false;
-      this.clearValueButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Remove;
+      this.clearValueButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Remove;
       this.clearValueButton.Location = new System.Drawing.Point(36, 19);
       this.clearValueButton.Name = "clearValueButton";
       this.clearValueButton.Size = new System.Drawing.Size(24, 24);
@@ -123,7 +123,7 @@ namespace HeuristicLab.Parameters.Views {
       // 
       // setValueButton
       // 
-      this.setValueButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Edit;
+      this.setValueButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Edit;
       this.setValueButton.Location = new System.Drawing.Point(6, 19);
       this.setValueButton.Name = "setValueButton";
       this.setValueButton.Size = new System.Drawing.Size(24, 24);

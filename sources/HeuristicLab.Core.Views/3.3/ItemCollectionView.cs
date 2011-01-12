@@ -127,8 +127,7 @@ namespace HeuristicLab.Core.Views {
       if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
         try {
           return (T)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
           ErrorHandling.ShowErrorDialog(this, ex);
         }
       }
@@ -138,7 +137,7 @@ namespace HeuristicLab.Core.Views {
       ListViewItem listViewItem = new ListViewItem();
       if (item == null) {
         listViewItem.Text = "null";
-        itemsListView.SmallImageList.Images.Add(HeuristicLab.Common.Resources.VS2008ImageLibrary.Nothing);
+        itemsListView.SmallImageList.Images.Add(HeuristicLab.Common.Resources.VSImageLibrary.Nothing);
         listViewItem.ImageIndex = itemsListView.SmallImageList.Images.Count - 1;
       } else {
         listViewItem.Text = item.ToString();
@@ -178,7 +177,7 @@ namespace HeuristicLab.Core.Views {
     protected virtual void UpdateListViewItemImage(ListViewItem listViewItem) {
       T item = listViewItem.Tag as T;
       int i = listViewItem.ImageIndex;
-      listViewItem.ImageList.Images[i] = item == null ? HeuristicLab.Common.Resources.VS2008ImageLibrary.Nothing : item.ItemImage;
+      listViewItem.ImageList.Images[i] = item == null ? HeuristicLab.Common.Resources.VSImageLibrary.Nothing : item.ItemImage;
       listViewItem.ImageIndex = -1;
       listViewItem.ImageIndex = i;
     }
@@ -382,7 +381,7 @@ namespace HeuristicLab.Core.Views {
       itemsListView.SmallImageList.Images.Clear();
       foreach (ListViewItem listViewItem in itemsListView.Items) {
         T item = listViewItem.Tag as T;
-        itemsListView.SmallImageList.Images.Add(item == null ? HeuristicLab.Common.Resources.VS2008ImageLibrary.Nothing : item.ItemImage);
+        itemsListView.SmallImageList.Images.Add(item == null ? HeuristicLab.Common.Resources.VSImageLibrary.Nothing : item.ItemImage);
         listViewItem.ImageIndex = itemsListView.SmallImageList.Images.Count - 1;
       }
     }

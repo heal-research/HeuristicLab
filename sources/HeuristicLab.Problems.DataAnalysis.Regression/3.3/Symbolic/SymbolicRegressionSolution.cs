@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [StorableClass]
   public class SymbolicRegressionSolution : DataAnalysisSolution {
     public override Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Function; }
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Function; }
     }
 
     public new SymbolicRegressionModel Model {

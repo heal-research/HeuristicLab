@@ -46,10 +46,10 @@ namespace HeuristicLab.Operators.Programmable {
     public ProgrammableOperatorView() {
       InitializeComponent();
       namespacesTreeView.ImageList = new ImageList();
-      namespacesTreeView.ImageList.Images.Add(VS2008ImageLibrary.Namespace);
+      namespacesTreeView.ImageList.Images.Add(VSImageLibrary.Namespace);
       assembliesTreeView.ImageList = new ImageList();
-      assembliesTreeView.ImageList.Images.Add(VS2008ImageLibrary.Assembly);
-      assembliesTreeView.ImageList.Images.Add(VS2008ImageLibrary.Module);
+      assembliesTreeView.ImageList.Images.Add(VSImageLibrary.Assembly);
+      assembliesTreeView.ImageList.Images.Add(VSImageLibrary.Module);
     }
 
     protected override void RegisterContentEvents() {
@@ -202,8 +202,7 @@ namespace HeuristicLab.Operators.Programmable {
       this.Enabled = false;
       try {
         ProgrammableOperator.Compile();
-      }
-      catch (Exception ex) {
+      } catch (Exception ex) {
         ErrorHandling.ShowErrorDialog(this, ex);
       }
       OnContentChanged();

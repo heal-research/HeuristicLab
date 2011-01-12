@@ -23,13 +23,13 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Threading;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
@@ -42,7 +42,7 @@ namespace HeuristicLab.Optimization {
     public string Filename { get; set; }
 
     public override Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Type; }
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
     }
     public new ParameterCollection Parameters {
       get { return base.Parameters; }
@@ -261,7 +261,7 @@ namespace HeuristicLab.Optimization {
       #endregion
 
       public override Image ItemImage {
-        get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Method; }
+        get { return HeuristicLab.Common.Resources.VSImageLibrary.Method; }
       }
     }
   }

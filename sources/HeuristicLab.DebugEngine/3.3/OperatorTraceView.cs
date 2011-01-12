@@ -83,9 +83,9 @@ namespace HeuristicLab.DebugEngine {
       listView.BeginUpdate();
       listView.Items.Clear();
       listView.SmallImageList.Images.Clear();
-      listView.SmallImageList.Images.Add(VS2008ImageLibrary.Method);
-      listView.SmallImageList.Images.Add(VS2008ImageLibrary.Module);
-      listView.SmallImageList.Images.Add(VS2008ImageLibrary.BreakpointActive);
+      listView.SmallImageList.Images.Add(VSImageLibrary.Method);
+      listView.SmallImageList.Images.Add(VSImageLibrary.Module);
+      listView.SmallImageList.Images.Add(VSImageLibrary.BreakpointActive);
       foreach (var item in Content) {
         var viewItem = listView.Items.Add(item.Name ?? item.ItemName);
         viewItem.ToolTipText = string.Format("{0}{1}{1}{2}",
@@ -139,7 +139,7 @@ namespace HeuristicLab.DebugEngine {
     }
     #endregion
 
-    
+
   }
 
 }

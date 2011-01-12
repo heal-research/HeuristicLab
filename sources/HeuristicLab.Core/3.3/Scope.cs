@@ -32,7 +32,7 @@ namespace HeuristicLab.Core {
   [StorableClass]
   public sealed class Scope : NamedItem, IScope {
     public override Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.OrgChart; }
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.OrgChart; }
     }
 
     [Storable]

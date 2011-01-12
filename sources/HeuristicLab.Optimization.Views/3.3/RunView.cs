@@ -115,7 +115,7 @@ namespace HeuristicLab.Optimization.Views {
       ListViewItem item = new ListViewItem(new string[] { name, value != null ? value.ToString() : "-" });
       item.Tag = value;
       item.Group = group;
-      listView.SmallImageList.Images.Add(value == null ? HeuristicLab.Common.Resources.VS2008ImageLibrary.Nothing : value.ItemImage);
+      listView.SmallImageList.Images.Add(value == null ? HeuristicLab.Common.Resources.VSImageLibrary.Nothing : value.ItemImage);
       item.ImageIndex = listView.SmallImageList.Images.Count - 1;
       listView.Items.Add(item);
       if ((selectedName != null) && name.Equals(selectedName)) item.Selected = true;

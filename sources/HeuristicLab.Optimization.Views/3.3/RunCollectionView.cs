@@ -154,7 +154,7 @@ namespace HeuristicLab.Optimization.Views {
       ListViewItem listViewItem = new ListViewItem();
       if (item == null) {
         listViewItem.Text = "null";
-        itemsListView.SmallImageList.Images.Add(HeuristicLab.Common.Resources.VS2008ImageLibrary.Nothing);
+        itemsListView.SmallImageList.Images.Add(HeuristicLab.Common.Resources.VSImageLibrary.Nothing);
         listViewItem.ImageIndex = itemsListView.SmallImageList.Images.Count - 1;
       } else {
         listViewItem.Text = item.ToString();
@@ -198,7 +198,7 @@ namespace HeuristicLab.Optimization.Views {
     private void UpdateListViewItemImage(ListViewItem listViewItem) {
       IRun item = listViewItem.Tag as IRun;
       int i = listViewItem.ImageIndex;
-      listViewItem.ImageList.Images[i] = item == null ? HeuristicLab.Common.Resources.VS2008ImageLibrary.Nothing : item.ItemImage;
+      listViewItem.ImageList.Images[i] = item == null ? HeuristicLab.Common.Resources.VSImageLibrary.Nothing : item.ItemImage;
       listViewItem.ImageIndex = -1;
       listViewItem.ImageIndex = i;
     }
@@ -431,7 +431,7 @@ namespace HeuristicLab.Optimization.Views {
       itemsListView.SmallImageList.Images.Clear();
       foreach (ListViewItem listViewItem in itemsListView.Items) {
         IRun item = listViewItem.Tag as IRun;
-        itemsListView.SmallImageList.Images.Add(item == null ? HeuristicLab.Common.Resources.VS2008ImageLibrary.Nothing : item.ItemImage);
+        itemsListView.SmallImageList.Images.Add(item == null ? HeuristicLab.Common.Resources.VSImageLibrary.Nothing : item.ItemImage);
         listViewItem.ImageIndex = itemsListView.SmallImageList.Images.Count - 1;
       }
     }

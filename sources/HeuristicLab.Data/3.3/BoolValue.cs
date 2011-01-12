@@ -31,7 +31,7 @@ namespace HeuristicLab.Data {
   [StorableClass]
   public class BoolValue : ValueTypeValue<bool>, IComparable, IStringConvertibleValue {
     public override Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Field; }
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Field; }
     }
 
     protected BoolValue(BoolValue original, Cloner cloner)

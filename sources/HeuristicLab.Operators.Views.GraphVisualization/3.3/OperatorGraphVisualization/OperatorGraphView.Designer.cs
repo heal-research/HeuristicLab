@@ -142,7 +142,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       // 
       // screenshotButton
       // 
-      this.screenshotButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Image;
+      this.screenshotButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Image;
       this.screenshotButton.Location = new System.Drawing.Point(243, 3);
       this.screenshotButton.Name = "screenshotButton";
       this.screenshotButton.Size = new System.Drawing.Size(24, 24);
@@ -153,7 +153,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       // 
       // zoomOutButton
       // 
-      this.zoomOutButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.ZoomOut;
+      this.zoomOutButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.ZoomOut;
       this.zoomOutButton.Location = new System.Drawing.Point(213, 3);
       this.zoomOutButton.Name = "zoomOutButton";
       this.zoomOutButton.Size = new System.Drawing.Size(24, 24);
@@ -164,7 +164,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       // 
       // zoomInButton
       // 
-      this.zoomInButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.ZoomIn;
+      this.zoomInButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.ZoomIn;
       this.zoomInButton.Location = new System.Drawing.Point(183, 3);
       this.zoomInButton.Name = "zoomInButton";
       this.zoomInButton.Size = new System.Drawing.Size(24, 24);
@@ -175,7 +175,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       // 
       // zoomAreaButton
       // 
-      this.zoomToFitButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.ActualSize;
+      this.zoomToFitButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.ActualSize;
       this.zoomToFitButton.Location = new System.Drawing.Point(153, 3);
       this.zoomToFitButton.Name = "zoomAreaButton";
       this.zoomToFitButton.Size = new System.Drawing.Size(24, 24);
@@ -186,7 +186,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       // 
       // relayoutButton
       // 
-      this.relayoutButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.RefreshDocument;
+      this.relayoutButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.RefreshDocument;
       this.relayoutButton.Location = new System.Drawing.Point(123, 3);
       this.relayoutButton.Name = "relayoutButton";
       this.relayoutButton.Size = new System.Drawing.Size(24, 24);
@@ -197,7 +197,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       // 
       // connectButton
       // 
-      this.connectButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Interface;
+      this.connectButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Interface;
       this.connectButton.Location = new System.Drawing.Point(63, 3);
       this.connectButton.Name = "connectButton";
       this.connectButton.Size = new System.Drawing.Size(24, 24);
@@ -208,7 +208,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       // 
       // panButton
       // 
-      this.panButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Breakpoint;
+      this.panButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Breakpoint;
       this.panButton.Location = new System.Drawing.Point(33, 3);
       this.panButton.Name = "panButton";
       this.panButton.Size = new System.Drawing.Size(24, 24);
@@ -219,7 +219,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       // 
       // selectButton
       // 
-      this.selectButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Pointer;
+      this.selectButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Pointer;
       this.selectButton.Location = new System.Drawing.Point(3, 3);
       this.selectButton.Name = "selectButton";
       this.selectButton.Size = new System.Drawing.Size(24, 24);

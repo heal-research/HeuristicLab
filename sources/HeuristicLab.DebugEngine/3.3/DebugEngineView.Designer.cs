@@ -76,8 +76,8 @@ namespace HeuristicLab.DebugEngine {
       // 
       // executionStackView
       // 
-      this.executionStackView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.executionStackView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.executionStackView.Caption = "Execution Stack View";
       this.executionStackView.Content = null;
@@ -110,7 +110,7 @@ namespace HeuristicLab.DebugEngine {
       // refreshButton
       // 
       this.refreshButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.refreshButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Refresh;
+      this.refreshButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Refresh;
       this.refreshButton.Location = new System.Drawing.Point(3, 511);
       this.refreshButton.Name = "refreshButton";
       this.refreshButton.Size = new System.Drawing.Size(24, 24);
@@ -136,7 +136,7 @@ namespace HeuristicLab.DebugEngine {
       // stepButton
       // 
       this.stepButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.stepButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.MoveNext;
+      this.stepButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.MoveNext;
       this.stepButton.Location = new System.Drawing.Point(33, 511);
       this.stepButton.Name = "stepButton";
       this.stepButton.Size = new System.Drawing.Size(24, 24);
@@ -147,8 +147,8 @@ namespace HeuristicLab.DebugEngine {
       // 
       // splitContainer3
       // 
-      this.splitContainer3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.splitContainer3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.splitContainer3.Location = new System.Drawing.Point(0, 0);
       this.splitContainer3.Name = "splitContainer3";

@@ -33,7 +33,7 @@ namespace HeuristicLab.Core {
     public string Filename { get; set; }
 
     public override Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.File; }
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.File; }
     }
 
     [Storable]

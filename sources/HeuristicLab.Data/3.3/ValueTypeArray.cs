@@ -34,7 +34,7 @@ namespace HeuristicLab.Data {
   [StorableClass]
   public abstract class ValueTypeArray<T> : Item, IEnumerable<T> where T : struct {
     public override Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Class; }
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Class; }
     }
 
     [Storable]

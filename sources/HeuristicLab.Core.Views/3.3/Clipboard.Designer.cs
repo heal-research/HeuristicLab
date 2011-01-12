@@ -119,7 +119,7 @@ namespace HeuristicLab.Core.Views {
       // sortDescendingButton
       // 
       this.sortDescendingButton.Enabled = false;
-      this.sortDescendingButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.SortUp;
+      this.sortDescendingButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.SortUp;
       this.sortDescendingButton.Location = new System.Drawing.Point(30, 0);
       this.sortDescendingButton.Name = "sortDescendingButton";
       this.sortDescendingButton.Size = new System.Drawing.Size(24, 24);
@@ -131,7 +131,7 @@ namespace HeuristicLab.Core.Views {
       // sortAscendingButton
       // 
       this.sortAscendingButton.Enabled = false;
-      this.sortAscendingButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Sort;
+      this.sortAscendingButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Sort;
       this.sortAscendingButton.Location = new System.Drawing.Point(60, 0);
       this.sortAscendingButton.Name = "sortAscendingButton";
       this.sortAscendingButton.Size = new System.Drawing.Size(24, 24);
@@ -143,7 +143,7 @@ namespace HeuristicLab.Core.Views {
       // removeButton
       // 
       this.removeButton.Enabled = false;
-      this.removeButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Remove;
+      this.removeButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Remove;
       this.removeButton.Location = new System.Drawing.Point(90, 0);
       this.removeButton.Name = "removeButton";
       this.removeButton.Size = new System.Drawing.Size(24, 24);
@@ -154,7 +154,7 @@ namespace HeuristicLab.Core.Views {
       // 
       // addButton
       // 
-      this.addButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Add;
+      this.addButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Add;
       this.addButton.Location = new System.Drawing.Point(0, 0);
       this.addButton.Name = "addButton";
       this.addButton.Size = new System.Drawing.Size(24, 24);
@@ -165,7 +165,7 @@ namespace HeuristicLab.Core.Views {
       // 
       // saveButton
       // 
-      this.saveButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Save;
+      this.saveButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Save;
       this.saveButton.Location = new System.Drawing.Point(120, 0);
       this.saveButton.Name = "saveButton";
       this.saveButton.Size = new System.Drawing.Size(24, 24);

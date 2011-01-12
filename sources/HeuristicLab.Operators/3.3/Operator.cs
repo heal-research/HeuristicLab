@@ -35,8 +35,8 @@ namespace HeuristicLab.Operators {
   public abstract class Operator : ParameterizedNamedItem, IOperator {
     public override Image ItemImage {
       get {
-        if (Breakpoint) return HeuristicLab.Common.Resources.VS2008ImageLibrary.BreakpointActive;
-        else return HeuristicLab.Common.Resources.VS2008ImageLibrary.Method;
+        if (Breakpoint) return HeuristicLab.Common.Resources.VSImageLibrary.BreakpointActive;
+        else return HeuristicLab.Common.Resources.VSImageLibrary.Method;
       }
     }
     public override bool CanChangeDescription {
@@ -115,8 +115,7 @@ namespace HeuristicLab.Operators {
         IOperation next = Apply();
         OnExecuted();
         return next;
-      }
-      finally {
+      } finally {
         foreach (IParameter param in Parameters)
           param.ExecutionContext = null;
         ExecutionContext = null;

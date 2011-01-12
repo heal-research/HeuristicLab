@@ -40,7 +40,7 @@ namespace HeuristicLab.Problems.OneMax {
     public string Filename { get; set; }
 
     public override Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Type; }
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
     }
 
     #region Parameter Properties
@@ -235,7 +235,7 @@ namespace HeuristicLab.Problems.OneMax {
       operators = new List<IOperator>();
       operators.Add(new BestOneMaxSolutionAnalyzer());
       ParameterizeAnalyzer();
-      foreach(IBinaryVectorOperator op in ApplicationManager.Manager.GetInstances<IBinaryVectorOperator>()) {
+      foreach (IBinaryVectorOperator op in ApplicationManager.Manager.GetInstances<IBinaryVectorOperator>()) {
         if (!(op is ISingleObjectiveMoveEvaluator) || (op is IOneMaxMoveEvaluator)) {
           operators.Add(op);
         }

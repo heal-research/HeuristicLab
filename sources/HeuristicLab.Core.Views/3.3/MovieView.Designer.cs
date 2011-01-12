@@ -116,7 +116,7 @@ namespace HeuristicLab.Core.Views {
       // stopButton
       // 
       this.stopButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.stopButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Stop;
+      this.stopButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Stop;
       this.stopButton.Location = new System.Drawing.Point(36, 355);
       this.stopButton.Name = "stopButton";
       this.stopButton.Size = new System.Drawing.Size(24, 24);
@@ -128,7 +128,7 @@ namespace HeuristicLab.Core.Views {
       // nextButton
       // 
       this.nextButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.nextButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.MoveNext;
+      this.nextButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.MoveNext;
       this.nextButton.Location = new System.Drawing.Point(472, 325);
       this.nextButton.Name = "nextButton";
       this.nextButton.Size = new System.Drawing.Size(24, 24);
@@ -139,7 +139,7 @@ namespace HeuristicLab.Core.Views {
       // lastButton
       // 
       this.lastButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.lastButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.MoveLast;
+      this.lastButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.MoveLast;
       this.lastButton.Location = new System.Drawing.Point(502, 325);
       this.lastButton.Name = "lastButton";
       this.lastButton.Size = new System.Drawing.Size(24, 24);
@@ -151,7 +151,7 @@ namespace HeuristicLab.Core.Views {
       // playButton
       // 
       this.playButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.playButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Play;
+      this.playButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Play;
       this.playButton.Location = new System.Drawing.Point(6, 355);
       this.playButton.Name = "playButton";
       this.playButton.Size = new System.Drawing.Size(24, 24);
@@ -163,7 +163,7 @@ namespace HeuristicLab.Core.Views {
       // previousButton
       // 
       this.previousButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.previousButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.MovePrevious;
+      this.previousButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.MovePrevious;
       this.previousButton.Location = new System.Drawing.Point(36, 325);
       this.previousButton.Name = "previousButton";
       this.previousButton.Size = new System.Drawing.Size(24, 24);
@@ -174,7 +174,7 @@ namespace HeuristicLab.Core.Views {
       // firstButton
       // 
       this.firstButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.firstButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.MoveFirst;
+      this.firstButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.MoveFirst;
       this.firstButton.Location = new System.Drawing.Point(6, 325);
       this.firstButton.Name = "firstButton";
       this.firstButton.Size = new System.Drawing.Size(24, 24);

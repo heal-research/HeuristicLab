@@ -194,8 +194,8 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       this.iconMaterial.Gliding = false;
       this.Children.Add(iconMaterial);
 
-      Bitmap expandBitmap = new Bitmap(HeuristicLab.Common.Resources.VS2008ImageLibrary.Expand);
-      Bitmap collapseBitmap = new Bitmap(HeuristicLab.Common.Resources.VS2008ImageLibrary.Collapse);
+      Bitmap expandBitmap = new Bitmap(HeuristicLab.Common.Resources.VSImageLibrary.Expand);
+      Bitmap collapseBitmap = new Bitmap(HeuristicLab.Common.Resources.VSImageLibrary.Collapse);
       this.expandIconMaterial = new ExpandableIconMaterial(expandBitmap, collapseBitmap);
       this.expandIconMaterial.Gliding = false;
       this.expandIconMaterial.Transform(new Rectangle(new Point(Rectangle.Right - 20, Rectangle.Y + 7), expandIconMaterial.Icon.Size));

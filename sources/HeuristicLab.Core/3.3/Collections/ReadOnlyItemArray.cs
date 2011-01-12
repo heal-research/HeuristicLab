@@ -40,7 +40,7 @@ namespace HeuristicLab.Core {
       get { return ItemAttribute.GetVersion(this.GetType()); }
     }
     public virtual Image ItemImage {
-      get { return VS2008ImageLibrary.Class; }
+      get { return VSImageLibrary.Class; }
     }
 
     [StorableConstructor]

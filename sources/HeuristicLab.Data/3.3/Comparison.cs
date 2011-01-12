@@ -30,7 +30,7 @@ namespace HeuristicLab.Data {
   [StorableClass]
   public class Comparison : ValueTypeValue<ComparisonType>, IComparable {
     public override Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Enum; }
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Enum; }
     }
 
     [StorableConstructor]

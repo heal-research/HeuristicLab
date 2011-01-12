@@ -75,9 +75,9 @@ namespace HeuristicLab.DebugEngine {
       treeView.BeginUpdate();
       treeView.Nodes.Clear();
       treeView.ImageList.Images.Clear();
-      treeView.ImageList.Images.Add(VS2008ImageLibrary.Method);
-      treeView.ImageList.Images.Add(VS2008ImageLibrary.Module);
-      treeView.ImageList.Images.Add(VS2008ImageLibrary.BreakpointActive);
+      treeView.ImageList.Images.Add(VSImageLibrary.Method);
+      treeView.ImageList.Images.Add(VSImageLibrary.Module);
+      treeView.ImageList.Images.Add(VSImageLibrary.BreakpointActive);
       int totalNodes = AddStackOperations(treeView.Nodes, ((IEnumerable<IOperation>)Content).Reverse());
       if (treeView.Nodes.Count > 0)
         treeView.TopNode = treeView.Nodes[0];

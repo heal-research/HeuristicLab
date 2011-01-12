@@ -110,7 +110,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // openAlgorithmButton
       // 
-      this.openAlgorithmButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Open;
+      this.openAlgorithmButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Open;
       this.openAlgorithmButton.Location = new System.Drawing.Point(36, 6);
       this.openAlgorithmButton.Name = "openAlgorithmButton";
       this.openAlgorithmButton.Size = new System.Drawing.Size(24, 24);
@@ -121,7 +121,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // newAlgorithmButton
       // 
-      this.newAlgorithmButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.NewDocument;
+      this.newAlgorithmButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.NewDocument;
       this.newAlgorithmButton.Location = new System.Drawing.Point(6, 6);
       this.newAlgorithmButton.Name = "newAlgorithmButton";
       this.newAlgorithmButton.Size = new System.Drawing.Size(24, 24);
@@ -155,7 +155,7 @@ namespace HeuristicLab.Optimization.Views {
       // startButton
       // 
       this.startButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.startButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Play;
+      this.startButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Play;
       this.startButton.Location = new System.Drawing.Point(0, 458);
       this.startButton.Name = "startButton";
       this.startButton.Size = new System.Drawing.Size(24, 24);
@@ -167,7 +167,7 @@ namespace HeuristicLab.Optimization.Views {
       // stopButton
       // 
       this.stopButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.stopButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Stop;
+      this.stopButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Stop;
       this.stopButton.Location = new System.Drawing.Point(60, 458);
       this.stopButton.Name = "stopButton";
       this.stopButton.Size = new System.Drawing.Size(24, 24);
@@ -179,7 +179,7 @@ namespace HeuristicLab.Optimization.Views {
       // resetButton
       // 
       this.resetButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.resetButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Restart;
+      this.resetButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Restart;
       this.resetButton.Location = new System.Drawing.Point(90, 458);
       this.resetButton.Name = "resetButton";
       this.resetButton.Size = new System.Drawing.Size(24, 24);
@@ -253,7 +253,7 @@ namespace HeuristicLab.Optimization.Views {
       // pauseButton
       // 
       this.pauseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.pauseButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Pause;
+      this.pauseButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Pause;
       this.pauseButton.Location = new System.Drawing.Point(30, 458);
       this.pauseButton.Name = "pauseButton";
       this.pauseButton.Size = new System.Drawing.Size(24, 24);

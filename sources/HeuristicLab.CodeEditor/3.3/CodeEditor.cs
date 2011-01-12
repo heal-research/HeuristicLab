@@ -163,16 +163,11 @@ namespace HeuristicLab.CodeEditor {
         File.Delete(Path.Combine(persistencePath, "test.tmp"));
         // if we made it this far, enable on-disk parsing cache
         projectContentRegistry.ActivatePersistence(persistencePath);
-      }
-      catch (NotSupportedException) {
-      }
-      catch (IOException) {
-      }
-      catch (System.Security.SecurityException) {
-      }
-      catch (UnauthorizedAccessException) {
-      }
-      catch (ArgumentException) {
+      } catch (NotSupportedException) {
+      } catch (IOException) {
+      } catch (System.Security.SecurityException) {
+      } catch (UnauthorizedAccessException) {
+      } catch (ArgumentException) {
       }
       projectContent = new Dom.DefaultProjectContent();
       projectContent.Language = Dom.LanguageProperties.CSharp;
@@ -197,13 +192,13 @@ namespace HeuristicLab.CodeEditor {
 
     private void InitializeImageList() {
       imageList1.Images.Clear();
-      imageList1.Images.Add("Icons.16x16.Class.png", VS2008ImageLibrary.Class);
-      imageList1.Images.Add("Icons.16x16.Method.png", VS2008ImageLibrary.Method);
-      imageList1.Images.Add("Icons.16x16.Property.png", VS2008ImageLibrary.Properties);
-      imageList1.Images.Add("Icons.16x16.Field.png", VS2008ImageLibrary.Field);
-      imageList1.Images.Add("Icons.16x16.Enum.png", VS2008ImageLibrary.Enum);
-      imageList1.Images.Add("Icons.16x16.NameSpace.png", VS2008ImageLibrary.Namespace);
-      imageList1.Images.Add("Icons.16x16.Event.png", VS2008ImageLibrary.Event);
+      imageList1.Images.Add("Icons.16x16.Class.png", VSImageLibrary.Class);
+      imageList1.Images.Add("Icons.16x16.Method.png", VSImageLibrary.Method);
+      imageList1.Images.Add("Icons.16x16.Property.png", VSImageLibrary.Properties);
+      imageList1.Images.Add("Icons.16x16.Field.png", VSImageLibrary.Field);
+      imageList1.Images.Add("Icons.16x16.Enum.png", VSImageLibrary.Enum);
+      imageList1.Images.Add("Icons.16x16.NameSpace.png", VSImageLibrary.Namespace);
+      imageList1.Images.Add("Icons.16x16.Event.png", VSImageLibrary.Event);
     }
 
     #region keyboard handlers: filter input in read-only areas
@@ -349,8 +344,7 @@ namespace HeuristicLab.CodeEditor {
         projectContent.UpdateCompilationUnit(lastCompilationUnit, newCompilationUnit, DummyFileName);
         lastCompilationUnit = newCompilationUnit;
         parseInformation.SetCompilationUnit(newCompilationUnit);
-      }
-      catch { }
+      } catch { }
     }
 
     Dom.ICompilationUnit ConvertCompilationUnit(NRefactory.Ast.CompilationUnit cu) {

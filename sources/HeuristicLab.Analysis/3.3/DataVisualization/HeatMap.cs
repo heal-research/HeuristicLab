@@ -31,7 +31,7 @@ namespace HeuristicLab.Analysis {
   [StorableClass]
   public class HeatMap : DoubleMatrix {
     public override Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Gradient; }
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Gradient; }
     }
 
     private string title;

@@ -22,14 +22,14 @@ namespace HeuristicLab.Common.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class VS2008ImageLibrary {
+    public class VSImageLibrary {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal VS2008ImageLibrary() {
+        internal VSImageLibrary() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace HeuristicLab.Common.Resources {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("HeuristicLab.Common.Resources.VS2008ImageLibrary", typeof(VS2008ImageLibrary).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("HeuristicLab.Common.Resources.VSImageLibrary", typeof(VSImageLibrary).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -364,6 +364,13 @@ namespace HeuristicLab.Common.Resources {
         public static System.Drawing.Bitmap File {
             get {
                 object obj = ResourceManager.GetObject("File", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        public static System.Drawing.Bitmap Filter {
+            get {
+                object obj = ResourceManager.GetObject("Filter", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

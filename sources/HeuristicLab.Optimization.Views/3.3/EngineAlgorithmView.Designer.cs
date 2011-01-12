@@ -219,7 +219,7 @@ namespace HeuristicLab.Optimization.Views {
       // openOperatorGraphButton
       // 
       this.openOperatorGraphButton.Enabled = false;
-      this.openOperatorGraphButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Open;
+      this.openOperatorGraphButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Open;
       this.openOperatorGraphButton.Location = new System.Drawing.Point(33, 3);
       this.openOperatorGraphButton.Name = "openOperatorGraphButton";
       this.openOperatorGraphButton.Size = new System.Drawing.Size(24, 24);
@@ -230,7 +230,7 @@ namespace HeuristicLab.Optimization.Views {
       // newOperatorGraphButton
       // 
       this.newOperatorGraphButton.Enabled = false;
-      this.newOperatorGraphButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.NewDocument;
+      this.newOperatorGraphButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.NewDocument;
       this.newOperatorGraphButton.Location = new System.Drawing.Point(3, 3);
       this.newOperatorGraphButton.Name = "newOperatorGraphButton";
       this.newOperatorGraphButton.Size = new System.Drawing.Size(24, 24);

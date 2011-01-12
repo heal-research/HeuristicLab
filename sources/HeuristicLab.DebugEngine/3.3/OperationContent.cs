@@ -42,16 +42,16 @@ namespace HeuristicLab.DebugEngine {
       if (AtomicOperation != null) {
         Name = Utils.Name(AtomicOperation);
         if (AtomicOperation.Operator != null && AtomicOperation.Operator.Breakpoint) {
-          Icon = VS2008ImageLibrary.BreakpointActive;
+          Icon = VSImageLibrary.BreakpointActive;
         } else {
-          Icon = VS2008ImageLibrary.Method;
+          Icon = VSImageLibrary.Method;
         }
       } else if (Collection != null) {
         Name = string.Format("{0} Operations", Collection.Count);
-        Icon = VS2008ImageLibrary.Module;
+        Icon = VSImageLibrary.Module;
       } else {
         Name = "";
-        Icon = VS2008ImageLibrary.Nothing;
+        Icon = VSImageLibrary.Nothing;
       }
     }
 

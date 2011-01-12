@@ -78,7 +78,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
       // 
       // browseExecutableButton
       // 
-      this.browseExecutableButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Open;
+      this.browseExecutableButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Open;
       this.browseExecutableButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.browseExecutableButton.Location = new System.Drawing.Point(362, 57);
       this.browseExecutableButton.Name = "browseExecutableButton";
@@ -122,7 +122,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
       // 
       // startButton
       // 
-      this.startButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Play;
+      this.startButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Play;
       this.startButton.Location = new System.Drawing.Point(72, 111);
       this.startButton.Name = "startButton";
       this.startButton.Size = new System.Drawing.Size(26, 23);
@@ -132,7 +132,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
       // 
       // terminateButton
       // 
-      this.terminateButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Stop;
+      this.terminateButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Stop;
       this.terminateButton.Enabled = false;
       this.terminateButton.Location = new System.Drawing.Point(104, 111);
       this.terminateButton.Name = "terminateButton";

@@ -51,7 +51,7 @@ namespace HeuristicLab.Operators.Programmable {
       get { return base.Parameters; }
     }
 
-    public override System.Drawing.Image ItemImage { get { return VS2008ImageLibrary.Script; } }
+    public override System.Drawing.Image ItemImage { get { return VSImageLibrary.Script; } }
 
     private MethodInfo executeMethod;
     public CompilerErrorCollection CompileErrors { get; private set; }

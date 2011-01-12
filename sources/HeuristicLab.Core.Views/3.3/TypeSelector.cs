@@ -98,10 +98,10 @@ namespace HeuristicLab.Core.Views {
         typesTreeView.Nodes.Clear();
         treeNodes.Clear();
         imageList.Images.Clear();
-        imageList.Images.Add(HeuristicLab.Common.Resources.VS2008ImageLibrary.Class);      // default icon
-        imageList.Images.Add(HeuristicLab.Common.Resources.VS2008ImageLibrary.Namespace);  // plugins
-        imageList.Images.Add(HeuristicLab.Common.Resources.VS2008ImageLibrary.Interface);  // interfaces
-        imageList.Images.Add(HeuristicLab.Common.Resources.VS2008ImageLibrary.Template);   // generic types
+        imageList.Images.Add(HeuristicLab.Common.Resources.VSImageLibrary.Class);      // default icon
+        imageList.Images.Add(HeuristicLab.Common.Resources.VSImageLibrary.Namespace);  // plugins
+        imageList.Images.Add(HeuristicLab.Common.Resources.VSImageLibrary.Interface);  // interfaces
+        imageList.Images.Add(HeuristicLab.Common.Resources.VSImageLibrary.Template);   // generic types
 
         var plugins = from p in ApplicationManager.Manager.Plugins
                       orderby p.Name, p.Version ascending
@@ -136,8 +136,7 @@ namespace HeuristicLab.Core.Views {
                   IItem item = (IItem)Activator.CreateInstance(type);
                   imageList.Images.Add(type.FullName, item.ItemImage);
                   typeNode.ImageIndex = imageList.Images.IndexOfKey(type.FullName);
-                }
-                catch (Exception) { }
+                } catch (Exception) { }
               }
               typeNode.SelectedImageIndex = typeNode.ImageIndex;
               typeNode.Tag = type;

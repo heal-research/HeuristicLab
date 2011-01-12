@@ -33,7 +33,7 @@ namespace HeuristicLab.Analysis {
   [StorableClass]
   public class DataTableHistory : ItemCollection<DataTable> {
     public override Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Cab; }
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Cab; }
     }
 
     [StorableConstructor]

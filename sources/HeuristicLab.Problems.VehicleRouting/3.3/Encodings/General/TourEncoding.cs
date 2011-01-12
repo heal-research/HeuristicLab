@@ -21,18 +21,18 @@
 
 using System.Collections.Generic;
 using System.Drawing;
+using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Text;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("TourEncoding", "Represents a base class for tour encodings of VRP solutions.")]
   [StorableClass]
   public abstract class TourEncoding : Item, IVRPEncoding {
     public override Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Class; }
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Class; }
     }
 
     #region IVRPEncoding Members
@@ -115,7 +115,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
         sb.AppendLine();
       }
 
-      return sb.ToString(); 
+      return sb.ToString();
     }
   }
 }

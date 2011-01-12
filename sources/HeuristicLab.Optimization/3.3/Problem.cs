@@ -38,7 +38,7 @@ namespace HeuristicLab.Optimization {
     private const string SolutionCreateParameterName = "SolutionCreator";
 
     public override Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Type; }
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
     }
 
     [StorableConstructor]

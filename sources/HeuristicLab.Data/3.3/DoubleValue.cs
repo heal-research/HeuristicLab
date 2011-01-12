@@ -31,7 +31,7 @@ namespace HeuristicLab.Data {
   [StorableClass]
   public class DoubleValue : ValueTypeValue<double>, IComparable, IStringConvertibleValue {
     public override Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Field; }
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Field; }
     }
 
     [StorableConstructor]

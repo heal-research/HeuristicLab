@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.SupportVectorRegression 
   [StorableClass]
   public sealed class SupportVectorRegressionSolution : DataAnalysisSolution {
     public override Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Function; }
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Function; }
     }
 
     public new SupportVectorMachineModel Model {

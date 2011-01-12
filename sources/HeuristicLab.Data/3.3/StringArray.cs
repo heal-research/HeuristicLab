@@ -34,7 +34,7 @@ namespace HeuristicLab.Data {
   [StorableClass]
   public class StringArray : Item, IEnumerable<string>, IStringConvertibleArray {
     public override Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Class; }
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Class; }
     }
 
     [Storable]

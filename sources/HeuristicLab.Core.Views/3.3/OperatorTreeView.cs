@@ -112,7 +112,7 @@ namespace HeuristicLab.Core.Views {
       if (op == null) {
         node.Text += "-";
         node.ToolTipText = "";
-        graphTreeView.ImageList.Images.Add(HeuristicLab.Common.Resources.VS2008ImageLibrary.Nothing);
+        graphTreeView.ImageList.Images.Add(HeuristicLab.Common.Resources.VSImageLibrary.Nothing);
         node.ImageIndex = graphTreeView.ImageList.Images.Count - 1;
         node.SelectedImageIndex = node.ImageIndex;
         node.ForeColor = graphTreeView.ForeColor;

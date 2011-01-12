@@ -99,7 +99,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
       // openVRPFileButton
       // 
       this.openVRPFileButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.openVRPFileButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Open;
+      this.openVRPFileButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Open;
       this.openVRPFileButton.Location = new System.Drawing.Point(520, 10);
       this.openVRPFileButton.Name = "openVRPFileButton";
       this.openVRPFileButton.Size = new System.Drawing.Size(24, 24);
@@ -130,7 +130,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
       // openTourFileButton
       // 
       this.openTourFileButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.openTourFileButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Open;
+      this.openTourFileButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Open;
       this.openTourFileButton.Location = new System.Drawing.Point(520, 35);
       this.openTourFileButton.Name = "openTourFileButton";
       this.openTourFileButton.Size = new System.Drawing.Size(24, 24);
@@ -160,7 +160,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
       // clearTourFileButton
       // 
       this.clearTourFileButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.clearTourFileButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Remove;
+      this.clearTourFileButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Remove;
       this.clearTourFileButton.Location = new System.Drawing.Point(550, 35);
       this.clearTourFileButton.Name = "clearTourFileButton";
       this.clearTourFileButton.Size = new System.Drawing.Size(24, 24);

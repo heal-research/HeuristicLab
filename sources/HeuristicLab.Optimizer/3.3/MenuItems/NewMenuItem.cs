@@ -35,7 +35,7 @@ namespace HeuristicLab.Optimizer.MenuItems {
       get { return 1100; }
     }
     public override Image Image {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.NewDocument; }
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.NewDocument; }
     }
     public override Keys ShortCutKeys {
       get { return Keys.Control | Keys.N; }

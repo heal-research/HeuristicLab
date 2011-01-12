@@ -119,8 +119,8 @@ namespace HeuristicLab.Operators.Programmable {
       // 
       // splitContainer2
       // 
-      this.splitContainer2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.splitContainer2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.splitContainer2.Location = new System.Drawing.Point(0, 33);
       this.splitContainer2.Name = "splitContainer2";
@@ -182,7 +182,7 @@ namespace HeuristicLab.Operators.Programmable {
       // 
       // showCodeButton
       // 
-      this.showCodeButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.PrintPreview;
+      this.showCodeButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.PrintPreview;
       this.showCodeButton.Location = new System.Drawing.Point(33, 3);
       this.showCodeButton.Name = "showCodeButton";
       this.showCodeButton.Size = new System.Drawing.Size(24, 24);
@@ -194,7 +194,7 @@ namespace HeuristicLab.Operators.Programmable {
       // 
       // compileButton
       // 
-      this.compileButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Script;
+      this.compileButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Script;
       this.compileButton.Location = new System.Drawing.Point(3, 3);
       this.compileButton.Name = "compileButton";
       this.compileButton.Size = new System.Drawing.Size(24, 24);
@@ -218,8 +218,8 @@ namespace HeuristicLab.Operators.Programmable {
       // 
       // tabControl1
       // 
-      this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl1.Controls.Add(this.tabPage1);
       this.tabControl1.Controls.Add(tabPage2);

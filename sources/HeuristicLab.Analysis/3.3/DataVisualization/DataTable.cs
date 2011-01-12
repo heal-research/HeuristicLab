@@ -38,7 +38,7 @@ namespace HeuristicLab.Analysis {
   [StorableClass]
   public class DataTable : NamedItem, IStringConvertibleMatrix {
     public override Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Performance; }
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Performance; }
     }
 
     private DataTableVisualProperties visualProperties;

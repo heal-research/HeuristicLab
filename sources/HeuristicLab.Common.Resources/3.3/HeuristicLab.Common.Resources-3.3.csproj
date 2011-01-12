@@ -11,7 +11,8 @@
     <RootNamespace>HeuristicLab.Common.Resources</RootNamespace>
     <AssemblyName>HeuristicLab.Common.Resources-3.3</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile></TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
@@ -114,10 +115,10 @@
     </Compile>
     <Compile Include="HeuristicLabCommonResourcesPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="VS2008ImageLibrary.Designer.cs">
+    <Compile Include="VSImageLibrary.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>VS2008ImageLibrary.resx</DependentUpon>
+      <DependentUpon>VSImageLibrary.resx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -135,9 +136,10 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>HeuristicLab.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="VS2008ImageLibrary.resx">
+    <EmbeddedResource Include="VSImageLibrary.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>VS2008ImageLibrary.Designer.cs</LastGenOutput>
+      <LastGenOutput>VSImageLibrary.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -427,7 +429,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Checkout.png" />
-    <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Clone.png" />
+    <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Clone.png" />
+    <None Include="Resources\VS2010ImageLibrary\VS2010ImageLibrary_Actions_Filter2HS.png" />
     <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Cab.png" />
     <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Gradient.png" />
     <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_EditBrightnessContrast.png" />

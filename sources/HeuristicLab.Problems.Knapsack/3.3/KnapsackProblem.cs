@@ -40,7 +40,7 @@ namespace HeuristicLab.Problems.Knapsack {
     public string Filename { get; set; }
 
     public override Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Type; }
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
     }
 
     #region Parameter Properties
@@ -166,7 +166,7 @@ namespace HeuristicLab.Problems.Knapsack {
       creator.BinaryVectorParameter.ActualName = "KnapsackSolution";
 
       InitializeRandomKnapsackInstance();
-      
+
       ParameterizeSolutionCreator();
       ParameterizeEvaluator();
 
@@ -277,7 +277,7 @@ namespace HeuristicLab.Problems.Knapsack {
       PenaltyParameter.ValueChanged += new EventHandler(PenaltyParameter_ValueChanged);
     }
     private void ParameterizeSolutionCreator() {
-      if(SolutionCreator.LengthParameter.Value == null ||
+      if (SolutionCreator.LengthParameter.Value == null ||
         SolutionCreator.LengthParameter.Value.Value != WeightsParameter.Value.Length)
         SolutionCreator.LengthParameter.Value = new IntValue(WeightsParameter.Value.Length);
     }

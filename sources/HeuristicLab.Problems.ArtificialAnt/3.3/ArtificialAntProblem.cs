@@ -44,7 +44,7 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     public string Filename { get; set; }
 
     public override Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Type; }
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
     }
 
     #region constant for default world (Santa Fe)

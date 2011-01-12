@@ -134,7 +134,7 @@ namespace HeuristicLab.Core.Views {
       // 
       // searchLabel
       // 
-      this.searchLabel.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Zoom;
+      this.searchLabel.Image = HeuristicLab.Common.Resources.VSImageLibrary.Zoom;
       this.searchLabel.Location = new System.Drawing.Point(3, 3);
       this.searchLabel.Name = "searchLabel";
       this.searchLabel.Size = new System.Drawing.Size(20, 20);
@@ -170,7 +170,7 @@ namespace HeuristicLab.Core.Views {
       // 
       this.setTypeParameterButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.setTypeParameterButton.Enabled = false;
-      this.setTypeParameterButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Edit;
+      this.setTypeParameterButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Edit;
       this.setTypeParameterButton.Location = new System.Drawing.Point(189, 19);
       this.setTypeParameterButton.Name = "setTypeParameterButton";
       this.setTypeParameterButton.Size = new System.Drawing.Size(24, 24);

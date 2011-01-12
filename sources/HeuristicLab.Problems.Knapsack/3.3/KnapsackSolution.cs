@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.Knapsack {
   [StorableClass]
   public class KnapsackSolution : Item {
     public override Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Image; }
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Image; }
     }
 
     [Storable]

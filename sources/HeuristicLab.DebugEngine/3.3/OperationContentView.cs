@@ -79,8 +79,8 @@ namespace HeuristicLab.DebugEngine {
       scopeTreeView.BeginUpdate();
       scopeTreeView.Nodes.Clear();
       scopeTreeView.ImageList.Images.Clear();
-      scopeTreeView.ImageList.Images.Add(VS2008ImageLibrary.Namespace);
-      scopeTreeView.ImageList.Images.Add(VS2008ImageLibrary.Field);
+      scopeTreeView.ImageList.Images.Add(VSImageLibrary.Namespace);
+      scopeTreeView.ImageList.Images.Add(VSImageLibrary.Field);
       if (Content.IsContext) {
         var scope = Content.ExecutionContext.Scope;
         while (scope != null && scope.Parent != null)
@@ -123,7 +123,7 @@ namespace HeuristicLab.DebugEngine {
       executionContextTreeView.BeginUpdate();
       executionContextTreeView.Nodes.Clear();
       executionContextTreeView.ImageList.Images.Clear();
-      executionContextTreeView.ImageList.Images.Add(VS2008ImageLibrary.Namespace);
+      executionContextTreeView.ImageList.Images.Add(VSImageLibrary.Namespace);
       if (Content.IsContext) {
         AddExecutionContext(Content.ExecutionContext, executionContextTreeView.Nodes);
       }
@@ -155,7 +155,7 @@ namespace HeuristicLab.DebugEngine {
           string.Format("{0} = {1}", param.Name, value);
         TreeNode paramNode = node.Nodes.Add(label);
         paramNode.Tag = param;
-        executionContextTreeView.ImageList.Images.Add(param.ItemImage ?? VS2008ImageLibrary.Nothing);
+        executionContextTreeView.ImageList.Images.Add(param.ItemImage ?? VSImageLibrary.Nothing);
         paramNode.ImageIndex = executionContextTreeView.ImageList.Images.Count - 1;
         paramNode.SelectedImageIndex = paramNode.ImageIndex;
         paramNode.ToolTipText = string.Format("{0}{1}{1}{2}",

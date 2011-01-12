@@ -33,7 +33,7 @@ namespace HeuristicLab.Optimizer {
       get { return 10; }
     }
     public override Image Image {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.NewDocument; }
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.NewDocument; }
     }
 
     public override void Execute() {

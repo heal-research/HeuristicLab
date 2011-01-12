@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   [StorableClass]
   public sealed class PathTSPTour : Item {
     public override Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Image; }
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Image; }
     }
 
     [Storable]

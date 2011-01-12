@@ -33,7 +33,7 @@ namespace HeuristicLab.Analysis {
   [StorableClass]
   public class AlleleFrequencyCollection : ReadOnlyItemCollection<AlleleFrequency> {
     public override Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Statistics; }
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Statistics; }
     }
 
     [StorableConstructor]

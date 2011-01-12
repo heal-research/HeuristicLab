@@ -41,7 +41,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     public string Filename { get; set; }
 
     public override Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Type; }
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
     }
 
     public new ParameterCollection Parameters {

@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System;
 using System.Windows.Forms;
 
 namespace HeuristicLab.Core.Views {
@@ -85,7 +84,7 @@ namespace HeuristicLab.Core.Views {
       this.showDetailsCheckBox.Appearance = System.Windows.Forms.Appearance.Button;
       this.showDetailsCheckBox.Checked = true;
       this.showDetailsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-      this.showDetailsCheckBox.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Properties;
+      this.showDetailsCheckBox.Image = HeuristicLab.Common.Resources.VSImageLibrary.Properties;
       this.showDetailsCheckBox.Location = new System.Drawing.Point(123, 3);
       this.showDetailsCheckBox.Name = "showDetailsCheckBox";
       this.showDetailsCheckBox.Size = new System.Drawing.Size(24, 24);
@@ -97,7 +96,7 @@ namespace HeuristicLab.Core.Views {
       // removeButton
       // 
       this.removeButton.Enabled = false;
-      this.removeButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Remove;
+      this.removeButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Remove;
       this.removeButton.Location = new System.Drawing.Point(93, 3);
       this.removeButton.Name = "removeButton";
       this.removeButton.Size = new System.Drawing.Size(24, 24);
@@ -109,7 +108,7 @@ namespace HeuristicLab.Core.Views {
       // moveUpButton
       // 
       this.moveUpButton.Enabled = false;
-      this.moveUpButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.ArrowUp;
+      this.moveUpButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.ArrowUp;
       this.moveUpButton.Location = new System.Drawing.Point(33, 3);
       this.moveUpButton.Name = "moveUpButton";
       this.moveUpButton.Size = new System.Drawing.Size(24, 24);
@@ -121,7 +120,7 @@ namespace HeuristicLab.Core.Views {
       // moveDownButton
       // 
       this.moveDownButton.Enabled = false;
-      this.moveDownButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.ArrowDown;
+      this.moveDownButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.ArrowDown;
       this.moveDownButton.Location = new System.Drawing.Point(63, 3);
       this.moveDownButton.Name = "moveDownButton";
       this.moveDownButton.Size = new System.Drawing.Size(24, 24);
@@ -164,7 +163,7 @@ namespace HeuristicLab.Core.Views {
       // 
       // addButton
       // 
-      this.addButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Add;
+      this.addButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Add;
       this.addButton.Location = new System.Drawing.Point(3, 3);
       this.addButton.Name = "addButton";
       this.addButton.Size = new System.Drawing.Size(24, 24);

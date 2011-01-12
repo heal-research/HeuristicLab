@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     public string Filename { get; set; }
 
     public override Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Type; }
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
     }
 
     #region Parameter Properties

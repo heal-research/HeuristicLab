@@ -37,7 +37,7 @@ namespace HeuristicLab.Optimizer {
       get { return 30; }
     }
     public override Image Image {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Save; }
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Save; }
     }
 
     protected override void OnToolStripItemSet(EventArgs e) {

@@ -74,7 +74,7 @@
       // 
       // connectButton
       // 
-      this.connectButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Play;
+      this.connectButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Play;
       this.connectButton.Location = new System.Drawing.Point(72, 110);
       this.connectButton.Name = "connectButton";
       this.connectButton.Size = new System.Drawing.Size(26, 23);
@@ -84,7 +84,7 @@
       // 
       // disconnectButton
       // 
-      this.disconnectButton.Image = HeuristicLab.Common.Resources.VS2008ImageLibrary.Stop;
+      this.disconnectButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Stop;
       this.disconnectButton.Location = new System.Drawing.Point(104, 110);
       this.disconnectButton.Name = "disconnectButton";
       this.disconnectButton.Size = new System.Drawing.Size(26, 23);
