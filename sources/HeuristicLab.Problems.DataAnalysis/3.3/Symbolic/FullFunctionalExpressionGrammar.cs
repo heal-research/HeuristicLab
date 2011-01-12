@@ -52,6 +52,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var cos = new Cosine();
       var tan = new Tangent();
       var log = new Logarithm();
+      var pow = new Power();
       var exp = new Exponential();
       var @if = new IfThenElse();
       var gt = new GreaterThan();
@@ -66,9 +67,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var laggedVariable = new LaggedVariable();
       laggedVariable.InitialFrequency = 0.0;
 
-      var allSymbols = new List<Symbol>() { add, sub, mul, div, mean, sin, cos, tan, log, exp, @if, gt, lt, and, or, not, constant, variableSymbol, laggedVariable };
+      var allSymbols = new List<Symbol>() { add, sub, mul, div, mean, sin, cos, tan, log, pow, exp, @if, gt, lt, and, or, not, constant, variableSymbol, laggedVariable };
       var unaryFunctionSymbols = new List<Symbol>() { sin, cos, tan, log, exp, not };
-      var binaryFunctionSymbols = new List<Symbol>() { gt, lt };
+      var binaryFunctionSymbols = new List<Symbol>() { pow, gt, lt };
       var functionSymbols = new List<Symbol>() { add, sub, mul, div, mean, and, or };
       var terminalSymbols = new List<Symbol>() { variableSymbol, constant, laggedVariable };
 

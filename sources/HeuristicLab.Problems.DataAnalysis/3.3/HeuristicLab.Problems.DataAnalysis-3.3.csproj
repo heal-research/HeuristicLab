@@ -11,7 +11,8 @@
     <RootNamespace>HeuristicLab.Problems.DataAnalysis</RootNamespace>
     <AssemblyName>HeuristicLab.Problems.DataAnalysis-3.3</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile></TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
@@ -106,6 +107,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Symbolic\Symbols\Power.cs" />
     <Compile Include="TableFileParser.cs" />
     <None Include="HeuristicLab.snk" />
     <None Include="HeuristicLabProblemsDataAnalysisPlugin.cs.frame" />

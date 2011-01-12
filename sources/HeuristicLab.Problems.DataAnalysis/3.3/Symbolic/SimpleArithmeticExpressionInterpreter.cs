@@ -64,6 +64,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       public const byte LagVariable = 19;
       public const byte Constant = 20;
       public const byte Arg = 21;
+
+      public const byte Power = 22;
     }
 
     private Dictionary<Type, byte> symbolToOpcode = new Dictionary<Type, byte>() {
@@ -88,6 +90,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       { typeof(LaggedVariable), OpCodes.LagVariable },
       { typeof(Constant), OpCodes.Constant },
       { typeof(Argument), OpCodes.Arg },
+      { typeof(Power),OpCodes.Power},
     };
     private const int ARGUMENT_STACK_SIZE = 1024;
 
@@ -183,6 +186,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           }
         case OpCodes.Tan: {
             return Math.Tan(Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer));
+          }
+        case OpCodes.Power: {
+            double x = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
+            double y = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
+            return Math.Pow(x, y);
           }
         case OpCodes.Exp: {
             return Math.Exp(Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer));
