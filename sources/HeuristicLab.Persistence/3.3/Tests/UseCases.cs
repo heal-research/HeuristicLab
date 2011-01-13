@@ -1101,6 +1101,64 @@ namespace HeuristicLab.Persistence_33.Tests {
         Assert.AreEqual(a[i], newA[i]);
       }
     }
+    private class IdentityComparer<T> : IEqualityComparer<T> {
+
+      public bool Equals(T x, T y) {
+        return x.Equals(y);
+      }
+
+      public int GetHashCode(T obj) {
+        return obj.GetHashCode();
+      }
+    }
+
+    [TestMethod]
+    public void TestHashSetSerializer() {
+      var hashSets = new List<HashSet<int>>() {
+        new HashSet<int>(new[] { 1, 2, 3 }),
+        new HashSet<int>(new[] { 4, 5, 6 }, new IdentityComparer<int>()),
+      };
+      XmlGenerator.Serialize(hashSets, tempFile);
+      var newHashSets = XmlParser.Deserialize<List<HashSet<int>>>(tempFile);
+      Assert.IsTrue(newHashSets[0].Contains(1));
+      Assert.IsTrue(newHashSets[0].Contains(2));
+      Assert.IsTrue(newHashSets[0].Contains(3));
+      Assert.IsTrue(newHashSets[1].Contains(4));
+      Assert.IsTrue(newHashSets[1].Contains(5));
+      Assert.IsTrue(newHashSets[1].Contains(6));
+      Assert.AreEqual(newHashSets[0].Comparer.GetType(), new HashSet<int>().Comparer.GetType());
+      Assert.AreEqual(newHashSets[1].Comparer.GetType(), typeof(IdentityComparer<int>));
+    }
+
+    [TestMethod]
+    public void TestConcreteDictionarySerializer() {
+      var dictionaries = new List<Dictionary<int, int>>() {
+        new Dictionary<int, int>(),
+        new Dictionary<int, int>(new IdentityComparer<int>()),
+      };
+      dictionaries[0].Add(1, 1);
+      dictionaries[0].Add(2, 2);
+      dictionaries[0].Add(3, 3);
+      dictionaries[1].Add(4, 4);
+      dictionaries[1].Add(5, 5);
+      dictionaries[1].Add(6, 6);
+      XmlGenerator.Serialize(dictionaries, tempFile);
+      var newDictionaries = XmlParser.Deserialize<List<Dictionary<int, int>>>(tempFile);
+      Assert.IsTrue(newDictionaries[0].ContainsKey(1));
+      Assert.IsTrue(newDictionaries[0].ContainsKey(2));
+      Assert.IsTrue(newDictionaries[0].ContainsKey(3));
+      Assert.IsTrue(newDictionaries[1].ContainsKey(4));
+      Assert.IsTrue(newDictionaries[1].ContainsKey(5));
+      Assert.IsTrue(newDictionaries[1].ContainsKey(6));
+      Assert.IsTrue(newDictionaries[0].ContainsValue(1));
+      Assert.IsTrue(newDictionaries[0].ContainsValue(2));
+      Assert.IsTrue(newDictionaries[0].ContainsValue(3));
+      Assert.IsTrue(newDictionaries[1].ContainsValue(4));
+      Assert.IsTrue(newDictionaries[1].ContainsValue(5));
+      Assert.IsTrue(newDictionaries[1].ContainsValue(6));
+      Assert.AreEqual(newDictionaries[0].Comparer.GetType(), new Dictionary<int, int>().Comparer.GetType());
+      Assert.AreEqual(newDictionaries[1].Comparer.GetType(), typeof(IdentityComparer<int>));
+    }
 
     [ClassInitialize]
     public static void Initialize(TestContext testContext) {
