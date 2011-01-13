@@ -130,8 +130,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     public object CreateInstance(Type type, IEnumerable<Tag> metaInfo) {
       try {
         return GetConstructor(type)();
-      }
-      catch (TargetInvocationException x) {
+      } catch (TargetInvocationException x) {
         throw new PersistenceException(
           "Could not instantiate storable object: Encountered exception during constructor call",
           x.InnerException);
@@ -233,7 +232,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       ConstructorInfo ci = type.GetConstructor(ALL_CONSTRUCTORS, null, Type.EmptyTypes, null);
       if (ci == null)
         return null;
-      DynamicMethod dm = new DynamicMethod("", typeof(object), null, type);
+      DynamicMethod dm = new DynamicMethod("", typeof(object), null, type, true);
       ILGenerator ilgen = dm.GetILGenerator();
       ilgen.Emit(OpCodes.Newobj, ci);
       ilgen.Emit(OpCodes.Ret);
@@ -246,7 +245,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
           if (ci.GetParameters().Length != 1 ||
               ci.GetParameters()[0].ParameterType != typeof(bool))
             throw new PersistenceException("StorableConstructor must have exactly one argument of type bool");
-          DynamicMethod dm = new DynamicMethod("", typeof(object), null, type);
+          DynamicMethod dm = new DynamicMethod("", typeof(object), null, type, true);
           ILGenerator ilgen = dm.GetILGenerator();
           ilgen.Emit(OpCodes.Ldc_I4_1); // load true
           ilgen.Emit(OpCodes.Newobj, ci);
