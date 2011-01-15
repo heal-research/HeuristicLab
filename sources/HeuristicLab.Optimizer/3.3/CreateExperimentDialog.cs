@@ -25,16 +25,16 @@ using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Optimizer {
   public partial class CreateExperimentDialog : Form {
-    private IAlgorithm algorithm;
-    public IAlgorithm Algorithm {
-      get { return algorithm; }
+    private IOptimizer optimizer;
+    public IOptimizer Optimizer {
+      get { return optimizer; }
       set {
-        algorithm = value;
+        optimizer = value;
         experiment = null;
-        okButton.Enabled = algorithm != null;
+        okButton.Enabled = optimizer != null;
       }
     }
-    
+
     private Experiment experiment;
     public Experiment Experiment {
       get { return experiment; }
@@ -42,11 +42,12 @@ namespace HeuristicLab.Optimizer {
 
     public CreateExperimentDialog() {
       experiment = null;
-      algorithm = null;
+      optimizer = null;
       InitializeComponent();
     }
-    public CreateExperimentDialog(IAlgorithm algorithm) : this() {
-      Algorithm = algorithm;
+    public CreateExperimentDialog(IOptimizer optimizer)
+      : this() {
+      Optimizer = optimizer;
     }
 
     private void createBatchRunCheckBox_CheckedChanged(object sender, EventArgs e) {
@@ -57,14 +58,14 @@ namespace HeuristicLab.Optimizer {
         repetitionsNumericUpDown.Text = repetitionsNumericUpDown.Value.ToString();
     }
     private void okButton_Click(object sender, EventArgs e) {
-      experiment = new Experiment(Algorithm.Name);
+      experiment = new Experiment(Optimizer.Name);
       if (createBatchRunCheckBox.Checked) {
-        BatchRun batchRun = new BatchRun(Algorithm.Name);
+        BatchRun batchRun = new BatchRun(Optimizer.Name);
         batchRun.Repetitions = (int)repetitionsNumericUpDown.Value;
-        batchRun.Algorithm = (IAlgorithm)Algorithm.Clone();
+        batchRun.Optimizer = (IOptimizer)Optimizer.Clone();
         Experiment.Optimizers.Add(batchRun);
       } else {
-        Experiment.Optimizers.Add((IAlgorithm)Algorithm.Clone());
+        Experiment.Optimizers.Add((IOptimizer)Optimizer.Clone());
       }
       Experiment.Prepare(true);
     }

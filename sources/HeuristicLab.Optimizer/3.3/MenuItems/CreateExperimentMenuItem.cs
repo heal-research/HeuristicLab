@@ -37,7 +37,7 @@ namespace HeuristicLab.Optimizer.MenuItems {
       get { return 2300; }
     }
     public override string ToolTipText {
-      get { return "Create an experiment for the shown algorithm"; }
+      get { return "Create an experiment for the shown optimizer"; }
     }
 
     protected override void OnToolStripItemSet(EventArgs e) {
@@ -45,13 +45,13 @@ namespace HeuristicLab.Optimizer.MenuItems {
     }
     protected override void OnActiveViewChanged(object sender, EventArgs e) {
       IContentView activeView = MainFormManager.MainForm.ActiveView as IContentView;
-      ToolStripItem.Enabled = (activeView != null) && (activeView.Content != null) && (activeView.Content is IAlgorithm) && !activeView.Locked;
+      ToolStripItem.Enabled = (activeView != null) && (activeView.Content != null) && (activeView.Content is IOptimizer) && !activeView.Locked;
     }
 
     public override void Execute() {
       IContentView activeView = MainFormManager.MainForm.ActiveView as IContentView;
-      if ((activeView != null) && (activeView.Content != null) && (activeView.Content is IAlgorithm) && !activeView.Locked) {
-        using (CreateExperimentDialog dialog = new CreateExperimentDialog((IAlgorithm)activeView.Content)) {
+      if ((activeView != null) && (activeView.Content != null) && (activeView.Content is IOptimizer) && !activeView.Locked) {
+        using (CreateExperimentDialog dialog = new CreateExperimentDialog((IOptimizer)activeView.Content)) {
           if (dialog.ShowDialog() == DialogResult.OK) MainFormManager.MainForm.ShowContent(dialog.Experiment);
         }
       }

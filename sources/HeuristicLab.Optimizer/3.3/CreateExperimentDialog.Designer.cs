@@ -88,7 +88,7 @@ namespace HeuristicLab.Optimizer {
       this.createBatchRunCheckBox.Name = "createBatchRunCheckBox";
       this.createBatchRunCheckBox.Size = new System.Drawing.Size(15, 14);
       this.createBatchRunCheckBox.TabIndex = 1;
-      this.toolTip.SetToolTip(this.createBatchRunCheckBox, "Check to create a batch run for executing an algorithm multiple times.");
+      this.toolTip.SetToolTip(this.createBatchRunCheckBox, "Check to create a batch run for executing an optimizer multiple times.");
       this.createBatchRunCheckBox.UseVisualStyleBackColor = true;
       this.createBatchRunCheckBox.CheckedChanged += new System.EventHandler(this.createBatchRunCheckBox_CheckedChanged);
       // 

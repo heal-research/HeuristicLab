@@ -29,9 +29,9 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
-  /// An experiment which contains multiple batch runs of algorithms.
+  /// An experiment which contains multiple algorithms, batch runs or other experiments.
   /// </summary>
-  [Item("Experiment", "An experiment which contains multiple batch runs of algorithms.")]
+  [Item("Experiment", "An experiment which contains multiple algorithms, batch runs or other experiments.")]
   [Creatable("Testing & Analysis")]
   [StorableClass]
   public sealed class Experiment : NamedItem, IOptimizer, IStorableContent {

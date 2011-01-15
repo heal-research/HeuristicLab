@@ -34,7 +34,7 @@ namespace HeuristicLab.Optimization.Views {
   [View("BatchRun View")]
   [Content(typeof(BatchRun), true)]
   public sealed partial class BatchRunView : NamedItemView {
-    private TypeSelectorDialog algorithmTypeSelectorDialog;
+    private TypeSelectorDialog optimizerTypeSelectorDialog;
 
     public new BatchRun Content {
       get { return (BatchRun)base.Content; }
@@ -50,14 +50,14 @@ namespace HeuristicLab.Optimization.Views {
 
     protected override void Dispose(bool disposing) {
       if (disposing) {
-        if (algorithmTypeSelectorDialog != null) algorithmTypeSelectorDialog.Dispose();
+        if (optimizerTypeSelectorDialog != null) optimizerTypeSelectorDialog.Dispose();
         if (components != null) components.Dispose();
       }
       base.Dispose(disposing);
     }
 
     protected override void DeregisterContentEvents() {
-      Content.AlgorithmChanged -= new EventHandler(Content_AlgorithmChanged);
+      Content.OptimizerChanged -= new EventHandler(Content_OptimizerChanged);
       Content.ExceptionOccurred -= new EventHandler<EventArgs<Exception>>(Content_ExceptionOccurred);
       Content.ExecutionStateChanged -= new EventHandler(Content_ExecutionStateChanged);
       Content.ExecutionTimeChanged -= new EventHandler(Content_ExecutionTimeChanged);
@@ -70,7 +70,7 @@ namespace HeuristicLab.Optimization.Views {
     }
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      Content.AlgorithmChanged += new EventHandler(Content_AlgorithmChanged);
+      Content.OptimizerChanged += new EventHandler(Content_OptimizerChanged);
       Content.ExceptionOccurred += new EventHandler<EventArgs<Exception>>(Content_ExceptionOccurred);
       Content.ExecutionStateChanged += new EventHandler(Content_ExecutionStateChanged);
       Content.ExecutionTimeChanged += new EventHandler(Content_ExecutionTimeChanged);
@@ -85,13 +85,13 @@ namespace HeuristicLab.Optimization.Views {
       base.OnContentChanged();
       if (Content == null) {
         repetitionsNumericUpDown.Value = 1;
-        algorithmViewHost.Content = null;
+        optimizerViewHost.Content = null;
         runsView.Content = null;
         executionTimeTextBox.Text = "-";
       } else {
         Locked = ReadOnly = Content.ExecutionState == ExecutionState.Started;
         repetitionsNumericUpDown.Value = Content.Repetitions;
-        algorithmViewHost.Content = Content.Algorithm;
+        optimizerViewHost.Content = Content.Optimizer;
         runsView.Content = Content.Runs;
         executionTimeTextBox.Text = Content.ExecutionTime.ToString();
       }
@@ -99,9 +99,9 @@ namespace HeuristicLab.Optimization.Views {
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
       repetitionsNumericUpDown.Enabled = Content != null && !ReadOnly;
-      newAlgorithmButton.Enabled = Content != null && !ReadOnly;
-      openAlgorithmButton.Enabled = Content != null && !ReadOnly;
-      algorithmViewHost.Enabled = Content != null;
+      newOptimizerButton.Enabled = Content != null && !ReadOnly;
+      openOptimizerButton.Enabled = Content != null && !ReadOnly;
+      optimizerViewHost.Enabled = Content != null;
       runsView.Enabled = Content != null;
       executionTimeTextBox.Enabled = Content != null;
       SetEnabledStateOfExecutableButtons();
@@ -163,11 +163,11 @@ namespace HeuristicLab.Optimization.Views {
       else
         ErrorHandling.ShowErrorDialog(this, e.Value);
     }
-    private void Content_AlgorithmChanged(object sender, EventArgs e) {
+    private void Content_OptimizerChanged(object sender, EventArgs e) {
       if (InvokeRequired)
-        Invoke(new EventHandler(Content_AlgorithmChanged), sender, e);
+        Invoke(new EventHandler(Content_OptimizerChanged), sender, e);
       else {
-        algorithmViewHost.Content = Content.Algorithm;
+        optimizerViewHost.Content = Content.Optimizer;
       }
     }
     private void Content_RepetitionsChanged(object sender, EventArgs e) {
@@ -187,44 +187,44 @@ namespace HeuristicLab.Optimization.Views {
       if (Content != null)
         Content.Repetitions = (int)repetitionsNumericUpDown.Value;
     }
-    private void newAlgorithmButton_Click(object sender, EventArgs e) {
-      if (algorithmTypeSelectorDialog == null) {
-        algorithmTypeSelectorDialog = new TypeSelectorDialog();
-        algorithmTypeSelectorDialog.Caption = "Select Algorithm";
-        algorithmTypeSelectorDialog.TypeSelector.Caption = "Available Algorithms";
-        algorithmTypeSelectorDialog.TypeSelector.Configure(typeof(IAlgorithm), false, true);
+    private void newOptimizerButton_Click(object sender, EventArgs e) {
+      if (optimizerTypeSelectorDialog == null) {
+        optimizerTypeSelectorDialog = new TypeSelectorDialog();
+        optimizerTypeSelectorDialog.Caption = "Select Optimizer";
+        optimizerTypeSelectorDialog.TypeSelector.Caption = "Available Optimizers";
+        optimizerTypeSelectorDialog.TypeSelector.Configure(typeof(IOptimizer), false, true);
       }
-      if (algorithmTypeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
+      if (optimizerTypeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
         try {
-          Content.Algorithm = (IAlgorithm)algorithmTypeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
+          Content.Optimizer = (IOptimizer)optimizerTypeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
         }
         catch (Exception ex) {
           ErrorHandling.ShowErrorDialog(this, ex);
         }
       }
     }
-    private void openAlgorithmButton_Click(object sender, EventArgs e) {
-      openFileDialog.Title = "Open Algorithm";
+    private void openOptimizerButton_Click(object sender, EventArgs e) {
+      openFileDialog.Title = "Open Optimizer";
       if (openFileDialog.ShowDialog(this) == DialogResult.OK) {
-        newAlgorithmButton.Enabled = openAlgorithmButton.Enabled = false;
-        algorithmViewHost.Enabled = false;
+        newOptimizerButton.Enabled = openOptimizerButton.Enabled = false;
+        optimizerViewHost.Enabled = false;
 
         ContentManager.LoadAsync(openFileDialog.FileName, delegate(IStorableContent content, Exception error) {
           try {
             if (error != null) throw error;
-            IAlgorithm algorithm = content as IAlgorithm;
-            if (algorithm == null)
-              MessageBox.Show(this, "The selected file does not contain an algorithm.", "Invalid File", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            IOptimizer optimizer = content as IOptimizer;
+            if (optimizer == null)
+              MessageBox.Show(this, "The selected file does not contain an optimizer.", "Invalid File", MessageBoxButtons.OK, MessageBoxIcon.Error);
             else
-              Content.Algorithm = algorithm;
+              Content.Optimizer = optimizer;
           }
           catch (Exception ex) {
             ErrorHandling.ShowErrorDialog(this, ex);
           }
           finally {
             Invoke(new Action(delegate() {
-              algorithmViewHost.Enabled = true;
-              newAlgorithmButton.Enabled = openAlgorithmButton.Enabled = true;
+              optimizerViewHost.Enabled = true;
+              newOptimizerButton.Enabled = openOptimizerButton.Enabled = true;
             }));
           }
         });
@@ -242,12 +242,12 @@ namespace HeuristicLab.Optimization.Views {
     private void resetButton_Click(object sender, EventArgs e) {
       Content.Prepare(false);
     }
-    private void algorithmTabPage_DragEnterOver(object sender, DragEventArgs e) {
+    private void optimizerTabPage_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
       if (ReadOnly)
         return;
       Type type = e.Data.GetData("Type") as Type;
-      if ((type != null) && (typeof(IAlgorithm).IsAssignableFrom(type))) {
+      if ((type != null) && (typeof(IOptimizer).IsAssignableFrom(type))) {
         if ((e.KeyState & 32) == 32) e.Effect = DragDropEffects.Link;  // ALT key
         else if ((e.KeyState & 4) == 4) e.Effect = DragDropEffects.Move;  // SHIFT key
         else if ((e.AllowedEffect & DragDropEffects.Copy) == DragDropEffects.Copy) e.Effect = DragDropEffects.Copy;
@@ -255,11 +255,11 @@ namespace HeuristicLab.Optimization.Views {
         else if ((e.AllowedEffect & DragDropEffects.Link) == DragDropEffects.Link) e.Effect = DragDropEffects.Link;
       }
     }
-    private void algorithmTabPage_DragDrop(object sender, DragEventArgs e) {
+    private void optimizerTabPage_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
-        IAlgorithm algorithm = e.Data.GetData("Value") as IAlgorithm;
-        if ((e.Effect & DragDropEffects.Copy) == DragDropEffects.Copy) algorithm = (IAlgorithm)algorithm.Clone();
-        Content.Algorithm = algorithm;
+        IOptimizer optimizer = e.Data.GetData("Value") as IOptimizer;
+        if ((e.Effect & DragDropEffects.Copy) == DragDropEffects.Copy) optimizer = (IOptimizer)optimizer.Clone();
+        Content.Optimizer = optimizer;
       }
     }
     #endregion

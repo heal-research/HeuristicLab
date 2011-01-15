@@ -34,10 +34,10 @@ namespace HeuristicLab.Optimization.Views {
     /// </summary>
     private void InitializeComponent() {
       this.tabControl = new System.Windows.Forms.TabControl();
-      this.algorithmTabPage = new System.Windows.Forms.TabPage();
-      this.algorithmViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
-      this.openAlgorithmButton = new System.Windows.Forms.Button();
-      this.newAlgorithmButton = new System.Windows.Forms.Button();
+      this.optimizerTabPage = new System.Windows.Forms.TabPage();
+      this.optimizerViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
+      this.openOptimizerButton = new System.Windows.Forms.Button();
+      this.newOptimizerButton = new System.Windows.Forms.Button();
       this.runsTabPage = new System.Windows.Forms.TabPage();
       this.runsView = new HeuristicLab.Optimization.Views.RunCollectionView();
       this.startButton = new System.Windows.Forms.Button();
@@ -51,7 +51,7 @@ namespace HeuristicLab.Optimization.Views {
       this.pauseButton = new System.Windows.Forms.Button();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.tabControl.SuspendLayout();
-      this.algorithmTabPage.SuspendLayout();
+      this.optimizerTabPage.SuspendLayout();
       this.runsTabPage.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.repetitionsNumericUpDown)).BeginInit();
       this.SuspendLayout();
@@ -71,7 +71,7 @@ namespace HeuristicLab.Optimization.Views {
       this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.tabControl.Controls.Add(this.algorithmTabPage);
+      this.tabControl.Controls.Add(this.optimizerTabPage);
       this.tabControl.Controls.Add(this.runsTabPage);
       this.tabControl.Location = new System.Drawing.Point(0, 78);
       this.tabControl.Name = "tabControl";
@@ -79,56 +79,56 @@ namespace HeuristicLab.Optimization.Views {
       this.tabControl.Size = new System.Drawing.Size(679, 374);
       this.tabControl.TabIndex = 6;
       // 
-      // algorithmTabPage
+      // optimizerTabPage
       // 
-      this.algorithmTabPage.AllowDrop = true;
-      this.algorithmTabPage.Controls.Add(this.algorithmViewHost);
-      this.algorithmTabPage.Controls.Add(this.openAlgorithmButton);
-      this.algorithmTabPage.Controls.Add(this.newAlgorithmButton);
-      this.algorithmTabPage.Location = new System.Drawing.Point(4, 22);
-      this.algorithmTabPage.Name = "algorithmTabPage";
-      this.algorithmTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.algorithmTabPage.Size = new System.Drawing.Size(671, 348);
-      this.algorithmTabPage.TabIndex = 1;
-      this.algorithmTabPage.Text = "Algorithm";
-      this.algorithmTabPage.UseVisualStyleBackColor = true;
-      this.algorithmTabPage.DragOver += new System.Windows.Forms.DragEventHandler(this.algorithmTabPage_DragEnterOver);
-      this.algorithmTabPage.DragDrop += new System.Windows.Forms.DragEventHandler(this.algorithmTabPage_DragDrop);
-      this.algorithmTabPage.DragEnter += new System.Windows.Forms.DragEventHandler(this.algorithmTabPage_DragEnterOver);
+      this.optimizerTabPage.AllowDrop = true;
+      this.optimizerTabPage.Controls.Add(this.optimizerViewHost);
+      this.optimizerTabPage.Controls.Add(this.openOptimizerButton);
+      this.optimizerTabPage.Controls.Add(this.newOptimizerButton);
+      this.optimizerTabPage.Location = new System.Drawing.Point(4, 22);
+      this.optimizerTabPage.Name = "optimizerTabPage";
+      this.optimizerTabPage.Padding = new System.Windows.Forms.Padding(3);
+      this.optimizerTabPage.Size = new System.Drawing.Size(671, 348);
+      this.optimizerTabPage.TabIndex = 1;
+      this.optimizerTabPage.Text = "Optimizer";
+      this.optimizerTabPage.UseVisualStyleBackColor = true;
+      this.optimizerTabPage.DragOver += new System.Windows.Forms.DragEventHandler(this.optimizerTabPage_DragEnterOver);
+      this.optimizerTabPage.DragDrop += new System.Windows.Forms.DragEventHandler(this.optimizerTabPage_DragDrop);
+      this.optimizerTabPage.DragEnter += new System.Windows.Forms.DragEventHandler(this.optimizerTabPage_DragEnterOver);
       // 
-      // algorithmViewHost
+      // optimizerViewHost
       // 
-      this.algorithmViewHost.Content = null;
-      this.algorithmViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+      this.optimizerViewHost.Content = null;
+      this.optimizerViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.algorithmViewHost.Location = new System.Drawing.Point(6, 36);
-      this.algorithmViewHost.Name = "algorithmViewHost";
-      this.algorithmViewHost.Size = new System.Drawing.Size(659, 306);
-      this.algorithmViewHost.TabIndex = 3;
-      this.algorithmViewHost.ViewType = null;
+      this.optimizerViewHost.Location = new System.Drawing.Point(6, 36);
+      this.optimizerViewHost.Name = "optimizerViewHost";
+      this.optimizerViewHost.Size = new System.Drawing.Size(659, 306);
+      this.optimizerViewHost.TabIndex = 3;
+      this.optimizerViewHost.ViewType = null;
       // 
-      // openAlgorithmButton
+      // openOptimizerButton
       // 
-      this.openAlgorithmButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Open;
-      this.openAlgorithmButton.Location = new System.Drawing.Point(36, 6);
-      this.openAlgorithmButton.Name = "openAlgorithmButton";
-      this.openAlgorithmButton.Size = new System.Drawing.Size(24, 24);
-      this.openAlgorithmButton.TabIndex = 1;
-      this.toolTip.SetToolTip(this.openAlgorithmButton, "Open Algorithm");
-      this.openAlgorithmButton.UseVisualStyleBackColor = true;
-      this.openAlgorithmButton.Click += new System.EventHandler(this.openAlgorithmButton_Click);
+      this.openOptimizerButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Open;
+      this.openOptimizerButton.Location = new System.Drawing.Point(36, 6);
+      this.openOptimizerButton.Name = "openOptimizerButton";
+      this.openOptimizerButton.Size = new System.Drawing.Size(24, 24);
+      this.openOptimizerButton.TabIndex = 1;
+      this.toolTip.SetToolTip(this.openOptimizerButton, "Open Optimizer");
+      this.openOptimizerButton.UseVisualStyleBackColor = true;
+      this.openOptimizerButton.Click += new System.EventHandler(this.openOptimizerButton_Click);
       // 
-      // newAlgorithmButton
+      // newOptimizerButton
       // 
-      this.newAlgorithmButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.NewDocument;
-      this.newAlgorithmButton.Location = new System.Drawing.Point(6, 6);
-      this.newAlgorithmButton.Name = "newAlgorithmButton";
-      this.newAlgorithmButton.Size = new System.Drawing.Size(24, 24);
-      this.newAlgorithmButton.TabIndex = 0;
-      this.toolTip.SetToolTip(this.newAlgorithmButton, "New Algorithm");
-      this.newAlgorithmButton.UseVisualStyleBackColor = true;
-      this.newAlgorithmButton.Click += new System.EventHandler(this.newAlgorithmButton_Click);
+      this.newOptimizerButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.NewDocument;
+      this.newOptimizerButton.Location = new System.Drawing.Point(6, 6);
+      this.newOptimizerButton.Name = "newOptimizerButton";
+      this.newOptimizerButton.Size = new System.Drawing.Size(24, 24);
+      this.newOptimizerButton.TabIndex = 0;
+      this.toolTip.SetToolTip(this.newOptimizerButton, "New Optimizer");
+      this.newOptimizerButton.UseVisualStyleBackColor = true;
+      this.newOptimizerButton.Click += new System.EventHandler(this.newOptimizerButton_Click);
       // 
       // runsTabPage
       // 
@@ -210,9 +210,9 @@ namespace HeuristicLab.Optimization.Views {
       // openFileDialog
       // 
       this.openFileDialog.DefaultExt = "hl";
-      this.openFileDialog.FileName = "Algorithm";
+      this.openFileDialog.FileName = "Optimizer";
       this.openFileDialog.Filter = "HeuristicLab Files|*.hl|All Files|*.*";
-      this.openFileDialog.Title = "Open Algorithm";
+      this.openFileDialog.Title = "Open Optimizer";
       // 
       // repetitionsLabel
       // 
@@ -292,7 +292,7 @@ namespace HeuristicLab.Optimization.Views {
       this.Controls.SetChildIndex(this.descriptionTextBox, 0);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.tabControl.ResumeLayout(false);
-      this.algorithmTabPage.ResumeLayout(false);
+      this.optimizerTabPage.ResumeLayout(false);
       this.runsTabPage.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.repetitionsNumericUpDown)).EndInit();
       this.ResumeLayout(false);
@@ -302,10 +302,10 @@ namespace HeuristicLab.Optimization.Views {
     #endregion
 
     private System.Windows.Forms.TabControl tabControl;
-    private System.Windows.Forms.TabPage algorithmTabPage;
-    private HeuristicLab.MainForm.WindowsForms.ViewHost algorithmViewHost;
-    private System.Windows.Forms.Button newAlgorithmButton;
-    private System.Windows.Forms.Button openAlgorithmButton;
+    private System.Windows.Forms.TabPage optimizerTabPage;
+    private HeuristicLab.MainForm.WindowsForms.ViewHost optimizerViewHost;
+    private System.Windows.Forms.Button newOptimizerButton;
+    private System.Windows.Forms.Button openOptimizerButton;
     private System.Windows.Forms.Button startButton;
     private System.Windows.Forms.Button stopButton;
     private System.Windows.Forms.Button resetButton;

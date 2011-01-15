@@ -30,9 +30,9 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
-  /// A run in which an algorithm is executed a given number of times.
+  /// A run in which an optimizer is executed a given number of times.
   /// </summary>
-  [Item("Batch Run", "A run in which an algorithm is executed a given number of times.")]
+  [Item("Batch Run", "A run in which an optimizer is executed a given number of times.")]
   [Creatable("Testing & Analysis")]
   [StorableClass]
   public sealed class BatchRun : NamedItem, IOptimizer, IStorableContent {
@@ -65,8 +65,8 @@ namespace HeuristicLab.Optimization {
     private TimeSpan executionTime;
     public TimeSpan ExecutionTime {
       get {
-        if ((Algorithm != null) && (Algorithm.ExecutionState != ExecutionState.Stopped))
-          return executionTime + Algorithm.ExecutionTime;
+        if ((Optimizer != null) && (Optimizer.ExecutionState != ExecutionState.Stopped))
+          return executionTime + Optimizer.ExecutionTime;
         else
           return executionTime;
       }
@@ -77,27 +77,35 @@ namespace HeuristicLab.Optimization {
     }
 
     [Storable]
-    private IAlgorithm algorithm;
-    public IAlgorithm Algorithm {
-      get { return algorithm; }
+    private IOptimizer optimizer;
+    public IOptimizer Optimizer {
+      get { return optimizer; }
       set {
-        if (algorithm != value) {
-          if (algorithm != null) {
-            DeregisterAlgorithmEvents();
-            IEnumerable<IRun> runs = algorithm.Runs;
-            algorithm = null; //necessary to avoid removing the runs from the old algorithm
+        if (optimizer != value) {
+          if (optimizer != null) {
+            DeregisterOptimizerEvents();
+            IEnumerable<IRun> runs = optimizer.Runs;
+            optimizer = null; //necessary to avoid removing the runs from the old optimizer
             Runs.RemoveRange(runs);
           }
-          algorithm = value;
-          if (algorithm != null) {
-            RegisterAlgorithmEvents();
-            Runs.AddRange(algorithm.Runs);
+          optimizer = value;
+          if (optimizer != null) {
+            RegisterOptimizerEvents();
+            Runs.AddRange(optimizer.Runs);
           }
-          OnAlgorithmChanged();
+          OnOptimizerChanged();
           Prepare();
         }
       }
     }
+    // BackwardsCompatibility3.3
+    #region Backwards compatible code (remove with 3.4)
+    [Storable]
+    private IAlgorithm algorithm {
+      get { return null; }
+      set { optimizer = value; }
+    }
+    #endregion
 
     [Storable]
     private int repetitions;
@@ -107,7 +115,7 @@ namespace HeuristicLab.Optimization {
         if (repetitions != value) {
           repetitions = value;
           OnRepetitionsChanged();
-          if ((Algorithm != null) && (Algorithm.ExecutionState == ExecutionState.Stopped))
+          if ((Optimizer != null) && (Optimizer.ExecutionState == ExecutionState.Stopped))
             Prepare();
         }
       }
@@ -175,7 +183,7 @@ namespace HeuristicLab.Optimization {
       : base(original, cloner) {
       executionState = original.executionState;
       executionTime = original.executionTime;
-      algorithm = cloner.Clone(original.algorithm);
+      optimizer = cloner.Clone(original.optimizer);
       repetitions = original.repetitions;
       repetitionsCounter = original.repetitionsCounter;
       runs = cloner.Clone(original.runs);
@@ -188,7 +196,7 @@ namespace HeuristicLab.Optimization {
     }
 
     private void Initialize() {
-      if (algorithm != null) RegisterAlgorithmEvents();
+      if (optimizer != null) RegisterOptimizerEvents();
       if (runs != null) RegisterRunsEvents();
     }
 
@@ -198,30 +206,30 @@ namespace HeuristicLab.Optimization {
     public void Prepare(bool clearRuns) {
       if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused) && (ExecutionState != ExecutionState.Stopped))
         throw new InvalidOperationException(string.Format("Prepare not allowed in execution state \"{0}\".", ExecutionState));
-      if (Algorithm != null) {
+      if (Optimizer != null) {
         repetitionsCounter = 0;
         if (clearRuns) runs.Clear();
-        Algorithm.Prepare(clearRuns);
+        Optimizer.Prepare(clearRuns);
       }
     }
     public void Start() {
       if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused))
         throw new InvalidOperationException(string.Format("Start not allowed in execution state \"{0}\".", ExecutionState));
-      if (Algorithm != null) Algorithm.Start();
+      if (Optimizer != null) Optimizer.Start();
     }
     public void Pause() {
       if (ExecutionState != ExecutionState.Started)
         throw new InvalidOperationException(string.Format("Pause not allowed in execution state \"{0}\".", ExecutionState));
-      if ((Algorithm != null) && (Algorithm.ExecutionState == ExecutionState.Started))
-        Algorithm.Pause();
+      if ((Optimizer != null) && (Optimizer.ExecutionState == ExecutionState.Started))
+        Optimizer.Pause();
     }
     public void Stop() {
       if ((ExecutionState != ExecutionState.Started) && (ExecutionState != ExecutionState.Paused))
         throw new InvalidOperationException(string.Format("Stop not allowed in execution state \"{0}\".", ExecutionState));
       stopPending = true;
-      if ((Algorithm != null) &&
-          ((Algorithm.ExecutionState == ExecutionState.Started) || (Algorithm.ExecutionState == ExecutionState.Paused)))
-        Algorithm.Stop();
+      if ((Optimizer != null) &&
+          ((Optimizer.ExecutionState == ExecutionState.Started) || (Optimizer.ExecutionState == ExecutionState.Paused)))
+        Optimizer.Stop();
     }
 
     #region Events
@@ -235,9 +243,9 @@ namespace HeuristicLab.Optimization {
       EventHandler handler = ExecutionTimeChanged;
       if (handler != null) handler(this, EventArgs.Empty);
     }
-    public event EventHandler AlgorithmChanged;
-    private void OnAlgorithmChanged() {
-      EventHandler handler = AlgorithmChanged;
+    public event EventHandler OptimizerChanged;
+    private void OnOptimizerChanged() {
+      EventHandler handler = OptimizerChanged;
       if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler RepetitionsChanged;
@@ -275,64 +283,64 @@ namespace HeuristicLab.Optimization {
       if (handler != null) handler(this, new EventArgs<Exception>(exception));
     }
 
-    private void RegisterAlgorithmEvents() {
-      algorithm.ExceptionOccurred += new EventHandler<EventArgs<Exception>>(Algorithm_ExceptionOccurred);
-      algorithm.ExecutionTimeChanged += new EventHandler(Algorithm_ExecutionTimeChanged);
-      algorithm.Paused += new EventHandler(Algorithm_Paused);
-      algorithm.Prepared += new EventHandler(Algorithm_Prepared);
-      algorithm.Started += new EventHandler(Algorithm_Started);
-      algorithm.Stopped += new EventHandler(Algorithm_Stopped);
-      algorithm.Runs.CollectionReset += new CollectionItemsChangedEventHandler<IRun>(Algorithm_Runs_CollectionReset);
-      algorithm.Runs.ItemsAdded += new CollectionItemsChangedEventHandler<IRun>(Algorithm_Runs_ItemsAdded);
-      algorithm.Runs.ItemsRemoved += new CollectionItemsChangedEventHandler<IRun>(Algorithm_Runs_ItemsRemoved);
+    private void RegisterOptimizerEvents() {
+      optimizer.ExceptionOccurred += new EventHandler<EventArgs<Exception>>(Optimizer_ExceptionOccurred);
+      optimizer.ExecutionTimeChanged += new EventHandler(Optimizer_ExecutionTimeChanged);
+      optimizer.Paused += new EventHandler(Optimizer_Paused);
+      optimizer.Prepared += new EventHandler(Optimizer_Prepared);
+      optimizer.Started += new EventHandler(Optimizer_Started);
+      optimizer.Stopped += new EventHandler(Optimizer_Stopped);
+      optimizer.Runs.CollectionReset += new CollectionItemsChangedEventHandler<IRun>(Optimizer_Runs_CollectionReset);
+      optimizer.Runs.ItemsAdded += new CollectionItemsChangedEventHandler<IRun>(Optimizer_Runs_ItemsAdded);
+      optimizer.Runs.ItemsRemoved += new CollectionItemsChangedEventHandler<IRun>(Optimizer_Runs_ItemsRemoved);
     }
-    private void DeregisterAlgorithmEvents() {
-      algorithm.ExceptionOccurred -= new EventHandler<EventArgs<Exception>>(Algorithm_ExceptionOccurred);
-      algorithm.ExecutionTimeChanged -= new EventHandler(Algorithm_ExecutionTimeChanged);
-      algorithm.Paused -= new EventHandler(Algorithm_Paused);
-      algorithm.Prepared -= new EventHandler(Algorithm_Prepared);
-      algorithm.Started -= new EventHandler(Algorithm_Started);
-      algorithm.Stopped -= new EventHandler(Algorithm_Stopped);
-      algorithm.Runs.CollectionReset -= new CollectionItemsChangedEventHandler<IRun>(Algorithm_Runs_CollectionReset);
-      algorithm.Runs.ItemsAdded -= new CollectionItemsChangedEventHandler<IRun>(Algorithm_Runs_ItemsAdded);
-      algorithm.Runs.ItemsRemoved -= new CollectionItemsChangedEventHandler<IRun>(Algorithm_Runs_ItemsRemoved);
+    private void DeregisterOptimizerEvents() {
+      optimizer.ExceptionOccurred -= new EventHandler<EventArgs<Exception>>(Optimizer_ExceptionOccurred);
+      optimizer.ExecutionTimeChanged -= new EventHandler(Optimizer_ExecutionTimeChanged);
+      optimizer.Paused -= new EventHandler(Optimizer_Paused);
+      optimizer.Prepared -= new EventHandler(Optimizer_Prepared);
+      optimizer.Started -= new EventHandler(Optimizer_Started);
+      optimizer.Stopped -= new EventHandler(Optimizer_Stopped);
+      optimizer.Runs.CollectionReset -= new CollectionItemsChangedEventHandler<IRun>(Optimizer_Runs_CollectionReset);
+      optimizer.Runs.ItemsAdded -= new CollectionItemsChangedEventHandler<IRun>(Optimizer_Runs_ItemsAdded);
+      optimizer.Runs.ItemsRemoved -= new CollectionItemsChangedEventHandler<IRun>(Optimizer_Runs_ItemsRemoved);
     }
-    private void Algorithm_ExceptionOccurred(object sender, EventArgs<Exception> e) {
+    private void Optimizer_ExceptionOccurred(object sender, EventArgs<Exception> e) {
       OnExceptionOccurred(e.Value);
     }
-    private void Algorithm_ExecutionTimeChanged(object sender, EventArgs e) {
+    private void Optimizer_ExecutionTimeChanged(object sender, EventArgs e) {
       OnExecutionTimeChanged();
     }
-    private void Algorithm_Paused(object sender, EventArgs e) {
+    private void Optimizer_Paused(object sender, EventArgs e) {
       OnPaused();
     }
-    private void Algorithm_Prepared(object sender, EventArgs e) {
+    private void Optimizer_Prepared(object sender, EventArgs e) {
       if ((ExecutionState == ExecutionState.Paused) || (ExecutionState == ExecutionState.Stopped))
         OnPrepared();
     }
-    private void Algorithm_Started(object sender, EventArgs e) {
+    private void Optimizer_Started(object sender, EventArgs e) {
       stopPending = false;
       if (ExecutionState != ExecutionState.Started)
         OnStarted();
     }
-    private void Algorithm_Stopped(object sender, EventArgs e) {
+    private void Optimizer_Stopped(object sender, EventArgs e) {
       repetitionsCounter++;
 
       if (!stopPending && (repetitionsCounter < repetitions)) {
-        Algorithm.Prepare();
-        Algorithm.Start();
+        Optimizer.Prepare();
+        Optimizer.Start();
       } else {
         OnStopped();
       }
     }
-    private void Algorithm_Runs_CollectionReset(object sender, CollectionItemsChangedEventArgs<IRun> e) {
+    private void Optimizer_Runs_CollectionReset(object sender, CollectionItemsChangedEventArgs<IRun> e) {
       Runs.RemoveRange(e.OldItems);
       Runs.AddRange(e.Items);
     }
-    private void Algorithm_Runs_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IRun> e) {
+    private void Optimizer_Runs_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IRun> e) {
       Runs.AddRange(e.Items);
     }
-    private void Algorithm_Runs_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IRun> e) {
+    private void Optimizer_Runs_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IRun> e) {
       Runs.RemoveRange(e.Items);
     }
 
@@ -354,7 +362,7 @@ namespace HeuristicLab.Optimization {
         TimeSpanValue executionTime = item as TimeSpanValue;
         if (executionTime != null) ExecutionTime -= executionTime.Value;
       }
-      if (Algorithm != null) Algorithm.Runs.RemoveRange(e.OldItems);
+      if (Optimizer != null) Optimizer.Runs.RemoveRange(e.OldItems);
       foreach (IRun run in e.Items) {
         IItem item;
         run.Results.TryGetValue("Execution Time", out item);
@@ -377,7 +385,7 @@ namespace HeuristicLab.Optimization {
         TimeSpanValue executionTime = item as TimeSpanValue;
         if (executionTime != null) ExecutionTime -= executionTime.Value;
       }
-      if (Algorithm != null) Algorithm.Runs.RemoveRange(e.Items);
+      if (Optimizer != null) Optimizer.Runs.RemoveRange(e.Items);
     }
     #endregion
   }
