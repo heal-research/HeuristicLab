@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Collections;
 using HeuristicLab.MainForm;
@@ -141,7 +142,8 @@ namespace HeuristicLab.Core.Views {
       if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
         try {
           return (T)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
           ErrorHandling.ShowErrorDialog(this, ex);
         }
       }
@@ -215,7 +217,9 @@ namespace HeuristicLab.Core.Views {
         }
         return listViewItems;
       } else {
-        return itemListViewItemMapping[item];
+        List<ListViewItem> listViewItems = null;
+        itemListViewItemMapping.TryGetValue(item, out listViewItems);
+        return listViewItems == null ? Enumerable.Empty<ListViewItem>() : listViewItems;
       }
     }
 

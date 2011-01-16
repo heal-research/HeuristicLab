@@ -215,7 +215,9 @@ namespace HeuristicLab.Optimization.Views {
         }
         return listViewItems;
       } else {
-        return itemListViewItemMapping[item];
+        List<ListViewItem> listViewItems = null;
+        itemListViewItemMapping.TryGetValue(item, out listViewItems);
+        return listViewItems == null ? Enumerable.Empty<ListViewItem>() : listViewItems;
       }
     }
 
