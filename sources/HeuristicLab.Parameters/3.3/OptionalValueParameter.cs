@@ -45,7 +45,6 @@ namespace HeuristicLab.Parameters {
       get { return this.value; }
       set {
         if (value != this.value) {
-          OnValueChanging();
           DeregisterValueEvents();
           this.value = value;
           RegisterValueEvents();
@@ -188,11 +187,6 @@ namespace HeuristicLab.Parameters {
       ((IValueParameter)this).Value = value;
     }
     
-    public event EventHandler ValueChanging;
-    protected virtual void OnValueChanging() {
-      EventHandler handler = ValueChanging;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
     public event EventHandler ValueChanged;
     protected virtual void OnValueChanged() {
       EventHandler handler = ValueChanged;
