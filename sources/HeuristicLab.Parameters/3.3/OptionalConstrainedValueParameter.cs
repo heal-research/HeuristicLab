@@ -53,7 +53,6 @@ namespace HeuristicLab.Parameters {
       set {
         if (value != this.value) {
           if ((value != null) && !validValues.Contains(value)) throw new ArgumentException("Invalid value.");
-          OnValueChanging();
           DeregisterValueEvents();
           this.value = value;
           RegisterValueEvents();
@@ -205,11 +204,6 @@ namespace HeuristicLab.Parameters {
       ((IValueParameter)this).Value = value;
     }
 
-    public event EventHandler ValueChanging;
-    protected virtual void OnValueChanging() {
-      EventHandler handler = ValueChanging;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
     public event EventHandler ValueChanged;
     protected virtual void OnValueChanged() {
       EventHandler handler = ValueChanged;
