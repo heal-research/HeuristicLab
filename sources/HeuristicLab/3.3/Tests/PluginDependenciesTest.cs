@@ -37,7 +37,7 @@ namespace HeuristicLab_33.Tests {
     // Use ClassInitialize to run code before running the first test in the class
     [ClassInitialize]
     public static void MyClassInitialize(TestContext testContext) {
-      loadedPlugins = PluginLoader.pluginAssemblies.ToDictionary(a => a, GetPluginFromAssembly);
+      loadedPlugins = PluginLoader.Assemblies.Where(x => PluginLoader.IsPluginAssembly(x)).ToDictionary(a => a, GetPluginFromAssembly);
       pluginNames = loadedPlugins.ToDictionary(a => a.Key.GetName().FullName, a => GetPluginName(a.Value));
 
       extLibPluginNames = new HashSet<string>();

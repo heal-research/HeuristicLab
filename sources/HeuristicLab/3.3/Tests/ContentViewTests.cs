@@ -51,7 +51,7 @@ namespace HeuristicLab_33.Tests {
     // Use ClassInitialize to run code before running the first test in the class
     [ClassInitialize]
     public static void MyClassInitialize(TestContext testContext) {
-      PluginLoader.pluginAssemblies.Any();
+      PluginLoader.Assemblies.Any();
     }
 
 
