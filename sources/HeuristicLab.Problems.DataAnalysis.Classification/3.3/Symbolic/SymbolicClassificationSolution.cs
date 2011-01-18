@@ -84,6 +84,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
            let boundedX = Math.Min(UpperEstimationLimit, Math.Max(LowerEstimationLimit, x))
            select double.IsNaN(boundedX) ? UpperEstimationLimit : boundedX).ToList();
       RecalculateClassIntermediates();
+      OnEstimatedValuesChanged();
     }
 
     private void RecalculateClassIntermediates() {
