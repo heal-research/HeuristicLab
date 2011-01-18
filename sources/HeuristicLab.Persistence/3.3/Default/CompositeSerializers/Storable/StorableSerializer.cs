@@ -117,7 +117,8 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     /// <returns>An enumerable of <see cref="Tag"/>s.</returns>
     public IEnumerable<Tag> Decompose(object obj) {
       foreach (var accessor in GetStorableAccessors(obj.GetType())) {
-        yield return new Tag(accessor.Name, accessor.Get(obj));
+        if (accessor.Get != null)
+          yield return new Tag(accessor.Name, accessor.Get(obj));
       }
     }
 
@@ -150,10 +151,12 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
         memberDict.Add(iter.Current.Name, iter.Current);
       }
       foreach (var accessor in GetStorableAccessors(instance.GetType())) {
-        if (memberDict.ContainsKey(accessor.Name)) {
-          accessor.Set(instance, memberDict[accessor.Name].Value);
-        } else if (accessor.DefaultValue != null) {
-          accessor.Set(instance, accessor.DefaultValue);
+        if (accessor.Set != null) {
+          if (memberDict.ContainsKey(accessor.Name)) {
+            accessor.Set(instance, memberDict[accessor.Name].Value);
+          } else if (accessor.DefaultValue != null) {
+            accessor.Set(instance, accessor.DefaultValue);
+          }
         }
       }
       InvokeHook(HookType.AfterDeserialization, instance);

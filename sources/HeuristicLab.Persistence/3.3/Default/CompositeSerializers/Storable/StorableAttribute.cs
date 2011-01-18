@@ -55,6 +55,13 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     public object DefaultValue { get; set; }
 
     /// <summary>
+    /// Allow storable attribute on properties with only a getter or a setter. These
+    /// properties will then by either only serialized but not deserialized or only
+    /// deserialized (if stored) but not serialized again.
+    /// </summary>
+    public bool AllowOneWay { get; set; }
+
+    /// <summary>
     /// Returns a <see cref="System.String"/> that represents this instance.
     /// </summary>
     /// <returns>

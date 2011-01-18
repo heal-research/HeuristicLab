@@ -149,12 +149,7 @@ namespace HeuristicLab.Persistence.Core {
         FieldInfo fieldInfo = (FieldInfo)memberInfo;
         return GenerateFieldGetter(fieldInfo);
       } else if (memberInfo.MemberType == MemberTypes.Property) {
-        PropertyInfo propertyInfo = (PropertyInfo)memberInfo;
-        if (!propertyInfo.CanRead || !propertyInfo.CanWrite) {
-          throw new PersistenceException(
-            "Storable properties must implement both a Get and a Set Accessor. ");
-        }
-        return GeneratePropertyGetter(propertyInfo);
+        return GeneratePropertyGetter((PropertyInfo)memberInfo);
       } else {
         throw new PersistenceException(
           "The Storable attribute can only be applied to fields and properties.");
@@ -171,12 +166,7 @@ namespace HeuristicLab.Persistence.Core {
         FieldInfo fieldInfo = (FieldInfo)memberInfo;
         return GenerateFieldSetter(fieldInfo);
       } else if (memberInfo.MemberType == MemberTypes.Property) {
-        PropertyInfo propertyInfo = (PropertyInfo)memberInfo;
-        if (!propertyInfo.CanRead || !propertyInfo.CanWrite) {
-          throw new PersistenceException(
-            "Storable properties must implement both a Get and a Set Accessor. ");
-        }
-        return GeneratePropertySetter(propertyInfo);
+        return GeneratePropertySetter((PropertyInfo)memberInfo);
       } else {
         throw new PersistenceException(
           "The Storable attribute can only be applied to fields and properties.");
@@ -200,7 +190,7 @@ namespace HeuristicLab.Persistence.Core {
     }
 
     /// <summary>
-    /// Generates a dynamically compiled sett to access fields (even private ones).
+    /// Generates a dynamically compiled setter to access fields (even private ones).
     /// </summary>
     /// <param name="fieldInfo">The field info.</param>
     /// <returns>An Action&lt;object, object%gt;</returns>
@@ -222,11 +212,14 @@ namespace HeuristicLab.Persistence.Core {
     /// <param name="propertyInfo">The property info.</param>
     /// <returns>A Func&lt;object, object&gt;</returns>
     public static Func<object, object> GeneratePropertyGetter(PropertyInfo propertyInfo) {
+      MethodInfo getter = propertyInfo.GetGetMethod(true);
+      if (getter == null)
+        return null;
       DynamicMethod dm = new DynamicMethod("", typeof(object), new Type[] { typeof(object) }, propertyInfo.DeclaringType, true);
       ILGenerator ilgen = dm.GetILGenerator();
       ilgen.Emit(OpCodes.Ldarg_0);
       ilgen.Emit(OpCodes.Castclass, propertyInfo.DeclaringType);
-      ilgen.Emit(OpCodes.Callvirt, propertyInfo.GetGetMethod(true));
+      ilgen.Emit(OpCodes.Callvirt, getter);
       ilgen.Emit(OpCodes.Box, propertyInfo.PropertyType);
       ilgen.Emit(OpCodes.Ret);
       return (Func<object, object>)dm.CreateDelegate(typeof(Func<object, object>));
@@ -238,13 +231,16 @@ namespace HeuristicLab.Persistence.Core {
     /// <param name="propertyInfo">The property info.</param>
     /// <returns>An Action&lt;object, object%gt;</returns>
     public static Action<object, object> GeneratePropertySetter(PropertyInfo propertyInfo) {
+      MethodInfo setter = propertyInfo.GetSetMethod(true);
+      if (setter == null)
+        return null;
       DynamicMethod dm = new DynamicMethod("", null, new Type[] { typeof(object), typeof(object) }, propertyInfo.DeclaringType, true);
       ILGenerator ilgen = dm.GetILGenerator();
       ilgen.Emit(OpCodes.Ldarg_0);
       ilgen.Emit(OpCodes.Castclass, propertyInfo.DeclaringType);
       ilgen.Emit(OpCodes.Ldarg_1);
       ilgen.Emit(OpCodes.Unbox_Any, propertyInfo.PropertyType);
-      ilgen.Emit(OpCodes.Callvirt, propertyInfo.GetSetMethod(true));
+      ilgen.Emit(OpCodes.Callvirt, setter);
       ilgen.Emit(OpCodes.Ret);
       return (Action<object, object>)dm.CreateDelegate(typeof(Action<object, object>));
     }

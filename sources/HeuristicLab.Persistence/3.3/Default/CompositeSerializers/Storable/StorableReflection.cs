@@ -57,7 +57,6 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
             throw new PersistenceException("unsupported [StorableClassType]: " + storableClassAttribute.Type);
         }
       }
-
       return DisentangleNameMapping(storableMembers);
     }
 
@@ -107,11 +106,23 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
         if ((memberInfo.MemberType & memberTypes) == memberInfo.MemberType &&
             !memberInfo.Name.StartsWith("<") &&
             !memberInfo.Name.EndsWith("k__BackingField"))
-          storableMembers.Add(new StorableMemberInfo(memberInfo));
+          storableMembers.Add(new StorableMemberInfo(memberInfo, false));
       }
     }
 
-
+    /// <summary>
+    /// Ascertain distinct names for all fields and properties. This method takes care
+    /// of disentangling equal names from different class hiarachy levels.
+    /// 
+    /// Field names are replaced with their fully qualified name which includes
+    /// the class names where they were declared.
+    /// 
+    /// Property names are first reduced to unqiue accessors that are not overrides of
+    /// each other and the replaced with their fully qualified name if more than one
+    /// accessor remains.
+    /// </summary>
+    /// <param name="storableMemberInfos"></param>
+    /// <returns></returns>
     private static IEnumerable<StorableMemberInfo> DisentangleNameMapping(
         IEnumerable<StorableMemberInfo> storableMemberInfos) {
       var nameGrouping = new Dictionary<string, List<StorableMemberInfo>>();
@@ -137,6 +148,12 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       return memberInfos;
     }
 
+    /// <summary>
+    /// Merges property accessors that are overrides of each other but differentiates if a new
+    /// property that shadows older implementations has been introduced with <code>new</code>.
+    /// </summary>
+    /// <param name="members">A list of <code>StorableMemberInfo</code>s for properties of the same type.</param>
+    /// <returns>A fieltered <code>IEnumerable</code> of propery infos.</returns>
     private static IEnumerable<StorableMemberInfo> MergePropertyAccessors(List<StorableMemberInfo> members) {
       var uniqueAccessors = new Dictionary<Type, StorableMemberInfo>();
       foreach (var member in members)

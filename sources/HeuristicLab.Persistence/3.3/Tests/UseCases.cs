@@ -30,6 +30,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using HeuristicLab.Persistence.Auxiliary;
 using HeuristicLab.Persistence.Core;
+using HeuristicLab.Persistence.Core.Tokens;
 using HeuristicLab.Persistence.Default.CompositeSerializers;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Persistence.Default.DebugString;
@@ -605,8 +606,7 @@ namespace HeuristicLab.Persistence_33.Tests {
       try {
         XmlGenerator.Serialize(c, tempFile);
         Assert.Fail("Exception not thrown");
-      }
-      catch (PersistenceException) {
+      } catch (PersistenceException) {
       }
     }
 
@@ -618,8 +618,7 @@ namespace HeuristicLab.Persistence_33.Tests {
       try {
         XmlGenerator.Serialize(s, tempFile);
         Assert.Fail("Exception expected");
-      }
-      catch (PersistenceException) { }
+      } catch (PersistenceException) { }
       List<int> newList = (List<int>)XmlParser.Deserialize(tempFile);
       Assert.AreEqual(list[0], newList[0]);
       Assert.AreEqual(list[1], newList[1]);
@@ -658,8 +657,7 @@ namespace HeuristicLab.Persistence_33.Tests {
           tokens.Append(token.ToString());
         }
         Assert.Fail("Exception expected");
-      }
-      catch (PersistenceException px) {
+      } catch (PersistenceException px) {
         Assert.AreEqual(3, px.Data.Count);
       }
     }
@@ -687,8 +685,7 @@ namespace HeuristicLab.Persistence_33.Tests {
       try {
         d = new Deserializer(XmlParser.ParseTypeCache(new StringReader(newTypeString)));
         Assert.Fail("Exception expected");
-      }
-      catch (PersistenceException x) {
+      } catch (PersistenceException x) {
         Assert.IsTrue(x.Message.Contains("incompatible"));
       }
       newTypeString = Regex.Replace(typeString.ToString(),
@@ -697,8 +694,7 @@ namespace HeuristicLab.Persistence_33.Tests {
       try {
         d = new Deserializer(XmlParser.ParseTypeCache(new StringReader(newTypeString)));
         Assert.Fail("Exception expected");
-      }
-      catch (PersistenceException x) {
+      } catch (PersistenceException x) {
         Assert.IsTrue(x.Message.Contains("newer"));
       }
     }
@@ -865,8 +861,7 @@ namespace HeuristicLab.Persistence_33.Tests {
       try {
         ExplodingDefaultConstructor newX = (ExplodingDefaultConstructor)XmlParser.Deserialize(tempFile);
         Assert.Fail("Exception expected");
-      }
-      catch (PersistenceException pe) {
+      } catch (PersistenceException pe) {
         Assert.AreEqual(pe.InnerException.Message, "this constructor will always fail");
       }
     }
@@ -877,8 +872,7 @@ namespace HeuristicLab.Persistence_33.Tests {
       try {
         XmlGenerator.Serialize(ns, tempFile);
         Assert.Fail("PersistenceException expected");
-      }
-      catch (PersistenceException x) {
+      } catch (PersistenceException x) {
         Assert.IsTrue(x.Message.Contains(new StorableSerializer().JustifyRejection(typeof(NonSerializable))));
       }
     }
@@ -1159,6 +1153,81 @@ namespace HeuristicLab.Persistence_33.Tests {
       Assert.AreEqual(newDictionaries[0].Comparer.GetType(), new Dictionary<int, int>().Comparer.GetType());
       Assert.AreEqual(newDictionaries[1].Comparer.GetType(), typeof(IdentityComparer<int>));
     }
+
+    [StorableClass]
+    public class ReadOnlyFail {
+      [Storable]
+      public string ReadOnly {
+        get { return "fail"; }
+      }
+    }
+
+    [TestMethod]
+    public void TestReadOnlyFail() {
+      try {
+        XmlGenerator.Serialize(new ReadOnlyFail(), tempFile);
+        Assert.Fail("Exception expected");
+      } catch (PersistenceException) {
+      } catch {
+        Assert.Fail("PersistenceException expected");
+      }
+    }
+
+
+    [StorableClass]
+    public class WriteOnlyFail {
+      [Storable]
+      public string WriteOnly {
+        set { throw new InvalidOperationException("this property should never be set."); }
+      }
+    }
+
+    [TestMethod]
+    public void TestWriteOnlyFail() {
+      try {
+        XmlGenerator.Serialize(new WriteOnlyFail(), tempFile);
+        Assert.Fail("Exception expected");
+      } catch (PersistenceException) {
+      } catch {
+        Assert.Fail("PersistenceException expected.");
+      }
+    }
+
+    [StorableClass]
+    public class OneWayTest {
+      public OneWayTest() { this.value = "default"; }
+      public string value;
+      [Storable(AllowOneWay=true)]
+      public string ReadOnly {
+        get { return "ReadOnly"; }
+      }
+      [Storable(AllowOneWay=true)]
+      public string WriteOnly {
+        set { this.value = value; }
+      }
+    }
+
+    [TestMethod]
+    public void TestOneWaySerialization() {
+      var test = new OneWayTest();
+      var serializer = new Serializer(test, ConfigurationService.Instance.GetDefaultConfig(new XmlFormat()));
+      var it = serializer.GetEnumerator();
+      it.MoveNext();
+      Assert.AreEqual("ROOT", ((BeginToken)it.Current).Name); it.MoveNext();
+      Assert.AreEqual("ReadOnly", ((PrimitiveToken)it.Current).Name); it.MoveNext();
+      Assert.AreEqual("ROOT", ((EndToken)it.Current).Name); it.MoveNext();
+      var deserializer = new Deserializer(new[] { 
+        new TypeMapping(0, typeof(OneWayTest).AssemblyQualifiedName, typeof(StorableSerializer).AssemblyQualifiedName),
+        new TypeMapping(1, typeof(string).AssemblyQualifiedName, typeof(String2XmlSerializer).AssemblyQualifiedName) });
+      var newTest = (OneWayTest)deserializer.Deserialize(new ISerializationToken[] {
+        new BeginToken("ROOT", 0, 0),
+        new PrimitiveToken("WriteOnly", 1, 1, new XmlString("<![CDATA[serial data]]>")),
+        new EndToken("ROOT", 0, 0)
+      });
+      Assert.AreEqual("serial data", newTest.value);
+    }
+
+
 
     [ClassInitialize]
     public static void Initialize(TestContext testContext) {
