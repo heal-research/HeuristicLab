@@ -62,8 +62,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
 
     public override void ShakeLocalParameters(IRandom random, double shakingFactor) {
       base.ShakeLocalParameters(random, shakingFactor);
-      double x = NormalDistributedRandom.NextDouble(random, Symbol.ManipulatorMu, Symbol.ManipulatorSigma);
-      Value = Value + x * shakingFactor;
+      // 50% additive & 50% multiplicative
+      if (random.NextDouble() < 0.5) {
+        double x = NormalDistributedRandom.NextDouble(random, Symbol.ManipulatorMu, Symbol.ManipulatorSigma);
+        Value = Value + x * shakingFactor;
+      } else {
+        double x = NormalDistributedRandom.NextDouble(random, 1.0, Symbol.MultiplicativeManipulatorSigma);
+        Value = Value * x;
+      }
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

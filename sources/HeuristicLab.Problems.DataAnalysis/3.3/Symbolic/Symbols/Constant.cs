@@ -29,7 +29,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [StorableClass]
   [Item("Constant", "Represents a constant value.")]
   public sealed class Constant : Symbol {
-    #region Propeties
+    #region Properties
     [Storable]
     private double minValue;
     public double MinValue {
@@ -75,6 +75,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
         }
       }
     }
+    [Storable(DefaultValue = 0.0)]
+    private double multiplicativeManipulatorSigma;
+    public double MultiplicativeManipulatorSigma {
+      get { return multiplicativeManipulatorSigma; }
+      set {
+        if (value < 0) throw new ArgumentException();
+        if (value != multiplicativeManipulatorSigma) {
+          multiplicativeManipulatorSigma = value;
+          OnChanged(EventArgs.Empty);
+        }
+      }
+    }
+
     #endregion
     [StorableConstructor]
     private Constant(bool deserializing) : base(deserializing) { }
@@ -84,11 +97,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
       maxValue = original.maxValue;
       manipulatorMu = original.manipulatorMu;
       manipulatorSigma = original.manipulatorSigma;
+      multiplicativeManipulatorSigma = original.multiplicativeManipulatorSigma;
     }
     public Constant()
       : base("Constant", "Represents a constant value.") {
       manipulatorMu = 0.0;
       manipulatorSigma = 1.0;
+      multiplicativeManipulatorSigma = 0.03;
       minValue = -20.0;
       maxValue = 20.0;
     }

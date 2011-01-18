@@ -65,7 +65,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       // initialFrequencyLabel
       // 
       this.initialFrequencyLabel.AutoSize = true;
-      this.initialFrequencyLabel.Location = new System.Drawing.Point(6, 56);
+      this.initialFrequencyLabel.Location = new System.Drawing.Point(3, 56);
       this.initialFrequencyLabel.Name = "initialFrequencyLabel";
       this.initialFrequencyLabel.Size = new System.Drawing.Size(84, 13);
       this.initialFrequencyLabel.TabIndex = 4;
@@ -87,12 +87,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.initialFrequencyLabel);
       this.Controls.Add(this.initialFrequencyTextBox);
+      this.Controls.Add(this.initialFrequencyLabel);
       this.Name = "SymbolView";
       this.Size = new System.Drawing.Size(320, 79);
-      this.Controls.SetChildIndex(this.initialFrequencyTextBox, 0);
       this.Controls.SetChildIndex(this.initialFrequencyLabel, 0);
+      this.Controls.SetChildIndex(this.initialFrequencyTextBox, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
       this.Controls.SetChildIndex(this.descriptionLabel, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);

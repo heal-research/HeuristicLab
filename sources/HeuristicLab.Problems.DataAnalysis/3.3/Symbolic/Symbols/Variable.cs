@@ -77,6 +77,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
         }
       }
     }
+    [Storable(DefaultValue = 0.0)]
+    private double multiplicativeWeightManipulatorSigma;
+    public double MultiplicativeWeightManipulatorSigma {
+      get { return multiplicativeWeightManipulatorSigma; }
+      set {
+        if (multiplicativeWeightManipulatorSigma < 0.0) throw new ArgumentException("Negative sigma is not allowed.");
+        if (value != multiplicativeWeightManipulatorSigma) {
+          multiplicativeWeightManipulatorSigma = value;
+          OnChanged(EventArgs.Empty);
+        }
+      }
+    }
     private List<string> variableNames;
     [Storable]
     public IEnumerable<string> VariableNames {
@@ -90,7 +102,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
     }
     #endregion
     [StorableConstructor]
-    protected Variable(bool deserializing) : base(deserializing) {
+    protected Variable(bool deserializing)
+      : base(deserializing) {
       variableNames = new List<string>();
     }
     protected Variable(Variable original, Cloner cloner)
@@ -100,6 +113,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
       variableNames = new List<string>(original.variableNames);
       weightManipulatorMu = original.weightManipulatorMu;
       weightManipulatorSigma = original.weightManipulatorSigma;
+      multiplicativeWeightManipulatorSigma = original.multiplicativeWeightManipulatorSigma;
     }
     public Variable() : this("Variable", "Represents a variable value.") { }
     public Variable(string name, string description)
@@ -108,6 +122,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
       weightSigma = 1.0;
       weightManipulatorMu = 0.0;
       weightManipulatorSigma = 1.0;
+      multiplicativeWeightManipulatorSigma = 0.03;
       variableNames = new List<string>();
     }
 

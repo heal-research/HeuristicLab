@@ -60,10 +60,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
       minValueTextBox.ReadOnly = ReadOnly;
       maxValueTextBox.Enabled = Content != null;
       maxValueTextBox.ReadOnly = ReadOnly;
-      valueChangeMuTextBox.Enabled = Content != null;
-      valueChangeMuTextBox.ReadOnly = ReadOnly;
-      valueChangeSigmaTextBox.Enabled = Content != null;
-      valueChangeSigmaTextBox.ReadOnly = ReadOnly;
+      additiveChangeSigmaTextBox.Enabled = Content != null;
+      additiveChangeSigmaTextBox.ReadOnly = ReadOnly;
+      multiplicativeChangeSigmaTextBox.Enabled = Content != null;
+      multiplicativeChangeSigmaTextBox.ReadOnly = ReadOnly;
     }
 
     #region content event handlers
@@ -92,23 +92,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
       }
     }
 
-    private void valueChangeMuTextBox_TextChanged(object sender, EventArgs e) {
-      double nu;
-      if (double.TryParse(valueChangeMuTextBox.Text, out nu)) {
-        Content.ManipulatorMu = nu;
-        errorProvider.SetError(valueChangeMuTextBox, string.Empty);
+    private void additiveChangeSigmaTextBox_TextChanged(object sender, EventArgs e) {
+      double sigma;
+      if (double.TryParse(additiveChangeSigmaTextBox.Text, out sigma) && sigma >= 0.0) {
+        Content.ManipulatorSigma = sigma;
+        errorProvider.SetError(additiveChangeSigmaTextBox, string.Empty);
       } else {
-        errorProvider.SetError(valueChangeMuTextBox, "Invalid value");
+        errorProvider.SetError(additiveChangeSigmaTextBox, "Invalid value");
       }
     }
 
-    private void valueChangeSigmaTextBox_TextChanged(object sender, EventArgs e) {
+    private void multiplicativeChangeSigmaTextBox_TextChanged(object sender, EventArgs e) {
       double sigma;
-      if (double.TryParse(valueChangeSigmaTextBox.Text, out sigma) && sigma >= 0.0) {
-        Content.ManipulatorSigma = sigma;
-        errorProvider.SetError(valueChangeSigmaTextBox, string.Empty);
+      if (double.TryParse(multiplicativeChangeSigmaTextBox.Text, out sigma) && sigma >= 0.0) {
+        Content.MultiplicativeManipulatorSigma = sigma;
+        errorProvider.SetError(multiplicativeChangeSigmaTextBox, string.Empty);
       } else {
-        errorProvider.SetError(valueChangeSigmaTextBox, "Invalid value");
+        errorProvider.SetError(multiplicativeChangeSigmaTextBox, "Invalid value");
       }
     }
     #endregion
@@ -119,12 +119,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
         minValueTextBox.Text = string.Empty;
         maxValueTextBox.Text = string.Empty;
         minValueTextBox.Text = string.Empty;
-        valueChangeSigmaTextBox.Text = string.Empty;
+        multiplicativeChangeSigmaTextBox.Text = string.Empty;
+        additiveChangeSigmaTextBox.Text = string.Empty;
       } else {
         minValueTextBox.Text = Content.MinValue.ToString();
         maxValueTextBox.Text = Content.MaxValue.ToString();
-        valueChangeMuTextBox.Text = Content.ManipulatorMu.ToString();
-        valueChangeSigmaTextBox.Text = Content.ManipulatorSigma.ToString();
+        additiveChangeSigmaTextBox.Text = Content.ManipulatorSigma.ToString();
+        multiplicativeChangeSigmaTextBox.Text = Content.MultiplicativeManipulatorSigma.ToString();
       }
       SetEnabledStateOfControls();
     }

@@ -56,14 +56,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
-      weightMuTextBox.Enabled = Content != null;
-      weightMuTextBox.ReadOnly = ReadOnly;
-      weightSigmaTextBox.Enabled = Content != null;
-      weightSigmaTextBox.ReadOnly = ReadOnly;
-      weightChangeMuTextBox.Enabled = Content != null;
-      weightChangeMuTextBox.ReadOnly = ReadOnly;
-      weightChangeSigmaTextBox.Enabled = Content != null;
-      weightChangeSigmaTextBox.ReadOnly = ReadOnly;
+      weightInitializationMuTextBox.Enabled = Content != null;
+      weightInitializationMuTextBox.ReadOnly = ReadOnly;
+      weightInitializationSigmaTextBox.Enabled = Content != null;
+      weightInitializationSigmaTextBox.ReadOnly = ReadOnly;
+      additiveWeightChangeSigmaTextBox.Enabled = Content != null;
+      additiveWeightChangeSigmaTextBox.ReadOnly = ReadOnly;
+      multiplicativeWeightChangeSigmaTextBox.Enabled = Content != null;
+      multiplicativeWeightChangeSigmaTextBox.ReadOnly = ReadOnly;
     }
 
     #region content event handlers
@@ -75,40 +75,40 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
     #region control event handlers
     private void weightMuTextBox_TextChanged(object sender, EventArgs e) {
       double nu;
-      if (double.TryParse(weightMuTextBox.Text, out nu)) {
+      if (double.TryParse(weightInitializationMuTextBox.Text, out nu)) {
         Content.WeightMu = nu;
-        errorProvider.SetError(weightMuTextBox, string.Empty);
+        errorProvider.SetError(weightInitializationMuTextBox, string.Empty);
       } else {
-        errorProvider.SetError(weightMuTextBox, "Invalid value");
+        errorProvider.SetError(weightInitializationMuTextBox, "Invalid value");
       }
     }
     private void weightSigmaTextBox_TextChanged(object sender, EventArgs e) {
       double sigma;
-      if (double.TryParse(weightSigmaTextBox.Text, out sigma) && sigma >= 0.0) {
+      if (double.TryParse(weightInitializationSigmaTextBox.Text, out sigma) && sigma >= 0.0) {
         Content.WeightSigma = sigma;
-        errorProvider.SetError(weightSigmaTextBox, string.Empty);
+        errorProvider.SetError(weightInitializationSigmaTextBox, string.Empty);
       } else {
-        errorProvider.SetError(weightSigmaTextBox, "Invalid value");
+        errorProvider.SetError(weightInitializationSigmaTextBox, "Invalid value");
       }
     }
 
-    private void weightChangeMuTextBox_TextChanged(object sender, EventArgs e) {
-      double nu;
-      if (double.TryParse(weightChangeMuTextBox.Text, out nu)) {
-        Content.WeightManipulatorMu = nu;
-        errorProvider.SetError(weightChangeMuTextBox, string.Empty);
-      } else {
-        errorProvider.SetError(weightChangeMuTextBox, "Invalid value");
-      }
-    }
-
-    private void weightChangeSigmaTextBox_TextChanged(object sender, EventArgs e) {
+    private void additiveWeightChangeSigmaTextBox_TextChanged(object sender, EventArgs e) {
       double sigma;
-      if (double.TryParse(weightChangeSigmaTextBox.Text, out sigma) && sigma >= 0.0) {
+      if (double.TryParse(additiveWeightChangeSigmaTextBox.Text, out sigma) && sigma >= 0.0) {
         Content.WeightManipulatorSigma = sigma;
-        errorProvider.SetError(weightChangeSigmaTextBox, string.Empty);
+        errorProvider.SetError(additiveWeightChangeSigmaTextBox, string.Empty);
       } else {
-        errorProvider.SetError(weightChangeSigmaTextBox, "Invalid value");
+        errorProvider.SetError(additiveWeightChangeSigmaTextBox, "Invalid value");
+      }
+    }
+
+    private void multiplicativeWeightChangeSigmaTextBox_TextChanged(object sender, EventArgs e) {
+      double sigma;
+      if (double.TryParse(multiplicativeWeightChangeSigmaTextBox.Text, out sigma) && sigma >= 0.0) {
+        Content.MultiplicativeWeightManipulatorSigma = sigma;
+        errorProvider.SetError(multiplicativeWeightChangeSigmaTextBox, string.Empty);
+      } else {
+        errorProvider.SetError(multiplicativeWeightChangeSigmaTextBox, "Invalid value");
       }
     }
     #endregion
@@ -116,15 +116,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
     #region helpers
     private void UpdateControl() {
       if (Content == null) {
-        weightMuTextBox.Text = string.Empty;
-        weightSigmaTextBox.Text = string.Empty;
-        weightMuTextBox.Text = string.Empty;
-        weightChangeSigmaTextBox.Text = string.Empty;
+        weightInitializationMuTextBox.Text = string.Empty;
+        weightInitializationSigmaTextBox.Text = string.Empty;
+        additiveWeightChangeSigmaTextBox.Text = string.Empty;
+        multiplicativeWeightChangeSigmaTextBox.Text = string.Empty;
       } else {
-        weightMuTextBox.Text = Content.WeightMu.ToString();
-        weightSigmaTextBox.Text = Content.WeightSigma.ToString();
-        weightChangeMuTextBox.Text = Content.WeightManipulatorMu.ToString();
-        weightChangeSigmaTextBox.Text = Content.WeightManipulatorSigma.ToString();
+        weightInitializationMuTextBox.Text = Content.WeightMu.ToString();
+        weightInitializationSigmaTextBox.Text = Content.WeightSigma.ToString();
+        additiveWeightChangeSigmaTextBox.Text = Content.WeightManipulatorSigma.ToString();
+        multiplicativeWeightChangeSigmaTextBox.Text = Content.MultiplicativeWeightManipulatorSigma.ToString();
       }
       SetEnabledStateOfControls();
     }

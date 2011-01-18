@@ -67,8 +67,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
 
     public override void ShakeLocalParameters(IRandom random, double shakingFactor) {
       base.ShakeLocalParameters(random, shakingFactor);
-      double x = NormalDistributedRandom.NextDouble(random, Symbol.WeightManipulatorMu, Symbol.WeightManipulatorSigma);
-      weight = weight + x * shakingFactor;
+      // 50% additive & 50% multiplicative
+      if (random.NextDouble() < 0) {
+        double x = NormalDistributedRandom.NextDouble(random, Symbol.WeightManipulatorMu, Symbol.WeightManipulatorSigma);
+        weight = weight + x * shakingFactor;
+      } else {        
+        double x = NormalDistributedRandom.NextDouble(random, 1.0, Symbol.MultiplicativeWeightManipulatorSigma);
+        weight = weight * x;
+      }
       variableName = Symbol.VariableNames.SelectRandom(random);
     }
 
