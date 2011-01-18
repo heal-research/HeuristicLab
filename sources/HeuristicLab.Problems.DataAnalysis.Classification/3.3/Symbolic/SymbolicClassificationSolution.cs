@@ -121,18 +121,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
             if (estimatedTarget.Value.IsAlmost(originalClasses[i - 1])) {
               if (estimatedTarget.Key > lowerThreshold && estimatedTarget.Key < actualThreshold)
                 //true positive
-                classificationScore += ProblemData.MisclassificationMatrix[i - 1, i - 1] / classInstances[i - 1];
+                classificationScore += ProblemData.MisclassificationMatrix[i - 1, i - 1];
               else
                 //false negative
-                classificationScore += ProblemData.MisclassificationMatrix[i, i - 1] / classInstances[i - 1];
+                classificationScore += ProblemData.MisclassificationMatrix[i, i - 1];
             }
               //all negatives
             else {
               if (estimatedTarget.Key > lowerThreshold && estimatedTarget.Key < actualThreshold)
-                classificationScore += ProblemData.MisclassificationMatrix[i - 1, i] / classInstances[i];
+                classificationScore += ProblemData.MisclassificationMatrix[i - 1, i];
               else
                 //true negative, consider only upper class
-                classificationScore += ProblemData.MisclassificationMatrix[i, i] / classInstances[i];
+                classificationScore += ProblemData.MisclassificationMatrix[i, i];
             }
           }
           if (classificationScore < bestClassificationScore) {
