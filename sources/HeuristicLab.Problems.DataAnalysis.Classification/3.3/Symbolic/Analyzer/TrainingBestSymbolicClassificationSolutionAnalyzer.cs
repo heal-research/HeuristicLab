@@ -52,6 +52,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification.Symbolic.Analyzers {
     private const string ProblemDataParameterName = "ClassificationProblemData";
     private const string UpperEstimationLimitParameterName = "UpperEstimationLimit";
     private const string LowerEstimationLimitParameterName = "LowerEstimationLimit";
+    private const string ApplyLinearScalingParameterName = "ApplyLinearScaling";
     private const string BestSolutionParameterName = "Best training solution";
     private const string BestSolutionQualityParameterName = "Best training solution quality";
     private const string BestSolutionLengthParameterName = "Best training solution length";
@@ -94,6 +95,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification.Symbolic.Analyzers {
     }
     public IValueLookupParameter<DoubleValue> LowerEstimationLimitParameter {
       get { return (IValueLookupParameter<DoubleValue>)Parameters[LowerEstimationLimitParameterName]; }
+    }
+    public IValueLookupParameter<BoolValue> ApplyLinearScalingParameter {
+      get { return (IValueLookupParameter<BoolValue>)Parameters[ApplyLinearScalingParameterName]; }
     }
 
     public ILookupParameter<SymbolicClassificationSolution> BestSolutionParameter {
@@ -169,6 +173,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification.Symbolic.Analyzers {
     public DoubleValue LowerEstimationLimit {
       get { return LowerEstimationLimitParameter.ActualValue; }
     }
+    public BoolValue ApplyLinearScaling {
+      get { return ApplyLinearScalingParameter.ActualValue; }
+      set { ApplyLinearScalingParameter.ActualValue = value; }
+    }
+
     public ResultCollection Results {
       get { return ResultsParameter.ActualValue; }
     }
@@ -240,6 +249,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification.Symbolic.Analyzers {
       Parameters.Add(new ValueLookupParameter<ClassificationProblemData>(ProblemDataParameterName, "The problem data for which the symbolic expression tree is a solution."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>(UpperEstimationLimitParameterName, "The upper estimation limit that was set for the evaluation of the symbolic expression trees."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>(LowerEstimationLimitParameterName, "The lower estimation limit that was set for the evaluation of the symbolic expression trees."));
+      Parameters.Add(new ValueLookupParameter<BoolValue>(ApplyLinearScalingParameterName, "The switch determines if the best solution should be linearly scaled on the whole training set.", new BoolValue(false)));
       Parameters.Add(new LookupParameter<SymbolicClassificationSolution>(BestSolutionParameterName, "The best symbolic classification solution."));
       Parameters.Add(new LookupParameter<DoubleValue>(BestSolutionQualityParameterName, "The quality of the best symbolic classification solution."));
       Parameters.Add(new LookupParameter<IntValue>(BestSolutionLengthParameterName, "The length of the best symbolic classification solution."));
@@ -254,6 +264,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification.Symbolic.Analyzers {
       Parameters.Add(new LookupParameter<DoubleValue>(BestSolutionAccuracyTrainingParameterName, "The accuracy on the training set of the best symbolic classification  solution."));
       Parameters.Add(new LookupParameter<DoubleValue>(BestSolutionAccuracyTestParameterName, "The accuracy on the test set of the best symbolic classification  solution."));
       Parameters.Add(new LookupParameter<ResultCollection>(ResultsParameterName, "The result collection where the best symbolic classification solution should be stored."));
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey(ApplyLinearScalingParameterName)) {
+        Parameters.Add(new ValueLookupParameter<BoolValue>(ApplyLinearScalingParameterName, "The switch determines if the best solution should be linearly scaled on the whole training set.", new BoolValue(false)));
+      }
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -286,17 +303,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification.Symbolic.Analyzers {
         double upperEstimationLimit = UpperEstimationLimit.Value;
         string targetVariable = ProblemData.TargetVariable.Value;
 
-        // calculate scaling parameters and only for the best tree using the full training set
-        double alpha, beta;
-        SymbolicRegressionScaledMeanSquaredErrorEvaluator.Calculate(SymbolicExpressionTreeInterpreter, bestTree,
-          lowerEstimationLimit, upperEstimationLimit,
-          ProblemData.Dataset, targetVariable,
-          ProblemData.TrainingIndizes, out beta, out alpha);
+        if (ApplyLinearScaling.Value) {
+          // calculate scaling parameters and only for the best tree using the full training set
+          double alpha, beta;
+          SymbolicRegressionScaledMeanSquaredErrorEvaluator.Calculate(SymbolicExpressionTreeInterpreter, bestTree,
+            lowerEstimationLimit, upperEstimationLimit,
+            ProblemData.Dataset, targetVariable,
+            ProblemData.TrainingIndizes, out beta, out alpha);
 
-        // scale tree for solution
-        var scaledTree = SymbolicRegressionSolutionLinearScaler.Scale(bestTree, alpha, beta);
+          // scale tree for solution
+          bestTree = SymbolicRegressionSolutionLinearScaler.Scale(bestTree, alpha, beta);
+        }
         var model = new SymbolicRegressionModel((ISymbolicExpressionTreeInterpreter)SymbolicExpressionTreeInterpreter.Clone(),
-          scaledTree);
+          bestTree);
         var solution = new SymbolicClassificationSolution((ClassificationProblemData)ProblemData.Clone(), model, lowerEstimationLimit, upperEstimationLimit);
         solution.Name = BestSolutionParameterName;
         solution.Description = "Best solution on training partition found over the whole run.";

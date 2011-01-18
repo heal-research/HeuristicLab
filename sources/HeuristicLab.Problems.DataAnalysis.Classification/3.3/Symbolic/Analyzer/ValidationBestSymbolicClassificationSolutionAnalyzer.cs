@@ -52,6 +52,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
     private const string UpperEstimationLimitParameterName = "UpperEstimationLimit";
     private const string LowerEstimationLimitParameterName = "LowerEstimationLimit";
     private const string CalculateSolutionComplexityParameterName = "CalculateSolutionComplexity";
+    private const string ApplyLinearScalingParameterName = "ApplyLinearScaling";
 
     private const string ResultsParameterName = "Results";
     private const string BestValidationQualityParameterName = "Best validation quality";
@@ -78,7 +79,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
     public IValueLookupParameter<ISymbolicExpressionTreeInterpreter> SymbolicExpressionTreeInterpreterParameter {
       get { return (IValueLookupParameter<ISymbolicExpressionTreeInterpreter>)Parameters[SymbolicExpressionTreeInterpreterParameterName]; }
     }
-
     public ILookupParameter<ClassificationProblemData> ClassificationProblemDataParameter {
       get { return (ILookupParameter<ClassificationProblemData>)Parameters[ClassificationProblemDataParameterName]; }
     }
@@ -100,12 +100,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
     public IValueLookupParameter<DoubleValue> LowerEstimationLimitParameter {
       get { return (IValueLookupParameter<DoubleValue>)Parameters[LowerEstimationLimitParameterName]; }
     }
+    public IValueLookupParameter<BoolValue> ApplyLinearScalingParameter {
+      get { return (IValueLookupParameter<BoolValue>)Parameters[ApplyLinearScalingParameterName]; }
+    }
     public ILookupParameter<DataTable> VariableFrequenciesParameter {
       get { return (ILookupParameter<DataTable>)Parameters[VariableFrequenciesParameterName]; }
     }
     public IValueParameter<BoolValue> CalculateSolutionComplexityParameter {
       get { return (IValueParameter<BoolValue>)Parameters[CalculateSolutionComplexityParameterName]; }
     }
+
     public ILookupParameter<ResultCollection> ResultsParameter {
       get { return (ILookupParameter<ResultCollection>)Parameters[ResultsParameterName]; }
     }
@@ -166,6 +170,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
     public DoubleValue LowerEstimationLimit {
       get { return LowerEstimationLimitParameter.ActualValue; }
     }
+    public BoolValue ApplyLinearScaling {
+      get { return ApplyLinearScalingParameter.ActualValue; }
+      set { ApplyLinearScalingParameter.ActualValue = value; }
+    }
     public DataTable VariableFrequencies {
       get { return VariableFrequenciesParameter.ActualValue; }
     }
@@ -215,7 +223,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
       Parameters.Add(new LookupParameter<IRandom>(RandomParameterName, "The random generator to use."));
       Parameters.Add(new ScopeTreeLookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression trees to analyze."));
       Parameters.Add(new ValueLookupParameter<ISymbolicExpressionTreeInterpreter>(SymbolicExpressionTreeInterpreterParameterName, "The interpreter that should be used for the analysis of symbolic expression trees."));
-
       Parameters.Add(new LookupParameter<ClassificationProblemData>(ClassificationProblemDataParameterName, "The problem data for which the symbolic expression tree is a solution."));
       Parameters.Add(new LookupParameter<ISymbolicClassificationEvaluator>(EvaluatorParameterName, "The evaluator which should be used to evaluate the solution on the validation set."));
       Parameters.Add(new ValueLookupParameter<IntValue>(ValidationSamplesStartParameterName, "The first index of the validation partition of the data set."));
@@ -225,6 +232,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
       Parameters.Add(new ValueLookupParameter<DoubleValue>(LowerEstimationLimitParameterName, "The lower estimation limit that was set for the evaluation of the symbolic expression trees."));
       Parameters.Add(new LookupParameter<DataTable>(VariableFrequenciesParameterName, "The variable frequencies table to use for the calculation of variable impacts"));
       Parameters.Add(new ValueParameter<BoolValue>(CalculateSolutionComplexityParameterName, "Determines if the length and height of the validation best solution should be calculated.", new BoolValue(true)));
+      Parameters.Add(new ValueLookupParameter<BoolValue>(ApplyLinearScalingParameterName, "The switch determines if the best solution should be linearly scaled on the whole training set.", new BoolValue(false)));
+
       Parameters.Add(new ValueLookupParameter<ResultCollection>(ResultsParameterName, "The results collection where the analysis values should be stored."));
       Parameters.Add(new LookupParameter<DoubleValue>(BestValidationQualityParameterName, "The validation quality of the best solution in the current run."));
       Parameters.Add(new LookupParameter<SymbolicClassificationSolution>(BestValidationSolutionParameterName, "The best solution on the validation data found in the current run."));
@@ -244,6 +253,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
       }
       if (!Parameters.ContainsKey(BestSolutionHeightParameterName)) {
         Parameters.Add(new LookupParameter<IntValue>(BestSolutionHeightParameterName, "The height of the best symbolic classification solution."));
+      }
+      if (!Parameters.ContainsKey(ApplyLinearScalingParameterName)) {
+        Parameters.Add(new ValueLookupParameter<BoolValue>(ApplyLinearScalingParameterName, "The switch determines if the best solution should be linearly scaled on the whole training set.", new BoolValue(false)));
       }
     }
 
@@ -288,16 +300,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
         (Maximization.Value && bestQuality > BestValidationQuality.Value) ||
         (!Maximization.Value && bestQuality < BestValidationQuality.Value);
       if (newBest) {
-        double alpha, beta;
-        SymbolicRegressionScaledMeanSquaredErrorEvaluator.Calculate(SymbolicExpressionTreeInterpreter, bestTree,
-          lowerEstimationLimit, upperEstimationLimit,
-          ClassificationProblemData.Dataset, targetVariable,
-          ClassificationProblemData.TrainingIndizes, out beta, out alpha);
+        if (ApplyLinearScaling.Value) {
+          double alpha, beta;
+          SymbolicRegressionScaledMeanSquaredErrorEvaluator.Calculate(SymbolicExpressionTreeInterpreter, bestTree,
+            lowerEstimationLimit, upperEstimationLimit,
+            ClassificationProblemData.Dataset, targetVariable,
+            ClassificationProblemData.TrainingIndizes, out beta, out alpha);
 
-        // scale tree for solution
-        var scaledTree = SymbolicRegressionSolutionLinearScaler.Scale(bestTree, alpha, beta);
+          // scale tree for solution
+          bestTree = SymbolicRegressionSolutionLinearScaler.Scale(bestTree, alpha, beta);
+        }
         var model = new SymbolicRegressionModel((ISymbolicExpressionTreeInterpreter)SymbolicExpressionTreeInterpreter.Clone(),
-          scaledTree);
+          bestTree);
 
         if (BestValidationSolution == null) {
           BestValidationSolution = new SymbolicClassificationSolution(ClassificationProblemData, model, LowerEstimationLimit.Value, UpperEstimationLimit.Value);
