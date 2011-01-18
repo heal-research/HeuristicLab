@@ -108,10 +108,10 @@ namespace HeuristicLab.MainForm.WindowsForms {
       get { return viewType; }
       set {
         if (viewType != value) {
-          if (value != null && Content != null && !ViewCanShowContent(value, Content))
-            throw new ArgumentException(string.Format("View \"{0}\" cannot display content \"{1}\".",                            value, Content.GetType()));
-          if (value != null && value.GetType() == typeof(ViewHost))
+          if (value == typeof(ViewHost))
             throw new ArgumentException("Directly nested ViewHosts are not allowed.");
+          if (value != null && Content != null && !ViewCanShowContent(value, Content))
+            throw new ArgumentException(string.Format("View \"{0}\" cannot display content \"{1}\".", value, Content.GetType()));
 
           viewType = value;
           OnViewTypeChanged();
