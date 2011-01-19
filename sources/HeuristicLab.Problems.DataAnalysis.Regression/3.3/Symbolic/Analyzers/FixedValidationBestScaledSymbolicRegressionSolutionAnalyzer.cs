@@ -19,14 +19,11 @@
  */
 #endregion
 
-using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -39,6 +36,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
   [Item("FixedValidationBestScaledSymbolicRegressionSolutionAnalyzer", "An operator that analyzes the validation best scaled symbolic regression solution.")]
   [StorableClass]
   public sealed class FixedValidationBestScaledSymbolicRegressionSolutionAnalyzer : SymbolicRegressionValidationAnalyzer, ISymbolicRegressionAnalyzer {
+    private const string ApplyLinearScalingParameterName = "ApplyLinearScaling";
     private const string MaximizationParameterName = "Maximization";
     private const string CalculateSolutionComplexityParameterName = "CalculateSolutionComplexity";
     private const string BestSolutionParameterName = "Best solution (validation)";
@@ -83,7 +81,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     public ILookupParameter<DataTable> VariableFrequenciesParameter {
       get { return (ILookupParameter<DataTable>)Parameters[VariableFrequenciesParameterName]; }
     }
-
+    public IValueLookupParameter<BoolValue> ApplyLinearScalingParameter {
+      get { return (IValueLookupParameter<BoolValue>)Parameters[ApplyLinearScalingParameterName]; }
+    }
     #endregion
     #region properties
     public BoolValue Maximization {
@@ -113,7 +113,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       get { return BestSolutionHeightParameter.ActualValue; }
       set { BestSolutionHeightParameter.ActualValue = value; }
     }
-
+    public BoolValue ApplyLinearScaling {
+      get { return ApplyLinearScalingParameter.ActualValue; }
+      set { ApplyLinearScalingParameter.ActualValue = value; }
+    }
     #endregion
 
     [StorableConstructor]
@@ -121,8 +124,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     private FixedValidationBestScaledSymbolicRegressionSolutionAnalyzer(FixedValidationBestScaledSymbolicRegressionSolutionAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public FixedValidationBestScaledSymbolicRegressionSolutionAnalyzer()
       : base() {
+      Parameters.Add(new ValueLookupParameter<BoolValue>(ApplyLinearScalingParameterName, "The switch determines if the best solution should be linearly scaled on the whole training set.", new BoolValue(true)));
       Parameters.Add(new LookupParameter<BoolValue>(MaximizationParameterName, "The direction of optimization."));
-      Parameters.Add(new ValueParameter<BoolValue>(CalculateSolutionComplexityParameterName, "Determines if the length and height of the validation best solution should be calculated.", new BoolValue(false)));
+      Parameters.Add(new ValueParameter<BoolValue>(CalculateSolutionComplexityParameterName, "Determines if the length and height of the validation best solution should be calculated.", new BoolValue(true)));
       Parameters.Add(new LookupParameter<SymbolicRegressionSolution>(BestSolutionParameterName, "The best symbolic regression solution."));
       Parameters.Add(new LookupParameter<IntValue>(GenerationsParameterName, "The number of generations calculated so far."));
       Parameters.Add(new LookupParameter<DoubleValue>(BestSolutionQualityParameterName, "The quality of the best symbolic regression solution."));
@@ -155,6 +159,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       if (!Parameters.ContainsKey(BestSolutionHeightParameterName)) {
         Parameters.Add(new LookupParameter<IntValue>(BestSolutionHeightParameterName, "The height of the best symbolic regression solution."));
       }
+      if (!Parameters.ContainsKey(ApplyLinearScalingParameterName)) {
+        Parameters.Add(new ValueLookupParameter<BoolValue>(ApplyLinearScalingParameterName, "The switch determines if the best solution should be linearly scaled on the whole training set.", new BoolValue(true)));
+      }
       #endregion
     }
 
@@ -181,17 +188,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
         double upperEstimationLimit = UpperEstimationLimit.Value;
         string targetVariable = ProblemData.TargetVariable.Value;
 
-        // calculate scaling parameters and only for the best tree using the full training set
-        double alpha, beta;
-        SymbolicRegressionScaledMeanSquaredErrorEvaluator.Calculate(SymbolicExpressionTreeInterpreter, bestTree,
-          lowerEstimationLimit, upperEstimationLimit,
-          ProblemData.Dataset, targetVariable,
-          ProblemData.TrainingIndizes, out beta, out alpha);
+        if (ApplyLinearScaling.Value) {
+          // calculate scaling parameters and only for the best tree using the full training set
+          double alpha, beta;
+          SymbolicRegressionScaledMeanSquaredErrorEvaluator.Calculate(SymbolicExpressionTreeInterpreter, bestTree,
+            lowerEstimationLimit, upperEstimationLimit,
+            ProblemData.Dataset, targetVariable,
+            ProblemData.TrainingIndizes, out beta, out alpha);
 
-        // scale tree for solution
-        var scaledTree = SymbolicRegressionSolutionLinearScaler.Scale(bestTree, alpha, beta);
+          // scale tree for solution
+          bestTree = SymbolicRegressionSolutionLinearScaler.Scale(bestTree, alpha, beta);
+        }
         var model = new SymbolicRegressionModel((ISymbolicExpressionTreeInterpreter)SymbolicExpressionTreeInterpreter.Clone(),
-          scaledTree);
+          bestTree);
         var solution = new SymbolicRegressionSolution((DataAnalysisProblemData)ProblemData.Clone(), model, lowerEstimationLimit, upperEstimationLimit);
         solution.Name = BestSolutionParameterName;
         solution.Description = "Best solution on validation partition found over the whole run.";

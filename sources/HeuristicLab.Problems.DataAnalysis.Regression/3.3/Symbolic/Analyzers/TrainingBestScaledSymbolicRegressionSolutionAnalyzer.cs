@@ -21,7 +21,6 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -30,8 +29,8 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Evaluators;
+using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
   /// <summary>
@@ -40,6 +39,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
   [Item("TrainingBestScaledSymbolicRegressionSolutionAnalyzer", "An operator that analyzes the training best scaled symbolic regression solution.")]
   [StorableClass]
   public sealed class TrainingBestScaledSymbolicRegressionSolutionAnalyzer : SingleSuccessorOperator, ISymbolicRegressionAnalyzer {
+    private const string ApplyLinearScalingParameterName = "ApplyLinearScaling";
     private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
     private const string QualityParameterName = "Quality";
     private const string MaximizationParameterName = "Maximization";
@@ -127,6 +127,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     public ILookupParameter<ResultCollection> ResultsParameter {
       get { return (ILookupParameter<ResultCollection>)Parameters[ResultsParameterName]; }
     }
+    public IValueLookupParameter<BoolValue> ApplyLinearScalingParameter {
+      get { return (IValueLookupParameter<BoolValue>)Parameters[ApplyLinearScalingParameterName]; }
+    }
     #endregion
     #region properties
     public ItemArray<SymbolicExpressionTree> SymbolicExpressionTree {
@@ -205,6 +208,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
       get { return BestSolutionTestRelativeErrorParameter.ActualValue; }
       set { BestSolutionTestRelativeErrorParameter.ActualValue = value; }
     }
+    public BoolValue ApplyLinearScaling {
+      get { return ApplyLinearScalingParameter.ActualValue; }
+      set { ApplyLinearScalingParameter.ActualValue = value; }
+    }
     #endregion
 
     [StorableConstructor]
@@ -212,11 +219,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     private TrainingBestScaledSymbolicRegressionSolutionAnalyzer(TrainingBestScaledSymbolicRegressionSolutionAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public TrainingBestScaledSymbolicRegressionSolutionAnalyzer()
       : base() {
+      Parameters.Add(new ValueLookupParameter<BoolValue>(ApplyLinearScalingParameterName, "The switch determines if the best solution should be linearly scaled on the whole training set.", new BoolValue(true)));
       Parameters.Add(new LookupParameter<BoolValue>(MaximizationParameterName, "The direction of optimization."));
       Parameters.Add(new ScopeTreeLookupParameter<SymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression trees to analyze."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>(QualityParameterName, "The qualities of the symbolic expression trees to analyze."));
-      Parameters.Add(new ValueParameter<BoolValue>(CalculateSolutionComplexityParameterName, "Determines if the length and height of the training best solution should be calculated.", new BoolValue(false)));
-      Parameters.Add(new ValueParameter<BoolValue>(CalculateSolutionAccuracyParameterName, "Determines if the accuracy of the training best solution on the training and test set should be calculated.", new BoolValue(false)));
+      Parameters.Add(new ValueParameter<BoolValue>(CalculateSolutionComplexityParameterName, "Determines if the length and height of the training best solution should be calculated.", new BoolValue(true)));
+      Parameters.Add(new ValueParameter<BoolValue>(CalculateSolutionAccuracyParameterName, "Determines if the accuracy of the training best solution on the training and test set should be calculated.", new BoolValue(true)));
       Parameters.Add(new ValueLookupParameter<ISymbolicExpressionTreeInterpreter>(SymbolicExpressionTreeInterpreterParameterName, "The interpreter that should be used for the analysis of symbolic expression trees."));
       Parameters.Add(new ValueLookupParameter<DataAnalysisProblemData>(ProblemDataParameterName, "The problem data for which the symbolic expression tree is a solution."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>(UpperEstimationLimitParameterName, "The upper estimation limit that was set for the evaluation of the symbolic expression trees."));
@@ -240,7 +248,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     }
 
     [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() { }
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey(ApplyLinearScalingParameterName)) {
+        Parameters.Add(new ValueLookupParameter<BoolValue>(ApplyLinearScalingParameterName, "The switch determines if the best solution should be linearly scaled on the whole training set.", new BoolValue(true)));
+      }
+    }
 
     public override IOperation Apply() {
       #region find best tree
@@ -268,17 +280,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
         double upperEstimationLimit = UpperEstimationLimit.Value;
         string targetVariable = ProblemData.TargetVariable.Value;
 
-        // calculate scaling parameters and only for the best tree using the full training set
-        double alpha, beta;
-        SymbolicRegressionScaledMeanSquaredErrorEvaluator.Calculate(SymbolicExpressionTreeInterpreter, bestTree,
-          lowerEstimationLimit, upperEstimationLimit,
-          ProblemData.Dataset, targetVariable,
-          ProblemData.TrainingIndizes, out beta, out alpha);
+        if (ApplyLinearScaling.Value) {
+          // calculate scaling parameters and only for the best tree using the full training set
+          double alpha, beta;
+          SymbolicRegressionScaledMeanSquaredErrorEvaluator.Calculate(SymbolicExpressionTreeInterpreter, bestTree,
+            lowerEstimationLimit, upperEstimationLimit,
+            ProblemData.Dataset, targetVariable,
+            ProblemData.TrainingIndizes, out beta, out alpha);
 
-        // scale tree for solution
-        var scaledTree = SymbolicRegressionSolutionLinearScaler.Scale(bestTree, alpha, beta);
+          // scale tree for solution
+          bestTree = SymbolicRegressionSolutionLinearScaler.Scale(bestTree, alpha, beta);
+        }
         var model = new SymbolicRegressionModel((ISymbolicExpressionTreeInterpreter)SymbolicExpressionTreeInterpreter.Clone(),
-          scaledTree);
+          bestTree);
         var solution = new SymbolicRegressionSolution((DataAnalysisProblemData)ProblemData.Clone(), model, lowerEstimationLimit, upperEstimationLimit);
         solution.Name = BestSolutionParameterName;
         solution.Description = "Best solution on training partition found over the whole run.";

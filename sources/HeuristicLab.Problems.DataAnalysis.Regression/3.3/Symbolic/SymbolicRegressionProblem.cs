@@ -147,6 +147,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     private void InitializeOperators() {
       AddOperator(new FixedValidationBestScaledSymbolicRegressionSolutionAnalyzer());
       AddOperator(new SymbolicRegressionOverfittingAnalyzer());
+      AddOperator(new TrainingBestScaledSymbolicRegressionSolutionAnalyzer());
       ParameterizeAnalyzers();
     }
 
