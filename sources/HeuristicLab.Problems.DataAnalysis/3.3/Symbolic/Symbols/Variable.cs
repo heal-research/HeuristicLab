@@ -121,7 +121,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
       weightMu = 1.0;
       weightSigma = 1.0;
       weightManipulatorMu = 0.0;
-      weightManipulatorSigma = 1.0;
+      weightManipulatorSigma = 0.05;
       multiplicativeWeightManipulatorSigma = 0.03;
       variableNames = new List<string>();
     }
