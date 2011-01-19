@@ -180,6 +180,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
       return new SymbolicClassificationProblem(this, cloner);
     }
 
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      RegisterParameterEvents();
+    }
+
     private void RegisterParameterEvents() {
       SolutionCreator.SymbolicExpressionTreeParameter.ActualNameChanged += new EventHandler(SolutionCreator_SymbolicExpressionTreeParameter_ActualNameChanged);
       FunctionTreeGrammarParameter.ValueChanged += new EventHandler(FunctionTreeGrammarParameter_ValueChanged);
@@ -216,8 +221,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
     }
 
     private void FunctionTreeGrammarParameter_ValueChanged(object sender, System.EventArgs e) {
-      if (!(FunctionTreeGrammar is GlobalSymbolicExpressionGrammar))
+      if (!(FunctionTreeGrammar is GlobalSymbolicExpressionGrammar)) {
         FunctionTreeGrammar = new GlobalSymbolicExpressionGrammar(FunctionTreeGrammar);
+      }
       OnGrammarChanged();
     }
     private void OnGrammarChanged() {
