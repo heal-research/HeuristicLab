@@ -67,18 +67,20 @@ namespace HeuristicLab.Optimization.Views {
       this.colorDialog = new System.Windows.Forms.ColorDialog();
       this.tooltip = new System.Windows.Forms.ToolTip(this.components);
       this.colorXAxisButton = new System.Windows.Forms.Button();
-      this.noRunsLabel = new System.Windows.Forms.Label();
       this.colorYAxisButton = new System.Windows.Forms.Button();
+      this.noRunsLabel = new System.Windows.Forms.Label();
+      this.sizeTrackBar = new System.Windows.Forms.TrackBar();
       ((System.ComponentModel.ISupportInitialize)(this.xTrackBar)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.yTrackBar)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
       this.radioButtonGroup.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.sizeTrackBar)).BeginInit();
       this.SuspendLayout();
       // 
       // yJitterLabel
       // 
       this.yJitterLabel.AutoSize = true;
-      this.yJitterLabel.Location = new System.Drawing.Point(350, 6);
+      this.yJitterLabel.Location = new System.Drawing.Point(278, 6);
       this.yJitterLabel.Name = "yJitterLabel";
       this.yJitterLabel.Size = new System.Drawing.Size(32, 13);
       this.yJitterLabel.TabIndex = 13;
@@ -88,7 +90,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       this.xJitterlabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.xJitterlabel.AutoSize = true;
-      this.xJitterlabel.Location = new System.Drawing.Point(635, 316);
+      this.xJitterlabel.Location = new System.Drawing.Point(749, 472);
       this.xJitterlabel.Name = "xJitterlabel";
       this.xJitterlabel.Size = new System.Drawing.Size(32, 13);
       this.xJitterlabel.TabIndex = 12;
@@ -98,7 +100,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       this.xTrackBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.xTrackBar.Enabled = false;
-      this.xTrackBar.Location = new System.Drawing.Point(673, 313);
+      this.xTrackBar.Location = new System.Drawing.Point(787, 469);
       this.xTrackBar.Maximum = 100;
       this.xTrackBar.Name = "xTrackBar";
       this.xTrackBar.Size = new System.Drawing.Size(64, 45);
@@ -110,7 +112,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       this.xAxisLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.xAxisLabel.AutoSize = true;
-      this.xAxisLabel.Location = new System.Drawing.Point(357, 316);
+      this.xAxisLabel.Location = new System.Drawing.Point(471, 472);
       this.xAxisLabel.Name = "xAxisLabel";
       this.xAxisLabel.Size = new System.Drawing.Size(15, 13);
       this.xAxisLabel.TabIndex = 8;
@@ -122,11 +124,11 @@ namespace HeuristicLab.Optimization.Views {
       this.xAxisComboBox.BackColor = System.Drawing.SystemColors.ControlLightLight;
       this.xAxisComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.xAxisComboBox.FormattingEnabled = true;
-      this.xAxisComboBox.Location = new System.Drawing.Point(378, 313);
+      this.xAxisComboBox.Location = new System.Drawing.Point(492, 469);
       this.xAxisComboBox.Name = "xAxisComboBox";
       this.xAxisComboBox.Size = new System.Drawing.Size(221, 21);
       this.xAxisComboBox.TabIndex = 7;
-      this.xAxisComboBox.SelectedIndexChanged += new System.EventHandler(this.AxisComboBox_SelectedIndexChanged);
+      this.xAxisComboBox.SelectedValueChanged += new System.EventHandler(this.AxisComboBox_SelectedValueChanged);
       // 
       // yAxisLabel
       // 
@@ -146,12 +148,12 @@ namespace HeuristicLab.Optimization.Views {
       this.yAxisComboBox.Name = "yAxisComboBox";
       this.yAxisComboBox.Size = new System.Drawing.Size(221, 21);
       this.yAxisComboBox.TabIndex = 5;
-      this.yAxisComboBox.SelectedIndexChanged += new System.EventHandler(this.AxisComboBox_SelectedIndexChanged);
+      this.yAxisComboBox.SelectedValueChanged += new System.EventHandler(this.AxisComboBox_SelectedValueChanged);
       // 
       // yTrackBar
       // 
       this.yTrackBar.Enabled = false;
-      this.yTrackBar.Location = new System.Drawing.Point(388, 3);
+      this.yTrackBar.Location = new System.Drawing.Point(312, 3);
       this.yTrackBar.Maximum = 100;
       this.yTrackBar.Name = "yTrackBar";
       this.yTrackBar.Size = new System.Drawing.Size(59, 45);
@@ -165,17 +167,17 @@ namespace HeuristicLab.Optimization.Views {
       this.sizeComboBox.BackColor = System.Drawing.SystemColors.ControlLightLight;
       this.sizeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.sizeComboBox.FormattingEnabled = true;
-      this.sizeComboBox.Location = new System.Drawing.Point(514, 3);
+      this.sizeComboBox.Location = new System.Drawing.Point(560, 4);
       this.sizeComboBox.Name = "sizeComboBox";
       this.sizeComboBox.Size = new System.Drawing.Size(221, 21);
       this.sizeComboBox.TabIndex = 14;
-      this.sizeComboBox.SelectedIndexChanged += new System.EventHandler(this.AxisComboBox_SelectedIndexChanged);
+      this.sizeComboBox.SelectedValueChanged += new System.EventHandler(this.AxisComboBox_SelectedValueChanged);
       // 
       // sizeLabel
       // 
       this.sizeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.sizeLabel.AutoSize = true;
-      this.sizeLabel.Location = new System.Drawing.Point(444, 6);
+      this.sizeLabel.Location = new System.Drawing.Point(489, 7);
       this.sizeLabel.Name = "sizeLabel";
       this.sizeLabel.Size = new System.Drawing.Size(66, 13);
       this.sizeLabel.TabIndex = 15;
@@ -191,14 +193,13 @@ namespace HeuristicLab.Optimization.Views {
       this.chart.Location = new System.Drawing.Point(6, 30);
       this.chart.Name = "chart";
       series2.ChartArea = "ChartArea1";
-      series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Bubble;
-      series2.CustomProperties = "BubbleMinSize=2, BubbleMaxSize=7";
+      series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
       series2.IsVisibleInLegend = false;
       series2.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
       series2.Name = "Bubbles";
       series2.YValuesPerPoint = 2;
       this.chart.Series.Add(series2);
-      this.chart.Size = new System.Drawing.Size(729, 269);
+      this.chart.Size = new System.Drawing.Size(843, 425);
       this.chart.TabIndex = 16;
       this.chart.Text = "chart";
       this.chart.AxisViewChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ViewEventArgs>(this.chart_AxisViewChanged);
@@ -243,7 +244,7 @@ namespace HeuristicLab.Optimization.Views {
       this.radioButtonGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.radioButtonGroup.Controls.Add(this.zoomButton);
       this.radioButtonGroup.Controls.Add(this.selectButton);
-      this.radioButtonGroup.Location = new System.Drawing.Point(3, 305);
+      this.radioButtonGroup.Location = new System.Drawing.Point(3, 461);
       this.radioButtonGroup.Name = "radioButtonGroup";
       this.radioButtonGroup.Size = new System.Drawing.Size(135, 32);
       this.radioButtonGroup.TabIndex = 19;
@@ -254,7 +255,7 @@ namespace HeuristicLab.Optimization.Views {
       this.colorButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.colorButton.Enabled = false;
       this.colorButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-      this.colorButton.Location = new System.Drawing.Point(144, 313);
+      this.colorButton.Location = new System.Drawing.Point(144, 469);
       this.colorButton.Name = "colorButton";
       this.colorButton.Size = new System.Drawing.Size(64, 21);
       this.colorButton.TabIndex = 20;
@@ -272,8 +273,8 @@ namespace HeuristicLab.Optimization.Views {
       // 
       this.colorXAxisButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.colorXAxisButton.Enabled = false;
-      this.colorXAxisButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.DisplayInColor;
-      this.colorXAxisButton.Location = new System.Drawing.Point(605, 313);
+      this.colorXAxisButton.Image = ((System.Drawing.Image)(resources.GetObject("colorXAxisButton.Image")));
+      this.colorXAxisButton.Location = new System.Drawing.Point(719, 469);
       this.colorXAxisButton.Name = "colorXAxisButton";
       this.colorXAxisButton.Size = new System.Drawing.Size(21, 21);
       this.colorXAxisButton.TabIndex = 22;
@@ -281,20 +282,10 @@ namespace HeuristicLab.Optimization.Views {
       this.colorXAxisButton.UseVisualStyleBackColor = true;
       this.colorXAxisButton.Click += new System.EventHandler(this.colorXAxisButton_Click);
       // 
-      // noRunsLabel
-      // 
-      this.noRunsLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.noRunsLabel.AutoSize = true;
-      this.noRunsLabel.Location = new System.Drawing.Point(309, 150);
-      this.noRunsLabel.Name = "noRunsLabel";
-      this.noRunsLabel.Size = new System.Drawing.Size(138, 13);
-      this.noRunsLabel.TabIndex = 21;
-      this.noRunsLabel.Text = "No runs could be displayed.";
-      // 
       // colorYAxisButton
       // 
       this.colorYAxisButton.Enabled = false;
-      this.colorYAxisButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.DisplayInColor;
+      this.colorYAxisButton.Image = ((System.Drawing.Image)(resources.GetObject("colorYAxisButton.Image")));
       this.colorYAxisButton.Location = new System.Drawing.Point(251, 3);
       this.colorYAxisButton.Name = "colorYAxisButton";
       this.colorYAxisButton.Size = new System.Drawing.Size(21, 21);
@@ -303,12 +294,36 @@ namespace HeuristicLab.Optimization.Views {
       this.colorYAxisButton.UseVisualStyleBackColor = true;
       this.colorYAxisButton.Click += new System.EventHandler(this.colorYAxisButton_Click);
       // 
+      // noRunsLabel
+      // 
+      this.noRunsLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.noRunsLabel.AutoSize = true;
+      this.noRunsLabel.Location = new System.Drawing.Point(366, 228);
+      this.noRunsLabel.Name = "noRunsLabel";
+      this.noRunsLabel.Size = new System.Drawing.Size(138, 13);
+      this.noRunsLabel.TabIndex = 21;
+      this.noRunsLabel.Text = "No runs could be displayed.";
+      // 
+      // sizeTrackBar
+      // 
+      this.sizeTrackBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.sizeTrackBar.Location = new System.Drawing.Point(787, 3);
+      this.sizeTrackBar.Maximum = 50;
+      this.sizeTrackBar.Minimum = 5;
+      this.sizeTrackBar.Name = "sizeTrackBar";
+      this.sizeTrackBar.Size = new System.Drawing.Size(64, 45);
+      this.sizeTrackBar.TabIndex = 24;
+      this.sizeTrackBar.TickStyle = System.Windows.Forms.TickStyle.None;
+      this.sizeTrackBar.Value = 50;
+      this.sizeTrackBar.ValueChanged += new System.EventHandler(this.sizeTrackBar_ValueChanged);
+      // 
       // RunCollectionBubbleChartView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.SystemColors.Window;
       this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+      this.Controls.Add(this.sizeTrackBar);
       this.Controls.Add(this.colorYAxisButton);
       this.Controls.Add(this.colorXAxisButton);
       this.Controls.Add(this.noRunsLabel);
@@ -326,12 +341,13 @@ namespace HeuristicLab.Optimization.Views {
       this.Controls.Add(this.yAxisComboBox);
       this.Controls.Add(this.yTrackBar);
       this.Name = "RunCollectionBubbleChartView";
-      this.Size = new System.Drawing.Size(740, 340);
+      this.Size = new System.Drawing.Size(854, 496);
       ((System.ComponentModel.ISupportInitialize)(this.xTrackBar)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.yTrackBar)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.chart)).EndInit();
       this.radioButtonGroup.ResumeLayout(false);
       this.radioButtonGroup.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.sizeTrackBar)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -359,5 +375,6 @@ namespace HeuristicLab.Optimization.Views {
     private System.Windows.Forms.ToolStripMenuItem openBoxPlotViewToolStripMenuItem;
     private System.Windows.Forms.Button colorXAxisButton;
     private System.Windows.Forms.Button colorYAxisButton;
+    private System.Windows.Forms.TrackBar sizeTrackBar;
   }
 }

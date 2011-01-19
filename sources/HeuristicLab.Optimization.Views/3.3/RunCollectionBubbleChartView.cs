@@ -230,20 +230,37 @@ namespace HeuristicLab.Optimization.Views {
         foreach (IRun run in this.Content)
           this.AddDataPoint(run);
 
-        //check to correct max bubble size
-        if (this.chart.Series[0].Points.Select(p => p.YValues[1]).Distinct().Count() == 1)
-          this.chart.Series[0]["BubbleMaxSize"] = "2";
-        else
-          this.chart.Series[0]["BubbleMaxSize"] = "7";
+        ////check to correct max bubble size
+        //if (this.chart.Series[0].Points.Select(p => p.YValues[1]).Distinct().Count() == 1)
+        //  this.chart.Series[0]["BubbleMaxSize"] = "2";
+        //else
+        //  this.chart.Series[0]["BubbleMaxSize"] = "7";
 
         if (this.chart.Series[0].Points.Count == 0)
           noRunsLabel.Visible = true;
         else {
           noRunsLabel.Visible = false;
+          UpdateMarkerSizes();
           UpdateCursorInterval();
         }
       }
     }
+
+    private void UpdateMarkerSizes() {
+      double[] sizeValues = this.chart.Series[0].Points.Select(p => p.YValues[1]).ToArray();
+      double minSizeValue = sizeValues.Min();
+      double maxSizeValue = sizeValues.Max();
+
+      if (maxSizeValue - minSizeValue < double.Epsilon) return;
+
+      for (int i = 0; i < sizeValues.Length; i++) {
+        DataPoint point = this.chart.Series[0].Points[i];
+        double relativeSize = (point.YValues[1] - minSizeValue) / (maxSizeValue - minSizeValue);
+        point.MarkerSize = (int)Math.Round((sizeTrackBar.Value - sizeTrackBar.Minimum) * relativeSize + sizeTrackBar.Minimum);
+      }
+
+    }
+
     private void AddDataPoint(IRun run) {
       double? xValue;
       double? yValue;
@@ -516,8 +533,11 @@ namespace HeuristicLab.Optimization.Views {
       this.yJitterFactor = yTrackBar.Value / 100.0;
       this.UpdateDataPoints();
     }
+    private void sizeTrackBar_ValueChanged(object sender, EventArgs e) {
+      UpdateMarkerSizes();
+    }
 
-    private void AxisComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+    private void AxisComboBox_SelectedValueChanged(object sender, EventArgs e) {
       bool axisSelected = xAxisComboBox.SelectedIndex != -1 && yAxisComboBox.SelectedIndex != -1;
       xTrackBar.Enabled = yTrackBar.Enabled = axisSelected;
       colorXAxisButton.Enabled = colorYAxisButton.Enabled = axisSelected;
