@@ -110,7 +110,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
         double actualThreshold = originalClasses[i - 1];
         double thresholdIncrement = (originalClasses[i] - originalClasses[i - 1]) / slices;
 
-        double bestThreshold = double.NaN;
+        double lowestBestThreshold = double.NaN;
+        double highestBestThreshold = double.NaN;
         double bestClassificationScore = double.PositiveInfinity;
 
         while (actualThreshold < originalClasses[i]) {
@@ -129,6 +130,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
               //all negatives
             else {
               if (estimatedTarget.Key > lowerThreshold && estimatedTarget.Key < actualThreshold)
+                //false positive
                 classificationScore += ProblemData.MisclassificationMatrix[i - 1, i];
               else
                 //true negative, consider only upper class
@@ -137,11 +139,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
           }
           if (classificationScore < bestClassificationScore) {
             bestClassificationScore = classificationScore;
-            bestThreshold = actualThreshold;
-          }
+            lowestBestThreshold = actualThreshold;
+            highestBestThreshold = actualThreshold;
+          } else if (Math.Abs(classificationScore - bestClassificationScore) < double.Epsilon)
+            highestBestThreshold = actualThreshold;
+
           actualThreshold += thresholdIncrement;
         }
-        thresholds[i] = bestThreshold;
+        double falseNegativePenalty = ProblemData.MisclassificationMatrix[i, i - 1];
+        double falsePositivePenalty = ProblemData.MisclassificationMatrix[i - 1, i];
+        thresholds[i] = (lowestBestThreshold * falsePositivePenalty + highestBestThreshold * falseNegativePenalty) / (falseNegativePenalty + falsePositivePenalty);
       }
       this.optimalThresholds = new List<double>(thresholds);
       this.actualThresholds = optimalThresholds;
