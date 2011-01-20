@@ -113,6 +113,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
         double lowestBestThreshold = double.NaN;
         double highestBestThreshold = double.NaN;
         double bestClassificationScore = double.PositiveInfinity;
+        bool seriesOfEqualClassificationScores = false;
 
         while (actualThreshold < originalClasses[i]) {
           double classificationScore = 0.0;
@@ -137,15 +138,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
                 classificationScore += ProblemData.MisclassificationMatrix[i, i];
             }
           }
+
+          //new best classification score found
           if (classificationScore < bestClassificationScore) {
             bestClassificationScore = classificationScore;
             lowestBestThreshold = actualThreshold;
             highestBestThreshold = actualThreshold;
-          } else if (Math.Abs(classificationScore - bestClassificationScore) < double.Epsilon)
+            seriesOfEqualClassificationScores = true;
+          }
+            //equal classification scores => if seriesOfEqualClassifcationScores == true update highest threshold
+          else if (Math.Abs(classificationScore - bestClassificationScore) < double.Epsilon && seriesOfEqualClassificationScores)
             highestBestThreshold = actualThreshold;
+          //worse classificatoin score found reset seriesOfEqualClassifcationScores
+          else seriesOfEqualClassificationScores = false;
 
           actualThreshold += thresholdIncrement;
         }
+        //scale lowest thresholds and highest found optimal threshold according to the misclassification matrix
         double falseNegativePenalty = ProblemData.MisclassificationMatrix[i, i - 1];
         double falsePositivePenalty = ProblemData.MisclassificationMatrix[i - 1, i];
         thresholds[i] = (lowestBestThreshold * falsePositivePenalty + highestBestThreshold * falseNegativePenalty) / (falseNegativePenalty + falsePositivePenalty);
