@@ -52,6 +52,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     private AlbaTranslocationMoveMaker(bool deserializing) : base(deserializing) { }
     private AlbaTranslocationMoveMaker(AlbaTranslocationMoveMaker original, Cloner cloner)
       : base(original, cloner) {
+      moveMaker = cloner.Clone(original.moveMaker);
     }
     public AlbaTranslocationMoveMaker()
       : base() {

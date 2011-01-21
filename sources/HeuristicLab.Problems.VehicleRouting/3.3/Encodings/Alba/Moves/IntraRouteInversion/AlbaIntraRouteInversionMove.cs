@@ -36,7 +36,6 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     protected AlbaIntraRouteInversionMove(bool deserializing) : base(deserializing) { }
     protected AlbaIntraRouteInversionMove(AlbaIntraRouteInversionMove original, Cloner cloner)
       : base(original, cloner) {
-      Permutation = cloner.Clone(original.Permutation);
     }
     public AlbaIntraRouteInversionMove()
       : base() {
@@ -47,7 +46,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     }
 
     public AlbaIntraRouteInversionMove(int index1, int index2, AlbaEncoding permutation)
-      : base(index1, index2, permutation) {
+      : base(index1, index2, null) {
       this.Permutation = permutation.Clone() as AlbaEncoding;
     }
 

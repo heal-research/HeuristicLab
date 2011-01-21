@@ -61,6 +61,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     private AlbaTranslocationMoveSoftTabuCriterion(bool deserializing) : base(deserializing) { }
     private AlbaTranslocationMoveSoftTabuCriterion(AlbaTranslocationMoveSoftTabuCriterion original, Cloner cloner)
       : base(original, cloner) {
+      tabuChecker = cloner.Clone(original.tabuChecker);
     }
     public AlbaTranslocationMoveSoftTabuCriterion()
       : base() {

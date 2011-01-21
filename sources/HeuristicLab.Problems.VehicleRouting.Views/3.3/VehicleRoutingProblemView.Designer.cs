@@ -39,6 +39,11 @@
       // 
       this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.errorProvider.SetIconPadding(this.nameTextBox, 2);
+      this.nameTextBox.Size = new System.Drawing.Size(418, 20);
+      // 
+      // descriptionTextBox
+      // 
+      this.descriptionTextBox.Size = new System.Drawing.Size(418, 20);
       // 
       // importButton
       // 
@@ -95,7 +100,7 @@
       this.tabPage2.Location = new System.Drawing.Point(4, 22);
       this.tabPage2.Name = "tabPage2";
       this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage2.Size = new System.Drawing.Size(482, 229);
+      this.tabPage2.Size = new System.Drawing.Size(482, 252);
       this.tabPage2.TabIndex = 1;
       this.tabPage2.Text = "Visualization";
       this.tabPage2.UseVisualStyleBackColor = true;
