@@ -32,7 +32,6 @@ namespace HeuristicLab.Operators {
   [Item("IntCounter", "An operator which increments an integer variable.")]
   [StorableClass]
   public sealed class IntCounter : SingleSuccessorOperator {
-    private object locker = new object();
 
     public LookupParameter<IntValue> ValueParameter {
       get { return (LookupParameter<IntValue>)Parameters["Value"]; }
@@ -61,10 +60,8 @@ namespace HeuristicLab.Operators {
     }
 
     public override IOperation Apply() {
-      lock (locker) {
-        if (ValueParameter.ActualValue == null) ValueParameter.ActualValue = new IntValue();
-        ValueParameter.ActualValue.Value += IncrementParameter.ActualValue.Value;
-      }
+      if (ValueParameter.ActualValue == null) ValueParameter.ActualValue = new IntValue();
+      ValueParameter.ActualValue.Value += IncrementParameter.ActualValue.Value;
       return base.Apply();
     }
   }

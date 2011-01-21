@@ -134,7 +134,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       get { return (SolutionsCreator)RandomCreator.Successor; }
     }
     private GeneticAlgorithmMainLoop GeneticAlgorithmMainLoop {
-      get { return (GeneticAlgorithmMainLoop)((Assigner)SolutionsCreator.Successor).Successor; }
+      get { return (GeneticAlgorithmMainLoop)((SubScopesCounter)SolutionsCreator.Successor).Successor; }
     }
     [Storable]
     private BestAverageWorstQualityAnalyzer qualityAnalyzer;
@@ -155,7 +155,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
 
       RandomCreator randomCreator = new RandomCreator();
       SolutionsCreator solutionsCreator = new SolutionsCreator();
-      Assigner assigner = new Assigner();
+      SubScopesCounter subScopesCounter = new SubScopesCounter();
       GeneticAlgorithmMainLoop geneticAlgorithmMainLoop = new GeneticAlgorithmMainLoop();
       OperatorGraph.InitialOperator = randomCreator;
 
@@ -167,12 +167,11 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       randomCreator.Successor = solutionsCreator;
 
       solutionsCreator.NumberOfSolutionsParameter.ActualName = PopulationSizeParameter.Name;
-      solutionsCreator.Successor = assigner;
+      solutionsCreator.Successor = subScopesCounter;
 
-      assigner.Name = "Initialize EvaluatedSolutions";
-      assigner.LeftSideParameter.ActualName = "EvaluatedSolutions";
-      assigner.RightSideParameter.ActualName = PopulationSizeParameter.Name;
-      assigner.Successor = geneticAlgorithmMainLoop;
+      subScopesCounter.Name = "Initialize EvaluatedSolutions";
+      subScopesCounter.ValueParameter.ActualName = "EvaluatedSolutions";
+      subScopesCounter.Successor = geneticAlgorithmMainLoop;
 
       geneticAlgorithmMainLoop.SelectorParameter.ActualName = SelectorParameter.Name;
       geneticAlgorithmMainLoop.CrossoverParameter.ActualName = CrossoverParameter.Name;
