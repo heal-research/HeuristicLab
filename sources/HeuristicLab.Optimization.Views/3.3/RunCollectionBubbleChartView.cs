@@ -230,12 +230,6 @@ namespace HeuristicLab.Optimization.Views {
         foreach (IRun run in this.Content)
           this.AddDataPoint(run);
 
-        ////check to correct max bubble size
-        //if (this.chart.Series[0].Points.Select(p => p.YValues[1]).Distinct().Count() == 1)
-        //  this.chart.Series[0]["BubbleMaxSize"] = "2";
-        //else
-        //  this.chart.Series[0]["BubbleMaxSize"] = "7";
-
         if (this.chart.Series[0].Points.Count == 0)
           noRunsLabel.Visible = true;
         else {
@@ -251,14 +245,16 @@ namespace HeuristicLab.Optimization.Views {
       double minSizeValue = sizeValues.Min();
       double maxSizeValue = sizeValues.Max();
 
-      if (maxSizeValue - minSizeValue < double.Epsilon) return;
-
       for (int i = 0; i < sizeValues.Length; i++) {
         DataPoint point = this.chart.Series[0].Points[i];
-        double relativeSize = (point.YValues[1] - minSizeValue) / (maxSizeValue - minSizeValue);
+        double sizeRange = maxSizeValue - minSizeValue;
+        double relativeSize = (point.YValues[1] - minSizeValue);
+
+        if (sizeRange > double.Epsilon) relativeSize /= sizeRange;
+        else relativeSize = 1;
+
         point.MarkerSize = (int)Math.Round((sizeTrackBar.Value - sizeTrackBar.Minimum) * relativeSize + sizeTrackBar.Minimum);
       }
-
     }
 
     private void AddDataPoint(IRun run) {
