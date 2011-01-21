@@ -115,12 +115,11 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       Assigner bestQualityInitializer = new Assigner();
       Placeholder analyzer1 = new Placeholder();
       ResultsCollector resultsCollector1 = new ResultsCollector();
-      ResultsCollector resultsCollector2 = new ResultsCollector();
       SubScopesProcessor mainProcessor = new SubScopesProcessor();
       Placeholder moveGenerator = new Placeholder();
       UniformSubScopesProcessor moveEvaluationProcessor = new UniformSubScopesProcessor();
       Placeholder moveEvaluator = new Placeholder();
-      IntCounter evaluatedMovesCounter = new IntCounter();
+      SubScopesCounter subScopesCounter = new SubScopesCounter();
       BestSelector bestSelector = new BestSelector();
       SubScopesProcessor moveMakingProcessor = new SubScopesProcessor();
       UniformSubScopesProcessor selectedMoveMakingProcessor = new UniformSubScopesProcessor();
@@ -133,7 +132,6 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       SubScopesRemover subScopesRemover = new SubScopesRemover();
       IntCounter iterationsCounter = new IntCounter();
       Comparator iterationsComparator = new Comparator();
-      ResultsCollector resultsCollector3 = new ResultsCollector();
       ConditionalBranch iterationsTermination = new ConditionalBranch();
 
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Iterations", new IntValue(0))); // Class LocalSearch expects this to be called Iterations
@@ -150,21 +148,19 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       resultsCollector1.CopyValue = new BoolValue(false);
       resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Iterations"));
       resultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality", null, "BestQuality"));
+      resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Moves", null, "EvaluatedMoves"));
       resultsCollector1.ResultsParameter.ActualName = ResultsParameter.Name;
-
-      resultsCollector2.CopyValue = new BoolValue(true);
-      resultsCollector2.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Moves", null, "EvaluatedMoves"));
-      resultsCollector2.ResultsParameter.ActualName = ResultsParameter.Name;
 
       moveGenerator.Name = "MoveGenerator (placeholder)";
       moveGenerator.OperatorParameter.ActualName = MoveGeneratorParameter.Name;
 
+      moveEvaluationProcessor.Parallel = new BoolValue(true);
+
       moveEvaluator.Name = "MoveEvaluator (placeholder)";
       moveEvaluator.OperatorParameter.ActualName = MoveEvaluatorParameter.Name;
 
-      evaluatedMovesCounter.Name = "EvaluatedMoves + 1";
-      evaluatedMovesCounter.ValueParameter.ActualName = "EvaluatedMoves";
-      evaluatedMovesCounter.Increment = new IntValue(1);
+      subScopesCounter.Name = "Increment EvaluatedMoves";
+      subScopesCounter.ValueParameter.ActualName = "EvaluatedMoves";
 
       bestSelector.CopySelected = new BoolValue(false);
       bestSelector.MaximizationParameter.ActualName = MaximizationParameter.Name;
@@ -199,10 +195,6 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       iterationsComparator.RightSideParameter.ActualName = MaximumIterationsParameter.Name;
       iterationsComparator.ResultParameter.ActualName = "Terminate";
 
-      resultsCollector3.CopyValue = new BoolValue(true);
-      resultsCollector3.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Moves", null, "EvaluatedMoves"));
-      resultsCollector3.ResultsParameter.ActualName = ResultsParameter.Name;
-
       iterationsTermination.Name = "Iterations Termination Condition";
       iterationsTermination.ConditionParameter.ActualName = "Terminate";
       #endregion
@@ -214,15 +206,14 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       subScopesProcessor0.Successor = resultsCollector1;
       bestQualityInitializer.Successor = analyzer1;
       analyzer1.Successor = null;
-      resultsCollector1.Successor = resultsCollector2;
-      resultsCollector2.Successor = mainProcessor;
+      resultsCollector1.Successor = mainProcessor;
       mainProcessor.Operators.Add(moveGenerator);
       mainProcessor.Successor = iterationsCounter;
       moveGenerator.Successor = moveEvaluationProcessor;
       moveEvaluationProcessor.Operator = moveEvaluator;
-      moveEvaluationProcessor.Successor = bestSelector;
-      moveEvaluator.Successor = evaluatedMovesCounter;
-      evaluatedMovesCounter.Successor = null;
+      moveEvaluationProcessor.Successor = subScopesCounter;
+      moveEvaluator.Successor = null;
+      subScopesCounter.Successor = bestSelector;
       bestSelector.Successor = moveMakingProcessor;
       moveMakingProcessor.Operators.Add(new EmptyOperator());
       moveMakingProcessor.Operators.Add(selectedMoveMakingProcessor);
@@ -238,8 +229,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       analyzer2.Successor = subScopesRemover;
       subScopesRemover.Successor = null;
       iterationsCounter.Successor = iterationsComparator;
-      iterationsComparator.Successor = resultsCollector3;
-      resultsCollector3.Successor = iterationsTermination;
+      iterationsComparator.Successor = iterationsTermination;
       iterationsTermination.TrueBranch = null;
       iterationsTermination.FalseBranch = mainProcessor;
       #endregion
