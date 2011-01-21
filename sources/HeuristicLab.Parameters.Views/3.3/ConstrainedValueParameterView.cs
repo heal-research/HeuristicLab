@@ -128,11 +128,12 @@ namespace HeuristicLab.Parameters.Views {
         Invoke(new EventHandler(Content_ValueChanged), sender, e);
       else {
         SetDataTypeTextBoxText();
-        valueComboBox.SelectedIndex = valueComboBoxItems.IndexOf(Content != null ? Content.Value : null);
+        SetComboBoxSelectedIndex();
         viewHost.ViewType = null;
         viewHost.Content = Content != null ? Content.Value : null;
       }
     }
+
     protected virtual void ValidValues_ItemsAdded(object sender, CollectionItemsChangedEventArgs<T> e) {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<T>(ValidValues_ItemsAdded), sender, e);
@@ -177,6 +178,9 @@ namespace HeuristicLab.Parameters.Views {
         else
           dataTypeTextBox.Text = Content.DataType.GetPrettyName();
       }
+    }
+    protected void SetComboBoxSelectedIndex() {
+      valueComboBox.SelectedIndex = valueComboBoxItems.IndexOf(Content != null ? Content.Value : null);
     }
     #endregion
   }

@@ -118,6 +118,12 @@
     <Compile Include="ConstrainedValueParameterView.Designer.cs">
       <DependentUpon>ConstrainedValueParameterView.cs</DependentUpon>
     </Compile>
+    <Compile Include="ConstrainedValueParameterConfigurationView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ConstrainedValueParameterConfigurationView.Designer.cs">
+      <DependentUpon>ConstrainedValueParameterConfigurationView.cs</DependentUpon>
+    </Compile>
     <Compile Include="ScopeTreeLookupParameterView.cs">
       <SubType>UserControl</SubType>
     </Compile>
