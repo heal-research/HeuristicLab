@@ -72,6 +72,12 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     public ValueLookupParameter<IOperator> AnalyzerParameter {
       get { return (ValueLookupParameter<IOperator>)Parameters["Analyzer"]; }
     }
+    public ValueLookupParameter<IntValue> EvaluatedSolutionsParameter {
+      get { return (ValueLookupParameter<IntValue>)Parameters["EvaluatedSolutions"]; }
+    }
+    public ValueLookupParameter<IntValue> PopulationSizeParameter {
+      get { return (ValueLookupParameter<IntValue>)Parameters["PopulationSize"]; }
+    }
     private ScopeParameter CurrentScopeParameter {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }
     }
@@ -108,6 +114,8 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       Parameters.Add(new ValueLookupParameter<IntValue>("MaximumGenerations", "The maximum number of generations which should be processed."));
       Parameters.Add(new ValueLookupParameter<VariableCollection>("Results", "The variable collection where results should be stored."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Analyzer", "The operator used to analyze each generation."));
+      Parameters.Add(new ValueLookupParameter<IntValue>("EvaluatedSolutions", "The number of times solutions have been evaluated."));
+      Parameters.Add(new ValueLookupParameter<IntValue>("PopulationSize", "The size of the population."));
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope which represents a population of solutions on which the genetic algorithm should be applied."));
       #endregion
 
@@ -125,11 +133,12 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       SubScopesRemover subScopesRemover = new SubScopesRemover();
       UniformSubScopesProcessor uniformSubScopesProcessor2 = new UniformSubScopesProcessor();
       Placeholder evaluator = new Placeholder();
+      IntCounter intCounter1 = new IntCounter();
       SubScopesProcessor subScopesProcessor2 = new SubScopesProcessor();
       BestSelector bestSelector = new BestSelector();
       RightReducer rightReducer = new RightReducer();
       MergingReducer mergingReducer = new MergingReducer();
-      IntCounter intCounter = new IntCounter();
+      IntCounter intCounter2 = new IntCounter();
       Comparator comparator = new Comparator();
       ResultsCollector resultsCollector2 = new ResultsCollector();
       Placeholder analyzer2 = new Placeholder();
@@ -138,6 +147,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Generations", new IntValue(0))); // Class GeneticAlgorithm expects this to be called Generations
 
       resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Generations"));
+      resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>(EvaluatedSolutionsParameter.Name));
       resultsCollector1.ResultsParameter.ActualName = "Results";
 
       analyzer1.Name = "Analyzer";
@@ -164,13 +174,18 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       evaluator.Name = "Evaluator";
       evaluator.OperatorParameter.ActualName = "Evaluator";
 
+      intCounter1.Name = "Increment EvaluatedSolutions";
+      intCounter1.ValueParameter.ActualName = EvaluatedSolutionsParameter.Name;
+      intCounter1.Increment = null;
+      intCounter1.IncrementParameter.ActualName = PopulationSizeParameter.Name;
+
       bestSelector.CopySelected = new BoolValue(false);
       bestSelector.MaximizationParameter.ActualName = "Maximization";
       bestSelector.NumberOfSelectedSubScopesParameter.ActualName = "Elites";
       bestSelector.QualityParameter.ActualName = "Quality";
 
-      intCounter.Increment = new IntValue(1);
-      intCounter.ValueParameter.ActualName = "Generations";
+      intCounter2.Increment = new IntValue(1);
+      intCounter2.ValueParameter.ActualName = "Generations";
 
       comparator.Comparison = new Comparison(ComparisonType.GreaterOrEqual);
       comparator.LeftSideParameter.ActualName = "Generations";
@@ -178,6 +193,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       comparator.RightSideParameter.ActualName = "MaximumGenerations";
 
       resultsCollector2.CollectedValues.Add(new LookupParameter<IntValue>("Generations"));
+      resultsCollector2.CollectedValues.Add(new LookupParameter<IntValue>(EvaluatedSolutionsParameter.Name));
       resultsCollector2.ResultsParameter.ActualName = "Results";
 
       analyzer2.Name = "Analyzer";
@@ -205,15 +221,16 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       mutator.Successor = null;
       subScopesRemover.Successor = null;
       uniformSubScopesProcessor2.Operator = evaluator;
-      uniformSubScopesProcessor2.Successor = null;
+      uniformSubScopesProcessor2.Successor = intCounter1;
       evaluator.Successor = null;
+      intCounter1.Successor = null;
       subScopesProcessor2.Operators.Add(bestSelector);
       subScopesProcessor2.Operators.Add(new EmptyOperator());
       subScopesProcessor2.Successor = mergingReducer;
       bestSelector.Successor = rightReducer;
       rightReducer.Successor = null;
-      mergingReducer.Successor = intCounter;
-      intCounter.Successor = comparator;
+      mergingReducer.Successor = intCounter2;
+      intCounter2.Successor = comparator;
       comparator.Successor = resultsCollector2;
       resultsCollector2.Successor = analyzer2;
       analyzer2.Successor = conditionalBranch;

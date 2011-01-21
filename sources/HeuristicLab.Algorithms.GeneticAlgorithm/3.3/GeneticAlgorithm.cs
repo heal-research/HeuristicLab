@@ -25,6 +25,7 @@ using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
@@ -133,7 +134,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       get { return (SolutionsCreator)RandomCreator.Successor; }
     }
     private GeneticAlgorithmMainLoop GeneticAlgorithmMainLoop {
-      get { return (GeneticAlgorithmMainLoop)SolutionsCreator.Successor; }
+      get { return (GeneticAlgorithmMainLoop)((Assigner)SolutionsCreator.Successor).Successor; }
     }
     [Storable]
     private BestAverageWorstQualityAnalyzer qualityAnalyzer;
@@ -154,6 +155,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
 
       RandomCreator randomCreator = new RandomCreator();
       SolutionsCreator solutionsCreator = new SolutionsCreator();
+      Assigner assigner = new Assigner();
       GeneticAlgorithmMainLoop geneticAlgorithmMainLoop = new GeneticAlgorithmMainLoop();
       OperatorGraph.InitialOperator = randomCreator;
 
@@ -165,7 +167,12 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       randomCreator.Successor = solutionsCreator;
 
       solutionsCreator.NumberOfSolutionsParameter.ActualName = PopulationSizeParameter.Name;
-      solutionsCreator.Successor = geneticAlgorithmMainLoop;
+      solutionsCreator.Successor = assigner;
+
+      assigner.Name = "Initialize EvaluatedSolutions";
+      assigner.LeftSideParameter.ActualName = "EvaluatedSolutions";
+      assigner.RightSideParameter.ActualName = PopulationSizeParameter.Name;
+      assigner.Successor = geneticAlgorithmMainLoop;
 
       geneticAlgorithmMainLoop.SelectorParameter.ActualName = SelectorParameter.Name;
       geneticAlgorithmMainLoop.CrossoverParameter.ActualName = CrossoverParameter.Name;
@@ -175,6 +182,8 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       geneticAlgorithmMainLoop.MutationProbabilityParameter.ActualName = MutationProbabilityParameter.Name;
       geneticAlgorithmMainLoop.RandomParameter.ActualName = RandomCreator.RandomParameter.ActualName;
       geneticAlgorithmMainLoop.AnalyzerParameter.ActualName = AnalyzerParameter.Name;
+      geneticAlgorithmMainLoop.EvaluatedSolutionsParameter.ActualName = "EvaluatedSolutions";
+      geneticAlgorithmMainLoop.PopulationSizeParameter.ActualName = PopulationSizeParameter.Name;
       geneticAlgorithmMainLoop.ResultsParameter.ActualName = "Results";
 
       foreach (ISelector selector in ApplicationManager.Manager.GetInstances<ISelector>().Where(x => !(x is IMultiObjectiveSelector)).OrderBy(x => x.Name))
