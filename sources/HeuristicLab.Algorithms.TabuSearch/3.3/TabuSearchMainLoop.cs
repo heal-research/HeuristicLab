@@ -138,13 +138,12 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       Assigner bestQualityInitializer = new Assigner();
       Placeholder analyzer1 = new Placeholder();
       ResultsCollector resultsCollector1 = new ResultsCollector();
-      ResultsCollector resultsCollector2 = new ResultsCollector();
       SubScopesProcessor solutionProcessor = new SubScopesProcessor();
       Placeholder moveGenerator = new Placeholder();
       UniformSubScopesProcessor moveEvaluationProcessor = new UniformSubScopesProcessor();
       Placeholder moveEvaluator = new Placeholder();
-      IntCounter evaluatedMovesCounter = new IntCounter();
       Placeholder tabuChecker = new Placeholder();
+      SubScopesCounter subScopesCounter = new SubScopesCounter();
       SubScopesSorter moveQualitySorter = new SubScopesSorter();
       TabuSelector tabuSelector = new TabuSelector();
       ConditionalBranch emptyNeighborhoodBranch1 = new ConditionalBranch();
@@ -159,7 +158,6 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       BestQualityMemorizer bestQualityUpdater = new BestQualityMemorizer();
       IntCounter iterationsCounter = new IntCounter();
       Comparator iterationsComparator = new Comparator();
-      ResultsCollector resultsCollector3 = new ResultsCollector();
       ConditionalBranch iterationsTermination = new ConditionalBranch();
 
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Iterations", new IntValue(0))); // Class TabuSearch expects this to be called Iterations
@@ -179,24 +177,22 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       resultsCollector1.CopyValue = new BoolValue(false);
       resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Iterations"));
       resultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality", null, "BestQuality"));
+      resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Moves", null, "EvaluatedMoves"));
       resultsCollector1.ResultsParameter.ActualName = ResultsParameter.Name;
-
-      resultsCollector2.CopyValue = new BoolValue(true);
-      resultsCollector2.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Moves", null, "EvaluatedMoves"));
-      resultsCollector2.ResultsParameter.ActualName = ResultsParameter.Name;
 
       moveGenerator.Name = "MoveGenerator (placeholder)";
       moveGenerator.OperatorParameter.ActualName = MoveGeneratorParameter.Name;
 
+      moveEvaluationProcessor.Parallel = new BoolValue(true);
+
       moveEvaluator.Name = "MoveEvaluator (placeholder)";
       moveEvaluator.OperatorParameter.ActualName = MoveEvaluatorParameter.Name;
 
-      evaluatedMovesCounter.Name = "EvaluatedMoves + 1";
-      evaluatedMovesCounter.ValueParameter.ActualName = "EvaluatedMoves";
-      evaluatedMovesCounter.Increment = new IntValue(1);
-
       tabuChecker.Name = "TabuChecker (placeholder)";
       tabuChecker.OperatorParameter.ActualName = TabuCheckerParameter.Name;
+
+      subScopesCounter.Name = "Increment EvaluatedMoves";
+      subScopesCounter.ValueParameter.ActualName = "EvaluatedMoves";
 
       moveQualitySorter.DescendingParameter.ActualName = MaximizationParameter.Name;
       moveQualitySorter.ValueParameter.ActualName = MoveQualityParameter.Name;
@@ -240,10 +236,6 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       iterationsComparator.RightSideParameter.ActualName = MaximumIterationsParameter.Name;
       iterationsComparator.ResultParameter.ActualName = "Terminate";
 
-      resultsCollector3.CopyValue = new BoolValue(true);
-      resultsCollector3.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Moves", null, "EvaluatedMoves"));
-      resultsCollector3.ResultsParameter.ActualName = ResultsParameter.Name;
-
       emptyNeighborhoodBranch2.Name = "Neighborhood empty?";
       emptyNeighborhoodBranch2.ConditionParameter.ActualName = "EmptyNeighborhood";
 
@@ -258,16 +250,15 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       subScopesProcessor0.Successor = resultsCollector1;
       bestQualityInitializer.Successor = analyzer1;
       analyzer1.Successor = null;
-      resultsCollector1.Successor = resultsCollector2;
-      resultsCollector2.Successor = solutionProcessor;
+      resultsCollector1.Successor = solutionProcessor;
       solutionProcessor.Operators.Add(moveGenerator);
       solutionProcessor.Successor = iterationsCounter;
       moveGenerator.Successor = moveEvaluationProcessor;
       moveEvaluationProcessor.Operator = moveEvaluator;
-      moveEvaluationProcessor.Successor = moveQualitySorter;
-      moveEvaluator.Successor = evaluatedMovesCounter;
-      evaluatedMovesCounter.Successor = tabuChecker;
+      moveEvaluationProcessor.Successor = subScopesCounter;
+      moveEvaluator.Successor = tabuChecker;
       tabuChecker.Successor = null;
+      subScopesCounter.Successor = moveQualitySorter;
       moveQualitySorter.Successor = tabuSelector;
       tabuSelector.Successor = emptyNeighborhoodBranch1;
       emptyNeighborhoodBranch1.FalseBranch = moveMakingProcessor;
@@ -284,8 +275,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       analyzer2.Successor = null;
       subScopesRemover.Successor = null;
       iterationsCounter.Successor = iterationsComparator;
-      iterationsComparator.Successor = resultsCollector3;
-      resultsCollector3.Successor = emptyNeighborhoodBranch2;
+      iterationsComparator.Successor = emptyNeighborhoodBranch2;
       emptyNeighborhoodBranch2.TrueBranch = null;
       emptyNeighborhoodBranch2.FalseBranch = iterationsTermination;
       emptyNeighborhoodBranch2.Successor = null;
