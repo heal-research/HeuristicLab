@@ -186,7 +186,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       get { return (SolutionsCreator)IslandProcessor.Operator; }
     }
     private IslandGeneticAlgorithmMainLoop MainLoop {
-      get { return (IslandGeneticAlgorithmMainLoop)IslandProcessor.Successor; }
+      get { return (IslandGeneticAlgorithmMainLoop)((UniformSubScopesProcessor)((VariableCreator)IslandProcessor.Successor).Successor).Successor; }
     }
     [Storable]
     private BestAverageWorstQualityAnalyzer islandQualityAnalyzer;
@@ -234,6 +234,9 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       SubScopesCreator populationCreator = new SubScopesCreator();
       UniformSubScopesProcessor ussp1 = new UniformSubScopesProcessor();
       SolutionsCreator solutionsCreator = new SolutionsCreator();
+      VariableCreator variableCreator = new VariableCreator();
+      UniformSubScopesProcessor ussp2 = new UniformSubScopesProcessor();
+      SubScopesCounter subScopesCounter = new SubScopesCounter();
       IslandGeneticAlgorithmMainLoop mainLoop = new IslandGeneticAlgorithmMainLoop();
       OperatorGraph.InitialOperator = randomCreator;
 
@@ -248,10 +251,21 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       populationCreator.Successor = ussp1;
 
       ussp1.Operator = solutionsCreator;
-      ussp1.Successor = mainLoop;
+      ussp1.Successor = variableCreator;
 
       solutionsCreator.NumberOfSolutionsParameter.ActualName = PopulationSizeParameter.Name;
       solutionsCreator.Successor = null;
+
+      variableCreator.Name = "Initialize EvaluatedSolutions";
+      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("EvaluatedSolutions", new IntValue()));
+      variableCreator.Successor = ussp2;
+
+      ussp2.Operator = subScopesCounter;
+      ussp2.Successor = mainLoop;
+
+      subScopesCounter.Name = "Count EvaluatedSolutions";
+      subScopesCounter.ValueParameter.ActualName = "EvaluatedSolutions";
+      subScopesCounter.Successor = null;
 
       mainLoop.EmigrantsSelectorParameter.ActualName = EmigrantsSelectorParameter.Name;
       mainLoop.ImmigrationReplacerParameter.ActualName = ImmigrationReplacerParameter.Name;
@@ -269,6 +283,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       mainLoop.ResultsParameter.ActualName = "Results";
       mainLoop.AnalyzerParameter.ActualName = AnalyzerParameter.Name;
       mainLoop.IslandAnalyzerParameter.ActualName = IslandAnalyzerParameter.Name;
+      mainLoop.EvaluatedSolutionsParameter.ActualName = "EvaluatedSolutions";
       mainLoop.Successor = null;
 
       foreach (ISelector selector in ApplicationManager.Manager.GetInstances<ISelector>().Where(x => !(x is IMultiObjectiveSelector)).OrderBy(x => x.Name))

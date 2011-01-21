@@ -123,6 +123,7 @@
     <Compile Include="StochasticMultiBranch.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SubScopesCounter.cs" />
     <Compile Include="SubScopesCreator.cs" />
     <Compile Include="SubScopesMixer.cs" />
     <Compile Include="SubScopesProcessor.cs" />
