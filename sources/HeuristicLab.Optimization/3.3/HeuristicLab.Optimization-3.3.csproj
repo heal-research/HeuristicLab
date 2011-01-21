@@ -11,7 +11,8 @@
     <RootNamespace>HeuristicLab.Optimization</RootNamespace>
     <AssemblyName>HeuristicLab.Optimization-3.3</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile></TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
@@ -116,6 +117,7 @@
     <Compile Include="Interfaces\IIterationBasedOperator.cs" />
     <Compile Include="Interfaces\IRealVectorDecoder.cs" />
     <Compile Include="Interfaces\IRealVectorEncoder.cs" />
+    <Compile Include="MultiObjectiveProblem.cs" />
     <Compile Include="Problem.cs" />
     <Compile Include="RunCollectionConstraints\RunCollectionComparisonConstraint.cs" />
     <Compile Include="RunCollectionConstraints\RunCollectionConstraintCollection.cs" />

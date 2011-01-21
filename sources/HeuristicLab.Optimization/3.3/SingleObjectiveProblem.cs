@@ -26,7 +26,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization {
-  [Item("Single Objective Problem", "Represents the base class for a single objective problem.")]
+  [Item("Single-Objective Problem", "A base class for single-objective problems.")]
   [StorableClass]
   public abstract class SingleObjectiveProblem<T, U> : Problem<T, U>, ISingleObjectiveProblem
     where T : class, ISingleObjectiveEvaluator
@@ -36,41 +36,37 @@ namespace HeuristicLab.Optimization {
 
     [StorableConstructor]
     protected SingleObjectiveProblem(bool deserializing) : base(deserializing) { }
-    protected SingleObjectiveProblem(SingleObjectiveProblem<T, U> original, Cloner cloner)
-      : base(original, cloner) {
-    }
-
+    protected SingleObjectiveProblem(SingleObjectiveProblem<T, U> original, Cloner cloner) : base(original, cloner) { }
     protected SingleObjectiveProblem()
       : base() {
       Parameters.Add(new ValueParameter<BoolValue>(MaximizationParameterName, "Set to false if the problem should be minimized."));
       Parameters.Add(new ValueParameter<DoubleValue>(BestKnownQualityParameterName, "The quality of the best known solution of this problem."));
     }
 
-
-    #region properties
-    ISingleObjectiveEvaluator ISingleObjectiveProblem.Evaluator { get { return Evaluator; } }
-
-    public BoolValue Maximization {
-      get { return MaximizationParameter.Value; }
-      protected set { MaximizationParameter.Value = value; }
-    }
     public ValueParameter<BoolValue> MaximizationParameter {
       get { return (ValueParameter<BoolValue>)Parameters[MaximizationParameterName]; }
     }
     IParameter ISingleObjectiveProblem.MaximizationParameter {
       get { return MaximizationParameter; }
     }
-
-    public DoubleValue BestKnownQuality {
-      get { return BestKnownQualityParameter.Value; }
-      protected set { BestKnownQualityParameter.Value = value; }
+    public BoolValue Maximization {
+      get { return MaximizationParameter.Value; }
+      protected set { MaximizationParameter.Value = value; }
     }
+
     public ValueParameter<DoubleValue> BestKnownQualityParameter {
       get { return (ValueParameter<DoubleValue>)Parameters[BestKnownQualityParameterName]; }
     }
     IParameter ISingleObjectiveProblem.BestKnownQualityParameter {
       get { return BestKnownQualityParameter; }
     }
-    #endregion
+    public DoubleValue BestKnownQuality {
+      get { return BestKnownQualityParameter.Value; }
+      protected set { BestKnownQualityParameter.Value = value; }
+    }
+
+    ISingleObjectiveEvaluator ISingleObjectiveProblem.Evaluator {
+      get { return Evaluator; }
+    }
   }
 }
