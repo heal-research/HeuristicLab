@@ -26,6 +26,7 @@ using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
@@ -134,7 +135,13 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       get { return (SolutionsCreator)RandomCreator.Successor; }
     }
     private SimulatedAnnealingMainLoop MainLoop {
-      get { return (SimulatedAnnealingMainLoop)SolutionsCreator.Successor; }
+      get {
+        return (SimulatedAnnealingMainLoop)(
+          (ResultsCollector)(
+            (VariableCreator)SolutionsCreator.Successor
+          ).Successor
+        ).Successor;
+      }
     }
     [Storable]
     private QualityAnalyzer qualityAnalyzer;
@@ -170,6 +177,8 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
 
       RandomCreator randomCreator = new RandomCreator();
       SolutionsCreator solutionsCreator = new SolutionsCreator();
+      VariableCreator variableCreator = new VariableCreator();
+      ResultsCollector resultsCollector = new ResultsCollector();
       SimulatedAnnealingMainLoop mainLoop = new SimulatedAnnealingMainLoop();
       OperatorGraph.InitialOperator = randomCreator;
 
@@ -181,7 +190,15 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       randomCreator.Successor = solutionsCreator;
 
       solutionsCreator.NumberOfSolutions = new IntValue(1);
-      solutionsCreator.Successor = mainLoop;
+      solutionsCreator.Successor = variableCreator;
+
+      variableCreator.Name = "Initialize EvaluatedMoves";
+      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("EvaluatedMoves", new IntValue()));
+      variableCreator.Successor = resultsCollector;
+
+      resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Moves", null, "EvaluatedMoves"));
+      resultsCollector.ResultsParameter.ActualName = "Results";
+      resultsCollector.Successor = mainLoop;
 
       mainLoop.MoveGeneratorParameter.ActualName = MoveGeneratorParameter.Name;
       mainLoop.MoveEvaluatorParameter.ActualName = MoveEvaluatorParameter.Name;
@@ -193,6 +210,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       mainLoop.RandomParameter.ActualName = RandomCreator.RandomParameter.ActualName;
       mainLoop.ResultsParameter.ActualName = "Results";
       mainLoop.AnalyzerParameter.ActualName = AnalyzerParameter.Name;
+      mainLoop.EvaluatedMovesParameter.ActualName = "EvaluatedMoves";
 
       foreach (IDiscreteDoubleValueModifier op in ApplicationManager.Manager.GetInstances<IDiscreteDoubleValueModifier>().OrderBy(x => x.Name))
         AnnealingOperatorParameter.ValidValues.Add(op);

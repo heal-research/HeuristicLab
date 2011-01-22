@@ -82,6 +82,9 @@ namespace HeuristicLab.Algorithms.TabuSearch {
     public ValueLookupParameter<VariableCollection> ResultsParameter {
       get { return (ValueLookupParameter<VariableCollection>)Parameters["Results"]; }
     }
+    public LookupParameter<IntValue> EvaluatedMovesParameter {
+      get { return (LookupParameter<IntValue>)Parameters["EvaluatedMoves"]; }
+    }
     #endregion
 
     [StorableConstructor]
@@ -130,6 +133,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
 
       Parameters.Add(new ValueLookupParameter<IOperator>("Analyzer", "The operator used to analyze the solution and moves."));
       Parameters.Add(new ValueLookupParameter<VariableCollection>("Results", "The variable collection where results should be stored."));
+      Parameters.Add(new LookupParameter<IntValue>("EvaluatedMoves", "The number of evaluated moves."));
       #endregion
 
       #region Create operators
@@ -161,7 +165,6 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       ConditionalBranch iterationsTermination = new ConditionalBranch();
 
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Iterations", new IntValue(0))); // Class TabuSearch expects this to be called Iterations
-      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("EvaluatedMoves", new IntValue(0)));
       variableCreator.CollectedValues.Add(new ValueParameter<BoolValue>("EmptyNeighborhood", new BoolValue(false)));
       variableCreator.CollectedValues.Add(new ValueParameter<ItemList<IItem>>("TabuList", new ItemList<IItem>()));
       variableCreator.CollectedValues.Add(new ValueParameter<VariableCollection>("Memories", new VariableCollection()));
@@ -177,7 +180,6 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       resultsCollector1.CopyValue = new BoolValue(false);
       resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Iterations"));
       resultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality", null, "BestQuality"));
-      resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Moves", null, "EvaluatedMoves"));
       resultsCollector1.ResultsParameter.ActualName = ResultsParameter.Name;
 
       moveGenerator.Name = "MoveGenerator (placeholder)";
@@ -192,7 +194,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       tabuChecker.OperatorParameter.ActualName = TabuCheckerParameter.Name;
 
       subScopesCounter.Name = "Increment EvaluatedMoves";
-      subScopesCounter.ValueParameter.ActualName = "EvaluatedMoves";
+      subScopesCounter.ValueParameter.ActualName = EvaluatedMovesParameter.Name;
 
       moveQualitySorter.DescendingParameter.ActualName = MaximizationParameter.Name;
       moveQualitySorter.ValueParameter.ActualName = MoveQualityParameter.Name;

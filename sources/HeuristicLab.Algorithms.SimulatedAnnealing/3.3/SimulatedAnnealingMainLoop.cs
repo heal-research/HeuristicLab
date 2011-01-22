@@ -80,6 +80,9 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     public ValueLookupParameter<VariableCollection> ResultsParameter {
       get { return (ValueLookupParameter<VariableCollection>)Parameters["Results"]; }
     }
+    public LookupParameter<IntValue> EvaluatedMovesParameter {
+      get { return (LookupParameter<IntValue>)Parameters["EvaluatedMoves"]; }
+    }
     #endregion
 
     [StorableConstructor]
@@ -114,6 +117,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
 
       Parameters.Add(new ValueLookupParameter<IOperator>("Analyzer", "The operator used to analyze each generation."));
       Parameters.Add(new ValueLookupParameter<VariableCollection>("Results", "The variable collection where results should be stored."));
+      Parameters.Add(new LookupParameter<IntValue>("EvaluatedMoves", "The number of evaluated moves."));
       #endregion
 
       #region Create operators
@@ -128,13 +132,13 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       Placeholder moveGenerator = new Placeholder();
       UniformSubScopesProcessor moveEvaluationProcessor = new UniformSubScopesProcessor();
       Placeholder moveEvaluator = new Placeholder();
+      SubScopesCounter subScopesCounter = new SubScopesCounter();
       ProbabilisticQualityComparator qualityComparator = new ProbabilisticQualityComparator();
       ConditionalBranch improvesQualityBranch = new ConditionalBranch();
       Placeholder moveMaker = new Placeholder();
       SubScopesRemover subScopesRemover = new SubScopesRemover();
       IntCounter iterationsCounter = new IntCounter();
       Comparator iterationsComparator = new Comparator();
-      ResultsCollector resultsCollector2 = new ResultsCollector();
       SubScopesProcessor subScopesProcessor1 = new SubScopesProcessor();
       Placeholder analyzer2 = new Placeholder();
       ConditionalBranch iterationsTermination = new ConditionalBranch();
@@ -158,6 +162,9 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       moveEvaluator.Name = "Move evaluator (placeholder)";
       moveEvaluator.OperatorParameter.ActualName = MoveEvaluatorParameter.Name;
 
+      subScopesCounter.Name = "Increment EvaluatedMoves";
+      subScopesCounter.ValueParameter.ActualName = EvaluatedMovesParameter.Name;
+
       qualityComparator.LeftSideParameter.ActualName = MoveQualityParameter.Name;
       qualityComparator.RightSideParameter.ActualName = QualityParameter.Name;
       qualityComparator.ResultParameter.ActualName = "IsBetter";
@@ -180,10 +187,6 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       iterationsComparator.ResultParameter.ActualName = "Terminate";
       iterationsComparator.Comparison.Value = ComparisonType.GreaterOrEqual;
 
-      resultsCollector2.CollectedValues.Add(new LookupParameter<IntValue>("Iterations"));
-      resultsCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Temperature"));
-      resultsCollector2.ResultsParameter.ActualName = ResultsParameter.Name;
-
       analyzer2.Name = "Analyzer (placeholder)";
       analyzer2.OperatorParameter.ActualName = AnalyzerParameter.Name;
 
@@ -197,21 +200,26 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       resultsCollector1.Successor = subScopesProcessor0;
       subScopesProcessor0.Operators.Add(analyzer1);
       subScopesProcessor0.Successor = sssp;
+      analyzer1.Successor = null;
       sssp.Operators.Add(resultsCollector);
-      resultsCollector.Successor = null;
       sssp.Successor = annealingOperator;
+      resultsCollector.Successor = null;
       annealingOperator.Successor = mainProcessor;
       mainProcessor.Operator = moveGenerator;
       mainProcessor.Successor = iterationsCounter;
       moveGenerator.Successor = moveEvaluationProcessor;
       moveEvaluationProcessor.Operator = moveEvaluator;
-      moveEvaluationProcessor.Successor = subScopesRemover;
+      moveEvaluationProcessor.Successor = subScopesCounter;
       moveEvaluator.Successor = qualityComparator;
       qualityComparator.Successor = improvesQualityBranch;
       improvesQualityBranch.TrueBranch = moveMaker;
+      improvesQualityBranch.FalseBranch = null;
+      improvesQualityBranch.Successor = null;
+      moveMaker.Successor = null;
+      subScopesCounter.Successor = subScopesRemover;
+      subScopesRemover.Successor = null;
       iterationsCounter.Successor = iterationsComparator;
-      iterationsComparator.Successor = resultsCollector2;
-      resultsCollector2.Successor = subScopesProcessor1;
+      iterationsComparator.Successor = subScopesProcessor1;
       subScopesProcessor1.Operators.Add(analyzer2);
       subScopesProcessor1.Successor = iterationsTermination;
       iterationsTermination.TrueBranch = null;

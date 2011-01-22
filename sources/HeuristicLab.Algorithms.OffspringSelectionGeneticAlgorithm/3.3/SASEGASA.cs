@@ -214,7 +214,15 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       get { return (SolutionsCreator)VillageProcessor.Operator; }
     }
     private SASEGASAMainLoop MainLoop {
-      get { return (SASEGASAMainLoop)VillageProcessor.Successor; }
+      get {
+        return (SASEGASAMainLoop)(
+          (ResultsCollector)(
+            (UniformSubScopesProcessor)(
+              (VariableCreator)VillageProcessor.Successor
+            ).Successor
+          ).Successor
+        ).Successor;
+      }
     }
     [Storable]
     private BestAverageWorstQualityAnalyzer villageQualityAnalyzer;
@@ -271,6 +279,10 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       SubScopesCreator populationCreator = new SubScopesCreator();
       UniformSubScopesProcessor ussp1 = new UniformSubScopesProcessor();
       SolutionsCreator solutionsCreator = new SolutionsCreator();
+      VariableCreator variableCreator = new VariableCreator();
+      UniformSubScopesProcessor ussp2 = new UniformSubScopesProcessor();
+      SubScopesCounter subScopesCounter = new SubScopesCounter();
+      ResultsCollector resultsCollector = new ResultsCollector();
       SASEGASAMainLoop mainLoop = new SASEGASAMainLoop();
       OperatorGraph.InitialOperator = randomCreator;
 
@@ -285,10 +297,24 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       populationCreator.Successor = ussp1;
 
       ussp1.Operator = solutionsCreator;
-      ussp1.Successor = mainLoop;
+      ussp1.Successor = variableCreator;
 
       solutionsCreator.NumberOfSolutionsParameter.ActualName = PopulationSizeParameter.Name;
       solutionsCreator.Successor = null;
+
+      variableCreator.Name = "Initialize EvaluatedSolutions";
+      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("EvaluatedSolutions", new IntValue()));
+      variableCreator.Successor = ussp2;
+
+      ussp2.Operator = subScopesCounter;
+      ussp2.Successor = resultsCollector;
+
+      subScopesCounter.Name = "Increment EvaluatedSolutions";
+      subScopesCounter.ValueParameter.ActualName = "EvaluatedSolutions";
+
+      resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Solutions", "", "EvaluatedSolutions"));
+      resultsCollector.ResultsParameter.ActualName = "Results";
+      resultsCollector.Successor = mainLoop;
 
       mainLoop.NumberOfVillagesParameter.ActualName = NumberOfVillagesParameter.Name;
       mainLoop.SelectorParameter.ActualName = SelectorParameter.Name;
@@ -305,6 +331,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       mainLoop.FinalMaximumSelectionPressureParameter.ActualName = FinalMaximumSelectionPressureParameter.Name;
       mainLoop.MaximumGenerationsParameter.ActualName = MaximumGenerationsParameter.Name;
       mainLoop.OffspringSelectionBeforeMutationParameter.ActualName = OffspringSelectionBeforeMutationParameter.Name;
+      mainLoop.EvaluatedSolutionsParameter.ActualName = "EvaluatedSolutions";
       mainLoop.Successor = null;
 
       foreach (ISelector selector in ApplicationManager.Manager.GetInstances<ISelector>().Where(x => !(x is IMultiObjectiveSelector)).OrderBy(x => x.Name))

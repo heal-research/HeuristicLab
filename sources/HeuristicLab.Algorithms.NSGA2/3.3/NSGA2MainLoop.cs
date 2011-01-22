@@ -75,6 +75,9 @@ namespace HeuristicLab.Algorithms.NSGA2 {
     public ValueLookupParameter<IOperator> AnalyzerParameter {
       get { return (ValueLookupParameter<IOperator>)Parameters["Analyzer"]; }
     }
+    public LookupParameter<IntValue> EvaluatedSolutionsParameter {
+      get { return (LookupParameter<IntValue>)Parameters["EvaluatedSolutions"]; }
+    }
     #endregion
 
     [StorableConstructor]
@@ -100,6 +103,7 @@ namespace HeuristicLab.Algorithms.NSGA2 {
       Parameters.Add(new ValueLookupParameter<IntValue>("MaximumGenerations", "The maximum number of generations which should be processed."));
       Parameters.Add(new ValueLookupParameter<VariableCollection>("Results", "The variable collection where results should be stored."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Analyzer", "The operator used to analyze each generation."));
+      Parameters.Add(new LookupParameter<IntValue>("EvaluatedSolutions", "The number of times solutions have been evaluated."));
       #endregion
 
       #region Create operators
@@ -118,13 +122,13 @@ namespace HeuristicLab.Algorithms.NSGA2 {
       SubScopesRemover subScopesRemover = new SubScopesRemover();
       UniformSubScopesProcessor uniformSubScopesProcessor2 = new UniformSubScopesProcessor();
       Placeholder evaluator = new Placeholder();
+      SubScopesCounter subScopesCounter = new SubScopesCounter();
       MergingReducer mergingReducer = new MergingReducer();
       RankAndCrowdingSorter rankAndCrowdingSorter = new RankAndCrowdingSorter();
       LeftSelector leftSelector = new LeftSelector();
       RightReducer rightReducer = new RightReducer();
       IntCounter intCounter = new IntCounter();
       Comparator comparator = new Comparator();
-      ResultsCollector resultsCollector2 = new ResultsCollector();
       Placeholder analyzer2 = new Placeholder();
       ConditionalBranch conditionalBranch = new ConditionalBranch();
 
@@ -163,6 +167,9 @@ namespace HeuristicLab.Algorithms.NSGA2 {
       evaluator.Name = "Evaluator";
       evaluator.OperatorParameter.ActualName = EvaluatorParameter.Name;
 
+      subScopesCounter.Name = "Increment EvaluatedSolutions";
+      subScopesCounter.ValueParameter.ActualName = EvaluatedSolutionsParameter.Name;
+
       rankAndCrowdingSorter.CrowdingDistanceParameter.ActualName = "CrowdingDistance";
       rankAndCrowdingSorter.RankParameter.ActualName = "Rank";
 
@@ -176,9 +183,6 @@ namespace HeuristicLab.Algorithms.NSGA2 {
       comparator.LeftSideParameter.ActualName = "Generations";
       comparator.ResultParameter.ActualName = "Terminate";
       comparator.RightSideParameter.ActualName = MaximumGenerationsParameter.Name;
-
-      resultsCollector2.CollectedValues.Add(new LookupParameter<IntValue>("Generations"));
-      resultsCollector2.ResultsParameter.ActualName = ResultsParameter.Name;
 
       analyzer2.Name = "Analyzer";
       analyzer2.OperatorParameter.ActualName = "Analyzer";
@@ -209,15 +213,15 @@ namespace HeuristicLab.Algorithms.NSGA2 {
       mutator.Successor = null;
       subScopesRemover.Successor = null;
       uniformSubScopesProcessor2.Operator = evaluator;
-      uniformSubScopesProcessor2.Successor = null;
+      uniformSubScopesProcessor2.Successor = subScopesCounter;
       evaluator.Successor = null;
+      subScopesCounter.Successor = null;
       mergingReducer.Successor = rankAndCrowdingSorter;
       rankAndCrowdingSorter.Successor = leftSelector;
       leftSelector.Successor = rightReducer;
       rightReducer.Successor = intCounter;
       intCounter.Successor = comparator;
-      comparator.Successor = resultsCollector2;
-      resultsCollector2.Successor = analyzer2;
+      comparator.Successor = analyzer2;
       analyzer2.Successor = conditionalBranch;
       conditionalBranch.FalseBranch = selector;
       conditionalBranch.TrueBranch = null;

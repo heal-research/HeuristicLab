@@ -26,6 +26,7 @@ using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
@@ -133,7 +134,13 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       get { return (SolutionsCreator)RandomCreator.Successor; }
     }
     private TabuSearchMainLoop MainLoop {
-      get { return (TabuSearchMainLoop)SolutionsCreator.Successor; }
+      get {
+        return (TabuSearchMainLoop)(
+          (ResultsCollector)(
+            (VariableCreator)SolutionsCreator.Successor
+          ).Successor
+        ).Successor;
+      }
     }
     [Storable]
     private BestAverageWorstQualityAnalyzer moveQualityAnalyzer;
@@ -157,7 +164,9 @@ namespace HeuristicLab.Algorithms.TabuSearch {
 
       RandomCreator randomCreator = new RandomCreator();
       SolutionsCreator solutionsCreator = new SolutionsCreator();
-      TabuSearchMainLoop tsMainLoop = new TabuSearchMainLoop();
+      VariableCreator variableCreator = new VariableCreator();
+      ResultsCollector resultsCollector = new ResultsCollector();
+      TabuSearchMainLoop mainLoop = new TabuSearchMainLoop();
       OperatorGraph.InitialOperator = randomCreator;
 
       randomCreator.RandomParameter.ActualName = "Random";
@@ -168,17 +177,26 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       randomCreator.Successor = solutionsCreator;
 
       solutionsCreator.NumberOfSolutions = new IntValue(1);
-      solutionsCreator.Successor = tsMainLoop;
+      solutionsCreator.Successor = variableCreator;
 
-      tsMainLoop.MoveGeneratorParameter.ActualName = MoveGeneratorParameter.Name;
-      tsMainLoop.MoveMakerParameter.ActualName = MoveMakerParameter.Name;
-      tsMainLoop.MoveEvaluatorParameter.ActualName = MoveEvaluatorParameter.Name;
-      tsMainLoop.TabuCheckerParameter.ActualName = TabuCheckerParameter.Name;
-      tsMainLoop.TabuMakerParameter.ActualName = TabuMakerParameter.Name;
-      tsMainLoop.MaximumIterationsParameter.ActualName = MaximumIterationsParameter.Name;
-      tsMainLoop.RandomParameter.ActualName = RandomCreator.RandomParameter.ActualName;
-      tsMainLoop.ResultsParameter.ActualName = "Results";
-      tsMainLoop.AnalyzerParameter.ActualName = AnalyzerParameter.Name;
+      variableCreator.Name = "Initialize EvaluatedMoves";
+      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("EvaluatedMoves", new IntValue()));
+      variableCreator.Successor = resultsCollector;
+
+      resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Moves", null, "EvaluatedMoves"));
+      resultsCollector.ResultsParameter.ActualName = "Results";
+      resultsCollector.Successor = mainLoop;
+
+      mainLoop.MoveGeneratorParameter.ActualName = MoveGeneratorParameter.Name;
+      mainLoop.MoveMakerParameter.ActualName = MoveMakerParameter.Name;
+      mainLoop.MoveEvaluatorParameter.ActualName = MoveEvaluatorParameter.Name;
+      mainLoop.TabuCheckerParameter.ActualName = TabuCheckerParameter.Name;
+      mainLoop.TabuMakerParameter.ActualName = TabuMakerParameter.Name;
+      mainLoop.MaximumIterationsParameter.ActualName = MaximumIterationsParameter.Name;
+      mainLoop.RandomParameter.ActualName = RandomCreator.RandomParameter.ActualName;
+      mainLoop.ResultsParameter.ActualName = "Results";
+      mainLoop.AnalyzerParameter.ActualName = AnalyzerParameter.Name;
+      mainLoop.EvaluatedMovesParameter.ActualName = "EvaluatedMoves";
 
       moveQualityAnalyzer = new BestAverageWorstQualityAnalyzer();
       tabuNeighborhoodAnalyzer = new TabuNeighborhoodAnalyzer();

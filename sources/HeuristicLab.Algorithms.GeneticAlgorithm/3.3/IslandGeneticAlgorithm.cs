@@ -186,7 +186,15 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       get { return (SolutionsCreator)IslandProcessor.Operator; }
     }
     private IslandGeneticAlgorithmMainLoop MainLoop {
-      get { return (IslandGeneticAlgorithmMainLoop)((UniformSubScopesProcessor)((VariableCreator)IslandProcessor.Successor).Successor).Successor; }
+      get {
+        return (IslandGeneticAlgorithmMainLoop)(
+          (ResultsCollector)(
+            (UniformSubScopesProcessor)(
+              (VariableCreator)IslandProcessor.Successor
+            ).Successor
+          ).Successor
+        ).Successor;
+      }
     }
     [Storable]
     private BestAverageWorstQualityAnalyzer islandQualityAnalyzer;
@@ -237,6 +245,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       VariableCreator variableCreator = new VariableCreator();
       UniformSubScopesProcessor ussp2 = new UniformSubScopesProcessor();
       SubScopesCounter subScopesCounter = new SubScopesCounter();
+      ResultsCollector resultsCollector = new ResultsCollector();
       IslandGeneticAlgorithmMainLoop mainLoop = new IslandGeneticAlgorithmMainLoop();
       OperatorGraph.InitialOperator = randomCreator;
 
@@ -261,11 +270,15 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       variableCreator.Successor = ussp2;
 
       ussp2.Operator = subScopesCounter;
-      ussp2.Successor = mainLoop;
+      ussp2.Successor = resultsCollector;
 
       subScopesCounter.Name = "Count EvaluatedSolutions";
       subScopesCounter.ValueParameter.ActualName = "EvaluatedSolutions";
       subScopesCounter.Successor = null;
+
+      resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Solutions", null, "EvaluatedSolutions"));
+      resultsCollector.ResultsParameter.ActualName = "Results";
+      resultsCollector.Successor = mainLoop;
 
       mainLoop.EmigrantsSelectorParameter.ActualName = EmigrantsSelectorParameter.Name;
       mainLoop.ImmigrationReplacerParameter.ActualName = ImmigrationReplacerParameter.Name;

@@ -89,6 +89,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     public ValueLookupParameter<BoolValue> OffspringSelectionBeforeMutationParameter {
       get { return (ValueLookupParameter<BoolValue>)Parameters["OffspringSelectionBeforeMutation"]; }
     }
+    public LookupParameter<IntValue> EvaluatedSolutionsParameter {
+      get { return (LookupParameter<IntValue>)Parameters["EvaluatedSolutions"]; }
+    }
     #endregion
 
     [StorableConstructor]
@@ -125,6 +128,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Parameters.Add(new ValueLookupParameter<IOperator>("ComparisonFactorModifier", "The operator used to modify the comparison factor."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("MaximumSelectionPressure", "The maximum selection pressure that terminates the algorithm."));
       Parameters.Add(new ValueLookupParameter<BoolValue>("OffspringSelectionBeforeMutation", "True if the offspring selection step should be applied before mutation, false if it should be applied after mutation."));
+      Parameters.Add(new LookupParameter<IntValue>("EvaluatedSolutions", "The number of times solutions have been evaluated."));
       #endregion
 
       #region Create operators
@@ -132,7 +136,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Assigner comparisonFactorInitializer = new Assigner();
       Placeholder analyzer1 = new Placeholder();
       ResultsCollector resultsCollector1 = new ResultsCollector();
-      ResultsCollector resultsCollector2 = new ResultsCollector();
       OffspringSelectionGeneticAlgorithmMainOperator mainOperator = new OffspringSelectionGeneticAlgorithmMainOperator();
       IntCounter generationsCounter = new IntCounter();
       Comparator maxGenerationsComparator = new Comparator();
@@ -140,13 +143,11 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Comparator maxEvaluatedSolutionsComparator = new Comparator();
       Placeholder comparisonFactorModifier = new Placeholder();
       Placeholder analyzer2 = new Placeholder();
-      ResultsCollector resultsCollector3 = new ResultsCollector();
       ConditionalBranch conditionalBranch1 = new ConditionalBranch();
       ConditionalBranch conditionalBranch2 = new ConditionalBranch();
       ConditionalBranch conditionalBranch3 = new ConditionalBranch();
 
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Generations", new IntValue(0))); // Class OffspringSelectionGeneticAlgorithm expects this to be called Generations
-      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("EvaluatedSolutions", new IntValue(0)));
       variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("SelectionPressure", new DoubleValue(0)));
       variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("CurrentSuccessRatio", new DoubleValue(0)));
 
@@ -164,15 +165,11 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       resultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Success Ratio", null, "CurrentSuccessRatio"));
       resultsCollector1.ResultsParameter.ActualName = ResultsParameter.Name;
 
-      resultsCollector2.CopyValue = new BoolValue(true);
-      resultsCollector2.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Solutions", null, "EvaluatedSolutions"));
-      resultsCollector2.ResultsParameter.ActualName = ResultsParameter.Name;
-
       mainOperator.ComparisonFactorParameter.ActualName = ComparisonFactorParameter.Name;
       mainOperator.CrossoverParameter.ActualName = CrossoverParameter.Name;
       mainOperator.CurrentSuccessRatioParameter.ActualName = "CurrentSuccessRatio";
       mainOperator.ElitesParameter.ActualName = ElitesParameter.Name;
-      mainOperator.EvaluatedSolutionsParameter.ActualName = "EvaluatedSolutions";
+      mainOperator.EvaluatedSolutionsParameter.ActualName = EvaluatedSolutionsParameter.Name;
       mainOperator.EvaluatorParameter.ActualName = EvaluatorParameter.Name;
       mainOperator.MaximizationParameter.ActualName = MaximizationParameter.Name;
       mainOperator.MaximumSelectionPressureParameter.ActualName = MaximumSelectionPressureParameter.Name;
@@ -199,7 +196,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       maxSelectionPressureComparator.RightSideParameter.ActualName = MaximumSelectionPressureParameter.Name;
 
       maxEvaluatedSolutionsComparator.Comparison = new Comparison(ComparisonType.GreaterOrEqual);
-      maxEvaluatedSolutionsComparator.LeftSideParameter.ActualName = "EvaluatedSolutions";
+      maxEvaluatedSolutionsComparator.LeftSideParameter.ActualName = EvaluatedSolutionsParameter.Name;
       maxEvaluatedSolutionsComparator.ResultParameter.ActualName = "TerminateEvaluatedSolutions";
       maxEvaluatedSolutionsComparator.RightSideParameter.ActualName = "MaximumEvaluatedSolutions";
 
@@ -208,10 +205,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
 
       analyzer2.Name = "Analyzer (placeholder)";
       analyzer2.OperatorParameter.ActualName = AnalyzerParameter.Name;
-
-      resultsCollector3.CopyValue = new BoolValue(true);
-      resultsCollector3.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Solutions", null, "EvaluatedSolutions"));
-      resultsCollector3.ResultsParameter.ActualName = ResultsParameter.Name;
 
       conditionalBranch1.Name = "MaximumSelectionPressure reached?";
       conditionalBranch1.ConditionParameter.ActualName = "TerminateSelectionPressure";
@@ -228,16 +221,14 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       variableCreator.Successor = comparisonFactorInitializer;
       comparisonFactorInitializer.Successor = analyzer1;
       analyzer1.Successor = resultsCollector1;
-      resultsCollector1.Successor = resultsCollector2;
-      resultsCollector2.Successor = mainOperator;
+      resultsCollector1.Successor = mainOperator;
       mainOperator.Successor = generationsCounter;
       generationsCounter.Successor = maxGenerationsComparator;
       maxGenerationsComparator.Successor = maxSelectionPressureComparator;
       maxSelectionPressureComparator.Successor = maxEvaluatedSolutionsComparator;
       maxEvaluatedSolutionsComparator.Successor = comparisonFactorModifier;
       comparisonFactorModifier.Successor = analyzer2;
-      analyzer2.Successor = resultsCollector3;
-      resultsCollector3.Successor = conditionalBranch1;
+      analyzer2.Successor = conditionalBranch1;
       conditionalBranch1.FalseBranch = conditionalBranch2;
       conditionalBranch1.TrueBranch = null;
       conditionalBranch1.Successor = null;

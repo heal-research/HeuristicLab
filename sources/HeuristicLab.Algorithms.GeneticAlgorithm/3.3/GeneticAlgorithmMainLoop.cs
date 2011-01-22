@@ -140,14 +140,12 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       MergingReducer mergingReducer = new MergingReducer();
       IntCounter intCounter = new IntCounter();
       Comparator comparator = new Comparator();
-      ResultsCollector resultsCollector2 = new ResultsCollector();
       Placeholder analyzer2 = new Placeholder();
       ConditionalBranch conditionalBranch = new ConditionalBranch();
 
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Generations", new IntValue(0))); // Class GeneticAlgorithm expects this to be called Generations
 
       resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Generations"));
-      resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>(EvaluatedSolutionsParameter.Name));
       resultsCollector1.ResultsParameter.ActualName = "Results";
 
       analyzer1.Name = "Analyzer";
@@ -190,10 +188,6 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       comparator.ResultParameter.ActualName = "Terminate";
       comparator.RightSideParameter.ActualName = "MaximumGenerations";
 
-      resultsCollector2.CollectedValues.Add(new LookupParameter<IntValue>("Generations"));
-      resultsCollector2.CollectedValues.Add(new LookupParameter<IntValue>(EvaluatedSolutionsParameter.Name));
-      resultsCollector2.ResultsParameter.ActualName = "Results";
-
       analyzer2.Name = "Analyzer";
       analyzer2.OperatorParameter.ActualName = "Analyzer";
 
@@ -229,8 +223,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       rightReducer.Successor = null;
       mergingReducer.Successor = intCounter;
       intCounter.Successor = comparator;
-      comparator.Successor = resultsCollector2;
-      resultsCollector2.Successor = analyzer2;
+      comparator.Successor = analyzer2;
       analyzer2.Successor = conditionalBranch;
       conditionalBranch.FalseBranch = selector;
       conditionalBranch.TrueBranch = null;

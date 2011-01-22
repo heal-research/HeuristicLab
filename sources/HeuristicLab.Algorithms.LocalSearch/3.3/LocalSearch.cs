@@ -26,6 +26,7 @@ using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
@@ -116,7 +117,13 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       get { return (SolutionsCreator)RandomCreator.Successor; }
     }
     private LocalSearchMainLoop MainLoop {
-      get { return (LocalSearchMainLoop)SolutionsCreator.Successor; }
+      get {
+        return (LocalSearchMainLoop)(
+          (ResultsCollector)(
+            (VariableCreator)SolutionsCreator.Successor
+          ).Successor
+        ).Successor;
+      }
     }
     [Storable]
     private BestAverageWorstQualityAnalyzer moveQualityAnalyzer;
@@ -149,7 +156,9 @@ namespace HeuristicLab.Algorithms.LocalSearch {
 
       RandomCreator randomCreator = new RandomCreator();
       SolutionsCreator solutionsCreator = new SolutionsCreator();
-      LocalSearchMainLoop lsMainLoop = new LocalSearchMainLoop();
+      VariableCreator variableCreator = new VariableCreator();
+      ResultsCollector resultsCollector = new ResultsCollector();
+      LocalSearchMainLoop mainLoop = new LocalSearchMainLoop();
       OperatorGraph.InitialOperator = randomCreator;
 
       randomCreator.RandomParameter.ActualName = "Random";
@@ -160,15 +169,24 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       randomCreator.Successor = solutionsCreator;
 
       solutionsCreator.NumberOfSolutions = new IntValue(1);
-      solutionsCreator.Successor = lsMainLoop;
+      solutionsCreator.Successor = variableCreator;
 
-      lsMainLoop.MoveGeneratorParameter.ActualName = MoveGeneratorParameter.Name;
-      lsMainLoop.MoveMakerParameter.ActualName = MoveMakerParameter.Name;
-      lsMainLoop.MoveEvaluatorParameter.ActualName = MoveEvaluatorParameter.Name;
-      lsMainLoop.MaximumIterationsParameter.ActualName = MaximumIterationsParameter.Name;
-      lsMainLoop.RandomParameter.ActualName = RandomCreator.RandomParameter.ActualName;
-      lsMainLoop.ResultsParameter.ActualName = "Results";
-      lsMainLoop.AnalyzerParameter.ActualName = AnalyzerParameter.Name;
+      variableCreator.Name = "Initialize EvaluatedMoves";
+      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("EvaluatedMoves", new IntValue()));
+      variableCreator.Successor = resultsCollector;
+
+      resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Moves", null, "EvaluatedMoves"));
+      resultsCollector.ResultsParameter.ActualName = "Results";
+      resultsCollector.Successor = mainLoop;
+
+      mainLoop.MoveGeneratorParameter.ActualName = MoveGeneratorParameter.Name;
+      mainLoop.MoveMakerParameter.ActualName = MoveMakerParameter.Name;
+      mainLoop.MoveEvaluatorParameter.ActualName = MoveEvaluatorParameter.Name;
+      mainLoop.MaximumIterationsParameter.ActualName = MaximumIterationsParameter.Name;
+      mainLoop.RandomParameter.ActualName = RandomCreator.RandomParameter.ActualName;
+      mainLoop.ResultsParameter.ActualName = "Results";
+      mainLoop.AnalyzerParameter.ActualName = AnalyzerParameter.Name;
+      mainLoop.EvaluatedMovesParameter.ActualName = "EvaluatedMoves";
 
       moveQualityAnalyzer = new BestAverageWorstQualityAnalyzer();
       ParameterizeAnalyzers();

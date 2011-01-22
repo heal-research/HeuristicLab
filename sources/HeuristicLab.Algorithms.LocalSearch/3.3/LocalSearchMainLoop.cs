@@ -69,12 +69,8 @@ namespace HeuristicLab.Algorithms.LocalSearch {
     public ValueLookupParameter<IOperator> AnalyzerParameter {
       get { return (ValueLookupParameter<IOperator>)Parameters["Analyzer"]; }
     }
-
-    private ScopeParameter CurrentScopeParameter {
-      get { return (ScopeParameter)Parameters["CurrentScope"]; }
-    }
-    public IScope CurrentScope {
-      get { return CurrentScopeParameter.ActualValue; }
+    public LookupParameter<IntValue> EvaluatedMovesParameter {
+      get { return (LookupParameter<IntValue>)Parameters["EvaluatedMoves"]; }
     }
     #endregion
 
@@ -106,7 +102,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       Parameters.Add(new ValueLookupParameter<IOperator>("MoveEvaluator", "The operator that evaluates a move."));
 
       Parameters.Add(new ValueLookupParameter<IOperator>("Analyzer", "The operator used to analyze the solution and moves."));
-      Parameters.Add(new ScopeParameter("CurrentScope", "The current scope which represents a population of solutions on which the TS should be applied."));
+      Parameters.Add(new LookupParameter<IntValue>("EvaluatedMoves", "The number of evaluated moves."));
       #endregion
 
       #region Create operators
@@ -136,7 +132,6 @@ namespace HeuristicLab.Algorithms.LocalSearch {
 
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Iterations", new IntValue(0))); // Class LocalSearch expects this to be called Iterations
       variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("BestQuality", new DoubleValue(0)));
-      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("EvaluatedMoves", new IntValue(0)));
 
       bestQualityInitializer.Name = "Initialize BestQuality";
       bestQualityInitializer.LeftSideParameter.ActualName = "BestQuality";
@@ -148,7 +143,6 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       resultsCollector1.CopyValue = new BoolValue(false);
       resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Iterations"));
       resultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality", null, "BestQuality"));
-      resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Moves", null, "EvaluatedMoves"));
       resultsCollector1.ResultsParameter.ActualName = ResultsParameter.Name;
 
       moveGenerator.Name = "MoveGenerator (placeholder)";
@@ -160,7 +154,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       moveEvaluator.OperatorParameter.ActualName = MoveEvaluatorParameter.Name;
 
       subScopesCounter.Name = "Increment EvaluatedMoves";
-      subScopesCounter.ValueParameter.ActualName = "EvaluatedMoves";
+      subScopesCounter.ValueParameter.ActualName = EvaluatedMovesParameter.Name;
 
       bestSelector.CopySelected = new BoolValue(false);
       bestSelector.MaximizationParameter.ActualName = MaximizationParameter.Name;

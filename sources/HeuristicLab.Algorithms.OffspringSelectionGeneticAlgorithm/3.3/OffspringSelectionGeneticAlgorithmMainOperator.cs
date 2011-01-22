@@ -128,7 +128,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Placeholder crossover1 = new Placeholder();
       UniformSubScopesProcessor uniformSubScopesProcessor2 = new UniformSubScopesProcessor();
       Placeholder evaluator1 = new Placeholder();
-      IntCounter evaluationCounter1 = new IntCounter();
+      SubScopesCounter subScopesCounter1 = new SubScopesCounter();
       WeightedParentsQualityComparator qualityComparer1 = new WeightedParentsQualityComparator();
       SubScopesRemover subScopesRemover1 = new SubScopesRemover();
       UniformSubScopesProcessor uniformSubScopesProcessor3 = new UniformSubScopesProcessor();
@@ -140,7 +140,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       SubScopesProcessor subScopesProcessor2 = new SubScopesProcessor();
       UniformSubScopesProcessor uniformSubScopesProcessor4 = new UniformSubScopesProcessor();
       Placeholder evaluator2 = new Placeholder();
-      IntCounter evaluationCounter2 = new IntCounter();
+      SubScopesCounter subScopesCounter2 = new SubScopesCounter();
       MergingReducer mergingReducer1 = new MergingReducer();
       UniformSubScopesProcessor uniformSubScopesProcessor5 = new UniformSubScopesProcessor();
       Placeholder crossover2 = new Placeholder();
@@ -148,7 +148,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Placeholder mutator2 = new Placeholder();
       UniformSubScopesProcessor uniformSubScopesProcessor6 = new UniformSubScopesProcessor();
       Placeholder evaluator3 = new Placeholder();
-      IntCounter evaluationCounter3 = new IntCounter();
+      SubScopesCounter subScopesCounter3 = new SubScopesCounter();
       WeightedParentsQualityComparator qualityComparer2 = new WeightedParentsQualityComparator();
       SubScopesRemover subScopesRemover2 = new SubScopesRemover();
       OffspringSelector offspringSelector = new OffspringSelector();
@@ -175,9 +175,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       evaluator1.Name = "Evaluator (placeholder)";
       evaluator1.OperatorParameter.ActualName = EvaluatorParameter.Name;
 
-      evaluationCounter1.Name = "EvaluatedSolutions++";
-      evaluationCounter1.Increment = new IntValue(1);
-      evaluationCounter1.ValueParameter.ActualName = EvaluatedSolutionsParameter.Name;
+      subScopesCounter1.Name = "Increment EvaluatedSolutions";
+      subScopesCounter1.ValueParameter.ActualName = EvaluatedSolutionsParameter.Name;
 
       qualityComparer1.ComparisonFactorParameter.ActualName = ComparisonFactorParameter.Name;
       qualityComparer1.LeftSideParameter.ActualName = QualityParameter.Name;
@@ -208,9 +207,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       evaluator2.Name = "Evaluator (placeholder)";
       evaluator2.OperatorParameter.ActualName = EvaluatorParameter.Name;
 
-      evaluationCounter2.Name = "EvaluatedSolutions++";
-      evaluationCounter2.Increment = new IntValue(1);
-      evaluationCounter2.ValueParameter.ActualName = EvaluatedSolutionsParameter.Name;
+      subScopesCounter2.Name = "Increment EvaluatedSolutions";
+      subScopesCounter2.ValueParameter.ActualName = EvaluatedSolutionsParameter.Name;
 
       crossover2.Name = "Crossover (placeholder)";
       crossover2.OperatorParameter.ActualName = CrossoverParameter.Name;
@@ -226,9 +224,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       evaluator3.Name = "Evaluator (placeholder)";
       evaluator3.OperatorParameter.ActualName = EvaluatorParameter.Name;
 
-      evaluationCounter3.Name = "EvaluatedSolutions++";
-      evaluationCounter3.Increment = new IntValue(1);
-      evaluationCounter3.ValueParameter.ActualName = EvaluatedSolutionsParameter.Name;
+      subScopesCounter3.Name = "Increment EvaluatedSolutions";
+      subScopesCounter3.ValueParameter.ActualName = EvaluatedSolutionsParameter.Name;
 
       qualityComparer2.ComparisonFactorParameter.ActualName = ComparisonFactorParameter.Name;
       qualityComparer2.LeftSideParameter.ActualName = QualityParameter.Name;
@@ -271,11 +268,11 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       uniformSubScopesProcessor1.Successor = uniformSubScopesProcessor2;
       crossover1.Successor = null;
       uniformSubScopesProcessor2.Operator = evaluator1;
-      uniformSubScopesProcessor2.Successor = uniformSubScopesProcessor3;
-      evaluator1.Successor = evaluationCounter1;
-      evaluationCounter1.Successor = qualityComparer1;
+      uniformSubScopesProcessor2.Successor = subScopesCounter1;
+      evaluator1.Successor = qualityComparer1;
       qualityComparer1.Successor = subScopesRemover1;
       subScopesRemover1.Successor = null;
+      subScopesCounter1.Successor = uniformSubScopesProcessor3;
       uniformSubScopesProcessor3.Operator = mutationBranch1;
       uniformSubScopesProcessor3.Successor = conditionalSelector;
       mutationBranch1.FirstBranch = mutator1;
@@ -289,9 +286,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       subScopesProcessor2.Operators.Add(uniformSubScopesProcessor4);
       subScopesProcessor2.Successor = mergingReducer1;
       uniformSubScopesProcessor4.Operator = evaluator2;
-      uniformSubScopesProcessor4.Successor = null;
-      evaluator2.Successor = evaluationCounter2;
-      evaluationCounter2.Successor = null;
+      uniformSubScopesProcessor4.Successor = subScopesCounter2;
+      evaluator2.Successor = null;
+      subScopesCounter2.Successor = null;
       mergingReducer1.Successor = null;
       uniformSubScopesProcessor5.Operator = crossover2;
       uniformSubScopesProcessor5.Successor = uniformSubScopesProcessor6;
@@ -301,11 +298,11 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       mutationBranch2.Successor = null;
       mutator2.Successor = null;
       uniformSubScopesProcessor6.Operator = evaluator3;
-      uniformSubScopesProcessor6.Successor = null;
-      evaluator3.Successor = evaluationCounter3;
-      evaluationCounter3.Successor = qualityComparer2;
+      uniformSubScopesProcessor6.Successor = subScopesCounter3;
+      evaluator3.Successor = qualityComparer2;
       qualityComparer2.Successor = subScopesRemover2;
       subScopesRemover2.Successor = null;
+      subScopesCounter3.Successor = null;
       offspringSelector.OffspringCreator = selector;
       offspringSelector.Successor = subScopesProcessor3;
       subScopesProcessor3.Operators.Add(bestSelector);

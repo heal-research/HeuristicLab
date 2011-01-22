@@ -105,6 +105,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     public ValueLookupParameter<BoolValue> OffspringSelectionBeforeMutationParameter {
       get { return (ValueLookupParameter<BoolValue>)Parameters["OffspringSelectionBeforeMutation"]; }
     }
+    public LookupParameter<IntValue> EvaluatedSolutionsParameter {
+      get { return (LookupParameter<IntValue>)Parameters["EvaluatedSolutions"]; }
+    }
     #endregion
 
     [StorableConstructor]
@@ -141,6 +144,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Parameters.Add(new ValueLookupParameter<DoubleValue>("FinalMaximumSelectionPressure", "The maximum selection pressure used when there is only one village left."));
       Parameters.Add(new ValueLookupParameter<IntValue>("MaximumGenerations", "The maximum genreation that terminates the algorithm."));
       Parameters.Add(new ValueLookupParameter<BoolValue>("OffspringSelectionBeforeMutation", "True if the offspring selection step should be applied before mutation, false if it should be applied after mutation."));
+      Parameters.Add(new LookupParameter<IntValue>("EvaluatedSolutions", "The number of times solutions have been evaluated."));
       #endregion
 
       #region Create operators
@@ -154,14 +158,11 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       ResultsCollector villageResultsCollector1 = new ResultsCollector();
       Placeholder analyzer1 = new Placeholder();
       ResultsCollector resultsCollector1 = new ResultsCollector();
-      ResultsCollector resultsCollector2 = new ResultsCollector();
       UniformSubScopesProcessor uniformSubScopesProcessor1 = new UniformSubScopesProcessor();
       ConditionalBranch villageTerminatedBySelectionPressure1 = new ConditionalBranch();
       OffspringSelectionGeneticAlgorithmMainOperator mainOperator = new OffspringSelectionGeneticAlgorithmMainOperator();
       Placeholder villageAnalyzer2 = new Placeholder();
       ResultsCollector villageResultsCollector2 = new ResultsCollector();
-      IntCounter evaluatedSolutionsCounter = new IntCounter();
-      Assigner villageEvaluatedSolutionsAssigner = new Assigner();
       Comparator villageSelectionPressureComparator = new Comparator();
       ConditionalBranch villageTerminatedBySelectionPressure2 = new ConditionalBranch();
       IntCounter terminatedVillagesCounter = new IntCounter();
@@ -186,7 +187,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Comparator maximumGenerationsComparator = new Comparator();
       Comparator maximumEvaluatedSolutionsComparator = new Comparator();
       Placeholder analyzer2 = new Placeholder();
-      ResultsCollector resultsCollector3 = new ResultsCollector();
       ConditionalBranch terminationCondition = new ConditionalBranch();
       ConditionalBranch maximumGenerationsTerminationCondition = new ConditionalBranch();
       ConditionalBranch maximumEvaluatedSolutionsTerminationCondition = new ConditionalBranch();
@@ -194,7 +194,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Reunifications", new IntValue(0)));
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Generations", new IntValue(0))); // Class SASEGASA expects this to be called Generations
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("GenerationsSinceLastReunification", new IntValue(0)));
-      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("EvaluatedSolutions", new IntValue(0)));
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("TerminatedVillages", new IntValue(0)));
 
       villageCountAssigner.LeftSideParameter.ActualName = "VillageCount";
@@ -207,7 +206,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       comparisonFactorInitializer.RightSideParameter.ActualName = ComparisonFactorStartParameter.Name;
 
       villageVariableCreator.CollectedValues.Add(new ValueParameter<ResultCollection>("Results", new ResultCollection()));
-      villageVariableCreator.CollectedValues.Add(new ValueParameter<IntValue>("VillageEvaluatedSolutions", new IntValue(0)));
       villageVariableCreator.CollectedValues.Add(new ValueParameter<BoolValue>("TerminateSelectionPressure", new BoolValue(false)));
       villageVariableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("SelectionPressure", new DoubleValue(0)));
       villageVariableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("CurrentSuccessRatio", new DoubleValue(0)));
@@ -230,10 +228,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       resultsCollector1.CollectedValues.Add(new ScopeTreeLookupParameter<ResultCollection>("VillageResults", "Result set for each village", "Results"));
       resultsCollector1.ResultsParameter.ActualName = ResultsParameter.Name;
 
-      resultsCollector2.CopyValue = new BoolValue(true);
-      resultsCollector2.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Solutions", null, "EvaluatedSolutions"));
-      resultsCollector2.ResultsParameter.ActualName = ResultsParameter.Name;
-
       villageTerminatedBySelectionPressure1.Name = "Village Terminated ?";
       villageTerminatedBySelectionPressure1.ConditionParameter.ActualName = "TerminateSelectionPressure";
 
@@ -241,7 +235,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       mainOperator.CrossoverParameter.ActualName = CrossoverParameter.Name;
       mainOperator.CurrentSuccessRatioParameter.ActualName = "CurrentSuccessRatio";
       mainOperator.ElitesParameter.ActualName = ElitesParameter.Name;
-      mainOperator.EvaluatedSolutionsParameter.ActualName = "VillageEvaluatedSolutions";
+      mainOperator.EvaluatedSolutionsParameter.ActualName = EvaluatedSolutionsParameter.Name;
       mainOperator.EvaluatorParameter.ActualName = EvaluatorParameter.Name;
       mainOperator.MaximizationParameter.ActualName = MaximizationParameter.Name;
       mainOperator.MaximumSelectionPressureParameter.ActualName = "CurrentMaximumSelectionPressure";
@@ -260,15 +254,6 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       villageResultsCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Success Ratio", null, "CurrentSuccessRatio"));
       villageResultsCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Selection Pressure", null, "SelectionPressure"));
       villageResultsCollector2.ResultsParameter.ActualName = "Results";
-
-      evaluatedSolutionsCounter.Name = "Update EvaluatedSolutions";
-      evaluatedSolutionsCounter.ValueParameter.ActualName = "EvaluatedSolutions";
-      evaluatedSolutionsCounter.Increment = null;
-      evaluatedSolutionsCounter.IncrementParameter.ActualName = "VillageEvaluatedSolutions";
-
-      villageEvaluatedSolutionsAssigner.Name = "Reset EvaluatedSolutions";
-      villageEvaluatedSolutionsAssigner.LeftSideParameter.ActualName = "VillageEvaluatedSolutions";
-      villageEvaluatedSolutionsAssigner.RightSideParameter.Value = new IntValue(0);
 
       villageSelectionPressureComparator.Name = "SelectionPressure >= MaximumSelectionPressure ?";
       villageSelectionPressureComparator.LeftSideParameter.ActualName = "SelectionPressure";
@@ -359,16 +344,12 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
 
       maximumEvaluatedSolutionsComparator.Name = "EvaluatedSolutions >= MaximumEvaluatedSolutions";
       maximumEvaluatedSolutionsComparator.Comparison = new Comparison(ComparisonType.GreaterOrEqual);
-      maximumEvaluatedSolutionsComparator.LeftSideParameter.ActualName = "EvaluatedSolutions";
+      maximumEvaluatedSolutionsComparator.LeftSideParameter.ActualName = EvaluatedSolutionsParameter.Name;
       maximumEvaluatedSolutionsComparator.ResultParameter.ActualName = "TerminateEvaluatedSolutions";
       maximumEvaluatedSolutionsComparator.RightSideParameter.ActualName = "MaximumEvaluatedSolutions";
 
       analyzer2.Name = "Analyzer (placeholder)";
       analyzer2.OperatorParameter.ActualName = AnalyzerParameter.Name;
-
-      resultsCollector3.CopyValue = new BoolValue(true);
-      resultsCollector3.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Solutions", null, "EvaluatedSolutions"));
-      resultsCollector3.ResultsParameter.ActualName = ResultsParameter.Name;
 
       terminationCondition.ConditionParameter.ActualName = "TerminateSASEGASA";
       maximumGenerationsTerminationCondition.ConditionParameter.ActualName = "TerminateMaximumGenerations";
@@ -386,8 +367,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       villageVariableCreator.Successor = villageAnalyzer1;
       villageAnalyzer1.Successor = villageResultsCollector1;
       analyzer1.Successor = resultsCollector1;
-      resultsCollector1.Successor = resultsCollector2;
-      resultsCollector2.Successor = uniformSubScopesProcessor1;
+      resultsCollector1.Successor = uniformSubScopesProcessor1;
       uniformSubScopesProcessor1.Operator = villageTerminatedBySelectionPressure1;
       uniformSubScopesProcessor1.Successor = generationsCounter;
       villageTerminatedBySelectionPressure1.TrueBranch = null;
@@ -395,9 +375,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       villageTerminatedBySelectionPressure1.Successor = null;
       mainOperator.Successor = villageAnalyzer2;
       villageAnalyzer2.Successor = villageResultsCollector2;
-      villageResultsCollector2.Successor = evaluatedSolutionsCounter;
-      evaluatedSolutionsCounter.Successor = villageEvaluatedSolutionsAssigner;
-      villageEvaluatedSolutionsAssigner.Successor = villageSelectionPressureComparator;
+      villageResultsCollector2.Successor = villageSelectionPressureComparator;
       villageSelectionPressureComparator.Successor = villageTerminatedBySelectionPressure2;
       villageTerminatedBySelectionPressure2.TrueBranch = terminatedVillagesCounter;
       villageTerminatedBySelectionPressure2.FalseBranch = null;
@@ -432,8 +410,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       finalMaxSelPressAssigner.Successor = null;
       maximumGenerationsComparator.Successor = maximumEvaluatedSolutionsComparator;
       maximumEvaluatedSolutionsComparator.Successor = analyzer2;
-      analyzer2.Successor = resultsCollector3;
-      resultsCollector3.Successor = terminationCondition;
+      analyzer2.Successor = terminationCondition;
       terminationCondition.TrueBranch = null;
       terminationCondition.FalseBranch = maximumGenerationsTerminationCondition;
       terminationCondition.Successor = null;

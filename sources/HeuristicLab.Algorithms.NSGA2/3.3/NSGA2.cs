@@ -25,6 +25,7 @@ using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
@@ -138,10 +139,14 @@ namespace HeuristicLab.Algorithms.NSGA2 {
       get { return (SolutionsCreator)RandomCreator.Successor; }
     }
     private RankAndCrowdingSorter RankAndCrowdingSorter {
-      get { return (RankAndCrowdingSorter)SolutionsCreator.Successor; }
+      get { return (RankAndCrowdingSorter)((SubScopesCounter)SolutionsCreator.Successor).Successor; }
     }
     private NSGA2MainLoop MainLoop {
-      get { return (NSGA2MainLoop)RankAndCrowdingSorter.Successor; }
+      get {
+        return (NSGA2MainLoop)(
+          (ResultsCollector)RankAndCrowdingSorter.Successor
+        ).Successor;
+      }
     }
     #endregion
 
@@ -150,7 +155,8 @@ namespace HeuristicLab.Algorithms.NSGA2 {
 
     [StorableConstructor]
     protected NSGA2(bool deserializing) : base(deserializing) { }
-    protected NSGA2(NSGA2 original, Cloner cloner) : base (original, cloner) {
+    protected NSGA2(NSGA2 original, Cloner cloner)
+      : base(original, cloner) {
       paretoFrontAnalyzer = (RankBasedParetoFrontAnalyzer)cloner.Clone(original.paretoFrontAnalyzer);
       AttachEventHandlers();
     }
@@ -169,9 +175,11 @@ namespace HeuristicLab.Algorithms.NSGA2 {
 
       RandomCreator randomCreator = new RandomCreator();
       SolutionsCreator solutionsCreator = new SolutionsCreator();
+      SubScopesCounter subScopesCounter = new SubScopesCounter();
       RankAndCrowdingSorter rankAndCrowdingSorter = new RankAndCrowdingSorter();
+      ResultsCollector resultsCollector = new ResultsCollector();
       NSGA2MainLoop mainLoop = new NSGA2MainLoop();
-      
+
       OperatorGraph.InitialOperator = randomCreator;
 
       randomCreator.RandomParameter.ActualName = "Random";
@@ -182,11 +190,19 @@ namespace HeuristicLab.Algorithms.NSGA2 {
       randomCreator.Successor = solutionsCreator;
 
       solutionsCreator.NumberOfSolutionsParameter.ActualName = PopulationSizeParameter.Name;
-      solutionsCreator.Successor = rankAndCrowdingSorter;
+      solutionsCreator.Successor = subScopesCounter;
+
+      subScopesCounter.Name = "Initialize EvaluatedSolutions";
+      subScopesCounter.ValueParameter.ActualName = "EvaluatedSolutions";
+      subScopesCounter.Successor = rankAndCrowdingSorter;
 
       rankAndCrowdingSorter.CrowdingDistanceParameter.ActualName = "CrowdingDistance";
       rankAndCrowdingSorter.RankParameter.ActualName = "Rank";
-      rankAndCrowdingSorter.Successor = mainLoop;
+      rankAndCrowdingSorter.Successor = resultsCollector;
+
+      resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Solutions", null, "EvaluatedSolutions"));
+      resultsCollector.ResultsParameter.ActualName = "Results";
+      resultsCollector.Successor = mainLoop;
 
       mainLoop.PopulationSizeParameter.ActualName = PopulationSizeParameter.Name;
       mainLoop.SelectorParameter.ActualName = SelectorParameter.Name;
@@ -198,6 +214,7 @@ namespace HeuristicLab.Algorithms.NSGA2 {
       mainLoop.RandomParameter.ActualName = RandomCreator.RandomParameter.ActualName;
       mainLoop.AnalyzerParameter.ActualName = AnalyzerParameter.Name;
       mainLoop.ResultsParameter.ActualName = "Results";
+      mainLoop.EvaluatedSolutionsParameter.ActualName = "EvaluatedSolutions";
 
       foreach (ISelector selector in ApplicationManager.Manager.GetInstances<ISelector>().Where(x => !(x is ISingleObjectiveSelector)).OrderBy(x => x.Name))
         SelectorParameter.ValidValues.Add(selector);
@@ -217,7 +234,7 @@ namespace HeuristicLab.Algorithms.NSGA2 {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new NSGA2(this, cloner);      
+      return new NSGA2(this, cloner);
     }
 
     #region Events
