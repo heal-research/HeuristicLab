@@ -51,7 +51,12 @@ namespace HeuristicLab.Optimization {
     }
 
     private IValueParameter AnalyzerParameter {
-      get { return (IValueParameter)Parameters["Analyzer"]; }
+      get {
+        IParameter param;
+        if (Parameters.TryGetValue("Analyzer", out param))
+          return param as IValueParameter;
+        return null;
+      }
     }
     private IMultiAnalyzer Analyzer {
       get {
