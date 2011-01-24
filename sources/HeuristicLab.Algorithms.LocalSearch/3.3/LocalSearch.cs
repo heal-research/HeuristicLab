@@ -117,13 +117,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       get { return (SolutionsCreator)RandomCreator.Successor; }
     }
     private LocalSearchMainLoop MainLoop {
-      get {
-        return (LocalSearchMainLoop)(
-          (ResultsCollector)(
-            (VariableCreator)SolutionsCreator.Successor
-          ).Successor
-        ).Successor;
-      }
+      get { return FindMainLoop(SolutionsCreator.Successor); }
     }
     [Storable]
     private BestAverageWorstQualityAnalyzer moveQualityAnalyzer;
@@ -394,6 +388,13 @@ namespace HeuristicLab.Algorithms.LocalSearch {
           op.MaximumIterationsParameter.ActualName = MaximumIterationsParameter.Name;
         }
       }
+    }
+    private LocalSearchMainLoop FindMainLoop(IOperator start) {
+      IOperator mainLoop = start;
+      while (mainLoop != null && !(mainLoop is LocalSearchMainLoop))
+        mainLoop = ((SingleSuccessorOperator)mainLoop).Successor;
+      if (mainLoop == null) return null;
+      else return (LocalSearchMainLoop)mainLoop;
     }
     #endregion
   }

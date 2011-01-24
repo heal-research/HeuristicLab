@@ -214,15 +214,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       get { return (SolutionsCreator)VillageProcessor.Operator; }
     }
     private SASEGASAMainLoop MainLoop {
-      get {
-        return (SASEGASAMainLoop)(
-          (ResultsCollector)(
-            (UniformSubScopesProcessor)(
-              (VariableCreator)VillageProcessor.Successor
-            ).Successor
-          ).Successor
-        ).Successor;
-      }
+      get { return FindMainLoop(VillageProcessor.Successor); }
     }
     [Storable]
     private BestAverageWorstQualityAnalyzer villageQualityAnalyzer;
@@ -561,6 +553,13 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       }
       Analyzer.Operators.Add(qualityAnalyzer);
       Analyzer.Operators.Add(selectionPressureAnalyzer);
+    }
+    private SASEGASAMainLoop FindMainLoop(IOperator start) {
+      IOperator mainLoop = start;
+      while (mainLoop != null && !(mainLoop is SASEGASAMainLoop))
+        mainLoop = ((SingleSuccessorOperator)mainLoop).Successor;
+      if (mainLoop == null) return null;
+      else return (SASEGASAMainLoop)mainLoop;
     }
     #endregion
   }

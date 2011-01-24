@@ -134,13 +134,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       get { return (SolutionsCreator)RandomCreator.Successor; }
     }
     private TabuSearchMainLoop MainLoop {
-      get {
-        return (TabuSearchMainLoop)(
-          (ResultsCollector)(
-            (VariableCreator)SolutionsCreator.Successor
-          ).Successor
-        ).Successor;
-      }
+      get { return FindMainLoop(SolutionsCreator.Successor); }
     }
     [Storable]
     private BestAverageWorstQualityAnalyzer moveQualityAnalyzer;
@@ -490,6 +484,13 @@ namespace HeuristicLab.Algorithms.TabuSearch {
           op.MaximumIterationsParameter.ActualName = MaximumIterationsParameter.Name;
         }
       }
+    }
+    private TabuSearchMainLoop FindMainLoop(IOperator start) {
+      IOperator mainLoop = start;
+      while (mainLoop != null && !(mainLoop is TabuSearchMainLoop))
+        mainLoop = ((SingleSuccessorOperator)mainLoop).Successor;
+      if (mainLoop == null) return null;
+      else return (TabuSearchMainLoop)mainLoop;
     }
     #endregion
   }

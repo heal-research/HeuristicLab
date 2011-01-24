@@ -135,13 +135,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       get { return (SolutionsCreator)RandomCreator.Successor; }
     }
     private SimulatedAnnealingMainLoop MainLoop {
-      get {
-        return (SimulatedAnnealingMainLoop)(
-          (ResultsCollector)(
-            (VariableCreator)SolutionsCreator.Successor
-          ).Successor
-        ).Successor;
-      }
+      get { return FindMainLoop(SolutionsCreator.Successor); }
     }
     [Storable]
     private QualityAnalyzer qualityAnalyzer;
@@ -430,6 +424,13 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
         }
       }
       Analyzer.Operators.Add(qualityAnalyzer);
+    }
+    private SimulatedAnnealingMainLoop FindMainLoop(IOperator start) {
+      IOperator mainLoop = start;
+      while (mainLoop != null && !(mainLoop is SimulatedAnnealingMainLoop))
+        mainLoop = ((SingleSuccessorOperator)mainLoop).Successor;
+      if (mainLoop == null) return null;
+      else return (SimulatedAnnealingMainLoop)mainLoop;
     }
     #endregion
   }

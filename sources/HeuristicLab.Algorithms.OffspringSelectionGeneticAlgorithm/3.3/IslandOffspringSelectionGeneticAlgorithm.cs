@@ -238,15 +238,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       get { return (SolutionsCreator)IslandProcessor.Operator; }
     }
     private IslandOffspringSelectionGeneticAlgorithmMainLoop MainLoop {
-      get {
-        return (IslandOffspringSelectionGeneticAlgorithmMainLoop)(
-          (ResultsCollector)(
-            (UniformSubScopesProcessor)(
-              (VariableCreator)IslandProcessor.Successor
-            ).Successor
-          ).Successor
-        ).Successor;
-      }
+      get { return FindMainLoop(IslandProcessor.Successor); }
     }
     [Storable]
     private BestAverageWorstQualityAnalyzer islandQualityAnalyzer;
@@ -623,6 +615,13 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       }
       Analyzer.Operators.Add(qualityAnalyzer);
       Analyzer.Operators.Add(selectionPressureAnalyzer);
+    }
+    private IslandOffspringSelectionGeneticAlgorithmMainLoop FindMainLoop(IOperator start) {
+      IOperator mainLoop = start;
+      while (mainLoop != null && !(mainLoop is IslandOffspringSelectionGeneticAlgorithmMainLoop))
+        mainLoop = ((SingleSuccessorOperator)mainLoop).Successor;
+      if (mainLoop == null) return null;
+      else return (IslandOffspringSelectionGeneticAlgorithmMainLoop)mainLoop;
     }
     #endregion
   }

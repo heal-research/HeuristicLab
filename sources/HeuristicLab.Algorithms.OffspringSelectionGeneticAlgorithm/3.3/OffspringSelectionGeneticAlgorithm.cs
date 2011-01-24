@@ -190,13 +190,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       get { return (SolutionsCreator)RandomCreator.Successor; }
     }
     private OffspringSelectionGeneticAlgorithmMainLoop MainLoop {
-      get {
-        return (OffspringSelectionGeneticAlgorithmMainLoop)(
-          (ResultsCollector)(
-            (SubScopesCounter)SolutionsCreator.Successor
-          ).Successor
-        ).Successor;
-      }
+      get { return FindMainLoop(SolutionsCreator.Successor); }
     }
     [Storable]
     private BestAverageWorstQualityAnalyzer qualityAnalyzer;
@@ -467,6 +461,13 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       }
       Analyzer.Operators.Add(qualityAnalyzer);
       Analyzer.Operators.Add(selectionPressureAnalyzer);
+    }
+    private OffspringSelectionGeneticAlgorithmMainLoop FindMainLoop(IOperator start) {
+      IOperator mainLoop = start;
+      while (mainLoop != null && !(mainLoop is OffspringSelectionGeneticAlgorithmMainLoop))
+        mainLoop = ((SingleSuccessorOperator)mainLoop).Successor;
+      if (mainLoop == null) return null;
+      else return (OffspringSelectionGeneticAlgorithmMainLoop)mainLoop;
     }
     #endregion
   }

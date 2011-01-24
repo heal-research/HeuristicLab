@@ -134,13 +134,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       get { return (SolutionsCreator)RandomCreator.Successor; }
     }
     private GeneticAlgorithmMainLoop GeneticAlgorithmMainLoop {
-      get {
-        return (GeneticAlgorithmMainLoop)(
-          (ResultsCollector)(
-            (SubScopesCounter)SolutionsCreator.Successor
-          ).Successor
-        ).Successor;
-      }
+      get { return FindMainLoop(SolutionsCreator.Successor); }
     }
     [Storable]
     private BestAverageWorstQualityAnalyzer qualityAnalyzer;
@@ -373,6 +367,13 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
         }
       }
       Analyzer.Operators.Add(qualityAnalyzer);
+    }
+    private GeneticAlgorithmMainLoop FindMainLoop(IOperator start) {
+      IOperator mainLoop = start;
+      while (mainLoop != null && !(mainLoop is GeneticAlgorithmMainLoop))
+        mainLoop = ((SingleSuccessorOperator)mainLoop).Successor;
+      if (mainLoop == null) return null;
+      else return (GeneticAlgorithmMainLoop)mainLoop;
     }
     #endregion
   }

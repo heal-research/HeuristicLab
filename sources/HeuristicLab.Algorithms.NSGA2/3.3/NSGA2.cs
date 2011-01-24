@@ -41,6 +41,8 @@ namespace HeuristicLab.Algorithms.NSGA2 {
   [Creatable("Algorithms")]
   [StorableClass]
   public class NSGA2 : EngineAlgorithm, IStorableContent {
+    public string Filename { get; set; }
+
     #region Problem Properties
     public override Type ProblemType {
       get { return typeof(IMultiObjectiveProblem); }
@@ -142,11 +144,7 @@ namespace HeuristicLab.Algorithms.NSGA2 {
       get { return (RankAndCrowdingSorter)((SubScopesCounter)SolutionsCreator.Successor).Successor; }
     }
     private NSGA2MainLoop MainLoop {
-      get {
-        return (NSGA2MainLoop)(
-          (ResultsCollector)RankAndCrowdingSorter.Successor
-        ).Successor;
-      }
+      get { return FindMainLoop(RankAndCrowdingSorter.Successor); }
     }
     #endregion
 
@@ -391,11 +389,13 @@ namespace HeuristicLab.Algorithms.NSGA2 {
       }
       Analyzer.Operators.Add(paretoFrontAnalyzer);
     }
-    #endregion
-
-    public string Filename {
-      get;
-      set;
+    private NSGA2MainLoop FindMainLoop(IOperator start) {
+      IOperator mainLoop = start;
+      while (mainLoop != null && !(mainLoop is NSGA2MainLoop))
+        mainLoop = ((SingleSuccessorOperator)mainLoop).Successor;
+      if (mainLoop == null) return null;
+      else return (NSGA2MainLoop)mainLoop;
     }
+    #endregion
   }
 }
