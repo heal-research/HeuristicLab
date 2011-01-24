@@ -86,6 +86,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
 
     #endregion
     #region properties
+    public abstract bool Maximization { get; }
+
     public IRandom Random {
       get { return RandomParameter.ActualValue; }
     }

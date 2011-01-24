@@ -32,6 +32,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [Item("SymbolicRegressionPearsonsRSquaredEvaluator", "Calculates the pearson r² correlation coefficient of a symbolic regression solution.")]
   [StorableClass]
   public class SymbolicRegressionPearsonsRSquaredEvaluator : SingleObjectiveSymbolicRegressionEvaluator {
+
+    public override bool Maximization {
+      get { return true; }
+    }
+    
     [StorableConstructor]
     protected SymbolicRegressionPearsonsRSquaredEvaluator(bool deserializing) : base(deserializing) { }
     protected SymbolicRegressionPearsonsRSquaredEvaluator(SymbolicRegressionPearsonsRSquaredEvaluator original, Cloner cloner)

@@ -28,6 +28,8 @@ using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   public interface ISymbolicRegressionEvaluator : ISingleObjectiveEvaluator {
+    bool Maximization { get; }
+
     ILookupParameter<ISymbolicExpressionTreeInterpreter> SymbolicExpressionTreeInterpreterParameter { get; }
     ILookupParameter<SymbolicExpressionTree> SymbolicExpressionTreeParameter { get; }
     ILookupParameter<DataAnalysisProblemData> RegressionProblemDataParameter { get; }

@@ -123,6 +123,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       base.OnEvaluatorChanged(e);
       ParameterizeEvaluator();
       ParameterizeAnalyzers();
+      ParameterizeProblem();
       RaiseEvaluatorChanged(e);
     }
     #endregion
@@ -189,6 +190,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
           bestValidationSolutionAnalyzer.BestKnownQualityParameter.ActualName = BestKnownQualityParameter.Name;
           bestValidationSolutionAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
         }
+      }
+    }
+
+    private void ParameterizeProblem() {
+      if (MaximizationParameter.Value != null) {
+        MaximizationParameter.Value.Value = Evaluator.Maximization;
+      } else {
+        MaximizationParameter.Value = new BoolValue(Evaluator.Maximization);
       }
     }
     #endregion

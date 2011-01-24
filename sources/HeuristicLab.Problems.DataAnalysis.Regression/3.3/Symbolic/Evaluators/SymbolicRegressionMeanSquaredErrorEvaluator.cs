@@ -33,6 +33,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [StorableClass]
   public class SymbolicRegressionMeanSquaredErrorEvaluator : SingleObjectiveSymbolicRegressionEvaluator {
 
+    public override bool Maximization {
+      get { return false; }
+    }
+
     [StorableConstructor]
     protected SymbolicRegressionMeanSquaredErrorEvaluator(bool deserializing) : base(deserializing) { }
     protected SymbolicRegressionMeanSquaredErrorEvaluator(SymbolicRegressionMeanSquaredErrorEvaluator original, Cloner cloner)

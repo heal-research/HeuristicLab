@@ -198,6 +198,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
     protected override void OnEvaluatorChanged() {
       ParameterizeEvaluator();
       ParameterizeAnalyzers();
+      ParameterizeProblem();
       base.OnEvaluatorChanged();
     }
 
@@ -337,6 +338,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
         if (varFreqAnalyzer != null) {
           varFreqAnalyzer.ProblemDataParameter.ActualName = ClassificationProblemDataParameter.Name;
         }
+      }
+    }
+
+    private void ParameterizeProblem() {
+      if (Maximization != null) {
+        Maximization.Value = Evaluator.Maximization;
+      } else {
+        Maximization = new BoolValue(Evaluator.Maximization);
       }
     }
     #endregion
