@@ -52,8 +52,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
       int generations = 5;
       var trees = new List<SymbolicExpressionTree>();
       var grammar = Grammars.CreateArithmeticAndAdfGrammar();
-      var random = new MersenneTwister();
-      int failedEvents = 0;
+      var random = new MersenneTwister(31415);
       List<SymbolicExpressionTree> crossoverTrees;
       double msPerCrossoverEvent;
 
@@ -69,7 +68,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
           var par1 = (SymbolicExpressionTree)trees.SelectRandom(random).Clone();
           bool success;
           newPopulation.Add(SubtreeCrossover.Cross(random, par0, par1, 0.9, 100, 10, out success));
-          if (!success) failedEvents++;
+          Assert.IsTrue(success);
         }
         crossoverTrees = newPopulation;
       }
@@ -79,8 +78,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
 
       msPerCrossoverEvent = stopwatch.ElapsedMilliseconds / (double)POPULATION_SIZE / (double)generations;
 
-      Assert.Inconclusive("SubtreeCrossover: " + Environment.NewLine +
-        "Failed events: " + failedEvents / (double)POPULATION_SIZE * 100 + " %" + Environment.NewLine +
+      Console.WriteLine("SubtreeCrossover: " + Environment.NewLine +
         msPerCrossoverEvent + " ms per crossover event (~" + Math.Round(1000.0 / (msPerCrossoverEvent)) + "crossovers / s)" + Environment.NewLine +
         Util.GetSizeDistributionString(trees, 105, 5) + Environment.NewLine +
         Util.GetFunctionDistributionString(trees) + Environment.NewLine +

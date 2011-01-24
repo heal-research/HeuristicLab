@@ -59,7 +59,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
       foreach (var tree in randomTrees) {
         Util.IsValid(tree);
       }
-      Assert.Inconclusive("ProbabilisticTreeCreator: " + Environment.NewLine +
+      Console.WriteLine("ProbabilisticTreeCreator: " + Environment.NewLine +
         Util.GetSizeDistributionString(randomTrees, 105, 5) + Environment.NewLine +
         Util.GetFunctionDistributionString(randomTrees) + Environment.NewLine +
         Util.GetNumberOfSubTreesDistributionString(randomTrees) + Environment.NewLine +
@@ -78,7 +78,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
         Util.IsValid(tree);
         randomTrees.Add(tree);
       }
-      Assert.Inconclusive("ProbabilisticTreeCreator: " + Environment.NewLine +
+      Console.WriteLine("ProbabilisticTreeCreator: " + Environment.NewLine +
         Util.GetSizeDistributionString(randomTrees, 105, 5) + Environment.NewLine +
         Util.GetFunctionDistributionString(randomTrees) + Environment.NewLine +
         Util.GetNumberOfSubTreesDistributionString(randomTrees) + Environment.NewLine +

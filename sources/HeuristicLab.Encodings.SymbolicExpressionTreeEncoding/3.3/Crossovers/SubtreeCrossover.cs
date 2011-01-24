@@ -73,8 +73,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Crossovers {
 
       List<SymbolicExpressionTreeNode> allowedBranches = new List<SymbolicExpressionTreeNode>();
       parent1.Root.ForEachNodePostfix((n) => {
-        if (n.GetSize() < maxInsertedBranchSize &&
-          n.GetHeight() < maxInsertedBranchHeight &&
+        if (n.GetSize() <= maxInsertedBranchSize &&
+          n.GetHeight() <= maxInsertedBranchHeight &&
           IsMatchingPointType(crossoverPoint0, replacedSubtreeIndex, n))
           allowedBranches.Add(n);
       });
@@ -116,19 +116,19 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Crossovers {
       List<CrossoverPoint> internalCrossoverPoints = new List<CrossoverPoint>();
       List<CrossoverPoint> leafCrossoverPoints = new List<CrossoverPoint>();
       parent0.Root.ForEachNodePostfix((n) => {
-        if (n.SubTrees.Count > 0 &&
-          n.GetSize() < maxBranchSize &&
-          n.GetHeight() < maxBranchHeight &&
-          n != parent0.Root
-          ) {
+        if (n.SubTrees.Count > 0 && n != parent0.Root) {
           foreach (var child in n.SubTrees) {
-            if (child.SubTrees.Count > 0)
-              internalCrossoverPoints.Add(new CrossoverPoint(n, child));
-            else
-              leafCrossoverPoints.Add(new CrossoverPoint(n, child));
+            if (child.GetSize() <= maxBranchSize &&
+                child.GetHeight() <= maxBranchHeight) {
+              if (child.SubTrees.Count > 0)
+                internalCrossoverPoints.Add(new CrossoverPoint(n, child));
+              else
+                leafCrossoverPoints.Add(new CrossoverPoint(n, child));
+            }
           }
         }
       });
+
       if (random.NextDouble() < internalNodeProbability) {
         // select from internal node if possible
         if (internalCrossoverPoints.Count > 0) {

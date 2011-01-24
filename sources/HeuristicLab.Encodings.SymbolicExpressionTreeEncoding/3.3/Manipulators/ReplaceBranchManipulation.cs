@@ -60,7 +60,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators {
                            where manipulationPoint.Node.Grammar.GetMinExpressionDepth(symbol) <= maxHeight
                            where manipulationPoint.Node.Grammar.GetMinExpressionLength(symbol) <= maxSize
                            select symbol;
-      if (allowedSymbols.Count() <= 1) return;
+      if (allowedSymbols.Count() == 0) return;
 
       var seedSymbol = SelectRandomSymbol(random, allowedSymbols);  // replace the old node with the new node
       var seedNode = seedSymbol.CreateTreeNode();

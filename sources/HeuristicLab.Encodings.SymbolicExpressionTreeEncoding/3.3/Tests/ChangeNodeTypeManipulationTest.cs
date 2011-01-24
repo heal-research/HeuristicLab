@@ -52,19 +52,16 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
     public void ChangeNodeTypeManipulationDistributionsTest() {
       var trees = new List<SymbolicExpressionTree>();
       var grammar = Grammars.CreateArithmeticAndAdfGrammar();
-      var random = new MersenneTwister();
-      int failedEvents = 0;
+      var random = new MersenneTwister(31415);
       for (int i = 0; i < POPULATION_SIZE; i++) {
         var tree = ProbabilisticTreeCreator.Create(random, grammar, MAX_TREE_SIZE, MAX_TREE_HEIGHT, 3, 3);
         bool success;
         ChangeNodeTypeManipulation.ChangeNodeType(random, tree, grammar, MAX_TREE_SIZE, MAX_TREE_HEIGHT, out success);
-        if (!success)
-          failedEvents++;
+        Assert.IsTrue(success);
         Util.IsValid(tree);
         trees.Add(tree);
       }
-      Assert.Inconclusive("ChangeNodeTypeManipulation: " + Environment.NewLine +
-        "Failed events: " + failedEvents / (double)POPULATION_SIZE * 100 + " %" + Environment.NewLine +
+      Console.WriteLine("ChangeNodeTypeManipulation: " + Environment.NewLine +
         Util.GetSizeDistributionString(trees, 105, 5) + Environment.NewLine +
         Util.GetFunctionDistributionString(trees) + Environment.NewLine +
         Util.GetNumberOfSubTreesDistributionString(trees) + Environment.NewLine +

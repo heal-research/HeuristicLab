@@ -53,21 +53,26 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
       var trees = new List<SymbolicExpressionTree>();
       var grammar = Grammars.CreateArithmeticAndAdfGrammar();
       var random = new MersenneTwister(31415);
-      int failedEvents = 0;
       for (int i = 0; i < POPULATION_SIZE; i++) {
-        var tree = ProbabilisticTreeCreator.Create(random, grammar, MAX_TREE_SIZE, MAX_TREE_HEIGHT, 3, 3);
-        if (!SubroutineDeleter.DeleteSubroutine(random, tree, grammar, MAX_TREE_SIZE, MAX_TREE_HEIGHT, 3, 3))
-          failedEvents++;
+        SymbolicExpressionTree tree = null;
+        do {
+          tree = ProbabilisticTreeCreator.Create(random, grammar, MAX_TREE_SIZE, MAX_TREE_HEIGHT, 3, 3);
+        } while (!HasAtLeastOneAdf(tree));
+        var success = SubroutineDeleter.DeleteSubroutine(random, tree, grammar, MAX_TREE_SIZE, MAX_TREE_HEIGHT, 3, 3);
+        Assert.IsTrue(success);
         Util.IsValid(tree);
         trees.Add(tree);
       }
-      Assert.Inconclusive("SubroutineDeleter: " + Environment.NewLine +
-        "Failed events: " + failedEvents / (double)POPULATION_SIZE * 100 + " %" + Environment.NewLine +
+      Console.WriteLine("SubroutineDeleter: " + Environment.NewLine +
         Util.GetSizeDistributionString(trees, 105, 5) + Environment.NewLine +
         Util.GetFunctionDistributionString(trees) + Environment.NewLine +
         Util.GetNumberOfSubTreesDistributionString(trees) + Environment.NewLine +
         Util.GetTerminalDistributionString(trees) + Environment.NewLine
         );
+    }
+
+    private bool HasAtLeastOneAdf(SymbolicExpressionTree tree) {
+      return tree.Root.SubTrees.Count > 1;
     }
   }
 }

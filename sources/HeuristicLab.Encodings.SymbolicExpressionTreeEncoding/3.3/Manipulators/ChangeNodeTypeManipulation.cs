@@ -58,7 +58,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators {
                            where manipulationPoint.Node.SubTrees.Count >= manipulationPoint.Node.Grammar.GetMinSubtreeCount(symbol)
                            select symbol;
 
-      if (allowedSymbols.Count() <= 1) {
+      if (allowedSymbols.Count() == 0) {
         success = false;
         return;
       }
@@ -71,7 +71,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Manipulators {
                                      select subtree
                                where disallowedSubtrees.Count() == 0
                                select symbol;
-      if (constrainedSymbols.Count() <= 1) {
+      if (constrainedSymbols.Count() == 0) {
         success = false;
         return;
       }

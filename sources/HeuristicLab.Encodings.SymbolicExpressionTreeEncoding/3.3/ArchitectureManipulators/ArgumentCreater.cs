@@ -83,7 +83,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureMani
 
       // this operation potentially creates very big trees so the access to the size property might throw overflow exception
       try {
-        if (CreateNewArgumentForDefun(random, clonedTree, selectedDefunBranch, newArgumentNode) && clonedTree.Size < maxTreeSize && clonedTree.Height < maxTreeHeight) {
+        if (CreateNewArgumentForDefun(random, clonedTree, selectedDefunBranch, newArgumentNode) && clonedTree.Size <= maxTreeSize && clonedTree.Height <= maxTreeHeight) {
 
           // size constraints are fulfilled 
           // replace root of original tree with root of manipulated tree

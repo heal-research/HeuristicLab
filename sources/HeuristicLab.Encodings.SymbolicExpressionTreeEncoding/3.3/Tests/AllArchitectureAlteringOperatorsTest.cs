@@ -58,9 +58,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
       var newTrees = new List<SymbolicExpressionTree>();
       var grammar = Grammars.CreateArithmeticAndAdfGrammar();
       var random = new MersenneTwister(31415);
-      int failedEvents = 0;
-      IntValue maxTreeSize = new IntValue(100);
-      IntValue maxTreeHeigth = new IntValue(10);
+      IntValue maxTreeSize = new IntValue(MAX_TREE_SIZE);
+      IntValue maxTreeHeigth = new IntValue(MAX_TREE_HEIGHT);
       IntValue maxDefuns = new IntValue(3);
       IntValue maxArgs = new IntValue(3);
       for (int i = 0; i < POPULATION_SIZE; i++) {
@@ -71,6 +70,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
       Stopwatch stopwatch = new Stopwatch();
       stopwatch.Start();
       var combinedAAOperator = new MultiSymbolicExpressionTreeArchitectureManipulator();
+      int failedEvents = 0;
       for (int g = 0; g < N_ITERATIONS; g++) {
         for (int i = 0; i < POPULATION_SIZE; i++) {
           if (random.NextDouble() < 0.5) {
@@ -84,20 +84,24 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
             newTrees.Add(selectedTree);
           } else {
             // crossover
-            var par0 = (SymbolicExpressionTree)trees.SelectRandom(random).Clone();
-            var par1 = (SymbolicExpressionTree)trees.SelectRandom(random).Clone();
+            SymbolicExpressionTree par0 = null;
+            SymbolicExpressionTree par1 = null;
+            do {
+              par0 = (SymbolicExpressionTree)trees.SelectRandom(random).Clone();
+              par1 = (SymbolicExpressionTree)trees.SelectRandom(random).Clone();
+            } while (par0.Size > MAX_TREE_SIZE || par1.Size > MAX_TREE_SIZE);
             bool success;
-            newTrees.Add(SubtreeCrossover.Cross(random, par0, par1, 0.9, 100, 10, out success));
-            if (!success) failedEvents++;
+            newTrees.Add(SubtreeCrossover.Cross(random, par0, par1, 0.9, MAX_TREE_SIZE, MAX_TREE_HEIGHT, out success));
+            Assert.IsTrue(success);
           }
         }
         trees = newTrees;
       }
       stopwatch.Stop();
       var msPerOperation = stopwatch.ElapsedMilliseconds / (double)POPULATION_SIZE / (double)N_ITERATIONS;
-      Assert.Inconclusive("AllArchitectureAlteringOperators: " + Environment.NewLine +
-        "Failed events: " + failedEvents / (double)POPULATION_SIZE / N_ITERATIONS * 100 + " %" + Environment.NewLine +
+      Console.WriteLine("AllArchitectureAlteringOperators: " + Environment.NewLine +
         "Operations / s: ~" + Math.Round(1000.0 / (msPerOperation)) + "operations / s)" + Environment.NewLine +
+        "Failed events: " + failedEvents / (double)(POPULATION_SIZE * N_ITERATIONS) + "%" + Environment.NewLine +
         Util.GetSizeDistributionString(trees, 200, 5) + Environment.NewLine +
         Util.GetFunctionDistributionString(trees) + Environment.NewLine +
         Util.GetNumberOfSubTreesDistributionString(trees) + Environment.NewLine +

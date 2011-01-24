@@ -20,12 +20,14 @@
 #endregion
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureManipulators;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators;
 using HeuristicLab.Random;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
   [TestClass]
@@ -53,21 +55,26 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
       var trees = new List<SymbolicExpressionTree>();
       var grammar = Grammars.CreateArithmeticAndAdfGrammar();
       var random = new MersenneTwister(31415);
-      int failedEvents = 0;
       for (int i = 0; i < POPULATION_SIZE; i++) {
-        var tree = ProbabilisticTreeCreator.Create(random, grammar, MAX_TREE_SIZE, MAX_TREE_HEIGHT, 3, 3);
-        if (!ArgumentDeleter.DeleteArgument(random, tree, grammar, MAX_TREE_SIZE, MAX_TREE_HEIGHT, 3, 3))
-          failedEvents++;
+        SymbolicExpressionTree tree = null;
+        do {
+          tree = ProbabilisticTreeCreator.Create(random, grammar, MAX_TREE_SIZE, MAX_TREE_HEIGHT, 3, 3);
+        } while (!TreeHasAdfWithArguments(tree));
+        var success = ArgumentDeleter.DeleteArgument(random, tree, grammar, MAX_TREE_SIZE, MAX_TREE_HEIGHT, 3, 3);
+        Assert.IsTrue(success);
         Util.IsValid(tree);
         trees.Add(tree);
       }
-      Assert.Inconclusive("ArgumentDeleter: " + Environment.NewLine +
-        "Failed events: " + failedEvents / (double)POPULATION_SIZE * 100 + " %" + Environment.NewLine +
+      Console.WriteLine("ArgumentDeleter: " + Environment.NewLine +
         Util.GetSizeDistributionString(trees, 105, 5) + Environment.NewLine +
         Util.GetFunctionDistributionString(trees) + Environment.NewLine +
         Util.GetNumberOfSubTreesDistributionString(trees) + Environment.NewLine +
         Util.GetTerminalDistributionString(trees) + Environment.NewLine
         );
+    }
+    private bool TreeHasAdfWithArguments(SymbolicExpressionTree tree) {
+      return tree.Root.SubTrees.Count == 2 &&
+        tree.Root.SubTrees[1].GetAllowedSymbols(0).Where(x => x is Argument).Count() >= 2;
     }
   }
 }
