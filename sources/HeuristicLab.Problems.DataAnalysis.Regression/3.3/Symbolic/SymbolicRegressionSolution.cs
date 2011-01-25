@@ -97,7 +97,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
 
       var laggedTreeNode = node as ILaggedTreeNode;
       if (laggedTreeNode != null) lag += laggedTreeNode.Lag;
-      if (node.Symbol is Derivative) lag -= 4;
+      else if (node.Symbol is Derivative) lag -= 4;
 
       int subtreeLag = 0;
       foreach (var subtree in node.SubTrees) {

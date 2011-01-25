@@ -353,8 +353,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var subtrees = new List<SymbolicExpressionTreeNode>(sum.SubTrees);
       while (sum.SubTrees.Count > 0) sum.RemoveSubTree(0);
       var groupedVarNodes = from node in subtrees.OfType<VariableTreeNode>()
-                            group node by node.VariableName into g
+                            let lag = (node is LaggedVariableTreeNode) ? ((LaggedVariableTreeNode)node).Lag : 0
+                            group node by node.VariableName + lag into g
                             select g;
+
       var unchangedSubTrees = subtrees.Where(t => !(t is VariableTreeNode));
 
       foreach (var variableNodeGroup in groupedVarNodes) {
@@ -428,7 +430,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var subtrees = new List<SymbolicExpressionTreeNode>(prod.SubTrees);
       while (prod.SubTrees.Count > 0) prod.RemoveSubTree(0);
       var groupedVarNodes = from node in subtrees.OfType<VariableTreeNode>()
-                            group node by node.VariableName into g
+                            let lag = (node is LaggedVariableTreeNode) ? ((LaggedVariableTreeNode)node).Lag : 0
+                            group node by node.VariableName + lag into g
                             orderby g.Count()
                             select g;
       var constantProduct = (from node in subtrees.OfType<VariableTreeNode>()
