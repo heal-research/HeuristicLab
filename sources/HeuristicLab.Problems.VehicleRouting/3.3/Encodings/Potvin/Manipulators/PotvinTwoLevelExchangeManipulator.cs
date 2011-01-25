@@ -37,10 +37,13 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
 
     protected override void Manipulate(IRandom random, PotvinEncoding individual) {
       int selectedIndex = SelectRandomTourBiasedByLength(random, individual);
-      Tour route1 =
-        individual.Tours[selectedIndex];
+      Tour route1 = individual.Tours[selectedIndex]; 
 
-      for (int customer1Position = 0; customer1Position < route1.Cities.Count; customer1Position++) {
+      bool performed = false;
+      int customer1Position = 0;
+      while (customer1Position < route1.Cities.Count) {
+        performed = false;
+
         foreach (Tour tour in individual.Tours) {
           if (tour != route1) {
             for (int customer2Position = 0; customer2Position < tour.Cities.Count; customer2Position++) {
@@ -50,17 +53,18 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
               //customer1 can be feasibly inserted at the location of customer2
               tour.Cities[customer2Position] = customer1;
               if (Feasible(tour)) {
-                int route, place;
+                int routeIdx, place;
                 if (FindInsertionPlace(individual,
-                  customer2, selectedIndex, out route, out place)) {
-                  individual.Tours[route].Cities.Insert(place, customer2);
-                  route1.Cities.RemoveAt(customer1Position);
+                  customer2, selectedIndex, out routeIdx, out place)) {
+                    individual.Tours[routeIdx].Cities.Insert(place, customer2);
+                    route1.Cities.RemoveAt(customer1Position);
 
-                  if (route1.Cities.Count == 0)
+                    if (route1.Cities.Count == 0)
                     individual.Tours.Remove(route1);
 
                   //two-level exchange has been performed
-                  return;
+                  performed = true;
+                  break;
                 } else {
                   tour.Cities[customer2Position] = customer2;
                 }
@@ -69,7 +73,13 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
               }
             }
           }
+
+          if (performed)
+            break;
         }
+
+        if (!performed)
+          customer1Position++;
       }
     }
   }

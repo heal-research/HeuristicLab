@@ -62,24 +62,28 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     public static AlbaLambdaInterchangeMove Apply(AlbaEncoding individual, int cities, int lambda, IRandom rand) {
       List<Tour> tours = individual.GetTours();
 
-      int route1Index = rand.Next(tours.Count);
-      Tour route1 = tours[route1Index];
+      if (tours.Count > 1) {
+        int route1Index = rand.Next(tours.Count);
+        Tour route1 = tours[route1Index];
 
-      int route2Index = rand.Next(tours.Count - 1);
-      if (route2Index >= route1Index)
-        route2Index += 1;
-      Tour route2 = tours[route2Index];
+        int route2Index = rand.Next(tours.Count - 1);
+        if (route2Index >= route1Index)
+          route2Index += 1;
+        Tour route2 = tours[route2Index];
 
-      int length1 = rand.Next(Math.Min(lambda + 1, route1.Cities.Count + 1));
-      int index1 = rand.Next(route1.Cities.Count - length1 + 1);
+        int length1 = rand.Next(Math.Min(lambda + 1, route1.Cities.Count + 1));
+        int index1 = rand.Next(route1.Cities.Count - length1 + 1);
 
-      int l2Min = 0;
-      if (length1 == 0)
-        l2Min = 1;
-      int length2 = rand.Next(l2Min, Math.Min(lambda + 1, route2.Cities.Count + 1));
-      int index2 = rand.Next(route2.Cities.Count - length2 + 1);
+        int l2Min = 0;
+        if (length1 == 0)
+          l2Min = 1;
+        int length2 = rand.Next(l2Min, Math.Min(lambda + 1, route2.Cities.Count + 1));
+        int index2 = rand.Next(route2.Cities.Count - length2 + 1);
 
-      return new AlbaLambdaInterchangeMove(route1Index, index1, length1, route2Index, index2, length2, individual);
+        return new AlbaLambdaInterchangeMove(route1Index, index1, length1, route2Index, index2, length2, individual);
+      } else {
+        return new AlbaLambdaInterchangeMove(0, 0, 0, 0, 0, 0, individual);
+      }
     }
 
     protected override AlbaLambdaInterchangeMove[] GenerateMoves(AlbaEncoding individual, int lambda) {
