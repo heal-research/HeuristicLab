@@ -174,6 +174,7 @@ namespace HeuristicLab.Optimization.Views {
       return listViewItem;
     }
     private void AddListViewItem(ListViewItem listViewItem) {
+      if (listViewItem == null) throw new ArgumentNullException();
       itemsListView.Items.Add(listViewItem);
       IRun run = listViewItem.Tag as IRun;
       if (run != null) {
@@ -185,6 +186,7 @@ namespace HeuristicLab.Optimization.Views {
       }
     }
     private void RemoveListViewItem(ListViewItem listViewItem) {
+      if (listViewItem == null) throw new ArgumentNullException();
       IRun run = listViewItem.Tag as IRun;
       if (run != null) {
         itemListViewItemMapping[run].Remove(listViewItem);
@@ -196,6 +198,7 @@ namespace HeuristicLab.Optimization.Views {
       listViewItem.Remove();
     }
     private void UpdateListViewItemImage(ListViewItem listViewItem) {
+      if (listViewItem == null) throw new ArgumentNullException();
       IRun item = listViewItem.Tag as IRun;
       int i = listViewItem.ImageIndex;
       listViewItem.ImageList.Images[i] = item == null ? HeuristicLab.Common.Resources.VSImageLibrary.Nothing : item.ItemImage;
@@ -203,6 +206,7 @@ namespace HeuristicLab.Optimization.Views {
       listViewItem.ImageIndex = i;
     }
     private void UpdateListViewItemText(ListViewItem listViewItem) {
+      if (listViewItem == null) throw new ArgumentNullException();
       IRun item = listViewItem.Tag as IRun;
       listViewItem.Text = item == null ? "null" : item.ToString();
       listViewItem.ToolTipText = item == null ? string.Empty : item.ItemName + ": " + item.ItemDescription;

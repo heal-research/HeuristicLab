@@ -165,6 +165,7 @@ namespace HeuristicLab.Core.Views {
       return listViewItem;
     }
     protected virtual void AddListViewItem(ListViewItem listViewItem) {
+      if (listViewItem == null) throw new ArgumentNullException();
       T item = (listViewItem.Tag as T);
       itemsListView.Items.Add(listViewItem);
       if (item != null) {
@@ -176,6 +177,7 @@ namespace HeuristicLab.Core.Views {
       }
     }
     protected virtual void InsertListViewItem(int index, ListViewItem listViewItem) {
+      if (listViewItem == null) throw new ArgumentNullException();
       T item = (listViewItem.Tag as T);
       itemsListView.Items.Insert(index, listViewItem);
       if (item != null) {
@@ -187,6 +189,7 @@ namespace HeuristicLab.Core.Views {
       }
     }
     protected virtual void RemoveListViewItem(ListViewItem listViewItem) {
+      if (listViewItem == null) throw new ArgumentNullException();
       T item = (listViewItem.Tag as T);
       if (item != null) {
         itemListViewItemMapping[item].Remove(listViewItem);
@@ -198,6 +201,7 @@ namespace HeuristicLab.Core.Views {
       listViewItem.Remove();
     }
     protected virtual void UpdateListViewItemImage(ListViewItem listViewItem) {
+      if (listViewItem == null) throw new ArgumentNullException();
       T item = listViewItem.Tag as T;
       int i = listViewItem.ImageIndex;
       listViewItem.ImageList.Images[i] = item == null ? HeuristicLab.Common.Resources.VSImageLibrary.Nothing : item.ItemImage;
@@ -205,6 +209,7 @@ namespace HeuristicLab.Core.Views {
       listViewItem.ImageIndex = i;
     }
     protected virtual void UpdateListViewItemText(ListViewItem listViewItem) {
+      if (listViewItem == null) throw new ArgumentNullException();
       T item = listViewItem.Tag as T;
       listViewItem.Text = item == null ? "null" : item.ToString();
       listViewItem.ToolTipText = item == null ? string.Empty : item.ItemName + ": " + item.ItemDescription;
