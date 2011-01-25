@@ -82,14 +82,19 @@ namespace HeuristicLab.Selection {
       ISelector replacedSelector = ReplacedSelectorParameter.ActualValue;
       ISelector selectedSelector = SelectedSelectorParameter.ActualValue;
 
-      if (replacedSelector != null) {
-        replacedSelector.CopySelected = new BoolValue(false);
-        replacedSelector.NumberOfSelectedSubScopesParameter.Value = new IntValue(Math.Min(remaining, selected));
+      if (replacedSelector == null) {
+        ReplacedSelectorParameter.Value = new RandomSelector();
+        replacedSelector = ReplacedSelectorParameter.Value;
       }
-      if (selectedSelector != null) {
-        selectedSelector.CopySelected = new BoolValue(false);
-        selectedSelector.NumberOfSelectedSubScopesParameter.Value = new IntValue(Math.Min(remaining, selected));
+      replacedSelector.CopySelected = new BoolValue(false);
+      replacedSelector.NumberOfSelectedSubScopesParameter.Value = new IntValue(Math.Min(remaining, selected));
+
+      if (selectedSelector == null) {
+        SelectedSelectorParameter.Value = new RandomSelector();
+        selectedSelector = SelectedSelectorParameter.Value;
       }
+      selectedSelector.CopySelected = new BoolValue(false);
+      selectedSelector.NumberOfSelectedSubScopesParameter.Value = new IntValue(Math.Min(remaining, selected));
 
       return base.Apply();
     }
