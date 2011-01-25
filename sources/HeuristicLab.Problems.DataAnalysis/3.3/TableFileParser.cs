@@ -30,9 +30,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
   public class TableFileParser {
     private const int BUFFER_SIZE = 1024;
     private readonly char[] POSSIBLE_SEPARATORS = new char[] { ',', ';', '\t' };
-    private const string VARIABLENAMES = "VARIABLENAMES";
     private Tokenizer tokenizer;
-    private List<string> variableNames;
     private List<List<double>> rowValues;
 
     private int rows;
@@ -54,6 +52,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
+    private List<string> variableNames;
     public IEnumerable<string> VariableNames {
       get {
         if (variableNames.Count > 0) return variableNames;
@@ -70,11 +69,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public TableFileParser() {
       rowValues = new List<List<double>>();
       variableNames = new List<string>();
-    }
-
-    private void Reset() {
-      variableNames.Clear();
-      rowValues.Clear();
     }
 
     public void Parse(string fileName) {
