@@ -204,6 +204,12 @@
     <Compile Include="Symbolic\Symbols\LaggedVariableView.Designer.cs">
       <DependentUpon>LaggedVariableView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Symbolic\Symbols\TimeLagView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Symbolic\Symbols\TimeLagView.Designer.cs">
+      <DependentUpon>TimeLagView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Symbolic\Symbols\VariableView.cs">
       <SubType>UserControl</SubType>
     </Compile>

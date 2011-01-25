@@ -60,6 +60,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var and = new And();
       var or = new Or();
       var not = new Not();
+
+      var timeLag = new TimeLag();
+      timeLag.InitialFrequency = 0.0;
+      var integral = new Integral();
+      integral.InitialFrequency = 0.0;
+      var derivative = new Derivative();
+      derivative.InitialFrequency = 0.0;
+
       var constant = new Constant();
       constant.MinValue = -20;
       constant.MaxValue = 20;
@@ -67,8 +75,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var laggedVariable = new LaggedVariable();
       laggedVariable.InitialFrequency = 0.0;
 
-      var allSymbols = new List<Symbol>() { add, sub, mul, div, mean, sin, cos, tan, log, pow, exp, @if, gt, lt, and, or, not, constant, variableSymbol, laggedVariable };
-      var unaryFunctionSymbols = new List<Symbol>() { sin, cos, tan, log, exp, not };
+      var allSymbols = new List<Symbol>() { add, sub, mul, div, mean, sin, cos, tan, log, pow, exp, @if, gt, lt, and, or, not, timeLag, integral, derivative, constant, variableSymbol, laggedVariable };
+      var unaryFunctionSymbols = new List<Symbol>() { sin, cos, tan, log, exp, not, timeLag, integral, derivative };
+
       var binaryFunctionSymbols = new List<Symbol>() { pow, gt, lt };
       var functionSymbols = new List<Symbol>() { add, sub, mul, div, mean, and, or };
       var terminalSymbols = new List<Symbol>() { variableSymbol, constant, laggedVariable };

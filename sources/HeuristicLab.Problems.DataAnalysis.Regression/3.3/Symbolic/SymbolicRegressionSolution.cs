@@ -25,6 +25,7 @@ using System.Drawing;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
 
@@ -75,10 +76,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
 
     protected override void RecalculateEstimatedValues() {
-      int minLag = 0;
-      var laggedTreeNodes = Model.SymbolicExpressionTree.IterateNodesPrefix().OfType<LaggedVariableTreeNode>();
-      if (laggedTreeNodes.Any())
-        minLag = laggedTreeNodes.Min(node => node.Lag);
+      int minLag = GetMinimumLagFromTree(Model.SymbolicExpressionTree.Root);
       IEnumerable<double> calculatedValues =
           from x in Model.GetEstimatedValues(ProblemData, 0 - minLag, ProblemData.Dataset.Rows)
           let boundedX = Math.Min(UpperEstimationLimit, Math.Max(LowerEstimationLimit, x))
@@ -91,6 +89,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       if (estimatedValues == null) RecalculateEstimatedValues();
       foreach (int row in rows)
         yield return estimatedValues[row];
+    }
+
+    protected int GetMinimumLagFromTree(SymbolicExpressionTreeNode node) {
+      if (node == null) return 0;
+      int lag = 0;
+
+      var laggedTreeNode = node as ILaggedTreeNode;
+      if (laggedTreeNode != null) lag += laggedTreeNode.Lag;
+      if (node.Symbol is Derivative) lag -= 4;
+
+      int subtreeLag = 0;
+      foreach (var subtree in node.SubTrees) {
+        subtreeLag = Math.Min(subtreeLag, GetMinimumLagFromTree(subtree));
+      }
+      return lag + subtreeLag;
     }
   }
 }

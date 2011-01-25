@@ -66,6 +66,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       public const byte Arg = 21;
 
       public const byte Power = 22;
+      public const byte TimeLag = 23;
+      public const byte Integral = 24;
+      public const byte Derivative = 25;
     }
 
     private Dictionary<Type, byte> symbolToOpcode = new Dictionary<Type, byte>() {
@@ -91,6 +94,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       { typeof(Constant), OpCodes.Constant },
       { typeof(Argument), OpCodes.Arg },
       { typeof(Power),OpCodes.Power},
+      { typeof(TimeLag), OpCodes.TimeLag}, 
+      { typeof(Integral), OpCodes.Integral},
+      {typeof(Derivative), OpCodes.Derivative},
     };
     private const int ARGUMENT_STACK_SIZE = 1024;
 
@@ -242,6 +248,50 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             double y = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
             if (x < y) return 1.0;
             else return -1.0;
+          }
+        case OpCodes.TimeLag: {
+            var timeLagTreeNode = (LaggedTreeNode)currentInstr.dynamicNode;
+            if (row + timeLagTreeNode.Lag < 0 || row + timeLagTreeNode.Lag >= dataset.Rows)
+              return double.NaN;
+
+            row += timeLagTreeNode.Lag;
+            double result = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
+            row -= timeLagTreeNode.Lag;
+            return result;
+          }
+        case OpCodes.Integral: {
+            int nextPc = pc;
+            var timeLagTreeNode = (LaggedTreeNode)currentInstr.dynamicNode;
+            if (row + timeLagTreeNode.Lag < 0 || row + timeLagTreeNode.Lag >= dataset.Rows)
+              return double.NaN;
+            double sum = 0.0;
+            for (int i = 0; i < Math.Abs(timeLagTreeNode.Lag); i++) {
+              row += Math.Sign(timeLagTreeNode.Lag);
+              sum += Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
+              pc = nextPc;
+            }
+            row -= timeLagTreeNode.Lag;
+            sum += Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
+            return sum;
+          }
+
+        //mkommend: derivate calculation taken from: 
+        //http://www.holoborodko.com/pavel/numerical-methods/numerical-derivative/smooth-low-noise-differentiators/
+        //one sided smooth differentiatior, N = 4
+        // y' = 1/8h (f_i + 2f_i-1, -2 f_i-3 - f_i-4)
+        case OpCodes.Derivative: {
+            if (row - 4 < 0) return double.NaN;
+            int nextPc = pc;
+            double f_0 = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer); ; row--;
+            pc = nextPc;
+            double f_1 = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer); ; row -= 2;
+            pc = nextPc;
+            double f_3 = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer); ; row--;
+            pc = nextPc;
+            double f_4 = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer); ;
+            row += 4;
+
+            return (f_0 + 2 * f_1 - 2 * f_3 - f_4) / 8; // h = 1
           }
         case OpCodes.Call: {
             // evaluate sub-trees

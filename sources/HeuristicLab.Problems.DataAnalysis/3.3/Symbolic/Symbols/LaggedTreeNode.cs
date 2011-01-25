@@ -22,12 +22,13 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [StorableClass]
-  public sealed class LaggedVariableTreeNode : VariableTreeNode, ILaggedTreeNode {
-    public new LaggedVariable Symbol {
-      get { return (LaggedVariable)base.Symbol; }
+  public class LaggedTreeNode : SymbolicExpressionTreeNode, ILaggedTreeNode {
+    public new LaggedSymbol Symbol {
+      get { return (LaggedSymbol)base.Symbol; }
     }
     [Storable]
     private int lag;
@@ -37,19 +38,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
     }
 
     [StorableConstructor]
-    private LaggedVariableTreeNode(bool deserializing) : base(deserializing) { }
-    private LaggedVariableTreeNode(LaggedVariableTreeNode original, Cloner cloner)
+    protected LaggedTreeNode(bool deserializing) : base(deserializing) { }
+    protected LaggedTreeNode(LaggedTreeNode original, Cloner cloner)
       : base(original, cloner) {
       lag = original.lag;
     }
-    private LaggedVariableTreeNode() { }
-
-    public LaggedVariableTreeNode(LaggedVariable variableSymbol) : base(variableSymbol) { }
+    public LaggedTreeNode(LaggedSymbol timeLagSymbol) : base(timeLagSymbol) { }
 
     public override bool HasLocalParameters {
-      get {
-        return true;
-      }
+      get { return true; }
     }
 
     public override void ResetLocalParameters(IRandom random) {
@@ -63,12 +60,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new LaggedVariableTreeNode(this, cloner);
+      return new LaggedTreeNode(this, cloner);
     }
 
     public override string ToString() {
-      return base.ToString() +
-        " (t" + (lag > 0 ? "+" : "") + lag + ")";
+      return base.ToString() + " " + lag.ToString();
     }
   }
 }

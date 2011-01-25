@@ -128,6 +128,7 @@
     <Compile Include="Interfaces\ISymbolicExpressionTreeArchitectureManipulator.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionTreeCreator.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionTreeCrossover.cs" />
+    <Compile Include="Interfaces\ISymbolicExpressionTreeNode.cs" />
     <Compile Include="Manipulators\ChangeNodeTypeManipulation.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionTreeManipulator.cs" />
     <Compile Include="Manipulators\ReplaceBranchManipulation.cs" />
