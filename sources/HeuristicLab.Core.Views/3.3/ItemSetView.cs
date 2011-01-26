@@ -35,5 +35,13 @@ namespace HeuristicLab.Core.Views {
     public ItemSetView() {
       InitializeComponent();
     }
+
+    protected override void itemsListView_DragEnterOver(object sender, DragEventArgs e) {
+      base.itemsListView_DragEnterOver(sender, e);
+      if (e.Effect == DragDropEffects.Link || e.Effect == DragDropEffects.Move) {
+        T item = e.Data.GetData("Value") as T;
+        if (Content.Contains(item)) e.Effect = DragDropEffects.None;
+      }
+    }
   }
 }
