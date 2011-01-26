@@ -11,7 +11,8 @@
     <RootNamespace>HeuristicLab.Problems.TestFunctions</RootNamespace>
     <AssemblyName>HeuristicLab.Problems.TestFunctions-3.3</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile></TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
@@ -127,10 +128,8 @@
     <Compile Include="Evaluators\SumSquaresEvaluator.cs" />
     <Compile Include="Evaluators\ZakharovEvaluator.cs" />
     <Compile Include="HeuristicLabProblemsTestFunctionsPlugin.cs" />
-    <Compile Include="Interfaces\IRealVectorPSODecoder.cs" />
     <Compile Include="Interfaces\IBestSingleObjectiveTestFunctionSolutionAnalyzer.cs" />
     <Compile Include="Interfaces\IRastriginMoveEvaluator.cs" />
-    <Compile Include="Interfaces\IRealVectorPSOEncoder.cs" />
     <Compile Include="Interfaces\ISingleObjectiveTestFunctionAdditiveMoveEvaluator.cs" />
     <Compile Include="Interfaces\ISingleObjectiveTestFunctionMoveEvaluator.cs" />
     <Compile Include="Interfaces\ISingleObjectiveTestFunctionProblemEvaluator.cs" />

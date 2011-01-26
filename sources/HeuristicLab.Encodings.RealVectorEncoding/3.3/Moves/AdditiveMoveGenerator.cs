@@ -64,17 +64,8 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
 
     public override IOperation Apply() {
       RealVector vector = RealVectorParameter.ActualValue;
-      AdditiveMove[] moves = GenerateMoves(RandomParameter.ActualValue, vector);
       DoubleMatrix bounds = BoundsParameter.ActualValue;
-      if (bounds != null) {
-        for (int i = 0; i < moves.Length; i++) {
-          AdditiveMove move = moves[i];
-          if (vector[move.Dimension] + move.MoveDistance < bounds[move.Dimension % bounds.Rows, 0])
-            vector[move.Dimension] = bounds[move.Dimension % bounds.Rows, 0];
-          else if (vector[move.Dimension] + move.MoveDistance > bounds[move.Dimension % bounds.Rows, 1])
-            vector[move.Dimension] = bounds[move.Dimension % bounds.Rows, 1];
-        }
-      }
+      AdditiveMove[] moves = GenerateMoves(RandomParameter.ActualValue, vector, bounds);
       Scope[] moveScopes = new Scope[moves.Length];
       for (int i = 0; i < moveScopes.Length; i++) {
         moveScopes[i] = new Scope(i.ToString());
@@ -84,6 +75,6 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       return base.Apply();
     }
 
-    protected abstract AdditiveMove[] GenerateMoves(IRandom random, RealVector realVector);
+    protected abstract AdditiveMove[] GenerateMoves(IRandom random, RealVector realVector, DoubleMatrix bounds);
   }
 }

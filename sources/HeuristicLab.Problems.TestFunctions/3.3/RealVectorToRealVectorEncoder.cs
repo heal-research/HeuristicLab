@@ -19,53 +19,23 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
-using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.TestFunctions {
-  public class RealVectorToRealVectorEncoder : SingleSuccessorOperator, IRealVectorPSOEncoder, IRealVectorOperator {
-    #region Parameters
-
-    public IParameter OriginalRealVectorParameter {
-      get { return (IParameter)Parameters["OriginalRealVector"]; }
-    }
-
-    public IParameter RealVectorParameter {
-      get { return (IParameter)Parameters["RealVector"]; }
-    }
-
-    public ILookupParameter<IntValue> LengthParameter {
-      get { return (ILookupParameter<IntValue>)Parameters["Length"]; }
-    }
-
-    public IValueLookupParameter<DoubleMatrix> BoundsParameter {
-      get { return (IValueLookupParameter<DoubleMatrix>)Parameters["Bounds"]; }
-    }
-
-    protected ScopeParameter CurrentScopeParameter {
-      get { return (ScopeParameter)Parameters["CurrentScope"]; }
-    }
-    #endregion
-
-    public IScope CurrentScope {
-      get { return CurrentScopeParameter.ActualValue; }
-    }
+  // BackwardsCompatibility3.3
+  #region Backwards compatible code (remove with 3.4)
+  [Obsolete("This operator should not be used anymore.")]
+  internal class RealVectorToRealVectorEncoder : SingleSuccessorOperator {
 
     [StorableConstructor]
     protected RealVectorToRealVectorEncoder(bool deserializing) : base(deserializing) { }
     protected RealVectorToRealVectorEncoder(RealVectorToRealVectorEncoder original, Cloner cloner) : base(original, cloner) { }
     public RealVectorToRealVectorEncoder()
       : base() {
-      Parameters.Add(new LookupParameter<RealVector>("OriginalRealVector", "The original real vector."));
-      Parameters.Add(new LookupParameter<RealVector>("RealVector", "The resulting reference to the original real vector."));
-      Parameters.Add(new LookupParameter<IntValue>("Length", "Vector length."));
-      Parameters.Add(new ScopeParameter("CurrentScope", "The current scope bounds matrix should be cloned."));
-      Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "The lower and upper bounds in each dimension."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -73,9 +43,6 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     public override IOperation Apply() {
-      RealVectorParameter.ActualValue = OriginalRealVectorParameter.ActualValue;
-      IItem value = (IItem)BoundsParameter.ActualValue.Clone();
-      CurrentScope.Variables.Add(new Variable("ParticleBounds", BoundsParameter.Description, value == null ? null : (IItem)value.Clone()));
       return base.Apply();
     }
 
@@ -83,4 +50,5 @@ namespace HeuristicLab.Problems.TestFunctions {
       get { return false; }
     }
   }
+  #endregion
 }

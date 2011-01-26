@@ -11,7 +11,8 @@
     <RootNamespace>HeuristicLab.Encodings.RealVectorEncoding</RootNamespace>
     <AssemblyName>HeuristicLab.Encodings.RealVectorEncoding-3.3</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile></TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
@@ -156,6 +157,7 @@
     <Compile Include="Manipulators\MichalewiczNonUniformOnePositionManipulator.cs" />
     <Compile Include="Manipulators\PolynomialOnePositionManipulator.cs" />
     <Compile Include="Manipulators\UniformOnePositionManipulator.cs" />
+    <Compile Include="ReflectiveBoundsChecker.cs" />
     <Compile Include="StrategyParameters\StdDevStrategyVectorCreator.cs" />
     <Compile Include="StrategyParameters\StdDevStrategyVectorCrossover.cs" />
     <Compile Include="StrategyParameters\StdDevStrategyVectorManipulator.cs" />

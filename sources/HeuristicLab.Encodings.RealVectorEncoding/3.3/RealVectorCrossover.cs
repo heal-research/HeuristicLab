@@ -50,6 +50,9 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public IValueLookupParameter<DoubleMatrix> BoundsParameter {
       get { return (IValueLookupParameter<DoubleMatrix>)Parameters["Bounds"]; }
     }
+    public OptionalValueParameter<IRealVectorBoundsChecker> BoundsCheckerParameter {
+      get { return (OptionalValueParameter<IRealVectorBoundsChecker>)Parameters["BoundsChecker"]; }
+    }
 
     [StorableConstructor]
     protected RealVectorCrossover(bool deserializing) : base(deserializing) { }
@@ -62,14 +65,28 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       Parameters.Add(new LookupParameter<RealVector>("Child", "The child vector resulting from the crossover."));
       ChildParameter.ActualName = "RealVector";
       Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "The lower and upper bounds of the real vector."));
+      Parameters.Add(new OptionalValueParameter<IRealVectorBoundsChecker>("BoundsChecker", "The bounds checker that ensures that the values stay within the bounds.", new BoundsChecker()));
     }
+
+    // BackwardsCompatibility3.3
+    #region Backwards compatible code (remove with 3.4)
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey("BoundsChecker"))
+        Parameters.Add(new OptionalValueParameter<IRealVectorBoundsChecker>("BoundsChecker", "The bounds checker that ensures that the values stay within the bounds.", new BoundsChecker()));
+    }
+    #endregion
 
     public sealed override IOperation Apply() {
       RealVector result = Cross(RandomParameter.ActualValue, ParentsParameter.ActualValue);
-      DoubleMatrix bounds = BoundsParameter.ActualValue;
-      if (bounds != null) BoundsChecker.Apply(result, bounds);
-      ChildParameter.ActualValue = result;
-      return base.Apply();
+
+      IRealVectorBoundsChecker checker = BoundsCheckerParameter.Value;
+      IOperation successor = base.Apply();
+      if (checker != null) {
+        IOperation checkerOperation = ExecutionContext.CreateChildOperation(checker);
+        if (successor == null) return checkerOperation;
+        else return new OperationCollection(checkerOperation, successor);
+      } else return successor;
     }
 
     protected abstract RealVector Cross(IRandom random, ItemArray<RealVector> parents);

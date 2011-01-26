@@ -51,18 +51,22 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       return new StochasticNormalMultiMoveGenerator(this, cloner);
     }
 
-    public static AdditiveMove[] Apply(IRandom random, RealVector realVector, double sigma, int sampleSize) {
+    public static AdditiveMove[] Apply(IRandom random, RealVector vector, double sigma, int sampleSize, DoubleMatrix bounds) {
       AdditiveMove[] moves = new AdditiveMove[sampleSize];
       NormalDistributedRandom N = new NormalDistributedRandom(random, 0, sigma);
       for (int i = 0; i < sampleSize; i++) {
-        int index = random.Next(realVector.Length);
-        moves[i] = new AdditiveMove(index, N.NextDouble());
+        int index = random.Next(vector.Length);
+        double strength = 0, min = bounds[index % bounds.Rows, 0], max = bounds[index % bounds.Rows, 1];
+        do {
+          strength = N.NextDouble();
+        } while (vector[index] + strength < min || vector[index] + strength > max);
+        moves[i] = new AdditiveMove(index, strength);
       }
       return moves;
     }
 
-    protected override AdditiveMove[] GenerateMoves(IRandom random, RealVector realVector) {
-      return Apply(random, realVector, SigmaParameter.ActualValue.Value, SampleSizeParameter.ActualValue.Value);
+    protected override AdditiveMove[] GenerateMoves(IRandom random, RealVector realVector, DoubleMatrix bounds) {
+      return Apply(random, realVector, SigmaParameter.ActualValue.Value, SampleSizeParameter.ActualValue.Value, bounds);
     }
   }
 }

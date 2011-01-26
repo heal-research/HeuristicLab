@@ -47,6 +47,9 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public IValueLookupParameter<DoubleMatrix> BoundsParameter {
       get { return (IValueLookupParameter<DoubleMatrix>)Parameters["Bounds"]; }
     }
+    public OptionalValueParameter<IRealVectorBoundsChecker> BoundsCheckerParameter {
+      get { return (OptionalValueParameter<IRealVectorBoundsChecker>)Parameters["BoundsChecker"]; }
+    }
 
     [StorableConstructor]
     protected RealVectorManipulator(bool deserializing) : base(deserializing) { }
@@ -56,14 +59,29 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));
       Parameters.Add(new LookupParameter<RealVector>("RealVector", "The vector which should be manipulated."));
       Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "The lower and upper bounds of the real vector."));
+      Parameters.Add(new OptionalValueParameter<IRealVectorBoundsChecker>("BoundsChecker", "The bounds checker that ensures that the values stay within the bounds.", new BoundsChecker()));
     }
+
+    // BackwardsCompatibility3.3
+    #region Backwards compatible code (remove with 3.4)
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey("BoundsChecker"))
+        Parameters.Add(new OptionalValueParameter<IRealVectorBoundsChecker>("BoundsChecker", "The bounds checker that ensures that the values stay within the bounds.", new BoundsChecker()));
+    }
+    #endregion
 
     public sealed override IOperation Apply() {
       RealVector vector = RealVectorParameter.ActualValue;
       Manipulate(RandomParameter.ActualValue, vector);
-      DoubleMatrix bounds = BoundsParameter.ActualValue;
-      if (bounds != null) BoundsChecker.Apply(vector, bounds);
-      return base.Apply();
+
+      IRealVectorBoundsChecker checker = BoundsCheckerParameter.Value;
+      IOperation successor = base.Apply();
+      if (checker != null) {
+        IOperation checkerOperation = ExecutionContext.CreateChildOperation(checker);
+        if (successor == null) return checkerOperation;
+        else return new OperationCollection(checkerOperation, successor);
+      } else return successor;
     }
 
     protected abstract void Manipulate(IRandom random, RealVector realVector);

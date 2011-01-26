@@ -88,11 +88,15 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       NormalDistributedRandom N = new NormalDistributedRandom(random, 0.0, 1.0);
       double generalMultiplier = Math.Exp(generalLearningRate * N.NextDouble());
       for (int i = 0; i < vector.Length; i++) {
-        vector[i] *= generalMultiplier * Math.Exp(learningRate * N.NextDouble());
+        double change = vector[i] * generalMultiplier * Math.Exp(learningRate * N.NextDouble());
         if (bounds != null) {
           double min = bounds[i % bounds.Rows, 0], max = bounds[i % bounds.Rows, 1];
-          if (vector[i] < min) vector[i] = min;
-          if (vector[i] > max) vector[i] = max;
+          if (min == max) vector[i] = min;
+          else {
+            while (change < min || change > max)
+              change = vector[i] * generalMultiplier * Math.Exp(learningRate * N.NextDouble());
+            vector[i] = change;
+          }
         }
       }
     }

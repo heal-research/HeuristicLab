@@ -61,17 +61,21 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       return new StochasticPolynomialMultiMoveGenerator(this, cloner);
     }
 
-    public static AdditiveMove[] Apply(IRandom random, RealVector realVector, double contiguity, int sampleSize, double maxManipulation) {
+    public static AdditiveMove[] Apply(IRandom random, RealVector vector, double contiguity, int sampleSize, double maxManipulation, DoubleMatrix bounds) {
       AdditiveMove[] moves = new AdditiveMove[sampleSize];
       for (int i = 0; i < sampleSize; i++) {
-        int index = random.Next(realVector.Length);
-        moves[i] = new AdditiveMove(index, PolynomialOnePositionManipulator.Apply(random, contiguity) * maxManipulation);
+        int index = random.Next(vector.Length);
+        double strength = 0, min = bounds[index % bounds.Rows, 0], max = bounds[index % bounds.Rows, 1];
+        do {
+          strength = PolynomialOnePositionManipulator.Apply(random, contiguity) * maxManipulation;
+        } while (vector[index] + strength < min || vector[index] + strength > max);
+        moves[i] = new AdditiveMove(index, strength);
       }
       return moves;
     }
 
-    protected override AdditiveMove[] GenerateMoves(IRandom random, RealVector realVector) {
-      return Apply(random, realVector, ContiguityParameter.ActualValue.Value, SampleSizeParameter.ActualValue.Value, MaximumManipulationParameter.ActualValue.Value);
+    protected override AdditiveMove[] GenerateMoves(IRandom random, RealVector realVector, DoubleMatrix bounds) {
+      return Apply(random, realVector, ContiguityParameter.ActualValue.Value, SampleSizeParameter.ActualValue.Value, MaximumManipulationParameter.ActualValue.Value, bounds);
     }
   }
 }

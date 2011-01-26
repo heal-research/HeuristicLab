@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2011 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -32,9 +32,9 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// Checks if all elements of a real vector are inside the bounds. 
   /// If not, the elements are corrected.
   /// </summary>
-  [Item("BoundsChecker", "Checks if all elements of a real vector are inside the bounds. If not, elements are set to the respective values of the bounds.")]
+  [Item("ReflectiveBoundsChecker", "Checks if all elements of a real vector are inside the bounds. If not, elements are mirrored at the bounds.")]
   [StorableClass]
-  public class BoundsChecker : SingleSuccessorOperator, IRealVectorBoundsChecker {
+  public class ReflectiveBoundsChecker : SingleSuccessorOperator, IRealVectorBoundsChecker {
     public LookupParameter<RealVector> RealVectorParameter {
       get { return (LookupParameter<RealVector>)Parameters["RealVector"]; }
     }
@@ -43,20 +43,20 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     [StorableConstructor]
-    protected BoundsChecker(bool deserializing) : base(deserializing) { }
-    protected BoundsChecker(BoundsChecker original, Cloner cloner) : base(original, cloner) { }
+    protected ReflectiveBoundsChecker(bool deserializing) : base(deserializing) { }
+    protected ReflectiveBoundsChecker(ReflectiveBoundsChecker original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="BoundsChecker"/> with two parameters
     /// (<c>RealVector</c>, <c>Bounds</c>).
     /// </summary>
-    public BoundsChecker()
+    public ReflectiveBoundsChecker()
       : base() {
       Parameters.Add(new LookupParameter<RealVector>("RealVector", "The real-valued vector for which the bounds should be checked."));
       Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "The lower and upper bound (1st and 2nd column) of the positions in the vector. If there are less rows than dimensions, the rows are cycled."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new BoundsChecker(this, cloner);
+      return new ReflectiveBoundsChecker(this, cloner);
     }
 
     /// <summary>
@@ -68,9 +68,23 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public static void Apply(RealVector vector, DoubleMatrix bounds) {
       for (int i = 0; i < vector.Length; i++) {
         double min = bounds[i % bounds.Rows, 0], max = bounds[i % bounds.Rows, 1];
-        if (vector[i] < min) vector[i] = min;
-        if (vector[i] > max) vector[i] = max;
+        if (vector[i] < min) {
+          int reflectionCount = (int)Math.Truncate((min - vector[i]) / (max - min)) + 1;
+          double reflection = (min - vector[i]) % (max - min);
+          if (IsOdd(reflectionCount)) vector[i] = min + reflection;
+          else vector[i] = max - reflection;
+        }
+        if (vector[i] > max) {
+          int reflectionCount = (int)Math.Truncate((vector[i] - max) / (max - min)) + 1;
+          double reflection = (vector[i] - max) % (max - min);
+          if (IsOdd(reflectionCount)) vector[i] = max - reflection;
+          else vector[i] = min + reflection;
+        }
       }
+    }
+
+    private static bool IsOdd(int number) {
+      return number % 2 == 1;
     }
 
     /// <summary>
@@ -80,8 +94,8 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// <remarks>Calls <see cref="Apply(RealVector, DoubleMatrix)"/>.</remarks>
     /// <inheritdoc select="returns" />
     public override IOperation Apply() {
-      if (RealVectorParameter.ActualValue == null) throw new InvalidOperationException("BoundsChecker: Parameter " + RealVectorParameter.ActualName + " could not be found.");
-      if (BoundsParameter.ActualValue == null) throw new InvalidOperationException("BoundsChecker: Parameter " + BoundsParameter.ActualName + " could not be found.");
+      if (RealVectorParameter.ActualValue == null) throw new InvalidOperationException("ReflectiveBoundsChecker: Parameter " + RealVectorParameter.ActualName + " could not be found.");
+      if (BoundsParameter.ActualValue == null) throw new InvalidOperationException("ReflectiveBoundsChecker: Parameter " + BoundsParameter.ActualName + " could not be found.");
       Apply(RealVectorParameter.ActualValue, BoundsParameter.ActualValue);
       return base.Apply();
     }

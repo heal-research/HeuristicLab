@@ -402,16 +402,13 @@ namespace HeuristicLab.Problems.TestFunctions {
         op.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
         op.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
       }
-      foreach (IRealVectorPSOEncoder op in Operators.OfType<IRealVectorPSOEncoder>()) {
-        ((ILookupParameter)op.OriginalRealVectorParameter).ActualName = SolutionCreator.RealVectorParameter.ActualName;
-        op.BoundsParameter.Value = (DoubleMatrix)BoundsParameter.Value.Clone();
-        op.BoundsParameter.ActualName = "ParticleBounds";
-      }
     }
     private void UpdateStrategyVectorBounds() {
       DoubleMatrix strategyBounds = (DoubleMatrix)Bounds.Clone();
-      for (int i = 0; i < strategyBounds.Rows; i++)
+      for (int i = 0; i < strategyBounds.Rows; i++) {
         if (strategyBounds[i, 0] < 0) strategyBounds[i, 0] = 0;
+        strategyBounds[i, 1] = 0.1 * (Bounds[i, 1] - Bounds[i, 0]);
+      }
       strategyVectorCreator.BoundsParameter.Value = strategyBounds;
     }
     #endregion
