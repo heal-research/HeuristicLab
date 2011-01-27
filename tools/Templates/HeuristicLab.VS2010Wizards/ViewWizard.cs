@@ -48,9 +48,9 @@ namespace HeuristicLab.VS2010Wizards {
 
     public void RunStarted(object automationObject, Dictionary<string, string> replacementsDictionary, WizardRunKind runKind, object[] customParams) {
       if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-        replacementsDictionary.Add("$baseClass$", form.BaseClass);
-        replacementsDictionary.Add("$viewContentType$", form.ViewContentType);
-        replacementsDictionary.Add("$isDefaultView$", form.IsDefaultView.ToString().ToLower());
+        replacementsDictionary.Add("$viewName$", form.ViewName);
+        replacementsDictionary.Add("$contentType$", form.ContentType);
+        replacementsDictionary.Add("$defaultView$", form.IsDefault.ToString().ToLower());
         shouldAddItem = true;
       } else shouldAddItem = false;
     }

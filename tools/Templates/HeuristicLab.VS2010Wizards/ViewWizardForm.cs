@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2011 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -23,46 +23,54 @@ using System.Windows.Forms;
 
 namespace HeuristicLab.VS2010Wizards {
   public partial class ViewWizardForm : Form {
-    public string BaseClass {
-      get;
-      private set;
+    private string viewName;
+    public string ViewName {
+      get { return viewName; }
+      set {
+        viewName = value;
+        if (nameTextBox.Text != viewName)
+          nameTextBox.Text = viewName;
+      }
     }
-    public string ViewContentType {
-      get;
-      private set;
+    private string contentType;
+    public string ContentType {
+      get { return contentType; }
+      set {
+        contentType = value;
+        if (contentTypeTextBox.Text != contentType)
+          contentTypeTextBox.Text = contentType;
+      }
     }
-    public bool IsDefaultView {
+    public bool IsDefault {
       get;
       private set;
     }
 
     public ViewWizardForm() {
       InitializeComponent();
-      BaseClass = baseClassTextBox.Text;
-      ViewContentType = viewContentTypeTextBox.Text;
-      IsDefaultView = isDefaultViewCheckBox.Checked;
+      ViewName = nameTextBox.Text;
+      ContentType = contentTypeTextBox.Text;
+      IsDefault = defaultViewCheckBox.Checked;
     }
 
-    private void okButton_Click(object sender, System.EventArgs e) {
-      DialogResult = System.Windows.Forms.DialogResult.OK;
+    private void finishButton_Click(object sender, System.EventArgs e) {
       Close();
     }
 
     private void cancelButton_Click(object sender, System.EventArgs e) {
-      DialogResult = System.Windows.Forms.DialogResult.Cancel;
       Close();
     }
 
-    private void baseClassTextBox_TextChanged(object sender, System.EventArgs e) {
-      BaseClass = baseClassTextBox.Text;
-    }
-
-    private void viewContentTypeTextBox_TextChanged(object sender, System.EventArgs e) {
-      ViewContentType = viewContentTypeTextBox.Text;
+    private void contentTypeTextBox_TextChanged(object sender, System.EventArgs e) {
+      ContentType = contentTypeTextBox.Text;
     }
 
     private void isDefaultViewCheckBox_CheckedChanged(object sender, System.EventArgs e) {
-      IsDefaultView = isDefaultViewCheckBox.Checked;
+      IsDefault = defaultViewCheckBox.Checked;
+    }
+
+    private void nameTextBox_TextChanged(object sender, System.EventArgs e) {
+      ViewName = nameTextBox.Text;
     }
   }
 }

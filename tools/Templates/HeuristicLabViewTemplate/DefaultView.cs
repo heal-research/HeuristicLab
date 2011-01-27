@@ -21,15 +21,15 @@
 
 using System;
 using System.Windows.Forms;
-using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 
 namespace $rootnamespace$ {
-  [View("$safeitemname$")]
-  [Content(typeof($viewContentType$), IsDefaultView = $isDefaultView$)]
-  public partial class $safeitemname$ : $baseClass$ {
-    public new $viewContentType$ Content {
-      get { return ($viewContentType$)base.Content; }
+  [View("$viewName$")]
+  [Content(typeof($contentType$), IsDefaultView = $defaultView$)]
+  public partial class $safeitemname$ : AsynchronousContentView {
+    public new $contentType$ Content {
+      get { return ($contentType$)base.Content; }
       set { base.Content = value; }
     }
 

@@ -36,17 +36,17 @@
       this.pictureBox1 = new System.Windows.Forms.PictureBox();
       this.page2Panel = new System.Windows.Forms.Panel();
       this.label3 = new System.Windows.Forms.Label();
+      this.parametersControl = new HeuristicLab.VS2010Wizards.ParametersControl();
       this.panel2 = new System.Windows.Forms.Panel();
       this.nextButton = new System.Windows.Forms.Button();
       this.previousButton = new System.Windows.Forms.Button();
       this.page1Panel = new System.Windows.Forms.Panel();
-      this.singleObjectiveCheckBox = new System.Windows.Forms.CheckBox();
-      this.contentPanel = new System.Windows.Forms.Panel();
       this.solutionCreatorTypeTextBox = new System.Windows.Forms.TextBox();
       this.evaluatorTypeTextBox = new System.Windows.Forms.TextBox();
       this.label6 = new System.Windows.Forms.Label();
       this.label5 = new System.Windows.Forms.Label();
-      this.parametersControl = new HeuristicLab.VS2010Wizards.ParametersControl();
+      this.singleObjectiveCheckBox = new System.Windows.Forms.CheckBox();
+      this.contentPanel = new System.Windows.Forms.Panel();
       this.panel1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
       this.page2Panel.SuspendLayout();
@@ -177,6 +177,16 @@
       this.label3.TabIndex = 1;
       this.label3.Text = "Parameters:";
       // 
+      // parametersControl
+      // 
+      this.parametersControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.parametersControl.Location = new System.Drawing.Point(0, 33);
+      this.parametersControl.Name = "parametersControl";
+      this.parametersControl.Size = new System.Drawing.Size(676, 260);
+      this.parametersControl.TabIndex = 0;
+      // 
       // panel2
       // 
       this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
@@ -229,32 +239,6 @@
       this.page1Panel.Size = new System.Drawing.Size(676, 293);
       this.page1Panel.TabIndex = 9;
       // 
-      // singleObjectiveCheckBox
-      // 
-      this.singleObjectiveCheckBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.singleObjectiveCheckBox.AutoSize = true;
-      this.singleObjectiveCheckBox.Checked = true;
-      this.singleObjectiveCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-      this.singleObjectiveCheckBox.Location = new System.Drawing.Point(103, 152);
-      this.singleObjectiveCheckBox.Name = "singleObjectiveCheckBox";
-      this.singleObjectiveCheckBox.Size = new System.Drawing.Size(103, 17);
-      this.singleObjectiveCheckBox.TabIndex = 5;
-      this.singleObjectiveCheckBox.Text = "Single-Objective";
-      this.singleObjectiveCheckBox.UseVisualStyleBackColor = true;
-      this.singleObjectiveCheckBox.CheckedChanged += new System.EventHandler(this.singleObjectiveCheckBox_CheckedChanged);
-      // 
-      // contentPanel
-      // 
-      this.contentPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.contentPanel.Controls.Add(this.page1Panel);
-      this.contentPanel.Controls.Add(this.page2Panel);
-      this.contentPanel.Location = new System.Drawing.Point(0, 85);
-      this.contentPanel.Name = "contentPanel";
-      this.contentPanel.Size = new System.Drawing.Size(676, 293);
-      this.contentPanel.TabIndex = 11;
-      // 
       // solutionCreatorTypeTextBox
       // 
       this.solutionCreatorTypeTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
@@ -295,15 +279,31 @@
       this.label5.TabIndex = 7;
       this.label5.Text = "Evaluator Type:";
       // 
-      // parametersControl
+      // singleObjectiveCheckBox
       // 
-      this.parametersControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+      this.singleObjectiveCheckBox.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.singleObjectiveCheckBox.AutoSize = true;
+      this.singleObjectiveCheckBox.Checked = true;
+      this.singleObjectiveCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.singleObjectiveCheckBox.Location = new System.Drawing.Point(103, 152);
+      this.singleObjectiveCheckBox.Name = "singleObjectiveCheckBox";
+      this.singleObjectiveCheckBox.Size = new System.Drawing.Size(103, 17);
+      this.singleObjectiveCheckBox.TabIndex = 5;
+      this.singleObjectiveCheckBox.Text = "Single-Objective";
+      this.singleObjectiveCheckBox.UseVisualStyleBackColor = true;
+      this.singleObjectiveCheckBox.CheckedChanged += new System.EventHandler(this.singleObjectiveCheckBox_CheckedChanged);
+      // 
+      // contentPanel
+      // 
+      this.contentPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.parametersControl.Location = new System.Drawing.Point(0, 33);
-      this.parametersControl.Name = "parametersControl";
-      this.parametersControl.Size = new System.Drawing.Size(676, 260);
-      this.parametersControl.TabIndex = 0;
+      this.contentPanel.Controls.Add(this.page1Panel);
+      this.contentPanel.Controls.Add(this.page2Panel);
+      this.contentPanel.Location = new System.Drawing.Point(0, 85);
+      this.contentPanel.Name = "contentPanel";
+      this.contentPanel.Size = new System.Drawing.Size(676, 293);
+      this.contentPanel.TabIndex = 11;
       // 
       // ProblemWizardForm
       // 
