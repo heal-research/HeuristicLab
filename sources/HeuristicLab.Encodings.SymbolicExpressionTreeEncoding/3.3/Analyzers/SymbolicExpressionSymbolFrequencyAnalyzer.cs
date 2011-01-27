@@ -93,7 +93,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Analyzers {
           row.VisualProperties.StartIndexZero = true;
           SymbolFrequencies.Rows.Add(row);
         }
-        results["Symbol frequencies"].Value = SymbolFrequencies;
       }
 
       int maxValues = SymbolFrequencies.Rows.Select(r => r.Values.Count).DefaultIfEmpty().Max();
