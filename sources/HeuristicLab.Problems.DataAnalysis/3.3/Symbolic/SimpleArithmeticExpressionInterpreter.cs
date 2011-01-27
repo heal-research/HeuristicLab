@@ -66,9 +66,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       public const byte Arg = 21;
 
       public const byte Power = 22;
-      public const byte TimeLag = 23;
-      public const byte Integral = 24;
-      public const byte Derivative = 25;
+      public const byte Root = 23;
+      public const byte TimeLag = 24;
+      public const byte Integral = 25;
+      public const byte Derivative = 26;
     }
 
     private Dictionary<Type, byte> symbolToOpcode = new Dictionary<Type, byte>() {
@@ -94,9 +95,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       { typeof(Constant), OpCodes.Constant },
       { typeof(Argument), OpCodes.Arg },
       { typeof(Power),OpCodes.Power},
+      { typeof(Root),OpCodes.Root},
       { typeof(TimeLag), OpCodes.TimeLag}, 
       { typeof(Integral), OpCodes.Integral},
-      {typeof(Derivative), OpCodes.Derivative},
+      { typeof(Derivative), OpCodes.Derivative},
     };
     private const int ARGUMENT_STACK_SIZE = 1024;
 
@@ -195,8 +197,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           }
         case OpCodes.Power: {
             double x = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
-            double y = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
+            double y = Math.Round(Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer));
             return Math.Pow(x, y);
+          }
+        case OpCodes.Root: {
+            double x = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
+            double y = Math.Round(Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer));
+            return Math.Pow(x, 1 / y);
           }
         case OpCodes.Exp: {
             return Math.Exp(Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer));
