@@ -22,7 +22,6 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Random;
@@ -36,37 +35,28 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// It is implemented as described in Beyer, H.-G. and Schwefel, H.-P. 2002. Evolution Strategies - A Comprehensive Introduction Natural Computing, 1, pp. 3-52.<br/>
   /// The strategy vector can be of smaller length than the solution vector, in which case values are taken from the beginning again once the end of the strategy vector is reached.
   /// </remarks>
-  [Item("NormalAllPositionsManipulator", "This manipulation operator adds a value sigma_i * N(0,1) to the current value in each position i. The values for sigma_i are taken from the strategy vector, if there are less elements in the strategy vector than positions, then the strategy vector is cycled. It is implemented as described in Beyer, H.-G. and Schwefel, H.-P. 2002. Evolution Strategies - A Comprehensive Introduction Natural Computing, 1, pp. 3-52.")]
+  [Item("FixedNormalAllPositionsManipulator", "This manipulation operator adds a value sigma_i * N_i(0,1) to the current value in each position i given the values for sigma_i in the parameter. If there are less elements in Sigma than positions, then Sigma is cycled. It is implemented as described in Beyer, H.-G. and Schwefel, H.-P. 2002. Evolution Strategies - A Comprehensive Introduction Natural Computing, 1, pp. 3-52.")]
   [StorableClass]
-  public class NormalAllPositionsManipulator : RealVectorManipulator, ISelfAdaptiveManipulator {
-    public Type StrategyParameterType {
-      get { return typeof(IRealVectorStdDevStrategyParameterOperator); }
-    }
-    /// <summary>
-    /// Parameter for the strategy vector.
-    /// </summary>
-    public IValueLookupParameter<RealVector> StrategyParameterParameter {
-      get { return (IValueLookupParameter<RealVector>)Parameters["StrategyParameter"]; }
-    }
+  public class FixedNormalAllPositionsManipulator : RealVectorManipulator {
 
-    IParameter ISelfAdaptiveManipulator.StrategyParameterParameter {
-      get { return StrategyParameterParameter; }
+    public IValueParameter<RealVector> SigmaParameter {
+      get { return (IValueParameter<RealVector>)Parameters["Sigma"]; }
     }
 
     [StorableConstructor]
-    protected NormalAllPositionsManipulator(bool deserializing) : base(deserializing) { }
-    protected NormalAllPositionsManipulator(NormalAllPositionsManipulator original, Cloner cloner) : base(original, cloner) { }
+    protected FixedNormalAllPositionsManipulator(bool deserializing) : base(deserializing) { }
+    protected FixedNormalAllPositionsManipulator(FixedNormalAllPositionsManipulator original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of <see cref="NormalAllPositionsManipulator"/> with one
     /// parameter (<c>StrategyVector</c>).
     /// </summary>
-    public NormalAllPositionsManipulator()
+    public FixedNormalAllPositionsManipulator()
       : base() {
-      Parameters.Add(new ValueLookupParameter<RealVector>("StrategyParameter", "The vector containing the endogenous strategy parameters."));
+      Parameters.Add(new ValueParameter<RealVector>("Sigma", "The vector containing the standard deviations used for manipulating each dimension. If it is only of length one the same sigma will be used for every dimension.", new RealVector(new double[] { 1 })));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new NormalAllPositionsManipulator(this, cloner);
+      return new FixedNormalAllPositionsManipulator(this, cloner);
     }
 
     /// <summary>
@@ -75,20 +65,15 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// </summary>
     /// <exception cref="InvalidOperationException">Thrown when the strategy vector is not
     /// as long as the vector to get manipulated.</exception>
-    /// <param name="strategyParameters">The strategy vector determining the strength of the mutation.</param>
+    /// <param name="sigma">The strategy vector determining the strength of the mutation.</param>
     /// <param name="random">A random number generator.</param>
     /// <param name="vector">The real vector to manipulate.</param>
     /// <returns>The manipulated real vector.</returns>
-    public static void Apply(IRandom random, RealVector vector, RealVector strategyParameters) {
+    public static void Apply(IRandom random, RealVector vector, RealVector sigma) {
+      if (sigma == null || sigma.Length == 0) throw new ArgumentException("ERROR: Vector containing the standard deviations is not defined.", "sigma");
       NormalDistributedRandom N = new NormalDistributedRandom(random, 0.0, 1.0);
-      if (strategyParameters != null && strategyParameters.Length > 0) {
-        for (int i = 0; i < vector.Length; i++) {
-          vector[i] = vector[i] + (N.NextDouble() * strategyParameters[i % strategyParameters.Length]);
-        }
-      } else {
-        for (int i = 0; i < vector.Length; i++) {
-          vector[i] = vector[i] + N.NextDouble();
-        }
+      for (int i = 0; i < vector.Length; i++) {
+        vector[i] = vector[i] + (N.NextDouble() * sigma[i % sigma.Length]);
       }
     }
 
@@ -98,7 +83,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// <param name="random">The random number generator.</param>
     /// <param name="realVector">The vector of real values that is manipulated.</param>
     protected override void Manipulate(IRandom random, RealVector realVector) {
-      Apply(random, realVector, StrategyParameterParameter.ActualValue);
+      Apply(random, realVector, SigmaParameter.Value);
     }
   }
 }

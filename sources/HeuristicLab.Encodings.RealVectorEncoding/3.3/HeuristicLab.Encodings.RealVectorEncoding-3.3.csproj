@@ -110,6 +110,7 @@
     <Compile Include="Interfaces\IRealVectorCreator.cs" />
     <Compile Include="BoundsChecker.cs" />
     <Compile Include="Creators\UniformRandomRealVectorCreator.cs" />
+    <Compile Include="Manipulators\SelfAdaptiveNormalAllPositionsManipulator.cs" />
     <Compile Include="RealVectorCreator.cs" />
     <Compile Include="RealVectorCrossover.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -139,7 +140,7 @@
     <Compile Include="Interfaces\IRealVectorMoveGenerator.cs" />
     <Compile Include="Interfaces\IRealVectorMoveOperator.cs" />
     <Compile Include="Manipulators\MultiRealVectorManipulator.cs" />
-    <Compile Include="Manipulators\NormalAllPositionsManipulator.cs" />
+    <Compile Include="Manipulators\FixedNormalAllPositionsManipulator.cs" />
     <Compile Include="Moves\AdditiveMoveTabuChecker.cs" />
     <Compile Include="Moves\AdditiveMoveTabuMaker.cs" />
     <Compile Include="Moves\AdditiveMoveTabuAttribute.cs" />
