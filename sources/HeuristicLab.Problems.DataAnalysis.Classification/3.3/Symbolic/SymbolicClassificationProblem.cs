@@ -33,10 +33,10 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Problems.DataAnalysis.Classification.Symbolic.Analyzers;
 using HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
-using HeuristicLab.Problems.DataAnalysis.Classification.Symbolic.Analyzers;
 
 namespace HeuristicLab.Problems.DataAnalysis.Classification {
   [Item("Classification Problem", "Represents a classfication problem.")]
@@ -247,6 +247,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
       Operators.AddRange(ApplicationManager.Manager.GetInstances<ISymbolicExpressionTreeOperator>().OfType<IOperator>());
       Operators.Add(new MinAverageMaxSymbolicExpressionTreeSizeAnalyzer());
       Operators.Add(new SymbolicRegressionVariableFrequencyAnalyzer());
+      Operators.Add(new SymbolicExpressionSymbolFrequencyAnalyzer());
       Operators.Add(new ValidationBestSymbolicClassificationSolutionAnalyzer());
       Operators.Add(new TrainingBestSymbolicClassificationSolutionAnalyzer());
     }

@@ -108,6 +108,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Analyzers\SymbolicExpressionSymbolFrequencyAnalyzer.cs" />
     <Compile Include="Analyzers\MinAverageMaxSymbolicExpressionTreeSizeAnalyzer.cs" />
     <Compile Include="Analyzers\SymbolicExpressionTreeSizeCalculator.cs" />
     <Compile Include="ArchitectureManipulators\ArgumentCreater.cs" />
