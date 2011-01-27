@@ -78,6 +78,8 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       IRealVectorBoundsChecker checker = BoundsCheckerParameter.Value;
       IOperation successor = base.Apply();
       if (checker != null) {
+        checker.BoundsParameter.ActualName = BoundsParameter.ActualName;
+        checker.RealVectorParameter.ActualName = RealVectorParameter.ActualName;
         IOperation checkerOperation = ExecutionContext.CreateChildOperation(checker);
         if (successor == null) return checkerOperation;
         else return new OperationCollection(checkerOperation, successor);

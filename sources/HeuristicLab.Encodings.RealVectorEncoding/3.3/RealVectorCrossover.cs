@@ -79,10 +79,13 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
 
     public sealed override IOperation Apply() {
       RealVector result = Cross(RandomParameter.ActualValue, ParentsParameter.ActualValue);
+      ChildParameter.ActualValue = result;
 
       IRealVectorBoundsChecker checker = BoundsCheckerParameter.Value;
       IOperation successor = base.Apply();
       if (checker != null) {
+        checker.BoundsParameter.ActualName = BoundsParameter.ActualName;
+        checker.RealVectorParameter.ActualName = ChildParameter.ActualName;
         IOperation checkerOperation = ExecutionContext.CreateChildOperation(checker);
         if (successor == null) return checkerOperation;
         else return new OperationCollection(checkerOperation, successor);
