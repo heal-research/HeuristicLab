@@ -19,8 +19,8 @@
  */
 #endregion
 
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
@@ -54,6 +54,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var tan = new Tangent();
       var log = new Logarithm();
       var pow = new Power();
+      pow.InitialFrequency = 0.0;
+      var root = new Root();
+      root.InitialFrequency = 0.0;
       var exp = new Exponential();
       var @if = new IfThenElse();
       var gt = new GreaterThan();
@@ -61,6 +64,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var and = new And();
       var or = new Or();
       var not = new Not();
+
+      var timeLag = new TimeLag();
+      timeLag.InitialFrequency = 0.0;
+      var integral = new Integral();
+      integral.InitialFrequency = 0.0;
+      var derivative = new Derivative();
+      derivative.InitialFrequency = 0.0;
+
       var constant = new Constant();
       constant.MinValue = -20;
       constant.MaxValue = 20;
@@ -94,10 +105,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
        *   "<" RealValueExpression RealValueExpression
        */
 
-      var allSymbols = new List<Symbol>() { add, sub, mul, div, mean, sin, cos, tan, log, pow, exp, @if, gt, lt, and, or, not, constant, variableSymbol, laggedVariable };
+      var allSymbols = new List<Symbol>() { add, sub, mul, div, mean, sin, cos, tan, log, pow, root, exp, @if, gt, lt, and, or, not, timeLag, integral, derivative, constant, variableSymbol, laggedVariable };
 
-      var unaryFunctionSymbols = new List<Symbol>() { sin, cos, tan, log, exp, };
-      var binaryFunctionSymbols = new List<Symbol>() { add, sub, mul, div, mean, pow };
+      var unaryFunctionSymbols = new List<Symbol>() { sin, cos, tan, log, exp, timeLag, integral, derivative };
+      var binaryFunctionSymbols = new List<Symbol>() { add, sub, mul, div, mean, pow, root };
 
       var unaryBooleanFunctionSymbols = new List<Symbol>() { not };
       var binaryBooleanFunctionSymbols = new List<Symbol>() { or, and };
