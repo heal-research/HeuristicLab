@@ -59,8 +59,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
     private const string BestValidationSolutionParameterName = "Best validation solution";
     private const string BestSolutionAccuracyTrainingParameterName = "Best solution accuracy (training)";
     private const string BestSolutionAccuracyTestParameterName = "Best solution accuracy (test)";
-    private const string BestSolutionLengthParameterName = "Best solution length (validation)";
-    private const string BestSolutionHeightParameterName = "Best solution height (validiation)";
+    private const string BestSolutionLengthParameterName = "Best solution length (on validation set)";
+    private const string BestSolutionHeightParameterName = "Best solution height (on validation set)";
     private const string VariableFrequenciesParameterName = "VariableFrequencies";
 
     #region parameter properties
