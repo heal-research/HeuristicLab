@@ -82,21 +82,21 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Analyzers {
         results.Add(new Result("Symbol frequencies", SymbolFrequencies));
       }
 
+      // all rows must have the same number of values so we can just take the first
+      int numberOfValues = SymbolFrequencies.Rows.Select(r => r.Values.Count).DefaultIfEmpty().First();
+
       foreach (var pair in SymbolicExpressionSymbolFrequencyAnalyzer.CalculateSymbolFrequencies(expressions)) {
-        if (SymbolFrequencies.Rows.ContainsKey(pair.Key))
-          SymbolFrequencies.Rows[pair.Key].Values.Add(pair.Value);
-        else {
-          int missingValues = SymbolFrequencies.Rows.Select(r => r.Values.Count()-1).DefaultIfEmpty().Max();
-          List<double> values = new List<double>(Enumerable.Repeat(0.0, missingValues));
-          values.Add(pair.Value);
-          DataRow row = new DataRow(pair.Key, "", values);
+        if (!SymbolFrequencies.Rows.ContainsKey(pair.Key)) {
+          // initialize a new row for the symbol and pad with zeros
+          DataRow row = new DataRow(pair.Key, "", Enumerable.Repeat(0.0, numberOfValues));
           row.VisualProperties.StartIndexZero = true;
           SymbolFrequencies.Rows.Add(row);
         }
+        SymbolFrequencies.Rows[pair.Key].Values.Add(pair.Value);
       }
 
-      int maxValues = SymbolFrequencies.Rows.Select(r => r.Values.Count).DefaultIfEmpty().Max();
-      foreach (var row in SymbolFrequencies.Rows.Where(r => r.Values.Count != maxValues))
+      // add a zero for each data row that was not modified in the previous loop 
+      foreach (var row in SymbolFrequencies.Rows.Where(r => r.Values.Count != numberOfValues + 1))
         row.Values.Add(0.0);
 
       return base.Apply();
@@ -114,9 +114,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Analyzers {
         }
       }
 
-      foreach (string symbolName in symbolFrequencies.Keys.ToList())
-        symbolFrequencies[symbolName] /= totalNumberOfSymbols;
-      return symbolFrequencies;
+      foreach (var pair in symbolFrequencies)
+        yield return new KeyValuePair<string, double>(pair.Key, pair.Value / totalNumberOfSymbols);
     }
   }
 }
