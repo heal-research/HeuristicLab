@@ -34,6 +34,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HeuristicLabProblemTemplate
 		HeuristicLabProblemTemplate\MyTemplate.vstemplate = HeuristicLabProblemTemplate\MyTemplate.vstemplate
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HeuristicLab 3.3 Plugin Template", "HeuristicLab 3.3 Plugin Template", "{1562A0EE-488D-4BC2-AA4D-D0C33EADE000}"
+	ProjectSection(SolutionItems) = preProject
+		HeuristicLab 3.3 Plugin Template\HeuristicLab.Plugin.csproj = HeuristicLab 3.3 Plugin Template\HeuristicLab.Plugin.csproj
+		HeuristicLab 3.3 Plugin Template\HeuristicLab.snk = HeuristicLab 3.3 Plugin Template\HeuristicLab.snk
+		HeuristicLab 3.3 Plugin Template\HeuristicLabIcon.ico = HeuristicLab 3.3 Plugin Template\HeuristicLabIcon.ico
+		HeuristicLab 3.3 Plugin Template\InstallTemplate.cmd = HeuristicLab 3.3 Plugin Template\InstallTemplate.cmd
+		HeuristicLab 3.3 Plugin Template\Plugin.cs = HeuristicLab 3.3 Plugin Template\Plugin.cs
+		HeuristicLab 3.3 Plugin Template\Plugin.cs.frame = HeuristicLab 3.3 Plugin Template\Plugin.cs.frame
+		HeuristicLab 3.3 Plugin Template\PluginProjectTemplate.vstemplate = HeuristicLab 3.3 Plugin Template\PluginProjectTemplate.vstemplate
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Properties", "Properties", "{F6B35DE9-F01C-4D6D-8609-91C38B7D4B35}"
+	ProjectSection(SolutionItems) = preProject
+		HeuristicLab 3.3 Plugin Template\Properties\AssemblyInfo.cs = HeuristicLab 3.3 Plugin Template\Properties\AssemblyInfo.cs
+		HeuristicLab 3.3 Plugin Template\Properties\AssemblyInfo.frame = HeuristicLab 3.3 Plugin Template\Properties\AssemblyInfo.frame
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -74,5 +91,7 @@ Global
 		{4BB6A8B2-416E-4577-A1D9-9EC3420B8EB2} = {28A05A91-A678-43B9-8573-0A7461E20F81}
 		{0F752C36-F6AD-480A-9720-CCEB240BE914} = {28A05A91-A678-43B9-8573-0A7461E20F81}
 		{3577ED45-0083-4164-89B3-01B3CE77B279} = {28A05A91-A678-43B9-8573-0A7461E20F81}
+		{1562A0EE-488D-4BC2-AA4D-D0C33EADE000} = {28A05A91-A678-43B9-8573-0A7461E20F81}
+		{F6B35DE9-F01C-4D6D-8609-91C38B7D4B35} = {1562A0EE-488D-4BC2-AA4D-D0C33EADE000}
 	EndGlobalSection
 EndGlobal

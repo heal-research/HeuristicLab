@@ -15,6 +15,12 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_05A3CD7212E641D7AABFE7C83B1A95EF"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_102F3FAFA05819C62F87BFEFD5F1C0C9"
         "OwnerKey" = "8:_B51E170D986C45DD9BBEEC6B70686DC9"
         "MsmSig" = "8:_UNDEFINED"
@@ -202,6 +208,26 @@
         }
         "File"
         {
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_05A3CD7212E641D7AABFE7C83B1A95EF"
+            {
+            "SourcePath" = "8:..\\HeuristicLab 3.3 Plugin Template\\HeuristicLab 3.3 Plugin Template.zip"
+            "TargetName" = "8:HeuristicLab 3.3 Plugin Template.zip"
+            "Tag" = "8:"
+            "Folder" = "8:_1CDC4FAF99F44A4E856732AEFC20FAB8"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_102F3FAFA05819C62F87BFEFD5F1C0C9"
             {
             "AssemblyRegister" = "3:1"
@@ -408,6 +434,28 @@
                             "Property" = "8:_21F61396CA2A45EF826387C986A27619"
                                 "Folders"
                                 {
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_220AC1CBA0904F879BCEF1A0BFFEE9DC"
+                                    {
+                                    "Name" = "8:ProjectTemplates"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_8046FC50DB2747AD88108A26491C9719"
+                                        "Folders"
+                                        {
+                                            "{9EF0B969-E518-4E46-987F-47570745A589}:_1CDC4FAF99F44A4E856732AEFC20FAB8"
+                                            {
+                                            "Name" = "8:Visual C#"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_BA93FB8E5BD94A668C5DE542105242E3"
+                                                "Folders"
+                                                {
+                                                }
+                                            }
+                                        }
+                                    }
                                     "{9EF0B969-E518-4E46-987F-47570745A589}:_39EF377865F94878B7F5EC5C5E3729F9"
                                     {
                                     "Name" = "8:ItemTemplates"
@@ -420,7 +468,7 @@
                                             "{9EF0B969-E518-4E46-987F-47570745A589}:_E33A3941E42F482B99D2418470C8A183"
                                             {
                                             "Name" = "8:Visual C#"
-                                            "AlwaysCreate" = "11:TRUE"
+                                            "AlwaysCreate" = "11:FALSE"
                                             "Condition" = "8:"
                                             "Transitive" = "11:FALSE"
                                             "Property" = "8:_07FF9CBD97B84CC1B2E12624E17284EC"
@@ -618,20 +666,6 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_640D4F41D6084D93A4C87B88C633E382"
-            {
-            "Name" = "8:Visual C# Templates"
-            "Arguments" = "8:"
-            "Description" = "8:"
-            "ShowCmd" = "3:1"
-            "IconIndex" = "3:0"
-            "Transitive" = "11:FALSE"
-            "Target" = "8:_E33A3941E42F482B99D2418470C8A183"
-            "Folder" = "8:_EB8295E99C2A46578D53F50F3B4F5A64"
-            "WorkingFolder" = "8:_E33A3941E42F482B99D2418470C8A183"
-            "Icon" = "8:"
-            "Feature" = "8:"
-            }
         }
         "UserInterface"
         {
