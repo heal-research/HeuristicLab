@@ -311,6 +311,7 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       operators.AddRange(ApplicationManager.Manager.GetInstances<ISymbolicExpressionTreeOperator>().OfType<IOperator>());
       operators.Add(new BestAntTrailAnalyzer());
       operators.Add(new MinAverageMaxSymbolicExpressionTreeSizeAnalyzer());
+      operators.Add(new SymbolicExpressionSymbolFrequencyAnalyzer());
       ParameterizeAnalyzers();
       ParameterizeOperators();
     }
