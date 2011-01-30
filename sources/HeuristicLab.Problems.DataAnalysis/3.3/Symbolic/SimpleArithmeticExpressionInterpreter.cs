@@ -33,6 +33,64 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("SimpleArithmeticExpressionInterpreter", "Interpreter for arithmetic symbolic expression trees including function calls.")]
   public sealed class SimpleArithmeticExpressionInterpreter : NamedItem, ISymbolicExpressionTreeInterpreter {
+    private class InterpreterState {
+      private const int ARGUMENT_STACK_SIZE = 1024;
+      private double[] argumentStack;
+      private int argumentStackPointer;
+      private Instruction[] code;
+      private int pc;
+      public int ProgramCounter {
+        get { return pc; }
+        set { pc = value; }
+      }
+      internal InterpreterState(Instruction[] code) {
+        this.code = code;
+        this.pc = 0;
+        this.argumentStack = new double[ARGUMENT_STACK_SIZE];
+        this.argumentStackPointer = 0;
+      }
+
+      internal void Reset() {
+        this.pc = 0;
+        this.argumentStackPointer = 0;
+      }
+
+      internal Instruction NextInstruction() {
+        return code[pc++];
+      }
+      private void Push(double val) {
+        argumentStack[argumentStackPointer++] = val;
+      }
+      private double Pop() {
+        return argumentStack[--argumentStackPointer];
+      }
+
+      internal void CreateStackFrame(double[] argValues) {
+        // push in reverse order to make indexing easier
+        for (int i = argValues.Length - 1; i >= 0; i--) {
+          argumentStack[argumentStackPointer++] = argValues[i];
+        }
+        Push(argValues.Length);
+      }
+
+      internal void RemoveStackFrame() {
+        int size = (int)Pop();
+        argumentStackPointer -= size;
+      }
+
+      internal double GetStackFrameValue(ushort index) {
+        // layout of stack:
+        // [0]   <- argumentStackPointer
+        // [StackFrameSize = N + 1]
+        // [Arg0] <- argumentStackPointer - 2 - 0
+        // [Arg1] <- argumentStackPointer - 2 - 1
+        // [...]
+        // [ArgN] <- argumentStackPointer - 2 - N
+        // <Begin of stack frame>
+        return argumentStack[argumentStackPointer - index - 2];
+      }
+    }
+
     private class OpCodes {
       public const byte Add = 1;
       public const byte Sub = 2;
@@ -100,7 +158,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       { typeof(Integral), OpCodes.Integral},
       { typeof(Derivative), OpCodes.Derivative},
     };
-    private const int ARGUMENT_STACK_SIZE = 1024;
+
 
     public override bool CanChangeName {
       get { return false; }
@@ -136,123 +194,122 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           code[i] = instr;
         }
       }
+      var state = new InterpreterState(code);
 
-      double[] argumentStack = new double[ARGUMENT_STACK_SIZE];
       foreach (var rowEnum in rows) {
         int row = rowEnum;
-        int pc = 0;
-        int argStackPointer = 0;
-        yield return Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
+        state.Reset();
+        yield return Evaluate(dataset, ref row, state);
       }
     }
 
-    private double Evaluate(Dataset dataset, ref int row, Instruction[] code, ref int pc, double[] argumentStack, ref int argStackPointer) {
-      Instruction currentInstr = code[pc++];
+    private double Evaluate(Dataset dataset, ref int row, InterpreterState state) {
+      Instruction currentInstr = state.NextInstruction();
       switch (currentInstr.opCode) {
         case OpCodes.Add: {
-            double s = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
+            double s = Evaluate(dataset, ref row, state);
             for (int i = 1; i < currentInstr.nArguments; i++) {
-              s += Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
+              s += Evaluate(dataset, ref row, state);
             }
             return s;
           }
         case OpCodes.Sub: {
-            double s = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
+            double s = Evaluate(dataset, ref row, state);
             for (int i = 1; i < currentInstr.nArguments; i++) {
-              s -= Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
+              s -= Evaluate(dataset, ref row, state);
             }
             if (currentInstr.nArguments == 1) s = -s;
             return s;
           }
         case OpCodes.Mul: {
-            double p = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
+            double p = Evaluate(dataset, ref row, state);
             for (int i = 1; i < currentInstr.nArguments; i++) {
-              p *= Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
+              p *= Evaluate(dataset, ref row, state);
             }
             return p;
           }
         case OpCodes.Div: {
-            double p = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
+            double p = Evaluate(dataset, ref row, state);
             for (int i = 1; i < currentInstr.nArguments; i++) {
-              p /= Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
+              p /= Evaluate(dataset, ref row, state);
             }
             if (currentInstr.nArguments == 1) p = 1.0 / p;
             return p;
           }
         case OpCodes.Average: {
-            double sum = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
+            double sum = Evaluate(dataset, ref row, state);
             for (int i = 1; i < currentInstr.nArguments; i++) {
-              sum += Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
+              sum += Evaluate(dataset, ref row, state);
             }
             return sum / currentInstr.nArguments;
           }
         case OpCodes.Cos: {
-            return Math.Cos(Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer));
+            return Math.Cos(Evaluate(dataset, ref row, state));
           }
         case OpCodes.Sin: {
-            return Math.Sin(Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer));
+            return Math.Sin(Evaluate(dataset, ref row, state));
           }
         case OpCodes.Tan: {
-            return Math.Tan(Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer));
+            return Math.Tan(Evaluate(dataset, ref row, state));
           }
         case OpCodes.Power: {
-            double x = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
-            double y = Math.Round(Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer));
+            double x = Evaluate(dataset, ref row, state);
+            double y = Math.Round(Evaluate(dataset, ref row, state));
             return Math.Pow(x, y);
           }
         case OpCodes.Root: {
-            double x = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
-            double y = Math.Round(Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer));
+            double x = Evaluate(dataset, ref row, state);
+            double y = Math.Round(Evaluate(dataset, ref row, state));
             return Math.Pow(x, 1 / y);
           }
         case OpCodes.Exp: {
-            return Math.Exp(Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer));
+            return Math.Exp(Evaluate(dataset, ref row, state));
           }
         case OpCodes.Log: {
-            return Math.Log(Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer));
+            return Math.Log(Evaluate(dataset, ref row, state));
           }
         case OpCodes.IfThenElse: {
-            double condition = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
+            double condition = Evaluate(dataset, ref row, state);
             double result;
             if (condition > 0.0) {
-              result = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer); SkipBakedCode(code, ref pc);
+              result = Evaluate(dataset, ref row, state); SkipInstructions(state);
             } else {
-              SkipBakedCode(code, ref pc); result = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
+              SkipInstructions(state); result = Evaluate(dataset, ref row, state);
             }
             return result;
           }
         case OpCodes.AND: {
-            double result = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
+            double result = Evaluate(dataset, ref row, state);
             for (int i = 1; i < currentInstr.nArguments; i++) {
-              if (result <= 0.0) SkipBakedCode(code, ref pc);
+              if (result <= 0.0) SkipInstructions(state);
               else {
-                result = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
+                result = Evaluate(dataset, ref row, state);
               }
             }
             return result <= 0.0 ? -1.0 : 1.0;
           }
         case OpCodes.OR: {
-            double result = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
+            double result = Evaluate(dataset, ref row, state);
             for (int i = 1; i < currentInstr.nArguments; i++) {
-              if (result > 0.0) SkipBakedCode(code, ref pc);
+              if (result > 0.0) SkipInstructions(state);
               else {
-                result = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
+                result = Evaluate(dataset, ref row, state);
               }
             }
             return result > 0.0 ? 1.0 : -1.0;
           }
         case OpCodes.NOT: {
-            return -Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
+            return -Evaluate(dataset, ref row, state);
           }
         case OpCodes.GT: {
-            double x = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
-            double y = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
+            double x = Evaluate(dataset, ref row, state);
+            double y = Evaluate(dataset, ref row, state);
             if (x > y) return 1.0;
             else return -1.0;
           }
         case OpCodes.LT: {
-            double x = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
-            double y = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
+            double x = Evaluate(dataset, ref row, state);
+            double y = Evaluate(dataset, ref row, state);
             if (x < y) return 1.0;
             else return -1.0;
           }
@@ -262,23 +319,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
               return double.NaN;
 
             row += timeLagTreeNode.Lag;
-            double result = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
+            double result = Evaluate(dataset, ref row, state);
             row -= timeLagTreeNode.Lag;
             return result;
           }
         case OpCodes.Integral: {
-            int nextPc = pc;
+            int savedPc = state.ProgramCounter;
             var timeLagTreeNode = (LaggedTreeNode)currentInstr.dynamicNode;
             if (row + timeLagTreeNode.Lag < 0 || row + timeLagTreeNode.Lag >= dataset.Rows)
               return double.NaN;
             double sum = 0.0;
             for (int i = 0; i < Math.Abs(timeLagTreeNode.Lag); i++) {
               row += Math.Sign(timeLagTreeNode.Lag);
-              sum += Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
-              pc = nextPc;
+              sum += Evaluate(dataset, ref row, state);
+              state.ProgramCounter = savedPc;
             }
             row -= timeLagTreeNode.Lag;
-            sum += Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
+            sum += Evaluate(dataset, ref row, state);
             return sum;
           }
 
@@ -288,43 +345,43 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         // y' = 1/8h (f_i + 2f_i-1, -2 f_i-3 - f_i-4)
         case OpCodes.Derivative: {
             if (row - 4 < 0) return double.NaN;
-            int nextPc = pc;
-            double f_0 = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer); ; row--;
-            pc = nextPc;
-            double f_1 = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer); ; row -= 2;
-            pc = nextPc;
-            double f_3 = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer); ; row--;
-            pc = nextPc;
-            double f_4 = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer); ;
+            int savedPc = state.ProgramCounter;
+            double f_0 = Evaluate(dataset, ref row, state); ; row--;
+            state.ProgramCounter = savedPc;
+            double f_1 = Evaluate(dataset, ref row, state); ; row -= 2;
+            state.ProgramCounter = savedPc;
+            double f_3 = Evaluate(dataset, ref row, state); ; row--;
+            state.ProgramCounter = savedPc;
+            double f_4 = Evaluate(dataset, ref row, state); ;
             row += 4;
 
             return (f_0 + 2 * f_1 - 2 * f_3 - f_4) / 8; // h = 1
           }
         case OpCodes.Call: {
             // evaluate sub-trees
-            // push on argStack in reverse order 
+            double[] argValues = new double[currentInstr.nArguments];
             for (int i = 0; i < currentInstr.nArguments; i++) {
-              argumentStack[argStackPointer + currentInstr.nArguments - i] = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
+              argValues[i] = Evaluate(dataset, ref row, state);
             }
-            argStackPointer += currentInstr.nArguments;
+            // push on argument values on stack 
+            state.CreateStackFrame(argValues);
 
             // save the pc
-            int nextPc = pc;
+            int savedPc = state.ProgramCounter;
             // set pc to start of function  
-            pc = currentInstr.iArg0;
+            state.ProgramCounter = currentInstr.iArg0;
             // evaluate the function
-            double v = Evaluate(dataset, ref row, code, ref pc, argumentStack, ref argStackPointer);
+            double v = Evaluate(dataset, ref row, state);
 
-            // decrease the argument stack pointer by the number of arguments pushed
-            // to set the argStackPointer back to the original location
-            argStackPointer -= currentInstr.nArguments;
+            // delete the stack frame
+            state.RemoveStackFrame();
 
             // restore the pc => evaluation will continue at point after my subtrees  
-            pc = nextPc;
+            state.ProgramCounter = savedPc;
             return v;
           }
         case OpCodes.Arg: {
-            return argumentStack[argStackPointer - currentInstr.iArg0];
+            return state.GetStackFrameValue(currentInstr.iArg0);
           }
         case OpCodes.Variable: {
             var variableTreeNode = currentInstr.dynamicNode as VariableTreeNode;
@@ -352,10 +409,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     // skips a whole branch
-    private void SkipBakedCode(Instruction[] code, ref int pc) {
+    private void SkipInstructions(InterpreterState state) {
       int i = 1;
       while (i > 0) {
-        i += code[pc++].nArguments;
+        i += state.NextInstruction().nArguments;
         i--;
       }
     }
