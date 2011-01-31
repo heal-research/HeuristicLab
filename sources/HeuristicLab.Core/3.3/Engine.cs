@@ -52,7 +52,6 @@ namespace HeuristicLab.Core {
     protected Engine(bool deserializing) : base(deserializing) { }
     protected Engine(Engine original, Cloner cloner)
       : base(original, cloner) {
-      if (original.ExecutionState == ExecutionState.Started) throw new InvalidOperationException(string.Format("Clone not allowed in execution state \"{0}\".", ExecutionState));
       log = cloner.Clone(original.log);
       executionStack = new Stack<IOperation>();
       IOperation[] contexts = original.executionStack.ToArray();
