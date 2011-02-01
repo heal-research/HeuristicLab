@@ -1227,6 +1227,21 @@ namespace HeuristicLab.Persistence_33.Tests {
       Assert.AreEqual("serial data", newTest.value);
     }
 
+    [TestMethod]
+    public void TestTypeCacheExport() {
+      var test = new List<List<int>>();
+      test.Add(new List<int>() { 1, 2, 3 });
+      IEnumerable<Type> types;
+      using (var stream = new MemoryStream()) {
+        XmlGenerator.Serialize(test, stream, ConfigurationService.Instance.GetConfiguration(new XmlFormat()), false, out types);
+      }
+      List<Type> t = new List<Type>(types);
+      // Assert.IsTrue(t.Contains(typeof(int))); not serialized as an int list is directly transformed into a string
+      Assert.IsTrue(t.Contains(typeof(List<int>)));
+      Assert.IsTrue(t.Contains(typeof(List<List<int>>)));
+      Assert.AreEqual(t.Count, 2);
+    }
+
 
 
     [ClassInitialize]

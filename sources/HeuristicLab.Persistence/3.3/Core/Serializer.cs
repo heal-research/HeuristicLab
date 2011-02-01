@@ -127,6 +127,12 @@ namespace HeuristicLab.Persistence.Core {
       requiredFiles = new List<string>(files.Keys);
     }
 
+    public IEnumerable<Type> SerializedTypes {
+      get {
+        return typeCache.Keys;
+      }
+    }
+
     /// <summary>
     /// Initializes a new instance of the <see cref="Serializer"/> class.
     /// </summary>

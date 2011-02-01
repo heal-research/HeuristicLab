@@ -404,22 +404,44 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// <param name="includeAssemblies">if set to <c>true</c> include need assemblies.</param>
     public static void Serialize(object obj, Stream stream, Configuration config, bool includeAssemblies) {
       try {
-        using (StreamWriter writer = new StreamWriter(new GZipStream(stream, CompressionMode.Compress))) {
-          Serializer serializer = new Serializer(obj, config);
-          serializer.InterleaveTypeInformation = true;
-          XmlGenerator generator = new XmlGenerator();
-          foreach (ISerializationToken token in serializer) {
-            string line = generator.Format(token);
-            writer.Write(line);
-          }
-          writer.Flush();
-        }
-      }
-      catch (PersistenceException) {
+        Serializer serializer = new Serializer(obj, config);
+        Serialize(stream, serializer);
+      } catch (PersistenceException) {
         throw;
-      }
-      catch (Exception e) {
+      } catch (Exception e) {
         throw new PersistenceException("Unexpected exception during Serialization.", e);
+      }
+    }
+
+    /// <summary>
+    /// Serializes the specified object into a stream.
+    /// </summary>
+    /// <param name="obj">The object.</param>
+    /// <param name="stream">The stream.</param>
+    /// <param name="config">The configuration.</param>
+    /// <param name="includeAssemblies">if set to <c>true</c> include need assemblies.</param>
+    /// <param name="types">The list of all serialized types.</param>
+    public static void Serialize(object obj, Stream stream, Configuration config, bool includeAssemblies, out IEnumerable<Type> types) {
+      try {
+        Serializer serializer = new Serializer(obj, config);
+        Serialize(stream, serializer);
+        types = serializer.SerializedTypes;
+      } catch (PersistenceException) {
+        throw;
+      } catch (Exception e) {
+        throw new PersistenceException("Unexpected exception during Serialization.", e);
+      }
+    }
+
+    private static void Serialize(Stream stream, Serializer serializer) {
+      using (StreamWriter writer = new StreamWriter(new GZipStream(stream, CompressionMode.Compress))) {
+        serializer.InterleaveTypeInformation = true;
+        XmlGenerator generator = new XmlGenerator();
+        foreach (ISerializationToken token in serializer) {
+          string line = generator.Format(token);
+          writer.Write(line);
+        }
+        writer.Flush();
       }
     }
   }
