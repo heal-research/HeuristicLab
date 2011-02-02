@@ -318,7 +318,7 @@ namespace HeuristicLab.Operators.Programmable {
     private static CSharpCodeProvider codeProvider =
       new CSharpCodeProvider(
         new Dictionary<string, string>() {
-          { "CompilerVersion", "v3.5" },  // support C# 3.0 syntax
+          { "CompilerVersion", "v4.0" },  // support C# 4.0 syntax
         });
 
     private CompilerResults DoCompile() {
