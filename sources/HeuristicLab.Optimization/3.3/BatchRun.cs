@@ -100,9 +100,8 @@ namespace HeuristicLab.Optimization {
     }
     // BackwardsCompatibility3.3
     #region Backwards compatible code (remove with 3.4)
-    [Storable]
+    [Storable(AllowOneWay = true)]
     private IAlgorithm algorithm {
-      get { return null; }
       set { optimizer = value; }
     }
     #endregion
