@@ -22,12 +22,16 @@
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
+using HeuristicLab.PluginInfrastructure;
+using System.Collections.Generic;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Formatters;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
   [View("SymbolicExpression View")]
   [Content(typeof(SymbolicExpressionTree), false)]
   public partial class SymbolicExpressionView : AsynchronousContentView {
-    private SymbolicExpressionTreeStringFormatter treeFormatter;
+
+    List<ISymbolicExpressionTreeStringFormatter> treeFormattersList = new List<ISymbolicExpressionTreeStringFormatter>();
 
     public new SymbolicExpressionTree Content {
       get { return (SymbolicExpressionTree)base.Content; }
@@ -36,21 +40,38 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
 
     public SymbolicExpressionView() {
       InitializeComponent();
-      treeFormatter = new SymbolicExpressionTreeStringFormatter();
+      IEnumerable<ISymbolicExpressionTreeStringFormatter> formatters = ApplicationManager.Manager.GetInstances<ISymbolicExpressionTreeStringFormatter>();
+      treeFormattersList = new List<ISymbolicExpressionTreeStringFormatter>();
+      int selectedIndex = -1;
+      foreach (ISymbolicExpressionTreeStringFormatter formatter in formatters) {
+        if (formatter is SymbolicExpressionTreeStringFormatter)
+          selectedIndex = treeFormattersList.Count;
+        treeFormattersList.Add(formatter);
+        formattersComboBox.Items.Add(formatter.Name);
+      }
+      formattersComboBox.SelectedIndex = selectedIndex;
     }
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      if (Content == null)
+      UpdateTextbox();
+    }
+
+    private void UpdateTextbox() {
+      if (Content == null || formattersComboBox.SelectedIndex < 0)
         textBox.Text = string.Empty;
       else
-        textBox.Text = treeFormatter.Format(Content);
+        textBox.Text = treeFormattersList[formattersComboBox.SelectedIndex].Format(Content);
     }
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
       textBox.Enabled = Content != null;
       textBox.ReadOnly = ReadOnly;
+    }
+
+    private void formattersComboBox_SelectedIndexChanged(object sender, System.EventArgs e) {
+      UpdateTextbox();
     }
   }
 }

@@ -125,11 +125,13 @@
     <Compile Include="Creators\SymbolicExpressionTreeCreator.cs" />
     <Compile Include="Crossovers\CrossoverPoint.cs" />
     <Compile Include="Crossovers\SymbolicExpressionTreeCrossover.cs" />
+    <Compile Include="Formatters\SymbolicExpressionTreeStringFormatter.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionTreeAnalyzer.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionTreeArchitectureManipulator.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionTreeCreator.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionTreeCrossover.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionTreeNode.cs" />
+    <Compile Include="Interfaces\ISymbolicExpressionTreeStringFormatter.cs" />
     <Compile Include="Manipulators\ChangeNodeTypeManipulation.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionTreeManipulator.cs" />
     <Compile Include="Manipulators\ReplaceBranchManipulation.cs" />
@@ -138,7 +140,6 @@
     <Compile Include="Manipulators\OnePointShaker.cs" />
     <Compile Include="Manipulators\SymbolicExpressionTreeManipulator.cs" />
     <Compile Include="SymbolicExpressionTreeGrammar.cs" />
-    <Compile Include="SymbolicExpressionTreeStringFormatter.cs" />
     <Compile Include="SymbolicExpressionTreeTopLevelNode.cs" />
     <Compile Include="Crossovers\SubtreeCrossover.cs">
       <SubType>Code</SubType>

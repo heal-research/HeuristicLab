@@ -45,23 +45,54 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     /// </summary>
     private void InitializeComponent() {
       this.textBox = new System.Windows.Forms.TextBox();
+      this.formattersComboBox = new System.Windows.Forms.ComboBox();
+      this.formatterLabel = new System.Windows.Forms.Label();
       this.SuspendLayout();
       // 
       // textBox
       // 
-      this.textBox.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.textBox.Location = new System.Drawing.Point(0, 0);
+      this.textBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.textBox.BackColor = System.Drawing.Color.White;
+      this.textBox.Location = new System.Drawing.Point(3, 30);
       this.textBox.Multiline = true;
       this.textBox.Name = "textBox";
-      this.textBox.Size = new System.Drawing.Size(150, 150);
+      this.textBox.ReadOnly = true;
+      this.textBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+      this.textBox.Size = new System.Drawing.Size(475, 282);
       this.textBox.TabIndex = 0;
       // 
-      // SymbolicExpressionTreeView
+      // formattersComboBox
+      // 
+      this.formattersComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.formattersComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.formattersComboBox.FormattingEnabled = true;
+      this.formattersComboBox.Location = new System.Drawing.Point(72, 3);
+      this.formattersComboBox.Name = "formattersComboBox";
+      this.formattersComboBox.Size = new System.Drawing.Size(406, 21);
+      this.formattersComboBox.TabIndex = 1;
+      this.formattersComboBox.SelectedIndexChanged += new System.EventHandler(this.formattersComboBox_SelectedIndexChanged);
+      // 
+      // formatterLabel
+      // 
+      this.formatterLabel.AutoSize = true;
+      this.formatterLabel.Location = new System.Drawing.Point(3, 6);
+      this.formatterLabel.Name = "formatterLabel";
+      this.formatterLabel.Size = new System.Drawing.Size(54, 13);
+      this.formatterLabel.TabIndex = 2;
+      this.formatterLabel.Text = "Formatter:";
+      // 
+      // SymbolicExpressionView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.formatterLabel);
+      this.Controls.Add(this.formattersComboBox);
       this.Controls.Add(this.textBox);
-      this.Name = "SymbolicExpressionTreeView";
+      this.Name = "SymbolicExpressionView";
+      this.Size = new System.Drawing.Size(481, 315);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -70,5 +101,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     #endregion
 
     private System.Windows.Forms.TextBox textBox;
+    private System.Windows.Forms.ComboBox formattersComboBox;
+    private System.Windows.Forms.Label formatterLabel;
   }
 }

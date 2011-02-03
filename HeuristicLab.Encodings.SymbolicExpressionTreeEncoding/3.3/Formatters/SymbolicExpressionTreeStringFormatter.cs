@@ -20,15 +20,27 @@
 #endregion
 
 using System.Text;
+using HeuristicLab.Core;
+using HeuristicLab.Common;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
-  
-  public class SymbolicExpressionTreeStringFormatter {
-    
+namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Formatters {
+
+  [Item("SymbolicExpressionTreeStringFormatter", "The default string formatter for symbolic expression trees.")]
+  [StorableClass]
+  public class SymbolicExpressionTreeStringFormatter : NamedItem, ISymbolicExpressionTreeStringFormatter {
+
     public bool Indent { get; set; }
-    
+
+    [StorableConstructor]
+    protected SymbolicExpressionTreeStringFormatter(bool deserializing) : base(deserializing) { }
+    protected SymbolicExpressionTreeStringFormatter(SymbolicExpressionTreeStringFormatter original, Cloner cloner)
+      : base(original, cloner) {
+      Indent = original.Indent;
+    }
     public SymbolicExpressionTreeStringFormatter()
       : base() {
+      Name = "Default String Formatter";
       Indent = true;
     }
 
@@ -58,5 +70,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       }
       return strBuilder.ToString();
     }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SymbolicExpressionTreeStringFormatter(this, cloner);
+    }
+
   }
+
 }
