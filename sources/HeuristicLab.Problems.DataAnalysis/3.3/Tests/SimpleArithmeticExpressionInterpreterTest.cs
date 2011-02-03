@@ -56,7 +56,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     public void FullGrammarSimpleArithmeticExpressionInterpreterPerformanceTest() {
-      var twister = new MersenneTwister();
+      var twister = new MersenneTwister(31415);
       var dataset = Util.CreateRandomDataset(twister, Rows, Columns);
       var grammar = new GlobalSymbolicExpressionGrammar(new FullFunctionalExpressionGrammar());
       grammar.MaxFunctionArguments = 0;
@@ -75,7 +75,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
     [TestMethod]
     public void ArithmeticGrammarSimpleArithmeticExpressionInterpreterPerformanceTest() {
-      var twister = new MersenneTwister();
+      var twister = new MersenneTwister(31415);
       var dataset = Util.CreateRandomDataset(twister, Rows, Columns);
       var grammar = new GlobalSymbolicExpressionGrammar(new ArithmeticExpressionGrammar());
       grammar.MaxFunctionArguments = 0;
