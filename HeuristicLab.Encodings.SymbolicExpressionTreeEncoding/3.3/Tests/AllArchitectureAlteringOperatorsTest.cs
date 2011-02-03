@@ -79,7 +79,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
             var op = combinedAAOperator.Operators.SelectRandom(random);
             bool success = false;
             op.ModifyArchitecture(random, selectedTree, grammar, maxTreeSize, maxTreeHeigth, maxDefuns, maxArgs, out success);
-            if (!success) failedEvents++;
+            if (!success) failedEvents++; // architecture manipulation might fail
             Util.IsValid(selectedTree);
             newTrees.Add(selectedTree);
           } else {
@@ -92,7 +92,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
             } while (par0.Size > MAX_TREE_SIZE || par1.Size > MAX_TREE_SIZE);
             bool success;
             newTrees.Add(SubtreeCrossover.Cross(random, par0, par1, 0.9, MAX_TREE_SIZE, MAX_TREE_HEIGHT, out success));
-            Assert.IsTrue(success);
+            Assert.IsTrue(success); // crossover must succeed
           }
         }
         trees = newTrees;
@@ -101,12 +101,15 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
       var msPerOperation = stopwatch.ElapsedMilliseconds / (double)POPULATION_SIZE / (double)N_ITERATIONS;
       Console.WriteLine("AllArchitectureAlteringOperators: " + Environment.NewLine +
         "Operations / s: ~" + Math.Round(1000.0 / (msPerOperation)) + "operations / s)" + Environment.NewLine +
-        "Failed events: " + failedEvents / (double)(POPULATION_SIZE * N_ITERATIONS) + "%" + Environment.NewLine +
+        "Failed events: " + failedEvents * 100.0 / (double)(POPULATION_SIZE * N_ITERATIONS * 2.0) + "%" + Environment.NewLine +
         Util.GetSizeDistributionString(trees, 200, 5) + Environment.NewLine +
         Util.GetFunctionDistributionString(trees) + Environment.NewLine +
         Util.GetNumberOfSubTreesDistributionString(trees) + Environment.NewLine +
         Util.GetTerminalDistributionString(trees) + Environment.NewLine
         );
+
+      Assert.IsTrue(failedEvents * 100.0 / (POPULATION_SIZE * N_ITERATIONS * 2.0) < 25.0); // 75% of architecture operations must succeed
+      Assert.IsTrue(Math.Round(1000.0 / (msPerOperation)) > 1000); // must achieve more than 1000 ops per second
     }
   }
 }

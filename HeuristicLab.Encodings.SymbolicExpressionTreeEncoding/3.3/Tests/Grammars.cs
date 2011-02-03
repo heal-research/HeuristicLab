@@ -78,6 +78,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
         var sub = new Subtraction();
         var mul = new Multiplication();
         var div = new Division();
+        div.InitialFrequency = 0.0; // disable division symbol
         var terminal = new Terminal();
 
         var allSymbols = new List<Symbol>() { add, sub, mul, div, terminal };

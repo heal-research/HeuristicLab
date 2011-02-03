@@ -85,6 +85,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
         Util.GetNumberOfSubTreesDistributionString(trees) + Environment.NewLine +
         Util.GetTerminalDistributionString(trees) + Environment.NewLine
         );
+
+      Assert.IsTrue(Math.Round(1000.0 / (msPerCrossoverEvent)) > 2000); // must achieve more than 2000 x-overs/s
     }
   }
 }
