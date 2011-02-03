@@ -46,8 +46,8 @@ namespace HeuristicLab.Selection {
       return new Replacer(this, cloner);
     }
     public Replacer() {
-      Parameters.Add(new ValueLookupParameter<ISelector>("ReplacedSelector", "The selection operator to select those scopes that are to be replaced."));
-      Parameters.Add(new ValueLookupParameter<ISelector>("SelectedSelector", "The selection operator to select those scopes that are replacing the others."));
+      Parameters.Add(new ValueLookupParameter<ISelector>("ReplacedSelector", "The selection operator to select those scopes that are to be replaced. If no selection operator is defined, random selection will be applied."));
+      Parameters.Add(new ValueLookupParameter<ISelector>("SelectedSelector", "The selection operator to select those scopes that are replacing the others. If no selection operator is defined, random selection will be applied."));
 
       SubScopesProcessor ssp = new SubScopesProcessor();
 
