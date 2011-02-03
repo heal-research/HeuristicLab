@@ -24,7 +24,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Compiler {
   // total size of this struct should be small to improve cache access while executing the code
   // should be aligned to 8/16/32 byte
   // size = 4(8) + 1 + 1 + 2 = 8 (12)
-  public struct Instruction {
+  public class Instruction {
     // the tree node can hold additional data that is necessary for the execution of this instruction
     public SymbolicExpressionTreeNode dynamicNode;
     // op code of the function that determines what operation should be executed
