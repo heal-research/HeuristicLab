@@ -28,6 +28,8 @@ using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
 using HeuristicLab.Random;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using HeuristicLab.Problems.DataAnalysis.Evaluators;
+using System;
 namespace HeuristicLab.Problems.DataAnalysis.Tests {
   internal class Util {
 
@@ -79,26 +81,29 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
       return nNodes / (watch.ElapsedMilliseconds / 1000.0);
     }
 
-    public static void EvaluateTrees(SymbolicExpressionTree[] trees, ISymbolicExpressionTreeInterpreter interpreter, Dataset dataset, int repetitions) {
-      double[] estimation = new double[dataset.Rows];
+    public static double CalculateEvaluatedNodesPerSec(SymbolicExpressionTree[] trees, ISymbolicExpressionTreeInterpreter interpreter, Dataset dataset, int repetitions) {
       // warm up
+      IEnumerable<int> rows = Enumerable.Range(0, dataset.Rows);
+      long nNodes = 0;
+      double c = 0;
       for (int i = 0; i < trees.Length; i++) {
-        estimation = interpreter.GetSymbolicExpressionTreeValues(trees[i], dataset, Enumerable.Range(0, dataset.Rows)).ToArray();
+        nNodes += trees[i].Size * (dataset.Rows - 1);
+        c = interpreter.GetSymbolicExpressionTreeValues(trees[i], dataset, rows).Count(); // count needs to evaluate all rows
       }
 
       Stopwatch watch = new Stopwatch();
-      long nNodes = 0;
       for (int rep = 0; rep < repetitions; rep++) {
         watch.Start();
+        c = 0;
         for (int i = 0; i < trees.Length; i++) {
-          nNodes += trees[i].Size * (dataset.Rows - 1);
-          estimation = interpreter.GetSymbolicExpressionTreeValues(trees[i], dataset, Enumerable.Range(0, dataset.Rows)).ToArray();
+          interpreter.GetSymbolicExpressionTreeValues(trees[i], dataset, rows).Count(); // count needs to evaluate all rows
         }
         watch.Stop();
       }
-      Assert.Inconclusive("Random tree evaluation performance of " + interpreter.GetType() + ":" +
+      Console.WriteLine("Random tree evaluation performance of " + interpreter.GetType() + ": " +
         watch.ElapsedMilliseconds + "ms " +
-        Util.NodesPerSecond(nNodes, watch) + " nodes/sec");
+        Util.NodesPerSecond(nNodes * repetitions, watch) + " nodes/sec");
+      return Util.NodesPerSecond(nNodes * repetitions, watch);
     }
   }
 }

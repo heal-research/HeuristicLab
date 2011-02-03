@@ -70,9 +70,5 @@ namespace HeuristicLab.Problems.DataAnalysis.Evaluators {
         return onlinePearsonRSquaredEvaluator.RSquared;
       }
     }
-
-    private static bool IsInvalidValue(double d) {
-      return double.IsNaN(d) || double.IsInfinity(d);
-    }
   }
 }

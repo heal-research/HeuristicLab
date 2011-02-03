@@ -39,9 +39,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
     private const int N = 1000;
     private const int Rows = 1000;
     private const int Columns = 50;
-    private static SymbolicExpressionTree[] randomTrees;
-    private static Dataset dataset;
-    private static MersenneTwister twister;
     private TestContext testContextInstance;
 
     /// <summary>
@@ -57,26 +54,42 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
       }
     }
 
-    [ClassInitialize()]
-    public static void CreateRandomTrees(TestContext testContext) {
-      twister = new MersenneTwister();
-      dataset = Util.CreateRandomDataset(twister, Rows, Columns);
+    [TestMethod]
+    public void FullGrammarSimpleArithmeticExpressionInterpreterPerformanceTest() {
+      var twister = new MersenneTwister();
+      var dataset = Util.CreateRandomDataset(twister, Rows, Columns);
       var grammar = new GlobalSymbolicExpressionGrammar(new FullFunctionalExpressionGrammar());
       grammar.MaxFunctionArguments = 0;
       grammar.MaxFunctionDefinitions = 0;
       grammar.MinFunctionArguments = 0;
       grammar.MinFunctionDefinitions = 0;
-      randomTrees = Util.CreateRandomTrees(twister, dataset, grammar, N, 1, 100, 0, 0);
-    }
-
-    [TestMethod]
-    public void SimpleArithmeticExpressionInterpreterPerformanceTest() {
+      var randomTrees = Util.CreateRandomTrees(twister, dataset, grammar, N, 1, 100, 0, 0);
       double[] estimation = new double[Rows];
       foreach (SymbolicExpressionTree tree in randomTrees) {
         Util.InitTree(tree, twister, new List<string>(dataset.VariableNames));
       }
       SimpleArithmeticExpressionInterpreter interpreter = new SimpleArithmeticExpressionInterpreter();
-      Util.EvaluateTrees(randomTrees, interpreter, dataset, 10);
+      double nodesPerSec = Util.CalculateEvaluatedNodesPerSec(randomTrees, interpreter, dataset, 3);
+      Assert.IsTrue(nodesPerSec > 15.0e6); // evaluated nodes per seconds must be larger than 15mNodes/sec
+    }
+
+    [TestMethod]
+    public void ArithmeticGrammarSimpleArithmeticExpressionInterpreterPerformanceTest() {
+      var twister = new MersenneTwister();
+      var dataset = Util.CreateRandomDataset(twister, Rows, Columns);
+      var grammar = new GlobalSymbolicExpressionGrammar(new ArithmeticExpressionGrammar());
+      grammar.MaxFunctionArguments = 0;
+      grammar.MaxFunctionDefinitions = 0;
+      grammar.MinFunctionArguments = 0;
+      grammar.MinFunctionDefinitions = 0;
+      var randomTrees = Util.CreateRandomTrees(twister, dataset, grammar, N, 1, 100, 0, 0);
+      double[] estimation = new double[Rows];
+      foreach (SymbolicExpressionTree tree in randomTrees) {
+        Util.InitTree(tree, twister, new List<string>(dataset.VariableNames));
+      }
+      SimpleArithmeticExpressionInterpreter interpreter = new SimpleArithmeticExpressionInterpreter();
+      double nodesPerSec = Util.CalculateEvaluatedNodesPerSec(randomTrees, interpreter, dataset, 3);
+      Assert.IsTrue(nodesPerSec > 15.0e6); // evaluated nodes per seconds must be larger than 15mNodes/sec
     }
 
 
