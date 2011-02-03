@@ -70,7 +70,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
       }
       SimpleArithmeticExpressionInterpreter interpreter = new SimpleArithmeticExpressionInterpreter();
       double nodesPerSec = Util.CalculateEvaluatedNodesPerSec(randomTrees, interpreter, dataset, 3);
-      Assert.IsTrue(nodesPerSec > 15.0e6); // evaluated nodes per seconds must be larger than 15mNodes/sec
+      Assert.IsTrue(nodesPerSec > 30.0e6); // evaluated nodes per seconds must be larger than 30mNodes/sec
     }
 
     [TestMethod]
@@ -89,7 +89,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
       }
       SimpleArithmeticExpressionInterpreter interpreter = new SimpleArithmeticExpressionInterpreter();
       double nodesPerSec = Util.CalculateEvaluatedNodesPerSec(randomTrees, interpreter, dataset, 3);
-      Assert.IsTrue(nodesPerSec > 15.0e6); // evaluated nodes per seconds must be larger than 15mNodes/sec
+      Assert.IsTrue(nodesPerSec > 30.0e6); // evaluated nodes per seconds must be larger than 30mNodes/sec
     }
 
 
