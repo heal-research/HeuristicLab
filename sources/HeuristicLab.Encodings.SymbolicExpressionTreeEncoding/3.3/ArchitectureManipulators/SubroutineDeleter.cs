@@ -27,6 +27,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Creators;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbols;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System.Collections.Generic;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureManipulators {
   /// <summary>
@@ -96,8 +97,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ArchitectureMani
       while (invocationCutPoint != null) {
         // deletion by random regeneration
         SymbolicExpressionTreeNode replacementTree = null;
-        // TODO: should weight symbols by tickets
-        var selectedSymbol = invocationCutPoint.Parent.GetAllowedSymbols(invocationCutPoint.ReplacedChildIndex).SelectRandom(random);
+        var allowedSymbolsList = invocationCutPoint.Parent.GetAllowedSymbols(invocationCutPoint.ReplacedChildIndex).ToList();
+        var weights = allowedSymbolsList.Select(s => s.InitialFrequency);
+        var selectedSymbol = allowedSymbolsList.SelectRandom(weights, random);
 
         int minPossibleSize = invocationCutPoint.Parent.Grammar.GetMinExpressionLength(selectedSymbol);
         int maxSize = Math.Max(minPossibleSize, invocationCutPoint.ReplacedChild.GetSize());

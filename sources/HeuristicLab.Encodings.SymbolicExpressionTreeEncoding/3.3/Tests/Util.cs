@@ -129,8 +129,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
         }
       }
       //Assert.AreEqual(tree.Root.Symbol, tree.Root.Grammar.StartSymbol);
-      //foreach (var subtree in tree.Root.SubTrees)
-      //  Assert.AreNotSame(subtree.Grammar, tree.Root.Grammar);
+      foreach (var subtree in tree.Root.SubTrees)
+        Assert.AreNotSame(subtree.Grammar, tree.Root.Grammar);
       IsValid(tree.Root);
     }
 
@@ -140,6 +140,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
                             select symb).SingleOrDefault();
       Assert.IsTrue(treeNode.SubTrees.Count >= treeNode.Grammar.GetMinSubtreeCount(matchingSymbol));
       Assert.IsTrue(treeNode.SubTrees.Count <= treeNode.Grammar.GetMaxSubtreeCount(matchingSymbol));
+      Assert.AreNotEqual(0.0, matchingSymbol.InitialFrequency); // check that no deactivated symbols occur in the tree
       for (int i = 0; i < treeNode.SubTrees.Count; i++) {
         Assert.IsTrue(treeNode.GetAllowedSymbols(i).Select(x => x.Name).Contains(treeNode.SubTrees[i].Symbol.Name));
         IsValid(treeNode.SubTrees[i]);

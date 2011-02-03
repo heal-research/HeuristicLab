@@ -36,8 +36,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     private Symbol symbol;
 
     // cached values to prevent unnecessary tree iterations
-    private short size;
-    private short height;
+    private ushort size;
+    private ushort height;
 
     public Symbol Symbol {
       get { return symbol; }
@@ -105,7 +105,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         size = 1;
         if (SubTrees != null) {
           for (int i = 0; i < SubTrees.Count; i++) {
-            checked { size += (short)SubTrees[i].GetSize(); }
+            checked { size += (ushort)SubTrees[i].GetSize(); }
           }
         }
         return size;
@@ -116,7 +116,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       if (height > 0) return height;
       else {
         if (SubTrees != null) {
-          for (int i = 0; i < SubTrees.Count; i++) height = Math.Max(height, (short)SubTrees[i].GetHeight());
+          for (int i = 0; i < SubTrees.Count; i++) height = Math.Max(height, (ushort)SubTrees[i].GetHeight());
         }
         height++;
         return height;
