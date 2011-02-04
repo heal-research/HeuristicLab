@@ -70,8 +70,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
     public MultiObjectiveSymbolicRegressionProblem()
       : base() {
-      var evaluator = new MultiObjectiveSymbolicRegressionMeanSquaredErrorEvaluator();
-      Parameters.Add(new ValueParameter<BoolArray>("Maximization", "Set to false as the error of the regression model should be minimized.", new BoolArray(new bool[] { false, false })));
+      var evaluator = new MultiObjectiveSymbolicRegressionPearsonsRSquaredEvaluator();
+      Parameters.Add(new ValueParameter<BoolArray>("Maximization", "Set to false as the error of the regression model should be minimized.", new BoolArray(new bool[] { true, false })));
       Parameters.Add(new ValueParameter<IMultiObjectiveSymbolicRegressionEvaluator>("Evaluator", "The operator which should be used to evaluate symbolic regression solutions.", evaluator));
 
       evaluator.QualitiesParameter.ActualName = "TrainingRSquared/Size";
