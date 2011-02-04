@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
@@ -29,5 +30,7 @@ namespace HeuristicLab.Optimization {
     RunCollection Runs { get; }
 
     void Prepare(bool clearRuns);
+
+    IEnumerable<IOptimizer> NestedOptimizers { get; }
   }
 }

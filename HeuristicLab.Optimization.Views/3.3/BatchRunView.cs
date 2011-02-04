@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -108,7 +109,14 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     protected override void OnClosed(FormClosedEventArgs e) {
-      if ((Content != null) && (Content.ExecutionState == ExecutionState.Started)) Content.Stop();
+      if ((Content != null) && (Content.ExecutionState == ExecutionState.Started)) {
+        //The content must be stopped if no other view showing the content is available
+        var optimizers = MainFormManager.MainForm.Views.OfType<IContentView>().Where(v => v != this).Select(v => v.Content).OfType<IOptimizer>();
+        //add nested optimizers
+        optimizers = optimizers.SelectMany(opt => opt.NestedOptimizers).Union(optimizers);
+
+        if (!optimizers.Contains(Content)) Content.Stop();
+      }
       base.OnClosed(e);
     }
 

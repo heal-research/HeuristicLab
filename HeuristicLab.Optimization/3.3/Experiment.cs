@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using HeuristicLab.Collections;
@@ -86,6 +87,18 @@ namespace HeuristicLab.Optimization {
           if (runs != null) DeregisterRunsEvents();
           runs = value;
           if (runs != null) RegisterRunsEvents();
+        }
+      }
+    }
+
+    public IEnumerable<IOptimizer> NestedOptimizers {
+      get {
+        if (Optimizers == null) yield break;
+
+        foreach (IOptimizer opt in Optimizers) {
+          yield return opt;
+          foreach (IOptimizer nestedOpt in opt.NestedOptimizers)
+            yield return nestedOpt;
         }
       }
     }

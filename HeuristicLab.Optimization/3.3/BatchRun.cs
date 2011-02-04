@@ -136,6 +136,16 @@ namespace HeuristicLab.Optimization {
       }
     }
 
+    public IEnumerable<IOptimizer> NestedOptimizers {
+      get {
+        if (Optimizer == null) yield break;
+
+        yield return Optimizer;
+        foreach (IOptimizer opt in Optimizer.NestedOptimizers)
+          yield return opt;
+      }
+    }
+
     private bool stopPending;
 
     public BatchRun()
