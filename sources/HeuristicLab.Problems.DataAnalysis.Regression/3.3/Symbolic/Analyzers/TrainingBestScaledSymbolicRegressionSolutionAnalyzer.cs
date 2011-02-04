@@ -276,8 +276,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
         (Maximization.Value && bestQuality > BestSolutionQuality.Value) ||
         (!Maximization.Value && bestQuality < BestSolutionQuality.Value);
       if (newBest) {
-        double lowerEstimationLimit = LowerEstimationLimit.Value;
-        double upperEstimationLimit = UpperEstimationLimit.Value;
+        double upperEstimationLimit = UpperEstimationLimit != null ? UpperEstimationLimit.Value : double.PositiveInfinity;
+        double lowerEstimationLimit = LowerEstimationLimit != null ? LowerEstimationLimit.Value : double.NegativeInfinity;
         string targetVariable = ProblemData.TargetVariable.Value;
 
         if (ApplyLinearScaling.Value) {

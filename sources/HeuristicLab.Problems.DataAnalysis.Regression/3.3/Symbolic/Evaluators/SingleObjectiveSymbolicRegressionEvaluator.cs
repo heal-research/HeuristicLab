@@ -147,9 +147,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
 
     public override IOperation Apply() {
       int seed = Random.Next();
+      double upperEstimationLimit = UpperEstimationLimit != null ? UpperEstimationLimit.Value : double.PositiveInfinity;
+      double lowerEstimationLimit = LowerEstimationLimit != null ? LowerEstimationLimit.Value : double.NegativeInfinity;
       IEnumerable<int> rows = GenerateRowsToEvaluate(seed, RelativeNumberOfEvaluatedSamples.Value, SamplesStart.Value, SamplesEnd.Value)
           .Where(i => i < RegressionProblemData.TestSamplesStart.Value || RegressionProblemData.TestSamplesEnd.Value <= i);
-      double quality = Evaluate(SymbolicExpressionTreeInterpreter, SymbolicExpressionTree, LowerEstimationLimit.Value, UpperEstimationLimit.Value,
+      double quality = Evaluate(SymbolicExpressionTreeInterpreter, SymbolicExpressionTree, lowerEstimationLimit, upperEstimationLimit,
         RegressionProblemData.Dataset,
         RegressionProblemData.TargetVariable.Value, rows);
       QualityParameter.ActualValue = new DoubleValue(quality);

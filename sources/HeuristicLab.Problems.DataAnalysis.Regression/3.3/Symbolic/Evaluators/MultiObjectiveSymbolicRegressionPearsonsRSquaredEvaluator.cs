@@ -68,7 +68,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
     }
 
     protected override double[] Evaluate(ISymbolicExpressionTreeInterpreter interpreter, SymbolicExpressionTree solution, Dataset dataset, StringValue targetVariable, IEnumerable<int> rows) {
-      double r2 = SymbolicRegressionPearsonsRSquaredEvaluator.Calculate(interpreter, solution, LowerEstimationLimit.Value, UpperEstimationLimit.Value, dataset, targetVariable.Value, rows);
+      double upperEstimationLimit = UpperEstimationLimit != null ? UpperEstimationLimit.Value : double.PositiveInfinity;
+      double lowerEstimationLimit = LowerEstimationLimit != null ? LowerEstimationLimit.Value : double.NegativeInfinity;
+      double r2 = SymbolicRegressionPearsonsRSquaredEvaluator.Calculate(interpreter, solution, lowerEstimationLimit, upperEstimationLimit, dataset, targetVariable.Value, rows);
       List<string> vars = new List<string>();
       solution.Root.ForEachNodePostfix(n => {
         var varNode = n as VariableTreeNode;
