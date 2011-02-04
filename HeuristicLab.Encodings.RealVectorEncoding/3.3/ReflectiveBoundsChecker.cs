@@ -29,8 +29,8 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
-  /// Checks if all elements of a real vector are inside the bounds. 
-  /// If not, the elements are corrected.
+  /// Checks if all elements of a real vector are inside the bounds.
+  /// If not, the elements are mirrored at the bounds.
   /// </summary>
   [Item("ReflectiveBoundsChecker", "Checks if all elements of a real vector are inside the bounds. If not, elements are mirrored at the bounds.")]
   [StorableClass]
@@ -46,7 +46,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     protected ReflectiveBoundsChecker(bool deserializing) : base(deserializing) { }
     protected ReflectiveBoundsChecker(ReflectiveBoundsChecker original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
-    /// Initializes a new instance of <see cref="BoundsChecker"/> with two parameters
+    /// Initializes a new instance of <see cref="ReflectiveBoundsChecker"/> with two parameters
     /// (<c>RealVector</c>, <c>Bounds</c>).
     /// </summary>
     public ReflectiveBoundsChecker()
@@ -60,7 +60,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     /// <summary>
-    /// Checks if all elements of the given <paramref name="vector"/> are inside the bounds and if not they are corrected.
+    /// Checks if all elements of the given <paramref name="vector"/> are inside the bounds and if not, they are mirrored at the bounds.
     /// </summary>
     /// <param name="bounds">The lower and upper bound (1st and 2nd column) of the positions in the vector. If there are less rows than dimensions, the rows are cycled.</param>
     /// <param name="vector">The vector to check.</param>
@@ -88,7 +88,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     /// <summary>
-    /// Checks if all elements of the given <paramref name="vector"/> are inside the bounds and if not they are corrected.
+    /// Checks if all elements of the given <paramref name="vector"/> are inside the bounds and if not, they are mirrored at the bounds.
     /// </summary>
     /// <exception cref="InvalidOperationException">Thrown when either vector or bounds could not be found.</exception>
     /// <remarks>Calls <see cref="Apply(RealVector, DoubleMatrix)"/>.</remarks>
