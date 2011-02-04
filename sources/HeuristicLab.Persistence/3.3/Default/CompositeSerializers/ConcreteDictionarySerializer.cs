@@ -37,7 +37,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
     public ConcreteDictionarySerializer() { }
 
     public int Priority {
-      get { return 100; }
+      get { return 150; }
     }
 
 
