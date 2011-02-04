@@ -29,7 +29,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Analysis {
-  [Item("RankBasedParetoFrontAnalyzer", "Uses the rank value that is computed by e.g. the NSGA2's fast non dominated sort operator to collect all solutions and their qualities of front 0 (the current pareto front).")]
+  [Item("RankBasedParetoFrontAnalyzer", "Uses the rank value that is computed by e.g. the NSGA2's fast non dominated sort operator to collect all solutions and their qualities of front 0 (the current Pareto front).")]
   [StorableClass]
   public class RankBasedParetoFrontAnalyzer : ParetoFrontAnalyzer {
     public IScopeTreeLookupParameter<IntValue> RankParameter {
