@@ -47,7 +47,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       algorithm = null;
       clonedAlgorithms = new ItemCollection<IAlgorithm>();
-      readOnlyClonedAlgorithms = null;
       results = new ResultCollection();
 
       folds = new IntValue(2);
@@ -156,25 +155,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     [Storable]
     private ItemCollection<IAlgorithm> clonedAlgorithms;
-    private ReadOnlyItemCollection<IAlgorithm> readOnlyClonedAlgorithms;
-    public IItemCollection<IAlgorithm> ClonedAlgorithms {
-      get {
-        if (readOnlyClonedAlgorithms == null) readOnlyClonedAlgorithms = clonedAlgorithms.AsReadOnly();
-        return readOnlyClonedAlgorithms;
-      }
-    }
 
     public IEnumerable<IOptimizer> NestedOptimizers {
-      get {
-        if (Algorithm != null) yield return Algorithm;
-        if (clonedAlgorithms != null) {
-          foreach (IAlgorithm alg in ClonedAlgorithms) {
-            yield return alg;
-            foreach (IOptimizer nested in alg.NestedOptimizers)
-              yield return nested;
-          }
-        }
-      }
+      get { return Enumerable.Empty<IOptimizer>(); }
     }
 
     [Storable]
@@ -315,7 +298,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
     private void PauseAllClonedAlgorithms() {
-      foreach (IAlgorithm clonedAlgorithm in ClonedAlgorithms) {
+      foreach (IAlgorithm clonedAlgorithm in clonedAlgorithms) {
         if (clonedAlgorithm.ExecutionState == ExecutionState.Started)
           clonedAlgorithm.Pause();
       }
@@ -332,7 +315,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
     private void StopAllClonedAlgorithms() {
-      foreach (IAlgorithm clonedAlgorithm in ClonedAlgorithms) {
+      foreach (IAlgorithm clonedAlgorithm in clonedAlgorithms) {
         if (clonedAlgorithm.ExecutionState == ExecutionState.Started ||
             clonedAlgorithm.ExecutionState == ExecutionState.Paused)
           clonedAlgorithm.Stop();
@@ -359,7 +342,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public void CollectResultValues(IDictionary<string, IItem> results) {
       Dictionary<string, List<double>> resultValues = new Dictionary<string, List<double>>();
-      IEnumerable<IRun> runs = ClonedAlgorithms.Select(alg => alg.Runs.FirstOrDefault()).Where(run => run != null);
+      IEnumerable<IRun> runs = clonedAlgorithms.Select(alg => alg.Runs.FirstOrDefault()).Where(run => run != null);
       IEnumerable<KeyValuePair<string, IItem>> resultCollections = runs.Where(x => x != null).SelectMany(x => x.Results).ToList();
 
       foreach (IResult result in ExtractAndAggregateResults<IntValue>(resultCollections))
