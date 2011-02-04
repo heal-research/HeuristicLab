@@ -34,7 +34,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
 
     [StorableConstructor]
     protected TotallyConnectedParticleUpdater(bool deserializing) : base(deserializing) { }
-    protected TotallyConnectedParticleUpdater(ParticleUpdater original, Cloner cloner) : base(original, cloner) { }
+    protected TotallyConnectedParticleUpdater(TotallyConnectedParticleUpdater original, Cloner cloner) : base(original, cloner) { }
     public TotallyConnectedParticleUpdater() : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {

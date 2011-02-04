@@ -34,7 +34,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
 
     [StorableConstructor]
     protected NeighborhoodParticleUpdater(bool deserializing) : base(deserializing) { }
-    protected NeighborhoodParticleUpdater(ParticleUpdater original, Cloner cloner) : base(original, cloner) { }
+    protected NeighborhoodParticleUpdater(NeighborhoodParticleUpdater original, Cloner cloner) : base(original, cloner) { }
     public NeighborhoodParticleUpdater() : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
