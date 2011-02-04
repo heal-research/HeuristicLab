@@ -28,11 +28,14 @@ using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
 
+namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
   [Item("Neighbor Updater", "Determines the best quality and point among the defined list of neigbors for every particle and its individual neighborhood.")]
   [StorableClass]
-  public class NeighborUpdater : SingleSuccessorOperator {
+  public sealed class NeighborUpdater : SingleSuccessorOperator {
+    public override bool CanChangeName {
+      get { return false; }
+    }
 
     #region Parameters
     public IScopeTreeLookupParameter<RealVector> PointsParameter {
@@ -53,25 +56,28 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     #endregion
 
     #region Parameter Values
-    public ItemArray<RealVector> Points {
+    private ItemArray<RealVector> Points {
       get { return PointsParameter.ActualValue; }
     }
-    public ItemArray<IntegerVector> Neighbors {
+    private ItemArray<IntegerVector> Neighbors {
       get { return NeighborsParameter.ActualValue; }
     }
-    public ItemArray<RealVector> BestNeighborPoints {
+    private ItemArray<RealVector> BestNeighborPoints {
       get { return BestNeighborPointParameter.ActualValue; }
       set { BestNeighborPointParameter.ActualValue = value; }
     }
-    public ItemArray<DoubleValue> Qualities {
+    private ItemArray<DoubleValue> Qualities {
       get { return QualityParameter.ActualValue; }
     }
-    public bool Maximization {
+    private bool Maximization {
       get { return MaximizationParameter.ActualValue.Value; }
     }
     #endregion
 
     #region Construction & Cloning
+    [StorableConstructor]
+    private NeighborUpdater(bool deserializing) : base(deserializing) { }
+    private NeighborUpdater(NeighborUpdater original, Cloner cloner) : base(original, cloner) { }
     public NeighborUpdater() {
       Parameters.Add(new ScopeTreeLookupParameter<RealVector>("Point", "The position of the particle."));
       Parameters.Add(new ScopeTreeLookupParameter<IntegerVector>("Neighbors", "The list of neighbors for each particle."));
@@ -79,11 +85,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The list of qualities of all particles."));
       Parameters.Add(new LookupParameter<BoolValue>("Maximization", "Whether the problem is a maximization problem."));
     }
-    [StorableConstructor]
-    protected NeighborUpdater(bool deserializing) : base(deserializing) { }
-    protected NeighborUpdater(NeighborUpdater original, Cloner cloner)
-      : base(original, cloner) {
-    }
+
     public override IDeepCloneable Clone(Cloner cloner) {
       return new NeighborUpdater(this, cloner);
     }
@@ -93,10 +95,10 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       if (Neighbors != null & Neighbors.Length > 0) {
         if (BestNeighborPoints == null || BestNeighborPoints.Length != Neighbors.Length)
           BestNeighborPoints = new ItemArray<RealVector>(Neighbors.Length);
-        for (int n = 0; n<Neighbors.Length; n++) {
+        for (int n = 0; n < Neighbors.Length; n++) {
           var pairs = Qualities.Zip(Points, (q, p) => new { Quality = q, Point = p })
             .Where((p, i) => i == n || Neighbors[n].Contains(i));
-          BestNeighborPoints[n] = Maximization ? 
+          BestNeighborPoints[n] = Maximization ?
           pairs.OrderByDescending(p => p.Quality.Value).First().Point :
           pairs.OrderBy(p => p.Quality.Value).First().Point;
         }

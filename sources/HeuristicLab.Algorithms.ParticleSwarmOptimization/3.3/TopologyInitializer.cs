@@ -26,10 +26,14 @@ using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
 
+namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
+  [Item("TopologyInitializer", "Groups the particles into neighborhoods according to a certain strategy.")]
   [StorableClass]
   public abstract class TopologyInitializer : SingleSuccessorOperator, ITopologyInitializer {
+    public override bool CanChangeName {
+      get { return false; }
+    }
 
     #region Parameters
     public IScopeTreeLookupParameter<IntegerVector> NeighborsParameter {
@@ -42,24 +46,22 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     #endregion
 
     #region Parameter Values
-    public ItemArray<IntegerVector> Neighbors {
+    protected ItemArray<IntegerVector> Neighbors {
       get { return NeighborsParameter.ActualValue; }
       set { NeighborsParameter.ActualValue = value; }
     }
-    public int SwarmSize {
+    protected int SwarmSize {
       get { return SwarmSizeParameter.ActualValue.Value; }
     }
     #endregion
 
     #region Construction & Cloning
-    protected TopologyInitializer() {
-      Parameters.Add(new ScopeTreeLookupParameter<IntegerVector>("Neighbors", "The list of neighbors for each particle."));
-      Parameters.Add(new LookupParameter<IntValue>("SwarmSize", "Number of particles in the swarm."));
-    }
     [StorableConstructor]
     protected TopologyInitializer(bool deserializing) : base(deserializing) { }
-    protected TopologyInitializer(TopologyInitializer original, Cloner cloner)
-      : base(original, cloner) {
+    protected TopologyInitializer(TopologyInitializer original, Cloner cloner) : base(original, cloner) { }
+    public TopologyInitializer() {
+      Parameters.Add(new ScopeTreeLookupParameter<IntegerVector>("Neighbors", "The list of neighbors for each particle."));
+      Parameters.Add(new LookupParameter<IntValue>("SwarmSize", "Number of particles in the swarm."));
     }
     #endregion
 

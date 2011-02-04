@@ -33,14 +33,12 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Random;
-using System.Collections.Generic;
 
 namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
-
   [Item("Particle Swarm Optimization", "A particle swarm optimization algorithm based on the description in Pedersen, M.E.H. (2010). PhD thesis. University of Southampton.")]
   [Creatable("Algorithms")]
   [StorableClass]
-  public class ParticleSwarmOptimization : EngineAlgorithm, IStorableContent {
+  public sealed class ParticleSwarmOptimization : EngineAlgorithm, IStorableContent {
 
     #region Problem Properties
     public override Type ProblemType {
@@ -134,20 +132,12 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     #endregion
 
     [StorableConstructor]
-    protected ParticleSwarmOptimization(bool deserializing)
-      : base(deserializing) {
-    }
-    protected ParticleSwarmOptimization(ParticleSwarmOptimization original, Cloner cloner)
+    private ParticleSwarmOptimization(bool deserializing) : base(deserializing) { }
+    private ParticleSwarmOptimization(ParticleSwarmOptimization original, Cloner cloner)
       : base(original, cloner) {
       qualityAnalyzer = cloner.Clone(original.qualityAnalyzer);
       Initialize();
     }
-
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-      Initialize();
-    }
-
     public ParticleSwarmOptimization()
       : base() {
       Parameters.Add(new ValueParameter<IntValue>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
@@ -285,6 +275,11 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ParticleSwarmOptimization(this, cloner);
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      Initialize();
     }
 
     public override void Prepare() {

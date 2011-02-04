@@ -27,12 +27,11 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
 
+namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
   [Item("Random Topology Initializer", "Randomly connectes every particle with k other particles.")]
   [StorableClass]
-  public class RandomTopologyInitializer : TopologyInitializer {
-
+  public sealed class RandomTopologyInitializer : TopologyInitializer {
     #region Parameters
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
@@ -43,24 +42,23 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     #endregion
 
     #region Parameter Values
-    public IRandom Random {
+    private IRandom Random {
       get { return RandomParameter.ActualValue; }
     }
-    public int NrOfConnections {
+    private int NrOfConnections {
       get { return NrOfConnectionsParameter.ActualValue.Value; }
     }
     #endregion
 
     #region Construction & Cloning
+    [StorableConstructor]
+    private RandomTopologyInitializer(bool deserializing) : base(deserializing) { }
+    private RandomTopologyInitializer(RandomTopologyInitializer original, Cloner cloner) : base(original, cloner) { }
     public RandomTopologyInitializer() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "A random number generation."));
       Parameters.Add(new ValueLookupParameter<IntValue>("NrOfConnections", "Nr of connected neighbors.", new IntValue(3)));
     }
-    [StorableConstructor]
-    protected RandomTopologyInitializer(bool deserializing) : base(deserializing) { }
-    protected RandomTopologyInitializer(RandomTopologyInitializer original, Cloner cloner)
-      : base(original, cloner) {
-    }
+
     public override IDeepCloneable Clone(Cloner cloner) {
       return new RandomTopologyInitializer(this, cloner);
     }
@@ -68,11 +66,11 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
 
     public override IOperation Apply() {
       ItemArray<IntegerVector> neighbors = new ItemArray<IntegerVector>(SwarmSize);
-      for (int i = 0; i<SwarmSize; i++) {
+      for (int i = 0; i < SwarmSize; i++) {
         var numbers = Enumerable.Range(0, SwarmSize).ToList();
         numbers.RemoveAt(i);
         var selectedNumbers = new List<int>(NrOfConnections);
-        for (int j = 0; j<NrOfConnections && numbers.Count > 0; j++) {
+        for (int j = 0; j < NrOfConnections && numbers.Count > 0; j++) {
           int index = Random.Next(numbers.Count);
           selectedNumbers.Add(numbers[index]);
           numbers.RemoveAt(index);
@@ -82,6 +80,5 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       Neighbors = neighbors;
       return base.Apply();
     }
-
   }
 }

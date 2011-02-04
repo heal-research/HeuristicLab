@@ -29,10 +29,12 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
-
   [Item("Best Point Initializer", "Determines the best quality and point of the current particle population.")]
   [StorableClass]
-  public class BestPointInitializer : SingleSuccessorOperator {
+  public sealed class BestPointInitializer : SingleSuccessorOperator {
+    public override bool CanChangeName {
+      get { return false; }
+    }
 
     #region Parameter properties
     public IScopeTreeLookupParameter<DoubleValue> QualityParameter {
@@ -53,21 +55,21 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     #endregion
 
     #region Parameter values
-    public ItemArray<DoubleValue> Quality {
+    private ItemArray<DoubleValue> Quality {
       get { return QualityParameter.ActualValue; }
     }
-    public double BestQuality {
+    private double BestQuality {
       get { return BestQualityParameter.ActualValue.Value; }
       set { BestQualityParameter.ActualValue = new DoubleValue(value); }
     }
-    public ItemArray<RealVector> Point {
+    private ItemArray<RealVector> Point {
       get { return PointParameter.ActualValue; }
     }
-    public RealVector BestPoint {
+    private RealVector BestPoint {
       get { return BestPointParameter.ActualValue; }
       set { BestPointParameter.ActualValue = value; }
     }
-    public bool Maximization {
+    private bool Maximization {
       get { return MaximizationParameter.ActualValue.Value; }
     }
     #endregion
@@ -75,11 +77,8 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     #region Construction & Cloning
 
     [StorableConstructor]
-    protected BestPointInitializer(bool deserializing) : base(deserializing) { }
-    protected BestPointInitializer(BestPointInitializer original, Cloner cloner)
-      : base(original, cloner) {
-    }
-
+    private BestPointInitializer(bool deserializing) : base(deserializing) { }
+    private BestPointInitializer(BestPointInitializer original, Cloner cloner) : base(original, cloner) { }
     public BestPointInitializer()
       : base() {
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "Particle's quality"));
@@ -100,10 +99,6 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       int bestIndex = Quality.FindIndex(v => v.Value == BestQuality);
       BestPoint = (RealVector)Point[bestIndex].Clone();
       return base.Apply();
-    }
-
-    public override bool CanChangeName {
-      get { return false; }
     }
   }
 }

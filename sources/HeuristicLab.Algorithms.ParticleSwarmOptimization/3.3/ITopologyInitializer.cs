@@ -22,12 +22,10 @@
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
-using HeuristicLab.Parameters;
-namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
 
+namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
   public interface ITopologyInitializer : IOperator {
     IScopeTreeLookupParameter<IntegerVector> NeighborsParameter { get; }
     ILookupParameter<IntValue> SwarmSizeParameter { get; }
   }
-
 }

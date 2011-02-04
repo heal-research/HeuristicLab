@@ -28,10 +28,12 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
-
   [Item("Swarm Updater", "Updates personal best point and quality as well as global best point and quality.")]
   [StorableClass]
-  public class SwarmUpdater : SingleSuccessorOperator {
+  public sealed class SwarmUpdater : SingleSuccessorOperator {
+    public override bool CanChangeName {
+      get { return false; }
+    }
 
     #region Parameter properties
     public ILookupParameter<DoubleValue> QualityParameter {
@@ -58,29 +60,29 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     #endregion
 
     #region Parameter values
-    public double Quality {
+    private double Quality {
       get { return QualityParameter.ActualValue.Value; }
     }
-    public double PersonalBestQuality {
+    private double PersonalBestQuality {
       get { return PersonalBestQualityParameter.ActualValue.Value; }
       set { PersonalBestQualityParameter.ActualValue = new DoubleValue(value); }
     }
-    public double BestQuality {
+    private double BestQuality {
       get { return BestQualityParameter.ActualValue.Value; }
       set { BestQualityParameter.ActualValue = new DoubleValue(value); }
     }
-    public RealVector Point {
+    private RealVector Point {
       get { return PointParameter.ActualValue; }
     }
-    public RealVector PersonalBestPoint {
+    private RealVector PersonalBestPoint {
       get { return PersonalBestPointParameter.ActualValue; }
       set { PersonalBestPointParameter.ActualValue = value; }
     }
-    public RealVector BestPoint {
+    private RealVector BestPoint {
       get { return BestPointParameter.ActualValue; }
       set { BestPointParameter.ActualValue = value; }
     }
-    public bool Maximization {
+    private bool Maximization {
       get { return MaximizationParameter.ActualValue.Value; }
     }
     #endregion
@@ -88,11 +90,8 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     #region Construction & Cloning
 
     [StorableConstructor]
-    protected SwarmUpdater(bool deserializing) : base(deserializing) { }
-    protected SwarmUpdater(SwarmUpdater original, Cloner cloner)
-      : base(original, cloner) {
-    }
-
+    private SwarmUpdater(bool deserializing) : base(deserializing) { }
+    private SwarmUpdater(SwarmUpdater original, Cloner cloner) : base(original, cloner) { }
     public SwarmUpdater()
       : base() {
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "Particle's quality"));
@@ -111,7 +110,6 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     #endregion
 
     public override IOperation Apply() {
-
       if (Maximization && Quality > PersonalBestQuality ||
          !Maximization && Quality < PersonalBestQuality) {
         PersonalBestQuality = Quality;
@@ -123,10 +121,6 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
         }
       }
       return base.Apply();
-    }
-
-    public override bool CanChangeName {
-      get { return false; }
     }
   }
 }

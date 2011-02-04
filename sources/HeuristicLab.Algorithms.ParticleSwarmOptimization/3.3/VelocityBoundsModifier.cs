@@ -1,21 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Operators;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2011 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
-
+  [Item("VelocityBoundsModifier", "Modifies the velocity bounds.")]
   [StorableClass]
-  public class VelocityBoundsModifier : SingleSuccessorOperator, IDiscreteDoubleMatrixModifier {
-
+  public sealed class VelocityBoundsModifier : SingleSuccessorOperator, IDiscreteDoubleMatrixModifier {
     #region Parameters
     public ILookupParameter<DoubleMatrix> ValueParameter {
       get { return (ILookupParameter<DoubleMatrix>)Parameters["Matrix"]; }
@@ -46,9 +62,10 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     #region Construction & Cloning
 
     [StorableConstructor]
-    protected VelocityBoundsModifier(bool deserializing) : base(deserializing) { }
-    protected VelocityBoundsModifier(VelocityBoundsModifier original, Cloner cloner) : base(original, cloner) {
-      Initialize();
+    private VelocityBoundsModifier(bool deserializing) : base(deserializing) { }
+    private VelocityBoundsModifier(VelocityBoundsModifier original, Cloner cloner)
+      : base(original, cloner) {
+      ParameterizeModifiers();
     }
     public VelocityBoundsModifier() {
       Parameters.Add(new LookupParameter<DoubleMatrix>("Matrix", "The double matrix to modify."));
@@ -59,63 +76,37 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       Parameters.Add(new LookupParameter<IntValue>("Index", "The current index."));
       Parameters.Add(new ValueLookupParameter<IntValue>("StartIndex", "The start index at which to start modifying 'Value'."));
       Parameters.Add(new ValueLookupParameter<IntValue>("EndIndex", "The end index by which 'Value' should have reached 'EndValue'."));
+
       Initialize();
+      ParameterizeModifiers();
     }
+
     public override IDeepCloneable Clone(Cloner cloner) {
       return new VelocityBoundsModifier(this, cloner);
+    }
+    #endregion
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      ParameterizeModifiers();
     }
 
     private void Initialize() {
       foreach (IDiscreteDoubleValueModifier op in ApplicationManager.Manager.GetInstances<IDiscreteDoubleValueModifier>()) {
         ScalingOperatorParameter.ValidValues.Add(op);
-        op.ValueParameter.ActualName = ScaleParameter.ActualName;
-      }
-      ScaleParameter.ActualNameChanged += new EventHandler(ScaleParameter_ActualNameChanged);
-      StartValueParameter.ActualNameChanged += new EventHandler(StartValueParameter_ActualNameChanged);
-      EndValueParameter.ActualNameChanged += new EventHandler(EndValueParameter_ActualNameChanged);
-      IndexParameter.ActualNameChanged += new EventHandler(IndexParameter_ActualNameChanged);
-      EndIndexParameter.ActualNameChanged += new EventHandler(EndIndexParameter_ActualNameChanged);
-      StartIndexParameter.ActualNameChanged += new EventHandler(StartIndexParameter_ActualNameChanged);
-    }
-    #endregion
-
-    #region Events
-    private void ScaleParameter_ActualNameChanged(object sender, EventArgs e) {
-      foreach (IDiscreteDoubleValueModifier modifier in ScalingOperatorParameter.ValidValues) {
-        modifier.ValueParameter.ActualName = ScaleParameter.ActualName;
       }
     }
 
-    private void StartValueParameter_ActualNameChanged(object sender, EventArgs e) {
-      foreach (IDiscreteDoubleValueModifier modifier in ScalingOperatorParameter.ValidValues) {
-        modifier.StartValueParameter.ActualName = StartValueParameter.ActualName;
+    private void ParameterizeModifiers() {
+      foreach (IDiscreteDoubleValueModifier op in ScalingOperatorParameter.ValidValues) {
+        op.ValueParameter.ActualName = ScaleParameter.Name;
+        op.StartValueParameter.ActualName = StartValueParameter.Name;
+        op.EndValueParameter.ActualName = EndValueParameter.Name;
+        op.IndexParameter.ActualName = IndexParameter.Name;
+        op.StartIndexParameter.ActualName = StartIndexParameter.Name;
+        op.EndIndexParameter.ActualName = EndIndexParameter.Name;
       }
     }
-
-    private void EndValueParameter_ActualNameChanged(object sender, EventArgs e) {
-      foreach (IDiscreteDoubleValueModifier modifier in ScalingOperatorParameter.ValidValues) {
-        modifier.EndValueParameter.ActualName = EndValueParameter.ActualName;
-      }
-    }
-
-    private void IndexParameter_ActualNameChanged(object sender, EventArgs e) {
-      foreach (IDiscreteDoubleValueModifier modifier in ScalingOperatorParameter.ValidValues) {
-        modifier.IndexParameter.ActualName = IndexParameter.ActualName;
-      }
-    }
-
-    private void StartIndexParameter_ActualNameChanged(object sender, EventArgs e) {
-      foreach (IDiscreteDoubleValueModifier modifier in ScalingOperatorParameter.ValidValues) {
-        modifier.StartIndexParameter.ActualName = StartIndexParameter.ActualName;
-      }
-    }
-
-    private void EndIndexParameter_ActualNameChanged(object sender, EventArgs e) {
-      foreach (IDiscreteDoubleValueModifier modifier in ScalingOperatorParameter.ValidValues) {
-        modifier.EndIndexParameter.ActualName = EndIndexParameter.ActualName;
-      }
-    }
-    #endregion
 
     public override IOperation Apply() {
       OperationCollection next = new OperationCollection();

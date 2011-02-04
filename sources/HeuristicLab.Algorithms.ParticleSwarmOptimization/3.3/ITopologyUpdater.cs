@@ -21,11 +21,9 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
-using HeuristicLab.Parameters;
-namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
 
-  public interface ITopologyUpdater : IItem {
+namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
+  public interface ITopologyUpdater : IOperator {
     IScopeTreeLookupParameter<IntegerVector> NeighborsParameter { get; }
   }
-
 }
