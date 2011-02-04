@@ -72,8 +72,8 @@ namespace HeuristicLab.Parameters.Views {
       // 
       // valueGroupBox
       // 
-      this.valueGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.valueGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.valueGroupBox.Controls.Add(this.configureButton);
       this.valueGroupBox.Controls.Add(this.showInRunCheckBox);
@@ -95,10 +95,10 @@ namespace HeuristicLab.Parameters.Views {
       this.configureButton.MinimumSize = new System.Drawing.Size(24, 24);
       this.configureButton.Name = "configureButton";
       this.configureButton.Size = new System.Drawing.Size(24, 24);
-      this.configureButton.TabIndex = 3;
+      this.configureButton.TabIndex = 1;
       this.configureButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Edit;
       this.configureButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-      this.toolTip.SetToolTip(this.configureButton, "Edit ValidValues");
+      this.toolTip.SetToolTip(this.configureButton, "Edit Values");
       this.configureButton.UseVisualStyleBackColor = true;
       this.configureButton.CheckedChanged += new System.EventHandler(this.configureButton_CheckedChanged);
       // 
@@ -112,7 +112,7 @@ namespace HeuristicLab.Parameters.Views {
       this.showInRunCheckBox.Location = new System.Drawing.Point(290, 21);
       this.showInRunCheckBox.Name = "showInRunCheckBox";
       this.showInRunCheckBox.Size = new System.Drawing.Size(90, 17);
-      this.showInRunCheckBox.TabIndex = 1;
+      this.showInRunCheckBox.TabIndex = 2;
       this.showInRunCheckBox.Text = "&Show in Run:";
       this.toolTip.SetToolTip(this.showInRunCheckBox, "Check to show the value of this parameter in each run.");
       this.showInRunCheckBox.UseVisualStyleBackColor = true;
@@ -120,8 +120,8 @@ namespace HeuristicLab.Parameters.Views {
       // 
       // viewHost
       // 
-      this.viewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.viewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.viewHost.Caption = "View";
       this.viewHost.Content = null;
@@ -130,13 +130,13 @@ namespace HeuristicLab.Parameters.Views {
       this.viewHost.Name = "viewHost";
       this.viewHost.ReadOnly = false;
       this.viewHost.Size = new System.Drawing.Size(374, 185);
-      this.viewHost.TabIndex = 2;
+      this.viewHost.TabIndex = 3;
       this.viewHost.ViewsLabelVisible = true;
       this.viewHost.ViewType = null;
       // 
       // valueComboBox
       // 
-      this.valueComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.valueComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.valueComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.valueComboBox.FormattingEnabled = true;
