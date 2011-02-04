@@ -7,7 +7,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Analysis {
-  [Item("BasicMultiObjectiveSolutionAnalyzer", "Analyzer for multiobjective problems that collects and presents the current pareto front as double matrix as well as the solution scopes that lie on the current front.")]
+  [Item("ParetoFrontAnalyzer", "Analyzer for multiobjective problems that collects and presents the current Pareto front as double matrix as well as the solution scopes that lie on the current front.")]
   [StorableClass]
   public abstract class ParetoFrontAnalyzer : SingleSuccessorOperator, IAnalyzer {
     public IScopeTreeLookupParameter<DoubleArray> QualitiesParameter {
