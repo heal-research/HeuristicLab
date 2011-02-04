@@ -22,21 +22,13 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Parameters.Views {
-  /// <summary>
-  /// The visual representation of a <see cref="Parameter"/>.
-  /// </summary>
-  [View("ConstrainedValueParameter ConfigurationView")]
+  [View("ConstrainedValueParameter Configuration View")]
   [Content(typeof(OptionalConstrainedValueParameter<>), false)]
   [Content(typeof(ConstrainedValueParameter<>), false)]
   public partial class ConstrainedValueParameterConfigurationView<T> : ConstrainedValueParameterView<T> where T : class, IItem {
-
-    /// <summary>
-    /// Initializes a new instance of <see cref="VariableView"/> with caption "Variable".
-    /// </summary>
     public ConstrainedValueParameterConfigurationView() {
       InitializeComponent();
     }
@@ -47,6 +39,7 @@ namespace HeuristicLab.Parameters.Views {
     }
 
     protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
       configureButton.Enabled = Content != null && !ReadOnly;
     }
 
