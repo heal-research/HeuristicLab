@@ -10,6 +10,7 @@ HeuristicLab.Algorithms.GeneticAlgorithm\3.3:HeuristicLab.Algorithms.GeneticAlgo
 HeuristicLab.Algorithms.LocalSearch\3.3:HeuristicLab.Algorithms.LocalSearch-3.3.dll
 HeuristicLab.Algorithms.NSGA2\3.3:HeuristicLab.Algorithms.NSGA2-3.3.dll
 HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm\3.3:HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm-3.3.dll
+HeuristicLab.Algorithms.ParticleSwarmOptimization\3.3:HeuristicLab.Algorithms.ParticleSwarmOptimization-3.3.dll
 HeuristicLab.Algorithms.SimulatedAnnealing\3.3:HeuristicLab.Algorithms.SimulatedAnnealing-3.3.dll
 HeuristicLab.Algorithms.TabuSearch\3.3:HeuristicLab.Algorithms.TabuSearch-3.3.dll
 HeuristicLab.Analysis\3.3:HeuristicLab.Analysis-3.3.dll

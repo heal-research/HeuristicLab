@@ -92,6 +92,7 @@
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Problems.OneMax.Views-3.3.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Problems.DataAnalysis.Classification.Views-3.3.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Optimization.Operators-3.3.dll" />
+    <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Algorithms.ParticleSwarmOptimization-3.3.dll" />
   </Deployment>
   <Execution>
     <TestTypeSpecific>
