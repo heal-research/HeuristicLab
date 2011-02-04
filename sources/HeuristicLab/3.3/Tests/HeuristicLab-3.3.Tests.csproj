@@ -158,6 +158,10 @@
       <Project>{F409DD9E-1E9C-4EB1-AA3A-9F6E987C6E58}</Project>
       <Name>HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm-3.3</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\HeuristicLab.Algorithms.ParticleSwarmOptimization\3.3\HeuristicLab.Algorithms.ParticleSwarmOptimization-3.3.csproj">
+      <Project>{2C429157-9C34-4DD3-9D5F-B444B751E39A}</Project>
+      <Name>HeuristicLab.Algorithms.ParticleSwarmOptimization-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\HeuristicLab.Algorithms.SimulatedAnnealing\3.3\HeuristicLab.Algorithms.SimulatedAnnealing-3.3.csproj">
       <Project>{96E5ED5B-187D-4012-9CDA-D85CDAD38342}</Project>
       <Name>HeuristicLab.Algorithms.SimulatedAnnealing-3.3</Name>
