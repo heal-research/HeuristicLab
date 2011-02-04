@@ -139,8 +139,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     }
 
     public override IOperation Apply() {
+      double upperEstimationLimit = UpperEstimationLimit != null ? UpperEstimationLimit.Value : double.PositiveInfinity;
+      double lowerEstimationLimit = LowerEstimationLimit != null ? LowerEstimationLimit.Value : double.NegativeInfinity;
       Analyze(SymbolicExpressionTreeParameter.ActualValue, SymbolicExpressionTreeInterpreterParameter.ActualValue,
-        UpperEstimationLimit.Value, LowerEstimationLimit.Value, ProblemDataParameter.ActualValue,
+        upperEstimationLimit, lowerEstimationLimit, ProblemDataParameter.ActualValue,
         ResultsParameter.ActualValue);
       return base.Apply();
     }
