@@ -157,7 +157,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private ItemCollection<IAlgorithm> clonedAlgorithms;
 
     public IEnumerable<IOptimizer> NestedOptimizers {
-      get { return Enumerable.Empty<IOptimizer>(); }
+      get {
+        if (Algorithm == null) yield break;
+        yield return Algorithm;
+      }
     }
 
     [Storable]
