@@ -164,6 +164,19 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
+    public IEnumerable<IOptimizer> NestedOptimizers {
+      get {
+        if (Algorithm != null) yield return Algorithm;
+        if (clonedAlgorithms != null) {
+          foreach (IAlgorithm alg in ClonedAlgorithms) {
+            yield return alg;
+            foreach (IOptimizer nested in alg.NestedOptimizers)
+              yield return nested;
+          }
+        }
+      }
+    }
+
     [Storable]
     private ResultCollection results;
     public ResultCollection Results {

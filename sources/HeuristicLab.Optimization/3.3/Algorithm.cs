@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -117,6 +118,10 @@ namespace HeuristicLab.Optimization {
           if (runs != null) RegisterRunsEvents();
         }
       }
+    }
+
+    public virtual IEnumerable<IOptimizer> NestedOptimizers {
+      get { return Enumerable.Empty<IOptimizer>(); }
     }
 
     protected Algorithm()
