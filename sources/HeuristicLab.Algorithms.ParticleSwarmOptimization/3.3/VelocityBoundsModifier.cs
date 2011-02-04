@@ -36,8 +36,8 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     public ILookupParameter<DoubleMatrix> ValueParameter {
       get { return (ILookupParameter<DoubleMatrix>)Parameters["Matrix"]; }
     }
-    public IValueLookupParameter<DoubleValue> ScaleParameter {
-      get { return (IValueLookupParameter<DoubleValue>)Parameters["Scale"]; }
+    public ILookupParameter<DoubleValue> ScaleParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters["Scale"]; }
     }
     public ConstrainedValueParameter<IDiscreteDoubleValueModifier> ScalingOperatorParameter {
       get { return (ConstrainedValueParameter<IDiscreteDoubleValueModifier>)Parameters["ScalingOperator"]; }
@@ -63,13 +63,10 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
 
     [StorableConstructor]
     private VelocityBoundsModifier(bool deserializing) : base(deserializing) { }
-    private VelocityBoundsModifier(VelocityBoundsModifier original, Cloner cloner)
-      : base(original, cloner) {
-      ParameterizeModifiers();
-    }
+    private VelocityBoundsModifier(VelocityBoundsModifier original, Cloner cloner) : base(original, cloner) { }
     public VelocityBoundsModifier() {
       Parameters.Add(new LookupParameter<DoubleMatrix>("Matrix", "The double matrix to modify."));
-      Parameters.Add(new ValueLookupParameter<DoubleValue>("Scale", "Scale parameter."));
+      Parameters.Add(new LookupParameter<DoubleValue>("Scale", "Scale parameter."));
       Parameters.Add(new ConstrainedValueParameter<IDiscreteDoubleValueModifier>("ScalingOperator", "Modifies the value"));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("StartValue", "The start value of 'Value'.", new DoubleValue(1)));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("EndValue", "The end value of 'Value'."));
@@ -78,7 +75,6 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       Parameters.Add(new ValueLookupParameter<IntValue>("EndIndex", "The end index by which 'Value' should have reached 'EndValue'."));
 
       Initialize();
-      ParameterizeModifiers();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -86,19 +82,9 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     }
     #endregion
 
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-      ParameterizeModifiers();
-    }
-
     private void Initialize() {
       foreach (IDiscreteDoubleValueModifier op in ApplicationManager.Manager.GetInstances<IDiscreteDoubleValueModifier>()) {
         ScalingOperatorParameter.ValidValues.Add(op);
-      }
-    }
-
-    private void ParameterizeModifiers() {
-      foreach (IDiscreteDoubleValueModifier op in ScalingOperatorParameter.ValidValues) {
         op.ValueParameter.ActualName = ScaleParameter.Name;
         op.StartValueParameter.ActualName = StartValueParameter.Name;
         op.EndValueParameter.ActualName = EndValueParameter.Name;
