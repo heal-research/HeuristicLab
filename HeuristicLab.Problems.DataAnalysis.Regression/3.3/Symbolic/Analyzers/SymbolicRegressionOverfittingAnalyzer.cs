@@ -118,17 +118,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
 
       TrainingValidationQualityCorrelationTableParameter.ActualValue.Rows["Training and validation fitness correlation"].Values.Add(r);
 
-      double correlationThreshold;
       if (OverfittingParameter.ActualValue != null && OverfittingParameter.ActualValue.Value) {
-        // if is already overfitting => have to reach the upper threshold to switch back to non-overfitting state
-        correlationThreshold = UpperCorrelationThresholdParameter.ActualValue.Value;
+        // overfitting == true
+        // => r must reach the upper threshold to switch back to non-overfitting state
+        OverfittingParameter.ActualValue = new BoolValue(r < UpperCorrelationThresholdParameter.ActualValue.Value);
       } else {
-        // if currently in non-overfitting state => have to reach to lower threshold to switch to overfitting state
-        correlationThreshold = LowerCorrelationThresholdParameter.ActualValue.Value;
+        // overfitting == false 
+        // => r must drop below lower threshold to switch to overfitting state
+        OverfittingParameter.ActualValue = new BoolValue(r < LowerCorrelationThresholdParameter.ActualValue.Value);
       }
-      bool overfitting = r < correlationThreshold;
-
-      OverfittingParameter.ActualValue = new BoolValue(overfitting);
     }
   }
 }
