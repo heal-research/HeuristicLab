@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2011 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -83,17 +83,20 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Formatters {
         stringBuilder.AppendLine("function test_model");
         foreach (string variableName in variableNames)
           stringBuilder.AppendLine("  " + variableName + " = Data(:, ???);");
-        stringBuilder.AppendLine();
         stringBuilder.AppendLine("  for "+CurrentIndexVariable+" = size(Data,1):-1:1");
         stringBuilder.AppendLine("    Target_estimated("+CurrentIndexVariable+") = " + FormatRecursively(node.SubTrees[0]) + ";");
+        stringBuilder.AppendLine("  end");
+        stringBuilder.AppendLine("end");
         stringBuilder.AppendLine();
         stringBuilder.AppendLine("function y = log_(x)");
         stringBuilder.AppendLine("  if(x<=0) y = NaN;");
         stringBuilder.AppendLine("  else     y = log(x);");
-        stringBuilder.AppendLine(
-@"
-function y = fivePoint(f0, f1, f3, f4)
-  y = (f0 + 2*f1 - 2*f3 - f4) / 8");
+        stringBuilder.AppendLine("  end");
+        stringBuilder.AppendLine("end");
+        stringBuilder.AppendLine();
+        stringBuilder.AppendLine("function y = fivePoint(f0, f1, f3, f4)");
+        stringBuilder.AppendLine("  y = (f0 + 2*f1 - 2*f3 - f4) / 8;");
+        stringBuilder.AppendLine("end");
         return stringBuilder.ToString();
       }
 
