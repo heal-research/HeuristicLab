@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -50,13 +51,20 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public IValueLookupParameter<DoubleMatrix> BoundsParameter {
       get { return (IValueLookupParameter<DoubleMatrix>)Parameters["Bounds"]; }
     }
-    public OptionalValueParameter<IRealVectorBoundsChecker> BoundsCheckerParameter {
+    protected OptionalValueParameter<IRealVectorBoundsChecker> BoundsCheckerParameter {
       get { return (OptionalValueParameter<IRealVectorBoundsChecker>)Parameters["BoundsChecker"]; }
+    }
+    public IRealVectorBoundsChecker BoundsChecker {
+      get { return BoundsCheckerParameter.Value; }
+      set { BoundsCheckerParameter.Value = value; }
     }
 
     [StorableConstructor]
     protected RealVectorCrossover(bool deserializing) : base(deserializing) { }
-    protected RealVectorCrossover(RealVectorCrossover original, Cloner cloner) : base(original, cloner) { }
+    protected RealVectorCrossover(RealVectorCrossover original, Cloner cloner)
+      : base(original, cloner) {
+      RegisterEventHandlers();
+    }
     protected RealVectorCrossover()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic crossover operators."));
@@ -66,32 +74,50 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       ChildParameter.ActualName = "RealVector";
       Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "The lower and upper bounds of the real vector."));
       Parameters.Add(new OptionalValueParameter<IRealVectorBoundsChecker>("BoundsChecker", "The bounds checker that ensures that the values stay within the bounds.", new BoundsChecker()));
+
+      RegisterEventHandlers();
+      ParameterizeBoundsChecker();
     }
 
-    // BackwardsCompatibility3.3
-    #region Backwards compatible code (remove with 3.4)
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
-      if (!Parameters.ContainsKey("BoundsChecker"))
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code (remove with 3.4)
+      if (!Parameters.ContainsKey("BoundsChecker")) {
         Parameters.Add(new OptionalValueParameter<IRealVectorBoundsChecker>("BoundsChecker", "The bounds checker that ensures that the values stay within the bounds.", new BoundsChecker()));
+        ParameterizeBoundsChecker();
+      }
+      #endregion
+      RegisterEventHandlers();
     }
-    #endregion
+
+    protected virtual void RegisterEventHandlers() {
+      BoundsCheckerParameter.ValueChanged += new System.EventHandler(BoundsCheckerParameter_ValueChanged);
+    }
 
     public sealed override IOperation Apply() {
       RealVector result = Cross(RandomParameter.ActualValue, ParentsParameter.ActualValue);
       ChildParameter.ActualValue = result;
 
-      IRealVectorBoundsChecker checker = BoundsCheckerParameter.Value;
       IOperation successor = base.Apply();
-      if (checker != null) {
-        checker.BoundsParameter.ActualName = BoundsParameter.ActualName;
-        checker.RealVectorParameter.ActualName = ChildParameter.ActualName;
-        IOperation checkerOperation = ExecutionContext.CreateChildOperation(checker);
+      if (BoundsChecker != null) {
+        IOperation checkerOperation = ExecutionContext.CreateChildOperation(BoundsChecker);
         if (successor == null) return checkerOperation;
         else return new OperationCollection(checkerOperation, successor);
       } else return successor;
     }
 
     protected abstract RealVector Cross(IRandom random, ItemArray<RealVector> parents);
+
+    protected virtual void BoundsCheckerParameter_ValueChanged(object sender, EventArgs e) {
+      ParameterizeBoundsChecker();
+    }
+
+    protected virtual void ParameterizeBoundsChecker() {
+      if (BoundsChecker != null) {
+        BoundsChecker.BoundsParameter.ActualName = BoundsParameter.Name;
+        BoundsChecker.RealVectorParameter.ActualName = ChildParameter.Name;
+      }
+    }
   }
 }
