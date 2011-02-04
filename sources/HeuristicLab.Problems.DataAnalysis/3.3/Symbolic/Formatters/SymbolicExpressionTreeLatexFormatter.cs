@@ -32,17 +32,20 @@ using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Formatters {
   [Item("LaTeX String Formatter", "Formatter for symbolic expression trees for import into LaTeX documents.")]
+  [StorableClass]
   public sealed class SymbolicExpressionTreeLatexFormatter : NamedItem, ISymbolicExpressionTreeStringFormatter {
     private List<double> constants;
     private int currentLag;
 
-    public SymbolicExpressionTreeLatexFormatter()
-      : base("LaTeX String Formatter", "Formatter for symbolic expression trees for import into LaTeX documents.") {
-      constants = new List<double>();
-    }
+    [StorableConstructor]
+    private SymbolicExpressionTreeLatexFormatter(bool deserializing) : base(deserializing) { }
     private SymbolicExpressionTreeLatexFormatter(SymbolicExpressionTreeLatexFormatter original, Cloner cloner)
       : base(original, cloner) {
       constants = new List<double>(original.constants);
+    }
+    public SymbolicExpressionTreeLatexFormatter()
+      : base("LaTeX String Formatter", "Formatter for symbolic expression trees for import into LaTeX documents.") {
+      constants = new List<double>();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
