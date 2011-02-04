@@ -1136,7 +1136,7 @@ namespace HeuristicLab.Persistence_33.Tests {
       dictionaries[1].Add(4, 4);
       dictionaries[1].Add(5, 5);
       dictionaries[1].Add(6, 6);
-      XmlGenerator.Serialize(dictionaries, tempFile);
+      XmlGenerator.Serialize(dictionaries, tempFile, ConfigurationService.Instance.GetDefaultConfig(new XmlFormat()));
       var newDictionaries = XmlParser.Deserialize<List<Dictionary<int, int>>>(tempFile);
       Assert.IsTrue(newDictionaries[0].ContainsKey(1));
       Assert.IsTrue(newDictionaries[0].ContainsKey(2));
@@ -1150,8 +1150,8 @@ namespace HeuristicLab.Persistence_33.Tests {
       Assert.IsTrue(newDictionaries[1].ContainsValue(4));
       Assert.IsTrue(newDictionaries[1].ContainsValue(5));
       Assert.IsTrue(newDictionaries[1].ContainsValue(6));
-      Assert.AreEqual(newDictionaries[0].Comparer.GetType(), new Dictionary<int, int>().Comparer.GetType());
-      Assert.AreEqual(newDictionaries[1].Comparer.GetType(), typeof(IdentityComparer<int>));
+      Assert.AreEqual(new Dictionary<int, int>().Comparer.GetType(), newDictionaries[0].Comparer.GetType());
+      Assert.AreEqual(typeof(IdentityComparer<int>), newDictionaries[1].Comparer.GetType());
     }
 
     [StorableClass]
