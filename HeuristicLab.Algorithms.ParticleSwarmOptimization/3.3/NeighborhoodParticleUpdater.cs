@@ -25,23 +25,18 @@ using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
-
-  [Item("Neighborhood Particle Updater", "Updates the particle's position using (among other things) the best neighbor's position. Point = Point + Velocity*Omega + (PersonalBestPoint-Point)*Phi_P*r_p + (BestNeighborPoint-Point)*Phi_G*r_g")]
+  [Item("Neighborhood Particle Updater", "Updates the particle's position using (among other things) the best neighbor's position. Point = Point + Velocity*Omega + (PersonalBestPoint-Point)*Phi_P*r_p + (BestNeighborPoint-Point)*Phi_G*r_g.")]
   [StorableClass]
-  public class NeighborhoodParticleUpdater : ParticleUpdater, ILocalParticleUpdater {
-
-    #region Construction & Cloning
+  public sealed class NeighborhoodParticleUpdater : ParticleUpdater, ILocalParticleUpdater {
 
     [StorableConstructor]
-    protected NeighborhoodParticleUpdater(bool deserializing) : base(deserializing) { }
-    protected NeighborhoodParticleUpdater(NeighborhoodParticleUpdater original, Cloner cloner) : base(original, cloner) { }
+    private NeighborhoodParticleUpdater(bool deserializing) : base(deserializing) { }
+    private NeighborhoodParticleUpdater(NeighborhoodParticleUpdater original, Cloner cloner) : base(original, cloner) { }
     public NeighborhoodParticleUpdater() : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new NeighborhoodParticleUpdater(this, cloner);
     }
-
-    #endregion
 
     public override IOperation Apply() {
       RealVector velocity = new RealVector(Velocity.Length);

@@ -23,27 +23,28 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
 
+namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
   [Item("Von Neumann Topology Initializer", "Every particle is connected with the two following and the two previous particles wrapping around at the beginning and the end of the population.")]
   [StorableClass]
-  public class VonNeumannTopologyInitializer : TopologyInitializer {
+  public sealed class VonNeumannTopologyInitializer : TopologyInitializer {
 
     #region Construction & Cloning
-    public VonNeumannTopologyInitializer() { }
+
     [StorableConstructor]
-    protected VonNeumannTopologyInitializer(bool deserializing) : base(deserializing) { }
-    protected VonNeumannTopologyInitializer(VonNeumannTopologyInitializer original, Cloner cloner)
-      : base(original, cloner) {
-    }
+    private VonNeumannTopologyInitializer(bool deserializing) : base(deserializing) { }
+    private VonNeumannTopologyInitializer(VonNeumannTopologyInitializer original, Cloner cloner) : base(original, cloner) { }
+    public VonNeumannTopologyInitializer() : base() { }
+
     public override IDeepCloneable Clone(Cloner cloner) {
       return new VonNeumannTopologyInitializer(this, cloner);
     }
+
     #endregion
 
     public override IOperation Apply() {
       ItemArray<IntegerVector> neighbors = new ItemArray<IntegerVector>(SwarmSize);
-      for (int i = 0; i<SwarmSize; i++) {
+      for (int i = 0; i < SwarmSize; i++) {
         neighbors[i] = new IntegerVector(new[] {
           (SwarmSize + i-2) % SwarmSize,
           (SwarmSize + i-1) % SwarmSize,
@@ -54,6 +55,5 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       Neighbors = neighbors;
       return base.Apply();
     }
-
   }
 }

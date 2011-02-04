@@ -23,32 +23,31 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
 
+namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
   [Item("Ring Topology Initializer", "Connected every particle with its preceeding and its following particle.")]
   [StorableClass]
-  public class RingTopologyInitializer : TopologyInitializer {
-
+  public sealed class RingTopologyInitializer : TopologyInitializer {
     #region Construction & Cloning
-    public RingTopologyInitializer() { }
+
     [StorableConstructor]
-    protected RingTopologyInitializer(bool deserializing) : base(deserializing) { }
-    protected RingTopologyInitializer(RingTopologyInitializer original, Cloner cloner)
-      : base(original, cloner) {
-    }
+    private RingTopologyInitializer(bool deserializing) : base(deserializing) { }
+    private RingTopologyInitializer(RingTopologyInitializer original, Cloner cloner) : base(original, cloner) { }
+    public RingTopologyInitializer() : base() { }
+
     public override IDeepCloneable Clone(Cloner cloner) {
       return new RingTopologyInitializer(this, cloner);
     }
+
     #endregion
 
     public override IOperation Apply() {
       ItemArray<IntegerVector> neighbors = new ItemArray<IntegerVector>(SwarmSize);
-      for (int i = 0; i<SwarmSize; i++) {
-        neighbors[i] = new IntegerVector(new[] { (SwarmSize + i-1) % SwarmSize, (i+1) % SwarmSize });
+      for (int i = 0; i < SwarmSize; i++) {
+        neighbors[i] = new IntegerVector(new[] { (SwarmSize + i - 1) % SwarmSize, (i + 1) % SwarmSize });
       }
       Neighbors = neighbors;
       return base.Apply();
     }
-
   }
 }

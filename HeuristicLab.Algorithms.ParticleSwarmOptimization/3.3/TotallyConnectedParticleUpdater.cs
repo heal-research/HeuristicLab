@@ -25,16 +25,15 @@ using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
-
   [Item("Totally Connected Particle Updater", "Updates the particle's position using (among other things) the global best position. Use together with the empty topology initialzer. Point = Point + Velocity*Omega + (PersonalBestPoint-Point)*Phi_P*r_p + (BestPoint-Point)*Phi_G*r_g")]
   [StorableClass]
-  public class TotallyConnectedParticleUpdater : ParticleUpdater, IGlobalParticleUpdater {
+  public sealed class TotallyConnectedParticleUpdater : ParticleUpdater, IGlobalParticleUpdater {
 
     #region Construction & Cloning
 
     [StorableConstructor]
-    protected TotallyConnectedParticleUpdater(bool deserializing) : base(deserializing) { }
-    protected TotallyConnectedParticleUpdater(TotallyConnectedParticleUpdater original, Cloner cloner) : base(original, cloner) { }
+    private TotallyConnectedParticleUpdater(bool deserializing) : base(deserializing) { }
+    private TotallyConnectedParticleUpdater(TotallyConnectedParticleUpdater original, Cloner cloner) : base(original, cloner) { }
     public TotallyConnectedParticleUpdater() : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {

@@ -28,9 +28,12 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
-
+  [Item("ParticleUpdater", "Updates a certain particle taking the current position and velocity into account, as well as the best point and the best point in a local neighborhood.")]
   [StorableClass]
   public abstract class ParticleUpdater : SingleSuccessorOperator, IParticleUpdater {
+    public override bool CanChangeName {
+      get { return false; }
+    }
 
     #region Parameter properties
     public ILookupParameter<IRandom> RandomParameter {
@@ -69,56 +72,48 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     #endregion
 
     #region Parameter Values
-    public IRandom Random {
+    protected IRandom Random {
       get { return RandomParameter.ActualValue; }
     }
-    public RealVector Point {
+    protected RealVector Point {
       get { return PointParameter.ActualValue; }
       set { PointParameter.ActualValue = value; }
     }
-    public RealVector Velocity {
+    protected RealVector Velocity {
       get { return VelocityParameter.ActualValue; }
       set { VelocityParameter.ActualValue = value; }
     }
-    public RealVector PersonalBestPoint {
+    protected RealVector PersonalBestPoint {
       get { return PersonalBestPointParameter.ActualValue; }
     }
-    public RealVector BestPoint {
+    protected RealVector BestPoint {
       get { return BestPointParameter.ActualValue; }
     }
-    public RealVector BestNeighborPoint {
+    protected RealVector BestNeighborPoint {
       get { return BestNeighborPointParameter.ActualValue; }
     }
-    public DoubleMatrix Bounds {
+    protected DoubleMatrix Bounds {
       get { return BoundsParameter.ActualValue; }
     }
-    public DoubleMatrix VelocityBounds {
+    protected DoubleMatrix VelocityBounds {
       get { return VelocityBoundsParameter.ActualValue; }
     }
-
-    public DoubleValue Omega {
+    protected DoubleValue Omega {
       get { return OmegaParameter.ActualValue; }
     }
-    public DoubleValue Phi_P {
+    protected DoubleValue Phi_P {
       get { return Phi_PParameter.ActualValue; }
     }
-    public DoubleValue Phi_G {
+    protected DoubleValue Phi_G {
       get { return Phi_GParameter.ActualValue; }
     }
     #endregion
-
-    public override bool CanChangeName {
-      get { return false; }
-    }
 
     #region Construction & Cloning
 
     [StorableConstructor]
     protected ParticleUpdater(bool deserializing) : base(deserializing) { }
-    protected ParticleUpdater(ParticleUpdater original, Cloner cloner)
-      : base(original, cloner) {
-    }
-
+    protected ParticleUpdater(ParticleUpdater original, Cloner cloner) : base(original, cloner) { }
     public ParticleUpdater()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "Random number generator."));

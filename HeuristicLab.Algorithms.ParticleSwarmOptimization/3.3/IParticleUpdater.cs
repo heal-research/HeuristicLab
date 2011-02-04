@@ -22,10 +22,8 @@
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
-
   public interface IParticleUpdater : IOperator {
 
     ILookupParameter<RealVector> VelocityParameter { get; }
