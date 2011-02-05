@@ -39,7 +39,6 @@
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.ProtobufCS-0.9.1.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Problems.ArtificialAnt.Views-3.3.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Data.Views-3.3.dll" />
-    <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Persistence.GUI-3.3.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Problems.VehicleRouting-3.3.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Operators.Programmable-3.3.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Encodings.PermutationEncoding.Views-3.3.dll" />
@@ -84,7 +83,6 @@
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\Mono.Cecil.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Optimization-3.3.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Random-3.3.dll" />
-    <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Clients.Common-3.3.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\Google.ProtocolBuffers-0.9.1.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Problems.ExternalEvaluation.GP.Views-3.3.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Algorithms.GeneticAlgorithm-3.3.dll" />
@@ -92,7 +90,6 @@
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Problems.OneMax.Views-3.3.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Problems.DataAnalysis.Classification.Views-3.3.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Optimization.Operators-3.3.dll" />
-    <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Algorithms.ParticleSwarmOptimization-3.3.dll" />
   </Deployment>
   <Execution>
     <TestTypeSpecific>

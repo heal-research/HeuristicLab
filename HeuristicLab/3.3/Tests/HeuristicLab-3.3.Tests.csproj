@@ -158,10 +158,6 @@
       <Project>{F409DD9E-1E9C-4EB1-AA3A-9F6E987C6E58}</Project>
       <Name>HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\HeuristicLab.Algorithms.ParticleSwarmOptimization\3.3\HeuristicLab.Algorithms.ParticleSwarmOptimization-3.3.csproj">
-      <Project>{2C429157-9C34-4DD3-9D5F-B444B751E39A}</Project>
-      <Name>HeuristicLab.Algorithms.ParticleSwarmOptimization-3.3</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\HeuristicLab.Algorithms.SimulatedAnnealing\3.3\HeuristicLab.Algorithms.SimulatedAnnealing-3.3.csproj">
       <Project>{96E5ED5B-187D-4012-9CDA-D85CDAD38342}</Project>
       <Name>HeuristicLab.Algorithms.SimulatedAnnealing-3.3</Name>
@@ -177,10 +173,6 @@
     <ProjectReference Include="..\..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
       <Project>{887425B4-4348-49ED-A457-B7D2C26DDBF9}</Project>
       <Name>HeuristicLab.Analysis-3.3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\HeuristicLab.Clients.Common\3.3\HeuristicLab.Clients.Common-3.3.csproj">
-      <Project>{730A9104-D4D1-4360-966B-E49B7571DDA3}</Project>
-      <Name>HeuristicLab.Clients.Common-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\HeuristicLab.CodeEditor\3.3\HeuristicLab.CodeEditor-3.3.csproj">
       <Project>{489CFE09-FDF7-4C89-BAB5-BD09CADD61AD}</Project>
@@ -349,10 +341,6 @@
     <ProjectReference Include="..\..\..\HeuristicLab.Parameters\3.3\HeuristicLab.Parameters-3.3.csproj">
       <Project>{56F9106A-079F-4C61-92F6-86A84C2D84B7}</Project>
       <Name>HeuristicLab.Parameters-3.3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\HeuristicLab.Persistence.GUI\3.3\HeuristicLab.Persistence.GUI-3.3.csproj">
-      <Project>{A9E282EA-180F-4233-B809-AEDF0787545C}</Project>
-      <Name>HeuristicLab.Persistence.GUI-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
       <Project>{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}</Project>
