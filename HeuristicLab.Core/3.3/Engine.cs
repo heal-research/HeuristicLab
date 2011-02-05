@@ -153,8 +153,8 @@ namespace HeuristicLab.Core {
         Run(cancellationToken);
       }
       finally {
+        timer.Elapsed -= new System.Timers.ElapsedEventHandler(timer_Elapsed);
         timer.Stop();
-        timer.Dispose();
         ExecutionTime += DateTime.Now - lastUpdateTime;
       }
 
