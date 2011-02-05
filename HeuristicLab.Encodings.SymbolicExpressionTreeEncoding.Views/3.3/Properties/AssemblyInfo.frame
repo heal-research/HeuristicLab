@@ -44,4 +44,4 @@ using System.Runtime.InteropServices;
 [assembly: Guid("266fc20e-e762-4f01-8d2d-17187186d0f9")]
 
 [assembly: AssemblyVersion("3.3.0.0")]
-[assembly: AssemblyFileVersion("3.3.2.$WCREV$")]
+[assembly: AssemblyFileVersion("3.3.3.$WCREV$")]
