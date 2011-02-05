@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2011 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -29,7 +29,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("Test cases for HeuristicLab generic data analysis problem classes")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyProduct("HeuristicLab")]
-[assembly: AssemblyCopyright("(c) 2002-2010 HEAL")]
+[assembly: AssemblyCopyright("(c) 2002-2011 HEAL")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
