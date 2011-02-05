@@ -25,7 +25,7 @@ namespace HeuristicLab.Analysis {
   /// <summary>
   /// Plugin class for HeuristicLab.Analysis plugin.
   /// </summary>
-  [Plugin("HeuristicLab.Analysis", "3.3.2.$WCREV$")]
+  [Plugin("HeuristicLab.Analysis", "3.3.3.$WCREV$")]
   [PluginFile("HeuristicLab.Analysis-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
