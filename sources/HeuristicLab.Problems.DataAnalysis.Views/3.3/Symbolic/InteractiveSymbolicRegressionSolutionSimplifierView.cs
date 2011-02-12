@@ -92,6 +92,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic {
         this.CalculateReplacementNodes();
 
         this.CalculateNodeImpacts(simplifiedExpressionTree, simplifiedExpressionTree.Root.SubTrees[0], originalTrainingMeanSquaredError);
+        // automatically fold all branches with impact = 1
+        List<SymbolicExpressionTreeNode> nodeList = simplifiedExpressionTree.Root.SubTrees[0].IterateNodesPrefix().ToList();
+        foreach (var parent in nodeList) {
+          for (int subTreeIndex = 0; subTreeIndex < parent.SubTrees.Count; subTreeIndex++) {
+            var child = parent.SubTrees[subTreeIndex];
+            if (!(child.Symbol is Constant) && nodeImpacts[child].IsAlmost(1.0)) {
+              ReplaceNodeWithConstant(parent, subTreeIndex);
+            }
+          }
+        }
         // show only interesting part of solution
         this.treeChart.Tree = new SymbolicExpressionTree(simplifiedExpressionTree.Root.SubTrees[0].SubTrees[0]);
         this.PaintNodeImpacts();
@@ -157,13 +167,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic {
         for (int i = 0; i < treeNode.SubTrees.Count; i++) {
           SymbolicExpressionTreeNode subTree = treeNode.SubTrees[i];
           if (subTree == visualTreeNode.SymbolicExpressionTreeNode) {
-            treeNode.RemoveSubTree(i);
-            if (replacementNodes.ContainsKey(subTree))
-              treeNode.InsertSubTree(i, replacementNodes[subTree]);
-            else if (subTree is ConstantTreeNode && replacementNodes.ContainsValue((ConstantTreeNode)subTree))
-              treeNode.InsertSubTree(i, replacementNodes.Where(v => v.Value == subTree).Single().Key);
-            else if (!(subTree is ConstantTreeNode))
-              throw new InvalidOperationException("Could not find replacement value.");
+            ReplaceNodeWithConstant(treeNode, i);
           }
         }
       }
@@ -178,6 +182,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic {
       this.Content.ModelChanged += new EventHandler(Content_ModelChanged);
 
       this.PaintNodeImpacts();
+    }
+
+    private void ReplaceNodeWithConstant(SymbolicExpressionTreeNode parent, int subTreeIndex) {
+      SymbolicExpressionTreeNode subTree = parent.SubTrees[subTreeIndex];
+      parent.RemoveSubTree(subTreeIndex);
+      if (replacementNodes.ContainsKey(subTree))
+        parent.InsertSubTree(subTreeIndex, replacementNodes[subTree]);
+      else if (subTree is ConstantTreeNode && replacementNodes.ContainsValue((ConstantTreeNode)subTree))
+        parent.InsertSubTree(subTreeIndex, replacementNodes.Where(v => v.Value == subTree).Single().Key);
+      else if (!(subTree is ConstantTreeNode))
+        throw new InvalidOperationException("Could not find replacement value.");
     }
 
     private void PaintNodeImpacts() {

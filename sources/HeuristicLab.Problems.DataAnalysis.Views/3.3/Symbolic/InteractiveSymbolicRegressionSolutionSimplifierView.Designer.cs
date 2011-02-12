@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2011 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -80,6 +80,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic {
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.viewHost.Caption = "View";
       this.viewHost.Content = null;
+      this.viewHost.Enabled = false;
       this.viewHost.Location = new System.Drawing.Point(6, 16);
       this.viewHost.Name = "viewHost";
       this.viewHost.ReadOnly = false;

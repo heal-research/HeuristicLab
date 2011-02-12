@@ -38,6 +38,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private Division divSymbol = new Division();
     private Constant constSymbol = new Constant();
     private Variable varSymbol = new Variable();
+    private Logarithm logSymbol = new Logarithm();
+    private Exponential expSymbol = new Exponential();
+    private Sine sineSymbol = new Sine();
+    private Cosine cosineSymbol = new Cosine();
+    private Tangent tanSymbol = new Tangent();
+    private IfThenElse ifThenElseSymbol = new IfThenElse();
+    private And andSymbol = new And();
+    private Or orSymbol = new Or();
+    private Not notSymbol = new Not();
+    private GreaterThan gtSymbol = new GreaterThan();
+    private LessThan ltSymbol = new LessThan();
 
     public SymbolicExpressionTree Simplify(SymbolicExpressionTree originalTree) {
       var clone = (SymbolicExpressionTreeNode)originalTree.Root.Clone();
@@ -83,39 +94,73 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
 
     #region symbol predicates
-    private bool IsDivision(SymbolicExpressionTreeNode original) {
-      return original.Symbol is Division;
+    // arithmetic
+    private bool IsDivision(SymbolicExpressionTreeNode node) {
+      return node.Symbol is Division;
     }
 
-    private bool IsMultiplication(SymbolicExpressionTreeNode original) {
-      return original.Symbol is Multiplication;
+    private bool IsMultiplication(SymbolicExpressionTreeNode node) {
+      return node.Symbol is Multiplication;
     }
 
-    private bool IsSubtraction(SymbolicExpressionTreeNode original) {
-      return original.Symbol is Subtraction;
+    private bool IsSubtraction(SymbolicExpressionTreeNode node) {
+      return node.Symbol is Subtraction;
     }
 
-    private bool IsAddition(SymbolicExpressionTreeNode original) {
-      return original.Symbol is Addition;
+    private bool IsAddition(SymbolicExpressionTreeNode node) {
+      return node.Symbol is Addition;
     }
 
-    private bool IsVariable(SymbolicExpressionTreeNode original) {
-      return original.Symbol is Variable;
+    private bool IsAverage(SymbolicExpressionTreeNode node) {
+      return node.Symbol is Average;
+    }
+    // exponential
+    private bool IsLog(SymbolicExpressionTreeNode node) {
+      return node.Symbol is Logarithm;
+    }
+    private bool IsExp(SymbolicExpressionTreeNode node) {
+      return node.Symbol is Exponential;
+    }
+    // trigonometric
+    private bool IsSine(SymbolicExpressionTreeNode node) {
+      return node.Symbol is Sine;
+    }
+    private bool IsCosine(SymbolicExpressionTreeNode node) {
+      return node.Symbol is Cosine;
+    }
+    private bool IsTangent(SymbolicExpressionTreeNode node) {
+      return node.Symbol is Tangent;
+    }
+    // boolean
+    private bool IsIfThenElse(SymbolicExpressionTreeNode node) {
+      return node.Symbol is IfThenElse;
+    }
+    private bool IsAnd(SymbolicExpressionTreeNode node) {
+      return node.Symbol is And;
+    }
+    private bool IsOr(SymbolicExpressionTreeNode node) {
+      return node.Symbol is Or;
+    }
+    private bool IsNot(SymbolicExpressionTreeNode node) {
+      return node.Symbol is Not;
+    }
+    // comparison
+    private bool IsGreaterThan(SymbolicExpressionTreeNode node) {
+      return node.Symbol is GreaterThan;
+    }
+    private bool IsLessThan(SymbolicExpressionTreeNode node) {
+      return node.Symbol is LessThan;
     }
 
-    private bool IsConstant(SymbolicExpressionTreeNode original) {
-      return original.Symbol is Constant;
+    // terminals
+    private bool IsVariable(SymbolicExpressionTreeNode node) {
+      return node.Symbol is Variable;
     }
 
-    private bool IsAverage(SymbolicExpressionTreeNode original) {
-      return original.Symbol is Average;
+    private bool IsConstant(SymbolicExpressionTreeNode node) {
+      return node.Symbol is Constant;
     }
-    private bool IsLog(SymbolicExpressionTreeNode original) {
-      return original.Symbol is Logarithm;
-    }
-    private bool IsIfThenElse(SymbolicExpressionTreeNode original) {
-      return original.Symbol is IfThenElse;
-    }
+
     #endregion
 
     /// <summary>
@@ -137,17 +182,32 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (IsAverage(original)) {
         return SimplifyAverage(original);
       } else if (IsLog(original)) {
-        // TODO simplify logarithm
-        return SimplifyAny(original);
+        return SimplifyLog(original);
+      } else if (IsExp(original)) {
+        return SimplifyExp(original);
+      } else if (IsSine(original)) {
+        return SimplifySine(original);
+      } else if (IsCosine(original)) {
+        return SimplifyCosine(original);
+      } else if (IsTangent(original)) {
+        return SimplifyTangent(original);
       } else if (IsIfThenElse(original)) {
-        // TODO simplify conditionals
-        return SimplifyAny(original);
-      } else if (IsAverage(original)) {
-        return SimplifyAverage(original);
+        return SimplifyIfThenElse(original);
+      } else if (IsGreaterThan(original)) {
+        return SimplifyGreaterThan(original);
+      } else if (IsLessThan(original)) {
+        return SimplifyLessThan(original);
+      } else if (IsAnd(original)) {
+        return SimplifyAnd(original);
+      } else if (IsOr(original)) {
+        return SimplifyOr(original);
+      } else if (IsNot(original)) {
+        return SimplifyNot(original);
       } else {
         return SimplifyAny(original);
       }
     }
+
 
     #region specific simplification routines
     private SymbolicExpressionTreeNode SimplifyAny(SymbolicExpressionTreeNode original) {
@@ -238,11 +298,209 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           .Aggregate((a, b) => MakeSum(a, b));
       }
     }
+
+    private SymbolicExpressionTreeNode SimplifyNot(SymbolicExpressionTreeNode original) {
+      return MakeNot(GetSimplifiedTree(original.SubTrees[0]));
+    }
+    private SymbolicExpressionTreeNode SimplifyOr(SymbolicExpressionTreeNode original) {
+      return original.SubTrees
+        .Select(x => GetSimplifiedTree(x))
+        .Aggregate((a, b) => MakeOr(a, b));
+    }
+    private SymbolicExpressionTreeNode SimplifyAnd(SymbolicExpressionTreeNode original) {
+      return original.SubTrees
+        .Select(x => GetSimplifiedTree(x))
+        .Aggregate((a, b) => MakeAnd(a, b));
+    }
+    private SymbolicExpressionTreeNode SimplifyLessThan(SymbolicExpressionTreeNode original) {
+      return MakeLessThan(GetSimplifiedTree(original.SubTrees[0]), GetSimplifiedTree(original.SubTrees[1]));
+    }
+    private SymbolicExpressionTreeNode SimplifyGreaterThan(SymbolicExpressionTreeNode original) {
+      return MakeGreaterThan(GetSimplifiedTree(original.SubTrees[0]), GetSimplifiedTree(original.SubTrees[1]));
+    }
+    private SymbolicExpressionTreeNode SimplifyIfThenElse(SymbolicExpressionTreeNode original) {
+      return MakeIfThenElse(GetSimplifiedTree(original.SubTrees[0]), GetSimplifiedTree(original.SubTrees[1]), GetSimplifiedTree(original.SubTrees[2]));
+    }
+    private SymbolicExpressionTreeNode SimplifyTangent(SymbolicExpressionTreeNode original) {
+      return MakeTangent(GetSimplifiedTree(original.SubTrees[0]));
+    }
+    private SymbolicExpressionTreeNode SimplifyCosine(SymbolicExpressionTreeNode original) {
+      return MakeCosine(GetSimplifiedTree(original.SubTrees[0]));
+    }
+    private SymbolicExpressionTreeNode SimplifySine(SymbolicExpressionTreeNode original) {
+      return MakeSine(GetSimplifiedTree(original.SubTrees[0]));
+    }
+    private SymbolicExpressionTreeNode SimplifyExp(SymbolicExpressionTreeNode original) {
+      return MakeExp(GetSimplifiedTree(original.SubTrees[0]));
+    }
+
+    private SymbolicExpressionTreeNode SimplifyLog(SymbolicExpressionTreeNode original) {
+      return MakeLog(GetSimplifiedTree(original.SubTrees[0]));
+    }
+
     #endregion
 
 
 
     #region low level tree restructuring
+    private SymbolicExpressionTreeNode MakeNot(SymbolicExpressionTreeNode t) {
+      return MakeProduct(t, MakeConstant(-1.0));
+    }
+
+    private SymbolicExpressionTreeNode MakeOr(SymbolicExpressionTreeNode a, SymbolicExpressionTreeNode b) {
+      if (IsConstant(a) && IsConstant(b)) {
+        var constA = a as ConstantTreeNode;
+        var constB = b as ConstantTreeNode;
+        if (constA.Value > 0.0 || constB.Value > 0.0) {
+          return MakeConstant(1.0);
+        } else {
+          return MakeConstant(-1.0);
+        }
+      } else if (IsConstant(a)) {
+        return MakeOr(b, a);
+      } else if (IsConstant(b)) {
+        var constT = b as ConstantTreeNode;
+        if (constT.Value > 0.0) {
+          // boolean expression is necessarily true
+          return MakeConstant(1.0);
+        } else {
+          // the constant value has no effect on the result of the boolean condition so we can drop the constant term
+          var orNode = orSymbol.CreateTreeNode();
+          orNode.AddSubTree(a);
+          return orNode;
+        }
+      } else {
+        var orNode = orSymbol.CreateTreeNode();
+        orNode.AddSubTree(a);
+        orNode.AddSubTree(b);
+        return orNode;
+      }
+    }
+    private SymbolicExpressionTreeNode MakeAnd(SymbolicExpressionTreeNode a, SymbolicExpressionTreeNode b) {
+      if (IsConstant(a) && IsConstant(b)) {
+        var constA = a as ConstantTreeNode;
+        var constB = b as ConstantTreeNode;
+        if (constA.Value > 0.0 && constB.Value > 0.0) {
+          return MakeConstant(1.0);
+        } else {
+          return MakeConstant(-1.0);
+        }
+      } else if (IsConstant(a)) {
+        return MakeAnd(b, a);
+      } else if (IsConstant(b)) {
+        var constB = b as ConstantTreeNode;
+        if (constB.Value > 0.0) {
+          // the constant value has no effect on the result of the boolean condition so we can drop the constant term
+          var andNode = andSymbol.CreateTreeNode();
+          andNode.AddSubTree(a);
+          return andNode;
+        } else {
+          // boolean expression is necessarily false
+          return MakeConstant(-1.0);
+        }
+      } else {
+        var andNode = andSymbol.CreateTreeNode();
+        andNode.AddSubTree(a);
+        andNode.AddSubTree(b);
+        return andNode;
+      }
+    }
+    private SymbolicExpressionTreeNode MakeLessThan(SymbolicExpressionTreeNode leftSide, SymbolicExpressionTreeNode rightSide) {
+      if (IsConstant(leftSide) && IsConstant(rightSide)) {
+        var lsConst = leftSide as ConstantTreeNode;
+        var rsConst = rightSide as ConstantTreeNode;
+        if (lsConst.Value < rsConst.Value) return MakeConstant(1.0);
+        else return MakeConstant(-1.0);
+      } else {
+        var ltNode = ltSymbol.CreateTreeNode();
+        ltNode.AddSubTree(leftSide);
+        ltNode.AddSubTree(rightSide);
+        return ltNode;
+      }
+    }
+    private SymbolicExpressionTreeNode MakeGreaterThan(SymbolicExpressionTreeNode leftSide, SymbolicExpressionTreeNode rightSide) {
+      if (IsConstant(leftSide) && IsConstant(rightSide)) {
+        var lsConst = leftSide as ConstantTreeNode;
+        var rsConst = rightSide as ConstantTreeNode;
+        if (lsConst.Value > rsConst.Value) return MakeConstant(1.0);
+        else return MakeConstant(-1.0);
+      } else {
+        var gtNode = gtSymbol.CreateTreeNode();
+        gtNode.AddSubTree(leftSide);
+        gtNode.AddSubTree(rightSide);
+        return gtNode;
+      }
+    }
+    private SymbolicExpressionTreeNode MakeIfThenElse(SymbolicExpressionTreeNode condition, SymbolicExpressionTreeNode trueBranch, SymbolicExpressionTreeNode falseBranch) {
+      if (IsConstant(condition)) {
+        var constT = condition as ConstantTreeNode;
+        if (constT.Value > 0.0) return trueBranch;
+        else return falseBranch;
+      } else {
+        var ifNode = ifThenElseSymbol.CreateTreeNode();
+        ifNode.AddSubTree(condition);
+        ifNode.AddSubTree(trueBranch);
+        ifNode.AddSubTree(falseBranch);
+        return ifNode;
+      }
+    }
+    private SymbolicExpressionTreeNode MakeSine(SymbolicExpressionTreeNode node) {
+      // todo implement more transformation rules
+      if (IsConstant(node)) {
+        var constT = node as ConstantTreeNode;
+        return MakeConstant(Math.Sin(constT.Value));
+      } else {
+        var sineNode = sineSymbol.CreateTreeNode();
+        sineNode.AddSubTree(node);
+        return sineNode;
+      }
+    }
+    private SymbolicExpressionTreeNode MakeTangent(SymbolicExpressionTreeNode node) {
+      // todo implement more transformation rules
+      if (IsConstant(node)) {
+        var constT = node as ConstantTreeNode;
+        return MakeConstant(Math.Tan(constT.Value));
+      } else {
+        var tanNode = tanSymbol.CreateTreeNode();
+        tanNode.AddSubTree(node);
+        return tanNode;
+      }
+    }
+    private SymbolicExpressionTreeNode MakeCosine(SymbolicExpressionTreeNode node) {
+      // todo implement more transformation rules
+      if (IsConstant(node)) {
+        var constT = node as ConstantTreeNode;
+        return MakeConstant(Math.Cos(constT.Value));
+      } else {
+        var cosNode = cosineSymbol.CreateTreeNode();
+        cosNode.AddSubTree(node);
+        return cosNode;
+      }
+    }
+    private SymbolicExpressionTreeNode MakeExp(SymbolicExpressionTreeNode node) {
+      // todo implement more transformation rules
+      if (IsConstant(node)) {
+        var constT = node as ConstantTreeNode;
+        return MakeConstant(Math.Exp(constT.Value));
+      } else {
+        var expNode = expSymbol.CreateTreeNode();
+        expNode.AddSubTree(node);
+        return expNode;
+      }
+    }
+    private SymbolicExpressionTreeNode MakeLog(SymbolicExpressionTreeNode node) {
+      // todo implement more transformation rules
+      if (IsConstant(node)) {
+        var constT = node as ConstantTreeNode;
+        return MakeConstant(Math.Log(constT.Value));
+      } else {
+        var logNode = logSymbol.CreateTreeNode();
+        logNode.AddSubTree(node);
+        return logNode;
+      }
+    }
+
+
     // MakeFraction, MakeProduct and MakeSum take two already simplified trees and create a new simplified tree
 
     private SymbolicExpressionTreeNode MakeFraction(SymbolicExpressionTreeNode a, SymbolicExpressionTreeNode b) {
@@ -356,7 +614,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
                             let lag = (node is LaggedVariableTreeNode) ? ((LaggedVariableTreeNode)node).Lag : 0
                             group node by node.VariableName + lag into g
                             select g;
-
       var unchangedSubTrees = subtrees.Where(t => !(t is VariableTreeNode));
 
       foreach (var variableNodeGroup in groupedVarNodes) {
