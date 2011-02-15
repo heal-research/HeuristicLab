@@ -32,11 +32,13 @@ namespace HeuristicLab.MainForm.WindowsForms {
       Point position = PointToClient(Control.MousePosition);
       int tabIndex = -1;
       for (int i = 0; i < TabPages.Count; i++) {
-        if (GetTabRect(i).Contains(position)) tabIndex = i;
+        if (GetTabRect(i).Contains(position))
+          tabIndex = i;
       }
 
-      if (tabIndex != SelectedIndex)
+      if (tabIndex != SelectedIndex && tabIndex != -1)
         SelectedIndex = tabIndex;
+
     }
   }
 }
