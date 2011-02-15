@@ -169,6 +169,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Formatters {
         // actually a new variable for t is needed in all subtrees (TODO)
         var laggedTreeNode = node as ILaggedTreeNode;
         strBuilder.Append(@"\sum_{t=" + (laggedTreeNode.Lag + currentLag) + @"}^0 \left(");
+      } else if (node.Symbol is VariableCondition) {
+        var conditionTreeNode = node as VariableConditionTreeNode;
+        string p = @"1 / \left( 1 + \exp \left( - c_{" + constants.Count + "} ";
+        constants.Add(conditionTreeNode.Slope);
+        p += @" \cdot \left(" + conditionTreeNode.VariableName + LagToString(currentLag) + " - c_{" + constants.Count + "} \right) \right) \right)";
+        constants.Add(conditionTreeNode.Threshold);
+        strBuilder.Append(@"\left( " + p + @"\cdot ");
       } else {
         throw new NotImplementedException("Export of " + node.Symbol + " is not implemented.");
       }
@@ -218,6 +225,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Formatters {
         strBuilder.Append(@"\right) ^ { \operatorname{round} \left(");
       } else if (node.Symbol is Root) {
         strBuilder.Append(@"\right) ^ { \left( \cfrac{1}{ \operatorname{round} \left(");
+      } else if (node.Symbol is VariableCondition) {
+        var conditionTreeNode = node as VariableConditionTreeNode;
+        string p = @"1 / \left( 1 + \exp \left( - c_{" + constants.Count + "} ";
+        constants.Add(conditionTreeNode.Slope);
+        p += @" \cdot \left(" + conditionTreeNode.VariableName + LagToString(currentLag) + " - c_{" + constants.Count + "} \right) \right) \right)";
+        constants.Add(conditionTreeNode.Threshold);
+        strBuilder.Append(@" + \left( 1 - " + p + @" \right) \cdot ");
       } else {
         throw new NotImplementedException("Export of " + node.Symbol + " is not implemented.");
       }
@@ -290,6 +304,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Formatters {
       } else if (node.Symbol is Integral) {
         var laggedTreeNode = node as ILaggedTreeNode;
         strBuilder.Append(@"\right) ");
+      } else if (node.Symbol is VariableCondition) {
+        strBuilder.Append(@"\left) ");
       } else {
         throw new NotImplementedException("Export of " + node.Symbol + " is not implemented.");
       }
