@@ -262,7 +262,16 @@ namespace HeuristicLab.MainForm.WindowsForms {
 
     private bool startDragAndDrop;
     private void viewsLabel_MouseDown(object sender, MouseEventArgs e) {
-      if (!Locked) {
+      if (e.Button == System.Windows.Forms.MouseButtons.Right) {
+        Screen screen = Screen.FromControl(viewsLabel);
+        int rightBorder = viewsLabel.PointToScreen(viewsLabel.Location).X + viewContextMenuStrip.Width; //
+        rightBorder = rightBorder - screen.Bounds.X; //pixel position on active screen
+
+        if (rightBorder < screen.Bounds.Width)
+          viewContextMenuStrip.Show(viewsLabel, viewsLabel.Margin.Left, viewsLabel.Margin.Top);
+        else
+          viewContextMenuStrip.Show(screen.Bounds.X + screen.Bounds.Width - viewContextMenuStrip.Width, viewsLabel.PointToScreen(viewsLabel.Location).Y - viewsLabel.Margin.Top);
+      } else if (!Locked) {
         startDragAndDrop = true;
         viewsLabel.Capture = false;
         viewsLabel.Focus();
