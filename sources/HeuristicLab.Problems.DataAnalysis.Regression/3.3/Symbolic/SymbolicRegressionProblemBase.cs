@@ -281,6 +281,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       foreach (var varSymbol in FunctionTreeGrammar.Symbols.OfType<HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols.Variable>()) {
         varSymbol.VariableNames = DataAnalysisProblemData.InputVariables.CheckedItems.Select(x => x.Value.Value);
       }
+      foreach (var varSymbol in FunctionTreeGrammar.Symbols.OfType<HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols.VariableCondition>()) {
+        varSymbol.VariableNames = DataAnalysisProblemData.InputVariables.CheckedItems.Select(x => x.Value.Value);
+      }
       var globalGrammar = FunctionTreeGrammar as GlobalSymbolicExpressionGrammar;
       if (globalGrammar != null) {
         globalGrammar.MaxFunctionArguments = MaxFunctionArguments.Value;

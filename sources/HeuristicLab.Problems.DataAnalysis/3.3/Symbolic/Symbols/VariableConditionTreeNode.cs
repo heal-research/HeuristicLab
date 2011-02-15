@@ -1,6 +1,6 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2011 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,22 +19,25 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Random;
+
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
   [StorableClass]
-  public class VariableTreeNode : SymbolicExpressionTreeTerminalNode {
-    public new Variable Symbol {
-      get { return (Variable)base.Symbol; }
+  public sealed class VariableConditionTreeNode : SymbolicExpressionTreeNode {
+    #region properties
+    public new VariableCondition Symbol {
+      get { return (VariableCondition)base.Symbol; }
     }
     [Storable]
-    private double weight;
-    public double Weight {
-      get { return weight; }
-      set { weight = value; }
+    private double threshold;
+    public double Threshold {
+      get { return threshold; }
+      set { threshold = value; }
     }
     [Storable]
     private string variableName;
@@ -42,47 +45,50 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
       get { return variableName; }
       set { variableName = value; }
     }
+    [Storable]
+    private double slope;
+    public double Slope {
+      get { return slope; }
+      set { slope = value; }
+    }
+    #endregion
 
     [StorableConstructor]
-    protected VariableTreeNode(bool deserializing) : base(deserializing) { }
-    protected VariableTreeNode(VariableTreeNode original, Cloner cloner)
+    private VariableConditionTreeNode(bool deserializing) : base(deserializing) { }
+    private VariableConditionTreeNode(VariableConditionTreeNode original, Cloner cloner)
       : base(original, cloner) {
-      weight = original.weight;
+      threshold = original.threshold;
       variableName = original.variableName;
+      slope = original.slope;
     }
-    protected VariableTreeNode() { }
-    public VariableTreeNode(Variable variableSymbol) : base(variableSymbol) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new VariableConditionTreeNode(this, cloner);
+    }
 
+    public VariableConditionTreeNode(VariableCondition variableConditionSymbol) : base(variableConditionSymbol) { }
     public override bool HasLocalParameters {
       get { return true; }
     }
 
     public override void ResetLocalParameters(IRandom random) {
       base.ResetLocalParameters(random);
-      weight = NormalDistributedRandom.NextDouble(random, Symbol.WeightMu, Symbol.WeightSigma);
+      threshold = NormalDistributedRandom.NextDouble(random, Symbol.ThresholdInitializerMu, Symbol.ThresholdInitializerSigma);
       variableName = Symbol.VariableNames.SelectRandom(random);
+      slope = NormalDistributedRandom.NextDouble(random, Symbol.SlopeInitializerMu, Symbol.SlopeInitializerSigma);
     }
 
     public override void ShakeLocalParameters(IRandom random, double shakingFactor) {
       base.ShakeLocalParameters(random, shakingFactor);
-      // 50% additive & 50% multiplicative
-      if (random.NextDouble() < 0) {
-        double x = NormalDistributedRandom.NextDouble(random, Symbol.WeightManipulatorMu, Symbol.WeightManipulatorSigma);
-        weight = weight + x * shakingFactor;
-      } else {        
-        double x = NormalDistributedRandom.NextDouble(random, 1.0, Symbol.MultiplicativeWeightManipulatorSigma);
-        weight = weight * x;
-      }
+      double x = NormalDistributedRandom.NextDouble(random, Symbol.ThresholdManipulatorMu, Symbol.ThresholdManipulatorSigma);
+      threshold = threshold + x * shakingFactor;
       variableName = Symbol.VariableNames.SelectRandom(random);
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new VariableTreeNode(this, cloner);
+      x = NormalDistributedRandom.NextDouble(random, Symbol.SlopeManipulatorMu, Symbol.SlopeManipulatorSigma);
+      slope = slope + x * shakingFactor;
     }
 
     public override string ToString() {
-      if (weight.IsAlmost(1.0)) return variableName;
-      else return weight.ToString("E4") + " " + variableName;
+      return variableName + " > " + threshold.ToString("E4") + Environment.NewLine +
+        "slope: " + slope.ToString("E4");
     }
   }
 }

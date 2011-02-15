@@ -128,6 +128,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       public const byte TimeLag = 24;
       public const byte Integral = 25;
       public const byte Derivative = 26;
+
+      public const byte VariableCondition = 27;
     }
 
     private Dictionary<Type, byte> symbolToOpcode = new Dictionary<Type, byte>() {
@@ -157,6 +159,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       { typeof(TimeLag), OpCodes.TimeLag}, 
       { typeof(Integral), OpCodes.Integral},
       { typeof(Derivative), OpCodes.Derivative},
+      { typeof(VariableCondition),OpCodes.VariableCondition}
     };
 
 
@@ -192,6 +195,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           var variableTreeNode = instr.dynamicNode as LaggedVariableTreeNode;
           instr.iArg0 = (ushort)dataset.GetVariableIndex(variableTreeNode.VariableName);
           code[i] = instr;
+        } else if (instr.opCode == OpCodes.VariableCondition) {
+          var variableConditionTreeNode = instr.dynamicNode as VariableConditionTreeNode;
+          instr.iArg0 = (ushort)dataset.GetVariableIndex(variableConditionTreeNode.VariableName);
         }
       }
       var state = new InterpreterState(code);
@@ -200,7 +206,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         int row = rowEnum;
         state.Reset();
         yield return Evaluate(dataset, ref row, state);
-      }
+      } 
     }
 
     private double Evaluate(Dataset dataset, ref int row, InterpreterState state) {
@@ -396,6 +402,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         case OpCodes.Constant: {
             var constTreeNode = currentInstr.dynamicNode as ConstantTreeNode;
             return constTreeNode.Value;
+          }
+
+        //mkommend: this symbol uses the logistic function f(x) = 1 / (1 + e^(-alpha * x) ) 
+        //to determine the relative amounts of the true and false branch see http://en.wikipedia.org/wiki/Logistic_function
+        case OpCodes.VariableCondition: {
+            var variableConditionTreeNode = (VariableConditionTreeNode)currentInstr.dynamicNode;
+            double variableValue = dataset[row, currentInstr.iArg0];
+            double x = variableValue - variableConditionTreeNode.Threshold;
+            double p = 1 / (1 + Math.Exp(-variableConditionTreeNode.Slope * x));
+
+            double trueBranch = Evaluate(dataset, ref row, state);
+            double falseBranch = Evaluate(dataset, ref row, state);
+
+            return trueBranch * p + falseBranch * (1 - p);
           }
         default: throw new NotSupportedException();
       }

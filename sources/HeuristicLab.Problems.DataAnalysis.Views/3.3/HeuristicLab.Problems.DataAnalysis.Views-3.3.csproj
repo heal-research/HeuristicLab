@@ -198,6 +198,12 @@
     <Compile Include="Symbolic\Symbols\ConstantView.Designer.cs">
       <DependentUpon>ConstantView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Symbolic\Symbols\VariableConditionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Symbolic\Symbols\VariableConditionView.Designer.cs">
+      <DependentUpon>VariableConditionView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Symbolic\Symbols\LaggedVariableView.cs">
       <SubType>UserControl</SubType>
     </Compile>

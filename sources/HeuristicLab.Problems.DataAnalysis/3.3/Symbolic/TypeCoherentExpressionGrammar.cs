@@ -71,6 +71,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       integral.InitialFrequency = 0.0;
       var derivative = new Derivative();
       derivative.InitialFrequency = 0.0;
+      var variableCondition = new VariableCondition();
+      variableCondition.InitialFrequency = 0.0;
 
       var constant = new Constant();
       constant.MinValue = -20;
@@ -90,6 +92,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
        *   BinaryOperator RealValueExpression RealValueExpression |
        *   UnaryOperator RealValueExpression | 
        *   "IF" BooleanExpression RealValueExpression RealValueExpression | 
+       *   "VariableCondition" RealValueExpression RealValueExpression
        * 
        * BinaryOperator = 
        *   "+" | "-" | "*" | "/" | "Power"
@@ -105,10 +108,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
        *   "<" RealValueExpression RealValueExpression
        */
 
-      var allSymbols = new List<Symbol>() { add, sub, mul, div, mean, sin, cos, tan, log, pow, root, exp, @if, gt, lt, and, or, not, timeLag, integral, derivative, constant, variableSymbol, laggedVariable };
+      var allSymbols = new List<Symbol>() { add, sub, mul, div, mean, sin, cos, tan, log, pow, root, exp, @if, gt, lt, and, or, not, timeLag, integral, derivative, constant, variableSymbol, laggedVariable, variableCondition };
 
       var unaryFunctionSymbols = new List<Symbol>() { sin, cos, tan, log, exp, timeLag, integral, derivative };
-      var binaryFunctionSymbols = new List<Symbol>() { add, sub, mul, div, mean, pow, root };
+      var binaryFunctionSymbols = new List<Symbol>() { add, sub, mul, div, mean, pow, root, variableCondition };
 
       var unaryBooleanFunctionSymbols = new List<Symbol>() { not };
       var binaryBooleanFunctionSymbols = new List<Symbol>() { or, and };

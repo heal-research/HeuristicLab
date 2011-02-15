@@ -115,6 +115,8 @@
     <Compile Include="Symbolic\Symbols\TimeLag.cs" />
     <Compile Include="Symbolic\TypeCoherentExpressionGrammar.cs" />
     <Compile Include="Symbolic\Symbols\Power.cs" />
+    <Compile Include="Symbolic\Symbols\VariableCondition.cs" />
+    <Compile Include="Symbolic\Symbols\VariableConditionTreeNode.cs" />
     <Compile Include="TableFileParser.cs" />
     <None Include="HeuristicLab.snk" />
     <None Include="HeuristicLabProblemsDataAnalysisPlugin.cs.frame" />
