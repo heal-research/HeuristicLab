@@ -139,6 +139,33 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
         Assert.AreEqual(formatter.Format(expectedTree), formatter.Format(actualTree));
       }
       #endregion
+      #region constant and variable folding
+      {
+        var actualTree = simplifier.Simplify(importer.Import("(+ 1.0 2.0)"));
+        var expectedTree = importer.Import("3.0");
+        Assert.AreEqual(formatter.Format(expectedTree), formatter.Format(actualTree));
+      }
+      {
+        var actualTree = simplifier.Simplify(importer.Import("(+ (variable 2.0 a) (variable 2.0 a))"));
+        var expectedTree = importer.Import("(variable 4.0 a)");
+        Assert.AreEqual(formatter.Format(expectedTree), formatter.Format(actualTree));
+      }
+      {
+        var actualTree = simplifier.Simplify(importer.Import("(- (variable 2.0 a) (variable 1.0 a))"));
+        var expectedTree = importer.Import("(variable 1.0 a)");
+        Assert.AreEqual(formatter.Format(expectedTree), formatter.Format(actualTree));
+      }
+      {
+        var actualTree = simplifier.Simplify(importer.Import("(* (variable 2.0 a) (variable 2.0 a))"));
+        var expectedTree = importer.Import("(* (* (variable 1.0 a) (variable 1.0 a)) 4.0)");
+        Assert.AreEqual(formatter.Format(expectedTree), formatter.Format(actualTree));
+      }
+      {
+        var actualTree = simplifier.Simplify(importer.Import("(/ (variable 1.0 a) (variable 2.0 a))"));
+        var expectedTree = importer.Import("0.5");
+        Assert.AreEqual(formatter.Format(expectedTree), formatter.Format(actualTree));
+      }
+      #endregion
       #region logarithm rules
       {
         // cancellation
@@ -154,13 +181,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
       }
       {
         // log transformation
-        var actualTree = simplifier.Simplify(importer.Import("(log (* (variable 2.0 a) (variable 3.0 b))"));
-        var expectedTree = importer.Import("(+ (log (variable 2.0 a)) (log (variable 3.0 b)))");
+        var actualTree = simplifier.Simplify(importer.Import("(log (* (variable 2.0 a) (variable 3.0 b)))"));
+        var expectedTree = importer.Import("(+ (log (variable 1.0 a)) (log (variable 1.0 b)) 1.7918)");
         Assert.AreEqual(formatter.Format(expectedTree), formatter.Format(actualTree));
       }
       {
         // log transformation
-        var actualTree = simplifier.Simplify(importer.Import("(log (/ (variable 2.0 a) (variable 3.0 b))"));
+        var actualTree = simplifier.Simplify(importer.Import("(log (/ (variable 2.0 a) (variable 3.0 b)))"));
         var expectedTree = importer.Import("(- (log (variable 2.0 a)) (log (variable 3.0 b)))");
         Assert.AreEqual(formatter.Format(expectedTree), formatter.Format(actualTree));
       }
@@ -193,19 +220,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
       {
         // constant not 
         var actualTree = simplifier.Simplify(importer.Import("(not -2.0)"));
-        var expectedTree = importer.Import("1.0");
+        var expectedTree = importer.Import("2.0");
         Assert.AreEqual(formatter.Format(expectedTree), formatter.Format(actualTree));
       }
       {
         // constant not 
         var actualTree = simplifier.Simplify(importer.Import("(not 2.0)"));
-        var expectedTree = importer.Import("-1.0");
+        var expectedTree = importer.Import("-2.0");
         Assert.AreEqual(formatter.Format(expectedTree), formatter.Format(actualTree));
       }
       {
         // constant not 
         var actualTree = simplifier.Simplify(importer.Import("(not 0.0)"));
-        var expectedTree = importer.Import("1.0");
+        var expectedTree = importer.Import("0.0");
         Assert.AreEqual(formatter.Format(expectedTree), formatter.Format(actualTree));
       }
       #endregion
@@ -244,33 +271,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
         // insertion of relational operator
         var actualTree = simplifier.Simplify(importer.Import("(if (variable 1.0 a) (variable 2.0 a) (variable 3.0 a))"));
         var expectedTree = importer.Import("(if (> (variable 1.0 a) 0.0) (variable 2.0 a) (variable 3.0 a))");
-        Assert.AreEqual(formatter.Format(expectedTree), formatter.Format(actualTree));
-      }
-      #endregion
-      #region constant and variable folding
-      {
-        var actualTree = simplifier.Simplify(importer.Import("(+ 1.0 2.0)"));
-        var expectedTree = importer.Import("3.0");
-        Assert.AreEqual(formatter.Format(expectedTree), formatter.Format(actualTree));
-      }
-      {
-        var actualTree = simplifier.Simplify(importer.Import("(+ (variable 2.0 a) (variable 2.0 a))"));
-        var expectedTree = importer.Import("(variable 4.0 a)");
-        Assert.AreEqual(formatter.Format(expectedTree), formatter.Format(actualTree));
-      }
-      {
-        var actualTree = simplifier.Simplify(importer.Import("(- (variable 2.0 a) (variable 1.0 a))"));
-        var expectedTree = importer.Import("(variable 1.0 a)");
-        Assert.AreEqual(formatter.Format(expectedTree), formatter.Format(actualTree));
-      }
-      {
-        var actualTree = simplifier.Simplify(importer.Import("(* (variable 2.0 a) (variable 2.0 a))"));
-        var expectedTree = importer.Import("(* (* (variable 1.0 a) (variable 1.0 a)) 4.0)");
-        Assert.AreEqual(formatter.Format(expectedTree), formatter.Format(actualTree));
-      }
-      {
-        var actualTree = simplifier.Simplify(importer.Import("(/ (variable 1.0 a) (variable 2.0 a))"));
-        var expectedTree = importer.Import("0.5");
         Assert.AreEqual(formatter.Format(expectedTree), formatter.Format(actualTree));
       }
       #endregion

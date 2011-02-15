@@ -34,6 +34,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// </summary>
   public class SymbolicSimplifier {
     private Addition addSymbol = new Addition();
+    private Subtraction subSymbol = new Subtraction();
     private Multiplication mulSymbol = new Multiplication();
     private Division divSymbol = new Division();
     private Constant constSymbol = new Constant();
@@ -150,6 +151,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
     private bool IsLessThan(SymbolicExpressionTreeNode node) {
       return node.Symbol is LessThan;
+    }
+
+    private bool IsBoolean(SymbolicExpressionTreeNode node) {
+      return
+        node.Symbol is GreaterThan ||
+        node.Symbol is LessThan ||
+        node.Symbol is And ||
+        node.Symbol is Or;
     }
 
     // terminals
@@ -438,12 +447,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         else return falseBranch;
       } else {
         var ifNode = ifThenElseSymbol.CreateTreeNode();
-        ifNode.AddSubTree(condition);
+        if (IsBoolean(condition)) {
+          ifNode.AddSubTree(condition);
+        } else {
+          var gtNode = gtSymbol.CreateTreeNode();
+          gtNode.AddSubTree(condition); gtNode.AddSubTree(MakeConstant(0.0));
+          ifNode.AddSubTree(gtNode);
+        }
         ifNode.AddSubTree(trueBranch);
         ifNode.AddSubTree(falseBranch);
         return ifNode;
       }
     }
+
     private SymbolicExpressionTreeNode MakeSine(SymbolicExpressionTreeNode node) {
       // todo implement more transformation rules
       if (IsConstant(node)) {
@@ -482,6 +498,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (IsConstant(node)) {
         var constT = node as ConstantTreeNode;
         return MakeConstant(Math.Exp(constT.Value));
+      } else if (IsLog(node)) {
+        return node.SubTrees[0];
       } else {
         var expNode = expSymbol.CreateTreeNode();
         expNode.AddSubTree(node);
@@ -493,6 +511,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (IsConstant(node)) {
         var constT = node as ConstantTreeNode;
         return MakeConstant(Math.Log(constT.Value));
+      } else if (IsExp(node)) {
+        return node.SubTrees[0];
+      } else if (IsMultiplication(node)) {
+        return node.SubTrees.Select(s => MakeLog(s)).Aggregate((x, y) => MakeSum(x, y));
+      } else if (IsDivision(node)) {
+        var subtractionNode = subSymbol.CreateTreeNode();
+        foreach (var subTree in node.SubTrees) {
+          subtractionNode.AddSubTree(MakeLog(subTree));
+        }
+        return subtractionNode;
       } else {
         var logNode = logSymbol.CreateTreeNode();
         logNode.AddSubTree(node);
@@ -502,7 +530,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
 
     // MakeFraction, MakeProduct and MakeSum take two already simplified trees and create a new simplified tree
-
     private SymbolicExpressionTreeNode MakeFraction(SymbolicExpressionTreeNode a, SymbolicExpressionTreeNode b) {
       if (IsConstant(a) && IsConstant(b)) {
         // fold constants
@@ -514,6 +541,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var constB = ((ConstantTreeNode)b).Value;
         ((VariableTreeNode)a).Weight /= constB;
         return a;
+      } else if (IsVariable(a) && IsVariable(b) && AreSameVariable(a, b)) {
+        // cancel variables
+        var aVar = a as VariableTreeNode;
+        var bVar = b as VariableTreeNode;
+        return MakeConstant(aVar.Weight / bVar.Weight);
       } else if (IsAddition(a) && IsConstant(b)) {
         return a.SubTrees
           .Select(x => GetSimplifiedTree(x))
@@ -573,7 +605,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           add.AddSubTree(b.SubTrees.Last());
         }
         MergeVariablesInSum(add);
-        return add;
+        if (add.SubTrees.Count == 1) {
+          return add.SubTrees[0];
+        } else {
+          return add;
+        }
       } else if (IsAddition(b)) {
         return MakeSum(b, a);
       } else if (IsAddition(a) && IsConstant(b)) {
@@ -595,18 +631,26 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           add.AddSubTree(subTree);
         }
         MergeVariablesInSum(add);
-        return add;
+        if (add.SubTrees.Count == 1) {
+          return add.SubTrees[0];
+        } else {
+          return add;
+        }
       } else {
         var add = addSymbol.CreateTreeNode();
         add.AddSubTree(a);
         add.AddSubTree(b);
         MergeVariablesInSum(add);
-        return add;
+        if (add.SubTrees.Count == 1) {
+          return add.SubTrees[0];
+        } else {
+          return add;
+        }
       }
     }
 
     // makes sure variable symbols in sums are combined
-    // possible improvment: combine sums of products where the products only reference the same variable
+    // possible improvement: combine sums of products where the products only reference the same variable
     private void MergeVariablesInSum(SymbolicExpressionTreeNode sum) {
       var subtrees = new List<SymbolicExpressionTreeNode>(sum.SubTrees);
       while (sum.SubTrees.Count > 0) sum.RemoveSubTree(0);
@@ -682,6 +726,24 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
     #endregion
 
+
+    #region helper functions
+
+    private bool AreSameVariable(SymbolicExpressionTreeNode a, SymbolicExpressionTreeNode b) {
+      var aLaggedVar = a as LaggedVariableTreeNode;
+      var bLaggedVar = b as LaggedVariableTreeNode;
+      if (aLaggedVar != null && bLaggedVar != null) {
+        return aLaggedVar.VariableName == bLaggedVar.VariableName &&
+          aLaggedVar.Lag == bLaggedVar.Lag;
+      }
+      var aVar = a as VariableTreeNode;
+      var bVar = b as VariableTreeNode;
+      if (aVar != null && bVar != null) {
+        return aVar.VariableName == bVar.VariableName;
+      }
+      return false;
+    }
+
     // helper to combine the constant factors in products and to combine variables (powers of 2, 3...)
     private void MergeVariablesAndConstantsInProduct(SymbolicExpressionTreeNode prod) {
       var subtrees = new List<SymbolicExpressionTreeNode>(prod.SubTrees);
@@ -726,7 +788,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
 
-    #region helper functions
     /// <summary>
     /// x => x * -1
     /// Doesn't create new trees and manipulates x
