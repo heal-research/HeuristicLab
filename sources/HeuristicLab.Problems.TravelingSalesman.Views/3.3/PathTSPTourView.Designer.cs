@@ -45,7 +45,7 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
     /// </summary>
     private void InitializeComponent() {
       this.pictureBox = new System.Windows.Forms.PictureBox();
-      this.tabControl = new System.Windows.Forms.TabControl();
+      this.tabControl = new HeuristicLab.MainForm.WindowsForms.DragOverTabControl();
       this.visualizationTabPage = new System.Windows.Forms.TabPage();
       this.valueTabPage = new System.Windows.Forms.TabPage();
       this.tourGroupBox = new System.Windows.Forms.GroupBox();
@@ -206,7 +206,7 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
     #endregion
 
     private System.Windows.Forms.PictureBox pictureBox;
-    private System.Windows.Forms.TabControl tabControl;
+    private HeuristicLab.MainForm.WindowsForms.DragOverTabControl tabControl;
     private System.Windows.Forms.TabPage visualizationTabPage;
     private System.Windows.Forms.TabPage valueTabPage;
     private System.Windows.Forms.GroupBox tourGroupBox;

@@ -60,10 +60,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.samplesEndLabel = new System.Windows.Forms.Label();
       this.samplesEndStringConvertibleValueView = new HeuristicLab.Data.Views.StringConvertibleValueView();
       this.samplesStartStringConvertibleValueView = new HeuristicLab.Data.Views.StringConvertibleValueView();
-      this.tabControl = new System.Windows.Forms.TabControl();
+      this.tabControl = new HeuristicLab.MainForm.WindowsForms.DragOverTabControl();
       this.algorithmTabPage = new System.Windows.Forms.TabPage();
       this.algorithmNamedItemView = new HeuristicLab.Core.Views.NamedItemView();
-      this.algorithmTabControl = new System.Windows.Forms.TabControl();
+      this.algorithmTabControl = new HeuristicLab.MainForm.WindowsForms.DragOverTabControl();
       this.algorithmProblemTabPage = new System.Windows.Forms.TabPage();
       this.openProblemButton = new System.Windows.Forms.Button();
       this.algorithmProblemViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
@@ -595,13 +595,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
     private Data.Views.StringConvertibleValueView samplesStartStringConvertibleValueView;
     private Data.Views.StringConvertibleValueView samplesEndStringConvertibleValueView;
     private System.Windows.Forms.Label samplesEndLabel;
-    private System.Windows.Forms.TabControl tabControl;
+    private HeuristicLab.MainForm.WindowsForms.DragOverTabControl tabControl;
     private System.Windows.Forms.TabPage algorithmTabPage;
     private System.Windows.Forms.TabPage resultsTabPage;
     private System.Windows.Forms.Button openAlgorithmButton;
     private System.Windows.Forms.Button newAlgorithmButton;
     private Core.Views.NamedItemView algorithmNamedItemView;
-    private System.Windows.Forms.TabControl algorithmTabControl;
+    private HeuristicLab.MainForm.WindowsForms.DragOverTabControl algorithmTabControl;
     private System.Windows.Forms.TabPage algorithmProblemTabPage;
     private System.Windows.Forms.TabPage algorithmParametersTabPage;
     private MainForm.WindowsForms.ViewHost algorithmProblemViewHost;

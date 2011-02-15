@@ -23,7 +23,7 @@
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.tabControl = new System.Windows.Forms.TabControl();
+      this.tabControl = new HeuristicLab.MainForm.WindowsForms.DragOverTabControl();
       this.variableNamesTabPage = new System.Windows.Forms.TabPage();
       this.parametersTabPage = new System.Windows.Forms.TabPage();
       this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -208,7 +208,7 @@
 
     #endregion
 
-    private System.Windows.Forms.TabControl tabControl;
+    private HeuristicLab.MainForm.WindowsForms.DragOverTabControl tabControl;
     private System.Windows.Forms.TabPage variableNamesTabPage;
     private System.Windows.Forms.TabPage parametersTabPage;
     private System.Windows.Forms.GroupBox groupBox2;

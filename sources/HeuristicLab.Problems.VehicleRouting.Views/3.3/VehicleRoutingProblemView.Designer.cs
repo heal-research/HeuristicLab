@@ -24,7 +24,7 @@
     /// </summary>
     private void InitializeComponent() {
       this.importButton = new System.Windows.Forms.Button();
-      this.tabControl1 = new System.Windows.Forms.TabControl();
+      this.tabControl1 = new HeuristicLab.MainForm.WindowsForms.DragOverTabControl();
       this.tabPage1 = new System.Windows.Forms.TabPage();
       this.parameterCollectionView = new HeuristicLab.Core.Views.ParameterCollectionView();
       this.tabPage2 = new System.Windows.Forms.TabPage();
@@ -141,7 +141,7 @@
     #endregion
 
     private System.Windows.Forms.Button importButton;
-    private System.Windows.Forms.TabControl tabControl1;
+    private HeuristicLab.MainForm.WindowsForms.DragOverTabControl tabControl1;
     private System.Windows.Forms.TabPage tabPage1;
     private System.Windows.Forms.TabPage tabPage2;
     private Core.Views.ParameterCollectionView parameterCollectionView;

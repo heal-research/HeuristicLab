@@ -34,7 +34,7 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
     /// </summary>
     private void InitializeComponent() {
       this.importButton = new System.Windows.Forms.Button();
-      this.tabControl = new System.Windows.Forms.TabControl();
+      this.tabControl = new HeuristicLab.MainForm.WindowsForms.DragOverTabControl();
       this.parametersTabPage = new System.Windows.Forms.TabPage();
       this.parameterCollectionView = new HeuristicLab.Core.Views.ParameterCollectionView();
       this.visualizationTabPage = new System.Windows.Forms.TabPage();
@@ -152,7 +152,7 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
     #endregion
 
     private System.Windows.Forms.Button importButton;
-    private System.Windows.Forms.TabControl tabControl;
+    private HeuristicLab.MainForm.WindowsForms.DragOverTabControl tabControl;
     private System.Windows.Forms.TabPage parametersTabPage;
     private System.Windows.Forms.TabPage visualizationTabPage;
     private HeuristicLab.Core.Views.ParameterCollectionView parameterCollectionView;

@@ -47,7 +47,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.dataViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.modelTabPage = new System.Windows.Forms.TabPage();
       this.modelViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
-      this.tabControl = new System.Windows.Forms.TabControl();
+      this.tabControl = new HeuristicLab.MainForm.WindowsForms.DragOverTabControl();
       this.dataTabPage.SuspendLayout();
       this.modelTabPage.SuspendLayout();
       this.tabControl.SuspendLayout();
@@ -134,7 +134,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     #endregion
 
-    protected System.Windows.Forms.TabControl tabControl;
+    protected HeuristicLab.MainForm.WindowsForms.DragOverTabControl tabControl;
     protected System.Windows.Forms.TabPage dataTabPage;
     protected System.Windows.Forms.TabPage modelTabPage;
     protected HeuristicLab.MainForm.WindowsForms.ViewHost dataViewHost;

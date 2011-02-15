@@ -45,7 +45,7 @@ namespace HeuristicLab.Optimization.Views {
     /// </summary>
     private void InitializeComponent() {
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ExperimentView));
-      this.tabControl = new System.Windows.Forms.TabControl();
+      this.tabControl = new HeuristicLab.MainForm.WindowsForms.DragOverTabControl();
       this.optimizersTabPage = new System.Windows.Forms.TabPage();
       this.optimizerListView = new HeuristicLab.Optimization.Views.OptimizerListView();
       this.runsTabPage = new System.Windows.Forms.TabPage();
@@ -231,7 +231,7 @@ namespace HeuristicLab.Optimization.Views {
     }
     #endregion
 
-    private System.Windows.Forms.TabControl tabControl;
+    private HeuristicLab.MainForm.WindowsForms.DragOverTabControl tabControl;
     private System.Windows.Forms.TabPage optimizersTabPage;
     private System.Windows.Forms.Button startButton;
     private System.Windows.Forms.Button stopButton;

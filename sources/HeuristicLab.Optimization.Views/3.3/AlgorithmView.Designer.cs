@@ -33,7 +33,7 @@ namespace HeuristicLab.Optimization.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.tabControl = new System.Windows.Forms.TabControl();
+      this.tabControl = new HeuristicLab.MainForm.WindowsForms.DragOverTabControl();
       this.problemTabPage = new System.Windows.Forms.TabPage();
       this.problemViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.openProblemButton = new System.Windows.Forms.Button();
@@ -339,7 +339,7 @@ namespace HeuristicLab.Optimization.Views {
 
     #endregion
 
-    protected System.Windows.Forms.TabControl tabControl;
+    protected HeuristicLab.MainForm.WindowsForms.DragOverTabControl tabControl;
     protected System.Windows.Forms.TabPage parametersTabPage;
     protected System.Windows.Forms.TabPage problemTabPage;
     protected HeuristicLab.Core.Views.ParameterCollectionView parameterCollectionView;

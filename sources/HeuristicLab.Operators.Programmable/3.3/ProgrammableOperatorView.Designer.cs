@@ -55,7 +55,7 @@ namespace HeuristicLab.Operators.Programmable {
       this.showCodeButton = new System.Windows.Forms.Button();
       this.compileButton = new System.Windows.Forms.Button();
       this.codeEditor = new HeuristicLab.CodeEditor.CodeEditor();
-      this.tabControl1 = new System.Windows.Forms.TabControl();
+      this.tabControl1 = new HeuristicLab.MainForm.WindowsForms.DragOverTabControl();
       this.tabPage1 = new System.Windows.Forms.TabPage();
       this.parameterCollectionView = new HeuristicLab.Core.Views.ParameterCollectionView();
       this.breakpointCheckBox = new System.Windows.Forms.CheckBox();
@@ -316,7 +316,7 @@ namespace HeuristicLab.Operators.Programmable {
 
     #endregion
 
-    private System.Windows.Forms.TabControl tabControl1;
+    private HeuristicLab.MainForm.WindowsForms.DragOverTabControl tabControl1;
     private System.Windows.Forms.TabPage tabPage1;
     private HeuristicLab.Core.Views.ParameterCollectionView parameterCollectionView;
     private System.Windows.Forms.SplitContainer splitContainer1;

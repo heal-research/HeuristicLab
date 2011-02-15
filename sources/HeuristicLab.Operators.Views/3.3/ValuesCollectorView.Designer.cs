@@ -44,7 +44,7 @@ namespace HeuristicLab.Operators.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.tabControl = new System.Windows.Forms.TabControl();
+      this.tabControl = new HeuristicLab.MainForm.WindowsForms.DragOverTabControl();
       this.collectedValuesTabPage = new System.Windows.Forms.TabPage();
       this.collectedValuesView = new HeuristicLab.Core.Views.ParameterCollectionView();
       this.parametersTabPage = new System.Windows.Forms.TabPage();
@@ -171,7 +171,7 @@ namespace HeuristicLab.Operators.Views {
 
     #endregion
 
-    protected System.Windows.Forms.TabControl tabControl;
+    protected HeuristicLab.MainForm.WindowsForms.DragOverTabControl tabControl;
     protected System.Windows.Forms.TabPage collectedValuesTabPage;
     protected System.Windows.Forms.TabPage parametersTabPage;
     protected HeuristicLab.Core.Views.ParameterCollectionView parameterCollectionView;

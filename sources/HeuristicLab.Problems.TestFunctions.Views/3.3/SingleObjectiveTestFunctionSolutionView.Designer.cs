@@ -49,7 +49,7 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
       this.groupBox3 = new System.Windows.Forms.GroupBox();
       this.groupBox4 = new System.Windows.Forms.GroupBox();
       this.realVectorView = new HeuristicLab.MainForm.WindowsForms.ViewHost();
-      this.tabControl1 = new System.Windows.Forms.TabControl();
+      this.tabControl1 = new HeuristicLab.MainForm.WindowsForms.DragOverTabControl();
       this.textualTabPage = new System.Windows.Forms.TabPage();
       this.graphicalTabPage = new System.Windows.Forms.TabPage();
       this.pictureBox = new System.Windows.Forms.PictureBox();
@@ -223,7 +223,7 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
     private HeuristicLab.MainForm.WindowsForms.ViewHost qualityView;
     private System.Windows.Forms.GroupBox groupBox3;
     private HeuristicLab.MainForm.WindowsForms.ViewHost realVectorView;
-    private System.Windows.Forms.TabControl tabControl1;
+    private HeuristicLab.MainForm.WindowsForms.DragOverTabControl tabControl1;
     private System.Windows.Forms.TabPage textualTabPage;
     private System.Windows.Forms.TabPage graphicalTabPage;
     private System.Windows.Forms.Label label1;

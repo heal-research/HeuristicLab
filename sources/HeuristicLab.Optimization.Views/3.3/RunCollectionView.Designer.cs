@@ -60,7 +60,7 @@ namespace HeuristicLab.Optimization.Views {
       this.viewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.itemsGroupBox = new System.Windows.Forms.GroupBox();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-      this.tabControl = new System.Windows.Forms.TabControl();
+      this.tabControl = new HeuristicLab.MainForm.WindowsForms.DragOverTabControl();
       this.runPage = new System.Windows.Forms.TabPage();
       this.constraintPage = new System.Windows.Forms.TabPage();
       this.runCollectionConstraintCollectionView = new HeuristicLab.Optimization.Views.RunCollectionConstraintCollectionView();
@@ -307,7 +307,7 @@ namespace HeuristicLab.Optimization.Views {
     private HeuristicLab.MainForm.WindowsForms.ViewHost viewHost;
     private ToolStrip toolStrip;
     private ToolStripDropDownButton analyzeRunsToolStripDropDownButton;
-    private TabControl tabControl;
+    private HeuristicLab.MainForm.WindowsForms.DragOverTabControl tabControl;
     private TabPage runPage;
     private TabPage constraintPage;
     private RunCollectionConstraintCollectionView runCollectionConstraintCollectionView;
