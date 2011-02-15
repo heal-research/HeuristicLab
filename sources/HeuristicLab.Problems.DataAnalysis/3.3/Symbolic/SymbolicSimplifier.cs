@@ -41,6 +41,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private Variable varSymbol = new Variable();
     private Logarithm logSymbol = new Logarithm();
     private Exponential expSymbol = new Exponential();
+    private Root rootSymbol = new Root();
+    private Power powSymbol = new Power();
     private Sine sineSymbol = new Sine();
     private Cosine cosineSymbol = new Cosine();
     private Tangent tanSymbol = new Tangent();
@@ -122,6 +124,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private bool IsExp(SymbolicExpressionTreeNode node) {
       return node.Symbol is Exponential;
     }
+    private bool IsRoot(SymbolicExpressionTreeNode node) {
+      return node.Symbol is Root;
+    }
+    private bool IsPower(SymbolicExpressionTreeNode node) {
+      return node.Symbol is Power;
+    }
     // trigonometric
     private bool IsSine(SymbolicExpressionTreeNode node) {
       return node.Symbol is Sine;
@@ -194,6 +202,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return SimplifyLog(original);
       } else if (IsExp(original)) {
         return SimplifyExp(original);
+      } else if (IsRoot(original)) {
+        return SimplifyRoot(original);
+      } else if (IsPower(original)) {
+        return SimplifyPower(original);
       } else if (IsSine(original)) {
         return SimplifySine(original);
       } else if (IsCosine(original)) {
@@ -346,10 +358,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private SymbolicExpressionTreeNode SimplifyLog(SymbolicExpressionTreeNode original) {
       return MakeLog(GetSimplifiedTree(original.SubTrees[0]));
     }
+    private SymbolicExpressionTreeNode SimplifyRoot(SymbolicExpressionTreeNode original) {
+      return MakeRoot(GetSimplifiedTree(original.SubTrees[0]), GetSimplifiedTree(original.SubTrees[1]));
+    }
 
+    private SymbolicExpressionTreeNode SimplifyPower(SymbolicExpressionTreeNode original) {
+      return MakePower(GetSimplifiedTree(original.SubTrees[0]), GetSimplifiedTree(original.SubTrees[1]));
+    }
     #endregion
-
-
 
     #region low level tree restructuring
     private SymbolicExpressionTreeNode MakeNot(SymbolicExpressionTreeNode t) {
@@ -461,7 +477,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private SymbolicExpressionTreeNode MakeSine(SymbolicExpressionTreeNode node) {
-      // todo implement more transformation rules
       if (IsConstant(node)) {
         var constT = node as ConstantTreeNode;
         return MakeConstant(Math.Sin(constT.Value));
@@ -472,7 +487,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
     private SymbolicExpressionTreeNode MakeTangent(SymbolicExpressionTreeNode node) {
-      // todo implement more transformation rules
       if (IsConstant(node)) {
         var constT = node as ConstantTreeNode;
         return MakeConstant(Math.Tan(constT.Value));
@@ -483,7 +497,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
     private SymbolicExpressionTreeNode MakeCosine(SymbolicExpressionTreeNode node) {
-      // todo implement more transformation rules
       if (IsConstant(node)) {
         var constT = node as ConstantTreeNode;
         return MakeConstant(Math.Cos(constT.Value));
@@ -494,12 +507,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
     private SymbolicExpressionTreeNode MakeExp(SymbolicExpressionTreeNode node) {
-      // todo implement more transformation rules
       if (IsConstant(node)) {
         var constT = node as ConstantTreeNode;
         return MakeConstant(Math.Exp(constT.Value));
       } else if (IsLog(node)) {
         return node.SubTrees[0];
+      } else if (IsAddition(node)) {
+        return node.SubTrees.Select(s => MakeExp(s)).Aggregate((s, t) => MakeProduct(s, t));
+      } else if (IsSubtraction(node)) {
+        return node.SubTrees.Select(s => MakeExp(s)).Aggregate((s, t) => MakeProduct(s, Negate(t)));
       } else {
         var expNode = expSymbol.CreateTreeNode();
         expNode.AddSubTree(node);
@@ -507,7 +523,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
     private SymbolicExpressionTreeNode MakeLog(SymbolicExpressionTreeNode node) {
-      // todo implement more transformation rules
       if (IsConstant(node)) {
         var constT = node as ConstantTreeNode;
         return MakeConstant(Math.Log(constT.Value));
@@ -525,6 +540,70 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var logNode = logSymbol.CreateTreeNode();
         logNode.AddSubTree(node);
         return logNode;
+      }
+    }
+    private SymbolicExpressionTreeNode MakeRoot(SymbolicExpressionTreeNode a, SymbolicExpressionTreeNode b) {
+      if (IsConstant(a) && IsConstant(b)) {
+        var constA = a as ConstantTreeNode;
+        var constB = b as ConstantTreeNode;
+        return MakeConstant(Math.Pow(constA.Value, 1.0 / Math.Round(constB.Value)));
+      } else if (IsConstant(b)) {
+        var constB = b as ConstantTreeNode;
+        var constBValue = Math.Round(constB.Value);
+        if (constBValue.IsAlmost(1.0)) {
+          return a;
+        } else if (constBValue.IsAlmost(0.0)) {
+          return MakeConstant(1.0);
+        } else if (constBValue.IsAlmost(-1.0)) {
+          return MakeFraction(MakeConstant(1.0), a);
+        } else if (constBValue < 0) {
+          var rootNode = rootSymbol.CreateTreeNode();
+          rootNode.AddSubTree(a);
+          rootNode.AddSubTree(MakeConstant(-1.0 * constBValue));
+          return MakeFraction(MakeConstant(1.0), rootNode);
+        } else {
+          var rootNode = rootSymbol.CreateTreeNode();
+          rootNode.AddSubTree(a);
+          rootNode.AddSubTree(MakeConstant(constBValue));
+          return rootNode;
+        }
+      } else {
+        var rootNode = rootSymbol.CreateTreeNode();
+        rootNode.AddSubTree(a);
+        rootNode.AddSubTree(b);
+        return rootNode;
+      }
+    }
+    private SymbolicExpressionTreeNode MakePower(SymbolicExpressionTreeNode a, SymbolicExpressionTreeNode b) {
+      if (IsConstant(a) && IsConstant(b)) {
+        var constA = a as ConstantTreeNode;
+        var constB = b as ConstantTreeNode;
+        return MakeConstant(Math.Pow(constA.Value, Math.Round(constB.Value)));
+      } else if (IsConstant(b)) {
+        var constB = b as ConstantTreeNode;
+        double exponent = Math.Round(constB.Value);
+        if (exponent.IsAlmost(0.0)) {
+          return MakeConstant(1.0);
+        } else if (exponent.IsAlmost(1.0)) {
+          return a;
+        } else if (exponent.IsAlmost(-1.0)) {
+          return MakeFraction(MakeConstant(1.0), a);
+        } else if (exponent < 0) {
+          var powNode = powSymbol.CreateTreeNode();
+          powNode.AddSubTree(a);
+          powNode.AddSubTree(MakeConstant(-1.0 * exponent));
+          return MakeFraction(MakeConstant(1.0), powNode);
+        } else {
+          var powNode = powSymbol.CreateTreeNode();
+          powNode.AddSubTree(a);
+          powNode.AddSubTree(MakeConstant(exponent));
+          return powNode;
+        }
+      } else {
+        var powNode = powSymbol.CreateTreeNode();
+        powNode.AddSubTree(a);
+        powNode.AddSubTree(b);
+        return powNode;
       }
     }
 

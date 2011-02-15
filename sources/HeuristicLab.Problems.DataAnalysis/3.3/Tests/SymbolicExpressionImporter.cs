@@ -41,6 +41,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
         {"-", new Subtraction()},
         {"EXP", new Exponential()},
         {"LOG", new Logarithm()},
+        {"POW", new Power()},
+        {"ROOT", new Root()},
         {"SIN",new Sine()},
         {"COS", new Cosine()},
         {"TAN", new Tangent()},
