@@ -153,7 +153,7 @@ namespace Netron.Diagramming.Core {
     protected CollectionBase<IMouseListener> mouseListeners;
     protected CollectionBase<IKeyboardListener> keyboardListeners;
     protected CollectionBase<IDragDropListener> dragdropListeners;
-    protected IDiagramControl parentControl;
+    private IDiagramControl parentControl;
     protected CollectionBase<ITool> registeredTools;
     protected CollectionBase<IActivity> registeredActivity;
 
@@ -191,7 +191,7 @@ namespace Netron.Diagramming.Core {
     /// <value>The parent control.</value>
     public IDiagramControl ParentControl {
       get { return parentControl; }
-      internal set { parentControl = value; }
+      protected internal set { parentControl = value; }
     }
     /// <summary>
     /// Gets the registered tools.
