@@ -143,8 +143,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols {
 
     #region persistence and cloning
     [StorableConstructor]
-    protected VariableCondition(bool deserializing) : base(deserializing) { }
-    protected VariableCondition(VariableCondition original, Cloner cloner)
+    private VariableCondition(bool deserializing) : base(deserializing) { }
+    private VariableCondition(VariableCondition original, Cloner cloner)
       : base(original, cloner) {
       thresholdInitializerMu = original.thresholdInitializerMu;
       thresholdInitializerSigma = original.thresholdInitializerSigma;
