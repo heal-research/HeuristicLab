@@ -21,10 +21,8 @@
 
 using System;
 using System.ServiceModel;
-using HeuristicLab.Clients.Common.Properties;
 using System.ServiceModel.Description;
-using System.Collections;
-using System.Collections.Generic;
+using HeuristicLab.Clients.Common.Properties;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Clients.Common {
@@ -64,21 +62,20 @@ namespace HeuristicLab.Clients.Common {
       return client;
     }
 
-    public static Disposable<I> CreateClient<I>(string endpointConfigurationName) where I : class {
-      return CreateClient<I>(endpointConfigurationName, null);
+    public static Disposable<ChannelFactory<I>> CreateChannelFactory<I>(string endpointConfigurationName) where I : class {
+      return CreateChannelFactory<I>(endpointConfigurationName, null);
     }
-    public static Disposable<I> CreateClient<I>(string endpointConfigurationName, string remoteAddress) where I : class {
-      return CreateClient<I>(endpointConfigurationName, remoteAddress, Settings.Default.UserName, Settings.Default.Password);
+    public static Disposable<ChannelFactory<I>> CreateChannelFactory<I>(string endpointConfigurationName, string remoteAddress) where I : class {
+      return CreateChannelFactory<I>(endpointConfigurationName, remoteAddress, Settings.Default.UserName, Settings.Default.Password);
     }
-    public static Disposable<I> CreateClient<I>(string endpointConfigurationName, string remoteAddress, string userName, string password) where I : class {
+    public static Disposable<ChannelFactory<I>> CreateChannelFactory<I>(string endpointConfigurationName, string remoteAddress, string userName, string password) where I : class {
       ChannelFactory<I> factory = GetChannelFactory<I>(endpointConfigurationName, userName, password);
 
       if (!string.IsNullOrEmpty(remoteAddress)) {
         SetEndpointAddress(factory.Endpoint, remoteAddress);
       }
-      Disposable<I> disposable = new Disposable<I>(factory.CreateChannel());
+      var disposable = new Disposable<ChannelFactory<I>>(factory);
       disposable.OnDisposing += new EventHandler<EventArgs<object>>(disposable_OnDisposing);
-
       return disposable;
     }
 
@@ -87,16 +84,12 @@ namespace HeuristicLab.Clients.Common {
       ((Disposable)sender).OnDisposing -= new EventHandler<EventArgs<object>>(disposable_OnDisposing);
     }
 
-    private static IDictionary<ChannelProperties, ChannelFactory> channelFactoryCache = new Dictionary<ChannelProperties, ChannelFactory>();
     private static ChannelFactory<I> GetChannelFactory<I>(string endpointConfigurationName, string userName, string password) where I : class {
-      ChannelProperties key = new ChannelProperties(typeof(I), endpointConfigurationName, userName, password);
-      if (!channelFactoryCache.ContainsKey(key)) {
-        channelFactoryCache.Add(key, new ChannelFactory<I>(endpointConfigurationName));
-        channelFactoryCache[key].Credentials.UserName.UserName = userName;
-        channelFactoryCache[key].Credentials.UserName.Password = password;
-        channelFactoryCache[key].Credentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
-      }
-      return (ChannelFactory<I>)channelFactoryCache[key];
+      var channelFactory = new ChannelFactory<I>(endpointConfigurationName);
+      channelFactory.Credentials.UserName.UserName = userName;
+      channelFactory.Credentials.UserName.Password = password;
+      channelFactory.Credentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+      return channelFactory;
     }
 
     public static void DisposeCommunicationObject(ICommunicationObject obj) {
@@ -119,20 +112,6 @@ namespace HeuristicLab.Clients.Common {
       uriBuilder.Host = remoteAddress;
       endpointAddressbuilder.Uri = uriBuilder.Uri;
       endpoint.Address = endpointAddressbuilder.ToEndpointAddress();
-    }
-  }
-
-  internal struct ChannelProperties {
-    public Type type;
-    public string endpointConfigurationName;
-    public string userName;
-    public string password;
-
-    public ChannelProperties(Type type, string endpointConfigurationName, string userName, string password) {
-      this.type = type;
-      this.endpointConfigurationName = endpointConfigurationName;
-      this.userName = userName;
-      this.password = password;
     }
   }
 }
