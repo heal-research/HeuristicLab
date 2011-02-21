@@ -78,7 +78,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       try {
         pluginDomain = AppDomain.CreateDomain("plugin domain", null, setup);
         Type pluginValidatorType = typeof(PluginValidator);
-        PluginValidator remoteValidator = (PluginValidator)pluginDomain.CreateInstanceAndUnwrap(pluginValidatorType.Assembly.FullName, pluginValidatorType.FullName, true, BindingFlags.NonPublic | BindingFlags.Instance, null, null, null, null, null);
+        PluginValidator remoteValidator = (PluginValidator)pluginDomain.CreateInstanceAndUnwrap(pluginValidatorType.Assembly.FullName, pluginValidatorType.FullName, true, BindingFlags.NonPublic | BindingFlags.Instance, null, null, null, null);
         remoteValidator.PluginDir = pluginDir;
         // forward all events from the remoteValidator to listeners
         remoteValidator.PluginLoaded +=
@@ -123,7 +123,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
         applicationDomain = AppDomain.CreateDomain(AppDomain.CurrentDomain.FriendlyName, null, setup);
         Type applicationManagerType = typeof(DefaultApplicationManager);
         DefaultApplicationManager applicationManager =
-          (DefaultApplicationManager)applicationDomain.CreateInstanceAndUnwrap(applicationManagerType.Assembly.FullName, applicationManagerType.FullName, true, BindingFlags.NonPublic | BindingFlags.Instance, null, null, null, null, null);
+          (DefaultApplicationManager)applicationDomain.CreateInstanceAndUnwrap(applicationManagerType.Assembly.FullName, applicationManagerType.FullName, true, BindingFlags.NonPublic | BindingFlags.Instance, null, null, null, null);
         applicationManager.PluginLoaded += applicationManager_PluginLoaded;
         applicationManager.PluginUnloaded += applicationManager_PluginUnloaded;
         applicationManager.PrepareApplicationDomain(applications, plugins);

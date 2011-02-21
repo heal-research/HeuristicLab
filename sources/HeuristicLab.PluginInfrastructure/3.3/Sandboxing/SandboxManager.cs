@@ -84,7 +84,7 @@ namespace HeuristicLab.PluginInfrastructure.Sandboxing {
       AppDomain applicationDomain = AppDomain.CreateDomain(appDomainName, AppDomain.CurrentDomain.Evidence, setup, pset, CreateStrongName(Assembly.GetExecutingAssembly()));
       Type applicationManagerType = typeof(DefaultApplicationManager);
       DefaultApplicationManager applicationManager =
-        (DefaultApplicationManager)applicationDomain.CreateInstanceAndUnwrap(applicationManagerType.Assembly.FullName, applicationManagerType.FullName, true, BindingFlags.NonPublic | BindingFlags.Instance, null, null, null, null, null);
+        (DefaultApplicationManager)applicationDomain.CreateInstanceAndUnwrap(applicationManagerType.Assembly.FullName, applicationManagerType.FullName, true, BindingFlags.NonPublic | BindingFlags.Instance, null, null, null, null);
       PluginManager pm = new PluginManager(applicationBase);
       pm.DiscoverAndCheckPlugins();
       ApplicationDescription[] apps = pm.Applications.Cast<ApplicationDescription>().ToArray();
