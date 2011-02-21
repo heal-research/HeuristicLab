@@ -83,8 +83,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Formatters {
         stringBuilder.AppendLine("function test_model");
         foreach (string variableName in variableNames)
           stringBuilder.AppendLine("  " + variableName + " = Data(:, ???);");
-        stringBuilder.AppendLine("  for "+CurrentIndexVariable+" = size(Data,1):-1:1");
-        stringBuilder.AppendLine("    Target_estimated("+CurrentIndexVariable+") = " + FormatRecursively(node.SubTrees[0]) + ";");
+        stringBuilder.AppendLine("  for " + CurrentIndexVariable + " = size(Data,1):-1:1");
+        stringBuilder.AppendLine("    Target_estimated(" + CurrentIndexVariable + ") = " + FormatRecursively(node.SubTrees[0]) + ";");
         stringBuilder.AppendLine("  end");
         stringBuilder.AppendLine("end");
         stringBuilder.AppendLine();
@@ -97,6 +97,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Formatters {
         stringBuilder.AppendLine("function y = fivePoint(f0, f1, f3, f4)");
         stringBuilder.AppendLine("  y = (f0 + 2*f1 - 2*f3 - f4) / 8;");
         stringBuilder.AppendLine("end");
+        stringBuilder.AppendLine("function y = sigmoid(slope, x, threshold, a, b)");
+        stringBuilder.AppendLine("  p = 1.0 / (1 + exp(-slope * (x - threshold)));");
+        stringBuilder.AppendLine("  y = p * a + (1-p) * b;");
+        stringBuilder.AppendLine("end");
+
         return stringBuilder.ToString();
       }
 
@@ -268,6 +273,13 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Formatters {
         currentLag += laggedNode.Lag;
         stringBuilder.Append(FormatRecursively(node.SubTrees[0]));
         currentLag -= laggedNode.Lag;
+      } else if (symbol is VariableCondition) {
+        var varConditionNode = node as VariableConditionTreeNode;
+        stringBuilder.AppendLine(" sigmoid(" + varConditionNode.Slope.ToString(CultureInfo.InvariantCulture) + ", " +
+          varConditionNode.VariableName + LagToString(currentLag) + ", " +
+          varConditionNode.Threshold.ToString(CultureInfo.InvariantCulture) + ", " +
+          FormatRecursively(varConditionNode.SubTrees[0]) + ", " +
+          FormatRecursively(varConditionNode.SubTrees[1]) + ")");
       } else {
         stringBuilder.Append("ERROR");
       }

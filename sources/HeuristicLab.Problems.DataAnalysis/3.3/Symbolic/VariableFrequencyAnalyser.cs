@@ -111,8 +111,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Dictionary<string, int> references = new Dictionary<string, int>();
       var variableNames = from node in tree.IterateNodesPrefix().OfType<VariableTreeNode>()
                           select node.VariableName;
+      var variableNamesInConditions = from node in tree.IterateNodesPrefix().OfType<VariableConditionTreeNode>()
+                                      select node.VariableName;
 
-      foreach (var variableName in variableNames) {
+      foreach (var variableName in variableNames.Concat(variableNamesInConditions)) {
         if (!references.ContainsKey(variableName)) {
           references[variableName] = 1;
         } else {
