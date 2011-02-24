@@ -411,6 +411,10 @@ namespace HeuristicLab.Problems.TestFunctions {
         op.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
         op.BoundsParameter.ActualName = BoundsParameter.Name; 
       }
+      foreach (IRealVectorSwarmUpdater op in Operators.OfType<IRealVectorSwarmUpdater>()) {
+        op.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
+        op.MaximizationParameter.ActualName = MaximizationParameter.Name; 
+      }
     }
     private void UpdateStrategyVectorBounds() {
       DoubleMatrix strategyBounds = (DoubleMatrix)Bounds.Clone();
