@@ -106,26 +106,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BestPointInitializer.cs" />
-    <Compile Include="IDiscreteDoubleMatrixModifier.cs" />
-    <Compile Include="IGlobalParticleUpdater.cs" />
-    <Compile Include="ILocalParticleUpdater.cs" />
     <Compile Include="MultiPSOTopologyUpdater.cs" />
+    <Compile Include="ParticleSwarmOptimizationMainLoop.cs" />
     <Compile Include="VelocityBoundsModifier.cs" />
     <Compile Include="RandomTopologyInitializer.cs" />
     <Compile Include="VonNeumannTopologyInitializer.cs" />
     <Compile Include="RingTopologyInitializer.cs" />
-    <Compile Include="ITopologyUpdater.cs" />
     <Compile Include="NeighborUpdater.cs" />
     <Compile Include="TopologyInitializer.cs" />
-    <Compile Include="ITopologyInitializer.cs" />
-    <Compile Include="NeighborhoodParticleUpdater.cs" />
-    <Compile Include="IParticleUpdater.cs" />
-    <Compile Include="TotallyConnectedParticleUpdater.cs" />
     <Compile Include="HeuristicLabAlgorithmsParticleSwarmOptimizationPlugin.cs" />
     <Compile Include="ParticleSwarmOptimization.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ParticleUpdater.cs" />
-    <Compile Include="SwarmUpdater.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />

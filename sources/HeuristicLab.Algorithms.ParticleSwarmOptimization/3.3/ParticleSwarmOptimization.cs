@@ -52,13 +52,9 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       get { return AnalyzerParameter.Value; }
       set { AnalyzerParameter.Value = value; }
     }
-    public IDiscreteDoubleValueModifier OmegaUpdater {
-      get { return OmegaUpdaterParameter.Value; }
-      set { OmegaUpdaterParameter.Value = value; }
-    }
-    public IDiscreteDoubleMatrixModifier VelocityBoundsUpdater {
-      get { return VelocityBoundsUpdaterParameter.Value; }
-      set { VelocityBoundsUpdaterParameter.Value = value; }
+    public IDiscreteDoubleValueModifier InertiaUpdater {
+      get { return InertiaUpdaterParameter.Value; }
+      set { InertiaUpdaterParameter.Value = value; }
     }
     #endregion
 
@@ -75,20 +71,20 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     public IValueParameter<IntValue> MaxIterationsParameter {
       get { return (IValueParameter<IntValue>)Parameters["MaxIterations"]; }
     }
-    public IValueParameter<DoubleValue> OmegaParameter {
-      get { return (IValueParameter<DoubleValue>)Parameters["Omega"]; }
+    public IValueParameter<DoubleValue> InertiaParameter {
+      get { return (IValueParameter<DoubleValue>)Parameters["Inertia"]; }
     }
-    public IValueParameter<DoubleValue> Phi_PParameter {
-      get { return (IValueParameter<DoubleValue>)Parameters["Phi_P"]; }
+    public IValueParameter<DoubleValue> PersonalBestAttractionParameter {
+      get { return (IValueParameter<DoubleValue>)Parameters["PersonalBestAttraction"]; }
     }
-    public IValueParameter<DoubleValue> Phi_GParameter {
-      get { return (IValueParameter<DoubleValue>)Parameters["Phi_G"]; }
+    public IValueParameter<DoubleValue> NeighborsBestAttractionParameter {
+      get { return (IValueParameter<DoubleValue>)Parameters["NeighborsBestAttraction"]; }
     }
     public IValueParameter<MultiAnalyzer> AnalyzerParameter {
       get { return (IValueParameter<MultiAnalyzer>)Parameters["Analyzer"]; }
     }
-    public IValueLookupParameter<DoubleMatrix> VelocityBoundsParameter {
-      get { return (IValueLookupParameter<DoubleMatrix>)Parameters["VelocityBounds"]; }
+    public ConstrainedValueParameter<IParticleCreator> ParticleCreatorParameter {
+      get { return (ConstrainedValueParameter<IParticleCreator>)Parameters["ParticleCreator"]; }
     }
     public ConstrainedValueParameter<IParticleUpdater> ParticleUpdaterParameter {
       get { return (ConstrainedValueParameter<IParticleUpdater>)Parameters["ParticleUpdater"]; }
@@ -99,11 +95,8 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     public OptionalConstrainedValueParameter<ITopologyUpdater> TopologyUpdaterParameter {
       get { return (OptionalConstrainedValueParameter<ITopologyUpdater>)Parameters["TopologyUpdater"]; }
     }
-    public OptionalConstrainedValueParameter<IDiscreteDoubleMatrixModifier> VelocityBoundsUpdaterParameter {
-      get { return (OptionalConstrainedValueParameter<IDiscreteDoubleMatrixModifier>)Parameters["VelocityBoundsUpdater"]; }
-    }
-    public OptionalConstrainedValueParameter<IDiscreteDoubleValueModifier> OmegaUpdaterParameter {
-      get { return (OptionalConstrainedValueParameter<IDiscreteDoubleValueModifier>)Parameters["OmegaUpdater"]; }
+    public OptionalConstrainedValueParameter<IDiscreteDoubleValueModifier> InertiaUpdaterParameter {
+      get { return (OptionalConstrainedValueParameter<IDiscreteDoubleValueModifier>)Parameters["InertiaUpdater"]; }
     }
     #endregion
 
@@ -113,6 +106,12 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
 
     [Storable]
     private BestAverageWorstQualityAnalyzer qualityAnalyzer;
+
+    [Storable]
+    private SolutionsCreator solutionsCreator;
+
+    [Storable]
+    private ParticleSwarmOptimizationMainLoop mainLoop;
 
     public ITopologyInitializer TopologyInitializer {
       get { return TopologyInitializerParameter.Value; }
@@ -124,11 +123,15 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       set { TopologyUpdaterParameter.Value = value; }
     }
 
+    public IParticleCreator ParticleCreator {
+      get { return ParticleCreatorParameter.Value; }
+      set { ParticleCreatorParameter.Value = value; }
+    }
+
     public IParticleUpdater ParticleUpdater {
       get { return ParticleUpdaterParameter.Value; }
       set { ParticleUpdaterParameter.Value = value; }
     }
-
     #endregion
 
     [StorableConstructor]
@@ -136,6 +139,8 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     private ParticleSwarmOptimization(ParticleSwarmOptimization original, Cloner cloner)
       : base(original, cloner) {
       qualityAnalyzer = cloner.Clone(original.qualityAnalyzer);
+      solutionsCreator = cloner.Clone(original.solutionsCreator);
+      mainLoop = cloner.Clone(original.mainLoop); 
       Initialize();
     }
     public ParticleSwarmOptimization()
@@ -145,41 +150,23 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       Parameters.Add(new ValueParameter<IntValue>("SwarmSize", "Size of the particle swarm.", new IntValue(10)));
       Parameters.Add(new ValueParameter<IntValue>("MaxIterations", "Maximal number of iterations.", new IntValue(1000)));
       Parameters.Add(new ValueParameter<MultiAnalyzer>("Analyzer", "The operator used to analyze each generation.", new MultiAnalyzer()));
-      Parameters.Add(new ValueParameter<DoubleValue>("Omega", "Weight for particle's velocity vector.", new DoubleValue(-0.2)));
-      Parameters.Add(new ValueParameter<DoubleValue>("Phi_P", "Weight for particle's personal best position.", new DoubleValue(-0.01)));
-      Parameters.Add(new ValueParameter<DoubleValue>("Phi_G", "Weight for global best position.", new DoubleValue(3.7)));
-      Parameters.Add(new ValueLookupParameter<DoubleMatrix>("VelocityBounds", "Maximum Velocity in every dimension", new DoubleMatrix(new double[,] { { -1, 1 } })));
-      Parameters.Add(new ConstrainedValueParameter<IParticleUpdater>("ParticleUpdater", "Operator that calculates new position and velocity of a particle"));
-      Parameters.Add(new OptionalConstrainedValueParameter<ITopologyInitializer>("TopologyInitializer", "Creates neighborhood description vectors"));
-      Parameters.Add(new OptionalConstrainedValueParameter<ITopologyUpdater>("TopologyUpdater", "Updates the neighborhood description vectors"));
-      Parameters.Add(new OptionalConstrainedValueParameter<IDiscreteDoubleValueModifier>("OmegaUpdater", "Updates the omega parameter"));
-      Parameters.Add(new OptionalConstrainedValueParameter<IDiscreteDoubleMatrixModifier>("VelocityBoundsUpdater", "Adjusts the velocity bounds."));
-      ParticleUpdaterParameter.ActualValue = ParticleUpdaterParameter.ValidValues.SingleOrDefault(v => v.GetType() == typeof(TotallyConnectedParticleUpdater));
+      Parameters.Add(new ValueParameter<DoubleValue>("Inertia", "Inertia weight on a particle's movement (omega).", new DoubleValue(-0.2)));
+      Parameters.Add(new ValueParameter<DoubleValue>("PersonalBestAttraction", "Weight for particle's pull towards its personal best soution (phi_p).", new DoubleValue(-0.01)));
+      Parameters.Add(new ValueParameter<DoubleValue>("NeighborsBestAttraction", "Weight for pull towards the neighborhood best solution or global best solution in case of a totally connected topology (phi_g).", new DoubleValue(3.7)));
+      Parameters.Add(new ConstrainedValueParameter<IParticleCreator>("ParticleCreator", "Operator creates a new particle."));
+      Parameters.Add(new ConstrainedValueParameter<IParticleUpdater>("ParticleUpdater", "Operator that updates a particle."));
+      Parameters.Add(new OptionalConstrainedValueParameter<ITopologyInitializer>("TopologyInitializer", "Creates neighborhood description vectors."));
+      Parameters.Add(new OptionalConstrainedValueParameter<ITopologyUpdater>("TopologyUpdater", "Updates the neighborhood description vectors."));
+      Parameters.Add(new OptionalConstrainedValueParameter<IDiscreteDoubleValueModifier>("InertiaUpdater", "Updates the omega parameter."));
 
       RandomCreator randomCreator = new RandomCreator();
       VariableCreator variableCreator = new VariableCreator();
-      SolutionsCreator solutionsCreator = new SolutionsCreator();
-      CombinedOperator particleCreator = new CombinedOperator();
-      Placeholder evaluatorPlaceholder = new Placeholder();
-      Assigner bestPersonalQualityAssigner = new Assigner();
-      BestPointInitializer bestPositionInitializer = new BestPointInitializer();
+      solutionsCreator = new SolutionsCreator();
       Placeholder topologyInitializerPlaceholder = new Placeholder();
-      NeighborUpdater neighborUpdater = new NeighborUpdater();
+      ResultsCollector resultsCollector = new ResultsCollector(); 
       Placeholder analyzerPlaceholder = new Placeholder();
-      UniformSubScopesProcessor uniformSubScopeProcessor = new UniformSubScopesProcessor();
-      Placeholder particleUpdaterPlaceholder = new Placeholder();
-      Placeholder topologyUpdaterPlaceholder = new Placeholder();
-      UniformSubScopesProcessor uniformSubscopesProcessor2 = new UniformSubScopesProcessor();
-      UniformSubScopesProcessor evaluationProcessor = new UniformSubScopesProcessor();
-      NeighborUpdater neighborUpdater2 = new NeighborUpdater();
-      Placeholder evaluatorPlaceholder2 = new Placeholder();
-      SwarmUpdater swarmUpdater = new SwarmUpdater();
-      Placeholder analyzerPlaceholder2 = new Placeholder();
-      IntCounter currentIterationCounter = new IntCounter();
-      Comparator currentIterationComparator = new Comparator();
-      ConditionalBranch conditionalBranch = new ConditionalBranch();
-      Placeholder velocityBoundsUpdaterPlaceholder = new Placeholder();
-      Placeholder omegaUpdaterPlaceholder = new Placeholder();
+      RealVectorSwarmUpdater swarmUpdater = new RealVectorSwarmUpdater();
+      mainLoop = new ParticleSwarmOptimizationMainLoop();
 
       OperatorGraph.InitialOperator = randomCreator;
 
@@ -191,86 +178,46 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       variableCreator.Successor = solutionsCreator;
 
       solutionsCreator.NumberOfSolutionsParameter.ActualName = "SwarmSize";
-      solutionsCreator.EvaluatorParameter.Value = evaluatorPlaceholder;
-      solutionsCreator.SolutionCreatorParameter.Value = particleCreator;
-      solutionsCreator.Successor = bestPositionInitializer;
-
-      InitializeParticleCreator(particleCreator);
-
-      evaluatorPlaceholder.Name = "(Evaluator)";
-      evaluatorPlaceholder.OperatorParameter.ActualName = "Evaluator";
-      evaluatorPlaceholder.Successor = bestPersonalQualityAssigner;
-
-      bestPersonalQualityAssigner.LeftSideParameter.ActualName = "PersonalBestQuality";
-      bestPersonalQualityAssigner.RightSideParameter.ActualName = "Quality";
-
-      bestPositionInitializer.Successor = topologyInitializerPlaceholder;
+      ParameterizeSolutionsCreator(); 
+      solutionsCreator.Successor = topologyInitializerPlaceholder; 
 
       topologyInitializerPlaceholder.Name = "(TopologyInitializer)";
       topologyInitializerPlaceholder.OperatorParameter.ActualName = "TopologyInitializer";
-      topologyInitializerPlaceholder.Successor = neighborUpdater;
+      topologyInitializerPlaceholder.Successor = swarmUpdater;
 
-      neighborUpdater.Successor = analyzerPlaceholder;
+      swarmUpdater.Successor = resultsCollector;
 
-      analyzerPlaceholder.Name = "(Analyzer)";
-      analyzerPlaceholder.OperatorParameter.ActualName = "Analyzer";
-      analyzerPlaceholder.Successor = uniformSubScopeProcessor;
+      resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Iterations", null, "CurrentIteration"));
+      //resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Current Inertia", null, "Inertia"));
+      //resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Solutions", null, "EvaluatedSolutions"));
+      resultsCollector.ResultsParameter.ActualName = "Results";
+      resultsCollector.Successor = mainLoop;
 
-      uniformSubScopeProcessor.Operator = particleUpdaterPlaceholder;
-      uniformSubScopeProcessor.Successor = evaluationProcessor;
-
-      particleUpdaterPlaceholder.Name = "(ParticleUpdater)";
-      particleUpdaterPlaceholder.OperatorParameter.ActualName = "ParticleUpdater";
-
-      evaluationProcessor.Parallel = new BoolValue(true);
-      evaluationProcessor.Operator = evaluatorPlaceholder2;
-      evaluationProcessor.Successor = topologyUpdaterPlaceholder;
-
-      evaluatorPlaceholder2.Name = "(Evaluator)";
-      evaluatorPlaceholder2.OperatorParameter.ActualName = "Evaluator";
-
-      topologyUpdaterPlaceholder.Name = "(TopologyUpdater)";
-      topologyUpdaterPlaceholder.OperatorParameter.ActualName = "TopologyUpdater";
-      topologyUpdaterPlaceholder.Successor = neighborUpdater2;
-
-      neighborUpdater2.Successor = uniformSubscopesProcessor2;
-
-      uniformSubscopesProcessor2.Operator = swarmUpdater;
-      uniformSubscopesProcessor2.Successor = analyzerPlaceholder2;
-
-      analyzerPlaceholder2.Name = "(Analyzer)";
-      analyzerPlaceholder2.OperatorParameter.ActualName = "Analyzer";
-      analyzerPlaceholder2.Successor = currentIterationCounter;
-
-      currentIterationCounter.Name = "CurrentIteration++";
-      currentIterationCounter.ValueParameter.ActualName = "CurrentIteration";
-      currentIterationCounter.Successor = omegaUpdaterPlaceholder;
-
-      omegaUpdaterPlaceholder.Name = "(Omega Updater)";
-      omegaUpdaterPlaceholder.OperatorParameter.ActualName = "OmegaUpdater";
-      omegaUpdaterPlaceholder.Successor = velocityBoundsUpdaterPlaceholder;
-
-      velocityBoundsUpdaterPlaceholder.Name = "(Velocity Bounds Updater)";
-      velocityBoundsUpdaterPlaceholder.OperatorParameter.ActualName = "VelocityBoundsUpdater";
-      velocityBoundsUpdaterPlaceholder.Successor = currentIterationComparator;
-
-      currentIterationComparator.LeftSideParameter.ActualName = "CurrentIteration";
-      currentIterationComparator.Comparison = new Comparison(ComparisonType.Less);
-      currentIterationComparator.RightSideParameter.ActualName = "MaxIterations";
-      currentIterationComparator.ResultParameter.ActualName = "ContinueIteration";
-      currentIterationComparator.Successor = conditionalBranch;
-
-      conditionalBranch.Name = "ContinueIteration?";
-      conditionalBranch.ConditionParameter.ActualName = "ContinueIteration";
-      conditionalBranch.TrueBranch = uniformSubScopeProcessor;
+      mainLoop.AnalyzerParameter.ActualName = AnalyzerParameter.Name;
+      mainLoop.InertiaParameter.ActualName = InertiaParameter.Name;
+      mainLoop.MaxIterationsParameter.ActualName = MaxIterationsParameter.Name;
+      mainLoop.NeighborsBestAttractionParameter.ActualName = NeighborsBestAttractionParameter.Name;
+      mainLoop.InertiaUpdaterParameter.ActualName = InertiaUpdaterParameter.Name;
+      mainLoop.ParticleUpdaterParameter.ActualName = ParticleUpdaterParameter.Name;
+      mainLoop.PersonalBestAttractionParameter.ActualName = PersonalBestAttractionParameter.Name;
+      mainLoop.RandomParameter.ActualName = randomCreator.RandomParameter.ActualName;
+      mainLoop.SwarmSizeParameter.ActualName = SwarmSizeParameter.Name; 
+      mainLoop.TopologyUpdaterParameter.ActualName = TopologyUpdaterParameter.Name; 
+      mainLoop.RandomParameter.ActualName = randomCreator.RandomParameter.ActualName;
+      mainLoop.ResultsParameter.ActualName = "Results";
+      mainLoop.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name; 
+     // mainLoop.EvaluatedMovesParameter.ActualName = "EvaluatedMoves";
 
       InitializeAnalyzers();
-      InitVelocityBoundsUpdater();
+      ////InitVelocityBoundsUpdater();
+      InitializeParticleCreator();
+      ParameterizeSolutionsCreator(); 
       UpdateAnalyzers();
-      UpdateOmegaUpdater();
-      InitOmegaUpdater();
+      UpdateInertiaUpdater();
+      InitInertiaUpdater();
       UpdateTopologyInitializer();
       Initialize();
+      ParameterizeMainLoop(); 
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -283,18 +230,18 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     }
 
     public override void Prepare() {
-      if (Problem != null) {
+      if (Problem != null && ParticleCreator != null && ParticleUpdater != null) {
         base.Prepare();
-        if (OmegaUpdater != null && OmegaUpdater.StartValueParameter.Value != null) {
-          this.OmegaParameter.ActualValue = new DoubleValue(OmegaUpdaterParameter.Value.StartValueParameter.Value.Value);
+        if (InertiaUpdater != null && InertiaUpdater.StartValueParameter.Value != null) {
+          this.InertiaParameter.ActualValue = new DoubleValue(InertiaUpdaterParameter.Value.StartValueParameter.Value.Value);
         }
-        if (VelocityBoundsUpdater != null && VelocityBoundsUpdater.StartValueParameter.Value != null && VelocityBoundsParameter.Value != null) {
-          DoubleMatrix matrix = VelocityBoundsParameter.Value;
-          for (int i = 0; i < matrix.Rows; i++) {
-            matrix[i, 0] = -VelocityBoundsUpdater.StartValueParameter.Value.Value;
-            matrix[i, 1] = VelocityBoundsUpdater.StartValueParameter.Value.Value;
-          }
-        }
+        //if (VelocityBoundsUpdater != null && VelocityBoundsUpdater.StartValueParameter.Value != null && VelocityBoundsParameter.Value != null) {
+        //  DoubleMatrix matrix = VelocityBoundsParameter.Value;
+        //  for (int i = 0; i < matrix.Rows; i++) {
+        //    matrix[i, 0] = -VelocityBoundsUpdater.StartValueParameter.Value.Value;
+        //    matrix[i, 1] = VelocityBoundsUpdater.StartValueParameter.Value.Value;
+        //  }
+        //}
       }
     }
 
@@ -302,6 +249,9 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     protected override void OnProblemChanged() {
       UpdateAnalyzers();
       ParameterizeAnalyzers();
+      UpdateTopologyParameters();
+      InitializeParticleCreator();
+      ParameterizeSolutionsCreator(); 
       base.OnProblemChanged();
     }
 
@@ -309,14 +259,14 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       this.UpdateTopologyParameters();
     }
 
-    void VelocityBoundsUpdaterParameter_ValueChanged(object sender, EventArgs e) {
-      if (VelocityBoundsParameter.Value != null) {
-        foreach (IDiscreteDoubleMatrixModifier matrixOp in VelocityBoundsUpdaterParameter.Value.ScalingOperatorParameter.ValidValues) {
-          matrixOp.ValueParameter.ActualName = VelocityBoundsUpdater.ScaleParameter.Name;
-          matrixOp.StartValueParameter.Value = new DoubleValue(VelocityBoundsUpdater.ScaleParameter.ActualValue.Value);
-        }
-      }
-    }
+    //void VelocityBoundsUpdaterParameter_ValueChanged(object sender, EventArgs e) {
+    //  if (VelocityBoundsParameter.Value != null) {
+    //    foreach (IDiscreteDoubleMatrixModifier matrixOp in VelocityBoundsUpdaterParameter.Value.ScalingOperatorParameter.ValidValues) {
+    //      matrixOp.ValueParameter.ActualName = VelocityBoundsUpdater.ScaleParameter.Name;
+    //      matrixOp.StartValueParameter.Value = new DoubleValue(VelocityBoundsUpdater.ScaleParameter.ActualValue.Value);
+    //    }
+    //  }
+    //}
     #endregion
 
     #region Helpers
@@ -324,25 +274,18 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       TopologyInitializerParameter.ValueChanged += new EventHandler(TopologyInitializerParameter_ValueChanged);
     }
 
-    private static void InitializeParticleCreator(CombinedOperator particleCreator) {
-      Placeholder positionCreator = new Placeholder();
-      Assigner personalBestPositionAssigner = new Assigner();
-      UniformRandomRealVectorCreator velocityCreator = new UniformRandomRealVectorCreator();
-
-      particleCreator.Name = "Particle Creator";
-      particleCreator.OperatorGraph.InitialOperator = positionCreator;
-
-      positionCreator.Name = "(SolutionCreator)";
-      positionCreator.OperatorParameter.ActualName = "SolutionCreator";
-      positionCreator.Successor = personalBestPositionAssigner;
-
-      personalBestPositionAssigner.LeftSideParameter.ActualName = "PersonalBestPoint";
-      personalBestPositionAssigner.RightSideParameter.ActualName = "Point";
-      personalBestPositionAssigner.Successor = velocityCreator;
-
-      velocityCreator.LengthParameter.ActualName = "ProblemSize";
-      velocityCreator.BoundsParameter.ActualName = "VelocityBounds";
-      velocityCreator.RealVectorParameter.ActualName = "Velocity";
+    private void InitializeParticleCreator() {
+      if (Problem != null) {
+        IParticleCreator oldParticleCreator = ParticleCreator;
+        ParticleCreatorParameter.ValidValues.Clear();
+        foreach (IParticleCreator Creator in Problem.Operators.OfType<IParticleCreator>().OrderBy(x => x.Name)) {
+          ParticleCreatorParameter.ValidValues.Add(Creator);
+        }
+        if (oldParticleCreator != null) {
+          IParticleCreator creator = ParticleCreatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldParticleCreator.GetType());
+          if (creator != null) ParticleCreator = creator;
+        }  
+      }
     }
 
     private void InitializeAnalyzers() {
@@ -367,38 +310,38 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       Analyzer.Operators.Add(qualityAnalyzer);
     }
 
-    private void InitVelocityBoundsUpdater() {
-      foreach (IDiscreteDoubleMatrixModifier matrixOp in ApplicationManager.Manager.GetInstances<IDiscreteDoubleMatrixModifier>()) {
-        VelocityBoundsUpdaterParameter.ValidValues.Add(matrixOp);
-        matrixOp.ValueParameter.ActualName = VelocityBoundsParameter.Name;
-        matrixOp.EndIndexParameter.ActualName = MaxIterationsParameter.Name;
-        matrixOp.StartIndexParameter.Value = new IntValue(0);
-        matrixOp.IndexParameter.ActualName = "CurrentIteration";
-        matrixOp.EndValueParameter.Value = new DoubleValue(0);
-      }
-      VelocityBoundsUpdaterParameter.ValueChanged += new EventHandler(VelocityBoundsUpdaterParameter_ValueChanged);
-    }
+    //private void InitVelocityBoundsUpdater() {
+    //  foreach (IDiscreteDoubleMatrixModifier matrixOp in ApplicationManager.Manager.GetInstances<IDiscreteDoubleMatrixModifier>()) {
+    //    VelocityBoundsUpdaterParameter.ValidValues.Add(matrixOp);
+    //    matrixOp.ValueParameter.ActualName = VelocityBoundsParameter.Name;
+    //    matrixOp.EndIndexParameter.ActualName = MaxIterationsParameter.Name;
+    //    matrixOp.StartIndexParameter.Value = new IntValue(0);
+    //    matrixOp.IndexParameter.ActualName = "CurrentIteration";
+    //    matrixOp.EndValueParameter.Value = new DoubleValue(0);
+    //  }
+    //  VelocityBoundsUpdaterParameter.ValueChanged += new EventHandler(VelocityBoundsUpdaterParameter_ValueChanged);
+    //}
 
-    private void InitOmegaUpdater() {
-      foreach (IDiscreteDoubleValueModifier updater in OmegaUpdaterParameter.ValidValues) {
+    private void InitInertiaUpdater() {
+      foreach (IDiscreteDoubleValueModifier updater in InertiaUpdaterParameter.ValidValues) {
         updater.EndIndexParameter.ActualName = MaxIterationsParameter.Name;
         updater.StartIndexParameter.Value = new IntValue(0);
         updater.IndexParameter.ActualName = "CurrentIteration";
-        updater.ValueParameter.ActualName = OmegaParameter.Name;
+        updater.ValueParameter.ActualName = InertiaParameter.Name;
         updater.StartValueParameter.Value = new DoubleValue(1);
         updater.EndValueParameter.Value = new DoubleValue(0);
       }
     }
 
-    private void UpdateOmegaUpdater() {
-      IDiscreteDoubleValueModifier oldOmegaUpdater = OmegaUpdater;
-      OmegaUpdaterParameter.ValidValues.Clear();
+    private void UpdateInertiaUpdater() {
+      IDiscreteDoubleValueModifier oldInertiaUpdater = InertiaUpdater;
+      InertiaUpdaterParameter.ValidValues.Clear();
       foreach (IDiscreteDoubleValueModifier updater in ApplicationManager.Manager.GetInstances<IDiscreteDoubleValueModifier>().OrderBy(x => x.Name)) {
-        OmegaUpdaterParameter.ValidValues.Add(updater);
+        InertiaUpdaterParameter.ValidValues.Add(updater);
       }
-      if (oldOmegaUpdater != null) {
-        IDiscreteDoubleValueModifier updater = OmegaUpdaterParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldOmegaUpdater.GetType());
-        if (updater != null) OmegaUpdaterParameter.Value = updater;
+      if (oldInertiaUpdater != null) {
+        IDiscreteDoubleValueModifier updater = InertiaUpdaterParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldInertiaUpdater.GetType());
+        if (updater != null) InertiaUpdaterParameter.Value = updater;
       }
     }
 
@@ -417,28 +360,41 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       ITopologyUpdater oldTopologyUpdater = TopologyUpdater;
       IParticleUpdater oldParticleUpdater = ParticleUpdater;
       ClearTopologyParameters();
-      if (TopologyInitializer != null) {
-        foreach (ITopologyUpdater topologyUpdater in ApplicationManager.Manager.GetInstances<ITopologyUpdater>())
-          TopologyUpdaterParameter.ValidValues.Add(topologyUpdater);
-        foreach (IParticleUpdater particleUpdater in ApplicationManager.Manager.GetInstances<ILocalParticleUpdater>())
-          ParticleUpdaterParameter.ValidValues.Add(particleUpdater);
-      } else {
-        foreach (IParticleUpdater particleUpdater in ApplicationManager.Manager.GetInstances<IGlobalParticleUpdater>())
-          ParticleUpdaterParameter.ValidValues.Add(particleUpdater);
-      }
-      if (oldTopologyUpdater != null) {
-        ITopologyUpdater newTopologyUpdater = TopologyUpdaterParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldParticleUpdater.GetType());
-        if (newTopologyUpdater != null) TopologyUpdater = newTopologyUpdater;
-      }
-      if (oldParticleUpdater != null) {
-        IParticleUpdater newParticleUpdater = ParticleUpdaterParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldParticleUpdater.GetType());
-        if (newParticleUpdater != null) ParticleUpdater = newParticleUpdater;
+      if (Problem != null) {
+        if (TopologyInitializer != null) {
+          foreach (ITopologyUpdater topologyUpdater in ApplicationManager.Manager.GetInstances<ITopologyUpdater>())
+            TopologyUpdaterParameter.ValidValues.Add(topologyUpdater);
+          foreach (IParticleUpdater particleUpdater in Problem.Operators.OfType<ILocalParticleUpdater>().OrderBy(x => x.Name))
+            ParticleUpdaterParameter.ValidValues.Add(particleUpdater);
+        } else {
+          foreach (IParticleUpdater particleUpdater in Problem.Operators.OfType<IGlobalParticleUpdater>().OrderBy(x => x.Name))
+            ParticleUpdaterParameter.ValidValues.Add(particleUpdater);
+        }
+        if (oldTopologyUpdater != null) {
+          ITopologyUpdater newTopologyUpdater = TopologyUpdaterParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldParticleUpdater.GetType());
+          if (newTopologyUpdater != null) TopologyUpdater = newTopologyUpdater;
+        }
+        if (oldParticleUpdater != null) {
+          IParticleUpdater newParticleUpdater = ParticleUpdaterParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldParticleUpdater.GetType());
+          if (newParticleUpdater != null) ParticleUpdater = newParticleUpdater;
+        }
       }
     }
 
     private void ClearTopologyParameters() {
       TopologyUpdaterParameter.ValidValues.Clear();
       ParticleUpdaterParameter.ValidValues.Clear();
+    }
+
+    private void ParameterizeSolutionsCreator() {
+      if (Problem != null) {
+        solutionsCreator.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
+        solutionsCreator.SolutionCreatorParameter.ActualName = ParticleCreatorParameter.Name;
+      }
+    }
+
+    private void ParameterizeMainLoop() {
+      mainLoop.MaxIterationsParameter.ActualName = MaxIterationsParameter.Name;
     }
     #endregion
 

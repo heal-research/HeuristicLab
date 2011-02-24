@@ -19,7 +19,16 @@
  */
 #endregion
 
-namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
-  public interface IGlobalParticleUpdater : IParticleUpdater {
+using HeuristicLab.Optimization;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+
+namespace HeuristicLab.Encodings.RealVectorEncoding {
+  public interface IRealVectorParticleCreator : IParticleCreator, IRealVectorOperator {
+    ILookupParameter<IntValue> ProblemSizeParameter { get; }
+    ILookupParameter<RealVector> RealVectorParameter { get; }
+    ILookupParameter<RealVector> PersonalBestParameter { get; }
+    IValueLookupParameter<DoubleMatrix> BoundsParameter { get; }
+    ILookupParameter<RealVector> VelocityParameter { get; }
   }
 }

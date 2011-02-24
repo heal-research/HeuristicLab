@@ -21,10 +21,9 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 
-namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
+namespace HeuristicLab.Optimization {
   public interface IDiscreteDoubleMatrixModifier : IItem {
     ILookupParameter<DoubleMatrix> ValueParameter { get; }
     ILookupParameter<DoubleValue> ScaleParameter { get; }

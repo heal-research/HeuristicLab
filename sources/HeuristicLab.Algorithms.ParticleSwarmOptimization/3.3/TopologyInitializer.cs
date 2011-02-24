@@ -22,8 +22,8 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Operators;
+using HeuristicLab.Optimization; 
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -36,9 +36,10 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     }
 
     #region Parameters
-    public IScopeTreeLookupParameter<IntegerVector> NeighborsParameter {
-      get { return (IScopeTreeLookupParameter<IntegerVector>)Parameters["Neighbors"]; }
+    public IScopeTreeLookupParameter<IntArray> NeighborsParameter {
+      get { return (IScopeTreeLookupParameter<IntArray>)Parameters["Neighbors"]; }
     }
+
     public ILookupParameter<IntValue> SwarmSizeParameter {
       get { return (ILookupParameter<IntValue>)Parameters["SwarmSize"]; }
     }
@@ -46,7 +47,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     #endregion
 
     #region Parameter Values
-    protected ItemArray<IntegerVector> Neighbors {
+    protected ItemArray<IntArray> Neighbors {
       get { return NeighborsParameter.ActualValue; }
       set { NeighborsParameter.ActualValue = value; }
     }
@@ -59,12 +60,12 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     [StorableConstructor]
     protected TopologyInitializer(bool deserializing) : base(deserializing) { }
     protected TopologyInitializer(TopologyInitializer original, Cloner cloner) : base(original, cloner) { }
+    
     public TopologyInitializer() {
-      Parameters.Add(new ScopeTreeLookupParameter<IntegerVector>("Neighbors", "The list of neighbors for each particle."));
+      Parameters.Add(new ScopeTreeLookupParameter<IntArray>("Neighbors", "The list of neighbors for each particle."));
       Parameters.Add(new LookupParameter<IntValue>("SwarmSize", "Number of particles in the swarm."));
     }
     #endregion
-
   }
 
 }

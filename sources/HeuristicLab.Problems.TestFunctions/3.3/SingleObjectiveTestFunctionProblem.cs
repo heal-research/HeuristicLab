@@ -402,6 +402,15 @@ namespace HeuristicLab.Problems.TestFunctions {
         op.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
         op.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
       }
+      foreach (IRealVectorParticleCreator op in Operators.OfType<IRealVectorParticleCreator>()) {
+        op.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
+        op.BoundsParameter.ActualName = BoundsParameter.Name;
+        op.ProblemSizeParameter.ActualName = ProblemSizeParameter.Name; 
+      }
+      foreach (IRealVectorParticleUpdater op in Operators.OfType<IRealVectorParticleUpdater>()) {
+        op.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
+        op.BoundsParameter.ActualName = BoundsParameter.Name; 
+      }
     }
     private void UpdateStrategyVectorBounds() {
       DoubleMatrix strategyBounds = (DoubleMatrix)Bounds.Clone();

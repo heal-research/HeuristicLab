@@ -23,7 +23,6 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
@@ -41,8 +40,8 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     public IScopeTreeLookupParameter<RealVector> PointsParameter {
       get { return (IScopeTreeLookupParameter<RealVector>)Parameters["Point"]; }
     }
-    public IScopeTreeLookupParameter<IntegerVector> NeighborsParameter {
-      get { return (IScopeTreeLookupParameter<IntegerVector>)Parameters["Neighbors"]; }
+    public IScopeTreeLookupParameter<IntArray> NeighborsParameter {
+      get { return (IScopeTreeLookupParameter<IntArray>)Parameters["Neighbors"]; }
     }
     public IScopeTreeLookupParameter<RealVector> BestNeighborPointParameter {
       get { return (IScopeTreeLookupParameter<RealVector>)Parameters["BestNeighborPoint"]; }
@@ -59,7 +58,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     private ItemArray<RealVector> Points {
       get { return PointsParameter.ActualValue; }
     }
-    private ItemArray<IntegerVector> Neighbors {
+    private ItemArray<IntArray> Neighbors {
       get { return NeighborsParameter.ActualValue; }
     }
     private ItemArray<RealVector> BestNeighborPoints {
@@ -79,8 +78,8 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     private NeighborUpdater(bool deserializing) : base(deserializing) { }
     private NeighborUpdater(NeighborUpdater original, Cloner cloner) : base(original, cloner) { }
     public NeighborUpdater() {
-      Parameters.Add(new ScopeTreeLookupParameter<RealVector>("Point", "The position of the particle."));
-      Parameters.Add(new ScopeTreeLookupParameter<IntegerVector>("Neighbors", "The list of neighbors for each particle."));
+      Parameters.Add(new ScopeTreeLookupParameter<RealVector>("RealVector", "The position of the particle."));
+      Parameters.Add(new ScopeTreeLookupParameter<IntArray>("Neighbors", "The list of neighbors for each particle."));
       Parameters.Add(new ScopeTreeLookupParameter<RealVector>("BestNeighborPoint", "The position of the best neighboring particle."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The list of qualities of all particles."));
       Parameters.Add(new LookupParameter<BoolValue>("Maximization", "Whether the problem is a maximization problem."));

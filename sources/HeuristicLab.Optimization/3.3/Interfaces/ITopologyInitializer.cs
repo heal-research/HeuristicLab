@@ -20,10 +20,11 @@
 #endregion
 
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.IntegerVectorEncoding;
+using HeuristicLab.Data;
 
-namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
-  public interface ITopologyUpdater : IOperator {
-    IScopeTreeLookupParameter<IntegerVector> NeighborsParameter { get; }
+namespace HeuristicLab.Optimization {
+  public interface ITopologyInitializer : IOperator {
+    IScopeTreeLookupParameter<IntArray> NeighborsParameter { get; }
+    ILookupParameter<IntValue> SwarmSizeParameter { get; }
   }
 }

@@ -24,7 +24,6 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -65,7 +64,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     #endregion
 
     public override IOperation Apply() {
-      ItemArray<IntegerVector> neighbors = new ItemArray<IntegerVector>(SwarmSize);
+      ItemArray<IntArray> neighbors = new ItemArray<IntArray>(SwarmSize);
       for (int i = 0; i < SwarmSize; i++) {
         var numbers = Enumerable.Range(0, SwarmSize).ToList();
         numbers.RemoveAt(i);
@@ -75,7 +74,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
           selectedNumbers.Add(numbers[index]);
           numbers.RemoveAt(index);
         }
-        neighbors[i] = new IntegerVector(selectedNumbers.ToArray());
+        neighbors[i] = new IntArray(selectedNumbers.ToArray());
       }
       Neighbors = neighbors;
       return base.Apply();

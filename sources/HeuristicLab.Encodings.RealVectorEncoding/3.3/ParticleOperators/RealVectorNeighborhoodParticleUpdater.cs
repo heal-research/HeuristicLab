@@ -23,46 +23,42 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Optimization;
 
-namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
-  [Item("Totally Connected Particle Updater", "Updates the particle's position using (among other things) the global best position. Use together with the empty topology initialzer. Point = Point + Velocity*Omega + (PersonalBestPoint-Point)*Phi_P*r_p + (BestPoint-Point)*Phi_G*r_g")]
+namespace HeuristicLab.Encodings.RealVectorEncoding {
+  [Item("Neighborhood Particle Updater", "Updates the particle's position using (among other things) the best neighbor's position. Point = Point + Velocity*Inertia + (PersonalBestPoint-Point)*Phi_P*r_p + (BestNeighborPoint-Point)*Phi_G*r_g.")]
   [StorableClass]
-  public sealed class TotallyConnectedParticleUpdater : ParticleUpdater, IGlobalParticleUpdater {
-
-    #region Construction & Cloning
+  public sealed class RealVectorNeighborhoodParticleUpdater : RealVectorParticleUpdater, ILocalParticleUpdater {
 
     [StorableConstructor]
-    private TotallyConnectedParticleUpdater(bool deserializing) : base(deserializing) { }
-    private TotallyConnectedParticleUpdater(TotallyConnectedParticleUpdater original, Cloner cloner) : base(original, cloner) { }
-    public TotallyConnectedParticleUpdater() : base() { }
+    private RealVectorNeighborhoodParticleUpdater(bool deserializing) : base(deserializing) { }
+    private RealVectorNeighborhoodParticleUpdater(RealVectorNeighborhoodParticleUpdater original, Cloner cloner) : base(original, cloner) { }
+    public RealVectorNeighborhoodParticleUpdater() : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new TotallyConnectedParticleUpdater(this, cloner);
+      return new RealVectorNeighborhoodParticleUpdater(this, cloner);
     }
 
-    #endregion
-
     public override IOperation Apply() {
-      base.Apply();
       RealVector velocity = new RealVector(Velocity.Length);
-      RealVector position = new RealVector(Point.Length);
+      RealVector position = new RealVector(RealVector.Length);
       double r_p = Random.NextDouble();
       double r_g = Random.NextDouble();
-      double omega = Omega.Value;
-      double phi_p = Phi_P.Value;
-      double phi_g = Phi_G.Value;
+      double omega = Inertia.Value;
+      double phi_p = PersonalBestAttraction.Value;
+      double phi_g = NeighborsBestAttraction.Value;
       for (int i = 0; i < velocity.Length; i++) {
         velocity[i] =
           Velocity[i] * omega +
-          (PersonalBestPoint[i] - Point[i]) * phi_p * r_p +
-          (BestPoint[i] - Point[i]) * phi_g * r_g;
+          (PersonalBest[i] - RealVector[i]) * phi_p * r_p +
+          (NeighborsBest[i] - RealVector[i]) * phi_g * r_g;
       }
       BoundsChecker.Apply(velocity, VelocityBounds);
       for (int i = 0; i < velocity.Length; i++) {
-        position[i] = Point[i] + velocity[i];
+        position[i] = RealVector[i] + velocity[i];
       }
       BoundsChecker.Apply(position, Bounds);
-      Point = position;
+      RealVector = position;
       Velocity = velocity;
 
       return base.Apply();

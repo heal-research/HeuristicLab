@@ -21,24 +21,15 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.RealVectorEncoding;
+using HeuristicLab.Optimization;
 
-namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
-  public interface IParticleUpdater : IOperator {
-
+namespace HeuristicLab.Encodings.RealVectorEncoding {
+  public interface IRealVectorParticleUpdater : IParticleUpdater, IRealVectorOperator {
     ILookupParameter<RealVector> VelocityParameter { get; }
     ILookupParameter<DoubleMatrix> VelocityBoundsParameter { get; }
-
-    ILookupParameter<RealVector> PointParameter { get; }
+    ILookupParameter<RealVector> RealVectorParameter { get; }
     ILookupParameter<DoubleMatrix> BoundsParameter { get; }
-
-    ILookupParameter<RealVector> PersonalBestPointParameter { get; }
-    ILookupParameter<RealVector> BestNeighborPointParameter { get; }
-    ILookupParameter<RealVector> BestPointParameter { get; }
-
-    ILookupParameter<DoubleValue> OmegaParameter { get; }
-    ILookupParameter<DoubleValue> Phi_PParameter { get; }
-    ILookupParameter<DoubleValue> Phi_GParameter { get; }
+    ILookupParameter<RealVector> PersonalBestParameter { get; }
+    ILookupParameter<RealVector> NeighborsBestParameter { get; }
   }
-
 }

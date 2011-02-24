@@ -24,15 +24,15 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Operators;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
-  [Item("Multi PSO Topology Initializer/Updater", "Splits swarm into swarmsize / (nrOfConnections + 1) non-overlapping sub-swarms. Swarms are re-grouped every regroupingPeriod iteration. The operator is implemented as described in Liang, J.J. and Suganthan, P.N 2005. Dynamic multi-swarm particle swarm optimizer. IEEE Swarm Intelligence Symposium, pp. 124-129.")]
+  [Item("Multi PSO Topology Updater", "Splits swarm into swarmsize / (nrOfConnections + 1) non-overlapping sub-swarms. Swarms are re-grouped every regroupingPeriod iteration. The operator is implemented as described in Liang, J.J. and Suganthan, P.N 2005. Dynamic multi-swarm particle swarm optimizer. IEEE Swarm Intelligence Symposium, pp. 124-129.")]
   [StorableClass]
-  public sealed class MultiPSOTopologyUpdater : SingleSuccessorOperator, ITopologyUpdater, ITopologyInitializer {
+  public sealed class MultiPSOTopologyUpdater : SingleSuccessorOperator, ITopologyUpdater {
     public override bool CanChangeName {
       get { return false; }
     }
@@ -47,8 +47,8 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     public ILookupParameter<IntValue> SwarmSizeParameter {
       get { return (ILookupParameter<IntValue>)Parameters["SwarmSize"]; }
     }
-    public IScopeTreeLookupParameter<IntegerVector> NeighborsParameter {
-      get { return (IScopeTreeLookupParameter<IntegerVector>)Parameters["Neighbors"]; }
+    public IScopeTreeLookupParameter<IntArray> NeighborsParameter {
+      get { return (IScopeTreeLookupParameter<IntArray>)Parameters["Neighbors"]; }
     }
     public ILookupParameter<IntValue> CurrentIterationParameter {
       get { return (ILookupParameter<IntValue>)Parameters["CurrentIteration"]; }
@@ -68,7 +68,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     private int SwarmSize {
       get { return SwarmSizeParameter.ActualValue.Value; }
     }
-    private ItemArray<IntegerVector> Neighbors {
+    private ItemArray<IntArray> Neighbors {
       get { return NeighborsParameter.ActualValue; }
       set { NeighborsParameter.ActualValue = value; }
     }
@@ -83,12 +83,13 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     [StorableConstructor]
     private MultiPSOTopologyUpdater(bool deserializing) : base(deserializing) { }
     private MultiPSOTopologyUpdater(MultiPSOTopologyUpdater original, Cloner cloner) : base(original, cloner) { }
+    
     public MultiPSOTopologyUpdater()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "A random number generator."));
       Parameters.Add(new ValueLookupParameter<IntValue>("NrOfConnections", "Nr of connected neighbors.", new IntValue(3)));
       Parameters.Add(new LookupParameter<IntValue>("SwarmSize", "Number of particles in the swarm."));
-      Parameters.Add(new ScopeTreeLookupParameter<IntegerVector>("Neighbors", "The list of neighbors for each particle."));
+      Parameters.Add(new ScopeTreeLookupParameter<IntArray>("Neighbors", "The list of neighbors for each particle."));
       Parameters.Add(new LookupParameter<IntValue>("CurrentIteration", "The current iteration of the algorithm."));
       Parameters.Add(new ValueLookupParameter<IntValue>("RegroupingPeriod", "Update interval (=iterations) for regrouping of neighborhoods.", new IntValue(5)));
     }
@@ -99,8 +100,8 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
 
     // Splits the swarm into non-overlapping sub swarms
     public override IOperation Apply() {
-      if (CurrentIteration % RegroupingPeriod == 0) {
-        ItemArray<IntegerVector> neighbors = new ItemArray<IntegerVector>(SwarmSize);
+      if (CurrentIteration > 0 && CurrentIteration % RegroupingPeriod == 0) {
+        ItemArray<IntArray> neighbors = new ItemArray<IntArray>(SwarmSize);
         Dictionary<int, List<int>> neighborsPerParticle = new Dictionary<int, List<int>>();
         for (int i = 0; i < SwarmSize; i++) {
           neighborsPerParticle.Add(i, new List<int>());
@@ -134,7 +135,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
         }
 
         for (int particle = 0; particle < neighborsPerParticle.Count; particle++) {
-          neighbors[particle] = new IntegerVector(neighborsPerParticle[particle].ToArray());
+          neighbors[particle] = new IntArray(neighborsPerParticle[particle].ToArray());
         }
         Neighbors = neighbors;
       }

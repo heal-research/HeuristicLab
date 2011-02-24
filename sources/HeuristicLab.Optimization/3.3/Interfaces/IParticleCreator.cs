@@ -19,7 +19,12 @@
  */
 #endregion
 
-namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
-  public interface ILocalParticleUpdater : IParticleUpdater {
+using HeuristicLab.Core;
+
+namespace HeuristicLab.Optimization {
+  /// <summary>
+  /// Interface to represent an operator that generates a particle. 
+  /// </summary>
+  public interface IParticleCreator : ISolutionCreator {
   }
 }

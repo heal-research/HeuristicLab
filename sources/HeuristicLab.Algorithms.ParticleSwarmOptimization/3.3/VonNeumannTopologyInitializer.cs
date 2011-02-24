@@ -21,8 +21,8 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
   [Item("Von Neumann Topology Initializer", "Every particle is connected with the two following and the two previous particles wrapping around at the beginning and the end of the population.")]
@@ -43,9 +43,9 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     #endregion
 
     public override IOperation Apply() {
-      ItemArray<IntegerVector> neighbors = new ItemArray<IntegerVector>(SwarmSize);
+      ItemArray<IntArray> neighbors = new ItemArray<IntArray>(SwarmSize);
       for (int i = 0; i < SwarmSize; i++) {
-        neighbors[i] = new IntegerVector(new[] {
+        neighbors[i] = new IntArray(new[] {
           (SwarmSize + i-2) % SwarmSize,
           (SwarmSize + i-1) % SwarmSize,
           (i+1) % SwarmSize,

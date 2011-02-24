@@ -113,8 +113,16 @@
     <None Include="HeuristicLabOptimizationPlugin.cs.frame" />
     <Compile Include="Algorithm.cs" />
     <Compile Include="BatchRun.cs" />
+    <Compile Include="Interfaces\IDiscreteDoubleMatrixModifier.cs" />
+    <Compile Include="Interfaces\IGlobalParticleUpdater.cs" />
+    <Compile Include="Interfaces\ILocalParticleUpdater.cs" />
     <Compile Include="Interfaces\IMultiAnalyzer.cs" />
     <Compile Include="Interfaces\IIterationBasedOperator.cs" />
+    <Compile Include="Interfaces\IParticleCreator.cs" />
+    <Compile Include="Interfaces\IParticleUpdater.cs" />
+    <Compile Include="Interfaces\ISwarmUpdater.cs" />
+    <Compile Include="Interfaces\ITopologyInitializer.cs" />
+    <Compile Include="Interfaces\ITopologyUpdater.cs" />
     <Compile Include="MultiObjectiveProblem.cs" />
     <Compile Include="Problem.cs" />
     <Compile Include="RunCollectionConstraints\RunCollectionComparisonConstraint.cs" />

@@ -22,15 +22,14 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
+namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("Swarm Updater", "Updates personal best point and quality as well as global best point and quality.")]
   [StorableClass]
-  public sealed class SwarmUpdater : SingleSuccessorOperator {
+  public sealed class RealVectorSwarmUpdater : SingleSuccessorOperator, IRealVectorSwarmUpdater {
     public override bool CanChangeName {
       get { return false; }
     }
@@ -42,17 +41,17 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     public ILookupParameter<DoubleValue> PersonalBestQualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["PersonalBestQuality"]; }
     }
-    public ILookupParameter<DoubleValue> BestQualityParameter {
-      get { return (ILookupParameter<DoubleValue>)Parameters["BestQuality"]; }
+    public ILookupParameter<DoubleValue> NeighborsBestQualityParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters["NeighborsBestQuality"]; }
     }
-    public ILookupParameter<RealVector> PointParameter {
-      get { return (ILookupParameter<RealVector>)Parameters["Point"]; }
+    public ILookupParameter<RealVector> RealVectorParameter {
+      get { return (ILookupParameter<RealVector>)Parameters["RealVector"]; }
     }
-    public ILookupParameter<RealVector> PersonalBestPointParameter {
-      get { return (ILookupParameter<RealVector>)Parameters["PersonalBestPoint"]; }
+    public ILookupParameter<RealVector> PersonalBestParameter {
+      get { return (ILookupParameter<RealVector>)Parameters["PersonalBest"]; }
     }
-    public ILookupParameter<RealVector> BestPointParameter {
-      get { return (ILookupParameter<RealVector>)Parameters["BestPoint"]; }
+    public ILookupParameter<RealVector> NeighborsBestParameter {
+      get { return (ILookupParameter<RealVector>)Parameters["NeighborsBest"]; }
     }
     public IValueLookupParameter<BoolValue> MaximizationParameter {
       get { return (IValueLookupParameter<BoolValue>)Parameters["Maximization"]; }
@@ -67,20 +66,20 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       get { return PersonalBestQualityParameter.ActualValue.Value; }
       set { PersonalBestQualityParameter.ActualValue = new DoubleValue(value); }
     }
-    private double BestQuality {
-      get { return BestQualityParameter.ActualValue.Value; }
-      set { BestQualityParameter.ActualValue = new DoubleValue(value); }
+    private double NeighborsBestQuality {
+      get { return NeighborsBestQualityParameter.ActualValue.Value; }
+      set { NeighborsBestQualityParameter.ActualValue = new DoubleValue(value); }
     }
-    private RealVector Point {
-      get { return PointParameter.ActualValue; }
+    private RealVector RealVector {
+      get { return RealVectorParameter.ActualValue; }
     }
-    private RealVector PersonalBestPoint {
-      get { return PersonalBestPointParameter.ActualValue; }
-      set { PersonalBestPointParameter.ActualValue = value; }
+    private RealVector PersonalBest {
+      get { return PersonalBestParameter.ActualValue; }
+      set { PersonalBestParameter.ActualValue = value; }
     }
-    private RealVector BestPoint {
-      get { return BestPointParameter.ActualValue; }
-      set { BestPointParameter.ActualValue = value; }
+    private RealVector NeighborsBest {
+      get { return NeighborsBestParameter.ActualValue; }
+      set { NeighborsBestParameter.ActualValue = value; }
     }
     private bool Maximization {
       get { return MaximizationParameter.ActualValue.Value; }
@@ -90,21 +89,21 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     #region Construction & Cloning
 
     [StorableConstructor]
-    private SwarmUpdater(bool deserializing) : base(deserializing) { }
-    private SwarmUpdater(SwarmUpdater original, Cloner cloner) : base(original, cloner) { }
-    public SwarmUpdater()
+    private RealVectorSwarmUpdater(bool deserializing) : base(deserializing) { }
+    private RealVectorSwarmUpdater(RealVectorSwarmUpdater original, Cloner cloner) : base(original, cloner) { }
+    public RealVectorSwarmUpdater()
       : base() {
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "Particle's quality"));
       Parameters.Add(new LookupParameter<DoubleValue>("PersonalBestQuality", "Particle's personal best quality"));
-      Parameters.Add(new LookupParameter<DoubleValue>("BestQuality", "Global best particle quality"));
-      Parameters.Add(new LookupParameter<RealVector>("Point", "Particle's position"));
-      Parameters.Add(new LookupParameter<RealVector>("PersonalBestPoint", "Particle's personal best position"));
-      Parameters.Add(new LookupParameter<RealVector>("BestPoint", "Globa best particle position"));
+      Parameters.Add(new LookupParameter<DoubleValue>("NeighborsBestQuality", "Global best particle quality"));
+      Parameters.Add(new LookupParameter<RealVector>("RealVector", "Particle's position"));
+      Parameters.Add(new LookupParameter<RealVector>("PersonalBest", "Particle's personal best position"));
+      Parameters.Add(new LookupParameter<RealVector>("NeighborsBest", "Neighborhood (or global in case of totally connected neighborhood) best particle position"));
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, otherwise false."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new SwarmUpdater(this, cloner);
+      return new RealVectorSwarmUpdater(this, cloner);
     }
 
     #endregion
@@ -113,14 +112,15 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       if (Maximization && Quality > PersonalBestQuality ||
          !Maximization && Quality < PersonalBestQuality) {
         PersonalBestQuality = Quality;
-        PersonalBestPoint = Point;
-        if (Maximization && PersonalBestQuality > BestQuality ||
-           !Maximization && PersonalBestQuality < BestQuality) {
-          BestQuality = PersonalBestQuality;
-          BestPoint = PersonalBestPoint;
+        PersonalBest = RealVector;
+        if (Maximization && PersonalBestQuality > NeighborsBestQuality ||
+           !Maximization && PersonalBestQuality < NeighborsBestQuality) {
+             NeighborsBestQuality = PersonalBestQuality;
+             NeighborsBest = PersonalBest;
         }
       }
       return base.Apply();
     }
+
   }
 }
