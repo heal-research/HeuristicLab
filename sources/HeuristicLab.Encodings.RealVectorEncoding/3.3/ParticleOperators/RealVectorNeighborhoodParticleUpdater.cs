@@ -21,9 +21,8 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Optimization;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("Neighborhood Particle Updater", "Updates the particle's position using (among other things) the best neighbor's position. Point = Point + Velocity*Inertia + (PersonalBestPoint-Point)*Phi_P*r_p + (BestNeighborPoint-Point)*Phi_G*r_g.")]
@@ -46,12 +45,12 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       double r_g = Random.NextDouble();
       double omega = Inertia.Value;
       double phi_p = PersonalBestAttraction.Value;
-      double phi_g = NeighborsBestAttraction.Value;
+      double phi_g = NeighborBestAttraction.Value;
       for (int i = 0; i < velocity.Length; i++) {
         velocity[i] =
           Velocity[i] * omega +
           (PersonalBest[i] - RealVector[i]) * phi_p * r_p +
-          (NeighborsBest[i] - RealVector[i]) * phi_g * r_g;
+          (BestPoint[i] - RealVector[i]) * phi_g * r_g;
       }
       BoundsChecker.Apply(velocity, VelocityBounds);
       for (int i = 0; i < velocity.Length; i++) {

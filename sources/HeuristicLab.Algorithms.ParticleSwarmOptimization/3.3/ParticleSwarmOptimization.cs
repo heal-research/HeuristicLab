@@ -25,7 +25,6 @@ using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
@@ -77,8 +76,8 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     public IValueParameter<DoubleValue> PersonalBestAttractionParameter {
       get { return (IValueParameter<DoubleValue>)Parameters["PersonalBestAttraction"]; }
     }
-    public IValueParameter<DoubleValue> NeighborsBestAttractionParameter {
-      get { return (IValueParameter<DoubleValue>)Parameters["NeighborsBestAttraction"]; }
+    public IValueParameter<DoubleValue> NeighborBestAttractionParameter {
+      get { return (IValueParameter<DoubleValue>)Parameters["NeighborBestAttraction"]; }
     }
     public IValueParameter<MultiAnalyzer> AnalyzerParameter {
       get { return (IValueParameter<MultiAnalyzer>)Parameters["Analyzer"]; }
@@ -98,6 +97,10 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     public OptionalConstrainedValueParameter<IDiscreteDoubleValueModifier> InertiaUpdaterParameter {
       get { return (OptionalConstrainedValueParameter<IDiscreteDoubleValueModifier>)Parameters["InertiaUpdater"]; }
     }
+    public ConstrainedValueParameter<ISwarmUpdater> SwarmUpdaterParameter {
+      get { return (ConstrainedValueParameter<ISwarmUpdater>)Parameters["SwarmUpdater"]; }
+
+    }
     #endregion
 
     #region Properties
@@ -112,9 +115,6 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
 
     [Storable]
     private ParticleSwarmOptimizationMainLoop mainLoop;
-
-    [Storable]
-    private CombinedOperator swarmUpdater;
 
     public ITopologyInitializer TopologyInitializer {
       get { return TopologyInitializerParameter.Value; }
@@ -144,7 +144,6 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       qualityAnalyzer = cloner.Clone(original.qualityAnalyzer);
       solutionsCreator = cloner.Clone(original.solutionsCreator);
       mainLoop = cloner.Clone(original.mainLoop);
-      swarmUpdater = cloner.Clone(original.swarmUpdater); 
       Initialize();
     }
     public ParticleSwarmOptimization()
@@ -156,20 +155,19 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       Parameters.Add(new ValueParameter<MultiAnalyzer>("Analyzer", "The operator used to analyze each generation.", new MultiAnalyzer()));
       Parameters.Add(new ValueParameter<DoubleValue>("Inertia", "Inertia weight on a particle's movement (omega).", new DoubleValue(-0.2)));
       Parameters.Add(new ValueParameter<DoubleValue>("PersonalBestAttraction", "Weight for particle's pull towards its personal best soution (phi_p).", new DoubleValue(-0.01)));
-      Parameters.Add(new ValueParameter<DoubleValue>("NeighborsBestAttraction", "Weight for pull towards the neighborhood best solution or global best solution in case of a totally connected topology (phi_g).", new DoubleValue(3.7)));
+      Parameters.Add(new ValueParameter<DoubleValue>("NeighborBestAttraction", "Weight for pull towards the neighborhood best solution or global best solution in case of a totally connected topology (phi_g).", new DoubleValue(3.7)));
       Parameters.Add(new ConstrainedValueParameter<IParticleCreator>("ParticleCreator", "Operator creates a new particle."));
       Parameters.Add(new ConstrainedValueParameter<IParticleUpdater>("ParticleUpdater", "Operator that updates a particle."));
       Parameters.Add(new OptionalConstrainedValueParameter<ITopologyInitializer>("TopologyInitializer", "Creates neighborhood description vectors."));
       Parameters.Add(new OptionalConstrainedValueParameter<ITopologyUpdater>("TopologyUpdater", "Updates the neighborhood description vectors."));
       Parameters.Add(new OptionalConstrainedValueParameter<IDiscreteDoubleValueModifier>("InertiaUpdater", "Updates the omega parameter."));
+      Parameters.Add(new ConstrainedValueParameter<ISwarmUpdater>("SwarmUpdater", "Encoding-specific parameter which is provided by the problem. May provide additional encoding-specific parameters, such as velocity bounds for real valued problems"));
 
       RandomCreator randomCreator = new RandomCreator();
       VariableCreator variableCreator = new VariableCreator();
       solutionsCreator = new SolutionsCreator();
       Placeholder topologyInitializerPlaceholder = new Placeholder();
-      ResultsCollector resultsCollector = new ResultsCollector(); 
       Placeholder analyzerPlaceholder = new Placeholder();
-      swarmUpdater = new CombinedOperator();
       mainLoop = new ParticleSwarmOptimizationMainLoop();
 
       OperatorGraph.InitialOperator = randomCreator;
@@ -182,46 +180,38 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       variableCreator.Successor = solutionsCreator;
 
       solutionsCreator.NumberOfSolutionsParameter.ActualName = "SwarmSize";
-      ParameterizeSolutionsCreator(); 
-      solutionsCreator.Successor = topologyInitializerPlaceholder; 
+      ParameterizeSolutionsCreator();
+      solutionsCreator.Successor = topologyInitializerPlaceholder;
 
       topologyInitializerPlaceholder.Name = "(TopologyInitializer)";
       topologyInitializerPlaceholder.OperatorParameter.ActualName = "TopologyInitializer";
-      topologyInitializerPlaceholder.Successor = swarmUpdater;
-
-      swarmUpdater.Successor = resultsCollector;
-
-      resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Iterations", null, "CurrentIteration"));
-      //resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Current Inertia", null, "Inertia"));
-      //resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Solutions", null, "EvaluatedSolutions"));
-      resultsCollector.ResultsParameter.ActualName = "Results";
-      resultsCollector.Successor = mainLoop;
+      topologyInitializerPlaceholder.Successor = mainLoop;
 
       mainLoop.AnalyzerParameter.ActualName = AnalyzerParameter.Name;
       mainLoop.InertiaParameter.ActualName = InertiaParameter.Name;
       mainLoop.MaxIterationsParameter.ActualName = MaxIterationsParameter.Name;
-      mainLoop.NeighborsBestAttractionParameter.ActualName = NeighborsBestAttractionParameter.Name;
+      mainLoop.NeighborBestAttractionParameter.ActualName = NeighborBestAttractionParameter.Name;
       mainLoop.InertiaUpdaterParameter.ActualName = InertiaUpdaterParameter.Name;
       mainLoop.ParticleUpdaterParameter.ActualName = ParticleUpdaterParameter.Name;
       mainLoop.PersonalBestAttractionParameter.ActualName = PersonalBestAttractionParameter.Name;
       mainLoop.RandomParameter.ActualName = randomCreator.RandomParameter.ActualName;
-      mainLoop.SwarmSizeParameter.ActualName = SwarmSizeParameter.Name; 
-      mainLoop.TopologyUpdaterParameter.ActualName = TopologyUpdaterParameter.Name; 
+      mainLoop.SwarmSizeParameter.ActualName = SwarmSizeParameter.Name;
+      mainLoop.TopologyUpdaterParameter.ActualName = TopologyUpdaterParameter.Name;
       mainLoop.RandomParameter.ActualName = randomCreator.RandomParameter.ActualName;
       mainLoop.ResultsParameter.ActualName = "Results";
-     // mainLoop.EvaluatedMovesParameter.ActualName = "EvaluatedMoves";
+      // mainLoop.EvaluatedMovesParameter.ActualName = "EvaluatedMoves";
 
       InitializeAnalyzers();
       ////InitVelocityBoundsUpdater();
       InitializeParticleCreator();
       InitializeSwarmUpdater();
-      ParameterizeSolutionsCreator(); 
+      ParameterizeSolutionsCreator();
       UpdateAnalyzers();
       UpdateInertiaUpdater();
       InitInertiaUpdater();
       UpdateTopologyInitializer();
       Initialize();
-      ParameterizeMainLoop(); 
+      ParameterizeMainLoop();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -256,7 +246,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       UpdateTopologyParameters();
       InitializeParticleCreator();
       InitializeSwarmUpdater();
-      ParameterizeSolutionsCreator(); 
+      ParameterizeSolutionsCreator();
       base.OnProblemChanged();
     }
 
@@ -289,7 +279,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
         if (oldParticleCreator != null) {
           IParticleCreator creator = ParticleCreatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldParticleCreator.GetType());
           if (creator != null) ParticleCreator = creator;
-        }  
+        }
       }
     }
 
@@ -399,7 +389,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     }
 
     private void ParameterizeMainLoop() {
-      if (Problem != null) { 
+      if (Problem != null) {
         mainLoop.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
       }
     }
@@ -407,7 +397,9 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     private void InitializeSwarmUpdater() {
       if (Problem != null) {
         ISwarmUpdater updater = Problem.Operators.OfType<ISwarmUpdater>().FirstOrDefault();
-        swarmUpdater.OperatorGraph.InitialOperator = updater;
+        SwarmUpdaterParameter.ValidValues.Clear();
+        SwarmUpdaterParameter.ValidValues.Add(updater);
+        SwarmUpdaterParameter.Value = updater;
       }
     }
     #endregion

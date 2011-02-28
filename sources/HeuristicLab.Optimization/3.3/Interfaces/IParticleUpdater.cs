@@ -28,7 +28,7 @@ namespace HeuristicLab.Optimization {
   /// </summary>
   public interface IParticleUpdater : IOperator {
     ILookupParameter<DoubleValue> InertiaParameter { get; }
-    ILookupParameter<DoubleValue> NeighborsBestAttractionParameter { get; }
+    ILookupParameter<DoubleValue> NeighborBestAttractionParameter { get; }
     ILookupParameter<DoubleValue> PersonalBestAttractionParameter { get; }
     ILookupParameter<IRandom> RandomParameter { get; }
   }

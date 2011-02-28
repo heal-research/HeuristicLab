@@ -24,7 +24,7 @@ using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   public interface IRealVectorSwarmUpdater : ISwarmUpdater, IRealVectorOperator {
-    IScopeTreeLookupParameter<RealVector> NeighborsBestParameter { get; }
+    IScopeTreeLookupParameter<RealVector> NeighborBestParameter { get; }
     IScopeTreeLookupParameter<RealVector> PersonalBestParameter { get; }
     IScopeTreeLookupParameter<RealVector> RealVectorParameter { get; }
   }

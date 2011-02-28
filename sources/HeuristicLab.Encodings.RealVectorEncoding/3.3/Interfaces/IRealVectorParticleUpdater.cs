@@ -30,6 +30,6 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     ILookupParameter<RealVector> RealVectorParameter { get; }
     ILookupParameter<DoubleMatrix> BoundsParameter { get; }
     ILookupParameter<RealVector> PersonalBestParameter { get; }
-    ILookupParameter<RealVector> NeighborsBestParameter { get; }
+    ILookupParameter<RealVector> NeighborBestParameter { get; }
   }
 }

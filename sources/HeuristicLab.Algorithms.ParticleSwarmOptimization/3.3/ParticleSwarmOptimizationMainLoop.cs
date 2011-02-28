@@ -19,21 +19,14 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Operators;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Parameters;
 using HeuristicLab.Data;
-using HeuristicLab.Analysis;
+using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
-using HeuristicLab.Random;
 using HeuristicLab.Optimization.Operators;
-using HeuristicLab.Encodings.RealVectorEncoding;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
   [Item("ParticleSwarmOptimizationMainLoop", "An operator which represents the main loop of a particle swarm optimization algorithm.")]
@@ -58,12 +51,12 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     public IValueLookupParameter<DoubleValue> PersonalBestAttractionParameter {
       get { return (IValueLookupParameter<DoubleValue>)Parameters["PersonalBestAttraction"]; }
     }
-    public IValueLookupParameter<DoubleValue> NeighborsBestAttractionParameter {
-      get { return (IValueLookupParameter<DoubleValue>)Parameters["NeighborsBestAttraction"]; }
+    public IValueLookupParameter<DoubleValue> NeighborBestAttractionParameter {
+      get { return (IValueLookupParameter<DoubleValue>)Parameters["NeighborBestAttraction"]; }
     }
     public IValueLookupParameter<DoubleMatrix> VelocityBoundsParameter {
       get { return (IValueLookupParameter<DoubleMatrix>)Parameters["VelocityBounds"]; }
-    }                                     
+    }
     public IValueLookupParameter<IOperator> ParticleUpdaterParameter {
       get { return (IValueLookupParameter<IOperator>)Parameters["ParticleUpdater"]; }
     }
@@ -73,14 +66,17 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     public IValueLookupParameter<IOperator> InertiaUpdaterParameter {
       get { return (IValueLookupParameter<IOperator>)Parameters["InertiaUpdater"]; }
     }
-    public IValueLookupParameter<VariableCollection> ResultsParameter {
-      get { return (IValueLookupParameter<VariableCollection>)Parameters["Results"]; }
+    public IValueLookupParameter<ResultCollection> ResultsParameter {
+      get { return (IValueLookupParameter<ResultCollection>)Parameters["Results"]; }
     }
     public IValueLookupParameter<IOperator> EvaluatorParameter {
       get { return (IValueLookupParameter<IOperator>)Parameters["Evaluator"]; }
     }
+    public ValueLookupParameter<ISwarmUpdater> SwarmUpdaterParameter {
+      get { return (ValueLookupParameter<ISwarmUpdater>)Parameters["SwarmUpdater"]; }
+    }
     #endregion
-                                                                 
+
     public ParticleSwarmOptimizationMainLoop()
       : base() {
       Initialize();
@@ -101,22 +97,26 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       Parameters.Add(new ValueLookupParameter<IRandom>("Random", "A pseudo random number generator."));
       Parameters.Add(new ValueLookupParameter<IntValue>("SwarmSize", "Size of the particle swarm.", new IntValue(10)));
       Parameters.Add(new ValueLookupParameter<IntValue>("MaxIterations", "Maximal number of iterations.", new IntValue(1000)));
-      
+
       Parameters.Add(new ValueLookupParameter<IOperator>("Analyzer", "The operator used to analyze each generation."));
 
       Parameters.Add(new ValueLookupParameter<DoubleValue>("Inertia", "Inertia weight on a particle's movement (omega)."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("PersonalBestAttraction", "Weight for particle's pull towards its personal best soution (phi_p)."));
-      Parameters.Add(new ValueLookupParameter<DoubleValue>("NeighborsBestAttraction", "Weight for pull towards the neighborhood best solution or global best solution in case of a totally connected topology (phi_g)."));
-     
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("NeighborBestAttraction", "Weight for pull towards the neighborhood best solution or global best solution in case of a totally connected topology (phi_g)."));
+
       Parameters.Add(new ValueLookupParameter<IOperator>("ParticleUpdater", "Operator that calculates new position and velocity of a particle"));
       Parameters.Add(new ValueLookupParameter<IOperator>("TopologyUpdater", "Updates the neighborhood description vectors"));
       Parameters.Add(new ValueLookupParameter<IOperator>("InertiaUpdater", "Updates the omega parameter"));
       Parameters.Add(new ValueLookupParameter<IOperator>("Evaluator", "Evaluates a particle solution."));
 
-      Parameters.Add(new ValueLookupParameter<VariableCollection>("Results", "The variable collection where results should be stored."));
+      Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The variable collection where results should be stored."));
+
+      Parameters.Add(new ValueLookupParameter<ISwarmUpdater>("SwarmUpdater", "The encoding-specific swarm updater."));
       #endregion
 
       #region Create operators
+      ResultsCollector resultsCollector = new ResultsCollector();
+      Placeholder swarmUpdaterPlaceholer1 = new Placeholder();
       Placeholder evaluatorPlaceholder = new Placeholder();
       Placeholder analyzerPlaceholder = new Placeholder();
       UniformSubScopesProcessor uniformSubScopeProcessor = new UniformSubScopesProcessor();
@@ -134,40 +134,49 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       #endregion
 
       #region Create operator graph
-      OperatorGraph.InitialOperator = analyzerPlaceholder;
+      OperatorGraph.InitialOperator = resultsCollector;
+      resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Iterations", null, "CurrentIteration"));
+      //resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Current Inertia", null, "Inertia"));
+      //resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Solutions", null, "EvaluatedSolutions"));
+      resultsCollector.ResultsParameter.ActualName = "Results";
+      resultsCollector.Successor = swarmUpdaterPlaceholer1;
+
+      swarmUpdaterPlaceholer1.Name = "(Swarm Updater)";
+      swarmUpdaterPlaceholer1.OperatorParameter.ActualName = SwarmUpdaterParameter.ActualName;
+      swarmUpdaterPlaceholer1.Successor = analyzerPlaceholder;
 
       analyzerPlaceholder.Name = "(Analyzer)";
-      analyzerPlaceholder.OperatorParameter.ActualName = AnalyzerParameter.Name; 
+      analyzerPlaceholder.OperatorParameter.ActualName = AnalyzerParameter.Name;
       analyzerPlaceholder.Successor = uniformSubScopeProcessor;
 
       uniformSubScopeProcessor.Operator = particleUpdaterPlaceholder;
       uniformSubScopeProcessor.Successor = evaluationProcessor;
 
       particleUpdaterPlaceholder.Name = "(ParticleUpdater)";
-      particleUpdaterPlaceholder.OperatorParameter.ActualName = ParticleUpdaterParameter.Name; 
+      particleUpdaterPlaceholder.OperatorParameter.ActualName = ParticleUpdaterParameter.Name;
 
       evaluationProcessor.Parallel = new BoolValue(true);
       evaluationProcessor.Operator = evaluatorPlaceholder;
       evaluationProcessor.Successor = topologyUpdaterPlaceholder;
 
       evaluatorPlaceholder.Name = "(Evaluator)";
-      evaluatorPlaceholder.OperatorParameter.ActualName = EvaluatorParameter.Name; 
+      evaluatorPlaceholder.OperatorParameter.ActualName = EvaluatorParameter.Name;
 
       topologyUpdaterPlaceholder.Name = "(TopologyUpdater)";
-      topologyUpdaterPlaceholder.OperatorParameter.ActualName = TopologyUpdaterParameter.Name; 
+      topologyUpdaterPlaceholder.OperatorParameter.ActualName = TopologyUpdaterParameter.Name;
       topologyUpdaterPlaceholder.Successor = swarmUpdater;
 
       swarmUpdater.Name = "Swarm Updater";
-      swarmUpdater.OperatorParameter.ActualName = "SwarmUpdater"; 
-      swarmUpdater.Successor = currentIterationCounter;
+      swarmUpdater.OperatorParameter.ActualName = SwarmUpdaterParameter.ActualName;
+      swarmUpdater.Successor = inertiaUpdaterPlaceholder;
+
+      inertiaUpdaterPlaceholder.Name = "(Inertia Updater)";
+      inertiaUpdaterPlaceholder.OperatorParameter.ActualName = InertiaUpdaterParameter.ActualName;
+      inertiaUpdaterPlaceholder.Successor = currentIterationCounter;
 
       currentIterationCounter.Name = "CurrentIteration++";
       currentIterationCounter.ValueParameter.ActualName = "CurrentIteration";
-      currentIterationCounter.Successor = inertiaUpdaterPlaceholder;
-
-      inertiaUpdaterPlaceholder.Name = "(Inertia Updater)";
-      inertiaUpdaterPlaceholder.OperatorParameter.ActualName = InertiaUpdaterParameter.ActualName; 
-      inertiaUpdaterPlaceholder.Successor = currentIterationComparator;
+      currentIterationCounter.Successor = currentIterationComparator;
 
       currentIterationComparator.LeftSideParameter.ActualName = "CurrentIteration";
       currentIterationComparator.Comparison = new Comparison(ComparisonType.Less);

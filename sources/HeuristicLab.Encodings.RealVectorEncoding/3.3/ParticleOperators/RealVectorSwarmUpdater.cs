@@ -24,6 +24,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -42,8 +43,8 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public IScopeTreeLookupParameter<DoubleValue> PersonalBestQualityParameter {
       get { return (IScopeTreeLookupParameter<DoubleValue>)Parameters["PersonalBestQuality"]; }
     }
-    public IScopeTreeLookupParameter<DoubleValue> NeighborsBestQualityParameter {
-      get { return (IScopeTreeLookupParameter<DoubleValue>)Parameters["NeighborsBestQuality"]; }
+    public IScopeTreeLookupParameter<DoubleValue> NeighborBestQualityParameter {
+      get { return (IScopeTreeLookupParameter<DoubleValue>)Parameters["NeighborBestQuality"]; }
     }
     public IScopeTreeLookupParameter<RealVector> RealVectorParameter {
       get { return (IScopeTreeLookupParameter<RealVector>)Parameters["RealVector"]; }
@@ -51,11 +52,11 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public IScopeTreeLookupParameter<RealVector> PersonalBestParameter {
       get { return (IScopeTreeLookupParameter<RealVector>)Parameters["PersonalBest"]; }
     }
-    public IScopeTreeLookupParameter<RealVector> NeighborsBestParameter {
-      get { return (IScopeTreeLookupParameter<RealVector>)Parameters["NeighborsBest"]; }
+    public IScopeTreeLookupParameter<RealVector> NeighborBestParameter {
+      get { return (IScopeTreeLookupParameter<RealVector>)Parameters["NeighborBest"]; }
     }
-    public IValueLookupParameter<BoolValue> MaximizationParameter {
-      get { return (IValueLookupParameter<BoolValue>)Parameters["Maximization"]; }
+    public ILookupParameter<BoolValue> MaximizationParameter {
+      get { return (ILookupParameter<BoolValue>)Parameters["Maximization"]; }
     }
     public ILookupParameter<DoubleValue> BestQualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["BestQuality"]; }
@@ -65,6 +66,12 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
     public IScopeTreeLookupParameter<IntArray> NeighborsParameter {
       get { return (IScopeTreeLookupParameter<IntArray>)Parameters["Neighbors"]; }
+    }
+    public ValueLookupParameter<IDiscreteDoubleMatrixModifier> VelocityBoundsUpdaterParameter {
+      get { return (ValueLookupParameter<IDiscreteDoubleMatrixModifier>)Parameters["VelocityBoundsUpdater"]; }
+    }
+    public LookupParameter<DoubleMatrix> VelocityBoundsParameter {
+      get { return (LookupParameter<DoubleMatrix>)Parameters["VelocityBounds"]; }
     }
     #endregion
 
@@ -81,9 +88,11 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
     private ItemArray<DoubleValue> PersonalBestQuality {
       get { return PersonalBestQualityParameter.ActualValue; }
+      set { PersonalBestQualityParameter.ActualValue = value; }
     }
-    private ItemArray<DoubleValue> NeighborsBestQuality {
-      get { return NeighborsBestQualityParameter.ActualValue; }
+    private ItemArray<DoubleValue> NeighborBestQuality {
+      get { return NeighborBestQualityParameter.ActualValue; }
+      set { NeighborBestQualityParameter.ActualValue = value; }
     }
     private ItemArray<RealVector> RealVector {
       get { return RealVectorParameter.ActualValue; }
@@ -92,15 +101,22 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       get { return PersonalBestParameter.ActualValue; }
       set { PersonalBestParameter.ActualValue = value; }
     }
-    private ItemArray<RealVector> NeighborsBest {
-      get { return NeighborsBestParameter.ActualValue; }
-      set { NeighborsBestParameter.ActualValue = value; }
+    private ItemArray<RealVector> NeighborBest {
+      get { return NeighborBestParameter.ActualValue; }
+      set { NeighborBestParameter.ActualValue = value; }
     }
     private bool Maximization {
       get { return MaximizationParameter.ActualValue.Value; }
     }
     private ItemArray<IntArray> Neighbors {
       get { return NeighborsParameter.ActualValue; }
+    }
+    private IDiscreteDoubleMatrixModifier VelocityBoundsUpdater {
+      get { return VelocityBoundsUpdaterParameter.ActualValue; }
+    }
+    private DoubleMatrix VelocityBounds {
+      get { return VelocityBoundsParameter.ActualValue; }
+      set { VelocityBoundsParameter.ActualValue = value; }
     }
     #endregion
 
@@ -115,12 +131,14 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       Parameters.Add(new LookupParameter<RealVector>("BestPoint", "Global best particle position"));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "Particle's quality"));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("PersonalBestQuality", "Particle's personal best quality"));
-      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("NeighborsBestQuality", "Global best particle quality"));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("NeighborBestQuality", "Global best particle quality"));
       Parameters.Add(new ScopeTreeLookupParameter<RealVector>("RealVector", "Particle's position"));
       Parameters.Add(new ScopeTreeLookupParameter<RealVector>("PersonalBest", "Particle's personal best position"));
-      Parameters.Add(new ScopeTreeLookupParameter<RealVector>("NeighborsBest", "Neighborhood (or global in case of totally connected neighborhood) best particle position"));
+      Parameters.Add(new ScopeTreeLookupParameter<RealVector>("NeighborBest", "Neighborhood (or global in case of totally connected neighborhood) best particle position"));
       Parameters.Add(new ScopeTreeLookupParameter<IntArray>("Neighbors", "The list of neighbors for each particle."));
-      Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, otherwise false."));
+      Parameters.Add(new LookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, otherwise false."));
+      Parameters.Add(new ValueLookupParameter<IDiscreteDoubleMatrixModifier>("VelocityBoundsUpdater", "Modifies the velocity bounds in the course of optimization."));
+      Parameters.Add(new LookupParameter<DoubleMatrix>("VelocityBounds", "Maximum velocity for each dimension."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -131,10 +149,16 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
 
     public override IOperation Apply() {
       InitializeBestPoint();
-      UpdateSwarm();
       UpdateNeighbors();
-      UpdateVelocityBounds();
-      return base.Apply();
+      UpdateSwarm();
+      if (VelocityBoundsUpdater != null) {
+        var ops = new OperationCollection();
+        ops.Add(ExecutionContext.CreateChildOperation(VelocityBoundsUpdater));
+        ops.Add(ExecutionContext.CreateOperation(Successor));
+        return ops;
+      } else {
+        return base.Apply();
+      }
     }
 
     private void InitializeBestPoint() {
@@ -147,65 +171,49 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
 
     private void UpdateNeighbors() {
       if (Neighbors != null & Neighbors.Length > 0) {
-        if (this.NeighborsBest == null || NeighborsBest.Length != Neighbors.Length)
-          NeighborsBest = new ItemArray<RealVector>(Neighbors.Length);
+        if (this.NeighborBest == null || NeighborBest.Length != Neighbors.Length)
+          NeighborBest = new ItemArray<RealVector>(Neighbors.Length);
         for (int n = 0; n < Neighbors.Length; n++) {
           var pairs = Quality.Zip(RealVector, (q, p) => new { Quality = q, Point = p })
             .Where((p, i) => i == n || Neighbors[n].Contains(i));
-          NeighborsBest[n] = Maximization ?
+          NeighborBest[n] = Maximization ?
           pairs.OrderByDescending(p => p.Quality.Value).First().Point :
           pairs.OrderBy(p => p.Quality.Value).First().Point;
         }
-        NeighborsBestParameter.ActualValue = NeighborsBest;
+        NeighborBestParameter.ActualValue = NeighborBest;
       }
-    }
-
-    private void UpdateVelocityBounds() {
-      // ToDo: Add code
     }
 
     private void UpdateSwarm() {
       if (PersonalBestQuality.Length == 0) {
-        ItemArray<DoubleValue> personalBestQualities = new ItemArray<DoubleValue>(RealVector.Length);
-        for (int i = 0; i < RealVector.Length; i++) {
-          if (Maximization) {
-            personalBestQualities[i] = new DoubleValue(double.MinValue);
-          } else {
-            personalBestQualities[i] = new DoubleValue(double.MaxValue);
-          }
-        }
-        PersonalBestQualityParameter.ActualValue = personalBestQualities;
+        PersonalBestQuality = (ItemArray<DoubleValue>)Quality.Clone();
+        if (VelocityBounds == null)
+          VelocityBounds = new DoubleMatrix(new double[,] { { -1, 1 } });
       }
-      if (NeighborsBestQuality.Length == 0) {
-        if (NeighborsParameter != null && Neighbors.Length > 0) {
-          ItemArray<DoubleValue> neighborsBestQualities = new ItemArray<DoubleValue>(RealVector.Length);
-          for (int i = 0; i < RealVector.Length; i++) {
-            if (Maximization) {
-              neighborsBestQualities[i] = new DoubleValue(double.MinValue);
-            } else {
-              neighborsBestQualities[i] = new DoubleValue(double.MaxValue);
-            }
-          }
-          NeighborsBestQualityParameter.ActualValue = neighborsBestQualities;
-        }
-      }
-      ItemArray<RealVector> neighborsBest = new ItemArray<RealVector>(RealVector.Length);
       for (int i = 0; i < RealVector.Length; i++) {
         if (Maximization && Quality[i].Value > PersonalBestQuality[i].Value ||
           !Maximization && Quality[i].Value < PersonalBestQuality[i].Value) {
           PersonalBestQuality[i].Value = Quality[i].Value;
           PersonalBest[i] = RealVector[i];
-          if (Maximization && PersonalBestQuality[i].Value > NeighborsBestQuality[i].Value ||
-             !Maximization && PersonalBestQuality[i].Value < NeighborsBestQuality[i].Value) {
-            NeighborsBestQuality[i].Value = PersonalBestQuality[i].Value;
-            neighborsBest[i] = PersonalBest[i];
-          }
         }
       }
-      if (NeighborsParameter != null && Neighbors.Length > 0) {
-        NeighborsBestParameter.ActualValue = neighborsBest;
+      if (Neighbors.Length > 0) {
+        var neighborBestQuality = NeighborBestQuality;
+        var neighborBest = NeighborBest;
+        if (NeighborBestQuality.Length == 0) {
+          neighborBestQuality = (ItemArray<DoubleValue>)Quality.Clone();
+          neighborBest = (ItemArray<RealVector>)RealVector.Clone();
+        }
+        for (int i = 0; i < RealVector.Length; i++) {
+          if (Maximization && PersonalBestQuality[i].Value > NeighborBestQuality[i].Value ||
+             !Maximization && PersonalBestQuality[i].Value < NeighborBestQuality[i].Value) {
+            neighborBestQuality[i].Value = PersonalBestQuality[i].Value;
+            neighborBest[i] = PersonalBest[i];
+          }
+        }
+        NeighborBestQuality = neighborBestQuality;
+        NeighborBest = neighborBest;
       }
     }
-
   }
 }

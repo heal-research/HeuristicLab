@@ -24,7 +24,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Optimization {
-  public interface IDiscreteDoubleMatrixModifier : IItem {
+  public interface IDiscreteDoubleMatrixModifier : IOperator {
     ILookupParameter<DoubleMatrix> ValueParameter { get; }
     ILookupParameter<DoubleValue> ScaleParameter { get; }
     ConstrainedValueParameter<IDiscreteDoubleValueModifier> ScalingOperatorParameter { get; }

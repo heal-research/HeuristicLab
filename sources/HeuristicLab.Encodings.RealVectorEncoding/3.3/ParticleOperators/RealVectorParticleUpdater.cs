@@ -44,8 +44,11 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public ILookupParameter<RealVector> PersonalBestParameter {
       get { return (ILookupParameter<RealVector>)Parameters["PersonalBest"]; }
     }
-    public ILookupParameter<RealVector> NeighborsBestParameter {
-      get { return (ILookupParameter<RealVector>)Parameters["NeighborsBest"]; }
+    public ILookupParameter<RealVector> NeighborBestParameter {
+      get { return (ILookupParameter<RealVector>)Parameters["NeighborBest"]; }
+    }
+    public LookupParameter<RealVector> BestPointParameter {
+      get { return (LookupParameter<RealVector>)Parameters["BestPoint"]; }
     }
     public ILookupParameter<RealVector> RealVectorParameter {
       get { return (ILookupParameter<RealVector>)Parameters["RealVector"]; }
@@ -62,8 +65,8 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public ILookupParameter<DoubleValue> PersonalBestAttractionParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["PersonalBestAttraction"]; }
     }
-    public ILookupParameter<DoubleValue> NeighborsBestAttractionParameter {
-      get { return (ILookupParameter<DoubleValue>)Parameters["NeighborsBestAttraction"]; }
+    public ILookupParameter<DoubleValue> NeighborBestAttractionParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters["NeighborBestAttraction"]; }
     }
     #endregion
 
@@ -78,12 +81,15 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     protected RealVector PersonalBest {
       get { return PersonalBestParameter.ActualValue; }
     }
+    protected RealVector BestPoint {
+      get { return BestPointParameter.ActualValue; }
+    }
     protected RealVector RealVector {
       get { return RealVectorParameter.ActualValue; }
       set { RealVectorParameter.ActualValue = value; }
     }
-    protected RealVector NeighborsBest {
-      get { return NeighborsBestParameter.ActualValue; }
+    protected RealVector NeighborBest {
+      get { return NeighborBestParameter.ActualValue; }
     }
     protected DoubleMatrix Bounds {
       get { return BoundsParameter.ActualValue; }
@@ -97,8 +103,8 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     protected DoubleValue PersonalBestAttraction {
       get { return PersonalBestAttractionParameter.ActualValue; }
     }
-    protected DoubleValue NeighborsBestAttraction {
-      get { return NeighborsBestAttractionParameter.ActualValue; }
+    protected DoubleValue NeighborBestAttraction {
+      get { return NeighborBestAttractionParameter.ActualValue; }
     }
     #endregion
 
@@ -107,7 +113,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     [StorableConstructor]
     protected RealVectorParticleUpdater(bool deserializing) : base(deserializing) { }
     protected RealVectorParticleUpdater(RealVectorParticleUpdater original, Cloner cloner) : base(original, cloner) { }
-    
+
     public RealVectorParticleUpdater()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "Random number generator."));
@@ -115,12 +121,12 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       Parameters.Add(new LookupParameter<RealVector>("Velocity", "Particle's current velocity."));
       Parameters.Add(new LookupParameter<RealVector>("PersonalBest", "Particle's personal best solution."));
       Parameters.Add(new LookupParameter<RealVector>("BestPoint", "Global best position."));
-      Parameters.Add(new LookupParameter<RealVector>("NeighborsBest", "Best neighboring solution."));
+      Parameters.Add(new LookupParameter<RealVector>("NeighborBest", "Best neighboring solution."));
       Parameters.Add(new LookupParameter<DoubleMatrix>("Bounds", "The lower and upper bounds for each dimension of the position vector for the current problem."));
       Parameters.Add(new LookupParameter<DoubleMatrix>("VelocityBounds", "Upper and lower bounds for the particle's velocity vector."));
       Parameters.Add(new LookupParameter<DoubleValue>("Inertia", "The weight for the particle's velocity vector."));
       Parameters.Add(new LookupParameter<DoubleValue>("PersonalBestAttraction", "The weight for the particle's personal best position."));
-      Parameters.Add(new LookupParameter<DoubleValue>("NeighborsBestAttraction", "The weight for the global best position."));
+      Parameters.Add(new LookupParameter<DoubleValue>("NeighborBestAttraction", "The weight for the global best position."));
     }
 
     #endregion

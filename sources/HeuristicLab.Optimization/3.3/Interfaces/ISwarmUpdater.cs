@@ -25,8 +25,8 @@ using HeuristicLab.Data;
 namespace HeuristicLab.Optimization {
   public interface ISwarmUpdater : IOperator {
     IScopeTreeLookupParameter<DoubleValue> QualityParameter { get; }
-    IScopeTreeLookupParameter<DoubleValue> NeighborsBestQualityParameter { get; }
+    IScopeTreeLookupParameter<DoubleValue> NeighborBestQualityParameter { get; }
     IScopeTreeLookupParameter<DoubleValue> PersonalBestQualityParameter { get; }
-    IValueLookupParameter<BoolValue> MaximizationParameter { get; }
+    ILookupParameter<BoolValue> MaximizationParameter { get; }
   }
 }
