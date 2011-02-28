@@ -125,68 +125,59 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       UniformSubScopesProcessor uniformSubscopesProcessor2 = new UniformSubScopesProcessor();
       UniformSubScopesProcessor evaluationProcessor = new UniformSubScopesProcessor();
       NeighborUpdater neighborUpdater = new NeighborUpdater();
-      ISwarmUpdater swarmUpdater = new RealVectorSwarmUpdater();
+      Placeholder swarmUpdater = new Placeholder();
       IntCounter currentIterationCounter = new IntCounter();
       Comparator currentIterationComparator = new Comparator();
       ConditionalBranch conditionalBranch = new ConditionalBranch();
       Placeholder velocityBoundsUpdaterPlaceholder = new Placeholder();
-      Placeholder omegaUpdaterPlaceholder = new Placeholder();
+      Placeholder inertiaUpdaterPlaceholder = new Placeholder();
       #endregion
 
       #region Create operator graph
-      //OperatorGraph.InitialOperator = analyzerPlaceholder;
+      OperatorGraph.InitialOperator = analyzerPlaceholder;
 
-      //analyzerPlaceholder.Name = "(Analyzer)";
-      //analyzerPlaceholder.OperatorParameter.ActualName = "Analyzer";
-      //analyzerPlaceholder.Successor = uniformSubScopeProcessor;
+      analyzerPlaceholder.Name = "(Analyzer)";
+      analyzerPlaceholder.OperatorParameter.ActualName = AnalyzerParameter.Name; 
+      analyzerPlaceholder.Successor = uniformSubScopeProcessor;
 
-      //uniformSubScopeProcessor.Operator = particleUpdaterPlaceholder;
-      //uniformSubScopeProcessor.Successor = evaluationProcessor;
+      uniformSubScopeProcessor.Operator = particleUpdaterPlaceholder;
+      uniformSubScopeProcessor.Successor = evaluationProcessor;
 
-      //particleUpdaterPlaceholder.Name = "(ParticleUpdater)";
-      //particleUpdaterPlaceholder.OperatorParameter.ActualName = "ParticleUpdater";
+      particleUpdaterPlaceholder.Name = "(ParticleUpdater)";
+      particleUpdaterPlaceholder.OperatorParameter.ActualName = ParticleUpdaterParameter.Name; 
 
-      //evaluationProcessor.Parallel = new BoolValue(true);
-      //evaluationProcessor.Operator = evaluatorPlaceholder;
-      //evaluationProcessor.Successor = topologyUpdaterPlaceholder;
+      evaluationProcessor.Parallel = new BoolValue(true);
+      evaluationProcessor.Operator = evaluatorPlaceholder;
+      evaluationProcessor.Successor = topologyUpdaterPlaceholder;
 
-      //evaluatorPlaceholder.Name = "(Evaluator)";
-      //evaluatorPlaceholder.OperatorParameter.ActualName = "Evaluator";
+      evaluatorPlaceholder.Name = "(Evaluator)";
+      evaluatorPlaceholder.OperatorParameter.ActualName = EvaluatorParameter.Name; 
 
-      //topologyUpdaterPlaceholder.Name = "(TopologyUpdater)";
-      //topologyUpdaterPlaceholder.OperatorParameter.ActualName = "TopologyUpdater";
-      //topologyUpdaterPlaceholder.Successor = neighborUpdater;
+      topologyUpdaterPlaceholder.Name = "(TopologyUpdater)";
+      topologyUpdaterPlaceholder.OperatorParameter.ActualName = TopologyUpdaterParameter.Name; 
+      topologyUpdaterPlaceholder.Successor = swarmUpdater;
 
-      //neighborUpdater.Successor = uniformSubscopesProcessor2;
+      swarmUpdater.Name = "Swarm Updater";
+      swarmUpdater.OperatorParameter.ActualName = "SwarmUpdater"; 
+      swarmUpdater.Successor = currentIterationCounter;
 
-      //uniformSubscopesProcessor2.Operator = swarmUpdater;
-      //uniformSubscopesProcessor2.Successor = analyzerPlaceholder;
+      currentIterationCounter.Name = "CurrentIteration++";
+      currentIterationCounter.ValueParameter.ActualName = "CurrentIteration";
+      currentIterationCounter.Successor = inertiaUpdaterPlaceholder;
 
-      //analyzerPlaceholder.Name = "(Analyzer)";
-      //analyzerPlaceholder.OperatorParameter.ActualName = "Analyzer";
-      //analyzerPlaceholder.Successor = currentIterationCounter;
+      inertiaUpdaterPlaceholder.Name = "(Inertia Updater)";
+      inertiaUpdaterPlaceholder.OperatorParameter.ActualName = InertiaUpdaterParameter.ActualName; 
+      inertiaUpdaterPlaceholder.Successor = currentIterationComparator;
 
-      //currentIterationCounter.Name = "CurrentIteration++";
-      //currentIterationCounter.ValueParameter.ActualName = "CurrentIteration";
-      //currentIterationCounter.Successor = omegaUpdaterPlaceholder;
+      currentIterationComparator.LeftSideParameter.ActualName = "CurrentIteration";
+      currentIterationComparator.Comparison = new Comparison(ComparisonType.Less);
+      currentIterationComparator.RightSideParameter.ActualName = "MaxIterations";
+      currentIterationComparator.ResultParameter.ActualName = "ContinueIteration";
+      currentIterationComparator.Successor = conditionalBranch;
 
-      //omegaUpdaterPlaceholder.Name = "(Inertia Updater)";
-      //omegaUpdaterPlaceholder.OperatorParameter.ActualName = "InertiaUpdater";
-      //omegaUpdaterPlaceholder.Successor = velocityBoundsUpdaterPlaceholder;
-
-      //velocityBoundsUpdaterPlaceholder.Name = "(Velocity Bounds Updater)";
-      //velocityBoundsUpdaterPlaceholder.OperatorParameter.ActualName = "VelocityBoundsUpdater";
-      //velocityBoundsUpdaterPlaceholder.Successor = currentIterationComparator;
-
-      //currentIterationComparator.LeftSideParameter.ActualName = "CurrentIteration";
-      //currentIterationComparator.Comparison = new Comparison(ComparisonType.Less);
-      //currentIterationComparator.RightSideParameter.ActualName = "MaxIterations";
-      //currentIterationComparator.ResultParameter.ActualName = "ContinueIteration";
-      //currentIterationComparator.Successor = conditionalBranch;
-
-      //conditionalBranch.Name = "ContinueIteration?";
-      //conditionalBranch.ConditionParameter.ActualName = "ContinueIteration";
-      //conditionalBranch.TrueBranch = uniformSubScopeProcessor;
+      conditionalBranch.Name = "ContinueIteration?";
+      conditionalBranch.ConditionParameter.ActualName = "ContinueIteration";
+      conditionalBranch.TrueBranch = uniformSubScopeProcessor;
       #endregion
     }
 

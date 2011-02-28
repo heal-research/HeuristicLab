@@ -42,7 +42,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       get { return (ILookupParameter<RealVector>)Parameters["Velocity"]; }
     }
     public ILookupParameter<RealVector> PersonalBestParameter {
-      get { return (ILookupParameter<RealVector>)Parameters["PersonalBestParameter"]; }
+      get { return (ILookupParameter<RealVector>)Parameters["PersonalBest"]; }
     }
     public ILookupParameter<RealVector> NeighborsBestParameter {
       get { return (ILookupParameter<RealVector>)Parameters["NeighborsBest"]; }

@@ -131,15 +131,15 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
 
     public override IOperation Apply() {
       InitializeBestPoint();
+      UpdateSwarm();
       UpdateNeighbors();
       UpdateVelocityBounds();
-      UpdateSwarm();
       return base.Apply();
     }
 
     private void InitializeBestPoint() {
       if (BestQuality == null)
-        BestQualityParameter.ActualValue = new DoubleValue(); 
+        BestQualityParameter.ActualValue = new DoubleValue();
       BestQuality.Value = Maximization ? Quality.Max(v => v.Value) : Quality.Min(v => v.Value);
       int bestIndex = Quality.FindIndex(v => v.Value == BestQuality.Value);
       BestPoint = (RealVector)RealVector[bestIndex].Clone();
@@ -166,28 +166,30 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
 
     private void UpdateSwarm() {
       if (PersonalBestQuality.Length == 0) {
-        PersonalBestQualityParameter.ActualValue = new ItemArray<DoubleValue>(RealVector.Length);
+        ItemArray<DoubleValue> personalBestQualities = new ItemArray<DoubleValue>(RealVector.Length);
         for (int i = 0; i < RealVector.Length; i++) {
           if (Maximization) {
-            PersonalBestQuality[i] = new DoubleValue();
+            personalBestQualities[i] = new DoubleValue(double.MinValue);
           } else {
-            PersonalBestQuality[i] = new DoubleValue(double.MaxValue); 
+            personalBestQualities[i] = new DoubleValue(double.MaxValue);
           }
         }
+        PersonalBestQualityParameter.ActualValue = personalBestQualities;
       }
       if (NeighborsBestQuality.Length == 0) {
-        NeighborsBestQualityParameter.ActualValue = new ItemArray<DoubleValue>(RealVector.Length);
-        for (int i = 0; i < RealVector.Length; i++) {
-          if (Maximization) {
-            NeighborsBestQuality[i] = new DoubleValue();
-          } else {
-            NeighborsBestQuality[i] = new DoubleValue(double.MaxValue);
+        if (NeighborsParameter != null && Neighbors.Length > 0) {
+          ItemArray<DoubleValue> neighborsBestQualities = new ItemArray<DoubleValue>(RealVector.Length);
+          for (int i = 0; i < RealVector.Length; i++) {
+            if (Maximization) {
+              neighborsBestQualities[i] = new DoubleValue(double.MinValue);
+            } else {
+              neighborsBestQualities[i] = new DoubleValue(double.MaxValue);
+            }
           }
+          NeighborsBestQualityParameter.ActualValue = neighborsBestQualities;
         }
       }
-      if (NeighborsBest.Length == 0) {
-        NeighborsBestParameter.ActualValue = new ItemArray<RealVector>(RealVector.Length);
-      }
+      ItemArray<RealVector> neighborsBest = new ItemArray<RealVector>(RealVector.Length);
       for (int i = 0; i < RealVector.Length; i++) {
         if (Maximization && Quality[i].Value > PersonalBestQuality[i].Value ||
           !Maximization && Quality[i].Value < PersonalBestQuality[i].Value) {
@@ -196,9 +198,12 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
           if (Maximization && PersonalBestQuality[i].Value > NeighborsBestQuality[i].Value ||
              !Maximization && PersonalBestQuality[i].Value < NeighborsBestQuality[i].Value) {
             NeighborsBestQuality[i].Value = PersonalBestQuality[i].Value;
-            NeighborsBest[i] = PersonalBest[i];
+            neighborsBest[i] = PersonalBest[i];
           }
         }
+      }
+      if (NeighborsParameter != null && Neighbors.Length > 0) {
+        NeighborsBestParameter.ActualValue = neighborsBest;
       }
     }
 
