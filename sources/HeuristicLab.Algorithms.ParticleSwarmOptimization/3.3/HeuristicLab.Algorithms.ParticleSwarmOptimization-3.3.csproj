@@ -105,7 +105,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BestPointInitializer.cs" />
     <Compile Include="MultiPSOTopologyUpdater.cs" />
     <Compile Include="ParticleSwarmOptimizationMainLoop.cs" />
     <Compile Include="VelocityBoundsModifier.cs" />

@@ -186,7 +186,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
 
       conditionalBranch.Name = "ContinueIteration?";
       conditionalBranch.ConditionParameter.ActualName = "ContinueIteration";
-      conditionalBranch.TrueBranch = uniformSubScopeProcessor;
+      conditionalBranch.TrueBranch = analyzerPlaceholder;
       #endregion
     }
 

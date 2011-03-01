@@ -205,8 +205,8 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
           neighborBest = (ItemArray<RealVector>)RealVector.Clone();
         }
         for (int i = 0; i < RealVector.Length; i++) {
-          if (Maximization && PersonalBestQuality[i].Value > NeighborBestQuality[i].Value ||
-             !Maximization && PersonalBestQuality[i].Value < NeighborBestQuality[i].Value) {
+          if (Maximization && PersonalBestQuality[i].Value > neighborBestQuality[i].Value ||
+             !Maximization && PersonalBestQuality[i].Value < neighborBestQuality[i].Value) {
             neighborBestQuality[i].Value = PersonalBestQuality[i].Value;
             neighborBest[i] = PersonalBest[i];
           }

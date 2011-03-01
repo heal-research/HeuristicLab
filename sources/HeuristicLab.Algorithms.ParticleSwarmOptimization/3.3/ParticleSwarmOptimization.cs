@@ -285,6 +285,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
 
     private void InitializeAnalyzers() {
       qualityAnalyzer = new BestAverageWorstQualityAnalyzer();
+      qualityAnalyzer.ResultsParameter.ActualName = "Results";
       ParameterizeAnalyzers();
     }
 
