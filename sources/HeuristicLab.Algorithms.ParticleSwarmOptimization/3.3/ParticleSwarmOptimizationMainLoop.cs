@@ -32,6 +32,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
   [Item("ParticleSwarmOptimizationMainLoop", "An operator which represents the main loop of a particle swarm optimization algorithm.")]
   [StorableClass]
   public class ParticleSwarmOptimizationMainLoop : AlgorithmOperator {
+
     #region Parameter Properties
     public IValueLookupParameter<IRandom> RandomParameter {
       get { return (IValueLookupParameter<IRandom>)Parameters["Random"]; }
@@ -95,8 +96,8 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     private void Initialize() {
       #region Create parameters
       Parameters.Add(new ValueLookupParameter<IRandom>("Random", "A pseudo random number generator."));
-      Parameters.Add(new ValueLookupParameter<IntValue>("SwarmSize", "Size of the particle swarm.", new IntValue(10)));
-      Parameters.Add(new ValueLookupParameter<IntValue>("MaxIterations", "Maximal number of iterations.", new IntValue(1000)));
+      Parameters.Add(new ValueLookupParameter<IntValue>("SwarmSize", "Size of the particle swarm."));
+      Parameters.Add(new ValueLookupParameter<IntValue>("MaxIterations", "Maximal number of iterations."));
 
       Parameters.Add(new ValueLookupParameter<IOperator>("Analyzer", "The operator used to analyze each generation."));
 

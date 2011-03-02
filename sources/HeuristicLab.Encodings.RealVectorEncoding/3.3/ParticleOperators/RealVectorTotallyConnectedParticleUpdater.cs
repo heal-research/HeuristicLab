@@ -30,38 +30,38 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   public sealed class RealVectorTotallyConnectedParticleUpdater : RealVectorParticleUpdater, IGlobalParticleUpdater {
 
     #region Construction & Cloning
-
     [StorableConstructor]
     private RealVectorTotallyConnectedParticleUpdater(bool deserializing) : base(deserializing) { }
     private RealVectorTotallyConnectedParticleUpdater(RealVectorTotallyConnectedParticleUpdater original, Cloner cloner) : base(original, cloner) { }
     public RealVectorTotallyConnectedParticleUpdater() : base() { }
-
     public override IDeepCloneable Clone(Cloner cloner) {
       return new RealVectorTotallyConnectedParticleUpdater(this, cloner);
     }
-
     #endregion
 
     public override IOperation Apply() {
-      base.Apply();
+      double inertia = Inertia.Value;
+      double personalBestAttraction = PersonalBestAttraction.Value;
+      double neighborBestAttraction = NeighborBestAttraction.Value;
+
       RealVector velocity = new RealVector(Velocity.Length);
       RealVector position = new RealVector(RealVector.Length);
       double r_p = Random.NextDouble();
       double r_g = Random.NextDouble();
-      double omega = Inertia.Value;
-      double phi_p = PersonalBestAttraction.Value;
-      double phi_g = NeighborBestAttraction.Value;
+
       for (int i = 0; i < velocity.Length; i++) {
         velocity[i] =
-          Velocity[i] * omega +
-          (PersonalBest[i] - RealVector[i]) * phi_p * r_p +
-          (BestPoint[i] - RealVector[i]) * phi_g * r_g;
+          Velocity[i] * inertia +
+          (PersonalBest[i] - RealVector[i]) * personalBestAttraction * r_p +
+          (BestPoint[i] - RealVector[i]) * neighborBestAttraction * r_g;
       }
+
       BoundsChecker.Apply(velocity, VelocityBounds);
       for (int i = 0; i < velocity.Length; i++) {
         position[i] = RealVector[i] + velocity[i];
       }
       BoundsChecker.Apply(position, Bounds);
+
       RealVector = position;
       Velocity = velocity;
 

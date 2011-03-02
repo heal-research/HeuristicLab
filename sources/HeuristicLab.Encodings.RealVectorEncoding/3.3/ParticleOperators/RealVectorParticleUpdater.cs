@@ -27,9 +27,11 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
+
   [Item("RealVectorParticleUpdater", "Updates a certain particle taking the current position and velocity into account, as well as the best point and the best point in a local neighborhood.")]
   [StorableClass]
   public abstract class RealVectorParticleUpdater : SingleSuccessorOperator, IRealVectorParticleUpdater {
+
     public override bool CanChangeName {
       get { return false; }
     }
@@ -109,11 +111,9 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     #endregion
 
     #region Construction & Cloning
-
     [StorableConstructor]
     protected RealVectorParticleUpdater(bool deserializing) : base(deserializing) { }
     protected RealVectorParticleUpdater(RealVectorParticleUpdater original, Cloner cloner) : base(original, cloner) { }
-
     public RealVectorParticleUpdater()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "Random number generator."));
@@ -128,7 +128,6 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       Parameters.Add(new LookupParameter<DoubleValue>("PersonalBestAttraction", "The weight for the particle's personal best position."));
       Parameters.Add(new LookupParameter<DoubleValue>("NeighborBestAttraction", "The weight for the global best position."));
     }
-
     #endregion
   }
 }

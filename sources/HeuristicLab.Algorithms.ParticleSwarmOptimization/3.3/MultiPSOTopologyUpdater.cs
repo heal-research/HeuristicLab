@@ -30,9 +30,10 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
-  [Item("Multi PSO Topology Updater", "Splits swarm into swarmsize / (nrOfConnections + 1) non-overlapping sub-swarms. Swarms are re-grouped every regroupingPeriod iteration. The operator is implemented as described in Liang, J.J. and Suganthan, P.N 2005. Dynamic multi-swarm particle swarm optimizer. IEEE Swarm Intelligence Symposium, pp. 124-129.")]
+  [Item("Multi PSO Topology Updater", "Splits swarm into NrOfSwarms non-overlapping sub-swarms. Swarms are re-grouped every regroupingPeriod iteration. The operator is implemented as described in Liang, J.J. and Suganthan, P.N 2005. Dynamic multi-swarm particle swarm optimizer. IEEE Swarm Intelligence Symposium, pp. 124-129.")]
   [StorableClass]
   public sealed class MultiPSOTopologyUpdater : SingleSuccessorOperator, ITopologyUpdater {
+
     public override bool CanChangeName {
       get { return false; }
     }
@@ -41,8 +42,8 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
-    public IValueLookupParameter<IntValue> NrOfConnectionsParameter {
-      get { return (IValueLookupParameter<IntValue>)Parameters["NrOfConnections"]; }
+    public IValueLookupParameter<IntValue> NrOfSwarmsParameter {
+      get { return (IValueLookupParameter<IntValue>)Parameters["NrOfSwarms"]; }
     }
     public ILookupParameter<IntValue> SwarmSizeParameter {
       get { return (ILookupParameter<IntValue>)Parameters["SwarmSize"]; }
@@ -62,8 +63,8 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     private IRandom Random {
       get { return RandomParameter.ActualValue; }
     }
-    private int NrOfConnections {
-      get { return NrOfConnectionsParameter.ActualValue.Value; }
+    private int NrOfSwarms {
+      get { return NrOfSwarmsParameter.ActualValue.Value; }
     }
     private int SwarmSize {
       get { return SwarmSizeParameter.ActualValue.Value; }
@@ -80,66 +81,54 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     }
     #endregion
 
+    #region Construction & Cloning
     [StorableConstructor]
     private MultiPSOTopologyUpdater(bool deserializing) : base(deserializing) { }
     private MultiPSOTopologyUpdater(MultiPSOTopologyUpdater original, Cloner cloner) : base(original, cloner) { }
-    
     public MultiPSOTopologyUpdater()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "A random number generator."));
-      Parameters.Add(new ValueLookupParameter<IntValue>("NrOfConnections", "Nr of connected neighbors.", new IntValue(3)));
+      Parameters.Add(new ValueLookupParameter<IntValue>("NrOfSwarms", "Nr of connected sub-swarms.", new IntValue(3)));
       Parameters.Add(new LookupParameter<IntValue>("SwarmSize", "Number of particles in the swarm."));
       Parameters.Add(new ScopeTreeLookupParameter<IntArray>("Neighbors", "The list of neighbors for each particle."));
       Parameters.Add(new LookupParameter<IntValue>("CurrentIteration", "The current iteration of the algorithm."));
       Parameters.Add(new ValueLookupParameter<IntValue>("RegroupingPeriod", "Update interval (=iterations) for regrouping of neighborhoods.", new IntValue(5)));
     }
-
     public override IDeepCloneable Clone(Cloner cloner) {
       return new MultiPSOTopologyUpdater(this, cloner);
     }
+    #endregion
 
-    // Splits the swarm into non-overlapping sub swarms
     public override IOperation Apply() {
       if (CurrentIteration > 0 && CurrentIteration % RegroupingPeriod == 0) {
         ItemArray<IntArray> neighbors = new ItemArray<IntArray>(SwarmSize);
-        Dictionary<int, List<int>> neighborsPerParticle = new Dictionary<int, List<int>>();
-        for (int i = 0; i < SwarmSize; i++) {
-          neighborsPerParticle.Add(i, new List<int>());
+
+        var particles = Enumerable.Range(0, SwarmSize).ToList();
+        for (int i = SwarmSize-1; i>0; i--) {
+          int j = Random.Next(i+1);
+          int t = particles[j];
+          particles[j] = particles[i];
+          particles[i] = t;
         }
 
-        // partition swarm into groups
-        Dictionary<int, List<int>> groups = new Dictionary<int, List<int>>();
-        int groupId = 0;
-        var numbers = Enumerable.Range(0, SwarmSize).ToList();
-        for (int i = 0; i < SwarmSize; i++) {
-          int nextParticle = numbers[Random.Next(0, numbers.Count)];
-          if (!groups.ContainsKey(groupId)) {
-            groups.Add(groupId, new List<int>());
-          }
-          groups[groupId].Add(nextParticle);
-          if (groups[groupId].Count - 1 == NrOfConnections) {
-            groupId++;
-          }
-          numbers.Remove(nextParticle);
+        for (int partitionNr = 0; partitionNr<NrOfSwarms; partitionNr++) {
+          int start = partitionNr*SwarmSize/NrOfSwarms;
+          int end = (partitionNr+1)*SwarmSize/NrOfSwarms;
+          for (int i = start; i<end; i++)
+            neighbors[particles[i]] = GetSegment(particles, start, end, i);
         }
 
-        // add neighbors to each particle
-        foreach (List<int> group in groups.Values) {
-          foreach (int sib1 in group) {
-            foreach (int sib2 in group) {
-              if (sib1 != sib2 && !neighborsPerParticle[sib1].Contains(sib2)) {
-                neighborsPerParticle[sib1].Add(sib2);
-              }
-            }
-          }
-        }
-
-        for (int particle = 0; particle < neighborsPerParticle.Count; particle++) {
-          neighbors[particle] = new IntArray(neighborsPerParticle[particle].ToArray());
-        }
         Neighbors = neighbors;
       }
       return base.Apply();
+    }
+
+    public static IntArray GetSegment(IEnumerable<int> list, int start, int end, int excludedIndex) {
+      return new IntArray(list
+        .Skip(start)
+        .Take(end-start)
+        .Where((p, j) => start+j != excludedIndex)
+        .ToArray());
     }
   }
 }
