@@ -18,7 +18,8 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile></TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -108,6 +109,7 @@
     <Compile Include="ConditionalSelector.cs" />
     <Compile Include="CrowdedTournamentSelector.cs" />
     <Compile Include="LeftSelector.cs" />
+    <Compile Include="NoSameMatesSelector.cs" />
     <Compile Include="RandomReplacer.cs" />
     <Compile Include="GenderSpecificSelector.cs" />
     <Compile Include="OffspringSelector.cs" />
