@@ -507,10 +507,13 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
         foreach (string assemblyLocation in desc.AssemblyLocations) {
           if (desc.PluginState != PluginState.Disabled) {
             try {
+              string assemblyName = (from assembly in AppDomain.CurrentDomain.ReflectionOnlyGetAssemblies()
+                                     where string.Equals(Path.GetFullPath(assembly.Location), Path.GetFullPath(assemblyLocation), StringComparison.CurrentCultureIgnoreCase)
+                                     select assembly.FullName).Single();
               // now load the assemblies into the execution context  
               // this can still lead to an exception
-              // even when the assembly was successfully loaded into the reflection only context before 
-              var asm = Assembly.LoadFrom(assemblyLocation);
+              // even when the assemby was successfully loaded into the reflection only context before 
+              var asm = Assembly.Load(assemblyName);
             }
             catch (BadImageFormatException) {
               desc.Disable(Path.GetFileName(assemblyLocation) + " is not a valid assembly.");
@@ -523,6 +526,10 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
             }
             catch (SecurityException) {
               desc.Disable("File " + Path.GetFileName(assemblyLocation) + " can't be loaded because of security constraints.");
+            }
+            catch (NotSupportedException ex) {
+              // disable the plugin
+              desc.Disable("Problem while loading plugin assemblies:" + Environment.NewLine + "NotSupportedException: " + ex.Message);
             }
           }
         }
