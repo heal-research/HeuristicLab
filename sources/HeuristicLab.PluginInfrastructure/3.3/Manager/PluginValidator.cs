@@ -116,13 +116,19 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       // check for dependency cycles
       CheckPluginDependencyCycles(pluginDescriptions);
 
-      // recursively check if all necessary plugins are available and not disabled
-      // disable plugins with missing or disabled dependencies
+      // 1st time recursively check if all necessary plugins are available and not disabled
+      // disable plugins with missing or disabled dependencies 
+      // to prevent that plugins with missing dependencies are loaded into the execution context
+      // in the next step
       CheckPluginDependencies(pluginDescriptions);
 
       // test full loading (in contrast to reflection only loading) of plugins
       // disables plugins that are not loaded correctly
       CheckExecutionContextLoad(pluginDescriptions);
+
+      // 2nd time recursively check if all necessary plugins have been loaded successfully and not disabled
+      // disable plugins with for which dependencies could not be loaded successfully
+      CheckPluginDependencies(pluginDescriptions);
 
       // mark all plugins as enabled that were not disabled in CheckPluginFiles, CheckPluginAssemblies, 
       // CheckCircularDependencies, CheckPluginDependencies and CheckExecutionContextLoad
@@ -499,23 +505,25 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       foreach (var desc in PluginDescriptionIterator.IterateDependenciesBottomUp(pluginDescriptions
                                                                                 .Where(x => x.PluginState != PluginState.Disabled))) {
         foreach (string assemblyLocation in desc.AssemblyLocations) {
-          try {
-            // now load the assemblies into the execution context  
-            // this can still lead to an exception
-            // even when the assembly was successfully loaded into the reflection only context before 
-            var asm = Assembly.LoadFrom(assemblyLocation);
-          }
-          catch (BadImageFormatException) {
-            desc.Disable(Path.GetFileName(assemblyLocation) + " is not a valid assembly.");
-          }
-          catch (FileLoadException) {
-            desc.Disable("Can't load file " + Path.GetFileName(assemblyLocation));
-          }
-          catch (FileNotFoundException) {
-            desc.Disable("File " + Path.GetFileName(assemblyLocation) + " is missing.");
-          }
-          catch (SecurityException) {
-            desc.Disable("File " + Path.GetFileName(assemblyLocation) + " can't be loaded because of security constraints.");
+          if (desc.PluginState != PluginState.Disabled) {
+            try {
+              // now load the assemblies into the execution context  
+              // this can still lead to an exception
+              // even when the assembly was successfully loaded into the reflection only context before 
+              var asm = Assembly.LoadFrom(assemblyLocation);
+            }
+            catch (BadImageFormatException) {
+              desc.Disable(Path.GetFileName(assemblyLocation) + " is not a valid assembly.");
+            }
+            catch (FileLoadException) {
+              desc.Disable("Can't load file " + Path.GetFileName(assemblyLocation));
+            }
+            catch (FileNotFoundException) {
+              desc.Disable("File " + Path.GetFileName(assemblyLocation) + " is missing.");
+            }
+            catch (SecurityException) {
+              desc.Disable("File " + Path.GetFileName(assemblyLocation) + " can't be loaded because of security constraints.");
+            }
           }
         }
       }
@@ -532,8 +540,8 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
           // cannot use ApplicationManager to retrieve types because it is not yet instantiated
           foreach (string assemblyLocation in desc.AssemblyLocations) {
             var asm = (from assembly in assemblies
-                      where string.Equals(Path.GetFullPath(assembly.Location), Path.GetFullPath(assemblyLocation), StringComparison.CurrentCultureIgnoreCase)
-                      select assembly)
+                       where string.Equals(Path.GetFullPath(assembly.Location), Path.GetFullPath(assemblyLocation), StringComparison.CurrentCultureIgnoreCase)
+                       select assembly)
                       .Single();
 
             foreach (Type pluginType in asm.GetTypes()) {
