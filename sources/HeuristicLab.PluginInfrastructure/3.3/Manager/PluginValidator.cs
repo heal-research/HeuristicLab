@@ -140,18 +140,17 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       LoadPlugins(pluginDescriptions);
 
       plugins = pluginDescriptions;
-      DiscoverApplications();
+      DiscoverApplications(pluginDescriptions);
     }
 
-    private void DiscoverApplications() {
+    private void DiscoverApplications(IEnumerable<PluginDescription> pluginDescriptions) {
       applications = new List<ApplicationDescription>();
-
-      foreach (IApplication application in GetApplications()) {
+      foreach (IApplication application in GetApplications(pluginDescriptions)) {
         Type appType = application.GetType();
         ApplicationAttribute attr = (from x in appType.GetCustomAttributes(typeof(ApplicationAttribute), false)
                                      select (ApplicationAttribute)x).Single();
-        var declaringPlugin = GetDeclaringPlugin(appType, plugins);
         ApplicationDescription info = new ApplicationDescription();
+        PluginDescription declaringPlugin = GetDeclaringPlugin(appType, pluginDescriptions);
         info.Name = application.Name;
         info.Version = declaringPlugin.Version;
         info.Description = application.Description;
@@ -163,11 +162,12 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       }
     }
 
-    private static IEnumerable<IApplication> GetApplications() {
+    private static IEnumerable<IApplication> GetApplications(IEnumerable<PluginDescription> pluginDescriptions) {
       return from asm in AppDomain.CurrentDomain.GetAssemblies()
              from t in asm.GetTypes()
              where typeof(IApplication).IsAssignableFrom(t) &&
                !t.IsAbstract && !t.IsInterface && !t.HasElementType
+             where GetDeclaringPlugin(t, pluginDescriptions).PluginState != PluginState.Disabled
              select (IApplication)Activator.CreateInstance(t);
     }
 
@@ -596,7 +596,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       return Path.GetFullPath(fileName).StartsWith(basePath);
     }
 
-    private PluginDescription GetDeclaringPlugin(Type appType, IEnumerable<PluginDescription> plugins) {
+    private static PluginDescription GetDeclaringPlugin(Type appType, IEnumerable<PluginDescription> plugins) {
       return (from p in plugins
               from asmLocation in p.AssemblyLocations
               where Path.GetFullPath(asmLocation).Equals(Path.GetFullPath(appType.Assembly.Location), StringComparison.CurrentCultureIgnoreCase)
