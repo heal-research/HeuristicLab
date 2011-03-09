@@ -62,7 +62,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       get { return (ILookupParameter<DoubleMatrix>)Parameters["VelocityBounds"]; }
     }
     public ILookupParameter<DoubleValue> InertiaParameter {
-      get { return (ILookupParameter<DoubleValue>)Parameters["Inertia"]; }
+      get { return (ILookupParameter<DoubleValue>)Parameters["CurrentInertia"]; }
     }
     public ILookupParameter<DoubleValue> PersonalBestAttractionParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["PersonalBestAttraction"]; }
@@ -124,7 +124,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       Parameters.Add(new LookupParameter<RealVector>("NeighborBest", "Best neighboring solution."));
       Parameters.Add(new LookupParameter<DoubleMatrix>("Bounds", "The lower and upper bounds for each dimension of the position vector for the current problem."));
       Parameters.Add(new LookupParameter<DoubleMatrix>("VelocityBounds", "Upper and lower bounds for the particle's velocity vector."));
-      Parameters.Add(new LookupParameter<DoubleValue>("Inertia", "The weight for the particle's velocity vector."));
+      Parameters.Add(new LookupParameter<DoubleValue>("CurrentInertia", "The weight for the particle's velocity vector."));
       Parameters.Add(new LookupParameter<DoubleValue>("PersonalBestAttraction", "The weight for the particle's personal best position."));
       Parameters.Add(new LookupParameter<DoubleValue>("NeighborBestAttraction", "The weight for the global best position."));
     }

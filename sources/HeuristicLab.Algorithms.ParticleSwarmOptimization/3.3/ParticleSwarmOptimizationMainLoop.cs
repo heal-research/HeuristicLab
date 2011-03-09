@@ -47,7 +47,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       get { return (IValueLookupParameter<IOperator>)Parameters["Analyzer"]; }
     }
     public IValueLookupParameter<DoubleValue> InertiaParameter {
-      get { return (IValueLookupParameter<DoubleValue>)Parameters["Inertia"]; }
+      get { return (IValueLookupParameter<DoubleValue>)Parameters["CurrentInertia"]; }
     }
     public IValueLookupParameter<DoubleValue> PersonalBestAttractionParameter {
       get { return (IValueLookupParameter<DoubleValue>)Parameters["PersonalBestAttraction"]; }
@@ -104,7 +104,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
 
       Parameters.Add(new ValueLookupParameter<IOperator>("Analyzer", "The operator used to analyze each generation."));
 
-      Parameters.Add(new ValueLookupParameter<DoubleValue>("Inertia", "Inertia weight on a particle's movement (omega)."));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("CurrentInertia", "Inertia weight on a particle's movement (omega)."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("PersonalBestAttraction", "Weight for particle's pull towards its personal best soution (phi_p)."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("NeighborBestAttraction", "Weight for pull towards the neighborhood best solution or global best solution in case of a totally connected topology (phi_g)."));
 
@@ -140,8 +140,8 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
 
       #region Create operator graph
       OperatorGraph.InitialOperator = resultsCollector;
-      resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Iterations", null, "CurrentIteration"));
-      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Inertia", null, "CurrentInertia"));
+      resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Iterations"));
+      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("CurrentInertia"));
       resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Solutions", null, "EvaluatedSolutions"));
       resultsCollector.ResultsParameter.ActualName = "Results";
       resultsCollector.Successor = swarmUpdaterPlaceholer1;
@@ -169,7 +169,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
 
       subScopesCounter.Name = "Increment EvaluatedSolutions";
       subScopesCounter.ValueParameter.ActualName = EvaluatedSolutionsParameter.Name;
-      subScopesCounter.Successor = topologyUpdaterPlaceholder; 
+      subScopesCounter.Successor = topologyUpdaterPlaceholder;
 
       topologyUpdaterPlaceholder.Name = "(TopologyUpdater)";
       topologyUpdaterPlaceholder.OperatorParameter.ActualName = TopologyUpdaterParameter.Name;
