@@ -18,6 +18,7 @@ namespace HeuristicLab.Selection {
     private const string SelectorParameterName = "Selector";
     private const string QualityDifferencePercentageParameterName = "QualityDifferencePercentage";
     private const string QualityDifferenceMaxAttemptsParameterName = "QualityDifferenceMaxAttempts";
+    private const string QualityDifferenceUseRangeParameterName = "QualityDifferenceUseRange";
 
     #region Parameters
     public IValueParameter<ISelector> SelectorParameter {
@@ -28,6 +29,9 @@ namespace HeuristicLab.Selection {
     }
     public IValueParameter<IntValue> QualityDifferenceMaxAttemptsParameter {
       get { return (IValueParameter<IntValue>)Parameters[QualityDifferenceMaxAttemptsParameterName]; }
+    }
+    public IValueParameter<BoolValue> QualityDifferenceUseRangeParameter {
+      get { return (IValueParameter<BoolValue>)Parameters[QualityDifferenceUseRangeParameterName]; }
     }
     #endregion
 
@@ -45,6 +49,9 @@ namespace HeuristicLab.Selection {
     public IntValue QualityDifferenceMaxAttempts {
       get { return QualityDifferenceMaxAttemptsParameter.Value; }
     }
+    public BoolValue QualityDifferenceUseRange {
+      get { return QualityDifferenceUseRangeParameter.Value; }
+    }
     #endregion
 
     [StorableConstructor]
@@ -59,6 +66,7 @@ namespace HeuristicLab.Selection {
       Parameters.Add(new ValueParameter<ISelector>(SelectorParameterName, "The inner selection operator to select the parents."));
       Parameters.Add(new ValueParameter<PercentValue>(QualityDifferencePercentageParameterName, "The minimum quality difference from parent1 to parent2 to accept the selection.", new PercentValue(0.05)));
       Parameters.Add(new ValueParameter<IntValue>(QualityDifferenceMaxAttemptsParameterName, "The maximum number of attempts to find parents which differ in quality.", new IntValue(5)));
+      Parameters.Add(new ValueParameter<BoolValue>(QualityDifferenceUseRangeParameterName, "Use the range from minimum to maximum quality as basis for QualityDifferencePercentage.", new BoolValue(false)));
       #endregion
 
       Initialize();
@@ -66,38 +74,68 @@ namespace HeuristicLab.Selection {
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      if (!Parameters.ContainsKey(QualityDifferenceUseRangeParameterName))
+        Parameters.Add(new ValueParameter<BoolValue>(QualityDifferenceUseRangeParameterName, "Use the range from minimum to maximum quality as basis for QualityDifferencePercentage.", new BoolValue(false)));
       Initialize();
     }
 
     protected override IScope[] Select(List<IScope> scopes) {
       int count = NumberOfSelectedSubScopes.Value;
       if (count % 2 > 0) throw new InvalidOperationException(Name + ": There must be an equal number of sub-scopes to be selected.");
+      int limit = count - 1;
       IScope[] selected = new IScope[count];
 
       double qualityDifferencePercentage = QualityDifferencePercentage.Value;
       int qualityDifferenceMaxAttempts = QualityDifferenceMaxAttempts.Value;
-    
+      bool qualityDifferenceUseRange = QualityDifferenceUseRange.Value;
+      string qualityName = QualityParameter.ActualName;
+      
+      // get minimum and maximum quality, calculate quality offsets
+      double minQualityOffset = 0;
+      double maxQualityOffset = 0;
+      if (qualityDifferenceUseRange) {
+        ItemArray<DoubleValue> qualities = QualityParameter.ActualValue;
+        double minQuality = double.MaxValue, maxQuality = double.MinValue;
+        for (int l = 0; l < qualities.Length; l++) {
+          if (qualities[l].Value < minQuality) minQuality = qualities[l].Value;
+          if (qualities[l].Value > maxQuality) maxQuality = qualities[l].Value;
+        } // maximization flag is not needed because only the range is relevant
+        minQualityOffset = (maxQuality - minQuality) * qualityDifferencePercentage;
+      } else {
+        maxQualityOffset = 1.0 + qualityDifferencePercentage;
+        minQualityOffset = 1.0 - qualityDifferencePercentage;
+      }
+
+      ScopeList parents, remaining;
+      double qualityParent1, qualityParent2;
+      bool parentsDifferent;
       int attempts = 1;
-      int j = 0;
-      while (j < count - 1) { // repeat until enough parents are selected
+      int i, j, k = 0;
+      while (k < limit) { // repeat until enough parents are selected
         ApplyInnerSelector();
-        ScopeList parents = CurrentScope.SubScopes[1].SubScopes;
+        parents = CurrentScope.SubScopes[1].SubScopes;
 
-        for (int i = 0; j < count - 1 && i < parents.Count / 2; i++) {
-          double qualityParent1 = ((DoubleValue)parents[i * 2].Variables[QualityParameter.ActualName].Value).Value;
-          double qualityParent2 = ((DoubleValue)parents[i * 2 + 1].Variables[QualityParameter.ActualName].Value).Value;
+        for (i = 0; k < limit && i < parents.Count - 1; i += 2) {
+          j = i + 1;
+          qualityParent1 = ((DoubleValue)parents[i].Variables[qualityName].Value).Value;
+          qualityParent2 = ((DoubleValue)parents[j].Variables[qualityName].Value).Value;
 
-          bool parentsDifferent = (qualityParent2 > qualityParent1 * (1.0 + qualityDifferencePercentage) ||
-                                   qualityParent2 < qualityParent1 * (1.0 - qualityDifferencePercentage));
+          if (qualityDifferenceUseRange) {
+            parentsDifferent = (qualityParent2 > qualityParent1 - minQualityOffset ||
+                                qualityParent2 < qualityParent1 + minQualityOffset);
+          } else {
+            parentsDifferent = (qualityParent2 > qualityParent1 * maxQualityOffset ||
+                                qualityParent2 < qualityParent1 * minQualityOffset);
+          }
+
           // parents meet difference criterion or max attempts reached
           if (attempts >= qualityDifferenceMaxAttempts || parentsDifferent) {
-      
             // inner selector already copied scopes
-            selected[j++] = parents[i * 2];
-            selected[j++] = parents[i * 2 + 1];
+            selected[k++] = parents[i];
+            selected[k++] = parents[j];
             if (!CopySelected.Value) {
-              scopes.Remove(parents[i * 2]);
-              scopes.Remove(parents[i * 2 + 1]);
+              scopes.Remove(parents[i]);
+              scopes.Remove(parents[j]);
             }
             attempts = 1;
           } else { // skip parents
@@ -105,7 +143,7 @@ namespace HeuristicLab.Selection {
           }
         }
         // modify scopes
-        ScopeList remaining = CurrentScope.SubScopes[0].SubScopes;
+        remaining = CurrentScope.SubScopes[0].SubScopes;
         CurrentScope.SubScopes.Clear();
         CurrentScope.SubScopes.AddRange(remaining);
       }
