@@ -49,8 +49,8 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public ILookupParameter<RealVector> NeighborBestParameter {
       get { return (ILookupParameter<RealVector>)Parameters["NeighborBest"]; }
     }
-    public LookupParameter<RealVector> BestPointParameter {
-      get { return (LookupParameter<RealVector>)Parameters["BestPoint"]; }
+    public LookupParameter<RealVector> BestRealVectorParameter {
+      get { return (LookupParameter<RealVector>)Parameters["BestRealVector"]; }
     }
     public ILookupParameter<RealVector> RealVectorParameter {
       get { return (ILookupParameter<RealVector>)Parameters["RealVector"]; }
@@ -84,7 +84,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       get { return PersonalBestParameter.ActualValue; }
     }
     protected RealVector BestPoint {
-      get { return BestPointParameter.ActualValue; }
+      get { return BestRealVectorParameter.ActualValue; }
     }
     protected RealVector RealVector {
       get { return RealVectorParameter.ActualValue; }
@@ -120,7 +120,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       Parameters.Add(new LookupParameter<RealVector>("RealVector", "Particle's current solution"));
       Parameters.Add(new LookupParameter<RealVector>("Velocity", "Particle's current velocity."));
       Parameters.Add(new LookupParameter<RealVector>("PersonalBest", "Particle's personal best solution."));
-      Parameters.Add(new LookupParameter<RealVector>("BestPoint", "Global best position."));
+      Parameters.Add(new LookupParameter<RealVector>("BestRealVector", "Global best position."));
       Parameters.Add(new LookupParameter<RealVector>("NeighborBest", "Best neighboring solution."));
       Parameters.Add(new LookupParameter<DoubleMatrix>("Bounds", "The lower and upper bounds for each dimension of the position vector for the current problem."));
       Parameters.Add(new LookupParameter<DoubleMatrix>("VelocityBounds", "Upper and lower bounds for the particle's velocity vector."));

@@ -111,7 +111,6 @@
     <Compile Include="RandomTopologyInitializer.cs" />
     <Compile Include="VonNeumannTopologyInitializer.cs" />
     <Compile Include="RingTopologyInitializer.cs" />
-    <Compile Include="NeighborUpdater.cs" />
     <Compile Include="TopologyInitializer.cs" />
     <Compile Include="HeuristicLabAlgorithmsParticleSwarmOptimizationPlugin.cs" />
     <Compile Include="ParticleSwarmOptimization.cs" />
@@ -159,14 +158,6 @@
     <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
       <Project>{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}</Project>
       <Name>HeuristicLab.Data-3.3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Encodings.IntegerVectorEncoding\3.3\HeuristicLab.Encodings.IntegerVectorEncoding-3.3.csproj">
-      <Project>{DDFB14DD-2A85-493C-A52D-E69729BBAEB0}</Project>
-      <Name>HeuristicLab.Encodings.IntegerVectorEncoding-3.3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Encodings.RealVectorEncoding\3.3\HeuristicLab.Encodings.RealVectorEncoding-3.3.csproj">
-      <Project>{BB6D334A-4BB6-4674-9883-31A6EBB32CAB}</Project>
-      <Name>HeuristicLab.Encodings.RealVectorEncoding-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
       <Project>{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}</Project>

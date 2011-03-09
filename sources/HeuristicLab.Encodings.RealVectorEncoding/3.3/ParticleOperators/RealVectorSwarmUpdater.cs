@@ -62,8 +62,8 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public ILookupParameter<DoubleValue> BestQualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["BestQuality"]; }
     }
-    public ILookupParameter<RealVector> BestPointParameter {
-      get { return (ILookupParameter<RealVector>)Parameters["BestPoint"]; }
+    public ILookupParameter<RealVector> BestRealVectorParameter {
+      get { return (ILookupParameter<RealVector>)Parameters["BestRealVector"]; }
     }
     public IScopeTreeLookupParameter<IntArray> NeighborsParameter {
       get { return (IScopeTreeLookupParameter<IntArray>)Parameters["Neighbors"]; }
@@ -81,9 +81,9 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       get { return BestQualityParameter.ActualValue; }
       set { BestQualityParameter.ActualValue = value; }
     }
-    private RealVector BestPoint {
-      get { return BestPointParameter.ActualValue; }
-      set { BestPointParameter.ActualValue = value; }
+    private RealVector BestRealVector {
+      get { return BestRealVectorParameter.ActualValue; }
+      set { BestRealVectorParameter.ActualValue = value; }
     }
     private ItemArray<DoubleValue> Quality {
       get { return QualityParameter.ActualValue; }
@@ -130,7 +130,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public RealVectorSwarmUpdater()
       : base() {
       Parameters.Add(new LookupParameter<DoubleValue>("BestQuality", "Overall best quality."));
-      Parameters.Add(new LookupParameter<RealVector>("BestPoint", "Global best particle position"));
+      Parameters.Add(new LookupParameter<RealVector>("BestRealVector", "Global best particle position"));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "Particle's quality"));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("PersonalBestQuality", "Particle's personal best quality"));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("NeighborBestQuality", "Global best particle quality"));
@@ -160,7 +160,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       if (BestQuality == null)
         BestQuality = new DoubleValue();
       BestQuality.Value = Maximization ? Quality.Max(v => v.Value) : Quality.Min(v => v.Value);
-      BestPoint = (RealVector)RealVector[Quality.FindIndex(v => v.Value == BestQuality.Value)].Clone();
+      BestRealVector = (RealVector)RealVector[Quality.FindIndex(v => v.Value == BestQuality.Value)].Clone();
     }
 
     private void UpdateNeighborBest() {

@@ -166,6 +166,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       RandomCreator randomCreator = new RandomCreator();
       VariableCreator variableCreator = new VariableCreator();
       solutionsCreator = new SolutionsCreator();
+      SubScopesCounter subScopesCounter = new SubScopesCounter();
       Placeholder topologyInitializerPlaceholder = new Placeholder();
       Placeholder analyzerPlaceholder = new Placeholder();
       mainLoop = new ParticleSwarmOptimizationMainLoop();
@@ -177,11 +178,16 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       randomCreator.Successor = variableCreator;
 
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("CurrentIteration", new IntValue(0)));
+      variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("CurrentVelocityBounds", new DoubleValue(0)));
       variableCreator.Successor = solutionsCreator;
 
       solutionsCreator.NumberOfSolutionsParameter.ActualName = "SwarmSize";
       ParameterizeSolutionsCreator();
-      solutionsCreator.Successor = topologyInitializerPlaceholder;
+      solutionsCreator.Successor = subScopesCounter;
+
+      subScopesCounter.Name = "Initialize EvaluatedSolutions";
+      subScopesCounter.ValueParameter.ActualName = "EvaluatedSolutions";
+      subScopesCounter.Successor = topologyInitializerPlaceholder;
 
       topologyInitializerPlaceholder.Name = "(TopologyInitializer)";
       topologyInitializerPlaceholder.OperatorParameter.ActualName = "TopologyInitializer";
@@ -199,10 +205,8 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       mainLoop.TopologyUpdaterParameter.ActualName = TopologyUpdaterParameter.Name;
       mainLoop.RandomParameter.ActualName = randomCreator.RandomParameter.ActualName;
       mainLoop.ResultsParameter.ActualName = "Results";
-      // mainLoop.EvaluatedMovesParameter.ActualName = "EvaluatedMoves";
 
       InitializeAnalyzers();
-      ////InitVelocityBoundsUpdater();
       InitializeParticleCreator();
       InitializeSwarmUpdater();
       ParameterizeSolutionsCreator();
@@ -226,16 +230,15 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     public override void Prepare() {
       if (Problem != null && ParticleCreator != null && ParticleUpdater != null) {
         base.Prepare();
-        if (InertiaUpdater != null && InertiaUpdater.StartValueParameter.Value != null) {
-          this.InertiaParameter.ActualValue = new DoubleValue(InertiaUpdaterParameter.Value.StartValueParameter.Value.Value);
+        VariableCreator creator = (VariableCreator)((RandomCreator)OperatorGraph.InitialOperator).Successor;
+        ValueParameter<DoubleValue> currentInertia = null; 
+        if (creator.CollectedValues.ContainsKey("CurrentInertia")) {
+          currentInertia = (ValueParameter<DoubleValue>) creator.CollectedValues["CurrentInertia"]; 
+        } else {
+          currentInertia = new ValueParameter<DoubleValue>("CurrentInertia");
+          creator.CollectedValues.Add(currentInertia); 
         }
-        //if (VelocityBoundsUpdater != null && VelocityBoundsUpdater.StartValueParameter.Value != null && VelocityBoundsParameter.Value != null) {
-        //  DoubleMatrix matrix = VelocityBoundsParameter.Value;
-        //  for (int i = 0; i < matrix.Rows; i++) {
-        //    matrix[i, 0] = -VelocityBoundsUpdater.StartValueParameter.Value.Value;
-        //    matrix[i, 1] = VelocityBoundsUpdater.StartValueParameter.Value.Value;
-        //  }
-        //}
+        currentInertia.ActualValue = InertiaParameter.ActualValue; 
       }
     }
 
@@ -306,24 +309,12 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       Analyzer.Operators.Add(qualityAnalyzer);
     }
 
-    //private void InitVelocityBoundsUpdater() {
-    //  foreach (IDiscreteDoubleMatrixModifier matrixOp in ApplicationManager.Manager.GetInstances<IDiscreteDoubleMatrixModifier>()) {
-    //    VelocityBoundsUpdaterParameter.ValidValues.Add(matrixOp);
-    //    matrixOp.ValueParameter.ActualName = VelocityBoundsParameter.Name;
-    //    matrixOp.EndIndexParameter.ActualName = MaxIterationsParameter.Name;
-    //    matrixOp.StartIndexParameter.Value = new IntValue(0);
-    //    matrixOp.IndexParameter.ActualName = "CurrentIteration";
-    //    matrixOp.EndValueParameter.Value = new DoubleValue(0);
-    //  }
-    //  VelocityBoundsUpdaterParameter.ValueChanged += new EventHandler(VelocityBoundsUpdaterParameter_ValueChanged);
-    //}
-
     private void InitInertiaUpdater() {
       foreach (IDiscreteDoubleValueModifier updater in InertiaUpdaterParameter.ValidValues) {
         updater.EndIndexParameter.ActualName = MaxIterationsParameter.Name;
         updater.StartIndexParameter.Value = new IntValue(0);
         updater.IndexParameter.ActualName = "CurrentIteration";
-        updater.ValueParameter.ActualName = InertiaParameter.Name;
+        updater.ValueParameter.ActualName = "CurrentInertia"; 
         updater.StartValueParameter.Value = new DoubleValue(1);
         updater.EndValueParameter.Value = new DoubleValue(0);
       }

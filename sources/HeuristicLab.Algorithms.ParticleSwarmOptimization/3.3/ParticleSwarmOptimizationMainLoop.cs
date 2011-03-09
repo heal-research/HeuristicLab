@@ -70,6 +70,9 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     public IValueLookupParameter<ResultCollection> ResultsParameter {
       get { return (IValueLookupParameter<ResultCollection>)Parameters["Results"]; }
     }
+    public LookupParameter<IntValue> EvaluatedSolutionsParameter {
+      get { return (LookupParameter<IntValue>)Parameters["EvaluatedSolutions"]; }
+    }
     public IValueLookupParameter<IOperator> EvaluatorParameter {
       get { return (IValueLookupParameter<IOperator>)Parameters["Evaluator"]; }
     }
@@ -111,6 +114,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       Parameters.Add(new ValueLookupParameter<IOperator>("Evaluator", "Evaluates a particle solution."));
 
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The variable collection where results should be stored."));
+      Parameters.Add(new LookupParameter<IntValue>("EvaluatedSolutions", "The number of times solutions have been evaluated."));
 
       Parameters.Add(new ValueLookupParameter<ISwarmUpdater>("SwarmUpdater", "The encoding-specific swarm updater."));
       #endregion
@@ -125,20 +129,20 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       Placeholder topologyUpdaterPlaceholder = new Placeholder();
       UniformSubScopesProcessor uniformSubscopesProcessor2 = new UniformSubScopesProcessor();
       UniformSubScopesProcessor evaluationProcessor = new UniformSubScopesProcessor();
-      NeighborUpdater neighborUpdater = new NeighborUpdater();
       Placeholder swarmUpdater = new Placeholder();
       IntCounter currentIterationCounter = new IntCounter();
       Comparator currentIterationComparator = new Comparator();
       ConditionalBranch conditionalBranch = new ConditionalBranch();
       Placeholder velocityBoundsUpdaterPlaceholder = new Placeholder();
       Placeholder inertiaUpdaterPlaceholder = new Placeholder();
+      SubScopesCounter subScopesCounter = new SubScopesCounter();
       #endregion
 
       #region Create operator graph
       OperatorGraph.InitialOperator = resultsCollector;
       resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Iterations", null, "CurrentIteration"));
-      //resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Current Inertia", null, "Inertia"));
-      //resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Solutions", null, "EvaluatedSolutions"));
+      resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Inertia", null, "CurrentInertia"));
+      resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Solutions", null, "EvaluatedSolutions"));
       resultsCollector.ResultsParameter.ActualName = "Results";
       resultsCollector.Successor = swarmUpdaterPlaceholer1;
 
@@ -158,10 +162,14 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
 
       evaluationProcessor.Parallel = new BoolValue(true);
       evaluationProcessor.Operator = evaluatorPlaceholder;
-      evaluationProcessor.Successor = topologyUpdaterPlaceholder;
+      evaluationProcessor.Successor = subScopesCounter;
 
       evaluatorPlaceholder.Name = "(Evaluator)";
       evaluatorPlaceholder.OperatorParameter.ActualName = EvaluatorParameter.Name;
+
+      subScopesCounter.Name = "Increment EvaluatedSolutions";
+      subScopesCounter.ValueParameter.ActualName = EvaluatedSolutionsParameter.Name;
+      subScopesCounter.Successor = topologyUpdaterPlaceholder; 
 
       topologyUpdaterPlaceholder.Name = "(TopologyUpdater)";
       topologyUpdaterPlaceholder.OperatorParameter.ActualName = TopologyUpdaterParameter.Name;
