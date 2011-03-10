@@ -53,7 +53,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     /// <summary>
     /// Gets all installed applications.
     /// </summary>
-    internal IEnumerable<ApplicationDescription> Applications {
+    public IEnumerable<ApplicationDescription> Applications {
       get { return applications; }
     }
 
@@ -109,7 +109,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     /// Loads all enabled plugins and starts the application via an ApplicationManager instance activated in the new AppDomain.
     /// </summary>
     /// <param name="appInfo">application to run</param>
-    internal void Run(ApplicationDescription appInfo) {
+    public void Run(ApplicationDescription appInfo) {
       if (!initialized) throw new InvalidOperationException("PluginManager is not initialized. DiscoverAndCheckPlugins() must be called before Run()");
       // create a separate AppDomain for the application
       // initialize the static ApplicationManager in the AppDomain

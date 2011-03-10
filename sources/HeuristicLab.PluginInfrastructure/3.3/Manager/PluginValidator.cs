@@ -178,7 +178,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
         assemblies.AddRange(ReflectionOnlyLoadDlls(dirName));
       }
       // try to load each .dll file in the plugin directory into the reflection only context
-      foreach (string filename in Directory.GetFiles(baseDir, "*.dll")) {
+      foreach (string filename in Directory.GetFiles(baseDir, "*.dll").Union(Directory.GetFiles(baseDir, "*.exe"))) {
         try {
           Assembly asm = Assembly.ReflectionOnlyLoadFrom(filename);
           RegisterLoadedAssembly(asm);

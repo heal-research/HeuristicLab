@@ -26,7 +26,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
   /// Class that provides information about an application.
   /// </summary>
   [Serializable]
-  internal sealed class ApplicationDescription : IApplicationDescription {
+  public sealed class ApplicationDescription : IApplicationDescription {
     private string name;
 
     /// <summary>
