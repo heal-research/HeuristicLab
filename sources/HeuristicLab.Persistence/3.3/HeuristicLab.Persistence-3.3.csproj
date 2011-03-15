@@ -141,6 +141,7 @@
     <Compile Include="Default\CompositeSerializers\ArraySerializer.cs" />
     <Compile Include="Default\CompositeSerializers\CompactNumberArray2StringSerializer.cs" />
     <Compile Include="Default\CompositeSerializers\ConcreteDictionarySerializer.cs" />
+    <Compile Include="Default\CompositeSerializers\TupleSerializer.cs" />
     <Compile Include="Default\CompositeSerializers\HashSetSerializer.cs" />
     <Compile Include="Default\CompositeSerializers\DictionarySerializer.cs" />
     <Compile Include="Default\CompositeSerializers\EnumerableSerializer.cs" />

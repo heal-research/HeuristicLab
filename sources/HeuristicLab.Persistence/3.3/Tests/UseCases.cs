@@ -1242,6 +1242,18 @@ namespace HeuristicLab.Persistence_33.Tests {
       Assert.AreEqual(t.Count, 2);
     }
 
+    [TestMethod]
+    public void TupleTest() {
+      var t1 = Tuple.Create(1);
+      var t2 = Tuple.Create('1', "2");
+      var t3 = Tuple.Create(3.0, 3f, 5);
+      var t4 = Tuple.Create(Tuple.Create(1, 2, 3), Tuple.Create(4, 5, 6), Tuple.Create(8, 9, 10));
+      var tuple = Tuple.Create(t1, t2, t3, t4);
+      XmlGenerator.Serialize(tuple, tempFile);
+      var newTuple = XmlParser.Deserialize<Tuple<Tuple<int>, Tuple<char, string>, Tuple<double, float, int>, Tuple<Tuple<int, int, int>, Tuple<int, int, int>, Tuple<int, int, int>>>>(tempFile);
+      Assert.AreEqual(tuple, newTuple);
+    }
+
 
 
     [ClassInitialize]
