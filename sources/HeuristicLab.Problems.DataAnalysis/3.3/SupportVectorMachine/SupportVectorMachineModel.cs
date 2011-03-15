@@ -36,16 +36,6 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
   [StorableClass]
   [Item("SupportVectorMachineModel", "Represents a support vector machine model.")]
   public sealed class SupportVectorMachineModel : NamedItem, IDataAnalysisModel {
-    [StorableConstructor]
-    private SupportVectorMachineModel(bool deserializing) : base(deserializing) { }
-    private SupportVectorMachineModel(SupportVectorMachineModel original, Cloner cloner)
-      : base(original, cloner) {
-      // only using a shallow copy here! (gkronber)
-      this.model = original.model;
-      this.rangeTransform = original.rangeTransform;
-    }
-    public SupportVectorMachineModel() : base() { }
-
     private SVM.Model model;
     /// <summary>
     /// Gets or sets the SVM model.
@@ -76,6 +66,24 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
       }
     }
 
+    public IEnumerable<double[]> SupportVectors {
+      get {
+        return from sv in Model.SupportVectors
+               select (from svx in sv
+                       select svx.Value).ToArray();
+      }
+    }
+
+    [StorableConstructor]
+    private SupportVectorMachineModel(bool deserializing) : base(deserializing) { }
+    private SupportVectorMachineModel(SupportVectorMachineModel original, Cloner cloner)
+      : base(original, cloner) {
+      // only using a shallow copy here! (gkronber)
+      this.model = original.model;
+      this.rangeTransform = original.rangeTransform;
+    }
+    public SupportVectorMachineModel() : base() { }
+
     public IEnumerable<double> GetEstimatedValues(DataAnalysisProblemData problemData, int start, int end) {
       SVM.Problem problem = SupportVectorMachineUtil.CreateSvmProblem(problemData, Enumerable.Range(start, end - start));
       SVM.Problem scaledProblem = Scaling.Scale(RangeTransform, problem);
@@ -95,12 +103,6 @@ namespace HeuristicLab.Problems.DataAnalysis.SupportVectorMachine {
     #endregion
 
     #region persistence
-    [Storable]
-    private int[] SupportVectorIndizes {
-      get { return this.Model.SupportVectorIndizes; }
-      set { this.Model.SupportVectorIndizes = value; }
-    }
-
     [Storable]
     private string ModelAsString {
       get {

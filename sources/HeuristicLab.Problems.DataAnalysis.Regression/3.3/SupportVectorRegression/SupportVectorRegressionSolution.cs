@@ -45,10 +45,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.SupportVectorRegression 
       set { base.Model = value; }
     }
 
-    public Dataset SupportVectors {
-      get { return CalculateSupportVectors(); }
-    }
-
     private List<double> estimatedValues;
     public override IEnumerable<double> EstimatedValues {
       get {
@@ -69,34 +65,46 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.SupportVectorRegression 
       }
     }
 
+    public Dataset SupportVectors {
+      get {
+        int nCol = inputVariables.Count;
+        double[,] data = new double[Model.Model.SupportVectorCount, nCol];
+        int row = 0;
+        foreach (var sv in Model.SupportVectors) {
+          for (int col = 0; col < nCol; col++) {
+            data[row, col] = sv[col];
+          }
+          row++;
+        }
+        return new Dataset(inputVariables, data);
+      }
+    }
+
+    [Storable]
+    private List<string> inputVariables;
+
     [StorableConstructor]
     private SupportVectorRegressionSolution(bool deserializing) : base(deserializing) { }
-    private SupportVectorRegressionSolution(SupportVectorRegressionSolution original, Cloner cloner) : base(original, cloner) { }
+    private SupportVectorRegressionSolution(SupportVectorRegressionSolution original, Cloner cloner)
+      : base(original, cloner) {
+      this.inputVariables = new List<string>(original.inputVariables);
+    }
     public SupportVectorRegressionSolution() : base() { }
     public SupportVectorRegressionSolution(DataAnalysisProblemData problemData, SupportVectorMachineModel model, IEnumerable<string> inputVariables, double lowerEstimationLimit, double upperEstimationLimit)
       : base(problemData, lowerEstimationLimit, upperEstimationLimit) {
       this.Model = model;
+      this.inputVariables = new List<string>(inputVariables);
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      #region backwards compatibility
+      if (inputVariables == null) inputVariables = ProblemData.InputVariables.CheckedItems.Select(x => x.Value.Value).ToList();
+      #endregion
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SupportVectorRegressionSolution(this, cloner);
-    }
-
-    protected override void OnProblemDataChanged() {
-      Model.Model.SupportVectorIndizes = new int[0];
-      base.OnProblemDataChanged();
-    }
-
-    private Dataset CalculateSupportVectors() {
-      if (Model.Model.SupportVectorIndizes.Length == 0)
-        return new Dataset(new List<string>(), new double[0, 0]);
-
-      double[,] data = new double[Model.Model.SupportVectorIndizes.Length, ProblemData.Dataset.Columns];
-      for (int i = 0; i < Model.Model.SupportVectorIndizes.Length; i++) {
-        for (int column = 0; column < ProblemData.Dataset.Columns; column++)
-          data[i, column] = ProblemData.Dataset[Model.Model.SupportVectorIndizes[i], column];
-      }
-      return new Dataset(ProblemData.Dataset.VariableNames, data);
     }
 
     protected override void RecalculateEstimatedValues() {

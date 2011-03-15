@@ -30,7 +30,6 @@ namespace SVM {
     private Parameter _parameter;
     private int _numberOfClasses;
     private int _supportVectorCount;
-    private int[] _supportVectorIndizes;
     private Node[][] _supportVectors;
     private double[][] _supportVectorCoefficients;
     private double[] _rho;
@@ -76,18 +75,6 @@ namespace SVM {
       }
       set {
         _supportVectorCount = value;
-      }
-    }
-
-    /// <summary>
-    /// Indizes of support vectors identified in the training.
-    /// </summary>
-    public int[] SupportVectorIndizes {
-      get {
-        return _supportVectorIndizes;
-      }
-      set {
-        _supportVectorIndizes = value;
       }
     }
 
@@ -214,7 +201,6 @@ namespace SVM {
       model.PairwiseProbabilityB = null;
       model.ClassLabels = null;
       model.NumberOfSVPerClass = null;
-      model.SupportVectorIndizes = new int[0];
 
       bool headerFinished = false;
       while (!headerFinished) {
@@ -415,7 +401,7 @@ namespace SVM {
       if (model.NumberOfSVPerClass != null) {
         output.Write("nr_sv");
         for (int i = 0; i < nr_class; i++)
-          output.Write(" " + model.NumberOfSVPerClass[i].ToString("r"));
+          output.Write(" " + model.NumberOfSVPerClass[i]);
         output.Write(Environment.NewLine);
       }
 
