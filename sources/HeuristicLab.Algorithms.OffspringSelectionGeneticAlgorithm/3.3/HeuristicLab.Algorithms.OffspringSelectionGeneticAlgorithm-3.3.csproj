@@ -11,7 +11,8 @@
     <RootNamespace>HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm</RootNamespace>
     <AssemblyName>HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm-3.3</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile></TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
@@ -114,6 +115,7 @@
     <Compile Include="OffspringSelectionGeneticAlgorithm.cs" />
     <Compile Include="OffspringSelectionGeneticAlgorithmMainOperator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SuccessfulOffspringAnalysis\SuccessfulOffspringAnalyzer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />

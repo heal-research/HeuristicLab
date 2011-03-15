@@ -48,10 +48,28 @@ namespace HeuristicLab.Operators {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
+    public ValueParameter<BoolValue> TraceSelectedOperatorParameter {
+      get { return (ValueParameter<BoolValue>)Parameters["TraceSelectedOperator"]; }
+    }
+    public ValueLookupParameter<StringValue> SelectedOperatorParameter {
+      get { return (ValueLookupParameter<StringValue>)Parameters["SelectedOperator"]; }
+    }
 
     public DoubleArray Probabilities {
       get { return ProbabilitiesParameter.Value; }
       set { ProbabilitiesParameter.Value = value; }
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserializationHook() {
+      #region Backwards Compatibility
+      if (!Parameters.ContainsKey("SelectedOperator")) {
+        Parameters.Add(new ValueLookupParameter<StringValue>("SelectedOperator", "If the TraceSelectedOperator flag is set, the name of the operator is traced in this parameter."));
+      }
+      if (!Parameters.ContainsKey("TraceSelectedOperator")) {
+        Parameters.Add(new ValueParameter<BoolValue>("TraceSelectedOperator", "Indicates, if the selected operator should be traced.", new BoolValue(false)));
+      }
+      #endregion
     }
 
     [StorableConstructor]
@@ -67,6 +85,8 @@ namespace HeuristicLab.Operators {
       : base() {
       Parameters.Add(new ValueLookupParameter<DoubleArray>("Probabilities", "The array of relative probabilities for each operator.", new DoubleArray()));
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));
+      Parameters.Add(new ValueLookupParameter<StringValue>("SelectedOperator", "If the TraceSelectedOperator flag is set, the name of the operator is traced in this parameter."));
+      Parameters.Add(new ValueParameter<BoolValue>("TraceSelectedOperator", "Indicates, if the selected operator should be traced.", new BoolValue(false)));
     }
 
     protected override void Operators_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
@@ -115,6 +135,7 @@ namespace HeuristicLab.Operators {
         throw new InvalidOperationException(Name + ": The list of probabilities has to match the number of operators");
       }
       IOperator successor = null;
+      int index = -1;
       var checkedOperators = Operators.CheckedItems;
       if (checkedOperators.Count() > 0) {
         // select a random operator from the checked operators
@@ -126,15 +147,22 @@ namespace HeuristicLab.Operators {
           sum += probabilities[indexedItem.Index];
           if (sum > r) {
             successor = indexedItem.Value;
+            index = indexedItem.Index;
             break;
           }
         }
       }
       OperationCollection next = new OperationCollection(base.Apply());
       if (successor != null) {
+        if (TraceSelectedOperatorParameter.Value.Value)
+          SelectedOperatorParameter.ActualValue = new StringValue(index + ": " + successor.Name);
+
         if (CreateChildOperation)
           next.Insert(0, ExecutionContext.CreateChildOperation(successor));
         else next.Insert(0, ExecutionContext.CreateOperation(successor));
+      } else {
+        if (TraceSelectedOperatorParameter.Value.Value)
+          SelectedOperatorParameter.ActualValue = new StringValue("");
       }
       return next;
     }

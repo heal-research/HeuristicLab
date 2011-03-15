@@ -196,18 +196,26 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     private BestAverageWorstQualityAnalyzer qualityAnalyzer;
     [Storable]
     private ValueAnalyzer selectionPressureAnalyzer;
+    [Storable]
+    private SuccessfulOffspringAnalyzer successfulOffspringAnalyzer;
     #endregion
 
     [StorableConstructor]
     private OffspringSelectionGeneticAlgorithm(bool deserializing) : base(deserializing) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      #region Backwards Compatibility
+      if (successfulOffspringAnalyzer == null)
+        successfulOffspringAnalyzer = new SuccessfulOffspringAnalyzer();
+      #endregion
+      
       Initialize();
     }
     private OffspringSelectionGeneticAlgorithm(OffspringSelectionGeneticAlgorithm original, Cloner cloner)
       : base(original, cloner) {
       qualityAnalyzer = cloner.Clone(original.qualityAnalyzer);
       selectionPressureAnalyzer = cloner.Clone(original.selectionPressureAnalyzer);
+      successfulOffspringAnalyzer = cloner.Clone(original.successfulOffspringAnalyzer);
       Initialize();
     }
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -290,6 +298,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
 
       qualityAnalyzer = new BestAverageWorstQualityAnalyzer();
       selectionPressureAnalyzer = new ValueAnalyzer();
+      successfulOffspringAnalyzer = new SuccessfulOffspringAnalyzer();
       ParameterizeAnalyzers();
       UpdateAnalyzers();
 
@@ -406,6 +415,10 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       selectionPressureAnalyzer.ValueParameter.ActualName = "SelectionPressure";
       selectionPressureAnalyzer.ValueParameter.Depth = 0;
       selectionPressureAnalyzer.ValuesParameter.ActualName = "Selection Pressure History";
+      successfulOffspringAnalyzer.ResultsParameter.ActualName = "Results";
+      successfulOffspringAnalyzer.GenerationsParameter.ActualName = "Generations";
+      successfulOffspringAnalyzer.SuccessfulOffspringFlag.Value.Value = "SuccessfulOffspring";
+      successfulOffspringAnalyzer.DepthParameter.Value = new IntValue(1);
       if (Problem != null) {
         qualityAnalyzer.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
         qualityAnalyzer.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
@@ -461,6 +474,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       }
       Analyzer.Operators.Add(qualityAnalyzer);
       Analyzer.Operators.Add(selectionPressureAnalyzer);
+      Analyzer.Operators.Add(successfulOffspringAnalyzer);
+      Analyzer.Operators.SetItemCheckedState(successfulOffspringAnalyzer, false);
     }
     private OffspringSelectionGeneticAlgorithmMainLoop FindMainLoop(IOperator start) {
       IOperator mainLoop = start;
