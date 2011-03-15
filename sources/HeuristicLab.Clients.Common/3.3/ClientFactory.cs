@@ -27,6 +27,7 @@ using HeuristicLab.Common;
 
 namespace HeuristicLab.Clients.Common {
   public static class ClientFactory {
+    #region CreateClient Methods
     public static T CreateClient<T, I>()
       where T : ClientBase<I>, I
       where I : class {
@@ -61,36 +62,38 @@ namespace HeuristicLab.Clients.Common {
       client.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
       return client;
     }
+    #endregion
 
-    public static Disposable<ChannelFactory<I>> CreateChannelFactory<I>(string endpointConfigurationName) where I : class {
+    #region CreateChannelFactory Methods
+    public static Disposable<ChannelFactory<I>> CreateChannelFactory<I>(string endpointConfigurationName)
+      where I : class {
       return CreateChannelFactory<I>(endpointConfigurationName, null);
     }
-    public static Disposable<ChannelFactory<I>> CreateChannelFactory<I>(string endpointConfigurationName, string remoteAddress) where I : class {
+    public static Disposable<ChannelFactory<I>> CreateChannelFactory<I>(string endpointConfigurationName, string remoteAddress)
+      where I : class {
       return CreateChannelFactory<I>(endpointConfigurationName, remoteAddress, Settings.Default.UserName, Settings.Default.Password);
     }
-    public static Disposable<ChannelFactory<I>> CreateChannelFactory<I>(string endpointConfigurationName, string remoteAddress, string userName, string password) where I : class {
-      ChannelFactory<I> factory = GetChannelFactory<I>(endpointConfigurationName, userName, password);
-
-      if (!string.IsNullOrEmpty(remoteAddress)) {
-        SetEndpointAddress(factory.Endpoint, remoteAddress);
-      }
-      var disposable = new Disposable<ChannelFactory<I>>(factory);
-      disposable.OnDisposing += new EventHandler<EventArgs<object>>(disposable_OnDisposing);
-      return disposable;
-    }
-
-    private static void disposable_OnDisposing(object sender, EventArgs<object> e) {
-      DisposeCommunicationObject((ICommunicationObject)e.Value);
-      ((Disposable)sender).OnDisposing -= new EventHandler<EventArgs<object>>(disposable_OnDisposing);
-    }
-
-    private static ChannelFactory<I> GetChannelFactory<I>(string endpointConfigurationName, string userName, string password) where I : class {
-      var channelFactory = new ChannelFactory<I>(endpointConfigurationName);
+    public static Disposable<ChannelFactory<I>> CreateChannelFactory<I>(string endpointConfigurationName, string remoteAddress, string userName, string password)
+      where I : class {
+      ChannelFactory<I> channelFactory = new ChannelFactory<I>(endpointConfigurationName);
       channelFactory.Credentials.UserName.UserName = userName;
       channelFactory.Credentials.UserName.Password = password;
       channelFactory.Credentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
-      return channelFactory;
+
+      if (!string.IsNullOrEmpty(remoteAddress)) {
+        SetEndpointAddress(channelFactory.Endpoint, remoteAddress);
+      }
+
+      Disposable<ChannelFactory<I>> disposableChannelFactory = new Disposable<ChannelFactory<I>>(channelFactory);
+      disposableChannelFactory.OnDisposing += new EventHandler<EventArgs<object>>(DisposableChannelFactory_OnDisposing);
+      return disposableChannelFactory;
     }
+
+    private static void DisposableChannelFactory_OnDisposing(object sender, EventArgs<object> e) {
+      DisposeCommunicationObject((ICommunicationObject)e.Value);
+      ((Disposable)sender).OnDisposing -= new EventHandler<EventArgs<object>>(DisposableChannelFactory_OnDisposing);
+    }
+    #endregion
 
     public static void DisposeCommunicationObject(ICommunicationObject obj) {
       if (obj != null) {
@@ -103,15 +106,15 @@ namespace HeuristicLab.Clients.Common {
       }
     }
 
-    /// <summary>
-    /// This method changes the endpoint-address while preserving the identity-certificate defined in the config file
-    /// </summary>
+    #region Helpers
     private static void SetEndpointAddress(ServiceEndpoint endpoint, string remoteAddress) {
-      EndpointAddressBuilder endpointAddressbuilder = new EndpointAddressBuilder(endpoint.Address);
-      UriBuilder uriBuilder = new UriBuilder(endpointAddressbuilder.Uri);
+      // change the endpoint address and preserve the identity certificate defined in the config file
+      EndpointAddressBuilder endpointAddressBuilder = new EndpointAddressBuilder(endpoint.Address);
+      UriBuilder uriBuilder = new UriBuilder(endpointAddressBuilder.Uri);
       uriBuilder.Host = remoteAddress;
-      endpointAddressbuilder.Uri = uriBuilder.Uri;
-      endpoint.Address = endpointAddressbuilder.ToEndpointAddress();
+      endpointAddressBuilder.Uri = uriBuilder.Uri;
+      endpoint.Address = endpointAddressBuilder.ToEndpointAddress();
     }
+    #endregion
   }
 }
