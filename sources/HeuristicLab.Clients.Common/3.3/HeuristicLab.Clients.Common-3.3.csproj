@@ -11,7 +11,8 @@
     <RootNamespace>HeuristicLab.Clients.Common</RootNamespace>
     <AssemblyName>HeuristicLab.Clients.Common-3.3</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile></TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -115,7 +116,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientFactory.cs" />
-    <Compile Include="Disposable.cs" />
     <Compile Include="HeuristicLabClientsCommonPlugin.cs" />
     <Compile Include="PasswordDialog.cs">
       <SubType>Form</SubType>

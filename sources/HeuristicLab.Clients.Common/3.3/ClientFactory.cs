@@ -23,7 +23,6 @@ using System;
 using System.ServiceModel;
 using System.ServiceModel.Description;
 using HeuristicLab.Clients.Common.Properties;
-using HeuristicLab.Common;
 
 namespace HeuristicLab.Clients.Common {
   public static class ClientFactory {
@@ -65,46 +64,27 @@ namespace HeuristicLab.Clients.Common {
     #endregion
 
     #region CreateChannelFactory Methods
-    public static Disposable<ChannelFactory<I>> CreateChannelFactory<I>(string endpointConfigurationName)
+    public static ChannelFactory<I> CreateChannelFactory<I>(string endpointConfigurationName)
       where I : class {
       return CreateChannelFactory<I>(endpointConfigurationName, null);
     }
-    public static Disposable<ChannelFactory<I>> CreateChannelFactory<I>(string endpointConfigurationName, string remoteAddress)
+    public static ChannelFactory<I> CreateChannelFactory<I>(string endpointConfigurationName, string remoteAddress)
       where I : class {
       return CreateChannelFactory<I>(endpointConfigurationName, remoteAddress, Settings.Default.UserName, Settings.Default.Password);
     }
-    public static Disposable<ChannelFactory<I>> CreateChannelFactory<I>(string endpointConfigurationName, string remoteAddress, string userName, string password)
+    public static ChannelFactory<I> CreateChannelFactory<I>(string endpointConfigurationName, string remoteAddress, string userName, string password)
       where I : class {
       ChannelFactory<I> channelFactory = new ChannelFactory<I>(endpointConfigurationName);
-      channelFactory.Credentials.UserName.UserName = userName;
-      channelFactory.Credentials.UserName.Password = password;
-      channelFactory.Credentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
-
       if (!string.IsNullOrEmpty(remoteAddress)) {
         SetEndpointAddress(channelFactory.Endpoint, remoteAddress);
       }
 
-      Disposable<ChannelFactory<I>> disposableChannelFactory = new Disposable<ChannelFactory<I>>(channelFactory);
-      disposableChannelFactory.OnDisposing += new EventHandler<EventArgs<object>>(DisposableChannelFactory_OnDisposing);
-      return disposableChannelFactory;
-    }
-
-    private static void DisposableChannelFactory_OnDisposing(object sender, EventArgs<object> e) {
-      DisposeCommunicationObject((ICommunicationObject)e.Value);
-      ((Disposable)sender).OnDisposing -= new EventHandler<EventArgs<object>>(DisposableChannelFactory_OnDisposing);
+      channelFactory.Credentials.UserName.UserName = userName;
+      channelFactory.Credentials.UserName.Password = password;
+      channelFactory.Credentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;
+      return channelFactory;
     }
     #endregion
-
-    public static void DisposeCommunicationObject(ICommunicationObject obj) {
-      if (obj != null) {
-        if (obj.State != CommunicationState.Faulted && obj.State != CommunicationState.Closed) {
-          try { obj.Close(); }
-          catch { obj.Abort(); }
-        } else {
-          obj.Abort();
-        }
-      }
-    }
 
     #region Helpers
     private static void SetEndpointAddress(ServiceEndpoint endpoint, string remoteAddress) {
