@@ -20,11 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
@@ -160,6 +155,7 @@ namespace HeuristicLab.VS2010Wizards {
 
     private void parametersListView_MouseDoubleClick(object sender, MouseEventArgs e) {
       var hit = parametersListView.HitTest(e.Location);
+      if (hit.Item == null || hit.SubItem == null) return;
       if (hit.Item.SubItems[typeColumnHeader.DisplayIndex] == hit.SubItem) {
         parameterTypeComboBox.Left = parametersListView.Left + hit.SubItem.Bounds.Left + 3;
         parameterTypeComboBox.Top = parametersListView.Top + hit.SubItem.Bounds.Top;
@@ -201,6 +197,20 @@ namespace HeuristicLab.VS2010Wizards {
       }
     }
 
+    protected override bool ProcessDialogKey(Keys keyData) {
+      if (keyData == Keys.Tab) {
+        if (customInputTextBox.Focused) {
+          if (customInputTextBox.Right + 5 < parametersListView.Right) {
+            parametersListView_MouseDoubleClick(parametersListView, new MouseEventArgs(MouseButtons.Left, 2, customInputTextBox.Right + 5, customInputTextBox.Top + 3, 0));
+            return true;
+          } else return base.ProcessDialogKey(keyData);
+        } else if (parameterTypeComboBox.Focused) {
+          parametersListView_MouseDoubleClick(parametersListView, new MouseEventArgs(MouseButtons.Left, 2, parameterTypeComboBox.Right + 5, parameterTypeComboBox.Top + 3, 0));
+          return true;
+        } else return base.ProcessDialogKey(keyData);
+      } else return base.ProcessDialogKey(keyData);
+    }
+
     private void customInputTextBox_Leave(object sender, EventArgs e) {
       TextBox t = (TextBox)sender;
       System.Windows.Forms.ListViewItem.ListViewSubItem subItem = t.Tag as System.Windows.Forms.ListViewItem.ListViewSubItem;
@@ -211,6 +221,7 @@ namespace HeuristicLab.VS2010Wizards {
     private void customInputTextBox_KeyUp(object sender, KeyEventArgs e) {
       if (e.KeyCode == Keys.Return || e.KeyCode == Keys.Enter)
         customInputTextBox_Leave(sender, EventArgs.Empty);
+      e.Handled = (e.KeyCode == Keys.Return || e.KeyCode == Keys.Enter);
     }
 
     private void parameterTypeComboBox_Leave(object sender, EventArgs e) {

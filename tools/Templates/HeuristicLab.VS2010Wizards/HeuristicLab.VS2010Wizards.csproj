@@ -90,6 +90,13 @@
     <Compile Include="AlgorithmWizardForm.Designer.cs">
       <DependentUpon>AlgorithmWizardForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ItemWizard.cs" />
+    <Compile Include="ItemWizardForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ItemWizardForm.Designer.cs">
+      <DependentUpon>ItemWizardForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ProblemWizardForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -123,6 +130,9 @@
   <ItemGroup>
     <EmbeddedResource Include="AlgorithmWizardForm.resx">
       <DependentUpon>AlgorithmWizardForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ItemWizardForm.resx">
+      <DependentUpon>ItemWizardForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ProblemWizardForm.resx">
       <DependentUpon>ProblemWizardForm.cs</DependentUpon>

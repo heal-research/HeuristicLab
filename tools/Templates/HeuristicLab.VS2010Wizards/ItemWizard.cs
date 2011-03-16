@@ -24,13 +24,15 @@ using EnvDTE;
 using Microsoft.VisualStudio.TemplateWizard;
 
 namespace HeuristicLab.VS2010Wizards {
-  public class ProblemWizard : IWizard {
-    private bool shouldAddItem;
-    private ProblemWizardForm form;
+  public class ItemWizard : IWizard {
+    ItemWizardForm form;
+    bool shouldAddItem;
 
-    public ProblemWizard() {
-      form = new ProblemWizardForm();
+    public ItemWizard() {
+      form = new ItemWizardForm();
     }
+
+    #region IWizard Members
 
     public void BeforeOpeningFile(ProjectItem projectItem) {
     }
@@ -46,12 +48,8 @@ namespace HeuristicLab.VS2010Wizards {
 
     public void RunStarted(object automationObject, Dictionary<string, string> replacementsDictionary, WizardRunKind runKind, object[] customParams) {
       if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-        replacementsDictionary.Add("$problemName$", form.ProblemName);
-        replacementsDictionary.Add("$problemDescription$", form.ProblemDescription);
-        replacementsDictionary.Add("$problemTypeImplementation$", form.ProblemTypeImplementation);
-        replacementsDictionary.Add("$parameterProperties$", form.ParameterProperties);
-        replacementsDictionary.Add("$properties$", form.Properties);
-        replacementsDictionary.Add("$parameterInitializers$", form.ParameterInitializers);
+        replacementsDictionary.Add("$hlItemName$", form.ItemName);
+        replacementsDictionary.Add("$hlItemDescription$", form.ItemDescription);
         shouldAddItem = true;
       } else shouldAddItem = false;
     }
@@ -59,5 +57,7 @@ namespace HeuristicLab.VS2010Wizards {
     public bool ShouldAddProjectItem(string filePath) {
       return shouldAddItem;
     }
+
+    #endregion
   }
 }

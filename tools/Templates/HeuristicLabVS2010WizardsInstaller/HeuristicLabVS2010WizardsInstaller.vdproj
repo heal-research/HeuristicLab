@@ -39,6 +39,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_385213F987E24F29927ABE1F0202233B"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_A7EAC0AA402C433C8EEB32377FBD8490"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -288,6 +294,26 @@
             "Register" = "3:1"
             "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_385213F987E24F29927ABE1F0202233B"
+            {
+            "SourcePath" = "8:..\\HeuristicLabItemTemplate\\HeuristicLabItemTemplate.zip"
+            "TargetName" = "8:HeuristicLabItemTemplate.zip"
+            "Tag" = "8:"
+            "Folder" = "8:_E33A3941E42F482B99D2418470C8A183"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A7EAC0AA402C433C8EEB32377FBD8490"
@@ -1010,7 +1036,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_B51E170D986C45DD9BBEEC6B70686DC9"
             {
-            "SourcePath" = "8:..\\HeuristicLab.VS2010Wizards\\obj\\x86\\Release\\HeuristicLab.VS2010Wizards.dll"
+            "SourcePath" = "8:..\\HeuristicLab.VS2010Wizards\\obj\\x86\\Debug\\HeuristicLab.VS2010Wizards.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_6C9F753281594A1483F7199C4F19C6D8"

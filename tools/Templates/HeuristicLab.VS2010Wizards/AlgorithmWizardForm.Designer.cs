@@ -136,9 +136,9 @@
       this.label4.Font = new System.Drawing.Font("Calibri", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.label4.Location = new System.Drawing.Point(96, 21);
       this.label4.Name = "label4";
-      this.label4.Size = new System.Drawing.Size(311, 39);
+      this.label4.Size = new System.Drawing.Size(214, 39);
       this.label4.TabIndex = 1;
-      this.label4.Text = "New Algorithm Wizard";
+      this.label4.Text = "New Algorithm";
       // 
       // pictureBox1
       // 

@@ -36,22 +36,17 @@ namespace $rootnamespace$ {
   [Item("$problemName$", "$problemDescription$")]
   [Creatable("Problems")]
   [StorableClass]
-  public sealed class $safeitemname$ : ParameterizedNamedItem, $problemTypeImplementation$ {
+  public sealed class $safeitemname$ : $problemTypeImplementation$ {
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Type; }
     }
 
     #region Parameter Properties
-    $problemSpecificParameterProperties$
     $parameterProperties$
     #endregion
 
     #region Properties
-    $problemSpecificProperties$
     $properties$
-    public IEnumerable<IOperator> Operators {
-      get { return operators; }
-    }
     #endregion
 
     [Storable]

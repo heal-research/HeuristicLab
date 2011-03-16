@@ -76,7 +76,7 @@ namespace HeuristicLab.VS2010Wizards {
       this.parametersListView.MultiSelect = false;
       this.parametersListView.Name = "parametersListView";
       this.parametersListView.Size = new System.Drawing.Size(701, 250);
-      this.parametersListView.TabIndex = 2;
+      this.parametersListView.TabIndex = 4;
       this.parametersListView.UseCompatibleStateImageBehavior = false;
       this.parametersListView.View = System.Windows.Forms.View.Details;
       this.parametersListView.SelectedIndexChanged += new System.EventHandler(this.parametersListView_SelectedIndexChanged);
@@ -113,7 +113,7 @@ namespace HeuristicLab.VS2010Wizards {
       this.downButton.Location = new System.Drawing.Point(3, 90);
       this.downButton.Name = "downButton";
       this.downButton.Size = new System.Drawing.Size(26, 26);
-      this.downButton.TabIndex = 4;
+      this.downButton.TabIndex = 3;
       this.downButton.UseVisualStyleBackColor = true;
       this.downButton.Click += new System.EventHandler(this.downButton_Click);
       // 
@@ -124,7 +124,7 @@ namespace HeuristicLab.VS2010Wizards {
       this.upButton.Location = new System.Drawing.Point(3, 61);
       this.upButton.Name = "upButton";
       this.upButton.Size = new System.Drawing.Size(26, 26);
-      this.upButton.TabIndex = 4;
+      this.upButton.TabIndex = 2;
       this.upButton.UseVisualStyleBackColor = true;
       this.upButton.Click += new System.EventHandler(this.upButton_Click);
       // 
@@ -135,7 +135,7 @@ namespace HeuristicLab.VS2010Wizards {
       this.removeButton.Location = new System.Drawing.Point(3, 32);
       this.removeButton.Name = "removeButton";
       this.removeButton.Size = new System.Drawing.Size(26, 26);
-      this.removeButton.TabIndex = 4;
+      this.removeButton.TabIndex = 1;
       this.removeButton.UseVisualStyleBackColor = true;
       this.removeButton.Click += new System.EventHandler(this.removeButton_Click);
       // 
@@ -145,7 +145,7 @@ namespace HeuristicLab.VS2010Wizards {
       this.addButton.Location = new System.Drawing.Point(3, 3);
       this.addButton.Name = "addButton";
       this.addButton.Size = new System.Drawing.Size(26, 26);
-      this.addButton.TabIndex = 4;
+      this.addButton.TabIndex = 0;
       this.addButton.UseVisualStyleBackColor = true;
       this.addButton.Click += new System.EventHandler(this.addButton_Click);
       // 
@@ -164,7 +164,8 @@ namespace HeuristicLab.VS2010Wizards {
       this.parameterTypeComboBox.Location = new System.Drawing.Point(3, 232);
       this.parameterTypeComboBox.Name = "parameterTypeComboBox";
       this.parameterTypeComboBox.Size = new System.Drawing.Size(26, 21);
-      this.parameterTypeComboBox.TabIndex = 5;
+      this.parameterTypeComboBox.TabIndex = 6;
+      this.parameterTypeComboBox.TabStop = false;
       this.parameterTypeComboBox.Visible = false;
       this.parameterTypeComboBox.SelectedIndexChanged += new System.EventHandler(this.parameterTypeComboBox_SelectedIndexChanged);
       this.parameterTypeComboBox.KeyUp += new System.Windows.Forms.KeyEventHandler(this.parameterTypeComboBox_KeyUp);
@@ -172,10 +173,12 @@ namespace HeuristicLab.VS2010Wizards {
       // 
       // customInputTextBox
       // 
+      this.customInputTextBox.AcceptsTab = true;
       this.customInputTextBox.Location = new System.Drawing.Point(3, 206);
       this.customInputTextBox.Name = "customInputTextBox";
       this.customInputTextBox.Size = new System.Drawing.Size(26, 20);
-      this.customInputTextBox.TabIndex = 6;
+      this.customInputTextBox.TabIndex = 5;
+      this.customInputTextBox.TabStop = false;
       this.customInputTextBox.Visible = false;
       this.customInputTextBox.KeyUp += new System.Windows.Forms.KeyEventHandler(this.customInputTextBox_KeyUp);
       this.customInputTextBox.Leave += new System.EventHandler(this.customInputTextBox_Leave);

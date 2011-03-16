@@ -10,7 +10,7 @@ namespace HeuristicLab.VS2010Wizards.Test {
     static void Main() {
       Application.EnableVisualStyles();
       Application.SetCompatibleTextRenderingDefault(false);
-      Application.Run(new ViewWizardForm());
+      Application.Run(new ProblemWizardForm());
     }
   }
 }
