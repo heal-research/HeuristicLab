@@ -74,6 +74,8 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       OnInitializing(PluginInfrastructureEventArgs.Empty);
       AppDomainSetup setup = AppDomain.CurrentDomain.SetupInformation;
       setup.PrivateBinPath = pluginDir;
+      // probing should only occur in PrivateBinPath (not in ApplicationBase). This is enforced by the value string.Empty
+      setup.PrivateBinPathProbe = string.Empty;
       AppDomain pluginDomain = null;
       try {
         pluginDomain = AppDomain.CreateDomain("plugin domain", null, setup);
