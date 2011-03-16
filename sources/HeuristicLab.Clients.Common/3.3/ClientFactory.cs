@@ -75,6 +75,7 @@ namespace HeuristicLab.Clients.Common {
     public static ChannelFactory<I> CreateChannelFactory<I>(string endpointConfigurationName, string remoteAddress, string userName, string password)
       where I : class {
       ChannelFactory<I> channelFactory = new ChannelFactory<I>(endpointConfigurationName);
+
       if (!string.IsNullOrEmpty(remoteAddress)) {
         SetEndpointAddress(channelFactory.Endpoint, remoteAddress);
       }
