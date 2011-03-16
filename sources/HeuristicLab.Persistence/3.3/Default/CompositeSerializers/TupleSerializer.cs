@@ -62,7 +62,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
 
     public IEnumerable<Tag> CreateMetaInfo(object obj) {
       Type t = obj.GetType();
-      for (int i = 1; i<=t.GetGenericArguments().Length; i++) {
+      for (int i = 1; i <= t.GetGenericArguments().Length; i++) {
         string name = string.Format("Item{0}", i);
         yield return new Tag(name, t.GetProperty(name).GetValue(obj, null));
       }
@@ -78,14 +78,14 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
 
     static TupleSerializer() {
       foreach (MethodInfo mi in typeof(Tuple).GetMethods(public_static).Where(mi => mi.Name == "Create")) {
-        CreateMethods[mi.GetGenericArguments().Length-1] = mi;
+        CreateMethods[mi.GetGenericArguments().Length - 1] = mi;
       }
     }
 
     public object CreateInstance(Type type, IEnumerable<Tag> metaInfo) {
       var values = metaInfo.Select(t => t.Value).ToArray();
-      MethodInfo createMethod = CreateMethods[values.Length-1].MakeGenericMethod(values.Select(v => v.GetType()).ToArray());
-      return createMethod.Invoke(null, values.ToArray());
+      MethodInfo createMethod = CreateMethods[values.Length - 1].MakeGenericMethod(type.GetGenericArguments());
+      return createMethod.Invoke(null, values);
     }
 
     public void Populate(object instance, IEnumerable<Tag> tags, Type type) {
