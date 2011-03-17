@@ -417,7 +417,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       selectionPressureAnalyzer.ValuesParameter.ActualName = "Selection Pressure History";
       successfulOffspringAnalyzer.ResultsParameter.ActualName = "Results";
       successfulOffspringAnalyzer.GenerationsParameter.ActualName = "Generations";
-      successfulOffspringAnalyzer.SuccessfulOffspringFlag.Value.Value = "SuccessfulOffspring";
+      successfulOffspringAnalyzer.SuccessfulOffspringFlagParameter.Value.Value = "SuccessfulOffspring";
       successfulOffspringAnalyzer.DepthParameter.Value = new IntValue(1);
       if (Problem != null) {
         qualityAnalyzer.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;

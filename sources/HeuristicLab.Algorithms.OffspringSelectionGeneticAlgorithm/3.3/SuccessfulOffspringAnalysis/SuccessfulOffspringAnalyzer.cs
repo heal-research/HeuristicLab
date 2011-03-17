@@ -39,16 +39,20 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
   [Item("SuccessfulOffspringAnalyzer", "An operator for analyzing certain properties in the successful offspring. The properties to be analyzed can be specified in the CollectedValues parameter.")]
   [StorableClass]
   public sealed class SuccessfulOffspringAnalyzer : SingleSuccessorOperator, IAnalyzer {
-    public ValueParameter<StringValue> SuccessfulOffspringFlag {
+    public ValueParameter<StringValue> SuccessfulOffspringFlagParameter {
       get { return (ValueParameter<StringValue>)Parameters["SuccessfulOffspringFlag"]; }
     }
 
-    public ValueParameter<ItemCollection<StringValue>> CollectedValues {
+    public ValueParameter<ItemCollection<StringValue>> CollectedValuesParameter {
       get { return (ValueParameter<ItemCollection<StringValue>>)Parameters["CollectedValues"]; }
     }
 
     public ValueLookupParameter<ResultCollection> ResultsParameter {
       get { return (ValueLookupParameter<ResultCollection>)Parameters["Results"]; }
+    }
+
+    public LookupParameter<ResultCollection> SuccessfulOffspringAnalysisParameter {
+      get { return (LookupParameter<ResultCollection>)Parameters["SuccessfulOffspringAnalysis"];  }
     }
 
     public ILookupParameter<IntValue> GenerationsParameter {
@@ -70,7 +74,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
         Parameters.Add(new ValueParameter<StringValue>("SuccessfulOffspringFlag", "The name of the flag which indicates if the individual was successful.", new StringValue("SuccessfulOffspring")));
         Parameters.Add(new ValueParameter<ItemCollection<StringValue>>("CollectedValues", "The properties of the successful offspring that should be collected.", new ItemCollection<StringValue>()));
         Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the succedd progress analysis results should be stored."));
-        Parameters.Add(new LookupParameter<IntValue>("Generations", "The current number of generations."));
+        Parameters.Add(new LookupParameter<IntValue>("Generations", "The current number of generations."));  
+        Parameters.Add(new LookupParameter<ResultCollection>("SuccessfulOffspringAnalysis", "The successful offspring analysis which is created."));
         Parameters.Add(new ValueParameter<IntValue>("Depth", "The depth of the individuals in the scope tree.", new IntValue(1)));
     }
 
@@ -81,13 +86,13 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       for (int i = 0; i < DepthParameter.Value.Value; i++)
         scopes = scopes.Select(x => (IEnumerable<IScope>)x.SubScopes).Aggregate((a, b) => a.Concat(b)).ToList();
 
-      ItemCollection<StringValue> collectedValues = CollectedValues.Value;
+      ItemCollection<StringValue> collectedValues = CollectedValuesParameter.Value;
         foreach (StringValue collected in collectedValues) {
           //collect the values of the successful offspring
           Dictionary<String, int> counts = new Dictionary<String, int>();
           for (int i = 0; i < scopes.Count; i++) {
             IScope child = scopes[i];
-            string successfulOffspringFlag = SuccessfulOffspringFlag.Value.Value;
+            string successfulOffspringFlag = SuccessfulOffspringFlagParameter.Value.Value;
             if (child.Variables.ContainsKey(collected.Value) && 
                 child.Variables.ContainsKey(successfulOffspringFlag) && 
                 (child.Variables[successfulOffspringFlag].Value is BoolValue) &&
@@ -102,15 +107,30 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
           }
 
           //create a data table containing the collected values
-          DataTable successProgressAnalysis;
-          string resultKey = "Success Progress " + collected.Value;
-          if (!results.ContainsKey(resultKey)) {
-            successProgressAnalysis = new DataTable();
-            successProgressAnalysis.Name = "Success Progress Analysis";
-            results.Add(new Result(resultKey, successProgressAnalysis));
+          ResultCollection successfulOffspringAnalysis;
+
+          if (SuccessfulOffspringAnalysisParameter.ActualValue == null) {
+            successfulOffspringAnalysis = new ResultCollection();
+            SuccessfulOffspringAnalysisParameter.ActualValue = successfulOffspringAnalysis;
           } else {
-            successProgressAnalysis = results[resultKey].Value as DataTable;
+            successfulOffspringAnalysis = SuccessfulOffspringAnalysisParameter.ActualValue;
           }
+
+          string resultKey = "SuccessfulOffspringAnalyzer Results";
+          if (!results.ContainsKey(resultKey)) {
+            results.Add(new Result(resultKey, successfulOffspringAnalysis));
+          } else {
+            results[resultKey].Value = successfulOffspringAnalysis;
+          }              
+
+          DataTable successProgressAnalysis;
+          if (!successfulOffspringAnalysis.ContainsKey(collected.Value)) {
+            successProgressAnalysis = new DataTable();
+            successProgressAnalysis.Name = collected.Value;
+            successfulOffspringAnalysis.Add(new Result(collected.Value, successProgressAnalysis));
+          } else {
+            successProgressAnalysis = successfulOffspringAnalysis[collected.Value].Value as DataTable;
+          }          
 
           int successfulCount = 0;
           foreach (string key in counts.Keys) {

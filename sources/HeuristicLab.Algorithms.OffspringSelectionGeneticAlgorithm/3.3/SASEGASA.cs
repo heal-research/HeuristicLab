@@ -502,7 +502,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
 
       successfulOffspringAnalyzer.ResultsParameter.ActualName = "Results";
       successfulOffspringAnalyzer.GenerationsParameter.ActualName = "Generations";
-      successfulOffspringAnalyzer.SuccessfulOffspringFlag.Value.Value = "SuccessfulOffspring";
+      successfulOffspringAnalyzer.SuccessfulOffspringFlagParameter.Value.Value = "SuccessfulOffspring";
       successfulOffspringAnalyzer.DepthParameter.Value = new IntValue(2);
 
       if (Problem != null) {

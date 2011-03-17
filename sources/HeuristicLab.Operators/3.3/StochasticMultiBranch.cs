@@ -51,8 +51,8 @@ namespace HeuristicLab.Operators {
     public ValueParameter<BoolValue> TraceSelectedOperatorParameter {
       get { return (ValueParameter<BoolValue>)Parameters["TraceSelectedOperator"]; }
     }
-    public ValueLookupParameter<StringValue> SelectedOperatorParameter {
-      get { return (ValueLookupParameter<StringValue>)Parameters["SelectedOperator"]; }
+    public LookupParameter<StringValue> SelectedOperatorParameter {
+      get { return (LookupParameter<StringValue>)Parameters["SelectedOperator"]; }
     }
 
     public DoubleArray Probabilities {
@@ -64,7 +64,7 @@ namespace HeuristicLab.Operators {
     private void AfterDeserializationHook() {
       #region Backwards Compatibility
       if (!Parameters.ContainsKey("SelectedOperator")) {
-        Parameters.Add(new ValueLookupParameter<StringValue>("SelectedOperator", "If the TraceSelectedOperator flag is set, the name of the operator is traced in this parameter."));
+        Parameters.Add(new LookupParameter<StringValue>("SelectedOperator", "If the TraceSelectedOperator flag is set, the name of the operator is traced in this parameter."));
       }
       if (!Parameters.ContainsKey("TraceSelectedOperator")) {
         Parameters.Add(new ValueParameter<BoolValue>("TraceSelectedOperator", "Indicates, if the selected operator should be traced.", new BoolValue(false)));
@@ -85,7 +85,7 @@ namespace HeuristicLab.Operators {
       : base() {
       Parameters.Add(new ValueLookupParameter<DoubleArray>("Probabilities", "The array of relative probabilities for each operator.", new DoubleArray()));
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));
-      Parameters.Add(new ValueLookupParameter<StringValue>("SelectedOperator", "If the TraceSelectedOperator flag is set, the name of the operator is traced in this parameter."));
+      Parameters.Add(new LookupParameter<StringValue>("SelectedOperator", "If the TraceSelectedOperator flag is set, the name of the operator is traced in this parameter."));
       Parameters.Add(new ValueParameter<BoolValue>("TraceSelectedOperator", "Indicates, if the selected operator should be traced.", new BoolValue(false)));
     }
 
