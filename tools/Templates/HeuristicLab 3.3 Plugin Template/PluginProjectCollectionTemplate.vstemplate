@@ -1,0 +1,18 @@
+<VSTemplate Version="2.0.0" Type="ProjectGroup"
+    xmlns="http://schemas.microsoft.com/developer/vstemplate/2005">
+    <TemplateData>
+        <Name>HeuristicLab 3 Plugin</Name>
+        <Description>Creates a new plugin for HeuristicLab 3.3</Description>
+        <Icon>HeuristicLabIcon.ico</Icon>
+        <ProjectType>CSharp</ProjectType>
+        <ProjectSubType>HeuristicLab</ProjectSubType>
+        <DefaultName>HeuristicLab.MyPlugin</DefaultName>
+    </TemplateData>
+    <TemplateContent>
+        <ProjectCollection>
+            <ProjectTemplateLink ProjectName="3.3">
+                3.3\PluginProjectTemplate.vstemplate
+            </ProjectTemplateLink>
+        </ProjectCollection>
+    </TemplateContent>
+</VSTemplate>
