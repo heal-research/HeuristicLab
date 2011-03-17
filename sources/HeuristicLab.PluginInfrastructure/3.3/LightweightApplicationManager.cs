@@ -121,6 +121,7 @@ namespace HeuristicLab.PluginInfrastructure {
         return from t in assemblyTypes
                where CheckTypeCompatibility(type, t)
                where onlyInstantiable == false || (!t.IsAbstract && !t.IsInterface && !t.HasElementType)
+               where !IsNonDiscoverableType(t)
                select BuildType(t, type);
       }
       catch (TypeLoadException) {
@@ -129,6 +130,10 @@ namespace HeuristicLab.PluginInfrastructure {
       catch (ReflectionTypeLoadException) {
         return Enumerable.Empty<Type>();
       }
+    }
+
+    private static bool IsNonDiscoverableType(Type t) {
+      return t.GetCustomAttributes(typeof(NonDiscoverableTypeAttribute), false).Any();
     }
 
     private static bool CheckTypeCompatibility(Type type, Type other) {

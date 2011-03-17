@@ -19,30 +19,19 @@
  */
 #endregion
 
-using HeuristicLab.Common;
-using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.PluginInfrastructure;
+using System;
 
-namespace HeuristicLab.Operators {
+namespace HeuristicLab.PluginInfrastructure {
   /// <summary>
-  /// An operator which represents an empty statement.
+  /// This attribute can be used to specify that a class is excluded from type discovery
   /// </summary>
-  [Item("EmptyOperator", "An operator which represents an empty statement.")]
-  [StorableClass]
-  [NonDiscoverableType]
-  public sealed class EmptyOperator : SingleSuccessorOperator {
-    [StorableConstructor]
-    private EmptyOperator(bool deserializing) : base(deserializing) { }
-    private EmptyOperator(EmptyOperator original, Cloner cloner)
-      : base(original, cloner) {
-    }
-    public EmptyOperator()
+  [AttributeUsage(AttributeTargets.Class)]
+  public sealed class NonDiscoverableTypeAttribute : System.Attribute {
+    /// <summary>
+    /// Initializes a new instance of <see cref="NonDiscoverableTypeAttribute"/>.
+    /// </summary>
+    public NonDiscoverableTypeAttribute()
       : base() {
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new EmptyOperator(this, cloner);
     }
   }
 }

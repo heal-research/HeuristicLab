@@ -30,6 +30,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
@@ -221,6 +222,7 @@ namespace HeuristicLab.Optimization {
 
     [Item("EmptyUserDefinedProblemEvaluator", "A dummy evaluator that will throw an exception when executed.")]
     [StorableClass]
+    [NonDiscoverableType]
     private sealed class EmptyUserDefinedProblemEvaluator : ParameterizedNamedItem, ISingleObjectiveEvaluator {
 
       [StorableConstructor]
