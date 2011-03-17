@@ -23,10 +23,12 @@ using System;
 namespace HeuristicLab.Common {
   public static class DoubleExtensions {
     public static bool IsAlmost(this double x, double y) {
-      if (double.IsPositiveInfinity(x)) return double.IsPositiveInfinity(y);
-      if (double.IsNegativeInfinity(x)) return double.IsNegativeInfinity(y);
-
-      return Math.Abs(x - y) < 1.0E-12;
+      if (double.IsInfinity(x)) {
+        if (x > 0) return double.IsPositiveInfinity(y);
+        else return double.IsNegativeInfinity(y);
+      } else {
+        return Math.Abs(x - y) < 1.0E-12;
+      }
     }
   }
 }
