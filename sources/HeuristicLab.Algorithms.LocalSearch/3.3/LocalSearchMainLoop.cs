@@ -45,11 +45,17 @@ namespace HeuristicLab.Algorithms.LocalSearch {
     public LookupParameter<DoubleValue> QualityParameter {
       get { return (LookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
+    public LookupParameter<DoubleValue> BestQualityParameter {
+      get { return (LookupParameter<DoubleValue>)Parameters["BestLocalQuality"]; }
+    }
     public ValueLookupParameter<DoubleValue> BestKnownQualityParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
     }
     public LookupParameter<DoubleValue> MoveQualityParameter {
       get { return (LookupParameter<DoubleValue>)Parameters["MoveQuality"]; }
+    }
+    public LookupParameter<IntValue> IterationsParameter {
+      get { return (LookupParameter<IntValue>)Parameters["LocalIterations"]; }
     }
     public ValueLookupParameter<IntValue> MaximumIterationsParameter {
       get { return (ValueLookupParameter<IntValue>)Parameters["MaximumIterations"]; }
@@ -78,7 +84,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
     private LocalSearchMainLoop(bool deserializing) : base(deserializing) { }
     public LocalSearchMainLoop()
       : base() {
-      Initialize();
+        Initialize();
     }
     private LocalSearchMainLoop(LocalSearchMainLoop original, Cloner cloner)
       : base(original, cloner) {
@@ -92,8 +98,10 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       Parameters.Add(new ValueLookupParameter<IRandom>("Random", "A pseudo random number generator."));
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, otherwise false."));
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The value which represents the quality of a solution."));
+      Parameters.Add(new LookupParameter<DoubleValue>("BestLocalQuality", "The value which represents the best quality found so far."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("BestKnownQuality", "The best known quality value found so far."));
       Parameters.Add(new LookupParameter<DoubleValue>("MoveQuality", "The value which represents the quality of a move."));
+      Parameters.Add(new LookupParameter<IntValue>("LocalIterations", "The number of generations."));
       Parameters.Add(new ValueLookupParameter<IntValue>("MaximumIterations", "The maximum number of generations which should be processed."));
       Parameters.Add(new ValueLookupParameter<VariableCollection>("Results", "The variable collection where results should be stored."));
 
@@ -106,7 +114,6 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       #endregion
 
       #region Create operators
-      VariableCreator variableCreator = new VariableCreator();
       SubScopesProcessor subScopesProcessor0 = new SubScopesProcessor();
       Assigner bestQualityInitializer = new Assigner();
       Placeholder analyzer1 = new Placeholder();
@@ -123,6 +130,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       ConditionalBranch improvesQualityBranch = new ConditionalBranch();
       Placeholder moveMaker = new Placeholder();
       Assigner bestQualityUpdater = new Assigner();
+      ResultsCollector resultsCollector2 = new ResultsCollector();
       MergingReducer mergingReducer = new MergingReducer();
       Placeholder analyzer2 = new Placeholder();
       SubScopesRemover subScopesRemover = new SubScopesRemover();
@@ -130,19 +138,16 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       Comparator iterationsComparator = new Comparator();
       ConditionalBranch iterationsTermination = new ConditionalBranch();
 
-      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Iterations", new IntValue(0))); // Class LocalSearch expects this to be called Iterations
-      variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("BestQuality", new DoubleValue(0)));
-
       bestQualityInitializer.Name = "Initialize BestQuality";
-      bestQualityInitializer.LeftSideParameter.ActualName = "BestQuality";
+      bestQualityInitializer.LeftSideParameter.ActualName = BestQualityParameter.Name;
       bestQualityInitializer.RightSideParameter.ActualName = QualityParameter.Name;
 
       analyzer1.Name = "Analyzer (placeholder)";
       analyzer1.OperatorParameter.ActualName = AnalyzerParameter.Name;
 
       resultsCollector1.CopyValue = new BoolValue(false);
-      resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Iterations"));
-      resultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality", null, "BestQuality"));
+      resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>(IterationsParameter.Name));
+      resultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>(BestQualityParameter.Name, null, BestQualityParameter.Name));
       resultsCollector1.ResultsParameter.ActualName = ResultsParameter.Name;
 
       moveGenerator.Name = "MoveGenerator (placeholder)";
@@ -171,8 +176,12 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       moveMaker.OperatorParameter.ActualName = MoveMakerParameter.Name;
 
       bestQualityUpdater.Name = "Update BestQuality";
-      bestQualityUpdater.LeftSideParameter.ActualName = "BestQuality";
+      bestQualityUpdater.LeftSideParameter.ActualName = BestQualityParameter.Name;
       bestQualityUpdater.RightSideParameter.ActualName = QualityParameter.Name;
+
+      resultsCollector2.CopyValue = new BoolValue(false);
+      resultsCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>(BestQualityParameter.Name, null, BestQualityParameter.Name));
+      resultsCollector2.ResultsParameter.ActualName = ResultsParameter.Name;
 
       analyzer2.Name = "Analyzer (placeholder)";
       analyzer2.OperatorParameter.ActualName = AnalyzerParameter.Name;
@@ -181,11 +190,11 @@ namespace HeuristicLab.Algorithms.LocalSearch {
 
       iterationsCounter.Name = "Iterations Counter";
       iterationsCounter.Increment = new IntValue(1);
-      iterationsCounter.ValueParameter.ActualName = "Iterations";
+      iterationsCounter.ValueParameter.ActualName = IterationsParameter.Name;
 
       iterationsComparator.Name = "Iterations >= MaximumIterations";
       iterationsComparator.Comparison = new Comparison(ComparisonType.GreaterOrEqual);
-      iterationsComparator.LeftSideParameter.ActualName = "Iterations";
+      iterationsComparator.LeftSideParameter.ActualName = IterationsParameter.Name;
       iterationsComparator.RightSideParameter.ActualName = MaximumIterationsParameter.Name;
       iterationsComparator.ResultParameter.ActualName = "Terminate";
 
@@ -194,8 +203,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       #endregion
 
       #region Create operator graph
-      OperatorGraph.InitialOperator = variableCreator;
-      variableCreator.Successor = subScopesProcessor0;
+      OperatorGraph.InitialOperator = subScopesProcessor0;
       subScopesProcessor0.Operators.Add(bestQualityInitializer);
       subScopesProcessor0.Successor = resultsCollector1;
       bestQualityInitializer.Successor = analyzer1;

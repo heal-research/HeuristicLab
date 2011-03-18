@@ -59,6 +59,9 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     public ValueLookupParameter<IntValue> InnerIterationsParameter {
       get { return (ValueLookupParameter<IntValue>)Parameters["InnerIterations"]; }
     }
+    public LookupParameter<IntValue> IterationsParameter {
+      get { return (LookupParameter<IntValue>)Parameters["LocalIterations"]; }
+    }
     public ValueLookupParameter<IntValue> MaximumIterationsParameter {
       get { return (ValueLookupParameter<IntValue>)Parameters["MaximumIterations"]; }
     }
@@ -108,6 +111,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       Parameters.Add(new ValueLookupParameter<DoubleValue>("StartTemperature", "The initial temperature."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("EndTemperature", "The end temperature."));
       Parameters.Add(new ValueLookupParameter<IntValue>("InnerIterations", "The amount of inner iterations (number of moves before temperature is adjusted again)."));
+      Parameters.Add(new LookupParameter<IntValue>("LocalIterations", "The number of generations."));
       Parameters.Add(new ValueLookupParameter<IntValue>("MaximumIterations", "The maximum number of iterations which should be processed."));
 
       Parameters.Add(new ValueLookupParameter<IOperator>("MoveGenerator", "The operator that generates the moves."));
@@ -143,10 +147,9 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       Placeholder analyzer2 = new Placeholder();
       ConditionalBranch iterationsTermination = new ConditionalBranch();
 
-      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Iterations", new IntValue(0))); // Class SimulatedAnnealing expects this to be called Iterations
       variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("Temperature", new DoubleValue(double.MaxValue)));
 
-      resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Iterations"));
+      resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>(IterationsParameter.Name));
       resultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Temperature"));
       resultsCollector1.ResultsParameter.ActualName = ResultsParameter.Name;
 
@@ -179,10 +182,10 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
 
       iterationsCounter.Name = "Increment Iterations";
       iterationsCounter.Increment = new IntValue(1);
-      iterationsCounter.ValueParameter.ActualName = "Iterations";
+      iterationsCounter.ValueParameter.ActualName = IterationsParameter.Name;
 
       iterationsComparator.Name = "Iterations >= MaximumIterations";
-      iterationsComparator.LeftSideParameter.ActualName = "Iterations";
+      iterationsComparator.LeftSideParameter.ActualName = IterationsParameter.Name;
       iterationsComparator.RightSideParameter.ActualName = MaximumIterationsParameter.Name;
       iterationsComparator.ResultParameter.ActualName = "Terminate";
       iterationsComparator.Comparison.Value = ComparisonType.GreaterOrEqual;

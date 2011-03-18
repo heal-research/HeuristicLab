@@ -167,6 +167,8 @@ namespace HeuristicLab.Algorithms.LocalSearch {
 
       variableCreator.Name = "Initialize EvaluatedMoves";
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("EvaluatedMoves", new IntValue()));
+      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Iterations", new IntValue(0)));
+      variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("BestQuality", new DoubleValue(0)));
       variableCreator.Successor = resultsCollector;
 
       resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Moves", null, "EvaluatedMoves"));
@@ -181,6 +183,8 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       mainLoop.ResultsParameter.ActualName = "Results";
       mainLoop.AnalyzerParameter.ActualName = AnalyzerParameter.Name;
       mainLoop.EvaluatedMovesParameter.ActualName = "EvaluatedMoves";
+      mainLoop.IterationsParameter.ActualName = "Iterations";
+      mainLoop.BestQualityParameter.ActualName = "BestQuality";
 
       moveQualityAnalyzer = new BestAverageWorstQualityAnalyzer();
       ParameterizeAnalyzers();

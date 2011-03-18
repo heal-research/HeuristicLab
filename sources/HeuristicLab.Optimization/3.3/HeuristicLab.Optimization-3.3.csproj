@@ -115,6 +115,7 @@
     <Compile Include="BatchRun.cs" />
     <Compile Include="Interfaces\IDiscreteDoubleMatrixModifier.cs" />
     <Compile Include="Interfaces\IGlobalParticleUpdater.cs" />
+    <Compile Include="Interfaces\ILocalImprovementOperator.cs" />
     <Compile Include="Interfaces\ILocalParticleUpdater.cs" />
     <Compile Include="Interfaces\IMultiAnalyzer.cs" />
     <Compile Include="Interfaces\IIterationBasedOperator.cs" />

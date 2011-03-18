@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{96E5ED5B-187D-4012-9CDA-D85CDAD38342}</ProjectGuid>
+    <ProjectGuid>{E4CFB0C3-0589-4893-B38E-8BEDF885C765}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeuristicLab.Algorithms.SimulatedAnnealing</RootNamespace>
-    <AssemblyName>HeuristicLab.Algorithms.SimulatedAnnealing-3.3</AssemblyName>
+    <RootNamespace>HeuristicLab.Algorithms.VariableNeighborhoodSearch</RootNamespace>
+    <AssemblyName>HeuristicLab.Algorithms.VariableNeighborhoodSearch-3.3</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
@@ -106,18 +106,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HeuristicLabAlgorithmsSimulatedAnnealingPlugin.cs" />
-    <Compile Include="SimulatedAnnealingImprovementOperator.cs" />
+    <Compile Include="HeuristicLabAlgorithmsVariableNeighborhoodSearchPlugin.cs" />
+    <Compile Include="IShakingOperator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SimulatedAnnealing.cs" />
-    <Compile Include="SimulatedAnnealingMainLoop.cs" />
+    <Compile Include="ShakingOperator.cs" />
+    <Compile Include="VariableNeighborhoodSearch.cs" />
+    <Compile Include="VariableNeighborhoodSearchMainLoop.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
-    <None Include="HeuristicLabAlgorithmsSimulatedAnnealingPlugin.cs.frame" />
+    <None Include="HeuristicLabAlgorithmsVariableNeighborhoodSearchPlugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Algorithms.LocalSearch\3.3\HeuristicLab.Algorithms.LocalSearch-3.3.csproj">
+      <Project>{4AE3FC69-C575-42D2-BC46-0FAD5850EFC5}</Project>
+      <Name>HeuristicLab.Algorithms.LocalSearch-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
       <Project>{887425B4-4348-49ED-A457-B7D2C26DDBF9}</Project>
       <Name>HeuristicLab.Analysis-3.3</Name>
@@ -166,6 +171,10 @@
       <Project>{F4539FB6-4708-40C9-BE64-0A1390AEA197}</Project>
       <Name>HeuristicLab.Random-3.3</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Selection\3.3\HeuristicLab.Selection-3.3.csproj">
+      <Project>{2C36CD4F-E5F5-43A4-801A-201EA895FE17}</Project>
+      <Name>HeuristicLab.Selection-3.3</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -199,6 +208,6 @@ set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
 call PreBuildEvent.cmd
-SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabAlgorithmsSimulatedAnnealingPlugin.cs.frame" "%25ProjectDir%25\HeuristicLabAlgorithmsSimulatedAnnealingPlugin.cs"</PreBuildEvent>
+SubWCRev "%25ProjectDir%25\" "%25ProjectDir%25\HeuristicLabAlgorithmsVariableNeighborhoodSearchPlugin.cs.frame" "%25ProjectDir%25\HeuristicLabAlgorithmsVariableNeighborhoodSearchPlugin.cs"</PreBuildEvent>
   </PropertyGroup>
 </Project>
