@@ -280,8 +280,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     private void viewsLabel_MouseLeave(object sender, EventArgs e) {
       if ((Control.MouseButtons & MouseButtons.Left) == MouseButtons.Left && startDragAndDrop) {
         DataObject data = new DataObject();
-        data.SetData("Type", Content.GetType());
-        data.SetData("Value", Content);
+        data.SetData("HeuristicLab", Content);
         DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
       } else
         startDragAndDrop = false;

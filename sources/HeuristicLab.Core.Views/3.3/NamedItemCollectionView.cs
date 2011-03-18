@@ -19,6 +19,9 @@
  */
 #endregion
 
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Collections;
 using HeuristicLab.MainForm;
@@ -74,12 +77,16 @@ namespace HeuristicLab.Core.Views {
     }
 
     #region ListView Events
-    protected override void itemsListView_DragEnterOver(object sender, DragEventArgs e) {
-      base.itemsListView_DragEnterOver(sender, e);
-      if (e.Effect != DragDropEffects.None) {
-        T item = e.Data.GetData("Value") as T;
-        if ((item == null) || (Content.ContainsKey(item.Name)))
-          e.Effect = DragDropEffects.None;
+    protected override void itemsListView_DragEnter(object sender, DragEventArgs e) {
+      base.itemsListView_DragEnter(sender, e);
+      if (validDragOperation) {
+        if (e.Data.GetData("HeuristicLab") is T) {
+          validDragOperation = validDragOperation && !Content.ContainsKey(((T)e.Data.GetData("HeuristicLab")).Name);
+        } else if (e.Data.GetData("HeuristicLab") is IEnumerable) {
+          IEnumerable<T> items = ((IEnumerable)e.Data.GetData("HeuristicLab")).Cast<T>();
+          foreach (T item in items)
+            validDragOperation = validDragOperation && !Content.ContainsKey(item.Name);
+        }
       }
     }
     #endregion

@@ -352,8 +352,7 @@ namespace HeuristicLab.Core.Views {
         IValueParameter opParam = GetOperatorParameterTag(node);
         IOperator op = GetOperatorTag(node);
         DataObject data = new DataObject();
-        data.SetData("Type", op.GetType());
-        data.SetData("Value", op);
+        data.SetData("HeuristicLab", op);
         if (ReadOnly || (opParam == null)) {
           DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
         } else {
@@ -365,23 +364,22 @@ namespace HeuristicLab.Core.Views {
     }
     private void graphTreeView_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
-      Type type = e.Data.GetData("Type") as Type;
-      if (!ReadOnly && (type != null) && (typeof(IOperator).IsAssignableFrom(type))) {
+      if (!ReadOnly && (e.Data.GetData("HeuristicLab") is IOperator)) {
         TreeNode node = graphTreeView.GetNodeAt(graphTreeView.PointToClient(new Point(e.X, e.Y)));
         if ((node != null) && !node.IsExpanded) node.Expand();
         if ((node != null) && (GetOperatorParameterTag(node) != null)) {
           if ((e.KeyState & 8) == 8) e.Effect = DragDropEffects.Copy;  // CTRL key
           else if ((e.KeyState & 4) == 4) e.Effect = DragDropEffects.Move;  // SHIFT key
-          else if ((e.AllowedEffect & DragDropEffects.Link) == DragDropEffects.Link) e.Effect = DragDropEffects.Link;
-          else if ((e.AllowedEffect & DragDropEffects.Copy) == DragDropEffects.Copy) e.Effect = DragDropEffects.Copy;
-          else if ((e.AllowedEffect & DragDropEffects.Move) == DragDropEffects.Move) e.Effect = DragDropEffects.Move;
+          else if (e.AllowedEffect.HasFlag(DragDropEffects.Link)) e.Effect = DragDropEffects.Link;
+          else if (e.AllowedEffect.HasFlag(DragDropEffects.Copy)) e.Effect = DragDropEffects.Copy;
+          else if (e.AllowedEffect.HasFlag(DragDropEffects.Move)) e.Effect = DragDropEffects.Move;
         }
       }
     }
     private void graphTreeView_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
-        IOperator op = e.Data.GetData("Value") as IOperator;
-        if ((e.Effect & DragDropEffects.Copy) == DragDropEffects.Copy) op = (IOperator)op.Clone();
+        IOperator op = e.Data.GetData("HeuristicLab") as IOperator;
+        if (e.Effect.HasFlag(DragDropEffects.Copy)) op = (IOperator)op.Clone();
         TreeNode node = graphTreeView.GetNodeAt(graphTreeView.PointToClient(new Point(e.X, e.Y)));
         IValueParameter opParam = GetOperatorParameterTag(node);
         opParam.Value = op;

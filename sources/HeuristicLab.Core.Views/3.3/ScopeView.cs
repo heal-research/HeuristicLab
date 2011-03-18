@@ -167,8 +167,7 @@ namespace HeuristicLab.Core.Views {
         IScope scope = node.Tag as IScope;
         if (scope != null) {
           DataObject data = new DataObject();
-          data.SetData("Type", scope.GetType());
-          data.SetData("Value", scope);
+          data.SetData("HeuristicLab", scope);
           DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
         }
       }

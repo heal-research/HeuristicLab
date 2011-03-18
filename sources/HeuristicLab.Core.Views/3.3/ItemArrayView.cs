@@ -36,6 +36,7 @@ namespace HeuristicLab.Core.Views {
   public partial class ItemArrayView<T> : ItemView where T : class, IItem {
     protected Dictionary<T, List<ListViewItem>> itemListViewItemMapping;
     protected TypeSelectorDialog typeSelectorDialog;
+    protected bool validDragOperation;
 
     public new IItemArray<T> Content {
       get { return (IItemArray<T>)base.Content; }
@@ -273,45 +274,51 @@ namespace HeuristicLab.Core.Views {
 
     protected virtual void itemsListView_ItemDrag(object sender, ItemDragEventArgs e) {
       if (!Locked) {
-        ListViewItem listViewItem = (ListViewItem)e.Item;
-        T item = listViewItem.Tag as T;
-        if (item != null) {
+        List<T> items = new List<T>();
+        foreach (ListViewItem listViewItem in itemsListView.SelectedItems) {
+          T item = listViewItem.Tag as T;
+          if (item != null) items.Add(item);
+        }
+
+        if (items.Count > 0) {
           DataObject data = new DataObject();
-          data.SetData("Type", item.GetType());
-          data.SetData("Value", item);
+          if (items.Count == 1) data.SetData("HeuristicLab", items[0]);
+          else data.SetData("HeuristicLab", items);
           if (Content.IsReadOnly || ReadOnly) {
             DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
           } else {
             DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link | DragDropEffects.Move);
-            if ((result & DragDropEffects.Move) == DragDropEffects.Move)
-              Content[listViewItem.Index] = null;
+            if ((result & DragDropEffects.Move) == DragDropEffects.Move) {
+              foreach (ListViewItem listViewItem in itemsListView.SelectedItems.Cast<ListViewItem>().ToArray())
+                Content[listViewItem.Index] = null;
+            }
           }
         }
       }
     }
-    protected virtual void itemsListView_DragEnterOver(object sender, DragEventArgs e) {
+    protected virtual void itemsListView_DragEnter(object sender, DragEventArgs e) {
+      validDragOperation = !Content.IsReadOnly && !ReadOnly && e.Data.GetData("HeuristicLab") is T;
+    }
+    protected virtual void itemsListView_DragOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
-      Type type = e.Data.GetData("Type") as Type;
-      if (!Content.IsReadOnly && !ReadOnly && (type != null) && (typeof(T).IsAssignableFrom(type))) {
+      if (validDragOperation) {
         Point p = itemsListView.PointToClient(new Point(e.X, e.Y));
         ListViewItem listViewItem = itemsListView.GetItemAt(p.X, p.Y);
         if (listViewItem != null) {
           if ((e.KeyState & 32) == 32) e.Effect = DragDropEffects.Link;  // ALT key
           else if ((e.KeyState & 4) == 4) e.Effect = DragDropEffects.Move;  // SHIFT key
-          else if ((e.AllowedEffect & DragDropEffects.Copy) == DragDropEffects.Copy) e.Effect = DragDropEffects.Copy;
-          else if ((e.AllowedEffect & DragDropEffects.Move) == DragDropEffects.Move) e.Effect = DragDropEffects.Move;
-          else if ((e.AllowedEffect & DragDropEffects.Link) == DragDropEffects.Link) e.Effect = DragDropEffects.Link;
+          else if (e.AllowedEffect.HasFlag(DragDropEffects.Copy)) e.Effect = DragDropEffects.Copy;
+          else if (e.AllowedEffect.HasFlag(DragDropEffects.Move)) e.Effect = DragDropEffects.Move;
+          else if (e.AllowedEffect.HasFlag(DragDropEffects.Link)) e.Effect = DragDropEffects.Link;
         }
       }
     }
     protected virtual void itemsListView_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
-        T item = e.Data.GetData("Value") as T;
-        if ((e.Effect & DragDropEffects.Copy) == DragDropEffects.Copy) item = (T)item.Clone();
-
         Point p = itemsListView.PointToClient(new Point(e.X, e.Y));
         ListViewItem listViewItem = itemsListView.GetItemAt(p.X, p.Y);
-        Content[listViewItem.Index] = item;
+        T item = e.Data.GetData("HeuristicLab") as T;
+        Content[listViewItem.Index] = e.Effect.HasFlag(DragDropEffects.Copy) ? (T)item.Clone() : item;
       }
     }
     #endregion

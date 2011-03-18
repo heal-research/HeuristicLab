@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -36,6 +37,7 @@ namespace HeuristicLab.Optimization.Views {
   [Content(typeof(IItemCollection<IRun>), false)]
   public sealed partial class RunCollectionView : ItemView {
     private Dictionary<IRun, List<ListViewItem>> itemListViewItemMapping;
+    private bool validDragOperation;
 
     public new IItemCollection<IRun> Content {
       get { return (IItemCollection<IRun>)base.Content; }
@@ -270,47 +272,50 @@ namespace HeuristicLab.Optimization.Views {
 
         if (items.Count > 0) {
           DataObject data = new DataObject();
-          if (items.Count == 1) {
-            data.SetData("Type", items[0].GetType());
-            data.SetData("Value", items[0]);
-          } else {
-            data.SetData("Type", typeof(IEnumerable<IRun>));
-            data.SetData("Value", items);
-          }
+          if (items.Count == 1) data.SetData("HeuristicLab", items[0]);
+          else data.SetData("HeuristicLab", items);
           if (Content.IsReadOnly || ReadOnly) {
             DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
           } else {
             DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link | DragDropEffects.Move);
-            if ((result & DragDropEffects.Move) == DragDropEffects.Move) {
+            if (result.HasFlag(DragDropEffects.Move)) {
               foreach (IRun item in items) Content.Remove(item);
             }
           }
         }
       }
     }
-    private void itemsListView_DragEnterOver(object sender, DragEventArgs e) {
+    private void itemsListView_DragEnter(object sender, DragEventArgs e) {
+      validDragOperation = false;
+      if (e.Data.GetData("HeuristicLab") is IRun) {
+        validDragOperation = true;
+      } else if (e.Data.GetData("HeuristicLab") is IEnumerable) {
+        validDragOperation = true;
+        IEnumerable items = (IEnumerable)e.Data.GetData("HeuristicLab");
+        foreach (object item in items)
+          validDragOperation = validDragOperation && (item is IRun);
+      }
+      validDragOperation = validDragOperation && !Content.IsReadOnly && !ReadOnly;
+    }
+    private void itemsListView_DragOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
-      Type type = e.Data.GetData("Type") as Type;
-      if (!Content.IsReadOnly && !ReadOnly && (type != null) && (typeof(IRun).IsAssignableFrom(type) || typeof(IEnumerable<IRun>).IsAssignableFrom(type))) {
+      if (validDragOperation) {
         if ((e.KeyState & 32) == 32) e.Effect = DragDropEffects.Link;  // ALT key
         else if ((e.KeyState & 4) == 4) e.Effect = DragDropEffects.Move;  // SHIFT key
-        else if ((e.AllowedEffect & DragDropEffects.Copy) == DragDropEffects.Copy) e.Effect = DragDropEffects.Copy;
-        else if ((e.AllowedEffect & DragDropEffects.Move) == DragDropEffects.Move) e.Effect = DragDropEffects.Move;
-        else if ((e.AllowedEffect & DragDropEffects.Link) == DragDropEffects.Link) e.Effect = DragDropEffects.Link;
+        else if (e.AllowedEffect.HasFlag(DragDropEffects.Copy)) e.Effect = DragDropEffects.Copy;
+        else if (e.AllowedEffect.HasFlag(DragDropEffects.Move)) e.Effect = DragDropEffects.Move;
+        else if (e.AllowedEffect.HasFlag(DragDropEffects.Link)) e.Effect = DragDropEffects.Link;
       }
     }
     private void itemsListView_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
-        object value = e.Data.GetData("Value");
-        IEnumerable<IRun> items = Enumerable.Empty<IRun>();
-        if (value is IRun)
-          items = new IRun[] { (IRun)value };
-        else if (value is IEnumerable<IRun>)
-          items = (IEnumerable<IRun>)value;
-
-        foreach (IRun item in items) {
-          if ((e.Effect & DragDropEffects.Copy) == DragDropEffects.Copy) Content.Add((IRun)item.Clone());
-          else Content.Add(item);
+        if (e.Data.GetData("HeuristicLab") is IRun) {
+          IRun item = (IRun)e.Data.GetData("HeuristicLab");
+          Content.Add(e.Effect.HasFlag(DragDropEffects.Copy) ? (IRun)item.Clone() : item);
+        } else if (e.Data.GetData("HeuristicLab") is IEnumerable) {
+          IEnumerable<IRun> items = ((IEnumerable)e.Data.GetData("HeuristicLab")).Cast<IRun>();
+          foreach (IRun item in items)
+            Content.Add(e.Effect.HasFlag(DragDropEffects.Copy) ? (IRun)item.Clone() : item);
         }
       }
     }

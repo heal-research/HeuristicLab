@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Collections;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
 
@@ -27,6 +28,8 @@ namespace HeuristicLab.Core.Views {
   [Content(typeof(ItemSet<>), true)]
   [Content(typeof(IItemSet<>), false)]
   public partial class ItemSetView<T> : ItemCollectionView<T> where T : class, IItem {
+    protected bool draggedItemsAlreadyContained;
+
     public new IItemSet<T> Content {
       get { return (IItemSet<T>)base.Content; }
       set { base.Content = value; }
@@ -36,11 +39,27 @@ namespace HeuristicLab.Core.Views {
       InitializeComponent();
     }
 
-    protected override void itemsListView_DragEnterOver(object sender, DragEventArgs e) {
-      base.itemsListView_DragEnterOver(sender, e);
-      if (e.Effect == DragDropEffects.Link || e.Effect == DragDropEffects.Move) {
-        T item = e.Data.GetData("Value") as T;
-        if (Content.Contains(item)) e.Effect = DragDropEffects.None;
+    protected override void itemsListView_DragEnter(object sender, DragEventArgs e) {
+      base.itemsListView_DragEnter(sender, e);
+      draggedItemsAlreadyContained = false;
+      if (validDragOperation) {
+        if (e.Data.GetData("HeuristicLab") is T) {
+          draggedItemsAlreadyContained = Content.Contains((T)e.Data.GetData("HeuristicLab"));
+        } else if (e.Data.GetData("HeuristicLab") is IEnumerable) {
+          IEnumerable items = (IEnumerable)e.Data.GetData("HeuristicLab");
+          foreach (object item in items)
+            draggedItemsAlreadyContained = draggedItemsAlreadyContained || Content.Contains((T)item);
+        }
+      }
+    }
+    protected override void itemsListView_DragOver(object sender, DragEventArgs e) {
+      e.Effect = DragDropEffects.None;
+      if (validDragOperation) {
+        if (((e.KeyState & 32) == 32) && !draggedItemsAlreadyContained) e.Effect = DragDropEffects.Link;  // ALT key
+        else if (((e.KeyState & 4) == 4) && !draggedItemsAlreadyContained) e.Effect = DragDropEffects.Move;  // SHIFT key
+        else if (e.AllowedEffect.HasFlag(DragDropEffects.Copy)) e.Effect = DragDropEffects.Copy;
+        else if (e.AllowedEffect.HasFlag(DragDropEffects.Move) && !draggedItemsAlreadyContained) e.Effect = DragDropEffects.Move;
+        else if (e.AllowedEffect.HasFlag(DragDropEffects.Link) && !draggedItemsAlreadyContained) e.Effect = DragDropEffects.Link;
       }
     }
   }

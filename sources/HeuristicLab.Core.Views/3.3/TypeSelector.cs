@@ -136,7 +136,8 @@ namespace HeuristicLab.Core.Views {
                   IItem item = (IItem)Activator.CreateInstance(type);
                   imageList.Images.Add(type.FullName, item.ItemImage);
                   typeNode.ImageIndex = imageList.Images.IndexOfKey(type.FullName);
-                } catch (Exception) { }
+                }
+                catch (Exception) { }
               }
               typeNode.SelectedImageIndex = typeNode.ImageIndex;
               typeNode.Tag = type;
@@ -316,8 +317,7 @@ namespace HeuristicLab.Core.Views {
       if ((type != null) && (!type.IsInterface) && (!type.IsAbstract) && (!type.HasElementType) && (!type.ContainsGenericParameters)) {
         object o = Activator.CreateInstance(type);
         DataObject data = new DataObject();
-        data.SetData("Type", type);
-        data.SetData("Value", o);
+        data.SetData("HeuristicLab", o);
         DoDragDrop(data, DragDropEffects.Copy);
       }
     }

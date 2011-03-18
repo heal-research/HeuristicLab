@@ -134,19 +134,18 @@ namespace HeuristicLab.Core.Views {
     }
     protected virtual void valuePanel_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
-      Type type = e.Data.GetData("Type") as Type;
-      if (!ReadOnly && (type != null) && (typeof(IItem).IsAssignableFrom(type))) {
+      if (!ReadOnly && (e.Data.GetData("HeuristicLab") is IItem)) {
         if ((e.KeyState & 32) == 32) e.Effect = DragDropEffects.Link;  // ALT key
         else if ((e.KeyState & 4) == 4) e.Effect = DragDropEffects.Move;  // SHIFT key
-        else if ((e.AllowedEffect & DragDropEffects.Copy) == DragDropEffects.Copy) e.Effect = DragDropEffects.Copy;
-        else if ((e.AllowedEffect & DragDropEffects.Move) == DragDropEffects.Move) e.Effect = DragDropEffects.Move;
-        else if ((e.AllowedEffect & DragDropEffects.Link) == DragDropEffects.Link) e.Effect = DragDropEffects.Link;
+        else if (e.AllowedEffect.HasFlag(DragDropEffects.Copy)) e.Effect = DragDropEffects.Copy;
+        else if (e.AllowedEffect.HasFlag(DragDropEffects.Move)) e.Effect = DragDropEffects.Move;
+        else if (e.AllowedEffect.HasFlag(DragDropEffects.Link)) e.Effect = DragDropEffects.Link;
       }
     }
     protected virtual void valuePanel_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
-        IItem item = e.Data.GetData("Value") as IItem;
-        if ((e.Effect & DragDropEffects.Copy) == DragDropEffects.Copy) item = (IItem)item.Clone();
+        IItem item = e.Data.GetData("HeuristicLab") as IItem;
+        if (e.Effect.HasFlag(DragDropEffects.Copy)) item = (IItem)item.Clone();
         Content.Value = item;
       }
     }

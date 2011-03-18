@@ -73,10 +73,10 @@ namespace HeuristicLab.Core.Views {
       this.listView.SelectedIndexChanged += new System.EventHandler(this.listView_SelectedIndexChanged);
       this.listView.DoubleClick += new System.EventHandler(this.listView_DoubleClick);
       this.listView.DragDrop += new System.Windows.Forms.DragEventHandler(this.listView_DragDrop);
-      this.listView.DragEnter += new System.Windows.Forms.DragEventHandler(this.listView_DragEnterOver);
+      this.listView.DragEnter += new System.Windows.Forms.DragEventHandler(this.listView_DragEnter);
       this.listView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listView_KeyDown);
       this.listView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.listView_ItemDrag);
-      this.listView.DragOver += new System.Windows.Forms.DragEventHandler(this.listView_DragEnterOver);
+      this.listView.DragOver += new System.Windows.Forms.DragEventHandler(this.listView_DragOver);
       // 
       // imageList
       // 

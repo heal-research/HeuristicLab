@@ -148,8 +148,7 @@ namespace HeuristicLab.Optimization.Views {
         IItem item = (IItem)listViewItem.Tag;
         if (item != null) {
           DataObject data = new DataObject();
-          data.SetData("Type", item.GetType());
-          data.SetData("Value", item);
+          data.SetData("HeuristicLab", item);
           DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy);
         }
       }

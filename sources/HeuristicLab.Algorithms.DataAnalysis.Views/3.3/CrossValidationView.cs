@@ -316,43 +316,38 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
 
     private void algorithmTabPage_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
-      if (ReadOnly) return;
-      Type type = e.Data.GetData("Type") as Type;
-      IAlgorithm algorithm = e.Data.GetData("Value") as IAlgorithm;
-      if ((type != null) && (typeof(IAlgorithm).IsAssignableFrom(type)) &&
-        algorithm != null && Content.ProblemType.IsAssignableFrom(algorithm.Problem.GetType())) {
+      IAlgorithm algorithm = e.Data.GetData("HeuristicLab") as IAlgorithm;
+      if (!ReadOnly && (algorithm != null) && Content.ProblemType.IsAssignableFrom(algorithm.Problem.GetType())) {
         if ((e.KeyState & 32) == 32) e.Effect = DragDropEffects.Link;  // ALT key
         else if ((e.KeyState & 4) == 4) e.Effect = DragDropEffects.Move;  // SHIFT key
-        else if ((e.AllowedEffect & DragDropEffects.Copy) == DragDropEffects.Copy) e.Effect = DragDropEffects.Copy;
-        else if ((e.AllowedEffect & DragDropEffects.Move) == DragDropEffects.Move) e.Effect = DragDropEffects.Move;
-        else if ((e.AllowedEffect & DragDropEffects.Link) == DragDropEffects.Link) e.Effect = DragDropEffects.Link;
+        else if (e.AllowedEffect.HasFlag(DragDropEffects.Copy)) e.Effect = DragDropEffects.Copy;
+        else if (e.AllowedEffect.HasFlag(DragDropEffects.Move)) e.Effect = DragDropEffects.Move;
+        else if (e.AllowedEffect.HasFlag(DragDropEffects.Link)) e.Effect = DragDropEffects.Link;
       }
     }
     private void algorithmTabPage_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
-        IAlgorithm algorithm = e.Data.GetData("Value") as IAlgorithm;
-        if ((e.Effect & DragDropEffects.Copy) == DragDropEffects.Copy) algorithm = (IAlgorithm)algorithm.Clone();
+        IAlgorithm algorithm = e.Data.GetData("HeuristicLab") as IAlgorithm;
+        if (e.Effect.HasFlag(DragDropEffects.Copy)) algorithm = (IAlgorithm)algorithm.Clone();
         Content.Algorithm = algorithm;
       }
     }
 
     private void algorithmProblemTabPage_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
-      if (ReadOnly) return;
-      Type type = e.Data.GetData("Type") as Type;
-      if ((type != null) && (Content.ProblemType.IsAssignableFrom(type)) &&
-        (Content.Algorithm.ProblemType.IsAssignableFrom(type))) {
+      Type type = e.Data.GetData("HeuristicLab") != null ? e.Data.GetData("HeuristicLab").GetType() : null;
+      if (!ReadOnly && (type != null) && Content.ProblemType.IsAssignableFrom(type) && Content.Algorithm.ProblemType.IsAssignableFrom(type)) {
         if ((e.KeyState & 32) == 32) e.Effect = DragDropEffects.Link;  // ALT key
         else if ((e.KeyState & 4) == 4) e.Effect = DragDropEffects.Move;  // SHIFT key
-        else if ((e.AllowedEffect & DragDropEffects.Copy) == DragDropEffects.Copy) e.Effect = DragDropEffects.Copy;
-        else if ((e.AllowedEffect & DragDropEffects.Move) == DragDropEffects.Move) e.Effect = DragDropEffects.Move;
-        else if ((e.AllowedEffect & DragDropEffects.Link) == DragDropEffects.Link) e.Effect = DragDropEffects.Link;
+        else if (e.AllowedEffect.HasFlag(DragDropEffects.Copy)) e.Effect = DragDropEffects.Copy;
+        else if (e.AllowedEffect.HasFlag(DragDropEffects.Move)) e.Effect = DragDropEffects.Move;
+        else if (e.AllowedEffect.HasFlag(DragDropEffects.Link)) e.Effect = DragDropEffects.Link;
       }
     }
     private void algorithmProblemTabPage_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
-        ISingleObjectiveDataAnalysisProblem problem = e.Data.GetData("Value") as ISingleObjectiveDataAnalysisProblem;
-        if ((e.Effect & DragDropEffects.Copy) == DragDropEffects.Copy) problem = (ISingleObjectiveDataAnalysisProblem)problem.Clone();
+        ISingleObjectiveDataAnalysisProblem problem = e.Data.GetData("HeuristicLab") as ISingleObjectiveDataAnalysisProblem;
+        if (e.Effect.HasFlag(DragDropEffects.Copy)) problem = (ISingleObjectiveDataAnalysisProblem)problem.Clone();
         Content.Problem = problem;
       }
     }

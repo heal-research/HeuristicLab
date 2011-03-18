@@ -150,8 +150,8 @@ namespace HeuristicLab.Core.Views {
       this.itemsListView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.itemsListView_ItemDrag);
       this.itemsListView.SelectedIndexChanged += new System.EventHandler(this.itemsListView_SelectedIndexChanged);
       this.itemsListView.DragDrop += new System.Windows.Forms.DragEventHandler(this.itemsListView_DragDrop);
-      this.itemsListView.DragEnter += new System.Windows.Forms.DragEventHandler(this.itemsListView_DragEnterOver);
-      this.itemsListView.DragOver += new System.Windows.Forms.DragEventHandler(this.itemsListView_DragEnterOver);
+      this.itemsListView.DragEnter += new System.Windows.Forms.DragEventHandler(this.itemsListView_DragEnter);
+      this.itemsListView.DragOver += new System.Windows.Forms.DragEventHandler(this.itemsListView_DragOver);
       this.itemsListView.DoubleClick += new System.EventHandler(this.itemsListView_DoubleClick);
       this.itemsListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.itemsListView_KeyDown);
       // 

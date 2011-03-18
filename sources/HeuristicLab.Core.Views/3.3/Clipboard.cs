@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -34,6 +35,8 @@ namespace HeuristicLab.Core.Views {
   public sealed partial class Clipboard<T> : HeuristicLab.MainForm.WindowsForms.Sidebar where T : class, IItem {
     private TypeSelectorDialog typeSelectorDialog;
     private Dictionary<T, ListViewItem> itemListViewItemMapping;
+    private bool validDragOperation;
+    private bool draggedItemsAlreadyContained;
 
     private string itemsPath;
     public string ItemsPath {
@@ -263,39 +266,64 @@ namespace HeuristicLab.Core.Views {
       }
     }
     private void listView_ItemDrag(object sender, ItemDragEventArgs e) {
-      ListViewItem listViewItem = (ListViewItem)e.Item;
-      T item = (T)listViewItem.Tag;
-      DataObject data = new DataObject();
-      data.SetData("Type", item.GetType());
-      data.SetData("Value", item);
-      if (ReadOnly) {
-        DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
-      } else {
-        DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link | DragDropEffects.Move);
-        if ((result & DragDropEffects.Move) == DragDropEffects.Move) {
-          RemoveItem(item);
-          RebuildImageList();
+      List<T> items = new List<T>();
+      foreach (ListViewItem listViewItem in listView.SelectedItems) {
+        T item = listViewItem.Tag as T;
+        if (item != null) items.Add(item);
+      }
+
+      if (items.Count > 0) {
+        DataObject data = new DataObject();
+        if (items.Count == 1) data.SetData("HeuristicLab", items[0]);
+        else data.SetData("HeuristicLab", items);
+        if (ReadOnly) {
+          DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
+        } else {
+          DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link | DragDropEffects.Move);
+          if ((result & DragDropEffects.Move) == DragDropEffects.Move) {
+            foreach (T item in items) RemoveItem(item);
+            RebuildImageList();
+          }
         }
       }
     }
-    private void listView_DragEnterOver(object sender, DragEventArgs e) {
+    private void listView_DragEnter(object sender, DragEventArgs e) {
+      validDragOperation = false;
+      draggedItemsAlreadyContained = false;
+      if (e.Data.GetData("HeuristicLab") is T) {
+        validDragOperation = true;
+        draggedItemsAlreadyContained = itemListViewItemMapping.ContainsKey((T)e.Data.GetData("HeuristicLab"));
+      } else if (e.Data.GetData("HeuristicLab") is IEnumerable) {
+        validDragOperation = true;
+        IEnumerable items = (IEnumerable)e.Data.GetData("HeuristicLab");
+        foreach (object item in items) {
+          validDragOperation = validDragOperation && (item is T);
+          draggedItemsAlreadyContained = draggedItemsAlreadyContained || itemListViewItemMapping.ContainsKey((T)item);
+        }
+      }
+      validDragOperation = validDragOperation && !ReadOnly;
+    }
+    private void listView_DragOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
-      Type type = e.Data.GetData("Type") as Type;
-      T item = e.Data.GetData("Value") as T;
-      if (!ReadOnly && (type != null) && (item != null)) {
-        if ((e.KeyState & 32) == 32) e.Effect = DragDropEffects.Link;  // ALT key
-        else if (((e.KeyState & 4) == 4) && !itemListViewItemMapping.ContainsKey(item)) e.Effect = DragDropEffects.Move;  // SHIFT key
-        else if ((e.AllowedEffect & DragDropEffects.Copy) == DragDropEffects.Copy) e.Effect = DragDropEffects.Copy;
-        else if (((e.AllowedEffect & DragDropEffects.Move) == DragDropEffects.Move) && !itemListViewItemMapping.ContainsKey(item)) e.Effect = DragDropEffects.Move;
-        else if (((e.AllowedEffect & DragDropEffects.Link) == DragDropEffects.Link) && !itemListViewItemMapping.ContainsKey(item)) e.Effect = DragDropEffects.Link;
+      if (validDragOperation) {
+        if (((e.KeyState & 32) == 32) && !draggedItemsAlreadyContained) e.Effect = DragDropEffects.Link;  // ALT key
+        else if (((e.KeyState & 4) == 4) && !draggedItemsAlreadyContained) e.Effect = DragDropEffects.Move;  // SHIFT key
+        else if (e.AllowedEffect.HasFlag(DragDropEffects.Copy)) e.Effect = DragDropEffects.Copy;
+        else if (e.AllowedEffect.HasFlag(DragDropEffects.Move) && !draggedItemsAlreadyContained) e.Effect = DragDropEffects.Move;
+        else if (e.AllowedEffect.HasFlag(DragDropEffects.Link) && !draggedItemsAlreadyContained) e.Effect = DragDropEffects.Link;
       }
     }
     private void listView_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
-        T item = e.Data.GetData("Value") as T;
-        if ((e.Effect & DragDropEffects.Copy) == DragDropEffects.Copy) item = (T)item.Clone();
         try {
-          AddItem(item);
+          if (e.Data.GetData("HeuristicLab") is T) {
+            T item = (T)e.Data.GetData("HeuristicLab");
+            AddItem(e.Effect.HasFlag(DragDropEffects.Copy) ? (T)item.Clone() : item);
+          } else if (e.Data.GetData("HeuristicLab") is IEnumerable) {
+            IEnumerable<T> items = ((IEnumerable)e.Data.GetData("HeuristicLab")).Cast<T>();
+            foreach (T item in items)
+              AddItem(e.Effect.HasFlag(DragDropEffects.Copy) ? (T)item.Clone() : item);
+          }
         }
         catch (Exception ex) {
           ErrorHandling.ShowErrorDialog(this, ex);
