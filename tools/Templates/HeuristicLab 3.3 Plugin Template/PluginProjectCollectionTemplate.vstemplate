@@ -10,7 +10,7 @@
     </TemplateData>
     <TemplateContent>
         <ProjectCollection>
-            <ProjectTemplateLink ProjectName="3.3">
+            <ProjectTemplateLink>
                 3.3\PluginProjectTemplate.vstemplate
             </ProjectTemplateLink>
         </ProjectCollection>
