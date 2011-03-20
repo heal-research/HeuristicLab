@@ -54,6 +54,18 @@ namespace HeuristicLab.Parameters {
       get { return dataType; }
     }
 
+    [Storable(DefaultValue = false)]
+    private bool hidden;
+    public bool Hidden {
+      get { return hidden; }
+      set {
+        if (value != hidden) {
+          hidden = value;
+          OnHiddenChanged();
+        }
+      }
+    }
+
     private Lazy<ThreadLocal<IItem>> cachedActualValues;
     public IItem ActualValue {
       get {
@@ -85,12 +97,14 @@ namespace HeuristicLab.Parameters {
     protected Parameter(Parameter original, Cloner cloner)
       : base(original, cloner) {
       dataType = original.dataType;
+      hidden = original.hidden;
       cachedActualValues = new Lazy<ThreadLocal<IItem>>(() => { return new ThreadLocal<IItem>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
       executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
     }
     protected Parameter()
       : base("Anonymous") {
       dataType = typeof(IItem);
+      hidden = false;
       cachedActualValues = new Lazy<ThreadLocal<IItem>>(() => { return new ThreadLocal<IItem>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
       executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
     }
@@ -98,6 +112,7 @@ namespace HeuristicLab.Parameters {
       : base(name) {
       if (dataType == null) throw new ArgumentNullException();
       this.dataType = dataType;
+      hidden = false;
       cachedActualValues = new Lazy<ThreadLocal<IItem>>(() => { return new ThreadLocal<IItem>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
       executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
     }
@@ -105,6 +120,7 @@ namespace HeuristicLab.Parameters {
       : base(name, description) {
       if (dataType == null) throw new ArgumentNullException();
       this.dataType = dataType;
+      hidden = false;
       cachedActualValues = new Lazy<ThreadLocal<IItem>>(() => { return new ThreadLocal<IItem>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
       executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
     }
@@ -115,5 +131,11 @@ namespace HeuristicLab.Parameters {
 
     protected abstract IItem GetActualValue();
     protected abstract void SetActualValue(IItem value);
+
+    public event EventHandler HiddenChanged;
+    protected virtual void OnHiddenChanged() {
+      EventHandler handler = HiddenChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
   }
 }

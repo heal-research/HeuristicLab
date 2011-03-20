@@ -20,6 +20,9 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
 
@@ -45,6 +48,15 @@ namespace HeuristicLab.Core.Views {
       base.Dispose(disposing);
     }
 
+    protected override void DeregisterItemEvents(IParameter item) {
+      item.HiddenChanged -= new EventHandler(Item_HiddenChanged);
+      base.DeregisterItemEvents(item);
+    }
+    protected override void RegisterItemEvents(IParameter item) {
+      base.RegisterItemEvents(item);
+      item.HiddenChanged += new EventHandler(Item_HiddenChanged);
+    }
+
     protected override IParameter CreateItem() {
       if (createParameterDialog == null) createParameterDialog = new CreateParameterDialog();
 
@@ -56,5 +68,87 @@ namespace HeuristicLab.Core.Views {
       }
       return null;
     }
+
+    protected override void AddListViewItem(ListViewItem listViewItem) {
+      IParameter parameter = listViewItem.Tag as IParameter;
+      if ((parameter != null) && (parameter.Hidden) && (!showHiddenParametersCheckBox.Checked)) {
+        return; // skip parameter
+      }
+      if ((parameter != null) && (parameter.Hidden) && (showHiddenParametersCheckBox.Checked)) {
+        listViewItem.Font = new Font(listViewItem.Font, FontStyle.Italic);
+        listViewItem.ForeColor = Color.LightGray;
+      }
+      base.AddListViewItem(listViewItem);
+    }
+
+    protected virtual void UpdateParameterVisibility(IParameter parameter) {
+      if (parameter.Hidden) {
+        if (showHiddenParametersCheckBox.Checked) {
+          foreach (ListViewItem listViewItem in GetListViewItemsForItem(parameter)) {
+            listViewItem.Font = new Font(listViewItem.Font, FontStyle.Italic);
+            listViewItem.ForeColor = Color.LightGray;
+          }
+        } else {
+          foreach (ListViewItem listViewItem in GetListViewItemsForItem(parameter).ToArray())
+            RemoveListViewItem(listViewItem);
+          RebuildImageList();
+        }
+      } else {
+        if (showHiddenParametersCheckBox.Checked) {
+          foreach (ListViewItem listViewItem in GetListViewItemsForItem(parameter)) {
+            listViewItem.Font = new Font(listViewItem.Font, FontStyle.Regular);
+            listViewItem.ForeColor = itemsListView.ForeColor;
+          }
+        } else {
+          for (int i = 0; i < Content.Count(x => x == parameter); i++)
+            AddListViewItem(CreateListViewItem(parameter));
+        }
+      }
+      AdjustListViewColumnSizes();
+    }
+
+    #region Control Events
+    protected virtual void showHiddenParametersCheckBox_CheckedChanged(object sender, System.EventArgs e) {
+      if (showHiddenParametersCheckBox.Checked) {
+        foreach (IParameter parameter in Content.Where(x => x.Hidden))
+          AddListViewItem(CreateListViewItem(parameter));
+        AdjustListViewColumnSizes();
+      } else {
+        foreach (IParameter parameter in Content.Where(x => x.Hidden)) {
+          foreach (ListViewItem listViewItem in GetListViewItemsForItem(parameter).ToArray())
+            RemoveListViewItem(listViewItem);
+        }
+        RebuildImageList();
+      }
+    }
+    protected virtual void itemsListViewContextMenuStrip_Opening(object sender, System.ComponentModel.CancelEventArgs e) {
+      if ((itemsListView.SelectedItems.Count == 0) || ReadOnly || Locked) {
+        showHideParametersToolStripMenuItem.Enabled = false;
+      } else {
+        List<IParameter> parameters = new List<IParameter>();
+        foreach (ListViewItem listViewItem in itemsListView.SelectedItems) {
+          IParameter parameter = listViewItem.Tag as IParameter;
+          if (parameter != null) parameters.Add(parameter);
+        }
+        showHideParametersToolStripMenuItem.Enabled = (parameters.Count > 0) && (parameters.All(x => x.Hidden == parameters[0].Hidden));
+        if (parameters.Count == 1) showHideParametersToolStripMenuItem.Text = parameters[0].Hidden ? "Show Parameter" : "Hide Parameter";
+        else showHideParametersToolStripMenuItem.Text = parameters[0].Hidden ? "Show Parameters" : "Hide Parameters";
+        showHideParametersToolStripMenuItem.Tag = parameters;
+      }
+    }
+    protected virtual void showHideParametersToolStripMenuItem_Click(object sender, System.EventArgs e) {
+      foreach (IParameter parameter in (IEnumerable<IParameter>)showHideParametersToolStripMenuItem.Tag)
+        parameter.Hidden = !parameter.Hidden;
+    }
+    #endregion
+
+    #region Item Events
+    protected virtual void Item_HiddenChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Item_HiddenChanged), sender, e);
+      else
+        UpdateParameterVisibility((IParameter)sender);
+    }
+    #endregion
   }
 }

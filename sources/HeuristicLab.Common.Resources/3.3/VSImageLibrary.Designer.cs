@@ -424,6 +424,13 @@ namespace HeuristicLab.Common.Resources {
             }
         }
         
+        public static System.Drawing.Bitmap HiddenField {
+            get {
+                object obj = ResourceManager.GetObject("HiddenField", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         public static System.Drawing.Bitmap HighPriorityLarge {
             get {
                 object obj = ResourceManager.GetObject("HighPriorityLarge", resourceCulture);
