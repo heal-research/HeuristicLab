@@ -53,8 +53,8 @@ namespace HeuristicLab.Operators {
 
 
     [StorableConstructor]
-    private SubScopesCloner(bool deserializing) : base(deserializing) { }
-    private SubScopesCloner(SubScopesCloner original, Cloner cloner)
+    protected SubScopesCloner(bool deserializing) : base(deserializing) { }
+    protected SubScopesCloner(SubScopesCloner original, Cloner cloner)
       : base(original, cloner) {
     }
     public SubScopesCloner()
