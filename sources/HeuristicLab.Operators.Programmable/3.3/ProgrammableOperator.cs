@@ -85,9 +85,9 @@ namespace HeuristicLab.Operators.Programmable {
         return Assemblies.Where(a => a.Value).Select(a => a.Key.FullName).ToList();
       }
       set {
-        var selectedAssemblyNames = new HashSet<string>(value);
+        var selectedAssemblyNames = new HashSet<string>(value.Select(n => new AssemblyName(n).Name));
         foreach (var a in Assemblies.Keys.ToList()) {
-          Assemblies[a] = selectedAssemblyNames.Contains(a.FullName);
+          Assemblies[a] = selectedAssemblyNames.Contains(new AssemblyName(a.FullName).Name);
         }
       }
     }
