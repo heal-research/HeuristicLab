@@ -31,7 +31,9 @@ namespace HeuristicLab.Core.Views {
     public IParameter Parameter {
       get {
         try {
-          return (IParameter)Activator.CreateInstance(parameterTypeSelector.SelectedType, nameTextBox.Text, descriptionTextBox.Text);
+          IParameter parameter = (IParameter)Activator.CreateInstance(parameterTypeSelector.SelectedType, nameTextBox.Text, descriptionTextBox.Text);
+          parameter.Hidden = false;
+          return parameter;
         }
         catch (Exception ex) {
           ErrorHandling.ShowErrorDialog(this, ex);

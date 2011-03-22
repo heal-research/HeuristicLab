@@ -40,12 +40,15 @@ namespace HeuristicLab.Parameters {
     protected ScopeParameter(ScopeParameter original, Cloner cloner) : base(original, cloner) { }
     public ScopeParameter()
       : base("Anonymous", typeof(IScope)) {
+      this.Hidden = true;
     }
     public ScopeParameter(string name)
       : base(name, typeof(IScope)) {
+      this.Hidden = true;
     }
     public ScopeParameter(string name, string description)
       : base(name, description, typeof(IScope)) {
+      this.Hidden = true;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

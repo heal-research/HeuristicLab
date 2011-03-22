@@ -88,54 +88,65 @@ namespace HeuristicLab.Parameters {
     }
     public ValueLookupParameter()
       : base() {
+      this.Hidden = false;
       this.getsCollected = true;
     }
     public ValueLookupParameter(string name)
       : base(name) {
+      this.Hidden = false;
       this.getsCollected = true;
     }
     public ValueLookupParameter(string name, bool getsCollected)
       : base(name) {
+      this.Hidden = false;
       this.getsCollected = getsCollected;
     }
     public ValueLookupParameter(string name, T value)
       : base(name) {
       this.value = value;
+      this.Hidden = false;
       this.getsCollected = true;
       RegisterValueEvents();
     }
     public ValueLookupParameter(string name, T value, bool getsCollected)
       : base(name) {
       this.value = value;
+      this.Hidden = false;
       this.getsCollected = getsCollected;
       RegisterValueEvents();
     }
     public ValueLookupParameter(string name, string description)
       : base(name, description) {
+      this.Hidden = false;
       this.getsCollected = true;
     }
     public ValueLookupParameter(string name, string description, bool getsCollected)
       : base(name, description) {
+      this.Hidden = false;
       this.getsCollected = getsCollected;
     }
     public ValueLookupParameter(string name, string description, T value)
       : base(name, description) {
       this.value = value;
+      this.Hidden = false;
       this.getsCollected = true;
       RegisterValueEvents();
     }
     public ValueLookupParameter(string name, string description, T value, bool getsCollected)
       : base(name, description) {
       this.value = value;
+      this.Hidden = false;
       this.getsCollected = getsCollected;
       RegisterValueEvents();
     }
     public ValueLookupParameter(string name, string description, string actualName)
       : base(name, description, actualName) {
+      this.Hidden = false;
       this.getsCollected = true;
     }
     public ValueLookupParameter(string name, string description, string actualName, bool getsCollected)
       : base(name, description, actualName) {
+      this.Hidden = false;
       this.getsCollected = getsCollected;
     }
     #endregion
