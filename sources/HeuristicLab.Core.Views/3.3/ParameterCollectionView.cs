@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using HeuristicLab.Collections;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Core.Views {
@@ -32,9 +33,7 @@ namespace HeuristicLab.Core.Views {
   [Content(typeof(IKeyedItemCollection<string, IParameter>), false)]
   public partial class ParameterCollectionView : NamedItemCollectionView<IParameter> {
     protected CreateParameterDialog createParameterDialog;
-    /// <summary>
-    /// Initializes a new instance of <see cref="VariablesScopeView"/> with caption "Variables Scope View".
-    /// </summary>
+
     public ParameterCollectionView() {
       InitializeComponent();
       itemsGroupBox.Text = "Parameters";
@@ -57,6 +56,17 @@ namespace HeuristicLab.Core.Views {
       item.HiddenChanged += new EventHandler(Item_HiddenChanged);
     }
 
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
+      if ((Content == null) || !Content.Any(x => x.Hidden))
+        showHiddenParametersCheckBox.Checked = false;
+    }
+
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
+      showHiddenParametersCheckBox.Enabled = (Content != null) && Content.Any(x => x.Hidden);
+    }
+
     protected override IParameter CreateItem() {
       if (createParameterDialog == null) createParameterDialog = new CreateParameterDialog();
 
@@ -69,62 +79,63 @@ namespace HeuristicLab.Core.Views {
       return null;
     }
 
-    protected override void AddListViewItem(ListViewItem listViewItem) {
-      IParameter parameter = listViewItem.Tag as IParameter;
-      if ((parameter != null) && (parameter.Hidden) && (!showHiddenParametersCheckBox.Checked)) {
-        return; // skip parameter
-      }
-      if ((parameter != null) && (parameter.Hidden) && (showHiddenParametersCheckBox.Checked)) {
+    protected override ListViewItem CreateListViewItem(IParameter item) {
+      ListViewItem listViewItem = base.CreateListViewItem(item);
+      if ((item != null) && item.Hidden) {
         listViewItem.Font = new Font(listViewItem.Font, FontStyle.Italic);
         listViewItem.ForeColor = Color.LightGray;
       }
+      return listViewItem;
+    }
+
+    protected override void AddListViewItem(ListViewItem listViewItem) {
       base.AddListViewItem(listViewItem);
+      IParameter parameter = listViewItem.Tag as IParameter;
+      if ((parameter != null) && parameter.Hidden && !showHiddenParametersCheckBox.Checked) {
+        itemsListView.Items.Remove(listViewItem);
+        RebuildImageList();
+      }
     }
 
     protected virtual void UpdateParameterVisibility(IParameter parameter) {
-      if (parameter.Hidden) {
-        if (showHiddenParametersCheckBox.Checked) {
-          foreach (ListViewItem listViewItem in GetListViewItemsForItem(parameter)) {
-            listViewItem.Font = new Font(listViewItem.Font, FontStyle.Italic);
-            listViewItem.ForeColor = Color.LightGray;
-          }
+      foreach (ListViewItem listViewItem in GetListViewItemsForItem(parameter)) {
+        if (parameter.Hidden) {
+          listViewItem.Font = new Font(listViewItem.Font, FontStyle.Italic);
+          listViewItem.ForeColor = Color.LightGray;
+          if (!showHiddenParametersCheckBox.Checked)
+            itemsListView.Items.Remove(listViewItem);
         } else {
-          foreach (ListViewItem listViewItem in GetListViewItemsForItem(parameter).ToArray())
-            RemoveListViewItem(listViewItem);
-          RebuildImageList();
-        }
-      } else {
-        if (showHiddenParametersCheckBox.Checked) {
-          foreach (ListViewItem listViewItem in GetListViewItemsForItem(parameter)) {
-            listViewItem.Font = new Font(listViewItem.Font, FontStyle.Regular);
-            listViewItem.ForeColor = itemsListView.ForeColor;
-          }
-        } else {
-          for (int i = 0; i < Content.Count(x => x == parameter); i++)
-            AddListViewItem(CreateListViewItem(parameter));
+          listViewItem.Font = new Font(listViewItem.Font, FontStyle.Regular);
+          listViewItem.ForeColor = itemsListView.ForeColor;
+          if (!showHiddenParametersCheckBox.Checked)
+            itemsListView.Items.Add(listViewItem);
         }
       }
+      RebuildImageList();
       AdjustListViewColumnSizes();
+      if (!Content.Any(x => x.Hidden)) showHiddenParametersCheckBox.Checked = false;
+      showHiddenParametersCheckBox.Enabled = (Content != null) && Content.Any(x => x.Hidden);
     }
 
     #region Control Events
     protected virtual void showHiddenParametersCheckBox_CheckedChanged(object sender, System.EventArgs e) {
-      if (showHiddenParametersCheckBox.Checked) {
-        foreach (IParameter parameter in Content.Where(x => x.Hidden))
-          AddListViewItem(CreateListViewItem(parameter));
-        AdjustListViewColumnSizes();
-      } else {
-        foreach (IParameter parameter in Content.Where(x => x.Hidden)) {
-          foreach (ListViewItem listViewItem in GetListViewItemsForItem(parameter).ToArray())
-            RemoveListViewItem(listViewItem);
+      if (Content != null) {
+        foreach (IParameter parameter in itemListViewItemMapping.Keys.Where(x => x.Hidden).OrderBy(x => x.ToString())) {
+          foreach (ListViewItem listViewItem in GetListViewItemsForItem(parameter)) {
+            if (showHiddenParametersCheckBox.Checked)
+              itemsListView.Items.Add(listViewItem);
+            else
+              itemsListView.Items.Remove(listViewItem);
+          }
         }
         RebuildImageList();
+        AdjustListViewColumnSizes();
       }
     }
     protected virtual void itemsListViewContextMenuStrip_Opening(object sender, System.ComponentModel.CancelEventArgs e) {
-      if ((itemsListView.SelectedItems.Count == 0) || ReadOnly || Locked) {
-        showHideParametersToolStripMenuItem.Enabled = false;
-      } else {
+      showHideParametersToolStripMenuItem.Text = "Show/Hide Parameters";
+      showHideParametersToolStripMenuItem.Enabled = false;
+      if ((itemsListView.SelectedItems.Count > 0) && !ReadOnly && !Locked) {
         List<IParameter> parameters = new List<IParameter>();
         foreach (ListViewItem listViewItem in itemsListView.SelectedItems) {
           IParameter parameter = listViewItem.Tag as IParameter;
@@ -142,12 +153,56 @@ namespace HeuristicLab.Core.Views {
     }
     #endregion
 
+    #region Content Events
+    protected override void Content_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IParameter> e) {
+      if (InvokeRequired)
+        Invoke(new CollectionItemsChangedEventHandler<IParameter>(Content_ItemsAdded), sender, e);
+      else {
+        base.Content_ItemsAdded(sender, e);
+        showHiddenParametersCheckBox.Enabled = Content.Any(x => x.Hidden);
+      }
+    }
+    protected override void Content_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IParameter> e) {
+      if (InvokeRequired)
+        Invoke(new CollectionItemsChangedEventHandler<IParameter>(Content_ItemsRemoved), sender, e);
+      else {
+        base.Content_ItemsRemoved(sender, e);
+        if (!Content.Any(x => x.Hidden)) showHiddenParametersCheckBox.Checked = false;
+        showHiddenParametersCheckBox.Enabled = Content.Any(x => x.Hidden);
+      }
+    }
+    protected override void Content_CollectionReset(object sender, CollectionItemsChangedEventArgs<IParameter> e) {
+      if (InvokeRequired)
+        Invoke(new CollectionItemsChangedEventHandler<IParameter>(Content_CollectionReset), sender, e);
+      else {
+        base.Content_CollectionReset(sender, e);
+        if (!Content.Any(x => x.Hidden)) showHiddenParametersCheckBox.Checked = false;
+        showHiddenParametersCheckBox.Enabled = Content.Any(x => x.Hidden);
+      }
+    }
+    #endregion
+
     #region Item Events
     protected virtual void Item_HiddenChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Item_HiddenChanged), sender, e);
       else
         UpdateParameterVisibility((IParameter)sender);
+    }
+    #endregion
+
+    #region Helpers
+    protected override void RebuildImageList() {
+      base.RebuildImageList();
+      if (!showHiddenParametersCheckBox.Checked) {
+        // update image of hidden list view items
+        foreach (IParameter parameter in itemListViewItemMapping.Keys.Where(x => x.Hidden)) {
+          foreach (ListViewItem listViewItem in GetListViewItemsForItem(parameter)) {
+            itemsListView.SmallImageList.Images.Add(parameter.ItemImage);
+            listViewItem.ImageIndex = itemsListView.SmallImageList.Images.Count - 1;
+          }
+        }
+      }
     }
     #endregion
   }
