@@ -38,13 +38,13 @@ using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [StorableClass]
-  public abstract class SymbolicRegressionProblemBase : DataAnalysisProblem, IProblem {
+  public abstract class SymbolicRegressionProblemBase : DataAnalysisProblem, IHeuristicOptimizationProblem {
 
     #region Parameter Properties
     public new ValueParameter<SymbolicExpressionTreeCreator> SolutionCreatorParameter {
       get { return (ValueParameter<SymbolicExpressionTreeCreator>)Parameters["SolutionCreator"]; }
     }
-    IParameter IProblem.SolutionCreatorParameter {
+    IParameter IHeuristicOptimizationProblem.SolutionCreatorParameter {
       get { return SolutionCreatorParameter; }
     }
     public ValueParameter<DoubleValue> LowerEstimationLimitParameter {
@@ -94,7 +94,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       get { return SolutionCreatorParameter.Value; }
       set { SolutionCreatorParameter.Value = value; }
     }
-    ISolutionCreator IProblem.SolutionCreator {
+    ISolutionCreator IHeuristicOptimizationProblem.SolutionCreator {
       get { return SolutionCreatorParameter.Value; }
     }
     public ISymbolicExpressionTreeInterpreter SymbolicExpressionTreeInterpreter {

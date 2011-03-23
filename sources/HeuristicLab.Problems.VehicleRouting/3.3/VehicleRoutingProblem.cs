@@ -39,7 +39,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
   [Item("Vehicle Routing Problem", "Represents a Vehicle Routing Problem.")]
   [Creatable("Problems")]
   [StorableClass]
-  public sealed class VehicleRoutingProblem : ParameterizedNamedItem, ISingleObjectiveProblem, IStorableContent {
+  public sealed class VehicleRoutingProblem : ParameterizedNamedItem, ISingleObjectiveHeuristicOptimizationProblem, IStorableContent {
     public string Filename { get; set; }
 
     public override Image ItemImage {
@@ -50,7 +50,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     public ValueParameter<BoolValue> MaximizationParameter {
       get { return (ValueParameter<BoolValue>)Parameters["Maximization"]; }
     }
-    IParameter ISingleObjectiveProblem.MaximizationParameter {
+    IParameter ISingleObjectiveHeuristicOptimizationProblem.MaximizationParameter {
       get { return MaximizationParameter; }
     }
     public ValueParameter<DoubleMatrix> CoordinatesParameter {
@@ -83,13 +83,13 @@ namespace HeuristicLab.Problems.VehicleRouting {
     ValueParameter<IVRPCreator> SolutionCreatorParameter {
       get { return (ValueParameter<IVRPCreator>)Parameters["SolutionCreator"]; }
     }
-    IParameter IProblem.SolutionCreatorParameter {
+    IParameter IHeuristicOptimizationProblem.SolutionCreatorParameter {
       get { return SolutionCreatorParameter; }
     }
     ValueParameter<IVRPEvaluator> EvaluatorParameter {
       get { return (ValueParameter<IVRPEvaluator>)Parameters["Evaluator"]; }
     }
-    IParameter IProblem.EvaluatorParameter {
+    IParameter IHeuristicOptimizationProblem.EvaluatorParameter {
       get { return EvaluatorParameter; }
     }
     public IValueParameter<DoubleValue> FleetUsageFactorParameter {
@@ -110,7 +110,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     public OptionalValueParameter<DoubleValue> BestKnownQualityParameter {
       get { return (OptionalValueParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
     }
-    IParameter ISingleObjectiveProblem.BestKnownQualityParameter {
+    IParameter ISingleObjectiveHeuristicOptimizationProblem.BestKnownQualityParameter {
       get { return BestKnownQualityParameter; }
     }
     public OptionalValueParameter<IVRPEncoding> BestKnownSolutionParameter {
@@ -167,17 +167,17 @@ namespace HeuristicLab.Problems.VehicleRouting {
       get { return SolutionCreatorParameter.Value; }
       set { SolutionCreatorParameter.Value = value; }
     }
-    ISolutionCreator IProblem.SolutionCreator {
+    ISolutionCreator IHeuristicOptimizationProblem.SolutionCreator {
       get { return SolutionCreatorParameter.Value; }
     }
     IVRPEvaluator Evaluator {
       get { return EvaluatorParameter.Value; }
       set { EvaluatorParameter.Value = value; }
     }
-    ISingleObjectiveEvaluator ISingleObjectiveProblem.Evaluator {
+    ISingleObjectiveEvaluator ISingleObjectiveHeuristicOptimizationProblem.Evaluator {
       get { return EvaluatorParameter.Value; }
     }
-    IEvaluator IProblem.Evaluator {
+    IEvaluator IHeuristicOptimizationProblem.Evaluator {
       get { return EvaluatorParameter.Value; }
     }
     public IEnumerable<IOperator> Operators {

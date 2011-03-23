@@ -32,13 +32,14 @@ using HeuristicLab.Problems.DataAnalysis.Regression.LinearRegression;
 using HeuristicLab.Problems.DataAnalysis.Regression.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Linear regression data analysis algorithm.
   /// </summary>
+  [NonDiscoverableType]
   [Item("Linear Regression", "Linear regression data analysis algorithm.")]
-  [Creatable("Data Analysis")]
   [StorableClass]
   public sealed class LinearRegression : EngineAlgorithm, IStorableContent {
     private const string TrainingSamplesStartParameterName = "Training start";

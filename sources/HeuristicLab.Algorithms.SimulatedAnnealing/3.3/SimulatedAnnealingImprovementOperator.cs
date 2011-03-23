@@ -155,15 +155,15 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       UpdateMoveOperators(problem);
       ChooseMoveOperators();
 
-      ParameterizeMoveGenerators(problem as ISingleObjectiveProblem);
-      ParameterizeMoveEvaluators(problem as ISingleObjectiveProblem);
-      ParameterizeMoveMakers(problem as ISingleObjectiveProblem);
+      ParameterizeMoveGenerators(problem as ISingleObjectiveHeuristicOptimizationProblem);
+      ParameterizeMoveEvaluators(problem as ISingleObjectiveHeuristicOptimizationProblem);
+      ParameterizeMoveMakers(problem as ISingleObjectiveHeuristicOptimizationProblem);
 
-      ParameterizeAnalyzers(problem as ISingleObjectiveProblem);
-      UpdateAnalyzers(problem as ISingleObjectiveProblem);
+      ParameterizeAnalyzers(problem as ISingleObjectiveHeuristicOptimizationProblem);
+      UpdateAnalyzers(problem as ISingleObjectiveHeuristicOptimizationProblem);
     }
 
-    void ParameterizeAnalyzers(ISingleObjectiveProblem problem) {
+    void ParameterizeAnalyzers(ISingleObjectiveHeuristicOptimizationProblem problem) {
       qualityAnalyzer.ResultsParameter.ActualName = "Results";
       if (problem != null) {
         qualityAnalyzer.MaximizationParameter.ActualName = problem.MaximizationParameter.Name;
@@ -173,7 +173,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       }
     }
 
-    void UpdateAnalyzers(ISingleObjectiveProblem problem) {
+    void UpdateAnalyzers(ISingleObjectiveHeuristicOptimizationProblem problem) {
       Analyzer.Operators.Clear();
       if (problem != null) {
         foreach (IAnalyzer analyzer in problem.Operators.OfType<IAnalyzer>()) {
@@ -269,18 +269,18 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       MoveEvaluatorParameter.ValidValues.Clear();
     }
 
-    private void ParameterizeMoveGenerators(ISingleObjectiveProblem problem) {
+    private void ParameterizeMoveGenerators(ISingleObjectiveHeuristicOptimizationProblem problem) {
       if (problem != null) {
         foreach (IMultiMoveGenerator generator in problem.Operators.OfType<IMultiMoveGenerator>())
           generator.SampleSizeParameter.ActualName = InnerIterationsParameter.Name;
       }
     }
-    private void ParameterizeMoveEvaluators(ISingleObjectiveProblem problem) {
+    private void ParameterizeMoveEvaluators(ISingleObjectiveHeuristicOptimizationProblem problem) {
       foreach (ISingleObjectiveMoveEvaluator op in problem.Operators.OfType<ISingleObjectiveMoveEvaluator>()) {
         op.QualityParameter.ActualName = problem.Evaluator.QualityParameter.ActualName;
       }
     }
-    private void ParameterizeMoveMakers(ISingleObjectiveProblem problem) {
+    private void ParameterizeMoveMakers(ISingleObjectiveHeuristicOptimizationProblem problem) {
       foreach (IMoveMaker op in problem.Operators.OfType<IMoveMaker>()) {
         op.QualityParameter.ActualName = problem.Evaluator.QualityParameter.ActualName;
         if (MoveEvaluator != null)

@@ -1,32 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Common;
-using HeuristicLab.Optimization;
-using HeuristicLab.Parameters;
-using HeuristicLab.Data;
-using HeuristicLab.Analysis;
-using HeuristicLab.Random;
-using HeuristicLab.Optimization.Operators;
-using HeuristicLab.Operators;
 using HeuristicLab.Algorithms.LocalSearch;
+using HeuristicLab.Analysis;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Operators;
+using HeuristicLab.Optimization;
+using HeuristicLab.Optimization.Operators;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
   [Item("Variable Neighborhood Search", "A variable neighborhood search algorithm.")]
   [Creatable("Algorithms")]
   [StorableClass]
-  public sealed class VariableNeighborhoodSearch : EngineAlgorithm, IStorableContent {
+  public sealed class VariableNeighborhoodSearch : HeuristicOptimizationEngineAlgorithm, IStorableContent {
     public string Filename { get; set; }
 
     #region Problem Properties
     public override Type ProblemType {
-      get { return typeof(ISingleObjectiveProblem); }
+      get { return typeof(ISingleObjectiveHeuristicOptimizationProblem); }
     }
-    public new ISingleObjectiveProblem Problem {
-      get { return (ISingleObjectiveProblem)base.Problem; }
+    public new ISingleObjectiveHeuristicOptimizationProblem Problem {
+      get { return (ISingleObjectiveHeuristicOptimizationProblem)base.Problem; }
       set { base.Problem = value; }
     }
     #endregion
@@ -233,7 +232,7 @@ namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
         Type t = mutator.GetType();
         Type[] interfaces = t.GetInterfaces();
 
-        for(int i = 0; i < interfaces.Length; i++) {
+        for (int i = 0; i < interfaces.Length; i++) {
           if (manipulatorType.IsAssignableFrom(interfaces[i])) {
             bool assignable = false;
             for (int j = 0; j < interfaces.Length; j++) {
@@ -243,9 +242,9 @@ namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
               }
             }
 
-            if(!assignable)
+            if (!assignable)
               manipulatorInterfaces.Add(interfaces[i]);
-          }         
+          }
         }
       }
 
@@ -265,9 +264,9 @@ namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
             manipulatorType = manipulatorInterface;
         }
       }
-      
+
       Type genericType = typeof(ShakingOperator<>).MakeGenericType(manipulatorType);
-      ShakingParameter.Value = (IShakingOperator)Activator.CreateInstance(genericType, new object[]{});
+      ShakingParameter.Value = (IShakingOperator)Activator.CreateInstance(genericType, new object[] { });
 
       ShakingParameter.Value.OnProblemChanged(Problem);
     }

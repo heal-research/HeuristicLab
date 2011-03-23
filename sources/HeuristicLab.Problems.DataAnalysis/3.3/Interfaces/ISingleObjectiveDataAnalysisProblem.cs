@@ -21,6 +21,6 @@
 
 using HeuristicLab.Optimization;
 namespace HeuristicLab.Problems.DataAnalysis {
-  public interface ISingleObjectiveDataAnalysisProblem : ISingleObjectiveProblem, IDataAnalysisProblem {
+  public interface ISingleObjectiveDataAnalysisProblem : ISingleObjectiveHeuristicOptimizationProblem, IDataAnalysisProblem {
   }
 }

@@ -25,6 +25,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Analyzers {
   /// <summary>
@@ -32,6 +33,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Analyzers {
   /// </summary>
   [Item("SymbolicExpressionTreeSizeCalculator", "An operator that outputs the tree size of a symbolic expression tree.")]
   [StorableClass]
+  [NonDiscoverableType]
   public sealed class SymbolicExpressionTreeSizeCalculator : SingleSuccessorOperator {
     private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
     private const string SymbolicExpressionTreeSizeParameterName = "SymbolicExpressionTreeSize";

@@ -28,6 +28,7 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Interfaces;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Analyzers {
   /// <summary>
@@ -35,6 +36,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Analyzers {
   /// </summary>
   [Item("MinAverageMaxSymbolicExpressionTreeSizeAnalyzer", "An operator that tracks the min avgerage and max tree size.")]
   [StorableClass]
+  [NonDiscoverableType]
   public sealed class MinAverageMaxSymbolicExpressionTreeSizeAnalyzer : AlgorithmOperator, ISymbolicExpressionTreeAnalyzer {
     private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
     private const string SymbolicExpressionTreeSizeParameterName = "SymbolicExpressionTreeSize";

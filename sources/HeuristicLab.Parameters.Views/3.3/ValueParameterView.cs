@@ -102,8 +102,8 @@ namespace HeuristicLab.Parameters.Views {
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
-      setValueButton.Enabled = Content != null && !ReadOnly;
-      clearValueButton.Enabled = Content != null && Content.Value != null && !(Content is ValueParameter<T>) && !ReadOnly;
+      setValueButton.Enabled = Content != null && !(Content is IFixedValueParameter) && !ReadOnly;
+      clearValueButton.Enabled = Content != null && Content.Value != null && !(Content is IFixedValueParameter) && !ReadOnly;
       showInRunCheckBox.Enabled = Content != null && !ReadOnly;
     }
 
@@ -112,7 +112,8 @@ namespace HeuristicLab.Parameters.Views {
         Invoke(new EventHandler(Content_ValueChanged), sender, e);
       else {
         SetDataTypeTextBoxText();
-        clearValueButton.Enabled = Content != null && Content.Value != null && !(Content is ValueParameter<T>) && !ReadOnly;
+        setValueButton.Enabled = Content != null && !(Content is IFixedValueParameter) && !ReadOnly;
+        clearValueButton.Enabled = Content != null && Content.Value != null && !(Content is IFixedValueParameter<T>) && !ReadOnly;
         valueViewHost.ViewType = null;
         valueViewHost.Content = Content != null ? Content.Value : null;
       }
@@ -147,6 +148,7 @@ namespace HeuristicLab.Parameters.Views {
     }
     protected virtual void valueGroupBox_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
+      if (Content is IFixedValueParameter) return;
       if (!ReadOnly && (e.Data.GetData("HeuristicLab") != null) && Content.DataType.IsAssignableFrom(e.Data.GetData("HeuristicLab").GetType())) {
         if ((e.KeyState & 32) == 32) e.Effect = DragDropEffects.Link;  // ALT key
         else if ((e.KeyState & 4) == 4) e.Effect = DragDropEffects.Move;  // SHIFT key

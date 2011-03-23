@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("External Evaluation Problem", "A problem that is evaluated in a different process.")]
   [Creatable("Problems")]
   [StorableClass]
-  public sealed class ExternalEvaluationProblem : ParameterizedNamedItem, ISingleObjectiveProblem, IStorableContent {
+  public sealed class ExternalEvaluationProblem : ParameterizedNamedItem, ISingleObjectiveHeuristicOptimizationProblem, IStorableContent {
     public string Filename { get; set; }
 
     public override Image ItemImage {
@@ -61,22 +61,22 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     public ValueParameter<BoolValue> MaximizationParameter {
       get { return (ValueParameter<BoolValue>)Parameters["Maximization"]; }
     }
-    IParameter ISingleObjectiveProblem.MaximizationParameter {
+    IParameter ISingleObjectiveHeuristicOptimizationProblem.MaximizationParameter {
       get { return MaximizationParameter; }
     }
     public ValueParameter<ISolutionCreator> SolutionCreatorParameter {
       get { return (ValueParameter<ISolutionCreator>)Parameters["SolutionCreator"]; }
     }
-    IParameter IProblem.SolutionCreatorParameter {
+    IParameter IHeuristicOptimizationProblem.SolutionCreatorParameter {
       get { return SolutionCreatorParameter; }
     }
-    IParameter IProblem.EvaluatorParameter {
+    IParameter IHeuristicOptimizationProblem.EvaluatorParameter {
       get { return EvaluatorParameter; }
     }
     public OptionalValueParameter<DoubleValue> BestKnownQualityParameter {
       get { return (OptionalValueParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
     }
-    IParameter ISingleObjectiveProblem.BestKnownQualityParameter {
+    IParameter ISingleObjectiveHeuristicOptimizationProblem.BestKnownQualityParameter {
       get { return BestKnownQualityParameter; }
     }
     public OptionalValueParameter<IScope> BestKnownSolutionParameter {
@@ -96,17 +96,17 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       get { return SolutionCreatorParameter.Value; }
       set { SolutionCreatorParameter.Value = value; }
     }
-    ISolutionCreator IProblem.SolutionCreator {
+    ISolutionCreator IHeuristicOptimizationProblem.SolutionCreator {
       get { return SolutionCreatorParameter.Value; }
     }
     public IExternalEvaluationProblemEvaluator Evaluator {
       get { return EvaluatorParameter.Value; }
       set { EvaluatorParameter.Value = value; }
     }
-    ISingleObjectiveEvaluator ISingleObjectiveProblem.Evaluator {
+    ISingleObjectiveEvaluator ISingleObjectiveHeuristicOptimizationProblem.Evaluator {
       get { return EvaluatorParameter.Value; }
     }
-    IEvaluator IProblem.Evaluator {
+    IEvaluator IHeuristicOptimizationProblem.Evaluator {
       get { return EvaluatorParameter.Value; }
     }
     public DoubleValue BestKnownQuality {

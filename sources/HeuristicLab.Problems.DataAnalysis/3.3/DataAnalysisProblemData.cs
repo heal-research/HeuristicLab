@@ -28,10 +28,12 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   [Item("DataAnalysisProblemData", "Represents an item containing all data defining a data analysis problem.")]
   [StorableClass]
+  [NonDiscoverableType]
   public class DataAnalysisProblemData : ParameterizedNamedItem, IStorableContent {
     protected bool suppressEvents = false;
     #region IStorableContent Members

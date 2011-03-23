@@ -40,15 +40,15 @@ namespace HeuristicLab.Algorithms.NSGA2 {
   [Item("NSGA-II", "The Nondominated Sorting Genetic Algorithm II was introduced in Deb et al. 2002. A Fast and Elitist Multiobjective Genetic Algorithm: NSGA-II. IEEE Transactions on Evolutionary Computation, 6(2), pp. 182-197.")]
   [Creatable("Algorithms")]
   [StorableClass]
-  public class NSGA2 : EngineAlgorithm, IStorableContent {
+  public class NSGA2 : HeuristicOptimizationEngineAlgorithm, IStorableContent {
     public string Filename { get; set; }
 
     #region Problem Properties
     public override Type ProblemType {
-      get { return typeof(IMultiObjectiveProblem); }
+      get { return typeof(IMultiObjectiveHeuristicOptimizationProblem); }
     }
-    public new IMultiObjectiveProblem Problem {
-      get { return (IMultiObjectiveProblem)base.Problem; }
+    public new IMultiObjectiveHeuristicOptimizationProblem Problem {
+      get { return (IMultiObjectiveHeuristicOptimizationProblem)base.Problem; }
       set { base.Problem = value; }
     }
     #endregion

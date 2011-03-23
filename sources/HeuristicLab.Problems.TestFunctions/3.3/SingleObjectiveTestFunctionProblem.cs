@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.TestFunctions {
   [Item("Single Objective Test Function", "Test function with real valued inputs and a single objective.")]
   [StorableClass]
   [Creatable("Problems")]
-  public sealed class SingleObjectiveTestFunctionProblem : ParameterizedNamedItem, ISingleObjectiveProblem, IStorableContent {
+  public sealed class SingleObjectiveTestFunctionProblem : ParameterizedNamedItem, ISingleObjectiveHeuristicOptimizationProblem, IStorableContent {
     public string Filename { get; set; }
 
     [Storable]
@@ -54,7 +54,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     public ValueParameter<BoolValue> MaximizationParameter {
       get { return (ValueParameter<BoolValue>)Parameters["Maximization"]; }
     }
-    IParameter ISingleObjectiveProblem.MaximizationParameter {
+    IParameter ISingleObjectiveHeuristicOptimizationProblem.MaximizationParameter {
       get { return MaximizationParameter; }
     }
     public ValueParameter<DoubleMatrix> BoundsParameter {
@@ -66,19 +66,19 @@ namespace HeuristicLab.Problems.TestFunctions {
     public ValueParameter<IRealVectorCreator> SolutionCreatorParameter {
       get { return (ValueParameter<IRealVectorCreator>)Parameters["SolutionCreator"]; }
     }
-    IParameter IProblem.SolutionCreatorParameter {
+    IParameter IHeuristicOptimizationProblem.SolutionCreatorParameter {
       get { return SolutionCreatorParameter; }
     }
     public ValueParameter<ISingleObjectiveTestFunctionProblemEvaluator> EvaluatorParameter {
       get { return (ValueParameter<ISingleObjectiveTestFunctionProblemEvaluator>)Parameters["Evaluator"]; }
     }
-    IParameter IProblem.EvaluatorParameter {
+    IParameter IHeuristicOptimizationProblem.EvaluatorParameter {
       get { return EvaluatorParameter; }
     }
     public OptionalValueParameter<DoubleValue> BestKnownQualityParameter {
       get { return (OptionalValueParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
     }
-    IParameter ISingleObjectiveProblem.BestKnownQualityParameter {
+    IParameter ISingleObjectiveHeuristicOptimizationProblem.BestKnownQualityParameter {
       get { return BestKnownQualityParameter; }
     }
     public OptionalValueParameter<RealVector> BestKnownSolutionParameter {
@@ -103,17 +103,17 @@ namespace HeuristicLab.Problems.TestFunctions {
       get { return SolutionCreatorParameter.Value; }
       set { SolutionCreatorParameter.Value = value; }
     }
-    ISolutionCreator IProblem.SolutionCreator {
+    ISolutionCreator IHeuristicOptimizationProblem.SolutionCreator {
       get { return SolutionCreatorParameter.Value; }
     }
     public ISingleObjectiveTestFunctionProblemEvaluator Evaluator {
       get { return EvaluatorParameter.Value; }
       set { EvaluatorParameter.Value = value; }
     }
-    ISingleObjectiveEvaluator ISingleObjectiveProblem.Evaluator {
+    ISingleObjectiveEvaluator ISingleObjectiveHeuristicOptimizationProblem.Evaluator {
       get { return EvaluatorParameter.Value; }
     }
-    IEvaluator IProblem.Evaluator {
+    IEvaluator IHeuristicOptimizationProblem.Evaluator {
       get { return EvaluatorParameter.Value; }
     }
     public DoubleValue BestKnownQuality {

@@ -25,25 +25,19 @@ using System.Drawing;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization {
   [Item("Problem", "Represents the base class for a problem.")]
   [StorableClass]
-  public abstract class Problem<T, U> : ParameterizedNamedItem, IProblem
-    where T : class,IEvaluator
-    where U : class,ISolutionCreator {
-    private const string EvaluatorParameterName = "Evaluator";
-    private const string SolutionCreateParameterName = "SolutionCreator";
-
+  public abstract class Problem : ParameterizedNamedItem, IProblem {
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
     }
 
     [StorableConstructor]
     protected Problem(bool deserializing) : base(deserializing) { }
-    protected Problem(Problem<T, U> original, Cloner cloner)
+    protected Problem(Problem original, Cloner cloner)
       : base(original, cloner) {
       operators = cloner.Clone(original.operators);
       RegisterEventHandlers();
@@ -52,8 +46,6 @@ namespace HeuristicLab.Optimization {
     protected Problem()
       : base() {
       operators = new OperatorCollection();
-      Parameters.Add(new ValueParameter<T>(EvaluatorParameterName, "The operator used to evaluate a solution."));
-      Parameters.Add(new ValueParameter<U>(SolutionCreateParameterName, "The operator to create a solution."));
       RegisterEventHandlers();
     }
 
@@ -66,9 +58,6 @@ namespace HeuristicLab.Optimization {
       Operators.ItemsAdded += new CollectionItemsChangedEventHandler<IOperator>(Operators_Changed);
       Operators.ItemsRemoved += new CollectionItemsChangedEventHandler<IOperator>(Operators_Changed);
       Operators.CollectionReset += new CollectionItemsChangedEventHandler<IOperator>(Operators_Changed);
-
-      EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
-      SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
     }
 
     #region properties
@@ -82,49 +71,9 @@ namespace HeuristicLab.Optimization {
       get { return this.operators; }
     }
     IEnumerable<IOperator> IProblem.Operators { get { return operators; } }
-
-    public T Evaluator {
-      get { return EvaluatorParameter.Value; }
-      protected set { EvaluatorParameter.Value = value; }
-    }
-    public ValueParameter<T> EvaluatorParameter {
-      get { return (ValueParameter<T>)Parameters[EvaluatorParameterName]; }
-    }
-    IEvaluator IProblem.Evaluator { get { return Evaluator; } }
-    IParameter IProblem.EvaluatorParameter { get { return EvaluatorParameter; } }
-
-    public U SolutionCreator {
-      get { return SolutionCreatorParameter.Value; }
-      protected set { SolutionCreatorParameter.Value = value; }
-    }
-    public ValueParameter<U> SolutionCreatorParameter {
-      get { return (ValueParameter<U>)Parameters[SolutionCreateParameterName]; }
-    }
-    ISolutionCreator IProblem.SolutionCreator { get { return SolutionCreator; } }
-    IParameter IProblem.SolutionCreatorParameter { get { return SolutionCreatorParameter; } }
     #endregion
 
     #region events
-    private void EvaluatorParameter_ValueChanged(object sender, EventArgs e) {
-      OnEvaluatorChanged();
-    }
-    public event EventHandler EvaluatorChanged;
-    protected virtual void OnEvaluatorChanged() {
-      EventHandler handler = EvaluatorChanged;
-      if (handler != null)
-        handler(this, EventArgs.Empty);
-    }
-
-    private void SolutionCreatorParameter_ValueChanged(object sender, EventArgs e) {
-      OnSolutionCreatorChanged();
-    }
-    public event EventHandler SolutionCreatorChanged;
-    protected virtual void OnSolutionCreatorChanged() {
-      EventHandler handler = SolutionCreatorChanged;
-      if (handler != null)
-        handler(this, EventArgs.Empty);
-    }
-
     private void Operators_Changed(object sender, EventArgs e) {
       OnOperatorsChanged();
     }

@@ -27,11 +27,12 @@ using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   [Item("Data Analysis Problem", "Represents a data analysis problem.")]
-  [Creatable("Problems")]
   [StorableClass]
+  [NonDiscoverableType]
   public class DataAnalysisProblem : ParameterizedNamedItem, IDataAnalysisProblem, IStorableContent {
     private const string DataAnalysisProblemDataParameterName = "DataAnalysisProblemData";
 

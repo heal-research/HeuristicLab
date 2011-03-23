@@ -124,12 +124,6 @@
     <Compile Include="ResultsView.Designer.cs">
       <DependentUpon>ResultsView.cs</DependentUpon>
     </Compile>
-    <Compile Include="RunCollectionVariableImpactView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="RunCollectionVariableImpactView.Designer.cs">
-      <DependentUpon>RunCollectionVariableImpactView.cs</DependentUpon>
-    </Compile>
     <Compile Include="SupportVectorRegressionSolutionView.cs">
       <SubType>UserControl</SubType>
     </Compile>

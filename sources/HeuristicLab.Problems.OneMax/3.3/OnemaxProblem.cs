@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.OneMax {
   [Item("OneMax Problem", "Represents a OneMax Problem.")]
   [Creatable("Problems")]
   [StorableClass]
-  public sealed class OneMaxProblem : ParameterizedNamedItem, ISingleObjectiveProblem, IStorableContent {
+  public sealed class OneMaxProblem : ParameterizedNamedItem, ISingleObjectiveHeuristicOptimizationProblem, IStorableContent {
     public string Filename { get; set; }
 
     public override Image ItemImage {
@@ -47,7 +47,7 @@ namespace HeuristicLab.Problems.OneMax {
     public ValueParameter<BoolValue> MaximizationParameter {
       get { return (ValueParameter<BoolValue>)Parameters["Maximization"]; }
     }
-    IParameter ISingleObjectiveProblem.MaximizationParameter {
+    IParameter ISingleObjectiveHeuristicOptimizationProblem.MaximizationParameter {
       get { return MaximizationParameter; }
     }
     public ValueParameter<IntValue> LengthParameter {
@@ -56,19 +56,19 @@ namespace HeuristicLab.Problems.OneMax {
     public ValueParameter<IBinaryVectorCreator> SolutionCreatorParameter {
       get { return (ValueParameter<IBinaryVectorCreator>)Parameters["SolutionCreator"]; }
     }
-    IParameter IProblem.SolutionCreatorParameter {
+    IParameter IHeuristicOptimizationProblem.SolutionCreatorParameter {
       get { return SolutionCreatorParameter; }
     }
     public ValueParameter<IOneMaxEvaluator> EvaluatorParameter {
       get { return (ValueParameter<IOneMaxEvaluator>)Parameters["Evaluator"]; }
     }
-    IParameter IProblem.EvaluatorParameter {
+    IParameter IHeuristicOptimizationProblem.EvaluatorParameter {
       get { return EvaluatorParameter; }
     }
     public ValueParameter<DoubleValue> BestKnownQualityParameter {
       get { return (ValueParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
     }
-    IParameter ISingleObjectiveProblem.BestKnownQualityParameter {
+    IParameter ISingleObjectiveHeuristicOptimizationProblem.BestKnownQualityParameter {
       get { return BestKnownQualityParameter; }
     }
     #endregion
@@ -82,17 +82,17 @@ namespace HeuristicLab.Problems.OneMax {
       get { return SolutionCreatorParameter.Value; }
       set { SolutionCreatorParameter.Value = value; }
     }
-    ISolutionCreator IProblem.SolutionCreator {
+    ISolutionCreator IHeuristicOptimizationProblem.SolutionCreator {
       get { return SolutionCreatorParameter.Value; }
     }
     public IOneMaxEvaluator Evaluator {
       get { return EvaluatorParameter.Value; }
       set { EvaluatorParameter.Value = value; }
     }
-    ISingleObjectiveEvaluator ISingleObjectiveProblem.Evaluator {
+    ISingleObjectiveEvaluator ISingleObjectiveHeuristicOptimizationProblem.Evaluator {
       get { return EvaluatorParameter.Value; }
     }
-    IEvaluator IProblem.Evaluator {
+    IEvaluator IHeuristicOptimizationProblem.Evaluator {
       get { return EvaluatorParameter.Value; }
     }
     public DoubleValue BestKnownQuality {

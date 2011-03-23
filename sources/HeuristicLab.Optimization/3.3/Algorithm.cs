@@ -223,8 +223,17 @@ namespace HeuristicLab.Optimization {
     }
     public virtual void CollectResultValues(IDictionary<string, IItem> values) {
       values.Add("Execution Time", new TimeSpanValue(ExecutionTime));
-      foreach (IResult result in Results)
-        values.Add(result.Name, result.Value);
+      CollectResultsRecursively("", Results, values);
+    }
+
+    private void CollectResultsRecursively(string path, ResultCollection results, IDictionary<string, IItem> values) {
+      foreach (IResult result in results) {
+        values.Add(path + result.Name, result.Value);
+        ResultCollection childCollection = result.Value as ResultCollection;
+        if (childCollection != null) {
+          CollectResultsRecursively(path + result.Name + ".", childCollection, values);
+        }
+      }
     }
 
     #region Events
@@ -282,19 +291,13 @@ namespace HeuristicLab.Optimization {
     }
 
     protected virtual void DeregisterProblemEvents() {
-      problem.SolutionCreatorChanged -= new EventHandler(Problem_SolutionCreatorChanged);
-      problem.EvaluatorChanged -= new EventHandler(Problem_EvaluatorChanged);
       problem.OperatorsChanged -= new EventHandler(Problem_OperatorsChanged);
       problem.Reset -= new EventHandler(Problem_Reset);
     }
     protected virtual void RegisterProblemEvents() {
-      problem.SolutionCreatorChanged += new EventHandler(Problem_SolutionCreatorChanged);
-      problem.EvaluatorChanged += new EventHandler(Problem_EvaluatorChanged);
       problem.OperatorsChanged += new EventHandler(Problem_OperatorsChanged);
       problem.Reset += new EventHandler(Problem_Reset);
     }
-    protected virtual void Problem_SolutionCreatorChanged(object sender, EventArgs e) { }
-    protected virtual void Problem_EvaluatorChanged(object sender, EventArgs e) { }
     protected virtual void Problem_OperatorsChanged(object sender, EventArgs e) { }
     protected virtual void Problem_Reset(object sender, EventArgs e) {
       Prepare();

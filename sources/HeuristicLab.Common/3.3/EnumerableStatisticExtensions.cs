@@ -31,21 +31,18 @@ namespace HeuristicLab.Common {
     /// <param name="values"></param>
     /// <returns></returns>
     public static double Median(this IEnumerable<double> values) {
-      int n = values.Count();
+      // iterate only once 
+      double[] valuesArr = values.ToArray();
+      int n = valuesArr.Length;
       if (n == 0) throw new InvalidOperationException("Enumeration contains no elements.");
 
-      double[] sortedValues = new double[n];
-      int i = 0;
-      foreach (double x in values)
-        sortedValues[i++] = x;
-
-      Array.Sort(sortedValues);
+      Array.Sort(valuesArr);
 
       // return the middle element (if n is uneven) or the average of the two middle elements if n is even.
       if (n % 2 == 1) {
-        return sortedValues[n / 2];
+        return valuesArr[n / 2];
       } else {
-        return (sortedValues[(n / 2) - 1] + sortedValues[n / 2]) / 2.0;
+        return (valuesArr[(n / 2) - 1] + valuesArr[n / 2]) / 2.0;
       }
     }
 
@@ -91,20 +88,28 @@ namespace HeuristicLab.Common {
     /// Calculates the pth percentile of the values.
     /// </summary
     public static double Percentile(this IEnumerable<double> values, double p) {
-      if (values.Count() == 0) throw new InvalidOperationException("Enumeration contains no elements.");
-      if (values.Count() == 1) return values.ElementAt(0);
+      // iterate only once 
+      double[] valuesArr = values.ToArray();
+      int n = valuesArr.Length;
+      if (n == 0) throw new InvalidOperationException("Enumeration contains no elements.");
+      if (n == 1) return values.ElementAt(0);
 
-      double[] sortedValues = values.ToArray();
-      Array.Sort(sortedValues);
-
-      int n = sortedValues.Length;
-      if (p.IsAlmost(0.0)) return sortedValues[0];
-      if (p.IsAlmost(1.0)) return sortedValues[n - 1];
+      if (p.IsAlmost(0.0)) return valuesArr[0];
+      if (p.IsAlmost(1.0)) return valuesArr[n - 1];
 
       double t = p * (n - 1);
       int index = (int)Math.Floor(t);
       double percentage = t - index;
-      return sortedValues[index] * (1 - percentage) + sortedValues[index + 1] * percentage;
+      return valuesArr[index] * (1 - percentage) + valuesArr[index + 1] * percentage;
+    }
+
+    public static IEnumerable<double> LimitToRange(this IEnumerable<double> values, double min, double max) {
+      foreach (var x in values) {
+        if (double.IsNaN(x)) yield return (max + min) / 2.0;
+        else if (x < min) yield return min;
+        else if (x > max) yield return max;
+        else yield return x;
+      }
     }
   }
 }

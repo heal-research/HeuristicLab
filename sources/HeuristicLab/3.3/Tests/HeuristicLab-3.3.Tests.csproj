@@ -134,9 +134,17 @@
       <Project>{C3E69936-0DB5-42A4-B1B4-12E9700B080E}</Project>
       <Name>HeuristicLab.Algorithms.DataAnalysis.Views-3.3</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\HeuristicLab.Algorithms.DataAnalysis.Views\3.4\HeuristicLab.Algorithms.DataAnalysis.Views-3.4.csproj">
+      <Project>{A2330DB0-413D-4424-B4E6-591118E2B9F8}</Project>
+      <Name>HeuristicLab.Algorithms.DataAnalysis.Views-3.4</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\HeuristicLab.Algorithms.DataAnalysis\3.3\HeuristicLab.Algorithms.DataAnalysis-3.3.csproj">
       <Project>{A8D5676D-9662-437A-B44D-ECB4046CDE12}</Project>
       <Name>HeuristicLab.Algorithms.DataAnalysis-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\HeuristicLab.Algorithms.DataAnalysis\3.4\HeuristicLab.Algorithms.DataAnalysis-3.4.csproj">
+      <Project>{2E782078-FA81-4B70-B56F-74CE38DAC6C8}</Project>
+      <Name>HeuristicLab.Algorithms.DataAnalysis-3.4</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\HeuristicLab.Algorithms.EvolutionStrategy\3.3\HeuristicLab.Algorithms.EvolutionStrategy-3.3.csproj">
       <Project>{E0B45023-CB84-48A1-A1B7-8295B64B7BAD}</Project>
@@ -242,9 +250,17 @@
       <Project>{6F42C5F8-16CD-43EE-8208-FD4573A69D85}</Project>
       <Name>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views-3.3</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views\3.4\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views-3.4.csproj">
+      <Project>{423BD94F-963A-438E-BA45-3BB3D61CD03B}</Project>
+      <Name>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views-3.4</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding\3.3\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3.csproj">
       <Project>{125D3006-67F5-48CB-913E-73C0548F17FA}</Project>
       <Name>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding\3.4\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4.csproj">
+      <Project>{06D4A186-9319-48A0-BADE-A2058D462EEA}</Project>
+      <Name>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.1.0\ALGLIB-3.1.0\ALGLIB-3.1.0.csproj">
       <Project>{FC841674-62A7-4055-BE91-E41944B6C606}</Project>
@@ -366,9 +382,17 @@
       <Project>{30DD3DA2-CA57-49DD-A5BA-50CEF19DB45F}</Project>
       <Name>HeuristicLab.Problems.ArtificialAnt.Views-3.3</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\HeuristicLab.Problems.ArtificialAnt.Views\3.4\HeuristicLab.Problems.ArtificialAnt.Views-3.4.csproj">
+      <Project>{3083C7AA-5AF4-4C75-BA19-B69B86E2F66A}</Project>
+      <Name>HeuristicLab.Problems.ArtificialAnt.Views-3.4</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\HeuristicLab.Problems.ArtificialAnt\3.3\HeuristicLab.Problems.ArtificialAnt-3.3.csproj">
       <Project>{F5C0ECAC-EDBA-4024-872A-1F74AFCB20B4}</Project>
       <Name>HeuristicLab.Problems.ArtificialAnt-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\HeuristicLab.Problems.ArtificialAnt\3.4\HeuristicLab.Problems.ArtificialAnt-3.4.csproj">
+      <Project>{0C67A033-F6D9-4237-B3CA-C033A44706BE}</Project>
+      <Name>HeuristicLab.Problems.ArtificialAnt-3.4</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\HeuristicLab.Problems.DataAnalysis.Classification.Views\3.3\HeuristicLab.Problems.DataAnalysis.Classification.Views-3.3.csproj">
       <Project>{7F038E9A-B91E-4F49-8C27-D47BC86F1220}</Project>
@@ -382,13 +406,33 @@
       <Project>{BDF86B1D-630E-4CE2-8A49-8C90B1BDE4C9}</Project>
       <Name>HeuristicLab.Problems.DataAnalysis.Regression-3.3</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\HeuristicLab.Problems.DataAnalysis.Symbolic.Classification\3.4\HeuristicLab.Problems.DataAnalysis.Symbolic.Classification-3.4.csproj">
+      <Project>{05BAE4E1-A9FA-4644-AA77-42558720159E}</Project>
+      <Name>HeuristicLab.Problems.DataAnalysis.Symbolic.Classification-3.4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\HeuristicLab.Problems.DataAnalysis.Symbolic.Regression\3.4\HeuristicLab.Problems.DataAnalysis.Symbolic.Regression-3.4.csproj">
+      <Project>{5AC82412-911B-4FA2-A013-EDC5E3F3FCC2}</Project>
+      <Name>HeuristicLab.Problems.DataAnalysis.Symbolic.Regression-3.4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\HeuristicLab.Problems.DataAnalysis.Symbolic\3.4\HeuristicLab.Problems.DataAnalysis.Symbolic-3.4.csproj">
+      <Project>{3D28463F-EC96-4D82-AFEE-38BE91A0CA00}</Project>
+      <Name>HeuristicLab.Problems.DataAnalysis.Symbolic-3.4</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\HeuristicLab.Problems.DataAnalysis.Views\3.3\HeuristicLab.Problems.DataAnalysis.Views-3.3.csproj">
       <Project>{799B0B38-E384-4A17-A73C-F211EB854592}</Project>
       <Name>HeuristicLab.Problems.DataAnalysis.Views-3.3</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\HeuristicLab.Problems.DataAnalysis.Views\3.4\HeuristicLab.Problems.DataAnalysis.Views-3.4.csproj">
+      <Project>{3E9E8944-44FF-40BB-A622-3A4A7DD0F198}</Project>
+      <Name>HeuristicLab.Problems.DataAnalysis.Views-3.4</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\HeuristicLab.Problems.DataAnalysis\3.3\HeuristicLab.Problems.DataAnalysis-3.3.csproj">
       <Project>{70DFD984-B1D9-46FE-8EB7-4DE92D71A9FC}</Project>
       <Name>HeuristicLab.Problems.DataAnalysis-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\HeuristicLab.Problems.DataAnalysis\3.4\HeuristicLab.Problems.DataAnalysis-3.4.csproj">
+      <Project>{DF87C13E-A889-46FF-8153-66DCAA8C5674}</Project>
+      <Name>HeuristicLab.Problems.DataAnalysis-3.4</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\HeuristicLab.Problems.ExternalEvaluation.GP.Views\3.3\HeuristicLab.Problems.ExternalEvaluation.GP.Views-3.3.csproj">
       <Project>{1778134B-866B-4CB3-BFC0-52B2FAAA5777}</Project>
@@ -397,6 +441,10 @@
     <ProjectReference Include="..\..\..\HeuristicLab.Problems.ExternalEvaluation.GP\3.3\HeuristicLab.Problems.ExternalEvaluation.GP-3.3.csproj">
       <Project>{E86E215D-E3CE-4244-978D-555D4E17AC09}</Project>
       <Name>HeuristicLab.Problems.ExternalEvaluation.GP-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\HeuristicLab.Problems.ExternalEvaluation.GP\3.4\HeuristicLab.Problems.ExternalEvaluation.GP-3.4.csproj">
+      <Project>{B7A64A60-B538-479F-9C47-A3180C458F6C}</Project>
+      <Name>HeuristicLab.Problems.ExternalEvaluation.GP-3.4</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\HeuristicLab.Problems.ExternalEvaluation.Views\3.3\HeuristicLab.Problems.ExternalEvaluation.Views-3.3.csproj">
       <Project>{3081630C-9521-47D7-8075-1777C12F212C}</Project>

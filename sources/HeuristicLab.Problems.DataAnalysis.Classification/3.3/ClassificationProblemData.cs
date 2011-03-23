@@ -28,10 +28,12 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Classification {
   [Item("ClassificationProblemData", "Represents an item containing all data defining a classification problem.")]
   [StorableClass]
+  [NonDiscoverableType]
   public class ClassificationProblemData : DataAnalysisProblemData {
     #region default data
     private static string[] defaultInputs = new string[] { "sample", "clump thickness", "cell size", "cell shape", "marginal adhesion", "epithelial cell size", "bare nuclei", "chromatin", "nucleoli", "mitoses", "class" };

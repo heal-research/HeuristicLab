@@ -37,14 +37,14 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
   [Item("Particle Swarm Optimization", "A particle swarm optimization algorithm based on the description in Pedersen, M.E.H. (2010). PhD thesis. University of Southampton.")]
   [Creatable("Algorithms")]
   [StorableClass]
-  public sealed class ParticleSwarmOptimization : EngineAlgorithm, IStorableContent {
+  public sealed class ParticleSwarmOptimization : HeuristicOptimizationEngineAlgorithm, IStorableContent {
 
     #region Problem Properties
     public override Type ProblemType {
-      get { return typeof(ISingleObjectiveProblem); }
+      get { return typeof(ISingleObjectiveHeuristicOptimizationProblem); }
     }
-    public new ISingleObjectiveProblem Problem {
-      get { return (ISingleObjectiveProblem)base.Problem; }
+    public new ISingleObjectiveHeuristicOptimizationProblem Problem {
+      get { return (ISingleObjectiveHeuristicOptimizationProblem)base.Problem; }
       set { base.Problem = value; }
     }
     public MultiAnalyzer Analyzer {

@@ -40,15 +40,15 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
   [Item("Island Genetic Algorithm", "An island genetic algorithm.")]
   [Creatable("Algorithms")]
   [StorableClass]
-  public sealed class IslandGeneticAlgorithm : EngineAlgorithm, IStorableContent {
+  public sealed class IslandGeneticAlgorithm : HeuristicOptimizationEngineAlgorithm, IStorableContent {
     public string Filename { get; set; }
 
     #region Problem Properties
     public override Type ProblemType {
-      get { return typeof(ISingleObjectiveProblem); }
+      get { return typeof(ISingleObjectiveHeuristicOptimizationProblem); }
     }
-    public new ISingleObjectiveProblem Problem {
-      get { return (ISingleObjectiveProblem)base.Problem; }
+    public new ISingleObjectiveHeuristicOptimizationProblem Problem {
+      get { return (ISingleObjectiveHeuristicOptimizationProblem)base.Problem; }
       set { base.Problem = value; }
     }
     #endregion

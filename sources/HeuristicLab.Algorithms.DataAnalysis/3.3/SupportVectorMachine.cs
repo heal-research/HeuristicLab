@@ -26,6 +26,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Evaluators;
 using HeuristicLab.Problems.DataAnalysis.Regression.SupportVectorRegression;
@@ -35,8 +36,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// A support vector machine.
   /// </summary>
+  [NonDiscoverableType]
   [Item("Support Vector Machine", "Support vector machine data analysis algorithm.")]
-  [Creatable("Data Analysis")]
   [StorableClass]
   public sealed class SupportVectorMachine : EngineAlgorithm, IStorableContent {
     private const string TrainingSamplesStartParameterName = "Training start";

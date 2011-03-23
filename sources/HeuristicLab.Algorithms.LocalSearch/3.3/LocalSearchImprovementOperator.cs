@@ -22,17 +22,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Operators;
+using HeuristicLab.Analysis;
 using HeuristicLab.Common;
-using HeuristicLab.Parameters;
-using HeuristicLab.Algorithms.LocalSearch;
+using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
-using HeuristicLab.Analysis;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.LocalSearch {
   /// <summary>
@@ -40,13 +38,13 @@ namespace HeuristicLab.Algorithms.LocalSearch {
   /// </summary>
   [Item("LocalSearchImprovementOperator", "A local search improvement operator.")]
   [StorableClass]
-  public class LocalSearchImprovementOperator: SingleSuccessorOperator, ILocalImprovementOperator {
+  public class LocalSearchImprovementOperator : SingleSuccessorOperator, ILocalImprovementOperator {
     [Storable]
     private LocalSearchMainLoop loop;
 
     [Storable]
     private BestAverageWorstQualityAnalyzer qualityAnalyzer;
-    
+
     private ConstrainedValueParameter<IMoveGenerator> MoveGeneratorParameter {
       get { return (ConstrainedValueParameter<IMoveGenerator>)Parameters["MoveGenerator"]; }
     }
@@ -87,38 +85,38 @@ namespace HeuristicLab.Algorithms.LocalSearch {
     }
 
     [StorableConstructor]
-    protected LocalSearchImprovementOperator(bool deserializing) : base(deserializing) {}
+    protected LocalSearchImprovementOperator(bool deserializing) : base(deserializing) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       Initialize();
     }
     protected LocalSearchImprovementOperator(LocalSearchImprovementOperator original, Cloner cloner)
       : base(original, cloner) {
-        this.loop = cloner.Clone(original.loop);
-        this.qualityAnalyzer = cloner.Clone(original.qualityAnalyzer);
-        Initialize();
+      this.loop = cloner.Clone(original.loop);
+      this.qualityAnalyzer = cloner.Clone(original.qualityAnalyzer);
+      Initialize();
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new LocalSearchImprovementOperator(this, cloner);
     }
     public LocalSearchImprovementOperator()
       : base() {
-        loop = new LocalSearchMainLoop();
-        
-        ResultsCollector rc = (loop.OperatorGraph.InitialOperator as SingleSuccessorOperator).Successor as ResultsCollector;
-        rc.CollectedValues.Remove("BestLocalQuality");
+      loop = new LocalSearchMainLoop();
 
-        qualityAnalyzer = new BestAverageWorstQualityAnalyzer();
+      ResultsCollector rc = (loop.OperatorGraph.InitialOperator as SingleSuccessorOperator).Successor as ResultsCollector;
+      rc.CollectedValues.Remove("BestLocalQuality");
 
-        Parameters.Add(new ConstrainedValueParameter<IMoveGenerator>("MoveGenerator", "The operator used to generate moves to the neighborhood of the current solution."));
-        Parameters.Add(new ConstrainedValueParameter<IMoveMaker>("MoveMaker", "The operator used to perform a move."));
-        Parameters.Add(new ConstrainedValueParameter<ISingleObjectiveMoveEvaluator>("MoveEvaluator", "The operator used to evaluate a move."));
-        Parameters.Add(new ValueParameter<IntValue>("MaximumIterations", "The maximum number of generations which should be processed.", new IntValue(150)));
-        Parameters.Add(new ValueParameter<IntValue>("SampleSize", "Number of moves that MultiMoveGenerators should create. This is ignored for Exhaustive- and SingleMoveGenerators.", new IntValue(1500)));
-        Parameters.Add(new LookupParameter<IntValue>("EvaluatedSolutions", "The number of evaluated moves."));
-        Parameters.Add(new ValueParameter<MultiAnalyzer>("Analyzer", "The operator used to analyze the solution.", new MultiAnalyzer()));
+      qualityAnalyzer = new BestAverageWorstQualityAnalyzer();
 
-        Initialize();
+      Parameters.Add(new ConstrainedValueParameter<IMoveGenerator>("MoveGenerator", "The operator used to generate moves to the neighborhood of the current solution."));
+      Parameters.Add(new ConstrainedValueParameter<IMoveMaker>("MoveMaker", "The operator used to perform a move."));
+      Parameters.Add(new ConstrainedValueParameter<ISingleObjectiveMoveEvaluator>("MoveEvaluator", "The operator used to evaluate a move."));
+      Parameters.Add(new ValueParameter<IntValue>("MaximumIterations", "The maximum number of generations which should be processed.", new IntValue(150)));
+      Parameters.Add(new ValueParameter<IntValue>("SampleSize", "Number of moves that MultiMoveGenerators should create. This is ignored for Exhaustive- and SingleMoveGenerators.", new IntValue(1500)));
+      Parameters.Add(new LookupParameter<IntValue>("EvaluatedSolutions", "The number of evaluated moves."));
+      Parameters.Add(new ValueParameter<MultiAnalyzer>("Analyzer", "The operator used to analyze the solution.", new MultiAnalyzer()));
+
+      Initialize();
     }
 
     private void Initialize() {
@@ -129,15 +127,15 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       UpdateMoveOperators(problem);
       ChooseMoveOperators();
 
-      ParameterizeMoveGenerators(problem as ISingleObjectiveProblem);
-      ParameterizeMoveEvaluators(problem as ISingleObjectiveProblem);
-      ParameterizeMoveMakers(problem as ISingleObjectiveProblem);
+      ParameterizeMoveGenerators(problem as ISingleObjectiveHeuristicOptimizationProblem);
+      ParameterizeMoveEvaluators(problem as ISingleObjectiveHeuristicOptimizationProblem);
+      ParameterizeMoveMakers(problem as ISingleObjectiveHeuristicOptimizationProblem);
 
-      ParameterizeAnalyzers(problem as ISingleObjectiveProblem);
-      UpdateAnalyzers(problem as ISingleObjectiveProblem);
+      ParameterizeAnalyzers(problem as ISingleObjectiveHeuristicOptimizationProblem);
+      UpdateAnalyzers(problem as ISingleObjectiveHeuristicOptimizationProblem);
     }
 
-    void ParameterizeAnalyzers(ISingleObjectiveProblem problem) {
+    void ParameterizeAnalyzers(ISingleObjectiveHeuristicOptimizationProblem problem) {
       qualityAnalyzer.ResultsParameter.ActualName = "Results";
       if (problem != null) {
         qualityAnalyzer.MaximizationParameter.ActualName = problem.MaximizationParameter.Name;
@@ -147,7 +145,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       }
     }
 
-    void UpdateAnalyzers(ISingleObjectiveProblem problem) {
+    void UpdateAnalyzers(ISingleObjectiveHeuristicOptimizationProblem problem) {
       Analyzer.Operators.Clear();
       if (problem != null) {
         foreach (IAnalyzer analyzer in problem.Operators.OfType<IAnalyzer>()) {
@@ -227,13 +225,13 @@ namespace HeuristicLab.Algorithms.LocalSearch {
           IMoveMaker mm = validMoveMakers.FirstOrDefault(x => x.GetType() == oldMoveMaker.GetType());
           if (mm != null) MoveMaker = mm;
           else MoveMaker = validMoveMakers.FirstOrDefault();
-        } 
+        }
 
         if (oldMoveEvaluator != null) {
           ISingleObjectiveMoveEvaluator me = validMoveEvaluators.FirstOrDefault(x => x.GetType() == oldMoveEvaluator.GetType());
           if (me != null) MoveEvaluator = me;
           else MoveEvaluator = validMoveEvaluators.FirstOrDefault();
-        } 
+        }
       }
     }
 
@@ -243,18 +241,18 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       MoveEvaluatorParameter.ValidValues.Clear();
     }
 
-    private void ParameterizeMoveGenerators(ISingleObjectiveProblem problem) {
+    private void ParameterizeMoveGenerators(ISingleObjectiveHeuristicOptimizationProblem problem) {
       if (problem != null) {
         foreach (IMultiMoveGenerator generator in problem.Operators.OfType<IMultiMoveGenerator>())
           generator.SampleSizeParameter.ActualName = SampleSizeParameter.Name;
       }
     }
-    private void ParameterizeMoveEvaluators(ISingleObjectiveProblem problem) {
+    private void ParameterizeMoveEvaluators(ISingleObjectiveHeuristicOptimizationProblem problem) {
       foreach (ISingleObjectiveMoveEvaluator op in problem.Operators.OfType<ISingleObjectiveMoveEvaluator>()) {
         op.QualityParameter.ActualName = problem.Evaluator.QualityParameter.ActualName;
       }
     }
-    private void ParameterizeMoveMakers(ISingleObjectiveProblem problem) {
+    private void ParameterizeMoveMakers(ISingleObjectiveHeuristicOptimizationProblem problem) {
       foreach (IMoveMaker op in problem.Operators.OfType<IMoveMaker>()) {
         op.QualityParameter.ActualName = problem.Evaluator.QualityParameter.ActualName;
         if (MoveEvaluator != null)

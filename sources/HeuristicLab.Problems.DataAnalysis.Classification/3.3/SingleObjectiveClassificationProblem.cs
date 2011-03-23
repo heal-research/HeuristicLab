@@ -25,11 +25,13 @@ using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Classification {
   [Item("Classification Problem", "Represents a classfication problem.")]
   [StorableClass]
-  public abstract class SingleObjectiveClassificationProblem<T, U> : SingleObjectiveProblem<T, U>, ISingleObjectiveDataAnalysisProblem
+  [NonDiscoverableType]
+  public abstract class SingleObjectiveClassificationProblem<T, U> : SingleObjectiveHeuristicOptimizationProblem<T, U>, ISingleObjectiveDataAnalysisProblem
     where T : class, ISingleObjectiveEvaluator
     where U : class, ISolutionCreator {
     private const string ClassificationProblemDataParameterName = "ClassificationProblemData";

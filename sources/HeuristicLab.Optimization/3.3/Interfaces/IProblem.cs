@@ -28,14 +28,8 @@ namespace HeuristicLab.Optimization {
   /// Interface to represent an optimization problem.
   /// </summary>
   public interface IProblem : IParameterizedNamedItem {
-    IParameter SolutionCreatorParameter { get; }
-    ISolutionCreator SolutionCreator { get; }
-    IParameter EvaluatorParameter { get; }
-    IEvaluator Evaluator { get; }
     IEnumerable<IOperator> Operators { get; }
 
-    event EventHandler SolutionCreatorChanged;
-    event EventHandler EvaluatorChanged;
     event EventHandler OperatorsChanged;
     event EventHandler Reset;
   }

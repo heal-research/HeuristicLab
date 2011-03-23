@@ -11,7 +11,8 @@
     <RootNamespace>HeuristicLab.Parameters</RootNamespace>
     <AssemblyName>HeuristicLab.Parameters-3.3</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile></TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
@@ -111,6 +112,7 @@
   <ItemGroup>
     <None Include="HeuristicLabParametersPlugin.cs.frame" />
     <Compile Include="ConstrainedValueParameter.cs" />
+    <Compile Include="FixedValueParameter.cs" />
     <Compile Include="OptionalConstrainedValueParameter.cs" />
     <Compile Include="ScopeTreeLookupParameter.cs" />
     <Compile Include="ValueParameter.cs" />

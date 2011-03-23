@@ -29,6 +29,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Analyzers {
   /// <summary>
@@ -36,6 +37,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Analyzers {
   /// </summary>
   [Item("SymbolicExpressionSymbolFrequencyAnalyzer", "An operator that tracks frequencies of symbols.")]
   [StorableClass]
+  [NonDiscoverableType]
   public class SymbolicExpressionSymbolFrequencyAnalyzer : SingleSuccessorOperator, ISymbolicExpressionTreeAnalyzer {
     private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
     private const string ResultsParameterName = "Results";

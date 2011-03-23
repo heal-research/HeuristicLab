@@ -38,15 +38,15 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
   [Item("Simulated Annealing", "A simulated annealing algorithm.")]
   [Creatable("Algorithms")]
   [StorableClass]
-  public sealed class SimulatedAnnealing : EngineAlgorithm, IStorableContent {
+  public sealed class SimulatedAnnealing : HeuristicOptimizationEngineAlgorithm, IStorableContent {
     public string Filename { get; set; }
 
     #region Problem Properties
     public override Type ProblemType {
-      get { return typeof(ISingleObjectiveProblem); }
+      get { return typeof(ISingleObjectiveHeuristicOptimizationProblem); }
     }
-    public new ISingleObjectiveProblem Problem {
-      get { return (ISingleObjectiveProblem)base.Problem; }
+    public new ISingleObjectiveHeuristicOptimizationProblem Problem {
+      get { return (ISingleObjectiveHeuristicOptimizationProblem)base.Problem; }
       set { base.Problem = value; }
     }
     #endregion

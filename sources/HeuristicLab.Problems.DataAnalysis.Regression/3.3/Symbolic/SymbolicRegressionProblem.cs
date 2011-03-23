@@ -28,30 +28,31 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [Item("Symbolic Regression Problem (single objective)", "Represents a single objective symbolic regression problem.")]
-  [Creatable("Problems")]
   [StorableClass]
+  [NonDiscoverableType]
   public sealed class SymbolicRegressionProblem : SymbolicRegressionProblemBase, ISingleObjectiveDataAnalysisProblem {
 
     #region Parameter Properties
     public ValueParameter<BoolValue> MaximizationParameter {
       get { return (ValueParameter<BoolValue>)Parameters["Maximization"]; }
     }
-    IParameter ISingleObjectiveProblem.MaximizationParameter {
+    IParameter ISingleObjectiveHeuristicOptimizationProblem.MaximizationParameter {
       get { return MaximizationParameter; }
     }
     public new ValueParameter<ISymbolicRegressionEvaluator> EvaluatorParameter {
       get { return (ValueParameter<ISymbolicRegressionEvaluator>)Parameters["Evaluator"]; }
     }
-    IParameter IProblem.EvaluatorParameter {
+    IParameter IHeuristicOptimizationProblem.EvaluatorParameter {
       get { return EvaluatorParameter; }
     }
     public OptionalValueParameter<DoubleValue> BestKnownQualityParameter {
       get { return (OptionalValueParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
     }
-    IParameter ISingleObjectiveProblem.BestKnownQualityParameter {
+    IParameter ISingleObjectiveHeuristicOptimizationProblem.BestKnownQualityParameter {
       get { return BestKnownQualityParameter; }
     }
     #endregion
@@ -61,10 +62,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       get { return EvaluatorParameter.Value; }
       set { EvaluatorParameter.Value = value; }
     }
-    ISingleObjectiveEvaluator ISingleObjectiveProblem.Evaluator {
+    ISingleObjectiveEvaluator ISingleObjectiveHeuristicOptimizationProblem.Evaluator {
       get { return EvaluatorParameter.Value; }
     }
-    IEvaluator IProblem.Evaluator {
+    IEvaluator IHeuristicOptimizationProblem.Evaluator {
       get { return EvaluatorParameter.Value; }
     }
     public DoubleValue BestKnownQuality {

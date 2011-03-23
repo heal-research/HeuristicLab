@@ -30,7 +30,7 @@ namespace HeuristicLab_33.Tests {
             found = true;
             if (deepCloneableType.IsSealed && !constructor.IsPrivate)
               errorMessage.Append(Environment.NewLine + deepCloneableType.ToString() + ": Cloning constructor must be private in sealed classes.");
-            else if (!deepCloneableType.IsSealed && !constructor.IsFamily)
+            else if (!deepCloneableType.IsSealed && !(constructor.IsFamily || constructor.IsPublic))
               errorMessage.Append(Environment.NewLine + deepCloneableType.ToString() + ": Cloning constructor must be protected.");
             break;
           }

@@ -118,6 +118,7 @@
     <Compile Include="NormalRandomizer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RandomCreator.cs" />
+    <Compile Include="RandomEnumerable.cs" />
     <Compile Include="UniformRandomizer.cs" />
   </ItemGroup>
   <ItemGroup>

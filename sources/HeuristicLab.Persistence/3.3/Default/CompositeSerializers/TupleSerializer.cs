@@ -84,6 +84,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
 
     public object CreateInstance(Type type, IEnumerable<Tag> metaInfo) {
       var values = metaInfo.Select(t => t.Value).ToArray();
+
       MethodInfo createMethod = CreateMethods[values.Length - 1].MakeGenericMethod(type.GetGenericArguments());
       return createMethod.Invoke(null, values);
     }

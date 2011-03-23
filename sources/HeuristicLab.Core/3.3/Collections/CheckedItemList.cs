@@ -83,7 +83,7 @@ namespace HeuristicLab.Core {
     public CheckedItemList(IEnumerable<T> collection)
       : base(collection) {
       checkedState = new Dictionary<T, bool>();
-      foreach (var item in collection) {
+      foreach (var item in list) {
         if (!checkedState.ContainsKey(item))
           checkedState.Add(item, true);
       }

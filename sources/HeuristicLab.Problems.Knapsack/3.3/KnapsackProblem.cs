@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.Knapsack {
   [Item("Knapsack Problem", "Represents a Knapsack problem.")]
   [Creatable("Problems")]
   [StorableClass]
-  public sealed class KnapsackProblem : ParameterizedNamedItem, ISingleObjectiveProblem, IStorableContent {
+  public sealed class KnapsackProblem : ParameterizedNamedItem, ISingleObjectiveHeuristicOptimizationProblem, IStorableContent {
     public string Filename { get; set; }
 
     public override Image ItemImage {
@@ -47,7 +47,7 @@ namespace HeuristicLab.Problems.Knapsack {
     public ValueParameter<BoolValue> MaximizationParameter {
       get { return (ValueParameter<BoolValue>)Parameters["Maximization"]; }
     }
-    IParameter ISingleObjectiveProblem.MaximizationParameter {
+    IParameter ISingleObjectiveHeuristicOptimizationProblem.MaximizationParameter {
       get { return MaximizationParameter; }
     }
     public ValueParameter<IntValue> KnapsackCapacityParameter {
@@ -65,19 +65,19 @@ namespace HeuristicLab.Problems.Knapsack {
     public ValueParameter<IBinaryVectorCreator> SolutionCreatorParameter {
       get { return (ValueParameter<IBinaryVectorCreator>)Parameters["SolutionCreator"]; }
     }
-    IParameter IProblem.SolutionCreatorParameter {
+    IParameter IHeuristicOptimizationProblem.SolutionCreatorParameter {
       get { return SolutionCreatorParameter; }
     }
     public ValueParameter<IKnapsackEvaluator> EvaluatorParameter {
       get { return (ValueParameter<IKnapsackEvaluator>)Parameters["Evaluator"]; }
     }
-    IParameter IProblem.EvaluatorParameter {
+    IParameter IHeuristicOptimizationProblem.EvaluatorParameter {
       get { return EvaluatorParameter; }
     }
     public OptionalValueParameter<DoubleValue> BestKnownQualityParameter {
       get { return (OptionalValueParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
     }
-    IParameter ISingleObjectiveProblem.BestKnownQualityParameter {
+    IParameter ISingleObjectiveHeuristicOptimizationProblem.BestKnownQualityParameter {
       get { return BestKnownQualityParameter; }
     }
     public OptionalValueParameter<BinaryVector> BestKnownSolutionParameter {
@@ -106,17 +106,17 @@ namespace HeuristicLab.Problems.Knapsack {
       get { return SolutionCreatorParameter.Value; }
       set { SolutionCreatorParameter.Value = value; }
     }
-    ISolutionCreator IProblem.SolutionCreator {
+    ISolutionCreator IHeuristicOptimizationProblem.SolutionCreator {
       get { return SolutionCreatorParameter.Value; }
     }
     public IKnapsackEvaluator Evaluator {
       get { return EvaluatorParameter.Value; }
       set { EvaluatorParameter.Value = value; }
     }
-    ISingleObjectiveEvaluator ISingleObjectiveProblem.Evaluator {
+    ISingleObjectiveEvaluator ISingleObjectiveHeuristicOptimizationProblem.Evaluator {
       get { return EvaluatorParameter.Value; }
     }
-    IEvaluator IProblem.Evaluator {
+    IEvaluator IHeuristicOptimizationProblem.Evaluator {
       get { return EvaluatorParameter.Value; }
     }
     public DoubleValue BestKnownQuality {

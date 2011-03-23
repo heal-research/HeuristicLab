@@ -11,7 +11,8 @@
     <RootNamespace>HeuristicLab.Data.Views</RootNamespace>
     <AssemblyName>HeuristicLab.Data.Views-3.3</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile></TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
@@ -110,6 +111,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DoubleRangeView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DoubleRangeView.Designer.cs">
+      <DependentUpon>DoubleRangeView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IntRangeView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="IntRangeView.Designer.cs">
+      <DependentUpon>IntRangeView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StringConvertibleValueTupleView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StringConvertibleValueTupleView.Designer.cs">
+      <DependentUpon>StringConvertibleValueTupleView.cs</DependentUpon>
+    </Compile>
     <None Include="HeuristicLabDataViewsPlugin.cs.frame" />
     <Compile Include="BoolValueView.cs">
       <SubType>UserControl</SubType>

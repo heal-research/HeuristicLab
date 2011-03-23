@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   [Item("Traveling Salesman Problem", "Represents a symmetric Traveling Salesman Problem.")]
   [Creatable("Problems")]
   [StorableClass]
-  public sealed class TravelingSalesmanProblem : ParameterizedNamedItem, ISingleObjectiveProblem, IStorableContent {
+  public sealed class TravelingSalesmanProblem : ParameterizedNamedItem, ISingleObjectiveHeuristicOptimizationProblem, IStorableContent {
     public string Filename { get; set; }
 
     public override Image ItemImage {
@@ -48,7 +48,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     public ValueParameter<BoolValue> MaximizationParameter {
       get { return (ValueParameter<BoolValue>)Parameters["Maximization"]; }
     }
-    IParameter ISingleObjectiveProblem.MaximizationParameter {
+    IParameter ISingleObjectiveHeuristicOptimizationProblem.MaximizationParameter {
       get { return MaximizationParameter; }
     }
     public ValueParameter<DoubleMatrix> CoordinatesParameter {
@@ -63,19 +63,19 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     public ValueParameter<IPermutationCreator> SolutionCreatorParameter {
       get { return (ValueParameter<IPermutationCreator>)Parameters["SolutionCreator"]; }
     }
-    IParameter IProblem.SolutionCreatorParameter {
+    IParameter IHeuristicOptimizationProblem.SolutionCreatorParameter {
       get { return SolutionCreatorParameter; }
     }
     public ValueParameter<ITSPEvaluator> EvaluatorParameter {
       get { return (ValueParameter<ITSPEvaluator>)Parameters["Evaluator"]; }
     }
-    IParameter IProblem.EvaluatorParameter {
+    IParameter IHeuristicOptimizationProblem.EvaluatorParameter {
       get { return EvaluatorParameter; }
     }
     public OptionalValueParameter<DoubleValue> BestKnownQualityParameter {
       get { return (OptionalValueParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
     }
-    IParameter ISingleObjectiveProblem.BestKnownQualityParameter {
+    IParameter ISingleObjectiveHeuristicOptimizationProblem.BestKnownQualityParameter {
       get { return BestKnownQualityParameter; }
     }
     public OptionalValueParameter<Permutation> BestKnownSolutionParameter {
@@ -100,17 +100,17 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       get { return SolutionCreatorParameter.Value; }
       set { SolutionCreatorParameter.Value = value; }
     }
-    ISolutionCreator IProblem.SolutionCreator {
+    ISolutionCreator IHeuristicOptimizationProblem.SolutionCreator {
       get { return SolutionCreatorParameter.Value; }
     }
     public ITSPEvaluator Evaluator {
       get { return EvaluatorParameter.Value; }
       set { EvaluatorParameter.Value = value; }
     }
-    ISingleObjectiveEvaluator ISingleObjectiveProblem.Evaluator {
+    ISingleObjectiveEvaluator ISingleObjectiveHeuristicOptimizationProblem.Evaluator {
       get { return EvaluatorParameter.Value; }
     }
-    IEvaluator IProblem.Evaluator {
+    IEvaluator IHeuristicOptimizationProblem.Evaluator {
       get { return EvaluatorParameter.Value; }
     }
     public DoubleValue BestKnownQuality {

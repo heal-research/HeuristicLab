@@ -31,7 +31,7 @@ using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Optimization.Views {
   /// <summary>
-  /// The base class for visual representations of items.
+  /// The base class for visual representations of algorithms.
   /// </summary>
   [View("Algorithm View")]
   [Content(typeof(Algorithm), true)]

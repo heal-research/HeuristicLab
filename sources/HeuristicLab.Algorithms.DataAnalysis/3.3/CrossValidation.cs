@@ -30,10 +30,11 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
+  [NonDiscoverableType]
   [Item("Cross Validation", "Cross Validation wrapper for data analysis algorithms.")]
-  [Creatable("Data Analysis")]
   [StorableClass]
   public sealed class CrossValidation : ParameterizedNamedItem, IAlgorithm, IStorableContent {
     public CrossValidation()

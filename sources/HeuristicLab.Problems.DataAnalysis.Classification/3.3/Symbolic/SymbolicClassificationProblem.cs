@@ -41,7 +41,7 @@ using HeuristicLab.Problems.DataAnalysis.Symbolic.Symbols;
 namespace HeuristicLab.Problems.DataAnalysis.Classification {
   [Item("Classification Problem", "Represents a classfication problem.")]
   [StorableClass]
-  [Creatable("Problems")]
+  [NonDiscoverableType]
   public sealed class SymbolicClassificationProblem : SingleObjectiveClassificationProblem<ISymbolicClassificationEvaluator, ISymbolicExpressionTreeCreator>, IStorableContent {
     private const string SymbolicExpressionTreeInterpreterParameterName = "SymbolicExpressionTreeInterpreter";
     private const string FunctionTreeGrammarParameterName = "FunctionTreeGrammar";

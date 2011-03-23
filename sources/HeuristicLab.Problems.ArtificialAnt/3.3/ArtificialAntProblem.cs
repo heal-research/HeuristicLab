@@ -38,9 +38,9 @@ using HeuristicLab.Problems.ArtificialAnt.Analyzers;
 
 namespace HeuristicLab.Problems.ArtificialAnt {
   [Item("Artificial Ant Problem", "Represents the Artificial Ant problem.")]
-  [Creatable("Problems")]
   [StorableClass]
-  public sealed class ArtificialAntProblem : ParameterizedNamedItem, ISingleObjectiveProblem, IStorableContent {
+  [NonDiscoverableType]
+  public sealed class ArtificialAntProblem : ParameterizedNamedItem, ISingleObjectiveHeuristicOptimizationProblem, IStorableContent {
     public string Filename { get; set; }
 
     public override Image ItemImage {
@@ -88,19 +88,19 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     public ValueParameter<BoolValue> MaximizationParameter {
       get { return (ValueParameter<BoolValue>)Parameters["Maximization"]; }
     }
-    IParameter ISingleObjectiveProblem.MaximizationParameter {
+    IParameter ISingleObjectiveHeuristicOptimizationProblem.MaximizationParameter {
       get { return MaximizationParameter; }
     }
     public ValueParameter<SymbolicExpressionTreeCreator> SolutionCreatorParameter {
       get { return (ValueParameter<SymbolicExpressionTreeCreator>)Parameters["SolutionCreator"]; }
     }
-    IParameter IProblem.SolutionCreatorParameter {
+    IParameter IHeuristicOptimizationProblem.SolutionCreatorParameter {
       get { return SolutionCreatorParameter; }
     }
     public ValueParameter<Evaluator> EvaluatorParameter {
       get { return (ValueParameter<Evaluator>)Parameters["Evaluator"]; }
     }
-    IParameter IProblem.EvaluatorParameter {
+    IParameter IHeuristicOptimizationProblem.EvaluatorParameter {
       get { return EvaluatorParameter; }
     }
     public ValueParameter<ISymbolicExpressionGrammar> ArtificialAntExpressionGrammarParameter {
@@ -128,7 +128,7 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     public ValueParameter<DoubleValue> BestKnownQualityParameter {
       get { return (ValueParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
     }
-    IParameter ISingleObjectiveProblem.BestKnownQualityParameter {
+    IParameter ISingleObjectiveHeuristicOptimizationProblem.BestKnownQualityParameter {
       get { return BestKnownQualityParameter; }
     }
     #endregion
@@ -162,17 +162,17 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       get { return SolutionCreatorParameter.Value; }
       set { SolutionCreatorParameter.Value = value; }
     }
-    ISolutionCreator IProblem.SolutionCreator {
+    ISolutionCreator IHeuristicOptimizationProblem.SolutionCreator {
       get { return SolutionCreatorParameter.Value; }
     }
     public Evaluator Evaluator {
       get { return EvaluatorParameter.Value; }
       set { EvaluatorParameter.Value = value; }
     }
-    ISingleObjectiveEvaluator ISingleObjectiveProblem.Evaluator {
+    ISingleObjectiveEvaluator ISingleObjectiveHeuristicOptimizationProblem.Evaluator {
       get { return EvaluatorParameter.Value; }
     }
-    IEvaluator IProblem.Evaluator {
+    IEvaluator IHeuristicOptimizationProblem.Evaluator {
       get { return EvaluatorParameter.Value; }
     }
     public GlobalSymbolicExpressionGrammar ArtificialAntExpressionGrammar {

@@ -91,9 +91,11 @@ namespace HeuristicLab.Parameters {
       set {
         if (value != reactOnValueToStringChangedAndValueItemImageChanged) {
           reactOnValueToStringChangedAndValueItemImageChanged = value;
-          if (reactOnValueToStringChangedAndValueItemImageChanged)
+          if (reactOnValueToStringChangedAndValueItemImageChanged) {
             RegisterValueEvents();
-          else
+            OnToStringChanged();
+            OnItemImageChanged();
+          } else
             DeregisterValueEvents();
         }
       }
@@ -186,7 +188,7 @@ namespace HeuristicLab.Parameters {
     protected override void SetActualValue(IItem value) {
       ((IValueParameter)this).Value = value;
     }
-    
+
     public event EventHandler ValueChanged;
     protected virtual void OnValueChanged() {
       EventHandler handler = ValueChanged;

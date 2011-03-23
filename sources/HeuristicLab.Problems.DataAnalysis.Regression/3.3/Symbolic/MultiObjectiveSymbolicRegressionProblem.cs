@@ -26,24 +26,25 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
   [Item("Symbolic Regression Problem (multi objective)", "Represents a multi objective symbolic regression problem.")]
-  [Creatable("Problems")]
   [StorableClass]
-  public class MultiObjectiveSymbolicRegressionProblem : SymbolicRegressionProblemBase, IMultiObjectiveProblem {
+  [NonDiscoverableType]
+  public class MultiObjectiveSymbolicRegressionProblem : SymbolicRegressionProblemBase, IMultiObjectiveHeuristicOptimizationProblem {
 
     #region Parameter Properties
     public ValueParameter<BoolArray> MaximizationParameter {
       get { return (ValueParameter<BoolArray>)Parameters["Maximization"]; }
     }
-    IParameter IMultiObjectiveProblem.MaximizationParameter {
+    IParameter IMultiObjectiveHeuristicOptimizationProblem.MaximizationParameter {
       get { return MaximizationParameter; }
     }
     public new ValueParameter<IMultiObjectiveSymbolicRegressionEvaluator> EvaluatorParameter {
       get { return (ValueParameter<IMultiObjectiveSymbolicRegressionEvaluator>)Parameters["Evaluator"]; }
     }
-    IParameter IProblem.EvaluatorParameter {
+    IParameter IHeuristicOptimizationProblem.EvaluatorParameter {
       get { return EvaluatorParameter; }
     }
     #endregion
@@ -53,10 +54,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic {
       get { return EvaluatorParameter.Value; }
       set { EvaluatorParameter.Value = value; }
     }
-    IMultiObjectiveEvaluator IMultiObjectiveProblem.Evaluator {
+    IMultiObjectiveEvaluator IMultiObjectiveHeuristicOptimizationProblem.Evaluator {
       get { return EvaluatorParameter.Value; }
     }
-    IEvaluator IProblem.Evaluator {
+    IEvaluator IHeuristicOptimizationProblem.Evaluator {
       get { return EvaluatorParameter.Value; }
     }
     #endregion
