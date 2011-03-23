@@ -102,11 +102,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       while (originalEnumerator.MoveNext() & targetEnumerator.MoveNext()) {
         double originalElement = originalEnumerator.Current;
         double targetElement = targetEnumerator.Current;
-        // don't consider very large or very small values for scaling
-        // careful: this also excludes infinity and NaN values
-        if (originalElement > -1.0E07 && originalElement < 1.0E07) {
-          calculator.Add(originalElement, targetElement);
-        }
+        calculator.Add(originalElement, targetElement);
       }
 
       // check if both enumerators are at the end to make sure both enumerations have the same length

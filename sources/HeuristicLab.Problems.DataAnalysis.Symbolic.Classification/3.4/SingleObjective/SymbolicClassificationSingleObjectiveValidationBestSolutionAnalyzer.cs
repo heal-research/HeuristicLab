@@ -65,11 +65,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
 
     protected override ISymbolicClassificationSolution CreateSolution(ISymbolicExpressionTree bestTree, double bestQuality) {
       var model = new SymbolicDiscriminantFunctionClassificationModel(bestTree, SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper);
-      var solution = new SymbolicDiscriminantFunctionClassificationSolution(model, ProblemDataParameter.ActualValue);
       if (ApplyLinearScaling.Value) {
-        solution.ScaleModel();
+        SymbolicDiscriminantFunctionClassificationModel.Scale(model, ProblemDataParameter.ActualValue);
       }
-      return solution;
+      return new SymbolicDiscriminantFunctionClassificationSolution(model, ProblemDataParameter.ActualValue);
     }
   }
 }

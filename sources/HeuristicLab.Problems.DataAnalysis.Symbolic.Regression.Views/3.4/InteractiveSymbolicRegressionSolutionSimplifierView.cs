@@ -52,8 +52,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
     }
 
     protected override void UpdateModel(ISymbolicExpressionTree tree) {
-      Content.Model = new SymbolicRegressionModel(tree, Content.Model.Interpreter);
-      Content.ScaleModel();
+      var model = new SymbolicRegressionModel(tree, Content.Model.Interpreter);
+      SymbolicRegressionModel.Scale(model, Content.ProblemData);
+      Content.Model = model;
     }
 
     protected override Dictionary<ISymbolicExpressionTreeNode, double> CalculateReplacementValues(ISymbolicExpressionTree tree) {

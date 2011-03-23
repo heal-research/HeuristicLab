@@ -65,5 +65,72 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       return Interpreter.GetSymbolicExpressionTreeValues(SymbolicExpressionTree, dataset, rows)
         .LimitToRange(lowerEstimationLimit, upperEstimationLimit);
     }
+
+    public static void Scale(SymbolicRegressionModel model, IRegressionProblemData problemData) {
+      var dataset = problemData.Dataset;
+      var targetVariable = problemData.TargetVariable;
+      var rows = problemData.TrainingIndizes;
+      var estimatedValues = model.Interpreter.GetSymbolicExpressionTreeValues(model.SymbolicExpressionTree, dataset, rows);
+      var targetValues = dataset.GetEnumeratedVariableValues(targetVariable, rows);
+      double alpha;
+      double beta;
+      OnlineLinearScalingParameterCalculator.Calculate(estimatedValues, targetValues, out alpha, out beta);
+
+      ConstantTreeNode alphaTreeNode = null;
+      ConstantTreeNode betaTreeNode = null;
+      // check if model has been scaled previously by analyzing the structure of the tree
+      var startNode = model.SymbolicExpressionTree.Root.GetSubtree(0);
+      if (startNode.GetSubtree(0).Symbol is Addition) {
+        var addNode = startNode.GetSubtree(0);
+        if (addNode.SubtreesCount == 2 && addNode.GetSubtree(0).Symbol is Multiplication && addNode.GetSubtree(1).Symbol is Constant) {
+          alphaTreeNode = addNode.GetSubtree(1) as ConstantTreeNode;
+          var mulNode = addNode.GetSubtree(0);
+          if (mulNode.SubtreesCount == 2 && mulNode.GetSubtree(1).Symbol is Constant) {
+            betaTreeNode = mulNode.GetSubtree(1) as ConstantTreeNode;
+          }
+        }
+      }
+      // if tree structure matches the structure necessary for linear scaling then reuse the existing tree nodes
+      if (alphaTreeNode != null && betaTreeNode != null) {
+        betaTreeNode.Value *= beta;
+        alphaTreeNode.Value *= beta;
+        alphaTreeNode.Value += alpha;
+      } else {
+        var mainBranch = startNode.GetSubtree(0);
+        startNode.RemoveSubtree(0);
+        var scaledMainBranch = MakeSum(MakeProduct(beta, mainBranch), alpha);
+        startNode.AddSubtree(scaledMainBranch);
+      }
+    }
+
+    private static ISymbolicExpressionTreeNode MakeSum(ISymbolicExpressionTreeNode treeNode, double alpha) {
+      if (alpha.IsAlmost(0.0)) {
+        return treeNode;
+      } else {
+        var node = (new Addition()).CreateTreeNode();
+        var alphaConst = MakeConstant(alpha);
+        node.AddSubtree(treeNode);
+        node.AddSubtree(alphaConst);
+        return node;
+      }
+    }
+
+    private static ISymbolicExpressionTreeNode MakeProduct(double beta, ISymbolicExpressionTreeNode treeNode) {
+      if (beta.IsAlmost(1.0)) {
+        return treeNode;
+      } else {
+        var node = (new Multiplication()).CreateTreeNode();
+        var betaConst = MakeConstant(beta);
+        node.AddSubtree(treeNode);
+        node.AddSubtree(betaConst);
+        return node;
+      }
+    }
+
+    private static ISymbolicExpressionTreeNode MakeConstant(double c) {
+      var node = (ConstantTreeNode)(new Constant()).CreateTreeNode();
+      node.Value = c;
+      return node;
+    }
   }
 }
