@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
@@ -43,6 +44,20 @@ namespace HeuristicLab.Optimization.Views {
 
     protected override IResult CreateItem() {
       return null;
+    }
+
+    protected override void itemsListView_SelectedIndexChanged(object sender, EventArgs e) {
+      AdjustListViewColumnSizes();
+      if (showDetailsCheckBox.Checked) {
+        if (itemsListView.SelectedItems.Count == 1) {
+          IResult result = (IResult)itemsListView.SelectedItems[0].Tag;
+          detailsGroupBox.Enabled = true;
+          viewHost.Content = result.Value;
+        } else {
+          viewHost.Content = null;
+          detailsGroupBox.Enabled = false;
+        }
+      }
     }
   }
 }
