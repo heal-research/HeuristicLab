@@ -173,7 +173,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var conditionTreeNode = node as VariableConditionTreeNode;
         string p = @"1 / \left( 1 + \exp \left( - c_{" + constants.Count + "} ";
         constants.Add(conditionTreeNode.Slope);
-        p += @" \cdot \left(" + conditionTreeNode.VariableName + LagToString(currentLag) + " - c_{" + constants.Count + "} \right) \right) \right)";
+        p += @" \cdot \left(" + conditionTreeNode.VariableName + LagToString(currentLag) + " - c_{" + constants.Count + @"} \right) \right) \right)";
         constants.Add(conditionTreeNode.Threshold);
         strBuilder.Append(@"\left( " + p + @"\cdot ");
       } else {
@@ -229,7 +229,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var conditionTreeNode = node as VariableConditionTreeNode;
         string p = @"1 / \left( 1 + \exp \left( - c_{" + constants.Count + "} ";
         constants.Add(conditionTreeNode.Slope);
-        p += @" \cdot \left(" + conditionTreeNode.VariableName + LagToString(currentLag) + " - c_{" + constants.Count + "} \right) \right) \right)";
+        p += @" \cdot \left(" + conditionTreeNode.VariableName + LagToString(currentLag) + " - c_{" + constants.Count + @"} \right) \right) \right)";
         constants.Add(conditionTreeNode.Threshold);
         strBuilder.Append(@" + \left( 1 - " + p + @" \right) \cdot ");
       } else {
