@@ -314,7 +314,7 @@ namespace HeuristicLab.Optimization.Views {
       this.sizeTrackBar.Size = new System.Drawing.Size(64, 45);
       this.sizeTrackBar.TabIndex = 24;
       this.sizeTrackBar.TickStyle = System.Windows.Forms.TickStyle.None;
-      this.sizeTrackBar.Value = 15;
+      this.sizeTrackBar.Value = 10;
       this.sizeTrackBar.ValueChanged += new System.EventHandler(this.sizeTrackBar_ValueChanged);
       // 
       // RunCollectionBubbleChartView

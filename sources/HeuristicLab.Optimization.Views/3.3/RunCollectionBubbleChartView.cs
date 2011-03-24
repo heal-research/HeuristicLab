@@ -238,6 +238,12 @@ namespace HeuristicLab.Optimization.Views {
           UpdateCursorInterval();
         }
       }
+      var xAxis = chart.ChartAreas[0].AxisX;
+      var yAxis = chart.ChartAreas[0].AxisY;
+      xTrackBar.Value = 0;
+      yTrackBar.Value = 0;
+      SetAutomaticUpdateOfAxis(xAxis, true);
+      SetAutomaticUpdateOfAxis(yAxis, true);
     }
 
     private void UpdateMarkerSizes() {
@@ -257,6 +263,44 @@ namespace HeuristicLab.Optimization.Views {
       }
     }
 
+    private void UpdateDataPointJitter() {
+      var xAxis = this.chart.ChartAreas[0].AxisX;
+      var yAxis = this.chart.ChartAreas[0].AxisY;
+      SetAutomaticUpdateOfAxis(xAxis, false);
+      SetAutomaticUpdateOfAxis(yAxis, false);
+
+      foreach (DataPoint point in chart.Series[0].Points) {
+        IRun run = (IRun)point.Tag;
+        double xValue = GetValue(run, xAxisValue).Value;
+        double yValue = GetValue(run, yAxisValue).Value;
+
+        if (!xJitterFactor.IsAlmost(0.0))
+          xValue += 0.1 * GetXJitter(run) * xJitterFactor * (xAxis.Maximum - xAxis.Minimum);
+        if (!yJitterFactor.IsAlmost(0.0))
+          yValue += 0.1 * GetYJitter(run) * yJitterFactor * (yAxis.Maximum - yAxis.Minimum);
+
+        point.XValue = xValue;
+        point.YValues[0] = yValue;
+      }
+    }
+
+    private void SetAutomaticUpdateOfAxis(Axis axis, bool enabled) {
+      if (enabled) {
+        axis.Maximum = double.NaN;
+        axis.Minimum = double.NaN;
+        axis.MajorGrid.Interval = double.NaN;
+        axis.MajorTickMark.Interval = double.NaN;
+        axis.LabelStyle.Interval = double.NaN;
+      } else {
+        axis.Minimum = axis.Minimum;
+        axis.Maximum = axis.Maximum;
+        axis.MajorGrid.Interval = axis.MajorGrid.Interval;
+        axis.MajorTickMark.Interval = axis.MajorTickMark.Interval;
+        axis.LabelStyle.Interval = axis.LabelStyle.Interval;
+      }
+
+    }
+
     private void AddDataPoint(IRun run) {
       double? xValue;
       double? yValue;
@@ -269,17 +313,14 @@ namespace HeuristicLab.Optimization.Views {
 
       if (xValue.HasValue && yValue.HasValue && sizeValue.HasValue) {
         xValue = xValue.Value;
-        if (!xJitterFactor.IsAlmost(0.0))
-          xValue += 0.1 * GetXJitter(run) * xJitterFactor * (this.chart.ChartAreas[0].AxisX.Maximum - this.chart.ChartAreas[0].AxisX.Minimum);
+
         yValue = yValue.Value;
-        if (!yJitterFactor.IsAlmost(0.0))
-          yValue += 0.1 * GetYJitter(run) * yJitterFactor * (this.chart.ChartAreas[0].AxisY.Maximum - this.chart.ChartAreas[0].AxisY.Minimum);
+
         if (run.Visible) {
           DataPoint point = new DataPoint(xValue.Value, new double[] { yValue.Value, sizeValue.Value });
           point.Tag = run;
           point.Color = run.Color;
           series.Points.Add(point);
-
           if (!runToDataPointMapping.ContainsKey(run)) runToDataPointMapping.Add(run, new List<DataPoint>());
           runToDataPointMapping[run].Add(point);
         }
@@ -526,7 +567,7 @@ namespace HeuristicLab.Optimization.Views {
     private void jitterTrackBar_ValueChanged(object sender, EventArgs e) {
       this.xJitterFactor = xTrackBar.Value / 100.0;
       this.yJitterFactor = yTrackBar.Value / 100.0;
-      this.UpdateDataPoints();
+      UpdateDataPointJitter();
     }
     private void sizeTrackBar_ValueChanged(object sender, EventArgs e) {
       UpdateMarkerSizes();
@@ -642,5 +683,6 @@ namespace HeuristicLab.Optimization.Views {
       Content.UpdateOfRunsInProgress = false;
     }
     #endregion
+
   }
 }
