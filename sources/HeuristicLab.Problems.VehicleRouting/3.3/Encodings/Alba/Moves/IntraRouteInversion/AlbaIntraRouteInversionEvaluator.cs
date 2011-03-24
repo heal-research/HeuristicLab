@@ -64,7 +64,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     protected override TourEvaluation GetMoveQuality() {
       return GetMoveQuality(
-        VRPToursParameter.ActualValue as AlbaEncoding, IntraRouteInversionMoveParameter.ActualValue,
+        IntraRouteInversionMoveParameter.ActualValue.Individual as AlbaEncoding, IntraRouteInversionMoveParameter.ActualValue,
         VehiclesParameter.ActualValue,
         DueTimeParameter.ActualValue, ServiceTimeParameter.ActualValue, ReadyTimeParameter.ActualValue,
         DemandParameter.ActualValue, CapacityParameter.ActualValue, CoordinatesParameter.ActualValue,
