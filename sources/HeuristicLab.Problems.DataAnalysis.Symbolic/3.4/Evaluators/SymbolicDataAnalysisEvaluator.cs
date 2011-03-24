@@ -92,12 +92,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       int seed = RandomParameter.ActualValue.Next();
       int samplesStart = EvaluationPartitionParameter.ActualValue.Start;
       int samplesEnd = EvaluationPartitionParameter.ActualValue.End;
+      int testPartitionStart = ProblemDataParameter.ActualValue.TestPartition.Start;
+      int testPartitionEnd = ProblemDataParameter.ActualValue.TestPartition.End;
 
       if (samplesEnd < samplesStart) throw new ArgumentException("Start value is larger than end value.");
       int count = (int)((samplesEnd - samplesStart) * RelativeNumberOfEvaluatedSamplesParameter.ActualValue.Value);
       if (count == 0) count = 1;
       return RandomEnumerable.SampleRandomNumbers(seed, samplesStart, samplesEnd, count)
-        .Where(i => i < ProblemDataParameter.ActualValue.TestPartition.Start || ProblemDataParameter.ActualValue.TestPartition.End <= i);
+        .Where(i => i < testPartitionStart || testPartitionEnd <= i);
     }
   }
 }

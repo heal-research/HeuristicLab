@@ -58,7 +58,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
         return OnlinePearsonsRSquaredEvaluator.Calculate(originalValues, estimatedValues);
       }
       catch (ArgumentException) {
-        // if R² cannot be calculated because of NaN or ininity elements => return worst possible fitness valuse
+        // if R² cannot be calculated because of NaN or ininity elements => return worst possible fitness value
         return 0.0;
       }
     }

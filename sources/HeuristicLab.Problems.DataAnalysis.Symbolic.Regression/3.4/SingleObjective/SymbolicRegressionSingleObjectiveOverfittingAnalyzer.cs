@@ -84,7 +84,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       double[] validationQuality = (from tree in SymbolicExpressionTrees
                                     select EvaluatorParameter.ActualValue.Evaluate(childContext, tree, ProblemDataParameter.ActualValue, rows))
                                    .ToArray();
-      double r = alglib.spearmancorr2(trainingQuality, validationQuality);
+      double r = 0.0;
+      try {
+        r = alglib.spearmancorr2(trainingQuality, validationQuality);
+      }
+      catch (alglib.alglibexception) {
+        r = 0.0;
+      }
 
       TrainingValidationQualityCorrelationParameter.ActualValue = new DoubleValue(r);
 
