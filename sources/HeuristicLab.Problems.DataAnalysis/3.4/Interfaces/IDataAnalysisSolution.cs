@@ -24,7 +24,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public interface IDataAnalysisSolution : INamedItem {
+  public interface IDataAnalysisSolution : INamedItem, IKeyedItemCollection<string, IResult> {
     IDataAnalysisModel Model { get; }
     IDataAnalysisProblemData ProblemData { get; }
 

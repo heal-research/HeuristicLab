@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2011 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -18,8 +18,9 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
-namespace HeuristicLab.Problems.DataAnalysis.Views {
-  partial class DataAnalysisSolutionView {
+
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
+  partial class TextualSymbolicDataAnalysisModelView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -43,45 +44,35 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
-      this.splitContainer.Panel1.SuspendLayout();
-      this.splitContainer.Panel2.SuspendLayout();
-      this.splitContainer.SuspendLayout();
-      this.itemsGroupBox.SuspendLayout();
-      this.detailsGroupBox.SuspendLayout();
+      this.symbolicExpressionTreeView = new HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views.SymbolicExpressionView();
       this.SuspendLayout();
       // 
-      // splitContainer
+      // expressionTreeView
       // 
+      this.symbolicExpressionTreeView.AllowDrop = true;
+      this.symbolicExpressionTreeView.Caption = "Graphical SymbolicExpressionTree View";
+      this.symbolicExpressionTreeView.Content = null;
+      this.symbolicExpressionTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.symbolicExpressionTreeView.Location = new System.Drawing.Point(0, 0);
+      this.symbolicExpressionTreeView.Name = "expressionTreeView";
+      this.symbolicExpressionTreeView.ReadOnly = false;
+      this.symbolicExpressionTreeView.Size = new System.Drawing.Size(352, 413);
+      this.symbolicExpressionTreeView.TabIndex = 0;
       // 
-      // itemsGroupBox
+      // SymbolicExpressionModelView
       // 
-      this.itemsGroupBox.Text = "Data Analysis Solution";
-      // 
-      // addButton
-      // 
-      this.toolTip.SetToolTip(this.addButton, "Add");
-      // 
-      // removeButton
-      // 
-      this.toolTip.SetToolTip(this.removeButton, "Remove");
-      // 
-      // DataAnalysisSolutionView
-      // 
+      this.AllowDrop = true;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Name = "DataAnalysisSolutionView";
-      this.splitContainer.Panel1.ResumeLayout(false);
-      this.splitContainer.Panel2.ResumeLayout(false);
-      ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
-      this.splitContainer.ResumeLayout(false);
-      this.itemsGroupBox.ResumeLayout(false);
-      this.detailsGroupBox.ResumeLayout(false);
+      this.Controls.Add(this.symbolicExpressionTreeView);
+      this.Name = "SymbolicExpressionModelView";
+      this.Size = new System.Drawing.Size(352, 413);
       this.ResumeLayout(false);
 
     }
 
     #endregion
+    private HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views.SymbolicExpressionView symbolicExpressionTreeView;
 
   }
 }

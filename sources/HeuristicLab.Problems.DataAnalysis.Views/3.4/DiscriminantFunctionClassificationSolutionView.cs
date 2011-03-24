@@ -22,25 +22,25 @@
 using System;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
-using HeuristicLab.Problems.DataAnalysis.Views;
+using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
-  [Content(typeof(SymbolicDiscriminantFunctionClassificationSolution), true)]
-  [View("Symbolic Discriminant Function Classification Solution View")]
-  public partial class SymbolicDiscriminantFunctionClassificationSolutionView : DiscriminantFunctionClassificationSolutionView {
-    public SymbolicDiscriminantFunctionClassificationSolutionView() {
+namespace HeuristicLab.Problems.DataAnalysis.Views {
+  [View("DiscriminantFunctionClassification solution view")]
+  [Content(typeof(DiscriminantFunctionClassificationSolution), true)]
+  public partial class DiscriminantFunctionClassificationSolutionView : ClassificationSolutionView {
+    public DiscriminantFunctionClassificationSolutionView() {
       InitializeComponent();
+
+      var regressionSolutionEvaluationViewTypes = ApplicationManager.Manager.GetTypes(typeof(IDiscriminantFunctionClassificationSolutionEvaluationView), true);
+      foreach (Type viewType in regressionSolutionEvaluationViewTypes)
+        AddViewListViewItem(viewType);
+
+      RemoveViewListViewItem(typeof(ClassificationSolutionEstimatedClassValuesView));
     }
 
-    protected new SymbolicDiscriminantFunctionClassificationSolution Content {
-      get { return (SymbolicDiscriminantFunctionClassificationSolution)base.Content; }
+    public new DiscriminantFunctionClassificationSolution Content {
+      get { return (DiscriminantFunctionClassificationSolution)base.Content; }
       set { base.Content = value; }
-    }
-
-    private void btn_SimplifyModel_Click(object sender, EventArgs e) {
-      var view = new InteractiveSymbolicDiscriminantFunctionClassificationSolutionSimplifierView();
-      view.Content = (SymbolicDiscriminantFunctionClassificationSolution)this.Content.Clone();
-      view.Show();
     }
   }
 }

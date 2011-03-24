@@ -44,61 +44,49 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.btn_SimplifyModel = new System.Windows.Forms.Button();
-      this.tabControl.SuspendLayout();
-      this.dataTabPage.SuspendLayout();
-      this.modelTabPage.SuspendLayout();
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SymbolicDiscriminantFunctionClassificationSolutionView));
+      this.btnSimplify = new System.Windows.Forms.Button();
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
+      this.splitContainer.Panel1.SuspendLayout();
+      this.splitContainer.Panel2.SuspendLayout();
+      this.splitContainer.SuspendLayout();
+      this.itemsGroupBox.SuspendLayout();
+      this.detailsGroupBox.SuspendLayout();
       this.SuspendLayout();
       // 
-      // tabControl
+      // splitContainer
       // 
-      this.tabControl.Size = new System.Drawing.Size(380, 233);
       // 
-      // dataTabPage
+      // splitContainer.Panel1
       // 
-      this.dataTabPage.Size = new System.Drawing.Size(372, 207);
+      this.splitContainer.Panel1.Controls.Add(this.btnSimplify);
       // 
-      // modelTabPage
+      // btnSimplify
       // 
-      this.modelTabPage.Size = new System.Drawing.Size(372, 207);
+      this.btnSimplify.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnSimplify.Location = new System.Drawing.Point(172, 4);
+      this.btnSimplify.Name = "btnSimplify";
+      this.btnSimplify.Size = new System.Drawing.Size(75, 23);
+      this.btnSimplify.TabIndex = 6;
+      this.btnSimplify.Text = "Simplify";
+      this.btnSimplify.UseVisualStyleBackColor = true;
+      this.btnSimplify.Click += new System.EventHandler(this.btn_SimplifyModel_Click);
       // 
-      // dataViewHost
-      // 
-      this.dataViewHost.Size = new System.Drawing.Size(360, 195);
-      // 
-      // modelViewHost
-      // 
-      this.modelViewHost.Size = new System.Drawing.Size(360, 195);
-      // 
-      // btn_SimplifyModel
-      // 
-      this.btn_SimplifyModel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.btn_SimplifyModel.Location = new System.Drawing.Point(3, 238);
-      this.btn_SimplifyModel.Name = "btn_SimplifyModel";
-      this.btn_SimplifyModel.Size = new System.Drawing.Size(376, 23);
-      this.btn_SimplifyModel.TabIndex = 2;
-      this.btn_SimplifyModel.Text = "Simplify Model";
-      this.btn_SimplifyModel.UseVisualStyleBackColor = true;
-      this.btn_SimplifyModel.Click += new System.EventHandler(this.btn_SimplifyModel_Click);
-      // 
-      // SymbolicRegressionSolutionView
+      // SymbolicDiscriminantFunctionClassificationSolutionView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.btn_SimplifyModel);
-      this.Name = "SymbolicRegressionSolutionView";
-      this.Controls.SetChildIndex(this.btn_SimplifyModel, 0);
-      this.Controls.SetChildIndex(this.tabControl, 0);
-      this.tabControl.ResumeLayout(false);
-      this.dataTabPage.ResumeLayout(false);
-      this.modelTabPage.ResumeLayout(false);
+      this.Name = "SymbolicDiscriminantFunctionClassificationSolutionView";
+      this.splitContainer.Panel1.ResumeLayout(false);
+      this.splitContainer.Panel2.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
+      this.splitContainer.ResumeLayout(false);
+      this.itemsGroupBox.ResumeLayout(false);
+      this.detailsGroupBox.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }
-
     #endregion
 
-    private System.Windows.Forms.Button btn_SimplifyModel;
+    protected System.Windows.Forms.Button btnSimplify;
   }
 }

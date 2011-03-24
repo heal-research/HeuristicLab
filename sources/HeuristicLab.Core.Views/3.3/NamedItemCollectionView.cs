@@ -50,7 +50,8 @@ namespace HeuristicLab.Core.Views {
 
     protected override void OnContentChanged() {
       string selectedName = null;
-      if ((itemsListView.SelectedItems.Count == 1) && (itemsListView.SelectedItems[0].Tag != null))
+      if ((itemsListView.SelectedItems.Count == 1) && (itemsListView.SelectedItems[0].Tag != null &&
+        itemsListView.SelectedItems[0].Tag is T))
         selectedName = ((T)itemsListView.SelectedItems[0].Tag).Name;
       base.OnContentChanged();
       if (selectedName != null) {

@@ -19,22 +19,9 @@
  */
 #endregion
 
-using System.Collections.Generic;
-namespace HeuristicLab.Problems.DataAnalysis {
-  public interface IRegressionSolution : IDataAnalysisSolution {
-    new IRegressionModel Model { get; }
-    new IRegressionProblemData ProblemData { get; }
 
-    IEnumerable<double> EstimatedValues { get; }
-    IEnumerable<double> EstimatedTrainingValues { get; }
-    IEnumerable<double> EstimatedTestValues { get; }
-    IEnumerable<double> GetEstimatedValues(IEnumerable<int> rows);
-
-    double TrainingMeanSquaredError { get; }
-    double TestMeanSquaredError { get; }
-    double TrainingRSquared { get; }
-    double TestRSquared { get; }
-    double TrainingRelativeError { get; }
-    double TestRelativeError { get; }
+namespace HeuristicLab.Problems.DataAnalysis.Views {
+  public interface IClassificationSolutionEvaluationView : IDataAnalysisSolutionEvaluationView {
+    new IClassificationSolution Content { get; set; }
   }
 }

@@ -19,28 +19,30 @@
  */
 #endregion
 
-using System;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
-using HeuristicLab.Problems.DataAnalysis.Views;
+using HeuristicLab.MainForm.WindowsForms;
 
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
-  [Content(typeof(SymbolicDiscriminantFunctionClassificationSolution), true)]
-  [View("Symbolic Discriminant Function Classification Solution View")]
-  public partial class SymbolicDiscriminantFunctionClassificationSolutionView : DiscriminantFunctionClassificationSolutionView {
-    public SymbolicDiscriminantFunctionClassificationSolutionView() {
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
+  [View("Textual symbolic data analysis model view")]
+  [Content(typeof(ISymbolicDataAnalysisModel), false)]
+  public partial class TextualSymbolicDataAnalysisModelView : AsynchronousContentView {
+    public TextualSymbolicDataAnalysisModelView()
+      : base() {
       InitializeComponent();
     }
 
-    protected new SymbolicDiscriminantFunctionClassificationSolution Content {
-      get { return (SymbolicDiscriminantFunctionClassificationSolution)base.Content; }
+    public new ISymbolicDataAnalysisModel Content {
+      get { return (ISymbolicDataAnalysisModel)base.Content; }
       set { base.Content = value; }
     }
 
-    private void btn_SimplifyModel_Click(object sender, EventArgs e) {
-      var view = new InteractiveSymbolicDiscriminantFunctionClassificationSolutionSimplifierView();
-      view.Content = (SymbolicDiscriminantFunctionClassificationSolution)this.Content.Clone();
-      view.Show();
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
+      if (Content != null)
+        symbolicExpressionTreeView.Content = Content.SymbolicExpressionTree;
+      else
+        symbolicExpressionTreeView.Content = null;
     }
   }
 }

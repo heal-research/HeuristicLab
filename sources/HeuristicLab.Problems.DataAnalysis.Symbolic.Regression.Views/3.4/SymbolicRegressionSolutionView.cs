@@ -25,9 +25,9 @@ using HeuristicLab.MainForm;
 using HeuristicLab.Problems.DataAnalysis.Views;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
-  [Content(typeof(SymbolicRegressionSolution))]
+  [Content(typeof(SymbolicRegressionSolution), true)]
   [View("Symbolic Regression Solution View")]
-  public partial class SymbolicRegressionSolutionView : DataAnalysisSolutionView {
+  public partial class SymbolicRegressionSolutionView : RegressionSolutionView {
     public SymbolicRegressionSolutionView() {
       InitializeComponent();
     }

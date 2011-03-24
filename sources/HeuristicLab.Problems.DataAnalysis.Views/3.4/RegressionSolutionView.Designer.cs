@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2011 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -18,8 +18,9 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
+
 namespace HeuristicLab.Problems.DataAnalysis.Views {
-  partial class DataAnalysisSolutionView {
+  partial class RegressionSolutionView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -56,7 +57,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       // 
       // itemsGroupBox
       // 
-      this.itemsGroupBox.Text = "Data Analysis Solution";
+      this.itemsGroupBox.Text = "Regression Solution";
       // 
       // addButton
       // 
@@ -66,11 +67,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       // 
       this.toolTip.SetToolTip(this.removeButton, "Remove");
       // 
-      // DataAnalysisSolutionView
+      // RegressionSolutionView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Name = "DataAnalysisSolutionView";
+      this.Name = "RegressionSolutionView";
       this.splitContainer.Panel1.ResumeLayout(false);
       this.splitContainer.Panel2.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
@@ -82,6 +83,5 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     #endregion
-
   }
 }

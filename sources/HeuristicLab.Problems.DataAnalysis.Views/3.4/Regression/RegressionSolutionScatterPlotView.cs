@@ -24,13 +24,14 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Regression solution scatter plot")]
   [Content(typeof(IRegressionSolution))]
-  public partial class RegressionSolutionScatterPlotView : AsynchronousContentView {
+  public partial class RegressionSolutionScatterPlotView : ItemView, IRegressionSolutionEvaluationView {
     private const string ALL_SERIES = "All samples";
     private const string TRAINING_SERIES = "Training samples";
     private const string TEST_SERIES = "Test samples";

@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2011 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -18,8 +18,9 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
-namespace HeuristicLab.Problems.DataAnalysis.Views {
-  partial class DataAnalysisSolutionView {
+
+namespace HeuristicLab.Algorithms.DataAnalysis.Views {
+  partial class SupportVectorMachineModelSupportVectorsView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -43,45 +44,36 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
-      this.splitContainer.Panel1.SuspendLayout();
-      this.splitContainer.Panel2.SuspendLayout();
-      this.splitContainer.SuspendLayout();
-      this.itemsGroupBox.SuspendLayout();
-      this.detailsGroupBox.SuspendLayout();
+      this.stringConvertibleMatrixView = new HeuristicLab.Data.Views.StringConvertibleMatrixView();
       this.SuspendLayout();
       // 
-      // splitContainer
+      // stringConvertibleMatrixView
       // 
+      this.stringConvertibleMatrixView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.stringConvertibleMatrixView.Caption = "StringConvertibleMatrix View";
+      this.stringConvertibleMatrixView.Content = null;
+      this.stringConvertibleMatrixView.Location = new System.Drawing.Point(3, 3);
+      this.stringConvertibleMatrixView.Name = "stringConvertibleMatrixView";
+      this.stringConvertibleMatrixView.ReadOnly = false;
+      this.stringConvertibleMatrixView.ShowRowsAndColumnsTextBox = true;
+      this.stringConvertibleMatrixView.ShowStatisticalInformation = false;
+      this.stringConvertibleMatrixView.Size = new System.Drawing.Size(381, 230);
+      this.stringConvertibleMatrixView.TabIndex = 0;
       // 
-      // itemsGroupBox
-      // 
-      this.itemsGroupBox.Text = "Data Analysis Solution";
-      // 
-      // addButton
-      // 
-      this.toolTip.SetToolTip(this.addButton, "Add");
-      // 
-      // removeButton
-      // 
-      this.toolTip.SetToolTip(this.removeButton, "Remove");
-      // 
-      // DataAnalysisSolutionView
+      // SupportVectorMachineModelSupportVectorsView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Name = "DataAnalysisSolutionView";
-      this.splitContainer.Panel1.ResumeLayout(false);
-      this.splitContainer.Panel2.ResumeLayout(false);
-      ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
-      this.splitContainer.ResumeLayout(false);
-      this.itemsGroupBox.ResumeLayout(false);
-      this.detailsGroupBox.ResumeLayout(false);
+      this.Controls.Add(this.stringConvertibleMatrixView);
+      this.Name = "SupportVectorMachineModelSupportVectorsView";
+      this.Size = new System.Drawing.Size(387, 236);
       this.ResumeLayout(false);
 
     }
 
     #endregion
 
+    private Data.Views.StringConvertibleMatrixView stringConvertibleMatrixView;
   }
 }

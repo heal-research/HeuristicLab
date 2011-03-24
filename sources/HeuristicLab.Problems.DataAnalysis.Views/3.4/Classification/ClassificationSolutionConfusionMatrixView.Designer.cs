@@ -1,4 +1,4 @@
-﻿namespace HeuristicLab.Problems.DataAnalysis.Classification.Views {
+﻿namespace HeuristicLab.Problems.DataAnalysis.Views {
   partial class ClassificationSolutionConfusionMatrixView {
     /// <summary> 
     /// Required designer variable.

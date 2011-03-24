@@ -92,6 +92,7 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="HeuristicLab.Common.Resources-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=x86" />
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -109,17 +110,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TextualSymbolicDataAnalysisModelView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TextualSymbolicDataAnalysisModelView.designer.cs">
+      <DependentUpon>TextualSymbolicDataAnalysisModelView.cs</DependentUpon>
+    </Compile>
     <Compile Include="InteractiveSymbolicDataAnalysisSolutionSimplifierView.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="InteractiveSymbolicDataAnalysisSolutionSimplifierView.Designer.cs">
       <DependentUpon>InteractiveSymbolicDataAnalysisSolutionSimplifierView.cs</DependentUpon>
     </Compile>
-    <Compile Include="SymbolicDataAnalysisModelView.cs">
+    <Compile Include="GraphicalSymbolicDataAnalysisModelView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="SymbolicDataAnalysisModelView.designer.cs">
-      <DependentUpon>SymbolicDataAnalysisModelView.cs</DependentUpon>
+    <Compile Include="GraphicalSymbolicDataAnalysisModelView.designer.cs">
+      <DependentUpon>GraphicalSymbolicDataAnalysisModelView.cs</DependentUpon>
     </Compile>
     <Compile Include="Symbols\ConstantView.cs">
       <SubType>UserControl</SubType>
@@ -215,6 +222,10 @@
     <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
       <Project>{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}</Project>
       <Name>HeuristicLab.Operators-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Optimization.Views\3.3\HeuristicLab.Optimization.Views-3.3.csproj">
+      <Project>{662B4B15-8F4D-4AE5-B3EB-D91C215F5AF2}</Project>
+      <Name>HeuristicLab.Optimization.Views-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
       <Project>{14AB8D24-25BC-400C-A846-4627AA945192}</Project>

@@ -27,12 +27,13 @@ using System.Text;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using HeuristicLab.Common;
+using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
-namespace HeuristicLab.Problems.DataAnalysis.Classification.Views {
+namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Discriminant function classification solution ROC curves view")]
   [Content(typeof(IDiscriminantFunctionClassificationSolution))]
-  public partial class DiscriminantFunctionClassificationRocCurvesView : AsynchronousContentView {
+  public partial class DiscriminantFunctionClassificationRocCurvesView : ItemView, IDiscriminantFunctionClassificationSolutionEvaluationView {
     private const string xAxisTitle = "False Positive Rate";
     private const string yAxisTitle = "True Positive Rate";
     private const string TrainingSamples = "Training";

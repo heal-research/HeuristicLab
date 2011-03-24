@@ -19,12 +19,12 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.PluginInfrastructure;
-using System;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
   [View("SymbolicExpression View")]
@@ -33,8 +33,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
 
     List<ISymbolicExpressionTreeStringFormatter> treeFormattersList = new List<ISymbolicExpressionTreeStringFormatter>();
 
-    public new SymbolicExpressionTree Content {
-      get { return (SymbolicExpressionTree)base.Content; }
+    public new ISymbolicExpressionTree Content {
+      get { return (ISymbolicExpressionTree)base.Content; }
       set { base.Content = value; }
     }
 

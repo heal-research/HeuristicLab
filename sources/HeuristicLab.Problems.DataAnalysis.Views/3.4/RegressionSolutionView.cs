@@ -19,22 +19,26 @@
  */
 #endregion
 
-using System.Collections.Generic;
-namespace HeuristicLab.Problems.DataAnalysis {
-  public interface IRegressionSolution : IDataAnalysisSolution {
-    new IRegressionModel Model { get; }
-    new IRegressionProblemData ProblemData { get; }
+using System;
+using System.Windows.Forms;
+using HeuristicLab.MainForm;
+using HeuristicLab.PluginInfrastructure;
 
-    IEnumerable<double> EstimatedValues { get; }
-    IEnumerable<double> EstimatedTrainingValues { get; }
-    IEnumerable<double> EstimatedTestValues { get; }
-    IEnumerable<double> GetEstimatedValues(IEnumerable<int> rows);
+namespace HeuristicLab.Problems.DataAnalysis.Views {
+  [View("Regresison solution view")]
+  [Content(typeof(RegressionSolution), true)]
+  public partial class RegressionSolutionView : DataAnalysisSolutionView {
+    public RegressionSolutionView() {
+      InitializeComponent();
 
-    double TrainingMeanSquaredError { get; }
-    double TestMeanSquaredError { get; }
-    double TrainingRSquared { get; }
-    double TestRSquared { get; }
-    double TrainingRelativeError { get; }
-    double TestRelativeError { get; }
+      var regressionSolutionEvaluationViewTypes = ApplicationManager.Manager.GetTypes(typeof(IRegressionSolutionEvaluationView), true);
+      foreach (Type viewType in regressionSolutionEvaluationViewTypes)
+        AddViewListViewItem(viewType);
+    }
+
+    public new RegressionSolution Content {
+      get { return (RegressionSolution)base.Content; }
+      set { base.Content = value; }
+    }
   }
 }

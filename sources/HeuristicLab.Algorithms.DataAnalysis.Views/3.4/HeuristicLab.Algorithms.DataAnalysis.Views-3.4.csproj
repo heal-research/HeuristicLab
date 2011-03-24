@@ -113,6 +113,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SupportVectorMachineModelSupportVectorsView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SupportVectorMachineModelSupportVectorsView.Designer.cs">
+      <DependentUpon>SupportVectorMachineModelSupportVectorsView.cs</DependentUpon>
+    </Compile>
     <Compile Include="CrossValidationView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -126,12 +132,6 @@
     </Compile>
     <Compile Include="SupportVectorMachineModelView.Designer.cs">
       <DependentUpon>SupportVectorMachineModelView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="SupportVectorRegressionSolutionView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="SupportVectorRegressionSolutionView.Designer.cs">
-      <DependentUpon>SupportVectorRegressionSolutionView.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
