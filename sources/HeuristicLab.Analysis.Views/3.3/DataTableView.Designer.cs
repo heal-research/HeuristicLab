@@ -44,10 +44,10 @@ namespace HeuristicLab.Analysis.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      System.Windows.Forms.DataVisualization.Charting.ChartArea defaultChartArea = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-      System.Windows.Forms.DataVisualization.Charting.Legend defaultLegend = new System.Windows.Forms.DataVisualization.Charting.Legend();
-      System.Windows.Forms.DataVisualization.Charting.Series defaultSeries = new System.Windows.Forms.DataVisualization.Charting.Series();
-      System.Windows.Forms.DataVisualization.Charting.Title defaultTitle = new System.Windows.Forms.DataVisualization.Charting.Title();
+      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+      System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+      System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+      System.Windows.Forms.DataVisualization.Charting.Title title1 = new System.Windows.Forms.DataVisualization.Charting.Title();
       this.chart = new HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
@@ -57,11 +57,12 @@ namespace HeuristicLab.Analysis.Views {
       // 
       this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.errorProvider.SetIconPadding(this.nameTextBox, 2);
-      this.nameTextBox.Size = new System.Drawing.Size(287, 20);
+      this.nameTextBox.Location = new System.Drawing.Point(55, 0);
+      this.nameTextBox.Size = new System.Drawing.Size(279, 20);
       // 
-      // descriptionTextBox
+      // infoLabel
       // 
-      this.descriptionTextBox.Size = new System.Drawing.Size(287, 20);
+      this.infoLabel.Location = new System.Drawing.Point(340, 3);
       // 
       // chart
       // 
@@ -70,30 +71,30 @@ namespace HeuristicLab.Analysis.Views {
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.chart.BorderlineColor = System.Drawing.Color.Black;
       this.chart.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
-      defaultChartArea.AxisX.Minimum = 0;
-      defaultChartArea.CursorX.IsUserEnabled = true;
-      defaultChartArea.CursorX.IsUserSelectionEnabled = true;
-      defaultChartArea.CursorY.IsUserEnabled = true;
-      defaultChartArea.CursorY.IsUserSelectionEnabled = true;
-      defaultChartArea.Name = "Default";
-      this.chart.ChartAreas.Add(defaultChartArea);
-      defaultLegend.Alignment = System.Drawing.StringAlignment.Center;
-      defaultLegend.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
-      defaultLegend.Name = "Default";
-      this.chart.Legends.Add(defaultLegend);
-      this.chart.Location = new System.Drawing.Point(0, 52);
+      chartArea1.AxisX.Minimum = 0D;
+      chartArea1.CursorX.IsUserEnabled = true;
+      chartArea1.CursorX.IsUserSelectionEnabled = true;
+      chartArea1.CursorY.IsUserEnabled = true;
+      chartArea1.CursorY.IsUserSelectionEnabled = true;
+      chartArea1.Name = "Default";
+      this.chart.ChartAreas.Add(chartArea1);
+      legend1.Alignment = System.Drawing.StringAlignment.Center;
+      legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
+      legend1.Name = "Default";
+      this.chart.Legends.Add(legend1);
+      this.chart.Location = new System.Drawing.Point(0, 26);
       this.chart.Name = "chart";
-      defaultSeries.ChartArea = "Default";
-      defaultSeries.Legend = "Default";
-      defaultSeries.Name = "Default";
-      this.chart.Series.Add(defaultSeries);
-      this.chart.Size = new System.Drawing.Size(359, 222);
-      this.chart.TabIndex = 4;
+      series1.ChartArea = "Default";
+      series1.Legend = "Default";
+      series1.Name = "Default";
+      this.chart.Series.Add(series1);
+      this.chart.Size = new System.Drawing.Size(359, 248);
+      this.chart.TabIndex = 3;
       this.chart.Text = "chart";
-      defaultTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      defaultTitle.Name = "Default";
-      defaultTitle.Text = "Title";
-      this.chart.Titles.Add(defaultTitle);
+      title1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      title1.Name = "Default";
+      title1.Text = "Title";
+      this.chart.Titles.Add(title1);
       this.chart.CustomizeLegend += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CustomizeLegendEventArgs>(this.chart_CustomizeLegend);
       this.chart.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chart_MouseDown);
       this.chart.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chart_MouseMove);
@@ -105,11 +106,10 @@ namespace HeuristicLab.Analysis.Views {
       this.Controls.Add(this.chart);
       this.Name = "DataTableView";
       this.Size = new System.Drawing.Size(359, 274);
+      this.Controls.SetChildIndex(this.infoLabel, 0);
       this.Controls.SetChildIndex(this.chart, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
-      this.Controls.SetChildIndex(this.descriptionLabel, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);
-      this.Controls.SetChildIndex(this.descriptionTextBox, 0);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.chart)).EndInit();
       this.ResumeLayout(false);

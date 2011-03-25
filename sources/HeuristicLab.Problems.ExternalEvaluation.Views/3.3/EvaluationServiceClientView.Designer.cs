@@ -44,15 +44,33 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.SuspendLayout();
+      // 
+      // parameterCollectionView
+      // 
+      this.parameterCollectionView.Size = new System.Drawing.Size(528, 334);
+      // 
+      // nameTextBox
+      // 
+      this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
+      this.errorProvider.SetIconPadding(this.nameTextBox, 2);
+      this.nameTextBox.Location = new System.Drawing.Point(58, 0);
+      this.nameTextBox.Size = new System.Drawing.Size(445, 20);
+      // 
+      // infoLabel
+      // 
+      this.infoLabel.Location = new System.Drawing.Point(509, 3);
       // 
       // EvaluationServiceClientView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Name = "EvaluationServiceClientView";
-      this.Size = new System.Drawing.Size(362, 215);
+      this.Size = new System.Drawing.Size(528, 360);
+      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.ResumeLayout(false);
+      this.PerformLayout();
 
     }
 

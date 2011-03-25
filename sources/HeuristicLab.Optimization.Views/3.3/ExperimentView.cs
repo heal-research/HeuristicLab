@@ -113,7 +113,7 @@ namespace HeuristicLab.Optimization.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_Prepared), sender, e);
       else {
-        nameTextBox.Enabled = descriptionTextBox.Enabled = true;
+        nameTextBox.Enabled = infoLabel.Enabled = true;
         ReadOnly = Locked = false;
         SetEnabledStateOfExecutableButtons();
       }
@@ -122,7 +122,7 @@ namespace HeuristicLab.Optimization.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_Started), sender, e);
       else {
-        nameTextBox.Enabled = descriptionTextBox.Enabled = false;
+        nameTextBox.Enabled = infoLabel.Enabled = false;
         ReadOnly = Locked = true;
         SetEnabledStateOfExecutableButtons();
       }
@@ -131,7 +131,7 @@ namespace HeuristicLab.Optimization.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_Paused), sender, e);
       else {
-        nameTextBox.Enabled = descriptionTextBox.Enabled = true;
+        nameTextBox.Enabled = infoLabel.Enabled = true;
         ReadOnly = Locked = false;
         SetEnabledStateOfExecutableButtons();
       }
@@ -140,7 +140,7 @@ namespace HeuristicLab.Optimization.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_Stopped), sender, e);
       else {
-        nameTextBox.Enabled = descriptionTextBox.Enabled = true;
+        nameTextBox.Enabled = infoLabel.Enabled = true;
         ReadOnly = Locked = false;
         SetEnabledStateOfExecutableButtons();
       }

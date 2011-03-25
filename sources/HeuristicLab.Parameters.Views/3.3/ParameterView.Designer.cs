@@ -53,30 +53,31 @@ namespace HeuristicLab.Parameters.Views {
       // 
       this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.errorProvider.SetIconPadding(this.nameTextBox, 2);
-      this.nameTextBox.Size = new System.Drawing.Size(321, 20);
+      this.nameTextBox.Location = new System.Drawing.Point(69, 0);
+      this.nameTextBox.Size = new System.Drawing.Size(299, 20);
       // 
-      // descriptionTextBox
+      // infoLabel
       // 
-      this.descriptionTextBox.Size = new System.Drawing.Size(321, 20);
+      this.infoLabel.Location = new System.Drawing.Point(374, 3);
       // 
       // dataTypeLabel
       // 
       this.dataTypeLabel.AutoSize = true;
-      this.dataTypeLabel.Location = new System.Drawing.Point(3, 55);
+      this.dataTypeLabel.Location = new System.Drawing.Point(3, 29);
       this.dataTypeLabel.Name = "dataTypeLabel";
       this.dataTypeLabel.Size = new System.Drawing.Size(60, 13);
-      this.dataTypeLabel.TabIndex = 4;
+      this.dataTypeLabel.TabIndex = 3;
       this.dataTypeLabel.Text = "Data &Type:";
       // 
       // dataTypeTextBox
       // 
       this.dataTypeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.dataTypeTextBox.Location = new System.Drawing.Point(72, 52);
+      this.dataTypeTextBox.Location = new System.Drawing.Point(69, 26);
       this.dataTypeTextBox.Name = "dataTypeTextBox";
       this.dataTypeTextBox.ReadOnly = true;
-      this.dataTypeTextBox.Size = new System.Drawing.Size(321, 20);
-      this.dataTypeTextBox.TabIndex = 5;
+      this.dataTypeTextBox.Size = new System.Drawing.Size(324, 20);
+      this.dataTypeTextBox.TabIndex = 4;
       // 
       // ParameterView
       // 
@@ -85,10 +86,9 @@ namespace HeuristicLab.Parameters.Views {
       this.Controls.Add(this.dataTypeLabel);
       this.Controls.Add(this.dataTypeTextBox);
       this.Name = "ParameterView";
-      this.Size = new System.Drawing.Size(393, 79);
+      this.Size = new System.Drawing.Size(393, 50);
+      this.Controls.SetChildIndex(this.infoLabel, 0);
       this.Controls.SetChildIndex(this.dataTypeTextBox, 0);
-      this.Controls.SetChildIndex(this.descriptionTextBox, 0);
-      this.Controls.SetChildIndex(this.descriptionLabel, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);
       this.Controls.SetChildIndex(this.dataTypeLabel, 0);

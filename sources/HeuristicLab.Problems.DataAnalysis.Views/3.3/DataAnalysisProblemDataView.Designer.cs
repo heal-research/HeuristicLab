@@ -50,25 +50,26 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       // 
       // parameterCollectionView
       // 
-      this.parameterCollectionView.Size = new System.Drawing.Size(585, 366);
+      this.parameterCollectionView.Size = new System.Drawing.Size(585, 397);
       // 
       // nameTextBox
       // 
       this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.errorProvider.SetIconPadding(this.nameTextBox, 2);
-      this.nameTextBox.Size = new System.Drawing.Size(513, 20);
+      this.nameTextBox.Location = new System.Drawing.Point(58, 0);
+      this.nameTextBox.Size = new System.Drawing.Size(505, 20);
       // 
-      // descriptionTextBox
+      // infoLabel
       // 
-      this.descriptionTextBox.Size = new System.Drawing.Size(513, 20);
+      this.infoLabel.Location = new System.Drawing.Point(569, 3);
       // 
       // importButton
       // 
       this.importButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.importButton.Location = new System.Drawing.Point(6, 424);
+      this.importButton.Location = new System.Drawing.Point(0, 429);
       this.importButton.Name = "importButton";
-      this.importButton.Size = new System.Drawing.Size(579, 23);
+      this.importButton.Size = new System.Drawing.Size(588, 23);
       this.importButton.TabIndex = 4;
       this.importButton.Text = "Import from CSV file";
       this.importButton.UseVisualStyleBackColor = true;
@@ -80,13 +81,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.importButton);
       this.Name = "DataAnalysisProblemDataView";
-      this.Size = new System.Drawing.Size(588, 450);
-      this.Controls.SetChildIndex(this.parameterCollectionView, 0);
+      this.Size = new System.Drawing.Size(588, 452);
       this.Controls.SetChildIndex(this.importButton, 0);
+      this.Controls.SetChildIndex(this.infoLabel, 0);
+      this.Controls.SetChildIndex(this.parameterCollectionView, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
-      this.Controls.SetChildIndex(this.descriptionLabel, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);
-      this.Controls.SetChildIndex(this.descriptionTextBox, 0);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();

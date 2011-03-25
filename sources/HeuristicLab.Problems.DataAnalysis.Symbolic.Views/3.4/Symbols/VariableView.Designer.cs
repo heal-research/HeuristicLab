@@ -71,18 +71,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // initialFrequencyTextBox
       // 
       this.errorProvider.SetIconAlignment(this.initialFrequencyTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
-      this.initialFrequencyTextBox.Size = new System.Drawing.Size(285, 20);
+      this.initialFrequencyTextBox.Size = new System.Drawing.Size(315, 20);
       // 
       // nameTextBox
       // 
       this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.errorProvider.SetIconPadding(this.nameTextBox, 2);
-      this.nameTextBox.Size = new System.Drawing.Size(285, 20);
+      this.nameTextBox.Size = new System.Drawing.Size(290, 20);
       // 
-      // descriptionTextBox
+      // infoLabel
       // 
-      this.errorProvider.SetIconAlignment(this.descriptionTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
-      this.descriptionTextBox.Size = new System.Drawing.Size(285, 20);
+      this.infoLabel.Location = new System.Drawing.Point(389, 3);
       // 
       // weightMuLabel
       // 
@@ -90,7 +89,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.weightMuLabel.Location = new System.Drawing.Point(6, 22);
       this.weightMuLabel.Name = "weightMuLabel";
       this.weightMuLabel.Size = new System.Drawing.Size(67, 13);
-      this.weightMuLabel.TabIndex = 6;
+      this.weightMuLabel.TabIndex = 0;
       this.weightMuLabel.Text = "Weight (mu):";
       this.toolTip.SetToolTip(this.weightMuLabel, "The mu (mean) parameter of the normal distribution to use for initial weights.");
       // 
@@ -100,8 +99,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.weightInitializationMuTextBox.Location = new System.Drawing.Point(92, 19);
       this.weightInitializationMuTextBox.Name = "weightInitializationMuTextBox";
-      this.weightInitializationMuTextBox.Size = new System.Drawing.Size(266, 20);
-      this.weightInitializationMuTextBox.TabIndex = 7;
+      this.weightInitializationMuTextBox.Size = new System.Drawing.Size(275, 20);
+      this.weightInitializationMuTextBox.TabIndex = 1;
       this.toolTip.SetToolTip(this.weightInitializationMuTextBox, "The mu (mean) parameter of the normal distribution from which to sample the initi" +
               "al weights.");
       this.weightInitializationMuTextBox.TextChanged += new System.EventHandler(this.weightMuTextBox_TextChanged);
@@ -116,8 +115,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.initializationGroupBox.Controls.Add(this.weightInitializationMuTextBox);
       this.initializationGroupBox.Location = new System.Drawing.Point(6, 6);
       this.initializationGroupBox.Name = "initializationGroupBox";
-      this.initializationGroupBox.Size = new System.Drawing.Size(364, 73);
-      this.initializationGroupBox.TabIndex = 8;
+      this.initializationGroupBox.Size = new System.Drawing.Size(373, 73);
+      this.initializationGroupBox.TabIndex = 0;
       this.initializationGroupBox.TabStop = false;
       this.initializationGroupBox.Text = "Initialization";
       // 
@@ -127,7 +126,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.weightSigmaLabel.Location = new System.Drawing.Point(6, 48);
       this.weightSigmaLabel.Name = "weightSigmaLabel";
       this.weightSigmaLabel.Size = new System.Drawing.Size(80, 13);
-      this.weightSigmaLabel.TabIndex = 8;
+      this.weightSigmaLabel.TabIndex = 2;
       this.weightSigmaLabel.Text = "Weight (sigma):";
       this.toolTip.SetToolTip(this.weightSigmaLabel, "The sigma parameter for the normal distribution to use for the initial weights.");
       // 
@@ -137,8 +136,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.weightInitializationSigmaTextBox.Location = new System.Drawing.Point(92, 45);
       this.weightInitializationSigmaTextBox.Name = "weightInitializationSigmaTextBox";
-      this.weightInitializationSigmaTextBox.Size = new System.Drawing.Size(266, 20);
-      this.weightInitializationSigmaTextBox.TabIndex = 9;
+      this.weightInitializationSigmaTextBox.Size = new System.Drawing.Size(275, 20);
+      this.weightInitializationSigmaTextBox.TabIndex = 3;
       this.toolTip.SetToolTip(this.weightInitializationSigmaTextBox, "The sigma parameter for the normal distribution from which to sample the initial " +
               "weights.");
       this.weightInitializationSigmaTextBox.TextChanged += new System.EventHandler(this.weightSigmaTextBox_TextChanged);
@@ -153,8 +152,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.mutationGroupBox.Controls.Add(this.additiveWeightChangeSigmaTextBox);
       this.mutationGroupBox.Location = new System.Drawing.Point(6, 85);
       this.mutationGroupBox.Name = "mutationGroupBox";
-      this.mutationGroupBox.Size = new System.Drawing.Size(364, 73);
-      this.mutationGroupBox.TabIndex = 9;
+      this.mutationGroupBox.Size = new System.Drawing.Size(373, 73);
+      this.mutationGroupBox.TabIndex = 1;
       this.mutationGroupBox.TabStop = false;
       this.mutationGroupBox.Text = "Mutation";
       // 
@@ -164,7 +163,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.multiplicativeWeightChangeLabel.Location = new System.Drawing.Point(6, 48);
       this.multiplicativeWeightChangeLabel.Name = "multiplicativeWeightChangeLabel";
       this.multiplicativeWeightChangeLabel.Size = new System.Drawing.Size(180, 13);
-      this.multiplicativeWeightChangeLabel.TabIndex = 8;
+      this.multiplicativeWeightChangeLabel.TabIndex = 2;
       this.multiplicativeWeightChangeLabel.Text = "Multiplicative weight change (sigma):";
       this.toolTip.SetToolTip(this.multiplicativeWeightChangeLabel, "The sigma parameter for the normal distribution to use to sample a multiplicative" +
               " change in weight.");
@@ -175,8 +174,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.multiplicativeWeightChangeSigmaTextBox.Location = new System.Drawing.Point(201, 45);
       this.multiplicativeWeightChangeSigmaTextBox.Name = "multiplicativeWeightChangeSigmaTextBox";
-      this.multiplicativeWeightChangeSigmaTextBox.Size = new System.Drawing.Size(157, 20);
-      this.multiplicativeWeightChangeSigmaTextBox.TabIndex = 9;
+      this.multiplicativeWeightChangeSigmaTextBox.Size = new System.Drawing.Size(166, 20);
+      this.multiplicativeWeightChangeSigmaTextBox.TabIndex = 3;
       this.toolTip.SetToolTip(this.multiplicativeWeightChangeSigmaTextBox, "The sigma (std.dev.) parameter for the normal distribution to sample a multiplica" +
               "tive change in weight.");
       this.multiplicativeWeightChangeSigmaTextBox.TextChanged += new System.EventHandler(this.multiplicativeWeightChangeSigmaTextBox_TextChanged);
@@ -187,7 +186,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.additiveWeightChangeLabel.Location = new System.Drawing.Point(6, 22);
       this.additiveWeightChangeLabel.Name = "additiveWeightChangeLabel";
       this.additiveWeightChangeLabel.Size = new System.Drawing.Size(157, 13);
-      this.additiveWeightChangeLabel.TabIndex = 6;
+      this.additiveWeightChangeLabel.TabIndex = 0;
       this.additiveWeightChangeLabel.Text = "Additive weight change (sigma):";
       this.toolTip.SetToolTip(this.additiveWeightChangeLabel, "The sigma (std.dev.) parameter for the normal distribution to sample an additive " +
               "change in weight.");
@@ -198,8 +197,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.additiveWeightChangeSigmaTextBox.Location = new System.Drawing.Point(201, 19);
       this.additiveWeightChangeSigmaTextBox.Name = "additiveWeightChangeSigmaTextBox";
-      this.additiveWeightChangeSigmaTextBox.Size = new System.Drawing.Size(157, 20);
-      this.additiveWeightChangeSigmaTextBox.TabIndex = 7;
+      this.additiveWeightChangeSigmaTextBox.Size = new System.Drawing.Size(166, 20);
+      this.additiveWeightChangeSigmaTextBox.TabIndex = 1;
       this.toolTip.SetToolTip(this.additiveWeightChangeSigmaTextBox, "The sigma (std.dev.) parameter for the normal distribution to sample an additive " +
               "change in weight.");
       this.additiveWeightChangeSigmaTextBox.TextChanged += new System.EventHandler(this.additiveWeightChangeSigmaTextBox_TextChanged);
@@ -211,18 +210,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl.Controls.Add(this.variableNamesTabPage);
       this.tabControl.Controls.Add(this.parametersTabPage);
-      this.tabControl.Location = new System.Drawing.Point(3, 79);
+      this.tabControl.Location = new System.Drawing.Point(0, 52);
       this.tabControl.Name = "tabControl";
       this.tabControl.SelectedIndex = 0;
-      this.tabControl.Size = new System.Drawing.Size(399, 212);
-      this.tabControl.TabIndex = 10;
+      this.tabControl.Size = new System.Drawing.Size(408, 242);
+      this.tabControl.TabIndex = 5;
       // 
       // variableNamesTabPage
       // 
       this.variableNamesTabPage.Location = new System.Drawing.Point(4, 22);
       this.variableNamesTabPage.Name = "variableNamesTabPage";
       this.variableNamesTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.variableNamesTabPage.Size = new System.Drawing.Size(391, 186);
+      this.variableNamesTabPage.Size = new System.Drawing.Size(400, 216);
       this.variableNamesTabPage.TabIndex = 0;
       this.variableNamesTabPage.Text = "Variable Names";
       this.variableNamesTabPage.UseVisualStyleBackColor = true;
@@ -234,7 +233,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.parametersTabPage.Location = new System.Drawing.Point(4, 22);
       this.parametersTabPage.Name = "parametersTabPage";
       this.parametersTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.parametersTabPage.Size = new System.Drawing.Size(391, 186);
+      this.parametersTabPage.Size = new System.Drawing.Size(400, 216);
       this.parametersTabPage.TabIndex = 1;
       this.parametersTabPage.Text = "Parameters";
       this.parametersTabPage.UseVisualStyleBackColor = true;
@@ -246,12 +245,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.Controls.Add(this.tabControl);
       this.Name = "VariableView";
       this.Size = new System.Drawing.Size(408, 294);
+      this.Controls.SetChildIndex(this.infoLabel, 0);
       this.Controls.SetChildIndex(this.initialFrequencyTextBox, 0);
       this.Controls.SetChildIndex(this.initialFrequencyLabel, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
-      this.Controls.SetChildIndex(this.descriptionLabel, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);
-      this.Controls.SetChildIndex(this.descriptionTextBox, 0);
       this.Controls.SetChildIndex(this.tabControl, 0);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.initializationGroupBox.ResumeLayout(false);
@@ -267,18 +265,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     #endregion
 
-    private System.Windows.Forms.Label weightMuLabel;
-    private System.Windows.Forms.TextBox weightInitializationMuTextBox;
+    protected System.Windows.Forms.Label weightMuLabel;
+    protected System.Windows.Forms.TextBox weightInitializationMuTextBox;
     protected System.Windows.Forms.GroupBox initializationGroupBox;
-    private System.Windows.Forms.Label weightSigmaLabel;
-    private System.Windows.Forms.TextBox weightInitializationSigmaTextBox;
+    protected System.Windows.Forms.Label weightSigmaLabel;
+    protected System.Windows.Forms.TextBox weightInitializationSigmaTextBox;
     protected System.Windows.Forms.GroupBox mutationGroupBox;
-    private System.Windows.Forms.Label multiplicativeWeightChangeLabel;
-    private System.Windows.Forms.TextBox multiplicativeWeightChangeSigmaTextBox;
-    private System.Windows.Forms.Label additiveWeightChangeLabel;
-    private System.Windows.Forms.TextBox additiveWeightChangeSigmaTextBox;
-    private System.Windows.Forms.TabControl tabControl;
-    private System.Windows.Forms.TabPage variableNamesTabPage;
-    private System.Windows.Forms.TabPage parametersTabPage;
+    protected System.Windows.Forms.Label multiplicativeWeightChangeLabel;
+    protected System.Windows.Forms.TextBox multiplicativeWeightChangeSigmaTextBox;
+    protected System.Windows.Forms.Label additiveWeightChangeLabel;
+    protected System.Windows.Forms.TextBox additiveWeightChangeSigmaTextBox;
+    protected System.Windows.Forms.TabPage variableNamesTabPage;
+    protected System.Windows.Forms.TabPage parametersTabPage;
+    protected System.Windows.Forms.TabControl tabControl;
   }
 }

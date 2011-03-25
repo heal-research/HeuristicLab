@@ -52,22 +52,25 @@ namespace HeuristicLab.Core.Views {
       // 
       this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.errorProvider.SetIconPadding(this.nameTextBox, 2);
-      this.nameTextBox.Size = new System.Drawing.Size(418, 20);
+      this.nameTextBox.Location = new System.Drawing.Point(59, 0);
+      this.nameTextBox.Size = new System.Drawing.Size(406, 20);
       // 
-      // descriptionTextBox
+      // infoLabel
       // 
-      this.descriptionTextBox.Size = new System.Drawing.Size(418, 20);
+      this.infoLabel.Location = new System.Drawing.Point(471, 3);
       // 
       // parameterCollectionView
       // 
       this.parameterCollectionView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
+      this.parameterCollectionView.Caption = "ParameterCollection View";
       this.parameterCollectionView.Content = null;
-      this.parameterCollectionView.Location = new System.Drawing.Point(0, 52);
+      this.parameterCollectionView.Location = new System.Drawing.Point(0, 26);
       this.parameterCollectionView.Name = "parameterCollectionView";
-      this.parameterCollectionView.Size = new System.Drawing.Size(490, 301);
-      this.parameterCollectionView.TabIndex = 4;
+      this.parameterCollectionView.ReadOnly = false;
+      this.parameterCollectionView.Size = new System.Drawing.Size(490, 327);
+      this.parameterCollectionView.TabIndex = 3;
       // 
       // ParameterizedNamedItemView
       // 
@@ -76,10 +79,9 @@ namespace HeuristicLab.Core.Views {
       this.Controls.Add(this.parameterCollectionView);
       this.Name = "ParameterizedNamedItemView";
       this.Size = new System.Drawing.Size(490, 353);
+      this.Controls.SetChildIndex(this.infoLabel, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
-      this.Controls.SetChildIndex(this.descriptionLabel, 0);
-      this.Controls.SetChildIndex(this.descriptionTextBox, 0);
       this.Controls.SetChildIndex(this.parameterCollectionView, 0);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.ResumeLayout(false);

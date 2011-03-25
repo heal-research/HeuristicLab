@@ -47,10 +47,9 @@ namespace HeuristicLab.Core.Views {
       this.components = new System.ComponentModel.Container();
       this.nameLabel = new System.Windows.Forms.Label();
       this.nameTextBox = new System.Windows.Forms.TextBox();
-      this.descriptionLabel = new System.Windows.Forms.Label();
-      this.descriptionTextBox = new System.Windows.Forms.TextBox();
       this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+      this.infoLabel = new System.Windows.Forms.Label();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.SuspendLayout();
       // 
@@ -67,50 +66,39 @@ namespace HeuristicLab.Core.Views {
       // 
       this.nameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.nameTextBox.Location = new System.Drawing.Point(72, 0);
+      this.nameTextBox.Location = new System.Drawing.Point(58, 0);
       this.nameTextBox.Name = "nameTextBox";
-      this.nameTextBox.Size = new System.Drawing.Size(279, 20);
+      this.nameTextBox.Size = new System.Drawing.Size(268, 20);
       this.nameTextBox.TabIndex = 1;
-      this.nameTextBox.Validated += new System.EventHandler(this.nameTextBox_Validated);
       this.nameTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.nameTextBox_KeyDown);
       this.nameTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.nameTextBox_Validating);
-      // 
-      // descriptionLabel
-      // 
-      this.descriptionLabel.AutoSize = true;
-      this.descriptionLabel.Location = new System.Drawing.Point(3, 29);
-      this.descriptionLabel.Name = "descriptionLabel";
-      this.descriptionLabel.Size = new System.Drawing.Size(63, 13);
-      this.descriptionLabel.TabIndex = 2;
-      this.descriptionLabel.Text = "&Description:";
-      // 
-      // descriptionTextBox
-      // 
-      this.descriptionTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.descriptionTextBox.Location = new System.Drawing.Point(72, 26);
-      this.descriptionTextBox.Name = "descriptionTextBox";
-      this.descriptionTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-      this.descriptionTextBox.Size = new System.Drawing.Size(279, 20);
-      this.descriptionTextBox.TabIndex = 3;
-      this.descriptionTextBox.DoubleClick += new System.EventHandler(this.descriptionTextBox_DoubleClick);
-      this.descriptionTextBox.Validated += new System.EventHandler(this.descriptionTextBox_Validated);
+      this.nameTextBox.Validated += new System.EventHandler(this.nameTextBox_Validated);
       // 
       // errorProvider
       // 
       this.errorProvider.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
       this.errorProvider.ContainerControl = this;
       // 
+      // infoLabel
+      // 
+      this.infoLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.infoLabel.Image = HeuristicLab.Common.Resources.VSImageLibrary.Information;
+      this.infoLabel.Location = new System.Drawing.Point(332, 3);
+      this.infoLabel.Name = "infoLabel";
+      this.infoLabel.Size = new System.Drawing.Size(16, 16);
+      this.infoLabel.TabIndex = 2;
+      this.toolTip.SetToolTip(this.infoLabel, "Double-click to open description editor.");
+      this.infoLabel.DoubleClick += new System.EventHandler(this.infoLabel_DoubleClick);
+      // 
       // NamedItemView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.descriptionTextBox);
+      this.Controls.Add(this.infoLabel);
       this.Controls.Add(this.nameTextBox);
-      this.Controls.Add(this.descriptionLabel);
       this.Controls.Add(this.nameLabel);
       this.Name = "NamedItemView";
-      this.Size = new System.Drawing.Size(351, 52);
+      this.Size = new System.Drawing.Size(351, 28);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
@@ -121,9 +109,8 @@ namespace HeuristicLab.Core.Views {
 
     protected System.Windows.Forms.TextBox nameTextBox;
     protected System.Windows.Forms.Label nameLabel;
-    protected System.Windows.Forms.Label descriptionLabel;
-    protected System.Windows.Forms.TextBox descriptionTextBox;
     protected System.Windows.Forms.ErrorProvider errorProvider;
     protected System.Windows.Forms.ToolTip toolTip;
+    protected System.Windows.Forms.Label infoLabel;
   }
 }

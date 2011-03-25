@@ -47,31 +47,32 @@
       // 
       this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.errorProvider.SetIconPadding(this.nameTextBox, 2);
-      this.nameTextBox.Size = new System.Drawing.Size(477, 20);
+      this.nameTextBox.Size = new System.Drawing.Size(466, 20);
       // 
-      // descriptionTextBox
+      // infoLabel
       // 
-      this.descriptionTextBox.Size = new System.Drawing.Size(477, 20);
+      this.infoLabel.Location = new System.Drawing.Point(530, 3);
       // 
       // tabControl
       // 
+      this.tabControl.AllowDrop = true;
       this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl.Controls.Add(this.variableNamesTabPage);
       this.tabControl.Controls.Add(this.parametersTabPage);
-      this.tabControl.Location = new System.Drawing.Point(0, 52);
+      this.tabControl.Location = new System.Drawing.Point(0, 26);
       this.tabControl.Name = "tabControl";
       this.tabControl.SelectedIndex = 0;
-      this.tabControl.Size = new System.Drawing.Size(549, 367);
-      this.tabControl.TabIndex = 4;
+      this.tabControl.Size = new System.Drawing.Size(549, 393);
+      this.tabControl.TabIndex = 3;
       // 
       // variableNamesTabPage
       // 
       this.variableNamesTabPage.Location = new System.Drawing.Point(4, 22);
       this.variableNamesTabPage.Name = "variableNamesTabPage";
       this.variableNamesTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.variableNamesTabPage.Size = new System.Drawing.Size(541, 341);
+      this.variableNamesTabPage.Size = new System.Drawing.Size(541, 367);
       this.variableNamesTabPage.TabIndex = 0;
       this.variableNamesTabPage.Text = "Variable Names";
       this.variableNamesTabPage.UseVisualStyleBackColor = true;
@@ -83,7 +84,7 @@
       this.parametersTabPage.Location = new System.Drawing.Point(4, 22);
       this.parametersTabPage.Name = "parametersTabPage";
       this.parametersTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.parametersTabPage.Size = new System.Drawing.Size(541, 341);
+      this.parametersTabPage.Size = new System.Drawing.Size(541, 367);
       this.parametersTabPage.TabIndex = 1;
       this.parametersTabPage.Text = "Parameters";
       this.parametersTabPage.UseVisualStyleBackColor = true;
@@ -97,7 +98,7 @@
       this.groupBox2.Location = new System.Drawing.Point(6, 100);
       this.groupBox2.Name = "groupBox2";
       this.groupBox2.Size = new System.Drawing.Size(200, 94);
-      this.groupBox2.TabIndex = 2;
+      this.groupBox2.TabIndex = 1;
       this.groupBox2.TabStop = false;
       this.groupBox2.Text = "Weight Manipulator";
       // 
@@ -123,7 +124,7 @@
       this.weightManipulatorSigmaTextBox.Location = new System.Drawing.Point(61, 57);
       this.weightManipulatorSigmaTextBox.Name = "weightManipulatorSigmaTextBox";
       this.weightManipulatorSigmaTextBox.Size = new System.Drawing.Size(100, 20);
-      this.weightManipulatorSigmaTextBox.TabIndex = 1;
+      this.weightManipulatorSigmaTextBox.TabIndex = 3;
       this.weightManipulatorSigmaTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.weightTextBox_Validating);
       // 
       // label4
@@ -132,7 +133,7 @@
       this.label4.Location = new System.Drawing.Point(27, 60);
       this.label4.Name = "label4";
       this.label4.Size = new System.Drawing.Size(17, 13);
-      this.label4.TabIndex = 0;
+      this.label4.TabIndex = 2;
       this.label4.Text = "σ:";
       // 
       // groupBox1
@@ -144,7 +145,7 @@
       this.groupBox1.Location = new System.Drawing.Point(6, 11);
       this.groupBox1.Name = "groupBox1";
       this.groupBox1.Size = new System.Drawing.Size(200, 83);
-      this.groupBox1.TabIndex = 2;
+      this.groupBox1.TabIndex = 0;
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "Weight";
       // 
@@ -171,7 +172,7 @@
       this.label2.Location = new System.Drawing.Point(27, 48);
       this.label2.Name = "label2";
       this.label2.Size = new System.Drawing.Size(17, 13);
-      this.label2.TabIndex = 0;
+      this.label2.TabIndex = 2;
       this.label2.Text = "σ:";
       // 
       // weightSigmaTextBox
@@ -179,7 +180,7 @@
       this.weightSigmaTextBox.Location = new System.Drawing.Point(61, 45);
       this.weightSigmaTextBox.Name = "weightSigmaTextBox";
       this.weightSigmaTextBox.Size = new System.Drawing.Size(100, 20);
-      this.weightSigmaTextBox.TabIndex = 1;
+      this.weightSigmaTextBox.TabIndex = 3;
       this.weightSigmaTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.weightTextBox_Validating);
       // 
       // VariableSymbolView
@@ -189,11 +190,10 @@
       this.Controls.Add(this.tabControl);
       this.Name = "VariableSymbolView";
       this.Size = new System.Drawing.Size(549, 419);
+      this.Controls.SetChildIndex(this.infoLabel, 0);
       this.Controls.SetChildIndex(this.tabControl, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
-      this.Controls.SetChildIndex(this.descriptionLabel, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);
-      this.Controls.SetChildIndex(this.descriptionTextBox, 0);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.tabControl.ResumeLayout(false);
       this.parametersTabPage.ResumeLayout(false);

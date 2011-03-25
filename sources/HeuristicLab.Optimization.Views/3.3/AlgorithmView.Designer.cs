@@ -43,6 +43,7 @@ namespace HeuristicLab.Optimization.Views {
       this.resultsTabPage = new System.Windows.Forms.TabPage();
       this.resultsView = new HeuristicLab.Optimization.Views.ResultCollectionView();
       this.runsTabPage = new System.Windows.Forms.TabPage();
+      this.storeAlgorithmInEachRunCheckBox = new System.Windows.Forms.CheckBox();
       this.runsView = new HeuristicLab.Optimization.Views.RunCollectionView();
       this.startButton = new System.Windows.Forms.Button();
       this.pauseButton = new System.Windows.Forms.Button();
@@ -51,7 +52,6 @@ namespace HeuristicLab.Optimization.Views {
       this.executionTimeTextBox = new System.Windows.Forms.TextBox();
       this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
       this.stopButton = new System.Windows.Forms.Button();
-      this.storeAlgorithmInEachRunCheckBox = new System.Windows.Forms.CheckBox();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.tabControl.SuspendLayout();
       this.problemTabPage.SuspendLayout();
@@ -64,14 +64,16 @@ namespace HeuristicLab.Optimization.Views {
       // 
       this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.errorProvider.SetIconPadding(this.nameTextBox, 2);
-      this.nameTextBox.Size = new System.Drawing.Size(607, 20);
+      this.nameTextBox.Location = new System.Drawing.Point(60, 0);
+      this.nameTextBox.Size = new System.Drawing.Size(594, 20);
       // 
-      // descriptionTextBox
+      // infoLabel
       // 
-      this.descriptionTextBox.Size = new System.Drawing.Size(607, 20);
+      this.infoLabel.Location = new System.Drawing.Point(660, 3);
       // 
       // tabControl
       // 
+      this.tabControl.AllowDrop = true;
       this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
@@ -79,22 +81,22 @@ namespace HeuristicLab.Optimization.Views {
       this.tabControl.Controls.Add(this.parametersTabPage);
       this.tabControl.Controls.Add(this.resultsTabPage);
       this.tabControl.Controls.Add(this.runsTabPage);
-      this.tabControl.Location = new System.Drawing.Point(0, 52);
+      this.tabControl.Location = new System.Drawing.Point(0, 26);
       this.tabControl.Name = "tabControl";
       this.tabControl.SelectedIndex = 0;
-      this.tabControl.Size = new System.Drawing.Size(679, 400);
-      this.tabControl.TabIndex = 4;
+      this.tabControl.Size = new System.Drawing.Size(679, 426);
+      this.tabControl.TabIndex = 3;
       // 
       // problemTabPage
       // 
+      this.problemTabPage.AllowDrop = true;
       this.problemTabPage.Controls.Add(this.problemViewHost);
       this.problemTabPage.Controls.Add(this.openProblemButton);
       this.problemTabPage.Controls.Add(this.newProblemButton);
-      this.problemTabPage.AllowDrop = true;
       this.problemTabPage.Location = new System.Drawing.Point(4, 22);
       this.problemTabPage.Name = "problemTabPage";
       this.problemTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.problemTabPage.Size = new System.Drawing.Size(671, 374);
+      this.problemTabPage.Size = new System.Drawing.Size(671, 400);
       this.problemTabPage.TabIndex = 0;
       this.problemTabPage.Text = "Problem";
       this.problemTabPage.UseVisualStyleBackColor = true;
@@ -109,11 +111,13 @@ namespace HeuristicLab.Optimization.Views {
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.problemViewHost.Caption = "View";
       this.problemViewHost.Content = null;
+      this.problemViewHost.Enabled = false;
       this.problemViewHost.Location = new System.Drawing.Point(6, 36);
       this.problemViewHost.Name = "problemViewHost";
       this.problemViewHost.ReadOnly = false;
-      this.problemViewHost.Size = new System.Drawing.Size(659, 332);
+      this.problemViewHost.Size = new System.Drawing.Size(659, 358);
       this.problemViewHost.TabIndex = 3;
+      this.problemViewHost.ViewsLabelVisible = true;
       this.problemViewHost.ViewType = null;
       // 
       // openProblemButton
@@ -144,7 +148,7 @@ namespace HeuristicLab.Optimization.Views {
       this.parametersTabPage.Location = new System.Drawing.Point(4, 22);
       this.parametersTabPage.Name = "parametersTabPage";
       this.parametersTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.parametersTabPage.Size = new System.Drawing.Size(671, 374);
+      this.parametersTabPage.Size = new System.Drawing.Size(671, 400);
       this.parametersTabPage.TabIndex = 1;
       this.parametersTabPage.Text = "Parameters";
       this.parametersTabPage.UseVisualStyleBackColor = true;
@@ -159,7 +163,7 @@ namespace HeuristicLab.Optimization.Views {
       this.parameterCollectionView.Location = new System.Drawing.Point(6, 6);
       this.parameterCollectionView.Name = "parameterCollectionView";
       this.parameterCollectionView.ReadOnly = false;
-      this.parameterCollectionView.Size = new System.Drawing.Size(659, 362);
+      this.parameterCollectionView.Size = new System.Drawing.Size(659, 388);
       this.parameterCollectionView.TabIndex = 0;
       // 
       // resultsTabPage
@@ -168,7 +172,7 @@ namespace HeuristicLab.Optimization.Views {
       this.resultsTabPage.Location = new System.Drawing.Point(4, 22);
       this.resultsTabPage.Name = "resultsTabPage";
       this.resultsTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.resultsTabPage.Size = new System.Drawing.Size(671, 374);
+      this.resultsTabPage.Size = new System.Drawing.Size(671, 400);
       this.resultsTabPage.TabIndex = 2;
       this.resultsTabPage.Text = "Results";
       this.resultsTabPage.UseVisualStyleBackColor = true;
@@ -183,7 +187,7 @@ namespace HeuristicLab.Optimization.Views {
       this.resultsView.Location = new System.Drawing.Point(6, 6);
       this.resultsView.Name = "resultsView";
       this.resultsView.ReadOnly = true;
-      this.resultsView.Size = new System.Drawing.Size(659, 362);
+      this.resultsView.Size = new System.Drawing.Size(659, 388);
       this.resultsView.TabIndex = 0;
       // 
       // runsTabPage
@@ -193,97 +197,10 @@ namespace HeuristicLab.Optimization.Views {
       this.runsTabPage.Location = new System.Drawing.Point(4, 22);
       this.runsTabPage.Name = "runsTabPage";
       this.runsTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.runsTabPage.Size = new System.Drawing.Size(671, 374);
+      this.runsTabPage.Size = new System.Drawing.Size(671, 400);
       this.runsTabPage.TabIndex = 3;
       this.runsTabPage.Text = "Runs";
       this.runsTabPage.UseVisualStyleBackColor = true;
-      // 
-      // runsView
-      // 
-      this.runsView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.runsView.Caption = "RunCollection View";
-      this.runsView.Content = null;
-      this.runsView.Location = new System.Drawing.Point(6, 6);
-      this.runsView.Name = "runsView";
-      this.runsView.ReadOnly = false;
-      this.runsView.Size = new System.Drawing.Size(659, 362);
-      this.runsView.TabIndex = 0;
-      // 
-      // startButton
-      // 
-      this.startButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.startButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Play;
-      this.startButton.Location = new System.Drawing.Point(0, 458);
-      this.startButton.Name = "startButton";
-      this.startButton.Size = new System.Drawing.Size(24, 24);
-      this.startButton.TabIndex = 5;
-      this.toolTip.SetToolTip(this.startButton, "Start/Resume Algorithm");
-      this.startButton.UseVisualStyleBackColor = true;
-      this.startButton.Click += new System.EventHandler(this.startButton_Click);
-      // 
-      // pauseButton
-      // 
-      this.pauseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.pauseButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Pause;
-      this.pauseButton.Location = new System.Drawing.Point(30, 458);
-      this.pauseButton.Name = "pauseButton";
-      this.pauseButton.Size = new System.Drawing.Size(24, 24);
-      this.pauseButton.TabIndex = 6;
-      this.toolTip.SetToolTip(this.pauseButton, "Pause Algorithm");
-      this.pauseButton.UseVisualStyleBackColor = true;
-      this.pauseButton.Click += new System.EventHandler(this.pauseButton_Click);
-      // 
-      // resetButton
-      // 
-      this.resetButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.resetButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Restart;
-      this.resetButton.Location = new System.Drawing.Point(90, 458);
-      this.resetButton.Name = "resetButton";
-      this.resetButton.Size = new System.Drawing.Size(24, 24);
-      this.resetButton.TabIndex = 8;
-      this.toolTip.SetToolTip(this.resetButton, "Reset Algorithm");
-      this.resetButton.UseVisualStyleBackColor = true;
-      this.resetButton.Click += new System.EventHandler(this.resetButton_Click);
-      // 
-      // executionTimeLabel
-      // 
-      this.executionTimeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.executionTimeLabel.AutoSize = true;
-      this.executionTimeLabel.Location = new System.Drawing.Point(453, 465);
-      this.executionTimeLabel.Name = "executionTimeLabel";
-      this.executionTimeLabel.Size = new System.Drawing.Size(83, 13);
-      this.executionTimeLabel.TabIndex = 9;
-      this.executionTimeLabel.Text = "&Execution Time:";
-      // 
-      // executionTimeTextBox
-      // 
-      this.executionTimeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.executionTimeTextBox.Location = new System.Drawing.Point(542, 462);
-      this.executionTimeTextBox.Name = "executionTimeTextBox";
-      this.executionTimeTextBox.ReadOnly = true;
-      this.executionTimeTextBox.Size = new System.Drawing.Size(137, 20);
-      this.executionTimeTextBox.TabIndex = 10;
-      // 
-      // openFileDialog
-      // 
-      this.openFileDialog.DefaultExt = "hl";
-      this.openFileDialog.FileName = "Problem";
-      this.openFileDialog.Filter = "HeuristicLab Files|*.hl|All Files|*.*";
-      this.openFileDialog.Title = "Open Problem";
-      // 
-      // stopButton
-      // 
-      this.stopButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.stopButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Stop;
-      this.stopButton.Location = new System.Drawing.Point(60, 458);
-      this.stopButton.Name = "stopButton";
-      this.stopButton.Size = new System.Drawing.Size(24, 24);
-      this.stopButton.TabIndex = 7;
-      this.toolTip.SetToolTip(this.stopButton, "Stop Algorithm");
-      this.stopButton.UseVisualStyleBackColor = true;
-      this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
       // 
       // storeAlgorithmInEachRunCheckBox
       // 
@@ -301,6 +218,93 @@ namespace HeuristicLab.Optimization.Views {
       this.storeAlgorithmInEachRunCheckBox.UseVisualStyleBackColor = true;
       this.storeAlgorithmInEachRunCheckBox.CheckedChanged += new System.EventHandler(this.storeAlgorithmInEachRunCheckBox_CheckedChanged);
       // 
+      // runsView
+      // 
+      this.runsView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.runsView.Caption = "RunCollection View";
+      this.runsView.Content = null;
+      this.runsView.Location = new System.Drawing.Point(6, 6);
+      this.runsView.Name = "runsView";
+      this.runsView.ReadOnly = false;
+      this.runsView.Size = new System.Drawing.Size(659, 388);
+      this.runsView.TabIndex = 0;
+      // 
+      // startButton
+      // 
+      this.startButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.startButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Play;
+      this.startButton.Location = new System.Drawing.Point(0, 458);
+      this.startButton.Name = "startButton";
+      this.startButton.Size = new System.Drawing.Size(24, 24);
+      this.startButton.TabIndex = 4;
+      this.toolTip.SetToolTip(this.startButton, "Start/Resume Algorithm");
+      this.startButton.UseVisualStyleBackColor = true;
+      this.startButton.Click += new System.EventHandler(this.startButton_Click);
+      // 
+      // pauseButton
+      // 
+      this.pauseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.pauseButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Pause;
+      this.pauseButton.Location = new System.Drawing.Point(30, 458);
+      this.pauseButton.Name = "pauseButton";
+      this.pauseButton.Size = new System.Drawing.Size(24, 24);
+      this.pauseButton.TabIndex = 5;
+      this.toolTip.SetToolTip(this.pauseButton, "Pause Algorithm");
+      this.pauseButton.UseVisualStyleBackColor = true;
+      this.pauseButton.Click += new System.EventHandler(this.pauseButton_Click);
+      // 
+      // resetButton
+      // 
+      this.resetButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.resetButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Restart;
+      this.resetButton.Location = new System.Drawing.Point(90, 458);
+      this.resetButton.Name = "resetButton";
+      this.resetButton.Size = new System.Drawing.Size(24, 24);
+      this.resetButton.TabIndex = 7;
+      this.toolTip.SetToolTip(this.resetButton, "Reset Algorithm");
+      this.resetButton.UseVisualStyleBackColor = true;
+      this.resetButton.Click += new System.EventHandler(this.resetButton_Click);
+      // 
+      // executionTimeLabel
+      // 
+      this.executionTimeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.executionTimeLabel.AutoSize = true;
+      this.executionTimeLabel.Location = new System.Drawing.Point(453, 465);
+      this.executionTimeLabel.Name = "executionTimeLabel";
+      this.executionTimeLabel.Size = new System.Drawing.Size(83, 13);
+      this.executionTimeLabel.TabIndex = 8;
+      this.executionTimeLabel.Text = "&Execution Time:";
+      // 
+      // executionTimeTextBox
+      // 
+      this.executionTimeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.executionTimeTextBox.Location = new System.Drawing.Point(542, 462);
+      this.executionTimeTextBox.Name = "executionTimeTextBox";
+      this.executionTimeTextBox.ReadOnly = true;
+      this.executionTimeTextBox.Size = new System.Drawing.Size(137, 20);
+      this.executionTimeTextBox.TabIndex = 9;
+      // 
+      // openFileDialog
+      // 
+      this.openFileDialog.DefaultExt = "hl";
+      this.openFileDialog.FileName = "Problem";
+      this.openFileDialog.Filter = "HeuristicLab Files|*.hl|All Files|*.*";
+      this.openFileDialog.Title = "Open Problem";
+      // 
+      // stopButton
+      // 
+      this.stopButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.stopButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Stop;
+      this.stopButton.Location = new System.Drawing.Point(60, 458);
+      this.stopButton.Name = "stopButton";
+      this.stopButton.Size = new System.Drawing.Size(24, 24);
+      this.stopButton.TabIndex = 6;
+      this.toolTip.SetToolTip(this.stopButton, "Stop Algorithm");
+      this.stopButton.UseVisualStyleBackColor = true;
+      this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
+      // 
       // AlgorithmView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -314,6 +318,7 @@ namespace HeuristicLab.Optimization.Views {
       this.Controls.Add(this.resetButton);
       this.Name = "AlgorithmView";
       this.Size = new System.Drawing.Size(679, 482);
+      this.Controls.SetChildIndex(this.infoLabel, 0);
       this.Controls.SetChildIndex(this.resetButton, 0);
       this.Controls.SetChildIndex(this.stopButton, 0);
       this.Controls.SetChildIndex(this.executionTimeLabel, 0);
@@ -322,9 +327,7 @@ namespace HeuristicLab.Optimization.Views {
       this.Controls.SetChildIndex(this.startButton, 0);
       this.Controls.SetChildIndex(this.tabControl, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
-      this.Controls.SetChildIndex(this.descriptionLabel, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);
-      this.Controls.SetChildIndex(this.descriptionTextBox, 0);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.tabControl.ResumeLayout(false);
       this.problemTabPage.ResumeLayout(false);

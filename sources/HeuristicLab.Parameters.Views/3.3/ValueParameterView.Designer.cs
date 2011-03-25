@@ -42,22 +42,27 @@ namespace HeuristicLab.Parameters.Views {
       this.valueGroupBox.SuspendLayout();
       this.SuspendLayout();
       // 
+      // dataTypeLabel
+      // 
+      this.dataTypeLabel.Location = new System.Drawing.Point(3, 29);
+      this.dataTypeLabel.TabIndex = 3;
+      // 
       // dataTypeTextBox
       // 
-      this.dataTypeTextBox.Location = new System.Drawing.Point(80, 52);
-      this.dataTypeTextBox.Size = new System.Drawing.Size(306, 20);
+      this.dataTypeTextBox.Location = new System.Drawing.Point(69, 26);
+      this.dataTypeTextBox.Size = new System.Drawing.Size(317, 20);
+      this.dataTypeTextBox.TabIndex = 4;
       // 
       // nameTextBox
       // 
       this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.errorProvider.SetIconPadding(this.nameTextBox, 2);
-      this.nameTextBox.Location = new System.Drawing.Point(80, 0);
-      this.nameTextBox.Size = new System.Drawing.Size(306, 20);
+      this.nameTextBox.Location = new System.Drawing.Point(69, 0);
+      this.nameTextBox.Size = new System.Drawing.Size(292, 20);
       // 
-      // descriptionTextBox
+      // infoLabel
       // 
-      this.descriptionTextBox.Location = new System.Drawing.Point(80, 26);
-      this.descriptionTextBox.Size = new System.Drawing.Size(306, 20);
+      this.infoLabel.Location = new System.Drawing.Point(367, 3);
       // 
       // valueGroupBox
       // 
@@ -69,10 +74,10 @@ namespace HeuristicLab.Parameters.Views {
       this.valueGroupBox.Controls.Add(this.valueViewHost);
       this.valueGroupBox.Controls.Add(this.clearValueButton);
       this.valueGroupBox.Controls.Add(this.setValueButton);
-      this.valueGroupBox.Location = new System.Drawing.Point(0, 78);
+      this.valueGroupBox.Location = new System.Drawing.Point(0, 52);
       this.valueGroupBox.Name = "valueGroupBox";
-      this.valueGroupBox.Size = new System.Drawing.Size(386, 237);
-      this.valueGroupBox.TabIndex = 6;
+      this.valueGroupBox.Size = new System.Drawing.Size(386, 263);
+      this.valueGroupBox.TabIndex = 5;
       this.valueGroupBox.TabStop = false;
       this.valueGroupBox.Text = "Value";
       this.valueGroupBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.valueGroupBox_DragDrop);
@@ -102,11 +107,13 @@ namespace HeuristicLab.Parameters.Views {
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.valueViewHost.Caption = "View";
       this.valueViewHost.Content = null;
+      this.valueViewHost.Enabled = false;
       this.valueViewHost.Location = new System.Drawing.Point(6, 49);
       this.valueViewHost.Name = "valueViewHost";
       this.valueViewHost.ReadOnly = false;
-      this.valueViewHost.Size = new System.Drawing.Size(374, 182);
+      this.valueViewHost.Size = new System.Drawing.Size(374, 208);
       this.valueViewHost.TabIndex = 3;
+      this.valueViewHost.ViewsLabelVisible = true;
       this.valueViewHost.ViewType = null;
       // 
       // clearValueButton
@@ -139,8 +146,7 @@ namespace HeuristicLab.Parameters.Views {
       this.Controls.Add(this.valueGroupBox);
       this.Name = "ValueParameterView";
       this.Size = new System.Drawing.Size(386, 315);
-      this.Controls.SetChildIndex(this.descriptionTextBox, 0);
-      this.Controls.SetChildIndex(this.descriptionLabel, 0);
+      this.Controls.SetChildIndex(this.infoLabel, 0);
       this.Controls.SetChildIndex(this.dataTypeTextBox, 0);
       this.Controls.SetChildIndex(this.dataTypeLabel, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);

@@ -53,32 +53,24 @@ namespace HeuristicLab.Parameters.Views {
       // 
       // dataTypeLabel
       // 
-      this.dataTypeLabel.Location = new System.Drawing.Point(3, 81);
-      this.dataTypeLabel.TabIndex = 6;
+      this.dataTypeLabel.TabIndex = 5;
       // 
       // dataTypeTextBox
       // 
-      this.dataTypeTextBox.Location = new System.Drawing.Point(80, 78);
+      this.dataTypeTextBox.Location = new System.Drawing.Point(80, 52);
       this.dataTypeTextBox.Size = new System.Drawing.Size(306, 20);
-      this.dataTypeTextBox.TabIndex = 7;
+      this.dataTypeTextBox.TabIndex = 6;
       // 
       // nameTextBox
       // 
       this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.errorProvider.SetIconPadding(this.nameTextBox, 2);
       this.nameTextBox.Location = new System.Drawing.Point(80, 0);
-      this.nameTextBox.Size = new System.Drawing.Size(306, 20);
+      this.nameTextBox.Size = new System.Drawing.Size(281, 20);
       // 
-      // descriptionLabel
+      // infoLabel
       // 
-      this.descriptionLabel.Location = new System.Drawing.Point(3, 55);
-      this.descriptionLabel.TabIndex = 4;
-      // 
-      // descriptionTextBox
-      // 
-      this.descriptionTextBox.Location = new System.Drawing.Point(80, 52);
-      this.descriptionTextBox.Size = new System.Drawing.Size(306, 20);
-      this.descriptionTextBox.TabIndex = 5;
+      this.infoLabel.Location = new System.Drawing.Point(367, 3);
       // 
       // depthTextBox
       // 
@@ -86,21 +78,21 @@ namespace HeuristicLab.Parameters.Views {
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.errorProvider.SetIconAlignment(this.depthTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.errorProvider.SetIconPadding(this.depthTextBox, 2);
-      this.depthTextBox.Location = new System.Drawing.Point(80, 104);
+      this.depthTextBox.Location = new System.Drawing.Point(80, 78);
       this.depthTextBox.Name = "depthTextBox";
       this.depthTextBox.Size = new System.Drawing.Size(306, 20);
-      this.depthTextBox.TabIndex = 9;
-      this.depthTextBox.Validated += new System.EventHandler(this.depthTextBox_Validated);
+      this.depthTextBox.TabIndex = 8;
       this.depthTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.depthTextBox_KeyDown);
       this.depthTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.depthTextBox_Validating);
+      this.depthTextBox.Validated += new System.EventHandler(this.depthTextBox_Validated);
       // 
       // depthLabel
       // 
       this.depthLabel.AutoSize = true;
-      this.depthLabel.Location = new System.Drawing.Point(3, 107);
+      this.depthLabel.Location = new System.Drawing.Point(3, 81);
       this.depthLabel.Name = "depthLabel";
       this.depthLabel.Size = new System.Drawing.Size(39, 13);
-      this.depthLabel.TabIndex = 8;
+      this.depthLabel.TabIndex = 7;
       this.depthLabel.Text = "&Depth:";
       // 
       // actualNameTextBox
@@ -110,7 +102,7 @@ namespace HeuristicLab.Parameters.Views {
       this.actualNameTextBox.Location = new System.Drawing.Point(80, 26);
       this.actualNameTextBox.Name = "actualNameTextBox";
       this.actualNameTextBox.Size = new System.Drawing.Size(306, 20);
-      this.actualNameTextBox.TabIndex = 3;
+      this.actualNameTextBox.TabIndex = 4;
       this.actualNameTextBox.Validated += new System.EventHandler(this.actualNameTextBox_Validated);
       // 
       // actualNameLabel
@@ -119,7 +111,7 @@ namespace HeuristicLab.Parameters.Views {
       this.actualNameLabel.Location = new System.Drawing.Point(3, 29);
       this.actualNameLabel.Name = "actualNameLabel";
       this.actualNameLabel.Size = new System.Drawing.Size(71, 13);
-      this.actualNameLabel.TabIndex = 2;
+      this.actualNameLabel.TabIndex = 3;
       this.actualNameLabel.Text = "&Actual Name:";
       // 
       // ScopeTreeLookupParameterView
@@ -127,19 +119,18 @@ namespace HeuristicLab.Parameters.Views {
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.actualNameTextBox);
-      this.Controls.Add(this.depthTextBox);
-      this.Controls.Add(this.depthLabel);
       this.Controls.Add(this.actualNameLabel);
+      this.Controls.Add(this.depthLabel);
+      this.Controls.Add(this.depthTextBox);
       this.Name = "ScopeTreeLookupParameterView";
-      this.Size = new System.Drawing.Size(386, 132);
-      this.Controls.SetChildIndex(this.actualNameLabel, 0);
-      this.Controls.SetChildIndex(this.descriptionTextBox, 0);
+      this.Size = new System.Drawing.Size(386, 103);
       this.Controls.SetChildIndex(this.dataTypeTextBox, 0);
-      this.Controls.SetChildIndex(this.depthLabel, 0);
       this.Controls.SetChildIndex(this.depthTextBox, 0);
-      this.Controls.SetChildIndex(this.actualNameTextBox, 0);
-      this.Controls.SetChildIndex(this.descriptionLabel, 0);
+      this.Controls.SetChildIndex(this.infoLabel, 0);
+      this.Controls.SetChildIndex(this.depthLabel, 0);
       this.Controls.SetChildIndex(this.dataTypeLabel, 0);
+      this.Controls.SetChildIndex(this.actualNameLabel, 0);
+      this.Controls.SetChildIndex(this.actualNameTextBox, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();

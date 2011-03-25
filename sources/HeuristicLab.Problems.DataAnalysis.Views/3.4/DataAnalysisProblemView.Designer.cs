@@ -51,27 +51,28 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       // 
       // parameterCollectionView
       // 
-      this.parameterCollectionView.Location = new System.Drawing.Point(3, 81);
-      this.parameterCollectionView.Size = new System.Drawing.Size(490, 253);
+      this.parameterCollectionView.Location = new System.Drawing.Point(3, 55);
+      this.parameterCollectionView.Size = new System.Drawing.Size(490, 279);
+      this.parameterCollectionView.TabIndex = 4;
       // 
       // nameTextBox
       // 
       this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.errorProvider.SetIconPadding(this.nameTextBox, 2);
-      this.nameTextBox.Size = new System.Drawing.Size(421, 20);
+      this.nameTextBox.Size = new System.Drawing.Size(409, 20);
       // 
-      // descriptionTextBox
+      // infoLabel
       // 
-      this.descriptionTextBox.Size = new System.Drawing.Size(421, 20);
+      this.infoLabel.Location = new System.Drawing.Point(474, 3);
       // 
       // ImportButton
       // 
       this.ImportButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.ImportButton.Location = new System.Drawing.Point(0, 52);
+      this.ImportButton.Location = new System.Drawing.Point(0, 26);
       this.ImportButton.Name = "ImportButton";
       this.ImportButton.Size = new System.Drawing.Size(493, 23);
-      this.ImportButton.TabIndex = 5;
+      this.ImportButton.TabIndex = 3;
       this.ImportButton.Text = "Import from CSV file";
       this.ImportButton.UseVisualStyleBackColor = true;
       this.ImportButton.Click += new System.EventHandler(this.ImportButton_Click);
@@ -88,10 +89,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.Name = "DataAnalysisProblemView";
       this.Size = new System.Drawing.Size(493, 334);
       this.Controls.SetChildIndex(this.ImportButton, 0);
+      this.Controls.SetChildIndex(this.infoLabel, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
-      this.Controls.SetChildIndex(this.descriptionLabel, 0);
-      this.Controls.SetChildIndex(this.descriptionTextBox, 0);
       this.Controls.SetChildIndex(this.parameterCollectionView, 0);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.ResumeLayout(false);

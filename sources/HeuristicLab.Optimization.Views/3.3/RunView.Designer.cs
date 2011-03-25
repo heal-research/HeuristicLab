@@ -63,6 +63,7 @@ namespace HeuristicLab.Optimization.Views {
       this.colorArea = new System.Windows.Forms.Label();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.parametersResultsGroupBox.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
       this.splitContainer.SuspendLayout();
@@ -73,11 +74,12 @@ namespace HeuristicLab.Optimization.Views {
       // 
       this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.errorProvider.SetIconPadding(this.nameTextBox, 2);
-      this.nameTextBox.Size = new System.Drawing.Size(423, 20);
+      this.nameTextBox.Location = new System.Drawing.Point(56, 0);
+      this.nameTextBox.Size = new System.Drawing.Size(414, 20);
       // 
-      // descriptionTextBox
+      // infoLabel
       // 
-      this.descriptionTextBox.Size = new System.Drawing.Size(423, 20);
+      this.infoLabel.Location = new System.Drawing.Point(476, 3);
       // 
       // parametersResultsGroupBox
       // 
@@ -85,10 +87,10 @@ namespace HeuristicLab.Optimization.Views {
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.parametersResultsGroupBox.Controls.Add(this.splitContainer);
-      this.parametersResultsGroupBox.Location = new System.Drawing.Point(0, 82);
+      this.parametersResultsGroupBox.Location = new System.Drawing.Point(0, 56);
       this.parametersResultsGroupBox.Name = "parametersResultsGroupBox";
-      this.parametersResultsGroupBox.Size = new System.Drawing.Size(495, 242);
-      this.parametersResultsGroupBox.TabIndex = 8;
+      this.parametersResultsGroupBox.Size = new System.Drawing.Size(495, 268);
+      this.parametersResultsGroupBox.TabIndex = 6;
       this.parametersResultsGroupBox.TabStop = false;
       this.parametersResultsGroupBox.Text = "Parameters && Results";
       // 
@@ -105,7 +107,7 @@ namespace HeuristicLab.Optimization.Views {
       // splitContainer.Panel2
       // 
       this.splitContainer.Panel2.Controls.Add(this.detailsGroupBox);
-      this.splitContainer.Size = new System.Drawing.Size(489, 223);
+      this.splitContainer.Size = new System.Drawing.Size(489, 249);
       this.splitContainer.SplitterDistance = 177;
       this.splitContainer.TabIndex = 0;
       // 
@@ -130,7 +132,7 @@ namespace HeuristicLab.Optimization.Views {
       this.listView.MultiSelect = false;
       this.listView.Name = "listView";
       this.listView.ShowItemToolTips = true;
-      this.listView.Size = new System.Drawing.Size(171, 217);
+      this.listView.Size = new System.Drawing.Size(171, 243);
       this.listView.SmallImageList = this.imageList;
       this.listView.Sorting = System.Windows.Forms.SortOrder.Ascending;
       this.listView.TabIndex = 0;
@@ -162,7 +164,7 @@ namespace HeuristicLab.Optimization.Views {
       this.detailsGroupBox.Controls.Add(this.viewHost);
       this.detailsGroupBox.Location = new System.Drawing.Point(3, 3);
       this.detailsGroupBox.Name = "detailsGroupBox";
-      this.detailsGroupBox.Size = new System.Drawing.Size(302, 217);
+      this.detailsGroupBox.Size = new System.Drawing.Size(302, 243);
       this.detailsGroupBox.TabIndex = 0;
       this.detailsGroupBox.TabStop = false;
       this.detailsGroupBox.Text = "Details";
@@ -174,11 +176,13 @@ namespace HeuristicLab.Optimization.Views {
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.viewHost.Caption = "View";
       this.viewHost.Content = null;
+      this.viewHost.Enabled = false;
       this.viewHost.Location = new System.Drawing.Point(6, 19);
       this.viewHost.Name = "viewHost";
       this.viewHost.ReadOnly = true;
-      this.viewHost.Size = new System.Drawing.Size(290, 192);
+      this.viewHost.Size = new System.Drawing.Size(290, 218);
       this.viewHost.TabIndex = 0;
+      this.viewHost.ViewsLabelVisible = true;
       this.viewHost.ViewType = null;
       // 
       // showAlgorithmButton
@@ -188,7 +192,7 @@ namespace HeuristicLab.Optimization.Views {
       this.showAlgorithmButton.Location = new System.Drawing.Point(0, 330);
       this.showAlgorithmButton.Name = "showAlgorithmButton";
       this.showAlgorithmButton.Size = new System.Drawing.Size(495, 23);
-      this.showAlgorithmButton.TabIndex = 9;
+      this.showAlgorithmButton.TabIndex = 8;
       this.showAlgorithmButton.Text = "&Show Algorithm";
       this.toolTip.SetToolTip(this.showAlgorithmButton, "Show the algorithm which produced these results");
       this.showAlgorithmButton.UseVisualStyleBackColor = true;
@@ -198,10 +202,10 @@ namespace HeuristicLab.Optimization.Views {
       // 
       this.changeColorButton.Enabled = false;
       this.changeColorButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-      this.changeColorButton.Location = new System.Drawing.Point(94, 52);
+      this.changeColorButton.Location = new System.Drawing.Point(78, 26);
       this.changeColorButton.Name = "changeColorButton";
       this.changeColorButton.Size = new System.Drawing.Size(64, 24);
-      this.changeColorButton.TabIndex = 6;
+      this.changeColorButton.TabIndex = 5;
       this.changeColorButton.Text = "&Change...";
       this.changeColorButton.UseVisualStyleBackColor = true;
       this.changeColorButton.Click += new System.EventHandler(this.changeColorButton_Click);
@@ -209,10 +213,10 @@ namespace HeuristicLab.Optimization.Views {
       // colorLabel
       // 
       this.colorLabel.AutoSize = true;
-      this.colorLabel.Location = new System.Drawing.Point(3, 58);
+      this.colorLabel.Location = new System.Drawing.Point(3, 32);
       this.colorLabel.Name = "colorLabel";
       this.colorLabel.Size = new System.Drawing.Size(34, 13);
-      this.colorLabel.TabIndex = 4;
+      this.colorLabel.TabIndex = 3;
       this.colorLabel.Text = "C&olor:";
       // 
       // showDetailsCheckBox
@@ -222,7 +226,7 @@ namespace HeuristicLab.Optimization.Views {
       this.showDetailsCheckBox.Checked = true;
       this.showDetailsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
       this.showDetailsCheckBox.Image = HeuristicLab.Common.Resources.VSImageLibrary.Properties;
-      this.showDetailsCheckBox.Location = new System.Drawing.Point(471, 52);
+      this.showDetailsCheckBox.Location = new System.Drawing.Point(471, 26);
       this.showDetailsCheckBox.Name = "showDetailsCheckBox";
       this.showDetailsCheckBox.Size = new System.Drawing.Size(24, 24);
       this.showDetailsCheckBox.TabIndex = 7;
@@ -234,10 +238,10 @@ namespace HeuristicLab.Optimization.Views {
       // 
       this.colorArea.BackColor = System.Drawing.Color.White;
       this.colorArea.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-      this.colorArea.Location = new System.Drawing.Point(72, 56);
+      this.colorArea.Location = new System.Drawing.Point(56, 31);
       this.colorArea.Name = "colorArea";
       this.colorArea.Size = new System.Drawing.Size(16, 16);
-      this.colorArea.TabIndex = 5;
+      this.colorArea.TabIndex = 4;
       // 
       // RunView
       // 
@@ -251,10 +255,9 @@ namespace HeuristicLab.Optimization.Views {
       this.Controls.Add(this.showAlgorithmButton);
       this.Name = "RunView";
       this.Size = new System.Drawing.Size(495, 353);
+      this.Controls.SetChildIndex(this.infoLabel, 0);
       this.Controls.SetChildIndex(this.showAlgorithmButton, 0);
       this.Controls.SetChildIndex(this.parametersResultsGroupBox, 0);
-      this.Controls.SetChildIndex(this.descriptionLabel, 0);
-      this.Controls.SetChildIndex(this.descriptionTextBox, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
       this.Controls.SetChildIndex(this.changeColorButton, 0);
@@ -265,6 +268,7 @@ namespace HeuristicLab.Optimization.Views {
       this.parametersResultsGroupBox.ResumeLayout(false);
       this.splitContainer.Panel1.ResumeLayout(false);
       this.splitContainer.Panel2.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
       this.splitContainer.ResumeLayout(false);
       this.detailsGroupBox.ResumeLayout(false);
       this.ResumeLayout(false);

@@ -44,7 +44,6 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EvaluationProcessChannelView));
       this.executableTextBox = new System.Windows.Forms.TextBox();
       this.browseExecutableButton = new System.Windows.Forms.Button();
       this.argumentsTextBox = new System.Windows.Forms.TextBox();
@@ -60,27 +59,28 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
       // 
       this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.errorProvider.SetIconPadding(this.nameTextBox, 2);
-      this.nameTextBox.Size = new System.Drawing.Size(319, 20);
+      this.nameTextBox.Location = new System.Drawing.Point(72, 0);
+      this.nameTextBox.Size = new System.Drawing.Size(287, 20);
       // 
-      // descriptionTextBox
+      // infoLabel
       // 
-      this.descriptionTextBox.Size = new System.Drawing.Size(319, 20);
+      this.infoLabel.Location = new System.Drawing.Point(370, 3);
       // 
       // executableTextBox
       // 
       this.executableTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.executableTextBox.Location = new System.Drawing.Point(72, 59);
+      this.executableTextBox.Location = new System.Drawing.Point(72, 26);
       this.executableTextBox.Name = "executableTextBox";
       this.executableTextBox.ReadOnly = true;
-      this.executableTextBox.Size = new System.Drawing.Size(284, 20);
+      this.executableTextBox.Size = new System.Drawing.Size(287, 20);
       this.executableTextBox.TabIndex = 4;
       // 
       // browseExecutableButton
       // 
-      this.browseExecutableButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Open;
       this.browseExecutableButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.browseExecutableButton.Location = new System.Drawing.Point(362, 57);
+      this.browseExecutableButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Open;
+      this.browseExecutableButton.Location = new System.Drawing.Point(365, 24);
       this.browseExecutableButton.Name = "browseExecutableButton";
       this.browseExecutableButton.Size = new System.Drawing.Size(26, 23);
       this.browseExecutableButton.TabIndex = 5;
@@ -91,16 +91,16 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
       // 
       this.argumentsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.argumentsTextBox.Location = new System.Drawing.Point(72, 85);
+      this.argumentsTextBox.Location = new System.Drawing.Point(72, 52);
       this.argumentsTextBox.Name = "argumentsTextBox";
-      this.argumentsTextBox.Size = new System.Drawing.Size(284, 20);
+      this.argumentsTextBox.Size = new System.Drawing.Size(287, 20);
       this.argumentsTextBox.TabIndex = 6;
       this.argumentsTextBox.Validated += new System.EventHandler(this.argumentsTextBox_Validated);
       // 
       // executableLabel
       // 
       this.executableLabel.AutoSize = true;
-      this.executableLabel.Location = new System.Drawing.Point(3, 62);
+      this.executableLabel.Location = new System.Drawing.Point(3, 29);
       this.executableLabel.Name = "executableLabel";
       this.executableLabel.Size = new System.Drawing.Size(63, 13);
       this.executableLabel.TabIndex = 7;
@@ -109,7 +109,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
       // argumentsLabel
       // 
       this.argumentsLabel.AutoSize = true;
-      this.argumentsLabel.Location = new System.Drawing.Point(3, 88);
+      this.argumentsLabel.Location = new System.Drawing.Point(3, 55);
       this.argumentsLabel.Name = "argumentsLabel";
       this.argumentsLabel.Size = new System.Drawing.Size(60, 13);
       this.argumentsLabel.TabIndex = 7;
@@ -123,7 +123,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
       // startButton
       // 
       this.startButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Play;
-      this.startButton.Location = new System.Drawing.Point(72, 111);
+      this.startButton.Location = new System.Drawing.Point(72, 78);
       this.startButton.Name = "startButton";
       this.startButton.Size = new System.Drawing.Size(26, 23);
       this.startButton.TabIndex = 8;
@@ -132,9 +132,9 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
       // 
       // terminateButton
       // 
-      this.terminateButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Stop;
       this.terminateButton.Enabled = false;
-      this.terminateButton.Location = new System.Drawing.Point(104, 111);
+      this.terminateButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Stop;
+      this.terminateButton.Location = new System.Drawing.Point(104, 78);
       this.terminateButton.Name = "terminateButton";
       this.terminateButton.Size = new System.Drawing.Size(26, 23);
       this.terminateButton.TabIndex = 8;
@@ -153,7 +153,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
       this.Controls.Add(this.browseExecutableButton);
       this.Controls.Add(this.terminateButton);
       this.Name = "EvaluationProcessChannelView";
-      this.Size = new System.Drawing.Size(391, 139);
+      this.Size = new System.Drawing.Size(391, 106);
+      this.Controls.SetChildIndex(this.infoLabel, 0);
       this.Controls.SetChildIndex(this.terminateButton, 0);
       this.Controls.SetChildIndex(this.browseExecutableButton, 0);
       this.Controls.SetChildIndex(this.executableLabel, 0);
@@ -162,9 +163,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
       this.Controls.SetChildIndex(this.argumentsLabel, 0);
       this.Controls.SetChildIndex(this.executableTextBox, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
-      this.Controls.SetChildIndex(this.descriptionLabel, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);
-      this.Controls.SetChildIndex(this.descriptionTextBox, 0);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();

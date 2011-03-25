@@ -51,48 +51,54 @@ namespace HeuristicLab.Operators.Views {
       // 
       // parameterCollectionView
       // 
-      this.parameterCollectionView.Location = new System.Drawing.Point(0, 72);
-      this.parameterCollectionView.Size = new System.Drawing.Size(490, 281);
-      this.parameterCollectionView.TabIndex = 6;
+      this.parameterCollectionView.Location = new System.Drawing.Point(0, 46);
+      this.parameterCollectionView.Size = new System.Drawing.Size(490, 307);
+      this.parameterCollectionView.TabIndex = 5;
       // 
       // nameTextBox
       // 
       this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.errorProvider.SetIconPadding(this.nameTextBox, 2);
+      this.nameTextBox.Location = new System.Drawing.Point(70, 0);
+      this.nameTextBox.Size = new System.Drawing.Size(395, 20);
+      // 
+      // infoLabel
+      // 
+      this.infoLabel.Location = new System.Drawing.Point(471, 3);
       // 
       // breakpointLabel
       // 
       this.breakpointLabel.AutoSize = true;
-      this.breakpointLabel.Location = new System.Drawing.Point(3, 52);
+      this.breakpointLabel.Location = new System.Drawing.Point(3, 26);
       this.breakpointLabel.Name = "breakpointLabel";
       this.breakpointLabel.Size = new System.Drawing.Size(61, 13);
-      this.breakpointLabel.TabIndex = 4;
+      this.breakpointLabel.TabIndex = 3;
       this.breakpointLabel.Text = "&Breakpoint:";
       // 
       // breakpointCheckBox
       // 
       this.breakpointCheckBox.AutoSize = true;
-      this.breakpointCheckBox.Location = new System.Drawing.Point(72, 52);
+      this.breakpointCheckBox.Location = new System.Drawing.Point(70, 26);
       this.breakpointCheckBox.Name = "breakpointCheckBox";
       this.breakpointCheckBox.Size = new System.Drawing.Size(15, 14);
-      this.breakpointCheckBox.TabIndex = 5;
+      this.breakpointCheckBox.TabIndex = 4;
+      this.toolTip.SetToolTip(this.breakpointCheckBox, "Check if an engine should stop execution each time after this operator has been p" +
+              "rocessed.");
       this.breakpointCheckBox.UseVisualStyleBackColor = true;
       this.breakpointCheckBox.CheckedChanged += new System.EventHandler(this.breakpointCheckBox_CheckedChanged);
-      this.toolTip.SetToolTip(this.breakpointCheckBox, "Check if an engine should stop execution each time after this operator has been processed.");
       // 
       // OperatorView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.breakpointCheckBox);
       this.Controls.Add(this.breakpointLabel);
+      this.Controls.Add(this.breakpointCheckBox);
       this.Name = "OperatorView";
-      this.Controls.SetChildIndex(this.breakpointLabel, 0);
       this.Controls.SetChildIndex(this.breakpointCheckBox, 0);
+      this.Controls.SetChildIndex(this.breakpointLabel, 0);
+      this.Controls.SetChildIndex(this.infoLabel, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
-      this.Controls.SetChildIndex(this.descriptionLabel, 0);
-      this.Controls.SetChildIndex(this.descriptionTextBox, 0);
       this.Controls.SetChildIndex(this.parameterCollectionView, 0);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.ResumeLayout(false);

@@ -32,6 +32,9 @@ namespace HeuristicLab.Core.Views {
   [Content(typeof(NamedItem), false)]
   [Content(typeof(INamedItem), false)]
   public partial class NamedItemView : ItemView {
+    private readonly string nl = Environment.NewLine;
+    private const string infoLabelToolTipSuffix = "Double-click to open description editor.";
+
     public new INamedItem Content {
       get { return (INamedItem)base.Content; }
       set { base.Content = value; }
@@ -58,16 +61,14 @@ namespace HeuristicLab.Core.Views {
       base.OnContentChanged();
       if (Content == null) {
         nameTextBox.Text = string.Empty;
-        descriptionTextBox.Text = string.Empty;
-        toolTip.SetToolTip(descriptionTextBox, string.Empty);
+        toolTip.SetToolTip(infoLabel, string.Empty);
         if (ViewAttribute.HasViewAttribute(this.GetType()))
           this.Caption = ViewAttribute.GetViewName(this.GetType());
         else
           this.Caption = "NamedItem View";
       } else {
         nameTextBox.Text = Content.Name;
-        descriptionTextBox.Text = Content.Description;
-        toolTip.SetToolTip(descriptionTextBox, Content.Description);
+        toolTip.SetToolTip(infoLabel, string.IsNullOrEmpty(Content.Description) ? infoLabelToolTipSuffix : Content.Description + nl + nl + infoLabelToolTipSuffix);
         Caption = Content.Name;
       }
     }
@@ -76,12 +77,11 @@ namespace HeuristicLab.Core.Views {
       base.SetEnabledStateOfControls();
       if (Content == null) {
         nameTextBox.Enabled = false;
-        descriptionTextBox.Enabled = false;
+        infoLabel.Enabled = false;
       } else {
         nameTextBox.Enabled = true;
-        nameTextBox.ReadOnly = ReadOnly || !Content.CanChangeName; ;
-        descriptionTextBox.Enabled = true;
-        descriptionTextBox.ReadOnly = ReadOnly || !Content.CanChangeDescription;
+        nameTextBox.ReadOnly = ReadOnly || !Content.CanChangeName;
+        infoLabel.Enabled = true;
       }
     }
 
@@ -97,8 +97,7 @@ namespace HeuristicLab.Core.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_DescriptionChanged), sender, e);
       else {
-        descriptionTextBox.Text = Content.Description;
-        toolTip.SetToolTip(descriptionTextBox, Content.Description);
+        toolTip.SetToolTip(infoLabel, string.IsNullOrEmpty(Content.Description) ? infoLabelToolTipSuffix : Content.Description + nl + nl + infoLabelToolTipSuffix);
       }
     }
 
@@ -130,13 +129,8 @@ namespace HeuristicLab.Core.Views {
         nameLabel.Focus();  // set focus on label to validate data
       }
     }
-    protected virtual void descriptionTextBox_Validated(object sender, EventArgs e) {
-      if (Content.CanChangeDescription)
-        Content.Description = descriptionTextBox.Text;
-    }
-
-    protected void descriptionTextBox_DoubleClick(object sender, EventArgs e) {
-      using (TextDialog dialog = new TextDialog("Description of " + Content.Name, descriptionTextBox.Text, ReadOnly || !Content.CanChangeDescription)) {
+    protected virtual void infoLabel_DoubleClick(object sender, EventArgs e) {
+      using (TextDialog dialog = new TextDialog("Description of " + Content.Name, Content.Description, ReadOnly || !Content.CanChangeDescription)) {
         if (dialog.ShowDialog(this) == DialogResult.OK)
           Content.Description = dialog.Content;
       }

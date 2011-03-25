@@ -61,24 +61,26 @@ namespace HeuristicLab.Operators.Views {
       // 
       this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.errorProvider.SetIconPadding(this.nameTextBox, 2);
-      this.nameTextBox.Size = new System.Drawing.Size(414, 20);
+      this.nameTextBox.Location = new System.Drawing.Point(70, 0);
+      this.nameTextBox.Size = new System.Drawing.Size(391, 20);
       // 
-      // descriptionTextBox
+      // infoLabel
       // 
-      this.descriptionTextBox.Size = new System.Drawing.Size(414, 20);
+      this.infoLabel.Location = new System.Drawing.Point(467, 3);
       // 
       // tabControl
       // 
+      this.tabControl.AllowDrop = true;
       this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl.Controls.Add(this.collectedValuesTabPage);
       this.tabControl.Controls.Add(this.parametersTabPage);
-      this.tabControl.Location = new System.Drawing.Point(0, 72);
+      this.tabControl.Location = new System.Drawing.Point(0, 46);
       this.tabControl.Name = "tabControl";
       this.tabControl.SelectedIndex = 0;
-      this.tabControl.Size = new System.Drawing.Size(486, 410);
-      this.tabControl.TabIndex = 6;
+      this.tabControl.Size = new System.Drawing.Size(486, 436);
+      this.tabControl.TabIndex = 5;
       // 
       // collectedValuesTabPage
       // 
@@ -86,7 +88,7 @@ namespace HeuristicLab.Operators.Views {
       this.collectedValuesTabPage.Location = new System.Drawing.Point(4, 22);
       this.collectedValuesTabPage.Name = "collectedValuesTabPage";
       this.collectedValuesTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.collectedValuesTabPage.Size = new System.Drawing.Size(478, 384);
+      this.collectedValuesTabPage.Size = new System.Drawing.Size(478, 410);
       this.collectedValuesTabPage.TabIndex = 0;
       this.collectedValuesTabPage.Text = "Collected Values";
       this.collectedValuesTabPage.UseVisualStyleBackColor = true;
@@ -96,10 +98,12 @@ namespace HeuristicLab.Operators.Views {
       this.collectedValuesView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
+      this.collectedValuesView.Caption = "ParameterCollection View";
       this.collectedValuesView.Content = null;
       this.collectedValuesView.Location = new System.Drawing.Point(6, 6);
       this.collectedValuesView.Name = "collectedValuesView";
-      this.collectedValuesView.Size = new System.Drawing.Size(466, 372);
+      this.collectedValuesView.ReadOnly = false;
+      this.collectedValuesView.Size = new System.Drawing.Size(466, 398);
       this.collectedValuesView.TabIndex = 0;
       // 
       // parametersTabPage
@@ -108,7 +112,7 @@ namespace HeuristicLab.Operators.Views {
       this.parametersTabPage.Location = new System.Drawing.Point(4, 22);
       this.parametersTabPage.Name = "parametersTabPage";
       this.parametersTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.parametersTabPage.Size = new System.Drawing.Size(478, 338);
+      this.parametersTabPage.Size = new System.Drawing.Size(478, 410);
       this.parametersTabPage.TabIndex = 1;
       this.parametersTabPage.Text = "Parameters";
       this.parametersTabPage.UseVisualStyleBackColor = true;
@@ -118,30 +122,33 @@ namespace HeuristicLab.Operators.Views {
       this.parameterCollectionView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
+      this.parameterCollectionView.Caption = "ParameterCollection View";
       this.parameterCollectionView.Content = null;
       this.parameterCollectionView.Location = new System.Drawing.Point(6, 6);
       this.parameterCollectionView.Name = "parameterCollectionView";
-      this.parameterCollectionView.Size = new System.Drawing.Size(466, 326);
+      this.parameterCollectionView.ReadOnly = false;
+      this.parameterCollectionView.Size = new System.Drawing.Size(466, 398);
       this.parameterCollectionView.TabIndex = 0;
       // 
       // breakpointCheckBox
       // 
       this.breakpointCheckBox.AutoSize = true;
-      this.breakpointCheckBox.Location = new System.Drawing.Point(72, 52);
+      this.breakpointCheckBox.Location = new System.Drawing.Point(70, 26);
       this.breakpointCheckBox.Name = "breakpointCheckBox";
       this.breakpointCheckBox.Size = new System.Drawing.Size(15, 14);
-      this.breakpointCheckBox.TabIndex = 5;
+      this.breakpointCheckBox.TabIndex = 4;
+      this.toolTip.SetToolTip(this.breakpointCheckBox, "Check if an engine should stop execution each time after this operator has been p" +
+              "rocessed.");
       this.breakpointCheckBox.UseVisualStyleBackColor = true;
       this.breakpointCheckBox.CheckedChanged += new System.EventHandler(this.breakpointCheckBox_CheckedChanged);
-      this.toolTip.SetToolTip(this.breakpointCheckBox, "Check if an engine should stop execution each time after this operator has been processed.");
       // 
       // breakpointLabel
       // 
       this.breakpointLabel.AutoSize = true;
-      this.breakpointLabel.Location = new System.Drawing.Point(3, 52);
+      this.breakpointLabel.Location = new System.Drawing.Point(3, 26);
       this.breakpointLabel.Name = "breakpointLabel";
       this.breakpointLabel.Size = new System.Drawing.Size(61, 13);
-      this.breakpointLabel.TabIndex = 4;
+      this.breakpointLabel.TabIndex = 3;
       this.breakpointLabel.Text = "&Breakpoint:";
       // 
       // ValuesCollectorView
@@ -153,11 +160,10 @@ namespace HeuristicLab.Operators.Views {
       this.Controls.Add(this.tabControl);
       this.Name = "ValuesCollectorView";
       this.Size = new System.Drawing.Size(486, 482);
+      this.Controls.SetChildIndex(this.infoLabel, 0);
       this.Controls.SetChildIndex(this.tabControl, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
-      this.Controls.SetChildIndex(this.descriptionLabel, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);
-      this.Controls.SetChildIndex(this.descriptionTextBox, 0);
       this.Controls.SetChildIndex(this.breakpointLabel, 0);
       this.Controls.SetChildIndex(this.breakpointCheckBox, 0);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();

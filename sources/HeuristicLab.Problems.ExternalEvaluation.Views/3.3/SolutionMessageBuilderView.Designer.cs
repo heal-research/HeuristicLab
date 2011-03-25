@@ -58,10 +58,10 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
       this.convertersGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.convertersGroupBox.Location = new System.Drawing.Point(0, 52);
+      this.convertersGroupBox.Location = new System.Drawing.Point(0, 26);
       this.convertersGroupBox.Name = "convertersGroupBox";
-      this.convertersGroupBox.Size = new System.Drawing.Size(351, 199);
-      this.convertersGroupBox.TabIndex = 4;
+      this.convertersGroupBox.Size = new System.Drawing.Size(351, 225);
+      this.convertersGroupBox.TabIndex = 3;
       this.convertersGroupBox.TabStop = false;
       this.convertersGroupBox.Text = "Converters";
       // 
@@ -72,11 +72,10 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
       this.Controls.Add(this.convertersGroupBox);
       this.Name = "SolutionMessageBuilderView";
       this.Size = new System.Drawing.Size(351, 251);
+      this.Controls.SetChildIndex(this.infoLabel, 0);
       this.Controls.SetChildIndex(this.convertersGroupBox, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
-      this.Controls.SetChildIndex(this.descriptionLabel, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);
-      this.Controls.SetChildIndex(this.descriptionTextBox, 0);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();

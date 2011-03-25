@@ -66,18 +66,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
       // initialFrequencyTextBox
       // 
       this.errorProvider.SetIconAlignment(this.initialFrequencyTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
-      this.initialFrequencyTextBox.Size = new System.Drawing.Size(275, 20);
+      this.initialFrequencyTextBox.Size = new System.Drawing.Size(305, 20);
       // 
       // nameTextBox
       // 
       this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.errorProvider.SetIconPadding(this.nameTextBox, 2);
-      this.nameTextBox.Size = new System.Drawing.Size(275, 20);
+      this.nameTextBox.Size = new System.Drawing.Size(280, 20);
       // 
-      // descriptionTextBox
+      // infoLabel
       // 
-      this.errorProvider.SetIconAlignment(this.descriptionTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
-      this.descriptionTextBox.Size = new System.Drawing.Size(275, 20);
+      this.infoLabel.Location = new System.Drawing.Point(379, 3);
       // 
       // weightNuLabel
       // 
@@ -85,7 +84,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
       this.weightNuLabel.Location = new System.Drawing.Point(6, 22);
       this.weightNuLabel.Name = "weightNuLabel";
       this.weightNuLabel.Size = new System.Drawing.Size(56, 13);
-      this.weightNuLabel.TabIndex = 6;
+      this.weightNuLabel.TabIndex = 0;
       this.weightNuLabel.Text = "Min value:";
       this.toolTip.SetToolTip(this.weightNuLabel, "The minimal value to use for random initialization of constants.");
       // 
@@ -96,8 +95,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
       this.errorProvider.SetIconAlignment(this.minValueTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.minValueTextBox.Location = new System.Drawing.Point(92, 19);
       this.minValueTextBox.Name = "minValueTextBox";
-      this.minValueTextBox.Size = new System.Drawing.Size(291, 20);
-      this.minValueTextBox.TabIndex = 7;
+      this.minValueTextBox.Size = new System.Drawing.Size(300, 20);
+      this.minValueTextBox.TabIndex = 1;
       this.toolTip.SetToolTip(this.minValueTextBox, "The minimal value to use for random initialization of constants.");
       this.minValueTextBox.TextChanged += new System.EventHandler(this.minValueTextBox_TextChanged);
       // 
@@ -109,10 +108,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
       this.initializationGroupBox.Controls.Add(this.maxValueTextBox);
       this.initializationGroupBox.Controls.Add(this.weightNuLabel);
       this.initializationGroupBox.Controls.Add(this.minValueTextBox);
-      this.initializationGroupBox.Location = new System.Drawing.Point(3, 79);
+      this.initializationGroupBox.Location = new System.Drawing.Point(0, 52);
       this.initializationGroupBox.Name = "initializationGroupBox";
-      this.initializationGroupBox.Size = new System.Drawing.Size(389, 73);
-      this.initializationGroupBox.TabIndex = 8;
+      this.initializationGroupBox.Size = new System.Drawing.Size(398, 73);
+      this.initializationGroupBox.TabIndex = 5;
       this.initializationGroupBox.TabStop = false;
       this.initializationGroupBox.Text = "Initialization";
       // 
@@ -122,7 +121,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
       this.weightSigmaLabel.Location = new System.Drawing.Point(6, 48);
       this.weightSigmaLabel.Name = "weightSigmaLabel";
       this.weightSigmaLabel.Size = new System.Drawing.Size(59, 13);
-      this.weightSigmaLabel.TabIndex = 8;
+      this.weightSigmaLabel.TabIndex = 2;
       this.weightSigmaLabel.Text = "Max value:";
       this.toolTip.SetToolTip(this.weightSigmaLabel, "The maximal value to use for random initialization of constants.");
       // 
@@ -133,8 +132,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
       this.errorProvider.SetIconAlignment(this.maxValueTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.maxValueTextBox.Location = new System.Drawing.Point(92, 45);
       this.maxValueTextBox.Name = "maxValueTextBox";
-      this.maxValueTextBox.Size = new System.Drawing.Size(291, 20);
-      this.maxValueTextBox.TabIndex = 9;
+      this.maxValueTextBox.Size = new System.Drawing.Size(300, 20);
+      this.maxValueTextBox.TabIndex = 3;
       this.toolTip.SetToolTip(this.maxValueTextBox, "The maximal value to use for random initialization of constants.");
       this.maxValueTextBox.TextChanged += new System.EventHandler(this.maxValueTextBox_TextChanged);
       // 
@@ -146,10 +145,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
       this.mutationGroupBox.Controls.Add(this.multiplicativeChangeSigmaTextBox);
       this.mutationGroupBox.Controls.Add(this.additiveChangeLabel);
       this.mutationGroupBox.Controls.Add(this.additiveChangeSigmaTextBox);
-      this.mutationGroupBox.Location = new System.Drawing.Point(3, 158);
+      this.mutationGroupBox.Location = new System.Drawing.Point(0, 131);
       this.mutationGroupBox.Name = "mutationGroupBox";
-      this.mutationGroupBox.Size = new System.Drawing.Size(389, 73);
-      this.mutationGroupBox.TabIndex = 9;
+      this.mutationGroupBox.Size = new System.Drawing.Size(398, 73);
+      this.mutationGroupBox.TabIndex = 6;
       this.mutationGroupBox.TabStop = false;
       this.mutationGroupBox.Text = "Mutation";
       // 
@@ -159,7 +158,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
       this.multiplicativeChangeLabel.Location = new System.Drawing.Point(6, 48);
       this.multiplicativeChangeLabel.Name = "multiplicativeChangeLabel";
       this.multiplicativeChangeLabel.Size = new System.Drawing.Size(146, 13);
-      this.multiplicativeChangeLabel.TabIndex = 8;
+      this.multiplicativeChangeLabel.TabIndex = 2;
       this.multiplicativeChangeLabel.Text = "Multiplicative change (sigma):";
       this.toolTip.SetToolTip(this.multiplicativeChangeLabel, "The sigma (std. dev.) parameter for the normal distribution to use to sample the " +
               "multiplicative change.");
@@ -171,8 +170,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
       this.errorProvider.SetIconAlignment(this.multiplicativeChangeSigmaTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.multiplicativeChangeSigmaTextBox.Location = new System.Drawing.Point(168, 45);
       this.multiplicativeChangeSigmaTextBox.Name = "multiplicativeChangeSigmaTextBox";
-      this.multiplicativeChangeSigmaTextBox.Size = new System.Drawing.Size(215, 20);
-      this.multiplicativeChangeSigmaTextBox.TabIndex = 9;
+      this.multiplicativeChangeSigmaTextBox.Size = new System.Drawing.Size(224, 20);
+      this.multiplicativeChangeSigmaTextBox.TabIndex = 3;
       this.toolTip.SetToolTip(this.multiplicativeChangeSigmaTextBox, "The sigma (std. dev.) parameter for the normal distribution to use to sample a mu" +
               "ltiplicative change.");
       this.multiplicativeChangeSigmaTextBox.TextChanged += new System.EventHandler(this.multiplicativeChangeSigmaTextBox_TextChanged);
@@ -183,7 +182,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
       this.additiveChangeLabel.Location = new System.Drawing.Point(6, 22);
       this.additiveChangeLabel.Name = "additiveChangeLabel";
       this.additiveChangeLabel.Size = new System.Drawing.Size(123, 13);
-      this.additiveChangeLabel.TabIndex = 6;
+      this.additiveChangeLabel.TabIndex = 0;
       this.additiveChangeLabel.Text = "Additive change (sigma):";
       this.toolTip.SetToolTip(this.additiveChangeLabel, "The sigma (std. dev.) parameter for the normal distribution to sample the additiv" +
               "e change.");
@@ -195,8 +194,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
       this.errorProvider.SetIconAlignment(this.additiveChangeSigmaTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.additiveChangeSigmaTextBox.Location = new System.Drawing.Point(168, 19);
       this.additiveChangeSigmaTextBox.Name = "additiveChangeSigmaTextBox";
-      this.additiveChangeSigmaTextBox.Size = new System.Drawing.Size(215, 20);
-      this.additiveChangeSigmaTextBox.TabIndex = 7;
+      this.additiveChangeSigmaTextBox.Size = new System.Drawing.Size(224, 20);
+      this.additiveChangeSigmaTextBox.TabIndex = 1;
       this.toolTip.SetToolTip(this.additiveChangeSigmaTextBox, "The sigma (std. dev.) parameter for the normal distribution to use to sample an a" +
               "dditive change.");
       this.additiveChangeSigmaTextBox.TextChanged += new System.EventHandler(this.additiveChangeSigmaTextBox_TextChanged);
@@ -208,14 +207,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Symbolic.Symbols {
       this.Controls.Add(this.mutationGroupBox);
       this.Controls.Add(this.initializationGroupBox);
       this.Name = "ConstantView";
-      this.Size = new System.Drawing.Size(398, 237);
+      this.Size = new System.Drawing.Size(398, 209);
+      this.Controls.SetChildIndex(this.infoLabel, 0);
       this.Controls.SetChildIndex(this.initializationGroupBox, 0);
       this.Controls.SetChildIndex(this.initialFrequencyTextBox, 0);
       this.Controls.SetChildIndex(this.initialFrequencyLabel, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
-      this.Controls.SetChildIndex(this.descriptionLabel, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);
-      this.Controls.SetChildIndex(this.descriptionTextBox, 0);
       this.Controls.SetChildIndex(this.mutationGroupBox, 0);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.initializationGroupBox.ResumeLayout(false);

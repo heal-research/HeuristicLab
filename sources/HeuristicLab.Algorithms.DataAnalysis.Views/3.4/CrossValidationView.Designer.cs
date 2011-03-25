@@ -45,7 +45,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CrossValidationView));
       this.startButton = new System.Windows.Forms.Button();
       this.pauseButton = new System.Windows.Forms.Button();
       this.stopButton = new System.Windows.Forms.Button();
@@ -73,12 +72,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.openAlgorithmButton = new System.Windows.Forms.Button();
       this.newAlgorithmButton = new System.Windows.Forms.Button();
       this.resultsTabPage = new System.Windows.Forms.TabPage();
+      this.resultCollectionView = new HeuristicLab.Optimization.Views.ResultCollectionView();
       this.runsTabPage = new System.Windows.Forms.TabPage();
       this.storeAlgorithmInEachRunCheckBox = new System.Windows.Forms.CheckBox();
       this.runCollectionView = new HeuristicLab.Optimization.Views.RunCollectionView();
       this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
-      this.resultCollectionView = new HeuristicLab.Optimization.Views.ResultCollectionView();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.foldsNumericUpDown)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.workersNumericUpDown)).BeginInit();
@@ -89,6 +88,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.algorithmParametersTabPage.SuspendLayout();
       this.resultsTabPage.SuspendLayout();
       this.runsTabPage.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
       this.splitContainer.SuspendLayout();
@@ -99,12 +99,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.errorProvider.SetIconPadding(this.nameTextBox, 2);
       this.nameTextBox.Location = new System.Drawing.Point(80, 0);
-      this.nameTextBox.Size = new System.Drawing.Size(533, 20);
+      this.nameTextBox.Size = new System.Drawing.Size(511, 20);
       // 
-      // descriptionTextBox
+      // infoLabel
       // 
-      this.descriptionTextBox.Location = new System.Drawing.Point(80, 26);
-      this.descriptionTextBox.Size = new System.Drawing.Size(533, 20);
+      this.infoLabel.Location = new System.Drawing.Point(597, 3);
       // 
       // startButton
       // 
@@ -113,7 +112,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.startButton.Location = new System.Drawing.Point(0, 514);
       this.startButton.Name = "startButton";
       this.startButton.Size = new System.Drawing.Size(24, 24);
-      this.startButton.TabIndex = 11;
+      this.startButton.TabIndex = 5;
       this.startButton.UseVisualStyleBackColor = true;
       this.startButton.Click += new System.EventHandler(this.startButton_Click);
       // 
@@ -124,7 +123,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.pauseButton.Location = new System.Drawing.Point(30, 514);
       this.pauseButton.Name = "pauseButton";
       this.pauseButton.Size = new System.Drawing.Size(24, 24);
-      this.pauseButton.TabIndex = 12;
+      this.pauseButton.TabIndex = 6;
       this.pauseButton.UseVisualStyleBackColor = true;
       this.pauseButton.Click += new System.EventHandler(this.pauseButton_Click);
       // 
@@ -135,7 +134,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.stopButton.Location = new System.Drawing.Point(60, 514);
       this.stopButton.Name = "stopButton";
       this.stopButton.Size = new System.Drawing.Size(24, 24);
-      this.stopButton.TabIndex = 13;
+      this.stopButton.TabIndex = 7;
       this.stopButton.UseVisualStyleBackColor = true;
       this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
       // 
@@ -146,7 +145,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.resetButton.Location = new System.Drawing.Point(90, 514);
       this.resetButton.Name = "resetButton";
       this.resetButton.Size = new System.Drawing.Size(24, 24);
-      this.resetButton.TabIndex = 14;
+      this.resetButton.TabIndex = 8;
       this.resetButton.UseVisualStyleBackColor = true;
       this.resetButton.Click += new System.EventHandler(this.resetButton_Click);
       // 
@@ -157,7 +156,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.executionTimeTextBox.Name = "executionTimeTextBox";
       this.executionTimeTextBox.ReadOnly = true;
       this.executionTimeTextBox.Size = new System.Drawing.Size(137, 20);
-      this.executionTimeTextBox.TabIndex = 16;
+      this.executionTimeTextBox.TabIndex = 10;
       // 
       // executionTimeLabel
       // 
@@ -166,7 +165,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.executionTimeLabel.Location = new System.Drawing.Point(389, 520);
       this.executionTimeLabel.Name = "executionTimeLabel";
       this.executionTimeLabel.Size = new System.Drawing.Size(83, 13);
-      this.executionTimeLabel.TabIndex = 15;
+      this.executionTimeLabel.TabIndex = 9;
       this.executionTimeLabel.Text = "&Execution Time:";
       // 
       // foldsNumericUpDown
@@ -186,7 +185,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
             0});
       this.foldsNumericUpDown.Name = "foldsNumericUpDown";
       this.foldsNumericUpDown.Size = new System.Drawing.Size(248, 20);
-      this.foldsNumericUpDown.TabIndex = 18;
+      this.foldsNumericUpDown.TabIndex = 3;
       this.foldsNumericUpDown.ThousandsSeparator = true;
       this.foldsNumericUpDown.Value = new decimal(new int[] {
             2,
@@ -202,7 +201,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.foldsLabel.Location = new System.Drawing.Point(3, 29);
       this.foldsLabel.Name = "foldsLabel";
       this.foldsLabel.Size = new System.Drawing.Size(35, 13);
-      this.foldsLabel.TabIndex = 17;
+      this.foldsLabel.TabIndex = 2;
       this.foldsLabel.Text = "&Folds:";
       // 
       // workersNumericUpDown
@@ -222,7 +221,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
             0});
       this.workersNumericUpDown.Name = "workersNumericUpDown";
       this.workersNumericUpDown.Size = new System.Drawing.Size(248, 20);
-      this.workersNumericUpDown.TabIndex = 20;
+      this.workersNumericUpDown.TabIndex = 1;
       this.workersNumericUpDown.ThousandsSeparator = true;
       this.workersNumericUpDown.Value = new decimal(new int[] {
             1,
@@ -238,7 +237,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.workersLabel.Location = new System.Drawing.Point(3, 3);
       this.workersLabel.Name = "workersLabel";
       this.workersLabel.Size = new System.Drawing.Size(50, 13);
-      this.workersLabel.TabIndex = 19;
+      this.workersLabel.TabIndex = 0;
       this.workersLabel.Text = "&Workers:";
       // 
       // samplesStartLabel
@@ -247,7 +246,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.samplesStartLabel.Location = new System.Drawing.Point(3, 3);
       this.samplesStartLabel.Name = "samplesStartLabel";
       this.samplesStartLabel.Size = new System.Drawing.Size(75, 13);
-      this.samplesStartLabel.TabIndex = 21;
+      this.samplesStartLabel.TabIndex = 0;
       this.samplesStartLabel.Text = "&Samples Start:";
       // 
       // samplesEndLabel
@@ -256,7 +255,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.samplesEndLabel.Location = new System.Drawing.Point(3, 29);
       this.samplesEndLabel.Name = "samplesEndLabel";
       this.samplesEndLabel.Size = new System.Drawing.Size(72, 13);
-      this.samplesEndLabel.TabIndex = 23;
+      this.samplesEndLabel.TabIndex = 2;
       this.samplesEndLabel.Text = "&Samples End:";
       // 
       // samplesEndStringConvertibleValueView
@@ -270,7 +269,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.samplesEndStringConvertibleValueView.Name = "samplesEndStringConvertibleValueView";
       this.samplesEndStringConvertibleValueView.ReadOnly = false;
       this.samplesEndStringConvertibleValueView.Size = new System.Drawing.Size(223, 20);
-      this.samplesEndStringConvertibleValueView.TabIndex = 24;
+      this.samplesEndStringConvertibleValueView.TabIndex = 3;
       // 
       // samplesStartStringConvertibleValueView
       // 
@@ -283,21 +282,22 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.samplesStartStringConvertibleValueView.Name = "samplesStartStringConvertibleValueView";
       this.samplesStartStringConvertibleValueView.ReadOnly = false;
       this.samplesStartStringConvertibleValueView.Size = new System.Drawing.Size(223, 20);
-      this.samplesStartStringConvertibleValueView.TabIndex = 22;
+      this.samplesStartStringConvertibleValueView.TabIndex = 1;
       // 
       // tabControl
       // 
+      this.tabControl.AllowDrop = true;
       this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl.Controls.Add(this.algorithmTabPage);
       this.tabControl.Controls.Add(this.resultsTabPage);
       this.tabControl.Controls.Add(this.runsTabPage);
-      this.tabControl.Location = new System.Drawing.Point(0, 113);
+      this.tabControl.Location = new System.Drawing.Point(0, 87);
       this.tabControl.Name = "tabControl";
       this.tabControl.SelectedIndex = 0;
-      this.tabControl.Size = new System.Drawing.Size(616, 395);
-      this.tabControl.TabIndex = 25;
+      this.tabControl.Size = new System.Drawing.Size(616, 421);
+      this.tabControl.TabIndex = 4;
       // 
       // algorithmTabPage
       // 
@@ -309,7 +309,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.algorithmTabPage.Location = new System.Drawing.Point(4, 22);
       this.algorithmTabPage.Name = "algorithmTabPage";
       this.algorithmTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.algorithmTabPage.Size = new System.Drawing.Size(608, 369);
+      this.algorithmTabPage.Size = new System.Drawing.Size(608, 395);
       this.algorithmTabPage.TabIndex = 0;
       this.algorithmTabPage.Text = "Algorithm";
       this.algorithmTabPage.UseVisualStyleBackColor = true;
@@ -326,21 +326,22 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.algorithmNamedItemView.Location = new System.Drawing.Point(6, 36);
       this.algorithmNamedItemView.Name = "algorithmNamedItemView";
       this.algorithmNamedItemView.ReadOnly = false;
-      this.algorithmNamedItemView.Size = new System.Drawing.Size(596, 52);
-      this.algorithmNamedItemView.TabIndex = 29;
+      this.algorithmNamedItemView.Size = new System.Drawing.Size(596, 23);
+      this.algorithmNamedItemView.TabIndex = 2;
       // 
       // algorithmTabControl
       // 
+      this.algorithmTabControl.AllowDrop = true;
       this.algorithmTabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.algorithmTabControl.Controls.Add(this.algorithmProblemTabPage);
       this.algorithmTabControl.Controls.Add(this.algorithmParametersTabPage);
-      this.algorithmTabControl.Location = new System.Drawing.Point(8, 94);
+      this.algorithmTabControl.Location = new System.Drawing.Point(8, 65);
       this.algorithmTabControl.Name = "algorithmTabControl";
       this.algorithmTabControl.SelectedIndex = 0;
-      this.algorithmTabControl.Size = new System.Drawing.Size(594, 269);
-      this.algorithmTabControl.TabIndex = 28;
+      this.algorithmTabControl.Size = new System.Drawing.Size(594, 324);
+      this.algorithmTabControl.TabIndex = 3;
       // 
       // algorithmProblemTabPage
       // 
@@ -351,7 +352,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.algorithmProblemTabPage.Location = new System.Drawing.Point(4, 22);
       this.algorithmProblemTabPage.Name = "algorithmProblemTabPage";
       this.algorithmProblemTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.algorithmProblemTabPage.Size = new System.Drawing.Size(586, 243);
+      this.algorithmProblemTabPage.Size = new System.Drawing.Size(586, 298);
       this.algorithmProblemTabPage.TabIndex = 0;
       this.algorithmProblemTabPage.Text = "Problem";
       this.algorithmProblemTabPage.UseVisualStyleBackColor = true;
@@ -365,7 +366,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.openProblemButton.Location = new System.Drawing.Point(36, 6);
       this.openProblemButton.Name = "openProblemButton";
       this.openProblemButton.Size = new System.Drawing.Size(24, 24);
-      this.openProblemButton.TabIndex = 31;
+      this.openProblemButton.TabIndex = 1;
       this.toolTip.SetToolTip(this.openProblemButton, "Open Problem");
       this.openProblemButton.UseVisualStyleBackColor = true;
       this.openProblemButton.Click += new System.EventHandler(this.openProblemButton_Click);
@@ -381,8 +382,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.algorithmProblemViewHost.Location = new System.Drawing.Point(6, 36);
       this.algorithmProblemViewHost.Name = "algorithmProblemViewHost";
       this.algorithmProblemViewHost.ReadOnly = false;
-      this.algorithmProblemViewHost.Size = new System.Drawing.Size(574, 201);
-      this.algorithmProblemViewHost.TabIndex = 0;
+      this.algorithmProblemViewHost.Size = new System.Drawing.Size(574, 256);
+      this.algorithmProblemViewHost.TabIndex = 2;
+      this.algorithmProblemViewHost.ViewsLabelVisible = true;
       this.algorithmProblemViewHost.ViewType = null;
       // 
       // newProblemButton
@@ -391,7 +393,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.newProblemButton.Location = new System.Drawing.Point(6, 6);
       this.newProblemButton.Name = "newProblemButton";
       this.newProblemButton.Size = new System.Drawing.Size(24, 24);
-      this.newProblemButton.TabIndex = 30;
+      this.newProblemButton.TabIndex = 0;
       this.toolTip.SetToolTip(this.newProblemButton, "NewProblem");
       this.newProblemButton.UseVisualStyleBackColor = true;
       this.newProblemButton.Click += new System.EventHandler(this.newProblemButton_Click);
@@ -402,7 +404,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.algorithmParametersTabPage.Location = new System.Drawing.Point(4, 22);
       this.algorithmParametersTabPage.Name = "algorithmParametersTabPage";
       this.algorithmParametersTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.algorithmParametersTabPage.Size = new System.Drawing.Size(586, 243);
+      this.algorithmParametersTabPage.Size = new System.Drawing.Size(586, 298);
       this.algorithmParametersTabPage.TabIndex = 1;
       this.algorithmParametersTabPage.Text = "Parameters";
       this.algorithmParametersTabPage.UseVisualStyleBackColor = true;
@@ -415,7 +417,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.algorithmParameterCollectionView.Location = new System.Drawing.Point(3, 3);
       this.algorithmParameterCollectionView.Name = "algorithmParameterCollectionView";
       this.algorithmParameterCollectionView.ReadOnly = false;
-      this.algorithmParameterCollectionView.Size = new System.Drawing.Size(580, 237);
+      this.algorithmParameterCollectionView.Size = new System.Drawing.Size(580, 292);
       this.algorithmParameterCollectionView.TabIndex = 0;
       // 
       // openAlgorithmButton
@@ -424,7 +426,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.openAlgorithmButton.Location = new System.Drawing.Point(38, 6);
       this.openAlgorithmButton.Name = "openAlgorithmButton";
       this.openAlgorithmButton.Size = new System.Drawing.Size(24, 24);
-      this.openAlgorithmButton.TabIndex = 27;
+      this.openAlgorithmButton.TabIndex = 1;
       this.toolTip.SetToolTip(this.openAlgorithmButton, "Open Algorithm");
       this.openAlgorithmButton.UseVisualStyleBackColor = true;
       this.openAlgorithmButton.Click += new System.EventHandler(this.openAlgorithmButton_Click);
@@ -435,7 +437,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.newAlgorithmButton.Location = new System.Drawing.Point(8, 6);
       this.newAlgorithmButton.Name = "newAlgorithmButton";
       this.newAlgorithmButton.Size = new System.Drawing.Size(24, 24);
-      this.newAlgorithmButton.TabIndex = 26;
+      this.newAlgorithmButton.TabIndex = 0;
       this.toolTip.SetToolTip(this.newAlgorithmButton, "New Algorithm");
       this.newAlgorithmButton.UseVisualStyleBackColor = true;
       this.newAlgorithmButton.Click += new System.EventHandler(this.newAlgorithmButton_Click);
@@ -446,10 +448,21 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.resultsTabPage.Location = new System.Drawing.Point(4, 22);
       this.resultsTabPage.Name = "resultsTabPage";
       this.resultsTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.resultsTabPage.Size = new System.Drawing.Size(608, 369);
+      this.resultsTabPage.Size = new System.Drawing.Size(608, 395);
       this.resultsTabPage.TabIndex = 1;
       this.resultsTabPage.Text = "Results";
       this.resultsTabPage.UseVisualStyleBackColor = true;
+      // 
+      // resultCollectionView
+      // 
+      this.resultCollectionView.Caption = "ResultCollection View";
+      this.resultCollectionView.Content = null;
+      this.resultCollectionView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.resultCollectionView.Location = new System.Drawing.Point(3, 3);
+      this.resultCollectionView.Name = "resultCollectionView";
+      this.resultCollectionView.ReadOnly = true;
+      this.resultCollectionView.Size = new System.Drawing.Size(602, 389);
+      this.resultCollectionView.TabIndex = 0;
       // 
       // runsTabPage
       // 
@@ -458,7 +471,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.runsTabPage.Location = new System.Drawing.Point(4, 22);
       this.runsTabPage.Name = "runsTabPage";
       this.runsTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.runsTabPage.Size = new System.Drawing.Size(608, 369);
+      this.runsTabPage.Size = new System.Drawing.Size(608, 395);
       this.runsTabPage.TabIndex = 2;
       this.runsTabPage.Text = "Runs";
       this.runsTabPage.UseVisualStyleBackColor = true;
@@ -473,7 +486,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.storeAlgorithmInEachRunCheckBox.Location = new System.Drawing.Point(440, 4);
       this.storeAlgorithmInEachRunCheckBox.Name = "storeAlgorithmInEachRunCheckBox";
       this.storeAlgorithmInEachRunCheckBox.Size = new System.Drawing.Size(161, 17);
-      this.storeAlgorithmInEachRunCheckBox.TabIndex = 2;
+      this.storeAlgorithmInEachRunCheckBox.TabIndex = 1;
       this.storeAlgorithmInEachRunCheckBox.Text = "&Store Algorithm in each Run:";
       this.toolTip.SetToolTip(this.storeAlgorithmInEachRunCheckBox, "Check to store a copy of the algorithm in each run.");
       this.storeAlgorithmInEachRunCheckBox.UseVisualStyleBackColor = true;
@@ -487,8 +500,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.runCollectionView.Location = new System.Drawing.Point(3, 3);
       this.runCollectionView.Name = "runCollectionView";
       this.runCollectionView.ReadOnly = false;
-      this.runCollectionView.Size = new System.Drawing.Size(602, 363);
-      this.runCollectionView.TabIndex = 3;
+      this.runCollectionView.Size = new System.Drawing.Size(602, 389);
+      this.runCollectionView.TabIndex = 0;
       // 
       // openFileDialog
       // 
@@ -501,7 +514,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // 
       this.splitContainer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.splitContainer.Location = new System.Drawing.Point(0, 52);
+      this.splitContainer.Location = new System.Drawing.Point(0, 26);
       this.splitContainer.Name = "splitContainer";
       // 
       // splitContainer.Panel1
@@ -519,18 +532,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.splitContainer.Panel2.Controls.Add(this.workersNumericUpDown);
       this.splitContainer.Size = new System.Drawing.Size(616, 55);
       this.splitContainer.SplitterDistance = 306;
-      this.splitContainer.TabIndex = 26;
-      // 
-      // resultCollectionView
-      // 
-      this.resultCollectionView.Caption = "ResultCollection View";
-      this.resultCollectionView.Content = null;
-      this.resultCollectionView.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.resultCollectionView.Location = new System.Drawing.Point(3, 3);
-      this.resultCollectionView.Name = "resultCollectionView";
-      this.resultCollectionView.ReadOnly = true;
-      this.resultCollectionView.Size = new System.Drawing.Size(602, 363);
-      this.resultCollectionView.TabIndex = 0;
+      this.splitContainer.TabIndex = 3;
       // 
       // CrossValidationView
       // 
@@ -547,6 +549,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.Name = "CrossValidationView";
       this.Size = new System.Drawing.Size(616, 538);
       this.Controls.SetChildIndex(this.splitContainer, 0);
+      this.Controls.SetChildIndex(this.infoLabel, 0);
       this.Controls.SetChildIndex(this.resetButton, 0);
       this.Controls.SetChildIndex(this.stopButton, 0);
       this.Controls.SetChildIndex(this.pauseButton, 0);
@@ -555,9 +558,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.Controls.SetChildIndex(this.executionTimeTextBox, 0);
       this.Controls.SetChildIndex(this.tabControl, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
-      this.Controls.SetChildIndex(this.descriptionLabel, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);
-      this.Controls.SetChildIndex(this.descriptionTextBox, 0);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.foldsNumericUpDown)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.workersNumericUpDown)).EndInit();
@@ -573,6 +574,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       this.splitContainer.Panel1.PerformLayout();
       this.splitContainer.Panel2.ResumeLayout(false);
       this.splitContainer.Panel2.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
       this.splitContainer.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();

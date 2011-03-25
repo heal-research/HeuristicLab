@@ -53,22 +53,20 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       // 
       this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.errorProvider.SetIconPadding(this.nameTextBox, 2);
-      this.nameTextBox.Location = new System.Drawing.Point(117, 0);
-      this.nameTextBox.Size = new System.Drawing.Size(200, 20);
+      this.nameTextBox.Location = new System.Drawing.Point(93, 0);
+      this.nameTextBox.Size = new System.Drawing.Size(202, 20);
       // 
-      // descriptionTextBox
+      // infoLabel
       // 
-      this.errorProvider.SetIconAlignment(this.descriptionTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
-      this.descriptionTextBox.Location = new System.Drawing.Point(117, 26);
-      this.descriptionTextBox.Size = new System.Drawing.Size(200, 20);
+      this.infoLabel.Location = new System.Drawing.Point(301, 3);
       // 
       // initialFrequencyLabel
       // 
       this.initialFrequencyLabel.AutoSize = true;
-      this.initialFrequencyLabel.Location = new System.Drawing.Point(3, 56);
+      this.initialFrequencyLabel.Location = new System.Drawing.Point(3, 29);
       this.initialFrequencyLabel.Name = "initialFrequencyLabel";
       this.initialFrequencyLabel.Size = new System.Drawing.Size(84, 13);
-      this.initialFrequencyLabel.TabIndex = 4;
+      this.initialFrequencyLabel.TabIndex = 3;
       this.initialFrequencyLabel.Text = "Initial frequency:";
       this.toolTip.SetToolTip(this.initialFrequencyLabel, "Relative frequency of the symbol in randomly created trees");
       // 
@@ -77,10 +75,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       this.initialFrequencyTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.errorProvider.SetIconAlignment(this.initialFrequencyTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
-      this.initialFrequencyTextBox.Location = new System.Drawing.Point(117, 53);
+      this.initialFrequencyTextBox.Location = new System.Drawing.Point(93, 26);
       this.initialFrequencyTextBox.Name = "initialFrequencyTextBox";
-      this.initialFrequencyTextBox.Size = new System.Drawing.Size(200, 20);
-      this.initialFrequencyTextBox.TabIndex = 5;
+      this.initialFrequencyTextBox.Size = new System.Drawing.Size(227, 20);
+      this.initialFrequencyTextBox.TabIndex = 4;
       this.initialFrequencyTextBox.TextChanged += new System.EventHandler(this.initialFrequencyTextBox_TextChanged);
       // 
       // SymbolView
@@ -90,13 +88,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       this.Controls.Add(this.initialFrequencyTextBox);
       this.Controls.Add(this.initialFrequencyLabel);
       this.Name = "SymbolView";
-      this.Size = new System.Drawing.Size(320, 79);
+      this.Size = new System.Drawing.Size(320, 51);
       this.Controls.SetChildIndex(this.initialFrequencyLabel, 0);
       this.Controls.SetChildIndex(this.initialFrequencyTextBox, 0);
+      this.Controls.SetChildIndex(this.infoLabel, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
-      this.Controls.SetChildIndex(this.descriptionLabel, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);
-      this.Controls.SetChildIndex(this.descriptionTextBox, 0);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
