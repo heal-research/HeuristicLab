@@ -42,6 +42,15 @@ namespace HeuristicLab.Optimization.Views {
       base.ReadOnly = true;
     }
 
+    protected override void RegisterItemEvents(IResult item) {
+      base.RegisterItemEvents(item);
+      item.ValueChanged += (o, e) => itemsListView_SelectedIndexChanged(o, e);
+    }
+    protected override void DeregisterItemEvents(IResult item) {
+      item.ValueChanged -= (o, e) => itemsListView_SelectedIndexChanged(o, e);
+      base.DeregisterItemEvents(item);
+    }
+
     protected override IResult CreateItem() {
       return null;
     }
