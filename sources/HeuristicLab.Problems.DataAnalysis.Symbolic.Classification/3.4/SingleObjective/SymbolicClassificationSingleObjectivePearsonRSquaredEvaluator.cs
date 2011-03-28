@@ -54,13 +54,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     public static double Calculate(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, IClassificationProblemData problemData, IEnumerable<int> rows) {
       IEnumerable<double> estimatedValues = interpreter.GetSymbolicExpressionTreeValues(solution, problemData.Dataset, rows);
       IEnumerable<double> originalValues = problemData.Dataset.GetEnumeratedVariableValues(problemData.TargetVariable, rows);
-      try {
-        return OnlinePearsonsRSquaredEvaluator.Calculate(originalValues, estimatedValues);
-      }
-      catch (ArgumentException) {
-        // if R² cannot be calculated because of NaN or ininity elements => return worst possible fitness value
-        return 0.0;
-      }
+      double r2 = OnlinePearsonsRSquaredEvaluator.Calculate(estimatedValues, originalValues);
+      return double.IsNaN(r2) ? 0.0 : r2;
     }
 
     public override double Evaluate(IExecutionContext context, ISymbolicExpressionTree tree, IClassificationProblemData problemData, IEnumerable<int> rows) {
