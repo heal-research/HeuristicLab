@@ -26,7 +26,7 @@ using HeuristicLab.Optimization.Views;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
-  [View("DataAnalysis Problem View")]
+  [View("DataAnalysisProblem View")]
   [Content(typeof(IDataAnalysisProblem), true)]
   public partial class DataAnalysisProblemView : ProblemView {
     public DataAnalysisProblemView() {

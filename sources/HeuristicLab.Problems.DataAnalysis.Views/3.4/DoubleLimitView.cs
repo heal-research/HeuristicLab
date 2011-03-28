@@ -25,7 +25,7 @@ using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
-  [View("DoubleRange View")]
+  [View("DoubleLimit View")]
   [Content(typeof(DoubleLimit), true)]
   public partial class DoubleLimitView : StringConvertibleValueTupleView {
 

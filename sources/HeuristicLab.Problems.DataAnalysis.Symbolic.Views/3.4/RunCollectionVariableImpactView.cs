@@ -31,7 +31,7 @@ using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
   [Content(typeof(RunCollection), false)]
-  [View("RunCollection Variable Impact View")]
+  [View("RunCollection VariableImpacts")]
   public sealed partial class RunCollectionVariableImpactView : AsynchronousContentView {
     private const string variableImpactResultName = "Variable impacts";
     public RunCollectionVariableImpactView() {

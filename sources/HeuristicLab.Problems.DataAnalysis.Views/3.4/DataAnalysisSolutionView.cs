@@ -27,7 +27,7 @@ using HeuristicLab.MainForm;
 using HeuristicLab.Optimization.Views;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
-  [View("Data analysis solution view")]
+  [View("DataAnalysisSolution View")]
   [Content(typeof(DataAnalysisSolution), true)]
   public partial class DataAnalysisSolutionView : ResultCollectionView {
     public DataAnalysisSolutionView() {

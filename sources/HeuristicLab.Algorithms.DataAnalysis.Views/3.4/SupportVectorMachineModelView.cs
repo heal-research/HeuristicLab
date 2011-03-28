@@ -25,7 +25,7 @@ using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Algorithms.DataAnalysis.Views {
-  [View("Support vector machine model view")]
+  [View("SupportVectorMachineModel view")]
   [Content(typeof(SupportVectorMachineModel), true)]
   public partial class SupportVectorMachineModelView : AsynchronousContentView {
 

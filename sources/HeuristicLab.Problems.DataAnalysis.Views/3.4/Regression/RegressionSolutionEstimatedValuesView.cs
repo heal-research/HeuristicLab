@@ -28,7 +28,7 @@ using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
-  [View("Regression solution estimated values view")]
+  [View("RegressionSolution EstimatedValues")]
   [Content(typeof(IRegressionSolution))]
   public partial class RegressionSolutionEstimatedValuesView : ItemView, IRegressionSolutionEvaluationView {
     private const string TARGETVARIABLE_SERIES_NAME = "TargetVariable";

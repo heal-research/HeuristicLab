@@ -25,7 +25,7 @@ using HeuristicLab.MainForm;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
-  [View("Regresison solution view")]
+  [View("RegressionSolution View")]
   [Content(typeof(RegressionSolution), true)]
   public partial class RegressionSolutionView : DataAnalysisSolutionView {
     public RegressionSolutionView() {

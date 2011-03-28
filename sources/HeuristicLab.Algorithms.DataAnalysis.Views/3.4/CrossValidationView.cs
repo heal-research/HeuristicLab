@@ -31,7 +31,7 @@ using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis.Views {
-  [View("Cross Validation View")]
+  [View("CrossValidation View")]
   [Content(typeof(CrossValidation), true)]
   public sealed partial class CrossValidationView : NamedItemView {
     private TypeSelectorDialog algorithmTypeSelectorDialog;
@@ -318,7 +318,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       e.Effect = DragDropEffects.None;
       IAlgorithm algorithm = e.Data.GetData("HeuristicLab") as IAlgorithm;
       if (!ReadOnly && algorithm != null &&
-        (algorithm.ProblemType != null || Content.ProblemType.IsAssignableFrom(algorithm.Problem.GetType())) ){
+        (algorithm.ProblemType != null || Content.ProblemType.IsAssignableFrom(algorithm.Problem.GetType()))) {
         if ((e.KeyState & 32) == 32) e.Effect = DragDropEffects.Link;  // ALT key
         else if ((e.KeyState & 4) == 4) e.Effect = DragDropEffects.Move;  // SHIFT key
         else if (e.AllowedEffect.HasFlag(DragDropEffects.Copy)) e.Effect = DragDropEffects.Copy;

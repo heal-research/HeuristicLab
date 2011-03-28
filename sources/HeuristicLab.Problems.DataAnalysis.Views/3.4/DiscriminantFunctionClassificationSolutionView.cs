@@ -25,7 +25,7 @@ using HeuristicLab.MainForm;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
-  [View("DiscriminantFunctionClassification solution view")]
+  [View("DiscriminantFunctionClassificationSolution View")]
   [Content(typeof(DiscriminantFunctionClassificationSolution), true)]
   public partial class DiscriminantFunctionClassificationSolutionView : ClassificationSolutionView {
     public DiscriminantFunctionClassificationSolutionView() {

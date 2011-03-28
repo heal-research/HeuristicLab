@@ -28,7 +28,7 @@ using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
-  [View("Classification solution confusion matrix view")]
+  [View("ClassificationSolution ConfusionMatrix")]
   [Content(typeof(IClassificationSolution))]
   public partial class ClassificationSolutionConfusionMatrixView : ItemView, IClassificationSolutionEvaluationView {
     private const string TrainingSamples = "Training";

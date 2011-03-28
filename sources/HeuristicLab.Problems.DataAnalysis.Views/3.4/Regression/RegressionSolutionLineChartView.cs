@@ -28,7 +28,7 @@ using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
-  [View("Regression solution line chart")]
+  [View("RegressionSolution LineChart")]
   [Content(typeof(IRegressionSolution))]
   public partial class RegressionSolutionLineChartView : ItemView, IRegressionSolutionEvaluationView {
     private const string TARGETVARIABLE_SERIES_NAME = "TargetVariable";
