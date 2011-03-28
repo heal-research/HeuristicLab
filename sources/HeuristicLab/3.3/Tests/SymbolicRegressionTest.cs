@@ -57,8 +57,6 @@ namespace HeuristicLab_33.Tests {
       GeneticAlgorithm ga = (GeneticAlgorithm)XmlParser.Deserialize("GA_SymbReg.hl");
       ga.ExceptionOccurred += new EventHandler<EventArgs<Exception>>(ga_ExceptionOccurred);
       ga.Stopped += new EventHandler(ga_Stopped);
-      ga.SetSeedRandomly.Value = false;
-      ga.Seed.Value = 0;
 
       ga.Prepare();
       ga.Start();
