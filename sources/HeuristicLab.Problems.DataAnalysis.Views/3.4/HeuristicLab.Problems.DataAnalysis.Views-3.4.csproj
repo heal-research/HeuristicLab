@@ -145,6 +145,18 @@
     <Compile Include="Classification\DiscriminantFunctionClassificationSolutionThresholdView.Designer.cs">
       <DependentUpon>DiscriminantFunctionClassificationSolutionThresholdView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Clustering\ClusteringSolutionEstimatedClusterView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Clustering\ClusteringSolutionEstimatedClusterView.Designer.cs">
+      <DependentUpon>ClusteringSolutionEstimatedClusterView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ClusteringSolutionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ClusteringSolutionView.Designer.cs">
+      <DependentUpon>ClusteringSolutionView.cs</DependentUpon>
+    </Compile>
     <Compile Include="DiscriminantFunctionClassificationSolutionView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -295,9 +307,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Clustering\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
