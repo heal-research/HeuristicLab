@@ -352,7 +352,7 @@ namespace HeuristicLab.Core.Views {
         IValueParameter opParam = GetOperatorParameterTag(node);
         IOperator op = GetOperatorTag(node);
         DataObject data = new DataObject();
-        data.SetData("HeuristicLab", op);
+        data.SetData(HeuristicLab.Common.Constants.DragDropDataFormat, op);
         if (ReadOnly || (opParam == null)) {
           DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
         } else {
@@ -364,7 +364,7 @@ namespace HeuristicLab.Core.Views {
     }
     private void graphTreeView_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
-      if (!ReadOnly && (e.Data.GetData("HeuristicLab") is IOperator)) {
+      if (!ReadOnly && (e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) is IOperator)) {
         TreeNode node = graphTreeView.GetNodeAt(graphTreeView.PointToClient(new Point(e.X, e.Y)));
         if ((node != null) && !node.IsExpanded) node.Expand();
         if ((node != null) && (GetOperatorParameterTag(node) != null)) {
@@ -378,7 +378,7 @@ namespace HeuristicLab.Core.Views {
     }
     private void graphTreeView_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
-        IOperator op = e.Data.GetData("HeuristicLab") as IOperator;
+        IOperator op = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) as IOperator;
         if (e.Effect.HasFlag(DragDropEffects.Copy)) op = (IOperator)op.Clone();
         TreeNode node = graphTreeView.GetNodeAt(graphTreeView.PointToClient(new Point(e.X, e.Y)));
         IValueParameter opParam = GetOperatorParameterTag(node);

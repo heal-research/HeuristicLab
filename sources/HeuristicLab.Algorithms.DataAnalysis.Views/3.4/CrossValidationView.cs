@@ -316,7 +316,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
 
     private void algorithmTabPage_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
-      IAlgorithm algorithm = e.Data.GetData("HeuristicLab") as IAlgorithm;
+      IAlgorithm algorithm = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) as IAlgorithm;
       if (!ReadOnly && algorithm != null &&
         (algorithm.ProblemType != null || Content.ProblemType.IsAssignableFrom(algorithm.Problem.GetType()))) {
         if ((e.KeyState & 32) == 32) e.Effect = DragDropEffects.Link;  // ALT key
@@ -328,7 +328,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
     }
     private void algorithmTabPage_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
-        IAlgorithm algorithm = e.Data.GetData("HeuristicLab") as IAlgorithm;
+        IAlgorithm algorithm = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) as IAlgorithm;
         if ((e.Effect & DragDropEffects.Copy) == DragDropEffects.Copy) algorithm = (IAlgorithm)algorithm.Clone();
         Content.Algorithm = algorithm;
       }
@@ -337,7 +337,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
     private void algorithmProblemTabPage_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
       if (ReadOnly) return;
-      IProblem problem = e.Data.GetData("HeuristicLab") as IProblem;
+      IProblem problem = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) as IProblem;
       if (problem != null && Content.ProblemType.IsAssignableFrom(problem.GetType()) &&
         Content.Algorithm.ProblemType.IsAssignableFrom(problem.GetType())) {
         if ((e.KeyState & 32) == 32) e.Effect = DragDropEffects.Link;  // ALT key
@@ -349,7 +349,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
     }
     private void algorithmProblemTabPage_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
-        IDataAnalysisProblem problem = e.Data.GetData("HeuristicLab") as IDataAnalysisProblem;
+        IDataAnalysisProblem problem = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) as IDataAnalysisProblem;
         if ((e.Effect & DragDropEffects.Copy) == DragDropEffects.Copy) problem = (IDataAnalysisProblem)problem.Clone();
         Content.Problem = problem;
       }

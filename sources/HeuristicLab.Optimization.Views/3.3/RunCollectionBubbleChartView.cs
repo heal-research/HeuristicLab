@@ -492,7 +492,7 @@ namespace HeuristicLab.Optimization.Views {
       if (!Locked) {
         if (this.draggedRun != null && h.ChartElementType != ChartElementType.DataPoint) {
           DataObject data = new DataObject();
-          data.SetData("HeuristicLab", draggedRun);
+          data.SetData(HeuristicLab.Common.Constants.DragDropDataFormat, draggedRun);
           if (ReadOnly)
             DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
           else {

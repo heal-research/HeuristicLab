@@ -277,7 +277,7 @@ namespace HeuristicLab.Optimization.Views {
     }
     protected virtual void problemTabPage_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
-      if (!ReadOnly && (e.Data.GetData("HeuristicLab") != null) && Content.ProblemType.IsAssignableFrom(e.Data.GetData("HeuristicLab").GetType())) {
+      if (!ReadOnly && (e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) != null) && Content.ProblemType.IsAssignableFrom(e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat).GetType())) {
         if ((e.KeyState & 32) == 32) e.Effect = DragDropEffects.Link;  // ALT key
         else if ((e.KeyState & 4) == 4) e.Effect = DragDropEffects.Move;  // SHIFT key
         else if (e.AllowedEffect.HasFlag(DragDropEffects.Copy)) e.Effect = DragDropEffects.Copy;
@@ -287,7 +287,7 @@ namespace HeuristicLab.Optimization.Views {
     }
     protected virtual void problemTabPage_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
-        IProblem problem = e.Data.GetData("HeuristicLab") as IProblem;
+        IProblem problem = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) as IProblem;
         if (e.Effect.HasFlag(DragDropEffects.Copy)) problem = (IProblem)problem.Clone();
         Content.Problem = problem;
       }

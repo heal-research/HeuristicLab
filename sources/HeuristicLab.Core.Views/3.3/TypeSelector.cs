@@ -317,7 +317,7 @@ namespace HeuristicLab.Core.Views {
       if ((type != null) && (!type.IsInterface) && (!type.IsAbstract) && (!type.HasElementType) && (!type.ContainsGenericParameters)) {
         object o = Activator.CreateInstance(type);
         DataObject data = new DataObject();
-        data.SetData("HeuristicLab", o);
+        data.SetData(HeuristicLab.Common.Constants.DragDropDataFormat, o);
         DoDragDrop(data, DragDropEffects.Copy);
       }
     }

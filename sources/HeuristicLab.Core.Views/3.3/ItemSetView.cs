@@ -43,10 +43,10 @@ namespace HeuristicLab.Core.Views {
       base.itemsListView_DragEnter(sender, e);
       draggedItemsAlreadyContained = false;
       if (validDragOperation) {
-        if (e.Data.GetData("HeuristicLab") is T) {
-          draggedItemsAlreadyContained = Content.Contains((T)e.Data.GetData("HeuristicLab"));
-        } else if (e.Data.GetData("HeuristicLab") is IEnumerable) {
-          IEnumerable items = (IEnumerable)e.Data.GetData("HeuristicLab");
+        if (e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) is T) {
+          draggedItemsAlreadyContained = Content.Contains((T)e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat));
+        } else if (e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) is IEnumerable) {
+          IEnumerable items = (IEnumerable)e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
           foreach (object item in items)
             draggedItemsAlreadyContained = draggedItemsAlreadyContained || Content.Contains((T)item);
         }

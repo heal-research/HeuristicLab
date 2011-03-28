@@ -282,8 +282,8 @@ namespace HeuristicLab.Core.Views {
 
         if (items.Count > 0) {
           DataObject data = new DataObject();
-          if (items.Count == 1) data.SetData("HeuristicLab", items[0]);
-          else data.SetData("HeuristicLab", items);
+          if (items.Count == 1) data.SetData(HeuristicLab.Common.Constants.DragDropDataFormat, items[0]);
+          else data.SetData(HeuristicLab.Common.Constants.DragDropDataFormat, items);
           if (Content.IsReadOnly || ReadOnly) {
             DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
           } else {
@@ -297,7 +297,7 @@ namespace HeuristicLab.Core.Views {
       }
     }
     protected virtual void itemsListView_DragEnter(object sender, DragEventArgs e) {
-      validDragOperation = !Content.IsReadOnly && !ReadOnly && e.Data.GetData("HeuristicLab") is T;
+      validDragOperation = !Content.IsReadOnly && !ReadOnly && e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) is T;
     }
     protected virtual void itemsListView_DragOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
@@ -317,7 +317,7 @@ namespace HeuristicLab.Core.Views {
       if (e.Effect != DragDropEffects.None) {
         Point p = itemsListView.PointToClient(new Point(e.X, e.Y));
         ListViewItem listViewItem = itemsListView.GetItemAt(p.X, p.Y);
-        T item = e.Data.GetData("HeuristicLab") as T;
+        T item = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) as T;
         Content[listViewItem.Index] = e.Effect.HasFlag(DragDropEffects.Copy) ? (T)item.Clone() : item;
       }
     }

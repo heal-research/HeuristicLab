@@ -87,7 +87,7 @@ namespace HeuristicLab.Core.Views {
 
     protected virtual void VariableValueView_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
-      if (!ReadOnly && (e.Data.GetData("HeuristicLab") is IItem)) {
+      if (!ReadOnly && (e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) is IItem)) {
         if ((e.KeyState & 32) == 32) e.Effect = DragDropEffects.Link;  // ALT key
         else if ((e.KeyState & 4) == 4) e.Effect = DragDropEffects.Move;  // SHIFT key
         else if (e.AllowedEffect.HasFlag(DragDropEffects.Copy)) e.Effect = DragDropEffects.Copy;
@@ -97,7 +97,7 @@ namespace HeuristicLab.Core.Views {
     }
     protected virtual void VariableValueView_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
-        IItem item = e.Data.GetData("HeuristicLab") as IItem;
+        IItem item = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) as IItem;
         if (e.Effect.HasFlag(DragDropEffects.Copy)) item = (IItem)item.Clone();
         Content.Value = item;
       }

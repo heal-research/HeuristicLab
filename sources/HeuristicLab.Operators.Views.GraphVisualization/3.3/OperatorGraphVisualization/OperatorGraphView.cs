@@ -203,7 +203,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     #region drag and drop
     private void OperatorGraphView_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
-      if (!ReadOnly && (e.Data.GetData("HeuristicLab") is IOperator)) {
+      if (!ReadOnly && (e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) is IOperator)) {
         if ((e.KeyState & 32) == 32) e.Effect = DragDropEffects.Link;  // ALT key
         else if ((e.KeyState & 4) == 4) e.Effect = DragDropEffects.Move;  // SHIFT key
         else if (e.AllowedEffect.HasFlag(DragDropEffects.Copy)) e.Effect = DragDropEffects.Copy;
@@ -214,7 +214,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
 
     private void OperatorGraphView_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
-        IOperator op = e.Data.GetData("HeuristicLab") as IOperator;
+        IOperator op = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) as IOperator;
         if (e.Effect.HasFlag(DragDropEffects.Copy)) op = (IOperator)op.Clone();
         IOperatorShapeInfo shapeInfo = OperatorShapeInfoFactory.CreateOperatorShapeInfo(op);
         Point mouse = new Point(MousePosition.X, MousePosition.Y);

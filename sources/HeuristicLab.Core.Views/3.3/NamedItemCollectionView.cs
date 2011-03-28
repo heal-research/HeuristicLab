@@ -81,10 +81,10 @@ namespace HeuristicLab.Core.Views {
     protected override void itemsListView_DragEnter(object sender, DragEventArgs e) {
       base.itemsListView_DragEnter(sender, e);
       if (validDragOperation) {
-        if (e.Data.GetData("HeuristicLab") is T) {
-          validDragOperation = validDragOperation && !Content.ContainsKey(((T)e.Data.GetData("HeuristicLab")).Name);
-        } else if (e.Data.GetData("HeuristicLab") is IEnumerable) {
-          IEnumerable<T> items = ((IEnumerable)e.Data.GetData("HeuristicLab")).Cast<T>();
+        if (e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) is T) {
+          validDragOperation = validDragOperation && !Content.ContainsKey(((T)e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat)).Name);
+        } else if (e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) is IEnumerable) {
+          IEnumerable<T> items = ((IEnumerable)e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat)).Cast<T>();
           foreach (T item in items)
             validDragOperation = validDragOperation && !Content.ContainsKey(item.Name);
         }

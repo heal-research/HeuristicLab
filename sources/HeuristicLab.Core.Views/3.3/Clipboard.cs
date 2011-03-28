@@ -274,8 +274,8 @@ namespace HeuristicLab.Core.Views {
 
       if (items.Count > 0) {
         DataObject data = new DataObject();
-        if (items.Count == 1) data.SetData("HeuristicLab", items[0]);
-        else data.SetData("HeuristicLab", items);
+        if (items.Count == 1) data.SetData(HeuristicLab.Common.Constants.DragDropDataFormat, items[0]);
+        else data.SetData(HeuristicLab.Common.Constants.DragDropDataFormat, items);
         if (ReadOnly) {
           DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
         } else {
@@ -290,18 +290,17 @@ namespace HeuristicLab.Core.Views {
     private void listView_DragEnter(object sender, DragEventArgs e) {
       validDragOperation = false;
       draggedItemsAlreadyContained = false;
-      if (e.Data.GetData("HeuristicLab") is T) {
+      if (!ReadOnly && (e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) is T)) {
         validDragOperation = true;
-        draggedItemsAlreadyContained = itemListViewItemMapping.ContainsKey((T)e.Data.GetData("HeuristicLab"));
-      } else if (e.Data.GetData("HeuristicLab") is IEnumerable) {
+        draggedItemsAlreadyContained = itemListViewItemMapping.ContainsKey((T)e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat));
+      } else if (!ReadOnly && (e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) is IEnumerable)) {
         validDragOperation = true;
-        IEnumerable items = (IEnumerable)e.Data.GetData("HeuristicLab");
+        IEnumerable items = (IEnumerable)e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
         foreach (object item in items) {
           validDragOperation = validDragOperation && (item is T);
           draggedItemsAlreadyContained = draggedItemsAlreadyContained || itemListViewItemMapping.ContainsKey((T)item);
         }
       }
-      validDragOperation = validDragOperation && !ReadOnly;
     }
     private void listView_DragOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
@@ -316,11 +315,11 @@ namespace HeuristicLab.Core.Views {
     private void listView_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
         try {
-          if (e.Data.GetData("HeuristicLab") is T) {
-            T item = (T)e.Data.GetData("HeuristicLab");
+          if (e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) is T) {
+            T item = (T)e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
             AddItem(e.Effect.HasFlag(DragDropEffects.Copy) ? (T)item.Clone() : item);
-          } else if (e.Data.GetData("HeuristicLab") is IEnumerable) {
-            IEnumerable<T> items = ((IEnumerable)e.Data.GetData("HeuristicLab")).Cast<T>();
+          } else if (e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) is IEnumerable) {
+            IEnumerable<T> items = ((IEnumerable)e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat)).Cast<T>();
             foreach (T item in items)
               AddItem(e.Effect.HasFlag(DragDropEffects.Copy) ? (T)item.Clone() : item);
           }

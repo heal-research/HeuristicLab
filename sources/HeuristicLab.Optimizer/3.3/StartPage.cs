@@ -121,7 +121,7 @@ namespace HeuristicLab.Optimizer {
       ListViewItem listViewItem = (ListViewItem)e.Item;
       IItem item = (IItem)listViewItem.Tag;
       DataObject data = new DataObject();
-      data.SetData("HeuristicLab", item);
+      data.SetData(HeuristicLab.Common.Constants.DragDropDataFormat, item);
       DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy);
     }
 

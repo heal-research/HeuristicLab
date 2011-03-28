@@ -316,7 +316,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
 
     private void algorithmTabPage_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
-      IAlgorithm algorithm = e.Data.GetData("HeuristicLab") as IAlgorithm;
+      IAlgorithm algorithm = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) as IAlgorithm;
       if (!ReadOnly && (algorithm != null) && Content.ProblemType.IsAssignableFrom(algorithm.Problem.GetType())) {
         if ((e.KeyState & 32) == 32) e.Effect = DragDropEffects.Link;  // ALT key
         else if ((e.KeyState & 4) == 4) e.Effect = DragDropEffects.Move;  // SHIFT key
@@ -327,7 +327,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
     }
     private void algorithmTabPage_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
-        IAlgorithm algorithm = e.Data.GetData("HeuristicLab") as IAlgorithm;
+        IAlgorithm algorithm = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) as IAlgorithm;
         if (e.Effect.HasFlag(DragDropEffects.Copy)) algorithm = (IAlgorithm)algorithm.Clone();
         Content.Algorithm = algorithm;
       }
@@ -335,7 +335,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
 
     private void algorithmProblemTabPage_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
-      Type type = e.Data.GetData("HeuristicLab") != null ? e.Data.GetData("HeuristicLab").GetType() : null;
+      Type type = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) != null ? e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat).GetType() : null;
       if (!ReadOnly && (type != null) && Content.ProblemType.IsAssignableFrom(type) && Content.Algorithm.ProblemType.IsAssignableFrom(type)) {
         if ((e.KeyState & 32) == 32) e.Effect = DragDropEffects.Link;  // ALT key
         else if ((e.KeyState & 4) == 4) e.Effect = DragDropEffects.Move;  // SHIFT key
@@ -346,7 +346,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
     }
     private void algorithmProblemTabPage_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
-        ISingleObjectiveDataAnalysisProblem problem = e.Data.GetData("HeuristicLab") as ISingleObjectiveDataAnalysisProblem;
+        ISingleObjectiveDataAnalysisProblem problem = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) as ISingleObjectiveDataAnalysisProblem;
         if (e.Effect.HasFlag(DragDropEffects.Copy)) problem = (ISingleObjectiveDataAnalysisProblem)problem.Clone();
         Content.Problem = problem;
       }

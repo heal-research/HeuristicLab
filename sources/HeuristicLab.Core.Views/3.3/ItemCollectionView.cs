@@ -252,8 +252,8 @@ namespace HeuristicLab.Core.Views {
 
         if (items.Count > 0) {
           DataObject data = new DataObject();
-          if (items.Count == 1) data.SetData("HeuristicLab", items[0]);
-          else data.SetData("HeuristicLab", items);
+          if (items.Count == 1) data.SetData(HeuristicLab.Common.Constants.DragDropDataFormat, items[0]);
+          else data.SetData(HeuristicLab.Common.Constants.DragDropDataFormat, items);
           if (Content.IsReadOnly || ReadOnly) {
             DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
           } else {
@@ -267,15 +267,14 @@ namespace HeuristicLab.Core.Views {
     }
     protected virtual void itemsListView_DragEnter(object sender, DragEventArgs e) {
       validDragOperation = false;
-      if (e.Data.GetData("HeuristicLab") is T) {
+      if (!Content.IsReadOnly && !ReadOnly && (e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) is T)) {
         validDragOperation = true;
-      } else if (e.Data.GetData("HeuristicLab") is IEnumerable) {
+      } else if (!Content.IsReadOnly && !ReadOnly && (e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) is IEnumerable)) {
         validDragOperation = true;
-        IEnumerable items = (IEnumerable)e.Data.GetData("HeuristicLab");
+        IEnumerable items = (IEnumerable)e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
         foreach (object item in items)
           validDragOperation = validDragOperation && (item is T);
       }
-      validDragOperation = validDragOperation && !Content.IsReadOnly && !ReadOnly;
     }
     protected virtual void itemsListView_DragOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
@@ -289,11 +288,11 @@ namespace HeuristicLab.Core.Views {
     }
     protected virtual void itemsListView_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
-        if (e.Data.GetData("HeuristicLab") is T) {
-          T item = (T)e.Data.GetData("HeuristicLab");
+        if (e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) is T) {
+          T item = (T)e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
           Content.Add(e.Effect.HasFlag(DragDropEffects.Copy) ? (T)item.Clone() : item);
-        } else if (e.Data.GetData("HeuristicLab") is IEnumerable) {
-          IEnumerable<T> items = ((IEnumerable)e.Data.GetData("HeuristicLab")).Cast<T>();
+        } else if (e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) is IEnumerable) {
+          IEnumerable<T> items = ((IEnumerable)e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat)).Cast<T>();
           foreach (T item in items)
             Content.Add(e.Effect.HasFlag(DragDropEffects.Copy) ? (T)item.Clone() : item);
         }

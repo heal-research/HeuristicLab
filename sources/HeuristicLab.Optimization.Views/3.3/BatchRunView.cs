@@ -252,7 +252,7 @@ namespace HeuristicLab.Optimization.Views {
     }
     private void optimizerTabPage_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
-      if (!ReadOnly && (e.Data.GetData("HeuristicLab") is IOptimizer)) {
+      if (!ReadOnly && (e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) is IOptimizer)) {
         if ((e.KeyState & 32) == 32) e.Effect = DragDropEffects.Link;  // ALT key
         else if ((e.KeyState & 4) == 4) e.Effect = DragDropEffects.Move;  // SHIFT key
         else if (e.AllowedEffect.HasFlag(DragDropEffects.Copy)) e.Effect = DragDropEffects.Copy;
@@ -262,7 +262,7 @@ namespace HeuristicLab.Optimization.Views {
     }
     private void optimizerTabPage_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
-        IOptimizer optimizer = e.Data.GetData("HeuristicLab") as IOptimizer;
+        IOptimizer optimizer = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) as IOptimizer;
         if (e.Effect.HasFlag(DragDropEffects.Copy)) optimizer = (IOptimizer)optimizer.Clone();
         Content.Optimizer = optimizer;
       }

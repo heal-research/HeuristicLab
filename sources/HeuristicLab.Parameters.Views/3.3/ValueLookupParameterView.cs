@@ -161,7 +161,7 @@ namespace HeuristicLab.Parameters.Views {
     }
     protected virtual void valueGroupBox_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
-      if (!ReadOnly && (e.Data.GetData("HeuristicLab") != null) && Content.DataType.IsAssignableFrom(e.Data.GetData("HeuristicLab").GetType())) {
+      if (!ReadOnly && (e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) != null) && Content.DataType.IsAssignableFrom(e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat).GetType())) {
         if ((e.KeyState & 32) == 32) e.Effect = DragDropEffects.Link;  // ALT key
         else if ((e.KeyState & 4) == 4) e.Effect = DragDropEffects.Move;  // SHIFT key
         else if (e.AllowedEffect.HasFlag(DragDropEffects.Copy)) e.Effect = DragDropEffects.Copy;
@@ -171,7 +171,7 @@ namespace HeuristicLab.Parameters.Views {
     }
     protected virtual void valueGroupBox_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
-        T value = e.Data.GetData("HeuristicLab") as T;
+        T value = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) as T;
         if (e.Effect.HasFlag(DragDropEffects.Copy)) value = (T)value.Clone();
         Content.Value = value;
       }
