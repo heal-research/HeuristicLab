@@ -32,7 +32,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.SingleObjec
   [Item("Bounded Mean squared error Evaluator", "Calculates the bounded mean squared error of a symbolic classification solution (estimations above or below the class values are only penaltilized linearly.")]
   [StorableClass]
   public class SymbolicClassificationSingleObjectiveBoundedMeanSquaredErrorEvaluator : SymbolicClassificationSingleObjectiveEvaluator {
-
     [StorableConstructor]
     protected SymbolicClassificationSingleObjectiveBoundedMeanSquaredErrorEvaluator(bool deserializing) : base(deserializing) { }
     protected SymbolicClassificationSingleObjectiveBoundedMeanSquaredErrorEvaluator(SymbolicClassificationSingleObjectiveBoundedMeanSquaredErrorEvaluator original, Cloner cloner) : base(original, cloner) { }
@@ -46,8 +45,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.SingleObjec
 
     public override IOperation Apply() {
       IEnumerable<int> rows = GenerateRowsToEvaluate();
-      double quality = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, SymbolicExpressionTreeParameter.ActualValue, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, ProblemDataParameter.ActualValue, rows);
+      var solution = SymbolicExpressionTreeParameter.ActualValue;
+      double quality = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, ProblemDataParameter.ActualValue, rows);
       QualityParameter.ActualValue = new DoubleValue(quality);
+      AddEvaluatedNodes(solution.Length * rows.Count());
       return base.Apply();
     }
 
@@ -87,7 +88,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.SingleObjec
     }
 
     public override double Evaluate(IExecutionContext context, ISymbolicExpressionTree tree, IClassificationProblemData problemData, IEnumerable<int> rows) {
-      return Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, tree, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, problemData, rows);
+      SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = context;
+      EstimationLimitsParameter.ExecutionContext = context;
+      EvaluatedNodesParameter.ExecutionContext = context;
+
+      double mse = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, tree, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, problemData, rows);
+      AddEvaluatedNodes(tree.Length * rows.Count());
+
+      SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = null;
+      EstimationLimitsParameter.ExecutionContext = null;
+      EvaluatedNodesParameter.ExecutionContext = null; 
+
+      return mse;
     }
   }
 }

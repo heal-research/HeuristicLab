@@ -43,6 +43,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private const string EstimationLimitsParameterName = "EstimationLimits";
     private const string EvaluationPartitionParameterName = "EvaluationPartition";
     private const string RelativeNumberOfEvaluatedSamplesParameterName = "RelativeNumberOfEvaluatedSamples";
+    private const string EvaluatedNodesParameterName = "EvaluatedNodes";
 
     public override bool CanChangeName { get { return false; } }
 
@@ -55,6 +56,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
     public ILookupParameter<ISymbolicDataAnalysisExpressionTreeInterpreter> SymbolicDataAnalysisTreeInterpreterParameter {
       get { return (ILookupParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>)Parameters[SymbolicDataAnalysisTreeInterpreterParameterName]; }
+    }
+    public ILookupParameter<DoubleValue> EvaluatedNodesParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters[EvaluatedNodesParameterName]; }
     }
     public IValueLookupParameter<T> ProblemDataParameter {
       get { return (IValueLookupParameter<T>)Parameters[ProblemDataParameterName]; }
@@ -82,6 +86,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Parameters.Add(new ValueLookupParameter<IRandom>(RandomParameterName, "The random generator to use."));
       Parameters.Add(new LookupParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>(SymbolicDataAnalysisTreeInterpreterParameterName, "The interpreter that should be used to calculate the output values of the symbolic data analysis tree."));
       Parameters.Add(new LookupParameter<ISymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic data analysis solution encoded as a symbolic expression tree."));
+      Parameters.Add(new LookupParameter<DoubleValue>(EvaluatedNodesParameterName, "The total number of evaluated symbolic expression tree nodes."));
       Parameters.Add(new ValueLookupParameter<T>(ProblemDataParameterName, "The problem data on which the symbolic data analysis solution should be evaluated."));
       Parameters.Add(new ValueLookupParameter<IntRange>(EvaluationPartitionParameterName, "The start index of the dataset partition on which the symbolic data analysis solution should be evaluated."));
       Parameters.Add(new ValueLookupParameter<DoubleLimit>(EstimationLimitsParameterName, "The upper and lower limit that should be used as cut off value for the output values of symbolic data analysis trees."));
@@ -100,6 +105,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (count == 0) count = 1;
       return RandomEnumerable.SampleRandomNumbers(seed, samplesStart, samplesEnd, count)
         .Where(i => i < testPartitionStart || testPartitionEnd <= i);
+    }
+
+    protected void AddEvaluatedNodes(double numberOfNodes) {
+      if (EvaluatedNodesParameter.ActualValue == null) EvaluatedNodesParameter.ActualValue = new DoubleValue();
+      double curEvaluatedNodes = EvaluatedNodesParameter.ActualValue.Value;
+      EvaluatedNodesParameter.ActualValue = new DoubleValue(curEvaluatedNodes + numberOfNodes);
     }
   }
 }

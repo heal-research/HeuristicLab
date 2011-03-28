@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Linq;
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -44,9 +45,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     public override bool Maximization { get { return false; } }
 
     public override IOperation Apply() {
+      var solution = SymbolicExpressionTreeParameter.ActualValue;
       IEnumerable<int> rows = GenerateRowsToEvaluate();
-      double quality = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, SymbolicExpressionTreeParameter.ActualValue, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, ProblemDataParameter.ActualValue, rows);
-      Quality = new DoubleValue(quality);
+
+      double quality = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, ProblemDataParameter.ActualValue, rows);
+      QualityParameter.ActualValue = new DoubleValue(quality);
+      AddEvaluatedNodes(solution.Length * rows.Count());
+
       return base.Apply();
     }
 
@@ -60,11 +65,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     public override double Evaluate(IExecutionContext context, ISymbolicExpressionTree tree, IRegressionProblemData problemData, IEnumerable<int> rows) {
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = context;
       EstimationLimitsParameter.ExecutionContext = context;
+      EvaluatedNodesParameter.ExecutionContext = context;
 
       double mse = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, tree, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, problemData, rows);
 
+      AddEvaluatedNodes(tree.Length * rows.Count());
+
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = null;
       EstimationLimitsParameter.ExecutionContext = null;
+      EvaluatedNodesParameter.ExecutionContext = null; 
 
       return mse;
     }

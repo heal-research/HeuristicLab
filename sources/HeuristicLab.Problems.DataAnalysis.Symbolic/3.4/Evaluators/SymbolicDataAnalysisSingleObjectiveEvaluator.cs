@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -38,10 +39,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
     #endregion
     #region properties
-    public DoubleValue Quality {
-      get { return QualityParameter.ActualValue; }
-      set { QualityParameter.ActualValue = value; }
-    }
     public abstract bool Maximization { get; }
     #endregion
     [StorableConstructor]
@@ -54,7 +51,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       : base() {
       Parameters.Add(new LookupParameter<DoubleValue>(QualityParameterName, "The quality of the evaluated symbolic data analysis solution."));
     }
-
 
     public abstract double Evaluate(IExecutionContext context, ISymbolicExpressionTree tree, T problemData, IEnumerable<int> rows);
   }

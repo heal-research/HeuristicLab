@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -25,8 +26,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
 
     public override IOperation Apply() {
       IEnumerable<int> rows = GenerateRowsToEvaluate();
-      double[] qualities = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, SymbolicExpressionTreeParameter.ActualValue, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, ProblemDataParameter.ActualValue, rows);
+      var solution = SymbolicExpressionTreeParameter.ActualValue;
+      double[] qualities = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, ProblemDataParameter.ActualValue, rows);
       QualitiesParameter.ActualValue = new DoubleArray(qualities);
+      AddEvaluatedNodes(solution.Length * rows.Count());
       return base.Apply();
     }
 
@@ -40,11 +43,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     public override double[] Evaluate(IExecutionContext context, ISymbolicExpressionTree tree, IClassificationProblemData problemData, IEnumerable<int> rows) {
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = context;
       EstimationLimitsParameter.ExecutionContext = context;
+      EvaluatedNodesParameter.ExecutionContext = context;
 
       double[] quality = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, tree, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, problemData, rows);
-
+      AddEvaluatedNodes(tree.Length * rows.Count());
+      
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = null;
       EstimationLimitsParameter.ExecutionContext = null;
+      EvaluatedNodesParameter.ExecutionContext = null;
 
       return quality;
     }
