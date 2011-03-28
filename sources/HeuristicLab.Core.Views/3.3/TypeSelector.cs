@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Common;
@@ -113,15 +114,12 @@ namespace HeuristicLab.Core.Views {
           pluginNode.SelectedImageIndex = pluginNode.ImageIndex;
           pluginNode.Tag = plugin;
 
-          var types = from t in ApplicationManager.Manager.GetTypes(BaseType, plugin, false)
+          var types = from t in ApplicationManager.Manager.GetTypes(BaseType, plugin, ShowNotInstantiableTypes)
                       orderby t.Name ascending
                       select t;
           foreach (Type type in types) {
             bool valid = true;
             valid = valid && (ShowGenericTypes || !type.ContainsGenericParameters);
-            valid = valid && (ShowNotInstantiableTypes || !type.IsAbstract);
-            valid = valid && (ShowNotInstantiableTypes || !type.IsInterface);
-            valid = valid && (ShowNotInstantiableTypes || !type.HasElementType);
             valid = valid && (ShowNotInstantiableTypes || type.GetConstructor(Type.EmptyTypes) != null); //check for public default ctor
             if (valid) {
               TreeNode typeNode = new TreeNode();
@@ -131,13 +129,10 @@ namespace HeuristicLab.Core.Views {
               if (type.IsInterface) typeNode.ImageIndex = 2;
               else if (type.ContainsGenericParameters) typeNode.ImageIndex = 3;
               else if (imageList.Images.ContainsKey(type.FullName)) typeNode.ImageIndex = imageList.Images.IndexOfKey(type.FullName);
-              else if (typeof(IItem).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract) {
-                try {
-                  IItem item = (IItem)Activator.CreateInstance(type);
-                  imageList.Images.Add(type.FullName, item.ItemImage);
-                  typeNode.ImageIndex = imageList.Images.IndexOfKey(type.FullName);
-                }
-                catch (Exception) { }
+              else if (typeof(IItem).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract && type.GetConstructor(Type.EmptyTypes) != null) {
+                IItem item = (IItem)Activator.CreateInstance(type);
+                imageList.Images.Add(type.FullName, item.ItemImage);
+                typeNode.ImageIndex = imageList.Images.IndexOfKey(type.FullName);
               }
               typeNode.SelectedImageIndex = typeNode.ImageIndex;
               typeNode.Tag = type;
@@ -257,7 +252,8 @@ namespace HeuristicLab.Core.Views {
       }
       Type param = typeParametersListView.SelectedItems[0].Tag as Type;
       Type[] contraints = param.GetGenericParameterConstraints();
-      typeSelectorDialog.TypeSelector.Configure(typeof(IItem), true, true);
+      bool showNotInstantiableTypes = !param.GenericParameterAttributes.HasFlag(GenericParameterAttributes.DefaultConstructorConstraint);
+      typeSelectorDialog.TypeSelector.Configure(typeof(IItem), showNotInstantiableTypes, true);
 
       if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
         Type selected = typeSelectorDialog.TypeSelector.SelectedType;
