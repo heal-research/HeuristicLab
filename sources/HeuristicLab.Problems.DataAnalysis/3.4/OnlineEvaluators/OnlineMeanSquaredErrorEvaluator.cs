@@ -48,8 +48,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public void Add(double original, double estimated) {
       if (double.IsNaN(estimated) || double.IsInfinity(estimated) ||
-          double.IsNaN(original) || double.IsInfinity(original)) {
-        throw new ArgumentException("Mean squared error is not defined for NaN or infinity elements");
+          double.IsNaN(original) || double.IsInfinity(original) ||
+        double.IsNaN(sse)) {
+        sse = double.NaN;
       } else {
         double error = estimated - original;
         sse += error * error;

@@ -59,8 +59,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public void Add(double x) {
-      if (double.IsNaN(x) || double.IsInfinity(x)) {
-        throw new ArgumentException("Mean and variance are not defined for NaN or infinity elements");
+      if (double.IsNaN(x) || double.IsInfinity(x) || double.IsNaN(m_newM)) {
+        m_newM = double.NaN;
+        m_newS = double.NaN;
       } else {
         n++;
         // See Knuth TAOCP vol 2, 3rd edition, page 232

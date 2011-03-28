@@ -49,8 +49,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public void Add(double original, double estimated) {
       if (double.IsNaN(estimated) || double.IsInfinity(estimated) ||
-          double.IsNaN(original) || double.IsInfinity(original)) {
-        throw new ArgumentException("Relative error is not defined for variables with NaN or infinity values.");
+          double.IsNaN(original) || double.IsInfinity(original) ||
+        double.IsNaN(sre)) {
+        sre = double.NaN;
       } else {
         if (!original.IsAlmost(0.0)) {
           sre += Math.Abs((estimated - original) / original);

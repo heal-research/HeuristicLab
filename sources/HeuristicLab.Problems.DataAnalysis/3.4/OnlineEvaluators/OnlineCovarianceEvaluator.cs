@@ -50,8 +50,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public void Add(double original, double estimated) {
       if (double.IsNaN(estimated) || double.IsInfinity(estimated) ||
-          double.IsNaN(original) || double.IsInfinity(original)) {
-        throw new ArgumentException("Covariance is not defined for series containing NaN or infinity elements");
+          double.IsNaN(original) || double.IsInfinity(original) ||
+         double.IsNaN(Cn)) {
+        Cn = double.NaN;
       } else {
         n++;
         // online calculation of tMean
