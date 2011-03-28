@@ -56,15 +56,19 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     protected override void itemsListView_SelectedIndexChanged(object sender, EventArgs e) {
-      AdjustListViewColumnSizes();
-      if (showDetailsCheckBox.Checked) {
-        if (itemsListView.SelectedItems.Count == 1) {
-          IResult result = (IResult)itemsListView.SelectedItems[0].Tag;
-          detailsGroupBox.Enabled = true;
-          viewHost.Content = result.Value;
-        } else {
-          viewHost.Content = null;
-          detailsGroupBox.Enabled = false;
+      if (InvokeRequired) {
+        Invoke((Action<object, EventArgs>)itemsListView_SelectedIndexChanged, sender, e);
+      } else {
+        AdjustListViewColumnSizes();
+        if (showDetailsCheckBox.Checked) {
+          if (itemsListView.SelectedItems.Count == 1) {
+            IResult result = (IResult)itemsListView.SelectedItems[0].Tag;
+            detailsGroupBox.Enabled = true;
+            viewHost.Content = result.Value;
+          } else {
+            viewHost.Content = null;
+            detailsGroupBox.Enabled = false;
+          }
         }
       }
     }
