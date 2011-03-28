@@ -168,6 +168,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Parameters.Add(new FixedValueParameter<IntRange>(ValidationPartitionParameterName, ValidationPartitionParameterDescription));
       Parameters.Add(new FixedValueParameter<PercentValue>(RelativeNumberOfEvaluatedSamplesParameterName, RelativeNumberOfEvaluatedSamplesParameterDescription, new PercentValue(1)));
 
+      SolutionCreatorParameter.Hidden = true;
+      SymbolicExpressionTreeInterpreterParameter.Hidden = true;
+      MaximumFunctionArgumentsParameter.Hidden = true;
+      MaximumFunctionDefinitionsParameter.Hidden = true;
+
       SymbolicExpressionTreeGrammar = new TypeCoherentExpressionGrammar();
       SymbolicExpressionTreeInterpreter = new SymbolicDataAnalysisExpressionTreeInterpreter();
 
