@@ -32,7 +32,6 @@ namespace HeuristicLab.Core.Views {
   [Content(typeof(NamedItem), false)]
   [Content(typeof(INamedItem), false)]
   public partial class NamedItemView : ItemView {
-    private readonly string nl = Environment.NewLine;
     private const string infoLabelToolTipSuffix = "Double-click to open description editor.";
 
     public new INamedItem Content {
@@ -68,7 +67,7 @@ namespace HeuristicLab.Core.Views {
           this.Caption = "NamedItem View";
       } else {
         nameTextBox.Text = Content.Name;
-        toolTip.SetToolTip(infoLabel, string.IsNullOrEmpty(Content.Description) ? infoLabelToolTipSuffix : Content.Description + nl + nl + infoLabelToolTipSuffix);
+        toolTip.SetToolTip(infoLabel, string.IsNullOrEmpty(Content.Description) ? infoLabelToolTipSuffix : Content.Description + Environment.NewLine + Environment.NewLine + infoLabelToolTipSuffix);
         Caption = Content.Name;
       }
     }
@@ -97,7 +96,7 @@ namespace HeuristicLab.Core.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_DescriptionChanged), sender, e);
       else {
-        toolTip.SetToolTip(infoLabel, string.IsNullOrEmpty(Content.Description) ? infoLabelToolTipSuffix : Content.Description + nl + nl + infoLabelToolTipSuffix);
+        toolTip.SetToolTip(infoLabel, string.IsNullOrEmpty(Content.Description) ? infoLabelToolTipSuffix : Content.Description + Environment.NewLine + Environment.NewLine + infoLabelToolTipSuffix);
       }
     }
 
