@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Common;
@@ -251,7 +252,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
           try {
             if (error != null) throw error;
             IAlgorithm algorithm = content as IAlgorithm;
-            if (algorithm == null || !(algorithm.Problem is IDataAnalysisProblem<IDataAnalysisProblemData>))
+            if (algorithm == null || !(algorithm.Problem is IDataAnalysisProblem))
               MessageBox.Show(this, "The selected file does not contain an algorithm or the problem of the algorithm is not a DataAnalysisProblem.", "Invalid File", MessageBoxButtons.OK, MessageBoxIcon.Error);
             else
               Content.Algorithm = algorithm;
@@ -273,15 +274,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
         problemTypeSelectorDialog = new TypeSelectorDialog();
         problemTypeSelectorDialog.Caption = "Select Problem";
         problemTypeSelectorDialog.TypeSelector.Caption = "Available Problems";
-        problemTypeSelectorDialog.TypeSelector.Configure(Content.ProblemType, false, true);
       }
+      problemTypeSelectorDialog.TypeSelector.Configure(new List<Type>() { Content.ProblemType, Content.Algorithm.ProblemType }, false, true);
       if (problemTypeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
-        try {
-          Content.Problem = (IDataAnalysisProblem)problemTypeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
-        }
-        catch (Exception ex) {
-          ErrorHandling.ShowErrorDialog(this, ex);
-        }
+        Content.Problem = (IDataAnalysisProblem)problemTypeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
       }
     }
 

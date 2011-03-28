@@ -224,6 +224,18 @@ namespace HeuristicLab.PluginInfrastructure {
              select t;
     }
 
+    internal static IEnumerable<Type> GetTypes(IEnumerable<Type> types, bool onlyInstantiable, bool allTypes) {
+      IEnumerable<Type> result = GetTypes(types.First(), onlyInstantiable);
+      foreach (Type type in types.Skip(1)) {
+        IEnumerable<Type> discoveredTypes = GetTypes(type, onlyInstantiable);
+        if (allTypes) result = result.Intersect(discoveredTypes);
+        else result = result.Union(discoveredTypes);
+      }
+
+      if (!allTypes) return result.Distinct();
+      return result;
+    }
+
     /// <summary>
     /// Finds all types that are subtypes or equal to the specified type if they are part of the given
     /// <paramref name="pluginDescription"/>.
@@ -240,6 +252,18 @@ namespace HeuristicLab.PluginInfrastructure {
              where pluginDesc.AssemblyLocations.Any(location => location.Equals(Path.GetFullPath(asm.Location), StringComparison.CurrentCultureIgnoreCase))
              from t in GetTypes(type, asm, onlyInstantiable)
              select t;
+    }
+
+    internal static IEnumerable<Type> GetTypes(IEnumerable<Type> types, IPluginDescription pluginDescription, bool onlyInstantiable, bool allTypes) {
+      IEnumerable<Type> result = GetTypes(types.First(), pluginDescription, onlyInstantiable);
+      foreach (Type type in types.Skip(1)) {
+        IEnumerable<Type> discoveredTypes = GetTypes(type, pluginDescription, onlyInstantiable);
+        if (allTypes) result = result.Intersect(discoveredTypes);
+        else result = result.Union(discoveredTypes);
+      }
+
+      if (!allTypes) return result.Distinct();
+      return result;
     }
 
     private static bool IsDynamicAssembly(Assembly asm) {
@@ -313,20 +337,18 @@ namespace HeuristicLab.PluginInfrastructure {
       return GetInstances(type);
     }
 
-    IEnumerable<Type> IApplicationManager.GetTypes(Type type) {
-      return GetTypes(type, true);
-    }
-
     IEnumerable<Type> IApplicationManager.GetTypes(Type type, bool onlyInstantiable) {
       return GetTypes(type, onlyInstantiable);
     }
-
-    IEnumerable<Type> IApplicationManager.GetTypes(Type type, IPluginDescription plugin) {
-      return GetTypes(type, plugin, true);
+    IEnumerable<Type> IApplicationManager.GetTypes(IEnumerable<Type> types, bool onlyInstantiable, bool allTypes) {
+      return GetTypes(types, onlyInstantiable, allTypes);
     }
 
     IEnumerable<Type> IApplicationManager.GetTypes(Type type, IPluginDescription plugin, bool onlyInstantiable) {
       return GetTypes(type, plugin, onlyInstantiable);
+    }
+    IEnumerable<Type> IApplicationManager.GetTypes(IEnumerable<Type> types, IPluginDescription plugin, bool onlyInstantiable, bool allTypes) {
+      return GetTypes(types, plugin, onlyInstantiable, allTypes);
     }
 
 

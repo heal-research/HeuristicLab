@@ -34,9 +34,9 @@ namespace HeuristicLab.Core.Views {
     protected string currentSearchString;
     protected TypeSelectorDialog typeSelectorDialog;
 
-    protected Type baseType;
-    public Type BaseType {
-      get { return baseType; }
+    protected IEnumerable<Type> baseTypes;
+    public IEnumerable<Type> BaseTypes {
+      get { return baseTypes; }
     }
     protected bool showNotInstantiableTypes;
     public bool ShowNotInstantiableTypes {
@@ -85,11 +85,15 @@ namespace HeuristicLab.Core.Views {
     }
 
     public virtual void Configure(Type baseType, bool showNotInstantiableTypes, bool showGenericTypes) {
-      if (baseType == null) throw new ArgumentNullException();
+      Configure(new List<Type>() { baseType }, showNotInstantiableTypes, showGenericTypes);
+    }
+
+    public virtual void Configure(IEnumerable<Type> baseTypes, bool showNotInstantiableTypes, bool showGenericTypes) {
+      if (baseTypes == null) throw new ArgumentNullException();
       if (InvokeRequired)
-        Invoke(new Action<Type, bool, bool>(Configure), baseType, showNotInstantiableTypes, showGenericTypes);
+        Invoke(new Action<IEnumerable<Type>, bool, bool>(Configure), baseTypes, showNotInstantiableTypes, showGenericTypes);
       else {
-        this.baseType = baseType;
+        this.baseTypes = baseTypes;
         this.showNotInstantiableTypes = showNotInstantiableTypes;
         this.showGenericTypes = showGenericTypes;
 
@@ -114,7 +118,7 @@ namespace HeuristicLab.Core.Views {
           pluginNode.SelectedImageIndex = pluginNode.ImageIndex;
           pluginNode.Tag = plugin;
 
-          var types = from t in ApplicationManager.Manager.GetTypes(BaseType, plugin, ShowNotInstantiableTypes)
+          var types = from t in ApplicationManager.Manager.GetTypes(BaseTypes, plugin, ShowNotInstantiableTypes)
                       orderby t.Name ascending
                       select t;
           foreach (Type type in types) {
@@ -251,9 +255,9 @@ namespace HeuristicLab.Core.Views {
         typeSelectorDialog.Caption = "Select Type of Generic Type Parameter";
       }
       Type param = typeParametersListView.SelectedItems[0].Tag as Type;
-      Type[] contraints = param.GetGenericParameterConstraints();
+      Type[] constraints = param.GetGenericParameterConstraints();
       bool showNotInstantiableTypes = !param.GenericParameterAttributes.HasFlag(GenericParameterAttributes.DefaultConstructorConstraint);
-      typeSelectorDialog.TypeSelector.Configure(typeof(IItem), showNotInstantiableTypes, true);
+      typeSelectorDialog.TypeSelector.Configure(constraints, showNotInstantiableTypes, true);
 
       if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
         Type selected = typeSelectorDialog.TypeSelector.SelectedType;

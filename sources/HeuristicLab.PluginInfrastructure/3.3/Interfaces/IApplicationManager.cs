@@ -55,24 +55,18 @@ namespace HeuristicLab.PluginInfrastructure {
     /// Discovers all types implementing or inheriting <paramref name="type"/> (directly and indirectly).
     /// </summary>
     /// <param name="type">The type to discover.</param>
-    /// <returns>An enumerable of discovered types.</returns>
-    IEnumerable<Type> GetTypes(Type type);
-
-    /// <summary>
-    /// Discovers all types implementing or inheriting <paramref name="type"/> (directly and indirectly).
-    /// </summary>
-    /// <param name="type">The type to discover.</param>
     /// <param name="onlyInstantiable">Return only types that are instantiable (instance, abstract... are not returned)</param>
     /// <returns>An enumerable of discovered types.</returns>
-    IEnumerable<Type> GetTypes(Type type, bool onlyInstantiable);
+    IEnumerable<Type> GetTypes(Type type, bool onlyInstantiable = true);
 
     /// <summary>
-    /// Discovers all types implementing or inheriting <paramref name="type"/> (directly and indirectly) that are declaed in any assembly of <paramref name="plugin"/>.
+    /// Discovers all types implementing or inheriting all or any type in <paramref name="types"/> (directly and indirectly).
     /// </summary>
-    /// <param name="type">The type to discover.</param>
-    /// <param name="plugin">The declaring plugin.</param>
+    /// <param name="types">The types to discover.</param>
+    /// <param name="onlyInstantiable">Return only types that are instantiable (instance, abstract... are not returned)</param>
+    /// <param name="allTypes">Specifies if discovered types must implement or inherit all given <paramref name="types"/>.</param>
     /// <returns>An enumerable of discovered types.</returns>
-    IEnumerable<Type> GetTypes(Type type, IPluginDescription plugin);
+    IEnumerable<Type> GetTypes(IEnumerable<Type> types, bool onlyInstantiable = true, bool allTypes = true);
 
     /// <summary>
     /// Discovers all types implementing or inheriting <paramref name="type"/> (directly and indirectly) that are declaed in any assembly of <paramref name="plugin"/>.
@@ -81,7 +75,17 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <param name="plugin">The declaring plugin.</param>
     /// <param name="onlyInstantiable">Return only types that are instantiable (instance, abstract... are not returned)</param>
     /// <returns>An enumerable of discovered types.</returns>
-    IEnumerable<Type> GetTypes(Type type, IPluginDescription plugin, bool onlyInstantiable);
+    IEnumerable<Type> GetTypes(Type type, IPluginDescription plugin, bool onlyInstantiable = true);
+
+    /// <summary>
+    /// Discovers all types implementing or inheriting all or any type in <paramref name="types"/> (directly and indirectly) that are declaed in any assembly of <paramref name="plugin"/>.
+    /// </summary>
+    /// <param name="types">The types to discover.</param>
+    /// <param name="plugin">The declaring plugin.</param>
+    /// <param name="onlyInstantiable">Return only types that are instantiable (instance, abstract... are not returned)</param>
+    /// /// <param name="allTypes">Specifies if discovered types must implement or inherit all given <paramref name="types"/>.</param>
+    /// <returns>An enumerable of discovered types.</returns>
+    IEnumerable<Type> GetTypes(IEnumerable<Type> types, IPluginDescription plugin, bool onlyInstantiable = true, bool allTypes = true);
 
     /// <summary>
     /// Finds the plugin that declares the <paramref name="type">type</paramref>.
