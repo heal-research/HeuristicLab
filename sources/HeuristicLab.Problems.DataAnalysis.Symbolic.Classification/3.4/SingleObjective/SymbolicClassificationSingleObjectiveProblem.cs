@@ -52,7 +52,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
 
     public SymbolicClassificationSingleObjectiveProblem()
       : base(new ClassificationProblemData(), new SymbolicClassificationSingleObjectiveMeanSquaredErrorEvaluator(), new SymbolicDataAnalysisExpressionTreeCreator()) {
-      Parameters.Add(new FixedValueParameter<DoubleLimit>(EstimationLimitsParameterName, EstimationLimitsParameterDescription, new DoubleLimit()));
+      Parameters.Add(new FixedValueParameter<DoubleLimit>(EstimationLimitsParameterName, EstimationLimitsParameterDescription));
 
       MaximumSymbolicExpressionTreeDepth.Value = InitialMaximumTreeDepth;
       MaximumSymbolicExpressionTreeLength.Value = InitialMaximumTreeLength;

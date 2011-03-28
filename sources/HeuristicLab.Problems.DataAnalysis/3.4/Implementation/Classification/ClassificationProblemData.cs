@@ -253,8 +253,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       : base(dataset, allowedInputVariables) {
       var variables = InputVariables.Select(x => x.AsReadOnly()).ToList();
       Parameters.Add(new ConstrainedValueParameter<StringValue>(TargetVariableParameterName, new ItemSet<StringValue>(variables), variables.Where(x => x.Value == targetVariable).First()));
-      Parameters.Add(new FixedValueParameter<StringMatrix>(ClassNamesParameterName, "", new StringMatrix()));
-      Parameters.Add(new FixedValueParameter<DoubleMatrix>(ClassificationPenaltiesParameterName, "", new DoubleMatrix()));
+      Parameters.Add(new FixedValueParameter<StringMatrix>(ClassNamesParameterName, ""));
+      Parameters.Add(new FixedValueParameter<DoubleMatrix>(ClassificationPenaltiesParameterName, ""));
 
       ResetTargetVariableDependentMembers();
       RegisterParameterEvents();

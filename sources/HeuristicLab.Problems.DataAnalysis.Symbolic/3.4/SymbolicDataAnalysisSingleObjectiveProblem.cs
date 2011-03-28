@@ -74,8 +74,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     public SymbolicDataAnalysisSingleObjectiveProblem(T problemData, U evaluator, V solutionCreator)
       : base(problemData, evaluator, solutionCreator) {
-      Parameters.Add(new FixedValueParameter<BoolValue>(MaximizationParameterName, "Set to false if the problem should be minimized.", new BoolValue()));
-      Parameters.Add(new FixedValueParameter<DoubleValue>(BestKnownQualityParameterName, "The quality of the best known solution of this problem.", new DoubleValue()));
+      Parameters.Add(new FixedValueParameter<BoolValue>(MaximizationParameterName, "Set to false if the problem should be minimized."));
+      Parameters.Add(new FixedValueParameter<DoubleValue>(BestKnownQualityParameterName, "The quality of the best known solution of this problem."));
 
       MaximizationParameter.Hidden = true;
       RegisterEventHandler();

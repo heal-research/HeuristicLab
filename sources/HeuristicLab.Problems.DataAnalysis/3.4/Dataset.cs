@@ -42,6 +42,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
       return new Dataset(this, cloner);
     }
 
+    public Dataset()
+      : base() {
+      Name = "-";
+      VariableNames = Enumerable.Empty<string>();
+      data = new double[0, 0];
+    }
+
     public Dataset(IEnumerable<string> variableNames, double[,] data)
       : base() {
       Name = "-";

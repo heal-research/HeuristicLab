@@ -160,12 +160,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Parameters.Add(new ValueParameter<T>(ProblemDataParameterName, ProblemDataParameterDescription, problemData));
       Parameters.Add(new ValueParameter<ISymbolicDataAnalysisGrammar>(SymbolicExpressionTreeGrammarParameterName, SymbolicExpressionTreeGrammarParameterDescription));
       Parameters.Add(new ValueParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>(SymbolicExpressionTreeInterpreterParameterName, SymoblicExpressionTreeInterpreterParameterDescription));
-      Parameters.Add(new FixedValueParameter<IntValue>(MaximumSymbolicExpressionTreeDepthParameterName, MaximumSymbolicExpressionTreeDepthParameterDescription, new IntValue()));
-      Parameters.Add(new FixedValueParameter<IntValue>(MaximumSymbolicExpressionTreeLengthParameterName, MaximumSymbolicExpressionTreeLengthParameterDescription, new IntValue()));
-      Parameters.Add(new FixedValueParameter<IntValue>(MaximumFunctionDefinitionsParameterName, MaximumFunctionDefinitionsParameterDescription, new IntValue()));
-      Parameters.Add(new FixedValueParameter<IntValue>(MaximumFunctionArgumentsParameterName, MaximumFunctionArgumentsParameterDescription, new IntValue()));
-      Parameters.Add(new FixedValueParameter<IntRange>(FitnessCalculationPartitionParameterName, FitnessCalculationPartitionParameterDescription, new IntRange()));
-      Parameters.Add(new FixedValueParameter<IntRange>(ValidationPartitionParameterName, ValidationPartitionParameterDescription, new IntRange()));
+      Parameters.Add(new FixedValueParameter<IntValue>(MaximumSymbolicExpressionTreeDepthParameterName, MaximumSymbolicExpressionTreeDepthParameterDescription));
+      Parameters.Add(new FixedValueParameter<IntValue>(MaximumSymbolicExpressionTreeLengthParameterName, MaximumSymbolicExpressionTreeLengthParameterDescription));
+      Parameters.Add(new FixedValueParameter<IntValue>(MaximumFunctionDefinitionsParameterName, MaximumFunctionDefinitionsParameterDescription));
+      Parameters.Add(new FixedValueParameter<IntValue>(MaximumFunctionArgumentsParameterName, MaximumFunctionArgumentsParameterDescription));
+      Parameters.Add(new FixedValueParameter<IntRange>(FitnessCalculationPartitionParameterName, FitnessCalculationPartitionParameterDescription));
+      Parameters.Add(new FixedValueParameter<IntRange>(ValidationPartitionParameterName, ValidationPartitionParameterDescription));
       Parameters.Add(new FixedValueParameter<PercentValue>(RelativeNumberOfEvaluatedSamplesParameterName, RelativeNumberOfEvaluatedSamplesParameterDescription, new PercentValue(1)));
 
       SymbolicExpressionTreeGrammar = new TypeCoherentExpressionGrammar();

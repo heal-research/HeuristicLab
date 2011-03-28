@@ -53,7 +53,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     public SymbolicRegressionSingleObjectiveProblem()
       : base(new RegressionProblemData(), new SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator(), new SymbolicDataAnalysisExpressionTreeCreator()) {
-      Parameters.Add(new FixedValueParameter<DoubleLimit>(EstimationLimitsParameterName, EstimationLimitsParameterDescription, new DoubleLimit()));
+      Parameters.Add(new FixedValueParameter<DoubleLimit>(EstimationLimitsParameterName, EstimationLimitsParameterDescription));
 
       Maximization.Value = true;
       MaximumSymbolicExpressionTreeDepth.Value = InitialMaximumTreeDepth;

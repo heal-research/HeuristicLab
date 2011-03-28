@@ -41,8 +41,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public IFixedValueParameter<Dataset> DatasetParameter {
       get { return (IFixedValueParameter<Dataset>)Parameters[DatasetParameterName]; }
     }
-    public IFixedValueParameter<ICheckedItemList<StringValue>> InputVariablesParameter {
-      get { return (IFixedValueParameter<ICheckedItemList<StringValue>>)Parameters[InputVariablesParameterName]; }
+    public IFixedValueParameter<ReadOnlyCheckedItemList<StringValue>> InputVariablesParameter {
+      get { return (IFixedValueParameter<ReadOnlyCheckedItemList<StringValue>>)Parameters[InputVariablesParameterName]; }
     }
     public IFixedValueParameter<IntRange> TrainingPartitionParameter {
       get { return (IFixedValueParameter<IntRange>)Parameters[TrainingPartitionParameterName]; }
@@ -105,7 +105,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       int testPartitionEnd = dataset.Rows;
 
       Parameters.Add(new FixedValueParameter<Dataset>(DatasetParameterName, "", dataset));
-      Parameters.Add(new FixedValueParameter<ICheckedItemList<StringValue>>(InputVariablesParameterName, "", inputVariables.AsReadOnly()));
+      Parameters.Add(new FixedValueParameter<ReadOnlyCheckedItemList<StringValue>>(InputVariablesParameterName, "", inputVariables.AsReadOnly()));
       Parameters.Add(new FixedValueParameter<IntRange>(TrainingPartitionParameterName, "", new IntRange(trainingPartitionStart, trainingPartitionEnd)));
       Parameters.Add(new FixedValueParameter<IntRange>(TestPartitionParameterName, "", new IntRange(testPartitionStart, testPartitionEnd)));
 
