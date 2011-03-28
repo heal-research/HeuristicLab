@@ -204,6 +204,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       ProblemDataParameter.ValueChanged += new EventHandler(ProblemDataParameter_ValueChanged);
       ProblemDataParameter.Value.Changed += (object sender, EventArgs e) => OnProblemDataChanged();
 
+      SymbolicExpressionTreeGrammarParameter.ValueChanged += new EventHandler(SymbolicExpressionTreeGrammarParameter_ValueChanged);
+
       MaximumFunctionArguments.ValueChanged += new EventHandler(ArchitectureParameterValue_ValueChanged);
       MaximumFunctionDefinitions.ValueChanged += new EventHandler(ArchitectureParameterValue_ValueChanged);
       MaximumSymbolicExpressionTreeDepth.ValueChanged += new EventHandler(MaximumSymbolicExpressionTreeDepth_ValueChanged);
@@ -212,6 +214,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private void ProblemDataParameter_ValueChanged(object sender, EventArgs e) {
       ProblemDataParameter.Value.Changed += (object s, EventArgs args) => OnProblemDataChanged();
       OnProblemDataChanged();
+    }
+
+    private void SymbolicExpressionTreeGrammarParameter_ValueChanged(object sender, EventArgs e) {
+      UpdateGrammar();
     }
 
     private void ArchitectureParameterValue_ValueChanged(object sender, EventArgs e) {
