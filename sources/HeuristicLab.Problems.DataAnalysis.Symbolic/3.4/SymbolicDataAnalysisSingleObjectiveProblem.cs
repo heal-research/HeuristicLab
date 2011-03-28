@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -26,7 +27,6 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
@@ -69,6 +69,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     protected SymbolicDataAnalysisSingleObjectiveProblem(SymbolicDataAnalysisSingleObjectiveProblem<T, U, V> original, Cloner cloner)
       : base(original, cloner) {
       RegisterEventHandler();
+      MaximizationParameter.Hidden = true;
     }
 
     public SymbolicDataAnalysisSingleObjectiveProblem(T problemData, U evaluator, V solutionCreator)
@@ -76,6 +77,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Parameters.Add(new FixedValueParameter<BoolValue>(MaximizationParameterName, "Set to false if the problem should be minimized.", new BoolValue()));
       Parameters.Add(new FixedValueParameter<DoubleValue>(BestKnownQualityParameterName, "The quality of the best known solution of this problem.", new DoubleValue()));
 
+      MaximizationParameter.Hidden = true;
       RegisterEventHandler();
     }
 

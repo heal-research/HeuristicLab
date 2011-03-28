@@ -42,14 +42,14 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       InitializeComponent();
       IEnumerable<ISymbolicExpressionTreeStringFormatter> formatters = ApplicationManager.Manager.GetInstances<ISymbolicExpressionTreeStringFormatter>();
       treeFormattersList = new List<ISymbolicExpressionTreeStringFormatter>();
-      int selectedIndex = -1;
       foreach (ISymbolicExpressionTreeStringFormatter formatter in formatters) {
-        if (formatter is ISymbolicExpressionTreeStringFormatter)
-          selectedIndex = treeFormattersList.Count;
         treeFormattersList.Add(formatter);
         formattersComboBox.Items.Add(formatter.Name);
       }
-      formattersComboBox.SelectedIndex = selectedIndex;
+      if (formattersComboBox.Items.Count > 0)
+        formattersComboBox.SelectedIndex = 0;
+      else
+        formattersComboBox.SelectedIndex = -1;
     }
 
     protected override void OnContentChanged() {
