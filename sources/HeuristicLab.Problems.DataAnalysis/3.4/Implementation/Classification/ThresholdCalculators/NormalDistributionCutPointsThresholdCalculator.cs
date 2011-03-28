@@ -99,7 +99,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
         }
 
         // determine class with maximal probability density in m
-        double maxDensity = 0;
+        double maxDensity = double.MinValue;
         double maxDensityClassValue = -1;
         foreach (var classValue in originalClasses) {
           double density = NormalDensity(m, classMean[classValue], classStdDev[classValue]);
@@ -135,7 +135,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     private static double NormalDensity(double x, double mu, double sigma) {
-      return (1.0 / Math.Sqrt(2.0 * Math.PI * sigma * sigma)) * Math.Exp(-((x - mu) * (x - mu)) / (2.0 * sigma * sigma));
+      if (sigma.IsAlmost(0.0)) {
+        if (x.IsAlmost(mu)) return 1.0; else return 0.0;
+      } else {
+        return (1.0 / Math.Sqrt(2.0 * Math.PI * sigma * sigma)) * Math.Exp(-((x - mu) * (x - mu)) / (2.0 * sigma * sigma));
+      }
     }
 
     private static void CalculateCutPoints(double m1, double s1, double m2, double s2, out double x1, out double x2) {

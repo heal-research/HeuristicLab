@@ -101,7 +101,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       SetAccuracyMaximizingThresholds();
     }
     protected virtual void OnModelThresholdsChanged(EventArgs e) {
-      RecalculateResults();
+      base.OnModelChanged(e);
     }
 
     public IEnumerable<double> EstimatedValues {
