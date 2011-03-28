@@ -383,7 +383,7 @@ namespace HeuristicLab.Core.Views {
         T item = (T)sender;
         ListViewItem listViewItem = itemListViewItemMapping[item];
         int i = listViewItem.ImageIndex;
-        listViewItem.ImageList.Images[i] = item.ItemImage;
+        listView.SmallImageList.Images[i] = item.ItemImage;
         listViewItem.ImageIndex = -1;
         listViewItem.ImageIndex = i;
       }

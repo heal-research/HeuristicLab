@@ -206,7 +206,7 @@ namespace HeuristicLab.Core.Views {
       if (listViewItem == null) throw new ArgumentNullException();
       T item = listViewItem.Tag as T;
       int i = listViewItem.ImageIndex;
-      listViewItem.ImageList.Images[i] = item == null ? HeuristicLab.Common.Resources.VSImageLibrary.Nothing : item.ItemImage;
+      itemsListView.SmallImageList.Images[i] = item == null ? HeuristicLab.Common.Resources.VSImageLibrary.Nothing : item.ItemImage;
       listViewItem.ImageIndex = -1;
       listViewItem.ImageIndex = i;
     }

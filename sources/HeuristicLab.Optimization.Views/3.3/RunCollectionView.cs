@@ -203,7 +203,7 @@ namespace HeuristicLab.Optimization.Views {
       if (listViewItem == null) throw new ArgumentNullException();
       IRun item = listViewItem.Tag as IRun;
       int i = listViewItem.ImageIndex;
-      listViewItem.ImageList.Images[i] = item == null ? HeuristicLab.Common.Resources.VSImageLibrary.Nothing : item.ItemImage;
+      itemsListView.SmallImageList.Images[i] = item == null ? HeuristicLab.Common.Resources.VSImageLibrary.Nothing : item.ItemImage;
       listViewItem.ImageIndex = -1;
       listViewItem.ImageIndex = i;
     }
