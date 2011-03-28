@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Reflection;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -42,15 +43,23 @@ namespace HeuristicLab.Parameters {
     [StorableConstructor]
     protected ValueParameter(bool deserializing) : base(deserializing) { }
     protected ValueParameter(ValueParameter<T> original, Cloner cloner) : base(original, cloner) { }
+
     public ValueParameter() : base() { }
-    public ValueParameter(string name) : base(name) { }
-    public ValueParameter(string name, bool getsCollected) : base(name, getsCollected) { }
+    public ValueParameter(string name) : base(name) { base.Value = CreateDefaultValue(); }
+    public ValueParameter(string name, bool getsCollected) : base(name, getsCollected) { base.Value = CreateDefaultValue(); }
     public ValueParameter(string name, T value) : base(name, value) { }
     public ValueParameter(string name, T value, bool getsCollected) : base(name, value, getsCollected) { }
-    public ValueParameter(string name, string description) : base(name, description) { }
-    public ValueParameter(string name, string description, bool getsCollected) : base(name, description, getsCollected) { }
+    public ValueParameter(string name, string description) : base(name, description) { base.Value = CreateDefaultValue(); }
+    public ValueParameter(string name, string description, bool getsCollected) : base(name, description, getsCollected) { base.Value = CreateDefaultValue(); }
     public ValueParameter(string name, string description, T value) : base(name, description, value) { }
     public ValueParameter(string name, string description, T value, bool getsCollected) : base(name, description, value, getsCollected) { }
+
+    protected T CreateDefaultValue() {
+      ConstructorInfo defaultConstructor = typeof(T).GetConstructor(Type.EmptyTypes);
+      if (defaultConstructor != null)
+        return (T)defaultConstructor.Invoke(new object[0]);
+      return null;
+    }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ValueParameter<T>(this, cloner);
