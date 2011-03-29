@@ -60,7 +60,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private const string MaximumFunctionArgumentsParameterDescription = "Maximal number of arguments of automatically defined functions.";
     private const string RelativeNumberOfEvaluatedSamplesParameterDescription = "The relative number of samples of the dataset partition, which should be randomly chosen for evaluation.";
     private const string FitnessCalculationPartitionParameterDescription = "The partition of the problem data training partition, that should be used to calculate the fitness of an individual.";
-    private const string ValidationPartitionParameterDescription = "The partition of the problem data training partition, that should be used the select the best model from (optional).";
+    private const string ValidationPartitionParameterDescription = "The partition of the problem data training partition, that should be used to select the best model from (optional).";
     #endregion
 
     #region parameter properties

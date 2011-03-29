@@ -65,21 +65,25 @@ namespace HeuristicLab_33.Tests {
 
       TestContext.WriteLine("Runtime: {0}", ga.ExecutionTime.ToString());
 
-      double expectedBestQuality = 0.69403710871428215;
-      double expectedAverageQuality = 0.4189061979501727;
+      double expectedValidationQuality = 0.731199318099719;
+      double expectedBestQuality = 0.6969610735436933;
+      double expectedAverageQuality = 0.47270643142587854;
       double expectedWorstQuality = 0;
       double bestQuality = (ga.Results["CurrentBestQuality"].Value as DoubleValue).Value;
       double averageQuality = (ga.Results["CurrentAverageQuality"].Value as DoubleValue).Value;
       double worstQuality = (ga.Results["CurrentWorstQuality"].Value as DoubleValue).Value;
+      double bestValidationSolutionQuality = (ga.Results["Best validation solution quality"].Value as DoubleValue).Value;
 
       TestContext.WriteLine("");
       TestContext.WriteLine("CurrentBestQuality: {0} (should be {1})", bestQuality, expectedBestQuality);
       TestContext.WriteLine("CurrentAverageQuality: {0} (should be {1})", averageQuality, expectedAverageQuality);
       TestContext.WriteLine("CurrentWorstQuality: {0} (should be {1})", worstQuality, expectedWorstQuality);
+      TestContext.WriteLine("Best valdidation solution quality: {0} (should be {1})", bestValidationSolutionQuality, expectedValidationQuality);
 
       Assert.AreEqual(bestQuality, expectedBestQuality);
       Assert.AreEqual(averageQuality, expectedAverageQuality);
       Assert.AreEqual(worstQuality, expectedWorstQuality);
+      Assert.AreEqual(bestValidationSolutionQuality, expectedValidationQuality);
     }
 
     private void ga_ExceptionOccurred(object sender, EventArgs<Exception> e) {
