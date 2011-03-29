@@ -96,6 +96,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       if (TrainingValidationQualityCorrelationTableParameter.ActualValue == null) {
         var dataTable = new DataTable(TrainingValidationQualityCorrelationTableParameter.Name, TrainingValidationQualityCorrelationTableParameter.Description);
         dataTable.Rows.Add(new DataRow(TrainingValidationQualityCorrelationParameter.Name, TrainingValidationQualityCorrelationParameter.Description));
+        dataTable.Rows[TrainingValidationQualityCorrelationParameter.Name].VisualProperties.StartIndexZero = true;
         TrainingValidationQualityCorrelationTableParameter.ActualValue = dataTable;
         ResultCollectionParameter.ActualValue.Add(new Result(TrainingValidationQualityCorrelationTableParameter.Name, dataTable));
       }
