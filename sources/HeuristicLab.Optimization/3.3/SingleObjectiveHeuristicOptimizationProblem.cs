@@ -40,15 +40,25 @@ namespace HeuristicLab.Optimization {
     protected SingleObjectiveHeuristicOptimizationProblem()
       : base() {
       Parameters.Add(new ValueParameter<BoolValue>(MaximizationParameterName, "Set to false if the problem should be minimized.", new BoolValue()));
-      Parameters.Add(new ValueParameter<DoubleValue>(BestKnownQualityParameterName, "The quality of the best known solution of this problem.", new DoubleValue()));
+      Parameters.Add(new OptionalValueParameter<DoubleValue>(BestKnownQualityParameterName, "The quality of the best known solution of this problem.", new DoubleValue()));
     }
 
     protected SingleObjectiveHeuristicOptimizationProblem(T evaluator, U solutionCreator)
       : base(evaluator, solutionCreator) {
       Parameters.Add(new ValueParameter<BoolValue>(MaximizationParameterName, "Set to false if the problem should be minimized.", new BoolValue()));
-      Parameters.Add(new ValueParameter<DoubleValue>(BestKnownQualityParameterName, "The quality of the best known solution of this problem.", new DoubleValue()));
+      Parameters.Add(new OptionalValueParameter<DoubleValue>(BestKnownQualityParameterName, "The quality of the best known solution of this problem.", new DoubleValue()));
     }
 
+    [StorableHook(HookType.AfterDeserialization)]
+    protected virtual void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code (remove with 3.4)
+      if (BestKnownQualityParameter is ValueParameter<DoubleValue>) {
+        Parameters.Remove(BestKnownQualityParameterName);
+        Parameters.Add(new OptionalValueParameter<DoubleValue>(BestKnownQualityParameterName, "The quality of the best known solution of this problem."));
+      }
+      #endregion
+    }
     public ValueParameter<BoolValue> MaximizationParameter {
       get { return (ValueParameter<BoolValue>)Parameters[MaximizationParameterName]; }
     }
@@ -60,8 +70,8 @@ namespace HeuristicLab.Optimization {
       protected set { MaximizationParameter.Value = value; }
     }
 
-    public ValueParameter<DoubleValue> BestKnownQualityParameter {
-      get { return (ValueParameter<DoubleValue>)Parameters[BestKnownQualityParameterName]; }
+    public IValueParameter<DoubleValue> BestKnownQualityParameter {
+      get { return (IValueParameter<DoubleValue>)Parameters[BestKnownQualityParameterName]; }
     }
     IParameter ISingleObjectiveHeuristicOptimizationProblem.BestKnownQualityParameter {
       get { return BestKnownQualityParameter; }
