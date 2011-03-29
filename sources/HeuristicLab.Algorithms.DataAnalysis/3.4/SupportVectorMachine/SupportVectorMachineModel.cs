@@ -27,9 +27,8 @@ using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using SVM;
 using HeuristicLab.Problems.DataAnalysis;
-using System.Drawing;
+using SVM;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
@@ -96,6 +95,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       // only using a shallow copy here! (gkronber)
       this.model = original.model;
       this.rangeTransform = original.rangeTransform;
+      this.targetVariable = original.targetVariable;
       this.allowedInputVariables = (string[])original.allowedInputVariables.Clone();
       if (original.classValues != null)
         this.classValues = (double[])original.classValues.Clone();
@@ -194,6 +194,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         }
       }
     }
-    #endregion    
+    #endregion
   }
 }
