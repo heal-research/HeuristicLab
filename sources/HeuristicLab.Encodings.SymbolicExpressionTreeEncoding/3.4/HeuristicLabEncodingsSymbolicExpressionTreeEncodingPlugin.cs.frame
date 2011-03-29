@@ -25,7 +25,7 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
-  [Plugin("HeuristicLab.Encodings.SymbolicExpressionTreeEncoding", "3.4.0.$WCREV$")]
+  [Plugin("HeuristicLab.Encodings.SymbolicExpressionTreeEncoding","Provides operators and related classes for symbolic expression tree encodings.", "3.4.0.$WCREV$")]
   [PluginFile("HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Analysis", "3.3.3.0")]
   [PluginDependency("HeuristicLab.Collections", "3.3.3.0")]

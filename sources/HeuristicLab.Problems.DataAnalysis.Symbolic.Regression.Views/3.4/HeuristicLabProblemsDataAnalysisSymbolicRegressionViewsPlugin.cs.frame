@@ -25,8 +25,8 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
-  [Plugin("HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views", "3.4.0.$WCREV$")]
-  [PluginFile("HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views-3.4.dll", PluginFileType.Assembly)]
+  [Plugin("HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views", "Provides views for symbolic regression problem classes.", "3.4.0.$WCREV$")]
+  [PluginFile("HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views-3.4.dll",PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
   [PluginDependency("HeuristicLab.Core.Views", "3.3")]
