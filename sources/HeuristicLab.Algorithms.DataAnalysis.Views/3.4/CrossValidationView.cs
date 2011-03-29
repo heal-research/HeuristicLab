@@ -40,7 +40,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
 
     public CrossValidationView() {
       InitializeComponent();
-      workersNumericUpDown.Maximum = Environment.ProcessorCount * 2;
     }
 
     public new CrossValidation Content {
