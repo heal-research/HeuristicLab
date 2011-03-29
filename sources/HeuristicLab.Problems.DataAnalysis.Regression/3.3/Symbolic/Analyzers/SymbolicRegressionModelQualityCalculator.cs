@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -36,7 +35,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
   /// </summary>
   [Item("SymbolicRegressionModelQualityCalculator", "An operator to calculate the quality values of a symbolic regression solution symbolic expression tree encoding.")]
   [StorableClass]
-  [Obsolete("This class should not be used anymore because of performance reasons and will therefore not be updated.")]
   public sealed class SymbolicRegressionModelQualityCalculator : AlgorithmOperator {
     private const string SymbolicExpressionTreeInterpreterParameterName = "SymbolicExpressionTreeInterpreter";
     private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";

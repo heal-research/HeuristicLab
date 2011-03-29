@@ -21,7 +21,6 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -30,11 +29,11 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Problems.DataAnalysis.Symbolic;
+using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.DataAnalysis.Evaluators;
-using HeuristicLab.Problems.DataAnalysis.Classification;
 using HeuristicLab.Problems.DataAnalysis.Regression.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers;
+using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Classification.Symbolic.Analyzers {
   /// <summary>
@@ -42,6 +41,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification.Symbolic.Analyzers {
   /// </summary>
   [Item("TrainingBestSymbolicClassificationSolutionAnalyzer", "An operator that analyzes the training best scaled symbolic classification solution.")]
   [StorableClass]
+  [NonDiscoverableType]
   public sealed class TrainingBestSymbolicClassificationSolutionAnalyzer : SingleSuccessorOperator, ISymbolicClassificationAnalyzer {
     private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
     private const string QualityParameterName = "Quality";

@@ -28,6 +28,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.ArtificialAnt.Analyzers {
   /// <summary>
@@ -35,6 +36,7 @@ namespace HeuristicLab.Problems.ArtificialAnt.Analyzers {
   /// </summary>
   [Item("BestAntTrailAnalyzer", "An operator for analyzing the best ant trail of an artificial ant problem.")]
   [StorableClass]
+  [NonDiscoverableType]
   public sealed class BestAntTrailAnalyzer : SingleSuccessorOperator, IAntTrailAnalyzer {
     public ILookupParameter<BoolMatrix> WorldParameter {
       get { return (ILookupParameter<BoolMatrix>)Parameters["World"]; }

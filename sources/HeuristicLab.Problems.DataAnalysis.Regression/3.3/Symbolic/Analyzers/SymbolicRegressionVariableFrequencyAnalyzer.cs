@@ -28,11 +28,13 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
   [Item("SymbolicRegressionVariableFrequencyAnalyzer", "An operator for analyzing the variable frequencies of symbolic regression solutions given in symbolic expression tree encoding.")]
   [StorableClass]
+  [NonDiscoverableType]
   public sealed class SymbolicRegressionVariableFrequencyAnalyzer : SingleSuccessorOperator, ISymbolicRegressionAnalyzer {
     private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
     private const string ProblemDataParameterName = "ProblemData";

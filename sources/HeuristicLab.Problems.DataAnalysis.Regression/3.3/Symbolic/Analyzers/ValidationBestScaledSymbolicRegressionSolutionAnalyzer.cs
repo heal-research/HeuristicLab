@@ -30,6 +30,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
@@ -38,7 +39,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
   /// </summary>
   [Item("ValidationBestScaledSymbolicRegressionSolutionAnalyzer", "An operator that analyzes the validation best scaled symbolic regression solution.")]
   [StorableClass]
-  [Obsolete("This class should not be used anymore because of performance reasons and will therefore not be updated.")]
+  [NonDiscoverableType]
   public sealed class ValidationBestScaledSymbolicRegressionSolutionAnalyzer : AlgorithmOperator, ISymbolicRegressionAnalyzer {
     private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
     private const string ScaledSymbolicExpressionTreeParameterName = "ScaledSymbolicExpressionTree";

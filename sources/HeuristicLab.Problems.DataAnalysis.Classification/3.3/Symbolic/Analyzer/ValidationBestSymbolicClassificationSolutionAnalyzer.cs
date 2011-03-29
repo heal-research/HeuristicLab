@@ -30,6 +30,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.DataAnalysis.Regression.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
@@ -37,6 +38,7 @@ using HeuristicLab.Problems.DataAnalysis.Symbolic;
 namespace HeuristicLab.Problems.DataAnalysis.Classification {
   [Item("ValidationBestSymbolicClassificationSolutionAnalyzer", "An operator that analyzes the validation best symbolic classification solution.")]
   [StorableClass]
+  [NonDiscoverableType]
   public class ValidationBestSymbolicClassificationSolutionAnalyzer : SingleSuccessorOperator, ISymbolicClassificationAnalyzer {
     private const string MaximizationParameterName = "Maximization";
     private const string GenerationsParameterName = "Generations";

@@ -19,24 +19,21 @@
  */
 #endregion
 
-using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Problems.DataAnalysis.Evaluators;
-using HeuristicLab.Problems.DataAnalysis.Symbolic;
-using System;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
   [Item("SymbolicRegressionOverfittingAnalyzer", "Calculates and tracks correlation of training and validation fitness of symbolic regression models.")]
   [StorableClass]
+  [NonDiscoverableType]
   public sealed class SymbolicRegressionOverfittingAnalyzer : SymbolicRegressionValidationAnalyzer, ISymbolicRegressionAnalyzer {
     private const string MaximizationParameterName = "Maximization";
     private const string QualityParameterName = "Quality";

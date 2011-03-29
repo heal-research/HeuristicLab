@@ -27,12 +27,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers;
 using HeuristicLab.Problems.DataAnalysis.SupportVectorMachine;
 
 namespace HeuristicLab.Problems.DataAnalysis.Regression.SupportVectorRegression {
   [Item("BestSupportVectorRegressionSolutionAnalyzer", "An operator for analyzing the best solution of support vector regression problems.")]
   [StorableClass]
+  [NonDiscoverableType]
   public sealed class BestSupportVectorRegressionSolutionAnalyzer : RegressionSolutionAnalyzer {
     private const string SupportVectorRegressionModelParameterName = "SupportVectorRegressionModel";
     private const string BestSolutionInputvariableCountResultName = "Variables used by best solution";
