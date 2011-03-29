@@ -22,7 +22,6 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Operators {
   /// <summary>
@@ -30,7 +29,6 @@ namespace HeuristicLab.Operators {
   /// </summary>
   [Item("EmptyOperator", "An operator which represents an empty statement.")]
   [StorableClass]
-  [NonDiscoverableType]
   public sealed class EmptyOperator : SingleSuccessorOperator {
     [StorableConstructor]
     private EmptyOperator(bool deserializing) : base(deserializing) { }

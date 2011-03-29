@@ -21,11 +21,13 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Encodings.RealVectorEncoding;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
   /// This wrapper disguises as real vector for use in the evaluation functions.
   /// </summary>
+  [NonDiscoverableType]
   internal sealed class RealVectorAdditiveMoveWrapper : RealVector {
     private int dimension;
     private double moveDistance;
