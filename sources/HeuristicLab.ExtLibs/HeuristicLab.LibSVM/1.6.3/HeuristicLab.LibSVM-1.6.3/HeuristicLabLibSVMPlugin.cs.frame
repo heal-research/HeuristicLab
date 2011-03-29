@@ -26,7 +26,7 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.LibSVM {
-  [Plugin("HeuristicLab.LibSVM", "1.6.3.$WCREV$")]
+  [Plugin("HeuristicLab.LibSVM", "HeuristicLab transport plugin for SVM.NET by Matthew Johnson which is a C# port of libSVM version 2.89 by Chih-Chung Chang and Chih-Jen Lin", "1.6.3.$WCREV$")]
   [PluginFile("HeuristicLab.LibSVM-1.6.3.dll", PluginFileType.Assembly)]
   [PluginFile("LibSVM-1.6.3.dll", PluginFileType.Assembly)]
   [PluginFile("SVM.NET-1.6.3 License.txt",PluginFileType.License)]

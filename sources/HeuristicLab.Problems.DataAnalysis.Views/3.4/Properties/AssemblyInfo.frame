@@ -26,7 +26,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("HeuristicLab.Problems.DataAnalysis.Views")]
-[assembly: AssemblyDescription("Views for HeuristicLab data analysis problem classes ")]
+[assembly: AssemblyDescription("Provides views for base classes for data analysis tasks.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("HeuristicLab")]

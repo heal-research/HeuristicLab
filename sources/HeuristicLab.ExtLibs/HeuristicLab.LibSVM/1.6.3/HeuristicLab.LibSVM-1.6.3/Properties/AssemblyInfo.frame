@@ -26,7 +26,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("HeuristicLab.LibSVM")]
-[assembly: AssemblyDescription("HeuristicLab transport plugin for SVM.NET by Matthew Johnson which is a C# port of libSVM by Chih-Chung Chang and Chih-Jen Lin")]
+[assembly: AssemblyDescription("HeuristicLab transport plugin for SVM.NET by Matthew Johnson which is a C# port of libSVM version 2.89 by Chih-Chung Chang and Chih-Jen Lin")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("HeuristicLab")]
