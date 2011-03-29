@@ -108,7 +108,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     protected void AddEvaluatedNodes(double numberOfNodes) {
-      if (EvaluatedNodesParameter.ActualValue == null) EvaluatedNodesParameter.ActualValue = new DoubleValue();
+      if (EvaluatedNodesParameter.ActualValue == null) {
+        // variable for evaluated nodes does not exist yet
+        // search global scope
+        var scope = ExecutionContext.Scope;
+        while (scope.Parent != null) scope = scope.Parent;
+        // add variable into global scope
+        scope.Variables.Add(new HeuristicLab.Core.Variable(EvaluatedNodesParameter.ActualName, new DoubleValue()));
+      } 
       double curEvaluatedNodes = EvaluatedNodesParameter.ActualValue.Value;
       EvaluatedNodesParameter.ActualValue = new DoubleValue(curEvaluatedNodes + numberOfNodes);
     }
