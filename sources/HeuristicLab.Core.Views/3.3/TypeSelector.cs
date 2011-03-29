@@ -113,7 +113,7 @@ namespace HeuristicLab.Core.Views {
                       select p;
         foreach (IPluginDescription plugin in plugins) {
           TreeNode pluginNode = new TreeNode();
-          pluginNode.Text = plugin.Name;
+          pluginNode.Text = string.Format("{0} [{1}.{2}]", plugin.Name, plugin.Version.Major, plugin.Version.Minor);
           pluginNode.ImageIndex = 1;
           pluginNode.SelectedImageIndex = pluginNode.ImageIndex;
           pluginNode.Tag = plugin;
