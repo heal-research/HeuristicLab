@@ -377,8 +377,10 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       if (Problem != null) {
         ISwarmUpdater updater = Problem.Operators.OfType<ISwarmUpdater>().FirstOrDefault();
         SwarmUpdaterParameter.ValidValues.Clear();
-        SwarmUpdaterParameter.ValidValues.Add(updater);
-        SwarmUpdaterParameter.Value = updater;
+        if (updater != null) {
+          SwarmUpdaterParameter.ValidValues.Add(updater);
+          SwarmUpdaterParameter.Value = updater;
+        }
       }
     }
     #endregion
