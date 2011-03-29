@@ -38,6 +38,14 @@ namespace HeuristicLab.Analysis {
     public ValueLookupParameter<DataTable> DataTableParameter {
       get { return (ValueLookupParameter<DataTable>)Parameters["DataTable"]; }
     }
+    private IFixedValueParameter<BoolValue> StartIndexZeroParameter {
+      get { return (FixedValueParameter<BoolValue>)Parameters["StartIndexZero"]; }
+    }
+
+    public bool StartIndexZero {
+      get { return StartIndexZeroParameter.Value.Value; }
+      set { StartIndexZeroParameter.Value.Value = value; }
+    }
 
     #region Storing & Cloning
     [StorableConstructor]
@@ -50,6 +58,19 @@ namespace HeuristicLab.Analysis {
     public DataTableValuesCollector()
       : base() {
       Parameters.Add(new ValueLookupParameter<DataTable>("DataTable", "The table of data values where the collected values should be stored."));
+      Parameters.Add(new FixedValueParameter<BoolValue>("StartIndexZero", "True, if the collected data values should start with index 0, otherwise false.", new BoolValue(true), false));
+      StartIndexZeroParameter.Hidden = true;
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code (remove with 3.4)
+      if (!Parameters.ContainsKey("StartIndexZero")) {
+        Parameters.Add(new FixedValueParameter<BoolValue>("StartIndexZero", "True, if the collected data values should start with index 0, otherwise false.", new BoolValue(true), false));
+        StartIndexZeroParameter.Hidden = true;
+      }
+      #endregion
     }
 
     public override IOperation Apply() {
@@ -103,6 +124,7 @@ namespace HeuristicLab.Analysis {
       table.Rows.TryGetValue(name, out row);
       if (row == null) {
         row = new DataRow(name, description);
+        row.VisualProperties.StartIndexZero = StartIndexZero;
         row.Values.Add(data);
         table.Rows.Add(row);
       } else {
