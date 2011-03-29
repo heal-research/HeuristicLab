@@ -107,7 +107,6 @@
   <ItemGroup>
     <Compile Include="MultiPSOTopologyUpdater.cs" />
     <Compile Include="ParticleSwarmOptimizationMainLoop.cs" />
-    <Compile Include="VelocityBoundsModifier.cs" />
     <Compile Include="RandomTopologyInitializer.cs" />
     <Compile Include="VonNeumannTopologyInitializer.cs" />
     <Compile Include="RingTopologyInitializer.cs" />

@@ -162,14 +162,14 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       Parameters.Add(new OptionalConstrainedValueParameter<ITopologyUpdater>("TopologyUpdater", "Updates the neighborhood description vectors."));
       Parameters.Add(new OptionalConstrainedValueParameter<IDiscreteDoubleValueModifier>("InertiaUpdater", "Updates the omega parameter."));
       Parameters.Add(new ConstrainedValueParameter<ISwarmUpdater>("SwarmUpdater", "Encoding-specific parameter which is provided by the problem. May provide additional encoding-specific parameters, such as velocity bounds for real valued problems"));
+      ParticleUpdaterParameter.Hidden = true;
 
       RandomCreator randomCreator = new RandomCreator();
       VariableCreator variableCreator = new VariableCreator();
-      Assigner assigner = new Assigner();
+      Assigner currentInertiaAssigner = new Assigner();
       solutionsCreator = new SolutionsCreator();
       SubScopesCounter subScopesCounter = new SubScopesCounter();
       Placeholder topologyInitializerPlaceholder = new Placeholder();
-      Placeholder analyzerPlaceholder = new Placeholder();
       mainLoop = new ParticleSwarmOptimizationMainLoop();
 
       OperatorGraph.InitialOperator = randomCreator;
@@ -179,13 +179,12 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       randomCreator.Successor = variableCreator;
 
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("CurrentIteration", new IntValue(0)));
-      variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("CurrentVelocityBounds", new DoubleValue(0)));
-      variableCreator.Successor = assigner;
+      variableCreator.Successor = currentInertiaAssigner;
 
-      assigner.Name = "CurrentInertia := Inertia";
-      assigner.LeftSideParameter.ActualName = "CurrentInertia";
-      assigner.RightSideParameter.ActualName = "Inertia";
-      assigner.Successor = solutionsCreator;
+      currentInertiaAssigner.Name = "CurrentInertia := Inertia";
+      currentInertiaAssigner.LeftSideParameter.ActualName = "CurrentInertia";
+      currentInertiaAssigner.RightSideParameter.ActualName = "Inertia";
+      currentInertiaAssigner.Successor = solutionsCreator;
 
       solutionsCreator.NumberOfSolutionsParameter.ActualName = "SwarmSize";
       ParameterizeSolutionsCreator();

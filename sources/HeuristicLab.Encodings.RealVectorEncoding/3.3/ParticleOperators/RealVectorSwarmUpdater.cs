@@ -25,13 +25,18 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
+using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("Swarm Updater", "Updates personal best point and quality as well as global best point and quality.")]
   [StorableClass]
   public sealed class RealVectorSwarmUpdater : SingleSuccessorOperator, IRealVectorSwarmUpdater {
+
+    [Storable]
+    private ResultsCollector ResultsCollector;
 
     public override bool CanChangeName {
       get { return false; }
@@ -68,12 +73,40 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public IScopeTreeLookupParameter<IntArray> NeighborsParameter {
       get { return (IScopeTreeLookupParameter<IntArray>)Parameters["Neighbors"]; }
     }
-    public ValueLookupParameter<IDiscreteDoubleMatrixModifier> VelocityBoundsUpdaterParameter {
-      get { return (ValueLookupParameter<IDiscreteDoubleMatrixModifier>)Parameters["VelocityBoundsUpdater"]; }
+    public IValueLookupParameter<DoubleMatrix> VelocityBoundsParameter {
+      get { return (ValueLookupParameter<DoubleMatrix>)Parameters["VelocityBounds"]; }
     }
-    public LookupParameter<DoubleMatrix> VelocityBoundsParameter {
-      get { return (LookupParameter<DoubleMatrix>)Parameters["VelocityBounds"]; }
+    public ILookupParameter<DoubleMatrix> CurrentVelocityBoundsParameter {
+      get { return (ILookupParameter<DoubleMatrix>)Parameters["CurrentVelocityBounds"]; }
     }
+    public LookupParameter<ResultCollection> ResultsParameter {
+      get { return (LookupParameter<ResultCollection>)Parameters["Results"]; }
+    }
+
+    #region Velocity Bounds Updating
+    public ILookupParameter<DoubleValue> VelocityBoundsScaleParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters["VelocityBoundsScale"]; }
+    }
+    public OptionalConstrainedValueParameter<IDiscreteDoubleValueModifier> VelocityBoundsScalingOperatorParameter {
+      get { return (OptionalConstrainedValueParameter<IDiscreteDoubleValueModifier>)Parameters["VelocityBoundsScalingOperator"]; }
+    }
+    public IValueLookupParameter<DoubleValue> VelocityBoundsStartValueParameter {
+      get { return (IValueLookupParameter<DoubleValue>)Parameters["VelocityBoundsStartValue"]; }
+    }
+    public IValueLookupParameter<DoubleValue> VelocityBoundsEndValueParameter {
+      get { return (IValueLookupParameter<DoubleValue>)Parameters["VelocityBoundsEndValue"]; }
+    }
+    public ILookupParameter<IntValue> VelocityBoundsIndexParameter {
+      get { return (ILookupParameter<IntValue>)Parameters["VelocityBoundsIndex"]; }
+    }
+    public IValueLookupParameter<IntValue> VelocityBoundsStartIndexParameter {
+      get { return (IValueLookupParameter<IntValue>)Parameters["VelocityBoundsStartIndex"]; }
+    }
+    public IValueLookupParameter<IntValue> VelocityBoundsEndIndexParameter {
+      get { return (IValueLookupParameter<IntValue>)Parameters["VelocityBoundsEndIndex"]; }
+    }
+    #endregion
+
     #endregion
 
     #region Parameter values
@@ -113,12 +146,25 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     private ItemArray<IntArray> Neighbors {
       get { return NeighborsParameter.ActualValue; }
     }
-    private IDiscreteDoubleMatrixModifier VelocityBoundsUpdater {
-      get { return VelocityBoundsUpdaterParameter.ActualValue; }
-    }
     private DoubleMatrix VelocityBounds {
       get { return VelocityBoundsParameter.ActualValue; }
-      set { VelocityBoundsParameter.ActualValue = value; }
+    }
+    private DoubleMatrix CurrentVelocityBounds {
+      get { return CurrentVelocityBoundsParameter.ActualValue; }
+      set { CurrentVelocityBoundsParameter.ActualValue = value; }
+    }
+    private DoubleValue VelocityBoundsScale {
+      get { return VelocityBoundsScaleParameter.ActualValue; }
+      set { VelocityBoundsScaleParameter.ActualValue = value; }
+    }
+    private DoubleValue VelocityBoundsStartValue {
+      get { return VelocityBoundsStartValueParameter.ActualValue; }
+    }
+    private IDiscreteDoubleValueModifier VelocityBoundsScalingOperator {
+      get { return VelocityBoundsScalingOperatorParameter.Value; }
+    }
+    private ResultCollection Results {
+      get { return ResultsParameter.ActualValue; }
     }
     #endregion
 
@@ -126,7 +172,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
 
     [StorableConstructor]
     private RealVectorSwarmUpdater(bool deserializing) : base(deserializing) { }
-    private RealVectorSwarmUpdater(RealVectorSwarmUpdater original, Cloner cloner) : base(original, cloner) { }
+    private RealVectorSwarmUpdater(RealVectorSwarmUpdater original, Cloner cloner)
+      : base(original, cloner) {
+      ResultsCollector = cloner.Clone(original.ResultsCollector);
+    }
     public RealVectorSwarmUpdater()
       : base() {
       Parameters.Add(new LookupParameter<DoubleValue>("BestQuality", "Overall best quality."));
@@ -139,8 +188,23 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       Parameters.Add(new ScopeTreeLookupParameter<RealVector>("NeighborBest", "Neighborhood (or global in case of totally connected neighborhood) best particle position"));
       Parameters.Add(new ScopeTreeLookupParameter<IntArray>("Neighbors", "The list of neighbors for each particle."));
       Parameters.Add(new LookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, otherwise false."));
-      Parameters.Add(new ValueLookupParameter<IDiscreteDoubleMatrixModifier>("VelocityBoundsUpdater", "Modifies the velocity bounds in the course of optimization."));
-      Parameters.Add(new LookupParameter<DoubleMatrix>("VelocityBounds", "Maximum velocity for each dimension."));
+      Parameters.Add(new ValueLookupParameter<DoubleMatrix>("VelocityBounds", "Maximum velocity for each dimension.", new DoubleMatrix(new double[,] { { -1, 1 } })));
+      Parameters.Add(new LookupParameter<DoubleMatrix>("CurrentVelocityBounds", "Current value of velocity bounds."));
+      Parameters.Add(new LookupParameter<ResultCollection>("Results", "Results"));
+
+      #region Velocity Bounds Updating
+      Parameters.Add(new LookupParameter<DoubleValue>("VelocityBoundsScale", "Scale parameter."));
+      Parameters.Add(new OptionalConstrainedValueParameter<IDiscreteDoubleValueModifier>("VelocityBoundsScalingOperator", "Modifies the value"));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("VelocityBoundsStartValue", "The start value of 'Value'.", new DoubleValue(1)));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("VelocityBoundsEndValue", "The end value of 'Value'.", new DoubleValue(1E-10)));
+      Parameters.Add(new LookupParameter<IntValue>("VelocityBoundsIndex", "The current index.", "CurrentIteration"));
+      Parameters.Add(new ValueLookupParameter<IntValue>("VelocityBoundsStartIndex", "The start index at which to start modifying 'Value'.", new IntValue(0)));
+      Parameters.Add(new ValueLookupParameter<IntValue>("VelocityBoundsEndIndex", "The end index by which 'Value' should have reached 'EndValue'.", "MaxIterations"));
+      VelocityBoundsStartIndexParameter.Hidden = true;
+      VelocityBoundsEndIndexParameter.Hidden = true;
+      #endregion
+
+      Initialize();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -148,6 +212,23 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     #endregion
+
+    private void Initialize() {
+      ResultsCollector = new ResultsCollector();
+      ResultsCollector.CollectedValues.Add(CurrentVelocityBoundsParameter);
+      ResultsCollector.CollectedValues.Add(VelocityBoundsParameter);
+
+      foreach (IDiscreteDoubleValueModifier op in ApplicationManager.Manager.GetInstances<IDiscreteDoubleValueModifier>()) {
+        VelocityBoundsScalingOperatorParameter.ValidValues.Add(op);
+        op.ValueParameter.ActualName = VelocityBoundsScaleParameter.Name;
+        op.StartValueParameter.ActualName = VelocityBoundsStartValueParameter.Name;
+        op.EndValueParameter.ActualName = VelocityBoundsEndValueParameter.Name;
+        op.IndexParameter.ActualName = VelocityBoundsIndexParameter.Name;
+        op.StartIndexParameter.ActualName = VelocityBoundsStartIndexParameter.Name;
+        op.EndIndexParameter.ActualName = VelocityBoundsEndIndexParameter.Name;
+      }
+      VelocityBoundsScalingOperatorParameter.Value = null;
+    }
 
     public override IOperation Apply() {
       UpdateGlobalBest();
@@ -193,15 +274,38 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       }
     }
 
+
+
     private IOperation UpdateVelocityBounds() {
-      if (VelocityBounds == null)
-        VelocityBounds = new DoubleMatrix(new double[,] { { -1, 1 } });
-      return VelocityBoundsUpdater == null ?
-        base.Apply() :
-        new OperationCollection() { 
-          ExecutionContext.CreateChildOperation(VelocityBoundsUpdater),
-          ExecutionContext.CreateOperation(Successor)
+      if (CurrentVelocityBounds == null)
+        CurrentVelocityBounds = (DoubleMatrix)VelocityBounds.Clone();
+
+      if (VelocityBoundsScalingOperator == null)
+        return new OperationCollection() {
+          ExecutionContext.CreateChildOperation(ResultsCollector),        
+          base.Apply()
         };
+
+
+      DoubleMatrix matrix = CurrentVelocityBounds;
+      if (VelocityBoundsScale == null && VelocityBoundsStartValue != null) {
+        VelocityBoundsScale = new DoubleValue(VelocityBoundsStartValue.Value);
+      }
+      for (int i = 0; i < matrix.Rows; i++) {
+        for (int j = 0; j < matrix.Columns; j++) {
+          if (matrix[i, j] >= 0) {
+            matrix[i, j] = VelocityBoundsScale.Value;
+          } else {
+            matrix[i, j] = (-1) * VelocityBoundsScale.Value;
+          }
+        }
+      }
+
+      return new OperationCollection() {
+        ExecutionContext.CreateChildOperation(ResultsCollector),
+        ExecutionContext.CreateChildOperation(VelocityBoundsScalingOperator),        
+        base.Apply()
+      };
     }
   }
 }

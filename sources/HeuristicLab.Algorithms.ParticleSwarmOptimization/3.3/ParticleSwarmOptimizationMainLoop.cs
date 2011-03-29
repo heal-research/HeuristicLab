@@ -55,9 +55,6 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     public IValueLookupParameter<DoubleValue> NeighborBestAttractionParameter {
       get { return (IValueLookupParameter<DoubleValue>)Parameters["NeighborBestAttraction"]; }
     }
-    public IValueLookupParameter<DoubleMatrix> VelocityBoundsParameter {
-      get { return (IValueLookupParameter<DoubleMatrix>)Parameters["VelocityBounds"]; }
-    }
     public IValueLookupParameter<IOperator> ParticleUpdaterParameter {
       get { return (IValueLookupParameter<IOperator>)Parameters["ParticleUpdater"]; }
     }
@@ -127,13 +124,11 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       UniformSubScopesProcessor uniformSubScopeProcessor = new UniformSubScopesProcessor();
       Placeholder particleUpdaterPlaceholder = new Placeholder();
       Placeholder topologyUpdaterPlaceholder = new Placeholder();
-      UniformSubScopesProcessor uniformSubscopesProcessor2 = new UniformSubScopesProcessor();
       UniformSubScopesProcessor evaluationProcessor = new UniformSubScopesProcessor();
       Placeholder swarmUpdater = new Placeholder();
       IntCounter currentIterationCounter = new IntCounter();
       Comparator currentIterationComparator = new Comparator();
       ConditionalBranch conditionalBranch = new ConditionalBranch();
-      Placeholder velocityBoundsUpdaterPlaceholder = new Placeholder();
       Placeholder inertiaUpdaterPlaceholder = new Placeholder();
       SubScopesCounter subScopesCounter = new SubScopesCounter();
       #endregion
@@ -175,7 +170,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       topologyUpdaterPlaceholder.OperatorParameter.ActualName = TopologyUpdaterParameter.Name;
       topologyUpdaterPlaceholder.Successor = swarmUpdater;
 
-      swarmUpdater.Name = "Swarm Updater";
+      swarmUpdater.Name = "(Swarm Updater)";
       swarmUpdater.OperatorParameter.ActualName = SwarmUpdaterParameter.ActualName;
       swarmUpdater.Successor = inertiaUpdaterPlaceholder;
 

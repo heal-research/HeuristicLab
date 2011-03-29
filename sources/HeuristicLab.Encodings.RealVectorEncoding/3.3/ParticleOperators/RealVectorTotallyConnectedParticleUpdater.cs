@@ -56,7 +56,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
           (BestPoint[i] - RealVector[i]) * neighborBestAttraction * r_g;
       }
 
-      BoundsChecker.Apply(velocity, VelocityBounds);
+      BoundsChecker.Apply(velocity, CurrentVelocityBounds);
       for (int i = 0; i < velocity.Length; i++) {
         position[i] = RealVector[i] + velocity[i];
       }
