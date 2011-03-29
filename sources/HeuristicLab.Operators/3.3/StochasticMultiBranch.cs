@@ -65,6 +65,7 @@ namespace HeuristicLab.Operators {
       #region Backwards Compatibility
       if (!Parameters.ContainsKey("SelectedOperator")) {
         Parameters.Add(new LookupParameter<StringValue>("SelectedOperator", "If the TraceSelectedOperator flag is set, the name of the operator is traced in this parameter."));
+        SelectedOperatorParameter.Hidden = false;
       }
       if (!Parameters.ContainsKey("TraceSelectedOperator")) {
         Parameters.Add(new ValueParameter<BoolValue>("TraceSelectedOperator", "Indicates, if the selected operator should be traced.", new BoolValue(false)));
@@ -87,6 +88,7 @@ namespace HeuristicLab.Operators {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));
       Parameters.Add(new LookupParameter<StringValue>("SelectedOperator", "If the TraceSelectedOperator flag is set, the name of the operator is traced in this parameter."));
       Parameters.Add(new ValueParameter<BoolValue>("TraceSelectedOperator", "Indicates, if the selected operator should be traced.", new BoolValue(false)));
+      SelectedOperatorParameter.Hidden = false;
     }
 
     protected override void Operators_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
