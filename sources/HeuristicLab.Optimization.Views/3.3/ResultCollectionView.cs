@@ -42,35 +42,17 @@ namespace HeuristicLab.Optimization.Views {
       base.ReadOnly = true;
     }
 
-    protected override void RegisterItemEvents(IResult item) {
-      base.RegisterItemEvents(item);
-      item.ValueChanged += (o, e) => itemsListView_SelectedIndexChanged(o, e);
-    }
-    protected override void DeregisterItemEvents(IResult item) {
-      item.ValueChanged -= (o, e) => itemsListView_SelectedIndexChanged(o, e);
-      base.DeregisterItemEvents(item);
-    }
-
     protected override IResult CreateItem() {
       return null;
     }
 
     protected override void itemsListView_SelectedIndexChanged(object sender, EventArgs e) {
-      if (InvokeRequired) {
-        Invoke((Action<object, EventArgs>)itemsListView_SelectedIndexChanged, sender, e);
-      } else {
-        AdjustListViewColumnSizes();
-        if (showDetailsCheckBox.Checked) {
-          if (itemsListView.SelectedItems.Count == 1) {
-            IResult result = (IResult)itemsListView.SelectedItems[0].Tag;
-            detailsGroupBox.Enabled = true;
-            viewHost.Content = result.Value;
-          } else {
-            viewHost.Content = null;
-            detailsGroupBox.Enabled = false;
-          }
-        }
-      }
+      viewHost.ViewType = typeof(ResultValueView);
+      base.itemsListView_SelectedIndexChanged(sender, e);
+    }
+    protected override void showDetailsCheckBox_CheckedChanged(object sender, EventArgs e) {
+      viewHost.ViewType = typeof(ResultValueView);
+      base.showDetailsCheckBox_CheckedChanged(sender, e);
     }
   }
 }
