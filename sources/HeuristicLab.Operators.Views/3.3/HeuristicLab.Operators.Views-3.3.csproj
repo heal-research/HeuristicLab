@@ -103,9 +103,6 @@
     <Reference Include="HeuristicLab.Optimization-3.3">
       <HintPath>..\..\HeuristicLab.Optimization\3.3\bin\Debug\HeuristicLab.Optimization-3.3.dll</HintPath>
     </Reference>
-    <Reference Include="HeuristicLab.Visualization.ChartControlsExtensions-3.3">
-      <HintPath>..\..\HeuristicLab.Visualization.ChartControlsExtensions\3.3\bin\Debug\HeuristicLab.Visualization.ChartControlsExtensions-3.3.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
