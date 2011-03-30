@@ -65,9 +65,9 @@ namespace HeuristicLab_33.Tests {
 
       TestContext.WriteLine("Runtime: {0}", ga.ExecutionTime.ToString());
 
-      double expectedValidationQuality = 0.731199318099719;
-      double expectedBestQuality = 0.6969610735436933;
-      double expectedAverageQuality = 0.47270643142587854;
+      double expectedValidationQuality = 0.72232929212380248;
+      double expectedBestQuality = 0.67404328905620081;
+      double expectedAverageQuality = 0.43099606868788487;
       double expectedWorstQuality = 0;
       double bestQuality = (ga.Results["CurrentBestQuality"].Value as DoubleValue).Value;
       double averageQuality = (ga.Results["CurrentAverageQuality"].Value as DoubleValue).Value;
