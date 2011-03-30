@@ -98,7 +98,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       RegisterEventHandler();
     }
 
-    protected void RecalculateResults() {
+    protected new void RecalculateResults() {
       double[] estimatedTrainingValues = EstimatedTrainingValues.ToArray(); // cache values
       IEnumerable<double> originalTrainingValues = ProblemData.Dataset.GetEnumeratedVariableValues(ProblemData.TargetVariable, ProblemData.TrainingIndizes);
       double[] estimatedTestValues = EstimatedTestValues.ToArray(); // cache values
