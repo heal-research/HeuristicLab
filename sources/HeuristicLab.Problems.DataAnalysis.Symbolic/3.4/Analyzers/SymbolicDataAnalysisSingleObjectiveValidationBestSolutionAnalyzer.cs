@@ -75,15 +75,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       #region find best tree
       double bestQuality = Maximization.Value ? double.NegativeInfinity : double.PositiveInfinity;
       ISymbolicExpressionTree bestTree = null;
-      ISymbolicExpressionTree[] tree = SymbolicExpressionTrees.ToArray();
+      ISymbolicExpressionTree[] tree = SymbolicExpressionTree.ToArray();
       double[] quality = new double[tree.Length];
       var evaluator = EvaluatorParameter.ActualValue;
-      int start = ValidationPartitionParameter.ActualValue.Start;
-      int end = ValidationPartitionParameter.ActualValue.End;
-      int count = (int)((end - start) * RelativeNumberOfEvaluatedSamplesParameter.ActualValue.Value);
-      if (count <= 0) return base.Apply();
+      IEnumerable<int> rows = GenerateRowsToEvaluate();
+      if (rows.Count() <= 0) return base.Apply();
 
-      IEnumerable<int> rows = RandomEnumerable.SampleRandomNumbers(start, end, count);
       IExecutionContext childContext = (IExecutionContext)ExecutionContext.CreateChildOperation(evaluator);
       for (int i = 0; i < tree.Length; i++) {
         quality[i] = evaluator.Evaluate(childContext, tree[i], ProblemDataParameter.ActualValue, rows);

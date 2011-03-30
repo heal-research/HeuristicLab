@@ -24,6 +24,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   public interface ISymbolicDataAnalysisValidationAnalyzer<T, U> : ISymbolicDataAnalysisAnalyzer, ISymbolicDataAnalysisInterpreterOperator
     where T : class,ISymbolicDataAnalysisEvaluator<U>
     where U : class, IDataAnalysisProblemData {
+    ILookupParameter<IRandom> RandomParameter { get; }
     ILookupParameter<U> ProblemDataParameter { get; }
     ILookupParameter<T> EvaluatorParameter { get; }
     IValueLookupParameter<IntRange> ValidationPartitionParameter { get; }

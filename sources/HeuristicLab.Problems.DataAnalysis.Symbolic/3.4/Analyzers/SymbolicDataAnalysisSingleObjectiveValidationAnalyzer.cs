@@ -19,11 +19,15 @@
  */
 #endregion
 
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System.Collections.Generic;
+using System;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// <summary>
@@ -34,6 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     ISymbolicDataAnalysisValidationAnalyzer<T, U>
     where T : class, ISymbolicDataAnalysisSingleObjectiveEvaluator<U>
     where U : class, IDataAnalysisProblemData {
+    private const string RandomParameterName = "Random";
     private const string ProblemDataParameterName = "ProblemData";
     private const string EvaluatorParameterName = "Evaluator";
     private const string SymbolicDataAnalysisTreeInterpreterParameterName = "SymbolicDataAnalysisTreeInterpreter";
@@ -41,6 +46,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private const string RelativeNumberOfEvaluatedSamplesParameterName = "RelativeNumberOfEvaluatedSamples";
 
     #region parameter properties
+    public ILookupParameter<IRandom> RandomParameter {
+      get { return (ILookupParameter<IRandom>)Parameters[RandomParameterName]; }
+    }
     public ILookupParameter<U> ProblemDataParameter {
       get { return (ILookupParameter<U>)Parameters[ProblemDataParameterName]; }
     }
@@ -65,11 +73,26 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
     public SymbolicDataAnalysisSingleObjectiveValidationAnalyzer()
       : base() {
+      Parameters.Add(new LookupParameter<IRandom>(RandomParameterName, "The random generator."));
       Parameters.Add(new LookupParameter<U>(ProblemDataParameterName, "The problem data of the symbolic data analysis problem."));
       Parameters.Add(new LookupParameter<T>(EvaluatorParameterName, "The operator to use for fitness evaluation on the validation partition."));
       Parameters.Add(new LookupParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>(SymbolicDataAnalysisTreeInterpreterParameterName, "The interpreter for symbolic data analysis expression trees."));
       Parameters.Add(new ValueLookupParameter<IntRange>(ValidationPartitionParameterName, "Thes validation partition."));
       Parameters.Add(new ValueLookupParameter<PercentValue>(RelativeNumberOfEvaluatedSamplesParameterName, "The relative number of samples of the dataset partition, which should be randomly chosen for evaluation between the start and end index."));
+    }
+
+    protected IEnumerable<int> GenerateRowsToEvaluate() {
+      int seed = RandomParameter.ActualValue.Next();
+      int samplesStart = ValidationPartitionParameter.ActualValue.Start;
+      int samplesEnd = ValidationPartitionParameter.ActualValue.End;
+      int testPartitionStart = ProblemDataParameter.ActualValue.TestPartition.Start;
+      int testPartitionEnd = ProblemDataParameter.ActualValue.TestPartition.End;
+
+      if (samplesEnd < samplesStart) throw new ArgumentException("Start value is larger than end value.");
+      int count = (int)((samplesEnd - samplesStart) * RelativeNumberOfEvaluatedSamplesParameter.ActualValue.Value);
+      if (count == 0) count = 1;
+      return RandomEnumerable.SampleRandomNumbers(seed, samplesStart, samplesEnd, count)
+        .Where(i => i < testPartitionStart || testPartitionEnd <= i);
     }
   }
 }

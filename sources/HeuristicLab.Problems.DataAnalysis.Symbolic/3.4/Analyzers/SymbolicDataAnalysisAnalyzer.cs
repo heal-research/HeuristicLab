@@ -48,7 +48,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
     #endregion
     #region properties
-    public ItemArray<ISymbolicExpressionTree> SymbolicExpressionTrees {
+    public ItemArray<ISymbolicExpressionTree> SymbolicExpressionTree {
       get { return SymbolicExpressionTreeParameter.ActualValue; }
     }
     public ResultCollection ResultCollection {

@@ -74,10 +74,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     public override IOperation Apply() {
-      int start = ValidationPartitionParameter.ActualValue.Start;
-      int end = ValidationPartitionParameter.ActualValue.End;
-      int count = (int)((end - start) * RelativeNumberOfEvaluatedSamplesParameter.ActualValue.Value);
-      if (count <= 0) return base.Apply();
+      IEnumerable<int> rows = GenerateRowsToEvaluate();
+      if (rows.Count() <= 0) return base.Apply();
 
       var results = ResultCollection;
       // create empty parameter and result values
@@ -94,12 +92,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       #region find best trees
       IList<int> nonDominatedIndexes = new List<int>();
-      ISymbolicExpressionTree[] tree = SymbolicExpressionTrees.ToArray();
+      ISymbolicExpressionTree[] tree = SymbolicExpressionTree.ToArray();
       List<double[]> qualities = new List<double[]>();
       bool[] maximization = Maximization.ToArray();
       List<double[]> newNonDominatedQualities = new List<double[]>();
       var evaluator = EvaluatorParameter.ActualValue;
-      IEnumerable<int> rows = RandomEnumerable.SampleRandomNumbers(start, end, count);
       IExecutionContext childContext = (IExecutionContext)ExecutionContext.CreateChildOperation(evaluator);
       for (int i = 0; i < tree.Length; i++) {
         qualities.Add(evaluator.Evaluate(childContext, tree[i], ProblemDataParameter.ActualValue, rows)); // qualities[i] = ...

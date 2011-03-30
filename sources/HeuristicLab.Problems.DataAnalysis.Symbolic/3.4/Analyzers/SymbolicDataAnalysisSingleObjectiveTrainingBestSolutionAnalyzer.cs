@@ -73,7 +73,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       #region find best tree
       double bestQuality = Maximization.Value ? double.NegativeInfinity : double.PositiveInfinity;
       ISymbolicExpressionTree bestTree = null;
-      ISymbolicExpressionTree[] tree = SymbolicExpressionTrees.ToArray();
+      ISymbolicExpressionTree[] tree = SymbolicExpressionTree.ToArray();
       double[] quality = Quality.Select(x => x.Value).ToArray();
       for (int i = 0; i < tree.Length; i++) {
         if (IsBetter(quality[i], bestQuality, Maximization.Value)) {
