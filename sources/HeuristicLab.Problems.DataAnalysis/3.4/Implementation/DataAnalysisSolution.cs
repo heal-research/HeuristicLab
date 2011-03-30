@@ -77,10 +77,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
       : base() {
       name = ItemName;
       description = ItemDescription;
-      Add(new Result(ModelResultName, "The symbolic data analysis model.", model));
-      Add(new Result(ProblemDataResultName, "The symbolic data analysis problem data.", problemData));
+      IDataAnalysisModel modelClone = (IDataAnalysisModel)model.Clone();
+      IDataAnalysisProblemData problemDataClone = (IDataAnalysisProblemData)problemData.Clone();
+      Add(new Result(ModelResultName, "The symbolic data analysis model.", modelClone));
+      Add(new Result(ProblemDataResultName, "The symbolic data analysis problem data.", problemDataClone));
 
-      problemData.Changed += new EventHandler(ProblemData_Changed);
+      problemDataClone.Changed += new EventHandler(ProblemData_Changed);
     }
 
     private void ProblemData_Changed(object sender, EventArgs e) {
