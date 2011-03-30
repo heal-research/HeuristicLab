@@ -217,6 +217,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private void ProblemDataParameter_ValueChanged(object sender, EventArgs e) {
+      ValidationPartition.Start = 0;
+      ValidationPartition.End = 0;
       ProblemDataParameter.Value.Changed += (object s, EventArgs args) => OnProblemDataChanged();
       OnProblemDataChanged();
     }
