@@ -13,7 +13,7 @@
     <ProjectItem SubType="" TargetFileName="$fileinputname$.Designer.cs" ReplaceParameters="true">DefaultView.Designer.cs</ProjectItem>
   </TemplateContent>
   <WizardExtension>
-    <Assembly>HeuristicLab.VS2010Wizards, Version=3.3.3.1, Culture=Neutral, PublicKeyToken=18a43a5d25a3c148</Assembly>
+    <Assembly>HeuristicLab.VS2010Wizards, Version=3.3.3.2, Culture=Neutral, PublicKeyToken=18a43a5d25a3c148</Assembly>
     <FullClassName>HeuristicLab.VS2010Wizards.ViewWizard</FullClassName>
   </WizardExtension>
 </VSTemplate>

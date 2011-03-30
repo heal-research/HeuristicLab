@@ -75,9 +75,9 @@ namespace HeuristicLab.VS2010Wizards {
       ParameterInitializers = parametersControl.GetInitializers();
 
       if (IsSingleObjective) {
-        ProblemTypeImplementation = "SingleObjectiveProblem<" + EvaluatorType + ", " + SolutionCreatorType + ">";
+        ProblemTypeImplementation = "SingleObjectiveHeuristicOptimizationProblem<" + EvaluatorType + ", " + SolutionCreatorType + ">";
       } else if (IsMultiObjective) {
-        ProblemTypeImplementation = "MultiObjectiveProblem<" + EvaluatorType + ", " + SolutionCreatorType + ">";
+        ProblemTypeImplementation = "MultiObjectiveHeuristicOptimizationProblem<" + EvaluatorType + ", " + SolutionCreatorType + ">";
       }
     }
 
