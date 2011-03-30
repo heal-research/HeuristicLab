@@ -93,19 +93,18 @@ namespace HeuristicLab.Data.Views {
       this.Item2Label.TabIndex = 3;
       this.Item2Label.Text = "Item2:";
       // 
-      // ValueTypeTupleView
+      // StringConvertibleValueTupleView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.Item2Label);
       this.Controls.Add(this.Item1Label);
-      this.Controls.Add(this.Item2View);
+      this.Controls.Add(this.Item2Label);
       this.Controls.Add(this.Item1View);
-      this.Name = "ValueTypeTupleView";
+      this.Controls.Add(this.Item2View);
+      this.Name = "StringConvertibleValueTupleView";
       this.Size = new System.Drawing.Size(308, 56);
       this.ResumeLayout(false);
       this.PerformLayout();
-
     }
 
     #endregion

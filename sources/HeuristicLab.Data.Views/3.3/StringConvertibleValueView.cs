@@ -21,6 +21,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Drawing;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
@@ -86,10 +87,11 @@ namespace HeuristicLab.Data.Views {
 
     private void valueTextBox_KeyDown(object sender, KeyEventArgs e) {
       if ((e.KeyCode == Keys.Enter) || (e.KeyCode == Keys.Return))
-        valueLabel.Focus();  // set focus on label to validate data
+        valueLabel.Select();  // select label to validate data
+
       if (e.KeyCode == Keys.Escape) {
         valueTextBox.Text = Content.GetValue();
-        valueLabel.Focus();  // set focus on label to validate data
+        valueLabel.Select();  // select label to validate data
       }
     }
     private void valueTextBox_Validating(object sender, CancelEventArgs e) {
@@ -107,10 +109,13 @@ namespace HeuristicLab.Data.Views {
     }
 
     private void valueLabel_VisibleChanged(object sender, EventArgs e) {
-      if (valueLabel.Visible)
-        valueTextBox.Dock = DockStyle.None;
-      else
-        valueTextBox.Dock = DockStyle.Fill;
+      if (valueLabel.Visible) {
+        valueTextBox.Location = new Point(56, 0);
+        valueTextBox.Size = new Size(valueTextBox.Size.Width - valueLabel.Size.Width, valueTextBox.Size.Height);
+      } else {
+        valueTextBox.Location = new Point(19, 0);
+        valueTextBox.Size = new Size(valueTextBox.Size.Width + valueLabel.Size.Width, valueTextBox.Size.Height);
+      }
     }
 
   }

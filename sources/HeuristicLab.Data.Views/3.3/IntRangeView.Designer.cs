@@ -45,6 +45,16 @@ namespace HeuristicLab.Data.Views {
     private void InitializeComponent() {
       this.SuspendLayout();
       // 
+      // Item1View
+      // 
+      this.Item1View.Location = new System.Drawing.Point(41, 3);
+      this.Item1View.Size = new System.Drawing.Size(264, 22);
+      // 
+      // Item2View
+      // 
+      this.Item2View.Location = new System.Drawing.Point(41, 31);
+      this.Item2View.Size = new System.Drawing.Size(264, 22);
+      // 
       // Item1Label
       // 
       this.Item1Label.Size = new System.Drawing.Size(32, 13);
@@ -61,6 +71,7 @@ namespace HeuristicLab.Data.Views {
       this.Name = "IntRangeView";
       this.ResumeLayout(false);
       this.PerformLayout();
+
     }
 
     #endregion
