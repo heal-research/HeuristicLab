@@ -66,7 +66,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._4.Tests {
       }
       // difficult to make sure that create argument operations succeed because trees are macro-expanded can potentially become very big 
       // => just test if only a small proportion fails
-      Assert.IsTrue(failedOps < POPULATION_SIZE * 0.01); // only 1% may fail
+      Assert.IsTrue(failedOps < POPULATION_SIZE * 0.05); // only 5% may fail
       Console.WriteLine("ArgumentCreator: " + Environment.NewLine +
         "Failed operations: " + failedOps * 100.0 / POPULATION_SIZE + " %" + Environment.NewLine +
         Util.GetSizeDistributionString(trees, 200, 20) + Environment.NewLine +
