@@ -50,7 +50,7 @@ namespace HeuristicLab.Optimization {
     }
 
     [StorableHook(HookType.AfterDeserialization)]
-    protected virtual void AfterDeserialization() {
+    private void AfterDeserialization() {
       // BackwardsCompatibility3.3
       #region Backwards compatible code (remove with 3.4)
       if (BestKnownQualityParameter is ValueParameter<DoubleValue>) {
