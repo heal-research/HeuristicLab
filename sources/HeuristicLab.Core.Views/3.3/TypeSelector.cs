@@ -85,13 +85,13 @@ namespace HeuristicLab.Core.Views {
     }
 
     public virtual void Configure(Type baseType, bool showNotInstantiableTypes, bool showGenericTypes) {
-      Configure(new List<Type>() { baseType }, showNotInstantiableTypes, showGenericTypes);
+      Configure(new List<Type>() { baseType }, showNotInstantiableTypes, showGenericTypes, true);
     }
 
-    public virtual void Configure(IEnumerable<Type> baseTypes, bool showNotInstantiableTypes, bool showGenericTypes) {
+    public virtual void Configure(IEnumerable<Type> baseTypes, bool showNotInstantiableTypes, bool showGenericTypes, bool allTypes) {
       if (baseTypes == null) throw new ArgumentNullException();
       if (InvokeRequired)
-        Invoke(new Action<IEnumerable<Type>, bool, bool>(Configure), baseTypes, showNotInstantiableTypes, showGenericTypes);
+        Invoke(new Action<IEnumerable<Type>, bool, bool, bool>(Configure), baseTypes, showNotInstantiableTypes, showGenericTypes, allTypes);
       else {
         this.baseTypes = baseTypes;
         this.showNotInstantiableTypes = showNotInstantiableTypes;
@@ -113,12 +113,12 @@ namespace HeuristicLab.Core.Views {
                       select p;
         foreach (IPluginDescription plugin in plugins) {
           TreeNode pluginNode = new TreeNode();
-          pluginNode.Text = string.Format("{0} [{1}.{2}]", plugin.Name, plugin.Version.Major, plugin.Version.Minor);
+          pluginNode.Text = string.Format("{0} {1}.{2}", plugin.Name, plugin.Version.Major, plugin.Version.Minor);
           pluginNode.ImageIndex = 1;
           pluginNode.SelectedImageIndex = pluginNode.ImageIndex;
           pluginNode.Tag = plugin;
 
-          var types = from t in ApplicationManager.Manager.GetTypes(BaseTypes, plugin, ShowNotInstantiableTypes)
+          var types = from t in ApplicationManager.Manager.GetTypes(BaseTypes, plugin, ShowNotInstantiableTypes, allTypes)
                       orderby t.Name ascending
                       select t;
           foreach (Type type in types) {
@@ -257,7 +257,7 @@ namespace HeuristicLab.Core.Views {
       Type param = typeParametersListView.SelectedItems[0].Tag as Type;
       Type[] constraints = param.GetGenericParameterConstraints();
       bool showNotInstantiableTypes = !param.GenericParameterAttributes.HasFlag(GenericParameterAttributes.DefaultConstructorConstraint);
-      typeSelectorDialog.TypeSelector.Configure(constraints, showNotInstantiableTypes, true);
+      typeSelectorDialog.TypeSelector.Configure(constraints, showNotInstantiableTypes, true, true);
 
       if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
         Type selected = typeSelectorDialog.TypeSelector.SelectedType;

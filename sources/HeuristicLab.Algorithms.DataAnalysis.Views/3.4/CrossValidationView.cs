@@ -274,7 +274,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
         problemTypeSelectorDialog.Caption = "Select Problem";
         problemTypeSelectorDialog.TypeSelector.Caption = "Available Problems";
       }
-      problemTypeSelectorDialog.TypeSelector.Configure(new List<Type>() { Content.ProblemType, Content.Algorithm.ProblemType }, false, true);
+      problemTypeSelectorDialog.TypeSelector.Configure(new List<Type>() { Content.ProblemType, Content.Algorithm.ProblemType }, false, true, true);
       if (problemTypeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
         Content.Problem = (IDataAnalysisProblem)problemTypeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
       }
