@@ -30,6 +30,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis;
+using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("Cross Validation", "Cross Validation wrapper for data analysis algorithms.")]
@@ -266,12 +267,29 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         //create cloned algorithms
         if (clonedAlgorithms.Count == 0) {
           int testSamplesCount = (SamplesEnd.Value - SamplesStart.Value) / Folds.Value;
+
           for (int i = 0; i < Folds.Value; i++) {
             IAlgorithm clonedAlgorithm = (IAlgorithm)algorithm.Clone();
             clonedAlgorithm.Name = algorithm.Name + " Fold " + i;
             IDataAnalysisProblem problem = clonedAlgorithm.Problem as IDataAnalysisProblem;
-            problem.ProblemData.TestPartition.End = (i + 1) == Folds.Value ? SamplesEnd.Value : (i + 1) * testSamplesCount + SamplesStart.Value;
-            problem.ProblemData.TestPartition.Start = (i * testSamplesCount) + SamplesStart.Value;
+            ISymbolicDataAnalysisProblem symbolicProblem = problem as ISymbolicDataAnalysisProblem;
+
+            int testStart = (i * testSamplesCount) + SamplesStart.Value;
+            int testEnd = (i + 1) == Folds.Value ? SamplesEnd.Value : (i + 1) * testSamplesCount + SamplesStart.Value;
+
+            problem.ProblemData.TestPartition.Start = testStart;
+            problem.ProblemData.TestPartition.End = testEnd;
+            DataAnalysisProblemData problemData = problem.ProblemData as DataAnalysisProblemData;
+            if (problemData != null) {
+              problemData.TrainingPartitionParameter.Hidden = false;
+              problemData.TestPartitionParameter.Hidden = false;
+            }
+
+            if (symbolicProblem != null) {
+              symbolicProblem.FitnessCalculationPartition.Start = SamplesStart.Value;
+              symbolicProblem.FitnessCalculationPartition.End = SamplesEnd.Value;
+            }
+
             clonedAlgorithms.Add(clonedAlgorithm);
           }
         }
@@ -446,6 +464,21 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (Problem != null) {
         Problem.ProblemDataChanged += (object sender, EventArgs e) => OnProblemChanged();
         SamplesEnd.Value = Problem.ProblemData.Dataset.Rows;
+
+        DataAnalysisProblemData problemData = Problem.ProblemData as DataAnalysisProblemData;
+        if (problemData != null) {
+          problemData.TrainingPartitionParameter.Hidden = true;
+          problemData.TestPartitionParameter.Hidden = true;
+        }
+        ISymbolicDataAnalysisProblem symbolicProblem = Problem as ISymbolicDataAnalysisProblem;
+        if (symbolicProblem != null) {
+          symbolicProblem.FitnessCalculationPartitionParameter.Hidden = true;
+          symbolicProblem.FitnessCalculationPartition.Start = SamplesStart.Value;
+          symbolicProblem.FitnessCalculationPartition.End = SamplesEnd.Value;
+          symbolicProblem.ValidationPartitionParameter.Hidden = true;
+          symbolicProblem.ValidationPartition.Start = 0;
+          symbolicProblem.ValidationPartition.End = 0;
+        }
       } else
         SamplesEnd.Value = 0;
     }
