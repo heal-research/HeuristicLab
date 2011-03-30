@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -129,5 +130,44 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       Parameters.Add(new LookupParameter<DoubleValue>("NeighborBestAttraction", "The weight for the global best position."));
     }
     #endregion
+
+    protected void MoveParticle(RealVector velocity, RealVector position) {
+      BoundsChecker.Apply(velocity, CurrentVelocityBounds);
+      for (int i = 0; i < velocity.Length; i++) {
+        position[i] = RealVector[i] + velocity[i];
+      }
+      for (int i = 0; i < position.Length; i++) {
+        double min = Bounds[i % Bounds.Rows, 0];
+        double max = Bounds[i % Bounds.Rows, 1];
+        if (position[i] < min) {
+          int reflectionCount = (int)Math.Truncate((min - position[i]) / (max - min)) + 1;
+          double reflection = (min - position[i]) % (max - min);
+          if (IsOdd(reflectionCount)) {
+            position[i] = min + reflection;
+            velocity[i] = -velocity[i];
+
+          } else {
+            position[i] = max - reflection;
+          }
+        }
+        if (position[i] > max) {
+          int reflectionCount = (int)Math.Truncate((position[i] - max) / (max - min)) + 1;
+          double reflection = (position[i] - max) % (max - min);
+          if (IsOdd(reflectionCount)) {
+            position[i] = max - reflection;
+            velocity[i] = -velocity[i];
+          } else {
+            position[i] = min + reflection;
+          }
+        }
+      }
+
+      RealVector = position;
+      Velocity = velocity;
+    }
+
+    private static bool IsOdd(int number) {
+      return number % 2 == 1;
+    }
   }
 }
