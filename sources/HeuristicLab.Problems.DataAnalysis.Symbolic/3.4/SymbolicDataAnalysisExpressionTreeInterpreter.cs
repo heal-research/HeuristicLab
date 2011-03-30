@@ -207,14 +207,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         if (instr.opCode == OpCodes.Variable) {
           var variableTreeNode = instr.dynamicNode as VariableTreeNode;
           instr.iArg0 = (ushort)dataset.GetVariableIndex(variableTreeNode.VariableName);
-          code[i] = instr;
+          instr.dArg0 = variableTreeNode.Weight;
         } else if (instr.opCode == OpCodes.LagVariable) {
           var variableTreeNode = instr.dynamicNode as LaggedVariableTreeNode;
           instr.iArg0 = (ushort)dataset.GetVariableIndex(variableTreeNode.VariableName);
-          code[i] = instr;
+          instr.dArg0 = variableTreeNode.Weight;
         } else if (instr.opCode == OpCodes.VariableCondition) {
           var variableConditionTreeNode = instr.dynamicNode as VariableConditionTreeNode;
           instr.iArg0 = (ushort)dataset.GetVariableIndex(variableConditionTreeNode.VariableName);
+          instr.dArg0 = variableConditionTreeNode.Threshold;
+        } else if (instr.opCode == OpCodes.Constant) {
+          var constTreeNode = instr.dynamicNode as ConstantTreeNode;
+          instr.dArg0 = constTreeNode.Value;
         }
       }
       var state = new InterpreterState(code);
@@ -407,18 +411,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             return state.GetStackFrameValue(currentInstr.iArg0);
           }
         case OpCodes.Variable: {
-            var variableTreeNode = currentInstr.dynamicNode as VariableTreeNode;
-            return dataset[row, currentInstr.iArg0] * variableTreeNode.Weight;
+            return dataset[row, currentInstr.iArg0] * currentInstr.dArg0;
           }
         case OpCodes.LagVariable: {
             var laggedVariableTreeNode = currentInstr.dynamicNode as LaggedVariableTreeNode;
             int actualRow = row + laggedVariableTreeNode.Lag;
             if (actualRow < 0 || actualRow >= dataset.Rows) throw new ArgumentException("Out of range access to dataset row: " + row);
-            return dataset[actualRow, currentInstr.iArg0] * laggedVariableTreeNode.Weight;
+            return dataset[actualRow, currentInstr.iArg0] * currentInstr.dArg0;
           }
         case OpCodes.Constant: {
-            var constTreeNode = currentInstr.dynamicNode as ConstantTreeNode;
-            return constTreeNode.Value;
+            return currentInstr.dArg0;
           }
 
         //mkommend: this symbol uses the logistic function f(x) = 1 / (1 + e^(-alpha * x) ) 
@@ -426,7 +428,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         case OpCodes.VariableCondition: {
             var variableConditionTreeNode = (VariableConditionTreeNode)currentInstr.dynamicNode;
             double variableValue = dataset[row, currentInstr.iArg0];
-            double x = variableValue - variableConditionTreeNode.Threshold;
+            double x = variableValue - currentInstr.dArg0;
             double p = 1 / (1 + Math.Exp(-variableConditionTreeNode.Slope * x));
 
             double trueBranch = Evaluate(dataset, ref row, state);

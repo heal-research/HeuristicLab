@@ -38,28 +38,33 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     #region IOnlineEvaluator Members
+    private OnlineEvaluatorError errorState;
+    public OnlineEvaluatorError ErrorState {
+      get { return errorState; }
+    }
     public double Value {
       get { return MeanSquaredError; }
     }
     public void Reset() {
       n = 0;
       sse = 0.0;
+      errorState = OnlineEvaluatorError.InsufficientElementsAdded;
     }
 
     public void Add(double original, double estimated) {
       if (double.IsNaN(estimated) || double.IsInfinity(estimated) ||
-          double.IsNaN(original) || double.IsInfinity(original) ||
-        double.IsNaN(sse)) {
-        sse = double.NaN;
-      } else {
+          double.IsNaN(original) || double.IsInfinity(original)) {
+        errorState = errorState | OnlineEvaluatorError.InvalidValueAdded;
+      } else if (!errorState.HasFlag(OnlineEvaluatorError.InvalidValueAdded)) {
         double error = estimated - original;
         sse += error * error;
         n++;
+        errorState = OnlineEvaluatorError.None; // n >= 1
       }
     }
     #endregion
 
-    public static double Calculate(IEnumerable<double> first, IEnumerable<double> second) {
+    public static double Calculate(IEnumerable<double> first, IEnumerable<double> second, out OnlineEvaluatorError errorState) {
       IEnumerator<double> firstEnumerator = first.GetEnumerator();
       IEnumerator<double> secondEnumerator = second.GetEnumerator();
       OnlineMeanSquaredErrorEvaluator mseEvaluator = new OnlineMeanSquaredErrorEvaluator();
@@ -75,6 +80,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       if (secondEnumerator.MoveNext() || firstEnumerator.MoveNext()) {
         throw new ArgumentException("Number of elements in first and second enumeration doesn't match.");
       } else {
+        errorState = mseEvaluator.ErrorState;
         return mseEvaluator.MeanSquaredError;
       }
     }

@@ -57,7 +57,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       IEnumerable<double> estimatedValues = interpreter.GetSymbolicExpressionTreeValues(solution, problemData.Dataset, rows);
       IEnumerable<double> originalValues = problemData.Dataset.GetEnumeratedVariableValues(problemData.TargetVariable, rows);
       IEnumerable<double> boundedEstimationValues = estimatedValues.LimitToRange(lowerEstimationLimit, upperEstimationLimit);
-      return OnlineMeanSquaredErrorEvaluator.Calculate(originalValues, boundedEstimationValues);
+      OnlineEvaluatorError errorState;
+      double mse = OnlineMeanSquaredErrorEvaluator.Calculate(originalValues, boundedEstimationValues, out errorState);
+      if (errorState != OnlineEvaluatorError.None) return double.NaN;
+      else return mse;
     }
 
     public override double Evaluate(IExecutionContext context, ISymbolicExpressionTree tree, IClassificationProblemData problemData, IEnumerable<int> rows) {

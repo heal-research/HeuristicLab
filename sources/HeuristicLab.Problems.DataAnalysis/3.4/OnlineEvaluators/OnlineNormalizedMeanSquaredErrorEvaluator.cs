@@ -42,6 +42,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     #region IOnlineEvaluator Members
+    public OnlineEvaluatorError ErrorState {
+      get { return meanSquaredErrorCalculator.MeanErrorState | originalVarianceCalculator.VarianceErrorState; }
+    }
     public double Value {
       get { return NormalizedMeanSquaredError; }
     }
@@ -59,7 +62,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     #endregion
 
-    public static double Calculate(IEnumerable<double> first, IEnumerable<double> second) {
+    public static double Calculate(IEnumerable<double> first, IEnumerable<double> second, out OnlineEvaluatorError errorState) {
       IEnumerator<double> firstEnumerator = first.GetEnumerator();
       IEnumerator<double> secondEnumerator = second.GetEnumerator();
       OnlineNormalizedMeanSquaredErrorEvaluator normalizedMSEEvaluator = new OnlineNormalizedMeanSquaredErrorEvaluator();
@@ -75,6 +78,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       if (secondEnumerator.MoveNext() || firstEnumerator.MoveNext()) {
         throw new ArgumentException("Number of elements in first and second enumeration doesn't match.");
       } else {
+        errorState = normalizedMSEEvaluator.ErrorState;
         return normalizedMSEEvaluator.NormalizedMeanSquaredError;
       }
     }

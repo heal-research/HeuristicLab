@@ -30,10 +30,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private int n;
     public double Accuracy {
       get {
-        if (n < 1)
-          throw new InvalidOperationException("No elements");
-        else
-          return correctlyClassified / (double)n;
+        return correctlyClassified / (double)n;
       }
     }
 
@@ -42,26 +39,35 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     #region IOnlineEvaluator Members
+    private OnlineEvaluatorError errorState;
+    public OnlineEvaluatorError ErrorState {
+      get { return errorState; }
+    }
     public double Value {
       get { return Accuracy; }
     }
     public void Reset() {
       n = 0;
       correctlyClassified = 0;
+      errorState = OnlineEvaluatorError.InsufficientElementsAdded;
     }
 
     public void Add(double original, double estimated) {
-      if (double.IsNaN(estimated) || double.IsInfinity(estimated) ||
-          double.IsNaN(original) || double.IsInfinity(original)) {
-        throw new ArgumentException("Accuracy is not defined for NaN or infinity elements");
-      } else {
-        if (original.IsAlmost(estimated)) correctlyClassified++;
+      // ignore cases where original is NaN completly 
+      if (!double.IsNaN(original)) {
+        // increment number of observed samples
         n++;
+        if (original.IsAlmost(estimated)) {
+          // original = estimated = +Inf counts as correctly classified
+          // original = estimated = -Inf counts as correctly classified
+          correctlyClassified++;
+        }
+        errorState = OnlineEvaluatorError.None; // number of (non-NaN) samples >= 1
       }
     }
     #endregion
 
-    public static double Calculate(IEnumerable<double> first, IEnumerable<double> second) {
+    public static double Calculate(IEnumerable<double> first, IEnumerable<double> second, out OnlineEvaluatorError errorState) {
       IEnumerator<double> firstEnumerator = first.GetEnumerator();
       IEnumerator<double> secondEnumerator = second.GetEnumerator();
       OnlineAccuracyEvaluator accuracyEvaluator = new OnlineAccuracyEvaluator();
@@ -77,6 +83,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       if (secondEnumerator.MoveNext() || firstEnumerator.MoveNext()) {
         throw new ArgumentException("Number of elements in first and second enumeration doesn't match.");
       } else {
+        errorState = accuracyEvaluator.ErrorState;
         return accuracyEvaluator.Accuracy;
       }
     }

@@ -104,15 +104,16 @@ namespace HeuristicLab.Problems.DataAnalysis {
       double[] estimatedTestValues = EstimatedTestValues.ToArray(); // cache values
       IEnumerable<double> originalTestValues = ProblemData.Dataset.GetEnumeratedVariableValues(ProblemData.TargetVariable, ProblemData.TestIndizes);
 
-      double trainingMSE = OnlineMeanSquaredErrorEvaluator.Calculate(estimatedTrainingValues, originalTrainingValues);
-      double testMSE = OnlineMeanSquaredErrorEvaluator.Calculate(estimatedTestValues, originalTestValues);
-      double trainingR2 = OnlinePearsonsRSquaredEvaluator.Calculate(estimatedTrainingValues, originalTrainingValues);
-      double testR2 = OnlinePearsonsRSquaredEvaluator.Calculate(estimatedTestValues, originalTestValues);
+      OnlineEvaluatorError errorState;
+      double trainingMSE = OnlineMeanSquaredErrorEvaluator.Calculate(estimatedTrainingValues, originalTrainingValues, out errorState);
+      TrainingMeanSquaredError = errorState == OnlineEvaluatorError.None ? trainingMSE : double.NaN;
+      double testMSE = OnlineMeanSquaredErrorEvaluator.Calculate(estimatedTestValues, originalTestValues, out errorState);
+      TestMeanSquaredError = errorState == OnlineEvaluatorError.None ? testMSE : double.NaN;
 
-      TrainingMeanSquaredError = trainingMSE;
-      TestMeanSquaredError = testMSE;
-      TrainingRSquared = trainingR2;
-      TestRSquared = testR2;
+      double trainingR2 = OnlinePearsonsRSquaredEvaluator.Calculate(estimatedTrainingValues, originalTrainingValues, out errorState);
+      TrainingRSquared = errorState == OnlineEvaluatorError.None ? trainingR2 : double.NaN;
+      double testR2 = OnlinePearsonsRSquaredEvaluator.Calculate(estimatedTestValues, originalTestValues, out errorState);
+      TestRSquared = errorState == OnlineEvaluatorError.None ? testR2 : double.NaN;
     }
 
     private void RegisterEventHandler() {

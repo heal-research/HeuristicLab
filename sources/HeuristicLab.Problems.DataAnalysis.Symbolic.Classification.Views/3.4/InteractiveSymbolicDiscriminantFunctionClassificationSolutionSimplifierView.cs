@@ -83,7 +83,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
       NormalDistributionCutPointsThresholdCalculator.CalculateThresholds(Content.ProblemData, originalOutput, targetClassValues, out classValues, out thresholds);
       var classifier = new SymbolicDiscriminantFunctionClassificationModel(tree, interpreter);
       classifier.SetThresholdsAndClassValues(thresholds, classValues);
-      double originalAccuracy = OnlineAccuracyEvaluator.Calculate(targetClassValues, classifier.GetEstimatedClassValues(dataset, rows));
+      OnlineEvaluatorError errorState;
+      double originalAccuracy = OnlineAccuracyEvaluator.Calculate(targetClassValues, classifier.GetEstimatedClassValues(dataset, rows), out errorState);
+      if (errorState != OnlineEvaluatorError.None) originalAccuracy = 0.0;
 
       foreach (ISymbolicExpressionTreeNode node in nodes) {
         var parent = node.Parent;
@@ -96,7 +98,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
         NormalDistributionCutPointsThresholdCalculator.CalculateThresholds(Content.ProblemData, newOutput, targetClassValues, out classValues, out thresholds);
         classifier = new SymbolicDiscriminantFunctionClassificationModel(tree, interpreter);
         classifier.SetThresholdsAndClassValues(thresholds, classValues);
-        double newAccuracy = OnlineAccuracyEvaluator.Calculate(targetClassValues, classifier.GetEstimatedClassValues(dataset, rows));
+        double newAccuracy = OnlineAccuracyEvaluator.Calculate(targetClassValues, classifier.GetEstimatedClassValues(dataset, rows), out errorState);
+        if (errorState != OnlineEvaluatorError.None) newAccuracy = 0.0;
 
         // impact = 0 if no change
         // impact < 0 if new solution is better

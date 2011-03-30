@@ -62,7 +62,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.SingleObjec
 
       IEnumerator<double> originalEnumerator = originalValues.GetEnumerator();
       IEnumerator<double> estimatedEnumerator = estimatedValues.GetEnumerator();
-      OnlineMeanSquaredErrorEvaluator mseEvaluator = new OnlineMeanSquaredErrorEvaluator();
       double errorSum = 0.0;
       int n = 0;
 

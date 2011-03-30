@@ -84,8 +84,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
       double[] estimatedTestClassValues = EstimatedTestClassValues.ToArray(); // cache values
       IEnumerable<double> originalTestClassValues = ProblemData.Dataset.GetEnumeratedVariableValues(ProblemData.TargetVariable, ProblemData.TestIndizes);
 
-      double trainingAccuracy = OnlineAccuracyEvaluator.Calculate(estimatedTrainingClassValues, originalTrainingClassValues);
-      double testAccuracy = OnlineAccuracyEvaluator.Calculate(estimatedTestClassValues, originalTestClassValues);
+      OnlineEvaluatorError errorState;
+      double trainingAccuracy = OnlineAccuracyEvaluator.Calculate(estimatedTrainingClassValues, originalTrainingClassValues, out errorState);
+      if (errorState != OnlineEvaluatorError.None) trainingAccuracy = double.NaN;
+      double testAccuracy = OnlineAccuracyEvaluator.Calculate(estimatedTestClassValues, originalTestClassValues, out errorState);
+      if (errorState != OnlineEvaluatorError.None) testAccuracy = double.NaN;
 
       TrainingAccuracy = trainingAccuracy;
       TestAccuracy = testAccuracy;

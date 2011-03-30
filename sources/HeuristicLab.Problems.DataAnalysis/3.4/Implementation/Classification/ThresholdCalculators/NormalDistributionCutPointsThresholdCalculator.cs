@@ -63,9 +63,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
         IEnumerable<double> estimatedClassValues = group.Select(x => x.EstimatedValue);
         double classValue = group.Key;
         double mean, variance;
-        OnlineMeanAndVarianceCalculator.Calculate(estimatedClassValues, out mean, out variance);
-        classMean[classValue] = mean;
-        classStdDev[classValue] = Math.Sqrt(variance);
+        OnlineEvaluatorError meanErrorState, varianceErrorState;
+        OnlineMeanAndVarianceCalculator.Calculate(estimatedClassValues, out mean, out variance, out meanErrorState, out varianceErrorState);
+
+        if (meanErrorState == OnlineEvaluatorError.None && varianceErrorState == OnlineEvaluatorError.None) {
+          classMean[classValue] = mean;
+          classStdDev[classValue] = Math.Sqrt(variance);
+        }
       }
       double[] originalClasses = classMean.Keys.OrderBy(x => x).ToArray();
       int nClasses = originalClasses.Length;

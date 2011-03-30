@@ -39,30 +39,34 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     #region IOnlineEvaluator Members
+    private OnlineEvaluatorError errorState;
+    public OnlineEvaluatorError ErrorState {
+      get { return errorState; }
+    }
     public double Value {
       get { return MeanAbsolutePercentageError; }
     }
     public void Reset() {
       n = 0;
       sre = 0.0;
+      errorState = OnlineEvaluatorError.InsufficientElementsAdded;
     }
 
     public void Add(double original, double estimated) {
       if (double.IsNaN(estimated) || double.IsInfinity(estimated) ||
           double.IsNaN(original) || double.IsInfinity(original) ||
-        double.IsNaN(sre)) {
-        sre = double.NaN;
-      } else {
-        if (!original.IsAlmost(0.0)) {
-          sre += Math.Abs((estimated - original) / original);
-          n++;
-        }
+        original.IsAlmost(0.0)) {
+        errorState = errorState | OnlineEvaluatorError.InvalidValueAdded;
+      } else if (!errorState.HasFlag(OnlineEvaluatorError.InvalidValueAdded)) {
+        sre += Math.Abs((estimated - original) / original);
+        n++;
+        errorState = OnlineEvaluatorError.None; // n >= 1
       }
     }
 
     #endregion
 
-    public static double Calculate(IEnumerable<double> first, IEnumerable<double> second) {
+    public static double Calculate(IEnumerable<double> first, IEnumerable<double> second, out OnlineEvaluatorError errorState) {
       IEnumerator<double> firstEnumerator = first.GetEnumerator();
       IEnumerator<double> secondEnumerator = second.GetEnumerator();
       OnlineMeanAbsolutePercentageErrorEvaluator evaluator = new OnlineMeanAbsolutePercentageErrorEvaluator();
@@ -78,6 +82,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       if (secondEnumerator.MoveNext() || firstEnumerator.MoveNext()) {
         throw new ArgumentException("Number of elements in first and second enumeration doesn't match.");
       } else {
+        errorState = evaluator.ErrorState;
         return evaluator.MeanAbsolutePercentageError;
       }
     }

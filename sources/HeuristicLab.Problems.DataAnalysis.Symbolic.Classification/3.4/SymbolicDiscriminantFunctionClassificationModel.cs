@@ -123,7 +123,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       var targetValues = dataset.GetEnumeratedVariableValues(targetVariable, rows);
       double alpha;
       double beta;
-      OnlineLinearScalingParameterCalculator.Calculate(estimatedValues, targetValues, out alpha, out beta);
+      OnlineEvaluatorError errorState;
+      OnlineLinearScalingParameterCalculator.Calculate(estimatedValues, targetValues, out alpha, out beta, out errorState);
+      if (errorState != OnlineEvaluatorError.None) return;
 
       ConstantTreeNode alphaTreeNode = null;
       ConstantTreeNode betaTreeNode = null;

@@ -31,10 +31,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     /// </summary>
     public double Alpha {
       get {
-        if (cnt < 2)
-          return 0;
-        else
-          return targetMeanCalculator.Mean - Beta * originalMeanAndVarianceCalculator.Mean;
+        return targetMeanCalculator.Mean - Beta * originalMeanAndVarianceCalculator.Mean;
       }
     }
 
@@ -43,12 +40,17 @@ namespace HeuristicLab.Problems.DataAnalysis {
     /// </summary>
     public double Beta {
       get {
-        if (cnt < 2)
-          return 1;
-        else if (originalMeanAndVarianceCalculator.PopulationVariance.IsAlmost(0.0))
+        if (originalMeanAndVarianceCalculator.PopulationVariance.IsAlmost(0.0))
           return 1;
         else
           return originalTargetCovarianceEvaluator.Covariance / originalMeanAndVarianceCalculator.PopulationVariance;
+      }
+    }
+
+    public OnlineEvaluatorError ErrorState {
+      get {
+        return targetMeanCalculator.MeanErrorState | originalMeanAndVarianceCalculator.MeanErrorState |
+          originalMeanAndVarianceCalculator.PopulationVarianceErrorState | originalTargetCovarianceEvaluator.ErrorState;
       }
     }
 
@@ -93,7 +95,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
     /// <param name="target">Target values to which the original values should be scaled</param>
     /// <param name="alpha">Additive constant for the linear scaling</param>
     /// <param name="beta">Multiplicative factor for the linear scaling</param>
-    public static void Calculate(IEnumerable<double> original, IEnumerable<double> target, out double alpha, out double beta) {
+    /// <param name="errorState">Flag that indicates if errors occurred in the calculation of the linea scaling parameters.</param>
+    public static void Calculate(IEnumerable<double> original, IEnumerable<double> target, out double alpha, out double beta, out OnlineEvaluatorError errorState) {
       OnlineLinearScalingParameterCalculator calculator = new OnlineLinearScalingParameterCalculator();
       IEnumerator<double> originalEnumerator = original.GetEnumerator();
       IEnumerator<double> targetEnumerator = target.GetEnumerator();
@@ -109,6 +112,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       if (originalEnumerator.MoveNext() || targetEnumerator.MoveNext()) {
         throw new ArgumentException("Number of elements in original and target enumeration do not match.");
       } else {
+        errorState = calculator.ErrorState;
         alpha = calculator.Alpha;
         beta = calculator.Beta;
       }

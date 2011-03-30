@@ -59,7 +59,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       IEnumerable<double> estimatedValues = interpreter.GetSymbolicExpressionTreeValues(solution, problemData.Dataset, rows);
       IEnumerable<double> originalValues = problemData.Dataset.GetEnumeratedVariableValues(problemData.TargetVariable, rows);
       IEnumerable<double> boundedEstimationValues = estimatedValues.LimitToRange(lowerEstimationLimit, upperEstimationLimit);
-      return OnlineMeanSquaredErrorEvaluator.Calculate(originalValues, boundedEstimationValues);
+      OnlineEvaluatorError errorState;
+      double mse = OnlineMeanSquaredErrorEvaluator.Calculate(originalValues, boundedEstimationValues, out errorState);
+      if (errorState != OnlineEvaluatorError.None) return double.NaN;
+      else return mse;
     }
 
     public override double Evaluate(IExecutionContext context, ISymbolicExpressionTree tree, IRegressionProblemData problemData, IEnumerable<int> rows) {
@@ -73,7 +76,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = null;
       EstimationLimitsParameter.ExecutionContext = null;
-      EvaluatedNodesParameter.ExecutionContext = null; 
+      EvaluatedNodesParameter.ExecutionContext = null;
 
       return mse;
     }

@@ -28,18 +28,30 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private double m_oldM, m_newM, m_oldS, m_newS;
     private int n;
 
+    private OnlineEvaluatorError varianceErrorState;
+    public OnlineEvaluatorError VarianceErrorState {
+      get { return varianceErrorState; }
+    }
+
     public double Variance {
       get {
         return (n > 1) ? m_newS / (n - 1) : 0.0;
       }
     }
 
+    private OnlineEvaluatorError errorState;
+    public OnlineEvaluatorError PopulationVarianceErrorState {
+      get { return errorState; }
+    }
     public double PopulationVariance {
       get {
         return (n > 0) ? m_newS / n : 0.0;
       }
     }
 
+    public OnlineEvaluatorError MeanErrorState {
+      get { return errorState; }
+    }
     public double Mean {
       get {
         return (n > 0) ? m_newM : 0.0;
@@ -56,19 +68,23 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public void Reset() {
       n = 0;
+      errorState = OnlineEvaluatorError.InsufficientElementsAdded;
+      varianceErrorState = OnlineEvaluatorError.InsufficientElementsAdded;
     }
 
     public void Add(double x) {
-      if (double.IsNaN(x) || double.IsInfinity(x) || double.IsNaN(m_newM)) {
-        m_newM = double.NaN;
-        m_newS = double.NaN;
-      } else {
+      if (double.IsNaN(x) || double.IsInfinity(x)) {
+        errorState = errorState | OnlineEvaluatorError.InvalidValueAdded;
+        varianceErrorState = errorState | OnlineEvaluatorError.InvalidValueAdded;
+      } else if (!errorState.HasFlag(OnlineEvaluatorError.InvalidValueAdded)) {
         n++;
         // See Knuth TAOCP vol 2, 3rd edition, page 232
         if (n == 1) {
           m_oldM = m_newM = x;
           m_oldS = 0.0;
+          errorState = OnlineEvaluatorError.None; // n >= 1
         } else {
+          varianceErrorState = OnlineEvaluatorError.None; // n >= 1
           m_newM = m_oldM + (x - m_oldM) / n;
           m_newS = m_oldS + (x - m_oldM) * (x - m_newM);
 
@@ -79,13 +95,15 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
-    public static void Calculate(IEnumerable<double> x, out double mean, out double variance) {
+    public static void Calculate(IEnumerable<double> x, out double mean, out double variance, out OnlineEvaluatorError meanErrorState, out OnlineEvaluatorError varianceErrorState) {
       OnlineMeanAndVarianceCalculator meanAndVarianceCalculator = new OnlineMeanAndVarianceCalculator();
       foreach (double xi in x) {
         meanAndVarianceCalculator.Add(xi);
       }
       mean = meanAndVarianceCalculator.Mean;
       variance = meanAndVarianceCalculator.Variance;
+      meanErrorState = meanAndVarianceCalculator.MeanErrorState;
+      varianceErrorState = meanAndVarianceCalculator.VarianceErrorState;
     }
   }
 }

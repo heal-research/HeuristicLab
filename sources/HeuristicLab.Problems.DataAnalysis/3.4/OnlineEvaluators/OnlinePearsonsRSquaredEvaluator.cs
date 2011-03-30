@@ -45,6 +45,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public OnlinePearsonsRSquaredEvaluator() { }
 
     #region IOnlineEvaluator Members
+    public OnlineEvaluatorError ErrorState {
+      get { return covEvaluator.ErrorState | sxEvaluator.PopulationVarianceErrorState | syEvaluator.PopulationVarianceErrorState; }
+    }
     public double Value {
       get { return RSquared; }
     }
@@ -63,7 +66,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     #endregion
 
-    public static double Calculate(IEnumerable<double> first, IEnumerable<double> second) {
+    public static double Calculate(IEnumerable<double> first, IEnumerable<double> second, out OnlineEvaluatorError errorState) {
       IEnumerator<double> firstEnumerator = first.GetEnumerator();
       IEnumerator<double> secondEnumerator = second.GetEnumerator();
       OnlinePearsonsRSquaredEvaluator rSquaredEvaluator = new OnlinePearsonsRSquaredEvaluator();
@@ -79,6 +82,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       if (secondEnumerator.MoveNext() || firstEnumerator.MoveNext()) {
         throw new ArgumentException("Number of elements in first and second enumeration doesn't match.");
       } else {
+        errorState = rSquaredEvaluator.ErrorState;
         return rSquaredEvaluator.RSquared;
       }
     }

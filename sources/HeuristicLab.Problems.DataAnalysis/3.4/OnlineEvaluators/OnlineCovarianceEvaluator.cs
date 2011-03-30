@@ -38,6 +38,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     #region IOnlineEvaluator Members
+    private OnlineEvaluatorError errorState;
+    public OnlineEvaluatorError ErrorState {
+      get { return errorState; }
+    }
     public double Value {
       get { return Covariance; }
     }
@@ -46,15 +50,16 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Cn = 0.0;
       originalMean = 0.0;
       estimatedMean = 0.0;
+      errorState = OnlineEvaluatorError.InsufficientElementsAdded;
     }
 
     public void Add(double original, double estimated) {
-      if (double.IsNaN(estimated) || double.IsInfinity(estimated) ||
-          double.IsNaN(original) || double.IsInfinity(original) ||
-         double.IsNaN(Cn)) {
-        Cn = double.NaN;
-      } else {
+      if (double.IsNaN(estimated) || double.IsInfinity(estimated) || double.IsNaN(original) || double.IsInfinity(original)) {
+        errorState = errorState | OnlineEvaluatorError.InvalidValueAdded;
+      } else if (!errorState.HasFlag(OnlineEvaluatorError.InvalidValueAdded)) {
         n++;
+        errorState = OnlineEvaluatorError.None;        // n >= 1
+
         // online calculation of tMean
         originalMean = originalMean + (original - originalMean) / n;
         double delta = estimated - estimatedMean; // delta = (y - yMean(n-1))
@@ -66,7 +71,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     #endregion
 
-    public static double Calculate(IEnumerable<double> first, IEnumerable<double> second) {
+    public static double Calculate(IEnumerable<double> first, IEnumerable<double> second, out OnlineEvaluatorError errorState) {
       IEnumerator<double> firstEnumerator = first.GetEnumerator();
       IEnumerator<double> secondEnumerator = second.GetEnumerator();
       OnlineCovarianceEvaluator covarianceEvaluator = new OnlineCovarianceEvaluator();
@@ -82,6 +87,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       if (secondEnumerator.MoveNext() || firstEnumerator.MoveNext()) {
         throw new ArgumentException("Number of elements in first and second enumeration doesn't match.");
       } else {
+        errorState = covarianceEvaluator.ErrorState;
         return covarianceEvaluator.Covariance;
       }
     }
