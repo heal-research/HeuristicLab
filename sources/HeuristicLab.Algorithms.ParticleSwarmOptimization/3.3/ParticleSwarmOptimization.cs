@@ -299,7 +299,9 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     private void InitInertiaUpdater() {
       foreach (IDiscreteDoubleValueModifier updater in InertiaUpdaterParameter.ValidValues) {
         updater.EndIndexParameter.ActualName = MaxIterationsParameter.Name;
+        updater.EndIndexParameter.Hidden = true; 
         updater.StartIndexParameter.Value = new IntValue(0);
+        updater.StartIndexParameter.Hidden = true;
         updater.IndexParameter.ActualName = "CurrentIteration";
         updater.ValueParameter.ActualName = "CurrentInertia";
         updater.StartValueParameter.Value = new DoubleValue(1);
