@@ -39,6 +39,7 @@ namespace HeuristicLab.Optimization.Views {
     public ResultCollectionView() {
       InitializeComponent();
       itemsGroupBox.Text = "Results";
+      viewHost.ViewsLabelVisible = false;
       base.ReadOnly = true;
     }
 
@@ -46,13 +47,17 @@ namespace HeuristicLab.Optimization.Views {
       return null;
     }
 
-    protected override void itemsListView_SelectedIndexChanged(object sender, EventArgs e) {
-      viewHost.ViewType = typeof(ResultValueView);
-      base.itemsListView_SelectedIndexChanged(sender, e);
-    }
-    protected override void showDetailsCheckBox_CheckedChanged(object sender, EventArgs e) {
-      viewHost.ViewType = typeof(ResultValueView);
-      base.showDetailsCheckBox_CheckedChanged(sender, e);
+    protected override void itemsListView_DoubleClick(object sender, EventArgs e) {
+      if (itemsListView.SelectedItems.Count == 1) {
+        IResult result = itemsListView.SelectedItems[0].Tag as IResult;
+        if (result != null) {
+          IContentView view = MainFormManager.MainForm.ShowContent(result, typeof(ResultView));
+          if (view != null) {
+            view.ReadOnly = ReadOnly;
+            view.Locked = Locked;
+          }
+        }
+      }
     }
   }
 }

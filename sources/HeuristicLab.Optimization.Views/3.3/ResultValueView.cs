@@ -26,7 +26,7 @@ using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Optimization.Views {
   [View("Result Value View")]
-  [Content(typeof(Result), false)]
+  [Content(typeof(Result), true)]
   [Content(typeof(IResult), false)]
   public sealed partial class ResultValueView : ItemView {
     public new IResult Content {

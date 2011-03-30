@@ -30,7 +30,7 @@ namespace HeuristicLab.Optimization.Views {
   /// The visual representation of a <see cref="Variable"/>.
   /// </summary>
   [View("Result View")]
-  [Content(typeof(Result), true)]
+  [Content(typeof(Result), false)]
   [Content(typeof(IResult), false)]
   public sealed partial class ResultView : NamedItemView {
     /// <summary>
