@@ -59,8 +59,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
     }
 
     protected override void ConvertSymbolicExpressionTree(SymbolicExpressionTree tree, string name, SolutionMessage.Builder builder) {
-      string stringRep = formatter.Format(tree);
-      stringRep.Replace(Environment.NewLine, "");
+      string stringRep = formatter.Format(tree);      
+      stringRep = stringRep.Replace(Environment.NewLine, "");
       SolutionMessage.Types.StringVariable.Builder stringVariable = SolutionMessage.Types.StringVariable.CreateBuilder();
       stringVariable.SetName(name).SetData(stringRep);
       builder.AddStringVars(stringVariable.Build());

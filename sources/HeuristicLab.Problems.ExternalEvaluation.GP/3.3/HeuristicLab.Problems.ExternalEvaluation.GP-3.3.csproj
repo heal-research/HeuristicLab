@@ -108,6 +108,7 @@
   <ItemGroup>
     <None Include="HeuristicLabProblemsExternalEvaluationGPPlugin.cs.frame" />
     <Compile Include="Grammar\FullFunctionalExpressionGrammar.cs" />
+    <Compile Include="Grammar\TypeCoherentExpressionGrammar.cs" />
     <Compile Include="HeuristicLabProblemsExternalEvaluationGPPlugin.cs" />
     <Compile Include="Interpretation\ITreeInterpreter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
