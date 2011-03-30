@@ -21,10 +21,9 @@
 
 using System;
 using HeuristicLab.Core;
-using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public interface IDataAnalysisSolution : INamedItem, IKeyedItemCollection<string, IResult> {
+  public interface IDataAnalysisSolution : INamedItem {
     IDataAnalysisModel Model { get; }
     IDataAnalysisProblemData ProblemData { get; }
 

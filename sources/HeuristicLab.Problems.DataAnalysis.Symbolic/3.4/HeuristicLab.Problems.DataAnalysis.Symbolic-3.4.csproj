@@ -123,6 +123,7 @@
     <Compile Include="Formatters\SymbolicDataAnalysisExpressionMATLABFormatter.cs" />
     <Compile Include="Interfaces\ISymbolicDataAnalysisBoundedOperator.cs" />
     <Compile Include="Interfaces\ISymbolicDataAnalysisExpressionTreeInterpreter.cs" />
+    <Compile Include="Interfaces\ISymbolicDataAnalysisProblem.cs" />
     <Compile Include="SymbolicDataAnalysisExpressionTreeCreator.cs" />
     <Compile Include="SymbolicDataAnalysisModel.cs">
       <SubType>Code</SubType>

@@ -34,7 +34,7 @@ using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
-  public abstract class SymbolicDataAnalysisProblem<T, U, V> : HeuristicOptimizationProblem<U, V>, IDataAnalysisProblem, IStorableContent
+  public abstract class SymbolicDataAnalysisProblem<T, U, V> : HeuristicOptimizationProblem<U, V>, IDataAnalysisProblem<T>, ISymbolicDataAnalysisProblem, IStorableContent
     where T : class,IDataAnalysisProblemData
     where U : class, ISymbolicDataAnalysisEvaluator<T>
     where V : class, ISymbolicDataAnalysisSolutionCreator {
@@ -94,7 +94,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public IFixedValueParameter<IntRange> FitnessCalculationPartitionParameter {
       get { return (IFixedValueParameter<IntRange>)Parameters[FitnessCalculationPartitionParameterName]; }
     }
-    public IFixedValueParameter<IntRange> ValidationPartitionParamater {
+    public IFixedValueParameter<IntRange> ValidationPartitionParameter {
       get { return (IFixedValueParameter<IntRange>)Parameters[ValidationPartitionParameterName]; }
     }
     #endregion
@@ -140,7 +140,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       get { return FitnessCalculationPartitionParameter.Value; }
     }
     public IntRange ValidationPartition {
-      get { return ValidationPartitionParamater.Value; }
+      get { return ValidationPartitionParameter.Value; }
     }
     #endregion
 
@@ -296,7 +296,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
       foreach (var op in operators.OfType<ISymbolicDataAnalysisValidationAnalyzer<U, T>>()) {
         op.RelativeNumberOfEvaluatedSamplesParameter.ActualName = RelativeNumberOfEvaluatedSamplesParameter.Name;
-        op.ValidationPartitionParameter.ActualName = ValidationPartitionParamater.Name;
+        op.ValidationPartitionParameter.ActualName = ValidationPartitionParameter.Name;
       }
       foreach (var op in operators.OfType<ISymbolicDataAnalysisInterpreterOperator>()) {
         op.SymbolicDataAnalysisTreeInterpreterParameter.ActualName = SymbolicExpressionTreeInterpreterParameterName;
