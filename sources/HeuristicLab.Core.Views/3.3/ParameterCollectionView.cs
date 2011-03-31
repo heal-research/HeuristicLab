@@ -34,9 +34,21 @@ namespace HeuristicLab.Core.Views {
   public partial class ParameterCollectionView : NamedItemCollectionView<IParameter> {
     protected CreateParameterDialog createParameterDialog;
 
+    protected bool allowEditingOfHiddenParameters;
+    public virtual bool AllowEditingOfHiddenParameters {
+      get { return allowEditingOfHiddenParameters; }
+      set {
+        if (value != allowEditingOfHiddenParameters) {
+          allowEditingOfHiddenParameters = value;
+          SetEnabledStateOfControls();
+        }
+      }
+    }
+
     public ParameterCollectionView() {
       InitializeComponent();
       itemsGroupBox.Text = "Parameters";
+      allowEditingOfHiddenParameters = true;
     }
 
     protected override void Dispose(bool disposing) {
@@ -65,6 +77,7 @@ namespace HeuristicLab.Core.Views {
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
       showHiddenParametersCheckBox.Enabled = (Content != null) && Content.Any(x => x.Hidden);
+      viewHost.ReadOnly = ReadOnly || ((viewHost.Content is IParameter) && (((IParameter)viewHost.Content).Hidden) && !AllowEditingOfHiddenParameters);
     }
 
     protected override IParameter CreateItem() {
@@ -132,10 +145,26 @@ namespace HeuristicLab.Core.Views {
         AdjustListViewColumnSizes();
       }
     }
+    protected override void itemsListView_SelectedIndexChanged(object sender, EventArgs e) {
+      base.itemsListView_SelectedIndexChanged(sender, e);
+      SetEnabledStateOfControls();
+    }
+    protected override void itemsListView_DoubleClick(object sender, EventArgs e) {
+      if (itemsListView.SelectedItems.Count == 1) {
+        IParameter item = itemsListView.SelectedItems[0].Tag as IParameter;
+        if (item != null) {
+          IContentView view = MainFormManager.MainForm.ShowContent(item);
+          if (view != null) {
+            view.ReadOnly = ReadOnly || (item.Hidden && !AllowEditingOfHiddenParameters);
+            view.Locked = Locked;
+          }
+        }
+      }
+    }
     protected virtual void itemsListViewContextMenuStrip_Opening(object sender, System.ComponentModel.CancelEventArgs e) {
       showHideParametersToolStripMenuItem.Text = "Show/Hide Parameters";
       showHideParametersToolStripMenuItem.Enabled = false;
-      if ((itemsListView.SelectedItems.Count > 0) && !ReadOnly && !Locked) {
+      if ((itemsListView.SelectedItems.Count > 0) && !ReadOnly && !Locked && AllowEditingOfHiddenParameters) {
         List<IParameter> parameters = new List<IParameter>();
         foreach (ListViewItem listViewItem in itemsListView.SelectedItems) {
           IParameter parameter = listViewItem.Tag as IParameter;
@@ -150,6 +179,10 @@ namespace HeuristicLab.Core.Views {
     protected virtual void showHideParametersToolStripMenuItem_Click(object sender, System.EventArgs e) {
       foreach (IParameter parameter in (IEnumerable<IParameter>)showHideParametersToolStripMenuItem.Tag)
         parameter.Hidden = !parameter.Hidden;
+    }
+    protected override void showDetailsCheckBox_CheckedChanged(object sender, EventArgs e) {
+      base.showDetailsCheckBox_CheckedChanged(sender, e);
+      SetEnabledStateOfControls();
     }
     #endregion
 
