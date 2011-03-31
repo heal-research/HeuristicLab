@@ -32,7 +32,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
-  [Item("Swarm Updater", "Updates personal best point and quality as well as global best point and quality.")]
+  [Item("RealVectorSwarmUpdater", "Updates personal best point and quality as well as global best point and quality.")]
   [StorableClass]
   public sealed class RealVectorSwarmUpdater : SingleSuccessorOperator, IRealVectorSwarmUpdater {
 
@@ -222,6 +222,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     void VelocityBoundsStartValueParameter_Value_ValueChanged(object sender, EventArgs e) {
+      UpdateVelocityBoundsParamater(); 
+    }
+
+    void UpdateVelocityBoundsParamater() {
       if (VelocityBoundsParameter.Value == null) {
         VelocityBoundsParameter.Value = new DoubleMatrix(1, 2);
       } else if (VelocityBoundsParameter.Value.Columns != 2) {
@@ -240,6 +244,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       if (VelocityBoundsStartValueParameter.Value != null) {
         VelocityBoundsStartValueParameter.Value.ValueChanged += new EventHandler(VelocityBoundsStartValueParameter_Value_ValueChanged);
       }
+      UpdateVelocityBoundsParamater(); 
     }
 
     private void Initialize() {
