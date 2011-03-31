@@ -33,5 +33,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       this.Child = child;
       this.childIndex = parent.IndexOfSubtree(child);
     }
+    public CutPoint(ISymbolicExpressionTreeNode parent, int childIndex) {
+      this.Parent = parent;
+      this.childIndex = childIndex;
+      this.Child = null;
+    }
   }
 }

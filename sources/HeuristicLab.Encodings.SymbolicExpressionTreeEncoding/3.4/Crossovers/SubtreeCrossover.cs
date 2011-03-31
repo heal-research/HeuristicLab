@@ -87,53 +87,72 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       ISymbolicExpressionTree parent0, ISymbolicExpressionTree parent1,
       double internalCrossoverPointProbability, int maxTreeLength, int maxTreeDepth) {
       // select a random crossover point in the first parent 
-      ISymbolicExpressionTreeNode crossoverPoint0;
-      int replacedSubtreeIndex;
-      SelectCrossoverPoint(random, parent0, internalCrossoverPointProbability, maxTreeLength, maxTreeDepth, out crossoverPoint0, out replacedSubtreeIndex);
+      CutPoint crossoverPoint0;
+      SelectCrossoverPoint(random, parent0, internalCrossoverPointProbability, maxTreeLength, maxTreeDepth, out crossoverPoint0);
 
+      int childLength = crossoverPoint0.Child != null ? crossoverPoint0.Child.GetLength() : 0;
       // calculate the max length and depth that the inserted branch can have 
-      int maxInsertedBranchLength = maxTreeLength - (parent0.Length - crossoverPoint0.GetSubtree(replacedSubtreeIndex).GetLength());
-      int maxInsertedBranchDepth = maxTreeDepth - GetBranchLevel(parent0.Root, crossoverPoint0);
+      int maxInsertedBranchLength = maxTreeLength - (parent0.Length - childLength);
+      int maxInsertedBranchDepth = maxTreeDepth - GetBranchLevel(parent0.Root, crossoverPoint0.Parent);
+
 
       List<ISymbolicExpressionTreeNode> allowedBranches = new List<ISymbolicExpressionTreeNode>();
       parent1.Root.ForEachNodePostfix((n) => {
         if (n.GetLength() <= maxInsertedBranchLength &&
           n.GetDepth() <= maxInsertedBranchDepth &&
-          IsMatchingPointType(crossoverPoint0, replacedSubtreeIndex, n))
+          IsMatchingPointType(crossoverPoint0, n))
           allowedBranches.Add(n);
       });
+      // empty branch
+      if (IsMatchingPointType(crossoverPoint0, null)) allowedBranches.Add(null);
 
       if (allowedBranches.Count == 0) {
         return parent0;
       } else {
         var selectedBranch = SelectRandomBranch(random, allowedBranches, internalCrossoverPointProbability);
 
-        // manipulate the tree of parent0 in place
-        // replace the branch in tree0 with the selected branch from tree1
-        crossoverPoint0.RemoveSubtree(replacedSubtreeIndex);
-        crossoverPoint0.InsertSubtree(replacedSubtreeIndex, selectedBranch);
+        if (crossoverPoint0.Child != null) {
+          // manipulate the tree of parent0 in place
+          // replace the branch in tree0 with the selected branch from tree1
+          crossoverPoint0.Parent.RemoveSubtree(crossoverPoint0.ChildIndex);
+          if (selectedBranch != null) {
+            crossoverPoint0.Parent.InsertSubtree(crossoverPoint0.ChildIndex, selectedBranch);
+          }
+        } else {
+          // child is null (additional child should be added under the parent)
+          if (selectedBranch != null) {
+            crossoverPoint0.Parent.AddSubtree(selectedBranch);
+          }
+        }
         return parent0;
       }
     }
 
-    private static bool IsMatchingPointType(ISymbolicExpressionTreeNode parent, int replacedSubtreeIndex, ISymbolicExpressionTreeNode branch) {
-      // check syntax constraints of direct parent - child relation
-      if (!parent.Grammar.ContainsSymbol(branch.Symbol) ||
-          !parent.Grammar.IsAllowedChildSymbol(parent.Symbol, branch.Symbol, replacedSubtreeIndex)) return false;
+    private static bool IsMatchingPointType(CutPoint cutPoint, ISymbolicExpressionTreeNode newChild) {
+      var parent = cutPoint.Parent;
+      if (newChild == null) {
+        // make sure that one subtree can be removed and that only the last subtree is removed 
+        return parent.Grammar.GetMinimumSubtreeCount(parent.Symbol) < parent.SubtreesCount &&
+          cutPoint.ChildIndex == parent.SubtreesCount - 1;
+      } else {
+        // check syntax constraints of direct parent - child relation
+        if (!parent.Grammar.ContainsSymbol(newChild.Symbol) ||
+            !parent.Grammar.IsAllowedChildSymbol(parent.Symbol, newChild.Symbol, cutPoint.ChildIndex)) return false;
 
-      bool result = true;
-      // check point type for the whole branch
-      branch.ForEachNodePostfix((n) => {
-        result =
-          result &&
-          parent.Grammar.ContainsSymbol(n.Symbol) &&
-          n.SubtreesCount >= parent.Grammar.GetMinimumSubtreeCount(n.Symbol) &&
-          n.SubtreesCount <= parent.Grammar.GetMaximumSubtreeCount(n.Symbol);
-      });
-      return result;
+        bool result = true;
+        // check point type for the whole branch
+        newChild.ForEachNodePostfix((n) => {
+          result =
+            result &&
+            parent.Grammar.ContainsSymbol(n.Symbol) &&
+            n.SubtreesCount >= parent.Grammar.GetMinimumSubtreeCount(n.Symbol) &&
+            n.SubtreesCount <= parent.Grammar.GetMaximumSubtreeCount(n.Symbol);
+        });
+        return result;
+      }
     }
 
-    private static void SelectCrossoverPoint(IRandom random, ISymbolicExpressionTree parent0, double internalNodeProbability, int maxBranchLength, int maxBranchDepth, out ISymbolicExpressionTreeNode crossoverPoint, out int subtreeIndex) {
+    private static void SelectCrossoverPoint(IRandom random, ISymbolicExpressionTree parent0, double internalNodeProbability, int maxBranchLength, int maxBranchDepth, out CutPoint crossoverPoint) {
       if (internalNodeProbability < 0.0 || internalNodeProbability > 1.0) throw new ArgumentException("internalNodeProbability");
       List<CutPoint> internalCrossoverPoints = new List<CutPoint>();
       List<CutPoint> leafCrossoverPoints = new List<CutPoint>();
@@ -148,6 +167,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
                 leafCrossoverPoints.Add(new CutPoint(n, child));
             }
           }
+          // add one additional extension point if the number of sub trees for the symbol is not full
+          if (n.SubtreesCount < n.Grammar.GetMaximumSubtreeCount(n.Symbol)) {
+            // empty extension point
+            internalCrossoverPoints.Add(new CutPoint(n, n.SubtreesCount));
+          }
         }
       });
 
@@ -155,25 +179,17 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         // select from internal node if possible
         if (internalCrossoverPoints.Count > 0) {
           // select internal crossover point or leaf
-          var selectedCrossoverPoint = internalCrossoverPoints[random.Next(internalCrossoverPoints.Count)];
-          crossoverPoint = selectedCrossoverPoint.Parent;
-          subtreeIndex = selectedCrossoverPoint.ChildIndex;
+          crossoverPoint = internalCrossoverPoints[random.Next(internalCrossoverPoints.Count)];
         } else {
           // otherwise select external node
-          var selectedCrossoverPoint = leafCrossoverPoints[random.Next(leafCrossoverPoints.Count)];
-          crossoverPoint = selectedCrossoverPoint.Parent;
-          subtreeIndex = selectedCrossoverPoint.ChildIndex;
+          crossoverPoint = leafCrossoverPoints[random.Next(leafCrossoverPoints.Count)];
         }
       } else if (leafCrossoverPoints.Count > 0) {
         // select from leaf crossover point if possible
-        var selectedCrossoverPoint = leafCrossoverPoints[random.Next(leafCrossoverPoints.Count)];
-        crossoverPoint = selectedCrossoverPoint.Parent;
-        subtreeIndex = selectedCrossoverPoint.ChildIndex;
+        crossoverPoint = leafCrossoverPoints[random.Next(leafCrossoverPoints.Count)];
       } else {
         // otherwise select internal crossover point
-        var selectedCrossoverPoint = internalCrossoverPoints[random.Next(internalCrossoverPoints.Count)];
-        crossoverPoint = selectedCrossoverPoint.Parent;
-        subtreeIndex = selectedCrossoverPoint.ChildIndex;
+        crossoverPoint = internalCrossoverPoints[random.Next(internalCrossoverPoints.Count)];
       }
     }
 
@@ -184,27 +200,27 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       if (random.NextDouble() < internalNodeProbability) {
         // select internal node if possible
         allowedInternalBranches = (from branch in branches
-                                   where branch.Subtrees.Any()
+                                   where branch != null && branch.Subtrees.Any()
                                    select branch).ToList();
         if (allowedInternalBranches.Count > 0) {
           return allowedInternalBranches.SelectRandom(random);
         } else {
           // no internal nodes allowed => select leaf nodes
           allowedLeafBranches = (from branch in branches
-                                 where !branch.Subtrees.Any()
+                                 where branch == null || !branch.Subtrees.Any()
                                  select branch).ToList();
           return allowedLeafBranches.SelectRandom(random);
         }
       } else {
         // select leaf node if possible
         allowedLeafBranches = (from branch in branches
-                               where !branch.Subtrees.Any()
+                               where branch == null || !branch.Subtrees.Any()
                                select branch).ToList();
         if (allowedLeafBranches.Count > 0) {
           return allowedLeafBranches.SelectRandom(random);
         } else {
           allowedInternalBranches = (from branch in branches
-                                     where branch.Subtrees.Any()
+                                     where branch != null && branch.Subtrees.Any()
                                      select branch).ToList();
           return allowedInternalBranches.SelectRandom(random);
         }
