@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System.Linq;
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -49,7 +48,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var solution = SymbolicExpressionTreeParameter.ActualValue;
       double[] qualities = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, ProblemDataParameter.ActualValue, rows);
       QualitiesParameter.ActualValue = new DoubleArray(qualities);
-      AddEvaluatedNodes(solution.Length * rows.Count());
       return base.Apply();
     }
 
@@ -66,14 +64,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     public override double[] Evaluate(IExecutionContext context, ISymbolicExpressionTree tree, IRegressionProblemData problemData, IEnumerable<int> rows) {
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = context;
       EstimationLimitsParameter.ExecutionContext = context;
-      EvaluatedNodesParameter.ExecutionContext = context;
 
       double[] quality = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, tree, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, problemData, rows);
-      AddEvaluatedNodes(tree.Length * rows.Count());
 
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = null;
       EstimationLimitsParameter.ExecutionContext = null;
-      EvaluatedNodesParameter.ExecutionContext = null;
 
       return quality;
     }

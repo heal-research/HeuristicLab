@@ -48,7 +48,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.SingleObjec
       var solution = SymbolicExpressionTreeParameter.ActualValue;
       double quality = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, ProblemDataParameter.ActualValue, rows);
       QualityParameter.ActualValue = new DoubleValue(quality);
-      AddEvaluatedNodes(solution.Length * rows.Count());
       return base.Apply();
     }
 
@@ -89,14 +88,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.SingleObjec
     public override double Evaluate(IExecutionContext context, ISymbolicExpressionTree tree, IClassificationProblemData problemData, IEnumerable<int> rows) {
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = context;
       EstimationLimitsParameter.ExecutionContext = context;
-      EvaluatedNodesParameter.ExecutionContext = context;
 
       double mse = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, tree, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, problemData, rows);
-      AddEvaluatedNodes(tree.Length * rows.Count());
 
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = null;
       EstimationLimitsParameter.ExecutionContext = null;
-      EvaluatedNodesParameter.ExecutionContext = null; 
 
       return mse;
     }
