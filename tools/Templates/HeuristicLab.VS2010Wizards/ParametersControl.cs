@@ -200,11 +200,13 @@ namespace HeuristicLab.VS2010Wizards {
     protected override bool ProcessDialogKey(Keys keyData) {
       if (keyData == Keys.Tab) {
         if (customInputTextBox.Focused) {
+          customInputTextBox_Leave(customInputTextBox, EventArgs.Empty);
           if (customInputTextBox.Right + 5 < parametersListView.Right) {
             parametersListView_MouseDoubleClick(parametersListView, new MouseEventArgs(MouseButtons.Left, 2, customInputTextBox.Right + 5, customInputTextBox.Top + 3, 0));
             return true;
           } else return base.ProcessDialogKey(keyData);
         } else if (parameterTypeComboBox.Focused) {
+          parameterTypeComboBox_Leave(parameterTypeComboBox, EventArgs.Empty);
           parametersListView_MouseDoubleClick(parametersListView, new MouseEventArgs(MouseButtons.Left, 2, parameterTypeComboBox.Right + 5, parameterTypeComboBox.Top + 3, 0));
           return true;
         } else return base.ProcessDialogKey(keyData);
