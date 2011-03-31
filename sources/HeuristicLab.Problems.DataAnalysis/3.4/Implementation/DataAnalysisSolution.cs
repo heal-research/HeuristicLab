@@ -34,6 +34,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private const string ModelResultName = "Model";
     private const string ProblemDataResultName = "ProblemData";
 
+    public string Filename { get; set; }
+
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Function; }
     }

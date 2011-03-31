@@ -21,9 +21,10 @@
 
 using System;
 using HeuristicLab.Core;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public interface IDataAnalysisSolution : INamedItem {
+  public interface IDataAnalysisSolution : INamedItem, IStorableContent {
     IDataAnalysisModel Model { get; }
     IDataAnalysisProblemData ProblemData { get; }
 
