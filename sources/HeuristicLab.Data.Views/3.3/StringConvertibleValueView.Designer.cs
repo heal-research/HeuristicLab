@@ -48,16 +48,21 @@ namespace HeuristicLab.Data.Views {
       this.valueTextBox = new System.Windows.Forms.TextBox();
       this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
       this.valueLabel = new System.Windows.Forms.Label();
+      this.splitContainer = new System.Windows.Forms.SplitContainer();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
+      this.splitContainer.Panel1.SuspendLayout();
+      this.splitContainer.Panel2.SuspendLayout();
+      this.splitContainer.SuspendLayout();
       this.SuspendLayout();
       // 
       // valueTextBox
       // 
-      this.valueTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.valueTextBox.Location = new System.Drawing.Point(56, 0);
+      this.valueTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.valueTextBox.Location = new System.Drawing.Point(17, 0);
       this.valueTextBox.Name = "valueTextBox";
-      this.valueTextBox.Size = new System.Drawing.Size(194, 20);
+      this.valueTextBox.Size = new System.Drawing.Size(135, 20);
       this.valueTextBox.TabIndex = 1;
       this.valueTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.valueTextBox_KeyDown);
       this.valueTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.valueTextBox_Validating);
@@ -76,19 +81,42 @@ namespace HeuristicLab.Data.Views {
       this.valueLabel.Size = new System.Drawing.Size(37, 13);
       this.valueLabel.TabIndex = 0;
       this.valueLabel.Text = "&Value:";
-      this.valueLabel.VisibleChanged += new System.EventHandler(this.valueLabel_VisibleChanged);
+      // 
+      // splitContainer
+      // 
+      this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.splitContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+      this.splitContainer.IsSplitterFixed = true;
+      this.splitContainer.Location = new System.Drawing.Point(0, 0);
+      this.splitContainer.Name = "splitContainer";
+      // 
+      // splitContainer.Panel1
+      // 
+      this.splitContainer.Panel1.Controls.Add(this.valueLabel);
+      // 
+      // splitContainer.Panel2
+      // 
+      this.splitContainer.Panel2.Controls.Add(this.valueTextBox);
+      this.splitContainer.Size = new System.Drawing.Size(194, 21);
+      this.splitContainer.SplitterDistance = 41;
+      this.splitContainer.SplitterWidth = 1;
+      this.splitContainer.TabIndex = 2;
       // 
       // StringConvertibleValueView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.valueLabel);
-      this.Controls.Add(this.valueTextBox);
+      this.Controls.Add(this.splitContainer);
       this.Name = "StringConvertibleValueView";
-      this.Size = new System.Drawing.Size(250, 22);
+      this.Size = new System.Drawing.Size(194, 21);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
+      this.splitContainer.Panel1.ResumeLayout(false);
+      this.splitContainer.Panel1.PerformLayout();
+      this.splitContainer.Panel2.ResumeLayout(false);
+      this.splitContainer.Panel2.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
+      this.splitContainer.ResumeLayout(false);
       this.ResumeLayout(false);
-      this.PerformLayout();
 
     }
 
@@ -97,5 +125,6 @@ namespace HeuristicLab.Data.Views {
     private System.Windows.Forms.TextBox valueTextBox;
     private System.Windows.Forms.ErrorProvider errorProvider;
     private System.Windows.Forms.Label valueLabel;
+    private System.Windows.Forms.SplitContainer splitContainer;
   }
 }

@@ -21,7 +21,6 @@
 
 using System;
 using System.ComponentModel;
-using System.Drawing;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
@@ -44,8 +43,8 @@ namespace HeuristicLab.Data.Views {
     }
 
     public bool LabelVisible {
-      get { return valueLabel.Visible; }
-      set { valueLabel.Visible = value; }
+      get { return !splitContainer.Panel1Collapsed; }
+      set { splitContainer.Panel1Collapsed = !value; }
     }
 
     public StringConvertibleValueView() {
@@ -91,7 +90,7 @@ namespace HeuristicLab.Data.Views {
 
       if (e.KeyCode == Keys.Escape) {
         valueTextBox.Text = Content.GetValue();
-        valueLabel.Select();  // select label to validate data
+        valueLabel.Focus();  // select label to validate data
       }
     }
     private void valueTextBox_Validating(object sender, CancelEventArgs e) {
@@ -107,16 +106,5 @@ namespace HeuristicLab.Data.Views {
       errorProvider.SetError(valueTextBox, string.Empty);
       valueTextBox.Text = Content.GetValue();
     }
-
-    private void valueLabel_VisibleChanged(object sender, EventArgs e) {
-      if (valueLabel.Visible) {
-        valueTextBox.Location = new Point(56, 0);
-        valueTextBox.Size = new Size(valueTextBox.Size.Width - valueLabel.Size.Width, valueTextBox.Size.Height);
-      } else {
-        valueTextBox.Location = new Point(19, 0);
-        valueTextBox.Size = new Size(valueTextBox.Size.Width + valueLabel.Size.Width, valueTextBox.Size.Height);
-      }
-    }
-
   }
 }

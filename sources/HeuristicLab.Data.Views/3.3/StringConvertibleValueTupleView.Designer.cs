@@ -51,34 +51,34 @@ namespace HeuristicLab.Data.Views {
       // 
       // Item1View
       // 
-      this.Item1View.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.Item1View.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.Item1View.Caption = "StringConvertibleValue View";
       this.Item1View.Content = null;
       this.Item1View.LabelVisible = false;
-      this.Item1View.Location = new System.Drawing.Point(45, 3);
+      this.Item1View.Location = new System.Drawing.Point(45, 0);
       this.Item1View.Name = "Item1View";
       this.Item1View.ReadOnly = false;
-      this.Item1View.Size = new System.Drawing.Size(260, 22);
+      this.Item1View.Size = new System.Drawing.Size(260, 20);
       this.Item1View.TabIndex = 0;
       // 
       // Item2View
       // 
-      this.Item2View.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.Item2View.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.Item2View.Caption = "StringConvertibleValue View";
       this.Item2View.Content = null;
       this.Item2View.LabelVisible = false;
-      this.Item2View.Location = new System.Drawing.Point(45, 31);
+      this.Item2View.Location = new System.Drawing.Point(45, 26);
       this.Item2View.Name = "Item2View";
       this.Item2View.ReadOnly = false;
-      this.Item2View.Size = new System.Drawing.Size(260, 22);
+      this.Item2View.Size = new System.Drawing.Size(260, 20);
       this.Item2View.TabIndex = 1;
       // 
       // Item1Label
       // 
       this.Item1Label.AutoSize = true;
-      this.Item1Label.Location = new System.Drawing.Point(3, 6);
+      this.Item1Label.Location = new System.Drawing.Point(3, 3);
       this.Item1Label.Name = "Item1Label";
       this.Item1Label.Size = new System.Drawing.Size(36, 13);
       this.Item1Label.TabIndex = 2;
@@ -87,7 +87,7 @@ namespace HeuristicLab.Data.Views {
       // Item2Label
       // 
       this.Item2Label.AutoSize = true;
-      this.Item2Label.Location = new System.Drawing.Point(3, 34);
+      this.Item2Label.Location = new System.Drawing.Point(3, 29);
       this.Item2Label.Name = "Item2Label";
       this.Item2Label.Size = new System.Drawing.Size(36, 13);
       this.Item2Label.TabIndex = 3;
@@ -102,9 +102,10 @@ namespace HeuristicLab.Data.Views {
       this.Controls.Add(this.Item1View);
       this.Controls.Add(this.Item2View);
       this.Name = "StringConvertibleValueTupleView";
-      this.Size = new System.Drawing.Size(308, 56);
+      this.Size = new System.Drawing.Size(308, 47);
       this.ResumeLayout(false);
       this.PerformLayout();
+
     }
 
     #endregion
