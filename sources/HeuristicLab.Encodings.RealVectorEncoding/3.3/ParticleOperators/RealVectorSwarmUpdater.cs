@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -205,6 +206,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       #endregion
 
       Initialize();
+      RegisterEvents();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -212,6 +214,33 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     #endregion
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void RegisterEvents() {
+      VelocityBoundsStartValueParameter.ValueChanged += new EventHandler(VelocityBoundsStartValueParameter_ValueChanged);
+      VelocityBoundsStartValueParameter.Value.ValueChanged += new EventHandler(VelocityBoundsStartValueParameter_Value_ValueChanged);
+    }
+
+    void VelocityBoundsStartValueParameter_Value_ValueChanged(object sender, EventArgs e) {
+      if (VelocityBoundsParameter.Value == null) {
+        VelocityBoundsParameter.Value = new DoubleMatrix(1, 2);
+      } else if (VelocityBoundsParameter.Value.Columns != 2) {
+        VelocityBoundsParameter.Value = new DoubleMatrix(VelocityBoundsParameter.Value.Rows, 2);
+      }
+      if (VelocityBoundsStartValueParameter.Value != null) {
+        DoubleMatrix matrix = VelocityBoundsParameter.Value;
+        for (int i = 0; i < matrix.Rows; i++) {
+          matrix[i, 0] = (-1) * VelocityBoundsStartValueParameter.Value.Value;
+          matrix[i, 1] = VelocityBoundsStartValueParameter.Value.Value;
+        }
+      }
+    }
+
+    void VelocityBoundsStartValueParameter_ValueChanged(object sender, EventArgs e) {
+      if (VelocityBoundsStartValueParameter.Value != null) {
+        VelocityBoundsStartValueParameter.Value.ValueChanged += new EventHandler(VelocityBoundsStartValueParameter_Value_ValueChanged);
+      }
+    }
 
     private void Initialize() {
       ResultsCollector = new ResultsCollector();
@@ -274,8 +303,6 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       }
     }
 
-
-
     private IOperation UpdateVelocityBounds() {
       if (CurrentVelocityBounds == null)
         CurrentVelocityBounds = (DoubleMatrix)VelocityBounds.Clone();
@@ -285,7 +312,6 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
           ExecutionContext.CreateChildOperation(ResultsCollector),        
           base.Apply()
         };
-
 
       DoubleMatrix matrix = CurrentVelocityBounds;
       if (VelocityBoundsScale == null && VelocityBoundsStartValue != null) {
