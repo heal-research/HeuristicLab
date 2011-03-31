@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
@@ -27,7 +28,6 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [Item("SymbolicRegressionSingleObjectiveOverfittingAnalyzer", "Calculates and tracks correlation of training and validation fitness of symbolic regression models.")]
@@ -75,7 +75,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     public override IOperation Apply() {
       IEnumerable<int> rows = GenerateRowsToEvaluate();
-      if (rows.Count() <= 0) return base.Apply();
+      if (!rows.Any()) return base.Apply();
 
       double[] trainingQuality = QualityParameter.ActualValue.Select(x => x.Value).ToArray();
       // evaluate on validation partition

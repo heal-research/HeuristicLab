@@ -29,7 +29,6 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// <summary>
@@ -75,7 +74,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     public override IOperation Apply() {
       IEnumerable<int> rows = GenerateRowsToEvaluate();
-      if (rows.Count() <= 0) return base.Apply();
+      if (!rows.Any()) return base.Apply();
 
       var results = ResultCollection;
       // create empty parameter and result values

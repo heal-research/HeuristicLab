@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
@@ -27,7 +28,6 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   [Item("SymbolicClassificationSingleObjectiveOverfittingAnalyzer", "Calculates and tracks correlation of training and validation fitness of symbolic classification models.")]
@@ -77,7 +77,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       double[] trainingQuality = QualityParameter.ActualValue.Select(x => x.Value).ToArray();
       // evaluate on validation partition
       IEnumerable<int> rows = GenerateRowsToEvaluate();
-      if (rows.Count() <= 0) return base.Apply();
+      if (!rows.Any()) return base.Apply();
 
       IExecutionContext childContext = (IExecutionContext)ExecutionContext.CreateChildOperation(EvaluatorParameter.ActualValue);
       double[] validationQuality = (from tree in SymbolicExpressionTree

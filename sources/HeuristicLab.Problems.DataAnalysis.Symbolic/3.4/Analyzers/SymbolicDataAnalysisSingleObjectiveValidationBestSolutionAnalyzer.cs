@@ -28,7 +28,6 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// <summary>
@@ -79,7 +78,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       double[] quality = new double[tree.Length];
       var evaluator = EvaluatorParameter.ActualValue;
       IEnumerable<int> rows = GenerateRowsToEvaluate();
-      if (rows.Count() <= 0) return base.Apply();
+      if (!rows.Any()) return base.Apply();
 
       IExecutionContext childContext = (IExecutionContext)ExecutionContext.CreateChildOperation(evaluator);
       for (int i = 0; i < tree.Length; i++) {
