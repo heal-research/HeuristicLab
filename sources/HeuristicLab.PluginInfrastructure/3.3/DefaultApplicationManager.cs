@@ -224,15 +224,13 @@ namespace HeuristicLab.PluginInfrastructure {
              select t;
     }
 
-    internal static IEnumerable<Type> GetTypes(IEnumerable<Type> types, bool onlyInstantiable, bool allTypes) {
+    internal static IEnumerable<Type> GetTypes(IEnumerable<Type> types, bool onlyInstantiable, bool assignableToAllTypes) {
       IEnumerable<Type> result = GetTypes(types.First(), onlyInstantiable);
       foreach (Type type in types.Skip(1)) {
         IEnumerable<Type> discoveredTypes = GetTypes(type, onlyInstantiable);
-        if (allTypes) result = result.Intersect(discoveredTypes);
+        if (assignableToAllTypes) result = result.Intersect(discoveredTypes);
         else result = result.Union(discoveredTypes);
       }
-
-      if (!allTypes) return result.Distinct();
       return result;
     }
 
@@ -254,15 +252,13 @@ namespace HeuristicLab.PluginInfrastructure {
              select t;
     }
 
-    internal static IEnumerable<Type> GetTypes(IEnumerable<Type> types, IPluginDescription pluginDescription, bool onlyInstantiable, bool allTypes) {
+    internal static IEnumerable<Type> GetTypes(IEnumerable<Type> types, IPluginDescription pluginDescription, bool onlyInstantiable, bool assignableToAllTypes) {
       IEnumerable<Type> result = GetTypes(types.First(), pluginDescription, onlyInstantiable);
       foreach (Type type in types.Skip(1)) {
         IEnumerable<Type> discoveredTypes = GetTypes(type, pluginDescription, onlyInstantiable);
-        if (allTypes) result = result.Intersect(discoveredTypes);
+        if (assignableToAllTypes) result = result.Intersect(discoveredTypes);
         else result = result.Union(discoveredTypes);
       }
-
-      if (!allTypes) return result.Distinct();
       return result;
     }
 
@@ -340,15 +336,15 @@ namespace HeuristicLab.PluginInfrastructure {
     IEnumerable<Type> IApplicationManager.GetTypes(Type type, bool onlyInstantiable) {
       return GetTypes(type, onlyInstantiable);
     }
-    IEnumerable<Type> IApplicationManager.GetTypes(IEnumerable<Type> types, bool onlyInstantiable, bool allTypes) {
-      return GetTypes(types, onlyInstantiable, allTypes);
+    IEnumerable<Type> IApplicationManager.GetTypes(IEnumerable<Type> types, bool onlyInstantiable, bool assignableToAllTypes) {
+      return GetTypes(types, onlyInstantiable, assignableToAllTypes);
     }
 
     IEnumerable<Type> IApplicationManager.GetTypes(Type type, IPluginDescription plugin, bool onlyInstantiable) {
       return GetTypes(type, plugin, onlyInstantiable);
     }
-    IEnumerable<Type> IApplicationManager.GetTypes(IEnumerable<Type> types, IPluginDescription plugin, bool onlyInstantiable, bool allTypes) {
-      return GetTypes(types, plugin, onlyInstantiable, allTypes);
+    IEnumerable<Type> IApplicationManager.GetTypes(IEnumerable<Type> types, IPluginDescription plugin, bool onlyInstantiable, bool assignableToAllTypes) {
+      return GetTypes(types, plugin, onlyInstantiable, assignableToAllTypes);
     }
 
 

@@ -64,9 +64,9 @@ namespace HeuristicLab.PluginInfrastructure {
     /// </summary>
     /// <param name="types">The types to discover.</param>
     /// <param name="onlyInstantiable">Return only types that are instantiable (instance, abstract... are not returned)</param>
-    /// <param name="allTypes">Specifies if discovered types must implement or inherit all given <paramref name="types"/>.</param>
+    /// <param name="assignableToAllTypes">Specifies if discovered types must implement or inherit all given <paramref name="types"/>.</param>
     /// <returns>An enumerable of discovered types.</returns>
-    IEnumerable<Type> GetTypes(IEnumerable<Type> types, bool onlyInstantiable = true, bool allTypes = true);
+    IEnumerable<Type> GetTypes(IEnumerable<Type> types, bool onlyInstantiable = true, bool assignableToAllTypes = true);
 
     /// <summary>
     /// Discovers all types implementing or inheriting <paramref name="type"/> (directly and indirectly) that are declaed in any assembly of <paramref name="plugin"/>.
@@ -83,9 +83,9 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <param name="types">The types to discover.</param>
     /// <param name="plugin">The declaring plugin.</param>
     /// <param name="onlyInstantiable">Return only types that are instantiable (instance, abstract... are not returned)</param>
-    /// /// <param name="allTypes">Specifies if discovered types must implement or inherit all given <paramref name="types"/>.</param>
+    /// /// <param name="assignableToAllTypes">Specifies if discovered types must implement or inherit all given <paramref name="types"/>.</param>
     /// <returns>An enumerable of discovered types.</returns>
-    IEnumerable<Type> GetTypes(IEnumerable<Type> types, IPluginDescription plugin, bool onlyInstantiable = true, bool allTypes = true);
+    IEnumerable<Type> GetTypes(IEnumerable<Type> types, IPluginDescription plugin, bool onlyInstantiable = true, bool assignableToAllTypes = true);
 
     /// <summary>
     /// Finds the plugin that declares the <paramref name="type">type</paramref>.

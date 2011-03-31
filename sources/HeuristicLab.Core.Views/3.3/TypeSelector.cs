@@ -88,10 +88,10 @@ namespace HeuristicLab.Core.Views {
       Configure(new List<Type>() { baseType }, showNotInstantiableTypes, showGenericTypes, true);
     }
 
-    public virtual void Configure(IEnumerable<Type> baseTypes, bool showNotInstantiableTypes, bool showGenericTypes, bool allTypes) {
+    public virtual void Configure(IEnumerable<Type> baseTypes, bool showNotInstantiableTypes, bool showGenericTypes, bool assignableToAllTypes) {
       if (baseTypes == null) throw new ArgumentNullException();
       if (InvokeRequired)
-        Invoke(new Action<IEnumerable<Type>, bool, bool, bool>(Configure), baseTypes, showNotInstantiableTypes, showGenericTypes, allTypes);
+        Invoke(new Action<IEnumerable<Type>, bool, bool, bool>(Configure), baseTypes, showNotInstantiableTypes, showGenericTypes, assignableToAllTypes);
       else {
         this.baseTypes = baseTypes;
         this.showNotInstantiableTypes = showNotInstantiableTypes;
@@ -118,7 +118,7 @@ namespace HeuristicLab.Core.Views {
           pluginNode.SelectedImageIndex = pluginNode.ImageIndex;
           pluginNode.Tag = plugin;
 
-          var types = from t in ApplicationManager.Manager.GetTypes(BaseTypes, plugin, ShowNotInstantiableTypes, allTypes)
+          var types = from t in ApplicationManager.Manager.GetTypes(BaseTypes, plugin, ShowNotInstantiableTypes, assignableToAllTypes)
                       orderby t.Name ascending
                       select t;
           foreach (Type type in types) {

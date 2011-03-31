@@ -88,15 +88,13 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <remarks>Return only types that are instantiable 
     /// (interfaces, abstract classes... are not returned)</remarks>
     /// <returns>Enumerable of the discovered types.</returns>
-    public IEnumerable<Type> GetTypes(IEnumerable<Type> types, bool onlyInstantiable = true, bool allTypes = true) {
+    public IEnumerable<Type> GetTypes(IEnumerable<Type> types, bool onlyInstantiable = true, bool assignableToAllTypes = true) {
       IEnumerable<Type> result = GetTypes(types.First(), onlyInstantiable);
       foreach (Type type in types.Skip(1)) {
         IEnumerable<Type> discoveredTypes = GetTypes(type, onlyInstantiable);
-        if (allTypes) result = result.Intersect(discoveredTypes);
+        if (assignableToAllTypes) result = result.Intersect(discoveredTypes);
         else result = result.Union(discoveredTypes);
       }
-
-      if (!allTypes) return result.Distinct();
       return result;
     }
 
@@ -193,7 +191,7 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <param name="onlyInstantiable"></param>
     /// <returns></returns>
     /// <throws>NotSupportedException</throws>
-    public IEnumerable<Type> GetTypes(IEnumerable<Type> types, IPluginDescription plugin, bool onlyInstantiable = true, bool allTypes = true) {
+    public IEnumerable<Type> GetTypes(IEnumerable<Type> types, IPluginDescription plugin, bool onlyInstantiable = true, bool assignableToAllTypes = true) {
       throw new NotSupportedException("LightweightApplicationManager doesn't support type discovery for plugins.");
     }
 
