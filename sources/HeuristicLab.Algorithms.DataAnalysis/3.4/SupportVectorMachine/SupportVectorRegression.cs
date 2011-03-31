@@ -149,7 +149,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       SVM.RangeTransform rangeTransform = SVM.RangeTransform.Compute(problem);
       SVM.Problem scaledProblem = SVM.Scaling.Scale(rangeTransform, problem);
       var model = new SupportVectorMachineModel(SVM.Training.Train(scaledProblem, parameter), rangeTransform, targetVariable, allowedInputVariables);
-      return new SupportVectorRegressionSolution(model, problemData);
+      return new SupportVectorRegressionSolution(model, (IRegressionProblemData)problemData.Clone());
     }
     #endregion
   }

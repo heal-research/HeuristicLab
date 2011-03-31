@@ -89,17 +89,30 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     protected IEnumerable<int> GenerateRowsToEvaluate() {
-      int seed = RandomParameter.ActualValue.Next();
+      return GenerateRowsToEvaluate(RelativeNumberOfEvaluatedSamplesParameter.ActualValue.Value);
+    }
+
+    protected IEnumerable<int> GenerateRowsToEvaluate(double percentageOfRows) {
+
+
+      IEnumerable<int> rows;
       int samplesStart = EvaluationPartitionParameter.ActualValue.Start;
       int samplesEnd = EvaluationPartitionParameter.ActualValue.End;
       int testPartitionStart = ProblemDataParameter.ActualValue.TestPartition.Start;
       int testPartitionEnd = ProblemDataParameter.ActualValue.TestPartition.End;
 
       if (samplesEnd < samplesStart) throw new ArgumentException("Start value is larger than end value.");
-      int count = (int)((samplesEnd - samplesStart) * RelativeNumberOfEvaluatedSamplesParameter.ActualValue.Value);
-      if (count == 0) count = 1;
-      return RandomEnumerable.SampleRandomNumbers(seed, samplesStart, samplesEnd, count)
-        .Where(i => i < testPartitionStart || testPartitionEnd <= i);
+
+      if (percentageOfRows.IsAlmost(1.0))
+        rows = Enumerable.Range(samplesStart, samplesEnd - samplesStart);
+      else {
+        int seed = RandomParameter.ActualValue.Next();
+        int count = (int)((samplesEnd - samplesStart) * percentageOfRows);
+        if (count == 0) count = 1;
+        rows = RandomEnumerable.SampleRandomNumbers(seed, samplesStart, samplesEnd, count);
+      }
+
+      return rows.Where(i => i < testPartitionStart || testPartitionEnd <= i);
     }
   }
 }

@@ -64,11 +64,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     }
 
     protected override ISymbolicClassificationSolution CreateSolution(ISymbolicExpressionTree bestTree, double bestQuality) {
-      var model = new SymbolicDiscriminantFunctionClassificationModel(bestTree, SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper);
+      var model = new SymbolicDiscriminantFunctionClassificationModel((ISymbolicExpressionTree)bestTree.Clone(), SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper);
       if (ApplyLinearScaling.Value) {
         SymbolicDiscriminantFunctionClassificationModel.Scale(model, ProblemDataParameter.ActualValue);
       }
-      return new SymbolicDiscriminantFunctionClassificationSolution(model, ProblemDataParameter.ActualValue);
+      return new SymbolicDiscriminantFunctionClassificationSolution(model, (IClassificationProblemData)ProblemDataParameter.ActualValue.Clone());
     }
   }
 }

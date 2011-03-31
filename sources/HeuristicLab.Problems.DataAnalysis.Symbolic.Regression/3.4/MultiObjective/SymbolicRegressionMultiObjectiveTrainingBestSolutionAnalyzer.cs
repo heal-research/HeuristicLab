@@ -75,10 +75,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
     protected override ISymbolicRegressionSolution CreateSolution(ISymbolicExpressionTree bestTree, double[] bestQuality) {
-      var model = new SymbolicRegressionModel(bestTree, SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper);
+      var model = new SymbolicRegressionModel((ISymbolicExpressionTree)bestTree.Clone(), SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper);
       if (ApplyLinearScaling.Value)
         SymbolicRegressionModel.Scale(model, ProblemDataParameter.ActualValue);
-      return new SymbolicRegressionSolution(model, ProblemDataParameter.ActualValue);
+      return new SymbolicRegressionSolution(model, (IRegressionProblemData)ProblemDataParameter.ActualValue.Clone());
     }
   }
 }

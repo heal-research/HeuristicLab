@@ -94,7 +94,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       alglib.kmeansgenerate(inputMatrix, inputMatrix.GetLength(0), inputMatrix.GetLength(1), k, restarts + 1, out info, out centers, out xyc);
       if (info != 1) throw new ArgumentException("Error in calculation of k-Means clustering solution");
 
-      KMeansClusteringSolution solution = new KMeansClusteringSolution(new KMeansClusteringModel(centers, allowedInputVariables), problemData);
+      KMeansClusteringSolution solution = new KMeansClusteringSolution(new KMeansClusteringModel(centers, allowedInputVariables), (IClusteringProblemData)problemData.Clone());
       return solution;
     }
     #endregion
