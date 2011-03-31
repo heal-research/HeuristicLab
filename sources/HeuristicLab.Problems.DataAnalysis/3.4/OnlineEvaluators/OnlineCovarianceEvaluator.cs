@@ -54,11 +54,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public void Add(double original, double estimated) {
-      if (double.IsNaN(estimated) || double.IsInfinity(estimated) || double.IsNaN(original) || double.IsInfinity(original)) {
+      if (double.IsNaN(estimated) || double.IsInfinity(estimated) || double.IsNaN(original) || double.IsInfinity(original) || (errorState & OnlineEvaluatorError.InvalidValueAdded) > 0) {
         errorState = errorState | OnlineEvaluatorError.InvalidValueAdded;
-      } else if (!errorState.HasFlag(OnlineEvaluatorError.InvalidValueAdded)) {
+      } else {
         n++;
-        errorState = OnlineEvaluatorError.None;        // n >= 1
+        errorState = errorState & (~OnlineEvaluatorError.InsufficientElementsAdded);        // n >= 1
 
         // online calculation of tMean
         originalMean = originalMean + (original - originalMean) / n;

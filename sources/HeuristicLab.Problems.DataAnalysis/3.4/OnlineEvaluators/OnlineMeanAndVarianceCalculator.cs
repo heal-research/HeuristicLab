@@ -73,18 +73,18 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public void Add(double x) {
-      if (double.IsNaN(x) || double.IsInfinity(x)) {
+      if (double.IsNaN(x) || double.IsInfinity(x) || (errorState & OnlineEvaluatorError.InvalidValueAdded) > 0) {
         errorState = errorState | OnlineEvaluatorError.InvalidValueAdded;
         varianceErrorState = errorState | OnlineEvaluatorError.InvalidValueAdded;
-      } else if (!errorState.HasFlag(OnlineEvaluatorError.InvalidValueAdded)) {
+      } else {
         n++;
         // See Knuth TAOCP vol 2, 3rd edition, page 232
         if (n == 1) {
           m_oldM = m_newM = x;
           m_oldS = 0.0;
-          errorState = OnlineEvaluatorError.None; // n >= 1
+          errorState = errorState & (~OnlineEvaluatorError.InsufficientElementsAdded);        // n >= 1
         } else {
-          varianceErrorState = OnlineEvaluatorError.None; // n >= 1
+          varianceErrorState = varianceErrorState & (~OnlineEvaluatorError.InsufficientElementsAdded);        // n >= 2
           m_newM = m_oldM + (x - m_oldM) / n;
           m_newS = m_oldS + (x - m_oldM) * (x - m_newM);
 

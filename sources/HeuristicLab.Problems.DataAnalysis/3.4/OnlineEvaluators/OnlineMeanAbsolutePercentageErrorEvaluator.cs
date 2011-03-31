@@ -57,10 +57,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
           double.IsNaN(original) || double.IsInfinity(original) ||
         original.IsAlmost(0.0)) {
         errorState = errorState | OnlineEvaluatorError.InvalidValueAdded;
-      } else if (!errorState.HasFlag(OnlineEvaluatorError.InvalidValueAdded)) {
+      } else {
         sre += Math.Abs((estimated - original) / original);
         n++;
-        errorState = OnlineEvaluatorError.None; // n >= 1
+        errorState = errorState & (~OnlineEvaluatorError.InsufficientElementsAdded);        // n >= 1
       }
     }
 
