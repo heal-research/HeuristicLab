@@ -57,6 +57,11 @@ namespace $rootnamespace$ {
 
     [StorableConstructor]
     private $safeitemname$(bool deserializing) : base(deserializing) { }
+    private $safeitemname$($safeitemname$ original, Cloner cloner)
+      : base(original, cloner) {
+      // TODO: clone your private fields here
+      AttachEventHandlers();
+    }
     public $safeitemname$()
       : base() {
       $parameterInitializers$
@@ -69,7 +74,7 @@ namespace $rootnamespace$ {
       randomCreator.SeedParameter.Value = null;
       randomCreator.SetSeedRandomlyParameter.ActualName = SetSeedRandomlyParameter.Name;
       randomCreator.SetSeedRandomlyParameter.Value = null;
-      randomCreator.Successor = null; // TODO: 
+      randomCreator.Successor = null;
 
       // TODO: Create further operators and build operator graph
       
@@ -78,10 +83,7 @@ namespace $rootnamespace$ {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      $safeitemname$ clone = ($safeitemname$)base.Clone(cloner);
-      // TODO: IMPORTANT! Clone necessary private fields here
-      clone.AttachEventHandlers();
-      return clone;
+      return new $safeitemname$(this, cloner);
     }
 
     public override void Prepare() {

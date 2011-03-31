@@ -38,7 +38,7 @@ namespace $rootnamespace$ {
   [StorableClass]
   public sealed class $safeitemname$ : $problemTypeImplementation$ {
     public override Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VS2008ImageLibrary.Type; }
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
     }
 
     #region Parameter Properties
@@ -49,16 +49,17 @@ namespace $rootnamespace$ {
     $properties$
     #endregion
 
-    [Storable]
-    private List<IOperator> operators;
-
     [StorableConstructor]
     private $safeitemname$(bool deserializing) : base(deserializing) { }
+    private $safeitemname$($safeitemname$ original, Cloner cloner)
+      : base(original, cloner) {
+      // TODO: Clone your private fields here
+      AttachEventHandlers();
+    }
     public $safeitemname$()
       : base() {
       // TODO: Create a new instance of evaluator and solution creator
-
-      $problemSpecificParameterInitializers$
+      
       $parameterInitializers$
 
       ParameterizeSolutionCreator();
@@ -69,35 +70,10 @@ namespace $rootnamespace$ {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      $safeitemname$ clone = ($safeitemname$)base.Clone(cloner);
-      clone.operators = operators.Select(x => (IOperator)cloner.Clone(x)).ToList();
-      // TODO: Clone private fields here
-      clone.AttachEventHandlers();
-      return clone;
+      return new $safeitemname$(this, cloner);
     }
 
     #region Events
-    public event EventHandler SolutionCreatorChanged;
-    private void OnSolutionCreatorChanged() {
-      EventHandler handler = SolutionCreatorChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-    public event EventHandler EvaluatorChanged;
-    private void OnEvaluatorChanged() {
-      EventHandler handler = EvaluatorChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-    public event EventHandler OperatorsChanged;
-    private void OnOperatorsChanged() {
-      EventHandler handler = OperatorsChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-    public event EventHandler Reset;
-    private void OnReset() {
-      EventHandler handler = Reset;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-
     // TODO: Add your event handlers here
     #endregion
 
@@ -112,7 +88,6 @@ namespace $rootnamespace$ {
     }
 
     private void InitializeOperators() {
-      operators = new List<IOperator>();
       // TODO: Add custom problem analyzer to the list
       // TODO: Add operators from the representation either by direct instantiation, or by using ApplicationManager.Manger.GetInstances<T>().Cast<IOperator>()
     }
