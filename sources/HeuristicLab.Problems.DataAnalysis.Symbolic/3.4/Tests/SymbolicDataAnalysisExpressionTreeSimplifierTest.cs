@@ -161,6 +161,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
         var expectedTree = importer.Import("(* (exp (variable 2.0 a)) (exp (variable -3.0 b)))");
         Assert.AreEqual(formatter.Format(expectedTree), formatter.Format(actualTree));
       }
+      {
+        // exp transformation
+        var actualTree = simplifier.Simplify(importer.Import("(exp (- (variable 2.0 a) (* (variable 3.0 b) (variable 4.0 c))))"));
+        var expectedTree = importer.Import("(* (exp (variable 2.0 a)) (exp (* (variable 1.0 b) (variable 1.0 c) -12.0)))");
+        Assert.AreEqual(formatter.Format(expectedTree), formatter.Format(actualTree));
+      }
+      {
+        // exp transformation
+        var actualTree = simplifier.Simplify(importer.Import("(exp (- (variable 2.0 a) (* (variable 3.0 b) (cos (variable 4.0 c)))))"));
+        var expectedTree = importer.Import("(* (exp (variable 2.0 a)) (exp (* (variable 1.0 b) (cos (variable 4.0 c)) -3.0)))");
+        Assert.AreEqual(formatter.Format(expectedTree), formatter.Format(actualTree));
+      }
       #endregion
       #region power rules
       {

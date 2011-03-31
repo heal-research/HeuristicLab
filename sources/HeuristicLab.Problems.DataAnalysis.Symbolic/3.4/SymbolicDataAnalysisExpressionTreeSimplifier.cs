@@ -904,8 +904,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         }
       } else if (IsMultiplication(x) || IsDivision(x)) {
         // x0 * x1 * .. * xn * -1 => x0 * x1 * .. * -xn
-        x.RemoveSubtree(x.Subtrees.Count() - 1);
-        x.AddSubtree(Negate(x.Subtrees.Last())); // last is maybe a constant, prefer to negate the constant
+        var lastSubTree = x.Subtrees.Last();
+        x.RemoveSubtree(x.SubtreesCount - 1);
+        x.AddSubtree(Negate(lastSubTree)); // last is maybe a constant, prefer to negate the constant
       } else {
         // any other function
         return MakeProduct(x, MakeConstant(-1));
