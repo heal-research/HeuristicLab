@@ -184,8 +184,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           GetVariableReferences(references, node.GetSubtree(0), currentLag + l);
         }
       } else if (node.Symbol is Derivative) {
-        var laggedNode = node as LaggedTreeNode;
-        for (int l = laggedNode.Lag; l <= 0; l++) {
+        for (int l = -4; l <= 0; l++) {
           GetVariableReferences(references, node.GetSubtree(0), currentLag + l);
         }
       } else if (node.Symbol is TimeLag) {
