@@ -65,9 +65,9 @@ namespace HeuristicLab_33.Tests {
 
       TestContext.WriteLine("Runtime: {0}", ga.ExecutionTime.ToString());
 
-      double expectedValidationQuality = 0.72232929212380248;
-      double expectedBestQuality = 0.67404328905620081;
-      double expectedAverageQuality = 0.43099606868788487;
+      double expectedValidationQuality = 0.74993359405662341;
+      double expectedBestQuality = 0.718883694431814551;
+      double expectedAverageQuality = 0.46786781419079804;
       double expectedWorstQuality = 0;
       double bestQuality = (ga.Results["CurrentBestQuality"].Value as DoubleValue).Value;
       double averageQuality = (ga.Results["CurrentAverageQuality"].Value as DoubleValue).Value;
@@ -80,10 +80,10 @@ namespace HeuristicLab_33.Tests {
       TestContext.WriteLine("CurrentWorstQuality: {0} (should be {1})", worstQuality, expectedWorstQuality);
       TestContext.WriteLine("Best valdidation solution quality: {0} (should be {1})", bestValidationSolutionQuality, expectedValidationQuality);
 
-      Assert.AreEqual(bestQuality, expectedBestQuality);
-      Assert.AreEqual(averageQuality, expectedAverageQuality);
-      Assert.AreEqual(worstQuality, expectedWorstQuality);
-      Assert.AreEqual(bestValidationSolutionQuality, expectedValidationQuality);
+      Assert.AreEqual(expectedBestQuality, bestQuality);
+      Assert.AreEqual(expectedAverageQuality, averageQuality);
+      Assert.AreEqual(expectedWorstQuality, worstQuality);
+      Assert.AreEqual(expectedValidationQuality, bestValidationSolutionQuality);
     }
 
     private void ga_ExceptionOccurred(object sender, EventArgs<Exception> e) {
