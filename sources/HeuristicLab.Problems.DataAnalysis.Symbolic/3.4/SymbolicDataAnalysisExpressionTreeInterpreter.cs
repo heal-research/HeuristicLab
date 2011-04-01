@@ -338,9 +338,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           }
         case OpCodes.TimeLag: {
             var timeLagTreeNode = (LaggedTreeNode)currentInstr.dynamicNode;
-            if (row + timeLagTreeNode.Lag < 0 || row + timeLagTreeNode.Lag >= dataset.Rows)
-              return double.NaN;
-
             row += timeLagTreeNode.Lag;
             double result = Evaluate(dataset, ref row, state);
             row -= timeLagTreeNode.Lag;
@@ -349,8 +346,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         case OpCodes.Integral: {
             int savedPc = state.ProgramCounter;
             var timeLagTreeNode = (LaggedTreeNode)currentInstr.dynamicNode;
-            if (row + timeLagTreeNode.Lag < 0 || row + timeLagTreeNode.Lag >= dataset.Rows)
-              return double.NaN;
             double sum = 0.0;
             for (int i = 0; i < Math.Abs(timeLagTreeNode.Lag); i++) {
               row += Math.Sign(timeLagTreeNode.Lag);
@@ -367,7 +362,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         //one sided smooth differentiatior, N = 4
         // y' = 1/8h (f_i + 2f_i-1, -2 f_i-3 - f_i-4)
         case OpCodes.Derivative: {
-            if (row - 4 < 0) return double.NaN;
             int savedPc = state.ProgramCounter;
             double f_0 = Evaluate(dataset, ref row, state); ; row--;
             state.ProgramCounter = savedPc;
@@ -407,13 +401,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             return state.GetStackFrameValue(currentInstr.iArg0);
           }
         case OpCodes.Variable: {
+            if (row < 0 || row >= dataset.Rows)
+              return double.NaN;
             var variableTreeNode = currentInstr.dynamicNode as VariableTreeNode;
             return dataset[row, currentInstr.iArg0] * variableTreeNode.Weight;
           }
         case OpCodes.LagVariable: {
             var laggedVariableTreeNode = currentInstr.dynamicNode as LaggedVariableTreeNode;
             int actualRow = row + laggedVariableTreeNode.Lag;
-            if (actualRow < 0 || actualRow >= dataset.Rows) throw new ArgumentException("Out of range access to dataset row: " + row);
+            if (actualRow < 0 || actualRow >= dataset.Rows)
+              return double.NaN;
             return dataset[actualRow, currentInstr.iArg0] * laggedVariableTreeNode.Weight;
           }
         case OpCodes.Constant: {
@@ -424,6 +421,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         //mkommend: this symbol uses the logistic function f(x) = 1 / (1 + e^(-alpha * x) ) 
         //to determine the relative amounts of the true and false branch see http://en.wikipedia.org/wiki/Logistic_function
         case OpCodes.VariableCondition: {
+            if (row < 0 || row >= dataset.Rows)
+              return double.NaN;
             var variableConditionTreeNode = (VariableConditionTreeNode)currentInstr.dynamicNode;
             double variableValue = dataset[row, currentInstr.iArg0];
             double x = variableValue - variableConditionTreeNode.Threshold;
