@@ -77,6 +77,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
                                 let allowedSymbols = (from symbol in parent.Grammar.GetAllowedChildSymbols(parent.Symbol, subtreeIndex)
                                                       // do not replace symbol with the same symbol
                                                       where symbol.Name != subtree.Symbol.Name
+                                                      where symbol.InitialFrequency > 0
                                                       where parent.Grammar.GetMinimumExpressionDepth(symbol) <= maxDepth
                                                       where parent.Grammar.GetMinimumExpressionLength(symbol) <= maxLength
                                                       select symbol)

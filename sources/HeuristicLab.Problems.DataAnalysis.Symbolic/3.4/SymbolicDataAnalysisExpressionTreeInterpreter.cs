@@ -363,13 +363,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         // y' = 1/8h (f_i + 2f_i-1, -2 f_i-3 - f_i-4)
         case OpCodes.Derivative: {
             int savedPc = state.ProgramCounter;
-            double f_0 = Evaluate(dataset, ref row, state); ; row--;
+            double f_0 = Evaluate(dataset, ref row, state); row--;
             state.ProgramCounter = savedPc;
-            double f_1 = Evaluate(dataset, ref row, state); ; row -= 2;
+            double f_1 = Evaluate(dataset, ref row, state); row -= 2;
             state.ProgramCounter = savedPc;
-            double f_3 = Evaluate(dataset, ref row, state); ; row--;
+            double f_3 = Evaluate(dataset, ref row, state); row--;
             state.ProgramCounter = savedPc;
-            double f_4 = Evaluate(dataset, ref row, state); ;
+            double f_4 = Evaluate(dataset, ref row, state); 
             row += 4;
 
             return (f_0 + 2 * f_1 - 2 * f_3 - f_4) / 8; // h = 1

@@ -152,6 +152,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
           ReplaceWithMinimalTree(random, root, parent, argumentIndex);
         } else {
           var allowedSymbols = (from s in parent.Grammar.Symbols
+                                where s.InitialFrequency > 0.0
                                 where parent.Grammar.IsAllowedChildSymbol(parent.Symbol, s, argumentIndex)
                                 where parent.Grammar.GetMinimumExpressionDepth(s) + extensionDepth - 1 < maxDepth
                                 where parent.Grammar.GetMaximumExpressionLength(s) > targetLength - totalListMinLength - currentLength
@@ -199,6 +200,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       int childIndex) {
       // determine possible symbols that will lead to the smallest possible tree
       var possibleSymbols = (from s in parent.Grammar.GetAllowedChildSymbols(parent.Symbol, childIndex)
+                             where s.InitialFrequency > 0.0
                              group s by parent.Grammar.GetMinimumExpressionLength(s) into g
                              orderby g.Key
                              select g).First().ToList();
@@ -238,8 +240,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       long aggregatedLongestExpressionLength = 0;
       for (int i = 0; i < maxArity; i++) {
         aggregatedLongestExpressionLength += (from s in node.Grammar.GetAllowedChildSymbols(node.Symbol, i)
+                                              where s.InitialFrequency > 0.0
                                               select node.Grammar.GetMaximumExpressionLength(s)).Max();
-        if (aggregatedLongestExpressionLength < targetLength) minArity = i;
+        if (aggregatedLongestExpressionLength < targetLength) minArity = i + 1;
         else break;
       }
 
@@ -248,6 +251,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       long aggregatedShortestExpressionLength = 0;
       for (int i = 0; i < maxArity; i++) {
         aggregatedShortestExpressionLength += (from s in node.Grammar.GetAllowedChildSymbols(node.Symbol, i)
+                                               where s.InitialFrequency > 0.0
                                                select node.Grammar.GetMinimumExpressionLength(s)).Min();
         if (aggregatedShortestExpressionLength > targetLength) {
           maxArity = i;
