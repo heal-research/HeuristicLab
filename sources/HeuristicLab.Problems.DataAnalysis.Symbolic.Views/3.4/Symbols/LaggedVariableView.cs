@@ -70,21 +70,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     private void minTimeOffsetTextBox_TextChanged(object sender, EventArgs e) {
       int timeOffset;
-      if (int.TryParse(minTimeOffsetTextBox.Text, out timeOffset) && timeOffset < 0) {
+      if (int.TryParse(minTimeOffsetTextBox.Text, out timeOffset) && timeOffset <= 0) {
         Content.MinLag = timeOffset;
         errorProvider.SetError(minTimeOffsetTextBox, string.Empty);
       } else {
-        errorProvider.SetError(minTimeOffsetTextBox, "Time offset must be a negative value.");
+        errorProvider.SetError(minTimeOffsetTextBox, "Time offset must be negative or zero.");
       }
     }
 
     private void maxTimeOffsetTextBox_TextChanged(object sender, EventArgs e) {
       int timeOffset;
-      if (int.TryParse(maxTimeOffsetTextBox.Text, out timeOffset) && timeOffset < 0) {
+      if (int.TryParse(maxTimeOffsetTextBox.Text, out timeOffset) && timeOffset <= 0) {
         Content.MaxLag = timeOffset;
         errorProvider.SetError(maxTimeOffsetTextBox, string.Empty);
       } else {
-        errorProvider.SetError(maxTimeOffsetTextBox, "Time offset must be a negative value.");
+        errorProvider.SetError(maxTimeOffsetTextBox, "Time offset must be negative or zero.");
       }
     }
 
