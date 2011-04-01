@@ -191,6 +191,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (node.Symbol is TimeLag) {
         var laggedNode = node as LaggedTreeNode;
         GetVariableReferences(references, node.GetSubtree(0), currentLag + laggedNode.Lag);
+      } else {
+        foreach (var subtree in node.Subtrees) {
+          GetVariableReferences(references, subtree, currentLag);
+        }
       }
     }
 
