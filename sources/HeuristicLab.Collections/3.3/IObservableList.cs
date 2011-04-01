@@ -22,5 +22,8 @@
 using System.Collections.Generic;
 
 namespace HeuristicLab.Collections {
-  public interface IObservableList<T> : IList<T>, IObservableCollection<T>, INotifyObservableListItemsChanged<T> { }
+  public interface IObservableList<T> : IList<T>, IObservableCollection<T>, INotifyObservableListItemsChanged<T> {
+    void Reverse();
+    void Reverse(int index, int count);
+  }
 }

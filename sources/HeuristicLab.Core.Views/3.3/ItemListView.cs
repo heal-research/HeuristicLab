@@ -351,21 +351,17 @@ namespace HeuristicLab.Core.Views {
     protected virtual void moveUpButton_Click(object sender, EventArgs e) {
       if (itemsListView.SelectedItems.Count == 1) {
         int index = itemsListView.SelectedIndices[0];
-        T item = Content[index - 1];
-        Content[index - 1] = Content[index];
+        Content.Reverse(index - 1, 2);
         itemsListView.Items[index].Selected = false;
         itemsListView.Items[index - 1].Selected = true;
-        Content[index] = item;
       }
     }
     protected virtual void moveDownButton_Click(object sender, EventArgs e) {
       if (itemsListView.SelectedItems.Count == 1) {
         int index = itemsListView.SelectedIndices[0];
-        T item = Content[index + 1];
-        Content[index + 1] = Content[index];
+        Content.Reverse(index, 2);
         itemsListView.Items[index].Selected = false;
         itemsListView.Items[index + 1].Selected = true;
-        Content[index] = item;
       }
     }
     protected virtual void removeButton_Click(object sender, EventArgs e) {

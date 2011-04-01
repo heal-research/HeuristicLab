@@ -94,6 +94,13 @@ namespace HeuristicLab.Collections {
     void ICollection<T>.Clear() {
       throw new NotSupportedException();
     }
+
+    void IObservableList<T>.Reverse() {
+      throw new NotSupportedException();
+    }
+    void IObservableList<T>.Reverse(int index, int count) {
+      throw new NotSupportedException();
+    }
     #endregion
 
     #region Conversion
