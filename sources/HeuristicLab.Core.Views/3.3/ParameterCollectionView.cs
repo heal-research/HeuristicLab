@@ -164,15 +164,17 @@ namespace HeuristicLab.Core.Views {
     protected virtual void itemsListViewContextMenuStrip_Opening(object sender, System.ComponentModel.CancelEventArgs e) {
       showHideParametersToolStripMenuItem.Text = "Show/Hide Parameters";
       showHideParametersToolStripMenuItem.Enabled = false;
-      if ((itemsListView.SelectedItems.Count > 0) && !ReadOnly && !Locked && AllowEditingOfHiddenParameters) {
+      if (itemsListView.SelectedItems.Count == 0) {
+        e.Cancel = true;
+      } else if (!ReadOnly && !Locked && AllowEditingOfHiddenParameters) {
         List<IParameter> parameters = new List<IParameter>();
         foreach (ListViewItem listViewItem in itemsListView.SelectedItems) {
           IParameter parameter = listViewItem.Tag as IParameter;
           if (parameter != null) parameters.Add(parameter);
         }
-        showHideParametersToolStripMenuItem.Enabled = (parameters.Count > 0) && (parameters.All(x => x.Hidden == parameters[0].Hidden));
+        showHideParametersToolStripMenuItem.Enabled = parameters.Count > 0;
         if (parameters.Count == 1) showHideParametersToolStripMenuItem.Text = parameters[0].Hidden ? "Show Parameter" : "Hide Parameter";
-        else showHideParametersToolStripMenuItem.Text = parameters[0].Hidden ? "Show Parameters" : "Hide Parameters";
+        else if ((parameters.Count > 1) && parameters.All(x => x.Hidden == parameters[0].Hidden)) showHideParametersToolStripMenuItem.Text = parameters[0].Hidden ? "Show Parameters" : "Hide Parameters";
         showHideParametersToolStripMenuItem.Tag = parameters;
       }
     }
