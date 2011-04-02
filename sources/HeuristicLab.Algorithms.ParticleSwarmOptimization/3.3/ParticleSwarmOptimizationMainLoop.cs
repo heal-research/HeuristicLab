@@ -126,8 +126,8 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       Placeholder topologyUpdaterPlaceholder = new Placeholder();
       UniformSubScopesProcessor evaluationProcessor = new UniformSubScopesProcessor();
       Placeholder swarmUpdater = new Placeholder();
-      IntCounter currentIterationCounter = new IntCounter();
-      Comparator currentIterationComparator = new Comparator();
+      IntCounter iterationsCounter = new IntCounter();
+      Comparator iterationsComparator = new Comparator();
       ConditionalBranch conditionalBranch = new ConditionalBranch();
       Placeholder inertiaUpdaterPlaceholder = new Placeholder();
       SubScopesCounter subScopesCounter = new SubScopesCounter();
@@ -176,17 +176,17 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
 
       inertiaUpdaterPlaceholder.Name = "(Inertia Updater)";
       inertiaUpdaterPlaceholder.OperatorParameter.ActualName = InertiaUpdaterParameter.ActualName;
-      inertiaUpdaterPlaceholder.Successor = currentIterationCounter;
+      inertiaUpdaterPlaceholder.Successor = iterationsCounter;
 
-      currentIterationCounter.Name = "CurrentIteration++";
-      currentIterationCounter.ValueParameter.ActualName = "CurrentIteration";
-      currentIterationCounter.Successor = currentIterationComparator;
+      iterationsCounter.Name = "Iterations++";
+      iterationsCounter.ValueParameter.ActualName = "Iterations";
+      iterationsCounter.Successor = iterationsComparator;
 
-      currentIterationComparator.LeftSideParameter.ActualName = "CurrentIteration";
-      currentIterationComparator.Comparison = new Comparison(ComparisonType.Less);
-      currentIterationComparator.RightSideParameter.ActualName = "MaxIterations";
-      currentIterationComparator.ResultParameter.ActualName = "ContinueIteration";
-      currentIterationComparator.Successor = conditionalBranch;
+      iterationsComparator.LeftSideParameter.ActualName = "Iterations";
+      iterationsComparator.Comparison = new Comparison(ComparisonType.Less);
+      iterationsComparator.RightSideParameter.ActualName = "MaxIterations";
+      iterationsComparator.ResultParameter.ActualName = "ContinueIteration";
+      iterationsComparator.Successor = conditionalBranch;
 
       conditionalBranch.Name = "ContinueIteration?";
       conditionalBranch.ConditionParameter.ActualName = "ContinueIteration";

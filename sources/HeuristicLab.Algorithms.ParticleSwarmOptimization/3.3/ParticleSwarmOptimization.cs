@@ -178,7 +178,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       randomCreator.SeedParameter.Value = null;
       randomCreator.Successor = variableCreator;
 
-      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("CurrentIteration", new IntValue(0)));
+      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Iterations", new IntValue(0)));
       variableCreator.Successor = currentInertiaAssigner;
 
       currentInertiaAssigner.Name = "CurrentInertia := Inertia";
@@ -299,10 +299,10 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     private void InitInertiaUpdater() {
       foreach (IDiscreteDoubleValueModifier updater in InertiaUpdaterParameter.ValidValues) {
         updater.EndIndexParameter.ActualName = MaxIterationsParameter.Name;
-        updater.EndIndexParameter.Hidden = true; 
+        updater.EndIndexParameter.Hidden = true;
         updater.StartIndexParameter.Value = new IntValue(0);
         updater.StartIndexParameter.Hidden = true;
-        updater.IndexParameter.ActualName = "CurrentIteration";
+        updater.IndexParameter.ActualName = "Iterations";
         updater.ValueParameter.ActualName = "CurrentInertia";
         updater.StartValueParameter.Value = new DoubleValue(1);
         updater.EndValueParameter.Value = new DoubleValue(double.Epsilon);
