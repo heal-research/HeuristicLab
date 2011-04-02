@@ -48,12 +48,16 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     /// <param name="random">The random number generator.</param>
     /// <param name="permutation">The permutation to manipulate.</param>
     public static void Apply(IRandom random, Permutation permutation) {
-      int index1, index2, temp;
+      int index1, index2;
 
       index1 = random.Next(permutation.Length);
       index2 = random.Next(permutation.Length);
 
-      temp = permutation[index1];
+      Apply(permutation, index1, index2);
+    }
+
+    public static void Apply(Permutation permutation, int index1, int index2) {
+      int temp = permutation[index1];
       permutation[index1] = permutation[index2];
       permutation[index2] = temp;
     }

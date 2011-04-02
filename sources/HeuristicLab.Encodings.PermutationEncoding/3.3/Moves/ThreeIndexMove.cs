@@ -24,7 +24,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
-  [Item("ThreeIndexMove", "A move on a permutation that is specified by 3 indices")]
+  [Item("ThreeIndexMove", "A move on a permutation that is specified by 3 indices.")]
   [StorableClass]
   public class ThreeIndexMove : Item {
     [Storable]
