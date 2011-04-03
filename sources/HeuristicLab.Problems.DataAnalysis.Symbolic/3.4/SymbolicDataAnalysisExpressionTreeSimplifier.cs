@@ -259,7 +259,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else {
         // simplify expressions x0..xn
         // make sum(x0..xn) / n
-        Trace.Assert(original.Subtrees.Count() > 1);
         var sum = original.Subtrees
           .Select(x => GetSimplifiedTree(x))
           .Aggregate((a, b) => MakeSum(a, b));
@@ -273,7 +272,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else {
         // simplify expressions x0..xn
         // make multiplication (x0 * 1/(x1 * x1 * .. * xn))
-        Trace.Assert(original.Subtrees.Count() > 1);
         var simplifiedTrees = original.Subtrees.Select(x => GetSimplifiedTree(x));
         return
           MakeProduct(simplifiedTrees.First(), Invert(simplifiedTrees.Skip(1).Aggregate((a, b) => MakeProduct(a, b))));
@@ -284,7 +282,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (original.Subtrees.Count() == 1) {
         return GetSimplifiedTree(original.GetSubtree(0));
       } else {
-        Trace.Assert(original.Subtrees.Count() > 1);
         return original.Subtrees
           .Select(x => GetSimplifiedTree(x))
           .Aggregate((a, b) => MakeProduct(a, b));
@@ -297,7 +294,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else {
         // simplify expressions x0..xn
         // make addition (x0,-x1..-xn)
-        Trace.Assert(original.Subtrees.Count() > 1);
         var simplifiedTrees = original.Subtrees.Select(x => GetSimplifiedTree(x));
         return simplifiedTrees.Take(1)
           .Concat(simplifiedTrees.Skip(1).Select(x => Negate(x)))
@@ -311,7 +307,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else {
         // simplify expression x0..xn
         // make addition (x0..xn)
-        Trace.Assert(original.Subtrees.Count() > 1);
         return original.Subtrees
           .Select(x => GetSimplifiedTree(x))
           .Aggregate((a, b) => MakeSum(a, b));
