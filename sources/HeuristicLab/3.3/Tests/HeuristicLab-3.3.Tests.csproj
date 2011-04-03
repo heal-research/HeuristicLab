@@ -487,6 +487,14 @@
       <Project>{F62BCD22-FB83-4444-9401-8031C2487A86}</Project>
       <Name>HeuristicLab.Problems.OneMax-3.3</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\HeuristicLab.Problems.QuadraticAssignment.Views\3.3\HeuristicLab.Problems.QuadraticAssignment.Views-3.3.csproj">
+      <Project>{997F018D-AEA2-4F21-9301-82FAF6A5612D}</Project>
+      <Name>HeuristicLab.Problems.QuadraticAssignment.Views-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\HeuristicLab.Problems.QuadraticAssignment\3.3\HeuristicLab.Problems.QuadraticAssignment-3.3.csproj">
+      <Project>{79271BC8-4446-40E2-BB89-9BE4E17174FE}</Project>
+      <Name>HeuristicLab.Problems.QuadraticAssignment-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\HeuristicLab.Problems.TestFunctions.Views\3.3\HeuristicLab.Problems.TestFunctions.Views-3.3.csproj">
       <Project>{6AE0E1F5-D3FF-43A3-90E1-2435E7493FB5}</Project>
       <Name>HeuristicLab.Problems.TestFunctions.Views-3.3</Name>
