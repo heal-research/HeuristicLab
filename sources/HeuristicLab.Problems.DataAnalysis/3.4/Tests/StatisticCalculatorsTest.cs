@@ -22,8 +22,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using HeuristicLab.Problems.DataAnalysis;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
 
   [TestClass()]
@@ -102,7 +102,7 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
             double r2_alglib = alglib.pearsoncorrelation(xs, ys, n);
             r2_alglib *= r2_alglib;
 
-            var r2Calculator = new OnlinePearsonsRSquaredEvaluator();
+            var r2Calculator = new OnlinePearsonsRSquaredCalculator();
             for (int i = 0; i < n; i++) {
               r2Calculator.Add(xs[i], ys[i]);
             }
