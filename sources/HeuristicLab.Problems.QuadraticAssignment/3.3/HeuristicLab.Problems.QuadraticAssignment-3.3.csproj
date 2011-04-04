@@ -430,6 +430,11 @@
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Data\tai100a.sln" />
+    <Content Include="Data\tai25a.sln" />
+    <Content Include="Data\tai50a.sln" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
