@@ -118,7 +118,7 @@
     <Compile Include="Interfaces\Classification\IDiscriminantFunctionThresholdCalculator.cs" />
     <Compile Include="Interfaces\Classification\IClassificationEnsembleModel.cs" />
     <Compile Include="Interfaces\Regression\IRegressionEnsembleModel.cs" />
-    <Compile Include="OnlineEvaluators\OnlineLinearScalingParameterCalculator.cs" />
+    <Compile Include="OnlineCalculators\OnlineLinearScalingParameterCalculator.cs" />
     <Compile Include="Implementation\Regression\RegressionEnsembleModel.cs" />
     <Compile Include="Implementation\Classification\DiscriminantFunctionClassificationModel.cs" />
     <Compile Include="Implementation\Classification\DiscriminantFunctionClassificationSolution.cs" />
@@ -129,7 +129,7 @@
     <Compile Include="Interfaces\Clustering\IClusteringProblem.cs" />
     <Compile Include="Interfaces\Clustering\IClusteringProblemData.cs" />
     <Compile Include="Interfaces\Clustering\IClusteringSolution.cs" />
-    <Compile Include="OnlineEvaluators\OnlineAccuracyCalculator.cs" />
+    <Compile Include="OnlineCalculators\OnlineAccuracyCalculator.cs" />
     <Compile Include="Implementation\Regression\RegressionProblemData.cs" />
     <Compile Include="Implementation\DataAnalysisProblemData.cs" />
     <Compile Include="Implementation\Regression\RegressionProblem.cs" />
@@ -146,12 +146,12 @@
     <Compile Include="Interfaces\Regression\IRegressionProblem.cs" />
     <Compile Include="Interfaces\Regression\IRegressionProblemData.cs" />
     <Compile Include="Interfaces\Regression\IRegressionSolution.cs" />
-    <Compile Include="OnlineEvaluators\OnlineCovarianceCalcualtor.cs" />
-    <Compile Include="OnlineEvaluators\OnlineMeanAbsolutePercentageErrorCalculator.cs" />
-    <Compile Include="OnlineEvaluators\OnlineMeanAndVarianceCalculator.cs" />
-    <Compile Include="OnlineEvaluators\OnlineMeanSquaredErrorCalculator.cs" />
-    <Compile Include="OnlineEvaluators\OnlineNormalizedMeanSquaredErrorCalculator.cs" />
-    <Compile Include="OnlineEvaluators\OnlinePearsonsRSquaredCalculator.cs" />
+    <Compile Include="OnlineCalculators\OnlineCovarianceCalcualtor.cs" />
+    <Compile Include="OnlineCalculators\OnlineMeanAbsolutePercentageErrorCalculator.cs" />
+    <Compile Include="OnlineCalculators\OnlineMeanAndVarianceCalculator.cs" />
+    <Compile Include="OnlineCalculators\OnlineMeanSquaredErrorCalculator.cs" />
+    <Compile Include="OnlineCalculators\OnlineNormalizedMeanSquaredErrorCalculator.cs" />
+    <Compile Include="OnlineCalculators\OnlinePearsonsRSquaredCalculator.cs" />
     <Compile Include="Implementation\Regression\RegressionSolution.cs" />
     <Compile Include="TableFileParser.cs" />
     <Compile Include="Implementation\Classification\ThresholdCalculators\AccuracyMaximizationThresholdCalculator.cs" />
