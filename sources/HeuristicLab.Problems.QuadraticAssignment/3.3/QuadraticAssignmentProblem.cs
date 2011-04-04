@@ -336,13 +336,14 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
           if (solParser.Error != null) throw solParser.Error;
           if (!solParser.Quality.IsAlmost(QAPEvaluator.Apply(new Permutation(PermutationTypes.Absolute, solParser.Assignment), Weights, Distances))) {
             solStream.Seek(0, SeekOrigin.Begin);
+            solParser.Reset();
             solParser.Parse(solStream, false); // some sln's seem to be of the type index = "location" => value = "facility"
             if (solParser.Error != null) throw solParser.Error;
             if (solParser.Quality.IsAlmost(QAPEvaluator.Apply(new Permutation(PermutationTypes.Absolute, solParser.Assignment), Weights, Distances))) {
               BestKnownQuality = new DoubleValue(solParser.Quality);
               BestKnownSolution = new Permutation(PermutationTypes.Absolute, solParser.Assignment);
             } else {
-              BestKnownQuality = null;
+              BestKnownQuality = new DoubleValue(solParser.Quality);
               BestKnownSolution = null;
             }
           } else {

@@ -20,6 +20,10 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Problems.QuadraticAssignment;
@@ -37,6 +41,24 @@ namespace Tests {
           qap.LoadEmbeddedInstance(instance);
         } catch (Exception ex) {
           failedInstances.AppendLine(instance + ": " + ex.Message);
+        }
+      }
+      Assert.IsTrue(failedInstances.Length == 0, "Following instances failed to load: " + Environment.NewLine + failedInstances.ToString());
+    }
+
+    [TestMethod]
+    public void LoadAllEmbeddedSolutions() {
+      IEnumerable<string> solutionFiles = Assembly.GetAssembly(typeof(QuadraticAssignmentProblem))
+          .GetManifestResourceNames()
+          .Where(x => x.EndsWith(".sln"));
+      QAPLIBSolutionParser parser = new QAPLIBSolutionParser();
+      StringBuilder failedInstances = new StringBuilder();
+      foreach (string solution in solutionFiles) {
+        using (Stream stream = Assembly.GetAssembly(typeof(QuadraticAssignmentProblem)).GetManifestResourceStream(solution)) {
+          parser.Reset();
+          parser.Parse(stream, true);
+          if (parser.Error != null)
+            failedInstances.AppendLine(solution + ": " + parser.Error.Message);
         }
       }
       Assert.IsTrue(failedInstances.Length == 0, "Following instances failed to load: " + Environment.NewLine + failedInstances.ToString());
@@ -62,6 +84,8 @@ namespace Tests {
           if (!quality.IsAlmost(qap.BestKnownQuality.Value)) {
             failedInstances.AppendLine(instance + ": Reported quality: " + qap.BestKnownQuality.Value.ToString() + ", evaluated fitness: " + quality.ToString() + ".");
           }
+        } else if (qap.BestKnownQuality != null) {
+          failedInstances.AppendLine(instance + ": The solution failed to load, only the quality value is available!");
         }
 
       }
