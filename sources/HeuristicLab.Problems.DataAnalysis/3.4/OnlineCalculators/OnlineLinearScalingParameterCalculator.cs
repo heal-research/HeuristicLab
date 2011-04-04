@@ -106,10 +106,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
         double originalElement = originalEnumerator.Current;
         double targetElement = targetEnumerator.Current;
         calculator.Add(originalElement, targetElement);
+        if (calculator.ErrorState != OnlineCalculatorError.None) break;
       }
 
       // check if both enumerators are at the end to make sure both enumerations have the same length
-      if (originalEnumerator.MoveNext() || targetEnumerator.MoveNext()) {
+      if (calculator.ErrorState == OnlineCalculatorError.None &&
+            (originalEnumerator.MoveNext() || targetEnumerator.MoveNext())) {
         throw new ArgumentException("Number of elements in original and target enumeration do not match.");
       } else {
         errorState = calculator.ErrorState;

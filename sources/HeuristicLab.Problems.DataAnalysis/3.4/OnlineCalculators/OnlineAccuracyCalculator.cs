@@ -77,10 +77,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
         double estimated = secondEnumerator.Current;
         double original = firstEnumerator.Current;
         accuracyCalculator.Add(original, estimated);
+        if (accuracyCalculator.ErrorState != OnlineCalculatorError.None) break;
       }
 
       // check if both enumerators are at the end to make sure both enumerations have the same length
-      if (secondEnumerator.MoveNext() || firstEnumerator.MoveNext()) {
+      if (accuracyCalculator.ErrorState == OnlineCalculatorError.None &&
+          (secondEnumerator.MoveNext() || firstEnumerator.MoveNext())) {
         throw new ArgumentException("Number of elements in first and second enumeration doesn't match.");
       } else {
         errorState = accuracyCalculator.ErrorState;
