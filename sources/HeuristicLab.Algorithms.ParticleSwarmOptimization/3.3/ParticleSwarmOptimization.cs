@@ -153,7 +153,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       Parameters.Add(new ValueParameter<IntValue>("SwarmSize", "Size of the particle swarm.", new IntValue(10)));
       Parameters.Add(new ValueParameter<IntValue>("MaxIterations", "Maximal number of iterations.", new IntValue(1000)));
       Parameters.Add(new ValueParameter<MultiAnalyzer>("Analyzer", "The operator used to analyze each generation.", new MultiAnalyzer()));
-      Parameters.Add(new ValueParameter<DoubleValue>("Inertia", "Inertia weight on a particle's movement (omega).", new DoubleValue(-0.2)));
+      Parameters.Add(new ValueParameter<DoubleValue>("Inertia", "Inertia weight on a particle's movement (omega).", new DoubleValue(1)));
       Parameters.Add(new ValueParameter<DoubleValue>("PersonalBestAttraction", "Weight for particle's pull towards its personal best soution (phi_p).", new DoubleValue(-0.01)));
       Parameters.Add(new ValueParameter<DoubleValue>("NeighborBestAttraction", "Weight for pull towards the neighborhood best solution or global best solution in case of a totally connected topology (phi_g).", new DoubleValue(3.7)));
       Parameters.Add(new ConstrainedValueParameter<IParticleCreator>("ParticleCreator", "Operator that creates a new particle."));
@@ -305,7 +305,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
         updater.IndexParameter.ActualName = "Iterations";
         updater.ValueParameter.ActualName = "CurrentInertia";
         updater.StartValueParameter.Value = new DoubleValue(1);
-        updater.EndValueParameter.Value = new DoubleValue(double.Epsilon);
+        updater.EndValueParameter.Value = new DoubleValue(1E-10);
       }
     }
 
