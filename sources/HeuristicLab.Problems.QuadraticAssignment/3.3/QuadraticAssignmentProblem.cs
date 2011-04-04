@@ -332,7 +332,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
         using (Stream solStream = Assembly.GetExecutingAssembly()
           .GetManifestResourceStream(InstancePrefix + instance + ".sln")) {
           QAPLIBSolutionParser solParser = new QAPLIBSolutionParser();
-          solParser.Parse(solStream, false); // most sln's seem to be of the type index = location => value = facility
+          solParser.Parse(solStream, true); // most sln's seem to be of the type index = facility => value = location
           if (solParser.Error != null) throw solParser.Error;
           if (!solParser.Quality.IsAlmost(QAPEvaluator.Apply(new Permutation(PermutationTypes.Absolute, solParser.Assignment), Weights, Distances))) {
             solStream.Seek(0, SeekOrigin.Begin);

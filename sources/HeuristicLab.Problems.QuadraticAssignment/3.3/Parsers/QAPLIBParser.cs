@@ -61,40 +61,39 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
         Size = int.Parse(reader.ReadLine());
         Distances = new double[Size, Size];
         Weights = new double[Size, Size];
-        string valLine = reader.ReadLine();
+        string valLine = null;
         char[] delim = new char[] { ' ' };
-        for (int i = 0; i < Size; i++) {
-          if (i > 0 || String.IsNullOrWhiteSpace(valLine))
-            valLine = reader.ReadLine();
-          string[] vals = new string[Size];
-          string[] partVals = valLine.Split(delim, StringSplitOptions.RemoveEmptyEntries);
-          partVals.CopyTo(vals, 0);
-          int index = partVals.Length;
-          while (index < Size) {
-            valLine = reader.ReadLine();
-            partVals = valLine.Split(delim, StringSplitOptions.RemoveEmptyEntries);
-            partVals.CopyTo(vals, index);
-            index += partVals.Length;
-          }
-          for (int j = 0; j < Size; j++) {
-            Distances[i, j] = double.Parse(vals[j]);
-          }
-        }
-        valLine = reader.ReadLine();
         int read = 0;
         int k = 0;
-        while (!reader.EndOfStream) {
-          if (read > 0 || String.IsNullOrWhiteSpace(valLine))
-            valLine = reader.ReadLine();
+        while (k < Size) {
+          if (reader.EndOfStream) throw new InvalidDataException("Reached end of stream while reading first matrix.");
+          valLine = reader.ReadLine();
+          while (String.IsNullOrWhiteSpace(valLine)) valLine = reader.ReadLine();
           string[] vals = valLine.Split(delim, StringSplitOptions.RemoveEmptyEntries);
-          for (int j = 0; j < vals.Length; j++) {
-            if (read + j == Size) {
+          foreach (string val in vals) {
+            Weights[k, read++] = double.Parse(val);
+            if (read == Size) {
               read = 0;
               k++;
             }
-            Weights[k, read + j] = double.Parse(vals[j]);
           }
-          read += vals.Length;
+        }
+
+        read = 0;
+        k = 0;
+
+        while (k < Size) {
+          if (reader.EndOfStream) throw new InvalidDataException("Reached end of stream while reading second matrix.");
+          valLine = reader.ReadLine();
+          while (String.IsNullOrWhiteSpace(valLine)) valLine = reader.ReadLine();
+          string[] vals = valLine.Split(delim, StringSplitOptions.RemoveEmptyEntries);
+          foreach (string val in vals) {
+            Distances[k, read++] = double.Parse(val);
+            if (read == Size) {
+              read = 0;
+              k++;
+            }
+          }
         }
         return true;
       } catch (Exception e) {
