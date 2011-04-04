@@ -33,9 +33,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     public static double[] Calculate(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, IClassificationProblemData problemData, IEnumerable<int> rows) {
       IEnumerable<double> estimatedValues = interpreter.GetSymbolicExpressionTreeValues(solution, problemData.Dataset, rows);
       IEnumerable<double> originalValues = problemData.Dataset.GetEnumeratedVariableValues(problemData.TargetVariable, rows);
-      OnlineEvaluatorError errorState;
-      double r2 = OnlinePearsonsRSquaredEvaluator.Calculate(estimatedValues, originalValues, out errorState);
-      if (errorState != OnlineEvaluatorError.None) r2 = 0.0;
+      OnlineCalculatorError errorState;
+      double r2 = OnlinePearsonsRSquaredCalculator.Calculate(estimatedValues, originalValues, out errorState);
+      if (errorState != OnlineCalculatorError.None) r2 = 0.0;
       return new double[] { r2, solution.Length };
 
     }

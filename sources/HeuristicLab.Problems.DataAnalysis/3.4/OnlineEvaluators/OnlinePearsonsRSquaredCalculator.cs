@@ -24,66 +24,66 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlineMeanAbsolutePercentageErrorEvaluator : IOnlineEvaluator {
+  public class OnlinePearsonsRSquaredCalculator : IOnlineCalculator {
+    private OnlineCovarianceCalculator covCalculator = new OnlineCovarianceCalculator();
+    private OnlineMeanAndVarianceCalculator sxCalculator = new OnlineMeanAndVarianceCalculator();
+    private OnlineMeanAndVarianceCalculator syCalculator = new OnlineMeanAndVarianceCalculator();
 
-    private double sre;
-    private int n;
-    public double MeanAbsolutePercentageError {
+    public double RSquared {
       get {
-        return n > 0 ? sre / n : 0.0;
+        double xVar = sxCalculator.PopulationVariance;
+        double yVar = syCalculator.PopulationVariance;
+        if (xVar.IsAlmost(0.0) || yVar.IsAlmost(0.0)) {
+          return 0.0;
+        } else {
+          double r = covCalculator.Covariance / (Math.Sqrt(xVar) * Math.Sqrt(yVar));
+          return r * r;
+        }
       }
     }
 
-    public OnlineMeanAbsolutePercentageErrorEvaluator() {
-      Reset();
-    }
+    public OnlinePearsonsRSquaredCalculator() { }
 
-    #region IOnlineEvaluator Members
-    private OnlineEvaluatorError errorState;
-    public OnlineEvaluatorError ErrorState {
-      get { return errorState; }
+    #region IOnlineCalculator Members
+    public OnlineCalculatorError ErrorState {
+      get { return covCalculator.ErrorState | sxCalculator.PopulationVarianceErrorState | syCalculator.PopulationVarianceErrorState; }
     }
     public double Value {
-      get { return MeanAbsolutePercentageError; }
+      get { return RSquared; }
     }
     public void Reset() {
-      n = 0;
-      sre = 0.0;
-      errorState = OnlineEvaluatorError.InsufficientElementsAdded;
+      covCalculator.Reset();
+      sxCalculator.Reset();
+      syCalculator.Reset();
     }
 
-    public void Add(double original, double estimated) {
-      if (double.IsNaN(estimated) || double.IsInfinity(estimated) ||
-          double.IsNaN(original) || double.IsInfinity(original) ||
-        original.IsAlmost(0.0)) {
-        errorState = errorState | OnlineEvaluatorError.InvalidValueAdded;
-      } else {
-        sre += Math.Abs((estimated - original) / original);
-        n++;
-        errorState = errorState & (~OnlineEvaluatorError.InsufficientElementsAdded);        // n >= 1
-      }
+    public void Add(double x, double y) {
+      // no need to check validity of values explicitly here as it is checked in all three evaluators 
+      covCalculator.Add(x, y);
+      sxCalculator.Add(x);
+      syCalculator.Add(y);
     }
 
     #endregion
 
-    public static double Calculate(IEnumerable<double> first, IEnumerable<double> second, out OnlineEvaluatorError errorState) {
+    public static double Calculate(IEnumerable<double> first, IEnumerable<double> second, out OnlineCalculatorError errorState) {
       IEnumerator<double> firstEnumerator = first.GetEnumerator();
       IEnumerator<double> secondEnumerator = second.GetEnumerator();
-      OnlineMeanAbsolutePercentageErrorEvaluator evaluator = new OnlineMeanAbsolutePercentageErrorEvaluator();
+      OnlinePearsonsRSquaredCalculator rSquaredCalculator = new OnlinePearsonsRSquaredCalculator();
 
       // always move forward both enumerators (do not use short-circuit evaluation!)
       while (firstEnumerator.MoveNext() & secondEnumerator.MoveNext()) {
         double estimated = secondEnumerator.Current;
         double original = firstEnumerator.Current;
-        evaluator.Add(original, estimated);
+        rSquaredCalculator.Add(original, estimated);
       }
 
       // check if both enumerators are at the end to make sure both enumerations have the same length
       if (secondEnumerator.MoveNext() || firstEnumerator.MoveNext()) {
         throw new ArgumentException("Number of elements in first and second enumeration doesn't match.");
       } else {
-        errorState = evaluator.ErrorState;
-        return evaluator.MeanAbsolutePercentageError;
+        errorState = rSquaredCalculator.ErrorState;
+        return rSquaredCalculator.RSquared;
       }
     }
   }

@@ -21,65 +21,69 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlineNormalizedMeanSquaredErrorEvaluator : IOnlineEvaluator {
-    private OnlineMeanAndVarianceCalculator meanSquaredErrorCalculator;
-    private OnlineMeanAndVarianceCalculator originalVarianceCalculator;
+  public class OnlineMeanAbsolutePercentageErrorCalculator : IOnlineCalculator {
 
-    public double NormalizedMeanSquaredError {
+    private double sre;
+    private int n;
+    public double MeanAbsolutePercentageError {
       get {
-        double var = originalVarianceCalculator.Variance;
-        double m = meanSquaredErrorCalculator.Mean;
-        return var > 0 ? m / var : 0.0;
+        return n > 0 ? sre / n : 0.0;
       }
     }
 
-    public OnlineNormalizedMeanSquaredErrorEvaluator() {
-      meanSquaredErrorCalculator = new OnlineMeanAndVarianceCalculator();
-      originalVarianceCalculator = new OnlineMeanAndVarianceCalculator();
+    public OnlineMeanAbsolutePercentageErrorCalculator() {
       Reset();
     }
 
-    #region IOnlineEvaluator Members
-    public OnlineEvaluatorError ErrorState {
-      get { return meanSquaredErrorCalculator.MeanErrorState | originalVarianceCalculator.VarianceErrorState; }
+    #region IOnlineCalculator Members
+    private OnlineCalculatorError errorState;
+    public OnlineCalculatorError ErrorState {
+      get { return errorState; }
     }
     public double Value {
-      get { return NormalizedMeanSquaredError; }
+      get { return MeanAbsolutePercentageError; }
     }
-
     public void Reset() {
-      meanSquaredErrorCalculator.Reset();
-      originalVarianceCalculator.Reset();
+      n = 0;
+      sre = 0.0;
+      errorState = OnlineCalculatorError.InsufficientElementsAdded;
     }
 
     public void Add(double original, double estimated) {
-      // no need to check for validity of values explicitly as it is checked in the meanAndVariance calculator anyway
-      double error = estimated - original;
-      meanSquaredErrorCalculator.Add(error * error);
-      originalVarianceCalculator.Add(original);
+      if (double.IsNaN(estimated) || double.IsInfinity(estimated) ||
+          double.IsNaN(original) || double.IsInfinity(original) ||
+        original.IsAlmost(0.0)) {
+        errorState = errorState | OnlineCalculatorError.InvalidValueAdded;
+      } else {
+        sre += Math.Abs((estimated - original) / original);
+        n++;
+        errorState = errorState & (~OnlineCalculatorError.InsufficientElementsAdded);        // n >= 1
+      }
     }
+
     #endregion
 
-    public static double Calculate(IEnumerable<double> first, IEnumerable<double> second, out OnlineEvaluatorError errorState) {
+    public static double Calculate(IEnumerable<double> first, IEnumerable<double> second, out OnlineCalculatorError errorState) {
       IEnumerator<double> firstEnumerator = first.GetEnumerator();
       IEnumerator<double> secondEnumerator = second.GetEnumerator();
-      OnlineNormalizedMeanSquaredErrorEvaluator normalizedMSEEvaluator = new OnlineNormalizedMeanSquaredErrorEvaluator();
+      OnlineMeanAbsolutePercentageErrorCalculator calculator = new OnlineMeanAbsolutePercentageErrorCalculator();
 
       // always move forward both enumerators (do not use short-circuit evaluation!)
       while (firstEnumerator.MoveNext() & secondEnumerator.MoveNext()) {
         double estimated = secondEnumerator.Current;
         double original = firstEnumerator.Current;
-        normalizedMSEEvaluator.Add(original, estimated);
+        calculator.Add(original, estimated);
       }
 
       // check if both enumerators are at the end to make sure both enumerations have the same length
       if (secondEnumerator.MoveNext() || firstEnumerator.MoveNext()) {
         throw new ArgumentException("Number of elements in first and second enumeration doesn't match.");
       } else {
-        errorState = normalizedMSEEvaluator.ErrorState;
-        return normalizedMSEEvaluator.NormalizedMeanSquaredError;
+        errorState = calculator.ErrorState;
+        return calculator.MeanAbsolutePercentageError;
       }
     }
   }

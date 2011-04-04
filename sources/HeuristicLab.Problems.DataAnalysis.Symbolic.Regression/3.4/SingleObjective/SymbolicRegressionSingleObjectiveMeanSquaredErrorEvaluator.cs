@@ -57,9 +57,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       IEnumerable<double> estimatedValues = interpreter.GetSymbolicExpressionTreeValues(solution, problemData.Dataset, rows);
       IEnumerable<double> originalValues = problemData.Dataset.GetEnumeratedVariableValues(problemData.TargetVariable, rows);
       IEnumerable<double> boundedEstimationValues = estimatedValues.LimitToRange(lowerEstimationLimit, upperEstimationLimit);
-      OnlineEvaluatorError errorState;
-      double mse = OnlineMeanSquaredErrorEvaluator.Calculate(originalValues, boundedEstimationValues, out errorState);
-      if (errorState != OnlineEvaluatorError.None) return double.NaN;
+      OnlineCalculatorError errorState;
+      double mse = OnlineMeanSquaredErrorCalculator.Calculate(originalValues, boundedEstimationValues, out errorState);
+      if (errorState != OnlineCalculatorError.None) return double.NaN;
       else return mse;
     }
 

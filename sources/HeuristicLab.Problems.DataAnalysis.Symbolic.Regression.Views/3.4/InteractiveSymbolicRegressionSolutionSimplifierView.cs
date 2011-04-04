@@ -77,9 +77,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
       var originalOutput = interpreter.GetSymbolicExpressionTreeValues(tree, dataset, rows)
         .ToArray();
       var targetValues = dataset.GetEnumeratedVariableValues(targetVariable, rows);
-      OnlineEvaluatorError errorState;
-      double originalR2 = OnlinePearsonsRSquaredEvaluator.Calculate(targetValues, originalOutput, out errorState);
-      if (errorState != OnlineEvaluatorError.None) originalR2 = 0.0;
+      OnlineCalculatorError errorState;
+      double originalR2 = OnlinePearsonsRSquaredCalculator.Calculate(targetValues, originalOutput, out errorState);
+      if (errorState != OnlineCalculatorError.None) originalR2 = 0.0;
 
       foreach (ISymbolicExpressionTreeNode node in nodes) {
         var parent = node.Parent;
@@ -87,8 +87,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
         ISymbolicExpressionTreeNode replacementNode = constantNode;
         SwitchNode(parent, node, replacementNode);
         var newOutput = interpreter.GetSymbolicExpressionTreeValues(tree, dataset, rows);
-        double newR2 = OnlinePearsonsRSquaredEvaluator.Calculate(targetValues, newOutput, out errorState);
-        if (errorState != OnlineEvaluatorError.None) newR2 = 0.0;
+        double newR2 = OnlinePearsonsRSquaredCalculator.Calculate(targetValues, newOutput, out errorState);
+        if (errorState != OnlineCalculatorError.None) newR2 = 0.0;
 
         // impact = 0 if no change
         // impact < 0 if new solution is better

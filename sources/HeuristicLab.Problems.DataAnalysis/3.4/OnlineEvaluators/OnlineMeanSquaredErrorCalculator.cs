@@ -20,71 +20,68 @@
 #endregion
 
 using System;
-using HeuristicLab.Common;
 using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlineAccuracyEvaluator : IOnlineEvaluator {
+  public class OnlineMeanSquaredErrorCalculator : IOnlineCalculator {
 
-    private int correctlyClassified;
+    private double sse;
     private int n;
-    public double Accuracy {
+    public double MeanSquaredError {
       get {
-        return correctlyClassified / (double)n;
+        return n > 0 ? sse / n : 0.0;
       }
     }
 
-    public OnlineAccuracyEvaluator() {
+    public OnlineMeanSquaredErrorCalculator() {
       Reset();
     }
 
-    #region IOnlineEvaluator Members
-    private OnlineEvaluatorError errorState;
-    public OnlineEvaluatorError ErrorState {
+    #region IOnlineCalculator Members
+    private OnlineCalculatorError errorState;
+    public OnlineCalculatorError ErrorState {
       get { return errorState; }
     }
     public double Value {
-      get { return Accuracy; }
+      get { return MeanSquaredError; }
     }
     public void Reset() {
       n = 0;
-      correctlyClassified = 0;
-      errorState = OnlineEvaluatorError.InsufficientElementsAdded;
+      sse = 0.0;
+      errorState = OnlineCalculatorError.InsufficientElementsAdded;
     }
 
     public void Add(double original, double estimated) {
-      // ignore cases where original is NaN completly 
-      if (!double.IsNaN(original)) {
-        // increment number of observed samples
+      if (double.IsNaN(estimated) || double.IsInfinity(estimated) ||
+          double.IsNaN(original) || double.IsInfinity(original) || (errorState & OnlineCalculatorError.InvalidValueAdded) > 0) {
+        errorState = errorState | OnlineCalculatorError.InvalidValueAdded;
+      } else {
+        double error = estimated - original;
+        sse += error * error;
         n++;
-        if (original.IsAlmost(estimated)) {
-          // original = estimated = +Inf counts as correctly classified
-          // original = estimated = -Inf counts as correctly classified
-          correctlyClassified++;
-        }
-        errorState = OnlineEvaluatorError.None; // number of (non-NaN) samples >= 1
+        errorState = errorState & (~OnlineCalculatorError.InsufficientElementsAdded);        // n >= 1
       }
     }
     #endregion
 
-    public static double Calculate(IEnumerable<double> first, IEnumerable<double> second, out OnlineEvaluatorError errorState) {
+    public static double Calculate(IEnumerable<double> first, IEnumerable<double> second, out OnlineCalculatorError errorState) {
       IEnumerator<double> firstEnumerator = first.GetEnumerator();
       IEnumerator<double> secondEnumerator = second.GetEnumerator();
-      OnlineAccuracyEvaluator accuracyEvaluator = new OnlineAccuracyEvaluator();
+      OnlineMeanSquaredErrorCalculator mseCalculator = new OnlineMeanSquaredErrorCalculator();
 
       // always move forward both enumerators (do not use short-circuit evaluation!)
       while (firstEnumerator.MoveNext() & secondEnumerator.MoveNext()) {
         double estimated = secondEnumerator.Current;
         double original = firstEnumerator.Current;
-        accuracyEvaluator.Add(original, estimated);
+        mseCalculator.Add(original, estimated);
       }
 
       // check if both enumerators are at the end to make sure both enumerations have the same length
       if (secondEnumerator.MoveNext() || firstEnumerator.MoveNext()) {
         throw new ArgumentException("Number of elements in first and second enumeration doesn't match.");
       } else {
-        errorState = accuracyEvaluator.ErrorState;
-        return accuracyEvaluator.Accuracy;
+        errorState = mseCalculator.ErrorState;
+        return mseCalculator.MeanSquaredError;
       }
     }
   }

@@ -21,69 +21,65 @@
 
 using System;
 using System.Collections.Generic;
-using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlinePearsonsRSquaredEvaluator : IOnlineEvaluator {
-    private OnlineCovarianceEvaluator covEvaluator = new OnlineCovarianceEvaluator();
-    private OnlineMeanAndVarianceCalculator sxEvaluator = new OnlineMeanAndVarianceCalculator();
-    private OnlineMeanAndVarianceCalculator syEvaluator = new OnlineMeanAndVarianceCalculator();
+  public class OnlineNormalizedMeanSquaredErrorCalculator : IOnlineCalculator {
+    private OnlineMeanAndVarianceCalculator meanSquaredErrorCalculator;
+    private OnlineMeanAndVarianceCalculator originalVarianceCalculator;
 
-    public double RSquared {
+    public double NormalizedMeanSquaredError {
       get {
-        double xVar = sxEvaluator.PopulationVariance;
-        double yVar = syEvaluator.PopulationVariance;
-        if (xVar.IsAlmost(0.0) || yVar.IsAlmost(0.0)) {
-          return 0.0;
-        } else {
-          double r = covEvaluator.Covariance / (Math.Sqrt(xVar) * Math.Sqrt(yVar));
-          return r * r;
-        }
+        double var = originalVarianceCalculator.Variance;
+        double m = meanSquaredErrorCalculator.Mean;
+        return var > 0 ? m / var : 0.0;
       }
     }
 
-    public OnlinePearsonsRSquaredEvaluator() { }
+    public OnlineNormalizedMeanSquaredErrorCalculator() {
+      meanSquaredErrorCalculator = new OnlineMeanAndVarianceCalculator();
+      originalVarianceCalculator = new OnlineMeanAndVarianceCalculator();
+      Reset();
+    }
 
-    #region IOnlineEvaluator Members
-    public OnlineEvaluatorError ErrorState {
-      get { return covEvaluator.ErrorState | sxEvaluator.PopulationVarianceErrorState | syEvaluator.PopulationVarianceErrorState; }
+    #region IOnlineCalculator Members
+    public OnlineCalculatorError ErrorState {
+      get { return meanSquaredErrorCalculator.MeanErrorState | originalVarianceCalculator.VarianceErrorState; }
     }
     public double Value {
-      get { return RSquared; }
+      get { return NormalizedMeanSquaredError; }
     }
+
     public void Reset() {
-      covEvaluator.Reset();
-      sxEvaluator.Reset();
-      syEvaluator.Reset();
+      meanSquaredErrorCalculator.Reset();
+      originalVarianceCalculator.Reset();
     }
 
-    public void Add(double x, double y) {
-      // no need to check validity of values explicitly here as it is checked in all three evaluators 
-      covEvaluator.Add(x, y);
-      sxEvaluator.Add(x);
-      syEvaluator.Add(y);
+    public void Add(double original, double estimated) {
+      // no need to check for validity of values explicitly as it is checked in the meanAndVariance calculator anyway
+      double error = estimated - original;
+      meanSquaredErrorCalculator.Add(error * error);
+      originalVarianceCalculator.Add(original);
     }
-
     #endregion
 
-    public static double Calculate(IEnumerable<double> first, IEnumerable<double> second, out OnlineEvaluatorError errorState) {
+    public static double Calculate(IEnumerable<double> first, IEnumerable<double> second, out OnlineCalculatorError errorState) {
       IEnumerator<double> firstEnumerator = first.GetEnumerator();
       IEnumerator<double> secondEnumerator = second.GetEnumerator();
-      OnlinePearsonsRSquaredEvaluator rSquaredEvaluator = new OnlinePearsonsRSquaredEvaluator();
+      OnlineNormalizedMeanSquaredErrorCalculator normalizedMSECalculator = new OnlineNormalizedMeanSquaredErrorCalculator();
 
       // always move forward both enumerators (do not use short-circuit evaluation!)
       while (firstEnumerator.MoveNext() & secondEnumerator.MoveNext()) {
         double estimated = secondEnumerator.Current;
         double original = firstEnumerator.Current;
-        rSquaredEvaluator.Add(original, estimated);
+        normalizedMSECalculator.Add(original, estimated);
       }
 
       // check if both enumerators are at the end to make sure both enumerations have the same length
       if (secondEnumerator.MoveNext() || firstEnumerator.MoveNext()) {
         throw new ArgumentException("Number of elements in first and second enumeration doesn't match.");
       } else {
-        errorState = rSquaredEvaluator.ErrorState;
-        return rSquaredEvaluator.RSquared;
+        errorState = normalizedMSECalculator.ErrorState;
+        return normalizedMSECalculator.NormalizedMeanSquaredError;
       }
     }
   }

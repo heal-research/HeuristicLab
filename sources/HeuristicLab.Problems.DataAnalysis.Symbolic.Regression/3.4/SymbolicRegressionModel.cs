@@ -68,9 +68,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var targetValues = dataset.GetEnumeratedVariableValues(targetVariable, rows);
       double alpha;
       double beta;
-      OnlineEvaluatorError errorState;
+      OnlineCalculatorError errorState;
       OnlineLinearScalingParameterCalculator.Calculate(estimatedValues, targetValues, out alpha, out beta, out errorState);
-      if (errorState != OnlineEvaluatorError.None) return;
+      if (errorState != OnlineCalculatorError.None) return;
 
       ConstantTreeNode alphaTreeNode = null;
       ConstantTreeNode betaTreeNode = null;

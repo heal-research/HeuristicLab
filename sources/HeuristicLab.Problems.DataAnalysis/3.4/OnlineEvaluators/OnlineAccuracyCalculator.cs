@@ -21,74 +21,70 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlineCovarianceEvaluator : IOnlineEvaluator {
+  public class OnlineAccuracyCalculator : IOnlineCalculator {
 
-    private double originalMean, estimatedMean, Cn;
+    private int correctlyClassified;
     private int n;
-    public double Covariance {
+    public double Accuracy {
       get {
-        return n > 0 ? Cn / n : 0.0;
+        return correctlyClassified / (double)n;
       }
     }
 
-    public OnlineCovarianceEvaluator() {
+    public OnlineAccuracyCalculator() {
       Reset();
     }
 
-    #region IOnlineEvaluator Members
-    private OnlineEvaluatorError errorState;
-    public OnlineEvaluatorError ErrorState {
+    #region IOnlineCalculator Members
+    private OnlineCalculatorError errorState;
+    public OnlineCalculatorError ErrorState {
       get { return errorState; }
     }
     public double Value {
-      get { return Covariance; }
+      get { return Accuracy; }
     }
     public void Reset() {
       n = 0;
-      Cn = 0.0;
-      originalMean = 0.0;
-      estimatedMean = 0.0;
-      errorState = OnlineEvaluatorError.InsufficientElementsAdded;
+      correctlyClassified = 0;
+      errorState = OnlineCalculatorError.InsufficientElementsAdded;
     }
 
     public void Add(double original, double estimated) {
-      if (double.IsNaN(estimated) || double.IsInfinity(estimated) || double.IsNaN(original) || double.IsInfinity(original) || (errorState & OnlineEvaluatorError.InvalidValueAdded) > 0) {
-        errorState = errorState | OnlineEvaluatorError.InvalidValueAdded;
-      } else {
+      // ignore cases where original is NaN completly 
+      if (!double.IsNaN(original)) {
+        // increment number of observed samples
         n++;
-        errorState = errorState & (~OnlineEvaluatorError.InsufficientElementsAdded);        // n >= 1
-
-        // online calculation of tMean
-        originalMean = originalMean + (original - originalMean) / n;
-        double delta = estimated - estimatedMean; // delta = (y - yMean(n-1))
-        estimatedMean = estimatedMean + delta / n;
-
-        // online calculation of covariance
-        Cn = Cn + delta * (original - originalMean); // C(n) = C(n-1) + (y - yMean(n-1)) (t - tMean(n))       
+        if (original.IsAlmost(estimated)) {
+          // original = estimated = +Inf counts as correctly classified
+          // original = estimated = -Inf counts as correctly classified
+          correctlyClassified++;
+        }
+        errorState = OnlineCalculatorError.None; // number of (non-NaN) samples >= 1
       }
     }
     #endregion
 
-    public static double Calculate(IEnumerable<double> first, IEnumerable<double> second, out OnlineEvaluatorError errorState) {
+    public static double Calculate(IEnumerable<double> first, IEnumerable<double> second, out OnlineCalculatorError errorState) {
       IEnumerator<double> firstEnumerator = first.GetEnumerator();
       IEnumerator<double> secondEnumerator = second.GetEnumerator();
-      OnlineCovarianceEvaluator covarianceEvaluator = new OnlineCovarianceEvaluator();
+      OnlineAccuracyCalculator accuracyCalculator = new OnlineAccuracyCalculator();
 
       // always move forward both enumerators (do not use short-circuit evaluation!)
       while (firstEnumerator.MoveNext() & secondEnumerator.MoveNext()) {
         double estimated = secondEnumerator.Current;
         double original = firstEnumerator.Current;
-        covarianceEvaluator.Add(original, estimated);
+        accuracyCalculator.Add(original, estimated);
       }
 
       // check if both enumerators are at the end to make sure both enumerations have the same length
       if (secondEnumerator.MoveNext() || firstEnumerator.MoveNext()) {
         throw new ArgumentException("Number of elements in first and second enumeration doesn't match.");
       } else {
-        errorState = covarianceEvaluator.ErrorState;
-        return covarianceEvaluator.Covariance;
+        errorState = accuracyCalculator.ErrorState;
+        return accuracyCalculator.Accuracy;
       }
     }
   }

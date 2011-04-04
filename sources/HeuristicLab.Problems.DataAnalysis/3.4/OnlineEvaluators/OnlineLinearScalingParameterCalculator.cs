@@ -43,26 +43,26 @@ namespace HeuristicLab.Problems.DataAnalysis {
         if (originalMeanAndVarianceCalculator.PopulationVariance.IsAlmost(0.0))
           return 1;
         else
-          return originalTargetCovarianceEvaluator.Covariance / originalMeanAndVarianceCalculator.PopulationVariance;
+          return originalTargetCovarianceCalculator.Covariance / originalMeanAndVarianceCalculator.PopulationVariance;
       }
     }
 
-    public OnlineEvaluatorError ErrorState {
+    public OnlineCalculatorError ErrorState {
       get {
         return targetMeanCalculator.MeanErrorState | originalMeanAndVarianceCalculator.MeanErrorState |
-          originalMeanAndVarianceCalculator.PopulationVarianceErrorState | originalTargetCovarianceEvaluator.ErrorState;
+          originalMeanAndVarianceCalculator.PopulationVarianceErrorState | originalTargetCovarianceCalculator.ErrorState;
       }
     }
 
     private int cnt;
     private OnlineMeanAndVarianceCalculator targetMeanCalculator;
     private OnlineMeanAndVarianceCalculator originalMeanAndVarianceCalculator;
-    private OnlineCovarianceEvaluator originalTargetCovarianceEvaluator;
+    private OnlineCovarianceCalculator originalTargetCovarianceCalculator;
 
     public OnlineLinearScalingParameterCalculator() {
       targetMeanCalculator = new OnlineMeanAndVarianceCalculator();
       originalMeanAndVarianceCalculator = new OnlineMeanAndVarianceCalculator();
-      originalTargetCovarianceEvaluator = new OnlineCovarianceEvaluator();
+      originalTargetCovarianceCalculator = new OnlineCovarianceCalculator();
       Reset();
     }
 
@@ -70,7 +70,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       cnt = 0;
       targetMeanCalculator.Reset();
       originalMeanAndVarianceCalculator.Reset();
-      originalTargetCovarianceEvaluator.Reset();
+      originalTargetCovarianceCalculator.Reset();
     }
 
     /// <summary>
@@ -82,7 +82,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       // validity of values is checked in mean calculator and covariance calculator
       targetMeanCalculator.Add(target);
       originalMeanAndVarianceCalculator.Add(original);
-      originalTargetCovarianceEvaluator.Add(original, target);
+      originalTargetCovarianceCalculator.Add(original, target);
 
       cnt++;
     }
@@ -96,7 +96,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     /// <param name="alpha">Additive constant for the linear scaling</param>
     /// <param name="beta">Multiplicative factor for the linear scaling</param>
     /// <param name="errorState">Flag that indicates if errors occurred in the calculation of the linea scaling parameters.</param>
-    public static void Calculate(IEnumerable<double> original, IEnumerable<double> target, out double alpha, out double beta, out OnlineEvaluatorError errorState) {
+    public static void Calculate(IEnumerable<double> original, IEnumerable<double> target, out double alpha, out double beta, out OnlineCalculatorError errorState) {
       OnlineLinearScalingParameterCalculator calculator = new OnlineLinearScalingParameterCalculator();
       IEnumerator<double> originalEnumerator = original.GetEnumerator();
       IEnumerator<double> targetEnumerator = target.GetEnumerator();

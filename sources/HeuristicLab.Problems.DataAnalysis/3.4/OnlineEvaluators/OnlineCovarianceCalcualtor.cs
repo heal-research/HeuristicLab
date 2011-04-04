@@ -23,65 +23,72 @@ using System;
 using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlineMeanSquaredErrorEvaluator : IOnlineEvaluator {
+  public class OnlineCovarianceCalculator : IOnlineCalculator {
 
-    private double sse;
+    private double originalMean, estimatedMean, Cn;
     private int n;
-    public double MeanSquaredError {
+    public double Covariance {
       get {
-        return n > 0 ? sse / n : 0.0;
+        return n > 0 ? Cn / n : 0.0;
       }
     }
 
-    public OnlineMeanSquaredErrorEvaluator() {
+    public OnlineCovarianceCalculator() {
       Reset();
     }
 
-    #region IOnlineEvaluator Members
-    private OnlineEvaluatorError errorState;
-    public OnlineEvaluatorError ErrorState {
+    #region IOnlineCalculator Members
+    private OnlineCalculatorError errorState;
+    public OnlineCalculatorError ErrorState {
       get { return errorState; }
     }
     public double Value {
-      get { return MeanSquaredError; }
+      get { return Covariance; }
     }
     public void Reset() {
       n = 0;
-      sse = 0.0;
-      errorState = OnlineEvaluatorError.InsufficientElementsAdded;
+      Cn = 0.0;
+      originalMean = 0.0;
+      estimatedMean = 0.0;
+      errorState = OnlineCalculatorError.InsufficientElementsAdded;
     }
 
     public void Add(double original, double estimated) {
-      if (double.IsNaN(estimated) || double.IsInfinity(estimated) ||
-          double.IsNaN(original) || double.IsInfinity(original) || (errorState & OnlineEvaluatorError.InvalidValueAdded) > 0) {
-        errorState = errorState | OnlineEvaluatorError.InvalidValueAdded;
+      if (double.IsNaN(estimated) || double.IsInfinity(estimated) || double.IsNaN(original) || double.IsInfinity(original) || (errorState & OnlineCalculatorError.InvalidValueAdded) > 0) {
+        errorState = errorState | OnlineCalculatorError.InvalidValueAdded;
       } else {
-        double error = estimated - original;
-        sse += error * error;
         n++;
-        errorState = errorState & (~OnlineEvaluatorError.InsufficientElementsAdded);        // n >= 1
+        errorState = errorState & (~OnlineCalculatorError.InsufficientElementsAdded);        // n >= 1
+
+        // online calculation of tMean
+        originalMean = originalMean + (original - originalMean) / n;
+        double delta = estimated - estimatedMean; // delta = (y - yMean(n-1))
+        estimatedMean = estimatedMean + delta / n;
+
+        // online calculation of covariance
+        Cn = Cn + delta * (original - originalMean); // C(n) = C(n-1) + (y - yMean(n-1)) (t - tMean(n))       
       }
     }
     #endregion
 
-    public static double Calculate(IEnumerable<double> first, IEnumerable<double> second, out OnlineEvaluatorError errorState) {
+    public static double Calculate(IEnumerable<double> first, IEnumerable<double> second, out OnlineCalculatorError errorState) {
       IEnumerator<double> firstEnumerator = first.GetEnumerator();
       IEnumerator<double> secondEnumerator = second.GetEnumerator();
-      OnlineMeanSquaredErrorEvaluator mseEvaluator = new OnlineMeanSquaredErrorEvaluator();
+      OnlineCovarianceCalculator covarianceCalculator = new OnlineCovarianceCalculator();
 
       // always move forward both enumerators (do not use short-circuit evaluation!)
       while (firstEnumerator.MoveNext() & secondEnumerator.MoveNext()) {
         double estimated = secondEnumerator.Current;
         double original = firstEnumerator.Current;
-        mseEvaluator.Add(original, estimated);
+        covarianceCalculator.Add(original, estimated);
       }
 
       // check if both enumerators are at the end to make sure both enumerations have the same length
       if (secondEnumerator.MoveNext() || firstEnumerator.MoveNext()) {
         throw new ArgumentException("Number of elements in first and second enumeration doesn't match.");
       } else {
-        errorState = mseEvaluator.ErrorState;
-        return mseEvaluator.MeanSquaredError;
+        errorState = covarianceCalculator.ErrorState;
+        return covarianceCalculator.Covariance;
       }
     }
   }

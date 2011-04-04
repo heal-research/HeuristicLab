@@ -28,8 +28,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private double m_oldM, m_newM, m_oldS, m_newS;
     private int n;
 
-    private OnlineEvaluatorError varianceErrorState;
-    public OnlineEvaluatorError VarianceErrorState {
+    private OnlineCalculatorError varianceErrorState;
+    public OnlineCalculatorError VarianceErrorState {
       get { return varianceErrorState; }
     }
 
@@ -39,8 +39,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
-    private OnlineEvaluatorError errorState;
-    public OnlineEvaluatorError PopulationVarianceErrorState {
+    private OnlineCalculatorError errorState;
+    public OnlineCalculatorError PopulationVarianceErrorState {
       get { return errorState; }
     }
     public double PopulationVariance {
@@ -49,7 +49,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
-    public OnlineEvaluatorError MeanErrorState {
+    public OnlineCalculatorError MeanErrorState {
       get { return errorState; }
     }
     public double Mean {
@@ -68,23 +68,23 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public void Reset() {
       n = 0;
-      errorState = OnlineEvaluatorError.InsufficientElementsAdded;
-      varianceErrorState = OnlineEvaluatorError.InsufficientElementsAdded;
+      errorState = OnlineCalculatorError.InsufficientElementsAdded;
+      varianceErrorState = OnlineCalculatorError.InsufficientElementsAdded;
     }
 
     public void Add(double x) {
-      if (double.IsNaN(x) || double.IsInfinity(x) || (errorState & OnlineEvaluatorError.InvalidValueAdded) > 0) {
-        errorState = errorState | OnlineEvaluatorError.InvalidValueAdded;
-        varianceErrorState = errorState | OnlineEvaluatorError.InvalidValueAdded;
+      if (double.IsNaN(x) || double.IsInfinity(x) || (errorState & OnlineCalculatorError.InvalidValueAdded) > 0) {
+        errorState = errorState | OnlineCalculatorError.InvalidValueAdded;
+        varianceErrorState = errorState | OnlineCalculatorError.InvalidValueAdded;
       } else {
         n++;
         // See Knuth TAOCP vol 2, 3rd edition, page 232
         if (n == 1) {
           m_oldM = m_newM = x;
           m_oldS = 0.0;
-          errorState = errorState & (~OnlineEvaluatorError.InsufficientElementsAdded);        // n >= 1
+          errorState = errorState & (~OnlineCalculatorError.InsufficientElementsAdded);        // n >= 1
         } else {
-          varianceErrorState = varianceErrorState & (~OnlineEvaluatorError.InsufficientElementsAdded);        // n >= 2
+          varianceErrorState = varianceErrorState & (~OnlineCalculatorError.InsufficientElementsAdded);        // n >= 2
           m_newM = m_oldM + (x - m_oldM) / n;
           m_newS = m_oldS + (x - m_oldM) * (x - m_newM);
 
@@ -95,7 +95,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
-    public static void Calculate(IEnumerable<double> x, out double mean, out double variance, out OnlineEvaluatorError meanErrorState, out OnlineEvaluatorError varianceErrorState) {
+    public static void Calculate(IEnumerable<double> x, out double mean, out double variance, out OnlineCalculatorError meanErrorState, out OnlineCalculatorError varianceErrorState) {
       OnlineMeanAndVarianceCalculator meanAndVarianceCalculator = new OnlineMeanAndVarianceCalculator();
       foreach (double xi in x) {
         meanAndVarianceCalculator.Add(xi);

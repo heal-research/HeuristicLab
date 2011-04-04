@@ -23,7 +23,7 @@
 using System;
 namespace HeuristicLab.Problems.DataAnalysis {
   [Flags]
-  public enum OnlineEvaluatorError { 
+  public enum OnlineCalculatorError { 
     /// <summary>
     /// No error occurred
     /// </summary>
@@ -37,8 +37,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
     /// </summary>
     InsufficientElementsAdded = 2
   }
-  public interface IOnlineEvaluator {
-    OnlineEvaluatorError ErrorState { get; }
+  public interface IOnlineCalculator {
+    OnlineCalculatorError ErrorState { get; }
     double Value { get; }
     void Reset();
     void Add(double original, double estimated);
