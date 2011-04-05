@@ -50,8 +50,10 @@ namespace HeuristicLab.Optimization {
     protected override void DeregisterProblemEvents() {
       Problem.SolutionCreatorChanged -= new EventHandler(Problem_SolutionCreatorChanged);
       Problem.EvaluatorChanged -= new EventHandler(Problem_EvaluatorChanged);
+      base.DeregisterProblemEvents();
     }
     protected override void RegisterProblemEvents() {
+      base.RegisterProblemEvents();
       Problem.SolutionCreatorChanged += new EventHandler(Problem_SolutionCreatorChanged);
       Problem.EvaluatorChanged += new EventHandler(Problem_EvaluatorChanged);
     }

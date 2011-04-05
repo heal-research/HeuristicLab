@@ -239,6 +239,7 @@ namespace HeuristicLab.Problems.TestFunctions {
       else if (ProblemSize.Value > Evaluator.MaximumProblemSize)
         ProblemSize.Value = Evaluator.MaximumProblemSize;
       BestKnownQuality = new DoubleValue(Evaluator.BestKnownQuality);
+      Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       Evaluator_QualityParameter_ActualNameChanged(null, EventArgs.Empty);
       OnEvaluatorChanged();
       OnReset();
@@ -405,15 +406,15 @@ namespace HeuristicLab.Problems.TestFunctions {
       foreach (IRealVectorParticleCreator op in Operators.OfType<IRealVectorParticleCreator>()) {
         op.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
         op.BoundsParameter.ActualName = BoundsParameter.Name;
-        op.ProblemSizeParameter.ActualName = ProblemSizeParameter.Name; 
+        op.ProblemSizeParameter.ActualName = ProblemSizeParameter.Name;
       }
       foreach (IRealVectorParticleUpdater op in Operators.OfType<IRealVectorParticleUpdater>()) {
         op.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
-        op.BoundsParameter.ActualName = BoundsParameter.Name; 
+        op.BoundsParameter.ActualName = BoundsParameter.Name;
       }
       foreach (IRealVectorSwarmUpdater op in Operators.OfType<IRealVectorSwarmUpdater>()) {
         op.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
-        op.MaximizationParameter.ActualName = MaximizationParameter.Name; 
+        op.MaximizationParameter.ActualName = MaximizationParameter.Name;
       }
     }
     private void UpdateStrategyVectorBounds() {
