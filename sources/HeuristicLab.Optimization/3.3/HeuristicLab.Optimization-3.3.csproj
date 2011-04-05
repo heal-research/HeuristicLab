@@ -111,17 +111,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLabOptimizationPlugin.cs.frame" />
-    <Compile Include="Algorithm.cs" />
+    <Compile Include="Algorithms\Algorithm.cs" />
     <Compile Include="BatchRun.cs" />
     <Compile Include="Interfaces\IDiscreteDoubleMatrixModifier.cs" />
-    <Compile Include="HeuristicOptimizationEngineAlgorithm.cs" />
+    <Compile Include="Algorithms\HeuristicOptimizationEngineAlgorithm.cs" />
     <Compile Include="Interfaces\IGlobalParticleUpdater.cs" />
     <Compile Include="Interfaces\ILocalImprovementOperator.cs" />
     <Compile Include="Interfaces\ILocalParticleUpdater.cs" />
-    <Compile Include="HeuristicOptimizationAlgorithm.cs" />
-    <Compile Include="MultiObjectiveHeuristicOptimizationProblem.cs" />
-    <Compile Include="HeuristicOptimizationProblem.cs" />
-    <Compile Include="SingleObjectiveHeuristicOptimizationProblem.cs" />
+    <Compile Include="Algorithms\HeuristicOptimizationAlgorithm.cs" />
+    <Compile Include="Problems\MultiObjectiveHeuristicOptimizationProblem.cs" />
+    <Compile Include="Problems\HeuristicOptimizationProblem.cs" />
+    <Compile Include="Problems\SingleObjectiveHeuristicOptimizationProblem.cs" />
     <Compile Include="Interfaces\IHeuristicOptimizationProblem.cs" />
     <Compile Include="Interfaces\IMultiAnalyzer.cs" />
     <Compile Include="Interfaces\IIterationBasedOperator.cs" />
@@ -132,7 +132,7 @@
     <Compile Include="Interfaces\ITopologyUpdater.cs" />
     <Compile Include="Interfaces\IMultiObjectiveHeuristicOptimizationProblem.cs" />
     <Compile Include="Interfaces\ISingleObjectiveHeuristicOptimizationProblem.cs" />
-    <Compile Include="Problem.cs" />
+    <Compile Include="Problems\Problem.cs" />
     <Compile Include="RunCollectionConstraints\RunCollectionComparisonConstraint.cs" />
     <Compile Include="RunCollectionConstraints\RunCollectionConstraintCollection.cs" />
     <Compile Include="RunCollectionConstraints\RunCollectionTypeCompatiblityConstraint.cs" />
@@ -179,12 +179,12 @@
     <Compile Include="Interfaces\ITabuChecker.cs" />
     <Compile Include="Interfaces\ITabuMaker.cs" />
     <Compile Include="Result.cs" />
-    <Compile Include="UserDefinedAlgorithm.cs" />
-    <Compile Include="EngineAlgorithm.cs" />
+    <Compile Include="Algorithms\UserDefinedAlgorithm.cs" />
+    <Compile Include="Algorithms\EngineAlgorithm.cs" />
     <Compile Include="HeuristicLabOptimizationPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResultCollection.cs" />
-    <Compile Include="UserDefinedProblem.cs" />
+    <Compile Include="Problems\UserDefinedProblem.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
