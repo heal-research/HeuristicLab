@@ -105,7 +105,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     }
     protected override void OnResize(EventArgs e) {
       base.OnResize(e);
-      if (this.Width == 0 || this.Height == 0)
+      if (this.Width <= 1 || this.Height <= 1)
         this.image = new Bitmap(1, 1);
       else
         this.image = new Bitmap(Width, Height);

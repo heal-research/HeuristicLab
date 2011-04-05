@@ -74,7 +74,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
           activeView = value;
 
           if (activeView != null) {
-            #region disposed cachedView
+            #region dispose cachedView
             if (activeView != cachedView) {
               if (cachedView != null) cachedView.Content = null;  //needed to deregister events
               View cached = cachedView as View;
@@ -92,11 +92,12 @@ namespace HeuristicLab.MainForm.WindowsForms {
             View view = activeView as View;
             if (view != null) {
               view.Visible = true;
-              view.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right;
-              view.Size = new Size(Width - this.viewsLabel.Width - this.viewsLabel.Margin.Left - this.viewsLabel.Margin.Right, this.Height);
-              view.Dock = viewsLabelVisible ? DockStyle.None : DockStyle.Fill;
-              view.OnShown(new ViewShownEventArgs(view, false));
+              if (ViewsLabelVisible) {
+                view.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right;
+                view.Size = new Size(Width - this.viewsLabel.Width - this.viewsLabel.Margin.Left - this.viewsLabel.Margin.Right, this.Height);
+              } else view.Dock = DockStyle.Fill;
               if (!Controls.Contains((view))) Controls.Add(view);
+              view.OnShown(new ViewShownEventArgs(view, false));
             }
           } else viewType = null;
         }
