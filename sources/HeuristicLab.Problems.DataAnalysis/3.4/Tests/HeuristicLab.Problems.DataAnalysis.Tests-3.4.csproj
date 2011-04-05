@@ -108,6 +108,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="OnlineCalculatorPerformanceTest.cs" />
     <Compile Include="TableFileParserTest.cs" />
     <Compile Include="StatisticCalculatorsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
