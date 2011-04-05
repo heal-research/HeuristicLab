@@ -38,8 +38,10 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
   [Item("Quadratic Assignment Problem", "The Quadratic Assignment Problem (QAP) can be described as the problem of assigning N facilities to N fixed locations such that there is exactly one facility in each location and that the sum of the distances multiplied by the connection strength between the facilities becomes minimal.")]
   [Creatable("Problems")]
   [StorableClass]
-  public sealed class QuadraticAssignmentProblem : SingleObjectiveHeuristicOptimizationProblem<IQAPEvaluator, IPermutationCreator> {
+  public sealed class QuadraticAssignmentProblem : SingleObjectiveHeuristicOptimizationProblem<IQAPEvaluator, IPermutationCreator>, IStorableContent {
     private static string InstancePrefix = "HeuristicLab.Problems.QuadraticAssignment.Data.";
+
+    public string Filename { get; set; }
 
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
