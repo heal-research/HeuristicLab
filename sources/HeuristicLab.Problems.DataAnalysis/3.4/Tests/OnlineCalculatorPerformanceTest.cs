@@ -74,14 +74,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
     private void TestCalculatorPerfomance(CalcateFunc calculateFunc) {
       var twister = new MersenneTwister(31415);
       var dataset = CreateRandomDataset(twister, Rows, Columns);
-      var errorState = new OnlineCalculatorError();
+      OnlineCalculatorError errorState = OnlineCalculatorError.None; ;
 
       Stopwatch watch = new Stopwatch();
       watch.Start();
       for (int i = 0; i < Repetitions; i++) {
         double value = calculateFunc(dataset.GetEnumeratedVariableValues(0), dataset.GetEnumeratedVariableValues(1), out errorState);
-
       }
+      Assert.AreEqual(errorState, OnlineCalculatorError.None);
       watch.Stop();
 
       TestContext.WriteLine("");
