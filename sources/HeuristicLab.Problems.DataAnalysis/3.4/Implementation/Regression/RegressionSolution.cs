@@ -106,8 +106,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Add(new Result(TestSquaredCorrelationResultName, "Squared Pearson's correlation coefficient of the model output and the actual values on the test partition", new DoubleValue()));
       Add(new Result(TrainingRelativeErrorResultName, "Average of the relative errors of the model output and the actual values on the training partition", new PercentValue()));
       Add(new Result(TestRelativeErrorResultName, "Average of the relative errors of the model output and the actual values on the test partition", new PercentValue()));
-      Add(new Result(TrainingNormalizedMeanSquaredErrorResultName, "", new DoubleValue()));
-      Add(new Result(TestNormalizedMeanSquaredErrorResultName, "", new DoubleValue()));
+      Add(new Result(TrainingNormalizedMeanSquaredErrorResultName, "Normalized mean of squared errors of the model on the training partition", new DoubleValue()));
+      Add(new Result(TestNormalizedMeanSquaredErrorResultName, "Normalized mean of squared errors of the model on the test partition", new DoubleValue()));
 
       RecalculateResults();
     }

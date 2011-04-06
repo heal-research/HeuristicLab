@@ -67,6 +67,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
       IEnumerator<double> secondEnumerator = second.GetEnumerator();
       OnlineNormalizedMeanSquaredErrorCalculator normalizedMSECalculator = new OnlineNormalizedMeanSquaredErrorCalculator();
 
+      //needed because otherwise the normalizedMSECalculator is in ErrorState.InsufficientValuesAdded
+      if (firstEnumerator.MoveNext() & secondEnumerator.MoveNext()) {
+        double estimated = secondEnumerator.Current;
+        double original = firstEnumerator.Current;
+        normalizedMSECalculator.Add(original, estimated);
+      }
+
       // always move forward both enumerators (do not use short-circuit evaluation!)
       while (firstEnumerator.MoveNext() & secondEnumerator.MoveNext()) {
         double estimated = secondEnumerator.Current;
