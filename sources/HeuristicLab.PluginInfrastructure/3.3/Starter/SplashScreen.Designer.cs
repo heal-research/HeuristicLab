@@ -112,10 +112,11 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.Controls.Add(this.copyrightLabel);
       this.Controls.Add(this.infoLabel);
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+      this.Icon = HeuristicLab.PluginInfrastructure.Resources.HeuristicLab;
       this.MaximizeBox = false;
       this.MinimizeBox = false;
       this.Name = "SplashScreen";
-      this.Opacity = 0.99;
+      this.Opacity = 0.99D;
       this.ShowInTaskbar = false;
       this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
