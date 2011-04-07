@@ -431,19 +431,15 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     #region Drag & drop and tooltip
-    private IRun draggedRun;
-    private void chart_MouseDown(object sender, MouseEventArgs e) {
+    private void chart_DoubleClick(object sender, MouseEventArgs e) {
       HitTestResult h = this.chart.HitTest(e.X, e.Y);
       if (h.ChartElementType == ChartElementType.DataPoint) {
         IRun run = (IRun)((DataPoint)h.Object).Tag;
-        if (e.Clicks >= 2) {
-          IContentView view = MainFormManager.MainForm.ShowContent(run);
-          if (view != null) {
-            view.ReadOnly = this.ReadOnly;
-            view.Locked = this.Locked;
-          }
-        } else
-          this.draggedRun = run;
+        IContentView view = MainFormManager.MainForm.ShowContent(run);
+        if (view != null) {
+          view.ReadOnly = this.ReadOnly;
+          view.Locked = this.Locked;
+        }
         this.chart.ChartAreas[0].CursorX.SetSelectionPosition(double.NaN, double.NaN);
         this.chart.ChartAreas[0].CursorY.SetSelectionPosition(double.NaN, double.NaN);
       }
@@ -451,7 +447,6 @@ namespace HeuristicLab.Optimization.Views {
 
     private void chart_MouseUp(object sender, MouseEventArgs e) {
       if (isSelecting) {
-        Content.UpdateOfRunsInProgress = true;
         System.Windows.Forms.DataVisualization.Charting.Cursor xCursor = chart.ChartAreas[0].CursorX;
         System.Windows.Forms.DataVisualization.Charting.Cursor yCursor = chart.ChartAreas[0].CursorY;
 
@@ -483,29 +478,11 @@ namespace HeuristicLab.Optimization.Views {
         }
         this.chart.ChartAreas[0].CursorX.SelectionStart = this.chart.ChartAreas[0].CursorX.SelectionEnd;
         this.chart.ChartAreas[0].CursorY.SelectionStart = this.chart.ChartAreas[0].CursorY.SelectionEnd;
-        Content.UpdateOfRunsInProgress = false;
       }
     }
 
     private void chart_MouseMove(object sender, MouseEventArgs e) {
       HitTestResult h = this.chart.HitTest(e.X, e.Y);
-      if (!Locked) {
-        if (this.draggedRun != null && h.ChartElementType != ChartElementType.DataPoint) {
-          DataObject data = new DataObject();
-          data.SetData(HeuristicLab.Common.Constants.DragDropDataFormat, draggedRun);
-          if (ReadOnly)
-            DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
-          else {
-            DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link | DragDropEffects.Move);
-            if ((result & DragDropEffects.Move) == DragDropEffects.Move)
-              Content.Remove(draggedRun);
-          }
-          this.chart.ChartAreas[0].AxisX.ScaleView.Zoomable = !isSelecting;
-          this.chart.ChartAreas[0].AxisY.ScaleView.Zoomable = !isSelecting;
-          this.draggedRun = null;
-        }
-      }
-
       string newTooltipText = string.Empty;
       string oldTooltipText;
       if (h.ChartElementType == ChartElementType.DataPoint) {
@@ -669,7 +646,6 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void ColorRuns(string axisValue) {
-      Content.UpdateOfRunsInProgress = true;
       var runs = Content.Select(r => new { Run = r, Value = GetValue(r, axisValue) }).Where(r => r.Value.HasValue);
       double minValue = runs.Min(r => r.Value.Value);
       double maxValue = runs.Max(r => r.Value.Value);
@@ -677,10 +653,9 @@ namespace HeuristicLab.Optimization.Views {
 
       foreach (var r in runs) {
         int colorIndex = 0;
-        if (!range.IsAlmost(0)) colorIndex = (int)((ColorGradient.Colors.Count - 1) * (r.Value.Value - minValue) / (maxValue - minValue));
+        if (!range.IsAlmost(0)) colorIndex = (int)((ColorGradient.Colors.Count - 1) * (r.Value.Value - minValue) / (range));
         r.Run.Color = ColorGradient.Colors[colorIndex];
       }
-      Content.UpdateOfRunsInProgress = false;
     }
     #endregion
 
