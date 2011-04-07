@@ -24,7 +24,7 @@ using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
-  [View("SymbolicDataAnalysisModel TextualRepresentation")]
+  [View("Textual Representation")]
   [Content(typeof(ISymbolicDataAnalysisModel), false)]
   public partial class TextualSymbolicDataAnalysisModelView : AsynchronousContentView {
     public TextualSymbolicDataAnalysisModelView()

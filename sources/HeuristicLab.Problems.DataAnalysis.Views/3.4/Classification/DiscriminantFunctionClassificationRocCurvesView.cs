@@ -31,7 +31,7 @@ using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 namespace HeuristicLab.Problems.DataAnalysis.Views {
-  [View("DiscriminantFunctionClassificationSolution ROC Curves")]
+  [View("ROC Curves")]
   [Content(typeof(IDiscriminantFunctionClassificationSolution))]
   public partial class DiscriminantFunctionClassificationRocCurvesView : ItemView, IDiscriminantFunctionClassificationSolutionEvaluationView {
     private const string xAxisTitle = "False Positive Rate";

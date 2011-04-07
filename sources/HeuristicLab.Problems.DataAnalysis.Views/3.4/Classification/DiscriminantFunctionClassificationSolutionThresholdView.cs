@@ -31,7 +31,7 @@ using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
-  [View("DsicriminantFunctionClassificationSolution ThresholdView")]
+  [View("Classification Threshold")]
   [Content(typeof(IDiscriminantFunctionClassificationSolution), true)]
   public sealed partial class DiscriminantFunctionClassificationSolutionThresholdView : ItemView, IDiscriminantFunctionClassificationSolutionEvaluationView {
     private const double TrainingAxisValue = 0.0;

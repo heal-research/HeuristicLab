@@ -28,7 +28,7 @@ using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
-  [View("ClusteringSolution EstimatedCluster")]
+  [View("Estimated Clusters")]
   [Content(typeof(IClusteringSolution))]
   public partial class ClusteringSolutionEstimatedClusterView : ItemView, IClusteringSolutionEvaluationView {
     private const string CLUSTER_NAMES = "Cluster";

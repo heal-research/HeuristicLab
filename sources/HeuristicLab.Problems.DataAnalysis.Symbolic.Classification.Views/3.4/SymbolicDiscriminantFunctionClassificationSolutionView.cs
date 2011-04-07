@@ -26,7 +26,7 @@ using HeuristicLab.Problems.DataAnalysis.Views;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
   [Content(typeof(SymbolicDiscriminantFunctionClassificationSolution), true)]
-  [View("SymbolicDiscriminan FunctionClassificationSolution View")]
+  [View("SymbolicDiscriminantFunctionClassificationSolution View")]
   public partial class SymbolicDiscriminantFunctionClassificationSolutionView : DiscriminantFunctionClassificationSolutionView {
     public SymbolicDiscriminantFunctionClassificationSolutionView() {
       InitializeComponent();

@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -54,14 +54,16 @@ namespace HeuristicLab.Selection {
 
     [StorableConstructor]
     protected NoSameMatesSelector(bool deserializing) : base(deserializing) { }
-    protected NoSameMatesSelector(NoSameMatesSelector original, Cloner cloner) : base(original, cloner) {
+    protected NoSameMatesSelector(NoSameMatesSelector original, Cloner cloner)
+      : base(original, cloner) {
       RegisterParameterEventHandlers();
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new NoSameMatesSelector(this, cloner);
     }
 
-    public NoSameMatesSelector() : base() {
+    public NoSameMatesSelector()
+      : base() {
       #region Create parameters
       Parameters.Add(new ValueParameter<ISingleObjectiveSelector>(SelectorParameterName, "The inner selection operator to select the parents.", new TournamentSelector()));
       Parameters.Add(new FixedValueParameter<PercentValue>(QualityDifferencePercentageParameterName, "The minimum quality difference from parent1 to parent2 to accept the selection.", new PercentValue(0.05)));
@@ -84,7 +86,7 @@ namespace HeuristicLab.Selection {
           Parameters.Remove(SelectorParameterName);
           Parameters.Add(new ValueParameter<ISingleObjectiveSelector>(SelectorParameterName, "The inner selection operator to select the parents.", selector));
         }
-      }   
+      }
       // FixedValueParameter for quality difference percentage, max attempts, use range
       if (Parameters.ContainsKey(QualityDifferencePercentageParameterName)) {
         ValueParameter<PercentValue> param = Parameters[QualityDifferencePercentageParameterName] as ValueParameter<PercentValue>;
@@ -152,8 +154,8 @@ namespace HeuristicLab.Selection {
         ApplyInnerSelector();
         ScopeList parents = CurrentScope.SubScopes[1].SubScopes;
 
-        for (int indexParent1 = 0, indexParent2 = 1; 
-             indexParent1 < parents.Count - 1 && selectedParents < parentsToSelect - 1; 
+        for (int indexParent1 = 0, indexParent2 = 1;
+             indexParent1 < parents.Count - 1 && selectedParents < parentsToSelect - 1;
              indexParent1 += 2, indexParent2 += 2) {
           double qualityParent1 = ((DoubleValue)parents[indexParent1].Variables[qualityName].Value).Value;
           double qualityParent2 = ((DoubleValue)parents[indexParent2].Variables[qualityName].Value).Value;
@@ -167,7 +169,7 @@ namespace HeuristicLab.Selection {
                                 qualityParent2 < qualityParent1 * minRelativeQualityOffset);
           }
 
-          if (parentsDifferent) { 
+          if (parentsDifferent) {
             // inner selector already copied scopes, no cloning necessary here
             selected[selectedParents++] = parents[indexParent1];
             selected[selectedParents++] = parents[indexParent2];
@@ -203,12 +205,11 @@ namespace HeuristicLab.Selection {
     private void CopySelected_ValueChanged(object sender, EventArgs e) {
       if (CopySelected.Value != true) {
         CopySelected.Value = true;
-        throw new ArgumentException(Name + ": CopySelected must always be true.");
       }
     }
     #endregion
 
-    #region Helpers  
+    #region Helpers
     private void ParameterizeSelector(ISingleObjectiveSelector selector) {
       selector.CopySelected = new BoolValue(true); // must always be true
       selector.MaximizationParameter.ActualName = MaximizationParameter.Name;

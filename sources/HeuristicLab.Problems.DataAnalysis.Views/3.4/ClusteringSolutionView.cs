@@ -25,7 +25,7 @@ using HeuristicLab.MainForm;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
-  [View("RegressionSolution View")]
+  [View("ClusteringSolution View")]
   [Content(typeof(ClusteringSolution), true)]
   public partial class ClusteringSolutionView : DataAnalysisSolutionView {
     public ClusteringSolutionView() {

@@ -33,8 +33,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [StorableClass]
   [Item(Name = "SymbolicRegressionSolution", Description = "Represents a symbolic regression solution (model + data) and attributes of the solution like accuracy and complexity.")]
   public sealed class SymbolicRegressionSolution : RegressionSolution, ISymbolicRegressionSolution {
-    private const string ModelLengthResultName = "ModelLength";
-    private const string ModelDepthResultName = "ModelDepth";
+    private const string ModelLengthResultName = "Model Length";
+    private const string ModelDepthResultName = "Model Depth";
 
     public new ISymbolicRegressionModel Model {
       get { return (ISymbolicRegressionModel)base.Model; }

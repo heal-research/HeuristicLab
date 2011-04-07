@@ -28,7 +28,7 @@ using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
-  [View("DiscriminantFunctionClassificationSolution EstimatedClassValues")]
+  [View("Estimated Class Values")]
   [Content(typeof(IDiscriminantFunctionClassificationSolution))]
   public partial class DiscriminantFunctionClassificationSolutionEstimatedClassValuesView : ItemView, IDiscriminantFunctionClassificationSolutionEvaluationView {
     private const string TargetClassValuesSeriesname = "TargetVariable";

@@ -19,17 +19,12 @@
  */
 #endregion
 
-using System.Collections.Generic;
-using System.Linq;
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Operators;
-using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Optimization;
-using System;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   /// <summary>
@@ -38,8 +33,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   [StorableClass]
   [Item(Name = "SymbolicDiscriminantFunctionClassificationSolution", Description = "Represents a symbolic classification solution (model + data) and attributes of the solution like accuracy and complexity.")]
   public sealed class SymbolicDiscriminantFunctionClassificationSolution : DiscriminantFunctionClassificationSolution, ISymbolicClassificationSolution {
-    private const string ModelLengthResultName = "ModelLength";
-    private const string ModelDepthResultName = "ModelDepth";
+    private const string ModelLengthResultName = "Model Length";
+    private const string ModelDepthResultName = "Model Depth";
 
     public new ISymbolicDiscriminantFunctionClassificationModel Model {
       get { return (ISymbolicDiscriminantFunctionClassificationModel)base.Model; }
@@ -86,6 +81,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     private new void RecalculateResults() {
       ModelLength = Model.SymbolicExpressionTree.Length;
       ModelDepth = Model.SymbolicExpressionTree.Depth;
-    }    
+    }
   }
 }

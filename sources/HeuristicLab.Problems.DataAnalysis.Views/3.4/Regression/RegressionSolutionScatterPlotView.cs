@@ -29,7 +29,7 @@ using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
-  [View("RegressionSolution ScatterPlot")]
+  [View("Scatter Plot")]
   [Content(typeof(IRegressionSolution))]
   public partial class RegressionSolutionScatterPlotView : ItemView, IRegressionSolutionEvaluationView {
     private const string ALL_SERIES = "All samples";
