@@ -28,6 +28,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// <summary>
@@ -39,6 +40,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
     private const string ResultsParameterName = "Results";
     private const string SymbolFrequenciesParameterName = "SymbolFrequencies";
+    private const string AggregateSymbolsWithDifferentSubtreeCountParameterName = "AggregateSymbolsWithDifferentSubtreeCount";
 
     #region parameter properties
     public IScopeTreeLookupParameter<ISymbolicExpressionTree> SymbolicExpressionTreeParameter {
@@ -50,11 +52,14 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     public ILookupParameter<ResultCollection> ResultsParameter {
       get { return (ILookupParameter<ResultCollection>)Parameters[ResultsParameterName]; }
     }
+    public IValueParameter<BoolValue> AggregateSymbolsWithDifferentSubtreeCountParameter {
+      get { return (IValueParameter<BoolValue>)Parameters[AggregateSymbolsWithDifferentSubtreeCountParameterName]; }
+    }
     #endregion
     #region properties
-    public DataTable SymbolFrequencies {
-      get { return SymbolFrequenciesParameter.ActualValue; }
-      set { SymbolFrequenciesParameter.ActualValue = value; }
+    public BoolValue AggregrateSymbolsWithDifferentSubtreeCount {
+      get { return AggregateSymbolsWithDifferentSubtreeCountParameter.Value; }
+      set { AggregateSymbolsWithDifferentSubtreeCountParameter.Value = value; }
     }
     #endregion
 
@@ -64,8 +69,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     public SymbolicExpressionSymbolFrequencyAnalyzer()
       : base() {
       Parameters.Add(new ScopeTreeLookupParameter<ISymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression trees to analyze."));
-      Parameters.Add(new ValueLookupParameter<DataTable>(SymbolFrequenciesParameterName, "The data table to store the symbol frequencies."));
+      Parameters.Add(new LookupParameter<DataTable>(SymbolFrequenciesParameterName, "The data table to store the symbol frequencies."));
       Parameters.Add(new LookupParameter<ResultCollection>(ResultsParameterName, "The result collection where the symbol frequencies should be stored."));
+      Parameters.Add(new ValueParameter<BoolValue>(AggregateSymbolsWithDifferentSubtreeCountParameterName, "Flag that indicates if the frequencies of symbols with the same name but different number of sub-trees should be aggregated.", new BoolValue(true)));
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SymbolicExpressionSymbolFrequencyAnalyzer(this, cloner);
@@ -74,41 +80,46 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     public override IOperation Apply() {
       ItemArray<ISymbolicExpressionTree> expressions = SymbolicExpressionTreeParameter.ActualValue;
       ResultCollection results = ResultsParameter.ActualValue;
+      DataTable symbolFrequencies = SymbolFrequenciesParameter.ActualValue;
+      if (symbolFrequencies == null) {
+        symbolFrequencies = new DataTable("Symbol frequencies", "Relative frequency of symbols aggregated over the whole population.");
+        symbolFrequencies.VisualProperties.YAxisTitle = "Relative Symbol Frequency";
 
-      if (SymbolFrequencies == null) {
-        SymbolFrequencies = new DataTable("Symbol frequencies", "Relative frequency of symbols aggregated over the whole population.");
-        SymbolFrequencies.VisualProperties.YAxisTitle = "Relative Symbol Frequency";
-        results.Add(new Result("Symbol frequencies", SymbolFrequencies));
+        SymbolFrequenciesParameter.ActualValue = symbolFrequencies;
+        results.Add(new Result("Symbol frequencies", symbolFrequencies));
       }
 
       // all rows must have the same number of values so we can just take the first
-      int numberOfValues = SymbolFrequencies.Rows.Select(r => r.Values.Count).DefaultIfEmpty().First();
+      int numberOfValues = symbolFrequencies.Rows.Select(r => r.Values.Count).DefaultIfEmpty().First();
 
-      foreach (var pair in SymbolicExpressionSymbolFrequencyAnalyzer.CalculateSymbolFrequencies(expressions)) {
-        if (!SymbolFrequencies.Rows.ContainsKey(pair.Key)) {
+      foreach (var pair in SymbolicExpressionSymbolFrequencyAnalyzer.CalculateSymbolFrequencies(expressions, AggregrateSymbolsWithDifferentSubtreeCount.Value)) {
+        if (!symbolFrequencies.Rows.ContainsKey(pair.Key)) {
           // initialize a new row for the symbol and pad with zeros
           DataRow row = new DataRow(pair.Key, "", Enumerable.Repeat(0.0, numberOfValues));
           row.VisualProperties.StartIndexZero = true;
-          SymbolFrequencies.Rows.Add(row);
+          symbolFrequencies.Rows.Add(row);
         }
-        SymbolFrequencies.Rows[pair.Key].Values.Add(pair.Value);
+        symbolFrequencies.Rows[pair.Key].Values.Add(pair.Value);
       }
 
       // add a zero for each data row that was not modified in the previous loop 
-      foreach (var row in SymbolFrequencies.Rows.Where(r => r.Values.Count != numberOfValues + 1))
+      foreach (var row in symbolFrequencies.Rows.Where(r => r.Values.Count != numberOfValues + 1))
         row.Values.Add(0.0);
 
       return base.Apply();
     }
 
-    public static IEnumerable<KeyValuePair<string, double>> CalculateSymbolFrequencies(IEnumerable<ISymbolicExpressionTree> trees) {
+    public static IEnumerable<KeyValuePair<string, double>> CalculateSymbolFrequencies(IEnumerable<ISymbolicExpressionTree> trees, bool aggregateDifferentNumberOfSubtrees = true) {
       Dictionary<string, double> symbolFrequencies = new Dictionary<string, double>();
       int totalNumberOfSymbols = 0;
 
       foreach (var tree in trees) {
         foreach (var node in tree.IterateNodesPrefix()) {
-          if (symbolFrequencies.ContainsKey(node.Symbol.Name)) symbolFrequencies[node.Symbol.Name] += 1;
-          else symbolFrequencies.Add(node.Symbol.Name, 1);
+          string symbolName;
+          if (aggregateDifferentNumberOfSubtrees) symbolName = node.Symbol.Name;
+          else symbolName = node.Symbol.Name + "-" + node.SubtreesCount;
+          if (symbolFrequencies.ContainsKey(symbolName)) symbolFrequencies[symbolName] += 1;
+          else symbolFrequencies.Add(symbolName, 1);
           totalNumberOfSymbols++;
         }
       }
