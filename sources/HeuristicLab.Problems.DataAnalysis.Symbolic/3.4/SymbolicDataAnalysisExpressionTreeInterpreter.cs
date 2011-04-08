@@ -35,7 +35,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private const string CheckExpressionsWithIntervalArithmeticParameterName = "CheckExpressionsWithIntervalArithmetic";
     #region private classes
     private class InterpreterState {
-      private const int ARGUMENT_STACK_SIZE = 1024;
       private double[] argumentStack;
       private int argumentStackPointer;
       private Instruction[] code;
@@ -44,10 +43,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         get { return pc; }
         set { pc = value; }
       }
-      internal InterpreterState(Instruction[] code) {
+      internal InterpreterState(Instruction[] code, int argumentStackSize) {
         this.code = code;
         this.pc = 0;
-        this.argumentStack = new double[ARGUMENT_STACK_SIZE];
+        if (argumentStackSize > 0) {
+          this.argumentStack = new double[argumentStackSize];
+        }
         this.argumentStackPointer = 0;
       }
 
@@ -201,7 +202,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         throw new NotSupportedException("Interval arithmetic is not yet supported in the symbolic data analysis interpreter.");
       var compiler = new SymbolicExpressionTreeCompiler();
       Instruction[] code = compiler.Compile(tree, MapSymbolToOpCode);
-
+      int necessaryArgStackSize = 0;
       for (int i = 0; i < code.Length; i++) {
         Instruction instr = code[i];
         if (instr.opCode == OpCodes.Variable) {
@@ -215,9 +216,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         } else if (instr.opCode == OpCodes.VariableCondition) {
           var variableConditionTreeNode = instr.dynamicNode as VariableConditionTreeNode;
           instr.iArg0 = (ushort)dataset.GetVariableIndex(variableConditionTreeNode.VariableName);
+        } else if (instr.opCode == OpCodes.Call) {
+          necessaryArgStackSize += instr.nArguments + 1;
         }
       }
-      var state = new InterpreterState(code);
+      var state = new InterpreterState(code, necessaryArgStackSize);
 
       foreach (var rowEnum in rows) {
         int row = rowEnum;
@@ -369,7 +372,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             state.ProgramCounter = savedPc;
             double f_3 = Evaluate(dataset, ref row, state); row--;
             state.ProgramCounter = savedPc;
-            double f_4 = Evaluate(dataset, ref row, state); 
+            double f_4 = Evaluate(dataset, ref row, state);
             row += 4;
 
             return (f_0 + 2 * f_1 - 2 * f_3 - f_4) / 8; // h = 1
