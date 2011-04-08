@@ -24,20 +24,18 @@ using System.Windows.Forms;
 
 namespace HeuristicLab.PluginInfrastructure {
   public static class ErrorHandling {
-    public static readonly string NewLine = Environment.NewLine;
-
     public static string BuildErrorMessage(Exception exception) {
       if (exception == null) {
         return string.Empty;
       } else {
-        string message = exception.GetType().Name + ": " + exception.Message + NewLine +
+        string message = exception.GetType().Name + ": " + exception.Message + Environment.NewLine +
                          exception.StackTrace;
 
         while (exception.InnerException != null) {
           exception = exception.InnerException;
-          message += NewLine +
-                     "-----" + NewLine +
-                     exception.GetType().Name + ": " + exception.Message + NewLine +
+          message += Environment.NewLine +
+                     "-----" + Environment.NewLine +
+                     exception.GetType().Name + ": " + exception.Message + Environment.NewLine +
                      exception.StackTrace;
         }
         return message;
@@ -52,6 +50,7 @@ namespace HeuristicLab.PluginInfrastructure {
     }
     public static void ShowErrorDialog(string message, Exception exception) {
       using (ErrorDialog dialog = new ErrorDialog(message, exception)) {
+        dialog.StartPosition = FormStartPosition.CenterScreen;
         dialog.ShowDialog();
       }
     }

@@ -33,13 +33,20 @@ namespace HeuristicLab.PluginInfrastructure {
     /// </summary>
     /// <param name="args">Command line arguments</param>
     public static void Run(string[] args) {
-      try {
+      bool fullProfileInstalled = Microsoft.Win32.Registry.LocalMachine.OpenSubKey("Software\\Microsoft\\NET Framework Setup\\NDP\\v4\\Full") != null;
+      if (!fullProfileInstalled) {
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
-        Application.Run(new StarterForm());
-      }
-      catch (Exception ex) {
-        ErrorHandling.ShowErrorDialog(ex);
+        Application.Run(new FrameworkVersionWarning());
+      } else {
+        try {
+          Application.EnableVisualStyles();
+          Application.SetCompatibleTextRenderingDefault(false);
+          Application.Run(new StarterForm());
+        }
+        catch (Exception ex) {
+          ErrorHandling.ShowErrorDialog(ex);
+        }
       }
     }
   }
