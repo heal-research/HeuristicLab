@@ -24,11 +24,11 @@ using System.Linq;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// <summary>
@@ -75,6 +75,14 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SymbolicExpressionSymbolFrequencyAnalyzer(this, cloner);
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      #region remove with HL 3.4
+      if (!Parameters.ContainsKey(AggregateSymbolsWithDifferentSubtreeCountParameterName))
+        Parameters.Add(new ValueParameter<BoolValue>(AggregateSymbolsWithDifferentSubtreeCountParameterName, "Flag that indicates if the frequencies of symbols with the same name but different number of sub-trees should be aggregated.", new BoolValue(true)));
+      #endregion
     }
 
     public override IOperation Apply() {
