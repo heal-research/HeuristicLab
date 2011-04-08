@@ -95,13 +95,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         foreach (var parent in nodeList) {
           for (int subTreeIndex = 0; subTreeIndex < parent.SubtreesCount; subTreeIndex++) {
             var child = parent.GetSubtree(subTreeIndex);
-            if (!(child.Symbol is Constant) && nodeImpacts[child].IsAlmost(1.0)) {
+            if (!(child.Symbol is Constant) && nodeImpacts[child].IsAlmost(0.0)) {
               SwitchNodeWithReplacementNode(parent, subTreeIndex);
             }
           }
         }
-        // show only interesting part of solution
-        this.treeChart.Tree = new SymbolicExpressionTree(tree.Root.GetSubtree(0).GetSubtree(0));
+        // show only interesting part of solution 
+        if (tree.Root.SubtreesCount > 1)
+          this.treeChart.Tree = new SymbolicExpressionTree(tree.Root); // RPB + ADFs
+        else
+          this.treeChart.Tree = new SymbolicExpressionTree(tree.Root.GetSubtree(0).GetSubtree(0)); // 1st child of RPB
         this.PaintNodeImpacts();
       }
     }
@@ -125,16 +128,28 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       foreach (SymbolicExpressionTreeNode treeNode in tree.IterateNodesPostfix()) {
         for (int i = 0; i < treeNode.SubtreesCount; i++) {
           ISymbolicExpressionTreeNode subTree = treeNode.GetSubtree(i);
-          if (subTree == visualTreeNode.SymbolicExpressionTreeNode) {
+          // only allow to replace nodes for which a replacement value is known (replacement value for ADF nodes are not available)
+          if (subTree == visualTreeNode.SymbolicExpressionTreeNode && replacementNodes.ContainsKey(subTree)) {
+            double replacementImpact = nodeImpacts.ContainsKey(replacementNodes[subTree]) ? nodeImpacts[replacementNodes[subTree]] : 0.0;
+            double originalImpact = nodeImpacts.ContainsKey(subTree) ? nodeImpacts[subTree] : 0.0;
             SwitchNodeWithReplacementNode(treeNode, i);
+
+            // show only interesting part of solution 
+            if (tree.Root.SubtreesCount > 1)
+              this.treeChart.Tree = new SymbolicExpressionTree(tree.Root); // RPB + ADFs
+            else
+              this.treeChart.Tree = new SymbolicExpressionTree(tree.Root.GetSubtree(0).GetSubtree(0)); // 1st child of RPB
+            if (!(originalImpact.IsAlmost(0.0) && replacementImpact.IsAlmost(0.0))) {
+              // update everything after the change if necessary (impact != 0)            
+              UpdateModel(tree);
+            } else {
+              // both impacts are zero, so we only need to repaint the nodes 
+              PaintNodeImpacts();
+            }
+            return; // break all loops
           }
         }
       }
-
-      // show only interesting part of solution
-      this.treeChart.Tree = new SymbolicExpressionTree(tree.Root.GetSubtree(0).GetSubtree(0));
-
-      UpdateModel(tree);
     }
 
     private void SwitchNodeWithReplacementNode(ISymbolicExpressionTreeNode parent, int subTreeIndex) {
@@ -175,7 +190,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
           if (constantReplacementNode != null) {
             visualTree.ToolTip += Environment.NewLine + "Replacement value: " + constantReplacementNode.Value;
           }
-        }
+        } 
       }
       this.PaintCollapsedNodes();
       this.treeChart.Repaint();

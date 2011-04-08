@@ -58,10 +58,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
 
     protected override Dictionary<ISymbolicExpressionTreeNode, double> CalculateReplacementValues(ISymbolicExpressionTree tree) {
       Dictionary<ISymbolicExpressionTreeNode, double> replacementValues = new Dictionary<ISymbolicExpressionTreeNode, double>();
-      foreach (ISymbolicExpressionTreeNode node in tree.IterateNodesPrefix()) {
-        if (!(node.Symbol is ProgramRootSymbol || node.Symbol is StartSymbol)) {
-          replacementValues[node] = CalculateReplacementValue(node);
-        }
+      foreach (ISymbolicExpressionTreeNode node in tree.Root.GetSubtree(0).GetSubtree(0).IterateNodesPrefix()) {
+        replacementValues[node] = CalculateReplacementValue(node, tree);
       }
       return replacementValues;
     }
@@ -89,7 +87,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
 
       foreach (ISymbolicExpressionTreeNode node in nodes) {
         var parent = node.Parent;
-        constantNode.Value = CalculateReplacementValue(node);
+        constantNode.Value = CalculateReplacementValue(node, tree);
         ISymbolicExpressionTreeNode replacementNode = constantNode;
         SwitchNode(parent, node, replacementNode);
         var newOutput = interpreter.GetSymbolicExpressionTreeValues(tree, dataset, rows)
@@ -110,7 +108,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
       return impactValues;
     }
 
-    private double CalculateReplacementValue(ISymbolicExpressionTreeNode node) {
+    private double CalculateReplacementValue(ISymbolicExpressionTreeNode node, ISymbolicExpressionTree sourceTree) {
+      // remove old ADFs
+      while (tempTree.Root.SubtreesCount > 1) tempTree.Root.RemoveSubtree(1);
+      // clone ADFs of source tree
+      for (int i = 1; i < sourceTree.Root.SubtreesCount; i++) {
+        tempTree.Root.AddSubtree((ISymbolicExpressionTreeNode)sourceTree.Root.GetSubtree(i).Clone());
+      } 
       var start = tempTree.Root.GetSubtree(0);
       while (start.SubtreesCount > 0) start.RemoveSubtree(0);
       start.AddSubtree((ISymbolicExpressionTreeNode)node.Clone());
