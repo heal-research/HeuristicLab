@@ -220,12 +220,6 @@
     <Compile Include="BaseClasses\ApplicationBase.cs" />
     <Compile Include="BaseClasses\PluginBase.cs" />
     <Compile Include="DefaultApplicationManager.cs" />
-    <Compile Include="ErrorHandling\FrameworkVersionWarning.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ErrorHandling\FrameworkVersionWarning.Designer.cs">
-      <DependentUpon>FrameworkVersionWarning.cs</DependentUpon>
-    </Compile>
     <Compile Include="ErrorHandling\ErrorDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -233,6 +227,12 @@
       <DependentUpon>ErrorDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="ErrorHandling\ErrorHandling.cs">
+    </Compile>
+    <Compile Include="ErrorHandling\FrameworkVersionErrorDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ErrorHandling\FrameworkVersionErrorDialog.Designer.cs">
+      <DependentUpon>FrameworkVersionErrorDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="LightweightApplicationManager.cs" />
     <Compile Include="Interfaces\IPluginFile.cs" />

@@ -18,8 +18,9 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
+
 namespace HeuristicLab.PluginInfrastructure {
-  partial class FrameworkVersionWarning {
+  partial class FrameworkVersionErrorDialog {
     /// <summary>
     /// Required designer variable.
     /// </summary>
@@ -44,80 +45,86 @@ namespace HeuristicLab.PluginInfrastructure {
     /// </summary>
     private void InitializeComponent() {
       this.iconLabel = new System.Windows.Forms.Label();
-      this.okButton = new System.Windows.Forms.Button();
+      this.closeButton = new System.Windows.Forms.Button();
       this.linkLabel = new System.Windows.Forms.LinkLabel();
-      this.label1 = new System.Windows.Forms.Label();
+      this.label = new System.Windows.Forms.Label();
       this.SuspendLayout();
       // 
       // iconLabel
       // 
+      this.iconLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)));
       this.iconLabel.Image = global::HeuristicLab.PluginInfrastructure.Resources.Error;
+      this.iconLabel.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
       this.iconLabel.Location = new System.Drawing.Point(12, 9);
       this.iconLabel.Name = "iconLabel";
-      this.iconLabel.Size = new System.Drawing.Size(21, 22);
-      this.iconLabel.TabIndex = 1;
+      this.iconLabel.Size = new System.Drawing.Size(50, 98);
+      this.iconLabel.TabIndex = 0;
       // 
-      // okButton
+      // closeButton
       // 
-      this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-      this.okButton.Location = new System.Drawing.Point(206, 102);
-      this.okButton.Name = "okButton";
-      this.okButton.Size = new System.Drawing.Size(75, 23);
-      this.okButton.TabIndex = 6;
-      this.okButton.Text = "&Close";
-      this.okButton.UseVisualStyleBackColor = true;
-      this.okButton.Click += new System.EventHandler(this.cancelButton_Click);
+      this.closeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.closeButton.DialogResult = System.Windows.Forms.DialogResult.OK;
+      this.closeButton.Location = new System.Drawing.Point(294, 81);
+      this.closeButton.Name = "closeButton";
+      this.closeButton.Size = new System.Drawing.Size(75, 23);
+      this.closeButton.TabIndex = 3;
+      this.closeButton.Text = "&Close";
+      this.closeButton.UseVisualStyleBackColor = true;
+      this.closeButton.Click += new System.EventHandler(this.cancelButton_Click);
       // 
       // linkLabel
       // 
-      this.linkLabel.AutoSize = true;
-      this.linkLabel.Location = new System.Drawing.Point(39, 66);
+      this.linkLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.linkLabel.Location = new System.Drawing.Point(68, 52);
       this.linkLabel.Name = "linkLabel";
-      this.linkLabel.Size = new System.Drawing.Size(210, 13);
-      this.linkLabel.TabIndex = 9;
+      this.linkLabel.Size = new System.Drawing.Size(301, 26);
+      this.linkLabel.TabIndex = 2;
       this.linkLabel.TabStop = true;
-      this.linkLabel.Text = ".NET framework v4.0 (full profile) download";
+      this.linkLabel.Text = "Download Microsoft .NET Framework 4 (Full Profile)";
       this.linkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_LinkClicked);
       // 
-      // label1
+      // label
       // 
-      this.label1.Location = new System.Drawing.Point(39, 9);
-      this.label1.Name = "label1";
-      this.label1.Size = new System.Drawing.Size(255, 33);
-      this.label1.TabIndex = 10;
-      this.label1.Text = ".NET framework version 4.0 (full profile) is not properly installed. Please downl" +
-          "oad and install it.";
+      this.label.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.label.Location = new System.Drawing.Point(68, 9);
+      this.label.Name = "label";
+      this.label.Size = new System.Drawing.Size(301, 43);
+      this.label.TabIndex = 1;
+      this.label.Text = "The Microsoft .NET Framework 4 (Full Profile) is not properly installed on your s" +
+          "ystem. Please download and install it.";
       // 
-      // FrameworkVersionWarning
+      // FrameworkVersionErrorDialog
       // 
-      this.AcceptButton = this.okButton;
+      this.AcceptButton = this.closeButton;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.CancelButton = this.okButton;
-      this.ClientSize = new System.Drawing.Size(293, 137);
-      this.Controls.Add(this.label1);
+      this.CancelButton = this.closeButton;
+      this.ClientSize = new System.Drawing.Size(381, 116);
+      this.Controls.Add(this.label);
       this.Controls.Add(this.linkLabel);
-      this.Controls.Add(this.okButton);
+      this.Controls.Add(this.closeButton);
       this.Controls.Add(this.iconLabel);
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
       this.Icon = global::HeuristicLab.PluginInfrastructure.Resources.HeuristicLab;
       this.MaximizeBox = false;
       this.MinimizeBox = false;
-      this.Name = "FrameworkVersionWarning";
+      this.Name = "FrameworkVersionErrorDialog";
       this.ShowInTaskbar = false;
       this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-      this.Text = "Warning";
+      this.Text = "Error";
       this.ResumeLayout(false);
-      this.PerformLayout();
 
     }
 
     #endregion
 
     private System.Windows.Forms.Label iconLabel;
-    private System.Windows.Forms.Button okButton;
+    private System.Windows.Forms.Button closeButton;
     private System.Windows.Forms.LinkLabel linkLabel;
-    private System.Windows.Forms.Label label1;
+    private System.Windows.Forms.Label label;
   }
 }

@@ -33,11 +33,10 @@ namespace HeuristicLab.PluginInfrastructure {
     /// </summary>
     /// <param name="args">Command line arguments</param>
     public static void Run(string[] args) {
-      bool fullProfileInstalled = Microsoft.Win32.Registry.LocalMachine.OpenSubKey("Software\\Microsoft\\NET Framework Setup\\NDP\\v4\\Full") != null;
-      if (!fullProfileInstalled) {
+      if (!FrameworkVersionErrorDialog.NET4FullProfileInstalled) {
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
-        Application.Run(new FrameworkVersionWarning());
+        Application.Run(new FrameworkVersionErrorDialog());
       } else {
         try {
           Application.EnableVisualStyles();

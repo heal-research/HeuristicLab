@@ -18,12 +18,17 @@
 	 * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
 	 */
 #endregion
+
 using System;
 using System.Windows.Forms;
 
 namespace HeuristicLab.PluginInfrastructure {
-  public partial class FrameworkVersionWarning : Form {
-    public FrameworkVersionWarning() {
+  public partial class FrameworkVersionErrorDialog : Form {
+    public static bool NET4FullProfileInstalled {
+      get { return Microsoft.Win32.Registry.LocalMachine.OpenSubKey("Software\\Microsoft\\NET Framework Setup\\NDP\\v4\\Full") != null; }
+    }
+
+    public FrameworkVersionErrorDialog() {
       InitializeComponent();
     }
 
