@@ -90,7 +90,7 @@ namespace HeuristicLab.Data.Views {
 
       if (e.KeyCode == Keys.Escape) {
         valueTextBox.Text = Content.GetValue();
-        valueLabel.Focus();  // select label to validate data
+        valueLabel.Select();  // select label to validate data
       }
     }
     private void valueTextBox_Validating(object sender, CancelEventArgs e) {

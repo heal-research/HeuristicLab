@@ -58,12 +58,12 @@ namespace HeuristicLab.Data.Views {
       // 
       // valueTextBox
       // 
-      this.valueTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.valueTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.valueTextBox.Location = new System.Drawing.Point(17, 0);
       this.valueTextBox.Name = "valueTextBox";
       this.valueTextBox.Size = new System.Drawing.Size(135, 20);
-      this.valueTextBox.TabIndex = 1;
+      this.valueTextBox.TabIndex = 2;
       this.valueTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.valueTextBox_KeyDown);
       this.valueTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.valueTextBox_Validating);
       this.valueTextBox.Validated += new System.EventHandler(this.valueTextBox_Validated);
@@ -79,7 +79,7 @@ namespace HeuristicLab.Data.Views {
       this.valueLabel.Location = new System.Drawing.Point(3, 3);
       this.valueLabel.Name = "valueLabel";
       this.valueLabel.Size = new System.Drawing.Size(37, 13);
-      this.valueLabel.TabIndex = 0;
+      this.valueLabel.TabIndex = 1;
       this.valueLabel.Text = "&Value:";
       // 
       // splitContainer
@@ -100,7 +100,8 @@ namespace HeuristicLab.Data.Views {
       this.splitContainer.Size = new System.Drawing.Size(194, 21);
       this.splitContainer.SplitterDistance = 41;
       this.splitContainer.SplitterWidth = 1;
-      this.splitContainer.TabIndex = 2;
+      this.splitContainer.TabIndex = 0;
+      this.splitContainer.TabStop = false;
       // 
       // StringConvertibleValueView
       // 
