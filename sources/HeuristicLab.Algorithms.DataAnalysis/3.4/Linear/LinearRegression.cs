@@ -75,6 +75,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       int samplesEnd = problemData.TrainingPartition.End;
       IEnumerable<int> rows = Enumerable.Range(samplesStart, samplesEnd - samplesStart);
       double[,] inputMatrix = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables.Concat(new string[] { targetVariable }), rows);
+      if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
+        throw new NotSupportedException("Linear regression does not support NaN or infinity values in the input dataset.");
 
       alglib.linearmodel lm = new alglib.linearmodel();
       alglib.lrreport ar = new alglib.lrreport();

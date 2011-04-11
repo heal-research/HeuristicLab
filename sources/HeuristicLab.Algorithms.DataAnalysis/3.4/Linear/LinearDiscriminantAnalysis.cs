@@ -72,6 +72,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       IEnumerable<int> rows = Enumerable.Range(samplesStart, samplesEnd - samplesStart);
       int nClasses = problemData.ClassNames.Count();
       double[,] inputMatrix = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables.Concat(new string[] { targetVariable }), rows);
+      if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
+        throw new NotSupportedException("Linear discriminant analysis does not support NaN or infinity values in the input dataset.");
 
       // change class values into class index
       int targetVariableColumn = inputMatrix.GetLength(1) - 1;

@@ -40,18 +40,21 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       List<SVM.Node> tempRow;
       int maxNodeIndex = 0;
       int svmProblemRowIndex = 0;
+      List<string> inputVariablesList = inputVariables.ToList();
       foreach (int row in rowIndices) {
         tempRow = new List<SVM.Node>();
-        foreach (var inputVariable in inputVariables) {
-          int col = dataset.GetVariableIndex(inputVariable);
-          double value = dataset[row, col];
+        int colIndex = 1; // make sure the smallest node index for SVM = 1
+        foreach (var inputVariable in inputVariablesList) {
+          double value = dataset[row, dataset.GetVariableIndex(inputVariable)];
+          // SVM also works with missing values
+          // => don't add NaN values in the dataset to the sparse SVM matrix representation
           if (!double.IsNaN(value)) {
-            int nodeIndex = col + 1; // make sure the smallest nodeIndex is 1 (libSVM convention)
-            tempRow.Add(new SVM.Node(nodeIndex, value));
-            if (nodeIndex > maxNodeIndex) maxNodeIndex = nodeIndex;
+            tempRow.Add(new SVM.Node(colIndex, value)); // nodes must be sorted in ascending ordered by column index
+            if (colIndex > maxNodeIndex) maxNodeIndex = colIndex;
           }
+          colIndex++;
         }
-        nodes[svmProblemRowIndex++] = tempRow.OrderBy(x => x.Index).ToArray(); // make sure the values are sorted by node index
+        nodes[svmProblemRowIndex++] = tempRow.ToArray();
       }
 
       return new SVM.Problem(targetVector.Length, targetVector, nodes, maxNodeIndex);

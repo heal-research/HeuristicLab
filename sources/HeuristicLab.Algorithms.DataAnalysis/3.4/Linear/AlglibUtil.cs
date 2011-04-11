@@ -26,28 +26,18 @@ using HeuristicLab.Problems.DataAnalysis;
 namespace HeuristicLab.Algorithms.DataAnalysis {
   public static class AlglibUtil {
     public static double[,] PrepareInputMatrix(Dataset dataset, IEnumerable<string> variables, IEnumerable<int> rows) {
-      List<int> allowedRows = CalculateAllowedRows(dataset, variables, rows).ToList();
+      List<string> variablesList = variables.ToList();
+      List<int> rowsList = rows.ToList();
 
-      double[,] matrix = new double[allowedRows.Count, variables.Count()];
-      for (int row = 0; row < allowedRows.Count; row++) {
+      double[,] matrix = new double[rowsList.Count, variablesList.Count];
+      for (int row = 0; row < rowsList.Count; row++) {
         int col = 0;
         foreach (string column in variables) {
-          matrix[row, col] = dataset[column, row];
+          matrix[row, col] = dataset[column, rowsList[row]];
           col++;
         }
       }
       return matrix;
-    }
-
-    private static IEnumerable<int> CalculateAllowedRows(Dataset dataset, IEnumerable<string> variables, IEnumerable<int> rows) {
-      // return only rows that contain no infinity or NaN values
-      return from row in rows
-             where (from variable in variables
-                    let x = dataset[variable, row]
-                    where double.IsInfinity(x) || double.IsNaN(x)
-                    select 1)
-                    .Any() == false
-             select row;
     }
   }
 }
