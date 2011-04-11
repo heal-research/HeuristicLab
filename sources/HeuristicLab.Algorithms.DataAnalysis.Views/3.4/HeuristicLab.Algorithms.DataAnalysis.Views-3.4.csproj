@@ -113,6 +113,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="KMeansClusteringModelView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="KMeansClusteringModelView.Designer.cs">
+      <DependentUpon>KMeansClusteringModelView.cs</DependentUpon>
+    </Compile>
     <Compile Include="SupportVectorMachineModelSupportVectorsView.cs">
       <SubType>UserControl</SubType>
     </Compile>

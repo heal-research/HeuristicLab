@@ -100,7 +100,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           }
 
           matrix = new DoubleMatrix(values);
-          var columnNames = dataset.VariableNames.ToList();
+          var columnNames = Content.ProblemData.AllowedInputVariables.ToList();
           columnNames.Insert(0, CLUSTER_NAMES);
           matrix.ColumnNames = columnNames;
         }
