@@ -228,7 +228,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     public virtual IEnumerable<ISymbol> GetAllowedChildSymbols(ISymbol parent) {
-      return from s in Symbols where IsAllowedChildSymbol(parent, s) select s;
+      return from s in AllowedSymbols where IsAllowedChildSymbol(parent, s) select s;
     }
 
     public virtual IEnumerable<ISymbol> GetAllowedChildSymbols(ISymbol parent, int argumentIndex) {
@@ -264,7 +264,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       if (!cachedMinExpressionLength.TryGetValue(symbol.Name, out temp)) {
         cachedMinExpressionLength[symbol.Name] = int.MaxValue; // prevent infinite recursion
         long sumOfMinExpressionLengths = 1 + (from argIndex in Enumerable.Range(0, GetMinimumSubtreeCount(symbol))
-                                              let minForSlot = (long)(from s in Symbols
+                                              let minForSlot = (long)(from s in AllowedSymbols
                                                                       where IsAllowedChildSymbol(symbol, s, argIndex)
                                                                       select GetMinimumExpressionLength(s)).DefaultIfEmpty(0).Min()
                                               select minForSlot).DefaultIfEmpty(0).Sum();
@@ -281,12 +281,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       if (!cachedMaxExpressionLength.TryGetValue(symbol.Name, out temp)) {
         cachedMaxExpressionLength[symbol.Name] = int.MaxValue; // prevent infinite recursion
         long sumOfMaxTrees = 1 + (from argIndex in Enumerable.Range(0, GetMaximumSubtreeCount(symbol))
-                                  let maxForSlot = (long)(from s in Symbols
+                                  let maxForSlot = (long)(from s in AllowedSymbols
                                                           where IsAllowedChildSymbol(symbol, s, argIndex)
                                                           select GetMaximumExpressionLength(s)).DefaultIfEmpty(0).Max()
                                   select maxForSlot).DefaultIfEmpty(0).Sum();
-        long limit = int.MaxValue;
-        cachedMaxExpressionLength[symbol.Name] = (int)Math.Min(sumOfMaxTrees, limit);
+        cachedMaxExpressionLength[symbol.Name] = (int)Math.Min(sumOfMaxTrees, int.MaxValue);
         return cachedMaxExpressionLength[symbol.Name];
       }
       return temp;
@@ -297,11 +296,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       int temp;
       if (!cachedMinExpressionDepth.TryGetValue(symbol.Name, out temp)) {
         cachedMinExpressionDepth[symbol.Name] = int.MaxValue; // prevent infinite recursion
-        cachedMinExpressionDepth[symbol.Name] = 1 + (from argIndex in Enumerable.Range(0, GetMinimumSubtreeCount(symbol))
-                                                     let minForSlot = (from s in Symbols
-                                                                       where IsAllowedChildSymbol(symbol, s, argIndex)
-                                                                       select GetMinimumExpressionDepth(s)).DefaultIfEmpty(0).Min()
-                                                     select minForSlot).DefaultIfEmpty(0).Max();
+        long minDepth = 1 + (from argIndex in Enumerable.Range(0, GetMinimumSubtreeCount(symbol))
+                             let minForSlot = (long)(from s in AllowedSymbols
+                                                     where IsAllowedChildSymbol(symbol, s, argIndex)
+                                                     select GetMinimumExpressionDepth(s)).DefaultIfEmpty(0).Min()
+                             select minForSlot).DefaultIfEmpty(0).Max();
+        cachedMinExpressionDepth[symbol.Name] = (int)Math.Min(minDepth, int.MaxValue);
         return cachedMinExpressionDepth[symbol.Name];
       }
       return temp;

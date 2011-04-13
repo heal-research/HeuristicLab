@@ -102,6 +102,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
     public static void PTC2(IRandom random, ISymbolicExpressionTreeNode seedNode,
       int maxLength, int maxDepth) {
+      // make sure it is possible to create a trees smaller than maxLength and maxDepth
+      if (seedNode.Grammar.GetMinimumExpressionLength(seedNode.Symbol) > maxLength)
+        throw new ArgumentException("Cannot create trees of length " + maxLength + " or shorter because of grammar constraints.", "maxLength");
+      if (seedNode.Grammar.GetMinimumExpressionDepth(seedNode.Symbol) > maxDepth)
+        throw new ArgumentException("Cannot create trees of depth " + maxDepth + " or smaller because of grammar constraints.", "maxDepth");
+
       // tree length is limited by the grammar and by the explicit size constraints
       int allowedMinLength = seedNode.Grammar.GetMinimumExpressionLength(seedNode.Symbol);
       int allowedMaxLength = Math.Min(maxLength, seedNode.Grammar.GetMaximumExpressionLength(seedNode.Symbol));
@@ -148,13 +154,13 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         ISymbolicExpressionTreeNode parent = nextExtension.Parent;
         int argumentIndex = nextExtension.ChildIndex;
         int extensionDepth = nextExtension.ExtensionPointDepth;
-        if (extensionDepth + parent.Grammar.GetMinimumExpressionDepth(parent.Symbol) >= maxDepth) {
+        if (parent.Grammar.GetMinimumExpressionDepth(parent.Symbol) >= maxDepth - extensionDepth) {
           ReplaceWithMinimalTree(random, root, parent, argumentIndex);
         } else {
           var allowedSymbols = (from s in parent.Grammar.Symbols
                                 where s.InitialFrequency > 0.0
                                 where parent.Grammar.IsAllowedChildSymbol(parent.Symbol, s, argumentIndex)
-                                where parent.Grammar.GetMinimumExpressionDepth(s) + extensionDepth - 1 < maxDepth
+                                where parent.Grammar.GetMinimumExpressionDepth(s) < maxDepth - extensionDepth + 1
                                 where parent.Grammar.GetMaximumExpressionLength(s) > targetLength - totalListMinLength - currentLength
                                 select s)
                                .ToList();
