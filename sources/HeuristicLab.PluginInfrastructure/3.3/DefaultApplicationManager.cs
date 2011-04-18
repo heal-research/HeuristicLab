@@ -150,6 +150,9 @@ namespace HeuristicLab.PluginInfrastructure {
 
     // register assembly in the assembly cache for the AssemblyResolveEvent
     private void RegisterLoadedAssembly(Assembly asm) {
+      if (loadedAssemblies.ContainsKey(asm.FullName) || loadedAssemblies.ContainsKey(asm.GetName().Name)) {
+        throw new ArgumentException("An assembly with the name " + asm.GetName().Name + " has been registered already.", "asm");
+      }
       loadedAssemblies.Add(asm.FullName, asm);
       loadedAssemblies.Add(asm.GetName().Name, asm); // add short name
     }
