@@ -203,7 +203,7 @@ namespace HeuristicLab.Optimization.Views {
       this.chart.TabIndex = 16;
       this.chart.Text = "chart";
       this.chart.AxisViewChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ViewEventArgs>(this.chart_AxisViewChanged);
-      this.chart.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.chart_DoubleClick);
+      this.chart.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.chart_MouseDoubleClick);
       this.chart.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chart_MouseMove);
       this.chart.MouseUp += new System.Windows.Forms.MouseEventHandler(this.chart_MouseUp);
       // 

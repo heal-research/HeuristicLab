@@ -431,7 +431,7 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     #region Drag & drop and tooltip
-    private void chart_DoubleClick(object sender, MouseEventArgs e) {
+    private void chart_MouseDoubleClick(object sender, MouseEventArgs e) {
       HitTestResult h = this.chart.HitTest(e.X, e.Y);
       if (h.ChartElementType == ChartElementType.DataPoint) {
         IRun run = (IRun)((DataPoint)h.Object).Tag;
@@ -440,8 +440,9 @@ namespace HeuristicLab.Optimization.Views {
           view.ReadOnly = this.ReadOnly;
           view.Locked = this.Locked;
         }
-        this.chart.ChartAreas[0].CursorX.SetSelectionPosition(double.NaN, double.NaN);
-        this.chart.ChartAreas[0].CursorY.SetSelectionPosition(double.NaN, double.NaN);
+
+        this.chart.ChartAreas[0].CursorX.SelectionStart = this.chart.ChartAreas[0].CursorX.SelectionEnd;
+        this.chart.ChartAreas[0].CursorY.SelectionStart = this.chart.ChartAreas[0].CursorY.SelectionEnd;
       }
     }
 
