@@ -53,12 +53,14 @@ namespace HeuristicLab.Parameters {
     public ValueParameter(string name, string description, bool getsCollected) : base(name, description, getsCollected) { base.Value = CreateDefaultValue(); }
     public ValueParameter(string name, string description, T value) : base(name, description, value) { }
     public ValueParameter(string name, string description, T value, bool getsCollected) : base(name, description, value, getsCollected) { }
-
+                                                                                  
     protected T CreateDefaultValue() {
-      ConstructorInfo defaultConstructor = typeof(T).GetConstructor(Type.EmptyTypes);
-      if (defaultConstructor != null)
-        return (T)defaultConstructor.Invoke(new object[0]);
-      return null;
+      Type type = typeof(T);
+      if (type.IsAbstract) return null;
+      ConstructorInfo defaultConstructor = type.GetConstructor(Type.EmptyTypes);
+      if (defaultConstructor == null) return null;
+
+      return (T)defaultConstructor.Invoke(new object[0]);
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
