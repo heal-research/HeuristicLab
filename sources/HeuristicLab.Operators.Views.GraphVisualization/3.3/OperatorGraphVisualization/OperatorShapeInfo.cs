@@ -32,6 +32,8 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     [Storable]
     private List<string> labels;
 
+    private object lockObject = new object();
+
     [StorableConstructor]
     protected OperatorShapeInfo(bool deserializing) : base(deserializing) { }
     protected OperatorShapeInfo(OperatorShapeInfo original, Cloner cloner)
@@ -41,7 +43,14 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       lineColor = original.lineColor;
       lineWidth = original.lineWidth;
       title = original.title;
-      if (original.icon != null) icon = (Bitmap)original.icon.Clone();
+
+      //mkommend: necessary because cloning a Bitmap is not threadsafe
+      //see http://stackoverflow.com/questions/1851292/invalidoperationexception-object-is-currently-in-use-elsewhere for further information
+      if (original.icon != null) {
+        lock (lockObject) {
+          icon = (Bitmap)original.icon.Clone();
+        }
+      }
 
       connectorNames = new List<string>(original.connectorNames);
       labels = new List<string>(original.labels);
@@ -230,8 +239,6 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       this.LineWidth = operatorShape.LineWidth;
       this.Icon = operatorShape.Icon;
       this.Collapsed = operatorShape.Collapsed;
-
-      //TODO update Connector and labels;
     }
   }
 }
