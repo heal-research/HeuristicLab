@@ -46,15 +46,17 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
 
       //mkommend: necessary because cloning a Bitmap is not threadsafe
       //see http://stackoverflow.com/questions/1851292/invalidoperationexception-object-is-currently-in-use-elsewhere for further information
-      if (original.icon != null) icon = (Bitmap)original.icon.Clone();
+      if (original.icon != null) {
+        lock (original.lockObject) {
+          icon = (Bitmap)original.icon.Clone();
+        }
+      }
 
       connectorNames = new List<string>(original.connectorNames);
       labels = new List<string>(original.labels);
     }
     public override IDeepCloneable Clone(Cloner cloner) {
-      lock (lockObject) {
-        return new OperatorShapeInfo(this, cloner);
-      }
+      return new OperatorShapeInfo(this, cloner);
     }
 
     public OperatorShapeInfo()
