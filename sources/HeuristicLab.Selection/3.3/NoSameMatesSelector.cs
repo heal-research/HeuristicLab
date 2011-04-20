@@ -11,9 +11,11 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Selection {
   /// <summary>
-  /// A selector which tries to select two parents which differ in quality.
+  /// A selector which tries to select two parents which differ in quality
+  /// as described in: "S. Gustafson, E. K. Burke, N. Krasnogor, On improving genetic programming for symbolic regression, 
+  /// The 2005 IEEE Congress on Evolutionary Computation, pp. 912-919, 2005."
   /// </summary>
-  [Item("NoSameMatesSelector", "A selector which tries to select two parents which differ in quality.")]
+  [Item("NoSameMatesSelector", "A selector which tries to select two parents which differ in quality as described in: \"S. Gustafson, E. K. Burke, N. Krasnogor, On improving genetic programming for symbolic regression, The 2005 IEEE Congress on Evolutionary Computation, pp. 912-919, 2005.\"")]
   [StorableClass]
   public class NoSameMatesSelector : StochasticSingleObjectiveSelector, ISingleObjectiveSelector {
     private const string SelectorParameterName = "Selector";
