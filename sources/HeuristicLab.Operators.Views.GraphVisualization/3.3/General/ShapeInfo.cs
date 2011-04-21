@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using Netron.Diagramming.Core;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
   [StorableClass]
@@ -33,21 +32,10 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     protected ShapeInfo(bool deserializing) : base() { }
     protected ShapeInfo(ShapeInfo original, Cloner cloner)
       : base(original, cloner) {
-      shapeType = original.shapeType;
       location = original.location;
     }
 
-    protected ShapeInfo(Type shapeType) {
-      if (!typeof(IShape).IsAssignableFrom(shapeType))
-        throw new ArgumentException("The passed shape type " + shapeType + " must be derived from IShape.");
-      this.shapeType = shapeType;
-    }
-
-    [Storable]
-    private Type shapeType;
-    public Type ShapeType {
-      get { return this.shapeType; }
-    }
+    protected ShapeInfo() : base() { }
 
     [Storable]
     private Point location;
@@ -67,21 +55,6 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     protected virtual void OnChanged() {
       EventHandler handler = this.Changed;
       if (handler != null) this.Changed(this, EventArgs.Empty);
-    }
-
-    public virtual IShape CreateShape() {
-      IShape shape = (IShape)Activator.CreateInstance(this.shapeType);
-      shape.Tag = this;
-      shape.Location = this.Location;
-      return shape;
-    }
-
-    public virtual void UpdateShape(IShape shape) {
-      shape.Location = this.Location;
-    }
-
-    public virtual void UpdateShapeInfo(IShape shape) {
-      this.Location = shape.Location;
     }
   }
 }

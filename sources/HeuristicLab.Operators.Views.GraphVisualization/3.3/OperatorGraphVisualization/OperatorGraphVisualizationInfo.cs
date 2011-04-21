@@ -127,7 +127,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       this.operatorGraph.DeserializationFinished -= new EventHandler(operatorGraph_DeserializationFinished);
     }
 
-    internal IOperator GetOperatorForShapeInfo(IOperatorShapeInfo shapeInfo) {
+    public IOperator GetOperatorForShapeInfo(IOperatorShapeInfo shapeInfo) {
       return this.operatorShapeInfoMapping.GetBySecond(shapeInfo);
     }
 
@@ -191,7 +191,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     }
 
     #region methods to manipulate operatorgraph by the shape info
-    internal void AddShapeInfo(IOperator op, IOperatorShapeInfo shapeInfo) {
+    public void AddShapeInfo(IOperator op, IOperatorShapeInfo shapeInfo) {
       this.RegisterOperatorEvents(op);
       this.operatorParameterCollectionMapping.Add(op, op.Parameters);
       this.operatorShapeInfoMapping.Add(op, shapeInfo);

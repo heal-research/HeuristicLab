@@ -25,7 +25,7 @@ using System.Linq;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
-  internal static class OperatorShapeInfoFactory {
+  public static class OperatorShapeInfoFactory {
     public const string PredecessorConnector = "Predecessor";
     public const string SuccessorConnector = "Successor";
     public static IOperatorShapeInfo CreateOperatorShapeInfo(IOperator op) {

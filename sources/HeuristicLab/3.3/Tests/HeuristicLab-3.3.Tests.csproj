@@ -331,6 +331,10 @@
       <Project>{6A5F8C2D-B0C3-4B36-BC20-9B1A91EE6DB6}</Project>
       <Name>HeuristicLab.Operators.Programmable-3.3</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\HeuristicLab.Operators.Views.GraphVisualization.Views\3.3\HeuristicLab.Operators.Views.GraphVisualization.Views-3.3.csproj">
+      <Project>{0C39A349-1979-419A-89BD-E4E2F26BD287}</Project>
+      <Name>HeuristicLab.Operators.Views.GraphVisualization.Views-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\HeuristicLab.Operators.Views.GraphVisualization\3.3\HeuristicLab.Operators.Views.GraphVisualization-3.3.csproj">
       <Project>{57F38579-409D-4DD8-AB19-3F2C4A665126}</Project>
       <Name>HeuristicLab.Operators.Views.GraphVisualization-3.3</Name>

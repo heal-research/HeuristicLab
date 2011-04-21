@@ -21,16 +21,17 @@
 
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using Netron.Diagramming.Core;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
   [StorableClass]
-  internal class OperatorShapeInfo : ShapeInfo, IOperatorShapeInfo {
+  public class OperatorShapeInfo : ShapeInfo, IOperatorShapeInfo {
     [Storable]
     private List<string> labels;
+    public IEnumerable<string> Labels {
+      get { return labels; }
+    }
 
     private object lockObject = new object();
 
@@ -60,7 +61,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     }
 
     public OperatorShapeInfo()
-      : base(typeof(OperatorShape)) {
+      : base() {
       this.connectorNames = new List<string>();
       this.labels = new List<string>();
     }
@@ -171,74 +172,6 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
           this.OnChanged();
         }
       }
-    }
-
-    public override IShape CreateShape() {
-      OperatorShape shape = (OperatorShape)base.CreateShape();
-      shape.Title = this.Title;
-      shape.Color = this.Color;
-      shape.LineColor = this.LineColor;
-      shape.LineWidth = this.LineWidth;
-      shape.Icon = this.Icon;
-      shape.Collapsed = this.Collapsed;
-      foreach (string connectorName in this.connectorNames)
-        if (connectorName != OperatorShapeInfoFactory.SuccessorConnector && connectorName != OperatorShapeInfoFactory.PredecessorConnector)
-          shape.AddConnector(connectorName);
-
-      shape.UpdateLabels(this.labels);
-      return shape;
-    }
-
-    public override void UpdateShape(IShape shape) {
-      base.UpdateShape(shape);
-      OperatorShape operatorShape = (OperatorShape)shape;
-      operatorShape.Title = this.Title;
-      operatorShape.Color = this.Color;
-      operatorShape.LineColor = this.LineColor;
-      operatorShape.LineWidth = this.LineWidth;
-      operatorShape.Icon = this.Icon;
-      operatorShape.Collapsed = this.Collapsed;
-
-      int i = 0;
-      int j = 0;
-      //remove old connectors and skip correct connectors
-      List<string> oldConnectorNames = operatorShape.AdditionalConnectorNames.ToList();
-      while (i < this.connectorNames.Count && j < oldConnectorNames.Count) {
-        if (connectorNames[i] == OperatorShapeInfoFactory.SuccessorConnector ||
-          connectorNames[i] == OperatorShapeInfoFactory.PredecessorConnector)
-          i++;
-        else if (oldConnectorNames[j] == OperatorShapeInfoFactory.SuccessorConnector ||
-          oldConnectorNames[j] == OperatorShapeInfoFactory.PredecessorConnector)
-          j++;
-        else if (this.connectorNames[i] != oldConnectorNames[j]) {
-          operatorShape.RemoveConnector(oldConnectorNames[j]);
-          j++;
-        } else {
-          i++;
-          j++;
-        }
-      }
-      //remove remaining old connectors
-      for (; j < oldConnectorNames.Count; j++)
-        operatorShape.RemoveConnector(oldConnectorNames[j]);
-
-      //add new connectors except successor and connector
-      for (; i < this.connectorNames.Count; i++)
-        if (this.connectorNames[i] != OperatorShapeInfoFactory.SuccessorConnector && this.connectorNames[i] != OperatorShapeInfoFactory.PredecessorConnector)
-          operatorShape.AddConnector(this.connectorNames[i]);
-
-      operatorShape.UpdateLabels(this.labels);
-    }
-
-    public override void UpdateShapeInfo(IShape shape) {
-      base.UpdateShapeInfo(shape);
-      OperatorShape operatorShape = (OperatorShape)shape;
-      this.Title = operatorShape.Title;
-      this.Color = operatorShape.Color;
-      this.LineColor = operatorShape.LineColor;
-      this.LineWidth = operatorShape.LineWidth;
-      this.Icon = operatorShape.Icon;
-      this.Collapsed = operatorShape.Collapsed;
     }
   }
 }

@@ -34,6 +34,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
     void AddConnector(string connectorName);
     void RemoveConnector(string connectorName);
 
+    IEnumerable<string> Labels { get; }
     void UpdateLabels(IEnumerable<string> labels);
   }
 }

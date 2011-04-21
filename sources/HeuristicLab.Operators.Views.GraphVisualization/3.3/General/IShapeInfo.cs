@@ -23,17 +23,11 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using HeuristicLab.Common;
-using Netron.Diagramming.Core;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
   public interface IShapeInfo : IDeepCloneable {
-    Type ShapeType { get; }
     Point Location { get; set; }
-
-    IShape CreateShape();
     IEnumerable<string> Connectors { get; }
-    void UpdateShape(IShape shape);
-    void UpdateShapeInfo(IShape shape);
 
     event EventHandler Changed;
   }

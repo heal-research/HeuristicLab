@@ -45,6 +45,7 @@
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.MainForm-3.3.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Netron-3.0.2672.12446.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Operators.Programmable-3.3.dll" />
+    <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Operators.Views.GraphVisualization.Views-3.3.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Operators.Views.GraphVisualization-3.3.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Operators.Views-3.3.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Operators-3.3.dll" />
