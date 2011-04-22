@@ -242,5 +242,16 @@ namespace HeuristicLab.Algorithms.LocalSearch {
         return null;
       return base.Apply();
     }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (!Parameters.ContainsKey("BestLocalQuality"))
+        Parameters.Add(new LookupParameter<DoubleValue>("BestLocalQuality", "The value which represents the best quality found so far."));
+      if (!Parameters.ContainsKey("Iterations"))
+        Parameters.Add(new LookupParameter<IntValue>("Iterations", "The number of iterations performed."));
+      #endregion
+    }
   }
 }

@@ -36,7 +36,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
   /// </summary>
   [Item("LocalSearchImprovementOperator", "A local search improvement operator.")]
   [StorableClass]
-  public sealed class LocalSearchImprovementOperator : SingleSuccessorOperator, IGenericLocalImprovementOperator, IStochasticOperator {
+  public sealed class LocalSearchImprovementOperator : SingleSuccessorOperator, ILocalImprovementOperator, IStochasticOperator {
     #region IGenericLocalImprovementOperator Properties
     public Type ProblemType { get { return typeof(ISingleObjectiveHeuristicOptimizationProblem); } }
     public IProblem Problem {
