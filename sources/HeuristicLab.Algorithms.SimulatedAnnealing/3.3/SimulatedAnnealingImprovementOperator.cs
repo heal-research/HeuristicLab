@@ -20,19 +20,15 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Operators;
-using HeuristicLab.Common;
-using HeuristicLab.Parameters;
-using HeuristicLab.Algorithms.SimulatedAnnealing;
-using HeuristicLab.Data;
-using HeuristicLab.Optimization;
-using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Analysis;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Operators;
+using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Algorithms.SimulatedAnnealing {
@@ -41,13 +37,35 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
   /// </summary>
   [Item("SimulatedAnnealingImprovementOperator", "A simulated annealing improvement operator.")]
   [StorableClass]
-  public class SimulatedAnnealingImprovementOperator: SingleSuccessorOperator, ILocalImprovementOperator {
-    [Storable]
-    private SimulatedAnnealingMainLoop loop;
+  public sealed class SimulatedAnnealingImprovementOperator : SingleSuccessorOperator, IGenericLocalImprovementOperator, IStochasticOperator {
+    #region IGenericLocalImprovementOperator Properties
+    public Type ProblemType { get { return typeof(ISingleObjectiveHeuristicOptimizationProblem); } }
+    public IProblem Problem {
+      get { return problem; }
+      set {
+        if (problem != value) {
+          if (value != null && !(value is ISingleObjectiveHeuristicOptimizationProblem))
+            throw new ArgumentException("Only problems of type " + ProblemType.ToString() + " can be assigned.");
+          if (problem != null) DeregisterProblemEventHandlers();
+          problem = (ISingleObjectiveHeuristicOptimizationProblem)value;
+          if (problem != null) RegisterProblemEventHandlers();
+          UpdateProblem();
+        }
+      }
+    }
+    #endregion
 
     [Storable]
+    private ISingleObjectiveHeuristicOptimizationProblem problem;
+    [Storable]
+    private SimulatedAnnealingMainLoop loop;
+    [Storable]
     private BestAverageWorstQualityAnalyzer qualityAnalyzer;
-    
+
+    #region Parameter Properties
+    public ILookupParameter<IRandom> RandomParameter {
+      get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
+    }
     private ConstrainedValueParameter<IMoveGenerator> MoveGeneratorParameter {
       get { return (ConstrainedValueParameter<IMoveGenerator>)Parameters["MoveGenerator"]; }
     }
@@ -57,14 +75,8 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     private ConstrainedValueParameter<ISingleObjectiveMoveEvaluator> MoveEvaluatorParameter {
       get { return (ConstrainedValueParameter<ISingleObjectiveMoveEvaluator>)Parameters["MoveEvaluator"]; }
     }
-    private ValueParameter<IntValue> MaximumIterationsParameter {
-      get { return (ValueParameter<IntValue>)Parameters["MaximumIterations"]; }
-    }
-    private ValueParameter<IntValue> InnerIterationsParameter {
-      get { return (ValueParameter<IntValue>)Parameters["InnerIterations"]; }
-    }
-    public LookupParameter<IntValue> EvaluatedSolutionsParameter {
-      get { return (LookupParameter<IntValue>)Parameters["EvaluatedSolutions"]; }
+    private IValueLookupParameter<IntValue> InnerIterationsParameter {
+      get { return (IValueLookupParameter<IntValue>)Parameters["InnerIterations"]; }
     }
     public ValueParameter<MultiAnalyzer> AnalyzerParameter {
       get { return (ValueParameter<MultiAnalyzer>)Parameters["Analyzer"]; }
@@ -78,7 +90,23 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     private ConstrainedValueParameter<IDiscreteDoubleValueModifier> AnnealingOperatorParameter {
       get { return (ConstrainedValueParameter<IDiscreteDoubleValueModifier>)Parameters["AnnealingOperator"]; }
     }
+    public ScopeTreeLookupParameter<DoubleValue> QualityParameter {
+      get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters["Quality"]; }
+    }
+    #region ILocalImprovementOperator Parameters
+    public IValueLookupParameter<IntValue> MaximumIterationsParameter {
+      get { return (IValueLookupParameter<IntValue>)Parameters["MaximumIterations"]; }
+    }
+    public ILookupParameter<IntValue> EvaluatedSolutionsParameter {
+      get { return (ILookupParameter<IntValue>)Parameters["EvaluatedSolutions"]; }
+    }
+    public ILookupParameter<ResultCollection> ResultsParameter {
+      get { return (ILookupParameter<ResultCollection>)Parameters["Results"]; }
+    }
+    #endregion
+    #endregion
 
+    #region Properties
     public IMoveGenerator MoveGenerator {
       get { return MoveGeneratorParameter.Value; }
       set { MoveGeneratorParameter.Value = value; }
@@ -95,50 +123,87 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       get { return AnalyzerParameter.Value; }
       set { AnalyzerParameter.Value = value; }
     }
+    #endregion
 
     [StorableConstructor]
-    protected SimulatedAnnealingImprovementOperator(bool deserializing) : base(deserializing) {}
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-      Initialize();
-    }
-    protected SimulatedAnnealingImprovementOperator(SimulatedAnnealingImprovementOperator original, Cloner cloner)
+    private SimulatedAnnealingImprovementOperator(bool deserializing) : base(deserializing) { }
+    private SimulatedAnnealingImprovementOperator(SimulatedAnnealingImprovementOperator original, Cloner cloner)
       : base(original, cloner) {
-        this.loop = cloner.Clone(original.loop);
-        this.qualityAnalyzer = cloner.Clone(original.qualityAnalyzer);
-        Initialize();
-    }
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new SimulatedAnnealingImprovementOperator(this, cloner);
+      this.problem = cloner.Clone(original.problem);
+      this.loop = cloner.Clone(original.loop);
+      this.qualityAnalyzer = cloner.Clone(original.qualityAnalyzer);
+      RegisterEventHandlers();
     }
     public SimulatedAnnealingImprovementOperator()
       : base() {
-        loop = new SimulatedAnnealingMainLoop();
+      loop = new SimulatedAnnealingMainLoop();
 
-        qualityAnalyzer = new BestAverageWorstQualityAnalyzer();
+      qualityAnalyzer = new BestAverageWorstQualityAnalyzer();
 
-        Parameters.Add(new ConstrainedValueParameter<IMoveGenerator>("MoveGenerator", "The operator used to generate moves to the neighborhood of the current solution."));
-        Parameters.Add(new ConstrainedValueParameter<IMoveMaker>("MoveMaker", "The operator used to perform a move."));
-        Parameters.Add(new ConstrainedValueParameter<ISingleObjectiveMoveEvaluator>("MoveEvaluator", "The operator used to evaluate a move."));
-        Parameters.Add(new ValueParameter<IntValue>("MaximumIterations", "The maximum number of generations which should be processed.", new IntValue(150)));
-        Parameters.Add(new ValueParameter<IntValue>("InnerIterations", "Number of moves that MultiMoveGenerators should create. This is ignored for Exhaustive- and SingleMoveGenerators.", new IntValue(1500)));
-        Parameters.Add(new LookupParameter<IntValue>("EvaluatedSolutions", "The number of evaluated moves."));
-        Parameters.Add(new ValueParameter<MultiAnalyzer>("Analyzer", "The operator used to analyze the solution.", new MultiAnalyzer()));
-        Parameters.Add(new ValueParameter<DoubleValue>("StartTemperature", "The initial temperature.", new DoubleValue(100)));
-        Parameters.Add(new ValueParameter<DoubleValue>("EndTemperature", "The final temperature which should be reached when iterations reaches maximum iterations.", new DoubleValue(1e-6)));
-        Parameters.Add(new ConstrainedValueParameter<IDiscreteDoubleValueModifier>("AnnealingOperator", "The operator used to modify the temperature."));
+      Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));
+      Parameters.Add(new ConstrainedValueParameter<IMoveGenerator>("MoveGenerator", "The operator used to generate moves to the neighborhood of the current solution."));
+      Parameters.Add(new ConstrainedValueParameter<IMoveMaker>("MoveMaker", "The operator used to perform a move."));
+      Parameters.Add(new ConstrainedValueParameter<ISingleObjectiveMoveEvaluator>("MoveEvaluator", "The operator used to evaluate a move."));
+      Parameters.Add(new ValueLookupParameter<IntValue>("MaximumIterations", "The maximum number of generations which should be processed.", new IntValue(150)));
+      Parameters.Add(new ValueLookupParameter<IntValue>("InnerIterations", "Number of moves that MultiMoveGenerators should create. This is ignored for Exhaustive- and SingleMoveGenerators.", new IntValue(1500)));
+      Parameters.Add(new LookupParameter<IntValue>("EvaluatedSolutions", "The number of evaluated moves."));
+      Parameters.Add(new ValueParameter<MultiAnalyzer>("Analyzer", "The operator used to analyze the solution.", new MultiAnalyzer()));
+      Parameters.Add(new ValueParameter<DoubleValue>("StartTemperature", "The initial temperature.", new DoubleValue(100)));
+      Parameters.Add(new ValueParameter<DoubleValue>("EndTemperature", "The final temperature which should be reached when iterations reaches maximum iterations.", new DoubleValue(1e-6)));
+      Parameters.Add(new ConstrainedValueParameter<IDiscreteDoubleValueModifier>("AnnealingOperator", "The operator used to modify the temperature."));
+      Parameters.Add(new LookupParameter<ResultCollection>("Results", "The variable where the results are stored."));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The quality/fitness value of a solution."));
 
-        foreach (IDiscreteDoubleValueModifier op in ApplicationManager.Manager.GetInstances<IDiscreteDoubleValueModifier>().OrderBy(x => x.Name))
-          AnnealingOperatorParameter.ValidValues.Add(op);
+      foreach (IDiscreteDoubleValueModifier op in ApplicationManager.Manager.GetInstances<IDiscreteDoubleValueModifier>().OrderBy(x => x.Name))
+        AnnealingOperatorParameter.ValidValues.Add(op);
 
-        ParameterizeAnnealingOperators();
+      ParameterizeAnnealingOperators();
+      ParameterizeSAMainLoop();
 
-        Initialize();
+      RegisterEventHandlers();
     }
 
-    private void Initialize() {
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SimulatedAnnealingImprovementOperator(this, cloner);
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      RegisterEventHandlers();
+    }
+
+    #region Event Handler Registration
+    private void RegisterEventHandlers() {
       MoveGeneratorParameter.ValueChanged += new EventHandler(MoveGeneratorParameter_ValueChanged);
+      if (problem != null)
+        RegisterProblemEventHandlers();
     }
+
+    private void RegisterProblemEventHandlers() {
+      problem.Reset += new EventHandler(problem_Reset);
+      problem.OperatorsChanged += new EventHandler(problem_OperatorsChanged);
+    }
+
+    private void DeregisterProblemEventHandlers() {
+      problem.Reset -= new EventHandler(problem_Reset);
+      problem.OperatorsChanged -= new EventHandler(problem_OperatorsChanged);
+    }
+    #endregion
+
+    #region Event Handlers
+    private void MoveGeneratorParameter_ValueChanged(object sender, EventArgs e) {
+      ChooseMoveOperators();
+      ParameterizeSAMainLoop();
+    }
+
+    private void problem_Reset(object sender, EventArgs e) {
+      UpdateProblem();
+    }
+
+    private void problem_OperatorsChanged(object sender, EventArgs e) {
+      UpdateProblem();
+    }
+    #endregion
 
     private void ParameterizeAnnealingOperators() {
       foreach (IDiscreteDoubleValueModifier op in AnnealingOperatorParameter.ValidValues) {
@@ -151,19 +216,18 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       }
     }
 
-    public void OnProblemChanged(IProblem problem) {
-      UpdateMoveOperators(problem);
+    public void UpdateProblem() {
+      UpdateMoveOperators();
       ChooseMoveOperators();
 
-      ParameterizeMoveGenerators(problem as ISingleObjectiveHeuristicOptimizationProblem);
-      ParameterizeMoveEvaluators(problem as ISingleObjectiveHeuristicOptimizationProblem);
-      ParameterizeMoveMakers(problem as ISingleObjectiveHeuristicOptimizationProblem);
+      ParameterizeMoveGenerators();
 
-      ParameterizeAnalyzers(problem as ISingleObjectiveHeuristicOptimizationProblem);
-      UpdateAnalyzers(problem as ISingleObjectiveHeuristicOptimizationProblem);
+      ParameterizeSAMainLoop();
+      ParameterizeAnalyzers();
+      UpdateAnalyzers();
     }
 
-    void ParameterizeAnalyzers(ISingleObjectiveHeuristicOptimizationProblem problem) {
+    private void ParameterizeAnalyzers() {
       qualityAnalyzer.ResultsParameter.ActualName = "Results";
       if (problem != null) {
         qualityAnalyzer.MaximizationParameter.ActualName = problem.MaximizationParameter.Name;
@@ -173,7 +237,28 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       }
     }
 
-    void UpdateAnalyzers(ISingleObjectiveHeuristicOptimizationProblem problem) {
+    private void ParameterizeSAMainLoop() {
+      loop.AnalyzerParameter.ActualName = AnalyzerParameter.Name;
+      loop.EvaluatedMovesParameter.ActualName = EvaluatedSolutionsParameter.Name;
+      loop.IterationsParameter.ActualName = "LocalIterations";
+      loop.MaximumIterationsParameter.ActualName = MaximumIterationsParameter.Name;
+      loop.MoveEvaluatorParameter.ActualName = MoveEvaluatorParameter.Name;
+      loop.MoveGeneratorParameter.ActualName = MoveGeneratorParameter.Name;
+      loop.MoveMakerParameter.ActualName = MoveMakerParameter.Name;
+      loop.QualityParameter.ActualName = QualityParameter.Name;
+      loop.RandomParameter.ActualName = RandomParameter.Name;
+      loop.ResultsParameter.ActualName = ResultsParameter.Name;
+
+      if (problem != null) {
+        loop.BestKnownQualityParameter.ActualName = problem.BestKnownQualityParameter.Name;
+        loop.MaximizationParameter.ActualName = problem.MaximizationParameter.Name;
+      }
+      if (MoveEvaluator != null) {
+        loop.MoveQualityParameter.ActualName = MoveEvaluator.MoveQualityParameter.ActualName;
+      }
+    }
+
+    private void UpdateAnalyzers() {
       Analyzer.Operators.Clear();
       if (problem != null) {
         foreach (IAnalyzer analyzer in problem.Operators.OfType<IAnalyzer>()) {
@@ -186,11 +271,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       Analyzer.Operators.Add(qualityAnalyzer);
     }
 
-    void MoveGeneratorParameter_ValueChanged(object sender, EventArgs e) {
-      ChooseMoveOperators();
-    }
-
-    private void UpdateMoveOperators(IProblem problem) {
+    private void UpdateMoveOperators() {
       IMoveGenerator oldMoveGenerator = MoveGenerator;
       IMoveMaker oldMoveMaker = MoveMaker;
       ISingleObjectiveMoveEvaluator oldMoveEvaluator = MoveEvaluator;
@@ -198,68 +279,41 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       ClearMoveParameters();
 
       if (problem != null) {
-        foreach (IMoveGenerator generator in problem.Operators.OfType<IMoveGenerator>().OrderBy(x => x.Name))
+        foreach (IMultiMoveGenerator generator in problem.Operators.OfType<IMultiMoveGenerator>().OrderBy(x => x.Name))
+          MoveGeneratorParameter.ValidValues.Add(generator);
+        foreach (IExhaustiveMoveGenerator generator in problem.Operators.OfType<IExhaustiveMoveGenerator>().OrderBy(x => x.Name))
           MoveGeneratorParameter.ValidValues.Add(generator);
 
-        foreach (IMoveMaker maker in problem.Operators.OfType<IMoveMaker>().OrderBy(x => x.Name))
-          MoveMakerParameter.ValidValues.Add(maker);
+        if (oldMoveGenerator != null) {
+          IMoveGenerator newMoveGenerator = MoveGeneratorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMoveGenerator.GetType());
+          if (newMoveGenerator != null) MoveGenerator = newMoveGenerator;
+        }
 
-        foreach (ISingleObjectiveMoveEvaluator evaluator in problem.Operators.OfType<ISingleObjectiveMoveEvaluator>().OrderBy(x => x.Name))
-          MoveEvaluatorParameter.ValidValues.Add(evaluator);
-      }
-
-      if (oldMoveGenerator != null) {
-        IMoveGenerator newMoveGenerator = MoveGeneratorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMoveGenerator.GetType());
-        if (newMoveGenerator != null) MoveGenerator = newMoveGenerator;
-      }
-      if (MoveGenerator == null) {
-        ClearMoveParameters();
-      }
-
-      if (oldMoveMaker != null) {
-        IMoveMaker mm = MoveMakerParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMoveMaker.GetType());
-        if (mm != null) MoveMaker = mm;
-      }
-
-      if (oldMoveEvaluator != null) {
-        ISingleObjectiveMoveEvaluator me = MoveEvaluatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMoveEvaluator.GetType());
-        if (me != null) MoveEvaluator = me;
+        ChooseMoveOperators(oldMoveMaker, oldMoveEvaluator);
       }
     }
 
-    private void ChooseMoveOperators() {
-      IMoveMaker oldMoveMaker = MoveMaker;
-      ISingleObjectiveMoveEvaluator oldMoveEvaluator = MoveEvaluator;
+    private void ChooseMoveOperators(IMoveMaker oldMoveMaker = null, ISingleObjectiveMoveEvaluator oldMoveEvaluator = null) {
+      if (oldMoveMaker == null) oldMoveMaker = MoveMaker;
+      if (oldMoveEvaluator == null) oldMoveEvaluator = MoveEvaluator;
+      MoveMakerParameter.ValidValues.Clear();
+      MoveEvaluatorParameter.ValidValues.Clear();
 
       if (MoveGenerator != null) {
-        List<Type> moveTypes = MoveGenerator.GetType().GetInterfaces().Where(x => typeof(IMoveOperator).IsAssignableFrom(x)).ToList();
-        foreach (Type type in moveTypes.ToList()) {
-          if (moveTypes.Any(t => t != type && type.IsAssignableFrom(t)))
-            moveTypes.Remove(type);
-        }
-        List<IMoveMaker> validMoveMakers = new List<IMoveMaker>();
-        List<ISingleObjectiveMoveEvaluator> validMoveEvaluators = new List<ISingleObjectiveMoveEvaluator>();
+        IMoveGenerator generator = MoveGeneratorParameter.Value;
+        foreach (IMoveMaker moveMaker in MoveHelper.GetCompatibleMoveMakers(generator, Problem.Operators).OrderBy(x => x.Name))
+          MoveMakerParameter.ValidValues.Add(moveMaker);
+        foreach (ISingleObjectiveMoveEvaluator moveEvaluator in MoveHelper.GetCompatibleSingleObjectiveMoveEvaluators(generator, Problem.Operators).OrderBy(x => x.Name))
+          MoveEvaluatorParameter.ValidValues.Add(moveEvaluator);
 
-        foreach (Type type in moveTypes) {
-          var moveMakers = MoveMakerParameter.ValidValues.Where(x => type.IsAssignableFrom(x.GetType())).OrderBy(x => x.Name);
-          foreach (IMoveMaker moveMaker in moveMakers)
-            validMoveMakers.Add(moveMaker);
-
-          var moveEvaluators = MoveEvaluatorParameter.ValidValues.Where(x => type.IsAssignableFrom(x.GetType())).OrderBy(x => x.Name);
-          foreach (ISingleObjectiveMoveEvaluator moveEvaluator in moveEvaluators)
-            validMoveEvaluators.Add(moveEvaluator);
-        }
         if (oldMoveMaker != null) {
-          IMoveMaker mm = validMoveMakers.FirstOrDefault(x => x.GetType() == oldMoveMaker.GetType());
+          IMoveMaker mm = MoveMakerParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMoveMaker.GetType());
           if (mm != null) MoveMaker = mm;
-          else MoveMaker = validMoveMakers.FirstOrDefault();
-        } 
-
+        }
         if (oldMoveEvaluator != null) {
-          ISingleObjectiveMoveEvaluator me = validMoveEvaluators.FirstOrDefault(x => x.GetType() == oldMoveEvaluator.GetType());
+          ISingleObjectiveMoveEvaluator me = MoveEvaluatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMoveEvaluator.GetType());
           if (me != null) MoveEvaluator = me;
-          else MoveEvaluator = validMoveEvaluators.FirstOrDefault();
-        } 
+        }
       }
     }
 
@@ -269,36 +323,25 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       MoveEvaluatorParameter.ValidValues.Clear();
     }
 
-    private void ParameterizeMoveGenerators(ISingleObjectiveHeuristicOptimizationProblem problem) {
+    private void ParameterizeMoveGenerators() {
       if (problem != null) {
         foreach (IMultiMoveGenerator generator in problem.Operators.OfType<IMultiMoveGenerator>())
           generator.SampleSizeParameter.ActualName = InnerIterationsParameter.Name;
       }
     }
-    private void ParameterizeMoveEvaluators(ISingleObjectiveHeuristicOptimizationProblem problem) {
-      foreach (ISingleObjectiveMoveEvaluator op in problem.Operators.OfType<ISingleObjectiveMoveEvaluator>()) {
-        op.QualityParameter.ActualName = problem.Evaluator.QualityParameter.ActualName;
-      }
-    }
-    private void ParameterizeMoveMakers(ISingleObjectiveHeuristicOptimizationProblem problem) {
-      foreach (IMoveMaker op in problem.Operators.OfType<IMoveMaker>()) {
-        op.QualityParameter.ActualName = problem.Evaluator.QualityParameter.ActualName;
-        if (MoveEvaluator != null)
-          op.MoveQualityParameter.ActualName = MoveEvaluator.MoveQualityParameter.ActualName;
-      }
-    }
 
     public override IOperation Apply() {
-      Scope subScope = new Scope();
+      IScope currentScope = ExecutionContext.Scope;
+
+      Scope localScope = new Scope();
       Scope individual = new Scope();
 
-      foreach (Variable var in ExecutionContext.Scope.Variables) {
-        individual.Variables.Add(var);
-      }
-      subScope.SubScopes.Add(individual);
+      foreach (IVariable var in currentScope.Variables)
+        individual.Variables.Add(var); // add reference to variable otherwise the analyzer fails (it's looking down the tree)
 
-      ExecutionContext.Scope.SubScopes.Add(subScope);
-      int index = subScope.Parent.SubScopes.IndexOf(subScope);
+      localScope.SubScopes.Add(individual);
+      currentScope.SubScopes.Add(localScope);
+      int index = currentScope.SubScopes.Count - 1;
 
       SubScopesProcessor processor = new SubScopesProcessor();
       SubScopesRemover remover = new SubScopesRemover();
@@ -306,26 +349,25 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       remover.RemoveAllSubScopes = false;
       remover.SubScopeIndexParameter.Value = new IntValue(index);
 
-      for (int i = 0; i < index; i++) {
-        processor.Operators.Add(new EmptyOperator());
+      if (index > 0) {
+        EmptyOperator eo = new EmptyOperator();
+        for (int i = 0; i < index - 1; i++) {
+          processor.Operators.Add(eo);
+        }
       }
 
       VariableCreator variableCreator = new VariableCreator();
-      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("LocalIterations", new IntValue(0)));
+      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>(loop.IterationsParameter.ActualName, new IntValue(0)));
 
       variableCreator.Successor = loop;
-
-      loop.EvaluatedMovesParameter.ActualName = EvaluatedSolutionsParameter.ActualName;
 
       processor.Operators.Add(variableCreator);
       processor.Successor = remover;
 
-      IOperation next = base.Apply();
-      if (next as ExecutionContext != null) {
-        remover.Successor = (next as ExecutionContext).Operator;
-      }
+      OperationCollection next = new OperationCollection(base.Apply());
+      next.Insert(0, ExecutionContext.CreateChildOperation(processor));
 
-      return ExecutionContext.CreateChildOperation(processor);
+      return next;
     }
   }
 }

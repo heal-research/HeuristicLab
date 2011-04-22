@@ -1,7 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2011 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System;
 using System.Linq;
-using HeuristicLab.Algorithms.LocalSearch;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -11,6 +30,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
@@ -31,26 +51,26 @@ namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
     #endregion
 
     #region Parameter Properties
-    private ValueParameter<IntValue> SeedParameter {
-      get { return (ValueParameter<IntValue>)Parameters["Seed"]; }
+    private FixedValueParameter<IntValue> SeedParameter {
+      get { return (FixedValueParameter<IntValue>)Parameters["Seed"]; }
     }
-    private ValueParameter<BoolValue> SetSeedRandomlyParameter {
-      get { return (ValueParameter<BoolValue>)Parameters["SetSeedRandomly"]; }
+    private FixedValueParameter<BoolValue> SetSeedRandomlyParameter {
+      get { return (FixedValueParameter<BoolValue>)Parameters["SetSeedRandomly"]; }
     }
-    private ValueParameter<ILocalImprovementOperator> LocalImprovementParameter {
-      get { return (ValueParameter<ILocalImprovementOperator>)Parameters["LocalImprovement"]; }
+    private ConstrainedValueParameter<ILocalImprovementOperator> LocalImprovementParameter {
+      get { return (ConstrainedValueParameter<ILocalImprovementOperator>)Parameters["LocalImprovement"]; }
     }
-    private ValueParameter<IShakingOperator> ShakingParameter {
-      get { return (ValueParameter<IShakingOperator>)Parameters["Shaking"]; }
+    private ConstrainedValueParameter<IMultiNeighborhoodShakingOperator> ShakingOperatorParameter {
+      get { return (ConstrainedValueParameter<IMultiNeighborhoodShakingOperator>)Parameters["ShakingOperator"]; }
     }
-    private ValueParameter<IntValue> MaximumIterationsParameter {
-      get { return (ValueParameter<IntValue>)Parameters["MaximumIterations"]; }
+    private FixedValueParameter<IntValue> MaximumIterationsParameter {
+      get { return (FixedValueParameter<IntValue>)Parameters["MaximumIterations"]; }
     }
     private ValueParameter<MultiAnalyzer> AnalyzerParameter {
       get { return (ValueParameter<MultiAnalyzer>)Parameters["Analyzer"]; }
     }
-    private VariableNeighborhoodSearchMainLoop VNSMainLoop {
-      get { return FindMainLoop(SolutionsCreator.Successor); }
+    public FixedValueParameter<IntValue> LocalImprovementMaximumIterationsParameter {
+      get { return (FixedValueParameter<IntValue>)Parameters["LocalImprovementMaximumIterations"]; }
     }
     #endregion
 
@@ -65,6 +85,9 @@ namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
     private SolutionsCreator SolutionsCreator {
       get { return (SolutionsCreator)RandomCreator.Successor; }
     }
+    private VariableNeighborhoodSearchMainLoop MainLoop {
+      get { return FindMainLoop(SolutionsCreator.Successor); }
+    }
     #endregion
 
     [Storable]
@@ -72,25 +95,19 @@ namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
 
     [StorableConstructor]
     private VariableNeighborhoodSearch(bool deserializing) : base(deserializing) { }
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-
-    }
     private VariableNeighborhoodSearch(VariableNeighborhoodSearch original, Cloner cloner)
       : base(original, cloner) {
       qualityAnalyzer = cloner.Clone(original.qualityAnalyzer);
-      Initialize();
-    }
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new VariableNeighborhoodSearch(this, cloner);
+      RegisterEventHandlers();
     }
     public VariableNeighborhoodSearch()
       : base() {
-      Parameters.Add(new ValueParameter<IntValue>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
-      Parameters.Add(new ValueParameter<BoolValue>("SetSeedRandomly", "True if the random seed should be set to a random value, otherwise false.", new BoolValue(true)));
-      Parameters.Add(new ValueParameter<ILocalImprovementOperator>("LocalImprovement", "The local improvement operation", new LocalSearchImprovementOperator()));
-      Parameters.Add(new ValueParameter<IShakingOperator>("Shaking", "The shaking operation"));
-      Parameters.Add(new ValueParameter<IntValue>("MaximumIterations", "The maximum number of generations which should be processed.", new IntValue(1000)));
+      Parameters.Add(new FixedValueParameter<IntValue>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
+      Parameters.Add(new FixedValueParameter<BoolValue>("SetSeedRandomly", "True if the random seed should be set to a random value, otherwise false.", new BoolValue(true)));
+      Parameters.Add(new ConstrainedValueParameter<ILocalImprovementOperator>("LocalImprovement", "The local improvement operation"));
+      Parameters.Add(new ConstrainedValueParameter<IMultiNeighborhoodShakingOperator>("ShakingOperator", "The operator that performs the shaking of solutions."));
+      Parameters.Add(new FixedValueParameter<IntValue>("MaximumIterations", "The maximum number of iterations which should be processed.", new IntValue(50)));
+      Parameters.Add(new FixedValueParameter<IntValue>("LocalImprovementMaximumIterations", "The maximum number of iterations which should be performed in the local improvement phase.", new IntValue(50)));
       Parameters.Add(new ValueParameter<MultiAnalyzer>("Analyzer", "The operator used to analyze the solution and moves.", new MultiAnalyzer()));
 
       RandomCreator randomCreator = new RandomCreator();
@@ -111,55 +128,74 @@ namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
       solutionsCreator.Successor = variableCreator;
 
       variableCreator.Name = "Initialize Evaluated Solutions";
-      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("EvaluatedSolutions", new IntValue()));
+
+      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Iterations", new IntValue(0)));
+      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("EvaluatedSolutions", new IntValue(0)));
+      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("CurrentNeighborhoodIndex", new IntValue(0)));
+      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("NeighborhoodCount", new IntValue(0)));
       variableCreator.Successor = resultsCollector;
 
       resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Evaluated Solutions", null, "EvaluatedSolutions"));
+      resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Iterations"));
       resultsCollector.ResultsParameter.ActualName = "Results";
       resultsCollector.Successor = mainLoop;
 
+      mainLoop.IterationsParameter.ActualName = "Iterations";
+      mainLoop.CurrentNeighborhoodIndexParameter.ActualName = "CurrentNeighborhoodIndex";
+      mainLoop.NeighborhoodCountParameter.ActualName = "NeighborhoodCount";
       mainLoop.LocalImprovementParameter.ActualName = LocalImprovementParameter.Name;
-      mainLoop.ShakingParameter.ActualName = ShakingParameter.Name;
+      mainLoop.ShakingOperatorParameter.ActualName = ShakingOperatorParameter.Name;
       mainLoop.MaximumIterationsParameter.ActualName = MaximumIterationsParameter.Name;
       mainLoop.RandomParameter.ActualName = RandomCreator.RandomParameter.ActualName;
       mainLoop.ResultsParameter.ActualName = "Results";
       mainLoop.AnalyzerParameter.ActualName = AnalyzerParameter.Name;
       mainLoop.EvaluatedSolutionsParameter.ActualName = "EvaluatedSolutions";
 
+      InitializeLocalImprovementOperators();
       qualityAnalyzer = new BestAverageWorstQualityAnalyzer();
       ParameterizeAnalyzers();
       UpdateAnalyzers();
 
-      Initialize();
+      RegisterEventHandlers();
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new VariableNeighborhoodSearch(this, cloner);
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      RegisterEventHandlers();
     }
 
     public override void Prepare() {
       if (Problem != null) base.Prepare();
     }
 
-    private void Initialize() {
+    private void RegisterEventHandlers() {
+      LocalImprovementParameter.ValueChanged += new EventHandler(LocalImprovementParameter_ValueChanged);
       if (Problem != null) {
         Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       }
-      LocalImprovementParameter.ValueChanged += new EventHandler(LocalImprovementParameter_ValueChanged);
     }
 
     #region Events
     protected override void OnProblemChanged() {
+      InitializeLocalImprovementOperators();
+      UpdateShakingOperators();
+      UpdateAnalyzers();
+
       ParameterizeStochasticOperator(Problem.SolutionCreator);
       ParameterizeStochasticOperator(Problem.Evaluator);
       foreach (IOperator op in Problem.Operators) ParameterizeStochasticOperator(op);
       ParameterizeSolutionsCreator();
-      ParameterizeVNSMainLoop();
+      ParameterizeMainLoop();
       ParameterizeAnalyzers();
       ParameterizeIterationBasedOperators();
-      UpdateShakingOperator();
-      UpdateLocalImprovementOperator();
-      UpdateAnalyzers();
+      ParameterizeLocalImprovementOperators();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.OnProblemChanged();
     }
-
     protected override void Problem_SolutionCreatorChanged(object sender, EventArgs e) {
       ParameterizeStochasticOperator(Problem.SolutionCreator);
       ParameterizeSolutionsCreator();
@@ -168,28 +204,24 @@ namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
     protected override void Problem_EvaluatorChanged(object sender, EventArgs e) {
       ParameterizeStochasticOperator(Problem.Evaluator);
       ParameterizeSolutionsCreator();
-      ParameterizeVNSMainLoop();
+      ParameterizeMainLoop();
       ParameterizeAnalyzers();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.Problem_EvaluatorChanged(sender, e);
     }
     protected override void Problem_OperatorsChanged(object sender, EventArgs e) {
+      UpdateShakingOperators();
+      UpdateAnalyzers();
       foreach (IOperator op in Problem.Operators) ParameterizeStochasticOperator(op);
       ParameterizeIterationBasedOperators();
-      UpdateShakingOperator();
-      UpdateLocalImprovementOperator();
-      UpdateAnalyzers();
       base.Problem_OperatorsChanged(sender, e);
     }
-
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
-      ParameterizeVNSMainLoop();
+      ParameterizeMainLoop();
       ParameterizeAnalyzers();
     }
-
-    void LocalImprovementParameter_ValueChanged(object sender, EventArgs e) {
-      if (LocalImprovementParameter.Value != null)
-        LocalImprovementParameter.Value.OnProblemChanged(Problem);
+    private void LocalImprovementParameter_ValueChanged(object sender, EventArgs e) {
+      ParameterizeLocalImprovementOperators();
     }
     #endregion
 
@@ -202,10 +234,10 @@ namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
       if (op is IStochasticOperator)
         ((IStochasticOperator)op).RandomParameter.ActualName = RandomCreator.RandomParameter.ActualName;
     }
-    private void ParameterizeVNSMainLoop() {
-      VNSMainLoop.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
-      VNSMainLoop.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
-      VNSMainLoop.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
+    private void ParameterizeMainLoop() {
+      MainLoop.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
+      MainLoop.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
+      MainLoop.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
     }
     private void ParameterizeAnalyzers() {
       qualityAnalyzer.ResultsParameter.ActualName = "Results";
@@ -220,58 +252,37 @@ namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
       if (Problem != null) {
         foreach (IIterationBasedOperator op in Problem.Operators.OfType<IIterationBasedOperator>()) {
           op.IterationsParameter.ActualName = "Iterations";
-          op.MaximumIterationsParameter.ActualName = "MaximumIterations";
+          op.MaximumIterationsParameter.ActualName = MaximumIterationsParameter.Name;
         }
       }
     }
-    private void UpdateShakingOperator() {
-      Type manipulatorType = typeof(IManipulator);
-      List<Type> manipulatorInterfaces = new List<Type>();
-
-      foreach (IManipulator mutator in Problem.Operators.OfType<IManipulator>().OrderBy(x => x.Name)) {
-        Type t = mutator.GetType();
-        Type[] interfaces = t.GetInterfaces();
-
-        for (int i = 0; i < interfaces.Length; i++) {
-          if (manipulatorType.IsAssignableFrom(interfaces[i])) {
-            bool assignable = false;
-            for (int j = 0; j < interfaces.Length; j++) {
-              if (i != j && interfaces[i].IsAssignableFrom(interfaces[j])) {
-                assignable = true;
-                break;
-              }
-            }
-
-            if (!assignable)
-              manipulatorInterfaces.Add(interfaces[i]);
-          }
-        }
+    private void ParameterizeLocalImprovementOperators() {
+      foreach (ILocalImprovementOperator op in LocalImprovementParameter.ValidValues) {
+        if (op != LocalImprovementParameter.Value) op.Problem = null;
+        op.MaximumIterationsParameter.Value = null;
+        op.MaximumIterationsParameter.ActualName = LocalImprovementMaximumIterationsParameter.Name;
       }
-
-      foreach (Type manipulatorInterface in manipulatorInterfaces) {
-        //manipulatorInterface is more specific
-        if (manipulatorType.IsAssignableFrom(manipulatorInterface)) {
-          //and compatible to all other found manipulator types
-          bool compatible = true;
-          foreach (Type manipulatorInterface2 in manipulatorInterfaces) {
-            if (!manipulatorInterface.IsAssignableFrom(manipulatorInterface2)) {
-              compatible = false;
-              break;
-            }
-          }
-
-          if (compatible)
-            manipulatorType = manipulatorInterface;
-        }
-      }
-
-      Type genericType = typeof(ShakingOperator<>).MakeGenericType(manipulatorType);
-      ShakingParameter.Value = (IShakingOperator)Activator.CreateInstance(genericType, new object[] { });
-
-      ShakingParameter.Value.OnProblemChanged(Problem);
+      if (LocalImprovementParameter.Value != null)
+        LocalImprovementParameter.Value.Problem = Problem;
     }
-    private void UpdateLocalImprovementOperator() {
-      LocalImprovementParameter.Value.OnProblemChanged(Problem);
+    private void InitializeLocalImprovementOperators() {
+      if (Problem == null) {
+        LocalImprovementParameter.ValidValues.Clear();
+      } else {
+        LocalImprovementParameter.ValidValues.RemoveWhere(x => !x.ProblemType.IsAssignableFrom(Problem.GetType()));
+        foreach (ILocalImprovementOperator op in ApplicationManager.Manager.GetInstances<ILocalImprovementOperator>().Where(x => x.ProblemType.IsAssignableFrom(Problem.GetType()))) {
+          if (!LocalImprovementParameter.ValidValues.Any(x => x.GetType() == op.GetType()))
+            LocalImprovementParameter.ValidValues.Add(op);
+        }
+      }
+    }
+    private void UpdateShakingOperators() {
+      ShakingOperatorParameter.ValidValues.Clear();
+      foreach (IMultiNeighborhoodShakingOperator op in Problem.Operators.OfType<IMultiNeighborhoodShakingOperator>()) {
+        ShakingOperatorParameter.ValidValues.Add(op);
+        op.CurrentNeighborhoodIndexParameter.ActualName = "CurrentNeighborhoodIndex";
+        op.NeighborhoodCountParameter.ActualName = "NeighborhoodCount";
+      }
     }
     private void UpdateAnalyzers() {
       Analyzer.Operators.Clear();

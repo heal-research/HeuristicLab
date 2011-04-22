@@ -19,19 +19,15 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Operators;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Parameters;
 using HeuristicLab.Data;
-using HeuristicLab.Optimization.Operators;
-using HeuristicLab.Selection;
+using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
+using HeuristicLab.Optimization.Operators;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Selection;
 
 namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
   /// <summary>
@@ -41,38 +37,47 @@ namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
   [StorableClass]
   public sealed class VariableNeighborhoodSearchMainLoop : AlgorithmOperator {
     #region Parameter properties
-    public ValueLookupParameter<IRandom> RandomParameter {
-      get { return (ValueLookupParameter<IRandom>)Parameters["Random"]; }
+    public IValueLookupParameter<IRandom> RandomParameter {
+      get { return (IValueLookupParameter<IRandom>)Parameters["Random"]; }
     }
-    public ValueLookupParameter<BoolValue> MaximizationParameter {
-      get { return (ValueLookupParameter<BoolValue>)Parameters["Maximization"]; }
+    public IValueLookupParameter<BoolValue> MaximizationParameter {
+      get { return (IValueLookupParameter<BoolValue>)Parameters["Maximization"]; }
     }
-    public LookupParameter<DoubleValue> QualityParameter {
-      get { return (LookupParameter<DoubleValue>)Parameters["Quality"]; }
+    public ILookupParameter<DoubleValue> QualityParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
-    public ValueLookupParameter<DoubleValue> BestKnownQualityParameter {
-      get { return (ValueLookupParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
+    public IValueLookupParameter<DoubleValue> BestKnownQualityParameter {
+      get { return (IValueLookupParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
     }
-    public ValueLookupParameter<IOperator> EvaluatorParameter {
-      get { return (ValueLookupParameter<IOperator>)Parameters["Evaluator"]; }
+    public IValueLookupParameter<IOperator> EvaluatorParameter {
+      get { return (IValueLookupParameter<IOperator>)Parameters["Evaluator"]; }
     }
-    public ValueLookupParameter<IntValue> MaximumIterationsParameter {
-      get { return (ValueLookupParameter<IntValue>)Parameters["MaximumIterations"]; }
+    public ILookupParameter<IntValue> IterationsParameter {
+      get { return (ILookupParameter<IntValue>)Parameters["Iterations"]; }
     }
-    public ValueLookupParameter<VariableCollection> ResultsParameter {
-      get { return (ValueLookupParameter<VariableCollection>)Parameters["Results"]; }
+    public IValueLookupParameter<IntValue> MaximumIterationsParameter {
+      get { return (IValueLookupParameter<IntValue>)Parameters["MaximumIterations"]; }
     }
-    public ValueLookupParameter<IOperator> AnalyzerParameter {
-      get { return (ValueLookupParameter<IOperator>)Parameters["Analyzer"]; }
+    public IValueLookupParameter<VariableCollection> ResultsParameter {
+      get { return (IValueLookupParameter<VariableCollection>)Parameters["Results"]; }
     }
-    public LookupParameter<IntValue> EvaluatedSolutionsParameter {
-      get { return (LookupParameter<IntValue>)Parameters["EvaluatedSolutions"]; }
+    public IValueLookupParameter<IOperator> AnalyzerParameter {
+      get { return (IValueLookupParameter<IOperator>)Parameters["Analyzer"]; }
     }
-    public ValueLookupParameter<ILocalImprovementOperator> LocalImprovementParameter {
-      get { return (ValueLookupParameter<ILocalImprovementOperator>)Parameters["LocalImprovement"]; }
+    public ILookupParameter<IntValue> EvaluatedSolutionsParameter {
+      get { return (ILookupParameter<IntValue>)Parameters["EvaluatedSolutions"]; }
     }
-    public ValueLookupParameter<IShakingOperator> ShakingParameter {
-      get { return (ValueLookupParameter<IShakingOperator>)Parameters["Shaking"]; }
+    public ILookupParameter<IntValue> CurrentNeighborhoodIndexParameter {
+      get { return (ILookupParameter<IntValue>)Parameters["CurrentNeighborhoodIndex"]; }
+    }
+    public ILookupParameter<IntValue> NeighborhoodCountParameter {
+      get { return (ILookupParameter<IntValue>)Parameters["NeighborhoodCount"]; }
+    }
+    public IValueLookupParameter<ILocalImprovementOperator> LocalImprovementParameter {
+      get { return (IValueLookupParameter<ILocalImprovementOperator>)Parameters["LocalImprovement"]; }
+    }
+    public IValueLookupParameter<IMultiNeighborhoodShakingOperator> ShakingOperatorParameter {
+      get { return (IValueLookupParameter<IMultiNeighborhoodShakingOperator>)Parameters["ShakingOperator"]; }
     }
     #endregion
 
@@ -80,7 +85,7 @@ namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
     private VariableNeighborhoodSearchMainLoop(bool deserializing) : base(deserializing) { }
     public VariableNeighborhoodSearchMainLoop()
       : base() {
-        Initialize();
+      Initialize();
     }
     private VariableNeighborhoodSearchMainLoop(VariableNeighborhoodSearchMainLoop original, Cloner cloner)
       : base(original, cloner) {
@@ -96,13 +101,15 @@ namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The value which represents the quality of a solution."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("BestKnownQuality", "The best known quality value found so far."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Evaluator", "The operator used to evaluate solutions. This operator is executed in parallel, if an engine is used which supports parallelization."));
+      Parameters.Add(new LookupParameter<IntValue>("Iterations", "The iterations to count."));
       Parameters.Add(new ValueLookupParameter<IntValue>("MaximumIterations", "The maximum number of generations which should be processed."));
       Parameters.Add(new ValueLookupParameter<VariableCollection>("Results", "The variable collection where results should be stored."));
-
       Parameters.Add(new ValueLookupParameter<IOperator>("Analyzer", "The operator used to analyze the solution."));
       Parameters.Add(new LookupParameter<IntValue>("EvaluatedSolutions", "The number of evaluated solutions."));
       Parameters.Add(new ValueLookupParameter<ILocalImprovementOperator>("LocalImprovement", "The local improvement operation."));
-      Parameters.Add(new ValueLookupParameter<IShakingOperator>("Shaking", "The shaking operation."));
+      Parameters.Add(new ValueLookupParameter<IMultiNeighborhoodShakingOperator>("ShakingOperator", "The shaking operation."));
+      Parameters.Add(new LookupParameter<IntValue>("CurrentNeighborhoodIndex", "The index of the current shaking operation that should be applied."));
+      Parameters.Add(new LookupParameter<IntValue>("NeighborhoodCount", "The number of neighborhood operators used for shaking."));
       #endregion
 
       #region Create operators
@@ -125,8 +132,7 @@ namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
       IntCounter evalCounter = new IntCounter();
 
       QualityComparator qualityComparator = new QualityComparator();
-      ConditionalBranch improvesQualityBranch1 = new ConditionalBranch();
-      ConditionalBranch improvesQualityBranch2 = new ConditionalBranch();
+      ConditionalBranch improvesQualityBranch = new ConditionalBranch();
 
       Assigner bestQualityUpdater = new Assigner();
 
@@ -138,15 +144,13 @@ namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
 
       Placeholder analyzer2 = new Placeholder();
 
+      Comparator indexComparator = new Comparator();
       ConditionalBranch indexTermination = new ConditionalBranch();
 
       IntCounter iterationsCounter = new IntCounter();
       Comparator iterationsComparator = new Comparator();
       ConditionalBranch iterationsTermination = new ConditionalBranch();
 
-      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Iterations", new IntValue(0)));
-      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Index", new IntValue(0)));
-      variableCreator.CollectedValues.Add(new ValueParameter<BoolValue>("Continue", new BoolValue(false)));
       variableCreator.CollectedValues.Add(new ValueParameter<BoolValue>("IsBetter", new BoolValue(false)));
       variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("BestQuality", new DoubleValue(0)));
 
@@ -158,14 +162,13 @@ namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
       analyzer1.OperatorParameter.ActualName = AnalyzerParameter.Name;
 
       resultsCollector1.CopyValue = new BoolValue(false);
-      resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Iterations"));
       resultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Best Quality", null, "BestQuality"));
       resultsCollector1.ResultsParameter.ActualName = ResultsParameter.Name;
 
-      iteration.Name = "Iteration";
+      iteration.Name = "MainLoop Body";
 
-      iterationInit.Name = "Init iteration";
-      iterationInit.LeftSideParameter.ActualName = "Index";
+      iterationInit.Name = "Init k = 0";
+      iterationInit.LeftSideParameter.ActualName = CurrentNeighborhoodIndexParameter.Name;
       iterationInit.RightSideParameter.Value = new IntValue(0);
 
       createChild.Name = "Clone solution";
@@ -175,7 +178,7 @@ namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
       qualityAssigner.RightSideParameter.ActualName = QualityParameter.Name;
 
       shaking.Name = "Shaking operator (placeholder)";
-      shaking.OperatorParameter.ActualName = ShakingParameter.Name;
+      shaking.OperatorParameter.ActualName = ShakingOperatorParameter.Name;
 
       localImprovement.Name = "Local improvement operator (placeholder)";
       localImprovement.OperatorParameter.ActualName = LocalImprovementParameter.Name;
@@ -191,8 +194,7 @@ namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
       qualityComparator.RightSideParameter.ActualName = "OriginalQuality";
       qualityComparator.ResultParameter.ActualName = "IsBetter";
 
-      improvesQualityBranch1.ConditionParameter.ActualName = "IsBetter";
-      improvesQualityBranch2.ConditionParameter.ActualName = "IsBetter";
+      improvesQualityBranch.ConditionParameter.ActualName = "IsBetter";
 
       bestQualityUpdater.Name = "Update BestQuality";
       bestQualityUpdater.LeftSideParameter.ActualName = "BestQuality";
@@ -203,12 +205,12 @@ namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
       bestSelector.NumberOfSelectedSubScopesParameter.Value = new IntValue(1);
       bestSelector.QualityParameter.ActualName = QualityParameter.Name;
 
-      indexCounter.Name = "Count index";
+      indexCounter.Name = "Count neighborhood index";
       indexCounter.Increment.Value = 1;
-      indexCounter.ValueParameter.ActualName = "Index";
+      indexCounter.ValueParameter.ActualName = CurrentNeighborhoodIndexParameter.Name;
 
-      indexResetter.Name = "Reset index";
-      indexResetter.LeftSideParameter.ActualName = "Index";
+      indexResetter.Name = "Reset neighborhood index";
+      indexResetter.LeftSideParameter.ActualName = CurrentNeighborhoodIndexParameter.Name;
       indexResetter.RightSideParameter.Value = new IntValue(0);
 
       analyzer2.Name = "Analyzer (placeholder)";
@@ -216,19 +218,25 @@ namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
 
       iterationsCounter.Name = "Iterations Counter";
       iterationsCounter.Increment = new IntValue(1);
-      iterationsCounter.ValueParameter.ActualName = "Iterations";
+      iterationsCounter.ValueParameter.ActualName = IterationsParameter.Name;
 
       iterationsComparator.Name = "Iterations >= MaximumIterations";
       iterationsComparator.Comparison = new Comparison(ComparisonType.GreaterOrEqual);
-      iterationsComparator.LeftSideParameter.ActualName = "Iterations";
+      iterationsComparator.LeftSideParameter.ActualName = IterationsParameter.Name;
       iterationsComparator.RightSideParameter.ActualName = MaximumIterationsParameter.Name;
       iterationsComparator.ResultParameter.ActualName = "Terminate";
 
       iterationsTermination.Name = "Iterations Termination Condition";
       iterationsTermination.ConditionParameter.ActualName = "Terminate";
 
+      indexComparator.Name = "k < k_max (index condition)";
+      indexComparator.LeftSideParameter.ActualName = CurrentNeighborhoodIndexParameter.Name;
+      indexComparator.RightSideParameter.ActualName = NeighborhoodCountParameter.Name;
+      indexComparator.Comparison = new Comparison(ComparisonType.Less);
+      indexComparator.ResultParameter.ActualName = "ContinueIteration";
+
       indexTermination.Name = "Index Termination Condition";
-      indexTermination.ConditionParameter.ActualName = "Continue";
+      indexTermination.ConditionParameter.ActualName = "ContinueIteration";
       #endregion
 
       #region Create operator graph
@@ -254,9 +262,9 @@ namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
       evaluator.Successor = evalCounter;
       evalCounter.Successor = localImprovement;
       localImprovement.Successor = qualityComparator;
-      qualityComparator.Successor = improvesQualityBranch1;
-      improvesQualityBranch1.TrueBranch = bestQualityUpdater;
-      improvesQualityBranch1.FalseBranch = indexCounter;
+      qualityComparator.Successor = improvesQualityBranch;
+      improvesQualityBranch.TrueBranch = bestQualityUpdater;
+      improvesQualityBranch.FalseBranch = indexCounter;
 
       bestQualityUpdater.Successor = indexResetter;
       indexResetter.Successor = null;
@@ -265,12 +273,10 @@ namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
       /////////
       bestSelector.Successor = rightReducer;
       rightReducer.Successor = analyzer2;
-      analyzer2.Successor = indexTermination;
-      indexTermination.TrueBranch = improvesQualityBranch2;
+      analyzer2.Successor = indexComparator;
+      indexComparator.Successor = indexTermination;
+      indexTermination.TrueBranch = createChild;
       indexTermination.FalseBranch = null;
-
-      improvesQualityBranch2.TrueBranch = null;
-      improvesQualityBranch2.FalseBranch = createChild;
 
       iterationsCounter.Successor = iterationsComparator;
       iterationsComparator.Successor = iterationsTermination;
@@ -280,7 +286,7 @@ namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
     }
 
     public override IOperation Apply() {
-      if (LocalImprovementParameter.ActualValue == null || EvaluatorParameter.ActualValue == null)
+      if (LocalImprovementParameter.ActualValue == null || ShakingOperatorParameter.ActualValue == null)
         return null;
       return base.Apply();
     }

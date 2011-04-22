@@ -184,7 +184,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       mainLoop.AnalyzerParameter.ActualName = AnalyzerParameter.Name;
       mainLoop.EvaluatedMovesParameter.ActualName = "EvaluatedMoves";
       mainLoop.IterationsParameter.ActualName = "Iterations";
-      mainLoop.BestQualityParameter.ActualName = "BestQuality";
+      mainLoop.BestLocalQualityParameter.ActualName = "BestQuality";
 
       moveQualityAnalyzer = new BestAverageWorstQualityAnalyzer();
       ParameterizeAnalyzers();

@@ -338,6 +338,8 @@ namespace HeuristicLab.Problems.Knapsack {
         op.WeightsParameter.ActualName = WeightsParameter.Name;
         op.ValuesParameter.ActualName = ValuesParameter.Name;
       }
+      foreach (var op in Operators.OfType<IBinaryVectorMultiNeighborhoodShakingOperator>())
+        op.BinaryVectorParameter.ActualName = SolutionCreator.BinaryVectorParameter.ActualName;
     }
     #endregion
 

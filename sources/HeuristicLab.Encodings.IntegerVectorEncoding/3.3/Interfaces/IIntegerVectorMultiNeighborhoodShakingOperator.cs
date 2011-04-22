@@ -19,16 +19,10 @@
  */
 #endregion
 
-using System;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 
-namespace HeuristicLab.Optimization {
-  public interface ILocalImprovementOperator : IOperator {
-    Type ProblemType { get; }
-    IProblem Problem { get; set; }
-    IValueLookupParameter<IntValue> MaximumIterationsParameter { get; }
-    ILookupParameter<IntValue> EvaluatedSolutionsParameter { get; }
-    ILookupParameter<ResultCollection> ResultsParameter { get; }
+namespace HeuristicLab.Encodings.IntegerVectorEncoding {
+  public interface IIntegerVectorMultiNeighborhoodShakingOperator : IIntegerVectorOperator {
+    ILookupParameter<IntegerVector> IntegerVectorParameter { get; }
   }
 }

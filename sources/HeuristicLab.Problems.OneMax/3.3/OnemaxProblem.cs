@@ -261,6 +261,8 @@ namespace HeuristicLab.Problems.OneMax {
       foreach (IBinaryVectorMoveOperator op in Operators.OfType<IBinaryVectorMoveOperator>()) {
         op.BinaryVectorParameter.ActualName = SolutionCreator.BinaryVectorParameter.ActualName;
       }
+      foreach (var op in Operators.OfType<IBinaryVectorMultiNeighborhoodShakingOperator>())
+        op.BinaryVectorParameter.ActualName = SolutionCreator.BinaryVectorParameter.ActualName;
     }
     #endregion
   }

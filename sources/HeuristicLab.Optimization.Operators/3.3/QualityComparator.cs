@@ -50,7 +50,7 @@ namespace HeuristicLab.Optimization.Operators {
       : base() {
       Parameters.Add(new LookupParameter<DoubleValue>("LeftSide", "The left side of the comparison."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("RightSide", "The right side of the comparison."));
-      Parameters.Add(new LookupParameter<BoolValue>("Result", "The result of the comparison."));
+      Parameters.Add(new LookupParameter<BoolValue>("Result", "The result of the comparison, true if the quality on the LeftSide is better than the quality on the RightSide."));
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, otherwise false."));
     }
 

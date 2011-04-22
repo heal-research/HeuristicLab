@@ -67,8 +67,8 @@ namespace HeuristicLab.Analysis {
     public ValueLookupParameter<PercentValue> RelativeDifferenceBestKnownToBestParameter {
       get { return (ValueLookupParameter<PercentValue>)Parameters["RelativeDifferenceBestKnownToBest"]; }
     }
-    public ValueLookupParameter<VariableCollection> ResultsParameter {
-      get { return (ValueLookupParameter<VariableCollection>)Parameters["Results"]; }
+    public ValueLookupParameter<ResultCollection> ResultsParameter {
+      get { return (ValueLookupParameter<ResultCollection>)Parameters["Results"]; }
     }
     #endregion
 
@@ -105,7 +105,7 @@ namespace HeuristicLab.Analysis {
       Parameters.Add(new ValueLookupParameter<DataTable>("Qualities", "The data table to store the current best, current average, current worst, best and best known quality value."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("AbsoluteDifferenceBestKnownToBest", "The absolute difference of the best known quality value to the best quality value."));
       Parameters.Add(new ValueLookupParameter<PercentValue>("RelativeDifferenceBestKnownToBest", "The relative difference of the best known quality value to the best quality value."));
-      Parameters.Add(new ValueLookupParameter<VariableCollection>("Results", "The results collection where the analysis values should be stored."));
+      Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The results collection where the analysis values should be stored."));
       #endregion
 
       #region Create operators
@@ -165,8 +165,15 @@ namespace HeuristicLab.Analysis {
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       Initialize();
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (Parameters["Results"] is ValueLookupParameter<VariableCollection>) {
+        Parameters.Remove("Results");
+        Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The results collection where the analysis values should be stored."));
+      }
+      #endregion
     }
-    
+
     private void Initialize() {
       QualityParameter.DepthChanged += new EventHandler(QualityParameter_DepthChanged);
     }

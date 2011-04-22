@@ -18,7 +18,8 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile></TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -108,6 +109,7 @@
     <Compile Include="ParentCopyCrossover.cs" />
     <Compile Include="MultiObjective\FastNonDominatedSort.cs" />
     <Compile Include="MultiObjective\RankAndCrowdingSorter.cs" />
+    <Compile Include="ShakingOperator.cs" />
     <Compile Include="UserDefinedCrossover.cs" />
     <Compile Include="UserDefinedEvaluator.cs" />
     <Compile Include="UserDefinedManipulator.cs" />

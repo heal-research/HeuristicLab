@@ -27,7 +27,6 @@ namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
   /// </summary>
   [Plugin("HeuristicLab.Algorithms.VariableNeighborhoodSearch", "3.3.3.$WCREV$")]
   [PluginFile("HeuristicLab.Algorithms.VariableNeighborhoodSearch-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Algorithms.LocalSearch", "3.3")]
   [PluginDependency("HeuristicLab.Analysis", "3.3")]  
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]

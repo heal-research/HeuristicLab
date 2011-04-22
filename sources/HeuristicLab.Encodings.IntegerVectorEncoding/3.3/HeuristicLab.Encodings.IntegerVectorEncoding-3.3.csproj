@@ -11,7 +11,8 @@
     <RootNamespace>HeuristicLab.Encodings.IntegerVectorEncoding</RootNamespace>
     <AssemblyName>HeuristicLab.Encodings.IntegerVectorEncoding-3.3</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile></TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
@@ -116,6 +117,7 @@
     <Compile Include="Interfaces\IIntegerVectorCreator.cs" />
     <Compile Include="Interfaces\IIntegerVectorCrossover.cs" />
     <Compile Include="Interfaces\IIntegerVectorManipulator.cs" />
+    <Compile Include="Interfaces\IIntegerVectorMultiNeighborhoodShakingOperator.cs" />
     <Compile Include="Interfaces\IIntegerVectorOperator.cs" />
     <Compile Include="IntegerVectorCrossover.cs" />
     <Compile Include="IntegerVectorManipulator.cs" />
@@ -125,6 +127,7 @@
     <Compile Include="IntegerVector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IntegerVectorCreator.cs" />
+    <Compile Include="ShakingOperators\IntegerVectorShakingOperator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
@@ -146,6 +149,10 @@
     <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
       <Project>{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}</Project>
       <Name>HeuristicLab.Operators-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Optimization.Operators\3.3\HeuristicLab.Optimization.Operators-3.3.csproj">
+      <Project>{25087811-F74C-4128-BC86-8324271DA13E}</Project>
+      <Name>HeuristicLab.Optimization.Operators-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
       <Project>{14AB8D24-25BC-400C-A846-4627AA945192}</Project>

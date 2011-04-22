@@ -286,6 +286,8 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
           op.Swap2MoveParameter.ActualName = swapMove;
         }
       }
+      foreach (var op in Operators.OfType<IPermutationMultiNeighborhoodShakingOperator>())
+        op.PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
     }
 
     private void AdjustDistanceMatrix() {

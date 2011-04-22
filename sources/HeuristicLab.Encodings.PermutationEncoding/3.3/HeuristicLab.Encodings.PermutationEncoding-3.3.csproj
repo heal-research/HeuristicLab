@@ -18,7 +18,8 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile></TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -117,6 +118,7 @@
     <Compile Include="Crossovers\PartiallyMatchedCrossover.cs" />
     <Compile Include="Crossovers\PositionBasedCrossover.cs" />
     <Compile Include="HeuristicLabEncodingsPermutationEncodingPlugin.cs" />
+    <Compile Include="Interfaces\IPermutationMultiNeighborhoodShakingOperator.cs" />
     <Compile Include="Interfaces\IPermutationSwap2MoveOperator.cs" />
     <Compile Include="Interfaces\IPermutationCreator.cs" />
     <Compile Include="Interfaces\IPermutationCrossover.cs" />
@@ -182,6 +184,7 @@
     <Compile Include="PermutationType.cs" />
     <Compile Include="PermutationTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ShakingOperators\PermutationShakingOperator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />

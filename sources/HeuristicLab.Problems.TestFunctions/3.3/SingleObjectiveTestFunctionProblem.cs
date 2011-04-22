@@ -416,6 +416,8 @@ namespace HeuristicLab.Problems.TestFunctions {
         op.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
         op.MaximizationParameter.ActualName = MaximizationParameter.Name;
       }
+      foreach (var op in Operators.OfType<IRealVectorMultiNeighborhoodShakingOperator>())
+        op.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
     }
     private void UpdateStrategyVectorBounds() {
       DoubleMatrix strategyBounds = (DoubleMatrix)Bounds.Clone();

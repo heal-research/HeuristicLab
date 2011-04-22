@@ -107,9 +107,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HeuristicLabAlgorithmsVariableNeighborhoodSearchPlugin.cs" />
-    <Compile Include="IShakingOperator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ShakingOperator.cs" />
     <Compile Include="VariableNeighborhoodSearch.cs" />
     <Compile Include="VariableNeighborhoodSearchMainLoop.cs" />
   </ItemGroup>
@@ -119,10 +117,6 @@
     <None Include="Properties\AssemblyInfo.frame" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\HeuristicLab.Algorithms.LocalSearch\3.3\HeuristicLab.Algorithms.LocalSearch-3.3.csproj">
-      <Project>{4AE3FC69-C575-42D2-BC46-0FAD5850EFC5}</Project>
-      <Name>HeuristicLab.Algorithms.LocalSearch-3.3</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
       <Project>{887425B4-4348-49ED-A457-B7D2C26DDBF9}</Project>
       <Name>HeuristicLab.Analysis-3.3</Name>

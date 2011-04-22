@@ -60,7 +60,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       get { return (ValueLookupParameter<IntValue>)Parameters["InnerIterations"]; }
     }
     public LookupParameter<IntValue> IterationsParameter {
-      get { return (LookupParameter<IntValue>)Parameters["LocalIterations"]; }
+      get { return (LookupParameter<IntValue>)Parameters["Iterations"]; }
     }
     public ValueLookupParameter<IntValue> MaximumIterationsParameter {
       get { return (ValueLookupParameter<IntValue>)Parameters["MaximumIterations"]; }
@@ -111,7 +111,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       Parameters.Add(new ValueLookupParameter<DoubleValue>("StartTemperature", "The initial temperature."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("EndTemperature", "The end temperature."));
       Parameters.Add(new ValueLookupParameter<IntValue>("InnerIterations", "The amount of inner iterations (number of moves before temperature is adjusted again)."));
-      Parameters.Add(new LookupParameter<IntValue>("LocalIterations", "The number of generations."));
+      Parameters.Add(new LookupParameter<IntValue>("Iterations", "The number of iterations."));
       Parameters.Add(new ValueLookupParameter<IntValue>("MaximumIterations", "The maximum number of iterations which should be processed."));
 
       Parameters.Add(new ValueLookupParameter<IOperator>("MoveGenerator", "The operator that generates the moves."));
@@ -227,6 +227,15 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       subScopesProcessor1.Successor = iterationsTermination;
       iterationsTermination.TrueBranch = null;
       iterationsTermination.FalseBranch = annealingOperator;
+      #endregion
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code (remove with 3.4)
+      if (!Parameters.ContainsKey("Iterations"))
+        Parameters.Add(new LookupParameter<IntValue>("Iterations", "The number of iterations."));
       #endregion
     }
 

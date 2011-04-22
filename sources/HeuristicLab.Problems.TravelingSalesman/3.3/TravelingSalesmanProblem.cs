@@ -388,6 +388,8 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       string translocationMove = Operators.OfType<IMoveGenerator>().OfType<IPermutationTranslocationMoveOperator>().First().TranslocationMoveParameter.ActualName;
       foreach (IPermutationTranslocationMoveOperator op in Operators.OfType<IPermutationTranslocationMoveOperator>())
         op.TranslocationMoveParameter.ActualName = translocationMove;
+      foreach (IPermutationMultiNeighborhoodShakingOperator op in Operators.OfType<IPermutationMultiNeighborhoodShakingOperator>())
+        op.PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
     }
 
     private void ClearDistanceMatrix() {

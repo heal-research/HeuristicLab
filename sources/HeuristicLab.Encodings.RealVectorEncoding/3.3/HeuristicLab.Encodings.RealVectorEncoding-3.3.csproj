@@ -103,6 +103,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\IRealVectorMultiNeighborhoodShakingOperator.cs" />
     <Compile Include="ParticleOperators\RealVectorParticleCreator.cs" />
     <Compile Include="Crossovers\BlendAlphaBetaCrossover.cs" />
     <Compile Include="Interfaces\IRealVectorManipulator.cs" />
@@ -167,6 +168,7 @@
     <Compile Include="Manipulators\PolynomialOnePositionManipulator.cs" />
     <Compile Include="Manipulators\UniformOnePositionManipulator.cs" />
     <Compile Include="ReflectiveBoundsChecker.cs" />
+    <Compile Include="ShakingOperators\RealVectorShakingOperator.cs" />
     <Compile Include="StrategyParameters\StdDevStrategyVectorCreator.cs" />
     <Compile Include="StrategyParameters\StdDevStrategyVectorCrossover.cs" />
     <Compile Include="StrategyParameters\StdDevStrategyVectorManipulator.cs" />

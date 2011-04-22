@@ -18,7 +18,8 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile></TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -110,6 +111,8 @@
     <Compile Include="Analyzers\BestAverageWorstVRPToursCalculator.cs" />
     <Compile Include="Analyzers\BestVRPToursMemorizer.cs" />
     <Compile Include="Analyzers\BestVRPSolutionAnalyzer.cs" />
+    <Compile Include="Interfaces\IVRPMultiNeighborhoodShakingOperator.cs" />
+    <Compile Include="ShakingOperators\VehicleRoutingShakingOperator.cs" />
     <Compile Include="SolutionParser.cs" />
     <Compile Include="Encodings\Alba\Crossovers\AlbaPermutationCrossover.cs" />
     <Compile Include="Encodings\Alba\Manipulators\AlbaIntraRouteInversionManipulator.cs" />

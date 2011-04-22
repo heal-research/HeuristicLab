@@ -606,6 +606,10 @@ namespace HeuristicLab.Problems.VehicleRouting {
       foreach (IVRPManipulator op in Operators.OfType<IVRPManipulator>()) {
         op.VRPToursParameter.ActualName = SolutionCreator.VRPToursParameter.ActualName;
       }
+
+      foreach (var op in Operators.OfType<IVRPMultiNeighborhoodShakingOperator>()) {
+        op.VRPToursParameter.ActualName = SolutionCreator.VRPToursParameter.ActualName;
+      }
     }
     private void ClearDistanceMatrix() {
       DistanceMatrixParameter.Value = null;

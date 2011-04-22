@@ -19,15 +19,11 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Optimization;
 using HeuristicLab.Core;
+using HeuristicLab.Optimization;
 
-namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
-  public interface IShakingOperator: IManipulator {
-    void OnProblemChanged(IProblem problem);
+namespace HeuristicLab.Problems.VehicleRouting {
+  public interface IVRPMultiNeighborhoodShakingOperator : IMultiNeighborhoodShakingOperator, IVRPOperator {
+    ILookupParameter<IVRPEncoding> VRPToursParameter { get; }
   }
 }
