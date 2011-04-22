@@ -27,6 +27,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
+using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -138,6 +139,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));
 
       loop = new LocalSearchMainLoop();
+      ((ResultsCollector)((SingleSuccessorOperator)loop.OperatorGraph.InitialOperator).Successor).CollectedValues.Remove(loop.BestLocalQualityParameter.Name);
       ParameterizeLSMainLoop();
 
       qualityAnalyzer = new BestAverageWorstQualityAnalyzer();

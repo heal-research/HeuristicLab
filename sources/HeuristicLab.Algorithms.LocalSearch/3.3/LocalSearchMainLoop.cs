@@ -203,7 +203,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       #endregion
 
       #region Create operator graph
-      OperatorGraph.InitialOperator = subScopesProcessor0;
+      OperatorGraph.InitialOperator = subScopesProcessor0; // don't change this without adapting the constructor of LocalSearchImprovementOperator
       subScopesProcessor0.Operators.Add(bestQualityInitializer);
       subScopesProcessor0.Successor = resultsCollector1;
       bestQualityInitializer.Successor = analyzer1;
