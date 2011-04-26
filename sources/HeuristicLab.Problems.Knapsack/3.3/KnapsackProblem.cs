@@ -286,21 +286,32 @@ namespace HeuristicLab.Problems.Knapsack {
         KnapsackEvaluator knapsackEvaluator =
           (KnapsackEvaluator)Evaluator;
         knapsackEvaluator.BinaryVectorParameter.ActualName = SolutionCreator.BinaryVectorParameter.ActualName;
+        knapsackEvaluator.BinaryVectorParameter.Hidden = true;
         knapsackEvaluator.KnapsackCapacityParameter.ActualName = KnapsackCapacityParameter.Name;
+        knapsackEvaluator.KnapsackCapacityParameter.Hidden = true;
         knapsackEvaluator.WeightsParameter.ActualName = WeightsParameter.Name;
+        knapsackEvaluator.WeightsParameter.Hidden = true;
         knapsackEvaluator.ValuesParameter.ActualName = ValuesParameter.Name;
+        knapsackEvaluator.ValuesParameter.Hidden = true;
         knapsackEvaluator.PenaltyParameter.ActualName = PenaltyParameter.Name;
+        knapsackEvaluator.PenaltyParameter.Hidden = true;
       }
     }
     private void ParameterizeAnalyzer() {
       BestKnapsackSolutionAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
+      BestKnapsackSolutionAnalyzer.MaximizationParameter.Hidden = true;
       BestKnapsackSolutionAnalyzer.BestKnownQualityParameter.ActualName = BestKnownQualityParameter.Name;
+      BestKnapsackSolutionAnalyzer.BestKnownQualityParameter.Hidden = true;
       BestKnapsackSolutionAnalyzer.BestKnownSolutionParameter.ActualName = BestKnownSolutionParameter.Name;
+      BestKnapsackSolutionAnalyzer.BestKnownSolutionParameter.Hidden = true;
       BestKnapsackSolutionAnalyzer.BinaryVectorParameter.ActualName = SolutionCreator.BinaryVectorParameter.ActualName;
+      BestKnapsackSolutionAnalyzer.BinaryVectorParameter.Hidden = true;
       BestKnapsackSolutionAnalyzer.KnapsackCapacityParameter.ActualName = KnapsackCapacityParameter.Name;
+      BestKnapsackSolutionAnalyzer.KnapsackCapacityParameter.Hidden = true;
       BestKnapsackSolutionAnalyzer.WeightsParameter.ActualName = WeightsParameter.Name;
+      BestKnapsackSolutionAnalyzer.WeightsParameter.Hidden = true;
       BestKnapsackSolutionAnalyzer.ValuesParameter.ActualName = ValuesParameter.Name;
-      BestKnapsackSolutionAnalyzer.ResultsParameter.ActualName = "Results";
+      BestKnapsackSolutionAnalyzer.ValuesParameter.Hidden = true;
     }
     private void InitializeOperators() {
       operators = new List<IOperator>();
@@ -324,22 +335,32 @@ namespace HeuristicLab.Problems.Knapsack {
     private void ParameterizeOperators() {
       foreach (IBinaryVectorCrossover op in Operators.OfType<IBinaryVectorCrossover>()) {
         op.ParentsParameter.ActualName = SolutionCreator.BinaryVectorParameter.ActualName;
+        op.ParentsParameter.Hidden = true;
         op.ChildParameter.ActualName = SolutionCreator.BinaryVectorParameter.ActualName;
+        op.ChildParameter.Hidden = true;
       }
       foreach (IBinaryVectorManipulator op in Operators.OfType<IBinaryVectorManipulator>()) {
         op.BinaryVectorParameter.ActualName = SolutionCreator.BinaryVectorParameter.ActualName;
+        op.BinaryVectorParameter.Hidden = true;
       }
       foreach (IBinaryVectorMoveOperator op in Operators.OfType<IBinaryVectorMoveOperator>()) {
         op.BinaryVectorParameter.ActualName = SolutionCreator.BinaryVectorParameter.ActualName;
+        op.BinaryVectorParameter.Hidden = true;
       }
       foreach (IKnapsackMoveEvaluator op in Operators.OfType<IKnapsackMoveEvaluator>()) {
         op.KnapsackCapacityParameter.ActualName = KnapsackCapacityParameter.Name;
+        op.KnapsackCapacityParameter.Hidden = true;
         op.PenaltyParameter.ActualName = PenaltyParameter.Name;
+        op.PenaltyParameter.Hidden = true;
         op.WeightsParameter.ActualName = WeightsParameter.Name;
+        op.WeightsParameter.Hidden = true;
         op.ValuesParameter.ActualName = ValuesParameter.Name;
+        op.ValuesParameter.Hidden = true;
       }
-      foreach (var op in Operators.OfType<IBinaryVectorMultiNeighborhoodShakingOperator>())
+      foreach (var op in Operators.OfType<IBinaryVectorMultiNeighborhoodShakingOperator>()) {
         op.BinaryVectorParameter.ActualName = SolutionCreator.BinaryVectorParameter.ActualName;
+        op.BinaryVectorParameter.Hidden = true;
+      }
     }
     #endregion
 

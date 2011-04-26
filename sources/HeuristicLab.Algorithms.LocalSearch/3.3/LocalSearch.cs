@@ -348,48 +348,71 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       SolutionsCreator.SolutionCreatorParameter.ActualName = Problem.SolutionCreatorParameter.Name;
     }
     private void ParameterizeMainLoop() {
-      MainLoop.BestKnownQualityParameter.ActualName = Problem.BestKnownQualityParameter.Name;
-      MainLoop.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
-      MainLoop.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
+      if (Problem != null) {
+        MainLoop.BestKnownQualityParameter.ActualName = Problem.BestKnownQualityParameter.Name;
+        MainLoop.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
+        MainLoop.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
+      }
       if (MoveEvaluator != null)
         MainLoop.MoveQualityParameter.ActualName = MoveEvaluator.MoveQualityParameter.ActualName;
     }
     private void ParameterizeStochasticOperator(IOperator op) {
-      if (op is IStochasticOperator)
-        ((IStochasticOperator)op).RandomParameter.ActualName = RandomCreator.RandomParameter.ActualName;
+      if (op is IStochasticOperator) {
+        IStochasticOperator stOp = (IStochasticOperator)op;
+        stOp.RandomParameter.ActualName = RandomCreator.RandomParameter.ActualName;
+        stOp.RandomParameter.Hidden = true;
+      }
     }
     private void ParameterizeMoveGenerators() {
       if (Problem != null) {
-        foreach (IMultiMoveGenerator generator in Problem.Operators.OfType<IMultiMoveGenerator>())
+        foreach (IMultiMoveGenerator generator in Problem.Operators.OfType<IMultiMoveGenerator>()) {
           generator.SampleSizeParameter.ActualName = SampleSizeParameter.Name;
+          generator.SampleSizeParameter.Hidden = true;
+        }
       }
     }
     private void ParameterizeMoveEvaluators() {
       foreach (ISingleObjectiveMoveEvaluator op in Problem.Operators.OfType<ISingleObjectiveMoveEvaluator>()) {
         op.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
+        op.QualityParameter.Hidden = true;
       }
     }
     private void ParameterizeMoveMakers() {
       foreach (IMoveMaker op in Problem.Operators.OfType<IMoveMaker>()) {
         op.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
-        if (MoveEvaluator != null)
+        op.QualityParameter.Hidden = true;
+        if (MoveEvaluator != null) {
           op.MoveQualityParameter.ActualName = MoveEvaluator.MoveQualityParameter.ActualName;
+          op.MoveQualityParameter.Hidden = true;
+        } else {
+          op.MoveQualityParameter.Hidden = false;
+        }
       }
     }
     private void ParameterizeAnalyzers() {
       moveQualityAnalyzer.ResultsParameter.ActualName = "Results";
+      moveQualityAnalyzer.ResultsParameter.Hidden = true;
       if (Problem != null) {
         moveQualityAnalyzer.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
-        if (MoveEvaluator != null)
+        moveQualityAnalyzer.MaximizationParameter.Hidden = true;
+        if (MoveEvaluator != null) {
           moveQualityAnalyzer.QualityParameter.ActualName = MoveEvaluator.MoveQualityParameter.ActualName;
+          moveQualityAnalyzer.QualityParameter.Hidden = true;
+        } else moveQualityAnalyzer.QualityParameter.Hidden = false;
         moveQualityAnalyzer.BestKnownQualityParameter.ActualName = Problem.BestKnownQualityParameter.Name;
+        moveQualityAnalyzer.BestKnownQualityParameter.Hidden = true;
+      } else {
+        moveQualityAnalyzer.MaximizationParameter.Hidden = false;
+        moveQualityAnalyzer.BestKnownQualityParameter.Hidden = false;
       }
     }
     private void ParameterizeIterationBasedOperators() {
       if (Problem != null) {
         foreach (IIterationBasedOperator op in Problem.Operators.OfType<IIterationBasedOperator>()) {
           op.IterationsParameter.ActualName = "Iterations";
+          op.IterationsParameter.Hidden = true;
           op.MaximumIterationsParameter.ActualName = MaximumIterationsParameter.Name;
+          op.MaximumIterationsParameter.Hidden = true;
         }
       }
     }
