@@ -258,14 +258,28 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       }
     }
 
+    private bool IsSubclassOfGeneric(Type generic, Type toCheck) {
+      while (toCheck != typeof(object)) {
+        var cur = toCheck.IsGenericType ? toCheck.GetGenericTypeDefinition() : toCheck;
+        if (generic == cur) {
+          return true;
+        }
+        toCheck = toCheck.BaseType;
+      }
+      return false;
+    }
+
     private void UpdateAnalyzers() {
       Analyzer.Operators.Clear();
       if (problem != null) {
         foreach (IAnalyzer analyzer in problem.Operators.OfType<IAnalyzer>()) {
-          IAnalyzer clone = analyzer.Clone() as IAnalyzer;
-          foreach (IScopeTreeLookupParameter param in clone.Parameters.OfType<IScopeTreeLookupParameter>())
-            param.Depth = 0;
-          Analyzer.Operators.Add(clone);
+          if (!IsSubclassOfGeneric(typeof(AlleleFrequencyAnalyzer<>), analyzer.GetType()) &&
+              !IsSubclassOfGeneric(typeof(PopulationDiversityAnalyzer<>), analyzer.GetType())) {
+            IAnalyzer clone = analyzer.Clone() as IAnalyzer;
+            foreach (IScopeTreeLookupParameter param in clone.Parameters.OfType<IScopeTreeLookupParameter>())
+              param.Depth = 0;
+            Analyzer.Operators.Add(clone);
+          }
         }
       }
       Analyzer.Operators.Add(qualityAnalyzer);
