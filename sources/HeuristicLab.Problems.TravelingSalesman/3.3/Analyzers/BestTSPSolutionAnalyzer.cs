@@ -77,6 +77,15 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the best TSP solution should be stored."));
       Parameters.Add(new LookupParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this TSP instance."));
       Parameters.Add(new LookupParameter<Permutation>("BestKnownSolution", "The best known solution of this TSP instance."));
+
+      MaximizationParameter.Hidden = true;
+      CoordinatesParameter.Hidden = true;
+      PermutationParameter.Hidden = true;
+      QualityParameter.Hidden = true;
+      BestSolutionParameter.Hidden = true;
+      ResultsParameter.Hidden = true;
+      BestKnownQualityParameter.Hidden = true;
+      BestKnownSolutionParameter.Hidden = true;
     }
 
     public override IOperation Apply() {

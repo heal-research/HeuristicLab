@@ -84,6 +84,16 @@ namespace HeuristicLab.Problems.TestFunctions {
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the SingleObjectiveTestFunction solution should be stored."));
       Parameters.Add(new ValueLookupParameter<ISingleObjectiveTestFunctionProblemEvaluator>("Evaluator", "The evaluator with which the solution is evaluated."));
       Parameters.Add(new LookupParameter<DoubleMatrix>("Bounds", "The bounds of the function."));
+
+      MaximizationParameter.Hidden = true;
+      RealVectorParameter.Hidden = true;
+      QualityParameter.Hidden = true;
+      BestSolutionParameter.Hidden = true;
+      BestKnownSolutionParameter.Hidden = true;
+      BestKnownQualityParameter.Hidden = true;
+      ResultsParameter.Hidden = true;
+      EvaluatorParameter.Hidden = true;
+      BoundsParameter.Hidden = true;
     }
 
     /// <summary>

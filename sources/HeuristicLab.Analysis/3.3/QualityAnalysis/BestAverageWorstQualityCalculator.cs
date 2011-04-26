@@ -64,6 +64,10 @@ namespace HeuristicLab.Analysis {
       Parameters.Add(new ValueLookupParameter<DoubleValue>("BestQuality", "The quality value of the best solution."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("AverageQuality", "The average quality of all solutions."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("WorstQuality", "The quality value of the worst solution."));
+
+      BestQualityParameter.Hidden = true;
+      AverageQualityParameter.Hidden = true;
+      WorstQualityParameter.Hidden = true;
     }
 
 

@@ -162,6 +162,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this TSP instance."));
       Parameters.Add(new OptionalValueParameter<Permutation>("BestKnownSolution", "The best known solution of this TSP instance."));
 
+      MaximizationParameter.Hidden = true;
       DistanceMatrixParameter.ReactOnValueToStringChangedAndValueItemImageChanged = false;
 
       Coordinates = new DoubleMatrix(new double[,] {
@@ -324,16 +325,24 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
     private void ParameterizeSolutionCreator() {
       SolutionCreator.LengthParameter.Value = new IntValue(Coordinates.Rows);
+      SolutionCreator.LengthParameter.Hidden = true;
       SolutionCreator.PermutationTypeParameter.Value = new PermutationType(PermutationTypes.RelativeUndirected);
+      SolutionCreator.PermutationTypeParameter.Hidden = true;
     }
     private void ParameterizeEvaluator() {
-      if (Evaluator is ITSPPathEvaluator)
-        ((ITSPPathEvaluator)Evaluator).PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
+      if (Evaluator is ITSPPathEvaluator) {
+        ITSPPathEvaluator evaluator = (ITSPPathEvaluator)Evaluator;
+        evaluator.PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
+        evaluator.PermutationParameter.Hidden = true;
+      }
       if (Evaluator is ITSPCoordinatesPathEvaluator) {
         ITSPCoordinatesPathEvaluator evaluator = (ITSPCoordinatesPathEvaluator)Evaluator;
         evaluator.CoordinatesParameter.ActualName = CoordinatesParameter.Name;
+        evaluator.CoordinatesParameter.Hidden = true;
         evaluator.DistanceMatrixParameter.ActualName = DistanceMatrixParameter.Name;
+        evaluator.DistanceMatrixParameter.Hidden = true;
         evaluator.UseDistanceMatrixParameter.ActualName = UseDistanceMatrixParameter.Name;
+        evaluator.UseDistanceMatrixParameter.Hidden = true;
       }
     }
     private void ParameterizeAnalyzers() {
@@ -367,29 +376,44 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     private void ParameterizeOperators() {
       foreach (IPermutationCrossover op in Operators.OfType<IPermutationCrossover>()) {
         op.ParentsParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
+        op.ParentsParameter.Hidden = true;
         op.ChildParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
+        op.ChildParameter.Hidden = true;
       }
       foreach (IPermutationManipulator op in Operators.OfType<IPermutationManipulator>()) {
         op.PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
+        op.PermutationParameter.Hidden = true;
       }
       foreach (IPermutationMoveOperator op in Operators.OfType<IPermutationMoveOperator>()) {
         op.PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
+        op.PermutationParameter.Hidden = true;
       }
       foreach (ITSPPathMoveEvaluator op in Operators.OfType<ITSPPathMoveEvaluator>()) {
         op.CoordinatesParameter.ActualName = CoordinatesParameter.Name;
+        op.CoordinatesParameter.Hidden = true;
         op.DistanceMatrixParameter.ActualName = DistanceMatrixParameter.Name;
+        op.DistanceMatrixParameter.Hidden = true;
         op.UseDistanceMatrixParameter.ActualName = UseDistanceMatrixParameter.Name;
+        op.UseDistanceMatrixParameter.Hidden = true;
         op.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
+        op.QualityParameter.Hidden = true;
         op.PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
+        op.PermutationParameter.Hidden = true;
       }
       string inversionMove = Operators.OfType<IMoveGenerator>().OfType<IPermutationInversionMoveOperator>().First().InversionMoveParameter.ActualName;
-      foreach (IPermutationInversionMoveOperator op in Operators.OfType<IPermutationInversionMoveOperator>())
+      foreach (IPermutationInversionMoveOperator op in Operators.OfType<IPermutationInversionMoveOperator>()) {
         op.InversionMoveParameter.ActualName = inversionMove;
+        op.InversionMoveParameter.Hidden = true;
+      }
       string translocationMove = Operators.OfType<IMoveGenerator>().OfType<IPermutationTranslocationMoveOperator>().First().TranslocationMoveParameter.ActualName;
-      foreach (IPermutationTranslocationMoveOperator op in Operators.OfType<IPermutationTranslocationMoveOperator>())
+      foreach (IPermutationTranslocationMoveOperator op in Operators.OfType<IPermutationTranslocationMoveOperator>()) {
         op.TranslocationMoveParameter.ActualName = translocationMove;
-      foreach (IPermutationMultiNeighborhoodShakingOperator op in Operators.OfType<IPermutationMultiNeighborhoodShakingOperator>())
+        op.TranslocationMoveParameter.Hidden = true;
+      }
+      foreach (IPermutationMultiNeighborhoodShakingOperator op in Operators.OfType<IPermutationMultiNeighborhoodShakingOperator>()) {
         op.PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
+        op.PermutationParameter.Hidden = true;
+      }
     }
 
     private void ClearDistanceMatrix() {

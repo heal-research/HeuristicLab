@@ -73,7 +73,6 @@ namespace HeuristicLab.Selection {
       Parameters.Add(new FixedValueParameter<BoolValue>(QualityDifferenceUseRangeParameterName, "Use the range from minimum to maximum quality as basis for QualityDifferencePercentage.", new BoolValue(true)));
       #endregion
 
-      CopySelectedParameter.Hidden = true;
       RegisterParameterEventHandlers();
     }
 

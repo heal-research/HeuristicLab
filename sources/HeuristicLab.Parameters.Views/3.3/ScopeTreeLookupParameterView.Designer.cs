@@ -53,6 +53,7 @@ namespace HeuristicLab.Parameters.Views {
       // 
       // dataTypeLabel
       // 
+      this.dataTypeLabel.Location = new System.Drawing.Point(3, 55);
       this.dataTypeLabel.TabIndex = 5;
       // 
       // dataTypeTextBox
@@ -119,17 +120,17 @@ namespace HeuristicLab.Parameters.Views {
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.actualNameTextBox);
-      this.Controls.Add(this.actualNameLabel);
       this.Controls.Add(this.depthLabel);
       this.Controls.Add(this.depthTextBox);
+      this.Controls.Add(this.actualNameLabel);
       this.Name = "ScopeTreeLookupParameterView";
       this.Size = new System.Drawing.Size(386, 103);
       this.Controls.SetChildIndex(this.dataTypeTextBox, 0);
+      this.Controls.SetChildIndex(this.actualNameLabel, 0);
       this.Controls.SetChildIndex(this.depthTextBox, 0);
+      this.Controls.SetChildIndex(this.dataTypeLabel, 0);
       this.Controls.SetChildIndex(this.infoLabel, 0);
       this.Controls.SetChildIndex(this.depthLabel, 0);
-      this.Controls.SetChildIndex(this.dataTypeLabel, 0);
-      this.Controls.SetChildIndex(this.actualNameLabel, 0);
       this.Controls.SetChildIndex(this.actualNameTextBox, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);

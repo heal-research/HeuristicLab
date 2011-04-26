@@ -378,46 +378,68 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
     private void ParameterizeSolutionCreator() {
       SolutionCreator.LengthParameter.Value = new IntValue(ProblemSize.Value);
+      SolutionCreator.LengthParameter.Hidden = true;
+      SolutionCreator.BoundsParameter.ActualName = BoundsParameter.Name;
+      SolutionCreator.BoundsParameter.Hidden = true;
     }
     private void ParameterizeEvaluator() {
       Evaluator.PointParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
+      Evaluator.PointParameter.Hidden = true;
       BestKnownSolutionParameter.Value = Evaluator.GetBestKnownSolution(ProblemSize.Value);
     }
     private void ParameterizeOperators() {
       foreach (IRealVectorCrossover op in Operators.OfType<IRealVectorCrossover>()) {
         op.ParentsParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
+        op.ParentsParameter.Hidden = true;
         op.ChildParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
+        op.ChildParameter.Hidden = true;
         op.BoundsParameter.ActualName = BoundsParameter.Name;
+        op.BoundsParameter.Hidden = true;
       }
       foreach (IRealVectorManipulator op in Operators.OfType<IRealVectorManipulator>()) {
         op.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
+        op.RealVectorParameter.Hidden = true;
         op.BoundsParameter.ActualName = BoundsParameter.Name;
+        op.BoundsParameter.Hidden = true;
       }
       foreach (IRealVectorMoveOperator op in Operators.OfType<IRealVectorMoveOperator>()) {
         op.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
+        op.RealVectorParameter.Hidden = true;
       }
       foreach (IRealVectorMoveGenerator op in Operators.OfType<IRealVectorMoveGenerator>()) {
         op.BoundsParameter.ActualName = BoundsParameter.Name;
+        op.BoundsParameter.Hidden = true;
       }
       foreach (ISingleObjectiveTestFunctionAdditiveMoveEvaluator op in Operators.OfType<ISingleObjectiveTestFunctionAdditiveMoveEvaluator>()) {
         op.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
+        op.QualityParameter.Hidden = true;
         op.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
+        op.RealVectorParameter.Hidden = true;
       }
       foreach (IRealVectorParticleCreator op in Operators.OfType<IRealVectorParticleCreator>()) {
         op.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
+        op.RealVectorParameter.Hidden = true;
         op.BoundsParameter.ActualName = BoundsParameter.Name;
+        op.BoundsParameter.Hidden = true;
         op.ProblemSizeParameter.ActualName = ProblemSizeParameter.Name;
+        op.ProblemSizeParameter.Hidden = true;
       }
       foreach (IRealVectorParticleUpdater op in Operators.OfType<IRealVectorParticleUpdater>()) {
         op.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
+        op.RealVectorParameter.Hidden = true;
         op.BoundsParameter.ActualName = BoundsParameter.Name;
+        op.BoundsParameter.Hidden = true;
       }
       foreach (IRealVectorSwarmUpdater op in Operators.OfType<IRealVectorSwarmUpdater>()) {
         op.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
+        op.RealVectorParameter.Hidden = true;
         op.MaximizationParameter.ActualName = MaximizationParameter.Name;
+        op.MaximizationParameter.Hidden = true;
       }
-      foreach (var op in Operators.OfType<IRealVectorMultiNeighborhoodShakingOperator>())
+      foreach (var op in Operators.OfType<IRealVectorMultiNeighborhoodShakingOperator>()) {
         op.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
+        op.RealVectorParameter.Hidden = true;
+      }
     }
     private void UpdateStrategyVectorBounds() {
       DoubleMatrix strategyBounds = (DoubleMatrix)Bounds.Clone();

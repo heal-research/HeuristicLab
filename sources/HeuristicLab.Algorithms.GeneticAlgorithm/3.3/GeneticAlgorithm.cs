@@ -304,36 +304,48 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       GeneticAlgorithmMainLoop.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
     }
     private void ParameterizeStochasticOperator(IOperator op) {
-      if (op is IStochasticOperator)
-        ((IStochasticOperator)op).RandomParameter.ActualName = RandomCreator.RandomParameter.ActualName;
+      IStochasticOperator stochasticOp = op as IStochasticOperator;
+      if (stochasticOp != null) {
+        stochasticOp.RandomParameter.ActualName = RandomCreator.RandomParameter.ActualName;
+        stochasticOp.RandomParameter.Hidden = true;
+      }
     }
     private void ParameterizeSelectors() {
       foreach (ISelector selector in SelectorParameter.ValidValues) {
         selector.CopySelected = new BoolValue(true);
         selector.NumberOfSelectedSubScopesParameter.Value = new IntValue(2 * (PopulationSizeParameter.Value.Value - ElitesParameter.Value.Value));
+        selector.NumberOfSelectedSubScopesParameter.Hidden = true;
         ParameterizeStochasticOperator(selector);
       }
       if (Problem != null) {
         foreach (ISingleObjectiveSelector selector in SelectorParameter.ValidValues.OfType<ISingleObjectiveSelector>()) {
           selector.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
+          selector.MaximizationParameter.Hidden = true;
           selector.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
+          selector.QualityParameter.Hidden = true;
         }
       }
     }
     private void ParameterizeAnalyzers() {
       qualityAnalyzer.ResultsParameter.ActualName = "Results";
+      qualityAnalyzer.ResultsParameter.Hidden = true;
       if (Problem != null) {
         qualityAnalyzer.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
+        qualityAnalyzer.MaximizationParameter.Hidden = true;
         qualityAnalyzer.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
         qualityAnalyzer.QualityParameter.Depth = 1;
+        qualityAnalyzer.QualityParameter.Hidden = true;
         qualityAnalyzer.BestKnownQualityParameter.ActualName = Problem.BestKnownQualityParameter.Name;
+        qualityAnalyzer.BestKnownQualityParameter.Hidden = true;
       }
     }
     private void ParameterizeIterationBasedOperators() {
       if (Problem != null) {
         foreach (IIterationBasedOperator op in Problem.Operators.OfType<IIterationBasedOperator>()) {
           op.IterationsParameter.ActualName = "Generations";
+          op.IterationsParameter.Hidden = true;
           op.MaximumIterationsParameter.ActualName = "MaximumGenerations";
+          op.MaximumIterationsParameter.Hidden = true;
         }
       }
     }

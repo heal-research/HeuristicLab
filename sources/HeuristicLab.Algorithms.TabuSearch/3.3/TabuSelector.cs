@@ -68,7 +68,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
     public ILookupParameter<ItemArray<BoolValue>> MoveTabuParameter {
       get { return (ILookupParameter<ItemArray<BoolValue>>)Parameters["MoveTabu"]; }
     }
-    public IValueLookupParameter<BoolValue> CopySelectedParameter {
+    protected IValueLookupParameter<BoolValue> CopySelectedParameter {
       get { return (IValueLookupParameter<BoolValue>)Parameters["CopySelected"]; }
     }
     public ILookupParameter<BoolValue> EmptyNeighborhoodParameter {
@@ -102,6 +102,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       Parameters.Add(new ScopeTreeLookupParameter<BoolValue>("MoveTabu", "The tabu status of the move."));
       Parameters.Add(new ValueLookupParameter<BoolValue>("CopySelected", "True if the selected move should be copied.", new BoolValue(false)));
       Parameters.Add(new LookupParameter<BoolValue>("EmptyNeighborhood", "Will be set to true if the neighborhood didn't contain any non-tabu moves, otherwise it is set to false."));
+      CopySelectedParameter.Hidden = true;
     }
 
     /// <summary>

@@ -42,7 +42,7 @@ namespace HeuristicLab.Selection {
     public IValueLookupParameter<IntValue> NumberOfSelectedSubScopesParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters["NumberOfSelectedSubScopes"]; }
     }
-    public IValueLookupParameter<BoolValue> CopySelectedParameter {
+    protected IValueLookupParameter<BoolValue> CopySelectedParameter {
       get { return (IValueLookupParameter<BoolValue>)Parameters["CopySelected"]; }
     }
     public ILookupParameter<IRandom> RandomParameter {
@@ -96,6 +96,7 @@ namespace HeuristicLab.Selection {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));
       Parameters.Add(new ValueParameter<ISelector>("FemaleSelector", "The selection operator to select the first parent."));
       Parameters.Add(new ValueParameter<ISelector>("MaleSelector", "The selection operator to select the second parent."));
+      CopySelectedParameter.Hidden = true;
       #endregion
 
       #region Create operators

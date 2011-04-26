@@ -33,8 +33,8 @@ namespace HeuristicLab.Selection {
   [Item("RightSelector", "An operator which selects sub-scopes from right to left.")]
   [StorableClass]
   public sealed class RightSelector : Selector {
-    private ValueParameter<BoolValue> CopySelectedParameter {
-      get { return (ValueParameter<BoolValue>)Parameters["CopySelected"]; }
+    private IValueParameter<BoolValue> CopySelectedParameter {
+      get { return (IValueParameter<BoolValue>)Parameters["CopySelected"]; }
     }
     public IValueLookupParameter<IntValue> NumberOfSelectedSubScopesParameter {
       get { return (ValueLookupParameter<IntValue>)Parameters["NumberOfSelectedSubScopes"]; }
@@ -55,6 +55,7 @@ namespace HeuristicLab.Selection {
       : base() {
       Parameters.Add(new ValueParameter<BoolValue>("CopySelected", "True if the selected sub-scopes should be copied, otherwise false.", new BoolValue(true)));
       Parameters.Add(new ValueLookupParameter<IntValue>("NumberOfSelectedSubScopes", "The number of sub-scopes which should be selected."));
+      CopySelectedParameter.Hidden = true;
     }
 
     protected override IScope[] Select(List<IScope> scopes) {

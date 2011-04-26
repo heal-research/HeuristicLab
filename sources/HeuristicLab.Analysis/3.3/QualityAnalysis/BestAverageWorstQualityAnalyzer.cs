@@ -106,6 +106,14 @@ namespace HeuristicLab.Analysis {
       Parameters.Add(new ValueLookupParameter<DoubleValue>("AbsoluteDifferenceBestKnownToBest", "The absolute difference of the best known quality value to the best quality value."));
       Parameters.Add(new ValueLookupParameter<PercentValue>("RelativeDifferenceBestKnownToBest", "The relative difference of the best known quality value to the best quality value."));
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The results collection where the analysis values should be stored."));
+
+      BestQualityParameter.Hidden = true;
+      CurrentBestQualityParameter.Hidden = true;
+      CurrentAverageQualityParameter.Hidden = true;
+      CurrentWorstQualityParameter.Hidden = true;
+      QualitiesParameter.Hidden = true;
+      AbsoluteDifferenceBestKnownToBestParameter.Hidden = true;
+      RelativeDifferenceBestKnownToBestParameter.Hidden = true;
       #endregion
 
       #region Create operators

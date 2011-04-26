@@ -86,6 +86,7 @@ namespace HeuristicLab.Operators {
       operatorParameters.Clear();
       for (int i = 0; i < Operators.Count; i++) {
         IValueParameter<T> opParam = new OptionalValueParameter<T>(i.ToString(), string.Empty, Operators[i]);
+        opParam.Hidden = true;
         opParam.ValueChanged += new EventHandler(opParam_ValueChanged);
         Parameters.Add(opParam);
         operatorParameters.Add(opParam);

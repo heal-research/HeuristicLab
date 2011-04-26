@@ -70,6 +70,12 @@ namespace HeuristicLab.Analysis {
       Parameters.Add(new ValueParameter<BoolValue>("StoreHistory", "True if the history of the population diversity analysis should be stored.", new BoolValue(false)));
       Parameters.Add(new ValueParameter<IntValue>("UpdateInterval", "The interval in which the population diversity analysis should be applied.", new IntValue(1)));
       Parameters.Add(new LookupParameter<IntValue>("UpdateCounter", "The value which counts how many times the operator was called since the last update.", "PopulationDiversityAnalyzerUpdateCounter"));
+
+      MaximizationParameter.Hidden = true;
+      SolutionParameter.Hidden = true;
+      QualityParameter.Hidden = true;
+      ResultsParameter.Hidden = true;
+      UpdateCounterParameter.Hidden = true;
     }
 
     public override IOperation Apply() {

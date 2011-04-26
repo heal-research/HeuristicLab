@@ -46,6 +46,7 @@ namespace HeuristicLab.Parameters.Views {
       // 
       // dataTypeLabel
       // 
+      this.dataTypeLabel.Location = new System.Drawing.Point(3, 55);
       this.dataTypeLabel.TabIndex = 5;
       // 
       // dataTypeTextBox

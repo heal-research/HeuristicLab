@@ -33,8 +33,8 @@ namespace HeuristicLab.Selection {
     public ScopeTreeLookupParameter<BoolValue> ConditionParameter {
       get { return (ScopeTreeLookupParameter<BoolValue>)Parameters["Condition"]; }
     }
-    public ValueParameter<BoolValue> CopySelectedParameter {
-      get { return (ValueParameter<BoolValue>)Parameters["CopySelected"]; }
+    protected IValueParameter<BoolValue> CopySelectedParameter {
+      get { return (IValueParameter<BoolValue>)Parameters["CopySelected"]; }
     }
 
     public BoolValue CopySelected {
@@ -54,6 +54,7 @@ namespace HeuristicLab.Selection {
       : base() {
       Parameters.Add(new ScopeTreeLookupParameter<BoolValue>("Condition", "The boolean variable based on which the scopes are selected into a true scope-branch and a false scope-branch."));
       Parameters.Add(new ValueParameter<BoolValue>("CopySelected", "The parameter that decides whether the selected scopes should be copied or moved.", new BoolValue(true)));
+      CopySelectedParameter.Hidden = true;
     }
 
     protected override IScope[] Select(List<IScope> scopes) {

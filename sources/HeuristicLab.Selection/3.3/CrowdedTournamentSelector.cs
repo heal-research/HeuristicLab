@@ -38,7 +38,7 @@ namespace HeuristicLab.Selection {
     public IValueLookupParameter<IntValue> NumberOfSelectedSubScopesParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters["NumberOfSelectedSubScopes"]; }
     }
-    public IValueParameter<BoolValue> CopySelectedParameter {
+    protected IValueParameter<BoolValue> CopySelectedParameter {
       get { return (IValueParameter<BoolValue>)Parameters["CopySelected"]; }
     }
     public ILookupParameter<IRandom> RandomParameter {
@@ -75,6 +75,7 @@ namespace HeuristicLab.Selection {
       Parameters.Add(new ScopeTreeLookupParameter<IntValue>("Rank", "The solutions' domination rank."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("CrowdingDistance", "The solutions' crowding distance values."));
       Parameters.Add(new ValueLookupParameter<IntValue>("GroupSize", "The size of the group from which the best will be chosen.", new IntValue(2)));
+      CopySelectedParameter.Hidden = true;
     }
 
     protected override IScope[] Select(List<IScope> scopes) {
