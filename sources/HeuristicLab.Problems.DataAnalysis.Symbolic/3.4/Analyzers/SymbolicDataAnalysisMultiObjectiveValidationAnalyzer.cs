@@ -19,14 +19,14 @@
  */
 #endregion
 
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Collections.Generic;
-using System;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
@@ -73,6 +73,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
     public SymbolicDataAnalysisMultiObjectiveValidationAnalyzer()
       : base() {
+      Parameters.Add(new ValueLookupParameter<IRandom>(RandomParameterName, "The random generator to use."));
       Parameters.Add(new LookupParameter<U>(ProblemDataParameterName, "The problem data of the symbolic data analysis problem."));
       Parameters.Add(new LookupParameter<T>(EvaluatorParameterName, "The operator to use for fitness evaluation on the validation partition."));
       Parameters.Add(new LookupParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>(SymbolicDataAnalysisTreeInterpreterParameterName, "The interpreter for symbolic data analysis expression trees."));
