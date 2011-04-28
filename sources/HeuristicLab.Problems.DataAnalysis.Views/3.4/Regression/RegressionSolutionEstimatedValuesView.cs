@@ -91,8 +91,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           for (int row = 0; row < target.Length; row++) {
             values[row, 0] = target[row];
             values[row, 1] = estimated[row];
-            values[row, 2] = estimated[row] - target[row];
-            values[row, 3] = estimated[row] / target[row] - 1;
+            values[row, 2] = Math.Abs(estimated[row] - target[row]);
+            values[row, 3] = Math.Abs(values[row, 2] / target[row]);
           }
 
           matrix = new DoubleMatrix(values);
