@@ -234,6 +234,8 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
 
     private void InitializeOperators() {
       Operators.AddRange(ApplicationManager.Manager.GetInstances<IPermutationOperator>());
+      Operators.RemoveAll(x => x is ISingleObjectiveMoveEvaluator);
+      Operators.AddRange(ApplicationManager.Manager.GetInstances<IQAPMoveEvaluator>());
       Operators.Add(new BestQAPSolutionAnalyzer());
       ParameterizeAnalyzers();
       ParameterizeOperators();
