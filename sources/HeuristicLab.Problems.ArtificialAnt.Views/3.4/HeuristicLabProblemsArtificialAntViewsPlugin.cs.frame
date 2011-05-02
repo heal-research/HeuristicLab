@@ -27,14 +27,14 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Problems.ArtificialAnt.Views {
   [Plugin("HeuristicLab.Problems.ArtificialAnt.Views","Provides views for the artificial ant problem.", "3.4.0.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.ArtificialAnt.Views-3.4.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Core", "3.3.3.0")]
-  [PluginDependency("HeuristicLab.Core.Views", "3.3.3.0")]
-  [PluginDependency("HeuristicLab.Data", "3.3.3.0")]
-  [PluginDependency("HeuristicLab.Encodings.SymbolicExpressionTreeEncoding","3.4.0.0")]
-  [PluginDependency("HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views","3.4.0.0")]
-  [PluginDependency("HeuristicLab.MainForm", "3.3.3.0")]
-  [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.3.3.0")]
-  [PluginDependency("HeuristicLab.Problems.ArtificialAnt", "3.4.0.0")]
+  [PluginDependency("HeuristicLab.Core", "3.3")]
+  [PluginDependency("HeuristicLab.Core.Views", "3.3")]
+  [PluginDependency("HeuristicLab.Data", "3.3")]
+  [PluginDependency("HeuristicLab.Encodings.SymbolicExpressionTreeEncoding","3.4")]
+  [PluginDependency("HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views","3.4")]
+  [PluginDependency("HeuristicLab.MainForm", "3.3")]
+  [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.3")]
+  [PluginDependency("HeuristicLab.Problems.ArtificialAnt", "3.4")]
   public class HeuristicLabProblemsArtificialAntViewsPlugin : PluginBase {
   }
 }
