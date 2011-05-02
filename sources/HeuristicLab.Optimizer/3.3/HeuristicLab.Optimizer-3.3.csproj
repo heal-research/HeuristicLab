@@ -115,6 +115,7 @@
     <EmbeddedResource Include="Documents\SGP_SymbClass_Mammographic.hl" />
     <EmbeddedResource Include="Documents\SGP_SymbReg.hl" />
     <EmbeddedResource Include="Documents\VNS_TSP.hl" />
+    <EmbeddedResource Include="Documents\PSO_Schwefel.hl" />
     <None Include="HeuristicLabOptimizerPlugin.cs.frame" />
     <Compile Include="CreateExperimentDialog.cs">
       <SubType>Form</SubType>
