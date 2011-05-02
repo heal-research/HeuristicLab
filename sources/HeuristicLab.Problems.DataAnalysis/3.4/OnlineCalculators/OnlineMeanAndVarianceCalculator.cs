@@ -72,7 +72,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public void Add(double x) {
-      if (double.IsNaN(x) || double.IsInfinity(x) || (errorState & OnlineCalculatorError.InvalidValueAdded) > 0) {
+      if (double.IsNaN(x) || double.IsInfinity(x) || x > 1E13 || x < -1E13 || (errorState & OnlineCalculatorError.InvalidValueAdded) > 0) {
         errorState = errorState | OnlineCalculatorError.InvalidValueAdded;
         varianceErrorState = errorState | OnlineCalculatorError.InvalidValueAdded;
       } else {
@@ -83,6 +83,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
           m_oldS = 0.0;
           errorState = errorState & (~OnlineCalculatorError.InsufficientElementsAdded);        // n >= 1
         } else {
+
           varianceErrorState = varianceErrorState & (~OnlineCalculatorError.InsufficientElementsAdded);        // n >= 2
           m_newM = m_oldM + (x - m_oldM) / n;
           m_newS = m_oldS + (x - m_oldM) * (x - m_newM);
