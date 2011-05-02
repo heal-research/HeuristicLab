@@ -226,6 +226,10 @@ namespace HeuristicLab.Optimization.Views {
       Series series = this.chart.Series[0];
       series.Points.Clear();
       runToDataPointMapping.Clear();
+
+      chart.ChartAreas[0].AxisX.IsMarginVisible = xAxisValue != AxisDimension.Index.ToString();
+      chart.ChartAreas[0].AxisY.IsMarginVisible = yAxisValue != AxisDimension.Index.ToString();
+
       if (Content != null) {
         foreach (IRun run in this.Content)
           this.AddDataPoint(run);
@@ -444,6 +448,7 @@ namespace HeuristicLab.Optimization.Views {
         this.chart.ChartAreas[0].CursorX.SelectionStart = this.chart.ChartAreas[0].CursorX.SelectionEnd;
         this.chart.ChartAreas[0].CursorY.SelectionStart = this.chart.ChartAreas[0].CursorY.SelectionEnd;
       }
+      UpdateAxisLabels();
     }
 
     private void chart_MouseUp(object sender, MouseEventArgs e) {
@@ -560,9 +565,6 @@ namespace HeuristicLab.Optimization.Views {
       yAxisValue = (string)yAxisComboBox.SelectedItem;
       sizeAxisValue = (string)sizeComboBox.SelectedItem;
 
-      chart.ChartAreas[0].AxisX.IsMarginVisible = xAxisValue != AxisDimension.Index.ToString() ;
-      chart.ChartAreas[0].AxisY.IsMarginVisible = yAxisValue != AxisDimension.Index.ToString();
-
       UpdateDataPoints();
       UpdateAxisLabels();
     }
@@ -601,7 +603,7 @@ namespace HeuristicLab.Optimization.Views {
         this.chart.ChartAreas[0].RecalculateAxesScale();
         for (double i = axis.Minimum; i <= axis.Maximum; i += axis.LabelStyle.Interval) {
           TimeSpan time = TimeSpan.FromSeconds(i);
-          string x = string.Format("{0:00}:{1:00}:{2:00}", (int)time.Hours, time.Minutes, time.Seconds);
+          string x = string.Format("{0:00}:{1:00}:{2:00}", time.Hours, time.Minutes, time.Seconds);
           axis.CustomLabels.Add(i - axis.LabelStyle.Interval / 2, i + axis.LabelStyle.Interval / 2, x);
         }
       }
