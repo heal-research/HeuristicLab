@@ -432,7 +432,7 @@ namespace HeuristicLab.Optimization.Views {
 
     #region Drag & drop and tooltip
     private void chart_MouseDoubleClick(object sender, MouseEventArgs e) {
-      HitTestResult h = this.chart.HitTest(e.X, e.Y);
+      HitTestResult h = this.chart.HitTest(e.X, e.Y, ChartElementType.DataPoint);
       if (h.ChartElementType == ChartElementType.DataPoint) {
         IRun run = (IRun)((DataPoint)h.Object).Tag;
         IContentView view = MainFormManager.MainForm.ShowContent(run);
@@ -556,12 +556,12 @@ namespace HeuristicLab.Optimization.Views {
       xTrackBar.Enabled = yTrackBar.Enabled = axisSelected;
       colorXAxisButton.Enabled = colorYAxisButton.Enabled = axisSelected;
 
-      if (!xAxisComboBox.DroppedDown)
-        xAxisValue = (string)xAxisComboBox.SelectedItem;
-      if (!yAxisComboBox.DroppedDown)
-        yAxisValue = (string)yAxisComboBox.SelectedItem;
-      if (!sizeComboBox.DroppedDown)
-        sizeAxisValue = (string)sizeComboBox.SelectedItem;
+      xAxisValue = (string)xAxisComboBox.SelectedItem;
+      yAxisValue = (string)yAxisComboBox.SelectedItem;
+      sizeAxisValue = (string)sizeComboBox.SelectedItem;
+
+      chart.ChartAreas[0].AxisX.IsMarginVisible = xAxisValue != AxisDimension.Index.ToString() ;
+      chart.ChartAreas[0].AxisY.IsMarginVisible = yAxisValue != AxisDimension.Index.ToString();
 
       UpdateDataPoints();
       UpdateAxisLabels();
