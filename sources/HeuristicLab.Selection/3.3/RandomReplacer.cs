@@ -64,10 +64,12 @@ namespace HeuristicLab.Selection {
       RandomSelector randomSelector = new RandomSelector();
       randomSelector.RandomParameter.ActualName = RandomParameter.Name;
       ReplacedSelectorParameter.Value = randomSelector;
+      ReplacedSelectorParameter.Hidden = true;
       BestSelector bestSelector = new BestSelector();
       bestSelector.MaximizationParameter.ActualName = MaximizationParameter.Name;
       bestSelector.QualityParameter.ActualName = QualityParameter.Name;
       SelectedSelectorParameter.Value = bestSelector;
+      SelectedSelectorParameter.Hidden = true;
     }
   }
 }

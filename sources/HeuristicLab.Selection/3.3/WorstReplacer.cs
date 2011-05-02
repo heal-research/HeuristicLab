@@ -59,10 +59,12 @@ namespace HeuristicLab.Selection {
       worstSelector.MaximizationParameter.ActualName = MaximizationParameter.Name;
       worstSelector.QualityParameter.ActualName = QualityParameter.Name;
       ReplacedSelectorParameter.Value = worstSelector;
+      ReplacedSelectorParameter.Hidden = true;
       BestSelector bestSelector = new BestSelector();
       bestSelector.MaximizationParameter.ActualName = MaximizationParameter.Name;
       bestSelector.QualityParameter.ActualName = QualityParameter.Name;
       SelectedSelectorParameter.Value = bestSelector;
+      SelectedSelectorParameter.Hidden = true;
     }
   }
 }
