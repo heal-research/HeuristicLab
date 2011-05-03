@@ -259,11 +259,11 @@ namespace HeuristicLab.Optimization {
     }
     public event EventHandler Prepared;
     protected virtual void OnPrepared() {
+      ExecutionState = ExecutionState.Prepared;
       ExecutionTime = TimeSpan.Zero;
       foreach (IStatefulItem statefulObject in this.GetObjectGraphObjects().OfType<IStatefulItem>()) {
         statefulObject.InitializeState();
       }
-      ExecutionState = ExecutionState.Prepared;
       EventHandler handler = Prepared;
       if (handler != null) handler(this, EventArgs.Empty);
     }
