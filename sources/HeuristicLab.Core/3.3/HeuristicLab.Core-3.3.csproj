@@ -146,6 +146,7 @@
     <Compile Include="Constraints\TypeCompatibilityConstraint.cs" />
     <Compile Include="Interfaces\IMultiOperator.cs" />
     <Compile Include="Interfaces\IFixedValueParameter.cs" />
+    <Compile Include="Interfaces\IStatefulItem.cs" />
     <Compile Include="OperatorExecutionException.cs" />
     <Compile Include="Interfaces\IScopeTreeLookupParameter.cs" />
     <Compile Include="Interfaces\ICheckedItemList.cs" />

@@ -32,7 +32,7 @@ namespace HeuristicLab.Operators {
   /// </summary>
   [Item("Operator", "Base class for operators.")]
   [StorableClass]
-  public abstract class Operator : ParameterizedNamedItem, IOperator {
+  public abstract class Operator : ParameterizedNamedItem, IOperator, IStatefulItem {
     public override Image ItemImage {
       get {
         if (Breakpoint) return HeuristicLab.Common.Resources.VSImageLibrary.BreakpointActive;
@@ -73,37 +73,44 @@ namespace HeuristicLab.Operators {
     [StorableConstructor]
     protected Operator(bool deserializing)
       : base(deserializing) {
-      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
+      InitializeState();
     }
     protected Operator(Operator original, Cloner cloner)
       : base(original, cloner) {
-      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
+      InitializeState();
       this.breakpoint = original.breakpoint;
     }
     protected Operator()
       : base() {
-      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
+      InitializeState();
       breakpoint = false;
     }
     protected Operator(string name)
       : base(name) {
-      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
+      InitializeState();
       breakpoint = false;
     }
     protected Operator(string name, ParameterCollection parameters)
       : base(name, parameters) {
-      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
+      InitializeState();
       breakpoint = false;
     }
     protected Operator(string name, string description)
       : base(name, description) {
-      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
+      InitializeState();
       breakpoint = false;
     }
     protected Operator(string name, string description, ParameterCollection parameters)
       : base(name, description, parameters) {
-      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
+      InitializeState();
       breakpoint = false;
+    }
+
+    public virtual void InitializeState() {
+      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
+    }
+    public virtual void ClearState() {
+      executionContexts = null;
     }
 
     public virtual IOperation Execute(IExecutionContext context, CancellationToken cancellationToken) {

@@ -32,7 +32,7 @@ namespace HeuristicLab.Parameters {
   /// </summary>
   [Item("Parameter", "A base class for parameters.")]
   [StorableClass]
-  public abstract class Parameter : NamedItem, IParameter {
+  public abstract class Parameter : NamedItem, IParameter, IStatefulItem {
     public override Image ItemImage {
       get {
         if ((dataType != null) && (typeof(IOperator).IsAssignableFrom(dataType)))
@@ -91,38 +91,42 @@ namespace HeuristicLab.Parameters {
     [StorableConstructor]
     protected Parameter(bool deserializing)
       : base(deserializing) {
-      cachedActualValues = new Lazy<ThreadLocal<IItem>>(() => { return new ThreadLocal<IItem>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
-      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
+      InitializeState();
     }
     protected Parameter(Parameter original, Cloner cloner)
       : base(original, cloner) {
       dataType = original.dataType;
       hidden = original.hidden;
-      cachedActualValues = new Lazy<ThreadLocal<IItem>>(() => { return new ThreadLocal<IItem>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
-      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
+      InitializeState();
     }
     protected Parameter()
       : base("Anonymous") {
       dataType = typeof(IItem);
       hidden = false;
-      cachedActualValues = new Lazy<ThreadLocal<IItem>>(() => { return new ThreadLocal<IItem>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
-      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
+      InitializeState();
     }
     protected Parameter(string name, Type dataType)
       : base(name) {
       if (dataType == null) throw new ArgumentNullException();
       this.dataType = dataType;
       hidden = false;
-      cachedActualValues = new Lazy<ThreadLocal<IItem>>(() => { return new ThreadLocal<IItem>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
-      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
+      InitializeState();
     }
     protected Parameter(string name, string description, Type dataType)
       : base(name, description) {
       if (dataType == null) throw new ArgumentNullException();
       this.dataType = dataType;
       hidden = false;
+      InitializeState();
+    }
+
+    public virtual void InitializeState() {
       cachedActualValues = new Lazy<ThreadLocal<IItem>>(() => { return new ThreadLocal<IItem>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
       executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
+    }
+    public virtual void ClearState() {
+      cachedActualValues = null;
+      executionContexts = null;
     }
 
     public override string ToString() {
