@@ -33,6 +33,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
   public abstract partial class InteractiveSymbolicDataAnalysisSolutionSimplifierView : AsynchronousContentView {
     private Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode> replacementNodes;
     private Dictionary<ISymbolicExpressionTreeNode, double> nodeImpacts;
+    private bool updateInProgress = false;
 
     public InteractiveSymbolicDataAnalysisSolutionSimplifierView() {
       InitializeComponent();
@@ -89,16 +90,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         }
         nodeImpacts = CalculateImpactValues(Content.Model.SymbolicExpressionTree);
 
-        // automatically fold all branches with impact = 1
-        List<ISymbolicExpressionTreeNode> nodeList = Content.Model.SymbolicExpressionTree.Root.GetSubtree(0).IterateNodesPrefix().ToList();
-        foreach (var parent in nodeList) {
-          for (int subTreeIndex = 0; subTreeIndex < parent.SubtreesCount; subTreeIndex++) {
-            var child = parent.GetSubtree(subTreeIndex);
-            if (!(child.Symbol is Constant) && nodeImpacts[child].IsAlmost(0.0)) {
-              SwitchNodeWithReplacementNode(parent, subTreeIndex);
+        if (!updateInProgress) {
+          // automatically fold all branches with impact = 1
+          List<ISymbolicExpressionTreeNode> nodeList = Content.Model.SymbolicExpressionTree.Root.GetSubtree(0).IterateNodesPrefix().ToList();
+          foreach (var parent in nodeList) {
+            for (int subTreeIndex = 0; subTreeIndex < parent.SubtreesCount; subTreeIndex++) {
+              var child = parent.GetSubtree(subTreeIndex);
+              if (!(child.Symbol is Constant) && nodeImpacts[child].IsAlmost(0.0)) {
+                SwitchNodeWithReplacementNode(parent, subTreeIndex);
+              }
             }
           }
         }
+
         // show only interesting part of solution 
         if (tree.Root.SubtreesCount > 1)
           this.treeChart.Tree = new SymbolicExpressionTree(tree.Root); // RPB + ADFs
@@ -137,7 +141,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
             else
               this.treeChart.Tree = new SymbolicExpressionTree(tree.Root.GetSubtree(0).GetSubtree(0)); // 1st child of RPB
 
+            updateInProgress = true;
             UpdateModel(tree);
+            updateInProgress = false;
             return; // break all loops
           }
         }
