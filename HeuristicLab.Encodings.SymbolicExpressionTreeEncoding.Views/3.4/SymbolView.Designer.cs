@@ -79,7 +79,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       this.initialFrequencyTextBox.Name = "initialFrequencyTextBox";
       this.initialFrequencyTextBox.Size = new System.Drawing.Size(227, 20);
       this.initialFrequencyTextBox.TabIndex = 4;
-      this.initialFrequencyTextBox.TextChanged += new System.EventHandler(this.initialFrequencyTextBox_TextChanged);
+      this.initialFrequencyTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.initialFrequencyTextBox_KeyDown);
+      this.initialFrequencyTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.initialFrequencyTextBox_Validating);
+      this.initialFrequencyTextBox.Validated += new System.EventHandler(this.initialFrequencyTextBox_Validated);
       // 
       // SymbolView
       // 
