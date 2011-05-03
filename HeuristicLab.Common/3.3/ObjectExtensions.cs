@@ -36,7 +36,8 @@ namespace HeuristicLab.Common {
       if (obj == null || obj is EventHandler || obj.GetType().IsSubclassOfRawGeneric(typeof(EventHandler<>)) || objects.Contains(obj)) return;
       objects.Add(obj);
 
-      if (obj is ValueType || obj is string) return;
+      //if (obj is ValueType || obj is string) return;
+      if (obj is Pointer) return;
 
       IEnumerable enumerable = obj as IEnumerable;
       if (enumerable != null) {

@@ -73,44 +73,42 @@ namespace HeuristicLab.Operators {
     [StorableConstructor]
     protected Operator(bool deserializing)
       : base(deserializing) {
-      InitializeState();
+      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
     }
     protected Operator(Operator original, Cloner cloner)
       : base(original, cloner) {
-      InitializeState();
+      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
       this.breakpoint = original.breakpoint;
     }
     protected Operator()
       : base() {
-      InitializeState();
+      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
       breakpoint = false;
     }
     protected Operator(string name)
       : base(name) {
-      InitializeState();
+      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
       breakpoint = false;
     }
     protected Operator(string name, ParameterCollection parameters)
       : base(name, parameters) {
-      InitializeState();
+      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
       breakpoint = false;
     }
     protected Operator(string name, string description)
       : base(name, description) {
-      InitializeState();
+      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
       breakpoint = false;
     }
     protected Operator(string name, string description, ParameterCollection parameters)
       : base(name, description, parameters) {
-      InitializeState();
+      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
       breakpoint = false;
     }
 
-    public virtual void InitializeState() {
-      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
-    }
+    public virtual void InitializeState() { }
     public virtual void ClearState() {
-      executionContexts = null;
+      executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
     }
 
     public virtual IOperation Execute(IExecutionContext context, CancellationToken cancellationToken) {
@@ -122,7 +120,8 @@ namespace HeuristicLab.Operators {
         IOperation next = Apply();
         OnExecuted();
         return next;
-      } finally {
+      }
+      finally {
         foreach (IParameter param in Parameters)
           param.ExecutionContext = null;
         ExecutionContext = null;
