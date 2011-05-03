@@ -28,7 +28,6 @@ using HeuristicLab.Common;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views;
 using HeuristicLab.MainForm.WindowsForms;
-using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
   public abstract partial class InteractiveSymbolicDataAnalysisSolutionSimplifierView : AsynchronousContentView {
@@ -130,8 +129,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
           ISymbolicExpressionTreeNode subTree = treeNode.GetSubtree(i);
           // only allow to replace nodes for which a replacement value is known (replacement value for ADF nodes are not available)
           if (subTree == visualTreeNode.SymbolicExpressionTreeNode && replacementNodes.ContainsKey(subTree)) {
-            double replacementImpact = nodeImpacts.ContainsKey(replacementNodes[subTree]) ? nodeImpacts[replacementNodes[subTree]] : 0.0;
-            double originalImpact = nodeImpacts.ContainsKey(subTree) ? nodeImpacts[subTree] : 0.0;
             SwitchNodeWithReplacementNode(treeNode, i);
 
             // show only interesting part of solution 
@@ -139,13 +136,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
               this.treeChart.Tree = new SymbolicExpressionTree(tree.Root); // RPB + ADFs
             else
               this.treeChart.Tree = new SymbolicExpressionTree(tree.Root.GetSubtree(0).GetSubtree(0)); // 1st child of RPB
-            if (!(originalImpact.IsAlmost(0.0) && replacementImpact.IsAlmost(0.0))) {
-              // update everything after the change if necessary (impact != 0)            
-              UpdateModel(tree);
-            } else {
-              // both impacts are zero, so we only need to repaint the nodes 
-              PaintNodeImpacts();
-            }
+
+            UpdateModel(tree);
             return; // break all loops
           }
         }
@@ -190,7 +182,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
           if (constantReplacementNode != null) {
             visualTree.ToolTip += Environment.NewLine + "Replacement value: " + constantReplacementNode.Value;
           }
-        } 
+        }
       }
       this.PaintCollapsedNodes();
       this.treeChart.Repaint();
