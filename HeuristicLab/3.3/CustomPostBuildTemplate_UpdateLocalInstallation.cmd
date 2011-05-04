@@ -1,4 +1,4 @@
-set target=C:\Program Files\HeuristicLab 3.3
+set target=C:\Program Files\HeuristicLab 3.3.4
 
 copy "HeuristicLab 3.3.exe" "%target%"
 copy "HeuristicLab 3.3.exe.config" "%target%"
