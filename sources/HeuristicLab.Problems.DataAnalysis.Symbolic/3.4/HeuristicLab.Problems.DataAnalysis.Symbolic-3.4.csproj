@@ -119,6 +119,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Analyzers\SymbolicDataAnalysisVariableFrequencyAnalyzer.cs" />
+    <Compile Include="Analyzers\SymbolicDataAnalysisAlleleFrequencyAnalyzer.cs" />
     <Compile Include="Formatters\SymbolicDataAnalysisExpressionLatexFormatter.cs" />
     <Compile Include="Formatters\SymbolicDataAnalysisExpressionMATLABFormatter.cs" />
     <Compile Include="Interfaces\ISymbolicDataAnalysisBoundedOperator.cs" />

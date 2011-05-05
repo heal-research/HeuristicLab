@@ -201,6 +201,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Operators.Add(new SymbolicExpressionSymbolFrequencyAnalyzer());
       Operators.Add(new SymbolicDataAnalysisVariableFrequencyAnalyzer());
       Operators.Add(new MinAverageMaxSymbolicExpressionTreeLengthAnalyzer());
+      Operators.Add(new SymbolicDataAnalysisAlleleFrequencyAnalyzer());
       ParameterizeOperators();
     }
 
@@ -294,6 +295,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         op.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
       }
       foreach (var op in operators.OfType<ISymbolicExpressionTreeAnalyzer>()) {
+        op.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
+      }
+      foreach (var op in operators.OfType<ISymbolicDataAnalysisAnalyzer>()) {
         op.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
       }
       foreach (var op in operators.OfType<ISymbolicDataAnalysisValidationAnalyzer<U, T>>()) {
