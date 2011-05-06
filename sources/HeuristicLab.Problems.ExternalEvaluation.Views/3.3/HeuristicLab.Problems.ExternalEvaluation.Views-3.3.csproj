@@ -110,6 +110,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLabProblemsExternalEvaluationViewsPlugin.cs.frame" />
+    <Compile Include="EvaluationCacheView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="EvaluationCacheView.Designer.cs">
+      <DependentUpon>EvaluationCacheView.cs</DependentUpon>
+    </Compile>
     <Compile Include="EvaluationServiceClientView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -195,6 +201,11 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="EvaluationCacheView.resx">
+      <DependentUpon>EvaluationCacheView.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

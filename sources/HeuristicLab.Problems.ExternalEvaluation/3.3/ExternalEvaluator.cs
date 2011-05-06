@@ -31,6 +31,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("ExternalEvaluationValuesCollector", "Creates a solution message, and communicates it via the driver to receive a quality message.")]
   [StorableClass]
   public class ExternalEvaluator : ValuesCollector, IExternalEvaluationProblemEvaluator {
+
     public ILookupParameter<DoubleValue> QualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
@@ -42,7 +43,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       get { return (IValueParameter<SolutionMessageBuilder>)Parameters["MessageBuilder"]; }
     }
 
-    private SolutionMessageBuilder MessageBuilder {
+    protected SolutionMessageBuilder MessageBuilder {
       get { return MessageBuilderParameter.Value; }
     }
 
@@ -60,7 +61,19 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     }
 
     public override IOperation Apply() {
+      SolutionMessage message = BuildSolutionMessage();
+
       IEvaluationServiceClient client = ClientParameter.ActualValue;
+      QualityMessage answer = client.Evaluate(message);
+
+      if (QualityParameter.ActualValue == null)
+        QualityParameter.ActualValue = new DoubleValue(answer.Quality);
+      else QualityParameter.ActualValue.Value = answer.Quality;
+
+      return base.Apply();
+    }
+
+    protected virtual SolutionMessage BuildSolutionMessage() {
       SolutionMessage.Builder protobufBuilder = SolutionMessage.CreateBuilder();
       protobufBuilder.SolutionId = 0;
       foreach (IParameter param in CollectedValues) {
@@ -70,18 +83,12 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
           string name = lookupParam != null ? lookupParam.TranslatedName : param.Name;
           try {
             MessageBuilder.AddToMessage(value, name, protobufBuilder);
-          }
-          catch (ArgumentException ex) {
+          } catch (ArgumentException ex) {
             throw new InvalidOperationException("ERROR in " + Name + ": Parameter " + name + " cannot be added to the message.", ex);
           }
         }
       }
-      QualityMessage answer = client.Evaluate(protobufBuilder.Build());
-      if (QualityParameter.ActualValue == null)
-        QualityParameter.ActualValue = new DoubleValue(answer.Quality);
-      else QualityParameter.ActualValue.Value = answer.Quality;
-
-      return base.Apply();
+      return protobufBuilder.Build();
     }
   }
 }
