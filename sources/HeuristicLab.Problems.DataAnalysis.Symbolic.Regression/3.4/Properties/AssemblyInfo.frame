@@ -26,7 +26,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("HeuristicLab.Problems.DataAnalysis.Symbolic.Regression")]
-[assembly: AssemblyDescription("Provides classes to perform a symbolic regression (single- or multiobjective).")]
+[assembly: AssemblyDescription("Provides classes to perform symbolic regression (single- or multiobjective).")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("HeuristicLab")]
