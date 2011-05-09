@@ -1,11 +1,13 @@
-﻿
+﻿using System;
+using System.Windows.Forms;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
-namespace HeuristicLab.Problems.ExternalEvaluation {
+
+namespace HeuristicLab.Problems.ExternalEvaluation.Views {
 
   [View("EvaluationCacheView")]
   [Content(typeof(EvaluationCache), IsDefaultView = true)]
-  public sealed partial class EvaluationCacheView : NamedItemView {
+  public sealed partial class EvaluationCacheView : ParameterizedNamedItemView {
 
     public new EvaluationCache Content {
       get { return (EvaluationCache)base.Content; }
@@ -17,36 +19,33 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     }
 
     protected override void DeregisterContentEvents() {
-      Content.CacheSizeChanged -= Content_CacheSizeChanged;
-      Content.CacheHitsChanged -= Content_CacheHitsChanged;
+      Content.SizeChanged -= new System.EventHandler(Content_StatusChanged);
+      Content.HitsChanged -= new System.EventHandler(Content_StatusChanged);
       base.DeregisterContentEvents();
     }
 
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      Content.CacheSizeChanged += Content_CacheSizeChanged;
-      Content.CacheHitsChanged += Content_CacheHitsChanged;
+      Content.SizeChanged += new System.EventHandler(Content_StatusChanged);
+      Content.HitsChanged += new System.EventHandler(Content_StatusChanged);
     }
-
 
     #region Event Handlers (Content)
-    void Content_CacheSizeChanged(object sender, System.EventArgs e) {
-      sizeTextBox.Text = Content.CacheSize.ToString();
+    void Content_StatusChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_StatusChanged), sender, e);
+      else
+        hits_sizeTextBox.Text = string.Format("{0}/{1}", Content.Hits, Content.Size);
     }
 
-    void Content_CacheHitsChanged(object sender, System.EventArgs e) {
-      hitsTextBox.Text = Content.CacheHits.ToString();
-    }
     #endregion
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        sizeTextBox.Text = "";
-        hitsTextBox.Text = "";
+        hits_sizeTextBox.Text = "#/#";
       } else {
-        sizeTextBox.Text = Content.CacheSize.ToString();
-        hitsTextBox.Text = Content.CacheHits.ToString();
+        Content_StatusChanged(this, EventArgs.Empty);
       }
     }
 
@@ -56,10 +55,9 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     }
 
     #region Event Handlers (child controls)
-    private void clearButton_Click(object sender, System.EventArgs e) {
+    private void clearButton_Click(object sender, EventArgs e) {
       Content.Reset();
     }
     #endregion
   }
-
 }

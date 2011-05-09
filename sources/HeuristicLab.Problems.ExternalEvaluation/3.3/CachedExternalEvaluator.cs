@@ -42,11 +42,11 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       get { return CacheParameter.Value; }
       set { CacheParameter.Value = value; }
     }
-    public DoubleValue Quality {
+    protected DoubleValue Quality {
       get { return QualityParameter.ActualValue; }
       set { QualityParameter.ActualValue = value; }
     }
-    public IEvaluationServiceClient Client {
+    protected IEvaluationServiceClient Client {
       get { return ClientParameter.ActualValue; }
     }
     #endregion
