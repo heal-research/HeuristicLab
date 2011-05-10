@@ -70,7 +70,10 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
 
       Quality.Value = Cache.GetValue(BuildSolutionMessage(), m => Client.Evaluate(m).Quality);
 
-      return base.Apply();
+      if (Successor != null)
+        return ExecutionContext.CreateOperation(Successor);
+      else
+        return null;
     }
   }
 }
