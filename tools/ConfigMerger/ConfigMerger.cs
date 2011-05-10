@@ -20,8 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Xml;
 
@@ -68,7 +66,7 @@ namespace HeuristicLab.Tools.ConfigMerger {
       sourceNode = source.SelectSingleNode("/configuration/system.serviceModel/services");
       destinationNode = destination.SelectSingleNode("/configuration/system.serviceModel/services");
       Merge(sourceNode, destinationNode, destination, "/configuration/system.serviceModel");
-      
+
       #region Merge 'system.serviceModel/bindings/*'
       destinationNode = destination.SelectSingleNode("/configuration/system.serviceModel/bindings");
       if (destinationNode == null) {
@@ -183,6 +181,13 @@ namespace HeuristicLab.Tools.ConfigMerger {
       sourceNode = source.SelectSingleNode("/configuration/system.data/DbProviderFactories");
       destinationNode = destination.SelectSingleNode("/configuration/system.data/DbProviderFactories");
       Merge(sourceNode, destinationNode, destination, "/configuration");
+
+      sourceNode = source.SelectSingleNode("/configuration/system.diagnostics");
+      destinationNode = destination.SelectSingleNode("/configuration/system.diagnostics");
+      Merge(sourceNode, destinationNode, destination, "/configuration");
+
+
+
 
       destination.Save(destinationFile);
 

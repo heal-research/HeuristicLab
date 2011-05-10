@@ -19,267 +19,164 @@
  */
 #endregion
 
+
 using System;
 using System.Diagnostics;
-using System.IO;
-using HeuristicLab.Tracing.Properties;
-using log4net;
-using log4net.Config;
-
 namespace HeuristicLab.Tracing {
 
   /// <summary>
-  /// HeuristicLab Tracing entry point. Default logger. Reads configured tracing
-  /// file and provides automatic logging with reflection of the calling type.
+  /// HeuristicLab.Tracing using System.Diagnostics.Trace.
+  /// Note that tracing is only activated if the DEBUG or TRACE symbol is set. 
+  /// Configuration (type of listener, file name, ...) is done in app.config in the <system.diagnostics> section. 
   /// </summary>
   public class Logger {
 
     /// <summary>
-    /// true if Configure has been called already.
-    /// </summary>
-    protected static bool IsConfigured = false;
-
-    /// <summary>
-    /// Configures this instance: Reads the log file specified in the settings.
-    /// </summary>
-    protected static void Configure() {
-      if (IsConfigured) return;
-      IsConfigured = true;
-      if (string.IsNullOrEmpty(Settings.Default.TracingLog4netConfigFile)) {
-        Settings.Default.TracingLog4netConfigFile =
-            "HeuristicLab.log4net.xml";
-      }
-      XmlConfigurator.ConfigureAndWatch(
-        new FileInfo(Settings.Default.TracingLog4netConfigFile));
-      Info("logging initialized " + DateTime.Now);
-    }
-
-    /// <summary>
-    /// Gets the default logger for the calling class n levels up in the
-    /// call hierarchy.
-    /// </summary>
-    /// <param name="nParents">The number of parent calls.</param>
-    /// <returns>An <see cref="ILog"/> instance.</returns>
-    public static ILog GetDefaultLogger(int nParents) {
-      Configure();
-      StackFrame frame = new StackFrame(nParents + 1);
-      return LogManager.GetLogger(frame.GetMethod().DeclaringType);
-    }
-
-    /// <summary>
-    /// Gets the default logger: The logger for the class of the
-    /// calling method.
-    /// </summary>
-    /// <returns>An <see cref="ILog"/> instance.</returns>
-    public static ILog GetDefaultLogger() {
-      Configure();
-      StackFrame frame = new StackFrame(1);
-      return LogManager.GetLogger(frame.GetMethod().DeclaringType);
-    }
-
-    /// <summary>
-    /// Issues a debug message to the default logger.
+    /// Issues a debug message.
     /// </summary>
     /// <param name="message">The message.</param>
     public static void Debug(object message) {
-      GetDefaultLogger(1).Debug(message);
+      StackFrame frame = new StackFrame(1);
+      Trace.TraceInformation(frame.GetMethod().DeclaringType.ToString() + " - " + message.ToString());
     }
 
     /// <summary>
-    /// Issues an informational message to the default logger.
+    /// Issues an informational message. 
     /// </summary>
     /// <param name="message">The message.</param>
     public static void Info(object message) {
-      GetDefaultLogger(1).Info(message);
+      StackFrame frame = new StackFrame(1);
+      Trace.TraceInformation(frame.GetMethod().DeclaringType.ToString() + " - " + message.ToString());
     }
 
     /// <summary>
-    /// Issues a warning message to the default logger.
+    /// Issues a warning message.
     /// </summary>
     /// <param name="message">The message.</param>
     public static void Warn(object message) {
-      GetDefaultLogger(1).Warn(message);
+      StackFrame frame = new StackFrame(1);
+      Trace.TraceWarning(frame.GetMethod().DeclaringType.ToString() + " - " + message.ToString());
     }
 
     /// <summary>
-    /// Issues an error message to the default logger.
+    /// Issues an error message.
     /// </summary>
     /// <param name="message">The message.</param>
     public static void Error(object message) {
-      GetDefaultLogger(1).Error(message);
+      StackFrame frame = new StackFrame(1);
+      Trace.TraceError(frame.GetMethod().DeclaringType.ToString() + " - " + message.ToString());
     }
 
     /// <summary>
-    /// Issues a fatal error message to the default logger.
-    /// </summary>
-    /// <param name="message">The message.</param>
-    public static void Fatal(object message) {
-      GetDefaultLogger(1).Fatal(message);
-    }
-
-    /// <summary>
-    /// Issues a debug message to the logger of the specified type.
+    /// Issues a debug message of the specified type.
     /// </summary>
     /// <param name="type">The type.</param>
     /// <param name="message">The message.</param>
     public static void Debug(Type type, object message) {
-      Configure();
-      LogManager.GetLogger(type).Debug(message);
+      Trace.TraceInformation(type.ToString() + ": " + message.ToString());
     }
 
     /// <summary>
-    /// Issues an iformational message to the logger of the specified
-    /// type.
+    /// Issues an informational message of the specified type.
     /// </summary>
     /// <param name="type">The type.</param>
     /// <param name="message">The message.</param>
     public static void Info(Type type, object message) {
-      Configure();
-      LogManager.GetLogger(type).Info(message);
+      Trace.TraceInformation(type.ToString() + ": " + message.ToString());
     }
 
     /// <summary>
-    /// Issues a warning message to the logger of
-    /// the specified type.
+    /// Issues a warning message of the specified type.
     /// </summary>
     /// <param name="type">The type.</param>
     /// <param name="message">The message.</param>
     public static void Warn(Type type, object message) {
-      Configure();
-      LogManager.GetLogger(type).Warn(message);
+      Trace.TraceWarning(type.ToString() + ": " + message.ToString());
     }
 
     /// <summary>
-    /// Issues an error message to the logger of the specified
-    /// type.
+    /// Issues an error message of the specified type.
     /// </summary>
     /// <param name="type">The type.</param>
     /// <param name="message">The message.</param>
     public static void Error(Type type, object message) {
-      Configure();
-      LogManager.GetLogger(type).Error(message);
+      Trace.TraceError(type.ToString() + ": " + message.ToString());
     }
 
     /// <summary>
-    /// Issues a fatal error message to the logger of
-    /// the specified type.
-    /// </summary>
-    /// <param name="type">The type.</param>
-    /// <param name="message">The message.</param>
-    public static void Fatal(Type type, object message) {
-      Configure();
-      LogManager.GetLogger(type).Fatal(message);
-    }
-
-    /// <summary>
-    /// Issues a debug message to the default
-    /// logger including an exception.
+    /// Issues a debug message including an exception.
     /// </summary>
     /// <param name="message">The message.</param>
     /// <param name="exception">The exception.</param>
     public static void Debug(object message, Exception exception) {
-      GetDefaultLogger(1).Debug(message, exception);
+      Trace.TraceInformation(message.ToString() + ": " + exception.ToString());
     }
 
     /// <summary>
-    /// Issues an informational message to the default
-    /// logger including an exception.
+    /// Issues an informational message including an exception.
     /// </summary>
     /// <param name="message">The message.</param>
-    /// <param name="exception">The exception.</param>
-
+    /// <param name="exception">The exception.</param>        
     public static void Info(object message, Exception exception) {
-      GetDefaultLogger(1).Info(message, exception);
+      Trace.TraceInformation(message.ToString() + ": " + exception.ToString());
     }
 
     /// <summary>
-    /// Issues a warning message to the default
-    /// logger including an exception.
+    /// Issues a warning message including an exception.
     /// </summary>
     /// <param name="message">The message.</param>
     /// <param name="exception">The exception.</param>
     public static void Warn(object message, Exception exception) {
-      GetDefaultLogger(1).Warn(message, exception);
+      Trace.TraceWarning(message.ToString() + ": " + exception.ToString());
     }
 
     /// <summary>
-    /// Issues an error message to the default
-    /// logger including an exception.
+    /// Issues an error message including an exception.
     /// </summary>
     /// <param name="message">The message.</param>
     /// <param name="exception">The exception.</param>
     public static void Error(object message, Exception exception) {
-      GetDefaultLogger(1).Error(message, exception);
+      Trace.TraceError(message.ToString() + ": " + exception.ToString());
     }
 
     /// <summary>
-    /// Issues a fatal error message to the default
-    /// logger including an exception.
-    /// </summary>
-    /// <param name="message">The message.</param>
-    /// <param name="exception">The exception.</param>
-    public static void Fatal(object message, Exception exception) {
-      GetDefaultLogger(1).Fatal(message, exception);
-    }
-
-    /// <summary>
-    /// Issues a debug message to the logger of the specified
-    /// type including an exception.
+    /// Issues a debug message of the specified type including an exception.
     /// </summary>
     /// <param name="type">The type.</param>
     /// <param name="message">The message.</param>
     /// <param name="exception">The exception.</param>
     public static void Debug(Type type, object message, Exception exception) {
-      Configure();
-      LogManager.GetLogger(type).Debug(message, exception);
+      Trace.TraceInformation(type.ToString() + ": " + message.ToString() + ": " + exception.ToString());
     }
 
     /// <summary>
-    /// Issues an informational message to the logger of the specified
-    /// type including an exception.
+    /// Issues an informational message of the specified type including an exception.
     /// </summary>
     /// <param name="type">The type.</param>
     /// <param name="message">The message.</param>
     /// <param name="exception">The exception.</param>
     public static void Info(Type type, object message, Exception exception) {
-      Configure();
-      LogManager.GetLogger(type).Info(message, exception);
+      Trace.TraceInformation(type.ToString() + ": " + message.ToString() + ": " + exception.ToString());
     }
 
     /// <summary>
-    /// Issues a warning message to the logger of the specified
-    /// type including an exception.
+    /// Issues a warning message of the specified type including an exception.
     /// </summary>
     /// <param name="type">The type.</param>
     /// <param name="message">The message.</param>
     /// <param name="exception">The exception.</param>
     public static void Warn(Type type, object message, Exception exception) {
-      Configure();
-      LogManager.GetLogger(type).Warn(message, exception);
+      Trace.TraceWarning(type.ToString() + ": " + message.ToString() + ": " + exception.ToString());
     }
 
     /// <summary>
-    /// Issues an error message to the logger of the specified
-    /// type including an exception.
+    /// Issues an error message of the specified type including an exception.
     /// </summary>
     /// <param name="type">The type.</param>
     /// <param name="message">The message.</param>
     /// <param name="exception">The exception.</param>
     public static void Error(Type type, object message, Exception exception) {
-      Configure();
-      LogManager.GetLogger(type).Error(message, exception);
-    }
-
-    /// <summary>
-    /// Issues a fatal error message to the logger of the specified
-    /// type including an exception.
-    /// </summary>
-    /// <param name="type">The type.</param>
-    /// <param name="message">The message.</param>
-    /// <param name="exception">The exception.</param>
-    public static void Fatal(Type type, object message, Exception exception) {
-      Configure();
-      LogManager.GetLogger(type).Fatal(message, exception);
+      Trace.TraceError(type.ToString() + ": " + message.ToString() + ": " + exception.ToString());
     }
   }
 }

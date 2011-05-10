@@ -28,8 +28,6 @@ namespace HeuristicLab.Tracing {
   /// </summary>  
   [Plugin("HeuristicLab.Tracing", "3.3.4.$WCREV$")]
   [PluginFile("HeuristicLab.Tracing-3.3.dll", PluginFileType.Assembly)]
-  [PluginFile("HeuristicLab.log4net.xml", PluginFileType.Data)]
-  [PluginDependency("HeuristicLab.log4net", "1.2.10.0")]
   public class HeuristicLabPersistencePlugin : PluginBase {}
 
 }
