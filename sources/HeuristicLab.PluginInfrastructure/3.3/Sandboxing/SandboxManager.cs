@@ -20,78 +20,80 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 using System.Security;
 using System.Security.Permissions;
-using System.Security.Policy;
 using HeuristicLab.PluginInfrastructure.Manager;
 
 namespace HeuristicLab.PluginInfrastructure.Sandboxing {
-  public class SandboxManager {
+  public static class SandboxManager {
 
-    // static class
-    private SandboxManager() { }
+    /// <summary>
+    /// Creates an privileged sandbox, meaning that the executed code is fully trusted and permissions are not restricted.
+    /// This method is a fall back for trusted users in HeuristicLab Hive. 
+    /// </summary>    
+    public static AppDomain CreateAndInitPrivilegedSandbox(string appDomainName, string applicationBase, string configFilePath) {
+      PermissionSet pSet;
+      pSet = new PermissionSet(PermissionState.Unrestricted);
 
-    private static StrongName CreateStrongName(Assembly assembly) {
-      if (assembly == null)
-        throw new ArgumentNullException("assembly");
-
-      AssemblyName assemblyName = assembly.GetName();
-      Trace.Assert(assemblyName != null, "Could not get assembly name");
-
-      // get the public key blob
-      byte[] publicKey = assemblyName.GetPublicKey();
-      if (publicKey == null || publicKey.Length == 0)
-        throw new InvalidOperationException("Assembly is not strongly named");
-
-      StrongNamePublicKeyBlob keyBlob = new StrongNamePublicKeyBlob(publicKey);
-
-      // and create the StrongName
-      return new StrongName(keyBlob, assemblyName.Name, assemblyName.Version);
-    }
-
-    #region ISandboxManager Members
-    public static AppDomain CreateAndInitSandbox(string appDomainName, string applicationBase, string configFilePath) {
-      PermissionSet pset;
-
-      #region permission set for sandbox
-      // Uncomment code for sandboxed appdomain
-      //pset = new PermissionSet(PermissionState.None);
-      //pset.AddPermission(new SecurityPermission(SecurityPermissionFlag.Execution));
-      //pset.AddPermission(new ReflectionPermission(ReflectionPermissionFlag.MemberAccess));
-      //FileIOPermission fPerm = new FileIOPermission(PermissionState.None);
-
-      //foreach (IPluginDescription plugin in ApplicationManager.Manager.Plugins) {
-      //  fPerm.AddPathList(FileIOPermissionAccess.Read | FileIOPermissionAccess.PathDiscovery, plugin.Files.ToArray());
-      //}
-
-      //pset.AddPermission(fPerm);
-      #endregion
-
-      #region permission set of unrestricted appdomain
-      // unrestricted appdomain 
-      pset = new PermissionSet(PermissionState.Unrestricted);
-      #endregion
-
-      AppDomainSetup setup = AppDomain.CurrentDomain.SetupInformation;
+      AppDomainSetup setup = new AppDomainSetup();
       setup.PrivateBinPath = applicationBase;
       setup.ApplicationBase = applicationBase;
       setup.ConfigurationFile = configFilePath;
 
-      AppDomain applicationDomain = AppDomain.CreateDomain(appDomainName, AppDomain.CurrentDomain.Evidence, setup, pset, CreateStrongName(Assembly.GetExecutingAssembly()));
       Type applicationManagerType = typeof(DefaultApplicationManager);
-      DefaultApplicationManager applicationManager =
-        (DefaultApplicationManager)applicationDomain.CreateInstanceAndUnwrap(applicationManagerType.Assembly.FullName, applicationManagerType.FullName, true, BindingFlags.NonPublic | BindingFlags.Instance, null, null, null, null);
+      AppDomain applicationDomain = AppDomain.CreateDomain(appDomainName, null, setup, pSet, null);
+      DefaultApplicationManager applicationManager = (DefaultApplicationManager)applicationDomain.CreateInstanceAndUnwrap(applicationManagerType.Assembly.FullName, applicationManagerType.FullName, true, BindingFlags.NonPublic | BindingFlags.Instance, null, null, null, null);
+
       PluginManager pm = new PluginManager(applicationBase);
       pm.DiscoverAndCheckPlugins();
-      ApplicationDescription[] apps = pm.Applications.Cast<ApplicationDescription>().ToArray();
-      PluginDescription[] plugins = pm.Plugins.Cast<PluginDescription>().ToArray();
-      applicationManager.PrepareApplicationDomain(apps, plugins);
+      applicationManager.PrepareApplicationDomain(pm.Applications, pm.Plugins);
+
       return applicationDomain;
     }
-    #endregion
+
+    /// <summary>
+    /// Creates a sandbox with restricted permissions.
+    /// Code that is executed in such an AppDomain is partially-trusted and is not allowed to call or override
+    /// methods that require full trust. 
+    /// </summary>    
+    public static AppDomain CreateAndInitSandbox(string appDomainName, string applicationBase, string configFilePath) {
+      PermissionSet pSet;
+
+      pSet = new PermissionSet(PermissionState.None);
+      pSet.AddPermission(new SecurityPermission(PermissionState.None));
+      pSet.AddPermission(new SecurityPermission(SecurityPermissionFlag.Execution));
+      pSet.AddPermission(new SecurityPermission(SecurityPermissionFlag.Infrastructure));
+      pSet.AddPermission(new SecurityPermission(SecurityPermissionFlag.UnmanagedCode));
+      pSet.AddPermission(new SecurityPermission(SecurityPermissionFlag.SerializationFormatter));
+      pSet.AddPermission(new SecurityPermission(SecurityPermissionFlag.ControlAppDomain));
+      //needed for HeuristicLab.Persistence, see DynamicMethod Constructor (String, Type, array<Type []()>[], Type, Boolean)
+      pSet.AddPermission(new SecurityPermission(SecurityPermissionFlag.ControlEvidence));
+
+      ReflectionPermission refPerm = new ReflectionPermission(PermissionState.Unrestricted);
+      pSet.AddPermission(refPerm);
+
+      FileIOPermission ioPerm = new FileIOPermission(PermissionState.None);
+      //allow path discovery for system drive, needed by HeuristicLab.Persistence: Serializer.BuildTypeCache() -> Assembly.CodeBase
+      ioPerm.AddPathList(FileIOPermissionAccess.PathDiscovery, Environment.SystemDirectory.Substring(0, 3));
+      //allow full access to the appdomain's base directory
+      ioPerm.AddPathList(FileIOPermissionAccess.AllAccess, applicationBase);
+      pSet.AddPermission(ioPerm);
+
+      AppDomainSetup setup = new AppDomainSetup();
+      setup.PrivateBinPath = applicationBase;
+      setup.ApplicationBase = applicationBase;
+      setup.ConfigurationFile = configFilePath;
+
+      Type applicationManagerType = typeof(SandboxApplicationManager);
+      AppDomain applicationDomain = AppDomain.CreateDomain(appDomainName, null, setup, pSet, null);
+      SandboxApplicationManager applicationManager = (SandboxApplicationManager)applicationDomain.CreateInstanceAndUnwrap(applicationManagerType.Assembly.FullName, applicationManagerType.FullName, true, BindingFlags.NonPublic | BindingFlags.Instance, null, null, null, null);
+
+      PluginManager pm = new PluginManager(applicationBase);
+      pm.DiscoverAndCheckPlugins();
+      applicationManager.PrepareApplicationDomain(pm.Applications, pm.Plugins);
+
+      return applicationDomain;
+    }
   }
 }

@@ -27,13 +27,18 @@ namespace HeuristicLab.PluginInfrastructure {
   /// The ApplicationManager has a reference to the application manager singleton.
   /// </summary>
   public static class ApplicationManager {
-    // the singleton instance is initialized to LightweightApplicationManager as long as no other application manager is registered
-    private static IApplicationManager appManager = new LightweightApplicationManager();
+    // the singleton instance is initialized to LightweightApplicationManager as long as no other application manager is registered    
+    private static IApplicationManager appManager;
+
     /// <summary>
     /// Gets the application manager singleton.
     /// </summary>
     public static IApplicationManager Manager {
-      get { return appManager; }
+      get {
+        if (appManager == null)
+          appManager = new LightweightApplicationManager();
+        return appManager;
+      }
     }
 
     /// <summary>
@@ -41,7 +46,7 @@ namespace HeuristicLab.PluginInfrastructure {
     /// </summary>
     /// <param name="manager"></param>
     internal static void RegisterApplicationManager(IApplicationManager manager) {
-      if (!(appManager is LightweightApplicationManager)) throw new InvalidOperationException("The application manager has already been set.");
+      if (appManager != null && !(appManager is LightweightApplicationManager)) throw new InvalidOperationException("The application manager has already been set.");
       else {
         appManager = manager;
       }

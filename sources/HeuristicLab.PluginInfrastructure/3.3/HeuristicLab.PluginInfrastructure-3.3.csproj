@@ -219,6 +219,7 @@
     <Compile Include="Attributes\PluginFileAttribute.cs" />
     <Compile Include="BaseClasses\ApplicationBase.cs" />
     <Compile Include="BaseClasses\PluginBase.cs" />
+    <Compile Include="SandboxApplicationManager.cs" />
     <Compile Include="DefaultApplicationManager.cs" />
     <Compile Include="ErrorHandling\ErrorDialog.cs">
       <SubType>Form</SubType>
