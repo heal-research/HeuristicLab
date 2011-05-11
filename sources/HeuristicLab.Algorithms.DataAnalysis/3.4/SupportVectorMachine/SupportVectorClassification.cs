@@ -121,9 +121,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       string svmType, string kernelType, double cost, double nu, double gamma) {
       Dataset dataset = problemData.Dataset;
       string targetVariable = problemData.TargetVariable;
-      int start = problemData.TrainingPartition.Start;
-      int end = problemData.TrainingPartition.End;
-      IEnumerable<int> rows = Enumerable.Range(start, end - start);
+      IEnumerable<int> rows = problemData.TrainingIndizes;
 
       //extract SVM parameters from scope and set them
       SVM.Parameter parameter = new SVM.Parameter();

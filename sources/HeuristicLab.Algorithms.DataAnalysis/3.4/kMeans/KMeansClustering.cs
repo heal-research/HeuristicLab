@@ -84,9 +84,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public static KMeansClusteringSolution CreateKMeansSolution(IClusteringProblemData problemData, int k, int restarts) {
       Dataset dataset = problemData.Dataset;
       IEnumerable<string> allowedInputVariables = problemData.AllowedInputVariables;
-      int start = problemData.TrainingPartition.Start;
-      int end = problemData.TrainingPartition.End;
-      IEnumerable<int> rows = Enumerable.Range(start, end - start);
+      IEnumerable<int> rows = problemData.TrainingIndizes;
       int info;
       double[,] centers;
       int[] xyc;
