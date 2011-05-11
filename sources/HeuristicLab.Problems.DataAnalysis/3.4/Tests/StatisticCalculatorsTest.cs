@@ -77,8 +77,8 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
           double mean = calculator.Mean;
           double variance = calculator.Variance;
 
-          Assert.AreEqual(mean_alglib, mean, 1E-6 * scale);
-          Assert.AreEqual(variance_alglib, variance, 1E-6 * scale);
+          Assert.AreEqual(mean_alglib.ToString(), mean.ToString());
+          Assert.AreEqual(variance_alglib.ToString(), variance.ToString());
         }
       }
     }
@@ -108,9 +108,35 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
             }
             double r2 = r2Calculator.RSquared;
 
-            Assert.AreEqual(r2_alglib, r2, 1E-6 * Math.Max(c1Scale, c2Scale));
+            Assert.AreEqual(r2_alglib.ToString(), r2.ToString());
           }
         }
+      }
+    }
+    [TestMethod]
+    public void CalculatePearsonsRSquaredOfConstantTest() {
+      System.Random random = new System.Random(31415);
+      int n = 12;
+      int cols = testData.GetLength(1);
+      for (int c1 = 0; c1 < cols; c1++) {
+        double c1Scale = random.NextDouble() * 1E7;
+        double c2Scale = 1.0;
+        IEnumerable<double> x = from rows in Enumerable.Range(0, n)
+                                select testData[rows, c1] * c1Scale;
+        IEnumerable<double> y = (new List<double>() { 150494407424305.44 })
+          .Concat(Enumerable.Repeat(150494407424305.47, n - 1));
+        double[] xs = x.ToArray();
+        double[] ys = y.ToArray();
+        double r2_alglib = alglib.pearsoncorrelation(xs, ys, n);
+        r2_alglib *= r2_alglib;
+
+        var r2Calculator = new OnlinePearsonsRSquaredCalculator();
+        for (int i = 0; i < n; i++) {
+          r2Calculator.Add(xs[i], ys[i]);
+        }
+        double r2 = r2Calculator.RSquared;
+
+        Assert.AreEqual(r2_alglib.ToString(), r2.ToString());
       }
     }
   }

@@ -29,10 +29,10 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   /// <summary>
-  /// Abstract base class for regression data analysis solutions
+  /// Represents a regression data analysis solution
   /// </summary>
   [StorableClass]
-  public abstract class RegressionSolution : DataAnalysisSolution, IRegressionSolution {
+  public class RegressionSolution : DataAnalysisSolution, IRegressionSolution {
     private const string TrainingMeanSquaredErrorResultName = "Mean squared error (training)";
     private const string TestMeanSquaredErrorResultName = "Mean squared error (test)";
     private const string TrainingSquaredCorrelationResultName = "Pearson's R² (training)";
@@ -54,42 +54,42 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public double TrainingMeanSquaredError {
       get { return ((DoubleValue)this[TrainingMeanSquaredErrorResultName].Value).Value; }
-      private set { ((DoubleValue)this[TrainingMeanSquaredErrorResultName].Value).Value = value; }
+      protected set { ((DoubleValue)this[TrainingMeanSquaredErrorResultName].Value).Value = value; }
     }
 
     public double TestMeanSquaredError {
       get { return ((DoubleValue)this[TestMeanSquaredErrorResultName].Value).Value; }
-      private set { ((DoubleValue)this[TestMeanSquaredErrorResultName].Value).Value = value; }
+      protected set { ((DoubleValue)this[TestMeanSquaredErrorResultName].Value).Value = value; }
     }
 
     public double TrainingRSquared {
       get { return ((DoubleValue)this[TrainingSquaredCorrelationResultName].Value).Value; }
-      private set { ((DoubleValue)this[TrainingSquaredCorrelationResultName].Value).Value = value; }
+      protected set { ((DoubleValue)this[TrainingSquaredCorrelationResultName].Value).Value = value; }
     }
 
     public double TestRSquared {
       get { return ((DoubleValue)this[TestSquaredCorrelationResultName].Value).Value; }
-      private set { ((DoubleValue)this[TestSquaredCorrelationResultName].Value).Value = value; }
+      protected set { ((DoubleValue)this[TestSquaredCorrelationResultName].Value).Value = value; }
     }
 
     public double TrainingRelativeError {
       get { return ((DoubleValue)this[TrainingRelativeErrorResultName].Value).Value; }
-      private set { ((DoubleValue)this[TrainingRelativeErrorResultName].Value).Value = value; }
+      protected set { ((DoubleValue)this[TrainingRelativeErrorResultName].Value).Value = value; }
     }
 
     public double TestRelativeError {
       get { return ((DoubleValue)this[TestRelativeErrorResultName].Value).Value; }
-      private set { ((DoubleValue)this[TestRelativeErrorResultName].Value).Value = value; }
+      protected set { ((DoubleValue)this[TestRelativeErrorResultName].Value).Value = value; }
     }
 
     public double TrainingNormalizedMeanSquaredError {
       get { return ((DoubleValue)this[TrainingNormalizedMeanSquaredErrorResultName].Value).Value; }
-      private set { ((DoubleValue)this[TrainingNormalizedMeanSquaredErrorResultName].Value).Value = value; }
+      protected set { ((DoubleValue)this[TrainingNormalizedMeanSquaredErrorResultName].Value).Value = value; }
     }
 
     public double TestNormalizedMeanSquaredError {
       get { return ((DoubleValue)this[TestNormalizedMeanSquaredErrorResultName].Value).Value; }
-      private set { ((DoubleValue)this[TestNormalizedMeanSquaredErrorResultName].Value).Value = value; }
+      protected set { ((DoubleValue)this[TestNormalizedMeanSquaredErrorResultName].Value).Value = value; }
     }
 
 
@@ -112,6 +112,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
       RecalculateResults();
     }
 
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new RegressionSolution(this, cloner);
+    }
+
     protected override void OnProblemDataChanged(EventArgs e) {
       base.OnProblemDataChanged(e);
       RecalculateResults();
@@ -121,7 +125,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       RecalculateResults();
     }
 
-    protected void RecalculateResults() {
+    private void RecalculateResults() {
       double[] estimatedTrainingValues = EstimatedTrainingValues.ToArray(); // cache values
       IEnumerable<double> originalTrainingValues = ProblemData.Dataset.GetEnumeratedVariableValues(ProblemData.TargetVariable, ProblemData.TrainingIndizes);
       double[] estimatedTestValues = EstimatedTestValues.ToArray(); // cache values

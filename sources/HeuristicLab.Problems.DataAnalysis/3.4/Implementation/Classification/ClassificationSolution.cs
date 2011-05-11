@@ -29,10 +29,10 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   /// <summary>
-  /// Abstract base class for classification data analysis solutions
+  /// Represents a classification data analysis solution
   /// </summary>
   [StorableClass]
-  public abstract class ClassificationSolution : DataAnalysisSolution, IClassificationSolution {
+  public class ClassificationSolution : DataAnalysisSolution, IClassificationSolution {
     private const string TrainingAccuracyResultName = "Accuracy (training)";
     private const string TestAccuracyResultName = "Accuracy (test)";
 
@@ -66,6 +66,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Add(new Result(TrainingAccuracyResultName, "Accuracy of the model on the training partition (percentage of correctly classified instances).", new PercentValue()));
       Add(new Result(TestAccuracyResultName, "Accuracy of the model on the test partition (percentage of correctly classified instances).", new PercentValue()));
       RecalculateResults();
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ClassificationSolution(this, cloner);
     }
 
     protected override void OnProblemDataChanged(EventArgs e) {

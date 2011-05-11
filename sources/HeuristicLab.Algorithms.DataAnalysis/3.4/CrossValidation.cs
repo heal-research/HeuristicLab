@@ -372,9 +372,37 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         results.Add(result.Name, result.Value);
       foreach (IResult result in ExtractAndAggregateResults<PercentValue>(resultCollections))
         results.Add(result.Name, result.Value);
-
+      foreach (IResult result in ExtractAndAggregateRegressionSolutions(resultCollections)) {
+        results.Add(result.Name, result.Value);
+      }
       results.Add("Execution Time", new TimeSpanValue(this.ExecutionTime));
       results.Add("CrossValidation Folds", new RunCollection(runs));
+    }
+
+    private IEnumerable<IResult> ExtractAndAggregateRegressionSolutions(IEnumerable<KeyValuePair<string, IItem>> resultCollections) {
+      Dictionary<string, List<IRegressionSolution>> resultSolutions = new Dictionary<string, List<IRegressionSolution>>();
+      foreach (var result in resultCollections) {
+        var regressionSolution = result.Value as IRegressionSolution;
+        if (regressionSolution != null) {
+          if (resultSolutions.ContainsKey(result.Key)) {
+            resultSolutions[result.Key].Add(regressionSolution);
+          } else {
+            resultSolutions.Add(result.Key, new List<IRegressionSolution>() { regressionSolution });
+          }
+        }
+      }
+      List<IResult> aggregatedResults = new List<IResult>();
+      foreach (KeyValuePair<string, List<IRegressionSolution>> solutions in resultSolutions) {
+        var problemDataClone = (IRegressionProblemData)Problem.ProblemData.Clone();
+        problemDataClone.TrainingPartition.Start = SamplesStart.Value; problemDataClone.TrainingPartition.End = SamplesEnd.Value;
+        problemDataClone.TestPartition.Start = SamplesStart.Value; problemDataClone.TestPartition.End = SamplesEnd.Value;
+        var ensembleSolution = new RegressionEnsembleSolution(solutions.Value.Select(x => x.Model), problemDataClone,
+          solutions.Value.Select(x => x.ProblemData.TrainingPartition),
+          solutions.Value.Select(x => x.ProblemData.TestPartition));
+
+        aggregatedResults.Add(new Result(solutions.Key, ensembleSolution));
+      }
+      return aggregatedResults;
     }
 
     private static IEnumerable<IResult> ExtractAndAggregateResults<T>(IEnumerable<KeyValuePair<string, IItem>> results)

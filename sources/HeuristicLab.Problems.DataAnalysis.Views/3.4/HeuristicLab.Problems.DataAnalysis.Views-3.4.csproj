@@ -157,6 +157,13 @@
     <Compile Include="ClusteringSolutionView.Designer.cs">
       <DependentUpon>ClusteringSolutionView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interfaces\IRegressionEnsembleSolutionEvaluationView.cs" />
+    <Compile Include="RegressionEnsembleSolutionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="RegressionEnsembleSolutionView.Designer.cs">
+      <DependentUpon>RegressionEnsembleSolutionView.cs</DependentUpon>
+    </Compile>
     <Compile Include="DiscriminantFunctionClassificationSolutionView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -185,6 +192,18 @@
     </Compile>
     <Compile Include="RegressionSolutionView.Designer.cs">
       <DependentUpon>RegressionSolutionView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Regression\RegressionEnsembleSolutionLineChartView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Regression\RegressionEnsembleSolutionLineChartView.Designer.cs">
+      <DependentUpon>RegressionEnsembleSolutionLineChartView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Regression\RegressionEnsembleSolutionScatterPlotView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Regression\RegressionEnsembleSolutionScatterPlotView.Designer.cs">
+      <DependentUpon>RegressionEnsembleSolutionScatterPlotView.cs</DependentUpon>
     </Compile>
     <Compile Include="Regression\RegressionSolutionEstimatedValuesView.cs">
       <SubType>UserControl</SubType>

@@ -26,10 +26,10 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   /// <summary>
-  /// Abstract base class for clustering data analysis solutions
+  /// Represents a clustering data analysis solution
   /// </summary>
   [StorableClass]
-  public abstract class ClusteringSolution : DataAnalysisSolution, IClusteringSolution {
+  public class ClusteringSolution : DataAnalysisSolution, IClusteringSolution {
 
     [StorableConstructor]
     protected ClusteringSolution(bool deserializing) : base(deserializing) { }
@@ -38,6 +38,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     public ClusteringSolution(IClusteringModel model, IClusteringProblemData problemData)
       : base(model, problemData) {
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ClusteringSolution(this, cloner);
     }
 
     #region IClusteringSolution Members
