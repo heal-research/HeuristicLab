@@ -20,6 +20,7 @@
 #endregion
 
 
+using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -32,22 +33,22 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   public class CachedExternalEvaluator : ExternalEvaluator {
 
     #region Parameters
-    public OptionalValueParameter<EvaluationCache> CacheParameter {
-      get { return (OptionalValueParameter<EvaluationCache>)Parameters["Cache"]; }
+    public ValueLookupParameter<EvaluationCache> CacheParameter {
+      get { return (ValueLookupParameter<EvaluationCache>)Parameters["Cache"]; }
     }
     #endregion
 
     #region Parameter Values
-    public EvaluationCache Cache {
-      get { return CacheParameter.Value; }
-      set { CacheParameter.Value = value; }
-    }
     protected DoubleValue Quality {
       get { return QualityParameter.ActualValue; }
       set { QualityParameter.ActualValue = value; }
     }
     protected IEvaluationServiceClient Client {
       get { return ClientParameter.ActualValue; }
+    }
+    protected EvaluationCache Cache {
+      get { return CacheParameter.ActualValue; }
+      set { CacheParameter.ActualValue = value; }
     }
     #endregion
 
@@ -60,16 +61,16 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     }
     public CachedExternalEvaluator()
       : base() {
-      Parameters.Add(new OptionalValueParameter<EvaluationCache>("Cache", "Cache of previously evaluated solutions"));
+      Parameters.Add(new ValueLookupParameter<EvaluationCache>("Cache", "Cache of previously evaluated solutions"));
     }
     #endregion
 
     public override IOperation Apply() {
-      if (Cache == null) Cache = new EvaluationCache();
+      if (Cache == null)
+        return base.Apply();
+
       if (Quality == null) Quality = new DoubleValue(0);
-
       Quality.Value = Cache.GetValue(BuildSolutionMessage(), m => Client.Evaluate(m).Quality);
-
       if (Successor != null)
         return ExecutionContext.CreateOperation(Successor);
       else

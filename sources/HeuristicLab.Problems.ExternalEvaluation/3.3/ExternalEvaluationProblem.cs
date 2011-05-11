@@ -85,6 +85,9 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     public ValueParameter<ItemList<IOperator>> OperatorsParameter {
       get { return (ValueParameter<ItemList<IOperator>>)Parameters["Operators"]; }
     }
+    public OptionalValueParameter<EvaluationCache> CacheParameter {
+      get { return (OptionalValueParameter<EvaluationCache>)Parameters["Cache"]; }
+    }
     #endregion
 
     #region Properties
@@ -147,6 +150,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this problem."));
       Parameters.Add(new OptionalValueParameter<IScope>("BestKnownSolution", "The best known solution for this external evaluation problem."));
       Parameters.Add(new ValueParameter<ItemList<IOperator>>("Operators", "The operators that are passed to the algorithm.", new ItemList<IOperator>()));
+      Parameters.Add(new OptionalValueParameter<EvaluationCache>("Cache", "Cache of previously evaluated solutions."));
 
       InitializeOperators();
       AttachEventHandlers();

@@ -25,6 +25,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
@@ -72,6 +73,10 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     #region Fields
     private LinkedList<CacheEntry> list;
     private Dictionary<CacheEntry, LinkedListNode<CacheEntry>> index;
+    private static HashSet<string> activeEvaluations = new HashSet<string>();
+    private static object cacheLock = new object();
+    private static object evaluationLock = new object();
+    private static AutoResetEvent evaluationDone = new AutoResetEvent(false);
     #endregion
 
     #region Properties
@@ -79,7 +84,18 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       get { return VSImageLibrary.Database; }
     }
     public int Size {
-      get { return index.Count; }
+      get {
+        lock (cacheLock) {
+          return index.Count;
+        }
+      }
+    }
+    public int ActiveEvaluations {
+      get {
+        lock (evaluationLock) {
+          return activeEvaluations.Count;
+        }
+      }
     }
     [Storable]
     public int Hits { get; private set; }
@@ -88,6 +104,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     #region events
     public event EventHandler SizeChanged;
     public event EventHandler HitsChanged;
+    public event EventHandler ActiveEvalutionsChanged;
 
     protected virtual void OnSizeChanged() {
       EventHandler handler = SizeChanged;
@@ -99,11 +116,19 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       if (handler != null)
         handler(this, EventArgs.Empty);
     }
+    protected virtual void OnActiveEvalutionsChanged() {
+      EventHandler handler = ActiveEvalutionsChanged;
+      if (handler != null)
+        handler(this, EventArgs.Empty);
+    }
     #endregion
 
     #region Parameters
     public FixedValueParameter<IntValue> CapacityParameter {
       get { return (FixedValueParameter<IntValue>)Parameters["Capacity"]; }
+    }
+    public FixedValueParameter<BoolValue> PersistentCacheParameter {
+      get { return (FixedValueParameter<BoolValue>)Parameters["PersistentCache"]; }
     }
     #endregion
 
@@ -112,22 +137,23 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       get { return CapacityParameter.Value.Value; }
       set { CapacityParameter.Value.Value = value; }
     }
+    public bool IsPersistent {
+      get { return PersistentCacheParameter.Value.Value; }
+    }
     #endregion
 
     #region Persistence
     [Storable(Name="Cache")]
     private IEnumerable<KeyValuePair<string, double>> Cache_Persistence {
       get {
-        return index.ToDictionary(kvp => kvp.Key.Key, kvp => kvp.Key.Value);
+        if (IsPersistent) {
+          return GetCacheValues();
+        } else {
+          return Enumerable.Empty<KeyValuePair<string, double>>();
+        }
       }
       set {
-        list = new LinkedList<CacheEntry>();
-        index = new Dictionary<CacheEntry, LinkedListNode<CacheEntry>>();
-        foreach (var kvp in value) {
-          var entry = new CacheEntry(kvp.Key);
-          entry.Value = kvp.Value;
-          index[entry] = list.AddLast(entry);
-        }
+        SetCacheValues(value);
       }
     }
     [StorableHook(HookType.AfterDeserialization)]
@@ -141,13 +167,14 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     protected EvaluationCache(bool deserializing) : base(deserializing) { }
     protected EvaluationCache(EvaluationCache original, Cloner cloner)
       : base(original, cloner) {
-      Cache_Persistence = original.Cache_Persistence;
+      SetCacheValues(original.GetCacheValues());
       RegisterEvents();
     }
     public EvaluationCache() {
       list = new LinkedList<CacheEntry>();
       index = new Dictionary<CacheEntry, LinkedListNode<CacheEntry>>();
       Parameters.Add(new FixedValueParameter<IntValue>("Capacity", "Maximum number of cache entries.", new IntValue(10000)));
+      Parameters.Add(new FixedValueParameter<BoolValue>("PersistentCache", "Save cache when serializing object graph?", new BoolValue(false)));
       RegisterEvents();
     }
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -169,9 +196,11 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
 
     #region Methods
     public void Reset() {
-      list = new LinkedList<CacheEntry>();
-      index = new Dictionary<CacheEntry, LinkedListNode<CacheEntry>>();
-      Hits = 0;
+      lock (cacheLock) {
+        list = new LinkedList<CacheEntry>();
+        index = new Dictionary<CacheEntry, LinkedListNode<CacheEntry>>();
+        Hits = 0;
+      }
       OnSizeChanged();
       OnHitsChanged();
     }
@@ -179,27 +208,90 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     public double GetValue(SolutionMessage message, Evaluator evaluate) {
       CacheEntry entry = new CacheEntry(message.ToString());
       LinkedListNode<CacheEntry> node;
-      if (index.TryGetValue(entry, out node)) {
-        list.Remove(node);
-        list.AddLast(node);
-        Hits++;
-        OnHitsChanged();
-        return node.Value.Value;
-      } else {
-        entry.Value = evaluate(message);
-        index[entry] = list.AddLast(entry);
-        Trim();
-        return entry.Value;
+      bool lockTaken = false;
+      try {
+        Monitor.Enter(cacheLock, ref lockTaken);
+        if (index.TryGetValue(entry, out node)) {
+          list.Remove(node);
+          list.AddLast(node);
+          Hits++;
+          lockTaken = false;
+          Monitor.Exit(cacheLock);
+          OnHitsChanged();
+          return node.Value.Value;
+        } else {
+          lockTaken = false;
+          Monitor.Exit(cacheLock);
+          return Evaluate(message, evaluate, entry);
+        }
+      } finally {
+        if (lockTaken)
+          Monitor.Exit(cacheLock);
+      }
+    }
+
+    private double Evaluate(SolutionMessage message, Evaluator evaluate, CacheEntry entry) {
+      bool lockTaken = false;
+      try {
+        Monitor.Enter(evaluationLock, ref lockTaken);
+        if (activeEvaluations.Contains(entry.Key)) {
+          while (activeEvaluations.Contains(entry.Key)) {
+            lockTaken = false;
+            Monitor.Exit(evaluationLock);
+            evaluationDone.WaitOne();
+            Monitor.Enter(evaluationLock, ref lockTaken);
+          }
+          lock (cacheLock) {
+            return index[entry].Value.Value;
+          }
+        } else {
+          activeEvaluations.Add(entry.Key);
+          lockTaken = false;
+          Monitor.Exit(evaluationLock);
+          OnActiveEvalutionsChanged();
+          entry.Value = evaluate(message);
+          lock (cacheLock) {
+            index[entry] = list.AddLast(entry);
+          }
+          lock (evaluationLock) {
+            activeEvaluations.Remove(entry.Key);
+            evaluationDone.Set();
+          }
+          OnActiveEvalutionsChanged();
+          Trim();
+          return entry.Value;
+        }
+      } finally {
+        if (lockTaken)
+          Monitor.Exit(evaluationLock);
       }
     }
 
     private void Trim() {
-      while (list.Count > Capacity) {
-        LinkedListNode<CacheEntry> item = list.First;
-        list.Remove(item);
-        index.Remove(item.Value);
+      lock (cacheLock) {
+        while (list.Count > Capacity) {
+          LinkedListNode<CacheEntry> item = list.First;
+          list.Remove(item);
+          index.Remove(item.Value);
+        }
       }
       OnSizeChanged();
+    }
+    private IEnumerable<KeyValuePair<string, double>> GetCacheValues() {
+      lock (cacheLock) {
+        return index.ToDictionary(kvp => kvp.Key.Key, kvp => kvp.Key.Value);
+      }
+    }
+    private void SetCacheValues(IEnumerable<KeyValuePair<string, double>> value) {
+      lock (cacheLock) {
+        list = new LinkedList<CacheEntry>();
+        index = new Dictionary<CacheEntry, LinkedListNode<CacheEntry>>();
+        foreach (var kvp in value) {
+          var entry = new CacheEntry(kvp.Key);
+          entry.Value = kvp.Value;
+          index[entry] = list.AddLast(entry);
+        }
+      }
     }
     #endregion
 

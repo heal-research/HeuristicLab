@@ -21,6 +21,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
     protected override void DeregisterContentEvents() {
       Content.SizeChanged -= new System.EventHandler(Content_StatusChanged);
       Content.HitsChanged -= new System.EventHandler(Content_StatusChanged);
+      Content.ActiveEvalutionsChanged -= new EventHandler(Content_StatusChanged);
       base.DeregisterContentEvents();
     }
 
@@ -28,6 +29,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
       base.RegisterContentEvents();
       Content.SizeChanged += new System.EventHandler(Content_StatusChanged);
       Content.HitsChanged += new System.EventHandler(Content_StatusChanged);
+      Content.ActiveEvalutionsChanged += new EventHandler(Content_StatusChanged);
     }
 
     #region Event Handlers (Content)
@@ -35,7 +37,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_StatusChanged), sender, e);
       else
-        hits_sizeTextBox.Text = string.Format("{0}/{1}", Content.Hits, Content.Size);
+        hits_sizeTextBox.Text = string.Format("{0}/{1} ({2} active)", Content.Hits, Content.Size, Content.ActiveEvaluations);
     }
 
     #endregion
