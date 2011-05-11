@@ -57,7 +57,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public override void ResetLocalParameters(IRandom random) {
       base.ResetLocalParameters(random);
       var range = Symbol.MaxValue - Symbol.MinValue;
-      Value = random.NextDouble() * range - Symbol.MinValue;
+      Value = random.NextDouble() * range + Symbol.MinValue;
     }
 
     public override void ShakeLocalParameters(IRandom random, double shakingFactor) {
