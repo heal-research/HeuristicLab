@@ -36,6 +36,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private const string TargetVariableParameterName = "TargetVariable";
     private const string ClassNamesParameterName = "ClassNames";
     private const string ClassificationPenaltiesParameterName = "ClassificationPenalties";
+    private const int MaximumNumberOfClass = 100;
+    private const int InspectedRowsToDetermineTargets = 500;
 
     #region default data
     private static string[] defaultVariableNames = new string[] { "sample", "clump thickness", "cell size", "cell shape", "marginal adhesion", "epithelial cell size", "bare nuclei", "chromatin", "nucleoli", "mitoses", "class" };
@@ -251,14 +253,30 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public ClassificationProblemData() : this(defaultDataset, defaultAllowedInputVariables, defaultTargetVariable) { }
     public ClassificationProblemData(Dataset dataset, IEnumerable<string> allowedInputVariables, string targetVariable)
       : base(dataset, allowedInputVariables) {
-      var variables = InputVariables.Select(x => x.AsReadOnly()).ToList();
-      Parameters.Add(new ConstrainedValueParameter<StringValue>(TargetVariableParameterName, new ItemSet<StringValue>(variables), variables.Where(x => x.Value == targetVariable).First()));
+      var validTargetVariableValues = CheckVariablesForPossibleTargetVariables(dataset).Select(x => new StringValue(x).AsReadOnly()).ToList();
+      var target = validTargetVariableValues.Where(x => x.Value == targetVariable).DefaultIfEmpty(validTargetVariableValues.First()).First();
+
+      Parameters.Add(new ConstrainedValueParameter<StringValue>(TargetVariableParameterName, new ItemSet<StringValue>(validTargetVariableValues), target));
       Parameters.Add(new FixedValueParameter<StringMatrix>(ClassNamesParameterName, ""));
       Parameters.Add(new FixedValueParameter<DoubleMatrix>(ClassificationPenaltiesParameterName, ""));
 
       ResetTargetVariableDependentMembers();
       RegisterParameterEvents();
     }
+
+    private static IEnumerable<string> CheckVariablesForPossibleTargetVariables(Dataset dataset) {
+      var validTargetVariables = from v in dataset.VariableNames
+                                 let DistinctValues = dataset.Rows > InspectedRowsToDetermineTargets ? dataset.GetVariableValues(v, 0, InspectedRowsToDetermineTargets).Distinct().Count()
+                                                                        : dataset.GetVariableValues(v).Distinct().Count()
+                                 where DistinctValues < MaximumNumberOfClass
+                                 select v;
+
+      if (!validTargetVariables.Any())
+        throw new ArgumentException("Import of classification problem data was not successfull, because no target variable was found." +
+          " A target variable must have at most " + MaximumNumberOfClass + " distinct values to be applicable to classification.");
+      return validTargetVariables;
+    }
+
 
     private void ResetTargetVariableDependentMembers() {
       DergisterParameterEvents();
