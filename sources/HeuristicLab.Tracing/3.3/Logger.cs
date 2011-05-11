@@ -37,7 +37,7 @@ namespace HeuristicLab.Tracing {
     /// <param name="message">The message.</param>
     public static void Debug(object message) {
       StackFrame frame = new StackFrame(1);
-      Trace.TraceInformation(frame.GetMethod().DeclaringType.ToString() + " - " + message.ToString());
+      Trace.TraceInformation("{0} - {1}", frame.GetMethod().DeclaringType, message);
     }
 
     /// <summary>
@@ -46,7 +46,7 @@ namespace HeuristicLab.Tracing {
     /// <param name="message">The message.</param>
     public static void Info(object message) {
       StackFrame frame = new StackFrame(1);
-      Trace.TraceInformation(frame.GetMethod().DeclaringType.ToString() + " - " + message.ToString());
+      Trace.TraceInformation("{0} - {1}", frame.GetMethod().DeclaringType, message);
     }
 
     /// <summary>
@@ -55,7 +55,7 @@ namespace HeuristicLab.Tracing {
     /// <param name="message">The message.</param>
     public static void Warn(object message) {
       StackFrame frame = new StackFrame(1);
-      Trace.TraceWarning(frame.GetMethod().DeclaringType.ToString() + " - " + message.ToString());
+      Trace.TraceWarning("{0} - {1}", frame.GetMethod().DeclaringType, message);
     }
 
     /// <summary>
@@ -64,7 +64,7 @@ namespace HeuristicLab.Tracing {
     /// <param name="message">The message.</param>
     public static void Error(object message) {
       StackFrame frame = new StackFrame(1);
-      Trace.TraceError(frame.GetMethod().DeclaringType.ToString() + " - " + message.ToString());
+      Trace.TraceError("{0} - {1}", frame.GetMethod().DeclaringType, message);
     }
 
     /// <summary>
@@ -73,7 +73,7 @@ namespace HeuristicLab.Tracing {
     /// <param name="type">The type.</param>
     /// <param name="message">The message.</param>
     public static void Debug(Type type, object message) {
-      Trace.TraceInformation(type.ToString() + ": " + message.ToString());
+      Trace.TraceInformation("{0}: {1}", type, message);
     }
 
     /// <summary>
@@ -82,7 +82,7 @@ namespace HeuristicLab.Tracing {
     /// <param name="type">The type.</param>
     /// <param name="message">The message.</param>
     public static void Info(Type type, object message) {
-      Trace.TraceInformation(type.ToString() + ": " + message.ToString());
+      Trace.TraceInformation("{0}: {1}", type, message);
     }
 
     /// <summary>
@@ -91,7 +91,7 @@ namespace HeuristicLab.Tracing {
     /// <param name="type">The type.</param>
     /// <param name="message">The message.</param>
     public static void Warn(Type type, object message) {
-      Trace.TraceWarning(type.ToString() + ": " + message.ToString());
+      Trace.TraceWarning("{0}: {1}", type, message);
     }
 
     /// <summary>
@@ -100,7 +100,7 @@ namespace HeuristicLab.Tracing {
     /// <param name="type">The type.</param>
     /// <param name="message">The message.</param>
     public static void Error(Type type, object message) {
-      Trace.TraceError(type.ToString() + ": " + message.ToString());
+      Trace.TraceError("{0}: {1}", type, message);
     }
 
     /// <summary>
@@ -109,7 +109,7 @@ namespace HeuristicLab.Tracing {
     /// <param name="message">The message.</param>
     /// <param name="exception">The exception.</param>
     public static void Debug(object message, Exception exception) {
-      Trace.TraceInformation(message.ToString() + ": " + exception.ToString());
+      Trace.TraceInformation("{0}: {1}:", message, exception);
     }
 
     /// <summary>
@@ -118,7 +118,7 @@ namespace HeuristicLab.Tracing {
     /// <param name="message">The message.</param>
     /// <param name="exception">The exception.</param>        
     public static void Info(object message, Exception exception) {
-      Trace.TraceInformation(message.ToString() + ": " + exception.ToString());
+      Trace.TraceInformation("{0}: {1}:", message, exception);
     }
 
     /// <summary>
@@ -127,7 +127,7 @@ namespace HeuristicLab.Tracing {
     /// <param name="message">The message.</param>
     /// <param name="exception">The exception.</param>
     public static void Warn(object message, Exception exception) {
-      Trace.TraceWarning(message.ToString() + ": " + exception.ToString());
+      Trace.TraceWarning("{0}: {1}:", message, exception);
     }
 
     /// <summary>
@@ -136,7 +136,7 @@ namespace HeuristicLab.Tracing {
     /// <param name="message">The message.</param>
     /// <param name="exception">The exception.</param>
     public static void Error(object message, Exception exception) {
-      Trace.TraceError(message.ToString() + ": " + exception.ToString());
+      Trace.TraceError("{0}: {1}:", message, exception);
     }
 
     /// <summary>
@@ -146,7 +146,7 @@ namespace HeuristicLab.Tracing {
     /// <param name="message">The message.</param>
     /// <param name="exception">The exception.</param>
     public static void Debug(Type type, object message, Exception exception) {
-      Trace.TraceInformation(type.ToString() + ": " + message.ToString() + ": " + exception.ToString());
+      Trace.TraceInformation("{0}: {1}: {2}", type, message, exception);
     }
 
     /// <summary>
@@ -156,7 +156,7 @@ namespace HeuristicLab.Tracing {
     /// <param name="message">The message.</param>
     /// <param name="exception">The exception.</param>
     public static void Info(Type type, object message, Exception exception) {
-      Trace.TraceInformation(type.ToString() + ": " + message.ToString() + ": " + exception.ToString());
+      Trace.TraceInformation("{0}: {1}: {2}", type, message, exception);
     }
 
     /// <summary>
@@ -166,7 +166,7 @@ namespace HeuristicLab.Tracing {
     /// <param name="message">The message.</param>
     /// <param name="exception">The exception.</param>
     public static void Warn(Type type, object message, Exception exception) {
-      Trace.TraceWarning(type.ToString() + ": " + message.ToString() + ": " + exception.ToString());
+      Trace.TraceWarning("{0}: {1}: {2}", type, message, exception);
     }
 
     /// <summary>
@@ -176,7 +176,7 @@ namespace HeuristicLab.Tracing {
     /// <param name="message">The message.</param>
     /// <param name="exception">The exception.</param>
     public static void Error(Type type, object message, Exception exception) {
-      Trace.TraceError(type.ToString() + ": " + message.ToString() + ": " + exception.ToString());
+      Trace.TraceError("{0}: {1}: {2}", type, message, exception);
     }
   }
 }
