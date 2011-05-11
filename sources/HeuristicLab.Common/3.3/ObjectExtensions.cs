@@ -33,10 +33,16 @@ namespace HeuristicLab.Common {
     }
 
     private static void CollectObjectGraphObjects(this object obj, HashSet<object> objects) {
-      if (obj == null || obj is Delegate || obj is EventHandler || obj.GetType().IsSubclassOfRawGeneric(typeof(EventHandler<>)) || objects.Contains(obj)) return;
-      objects.Add(obj);
-
+      if (obj == null || objects.Contains(obj)) return;
       if (obj is ValueType || obj is string) return;
+      if (obj is Delegate || obj is EventHandler) return;
+      if (obj.GetType().IsSubclassOfRawGeneric(typeof(EventHandler<>))) return;
+      if (obj.GetType().GetElementType() != null) {
+        Type elementType = obj.GetType().GetElementType();
+        if (elementType.IsPrimitive || elementType == typeof(string) || elementType == typeof(decimal)) return;
+      }
+
+      objects.Add(obj);
 
       IEnumerable enumerable = obj as IEnumerable;
       if (enumerable != null) {
