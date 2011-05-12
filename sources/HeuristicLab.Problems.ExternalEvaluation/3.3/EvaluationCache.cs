@@ -73,10 +73,10 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     #region Fields
     private LinkedList<CacheEntry> list;
     private Dictionary<CacheEntry, LinkedListNode<CacheEntry>> index;
-    private static HashSet<string> activeEvaluations = new HashSet<string>();
-    private static object cacheLock = new object();
-    private static object evaluationLock = new object();
-    private static AutoResetEvent evaluationDone = new AutoResetEvent(false);
+    private HashSet<string> activeEvaluations = new HashSet<string>();
+    private object cacheLock = new object();
+    private object evaluationLock = new object();
+    private AutoResetEvent evaluationDone = new AutoResetEvent(false);
     #endregion
 
     #region Properties
@@ -249,16 +249,19 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
           lockTaken = false;
           Monitor.Exit(evaluationLock);
           OnActiveEvalutionsChanged();
-          entry.Value = evaluate(message);
-          lock (cacheLock) {
-            index[entry] = list.AddLast(entry);
+          try {
+            entry.Value = evaluate(message);
+            lock (cacheLock) {
+              index[entry] = list.AddLast(entry);
+            }
+            Trim();
+          } finally {
+            lock (evaluationLock) {
+              activeEvaluations.Remove(entry.Key);
+              evaluationDone.Set();
+            }
+            OnActiveEvalutionsChanged();
           }
-          lock (evaluationLock) {
-            activeEvaluations.Remove(entry.Key);
-            evaluationDone.Set();
-          }
-          OnActiveEvalutionsChanged();
-          Trim();
           return entry.Value;
         }
       } finally {
