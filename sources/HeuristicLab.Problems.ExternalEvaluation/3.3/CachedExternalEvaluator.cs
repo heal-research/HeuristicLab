@@ -43,9 +43,6 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       get { return QualityParameter.ActualValue; }
       set { QualityParameter.ActualValue = value; }
     }
-    protected IEvaluationServiceClient Client {
-      get { return ClientParameter.ActualValue; }
-    }
     protected EvaluationCache Cache {
       get { return CacheParameter.ActualValue; }
       set { CacheParameter.ActualValue = value; }
@@ -70,7 +67,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
         return base.Apply();
 
       if (Quality == null) Quality = new DoubleValue(0);
-      Quality.Value = Cache.GetValue(BuildSolutionMessage(), m => Client.Evaluate(m).Quality);
+      Quality.Value = Cache.GetValue(BuildSolutionMessage(), m => EvaluateOnNextAvailableClient(m).Quality);
       if (Successor != null)
         return ExecutionContext.CreateOperation(Successor);
       else

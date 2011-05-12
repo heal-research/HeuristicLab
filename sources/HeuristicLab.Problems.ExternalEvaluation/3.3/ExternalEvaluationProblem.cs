@@ -52,8 +52,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     }
 
     #region Parameters
-    public IValueParameter<IEvaluationServiceClient> ClientParameter {
-      get { return (IValueParameter<IEvaluationServiceClient>)Parameters["Client"]; }
+    public IValueParameter<CheckedItemCollection<IEvaluationServiceClient>> ClientsParameter {
+      get { return (IValueParameter<CheckedItemCollection<IEvaluationServiceClient>>)Parameters["Clients"]; }
     }
     public IValueParameter<IExternalEvaluationProblemEvaluator> EvaluatorParameter {
       get { return (IValueParameter<IExternalEvaluationProblemEvaluator>)Parameters["Evaluator"]; }
@@ -143,7 +143,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       ExternalEvaluator evaluator = new ExternalEvaluator();
       UserDefinedSolutionCreator solutionCreator = new UserDefinedSolutionCreator();
 
-      Parameters.Add(new ValueParameter<IEvaluationServiceClient>("Client", "The client that is used to communicate with the external application.", new EvaluationServiceClient()));
+      Parameters.Add(new ValueParameter<CheckedItemCollection<IEvaluationServiceClient>>("Clients", "The clients that are used to communicate with the external application.", new CheckedItemCollection<IEvaluationServiceClient>() { new EvaluationServiceClient() }));
       Parameters.Add(new ValueParameter<IExternalEvaluationProblemEvaluator>("Evaluator", "The evaluator that collects the values to exchange.", evaluator));
       Parameters.Add(new ValueParameter<ISolutionCreator>("SolutionCreator", "An operator to create the solution components.", solutionCreator));
       Parameters.Add(new ValueParameter<BoolValue>("Maximization", "Set to false as most test functions are minimization problems.", new BoolValue(false)));
@@ -154,6 +154,21 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
 
       InitializeOperators();
       AttachEventHandlers();
+    }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (!Parameters.ContainsKey("Clients")) {
+        Parameters.Add(new ValueParameter<CheckedItemCollection<IEvaluationServiceClient>>("Clients", "The clients that are used to communicate with the external application.", new CheckedItemCollection<IEvaluationServiceClient>() { new EvaluationServiceClient() }));
+        if (Parameters.ContainsKey("Client")) {
+          var client = ((IValueParameter<IEvaluationServiceClient>)Parameters["Client"]).Value;
+          if (client != null)
+            ClientsParameter.Value = new CheckedItemCollection<IEvaluationServiceClient>() { client };
+          Parameters.Remove("Client");
+        }
+      }
+      #endregion
     }
 
     #region Events
@@ -226,7 +241,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       BestScopeSolutionAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
     }
     private void ParameterizeEvaluator() {
-      Evaluator.ClientParameter.ActualName = ClientParameter.Name;
+      Evaluator.ClientsParameter.ActualName = ClientsParameter.Name;
     }
     private void ParameterizeOperators() {
       // This is a best effort approach to wiring
