@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading;
 
 namespace HeuristicLab.Common {
   public static class ObjectExtensions {
@@ -31,29 +32,56 @@ namespace HeuristicLab.Common {
       obj.CollectObjectGraphObjects(objects);
       return objects;
     }
-
+    /// <summary>
+    /// Types not collected:
+    ///   * System.Delegate
+    ///   * System.EventHandler (+ System.EventHandler<T>)
+    ///   * Primitives (Boolean, Byte, SByte, Int16, UInt16, Int32, UInt32, Int64, UInt64, IntPtr, UIntPtr, Char, Double, Single)
+    ///   * string, decimal
+    ///   * Arrays of primitives (+ string, decimal)
+    /// Types of which the fields are not further collected:
+    ///   * System.Type
+    ///   * System.Threading.ThreadLocal<T>
+    /// </summary>
     private static void CollectObjectGraphObjects(this object obj, HashSet<object> objects) {
       if (obj == null || objects.Contains(obj)) return;
-      if (obj is ValueType || obj is string) return;
-      if (obj is Delegate || obj is EventHandler) return;
-      if (obj.GetType().IsSubclassOfRawGeneric(typeof(EventHandler<>))) return;
-      if (obj.GetType().GetElementType() != null) {
-        Type elementType = obj.GetType().GetElementType();
+      if (obj is Delegate || obj is EventHandler) return; 
+      Type type = obj.GetType();
+      if (type.IsSubclassOfRawGeneric(typeof(EventHandler<>))) return;
+      if (type.IsPrimitive || type == typeof(string) || type == typeof(decimal)) return;
+      if (type.IsArray) {
+        Type elementType = type.GetElementType();
         if (elementType.IsPrimitive || elementType == typeof(string) || elementType == typeof(decimal)) return;
       }
 
       objects.Add(obj);
 
-      IEnumerable enumerable = obj as IEnumerable;
-      if (enumerable != null) {
-        foreach (object value in enumerable) {
-          value.CollectObjectGraphObjects(objects);
+      if (typeof(Type).IsInstanceOfType(obj)) return; // avoid infinite recursion
+      if (type.IsSubclassOfRawGeneric(typeof(ThreadLocal<>))) return; // avoid stack overflow when the field `ConcurrentStack<int> s_availableIndices` grows large
+
+      // performance critical to handle dictionaries in a special way
+      var dictionary = obj as IDictionary;
+      if (dictionary != null) {
+        foreach (object value in dictionary.Keys) {
+          CollectObjectGraphObjects(value, objects);
         }
-      } else {
-        foreach (FieldInfo f in obj.GetType().GetAllFields()) {
-          f.GetValue(obj).CollectObjectGraphObjects(objects);
+        foreach (object value in dictionary.Values) {
+          CollectObjectGraphObjects(value, objects);
         }
+        return;
       }
+
+      if (type.IsArray) {
+        var array = obj as Array;
+        foreach (object value in array) {
+          CollectObjectGraphObjects(value, objects);
+        }
+        return;
+      }
+
+      foreach (FieldInfo f in type.GetAllFields()) {
+        f.GetValue(obj).CollectObjectGraphObjects(objects);
+      }      
     }
   }
 }
