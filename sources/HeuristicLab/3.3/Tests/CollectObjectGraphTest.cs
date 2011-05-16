@@ -23,9 +23,14 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using HeuristicLab.Algorithms.GeneticAlgorithm;
 using HeuristicLab.Common;
+using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.Xml;
+using HeuristicLab.Problems.TestFunctions;
+using HeuristicLab.Random;
+using HeuristicLab.SequentialEngine;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab_33.Tests {
@@ -80,6 +85,30 @@ namespace HeuristicLab_33.Tests {
         TestContext.WriteLine("{0}: {1}", pair.Key, pair.Value.Count);
       }
       TestContext.WriteLine("");
+    }
+
+    [TestMethod]
+    public void AlgorithmExecutions() {
+      var random = new MersenneTwister(0);
+      var algs = new List<IAlgorithm>();
+
+      Stopwatch sw = new Stopwatch();
+      for (int i = 0; i < 100; i++) {
+        GeneticAlgorithm ga = new GeneticAlgorithm();
+        ga.PopulationSize.Value = 5;
+        ga.MaximumGenerations.Value = 5;
+        ga.Engine = new SequentialEngine();
+        ga.Problem = new SingleObjectiveTestFunctionProblem();
+
+        sw.Start();
+        algs.Add(ga);
+
+        var cancellationTokenSource = new CancellationTokenSource();
+        ga.StartSync(cancellationTokenSource.Token);
+        sw.Stop();
+        TestContext.WriteLine("{0}: {1} ", i, sw.Elapsed);
+        sw.Reset();
+      }
     }
   }
 }

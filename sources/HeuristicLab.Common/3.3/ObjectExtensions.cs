@@ -20,9 +20,11 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Reflection;
 using System.Collections;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Reflection;
+using System.Threading;
 
 namespace HeuristicLab.Common {
   public static class ObjectExtensions {
@@ -34,43 +36,41 @@ namespace HeuristicLab.Common {
     /// <summary>
     /// Types not collected:
     ///   * System.Delegate
-    ///   * System.EventHandler (+ System.EventHandler<T>)
+    ///   * System.Reflection.Pointer
     ///   * Primitives (Boolean, Byte, SByte, Int16, UInt16, Int32, UInt32, Int64, UInt64, IntPtr, UIntPtr, Char, Double, Single)
     ///   * string, decimal
-    ///   * Arrays of primitives (+ string, decimal)
-    /// Types of which the fields are not further collected:
-    ///   * System.Type
-    ///   * System.Threading.ThreadLocal<T>
+    ///   * Arrays of types not collected
+    ///   
+    /// Dictionaries and HashSets are treated specially, because it is cheaper to iterate over their keys and values
+    /// compared to traverse their internal data structures.
     /// </summary>
     private static void CollectObjectGraphObjects(this object obj, HashSet<object> objects) {
       if (obj == null || objects.Contains(obj)) return;
-      if (obj is Delegate || obj is EventHandler) return;
-      if (obj is Pointer) return;
       Type type = obj.GetType();
-      if (type.IsSubclassOfRawGeneric(typeof(EventHandler<>))) return;
-      if (type.IsPrimitive || type == typeof(string) || type == typeof(decimal)) return;
-      if (type.HasElementType) {
-        Type elementType = type.GetElementType();
-        if (elementType.IsPrimitive || elementType == typeof(string) || elementType == typeof(decimal)) return;
-        //TODO check all types
-      }
+      if (ExcludeType(type)) return;
+      if (type.HasElementType && ExcludeType(type.GetElementType())) return;
 
       objects.Add(obj);
 
-      //if (typeof(Type).IsInstanceOfType(obj)) return; // avoid infinite recursion
-      //if (type.IsSubclassOfRawGeneric(typeof(ThreadLocal<>))) return; // avoid stack overflow when the field `ConcurrentStack<int> s_availableIndices` grows large
-
-      // performance critical to handle dictionaries in a special way
-      var dictionary = obj as IDictionary;
-      if (dictionary != null) {
+      if (type.IsSubclassOfRawGeneric(typeof(ThreadLocal<>))) return; // avoid stack overflow when the field `ConcurrentStack<int> s_availableIndices` too grows large
+      
+      // performance critical to handle dictionaries, hashsets and hashtables in a special way
+      if (type.IsSubclassOfRawGeneric(typeof(Dictionary<,>)) || 
+          type.IsSubclassOfRawGeneric(typeof(SortedDictionary<,>)) || 
+          type.IsSubclassOfRawGeneric(typeof(SortedList<,>)) ||
+          obj is SortedList || 
+          obj is OrderedDictionary || 
+          obj is ListDictionary || 
+          obj is Hashtable) {        
+        var dictionary = obj as IDictionary;
         foreach (object value in dictionary.Keys)
           CollectObjectGraphObjects(value, objects);
         foreach (object value in dictionary.Values)
           CollectObjectGraphObjects(value, objects);
         return;
-      } else if (type.IsArray) {
-        var array = obj as Array;
-        foreach (object value in array)
+      } else if (type.IsArray || type.IsSubclassOfRawGeneric(typeof(HashSet<>))) {
+        var enumerable = obj as IEnumerable;
+        foreach (var value in enumerable)
           CollectObjectGraphObjects(value, objects);
         return;
       }
@@ -78,6 +78,14 @@ namespace HeuristicLab.Common {
       foreach (FieldInfo f in type.GetAllFields()) {
         f.GetValue(obj).CollectObjectGraphObjects(objects);
       }
+    }
+
+    private static bool ExcludeType(Type type) {
+      return type.IsPrimitive ||
+             type == typeof(string) || 
+             type == typeof(decimal) ||
+             typeof(Delegate).IsAssignableFrom(type) || 
+             typeof(Pointer).IsAssignableFrom(type);
     }
   }
 }

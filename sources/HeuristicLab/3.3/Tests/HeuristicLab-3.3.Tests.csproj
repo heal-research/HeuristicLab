@@ -121,6 +121,7 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlgorithmExtensions.cs" />
     <Compile Include="CloningConstructorTest.cs" />
     <Compile Include="CollectObjectGraphTest.cs" />
     <Compile Include="ContentViewTests.cs" />
@@ -556,6 +557,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="GA_TSP.hl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="GA_SymbReg2.hl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
