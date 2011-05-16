@@ -20,10 +20,9 @@
 #endregion
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Threading;
+using System.Collections;
 
 namespace HeuristicLab.Common {
   public static class ObjectExtensions {
@@ -45,43 +44,40 @@ namespace HeuristicLab.Common {
     /// </summary>
     private static void CollectObjectGraphObjects(this object obj, HashSet<object> objects) {
       if (obj == null || objects.Contains(obj)) return;
-      if (obj is Delegate || obj is EventHandler) return; 
+      if (obj is Delegate || obj is EventHandler) return;
+      if (obj is Pointer) return;
       Type type = obj.GetType();
       if (type.IsSubclassOfRawGeneric(typeof(EventHandler<>))) return;
       if (type.IsPrimitive || type == typeof(string) || type == typeof(decimal)) return;
-      if (type.IsArray) {
+      if (type.HasElementType) {
         Type elementType = type.GetElementType();
         if (elementType.IsPrimitive || elementType == typeof(string) || elementType == typeof(decimal)) return;
+        //TODO check all types
       }
 
       objects.Add(obj);
 
-      if (typeof(Type).IsInstanceOfType(obj)) return; // avoid infinite recursion
-      if (type.IsSubclassOfRawGeneric(typeof(ThreadLocal<>))) return; // avoid stack overflow when the field `ConcurrentStack<int> s_availableIndices` grows large
+      //if (typeof(Type).IsInstanceOfType(obj)) return; // avoid infinite recursion
+      //if (type.IsSubclassOfRawGeneric(typeof(ThreadLocal<>))) return; // avoid stack overflow when the field `ConcurrentStack<int> s_availableIndices` grows large
 
       // performance critical to handle dictionaries in a special way
       var dictionary = obj as IDictionary;
       if (dictionary != null) {
-        foreach (object value in dictionary.Keys) {
+        foreach (object value in dictionary.Keys)
           CollectObjectGraphObjects(value, objects);
-        }
-        foreach (object value in dictionary.Values) {
+        foreach (object value in dictionary.Values)
           CollectObjectGraphObjects(value, objects);
-        }
         return;
-      }
-
-      if (type.IsArray) {
+      } else if (type.IsArray) {
         var array = obj as Array;
-        foreach (object value in array) {
+        foreach (object value in array)
           CollectObjectGraphObjects(value, objects);
-        }
         return;
       }
 
       foreach (FieldInfo f in type.GetAllFields()) {
         f.GetValue(obj).CollectObjectGraphObjects(objects);
-      }      
+      }
     }
   }
 }

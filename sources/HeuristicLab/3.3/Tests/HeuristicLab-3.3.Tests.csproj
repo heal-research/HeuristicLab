@@ -122,6 +122,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CloningConstructorTest.cs" />
+    <Compile Include="CollectObjectGraphTest.cs" />
     <Compile Include="ContentViewTests.cs" />
     <Compile Include="SymbolicRegressionTest.cs" />
     <Compile Include="PluginDependenciesTest.cs" />
