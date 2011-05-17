@@ -128,7 +128,12 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="app.config" />
+    <None Include="HeuristicLab.Hive.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="CustomPostBuild.cmd" />
     <None Include="CopyAssemblies.cmd" />
     <None Include="CustomPostBuildTemplate_UpdateLocalInstallation.cmd" />
