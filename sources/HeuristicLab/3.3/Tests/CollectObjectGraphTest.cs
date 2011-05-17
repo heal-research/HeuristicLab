@@ -87,6 +87,12 @@ namespace HeuristicLab_33.Tests {
       TestContext.WriteLine("");
     }
 
+    /// <summary>
+    /// Tests if performance of multiple executions of a GA stays constant (as discussed in #1424)
+    /// Tests if object collection works after multiple executions of a GA 
+    /// (for example the traversal of `ThreadLocal` objects in CollectObjectGraphObjects 
+    /// causes a StackOverflow occurs after some executions)
+    /// </summary>
     [TestMethod]
     public void AlgorithmExecutions() {
       var random = new MersenneTwister(0);
