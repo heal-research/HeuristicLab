@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private const string TargetVariableParameterName = "TargetVariable";
     private const string ClassNamesParameterName = "ClassNames";
     private const string ClassificationPenaltiesParameterName = "ClassificationPenalties";
-    private const int MaximumNumberOfClass = 100;
+    private const int MaximumNumberOfClasses = 20;
     private const int InspectedRowsToDetermineTargets = 500;
 
     #region default data
@@ -265,15 +265,18 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     private static IEnumerable<string> CheckVariablesForPossibleTargetVariables(Dataset dataset) {
+      int maxSamples = Math.Min(InspectedRowsToDetermineTargets, dataset.Rows);
       var validTargetVariables = from v in dataset.VariableNames
-                                 let DistinctValues = dataset.Rows > InspectedRowsToDetermineTargets ? dataset.GetVariableValues(v, 0, InspectedRowsToDetermineTargets).Distinct().Count()
-                                                                        : dataset.GetVariableValues(v).Distinct().Count()
-                                 where DistinctValues < MaximumNumberOfClass
+                                 let DistinctValues = dataset.GetVariableValues(v)
+                                   .Take(maxSamples)
+                                   .Distinct()
+                                   .Count()
+                                 where DistinctValues < MaximumNumberOfClasses
                                  select v;
 
       if (!validTargetVariables.Any())
-        throw new ArgumentException("Import of classification problem data was not successfull, because no target variable was found." +
-          " A target variable must have at most " + MaximumNumberOfClass + " distinct values to be applicable to classification.");
+        throw new ArgumentException("Import of classification problem data was not successful, because no target variable was found." +
+          " A target variable must have at most " + MaximumNumberOfClasses + " distinct values to be applicable to classification.");
       return validTargetVariables;
     }
 
