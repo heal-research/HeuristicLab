@@ -32,7 +32,6 @@ using HeuristicLab.MainForm.WindowsForms;
 
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
-
   [View("Variable View")]
   [Content(typeof(Variable), true)]
   public partial class VariableView : SymbolView {
@@ -137,7 +136,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         errorProvider.SetError(additiveWeightChangeSigmaTextBox, "Invalid value");
       }
     }
-
     private void multiplicativeWeightChangeSigmaTextBox_TextChanged(object sender, EventArgs e) {
       double sigma;
       if (double.TryParse(multiplicativeWeightChangeSigmaTextBox.Text, out sigma) && sigma >= 0.0) {
@@ -161,14 +159,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         variableNamesView.Content.Clear();
         RegisterVariableNamesViewContentEvents();
       } else {
-        var existingEntries = variableNamesView.Content.Select(x => x.Value);
+        var existingEntries = variableNamesView.Content.ToList();
 
         // temporarily deregister to prevent circular calling of events
         DeregisterVariableNamesViewContentEvents();
         // add additional entries
-        foreach (var variableName in Content.VariableNames.Except(existingEntries)) {
+        foreach (var variableName in Content.VariableNames.Except(existingEntries.Select(x => x.Value)))
           variableNamesView.Content.Add(new StringValue(variableName), true);
-        }
+        foreach (var oldEntry in existingEntries.Where(x => !Content.VariableNames.Contains(x.Value)))
+          variableNamesView.Content.Remove(oldEntry);
         RegisterVariableNamesViewContentEvents();
 
         weightInitializationMuTextBox.Text = Content.WeightMu.ToString();
