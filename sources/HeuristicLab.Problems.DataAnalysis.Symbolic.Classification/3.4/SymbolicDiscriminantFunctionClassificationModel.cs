@@ -144,12 +144,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
         alphaTreeNode.Value += alpha;
       } else {
         var mainBranch = startNode.GetSubtree(0);
-        var product = MakeProduct(mainBranch, beta);
         startNode.RemoveSubtree(0);
-        startNode.AddSubtree(product);
-
-        var scaledMainBranch = MakeSum(product, alpha);
-        startNode.RemoveSubtree(0);
+        var scaledMainBranch = MakeSum(MakeProduct(mainBranch, beta), alpha);
         startNode.AddSubtree(scaledMainBranch);
       }
     }
@@ -158,8 +154,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       if (alpha.IsAlmost(0.0)) {
         return treeNode;
       } else {
-        var addition = treeNode.Grammar.Symbols.OfType<Addition>().FirstOrDefault();
-        if (addition == null) addition = new Addition();
+        var addition = new Addition();
         var node = addition.CreateTreeNode();
         var alphaConst = MakeConstant(alpha);
         node.AddSubtree(treeNode);
@@ -172,8 +167,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       if (beta.IsAlmost(1.0)) {
         return treeNode;
       } else {
-        var multipliciation = treeNode.Grammar.Symbols.OfType<Multiplication>().FirstOrDefault();
-        if (multipliciation == null) multipliciation = new Multiplication();
+        var multipliciation = new Multiplication();
         var node = multipliciation.CreateTreeNode();
         var betaConst = MakeConstant(beta);
         node.AddSubtree(treeNode);
