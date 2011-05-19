@@ -84,7 +84,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     #endregion
 
-    protected DataAnalysisProblemData(DataAnalysisProblemData original, Cloner cloner) : base(original, cloner) { }
+    protected DataAnalysisProblemData(DataAnalysisProblemData original, Cloner cloner)
+      : base(original, cloner) {
+      RegisterEventHandlers();
+    }
     [StorableConstructor]
     protected DataAnalysisProblemData(bool deserializing) : base(deserializing) { }
 

@@ -104,7 +104,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     #region control event handlers
     private void variableNames_Changed(object sender, CollectionItemsChangedEventArgs<StringValue> args) {
       if (Content != null) {
+        Content.Changed -= new EventHandler(Content_Changed);
         Content.VariableNames = variableNamesView.Content.CheckedItems.Select(x => x.Value).ToList();
+        Content.Changed += new EventHandler(Content_Changed);
       }
     }
 
