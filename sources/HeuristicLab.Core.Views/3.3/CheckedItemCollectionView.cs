@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Drawing;
 using System.Windows.Forms;
 using HeuristicLab.Collections;
 using HeuristicLab.MainForm;
@@ -48,9 +49,14 @@ namespace HeuristicLab.Core.Views {
       base.DeregisterContentEvents();
     }
 
+    private Color backupColor = Color.Empty;
     protected override void SetEnabledStateOfControls() {
+      if (backupColor == Color.Empty) backupColor = base.itemsListView.BackColor;
       base.SetEnabledStateOfControls();
-      base.itemsListView.Enabled = !this.Locked;
+      if (ReadOnly || Locked)
+        base.itemsListView.BackColor = ListView.DefaultBackColor;
+      else
+        base.itemsListView.BackColor = backupColor;
     }
 
     protected override ListViewItem CreateListViewItem(T item) {
@@ -69,7 +75,8 @@ namespace HeuristicLab.Core.Views {
         var checkedItem = (T)itemsListView.Items[e.Index].Tag;
         bool check = e.NewValue == CheckState.Checked;
         if (Content.ItemChecked(checkedItem) != check) {
-          Content.SetItemCheckedState(checkedItem, check);
+          if (!ReadOnly && !Locked) Content.SetItemCheckedState(checkedItem, check);
+          else e.NewValue = e.CurrentValue;
         }
       }
     }

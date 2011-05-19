@@ -20,11 +20,11 @@
 #endregion
 
 using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
-using System.ComponentModel;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
   [View("Symbol View")]
@@ -90,7 +90,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       double freq;
       if (double.TryParse(initialFrequencyTextBox.Text, out freq) && freq >= 0.0) {
         Content.InitialFrequency = freq;
-      } 
+      }
     }
     #endregion
 

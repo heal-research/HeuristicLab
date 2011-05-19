@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -37,10 +36,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     private string functionName;
     public string FunctionName {
       get { return functionName; }
-      set {
-        if (value == null) throw new ArgumentNullException();
-        functionName = value;
-      }
     }
 
     [StorableConstructor]
@@ -52,7 +47,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
     public InvokeFunction(string functionName)
       : base("Invoke: " + functionName, InvokeFunction.InvokeFunctionDescription) {
-      this.FunctionName = functionName;
+      this.functionName = functionName;
     }
 
     public override ISymbolicExpressionTreeNode CreateTreeNode() {

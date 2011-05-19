@@ -74,7 +74,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       RecalculateResults();
     }
 
-    private new void RecalculateResults() {
+    private void RecalculateResults() {
       ModelLength = Model.SymbolicExpressionTree.Length;
       ModelDepth = Model.SymbolicExpressionTree.Depth;
     }

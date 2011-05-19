@@ -20,6 +20,7 @@
 #endregion
 
 using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
@@ -93,8 +94,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         alphaTreeNode.Value += alpha;
       } else {
         var mainBranch = startNode.GetSubtree(0);
+        var product = MakeProduct(mainBranch, beta);
         startNode.RemoveSubtree(0);
-        var scaledMainBranch = MakeSum(MakeProduct(beta, mainBranch), alpha);
+        startNode.AddSubtree(product);
+
+        var scaledMainBranch = MakeSum(product, alpha);
+        startNode.RemoveSubtree(0);
         startNode.AddSubtree(scaledMainBranch);
       }
     }
@@ -103,7 +108,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       if (alpha.IsAlmost(0.0)) {
         return treeNode;
       } else {
-        var node = (new Addition()).CreateTreeNode();
+        var addition = treeNode.Grammar.Symbols.OfType<Addition>().FirstOrDefault();
+        if (addition == null) addition = new Addition();
+        var node = addition.CreateTreeNode();
         var alphaConst = MakeConstant(alpha);
         node.AddSubtree(treeNode);
         node.AddSubtree(alphaConst);
@@ -111,11 +118,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       }
     }
 
-    private static ISymbolicExpressionTreeNode MakeProduct(double beta, ISymbolicExpressionTreeNode treeNode) {
+    private static ISymbolicExpressionTreeNode MakeProduct(ISymbolicExpressionTreeNode treeNode, double beta) {
       if (beta.IsAlmost(1.0)) {
         return treeNode;
       } else {
-        var node = (new Multiplication()).CreateTreeNode();
+        var multipliciation = treeNode.Grammar.Symbols.OfType<Multiplication>().FirstOrDefault();
+        if (multipliciation == null) multipliciation = new Multiplication();
+        var node = multipliciation.CreateTreeNode();
         var betaConst = MakeConstant(beta);
         node.AddSubtree(treeNode);
         node.AddSubtree(betaConst);

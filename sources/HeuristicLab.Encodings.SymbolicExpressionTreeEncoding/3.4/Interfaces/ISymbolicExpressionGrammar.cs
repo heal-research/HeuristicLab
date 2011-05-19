@@ -20,8 +20,10 @@
 #endregion
 
 
+using System;
+using HeuristicLab.Core;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
-  public interface ISymbolicExpressionGrammar : ISymbolicExpressionGrammarBase {
+  public interface ISymbolicExpressionGrammar : ISymbolicExpressionGrammarBase, IStatefulItem {
     ISymbol ProgramRootSymbol { get; }
     ISymbol StartSymbol { get; }
 
@@ -29,5 +31,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     int MaximumFunctionDefinitions { get; set; }
     int MinimumFunctionArguments { get; set; }
     int MaximumFunctionArguments { get; set; }
+
+    bool ReadOnly { get; set; }
+    event EventHandler ReadOnlyChanged;
   }
 }

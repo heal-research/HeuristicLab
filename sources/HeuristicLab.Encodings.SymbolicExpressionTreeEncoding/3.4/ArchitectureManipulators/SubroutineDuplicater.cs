@@ -82,7 +82,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
           subtree.Grammar.AddSymbol(invokeSymbol);
           subtree.Grammar.SetSubtreeCount(invokeSymbol, duplicatedDefunBranch.NumberOfArguments, duplicatedDefunBranch.NumberOfArguments);
 
-          foreach (Symbol symbol in subtree.Grammar.Symbols) {
+          foreach (ISymbol symbol in subtree.Grammar.Symbols) {
             if (subtree.Grammar.IsAllowedChildSymbol(symbol, matchingInvokeSymbol))
               subtree.Grammar.AddAllowedChildSymbol(symbol, invokeSymbol);
             else {
@@ -92,11 +92,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
             }
           }
 
-          foreach (Symbol symbol in subtree.Grammar.GetAllowedChildSymbols(matchingInvokeSymbol))
+          foreach (ISymbol symbol in subtree.Grammar.GetAllowedChildSymbols(matchingInvokeSymbol))
             if (symbol != invokeSymbol) //avoid duplicate entry invokesymbol / invokesymbol
               subtree.Grammar.AddAllowedChildSymbol(invokeSymbol, symbol);
           for (int i = 0; i < subtree.Grammar.GetMaximumSubtreeCount(matchingInvokeSymbol); i++) {
-            foreach (Symbol symbol in subtree.Grammar.GetAllowedChildSymbols(matchingInvokeSymbol, i).Except(subtree.Grammar.GetAllowedChildSymbols(matchingInvokeSymbol)))
+            foreach (ISymbol symbol in subtree.Grammar.GetAllowedChildSymbols(matchingInvokeSymbol, i).Except(subtree.Grammar.GetAllowedChildSymbols(matchingInvokeSymbol)))
               subtree.Grammar.AddAllowedChildSymbol(invokeSymbol, symbol, i);
           }
         }

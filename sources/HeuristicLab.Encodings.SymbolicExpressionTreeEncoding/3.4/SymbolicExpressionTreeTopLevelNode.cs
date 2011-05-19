@@ -41,7 +41,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       grammar = cloner.Clone(original.Grammar);
     }
     public SymbolicExpressionTreeTopLevelNode() : base() { }
-    public SymbolicExpressionTreeTopLevelNode(Symbol symbol) : base(symbol) { }
+    public SymbolicExpressionTreeTopLevelNode(ISymbol symbol) : base(symbol) { }
 
 
     public override IDeepCloneable Clone(Cloner cloner) {

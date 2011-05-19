@@ -19,14 +19,27 @@
  */
 #endregion
 
-using System.Linq;
+using System;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableClass]
   public abstract class SymbolicExpressionGrammar : SymbolicExpressionGrammarBase, ISymbolicExpressionGrammar {
     #region fields & properties
+    [Storable(DefaultValue = false)]
+    private bool readOnly;
+    public bool ReadOnly {
+      get { return readOnly; }
+      set {
+        if (readOnly != value) {
+          readOnly = value;
+          OnReadOnlyChanged();
+        }
+      }
+    }
+
     [Storable]
     private int minimumFunctionDefinitions;
     public int MinimumFunctionDefinitions {
@@ -101,11 +114,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     protected SymbolicExpressionGrammar(bool deserializing) : base(deserializing) { }
     protected SymbolicExpressionGrammar(SymbolicExpressionGrammar original, Cloner cloner)
       : base(original, cloner) {
-      programRootSymbol = (ProgramRootSymbol)cloner.Clone(original.programRootSymbol);
-      startSymbol = (StartSymbol)cloner.Clone(original.StartSymbol);
-      defunSymbol = (Defun)cloner.Clone(original.defunSymbol);
-      symbols = original.symbols
-        .ToDictionary(x => x.Key, y => (ISymbol)cloner.Clone(y.Value));
+      programRootSymbol = cloner.Clone(original.programRootSymbol);
+      startSymbol = cloner.Clone(original.StartSymbol);
+      defunSymbol = cloner.Clone(original.defunSymbol);
+
       maximumFunctionArguments = original.maximumFunctionArguments;
       minimumFunctionArguments = original.minimumFunctionArguments;
       maximumFunctionDefinitions = original.maximumFunctionDefinitions;
@@ -139,5 +151,19 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         AddAllowedChildSymbol(programRootSymbol, defunSymbol, argumentIndex);
       }
     }
+
+    public event EventHandler ReadOnlyChanged;
+    protected virtual void OnReadOnlyChanged() {
+      var handler = ReadOnlyChanged;
+      if (handler != null)
+        handler(this, EventArgs.Empty);
+    }
+
+    #region IStatefulItem
+    void IStatefulItem.InitializeState() { }
+    void IStatefulItem.ClearState() {
+      ReadOnly = false;
+    }
+    #endregion
   }
 }

@@ -22,13 +22,13 @@
 using System;
 using System.Linq;
 using System.Windows.Forms;
+using HeuristicLab.Collections;
+using HeuristicLab.Core;
+using HeuristicLab.Core.Views;
+using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
-using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Core.Views;
-using HeuristicLab.Collections;
 
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
@@ -80,6 +80,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
+      variableNamesView.Content.Clear();
       UpdateControl();
     }
 
@@ -161,7 +162,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         RegisterVariableNamesViewContentEvents();
       } else {
         var existingEntries = variableNamesView.Content.Select(x => x.Value);
-        
+
         // temporarily deregister to prevent circular calling of events
         DeregisterVariableNamesViewContentEvents();
         // add additional entries

@@ -38,10 +38,30 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       set { base.Content = value; }
     }
 
+    public override bool ReadOnly {
+      get {
+        if ((Content != null) && Content.ReadOnly) return true;
+        return base.ReadOnly;
+      }
+      set {
+        if ((Content != null) && Content.ReadOnly) base.ReadOnly = true;
+        else base.ReadOnly = value;
+      }
+    }
+
     public SymbolicExpressionGrammarView() {
       InitializeComponent();
       symbols = new CheckedItemList<ISymbol>();
       symbols.CheckedItemsChanged += new CollectionItemsChangedEventHandler<IndexedItem<ISymbol>>(symbols_CheckedItemsChanged);
+    }
+
+    protected override void RegisterContentEvents() {
+      base.RegisterContentEvents();
+      Content.ReadOnlyChanged += new EventHandler(Content_ReadOnlyChanged);
+    }
+    protected override void DeregisterContentEvents() {
+      base.DeregisterContentEvents();
+      Content.ReadOnlyChanged -= new EventHandler(Content_ReadOnlyChanged);
     }
 
     protected override void OnContentChanged() {
@@ -49,10 +69,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       UpdateControl();
     }
 
-    protected override void SetEnabledStateOfControls() {
-      base.SetEnabledStateOfControls();
-      checkedItemListView.Enabled = Content != null;
-      checkedItemListView.ReadOnly = ReadOnly;
+    private void Content_ReadOnlyChanged(object sender, EventArgs e) {
+      ReadOnly = Content.ReadOnly;
     }
 
     #region content event handlers
@@ -68,7 +86,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
         checkedItemListView.Content = symbols.AsReadOnly();
       } else {
         ClearSymbols();
-        foreach (Symbol symbol in Content.Symbols) {
+        foreach (ISymbol symbol in Content.Symbols) {
           if (!(symbol is IReadOnlySymbol)) {
             symbol.Changed += new EventHandler(symbol_Changed);
             symbols.Add(symbol, symbol.InitialFrequency > 0.0);

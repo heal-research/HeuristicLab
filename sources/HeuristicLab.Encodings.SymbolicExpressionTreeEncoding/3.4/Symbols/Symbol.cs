@@ -42,7 +42,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       }
     }
     public override bool CanChangeName {
-      get { return false; }
+      get { return !(this is IReadOnlySymbol); }
     }
     public override bool CanChangeDescription {
       get { return false; }
@@ -55,16 +55,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       : base(original, cloner) {
       initialFrequency = original.initialFrequency;
     }
-    protected Symbol()
-      : base() {
-      initialFrequency = 1.0;
-    }
 
     protected Symbol(string name, string description)
       : base(name, description) {
       initialFrequency = 1.0;
     }
-
 
     public virtual ISymbolicExpressionTreeNode CreateTreeNode() {
       return new SymbolicExpressionTreeNode(this);

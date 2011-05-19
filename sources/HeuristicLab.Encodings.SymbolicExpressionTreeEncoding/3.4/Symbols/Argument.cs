@@ -37,10 +37,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       get { return argumentIndex; }
     }
 
-    public override bool CanChangeDescription {
-      get { return false; }
-    }
-
     [StorableConstructor]
     private Argument(bool deserializing) : base(deserializing) { }
     private Argument(Argument original, Cloner cloner)

@@ -44,7 +44,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
     protected SymbolicExpressionTreeTerminalNode() : base() { }
 
-    protected SymbolicExpressionTreeTerminalNode(Symbol symbol)
+    protected SymbolicExpressionTreeTerminalNode(ISymbol symbol)
       : base() {
       // symbols are reused
       this.Symbol = symbol;
