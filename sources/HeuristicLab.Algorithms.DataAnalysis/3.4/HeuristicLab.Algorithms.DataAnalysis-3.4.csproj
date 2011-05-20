@@ -111,6 +111,8 @@
     </Compile>
     <Compile Include="HeuristicLabAlgorithmsDataAnalysisPlugin.cs" />
     <Compile Include="FixedDataAnalysisAlgorithm.cs" />
+    <Compile Include="Interfaces\IRandomForestRegressionModel.cs" />
+    <Compile Include="Interfaces\IRandomForestRegressionSolution.cs" />
     <Compile Include="Interfaces\ISupportVectorMachineModel.cs" />
     <Compile Include="Interfaces\ISupportVectorMachineSolution.cs" />
     <Compile Include="Interfaces\IDataAnalysisAlgorithm.cs" />
@@ -126,6 +128,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RandomForest\RandomForestRegression.cs" />
+    <Compile Include="RandomForest\RandomForestRegressionSolution.cs" />
+    <Compile Include="RandomForest\RandomForestRegressionModel.cs" />
     <Compile Include="SupportVectorMachine\SupportVectorClassification.cs" />
     <Compile Include="SupportVectorMachine\SupportVectorClassificationSolution.cs" />
     <Compile Include="SupportVectorMachine\SupportVectorMachineModel.cs" />

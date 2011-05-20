@@ -34,7 +34,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// k-Means clustering algorithm data analysis algorithm.
   /// </summary>
-  [Item("k-Means", "The k-Means clustering algorithm.")]
+  [Item("k-Means", "The k-Means clustering algorithm (wrapper for ALGLIB).")]
   [Creatable("Data Analysis")]
   [StorableClass]
   public sealed class KMeansClustering : FixedDataAnalysisAlgorithm<IClusteringProblem> {

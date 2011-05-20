@@ -35,7 +35,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Linear discriminant analysis classification algorithm.
   /// </summary>
-  [Item("Linear Discriminant Analysis", "Linear discriminant analysis classification algorithm.")]
+  [Item("Linear Discriminant Analysis", "Linear discriminant analysis classification algorithm (wrapper for ALGLIB).")]
   [Creatable("Data Analysis")]
   [StorableClass]
   public sealed class LinearDiscriminantAnalysis : FixedDataAnalysisAlgorithm<IClassificationProblem> {

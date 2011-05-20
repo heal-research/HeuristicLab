@@ -34,7 +34,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Support vector machine regression data analysis algorithm.
   /// </summary>
-  [Item("Support Vector Regression", "Support vector machine regression data analysis algorithm.")]
+  [Item("Support Vector Regression", "Support vector machine regression data analysis algorithm (wrapper for libSVM).")]
   [Creatable("Data Analysis")]
   [StorableClass]
   public sealed class SupportVectorRegression : FixedDataAnalysisAlgorithm<IRegressionProblem> {
