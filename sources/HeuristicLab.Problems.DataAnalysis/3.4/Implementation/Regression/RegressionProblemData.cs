@@ -32,7 +32,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
   [Item("RegressionProblemData", "Represents an item containing all data defining a regression problem.")]
-  public sealed class RegressionProblemData : DataAnalysisProblemData, IRegressionProblemData {
+  public class RegressionProblemData : DataAnalysisProblemData, IRegressionProblemData {
     private const string TargetVariableParameterName = "TargetVariable";
 
     #region default data
@@ -84,14 +84,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     [StorableConstructor]
-    private RegressionProblemData(bool deserializing) : base(deserializing) { }
+    protected RegressionProblemData(bool deserializing) : base(deserializing) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       RegisterParameterEvents();
     }
 
 
-    private RegressionProblemData(RegressionProblemData original, Cloner cloner)
+    protected RegressionProblemData(RegressionProblemData original, Cloner cloner)
       : base(original, cloner) {
       RegisterParameterEvents();
     }

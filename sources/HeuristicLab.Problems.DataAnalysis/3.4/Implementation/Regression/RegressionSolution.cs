@@ -54,42 +54,42 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public double TrainingMeanSquaredError {
       get { return ((DoubleValue)this[TrainingMeanSquaredErrorResultName].Value).Value; }
-      protected set { ((DoubleValue)this[TrainingMeanSquaredErrorResultName].Value).Value = value; }
+      private set { ((DoubleValue)this[TrainingMeanSquaredErrorResultName].Value).Value = value; }
     }
 
     public double TestMeanSquaredError {
       get { return ((DoubleValue)this[TestMeanSquaredErrorResultName].Value).Value; }
-      protected set { ((DoubleValue)this[TestMeanSquaredErrorResultName].Value).Value = value; }
+      private set { ((DoubleValue)this[TestMeanSquaredErrorResultName].Value).Value = value; }
     }
 
     public double TrainingRSquared {
       get { return ((DoubleValue)this[TrainingSquaredCorrelationResultName].Value).Value; }
-      protected set { ((DoubleValue)this[TrainingSquaredCorrelationResultName].Value).Value = value; }
+      private set { ((DoubleValue)this[TrainingSquaredCorrelationResultName].Value).Value = value; }
     }
 
     public double TestRSquared {
       get { return ((DoubleValue)this[TestSquaredCorrelationResultName].Value).Value; }
-      protected set { ((DoubleValue)this[TestSquaredCorrelationResultName].Value).Value = value; }
+      private set { ((DoubleValue)this[TestSquaredCorrelationResultName].Value).Value = value; }
     }
 
     public double TrainingRelativeError {
       get { return ((DoubleValue)this[TrainingRelativeErrorResultName].Value).Value; }
-      protected set { ((DoubleValue)this[TrainingRelativeErrorResultName].Value).Value = value; }
+      private set { ((DoubleValue)this[TrainingRelativeErrorResultName].Value).Value = value; }
     }
 
     public double TestRelativeError {
       get { return ((DoubleValue)this[TestRelativeErrorResultName].Value).Value; }
-      protected set { ((DoubleValue)this[TestRelativeErrorResultName].Value).Value = value; }
+      private set { ((DoubleValue)this[TestRelativeErrorResultName].Value).Value = value; }
     }
 
     public double TrainingNormalizedMeanSquaredError {
       get { return ((DoubleValue)this[TrainingNormalizedMeanSquaredErrorResultName].Value).Value; }
-      protected set { ((DoubleValue)this[TrainingNormalizedMeanSquaredErrorResultName].Value).Value = value; }
+      private set { ((DoubleValue)this[TrainingNormalizedMeanSquaredErrorResultName].Value).Value = value; }
     }
 
     public double TestNormalizedMeanSquaredError {
       get { return ((DoubleValue)this[TestNormalizedMeanSquaredErrorResultName].Value).Value; }
-      protected set { ((DoubleValue)this[TestNormalizedMeanSquaredErrorResultName].Value).Value = value; }
+      private set { ((DoubleValue)this[TestNormalizedMeanSquaredErrorResultName].Value).Value = value; }
     }
 
 
@@ -125,7 +125,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       RecalculateResults();
     }
 
-    private void RecalculateResults() {
+    protected void RecalculateResults() {
       double[] estimatedTrainingValues = EstimatedTrainingValues.ToArray(); // cache values
       IEnumerable<double> originalTrainingValues = ProblemData.Dataset.GetEnumeratedVariableValues(ProblemData.TargetVariable, ProblemData.TrainingIndizes);
       double[] estimatedTestValues = EstimatedTestValues.ToArray(); // cache values

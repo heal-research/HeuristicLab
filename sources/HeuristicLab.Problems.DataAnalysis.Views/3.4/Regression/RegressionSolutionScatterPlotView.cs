@@ -138,8 +138,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           this.chart.Series[TEST_SERIES].Points.DataBindXY(Content.EstimatedTestValues.ToArray(), "",
            dataset.GetEnumeratedVariableValues(targetVariableName, Content.ProblemData.TestIndizes).ToArray(), "");
 
-        double max = Math.Max(Content.EstimatedValues.Max(), dataset.GetVariableValues(targetVariableName).Max());
-        double min = Math.Min(Content.EstimatedValues.Min(), dataset.GetVariableValues(targetVariableName).Min());
+        double max = Content.EstimatedTrainingValues.Concat(Content.EstimatedTestValues.Concat(Content.EstimatedValues.Concat(dataset.GetVariableValues(targetVariableName)))).Max();
+        double min = Content.EstimatedTrainingValues.Concat(Content.EstimatedTestValues.Concat(Content.EstimatedValues.Concat(dataset.GetVariableValues(targetVariableName)))).Min();
 
         max = max + 0.2 * Math.Abs(max);
         min = min - 0.2 * Math.Abs(min);

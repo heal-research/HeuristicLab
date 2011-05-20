@@ -108,23 +108,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DoubleLimit.cs" />
-    <Compile Include="Implementation\Classification\ClassificationEnsembleModel.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Implementation\Classification\ClassificationProblemData.cs" />
     <Compile Include="Implementation\Classification\ClassificationProblem.cs" />
     <Compile Include="Implementation\Classification\ClassificationSolution.cs" />
     <Compile Include="Implementation\Clustering\ClusteringProblem.cs" />
     <Compile Include="Implementation\Clustering\ClusteringProblemData.cs" />
     <Compile Include="Implementation\Clustering\ClusteringSolution.cs" />
+    <Compile Include="Implementation\Regression\RegressionEnsembleProblemData.cs" />
     <Compile Include="Implementation\Regression\RegressionEnsembleModel.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Implementation\Regression\RegressionEnsembleSolution.cs" />
-    <Compile Include="Interfaces\Classification\IClassificationEnsembleModel.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Interfaces\Classification\IClassificationEnsembleSolution.cs" />
     <Compile Include="Interfaces\Classification\IDiscriminantFunctionThresholdCalculator.cs" />
     <Compile Include="Interfaces\Regression\IRegressionEnsembleModel.cs">
       <SubType>Code</SubType>

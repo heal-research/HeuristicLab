@@ -31,8 +31,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Line Chart")]
   [Content(typeof(IRegressionSolution))]
   public partial class RegressionSolutionLineChartView : ItemView, IRegressionSolutionEvaluationView {
-    private const string TARGETVARIABLE_SERIES_NAME = "TargetVariable";
-    private const string ESTIMATEDVALUES_SERIES_NAME = "EstimatedValues";
+    private const string TARGETVARIABLE_SERIES_NAME = "Target Variable";
+    private const string ESTIMATEDVALUES_TRAINING_SERIES_NAME = "Estimated Values (training)";
+    private const string ESTIMATEDVALUES_TEST_SERIES_NAME = "Estimated Values (test)";
 
     public new IRegressionSolution Content {
       get { return (IRegressionSolution)base.Content; }
@@ -46,6 +47,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.chart.CustomizeAllChartAreas();
       this.chart.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
       this.chart.ChartAreas[0].AxisX.ScaleView.Zoomable = true;
+      this.chart.ChartAreas[0].AxisX.IsStartedFromZero = true;
       this.chart.ChartAreas[0].CursorX.Interval = 1;
 
       this.chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = true;
@@ -56,23 +58,35 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private void RedrawChart() {
       this.chart.Series.Clear();
       if (Content != null) {
+        this.chart.ChartAreas[0].AxisX.Minimum = 0;
+        this.chart.ChartAreas[0].AxisX.Maximum = Content.ProblemData.Dataset.Rows - 1;
+
         this.chart.Series.Add(TARGETVARIABLE_SERIES_NAME);
         this.chart.Series[TARGETVARIABLE_SERIES_NAME].LegendText = Content.ProblemData.TargetVariable;
         this.chart.Series[TARGETVARIABLE_SERIES_NAME].ChartType = SeriesChartType.FastLine;
-        this.chart.Series[TARGETVARIABLE_SERIES_NAME].Points.DataBindY(Content.ProblemData.Dataset.GetVariableValues(Content.ProblemData.TargetVariable));
-        this.UpdateStripLines();
+        this.chart.Series[TARGETVARIABLE_SERIES_NAME].Points.DataBindXY(Enumerable.Range(0, Content.ProblemData.Dataset.Rows).ToArray(),
+          Content.ProblemData.Dataset.GetVariableValues(Content.ProblemData.TargetVariable));
 
-        this.chart.Series.Add(ESTIMATEDVALUES_SERIES_NAME);
-        this.chart.Series[ESTIMATEDVALUES_SERIES_NAME].LegendText = Content.ItemName;
-        this.chart.Series[ESTIMATEDVALUES_SERIES_NAME].ChartType = SeriesChartType.FastLine;
-        this.chart.Series[ESTIMATEDVALUES_SERIES_NAME].Points.DataBindY(Content.EstimatedValues.ToArray());
-        this.chart.Series[ESTIMATEDVALUES_SERIES_NAME].Tag = Content;
+        this.chart.Series.Add(ESTIMATEDVALUES_TRAINING_SERIES_NAME);
+        this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].LegendText = ESTIMATEDVALUES_TRAINING_SERIES_NAME;
+        this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].ChartType = SeriesChartType.FastLine;
+        this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].Points.DataBindXY(Content.ProblemData.TrainingIndizes.ToArray(),
+          Content.EstimatedTrainingValues.ToArray());
+        this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].Tag = Content;
+
+        this.chart.Series.Add(ESTIMATEDVALUES_TEST_SERIES_NAME);
+        this.chart.Series[ESTIMATEDVALUES_TEST_SERIES_NAME].LegendText = ESTIMATEDVALUES_TEST_SERIES_NAME;
+        this.chart.Series[ESTIMATEDVALUES_TEST_SERIES_NAME].ChartType = SeriesChartType.FastLine;
+        this.chart.Series[ESTIMATEDVALUES_TEST_SERIES_NAME].Points.DataBindXY(Content.ProblemData.TestIndizes.ToArray(),
+          Content.EstimatedTestValues.ToArray());
+        this.chart.Series[ESTIMATEDVALUES_TEST_SERIES_NAME].Tag = Content;
         UpdateCursorInterval();
+        this.UpdateStripLines();
       }
     }
 
     private void UpdateCursorInterval() {
-      var estimatedValues = this.chart.Series[ESTIMATEDVALUES_SERIES_NAME].Points.Select(x => x.YValues[0]).DefaultIfEmpty(1.0);
+      var estimatedValues = this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].Points.Select(x => x.YValues[0]).DefaultIfEmpty(1.0);
       var targetValues = this.chart.Series[TARGETVARIABLE_SERIES_NAME].Points.Select(x => x.YValues[0]).DefaultIfEmpty(1.0);
       double estimatedValuesRange = estimatedValues.Max() - estimatedValues.Min();
       double targetValuesRange = targetValues.Max() - targetValues.Min();
@@ -111,13 +125,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       if (InvokeRequired) Invoke((Action)UpdateEstimatedValuesLineChart);
       else {
         if (this.chart.Series.Count > 0) {
-          Series s = this.chart.Series.SingleOrDefault(x => x.Tag == Content);
+          Series s = this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME];
           if (s != null) {
-            s.Points.DataBindY(Content.EstimatedValues.ToArray());
-            s.LegendText = Content.ItemName;
-            this.UpdateStripLines();
-            UpdateCursorInterval();
+            s.Points.DataBindXY(Content.ProblemData.TrainingIndizes.ToArray(), Content.EstimatedTrainingValues.ToArray());
+            s.LegendText = ESTIMATEDVALUES_TRAINING_SERIES_NAME;
           }
+          s = this.chart.Series[ESTIMATEDVALUES_TEST_SERIES_NAME];
+          if (s != null) {
+            s.Points.DataBindXY(Content.ProblemData.TestIndizes.ToArray(), Content.EstimatedTestValues.ToArray());
+            s.LegendText = ESTIMATEDVALUES_TEST_SERIES_NAME;
+          }
+          this.UpdateStripLines();
+          UpdateCursorInterval();
         }
       }
     }
@@ -135,20 +154,47 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     private void UpdateStripLines() {
       this.chart.ChartAreas[0].AxisX.StripLines.Clear();
-      this.CreateAndAddStripLine("Training", Color.FromArgb(20, Color.Green),
-        Content.ProblemData.TrainingPartition.Start,
-        Content.ProblemData.TrainingPartition.End);
-      this.CreateAndAddStripLine("Test", Color.FromArgb(20, Color.Red),
-        Content.ProblemData.TestPartition.Start,
-        Content.ProblemData.TestPartition.End);
+
+      int[] attr = new int[Content.ProblemData.Dataset.Rows + 1]; // add a virtual last row that is again empty to simplify loop further down
+      foreach (var row in Content.ProblemData.TrainingIndizes) {
+        attr[row] += 1;
+      }
+      foreach (var row in Content.ProblemData.TestIndizes) {
+        attr[row] += 2;
+      }
+      int start = 0;
+      int curAttr = attr[start];
+      for (int row = 0; row < attr.Length; row++) {
+        if (attr[row] != curAttr) {
+          switch (curAttr) {
+            case 0: break;
+            case 1:
+              this.CreateAndAddStripLine("Training", start, row, Color.FromArgb(40, Color.Green), Color.Transparent);
+              break;
+            case 2:
+              this.CreateAndAddStripLine("Test", start, row, Color.FromArgb(40, Color.Red), Color.Transparent);
+              break;
+            case 3:
+              this.CreateAndAddStripLine("Training and Test", start, row, Color.FromArgb(40, Color.Green), Color.FromArgb(40, Color.Red), ChartHatchStyle.WideUpwardDiagonal);
+              break;
+            default:
+              // should not happen
+              break;
+          }
+          curAttr = attr[row];
+          start = row;
+        }
+      }
     }
 
-    private void CreateAndAddStripLine(string title, Color c, int start, int end) {
+    private void CreateAndAddStripLine(string title, int start, int end, Color color, Color secondColor, ChartHatchStyle hatchStyle = ChartHatchStyle.None) {
       StripLine stripLine = new StripLine();
-      stripLine.BackColor = c;
+      stripLine.BackColor = color;
+      stripLine.BackSecondaryColor = secondColor;
+      stripLine.BackHatchStyle = hatchStyle;
       stripLine.Text = title;
       stripLine.Font = new Font("Times New Roman", 12, FontStyle.Bold);
-      stripLine.StripWidth = end - start;
+      stripLine.StripWidth = end - start - 1; // strip range is [start .. end] inclusive, but we evaluate [start..end[ (end is exclusive)
       stripLine.IntervalOffset = start;
       this.chart.ChartAreas[0].AxisX.StripLines.Add(stripLine);
     }

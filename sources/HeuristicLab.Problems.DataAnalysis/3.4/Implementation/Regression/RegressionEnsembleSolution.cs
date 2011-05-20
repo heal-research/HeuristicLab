@@ -50,7 +50,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       : base(original, cloner) {
     }
     public RegressionEnsembleSolution(IEnumerable<IRegressionModel> models, IRegressionProblemData problemData)
-      : base(new RegressionEnsembleModel(models), problemData) {
+      : base(new RegressionEnsembleModel(models), new RegressionEnsembleProblemData(problemData)) {
       trainingPartitions = new Dictionary<IRegressionModel, IntRange>();
       testPartitions = new Dictionary<IRegressionModel, IntRange>();
       foreach (var model in models) {
@@ -61,7 +61,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public RegressionEnsembleSolution(IEnumerable<IRegressionModel> models, IRegressionProblemData problemData, IEnumerable<IntRange> trainingPartitions, IEnumerable<IntRange> testPartitions)
-      : base(new RegressionEnsembleModel(models), problemData) {
+      : base(new RegressionEnsembleModel(models), new RegressionEnsembleProblemData(problemData)) {
       this.trainingPartitions = new Dictionary<IRegressionModel, IntRange>();
       this.testPartitions = new Dictionary<IRegressionModel, IntRange>();
       var modelEnumerator = models.GetEnumerator();
@@ -74,38 +74,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       if (modelEnumerator.MoveNext() | trainingPartitionEnumerator.MoveNext() | testPartitionEnumerator.MoveNext()) {
         throw new ArgumentException();
       }
-
       RecalculateResults();
-    }
-
-    private void RecalculateResults() {
-      double[] estimatedTrainingValues = EstimatedTrainingValues.ToArray(); // cache values
-      var trainingIndizes = Enumerable.Range(ProblemData.TrainingPartition.Start,
-        ProblemData.TrainingPartition.End - ProblemData.TrainingPartition.Start);
-      IEnumerable<double> originalTrainingValues = ProblemData.Dataset.GetEnumeratedVariableValues(ProblemData.TargetVariable, trainingIndizes);
-      double[] estimatedTestValues = EstimatedTestValues.ToArray(); // cache values
-      IEnumerable<double> originalTestValues = ProblemData.Dataset.GetEnumeratedVariableValues(ProblemData.TargetVariable, ProblemData.TestIndizes);
-
-      OnlineCalculatorError errorState;
-      double trainingMSE = OnlineMeanSquaredErrorCalculator.Calculate(estimatedTrainingValues, originalTrainingValues, out errorState);
-      TrainingMeanSquaredError = errorState == OnlineCalculatorError.None ? trainingMSE : double.NaN;
-      double testMSE = OnlineMeanSquaredErrorCalculator.Calculate(estimatedTestValues, originalTestValues, out errorState);
-      TestMeanSquaredError = errorState == OnlineCalculatorError.None ? testMSE : double.NaN;
-
-      double trainingR2 = OnlinePearsonsRSquaredCalculator.Calculate(estimatedTrainingValues, originalTrainingValues, out errorState);
-      TrainingRSquared = errorState == OnlineCalculatorError.None ? trainingR2 : double.NaN;
-      double testR2 = OnlinePearsonsRSquaredCalculator.Calculate(estimatedTestValues, originalTestValues, out errorState);
-      TestRSquared = errorState == OnlineCalculatorError.None ? testR2 : double.NaN;
-
-      double trainingRelError = OnlineMeanAbsolutePercentageErrorCalculator.Calculate(estimatedTrainingValues, originalTrainingValues, out errorState);
-      TrainingRelativeError = errorState == OnlineCalculatorError.None ? trainingRelError : double.NaN;
-      double testRelError = OnlineMeanAbsolutePercentageErrorCalculator.Calculate(estimatedTestValues, originalTestValues, out errorState);
-      TestRelativeError = errorState == OnlineCalculatorError.None ? testRelError : double.NaN;
-
-      double trainingNMSE = OnlineNormalizedMeanSquaredErrorCalculator.Calculate(estimatedTrainingValues, originalTrainingValues, out errorState);
-      TrainingNormalizedMeanSquaredError = errorState == OnlineCalculatorError.None ? trainingNMSE : double.NaN;
-      double testNMSE = OnlineNormalizedMeanSquaredErrorCalculator.Calculate(estimatedTestValues, originalTestValues, out errorState);
-      TestNormalizedMeanSquaredError = errorState == OnlineCalculatorError.None ? testNMSE : double.NaN;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -114,11 +83,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public override IEnumerable<double> EstimatedTrainingValues {
       get {
-        var rows = Enumerable.Range(ProblemData.TrainingPartition.Start, ProblemData.TrainingPartition.End - ProblemData.TrainingPartition.Start);
+        var rows = ProblemData.TrainingIndizes;
         var estimatedValuesEnumerators = (from model in Model.Models
                                           select new { Model = model, EstimatedValuesEnumerator = model.GetEstimatedValues(ProblemData.Dataset, rows).GetEnumerator() })
                                          .ToList();
         var rowsEnumerator = rows.GetEnumerator();
+        // aggregate to make sure that MoveNext is called for all enumerators 
         while (rowsEnumerator.MoveNext() & estimatedValuesEnumerators.Select(en => en.EstimatedValuesEnumerator.MoveNext()).Aggregate(true, (acc, b) => acc & b)) {
           int currentRow = rowsEnumerator.Current;
 
@@ -133,10 +103,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public override IEnumerable<double> EstimatedTestValues {
       get {
+        var rows = ProblemData.TestIndizes;
         var estimatedValuesEnumerators = (from model in Model.Models
-                                          select new { Model = model, EstimatedValuesEnumerator = model.GetEstimatedValues(ProblemData.Dataset, ProblemData.TestIndizes).GetEnumerator() })
+                                          select new { Model = model, EstimatedValuesEnumerator = model.GetEstimatedValues(ProblemData.Dataset, rows).GetEnumerator() })
                                          .ToList();
         var rowsEnumerator = ProblemData.TestIndizes.GetEnumerator();
+        // aggregate to make sure that MoveNext is called for all enumerators 
         while (rowsEnumerator.MoveNext() & estimatedValuesEnumerators.Select(en => en.EstimatedValuesEnumerator.MoveNext()).Aggregate(true, (acc, b) => acc & b)) {
           int currentRow = rowsEnumerator.Current;
 
@@ -167,7 +139,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     private double AggregateEstimatedValues(IEnumerable<double> estimatedValues) {
-      return estimatedValues.Average();
+      return estimatedValues.DefaultIfEmpty(double.NaN).Average();
     }
 
     //[Storable]

@@ -31,8 +31,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Estimated Values")]
   [Content(typeof(IRegressionSolution))]
   public partial class RegressionSolutionEstimatedValuesView : ItemView, IRegressionSolutionEvaluationView {
-    private const string TARGETVARIABLE_SERIES_NAME = "TargetVariable";
-    private const string ESTIMATEDVALUES_SERIES_NAME = "EstimatedValues";
+    private const string TARGETVARIABLE_SERIES_NAME = "Target Variable";
+    private const string ESTIMATEDVALUES_TRAINING_SERIES_NAME = "Estimated Values (training)";
+    private const string ESTIMATEDVALUES_TEST_SERIES_NAME = "Estimated Values (test)";
 
     public new IRegressionSolution Content {
       get { return (IRegressionSolution)base.Content; }
@@ -84,19 +85,37 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       else {
         DoubleMatrix matrix = null;
         if (Content != null) {
-          double[,] values = new double[Content.ProblemData.Dataset.Rows, 4];
+          double[,] values = new double[Content.ProblemData.Dataset.Rows, 5];
+          // initialize to double.NaN
+          for (int row = 0; row < Content.ProblemData.Dataset.Rows; row++)
+            for (int column = 0; column < 5; column++)
+              values[row, column] = double.NaN;
 
           double[] target = Content.ProblemData.Dataset.GetVariableValues(Content.ProblemData.TargetVariable);
-          double[] estimated = Content.EstimatedValues.ToArray();
+          var estimated_training = Content.EstimatedTrainingValues.GetEnumerator();
+          var estimated_test = Content.EstimatedTestValues.GetEnumerator();
+
+          foreach (var row in Content.ProblemData.TrainingIndizes) {
+            estimated_training.MoveNext();
+            values[row, 1] = estimated_training.Current;
+          }
+
+          foreach (var row in Content.ProblemData.TestIndizes) {
+            estimated_test.MoveNext();
+            values[row, 2] = estimated_test.Current;
+          }
+
           for (int row = 0; row < target.Length; row++) {
             values[row, 0] = target[row];
-            values[row, 1] = estimated[row];
-            values[row, 2] = Math.Abs(estimated[row] - target[row]);
-            values[row, 3] = Math.Abs(values[row, 2] / target[row]);
+            double est = values[row, 1];
+            if (!double.IsNaN(est)) {
+              values[row, 3] = Math.Abs(est - target[row]);
+              values[row, 4] = Math.Abs(values[row, 3] / target[row]);
+            }
           }
 
           matrix = new DoubleMatrix(values);
-          matrix.ColumnNames = new string[] { TARGETVARIABLE_SERIES_NAME, ESTIMATEDVALUES_SERIES_NAME, "Absolute Error", "Relative Error" };
+          matrix.ColumnNames = new string[] { TARGETVARIABLE_SERIES_NAME, ESTIMATEDVALUES_TRAINING_SERIES_NAME, ESTIMATEDVALUES_TEST_SERIES_NAME, "Absolute Error (training)", "Relative Error (training)" };
         }
         matrixView.Content = matrix;
       }
