@@ -102,11 +102,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         double[,] confusionMatrix = new double[Content.ProblemData.Classes, Content.ProblemData.Classes];
         IEnumerable<int> rows;
 
+        double[] predictedValues;
         if (cmbSamples.SelectedItem.ToString() == TrainingSamples) {
           rows = Content.ProblemData.TrainingIndizes;
+          predictedValues = Content.EstimatedTrainingClassValues.ToArray();
         } else if (cmbSamples.SelectedItem.ToString() == TestSamples) {
           rows = Content.ProblemData.TestIndizes;
+          predictedValues = Content.EstimatedTestClassValues.ToArray();          
         } else throw new InvalidOperationException();
+
+        double[] targetValues = Content.ProblemData.Dataset.GetEnumeratedVariableValues(Content.ProblemData.TargetVariable, rows).ToArray();
 
         Dictionary<double, int> classValueIndexMapping = new Dictionary<double, int>();
         int index = 0;
@@ -114,9 +119,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           classValueIndexMapping.Add(classValue, index);
           index++;
         }
-
-        double[] targetValues = Content.ProblemData.Dataset.GetEnumeratedVariableValues(Content.ProblemData.TargetVariable, rows).ToArray();
-        double[] predictedValues = Content.GetEstimatedClassValues(rows).ToArray();
 
         for (int i = 0; i < targetValues.Length; i++) {
           double targetValue = targetValues[i];

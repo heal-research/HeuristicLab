@@ -24,6 +24,8 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Data;
+using System;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   /// <summary>
@@ -32,34 +34,113 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
   [Item("Classification Ensemble Solution", "A classification solution that contains an ensemble of multiple classification models")]
   // [Creatable("Data Analysis")]
-  public class ClassificationEnsembleSolution : NamedItem, IClassificationEnsembleSolution {
+  public class ClassificationEnsembleSolution : ClassificationSolution, IClassificationEnsembleSolution {
+
+    public new IClassificationEnsembleModel Model {
+      set { base.Model = value; }
+      get { return (IClassificationEnsembleModel)base.Model; }
+    }
 
     [Storable]
-    private List<IClassificationModel> models;
-    public IEnumerable<IClassificationModel> Models {
-      get { return new List<IClassificationModel>(models); }
-    }
+    private Dictionary<IClassificationModel, IntRange> trainingPartitions;
+    [Storable]
+    private Dictionary<IClassificationModel, IntRange> testPartitions;
+
+
     [StorableConstructor]
     protected ClassificationEnsembleSolution(bool deserializing) : base(deserializing) { }
     protected ClassificationEnsembleSolution(ClassificationEnsembleSolution original, Cloner cloner)
       : base(original, cloner) {
-      this.models = original.Models.Select(m => cloner.Clone(m)).ToList();
+      trainingPartitions = new Dictionary<IClassificationModel, IntRange>();
+      testPartitions = new Dictionary<IClassificationModel, IntRange>();
+      foreach (var model in Model.Models) {
+        trainingPartitions[model] = (IntRange)ProblemData.TrainingPartition.Clone();
+        testPartitions[model] = (IntRange)ProblemData.TestPartition.Clone();
+      }
+      RecalculateResults();
     }
-    public ClassificationEnsembleSolution(IEnumerable<IClassificationModel> models)
-      : base() {
+    public ClassificationEnsembleSolution(IEnumerable<IClassificationModel> models, IClassificationProblemData problemData)
+      : base(new ClassificationEnsembleModel(models), new ClassificationEnsembleProblemData(problemData)) {
       this.name = ItemName;
       this.description = ItemDescription;
-      this.models = new List<IClassificationModel>(models);
+      trainingPartitions = new Dictionary<IClassificationModel, IntRange>();
+      testPartitions = new Dictionary<IClassificationModel, IntRange>();
+      foreach (var model in models) {
+        trainingPartitions[model] = (IntRange)problemData.TrainingPartition.Clone();
+        testPartitions[model] = (IntRange)problemData.TestPartition.Clone();
+      }
+      RecalculateResults();
+    }
+
+    public ClassificationEnsembleSolution(IEnumerable<IClassificationModel> models, IClassificationProblemData problemData, IEnumerable<IntRange> trainingPartitions, IEnumerable<IntRange> testPartitions)
+      : base(new ClassificationEnsembleModel(models), new ClassificationEnsembleProblemData(problemData)) {
+      this.trainingPartitions = new Dictionary<IClassificationModel, IntRange>();
+      this.testPartitions = new Dictionary<IClassificationModel, IntRange>();
+      var modelEnumerator = models.GetEnumerator();
+      var trainingPartitionEnumerator = trainingPartitions.GetEnumerator();
+      var testPartitionEnumerator = testPartitions.GetEnumerator();
+      while (modelEnumerator.MoveNext() & trainingPartitionEnumerator.MoveNext() & testPartitionEnumerator.MoveNext()) {
+        this.trainingPartitions[modelEnumerator.Current] = (IntRange)trainingPartitionEnumerator.Current.Clone();
+        this.testPartitions[modelEnumerator.Current] = (IntRange)testPartitionEnumerator.Current.Clone();
+      }
+      if (modelEnumerator.MoveNext() | trainingPartitionEnumerator.MoveNext() | testPartitionEnumerator.MoveNext()) {
+        throw new ArgumentException();
+      }
+      RecalculateResults();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ClassificationEnsembleSolution(this, cloner);
     }
 
-    #region IClassificationEnsembleModel Members
+    public override IEnumerable<double> EstimatedTrainingClassValues {
+      get {
+        var rows = ProblemData.TrainingIndizes;
+        var estimatedValuesEnumerators = (from model in Model.Models
+                                          select new { Model = model, EstimatedValuesEnumerator = model.GetEstimatedClassValues(ProblemData.Dataset, rows).GetEnumerator() })
+                                         .ToList();
+        var rowsEnumerator = rows.GetEnumerator();
+        // aggregate to make sure that MoveNext is called for all enumerators 
+        while (rowsEnumerator.MoveNext() & estimatedValuesEnumerators.Select(en => en.EstimatedValuesEnumerator.MoveNext()).Aggregate(true, (acc, b) => acc & b)) {
+          int currentRow = rowsEnumerator.Current;
+
+          var selectedEnumerators = from pair in estimatedValuesEnumerators
+                                    where trainingPartitions == null || !trainingPartitions.ContainsKey(pair.Model) ||
+                                         (trainingPartitions[pair.Model].Start <= currentRow && currentRow < trainingPartitions[pair.Model].End)
+                                    select pair.EstimatedValuesEnumerator;
+          yield return AggregateEstimatedClassValues(selectedEnumerators.Select(x => x.Current));
+        }
+      }
+    }
+
+    public override IEnumerable<double> EstimatedTestClassValues {
+      get {
+        var rows = ProblemData.TestIndizes;
+        var estimatedValuesEnumerators = (from model in Model.Models
+                                          select new { Model = model, EstimatedValuesEnumerator = model.GetEstimatedClassValues(ProblemData.Dataset, rows).GetEnumerator() })
+                                         .ToList();
+        var rowsEnumerator = ProblemData.TestIndizes.GetEnumerator();
+        // aggregate to make sure that MoveNext is called for all enumerators 
+        while (rowsEnumerator.MoveNext() & estimatedValuesEnumerators.Select(en => en.EstimatedValuesEnumerator.MoveNext()).Aggregate(true, (acc, b) => acc & b)) {
+          int currentRow = rowsEnumerator.Current;
+
+          var selectedEnumerators = from pair in estimatedValuesEnumerators
+                                    where testPartitions == null || !testPartitions.ContainsKey(pair.Model) ||
+                                      (testPartitions[pair.Model].Start <= currentRow && currentRow < testPartitions[pair.Model].End)
+                                    select pair.EstimatedValuesEnumerator;
+
+          yield return AggregateEstimatedClassValues(selectedEnumerators.Select(x => x.Current));
+        }
+      }
+    }
+
+    public override IEnumerable<double> GetEstimatedClassValues(IEnumerable<int> rows) {
+      return from xs in GetEstimatedClassValueVectors(ProblemData.Dataset, rows)
+             select AggregateEstimatedClassValues(xs);
+    }
 
     public IEnumerable<IEnumerable<double>> GetEstimatedClassValueVectors(Dataset dataset, IEnumerable<int> rows) {
-      var estimatedValuesEnumerators = (from model in models
+      var estimatedValuesEnumerators = (from model in Model.Models
                                         select model.GetEstimatedClassValues(dataset, rows).GetEnumerator())
                                        .ToList();
 
@@ -69,22 +150,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
-    #endregion
-
-    #region IClassificationModel Members
-
-    public IEnumerable<double> GetEstimatedClassValues(Dataset dataset, IEnumerable<int> rows) {
-      foreach (var estimatedValuesVector in GetEstimatedClassValueVectors(dataset, rows)) {
-        // return the class which is most often occuring
-        yield return
-          estimatedValuesVector
-          .GroupBy(x => x)
-          .OrderBy(g => -g.Count())
-          .Select(g => g.Key)
-          .First();
-      }
+    private double AggregateEstimatedClassValues(IEnumerable<double> estimatedClassValues) {
+      return estimatedClassValues
+      .GroupBy(x => x)
+      .OrderBy(g => -g.Count())
+      .Select(g => g.Key)
+      .First();
     }
-
-    #endregion
   }
 }

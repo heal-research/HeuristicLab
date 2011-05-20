@@ -375,6 +375,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       foreach (IResult result in ExtractAndAggregateRegressionSolutions(resultCollections)) {
         results.Add(result.Name, result.Value);
       }
+      foreach (IResult result in ExtractAndAggregateClassificationSolutions(resultCollections)) {
+        results.Add(result.Name, result.Value);
+      }
       results.Add("Execution Time", new TimeSpanValue(this.ExecutionTime));
       results.Add("CrossValidation Folds", new RunCollection(runs));
     }
@@ -397,6 +400,32 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         problemDataClone.TrainingPartition.Start = SamplesStart.Value; problemDataClone.TrainingPartition.End = SamplesEnd.Value;
         problemDataClone.TestPartition.Start = SamplesStart.Value; problemDataClone.TestPartition.End = SamplesEnd.Value;
         var ensembleSolution = new RegressionEnsembleSolution(solutions.Value.Select(x => x.Model), problemDataClone,
+          solutions.Value.Select(x => x.ProblemData.TrainingPartition),
+          solutions.Value.Select(x => x.ProblemData.TestPartition));
+
+        aggregatedResults.Add(new Result(solutions.Key, ensembleSolution));
+      }
+      return aggregatedResults;
+    }
+
+    private IEnumerable<IResult> ExtractAndAggregateClassificationSolutions(IEnumerable<KeyValuePair<string, IItem>> resultCollections) {
+      Dictionary<string, List<IClassificationSolution>> resultSolutions = new Dictionary<string, List<IClassificationSolution>>();
+      foreach (var result in resultCollections) {
+        var classificationSolution = result.Value as IClassificationSolution;
+        if (classificationSolution != null) {
+          if (resultSolutions.ContainsKey(result.Key)) {
+            resultSolutions[result.Key].Add(classificationSolution);
+          } else {
+            resultSolutions.Add(result.Key, new List<IClassificationSolution>() { classificationSolution });
+          }
+        }
+      }
+      List<IResult> aggregatedResults = new List<IResult>();
+      foreach (KeyValuePair<string, List<IClassificationSolution>> solutions in resultSolutions) {
+        var problemDataClone = (IClassificationProblemData)Problem.ProblemData.Clone();
+        problemDataClone.TrainingPartition.Start = SamplesStart.Value; problemDataClone.TrainingPartition.End = SamplesEnd.Value;
+        problemDataClone.TestPartition.Start = SamplesStart.Value; problemDataClone.TestPartition.End = SamplesEnd.Value;
+        var ensembleSolution = new ClassificationEnsembleSolution(solutions.Value.Select(x => x.Model), problemDataClone,
           solutions.Value.Select(x => x.ProblemData.TrainingPartition),
           solutions.Value.Select(x => x.ProblemData.TestPartition));
 

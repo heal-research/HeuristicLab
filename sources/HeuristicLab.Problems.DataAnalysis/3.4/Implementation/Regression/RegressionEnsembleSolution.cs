@@ -48,7 +48,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
     protected RegressionEnsembleSolution(bool deserializing) : base(deserializing) { }
     protected RegressionEnsembleSolution(RegressionEnsembleSolution original, Cloner cloner)
       : base(original, cloner) {
+      trainingPartitions = new Dictionary<IRegressionModel, IntRange>();
+      testPartitions = new Dictionary<IRegressionModel, IntRange>();
+      foreach (var model in Model.Models) {
+        trainingPartitions[model] = (IntRange)ProblemData.TrainingPartition.Clone();
+        testPartitions[model] = (IntRange)ProblemData.TestPartition.Clone();
+      }
     }
+
     public RegressionEnsembleSolution(IEnumerable<IRegressionModel> models, IRegressionProblemData problemData)
       : base(new RegressionEnsembleModel(models), new RegressionEnsembleProblemData(problemData)) {
       trainingPartitions = new Dictionary<IRegressionModel, IntRange>();
@@ -140,66 +147,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     private double AggregateEstimatedValues(IEnumerable<double> estimatedValues) {
       return estimatedValues.DefaultIfEmpty(double.NaN).Average();
-    }
-
-    //[Storable]
-    //private string name;
-    //public string Name {
-    //  get {
-    //    return name;
-    //  }
-    //  set {
-    //    if (value != null && value != name) {
-    //      var cancelEventArgs = new CancelEventArgs<string>(value);
-    //      OnNameChanging(cancelEventArgs);
-    //      if (cancelEventArgs.Cancel == false) {
-    //        name = value;
-    //        OnNamedChanged(EventArgs.Empty);
-    //      }
-    //    }
-    //  }
-    //}
-
-    //public bool CanChangeName {
-    //  get { return true; }
-    //}
-
-    //[Storable]
-    //private string description;
-    //public string Description {
-    //  get {
-    //    return description;
-    //  }
-    //  set {
-    //    if (value != null && value != description) {
-    //      description = value;
-    //      OnDescriptionChanged(EventArgs.Empty);
-    //    }
-    //  }
-    //}
-
-    //public bool CanChangeDescription {
-    //  get { return true; }
-    //}
-
-    //#region events
-    //public event EventHandler<CancelEventArgs<string>> NameChanging;
-    //private void OnNameChanging(CancelEventArgs<string> cancelEventArgs) {
-    //  var listener = NameChanging;
-    //  if (listener != null) listener(this, cancelEventArgs);
-    //}
-
-    //public event EventHandler NameChanged;
-    //private void OnNamedChanged(EventArgs e) {
-    //  var listener = NameChanged;
-    //  if (listener != null) listener(this, e);
-    //}
-
-    //public event EventHandler DescriptionChanged;
-    //private void OnDescriptionChanged(EventArgs e) {
-    //  var listener = DescriptionChanged;
-    //  if (listener != null) listener(this, e);
-    //}
-    // #endregion
+    }   
   }
 }

@@ -38,6 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public IEnumerable<IClassificationModel> Models {
       get { return new List<IClassificationModel>(models); }
     }
+
     [StorableConstructor]
     protected ClassificationEnsembleModel(bool deserializing) : base(deserializing) { }
     protected ClassificationEnsembleModel(ClassificationEnsembleModel original, Cloner cloner)
