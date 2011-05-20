@@ -56,5 +56,15 @@ namespace HeuristicLab.Common {
     public void RegisterClonedObject(IDeepCloneable item, IDeepCloneable clone) {
       mapping.Add(item, clone);
     }
+
+    /// <summary>
+    /// Checks if a clone is already registered for a given deeply cloneable item.
+    /// </summary>
+    /// <param name="item">The original object.</param>
+    /// <returns>True if a clone is already registered for the given item; false otherwise</returns>
+    public bool ClonedObjectRegistered(IDeepCloneable item) {
+      return mapping.ContainsKey(item);
+    }
+
   }
 }

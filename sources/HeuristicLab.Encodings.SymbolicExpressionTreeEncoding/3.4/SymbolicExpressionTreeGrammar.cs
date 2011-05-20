@@ -36,7 +36,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       foreach (ISymbol symbol in base.Symbols)
-        cloner.RegisterClonedObject(symbol, symbol);
+        if (!cloner.ClonedObjectRegistered(symbol))
+          cloner.RegisterClonedObject(symbol, symbol);
       return new SymbolicExpressionTreeGrammar(this, cloner);
     }
 
