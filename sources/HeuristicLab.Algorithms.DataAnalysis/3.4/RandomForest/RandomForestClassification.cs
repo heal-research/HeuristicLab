@@ -35,13 +35,13 @@ using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
-  /// Random forest regression data analysis algorithm.
+  /// Random forest classification data analysis algorithm.
   /// </summary>
-  [Item("Random Forest Regression", "Random forest regression data analysis algorithm (wrapper for ALGLIB).")]
+  [Item("Random Forest Classification", "Random forest classification data analysis algorithm (wrapper for ALGLIB).")]
   [Creatable("Data Analysis")]
   [StorableClass]
-  public sealed class RandomForestRegression : FixedDataAnalysisAlgorithm<IRegressionProblem> {
-    private const string RandomForestRegressionModelResultName = "Random forest regression solution";
+  public sealed class RandomForestClassification : FixedDataAnalysisAlgorithm<IClassificationProblem> {
+    private const string RandomForestClassificationModelResultName = "Random forest classification solution";
     private const string NumberOfTreesParameterName = "Number of trees";
     private const string RParameterName = "R";
     #region parameter properties
@@ -63,59 +63,69 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     #endregion
     [StorableConstructor]
-    private RandomForestRegression(bool deserializing) : base(deserializing) { }
-    private RandomForestRegression(RandomForestRegression original, Cloner cloner)
+    private RandomForestClassification(bool deserializing) : base(deserializing) { }
+    private RandomForestClassification(RandomForestClassification original, Cloner cloner)
       : base(original, cloner) {
     }
-    public RandomForestRegression()
+    public RandomForestClassification()
       : base() {
       Parameters.Add(new FixedValueParameter<IntValue>(NumberOfTreesParameterName, "The number of trees in the forest. Should be between 50 and 100", new IntValue(50)));
       Parameters.Add(new FixedValueParameter<DoubleValue>(RParameterName, "The ratio of the training set that will be used in the construction of individual trees (0<r<=1). Should be adjusted depending on the noise level in the dataset in the range from 0.66 (low noise) to 0.05 (high noise). This parameter should be adjusted to achieve good generalization error.", new DoubleValue(0.3)));
-      Problem = new RegressionProblem();
+      Problem = new ClassificationProblem();
     }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new RandomForestRegression(this, cloner);
+      return new RandomForestClassification(this, cloner);
     }
 
     #region random forest
     protected override void Run() {
-      double rmsError, avgRelError, outOfBagRmsError, outOfBagAvgRelError;
-      var solution = CreateRandomForestRegressionSolution(Problem.ProblemData, NumberOfTrees, R, out rmsError, out avgRelError, out outOfBagRmsError, out outOfBagAvgRelError);
-      Results.Add(new Result(RandomForestRegressionModelResultName, "The random forest regression solution.", solution));
+      double rmsError, relClassificationError, outOfBagRmsError, outOfBagRelClassificationError;
+      var solution = CreateRandomForestClassificationSolution(Problem.ProblemData, NumberOfTrees, R, out rmsError, out relClassificationError, out outOfBagRmsError, out outOfBagRelClassificationError);
+      Results.Add(new Result(RandomForestClassificationModelResultName, "The random forest classification solution.", solution));
       Results.Add(new Result("Root mean square error", "The root of the mean of squared errors of the random forest regression solution on the training set.", new DoubleValue(rmsError)));
-      Results.Add(new Result("Average relative error", "The average of relative errors of the random forest regression solution on the training set.", new PercentValue(avgRelError)));
+      Results.Add(new Result("Relative classification error", "Relative classification error of the random forest regression solution on the training set.", new PercentValue(relClassificationError)));
       Results.Add(new Result("Root mean square error (out-of-bag)", "The out-of-bag root of the mean of squared errors of the random forest regression solution.", new DoubleValue(outOfBagRmsError)));
-      Results.Add(new Result("Average relative error (out-of-bag)", "The out-of-bag average of relative errors of the random forest regression solution.", new PercentValue(outOfBagAvgRelError)));
+      Results.Add(new Result("Relative classification error (out-of-bag)", "The out-of-bag relative classification error  of the random forest regression solution.", new PercentValue(outOfBagRelClassificationError)));
     }
 
-    public static IRegressionSolution CreateRandomForestRegressionSolution(IRegressionProblemData problemData, int nTrees, double r,
-      out double rmsError, out double avgRelError, out double outOfBagRmsError, out double outOfBagAvgRelError) {
+    public static IClassificationSolution CreateRandomForestClassificationSolution(IClassificationProblemData problemData, int nTrees, double r,
+      out double rmsError, out double relClassificationError, out double outOfBagRmsError, out double outOfBagRelClassificationError) {
       Dataset dataset = problemData.Dataset;
       string targetVariable = problemData.TargetVariable;
       IEnumerable<string> allowedInputVariables = problemData.AllowedInputVariables;
       IEnumerable<int> rows = problemData.TrainingIndizes;
       double[,] inputMatrix = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables.Concat(new string[] { targetVariable }), rows);
       if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
-        throw new NotSupportedException("Random forest regression does not support NaN or infinity values in the input dataset.");
+        throw new NotSupportedException("Random forest classification does not support NaN or infinity values in the input dataset.");
 
 
       alglib.decisionforest dforest;
       alglib.dfreport rep;
       int nRows = inputMatrix.GetLength(0);
-
+      int nCols = inputMatrix.GetLength(1);
       int info;
-      alglib.dfbuildrandomdecisionforest(inputMatrix, nRows, allowedInputVariables.Count(), 1, nTrees, r, out info, out dforest, out rep);
-      if (info != 1) throw new ArgumentException("Error in calculation of random forest regression solution");
+      double[] classValues = dataset.GetVariableValues(targetVariable).Distinct().OrderBy(x => x).ToArray();
+      int nClasses = classValues.Count();
+      // map original class values to values [0..nClasses-1]
+      Dictionary<double, double> classIndizes = new Dictionary<double, double>();
+      for (int i = 0; i < nClasses; i++) {
+        classIndizes[classValues[i]] = i;
+      }
+      for (int row = 0; row < nRows; row++) {
+        inputMatrix[row, nCols - 1] = classIndizes[inputMatrix[row, nCols - 1]];
+      }
+      // execute random forest algorithm
+      alglib.dfbuildrandomdecisionforest(inputMatrix, nRows, nCols - 1, nClasses, nTrees, r, out info, out dforest, out rep);
+      if (info != 1) throw new ArgumentException("Error in calculation of random forest classification solution");
 
       rmsError = rep.rmserror;
-      avgRelError = rep.avgrelerror;
-      outOfBagAvgRelError = rep.oobavgrelerror;
       outOfBagRmsError = rep.oobrmserror;
-
-      return new RandomForestRegressionSolution(problemData, new RandomForestModel(dforest, targetVariable, allowedInputVariables));
+      relClassificationError = rep.relclserror;
+      outOfBagRelClassificationError = rep.oobrelclserror;
+      return new RandomForestClassificationSolution(problemData, new RandomForestModel(dforest, targetVariable, allowedInputVariables, classValues));
     }
     #endregion
   }

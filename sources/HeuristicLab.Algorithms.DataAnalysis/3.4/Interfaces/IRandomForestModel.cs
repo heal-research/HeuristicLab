@@ -26,8 +26,8 @@ using System.Collections.Generic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
-  /// Interface to represent a random forest regression model
+  /// Interface to represent a random forest model for either regression or classification
   /// </summary>
-  public interface IRandomForestRegressionModel : IRegressionModel {
+  public interface IRandomForestModel : IRegressionModel, IClassificationModel {
   }
 }

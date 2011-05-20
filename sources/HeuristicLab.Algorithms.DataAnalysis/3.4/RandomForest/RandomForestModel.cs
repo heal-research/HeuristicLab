@@ -32,16 +32,13 @@ using SVM;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
-  /// Represents a random forest regression model.
+  /// Represents a random forest model for regression and classification
   /// </summary>
   [StorableClass]
-  [Item("RandomForestRegressionModel", "Represents a random forest regression model.")]
-  public sealed class RandomForestRegressionModel : NamedItem, IRandomForestRegressionModel {
+  [Item("RandomForestModel", "Represents a random forest for regression and classification.")]
+  public sealed class RandomForestModel : NamedItem, IRandomForestModel {
 
     private alglib.decisionforest randomForest;
-    /// <summary>
-    /// Gets or sets the SVM model.
-    /// </summary>
     public alglib.decisionforest RandomForest {
       get { return randomForest; }
       set {
@@ -57,14 +54,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private string targetVariable;
     [Storable]
     private string[] allowedInputVariables;
-
+    [Storable]
+    private double[] classValues;
     [StorableConstructor]
-    private RandomForestRegressionModel(bool deserializing)
+    private RandomForestModel(bool deserializing)
       : base(deserializing) {
       if (deserializing)
         randomForest = new alglib.decisionforest();
     }
-    private RandomForestRegressionModel(RandomForestRegressionModel original, Cloner cloner)
+    private RandomForestModel(RandomForestModel original, Cloner cloner)
       : base(original, cloner) {
       randomForest = new alglib.decisionforest();
       randomForest.innerobj.bufsize = original.randomForest.innerobj.bufsize;
@@ -74,18 +72,22 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       randomForest.innerobj.trees = (double[])original.randomForest.innerobj.trees.Clone();
       targetVariable = original.targetVariable;
       allowedInputVariables = (string[])original.allowedInputVariables.Clone();
+      if (original.classValues != null)
+        this.classValues = (double[])original.classValues.Clone();
     }
-    public RandomForestRegressionModel(alglib.decisionforest randomForest, string targetVariable, IEnumerable<string> allowedInputVariables)
+    public RandomForestModel(alglib.decisionforest randomForest, string targetVariable, IEnumerable<string> allowedInputVariables, double[] classValues = null)
       : base() {
       this.name = ItemName;
       this.description = ItemDescription;
       this.randomForest = randomForest;
       this.targetVariable = targetVariable;
       this.allowedInputVariables = allowedInputVariables.ToArray();
+      if (classValues != null)
+        this.classValues = (double[])classValues.Clone();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new RandomForestRegressionModel(this, cloner);
+      return new RandomForestModel(this, cloner);
     }
 
     public IEnumerable<double> GetEstimatedValues(Dataset dataset, IEnumerable<int> rows) {
@@ -102,6 +104,32 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         }
         alglib.dfprocess(randomForest, x, ref y);
         yield return y[0];
+      }
+    }
+
+    public IEnumerable<double> GetEstimatedClassValues(Dataset dataset, IEnumerable<int> rows) {
+      double[,] inputData = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables, rows);
+
+      int n = inputData.GetLength(0);
+      int columns = inputData.GetLength(1);
+      double[] x = new double[columns];
+      double[] y = new double[randomForest.innerobj.nclasses];
+
+      for (int row = 0; row < n; row++) {
+        for (int column = 0; column < columns; column++) {
+          x[column] = inputData[row, column];
+        }
+        alglib.dfprocess(randomForest, x, ref y);
+        // find class for with the largest probability value
+        int maxProbClassIndex = 0;
+        double maxProb = y[0];
+        for (int i = 1; i < y.Length; i++) {
+          if (maxProb < y[i]) {
+            maxProb = y[i];
+            maxProbClassIndex = i;
+          }
+        }
+        yield return classValues[maxProbClassIndex];
       }
     }
 

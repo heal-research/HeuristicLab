@@ -25,9 +25,9 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
-  /// Interface to represent a random forest regression solution
+  /// Interface to represent a random forest classification solution
   /// </summary>
-  public interface IRandomForestRegressionSolution : IRegressionSolution {
+  public interface IRandomForestClassificationSolution : IClassificationSolution {
     new IRandomForestModel Model { get; }
   }
 }

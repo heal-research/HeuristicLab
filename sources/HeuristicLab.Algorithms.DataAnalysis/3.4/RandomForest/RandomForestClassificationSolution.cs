@@ -30,11 +30,11 @@ using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
-  /// Represents a random forest solution for a regression problem which can be visualized in the GUI.
+  /// Represents a random forest solution for a classification problem which can be visualized in the GUI.
   /// </summary>
-  [Item("RandomForestRegressionSolution", "Represents a random forest solution for a regression problem which can be visualized in the GUI.")]
+  [Item("RandomForestClassificationSolution", "Represents a random forest solution for a classification problem which can be visualized in the GUI.")]
   [StorableClass]
-  public sealed class RandomForestRegressionSolution : RegressionSolution, IRandomForestRegressionSolution {
+  public sealed class RandomForestClassificationSolution : ClassificationSolution, IRandomForestClassificationSolution {
 
     public new IRandomForestModel Model {
       get { return (IRandomForestModel)base.Model; }
@@ -42,16 +42,16 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    private RandomForestRegressionSolution(bool deserializing) : base(deserializing) { }
-    private RandomForestRegressionSolution(RandomForestRegressionSolution original, Cloner cloner)
+    private RandomForestClassificationSolution(bool deserializing) : base(deserializing) { }
+    private RandomForestClassificationSolution(RandomForestClassificationSolution original, Cloner cloner)
       : base(original, cloner) {
     }
-    public RandomForestRegressionSolution(IRegressionProblemData problemData, IRandomForestModel randomForestModel)
+    public RandomForestClassificationSolution(IClassificationProblemData problemData, IRandomForestModel randomForestModel)
       : base(randomForestModel, problemData) {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new RandomForestRegressionSolution(this, cloner);
+      return new RandomForestClassificationSolution(this, cloner);
     }
   }
 }
