@@ -83,21 +83,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private void UpdateEstimatedValues() {
       if (InvokeRequired) Invoke((Action)UpdateEstimatedValues);
       else {
-        DoubleMatrix matrix = null;
+        StringMatrix matrix = null;
         if (Content != null) {
-          double[,] values = new double[Content.ProblemData.Dataset.Rows, 3];
+          string[,] values = new string[Content.ProblemData.Dataset.Rows, 5];
 
           double[] target = Content.ProblemData.Dataset.GetVariableValues(Content.ProblemData.TargetVariable);
           double[] estimatedClassValues = Content.EstimatedClassValues.ToArray();
           double[] estimatedValues = Content.EstimatedValues.ToArray();
           for (int row = 0; row < target.Length; row++) {
-            values[row, 0] = target[row];
-            values[row, 1] = estimatedClassValues[row];
-            values[row, 2] = estimatedValues[row];
+            values[row, 0] = row.ToString();
+            values[row, 1] = target[row].ToString();
+            values[row, 2] = estimatedClassValues[row].ToString();
+            values[row, 3] = estimatedValues[row].ToString();
           }
 
-          matrix = new DoubleMatrix(values);
-          matrix.ColumnNames = new string[] { TargetClassValuesSeriesname, EstimatedClassValuesSeriesName, EstimatedValuesSeriesName };
+          matrix = new StringMatrix(values);
+          matrix.ColumnNames = new string[] { "Id", TargetClassValuesSeriesname, EstimatedClassValuesSeriesName, EstimatedValuesSeriesName };
+          matrix.SortableView = true;
         }
         matrixView.Content = matrix;
       }

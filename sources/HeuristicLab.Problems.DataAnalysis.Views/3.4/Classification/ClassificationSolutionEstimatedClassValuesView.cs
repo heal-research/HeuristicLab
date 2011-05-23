@@ -32,6 +32,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
   [Content(typeof(IClassificationSolution))]
   public partial class ClassificationSolutionEstimatedClassValuesView : ItemView, IClassificationSolutionEvaluationView {
     private const string TARGETVARIABLE_SERIES_NAME = "Target Variable";
+    private const string ESTIMATEDVALUES_SERIES_NAME = "Estimated Class Values (all)";
     private const string ESTIMATEDVALUES_TRAINING_SERIES_NAME = "Estimated Class Values (training)";
     private const string ESTIMATEDVALUES_TEST_SERIES_NAME = "Estimated Class Values (test)";
 
@@ -83,33 +84,34 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private void UpdateEstimatedValues() {
       if (InvokeRequired) Invoke((Action)UpdateEstimatedValues);
       else {
-        DoubleMatrix matrix = null;
+        StringMatrix matrix = null;
         if (Content != null) {
-          double[,] values = new double[Content.ProblemData.Dataset.Rows, 3];
-          // fill with NaN
-          for (int row = 0; row < Content.ProblemData.Dataset.Rows; row++)
-            for (int column = 0; column < 3; column++)
-              values[row, column] = double.NaN;
+          string[,] values = new string[Content.ProblemData.Dataset.Rows, 5];
 
           double[] target = Content.ProblemData.Dataset.GetVariableValues(Content.ProblemData.TargetVariable);
+          double[] estimated = Content.EstimatedClassValues.ToArray();
           for (int row = 0; row < target.Length; row++) {
-            values[row, 0] = target[row];
+            values[row, 0] = row.ToString();
+            values[row, 1] = target[row].ToString();
+            values[row, 2] = estimated[row].ToString();
           }
+
           var estimatedTraining = Content.EstimatedTrainingClassValues.GetEnumerator();
           estimatedTraining.MoveNext();
           foreach (var trainingRow in Content.ProblemData.TrainingIndizes) {
-            values[trainingRow, 1] = estimatedTraining.Current;
+            values[trainingRow, 3] = estimatedTraining.Current.ToString();
             estimatedTraining.MoveNext();
           }
           var estimatedTest = Content.EstimatedTestClassValues.GetEnumerator();
           estimatedTest.MoveNext();
           foreach (var testRow in Content.ProblemData.TestIndizes) {
-            values[testRow, 2] = estimatedTest.Current;
+            values[testRow, 4] = estimatedTest.Current.ToString();
             estimatedTest.MoveNext();
           }
 
-          matrix = new DoubleMatrix(values);
-          matrix.ColumnNames = new string[] { TARGETVARIABLE_SERIES_NAME, ESTIMATEDVALUES_TRAINING_SERIES_NAME, ESTIMATEDVALUES_TEST_SERIES_NAME };
+          matrix = new StringMatrix(values);
+          matrix.ColumnNames = new string[] {"Id", TARGETVARIABLE_SERIES_NAME, ESTIMATEDVALUES_SERIES_NAME, ESTIMATEDVALUES_TRAINING_SERIES_NAME, ESTIMATEDVALUES_TEST_SERIES_NAME };
+          matrix.SortableView = true;
         }
         matrixView.Content = matrix;
       }
