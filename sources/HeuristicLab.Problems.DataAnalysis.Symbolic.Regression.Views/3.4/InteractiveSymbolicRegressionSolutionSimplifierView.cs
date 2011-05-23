@@ -21,13 +21,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
-using System.Windows.Forms;
 using HeuristicLab.Common;
-using HeuristicLab.MainForm.WindowsForms;
-using HeuristicLab.Problems.DataAnalysis.Symbolic.Views;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Problems.DataAnalysis.Symbolic.Views;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
   public partial class InteractiveSymbolicRegressionSolutionSimplifierView : InteractiveSymbolicDataAnalysisSolutionSimplifierView {
@@ -121,6 +118,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
           return;
         }
       }
+    }
+
+    protected override void btnOptimizeConstants_Click(object sender, EventArgs e) {
+      SymbolicRegressionConstantOptimizationEvaluator.OptimizeConstants(Content.Model.Interpreter, Content.Model.SymbolicExpressionTree, Content.ProblemData, Content.ProblemData.TrainingIndizes, 0, 10);
+      UpdateModel(Content.Model.SymbolicExpressionTree);
     }
   }
 }

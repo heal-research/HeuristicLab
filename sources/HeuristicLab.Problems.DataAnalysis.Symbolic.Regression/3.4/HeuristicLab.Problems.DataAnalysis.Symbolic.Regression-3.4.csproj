@@ -108,6 +108,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MultiObjective\SymbolicRegressionMultiObjectiveValidationBestSolutionAnalyzer.cs" />
+    <Compile Include="SingleObjective\SymbolicRegressionConstantOptimizationEvaluator.cs" />
     <Compile Include="SingleObjective\SymbolicRegressionSingleObjectiveOverfittingAnalyzer.cs" />
     <Compile Include="SymbolicRegressionModel.cs" />
     <Compile Include="Interfaces\ISymbolicRegressionModel.cs" />

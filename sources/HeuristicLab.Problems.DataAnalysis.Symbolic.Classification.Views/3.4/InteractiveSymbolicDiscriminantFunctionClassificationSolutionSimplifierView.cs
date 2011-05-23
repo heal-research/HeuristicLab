@@ -21,13 +21,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
-using System.Windows.Forms;
 using HeuristicLab.Common;
-using HeuristicLab.MainForm.WindowsForms;
-using HeuristicLab.Problems.DataAnalysis.Symbolic.Views;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Problems.DataAnalysis.Symbolic.Views;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
   public partial class InteractiveSymbolicDiscriminantFunctionClassificationSolutionSimplifierView : InteractiveSymbolicDataAnalysisSolutionSimplifierView {
@@ -114,7 +111,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
       // clone ADFs of source tree
       for (int i = 1; i < sourceTree.Root.SubtreesCount; i++) {
         tempTree.Root.AddSubtree((ISymbolicExpressionTreeNode)sourceTree.Root.GetSubtree(i).Clone());
-      } 
+      }
       var start = tempTree.Root.GetSubtree(0);
       while (start.SubtreesCount > 0) start.RemoveSubtree(0);
       start.AddSubtree((ISymbolicExpressionTreeNode)node.Clone());
@@ -132,6 +129,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
           return;
         }
       }
+    }
+
+    protected override void btnOptimizeConstants_Click(object sender, EventArgs e) {
+
     }
   }
 }
