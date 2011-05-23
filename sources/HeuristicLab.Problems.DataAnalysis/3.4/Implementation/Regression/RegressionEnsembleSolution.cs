@@ -100,8 +100,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
           int currentRow = rowsEnumerator.Current;
 
           var selectedEnumerators = from pair in estimatedValuesEnumerators
-                                    where trainingPartitions == null || !trainingPartitions.ContainsKey(pair.Model) ||
-                                         (trainingPartitions[pair.Model].Start <= currentRow && currentRow < trainingPartitions[pair.Model].End)
+                                    where RowIsTrainingForModel(currentRow, pair.Model) && !RowIsTestForModel(currentRow, pair.Model)
                                     select pair.EstimatedValuesEnumerator;
           yield return AggregateEstimatedValues(selectedEnumerators.Select(x => x.Current));
         }
@@ -120,13 +119,22 @@ namespace HeuristicLab.Problems.DataAnalysis {
           int currentRow = rowsEnumerator.Current;
 
           var selectedEnumerators = from pair in estimatedValuesEnumerators
-                                    where testPartitions == null || !testPartitions.ContainsKey(pair.Model) ||
-                                      (testPartitions[pair.Model].Start <= currentRow && currentRow < testPartitions[pair.Model].End)
+                                    where RowIsTestForModel(currentRow, pair.Model)
                                     select pair.EstimatedValuesEnumerator;
 
           yield return AggregateEstimatedValues(selectedEnumerators.Select(x => x.Current));
         }
       }
+    }
+
+    private bool RowIsTrainingForModel(int currentRow, IRegressionModel model) {
+      return trainingPartitions == null || !trainingPartitions.ContainsKey(model) ||
+              (trainingPartitions[model].Start <= currentRow && currentRow < trainingPartitions[model].End);
+    }
+
+    private bool RowIsTestForModel(int currentRow, IRegressionModel model) {
+      return testPartitions == null || !testPartitions.ContainsKey(model) ||
+              (testPartitions[model].Start <= currentRow && currentRow < testPartitions[model].End);
     }
 
     public override IEnumerable<double> GetEstimatedValues(IEnumerable<int> rows) {
@@ -147,6 +155,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     private double AggregateEstimatedValues(IEnumerable<double> estimatedValues) {
       return estimatedValues.DefaultIfEmpty(double.NaN).Average();
-    }   
+    }
   }
 }
