@@ -403,9 +403,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           solutions.Value.Select(x => x.ProblemData.TrainingPartition),
           solutions.Value.Select(x => x.ProblemData.TestPartition));
 
-        aggregatedResults.Add(new Result(solutions.Key, ensembleSolution));
+        aggregatedResults.Add(new Result(solutions.Key + " (ensemble)", ensembleSolution));
       }
-      return aggregatedResults;
+      List<IResult> flattenedResults = new List<IResult>();
+      CollectResultsRecursively("", aggregatedResults, flattenedResults);
+      return flattenedResults;
     }
 
     private IEnumerable<IResult> ExtractAndAggregateClassificationSolutions(IEnumerable<KeyValuePair<string, IItem>> resultCollections) {
@@ -420,7 +422,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           }
         }
       }
-      List<IResult> aggregatedResults = new List<IResult>();
+      var aggregatedResults = new List<IResult>();
       foreach (KeyValuePair<string, List<IClassificationSolution>> solutions in resultSolutions) {
         var problemDataClone = (IClassificationProblemData)Problem.ProblemData.Clone();
         problemDataClone.TrainingPartition.Start = SamplesStart.Value; problemDataClone.TrainingPartition.End = SamplesEnd.Value;
@@ -429,9 +431,21 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           solutions.Value.Select(x => x.ProblemData.TrainingPartition),
           solutions.Value.Select(x => x.ProblemData.TestPartition));
 
-        aggregatedResults.Add(new Result(solutions.Key, ensembleSolution));
+        aggregatedResults.Add(new Result(solutions.Key + " (ensemble)", ensembleSolution));
       }
-      return aggregatedResults;
+      List<IResult> flattenedResults = new List<IResult>();
+      CollectResultsRecursively("", aggregatedResults, flattenedResults);
+      return flattenedResults;
+    }
+
+    private void CollectResultsRecursively(string path, IEnumerable<IResult> results, IList<IResult> flattenedResults) {
+      foreach (IResult result in results) {
+        flattenedResults.Add(new Result(path + result.Name, result.Value));
+        ResultCollection childCollection = result.Value as ResultCollection;
+        if (childCollection != null) {
+          CollectResultsRecursively(path + result.Name + ".", childCollection, flattenedResults);
+        }
+      }
     }
 
     private static IEnumerable<IResult> ExtractAndAggregateResults<T>(IEnumerable<KeyValuePair<string, IItem>> results)
@@ -456,9 +470,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       List<IResult> aggregatedResults = new List<IResult>();
       foreach (KeyValuePair<string, List<double>> resultValue in resultValues) {
         doubleValue.Value = resultValue.Value.Average();
-        aggregatedResults.Add(new Result(resultValue.Key, (IItem)doubleValue.Clone()));
+        aggregatedResults.Add(new Result(resultValue.Key + " (average)", (IItem)doubleValue.Clone()));
         doubleValue.Value = resultValue.Value.StandardDeviation();
-        aggregatedResults.Add(new Result(resultValue.Key + " StdDev", (IItem)doubleValue.Clone()));
+        aggregatedResults.Add(new Result(resultValue.Key + " (std.dev.)", (IItem)doubleValue.Clone()));
       }
       return aggregatedResults;
     }
