@@ -103,7 +103,7 @@ namespace HeuristicLab.Parameters.Views {
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
       setValueButton.Enabled = Content != null && !(Content is IFixedValueParameter) && !ReadOnly;
-      clearValueButton.Enabled = Content != null && Content.Value != null && !(Content is IFixedValueParameter) && !ReadOnly;
+      clearValueButton.Enabled = Content != null && Content.Value != null && !(Content is IFixedValueParameter) && !(Content is ValueParameter<T>) && !ReadOnly;
       showInRunCheckBox.Enabled = Content != null && !ReadOnly;
     }
 
@@ -113,7 +113,7 @@ namespace HeuristicLab.Parameters.Views {
       else {
         SetDataTypeTextBoxText();
         setValueButton.Enabled = Content != null && !(Content is IFixedValueParameter) && !ReadOnly;
-        clearValueButton.Enabled = Content != null && Content.Value != null && !(Content is IFixedValueParameter<T>) && !ReadOnly;
+        clearValueButton.Enabled = Content != null && Content.Value != null && !(Content is IFixedValueParameter<T>) && !(Content is ValueParameter<T>) && !ReadOnly;
         valueViewHost.ViewType = null;
         valueViewHost.Content = Content != null ? Content.Value : null;
       }
