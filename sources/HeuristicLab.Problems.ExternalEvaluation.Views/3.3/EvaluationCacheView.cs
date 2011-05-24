@@ -2,6 +2,9 @@
 using System.Windows.Forms;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
+using System.Threading;
+using System.IO;
+using System.ComponentModel;
 
 namespace HeuristicLab.Problems.ExternalEvaluation.Views {
 
@@ -54,6 +57,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
       clearButton.Enabled = !ReadOnly && Content != null;
+      saveButton.Enabled = !ReadOnly && Content != null;
     }
 
     #region Event Handlers (child controls)
@@ -61,5 +65,19 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
       Content.Reset();
     }
     #endregion
+    
+    private void saveButton_Click(object sender, EventArgs e) {
+      if (saveFileDialog.ShowDialog() == DialogResult.OK) {
+        saveButton.Enabled = false;
+        BackgroundWorker worker = new BackgroundWorker();
+        worker.DoWork += (s, a) => {
+          Content.Save((string)a.Argument);
+        };
+        worker.RunWorkerCompleted += (s, a) => {
+          SetEnabledStateOfControls();
+        };
+        worker.RunWorkerAsync(saveFileDialog.FileName);
+      }
+    }    
   }
 }

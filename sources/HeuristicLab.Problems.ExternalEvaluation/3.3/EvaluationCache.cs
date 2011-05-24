@@ -32,6 +32,10 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Analysis;
+using System.IO;
+using System.Globalization;
+using System.Text.RegularExpressions;
 namespace HeuristicLab.Problems.ExternalEvaluation {
 
   [Item("EvaluationCache", "Cache for external evaluation values")]
@@ -280,11 +284,13 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       }
       OnSizeChanged();
     }
+
     private IEnumerable<KeyValuePair<string, double>> GetCacheValues() {
       lock (cacheLock) {
         return index.ToDictionary(kvp => kvp.Key.Key, kvp => kvp.Key.Value);
       }
     }
+
     private void SetCacheValues(IEnumerable<KeyValuePair<string, double>> value) {
       lock (cacheLock) {
         list = new LinkedList<CacheEntry>();
@@ -296,7 +302,20 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
         }
       }
     }
-    #endregion
 
-  }
+    public void Save(string filename) {
+      using (var writer = new StreamWriter(filename)) {
+        lock (cacheLock) {
+          foreach (var entry in list) {
+            writer.WriteLine(string.Format(CultureInfo.InvariantCulture,
+              "\"{0}\", {1}",
+              Regex.Replace(entry.Key, "\\s", "").Replace("\"", "\"\""),
+              entry.Value));
+          }
+        }
+        writer.Close();
+      }
+    }
+    #endregion
+  }  
 }

@@ -26,6 +26,8 @@
       this.hits_sizeLabel = new System.Windows.Forms.Label();
       this.hits_sizeTextBox = new System.Windows.Forms.TextBox();
       this.clearButton = new System.Windows.Forms.Button();
+      this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+      this.saveButton = new System.Windows.Forms.Button();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.SuspendLayout();
       // 
@@ -55,7 +57,7 @@
       this.hits_sizeTextBox.Location = new System.Drawing.Point(59, 26);
       this.hits_sizeTextBox.Name = "hits_sizeTextBox";
       this.hits_sizeTextBox.ReadOnly = true;
-      this.hits_sizeTextBox.Size = new System.Drawing.Size(379, 20);
+      this.hits_sizeTextBox.Size = new System.Drawing.Size(319, 20);
       this.hits_sizeTextBox.TabIndex = 5;
       // 
       // clearButton
@@ -70,6 +72,24 @@
       this.clearButton.UseVisualStyleBackColor = true;
       this.clearButton.Click += new System.EventHandler(this.clearButton_Click);
       // 
+      // saveFileDialog
+      // 
+      this.saveFileDialog.DefaultExt = "csv";
+      this.saveFileDialog.Filter = "CSV Files|*.csv|All Files|*.*";
+      this.saveFileDialog.RestoreDirectory = true;
+      this.saveFileDialog.Title = "Save Cache";
+      // 
+      // saveButton
+      // 
+      this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.saveButton.Location = new System.Drawing.Point(384, 23);
+      this.saveButton.Name = "saveButton";
+      this.saveButton.Size = new System.Drawing.Size(54, 23);
+      this.saveButton.TabIndex = 8;
+      this.saveButton.Text = "Save...";
+      this.saveButton.UseVisualStyleBackColor = true;
+      this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
+      // 
       // EvaluationCacheView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -77,7 +97,9 @@
       this.Controls.Add(this.hits_sizeTextBox);
       this.Controls.Add(this.hits_sizeLabel);
       this.Controls.Add(this.clearButton);
+      this.Controls.Add(this.saveButton);
       this.Name = "EvaluationCacheView";
+      this.Controls.SetChildIndex(this.saveButton, 0);
       this.Controls.SetChildIndex(this.clearButton, 0);
       this.Controls.SetChildIndex(this.hits_sizeLabel, 0);
       this.Controls.SetChildIndex(this.hits_sizeTextBox, 0);
@@ -96,5 +118,7 @@
     private System.Windows.Forms.Label hits_sizeLabel;
     private System.Windows.Forms.TextBox hits_sizeTextBox;
     private System.Windows.Forms.Button clearButton;
+    private System.Windows.Forms.SaveFileDialog saveFileDialog;
+    private System.Windows.Forms.Button saveButton;
   }
 }
