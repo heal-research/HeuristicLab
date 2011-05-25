@@ -43,17 +43,19 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   public class EvaluationCache : ParameterizedNamedItem {
 
     #region Types
-    private class CacheEntry {
+    private sealed class CacheEntry {
 
-      public string Key { get; private set; }
-      public double Value { get; set; }
+      public readonly string Key;
+      public double Value;
 
       public CacheEntry(string key, double value) {
         Key = key;
         Value = value;
       }
 
-      public CacheEntry(string key) : this(key, 0) { }
+      public CacheEntry(string key) {
+        Key = key;
+      }
 
       public override bool Equals(object obj) {
         CacheEntry other = obj as CacheEntry;
@@ -77,51 +79,27 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     #region Fields
     private LinkedList<CacheEntry> list;
     private Dictionary<CacheEntry, LinkedListNode<CacheEntry>> index;
+
     private HashSet<string> activeEvaluations = new HashSet<string>();
-    private object cacheLock = new object();
-    private object evaluationLock = new object();
-    private AutoResetEvent evaluationDone = new AutoResetEvent(false);
+    private object cacheLock = new object();    
     #endregion
 
     #region Properties
     public override System.Drawing.Image ItemImage {
       get { return VSImageLibrary.Database; }
     }
-    public int Size {
-      get {
-        lock (cacheLock) {
-          return index.Count;
-        }
-      }
-    }
-    public int ActiveEvaluations {
-      get {
-        lock (evaluationLock) {
-          return activeEvaluations.Count;
-        }
-      }
-    }
+    public int Size { get { lock (cacheLock) return index.Count; } }
+    public int ActiveEvaluations { get { lock (cacheLock) return activeEvaluations.Count; } }
+
     [Storable]
     public int Hits { get; private set; }
     #endregion
 
     #region events
-    public event EventHandler SizeChanged;
-    public event EventHandler HitsChanged;
-    public event EventHandler ActiveEvalutionsChanged;
+    public event EventHandler Changed;
 
-    protected virtual void OnSizeChanged() {
-      EventHandler handler = SizeChanged;
-      if (handler != null)
-        handler(this, EventArgs.Empty);
-    }
-    protected virtual void OnHitsChanged() {
-      EventHandler handler = HitsChanged;
-      if (handler != null)
-        handler(this, EventArgs.Empty);
-    }
-    protected virtual void OnActiveEvalutionsChanged() {
-      EventHandler handler = ActiveEvalutionsChanged;
+    protected virtual void OnChanged() {
+      EventHandler handler = Changed;
       if (handler != null)
         handler(this, EventArgs.Empty);
     }
@@ -194,7 +172,9 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     void Value_ValueChanged(object sender, EventArgs e) {
       if (Capacity < 0)
         throw new ArgumentOutOfRangeException("Cache capacity cannot be less than zero");
-      Trim();
+      lock (cacheLock)
+        Trim();
+      OnChanged();
     }
     #endregion
 
@@ -205,84 +185,65 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
         index = new Dictionary<CacheEntry, LinkedListNode<CacheEntry>>();
         Hits = 0;
       }
-      OnSizeChanged();
-      OnHitsChanged();
+      OnChanged();
     }
 
     public double GetValue(SolutionMessage message, Evaluator evaluate) {
       CacheEntry entry = new CacheEntry(message.ToString());
       LinkedListNode<CacheEntry> node;
       bool lockTaken = false;
-      try {
+      bool waited = false;
+      try {        
         Monitor.Enter(cacheLock, ref lockTaken);
-        if (index.TryGetValue(entry, out node)) {
-          list.Remove(node);
-          list.AddLast(node);
-          Hits++;
-          lockTaken = false;
-          Monitor.Exit(cacheLock);
-          OnHitsChanged();
-          return node.Value.Value;
-        } else {
-          lockTaken = false;
-          Monitor.Exit(cacheLock);
-          return Evaluate(message, evaluate, entry);
-        }
-      } finally {
-        if (lockTaken)
-          Monitor.Exit(cacheLock);
-      }
-    }
-
-    private double Evaluate(SolutionMessage message, Evaluator evaluate, CacheEntry entry) {
-      bool lockTaken = false;
-      try {
-        Monitor.Enter(evaluationLock, ref lockTaken);
-        if (activeEvaluations.Contains(entry.Key)) {
-          while (activeEvaluations.Contains(entry.Key)) {
+        while (true) {
+          if (index.TryGetValue(entry, out node)) {
+            list.Remove(node);
+            list.AddLast(node);
+            Hits++;
             lockTaken = false;
-            Monitor.Exit(evaluationLock);
-            evaluationDone.WaitOne();
-            Monitor.Enter(evaluationLock, ref lockTaken);
-          }
-          lock (cacheLock) {
-            return index[entry].Value.Value;
-          }
-        } else {
-          activeEvaluations.Add(entry.Key);
-          lockTaken = false;
-          Monitor.Exit(evaluationLock);
-          OnActiveEvalutionsChanged();
-          try {
-            entry.Value = evaluate(message);
-            lock (cacheLock) {
-              index[entry] = list.AddLast(entry);
+            Monitor.Exit(cacheLock);
+            OnChanged();
+            return node.Value.Value;
+          } else {
+            if (!waited && activeEvaluations.Contains(entry.Key)) {
+              while (activeEvaluations.Contains(entry.Key))
+                Monitor.Wait(cacheLock);
+              waited = true;
+            } else {
+              activeEvaluations.Add(entry.Key);
+              lockTaken = false;
+              Monitor.Exit(cacheLock);
+              OnChanged();
+              try {
+                entry.Value = evaluate(message);
+                Monitor.Enter(cacheLock, ref lockTaken);
+                index[entry] = list.AddLast(entry);
+                Trim();
+              } finally {
+                if (!lockTaken)
+                  Monitor.Enter(cacheLock, ref lockTaken);
+                activeEvaluations.Remove(entry.Key);
+                Monitor.PulseAll(cacheLock);
+                lockTaken = false;
+                Monitor.Exit(cacheLock);
+              }
+              OnChanged();
+              return entry.Value;
             }
-            Trim();
-          } finally {
-            lock (evaluationLock) {
-              activeEvaluations.Remove(entry.Key);
-              evaluationDone.Set();
-            }
-            OnActiveEvalutionsChanged();
           }
-          return entry.Value;
         }
       } finally {
         if (lockTaken)
-          Monitor.Exit(evaluationLock);
+          Monitor.Exit(cacheLock);
       }
     }
 
     private void Trim() {
-      lock (cacheLock) {
-        while (list.Count > Capacity) {
-          LinkedListNode<CacheEntry> item = list.First;
-          list.Remove(item);
-          index.Remove(item.Value);
-        }
+      while (list.Count > Capacity) {
+        LinkedListNode<CacheEntry> item = list.First;
+        list.Remove(item);
+        index.Remove(item.Value);
       }
-      OnSizeChanged();
     }
 
     private IEnumerable<KeyValuePair<string, double>> GetCacheValues() {
@@ -317,5 +278,5 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       }
     }
     #endregion
-  }  
+  }
 }

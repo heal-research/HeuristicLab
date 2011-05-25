@@ -22,17 +22,13 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
     }
 
     protected override void DeregisterContentEvents() {
-      Content.SizeChanged -= new System.EventHandler(Content_StatusChanged);
-      Content.HitsChanged -= new System.EventHandler(Content_StatusChanged);
-      Content.ActiveEvalutionsChanged -= new EventHandler(Content_StatusChanged);
+      Content.Changed -= new System.EventHandler(Content_StatusChanged);
       base.DeregisterContentEvents();
     }
 
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      Content.SizeChanged += new System.EventHandler(Content_StatusChanged);
-      Content.HitsChanged += new System.EventHandler(Content_StatusChanged);
-      Content.ActiveEvalutionsChanged += new EventHandler(Content_StatusChanged);
+      Content.Changed += new System.EventHandler(Content_StatusChanged);
     }
 
     #region Event Handlers (Content)
