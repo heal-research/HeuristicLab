@@ -405,10 +405,11 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     // searches matching plugin descriptions based on the list of dependency names for each plugin
     // and sets the dependencies in the plugin descriptions
     private void BuildDependencyTree(IEnumerable<PluginDescription> pluginDescriptions) {
-      foreach (var desc in pluginDescriptions) {
+      foreach (var desc in pluginDescriptions.Where(x => x.PluginState != PluginState.Disabled)) {
         var missingDependencies = new List<PluginDependency>();
         foreach (var dependency in pluginDependencies[desc]) {
           var matchingDescriptions = from availablePlugin in pluginDescriptions
+                                     where availablePlugin.PluginState != PluginState.Disabled
                                      where availablePlugin.Name == dependency.Name
                                      where IsCompatiblePluginVersion(availablePlugin.Version, dependency.Version)
                                      select availablePlugin;
