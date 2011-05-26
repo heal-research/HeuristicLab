@@ -72,6 +72,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].ChartType = SeriesChartType.FastLine;
         this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].Points.DataBindXY(Content.ProblemData.TrainingIndizes.ToArray(),
           Content.EstimatedTrainingValues.ToArray());
+        this.chart.DataManipulator.InsertEmptyPoints(Content.ProblemData.Dataset.Rows, IntervalType.Number, ESTIMATEDVALUES_TRAINING_SERIES_NAME);
         this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].Tag = Content;
 
         this.chart.Series.Add(ESTIMATEDVALUES_TEST_SERIES_NAME);

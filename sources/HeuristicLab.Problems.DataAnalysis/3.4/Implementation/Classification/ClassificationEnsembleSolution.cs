@@ -53,9 +53,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
       : base(original, cloner) {
       trainingPartitions = new Dictionary<IClassificationModel, IntRange>();
       testPartitions = new Dictionary<IClassificationModel, IntRange>();
-      foreach (var model in Model.Models) {
-        trainingPartitions[model] = (IntRange)ProblemData.TrainingPartition.Clone();
-        testPartitions[model] = (IntRange)ProblemData.TestPartition.Clone();
+      foreach (var pair in original.trainingPartitions) {
+        trainingPartitions[cloner.Clone(pair.Key)] = cloner.Clone(pair.Value);
+      }
+      foreach (var pair in original.testPartitions) {
+        testPartitions[cloner.Clone(pair.Key)] = cloner.Clone(pair.Value);
       }
       RecalculateResults();
     }
