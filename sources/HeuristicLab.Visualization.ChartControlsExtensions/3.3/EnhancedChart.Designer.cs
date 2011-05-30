@@ -59,7 +59,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
             this.exportChartToolStripMenuItem,
             this.copyImageToClipboardBitmapToolStripMenuItem});
       this.contextMenuStrip.Name = "contextMenuStrip";
-      this.contextMenuStrip.Size = new System.Drawing.Size(257, 48);
+      this.contextMenuStrip.Size = new System.Drawing.Size(257, 76);
       // 
       // exportChartToolStripMenuItem
       // 
@@ -77,8 +77,8 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       // 
       // saveFileDialog
       // 
-      this.saveFileDialog.Filter = "Bitmap (*.bmp)|*.bmp|JPEG (*.jpg)|*.jpg|EMF (*.emf)|*.emf|PNG (*.png)|*.png|GIF " +
-          "(*.gif)|*.gif|TIFF (*.tif)|*.tif\"";
+      this.saveFileDialog.Filter = "Bitmap (*.bmp)|*.bmp|JPEG (*.jpg)|*.jpg|EMF (*.emf)|*.emf|PNG (*.png)|*.png|GIF (" +
+          "*.gif)|*.gif|TIFF (*.tif)|*.tif\"";
       this.saveFileDialog.FilterIndex = 2;
       // 
       // EnhancedChart

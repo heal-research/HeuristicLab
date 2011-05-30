@@ -26,10 +26,26 @@ using HeuristicLab.MainForm;
 namespace HeuristicLab.Analysis.Views {
   [View("DataTableHistory View")]
   [Content(typeof(DataTableHistory), true)]
-  public partial class DataTableHistoryView : MovieView<DataTable> {
+  public partial class DataTableHistoryView : MovieView<DataTable>, IConfigureableView {
     public DataTableHistoryView() {
       InitializeComponent();
       itemsGroupBox.Text = "Data Table";
     }
+
+    public void ShowConfiguration() {
+      DataTable current = viewHost.Content as DataTable;
+      if (current == null) return;
+      using (DataTableVisualPropertiesDialog dialog = new DataTableVisualPropertiesDialog(current)) {
+        if (dialog.ShowDialog() != DialogResult.OK) return;
+        foreach (DataTable dt in Content) {
+          if (current != dt) {
+            dt.VisualProperties = (DataTableVisualProperties)current.VisualProperties.Clone();
+            foreach (DataRow row in current.Rows)
+              dt.Rows[row.Name].VisualProperties = (DataRowVisualProperties)row.VisualProperties.Clone();
+          }
+        }
+      }
+    }
+
   }
 }

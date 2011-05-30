@@ -50,6 +50,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.viewsLabel = new System.Windows.Forms.Label();
       this.viewContextMenuStrip = new HeuristicLab.MainForm.WindowsForms.ViewContextMenuStrip();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+      this.configurationLabel = new System.Windows.Forms.Label();
       this.SuspendLayout();
       // 
       // messageLabel
@@ -85,11 +86,24 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.viewContextMenuStrip.Size = new System.Drawing.Size(61, 4);
       this.viewContextMenuStrip.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.viewContextMenuStrip_ItemClicked);
       // 
+      // configurationLabel
+      // 
+      this.configurationLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.configurationLabel.Image = HeuristicLab.Common.Resources.VSImageLibrary.EditInformation;
+      this.configurationLabel.Location = new System.Drawing.Point(211, 22);
+      this.configurationLabel.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
+      this.configurationLabel.Name = "configurationLabel";
+      this.configurationLabel.Size = new System.Drawing.Size(16, 16);
+      this.configurationLabel.TabIndex = 0;
+      this.configurationLabel.Visible = false;
+      this.configurationLabel.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.configurationLabel_MouseDoubleClick);
+      // 
       // ViewHost
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.viewsLabel);
+      this.Controls.Add(this.configurationLabel);
       this.Controls.Add(this.messageLabel);
       this.Name = "ViewHost";
       this.Size = new System.Drawing.Size(227, 184);
@@ -102,6 +116,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     private System.Windows.Forms.Label messageLabel;
     private System.Windows.Forms.ToolTip toolTip;
     private HeuristicLab.MainForm.WindowsForms.ViewContextMenuStrip viewContextMenuStrip;
+    private System.Windows.Forms.Label configurationLabel;
 
   }
 }

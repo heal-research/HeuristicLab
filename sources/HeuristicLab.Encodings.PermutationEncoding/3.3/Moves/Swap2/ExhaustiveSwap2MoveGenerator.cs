@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
@@ -38,17 +39,24 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       return new ExhaustiveSwap2MoveGenerator(this, cloner);
     }
 
-    public static Swap2Move[] Apply(Permutation permutation) {
+    public static IEnumerable<Swap2Move> Generate(Permutation permutation) {
       int length = permutation.Length;
       if (length == 1) throw new ArgumentException("ExhaustiveSwap2MoveGenerator: There cannot be an Swap move given a permutation of length 1.", "permutation");
-      int totalMoves = (length) * (length - 1) / 2;
-      Swap2Move[] moves = new Swap2Move[totalMoves];
-      int count = 0;
 
       for (int i = 0; i < length - 1; i++)
         for (int j = i + 1; j < length; j++) {
-          moves[count++] = new Swap2Move(i, j);
+          yield return new Swap2Move(i, j);
         }
+    }
+
+    public static Swap2Move[] Apply(Permutation permutation) {
+      int length = permutation.Length;
+      int totalMoves = (length) * (length - 1) / 2;
+      Swap2Move[] moves = new Swap2Move[totalMoves];
+      int count = 0;
+      foreach (Swap2Move move in Generate(permutation)) {
+        moves[count++] = move;
+      }
       return moves;
     }
 

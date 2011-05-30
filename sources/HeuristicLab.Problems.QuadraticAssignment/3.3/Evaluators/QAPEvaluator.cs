@@ -68,6 +68,15 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       return quality;
     }
 
+    public static double Impact(int facility, Permutation assignment, DoubleMatrix weights, DoubleMatrix distances) {
+      double impact = 0;
+      for (int i = 0; i < assignment.Length; i++) {
+        impact += weights[facility, i] * distances[assignment[facility], assignment[i]];
+        impact += weights[i, facility] * distances[assignment[i], assignment[facility]];
+      }
+      return impact;
+    }
+
     public override IOperation Apply() {
       Permutation assignment = PermutationParameter.ActualValue;
       DoubleMatrix weights = WeightsParameter.ActualValue;

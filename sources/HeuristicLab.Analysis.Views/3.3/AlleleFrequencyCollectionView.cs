@@ -90,7 +90,6 @@ namespace HeuristicLab.Analysis.Views {
       impacts.YValueType = ChartValueType.Double;
       impacts.YAxisType = AxisType.Secondary;
       chart.Series.Add(impacts);
-      invisibleSeries.Add(impacts);
     }
 
     protected virtual void UpdateSeries() {
@@ -112,7 +111,7 @@ namespace HeuristicLab.Analysis.Views {
         chart.ChartAreas["Default"].AxisY2.Title = "Average Impact";
 
       if (!invisibleSeries.Contains(bestKnown)) {
-        foreach (AlleleFrequency af in Content.Where(x => x.ContainedInBestKnownSolution).OrderBy(x => x.AverageImpact)) {
+        foreach (AlleleFrequency af in Content.Where(x => x.ContainedInBestKnownSolution).OrderBy(x => x.Id)) {
           bestKnown.Points.Add(CreateDataPoint(index, af.Frequency, af));
           if (!invisibleSeries.Contains(qualities)) qualities.Points.Add(CreateDataPoint(index, af.AverageSolutionQuality, af));
           if (!invisibleSeries.Contains(impacts)) impacts.Points.Add(CreateDataPoint(index, af.AverageImpact, af));
@@ -120,7 +119,7 @@ namespace HeuristicLab.Analysis.Views {
         }
       }
       if (!invisibleSeries.Contains(others)) {
-        foreach (AlleleFrequency af in Content.Where(x => !x.ContainedInBestKnownSolution).OrderBy(x => x.AverageImpact)) {
+        foreach (AlleleFrequency af in Content.Where(x => !x.ContainedInBestKnownSolution).OrderBy(x => x.Id)) {
           others.Points.Add(CreateDataPoint(index, af.Frequency, af));
           if (!invisibleSeries.Contains(qualities)) qualities.Points.Add(CreateDataPoint(index, af.AverageSolutionQuality, af));
           if (!invisibleSeries.Contains(impacts)) impacts.Points.Add(CreateDataPoint(index, af.AverageImpact, af));

@@ -117,6 +117,7 @@
     <Compile Include="Crossovers\OrderCrossover2.cs" />
     <Compile Include="Crossovers\PartiallyMatchedCrossover.cs" />
     <Compile Include="Crossovers\PositionBasedCrossover.cs" />
+    <Compile Include="Crossovers\UniformLikeCrossover.cs" />
     <Compile Include="HeuristicLabEncodingsPermutationEncodingPlugin.cs" />
     <Compile Include="Interfaces\IPermutationMultiNeighborhoodShakingOperator.cs" />
     <Compile Include="Interfaces\IPermutationSwap2MoveOperator.cs" />
@@ -178,6 +179,7 @@
     <Compile Include="Moves\TwoOpt\InversionMoveTabuMaker.cs" />
     <Compile Include="Moves\TwoOpt\StochasticInversionMultiMoveGenerator.cs" />
     <Compile Include="Moves\TwoOpt\StochasticInversionSingleMoveGenerator.cs" />
+    <Compile Include="PermutationEqualityComparer.cs" />
     <Compile Include="PermutationManipulator.cs" />
     <Compile Include="PermutationCrossover.cs" />
     <Compile Include="Permutation.cs" />

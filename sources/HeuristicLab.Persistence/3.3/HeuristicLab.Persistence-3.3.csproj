@@ -203,6 +203,7 @@
     <Compile Include="Default\Xml\Primitive\Short2XmlSerializer.cs" />
     <Compile Include="Default\Xml\Primitive\SimpleNumber2XmlSerializerBase.cs" />
     <Compile Include="Default\Xml\Primitive\String2XmlSerializer.cs" />
+    <Compile Include="Default\Xml\Primitive\System.Drawing\Font2XmlSerializer.cs" />
     <Compile Include="Default\Xml\Primitive\TimeSpan2XmlSerializer.cs" />
     <Compile Include="Default\Xml\Primitive\UInt2XmlSerializer.cs" />
     <Compile Include="Default\Xml\Primitive\ULong2XmlSerializer.cs" />

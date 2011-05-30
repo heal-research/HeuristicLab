@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Collections {
@@ -208,6 +209,29 @@ namespace HeuristicLab.Collections {
         OnItemsAdded(items);
         OnItemsAdded(collection);
       }
+    }
+
+    /// <summary>
+    /// Performs a Clear and an AddRange, but does not fire separate events for those operations
+    /// </summary>
+    /// <param name="collection"></param>
+    public void Replace(IEnumerable<T> collection) {
+      List<IndexedItem<T>> oldItems = null;
+      if (list.Any()) oldItems = list.Select((x, i) => new IndexedItem<T>(i, x)).ToList();
+      else oldItems = new List<IndexedItem<T>>();
+
+      int oldCapacity = list.Capacity;
+      list.Clear();
+      list.AddRange(collection);
+
+      List<IndexedItem<T>> items = null;
+      if (list.Any()) items = list.Select((x, i) => new IndexedItem<T>(i, x)).ToList();
+      else items = new List<IndexedItem<T>>();
+
+      if (oldCapacity != list.Capacity) OnPropertyChanged("Capacity");
+      OnPropertyChanged("Item[]");
+      if (oldItems.Count != items.Count) OnPropertyChanged("Count");
+      OnItemsReplaced(items, oldItems);
     }
 
     public bool Remove(T item) {

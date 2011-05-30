@@ -35,7 +35,7 @@ namespace HeuristicLab.Analysis.Views {
   /// </summary>
   [View("DataTable View")]
   [Content(typeof(DataTable), true)]
-  public partial class DataTableView : NamedItemView {
+  public partial class DataTableView : NamedItemView, IConfigureableView {
     protected List<Series> invisibleSeries;
     protected Dictionary<IObservableList<double>, DataRow> valuesRowsTable;
     /// <summary>
@@ -59,6 +59,7 @@ namespace HeuristicLab.Analysis.Views {
       chart.ChartAreas[0].CursorX.Interval = 1;
     }
 
+    #region Event Handler Registration
     /// <summary>
     /// Removes the eventhandlers from the underlying <see cref="Variable"/>.
     /// </summary>
@@ -89,98 +90,6 @@ namespace HeuristicLab.Analysis.Views {
         RegisterDataRowEvents(row);
     }
 
-    protected override void OnContentChanged() {
-      base.OnContentChanged();
-      invisibleSeries.Clear();
-      chart.Titles[0].Text = string.Empty;
-      chart.ChartAreas[0].AxisX.Title = string.Empty;
-      chart.ChartAreas[0].AxisY.Title = string.Empty;
-      chart.ChartAreas[0].AxisY2.Title = string.Empty;
-      chart.Series.Clear();
-      if (Content != null) {
-        chart.Titles[0].Text = Content.Name;
-        foreach (DataRow row in Content.Rows)
-          AddDataRow(row);
-        chart.ChartAreas[0].AxisX.Title = Content.VisualProperties.XAxisTitle;
-        chart.ChartAreas[0].AxisY.Title = Content.VisualProperties.YAxisTitle;
-        chart.ChartAreas[0].AxisY2.Title = Content.VisualProperties.SecondYAxisTitle;
-      }
-    }
-
-    protected override void SetEnabledStateOfControls() {
-      base.SetEnabledStateOfControls();
-      chart.Enabled = Content != null;
-    }
-
-
-    /// <summary>
-    /// Add the DataRow as a series to the chart.
-    /// </summary>
-    /// <param name="row">DataRow to add as series to the chart.</param>
-    protected virtual void AddDataRow(DataRow row) {
-      Series series = new Series(row.Name);
-      switch (row.VisualProperties.ChartType) {
-        case DataRowVisualProperties.DataRowChartType.Line:
-          series.ChartType = SeriesChartType.FastLine;
-          break;
-        case DataRowVisualProperties.DataRowChartType.Bars:
-          series.ChartType = SeriesChartType.Bar;
-          break;
-        case DataRowVisualProperties.DataRowChartType.Columns:
-          series.ChartType = SeriesChartType.Column;
-          break;
-        case DataRowVisualProperties.DataRowChartType.Points:
-          series.ChartType = SeriesChartType.FastPoint;
-          break;
-        default:
-          series.ChartType = SeriesChartType.FastPoint;
-          break;
-      }
-      series.YAxisType = row.VisualProperties.SecondYAxis ? AxisType.Secondary : AxisType.Primary;
-      if (row.VisualProperties.Color != Color.Empty) series.Color = row.VisualProperties.Color;
-      series.ToolTip = row.Name + " X = #INDEX, Y = #VAL";
-      FillSeriesWithRowValues(series, row);
-      chart.Series.Add(series);
-      chart.ChartAreas[0].RecalculateAxesScale();
-      UpdateYCursorInterval();
-    }
-
-
-    /// <summary>
-    /// Set the Y Cursor interval to visible points of enabled series.
-    /// </summary>
-    protected virtual void UpdateYCursorInterval() {
-      double interestingValuesRange = (from series in chart.Series
-                                       where series.Enabled
-                                       let values = (from point in series.Points
-                                                     where !point.IsEmpty
-                                                     select point.YValues[0])
-                                                     .DefaultIfEmpty(1.0)
-                                       let range = values.Max() - values.Min()
-                                       where range > 0.0
-                                       select range)
-                                       .DefaultIfEmpty(1.0)
-                                       .Min();
-
-      double digits = (int)Math.Log10(interestingValuesRange) - 3;
-      double yZoomInterval = Math.Pow(10, digits);
-      this.chart.ChartAreas[0].CursorY.Interval = yZoomInterval;
-    }
-
-
-    /// <summary>
-    /// Remove the corresponding series for a certain DataRow.
-    /// </summary>
-    /// <param name="row">DataRow which series should be removed.</param>
-    protected virtual void RemoveDataRow(DataRow row) {
-      Series series = chart.Series[row.Name];
-      chart.Series.Remove(series);
-      if (invisibleSeries.Contains(series))
-        invisibleSeries.Remove(series);
-      chart.ChartAreas[0].RecalculateAxesScale();
-    }
-
-    #region Content Events
     /// <summary>
     /// Automatically called for every existing data row and whenever a data row is added
     /// to the data table. Do not call this method directly.
@@ -212,6 +121,179 @@ namespace HeuristicLab.Analysis.Views {
       row.VisualPropertiesChanged -= new EventHandler(Row_VisualPropertiesChanged);
       row.NameChanged -= new EventHandler(Row_NameChanged);
     }
+    #endregion
+
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
+      invisibleSeries.Clear();
+      chart.Titles[0].Text = string.Empty;
+      chart.ChartAreas[0].AxisX.Title = string.Empty;
+      chart.ChartAreas[0].AxisY.Title = string.Empty;
+      chart.ChartAreas[0].AxisY2.Title = string.Empty;
+      chart.Series.Clear();
+      if (Content != null) {
+        chart.Titles[0].Text = Content.Name;
+        foreach (DataRow row in Content.Rows)
+          AddDataRow(row);
+        ConfigureChartArea(chart.ChartAreas[0]);
+        RecalculateAxesScale(chart.ChartAreas[0]);
+      }
+    }
+
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
+      chart.Enabled = Content != null;
+    }
+
+    public void ShowConfiguration() {
+      if (Content != null) {
+        DataTableVisualPropertiesDialog dialog = new DataTableVisualPropertiesDialog(Content);
+        dialog.ShowDialog();
+      } else MessageBox.Show("Nothing to configure.");
+    }
+
+    /// <summary>
+    /// Add the DataRow as a series to the chart.
+    /// </summary>
+    /// <param name="row">DataRow to add as series to the chart.</param>
+    protected virtual void AddDataRow(DataRow row) {
+      Series series = new Series(row.Name);
+      ConfigureSeries(series, row);
+      FillSeriesWithRowValues(series, row);
+
+      chart.Series.Add(series);
+      ConfigureChartArea(chart.ChartAreas[0]);
+      RecalculateAxesScale(chart.ChartAreas[0]);
+      UpdateYCursorInterval();
+    }
+
+    private void ConfigureSeries(Series series, DataRow row) {
+      RemoveCustomPropertyIfExists(series, "PointWidth");
+      series.BorderWidth = 1;
+      series.BorderDashStyle = ChartDashStyle.Solid;
+      series.BorderColor = Color.Empty;
+
+      if (row.VisualProperties.Color != Color.Empty)
+        series.Color = row.VisualProperties.Color;
+      else series.Color = Color.Empty;
+
+      switch (row.VisualProperties.ChartType) {
+        case DataRowVisualProperties.DataRowChartType.Line:
+          series.ChartType = SeriesChartType.FastLine;
+          series.BorderWidth = row.VisualProperties.LineWidth;
+          series.BorderDashStyle = ConvertLineStyle(row.VisualProperties.LineStyle);
+          break;
+        case DataRowVisualProperties.DataRowChartType.Bars:
+          // Bar is incompatible with anything but Bar and StackedBar*
+          if (!chart.Series.Any(x => x.ChartType != SeriesChartType.Bar && x.ChartType != SeriesChartType.StackedBar && x.ChartType != SeriesChartType.StackedBar100))
+            series.ChartType = SeriesChartType.Bar;
+          else {
+            series.ChartType = SeriesChartType.FastPoint; //default
+            row.VisualProperties.ChartType = DataRowVisualProperties.DataRowChartType.Points;
+          }
+          break;
+        case DataRowVisualProperties.DataRowChartType.Columns:
+          series.ChartType = SeriesChartType.Column;
+          break;
+        case DataRowVisualProperties.DataRowChartType.Points:
+          series.ChartType = SeriesChartType.FastPoint;
+          break;
+        case DataRowVisualProperties.DataRowChartType.Histogram:
+          series.ChartType = SeriesChartType.Column;
+          series.SetCustomProperty("PointWidth", "1");
+          if (!series.Color.IsEmpty && series.Color.GetBrightness() < 0.25)
+            series.BorderColor = Color.White;
+          else series.BorderColor = Color.Black;
+          break;
+        default:
+          series.ChartType = SeriesChartType.FastPoint;
+          break;
+      }
+      series.YAxisType = row.VisualProperties.SecondYAxis ? AxisType.Secondary : AxisType.Primary;
+      series.XAxisType = row.VisualProperties.SecondXAxis ? AxisType.Secondary : AxisType.Primary;
+      series.ToolTip = row.Name + " X = #INDEX, Y = #VAL";
+    }
+
+    private void ConfigureChartArea(ChartArea area) {
+      if (Content.VisualProperties.TitleFont != null) chart.Titles[0].Font = Content.VisualProperties.TitleFont;
+      if (!Content.VisualProperties.TitleColor.IsEmpty) chart.Titles[0].ForeColor = Content.VisualProperties.TitleColor;
+
+      if (Content.VisualProperties.AxisTitleFont != null) area.AxisX.TitleFont = Content.VisualProperties.AxisTitleFont;
+      if (!Content.VisualProperties.AxisTitleColor.IsEmpty) area.AxisX.TitleForeColor = Content.VisualProperties.AxisTitleColor;
+      area.AxisX.Title = Content.VisualProperties.XAxisTitle;
+
+      if (Content.VisualProperties.AxisTitleFont != null) area.AxisX2.TitleFont = Content.VisualProperties.AxisTitleFont;
+      if (!Content.VisualProperties.AxisTitleColor.IsEmpty) area.AxisX2.TitleForeColor = Content.VisualProperties.AxisTitleColor;
+      area.AxisX2.Title = Content.VisualProperties.SecondXAxisTitle;
+
+      if (Content.VisualProperties.AxisTitleFont != null) area.AxisY.TitleFont = Content.VisualProperties.AxisTitleFont;
+      if (!Content.VisualProperties.AxisTitleColor.IsEmpty) area.AxisY.TitleForeColor = Content.VisualProperties.AxisTitleColor;
+      area.AxisY.Title = Content.VisualProperties.YAxisTitle;
+
+      if (Content.VisualProperties.AxisTitleFont != null) area.AxisY2.TitleFont = Content.VisualProperties.AxisTitleFont;
+      if (!Content.VisualProperties.AxisTitleColor.IsEmpty) area.AxisY2.TitleForeColor = Content.VisualProperties.AxisTitleColor;
+      area.AxisY2.Title = Content.VisualProperties.SecondYAxisTitle;
+    }
+
+    private void RecalculateAxesScale(ChartArea area) {
+      // Reset the axes bounds so that RecalculateAxesScale() will assign new bounds
+      foreach (Axis a in area.Axes) {
+        a.Minimum = double.NaN;
+        a.Maximum = double.NaN;
+      }
+      area.RecalculateAxesScale();
+      area.AxisX.IsMarginVisible = false;
+      area.AxisX2.IsMarginVisible = false;
+
+      if (!Content.VisualProperties.XAxisMinimumAuto && !double.IsNaN(Content.VisualProperties.XAxisMinimumFixedValue)) area.AxisX.Minimum = Content.VisualProperties.XAxisMinimumFixedValue;
+      if (!Content.VisualProperties.XAxisMaximumAuto && !double.IsNaN(Content.VisualProperties.XAxisMaximumFixedValue)) area.AxisX.Maximum = Content.VisualProperties.XAxisMaximumFixedValue;
+      if (!Content.VisualProperties.SecondXAxisMinimumAuto && !double.IsNaN(Content.VisualProperties.SecondXAxisMinimumFixedValue)) area.AxisX2.Minimum = Content.VisualProperties.SecondXAxisMinimumFixedValue;
+      if (!Content.VisualProperties.SecondXAxisMaximumAuto && !double.IsNaN(Content.VisualProperties.SecondXAxisMaximumFixedValue)) area.AxisX2.Maximum = Content.VisualProperties.SecondXAxisMaximumFixedValue;
+      if (!Content.VisualProperties.YAxisMinimumAuto && !double.IsNaN(Content.VisualProperties.YAxisMinimumFixedValue)) area.AxisY.Minimum = Content.VisualProperties.YAxisMinimumFixedValue;
+      if (!Content.VisualProperties.YAxisMaximumAuto && !double.IsNaN(Content.VisualProperties.YAxisMaximumFixedValue)) area.AxisY.Maximum = Content.VisualProperties.YAxisMaximumFixedValue;
+      if (!Content.VisualProperties.SecondYAxisMinimumAuto && !double.IsNaN(Content.VisualProperties.SecondYAxisMinimumFixedValue)) area.AxisY2.Minimum = Content.VisualProperties.SecondYAxisMinimumFixedValue;
+      if (!Content.VisualProperties.SecondYAxisMaximumAuto && !double.IsNaN(Content.VisualProperties.SecondYAxisMaximumFixedValue)) area.AxisY2.Maximum = Content.VisualProperties.SecondYAxisMaximumFixedValue;
+      if (area.AxisX.Minimum > area.AxisX.Maximum) area.AxisX.Maximum = area.AxisX.Minimum + 1;
+      if (area.AxisX2.Minimum > area.AxisX2.Maximum) area.AxisX2.Maximum = area.AxisX2.Minimum + 1;
+      if (area.AxisY.Minimum > area.AxisY.Maximum) area.AxisY.Maximum = area.AxisY.Minimum + 1;
+      if (area.AxisY2.Minimum > area.AxisY2.Maximum) area.AxisY2.Maximum = area.AxisY2.Minimum + 1;
+    }
+
+    /// <summary>
+    /// Set the Y Cursor interval to visible points of enabled series.
+    /// </summary>
+    protected virtual void UpdateYCursorInterval() {
+      double interestingValuesRange = (
+        from series in chart.Series
+        where series.Enabled
+        let values = (from point in series.Points
+                      where !point.IsEmpty
+                      select point.YValues[0]).DefaultIfEmpty(1.0)
+        let range = values.Max() - values.Min()
+        where range > 0.0
+        select range
+        ).DefaultIfEmpty(1.0).Min();
+
+      double digits = (int)Math.Log10(interestingValuesRange) - 3;
+      double yZoomInterval = Math.Pow(10, digits);
+      this.chart.ChartAreas[0].CursorY.Interval = yZoomInterval;
+    }
+
+
+    /// <summary>
+    /// Remove the corresponding series for a certain DataRow.
+    /// </summary>
+    /// <param name="row">DataRow which series should be removed.</param>
+    protected virtual void RemoveDataRow(DataRow row) {
+      Series series = chart.Series[row.Name];
+      chart.Series.Remove(series);
+      if (invisibleSeries.Contains(series))
+        invisibleSeries.Remove(series);
+      RecalculateAxesScale(chart.ChartAreas[0]);
+    }
+
+    #region Event Handlers
+    #region Content Event Handlers
     protected override void Content_NameChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_NameChanged), sender, e);
@@ -224,11 +306,12 @@ namespace HeuristicLab.Analysis.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_VisualPropertiesChanged), sender, e);
       else {
-        chart.ChartAreas[0].AxisX.Title = Content.VisualProperties.XAxisTitle;
-        chart.ChartAreas[0].AxisY.Title = Content.VisualProperties.YAxisTitle;
-        chart.ChartAreas[0].AxisY2.Title = Content.VisualProperties.SecondYAxisTitle;
+        ConfigureChartArea(chart.ChartAreas[0]);
+        RecalculateAxesScale(chart.ChartAreas[0]); // axes min/max could have changed
       }
     }
+    #endregion
+    #region Rows Event Handlers
     private void Rows_ItemsAdded(object sender, CollectionItemsChangedEventArgs<DataRow> e) {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<DataRow>(Rows_ItemsAdded), sender, e);
@@ -277,31 +360,18 @@ namespace HeuristicLab.Analysis.Views {
         }
       }
     }
+    #endregion
+    #region Row Event Handlers
     private void Row_VisualPropertiesChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Row_VisualPropertiesChanged), sender, e);
       else {
         DataRow row = (DataRow)sender;
-        switch (row.VisualProperties.ChartType) {
-          case DataRowVisualProperties.DataRowChartType.Line:
-            chart.Series[row.Name].ChartType = SeriesChartType.FastLine;
-            break;
-          case DataRowVisualProperties.DataRowChartType.Bars:
-            chart.Series[row.Name].ChartType = SeriesChartType.Bar;
-            break;
-          case DataRowVisualProperties.DataRowChartType.Columns:
-            chart.Series[row.Name].ChartType = SeriesChartType.Column;
-            break;
-          case DataRowVisualProperties.DataRowChartType.Points:
-            chart.Series[row.Name].ChartType = SeriesChartType.FastPoint;
-            break;
-          default:
-            chart.Series[row.Name].ChartType = SeriesChartType.FastPoint;
-            break;
-        }
-        chart.Series[row.Name].YAxisType = row.VisualProperties.SecondYAxis ? AxisType.Secondary : AxisType.Primary;
-        if (row.VisualProperties.Color != Color.Empty) chart.Series[row.Name].Color = row.VisualProperties.Color;
-        chart.ChartAreas[0].RecalculateAxesScale();
+        Series series = chart.Series[row.Name];
+        series.Points.Clear();
+        ConfigureSeries(series, row);
+        FillSeriesWithRowValues(series, row);
+        RecalculateAxesScale(chart.ChartAreas[0]);
       }
     }
     private void Row_NameChanged(object sender, EventArgs e) {
@@ -312,6 +382,8 @@ namespace HeuristicLab.Analysis.Views {
         chart.Series[row.Name].Name = row.Name;
       }
     }
+    #endregion
+    #region Values Event Handlers
     private void Values_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<double>> e) {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<IndexedItem<double>>(Values_ItemsAdded), sender, e);
@@ -323,6 +395,7 @@ namespace HeuristicLab.Analysis.Views {
           if (!invisibleSeries.Contains(rowSeries)) {
             rowSeries.Points.Clear();
             FillSeriesWithRowValues(rowSeries, row);
+            RecalculateAxesScale(chart.ChartAreas[0]);
             UpdateYCursorInterval();
           }
         }
@@ -339,6 +412,7 @@ namespace HeuristicLab.Analysis.Views {
           if (!invisibleSeries.Contains(rowSeries)) {
             rowSeries.Points.Clear();
             FillSeriesWithRowValues(rowSeries, row);
+            RecalculateAxesScale(chart.ChartAreas[0]);
             UpdateYCursorInterval();
           }
         }
@@ -353,14 +427,20 @@ namespace HeuristicLab.Analysis.Views {
         if (row != null) {
           Series rowSeries = chart.Series[row.Name];
           if (!invisibleSeries.Contains(rowSeries)) {
-            foreach (IndexedItem<double> item in e.Items) {
-              if (IsInvalidValue(item.Value))
-                rowSeries.Points[item.Index].IsEmpty = true;
-              else {
-                rowSeries.Points[item.Index].YValues = new double[] { item.Value };
-                rowSeries.Points[item.Index].IsEmpty = false;
+            if (row.VisualProperties.ChartType == DataRowVisualProperties.DataRowChartType.Histogram) {
+              rowSeries.Points.Clear();
+              FillSeriesWithRowValues(rowSeries, row);
+            } else {
+              foreach (IndexedItem<double> item in e.Items) {
+                if (IsInvalidValue(item.Value))
+                  rowSeries.Points[item.Index].IsEmpty = true;
+                else {
+                  rowSeries.Points[item.Index].YValues = new double[] { item.Value };
+                  rowSeries.Points[item.Index].IsEmpty = false;
+                }
               }
             }
+            RecalculateAxesScale(chart.ChartAreas[0]);
             UpdateYCursorInterval();
           }
         }
@@ -377,6 +457,7 @@ namespace HeuristicLab.Analysis.Views {
           if (!invisibleSeries.Contains(rowSeries)) {
             rowSeries.Points.Clear();
             FillSeriesWithRowValues(rowSeries, row);
+            RecalculateAxesScale(chart.ChartAreas[0]);
             UpdateYCursorInterval();
           }
         }
@@ -394,52 +475,22 @@ namespace HeuristicLab.Analysis.Views {
           if (!invisibleSeries.Contains(rowSeries)) {
             rowSeries.Points.Clear();
             FillSeriesWithRowValues(rowSeries, row);
+            RecalculateAxesScale(chart.ChartAreas[0]);
             UpdateYCursorInterval();
           }
         }
       }
     }
     #endregion
+    #endregion
 
-    #region Chart Events
+    #region Chart Event Handlers
     private void chart_MouseDown(object sender, MouseEventArgs e) {
       HitTestResult result = chart.HitTest(e.X, e.Y);
       if (result.ChartElementType == ChartElementType.LegendItem) {
         ToggleSeriesVisible(result.Series);
       }
     }
-
-    private void ToggleSeriesVisible(Series series) {
-      if (!invisibleSeries.Contains(series)) {
-        series.Points.Clear();
-        invisibleSeries.Add(series);
-      } else {
-        invisibleSeries.Remove(series);
-        if (Content != null) {
-
-          var row = (from r in Content.Rows
-                     where r.Name == series.Name
-                     select r).Single();
-          FillSeriesWithRowValues(series, row);
-          this.chart.Legends[series.Legend].ForeColor = Color.Black;
-          UpdateYCursorInterval();
-        }
-      }
-    }
-
-    private void FillSeriesWithRowValues(Series series, DataRow row) {
-      for (int i = 0; i < row.Values.Count; i++) {
-        var value = row.Values[i];
-        DataPoint point = new DataPoint();
-        point.XValue = row.VisualProperties.StartIndexZero ? i : i + 1;
-        if (IsInvalidValue(value))
-          point.IsEmpty = true;
-        else
-          point.YValues = new double[] { value };
-        series.Points.Add(point);
-      }
-    }
-
     private void chart_MouseMove(object sender, MouseEventArgs e) {
       HitTestResult result = chart.HitTest(e.X, e.Y);
       if (result.ChartElementType == ChartElementType.LegendItem)
@@ -460,6 +511,124 @@ namespace HeuristicLab.Analysis.Views {
     }
     #endregion
 
+    private void ToggleSeriesVisible(Series series) {
+      if (!invisibleSeries.Contains(series)) {
+        series.Points.Clear();
+        invisibleSeries.Add(series);
+      } else {
+        invisibleSeries.Remove(series);
+        if (Content != null) {
+
+          var row = (from r in Content.Rows
+                     where r.Name == series.Name
+                     select r).Single();
+          FillSeriesWithRowValues(series, row);
+          this.chart.Legends[series.Legend].ForeColor = Color.Black;
+          RecalculateAxesScale(chart.ChartAreas[0]);
+          UpdateYCursorInterval();
+        }
+      }
+    }
+
+    private void FillSeriesWithRowValues(Series series, DataRow row) {
+      switch (row.VisualProperties.ChartType) {
+        case DataRowVisualProperties.DataRowChartType.Histogram:
+          CalculateHistogram(series, row);
+          break;
+        default: {
+            for (int i = 0; i < row.Values.Count; i++) {
+              var value = row.Values[i];
+              DataPoint point = new DataPoint();
+              point.XValue = row.VisualProperties.StartIndexZero ? i : i + 1;
+              if (IsInvalidValue(value))
+                point.IsEmpty = true;
+              else
+                point.YValues = new double[] { value };
+              series.Points.Add(point);
+            }
+          }
+          break;
+      }
+    }
+
+    protected virtual void CalculateHistogram(Series series, DataRow row) {
+      series.Points.Clear();
+      if (!row.Values.Any()) return;
+      int bins = row.VisualProperties.Bins;
+
+      double minValue = row.Values.Min();
+      double maxValue = row.Values.Max();
+      double intervalWidth = (maxValue - minValue) / bins;
+      if (intervalWidth < 0) return;
+      if (intervalWidth == 0) {
+        series.Points.AddXY(minValue, row.Values.Count);
+        return;
+      }
+
+      if (!row.VisualProperties.ExactBins) {
+        intervalWidth = HumanRoundRange(intervalWidth);
+        minValue = Math.Floor(minValue / intervalWidth) * intervalWidth;
+        maxValue = Math.Ceiling(maxValue / intervalWidth) * intervalWidth;
+      }
+
+      double current = minValue, intervalCenter = intervalWidth / 2.0;
+      int frequency = 0;
+      series.Points.AddXY(current - intervalCenter, 0); // so that the first column is not visually truncated
+      foreach (double v in row.Values.Where(x => !IsInvalidValue(x)).OrderBy(x => x)) {
+        while (v > current + intervalWidth) {
+          series.Points.AddXY(current + intervalCenter, frequency);
+          current += intervalWidth;
+          frequency = 0;
+        }
+        frequency++;
+      }
+      series.Points.AddXY(current + intervalCenter, frequency);
+      series.Points.AddXY(current + 3 * intervalCenter, 0); // so that the last column is not visually truncated
+    }
+
+    #region Helpers
+    protected void RemoveCustomPropertyIfExists(Series series, string property) {
+      if (series.IsCustomPropertySet(property)) series.DeleteCustomProperty(property);
+    }
+
+    private double HumanRoundRange(double range) {
+      double base10 = Math.Pow(10.0, Math.Floor(Math.Log10(range)));
+      double rounding = range / base10;
+      if (rounding <= 1.5) rounding = 1;
+      else if (rounding <= 2.25) rounding = 2;
+      else if (rounding <= 3.75) rounding = 2.5;
+      else if (rounding <= 7.5) rounding = 5;
+      else rounding = 10;
+      return rounding * base10;
+    }
+
+    private double HumanRoundMax(double max) {
+      double base10;
+      if (max > 0) base10 = Math.Pow(10.0, Math.Floor(Math.Log10(max)));
+      else base10 = Math.Pow(10.0, Math.Ceiling(Math.Log10(-max)));
+      double rounding = (max > 0) ? base10 : -base10;
+      while (rounding < max) rounding += base10;
+      return rounding;
+    }
+
+    private ChartDashStyle ConvertLineStyle(DataRowVisualProperties.DataRowLineStyle dataRowLineStyle) {
+      switch (dataRowLineStyle) {
+        case DataRowVisualProperties.DataRowLineStyle.Dash:
+          return ChartDashStyle.Dash;
+        case DataRowVisualProperties.DataRowLineStyle.DashDot:
+          return ChartDashStyle.DashDot;
+        case DataRowVisualProperties.DataRowLineStyle.DashDotDot:
+          return ChartDashStyle.DashDotDot;
+        case DataRowVisualProperties.DataRowLineStyle.Dot:
+          return ChartDashStyle.Dot;
+        case DataRowVisualProperties.DataRowLineStyle.NotSet:
+          return ChartDashStyle.NotSet;
+        case DataRowVisualProperties.DataRowLineStyle.Solid:
+          return ChartDashStyle.Solid;
+        default:
+          return ChartDashStyle.NotSet;
+      }
+    }
 
     /// <summary>
     /// Determines whether a double value can be displayed (converted to Decimal and not an NaN).
@@ -470,5 +639,6 @@ namespace HeuristicLab.Analysis.Views {
     protected static bool IsInvalidValue(double x) {
       return double.IsNaN(x) || x < (double)decimal.MinValue || x > (double)decimal.MaxValue;
     }
+    #endregion
   }
 }

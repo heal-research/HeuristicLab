@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Globalization;
 using HeuristicLab.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -41,8 +42,11 @@ namespace HeuristicLab.Analysis.Tests {
       distances3[0, 1] = distances3[1, 0] = 8;
       distances3[0, 2] = distances3[2, 0] = 6.4;
       distances3[1, 2] = distances3[2, 1] = 5;
-      stress = MultidimensionalScaling.CalculateNormalizedStress(distances3,
-        MultidimensionalScaling.KruskalShepard(distances3));
+      DoubleMatrix coords3 = MultidimensionalScaling.KruskalShepard(distances3);
+      Console.WriteLine("Coordinates: ");
+      Console.WriteLine("A = ({0}, {1}), B = ({2}, {3}), C = ({4}, {5})", coords3[0, 0], coords3[0, 1], coords3[1, 0], coords3[1, 1], coords3[2, 0], coords3[2, 1]);
+      stress = MultidimensionalScaling.CalculateNormalizedStress(distances3, coords3);
+      Console.WriteLine("Stress = " + stress.ToString(CultureInfo.InvariantCulture.NumberFormat));
       Assert.IsTrue(stress < 0.1);
       DoubleMatrix distances4 = new DoubleMatrix(4, 4);
       // Example 3: A small square

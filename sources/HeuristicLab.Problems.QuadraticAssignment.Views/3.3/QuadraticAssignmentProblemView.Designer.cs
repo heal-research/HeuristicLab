@@ -100,6 +100,8 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
       // 
       this.QAPLIBInstancesLabel.AutoSize = true;
       this.QAPLIBInstancesLabel.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.QAPLIBInstancesLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.QAPLIBInstancesLabel.ForeColor = System.Drawing.Color.Blue;
       this.QAPLIBInstancesLabel.Location = new System.Drawing.Point(3, 5);
       this.QAPLIBInstancesLabel.Name = "QAPLIBInstancesLabel";
       this.QAPLIBInstancesLabel.Size = new System.Drawing.Size(96, 13);
@@ -108,6 +110,8 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
       this.toolTip.SetToolTip(this.QAPLIBInstancesLabel, "These instances were taken from the QAPLIB homepage at http://www.seas.upenn.edu/" +
               "qaplib/");
       this.QAPLIBInstancesLabel.Click += new System.EventHandler(this.QAPLIBInstancesLabel_Click);
+      this.QAPLIBInstancesLabel.MouseEnter += new System.EventHandler(this.QAPLIBInstancesLabel_MouseEnter);
+      this.QAPLIBInstancesLabel.MouseLeave += new System.EventHandler(this.QAPLIBInstancesLabel_MouseLeave);
       // 
       // instancesComboBox
       // 
@@ -190,15 +194,15 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
       this.Controls.Add(this.QAPLIBInstancesLabel);
       this.Name = "QuadraticAssignmentProblemView";
       this.Size = new System.Drawing.Size(647, 492);
-      this.Controls.SetChildIndex(this.infoLabel, 0);
-      this.Controls.SetChildIndex(this.parameterCollectionView, 0);
-      this.Controls.SetChildIndex(this.nameLabel, 0);
-      this.Controls.SetChildIndex(this.nameTextBox, 0);
       this.Controls.SetChildIndex(this.QAPLIBInstancesLabel, 0);
       this.Controls.SetChildIndex(this.loadInstanceButton, 0);
       this.Controls.SetChildIndex(this.importInstanceButton, 0);
       this.Controls.SetChildIndex(this.tabControl, 0);
       this.Controls.SetChildIndex(this.instancesComboBox, 0);
+      this.Controls.SetChildIndex(this.infoLabel, 0);
+      this.Controls.SetChildIndex(this.parameterCollectionView, 0);
+      this.Controls.SetChildIndex(this.nameLabel, 0);
+      this.Controls.SetChildIndex(this.nameTextBox, 0);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.tabControl.ResumeLayout(false);
       this.visualizationTabPage.ResumeLayout(false);

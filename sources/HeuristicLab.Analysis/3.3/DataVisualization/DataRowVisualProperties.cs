@@ -35,7 +35,18 @@ namespace HeuristicLab.Analysis {
       Line,
       Columns,
       Points,
-      Bars
+      Bars,
+      Histogram
+    }
+    #endregion
+    #region LineStyle
+    public enum DataRowLineStyle {
+      Dash,
+      DashDot,
+      DashDotDot,
+      Dot,
+      NotSet,
+      Solid
     }
     #endregion
 
@@ -59,6 +70,16 @@ namespace HeuristicLab.Analysis {
         }
       }
     }
+    private bool secondXAxis;
+    public bool SecondXAxis {
+      get { return secondXAxis; }
+      set {
+        if (secondXAxis != value) {
+          secondXAxis = value;
+          OnPropertyChanged("SecondXAxis");
+        }
+      }
+    }
     private Color color;
     public Color Color {
       get { return color; }
@@ -69,6 +90,16 @@ namespace HeuristicLab.Analysis {
         }
       }
     }
+    private DataRowLineStyle lineStyle;
+    public DataRowLineStyle LineStyle {
+      get { return lineStyle; }
+      set {
+        if (lineStyle != value) {
+          lineStyle = value;
+          OnPropertyChanged("LineStyle");
+        }
+      }
+    }
     private bool startIndexZero;
     public bool StartIndexZero {
       get { return startIndexZero; }
@@ -76,6 +107,36 @@ namespace HeuristicLab.Analysis {
         if (startIndexZero != value) {
           startIndexZero = value;
           OnPropertyChanged("StartIndexZero");
+        }
+      }
+    }
+    private int lineWidth;
+    public int LineWidth {
+      get { return lineWidth; }
+      set {
+        if (lineWidth != value) {
+          lineWidth = value;
+          OnPropertyChanged("LineWidth");
+        }
+      }
+    }
+    private int bins;
+    public int Bins {
+      get { return bins; }
+      set {
+        if (bins != value) {
+          bins = value;
+          OnPropertyChanged("Bins");
+        }
+      }
+    }
+    private bool exactBins;
+    public bool ExactBins {
+      get { return exactBins; }
+      set {
+        if (exactBins != value) {
+          exactBins = value;
+          OnPropertyChanged("ExactBins");
         }
       }
     }
@@ -91,15 +152,40 @@ namespace HeuristicLab.Analysis {
       get { return secondYAxis; }
       set { secondYAxis = value; }
     }
+    [Storable(Name = "SecondXAxis")]
+    private bool StorableSecondXAxis {
+      get { return secondXAxis; }
+      set { secondXAxis = value; }
+    }
     [Storable(Name = "Color")]
     private Color StorableColor {
       get { return color; }
       set { color = value; }
     }
+    [Storable(Name = "LineStyle")]
+    private DataRowLineStyle StorableLineStyle {
+      get { return lineStyle; }
+      set { lineStyle = value; }
+    }
     [Storable(Name = "StartIndexZero")]
     private bool StorableStartIndexZero {
       get { return startIndexZero; }
       set { startIndexZero = value; }
+    }
+    [Storable(Name = "LineWidth")]
+    private int StorableLineWidth {
+      get { return lineWidth; }
+      set { lineWidth = value; }
+    }
+    [Storable(Name = "Bins")]
+    private int StorableBins {
+      get { return bins; }
+      set { bins = value; }
+    }
+    [Storable(Name = "ExactBins")]
+    private bool StorableExactBins {
+      get { return exactBins; }
+      set { exactBins = value; }
     }
     #endregion
 
@@ -109,14 +195,24 @@ namespace HeuristicLab.Analysis {
       : base(original, cloner) {
       this.chartType = original.chartType;
       this.secondYAxis = original.secondYAxis;
+      this.secondXAxis = original.secondXAxis;
       this.color = original.color;
+      this.lineStyle = original.lineStyle;
       this.startIndexZero = original.startIndexZero;
+      this.lineWidth = original.lineWidth;
+      this.bins = original.bins;
+      this.exactBins = original.exactBins;
     }
     public DataRowVisualProperties() {
       chartType = DataRowChartType.Line;
       secondYAxis = false;
+      secondXAxis = false;
       color = Color.Empty;
+      lineStyle = DataRowLineStyle.Solid;
       startIndexZero = false;
+      lineWidth = 1;
+      bins = 10;
+      exactBins = false;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

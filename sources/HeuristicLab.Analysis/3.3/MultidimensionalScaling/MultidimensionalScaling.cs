@@ -67,31 +67,27 @@ namespace HeuristicLab.Analysis {
     /// <param name="maximumIterations">The number of iterations for which the algorithm should run.
     /// In every iteration it tries to find the best location for every item.</param>
     /// <returns>A Nx2 matrix where the first column represents the x- and the second column the y coordinates.</returns>
-    public static DoubleMatrix KruskalShepard(DoubleMatrix dissimilarities, DoubleMatrix coordinates, int maximumIterations = 20) {
+    public static DoubleMatrix KruskalShepard(DoubleMatrix dissimilarities, DoubleMatrix coordinates, int maximumIterations = 10) {
       int dimension = dissimilarities.Rows;
       if (dimension != dissimilarities.Columns || coordinates.Rows != dimension) throw new ArgumentException("The number of coordinates and the number of rows and columns in the dissimilarities matrix do not match.");
 
       double epsg = 1e-7;
       double epsf = 0;
       double epsx = 0;
-      int maxits = 100;
-      alglib.mincgstate state = null;
-      alglib.mincgreport rep;
+      int maxits = 0;
 
+      alglib.minlmstate state;
+      alglib.minlmreport rep;
       for (int iterations = 0; iterations < maximumIterations; iterations++) {
         bool changed = false;
         for (int i = 0; i < dimension; i++) {
           double[] c = new double[] { coordinates[i, 0], coordinates[i, 1] };
 
           try {
-            if ((iterations == 0 && i == 0)) {
-              alglib.mincgcreate(c, out state);
-              alglib.mincgsetcond(state, epsg, epsf, epsx, maxits);
-            } else {
-              alglib.mincgrestartfrom(state, c);
-            }
-            alglib.mincgoptimize(state, StressGradient, null, new Info(coordinates, dissimilarities, i));
-            alglib.mincgresults(state, out c, out rep);
+            alglib.minlmcreatevj(dimension - 1, c, out state);
+            alglib.minlmsetcond(state, epsg, epsf, epsx, maxits);
+            alglib.minlmoptimize(state, StressFitness, StressJacobian, null, new Info(coordinates, dissimilarities, i));
+            alglib.minlmresults(state, out c, out rep);
           } catch (alglib.alglibexception) { }
           if (!double.IsNaN(c[0]) && !double.IsNaN(c[1])) {
             changed = changed || (coordinates[i, 0] != c[0]) || (coordinates[i, 1] != c[1]);
@@ -104,18 +100,28 @@ namespace HeuristicLab.Analysis {
       return coordinates;
     }
 
-    // computes the function and the gradient of the raw stress function.
-    private static void StressGradient(double[] x, ref double func, double[] grad, object obj) {
-      func = 0; grad[0] = 0; grad[1] = 0;
+    private static void StressFitness(double[] x, double[] fi, object obj) {
       Info info = (obj as Info);
       for (int i = 0; i < info.Coordinates.Rows; i++) {
-        double c = info.Dissimilarities[info.Row, i];
+        double f = Stress(x, info.Dissimilarities[info.Row, i], info.Coordinates[i, 0], info.Coordinates[i, 1]);
+        if (i < info.Row) fi[i] = f;
+        else if (i > info.Row) fi[i - 1] = f;
+      }
+    }
+
+    private static void StressJacobian(double[] x, double[] fi, double[,] jac, object obj) {
+      Info info = (obj as Info);
+      int idx = 0;
+      for (int i = 0; i < info.Coordinates.Rows; i++) {
         if (i != info.Row) {
+          double c = info.Dissimilarities[info.Row, i];
           double a = info.Coordinates[i, 0];
           double b = info.Coordinates[i, 1];
-          func += Stress(x, c, a, b);
-          grad[0] += ((2 * x[0] - 2 * a) * Math.Sqrt(x[1] * x[1] - 2 * b * x[1] + x[0] * x[0] - 2 * a * x[0] + b * b + a * a) - 2 * c * x[0] + 2 * a * c) / Math.Sqrt(x[1] * x[1] - 2 * b * x[1] + x[0] * x[0] - 2 * a * x[0] + b * b + a * a);
-          grad[1] += ((2 * x[1] - 2 * b) * Math.Sqrt(x[1] * x[1] - 2 * b * x[1] + x[0] * x[0] - 2 * a * x[0] + b * b + a * a) - 2 * c * x[1] + 2 * b * c) / Math.Sqrt(x[1] * x[1] - 2 * b * x[1] + x[0] * x[0] - 2 * a * x[0] + b * b + a * a);
+          double f = Stress(x, c, a, b);
+          fi[idx] = f;
+          jac[idx, 0] = 2 * (x[0] - a) * (Math.Sqrt((a - x[0]) * (a - x[0]) + (b - x[1]) * (b - x[1])) - c) / Math.Sqrt((a - x[0]) * (a - x[0]) + (b - x[1]) * (b - x[1]));
+          jac[idx, 1] = 2 * (x[1] - b) * (Math.Sqrt((a - x[0]) * (a - x[0]) + (b - x[1]) * (b - x[1])) - c) / Math.Sqrt((a - x[0]) * (a - x[0]) + (b - x[1]) * (b - x[1]));
+          idx++;
         }
       }
     }

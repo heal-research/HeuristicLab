@@ -100,6 +100,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
               view.OnShown(new ViewShownEventArgs(view, false));
             }
           } else viewType = null;
+          configurationLabel.Visible = activeView is IConfigureableView;
+          configurationLabel.Enabled = activeView != null && !activeView.Locked;
         }
       }
     }
@@ -188,6 +190,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
     private void activeView_LockedChanged(object sender, EventArgs e) {
       Locked = activeView.Locked;
+      configurationLabel.Enabled = !activeView.Locked;
     }
 
     protected override void OnSizeChanged(EventArgs e) {
@@ -199,6 +202,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     private void OnSizeChangedHelper(EventArgs e) {
       base.OnSizeChanged(e);
       viewsLabel.Location = new Point(Width - viewsLabel.Margin.Right - viewsLabel.Width, viewsLabel.Margin.Top);
+      configurationLabel.Location = new Point(Width - configurationLabel.Margin.Right - configurationLabel.Width, viewsLabel.Bottom + viewsLabel.Margin.Bottom + configurationLabel.Margin.Top);
     }
 
     #region forwarding of view events
@@ -285,6 +289,10 @@ namespace HeuristicLab.MainForm.WindowsForms {
         DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
       } else
         startDragAndDrop = false;
+    }
+
+    private void configurationLabel_MouseDoubleClick(object sender, MouseEventArgs e) {
+      ((IConfigureableView)ActiveView).ShowConfiguration();
     }
     #endregion
   }

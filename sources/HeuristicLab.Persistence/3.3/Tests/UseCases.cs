@@ -1197,11 +1197,11 @@ namespace HeuristicLab.Persistence_33.Tests {
     public class OneWayTest {
       public OneWayTest() { this.value = "default"; }
       public string value;
-      [Storable(AllowOneWay=true)]
+      [Storable(AllowOneWay = true)]
       public string ReadOnly {
         get { return "ReadOnly"; }
       }
-      [Storable(AllowOneWay=true)]
+      [Storable(AllowOneWay = true)]
       public string WriteOnly {
         set { this.value = value; }
       }
@@ -1252,6 +1252,22 @@ namespace HeuristicLab.Persistence_33.Tests {
       XmlGenerator.Serialize(tuple, tempFile);
       var newTuple = XmlParser.Deserialize<Tuple<Tuple<int>, Tuple<char, string>, Tuple<double, float, int>, Tuple<Tuple<int, int, int>, Tuple<int, int, int>, Tuple<int, int, int>>>>(tempFile);
       Assert.AreEqual(tuple, newTuple);
+    }
+
+    [TestMethod]
+    public void FontTest() {
+      List<Font> fonts = new List<Font>() {
+        new Font(FontFamily.GenericSansSerif, 12),
+        new Font("Times New Roman", 21, FontStyle.Bold, GraphicsUnit.Pixel),
+        new Font("Courier New", 10, FontStyle.Underline, GraphicsUnit.Document),
+        new Font("Helvetica", 21, FontStyle.Strikeout, GraphicsUnit.Inch, 0, true),
+      };
+      XmlGenerator.Serialize(fonts, tempFile);
+      var newFonts = XmlParser.Deserialize<List<Font>>(tempFile);
+      Assert.AreEqual(fonts[0], newFonts[0]);
+      Assert.AreEqual(fonts[1], newFonts[1]);
+      Assert.AreEqual(fonts[2], newFonts[2]);
+      Assert.AreEqual(fonts[3], newFonts[3]);
     }
 
 

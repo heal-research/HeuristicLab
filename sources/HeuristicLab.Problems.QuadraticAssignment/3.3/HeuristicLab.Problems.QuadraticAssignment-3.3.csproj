@@ -108,6 +108,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Analyzers\BestQAPSolutionAnalyzer.cs" />
+    <Compile Include="Analyzers\QAPAlleleFrequencyAnalyzer.cs" />
+    <Compile Include="Analyzers\QAPPopulationDiversityAnalyzer.cs" />
     <Compile Include="Evaluators\QAPSwap2MoveEvaluator.cs" />
     <Compile Include="Evaluators\QAPEvaluator.cs" />
     <Compile Include="Evaluators\QAPInversionMoveEvaluator.cs" />
@@ -117,6 +119,7 @@
     </Compile>
     <Compile Include="Interfaces\IQAPEvaluator.cs" />
     <Compile Include="Interfaces\IQAPMoveEvaluator.cs" />
+    <Compile Include="LocalImprovement\QAPExhaustiveSwap2LocalImprovement.cs" />
     <Compile Include="Parsers\QAPLIBSolutionParser.cs" />
     <Compile Include="Parsers\QAPLIBParser.cs" />
     <Compile Include="QAPAssignment.cs" />
@@ -385,6 +388,10 @@
     <EmbeddedResource Include="Data\wil100.sln" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
+      <Project>{887425B4-4348-49ED-A457-B7D2C26DDBF9}</Project>
+      <Name>HeuristicLab.Analysis-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
       <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
       <Name>HeuristicLab.Collections-3.3</Name>
@@ -431,9 +438,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Data\tai100a.sln" />
-    <Content Include="Data\tai25a.sln" />
-    <Content Include="Data\tai50a.sln" />
+    <EmbeddedResource Include="Data\tai100a.sln" />
+    <EmbeddedResource Include="Data\tai25a.sln" />
+    <EmbeddedResource Include="Data\tai50a.sln" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Data\esc32a.sln" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Data\sko49.sln" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

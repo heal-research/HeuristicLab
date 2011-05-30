@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core.Views;
@@ -118,6 +119,18 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
 
     private void QAPLIBInstancesLabel_Click(object sender, System.EventArgs e) {
       System.Diagnostics.Process.Start("http://www.seas.upenn.edu/qaplib/");
+    }
+
+    private void QAPLIBInstancesLabel_MouseEnter(object sender, EventArgs e) {
+      Cursor = Cursors.Hand;
+      QAPLIBInstancesLabel.ForeColor = Color.Red;
+      toolTip.SetToolTip(QAPLIBInstancesLabel, "Browse to http://www.seas.upenn.edu/qaplib/");
+    }
+
+    private void QAPLIBInstancesLabel_MouseLeave(object sender, EventArgs e) {
+      Cursor = Cursors.Default;
+      QAPLIBInstancesLabel.ForeColor = Color.Blue;
+      toolTip.SetToolTip(QAPLIBInstancesLabel, String.Empty);
     }
   }
 }
