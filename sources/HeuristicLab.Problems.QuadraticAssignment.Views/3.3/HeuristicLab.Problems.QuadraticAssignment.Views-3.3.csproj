@@ -144,17 +144,6 @@
     <None Include="HeuristicLab.snk" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="QAPAssignmentView.resx">
-      <DependentUpon>QAPAssignmentView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="QAPVisualizationControl.resx">
-      <DependentUpon>QAPVisualizationControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="QuadraticAssignmentProblemView.resx">
-      <DependentUpon>QuadraticAssignmentProblemView.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
       <Project>{887425B4-4348-49ED-A457-B7D2C26DDBF9}</Project>
       <Name>HeuristicLab.Analysis-3.3</Name>

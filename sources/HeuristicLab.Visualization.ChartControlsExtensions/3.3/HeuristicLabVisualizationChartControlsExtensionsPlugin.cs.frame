@@ -27,6 +27,5 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
   /// </summary>  
   [Plugin("HeuristicLab.Visualization.ChartControlsExtensions", "3.3.4.$WCREV$")]
   [PluginFile("HeuristicLab.Visualization.ChartControlsExtensions-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
   public class HeuristicLabVisualizationChartControlsExtensionsPlugin : PluginBase { }
 }
