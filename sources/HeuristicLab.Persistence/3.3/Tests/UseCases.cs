@@ -38,6 +38,8 @@ using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Persistence.Default.Xml.Primitive;
 using HeuristicLab.Persistence.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Threading.Tasks;
+using HeuristicLab.Algorithms.GeneticAlgorithm;
 
 namespace HeuristicLab.Persistence_33.Tests {
 
@@ -1270,7 +1272,21 @@ namespace HeuristicLab.Persistence_33.Tests {
       Assert.AreEqual(fonts[3], newFonts[3]);
     }
 
-
+    [TestMethod]
+    public void ConcurrencyTest() {
+      int n = 20;
+      Task[] tasks = new Task[n];
+      for (int i = 0; i < n; i++) {
+        tasks[i] = Task.Factory.StartNew((idx) => {
+          byte[] data;
+          using(var stream = new MemoryStream()) {
+            XmlGenerator.Serialize(new GeneticAlgorithm(), stream);
+            data = stream.ToArray();
+          }
+        }, i);
+      }
+      Task.WaitAll(tasks);
+    }
 
     [ClassInitialize]
     public static void Initialize(TestContext testContext) {

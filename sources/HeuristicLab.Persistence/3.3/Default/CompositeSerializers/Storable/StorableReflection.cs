@@ -123,8 +123,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     /// </summary>
     /// <param name="storableMemberInfos"></param>
     /// <returns></returns>
-    private static IEnumerable<StorableMemberInfo> DisentangleNameMapping(
-        IEnumerable<StorableMemberInfo> storableMemberInfos) {
+    private static IEnumerable<StorableMemberInfo> DisentangleNameMapping(IEnumerable<StorableMemberInfo> storableMemberInfos) {
       var nameGrouping = new Dictionary<string, List<StorableMemberInfo>>();
       foreach (StorableMemberInfo storable in storableMemberInfos) {
         if (!nameGrouping.ContainsKey(storable.MemberInfo.Name))

@@ -41,6 +41,7 @@ namespace HeuristicLab.Persistence.Core {
   public class ConfigurationService {
 
     private static ConfigurationService instance;
+    private static object locker = new object();
     private readonly Dictionary<IFormat, Configuration> customConfigurations;
 
     /// <summary>
@@ -64,9 +65,11 @@ namespace HeuristicLab.Persistence.Core {
     /// <value>The singleton instance.</value>
     public static ConfigurationService Instance {
       get {
-        if (instance == null)
-          instance = new ConfigurationService();
-        return instance;
+        lock (locker) {
+          if (instance == null)
+            instance = new ConfigurationService();
+          return instance;
+        }
       }
     }
 

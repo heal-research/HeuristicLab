@@ -45,19 +45,22 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
       new Number2StringSerializer();
 
     private static readonly Dictionary<Type, Type> interfaceCache = new Dictionary<Type, Type>();
+    private static readonly object locker = new object();
 
     public Type GetGenericEnumerableInterface(Type type) {
-      if (interfaceCache.ContainsKey(type))
-        return interfaceCache[type];
-      foreach (Type iface in type.GetInterfaces()) {
-        if (iface.IsGenericType &&
-          iface.GetGenericTypeDefinition() == typeof(IEnumerable<>) &&
-          numberConverter.CanSerialize(iface.GetGenericArguments()[0])) {
-          interfaceCache.Add(type, iface);
-          return iface;
+      lock (locker) {
+        if (interfaceCache.ContainsKey(type))
+          return interfaceCache[type];
+        foreach (Type iface in type.GetInterfaces()) {
+          if (iface.IsGenericType &&
+            iface.GetGenericTypeDefinition() == typeof(IEnumerable<>) &&
+            numberConverter.CanSerialize(iface.GetGenericArguments()[0])) {
+            interfaceCache.Add(type, iface);
+            return iface;
+          }
         }
+        interfaceCache.Add(type, null);
       }
-      interfaceCache.Add(type, null);
       return null;
     }
 
