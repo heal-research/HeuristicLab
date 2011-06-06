@@ -85,13 +85,21 @@ namespace HeuristicLab.Core.Views {
     }
 
     public virtual void Configure(Type baseType, bool showNotInstantiableTypes, bool showGenericTypes) {
-      Configure(new List<Type>() { baseType }, showNotInstantiableTypes, showGenericTypes, true);
+      Configure(baseType, showNotInstantiableTypes, showGenericTypes, (t) => { return true; });
+    }
+
+    public virtual void Configure(Type baseType, bool showNotInstantiableTypes, bool showGenericTypes, Func<Type, bool> typeCondition) {
+      Configure(new List<Type>() { baseType }, showNotInstantiableTypes, showGenericTypes, true, typeCondition);
     }
 
     public virtual void Configure(IEnumerable<Type> baseTypes, bool showNotInstantiableTypes, bool showGenericTypes, bool assignableToAllTypes) {
+      Configure(baseTypes, showNotInstantiableTypes, showGenericTypes, assignableToAllTypes, (t) => { return true; });
+    }
+
+    public virtual void Configure(IEnumerable<Type> baseTypes, bool showNotInstantiableTypes, bool showGenericTypes, bool assignableToAllTypes, Func<Type, bool> typeCondition) {
       if (baseTypes == null) throw new ArgumentNullException();
       if (InvokeRequired)
-        Invoke(new Action<IEnumerable<Type>, bool, bool, bool>(Configure), baseTypes, showNotInstantiableTypes, showGenericTypes, assignableToAllTypes);
+        Invoke(new Action<IEnumerable<Type>, bool, bool, bool, Func<Type, bool>>(Configure), baseTypes, showNotInstantiableTypes, showGenericTypes, assignableToAllTypes, typeCondition);
       else {
         this.baseTypes = baseTypes;
         this.showNotInstantiableTypes = showNotInstantiableTypes;
@@ -119,6 +127,7 @@ namespace HeuristicLab.Core.Views {
           pluginNode.Tag = plugin;
 
           var types = from t in ApplicationManager.Manager.GetTypes(BaseTypes, plugin, !ShowNotInstantiableTypes, assignableToAllTypes)
+                      where typeCondition(t)
                       orderby t.Name ascending
                       select t;
           foreach (Type type in types) {
