@@ -85,7 +85,7 @@ namespace HeuristicLab.Core.Views {
     }
 
     public virtual void Configure(Type baseType, bool showNotInstantiableTypes, bool showGenericTypes) {
-      Configure(baseType, showNotInstantiableTypes, showGenericTypes, (t) => { return true; });
+      Configure(baseType, showNotInstantiableTypes, showGenericTypes, (t) => true);
     }
 
     public virtual void Configure(Type baseType, bool showNotInstantiableTypes, bool showGenericTypes, Func<Type, bool> typeCondition) {
