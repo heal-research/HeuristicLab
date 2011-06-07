@@ -41,6 +41,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       return new SymbolicExpressionTreeGrammar(this, cloner);
     }
 
+    [Storable]
     private ISymbolicExpressionGrammar grammar;
     public SymbolicExpressionTreeGrammar(ISymbolicExpressionGrammar grammar)
       : base("SymbolicExpressionTreeGrammar", "A grammar that is used held by symbolic expression trees and allows extensions to the wraped grammar.") {
