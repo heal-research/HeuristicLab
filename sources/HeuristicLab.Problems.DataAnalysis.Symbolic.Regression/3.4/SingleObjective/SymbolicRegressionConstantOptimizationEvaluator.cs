@@ -105,7 +105,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       if (RandomParameter.ActualValue.NextDouble() < ConstantOptimizationProbability.Value) {
         IEnumerable<int> constantOptimizationRows = GenerateRowsToEvaluate(ConstantOptimizationRowsPercentage.Value);
         quality = OptimizeConstants(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, ProblemDataParameter.ActualValue,
-           constantOptimizationRows, ConstantOptimizationImprovement.Value, ConstantOptimizationIterations.Value,
+           constantOptimizationRows, ConstantOptimizationImprovement.Value, ConstantOptimizationIterations.Value, 0.001,
            EstimationLimitsParameter.ActualValue.Upper, EstimationLimitsParameter.ActualValue.Lower,
           EvaluatedTreesParameter.ActualValue, EvaluatedTreeNodesParameter.ActualValue);
         if (ConstantOptimizationRowsPercentage.Value != RelativeNumberOfEvaluatedSamplesParameter.ActualValue.Value) {
@@ -154,7 +154,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
     public static double OptimizeConstants(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree tree, IRegressionProblemData problemData,
-      IEnumerable<int> rows, double improvement, int iterations, double upperEstimationLimit = double.MaxValue, double lowerEstimationLimit = double.MinValue, IntValue evaluatedTrees = null, IntValue evaluatedTreeNodes = null) {
+      IEnumerable<int> rows, double improvement, int iterations, double differentialStep, double upperEstimationLimit = double.MaxValue, double lowerEstimationLimit = double.MinValue, IntValue evaluatedTrees = null, IntValue evaluatedTreeNodes = null) {
       List<SymbolicExpressionTreeTerminalNode> terminalNodes = tree.Root.IterateNodesPrefix().OfType<SymbolicExpressionTreeTerminalNode>().ToList();
       double[] c = new double[terminalNodes.Count];
       int treeLength = tree.Length;
@@ -171,7 +171,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       double epsf = improvement;
       double epsx = 0;
       int maxits = iterations;
-      double diffstep = 0.01;
+      double diffstep = differentialStep;
 
       alglib.minlmstate state;
       alglib.minlmreport report;

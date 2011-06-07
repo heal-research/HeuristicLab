@@ -121,7 +121,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
     }
 
     protected override void btnOptimizeConstants_Click(object sender, EventArgs e) {
-      SymbolicRegressionConstantOptimizationEvaluator.OptimizeConstants(Content.Model.Interpreter, Content.Model.SymbolicExpressionTree, Content.ProblemData, Content.ProblemData.TrainingIndizes, 0, 10);
+      SymbolicRegressionConstantOptimizationEvaluator.OptimizeConstants(Content.Model.Interpreter, Content.Model.SymbolicExpressionTree, Content.ProblemData, Content.ProblemData.TrainingIndizes, 0.001, 0, 0.0001);
       UpdateModel(Content.Model.SymbolicExpressionTree);
     }
   }
