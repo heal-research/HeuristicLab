@@ -23,14 +23,29 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Reflection;
-using System.Threading;
 
 namespace HeuristicLab.Common {
   public static class ObjectExtensions {
     public static IEnumerable<object> GetObjectGraphObjects(this object obj) {
+      if (obj == null) return Enumerable.Empty<object>();
+
       var objects = new HashSet<object>();
-      obj.CollectObjectGraphObjects(objects);
+      var stack = new Stack<object>();
+
+      stack.Push(obj);
+      while (stack.Count > 0) {
+        object current = stack.Pop();
+        Type type = obj.GetType();
+        objects.Add(current);
+
+        foreach (object o in GetChildObjects(current)) {
+          if (o != null && !objects.Contains(o) && !ExcludeType(o.GetType()))
+            stack.Push(o);
+        }
+      }
+
       return objects;
     }
     /// <summary>
@@ -44,48 +59,38 @@ namespace HeuristicLab.Common {
     /// Dictionaries and HashSets are treated specially, because it is cheaper to iterate over their keys and values
     /// compared to traverse their internal data structures.
     /// </summary>
-    private static void CollectObjectGraphObjects(this object obj, HashSet<object> objects) {
-      if (obj == null || objects.Contains(obj)) return;
+    private static bool ExcludeType(Type type) {
+      return type.IsPrimitive ||
+             type == typeof(string) ||
+             type == typeof(decimal) ||
+             typeof(Delegate).IsAssignableFrom(type) ||
+             typeof(Pointer).IsAssignableFrom(type) ||
+             (type.HasElementType && ExcludeType(type.GetElementType()));
+    }
+    private static IEnumerable<object> GetChildObjects(object obj) {
       Type type = obj.GetType();
-      if (ExcludeType(type)) return;
-      if (type.HasElementType && ExcludeType(type.GetElementType())) return;
 
-      objects.Add(obj);
-
-      if (type.IsSubclassOfRawGeneric(typeof(ThreadLocal<>))) return; // avoid stack overflow when the field `ConcurrentStack<int> s_availableIndices` too grows large
-      
-      // performance critical to handle dictionaries, hashsets and hashtables in a special way
-      if (type.IsSubclassOfRawGeneric(typeof(Dictionary<,>)) || 
-          type.IsSubclassOfRawGeneric(typeof(SortedDictionary<,>)) || 
-          type.IsSubclassOfRawGeneric(typeof(SortedList<,>)) ||
-          obj is SortedList || 
-          obj is OrderedDictionary || 
-          obj is ListDictionary || 
-          obj is Hashtable) {        
+      if (type.IsSubclassOfRawGeneric(typeof(Dictionary<,>)) ||
+         type.IsSubclassOfRawGeneric(typeof(SortedDictionary<,>)) ||
+         type.IsSubclassOfRawGeneric(typeof(SortedList<,>)) ||
+         obj is SortedList ||
+         obj is OrderedDictionary ||
+         obj is ListDictionary ||
+         obj is Hashtable) {
         var dictionary = obj as IDictionary;
         foreach (object value in dictionary.Keys)
-          CollectObjectGraphObjects(value, objects);
+          yield return value;
         foreach (object value in dictionary.Values)
-          CollectObjectGraphObjects(value, objects);
-        return;
+          yield return value;
       } else if (type.IsArray || type.IsSubclassOfRawGeneric(typeof(HashSet<>))) {
         var enumerable = obj as IEnumerable;
         foreach (var value in enumerable)
-          CollectObjectGraphObjects(value, objects);
-        return;
+          yield return value;
+      } else {
+        foreach (FieldInfo f in type.GetAllFields()) {
+          yield return f.GetValue(obj);
+        }
       }
-
-      foreach (FieldInfo f in type.GetAllFields()) {
-        f.GetValue(obj).CollectObjectGraphObjects(objects);
-      }
-    }
-
-    private static bool ExcludeType(Type type) {
-      return type.IsPrimitive ||
-             type == typeof(string) || 
-             type == typeof(decimal) ||
-             typeof(Delegate).IsAssignableFrom(type) || 
-             typeof(Pointer).IsAssignableFrom(type);
     }
   }
 }
