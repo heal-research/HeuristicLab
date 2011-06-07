@@ -23,7 +23,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
@@ -262,7 +261,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       }
 
       //draw terminal node
-      if (node.Subtrees.Count() == 0) {
+      if (node.SubtreesCount == 0) {
         graphics.FillRectangle(nodeFillBrush, visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height);
         graphics.DrawRectangle(nodeLinePen, visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height);
       } else {
@@ -280,11 +279,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
 
       //calculate areas for the subtrees according to their tree size and call drawFunctionTree
       Point connectFrom = new Point(visualTreeNode.X + visualTreeNode.Width / 2, visualTreeNode.Y + visualTreeNode.Height);
-      int[] xBoundaries = new int[node.Subtrees.Count() + 1];
+      int[] xBoundaries = new int[node.SubtreesCount + 1];
       xBoundaries[0] = x;
-      for (int i = 0; i < node.Subtrees.Count(); i++) {
-        xBoundaries[i + 1] = (int)(xBoundaries[i] + (width * (double)node.Subtrees.ElementAt(i).GetLength()) / (node.GetLength() - 1));
-        DrawFunctionTree(node.Subtrees.ElementAt(i), graphics, xBoundaries[i], y + height,
+      for (int i = 0; i < node.SubtreesCount; i++) {
+        xBoundaries[i + 1] = (int)(xBoundaries[i] + (width * (double)node.GetSubtree(i).GetLength()) / (node.GetLength() - 1));
+        DrawFunctionTree(node.GetSubtree(i), graphics, xBoundaries[i], y + height,
           xBoundaries[i + 1] - xBoundaries[i], height, connectFrom);
       }
     }

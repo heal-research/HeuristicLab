@@ -26,35 +26,55 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._4.Tests {
   public static class Grammars {
+
+    [StorableClass]
     private class Addition : Symbol {
+      [StorableConstructor]
+      protected Addition(bool deserializing) : base(deserializing) { }
       protected Addition(Addition original, Cloner cloner) : base(original, cloner) { }
       public Addition() : base("Addition", "") { }
       public override IDeepCloneable Clone(Cloner cloner) {
         return new Addition(this, cloner);
       }
     }
+
+    [StorableClass]
     private class Subtraction : Symbol {
+      [StorableConstructor]
+      protected Subtraction(bool deserializing) : base(deserializing) { }
       protected Subtraction(Subtraction original, Cloner cloner) : base(original, cloner) { }
       public Subtraction() : base("Subtraction", "") { }
       public override IDeepCloneable Clone(Cloner cloner) {
         return new Subtraction(this, cloner);
       }
     }
+
+    [StorableClass]
     private class Multiplication : Symbol {
+      [StorableConstructor]
+      protected Multiplication(bool deserializing) : base(deserializing) { }
       protected Multiplication(Multiplication original, Cloner cloner) : base(original, cloner) { }
       public Multiplication() : base("Multiplication", "") { }
       public override IDeepCloneable Clone(Cloner cloner) {
         return new Multiplication(this, cloner);
       }
     }
+
+    [StorableClass]
     private class Division : Symbol {
+      [StorableConstructor]
+      protected Division(bool deserializing) : base(deserializing) { }
       protected Division(Division original, Cloner cloner) : base(original, cloner) { }
       public Division() : base("Division", "") { }
       public override IDeepCloneable Clone(Cloner cloner) {
         return new Division(this, cloner);
       }
     }
+
+    [StorableClass]
     private class Terminal : Symbol {
+      [StorableConstructor]
+      protected Terminal(bool deserializing) : base(deserializing) { }
       protected Terminal(Terminal original, Cloner cloner) : base(original, cloner) { }
       public Terminal() : base("Terminal", "") { }
       public override IDeepCloneable Clone(Cloner cloner) {
@@ -66,6 +86,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._4.Tests {
       }
     }
 
+    [StorableClass]
     private class TerminalNode : SymbolicExpressionTreeTerminalNode {
       public override bool HasLocalParameters { get { return true; } }
       private double value;
@@ -93,7 +114,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._4.Tests {
       }
     }
 
+    [StorableClass]
     private class SimpleArithmeticGrammar : SymbolicExpressionGrammar {
+      [StorableConstructor]
+      protected SimpleArithmeticGrammar(bool deserializing) : base(deserializing) { }
       protected SimpleArithmeticGrammar(SimpleArithmeticGrammar original, Cloner cloner) : base(original, cloner) { }
       public SimpleArithmeticGrammar()
         : base("Grammar for unit tests", "") {

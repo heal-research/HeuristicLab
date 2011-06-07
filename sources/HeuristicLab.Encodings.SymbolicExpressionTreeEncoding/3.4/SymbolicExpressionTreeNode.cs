@@ -185,7 +185,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     public override string ToString() {
-      return Symbol.Name;
+      if (Symbol != null) return Symbol.Name;
+      return "SymbolicExpressionTreeNode";
     }
 
     private void ResetCachedValues() {
