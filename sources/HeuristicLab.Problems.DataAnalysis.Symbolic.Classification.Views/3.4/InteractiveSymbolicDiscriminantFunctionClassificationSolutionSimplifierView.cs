@@ -50,7 +50,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
 
     protected override void UpdateModel(ISymbolicExpressionTree tree) {
       Content.Model = new SymbolicDiscriminantFunctionClassificationModel(tree, Content.Model.Interpreter);
-      Content.SetClassDistibutionCutPointThresholds();
     }
 
     protected override Dictionary<ISymbolicExpressionTreeNode, double> CalculateReplacementValues(ISymbolicExpressionTree tree) {

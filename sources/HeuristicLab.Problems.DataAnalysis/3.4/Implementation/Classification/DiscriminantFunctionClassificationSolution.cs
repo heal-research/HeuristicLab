@@ -24,9 +24,9 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   /// <summary>
@@ -88,9 +88,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Add(new Result(TestMeanSquaredErrorResultName, "Mean of squared errors of the model on the test partition", new DoubleValue()));
       Add(new Result(TrainingRSquaredResultName, "Squared Pearson's correlation coefficient of the model output and the actual values on the training partition", new DoubleValue()));
       Add(new Result(TestRSquaredResultName, "Squared Pearson's correlation coefficient of the model output and the actual values on the test partition", new DoubleValue()));
-      RegisterEventHandler();
       SetAccuracyMaximizingThresholds();
-      RecalculateResults();
+
+      //mkommend: important to recalculate accuracy because during the calculation before no thresholds were present     
+      base.RecalculateResults();
+      CalculateResults();
+      RegisterEventHandler();
     }
 
     [StorableHook(HookType.AfterDeserialization)]
@@ -98,7 +101,19 @@ namespace HeuristicLab.Problems.DataAnalysis {
       RegisterEventHandler();
     }
 
-    protected new void RecalculateResults() {
+    protected override void OnModelChanged(EventArgs e) {
+      DeregisterEventHandler();
+      SetAccuracyMaximizingThresholds();
+      RegisterEventHandler();
+      base.OnModelChanged(e);
+    }
+
+    protected override void RecalculateResults() {
+      base.RecalculateResults();
+      CalculateResults();
+    }
+
+    private void CalculateResults() {
       double[] estimatedTrainingValues = EstimatedTrainingValues.ToArray(); // cache values
       IEnumerable<double> originalTrainingValues = ProblemData.Dataset.GetEnumeratedVariableValues(ProblemData.TargetVariable, ProblemData.TrainingIndizes);
       double[] estimatedTestValues = EstimatedTestValues.ToArray(); // cache values
@@ -118,6 +133,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     private void RegisterEventHandler() {
       Model.ThresholdsChanged += new EventHandler(Model_ThresholdsChanged);
+    }
+    private void DeregisterEventHandler() {
+      Model.ThresholdsChanged -= new EventHandler(Model_ThresholdsChanged);
     }
     private void Model_ThresholdsChanged(object sender, EventArgs e) {
       OnModelThresholdsChanged(e);
@@ -141,19 +159,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Model.SetThresholdsAndClassValues(thresholds, classValues);
     }
 
-    protected override void OnModelChanged(EventArgs e) {
-      base.OnModelChanged(e);
-      SetAccuracyMaximizingThresholds();
-      RecalculateResults();
-    }
-
-    protected override void OnProblemDataChanged(EventArgs e) {
-      base.OnProblemDataChanged(e);
-      SetAccuracyMaximizingThresholds();
-      RecalculateResults();
-    }
     protected virtual void OnModelThresholdsChanged(EventArgs e) {
-      base.OnModelChanged(e);
       RecalculateResults();
     }
 

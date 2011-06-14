@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
@@ -65,24 +64,18 @@ namespace HeuristicLab.Problems.DataAnalysis {
       : base(model, problemData) {
       Add(new Result(TrainingAccuracyResultName, "Accuracy of the model on the training partition (percentage of correctly classified instances).", new PercentValue()));
       Add(new Result(TestAccuracyResultName, "Accuracy of the model on the test partition (percentage of correctly classified instances).", new PercentValue()));
-      RecalculateResults();
+      CalculateResults();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ClassificationSolution(this, cloner);
     }
 
-    protected override void OnProblemDataChanged(EventArgs e) {
-      base.OnProblemDataChanged(e);
-      RecalculateResults();
+    protected override void RecalculateResults() {
+      CalculateResults();
     }
 
-    protected override void OnModelChanged(EventArgs e) {
-      base.OnModelChanged(e);
-      RecalculateResults();
-    }
-
-    protected void RecalculateResults() {
+    private void CalculateResults() {
       double[] estimatedTrainingClassValues = EstimatedTrainingClassValues.ToArray(); // cache values
       IEnumerable<double> originalTrainingClassValues = ProblemData.Dataset.GetEnumeratedVariableValues(ProblemData.TargetVariable, ProblemData.TrainingIndizes);
       double[] estimatedTestClassValues = EstimatedTestClassValues.ToArray(); // cache values

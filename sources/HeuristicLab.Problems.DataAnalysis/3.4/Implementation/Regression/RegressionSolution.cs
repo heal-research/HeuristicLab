@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
@@ -109,23 +108,18 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Add(new Result(TrainingNormalizedMeanSquaredErrorResultName, "Normalized mean of squared errors of the model on the training partition", new DoubleValue()));
       Add(new Result(TestNormalizedMeanSquaredErrorResultName, "Normalized mean of squared errors of the model on the test partition", new DoubleValue()));
 
-      RecalculateResults();
+      CalculateResults();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new RegressionSolution(this, cloner);
     }
 
-    protected override void OnProblemDataChanged(EventArgs e) {
-      base.OnProblemDataChanged(e);
-      RecalculateResults();
-    }
-    protected override void OnModelChanged(EventArgs e) {
-      base.OnModelChanged(e);
-      RecalculateResults();
+    protected override void RecalculateResults() {
+      CalculateResults();
     }
 
-    protected void RecalculateResults() {
+    private void CalculateResults() {
       double[] estimatedTrainingValues = EstimatedTrainingValues.ToArray(); // cache values
       IEnumerable<double> originalTrainingValues = ProblemData.Dataset.GetEnumeratedVariableValues(ProblemData.TargetVariable, ProblemData.TrainingIndizes);
       double[] estimatedTestValues = EstimatedTestValues.ToArray(); // cache values

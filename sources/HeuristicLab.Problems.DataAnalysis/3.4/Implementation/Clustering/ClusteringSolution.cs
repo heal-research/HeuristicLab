@@ -44,6 +44,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
       return new ClusteringSolution(this, cloner);
     }
 
+    protected override void RecalculateResults() {
+    }
+
     #region IClusteringSolution Members
 
     public new IClusteringModel Model {

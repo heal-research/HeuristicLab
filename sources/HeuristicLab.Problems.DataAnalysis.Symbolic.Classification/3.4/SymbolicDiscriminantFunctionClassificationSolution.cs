@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -66,19 +65,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       : base(model, problemData) {
       Add(new Result(ModelLengthResultName, "Length of the symbolic classification model.", new IntValue()));
       Add(new Result(ModelDepthResultName, "Depth of the symbolic classification model.", new IntValue()));
-      RecalculateResults();
+      CalculateResults();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SymbolicDiscriminantFunctionClassificationSolution(this, cloner);
     }
 
-    protected override void OnModelChanged(EventArgs e) {
-      base.OnModelChanged(e);
-      RecalculateResults();
+    protected override void RecalculateResults() {
+      base.RecalculateResults();
+      CalculateResults();
     }
 
-    private new void RecalculateResults() {
+    private void CalculateResults() {
       ModelLength = Model.SymbolicExpressionTree.Length;
       ModelDepth = Model.SymbolicExpressionTree.Depth;
     }

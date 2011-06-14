@@ -19,17 +19,11 @@
  */
 #endregion
 
-using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Operators;
-using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Optimization;
-using System;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   /// <summary>
@@ -68,19 +62,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       : base(model, problemData) {
       Add(new Result(ModelLengthResultName, "Length of the symbolic classification model.", new IntValue()));
       Add(new Result(ModelDepthResultName, "Depth of the symbolic classification model.", new IntValue()));
-      RecalculateResults();
+      CalculateResults();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SymbolicClassificationSolution(this, cloner);
     }
 
-    protected override void OnModelChanged(EventArgs e) {
-      base.OnModelChanged(e);
-      RecalculateResults();
+    protected override void RecalculateResults() {
+      base.RecalculateResults();
+      CalculateResults();
     }
 
-    private new void RecalculateResults() {
+    private void CalculateResults() {
       ModelLength = Model.SymbolicExpressionTree.Length;
       ModelDepth = Model.SymbolicExpressionTree.Depth;
     }

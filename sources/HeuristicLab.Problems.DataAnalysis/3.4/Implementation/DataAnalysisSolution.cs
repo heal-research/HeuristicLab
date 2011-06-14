@@ -85,18 +85,22 @@ namespace HeuristicLab.Problems.DataAnalysis {
       problemData.Changed += new EventHandler(ProblemData_Changed);
     }
 
+    protected abstract void RecalculateResults();
+
     private void ProblemData_Changed(object sender, EventArgs e) {
       OnProblemDataChanged(e);
     }
 
     public event EventHandler ModelChanged;
     protected virtual void OnModelChanged(EventArgs e) {
+      RecalculateResults();
       var listeners = ModelChanged;
       if (listeners != null) listeners(this, e);
     }
 
     public event EventHandler ProblemDataChanged;
     protected virtual void OnProblemDataChanged(EventArgs e) {
+      RecalculateResults();
       var listeners = ProblemDataChanged;
       if (listeners != null) listeners(this, e);
     }
