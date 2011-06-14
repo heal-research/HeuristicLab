@@ -143,6 +143,12 @@
     <Compile Include="Advanced\ConnectionSetupView.Designer.cs">
       <DependentUpon>ConnectionSetupView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Advanced\PluginUpdaterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Advanced\PluginUpdaterForm.Designer.cs">
+      <DependentUpon>PluginUpdaterForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Advanced\DeploymentService\AdminServiceClientFactory.cs" />
     <Compile Include="Advanced\DeploymentService\DeploymentServerCertificateValidator.cs" />
     <Compile Include="Advanced\DeploymentService\ServiceClients.cs" />
@@ -258,7 +264,9 @@
     <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Advanced\DeploymentService\GenerateServiceClients.cmd" />
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="HeuristicLab.snk" />
     <None Include="Properties\AssemblyInfo.frame" />
     <None Include="Properties\Settings.settings">
@@ -307,7 +315,7 @@
     <Content Include="Resources\HeuristicLab.ico" />
     <None Include="Resources\HeuristicLabLogo.png" />
     <None Include="Resources\HeuristicLabBanner.png" />
-    <None Include="Resources\VS2008ImageLibrary_Actions_Delete.png" />
+    <Content Include="Resources\UpdateAvailable.ico" />
     <Content Include="Resources\VS2008ImageLibrary_Actions_PublishToWebHS.png" />
     <Content Include="Resources\VS2008ImageLibrary_Actions_RepeatHS.png" />
     <None Include="Resources\VS2008ImageLibrary_Annotations_Error.png" />

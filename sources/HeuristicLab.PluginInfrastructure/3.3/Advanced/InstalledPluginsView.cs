@@ -115,9 +115,10 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
                             where matchingLocalPlugins.Count() > 0
                             select remotePlugin;
       if (pluginsToUpdate.Count() > 0) {
-        installationManager.Update(pluginsToUpdate);
+        bool cancelled;
+        installationManager.Update(pluginsToUpdate, out cancelled);
+        if (!cancelled) pluginManager.DiscoverAndCheckPlugins();
       }
-      pluginManager.DiscoverAndCheckPlugins();
     }
 
     // compares for two plugins with same major and minor version if plugin1 is newer than plugin2

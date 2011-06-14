@@ -97,10 +97,11 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     ///  Installs plugins from remote server
     /// </summary>
     /// <param name="plugins"></param>
-    public void Install(IEnumerable<IPluginDescription> plugins) {
+    public void Install(IEnumerable<IPluginDescription> plugins, out bool cancelled) {
       var args = new PluginInfrastructureCancelEventArgs(plugins);
       OnPreInstall(args);
       if (!args.Cancel) {
+        cancelled = false;
         var client = DeploymentService.UpdateServiceClientFactory.CreateClient();
         try {
           foreach (DeploymentService.PluginDescription plugin in plugins) {
@@ -122,6 +123,8 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
           client.Abort();
           throw new InstallationManagerException("General communication exception in connection to server.", e);
         }
+      } else {
+        cancelled = true;
       }
     }
 
@@ -129,10 +132,11 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     /// Updates plugins from remote server
     /// </summary>
     /// <param name="plugins"></param>
-    public void Update(IEnumerable<IPluginDescription> plugins) {
+    public void Update(IEnumerable<IPluginDescription> plugins, out bool cancelled) {
       PluginInfrastructureCancelEventArgs args = new PluginInfrastructureCancelEventArgs(plugins);
       OnPreUpdate(args);
       if (!args.Cancel) {
+        cancelled = false;
         var client = DeploymentService.UpdateServiceClientFactory.CreateClient();
         try {
           foreach (DeploymentService.PluginDescription plugin in plugins) {
@@ -154,6 +158,8 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
           client.Abort();
           throw new InstallationManagerException("General communication exception in connection to server.", e);
         }
+      } else {
+        cancelled = true;
       }
     }
 

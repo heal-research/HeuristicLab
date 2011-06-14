@@ -116,12 +116,13 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
 
     void updateOrInstallPluginsBackgroundWorker_DoWork(object sender, DoWorkEventArgs e) {
       UpdateOrInstallPluginsBackgroundWorkerArgument info = (UpdateOrInstallPluginsBackgroundWorkerArgument)e.Argument;
+      bool cancelled = false;
       if (info.PluginsToInstall.Count() > 0)
-        installationManager.Install(info.PluginsToInstall);
+        installationManager.Install(info.PluginsToInstall, out cancelled);
       if (info.PluginsToUpdate.Count() > 0)
-        installationManager.Update(info.PluginsToUpdate);
+        installationManager.Update(info.PluginsToUpdate, out cancelled);
 
-      if (info.PluginsToInstall.Count() > 0 || info.PluginsToUpdate.Count() > 0)
+      if (!cancelled && (info.PluginsToInstall.Count() > 0 || info.PluginsToUpdate.Count() > 0))
         pluginManager.DiscoverAndCheckPlugins();
     }
     #endregion
@@ -175,11 +176,11 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // otherwise install a new plugin
       var pluginsToInstall = selectedProduct.Plugins.Except(pluginsToUpdate);
 
-      updateOrInstallInfo.PluginsToInstall = 
+      updateOrInstallInfo.PluginsToInstall =
         pluginsToInstall
         .Cast<IPluginDescription>()
         .ToList();
-      updateOrInstallInfo.PluginsToUpdate = 
+      updateOrInstallInfo.PluginsToUpdate =
         pluginsToUpdate
         .Cast<IPluginDescription>()
         .ToList();
