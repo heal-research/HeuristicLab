@@ -396,6 +396,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.DataA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Operators.Views.GraphVisualization.Views-3.3", "HeuristicLab.Operators.Views.GraphVisualization.Views\3.3\HeuristicLab.Operators.Views.GraphVisualization.Views-3.3.csproj", "{0C39A349-1979-419A-89BD-E4E2F26BD287}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.PluginInfrastructure-3.3.Test", "HeuristicLab.PluginInfrastructure\3.3\Tests\HeuristicLab.PluginInfrastructure-3.3.Test.csproj", "{04840E7E-F7DB-4CE4-B308-EE805DD94E73}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = HeuristicLab 3.3.vsmdi
@@ -1849,6 +1851,14 @@ Global
 		{0C39A349-1979-419A-89BD-E4E2F26BD287}.Release|x64.Build.0 = Release|x64
 		{0C39A349-1979-419A-89BD-E4E2F26BD287}.Release|x86.ActiveCfg = Release|x86
 		{0C39A349-1979-419A-89BD-E4E2F26BD287}.Release|x86.Build.0 = Release|x86
+		{04840E7E-F7DB-4CE4-B308-EE805DD94E73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04840E7E-F7DB-4CE4-B308-EE805DD94E73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04840E7E-F7DB-4CE4-B308-EE805DD94E73}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{04840E7E-F7DB-4CE4-B308-EE805DD94E73}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{04840E7E-F7DB-4CE4-B308-EE805DD94E73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04840E7E-F7DB-4CE4-B308-EE805DD94E73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04840E7E-F7DB-4CE4-B308-EE805DD94E73}.Release|x64.ActiveCfg = Release|Any CPU
+		{04840E7E-F7DB-4CE4-B308-EE805DD94E73}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
