@@ -190,6 +190,7 @@
     <Compile Include="Interfaces\IOperator.cs" />
     <Compile Include="HeuristicLabCorePlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ThreadSafeLog.cs" />
     <Compile Include="Variable.cs" />
   </ItemGroup>
   <ItemGroup>
