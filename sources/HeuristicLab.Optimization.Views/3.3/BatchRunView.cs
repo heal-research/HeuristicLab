@@ -34,7 +34,7 @@ namespace HeuristicLab.Optimization.Views {
   /// </summary>
   [View("BatchRun View")]
   [Content(typeof(BatchRun), true)]
-  public sealed partial class BatchRunView : NamedItemView {
+  public sealed partial class BatchRunView : IOptimizerView {
     private TypeSelectorDialog optimizerTypeSelectorDialog;
 
     public new BatchRun Content {
@@ -59,26 +59,12 @@ namespace HeuristicLab.Optimization.Views {
 
     protected override void DeregisterContentEvents() {
       Content.OptimizerChanged -= new EventHandler(Content_OptimizerChanged);
-      Content.ExceptionOccurred -= new EventHandler<EventArgs<Exception>>(Content_ExceptionOccurred);
-      Content.ExecutionStateChanged -= new EventHandler(Content_ExecutionStateChanged);
-      Content.ExecutionTimeChanged -= new EventHandler(Content_ExecutionTimeChanged);
-      Content.Prepared -= new EventHandler(Content_Prepared);
-      Content.Started -= new EventHandler(Content_Started);
-      Content.Paused -= new EventHandler(Content_Paused);
-      Content.Stopped -= new EventHandler(Content_Stopped);
       Content.RepetitionsChanged -= new EventHandler(Content_RepetitionsChanged);
       base.DeregisterContentEvents();
     }
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.OptimizerChanged += new EventHandler(Content_OptimizerChanged);
-      Content.ExceptionOccurred += new EventHandler<EventArgs<Exception>>(Content_ExceptionOccurred);
-      Content.ExecutionStateChanged += new EventHandler(Content_ExecutionStateChanged);
-      Content.ExecutionTimeChanged += new EventHandler(Content_ExecutionTimeChanged);
-      Content.Prepared += new EventHandler(Content_Prepared);
-      Content.Started += new EventHandler(Content_Started);
-      Content.Paused += new EventHandler(Content_Paused);
-      Content.Stopped += new EventHandler(Content_Stopped);
       Content.RepetitionsChanged += new EventHandler(Content_RepetitionsChanged);
     }
 
@@ -88,13 +74,10 @@ namespace HeuristicLab.Optimization.Views {
         repetitionsNumericUpDown.Value = 1;
         optimizerViewHost.Content = null;
         runsView.Content = null;
-        executionTimeTextBox.Text = "-";
       } else {
-        Locked = ReadOnly = Content.ExecutionState == ExecutionState.Started;
         repetitionsNumericUpDown.Value = Content.Repetitions;
         optimizerViewHost.Content = Content.Optimizer;
         runsView.Content = Content.Runs;
-        executionTimeTextBox.Text = Content.ExecutionTime.ToString();
       }
     }
     protected override void SetEnabledStateOfControls() {
@@ -104,8 +87,6 @@ namespace HeuristicLab.Optimization.Views {
       openOptimizerButton.Enabled = Content != null && !ReadOnly;
       optimizerViewHost.Enabled = Content != null;
       runsView.Enabled = Content != null;
-      executionTimeTextBox.Enabled = Content != null;
-      SetEnabledStateOfExecutableButtons();
     }
 
     protected override void OnClosed(FormClosedEventArgs e) {
@@ -121,56 +102,6 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     #region Content Events
-    private void Content_ExecutionStateChanged(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_ExecutionStateChanged), sender, e);
-      else
-        startButton.Enabled = pauseButton.Enabled = stopButton.Enabled = resetButton.Enabled = false;
-    }
-    private void Content_Prepared(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_Prepared), sender, e);
-      else {
-        ReadOnly = Locked = false;
-        SetEnabledStateOfExecutableButtons();
-      }
-    }
-    private void Content_Started(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_Started), sender, e);
-      else {
-        ReadOnly = Locked = true;
-        SetEnabledStateOfExecutableButtons();
-      }
-    }
-    private void Content_Paused(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_Paused), sender, e);
-      else {
-        ReadOnly = Locked = false;
-        SetEnabledStateOfExecutableButtons();
-      }
-    }
-    private void Content_Stopped(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_Stopped), sender, e);
-      else {
-        ReadOnly = Locked = false;
-        SetEnabledStateOfExecutableButtons();
-      }
-    }
-    private void Content_ExecutionTimeChanged(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_ExecutionTimeChanged), sender, e);
-      else
-        executionTimeTextBox.Text = Content == null ? "-" : Content.ExecutionTime.ToString();
-    }
-    private void Content_ExceptionOccurred(object sender, EventArgs<Exception> e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler<EventArgs<Exception>>(Content_ExceptionOccurred), sender, e);
-      else
-        ErrorHandling.ShowErrorDialog(this, e.Value);
-    }
     private void Content_OptimizerChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_OptimizerChanged), sender, e);
@@ -238,18 +169,7 @@ namespace HeuristicLab.Optimization.Views {
         });
       }
     }
-    private void startButton_Click(object sender, EventArgs e) {
-      Content.Start();
-    }
-    private void pauseButton_Click(object sender, EventArgs e) {
-      Content.Pause();
-    }
-    private void stopButton_Click(object sender, EventArgs e) {
-      Content.Stop();
-    }
-    private void resetButton_Click(object sender, EventArgs e) {
-      Content.Prepare(false);
-    }
+
     private void optimizerTabPage_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
       if (!ReadOnly && (e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) is IOptimizer)) {
@@ -269,17 +189,5 @@ namespace HeuristicLab.Optimization.Views {
     }
     #endregion
 
-    #region Helpers
-    private void SetEnabledStateOfExecutableButtons() {
-      if (Content == null) {
-        startButton.Enabled = pauseButton.Enabled = stopButton.Enabled = resetButton.Enabled = false;
-      } else {
-        startButton.Enabled = (Content.ExecutionState == ExecutionState.Prepared) || (Content.ExecutionState == ExecutionState.Paused);
-        pauseButton.Enabled = Content.ExecutionState == ExecutionState.Started;
-        stopButton.Enabled = (Content.ExecutionState == ExecutionState.Started) || (Content.ExecutionState == ExecutionState.Paused);
-        resetButton.Enabled = Content.ExecutionState != ExecutionState.Started;
-      }
-    }
-    #endregion
   }
 }

@@ -30,25 +30,18 @@ using HeuristicLab.MainForm;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Optimization.Views {
-  /// <summary>
-  /// The base class for visual representations of algorithms.
-  /// </summary>
   [View("Algorithm View")]
   [Content(typeof(Algorithm), true)]
   [Content(typeof(IAlgorithm), false)]
-  public partial class AlgorithmView : NamedItemView {
+  public partial class AlgorithmView : IOptimizerView {
     private TypeSelectorDialog problemTypeSelectorDialog;
+    public AlgorithmView() {
+      InitializeComponent();
+    }
 
     public new IAlgorithm Content {
       get { return (IAlgorithm)base.Content; }
       set { base.Content = value; }
-    }
-
-    /// <summary>
-    /// Initializes a new instance of <see cref="ItemBaseView"/>.
-    /// </summary>
-    public AlgorithmView() {
-      InitializeComponent();
     }
 
     protected override void Dispose(bool disposing) {
@@ -74,26 +67,12 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     protected override void DeregisterContentEvents() {
-      Content.ExceptionOccurred -= new EventHandler<EventArgs<Exception>>(Content_ExceptionOccurred);
-      Content.ExecutionStateChanged -= new EventHandler(Content_ExecutionStateChanged);
-      Content.ExecutionTimeChanged -= new EventHandler(Content_ExecutionTimeChanged);
-      Content.Prepared -= new EventHandler(Content_Prepared);
-      Content.Started -= new EventHandler(Content_Started);
-      Content.Paused -= new EventHandler(Content_Paused);
-      Content.Stopped -= new EventHandler(Content_Stopped);
       Content.ProblemChanged -= new EventHandler(Content_ProblemChanged);
       Content.StoreAlgorithmInEachRunChanged -= new EventHandler(Content_StoreAlgorithmInEachRunChanged);
       base.DeregisterContentEvents();
     }
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      Content.ExceptionOccurred += new EventHandler<EventArgs<Exception>>(Content_ExceptionOccurred);
-      Content.ExecutionStateChanged += new EventHandler(Content_ExecutionStateChanged);
-      Content.ExecutionTimeChanged += new EventHandler(Content_ExecutionTimeChanged);
-      Content.Prepared += new EventHandler(Content_Prepared);
-      Content.Started += new EventHandler(Content_Started);
-      Content.Paused += new EventHandler(Content_Paused);
-      Content.Stopped += new EventHandler(Content_Stopped);
       Content.ProblemChanged += new EventHandler(Content_ProblemChanged);
       Content.StoreAlgorithmInEachRunChanged += new EventHandler(Content_StoreAlgorithmInEachRunChanged);
     }
@@ -106,16 +85,13 @@ namespace HeuristicLab.Optimization.Views {
         resultsView.Content = null;
         runsView.Content = null;
         storeAlgorithmInEachRunCheckBox.Checked = true;
-        executionTimeTextBox.Text = "-";
       } else {
-        Locked = ReadOnly = Content.ExecutionState == ExecutionState.Started;
         parameterCollectionView.Content = Content.Parameters;
         problemViewHost.ViewType = null;
         problemViewHost.Content = Content.Problem;
         resultsView.Content = Content.Results.AsReadOnly();
         runsView.Content = Content.Runs;
         storeAlgorithmInEachRunCheckBox.Checked = Content.StoreAlgorithmInEachRun;
-        executionTimeTextBox.Text = Content.ExecutionTime.ToString();
       }
     }
 
@@ -128,8 +104,6 @@ namespace HeuristicLab.Optimization.Views {
       resultsView.Enabled = Content != null;
       runsView.Enabled = Content != null;
       storeAlgorithmInEachRunCheckBox.Enabled = Content != null && !ReadOnly;
-      executionTimeTextBox.Enabled = Content != null;
-      SetEnabledStateOfExecutableButtons();
     }
 
     protected override void OnClosed(FormClosedEventArgs e) {
@@ -145,6 +119,15 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     #region Content Events
+    protected override void Content_Prepared(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_Prepared), sender, e);
+      else {
+        base.Content_Prepared(sender, e);
+        resultsView.Content = Content.Results.AsReadOnly();
+      }
+    }
+
     protected virtual void Content_ProblemChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_ProblemChanged), sender, e);
@@ -153,62 +136,11 @@ namespace HeuristicLab.Optimization.Views {
         problemViewHost.Content = Content.Problem;
       }
     }
-    protected virtual void Content_ExecutionStateChanged(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_ExecutionStateChanged), sender, e);
-      else
-        startButton.Enabled = pauseButton.Enabled = stopButton.Enabled = resetButton.Enabled = false;
-    }
-    protected virtual void Content_ExecutionTimeChanged(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_ExecutionTimeChanged), sender, e);
-      else
-        executionTimeTextBox.Text = Content == null ? "-" : Content.ExecutionTime.ToString();
-    }
     protected virtual void Content_StoreAlgorithmInEachRunChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_StoreAlgorithmInEachRunChanged), sender, e);
       else
         storeAlgorithmInEachRunCheckBox.Checked = Content.StoreAlgorithmInEachRun;
-    }
-    protected virtual void Content_Prepared(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_Prepared), sender, e);
-      else {
-        resultsView.Content = Content.Results.AsReadOnly();
-        ReadOnly = Locked = false;
-        SetEnabledStateOfExecutableButtons();
-      }
-    }
-    protected virtual void Content_Started(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_Started), sender, e);
-      else {
-        ReadOnly = Locked = true;
-        SetEnabledStateOfExecutableButtons();
-      }
-    }
-    protected virtual void Content_Paused(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_Paused), sender, e);
-      else {
-        ReadOnly = Locked = false;
-        SetEnabledStateOfExecutableButtons();
-      }
-    }
-    protected virtual void Content_Stopped(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_Stopped), sender, e);
-      else {
-        ReadOnly = Locked = false;
-        SetEnabledStateOfExecutableButtons();
-      }
-    }
-    protected virtual void Content_ExceptionOccurred(object sender, EventArgs<Exception> e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler<EventArgs<Exception>>(Content_ExceptionOccurred), sender, e);
-      else
-        ErrorHandling.ShowErrorDialog(this, e.Value);
     }
     #endregion
 
@@ -263,18 +195,6 @@ namespace HeuristicLab.Optimization.Views {
     protected virtual void storeAlgorithmInEachRunCheckBox_CheckedChanged(object sender, EventArgs e) {
       if (Content != null) Content.StoreAlgorithmInEachRun = storeAlgorithmInEachRunCheckBox.Checked;
     }
-    protected virtual void startButton_Click(object sender, EventArgs e) {
-      Content.Start();
-    }
-    protected virtual void pauseButton_Click(object sender, EventArgs e) {
-      Content.Pause();
-    }
-    protected virtual void stopButton_Click(object sender, EventArgs e) {
-      Content.Stop();
-    }
-    protected virtual void resetButton_Click(object sender, EventArgs e) {
-      Content.Prepare(false);
-    }
     protected virtual void problemTabPage_DragEnterOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
       if (!ReadOnly && (e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) != null) && Content.ProblemType.IsAssignableFrom(e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat).GetType())) {
@@ -290,19 +210,6 @@ namespace HeuristicLab.Optimization.Views {
         IProblem problem = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) as IProblem;
         if (e.Effect.HasFlag(DragDropEffects.Copy)) problem = (IProblem)problem.Clone();
         Content.Problem = problem;
-      }
-    }
-    #endregion
-
-    #region Helpers
-    private void SetEnabledStateOfExecutableButtons() {
-      if (Content == null) {
-        startButton.Enabled = pauseButton.Enabled = stopButton.Enabled = resetButton.Enabled = false;
-      } else {
-        startButton.Enabled = (Content.ExecutionState == ExecutionState.Prepared) || (Content.ExecutionState == ExecutionState.Paused);
-        pauseButton.Enabled = Content.ExecutionState == ExecutionState.Started;
-        stopButton.Enabled = (Content.ExecutionState == ExecutionState.Started) || (Content.ExecutionState == ExecutionState.Paused);
-        resetButton.Enabled = Content.ExecutionState != ExecutionState.Started;
       }
     }
     #endregion

@@ -68,7 +68,8 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\x86\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <DocumentationFile>bin\x86\Release\HeuristicLab.Optimization.Views-3.3.XML</DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -125,6 +126,12 @@
     </Compile>
     <Compile Include="BatchRunView.Designer.cs">
       <DependentUpon>BatchRunView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IOptimizerView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="IOptimizerView.Designer.cs">
+      <DependentUpon>IOptimizerView.cs</DependentUpon>
     </Compile>
     <Compile Include="ResultValueView.cs">
       <SubType>UserControl</SubType>
