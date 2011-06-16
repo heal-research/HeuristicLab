@@ -42,6 +42,9 @@ namespace HeuristicLab.Optimization.Operators {
     public ValueLookupParameter<IOperator> EvaluatorParameter {
       get { return (ValueLookupParameter<IOperator>)Parameters["Evaluator"]; }
     }
+    public ValueLookupParameter<BoolValue> ParallelParameter {
+      get { return (ValueLookupParameter<BoolValue>)Parameters["Parallel"]; }
+    }
     private ScopeParameter CurrentScopeParameter {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }
     }
@@ -61,7 +64,12 @@ namespace HeuristicLab.Optimization.Operators {
       Parameters.Add(new ValueLookupParameter<IntValue>("NumberOfSolutions", "The number of solutions that should be created."));
       Parameters.Add(new ValueLookupParameter<IOperator>("SolutionCreator", "The operator which is used to create new solutions."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Evaluator", "The operator which is used to evaluate new solutions. This operator is executed in parallel, if an engine is used which supports parallelization."));
-      Parameters.Add(new ScopeParameter("CurrentScope", "The current scope to which the new solutions are added as sub-scopes."));
+      Parameters.Add(new ValueLookupParameter<BoolValue>("Parallel", "True if the operator should be applied in parallel on all sub-scopes, otherwise false.", new BoolValue(true)));
+      Parameters.Add(new ScopeParameter("CurrentScope", "The current scope to which the new solutions are added as sub-scopes."));      
+    }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey("Parallel")) Parameters.Add(new ValueLookupParameter<BoolValue>("Parallel", "True if the operator should be applied in parallel on all sub-scopes, otherwise false.", new BoolValue(true))); // backwards compatibility
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -72,13 +80,14 @@ namespace HeuristicLab.Optimization.Operators {
       int count = NumberOfSolutionsParameter.ActualValue.Value;
       IOperator creator = SolutionCreatorParameter.ActualValue;
       IOperator evaluator = EvaluatorParameter.ActualValue;
+      bool parallel = ParallelParameter.ActualValue.Value;
 
       int current = CurrentScope.SubScopes.Count;
       for (int i = 0; i < count; i++)
         CurrentScope.SubScopes.Add(new Scope((current + i).ToString()));
 
       OperationCollection creation = new OperationCollection();
-      OperationCollection evaluation = new OperationCollection() { Parallel = true };
+      OperationCollection evaluation = new OperationCollection() { Parallel = parallel };
       for (int i = 0; i < count; i++) {
         if (creator != null) creation.Add(ExecutionContext.CreateOperation(creator, CurrentScope.SubScopes[current + i]));
         if (evaluator != null) evaluation.Add(ExecutionContext.CreateOperation(evaluator, CurrentScope.SubScopes[current + i]));
