@@ -32,6 +32,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Random;
+using System.Collections.Generic;
 
 namespace HeuristicLab.Algorithms.GeneticAlgorithm {
   /// <summary>
@@ -103,6 +104,9 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       get { return SelectorParameter.Value; }
       set { SelectorParameter.Value = value; }
     }
+    public IEnumerable<ISelector> ValidSelectors {
+      get { return SelectorParameter.ValidValues; }
+    }
     public ICrossover Crossover {
       get { return CrossoverParameter.Value; }
       set { CrossoverParameter.Value = value; }
@@ -114,6 +118,9 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     public IManipulator Mutator {
       get { return MutatorParameter.Value; }
       set { MutatorParameter.Value = value; }
+    }
+    public IEnumerable<IManipulator> ValidMutators {
+      get { return MutatorParameter.ValidValues; }
     }
     public IntValue Elites {
       get { return ElitesParameter.Value; }

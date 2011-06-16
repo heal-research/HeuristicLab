@@ -125,6 +125,7 @@
     <Compile Include="CloningConstructorTest.cs" />
     <Compile Include="CollectObjectGraphTest.cs" />
     <Compile Include="ContentViewTests.cs" />
+    <Compile Include="GeneticProgrammingSamplesTest.cs" />
     <Compile Include="SymbolicRegressionTest.cs" />
     <Compile Include="PluginDependenciesTest.cs" />
     <Compile Include="PluginLoader.cs" />
@@ -389,17 +390,9 @@
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\HeuristicLab.Problems.ArtificialAnt.Views\3.3\HeuristicLab.Problems.ArtificialAnt.Views-3.3.csproj">
-      <Project>{30DD3DA2-CA57-49DD-A5BA-50CEF19DB45F}</Project>
-      <Name>HeuristicLab.Problems.ArtificialAnt.Views-3.3</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\HeuristicLab.Problems.ArtificialAnt.Views\3.4\HeuristicLab.Problems.ArtificialAnt.Views-3.4.csproj">
       <Project>{3083C7AA-5AF4-4C75-BA19-B69B86E2F66A}</Project>
       <Name>HeuristicLab.Problems.ArtificialAnt.Views-3.4</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\HeuristicLab.Problems.ArtificialAnt\3.3\HeuristicLab.Problems.ArtificialAnt-3.3.csproj">
-      <Project>{F5C0ECAC-EDBA-4024-872A-1F74AFCB20B4}</Project>
-      <Name>HeuristicLab.Problems.ArtificialAnt-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\HeuristicLab.Problems.ArtificialAnt\3.4\HeuristicLab.Problems.ArtificialAnt-3.4.csproj">
       <Project>{0C67A033-F6D9-4237-B3CA-C033A44706BE}</Project>
