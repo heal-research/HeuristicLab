@@ -405,7 +405,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.DataA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Operators.Views.GraphVisualization.Views-3.3", "HeuristicLab.Operators.Views.GraphVisualization.Views\3.3\HeuristicLab.Operators.Views.GraphVisualization.Views-3.3.csproj", "{0C39A349-1979-419A-89BD-E4E2F26BD287}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.PluginInfrastructure-3.3.Test", "HeuristicLab.PluginInfrastructure\3.3\Tests\HeuristicLab.PluginInfrastructure-3.3.Test.csproj", "{04840E7E-F7DB-4CE4-B308-EE805DD94E73}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.PluginInfrastructure-3.3.Tests", "HeuristicLab.PluginInfrastructure\3.3\Tests\HeuristicLab.PluginInfrastructure-3.3.Tests.csproj", "{04840E7E-F7DB-4CE4-B308-EE805DD94E73}"
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution

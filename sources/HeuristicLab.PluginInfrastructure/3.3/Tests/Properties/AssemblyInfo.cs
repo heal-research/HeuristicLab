@@ -26,7 +26,7 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("HeuristicLab.PluginInfrastructure-3.3.Test")]
+[assembly: AssemblyTitle("HeuristicLab.PluginInfrastructure-3.3.Tests")]
 [assembly: AssemblyDescription("Unit test classes for the HeuristicLab plugin infrastructure")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
