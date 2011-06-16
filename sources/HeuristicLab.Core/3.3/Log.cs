@@ -42,15 +42,23 @@ namespace HeuristicLab.Core {
       get { return messages; }
     }
 
+    [Storable]
+    protected long maxMessageCount;
+    public virtual long MaxMessageCount {
+      get { return maxMessageCount; }
+    }
+
     [StorableConstructor]
     protected Log(bool deserializing) : base(deserializing) { }
     protected Log(Log original, Cloner cloner)
       : base(original, cloner) {
-      messages = new List<string>(original.messages);
+      this.messages = new List<string>(original.messages);
+      this.maxMessageCount = original.maxMessageCount;
     }
-    public Log()
+    public Log(long maxMessageCount = -1)
       : base() {
-      messages = new List<string>();
+      this.messages = new List<string>();
+      this.maxMessageCount = maxMessageCount;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -64,12 +72,19 @@ namespace HeuristicLab.Core {
     public virtual void LogMessage(string message) {
       string s = DateTime.Now.ToString() + "\t" + message;
       messages.Add(s);
+      CapMessages();
       OnMessageAdded(s);
     }
     public virtual void LogException(Exception ex) {
       string s = DateTime.Now.ToString() + "\t" + "Exception occurred:" + Environment.NewLine + ErrorHandling.BuildErrorMessage(ex);
       messages.Add(s);
+      CapMessages();
       OnMessageAdded(s);
+    }
+    protected virtual void CapMessages() {
+      while (maxMessageCount >= 0 && messages.Count > maxMessageCount) {
+        messages.RemoveAt(0);
+      }
     }
 
     public event EventHandler<EventArgs<string>> MessageAdded;
