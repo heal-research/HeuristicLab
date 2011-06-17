@@ -33,13 +33,14 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   public sealed class OnePointShaker : SymbolicExpressionTreeManipulator {
     private const string ShakingFactorParameterName = "ShakingFactor";
     #region parameter properties
-    public IValueLookupParameter<DoubleValue> ShakingFactorParameter {
-      get { return (IValueLookupParameter<DoubleValue>)Parameters[ShakingFactorParameterName]; }
+    public IValueParameter<DoubleValue> ShakingFactorParameter {
+      get { return (IValueParameter<DoubleValue>)Parameters[ShakingFactorParameterName]; }
     }
     #endregion
     #region properties
-    public DoubleValue ShakingFactor {
-      get { return ShakingFactorParameter.ActualValue; }
+    public double ShakingFactor {
+      get { return ShakingFactorParameter.Value.Value; }
+      set { ShakingFactorParameter.Value.Value = value; }
     }
     #endregion
     [StorableConstructor]
@@ -47,7 +48,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     private OnePointShaker(OnePointShaker original, Cloner cloner) : base(original, cloner) { }
     public OnePointShaker()
       : base() {
-      Parameters.Add(new ValueLookupParameter<DoubleValue>(ShakingFactorParameterName, "The shaking factor that should be used for the manipulation of constants (default=1.0).", new DoubleValue(1.0)));
+      Parameters.Add(new FixedValueParameter<DoubleValue>(ShakingFactorParameterName, "The shaking factor that should be used for the manipulation of constants (default=1.0).", new DoubleValue(1.0)));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -61,7 +62,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       });
       if (parametricNodes.Count > 0) {
         var selectedPoint = parametricNodes.SelectRandom(random);
-        selectedPoint.ShakeLocalParameters(random, ShakingFactor.Value);
+        selectedPoint.ShakeLocalParameters(random, ShakingFactor);
       }
     }
   }

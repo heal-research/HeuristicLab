@@ -76,8 +76,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     #endregion
 
-    public IValueParameter<StringValue> TargetVariableParameter {
-      get { return (IValueParameter<StringValue>)Parameters[TargetVariableParameterName]; }
+    public ConstrainedValueParameter<StringValue> TargetVariableParameter {
+      get { return (ConstrainedValueParameter<StringValue>)Parameters[TargetVariableParameterName]; }
     }
     public string TargetVariable {
       get { return TargetVariableParameter.Value.Value; }

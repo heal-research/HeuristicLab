@@ -126,6 +126,11 @@
     <Compile Include="CollectObjectGraphTest.cs" />
     <Compile Include="ContentViewTests.cs" />
     <Compile Include="GeneticProgrammingSamplesTest.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="SymbolicRegressionTest.cs" />
     <Compile Include="PluginDependenciesTest.cs" />
     <Compile Include="PluginLoader.cs" />
@@ -442,10 +447,6 @@
       <Project>{3E9E8944-44FF-40BB-A622-3A4A7DD0F198}</Project>
       <Name>HeuristicLab.Problems.DataAnalysis.Views-3.4</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\HeuristicLab.Problems.DataAnalysis\3.3\HeuristicLab.Problems.DataAnalysis-3.3.csproj">
-      <Project>{70DFD984-B1D9-46FE-8EB7-4DE92D71A9FC}</Project>
-      <Name>HeuristicLab.Problems.DataAnalysis-3.3</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\HeuristicLab.Problems.DataAnalysis\3.4\HeuristicLab.Problems.DataAnalysis-3.4.csproj">
       <Project>{DF87C13E-A889-46FF-8153-66DCAA8C5674}</Project>
       <Name>HeuristicLab.Problems.DataAnalysis-3.4</Name>
@@ -552,6 +553,17 @@
     <None Include="GA_TSP.hl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="towerData.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

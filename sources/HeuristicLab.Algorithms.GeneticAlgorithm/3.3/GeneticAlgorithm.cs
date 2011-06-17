@@ -64,16 +64,16 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     private ValueParameter<IntValue> PopulationSizeParameter {
       get { return (ValueParameter<IntValue>)Parameters["PopulationSize"]; }
     }
-    private ConstrainedValueParameter<ISelector> SelectorParameter {
+    public ConstrainedValueParameter<ISelector> SelectorParameter {
       get { return (ConstrainedValueParameter<ISelector>)Parameters["Selector"]; }
     }
-    private ConstrainedValueParameter<ICrossover> CrossoverParameter {
+    public ConstrainedValueParameter<ICrossover> CrossoverParameter {
       get { return (ConstrainedValueParameter<ICrossover>)Parameters["Crossover"]; }
     }
     private ValueParameter<PercentValue> MutationProbabilityParameter {
       get { return (ValueParameter<PercentValue>)Parameters["MutationProbability"]; }
     }
-    private OptionalConstrainedValueParameter<IManipulator> MutatorParameter {
+    public OptionalConstrainedValueParameter<IManipulator> MutatorParameter {
       get { return (OptionalConstrainedValueParameter<IManipulator>)Parameters["Mutator"]; }
     }
     private ValueParameter<IntValue> ElitesParameter {
@@ -104,9 +104,6 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       get { return SelectorParameter.Value; }
       set { SelectorParameter.Value = value; }
     }
-    public IEnumerable<ISelector> ValidSelectors {
-      get { return SelectorParameter.ValidValues; }
-    }
     public ICrossover Crossover {
       get { return CrossoverParameter.Value; }
       set { CrossoverParameter.Value = value; }
@@ -118,9 +115,6 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     public IManipulator Mutator {
       get { return MutatorParameter.Value; }
       set { MutatorParameter.Value = value; }
-    }
-    public IEnumerable<IManipulator> ValidMutators {
-      get { return MutatorParameter.ValidValues; }
     }
     public IntValue Elites {
       get { return ElitesParameter.Value; }
