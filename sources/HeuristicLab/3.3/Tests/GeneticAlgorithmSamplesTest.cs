@@ -17,10 +17,123 @@ using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using System.IO;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Classification;
+using HeuristicLab.Problems.TravelingSalesman;
+using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Problems.VehicleRouting;
+using HeuristicLab.Problems.VehicleRouting.Encodings.Potvin;
+using HeuristicLab.Problems.VehicleRouting.Encodings;
+using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 
 namespace HeuristicLab_33.Tests {
   [TestClass]
-  public class GeneticProgrammingSamplesTest {
+  public class GeneticAlgorithmSamplesTest {
+    [TestMethod]
+    public void CreateTSPSample() {
+      GeneticAlgorithm ga = new GeneticAlgorithm();
+      #region problem configuration
+      TravelingSalesmanProblem tspProblem = new TravelingSalesmanProblem();
+      // import and configure TSP data
+      string ch130FileName = Path.GetTempFileName() + ".tsp";// for silly parser constraints
+      using (var writer = File.CreateText(ch130FileName)) {
+        writer.Write(HeuristicLab_33.Tests.Properties.Resources.ch130);
+      }
+      string ch130OptTourFileName = Path.GetTempFileName() + ".opt.tour"; // for silly parser constraints
+      using (var writer = File.CreateText(ch130OptTourFileName)) {
+        writer.Write(HeuristicLab_33.Tests.Properties.Resources.ch130_opt);
+      }
+
+      tspProblem.ImportFromTSPLIB(ch130FileName, ch130OptTourFileName, 6110);
+      tspProblem.Evaluator = new TSPRoundedEuclideanPathEvaluator();
+      tspProblem.SolutionCreator = new RandomPermutationCreator();
+      tspProblem.UseDistanceMatrix.Value = true;
+      tspProblem.Name = "ch130 TSP (imported from TSPLIB)";
+      tspProblem.Description = "130 city problem (Churritz)";
+      #endregion
+      #region algorithm configuration
+      ga.Name = "Genetic Algorithm - TSP";
+      ga.Description = "A genetic algorithm which solves the \"ch130\" traveling salesman problem (imported from TSPLIB)";
+      ga.Problem = tspProblem;
+      ConfigureGeneticAlgorithmParameters<ProportionalSelector, OrderCrossover2, InversionManipulator>(
+        ga, 100, 1, 1000, 0.05);
+
+      ga.Analyzer.Operators.SetItemCheckedState(ga.Analyzer.Operators
+        .OfType<TSPAlleleFrequencyAnalyzer>()
+        .Single(), false);
+      ga.Analyzer.Operators.SetItemCheckedState(ga.Analyzer.Operators
+        .OfType<TSPPopulationDiversityAnalyzer>()
+        .Single(), false);
+      #endregion
+
+      XmlGenerator.Serialize(ga, "../../GA_TSP.hl");
+
+      RunAlgorithm(ga);
+    }
+    [TestMethod]
+    public void CreateVRPSample() {
+      GeneticAlgorithm ga = new GeneticAlgorithm();
+      #region problem configuration
+      VehicleRoutingProblem vrpProblem = new VehicleRoutingProblem();
+      // import and configure VRP data
+      string c101FileName = Path.GetTempFileName();
+      using (var writer = File.CreateText(c101FileName)) {
+        writer.Write(HeuristicLab_33.Tests.Properties.Resources.C101);
+      }
+      // import and configure VRP data
+      string c101BestSolutionFileName = Path.GetTempFileName();
+      using (var writer = File.CreateText(c101BestSolutionFileName)) {
+        writer.Write(HeuristicLab_33.Tests.Properties.Resources.C101_opt);
+      }
+
+      vrpProblem.ImportFromSolomon(c101FileName);
+      vrpProblem.ImportSolution(c101BestSolutionFileName);
+      vrpProblem.Name = "C101 VRP (imported from Solomon)";
+      vrpProblem.Description = "Represents a Vehicle Routing Problem.";
+      vrpProblem.DistanceFactorParameter.Value.Value = 1;
+      vrpProblem.FleetUsageFactorParameter.Value.Value = 100;
+      vrpProblem.OverloadPenaltyParameter.Value.Value = 100;
+      vrpProblem.TardinessPenaltyParameter.Value.Value = 100;
+      vrpProblem.TimeFactorParameter.Value.Value = 0;
+      vrpProblem.Evaluator = new VRPEvaluator();
+      vrpProblem.MaximizationParameter.Value.Value = false;
+      vrpProblem.SolutionCreator = new RandomCreator();
+      vrpProblem.UseDistanceMatrix.Value = true;
+      vrpProblem.Vehicles.Value = 25;
+      #endregion
+      #region algorithm configuration
+      ga.Name = "Genetic Algorithm - VRP";
+      ga.Description = "A genetic algorithm which solves the \"C101\" vehicle routing problem (imported from Solomon)";
+      ga.Problem = vrpProblem;
+      ConfigureGeneticAlgorithmParameters<TournamentSelector, MultiVRPSolutionCrossover, MultiVRPSolutionManipulator>(
+        ga, 100, 1, 1000, 0.05, 3);
+
+      var xOver = (MultiVRPSolutionCrossover)ga.Crossover;
+      foreach (var op in xOver.Operators) {
+        xOver.Operators.SetItemCheckedState(op, false);
+      }
+      xOver.Operators.SetItemCheckedState(xOver.Operators
+        .OfType<PotvinRouteBasedCrossover>()
+        .Single(), true);
+      xOver.Operators.SetItemCheckedState(xOver.Operators
+        .OfType<PotvinSequenceBasedCrossover>()
+        .Single(), true);
+
+      var manipulator = (MultiVRPSolutionManipulator)ga.Mutator;
+      foreach (var op in manipulator.Operators) {
+        manipulator.Operators.SetItemCheckedState(op, false);
+      }
+      manipulator.Operators.SetItemCheckedState(manipulator.Operators
+        .OfType<PotvinOneLevelExchangeMainpulator>()
+        .Single(), true);
+      manipulator.Operators.SetItemCheckedState(manipulator.Operators
+        .OfType<PotvinTwoLevelExchangeManipulator>()
+        .Single(), true);
+      #endregion
+
+      XmlGenerator.Serialize(ga, "../../GA_VRP.hl");
+
+      RunAlgorithm(ga);
+    }
+
     [TestMethod]
     public void CreateArtificialAntSample() {
       GeneticAlgorithm ga = new GeneticAlgorithm();
@@ -37,29 +150,15 @@ namespace HeuristicLab_33.Tests {
       ga.Name = "Genetic Programming - Artificial Ant";
       ga.Description = "A standard genetic programming algorithm to solve the artificial ant problem (Santa-Fe trail)";
       ga.Problem = antProblem;
-      ga.PopulationSize.Value = 1000;
-      ga.MaximumGenerations.Value = 100;
-      ga.MutationProbability.Value = 0.15;
-      ga.Elites.Value = 1;
-      var tSelector = ga.SelectorParameter.ValidValues
-        .OfType<TournamentSelector>()
-        .Single();
-      tSelector.GroupSizeParameter.Value = new IntValue(5);
-      ga.Selector = tSelector;
-      var mutator = ga.MutatorParameter.ValidValues
-        .OfType<MultiSymbolicExpressionTreeArchitectureManipulator>()
-        .Single();
+      ConfigureGeneticAlgorithmParameters<TournamentSelector, SubtreeCrossover, MultiSymbolicExpressionTreeArchitectureManipulator>(
+        ga, 1000, 1, 100, 0.15, 5);
+      var mutator = (MultiSymbolicExpressionTreeArchitectureManipulator)ga.Mutator;
       mutator.Operators.SetItemCheckedState(mutator.Operators
         .OfType<FullTreeShaker>()
         .Single(), false);
       mutator.Operators.SetItemCheckedState(mutator.Operators
         .OfType<OnePointShaker>()
         .Single(), false);
-      ga.Mutator = mutator;
-
-      ga.SetSeedRandomly.Value = false;
-      ga.Seed.Value = 0;
-      ga.Engine = new ParallelEngine();
       #endregion
 
       XmlGenerator.Serialize(ga, "../../SGP_SantaFe.hl");
@@ -152,29 +251,16 @@ namespace HeuristicLab_33.Tests {
       ga.Problem = symbRegProblem;
       ga.Name = "Genetic Programming - Symbolic Regression";
       ga.Description = "A standard genetic programming algorithm to solve a symbolic regression problem (tower dataset)";
-      ga.Elites.Value = 1;
-      ga.MaximumGenerations.Value = 100;
-      ga.MutationProbability.Value = 0.15;
-      ga.PopulationSize.Value = 1000;
-      ga.Seed.Value = 0;
-      ga.SetSeedRandomly.Value = false;
-      var tSelector = ga.SelectorParameter.ValidValues
-        .OfType<TournamentSelector>()
-        .Single();
-      tSelector.GroupSizeParameter.Value.Value = 5;
-      ga.Selector = tSelector;
-      var mutator = ga.MutatorParameter.ValidValues
-        .OfType<MultiSymbolicExpressionTreeManipulator>()
-        .Single();
+      ConfigureGeneticAlgorithmParameters<TournamentSelector, SubtreeCrossover, MultiSymbolicExpressionTreeManipulator>(
+        ga, 1000, 1, 100, 0.15, 5);
+      var mutator = (MultiSymbolicExpressionTreeManipulator)ga.Mutator;
       mutator.Operators.OfType<FullTreeShaker>().Single().ShakingFactor = 0.1;
       mutator.Operators.OfType<OnePointShaker>().Single().ShakingFactor = 1.0;
-      ga.Mutator = mutator;
 
       ga.Analyzer.Operators.SetItemCheckedState(
         ga.Analyzer.Operators
         .OfType<SymbolicRegressionSingleObjectiveOverfittingAnalyzer>()
         .Single(), false);
-      ga.Engine = new ParallelEngine();
       #endregion
 
       XmlGenerator.Serialize(ga, "../../SGP_SymbReg.hl");
@@ -260,34 +346,52 @@ namespace HeuristicLab_33.Tests {
       ga.Problem = symbClassProblem;
       ga.Name = "Genetic Programming - Symbolic Classification";
       ga.Description = "A standard genetic programming algorithm to solve a classification problem (Mammographic+Mass dataset)";
-      ga.Elites.Value = 1;
-      ga.MaximumGenerations.Value = 100;
-      ga.MutationProbability.Value = 0.15;
-      ga.PopulationSize.Value = 1000;
-      ga.Seed.Value = 0;
-      ga.SetSeedRandomly.Value = false;
-      var tSelector = ga.SelectorParameter.ValidValues
-        .OfType<TournamentSelector>()
-        .Single();
-      tSelector.GroupSizeParameter.Value.Value = 5;
-      ga.Selector = tSelector;
-      var mutator = ga.MutatorParameter.ValidValues
-        .OfType<MultiSymbolicExpressionTreeManipulator>()
-        .Single();
+      ConfigureGeneticAlgorithmParameters<TournamentSelector, SubtreeCrossover, MultiSymbolicExpressionTreeManipulator>(
+        ga, 1000, 1, 100, 0.15, 5
+        );
+
+      var mutator = (MultiSymbolicExpressionTreeManipulator)ga.Mutator;
       mutator.Operators.OfType<FullTreeShaker>().Single().ShakingFactor = 0.1;
       mutator.Operators.OfType<OnePointShaker>().Single().ShakingFactor = 1.0;
-      ga.Mutator = mutator;
 
       ga.Analyzer.Operators.SetItemCheckedState(
         ga.Analyzer.Operators
         .OfType<SymbolicClassificationSingleObjectiveOverfittingAnalyzer>()
         .Single(), false);
-      ga.Engine = new ParallelEngine();
       #endregion
 
       XmlGenerator.Serialize(ga, "../../SGP_SymbClass.hl");
 
       RunAlgorithm(ga);
+    }
+
+    private void ConfigureGeneticAlgorithmParameters<S, C, M>(GeneticAlgorithm ga, int popSize, int elites, int maxGens, double mutationRate, int tournGroupSize = 0)
+      where S : ISelector
+      where C : ICrossover
+      where M : IManipulator {
+      ga.Elites.Value = elites;
+      ga.MaximumGenerations.Value = maxGens;
+      ga.MutationProbability.Value = mutationRate;
+      ga.PopulationSize.Value = popSize;
+      ga.Seed.Value = 0;
+      ga.SetSeedRandomly.Value = true;
+      ga.Selector = ga.SelectorParameter.ValidValues
+        .OfType<S>()
+        .Single();
+
+      ga.Crossover = ga.CrossoverParameter.ValidValues
+        .OfType<C>()
+        .Single();
+
+      ga.Mutator = ga.MutatorParameter.ValidValues
+        .OfType<M>()
+        .Single();
+
+      var tSelector = ga.Selector as TournamentSelector;
+      if (tSelector != null) {
+        tSelector.GroupSizeParameter.Value.Value = 5;
+      }
+      ga.Engine = new ParallelEngine();
     }
 
 
