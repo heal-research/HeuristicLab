@@ -555,6 +555,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="mammographic_masses.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="towerData.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

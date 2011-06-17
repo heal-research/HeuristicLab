@@ -16,6 +16,7 @@ using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using System.IO;
+using HeuristicLab.Problems.DataAnalysis.Symbolic.Classification;
 
 namespace HeuristicLab_33.Tests {
   [TestClass]
@@ -71,6 +72,8 @@ namespace HeuristicLab_33.Tests {
       GeneticAlgorithm ga = new GeneticAlgorithm();
       #region problem configuration
       SymbolicRegressionSingleObjectiveProblem symbRegProblem = new SymbolicRegressionSingleObjectiveProblem();
+      symbRegProblem.Name = "Tower Symbolic Regression Problem";
+      symbRegProblem.Description = "Tower Dataset (downloaded from: http://vanillamodeling.com/realproblems.html)";
       // import and configure problem data
       string filename = Path.GetTempFileName();
       using (var writer = File.CreateText(filename)) {
@@ -138,6 +141,11 @@ namespace HeuristicLab_33.Tests {
       symbRegProblem.ValidationPartition.Start = 2800;
       symbRegProblem.ValidationPartition.End = 4000;
       symbRegProblem.RelativeNumberOfEvaluatedSamples.Value = 0.3;
+      symbRegProblem.MaximumSymbolicExpressionTreeLength.Value = 150;
+      symbRegProblem.MaximumSymbolicExpressionTreeDepth.Value = 12;
+      symbRegProblem.MaximumFunctionDefinitions.Value = 0;
+      symbRegProblem.MaximumFunctionArguments.Value = 0;
+
       symbRegProblem.EvaluatorParameter.Value = new SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator();
       #endregion
       #region algorithm configuration
@@ -170,6 +178,114 @@ namespace HeuristicLab_33.Tests {
       #endregion
 
       XmlGenerator.Serialize(ga, "../../SGP_SymbReg.hl");
+
+      RunAlgorithm(ga);
+    }
+
+    [TestMethod]
+    public void CreateSymbolicClassificationSample() {
+      GeneticAlgorithm ga = new GeneticAlgorithm();
+      #region problem configuration
+      SymbolicClassificationSingleObjectiveProblem symbClassProblem = new SymbolicClassificationSingleObjectiveProblem();
+      symbClassProblem.Name = "Mammography Classification Problem";
+      symbClassProblem.Description = "Mammography dataset imported from the UCI machine learning repository (http://archive.ics.uci.edu/ml/datasets/Mammographic+Mass)";
+      // import and configure problem data
+      string filename = Path.GetTempFileName();
+      using (var writer = File.CreateText(filename)) {
+        writer.Write(HeuristicLab_33.Tests.Properties.Resources.MammographicMasses);
+      }
+      var mammoData = ClassificationProblemData.ImportFromFile(filename);
+      mammoData.TargetVariableParameter.Value = mammoData.TargetVariableParameter.ValidValues
+        .First(v => v.Value == "Severity");
+      mammoData.InputVariables.SetItemCheckedState(
+        mammoData.InputVariables.Single(x => x.Value == "BI-RADS"), false);
+      mammoData.InputVariables.SetItemCheckedState(
+        mammoData.InputVariables.Single(x => x.Value == "Age"), true);
+      mammoData.InputVariables.SetItemCheckedState(
+        mammoData.InputVariables.Single(x => x.Value == "Shape"), true);
+      mammoData.InputVariables.SetItemCheckedState(
+        mammoData.InputVariables.Single(x => x.Value == "Margin"), true);
+      mammoData.InputVariables.SetItemCheckedState(
+        mammoData.InputVariables.Single(x => x.Value == "Density"), true);
+      mammoData.InputVariables.SetItemCheckedState(
+        mammoData.InputVariables.Single(x => x.Value == "Severity"), false);
+      mammoData.TrainingPartition.Start = 0;
+      mammoData.TrainingPartition.End = 800;
+      mammoData.TestPartition.Start = 800;
+      mammoData.TestPartition.End = 961;
+      mammoData.Name = "Data imported from mammographic_masses.csv";
+      mammoData.Description = "Original dataset: http://archive.ics.uci.edu/ml/datasets/Mammographic+Mass, missing values have been replaced with median values.";
+      symbClassProblem.ProblemData = mammoData;
+
+      // configure grammar
+      var grammar = new TypeCoherentExpressionGrammar();
+      grammar.Symbols.OfType<Sine>().Single().InitialFrequency = 0.0;
+      grammar.Symbols.OfType<Cosine>().Single().InitialFrequency = 0.0;
+      grammar.Symbols.OfType<Tangent>().Single().InitialFrequency = 0.0;
+      grammar.Symbols.OfType<Power>().Single().InitialFrequency = 0.0;
+      grammar.Symbols.OfType<Root>().Single().InitialFrequency = 0.0;
+      grammar.Symbols.OfType<TimeLag>().Single().InitialFrequency = 0.0;
+      grammar.Symbols.OfType<Integral>().Single().InitialFrequency = 0.0;
+      grammar.Symbols.OfType<Derivative>().Single().InitialFrequency = 0.0;
+      grammar.Symbols.OfType<LaggedVariable>().Single().InitialFrequency = 0.0;
+      grammar.Symbols.OfType<VariableCondition>().Single().InitialFrequency = 0.0;
+      var varSymbol = grammar.Symbols.OfType<Variable>().Where(x => !(x is LaggedVariable)).Single();
+      varSymbol.WeightMu = 1.0;
+      varSymbol.WeightSigma = 1.0;
+      varSymbol.WeightManipulatorMu = 0.0;
+      varSymbol.WeightManipulatorSigma = 0.05;
+      varSymbol.MultiplicativeWeightManipulatorSigma = 0.03;
+      var constSymbol = grammar.Symbols.OfType<Constant>().Single();
+      constSymbol.MaxValue = 20;
+      constSymbol.MinValue = -20;
+      constSymbol.ManipulatorMu = 0.0;
+      constSymbol.ManipulatorSigma = 1;
+      constSymbol.MultiplicativeManipulatorSigma = 0.03;
+      symbClassProblem.SymbolicExpressionTreeGrammar = grammar;
+
+      // configure remaining problem parameters
+      symbClassProblem.BestKnownQuality.Value = 0.0;
+      symbClassProblem.FitnessCalculationPartition.Start = 0;
+      symbClassProblem.FitnessCalculationPartition.End = 400;
+      symbClassProblem.ValidationPartition.Start = 400;
+      symbClassProblem.ValidationPartition.End = 800;
+      symbClassProblem.RelativeNumberOfEvaluatedSamples.Value = 1;
+      symbClassProblem.MaximumSymbolicExpressionTreeLength.Value = 100;
+      symbClassProblem.MaximumSymbolicExpressionTreeDepth.Value = 10;
+      symbClassProblem.MaximumFunctionDefinitions.Value = 0;
+      symbClassProblem.MaximumFunctionArguments.Value = 0;
+      symbClassProblem.EvaluatorParameter.Value = new SymbolicClassificationSingleObjectiveMeanSquaredErrorEvaluator();
+      #endregion
+      #region algorithm configuration
+      ga.Problem = symbClassProblem;
+      ga.Name = "Genetic Programming - Symbolic Classification";
+      ga.Description = "A standard genetic programming algorithm to solve a classification problem (Mammographic+Mass dataset)";
+      ga.Elites.Value = 1;
+      ga.MaximumGenerations.Value = 100;
+      ga.MutationProbability.Value = 0.15;
+      ga.PopulationSize.Value = 1000;
+      ga.Seed.Value = 0;
+      ga.SetSeedRandomly.Value = false;
+      var tSelector = ga.SelectorParameter.ValidValues
+        .OfType<TournamentSelector>()
+        .Single();
+      tSelector.GroupSizeParameter.Value.Value = 5;
+      ga.Selector = tSelector;
+      var mutator = ga.MutatorParameter.ValidValues
+        .OfType<MultiSymbolicExpressionTreeManipulator>()
+        .Single();
+      mutator.Operators.OfType<FullTreeShaker>().Single().ShakingFactor = 0.1;
+      mutator.Operators.OfType<OnePointShaker>().Single().ShakingFactor = 1.0;
+      ga.Mutator = mutator;
+
+      ga.Analyzer.Operators.SetItemCheckedState(
+        ga.Analyzer.Operators
+        .OfType<SymbolicClassificationSingleObjectiveOverfittingAnalyzer>()
+        .Single(), false);
+      ga.Engine = new ParallelEngine();
+      #endregion
+
+      XmlGenerator.Serialize(ga, "../../SGP_SymbClass.hl");
 
       RunAlgorithm(ga);
     }
