@@ -159,6 +159,12 @@ namespace HeuristicLab_33.Tests {
       mutator.Operators.SetItemCheckedState(mutator.Operators
         .OfType<OnePointShaker>()
         .Single(), false);
+      mutator.Operators.SetItemCheckedState(mutator.Operators
+        .OfType<ArgumentDeleter>()
+        .Single(), false);
+      mutator.Operators.SetItemCheckedState(mutator.Operators
+        .OfType<SubroutineDeleter>()
+        .Single(), false);
       #endregion
 
       XmlGenerator.Serialize(ga, "../../SGP_SantaFe.hl");
