@@ -20,9 +20,11 @@
 #endregion
 
 using System;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System.Collections.Generic;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableClass]
@@ -110,10 +112,18 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
     #endregion
 
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      foreach (ISymbol symbol in symbols.Values)
+        RegisterSymbolEvents(symbol);
+    }
     [StorableConstructor]
     protected SymbolicExpressionGrammar(bool deserializing) : base(deserializing) { }
     protected SymbolicExpressionGrammar(SymbolicExpressionGrammar original, Cloner cloner)
       : base(original, cloner) {
+      foreach (ISymbol symbol in Symbols)
+        RegisterSymbolEvents(symbol);
+
       programRootSymbol = cloner.Clone(original.programRootSymbol);
       startSymbol = cloner.Clone(original.StartSymbol);
       defunSymbol = cloner.Clone(original.defunSymbol);
@@ -152,6 +162,15 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       }
     }
 
+    protected override void AddSymbol(ISymbol symbol) {
+      base.AddSymbol(symbol);
+      RegisterSymbolEvents(symbol);
+    }
+    protected override void RemoveSymbol(ISymbol symbol) {
+      DeregisterSymbolEvents(symbol);
+      base.RemoveSymbol(symbol);
+    }
+
     public event EventHandler ReadOnlyChanged;
     protected virtual void OnReadOnlyChanged() {
       var handler = ReadOnlyChanged;
@@ -163,6 +182,59 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     void IStatefulItem.InitializeState() { }
     void IStatefulItem.ClearState() {
       ReadOnly = false;
+    }
+    #endregion
+
+    #region symbol events
+    protected virtual void RegisterSymbolEvents(ISymbol symbol) {
+      symbol.NameChanging += new EventHandler<CancelEventArgs<string>>(Symbol_NameChanging);
+      symbol.NameChanged += new EventHandler(Symbol_NameChanged);
+    }
+    protected virtual void DeregisterSymbolEvents(ISymbol symbol) {
+      symbol.NameChanging -= new EventHandler<CancelEventArgs<string>>(Symbol_NameChanging);
+      symbol.NameChanged -= new EventHandler(Symbol_NameChanged);
+    }
+
+    private void Symbol_NameChanging(object sender, CancelEventArgs<string> e) {
+      if (symbols.ContainsKey(e.Value)) e.Cancel = true;
+    }
+    private void Symbol_NameChanged(object sender, EventArgs e) {
+      ISymbol symbol = (ISymbol)sender;
+      string oldName = symbols.Where(x => x.Value == symbol).First().Key;
+      string newName = symbol.Name;
+
+      symbols.Remove(oldName);
+      symbols.Add(newName, symbol);
+
+      var subtreeCount = symbolSubtreeCount[oldName];
+      symbolSubtreeCount.Remove(oldName);
+      symbolSubtreeCount.Add(newName, subtreeCount);
+
+      List<string> allowedChilds;
+      if (allowedChildSymbols.TryGetValue(oldName, out allowedChilds)) {
+        allowedChildSymbols.Remove(oldName);
+        allowedChildSymbols.Add(newName, allowedChilds);
+      }
+
+      for (int i = 0; i < GetMaximumSubtreeCount(symbol); i++) {
+        if (allowedChildSymbolsPerIndex.TryGetValue(Tuple.Create(oldName, i), out allowedChilds)) {
+          allowedChildSymbolsPerIndex.Remove(Tuple.Create(oldName, i));
+          allowedChildSymbolsPerIndex.Add(Tuple.Create(newName, i), allowedChilds);
+        }
+      }
+
+      foreach (var parent in Symbols) {
+        if (allowedChildSymbols.TryGetValue(parent.Name, out allowedChilds))
+          if (allowedChilds.Remove(oldName))
+            allowedChilds.Add(newName);
+
+        for (int i = 0; i < GetMaximumSubtreeCount(parent); i++) {
+          if (allowedChildSymbolsPerIndex.TryGetValue(Tuple.Create(parent.Name, i), out allowedChilds))
+            if (allowedChilds.Remove(oldName)) allowedChilds.Add(newName);
+        }
+      }
+
+      ClearCaches();
     }
     #endregion
   }
