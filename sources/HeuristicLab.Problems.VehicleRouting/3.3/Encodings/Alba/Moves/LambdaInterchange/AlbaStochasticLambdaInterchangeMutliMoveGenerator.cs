@@ -49,16 +49,21 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     public override IDeepCloneable Clone(Cloner cloner) {
       return new AlbaStochasticLambdaInterchangeMultiMoveGenerator(this, cloner);
     }
-    protected override AlbaLambdaInterchangeMove[] GenerateMoves(AlbaEncoding individual, int lambda) {
-      int sampleSize = SampleSizeParameter.ActualValue.Value;
 
+    public static AlbaLambdaInterchangeMove[] GenerateAllMoves(AlbaEncoding individual, int lambda, int sampleSize, IRandom random) {
       AlbaLambdaInterchangeMove[] moves = new AlbaLambdaInterchangeMove[sampleSize];
       for (int i = 0; i < sampleSize; i++) {
         moves[i] = AlbaStochasticLambdaInterchangeSingleMoveGenerator.Apply(
-          individual, Cities, lambda, RandomParameter.ActualValue);
+          individual, individual.Cities, lambda, random);
       }
 
       return moves;
+    }
+
+    protected override AlbaLambdaInterchangeMove[] GenerateMoves(AlbaEncoding individual, int lambda) {
+      int sampleSize = SampleSizeParameter.ActualValue.Value;
+
+      return GenerateAllMoves(individual, lambda, sampleSize, RandomParameter.ActualValue);
     }
   }
 }

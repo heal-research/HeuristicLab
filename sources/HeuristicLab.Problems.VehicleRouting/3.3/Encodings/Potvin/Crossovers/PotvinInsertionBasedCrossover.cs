@@ -1,0 +1,295 @@
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2011 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System.Collections.Generic;
+using HeuristicLab.Data;
+using System;
+
+namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
+  [Item("PotvinInsertionBasedCrossover", "The IBX crossover for VRP representations.")]
+  [StorableClass]
+  public sealed class PotvinInsertionBasedCrossover : PotvinCrossover {
+    [StorableConstructor]
+    private PotvinInsertionBasedCrossover(bool deserializing) : base(deserializing) { }
+    private PotvinInsertionBasedCrossover(PotvinInsertionBasedCrossover original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new PotvinInsertionBasedCrossover(this, cloner);
+    }
+    public PotvinInsertionBasedCrossover()
+      : base() { }
+
+    protected static int SelectRandomTourBiasedByLength(IRandom random, PotvinEncoding individual) {
+      int tourIndex = -1;
+
+      double sum = 0.0;
+      double[] probabilities = new double[individual.Tours.Count];
+      for (int i = 0; i < individual.Tours.Count; i++) {
+        probabilities[i] = 1.0 / ((double)individual.Tours[i].Cities.Count / (double)individual.Cities);
+        sum += probabilities[i];
+      }
+
+      for (int i = 0; i < probabilities.Length; i++)
+        probabilities[i] = probabilities[i] / sum;
+
+      double rand = random.NextDouble();
+      double cumulatedProbabilities = 0.0;
+      int index = 0;
+      while (tourIndex == -1 && index < probabilities.Length) {
+        if (cumulatedProbabilities <= rand && rand <= cumulatedProbabilities + probabilities[index])
+          tourIndex = index;
+
+        cumulatedProbabilities += probabilities[index];
+        index++;
+      }
+
+      return tourIndex;
+    }
+
+    private double CalculateCentroidDistance(Tour t1, Tour t2, DoubleMatrix coordinates) {
+      double xSum = 0;
+      double ySum = 0;
+      double c1X, c1Y, c2X, c2Y;
+
+      for (int i = 0; i < t1.Cities.Count; i++) {
+        xSum += coordinates[t1.Cities[i], 0];
+        ySum += coordinates[t1.Cities[i], 0];
+      }
+      c1X = xSum / t1.Cities.Count;
+      c1Y = ySum / t1.Cities.Count;
+
+      for (int i = 0; i < t2.Cities.Count; i++) {
+        xSum += coordinates[t2.Cities[i], 0];
+        ySum += coordinates[t2.Cities[i], 0];
+      }
+      c2X = xSum / t1.Cities.Count;
+      c2Y = ySum / t1.Cities.Count;
+
+      return Math.Sqrt(
+            Math.Pow(c1X - c2X, 2) +
+            Math.Pow(c1Y - c2Y, 2));
+    }
+
+    private double CalculateMeanCentroidDistance(Tour t1, IList<Tour> tours, DoubleMatrix coordinates) {
+      double sum = 0;
+
+      for (int i = 0; i < tours.Count; i++) {
+        sum += CalculateCentroidDistance(t1, tours[i], coordinates);
+      }
+
+      return sum / tours.Count;
+    }
+
+    private int SelectCityBiasedByNeighborDistance(IRandom random, Tour tour, DistanceMatrix distMatrix) {
+      int cityIndex = -1;
+
+      double sum = 0.0;
+      double[] probabilities = new double[tour.Cities.Count];
+      for (int i = 0; i < tour.Cities.Count; i++) {
+        int next = i + 1;
+        if (next >= tour.Cities.Count)
+          next = 0;
+        else 
+          next = tour.Cities[next];
+        double distance = VRPUtilities.GetDistance(
+          tour.Cities[i], next, distMatrix);
+
+        int prev = i - 1;
+        if (prev < 0)
+          prev = 0;
+        else
+          prev = tour.Cities[prev];
+        distance += VRPUtilities.GetDistance(
+          tour.Cities[i], prev, distMatrix);
+
+        probabilities[i] = distance;
+        sum += probabilities[i];
+      }
+
+      for (int i = 0; i < probabilities.Length; i++)
+        probabilities[i] = probabilities[i] / sum;
+
+      double rand = random.NextDouble();
+      double cumulatedProbabilities = 0.0;
+      int index = 0;
+      while (cityIndex == -1 && index < probabilities.Length) {
+        if (cumulatedProbabilities <= rand && rand <= cumulatedProbabilities + probabilities[index])
+          cityIndex = index;
+
+        cumulatedProbabilities += probabilities[index];
+        index++;
+      }
+
+      return cityIndex;
+    }
+
+    private bool FindRouteInsertionPlace(
+      Tour tour,
+      DoubleArray dueTimeArray,
+      DoubleArray serviceTimeArray, DoubleArray readyTimeArray, DoubleArray demandArray, DoubleValue capacity,
+      DistanceMatrix distMatrix,
+      int city, out int place) {
+      place = -1;
+      bool bestFeasible = false;
+      double minDetour = 0;
+
+      for (int i = 0; i <= tour.Cities.Count; i++) {
+        double length = tour.GetLength(distMatrix);
+
+        tour.Cities.Insert(i, city);
+
+        bool feasible = tour.Feasible(dueTimeArray, serviceTimeArray, readyTimeArray, demandArray,
+          capacity, distMatrix);
+
+        if (!bestFeasible || feasible) {
+          double newLength = tour.GetLength(distMatrix);
+          double detour = newLength - length;
+
+          if (place <= 0 || (!(bestFeasible && !feasible)) && detour < minDetour || (feasible && !bestFeasible)) {
+            place = i;
+            minDetour = detour;
+
+            if (feasible)
+              bestFeasible = true;
+          }
+        }
+
+        tour.Cities.RemoveAt(i);
+      }
+
+      return place >= 0;
+    }
+
+    protected override PotvinEncoding Crossover(IRandom random, PotvinEncoding parent1, PotvinEncoding parent2) {
+      PotvinEncoding child = new PotvinEncoding();
+      bool success = true;
+
+      BoolValue useDistanceMatrix = UseDistanceMatrixParameter.ActualValue;
+      DoubleMatrix coordinates = CoordinatesParameter.ActualValue;
+      DistanceMatrix distMatrix = VRPUtilities.GetDistanceMatrix(coordinates, DistanceMatrixParameter, useDistanceMatrix);
+      DoubleArray dueTime = DueTimeParameter.ActualValue;
+      DoubleArray readyTime = ReadyTimeParameter.ActualValue;
+      DoubleArray serviceTime = ServiceTimeParameter.ActualValue;
+      DoubleArray demand = DemandParameter.ActualValue;
+      DoubleValue capacity = CapacityParameter.ActualValue;
+
+      List<Tour> R1 = new List<Tour>();
+      PotvinEncoding p1Clone = parent1.Clone() as PotvinEncoding;
+
+      int k = 1;//random.Next(1, Math.Min(10, parent1.Tours.Count + 1));
+      for (int i = 0; i < k; i++) {
+        int index = SelectRandomTourBiasedByLength(random, p1Clone);
+        R1.Add(p1Clone.Tours[index]);
+        p1Clone.Tours.RemoveAt(index);
+      }
+
+      foreach (Tour r1 in R1) {
+        List<int> R2 = new List<int>();
+
+        double r = CalculateMeanCentroidDistance(r1, parent2.Tours, coordinates);
+        foreach (Tour tour in parent2.Tours) {
+          if (CalculateCentroidDistance(r1, tour, coordinates) <= r) {
+            R2.AddRange(tour.Cities);
+          }
+        }
+
+        Tour childTour = new Tour();
+        childTour.Cities.AddRange(r1.Cities);
+
+        //DESTROY - remove cities from r1
+        int removed = random.Next(1, r1.Cities.Count + 1);
+        for (int i = 0; i < removed; i++) {
+          childTour.Cities.RemoveAt(SelectCityBiasedByNeighborDistance(random, childTour, distMatrix));
+        }
+
+        //REPAIR - add cities from R2
+        bool insertSuccess = true;
+        int maxCount = random.Next(1, Math.Min(5, R2.Count));
+        int count = 0;
+
+        while (count < maxCount && R2.Count != 0) {
+          PotvinEncoding newChild = child.Clone() as PotvinEncoding;
+          newChild.Tours.Add(childTour);
+
+          int index = random.Next(R2.Count);
+          int city = R2[index];
+          R2.RemoveAt(index);
+
+          int place = -1;
+          if(FindRouteInsertionPlace(childTour, dueTime, serviceTime, readyTime, 
+            demand, capacity, distMatrix, city, out place)) {
+            childTour.Cities.Insert(place, city);
+
+            if (!Repair(random, child, childTour, distMatrix, dueTime, readyTime, serviceTime, demand, capacity)) {
+              childTour.Cities.RemoveAt(place);
+              insertSuccess = false;
+            } else {
+              count++;
+            } 
+          } 
+        }
+
+        child.Tours.Add(childTour);
+        if (!Repair(random, child, childTour, distMatrix, dueTime, readyTime, serviceTime, demand, capacity)) {
+          //success = false;
+          //break;
+        }
+      }
+
+      if (success) {
+        for (int i = 0; i < p1Clone.Tours.Count; i++) {
+          Tour childTour = p1Clone.Tours[i].Clone() as Tour;
+          child.Tours.Add(childTour);
+          if (!Repair(random, child, childTour, distMatrix, dueTime, readyTime, serviceTime, demand, capacity)) {
+            //success = false;
+            //break;
+          }
+        }
+      }
+
+      if (success) {
+        //route unrouted customers
+        for (int i = 1; i <= parent1.Cities; i++) {
+          if (FindRoute(child, i) == null)
+            child.Unrouted.Add(i);
+        }
+
+        if (!RouteUnrouted(child, distMatrix, dueTime, readyTime, serviceTime, demand, capacity)) {
+          success = false;
+        }
+      }
+
+      if (success)
+        return child;
+      else {
+        /* if (random.NextDouble() < 0.5)
+          return parent1.Clone() as PotvinEncoding;
+        else
+          return parent2.Clone() as PotvinEncoding;   */
+        return child;
+      }
+    }
+  }
+}

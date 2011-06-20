@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       return new AlbaExhaustiveLambdaInterchangeMoveGenerator(this, cloner);
     }
 
-    protected override AlbaLambdaInterchangeMove[] GenerateMoves(AlbaEncoding individual, int lambda) {
+    public static AlbaLambdaInterchangeMove[] GenerateAllMoves(AlbaEncoding individual, int lambda) {
       List<AlbaLambdaInterchangeMove> moves = new List<AlbaLambdaInterchangeMove>();
 
       List<Tour> tours = individual.GetTours();
@@ -64,6 +64,10 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       }
 
       return moves.ToArray();
+    }
+
+    protected override AlbaLambdaInterchangeMove[] GenerateMoves(AlbaEncoding individual, int lambda) {
+      return GenerateAllMoves(individual, lambda);
     }
   }
 }
