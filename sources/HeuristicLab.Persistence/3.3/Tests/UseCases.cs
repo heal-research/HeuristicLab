@@ -1288,6 +1288,28 @@ namespace HeuristicLab.Persistence_33.Tests {
       Task.WaitAll(tasks);
     }
 
+    [TestMethod]
+    public void ConcurrentBitmapTest() {
+      Bitmap b = new Bitmap(300, 300);
+      Random r = new Random();
+      for (int x = 0; x<b.Height; x++) {
+        for (int y = 0; y<b.Width; y++) {
+          b.SetPixel(x, y, Color.FromArgb(r.Next()));
+        }
+      }
+      Task[] tasks = new Task[20];
+      byte[][] datas = new byte[tasks.Length][];
+      for (int i = 0; i<tasks.Length; i++) {
+        tasks[i] = Task.Factory.StartNew((idx) => {
+          using (var stream = new MemoryStream()) {
+            XmlGenerator.Serialize(b, stream);
+            datas[(int)idx] = stream.ToArray();
+          }
+        }, i);
+      }
+      Task.WaitAll(tasks);
+    }
+
     [ClassInitialize]
     public static void Initialize(TestContext testContext) {
       ConfigurationService.Instance.Reset();

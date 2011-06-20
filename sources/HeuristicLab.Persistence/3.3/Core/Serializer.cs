@@ -245,7 +245,7 @@ namespace HeuristicLab.Persistence.Core {
             typeId,
             compositeSerializer.CreateMetaInfo(value),
             emitTypeInfo);
-        throw CreatePersistenceException(type, "Could not determine how to serialize a value.");
+        throw CreatePersistenceException(type, "Could not determine how to serialize a value.", true);
       }
       catch (Exception x) {
         if (isTestRun) {
@@ -254,35 +254,40 @@ namespace HeuristicLab.Persistence.Core {
         } else if (x is PersistenceException) {
           throw;
         } else {
-          throw CreatePersistenceException(type, "Uncaught exception during serialization: " + x.Message);
+          throw CreatePersistenceException(
+            type,
+            string.Format("Uncaught exception during serialization:{0}{1}", Environment.NewLine, x),
+            false);
         }
       }
       finally {
         objectGraphTrace.Pop();
       }
-    }
+    }    
 
-    private PersistenceException CreatePersistenceException(Type type, string message) {
+    private PersistenceException CreatePersistenceException(Type type, string message, bool appendConfig) {
       StringBuilder sb = new StringBuilder();
       sb.Append(message)
         .Append("Type was \"")
         .Append(type.VersionInvariantName())
         .AppendLine("\"")
         .Append("object graph location: ")
-        .AppendLine(string.Join(".", objectGraphTrace.ToArray()))
-        .AppendLine("No registered primitive serializer for this type:");
-      foreach (var ps in configuration.PrimitiveSerializers)
-        sb.Append(ps.SourceType.VersionInvariantName())
-          .Append(" ---- (")
-          .Append(ps.GetType().VersionInvariantName())
-          .AppendLine(")");
-      sb.AppendLine("Rejected by all composite serializers:");
-      foreach (var cs in configuration.CompositeSerializers)
-        sb.Append("\"")
-          .Append(cs.JustifyRejection(type))
-          .Append("\" ---- (")
-          .Append(cs.GetType().VersionInvariantName())
-          .AppendLine(")");
+        .AppendLine(string.Join(".", objectGraphTrace.ToArray()));
+      if (appendConfig) {
+        sb.AppendLine("No registered primitive serializer for this type:");
+        foreach (var ps in configuration.PrimitiveSerializers)
+          sb.Append(ps.SourceType.VersionInvariantName())
+            .Append(" ---- (")
+            .Append(ps.GetType().VersionInvariantName())
+            .AppendLine(")");
+        sb.AppendLine("Rejected by all composite serializers:");
+        foreach (var cs in configuration.CompositeSerializers)
+          sb.Append("\"")
+            .Append(cs.JustifyRejection(type))
+            .Append("\" ---- (")
+            .Append(cs.GetType().VersionInvariantName())
+            .AppendLine(")");
+      }
       return new PersistenceException(sb.ToString());
     }
 

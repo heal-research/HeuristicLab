@@ -27,9 +27,10 @@ using HeuristicLab.Persistence.Default.Xml.Compact;
 namespace HeuristicLab.Persistence.Default.Xml.Primitive {
   internal sealed class Bitmap2XmlSerializer : PrimitiveXmlSerializerBase<Bitmap> {
 
-    public override XmlString Format(Bitmap o) {
+    public override XmlString Format(Bitmap o) {      
       MemoryStream stream = new MemoryStream();
-      o.Save(stream, ImageFormat.Png);
+      lock (o)
+        o.Save(stream, ImageFormat.Png);
       byte[] array = stream.ToArray();
       Byte1DArray2XmlSerializer serializer = new Byte1DArray2XmlSerializer();
       return serializer.Format(array);
