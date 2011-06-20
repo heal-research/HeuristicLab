@@ -114,10 +114,6 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       while (newTour.Cities.Contains(0))
         newTour.Cities.Remove(0);
 
-      if (!newTour.Feasible(
-        dueTime, serviceTime, readyTime, demand, capacity, distmatrix))
-              return false; 
-
       //remove duplicates from old tours
       for (int i = 0; i < newTour.Cities.Count; i++) {
         foreach (Tour tour in solution.Tours) {
@@ -136,6 +132,10 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       foreach (Tour tour in toBeDeleted) {
         solution.Tours.Remove(tour);
       }
+
+      if (!newTour.Feasible(
+        dueTime, serviceTime, readyTime, demand, capacity, distmatrix))
+        return false;
 
       //route unrouted vehicles
       success = RouteUnrouted(solution, distmatrix, dueTime, readyTime, serviceTime, demand, capacity);

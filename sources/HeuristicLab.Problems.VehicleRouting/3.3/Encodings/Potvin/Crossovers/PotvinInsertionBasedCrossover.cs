@@ -25,11 +25,16 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using System.Collections.Generic;
 using HeuristicLab.Data;
 using System;
+using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
-  [Item("PotvinInsertionBasedCrossover", "The IBX crossover for VRP representations.")]
+  [Item("PotvinInsertionBasedCrossover", "The IBX crossover for VRP representations. It is implemented as described in Berger, J and Solois, M and Begin, R (1998). A hybrid genetic algorithm for the vehicle routing problem with time windows. LNCS 1418. Springer, London 114-127.")]
   [StorableClass]
   public sealed class PotvinInsertionBasedCrossover : PotvinCrossover {
+    public IValueParameter<IntValue> Length {
+      get { return (IValueParameter<IntValue>)Parameters["Length"]; }
+    } 
+
     [StorableConstructor]
     private PotvinInsertionBasedCrossover(bool deserializing) : base(deserializing) { }
     private PotvinInsertionBasedCrossover(PotvinInsertionBasedCrossover original, Cloner cloner)
@@ -39,7 +44,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       return new PotvinInsertionBasedCrossover(this, cloner);
     }
     public PotvinInsertionBasedCrossover()
-      : base() { }
+      : base() {
+        Parameters.Add(new ValueParameter<IntValue>("Length", "The maximum length of the replaced route.", new IntValue(1)));
+    }
 
     protected static int SelectRandomTourBiasedByLength(IRandom random, PotvinEncoding individual) {
       int tourIndex = -1;
@@ -198,7 +205,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       List<Tour> R1 = new List<Tour>();
       PotvinEncoding p1Clone = parent1.Clone() as PotvinEncoding;
 
-      int k = 1;//random.Next(1, Math.Min(10, parent1.Tours.Count + 1));
+      int length = Math.Min(Length.Value.Value, parent1.Tours.Count) + 1;
+      int k = random.Next(1, length);
       for (int i = 0; i < k; i++) {
         int index = SelectRandomTourBiasedByLength(random, p1Clone);
         R1.Add(p1Clone.Tours[index]);
@@ -253,8 +261,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
 
         child.Tours.Add(childTour);
         if (!Repair(random, child, childTour, distMatrix, dueTime, readyTime, serviceTime, demand, capacity)) {
-          //success = false;
-          //break;
+          /*success = false;
+          break;*/
         }
       }
 
@@ -263,8 +271,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
           Tour childTour = p1Clone.Tours[i].Clone() as Tour;
           child.Tours.Add(childTour);
           if (!Repair(random, child, childTour, distMatrix, dueTime, readyTime, serviceTime, demand, capacity)) {
-            //success = false;
-            //break;
+            /*success = false;
+            break;*/
           }
         }
       }
@@ -284,11 +292,10 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       if (success)
         return child;
       else {
-        /* if (random.NextDouble() < 0.5)
+        if (random.NextDouble() < 0.5)
           return parent1.Clone() as PotvinEncoding;
         else
-          return parent2.Clone() as PotvinEncoding;   */
-        return child;
+          return parent2.Clone() as PotvinEncoding;   
       }
     }
   }
