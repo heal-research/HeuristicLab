@@ -49,17 +49,17 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
       this.pictureBox = new System.Windows.Forms.PictureBox();
       this.valueTabPage = new System.Windows.Forms.TabPage();
       this.tourGroupBox = new System.Windows.Forms.GroupBox();
-      this.tourGridView = new System.Windows.Forms.DataGridView();
+      this.valueTextBox = new System.Windows.Forms.TextBox();
       this.tabControl.SuspendLayout();
       this.visualizationTabPage.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
       this.valueTabPage.SuspendLayout();
       this.tourGroupBox.SuspendLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.tourGridView)).BeginInit();
       this.SuspendLayout();
       // 
       // tabControl
       // 
+      this.tabControl.AllowDrop = true;
       this.tabControl.Controls.Add(this.visualizationTabPage);
       this.tabControl.Controls.Add(this.valueTabPage);
       this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -82,9 +82,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
       // 
       // pictureBox
       // 
-      this.pictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.pictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.pictureBox.BackColor = System.Drawing.Color.White;
       this.pictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
       this.pictureBox.Location = new System.Drawing.Point(6, 6);
@@ -107,7 +107,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
       // 
       // tourGroupBox
       // 
-      this.tourGroupBox.Controls.Add(this.tourGridView);
+      this.tourGroupBox.Controls.Add(this.valueTextBox);
       this.tourGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
       this.tourGroupBox.Location = new System.Drawing.Point(3, 3);
       this.tourGroupBox.Name = "tourGroupBox";
@@ -116,15 +116,14 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
       this.tourGroupBox.TabStop = false;
       this.tourGroupBox.Text = "Tour";
       // 
-      // tourGridView
+      // valueTextBox
       // 
-      this.tourGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-      this.tourGridView.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.tourGridView.Location = new System.Drawing.Point(3, 16);
-      this.tourGridView.Name = "tourGridView";
-      this.tourGridView.ReadOnly = true;
-      this.tourGridView.Size = new System.Drawing.Size(403, 507);
-      this.tourGridView.TabIndex = 0;
+      this.valueTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.valueTextBox.Location = new System.Drawing.Point(3, 16);
+      this.valueTextBox.Multiline = true;
+      this.valueTextBox.Name = "valueTextBox";
+      this.valueTextBox.Size = new System.Drawing.Size(403, 507);
+      this.valueTextBox.TabIndex = 0;
       // 
       // VRPSolutionView
       // 
@@ -138,7 +137,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
       this.valueTabPage.ResumeLayout(false);
       this.tourGroupBox.ResumeLayout(false);
-      ((System.ComponentModel.ISupportInitialize)(this.tourGridView)).EndInit();
+      this.tourGroupBox.PerformLayout();
       this.ResumeLayout(false);
 
     }
@@ -150,7 +149,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
     private System.Windows.Forms.PictureBox pictureBox;
     private System.Windows.Forms.TabPage valueTabPage;
     private System.Windows.Forms.GroupBox tourGroupBox;
-    private System.Windows.Forms.DataGridView tourGridView;
+    private System.Windows.Forms.TextBox valueTextBox;
 
 
 

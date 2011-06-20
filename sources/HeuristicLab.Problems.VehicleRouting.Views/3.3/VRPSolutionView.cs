@@ -27,6 +27,7 @@ using HeuristicLab.Data;
 using HeuristicLab.MainForm;
 using HeuristicLab.Parameters;
 using HeuristicLab.Problems.VehicleRouting.Encodings;
+using System.Text;
 
 namespace HeuristicLab.Problems.VehicleRouting.Views {
   /// <summary>
@@ -83,19 +84,19 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
     }
 
     private void UpdateTourView() {
-      tourGridView.Rows.Clear();
-      tourGridView.ColumnCount = Content.Coordinates.Rows - 1;
+      StringBuilder sb = new StringBuilder();
 
       if (Content != null && Content.Solution != null) {
         foreach (Tour tour in Content.Solution.GetTours(new ValueLookupParameter<DoubleMatrix>("DistanceMatrix", Content.DistanceMatrix))) {
-          int row = tourGridView.Rows.Add();
-          int cell = 0;
           foreach (int city in tour.Cities) {
-            tourGridView.Rows[row].Cells[cell].Value = city;
-            cell++;
+            sb.Append(city);
+            sb.Append(" ");
           }
+          sb.AppendLine();
         }
       }
+
+      valueTextBox.Text = sb.ToString();
     }
 
     private void GenerateImage() {
