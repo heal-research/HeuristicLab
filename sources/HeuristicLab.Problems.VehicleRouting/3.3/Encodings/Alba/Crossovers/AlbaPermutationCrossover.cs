@@ -47,22 +47,26 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     }
 
     protected override AlbaEncoding Crossover(IRandom random, AlbaEncoding parent1, AlbaEncoding parent2) {
-      //note - the inner crossover is called here and the result is converted to an alba representation
+      //note - the inner crossover is called here and the solution is converted to an alba representation
       //some refactoring should be done here in the future - the crossover operation should be called directly
 
-      InnerCrossoverParameter.ActualValue.ParentsParameter.ActualName = ParentsParameter.ActualName;
-      IAtomicOperation op = this.ExecutionContext.CreateOperation(
-        InnerCrossoverParameter.ActualValue, this.ExecutionContext.Scope);
-      op.Operator.Execute((IExecutionContext)op, CancellationToken);
+      if (parent1.Length == parent2.Length) {
+        InnerCrossoverParameter.ActualValue.ParentsParameter.ActualName = ParentsParameter.ActualName;
+        IAtomicOperation op = this.ExecutionContext.CreateOperation(
+          InnerCrossoverParameter.ActualValue, this.ExecutionContext.Scope);
+        op.Operator.Execute((IExecutionContext)op, CancellationToken);
 
-      string childName = InnerCrossoverParameter.ActualValue.ChildParameter.ActualName;
-      if (ExecutionContext.Scope.Variables.ContainsKey(childName)) {
-        Permutation permutation = ExecutionContext.Scope.Variables[childName].Value as Permutation;
-        ExecutionContext.Scope.Variables.Remove(childName);
+        string childName = InnerCrossoverParameter.ActualValue.ChildParameter.ActualName;
+        if (ExecutionContext.Scope.Variables.ContainsKey(childName)) {
+          Permutation permutation = ExecutionContext.Scope.Variables[childName].Value as Permutation;
+          ExecutionContext.Scope.Variables.Remove(childName);
 
-        return new AlbaEncoding(permutation, Cities);
-      } else
-        return null;
+          return new AlbaEncoding(permutation, Cities);
+        } else
+          return null;
+      } else {
+        return parent1.Clone() as AlbaEncoding;
+      }
     }
   }
 }

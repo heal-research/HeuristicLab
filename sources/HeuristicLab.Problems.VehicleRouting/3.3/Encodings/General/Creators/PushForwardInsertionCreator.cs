@@ -90,9 +90,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
       return mu + (sigma * Gauss(random)); // transform the random variable sampled from N(0,1) to N(mu,sigma)
     }
 
-    private double CalculateDistance(int start, int end) {
+    private double CalculateDistance(int start, int end, DoubleMatrix coordinates) {
       double distance = 0.0;
-      DoubleMatrix coordinates = CoordinatesParameter.ActualValue;
 
       distance =
           Math.Sqrt(
@@ -102,13 +101,12 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
       return distance;
     }
 
-    private DoubleMatrix CreateDistanceMatrix() {
-      DoubleMatrix coordinates = CoordinatesParameter.ActualValue;
+    private DoubleMatrix CreateDistanceMatrix(DoubleMatrix coordinates) {
       DoubleMatrix distanceMatrix = new DoubleMatrix(coordinates.Rows, coordinates.Rows);
 
       for (int i = 0; i < distanceMatrix.Rows; i++) {
         for (int j = i; j < distanceMatrix.Columns; j++) {
-          double distance = CalculateDistance(i, j);
+          double distance = CalculateDistance(i, j, coordinates);
 
           distanceMatrix[i, j] = distance;
           distanceMatrix[j, i] = distance;
@@ -118,78 +116,76 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
       return distanceMatrix;
     }
 
-    private double Distance(int start, int end) {
+    private double Distance(int start, int end, DoubleMatrix coordinates, bool useDistanceMatrix) {
       double distance = 0.0;
 
-      if (UseDistanceMatrixParameter.ActualValue.Value) {
-        if (DistanceMatrixParameter.ActualValue == null) {
-          DistanceMatrixParameter.ActualValue = CreateDistanceMatrix();
-        }
-
-        distance = DistanceMatrixParameter.ActualValue[start, end];
-      } else {
-        distance = CalculateDistance(start, end);
+      if (useDistanceMatrix) {
+        distance = coordinates[start, end];
+      } else {  
+        distance = CalculateDistance(start, end, coordinates);
       }
 
       return distance;
     }
 
-    private double TravelDistance(List<int> route, int begin) {
+    private double TravelDistance(List<int> route, int begin, DoubleMatrix coordinates, bool useDistanceMatrix) {
       double distance = 0;
       for (int i = begin; i < route.Count - 1 && (i == begin || route[i] != 0); i++) {
-        distance += Distance(route[i], route[i + 1]);
+        distance += Distance(route[i], route[i + 1], coordinates, useDistanceMatrix);
       }
       return distance;
     }
 
-    private bool SubrouteConstraintsOK(List<int> route, int begin) {
+    private bool SubrouteConstraintsOK(List<int> route, int begin, DoubleMatrix coordinates, bool useDistanceMatrix, 
+      DoubleArray dueTime, DoubleArray readyTime, DoubleArray serviceTime, DoubleArray demand, DoubleValue capacity) {
       double t = 0.0, o = 0.0;
       for (int i = begin + 1; i < route.Count; i++) {
-        t += Distance(route[i - 1], route[i]);
+        t += Distance(route[i - 1], route[i], coordinates, useDistanceMatrix);
         if (route[i] == 0) return (t < DueTimeParameter.ActualValue[0]); // violation on capacity constraint is handled below
         else {
-          if (t > DueTimeParameter.ActualValue[route[i]]) return false;
-          t = Math.Max(ReadyTimeParameter.ActualValue[route[i]], t);
-          t += ServiceTimeParameter.ActualValue[route[i]];
-          o += DemandParameter.ActualValue[route[i]];
-          if (o > CapacityParameter.ActualValue.Value) return false; // premature exit on capacity constraint violation
+          if (t > dueTime[route[i]]) return false;
+          t = Math.Max(readyTime[route[i]], t);
+          t += serviceTime[route[i]];
+          o += demand[route[i]];
+          if (o > capacity.Value) return false; // premature exit on capacity constraint violation
         }
       }
       return true;
     }
 
-    private bool SubrouteTardinessOK(List<int> route, int begin) {
+    private bool SubrouteTardinessOK(List<int> route, int begin, DoubleMatrix coordinates, bool useDistanceMatrix, 
+      DoubleArray dueTime, DoubleArray readyTime, DoubleArray serviceTime) {
       double t = 0.0;
       for (int i = begin + 1; i < route.Count; i++) {
-        t += Distance(route[i - 1], route[i]);
+        t += Distance(route[i - 1], route[i], coordinates, useDistanceMatrix);
         if (route[i] == 0) {
-          if (t < DueTimeParameter.ActualValue[0]) return true;
+          if (t < dueTime[0]) return true;
           else return false;
         } else {
-          if (t > DueTimeParameter.ActualValue[route[i]]) return false;
-          t = Math.Max(ReadyTimeParameter.ActualValue[route[i]], t);
-          t += ServiceTimeParameter.ActualValue[route[i]];
+          if (t > dueTime[route[i]]) return false;
+          t = Math.Max(readyTime[route[i]], t);
+          t += serviceTime[route[i]];
         }
       }
       return true;
     }
 
-    private bool SubrouteLoadOK(List<int> route, int begin) {
+    private bool SubrouteLoadOK(List<int> route, int begin, DoubleValue capacity, DoubleArray demand) {
       double o = 0.0;
       for (int i = begin + 1; i < route.Count; i++) {
-        if (route[i] == 0) return (o < CapacityParameter.ActualValue.Value);
+        if (route[i] == 0) return (o < capacity.Value);
         else {
-          o += DemandParameter.ActualValue[route[i]];
+          o += demand[route[i]];
         }
       }
-      return (o < CapacityParameter.ActualValue.Value);
+      return (o < capacity.Value);
     }
 
     protected override List<int> CreateSolution() {
-      double alpha, beta, gamma;
-      alpha = N(Alpha.Value.Value, Math.Sqrt(AlphaVariance.Value.Value), RandomParameter.ActualValue);
-      beta = N(Beta.Value.Value, Math.Sqrt(BetaVariance.Value.Value), RandomParameter.ActualValue);
-      gamma = N(Gamma.Value.Value, Math.Sqrt(GammaVariance.Value.Value), RandomParameter.ActualValue);
+      //double alpha, beta, gamma;
+      double alpha = N(Alpha.Value.Value, Math.Sqrt(AlphaVariance.Value.Value), RandomParameter.ActualValue);
+      double beta = N(Beta.Value.Value, Math.Sqrt(BetaVariance.Value.Value), RandomParameter.ActualValue);
+      double gamma = N(Gamma.Value.Value, Math.Sqrt(GammaVariance.Value.Value), RandomParameter.ActualValue);
 
       double x0 = CoordinatesParameter.ActualValue[0, 0];
       double y0 = CoordinatesParameter.ActualValue[0, 1];
@@ -202,16 +198,33 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
       int indexOfMinimumCost = -1;
       int indexOfCustomer = -1;
 
+      int vehicles = VehiclesParameter.ActualValue.Value;
+      DoubleMatrix coordinates = CoordinatesParameter.ActualValue;
+      DoubleArray dueTime = DueTimeParameter.ActualValue;
+      DoubleArray serviceTime = ServiceTimeParameter.ActualValue;
+      DoubleArray readyTime = ReadyTimeParameter.ActualValue;
+      DoubleArray demand = DemandParameter.ActualValue;
+      DoubleValue capacity = CapacityParameter.ActualValue;
+
+      bool useDistanceMatrix = UseDistanceMatrixParameter.ActualValue.Value;
+      if (useDistanceMatrix) {
+        if (DistanceMatrixParameter.ActualValue == null) {
+          DistanceMatrixParameter.ActualValue = CreateDistanceMatrix(coordinates);
+        }
+
+        coordinates = DistanceMatrixParameter.ActualValue;
+      }
+
       /*-----------------------------------------------------------------------------
        * generate cost list
        *-----------------------------------------------------------------------------
        */
       for (int i = 1; i <= Cities; i++) {
-        distance = Distance(i, 0);
-        if (CoordinatesParameter.ActualValue[i, 0] < x0) distance = -distance;
+        distance = Distance(i, 0, coordinates, useDistanceMatrix);
+        if (coordinates[i, 0] < x0) distance = -distance;
         cost = -alpha * distance + // distance 0 <-> City[i]
                  beta * (DueTimeParameter.ActualValue[i]) + // latest arrival time
-                 gamma * (Math.Asin((CoordinatesParameter.ActualValue[i, 1] - y0) / distance) / 360 * distance); // polar angle
+                 gamma * (Math.Asin((coordinates[i, 1] - y0) / distance) / 360 * distance); // polar angle
 
         index = 0;
         while (index < costList.Count && costList[index] < cost) index++;
@@ -228,7 +241,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
       int c;
       int customer = -1;
       int subTourCount = 1;
-      List<int> route = new List<int>(Cities + VehiclesParameter.ActualValue.Value - 1);
+
+      List<int> route = new List<int>(Cities + vehicles - 1);
       minimumCost = double.MaxValue;
       indexOfMinimumCost = -1;
       route.Add(0);
@@ -243,8 +257,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
           for (int i = currentRoute + 1; i < route.Count; i++) {
             route.Insert(i, (int)unroutedList[c]);
             if (route[currentRoute] != 0) { throw new Exception("currentRoute not depot"); }
-            cost = TravelDistance(route, currentRoute);
-            if (cost < minimumCost && SubrouteConstraintsOK(route, currentRoute)) {
+            cost = TravelDistance(route, currentRoute, coordinates, useDistanceMatrix);
+            if (cost < minimumCost && SubrouteConstraintsOK(route, currentRoute, coordinates, useDistanceMatrix, dueTime, readyTime, serviceTime, demand, capacity)) {
               minimumCost = cost;
               indexOfMinimumCost = i;
               customer = (int)unroutedList[c];
@@ -274,7 +288,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
         indexOfCustomer = -1;
         customer = -1;
       } while (unroutedList.Count > 0);
-      while (route.Count < Cities + VehiclesParameter.ActualValue.Value - 1)
+      while (route.Count < Cities + vehicles)
         route.Add(0);
 
       return route;

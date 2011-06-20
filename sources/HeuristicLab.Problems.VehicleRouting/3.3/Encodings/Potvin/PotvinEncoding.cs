@@ -68,29 +68,34 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     public bool FindInsertionPlace(
       DoubleArray dueTimeArray,
       DoubleArray serviceTimeArray, DoubleArray readyTimeArray, DoubleArray demandArray, DoubleValue capacity,
-      DoubleMatrix coordinates, ILookupParameter<DoubleMatrix> distanceMatrix, BoolValue useDistanceMatrix,
+      DistanceMatrix distMatrix, 
       int city, int routeToAvoid, out int route, out int place) {
       route = -1;
       place = -1;
+      bool bestFeasible = false;
       double minDetour = 0;
 
       for (int tour = 0; tour < Tours.Count; tour++) {
         if (tour != routeToAvoid) {
           for (int i = 0; i <= Tours[tour].Cities.Count; i++) {
-            double length = Tours[tour].GetLength(coordinates, distanceMatrix, useDistanceMatrix);
+            double length = Tours[tour].GetLength(distMatrix);
 
             Tours[tour].Cities.Insert(i, city);
 
-            if (Tours[tour].Feasible(dueTimeArray, serviceTimeArray, readyTimeArray, demandArray,
-              capacity, coordinates, distanceMatrix, useDistanceMatrix)) {
-              double newLength = Tours[tour].GetLength(coordinates, distanceMatrix, useDistanceMatrix);
+            bool feasible = Tours[tour].Feasible(dueTimeArray, serviceTimeArray, readyTimeArray, demandArray,
+              capacity, distMatrix);
 
+            if (!bestFeasible || feasible) {
+              double newLength = Tours[tour].GetLength(distMatrix);
               double detour = newLength - length;
 
-              if (route <= 0 || detour < minDetour) {
+              if (route <= 0 || detour < minDetour || (!(bestFeasible && !feasible)) && detour < minDetour || (feasible && !bestFeasible)) {
                 route = tour;
                 place = i;
                 minDetour = detour;
+
+                if (feasible)
+                  bestFeasible = true;
               }
             }
 

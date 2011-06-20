@@ -111,6 +111,10 @@
     <Compile Include="Analyzers\BestAverageWorstVRPToursCalculator.cs" />
     <Compile Include="Analyzers\BestVRPToursMemorizer.cs" />
     <Compile Include="Analyzers\BestVRPSolutionAnalyzer.cs" />
+    <Compile Include="Encodings\Alba\LocalImprovement\AlbaLambdaInterchangeLocalImprovementOperator.cs" />
+    <Compile Include="Encodings\General\Creators\IterativeInsertionCreator.cs" />
+    <Compile Include="Encodings\Potvin\Crossovers\PotvinInsertionBasedCrossover.cs" />
+    <Compile Include="Encodings\Potvin\Manipulators\PotvinLocalSearchManipulator.cs" />
     <Compile Include="Interfaces\IVRPMultiNeighborhoodShakingOperator.cs" />
     <Compile Include="ShakingOperators\VehicleRoutingShakingOperator.cs" />
     <Compile Include="SolutionParser.cs" />
@@ -161,7 +165,6 @@
     <Compile Include="Encodings\Potvin\Crossovers\PotvinRouteBasedCrossover.cs" />
     <Compile Include="Encodings\Potvin\Crossovers\PotvinSequenceBasedCrossover.cs" />
     <Compile Include="Encodings\Potvin\Crossovers\PotvinCrossover.cs" />
-    <Compile Include="Encodings\Potvin\Manipulators\PotvinLocalSearchManipulator.cs" />
     <Compile Include="Encodings\Potvin\Manipulators\PotvinTwoLevelExchangeManipulator.cs" />
     <Compile Include="Encodings\Potvin\Manipulators\PotvinOneLevelExchangeManipulator.cs" />
     <Compile Include="Encodings\Potvin\Manipulators\PotvinManipulator.cs" />

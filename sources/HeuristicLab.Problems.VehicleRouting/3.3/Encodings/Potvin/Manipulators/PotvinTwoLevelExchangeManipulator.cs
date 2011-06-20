@@ -22,6 +22,7 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinTwoLevelExchangeManipulator", "The 2M operator which manipulates a VRP representation.  It is implemented as described in Potvin, J.-Y. and Bengio, S. (1996). The Vehicle Routing Problem with Time Windows - Part II: Genetic Search. INFORMS Journal of Computing, 8:165–172.")]
@@ -35,9 +36,11 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
     public PotvinTwoLevelExchangeManipulator() : base() { }
 
-    protected override void Manipulate(IRandom random, PotvinEncoding individual) {
+    public static void Apply(IRandom random, PotvinEncoding individual, 
+      DoubleArray dueTime, DoubleArray readyTime, DoubleArray serviceTime, DoubleArray demand,
+      DoubleValue capacity, DistanceMatrix distMatrix) {
       int selectedIndex = SelectRandomTourBiasedByLength(random, individual);
-      Tour route1 = individual.Tours[selectedIndex]; 
+      Tour route1 = individual.Tours[selectedIndex];
 
       bool performed = false;
       int customer1Position = 0;
@@ -52,14 +55,17 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
 
               //customer1 can be feasibly inserted at the location of customer2
               tour.Cities[customer2Position] = customer1;
-              if (Feasible(tour)) {
+              if (tour.Feasible(dueTime, serviceTime, readyTime, demand, capacity, distMatrix)) {
                 int routeIdx, place;
                 if (FindInsertionPlace(individual,
-                  customer2, selectedIndex, out routeIdx, out place)) {
-                    individual.Tours[routeIdx].Cities.Insert(place, customer2);
-                    route1.Cities.RemoveAt(customer1Position);
+                  customer2, selectedIndex,
+                  dueTime, serviceTime, readyTime, demand, capacity,
+                  distMatrix,
+                  out routeIdx, out place)) {
+                  individual.Tours[routeIdx].Cities.Insert(place, customer2);
+                  route1.Cities.RemoveAt(customer1Position);
 
-                    if (route1.Cities.Count == 0)
+                  if (route1.Cities.Count == 0)
                     individual.Tours.Remove(route1);
 
                   //two-level exchange has been performed
@@ -81,6 +87,19 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
         if (!performed)
           customer1Position++;
       }
+    }
+
+    protected override void Manipulate(IRandom random, PotvinEncoding individual) {
+      BoolValue useDistanceMatrix = UseDistanceMatrixParameter.ActualValue;
+      DoubleMatrix coordinates = CoordinatesParameter.ActualValue;
+      DistanceMatrix distMatrix = VRPUtilities.GetDistanceMatrix(coordinates, DistanceMatrixParameter, useDistanceMatrix);
+      DoubleArray dueTime = DueTimeParameter.ActualValue;
+      DoubleArray readyTime = ReadyTimeParameter.ActualValue;
+      DoubleArray serviceTime = ServiceTimeParameter.ActualValue;
+      DoubleArray demand = DemandParameter.ActualValue;
+      DoubleValue capacity = CapacityParameter.ActualValue;
+
+      Apply(random, individual, dueTime, readyTime, serviceTime, demand, capacity, distMatrix);
     }
   }
 }

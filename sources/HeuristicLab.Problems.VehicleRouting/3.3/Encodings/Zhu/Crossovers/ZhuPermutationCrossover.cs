@@ -47,29 +47,33 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
     }
 
     protected override ZhuEncoding Crossover(IRandom random, ZhuEncoding parent1, ZhuEncoding parent2) {
-      //note - the inner crossover is called here and the result is converted to a prins representation
+      //note - the inner crossover is called here and the solution is converted to a prins representation
       //some refactoring should be done here in the future - the crossover operation should be called directly
 
-      InnerCrossoverParameter.ActualValue.ParentsParameter.ActualName = ParentsParameter.ActualName;
-      IAtomicOperation op = this.ExecutionContext.CreateOperation(
-        InnerCrossoverParameter.ActualValue, this.ExecutionContext.Scope);
-      op.Operator.Execute((IExecutionContext)op, CancellationToken);
+      if (parent1.Length == parent2.Length) {
+        InnerCrossoverParameter.ActualValue.ParentsParameter.ActualName = ParentsParameter.ActualName;
+        IAtomicOperation op = this.ExecutionContext.CreateOperation(
+          InnerCrossoverParameter.ActualValue, this.ExecutionContext.Scope);
+        op.Operator.Execute((IExecutionContext)op, CancellationToken);
 
-      string childName = InnerCrossoverParameter.ActualValue.ChildParameter.ActualName;
-      if (ExecutionContext.Scope.Variables.ContainsKey(childName)) {
-        Permutation permutation = ExecutionContext.Scope.Variables[childName].Value as Permutation;
-        ExecutionContext.Scope.Variables.Remove(childName);
+        string childName = InnerCrossoverParameter.ActualValue.ChildParameter.ActualName;
+        if (ExecutionContext.Scope.Variables.ContainsKey(childName)) {
+          Permutation permutation = ExecutionContext.Scope.Variables[childName].Value as Permutation;
+          ExecutionContext.Scope.Variables.Remove(childName);
 
-        return new ZhuEncoding(permutation, Cities,
-          DueTimeParameter.ActualValue,
-            ServiceTimeParameter.ActualValue,
-            ReadyTimeParameter.ActualValue,
-            DemandParameter.ActualValue,
-            CapacityParameter.ActualValue,
-            CoordinatesParameter.ActualValue,
-            UseDistanceMatrixParameter.ActualValue);
-      } else
-        return null;
+          return new ZhuEncoding(permutation, Cities,
+            DueTimeParameter.ActualValue,
+              ServiceTimeParameter.ActualValue,
+              ReadyTimeParameter.ActualValue,
+              DemandParameter.ActualValue,
+              CapacityParameter.ActualValue,
+              CoordinatesParameter.ActualValue,
+              UseDistanceMatrixParameter.ActualValue);
+        } else
+          return null;
+      } else {
+        return parent1.Clone() as ZhuEncoding;
+      }
     }
   }
 }

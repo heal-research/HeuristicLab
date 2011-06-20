@@ -48,26 +48,29 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     private bool FindBetterInsertionPlace(
-      PotvinEncoding individual, int tour, int city, int length,
+      PotvinEncoding individual,  
+      DoubleArray dueTime, DoubleArray readyTime, DoubleArray serviceTime, DoubleArray demand,
+      DoubleValue capacity, DistanceMatrix distMatrix,
+      int tour, int city, int length,
       out int insertionTour, out int insertionPlace) {
       bool insertionFound = false;
       insertionTour = -1;
       insertionPlace = 1;
 
       List<int> toBeDeleted = individual.Tours[tour].Cities.GetRange(city, length);
-      double distance = GetLength(individual.Tours[tour]);
+      double distance = individual.Tours[tour].GetLength(distMatrix);
       individual.Tours[tour].Cities.RemoveRange(city, length);
-      double removalBenefit = distance - GetLength(individual.Tours[tour]);
+      double removalBenefit = distance - individual.Tours[tour].GetLength(distMatrix);
 
       int currentTour = 0;
       while (currentTour < individual.Tours.Count && !insertionFound) {
         int currentCity = 0;
         while (currentCity <= individual.Tours[currentTour].Cities.Count && !insertionFound) {
-          distance = GetLength(individual.Tours[currentTour]);
+          distance = individual.Tours[currentTour].GetLength(distMatrix);
           individual.Tours[currentTour].Cities.InsertRange(currentCity, toBeDeleted);
-          if (Feasible(individual.Tours[currentTour])) {
+          if (individual.Tours[currentTour].Feasible(dueTime, serviceTime, readyTime, demand, capacity, distMatrix)) {
             double lengthIncrease =
-              GetLength(individual.Tours[currentTour]) - distance;
+              individual.Tours[currentTour].GetLength(distMatrix) - distance;
             if (removalBenefit > lengthIncrease) {
               insertionTour = currentTour;
               insertionPlace = currentCity;
@@ -82,14 +85,32 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
         currentTour++;
       }
 
-      individual.Tours[tour].Cities.InsertRange(city, toBeDeleted);
+      individual.Tours[tour].Cities.InsertRange(city, toBeDeleted);  
 
       return insertionFound;
     }
 
     protected override void Manipulate(IRandom random, PotvinEncoding individual) {
+      BoolValue useDistanceMatrix = UseDistanceMatrixParameter.ActualValue;
+      DoubleMatrix coordinates = CoordinatesParameter.ActualValue;
+      DistanceMatrix distMatrix = VRPUtilities.GetDistanceMatrix(coordinates, DistanceMatrixParameter, useDistanceMatrix);
+      DoubleArray dueTime = DueTimeParameter.ActualValue;
+      DoubleArray readyTime = ReadyTimeParameter.ActualValue;
+      DoubleArray serviceTime = ServiceTimeParameter.ActualValue;
+      DoubleArray demand = DemandParameter.ActualValue;
+      DoubleValue capacity = CapacityParameter.ActualValue;
+      
       //only apply to feasible individuals
-      if (Feasible(individual)) {
+      bool feasible = true;
+
+      foreach (Tour tour in individual.Tours) {
+        if (!tour.Feasible(dueTime, serviceTime, readyTime, demand, capacity, distMatrix)) {
+          feasible = false;
+          break;
+        }
+      }
+
+      if (feasible) {
         bool insertionFound;
         int iterations = 0;
 
@@ -102,7 +123,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
               int city = 0;
               while (city <= individual.Tours[tour].Cities.Count - length && !insertionFound) {
                 int insertionTour, insertionPlace;
-                if (FindBetterInsertionPlace(individual, tour, city, length,
+                if (FindBetterInsertionPlace(individual, dueTime, readyTime, serviceTime, demand, capacity, distMatrix,
+                  tour, city, length,
                  out insertionTour, out insertionPlace)) {
                   insertionFound = true;
 

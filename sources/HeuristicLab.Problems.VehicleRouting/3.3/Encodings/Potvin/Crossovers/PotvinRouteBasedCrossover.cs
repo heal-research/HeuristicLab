@@ -22,6 +22,7 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinRouteBasedCrossover", "The RBX crossover for a VRP representations.  It is implemented as described in Potvin, J.-Y. and Bengio, S. (1996). The Vehicle Routing Problem with Time Windows - Part II: Genetic Search. INFORMS Journal of Computing, 8:165–172.")]
@@ -39,6 +40,15 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       : base() { }
 
     protected override PotvinEncoding Crossover(IRandom random, PotvinEncoding parent1, PotvinEncoding parent2) {
+      BoolValue useDistanceMatrix = UseDistanceMatrixParameter.ActualValue;
+      DoubleMatrix coordinates = CoordinatesParameter.ActualValue;
+      DistanceMatrix distMatrix = VRPUtilities.GetDistanceMatrix(coordinates, DistanceMatrixParameter, useDistanceMatrix);
+      DoubleArray dueTime = DueTimeParameter.ActualValue;
+      DoubleArray readyTime = ReadyTimeParameter.ActualValue;
+      DoubleArray serviceTime = ServiceTimeParameter.ActualValue;
+      DoubleArray demand = DemandParameter.ActualValue;
+      DoubleValue capacity = CapacityParameter.ActualValue;
+
       PotvinEncoding child = parent2.Clone() as PotvinEncoding;
 
       int tourParent1 = random.Next(parent1.Tours.Count);
@@ -54,13 +64,13 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
         if (FindRoute(child, city) == null && !child.Unrouted.Contains(city))
           child.Unrouted.Add(city);
 
-      if (Repair(random, child, replacing))
+      if (Repair(random, child, replacing, distMatrix, dueTime, readyTime, serviceTime, demand, capacity))
         return child;
       else {
         if (random.NextDouble() < 0.5)
           return parent1.Clone() as PotvinEncoding;
         else
-          return parent2.Clone() as PotvinEncoding;
+          return parent2.Clone() as PotvinEncoding;   
       }
     }
   }

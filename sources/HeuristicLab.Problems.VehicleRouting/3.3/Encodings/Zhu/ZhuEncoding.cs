@@ -62,6 +62,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
 
       Tour newTour = new Tour();
 
+      DistanceMatrix distMatrix = VRPUtilities.GetDistanceMatrix(coordinates, distanceMatrix, useDistanceMatrix);
+
       for (int i = 0; i < this.Length; i++) {
         int city = this[i] + 1;
         newTour.Cities.Add(city);
@@ -71,9 +73,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
           readyTimeArray,
           demandArray,
           capacity,
-          coordinates,
-          distanceMatrix,
-          useDistanceMatrix)) {
+          distMatrix)) {
           newTour.Cities.Remove(city);
           if (newTour.Cities.Count > 0)
             result.Add(newTour);

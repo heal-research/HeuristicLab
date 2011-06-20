@@ -75,6 +75,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
     public override List<Tour> GetTours(ILookupParameter<DoubleMatrix> distanceMatrix, int maxVehicles = int.MaxValue) {
       List<Tour> result = new List<Tour>();
 
+      DistanceMatrix distMatrix = VRPUtilities.GetDistanceMatrix(coordinates, distanceMatrix, useDistanceMatrix);
+
       //Split permutation into vector P
       int[] P = new int[cities + 1];
       for (int i = 0; i <= cities; i++)
@@ -105,9 +107,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
             distanceFactor,
             overloadPenalty,
             tardinessPenalty,
-            coordinates,
-            distanceMatrix,
-            useDistanceMatrix);
+            distMatrix);
 
           double cost = eval.Quality;
           feasible = eval.Overload < double.Epsilon && eval.Tardiness < double.Epsilon;

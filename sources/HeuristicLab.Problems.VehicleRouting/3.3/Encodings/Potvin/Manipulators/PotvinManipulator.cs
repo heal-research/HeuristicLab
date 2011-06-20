@@ -24,6 +24,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinManipulator", "A VRP manipulation operation.")]
@@ -44,13 +45,13 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
 
     protected abstract void Manipulate(IRandom random, PotvinEncoding individual);
 
-    protected int SelectRandomTourBiasedByLength(IRandom random, PotvinEncoding individual) {
+    protected static int SelectRandomTourBiasedByLength(IRandom random, PotvinEncoding individual) {
       int tourIndex = -1;
 
       double sum = 0.0;
       double[] probabilities = new double[individual.Tours.Count];
       for (int i = 0; i < individual.Tours.Count; i++) {
-        probabilities[i] = 1.0 / ((double)individual.Tours[i].Cities.Count / (double)Cities);
+        probabilities[i] = 1.0 / ((double)individual.Tours[i].Cities.Count / (double)individual.Cities);
         sum += probabilities[i];
       }
 
@@ -71,13 +72,16 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       return tourIndex;
     }
 
-    protected bool FindInsertionPlace(PotvinEncoding individual, int city, int routeToAvoid, out int route, out int place) {
+    protected static bool FindInsertionPlace(PotvinEncoding individual, int city, int routeToAvoid,
+      DoubleArray dueTime, DoubleArray serviceTime, DoubleArray readyTime, DoubleArray demand,
+      DoubleValue capacity, DistanceMatrix distMatrix,
+      out int route, out int place) {
       return individual.FindInsertionPlace(
-        DueTimeParameter.ActualValue, ServiceTimeParameter.ActualValue, ReadyTimeParameter.ActualValue,
-        DemandParameter.ActualValue, CapacityParameter.ActualValue, CoordinatesParameter.ActualValue,
-        DistanceMatrixParameter, UseDistanceMatrixParameter.ActualValue,
+        dueTime, serviceTime, readyTime,
+        demand, capacity, distMatrix,
         city, routeToAvoid, out route, out place);
     }
+      
 
     public override IOperation Apply() {
       IVRPEncoding solution = VRPToursParameter.ActualValue;

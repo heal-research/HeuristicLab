@@ -25,6 +25,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinCrossover", "A VRP crossover operation.")]
@@ -46,11 +47,13 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
 
     protected abstract PotvinEncoding Crossover(IRandom random, PotvinEncoding parent1, PotvinEncoding parent2);
 
-    protected bool FindInsertionPlace(PotvinEncoding individual, int city, out int route, out int place) {
+    protected static bool FindInsertionPlace(PotvinEncoding individual, int city, 
+      DoubleArray dueTime, DoubleArray serviceTime, DoubleArray readyTime, DoubleArray demand,
+      DoubleValue capacity, DistanceMatrix distMatrix, 
+      out int route, out int place) {
       return individual.FindInsertionPlace(
-        DueTimeParameter.ActualValue, ServiceTimeParameter.ActualValue, ReadyTimeParameter.ActualValue,
-        DemandParameter.ActualValue, CapacityParameter.ActualValue, CoordinatesParameter.ActualValue,
-        DistanceMatrixParameter, UseDistanceMatrixParameter.ActualValue,
+        dueTime, serviceTime, readyTime,
+        demand, capacity, distMatrix,
         city, -1, out route, out place);
     }
 
@@ -67,7 +70,34 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       return found;
     }
 
-    protected bool Repair(IRandom random, PotvinEncoding solution, Tour newTour) {
+    protected static bool RouteUnrouted(PotvinEncoding solution, DistanceMatrix distMatrix,
+      DoubleArray dueTime, DoubleArray readyTime, DoubleArray serviceTime, DoubleArray demand, DoubleValue capacity) {
+      bool success = true;
+      int index = 0;
+      while (index < solution.Unrouted.Count && success) {
+        int unrouted = solution.Unrouted[index];
+
+        int route, place;
+        if (FindInsertionPlace(solution, unrouted,
+          dueTime, serviceTime, readyTime, demand, capacity,
+          distMatrix,
+          out route, out place)) {
+          solution.Tours[route].Cities.Insert(place, unrouted);
+        } else {
+          success = false;
+        }
+
+        index++;
+      }
+
+      for (int i = 0; i < index; i++)
+        solution.Unrouted.RemoveAt(0);
+
+      return success;
+    }
+
+    protected static bool Repair(IRandom random, PotvinEncoding solution, Tour newTour, DistanceMatrix distmatrix,
+      DoubleArray dueTime, DoubleArray readyTime, DoubleArray serviceTime, DoubleArray demand, DoubleValue capacity) {
       bool success = true;
 
       //remove duplicates from new tour      
@@ -83,6 +113,10 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       }
       while (newTour.Cities.Contains(0))
         newTour.Cities.Remove(0);
+
+      if (!newTour.Feasible(
+        dueTime, serviceTime, readyTime, demand, capacity, distmatrix))
+              return false; 
 
       //remove duplicates from old tours
       for (int i = 0; i < newTour.Cities.Count; i++) {
@@ -104,22 +138,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       }
 
       //route unrouted vehicles
-      int index = 0;
-      while (index < solution.Unrouted.Count && success) {
-        int unrouted = solution.Unrouted[index];
-
-        int route, place;
-        if (FindInsertionPlace(solution, unrouted, out route, out place)) {
-          solution.Tours[route].Cities.Insert(place, unrouted);
-        } else {
-          success = false;
-        }
-
-        index++;
-      }
-
-      for (int i = 0; i < index; i++)
-        solution.Unrouted.RemoveAt(0);
+      success = RouteUnrouted(solution, distmatrix, dueTime, readyTime, serviceTime, demand, capacity);
 
       return success;
     }

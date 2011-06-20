@@ -122,37 +122,5 @@ namespace HeuristicLab.Problems.VehicleRouting {
       Parameters.Add(new LookupParameter<DoubleArray>("DueTime", "The due time of each customer."));
       Parameters.Add(new LookupParameter<DoubleArray>("ServiceTime", "The service time of each customer."));
     }
-
-    protected bool Feasible(Tour tour) {
-      return tour.Feasible(
-                  DueTimeParameter.ActualValue,
-                  ServiceTimeParameter.ActualValue,
-                  ReadyTimeParameter.ActualValue,
-                  DemandParameter.ActualValue,
-                  CapacityParameter.ActualValue,
-                  CoordinatesParameter.ActualValue,
-                  DistanceMatrixParameter,
-                  UseDistanceMatrixParameter.ActualValue);
-    }
-
-    protected bool Feasible(IVRPEncoding solution) {
-      bool feasible = true;
-
-      foreach (Tour tour in solution.GetTours(DistanceMatrixParameter)) {
-        if (!Feasible(tour)) {
-          feasible = false;
-          break;
-        }
-      }
-
-      return feasible;
-    }
-
-    protected double GetLength(Tour tour) {
-      return tour.GetLength(
-                CoordinatesParameter.ActualValue,
-                DistanceMatrixParameter,
-                UseDistanceMatrixParameter.ActualValue);
-    }
   }
 }

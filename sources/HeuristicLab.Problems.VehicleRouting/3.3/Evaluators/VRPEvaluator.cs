@@ -115,7 +115,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     internal static TourEvaluation EvaluateTour(Tour tour, DoubleArray dueTimeArray,
       DoubleArray serviceTimeArray, DoubleArray readyTimeArray, DoubleArray demandArray, DoubleValue capacity,
       DoubleValue fleetUsageFactor, DoubleValue timeFactor, DoubleValue distanceFactor, DoubleValue overloadPenalty, DoubleValue tardinessPenalty,
-      DoubleMatrix coordinates, IParameter distanceMatrix, BoolValue useDistanceMatrix) {
+      DistanceMatrix distMatrix) {
       TourEvaluation eval = new TourEvaluation();
 
       double quality = 0.0;
@@ -139,7 +139,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
           end = tour.Cities[i];
 
         //drive there
-        double currentDistace = VRPUtilities.GetDistance(start, end, coordinates, distanceMatrix, useDistanceMatrix);
+        double currentDistace = VRPUtilities.GetDistance(start, end, distMatrix);
         distance += currentDistace;
         time += currentDistace;
 
@@ -198,10 +198,12 @@ namespace HeuristicLab.Problems.VehicleRouting {
       sumEval.Overload = 0;
       sumEval.Tardiness = 0;
 
+      DistanceMatrix distMatrix = VRPUtilities.GetDistanceMatrix(coordinates, distanceMatrix, useDistanceMatrix);
+
       foreach (Tour tour in solution.GetTours(distanceMatrix as ILookupParameter<DoubleMatrix>)) {
         TourEvaluation eval = EvaluateTour(tour, dueTimeArray, serviceTimeArray, readyTimeArray, demandArray, capacity,
           fleetUsageFactor, timeFactor, distanceFactor, overloadPenalty, tardinessPenalty,
-          coordinates, distanceMatrix, useDistanceMatrix);
+          distMatrix);
         sumEval.Quality += eval.Quality;
         sumEval.Distance += eval.Distance;
         sumEval.TravelTime += eval.TravelTime;

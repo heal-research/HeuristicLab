@@ -24,6 +24,11 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting {
+  public struct DistanceMatrix {
+    public DoubleMatrix Matrix { get; set; }
+    public BoolValue UseDistanceMatrix { get; set; }
+  }
+
   public sealed class VRPUtilities {
     public static double CalculateDistance(int start, int end, DoubleMatrix coordinates) {
       double distance = 0.0;
@@ -49,6 +54,43 @@ namespace HeuristicLab.Problems.VehicleRouting {
       }
 
       return distanceMatrix;
+    }
+
+    public static DistanceMatrix GetDistanceMatrix(DoubleMatrix coordinates, IParameter distanceMatrix, BoolValue useDistanceMatrix) {
+      DistanceMatrix result = new DistanceMatrix();
+      
+      if (useDistanceMatrix.Value) {
+        result.UseDistanceMatrix = new BoolValue(true);
+        if (distanceMatrix is IValueParameter<DoubleMatrix>) {
+          if ((distanceMatrix as IValueParameter<DoubleMatrix>).Value == null) {
+            (distanceMatrix as IValueParameter<DoubleMatrix>).Value = CreateDistanceMatrix(coordinates);
+          }
+
+          result.Matrix = (distanceMatrix as IValueParameter<DoubleMatrix>).Value;
+        } else {
+          if (distanceMatrix.ActualValue == null) {
+            distanceMatrix.ActualValue = CreateDistanceMatrix(coordinates);
+          }
+
+          result.Matrix = (distanceMatrix.ActualValue as DoubleMatrix);
+        }
+      } else {
+        result.UseDistanceMatrix = new BoolValue(false);
+        result.Matrix = coordinates;
+      }
+
+      return result;
+    }
+
+    public static double GetDistance(int start, int end, DistanceMatrix distMatrix) {
+      double distance = 0.0;
+
+      if (distMatrix.UseDistanceMatrix.Value)
+        distance = distMatrix.Matrix[start, end];
+      else
+        distance = CalculateDistance(start, end, distMatrix.Matrix);
+
+      return distance;
     }
 
     public static double GetDistance(int start, int end,

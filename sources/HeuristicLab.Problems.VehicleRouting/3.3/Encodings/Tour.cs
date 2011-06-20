@@ -47,7 +47,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings {
 
     public bool Feasible(DoubleArray dueTimeArray,
       DoubleArray serviceTimeArray, DoubleArray readyTimeArray, DoubleArray demandArray, DoubleValue capacity,
-      DoubleMatrix coordinates, ILookupParameter<DoubleMatrix> distanceMatrix, BoolValue useDistanceMatrix) {
+      DistanceMatrix distMatrix) {
       TourEvaluation eval = VRPEvaluator.EvaluateTour(this,
         dueTimeArray,
         serviceTimeArray,
@@ -59,16 +59,12 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings {
         new DoubleValue(0),
         new DoubleValue(1),
         new DoubleValue(1),
-        coordinates,
-        distanceMatrix,
-        useDistanceMatrix);
+        distMatrix);
 
       return eval.Overload < double.Epsilon && eval.Tardiness < double.Epsilon;
     }
 
-    public double GetLength(DoubleMatrix coordinates,
-      ILookupParameter<DoubleMatrix> distanceMatrix,
-      BoolValue useDistanceMatrix) {
+    public double GetLength(DistanceMatrix distMatrix) {
       double length = 0;
 
       if (Cities.Count > 0) {
@@ -81,7 +77,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings {
 
         for (int i = 1; i < cities.Count; i++) {
           length += VRPUtilities.GetDistance(
-            cities[i - 1], cities[i], coordinates, distanceMatrix, useDistanceMatrix);
+            cities[i - 1], cities[i], distMatrix);
         }
       }
 

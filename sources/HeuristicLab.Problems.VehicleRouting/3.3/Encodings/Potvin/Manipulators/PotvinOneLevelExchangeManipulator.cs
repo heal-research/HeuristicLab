@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinOneLevelExchangeMainpulator", "The 1M operator which manipulates a VRP representation.  It is implemented as described in Potvin, J.-Y. and Bengio, S. (1996). The Vehicle Routing Problem with Time Windows - Part II: Genetic Search. INFORMS Journal of Computing, 8:165–172.")]
@@ -38,7 +39,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
     public PotvinOneLevelExchangeMainpulator() : base() { }
 
-    protected override void Manipulate(IRandom random, PotvinEncoding individual) {
+    public static void Apply(IRandom random, PotvinEncoding individual, 
+     DoubleArray dueTime, DoubleArray readyTime, DoubleArray serviceTime, DoubleArray demand,
+      DoubleValue capacity, DistanceMatrix distMatrix) {
       int selectedIndex = SelectRandomTourBiasedByLength(random, individual);
       Tour route1 =
         individual.Tours[selectedIndex];
@@ -47,7 +50,10 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       for (int i = 0; i < route1.Cities.Count; i++) {
         int insertedRoute, insertedPlace;
 
-        if (FindInsertionPlace(individual, route1.Cities[i], selectedIndex, out insertedRoute, out insertedPlace)) {
+        if (FindInsertionPlace(individual, route1.Cities[i], selectedIndex,
+          dueTime, serviceTime, readyTime, demand, capacity,
+          distMatrix,
+          out insertedRoute, out insertedPlace)) {
           individual.Tours[insertedRoute].Cities.Insert(insertedPlace, route1.Cities[i]);
           replaced.Add(route1.Cities[i]);
         }
@@ -63,6 +69,19 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
 
       if (route1.Cities.Count == 0)
         individual.Tours.Remove(route1);
+    }
+
+    protected override void Manipulate(IRandom random, PotvinEncoding individual) {
+      BoolValue useDistanceMatrix = UseDistanceMatrixParameter.ActualValue;
+      DoubleMatrix coordinates = CoordinatesParameter.ActualValue;
+      DistanceMatrix distMatrix = VRPUtilities.GetDistanceMatrix(coordinates, DistanceMatrixParameter, useDistanceMatrix);
+      DoubleArray dueTime = DueTimeParameter.ActualValue;
+      DoubleArray readyTime = ReadyTimeParameter.ActualValue;
+      DoubleArray serviceTime = ServiceTimeParameter.ActualValue;
+      DoubleArray demand = DemandParameter.ActualValue;
+      DoubleValue capacity = CapacityParameter.ActualValue;
+
+      Apply(random, individual, dueTime, readyTime, serviceTime, demand, capacity, distMatrix); 
     }
   }
 }
