@@ -20,19 +20,12 @@
 #endregion
 
 using System;
-using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using HeuristicLab.Common;
-using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Optimization;
-using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using System.Collections.Generic;
-using HeuristicLab.Problems.DataAnalysis.Symbolic;
-using System.Threading.Tasks;
-using System.Threading;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
@@ -56,7 +49,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       get { return results; }
     }
     #endregion
-    
+
     private DateTime lastUpdateTime;
 
     [StorableConstructor]
@@ -102,7 +95,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     private void Run(object state) {
       CancellationToken cancellationToken = (CancellationToken)state;
-      OnStarted();
       lastUpdateTime = DateTime.Now;
       System.Timers.Timer timer = new System.Timers.Timer(250);
       timer.AutoReset = true;
