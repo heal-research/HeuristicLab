@@ -58,8 +58,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
 
     #region Fields
     protected HashSet<IEvaluationServiceClient> activeClients = new HashSet<IEvaluationServiceClient>();
-    protected object clientLock = new object();
-    protected AutoResetEvent clientAvailable = new AutoResetEvent(false);
+    protected object clientLock = new object();    
     #endregion
 
     #region Construction & Cloning
@@ -108,9 +107,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       lock (clientLock) {
         client = Clients.CheckedItems.FirstOrDefault(c => !activeClients.Contains(c));
         while (client == null && Clients.Count > 0) {
-          Monitor.Exit(clientLock);
-          clientAvailable.WaitOne();
-          Monitor.Enter(clientLock);
+          Monitor.Wait(clientLock);
           client = Clients.CheckedItems.FirstOrDefault(c => !activeClients.Contains(c));
         }
         if (client != null)
@@ -121,7 +118,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       } finally {
         lock (clientLock) {
           activeClients.Remove(client);
-          clientAvailable.Set();
+          Monitor.PulseAll(clientLock);
         }
       }
     }

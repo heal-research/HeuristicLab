@@ -27,6 +27,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using System;
+using System.Globalization;
 
 namespace HeuristicLab.Problems.ExternalEvaluation.GP {
 
@@ -56,10 +57,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
     private string FormatRecursively(ISymbolicExpressionTreeNode node, int indentLength) {
       StringBuilder strBuilder = new StringBuilder();
       if (Indent) strBuilder.Append(' ', indentLength);
-      strBuilder.Append("(");
-      // internal nodes or leaf nodes?
-      if (node.Subtrees.Count() > 0) {
-        // symbol on same line as '('
+      if (node.Subtrees.Count() > 0) { // internal node
+        strBuilder.Append("(");
         if (node.Symbol is Addition) {
           strBuilder.AppendLine("+");
         } else if (node.Symbol is And) {
@@ -97,7 +96,6 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
         }
         // each subtree expression on a new line
         // and closing ')' also on new line
-
         foreach (var subtree in node.Subtrees) {
           strBuilder.AppendLine(FormatRecursively(subtree, indentLength + 2));
         }
@@ -106,14 +104,10 @@ namespace HeuristicLab.Problems.ExternalEvaluation.GP {
       } else {
         if (node is VariableTreeNode) {
           var varNode = node as VariableTreeNode;
-          // symbol in the same line with as '(' and ')'
-          strBuilder.Append(";" + varNode.VariableName + ";" + varNode.Weight.ToString("E4"));
-          strBuilder.Append(")");
+          strBuilder.AppendFormat("(* {0} {1})", varNode.VariableName, varNode.Weight.ToString("g17", CultureInfo.InvariantCulture));
         } else if (node is ConstantTreeNode) {
           var constNode = node as ConstantTreeNode;
-          // symbol in the same line with as '(' and ')'
-          strBuilder.Append(";" + constNode.Value.ToString("E4"));
-          strBuilder.Append(")");
+          strBuilder.Append(constNode.Value.ToString("g17", CultureInfo.InvariantCulture));
         } else {
           throw new NotSupportedException("Formatting of symbol: " + node.Symbol + " not supported for external evaluation.");
         }
