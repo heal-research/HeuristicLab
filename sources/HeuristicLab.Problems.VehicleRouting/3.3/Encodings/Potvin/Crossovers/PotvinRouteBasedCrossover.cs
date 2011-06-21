@@ -49,6 +49,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       DoubleArray demand = DemandParameter.ActualValue;
       DoubleValue capacity = CapacityParameter.ActualValue;
 
+      bool allowInfeasible = AllowInfeasibleSolutions.Value.Value;
+
       PotvinEncoding child = parent2.Clone() as PotvinEncoding;
 
       int tourParent1 = random.Next(parent1.Tours.Count);
@@ -64,7 +66,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
         if (FindRoute(child, city) == null && !child.Unrouted.Contains(city))
           child.Unrouted.Add(city);
 
-      if (Repair(random, child, replacing, distMatrix, dueTime, readyTime, serviceTime, demand, capacity))
+      if (Repair(random, child, replacing, distMatrix, dueTime, readyTime, serviceTime, demand, capacity, allowInfeasible) || allowInfeasible)
         return child;
       else {
         if (random.NextDouble() < 0.5)

@@ -156,8 +156,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       Tour tour,
       DoubleArray dueTimeArray,
       DoubleArray serviceTimeArray, DoubleArray readyTimeArray, DoubleArray demandArray, DoubleValue capacity,
-      DistanceMatrix distMatrix,
-      int city, out int place) {
+      DistanceMatrix distMatrix, int city, bool allowInfeasible, out int place) {
       place = -1;
       bool bestFeasible = false;
       double minDetour = 0;
@@ -170,11 +169,12 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
         bool feasible = tour.Feasible(dueTimeArray, serviceTimeArray, readyTimeArray, demandArray,
           capacity, distMatrix);
 
-        if (!bestFeasible || feasible) {
+        if ((!allowInfeasible && feasible) || (allowInfeasible && (!bestFeasible || feasible))) {
           double newLength = tour.GetLength(distMatrix);
           double detour = newLength - length;
 
-          if (place <= 0 || (!(bestFeasible && !feasible)) && detour < minDetour || (feasible && !bestFeasible)) {
+          if (place <= 0 || detour < minDetour ||
+                (allowInfeasible && ((!(bestFeasible && !feasible)) && detour < minDetour || (feasible && !bestFeasible)))) {
             place = i;
             minDetour = detour;
 
@@ -201,6 +201,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       DoubleArray serviceTime = ServiceTimeParameter.ActualValue;
       DoubleArray demand = DemandParameter.ActualValue;
       DoubleValue capacity = CapacityParameter.ActualValue;
+
+      bool allowInfeasible = AllowInfeasibleSolutions.Value.Value;
 
       List<Tour> R1 = new List<Tour>();
       PotvinEncoding p1Clone = parent1.Clone() as PotvinEncoding;
@@ -246,11 +248,11 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
           R2.RemoveAt(index);
 
           int place = -1;
-          if(FindRouteInsertionPlace(childTour, dueTime, serviceTime, readyTime, 
-            demand, capacity, distMatrix, city, out place)) {
+          if(FindRouteInsertionPlace(childTour, dueTime, serviceTime, readyTime,
+            demand, capacity, distMatrix, city, allowInfeasible, out place)) {
             childTour.Cities.Insert(place, city);
 
-            if (!Repair(random, child, childTour, distMatrix, dueTime, readyTime, serviceTime, demand, capacity)) {
+            if (!Repair(random, child, childTour, distMatrix, dueTime, readyTime, serviceTime, demand, capacity, allowInfeasible)) {
               childTour.Cities.RemoveAt(place);
               insertSuccess = false;
             } else {
@@ -260,7 +262,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
         }
 
         child.Tours.Add(childTour);
-        if (!Repair(random, child, childTour, distMatrix, dueTime, readyTime, serviceTime, demand, capacity)) {
+        if (!Repair(random, child, childTour, distMatrix, dueTime, readyTime, serviceTime, demand, capacity, allowInfeasible)) {
           /*success = false;
           break;*/
         }
@@ -270,7 +272,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
         for (int i = 0; i < p1Clone.Tours.Count; i++) {
           Tour childTour = p1Clone.Tours[i].Clone() as Tour;
           child.Tours.Add(childTour);
-          if (!Repair(random, child, childTour, distMatrix, dueTime, readyTime, serviceTime, demand, capacity)) {
+          if (!Repair(random, child, childTour, distMatrix, dueTime, readyTime, serviceTime, demand, capacity, allowInfeasible)) {
             /*success = false;
             break;*/
           }
@@ -284,12 +286,12 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
             child.Unrouted.Add(i);
         }
 
-        if (!RouteUnrouted(child, distMatrix, dueTime, readyTime, serviceTime, demand, capacity)) {
+        if (!RouteUnrouted(child, distMatrix, dueTime, readyTime, serviceTime, demand, capacity, allowInfeasible)) {
           success = false;
         }
       }
 
-      if (success)
+      if (success || allowInfeasible)
         return child;
       else {
         if (random.NextDouble() < 0.5)

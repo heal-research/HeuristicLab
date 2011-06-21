@@ -41,7 +41,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
 
     public static void Apply(IRandom random, PotvinEncoding individual, 
      DoubleArray dueTime, DoubleArray readyTime, DoubleArray serviceTime, DoubleArray demand,
-      DoubleValue capacity, DistanceMatrix distMatrix) {
+      DoubleValue capacity, DistanceMatrix distMatrix, bool allowInfeasible) {
       int selectedIndex = SelectRandomTourBiasedByLength(random, individual);
       Tour route1 =
         individual.Tours[selectedIndex];
@@ -52,7 +52,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
 
         if (FindInsertionPlace(individual, route1.Cities[i], selectedIndex,
           dueTime, serviceTime, readyTime, demand, capacity,
-          distMatrix,
+          distMatrix, allowInfeasible,
           out insertedRoute, out insertedPlace)) {
           individual.Tours[insertedRoute].Cities.Insert(insertedPlace, route1.Cities[i]);
           replaced.Add(route1.Cities[i]);
@@ -81,7 +81,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       DoubleArray demand = DemandParameter.ActualValue;
       DoubleValue capacity = CapacityParameter.ActualValue;
 
-      Apply(random, individual, dueTime, readyTime, serviceTime, demand, capacity, distMatrix); 
+      bool allowInfeasible = AllowInfeasibleSolutions.Value.Value;
+
+      Apply(random, individual, dueTime, readyTime, serviceTime, demand, capacity, distMatrix, allowInfeasible); 
     }
   }
 }

@@ -34,6 +34,20 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
 
+    public IValueParameter<BoolValue> AllowInfeasibleSolutions {
+      get { return (IValueParameter<BoolValue>)Parameters["AllowInfeasibleSolutions"]; }
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code (remove with 3.4)
+      if (!Parameters.ContainsKey("AllowInfeasibleSolutions")) {
+        Parameters.Add(new ValueParameter<BoolValue>("AllowInfeasibleSolutions", "Indicates if infeasible solutions should be allowed.", new BoolValue(false)));
+      }
+      #endregion
+    }
+
     [StorableConstructor]
     protected PotvinManipulator(bool deserializing) : base(deserializing) { }
     protected PotvinManipulator(PotvinManipulator original, Cloner cloner)
@@ -41,6 +55,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
     public PotvinManipulator() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));
+      Parameters.Add(new ValueParameter<BoolValue>("AllowInfeasibleSolutions", "Indicates if infeasible solutions should be allowed.", new BoolValue(false)));
     }
 
     protected abstract void Manipulate(IRandom random, PotvinEncoding individual);
@@ -74,12 +89,13 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
 
     protected static bool FindInsertionPlace(PotvinEncoding individual, int city, int routeToAvoid,
       DoubleArray dueTime, DoubleArray serviceTime, DoubleArray readyTime, DoubleArray demand,
-      DoubleValue capacity, DistanceMatrix distMatrix,
+      DoubleValue capacity, DistanceMatrix distMatrix,  bool allowInfeasible,
       out int route, out int place) {
       return individual.FindInsertionPlace(
         dueTime, serviceTime, readyTime,
         demand, capacity, distMatrix,
-        city, routeToAvoid, out route, out place);
+        city, routeToAvoid, allowInfeasible, 
+        out route, out place);
     }
       
 

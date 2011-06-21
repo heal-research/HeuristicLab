@@ -68,10 +68,12 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     public bool FindInsertionPlace(
       DoubleArray dueTimeArray,
       DoubleArray serviceTimeArray, DoubleArray readyTimeArray, DoubleArray demandArray, DoubleValue capacity,
-      DistanceMatrix distMatrix, 
-      int city, int routeToAvoid, out int route, out int place) {
+      DistanceMatrix distMatrix,
+      int city, int routeToAvoid, bool allowInfeasible,
+      out int route, out int place) {
       route = -1;
       place = -1;
+      bool bestFeasible = false;
       double minDetour = 0;
 
       for (int tour = 0; tour < Tours.Count; tour++) {
@@ -84,14 +86,18 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
             bool feasible = Tours[tour].Feasible(dueTimeArray, serviceTimeArray, readyTimeArray, demandArray,
               capacity, distMatrix);
 
-            if (feasible) {
+            if ((!allowInfeasible && feasible) || (allowInfeasible && (!bestFeasible || feasible))) {
               double newLength = Tours[tour].GetLength(distMatrix);
               double detour = newLength - length;
 
-              if (route <= 0 || detour < minDetour) {
+              if (route <= 0 || detour < minDetour ||
+                (allowInfeasible && ((!(bestFeasible && !feasible)) && detour < minDetour || (feasible && !bestFeasible)))) {
                 route = tour;
                 place = i;
                 minDetour = detour;
+
+                if (feasible)
+                  bestFeasible = true;
               }
             }
 

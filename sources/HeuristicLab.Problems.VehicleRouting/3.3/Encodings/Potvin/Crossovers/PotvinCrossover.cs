@@ -35,6 +35,20 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
 
+    public IValueParameter<BoolValue> AllowInfeasibleSolutions {
+      get { return (IValueParameter<BoolValue>)Parameters["AllowInfeasibleSolutions"]; }
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code (remove with 3.4)
+      if (!Parameters.ContainsKey("AllowInfeasibleSolutions")) {
+        Parameters.Add(new ValueParameter<BoolValue>("AllowInfeasibleSolutions", "Indicates if infeasible solutions should be allowed.", new BoolValue(false)));
+      }
+      #endregion
+    }
+
     [StorableConstructor]
     protected PotvinCrossover(bool deserializing) : base(deserializing) { }
     protected PotvinCrossover(PotvinCrossover original, Cloner cloner)
@@ -43,18 +57,20 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
 
     public PotvinCrossover() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));
+      Parameters.Add(new ValueParameter<BoolValue>("AllowInfeasibleSolutions", "Indicates if infeasible solutions should be allowed.", new BoolValue(false)));
     }
 
     protected abstract PotvinEncoding Crossover(IRandom random, PotvinEncoding parent1, PotvinEncoding parent2);
 
     protected static bool FindInsertionPlace(PotvinEncoding individual, int city, 
       DoubleArray dueTime, DoubleArray serviceTime, DoubleArray readyTime, DoubleArray demand,
-      DoubleValue capacity, DistanceMatrix distMatrix, 
+      DoubleValue capacity, DistanceMatrix distMatrix, bool allowInfeasible,
       out int route, out int place) {
       return individual.FindInsertionPlace(
         dueTime, serviceTime, readyTime,
         demand, capacity, distMatrix,
-        city, -1, out route, out place);
+        city, -1, allowInfeasible,
+        out route, out place);
     }
 
     protected Tour FindRoute(PotvinEncoding solution, int city) {
@@ -71,7 +87,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     protected static bool RouteUnrouted(PotvinEncoding solution, DistanceMatrix distMatrix,
-      DoubleArray dueTime, DoubleArray readyTime, DoubleArray serviceTime, DoubleArray demand, DoubleValue capacity) {
+      DoubleArray dueTime, DoubleArray readyTime, DoubleArray serviceTime, DoubleArray demand, DoubleValue capacity, bool allowInfeasible) {
       bool success = true;
       int index = 0;
       while (index < solution.Unrouted.Count && success) {
@@ -80,7 +96,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
         int route, place;
         if (FindInsertionPlace(solution, unrouted,
           dueTime, serviceTime, readyTime, demand, capacity,
-          distMatrix,
+          distMatrix, allowInfeasible,
           out route, out place)) {
           solution.Tours[route].Cities.Insert(place, unrouted);
         } else {
@@ -97,7 +113,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     protected static bool Repair(IRandom random, PotvinEncoding solution, Tour newTour, DistanceMatrix distmatrix,
-      DoubleArray dueTime, DoubleArray readyTime, DoubleArray serviceTime, DoubleArray demand, DoubleValue capacity) {
+      DoubleArray dueTime, DoubleArray readyTime, DoubleArray serviceTime, DoubleArray demand, DoubleValue capacity, 
+      bool allowInfeasible) {
       bool success = true;
 
       //remove duplicates from new tour      
@@ -133,12 +150,12 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
         solution.Tours.Remove(tour);
       }
 
-      if (!newTour.Feasible(
+      if (!allowInfeasible && !newTour.Feasible(
         dueTime, serviceTime, readyTime, demand, capacity, distmatrix))
         return false;
 
       //route unrouted vehicles
-      success = RouteUnrouted(solution, distmatrix, dueTime, readyTime, serviceTime, demand, capacity);
+      success = RouteUnrouted(solution, distmatrix, dueTime, readyTime, serviceTime, demand, capacity, allowInfeasible);
 
       return success;
     }
