@@ -27,8 +27,24 @@ using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 namespace HeuristicLab_33.Tests {
   [TestClass]
   public class GeneticAlgorithmSamplesTest {
+    #region TSP
     [TestMethod]
-    public void CreateTSPSample() {
+    public void CreateTSPSampleTest() {
+      var ga = CreateTSPSample();
+      XmlGenerator.Serialize(ga, "../../GA_TSP.hl");
+    }
+    [TestMethod]
+    public void RunTSPSampleTest() {
+      var ga = CreateTSPSample();
+      ga.SetSeedRandomly.Value = false;
+      RunAlgorithm(ga);
+      Assert.AreEqual(12332, GetDoubleResult(ga, "BestQuality"));
+      Assert.AreEqual(13123.2, GetDoubleResult(ga, "CurrentAverageQuality"));
+      Assert.AreEqual(14538, GetDoubleResult(ga, "CurrentWorstQuality"));
+      Assert.AreEqual(99100, GetIntResult(ga, "EvaluatedSolutions"));
+    }
+
+    private GeneticAlgorithm CreateTSPSample() {
       GeneticAlgorithm ga = new GeneticAlgorithm();
       #region problem configuration
       TravelingSalesmanProblem tspProblem = new TravelingSalesmanProblem();
@@ -63,13 +79,29 @@ namespace HeuristicLab_33.Tests {
         .OfType<TSPPopulationDiversityAnalyzer>()
         .Single(), false);
       #endregion
-
-      XmlGenerator.Serialize(ga, "../../GA_TSP.hl");
-
-      RunAlgorithm(ga);
+      return ga;
     }
+
+    #endregion
+    #region VRP
     [TestMethod]
-    public void CreateVRPSample() {
+    public void CreateVRPSampleTest() {
+      var ga = CreateVRPSample();
+      XmlGenerator.Serialize(ga, "../../GA_VRP.hl");
+    }
+
+    [TestMethod]
+    public void RunVRPSampleTest() {
+      var ga = CreateVRPSample();
+      ga.SetSeedRandomly.Value = false;
+      RunAlgorithm(ga);
+      Assert.AreEqual(1828.9368669428336, GetDoubleResult(ga, "BestQuality"));
+      Assert.AreEqual(1832.0882694567929, GetDoubleResult(ga, "CurrentAverageQuality"));
+      Assert.AreEqual(1948.386456294867, GetDoubleResult(ga, "CurrentWorstQuality"));
+      Assert.AreEqual(99100, GetIntResult(ga, "EvaluatedSolutions"));
+    }
+
+    private GeneticAlgorithm CreateVRPSample() {
       GeneticAlgorithm ga = new GeneticAlgorithm();
       #region problem configuration
       VehicleRoutingProblem vrpProblem = new VehicleRoutingProblem();
@@ -128,14 +160,30 @@ namespace HeuristicLab_33.Tests {
         .OfType<PotvinTwoLevelExchangeManipulator>()
         .Single(), true);
       #endregion
+      return ga;
+    }
 
-      XmlGenerator.Serialize(ga, "../../GA_VRP.hl");
+    #endregion
+    #region ArtificialAnt
 
-      RunAlgorithm(ga);
+    [TestMethod]
+    public void CreateArtificialAntSampleTest() {
+      var ga = CreateArtificialAntSample();
+      XmlGenerator.Serialize(ga, "../../SGP_SantaFe.hl");
     }
 
     [TestMethod]
-    public void CreateArtificialAntSample() {
+    public void RunArtificialAntSampleTest() {
+      var ga = CreateArtificialAntSample();
+      ga.SetSeedRandomly.Value = false;
+      RunAlgorithm(ga);
+      Assert.AreEqual(89, GetDoubleResult(ga, "BestQuality"));
+      Assert.AreEqual(79.834, GetDoubleResult(ga, "CurrentAverageQuality"));
+      Assert.AreEqual(0, GetDoubleResult(ga, "CurrentWorstQuality"));
+      Assert.AreEqual(100900, GetIntResult(ga, "EvaluatedSolutions"));
+    }
+
+    public GeneticAlgorithm CreateArtificialAntSample() {
       GeneticAlgorithm ga = new GeneticAlgorithm();
       #region problem configuration
       ArtificialAntProblem antProblem = new ArtificialAntProblem();
@@ -166,14 +214,28 @@ namespace HeuristicLab_33.Tests {
         .OfType<SubroutineDeleter>()
         .Single(), false);
       #endregion
-
-      XmlGenerator.Serialize(ga, "../../SGP_SantaFe.hl");
-
-      RunAlgorithm(ga);
+      return ga;
     }
 
+    #endregion
+    #region symbolic regression
     [TestMethod]
-    public void CreateSymbolicRegressionSample() {
+    public void CreateSymbolicRegressionSampleTest() {
+      var ga = CreateSymbolicRegressionSample();
+      XmlGenerator.Serialize(ga, "../../SGP_SymbReg.hl");
+    }
+    [TestMethod]
+    public void RunSymbolicRegressionSampleTest() {
+      var ga = CreateSymbolicRegressionSample();
+      ga.SetSeedRandomly.Value = false;
+      RunAlgorithm(ga);
+      Assert.AreEqual(0.87577096276191879, GetDoubleResult(ga, "BestQuality"));
+      Assert.AreEqual(0.65140971696668726, GetDoubleResult(ga, "CurrentAverageQuality"));
+      Assert.AreEqual(0, GetDoubleResult(ga, "CurrentWorstQuality"));
+      Assert.AreEqual(100900, GetIntResult(ga, "EvaluatedSolutions"));
+    }
+
+    private GeneticAlgorithm CreateSymbolicRegressionSample() {
       GeneticAlgorithm ga = new GeneticAlgorithm();
       #region problem configuration
       SymbolicRegressionSingleObjectiveProblem symbRegProblem = new SymbolicRegressionSingleObjectiveProblem();
@@ -268,14 +330,29 @@ namespace HeuristicLab_33.Tests {
         .OfType<SymbolicRegressionSingleObjectiveOverfittingAnalyzer>()
         .Single(), false);
       #endregion
+      return ga;
+    }
+    #endregion
+    #region symbolic classification
 
-      XmlGenerator.Serialize(ga, "../../SGP_SymbReg.hl");
-
-      RunAlgorithm(ga);
+    [TestMethod]
+    public void CreateSymbolicClassificationSampleTest() {
+      var ga = CreateSymbolicClassificationSample();
+      XmlGenerator.Serialize(ga, "../../SGP_SymbClass.hl");
     }
 
     [TestMethod]
-    public void CreateSymbolicClassificationSample() {
+    public void RunSymbolicClassificationSampleTest() {
+      var ga = CreateSymbolicClassificationSample();
+      ga.SetSeedRandomly.Value = false;
+      RunAlgorithm(ga);
+      Assert.AreEqual(0.1385094551576456, GetDoubleResult(ga, "BestQuality"));
+      Assert.AreEqual(2.8817699057253576, GetDoubleResult(ga, "CurrentAverageQuality"));
+      Assert.AreEqual(100.62175156249987, GetDoubleResult(ga, "CurrentWorstQuality"));
+      Assert.AreEqual(100900, GetIntResult(ga, "EvaluatedSolutions"));
+    }
+
+    private GeneticAlgorithm CreateSymbolicClassificationSample() {
       GeneticAlgorithm ga = new GeneticAlgorithm();
       #region problem configuration
       SymbolicClassificationSingleObjectiveProblem symbClassProblem = new SymbolicClassificationSingleObjectiveProblem();
@@ -365,11 +442,9 @@ namespace HeuristicLab_33.Tests {
         .OfType<SymbolicClassificationSingleObjectiveOverfittingAnalyzer>()
         .Single(), false);
       #endregion
-
-      XmlGenerator.Serialize(ga, "../../SGP_SymbClass.hl");
-
-      RunAlgorithm(ga);
+      return ga;
     }
+    #endregion
 
     private void ConfigureGeneticAlgorithmParameters<S, C, M>(GeneticAlgorithm ga, int popSize, int elites, int maxGens, double mutationRate, int tournGroupSize = 0)
       where S : ISelector
@@ -411,6 +486,13 @@ namespace HeuristicLab_33.Tests {
       trigger.WaitOne();
 
       Assert.AreEqual(ex, null);
+    }
+
+    private double GetDoubleResult(GeneticAlgorithm ga, string resultName) {
+      return ((DoubleValue)ga.Results[resultName].Value).Value;
+    }
+    private int GetIntResult(GeneticAlgorithm ga, string resultName) {
+      return ((IntValue)ga.Results[resultName].Value).Value;
     }
   }
 }
