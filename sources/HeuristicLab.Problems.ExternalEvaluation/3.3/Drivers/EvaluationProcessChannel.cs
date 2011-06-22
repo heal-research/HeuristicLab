@@ -32,6 +32,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [StorableClass]
   public class EvaluationProcessChannel : EvaluationChannel {
 
+    #region Fields & Properties
     private Process process;
     [Storable]
     private string executable;
@@ -39,9 +40,10 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       get { return executable; }
       set {
         if (IsInitialized) throw new InvalidOperationException(Name + ": Cannot change the executable path as the process has already been started.");
-        string oldExecutable = executable;
+        if (value == executable) return;
         executable = value;
-        if (!oldExecutable.Equals(executable)) OnExecutableChanged();
+        UpdateName();
+        OnExecutableChanged();
       }
     }
     [Storable]
@@ -50,19 +52,23 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       get { return arguments; }
       set {
         if (IsInitialized) throw new InvalidOperationException(Name + ": Cannot change the arguments as the process has already been started.");
-        string oldArguments = arguments;
+        if (value == arguments) return;
         arguments = value;
-        if (!oldArguments.Equals(arguments)) OnArgumentsChanged();
+        UpdateName();
+        OnArgumentsChanged();
       }
     }
     private EvaluationStreamChannel streamingChannel;
+    #endregion
 
+    #region Construction & Cloning
     [StorableConstructor]
     protected EvaluationProcessChannel(bool deserializing) : base(deserializing) { }
     protected EvaluationProcessChannel(EvaluationProcessChannel original, Cloner cloner)
       : base(original, cloner) {
       executable = original.executable;
       arguments = original.arguments;
+      UpdateName();
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new EvaluationProcessChannel(this, cloner);
@@ -73,10 +79,15 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       : base() {
       this.executable = executable;
       this.arguments = arguments;
+      UpdateName();
     }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      UpdateName();
+    }
+    #endregion
 
     #region IExternalEvaluationChannel Members
-
     public override void Open() {
       if (!String.IsNullOrEmpty(executable.Trim())) {
         base.Open();
@@ -172,6 +183,13 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     private void OnProcessExited() {
       EventHandler handler = ProcessExited;
       if (handler != null) handler(this, EventArgs.Empty);
+    }
+    #endregion
+
+    #region Auxiliary Methods
+    private void UpdateName() {
+      name = string.Format("ProcessChannel {0} {1}", Path.GetFileNameWithoutExtension(executable), arguments);
+      OnNameChanged();
     }
     #endregion
   }

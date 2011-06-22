@@ -31,17 +31,19 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("EvaluationTCPChannel", "A channel that creates a TCP connection over a network.")]
   [StorableClass]
   public class EvaluationTCPChannel : EvaluationChannel {
+
     public const int MAX_VARINT32_SIZE = 5;
 
+    #region Fields & Properties
     [Storable]
     private string ipAddress;
     public string IpAddress {
       get { return ipAddress; }
       set {
-        bool changed = !ipAddress.Equals(value);
+        if (value == ipAddress) return;
         ipAddress = value;
-        if (changed)
-          OnIpAddressChanged();
+        UpdateName();
+        OnIpAddressChanged();
       }
     }
     [Storable]
@@ -49,21 +51,25 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     public int Port {
       get { return port; }
       set {
-        bool changed = port != value;
+        if (value == port) return;
         port = value;
-        if (changed)
-          OnPortChanged();
+        UpdateName();
+        OnPortChanged();
       }
     }
     private Socket socket;
+    #endregion
 
+    #region Construction & Cloning
     [StorableConstructor]
     protected EvaluationTCPChannel(bool deserializing) : base(deserializing) { }
     protected EvaluationTCPChannel(EvaluationTCPChannel original, Cloner cloner)
       : base(original, cloner) {
       ipAddress = original.ipAddress;
       port = original.port;
+      UpdateName();
     }
+
     public override IDeepCloneable Clone(Cloner cloner) {
       return new EvaluationTCPChannel(this, cloner);
     }
@@ -73,7 +79,15 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       : base() {
       this.ipAddress = ip;
       this.port = port;
+      UpdateName();
     }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      UpdateName();
+    }
+    #endregion
+
+    
 
     #region IExternalEvaluationChannel Members
 
@@ -180,6 +194,13 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       if (wasInitialized) OnDiconnected();
     }
 
+    #endregion
+
+    #region Auxiliary Methods
+    private void UpdateName() {
+      name = string.Format("TCPChannel {0}:{1}", ipAddress, port);
+      OnNameChanged();
+    }
     #endregion
 
     #region Events

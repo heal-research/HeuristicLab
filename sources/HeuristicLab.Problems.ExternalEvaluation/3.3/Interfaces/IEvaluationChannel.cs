@@ -23,7 +23,7 @@ using Google.ProtocolBuffers;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
-  public interface IEvaluationChannel : IItem {
+  public interface IEvaluationChannel : INamedItem {
     /// <summary>
     /// A flag that describes whether the channel has been initialized or not.
     /// </summary>

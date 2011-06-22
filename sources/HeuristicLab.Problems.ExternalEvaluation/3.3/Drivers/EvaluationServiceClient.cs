@@ -30,9 +30,11 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("EvaluationServiceClient", "An RPC client that evaluates a solution.")]
   [StorableClass]
   public class EvaluationServiceClient : ParameterizedNamedItem, IEvaluationServiceClient {
+
     public override bool CanChangeName { get { return false; } }
     public override bool CanChangeDescription { get { return false; } }
 
+    #region Parameters
     public IValueParameter<IEvaluationChannel> ChannelParameter {
       get { return (IValueParameter<IEvaluationChannel>)Parameters["Channel"]; }
     }
@@ -43,22 +45,32 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     private IEvaluationChannel Channel {
       get { return ChannelParameter.Value; }
     }
+    #endregion
 
 
+    #region Construction & Cloning
     [StorableConstructor]
     protected EvaluationServiceClient(bool deserializing) : base(deserializing) { }
-    protected EvaluationServiceClient(EvaluationServiceClient original, Cloner cloner) : base(original, cloner) { }
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new EvaluationServiceClient(this, cloner);
-    }
+    protected EvaluationServiceClient(EvaluationServiceClient original, Cloner cloner) : base(original, cloner) {
+      RegisterEvents();
+    }    
     public EvaluationServiceClient()
       : base() {
       Parameters.Add(new ValueParameter<IEvaluationChannel>("Channel", "The channel over which to call the remote function."));
       Parameters.Add(new ValueParameter<IntValue>("Retry", "How many times the client should retry obtaining a quality in case there is an exception. Note that it immediately aborts when the channel cannot be opened.", new IntValue(10)));
+      RegisterEvents();
     }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new EvaluationServiceClient(this, cloner);
+    }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      ChannelParameter_ValueChanged(this, EventArgs.Empty);
+      RegisterEvents();
+    }
+    #endregion
 
     #region IEvaluationServiceClient Members
-
     public QualityMessage Evaluate(SolutionMessage solution) {
       int tries = 0, maxTries = RetryParameter.Value.Value;
       bool success = false;
@@ -102,9 +114,9 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       }
       System.Threading.ThreadPool.QueueUserWorkItem(new System.Threading.WaitCallback(ReceiveAsync), callback);
     }
-
     #endregion
 
+    #region Auxiliary Methods
     private void CheckAndOpenChannel() {
       if (Channel == null) throw new InvalidOperationException(Name + ": The channel is not defined.");
       if (!Channel.IsInitialized) {
@@ -125,5 +137,18 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       catch { }
       ((Action<QualityMessage>)callback).Invoke(message);
     }
+
+    private void RegisterEvents() {
+      ChannelParameter.ValueChanged += new EventHandler(ChannelParameter_ValueChanged);
+    }
+
+    void ChannelParameter_ValueChanged(object sender, EventArgs e) {
+      if (ChannelParameter.Value == null)
+        name = "Empty EvaluationServiceClient";
+      else
+        name = String.Format("{0} ServiceClient", ChannelParameter.Value.Name);
+      OnNameChanged();
+    }
+    #endregion
   }
 }
