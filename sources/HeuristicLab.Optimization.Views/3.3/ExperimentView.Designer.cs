@@ -46,9 +46,9 @@ namespace HeuristicLab.Optimization.Views {
     private void InitializeComponent() {
       this.tabControl = new HeuristicLab.MainForm.WindowsForms.DragOverTabControl();
       this.optimizersTabPage = new System.Windows.Forms.TabPage();
-      this.optimizerListView = new HeuristicLab.Optimization.Views.OptimizerListView();
       this.runsTabPage = new System.Windows.Forms.TabPage();
       this.runsViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
+      this.experimentTreeView = new HeuristicLab.Optimization.Views.ExperimentTreeView();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.tabControl.SuspendLayout();
       this.optimizersTabPage.SuspendLayout();
@@ -110,7 +110,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // optimizersTabPage
       // 
-      this.optimizersTabPage.Controls.Add(this.optimizerListView);
+      this.optimizersTabPage.Controls.Add(this.experimentTreeView);
       this.optimizersTabPage.Location = new System.Drawing.Point(4, 22);
       this.optimizersTabPage.Name = "optimizersTabPage";
       this.optimizersTabPage.Padding = new System.Windows.Forms.Padding(3);
@@ -118,19 +118,6 @@ namespace HeuristicLab.Optimization.Views {
       this.optimizersTabPage.TabIndex = 1;
       this.optimizersTabPage.Text = "Optimizers";
       this.optimizersTabPage.UseVisualStyleBackColor = true;
-      // 
-      // optimizerListView
-      // 
-      this.optimizerListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.optimizerListView.Caption = "OptimizerList View";
-      this.optimizerListView.Content = null;
-      this.optimizerListView.Location = new System.Drawing.Point(6, 6);
-      this.optimizerListView.Name = "optimizerListView";
-      this.optimizerListView.ReadOnly = false;
-      this.optimizerListView.Size = new System.Drawing.Size(659, 389);
-      this.optimizerListView.TabIndex = 0;
       // 
       // runsTabPage
       // 
@@ -158,6 +145,17 @@ namespace HeuristicLab.Optimization.Views {
       this.runsViewHost.TabIndex = 0;
       this.runsViewHost.ViewsLabelVisible = true;
       this.runsViewHost.ViewType = null;
+      // 
+      // experimentTreeView
+      // 
+      this.experimentTreeView.Caption = "Experiment View";
+      this.experimentTreeView.Content = null;
+      this.experimentTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.experimentTreeView.Location = new System.Drawing.Point(3, 3);
+      this.experimentTreeView.Name = "experimentTreeView";
+      this.experimentTreeView.ReadOnly = false;
+      this.experimentTreeView.Size = new System.Drawing.Size(665, 395);
+      this.experimentTreeView.TabIndex = 0;
       // 
       // ExperimentView
       // 
@@ -188,9 +186,9 @@ namespace HeuristicLab.Optimization.Views {
 
     private HeuristicLab.MainForm.WindowsForms.DragOverTabControl tabControl;
     private System.Windows.Forms.TabPage optimizersTabPage;
-    private OptimizerListView optimizerListView;
     private System.Windows.Forms.TabPage runsTabPage;
     private HeuristicLab.MainForm.WindowsForms.ViewHost runsViewHost;
+    private ExperimentTreeView experimentTreeView;
 
   }
 }

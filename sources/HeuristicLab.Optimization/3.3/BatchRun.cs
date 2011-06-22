@@ -219,6 +219,8 @@ namespace HeuristicLab.Optimization {
         repetitionsCounter = 0;
         if (clearRuns) runs.Clear();
         Optimizer.Prepare(clearRuns);
+      } else {
+        ExecutionState = ExecutionState.Stopped;
       }
     }
     public void Start() {

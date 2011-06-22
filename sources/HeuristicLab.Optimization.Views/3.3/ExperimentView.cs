@@ -40,17 +40,17 @@ namespace HeuristicLab.Optimization.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        optimizerListView.Content = null;
+        experimentTreeView.Content = null;
         runsViewHost.Content = null;
       } else {
-        optimizerListView.Content = Content.Optimizers;
+        experimentTreeView.Content = Content;
         runsViewHost.Content = Content.Runs;
       }
     }
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
-      optimizerListView.Enabled = Content != null;
+      experimentTreeView.Enabled = Content != null;
       runsViewHost.Enabled = Content != null;
     }
 

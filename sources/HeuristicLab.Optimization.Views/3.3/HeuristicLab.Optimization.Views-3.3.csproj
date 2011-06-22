@@ -127,6 +127,12 @@
     <Compile Include="BatchRunView.Designer.cs">
       <DependentUpon>BatchRunView.cs</DependentUpon>
     </Compile>
+    <Compile Include="ExperimentTreeView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ExperimentTreeView.Designer.cs">
+      <DependentUpon>ExperimentTreeView.cs</DependentUpon>
+    </Compile>
     <Compile Include="IOptimizerView.cs">
       <SubType>UserControl</SubType>
     </Compile>
