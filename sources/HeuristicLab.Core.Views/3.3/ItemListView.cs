@@ -26,6 +26,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Collections;
+using HeuristicLab.Common;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.PluginInfrastructure;
@@ -333,9 +334,13 @@ namespace HeuristicLab.Core.Views {
           else Content.Add(e.Effect.HasFlag(DragDropEffects.Copy) ? (T)item.Clone() : item);
         } else if (e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) is IEnumerable) {
           IEnumerable<T> items = ((IEnumerable)e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat)).Cast<T>();
+          if (e.Effect.HasFlag(DragDropEffects.Copy)) {
+            Cloner cloner = new Cloner();
+            items = items.Select(i => (T)i.Clone(cloner));
+          }
           foreach (T item in items) {
-            if (listViewItem != null) Content.Insert(listViewItem.Index, e.Effect.HasFlag(DragDropEffects.Copy) ? (T)item.Clone() : item);
-            else Content.Add(e.Effect.HasFlag(DragDropEffects.Copy) ? (T)item.Clone() : item);
+            if (listViewItem != null) Content.Insert(listViewItem.Index, item);
+            else Content.Add(item);
           }
         }
       }
