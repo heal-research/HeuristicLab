@@ -96,8 +96,8 @@ namespace HeuristicLab_33.Tests {
       ga.SetSeedRandomly.Value = false;
       RunAlgorithm(ga);
       Assert.AreEqual(1828.9368669428336, GetDoubleResult(ga, "BestQuality"));
-      Assert.AreEqual(1832.0882694567929, GetDoubleResult(ga, "CurrentAverageQuality"));
-      Assert.AreEqual(1948.386456294867, GetDoubleResult(ga, "CurrentWorstQuality"));
+      Assert.AreEqual(1832.7272021720889, GetDoubleResult(ga, "CurrentAverageQuality"));
+      Assert.AreEqual(1929.5220133155044, GetDoubleResult(ga, "CurrentWorstQuality"));
       Assert.AreEqual(99100, GetIntResult(ga, "EvaluatedSolutions"));
     }
 
@@ -178,9 +178,9 @@ namespace HeuristicLab_33.Tests {
       ga.SetSeedRandomly.Value = false;
       RunAlgorithm(ga);
       Assert.AreEqual(89, GetDoubleResult(ga, "BestQuality"));
-      Assert.AreEqual(79.834, GetDoubleResult(ga, "CurrentAverageQuality"));
+      Assert.AreEqual(68.635, GetDoubleResult(ga, "CurrentAverageQuality"));
       Assert.AreEqual(0, GetDoubleResult(ga, "CurrentWorstQuality"));
-      Assert.AreEqual(100900, GetIntResult(ga, "EvaluatedSolutions"));
+      Assert.AreEqual(50950, GetIntResult(ga, "EvaluatedSolutions"));
     }
 
     public GeneticAlgorithm CreateArtificialAntSample() {
@@ -199,7 +199,7 @@ namespace HeuristicLab_33.Tests {
       ga.Description = "A standard genetic programming algorithm to solve the artificial ant problem (Santa-Fe trail)";
       ga.Problem = antProblem;
       ConfigureGeneticAlgorithmParameters<TournamentSelector, SubtreeCrossover, MultiSymbolicExpressionTreeArchitectureManipulator>(
-        ga, 1000, 1, 100, 0.15, 5);
+        ga, 1000, 1, 50, 0.15, 5);
       var mutator = (MultiSymbolicExpressionTreeArchitectureManipulator)ga.Mutator;
       mutator.Operators.SetItemCheckedState(mutator.Operators
         .OfType<FullTreeShaker>()
@@ -229,10 +229,10 @@ namespace HeuristicLab_33.Tests {
       var ga = CreateSymbolicRegressionSample();
       ga.SetSeedRandomly.Value = false;
       RunAlgorithm(ga);
-      Assert.AreEqual(0.87577096276191879, GetDoubleResult(ga, "BestQuality"));
-      Assert.AreEqual(0.65140971696668726, GetDoubleResult(ga, "CurrentAverageQuality"));
+      Assert.AreEqual(0.82895806566669916, GetDoubleResult(ga, "BestQuality"));
+      Assert.AreEqual(0.50808259256341926, GetDoubleResult(ga, "CurrentAverageQuality"));
       Assert.AreEqual(0, GetDoubleResult(ga, "CurrentWorstQuality"));
-      Assert.AreEqual(100900, GetIntResult(ga, "EvaluatedSolutions"));
+      Assert.AreEqual(50950, GetIntResult(ga, "EvaluatedSolutions"));
     }
 
     private GeneticAlgorithm CreateSymbolicRegressionSample() {
@@ -307,7 +307,7 @@ namespace HeuristicLab_33.Tests {
       symbRegProblem.FitnessCalculationPartition.End = 2800;
       symbRegProblem.ValidationPartition.Start = 2800;
       symbRegProblem.ValidationPartition.End = 4000;
-      symbRegProblem.RelativeNumberOfEvaluatedSamples.Value = 0.3;
+      symbRegProblem.RelativeNumberOfEvaluatedSamples.Value = 1;
       symbRegProblem.MaximumSymbolicExpressionTreeLength.Value = 150;
       symbRegProblem.MaximumSymbolicExpressionTreeDepth.Value = 12;
       symbRegProblem.MaximumFunctionDefinitions.Value = 0;
@@ -320,7 +320,7 @@ namespace HeuristicLab_33.Tests {
       ga.Name = "Genetic Programming - Symbolic Regression";
       ga.Description = "A standard genetic programming algorithm to solve a symbolic regression problem (tower dataset)";
       ConfigureGeneticAlgorithmParameters<TournamentSelector, SubtreeCrossover, MultiSymbolicExpressionTreeManipulator>(
-        ga, 1000, 1, 100, 0.15, 5);
+        ga, 1000, 1, 50, 0.15, 5);
       var mutator = (MultiSymbolicExpressionTreeManipulator)ga.Mutator;
       mutator.Operators.OfType<FullTreeShaker>().Single().ShakingFactor = 0.1;
       mutator.Operators.OfType<OnePointShaker>().Single().ShakingFactor = 1.0;
@@ -329,6 +329,10 @@ namespace HeuristicLab_33.Tests {
         ga.Analyzer.Operators
         .OfType<SymbolicRegressionSingleObjectiveOverfittingAnalyzer>()
         .Single(), false);
+      ga.Analyzer.Operators.SetItemCheckedState(
+        ga.Analyzer.Operators
+        .OfType<SymbolicDataAnalysisAlleleFrequencyAnalyzer>()
+        .First(), false);
       #endregion
       return ga;
     }
@@ -346,8 +350,8 @@ namespace HeuristicLab_33.Tests {
       var ga = CreateSymbolicClassificationSample();
       ga.SetSeedRandomly.Value = false;
       RunAlgorithm(ga);
-      Assert.AreEqual(0.1385094551576456, GetDoubleResult(ga, "BestQuality"));
-      Assert.AreEqual(2.8817699057253576, GetDoubleResult(ga, "CurrentAverageQuality"));
+      Assert.AreEqual(0.13607488888377872, GetDoubleResult(ga, "BestQuality"));
+      Assert.AreEqual(2.1634701155600293, GetDoubleResult(ga, "CurrentAverageQuality"));
       Assert.AreEqual(100.62175156249987, GetDoubleResult(ga, "CurrentWorstQuality"));
       Assert.AreEqual(100900, GetIntResult(ga, "EvaluatedSolutions"));
     }
@@ -441,6 +445,10 @@ namespace HeuristicLab_33.Tests {
         ga.Analyzer.Operators
         .OfType<SymbolicClassificationSingleObjectiveOverfittingAnalyzer>()
         .Single(), false);
+      ga.Analyzer.Operators.SetItemCheckedState(
+        ga.Analyzer.Operators
+        .OfType<SymbolicDataAnalysisAlleleFrequencyAnalyzer>()
+        .First(), false);
       #endregion
       return ga;
     }
