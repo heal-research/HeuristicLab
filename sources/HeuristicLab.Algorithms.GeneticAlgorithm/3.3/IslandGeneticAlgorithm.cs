@@ -69,13 +69,13 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     private ValueParameter<PercentValue> MigrationRateParameter {
       get { return (ValueParameter<PercentValue>)Parameters["MigrationRate"]; }
     }
-    private ConstrainedValueParameter<IMigrator> MigratorParameter {
+    public ConstrainedValueParameter<IMigrator> MigratorParameter {
       get { return (ConstrainedValueParameter<IMigrator>)Parameters["Migrator"]; }
     }
-    private ConstrainedValueParameter<ISelector> EmigrantsSelectorParameter {
+    public ConstrainedValueParameter<ISelector> EmigrantsSelectorParameter {
       get { return (ConstrainedValueParameter<ISelector>)Parameters["EmigrantsSelector"]; }
     }
-    private ConstrainedValueParameter<IReplacer> ImmigrationReplacerParameter {
+    public ConstrainedValueParameter<IReplacer> ImmigrationReplacerParameter {
       get { return (ConstrainedValueParameter<IReplacer>)Parameters["ImmigrationReplacer"]; }
     }
     private ValueParameter<IntValue> PopulationSizeParameter {
@@ -84,16 +84,16 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     private ValueParameter<IntValue> MaximumGenerationsParameter {
       get { return (ValueParameter<IntValue>)Parameters["MaximumGenerations"]; }
     }
-    private ConstrainedValueParameter<ISelector> SelectorParameter {
+    public ConstrainedValueParameter<ISelector> SelectorParameter {
       get { return (ConstrainedValueParameter<ISelector>)Parameters["Selector"]; }
     }
-    private ConstrainedValueParameter<ICrossover> CrossoverParameter {
+    public ConstrainedValueParameter<ICrossover> CrossoverParameter {
       get { return (ConstrainedValueParameter<ICrossover>)Parameters["Crossover"]; }
     }
     private ValueParameter<PercentValue> MutationProbabilityParameter {
       get { return (ValueParameter<PercentValue>)Parameters["MutationProbability"]; }
     }
-    private OptionalConstrainedValueParameter<IManipulator> MutatorParameter {
+    public OptionalConstrainedValueParameter<IManipulator> MutatorParameter {
       get { return (OptionalConstrainedValueParameter<IManipulator>)Parameters["Mutator"]; }
     }
     private ValueParameter<IntValue> ElitesParameter {

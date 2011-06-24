@@ -86,6 +86,10 @@ namespace HeuristicLab.Problems.Knapsack {
     #endregion
 
     #region Properties
+    public BoolValue Maximization {
+      get { return MaximizationParameter.Value; }
+      set { MaximizationParameter.Value = value; }
+    }
     public IntValue KnapsackCapacity {
       get { return KnapsackCapacityParameter.Value; }
       set { KnapsackCapacityParameter.Value = value; }

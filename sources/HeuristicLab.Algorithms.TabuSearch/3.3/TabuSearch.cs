@@ -57,19 +57,19 @@ namespace HeuristicLab.Algorithms.TabuSearch {
     private ValueParameter<BoolValue> SetSeedRandomlyParameter {
       get { return (ValueParameter<BoolValue>)Parameters["SetSeedRandomly"]; }
     }
-    private ConstrainedValueParameter<IMoveGenerator> MoveGeneratorParameter {
+    public ConstrainedValueParameter<IMoveGenerator> MoveGeneratorParameter {
       get { return (ConstrainedValueParameter<IMoveGenerator>)Parameters["MoveGenerator"]; }
     }
-    private ConstrainedValueParameter<IMoveMaker> MoveMakerParameter {
+    public ConstrainedValueParameter<IMoveMaker> MoveMakerParameter {
       get { return (ConstrainedValueParameter<IMoveMaker>)Parameters["MoveMaker"]; }
     }
-    private ConstrainedValueParameter<ISingleObjectiveMoveEvaluator> MoveEvaluatorParameter {
+    public ConstrainedValueParameter<ISingleObjectiveMoveEvaluator> MoveEvaluatorParameter {
       get { return (ConstrainedValueParameter<ISingleObjectiveMoveEvaluator>)Parameters["MoveEvaluator"]; }
     }
-    private ConstrainedValueParameter<ITabuChecker> TabuCheckerParameter {
+    public ConstrainedValueParameter<ITabuChecker> TabuCheckerParameter {
       get { return (ConstrainedValueParameter<ITabuChecker>)Parameters["TabuChecker"]; }
     }
-    private ConstrainedValueParameter<ITabuMaker> TabuMakerParameter {
+    public ConstrainedValueParameter<ITabuMaker> TabuMakerParameter {
       get { return (ConstrainedValueParameter<ITabuMaker>)Parameters["TabuMaker"]; }
     }
     private ValueParameter<IntValue> TabuTenureParameter {
@@ -122,6 +122,10 @@ namespace HeuristicLab.Algorithms.TabuSearch {
     public IntValue MaximumIterations {
       get { return MaximumIterationsParameter.Value; }
       set { MaximumIterationsParameter.Value = value; }
+    }
+    public IntValue SampleSize {
+      get { return SampleSizeParameter.Value; }
+      set { SampleSizeParameter.Value = value; }
     }
     public MultiAnalyzer Analyzer {
       get { return AnalyzerParameter.Value; }

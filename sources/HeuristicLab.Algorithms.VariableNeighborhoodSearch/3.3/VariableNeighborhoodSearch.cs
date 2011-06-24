@@ -57,10 +57,10 @@ namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
     private FixedValueParameter<BoolValue> SetSeedRandomlyParameter {
       get { return (FixedValueParameter<BoolValue>)Parameters["SetSeedRandomly"]; }
     }
-    private ConstrainedValueParameter<ILocalImprovementOperator> LocalImprovementParameter {
+    public ConstrainedValueParameter<ILocalImprovementOperator> LocalImprovementParameter {
       get { return (ConstrainedValueParameter<ILocalImprovementOperator>)Parameters["LocalImprovement"]; }
     }
-    private ConstrainedValueParameter<IMultiNeighborhoodShakingOperator> ShakingOperatorParameter {
+    public ConstrainedValueParameter<IMultiNeighborhoodShakingOperator> ShakingOperatorParameter {
       get { return (ConstrainedValueParameter<IMultiNeighborhoodShakingOperator>)Parameters["ShakingOperator"]; }
     }
     private FixedValueParameter<IntValue> MaximumIterationsParameter {
@@ -87,6 +87,30 @@ namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
     }
     private VariableNeighborhoodSearchMainLoop MainLoop {
       get { return FindMainLoop(SolutionsCreator.Successor); }
+    }
+    public int Seed {
+      get { return SeedParameter.Value.Value; }
+      set { SeedParameter.Value.Value = value; }
+    }
+    public bool SetSeedRandomly {
+      get { return SetSeedRandomlyParameter.Value.Value; }
+      set { SetSeedRandomlyParameter.Value.Value = value; }
+    }
+    public ILocalImprovementOperator LocalImprovement {
+      get { return LocalImprovementParameter.Value; }
+      set { LocalImprovementParameter.Value = value; }
+    }
+    public IMultiNeighborhoodShakingOperator ShakingOperator {
+      get { return ShakingOperatorParameter.Value; }
+      set { ShakingOperatorParameter.Value = value; }
+    }
+    public int MaximumIterations {
+      get { return MaximumIterationsParameter.Value.Value; }
+      set { MaximumIterationsParameter.Value.Value = value; }
+    }
+    public int LocalImprovementMaximumIterations {
+      get { return LocalImprovementMaximumIterationsParameter.Value.Value; }
+      set { LocalImprovementMaximumIterationsParameter.Value.Value = value; }
     }
     #endregion
 

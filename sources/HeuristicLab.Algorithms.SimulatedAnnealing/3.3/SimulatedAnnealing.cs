@@ -58,16 +58,16 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     private ValueParameter<BoolValue> SetSeedRandomlyParameter {
       get { return (ValueParameter<BoolValue>)Parameters["SetSeedRandomly"]; }
     }
-    private ConstrainedValueParameter<IMultiMoveGenerator> MoveGeneratorParameter {
+    public ConstrainedValueParameter<IMultiMoveGenerator> MoveGeneratorParameter {
       get { return (ConstrainedValueParameter<IMultiMoveGenerator>)Parameters["MoveGenerator"]; }
     }
-    private ConstrainedValueParameter<IMoveMaker> MoveMakerParameter {
+    public ConstrainedValueParameter<IMoveMaker> MoveMakerParameter {
       get { return (ConstrainedValueParameter<IMoveMaker>)Parameters["MoveMaker"]; }
     }
-    private ConstrainedValueParameter<ISingleObjectiveMoveEvaluator> MoveEvaluatorParameter {
+    public ConstrainedValueParameter<ISingleObjectiveMoveEvaluator> MoveEvaluatorParameter {
       get { return (ConstrainedValueParameter<ISingleObjectiveMoveEvaluator>)Parameters["MoveEvaluator"]; }
     }
-    private ConstrainedValueParameter<IDiscreteDoubleValueModifier> AnnealingOperatorParameter {
+    public ConstrainedValueParameter<IDiscreteDoubleValueModifier> AnnealingOperatorParameter {
       get { return (ConstrainedValueParameter<IDiscreteDoubleValueModifier>)Parameters["AnnealingOperator"]; }
     }
     private ValueParameter<IntValue> MaximumIterationsParameter {
@@ -107,6 +107,10 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     public ISingleObjectiveMoveEvaluator MoveEvaluator {
       get { return MoveEvaluatorParameter.Value; }
       set { MoveEvaluatorParameter.Value = value; }
+    }
+    public IDiscreteDoubleValueModifier AnnealingOperator {
+      get { return AnnealingOperatorParameter.Value; }
+      set { AnnealingOperatorParameter.Value = value; }
     }
     public IntValue MaximumIterations {
       get { return MaximumIterationsParameter.Value; }

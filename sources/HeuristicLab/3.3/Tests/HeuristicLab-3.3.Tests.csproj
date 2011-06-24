@@ -125,12 +125,12 @@
     <Compile Include="CloningConstructorTest.cs" />
     <Compile Include="CollectObjectGraphTest.cs" />
     <Compile Include="ContentViewTests.cs" />
-    <Compile Include="GeneticAlgorithmSamplesTest.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="SamplesTest.cs" />
     <Compile Include="SymbolicRegressionTest.cs" />
     <Compile Include="PluginDependenciesTest.cs" />
     <Compile Include="PluginLoader.cs" />
@@ -553,16 +553,10 @@
     <None Include="GA_TSP.hl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Resources\ch130.opt.tour" />
-    <None Include="Resources\ch130.tsp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Resources\C101.opt.txt" />
-    <Content Include="Resources\C101.txt" />
-    <Content Include="Resources\mammographic_masses.txt">
+    <Content Include="Resources\ch130.opt.tour">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\towerData.txt">
+    <Content Include="Resources\ch130.tsp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -572,6 +566,21 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\C101.opt.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\C101.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\mammographic_masses.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\towerData.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

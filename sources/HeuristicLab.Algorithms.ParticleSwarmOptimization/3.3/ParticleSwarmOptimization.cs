@@ -38,25 +38,6 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
   [Creatable("Algorithms")]
   [StorableClass]
   public sealed class ParticleSwarmOptimization : HeuristicOptimizationEngineAlgorithm, IStorableContent {
-
-    #region Problem Properties
-    public override Type ProblemType {
-      get { return typeof(ISingleObjectiveHeuristicOptimizationProblem); }
-    }
-    public new ISingleObjectiveHeuristicOptimizationProblem Problem {
-      get { return (ISingleObjectiveHeuristicOptimizationProblem)base.Problem; }
-      set { base.Problem = value; }
-    }
-    public MultiAnalyzer Analyzer {
-      get { return AnalyzerParameter.Value; }
-      set { AnalyzerParameter.Value = value; }
-    }
-    public IDiscreteDoubleValueModifier InertiaUpdater {
-      get { return InertiaUpdaterParameter.Value; }
-      set { InertiaUpdaterParameter.Value = value; }
-    }
-    #endregion
-
     #region Parameter Properties
     public IValueParameter<IntValue> SeedParameter {
       get { return (IValueParameter<IntValue>)Parameters["Seed"]; }
@@ -115,25 +96,69 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
 
     [Storable]
     private ParticleSwarmOptimizationMainLoop mainLoop;
-
-    public ITopologyInitializer TopologyInitializer {
-      get { return TopologyInitializerParameter.Value; }
-      set { TopologyInitializerParameter.Value = value; }
+    
+    public override Type ProblemType {
+      get { return typeof(ISingleObjectiveHeuristicOptimizationProblem); }
     }
-
-    public ITopologyUpdater TopologyUpdater {
-      get { return TopologyUpdaterParameter.Value; }
-      set { TopologyUpdaterParameter.Value = value; }
+    public new ISingleObjectiveHeuristicOptimizationProblem Problem {
+      get { return (ISingleObjectiveHeuristicOptimizationProblem)base.Problem; }
+      set { base.Problem = value; }
     }
-
+    public IntValue Seed {
+      get { return SeedParameter.Value; }
+      set { SeedParameter.Value = value; }
+    }
+    public BoolValue SetSeedRandomly {
+      get { return SetSeedRandomlyParameter.Value; }
+      set { SetSeedRandomlyParameter.Value = value; }
+    }
+    public IntValue SwarmSize {
+      get { return SwarmSizeParameter.Value; }
+      set { SwarmSizeParameter.Value = value; }
+    }
+    public IntValue MaxIterations {
+      get { return MaxIterationsParameter.Value; }
+      set { MaxIterationsParameter.Value = value; }
+    }
+    public DoubleValue Inertia {
+      get { return InertiaParameter.Value; }
+      set { InertiaParameter.Value = value; }
+    }
+    public DoubleValue PersonalBestAttraction {
+      get { return PersonalBestAttractionParameter.Value; }
+      set { PersonalBestAttractionParameter.Value = value; }
+    }
+    public DoubleValue NeighborBestAttraction {
+      get { return NeighborBestAttractionParameter.Value; }
+      set { NeighborBestAttractionParameter.Value = value; }
+    }
+    public MultiAnalyzer Analyzer {
+      get { return AnalyzerParameter.Value; }
+      set { AnalyzerParameter.Value = value; }
+    }
     public IParticleCreator ParticleCreator {
       get { return ParticleCreatorParameter.Value; }
       set { ParticleCreatorParameter.Value = value; }
     }
-
     public IParticleUpdater ParticleUpdater {
       get { return ParticleUpdaterParameter.Value; }
       set { ParticleUpdaterParameter.Value = value; }
+    }
+    public ITopologyInitializer TopologyInitializer {
+      get { return TopologyInitializerParameter.Value; }
+      set { TopologyInitializerParameter.Value = value; }
+    }
+    public ITopologyUpdater TopologyUpdater {
+      get { return TopologyUpdaterParameter.Value; }
+      set { TopologyUpdaterParameter.Value = value; }
+    }
+    public IDiscreteDoubleValueModifier InertiaUpdater {
+      get { return InertiaUpdaterParameter.Value; }
+      set { InertiaUpdaterParameter.Value = value; }
+    }
+    public ISwarmUpdater SwarmUpdater {
+      get { return SwarmUpdaterParameter.Value; }
+      set { SwarmUpdaterParameter.Value = value; }
     }
     #endregion
 
@@ -332,6 +357,15 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       UpdateTopologyParameters();
     }
 
+    private void ParameterizeTopologyUpdaters() {
+      foreach (var updater in TopologyUpdaterParameter.ValidValues) {
+        var multiPsoUpdater = updater as MultiPSOTopologyUpdater;
+        if (multiPsoUpdater != null) {
+          multiPsoUpdater.CurrentIterationParameter.ActualName = "Iterations";
+        }
+      }
+    }
+
     private void UpdateTopologyParameters() {
       ITopologyUpdater oldTopologyUpdater = TopologyUpdater;
       IParticleUpdater oldParticleUpdater = ParticleUpdater;
@@ -354,6 +388,8 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
           IParticleUpdater newParticleUpdater = ParticleUpdaterParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldParticleUpdater.GetType());
           if (newParticleUpdater != null) ParticleUpdater = newParticleUpdater;
         }
+
+        ParameterizeTopologyUpdaters();
       }
     }
 

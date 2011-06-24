@@ -33,6 +33,7 @@ namespace HeuristicLab.Optimization.Operators {
   [Item("DiscreteDoubleValueModifier", "Base class for modifying a double value according to a certain function in discrete intervalls.")]
   [StorableClass]
   public abstract class DiscreteDoubleValueModifier : SingleSuccessorOperator, IDiscreteDoubleValueModifier {
+    #region parameter properties
     /// <summary>
     /// The parameter that should be modified.
     /// </summary>
@@ -69,7 +70,7 @@ namespace HeuristicLab.Optimization.Operators {
     public IValueLookupParameter<IntValue> EndIndexParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters["EndIndex"]; }
     }
-
+    #endregion
     [StorableConstructor]
     protected DiscreteDoubleValueModifier(bool deserializing) : base(deserializing) { }
     protected DiscreteDoubleValueModifier(DiscreteDoubleValueModifier original, Cloner cloner) : base(original, cloner) { }
