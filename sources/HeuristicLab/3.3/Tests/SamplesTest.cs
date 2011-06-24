@@ -623,7 +623,7 @@ namespace HeuristicLab_33.Tests {
       var pso = CreatePsoSchwefelSample();
       pso.SetSeedRandomly.Value = false;
       RunAlgorithm(pso);
-      Assert.AreEqual(119.33873327772062, GetDoubleResult(pso, "BestQuality"));
+      Assert.AreEqual(119.30888659302838, GetDoubleResult(pso, "BestQuality"));
       Assert.AreEqual(140.71570105946438, GetDoubleResult(pso, "CurrentAverageQuality"));
       Assert.AreEqual(220.956806502853, GetDoubleResult(pso, "CurrentWorstQuality"));
       Assert.AreEqual(1000, GetIntResult(pso, "Iterations"));
@@ -843,7 +843,7 @@ namespace HeuristicLab_33.Tests {
       Assert.AreEqual(867, GetDoubleResult(vns, "BestQuality"));
       Assert.AreEqual(867, GetDoubleResult(vns, "CurrentAverageQuality"));
       Assert.AreEqual(867, GetDoubleResult(vns, "CurrentWorstQuality"));
-      Assert.AreEqual(12975173, GetIntResult(vns, "EvaluatedMoves"));
+      Assert.AreEqual(12975173, GetIntResult(vns, "EvaluatedSolutions"));
     }
 
     private VariableNeighborhoodSearch CreateVnsTspSample() {
