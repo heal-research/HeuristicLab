@@ -161,6 +161,7 @@ namespace HeuristicLab.Optimization.Views {
         }
       }
       RebuildImageList();
+      UpdateDetailsViewHost();
     }
 
     private void Optimizers_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<IOptimizer>> e) {
@@ -218,6 +219,7 @@ namespace HeuristicLab.Optimization.Views {
         }
       }
       RebuildImageList();
+      UpdateDetailsViewHost();
     }
     private void Optimizers_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<IOptimizer>> e) {
       if (InvokeRequired) {
@@ -241,6 +243,7 @@ namespace HeuristicLab.Optimization.Views {
         }
       }
       RebuildImageList();
+      UpdateDetailsViewHost();
     }
     private void Optimizers_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<IOptimizer>> e) {
       if (InvokeRequired) {
@@ -269,6 +272,7 @@ namespace HeuristicLab.Optimization.Views {
         }
       }
       RebuildImageList();
+      UpdateDetailsViewHost();
     }
     private void Optimizers_CollectionReset(object sender, CollectionItemsChangedEventArgs<IndexedItem<IOptimizer>> e) {
       if (InvokeRequired) {
@@ -297,6 +301,7 @@ namespace HeuristicLab.Optimization.Views {
         }
       }
       RebuildImageList();
+      UpdateDetailsViewHost();
     }
 
     private void optimizer_ToStringChanged(object sender, EventArgs e) {
@@ -381,9 +386,8 @@ namespace HeuristicLab.Optimization.Views {
             else if (parentExperiment != null) parentExperiment.Optimizers.Remove(optimizer);
             else throw new NotSupportedException("Handling for specific type not implemented" + parentOptimizer.GetType());
           }
-          if (optimizerTreeView.SelectedNode != null)
-            detailsViewHost.Content = (IOptimizer)optimizerTreeView.SelectedNode.Tag;
           SetEnabledStateOfControls();
+          UpdateDetailsViewHost();
           RebuildImageList();
         }
       }
@@ -493,6 +497,28 @@ namespace HeuristicLab.Optimization.Views {
       }
     }
 
+    private void optimizerTreeView_KeyDown(object sender, KeyEventArgs e) {
+      if (ReadOnly) return;
+      if (optimizerTreeView.SelectedNode == null) return;
+      if (e.KeyCode != Keys.Delete) return;
+
+      var treeNode = optimizerTreeView.SelectedNode;
+      var optimizer = (IOptimizer)treeNode.Tag;
+
+      if (treeNode.Parent == null)
+        Content.Optimizers.Remove(optimizer);
+      else {
+        var batchRun = treeNode.Parent.Tag as BatchRun;
+        var experiment = treeNode.Parent.Tag as Experiment;
+        if (batchRun != null) batchRun.Optimizer = null;
+        else if (experiment != null) experiment.Optimizers.Remove(optimizer);
+        else throw new NotSupportedException("Handling for specific type not implemented" + optimizerTreeView.SelectedNode.Tag.GetType());
+      }
+      SetEnabledStateOfControls();
+      UpdateDetailsViewHost();
+      RebuildImageList();
+    }
+
     private void addButton_Click(object sender, System.EventArgs e) {
       if (typeSelectorDialog == null) {
         typeSelectorDialog = new TypeSelectorDialog();
@@ -525,13 +551,12 @@ namespace HeuristicLab.Optimization.Views {
       if (optimizerTreeView.SelectedNode.Parent == null) experiment = Content;
       else experiment = (Experiment)optimizerTreeView.SelectedNode.Parent.Tag;
 
-      detailsViewHost.SuspendRepaint();
       int index = optimizerTreeView.SelectedNode.Index;
       experiment.Optimizers.Reverse(index - 1, 2);
       optimizerTreeView.SelectedNode = optimizerTreeViewMapping[optimizer].First();
-      detailsViewHost.Content = (IOptimizer)optimizerTreeView.SelectedNode.Tag;
       SetEnabledStateOfControls();
-      detailsViewHost.ResumeRepaint(true);
+      UpdateDetailsViewHost();
+      RebuildImageList();
     }
     private void moveDownButton_Click(object sender, EventArgs e) {
       var optimizer = optimizerTreeView.SelectedNode.Tag as IOptimizer;
@@ -542,11 +567,12 @@ namespace HeuristicLab.Optimization.Views {
       int index = optimizerTreeView.SelectedNode.Index;
       experiment.Optimizers.Reverse(index, 2);
       optimizerTreeView.SelectedNode = optimizerTreeViewMapping[optimizer].First();
-      detailsViewHost.Content = (IOptimizer)optimizerTreeView.SelectedNode.Tag;
       SetEnabledStateOfControls();
+      UpdateDetailsViewHost();
+      RebuildImageList();
     }
 
-    private void removeButton_Click(object sender, System.EventArgs e) {
+    private void removeButton_Click(object sender, EventArgs e) {
       var treeNode = optimizerTreeView.SelectedNode;
       var optimizer = (IOptimizer)treeNode.Tag;
 
@@ -560,7 +586,8 @@ namespace HeuristicLab.Optimization.Views {
         else throw new NotSupportedException("Handling for specific type not implemented" + optimizerTreeView.SelectedNode.Tag.GetType());
       }
       SetEnabledStateOfControls();
-      detailsViewHost.Content = (IOptimizer)optimizerTreeView.SelectedNode.Tag;
+      UpdateDetailsViewHost();
+      RebuildImageList();
     }
 
     private void showDetailsCheckBox_CheckedChanged(object sender, System.EventArgs e) {
@@ -576,6 +603,13 @@ namespace HeuristicLab.Optimization.Views {
     #endregion
 
     #region helpers
+    private void UpdateDetailsViewHost() {
+      if (optimizerTreeView.SelectedNode != null)
+        detailsViewHost.Content = (IOptimizer)optimizerTreeView.SelectedNode.Tag;
+      else
+        detailsViewHost.Content = null;
+    }
+
     private TreeNode CreateTreeNode(IOptimizer optimizer) {
       TreeNode node = new TreeNode(optimizer.ToString());
       node.Tag = optimizer;

@@ -33,7 +33,6 @@ namespace HeuristicLab.Optimization.Views {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ExperimentTreeView));
       this.optimizersGroupBox = new System.Windows.Forms.GroupBox();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
       this.showDetailsCheckBox = new System.Windows.Forms.CheckBox();
@@ -166,6 +165,7 @@ namespace HeuristicLab.Optimization.Views {
       this.optimizerTreeView.DragDrop += new System.Windows.Forms.DragEventHandler(this.optimizerTreeView_DragDrop);
       this.optimizerTreeView.DragEnter += new System.Windows.Forms.DragEventHandler(this.optimizerTreeView_DragEnter);
       this.optimizerTreeView.DragOver += new System.Windows.Forms.DragEventHandler(this.optimizerTreeView_DragOver);
+      this.optimizerTreeView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.optimizerTreeView_KeyDown);
       this.optimizerTreeView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.optimizerTreeview_MouseClick);
       this.optimizerTreeView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.optimizerTreeView_MouseDown);
       // 
