@@ -66,7 +66,6 @@ namespace HeuristicLab.PluginInfrastructure.Sandboxing {
       pSet.AddPermission(new SecurityPermission(SecurityPermissionFlag.Infrastructure));
       pSet.AddPermission(new SecurityPermission(SecurityPermissionFlag.UnmanagedCode));
       pSet.AddPermission(new SecurityPermission(SecurityPermissionFlag.SerializationFormatter));
-      pSet.AddPermission(new SecurityPermission(SecurityPermissionFlag.ControlAppDomain));
       //needed for HeuristicLab.Persistence, see DynamicMethod Constructor (String, Type, array<Type []()>[], Type, Boolean)
       pSet.AddPermission(new SecurityPermission(SecurityPermissionFlag.ControlEvidence));
 
