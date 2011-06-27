@@ -48,6 +48,24 @@ namespace HeuristicLab.Optimization.Views {
       base.Dispose(disposing);
     }
 
+    #region necessary code to handle dock correctly regarding the expanded nodes
+    bool[] expandendedState;
+    protected override void OnHandleCreated(EventArgs e) {
+      base.OnHandleCreated(e);
+      if (expandendedState == null) return;
+      var nodes = IterateTreeNodes().ToList();
+      for (int i = 0; i < nodes.Count; i++)
+        if (expandendedState[i]) nodes[i].Expand();
+    }
+    protected override void OnHandleDestroyed(EventArgs e) {
+      base.OnHandleDestroyed(e);
+      var nodes = IterateTreeNodes().ToList();
+      expandendedState = new bool[nodes.Count];
+      for (int i = 0; i < nodes.Count; i++)
+        expandendedState[i] = nodes[i].IsExpanded;
+    }
+    #endregion
+
     public new Experiment Content {
       get { return (Experiment)base.Content; }
       set { base.Content = value; }
