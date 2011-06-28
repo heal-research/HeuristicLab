@@ -21,13 +21,13 @@
 
 using System;
 using System.Threading;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Optimization;
 
 namespace HeuristicLab_33.Tests {
   public static class AlgorithmExtensions {
-    public static void StartSync(this IAlgorithm algorithm, CancellationToken cancellationToken) {
-      var executor = new AlgorithmExecutor(algorithm, cancellationToken);
+    public static void StartSync(this IExecutable executable, CancellationToken cancellationToken) {
+      var executor = new AlgorithmExecutor(executable, cancellationToken);
       executor.StartSync();
     }
   }
@@ -36,39 +36,47 @@ namespace HeuristicLab_33.Tests {
   /// Can execute an algorithm synchronously
   /// </summary>
   internal class AlgorithmExecutor {
-    private IAlgorithm algorithm;
+    private IExecutable executable;
     private AutoResetEvent waitHandle = new AutoResetEvent(false);
     private CancellationToken cancellationToken;
+    private Exception occuredException;
 
-    public AlgorithmExecutor(IAlgorithm algorithm, CancellationToken cancellationToken) {
-      this.algorithm = algorithm;
+    public AlgorithmExecutor(IExecutable executable, CancellationToken cancellationToken) {
+      this.executable = executable;
       this.cancellationToken = cancellationToken;
+      this.occuredException = null;
     }
 
     public void StartSync() {
-      algorithm.Stopped += new EventHandler(algorithm_Stopped);
-      algorithm.Paused += new EventHandler(algorithm_Paused);
+      executable.Stopped += new EventHandler(executable_Stopped);
+      executable.Paused += new EventHandler(executable_Paused);
+      executable.ExceptionOccurred += new EventHandler<EventArgs<Exception>>(executable_ExceptionOccurred);
 
       using (CancellationTokenRegistration registration = cancellationToken.Register(new Action(cancellationToken_Canceled))) {
-        algorithm.Start();
-        waitHandle.WaitOne();
+        executable.Start();
+        waitHandle.WaitOne(-1, false);
         waitHandle.Dispose();
       }
 
-      algorithm.Stopped -= new EventHandler(algorithm_Stopped);
-      algorithm.Paused -= new EventHandler(algorithm_Paused);
-      if (algorithm.ExecutionState == ExecutionState.Started) {
-        algorithm.Pause();
+      executable.Stopped -= new EventHandler(executable_Stopped);
+      executable.Paused -= new EventHandler(executable_Paused);
+      if (executable.ExecutionState == ExecutionState.Started) {
+        executable.Pause();
       }
       cancellationToken.ThrowIfCancellationRequested();
+      if (occuredException != null) throw occuredException;
     }
 
-    private void algorithm_Paused(object sender, EventArgs e) {
+    private void executable_Paused(object sender, EventArgs e) {
       waitHandle.Set();
     }
 
-    private void algorithm_Stopped(object sender, EventArgs e) {
+    private void executable_Stopped(object sender, EventArgs e) {
       waitHandle.Set();
+    }
+
+    private void executable_ExceptionOccurred(object sender, EventArgs<Exception> e) {
+      occuredException = e.Value; // after an exception occured the executable pauses
     }
 
     private void cancellationToken_Canceled() {

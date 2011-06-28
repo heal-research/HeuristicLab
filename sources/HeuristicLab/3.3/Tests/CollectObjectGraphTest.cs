@@ -24,12 +24,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using HeuristicLab.Algorithms.GeneticAlgorithm;
 using HeuristicLab.Common;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Problems.TestFunctions;
-using HeuristicLab.Random;
 using HeuristicLab.SequentialEngine;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -95,7 +95,6 @@ namespace HeuristicLab_33.Tests {
     /// </summary>
     [TestMethod]
     public void AlgorithmExecutions() {
-      var random = new MersenneTwister(0);
       var algs = new List<IAlgorithm>();
 
       Stopwatch sw = new Stopwatch();
@@ -115,6 +114,42 @@ namespace HeuristicLab_33.Tests {
         TestContext.WriteLine("{0}: {1} ", i, sw.Elapsed);
         sw.Reset();
       }
+    }
+
+    /// <summary>
+    /// Test the execution of many algorithms in parallel
+    /// </summary>
+    [TestMethod]
+    public void ParallelAlgorithmExecutions() {
+      int n = 60;
+      var tasks = new Task[n];
+
+      TestContext.WriteLine("creating tasks...");
+      for (int i = 0; i < n; i++) {
+        tasks[i] = new Task((iobj) => {
+          int locali = (int)iobj;
+          GeneticAlgorithm ga = new GeneticAlgorithm();
+          ga.Name = "Alg " + locali;
+          ga.PopulationSize.Value = 5;
+          ga.MaximumGenerations.Value = 5;
+          ga.Engine = new SequentialEngine();
+          ga.Problem = new SingleObjectiveTestFunctionProblem();
+          ga.Prepare(true);
+          Console.WriteLine("{0}; Objects before execution: {1}", ga.Name, ga.GetObjectGraphObjects().Count());
+          var sw = new Stopwatch();
+          sw.Start();
+          ga.StartSync(new CancellationToken());
+          sw.Stop();
+          Console.WriteLine("{0}; Objects after execution: {1}", ga.Name, ga.GetObjectGraphObjects().Count());
+          Console.WriteLine("{0}; ExecutionTime: {1} ", ga.Name, sw.Elapsed);
+        }, i);
+      }
+      TestContext.WriteLine("starting tasks...");
+      for (int i = 0; i < n; i++) {
+        tasks[i].Start();
+      }
+      TestContext.WriteLine("waiting for tasks to finish...");
+      Task.WaitAll(tasks);
     }
   }
 }
