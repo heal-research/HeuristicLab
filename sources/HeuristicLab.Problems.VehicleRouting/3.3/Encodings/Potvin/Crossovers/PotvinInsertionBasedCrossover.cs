@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   public sealed class PotvinInsertionBasedCrossover : PotvinCrossover {
     public IValueParameter<IntValue> Length {
       get { return (IValueParameter<IntValue>)Parameters["Length"]; }
-    } 
+    }
 
     [StorableConstructor]
     private PotvinInsertionBasedCrossover(bool deserializing) : base(deserializing) { }
@@ -45,10 +45,10 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
     public PotvinInsertionBasedCrossover()
       : base() {
-        Parameters.Add(new ValueParameter<IntValue>("Length", "The maximum length of the replaced route.", new IntValue(1)));
+      Parameters.Add(new ValueParameter<IntValue>("Length", "The maximum length of the replaced route.", new IntValue(1)));
     }
 
-    protected static int SelectRandomTourBiasedByLength(IRandom random, PotvinEncoding individual) {
+    private static int SelectRandomTourBiasedByLength(IRandom random, PotvinEncoding individual) {
       int tourIndex = -1;
 
       double sum = 0.0;
@@ -118,7 +118,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
         int next = i + 1;
         if (next >= tour.Cities.Count)
           next = 0;
-        else 
+        else
           next = tour.Cities[next];
         double distance = VRPUtilities.GetDistance(
           tour.Cities[i], next, distMatrix);
@@ -191,7 +191,6 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
 
     protected override PotvinEncoding Crossover(IRandom random, PotvinEncoding parent1, PotvinEncoding parent2) {
       PotvinEncoding child = new PotvinEncoding();
-      bool success = true;
 
       BoolValue useDistanceMatrix = UseDistanceMatrixParameter.ActualValue;
       DoubleMatrix coordinates = CoordinatesParameter.ActualValue;
@@ -235,7 +234,6 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
         }
 
         //REPAIR - add cities from R2
-        bool insertSuccess = true;
         int maxCount = random.Next(1, Math.Min(5, R2.Count));
         int count = 0;
 
@@ -248,47 +246,37 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
           R2.RemoveAt(index);
 
           int place = -1;
-          if(FindRouteInsertionPlace(childTour, dueTime, serviceTime, readyTime,
+          if (FindRouteInsertionPlace(childTour, dueTime, serviceTime, readyTime,
             demand, capacity, distMatrix, city, allowInfeasible, out place)) {
             childTour.Cities.Insert(place, city);
 
             if (!Repair(random, child, childTour, distMatrix, dueTime, readyTime, serviceTime, demand, capacity, allowInfeasible)) {
               childTour.Cities.RemoveAt(place);
-              insertSuccess = false;
             } else {
               count++;
-            } 
-          } 
+            }
+          }
         }
 
         child.Tours.Add(childTour);
-        if (!Repair(random, child, childTour, distMatrix, dueTime, readyTime, serviceTime, demand, capacity, allowInfeasible)) {
-          /*success = false;
-          break;*/
-        }
+        Repair(random, child, childTour, distMatrix, dueTime, readyTime, serviceTime, demand, capacity, allowInfeasible);
       }
 
-      if (success) {
-        for (int i = 0; i < p1Clone.Tours.Count; i++) {
-          Tour childTour = p1Clone.Tours[i].Clone() as Tour;
-          child.Tours.Add(childTour);
-          if (!Repair(random, child, childTour, distMatrix, dueTime, readyTime, serviceTime, demand, capacity, allowInfeasible)) {
-            /*success = false;
-            break;*/
-          }
-        }
+      for (int i = 0; i < p1Clone.Tours.Count; i++) {
+        Tour childTour = p1Clone.Tours[i].Clone() as Tour;
+        child.Tours.Add(childTour);
+        Repair(random, child, childTour, distMatrix, dueTime, readyTime, serviceTime, demand, capacity, allowInfeasible);
       }
 
-      if (success) {
-        //route unrouted customers
-        for (int i = 1; i <= parent1.Cities; i++) {
-          if (FindRoute(child, i) == null)
-            child.Unrouted.Add(i);
-        }
+      //route unrouted customers
+      for (int i = 1; i <= parent1.Cities; i++) {
+        if (FindRoute(child, i) == null)
+          child.Unrouted.Add(i);
+      }
 
-        if (!RouteUnrouted(child, distMatrix, dueTime, readyTime, serviceTime, demand, capacity, allowInfeasible)) {
-          success = false;
-        }
+      bool success = true;
+      if (!RouteUnrouted(child, distMatrix, dueTime, readyTime, serviceTime, demand, capacity, allowInfeasible)) {
+        success = false;
       }
 
       if (success || allowInfeasible)
@@ -297,7 +285,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
         if (random.NextDouble() < 0.5)
           return parent1.Clone() as PotvinEncoding;
         else
-          return parent2.Clone() as PotvinEncoding;   
+          return parent2.Clone() as PotvinEncoding;
       }
     }
   }
