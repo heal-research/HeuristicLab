@@ -166,8 +166,9 @@ namespace HeuristicLab.Optimization.Views {
       this.optimizerTreeView.DragEnter += new System.Windows.Forms.DragEventHandler(this.optimizerTreeView_DragEnter);
       this.optimizerTreeView.DragOver += new System.Windows.Forms.DragEventHandler(this.optimizerTreeView_DragOver);
       this.optimizerTreeView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.optimizerTreeView_KeyDown);
-      this.optimizerTreeView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.optimizerTreeview_MouseClick);
       this.optimizerTreeView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.optimizerTreeView_MouseDown);
+      this.optimizerTreeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.optimizerTreeview_NodeMouseClick);
+      this.optimizerTreeView.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(optimizerTreeView_NodeMouseDoubleClick);
       // 
       // imageList
       // 
@@ -220,7 +221,6 @@ namespace HeuristicLab.Optimization.Views {
       this.ResumeLayout(false);
 
     }
-
     #endregion
 
     private System.Windows.Forms.GroupBox optimizersGroupBox;

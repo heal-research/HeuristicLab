@@ -28,6 +28,7 @@ using System.Windows.Forms;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core.Views;
+using HeuristicLab.MainForm;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Optimization.Views {
@@ -495,20 +496,24 @@ namespace HeuristicLab.Optimization.Views {
     #endregion
 
     #region control events
-    private void optimizerTreeview_MouseClick(object sender, MouseEventArgs e) {
-      Point coordinates = new Point(e.X, e.Y);
-      TreeNode selectedNode = optimizerTreeView.GetNodeAt(coordinates);
-      if (selectedNode != null) {
-        optimizerTreeView.SelectedNode = selectedNode;
-        detailsViewHost.Content = (IOptimizer)selectedNode.Tag;
-        SetEnabledStateOfControls();
-      }
+    private void optimizerTreeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e) {
+      if (e.X < e.Node.Bounds.Left || e.X > e.Node.Bounds.Right) return;
+      IOptimizer optimizer = (IOptimizer)e.Node.Tag;
+      MainFormManager.MainForm.ShowContent(optimizer);
+    }
+    private void optimizerTreeview_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e) {
+      if (e.X < e.Node.Bounds.Left || e.X > e.Node.Bounds.Right) return;
+      optimizerTreeView.SelectedNode = e.Node;
+      detailsViewHost.Content = (IOptimizer)e.Node.Tag;
+      SetEnabledStateOfControls();
     }
     private void optimizerTreeView_MouseDown(object sender, MouseEventArgs e) {
       // enables deselection of treeNodes
+      if (e.Button != System.Windows.Forms.MouseButtons.Left) return;
       if (optimizerTreeView.SelectedNode == null) return;
       Point coordinates = new Point(e.X, e.Y);
-      if (e.Button == System.Windows.Forms.MouseButtons.Left && optimizerTreeView.GetNodeAt(coordinates) == null) {
+      TreeNode node = optimizerTreeView.GetNodeAt(coordinates);
+      if (node == null || coordinates.X < node.Bounds.Left || coordinates.X > node.Bounds.Right) {
         optimizerTreeView.SelectedNode = null;
         detailsViewHost.Content = null;
         SetEnabledStateOfControls();
