@@ -504,6 +504,7 @@ namespace HeuristicLab.Optimization.Views {
     private void optimizerTreeview_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e) {
       if (e.X < e.Node.Bounds.Left || e.X > e.Node.Bounds.Right) return;
       optimizerTreeView.SelectedNode = e.Node;
+      optimizerTreeView.SelectedNode.Toggle();
       detailsViewHost.Content = (IOptimizer)e.Node.Tag;
       SetEnabledStateOfControls();
     }
