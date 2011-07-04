@@ -91,7 +91,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
       random.Reset();
       random.DoubleNumbers = new double[] { 0.2, 0.7, 0.8, 0.01, 0.1 };
       parent = new RealVector(new double[] { 0.2, 0.2, 0.3, 0.5, 0.1 });
-      expected = new RealVector(new double[] { 0.120213215256006, 0.336631954950876, 0.474551336679454, 0.322759240811056, -0.0182075293954083 });
+      expected = new RealVector(new double[] { 0.120213215256006, 0.249415354697564, 0.379786784743994, 0.322759240811056, -0.0182075293954083 });
       contiguity = new DoubleValue(0.8);
       maxManipulation = new DoubleValue(0.2);
       PolynomialAllPositionManipulator.Apply(random, parent, contiguity, maxManipulation);
@@ -105,8 +105,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
       maxManipulation = new DoubleValue(0.2);
       try {
         PolynomialAllPositionManipulator.Apply(random, parent, contiguity, maxManipulation);
-      }
-      catch (System.ArgumentException) {
+      } catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);

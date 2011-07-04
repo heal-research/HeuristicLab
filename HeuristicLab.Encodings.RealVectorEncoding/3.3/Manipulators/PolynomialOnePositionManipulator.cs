@@ -88,9 +88,9 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
 
       if (u < 0.5) {
         delta = Math.Pow(2 * u, 1.0 / (contiguity + 1)) - 1.0;
-      } else if (u > 0.5) {
-        delta = 1.0 - Math.Pow(2.0 - 2.0 * u, 1.0 / contiguity + 1);
-      } else delta = 0;
+      } else if (u >= 0.5) {
+        delta = 1.0 - Math.Pow(2.0 - 2.0 * u, 1.0 / (contiguity + 1));
+      }
 
       return delta;
     }
