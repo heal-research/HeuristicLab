@@ -644,10 +644,17 @@ namespace HeuristicLab_33.Tests {
       var pso = CreatePsoSchwefelSample();
       pso.SetSeedRandomly.Value = false;
       RunAlgorithm(pso);
-      Assert.AreEqual(119.30888659302838, GetDoubleResult(pso, "BestQuality"));
-      Assert.AreEqual(140.71570105946438, GetDoubleResult(pso, "CurrentAverageQuality"));
-      Assert.AreEqual(220.956806502853, GetDoubleResult(pso, "CurrentWorstQuality"));
-      Assert.AreEqual(1000, GetIntResult(pso, "Iterations"));
+      if (!Environment.Is64BitProcess) {
+        Assert.AreEqual(119.30888659302838, GetDoubleResult(pso, "BestQuality"));
+        Assert.AreEqual(140.71570105946438, GetDoubleResult(pso, "CurrentAverageQuality"));
+        Assert.AreEqual(220.956806502853, GetDoubleResult(pso, "CurrentWorstQuality"));
+        Assert.AreEqual(1000, GetIntResult(pso, "Iterations"));
+      } else {
+        Assert.AreEqual(118.58396881972624, GetDoubleResult(pso, "BestQuality"));
+        Assert.AreEqual(139.43946864779372, GetDoubleResult(pso, "CurrentAverageQuality"));
+        Assert.AreEqual(217.14654589055152, GetDoubleResult(pso, "CurrentWorstQuality"));
+        Assert.AreEqual(1000, GetIntResult(pso, "Iterations"));
+      }
     }
     private ParticleSwarmOptimization CreatePsoSchwefelSample() {
       ParticleSwarmOptimization pso = new ParticleSwarmOptimization();
