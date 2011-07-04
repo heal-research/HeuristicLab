@@ -28,6 +28,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Selection {
   /// <summary>
@@ -87,6 +88,7 @@ namespace HeuristicLab.Selection {
       return selected;
     }
 
+    [NonDiscoverableType]
     private struct IndexValuePair {
       private int index;
       internal int Index { get { return index; } }
