@@ -110,7 +110,7 @@
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\Netron.Diagramming.Core-3.0.2672.12446.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\WeifenLuo.WinFormsUI.Docking-2.3.1.dll" />
   </Deployment>
-  <Execution>
+  <Execution hostProcessPlatform="MSIL">
     <TestTypeSpecific>
       <UnitTestRunConfig testTypeId="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b">
         <AssemblyResolution>
