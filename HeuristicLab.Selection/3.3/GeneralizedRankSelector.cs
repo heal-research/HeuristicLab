@@ -62,7 +62,7 @@ namespace HeuristicLab.Selection {
       IScope[] selected = new IScope[count];
       double pressure = PressureParameter.ActualValue.Value;
 
-      var ordered = qualities.Select((x, index) => new { index, x.Value }).OrderBy(x => x.Value).ToList();
+      var ordered = qualities.Select((x, index) => new IndexValuePair(index, x.Value)).OrderBy(x => x.Value).ToList();
       if (maximization) ordered.Reverse();
 
       int m = scopes.Count;
@@ -71,14 +71,37 @@ namespace HeuristicLab.Selection {
         int selIdx = (int)Math.Floor(Math.Pow(rand, pressure) - 1);
 
         if (copy) {
-          selected[i] = (IScope)scopes[ordered[selIdx].index].Clone();
+          selected[i] = (IScope)scopes[ordered[selIdx].Index].Clone();
         } else {
-          selected[i] = scopes[ordered[selIdx].index];
-          scopes.Remove(selected[i]);
+          int idx = ordered[selIdx].Index;
+          selected[i] = scopes[idx];
+          scopes.RemoveAt(idx);
+          ordered.RemoveAt(selIdx);
+          for (int j = 0; j < ordered.Count; j++) {
+            var o = ordered[j];
+            if (o.Index > idx) ordered[j] = o.DecrementIndex();
+          }
           m--;
         }
       }
       return selected;
+    }
+
+    private struct IndexValuePair {
+      private int index;
+      internal int Index { get { return index; } }
+      private double value;
+      internal double Value { get { return value; } }
+
+      internal IndexValuePair(int index, double value) {
+        this.index = index;
+        this.value = value;
+      }
+
+      internal IndexValuePair DecrementIndex() {
+        this.index--;
+        return this;
+      }
     }
   }
 }
