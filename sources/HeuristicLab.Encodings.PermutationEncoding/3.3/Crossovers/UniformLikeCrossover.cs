@@ -28,7 +28,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("UniformLikeCrossover", "The ULX crossover tries to maintain the position in the permutation. It randomly chooses from left to right one of its parents' alleles at each position. Missing entries are then filled randomly later. It is described in Tate, D. M. and Smith, A. E. 1995. A genetic approach to the quadratic assignment problem. Computers & Operations Research, vol. 22, pp. 73-83.")]
   [StorableClass]
-  public class UniformLikeCrossover : PermutationCrossover {
+  public sealed class UniformLikeCrossover : PermutationCrossover {
     [StorableConstructor]
     protected UniformLikeCrossover(bool deserializing) : base(deserializing) { }
     protected UniformLikeCrossover(UniformLikeCrossover original, Cloner cloner) : base(original, cloner) { }
