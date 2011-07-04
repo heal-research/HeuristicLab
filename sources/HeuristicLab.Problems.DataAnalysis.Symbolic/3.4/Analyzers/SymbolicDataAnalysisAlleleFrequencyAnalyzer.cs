@@ -19,17 +19,16 @@
  */
 #endregion
 
-using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Collections.Generic;
-using System.Text;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [Item("SymbolicDataAnalysisAlleleFrequencyAnalyzer", "")]
@@ -46,7 +45,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       get { return ResultsParameter; }
     }
 
-    public IValueParameter<IntValue> AlleleTreeDepthParameter {
+    public IFixedValueParameter<IntValue> AlleleTreeDepthParameter {
       get { return (IFixedValueParameter<IntValue>)Parameters[AlleleTreeDepthParameterName]; }
     }
     #endregion
