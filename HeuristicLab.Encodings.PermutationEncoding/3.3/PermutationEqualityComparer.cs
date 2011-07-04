@@ -21,12 +21,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [NonDiscoverableType]
-  public class PermutationEqualityComparer : IEqualityComparer<Permutation> {
-    public bool Equals(Permutation x, Permutation y) {
+  public class PermutationEqualityComparer : EqualityComparer<Permutation> {
+    public override bool Equals(Permutation x, Permutation y) {
       if (x.PermutationType != y.PermutationType) return false;
       if (x.Length != y.Length) return false;
       switch (x.PermutationType) {
@@ -42,9 +44,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     private bool EqualsAbsolute(Permutation x, Permutation y) {
-      for (int i = 0; i < x.Length; i++)
-        if (x[i] != y[i]) return false;
-      return true;
+      return x.SequenceEqual(y);
     }
 
     private bool EqualsRelative(Permutation x, Permutation y, bool directed) {
@@ -65,9 +65,31 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       return edgesVector;
     }
 
-    public int GetHashCode(Permutation obj) {
+    public override int GetHashCode(Permutation obj) {
       if (obj == null) return 0;
-      return obj.GetHashCode();
+      return GenerateHashString(obj).GetHashCode();
+    }
+
+    private string GenerateHashString(Permutation p) {
+      StringBuilder sb = new StringBuilder();
+      if (p.PermutationType == PermutationTypes.Absolute) {
+        for (int i = 0; i < p.Length; i++)
+          sb.Append(p[i].ToString() + ";");
+      } else {
+        int i = 0;
+        while (p[i] != 0) i++; // always start at element 0
+        if (p.PermutationType == PermutationTypes.RelativeDirected) {
+          for (int j = 0; j < p.Length; j++)
+            sb.Append(p.GetCircular(i + j).ToString() + ";");
+        } else {
+          bool goLeft = p.GetCircular(i - 1) < p.GetCircular(i + 1); // go in direction of the lowest edge so that the total inversion and its original return the same hash code
+          for (int j = 0; j < p.Length; j++) {
+            if (goLeft) sb.Append(p.GetCircular(i - j).ToString() + ";");
+            else sb.Append(p.GetCircular(i + j).ToString() + ";");
+          }
+        }
+      }
+      return sb.ToString();
     }
   }
 }
