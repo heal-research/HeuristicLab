@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 
 namespace HeuristicLab.Common {
   public static class ObjectExtensions {
@@ -37,7 +38,6 @@ namespace HeuristicLab.Common {
       stack.Push(obj);
       while (stack.Count > 0) {
         object current = stack.Pop();
-        Type type = obj.GetType();
         objects.Add(current);
 
         foreach (object o in GetChildObjects(current)) {
@@ -70,13 +70,17 @@ namespace HeuristicLab.Common {
     private static IEnumerable<object> GetChildObjects(object obj) {
       Type type = obj.GetType();
 
-      if (type.IsSubclassOfRawGeneric(typeof(Dictionary<,>)) ||
-         type.IsSubclassOfRawGeneric(typeof(SortedDictionary<,>)) ||
-         type.IsSubclassOfRawGeneric(typeof(SortedList<,>)) ||
-         obj is SortedList ||
-         obj is OrderedDictionary ||
-         obj is ListDictionary ||
-         obj is Hashtable) {
+      if (type.IsSubclassOfRawGeneric(typeof(ThreadLocal<>))) {
+        PropertyInfo info = type.GetProperty("Value");
+        object value = info.GetValue(obj, null);
+        if (value != null) yield return value;
+      } else if (type.IsSubclassOfRawGeneric(typeof(Dictionary<,>)) ||
+           type.IsSubclassOfRawGeneric(typeof(SortedDictionary<,>)) ||
+           type.IsSubclassOfRawGeneric(typeof(SortedList<,>)) ||
+           obj is SortedList ||
+           obj is OrderedDictionary ||
+           obj is ListDictionary ||
+           obj is Hashtable) {
         var dictionary = obj as IDictionary;
         foreach (object value in dictionary.Keys)
           yield return value;
