@@ -30,8 +30,8 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   [StorableClass]
   public sealed class UniformLikeCrossover : PermutationCrossover {
     [StorableConstructor]
-    protected UniformLikeCrossover(bool deserializing) : base(deserializing) { }
-    protected UniformLikeCrossover(UniformLikeCrossover original, Cloner cloner) : base(original, cloner) { }
+    private UniformLikeCrossover(bool deserializing) : base(deserializing) { }
+    private UniformLikeCrossover(UniformLikeCrossover original, Cloner cloner) : base(original, cloner) { }
     public UniformLikeCrossover() : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
