@@ -89,9 +89,22 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
         return pluginsToUpdate.Count() > 0;
       });
       task.ContinueWith(t => {
-        updatesAvailable = t.Result;
-        UpdateApplicationsList();
-      }, TaskContinuationOptions.NotOnFaulted);
+        try {
+          t.Wait();
+          updatesAvailable = t.Result;
+          UpdateApplicationsList();
+        }
+        catch (AggregateException ae) {
+          ae.Handle(ex => {
+            if (ex is InstallationManagerException) {
+              // this is expected when no internet connection is available => do nothing 
+              return true;
+            } else { 
+              return false; 
+            }
+          });
+        }
+      });
     }
 
     /// <summary>
