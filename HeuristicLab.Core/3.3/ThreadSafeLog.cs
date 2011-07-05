@@ -65,13 +65,14 @@ namespace HeuristicLab.Core {
       this.log = log;
       RegisterLogEvents();
     }
-    ~ThreadSafeLog() {
-      locker.Dispose();
-    }
 
     protected ThreadSafeLog(ThreadSafeLog original, Cloner cloner)
       : base(original, cloner) {
-      log = cloner.Clone(original.log);
+      original.locker.EnterReadLock();
+      try {
+        log = cloner.Clone(original.log);
+      }
+      finally { locker.ExitReadLock(); }
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ThreadSafeLog(this, cloner);
@@ -133,5 +134,7 @@ namespace HeuristicLab.Core {
       if (handler != null) handler(this, EventArgs.Empty);
     }
     #endregion
+
+
   }
 }
