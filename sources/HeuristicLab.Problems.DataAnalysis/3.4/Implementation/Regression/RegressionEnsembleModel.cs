@@ -57,6 +57,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     #region IRegressionEnsembleModel Members
 
+    public void Add(IRegressionModel model) {
+      models.Add(model);
+    }
+
     public IEnumerable<IEnumerable<double>> GetEstimatedValueVectors(Dataset dataset, IEnumerable<int> rows) {
       var estimatedValuesEnumerators = (from model in models
                                         select model.GetEstimatedValues(dataset, rows).GetEnumerator())

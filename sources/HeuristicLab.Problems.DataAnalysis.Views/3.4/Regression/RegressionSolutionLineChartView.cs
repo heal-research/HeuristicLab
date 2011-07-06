@@ -197,7 +197,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       stripLine.Font = new Font("Times New Roman", 12, FontStyle.Bold);
       // strip range is [start .. end] inclusive, but we evaluate [start..end[ (end is exclusive)
       // the strip should be by one longer (starting at start - 0.5 and ending at end + 0.5)
-      stripLine.StripWidth = end - start; 
+      stripLine.StripWidth = end - start;
       stripLine.IntervalOffset = start - 0.5; // start slightly to the left of the first point to clearly indicate the first point in the partition
       this.chart.ChartAreas[0].AxisX.StripLines.Add(stripLine);
     }

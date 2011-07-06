@@ -22,6 +22,7 @@
 using System.Collections.Generic;
 namespace HeuristicLab.Problems.DataAnalysis {
   public interface IRegressionEnsembleModel : IRegressionModel {
+    void Add(IRegressionModel model);
     IEnumerable<IRegressionModel> Models { get; }
     IEnumerable<IEnumerable<double>> GetEstimatedValueVectors(Dataset dataset, IEnumerable<int> rows);
   }

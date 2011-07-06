@@ -22,6 +22,7 @@
 using System.Collections.Generic;
 namespace HeuristicLab.Problems.DataAnalysis {
   public interface IClassificationEnsembleModel : IClassificationModel {
+    void Add(IClassificationModel model);
     IEnumerable<IClassificationModel> Models { get; }
     IEnumerable<IEnumerable<double>> GetEstimatedClassValueVectors(Dataset dataset, IEnumerable<int> rows);
   }

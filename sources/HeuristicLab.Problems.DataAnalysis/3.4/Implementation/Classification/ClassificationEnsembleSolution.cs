@@ -78,16 +78,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
       : base(new ClassificationEnsembleModel(models), new ClassificationEnsembleProblemData(problemData)) {
       this.trainingPartitions = new Dictionary<IClassificationModel, IntRange>();
       this.testPartitions = new Dictionary<IClassificationModel, IntRange>();
-      var modelEnumerator = models.GetEnumerator();
-      var trainingPartitionEnumerator = trainingPartitions.GetEnumerator();
-      var testPartitionEnumerator = testPartitions.GetEnumerator();
-      while (modelEnumerator.MoveNext() & trainingPartitionEnumerator.MoveNext() & testPartitionEnumerator.MoveNext()) {
-        this.trainingPartitions[modelEnumerator.Current] = (IntRange)trainingPartitionEnumerator.Current.Clone();
-        this.testPartitions[modelEnumerator.Current] = (IntRange)testPartitionEnumerator.Current.Clone();
-      }
-      if (modelEnumerator.MoveNext() | trainingPartitionEnumerator.MoveNext() | testPartitionEnumerator.MoveNext()) {
-        throw new ArgumentException();
-      }
+      AddModelsAndParitions(models,
+        trainingPartitions,
+        testPartitions);
       RecalculateResults();
     }
 
@@ -167,6 +160,44 @@ namespace HeuristicLab.Problems.DataAnalysis {
       .Select(g => g.Key)
       .DefaultIfEmpty(double.NaN)
       .First();
+    }
+
+    public void AddModelsAndParitions(IEnumerable<IClassificationSolution> solutions) {
+      foreach (var solution in solutions) {
+        var ensembleSolution = solution as ClassificationEnsembleSolution;
+        if (ensembleSolution != null) {
+          var data = from m in ensembleSolution.Model.Models
+                     let train = ensembleSolution.trainingPartitions[m]
+                     let test = ensembleSolution.testPartitions[m]
+                     select new { m, train, test };
+
+          foreach (var d in data) {
+            Model.Add(d.m);
+            trainingPartitions[d.m] = (IntRange)d.train.Clone();
+            testPartitions[d.m] = (IntRange)d.test.Clone();
+          }
+        } else {
+          Model.Add(solution.Model);
+          trainingPartitions[solution.Model] = (IntRange)solution.ProblemData.TrainingPartition.Clone();
+          testPartitions[solution.Model] = (IntRange)solution.ProblemData.TestPartition.Clone();
+        }
+      }
+
+      RecalculateResults();
+    }
+
+    private void AddModelsAndParitions(IEnumerable<IClassificationModel> models, IEnumerable<IntRange> trainingPartitions, IEnumerable<IntRange> testPartitions) {
+      var modelEnumerator = models.GetEnumerator();
+      var trainingPartitionEnumerator = trainingPartitions.GetEnumerator();
+      var testPartitionEnumerator = testPartitions.GetEnumerator();
+
+      while (modelEnumerator.MoveNext() & trainingPartitionEnumerator.MoveNext() & testPartitionEnumerator.MoveNext()) {
+        this.trainingPartitions[modelEnumerator.Current] = (IntRange)trainingPartitionEnumerator.Current.Clone();
+        this.testPartitions[modelEnumerator.Current] = (IntRange)testPartitionEnumerator.Current.Clone();
+      }
+      if (modelEnumerator.MoveNext() | trainingPartitionEnumerator.MoveNext() | testPartitionEnumerator.MoveNext()) {
+        throw new ArgumentException();
+      }
     }
   }
 }
