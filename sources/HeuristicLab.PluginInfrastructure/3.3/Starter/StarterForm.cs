@@ -99,8 +99,8 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
             if (ex is InstallationManagerException) {
               // this is expected when no internet connection is available => do nothing 
               return true;
-            } else { 
-              return false; 
+            } else {
+              return false;
             }
           });
         }
@@ -195,16 +195,14 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
     }
 
     private void AddPluginManagerItem() {
-      if (HeuristicLab.PluginInfrastructure.Properties.Settings.Default.ShowPluginUploadControls) {
-        FileVersionInfo pluginInfrastructureVersion = FileVersionInfo.GetVersionInfo(GetType().Assembly.Location);
-        pluginManagerListViewItem = new ListViewItem(pluginManagerItemName, 0);
-        pluginManagerListViewItem.Group = applicationsListView.Groups["Plugin Management"];
-        pluginManagerListViewItem.SubItems.Add(new ListViewItem.ListViewSubItem(pluginManagerListViewItem, pluginInfrastructureVersion.FileVersion));
-        pluginManagerListViewItem.SubItems.Add(new ListViewItem.ListViewSubItem(pluginManagerListViewItem, "Install, upgrade or delete plugins"));
-        pluginManagerListViewItem.ToolTipText = "Install, upgrade or delete plugins";
+      FileVersionInfo pluginInfrastructureVersion = FileVersionInfo.GetVersionInfo(GetType().Assembly.Location);
+      pluginManagerListViewItem = new ListViewItem(pluginManagerItemName, 0);
+      pluginManagerListViewItem.Group = applicationsListView.Groups["Plugin Management"];
+      pluginManagerListViewItem.SubItems.Add(new ListViewItem.ListViewSubItem(pluginManagerListViewItem, pluginInfrastructureVersion.FileVersion));
+      pluginManagerListViewItem.SubItems.Add(new ListViewItem.ListViewSubItem(pluginManagerListViewItem, "Install, upgrade or delete plugins"));
+      pluginManagerListViewItem.ToolTipText = "Install, upgrade or delete plugins";
 
-        applicationsListView.Items.Add(pluginManagerListViewItem);
-      }
+      applicationsListView.Items.Add(pluginManagerListViewItem);
     }
 
     private void AddUpdatePluginsItem() {
