@@ -44,13 +44,10 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InstallationManagerForm));
       this.statusStrip = new System.Windows.Forms.StatusStrip();
       this.toolStripProgressBar = new System.Windows.Forms.ToolStripProgressBar();
       this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
       this.tabControl = new System.Windows.Forms.TabControl();
-      this.updateAllPluginsTabPage = new System.Windows.Forms.TabPage();
-      this.basicUpdateView = new HeuristicLab.PluginInfrastructure.Advanced.BasicUpdateView();
       this.localPluginsTabPage = new System.Windows.Forms.TabPage();
       this.localPluginsView = new HeuristicLab.PluginInfrastructure.Advanced.InstalledPluginsView();
       this.availablePluginsTabPage = new System.Windows.Forms.TabPage();
@@ -67,7 +64,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.statusStrip.SuspendLayout();
       this.tabControl.SuspendLayout();
-      this.updateAllPluginsTabPage.SuspendLayout();
       this.localPluginsTabPage.SuspendLayout();
       this.availablePluginsTabPage.SuspendLayout();
       this.uploadPluginsTabPage.SuspendLayout();
@@ -104,7 +100,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.tabControl.Controls.Add(this.updateAllPluginsTabPage);
       this.tabControl.Controls.Add(this.localPluginsTabPage);
       this.tabControl.Controls.Add(this.availablePluginsTabPage);
       this.tabControl.Controls.Add(this.uploadPluginsTabPage);
@@ -116,31 +111,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.tabControl.Size = new System.Drawing.Size(598, 392);
       this.tabControl.TabIndex = 16;
       this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
-      // 
-      // updateAllPluginsTabPage
-      // 
-      this.updateAllPluginsTabPage.Controls.Add(this.basicUpdateView);
-      this.updateAllPluginsTabPage.Location = new System.Drawing.Point(4, 22);
-      this.updateAllPluginsTabPage.Name = "updateAllPluginsTabPage";
-      this.updateAllPluginsTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.updateAllPluginsTabPage.Size = new System.Drawing.Size(590, 366);
-      this.updateAllPluginsTabPage.TabIndex = 5;
-      this.updateAllPluginsTabPage.Text = "Update Plugins";
-      this.toolTip.SetToolTip(this.updateAllPluginsTabPage, "Update all installed plugins");
-      this.updateAllPluginsTabPage.UseVisualStyleBackColor = true;
-      // 
-      // basicUpdateView
-      // 
-      this.basicUpdateView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.basicUpdateView.InstallationManager = null;
-      this.basicUpdateView.Location = new System.Drawing.Point(6, 6);
-      this.basicUpdateView.Name = "basicUpdateView";
-      this.basicUpdateView.PluginManager = null;
-      this.basicUpdateView.Size = new System.Drawing.Size(578, 354);
-      this.basicUpdateView.StatusView = null;
-      this.basicUpdateView.TabIndex = 0;
       // 
       // localPluginsTabPage
       // 
@@ -297,14 +267,13 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       this.Controls.Add(this.tabControl);
       this.Controls.Add(this.statusStrip);
       this.Controls.Add(this.menuStrip);
-      this.Icon = HeuristicLab.PluginInfrastructure.Resources.HeuristicLab;
+      this.Icon = global::HeuristicLab.PluginInfrastructure.Resources.HeuristicLab;
       this.MainMenuStrip = this.menuStrip;
       this.Name = "InstallationManagerForm";
       this.Text = "Plugin Manager";
       this.statusStrip.ResumeLayout(false);
       this.statusStrip.PerformLayout();
       this.tabControl.ResumeLayout(false);
-      this.updateAllPluginsTabPage.ResumeLayout(false);
       this.localPluginsTabPage.ResumeLayout(false);
       this.availablePluginsTabPage.ResumeLayout(false);
       this.uploadPluginsTabPage.ResumeLayout(false);
@@ -337,8 +306,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     private UploadPluginsView pluginEditor;
     private EditProductsView productEditor;
     private InstalledPluginsView localPluginsView;
-    private System.Windows.Forms.TabPage updateAllPluginsTabPage;
-    private BasicUpdateView basicUpdateView;
     private System.Windows.Forms.ToolTip toolTip;
   }
 }

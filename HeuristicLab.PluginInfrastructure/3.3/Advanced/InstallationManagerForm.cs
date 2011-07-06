@@ -66,10 +66,6 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       localPluginsView.PluginManager = pluginManager;
       localPluginsView.InstallationManager = installationManager;
 
-      basicUpdateView.StatusView = this;
-      basicUpdateView.PluginManager = pluginManager;
-      basicUpdateView.InstallationManager = installationManager;
-
       remotePluginInstaller.StatusView = this;
       remotePluginInstaller.InstallationManager = installationManager;
       remotePluginInstaller.PluginManager = pluginManager;
