@@ -51,9 +51,10 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     #region Construction & Cloning
     [StorableConstructor]
     protected EvaluationServiceClient(bool deserializing) : base(deserializing) { }
-    protected EvaluationServiceClient(EvaluationServiceClient original, Cloner cloner) : base(original, cloner) {
+    protected EvaluationServiceClient(EvaluationServiceClient original, Cloner cloner)
+      : base(original, cloner) {
       RegisterEvents();
-    }    
+    }
     public EvaluationServiceClient()
       : base() {
       Parameters.Add(new ValueParameter<IEvaluationChannel>("Channel", "The channel over which to call the remote function."));
@@ -82,11 +83,9 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
           Channel.Send(solution);
           result = (QualityMessage)Channel.Receive(QualityMessage.CreateBuilder());
           success = true;
-        }
-        catch (InvalidOperationException) {
+        } catch (InvalidOperationException) {
           throw;
-        }
-        catch {
+        } catch {
           if (tries >= maxTries)
             throw;
         }
@@ -103,11 +102,9 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
           CheckAndOpenChannel();
           Channel.Send(solution);
           success = true;
-        }
-        catch (InvalidOperationException) {
+        } catch (InvalidOperationException) {
           throw;
-        }
-        catch {
+        } catch {
           if (tries >= maxTries)
             throw;
         }
@@ -122,8 +119,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       if (!Channel.IsInitialized) {
         try {
           Channel.Open();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
           throw new InvalidOperationException(Name + ": The channel could not be opened.", e);
         }
       }
@@ -133,8 +129,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       QualityMessage message = null;
       try {
         message = (QualityMessage)Channel.Receive(QualityMessage.CreateBuilder());
-      }
-      catch { }
+      } catch { }
       ((Action<QualityMessage>)callback).Invoke(message);
     }
 

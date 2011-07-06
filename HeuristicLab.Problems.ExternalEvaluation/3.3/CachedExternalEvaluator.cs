@@ -19,13 +19,13 @@
  */
 #endregion
 
-
 using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+
 namespace HeuristicLab.Problems.ExternalEvaluation {
 
   [Item("CachedExternalEvaluationValuesCollector", "Creates a solution message, and communicates it via the driver to receive a quality message, also keeps a cache of previous evaluation results.")]
