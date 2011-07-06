@@ -33,6 +33,7 @@ namespace HeuristicLab.Optimization.Views {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ExperimentTreeView));
       this.optimizersGroupBox = new System.Windows.Forms.GroupBox();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
       this.showDetailsCheckBox = new System.Windows.Forms.CheckBox();
@@ -40,10 +41,13 @@ namespace HeuristicLab.Optimization.Views {
       this.moveUpButton = new System.Windows.Forms.Button();
       this.moveDownButton = new System.Windows.Forms.Button();
       this.addButton = new System.Windows.Forms.Button();
-      this.optimizerTreeView = new System.Windows.Forms.TreeView();
+      this.optimizerTreeView = new HeuristicLab.Optimization.Views.ExperimentTreeView.CustomTreeView();
       this.imageList = new System.Windows.Forms.ImageList(this.components);
       this.detailsGroupBox = new System.Windows.Forms.GroupBox();
       this.detailsViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
+      this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+      this.ExpandToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.CollapseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.optimizersGroupBox.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
@@ -51,6 +55,7 @@ namespace HeuristicLab.Optimization.Views {
       this.splitContainer.Panel2.SuspendLayout();
       this.splitContainer.SuspendLayout();
       this.detailsGroupBox.SuspendLayout();
+      this.contextMenuStrip.SuspendLayout();
       this.SuspendLayout();
       // 
       // optimizersGroupBox
@@ -162,13 +167,14 @@ namespace HeuristicLab.Optimization.Views {
       this.optimizerTreeView.Size = new System.Drawing.Size(191, 402);
       this.optimizerTreeView.TabIndex = 10;
       this.optimizerTreeView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.optimizerTreeView_ItemDrag);
+      this.optimizerTreeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.optimizerTreeview_NodeMouseClick);
+      this.optimizerTreeView.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.optimizerTreeView_NodeMouseDoubleClick);
       this.optimizerTreeView.DragDrop += new System.Windows.Forms.DragEventHandler(this.optimizerTreeView_DragDrop);
       this.optimizerTreeView.DragEnter += new System.Windows.Forms.DragEventHandler(this.optimizerTreeView_DragEnter);
       this.optimizerTreeView.DragOver += new System.Windows.Forms.DragEventHandler(this.optimizerTreeView_DragOver);
       this.optimizerTreeView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.optimizerTreeView_KeyDown);
       this.optimizerTreeView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.optimizerTreeView_MouseDown);
-      this.optimizerTreeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.optimizerTreeview_NodeMouseClick);
-      this.optimizerTreeView.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(optimizerTreeView_NodeMouseDoubleClick);
+      this.optimizerTreeView.RightClick += new System.EventHandler(optimizerTreeView_RightClick);
       // 
       // imageList
       // 
@@ -205,6 +211,28 @@ namespace HeuristicLab.Optimization.Views {
       this.detailsViewHost.ViewsLabelVisible = true;
       this.detailsViewHost.ViewType = null;
       // 
+      // contextMenuStrip
+      // 
+      this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ExpandToolStripMenuItem,
+            this.CollapseToolStripMenuItem});
+      this.contextMenuStrip.Name = "contextMenuStrip";
+      this.contextMenuStrip.Size = new System.Drawing.Size(120, 48);
+      // 
+      // ExpandToolStripMenuItem
+      // 
+      this.ExpandToolStripMenuItem.Name = "ExpandToolStripMenuItem";
+      this.ExpandToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
+      this.ExpandToolStripMenuItem.Text = "Expand";
+      this.ExpandToolStripMenuItem.Click += new System.EventHandler(this.ExpandToolStripMenuItem_Click);
+      // 
+      // CollapseToolStripMenuItem
+      // 
+      this.CollapseToolStripMenuItem.Name = "CollapseToolStripMenuItem";
+      this.CollapseToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
+      this.CollapseToolStripMenuItem.Text = "Collapse";
+      this.CollapseToolStripMenuItem.Click += new System.EventHandler(this.CollapseToolStripMenuItem_Click);
+      // 
       // ExperimentTreeView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -218,6 +246,7 @@ namespace HeuristicLab.Optimization.Views {
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
       this.splitContainer.ResumeLayout(false);
       this.detailsGroupBox.ResumeLayout(false);
+      this.contextMenuStrip.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }
@@ -225,7 +254,7 @@ namespace HeuristicLab.Optimization.Views {
 
     private System.Windows.Forms.GroupBox optimizersGroupBox;
     private System.Windows.Forms.SplitContainer splitContainer;
-    private System.Windows.Forms.TreeView optimizerTreeView;
+    private HeuristicLab.Optimization.Views.ExperimentTreeView.CustomTreeView optimizerTreeView;
     private System.Windows.Forms.GroupBox detailsGroupBox;
     private MainForm.WindowsForms.ViewHost detailsViewHost;
     private System.Windows.Forms.ToolTip toolTip;
@@ -235,6 +264,9 @@ namespace HeuristicLab.Optimization.Views {
     private System.Windows.Forms.Button moveDownButton;
     private System.Windows.Forms.Button addButton;
     private System.Windows.Forms.ImageList imageList;
+    private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
+    private System.Windows.Forms.ToolStripMenuItem ExpandToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem CollapseToolStripMenuItem;
 
   }
 }
