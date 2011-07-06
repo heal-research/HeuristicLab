@@ -24,7 +24,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
@@ -32,10 +35,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Analysis;
-using System.IO;
-using System.Globalization;
-using System.Text.RegularExpressions;
+
 namespace HeuristicLab.Problems.ExternalEvaluation {
 
   [Item("EvaluationCache", "Cache for external evaluation values")]
@@ -81,7 +81,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     private Dictionary<CacheEntry, LinkedListNode<CacheEntry>> index;
 
     private HashSet<string> activeEvaluations = new HashSet<string>();
-    private object cacheLock = new object();    
+    private object cacheLock = new object();
     #endregion
 
     #region Properties
@@ -125,7 +125,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     #endregion
 
     #region Persistence
-    [Storable(Name="Cache")]
+    [Storable(Name = "Cache")]
     private IEnumerable<KeyValuePair<string, double>> Cache_Persistence {
       get {
         if (IsPersistent) {
@@ -193,7 +193,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       LinkedListNode<CacheEntry> node;
       bool lockTaken = false;
       bool waited = false;
-      try {        
+      try {
         Monitor.Enter(cacheLock, ref lockTaken);
         while (true) {
           if (index.TryGetValue(entry, out node)) {

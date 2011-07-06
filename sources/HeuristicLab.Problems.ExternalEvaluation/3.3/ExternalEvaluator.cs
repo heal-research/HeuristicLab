@@ -58,7 +58,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
 
     #region Fields
     protected HashSet<IEvaluationServiceClient> activeClients = new HashSet<IEvaluationServiceClient>();
-    protected object clientLock = new object();    
+    protected object clientLock = new object();
     #endregion
 
     #region Construction & Cloning
