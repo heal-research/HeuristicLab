@@ -48,6 +48,7 @@ namespace HeuristicLab.Optimization.Views {
       this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.ExpandToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.CollapseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.EditNodeLabelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.optimizersGroupBox.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
@@ -161,11 +162,14 @@ namespace HeuristicLab.Optimization.Views {
       this.treeView.HideSelection = false;
       this.treeView.ImageIndex = 0;
       this.treeView.ImageList = this.imageList;
+      this.treeView.LabelEdit = true;
       this.treeView.Location = new System.Drawing.Point(4, 34);
       this.treeView.Name = "optimizerTreeView";
       this.treeView.SelectedImageIndex = 0;
       this.treeView.Size = new System.Drawing.Size(191, 402);
       this.treeView.TabIndex = 10;
+      this.treeView.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(treeView_AfterLabelEdit);
+      this.treeView.BeforeLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(treeView_BeforeLabelEdit);
       this.treeView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.optimizerTreeView_ItemDrag);
       this.treeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.optimizerTreeview_NodeMouseClick);
       this.treeView.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.optimizerTreeView_NodeMouseDoubleClick);
@@ -214,6 +218,7 @@ namespace HeuristicLab.Optimization.Views {
       // contextMenuStrip
       // 
       this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.EditNodeLabelToolStripMenuItem,
             this.ExpandToolStripMenuItem,
             this.CollapseToolStripMenuItem});
       this.contextMenuStrip.Name = "contextMenuStrip";
@@ -232,6 +237,14 @@ namespace HeuristicLab.Optimization.Views {
       this.CollapseToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
       this.CollapseToolStripMenuItem.Text = "Collapse";
       this.CollapseToolStripMenuItem.Click += new System.EventHandler(this.CollapseToolStripMenuItem_Click);
+      //
+      // EditNodeLabelToolStripMenuItem
+      //
+      this.EditNodeLabelToolStripMenuItem.Name = "EditNodeLabelToolStripMenuItem";
+      this.EditNodeLabelToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
+      this.EditNodeLabelToolStripMenuItem.Text = "Edit Name";
+      this.EditNodeLabelToolStripMenuItem.Click += new System.EventHandler(this.EditNodeLabelToolStripMenuItem_Click);
+
       // 
       // ExperimentTreeView
       // 
@@ -267,6 +280,7 @@ namespace HeuristicLab.Optimization.Views {
     private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
     private System.Windows.Forms.ToolStripMenuItem ExpandToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem CollapseToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem EditNodeLabelToolStripMenuItem;
 
   }
 }

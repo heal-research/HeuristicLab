@@ -453,9 +453,6 @@ namespace HeuristicLab.Optimization.Views {
             else if (parentExperiment != null) parentExperiment.Optimizers.Remove(optimizer);
             else throw new NotSupportedException("Handling for specific type not implemented" + parentOptimizer.GetType());
           }
-          SetEnabledStateOfControls();
-          UpdateDetailsViewHost();
-          RebuildImageList();
         }
       }
     }
@@ -492,7 +489,7 @@ namespace HeuristicLab.Optimization.Views {
           var optimizer = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) as IOptimizer;
           if (optimizer == null) return;
           if (batchRun.Optimizer != null) return;
-          if (optimizer.GetObjectGraphObjects().OfType<IOptimizer>().Contains(batchRun)) return;
+          if (optimizer.NestedOptimizers.Contains(batchRun)) return;
         }
 
         //do not allow recursive nesting of contents
@@ -502,8 +499,8 @@ namespace HeuristicLab.Optimization.Views {
           var enumerable = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) as IEnumerable;
           if (enumerable != null) optimizers = enumerable.Cast<IOptimizer>();
 
-          if (optimizer != null && optimizer.GetObjectGraphObjects().OfType<IOptimizer>().Contains(experiment)) return;
-          if (optimizers != null && optimizers.GetObjectGraphObjects().OfType<IOptimizer>().Contains(experiment)) return;
+          if (optimizer != null && optimizer.NestedOptimizers.Contains(experiment)) return;
+          if (optimizers != null && optimizers.Any(x => x.NestedOptimizers.Contains(experiment))) return;
         }
 
         if ((e.KeyState & 32) == 32) e.Effect = DragDropEffects.Link;  // ALT key
@@ -610,6 +607,8 @@ namespace HeuristicLab.Optimization.Views {
         ExpandToolStripMenuItem.Visible = !toolStripMenuNode.IsExpanded && toolStripMenuNode.Nodes.Count > 0;
         CollapseToolStripMenuItem.Enabled = toolStripMenuNode.IsExpanded;
         CollapseToolStripMenuItem.Visible = toolStripMenuNode.IsExpanded;
+        EditNodeLabelToolStripMenuItem.Enabled = toolStripMenuNode.Tag != null && toolStripMenuNode.Tag is INamedItem;
+        EditNodeLabelToolStripMenuItem.Visible = toolStripMenuNode.Tag != null && toolStripMenuNode.Tag is INamedItem;
         if (contextMenuStrip.Items.Cast<ToolStripMenuItem>().Any(item => item.Enabled))
           contextMenuStrip.Show(Cursor.Position);
       }
@@ -620,6 +619,26 @@ namespace HeuristicLab.Optimization.Views {
     }
     private void CollapseToolStripMenuItem_Click(object sender, EventArgs e) {
       if (toolStripMenuNode != null) toolStripMenuNode.Collapse();
+    }
+    private void EditNodeLabelToolStripMenuItem_Click(object sender, EventArgs e) {
+      if (toolStripMenuNode != null) {
+        if (!toolStripMenuNode.IsEditing) toolStripMenuNode.BeginEdit();
+      }
+    }
+
+
+    private void treeView_BeforeLabelEdit(object sender, NodeLabelEditEventArgs e) {
+      if (e.Node.Tag == null || !(e.Node.Tag is INamedItem)) {
+        e.CancelEdit = true;
+        return;
+      }
+    }
+    private void treeView_AfterLabelEdit(object sender, NodeLabelEditEventArgs e) {
+      if (e.Label == null) return;
+
+      e.Node.EndEdit(false);
+      var namedItem = (INamedItem)e.Node.Tag;
+      namedItem.Name = e.Label;
     }
 
     private void addButton_Click(object sender, System.EventArgs e) {
