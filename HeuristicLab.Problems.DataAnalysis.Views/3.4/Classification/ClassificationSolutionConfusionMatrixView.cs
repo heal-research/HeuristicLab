@@ -77,8 +77,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           dataGridView.RowCount = 1;
           dataGridView.ColumnCount = 1;
         } else {
-          dataGridView.ColumnCount = Content.ProblemData.Classes;
-          dataGridView.RowCount = Content.ProblemData.Classes;
+          dataGridView.ColumnCount = Content.ProblemData.Classes + 1;
+          dataGridView.RowCount = Content.ProblemData.Classes + 1;
 
           int i = 0;
           foreach (string headerText in Content.ProblemData.ClassNames) {
@@ -86,6 +86,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
             dataGridView.Rows[i].HeaderCell.Value = "Predicted " + headerText;
             i++;
           }
+          dataGridView.Columns[i].HeaderText = "Actual not classified";
+          dataGridView.Rows[i].HeaderCell.Value = "Predicted not classified";
+
           dataGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.ColumnHeader);
           dataGridView.AutoResizeRowHeadersWidth(DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders);
 
@@ -99,7 +102,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       else {
         if (Content == null) return;
 
-        double[,] confusionMatrix = new double[Content.ProblemData.Classes, Content.ProblemData.Classes];
+        double[,] confusionMatrix = new double[Content.ProblemData.Classes + 1, Content.ProblemData.Classes + 1];
         IEnumerable<int> rows;
 
         double[] predictedValues;
@@ -108,7 +111,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           predictedValues = Content.EstimatedTrainingClassValues.ToArray();
         } else if (cmbSamples.SelectedItem.ToString() == TestSamples) {
           rows = Content.ProblemData.TestIndizes;
-          predictedValues = Content.EstimatedTestClassValues.ToArray();          
+          predictedValues = Content.EstimatedTestClassValues.ToArray();
         } else throw new InvalidOperationException();
 
         double[] targetValues = Content.ProblemData.Dataset.GetEnumeratedVariableValues(Content.ProblemData.TargetVariable, rows).ToArray();
@@ -123,8 +126,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         for (int i = 0; i < targetValues.Length; i++) {
           double targetValue = targetValues[i];
           double predictedValue = predictedValues[i];
-          int targetIndex = classValueIndexMapping[targetValue];
-          int predictedIndex = classValueIndexMapping[predictedValue];
+          int targetIndex;
+          int predictedIndex;
+          if (!classValueIndexMapping.TryGetValue(targetValue, out targetIndex)) {
+            targetIndex = Content.ProblemData.Classes;
+          }
+          if (!classValueIndexMapping.TryGetValue(predictedValue, out predictedIndex)) {
+            predictedIndex = Content.ProblemData.Classes;
+          }
 
           confusionMatrix[predictedIndex, targetIndex] += 1;
         }

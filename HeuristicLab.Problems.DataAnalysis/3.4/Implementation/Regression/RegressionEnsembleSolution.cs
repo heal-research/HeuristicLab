@@ -63,10 +63,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
       : base(new RegressionEnsembleModel(models), new RegressionEnsembleProblemData(problemData)) {
       trainingPartitions = new Dictionary<IRegressionModel, IntRange>();
       testPartitions = new Dictionary<IRegressionModel, IntRange>();
-      foreach (var model in models) {
-        trainingPartitions[model] = (IntRange)problemData.TrainingPartition.Clone();
-        testPartitions[model] = (IntRange)problemData.TestPartition.Clone();
-      }
+      AddModelsAndParitions(models,
+        from m in models select (IntRange)problemData.TrainingPartition.Clone(),
+        from m in models select (IntRange)problemData.TestPartition.Clone());
       RecalculateResults();
     }
 
@@ -74,16 +73,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       : base(new RegressionEnsembleModel(models), new RegressionEnsembleProblemData(problemData)) {
       this.trainingPartitions = new Dictionary<IRegressionModel, IntRange>();
       this.testPartitions = new Dictionary<IRegressionModel, IntRange>();
-      var modelEnumerator = models.GetEnumerator();
-      var trainingPartitionEnumerator = trainingPartitions.GetEnumerator();
-      var testPartitionEnumerator = testPartitions.GetEnumerator();
-      while (modelEnumerator.MoveNext() & trainingPartitionEnumerator.MoveNext() & testPartitionEnumerator.MoveNext()) {
-        this.trainingPartitions[modelEnumerator.Current] = (IntRange)trainingPartitionEnumerator.Current.Clone();
-        this.testPartitions[modelEnumerator.Current] = (IntRange)testPartitionEnumerator.Current.Clone();
-      }
-      if (modelEnumerator.MoveNext() | trainingPartitionEnumerator.MoveNext() | testPartitionEnumerator.MoveNext()) {
-        throw new ArgumentException();
-      }
+      AddModelsAndParitions(models, trainingPartitions, testPartitions);
       RecalculateResults();
     }
 
@@ -158,6 +148,45 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     private double AggregateEstimatedValues(IEnumerable<double> estimatedValues) {
       return estimatedValues.DefaultIfEmpty(double.NaN).Average();
+    }
+
+
+    public void AddModelsAndParitions(IEnumerable<IRegressionSolution> solutions) {
+      foreach (var solution in solutions) {
+        var ensembleSolution = solution as RegressionEnsembleSolution;
+        if (ensembleSolution != null) {
+          var data = from m in ensembleSolution.Model.Models
+                     let train = ensembleSolution.trainingPartitions[m]
+                     let test = ensembleSolution.testPartitions[m]
+                     select new { m, train, test };
+
+          foreach (var d in data) {
+            Model.Add(d.m);
+            trainingPartitions[d.m] = (IntRange)d.train.Clone();
+            testPartitions[d.m] = (IntRange)d.test.Clone();
+          }
+        } else {
+          Model.Add(solution.Model);
+          trainingPartitions[solution.Model] = (IntRange)solution.ProblemData.TrainingPartition.Clone();
+          testPartitions[solution.Model] = (IntRange)solution.ProblemData.TestPartition.Clone();
+        }
+      }
+
+      RecalculateResults();
+    }
+
+    private void AddModelsAndParitions(IEnumerable<IRegressionModel> models, IEnumerable<IntRange> trainingPartitions, IEnumerable<IntRange> testPartitions) {
+      var modelEnumerator = models.GetEnumerator();
+      var trainingPartitionEnumerator = trainingPartitions.GetEnumerator();
+      var testPartitionEnumerator = testPartitions.GetEnumerator();
+
+      while (modelEnumerator.MoveNext() & trainingPartitionEnumerator.MoveNext() & testPartitionEnumerator.MoveNext()) {
+        this.trainingPartitions[modelEnumerator.Current] = (IntRange)trainingPartitionEnumerator.Current.Clone();
+        this.testPartitions[modelEnumerator.Current] = (IntRange)testPartitionEnumerator.Current.Clone();
+      }
+      if (modelEnumerator.MoveNext() | trainingPartitionEnumerator.MoveNext() | testPartitionEnumerator.MoveNext()) {
+        throw new ArgumentException();
+      }
     }
   }
 }

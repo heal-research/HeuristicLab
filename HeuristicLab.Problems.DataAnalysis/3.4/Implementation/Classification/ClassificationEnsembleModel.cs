@@ -57,6 +57,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     #region IClassificationEnsembleModel Members
+    public void Add(IClassificationModel model) {
+      models.Add(model);
+    }
 
     public IEnumerable<IEnumerable<double>> GetEstimatedClassValueVectors(Dataset dataset, IEnumerable<int> rows) {
       var estimatedValuesEnumerators = (from model in models

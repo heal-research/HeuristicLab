@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public override IEnumerable<int> TrainingIndizes {
       get {
-        return Enumerable.Range(TrainingPartition.Start, TestPartition.End - TestPartition.Start);
+        return Enumerable.Range(TrainingPartition.Start, TrainingPartition.End - TrainingPartition.Start);
       }
     }
     public override IEnumerable<int> TestIndizes {
