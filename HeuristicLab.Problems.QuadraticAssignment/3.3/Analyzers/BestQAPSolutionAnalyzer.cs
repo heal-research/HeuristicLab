@@ -60,8 +60,8 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     public LookupParameter<DoubleValue> BestKnownQualityParameter {
       get { return (LookupParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
     }
-    public LookupParameter<ItemList<Permutation>> BestKnownSolutionsParameter {
-      get { return (LookupParameter<ItemList<Permutation>>)Parameters["BestKnownSolutions"]; }
+    public LookupParameter<ItemSet<Permutation>> BestKnownSolutionsParameter {
+      get { return (LookupParameter<ItemSet<Permutation>>)Parameters["BestKnownSolutions"]; }
     }
     public LookupParameter<Permutation> BestKnownSolutionParameter {
       get { return (LookupParameter<Permutation>)Parameters["BestKnownSolution"]; }
@@ -83,7 +83,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       Parameters.Add(new LookupParameter<QAPAssignment>("BestSolution", "The best QAP solution."));
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the best QAP solution should be stored."));
       Parameters.Add(new LookupParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this QAP instance."));
-      Parameters.Add(new LookupParameter<ItemList<Permutation>>("BestKnownSolutions", "The best known solutions (there may be multiple) of this QAP instance."));
+      Parameters.Add(new LookupParameter<ItemSet<Permutation>>("BestKnownSolutions", "The best known solutions (there may be multiple) of this QAP instance."));
       Parameters.Add(new LookupParameter<Permutation>("BestKnownSolution", "The best known solution of this QAP instance."));
     }
 
@@ -116,7 +116,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
         // if there isn't a best-known quality or we improved the best-known quality we'll add the current solution as best-known
         BestKnownQualityParameter.ActualValue = new DoubleValue(qualities[i].Value);
         BestKnownSolutionParameter.ActualValue = (Permutation)permutations[i].Clone();
-        BestKnownSolutionsParameter.ActualValue = new ItemList<Permutation>();
+        BestKnownSolutionsParameter.ActualValue = new ItemSet<Permutation>(new PermutationEqualityComparer());
         BestKnownSolutionsParameter.ActualValue.Add((Permutation)permutations[i].Clone());
       } else if (bestKnownQuality.Value == qualities[i].Value) {
         // if we matched the best-known quality we'll try to set the best-known solution if it isn't null
@@ -124,20 +124,12 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
         if (BestKnownSolutionParameter.ActualValue == null)
           BestKnownSolutionParameter.ActualValue = (Permutation)permutations[i].Clone();
         if (BestKnownSolutionsParameter.ActualValue == null)
-          BestKnownSolutionsParameter.ActualValue = new ItemList<Permutation>();
-        PermutationEqualityComparer comparer = new PermutationEqualityComparer();
+          BestKnownSolutionsParameter.ActualValue = new ItemSet<Permutation>(new PermutationEqualityComparer());
         foreach (var k in sorted) { // for each solution that we found check if it is in the pool of best-knowns
           if (!max && k.Value > qualities[i].Value
             || max && k.Value < qualities[i].Value) break; // stop when we reached a solution worse than the best-known quality
           Permutation p = permutations[k.index];
-          bool alreadyPresent = false;
-          foreach (Permutation p2 in BestKnownSolutionsParameter.ActualValue) {
-            if (comparer.Equals(p, p2)) {
-              alreadyPresent = true;
-              break;
-            }
-          }
-          if (!alreadyPresent)
+          if (!BestKnownSolutionsParameter.ActualValue.Contains(p))
             BestKnownSolutionsParameter.ActualValue.Add((Permutation)permutations[k.index].Clone());
         }
       }
