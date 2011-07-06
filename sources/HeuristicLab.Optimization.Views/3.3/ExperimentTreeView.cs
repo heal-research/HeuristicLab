@@ -497,8 +497,9 @@ namespace HeuristicLab.Optimization.Views {
 
     #region control events
     private void optimizerTreeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e) {
+      if (rightClickOccured) return;
       if (e.X < e.Node.Bounds.Left || e.X > e.Node.Bounds.Right) return;
-      optimizerTreeView.SelectedNode.Toggle();
+      e.Node.Toggle();
       IOptimizer optimizer = (IOptimizer)e.Node.Tag;
       MainFormManager.MainForm.ShowContent(optimizer);
     }
@@ -510,7 +511,7 @@ namespace HeuristicLab.Optimization.Views {
     }
     private void optimizerTreeView_MouseDown(object sender, MouseEventArgs e) {
       // enables deselection of treeNodes
-      if (e.Button != System.Windows.Forms.MouseButtons.Left) return;
+      if (e.Button != MouseButtons.Right) rightClickOccured = false;
       if (optimizerTreeView.SelectedNode == null) return;
       Point coordinates = new Point(e.X, e.Y);
       TreeNode node = optimizerTreeView.GetNodeAt(coordinates);
@@ -520,6 +521,7 @@ namespace HeuristicLab.Optimization.Views {
         SetEnabledStateOfControls();
       }
     }
+
 
     private void optimizerTreeView_KeyDown(object sender, KeyEventArgs e) {
       if (ReadOnly) return;
@@ -541,6 +543,34 @@ namespace HeuristicLab.Optimization.Views {
       SetEnabledStateOfControls();
       UpdateDetailsViewHost();
       RebuildImageList();
+    }
+
+    private bool rightClickOccured = true;
+    private TreeNode toolStripMenuNode = null;
+    private void optimizerTreeView_RightClick(object sender, EventArgs e) {
+      rightClickOccured = true;
+      Point coordinates = optimizerTreeView.PointToClient(Cursor.Position);
+      toolStripMenuNode = optimizerTreeView.GetNodeAt(coordinates);
+
+      if (toolStripMenuNode != null && coordinates.X >= toolStripMenuNode.Bounds.Left && coordinates.X <= toolStripMenuNode.Bounds.Right) {
+        optimizerTreeView.SelectedNode = toolStripMenuNode;
+        detailsViewHost.Content = (IContent)toolStripMenuNode.Tag;
+        SetEnabledStateOfControls();
+
+        ExpandToolStripMenuItem.Enabled = !toolStripMenuNode.IsExpanded && toolStripMenuNode.Nodes.Count > 0;
+        ExpandToolStripMenuItem.Visible = !toolStripMenuNode.IsExpanded && toolStripMenuNode.Nodes.Count > 0;
+        CollapseToolStripMenuItem.Enabled = toolStripMenuNode.IsExpanded;
+        CollapseToolStripMenuItem.Visible = toolStripMenuNode.IsExpanded;
+        if (contextMenuStrip.Items.Cast<ToolStripMenuItem>().Any(item => item.Enabled))
+          contextMenuStrip.Show(Cursor.Position);
+      }
+    }
+
+    private void ExpandToolStripMenuItem_Click(object sender, EventArgs e) {
+      if (toolStripMenuNode != null) toolStripMenuNode.ExpandAll();
+    }
+    private void CollapseToolStripMenuItem_Click(object sender, EventArgs e) {
+      if (toolStripMenuNode != null) toolStripMenuNode.Collapse();
     }
 
     private void addButton_Click(object sender, System.EventArgs e) {
@@ -688,5 +718,24 @@ namespace HeuristicLab.Optimization.Views {
       }
     }
     #endregion
+
+
+    public sealed class CustomTreeView : System.Windows.Forms.TreeView {
+      protected override void WndProc(ref System.Windows.Forms.Message m) {
+        const int WM_RBUTTONDOWN = 0x204;
+        if (m.Msg == WM_RBUTTONDOWN) {
+          //Raise your custom event right click event to prevent node highlighting
+          OnRightClick();
+          return;
+        }
+        base.WndProc(ref m);
+      }
+
+      public event EventHandler RightClick;
+      private void OnRightClick() {
+        var handler = RightClick;
+        if (handler != null) RightClick(this, EventArgs.Empty);
+      }
+    }
   }
 }
