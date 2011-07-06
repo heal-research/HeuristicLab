@@ -39,5 +39,9 @@ namespace HeuristicLab.Optimization {
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ResultCollection(this, cloner);
     }
+
+    public override System.Drawing.Image ItemImage {
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Object; }
+    }
   }
 }

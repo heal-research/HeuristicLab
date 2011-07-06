@@ -41,7 +41,7 @@ namespace HeuristicLab.Optimization.Views {
       this.moveUpButton = new System.Windows.Forms.Button();
       this.moveDownButton = new System.Windows.Forms.Button();
       this.addButton = new System.Windows.Forms.Button();
-      this.optimizerTreeView = new HeuristicLab.Optimization.Views.ExperimentTreeView.CustomTreeView();
+      this.treeView = new HeuristicLab.Optimization.Views.ExperimentTreeView.CustomTreeView();
       this.imageList = new System.Windows.Forms.ImageList(this.components);
       this.detailsGroupBox = new System.Windows.Forms.GroupBox();
       this.detailsViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
@@ -82,7 +82,7 @@ namespace HeuristicLab.Optimization.Views {
       this.splitContainer.Panel1.Controls.Add(this.moveUpButton);
       this.splitContainer.Panel1.Controls.Add(this.moveDownButton);
       this.splitContainer.Panel1.Controls.Add(this.addButton);
-      this.splitContainer.Panel1.Controls.Add(this.optimizerTreeView);
+      this.splitContainer.Panel1.Controls.Add(this.treeView);
       // 
       // splitContainer.Panel2
       // 
@@ -154,27 +154,27 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // optimizerTreeView
       // 
-      this.optimizerTreeView.AllowDrop = true;
-      this.optimizerTreeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+      this.treeView.AllowDrop = true;
+      this.treeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.optimizerTreeView.HideSelection = false;
-      this.optimizerTreeView.ImageIndex = 0;
-      this.optimizerTreeView.ImageList = this.imageList;
-      this.optimizerTreeView.Location = new System.Drawing.Point(4, 34);
-      this.optimizerTreeView.Name = "optimizerTreeView";
-      this.optimizerTreeView.SelectedImageIndex = 0;
-      this.optimizerTreeView.Size = new System.Drawing.Size(191, 402);
-      this.optimizerTreeView.TabIndex = 10;
-      this.optimizerTreeView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.optimizerTreeView_ItemDrag);
-      this.optimizerTreeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.optimizerTreeview_NodeMouseClick);
-      this.optimizerTreeView.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.optimizerTreeView_NodeMouseDoubleClick);
-      this.optimizerTreeView.DragDrop += new System.Windows.Forms.DragEventHandler(this.optimizerTreeView_DragDrop);
-      this.optimizerTreeView.DragEnter += new System.Windows.Forms.DragEventHandler(this.optimizerTreeView_DragEnter);
-      this.optimizerTreeView.DragOver += new System.Windows.Forms.DragEventHandler(this.optimizerTreeView_DragOver);
-      this.optimizerTreeView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.optimizerTreeView_KeyDown);
-      this.optimizerTreeView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.optimizerTreeView_MouseDown);
-      this.optimizerTreeView.RightClick += new System.EventHandler(optimizerTreeView_RightClick);
+      this.treeView.HideSelection = false;
+      this.treeView.ImageIndex = 0;
+      this.treeView.ImageList = this.imageList;
+      this.treeView.Location = new System.Drawing.Point(4, 34);
+      this.treeView.Name = "optimizerTreeView";
+      this.treeView.SelectedImageIndex = 0;
+      this.treeView.Size = new System.Drawing.Size(191, 402);
+      this.treeView.TabIndex = 10;
+      this.treeView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.optimizerTreeView_ItemDrag);
+      this.treeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.optimizerTreeview_NodeMouseClick);
+      this.treeView.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.optimizerTreeView_NodeMouseDoubleClick);
+      this.treeView.DragDrop += new System.Windows.Forms.DragEventHandler(this.optimizerTreeView_DragDrop);
+      this.treeView.DragEnter += new System.Windows.Forms.DragEventHandler(this.optimizerTreeView_DragEnter);
+      this.treeView.DragOver += new System.Windows.Forms.DragEventHandler(this.optimizerTreeView_DragOver);
+      this.treeView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.optimizerTreeView_KeyDown);
+      this.treeView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.optimizerTreeView_MouseDown);
+      this.treeView.RightClick += new System.EventHandler(optimizerTreeView_RightClick);
       // 
       // imageList
       // 
@@ -254,7 +254,7 @@ namespace HeuristicLab.Optimization.Views {
 
     private System.Windows.Forms.GroupBox optimizersGroupBox;
     private System.Windows.Forms.SplitContainer splitContainer;
-    private HeuristicLab.Optimization.Views.ExperimentTreeView.CustomTreeView optimizerTreeView;
+    private HeuristicLab.Optimization.Views.ExperimentTreeView.CustomTreeView treeView;
     private System.Windows.Forms.GroupBox detailsGroupBox;
     private MainForm.WindowsForms.ViewHost detailsViewHost;
     private System.Windows.Forms.ToolTip toolTip;
