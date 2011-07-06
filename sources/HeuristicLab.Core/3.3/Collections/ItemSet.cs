@@ -53,6 +53,8 @@ namespace HeuristicLab.Core {
     }
     public ItemSet() : base() { }
     public ItemSet(IEnumerable<T> collection) : base(collection) { }
+    public ItemSet(IEqualityComparer<T> comparer) : base(comparer) { }
+    public ItemSet(IEnumerable<T> collection, IEqualityComparer<T> comparer) : base(collection, comparer) { }
 
     public object Clone() {
       return Clone(new Cloner());

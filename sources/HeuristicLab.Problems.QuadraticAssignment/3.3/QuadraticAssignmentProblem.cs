@@ -48,8 +48,8 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     }
 
     #region Parameter Properties
-    public IValueParameter<ItemList<Permutation>> BestKnownSolutionsParameter {
-      get { return (IValueParameter<ItemList<Permutation>>)Parameters["BestKnownSolutions"]; }
+    public IValueParameter<ItemSet<Permutation>> BestKnownSolutionsParameter {
+      get { return (IValueParameter<ItemSet<Permutation>>)Parameters["BestKnownSolutions"]; }
     }
     public IValueParameter<Permutation> BestKnownSolutionParameter {
       get { return (IValueParameter<Permutation>)Parameters["BestKnownSolution"]; }
@@ -63,7 +63,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     #endregion
 
     #region Properties
-    public ItemList<Permutation> BestKnownSolutions {
+    public ItemSet<Permutation> BestKnownSolutions {
       get { return BestKnownSolutionsParameter.Value; }
       set { BestKnownSolutionsParameter.Value = value; }
     }
@@ -112,7 +112,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     }
     public QuadraticAssignmentProblem()
       : base(new QAPEvaluator(), new RandomPermutationCreator()) {
-      Parameters.Add(new OptionalValueParameter<ItemList<Permutation>>("BestKnownSolutions", "The list of best known solutions which is updated whenever a new better solution is found or may be the optimal solution if it is known beforehand.", null));
+      Parameters.Add(new OptionalValueParameter<ItemSet<Permutation>>("BestKnownSolutions", "The list of best known solutions which is updated whenever a new better solution is found or may be the optimal solution if it is known beforehand.", null));
       Parameters.Add(new OptionalValueParameter<Permutation>("BestKnownSolution", "The best known solution which is updated whenever a new better solution is found or may be the optimal solution if it is known beforehand.", null));
       Parameters.Add(new ValueParameter<DoubleMatrix>("Weights", "The strength of the connection between the facilities.", new DoubleMatrix(5, 5)));
       Parameters.Add(new ValueParameter<DoubleMatrix>("Distances", "The distance matrix which can either be specified directly without the coordinates, or can be calculated automatically from the coordinates.", new DoubleMatrix(5, 5)));
@@ -151,22 +151,16 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     private void AfterDeserialization() {
       // BackwardsCompatibility3.3
       #region Backwards compatible code, remove with 3.4
-      /*if (Parameters.ContainsKey("BestKnownSolution")) {
-        Permutation solution = ((IValueParameter<Permutation>)Parameters["BestKnownSolution"]).Value;
-        Parameters.Remove("BestKnownSolution");
-        Parameters.Add(new OptionalValueParameter<ItemList<Permutation>>("BestKnownSolutions", "The list of best known solutions which is updated whenever a new better solution is found or may be the optimal solution if it is known beforehand.", null));
-        if (solution != null) {
-          BestKnownSolutions = new ItemList<Permutation>();
-          BestKnownSolutions.Add(solution);
-        }
-      }*/
       if (!Parameters.ContainsKey("BestKnownSolutions")) {
-        Parameters.Add(new OptionalValueParameter<ItemList<Permutation>>("BestKnownSolutions", "The list of best known solutions which is updated whenever a new better solution is found or may be the optimal solution if it is known beforehand.", null));
+        Parameters.Add(new OptionalValueParameter<ItemSet<Permutation>>("BestKnownSolutions", "The list of best known solutions which is updated whenever a new better solution is found or may be the optimal solution if it is known beforehand.", null));
+      } else if (Parameters["BestKnownSolutions"].GetType().Equals(typeof(OptionalValueParameter<ItemList<Permutation>>))) {
+        ItemList<Permutation> list = ((OptionalValueParameter<ItemList<Permutation>>)Parameters["BestKnownSolutions"]).Value;
+        Parameters.Add(new OptionalValueParameter<ItemSet<Permutation>>("BestKnownSolutions", "The list of best known solutions which is updated whenever a new better solution is found or may be the optimal solution if it is known beforehand.", new ItemSet<Permutation>(list)));
       }
       if (Parameters.ContainsKey("DistanceMatrix")) {
-        DoubleMatrix bla = ((ValueParameter<DoubleMatrix>)Parameters["DistanceMatrix"]).Value;
+        DoubleMatrix d = ((ValueParameter<DoubleMatrix>)Parameters["DistanceMatrix"]).Value;
         Parameters.Remove("DistanceMatrix");
-        Parameters.Add(new ValueParameter<DoubleMatrix>("Distances", "bla", bla));
+        Parameters.Add(new ValueParameter<DoubleMatrix>("Distances", "The distance matrix which can either be specified directly without the coordinates, or can be calculated automatically from the coordinates.", d));
       }
       AttachEventHandlers();
       #endregion
@@ -410,7 +404,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
             if (solParser.Error != null) throw solParser.Error;
             if (solParser.Quality.IsAlmost(QAPEvaluator.Apply(new Permutation(PermutationTypes.Absolute, solParser.Assignment), Weights, Distances))) {
               BestKnownQuality = new DoubleValue(solParser.Quality);
-              BestKnownSolutions = new ItemList<Permutation>(new Permutation[] { new Permutation(PermutationTypes.Absolute, solParser.Assignment) });
+              BestKnownSolutions = new ItemSet<Permutation>(new Permutation[] { new Permutation(PermutationTypes.Absolute, solParser.Assignment) }, new PermutationEqualityComparer());
               BestKnownSolution = new Permutation(PermutationTypes.Absolute, solParser.Assignment);
             } else {
               BestKnownQuality = new DoubleValue(solParser.Quality);
@@ -419,13 +413,13 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
             }
           } else {
             BestKnownQuality = new DoubleValue(solParser.Quality);
-            BestKnownSolutions = new ItemList<Permutation>(new Permutation[] { new Permutation(PermutationTypes.Absolute, solParser.Assignment) });
+            BestKnownSolutions = new ItemSet<Permutation>(new Permutation[] { new Permutation(PermutationTypes.Absolute, solParser.Assignment) }, new PermutationEqualityComparer());
             BestKnownSolution = new Permutation(PermutationTypes.Absolute, solParser.Assignment);
           }
         }
       } else {
         BestKnownQuality = null;
-        BestKnownSolutions = null;
+        BestKnownSolutions = new ItemSet<Permutation>(new PermutationEqualityComparer());
         BestKnownSolution = null;
       }
     }
