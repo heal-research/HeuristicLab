@@ -113,7 +113,6 @@
     <Compile Include="Analyzers\BestVRPSolutionAnalyzer.cs" />
     <Compile Include="Encodings\Alba\LocalImprovement\AlbaLambdaInterchangeLocalImprovementOperator.cs" />
     <Compile Include="Encodings\General\Creators\IterativeInsertionCreator.cs" />
-    <Compile Include="Encodings\Potvin\Crossovers\PotvinInsertionBasedCrossover.cs" />
     <Compile Include="Encodings\Potvin\Manipulators\PotvinLocalSearchManipulator.cs" />
     <Compile Include="Interfaces\IVRPMultiNeighborhoodShakingOperator.cs" />
     <Compile Include="ShakingOperators\VehicleRoutingShakingOperator.cs" />
