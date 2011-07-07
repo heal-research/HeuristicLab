@@ -430,6 +430,14 @@
   <ItemGroup>
     <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Checkout.png" />
     <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Clone.png" />
+    <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_BatchRun_Paused.png" />
+    <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_BatchRun_Prepared.png" />
+    <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_BatchRun_Started.png" />
+    <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_BatchRun_Stopped.png" />
+    <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Experiment_Paused.png" />
+    <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Experiment_Prepared.png" />
+    <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Experiment_Started.png" />
+    <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Experiment_Stopped.png" />
     <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Annotations_Information.png" />
     <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Help.png" />
     <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_HiddenField.png" />
