@@ -155,6 +155,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
         Parameters.Add(new OptionalValueParameter<ItemSet<Permutation>>("BestKnownSolutions", "The list of best known solutions which is updated whenever a new better solution is found or may be the optimal solution if it is known beforehand.", null));
       } else if (Parameters["BestKnownSolutions"].GetType().Equals(typeof(OptionalValueParameter<ItemList<Permutation>>))) {
         ItemList<Permutation> list = ((OptionalValueParameter<ItemList<Permutation>>)Parameters["BestKnownSolutions"]).Value;
+        Parameters.Remove("BestKnownSolutions");
         Parameters.Add(new OptionalValueParameter<ItemSet<Permutation>>("BestKnownSolutions", "The list of best known solutions which is updated whenever a new better solution is found or may be the optimal solution if it is known beforehand.", new ItemSet<Permutation>(list)));
       }
       if (Parameters.ContainsKey("DistanceMatrix")) {
