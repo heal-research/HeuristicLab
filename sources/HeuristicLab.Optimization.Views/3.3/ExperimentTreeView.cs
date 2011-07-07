@@ -847,13 +847,20 @@ namespace HeuristicLab.Optimization.Views {
         return;
       }
 
+      treeView.BeginUpdate();
+
       treeView.ImageList.Images.Clear();
-      foreach (TreeNode treeNode in IterateTreeNodes()) {
+      var topLevelNodes = treeView.Nodes.OfType<TreeNode>().ToArray();
+      var nodes = IterateTreeNodes().ToList();
+      treeView.Nodes.Clear();
+
+      foreach (TreeNode treeNode in nodes) {
         var item = (IItem)treeNode.Tag;
         treeView.ImageList.Images.Add(item == null ? HeuristicLab.Common.Resources.VSImageLibrary.Nothing : item.ItemImage);
         treeNode.ImageIndex = treeView.ImageList.Images.Count - 1;
-        treeNode.SelectedImageIndex = treeNode.ImageIndex;
       }
+      treeView.Nodes.AddRange(topLevelNodes);
+      treeView.EndUpdate();
     }
     #endregion
 
