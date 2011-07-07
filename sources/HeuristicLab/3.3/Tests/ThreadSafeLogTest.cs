@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 using HeuristicLab.Core;
@@ -31,26 +30,15 @@ namespace HeuristicLab_33.Tests {
 
     [TestMethod]
     public void ThreadSafeLogThreadSavetyTest() {
-      int count = 100000;
-      if (Environment.ProcessorCount > 2) {
-        Log l = new Log();
-        AddMessagesInParallel(count, l);
-        // with a normal log there are race conditions which should cause problems
-        // actually we might geht lucky here but this should happen only seldomly
-        Assert.AreNotEqual(count, l.Messages.Count());
-      }
+      int count = 10000;
+      ThreadSafeLog log = new ThreadSafeLog();
 
-      ThreadSafeLog safeLog = new ThreadSafeLog();
-      AddMessagesInParallel(count, safeLog);
-      // the thread safe log should work like a charm
-      Assert.AreEqual(count, safeLog.Messages.Count());
-    }
-
-    private void AddMessagesInParallel(int count, ILog l) {
       Parallel.For(0, count, (i) => {
-        l.LogMessage("Message " + i); // write something
-        l.Messages.Count(); // iterate over all messages
+        log.LogMessage("Message " + i); // write something
+        log.Messages.Count(); // iterate over all messages
       });
+
+      Assert.AreEqual(count, log.Messages.Count());
     }
   }
 }
