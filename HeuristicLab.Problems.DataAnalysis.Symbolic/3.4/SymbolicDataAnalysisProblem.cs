@@ -201,7 +201,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Operators.Add(new SymbolicExpressionSymbolFrequencyAnalyzer());
       Operators.Add(new SymbolicDataAnalysisVariableFrequencyAnalyzer());
       Operators.Add(new MinAverageMaxSymbolicExpressionTreeLengthAnalyzer());
-      Operators.Add(new SymbolicDataAnalysisAlleleFrequencyAnalyzer());
       ParameterizeOperators();
     }
 
