@@ -434,6 +434,8 @@ namespace HeuristicLab.Optimization.Views {
 
       TreeNode selectedNode = (TreeNode)e.Item;
       var item = (IItem)selectedNode.Tag;
+      if (item == null) return;
+
       DataObject data = new DataObject();
       data.SetData(HeuristicLab.Common.Constants.DragDropDataFormat, item);
       validDragOperation = true;
@@ -461,10 +463,12 @@ namespace HeuristicLab.Optimization.Views {
     private void optimizerTreeView_DragEnter(object sender, DragEventArgs e) {
       validDragOperation = false;
       if (!ReadOnly) {
-        if ((e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) is IOptimizer)) validDragOperation = true;
-        else if (e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) is IEnumerable) {
+        var data = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
+        if (data is IOptimizer) validDragOperation = true;
+        else if (data is IProblem) validDragOperation = true;
+        else if (data is IEnumerable) {
+          IEnumerable items = (IEnumerable)data;
           validDragOperation = true;
-          IEnumerable items = (IEnumerable)e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
           foreach (object item in items)
             validDragOperation = validDragOperation && (item is IOptimizer);
         }
@@ -472,67 +476,81 @@ namespace HeuristicLab.Optimization.Views {
     }
     private void optimizerTreeView_DragOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
-      if (validDragOperation) {
-        Point coordinates = treeView.PointToClient(new Point(e.X, e.Y));
-        TreeNode node = treeView.GetNodeAt(coordinates);
-        Experiment experiment = null;
-        BatchRun batchRun = null;
-
-        if (node == null) experiment = Content;
-        else {
-          experiment = node.Tag as Experiment;
-          batchRun = node.Tag as BatchRun;
-        }
-
-        if (batchRun == null && experiment == null) return;
-        if (batchRun != null) {
-          var optimizer = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) as IOptimizer;
-          if (optimizer == null) return;
-          if (batchRun.Optimizer != null) return;
-          if (optimizer.NestedOptimizers.Contains(batchRun)) return;
-        }
-
-        //do not allow recursive nesting of contents
-        if (experiment != null) {
-          var optimizer = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) as IOptimizer;
-          IEnumerable<IOptimizer> optimizers = null;
-          var enumerable = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) as IEnumerable;
-          if (enumerable != null) optimizers = enumerable.Cast<IOptimizer>();
-
-          if (optimizer != null && optimizer.NestedOptimizers.Contains(experiment)) return;
-          if (optimizers != null && optimizers.Any(x => x.NestedOptimizers.Contains(experiment))) return;
-        }
-
-        if ((e.KeyState & 32) == 32) e.Effect = DragDropEffects.Link;  // ALT key
-        else if ((e.KeyState & 4) == 4) e.Effect = DragDropEffects.Move;  // SHIFT key
-        else if (e.AllowedEffect.HasFlag(DragDropEffects.Copy)) e.Effect = DragDropEffects.Copy;
-        else if (e.AllowedEffect.HasFlag(DragDropEffects.Move)) e.Effect = DragDropEffects.Move;
-        else if (e.AllowedEffect.HasFlag(DragDropEffects.Link)) e.Effect = DragDropEffects.Link;
-      }
-    }
-    private void optimizerTreeView_DragDrop(object sender, DragEventArgs e) {
+      if (!validDragOperation) return;
       Point coordinates = treeView.PointToClient(new Point(e.X, e.Y));
       TreeNode node = treeView.GetNodeAt(coordinates);
       Experiment experiment = null;
       BatchRun batchRun = null;
+      Algorithm algorithm = null;
 
       if (node == null) experiment = Content;
       else {
         experiment = node.Tag as Experiment;
         batchRun = node.Tag as BatchRun;
+        algorithm = node.Tag as Algorithm;
       }
 
-      if (e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) is IOptimizer) {
-        IOptimizer optimizer = (IOptimizer)e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
+      if (batchRun == null && experiment == null && algorithm == null) return;
+
+      var data = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
+
+      if (algorithm != null) {
+        var problem = data as IProblem;
+        if (problem == null) return;
+        if (!algorithm.ProblemType.IsAssignableFrom(problem.GetType())) return;
+      } else if (batchRun != null) {
+        var optimizer = data as IOptimizer;
+        if (optimizer == null) return;
+        if (batchRun == optimizer) return;
+        if (optimizer.NestedOptimizers.Contains(batchRun)) return;
+      } //do not allow recursive nesting of contents
+      else if (experiment != null) {
+        var optimizer = data as IOptimizer;
+        IEnumerable<IOptimizer> optimizers = null;
+        var enumerable = data as IEnumerable;
+        if (enumerable != null) optimizers = enumerable.Cast<IOptimizer>();
+        if (experiment == optimizer) return;
+        if (optimizer != null && optimizer.NestedOptimizers.Contains(experiment)) return;
+        if (optimizers != null && optimizers.Any(x => x.NestedOptimizers.Contains(experiment))) return;
+      }
+
+      if ((e.KeyState & 32) == 32 && e.AllowedEffect.HasFlag(DragDropEffects.Link)) e.Effect = DragDropEffects.Link;  // ALT key
+      else if ((e.KeyState & 4) == 4 && e.AllowedEffect.HasFlag(DragDropEffects.Move)) e.Effect = DragDropEffects.Move;  // SHIFT key
+      else if (e.AllowedEffect.HasFlag(DragDropEffects.Copy)) e.Effect = DragDropEffects.Copy;
+      else if (e.AllowedEffect.HasFlag(DragDropEffects.Move)) e.Effect = DragDropEffects.Move;
+      else if (e.AllowedEffect.HasFlag(DragDropEffects.Link)) e.Effect = DragDropEffects.Link;
+    }
+
+    private void optimizerTreeView_DragDrop(object sender, DragEventArgs e) {
+      Point coordinates = treeView.PointToClient(new Point(e.X, e.Y));
+      TreeNode node = treeView.GetNodeAt(coordinates);
+      Algorithm algorithm = null;
+      BatchRun batchRun = null;
+      Experiment experiment = null;
+
+      if (node == null) experiment = Content;
+      else {
+        algorithm = node.Tag as Algorithm;
+        batchRun = node.Tag as BatchRun;
+        experiment = node.Tag as Experiment;
+      }
+
+      var data = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
+      if (data is IProblem) {
+        var problem = (IProblem)data;
+        if (e.Effect.HasFlag(DragDropEffects.Copy)) problem = (IProblem)problem.Clone();
+        algorithm.Problem = problem;
+      } else if (data is IOptimizer) {
+        IOptimizer optimizer = (IOptimizer)data;
         if (e.Effect.HasFlag(DragDropEffects.Copy)) optimizer = (IOptimizer)optimizer.Clone();
         if (batchRun != null) batchRun.Optimizer = optimizer;
         else if (experiment != null) experiment.Optimizers.Add(optimizer);
         else throw new NotSupportedException("Handling for specific type not implemented" + node.Tag.GetType());
-      } else if (e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) is IEnumerable) {
-        IEnumerable<IOptimizer> optimizers = ((IEnumerable)e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat)).Cast<IOptimizer>();
+      } else if (data is IEnumerable) {
+        IEnumerable<IOptimizer> optimizers = ((IEnumerable)data).Cast<IOptimizer>();
         if (e.Effect.HasFlag(DragDropEffects.Copy)) {
           Cloner cloner = new Cloner();
-          optimizers = optimizers.Select(o => (IOptimizer)o.Clone(cloner));
+          optimizers = optimizers.Select(o => cloner.Clone(o));
         }
         if (experiment != null) experiment.Optimizers.AddRange(optimizers);
         else throw new NotSupportedException("Handling for specific type not implemented" + node.Tag.GetType());
