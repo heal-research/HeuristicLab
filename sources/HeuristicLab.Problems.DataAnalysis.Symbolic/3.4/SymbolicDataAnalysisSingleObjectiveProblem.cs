@@ -78,12 +78,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Parameters.Add(new FixedValueParameter<DoubleValue>(BestKnownQualityParameterName, "The quality of the best known solution of this problem."));
 
       MaximizationParameter.Hidden = true;
+      InitializeOperators();
       RegisterEventHandler();
     }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       RegisterEventHandler();
+    }
+
+    private void InitializeOperators() {
+      Operators.Add(new SymbolicDataAnalysisAlleleFrequencyAnalyzer());
+      ParameterizeOperators();
     }
 
     private void RegisterEventHandler() {
