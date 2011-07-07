@@ -92,7 +92,11 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       // BackwardsCompatibility3.3
       #region Backwards compatible code, remove with 3.4
       if (!Parameters.ContainsKey("BestKnownSolutions")) {
-        Parameters.Add(new LookupParameter<ItemList<Permutation>>("BestKnownSolutions", "The best known solutions of this QAP instance."));
+        Parameters.Add(new LookupParameter<ItemSet<Permutation>>("BestKnownSolutions", "The best known solutions of this QAP instance."));
+      } else if (Parameters["BestKnownSolutions"].GetType().Equals(typeof(LookupParameter<ItemList<Permutation>>))) {
+        string actualName = (Parameters["BestKnownSolutions"] as LookupParameter<ItemList<Permutation>>).ActualName;
+        Parameters.Remove("BestKnownSolutions");
+        Parameters.Add(new LookupParameter<ItemSet<Permutation>>("BestKnownSolutions", "The best known solutions of this QAP instance.", actualName));
       }
       #endregion
     }
