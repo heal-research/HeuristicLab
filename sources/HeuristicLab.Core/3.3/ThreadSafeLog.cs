@@ -32,7 +32,7 @@ namespace HeuristicLab.Core {
   [Item("ThreadSafeLog", "A thread-safe log for logging string messages.")]
   [StorableClass]
   public class ThreadSafeLog : Item, ILog, IStorableContent {
-    protected ReaderWriterLockSlim locker = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+    protected ReaderWriterLockSlim locker = new ReaderWriterLockSlim();
 
     public string Filename { get; set; }
 
