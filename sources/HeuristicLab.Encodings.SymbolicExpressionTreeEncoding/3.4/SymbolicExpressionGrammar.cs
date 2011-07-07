@@ -73,7 +73,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       set { maximumFunctionArguments = value; }
     }
 
-    [Storable]
     private ProgramRootSymbol programRootSymbol;
     public ProgramRootSymbol ProgramRootSymbol {
       get { return programRootSymbol; }
@@ -100,7 +99,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       set { startSymbol = (StartSymbol)value; }
     }
 
-    [Storable]
     private Defun defunSymbol;
     protected Defun DefunSymbol {
       get { return defunSymbol; }
