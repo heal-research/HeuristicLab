@@ -169,8 +169,20 @@ namespace HeuristicLab.Optimization.Views {
           DisposeTreeNode(childNode);
           childNode.Remove();
         }
-        foreach (TreeNode childNode in CreateAlgorithmChildNodes(algorithm))
+        List<TreeNode> nodes;
+        foreach (TreeNode childNode in CreateAlgorithmChildNodes(algorithm)) {
           node.Nodes.Add(childNode);
+          NamedItem namedItem = childNode.Tag as NamedItem;
+          if (namedItem != null) {
+            if (!treeNodeTagMapping.TryGetValue(namedItem, out nodes)) {
+              nodes = new List<TreeNode>();
+              treeNodeTagMapping.Add(namedItem, nodes);
+              RegisterNamedItemEvents(namedItem);
+            }
+            nodes.Add(childNode);
+          }
+        }
+
         node.Expand();
       }
 
@@ -858,6 +870,7 @@ namespace HeuristicLab.Optimization.Views {
         var item = (IItem)treeNode.Tag;
         treeView.ImageList.Images.Add(item == null ? HeuristicLab.Common.Resources.VSImageLibrary.Nothing : item.ItemImage);
         treeNode.ImageIndex = treeView.ImageList.Images.Count - 1;
+        treeNode.SelectedImageIndex = treeNode.ImageIndex;
       }
       treeView.Nodes.AddRange(topLevelNodes);
       treeView.EndUpdate();
