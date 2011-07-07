@@ -1,39 +1,56 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2011 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using HeuristicLab.Algorithms.GeneticAlgorithm;
-using HeuristicLab.Problems.ArtificialAnt;
-using HeuristicLab.Selection;
-using HeuristicLab.Data;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.Xml;
-using HeuristicLab.Optimization;
 using System.Threading;
-using HeuristicLab.ParallelEngine;
-using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
-using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.Problems.DataAnalysis.Symbolic;
-using System.IO;
-using HeuristicLab.Problems.DataAnalysis.Symbolic.Classification;
-using HeuristicLab.Problems.TravelingSalesman;
-using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Problems.VehicleRouting;
-using HeuristicLab.Problems.VehicleRouting.Encodings.Potvin;
-using HeuristicLab.Problems.VehicleRouting.Encodings;
-using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Algorithms.EvolutionStrategy;
-using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Problems.TestFunctions;
-using HeuristicLab.Optimization.Operators;
+using HeuristicLab.Algorithms.GeneticAlgorithm;
 using HeuristicLab.Algorithms.LocalSearch;
-using HeuristicLab.Problems.Knapsack;
-using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Algorithms.ParticleSwarmOptimization;
 using HeuristicLab.Algorithms.SimulatedAnnealing;
 using HeuristicLab.Algorithms.TabuSearch;
 using HeuristicLab.Algorithms.VariableNeighborhoodSearch;
+using HeuristicLab.Data;
+using HeuristicLab.Encodings.BinaryVectorEncoding;
+using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Encodings.RealVectorEncoding;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Optimization;
+using HeuristicLab.Optimization.Operators;
+using HeuristicLab.ParallelEngine;
+using HeuristicLab.Persistence.Default.Xml;
+using HeuristicLab.Problems.ArtificialAnt;
+using HeuristicLab.Problems.DataAnalysis;
+using HeuristicLab.Problems.DataAnalysis.Symbolic;
+using HeuristicLab.Problems.DataAnalysis.Symbolic.Classification;
+using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
+using HeuristicLab.Problems.Knapsack;
+using HeuristicLab.Problems.TestFunctions;
+using HeuristicLab.Problems.TravelingSalesman;
+using HeuristicLab.Problems.VehicleRouting;
+using HeuristicLab.Problems.VehicleRouting.Encodings.General;
+using HeuristicLab.Problems.VehicleRouting.Encodings.Potvin;
+using HeuristicLab.Selection;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab_33.Tests {
   [TestClass]
@@ -64,7 +81,7 @@ namespace HeuristicLab_33.Tests {
 
     private GeneticAlgorithm CreateGaTspSample() {
       GeneticAlgorithm ga = new GeneticAlgorithm();
-      #region problem configuration
+      #region Problem Configuration
       TravelingSalesmanProblem tspProblem = new TravelingSalesmanProblem();
       tspProblem.ImportFromTSPLIB("ch130.tsp", "ch130.opt.tour", 6110);
       tspProblem.Evaluator = new TSPRoundedEuclideanPathEvaluator();
@@ -73,7 +90,7 @@ namespace HeuristicLab_33.Tests {
       tspProblem.Name = "ch130 TSP (imported from TSPLIB)";
       tspProblem.Description = "130 city problem (Churritz)";
       #endregion
-      #region algorithm configuration
+      #region Algorithm Configuration
       ga.Name = "Genetic Algorithm - TSP";
       ga.Description = "A genetic algorithm which solves the \"ch130\" traveling salesman problem (imported from TSPLIB)";
       ga.Problem = tspProblem;
@@ -89,7 +106,6 @@ namespace HeuristicLab_33.Tests {
       #endregion
       return ga;
     }
-
     #endregion
     #region VRP
     [TestMethod]
@@ -111,7 +127,7 @@ namespace HeuristicLab_33.Tests {
 
     private GeneticAlgorithm CreateGaVrpSample() {
       GeneticAlgorithm ga = new GeneticAlgorithm();
-      #region problem configuration
+      #region Problem Configuration
       VehicleRoutingProblem vrpProblem = new VehicleRoutingProblem();
 
       vrpProblem.ImportFromSolomon("C101.txt");
@@ -129,7 +145,7 @@ namespace HeuristicLab_33.Tests {
       vrpProblem.UseDistanceMatrix.Value = true;
       vrpProblem.Vehicles.Value = 25;
       #endregion
-      #region algorithm configuration
+      #region Algorithm Configuration
       ga.Name = "Genetic Algorithm - VRP";
       ga.Description = "A genetic algorithm which solves the \"C101\" vehicle routing problem (imported from Solomon)";
       ga.Problem = vrpProblem;
@@ -160,10 +176,8 @@ namespace HeuristicLab_33.Tests {
       #endregion
       return ga;
     }
-
     #endregion
     #region ArtificialAnt
-
     [TestMethod]
     public void CreateGpArtificialAntSampleTest() {
       var ga = CreateGpArtificialAntSample();
@@ -190,7 +204,7 @@ namespace HeuristicLab_33.Tests {
 
     public GeneticAlgorithm CreateGpArtificialAntSample() {
       GeneticAlgorithm ga = new GeneticAlgorithm();
-      #region problem configuration
+      #region Problem Configuration
       ArtificialAntProblem antProblem = new ArtificialAntProblem();
       antProblem.BestKnownQuality.Value = 89;
       antProblem.MaxExpressionDepth.Value = 10;
@@ -199,7 +213,7 @@ namespace HeuristicLab_33.Tests {
       antProblem.MaxFunctionDefinitions.Value = 3;
       antProblem.MaxTimeSteps.Value = 600;
       #endregion
-      #region algorithm configuration
+      #region Algorithm Configuration
       ga.Name = "Genetic Programming - Artificial Ant";
       ga.Description = "A standard genetic programming algorithm to solve the artificial ant problem (Santa-Fe trail)";
       ga.Problem = antProblem;
@@ -221,9 +235,8 @@ namespace HeuristicLab_33.Tests {
       #endregion
       return ga;
     }
-
     #endregion
-    #region symbolic regression
+    #region Symbolic Regression
     [TestMethod]
     public void CreateGpSymbolicRegressionSampleTest() {
       var ga = CreateGpSymbolicRegressionSample();
@@ -249,7 +262,7 @@ namespace HeuristicLab_33.Tests {
 
     private GeneticAlgorithm CreateGpSymbolicRegressionSample() {
       GeneticAlgorithm ga = new GeneticAlgorithm();
-      #region problem configuration
+      #region Problem Configuration
       SymbolicRegressionSingleObjectiveProblem symbRegProblem = new SymbolicRegressionSingleObjectiveProblem();
       symbRegProblem.Name = "Tower Symbolic Regression Problem";
       symbRegProblem.Description = "Tower Dataset (downloaded from: http://vanillamodeling.com/realproblems.html)";
@@ -322,7 +335,7 @@ namespace HeuristicLab_33.Tests {
 
       symbRegProblem.EvaluatorParameter.Value = new SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator();
       #endregion
-      #region algorithm configuration
+      #region Algorithm Configuration
       ga.Problem = symbRegProblem;
       ga.Name = "Genetic Programming - Symbolic Regression";
       ga.Description = "A standard genetic programming algorithm to solve a symbolic regression problem (tower dataset)";
@@ -344,8 +357,7 @@ namespace HeuristicLab_33.Tests {
       return ga;
     }
     #endregion
-    #region symbolic classification
-
+    #region Symbolic Classification
     [TestMethod]
     public void CreateGpSymbolicClassificationSampleTest() {
       var ga = CreateGpSymbolicClassificationSample();
@@ -372,7 +384,7 @@ namespace HeuristicLab_33.Tests {
 
     private GeneticAlgorithm CreateGpSymbolicClassificationSample() {
       GeneticAlgorithm ga = new GeneticAlgorithm();
-      #region problem configuration
+      #region Problem Configuration
       SymbolicClassificationSingleObjectiveProblem symbClassProblem = new SymbolicClassificationSingleObjectiveProblem();
       symbClassProblem.Name = "Mammography Classification Problem";
       symbClassProblem.Description = "Mammography dataset imported from the UCI machine learning repository (http://archive.ics.uci.edu/ml/datasets/Mammographic+Mass)";
@@ -438,7 +450,7 @@ namespace HeuristicLab_33.Tests {
       symbClassProblem.MaximumFunctionArguments.Value = 0;
       symbClassProblem.EvaluatorParameter.Value = new SymbolicClassificationSingleObjectiveMeanSquaredErrorEvaluator();
       #endregion
-      #region algorithm configuration
+      #region Algorithm Configuration
       ga.Problem = symbClassProblem;
       ga.Name = "Genetic Programming - Symbolic Classification";
       ga.Description = "A standard genetic programming algorithm to solve a classification problem (Mammographic+Mass dataset)";
@@ -484,7 +496,7 @@ namespace HeuristicLab_33.Tests {
 
     private EvolutionStrategy CreateEsGriewankSample() {
       EvolutionStrategy es = new EvolutionStrategy();
-      #region problem configuration
+      #region Problem Configuration
       SingleObjectiveTestFunctionProblem problem = new SingleObjectiveTestFunctionProblem();
 
       problem.ProblemSize.Value = 10;
@@ -497,7 +509,7 @@ namespace HeuristicLab_33.Tests {
       problem.Name = "Single Objective Test Function";
       problem.Description = "Test function with real valued inputs and a single objective.";
       #endregion
-      #region algorithm configuration
+      #region Algorithm Configuration
       es.Name = "Evolution Strategy - Griewank";
       es.Description = "An evolution strategy which solves the 10-dimensional Griewank test function";
       es.Problem = problem;
@@ -515,7 +527,6 @@ namespace HeuristicLab_33.Tests {
       #endregion
       return es;
     }
-
     #endregion
     #endregion
 
@@ -539,7 +550,7 @@ namespace HeuristicLab_33.Tests {
 
     private IslandGeneticAlgorithm CreateIslandGaTspSample() {
       IslandGeneticAlgorithm ga = new IslandGeneticAlgorithm();
-      #region problem configuration
+      #region Problem Configuration
       TravelingSalesmanProblem tspProblem = new TravelingSalesmanProblem();
       tspProblem.ImportFromTSPLIB("ch130.tsp", "ch130.opt.tour", 6110);
       tspProblem.Evaluator = new TSPRoundedEuclideanPathEvaluator();
@@ -548,7 +559,7 @@ namespace HeuristicLab_33.Tests {
       tspProblem.Name = "ch130 TSP (imported from TSPLIB)";
       tspProblem.Description = "130 city problem (Churritz)";
       #endregion
-      #region algorithm configuration
+      #region Algorithm Configuration
       ga.Name = "Island Genetic Algorithm - TSP";
       ga.Description = "An island genetic algorithm which solves the \"ch130\" traveling salesman problem (imported from TSPLIB)";
       ga.Problem = tspProblem;
@@ -565,7 +576,6 @@ namespace HeuristicLab_33.Tests {
       #endregion
       return ga;
     }
-
     #endregion
     #endregion
 
@@ -589,7 +599,7 @@ namespace HeuristicLab_33.Tests {
 
     private LocalSearch CreateLocalSearchKnapsackSample() {
       LocalSearch ls = new LocalSearch();
-      #region problem configuration
+      #region Problem Configuration
       KnapsackProblem problem = new KnapsackProblem();
       problem.BestKnownQuality = new DoubleValue(362);
       problem.BestKnownSolution = new HeuristicLab.Encodings.BinaryVectorEncoding.BinaryVector(new bool[] { 
@@ -606,7 +616,7 @@ namespace HeuristicLab_33.Tests {
       problem.Name = "Knapsack Problem";
       problem.Description = "Represents a Knapsack problem.";
       #endregion
-      #region algorithm configuration
+      #region Algorithm Configuration
       ls.Name = "Local Search - Knapsack";
       ls.Description = "A local search algorithm that solves a randomly generated Knapsack problem";
       ls.Problem = problem;
@@ -623,12 +633,10 @@ namespace HeuristicLab_33.Tests {
       ls.SampleSize.Value = 100;
       ls.Seed.Value = 0;
       ls.SetSeedRandomly.Value = true;
-
       #endregion
       ls.Engine = new ParallelEngine();
       return ls;
     }
-
     #endregion
     #endregion
 
@@ -658,7 +666,7 @@ namespace HeuristicLab_33.Tests {
     }
     private ParticleSwarmOptimization CreatePsoSchwefelSample() {
       ParticleSwarmOptimization pso = new ParticleSwarmOptimization();
-      #region problem configuration
+      #region Problem Configuration
       var problem = new SingleObjectiveTestFunctionProblem();
       problem.BestKnownQuality.Value = 0.0;
       problem.BestKnownSolutionParameter.Value = new RealVector(new double[] { 420.968746, 420.968746 });
@@ -668,7 +676,7 @@ namespace HeuristicLab_33.Tests {
       problem.ProblemSize.Value = 2;
       problem.SolutionCreator = new UniformRandomRealVectorCreator();
       #endregion
-      #region algorithm configuration
+      #region Algorithm Configuration
       pso.Name = "Particle Swarm Optimization - Schwefel";
       pso.Description = "A particle swarm optimization algorithm which solves the 2-dimensional Schwefel test function (based on the description in Pedersen, M.E.H. (2010). PhD thesis. University of Southampton)";
       pso.Problem = problem;
@@ -704,7 +712,6 @@ namespace HeuristicLab_33.Tests {
       pso.SwarmUpdater = swarmUpdater;
       pso.Seed.Value = 0;
       pso.SetSeedRandomly.Value = true;
-
       #endregion
       pso.Engine = new ParallelEngine();
       return pso;
@@ -729,7 +736,7 @@ namespace HeuristicLab_33.Tests {
     }
     private SimulatedAnnealing CreateSimulatedAnnealingRastriginSample() {
       SimulatedAnnealing sa = new SimulatedAnnealing();
-      #region problem configuration
+      #region Problem Configuration
       var problem = new SingleObjectiveTestFunctionProblem();
       problem.BestKnownQuality.Value = 0.0;
       problem.BestKnownSolutionParameter.Value = new RealVector(new double[] { 0, 0 });
@@ -739,7 +746,7 @@ namespace HeuristicLab_33.Tests {
       problem.ProblemSize.Value = 2;
       problem.SolutionCreator = new UniformRandomRealVectorCreator();
       #endregion
-      #region algorithm configuration
+      #region Algorithm Configuration
       sa.Name = "Simulated Annealing - Rastrigin";
       sa.Description = "A simulated annealing algorithm that solves the 2-dimensional Rastrigin test function";
       sa.Problem = problem;
@@ -798,7 +805,7 @@ namespace HeuristicLab_33.Tests {
 
     private TabuSearch CreateTabuSearchTspSample() {
       TabuSearch ts = new TabuSearch();
-      #region problem configuration
+      #region Problem Configuration
       var tspProblem = new TravelingSalesmanProblem();
       tspProblem.ImportFromTSPLIB("ch130.tsp", "ch130.opt.tour", 6110);
       tspProblem.Evaluator = new TSPRoundedEuclideanPathEvaluator();
@@ -807,7 +814,7 @@ namespace HeuristicLab_33.Tests {
       tspProblem.Name = "ch130 TSP (imported from TSPLIB)";
       tspProblem.Description = "130 city problem (Churritz)";
       #endregion
-      #region algorithm configuration
+      #region Algorithm Configuration
       ts.Name = "Tabu Search - TSP";
       ts.Description = "A tabu search algorithm that solves the \"ch130\" TSP (imported from TSPLIB)";
       ts.Problem = tspProblem;
@@ -852,7 +859,6 @@ namespace HeuristicLab_33.Tests {
       ts.Engine = new ParallelEngine();
       return ts;
     }
-
     #endregion
     #endregion
 
@@ -876,7 +882,7 @@ namespace HeuristicLab_33.Tests {
 
     private VariableNeighborhoodSearch CreateVnsTspSample() {
       VariableNeighborhoodSearch vns = new VariableNeighborhoodSearch();
-      #region problem configuration
+      #region Problem Configuration
       TravelingSalesmanProblem tspProblem = new TravelingSalesmanProblem();
       tspProblem.BestKnownSolution = new Permutation(PermutationTypes.Absolute, new int[] {
 117, 65, 73, 74, 75, 76, 82, 86, 87, 94, 100, 106, 115, 120, 124, 107, 101, 108, 109, 102, 97, 90, 96, 95, 88, 89, 84, 78, 69, 57, 68, 56, 44, 55, 45, 36, 46, 37, 38, 47, 48, 59, 49, 58, 70, 77, 83, 79, 50, 80, 85, 98, 103, 110, 116, 121, 125, 133, 132, 138, 139, 146, 147, 159, 168, 169, 175, 182, 188, 201, 213, 189, 214, 221, 230, 246, 262, 276, 284, 275, 274, 261, 245, 229, 220, 228, 243, 259, 273, 282, 272, 258, 242, 257, 293, 292, 302, 310, 319, 320, 327, 326, 333, 340, 346, 339, 345, 344, 337, 338, 332, 325, 318, 309, 301, 291, 271, 251, 270, 233, 250, 269, 268, 280, 290, 300, 415, 440, 416, 417, 441, 458, 479, 418, 419, 395, 420, 442, 421, 396, 397, 422, 423, 461, 481, 502, 460, 501, 459, 480, 500, 517, 531, 516, 530, 499, 478, 457, 439, 414, 413, 412, 438, 456, 477, 498, 515, 529, 538, 547, 558, 559, 560, 548, 539, 549, 561, 562, 551, 550, 532, 540, 533, 541, 518, 534, 542, 552, 553, 554, 555, 535, 543, 556, 544, 536, 522, 505, 521, 520, 504, 519, 503, 482, 462, 463, 464, 483, 443, 465, 484, 506, 485, 507, 508, 487, 467, 486, 466, 445, 428, 444, 424, 425, 426, 427, 398, 399, 400, 381, 382, 371, 372, 401, 429, 446, 430, 402, 383, 366, 356, 357, 352, 385, 384, 403, 431, 447, 469, 468, 488, 489, 490, 470, 471, 448, 432, 433, 404, 405, 386, 373, 374, 367, 376, 375, 387, 491, 509, 537, 510, 492, 472, 449, 388, 389, 406, 450, 407, 377, 368, 359, 354, 350, 335, 324, 330, 390, 434, 451, 473, 493, 511, 523, 545, 563, 565, 567, 570, 569, 578, 577, 576, 575, 574, 573, 572, 580, 584, 583, 582, 587, 586, 585, 581, 579, 571, 568, 566, 564, 557, 546, 527, 513, 526, 525, 524, 512, 495, 494, 474, 452, 436, 409, 435, 453, 475, 496, 514, 528, 497, 455, 476, 454, 437, 411, 410, 394, 393, 392, 380, 370, 379, 408, 391, 378, 369, 364, 365, 361, 355, 351, 343, 336, 331, 317, 299, 286, 287, 278, 263, 264, 265, 223, 202, 248, 266, 279, 288, 289, 281, 267, 249, 232, 224, 216, 215, 204, 192, 193, 194, 186, 179, 185, 203, 191, 190, 177, 171, 161, 128, 135, 140, 149, 162, 150, 163, 172, 178, 173, 164, 152, 151, 141, 153, 165, 154, 142, 155, 143, 137, 136, 130, 129, 118, 114, 113, 105, 119, 123, 131, 144, 156, 157, 145, 158, 166, 167, 174, 180, 181, 187, 195, 205, 217, 226, 236, 225, 234, 252, 235, 253, 254, 255, 238, 239, 240, 241, 256, 237, 206, 207, 208, 196, 197, 198, 209, 199, 200, 211, 212, 219, 210, 218, 227, 244, 260, 283, 294, 295, 303, 296, 311, 304, 297, 298, 305, 285, 306, 314, 329, 321, 313, 312, 328, 334, 341, 347, 348, 353, 358, 362, 363, 360, 349, 342, 322, 323, 315, 316, 308, 307, 277, 247, 231, 222, 184, 183, 176, 170, 160, 148, 134, 127, 126, 111, 104, 92, 91, 71, 60, 51, 52, 40, 32, 23, 21, 20, 18, 17, 16, 14, 13, 11, 10, 7, 6, 5, 2, 1, 0, 3, 4, 31, 39, 25, 30, 35, 34, 33, 43, 54, 42, 27, 28, 29, 9, 8, 12, 15, 19, 22, 24, 26, 41, 67, 66, 64, 63, 53, 62, 61, 72, 81, 93, 99, 112, 122, 
@@ -892,7 +898,7 @@ namespace HeuristicLab_33.Tests {
       tspProblem.Name = "Funny TSP";
       tspProblem.Description = "Represents a symmetric Traveling Salesman Problem.";
       #endregion
-      #region algorithm configuration
+      #region Algorithm Configuration
       vns.Name = "Variable Neighborhood Search - TSP";
       vns.Description = "A variable neighborhood search algorithm which solves a funny TSP instance";
       vns.Problem = tspProblem;
@@ -937,10 +943,10 @@ namespace HeuristicLab_33.Tests {
       vns.Engine = new ParallelEngine();
       return vns;
     }
+    #endregion
+    #endregion
 
-    #endregion
-    #endregion
-    #region helper
+    #region Helpers
     private void ConfigureEvolutionStrategyParameters<R, M, SC, SR, SM>(EvolutionStrategy es, int popSize, int children, int parentsPerChild, int maxGens, bool plusSelection)
       where R : ICrossover
       where M : IManipulator
