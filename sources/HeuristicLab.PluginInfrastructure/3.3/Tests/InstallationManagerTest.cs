@@ -19,15 +19,12 @@
  */
 #endregion
 
-using HeuristicLab.PluginInfrastructure.Advanced;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
-using HeuristicLab.PluginInfrastructure;
-using System.Collections.Generic;
-using HeuristicLab.PluginInfrastructure.Advanced.DeploymentService;
+using HeuristicLab.PluginInfrastructure.Advanced;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.PluginInfrastructure_3._3.Test {
+namespace HeuristicLab.PluginInfrastructure_33.Tests {
 
 
   /// <summary>

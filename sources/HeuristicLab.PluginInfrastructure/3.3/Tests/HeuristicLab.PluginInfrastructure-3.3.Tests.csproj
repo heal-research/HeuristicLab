@@ -9,7 +9,7 @@
     <ProjectGuid>{04840E7E-F7DB-4CE4-B308-EE805DD94E73}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeuristicLab.PluginInfrastructure_3._3.Test</RootNamespace>
+    <RootNamespace>HeuristicLab.PluginInfrastructure_33.Tests</RootNamespace>
     <AssemblyName>HeuristicLab.PluginInfrastructure-3.3.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
