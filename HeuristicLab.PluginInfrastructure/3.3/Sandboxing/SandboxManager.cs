@@ -24,6 +24,7 @@ using System.Reflection;
 using System.Security;
 using System.Security.Permissions;
 using HeuristicLab.PluginInfrastructure.Manager;
+using System.IO;
 
 namespace HeuristicLab.PluginInfrastructure.Sandboxing {
   public static class SandboxManager {
@@ -68,13 +69,11 @@ namespace HeuristicLab.PluginInfrastructure.Sandboxing {
       pSet.AddPermission(new SecurityPermission(SecurityPermissionFlag.SerializationFormatter));
       //needed for HeuristicLab.Persistence, see DynamicMethod Constructor (String, Type, array<Type []()>[], Type, Boolean)
       pSet.AddPermission(new SecurityPermission(SecurityPermissionFlag.ControlEvidence));
-
-      ReflectionPermission refPerm = new ReflectionPermission(PermissionState.Unrestricted);
-      pSet.AddPermission(refPerm);
+      pSet.AddPermission(new ReflectionPermission(PermissionState.Unrestricted));
 
       FileIOPermission ioPerm = new FileIOPermission(PermissionState.None);
       //allow path discovery for system drive, needed by HeuristicLab.Persistence: Serializer.BuildTypeCache() -> Assembly.CodeBase
-      ioPerm.AddPathList(FileIOPermissionAccess.PathDiscovery, Environment.SystemDirectory.Substring(0, 3));
+      ioPerm.AddPathList(FileIOPermissionAccess.PathDiscovery, Path.GetPathRoot(Path.GetFullPath(Environment.SystemDirectory)));
       //allow full access to the appdomain's base directory
       ioPerm.AddPathList(FileIOPermissionAccess.AllAccess, applicationBase);
       pSet.AddPermission(ioPerm);
