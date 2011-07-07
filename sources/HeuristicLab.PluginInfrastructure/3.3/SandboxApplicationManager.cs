@@ -131,17 +131,6 @@ namespace HeuristicLab.PluginInfrastructure {
       }
     }
 
-    /// <summary>
-    /// Loads raw assemblies dynamically from a byte array
-    /// </summary>
-    /// <param name="assemblies">bytearray of all raw assemblies that should be loaded</param>
-    internal void LoadAssemblies(IEnumerable<byte[]> assemblies) {
-      foreach (byte[] asm in assemblies) {
-        Assembly loadedAsm = Assembly.Load(asm);
-        RegisterLoadedAssembly(loadedAsm);
-      }
-    }
-
     // register assembly in the assembly cache for the AssemblyResolveEvent
     private void RegisterLoadedAssembly(Assembly asm) {
       if (loadedAssemblies.ContainsKey(asm.FullName) || loadedAssemblies.ContainsKey(asm.GetName().Name)) {
