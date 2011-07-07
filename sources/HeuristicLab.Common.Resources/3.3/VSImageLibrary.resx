@@ -229,6 +229,30 @@
   <data name="Exception" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Exception.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="BatchRunPrepared" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_BatchRun_Prepared.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BatchRunStarted" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_BatchRun_Started.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BatchRunPaused" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_BatchRun_Paused.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BatchRunStopped" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_BatchRun_Stopped.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ExperimentPrepared" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Experiment_Prepared.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ExperimentStarted" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Experiment_Started.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ExperimentPaused" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Experiment_Paused.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ExperimentStopped" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Experiment_Stopped.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="ExecutablePaused" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Executable_Paused.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
