@@ -296,7 +296,7 @@ namespace HeuristicLab.Core.Views {
           IEnumerable<T> items = ((IEnumerable)e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat)).Cast<T>();
           if (e.Effect.HasFlag(DragDropEffects.Copy)) {
             Cloner cloner = new Cloner();
-            items = items.Select(i => (T)i.Clone(cloner));
+            items = items.Select(x => cloner.Clone(x));
           }
           foreach (T item in items)
             Content.Add(item);
