@@ -117,8 +117,6 @@ namespace HeuristicLab.Optimization.Views {
       }
     }
 
-
-
     private void DeregisterNamedItemEvents(INamedItem namedItem) {
       namedItem.ToStringChanged -= new EventHandler(namedItem_ToStringChanged);
       namedItem.ItemImageChanged -= new EventHandler(namedItem_ItemImageChanged);
@@ -398,7 +396,7 @@ namespace HeuristicLab.Optimization.Views {
       }
 
       addButton.Enabled = Content != null && !Locked && !ReadOnly &&
-        (treeView.SelectedNode == null || experiment != null || (batchRun != null && batchRun.Optimizer == null) || (algorithm != null && algorithm.Problem == null));
+        (treeView.SelectedNode == null || experiment != null || batchRun != null || algorithm != null);
       moveUpButton.Enabled = Content != null && !Locked && !ReadOnly &&
         treeView.SelectedNode != null && treeView.SelectedNode.PrevNode != null && parentExperiment != null;
       moveDownButton.Enabled = Content != null && !Locked && !ReadOnly &&
@@ -646,10 +644,10 @@ namespace HeuristicLab.Optimization.Views {
 
 
     private void treeView_BeforeLabelEdit(object sender, NodeLabelEditEventArgs e) {
-      if (e.Node.Tag == null || !(e.Node.Tag is INamedItem)) {
-        e.CancelEdit = true;
-        return;
-      }
+      if (Locked) e.CancelEdit = true;
+      if (ReadOnly) e.CancelEdit = true;
+      if (e.Node.Tag == null) e.CancelEdit = true;
+      if (!(e.Node.Tag is NamedItem)) e.CancelEdit = true;
     }
     private void treeView_AfterLabelEdit(object sender, NodeLabelEditEventArgs e) {
       if (e.Label == null) return;
