@@ -552,6 +552,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         }
       } else
         SamplesEnd.Value = 0;
+
+      SamplesStart_ValueChanged(this, EventArgs.Empty);
+      SamplesEnd_ValueChanged(this, EventArgs.Empty);
     }
 
     private void Algorithm_ExecutionStateChanged(object sender, EventArgs e) {
