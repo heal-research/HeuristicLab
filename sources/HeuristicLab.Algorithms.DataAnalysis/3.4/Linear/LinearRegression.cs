@@ -110,6 +110,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       addition.AddSubtree(cNode);
 
       SymbolicRegressionSolution solution = new SymbolicRegressionSolution(new SymbolicRegressionModel(tree, new SymbolicDataAnalysisExpressionTreeInterpreter()), problemData);
+      solution.Model.Name = "Linear Regression Model";
       return solution;
     }
     #endregion

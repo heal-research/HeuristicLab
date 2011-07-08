@@ -30,7 +30,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   /// Represents a symbolic regression model
   /// </summary>
   [StorableClass]
-  [Item(Name = "SymbolicRegressionModel", Description = "Represents a symbolic regression model.")]
+  [Item(Name = "Symbolic Regression Model", Description = "Represents a symbolic regression model.")]
   public class SymbolicRegressionModel : SymbolicDataAnalysisModel, ISymbolicRegressionModel {
     [Storable]
     private double lowerEstimationLimit;
