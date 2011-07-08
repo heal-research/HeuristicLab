@@ -105,6 +105,7 @@ namespace HeuristicLab.Optimization.Views {
       var experiment = namedItem as Experiment;
 
       if (algorithm != null) {
+        algorithm.Prepared += new EventHandler(algorithm_Prepared);
         algorithm.ProblemChanged += new EventHandler(algorithm_ProblemChanged);
       } else if (batchRun != null) {
         batchRun.OptimizerChanged += new EventHandler(batchRun_OptimizerChanged);
@@ -124,7 +125,9 @@ namespace HeuristicLab.Optimization.Views {
       var algorithm = namedItem as IAlgorithm;
       var batchRun = namedItem as BatchRun;
       var experiment = namedItem as Experiment;
+
       if (algorithm != null) {
+        algorithm.Prepared -= new EventHandler(algorithm_Prepared);
         algorithm.ProblemChanged -= new EventHandler(algorithm_ProblemChanged);
       } else if (batchRun != null) {
         batchRun.OptimizerChanged -= new EventHandler(batchRun_OptimizerChanged);
@@ -155,6 +158,16 @@ namespace HeuristicLab.Optimization.Views {
         return;
       }
       SetEnabledStateOfControls();
+    }
+
+    private void algorithm_Prepared(object sender, EventArgs e) {
+      var algorithm = (IAlgorithm)sender;
+      foreach (TreeNode node in treeNodeTagMapping[algorithm]) {
+        TreeNode resultsNode = node.Nodes.OfType<TreeNode>().Where(x => x.Tag is ResultCollection).Single();
+        if (detailsViewHost.Content == resultsNode.Tag)
+          detailsViewHost.Content = algorithm.Results;
+        resultsNode.Tag = algorithm.Results;
+      }
     }
 
     private void algorithm_ProblemChanged(object sender, EventArgs e) {
