@@ -125,6 +125,7 @@
     <Compile Include="CloningConstructorTest.cs" />
     <Compile Include="CollectObjectGraphTest.cs" />
     <Compile Include="ContentViewTests.cs" />
+    <Compile Include="SupportVectorMachineTest.cs" />
     <Compile Include="ThreadSafeLogTest.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
