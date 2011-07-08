@@ -26,7 +26,7 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.ExternalEvaluation.GP.Views {
-  [Plugin("HeuristicLab.Problems.ExternalEvaluation.GP.Views", "3.3.4.$WCREV$")]
+  [Plugin("HeuristicLab.Problems.ExternalEvaluation.GP.Views", "3.3.5.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.ExternalEvaluation.GP.Views-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
