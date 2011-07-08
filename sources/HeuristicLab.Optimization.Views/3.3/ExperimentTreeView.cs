@@ -655,8 +655,8 @@ namespace HeuristicLab.Optimization.Views {
         ExpandToolStripMenuItem.Visible = !toolStripMenuNode.IsExpanded && toolStripMenuNode.Nodes.Count > 0;
         CollapseToolStripMenuItem.Enabled = toolStripMenuNode.IsExpanded;
         CollapseToolStripMenuItem.Visible = toolStripMenuNode.IsExpanded;
-        EditNodeLabelToolStripMenuItem.Enabled = toolStripMenuNode.Tag != null && toolStripMenuNode.Tag is INamedItem;
-        EditNodeLabelToolStripMenuItem.Visible = toolStripMenuNode.Tag != null && toolStripMenuNode.Tag is INamedItem;
+        EditNodeLabelToolStripMenuItem.Enabled = !Locked && !ReadOnly && toolStripMenuNode.Tag != null && toolStripMenuNode.Tag is INamedItem && ((INamedItem)toolStripMenuNode.Tag).CanChangeName;
+        EditNodeLabelToolStripMenuItem.Visible = !Locked && !ReadOnly && toolStripMenuNode.Tag != null && toolStripMenuNode.Tag is INamedItem && ((INamedItem)toolStripMenuNode.Tag).CanChangeName;
         if (contextMenuStrip.Items.Cast<ToolStripMenuItem>().Any(item => item.Enabled))
           contextMenuStrip.Show(Cursor.Position);
       }
