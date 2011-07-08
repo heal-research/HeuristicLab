@@ -45,7 +45,6 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
     private PluginManager pluginManager;
     private SplashScreen splashScreen;
     private bool updatesAvailable = false;
-
     /// <summary>
     /// Initializes an instance of the starter form.
     /// The starter form shows a splashscreen and initializes the plugin infrastructure.
@@ -68,10 +67,11 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       pluginManager.DiscoverAndCheckPlugins();
       UpdateApplicationsList();
 
-      CheckUpdatesAvailableAsync(pluginPath);
+      CheckUpdatesAvailableAsync();
     }
 
-    private void CheckUpdatesAvailableAsync(string pluginPath) {
+    private void CheckUpdatesAvailableAsync() {
+      string pluginPath = Path.GetFullPath(Application.StartupPath);
       var task = Task.Factory.StartNew<bool>(() => {
         var installationManager = new InstallationManager(pluginPath);
         IEnumerable<IPluginDescription> installedPlugins = pluginManager.Plugins.OfType<IPluginDescription>();
@@ -157,6 +157,8 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
               using (PluginUpdaterForm form = new PluginUpdaterForm(pluginManager)) {
                 form.ShowDialog(this);
               }
+              updatesAvailable = false;
+              CheckUpdatesAvailableAsync();
               UpdateApplicationsList();
             }
             finally {
