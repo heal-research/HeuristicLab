@@ -29,7 +29,7 @@ namespace HeuristicLab_33.Tests {
   public class ThreadSafeLogTest {
 
     [TestMethod]
-    public void ThreadSafeLogThreadSavetyTest() {
+    public void ThreadSafeLogThreadSafetyTest() {
       int count = 10000;
       ThreadSafeLog log = new ThreadSafeLog();
 
