@@ -171,14 +171,14 @@ namespace HeuristicLab.Optimization.Views {
       this.treeView.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(treeView_AfterLabelEdit);
       this.treeView.BeforeLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(treeView_BeforeLabelEdit);
       this.treeView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.optimizerTreeView_ItemDrag);
-      this.treeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.optimizerTreeview_NodeMouseClick);
-      this.treeView.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.optimizerTreeView_NodeMouseDoubleClick);
+      this.treeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeview_NodeMouseClick);
+      this.treeView.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView_NodeMouseDoubleClick);
       this.treeView.DragDrop += new System.Windows.Forms.DragEventHandler(this.optimizerTreeView_DragDrop);
       this.treeView.DragEnter += new System.Windows.Forms.DragEventHandler(this.optimizerTreeView_DragEnter);
       this.treeView.DragOver += new System.Windows.Forms.DragEventHandler(this.optimizerTreeView_DragOver);
-      this.treeView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.optimizerTreeView_KeyDown);
-      this.treeView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.optimizerTreeView_MouseDown);
-      this.treeView.RightClick += new System.EventHandler(optimizerTreeView_RightClick);
+      this.treeView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeView_KeyDown);
+      this.treeView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.treeView_MouseDown);
+      this.treeView.RightClick += new System.EventHandler(treeView_RightClick);
       // 
       // imageList
       // 
