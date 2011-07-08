@@ -582,20 +582,20 @@ namespace HeuristicLab.Optimization.Views {
     #endregion
 
     #region control events
-    private void optimizerTreeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e) {
+    private void treeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e) {
       if (rightClickOccured) return;
       if (e.X < e.Node.Bounds.Left || e.X > e.Node.Bounds.Right) return;
       e.Node.Toggle();
       IContent optimizer = (IContent)e.Node.Tag;
       MainFormManager.MainForm.ShowContent(optimizer);
     }
-    private void optimizerTreeview_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e) {
+    private void treeview_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e) {
       if (e.X < e.Node.Bounds.Left || e.X > e.Node.Bounds.Right) return;
       treeView.SelectedNode = e.Node;
       detailsViewHost.Content = (IContent)e.Node.Tag;
       SetEnabledStateOfControls();
     }
-    private void optimizerTreeView_MouseDown(object sender, MouseEventArgs e) {
+    private void treeView_MouseDown(object sender, MouseEventArgs e) {
       // enables deselection of treeNodes
       if (e.Button != MouseButtons.Right) rightClickOccured = false;
       if (treeView.SelectedNode == null) return;
@@ -609,32 +609,39 @@ namespace HeuristicLab.Optimization.Views {
     }
 
 
-    private void optimizerTreeView_KeyDown(object sender, KeyEventArgs e) {
-      if (ReadOnly) return;
-      if (e.KeyCode != Keys.Delete) return;
+    private void treeView_KeyDown(object sender, KeyEventArgs e) {
+      if (Locked || ReadOnly) return;
       if (treeView.SelectedNode == null) return;
-      if (!(treeView.SelectedNode.Tag is IOptimizer)) return;
+      if (!(treeView.SelectedNode.Tag is INamedItem)) return;
 
       var treeNode = treeView.SelectedNode;
-      var optimizer = (IOptimizer)treeNode.Tag;
+      var namedItem = (NamedItem)treeNode.Tag;
+      var optimizer = namedItem as IOptimizer;
 
-      if (treeNode.Parent == null)
-        Content.Optimizers.Remove(optimizer);
-      else {
-        var batchRun = treeNode.Parent.Tag as BatchRun;
-        var experiment = treeNode.Parent.Tag as Experiment;
-        if (batchRun != null) batchRun.Optimizer = null;
-        else if (experiment != null) experiment.Optimizers.Remove(optimizer);
-        else throw new NotSupportedException("Handling for specific type not implemented" + treeView.SelectedNode.Tag.GetType());
+      if (e.KeyCode == Keys.F2 && !treeNode.IsEditing) {
+        treeNode.BeginEdit();
+        return;
       }
-      SetEnabledStateOfControls();
-      UpdateDetailsViewHost();
-      RebuildImageList();
+
+      if (e.KeyCode == Keys.Delete && optimizer != null) {
+        if (treeNode.Parent == null)
+          Content.Optimizers.Remove(optimizer);
+        else {
+          var batchRun = treeNode.Parent.Tag as BatchRun;
+          var experiment = treeNode.Parent.Tag as Experiment;
+          if (batchRun != null) batchRun.Optimizer = null;
+          else if (experiment != null) experiment.Optimizers.Remove(optimizer);
+          else throw new NotSupportedException("Handling for specific type not implemented" + treeView.SelectedNode.Tag.GetType());
+        }
+        SetEnabledStateOfControls();
+        UpdateDetailsViewHost();
+        RebuildImageList();
+      }
     }
 
     private bool rightClickOccured = true;
     private TreeNode toolStripMenuNode = null;
-    private void optimizerTreeView_RightClick(object sender, EventArgs e) {
+    private void treeView_RightClick(object sender, EventArgs e) {
       rightClickOccured = true;
       Point coordinates = treeView.PointToClient(Cursor.Position);
       toolStripMenuNode = treeView.GetNodeAt(coordinates);
@@ -655,6 +662,21 @@ namespace HeuristicLab.Optimization.Views {
       }
     }
 
+    private void treeView_BeforeLabelEdit(object sender, NodeLabelEditEventArgs e) {
+      if (Locked) e.CancelEdit = true;
+      if (ReadOnly) e.CancelEdit = true;
+      if (e.Node.Tag == null) e.CancelEdit = true;
+      var namedItem = e.Node.Tag as INamedItem;
+      if (namedItem == null) e.CancelEdit = true;
+      else if (!namedItem.CanChangeName) e.CancelEdit = true;
+    }
+    private void treeView_AfterLabelEdit(object sender, NodeLabelEditEventArgs e) {
+      if (e.Label == null) return;
+      e.Node.EndEdit(false);
+      var namedItem = (INamedItem)e.Node.Tag;
+      namedItem.Name = e.Label;
+    }
+
     private void ExpandToolStripMenuItem_Click(object sender, EventArgs e) {
       if (toolStripMenuNode != null) toolStripMenuNode.ExpandAll();
     }
@@ -665,21 +687,6 @@ namespace HeuristicLab.Optimization.Views {
       if (toolStripMenuNode != null) {
         if (!toolStripMenuNode.IsEditing) toolStripMenuNode.BeginEdit();
       }
-    }
-
-
-    private void treeView_BeforeLabelEdit(object sender, NodeLabelEditEventArgs e) {
-      if (Locked) e.CancelEdit = true;
-      if (ReadOnly) e.CancelEdit = true;
-      if (e.Node.Tag == null) e.CancelEdit = true;
-      if (!(e.Node.Tag is NamedItem)) e.CancelEdit = true;
-    }
-    private void treeView_AfterLabelEdit(object sender, NodeLabelEditEventArgs e) {
-      if (e.Label == null) return;
-
-      e.Node.EndEdit(false);
-      var namedItem = (INamedItem)e.Node.Tag;
-      namedItem.Name = e.Label;
     }
 
     private void addButton_Click(object sender, System.EventArgs e) {
