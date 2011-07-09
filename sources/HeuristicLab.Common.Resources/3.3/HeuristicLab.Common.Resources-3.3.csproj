@@ -430,6 +430,7 @@
   <ItemGroup>
     <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Checkout.png" />
     <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Clone.png" />
+    <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_DisplayInColor_Vertical.png" />
     <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_BatchRun_Paused.png" />
     <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_BatchRun_Prepared.png" />
     <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_BatchRun_Started.png" />

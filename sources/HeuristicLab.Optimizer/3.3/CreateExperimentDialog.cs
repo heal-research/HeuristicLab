@@ -58,9 +58,9 @@ namespace HeuristicLab.Optimizer {
         repetitionsNumericUpDown.Text = repetitionsNumericUpDown.Value.ToString();
     }
     private void okButton_Click(object sender, EventArgs e) {
-      experiment = new Experiment(Optimizer.Name);
+      experiment = new Experiment();
       if (createBatchRunCheckBox.Checked) {
-        BatchRun batchRun = new BatchRun(Optimizer.Name);
+        BatchRun batchRun = new BatchRun();
         batchRun.Repetitions = (int)repetitionsNumericUpDown.Value;
         batchRun.Optimizer = (IOptimizer)Optimizer.Clone();
         Experiment.Optimizers.Add(batchRun);
