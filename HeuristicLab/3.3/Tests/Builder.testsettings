@@ -56,7 +56,6 @@
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.ParallelEngine-3.3.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Parameters.Views-3.3.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Parameters-3.3.dll" />
-    <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Persistence.GUI-3.3.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Persistence-3.3.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.PluginInfrastructure-3.3.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Problems.ArtificialAnt.Views-3.3.dll" />
