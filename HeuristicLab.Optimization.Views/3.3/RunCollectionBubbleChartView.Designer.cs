@@ -273,7 +273,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       this.colorXAxisButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.colorXAxisButton.Enabled = false;
-      this.colorXAxisButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.DisplayInColor;
+      this.colorXAxisButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.DisplayInColorVertical;
       this.colorXAxisButton.Location = new System.Drawing.Point(719, 469);
       this.colorXAxisButton.Name = "colorXAxisButton";
       this.colorXAxisButton.Size = new System.Drawing.Size(21, 21);
