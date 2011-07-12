@@ -362,6 +362,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public void CollectResultValues(IDictionary<string, IItem> results) {
+      var clonedResults = (ResultCollection)this.results.Clone();
+      foreach (var result in clonedResults) {
+        results.Add(result.Name, result.Value);
+      }
+    }
+
+    private void AggregateResultValues(IDictionary<string, IItem> results) {
       Dictionary<string, List<double>> resultValues = new Dictionary<string, List<double>>();
       IEnumerable<IRun> runs = clonedAlgorithms.Select(alg => alg.Runs.FirstOrDefault()).Where(run => run != null);
       IEnumerable<KeyValuePair<string, IItem>> resultCollections = runs.Where(x => x != null).SelectMany(x => x.Results).ToList();
@@ -396,12 +403,18 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
       List<IResult> aggregatedResults = new List<IResult>();
       foreach (KeyValuePair<string, List<IRegressionSolution>> solutions in resultSolutions) {
-        var problemDataClone = (IRegressionProblemData)Problem.ProblemData.Clone();
+        // clone manually to correctly clone references between cloned root objects 
+        Cloner cloner = new Cloner();
+        var problemDataClone = (IRegressionProblemData)cloner.Clone(Problem.ProblemData);
+        // set partitions of problem data clone correctly
         problemDataClone.TrainingPartition.Start = SamplesStart.Value; problemDataClone.TrainingPartition.End = SamplesEnd.Value;
         problemDataClone.TestPartition.Start = SamplesStart.Value; problemDataClone.TestPartition.End = SamplesEnd.Value;
-        var ensembleSolution = new RegressionEnsembleSolution(solutions.Value.Select(x => x.Model), problemDataClone,
-          solutions.Value.Select(x => x.ProblemData.TrainingPartition),
-          solutions.Value.Select(x => x.ProblemData.TestPartition));
+        // clone models
+        var ensembleSolution = new RegressionEnsembleSolution(
+          solutions.Value.Select(x => cloner.Clone(x.Model)),
+          problemDataClone,
+          solutions.Value.Select(x => cloner.Clone(x.ProblemData.TrainingPartition)),
+          solutions.Value.Select(x => cloner.Clone(x.ProblemData.TestPartition)));
 
         aggregatedResults.Add(new Result(solutions.Key + " (ensemble)", ensembleSolution));
       }
@@ -424,12 +437,18 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
       var aggregatedResults = new List<IResult>();
       foreach (KeyValuePair<string, List<IClassificationSolution>> solutions in resultSolutions) {
-        var problemDataClone = (IClassificationProblemData)Problem.ProblemData.Clone();
+        // clone manually to correctly clone references between cloned root objects 
+        Cloner cloner = new Cloner();
+        var problemDataClone = (IClassificationProblemData)cloner.Clone(Problem.ProblemData);
+        // set partitions of problem data clone correctly
         problemDataClone.TrainingPartition.Start = SamplesStart.Value; problemDataClone.TrainingPartition.End = SamplesEnd.Value;
         problemDataClone.TestPartition.Start = SamplesStart.Value; problemDataClone.TestPartition.End = SamplesEnd.Value;
-        var ensembleSolution = new ClassificationEnsembleSolution(solutions.Value.Select(x => x.Model), problemDataClone,
-          solutions.Value.Select(x => x.ProblemData.TrainingPartition),
-          solutions.Value.Select(x => x.ProblemData.TestPartition));
+        // clone models
+        var ensembleSolution = new ClassificationEnsembleSolution(
+          solutions.Value.Select(x => cloner.Clone(x.Model)), 
+          problemDataClone,
+          solutions.Value.Select(x => cloner.Clone(x.ProblemData.TrainingPartition)),
+          solutions.Value.Select(x => cloner.Clone(x.ProblemData.TestPartition)));
 
         aggregatedResults.Add(new Result(solutions.Key + " (ensemble)", ensembleSolution));
       }
@@ -701,7 +720,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private void OnStopped() {
       stopPending = false;
       Dictionary<string, IItem> collectedResults = new Dictionary<string, IItem>();
-      CollectResultValues(collectedResults);
+      AggregateResultValues(collectedResults);
       results.AddRange(collectedResults.Select(x => new Result(x.Key, x.Value)).Cast<IResult>().ToArray());
       runsCounter++;
       runs.Add(new Run(string.Format("{0} Run {1}", Name, runsCounter), this));
