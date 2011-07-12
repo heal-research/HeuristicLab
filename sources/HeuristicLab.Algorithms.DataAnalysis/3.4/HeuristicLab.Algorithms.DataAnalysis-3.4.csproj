@@ -128,6 +128,9 @@
     <Compile Include="Linear\LinearRegression.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Linear\LogitClassificationSolution.cs" />
+    <Compile Include="Linear\LogitModel.cs" />
+    <Compile Include="Linear\MultinomialLogitClassification.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RandomForest\RandomForestClassificationSolution.cs" />
     <Compile Include="RandomForest\RandomForestClassification.cs" />
