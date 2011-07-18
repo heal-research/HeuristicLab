@@ -170,6 +170,7 @@ namespace HeuristicLab.Optimization.Views {
       this.treeView.TabIndex = 10;
       this.treeView.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(treeView_AfterLabelEdit);
       this.treeView.BeforeLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(treeView_BeforeLabelEdit);
+      this.treeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(treeView_AfterSelect);
       this.treeView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.optimizerTreeView_ItemDrag);
       this.treeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeview_NodeMouseClick);
       this.treeView.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView_NodeMouseDoubleClick);

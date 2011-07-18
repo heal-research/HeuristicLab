@@ -264,22 +264,13 @@ namespace HeuristicLab.Optimization.Views {
       }
 
       foreach (TreeNodeCollection parentNode in parentNodes) {
-        //get all effected child nodes
-        foreach (TreeNode childNode in parentNode.OfType<TreeNode>()
-          .Where(n => e.OldItems.Select(x => x.Value).Contains((IOptimizer)n.Tag)).ToList()) {
-          DisposeTreeNode(childNode);
-          childNode.Remove();
-        }
-
-        foreach (var childOptimizer in e.Items) {
-          TreeNode childNode = CreateTreeNode(childOptimizer.Value);
-          UpdateChildTreeNodes(childNode.Nodes, childOptimizer.Value);
-          childNode.ExpandAll();
-          parentNode.Insert(childOptimizer.Index, childNode);
+        var backup = parentNode.OfType<TreeNode>().ToList();
+        foreach (var indexedItem in e.Items) {
+          var node = backup.Where(n => n.Tag == indexedItem.Value).First();
+          node.Remove();
+          parentNode.Insert(indexedItem.Index, node);
         }
       }
-      RebuildImageList();
-      UpdateDetailsViewHost();
     }
     private void Optimizers_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<IOptimizer>> e) {
       if (InvokeRequired) {
@@ -639,6 +630,15 @@ namespace HeuristicLab.Optimization.Views {
       }
     }
 
+
+    private void treeView_AfterSelect(object sender, TreeViewEventArgs e) {
+      if (e.Action == TreeViewAction.ByKeyboard) {
+        UpdateDetailsViewHost();
+        //NOTE: necessary because algorithm view steals the focus
+        treeView.Focus();
+      }
+    }
+
     private bool rightClickOccured = true;
     private TreeNode toolStripMenuNode = null;
     private void treeView_RightClick(object sender, EventArgs e) {
@@ -735,12 +735,11 @@ namespace HeuristicLab.Optimization.Views {
       if (treeView.SelectedNode.Parent == null) experiment = Content;
       else experiment = (Experiment)treeView.SelectedNode.Parent.Tag;
 
+      var selectedNode = treeView.SelectedNode;
       int index = treeView.SelectedNode.Index;
       experiment.Optimizers.Reverse(index - 1, 2);
-      treeView.SelectedNode = treeNodeTagMapping[optimizer].First();
+      treeView.SelectedNode = selectedNode;
       SetEnabledStateOfControls();
-      UpdateDetailsViewHost();
-      RebuildImageList();
     }
     private void moveDownButton_Click(object sender, EventArgs e) {
       var optimizer = (IOptimizer)treeView.SelectedNode.Tag;
@@ -748,12 +747,11 @@ namespace HeuristicLab.Optimization.Views {
       if (treeView.SelectedNode.Parent == null) experiment = Content;
       else experiment = (Experiment)treeView.SelectedNode.Parent.Tag;
 
+      var selectedNode = treeView.SelectedNode;
       int index = treeView.SelectedNode.Index;
       experiment.Optimizers.Reverse(index, 2);
-      treeView.SelectedNode = treeNodeTagMapping[optimizer].First();
+      treeView.SelectedNode = selectedNode;
       SetEnabledStateOfControls();
-      UpdateDetailsViewHost();
-      RebuildImageList();
     }
 
     private void removeButton_Click(object sender, EventArgs e) {
@@ -884,6 +882,7 @@ namespace HeuristicLab.Optimization.Views {
       treeView.ImageList.Images.Clear();
       var topLevelNodes = treeView.Nodes.OfType<TreeNode>().ToArray();
       var nodes = IterateTreeNodes().ToList();
+      var selectedNode = treeView.SelectedNode;
       treeView.Nodes.Clear();
 
       foreach (TreeNode treeNode in nodes) {
@@ -893,6 +892,7 @@ namespace HeuristicLab.Optimization.Views {
         treeNode.SelectedImageIndex = treeNode.ImageIndex;
       }
       treeView.Nodes.AddRange(topLevelNodes);
+      treeView.SelectedNode = selectedNode;
       treeView.EndUpdate();
     }
     #endregion
