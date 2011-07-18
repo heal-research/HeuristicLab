@@ -64,7 +64,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
         IOperator op = cloner.Clone(pair.Key);
         IOperatorShapeInfo shapeInfo = cloner.Clone(pair.Value);
         RegisterOperatorEvents(op);
-        operatorParameterCollectionMapping.Add(op, pair.Key.Parameters);
+        operatorParameterCollectionMapping.Add(op, op.Parameters);
         operatorShapeInfoMapping.Add(op, shapeInfo);
       }
 
