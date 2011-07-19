@@ -151,7 +151,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
 
-    public void AddModelsAndParitions(IEnumerable<IRegressionSolution> solutions) {
+    public void AddModelsAndPartitions(IEnumerable<IRegressionSolution> solutions) {
       foreach (var solution in solutions) {
         var ensembleSolution = solution as RegressionEnsembleSolution;
         if (ensembleSolution != null) {

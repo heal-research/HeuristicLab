@@ -162,7 +162,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       .First();
     }
 
-    public void AddModelsAndParitions(IEnumerable<IClassificationSolution> solutions) {
+    public void AddModelsAndPartitions(IEnumerable<IClassificationSolution> solutions) {
       foreach (var solution in solutions) {
         var ensembleSolution = solution as ClassificationEnsembleSolution;
         if (ensembleSolution != null) {
