@@ -35,7 +35,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// Represents a multinomial logit model for classification
   /// </summary>
   [StorableClass]
-  [Item("LogitModel", "Represents a multinomial logit model for classification.")]
+  [Item("Multinomial Logit Model", "Represents a multinomial logit model for classification.")]
   public sealed class LogitModel : NamedItem, IClassificationModel {
 
     private alglib.logitmodel logitModel;
