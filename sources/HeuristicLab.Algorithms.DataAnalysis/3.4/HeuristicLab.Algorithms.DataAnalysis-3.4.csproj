@@ -111,6 +111,8 @@
     </Compile>
     <Compile Include="HeuristicLabAlgorithmsDataAnalysisPlugin.cs" />
     <Compile Include="FixedDataAnalysisAlgorithm.cs" />
+    <Compile Include="Interfaces\INeuralNetworkRegressionSolution.cs" />
+    <Compile Include="Interfaces\INeuralNetworkModel.cs" />
     <Compile Include="Interfaces\IRandomForestClassificationSolution.cs" />
     <Compile Include="Interfaces\IRandomForestModel.cs" />
     <Compile Include="Interfaces\IRandomForestRegressionSolution.cs" />
@@ -131,6 +133,9 @@
     <Compile Include="Linear\MultinomialLogitClassification.cs" />
     <Compile Include="Linear\MultinomialLogitClassificationSolution.cs" />
     <Compile Include="Linear\MultinomialLogitModel.cs" />
+    <Compile Include="NeuralNetwork\NeuralNetworkModel.cs" />
+    <Compile Include="NeuralNetwork\NeuralNetworkRegression.cs" />
+    <Compile Include="NeuralNetwork\NeuralNetworkRegressionSolution.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RandomForest\RandomForestClassificationSolution.cs" />
     <Compile Include="RandomForest\RandomForestClassification.cs" />
