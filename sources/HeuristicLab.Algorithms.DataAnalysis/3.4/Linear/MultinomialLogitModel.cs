@@ -36,7 +36,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   [StorableClass]
   [Item("Multinomial Logit Model", "Represents a multinomial logit model for classification.")]
-  public sealed class LogitModel : NamedItem, IClassificationModel {
+  public sealed class MultinomialLogitModel : NamedItem, IClassificationModel {
 
     private alglib.logitmodel logitModel;
     public alglib.logitmodel Model {
@@ -57,12 +57,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     [Storable]
     private double[] classValues;
     [StorableConstructor]
-    private LogitModel(bool deserializing)
+    private MultinomialLogitModel(bool deserializing)
       : base(deserializing) {
       if (deserializing)
         logitModel = new alglib.logitmodel();
     }
-    private LogitModel(LogitModel original, Cloner cloner)
+    private MultinomialLogitModel(MultinomialLogitModel original, Cloner cloner)
       : base(original, cloner) {
       logitModel = new alglib.logitmodel();
       logitModel.innerobj.w = (double[])original.logitModel.innerobj.w.Clone();
@@ -70,7 +70,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       allowedInputVariables = (string[])original.allowedInputVariables.Clone();
       this.classValues = (double[])original.classValues.Clone();
     }
-    public LogitModel(alglib.logitmodel logitModel, string targetVariable, IEnumerable<string> allowedInputVariables, double[] classValues)
+    public MultinomialLogitModel(alglib.logitmodel logitModel, string targetVariable, IEnumerable<string> allowedInputVariables, double[] classValues)
       : base() {
       this.name = ItemName;
       this.description = ItemDescription;
@@ -81,7 +81,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new LogitModel(this, cloner);
+      return new MultinomialLogitModel(this, cloner);
     }
 
     public IEnumerable<double> GetEstimatedClassValues(Dataset dataset, IEnumerable<int> rows) {

@@ -32,26 +32,26 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Represents a multinomial logit solution for a classification problem which can be visualized in the GUI.
   /// </summary>
-  [Item("LogitClassificationSolution", "Represents a multinomial logit solution for a classification problem which can be visualized in the GUI.")]
+  [Item("Multinomial Logit Classification Solution", "Represents a multinomial logit solution for a classification problem which can be visualized in the GUI.")]
   [StorableClass]
-  public sealed class LogitClassificationSolution : ClassificationSolution {
+  public sealed class MultinomialLogitClassificationSolution : ClassificationSolution {
 
-    public new LogitModel Model {
-      get { return (LogitModel)base.Model; }
+    public new MultinomialLogitModel Model {
+      get { return (MultinomialLogitModel)base.Model; }
       set { base.Model = value; }
     }
 
     [StorableConstructor]
-    private LogitClassificationSolution(bool deserializing) : base(deserializing) { }
-    private LogitClassificationSolution(LogitClassificationSolution original, Cloner cloner)
+    private MultinomialLogitClassificationSolution(bool deserializing) : base(deserializing) { }
+    private MultinomialLogitClassificationSolution(MultinomialLogitClassificationSolution original, Cloner cloner)
       : base(original, cloner) {
     }
-    public LogitClassificationSolution(IClassificationProblemData problemData, LogitModel logitModel)
+    public MultinomialLogitClassificationSolution(IClassificationProblemData problemData, MultinomialLogitModel logitModel)
       : base(logitModel, problemData) {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new LogitClassificationSolution(this, cloner);
+      return new MultinomialLogitClassificationSolution(this, cloner);
     }
   }
 }
