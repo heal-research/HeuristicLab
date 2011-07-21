@@ -90,6 +90,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     [StorableConstructor]
     protected DataAnalysisProblemData(bool deserializing) : base(deserializing) { }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      RegisterEventHandlers();
+    }
 
     protected DataAnalysisProblemData(Dataset dataset, IEnumerable<string> allowedInputVariables) {
       if (dataset == null) throw new ArgumentNullException("The dataset must not be null.");
