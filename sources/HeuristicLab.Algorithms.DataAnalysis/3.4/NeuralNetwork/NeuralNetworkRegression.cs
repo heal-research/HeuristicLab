@@ -41,7 +41,73 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [Creatable("Data Analysis")]
   [StorableClass]
   public sealed class NeuralNetworkRegression : FixedDataAnalysisAlgorithm<IRegressionProblem> {
+    private const string DecayParameterName = "Decay";
+    private const string HiddenLayersParameterName = "HiddenLayers";
+    private const string NodesInFirstHiddenLayerParameterName = "NodesInFirstHiddenLayer";
+    private const string NodesInSecondHiddenLayerParameterName = "NodesInSecondHiddenLayer";
+    private const string RestartsParameterName = "Restarts";
     private const string NeuralNetworkRegressionModelResultName = "Neural network regression solution";
+
+    #region parameter properties
+    public IFixedValueParameter<DoubleValue> DecayParameter {
+      get { return (IFixedValueParameter<DoubleValue>)Parameters[DecayParameterName]; }
+    }
+    public ConstrainedValueParameter<IntValue> HiddenLayersParameter {
+      get { return (ConstrainedValueParameter<IntValue>)Parameters[HiddenLayersParameterName]; }
+    }
+    public IFixedValueParameter<IntValue> NodesInFirstHiddenLayerParameter {
+      get { return (IFixedValueParameter<IntValue>)Parameters[NodesInFirstHiddenLayerParameterName]; }
+    }
+    public IFixedValueParameter<IntValue> NodesInSecondHiddenLayerParameter {
+      get { return (IFixedValueParameter<IntValue>)Parameters[NodesInSecondHiddenLayerParameterName]; }
+    }
+    public IFixedValueParameter<IntValue> RestartsParameter {
+      get { return (IFixedValueParameter<IntValue>)Parameters[RestartsParameterName]; }
+    }
+    #endregion
+
+    #region properties
+    public double Decay {
+      get { return DecayParameter.Value.Value; }
+      set {
+        if (value < 0.001 || value > 100) throw new ArgumentException("The decay parameter should be set to a value between 0.001 and 100.", "Decay");
+        DecayParameter.Value.Value = value;
+      }
+    }
+    public int HiddenLayers {
+      get { return HiddenLayersParameter.Value.Value; }
+      set {
+        if (value < 0 || value > 2) throw new ArgumentException("The number of hidden layers should be set to 0, 1, or 2.", "HiddenLayers");
+        HiddenLayersParameter.Value = (from v in HiddenLayersParameter.ValidValues
+                                       where v.Value == value
+                                       select v)
+                                      .Single();
+      }
+    }
+    public int NodesInFirstHiddenLayer {
+      get { return NodesInFirstHiddenLayerParameter.Value.Value; }
+      set {
+        if (value < 1) throw new ArgumentException("The number of nodes in the first hidden layer must be at least one.", "NodesInFirstHiddenLayer");
+        NodesInFirstHiddenLayerParameter.Value.Value = value;
+      }
+    }
+    public int NodesInSecondHiddenLayer {
+      get { return NodesInSecondHiddenLayerParameter.Value.Value; }
+      set {
+        if (value < 1) throw new ArgumentException("The number of nodes in the first second layer must be at least one.", "NodesInSecondHiddenLayer");
+        NodesInSecondHiddenLayerParameter.Value.Value = value;
+      }
+    }
+    public int Restarts {
+      get { return RestartsParameter.Value.Value; }
+      set {
+        if (value < 0) throw new ArgumentException("The number of restarts must be positive.", "Restarts");
+        RestartsParameter.Value.Value = value;
+      }
+    }
+    #endregion
+
+
     [StorableConstructor]
     private NeuralNetworkRegression(bool deserializing) : base(deserializing) { }
     private NeuralNetworkRegression(NeuralNetworkRegression original, Cloner cloner)
@@ -49,6 +115,17 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     public NeuralNetworkRegression()
       : base() {
+      var validHiddenLayerValues = new ItemSet<IntValue>(new IntValue[] { new IntValue(0), new IntValue(1), new IntValue(2) });
+      var selectedHiddenLayerValue = (from v in validHiddenLayerValues
+                                      where v.Value == 1
+                                      select v)
+                                     .Single();
+      Parameters.Add(new FixedValueParameter<DoubleValue>(DecayParameterName, "The decay parameter for the training phase of the neural network. This parameter determines the strengh of regularization and should be set to a value between 0.001 (weak regularization) to 100 (very strong regularization). The correct value should be determined via cross-validation.", new DoubleValue(1)));
+      Parameters.Add(new ConstrainedValueParameter<IntValue>(HiddenLayersParameterName, "The number of hidden layers for the neural network (0, 1, or 2)", validHiddenLayerValues, selectedHiddenLayerValue));
+      Parameters.Add(new FixedValueParameter<IntValue>(NodesInFirstHiddenLayerParameterName, "The number of nodes in the first hidden layer. This value is not used if the number of hidden layers is zero.", new IntValue(10)));
+      Parameters.Add(new FixedValueParameter<IntValue>(NodesInSecondHiddenLayerParameterName, "The number of nodes in the second hidden layer. This value is not used if the number of hidden layers is zero or one.", new IntValue(10)));
+      Parameters.Add(new FixedValueParameter<IntValue>(RestartsParameterName, "The number of restarts for learning.", new IntValue(2)));
+
       Problem = new RegressionProblem();
     }
     [StorableHook(HookType.AfterDeserialization)]
@@ -60,13 +137,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     #region neural network
     protected override void Run() {
-      double decay = 0.01;
-      int nLayers = 2;
-      int nHidden1 = 10;
-      int nHidden2 = 10;
-      int nRestarts = 5;
       double rmsError, avgRelError;
-      var solution = CreateNeuralNetworkRegressionSolution(Problem.ProblemData, nLayers, nHidden1, nHidden2, decay, nRestarts, out rmsError, out avgRelError);
+      var solution = CreateNeuralNetworkRegressionSolution(Problem.ProblemData, HiddenLayers, NodesInFirstHiddenLayer, NodesInSecondHiddenLayer, Decay, Restarts, out rmsError, out avgRelError);
       Results.Add(new Result(NeuralNetworkRegressionModelResultName, "The neural network regression solution.", solution));
       Results.Add(new Result("Root mean square error", "The root of the mean of squared errors of the neural network regression solution on the training set.", new DoubleValue(rmsError)));
       Results.Add(new Result("Average relative error", "The average of relative errors of the neural network regression solution on the training set.", new PercentValue(avgRelError)));
@@ -104,7 +176,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (info != 2) throw new ArgumentException("Error in calculation of neural network regression solution");
 
       rmsError = alglib.mlprmserror(multiLayerPerceptron, inputMatrix, nRows);
-      avgRelError = alglib.mlpavgerror(multiLayerPerceptron, inputMatrix, nRows);
+      avgRelError = alglib.mlpavgrelerror(multiLayerPerceptron, inputMatrix, nRows);
 
       return new NeuralNetworkRegressionSolution(problemData, new NeuralNetworkModel(multiLayerPerceptron, targetVariable, allowedInputVariables));
     }
