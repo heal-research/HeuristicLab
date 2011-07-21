@@ -35,20 +35,24 @@ using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
-  /// Neural network regression data analysis algorithm.
+  /// Neural network ensemble classification data analysis algorithm.
   /// </summary>
-  [Item("Neural Network Regression", "Neural network regression data analysis algorithm (wrapper for ALGLIB). Further documentation: http://www.alglib.net/dataanalysis/neuralnetworks.php")]
+  [Item("Neural Network Ensemble Classification", "Neural network ensemble classification data analysis algorithm (wrapper for ALGLIB). Further documentation: http://www.alglib.net/dataanalysis/mlpensembles.php")]
   [Creatable("Data Analysis")]
   [StorableClass]
-  public sealed class NeuralNetworkRegression : FixedDataAnalysisAlgorithm<IRegressionProblem> {
+  public sealed class NeuralNetworkEnsembleClassification : FixedDataAnalysisAlgorithm<IClassificationProblem> {
+    private const string EnsembleSizeParameterName = "EnsembleSize";
     private const string DecayParameterName = "Decay";
     private const string HiddenLayersParameterName = "HiddenLayers";
     private const string NodesInFirstHiddenLayerParameterName = "NodesInFirstHiddenLayer";
     private const string NodesInSecondHiddenLayerParameterName = "NodesInSecondHiddenLayer";
     private const string RestartsParameterName = "Restarts";
-    private const string NeuralNetworkRegressionModelResultName = "Neural network regression solution";
+    private const string NeuralNetworkEnsembleClassificationModelResultName = "Neural network ensemble classification solution";
 
     #region parameter properties
+    public IFixedValueParameter<IntValue> EnsembleSizeParameter {
+      get { return (IFixedValueParameter<IntValue>)Parameters[EnsembleSizeParameterName]; }
+    }
     public IFixedValueParameter<DoubleValue> DecayParameter {
       get { return (IFixedValueParameter<DoubleValue>)Parameters[DecayParameterName]; }
     }
@@ -67,6 +71,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #endregion
 
     #region properties
+    public int EnsembleSize {
+      get { return EnsembleSizeParameter.Value.Value; }
+      set {
+        if (value < 1) throw new ArgumentException("The number of models in the ensemble must be positive and at least one.", "EnsembleSize");
+        EnsembleSizeParameter.Value.Value = value;
+      }
+    }
     public double Decay {
       get { return DecayParameter.Value.Value; }
       set {
@@ -109,76 +120,85 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
 
     [StorableConstructor]
-    private NeuralNetworkRegression(bool deserializing) : base(deserializing) { }
-    private NeuralNetworkRegression(NeuralNetworkRegression original, Cloner cloner)
+    private NeuralNetworkEnsembleClassification(bool deserializing) : base(deserializing) { }
+    private NeuralNetworkEnsembleClassification(NeuralNetworkEnsembleClassification original, Cloner cloner)
       : base(original, cloner) {
     }
-    public NeuralNetworkRegression()
+    public NeuralNetworkEnsembleClassification()
       : base() {
       var validHiddenLayerValues = new ItemSet<IntValue>(new IntValue[] { new IntValue(0), new IntValue(1), new IntValue(2) });
       var selectedHiddenLayerValue = (from v in validHiddenLayerValues
                                       where v.Value == 1
                                       select v)
                                      .Single();
-      Parameters.Add(new FixedValueParameter<DoubleValue>(DecayParameterName, "The decay parameter for the training phase of the neural network. This parameter determines the strengh of regularization and should be set to a value between 0.001 (weak regularization) to 100 (very strong regularization). The correct value should be determined via cross-validation.", new DoubleValue(1)));
+      Parameters.Add(new FixedValueParameter<IntValue>(EnsembleSizeParameterName, "The number of simple neural network models in the ensemble. A good value is 10.", new IntValue(10)));
+      Parameters.Add(new FixedValueParameter<DoubleValue>(DecayParameterName, "The decay parameter for the training phase of the neural network. This parameter determines the strengh of regularization and should be set to a value between 0.001 (weak regularization) to 100 (very strong regularization). The correct value should be determined via cross-validation.", new DoubleValue(0.001)));
       Parameters.Add(new ConstrainedValueParameter<IntValue>(HiddenLayersParameterName, "The number of hidden layers for the neural network (0, 1, or 2)", validHiddenLayerValues, selectedHiddenLayerValue));
-      Parameters.Add(new FixedValueParameter<IntValue>(NodesInFirstHiddenLayerParameterName, "The number of nodes in the first hidden layer. This value is not used if the number of hidden layers is zero.", new IntValue(10)));
-      Parameters.Add(new FixedValueParameter<IntValue>(NodesInSecondHiddenLayerParameterName, "The number of nodes in the second hidden layer. This value is not used if the number of hidden layers is zero or one.", new IntValue(10)));
+      Parameters.Add(new FixedValueParameter<IntValue>(NodesInFirstHiddenLayerParameterName, "The number of nodes in the first hidden layer. The value should be rather large (30-100 nodes) in order to make the network highly flexible and run into the early stopping criterion). This value is not used if the number of hidden layers is zero.", new IntValue(100)));
+      Parameters.Add(new FixedValueParameter<IntValue>(NodesInSecondHiddenLayerParameterName, "The number of nodes in the second hidden layer. This value is not used if the number of hidden layers is zero or one.", new IntValue(100)));
       Parameters.Add(new FixedValueParameter<IntValue>(RestartsParameterName, "The number of restarts for learning.", new IntValue(2)));
 
-      Problem = new RegressionProblem();
+      Problem = new ClassificationProblem();
     }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new NeuralNetworkRegression(this, cloner);
+      return new NeuralNetworkEnsembleClassification(this, cloner);
     }
 
-    #region neural network
+    #region neural network ensemble
     protected override void Run() {
-      double rmsError, avgRelError;
-      var solution = CreateNeuralNetworkRegressionSolution(Problem.ProblemData, HiddenLayers, NodesInFirstHiddenLayer, NodesInSecondHiddenLayer, Decay, Restarts, out rmsError, out avgRelError);
-      Results.Add(new Result(NeuralNetworkRegressionModelResultName, "The neural network regression solution.", solution));
-      Results.Add(new Result("Root mean square error", "The root of the mean of squared errors of the neural network regression solution on the training set.", new DoubleValue(rmsError)));
-      Results.Add(new Result("Average relative error", "The average of relative errors of the neural network regression solution on the training set.", new PercentValue(avgRelError)));
+      double rmsError, avgRelError, relClassError;
+      var solution = CreateNeuralNetworkEnsembleClassificationSolution(Problem.ProblemData, EnsembleSize, HiddenLayers, NodesInFirstHiddenLayer, NodesInSecondHiddenLayer, Decay, Restarts, out rmsError, out avgRelError, out relClassError);
+      Results.Add(new Result(NeuralNetworkEnsembleClassificationModelResultName, "The neural network ensemble classification solution.", solution));
+      Results.Add(new Result("Root mean square error", "The root of the mean of squared errors of the neural network ensemble regression solution on the training set.", new DoubleValue(rmsError)));
+      Results.Add(new Result("Average relative error", "The average of relative errors of the neural network ensemble regression solution on the training set.", new PercentValue(avgRelError)));
+      Results.Add(new Result("Relative classification error", "The percentage of misclassified samples.", new PercentValue(relClassError)));
     }
 
-    public static IRegressionSolution CreateNeuralNetworkRegressionSolution(IRegressionProblemData problemData, int nLayers, int nHiddenNodes1, int nHiddenNodes2, double decay, int restarts,
-      out double rmsError, out double avgRelError) {
+    public static IClassificationSolution CreateNeuralNetworkEnsembleClassificationSolution(IClassificationProblemData problemData, int ensembleSize, int nLayers, int nHiddenNodes1, int nHiddenNodes2, double decay, int restarts,
+      out double rmsError, out double avgRelError, out double relClassError) {
       Dataset dataset = problemData.Dataset;
       string targetVariable = problemData.TargetVariable;
       IEnumerable<string> allowedInputVariables = problemData.AllowedInputVariables;
       IEnumerable<int> rows = problemData.TrainingIndizes;
       double[,] inputMatrix = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables.Concat(new string[] { targetVariable }), rows);
       if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
-        throw new NotSupportedException("Neural network regression does not support NaN or infinity values in the input dataset.");
+        throw new NotSupportedException("Neural network ensemble classification does not support NaN or infinity values in the input dataset.");
 
-      double targetMin = problemData.Dataset.GetEnumeratedVariableValues(targetVariable).Min();
-      targetMin = targetMin - targetMin * 0.1; // -10%
-      double targetMax = problemData.Dataset.GetEnumeratedVariableValues(targetVariable).Max();
-      targetMax = targetMax + targetMax * 0.1; // + 10%
+      int nRows = inputMatrix.GetLength(0);
+      int nFeatures = inputMatrix.GetLength(1) - 1;
+      double[] classValues = dataset.GetVariableValues(targetVariable).Distinct().OrderBy(x => x).ToArray();
+      int nClasses = classValues.Count();
+      // map original class values to values [0..nClasses-1]
+      Dictionary<double, double> classIndizes = new Dictionary<double, double>();
+      for (int i = 0; i < nClasses; i++) {
+        classIndizes[classValues[i]] = i;
+      }
+      for (int row = 0; row < nRows; row++) {
+        inputMatrix[row, nFeatures] = classIndizes[inputMatrix[row, nFeatures]];
+      }
 
-      alglib.multilayerperceptron multiLayerPerceptron = null;
+      alglib.mlpensemble mlpEnsemble = null;
       if (nLayers == 0) {
-        alglib.mlpcreater0(allowedInputVariables.Count(), 1, targetMin, targetMax, out multiLayerPerceptron);
+        alglib.mlpecreatec0(allowedInputVariables.Count(), nClasses, ensembleSize, out mlpEnsemble);
       } else if (nLayers == 1) {
-        alglib.mlpcreater1(allowedInputVariables.Count(), nHiddenNodes1, 1, targetMin, targetMax, out multiLayerPerceptron);
+        alglib.mlpecreatec1(allowedInputVariables.Count(), nHiddenNodes1, nClasses, ensembleSize, out mlpEnsemble);
       } else if (nLayers == 2) {
-        alglib.mlpcreater2(allowedInputVariables.Count(), nHiddenNodes1, nHiddenNodes2, 1, targetMin, targetMax, out multiLayerPerceptron);
+        alglib.mlpecreatec2(allowedInputVariables.Count(), nHiddenNodes1, nHiddenNodes2, nClasses, ensembleSize, out mlpEnsemble);
       } else throw new ArgumentException("Number of layers must be zero, one, or two.", "nLayers");
       alglib.mlpreport rep;
-      int nRows = inputMatrix.GetLength(0);
 
       int info;
-      // using mlptrainlm instead of mlptraines or mlptrainbfgs because only one parameter is necessary
-      alglib.mlptrainlm(multiLayerPerceptron, inputMatrix, nRows, decay, restarts, out info, out rep);
-      if (info != 2) throw new ArgumentException("Error in calculation of neural network regression solution");
+      alglib.mlpetraines(mlpEnsemble, inputMatrix, nRows, decay, restarts, out info, out rep);
+      if (info != 6) throw new ArgumentException("Error in calculation of neural network ensemble regression solution");
 
-      rmsError = alglib.mlprmserror(multiLayerPerceptron, inputMatrix, nRows);
-      avgRelError = alglib.mlpavgrelerror(multiLayerPerceptron, inputMatrix, nRows);      
+      rmsError = alglib.mlpermserror(mlpEnsemble, inputMatrix, nRows);
+      avgRelError = alglib.mlpeavgrelerror(mlpEnsemble, inputMatrix, nRows);
+      relClassError = alglib.mlperelclserror(mlpEnsemble, inputMatrix, nRows);
 
-      return new NeuralNetworkRegressionSolution(problemData, new NeuralNetworkModel(multiLayerPerceptron, targetVariable, allowedInputVariables));
+      return new NeuralNetworkEnsembleClassificationSolution(problemData, new NeuralNetworkEnsembleModel(mlpEnsemble, targetVariable, allowedInputVariables, problemData.ClassValues.ToArray()));
     }
     #endregion
   }

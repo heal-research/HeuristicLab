@@ -37,7 +37,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Neural network classification data analysis algorithm.
   /// </summary>
-  [Item("Neural Network Classification", "Neural network classification data analysis algorithm (wrapper for ALGLIB).")]
+  [Item("Neural Network Classification", "Neural network classification data analysis algorithm (wrapper for ALGLIB). Further documentation: http://www.alglib.net/dataanalysis/neuralnetworks.php")]
   [Creatable("Data Analysis")]
   [StorableClass]
   public sealed class NeuralNetworkClassification : FixedDataAnalysisAlgorithm<IClassificationProblem> {
@@ -155,16 +155,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
         throw new NotSupportedException("Neural network classification does not support NaN or infinity values in the input dataset.");
 
-      alglib.multilayerperceptron multiLayerPerceptron = null;
-      int numberOfClasses = problemData.ClassValues.Count();
-      if (nLayers == 0) {
-        alglib.mlpcreatec0(allowedInputVariables.Count(), numberOfClasses, out multiLayerPerceptron);
-      } else if (nLayers == 1) {
-        alglib.mlpcreatec1(allowedInputVariables.Count(), nHiddenNodes1, numberOfClasses, out multiLayerPerceptron);
-      } else if (nLayers == 2) {
-        alglib.mlpcreatec2(allowedInputVariables.Count(), nHiddenNodes1, nHiddenNodes2, numberOfClasses, out multiLayerPerceptron);
-      } else throw new ArgumentException("Number of layers must be zero, one, or two.", "nLayers");
-      alglib.mlpreport rep;
       int nRows = inputMatrix.GetLength(0);
       int nFeatures = inputMatrix.GetLength(1) - 1;
       double[] classValues = dataset.GetVariableValues(targetVariable).Distinct().OrderBy(x => x).ToArray();
@@ -177,6 +167,16 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       for (int row = 0; row < nRows; row++) {
         inputMatrix[row, nFeatures] = classIndizes[inputMatrix[row, nFeatures]];
       }
+
+      alglib.multilayerperceptron multiLayerPerceptron = null;
+      if (nLayers == 0) {
+        alglib.mlpcreatec0(allowedInputVariables.Count(), nClasses, out multiLayerPerceptron);
+      } else if (nLayers == 1) {
+        alglib.mlpcreatec1(allowedInputVariables.Count(), nHiddenNodes1, nClasses, out multiLayerPerceptron);
+      } else if (nLayers == 2) {
+        alglib.mlpcreatec2(allowedInputVariables.Count(), nHiddenNodes1, nHiddenNodes2, nClasses, out multiLayerPerceptron);
+      } else throw new ArgumentException("Number of layers must be zero, one, or two.", "nLayers");
+      alglib.mlpreport rep;
 
       int info;
       // using mlptrainlm instead of mlptraines or mlptrainbfgs because only one parameter is necessary
