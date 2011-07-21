@@ -189,7 +189,126 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #endregion
 
     #region persistence
-    // not implemented yet
+    [Storable]
+    public double KDTreeApproxF {
+      get { return kdTree.approxf; }
+      set { kdTree.approxf = value; }
+    }
+    [Storable]
+    public double[] KDTreeBoxMax {
+      get { return kdTree.boxmax; }
+      set { kdTree.boxmax = value; }
+    }
+    [Storable]
+    public double[] KDTreeBoxMin {
+      get { return kdTree.boxmin; }
+      set { kdTree.boxmin = value; }
+    }
+    [Storable]
+    public double[] KDTreeBuf {
+      get { return kdTree.buf; }
+      set { kdTree.buf = value; }
+    }
+    [Storable]
+    public double[] KDTreeCurBoxMax {
+      get { return kdTree.curboxmax; }
+      set { kdTree.curboxmax = value; }
+    }
+    [Storable]
+    public double[] KDTreeCurBoxMin {
+      get { return kdTree.curboxmin; }
+      set { kdTree.curboxmin = value; }
+    }
+    [Storable]
+    public double KDTreeCurDist {
+      get { return kdTree.curdist; }
+      set { kdTree.curdist = value; }
+    }
+    [Storable]
+    public int KDTreeDebugCounter {
+      get { return kdTree.debugcounter; }
+      set { kdTree.debugcounter = value; }
+    }
+    [Storable]
+    public int KDTreeDistMatrixType {
+      get { return kdTree.distmatrixtype; }
+      set { kdTree.distmatrixtype = value; }
+    }
+    [Storable]
+    public int[] KDTreeIdx {
+      get { return kdTree.idx; }
+      set { kdTree.idx = value; }
+    }
+    [Storable]
+    public int KDTreeKCur {
+      get { return kdTree.kcur; }
+      set { kdTree.kcur = value; }
+    }
+    [Storable]
+    public int KDTreeKNeeded {
+      get { return kdTree.kneeded; }
+      set { kdTree.kneeded = value; }
+    }
+    [Storable]
+    public int KDTreeN {
+      get { return kdTree.n; }
+      set { kdTree.n = value; }
+    }
+    [Storable]
+    public int[] KDTreeNodes {
+      get { return kdTree.nodes; }
+      set { kdTree.nodes = value; }
+    }
+    [Storable]
+    public int KDTreeNormType {
+      get { return kdTree.normtype; }
+      set { kdTree.normtype = value; }
+    }
+    [Storable]
+    public int KDTreeNX {
+      get { return kdTree.nx; }
+      set { kdTree.nx = value; }
+    }
+    [Storable]
+    public int KDTreeNY {
+      get { return kdTree.ny; }
+      set { kdTree.ny = value; }
+    }
+    [Storable]
+    public double[] KDTreeR {
+      get { return kdTree.r; }
+      set { kdTree.r = value; }
+    }
+    [Storable]
+    public double KDTreeRNeeded {
+      get { return kdTree.rneeded; }
+      set { kdTree.rneeded = value; }
+    }
+    [Storable]
+    public bool KDTreeSelfMatch {
+      get { return kdTree.selfmatch; }
+      set { kdTree.selfmatch = value; }
+    }
+    [Storable]
+    public double[] KDTreeSplits {
+      get { return kdTree.splits; }
+      set { kdTree.splits = value; }
+    }
+    [Storable]
+    public int[] KDTreeTags {
+      get { return kdTree.tags; }
+      set { kdTree.tags = value; }
+    }
+    [Storable]
+    public double[] KDTreeX {
+      get { return kdTree.x; }
+      set { kdTree.x = value; }
+    }
+    [Storable]
+    public double[,] KDTreeXY {
+      get { return kdTree.xy; }
+      set { kdTree.xy = value; }
+    }
     #endregion
   }
 }
