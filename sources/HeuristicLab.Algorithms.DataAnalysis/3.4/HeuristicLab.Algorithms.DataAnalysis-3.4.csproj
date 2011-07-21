@@ -111,6 +111,9 @@
     </Compile>
     <Compile Include="HeuristicLabAlgorithmsDataAnalysisPlugin.cs" />
     <Compile Include="FixedDataAnalysisAlgorithm.cs" />
+    <Compile Include="Interfaces\INearestNeighbourClassificationSolution.cs" />
+    <Compile Include="Interfaces\INearestNeighbourRegressionSolution.cs" />
+    <Compile Include="Interfaces\INearestNeighbourModel.cs" />
     <Compile Include="Interfaces\INeuralNetworkEnsembleClassificationSolution.cs" />
     <Compile Include="Interfaces\INeuralNetworkEnsembleRegressionSolution.cs" />
     <Compile Include="Interfaces\INeuralNetworkEnsembleModel.cs" />
@@ -137,6 +140,11 @@
     <Compile Include="Linear\MultinomialLogitClassification.cs" />
     <Compile Include="Linear\MultinomialLogitClassificationSolution.cs" />
     <Compile Include="Linear\MultinomialLogitModel.cs" />
+    <Compile Include="NearestNeighbour\NearestNeighbourClassification.cs" />
+    <Compile Include="NearestNeighbour\NearestNeighbourClassificationSolution.cs" />
+    <Compile Include="NearestNeighbour\NearestNeighbourModel.cs" />
+    <Compile Include="NearestNeighbour\NearestNeighbourRegression.cs" />
+    <Compile Include="NearestNeighbour\NearestNeighbourRegressionSolution.cs" />
     <Compile Include="NeuralNetwork\NeuralNetworkEnsembleClassification.cs" />
     <Compile Include="NeuralNetwork\NeuralNetworkEnsembleClassificationSolution.cs" />
     <Compile Include="NeuralNetwork\NeuralNetworkEnsembleModel.cs" />
