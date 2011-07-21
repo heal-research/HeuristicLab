@@ -61,7 +61,7 @@ namespace HeuristicLab.Problems.DataAnalysis.MenuItems {
       if ((activeView != null) && (activeView.Content != null) && (activeView.Content is IOptimizer) && !activeView.Locked) {
         var optimizer = activeView.Content as IOptimizer;
         var solutionGroups = from pair in GetDataAnalysisResults(optimizer)
-                             group pair.Value by new { pair.Key } into g
+                             group pair.Value by pair.Key into g
                              select g;
         foreach (var group in solutionGroups) {
           // check if all solutions in the group are either only regression or only classification solutions
