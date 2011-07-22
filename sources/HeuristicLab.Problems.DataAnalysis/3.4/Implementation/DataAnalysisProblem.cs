@@ -47,23 +47,35 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     public T ProblemData {
       get { return ProblemDataParameter.Value; }
-      protected set { ProblemDataParameter.Value = value; }
+      protected set {
+        ProblemDataParameter.Value = value;
+      }
     }
     #endregion
     protected DataAnalysisProblem(DataAnalysisProblem<T> original, Cloner cloner)
       : base(original, cloner) {
+      RegisterEventHandlers();
     }
     [StorableConstructor]
     protected DataAnalysisProblem(bool deserializing) : base(deserializing) { }
     public DataAnalysisProblem()
       : base() {
       Parameters.Add(new ValueParameter<T>(ProblemDataParameterName, ProblemDataParameterDescription));
+      RegisterEventHandlers();
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      RegisterEventHandlers();
     }
 
     private void RegisterEventHandlers() {
-      ProblemDataParameter.Value.Changed += new EventHandler(ProblemDataParameter_ValueChanged);
+      ProblemDataParameter.ValueChanged += new EventHandler(ProblemDataParameter_ValueChanged);
+      if (ProblemDataParameter.Value != null) ProblemDataParameter.Value.Changed += new EventHandler(ProblemDataParameter_ValueChanged);
     }
+
     private void ProblemDataParameter_ValueChanged(object sender, EventArgs e) {
+      ProblemDataParameter.Value.Changed += new EventHandler(ProblemDataParameter_ValueChanged);
       OnProblemDataChanged();
       OnReset();
     }
