@@ -57,7 +57,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       // 
       // itemsGroupBox
       // 
-      this.itemsGroupBox.Text = "Regression Solution";
+      this.itemsGroupBox.Text = "Clustering Solution";
       // 
       // addButton
       // 
@@ -71,7 +71,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Name = "RegressionSolutionView";
+      this.Name = "ClusteringSolutionView";
       this.splitContainer.Panel1.ResumeLayout(false);
       this.splitContainer.Panel2.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
@@ -79,7 +79,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.itemsGroupBox.ResumeLayout(false);
       this.detailsGroupBox.ResumeLayout(false);
       this.ResumeLayout(false);
-
     }
 
     #endregion
