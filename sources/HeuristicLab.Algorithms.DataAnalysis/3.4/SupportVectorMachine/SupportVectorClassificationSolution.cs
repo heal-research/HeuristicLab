@@ -19,10 +19,6 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -48,10 +44,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     public SupportVectorClassificationSolution(SupportVectorMachineModel model, IClassificationProblemData problemData)
       : base(model, problemData) {
+      RecalculateResults();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SupportVectorClassificationSolution(this, cloner);
+    }
+
+    protected override void RecalculateResults() {
+      CalculateResults();
     }
   }
 }

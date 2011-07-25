@@ -27,9 +27,6 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  /// <summary>
-  /// Represents a regression data analysis solution
-  /// </summary>
   [StorableClass]
   public abstract class RegressionSolutionBase : DataAnalysisSolution, IRegressionSolution {
     private const string TrainingMeanSquaredErrorResultName = "Mean squared error (training)";

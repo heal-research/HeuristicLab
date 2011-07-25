@@ -116,6 +116,8 @@
     <Compile Include="Implementation\Classification\ClassificationProblem.cs" />
     <Compile Include="Implementation\Classification\ClassificationSolution.cs" />
     <Compile Include="Implementation\Classification\ClassificationEnsembleProblemData.cs" />
+    <Compile Include="Implementation\Classification\ClassificationSolutionBase.cs" />
+    <Compile Include="Implementation\Classification\DiscriminantFunctionClassificationSolutionBase.cs" />
     <Compile Include="Implementation\Clustering\ClusteringProblem.cs" />
     <Compile Include="Implementation\Clustering\ClusteringProblemData.cs" />
     <Compile Include="Implementation\Clustering\ClusteringSolution.cs" />
