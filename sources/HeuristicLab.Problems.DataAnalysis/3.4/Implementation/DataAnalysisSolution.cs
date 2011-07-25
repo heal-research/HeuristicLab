@@ -79,8 +79,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       : base() {
       name = ItemName;
       description = ItemDescription;
-      Add(new Result(ModelResultName, "The symbolic data analysis model.", model));
-      Add(new Result(ProblemDataResultName, "The symbolic data analysis problem data.", problemData));
+      Add(new Result(ModelResultName, "The data analysis model.", model));
+      Add(new Result(ProblemDataResultName, "The data analysis problem data.", problemData));
 
       problemData.Changed += new EventHandler(ProblemData_Changed);
     }

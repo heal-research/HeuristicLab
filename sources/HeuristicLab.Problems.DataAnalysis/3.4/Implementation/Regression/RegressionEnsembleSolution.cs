@@ -19,13 +19,13 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System;
 using HeuristicLab.Data;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   /// <summary>
@@ -79,6 +79,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new RegressionEnsembleSolution(this, cloner);
+    }
+
+    protected override void RecalculateResults() {
+      CalculateResults();
     }
 
     public override IEnumerable<double> EstimatedTrainingValues {

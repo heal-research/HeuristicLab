@@ -61,7 +61,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       : base(model, problemData) {
       Add(new Result(ModelLengthResultName, "Length of the symbolic regression model.", new IntValue()));
       Add(new Result(ModelDepthResultName, "Depth of the symbolic regression model.", new IntValue()));
-      CalculateResults();
+      RecalculateResults();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -69,13 +69,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
     protected override void RecalculateResults() {
-      base.RecalculateResults();
-      CalculateResults();
-    }
-
-    private void CalculateResults() {
       ModelLength = Model.SymbolicExpressionTree.Length;
       ModelDepth = Model.SymbolicExpressionTree.Depth;
+      CalculateResults();
     }
   }
 }

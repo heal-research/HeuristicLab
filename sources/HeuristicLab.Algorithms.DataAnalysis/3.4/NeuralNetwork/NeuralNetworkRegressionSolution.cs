@@ -19,10 +19,6 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -48,10 +44,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     public NeuralNetworkRegressionSolution(IRegressionProblemData problemData, INeuralNetworkModel nnModel)
       : base(nnModel, problemData) {
+      RecalculateResults();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new NeuralNetworkRegressionSolution(this, cloner);
+    }
+
+    protected override void RecalculateResults() {
+      CalculateResults();
     }
   }
 }

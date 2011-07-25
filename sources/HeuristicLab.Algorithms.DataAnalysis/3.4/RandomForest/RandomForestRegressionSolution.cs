@@ -19,10 +19,6 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -48,10 +44,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     public RandomForestRegressionSolution(IRegressionProblemData problemData, IRandomForestModel randomForestModel)
       : base(randomForestModel, problemData) {
+      RecalculateResults();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new RandomForestRegressionSolution(this, cloner);
+    }
+
+    protected override void RecalculateResults() {
+      CalculateResults();
     }
   }
 }

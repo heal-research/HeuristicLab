@@ -36,5 +36,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     double TestRSquared { get; }
     double TrainingRelativeError { get; }
     double TestRelativeError { get; }
+    double TrainingNormalizedMeanSquaredError { get; }
+    double TestNormalizedMeanSquaredError { get; }
   }
 }

@@ -135,6 +135,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Interfaces\Regression\IRegressionEnsembleSolution.cs" />
+    <Compile Include="Implementation\Regression\RegressionSolutionBase.cs" />
     <Compile Include="OnlineCalculators\OnlineLinearScalingParameterCalculator.cs" />
     <Compile Include="Implementation\Classification\DiscriminantFunctionClassificationModel.cs" />
     <Compile Include="Implementation\Classification\DiscriminantFunctionClassificationSolution.cs" />
