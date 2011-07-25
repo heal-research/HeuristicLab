@@ -63,7 +63,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       : base(new RegressionEnsembleModel(models), new RegressionEnsembleProblemData(problemData)) {
       trainingPartitions = new Dictionary<IRegressionModel, IntRange>();
       testPartitions = new Dictionary<IRegressionModel, IntRange>();
-      AddModelsAndParitions(models,
+      AddModelsAndPartitions(models,
         from m in models select (IntRange)problemData.TrainingPartition.Clone(),
         from m in models select (IntRange)problemData.TestPartition.Clone());
       RecalculateResults();
@@ -73,7 +73,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       : base(new RegressionEnsembleModel(models), new RegressionEnsembleProblemData(problemData)) {
       this.trainingPartitions = new Dictionary<IRegressionModel, IntRange>();
       this.testPartitions = new Dictionary<IRegressionModel, IntRange>();
-      AddModelsAndParitions(models, trainingPartitions, testPartitions);
+      AddModelsAndPartitions(models, trainingPartitions, testPartitions);
       RecalculateResults();
     }
 
@@ -179,7 +179,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       RecalculateResults();
     }
 
-    private void AddModelsAndParitions(IEnumerable<IRegressionModel> models, IEnumerable<IntRange> trainingPartitions, IEnumerable<IntRange> testPartitions) {
+    private void AddModelsAndPartitions(IEnumerable<IRegressionModel> models, IEnumerable<IntRange> trainingPartitions, IEnumerable<IntRange> testPartitions) {
       var modelEnumerator = models.GetEnumerator();
       var trainingPartitionEnumerator = trainingPartitions.GetEnumerator();
       var testPartitionEnumerator = testPartitions.GetEnumerator();

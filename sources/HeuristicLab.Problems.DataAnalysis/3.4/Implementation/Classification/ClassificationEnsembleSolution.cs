@@ -78,7 +78,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       : base(new ClassificationEnsembleModel(models), new ClassificationEnsembleProblemData(problemData)) {
       this.trainingPartitions = new Dictionary<IClassificationModel, IntRange>();
       this.testPartitions = new Dictionary<IClassificationModel, IntRange>();
-      AddModelsAndParitions(models,
+      AddModelsAndPartitions(models,
         trainingPartitions,
         testPartitions);
       RecalculateResults();
@@ -190,7 +190,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       RecalculateResults();
     }
 
-    private void AddModelsAndParitions(IEnumerable<IClassificationModel> models, IEnumerable<IntRange> trainingPartitions, IEnumerable<IntRange> testPartitions) {
+    private void AddModelsAndPartitions(IEnumerable<IClassificationModel> models, IEnumerable<IntRange> trainingPartitions, IEnumerable<IntRange> testPartitions) {
       var modelEnumerator = models.GetEnumerator();
       var trainingPartitionEnumerator = trainingPartitions.GetEnumerator();
       var testPartitionEnumerator = testPartitions.GetEnumerator();
