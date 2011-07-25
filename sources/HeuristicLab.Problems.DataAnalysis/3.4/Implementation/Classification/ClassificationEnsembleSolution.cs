@@ -34,7 +34,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
   [Item("Classification Ensemble Solution", "A classification solution that contains an ensemble of multiple classification models")]
   // [Creatable("Data Analysis")]
-  public class ClassificationEnsembleSolution : ClassificationSolution, IClassificationEnsembleSolution {
+  public sealed class ClassificationEnsembleSolution : ClassificationSolution, IClassificationEnsembleSolution {
 
     public new IClassificationEnsembleModel Model {
       set { base.Model = value; }
@@ -48,8 +48,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
 
     [StorableConstructor]
-    protected ClassificationEnsembleSolution(bool deserializing) : base(deserializing) { }
-    protected ClassificationEnsembleSolution(ClassificationEnsembleSolution original, Cloner cloner)
+    private ClassificationEnsembleSolution(bool deserializing) : base(deserializing) { }
+    private ClassificationEnsembleSolution(ClassificationEnsembleSolution original, Cloner cloner)
       : base(original, cloner) {
       trainingPartitions = new Dictionary<IClassificationModel, IntRange>();
       testPartitions = new Dictionary<IClassificationModel, IntRange>();

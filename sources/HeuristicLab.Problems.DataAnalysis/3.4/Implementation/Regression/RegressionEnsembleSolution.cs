@@ -34,7 +34,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
   [Item("Regression Ensemble Solution", "A regression solution that contains an ensemble of multiple regression models")]
   // [Creatable("Data Analysis")]
-  public class RegressionEnsembleSolution : RegressionSolution, IRegressionEnsembleSolution {
+  public sealed class RegressionEnsembleSolution : RegressionSolution, IRegressionEnsembleSolution {
     public new IRegressionEnsembleModel Model {
       get { return (IRegressionEnsembleModel)base.Model; }
     }
@@ -45,8 +45,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private Dictionary<IRegressionModel, IntRange> testPartitions;
 
     [StorableConstructor]
-    protected RegressionEnsembleSolution(bool deserializing) : base(deserializing) { }
-    protected RegressionEnsembleSolution(RegressionEnsembleSolution original, Cloner cloner)
+    private RegressionEnsembleSolution(bool deserializing) : base(deserializing) { }
+    private RegressionEnsembleSolution(RegressionEnsembleSolution original, Cloner cloner)
       : base(original, cloner) {
       trainingPartitions = new Dictionary<IRegressionModel, IntRange>();
       testPartitions = new Dictionary<IRegressionModel, IntRange>();
