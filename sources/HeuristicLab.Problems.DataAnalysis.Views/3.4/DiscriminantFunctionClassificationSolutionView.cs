@@ -27,15 +27,18 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("DiscriminantFunctionClassificationSolution View")]
   [Content(typeof(DiscriminantFunctionClassificationSolution), true)]
-  public partial class DiscriminantFunctionClassificationSolutionView : ClassificationSolutionView {
+  public partial class DiscriminantFunctionClassificationSolutionView : DataAnalysisSolutionView {
     public DiscriminantFunctionClassificationSolutionView() {
       InitializeComponent();
+
+      var classificationSolutionEvaluationViewTypes = ApplicationManager.Manager.GetTypes(typeof(IClassificationSolutionEvaluationView), true);
+      foreach (Type viewType in classificationSolutionEvaluationViewTypes)
+        AddViewListViewItem(viewType);
+      RemoveViewListViewItem(typeof(ClassificationSolutionEstimatedClassValuesView));
 
       var regressionSolutionEvaluationViewTypes = ApplicationManager.Manager.GetTypes(typeof(IDiscriminantFunctionClassificationSolutionEvaluationView), true);
       foreach (Type viewType in regressionSolutionEvaluationViewTypes)
         AddViewListViewItem(viewType);
-
-      RemoveViewListViewItem(typeof(ClassificationSolutionEstimatedClassValuesView));
     }
 
     public new DiscriminantFunctionClassificationSolution Content {
