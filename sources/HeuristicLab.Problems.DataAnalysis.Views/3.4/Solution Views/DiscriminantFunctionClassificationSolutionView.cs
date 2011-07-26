@@ -26,7 +26,7 @@ using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("DiscriminantFunctionClassificationSolution View")]
-  [Content(typeof(DiscriminantFunctionClassificationSolution), true)]
+  [Content(typeof(DiscriminantFunctionClassificationSolutionBase), true)]
   public partial class DiscriminantFunctionClassificationSolutionView : DataAnalysisSolutionView {
     public DiscriminantFunctionClassificationSolutionView() {
       InitializeComponent();
@@ -41,8 +41,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         AddViewListViewItem(viewType);
     }
 
-    public new DiscriminantFunctionClassificationSolution Content {
-      get { return (DiscriminantFunctionClassificationSolution)base.Content; }
+    public new DiscriminantFunctionClassificationSolutionBase Content {
+      get { return (DiscriminantFunctionClassificationSolutionBase)base.Content; }
       set { base.Content = value; }
     }
   }

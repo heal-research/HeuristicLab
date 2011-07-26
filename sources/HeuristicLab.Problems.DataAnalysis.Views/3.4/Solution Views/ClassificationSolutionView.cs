@@ -26,7 +26,7 @@ using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("ClassificationSolution View")]
-  [Content(typeof(ClassificationSolution), true)]
+  [Content(typeof(ClassificationSolutionBase), true)]
   public partial class ClassificationSolutionView : DataAnalysisSolutionView {
     public ClassificationSolutionView() {
       InitializeComponent();
@@ -36,8 +36,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         AddViewListViewItem(viewType);
     }
 
-    public new ClassificationSolution Content {
-      get { return (ClassificationSolution)base.Content; }
+    public new ClassificationSolutionBase Content {
+      get { return (ClassificationSolutionBase)base.Content; }
       set { base.Content = value; }
     }
   }

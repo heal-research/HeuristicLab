@@ -26,7 +26,7 @@ using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("RegressionSolution View")]
-  [Content(typeof(RegressionSolution), true)]
+  [Content(typeof(RegressionSolutionBase), true)]
   public partial class RegressionSolutionView : DataAnalysisSolutionView {
     public RegressionSolutionView() {
       InitializeComponent();
@@ -36,8 +36,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         AddViewListViewItem(viewType);
     }
 
-    public new RegressionSolution Content {
-      get { return (RegressionSolution)base.Content; }
+    public new RegressionSolutionBase Content {
+      get { return (RegressionSolutionBase)base.Content; }
       set { base.Content = value; }
     }
   }
