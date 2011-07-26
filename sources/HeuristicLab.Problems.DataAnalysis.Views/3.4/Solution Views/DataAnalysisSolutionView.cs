@@ -101,7 +101,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     protected void RemoveViewListViewItem(Type viewType) {
       List<ListViewItem> itemsToRemove = new List<ListViewItem>(); ;
       foreach (ListViewItem item in itemsListView.Items)
-        if (item.Tag as Type == typeof(ClassificationSolutionEstimatedClassValuesView))
+        if (item.Tag as Type == typeof(IDataAnalysisSolutionEvaluationView))
           itemsToRemove.Add(item);
 
       foreach (ListViewItem item in itemsToRemove)

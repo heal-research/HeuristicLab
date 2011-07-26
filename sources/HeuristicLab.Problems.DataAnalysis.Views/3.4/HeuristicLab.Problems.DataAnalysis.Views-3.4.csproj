@@ -109,10 +109,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClassificationSolutionView.cs">
+    <Compile Include="Solution Views\ClassificationSolutionView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ClassificationSolutionView.Designer.cs">
+    <Compile Include="Solution Views\ClassificationSolutionView.Designer.cs">
       <DependentUpon>ClassificationSolutionView.cs</DependentUpon>
     </Compile>
     <Compile Include="Classification\ClassificationSolutionConfusionMatrixView.cs">
@@ -151,26 +151,26 @@
     <Compile Include="Clustering\ClusteringSolutionEstimatedClusterView.Designer.cs">
       <DependentUpon>ClusteringSolutionEstimatedClusterView.cs</DependentUpon>
     </Compile>
-    <Compile Include="ClusteringSolutionView.cs">
+    <Compile Include="Solution Views\ClusteringSolutionView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ClusteringSolutionView.Designer.cs">
+    <Compile Include="Solution Views\ClusteringSolutionView.Designer.cs">
       <DependentUpon>ClusteringSolutionView.cs</DependentUpon>
     </Compile>
-    <Compile Include="DiscriminantFunctionClassificationSolutionView.cs">
+    <Compile Include="Solution Views\DiscriminantFunctionClassificationSolutionView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="DiscriminantFunctionClassificationSolutionView.Designer.cs">
+    <Compile Include="Solution Views\DiscriminantFunctionClassificationSolutionView.Designer.cs">
       <DependentUpon>DiscriminantFunctionClassificationSolutionView.cs</DependentUpon>
     </Compile>
     <Compile Include="Interfaces\IDataAnalysisSolutionEvaluationView.cs" />
     <Compile Include="Interfaces\IDiscriminantFunctionClassificationSolutionEvaluationView.cs" />
     <Compile Include="Interfaces\IClusteringSolutionEvaluationView.cs" />
     <Compile Include="Interfaces\IClassificationSolutionEvaluationView.cs" />
-    <Compile Include="DataAnalysisSolutionView.cs">
+    <Compile Include="Solution Views\DataAnalysisSolutionView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="DataAnalysisSolutionView.Designer.cs">
+    <Compile Include="Solution Views\DataAnalysisSolutionView.Designer.cs">
       <DependentUpon>DataAnalysisSolutionView.cs</DependentUpon>
     </Compile>
     <Compile Include="DoubleLimitView.cs">
@@ -181,10 +181,10 @@
     </Compile>
     <Compile Include="Interfaces\IRegressionSolutionEvaluationView.cs" />
     <Compile Include="MenuItems\CreateEnsembleMenuItem.cs" />
-    <Compile Include="RegressionSolutionView.cs">
+    <Compile Include="Solution Views\RegressionSolutionView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="RegressionSolutionView.Designer.cs">
+    <Compile Include="Solution Views\RegressionSolutionView.Designer.cs">
       <DependentUpon>RegressionSolutionView.cs</DependentUpon>
     </Compile>
     <Compile Include="Regression\RegressionSolutionEstimatedValuesView.cs">
