@@ -78,9 +78,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
       : base(original, cloner) {
       RegisterEventHandler();
     }
-    protected DiscriminantFunctionClassificationSolutionBase(IRegressionModel model, IClassificationProblemData problemData)
-      : this(new DiscriminantFunctionClassificationModel(model), problemData) {
-    }
     protected DiscriminantFunctionClassificationSolutionBase(IDiscriminantFunctionClassificationModel model, IClassificationProblemData problemData)
       : base(model, problemData) {
       Add(new Result(TrainingMeanSquaredErrorResultName, "Mean of squared errors of the model on the training partition", new DoubleValue()));

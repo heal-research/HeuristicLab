@@ -38,9 +38,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
     protected DiscriminantFunctionClassificationSolution(DiscriminantFunctionClassificationSolution original, Cloner cloner)
       : base(original, cloner) {
     }
-    protected DiscriminantFunctionClassificationSolution(IRegressionModel model, IClassificationProblemData problemData)
-      : this(new DiscriminantFunctionClassificationModel(model), problemData) {
-    }
     protected DiscriminantFunctionClassificationSolution(IDiscriminantFunctionClassificationModel model, IClassificationProblemData problemData)
       : base(model, problemData) {
     }

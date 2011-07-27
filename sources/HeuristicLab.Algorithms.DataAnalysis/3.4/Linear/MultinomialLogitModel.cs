@@ -21,14 +21,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis;
-using SVM;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
@@ -108,6 +105,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         }
         yield return classValues[maxProbClassIndex];
       }
+    }
+
+    public MultinomialLogitClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
+      return new MultinomialLogitClassificationSolution(problemData, this);
+    }
+    IClassificationSolution IClassificationModel.CreateClassificationSolution(IClassificationProblemData problemData) {
+      return CreateClassificationSolution(problemData);
     }
 
     #region events

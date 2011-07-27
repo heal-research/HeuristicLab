@@ -32,7 +32,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
   /// </summary>
   [StorableClass]
   [Item("DiscriminantFunctionClassificationModel", "Represents a classification model that uses a discriminant function and classification thresholds.")]
-  public class DiscriminantFunctionClassificationModel : NamedItem, IDiscriminantFunctionClassificationModel {
+  public abstract class DiscriminantFunctionClassificationModel : NamedItem, IDiscriminantFunctionClassificationModel {
     [Storable]
     private IRegressionModel model;
 
@@ -69,10 +69,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
       this.thresholds = new double[] { double.NegativeInfinity };
     }
 
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new DiscriminantFunctionClassificationModel(this, cloner);
-    }
-
     public void SetThresholdsAndClassValues(IEnumerable<double> thresholds, IEnumerable<double> classValues) {
       var classValuesArr = classValues.ToArray();
       var thresholdsArr = thresholds.ToArray();
@@ -105,5 +101,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       if (listener != null) listener(this, e);
     }
     #endregion
+
+    public abstract IDiscriminantFunctionClassificationSolution CreateDiscriminantFunctionClassificationSolution(IClassificationProblemData problemData);
+    public abstract IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData);
   }
 }

@@ -142,6 +142,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     IRegressionSolution IRegressionModel.CreateRegressionSolution(IRegressionProblemData problemData) {
       return CreateRegressionSolution(problemData);
     }
+    public INeuralNetworkClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
+      return new NeuralNetworkClassificationSolution(problemData, this);
+    }
+    IClassificationSolution IClassificationModel.CreateClassificationSolution(IClassificationProblemData problemData) {
+      return CreateClassificationSolution(problemData);
+    }
 
     #region events
     public event EventHandler Changed;

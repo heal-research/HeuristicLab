@@ -88,6 +88,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
+    IClassificationSolution IClassificationModel.CreateClassificationSolution(IClassificationProblemData problemData) {
+      return new ClassificationEnsembleSolution(models, problemData);
+    }
     #endregion
   }
 }

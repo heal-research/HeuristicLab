@@ -103,6 +103,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       }
     }
 
+    public SymbolicDiscriminantFunctionClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
+      return new SymbolicDiscriminantFunctionClassificationSolution(this, problemData);
+    }
+    IClassificationSolution IClassificationModel.CreateClassificationSolution(IClassificationProblemData problemData) {
+      return CreateClassificationSolution(problemData);
+    }
+    IDiscriminantFunctionClassificationSolution IDiscriminantFunctionClassificationModel.CreateDiscriminantFunctionClassificationSolution(IClassificationProblemData problemData) {
+      return CreateClassificationSolution(problemData);
+    }
+
     #region events
     public event EventHandler ThresholdsChanged;
     protected virtual void OnThresholdsChanged(EventArgs e) {

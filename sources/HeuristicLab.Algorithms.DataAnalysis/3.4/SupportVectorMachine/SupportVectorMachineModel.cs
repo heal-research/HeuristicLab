@@ -153,6 +153,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         yield return bestClass;
       }
     }
+
+    public SupportVectorClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
+      return new SupportVectorClassificationSolution(this, problemData);
+    }
+    IClassificationSolution IClassificationModel.CreateClassificationSolution(IClassificationProblemData problemData) {
+      return CreateClassificationSolution(problemData);
+    }
     #endregion
     // cache for predictions, which is cloned but not persisted, must be cleared when the model is changed
     private Dictionary<Dataset, double[]> cachedPredictions = new Dictionary<Dataset, double[]>();

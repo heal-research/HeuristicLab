@@ -20,16 +20,10 @@
 #endregion
 
 using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Operators;
-using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Optimization;
-using System;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   /// <summary>
@@ -54,5 +48,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     public IEnumerable<double> GetEstimatedClassValues(Dataset dataset, IEnumerable<int> rows) {
       return Interpreter.GetSymbolicExpressionTreeValues(SymbolicExpressionTree, dataset, rows);
     }
+
+    public ISymbolicClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
+      return new SymbolicClassificationSolution(this, problemData);
+    }
+    IClassificationSolution IClassificationModel.CreateClassificationSolution(IClassificationProblemData problemData) {
+      return CreateClassificationSolution(problemData);
+    }
+
+
   }
 }
