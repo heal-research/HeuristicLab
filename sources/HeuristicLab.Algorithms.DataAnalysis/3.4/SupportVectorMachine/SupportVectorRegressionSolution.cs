@@ -50,9 +50,5 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SupportVectorRegressionSolution(this, cloner);
     }
-
-    protected override void RecalculateResults() {
-      base.CalculateResults();
-    }
   }
 }

@@ -50,9 +50,5 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public override IDeepCloneable Clone(Cloner cloner) {
       return new NeuralNetworkEnsembleRegressionSolution(this, cloner);
     }
-
-    protected override void RecalculateResults() {
-      CalculateResults();
-    }
   }
 }

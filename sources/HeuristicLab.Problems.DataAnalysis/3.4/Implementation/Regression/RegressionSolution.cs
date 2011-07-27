@@ -39,6 +39,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
       : base(model, problemData) {
     }
 
+    protected override void RecalculateResults() {
+      CalculateResults();
+    }
+
     public override IEnumerable<double> EstimatedValues {
       get { return GetEstimatedValues(Enumerable.Range(0, ProblemData.Dataset.Rows)); }
     }
