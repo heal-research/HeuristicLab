@@ -62,7 +62,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       }
     }
 
-    
+
     private void DeregisterVariableNamesViewContentEvents() {
       variableNamesView.Content.ItemsAdded -= new CollectionItemsChangedEventHandler<StringValue>(variableNames_Changed);
       variableNamesView.Content.ItemsRemoved -= new CollectionItemsChangedEventHandler<StringValue>(variableNames_Changed);
@@ -99,7 +99,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       additiveWeightChangeSigmaTextBox.Enabled = Content != null;
       additiveWeightChangeSigmaTextBox.ReadOnly = ReadOnly;
       multiplicativeWeightChangeSigmaTextBox.Enabled = Content != null;
-      multiplicativeWeightChangeSigmaTextBox.ReadOnly = ReadOnly;      
+      multiplicativeWeightChangeSigmaTextBox.ReadOnly = ReadOnly;
     }
 
     #region content event handlers
@@ -117,9 +117,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         foreach (var oldVar in args.OldItems)
           oldVar.ValueChanged -= new EventHandler(variable_ValueChanged);
       UpdateContent();
-    }    
+    }
 
-    void variable_ValueChanged(object sender, EventArgs e) {
+    private void variable_ValueChanged(object sender, EventArgs e) {
       UpdateContent();
     }
 
