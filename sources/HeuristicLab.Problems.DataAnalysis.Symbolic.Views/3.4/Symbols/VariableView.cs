@@ -57,13 +57,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       variableNamesView.Content.ItemsRemoved += new CollectionItemsChangedEventHandler<StringValue>(variableNames_Changed);
       variableNamesView.Content.CheckedItemsChanged += new CollectionItemsChangedEventHandler<StringValue>(variableNames_Changed);
       variableNamesView.Content.CollectionReset += new CollectionItemsChangedEventHandler<StringValue>(variableNames_Changed);
+      foreach (var variable in variableNamesView.Content) {
+        variable.ValueChanged += new EventHandler(variable_ValueChanged);
+      }
     }
 
+    
     private void DeregisterVariableNamesViewContentEvents() {
       variableNamesView.Content.ItemsAdded -= new CollectionItemsChangedEventHandler<StringValue>(variableNames_Changed);
       variableNamesView.Content.ItemsRemoved -= new CollectionItemsChangedEventHandler<StringValue>(variableNames_Changed);
       variableNamesView.Content.CheckedItemsChanged -= new CollectionItemsChangedEventHandler<StringValue>(variableNames_Changed);
       variableNamesView.Content.CollectionReset -= new CollectionItemsChangedEventHandler<StringValue>(variableNames_Changed);
+      foreach (var variable in variableNamesView.Content) {
+        variable.ValueChanged -= new EventHandler(variable_ValueChanged);
+      }
     }
 
 
@@ -92,7 +99,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       additiveWeightChangeSigmaTextBox.Enabled = Content != null;
       additiveWeightChangeSigmaTextBox.ReadOnly = ReadOnly;
       multiplicativeWeightChangeSigmaTextBox.Enabled = Content != null;
-      multiplicativeWeightChangeSigmaTextBox.ReadOnly = ReadOnly;
+      multiplicativeWeightChangeSigmaTextBox.ReadOnly = ReadOnly;      
     }
 
     #region content event handlers
@@ -103,12 +110,27 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     #region control event handlers
     private void variableNames_Changed(object sender, CollectionItemsChangedEventArgs<StringValue> args) {
+      if (args.Items != null)
+        foreach (var newVar in args.Items)
+          newVar.ValueChanged += new EventHandler(variable_ValueChanged);
+      if (args.OldItems != null)
+        foreach (var oldVar in args.OldItems)
+          oldVar.ValueChanged -= new EventHandler(variable_ValueChanged);
+      UpdateContent();
+    }    
+
+    void variable_ValueChanged(object sender, EventArgs e) {
+      UpdateContent();
+    }
+
+    private void UpdateContent() {
       if (Content != null) {
         Content.Changed -= new EventHandler(Content_Changed);
         Content.VariableNames = variableNamesView.Content.CheckedItems.Select(x => x.Value).ToList();
         Content.Changed += new EventHandler(Content_Changed);
       }
     }
+
 
     private void weightMuTextBox_TextChanged(object sender, EventArgs e) {
       double nu;
