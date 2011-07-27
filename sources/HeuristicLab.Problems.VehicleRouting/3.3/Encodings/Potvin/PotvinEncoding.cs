@@ -74,7 +74,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       route = -1;
       place = -1;
       bool bestFeasible = false;
-      double minDetour = 0;
+      double minDetour = double.MaxValue;
 
       for (int tour = 0; tour < Tours.Count; tour++) {
         if (tour != routeToAvoid) {
@@ -86,12 +86,11 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
             bool feasible = Tours[tour].Feasible(dueTimeArray, serviceTimeArray, readyTimeArray, demandArray,
               capacity, distMatrix);
 
-            if ((!allowInfeasible && feasible) || (allowInfeasible && (!bestFeasible || feasible))) {
+            if (feasible || allowInfeasible && !bestFeasible) {
               double newLength = Tours[tour].GetLength(distMatrix);
               double detour = newLength - length;
 
-              if (route <= 0 || detour < minDetour ||
-                (allowInfeasible && ((!(bestFeasible && !feasible)) && detour < minDetour || (feasible && !bestFeasible)))) {
+              if (route < 0 || detour < minDetour || feasible && !bestFeasible) {
                 route = tour;
                 place = i;
                 minDetour = detour;
