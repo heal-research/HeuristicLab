@@ -21,14 +21,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis;
-using SVM;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
@@ -177,6 +174,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         }
         yield return classValues[maxProbClassIndex];
       }
+    }
+
+    public INearestNeighbourRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
+      return new NearestNeighbourRegressionSolution(problemData, this);
+    }
+    IRegressionSolution IRegressionModel.CreateRegressionSolution(IRegressionProblemData problemData) {
+      return CreateRegressionSolution(problemData);
     }
 
     #region events

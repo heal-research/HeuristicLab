@@ -125,7 +125,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public IEnumerable<double> GetEstimatedValues(Dataset dataset, IEnumerable<int> rows) {
       return GetEstimatedValuesHelper(dataset, rows);
     }
+    public SupportVectorRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
+      return new SupportVectorRegressionSolution(this, problemData);
+    }
+    IRegressionSolution IRegressionModel.CreateRegressionSolution(IRegressionProblemData problemData) {
+      return CreateRegressionSolution(problemData);
+    }
     #endregion
+
     #region IClassificationModel Members
     public IEnumerable<double> GetEstimatedClassValues(Dataset dataset, IEnumerable<int> rows) {
       if (classValues == null) throw new NotSupportedException();

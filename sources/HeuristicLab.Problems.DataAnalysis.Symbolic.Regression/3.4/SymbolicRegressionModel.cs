@@ -60,6 +60,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         .LimitToRange(lowerEstimationLimit, upperEstimationLimit);
     }
 
+    public ISymbolicRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
+      return new SymbolicRegressionSolution(this, problemData);
+    }
+    IRegressionSolution IRegressionModel.CreateRegressionSolution(IRegressionProblemData problemData) {
+      return CreateRegressionSolution(problemData);
+    }
+
     public static void Scale(SymbolicRegressionModel model, IRegressionProblemData problemData) {
       var dataset = problemData.Dataset;
       var targetVariable = problemData.TargetVariable;

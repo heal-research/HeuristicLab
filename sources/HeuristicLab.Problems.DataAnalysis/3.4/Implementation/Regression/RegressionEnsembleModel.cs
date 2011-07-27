@@ -33,11 +33,24 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [Item("RegressionEnsembleModel", "A regression model that contains an ensemble of multiple regression models")]
   public class RegressionEnsembleModel : NamedItem, IRegressionEnsembleModel {
 
-    [Storable]
     private List<IRegressionModel> models;
     public IEnumerable<IRegressionModel> Models {
       get { return new List<IRegressionModel>(models); }
     }
+
+    [Storable(Name = "Models")]
+    private IEnumerable<IRegressionModel> StorableModels {
+      get { return models; }
+      set { models = value.ToList(); }
+    }
+
+    #region backwards compatiblity 3.3.5
+    [Storable(Name = "models", AllowOneWay = true)]
+    private List<IRegressionModel> OldStorableModels {
+      set { models = value; }
+    }
+    #endregion
+
     [StorableConstructor]
     protected RegressionEnsembleModel(bool deserializing) : base(deserializing) { }
     protected RegressionEnsembleModel(RegressionEnsembleModel original, Cloner cloner)
@@ -80,6 +93,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
       foreach (var estimatedValuesVector in GetEstimatedValueVectors(dataset, rows)) {
         yield return estimatedValuesVector.Average();
       }
+    }
+
+    public RegressionEnsembleSolution CreateRegressionSolution(IRegressionProblemData problemData) {
+      return new RegressionEnsembleSolution(this.Models, problemData);
+    }
+    IRegressionSolution IRegressionModel.CreateRegressionSolution(IRegressionProblemData problemData) {
+      return CreateRegressionSolution(problemData);
     }
 
     #endregion

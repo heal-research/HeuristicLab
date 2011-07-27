@@ -23,5 +23,6 @@ using System.Collections.Generic;
 namespace HeuristicLab.Problems.DataAnalysis {
   public interface IRegressionModel : IDataAnalysisModel {
     IEnumerable<double> GetEstimatedValues(Dataset dataset, IEnumerable<int> rows);
+    IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData);
   }
 }
