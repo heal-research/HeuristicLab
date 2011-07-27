@@ -33,9 +33,7 @@ namespace HeuristicLab.Optimization.Views {
       get { return base.ReadOnly; }
       set { /*not needed because results are always readonly */}
     }
-    /// <summary>
-    /// Initializes a new instance of <see cref="VariablesScopeView"/> with caption "Variables Scope View".
-    /// </summary>
+
     public ResultCollectionView() {
       InitializeComponent();
       itemsGroupBox.Text = "Results";
