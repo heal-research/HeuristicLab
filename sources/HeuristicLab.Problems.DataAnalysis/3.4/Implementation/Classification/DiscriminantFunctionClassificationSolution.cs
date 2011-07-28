@@ -32,14 +32,26 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
   [Item("DiscriminantFunctionClassificationSolution", "Represents a classification solution that uses a discriminant function and classification thresholds.")]
   public abstract class DiscriminantFunctionClassificationSolution : DiscriminantFunctionClassificationSolutionBase {
+    protected readonly Dictionary<int, double> valueEvaluationCache;
+    protected readonly Dictionary<int, double> classValueEvaluationCache;
 
     [StorableConstructor]
-    protected DiscriminantFunctionClassificationSolution(bool deserializing) : base(deserializing) { }
+    protected DiscriminantFunctionClassificationSolution(bool deserializing)
+      : base(deserializing) {
+      valueEvaluationCache = new Dictionary<int, double>();
+      classValueEvaluationCache = new Dictionary<int, double>();
+    }
     protected DiscriminantFunctionClassificationSolution(DiscriminantFunctionClassificationSolution original, Cloner cloner)
       : base(original, cloner) {
+      valueEvaluationCache = new Dictionary<int, double>(original.valueEvaluationCache);
+      classValueEvaluationCache = new Dictionary<int, double>(original.classValueEvaluationCache);
     }
     protected DiscriminantFunctionClassificationSolution(IDiscriminantFunctionClassificationModel model, IClassificationProblemData problemData)
       : base(model, problemData) {
+      valueEvaluationCache = new Dictionary<int, double>();
+      classValueEvaluationCache = new Dictionary<int, double>();
+
+      SetAccuracyMaximizingThresholds();
     }
 
     public override IEnumerable<double> EstimatedClassValues {
@@ -53,7 +65,15 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public override IEnumerable<double> GetEstimatedClassValues(IEnumerable<int> rows) {
-      return Model.GetEstimatedClassValues(ProblemData.Dataset, rows);
+      var rowsToEvaluate = rows.Except(classValueEvaluationCache.Keys);
+      var rowsEnumerator = rowsToEvaluate.GetEnumerator();
+      var valuesEnumerator = Model.GetEstimatedClassValues(ProblemData.Dataset, rowsToEvaluate).GetEnumerator();
+
+      while (rowsEnumerator.MoveNext() & valuesEnumerator.MoveNext()) {
+        classValueEvaluationCache.Add(rowsEnumerator.Current, valuesEnumerator.Current);
+      }
+
+      return rows.Select(row => classValueEvaluationCache[row]);
     }
 
 
@@ -68,7 +88,30 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public override IEnumerable<double> GetEstimatedValues(IEnumerable<int> rows) {
-      return Model.GetEstimatedValues(ProblemData.Dataset, rows);
+      var rowsToEvaluate = rows.Except(valueEvaluationCache.Keys);
+      var rowsEnumerator = rowsToEvaluate.GetEnumerator();
+      var valuesEnumerator = Model.GetEstimatedValues(ProblemData.Dataset, rowsToEvaluate).GetEnumerator();
+
+      while (rowsEnumerator.MoveNext() & valuesEnumerator.MoveNext()) {
+        valueEvaluationCache.Add(rowsEnumerator.Current, valuesEnumerator.Current);
+      }
+
+      return rows.Select(row => valueEvaluationCache[row]);
+    }
+
+    protected override void OnModelChanged() {
+      valueEvaluationCache.Clear();
+      classValueEvaluationCache.Clear();
+      base.OnModelChanged();
+    }
+    protected override void OnModelThresholdsChanged(System.EventArgs e) {
+      classValueEvaluationCache.Clear();
+      base.OnModelThresholdsChanged(e);
+    }
+    protected override void OnProblemDataChanged() {
+      valueEvaluationCache.Clear();
+      classValueEvaluationCache.Clear();
+      base.OnProblemDataChanged();
     }
   }
 }

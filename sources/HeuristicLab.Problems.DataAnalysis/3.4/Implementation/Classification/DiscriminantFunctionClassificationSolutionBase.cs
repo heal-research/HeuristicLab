@@ -85,7 +85,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Add(new Result(TrainingRSquaredResultName, "Squared Pearson's correlation coefficient of the model output and the actual values on the training partition", new DoubleValue()));
       Add(new Result(TestRSquaredResultName, "Squared Pearson's correlation coefficient of the model output and the actual values on the test partition", new DoubleValue()));
 
-      SetAccuracyMaximizingThresholds();
       RegisterEventHandler();
     }
 
@@ -94,11 +93,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
       RegisterEventHandler();
     }
 
-    protected override void OnModelChanged(EventArgs e) {
+    protected override void OnModelChanged() {
       DeregisterEventHandler();
       SetAccuracyMaximizingThresholds();
       RegisterEventHandler();
-      base.OnModelChanged(e);
+      base.OnModelChanged();
     }
 
     protected void CalculateRegressionResults() {
@@ -148,7 +147,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     protected virtual void OnModelThresholdsChanged(EventArgs e) {
-      RecalculateResults();
+      CalculateResults();
     }
 
     public abstract IEnumerable<double> EstimatedValues { get; }

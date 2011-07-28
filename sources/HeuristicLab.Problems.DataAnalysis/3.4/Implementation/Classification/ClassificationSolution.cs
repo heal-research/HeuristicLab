@@ -30,13 +30,20 @@ namespace HeuristicLab.Problems.DataAnalysis {
   /// </summary>
   [StorableClass]
   public abstract class ClassificationSolution : ClassificationSolutionBase {
+    protected readonly Dictionary<int, double> evaluationCache;
+
     [StorableConstructor]
-    protected ClassificationSolution(bool deserializing) : base(deserializing) { }
+    protected ClassificationSolution(bool deserializing)
+      : base(deserializing) {
+      evaluationCache = new Dictionary<int, double>();
+    }
     protected ClassificationSolution(ClassificationSolution original, Cloner cloner)
       : base(original, cloner) {
+      evaluationCache = new Dictionary<int, double>(original.evaluationCache);
     }
     public ClassificationSolution(IClassificationModel model, IClassificationProblemData problemData)
       : base(model, problemData) {
+      evaluationCache = new Dictionary<int, double>();
     }
 
     public override IEnumerable<double> EstimatedClassValues {
@@ -50,7 +57,25 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public override IEnumerable<double> GetEstimatedClassValues(IEnumerable<int> rows) {
-      return Model.GetEstimatedClassValues(ProblemData.Dataset, rows);
+      var rowsToEvaluate = rows.Except(evaluationCache.Keys);
+      var rowsEnumerator = rowsToEvaluate.GetEnumerator();
+      var valuesEnumerator = Model.GetEstimatedClassValues(ProblemData.Dataset, rowsToEvaluate).GetEnumerator();
+
+      while (rowsEnumerator.MoveNext() & valuesEnumerator.MoveNext()) {
+        evaluationCache.Add(rowsEnumerator.Current, valuesEnumerator.Current);
+      }
+
+      return rows.Select(row => evaluationCache[row]);
+    }
+
+    protected override void OnProblemDataChanged() {
+      evaluationCache.Clear();
+      base.OnProblemDataChanged();
+    }
+
+    protected override void OnModelChanged() {
+      evaluationCache.Clear();
+      base.OnModelChanged();
     }
   }
 }

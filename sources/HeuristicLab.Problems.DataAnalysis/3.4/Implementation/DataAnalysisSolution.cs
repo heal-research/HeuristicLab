@@ -47,7 +47,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
         if (this[ModelResultName].Value != value) {
           if (value != null) {
             this[ModelResultName].Value = value;
-            OnModelChanged(EventArgs.Empty);
+            OnModelChanged();
           }
         }
       }
@@ -61,7 +61,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
             ProblemData.Changed -= new EventHandler(ProblemData_Changed);
             this[ProblemDataResultName].Value = value;
             ProblemData.Changed += new EventHandler(ProblemData_Changed);
-            OnProblemDataChanged(EventArgs.Empty);
+            OnProblemDataChanged();
           }
         }
       }
@@ -88,21 +88,21 @@ namespace HeuristicLab.Problems.DataAnalysis {
     protected abstract void RecalculateResults();
 
     private void ProblemData_Changed(object sender, EventArgs e) {
-      OnProblemDataChanged(e);
+      OnProblemDataChanged();
     }
 
     public event EventHandler ModelChanged;
-    protected virtual void OnModelChanged(EventArgs e) {
+    protected virtual void OnModelChanged() {
       RecalculateResults();
       var listeners = ModelChanged;
-      if (listeners != null) listeners(this, e);
+      if (listeners != null) listeners(this, EventArgs.Empty);
     }
 
     public event EventHandler ProblemDataChanged;
-    protected virtual void OnProblemDataChanged(EventArgs e) {
+    protected virtual void OnProblemDataChanged() {
       RecalculateResults();
       var listeners = ProblemDataChanged;
-      if (listeners != null) listeners(this, e);
+      if (listeners != null) listeners(this, EventArgs.Empty);
     }
 
     #region INamedItem Members
