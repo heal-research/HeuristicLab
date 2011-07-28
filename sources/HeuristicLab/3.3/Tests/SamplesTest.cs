@@ -120,8 +120,8 @@ namespace HeuristicLab_33.Tests {
       ga.SetSeedRandomly.Value = false;
       RunAlgorithm(ga);
       Assert.AreEqual(1828.9368669428336, GetDoubleResult(ga, "BestQuality"));
-      Assert.AreEqual(1829.6829520983711, GetDoubleResult(ga, "CurrentAverageQuality"));
-      Assert.AreEqual(1867.8378222145707, GetDoubleResult(ga, "CurrentWorstQuality"));
+      Assert.AreEqual(1831.6785302558208, GetDoubleResult(ga, "CurrentAverageQuality"));
+      Assert.AreEqual(1948.3864562948675, GetDoubleResult(ga, "CurrentWorstQuality"));
       Assert.AreEqual(99100, GetIntResult(ga, "EvaluatedSolutions"));
     }
 
