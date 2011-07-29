@@ -109,6 +109,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Regression\RegressionEnsembleSolutionModelView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Regression\RegressionEnsembleSolutionModelView.Designer.cs">
+      <DependentUpon>RegressionEnsembleSolutionModelView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Solution Views\ClassificationSolutionView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -163,7 +169,6 @@
     <Compile Include="Solution Views\DiscriminantFunctionClassificationSolutionView.Designer.cs">
       <DependentUpon>DiscriminantFunctionClassificationSolutionView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interfaces\IDataAnalysisSolutionEvaluationView.cs" />
     <Compile Include="Interfaces\IDiscriminantFunctionClassificationSolutionEvaluationView.cs" />
     <Compile Include="Interfaces\IClusteringSolutionEvaluationView.cs" />
     <Compile Include="Interfaces\IClassificationSolutionEvaluationView.cs" />
@@ -181,6 +186,12 @@
     </Compile>
     <Compile Include="Interfaces\IRegressionSolutionEvaluationView.cs" />
     <Compile Include="MenuItems\CreateEnsembleMenuItem.cs" />
+    <Compile Include="Solution Views\RegressionEnsembleSolutionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Solution Views\RegressionEnsembleSolutionView.Designer.cs">
+      <DependentUpon>RegressionEnsembleSolutionView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Solution Views\RegressionSolutionView.cs">
       <SubType>UserControl</SubType>
     </Compile>

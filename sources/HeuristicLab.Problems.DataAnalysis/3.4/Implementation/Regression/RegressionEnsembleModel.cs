@@ -73,6 +73,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public void Add(IRegressionModel model) {
       models.Add(model);
     }
+    public void Remove(IRegressionModel model) {
+      models.Remove(model);
+    }
 
     public IEnumerable<IEnumerable<double>> GetEstimatedValueVectors(Dataset dataset, IEnumerable<int> rows) {
       var estimatedValuesEnumerators = (from model in models

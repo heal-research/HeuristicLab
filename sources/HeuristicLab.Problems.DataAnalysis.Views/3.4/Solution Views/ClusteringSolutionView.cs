@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
       var clusteringSolutionEvaluationViewTypes = ApplicationManager.Manager.GetTypes(typeof(IClusteringSolutionEvaluationView), true);
       foreach (Type viewType in clusteringSolutionEvaluationViewTypes)
-        AddViewListViewItem(viewType);
+        AddViewListViewItem(viewType, HeuristicLab.Common.Resources.VSImageLibrary.Graph);
     }
 
     public new ClusteringSolution Content {

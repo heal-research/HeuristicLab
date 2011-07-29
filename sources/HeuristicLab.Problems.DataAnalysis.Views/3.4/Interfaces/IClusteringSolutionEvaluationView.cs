@@ -21,7 +21,7 @@
 
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
-  public interface IClusteringSolutionEvaluationView : IDataAnalysisSolutionEvaluationView {
+  public interface IClusteringSolutionEvaluationView {
     new IClusteringSolution Content { get; set; }
   }
 }

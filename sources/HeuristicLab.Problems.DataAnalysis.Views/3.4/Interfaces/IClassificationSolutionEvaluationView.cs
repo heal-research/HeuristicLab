@@ -21,7 +21,7 @@
 
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
-  public interface IClassificationSolutionEvaluationView : IDataAnalysisSolutionEvaluationView {
+  public interface IClassificationSolutionEvaluationView {
     new IClassificationSolution Content { get; set; }
   }
 }

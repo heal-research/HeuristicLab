@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
       var regressionSolutionEvaluationViewTypes = ApplicationManager.Manager.GetTypes(typeof(IRegressionSolutionEvaluationView), true);
       foreach (Type viewType in regressionSolutionEvaluationViewTypes)
-        AddViewListViewItem(viewType);
+        AddViewListViewItem(viewType, HeuristicLab.Common.Resources.VSImageLibrary.Graph);
     }
 
     public new RegressionSolutionBase Content {

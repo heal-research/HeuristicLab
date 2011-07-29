@@ -21,8 +21,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
-using HeuristicLab.Common.Resources;
 using HeuristicLab.MainForm;
 using HeuristicLab.Optimization.Views;
 
@@ -45,17 +46,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         selectedName = itemsListView.SelectedItems[0].Text;
 
       //cache old viewTypes;
-      var viewTypes = new List<Type>();
+      var viewTypes = new List<Tuple<Type, Image>>();
       foreach (ListViewItem item in ItemsListView.Items) {
         var viewType = item.Tag as Type;
-        if (viewType != null) viewTypes.Add(viewType);
+        if (viewType != null) viewTypes.Add(Tuple.Create(viewType, imageList.Images[item.ImageIndex]));
       }
 
       base.OnContentChanged();
 
       //readd viewTypes
-      foreach (Type viewType in viewTypes)
-        AddViewListViewItem(viewType);
+      foreach (var tuple in viewTypes)
+        AddViewListViewItem(tuple.Item1, tuple.Item2);
 
       //recover selection
       if (selectedName != null) {
@@ -84,13 +85,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         base.itemsListView_SelectedIndexChanged(sender, e);
     }
 
-    protected void AddViewListViewItem(Type viewType) {
-      if (!typeof(IDataAnalysisSolutionEvaluationView).IsAssignableFrom(viewType))
-        throw new ArgumentException("Given type " + viewType + " is not a IDataAnalysisSolutionEvaluationView.");
-
+    protected void AddViewListViewItem(Type viewType, Image image) {
       ListViewItem listViewItem = new ListViewItem();
       listViewItem.Text = ViewAttribute.GetViewName(viewType);
-      itemsListView.SmallImageList.Images.Add(VSImageLibrary.Graph);
+      itemsListView.SmallImageList.Images.Add(image);
       listViewItem.ImageIndex = itemsListView.SmallImageList.Images.Count - 1;
       listViewItem.Tag = viewType;
       itemsListView.Items.Add(listViewItem);
@@ -99,10 +97,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     protected void RemoveViewListViewItem(Type viewType) {
-      List<ListViewItem> itemsToRemove = new List<ListViewItem>(); ;
-      foreach (ListViewItem item in itemsListView.Items)
-        if (item.Tag as Type == typeof(IDataAnalysisSolutionEvaluationView))
-          itemsToRemove.Add(item);
+      List<ListViewItem> itemsToRemove = itemsListView.Items.Cast<ListViewItem>().Where(item => item.Tag as Type == viewType).ToList();
 
       foreach (ListViewItem item in itemsToRemove)
         itemsListView.Items.Remove(item);

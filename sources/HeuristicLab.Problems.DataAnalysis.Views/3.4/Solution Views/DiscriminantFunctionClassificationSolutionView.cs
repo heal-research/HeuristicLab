@@ -33,12 +33,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
       var classificationSolutionEvaluationViewTypes = ApplicationManager.Manager.GetTypes(typeof(IClassificationSolutionEvaluationView), true);
       foreach (Type viewType in classificationSolutionEvaluationViewTypes)
-        AddViewListViewItem(viewType);
+        AddViewListViewItem(viewType, HeuristicLab.Common.Resources.VSImageLibrary.Graph);
       RemoveViewListViewItem(typeof(ClassificationSolutionEstimatedClassValuesView));
 
       var regressionSolutionEvaluationViewTypes = ApplicationManager.Manager.GetTypes(typeof(IDiscriminantFunctionClassificationSolutionEvaluationView), true);
       foreach (Type viewType in regressionSolutionEvaluationViewTypes)
-        AddViewListViewItem(viewType);
+        AddViewListViewItem(viewType, HeuristicLab.Common.Resources.VSImageLibrary.Graph);
     }
 
     public new DiscriminantFunctionClassificationSolutionBase Content {

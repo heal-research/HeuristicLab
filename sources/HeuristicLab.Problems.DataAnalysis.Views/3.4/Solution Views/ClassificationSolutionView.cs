@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
       var classificationSolutionEvaluationViewTypes = ApplicationManager.Manager.GetTypes(typeof(IClassificationSolutionEvaluationView), true);
       foreach (Type viewType in classificationSolutionEvaluationViewTypes)
-        AddViewListViewItem(viewType);
+        AddViewListViewItem(viewType, HeuristicLab.Common.Resources.VSImageLibrary.Graph);
     }
 
     public new ClassificationSolutionBase Content {

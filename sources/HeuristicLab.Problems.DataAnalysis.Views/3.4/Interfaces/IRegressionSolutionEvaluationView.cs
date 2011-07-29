@@ -21,7 +21,7 @@
 
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
-  public interface IRegressionSolutionEvaluationView : IDataAnalysisSolutionEvaluationView {
+  public interface IRegressionSolutionEvaluationView {
     new IRegressionSolution Content { get; set; }
   }
 }
