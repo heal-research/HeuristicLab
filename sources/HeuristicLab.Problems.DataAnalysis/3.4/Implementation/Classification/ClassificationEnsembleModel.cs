@@ -60,6 +60,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public void Add(IClassificationModel model) {
       models.Add(model);
     }
+    public void Remove(IClassificationModel model) {
+      models.Remove(model);
+    }
 
     public IEnumerable<IEnumerable<double>> GetEstimatedClassValueVectors(Dataset dataset, IEnumerable<int> rows) {
       var estimatedValuesEnumerators = (from model in models

@@ -203,6 +203,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     #endregion
 
     public void AddRegressionSolutions(IEnumerable<IRegressionSolution> solutions) {
+      solutions.OfType<RegressionEnsembleSolution>().SelectMany(ensemble => ensemble.RegressionSolutions);
       regressionSolutions.AddRange(solutions);
     }
     public void RemoveRegressionSolutions(IEnumerable<IRegressionSolution> solutions) {

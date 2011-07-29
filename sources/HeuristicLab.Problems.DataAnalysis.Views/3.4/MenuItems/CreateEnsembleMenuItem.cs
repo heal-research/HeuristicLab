@@ -20,13 +20,13 @@
 #endregion
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
+using HeuristicLab.Core;
 using HeuristicLab.MainForm;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimizer;
-using HeuristicLab.Core;
 
 namespace HeuristicLab.Problems.DataAnalysis.MenuItems {
   internal class CreateEnsembleMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItem, IOptimizerUserInterfaceItemProvider {
@@ -84,7 +84,7 @@ namespace HeuristicLab.Problems.DataAnalysis.MenuItems {
               .ProblemData.Clone();
             var ensemble = new ClassificationEnsembleSolution(Enumerable.Empty<IClassificationModel>(), problemData);
             ensemble.Name = group.Key + " ensemble";
-            ensemble.AddModelsAndPartitions(group.OfType<IClassificationSolution>());
+            ensemble.AddClassificationSolutions(group.OfType<IClassificationSolution>());
             MainFormManager.MainForm.ShowContent(ensemble);
           }
         }

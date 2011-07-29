@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -35,10 +36,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [Item("Classification Ensemble Solution", "A classification solution that contains an ensemble of multiple classification models")]
   // [Creatable("Data Analysis")]
   public sealed class ClassificationEnsembleSolution : ClassificationSolution, IClassificationEnsembleSolution {
-
     public new IClassificationEnsembleModel Model {
-      set { base.Model = value; }
       get { return (IClassificationEnsembleModel)base.Model; }
+    }
+
+    private readonly ItemCollection<IClassificationSolution> classificationSolutions;
+    public IItemCollection<IClassificationSolution> ClassificationSolutions {
+      get { return classificationSolutions; }
     }
 
     [Storable]
@@ -46,9 +50,25 @@ namespace HeuristicLab.Problems.DataAnalysis {
     [Storable]
     private Dictionary<IClassificationModel, IntRange> testPartitions;
 
-
     [StorableConstructor]
-    private ClassificationEnsembleSolution(bool deserializing) : base(deserializing) { }
+    private ClassificationEnsembleSolution(bool deserializing)
+      : base(deserializing) {
+      classificationSolutions = new ItemCollection<IClassificationSolution>();
+    }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      foreach (var model in Model.Models) {
+        IClassificationProblemData problemData = (IClassificationProblemData)ProblemData.Clone();
+        problemData.TrainingPartition.Start = trainingPartitions[model].Start;
+        problemData.TrainingPartition.End = trainingPartitions[model].End;
+        problemData.TestPartition.Start = testPartitions[model].Start;
+        problemData.TestPartition.End = testPartitions[model].End;
+
+        classificationSolutions.Add(model.CreateClassificationSolution(problemData));
+      }
+      RegisterClassificationSolutionsEventHandler();
+    }
+
     private ClassificationEnsembleSolution(ClassificationEnsembleSolution original, Cloner cloner)
       : base(original, cloner) {
       trainingPartitions = new Dictionary<IClassificationModel, IntRange>();
@@ -59,39 +79,59 @@ namespace HeuristicLab.Problems.DataAnalysis {
       foreach (var pair in original.testPartitions) {
         testPartitions[cloner.Clone(pair.Key)] = cloner.Clone(pair.Value);
       }
-      RecalculateResults();
-    }
-    public ClassificationEnsembleSolution(IEnumerable<IClassificationModel> models, IClassificationProblemData problemData)
-      : base(new ClassificationEnsembleModel(models), new ClassificationEnsembleProblemData(problemData)) {
-      this.name = ItemName;
-      this.description = ItemDescription;
-      trainingPartitions = new Dictionary<IClassificationModel, IntRange>();
-      testPartitions = new Dictionary<IClassificationModel, IntRange>();
-      foreach (var model in models) {
-        trainingPartitions[model] = (IntRange)problemData.TrainingPartition.Clone();
-        testPartitions[model] = (IntRange)problemData.TestPartition.Clone();
-      }
-      RecalculateResults();
+
+      classificationSolutions = cloner.Clone(original.classificationSolutions);
+      RegisterClassificationSolutionsEventHandler();
     }
 
+    public ClassificationEnsembleSolution(IEnumerable<IClassificationModel> models, IClassificationProblemData problemData)
+      : this(models, problemData,
+             models.Select(m => (IntRange)problemData.TrainingPartition.Clone()),
+             models.Select(m => (IntRange)problemData.TestPartition.Clone())
+      ) { }
+
     public ClassificationEnsembleSolution(IEnumerable<IClassificationModel> models, IClassificationProblemData problemData, IEnumerable<IntRange> trainingPartitions, IEnumerable<IntRange> testPartitions)
-      : base(new ClassificationEnsembleModel(models), new ClassificationEnsembleProblemData(problemData)) {
+      : base(new ClassificationEnsembleModel(Enumerable.Empty<IClassificationModel>()), new ClassificationEnsembleProblemData(problemData)) {
       this.trainingPartitions = new Dictionary<IClassificationModel, IntRange>();
       this.testPartitions = new Dictionary<IClassificationModel, IntRange>();
-      AddModelsAndPartitions(models,
-        trainingPartitions,
-        testPartitions);
-      RecalculateResults();
+      this.classificationSolutions = new ItemCollection<IClassificationSolution>();
+
+      List<IClassificationSolution> solutions = new List<IClassificationSolution>();
+      var modelEnumerator = models.GetEnumerator();
+      var trainingPartitionEnumerator = trainingPartitions.GetEnumerator();
+      var testPartitionEnumerator = testPartitions.GetEnumerator();
+
+      while (modelEnumerator.MoveNext() & trainingPartitionEnumerator.MoveNext() & testPartitionEnumerator.MoveNext()) {
+        var p = (IClassificationProblemData)problemData.Clone();
+        p.TrainingPartition.Start = trainingPartitionEnumerator.Current.Start;
+        p.TrainingPartition.End = trainingPartitionEnumerator.Current.End;
+        p.TestPartition.Start = testPartitionEnumerator.Current.Start;
+        p.TestPartition.End = testPartitionEnumerator.Current.End;
+
+        solutions.Add(modelEnumerator.Current.CreateClassificationSolution(p));
+      }
+      if (modelEnumerator.MoveNext() | trainingPartitionEnumerator.MoveNext() | testPartitionEnumerator.MoveNext()) {
+        throw new ArgumentException();
+      }
+
+      RegisterClassificationSolutionsEventHandler();
+      classificationSolutions.AddRange(solutions);
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ClassificationEnsembleSolution(this, cloner);
+    }
+    private void RegisterClassificationSolutionsEventHandler() {
+      classificationSolutions.ItemsAdded += new CollectionItemsChangedEventHandler<IClassificationSolution>(classificationSolutions_ItemsAdded);
+      classificationSolutions.ItemsRemoved += new CollectionItemsChangedEventHandler<IClassificationSolution>(classificationSolutions_ItemsRemoved);
+      classificationSolutions.CollectionReset += new CollectionItemsChangedEventHandler<IClassificationSolution>(classificationSolutions_CollectionReset);
     }
 
     protected override void RecalculateResults() {
       CalculateResults();
     }
 
+    #region Evaluation
     public override IEnumerable<double> EstimatedTrainingClassValues {
       get {
         var rows = ProblemData.TrainingIndizes;
@@ -165,43 +205,41 @@ namespace HeuristicLab.Problems.DataAnalysis {
       .DefaultIfEmpty(double.NaN)
       .First();
     }
+    #endregion
 
-    public void AddModelsAndPartitions(IEnumerable<IClassificationSolution> solutions) {
-      foreach (var solution in solutions) {
-        var ensembleSolution = solution as ClassificationEnsembleSolution;
-        if (ensembleSolution != null) {
-          var data = from m in ensembleSolution.Model.Models
-                     let train = ensembleSolution.trainingPartitions[m]
-                     let test = ensembleSolution.testPartitions[m]
-                     select new { m, train, test };
+    public void AddClassificationSolutions(IEnumerable<IClassificationSolution> solutions) {
+      classificationSolutions.AddRange(solutions);
+    }
+    public void RemoveClassificationSolutions(IEnumerable<IClassificationSolution> solutions) {
+      classificationSolutions.RemoveRange(solutions);
+    }
 
-          foreach (var d in data) {
-            Model.Add(d.m);
-            trainingPartitions[d.m] = (IntRange)d.train.Clone();
-            testPartitions[d.m] = (IntRange)d.test.Clone();
-          }
-        } else {
-          Model.Add(solution.Model);
-          trainingPartitions[solution.Model] = (IntRange)solution.ProblemData.TrainingPartition.Clone();
-          testPartitions[solution.Model] = (IntRange)solution.ProblemData.TestPartition.Clone();
-        }
-      }
-
+    private void classificationSolutions_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IClassificationSolution> e) {
+      foreach (var solution in e.Items) AddClassificationSolution(solution);
+      RecalculateResults();
+    }
+    private void classificationSolutions_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IClassificationSolution> e) {
+      foreach (var solution in e.Items) RemoveClassificationSolution(solution);
+      RecalculateResults();
+    }
+    private void classificationSolutions_CollectionReset(object sender, CollectionItemsChangedEventArgs<IClassificationSolution> e) {
+      foreach (var solution in e.OldItems) RemoveClassificationSolution(solution);
+      foreach (var solution in e.Items) AddClassificationSolution(solution);
       RecalculateResults();
     }
 
-    private void AddModelsAndPartitions(IEnumerable<IClassificationModel> models, IEnumerable<IntRange> trainingPartitions, IEnumerable<IntRange> testPartitions) {
-      var modelEnumerator = models.GetEnumerator();
-      var trainingPartitionEnumerator = trainingPartitions.GetEnumerator();
-      var testPartitionEnumerator = testPartitions.GetEnumerator();
+    private void AddClassificationSolution(IClassificationSolution solution) {
+      if (Model.Models.Contains(solution.Model)) throw new ArgumentException();
+      Model.Add(solution.Model);
+      trainingPartitions[solution.Model] = solution.ProblemData.TrainingPartition;
+      testPartitions[solution.Model] = solution.ProblemData.TestPartition;
+    }
 
-      while (modelEnumerator.MoveNext() & trainingPartitionEnumerator.MoveNext() & testPartitionEnumerator.MoveNext()) {
-        this.trainingPartitions[modelEnumerator.Current] = (IntRange)trainingPartitionEnumerator.Current.Clone();
-        this.testPartitions[modelEnumerator.Current] = (IntRange)testPartitionEnumerator.Current.Clone();
-      }
-      if (modelEnumerator.MoveNext() | trainingPartitionEnumerator.MoveNext() | testPartitionEnumerator.MoveNext()) {
-        throw new ArgumentException();
-      }
+    private void RemoveClassificationSolution(IClassificationSolution solution) {
+      if (!Model.Models.Contains(solution.Model)) throw new ArgumentException();
+      Model.Remove(solution.Model);
+      trainingPartitions.Remove(solution.Model);
+      testPartitions.Remove(solution.Model);
     }
   }
 }

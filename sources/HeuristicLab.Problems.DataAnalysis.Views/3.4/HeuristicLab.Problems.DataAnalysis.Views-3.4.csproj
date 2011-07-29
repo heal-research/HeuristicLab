@@ -109,6 +109,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classification\ClassificationEnsembleSolutionModelView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Classification\ClassificationEnsembleSolutionModelView.Designer.cs">
+      <DependentUpon>ClassificationEnsembleSolutionModelView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Regression\RegressionEnsembleSolutionModelView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -162,6 +168,12 @@
     </Compile>
     <Compile Include="Solution Views\ClusteringSolutionView.Designer.cs">
       <DependentUpon>ClusteringSolutionView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Solution Views\ClassificationEnsembleSolutionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Solution Views\ClassificationEnsembleSolutionView.Designer.cs">
+      <DependentUpon>ClassificationEnsembleSolutionView.cs</DependentUpon>
     </Compile>
     <Compile Include="Solution Views\DiscriminantFunctionClassificationSolutionView.cs">
       <SubType>UserControl</SubType>

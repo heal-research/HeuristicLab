@@ -20,9 +20,11 @@
 #endregion
 
 using System.Collections.Generic;
+using HeuristicLab.Core;
 namespace HeuristicLab.Problems.DataAnalysis {
   public interface IClassificationEnsembleSolution : IClassificationSolution {
     new IClassificationEnsembleModel Model { get; }
+    IItemCollection<IClassificationSolution> ClassificationSolutions { get; }
     IEnumerable<IEnumerable<double>> GetEstimatedClassValueVectors(Dataset dataset, IEnumerable<int> rows);
   }
 }
