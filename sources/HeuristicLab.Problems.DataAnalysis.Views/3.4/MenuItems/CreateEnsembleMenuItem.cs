@@ -74,7 +74,9 @@ namespace HeuristicLab.Problems.DataAnalysis.MenuItems {
               .ProblemData.Clone();
             var ensemble = new RegressionEnsembleSolution(Enumerable.Empty<IRegressionModel>(), problemData);
             ensemble.Name = group.Key + " ensemble";
-            ensemble.AddRegressionSolutions(group.OfType<IRegressionSolution>());
+            var nestedSolutions = group.OfType<RegressionEnsembleSolution>().SelectMany(e => e.RegressionSolutions);
+            var solutions = group.Where(s => !(s is RegressionEnsembleSolution)).OfType<IRegressionSolution>();
+            ensemble.AddRegressionSolutions(nestedSolutions.Concat(solutions));
             MainFormManager.MainForm.ShowContent(ensemble);
           } else if (group.All(s => s is IClassificationSolution)) {
             // show all classification ensembles
@@ -84,7 +86,9 @@ namespace HeuristicLab.Problems.DataAnalysis.MenuItems {
               .ProblemData.Clone();
             var ensemble = new ClassificationEnsembleSolution(Enumerable.Empty<IClassificationModel>(), problemData);
             ensemble.Name = group.Key + " ensemble";
-            ensemble.AddClassificationSolutions(group.OfType<IClassificationSolution>());
+            var nestedSolutions = group.OfType<ClassificationEnsembleSolution>().SelectMany(e => e.ClassificationSolutions);
+            var solutions = group.Where(s => !(s is ClassificationEnsembleSolution)).OfType<IClassificationSolution>();
+            ensemble.AddClassificationSolutions(nestedSolutions.Concat(solutions));
             MainFormManager.MainForm.ShowContent(ensemble);
           }
         }
