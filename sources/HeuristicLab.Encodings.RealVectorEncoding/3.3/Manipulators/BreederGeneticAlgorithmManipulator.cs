@@ -51,7 +51,8 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// </summary>
     public BreederGeneticAlgorithmManipulator()
       : base() {
-      Parameters.Add(new ValueLookupParameter<DoubleValue>("SearchIntervalFactor", "The factor determining the size of the search interval, that will be added/removed to/from the allele selected for manipulation. E.g. a value of 0.1 means 10% of the range will be maximally added/removed.", new DoubleValue(0.1)));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("SearchIntervalFactor", @"Scales the manipulation strength as a factor of the range. The range is determined by the bounds interval.
+A value of 0.1 means that certain components of the vector are moved by values in the non-uniform interval [0;0.1*range].", new DoubleValue(0.1)));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
