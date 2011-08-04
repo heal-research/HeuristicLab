@@ -445,7 +445,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         problemDataClone.TestPartition.Start = SamplesStart.Value; problemDataClone.TestPartition.End = SamplesEnd.Value;
         // clone models
         var ensembleSolution = new ClassificationEnsembleSolution(
-          solutions.Value.Select(x => cloner.Clone(x.Model)), 
+          solutions.Value.Select(x => cloner.Clone(x.Model)),
           problemDataClone,
           solutions.Value.Select(x => cloner.Clone(x.ProblemData.TrainingPartition)),
           solutions.Value.Select(x => cloner.Clone(x.ProblemData.TestPartition)));
@@ -542,6 +542,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         algorithm.Problem = problem;
         throw new ArgumentException("A cross validation algorithm can only contain DataAnalysisProblems.");
       }
+      algorithm.Problem.Reset += (x,y) => OnProblemChanged();
       problem = (IDataAnalysisProblem)algorithm.Problem;
       OnProblemChanged();
     }
@@ -552,7 +553,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       SamplesStart.Value = 0;
       if (Problem != null) {
-        Problem.ProblemDataChanged += (object sender, EventArgs e) => OnProblemChanged();
         SamplesEnd.Value = Problem.ProblemData.Dataset.Rows;
 
         DataAnalysisProblemData problemData = Problem.ProblemData as DataAnalysisProblemData;
