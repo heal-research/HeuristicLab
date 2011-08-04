@@ -71,12 +71,16 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     private void RegisterEventHandlers() {
       ProblemDataParameter.ValueChanged += new EventHandler(ProblemDataParameter_ValueChanged);
-      if (ProblemDataParameter.Value != null) ProblemDataParameter.Value.Changed += new EventHandler(ProblemDataParameter_ValueChanged);
+      if (ProblemDataParameter.Value != null) ProblemDataParameter.Value.Changed += new EventHandler(ProblemData_Changed);
     }
 
     private void ProblemDataParameter_ValueChanged(object sender, EventArgs e) {
-      ProblemDataParameter.Value.Changed += new EventHandler(ProblemDataParameter_ValueChanged);
+      ProblemDataParameter.Value.Changed += new EventHandler(ProblemData_Changed);
       OnProblemDataChanged();
+      OnReset();
+    }
+
+    private void ProblemData_Changed(object sender, EventArgs e) {
       OnReset();
     }
 
