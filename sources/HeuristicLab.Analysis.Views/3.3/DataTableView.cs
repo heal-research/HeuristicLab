@@ -158,6 +158,8 @@ namespace HeuristicLab.Analysis.Views {
     /// <param name="row">DataRow to add as series to the chart.</param>
     protected virtual void AddDataRow(DataRow row) {
       Series series = new Series(row.Name);
+      if (row.VisualProperties.DisplayName.Trim() != String.Empty) series.LegendText = row.VisualProperties.DisplayName;
+      else series.LegendText = row.Name;
       ConfigureSeries(series, row);
       FillSeriesWithRowValues(series, row);
 
@@ -211,7 +213,9 @@ namespace HeuristicLab.Analysis.Views {
       }
       series.YAxisType = row.VisualProperties.SecondYAxis ? AxisType.Secondary : AxisType.Primary;
       series.XAxisType = row.VisualProperties.SecondXAxis ? AxisType.Secondary : AxisType.Primary;
-      series.ToolTip = row.Name + " X = #INDEX, Y = #VAL";
+      if (row.VisualProperties.DisplayName.Trim() != String.Empty) series.LegendText = row.VisualProperties.DisplayName;
+      else series.LegendText = row.Name;
+      series.ToolTip = series.LegendText + " X = #INDEX, Y = #VAL";
     }
 
     private void ConfigureChartArea(ChartArea area) {

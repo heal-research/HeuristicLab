@@ -22,7 +22,9 @@
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.QuadraticAssignment {
@@ -32,36 +34,59 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
   [Item("QAPPopulationDiversityAnalyzer", "An operator for analyzing the diversity of solutions of Quadratic Assignment Problems regarding their structural identity (number of equal facilty->location assignments).")]
   [StorableClass]
   public sealed class QAPPopulationDiversityAnalyzer : PopulationDiversityAnalyzer<Permutation> {
+    public IValueParameter<BoolValue> UsePhenotypeSimilarityParameter {
+      get { return (IValueParameter<BoolValue>)Parameters["UsePhenotypeSimilarity"]; }
+    }
+    public ILookupParameter<DoubleMatrix> WeightsParameter {
+      get { return (ILookupParameter<DoubleMatrix>)Parameters["Weights"]; }
+    }
+    public ILookupParameter<DoubleMatrix> DistancesParameter {
+      get { return (ILookupParameter<DoubleMatrix>)Parameters["Distances"]; }
+    }
+
     [StorableConstructor]
     private QAPPopulationDiversityAnalyzer(bool deserializing) : base(deserializing) { }
     private QAPPopulationDiversityAnalyzer(QAPPopulationDiversityAnalyzer original, Cloner cloner) : base(original, cloner) { }
-    public QAPPopulationDiversityAnalyzer() : base() { }
+    public QAPPopulationDiversityAnalyzer()
+      : base() {
+      Parameters.Add(new ValueParameter<BoolValue>("UsePhenotypeSimilarity", "True if the similarity should be measured a level closer to the phenotype (the number of similar assignments of individual weights to distances). Set to false if the number of equal assignments (facility to location) should be counted.", new BoolValue(false)));
+      Parameters.Add(new LookupParameter<DoubleMatrix>("Weights", "The weights matrix."));
+      Parameters.Add(new LookupParameter<DoubleMatrix>("Distances", "The distances matrix."));
+    }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new QAPPopulationDiversityAnalyzer(this, cloner);
     }
 
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (!Parameters.ContainsKey("UsePhenotypeSimilarity"))
+        Parameters.Add(new ValueParameter<BoolValue>("UsePhenotypeSimilarity", "True if the similarity should be measured a level closer to the phenotype (the number of similar assignments of individual weights to distances). Set to false if the number of equal assignments (facility to location) should be counted.", new BoolValue(false)));
+      if (!Parameters.ContainsKey("Weights"))
+        Parameters.Add(new LookupParameter<DoubleMatrix>("Weights", "The weights matrix."));
+      if (!Parameters.ContainsKey("Distances"))
+        Parameters.Add(new LookupParameter<DoubleMatrix>("Distances", "The distances matrix."));
+      #endregion
+    }
+
     protected override double[,] CalculateSimilarities(Permutation[] solutions) {
+      DoubleMatrix weights = WeightsParameter.ActualValue, distances = DistancesParameter.ActualValue;
+      bool phenotypeSimilarity = UsePhenotypeSimilarityParameter.Value.Value;
       int count = solutions.Length;
       double[,] similarities = new double[count, count];
 
       for (int i = 0; i < count; i++) {
         similarities[i, i] = 1;
         for (int j = i + 1; j < count; j++) {
-          similarities[i, j] = CalculateSimilarity(solutions[i], solutions[j]);
+          if (phenotypeSimilarity)
+            similarities[i, j] = QAPPermutationProximityCalculator.CalculatePhenotypeSimilarity(solutions[i], solutions[j], weights, distances);
+          else similarities[i, j] = QAPPermutationProximityCalculator.CalculateGenotypeSimilarity(solutions[i], solutions[j]);
           similarities[j, i] = similarities[i, j];
         }
       }
       return similarities;
-    }
-
-    private double CalculateSimilarity(Permutation assignment1, Permutation assignment2) {
-      int identicalAssignments = 0;
-      for (int i = 0; i < assignment1.Length; i++) {
-        if (assignment1[i] == assignment2[i])
-          identicalAssignments++;
-      }
-      return ((double)identicalAssignments) / assignment1.Length;
     }
   }
 }

@@ -82,17 +82,17 @@ namespace HeuristicLab.Analysis {
     }
     public DataRow(string name)
       : base(name) {
-      VisualProperties = new DataRowVisualProperties();
+      VisualProperties = new DataRowVisualProperties(name);
       values = new ObservableList<double>();
     }
     public DataRow(string name, string description)
       : base(name, description) {
-      VisualProperties = new DataRowVisualProperties();
+      VisualProperties = new DataRowVisualProperties(name);
       values = new ObservableList<double>();
     }
     public DataRow(string name, string description, IEnumerable<double> values)
       : base(name, description) {
-      VisualProperties = new DataRowVisualProperties();
+      VisualProperties = new DataRowVisualProperties(name);
       this.values = new ObservableList<double>(values);
     }
 

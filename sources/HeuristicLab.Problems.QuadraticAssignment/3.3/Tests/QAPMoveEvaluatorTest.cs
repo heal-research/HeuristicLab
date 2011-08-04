@@ -59,29 +59,69 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Tests_33 {
       nonZeroDiagonalWeights = new DoubleMatrix(ProblemSize, ProblemSize);
       for (int i = 0; i < ProblemSize - 1; i++) {
         for (int j = i + 1; j < ProblemSize; j++) {
-          symmetricDistances[i, j] = random.Next(ProblemSize);
+          symmetricDistances[i, j] = random.Next(ProblemSize * 100);
           symmetricDistances[j, i] = symmetricDistances[i, j];
-          symmetricWeights[i, j] = random.Next(ProblemSize);
+          symmetricWeights[i, j] = random.Next(ProblemSize * 100);
           symmetricWeights[j, i] = symmetricWeights[i, j];
-          asymmetricDistances[i, j] = random.Next(ProblemSize);
-          asymmetricDistances[j, i] = random.Next(ProblemSize);
-          asymmetricWeights[i, j] = random.Next(ProblemSize);
-          asymmetricWeights[j, i] = random.Next(ProblemSize);
-          nonZeroDiagonalDistances[i, j] = random.Next(ProblemSize);
-          nonZeroDiagonalDistances[j, i] = random.Next(ProblemSize);
-          nonZeroDiagonalWeights[i, j] = random.Next(ProblemSize);
-          nonZeroDiagonalWeights[j, i] = random.Next(ProblemSize);
+          asymmetricDistances[i, j] = random.Next(ProblemSize * 100);
+          asymmetricDistances[j, i] = random.Next(ProblemSize * 100);
+          asymmetricWeights[i, j] = random.Next(ProblemSize * 100);
+          asymmetricWeights[j, i] = random.Next(ProblemSize * 100);
+          nonZeroDiagonalDistances[i, j] = random.Next(ProblemSize * 100);
+          nonZeroDiagonalDistances[j, i] = random.Next(ProblemSize * 100);
+          nonZeroDiagonalWeights[i, j] = random.Next(ProblemSize * 100);
+          nonZeroDiagonalWeights[j, i] = random.Next(ProblemSize * 100);
         }
-        nonZeroDiagonalDistances[i, i] = random.Next(ProblemSize);
-        nonZeroDiagonalWeights[i, i] = random.Next(ProblemSize);
+        nonZeroDiagonalDistances[i, i] = random.Next(ProblemSize * 100);
+        nonZeroDiagonalWeights[i, i] = random.Next(ProblemSize * 100);
       }
       int index = random.Next(ProblemSize);
       if (nonZeroDiagonalDistances[index, index] == 0)
-        nonZeroDiagonalDistances[index, index] = random.Next(1, ProblemSize);
+        nonZeroDiagonalDistances[index, index] = random.Next(1, ProblemSize * 100);
       index = random.Next(ProblemSize);
       if (nonZeroDiagonalWeights[index, index] == 0)
-        nonZeroDiagonalWeights[index, index] = random.Next(1, ProblemSize);
+        nonZeroDiagonalWeights[index, index] = random.Next(1, ProblemSize * 100);
       assignment = new Permutation(PermutationTypes.Absolute, ProblemSize, random);
+    }
+
+    [TestMethod]
+    public void Swap2MoveEvaluatorFastEvaluationTest() {
+
+      for (int i = 0; i < 500; i++) {
+        Swap2Move lastMove = new Swap2Move(random.Next(ProblemSize), random.Next(ProblemSize));
+        Permutation prevAssignment = (Permutation)assignment.Clone();
+        Swap2Manipulator.Apply(assignment, lastMove.Index1, lastMove.Index2);
+        Permutation nextAssignment = (Permutation)assignment.Clone();
+        Swap2Move currentMove = new Swap2Move(random.Next(ProblemSize), random.Next(ProblemSize));
+        Swap2Manipulator.Apply(nextAssignment, currentMove.Index1, currentMove.Index2);
+
+        double moveBefore = QAPSwap2MoveEvaluator.Apply(prevAssignment, currentMove, symmetricWeights, symmetricDistances);
+        double moveAfter = QAPSwap2MoveEvaluator.Apply(assignment, currentMove,
+                moveBefore, symmetricWeights, symmetricDistances, lastMove);
+        double before = QAPEvaluator.Apply(assignment, symmetricWeights, symmetricDistances);
+        double after = QAPEvaluator.Apply(nextAssignment, symmetricWeights, symmetricDistances);
+
+        Assert.IsTrue(moveAfter.IsAlmost(after - before), "Failed on symmetric matrices: " + Environment.NewLine
+          + "Quality changed from " + before + " to " + after + " (" + (after - before).ToString() + "), but move quality change was " + moveAfter + ".");
+
+        moveBefore = QAPSwap2MoveEvaluator.Apply(prevAssignment, currentMove, asymmetricWeights, asymmetricDistances);
+        moveAfter = QAPSwap2MoveEvaluator.Apply(assignment, currentMove,
+                moveBefore, asymmetricWeights, asymmetricDistances, lastMove);
+        before = QAPEvaluator.Apply(assignment, asymmetricWeights, asymmetricDistances);
+        after = QAPEvaluator.Apply(nextAssignment, asymmetricWeights, asymmetricDistances);
+
+        Assert.IsTrue(moveAfter.IsAlmost(after - before), "Failed on asymmetric matrices: " + Environment.NewLine
+          + "Quality changed from " + before + " to " + after + " (" + (after - before).ToString() + "), but move quality change was " + moveAfter + ".");
+
+        moveBefore = QAPSwap2MoveEvaluator.Apply(prevAssignment, currentMove, nonZeroDiagonalWeights, nonZeroDiagonalDistances);
+        moveAfter = QAPSwap2MoveEvaluator.Apply(assignment, currentMove,
+                moveBefore, nonZeroDiagonalWeights, nonZeroDiagonalDistances, lastMove);
+        before = QAPEvaluator.Apply(assignment, nonZeroDiagonalWeights, nonZeroDiagonalDistances);
+        after = QAPEvaluator.Apply(nextAssignment, nonZeroDiagonalWeights, nonZeroDiagonalDistances);
+
+        Assert.IsTrue(moveAfter.IsAlmost(after - before), "Failed on non-zero diagonal matrices: " + Environment.NewLine
+          + "Quality changed from " + before + " to " + after + " (" + (after - before).ToString() + "), but move quality change was " + moveAfter + ".");
+      }
     }
 
     [TestMethod]

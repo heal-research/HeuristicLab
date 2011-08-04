@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -55,19 +56,21 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     }
 
     protected override Allele[] CalculateAlleles(Permutation solution) {
-      Allele[] alleles = new Allele[solution.Length];
+      Allele[] alleles = new Allele[solution.Length * solution.Length];
+      Dictionary<string, int> allelesDict = new Dictionary<string, int>();
       DoubleMatrix weights = WeightsParameter.ActualValue;
       DoubleMatrix distances = DistancesParameter.ActualValue;
-      int source, target;
       double impact;
 
-      for (int i = 0; i < solution.Length; i++) {
-        source = i;
-        target = solution[i];
-        impact = 0;
-        for (int j = 0; j < solution.Length; j++)
-          impact += weights[source, j] * distances[target, solution[j]];
-        alleles[i] = new Allele(source.ToString() + "->" + target.ToString(), impact);
+      for (int x = 0; x < solution.Length; x++) {
+        for (int y = 0; y < solution.Length; y++) {
+          string allele = weights[x, y].ToString() + ">" + distances[solution[x], solution[y]].ToString();
+          int repetition = 1;
+          if (allelesDict.ContainsKey(allele)) repetition += allelesDict[allele];
+          allelesDict[allele] = repetition;
+          impact = weights[x, y] * distances[solution[x], solution[y]];
+          alleles[x * solution.Length + y] = new Allele(allele + "/" + repetition, impact);
+        }
       }
 
       return alleles;

@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.ComponentModel;
 using System.Drawing;
 using HeuristicLab.Common;
@@ -140,6 +141,21 @@ namespace HeuristicLab.Analysis {
         }
       }
     }
+    private string displayName;
+    public string DisplayName {
+      get { return displayName == null ? String.Empty : displayName; }
+      set {
+        if (displayName != value) {
+          if (value == null && displayName != String.Empty) {
+            displayName = String.Empty;
+            OnPropertyChanged("DisplayName");
+          } else if (value != null) {
+            displayName = value;
+            OnPropertyChanged("DisplayName");
+          }
+        }
+      }
+    }
 
     #region Persistence Properties
     [Storable(Name = "ChartType")]
@@ -187,6 +203,11 @@ namespace HeuristicLab.Analysis {
       get { return exactBins; }
       set { exactBins = value; }
     }
+    [Storable(Name = "DisplayName")]
+    private string StorableDisplayName {
+      get { return displayName; }
+      set { displayName = value; }
+    }
     #endregion
 
     [StorableConstructor]
@@ -202,6 +223,7 @@ namespace HeuristicLab.Analysis {
       this.lineWidth = original.lineWidth;
       this.bins = original.bins;
       this.exactBins = original.exactBins;
+      this.displayName = original.displayName;
     }
     public DataRowVisualProperties() {
       chartType = DataRowChartType.Line;
@@ -213,6 +235,11 @@ namespace HeuristicLab.Analysis {
       lineWidth = 1;
       bins = 10;
       exactBins = false;
+      displayName = String.Empty;
+    }
+    public DataRowVisualProperties(string displayName)
+      : this() {
+      this.displayName = displayName;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

@@ -72,6 +72,8 @@ namespace HeuristicLab.Analysis.Views {
       this.label7 = new System.Windows.Forms.Label();
       this.lineStyleComboBox = new System.Windows.Forms.ComboBox();
       this.label8 = new System.Windows.Forms.Label();
+      this.label9 = new System.Windows.Forms.Label();
+      this.displayNameTextBox = new System.Windows.Forms.TextBox();
       ((System.ComponentModel.ISupportInitialize)(this.binsNumericUpDown)).BeginInit();
       this.commonGroupBox.SuspendLayout();
       this.axisGroupBox.SuspendLayout();
@@ -87,9 +89,9 @@ namespace HeuristicLab.Analysis.Views {
       // 
       this.chartTypeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.chartTypeComboBox.FormattingEnabled = true;
-      this.chartTypeComboBox.Location = new System.Drawing.Point(76, 19);
+      this.chartTypeComboBox.Location = new System.Drawing.Point(89, 45);
       this.chartTypeComboBox.Name = "chartTypeComboBox";
-      this.chartTypeComboBox.Size = new System.Drawing.Size(224, 21);
+      this.chartTypeComboBox.Size = new System.Drawing.Size(211, 21);
       this.chartTypeComboBox.TabIndex = 1;
       this.chartTypeComboBox.SelectedValueChanged += new System.EventHandler(this.chartTypeComboBox_SelectedValueChanged);
       // 
@@ -100,7 +102,7 @@ namespace HeuristicLab.Analysis.Views {
       // colorButton
       // 
       this.colorButton.BackColor = System.Drawing.SystemColors.Control;
-      this.colorButton.Location = new System.Drawing.Point(76, 46);
+      this.colorButton.Location = new System.Drawing.Point(89, 72);
       this.colorButton.Name = "colorButton";
       this.colorButton.Size = new System.Drawing.Size(23, 23);
       this.colorButton.TabIndex = 3;
@@ -139,16 +141,16 @@ namespace HeuristicLab.Analysis.Views {
       // label1
       // 
       this.label1.AutoSize = true;
-      this.label1.Location = new System.Drawing.Point(8, 22);
+      this.label1.Location = new System.Drawing.Point(8, 48);
       this.label1.Name = "label1";
-      this.label1.Size = new System.Drawing.Size(62, 13);
+      this.label1.Size = new System.Drawing.Size(58, 13);
       this.label1.TabIndex = 0;
-      this.label1.Text = "Chart Type:";
+      this.label1.Text = "Chart type:";
       // 
       // label2
       // 
       this.label2.AutoSize = true;
-      this.label2.Location = new System.Drawing.Point(8, 51);
+      this.label2.Location = new System.Drawing.Point(8, 77);
       this.label2.Name = "label2";
       this.label2.Size = new System.Drawing.Size(34, 13);
       this.label2.TabIndex = 2;
@@ -167,14 +169,16 @@ namespace HeuristicLab.Analysis.Views {
       // 
       this.commonGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
+      this.commonGroupBox.Controls.Add(this.displayNameTextBox);
       this.commonGroupBox.Controls.Add(this.axisGroupBox);
       this.commonGroupBox.Controls.Add(this.colorButton);
+      this.commonGroupBox.Controls.Add(this.label9);
       this.commonGroupBox.Controls.Add(this.label1);
       this.commonGroupBox.Controls.Add(this.label2);
       this.commonGroupBox.Controls.Add(this.chartTypeComboBox);
       this.commonGroupBox.Location = new System.Drawing.Point(3, 3);
       this.commonGroupBox.Name = "commonGroupBox";
-      this.commonGroupBox.Size = new System.Drawing.Size(313, 158);
+      this.commonGroupBox.Size = new System.Drawing.Size(313, 181);
       this.commonGroupBox.TabIndex = 0;
       this.commonGroupBox.TabStop = false;
       this.commonGroupBox.Text = "Common";
@@ -185,12 +189,12 @@ namespace HeuristicLab.Analysis.Views {
       this.axisGroupBox.Controls.Add(this.label6);
       this.axisGroupBox.Controls.Add(this.panel1);
       this.axisGroupBox.Controls.Add(this.panel2);
-      this.axisGroupBox.Location = new System.Drawing.Point(6, 75);
+      this.axisGroupBox.Location = new System.Drawing.Point(6, 101);
       this.axisGroupBox.Name = "axisGroupBox";
       this.axisGroupBox.Size = new System.Drawing.Size(299, 75);
       this.axisGroupBox.TabIndex = 9;
       this.axisGroupBox.TabStop = false;
-      this.axisGroupBox.Text = "Display Data on";
+      this.axisGroupBox.Text = "Display data on";
       // 
       // label5
       // 
@@ -199,7 +203,7 @@ namespace HeuristicLab.Analysis.Views {
       this.label5.Name = "label5";
       this.label5.Size = new System.Drawing.Size(39, 13);
       this.label5.TabIndex = 6;
-      this.label5.Text = "Y Axis:";
+      this.label5.Text = "Y-Axis:";
       // 
       // label6
       // 
@@ -208,7 +212,7 @@ namespace HeuristicLab.Analysis.Views {
       this.label6.Name = "label6";
       this.label6.Size = new System.Drawing.Size(39, 13);
       this.label6.TabIndex = 6;
-      this.label6.Text = "X Axis:";
+      this.label6.Text = "X-Axis:";
       // 
       // panel1
       // 
@@ -283,7 +287,7 @@ namespace HeuristicLab.Analysis.Views {
       this.histoGramGroupBox.Controls.Add(this.panel3);
       this.histoGramGroupBox.Controls.Add(this.binsNumericUpDown);
       this.histoGramGroupBox.Controls.Add(this.label3);
-      this.histoGramGroupBox.Location = new System.Drawing.Point(3, 269);
+      this.histoGramGroupBox.Location = new System.Drawing.Point(3, 292);
       this.histoGramGroupBox.Name = "histoGramGroupBox";
       this.histoGramGroupBox.Size = new System.Drawing.Size(313, 49);
       this.histoGramGroupBox.TabIndex = 2;
@@ -333,12 +337,12 @@ namespace HeuristicLab.Analysis.Views {
       this.lineChartGroupBox.Controls.Add(this.label7);
       this.lineChartGroupBox.Controls.Add(this.lineStyleComboBox);
       this.lineChartGroupBox.Controls.Add(this.label8);
-      this.lineChartGroupBox.Location = new System.Drawing.Point(3, 167);
+      this.lineChartGroupBox.Location = new System.Drawing.Point(3, 190);
       this.lineChartGroupBox.Name = "lineChartGroupBox";
       this.lineChartGroupBox.Size = new System.Drawing.Size(313, 96);
       this.lineChartGroupBox.TabIndex = 1;
       this.lineChartGroupBox.TabStop = false;
-      this.lineChartGroupBox.Text = "Line Chart";
+      this.lineChartGroupBox.Text = "Line chart";
       // 
       // lineWidthNumericUpDown
       // 
@@ -363,18 +367,18 @@ namespace HeuristicLab.Analysis.Views {
       this.label4.AutoSize = true;
       this.label4.Location = new System.Drawing.Point(8, 68);
       this.label4.Name = "label4";
-      this.label4.Size = new System.Drawing.Size(61, 13);
+      this.label4.Size = new System.Drawing.Size(58, 13);
       this.label4.TabIndex = 4;
-      this.label4.Text = "Line Width:";
+      this.label4.Text = "Line width:";
       // 
       // label7
       // 
       this.label7.AutoSize = true;
       this.label7.Location = new System.Drawing.Point(8, 46);
       this.label7.Name = "label7";
-      this.label7.Size = new System.Drawing.Size(82, 13);
+      this.label7.Size = new System.Drawing.Size(81, 13);
       this.label7.TabIndex = 2;
-      this.label7.Text = "Start Index at 0:";
+      this.label7.Text = "Start index at 0:";
       // 
       // lineStyleComboBox
       // 
@@ -391,9 +395,26 @@ namespace HeuristicLab.Analysis.Views {
       this.label8.AutoSize = true;
       this.label8.Location = new System.Drawing.Point(8, 22);
       this.label8.Name = "label8";
-      this.label8.Size = new System.Drawing.Size(56, 13);
+      this.label8.Size = new System.Drawing.Size(54, 13);
       this.label8.TabIndex = 0;
-      this.label8.Text = "Line Style:";
+      this.label8.Text = "Line style:";
+      // 
+      // label9
+      // 
+      this.label9.AutoSize = true;
+      this.label9.Location = new System.Drawing.Point(8, 22);
+      this.label9.Name = "label9";
+      this.label9.Size = new System.Drawing.Size(75, 13);
+      this.label9.TabIndex = 0;
+      this.label9.Text = "Display Name:";
+      // 
+      // displayNameTextBox
+      // 
+      this.displayNameTextBox.Location = new System.Drawing.Point(89, 19);
+      this.displayNameTextBox.Name = "displayNameTextBox";
+      this.displayNameTextBox.Size = new System.Drawing.Size(211, 20);
+      this.displayNameTextBox.TabIndex = 10;
+      this.displayNameTextBox.Validated += new System.EventHandler(this.displayNameTextBox_Validated);
       // 
       // DataRowVisualPropertiesControl
       // 
@@ -403,7 +424,7 @@ namespace HeuristicLab.Analysis.Views {
       this.Controls.Add(this.histoGramGroupBox);
       this.Controls.Add(this.commonGroupBox);
       this.Name = "DataRowVisualPropertiesControl";
-      this.Size = new System.Drawing.Size(319, 323);
+      this.Size = new System.Drawing.Size(319, 347);
       ((System.ComponentModel.ISupportInitialize)(this.binsNumericUpDown)).EndInit();
       this.commonGroupBox.ResumeLayout(false);
       this.commonGroupBox.PerformLayout();
@@ -454,5 +475,7 @@ namespace HeuristicLab.Analysis.Views {
     private System.Windows.Forms.Label label8;
     private System.Windows.Forms.Label label5;
     private System.Windows.Forms.GroupBox axisGroupBox;
+    private System.Windows.Forms.TextBox displayNameTextBox;
+    private System.Windows.Forms.Label label9;
   }
 }

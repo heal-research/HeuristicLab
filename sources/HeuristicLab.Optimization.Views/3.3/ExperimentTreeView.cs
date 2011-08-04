@@ -575,13 +575,13 @@ namespace HeuristicLab.Optimization.Views {
     #region control events
     private void treeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e) {
       if (rightClickOccured) return;
-      if (e.X < e.Node.Bounds.Left || e.X > e.Node.Bounds.Right) return;
+      if (e.X < e.Node.Bounds.Left - treeView.ImageList.Images[e.Node.ImageIndex].Width || e.X > e.Node.Bounds.Right) return;
       e.Node.Toggle();
       IContent optimizer = (IContent)e.Node.Tag;
       MainFormManager.MainForm.ShowContent(optimizer);
     }
     private void treeview_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e) {
-      if (e.X < e.Node.Bounds.Left || e.X > e.Node.Bounds.Right) return;
+      if (e.X < e.Node.Bounds.Left - treeView.ImageList.Images[e.Node.ImageIndex].Width || e.X > e.Node.Bounds.Right) return;
       treeView.SelectedNode = e.Node;
       detailsViewHost.Content = (IContent)e.Node.Tag;
       SetEnabledStateOfControls();
@@ -592,7 +592,7 @@ namespace HeuristicLab.Optimization.Views {
       if (treeView.SelectedNode == null) return;
       Point coordinates = new Point(e.X, e.Y);
       TreeNode node = treeView.GetNodeAt(coordinates);
-      if (node == null || coordinates.X < node.Bounds.Left || coordinates.X > node.Bounds.Right) {
+      if (node == null || coordinates.X < node.Bounds.Left - treeView.ImageList.Images[node.ImageIndex].Width || coordinates.X > node.Bounds.Right) {
         treeView.SelectedNode = null;
         detailsViewHost.Content = null;
         SetEnabledStateOfControls();
@@ -722,8 +722,7 @@ namespace HeuristicLab.Optimization.Views {
             IProblem problem = (IProblem)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
             algorithm.Problem = problem;
           }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
           ErrorHandling.ShowErrorDialog(this, ex);
         }
       }

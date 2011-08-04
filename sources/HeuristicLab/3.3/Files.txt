@@ -80,6 +80,7 @@ HeuristicLab.Problems.Knapsack.Views\3.3:HeuristicLab.Problems.Knapsack.Views-3.
 HeuristicLab.Problems.OneMax\3.3:HeuristicLab.Problems.OneMax-3.3.dll
 HeuristicLab.Problems.OneMax.Views\3.3:HeuristicLab.Problems.OneMax.Views-3.3.dll
 HeuristicLab.Problems.QuadraticAssignment\3.3:HeuristicLab.Problems.QuadraticAssignment-3.3.dll
+HeuristicLab.Problems.QuadraticAssignment.Algorithms\3.3:HeuristicLab.Problems.QuadraticAssignment.Algorithms-3.3.dll
 HeuristicLab.Problems.QuadraticAssignment.Views\3.3:HeuristicLab.Problems.QuadraticAssignment.Views-3.3.dll
 HeuristicLab.Problems.TestFunctions\3.3:HeuristicLab.Problems.TestFunctions-3.3.dll
 HeuristicLab.Problems.TestFunctions.Views\3.3:HeuristicLab.Problems.TestFunctions.Views-3.3.dll

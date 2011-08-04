@@ -115,10 +115,10 @@ namespace HeuristicLab.Data.Views {
 
     #endregion
 
-    private System.Windows.Forms.Label lengthLabel;
-    private System.Windows.Forms.TextBox lengthTextBox;
-    private System.Windows.Forms.DataGridView dataGridView;
-    private System.Windows.Forms.ErrorProvider errorProvider;
+    protected System.Windows.Forms.DataGridView dataGridView;
+    protected System.Windows.Forms.Label lengthLabel;
+    protected System.Windows.Forms.TextBox lengthTextBox;
+    protected System.Windows.Forms.ErrorProvider errorProvider;
 
   }
 }

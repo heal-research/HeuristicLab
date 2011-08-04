@@ -68,7 +68,7 @@ namespace HeuristicLab.Analysis.Views {
       // 
       this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.okButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.okButton.Location = new System.Drawing.Point(307, 357);
+      this.okButton.Location = new System.Drawing.Point(307, 381);
       this.okButton.Name = "okButton";
       this.okButton.Size = new System.Drawing.Size(75, 23);
       this.okButton.TabIndex = 0;
@@ -80,7 +80,7 @@ namespace HeuristicLab.Analysis.Views {
       // 
       this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.cancelButton.Location = new System.Drawing.Point(388, 357);
+      this.cancelButton.Location = new System.Drawing.Point(388, 381);
       this.cancelButton.Name = "cancelButton";
       this.cancelButton.Size = new System.Drawing.Size(75, 23);
       this.cancelButton.TabIndex = 1;
@@ -98,7 +98,7 @@ namespace HeuristicLab.Analysis.Views {
       this.tabControl.Location = new System.Drawing.Point(0, 0);
       this.tabControl.Name = "tabControl";
       this.tabControl.SelectedIndex = 0;
-      this.tabControl.Size = new System.Drawing.Size(474, 350);
+      this.tabControl.Size = new System.Drawing.Size(474, 374);
       this.tabControl.TabIndex = 2;
       // 
       // seriesTabPage
@@ -107,7 +107,7 @@ namespace HeuristicLab.Analysis.Views {
       this.seriesTabPage.Location = new System.Drawing.Point(4, 22);
       this.seriesTabPage.Name = "seriesTabPage";
       this.seriesTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.seriesTabPage.Size = new System.Drawing.Size(466, 324);
+      this.seriesTabPage.Size = new System.Drawing.Size(466, 348);
       this.seriesTabPage.TabIndex = 0;
       this.seriesTabPage.Text = "Series";
       this.seriesTabPage.UseVisualStyleBackColor = true;
@@ -130,7 +130,7 @@ namespace HeuristicLab.Analysis.Views {
       // 
       this.splitContainer.Panel2.Controls.Add(this.dataRowVisualPropertiesControl);
       this.splitContainer.Panel2MinSize = 50;
-      this.splitContainer.Size = new System.Drawing.Size(460, 318);
+      this.splitContainer.Size = new System.Drawing.Size(460, 342);
       this.splitContainer.SplitterDistance = 125;
       this.splitContainer.TabIndex = 0;
       // 
@@ -164,7 +164,7 @@ namespace HeuristicLab.Analysis.Views {
       this.seriesListView.MultiSelect = false;
       this.seriesListView.Name = "seriesListView";
       this.seriesListView.ShowGroups = false;
-      this.seriesListView.Size = new System.Drawing.Size(125, 289);
+      this.seriesListView.Size = new System.Drawing.Size(125, 313);
       this.seriesListView.TabIndex = 0;
       this.seriesListView.UseCompatibleStateImageBehavior = false;
       this.seriesListView.View = System.Windows.Forms.View.SmallIcon;
@@ -176,7 +176,7 @@ namespace HeuristicLab.Analysis.Views {
       this.dataRowVisualPropertiesControl.Dock = System.Windows.Forms.DockStyle.Fill;
       this.dataRowVisualPropertiesControl.Location = new System.Drawing.Point(0, 0);
       this.dataRowVisualPropertiesControl.Name = "dataRowVisualPropertiesControl";
-      this.dataRowVisualPropertiesControl.Size = new System.Drawing.Size(331, 318);
+      this.dataRowVisualPropertiesControl.Size = new System.Drawing.Size(331, 342);
       this.dataRowVisualPropertiesControl.TabIndex = 0;
       // 
       // chartTabPage
@@ -205,7 +205,7 @@ namespace HeuristicLab.Analysis.Views {
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.CancelButton = this.cancelButton;
-      this.ClientSize = new System.Drawing.Size(475, 392);
+      this.ClientSize = new System.Drawing.Size(475, 416);
       this.Controls.Add(this.tabControl);
       this.Controls.Add(this.cancelButton);
       this.Controls.Add(this.okButton);

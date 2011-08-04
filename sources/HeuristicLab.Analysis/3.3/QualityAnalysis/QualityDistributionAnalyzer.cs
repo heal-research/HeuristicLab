@@ -125,7 +125,7 @@ namespace HeuristicLab.Analysis.QualityAnalysis {
           if (iterationName.EndsWith("s")) iterationName = iterationName.Remove(iterationName.Length - 1);
           string appendix = " at " + iterationName + " " + iteration.Value.ToString();
           table.Name += appendix;
-          table.Rows["QualityDistribution"].Name += appendix;
+          table.Rows["QualityDistribution"].VisualProperties.DisplayName += appendix;
         }
         qdHistory.Add(table);
       }

@@ -384,8 +384,8 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
         if (parser.Error != null) throw parser.Error;
         Distances = new DoubleMatrix(parser.Distances);
         Weights = new DoubleMatrix(parser.Weights);
-        Name = "Quadratic Assignment Problem (loaded instance " + instance + ")";
-        Description = "Loaded embedded problem data of instance " + instance + ".";
+        Name = instance;
+        Description = "Loaded embedded QAPLIB problem data of instance " + instance + ".";
         OnReset();
       }
       bool solutionExists = Assembly.GetExecutingAssembly()

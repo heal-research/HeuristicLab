@@ -123,6 +123,7 @@
     <Compile Include="Parsers\QAPLIBSolutionParser.cs" />
     <Compile Include="Parsers\QAPLIBParser.cs" />
     <Compile Include="QAPAssignment.cs" />
+    <Compile Include="QAPPermutationProximityCalculator.cs" />
     <Compile Include="QuadraticAssignmentProblem.cs" />
     <EmbeddedResource Include="Data\bur26a.dat" />
     <EmbeddedResource Include="Data\bur26b.dat" />

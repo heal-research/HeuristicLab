@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -35,6 +36,11 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     /// </summary>
     public PermutationTypes PermutationType {
       get { return permutationType; }
+      set {
+        bool changed = (permutationType != value);
+        permutationType = value;
+        if (changed) OnPermutationTypeChanged();
+      }
     }
 
     [StorableConstructor]
@@ -44,7 +50,8 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       this.permutationType = original.permutationType;
     }
     public Permutation() : this(PermutationTypes.RelativeUndirected) { }
-    public Permutation(PermutationTypes type) : base() {
+    public Permutation(PermutationTypes type)
+      : base() {
       permutationType = type;
     }
     public Permutation(PermutationTypes type, int length)
@@ -57,10 +64,12 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       : this(type, length) {
       Randomize(random);
     }
-    public Permutation(PermutationTypes type, int[] elements) : base(elements) {
+    public Permutation(PermutationTypes type, int[] elements)
+      : base(elements) {
       permutationType = type;
     }
-    public Permutation(PermutationTypes type, IntArray elements) : this(type, elements.Length) {
+    public Permutation(PermutationTypes type, IntArray elements)
+      : this(type, elements.Length) {
       for (int i = 0; i < array.Length; i++)
         array[i] = elements[i];
     }
@@ -109,6 +118,13 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       if (position >= Length) position = position % Length;
       while (position < 0) position += Length;
       return this[position];
+    }
+
+    public event EventHandler PermutationTypeChanged;
+
+    protected virtual void OnPermutationTypeChanged() {
+      var handler = PermutationTypeChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
   }
 }

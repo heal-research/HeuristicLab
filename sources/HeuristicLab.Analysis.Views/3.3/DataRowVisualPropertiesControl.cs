@@ -63,6 +63,7 @@ namespace HeuristicLab.Analysis.Views {
           binsNumericUpDown.Value = 1;
           binsApproximatelyRadioButton.Checked = false;
           binsExactRadioButton.Checked = false;
+          displayNameTextBox.Text = String.Empty;
         } else {
           chartTypeComboBox.SelectedItem = Content.ChartType;
           if (Content.Color.IsEmpty) {
@@ -82,6 +83,7 @@ namespace HeuristicLab.Analysis.Views {
           binsNumericUpDown.Value = Content.Bins;
           binsApproximatelyRadioButton.Checked = !Content.ExactBins;
           binsExactRadioButton.Checked = Content.ExactBins;
+          displayNameTextBox.Text = Content.DisplayName;
         }
       } finally { SuppressEvents = false; }
       SetEnabledStateOfControls();
@@ -164,6 +166,15 @@ namespace HeuristicLab.Analysis.Views {
         SuppressEvents = true;
         try {
           Content.ExactBins = binsExactRadioButton.Checked;
+        } finally { SuppressEvents = false; }
+      }
+    }
+
+    private void displayNameTextBox_Validated(object sender, EventArgs e) {
+      if (!SuppressEvents && Content != null) {
+        SuppressEvents = true;
+        try {
+          Content.DisplayName = displayNameTextBox.Text;
         } finally { SuppressEvents = false; }
       }
     }
