@@ -41,6 +41,13 @@ namespace HeuristicLab.Optimization {
       }
     }
 
+    public override string ItemDescription {
+      get {
+        if (Description != String.Empty) return Description;
+        else return base.ItemDescription;
+      }
+    }
+
     public override bool CanChangeName {
       get { return false; }
     }
