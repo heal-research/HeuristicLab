@@ -160,9 +160,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
 
       resultsCollector1.CopyValue = new BoolValue(false);
       resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>("Generations"));
-      resultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Curent Comparison Factor", null, ComparisonFactorParameter.Name));
-      resultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Selection Pressure", null, "SelectionPressure"));
-      resultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Success Ratio", null, "CurrentSuccessRatio"));
+      resultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Comparison Factor", null, ComparisonFactorParameter.Name));
+      resultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Selection Pressure", "Displays the rising selection pressure during a generation.", "SelectionPressure"));
+      resultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Success Ratio", "Indicates how many successful children were already found during a generation (relative to the population size).", "CurrentSuccessRatio"));
       resultsCollector1.ResultsParameter.ActualName = ResultsParameter.Name;
 
       mainOperator.ComparisonFactorParameter.ActualName = ComparisonFactorParameter.Name;

@@ -222,8 +222,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       islandAnalyzer1.Name = "Island Analyzer (placeholder)";
       islandAnalyzer1.OperatorParameter.ActualName = IslandAnalyzerParameter.Name;
 
-      islandResultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Selection Pressure", null, "SelectionPressure"));
-      islandResultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Success Ratio", null, "CurrentSuccessRatio"));
+      islandResultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Selection Pressure", "Displays the rising selection pressure during a generation.", "SelectionPressure"));
+      islandResultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Success Ratio", "Indicates how many successful children were already found during a generation (relative to the population size).", "CurrentSuccessRatio"));
       islandResultsCollector1.ResultsParameter.ActualName = ResultsParameter.Name;
 
       comparisonFactorInitializer.Name = "Initialize Comparison Factor";
@@ -263,8 +263,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       islandAnalyzer2.Name = "Island Analyzer (placeholder)";
       islandAnalyzer2.OperatorParameter.ActualName = IslandAnalyzerParameter.Name;
 
-      islandResultsCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Selection Pressure", null, "SelectionPressure"));
-      islandResultsCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Success Ratio", null, "CurrentSuccessRatio"));
+      islandResultsCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Selection Pressure", "Displays the rising selection pressure during a generation.", "SelectionPressure"));
+      islandResultsCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Success Ratio", "Indicates how many successful children were already found during a generation (relative to the population size).", "CurrentSuccessRatio"));
       islandResultsCollector2.ResultsParameter.ActualName = "Results";
 
       islandSelectionPressureComparator.Name = "SelectionPressure >= MaximumSelectionPressure ?";

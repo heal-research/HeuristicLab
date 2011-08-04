@@ -213,8 +213,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       villageAnalyzer1.Name = "Village Analyzer (placeholder)";
       villageAnalyzer1.OperatorParameter.ActualName = VillageAnalyzerParameter.Name;
 
-      villageResultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Success Ratio", null, "CurrentSuccessRatio"));
-      villageResultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Selection Pressure", null, "SelectionPressure"));
+      villageResultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Success Ratio", "Indicates how many successful children were already found during a generation (relative to the population size).", "CurrentSuccessRatio"));
+      villageResultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Selection Pressure", "Displays the rising selection pressure during a generation.", "SelectionPressure"));
       villageResultsCollector1.ResultsParameter.ActualName = "Results";
 
       analyzer1.Name = "Analyzer (placeholder)";
@@ -251,8 +251,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       villageAnalyzer2.Name = "Village Analyzer (placeholder)";
       villageAnalyzer2.OperatorParameter.ActualName = VillageAnalyzerParameter.Name;
 
-      villageResultsCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Success Ratio", null, "CurrentSuccessRatio"));
-      villageResultsCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Selection Pressure", null, "SelectionPressure"));
+      villageResultsCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Success Ratio", "Indicates how many successful children were already found during a generation (relative to the population size).", "CurrentSuccessRatio"));
+      villageResultsCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Selection Pressure", "Displays the rising selection pressure during a generation.", "SelectionPressure"));
       villageResultsCollector2.ResultsParameter.ActualName = "Results";
 
       villageSelectionPressureComparator.Name = "SelectionPressure >= MaximumSelectionPressure ?";
