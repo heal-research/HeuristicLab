@@ -25,12 +25,9 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.Problems.DataAnalysis.Symbolic;
-using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
@@ -58,12 +55,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return new MultiNomialLogitClassification(this, cloner);
     }
 
-    #region logit regression
+    #region logit classification
     protected override void Run() {
       double rmsError, relClassError;
       var solution = CreateLogitClassificationSolution(Problem.ProblemData, out rmsError, out relClassError);
-      Results.Add(new Result(LogitClassificationModelResultName, "The linear regression solution.", solution));
-      Results.Add(new Result("Root mean square error", "The root of the mean of squared errors of the logit regression solution on the training set.", new DoubleValue(rmsError)));
+      Results.Add(new Result(LogitClassificationModelResultName, "The logit classification solution.", solution));
+      Results.Add(new Result("Root mean squared error", "The root of the mean of squared errors of the logit regression solution on the training set.", new DoubleValue(rmsError)));
       Results.Add(new Result("Relative classification error", "Relative classification error on the training set (percentage of misclassified cases).", new PercentValue(relClassError)));
     }
 

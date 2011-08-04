@@ -65,7 +65,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       logitModel.innerobj.w = (double[])original.logitModel.innerobj.w.Clone();
       targetVariable = original.targetVariable;
       allowedInputVariables = (string[])original.allowedInputVariables.Clone();
-      this.classValues = (double[])original.classValues.Clone();
+      classValues = (double[])original.classValues.Clone();
     }
     public MultinomialLogitModel(alglib.logitmodel logitModel, string targetVariable, IEnumerable<string> allowedInputVariables, double[] classValues)
       : base() {
