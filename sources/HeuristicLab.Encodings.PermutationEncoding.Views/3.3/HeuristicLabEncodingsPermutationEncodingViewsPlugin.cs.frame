@@ -34,7 +34,6 @@ namespace HeuristicLab.Encodings.PermutationEncoding.Views {
   [PluginDependency("HeuristicLab.Encodings.PermutationEncoding", "3.3")]
   [PluginDependency("HeuristicLab.MainForm", "3.3")]
   [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.3")]
-  [PluginDependency("HeuristicLab.Optimization.Views", "3.3")]
   public class HeuristicLabEncodingsPermutationEncodingViewsPlugin : PluginBase {
   }
 }
