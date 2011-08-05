@@ -49,6 +49,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       this.exportChartToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.copyImageToClipboardBitmapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+      this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.contextMenuStrip.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
       this.SuspendLayout();
@@ -57,15 +58,16 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       // 
       this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exportChartToolStripMenuItem,
+            this.exportToolStripMenuItem,
             this.copyImageToClipboardBitmapToolStripMenuItem});
       this.contextMenuStrip.Name = "contextMenuStrip";
-      this.contextMenuStrip.Size = new System.Drawing.Size(257, 76);
+      this.contextMenuStrip.Size = new System.Drawing.Size(257, 70);
       // 
       // exportChartToolStripMenuItem
       // 
       this.exportChartToolStripMenuItem.Name = "exportChartToolStripMenuItem";
       this.exportChartToolStripMenuItem.Size = new System.Drawing.Size(256, 22);
-      this.exportChartToolStripMenuItem.Text = "Export Chart";
+      this.exportChartToolStripMenuItem.Text = "Quick Export Chart";
       this.exportChartToolStripMenuItem.Click += new System.EventHandler(this.exportChartToolStripMenuItem_Click);
       // 
       // copyImageToClipboardBitmapToolStripMenuItem
@@ -80,6 +82,13 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       this.saveFileDialog.Filter = "Bitmap (*.bmp)|*.bmp|JPEG (*.jpg)|*.jpg|EMF (*.emf)|*.emf|PNG (*.png)|*.png|GIF (" +
           "*.gif)|*.gif|TIFF (*.tif)|*.tif\"";
       this.saveFileDialog.FilterIndex = 2;
+      // 
+      // exportToolStripMenuItem
+      // 
+      this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
+      this.exportToolStripMenuItem.Size = new System.Drawing.Size(256, 22);
+      this.exportToolStripMenuItem.Text = "Export Chart...";
+      this.exportToolStripMenuItem.Click += new System.EventHandler(this.exportToolStripMenuItem_Click);
       // 
       // EnhancedChart
       // 
@@ -96,5 +105,6 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
     private System.Windows.Forms.ToolStripMenuItem exportChartToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem copyImageToClipboardBitmapToolStripMenuItem;
     private System.Windows.Forms.SaveFileDialog saveFileDialog;
+    private System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem;
   }
 }
