@@ -52,6 +52,9 @@ namespace HeuristicLab.Optimization.Views {
       chart.Series.Clear();
       chart.ChartAreas.Add(BoxPlotChartAreaName);
       chart.CustomizeAllChartAreas();
+      chart.ChartAreas[BoxPlotChartAreaName].Axes.ToList().ForEach(x => { x.ScaleView.Zoomable = true; x.ScaleView.MinSize = 0; });
+      chart.ChartAreas[BoxPlotChartAreaName].CursorX.Interval = 0.5;
+      chart.ChartAreas[BoxPlotChartAreaName].CursorY.Interval = 1e-5;
     }
 
     public new RunCollection Content {
