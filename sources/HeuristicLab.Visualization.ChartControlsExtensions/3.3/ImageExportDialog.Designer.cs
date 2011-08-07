@@ -35,8 +35,8 @@
       this.widthNumericUD = new System.Windows.Forms.NumericUpDown();
       this.label5 = new System.Windows.Forms.Label();
       this.label6 = new System.Windows.Forms.Label();
-      this.axisComboBox = new System.Windows.Forms.ComboBox();
-      this.scalesComboBox = new System.Windows.Forms.ComboBox();
+      this.axisFontSizeComboBox = new System.Windows.Forms.ComboBox();
+      this.scalesFontSizeComboBox = new System.Windows.Forms.ComboBox();
       this.cancelButton = new System.Windows.Forms.Button();
       this.label9 = new System.Windows.Forms.Label();
       this.label10 = new System.Windows.Forms.Label();
@@ -47,10 +47,13 @@
       this.label14 = new System.Windows.Forms.Label();
       this.label15 = new System.Windows.Forms.Label();
       this.groupBox3 = new System.Windows.Forms.GroupBox();
+      this.label18 = new System.Windows.Forms.Label();
       this.label12 = new System.Windows.Forms.Label();
       this.label11 = new System.Windows.Forms.Label();
       this.label7 = new System.Windows.Forms.Label();
-      this.titleComboBox = new System.Windows.Forms.ComboBox();
+      this.legendFontSizeComboBox = new System.Windows.Forms.ComboBox();
+      this.label17 = new System.Windows.Forms.Label();
+      this.titleFontSizeComboBox = new System.Windows.Forms.ComboBox();
       this.label16 = new System.Windows.Forms.Label();
       this.heightNumericUD = new System.Windows.Forms.NumericUpDown();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
@@ -100,7 +103,7 @@
       this.okButton.Name = "okButton";
       this.okButton.Size = new System.Drawing.Size(75, 23);
       this.okButton.TabIndex = 13;
-      this.okButton.Text = "Ok";
+      this.okButton.Text = "Save";
       this.okButton.UseVisualStyleBackColor = true;
       this.okButton.Click += new System.EventHandler(this.okButton_Click);
       // 
@@ -169,10 +172,15 @@
       // 
       // widthNumericUD
       // 
-      this.widthNumericUD.DecimalPlaces = 1;
+      this.widthNumericUD.DecimalPlaces = 2;
+      this.widthNumericUD.Increment = new decimal(new int[] {
+            5,
+            0,
+            0,
+            65536});
       this.widthNumericUD.Location = new System.Drawing.Point(76, 410);
       this.widthNumericUD.Maximum = new decimal(new int[] {
-            42,
+            1000,
             0,
             0,
             0});
@@ -180,7 +188,7 @@
             1,
             0,
             0,
-            0});
+            131072});
       this.widthNumericUD.Name = "widthNumericUD";
       this.widthNumericUD.Size = new System.Drawing.Size(75, 20);
       this.widthNumericUD.TabIndex = 8;
@@ -209,12 +217,12 @@
       this.label6.TabIndex = 7;
       this.label6.Text = "Width:";
       // 
-      // axisComboBox
+      // axisFontSizeComboBox
       // 
-      this.axisComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.axisFontSizeComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.axisComboBox.FormattingEnabled = true;
-      this.axisComboBox.Items.AddRange(new object[] {
+      this.axisFontSizeComboBox.FormattingEnabled = true;
+      this.axisFontSizeComboBox.Items.AddRange(new object[] {
             "6",
             "8",
             "10",
@@ -226,19 +234,19 @@
             "24",
             "36",
             "72"});
-      this.axisComboBox.Location = new System.Drawing.Point(54, 46);
-      this.axisComboBox.Name = "axisComboBox";
-      this.axisComboBox.Size = new System.Drawing.Size(84, 21);
-      this.axisComboBox.TabIndex = 3;
-      this.axisComboBox.TextChanged += new System.EventHandler(this.axisComboBox_TextChanged);
-      this.axisComboBox.Validating += new System.ComponentModel.CancelEventHandler(this.axisComboBox_Validating);
+      this.axisFontSizeComboBox.Location = new System.Drawing.Point(54, 46);
+      this.axisFontSizeComboBox.Name = "axisFontSizeComboBox";
+      this.axisFontSizeComboBox.Size = new System.Drawing.Size(84, 21);
+      this.axisFontSizeComboBox.TabIndex = 3;
+      this.axisFontSizeComboBox.TextChanged += new System.EventHandler(this.axisFontSizeComboBox_TextChanged);
+      this.axisFontSizeComboBox.Validating += new System.ComponentModel.CancelEventHandler(this.numericComboBox_Validating);
       // 
-      // scalesComboBox
+      // scalesFontSizeComboBox
       // 
-      this.scalesComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.scalesFontSizeComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.scalesComboBox.FormattingEnabled = true;
-      this.scalesComboBox.Items.AddRange(new object[] {
+      this.scalesFontSizeComboBox.FormattingEnabled = true;
+      this.scalesFontSizeComboBox.Items.AddRange(new object[] {
             "4",
             "5",
             "6",
@@ -254,12 +262,12 @@
             "24",
             "36",
             "72"});
-      this.scalesComboBox.Location = new System.Drawing.Point(54, 73);
-      this.scalesComboBox.Name = "scalesComboBox";
-      this.scalesComboBox.Size = new System.Drawing.Size(84, 21);
-      this.scalesComboBox.TabIndex = 5;
-      this.scalesComboBox.TextChanged += new System.EventHandler(this.scalesComboBox_TextChanged);
-      this.scalesComboBox.Validating += new System.ComponentModel.CancelEventHandler(this.scalesComboBox_Validating);
+      this.scalesFontSizeComboBox.Location = new System.Drawing.Point(54, 73);
+      this.scalesFontSizeComboBox.Name = "scalesFontSizeComboBox";
+      this.scalesFontSizeComboBox.Size = new System.Drawing.Size(84, 21);
+      this.scalesFontSizeComboBox.TabIndex = 5;
+      this.scalesFontSizeComboBox.TextChanged += new System.EventHandler(this.scalesFontSizeComboBox_TextChanged);
+      this.scalesFontSizeComboBox.Validating += new System.ComponentModel.CancelEventHandler(this.numericComboBox_Validating);
       // 
       // cancelButton
       // 
@@ -296,7 +304,7 @@
       this.groupBox1.Controls.Add(this.secondaryYTextBox);
       this.groupBox1.Controls.Add(this.label4);
       this.groupBox1.Controls.Add(this.label3);
-      this.groupBox1.Location = new System.Drawing.Point(13, 166);
+      this.groupBox1.Location = new System.Drawing.Point(12, 154);
       this.groupBox1.Name = "groupBox1";
       this.groupBox1.Size = new System.Drawing.Size(258, 82);
       this.groupBox1.TabIndex = 3;
@@ -309,7 +317,7 @@
       this.groupBox2.Controls.Add(this.primaryYTextBox);
       this.groupBox2.Controls.Add(this.label14);
       this.groupBox2.Controls.Add(this.label15);
-      this.groupBox2.Location = new System.Drawing.Point(13, 73);
+      this.groupBox2.Location = new System.Drawing.Point(12, 64);
       this.groupBox2.Name = "groupBox2";
       this.groupBox2.Size = new System.Drawing.Size(258, 84);
       this.groupBox2.TabIndex = 2;
@@ -356,21 +364,33 @@
       // 
       // groupBox3
       // 
+      this.groupBox3.Controls.Add(this.label18);
       this.groupBox3.Controls.Add(this.label12);
       this.groupBox3.Controls.Add(this.label11);
       this.groupBox3.Controls.Add(this.label7);
       this.groupBox3.Controls.Add(this.label1);
       this.groupBox3.Controls.Add(this.label9);
-      this.groupBox3.Controls.Add(this.scalesComboBox);
+      this.groupBox3.Controls.Add(this.legendFontSizeComboBox);
+      this.groupBox3.Controls.Add(this.label17);
+      this.groupBox3.Controls.Add(this.scalesFontSizeComboBox);
       this.groupBox3.Controls.Add(this.label10);
-      this.groupBox3.Controls.Add(this.axisComboBox);
-      this.groupBox3.Controls.Add(this.titleComboBox);
-      this.groupBox3.Location = new System.Drawing.Point(13, 259);
+      this.groupBox3.Controls.Add(this.axisFontSizeComboBox);
+      this.groupBox3.Controls.Add(this.titleFontSizeComboBox);
+      this.groupBox3.Location = new System.Drawing.Point(12, 242);
       this.groupBox3.Name = "groupBox3";
-      this.groupBox3.Size = new System.Drawing.Size(258, 105);
+      this.groupBox3.Size = new System.Drawing.Size(258, 131);
       this.groupBox3.TabIndex = 4;
       this.groupBox3.TabStop = false;
       this.groupBox3.Text = "Font Size";
+      // 
+      // label18
+      // 
+      this.label18.AutoSize = true;
+      this.label18.Location = new System.Drawing.Point(144, 105);
+      this.label18.Name = "label18";
+      this.label18.Size = new System.Drawing.Size(16, 13);
+      this.label18.TabIndex = 0;
+      this.label18.Text = "pt";
       // 
       // label12
       // 
@@ -399,12 +419,49 @@
       this.label7.TabIndex = 0;
       this.label7.Text = "pt";
       // 
-      // titleComboBox
+      // legendFontSizeComboBox
       // 
-      this.titleComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.legendFontSizeComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.titleComboBox.FormattingEnabled = true;
-      this.titleComboBox.Items.AddRange(new object[] {
+      this.legendFontSizeComboBox.FormattingEnabled = true;
+      this.legendFontSizeComboBox.Items.AddRange(new object[] {
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "14",
+            "16",
+            "18",
+            "24",
+            "36",
+            "72"});
+      this.legendFontSizeComboBox.Location = new System.Drawing.Point(54, 100);
+      this.legendFontSizeComboBox.Name = "legendFontSizeComboBox";
+      this.legendFontSizeComboBox.Size = new System.Drawing.Size(84, 21);
+      this.legendFontSizeComboBox.TabIndex = 5;
+      this.legendFontSizeComboBox.TextChanged += new System.EventHandler(this.legendFontSizeComboBox_TextChanged);
+      this.legendFontSizeComboBox.Validating += new System.ComponentModel.CancelEventHandler(this.numericComboBox_Validating);
+      // 
+      // label17
+      // 
+      this.label17.AutoSize = true;
+      this.label17.Location = new System.Drawing.Point(6, 105);
+      this.label17.Name = "label17";
+      this.label17.Size = new System.Drawing.Size(46, 13);
+      this.label17.TabIndex = 4;
+      this.label17.Text = "Legend:";
+      // 
+      // titleFontSizeComboBox
+      // 
+      this.titleFontSizeComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.titleFontSizeComboBox.FormattingEnabled = true;
+      this.titleFontSizeComboBox.Items.AddRange(new object[] {
             "6",
             "8",
             "10",
@@ -416,12 +473,12 @@
             "24",
             "36",
             "72"});
-      this.titleComboBox.Location = new System.Drawing.Point(54, 19);
-      this.titleComboBox.Name = "titleComboBox";
-      this.titleComboBox.Size = new System.Drawing.Size(84, 21);
-      this.titleComboBox.TabIndex = 1;
-      this.titleComboBox.TextChanged += new System.EventHandler(this.titleComboBox_TextChanged);
-      this.titleComboBox.Validating += new System.ComponentModel.CancelEventHandler(this.titleComboBox_Validating);
+      this.titleFontSizeComboBox.Location = new System.Drawing.Point(54, 19);
+      this.titleFontSizeComboBox.Name = "titleFontSizeComboBox";
+      this.titleFontSizeComboBox.Size = new System.Drawing.Size(84, 21);
+      this.titleFontSizeComboBox.TabIndex = 1;
+      this.titleFontSizeComboBox.TextChanged += new System.EventHandler(this.titleFontSizeComboBox_TextChanged);
+      this.titleFontSizeComboBox.Validating += new System.ComponentModel.CancelEventHandler(this.numericComboBox_Validating);
       // 
       // label16
       // 
@@ -434,10 +491,15 @@
       // 
       // heightNumericUD
       // 
-      this.heightNumericUD.DecimalPlaces = 1;
+      this.heightNumericUD.DecimalPlaces = 2;
+      this.heightNumericUD.Increment = new decimal(new int[] {
+            5,
+            0,
+            0,
+            65536});
       this.heightNumericUD.Location = new System.Drawing.Point(76, 436);
       this.heightNumericUD.Maximum = new decimal(new int[] {
-            42,
+            1000,
             0,
             0,
             0});
@@ -445,7 +507,7 @@
             1,
             0,
             0,
-            0});
+            131072});
       this.heightNumericUD.Name = "heightNumericUD";
       this.heightNumericUD.Size = new System.Drawing.Size(75, 20);
       this.heightNumericUD.TabIndex = 11;
@@ -496,7 +558,7 @@
       // 
       this.chartAreaComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.chartAreaComboBox.FormattingEnabled = true;
-      this.chartAreaComboBox.Location = new System.Drawing.Point(76, 46);
+      this.chartAreaComboBox.Location = new System.Drawing.Point(76, 37);
       this.chartAreaComboBox.Name = "chartAreaComboBox";
       this.chartAreaComboBox.Size = new System.Drawing.Size(189, 21);
       this.chartAreaComboBox.TabIndex = 17;
@@ -520,9 +582,6 @@
       // 
       this.lengthUnitComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.lengthUnitComboBox.FormattingEnabled = true;
-      this.lengthUnitComboBox.Items.AddRange(new object[] {
-            "inch",
-            "cm"});
       this.lengthUnitComboBox.Location = new System.Drawing.Point(157, 422);
       this.lengthUnitComboBox.Name = "lengthUnitComboBox";
       this.lengthUnitComboBox.Size = new System.Drawing.Size(108, 21);
@@ -533,9 +592,6 @@
       // 
       this.resolutionUnitComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.resolutionUnitComboBox.FormattingEnabled = true;
-      this.resolutionUnitComboBox.Items.AddRange(new object[] {
-            "dpi",
-            "dpcm"});
       this.resolutionUnitComboBox.Location = new System.Drawing.Point(157, 383);
       this.resolutionUnitComboBox.Name = "resolutionUnitComboBox";
       this.resolutionUnitComboBox.Size = new System.Drawing.Size(108, 21);
@@ -545,7 +601,7 @@
       // label8
       // 
       this.label8.AutoSize = true;
-      this.label8.Location = new System.Drawing.Point(10, 49);
+      this.label8.Location = new System.Drawing.Point(10, 40);
       this.label8.Name = "label8";
       this.label8.Size = new System.Drawing.Size(60, 13);
       this.label8.TabIndex = 0;
@@ -633,8 +689,8 @@
     private System.Windows.Forms.NumericUpDown widthNumericUD;
     private System.Windows.Forms.Label label5;
     private System.Windows.Forms.Label label6;
-    private System.Windows.Forms.ComboBox axisComboBox;
-    private System.Windows.Forms.ComboBox scalesComboBox;
+    private System.Windows.Forms.ComboBox axisFontSizeComboBox;
+    private System.Windows.Forms.ComboBox scalesFontSizeComboBox;
     private System.Windows.Forms.Button cancelButton;
     private System.Windows.Forms.Label label9;
     private System.Windows.Forms.Label label10;
@@ -653,7 +709,7 @@
     private System.Windows.Forms.Label label12;
     private System.Windows.Forms.Label label11;
     private System.Windows.Forms.Label label7;
-    private System.Windows.Forms.ComboBox titleComboBox;
+    private System.Windows.Forms.ComboBox titleFontSizeComboBox;
     private System.Windows.Forms.ComboBox lengthUnitComboBox;
     private System.Windows.Forms.ComboBox resolutionUnitComboBox;
     private System.Windows.Forms.ComboBox chartAreaComboBox;
@@ -661,5 +717,8 @@
     private System.Windows.Forms.SaveFileDialog saveFileDialog;
     private System.Windows.Forms.Label label13;
     private System.Windows.Forms.Label previewZoomLabel;
+    private System.Windows.Forms.Label label18;
+    private System.Windows.Forms.ComboBox legendFontSizeComboBox;
+    private System.Windows.Forms.Label label17;
   }
 }

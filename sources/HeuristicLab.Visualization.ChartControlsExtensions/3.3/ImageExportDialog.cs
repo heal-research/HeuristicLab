@@ -28,10 +28,9 @@ using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
 namespace HeuristicLab.Visualization.ChartControlsExtensions {
-  public enum LengthUnit { Centimeters = 1, Inches = 2 };
-
   public sealed partial class ImageExportDialog : Form {
     private const float CMPERINCH = 2.54f;
+    private static readonly string DPI = "dpi", DPCM = "dpcm", INCH = "inch", CM = "cm";
     private Chart originalChart, workingChart;
     private bool SuppressEvents { get; set; }
 
@@ -46,15 +45,29 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       if (chart == null) throw new ArgumentNullException("chart");
       this.originalChart = chart;
       InitializeComponent();
+      #region Custom Initialization
       SuppressEvents = true;
-      titleComboBox.Text = "12";
-      resolutionUnitComboBox.SelectedIndex = 0;
-      lengthUnitComboBox.SelectedIndex = 1;
-      resolutionComboBox.Text = "300";
-      SuppressEvents = false;
-      splitContainer.Panel2Collapsed = true;
-      Width = 305;
-      Height = 550;
+      try {
+        resolutionUnitComboBox.Items.Add(DPI);
+        resolutionUnitComboBox.Items.Add(DPCM);
+        lengthUnitComboBox.Items.Add(INCH);
+        lengthUnitComboBox.Items.Add(CM);
+        resolutionUnitComboBox.SelectedIndex = 0;
+        if (System.Globalization.RegionInfo.CurrentRegion.IsMetric)
+          lengthUnitComboBox.SelectedIndex = 1;
+        else lengthUnitComboBox.SelectedIndex = 0;
+
+        titleFontSizeComboBox.Text = "12";
+        axisFontSizeComboBox.Text = "8";
+        scalesFontSizeComboBox.Text = "6";
+        legendFontSizeComboBox.Text = "6";
+        resolutionComboBox.Text = "300";
+        SuppressEvents = false;
+        splitContainer.Panel2Collapsed = true;
+        Width = 305;
+        Height = 550;
+      } finally { SuppressEvents = false; }
+      #endregion
     }
 
     private void UpdateFields() {
@@ -63,10 +76,10 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       try {
         SuppressEvents = true;
 
-        if (workingChart.Titles.Count == 0) titleComboBox.Text = "12";
+        if (workingChart.Titles.Count == 0) titleFontSizeComboBox.Text = "12";
         else {
           titleTextBox.Text = workingChart.Titles[0].Text;
-          titleComboBox.Text = workingChart.Titles[0].Font.SizeInPoints.ToString();
+          titleFontSizeComboBox.Text = workingChart.Titles[0].Font.SizeInPoints.ToString();
         }
 
         primaryXTextBox.Text = area.AxisX.Title;
@@ -74,8 +87,10 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
         secondaryXTextBox.Text = area.AxisX2.Title;
         secondaryYTextBox.Text = area.AxisY2.Title;
 
-        axisComboBox.Text = area.AxisX.TitleFont.SizeInPoints.ToString();
-        scalesComboBox.Text = area.AxisX.LabelStyle.Font.SizeInPoints.ToString();
+        axisFontSizeComboBox.Text = area.AxisX.TitleFont.SizeInPoints.ToString();
+        scalesFontSizeComboBox.Text = area.AxisX.LabelStyle.Font.SizeInPoints.ToString();
+        if (workingChart.Legends.Count == 0) legendFontSizeComboBox.Text = "8";
+        else legendFontSizeComboBox.Text = workingChart.Legends[0].Font.SizeInPoints.ToString();
       } finally {
         SuppressEvents = false;
       }
@@ -86,15 +101,16 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
     }
 
     private void UpdatePreview() {
-      float dpi = float.Parse(resolutionComboBox.Text);
-      if (resolutionUnitComboBox.SelectedIndex == 1) dpi *= CMPERINCH;
-      float width = (float)widthNumericUD.Value;
-      float height = (float)heightNumericUD.Value;
-      if (lengthUnitComboBox.SelectedIndex == 1) {
-        width /= CMPERINCH; height /= CMPERINCH;
+      float dpi;
+      float width;
+      float height;
+      GetImageParameters(out dpi, out width, out height);
+
+      if (previewPictureBox.Image != null) {
+        previewPictureBox.Image.Dispose();
+        previewPictureBox.Image = null;
       }
-      width *= dpi; height *= dpi;
-      if (previewPictureBox.Image != null) previewPictureBox.Image.Dispose();
+
       int previewWidth, previewHeight;
       if (width / height >= 1.0) {
         previewWidth = previewPictureBox.Width;
@@ -103,31 +119,50 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
         previewHeight = previewPictureBox.Height;
         previewWidth = (int)Math.Round(width / height * previewHeight);
       }
+
+      float scaleFactor = (float)Math.Min(previewWidth / width, previewHeight / height);
+      if (scaleFactor >= 1) {
+        previewZoomLabel.Text = "100%";
+        previewWidth = (int)Math.Round(width);
+        previewHeight = (int)Math.Round(height);
+      } else previewZoomLabel.Text = (scaleFactor * 100).ToString("0") + "%";
+
       Bitmap image = new Bitmap(previewWidth, previewHeight);
       image.SetResolution(dpi, dpi);
       using (Graphics graphics = Graphics.FromImage(image)) {
-        graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
-        graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-        graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-        float scaleFactor = (float)Math.Min(image.Width / width, image.Height / height);
-        previewZoomLabel.Text = (scaleFactor * 100).ToString("0") + "%";
-        graphics.ScaleTransform(scaleFactor, scaleFactor);
-        workingChart.Printing.PrintPaint(graphics, new Rectangle(0, 0, (int)width, (int)height));
+        if (scaleFactor < 1) graphics.ScaleTransform(scaleFactor, scaleFactor);
+        workingChart.Printing.PrintPaint(graphics, new Rectangle(0, 0, (int)Math.Round(width), (int)Math.Round(height)));
       }
       previewPictureBox.Image = image;
     }
 
+    private void GetImageParameters(out float dpi, out float width, out float height) {
+      dpi = float.Parse(resolutionComboBox.Text);
+      if (resolutionUnitComboBox.Text == DPCM) dpi *= CMPERINCH;
+      width = (float)widthNumericUD.Value;
+      height = (float)heightNumericUD.Value;
+      if (lengthUnitComboBox.Text == CM) {
+        width /= CMPERINCH; height /= CMPERINCH;
+      }
+      width *= dpi; height *= dpi;
+    }
+
     protected override void OnShown(EventArgs e) {
-      var prev = originalChart.Serializer.Content;
+      #region Create copy of chart
+      var prevContent = originalChart.Serializer.Content;
+      var prevFormat = originalChart.Serializer.Format;
       originalChart.Serializer.Content = SerializationContents.Default;
+      originalChart.Serializer.Format = SerializationFormat.Binary;
       MemoryStream ms = new MemoryStream();
       originalChart.Serializer.Save(ms);
-      originalChart.Serializer.Content = prev;
+      originalChart.Serializer.Content = prevContent;
+      originalChart.Serializer.Format = prevFormat;
 
       ms.Seek(0, SeekOrigin.Begin);
       workingChart = new EnhancedChart();
       workingChart.Serializer.Load(ms);
       ms.Close();
+      #endregion
 
       chartAreaComboBox.Items.Clear();
       foreach (ChartArea area in originalChart.ChartAreas) {
@@ -160,6 +195,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
           workingChart.Titles[0].Text = titleTextBox.Text;
         } else {
           Title t = new Title(titleTextBox.Text);
+          t.Font = ChangeFontSizePt(t.Font, float.Parse(titleFontSizeComboBox.Text));
           workingChart.Titles.Add(t);
         }
         if (togglePreviewCheckBox.Checked) UpdatePreview();
@@ -206,10 +242,10 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       if (togglePreviewCheckBox.Checked) UpdatePreview();
     }
 
-    private void titleComboBox_TextChanged(object sender, EventArgs e) {
+    private void titleFontSizeComboBox_TextChanged(object sender, EventArgs e) {
       if (!SuppressEvents) {
         float fontSize;
-        if (float.TryParse(titleComboBox.Text, out fontSize)) {
+        if (float.TryParse(titleFontSizeComboBox.Text, out fontSize)) {
           if (workingChart.Titles.Count > 0) {
             workingChart.Titles[0].Font = ChangeFontSizePt(workingChart.Titles[0].Font, fontSize);
             if (togglePreviewCheckBox.Checked) UpdatePreview();
@@ -218,15 +254,10 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       }
     }
 
-    private void titleComboBox_Validating(object sender, CancelEventArgs e) {
-      float number;
-      e.Cancel = !float.TryParse(titleComboBox.Text, out number);
-    }
-
-    private void axisComboBox_TextChanged(object sender, EventArgs e) {
+    private void axisFontSizeComboBox_TextChanged(object sender, EventArgs e) {
       if (!SuppressEvents) {
         float fontSize;
-        if (float.TryParse(axisComboBox.Text, out fontSize)) {
+        if (float.TryParse(axisFontSizeComboBox.Text, out fontSize)) {
           ChartArea area = GetCurrentChartArea();
           foreach (Axis a in area.Axes) {
             a.TitleFont = ChangeFontSizePt(a.TitleFont, fontSize);
@@ -236,15 +267,10 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       }
     }
 
-    private void axisComboBox_Validating(object sender, CancelEventArgs e) {
-      float number;
-      e.Cancel = !float.TryParse(axisComboBox.Text, out number);
-    }
-
-    private void scalesComboBox_TextChanged(object sender, EventArgs e) {
+    private void scalesFontSizeComboBox_TextChanged(object sender, EventArgs e) {
       if (!SuppressEvents) {
         float fontSize;
-        if (float.TryParse(scalesComboBox.Text, out fontSize)) {
+        if (float.TryParse(scalesFontSizeComboBox.Text, out fontSize)) {
           ChartArea area = GetCurrentChartArea();
           foreach (Axis a in area.Axes) {
             a.LabelStyle.Font = ChangeFontSizePt(a.LabelStyle.Font, fontSize);
@@ -254,9 +280,22 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       }
     }
 
-    private void scalesComboBox_Validating(object sender, CancelEventArgs e) {
+    private void legendFontSizeComboBox_TextChanged(object sender, EventArgs e) {
+      if (!SuppressEvents) {
+        float fontSize;
+        if (float.TryParse(legendFontSizeComboBox.Text, out fontSize)) {
+          foreach (Legend l in workingChart.Legends) {
+            l.Font = ChangeFontSizePt(l.Font, fontSize);
+          }
+        }
+        if (togglePreviewCheckBox.Checked) UpdatePreview();
+      }
+    }
+
+    private void numericComboBox_Validating(object sender, CancelEventArgs e) {
+      if (!(sender is ComboBox)) return;
       float number;
-      e.Cancel = !float.TryParse(scalesComboBox.Text, out number);
+      e.Cancel = !float.TryParse((sender as ComboBox).Text, out number);
     }
 
     private void resolutionComboBox_TextChanged(object sender, EventArgs e) {
@@ -280,20 +319,18 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
     }
 
     private void okButton_Click(object sender, EventArgs e) {
-      float dpi = float.Parse(resolutionComboBox.Text);
-      if (resolutionUnitComboBox.SelectedIndex == 1) dpi *= CMPERINCH;
-      float width = (float)widthNumericUD.Value;
-      float height = (float)heightNumericUD.Value;
-      if (lengthUnitComboBox.SelectedIndex == 1) {
-        width /= CMPERINCH;
-        height /= CMPERINCH;
-      }
-      Bitmap image = new Bitmap((int)Math.Round(width * dpi), (int)Math.Round(height * dpi));
+      float dpi;
+      float width;
+      float height;
+      GetImageParameters(out dpi, out width, out height);
+
+      Bitmap image = new Bitmap((int)Math.Round(width), (int)Math.Round(height));
       image.SetResolution(dpi, dpi);
       using (Graphics graphics = Graphics.FromImage(image)) {
         workingChart.Printing.PrintPaint(graphics, new Rectangle(0, 0, image.Width, image.Height));
       }
 
+      if (titleTextBox.Text.Trim() != String.Empty) saveFileDialog.FileName = titleTextBox.Text.Trim();
       if (saveFileDialog.ShowDialog() == DialogResult.OK) {
         ImageFormat format = ImageFormat.Bmp;
         string filename = saveFileDialog.FileName.ToLower();
