@@ -31,6 +31,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
   public abstract class RegressionSolutionBase : DataAnalysisSolution, IRegressionSolution {
     private const string TrainingMeanSquaredErrorResultName = "Mean squared error (training)";
     private const string TestMeanSquaredErrorResultName = "Mean squared error (test)";
+    private const string TrainingMeanAbsoluteErrorResultName = "Mean absolute error (training)";
+    private const string TestMeanAbsoluteErrorResultName = "Mean absolute error (test)";
     private const string TrainingSquaredCorrelationResultName = "Pearson's R² (training)";
     private const string TestSquaredCorrelationResultName = "Pearson's R² (test)";
     private const string TrainingRelativeErrorResultName = "Average relative error (training)";
@@ -61,6 +63,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public double TestMeanSquaredError {
       get { return ((DoubleValue)this[TestMeanSquaredErrorResultName].Value).Value; }
       private set { ((DoubleValue)this[TestMeanSquaredErrorResultName].Value).Value = value; }
+    }
+    public double TrainingMeanAbsoluteError {
+      get { return ((DoubleValue)this[TrainingMeanAbsoluteErrorResultName].Value).Value; }
+      private set { ((DoubleValue)this[TrainingMeanAbsoluteErrorResultName].Value).Value = value; }
+    }
+    public double TestMeanAbsoluteError {
+      get { return ((DoubleValue)this[TestMeanAbsoluteErrorResultName].Value).Value; }
+      private set { ((DoubleValue)this[TestMeanAbsoluteErrorResultName].Value).Value = value; }
     }
     public double TrainingRSquared {
       get { return ((DoubleValue)this[TrainingSquaredCorrelationResultName].Value).Value; }
@@ -97,12 +107,36 @@ namespace HeuristicLab.Problems.DataAnalysis {
       : base(model, problemData) {
       Add(new Result(TrainingMeanSquaredErrorResultName, "Mean of squared errors of the model on the training partition", new DoubleValue()));
       Add(new Result(TestMeanSquaredErrorResultName, "Mean of squared errors of the model on the test partition", new DoubleValue()));
+      Add(new Result(TrainingMeanAbsoluteErrorResultName, "Mean of absolute errors of the model on the training partition", new DoubleValue()));
+      Add(new Result(TestMeanAbsoluteErrorResultName, "Mean of absolute errors of the model on the test partition", new DoubleValue()));
       Add(new Result(TrainingSquaredCorrelationResultName, "Squared Pearson's correlation coefficient of the model output and the actual values on the training partition", new DoubleValue()));
       Add(new Result(TestSquaredCorrelationResultName, "Squared Pearson's correlation coefficient of the model output and the actual values on the test partition", new DoubleValue()));
       Add(new Result(TrainingRelativeErrorResultName, "Average of the relative errors of the model output and the actual values on the training partition", new PercentValue()));
       Add(new Result(TestRelativeErrorResultName, "Average of the relative errors of the model output and the actual values on the test partition", new PercentValue()));
       Add(new Result(TrainingNormalizedMeanSquaredErrorResultName, "Normalized mean of squared errors of the model on the training partition", new DoubleValue()));
       Add(new Result(TestNormalizedMeanSquaredErrorResultName, "Normalized mean of squared errors of the model on the test partition", new DoubleValue()));
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.4
+
+      #region Backwards compatible code, remove with 3.5
+
+      if (!ContainsKey(TrainingMeanAbsoluteErrorResultName)) {
+        OnlineCalculatorError errorState;
+        Add(new Result(TrainingMeanAbsoluteErrorResultName, "Mean of absolute errors of the model on the training partition", new DoubleValue()));
+        double trainingMAE = OnlineMeanSquaredErrorCalculator.Calculate(EstimatedTrainingValues, ProblemData.Dataset.GetEnumeratedVariableValues(ProblemData.TargetVariable, ProblemData.TrainingIndizes), out errorState);
+        TrainingMeanAbsoluteError = errorState == OnlineCalculatorError.None ? trainingMAE : double.NaN;
+      }
+
+      if (!ContainsKey(TestMeanAbsoluteErrorResultName)) {
+        OnlineCalculatorError errorState;
+        Add(new Result(TestMeanAbsoluteErrorResultName, "Mean of absolute errors of the model on the test partition", new DoubleValue()));
+        double testMAE = OnlineMeanAbsoluteErrorCalculator.Calculate(EstimatedTestValues, ProblemData.Dataset.GetEnumeratedVariableValues(ProblemData.TargetVariable, ProblemData.TestIndizes), out errorState);
+        TestMeanAbsoluteError = errorState == OnlineCalculatorError.None ? testMAE : double.NaN;
+      }
+      #endregion
     }
 
     protected void CalculateResults() {
@@ -116,6 +150,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
       TrainingMeanSquaredError = errorState == OnlineCalculatorError.None ? trainingMSE : double.NaN;
       double testMSE = OnlineMeanSquaredErrorCalculator.Calculate(estimatedTestValues, originalTestValues, out errorState);
       TestMeanSquaredError = errorState == OnlineCalculatorError.None ? testMSE : double.NaN;
+
+      double trainingMAE = OnlineMeanAbsoluteErrorCalculator.Calculate(estimatedTrainingValues, originalTrainingValues, out errorState);
+      TrainingMeanAbsoluteError = errorState == OnlineCalculatorError.None ? trainingMAE : double.NaN;
+      double testMAE = OnlineMeanAbsoluteErrorCalculator.Calculate(estimatedTestValues, originalTestValues, out errorState);
+      TestMeanAbsoluteError = errorState == OnlineCalculatorError.None ? testMAE : double.NaN;
 
       double trainingR2 = OnlinePearsonsRSquaredCalculator.Calculate(estimatedTrainingValues, originalTrainingValues, out errorState);
       TrainingRSquared = errorState == OnlineCalculatorError.None ? trainingR2 : double.NaN;
