@@ -21,7 +21,6 @@
 using System;
 using System.Linq;
 using System.Windows.Forms;
-using HeuristicLab.Core.Views;
 using HeuristicLab.Data;
 using HeuristicLab.Data.Views;
 using HeuristicLab.MainForm;
@@ -30,7 +29,7 @@ using HeuristicLab.MainForm.WindowsForms;
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Estimated Clusters")]
   [Content(typeof(IClusteringSolution))]
-  public partial class ClusteringSolutionEstimatedClusterView : ItemView, IClusteringSolutionEvaluationView {
+  public partial class ClusteringSolutionEstimatedClusterView : DataAnalysisSolutionEvaluationView {
     private const string CLUSTER_NAMES = "Cluster";
 
     public new IClusteringSolution Content {

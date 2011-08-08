@@ -26,14 +26,13 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using HeuristicLab.Common;
-using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Classification Threshold")]
   [Content(typeof(IDiscriminantFunctionClassificationSolution), true)]
-  public sealed partial class DiscriminantFunctionClassificationSolutionThresholdView : ItemView, IDiscriminantFunctionClassificationSolutionEvaluationView {
+  public sealed partial class DiscriminantFunctionClassificationSolutionThresholdView : DataAnalysisSolutionEvaluationView {
     private const double TrainingAxisValue = 0.0;
     private const double TestAxisValue = 10.0;
     private const double TrainingTestBorder = (TestAxisValue - TrainingAxisValue) / 2;

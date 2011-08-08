@@ -19,10 +19,8 @@
  */
 #endregion
 
-using System;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
-using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("DiscriminantFunctionClassificationSolution View")]
@@ -30,15 +28,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
   public partial class DiscriminantFunctionClassificationSolutionView : DataAnalysisSolutionView {
     public DiscriminantFunctionClassificationSolutionView() {
       InitializeComponent();
-
-      var classificationSolutionEvaluationViewTypes = ApplicationManager.Manager.GetTypes(typeof(IClassificationSolutionEvaluationView), true);
-      foreach (Type viewType in classificationSolutionEvaluationViewTypes)
-        AddViewListViewItem(viewType, HeuristicLab.Common.Resources.VSImageLibrary.Graph);
-      RemoveViewListViewItem(typeof(ClassificationSolutionEstimatedClassValuesView));
-
-      var regressionSolutionEvaluationViewTypes = ApplicationManager.Manager.GetTypes(typeof(IDiscriminantFunctionClassificationSolutionEvaluationView), true);
-      foreach (Type viewType in regressionSolutionEvaluationViewTypes)
-        AddViewListViewItem(viewType, HeuristicLab.Common.Resources.VSImageLibrary.Graph);
     }
 
     public new DiscriminantFunctionClassificationSolutionBase Content {

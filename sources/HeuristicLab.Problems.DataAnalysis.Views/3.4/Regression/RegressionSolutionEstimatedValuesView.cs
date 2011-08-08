@@ -21,17 +21,15 @@
 using System;
 using System.Linq;
 using System.Windows.Forms;
-using HeuristicLab.Core.Views;
 using HeuristicLab.Data;
 using HeuristicLab.Data.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
-using System.Globalization;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Estimated Values")]
   [Content(typeof(IRegressionSolution))]
-  public partial class RegressionSolutionEstimatedValuesView : ItemView, IRegressionSolutionEvaluationView {
+  public partial class RegressionSolutionEstimatedValuesView : DataAnalysisSolutionEvaluationView {
     private const string TARGETVARIABLE_SERIES_NAME = "Target Variable";
     private const string ESTIMATEDVALUES_SERIES_NAME = "Estimated Values (all)";
     private const string ESTIMATEDVALUES_TRAINING_SERIES_NAME = "Estimated Values (training)";

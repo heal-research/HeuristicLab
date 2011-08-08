@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
-  partial class ClassificationEnsembleSolutionView {
+  partial class DataAnalysisSolutionEvaluationView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -44,42 +44,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
-      this.splitContainer.Panel1.SuspendLayout();
-      this.splitContainer.Panel2.SuspendLayout();
-      this.splitContainer.SuspendLayout();
-      this.itemsGroupBox.SuspendLayout();
-      this.detailsGroupBox.SuspendLayout();
-      this.SuspendLayout();
-      // 
-      // splitContainer
-      // 
-      // 
-      // itemsGroupBox
-      // 
-      this.itemsGroupBox.Text = "Regression Solution";
-      // 
-      // addButton
-      // 
-      this.toolTip.SetToolTip(this.addButton, "Add");
-      // 
-      // removeButton
-      // 
-      this.toolTip.SetToolTip(this.removeButton, "Remove");
-      // 
-      // RegressionSolutionView
-      // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+      components = new System.ComponentModel.Container();
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Name = "RegressionSolutionView";
-      this.splitContainer.Panel1.ResumeLayout(false);
-      this.splitContainer.Panel2.ResumeLayout(false);
-      ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
-      this.splitContainer.ResumeLayout(false);
-      this.itemsGroupBox.ResumeLayout(false);
-      this.detailsGroupBox.ResumeLayout(false);
-      this.ResumeLayout(false);
-
     }
 
     #endregion

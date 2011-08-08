@@ -23,14 +23,13 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
-using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Line Chart")]
   [Content(typeof(IRegressionSolution))]
-  public partial class RegressionSolutionLineChartView : ItemView, IRegressionSolutionEvaluationView {
+  public partial class RegressionSolutionLineChartView : DataAnalysisSolutionEvaluationView {
     private const string TARGETVARIABLE_SERIES_NAME = "Target Variable";
     private const string ESTIMATEDVALUES_TRAINING_SERIES_NAME = "Estimated Values (training)";
     private const string ESTIMATEDVALUES_TEST_SERIES_NAME = "Estimated Values (test)";

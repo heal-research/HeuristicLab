@@ -19,10 +19,8 @@
  */
 #endregion
 
-using System;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
-using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("RegressionSolution View")]
@@ -30,10 +28,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
   public partial class RegressionSolutionView : DataAnalysisSolutionView {
     public RegressionSolutionView() {
       InitializeComponent();
-
-      var regressionSolutionEvaluationViewTypes = ApplicationManager.Manager.GetTypes(typeof(IRegressionSolutionEvaluationView), true);
-      foreach (Type viewType in regressionSolutionEvaluationViewTypes)
-        AddViewListViewItem(viewType, HeuristicLab.Common.Resources.VSImageLibrary.Graph);
     }
 
     public new RegressionSolutionBase Content {

@@ -21,7 +21,6 @@
 using System;
 using System.Linq;
 using System.Windows.Forms;
-using HeuristicLab.Core.Views;
 using HeuristicLab.Data;
 using HeuristicLab.Data.Views;
 using HeuristicLab.MainForm;
@@ -30,7 +29,7 @@ using HeuristicLab.MainForm.WindowsForms;
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Estimated Class Values")]
   [Content(typeof(IClassificationSolution))]
-  public partial class ClassificationSolutionEstimatedClassValuesView : ItemView, IClassificationSolutionEvaluationView {
+  public partial class ClassificationSolutionEstimatedClassValuesView : DataAnalysisSolutionEvaluationView {
     private const string TARGETVARIABLE_SERIES_NAME = "Target Variable";
     private const string ESTIMATEDVALUES_SERIES_NAME = "Estimated Class Values (all)";
     private const string ESTIMATEDVALUES_TRAINING_SERIES_NAME = "Estimated Class Values (training)";
@@ -38,12 +37,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     public new IClassificationSolution Content {
       get { return (IClassificationSolution)base.Content; }
-      set {
-        base.Content = value;
-      }
+      set { base.Content = value; }
     }
 
-    private StringConvertibleMatrixView matrixView;
+    protected StringConvertibleMatrixView matrixView;
 
     public ClassificationSolutionEstimatedClassValuesView()
       : base() {
@@ -81,7 +78,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       UpdateEstimatedValues();
     }
 
-    private void UpdateEstimatedValues() {
+    protected virtual void UpdateEstimatedValues() {
       if (InvokeRequired) Invoke((Action)UpdateEstimatedValues);
       else {
         StringMatrix matrix = null;
@@ -110,7 +107,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           }
 
           matrix = new StringMatrix(values);
-          matrix.ColumnNames = new string[] {"Id", TARGETVARIABLE_SERIES_NAME, ESTIMATEDVALUES_SERIES_NAME, ESTIMATEDVALUES_TRAINING_SERIES_NAME, ESTIMATEDVALUES_TEST_SERIES_NAME };
+          matrix.ColumnNames = new string[] { "Id", TARGETVARIABLE_SERIES_NAME, ESTIMATEDVALUES_SERIES_NAME, ESTIMATEDVALUES_TRAINING_SERIES_NAME, ESTIMATEDVALUES_TEST_SERIES_NAME };
           matrix.SortableView = true;
         }
         matrixView.Content = matrix;

@@ -20,8 +20,10 @@
 #endregion
 
 
+using System.Drawing;
+using HeuristicLab.MainForm;
 namespace HeuristicLab.Problems.DataAnalysis.Views {
-  public interface IRegressionSolutionEvaluationView {
-    new IRegressionSolution Content { get; set; }
+  public interface IDataAnalysisSolutionEvaluationView :IContentView {
+    Image ViewImage { get; }
   }
 }

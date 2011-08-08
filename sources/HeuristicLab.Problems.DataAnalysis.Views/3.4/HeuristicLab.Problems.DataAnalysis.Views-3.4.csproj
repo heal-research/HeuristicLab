@@ -115,6 +115,18 @@
     <Compile Include="Classification\ClassificationEnsembleSolutionModelView.Designer.cs">
       <DependentUpon>ClassificationEnsembleSolutionModelView.cs</DependentUpon>
     </Compile>
+    <Compile Include="DataAnalysisSolutionEvaluationView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DataAnalysisSolutionEvaluationView.Designer.cs">
+      <DependentUpon>DataAnalysisSolutionEvaluationView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Regression\RegressionSolutionErrorCharacteristicsCurveView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Regression\RegressionSolutionErrorCharacteristicsCurveView.Designer.cs">
+      <DependentUpon>RegressionSolutionErrorCharacteristicsCurveView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Regression\RegressionEnsembleSolutionModelView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -169,21 +181,12 @@
     <Compile Include="Solution Views\ClusteringSolutionView.Designer.cs">
       <DependentUpon>ClusteringSolutionView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Solution Views\ClassificationEnsembleSolutionView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Solution Views\ClassificationEnsembleSolutionView.Designer.cs">
-      <DependentUpon>ClassificationEnsembleSolutionView.cs</DependentUpon>
-    </Compile>
     <Compile Include="Solution Views\DiscriminantFunctionClassificationSolutionView.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Solution Views\DiscriminantFunctionClassificationSolutionView.Designer.cs">
       <DependentUpon>DiscriminantFunctionClassificationSolutionView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interfaces\IDiscriminantFunctionClassificationSolutionEvaluationView.cs" />
-    <Compile Include="Interfaces\IClusteringSolutionEvaluationView.cs" />
-    <Compile Include="Interfaces\IClassificationSolutionEvaluationView.cs" />
     <Compile Include="Solution Views\DataAnalysisSolutionView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -196,14 +199,8 @@
     <Compile Include="DoubleLimitView.Designer.cs">
       <DependentUpon>DoubleLimitView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interfaces\IRegressionSolutionEvaluationView.cs" />
+    <Compile Include="Interfaces\IDataAnalysisSolutionEvaluationView.cs" />
     <Compile Include="MenuItems\CreateEnsembleMenuItem.cs" />
-    <Compile Include="Solution Views\RegressionEnsembleSolutionView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Solution Views\RegressionEnsembleSolutionView.Designer.cs">
-      <DependentUpon>RegressionEnsembleSolutionView.cs</DependentUpon>
-    </Compile>
     <Compile Include="Solution Views\RegressionSolutionView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -335,7 +332,6 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -23,14 +23,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Confusion Matrix")]
   [Content(typeof(IClassificationSolution))]
-  public partial class ClassificationSolutionConfusionMatrixView : ItemView, IClassificationSolutionEvaluationView {
+  public partial class ClassificationSolutionConfusionMatrixView : DataAnalysisSolutionEvaluationView {
     private const string TrainingSamples = "Training";
     private const string TestSamples = "Test";
     public ClassificationSolutionConfusionMatrixView() {

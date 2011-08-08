@@ -21,66 +21,29 @@
 using System;
 using System.Linq;
 using System.Windows.Forms;
-using HeuristicLab.Core.Views;
 using HeuristicLab.Data;
-using HeuristicLab.Data.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Estimated Class Values")]
   [Content(typeof(IDiscriminantFunctionClassificationSolution))]
-  public partial class DiscriminantFunctionClassificationSolutionEstimatedClassValuesView : ItemView, IDiscriminantFunctionClassificationSolutionEvaluationView {
+  public partial class DiscriminantFunctionClassificationSolutionEstimatedClassValuesView : ClassificationSolutionEstimatedClassValuesView {
     private const string TargetClassValuesSeriesname = "TargetVariable";
     private const string EstimatedClassValuesSeriesName = "EstimatedClassValues";
     private const string EstimatedValuesSeriesName = "EstimatedValues";
 
     public new IDiscriminantFunctionClassificationSolution Content {
       get { return (IDiscriminantFunctionClassificationSolution)base.Content; }
-      set {
-        base.Content = value;
-      }
+      set { base.Content = value; }
     }
-
-    private StringConvertibleMatrixView matrixView;
 
     public DiscriminantFunctionClassificationSolutionEstimatedClassValuesView()
       : base() {
       InitializeComponent();
-      matrixView = new StringConvertibleMatrixView();
-      matrixView.ShowRowsAndColumnsTextBox = false;
-      matrixView.ShowStatisticalInformation = false;
-      matrixView.Dock = DockStyle.Fill;
-      this.Controls.Add(matrixView);
     }
 
-    #region events
-    protected override void RegisterContentEvents() {
-      base.RegisterContentEvents();
-      Content.ModelChanged += new EventHandler(Content_ModelChanged);
-      Content.ProblemDataChanged += new EventHandler(Content_ProblemDataChanged);
-    }
-
-    protected override void DeregisterContentEvents() {
-      base.DeregisterContentEvents();
-      Content.ModelChanged -= new EventHandler(Content_ModelChanged);
-      Content.ProblemDataChanged -= new EventHandler(Content_ProblemDataChanged);
-    }
-
-    private void Content_ProblemDataChanged(object sender, EventArgs e) {
-      OnContentChanged();
-    }
-
-    private void Content_ModelChanged(object sender, EventArgs e) {
-      OnContentChanged();
-    }
-
-    protected override void OnContentChanged() {
-      base.OnContentChanged();
-      UpdateEstimatedValues();
-    }
-
-    private void UpdateEstimatedValues() {
+    protected override void UpdateEstimatedValues() {
       if (InvokeRequired) Invoke((Action)UpdateEstimatedValues);
       else {
         StringMatrix matrix = null;
@@ -104,6 +67,5 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         matrixView.Content = matrix;
       }
     }
-    #endregion
   }
 }

@@ -45,18 +45,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       if ((itemsListView.SelectedItems.Count == 1) && (itemsListView.SelectedItems[0].Tag != null && itemsListView.SelectedItems[0].Tag is Type))
         selectedName = itemsListView.SelectedItems[0].Text;
 
-      //cache old viewTypes;
-      var viewTypes = new List<Tuple<Type, Image>>();
-      foreach (ListViewItem item in ItemsListView.Items) {
-        var viewType = item.Tag as Type;
-        if (viewType != null) viewTypes.Add(Tuple.Create(viewType, imageList.Images[item.ImageIndex]));
-      }
-
       base.OnContentChanged();
-
-      //readd viewTypes
-      foreach (var tuple in viewTypes)
-        AddViewListViewItem(tuple.Item1, tuple.Item2);
+      AddEvaluationViewTypes();
 
       //recover selection
       if (selectedName != null) {
@@ -64,6 +54,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           if (item.Tag != null && item.Tag is Type && item.Text == selectedName)
             item.Selected = true;
         }
+      }
+    }
+
+    protected virtual void AddEvaluationViewTypes() {
+      if (Content != null) {
+        var viewTypes = MainFormManager.GetViewTypes(Content.GetType(), true)
+          .Where(t => typeof(IDataAnalysisSolutionEvaluationView).IsAssignableFrom(t));
+        foreach (var viewType in viewTypes)
+          AddViewListViewItem(viewType, ((IDataAnalysisSolutionEvaluationView)Activator.CreateInstance(viewType)).ViewImage);
       }
     }
 

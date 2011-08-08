@@ -19,10 +19,8 @@
  */
 #endregion
 
-using System;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
-using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("ClusteringSolution View")]
@@ -30,10 +28,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
   public partial class ClusteringSolutionView : DataAnalysisSolutionView {
     public ClusteringSolutionView() {
       InitializeComponent();
-
-      var clusteringSolutionEvaluationViewTypes = ApplicationManager.Manager.GetTypes(typeof(IClusteringSolutionEvaluationView), true);
-      foreach (Type viewType in clusteringSolutionEvaluationViewTypes)
-        AddViewListViewItem(viewType, HeuristicLab.Common.Resources.VSImageLibrary.Graph);
     }
 
     public new ClusteringSolution Content {

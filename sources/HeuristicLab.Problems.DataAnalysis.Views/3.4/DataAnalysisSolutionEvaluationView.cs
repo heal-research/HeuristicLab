@@ -19,9 +19,22 @@
  */
 #endregion
 
+using System.Drawing;
+using HeuristicLab.Core.Views;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
-  public interface IDiscriminantFunctionClassificationSolutionEvaluationView {
-    new IDiscriminantFunctionClassificationSolution Content { get; set; }
+  public partial class DataAnalysisSolutionEvaluationView : ItemView, IDataAnalysisSolutionEvaluationView {
+    public DataAnalysisSolutionEvaluationView() {
+      InitializeComponent();
+    }
+
+    public new IDataAnalysisSolution Content {
+      get { return (IDataAnalysisSolution)base.Content; }
+      set { base.Content = value; }
+    }
+
+    public virtual Image ViewImage {
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Graph; }
+    }
   }
 }
