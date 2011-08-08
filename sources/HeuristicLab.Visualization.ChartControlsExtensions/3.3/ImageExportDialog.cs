@@ -155,13 +155,15 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       originalChart.Serializer.Format = SerializationFormat.Binary;
       MemoryStream ms = new MemoryStream();
       originalChart.Serializer.Save(ms);
-      originalChart.Serializer.Content = prevContent;
-      originalChart.Serializer.Format = prevFormat;
 
       ms.Seek(0, SeekOrigin.Begin);
       workingChart = new EnhancedChart();
+      workingChart.Serializer.Format = originalChart.Serializer.Format;
       workingChart.Serializer.Load(ms);
       ms.Close();
+
+      originalChart.Serializer.Content = prevContent;
+      originalChart.Serializer.Format = prevFormat;
       #endregion
 
       chartAreaComboBox.Items.Clear();
