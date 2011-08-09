@@ -97,7 +97,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       alglib.nearestneighbor.kdtreebuild(inputMatrix, nRows, inputMatrix.GetLength(1) - 1, 1, 2, kdtree);
 
-      return new NearestNeighbourRegressionSolution(problemData, new NearestNeighbourModel(kdtree, k, targetVariable, allowedInputVariables));
+      return new NearestNeighbourRegressionSolution((IRegressionProblemData)problemData.Clone(), new NearestNeighbourModel(kdtree, k, targetVariable, allowedInputVariables));
     }
     #endregion
   }

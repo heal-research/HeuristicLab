@@ -94,7 +94,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       rmsError = alglib.mnlrmserror(lm, inputMatrix, nRows);
       relClassError = alglib.mnlrelclserror(lm, inputMatrix, nRows);
 
-      MultinomialLogitClassificationSolution solution = new MultinomialLogitClassificationSolution(problemData, new MultinomialLogitModel(lm, targetVariable, allowedInputVariables, classValues));
+      MultinomialLogitClassificationSolution solution = new MultinomialLogitClassificationSolution((IClassificationProblemData)problemData.Clone(), new MultinomialLogitModel(lm, targetVariable, allowedInputVariables, classValues));
       return solution;
     }
     #endregion

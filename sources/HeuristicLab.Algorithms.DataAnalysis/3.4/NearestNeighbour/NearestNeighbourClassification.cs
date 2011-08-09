@@ -106,8 +106,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         inputMatrix[row, nFeatures] = classIndizes[inputMatrix[row, nFeatures]];
       }
       alglib.nearestneighbor.kdtreebuild(inputMatrix, nRows, inputMatrix.GetLength(1) - 1, 1, 2, kdtree);
-
-      return new NearestNeighbourClassificationSolution(problemData, new NearestNeighbourModel(kdtree, k, targetVariable, allowedInputVariables, problemData.ClassValues.ToArray()));
+      var problemDataClone = (IClassificationProblemData) problemData.Clone();
+      return new NearestNeighbourClassificationSolution(problemDataClone, new NearestNeighbourModel(kdtree, k, targetVariable, allowedInputVariables, problemDataClone.ClassValues.ToArray()));
     }
     #endregion
   }

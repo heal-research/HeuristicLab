@@ -115,7 +115,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       outOfBagAvgRelError = rep.oobavgrelerror;
       outOfBagRmsError = rep.oobrmserror;
 
-      return new RandomForestRegressionSolution(problemData, new RandomForestModel(dforest, targetVariable, allowedInputVariables));
+      return new RandomForestRegressionSolution((IRegressionProblemData)problemData.Clone(), new RandomForestModel(dforest, targetVariable, allowedInputVariables));
     }
     #endregion
   }

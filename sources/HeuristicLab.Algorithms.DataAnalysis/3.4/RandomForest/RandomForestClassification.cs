@@ -125,7 +125,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       outOfBagRmsError = rep.oobrmserror;
       relClassificationError = rep.relclserror;
       outOfBagRelClassificationError = rep.oobrelclserror;
-      return new RandomForestClassificationSolution(problemData, new RandomForestModel(dforest, targetVariable, allowedInputVariables, classValues));
+      return new RandomForestClassificationSolution((IClassificationProblemData)problemData.Clone(), new RandomForestModel(dforest, targetVariable, allowedInputVariables, classValues));
     }
     #endregion
   }

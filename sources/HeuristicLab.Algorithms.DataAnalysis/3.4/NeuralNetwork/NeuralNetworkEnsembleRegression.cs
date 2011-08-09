@@ -184,7 +184,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       rmsError = alglib.mlpermserror(mlpEnsemble, inputMatrix, nRows);
       avgRelError = alglib.mlpeavgrelerror(mlpEnsemble, inputMatrix, nRows);
 
-      return new NeuralNetworkEnsembleRegressionSolution(problemData, new NeuralNetworkEnsembleModel(mlpEnsemble, targetVariable, allowedInputVariables));
+      return new NeuralNetworkEnsembleRegressionSolution((IRegressionProblemData)problemData.Clone(), new NeuralNetworkEnsembleModel(mlpEnsemble, targetVariable, allowedInputVariables));
     }
     #endregion
   }

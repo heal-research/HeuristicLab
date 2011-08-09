@@ -187,7 +187,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       avgRelError = alglib.mlpavgrelerror(multiLayerPerceptron, inputMatrix, nRows);
       relClassError = alglib.mlpclserror(multiLayerPerceptron, inputMatrix, nRows) / (double)nRows;
 
-      return new NeuralNetworkClassificationSolution(problemData, new NeuralNetworkModel(multiLayerPerceptron, targetVariable, allowedInputVariables, problemData.ClassValues.ToArray()));
+      var problemDataClone = (IClassificationProblemData)problemData.Clone();
+      return new NeuralNetworkClassificationSolution(problemDataClone, new NeuralNetworkModel(multiLayerPerceptron, targetVariable, allowedInputVariables, problemDataClone.ClassValues.ToArray()));
     }
     #endregion
   }

@@ -109,7 +109,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       cNode.Value = coefficients[coefficients.Length - 1];
       addition.AddSubtree(cNode);
 
-      SymbolicRegressionSolution solution = new SymbolicRegressionSolution(new SymbolicRegressionModel(tree, new SymbolicDataAnalysisExpressionTreeInterpreter()), problemData);
+      SymbolicRegressionSolution solution = new SymbolicRegressionSolution(new SymbolicRegressionModel(tree, new SymbolicDataAnalysisExpressionTreeInterpreter()), (IRegressionProblemData)problemData.Clone());
       solution.Model.Name = "Linear Regression Model";
       return solution;
     }
