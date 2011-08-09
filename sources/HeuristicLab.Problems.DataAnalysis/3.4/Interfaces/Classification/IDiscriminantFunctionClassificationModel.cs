@@ -25,7 +25,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
   public interface IDiscriminantFunctionClassificationModel : IClassificationModel {
     IEnumerable<double> Thresholds { get; }
     IEnumerable<double> ClassValues { get; }
-    // class values and thresholds can only be assigned simultaniously
+    // class values and thresholds can only be assigned simultanously
     void SetThresholdsAndClassValues(IEnumerable<double> thresholds, IEnumerable<double> classValues);
     IEnumerable<double> GetEstimatedValues(Dataset dataset, IEnumerable<int> rows);
 
