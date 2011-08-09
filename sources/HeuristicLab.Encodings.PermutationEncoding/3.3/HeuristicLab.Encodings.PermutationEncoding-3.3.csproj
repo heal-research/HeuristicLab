@@ -119,6 +119,7 @@
     <Compile Include="Crossovers\PositionBasedCrossover.cs" />
     <Compile Include="Crossovers\UniformLikeCrossover.cs" />
     <Compile Include="HeuristicLabEncodingsPermutationEncodingPlugin.cs" />
+    <Compile Include="Interfaces\IPermutationScrambleMoveOperator.cs" />
     <Compile Include="Interfaces\IPermutationMultiNeighborhoodShakingOperator.cs" />
     <Compile Include="Interfaces\IPermutationSwap2MoveOperator.cs" />
     <Compile Include="Interfaces\IPermutationCreator.cs" />
@@ -138,6 +139,10 @@
     <Compile Include="Manipulators\TranslocationManipulator.cs" />
     <Compile Include="Moves\Edge.cs" />
     <Compile Include="Moves\PermutationMoveAttribute.cs" />
+    <Compile Include="Moves\Scramble\StochasticScrambleMultiMoveGenerator.cs" />
+    <Compile Include="Moves\Scramble\ScrambleMove.cs" />
+    <Compile Include="Moves\Scramble\ScrambleMoveGenerator.cs" />
+    <Compile Include="Moves\Scramble\ScrambleMoveMaker.cs" />
     <Compile Include="Moves\StandardEdgeEqualityComparer.cs" />
     <Compile Include="Moves\Swap2\ExhaustiveSwap2MoveGenerator.cs" />
     <Compile Include="Moves\Swap2\StochasticSwap2MultiMoveGenerator.cs" />

@@ -225,5 +225,36 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Tests_33 {
       }
     }
 
+    [TestMethod]
+    public void ScrambleMoveEvaluatorTest() {
+      for (int i = 0; i < 500; i++) {
+        ScrambleMove scramble = StochasticScrambleMultiMoveGenerator.GenerateRandomMove(assignment, random);
+
+        // SYMMETRIC MATRICES
+        double before = QAPEvaluator.Apply(assignment, symmetricWeights, symmetricDistances);
+        Permutation clone = new Cloner().Clone(assignment);
+        ScrambleManipulator.Apply(assignment, scramble.StartIndex, scramble.ScrambledIndices);
+        double after = QAPEvaluator.Apply(assignment, symmetricWeights, symmetricDistances);
+        double move = QAPScrambleMoveEvaluator.Apply(clone, scramble, symmetricWeights, symmetricDistances);
+        Assert.IsTrue(move.IsAlmost(after - before), "Failed on symmetric matrices");
+
+        // ASYMMETRIC MATRICES
+        before = QAPEvaluator.Apply(assignment, asymmetricWeights, asymmetricDistances);
+        clone = new Cloner().Clone(assignment);
+        ScrambleManipulator.Apply(assignment, scramble.StartIndex, scramble.ScrambledIndices);
+        after = QAPEvaluator.Apply(assignment, asymmetricWeights, asymmetricDistances);
+        move = QAPScrambleMoveEvaluator.Apply(clone, scramble, asymmetricWeights, asymmetricDistances);
+        Assert.IsTrue(move.IsAlmost(after - before), "Failed on asymmetric matrices");
+
+        // NON-ZERO DIAGONAL ASYMMETRIC MATRICES
+        before = QAPEvaluator.Apply(assignment, nonZeroDiagonalWeights, nonZeroDiagonalDistances);
+        clone = new Cloner().Clone(assignment);
+        ScrambleManipulator.Apply(assignment, scramble.StartIndex, scramble.ScrambledIndices);
+        after = QAPEvaluator.Apply(assignment, nonZeroDiagonalWeights, nonZeroDiagonalDistances);
+        move = QAPScrambleMoveEvaluator.Apply(clone, scramble, nonZeroDiagonalWeights, nonZeroDiagonalDistances);
+        Assert.IsTrue(move.IsAlmost(after - before), "Failed on non-zero diagonal matrices");
+      }
+    }
+
   }
 }

@@ -110,6 +110,7 @@
     <Compile Include="Analyzers\BestQAPSolutionAnalyzer.cs" />
     <Compile Include="Analyzers\QAPAlleleFrequencyAnalyzer.cs" />
     <Compile Include="Analyzers\QAPPopulationDiversityAnalyzer.cs" />
+    <Compile Include="Evaluators\QAPScrambleMoveEvaluator.cs" />
     <Compile Include="Evaluators\QAPSwap2MoveEvaluator.cs" />
     <Compile Include="Evaluators\QAPEvaluator.cs" />
     <Compile Include="Evaluators\QAPInversionMoveEvaluator.cs" />

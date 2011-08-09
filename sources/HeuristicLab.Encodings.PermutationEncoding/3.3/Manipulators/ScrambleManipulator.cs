@@ -49,14 +49,12 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     /// <param name="random">The random number generator.</param>
     /// <param name="permutation">The permutation to manipulate.</param>
     public static void Apply(IRandom random, Permutation permutation) {
-      Permutation original = (Permutation)permutation.Clone();
-
       int breakPoint1, breakPoint2;
       int[] scrambledIndices, remainingIndices, temp;
       int selectedIndex, index;
 
-      breakPoint1 = random.Next(original.Length - 1);
-      breakPoint2 = random.Next(breakPoint1 + 1, original.Length);
+      breakPoint1 = random.Next(permutation.Length - 1);
+      breakPoint2 = random.Next(breakPoint1 + 1, permutation.Length);
 
       scrambledIndices = new int[breakPoint2 - breakPoint1 + 1];
       remainingIndices = new int[breakPoint2 - breakPoint1 + 1];
@@ -79,8 +77,13 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
         }
       }
 
-      for (int i = 0; i <= (breakPoint2 - breakPoint1); i++) {  // scramble permutation between breakpoints
-        permutation[breakPoint1 + i] = original[breakPoint1 + scrambledIndices[i]];
+      Apply(permutation, breakPoint1, scrambledIndices);
+    }
+
+    public static void Apply(Permutation permutation, int startIndex, int[] scrambleArray) {
+      Permutation original = (Permutation)permutation.Clone();
+      for (int i = 0; i < scrambleArray.Length; i++) {  // scramble permutation between breakpoints
+        permutation[startIndex + i] = original[startIndex + scrambleArray[i]];
       }
     }
 
