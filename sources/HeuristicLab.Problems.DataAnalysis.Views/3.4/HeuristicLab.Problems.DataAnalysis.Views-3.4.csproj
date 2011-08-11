@@ -201,6 +201,12 @@
     </Compile>
     <Compile Include="Interfaces\IDataAnalysisSolutionEvaluationView.cs" />
     <Compile Include="MenuItems\CreateEnsembleMenuItem.cs" />
+    <Compile Include="Solution Views\NamedDataAnalysisSolutionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Solution Views\NamedDataAnalysisSolutionView.Designer.cs">
+      <DependentUpon>NamedDataAnalysisSolutionView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Solution Views\RegressionSolutionView.cs">
       <SubType>UserControl</SubType>
     </Compile>

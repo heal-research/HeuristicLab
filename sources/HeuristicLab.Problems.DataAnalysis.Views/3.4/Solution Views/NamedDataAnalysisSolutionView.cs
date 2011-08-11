@@ -20,27 +20,37 @@
 #endregion
 
 using System;
+using System.Linq;
 using System.Windows.Forms;
+using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
-using HeuristicLab.Problems.DataAnalysis.Views;
 
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
-  [Content(typeof(SymbolicRegressionSolution), false)]
-  [View("SymbolicRegressionSolution View")]
-  public partial class SymbolicRegressionSolutionView : RegressionSolutionView {
-    public SymbolicRegressionSolutionView() {
+namespace HeuristicLab.Problems.DataAnalysis.Views.Solution_Views {
+  [View("DataAnalysisSolutionView")]
+  [Content(typeof(DataAnalysisSolution), true)]
+  public partial class NamedDataAnalysisSolutionView : NamedItemView {
+    public NamedDataAnalysisSolutionView() {
       InitializeComponent();
     }
 
-    protected new SymbolicRegressionSolution Content {
-      get { return (SymbolicRegressionSolution)base.Content; }
+    public new DataAnalysisSolution Content {
+      get { return (DataAnalysisSolution)base.Content; }
       set { base.Content = value; }
     }
 
-    private void btn_SimplifyModel_Click(object sender, EventArgs e) {
-      InteractiveSymbolicRegressionSolutionSimplifierView view = new InteractiveSymbolicRegressionSolutionSimplifierView();
-      view.Content = (SymbolicRegressionSolution)this.Content.Clone();
-      view.Show();
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
+      panel.Controls.Clear();
+
+      if (Content != null) {
+        var viewType = MainFormManager.GetViewTypes(Content.GetType(), true).Where(t => typeof(DataAnalysisSolutionView).IsAssignableFrom(t)).FirstOrDefault();
+        if (viewType != null) {
+          var view = (DataAnalysisSolutionView)Activator.CreateInstance(viewType);
+          view.Dock = DockStyle.Fill;
+          view.Content = Content;
+          panel.Controls.Add(view);
+        }
+      }
     }
   }
 }

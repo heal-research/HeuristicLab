@@ -24,15 +24,19 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
+using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Views;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("DataAnalysisSolution View")]
-  [Content(typeof(DataAnalysisSolution), true)]
-  public partial class DataAnalysisSolutionView : ResultCollectionView {
+  [Content(typeof(DataAnalysisSolution), false)]
+  public partial class DataAnalysisSolutionView : NamedItemCollectionView<IResult> {
     public DataAnalysisSolutionView() {
       InitializeComponent();
+      viewHost.ViewsLabelVisible = false;
+      base.ReadOnly = true;
     }
 
     public new DataAnalysisSolution Content {
@@ -57,6 +61,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       }
     }
 
+    protected override IResult CreateItem() {
+      return null;
+    }
+
     protected virtual void AddEvaluationViewTypes() {
       if (Content != null) {
         var viewTypes = MainFormManager.GetViewTypes(Content.GetType(), true)
@@ -67,11 +75,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     protected override void itemsListView_DoubleClick(object sender, EventArgs e) {
-      if (itemsListView.SelectedItems.Count == 1 && itemsListView.SelectedItems[0].Tag is Type) {
-        Type viewType = (Type)itemsListView.SelectedItems[0].Tag;
+      if (itemsListView.SelectedItems.Count != 1) return;
+
+      IResult result = itemsListView.SelectedItems[0].Tag as IResult;
+      Type viewType = itemsListView.SelectedItems[0].Tag as Type;
+      if (result != null) {
+        IContentView view = MainFormManager.MainForm.ShowContent(result, typeof(ResultView));
+        if (view != null) {
+          view.ReadOnly = ReadOnly;
+          view.Locked = Locked;
+        }
+      } else if (viewType != null) {
         MainFormManager.MainForm.ShowContent(Content, viewType);
-      } else
-        base.itemsListView_DoubleClick(sender, e);
+      }
     }
 
     protected override void itemsListView_SelectedIndexChanged(object sender, EventArgs e) {

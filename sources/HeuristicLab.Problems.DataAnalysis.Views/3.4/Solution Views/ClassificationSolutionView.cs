@@ -24,7 +24,7 @@ using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("ClassificationSolution View")]
-  [Content(typeof(ClassificationSolutionBase), true)]
+  [Content(typeof(ClassificationSolutionBase), false)]
   public partial class ClassificationSolutionView : DataAnalysisSolutionView {
     public ClassificationSolutionView() {
       InitializeComponent();

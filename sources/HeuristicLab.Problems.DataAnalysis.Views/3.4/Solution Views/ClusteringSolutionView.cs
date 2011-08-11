@@ -24,7 +24,7 @@ using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("ClusteringSolution View")]
-  [Content(typeof(ClusteringSolution), true)]
+  [Content(typeof(ClusteringSolution), false)]
   public partial class ClusteringSolutionView : DataAnalysisSolutionView {
     public ClusteringSolutionView() {
       InitializeComponent();

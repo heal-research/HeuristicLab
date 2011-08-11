@@ -19,13 +19,12 @@
  */
 #endregion
 
-using System.Windows.Forms;
-using HeuristicLab.MainForm;
 
+using HeuristicLab.MainForm;
 namespace HeuristicLab.Problems.DataAnalysis.Views {
-  [View("DiscriminantFunctionClassificationSolution View")]
-  [Content(typeof(DiscriminantFunctionClassificationSolutionBase), true)]
-  public partial class DiscriminantFunctionClassificationSolutionView : DataAnalysisSolutionView {
+  [View("ClassificationSolution View")]
+  [Content(typeof(DiscriminantFunctionClassificationSolutionBase), false)]
+  public partial class DiscriminantFunctionClassificationSolutionView : ClassificationSolutionView {
     public DiscriminantFunctionClassificationSolutionView() {
       InitializeComponent();
     }
