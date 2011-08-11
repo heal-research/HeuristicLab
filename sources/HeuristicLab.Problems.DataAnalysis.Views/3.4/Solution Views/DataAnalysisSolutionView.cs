@@ -36,7 +36,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     public DataAnalysisSolutionView() {
       InitializeComponent();
       viewHost.ViewsLabelVisible = false;
-      base.ReadOnly = true;
     }
 
     public new DataAnalysisSolution Content {
@@ -117,5 +116,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       foreach (ListViewItem item in itemsToRemove)
         itemsListView.Items.Remove(item);
     }
+
+    #region drag and drop
+    protected override void itemsListView_DragEnter(object sender, DragEventArgs e) {
+      validDragOperation = false;
+      if (!ReadOnly && (e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) is DataAnalysisProblemData)) {
+        validDragOperation = true;
+      }
+    }
+
+    protected override void itemsListView_DragDrop(object sender, DragEventArgs e) {
+      if (e.Effect != DragDropEffects.None) {
+        if (e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) is DataAnalysisProblemData) {
+          DataAnalysisProblemData problemData = (DataAnalysisProblemData)e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
+          Content.ProblemData = (DataAnalysisProblemData)problemData.Clone();
+        }
+      }
+    }
+    #endregion
   }
 }

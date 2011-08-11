@@ -20,13 +20,13 @@
 #endregion
 
 using System;
-using HeuristicLab.Core;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   public interface IDataAnalysisSolution : INamedItem, IStorableContent {
     IDataAnalysisModel Model { get; }
-    IDataAnalysisProblemData ProblemData { get; }
+    IDataAnalysisProblemData ProblemData { get; set; }
 
     event EventHandler ModelChanged;
     event EventHandler ProblemDataChanged;

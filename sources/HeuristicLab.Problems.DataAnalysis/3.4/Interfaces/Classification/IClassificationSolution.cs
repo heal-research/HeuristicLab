@@ -19,12 +19,11 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
 namespace HeuristicLab.Problems.DataAnalysis {
   public interface IClassificationSolution : IDataAnalysisSolution {
     new IClassificationModel Model { get; }
-    new IClassificationProblemData ProblemData { get; }
+    new IClassificationProblemData ProblemData { get; set; }
 
     IEnumerable<double> EstimatedClassValues { get; }
     IEnumerable<double> EstimatedTrainingClassValues { get; }

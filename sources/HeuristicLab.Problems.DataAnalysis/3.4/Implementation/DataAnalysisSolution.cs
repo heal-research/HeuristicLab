@@ -55,7 +55,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public IDataAnalysisProblemData ProblemData {
       get { return (IDataAnalysisProblemData)this[ProblemDataResultName].Value; }
-      protected set {
+      set {
         if (this[ProblemDataResultName].Value != value) {
           if (value != null) {
             ProblemData.Changed -= new EventHandler(ProblemData_Changed);

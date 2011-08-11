@@ -34,5 +34,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       get { return (ClassificationSolutionBase)base.Content; }
       set { base.Content = value; }
     }
+
+    #region drag and drop
+    protected override void itemsListView_DragEnter(object sender, DragEventArgs e) {
+      validDragOperation = false;
+      if (!ReadOnly && (e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) is ClassificationProblemData)) {
+        validDragOperation = true;
+      }
+    }
+    #endregion
   }
 }

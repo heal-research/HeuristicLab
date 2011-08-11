@@ -23,7 +23,7 @@ using System.Collections.Generic;
 namespace HeuristicLab.Problems.DataAnalysis {
   public interface IRegressionSolution : IDataAnalysisSolution {
     new IRegressionModel Model { get; }
-    new IRegressionProblemData ProblemData { get; }
+    new IRegressionProblemData ProblemData { get; set; }
 
     IEnumerable<double> EstimatedValues { get; }
     IEnumerable<double> EstimatedTrainingValues { get; }

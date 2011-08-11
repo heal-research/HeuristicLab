@@ -39,7 +39,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public new IClassificationProblemData ProblemData {
       get { return (IClassificationProblemData)base.ProblemData; }
-      protected set { base.ProblemData = value; }
+      set { base.ProblemData = value; }
     }
 
     #region Results

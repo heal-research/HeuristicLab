@@ -23,7 +23,7 @@ using System.Collections.Generic;
 namespace HeuristicLab.Problems.DataAnalysis {
   public interface IClusteringSolution : IDataAnalysisSolution {
     new IClusteringModel Model { get; }
-    new IClusteringProblemData ProblemData { get; }
+    new IClusteringProblemData ProblemData { get; set; }
 
     IEnumerable<int> ClusterValues { get; }
     IEnumerable<int> TrainingClusterValues { get; }

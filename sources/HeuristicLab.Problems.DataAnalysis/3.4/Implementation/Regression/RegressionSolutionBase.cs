@@ -47,7 +47,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public new IRegressionProblemData ProblemData {
       get { return (IRegressionProblemData)base.ProblemData; }
-      protected set { base.ProblemData = value; }
+      set { base.ProblemData = value; }
     }
 
     public abstract IEnumerable<double> EstimatedValues { get; }
