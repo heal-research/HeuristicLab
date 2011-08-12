@@ -266,13 +266,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     private static IEnumerable<string> CheckVariablesForPossibleTargetVariables(Dataset dataset) {
       int maxSamples = Math.Min(InspectedRowsToDetermineTargets, dataset.Rows);
-      var validTargetVariables = from v in dataset.VariableNames
-                                 let DistinctValues = dataset.GetVariableValues(v)
-                                   .Take(maxSamples)
-                                   .Distinct()
-                                   .Count()
-                                 where DistinctValues < MaximumNumberOfClasses
-                                 select v;
+      var validTargetVariables = (from v in dataset.VariableNames
+                                  let distinctValues = dataset.GetEnumeratedVariableValues(v)
+                                    .Take(maxSamples)
+                                    .Distinct()
+                                    .Count()
+                                  where distinctValues < MaximumNumberOfClasses
+                                  select v).ToArray();
 
       if (!validTargetVariables.Any())
         throw new ArgumentException("Import of classification problem data was not successful, because no target variable was found." +
@@ -282,7 +282,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
 
     private void ResetTargetVariableDependentMembers() {
-      DergisterParameterEvents();
+      DeregisterParameterEvents();
 
       classNames = null;
       ((IStringConvertibleMatrix)ClassNamesParameter.Value).Columns = 1;
@@ -356,7 +356,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       ClassificationPenaltiesParameter.Value.Reset += new EventHandler(Parameter_ValueChanged);
       ClassificationPenaltiesParameter.Value.ItemChanged += new EventHandler<EventArgs<int, int>>(MatrixParameter_ItemChanged);
     }
-    private void DergisterParameterEvents() {
+    private void DeregisterParameterEvents() {
       TargetVariableParameter.ValueChanged -= new EventHandler(TargetVariableParameter_ValueChanged);
       ClassNamesParameter.Value.Reset -= new EventHandler(Parameter_ValueChanged);
       ClassNamesParameter.Value.ItemChanged -= new EventHandler<EventArgs<int, int>>(MatrixParameter_ItemChanged);
