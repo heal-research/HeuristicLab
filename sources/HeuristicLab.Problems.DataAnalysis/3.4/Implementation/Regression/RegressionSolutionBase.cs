@@ -126,7 +126,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       if (!ContainsKey(TrainingMeanAbsoluteErrorResultName)) {
         OnlineCalculatorError errorState;
         Add(new Result(TrainingMeanAbsoluteErrorResultName, "Mean of absolute errors of the model on the training partition", new DoubleValue()));
-        double trainingMAE = OnlineMeanSquaredErrorCalculator.Calculate(EstimatedTrainingValues, ProblemData.Dataset.GetEnumeratedVariableValues(ProblemData.TargetVariable, ProblemData.TrainingIndizes), out errorState);
+        double trainingMAE = OnlineMeanAbsoluteErrorCalculator.Calculate(EstimatedTrainingValues, ProblemData.Dataset.GetEnumeratedVariableValues(ProblemData.TargetVariable, ProblemData.TrainingIndizes), out errorState);
         TrainingMeanAbsoluteError = errorState == OnlineCalculatorError.None ? trainingMAE : double.NaN;
       }
 
