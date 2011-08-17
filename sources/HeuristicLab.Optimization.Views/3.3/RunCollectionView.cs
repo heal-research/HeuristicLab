@@ -97,6 +97,10 @@ namespace HeuristicLab.Optimization.Views {
           analyzeRunsToolStripDropDownButton.DropDownItems.Add(menuItem);
         }
       }
+      var modifierMenuItem = new ToolStripMenuItem();
+      modifierMenuItem.Text = "Modify RunCollection";
+      modifierMenuItem.Click += ModifierMenuItem_OnClick;
+      analyzeRunsToolStripDropDownButton.DropDownItems.Add(modifierMenuItem);
     }
 
     protected override void OnContentChanged() {
@@ -334,6 +338,11 @@ namespace HeuristicLab.Optimization.Views {
         view.Locked = Locked;
         view.ReadOnly = ReadOnly;
       }
+    }
+    private void ModifierMenuItem_OnClick(object sender, EventArgs args) {
+      var modifier = new RunCollectionModificationEvaluator();
+      modifier.RunCollection.AddRange(Content.Select(r => (IRun)r.Clone()));
+      MainFormManager.MainForm.ShowContent(modifier);
     }
     private void removeButton_Click(object sender, EventArgs e) {
       if (itemsListView.SelectedItems.Count > 0) {
