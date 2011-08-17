@@ -110,9 +110,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IRunCollectionModifier.cs" />
     <None Include="HeuristicLabOptimizationPlugin.cs.frame" />
     <Compile Include="Algorithms\Algorithm.cs" />
     <Compile Include="BatchRun.cs" />
+    <Compile Include="Calculator.cs" />
     <Compile Include="Interfaces\IDiscreteDoubleMatrixModifier.cs" />
     <Compile Include="Algorithms\HeuristicOptimizationEngineAlgorithm.cs" />
     <Compile Include="Interfaces\IGlobalParticleUpdater.cs" />
@@ -135,6 +137,9 @@
     <Compile Include="Interfaces\IMultiObjectiveHeuristicOptimizationProblem.cs" />
     <Compile Include="Interfaces\ISingleObjectiveHeuristicOptimizationProblem.cs" />
     <Compile Include="Problems\Problem.cs" />
+    <Compile Include="RunCollectionFormulaModifer.cs" />
+    <Compile Include="RunCollectionFuzzifier.cs" />
+    <Compile Include="RunCollectionModificationEvaluator.cs" />
     <Compile Include="RunCollectionConstraints\RunCollectionComparisonConstraint.cs" />
     <Compile Include="RunCollectionConstraints\RunCollectionConstraintCollection.cs" />
     <Compile Include="RunCollectionConstraints\RunCollectionTypeCompatiblityConstraint.cs" />
@@ -242,6 +247,37 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="bin\x86\Debug\HeuristicLab.Collections-3.3.dll" />
+    <Content Include="bin\x86\Debug\HeuristicLab.Collections-3.3.pdb" />
+    <Content Include="bin\x86\Debug\HeuristicLab.Common-3.3.dll" />
+    <Content Include="bin\x86\Debug\HeuristicLab.Common-3.3.pdb" />
+    <Content Include="bin\x86\Debug\HeuristicLab.Common.Resources-3.3.dll" />
+    <Content Include="bin\x86\Debug\HeuristicLab.Common.Resources-3.3.pdb" />
+    <Content Include="bin\x86\Debug\HeuristicLab.Core-3.3.dll" />
+    <Content Include="bin\x86\Debug\HeuristicLab.Core-3.3.pdb" />
+    <Content Include="bin\x86\Debug\HeuristicLab.Data-3.3.dll" />
+    <Content Include="bin\x86\Debug\HeuristicLab.Data-3.3.pdb" />
+    <Content Include="bin\x86\Debug\HeuristicLab.Optimization-3.3.dll" />
+    <Content Include="bin\x86\Debug\HeuristicLab.Optimization-3.3.pdb" />
+    <Content Include="bin\x86\Debug\HeuristicLab.Parameters-3.3.dll" />
+    <Content Include="bin\x86\Debug\HeuristicLab.Parameters-3.3.pdb" />
+    <Content Include="bin\x86\Debug\HeuristicLab.Persistence-3.3.dll" />
+    <Content Include="bin\x86\Debug\HeuristicLab.Persistence-3.3.pdb" />
+    <Content Include="bin\x86\Debug\HeuristicLab.PluginInfrastructure-3.3.dll" />
+    <Content Include="bin\x86\Debug\HeuristicLab.PluginInfrastructure-3.3.pdb" />
+    <Content Include="bin\x86\Debug\HeuristicLab.Tracing-3.3.dll" />
+    <Content Include="bin\x86\Debug\HeuristicLab.Tracing-3.3.pdb" />
+    <Content Include="bin\x86\Debug\ICSharpCode.SharpZipLib License.txt" />
+    <Content Include="bin\x86\Debug\ICSharpCode.SharpZipLib.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="bin\Debug\" />
+    <Folder Include="bin\Release\" />
+    <Folder Include="bin\x64\Debug\" />
+    <Folder Include="bin\x64\Release\" />
+    <Folder Include="bin\x86\Release\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
