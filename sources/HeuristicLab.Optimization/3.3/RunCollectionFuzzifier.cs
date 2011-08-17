@@ -13,6 +13,9 @@ namespace HeuristicLab.Optimization {
   [StorableClass]
   public class RunCollectionFuzzifier : ParameterizedNamedItem, IRunCollectionModifier {
 
+    public override bool CanChangeName { get { return false; } }
+    public override bool CanChangeDescription { get { return false; } }
+
     #region Parameters
     public ValueParameter<StringValue> SourceParameter {
       get { return (ValueParameter<StringValue>)Parameters["Source"]; }
@@ -57,6 +60,7 @@ namespace HeuristicLab.Optimization {
           new StringValue("Very High"),
         }));
       RegisterEvents();
+      UpdateName();
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new RunCollectionFuzzifier(this, cloner);

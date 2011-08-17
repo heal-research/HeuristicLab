@@ -110,6 +110,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RunCollectionValueRemover.cs" />
     <Compile Include="IRunCollectionModifier.cs" />
     <None Include="HeuristicLabOptimizationPlugin.cs.frame" />
     <Compile Include="Algorithms\Algorithm.cs" />
@@ -248,37 +249,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="bin\x86\Debug\HeuristicLab.Collections-3.3.dll" />
-    <Content Include="bin\x86\Debug\HeuristicLab.Collections-3.3.pdb" />
-    <Content Include="bin\x86\Debug\HeuristicLab.Common-3.3.dll" />
-    <Content Include="bin\x86\Debug\HeuristicLab.Common-3.3.pdb" />
-    <Content Include="bin\x86\Debug\HeuristicLab.Common.Resources-3.3.dll" />
-    <Content Include="bin\x86\Debug\HeuristicLab.Common.Resources-3.3.pdb" />
-    <Content Include="bin\x86\Debug\HeuristicLab.Core-3.3.dll" />
-    <Content Include="bin\x86\Debug\HeuristicLab.Core-3.3.pdb" />
-    <Content Include="bin\x86\Debug\HeuristicLab.Data-3.3.dll" />
-    <Content Include="bin\x86\Debug\HeuristicLab.Data-3.3.pdb" />
-    <Content Include="bin\x86\Debug\HeuristicLab.Optimization-3.3.dll" />
-    <Content Include="bin\x86\Debug\HeuristicLab.Optimization-3.3.pdb" />
-    <Content Include="bin\x86\Debug\HeuristicLab.Parameters-3.3.dll" />
-    <Content Include="bin\x86\Debug\HeuristicLab.Parameters-3.3.pdb" />
-    <Content Include="bin\x86\Debug\HeuristicLab.Persistence-3.3.dll" />
-    <Content Include="bin\x86\Debug\HeuristicLab.Persistence-3.3.pdb" />
-    <Content Include="bin\x86\Debug\HeuristicLab.PluginInfrastructure-3.3.dll" />
-    <Content Include="bin\x86\Debug\HeuristicLab.PluginInfrastructure-3.3.pdb" />
-    <Content Include="bin\x86\Debug\HeuristicLab.Tracing-3.3.dll" />
-    <Content Include="bin\x86\Debug\HeuristicLab.Tracing-3.3.pdb" />
-    <Content Include="bin\x86\Debug\ICSharpCode.SharpZipLib License.txt" />
-    <Content Include="bin\x86\Debug\ICSharpCode.SharpZipLib.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="bin\Debug\" />
-    <Folder Include="bin\Release\" />
-    <Folder Include="bin\x64\Debug\" />
-    <Folder Include="bin\x64\Release\" />
-    <Folder Include="bin\x86\Release\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
