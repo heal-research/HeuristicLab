@@ -29,15 +29,19 @@ namespace HeuristicLab.Optimization {
     public ValueParameter<DoubleValue> SpreadParameter {
       get { return (ValueParameter<DoubleValue>)Parameters["Spread"]; }
     }
+    public ValueParameter<StringValue> GroupByParameter {
+      get { return (ValueParameter<StringValue>)Parameters["GroupBy"]; }
+    }    
     public ValueParameter<ItemList<StringValue>> LevelsParameter {
       get { return (ValueParameter<ItemList<StringValue>>)Parameters["Levels"]; }
-    }
+    }    
     #endregion
 
     private string Source { get { return SourceParameter.Value.Value; } }
     private string Target { get { return TargetParameter.Value.Value; } }
     private string Suffix { get { return SuffixParameter.Value.Value; } }
     private double Spread { get { return SpreadParameter.Value.Value; } }
+    private string GroupBy { get { return GroupByParameter.Value.Value; } }
     private List<string> Levels { get { return LevelsParameter.Value.Select(v => v.Value).ToList(); } }
 
       #region Construction & Cloning
@@ -51,6 +55,7 @@ namespace HeuristicLab.Optimization {
       Parameters.Add(new ValueParameter<StringValue>("Target", "Target value name. The new, fuzzified variable to be created.", new StringValue("Calc.Value")));
       Parameters.Add(new ValueParameter<StringValue>("Suffix", "The suffix of all fuzzified values.", new StringValue()));
       Parameters.Add(new ValueParameter<DoubleValue>("Spread", "The number of standard deviations considered one additional level.", new DoubleValue(1)));
+      Parameters.Add(new ValueParameter<StringValue>("GroupBy", "Create separate analyzes for different values of this variable.", new StringValue("")));
       Parameters.Add(new ValueParameter<ItemList<StringValue>>("Levels", "The list of levels to be assigned.",
         new ItemList<StringValue> {
           new StringValue("Very Low"),
@@ -58,7 +63,7 @@ namespace HeuristicLab.Optimization {
           new StringValue("Average"),
           new StringValue("High"),
           new StringValue("Very High"),
-        }));
+        }));     
       RegisterEvents();
       UpdateName();
     }
@@ -75,6 +80,7 @@ namespace HeuristicLab.Optimization {
       SourceParameter.ToStringChanged += Parameter_NameChanged;
       TargetParameter.ToStringChanged += Parameter_NameChanged;
       SuffixParameter.ToStringChanged += Parameter_NameChanged;
+      GroupByParameter.ToStringChanged += Parameter_NameChanged;
     }
 
     private void Parameter_NameChanged(object sender, EventArgs e) {
@@ -82,32 +88,48 @@ namespace HeuristicLab.Optimization {
     }
 
     private void UpdateName() {
-      name = string.Format("{0} := Fuzzy({1}) {2}", Target,Source, Suffix);
+      name = string.Format("{0} := Fuzzy({1}) {3}",
+        Target,
+        Source,
+        string.IsNullOrWhiteSpace(GroupBy) ? "" : string.Format("/{0}", GroupBy),
+        Suffix);
       OnNameChanged();
     }
 
     #region IRunCollectionModifier Members
 
     public void Modify(List<IRun> runs) {
-      var values =
-        (from run in runs
-         select GetSourceValue(run) into value
-         where value.HasValue
-         select value.Value).ToList();
-      if (values.Count == 0)
-        return;
-      var avg = values.Average();
-      var stdDev = values.StandardDeviation();
-      foreach (var run in runs) {
-        double? value = GetSourceValue(run);
-        if (value.HasValue) {
-          run.Results[Target] = new StringValue(Fuzzify(value.Value, avg, stdDev));
+      foreach (var group in runs
+        .Select(r => new {Run=r, Value=GetSourceValue(r)})
+        .Where(r => r.Value.HasValue && !double.IsNaN(r.Value.Value) && !double.IsInfinity(r.Value.Value))
+        .Select(r => new {r.Run, r.Value.Value, Bin=GetGroupByValue(r.Run)})
+        .GroupBy(r => r.Bin).ToList()) {
+        var values = group.Select(r => r.Value).ToList();
+        if (values.Count > 0) {
+          var avg = values.Average();
+          var stdDev = values.StandardDeviation();
+          foreach (var r in group) {
+            r.Run.Results[Target] = new StringValue(Fuzzify(r.Value, avg, stdDev));
+          }
         }
       }      
     }
 
     private double? GetSourceValue(IRun run) {
       return CastSourceValue(run.Results) ?? CastSourceValue(run.Parameters);
+    }
+
+    private string GetGroupByValue(IRun run) {
+      if (string.IsNullOrWhiteSpace(GroupBy))
+        return String.Empty;
+      IItem value;
+      run.Results.TryGetValue(GroupBy, out value);
+      if (value == null)
+        run.Parameters.TryGetValue(GroupBy, out value);
+      if (value != null)
+        return value.ToString();
+      else
+        return String.Empty;
     }
 
     private double? CastSourceValue(IDictionary<string, IItem> variables) {
@@ -128,15 +150,15 @@ namespace HeuristicLab.Optimization {
       double dev = (value - avg)/(stdDev*Spread);
       int index;
       if (Levels.Count % 2 == 1) {
-        index = (int) Math.Floor(Math.Abs(dev));        
-        index = (Levels.Count - 1)/2 + Math.Sign(dev) * index;        
+        index = (int) Math.Floor(Math.Abs(dev));
+        index = (Levels.Count - 1)/2 + Math.Sign(dev) * index;
       } else {
         index = (int) Math.Ceiling(Math.Abs(dev));
         if (dev > 0)
           index = Levels.Count/2 + index;
         else
-          index = Levels.Count/2 + 1 - index;        
-      }            
+          index = Levels.Count/2 + 1 - index;
+      }
       return Levels[Math.Min(Levels.Count - 1, Math.Max(0, index))];
     }
 
