@@ -181,6 +181,12 @@
     <Compile Include="Solution Views\ClusteringSolutionView.Designer.cs">
       <DependentUpon>ClusteringSolutionView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Solution Views\ClassificationEnsembleSolutionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Solution Views\ClassificationEnsembleSolutionView.Designer.cs">
+      <DependentUpon>ClassificationEnsembleSolutionView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Solution Views\DiscriminantFunctionClassificationSolutionView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -206,6 +212,12 @@
     </Compile>
     <Compile Include="Solution Views\NamedDataAnalysisSolutionView.Designer.cs">
       <DependentUpon>NamedDataAnalysisSolutionView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Solution Views\RegressionEnsembleSolutionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Solution Views\RegressionEnsembleSolutionView.Designer.cs">
+      <DependentUpon>RegressionEnsembleSolutionView.cs</DependentUpon>
     </Compile>
     <Compile Include="Solution Views\RegressionSolutionView.cs">
       <SubType>UserControl</SubType>

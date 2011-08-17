@@ -26,6 +26,8 @@ using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   public interface IDataAnalysisProblemData : INamedItem {
+    bool IsEmpty { get; }
+
     Dataset Dataset { get; }
     ICheckedItemList<StringValue> InputVariables { get; }
     IEnumerable<string> AllowedInputVariables { get; }

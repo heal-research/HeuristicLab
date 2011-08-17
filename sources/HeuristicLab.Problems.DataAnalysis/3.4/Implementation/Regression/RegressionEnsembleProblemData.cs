@@ -19,9 +19,7 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -46,20 +44,43 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
+    private static RegressionEnsembleProblemData emptyProblemData;
+    public new static RegressionEnsembleProblemData EmptyProblemData {
+      get { return emptyProblemData; }
+    }
+    static RegressionEnsembleProblemData() {
+      var problemData = new RegressionEnsembleProblemData();
+      problemData.Parameters.Clear();
+      problemData.Name = "Empty Regression ProblemData";
+      problemData.Description = "This ProblemData acts as place holder before the correct problem data is loaded.";
+      problemData.isEmpty = true;
+
+      problemData.Parameters.Add(new FixedValueParameter<Dataset>(DatasetParameterName, "", new Dataset()));
+      problemData.Parameters.Add(new FixedValueParameter<ReadOnlyCheckedItemList<StringValue>>(InputVariablesParameterName, ""));
+      problemData.Parameters.Add(new FixedValueParameter<IntRange>(TrainingPartitionParameterName, "", (IntRange)new IntRange(0, 0).AsReadOnly()));
+      problemData.Parameters.Add(new FixedValueParameter<IntRange>(TestPartitionParameterName, "", (IntRange)new IntRange(0, 0).AsReadOnly()));
+      problemData.Parameters.Add(new ConstrainedValueParameter<StringValue>(TargetVariableParameterName, new ItemSet<StringValue>()));
+      emptyProblemData = problemData;
+    }
+
     [StorableConstructor]
     private RegressionEnsembleProblemData(bool deserializing) : base(deserializing) { }
-
-    private RegressionEnsembleProblemData(RegressionEnsembleProblemData original, Cloner cloner)
-      : base(original, cloner) {
+    private RegressionEnsembleProblemData(RegressionEnsembleProblemData original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      if (this == emptyProblemData) return emptyProblemData;
+      return new RegressionEnsembleProblemData(this, cloner);
     }
-    public override IDeepCloneable Clone(Cloner cloner) { return new RegressionEnsembleProblemData(this, cloner); }
 
+    public RegressionEnsembleProblemData() : base() { }
     public RegressionEnsembleProblemData(IRegressionProblemData regressionProblemData)
       : base(regressionProblemData.Dataset, regressionProblemData.AllowedInputVariables, regressionProblemData.TargetVariable) {
       TrainingPartition.Start = regressionProblemData.TrainingPartition.Start;
       TrainingPartition.End = regressionProblemData.TrainingPartition.End;
       TestPartition.Start = regressionProblemData.TestPartition.Start;
       TestPartition.End = regressionProblemData.TestPartition.End;
+    }
+    public RegressionEnsembleProblemData(Dataset dataset, IEnumerable<string> allowedInputVariables, string targetVariable)
+      : base(dataset, allowedInputVariables, targetVariable) {
     }
   }
 }

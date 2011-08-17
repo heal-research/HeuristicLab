@@ -19,9 +19,7 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -35,30 +33,53 @@ namespace HeuristicLab.Problems.DataAnalysis {
   public class ClassificationEnsembleProblemData : ClassificationProblemData {
 
     public override IEnumerable<int> TrainingIndizes {
-      get {
-        return Enumerable.Range(TrainingPartition.Start, TrainingPartition.End - TrainingPartition.Start);
-      }
+      get { return Enumerable.Range(TrainingPartition.Start, TrainingPartition.End - TrainingPartition.Start); }
     }
     public override IEnumerable<int> TestIndizes {
-      get {
-        return Enumerable.Range(TestPartition.Start, TestPartition.End - TestPartition.Start);
-      }
+      get { return Enumerable.Range(TestPartition.Start, TestPartition.End - TestPartition.Start); }
+    }
+
+    private static ClassificationEnsembleProblemData emptyProblemData;
+    public static ClassificationEnsembleProblemData EmptyProblemData {
+      get { return emptyProblemData; }
+    }
+
+    static ClassificationEnsembleProblemData() {
+      var problemData = new ClassificationEnsembleProblemData();
+      problemData.Parameters.Clear();
+      problemData.Name = "Empty Classification ProblemData";
+      problemData.Description = "This ProblemData acts as place holder before the correct problem data is loaded.";
+      problemData.isEmpty = true;
+
+      problemData.Parameters.Add(new FixedValueParameter<Dataset>(DatasetParameterName, "", new Dataset()));
+      problemData.Parameters.Add(new FixedValueParameter<ReadOnlyCheckedItemList<StringValue>>(InputVariablesParameterName, ""));
+      problemData.Parameters.Add(new FixedValueParameter<IntRange>(TrainingPartitionParameterName, "", (IntRange)new IntRange(0, 0).AsReadOnly()));
+      problemData.Parameters.Add(new FixedValueParameter<IntRange>(TestPartitionParameterName, "", (IntRange)new IntRange(0, 0).AsReadOnly()));
+      problemData.Parameters.Add(new ConstrainedValueParameter<StringValue>(TargetVariableParameterName, new ItemSet<StringValue>()));
+      problemData.Parameters.Add(new FixedValueParameter<StringMatrix>(ClassNamesParameterName, "", new StringMatrix(0, 0).AsReadOnly()));
+      problemData.Parameters.Add(new FixedValueParameter<DoubleMatrix>(ClassificationPenaltiesParameterName, "", (DoubleMatrix)new DoubleMatrix(0, 0).AsReadOnly()));
+      emptyProblemData = problemData;
     }
 
     [StorableConstructor]
     protected ClassificationEnsembleProblemData(bool deserializing) : base(deserializing) { }
-
-    protected ClassificationEnsembleProblemData(ClassificationEnsembleProblemData original, Cloner cloner)
-      : base(original, cloner) {
+    protected ClassificationEnsembleProblemData(ClassificationEnsembleProblemData original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      if (this == emptyProblemData) return emptyProblemData;
+      return new ClassificationEnsembleProblemData(this, cloner);
     }
-    public override IDeepCloneable Clone(Cloner cloner) { return new ClassificationEnsembleProblemData(this, cloner); }
 
+    public ClassificationEnsembleProblemData() : base() { }
     public ClassificationEnsembleProblemData(IClassificationProblemData classificationProblemData)
       : base(classificationProblemData.Dataset, classificationProblemData.AllowedInputVariables, classificationProblemData.TargetVariable) {
       this.TrainingPartition.Start = classificationProblemData.TrainingPartition.Start;
       this.TrainingPartition.End = classificationProblemData.TrainingPartition.End;
       this.TestPartition.Start = classificationProblemData.TestPartition.Start;
       this.TestPartition.End = classificationProblemData.TestPartition.End;
+    }
+
+    public ClassificationEnsembleProblemData(Dataset dataset, IEnumerable<string> allowedInputVariables, string targetVariable)
+      : base(dataset, allowedInputVariables, targetVariable) {
     }
   }
 }

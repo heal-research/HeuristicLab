@@ -34,10 +34,15 @@ namespace HeuristicLab.Problems.DataAnalysis {
   /// </summary>
   [StorableClass]
   [Item("Regression Ensemble Solution", "A regression solution that contains an ensemble of multiple regression models")]
-  // [Creatable("Data Analysis")]
+  [Creatable("Data Analysis - Ensembles")]
   public sealed class RegressionEnsembleSolution : RegressionSolution, IRegressionEnsembleSolution {
     public new IRegressionEnsembleModel Model {
       get { return (IRegressionEnsembleModel)base.Model; }
+    }
+
+    public new RegressionEnsembleProblemData ProblemData {
+      get { return (RegressionEnsembleProblemData)base.ProblemData; }
+      set { base.ProblemData = value; }
     }
 
     private readonly ItemCollection<IRegressionSolution> regressionSolutions;
@@ -58,7 +63,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       foreach (var model in Model.Models) {
-        IRegressionProblemData problemData = (IRegressionProblemData)ProblemData.Clone();
+        IRegressionProblemData problemData = (IRegressionProblemData) ProblemData.Clone();
         problemData.TrainingPartition.Start = trainingPartitions[model].Start;
         problemData.TrainingPartition.End = trainingPartitions[model].End;
         problemData.TestPartition.Start = testPartitions[model].Start;
@@ -81,6 +86,15 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
 
       regressionSolutions = cloner.Clone(original.regressionSolutions);
+      RegisterRegressionSolutionsEventHandler();
+    }
+
+    public RegressionEnsembleSolution()
+      : base(new RegressionEnsembleModel(), RegressionEnsembleProblemData.EmptyProblemData) {
+      trainingPartitions = new Dictionary<IRegressionModel, IntRange>();
+      testPartitions = new Dictionary<IRegressionModel, IntRange>();
+      regressionSolutions = new ItemCollection<IRegressionSolution>();
+
       RegisterRegressionSolutionsEventHandler();
     }
 
@@ -202,8 +216,34 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     #endregion
 
+    protected override void OnProblemDataChanged() {
+      IRegressionProblemData problemData = new RegressionProblemData(ProblemData.Dataset,
+                                                                     ProblemData.AllowedInputVariables,
+                                                                     ProblemData.TargetVariable);
+      problemData.TrainingPartition.Start = ProblemData.TrainingPartition.Start;
+      problemData.TrainingPartition.End = ProblemData.TrainingPartition.End;
+      problemData.TestPartition.Start = ProblemData.TestPartition.Start;
+      problemData.TestPartition.End = ProblemData.TestPartition.End;
+
+      foreach (var solution in RegressionSolutions) {
+        if (solution is RegressionEnsembleSolution)
+          solution.ProblemData = ProblemData;
+        else
+          solution.ProblemData = problemData;
+      }
+      foreach (var trainingPartition in trainingPartitions.Values) {
+        trainingPartition.Start = ProblemData.TrainingPartition.Start;
+        trainingPartition.End = ProblemData.TrainingPartition.End;
+      }
+      foreach (var testPartition in testPartitions.Values) {
+        testPartition.Start = ProblemData.TestPartition.Start;
+        testPartition.End = ProblemData.TestPartition.End;
+      }
+
+      base.OnProblemDataChanged();
+    }
+
     public void AddRegressionSolutions(IEnumerable<IRegressionSolution> solutions) {
-      solutions.OfType<RegressionEnsembleSolution>().SelectMany(ensemble => ensemble.RegressionSolutions);
       regressionSolutions.AddRange(solutions);
     }
     public void RemoveRegressionSolutions(IEnumerable<IRegressionSolution> solutions) {

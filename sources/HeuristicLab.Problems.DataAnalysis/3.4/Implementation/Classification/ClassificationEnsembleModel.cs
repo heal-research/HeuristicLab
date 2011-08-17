@@ -45,6 +45,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       : base(original, cloner) {
       this.models = original.Models.Select(m => cloner.Clone(m)).ToList();
     }
+
+    public ClassificationEnsembleModel() : this(Enumerable.Empty<IClassificationModel>()) { }
     public ClassificationEnsembleModel(IEnumerable<IClassificationModel> models)
       : base() {
       this.name = ItemName;

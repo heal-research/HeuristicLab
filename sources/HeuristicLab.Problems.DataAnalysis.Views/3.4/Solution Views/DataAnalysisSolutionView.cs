@@ -43,6 +43,24 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       set { base.Content = value; }
     }
 
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
+      addButton.Enabled = false;
+      removeButton.Enabled = false;
+    }
+
+    protected override void RegisterContentEvents() {
+      base.RegisterContentEvents();
+      Content.ProblemDataChanged += new EventHandler(Content_ProblemDataChanged);
+    }
+    protected override void DeregisterContentEvents() {
+      base.DeregisterContentEvents();
+      Content.ProblemDataChanged -= new EventHandler(Content_ProblemDataChanged);
+    }
+    private void Content_ProblemDataChanged(object sender, EventArgs e) {
+      OnContentChanged();
+    }
+
     protected override void OnContentChanged() {
       string selectedName = null;
       if ((itemsListView.SelectedItems.Count == 1) && (itemsListView.SelectedItems[0].Tag != null && itemsListView.SelectedItems[0].Tag is Type))
@@ -65,7 +83,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     protected virtual void AddEvaluationViewTypes() {
-      if (Content != null) {
+      if (Content != null && !Content.ProblemData.IsEmpty) {
         var viewTypes = MainFormManager.GetViewTypes(Content.GetType(), true)
           .Where(t => typeof(IDataAnalysisSolutionEvaluationView).IsAssignableFrom(t));
         foreach (var viewType in viewTypes)

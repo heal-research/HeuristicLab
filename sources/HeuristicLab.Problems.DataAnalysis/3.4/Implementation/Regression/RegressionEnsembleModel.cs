@@ -57,6 +57,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       : base(original, cloner) {
       this.models = original.Models.Select(m => cloner.Clone(m)).ToList();
     }
+
+    public RegressionEnsembleModel() : this(Enumerable.Empty<IRegressionModel>()) { }
     public RegressionEnsembleModel(IEnumerable<IRegressionModel> models)
       : base() {
       this.name = ItemName;

@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
   [Item("RegressionProblemData", "Represents an item containing all data defining a regression problem.")]
   public class RegressionProblemData : DataAnalysisProblemData, IRegressionProblemData {
-    private const string TargetVariableParameterName = "TargetVariable";
+    protected const string TargetVariableParameterName = "TargetVariable";
 
     #region default data
     private static double[,] kozaF1 = new double[,] {
@@ -67,12 +67,30 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private static IEnumerable<string> defaultAllowedInputVariables;
     private static string defaultTargetVariable;
 
+    private static RegressionProblemData emptyProblemData;
+    public static RegressionProblemData EmptyProblemData {
+      get { return emptyProblemData; }
+    }
+
     static RegressionProblemData() {
       defaultDataset = new Dataset(new string[] { "y", "x" }, kozaF1);
       defaultDataset.Name = "Fourth-order Polynomial Function Benchmark Dataset";
       defaultDataset.Description = "f(x) = x^4 + x^3 + x^2 + x^1";
       defaultAllowedInputVariables = new List<string>() { "x" };
       defaultTargetVariable = "y";
+
+      var problemData = new RegressionProblemData();
+      problemData.Parameters.Clear();
+      problemData.Name = "Empty Regression ProblemData";
+      problemData.Description = "This ProblemData acts as place holder before the correct problem data is loaded.";
+      problemData.isEmpty = true;
+
+      problemData.Parameters.Add(new FixedValueParameter<Dataset>(DatasetParameterName, "", new Dataset()));
+      problemData.Parameters.Add(new FixedValueParameter<ReadOnlyCheckedItemList<StringValue>>(InputVariablesParameterName, ""));
+      problemData.Parameters.Add(new FixedValueParameter<IntRange>(TrainingPartitionParameterName, "", (IntRange)new IntRange(0, 0).AsReadOnly()));
+      problemData.Parameters.Add(new FixedValueParameter<IntRange>(TestPartitionParameterName, "", (IntRange)new IntRange(0, 0).AsReadOnly()));
+      problemData.Parameters.Add(new ConstrainedValueParameter<StringValue>(TargetVariableParameterName, new ItemSet<StringValue>()));
+      emptyProblemData = problemData;
     }
     #endregion
 
@@ -90,12 +108,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
       RegisterParameterEvents();
     }
 
-
     protected RegressionProblemData(RegressionProblemData original, Cloner cloner)
       : base(original, cloner) {
       RegisterParameterEvents();
     }
-    public override IDeepCloneable Clone(Cloner cloner) { return new RegressionProblemData(this, cloner); }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      if (this == emptyProblemData) return emptyProblemData;
+      return new RegressionProblemData(this, cloner);
+    }
 
     public RegressionProblemData()
       : this(defaultDataset, defaultAllowedInputVariables, defaultTargetVariable) {

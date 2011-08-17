@@ -24,6 +24,7 @@ using HeuristicLab.Core;
 namespace HeuristicLab.Problems.DataAnalysis {
   public interface IRegressionEnsembleSolution : IRegressionSolution {
     new IRegressionEnsembleModel Model { get; }
+    new RegressionEnsembleProblemData ProblemData { get; set; }
     IItemCollection<IRegressionSolution> RegressionSolutions { get; }
     IEnumerable<IEnumerable<double>> GetEstimatedValueVectors(Dataset dataset, IEnumerable<int> rows);
   }

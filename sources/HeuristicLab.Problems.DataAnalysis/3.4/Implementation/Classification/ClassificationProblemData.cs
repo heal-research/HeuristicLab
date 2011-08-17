@@ -33,11 +33,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
   [Item("ClassificationProblemData", "Represents an item containing all data defining a classification problem.")]
   public class ClassificationProblemData : DataAnalysisProblemData, IClassificationProblemData {
-    private const string TargetVariableParameterName = "TargetVariable";
-    private const string ClassNamesParameterName = "ClassNames";
-    private const string ClassificationPenaltiesParameterName = "ClassificationPenalties";
-    private const int MaximumNumberOfClasses = 20;
-    private const int InspectedRowsToDetermineTargets = 500;
+    protected const string TargetVariableParameterName = "TargetVariable";
+    protected const string ClassNamesParameterName = "ClassNames";
+    protected const string ClassificationPenaltiesParameterName = "ClassificationPenalties";
+    protected const int MaximumNumberOfClasses = 20;
+    protected const int InspectedRowsToDetermineTargets = 500;
 
     #region default data
     private static string[] defaultVariableNames = new string[] { "sample", "clump thickness", "cell size", "cell shape", "marginal adhesion", "epithelial cell size", "bare nuclei", "chromatin", "nucleoli", "mitoses", "class" };
@@ -173,6 +173,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private static Dataset defaultDataset;
     private static IEnumerable<string> defaultAllowedInputVariables;
     private static string defaultTargetVariable;
+
+    private static ClassificationProblemData emptyProblemData;
+    public static ClassificationProblemData EmptyProblemData {
+      get { return EmptyProblemData; }
+    }
+
     static ClassificationProblemData() {
       defaultDataset = new Dataset(defaultVariableNames, defaultData);
       defaultDataset.Name = "Wisconsin classification problem";
@@ -180,6 +186,21 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
       defaultAllowedInputVariables = defaultVariableNames.Except(new List<string>() { "sample", "class" });
       defaultTargetVariable = "class";
+
+      var problemData = new ClassificationProblemData();
+      problemData.Parameters.Clear();
+      problemData.Name = "Empty Classification ProblemData";
+      problemData.Description = "This ProblemData acts as place holder before the correct problem data is loaded.";
+      problemData.isEmpty = true;
+
+      problemData.Parameters.Add(new FixedValueParameter<Dataset>(DatasetParameterName, "", new Dataset()));
+      problemData.Parameters.Add(new FixedValueParameter<ReadOnlyCheckedItemList<StringValue>>(InputVariablesParameterName, ""));
+      problemData.Parameters.Add(new FixedValueParameter<IntRange>(TrainingPartitionParameterName, "", (IntRange)new IntRange(0, 0).AsReadOnly()));
+      problemData.Parameters.Add(new FixedValueParameter<IntRange>(TestPartitionParameterName, "", (IntRange)new IntRange(0, 0).AsReadOnly()));
+      problemData.Parameters.Add(new ConstrainedValueParameter<StringValue>(TargetVariableParameterName, new ItemSet<StringValue>()));
+      problemData.Parameters.Add(new FixedValueParameter<StringMatrix>(ClassNamesParameterName, "", new StringMatrix(0, 0).AsReadOnly()));
+      problemData.Parameters.Add(new FixedValueParameter<DoubleMatrix>(ClassificationPenaltiesParameterName, "", (DoubleMatrix)new DoubleMatrix(0, 0).AsReadOnly()));
+      emptyProblemData = problemData;
     }
     #endregion
 
@@ -248,7 +269,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
       : base(original, cloner) {
       RegisterParameterEvents();
     }
-    public override IDeepCloneable Clone(Cloner cloner) { return new ClassificationProblemData(this, cloner); }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      if (this == emptyProblemData) return emptyProblemData;
+      return new ClassificationProblemData(this, cloner);
+    }
 
     public ClassificationProblemData() : this(defaultDataset, defaultAllowedInputVariables, defaultTargetVariable) { }
     public ClassificationProblemData(Dataset dataset, IEnumerable<string> allowedInputVariables, string targetVariable)

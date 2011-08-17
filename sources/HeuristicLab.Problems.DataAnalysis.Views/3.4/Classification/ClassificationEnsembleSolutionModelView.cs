@@ -18,7 +18,10 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
+
+using System.Linq;
 using System.Windows.Forms;
+using HeuristicLab.Common;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
@@ -43,9 +46,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      if (Content != null)
+      if (Content != null) {
+        view.Locked = Content.ProblemData == ClassificationEnsembleProblemData.EmptyProblemData;
         view.Content = Content.ClassificationSolutions;
-      else
+      } else
         view.Content = null;
     }
 
@@ -60,6 +64,27 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         removeButton.Enabled = Content != null && !Content.IsReadOnly && !Locked && itemsListView.SelectedItems.Count > 0;
         itemsListView.Enabled = Content != null;
         detailsGroupBox.Enabled = Content != null && itemsListView.SelectedItems.Count == 1;
+      }
+
+      protected override void itemsListView_DragEnter(object sender, DragEventArgs e) {
+        validDragOperation = false;
+        if (ReadOnly || Locked) return;
+        if (Content.IsReadOnly) return;
+
+        var dropData = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
+        validDragOperation = dropData.GetObjectGraphObjects().OfType<IClassificationSolution>().Any();
+      }
+      protected override void itemsListView_DragDrop(object sender, DragEventArgs e) {
+        if (e.Effect != DragDropEffects.None) {
+          var dropData = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
+          var solutions = dropData.GetObjectGraphObjects().OfType<IClassificationSolution>();
+          if (e.Effect.HasFlag(DragDropEffects.Copy)) {
+            Cloner cloner = new Cloner();
+            solutions = solutions.Select(s => cloner.Clone(s));
+          }
+          foreach (var solution in solutions)
+            Content.Add(solution);
+        }
       }
     }
   }

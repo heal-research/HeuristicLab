@@ -32,10 +32,10 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
   public abstract class DataAnalysisProblemData : ParameterizedNamedItem, IDataAnalysisProblemData {
-    private const string DatasetParameterName = "Dataset";
-    private const string InputVariablesParameterName = "InputVariables";
-    private const string TrainingPartitionParameterName = "TrainingPartition";
-    private const string TestPartitionParameterName = "TestPartition";
+    protected const string DatasetParameterName = "Dataset";
+    protected const string InputVariablesParameterName = "InputVariables";
+    protected const string TrainingPartitionParameterName = "TrainingPartition";
+    protected const string TestPartitionParameterName = "TestPartition";
 
     #region parameter properites
     public IFixedValueParameter<Dataset> DatasetParameter {
@@ -52,7 +52,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     #endregion
 
-    #region propeties
+    #region properties
+    protected bool isEmpty = false;
+    public bool IsEmpty {
+      get { return isEmpty; }
+    }
     public Dataset Dataset {
       get { return DatasetParameter.Value; }
     }
@@ -86,6 +90,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     protected DataAnalysisProblemData(DataAnalysisProblemData original, Cloner cloner)
       : base(original, cloner) {
+      isEmpty = original.isEmpty;
       RegisterEventHandlers();
     }
     [StorableConstructor]

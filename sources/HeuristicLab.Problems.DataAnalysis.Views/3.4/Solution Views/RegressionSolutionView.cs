@@ -20,6 +20,7 @@
 #endregion
 
 using System.Windows.Forms;
+using HeuristicLab.Core;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
@@ -38,8 +39,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     #region drag and drop
     protected override void itemsListView_DragEnter(object sender, DragEventArgs e) {
       validDragOperation = false;
-      if (!ReadOnly && (e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) is RegressionProblemData)) {
-        validDragOperation = true;
+      if (ReadOnly) return;
+
+      var dropData = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
+      if (dropData is RegressionProblemData) validDragOperation = true;
+      else if (dropData is IValueParameter) {
+        var param = (IValueParameter)dropData;
+        if (param.Value is RegressionProblemData) validDragOperation = true;
       }
     }
     #endregion

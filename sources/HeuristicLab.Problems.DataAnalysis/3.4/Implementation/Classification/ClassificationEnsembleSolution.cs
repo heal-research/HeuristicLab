@@ -34,10 +34,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
   /// </summary>
   [StorableClass]
   [Item("Classification Ensemble Solution", "A classification solution that contains an ensemble of multiple classification models")]
-  // [Creatable("Data Analysis")]
+  [Creatable("Data Analysis - Ensembles")]
   public sealed class ClassificationEnsembleSolution : ClassificationSolution, IClassificationEnsembleSolution {
     public new IClassificationEnsembleModel Model {
       get { return (IClassificationEnsembleModel)base.Model; }
+    }
+    public new ClassificationEnsembleProblemData ProblemData {
+      get { return (ClassificationEnsembleProblemData)base.ProblemData; }
+      set { base.ProblemData = value; }
     }
 
     private readonly ItemCollection<IClassificationSolution> classificationSolutions;
@@ -81,6 +85,15 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
 
       classificationSolutions = cloner.Clone(original.classificationSolutions);
+      RegisterClassificationSolutionsEventHandler();
+    }
+
+    public ClassificationEnsembleSolution()
+      : base(new ClassificationEnsembleModel(), ClassificationEnsembleProblemData.EmptyProblemData) {
+      trainingPartitions = new Dictionary<IClassificationModel, IntRange>();
+      testPartitions = new Dictionary<IClassificationModel, IntRange>();
+      classificationSolutions = new ItemCollection<IClassificationSolution>();
+
       RegisterClassificationSolutionsEventHandler();
     }
 
@@ -206,6 +219,33 @@ namespace HeuristicLab.Problems.DataAnalysis {
       .First();
     }
     #endregion
+
+    protected override void OnProblemDataChanged() {
+      IClassificationProblemData problemData = new ClassificationProblemData(ProblemData.Dataset,
+                                                                     ProblemData.AllowedInputVariables,
+                                                                     ProblemData.TargetVariable);
+      problemData.TrainingPartition.Start = ProblemData.TrainingPartition.Start;
+      problemData.TrainingPartition.End = ProblemData.TrainingPartition.End;
+      problemData.TestPartition.Start = ProblemData.TestPartition.Start;
+      problemData.TestPartition.End = ProblemData.TestPartition.End;
+
+      foreach (var solution in ClassificationSolutions) {
+        if (solution is ClassificationEnsembleSolution)
+          solution.ProblemData = ProblemData;
+        else
+          solution.ProblemData = problemData;
+      }
+      foreach (var trainingPartition in trainingPartitions.Values) {
+        trainingPartition.Start = ProblemData.TrainingPartition.Start;
+        trainingPartition.End = ProblemData.TrainingPartition.End;
+      }
+      foreach (var testPartition in testPartitions.Values) {
+        testPartition.Start = ProblemData.TestPartition.Start;
+        testPartition.End = ProblemData.TestPartition.End;
+      }
+
+      base.OnProblemDataChanged();
+    }
 
     public void AddClassificationSolutions(IEnumerable<IClassificationSolution> solutions) {
       classificationSolutions.AddRange(solutions);
