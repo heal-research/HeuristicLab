@@ -53,6 +53,11 @@ namespace HeuristicLab.Optimization {
       foreach (var modifier in Modifiers.CheckedItems)
         modifier.Value.Modify(runs);
       RunCollection.UpdateOfRunsInProgress = false;
+      if (runs.Count > 0) { // force update
+        var run = (IRun) runs[0].Clone();
+        RunCollection.Add(run);
+        RunCollection.Remove(run);
+      }
     }
   }
 }
