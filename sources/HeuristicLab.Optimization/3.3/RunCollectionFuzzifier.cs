@@ -49,6 +49,7 @@ namespace HeuristicLab.Optimization {
     protected RunCollectionFuzzifier(bool deserializing) : base(deserializing) { }
     protected RunCollectionFuzzifier(RunCollectionFuzzifier original, Cloner cloner)
       : base(original, cloner) {
+      RegisterEvents();
     }
     public RunCollectionFuzzifier() {
       Parameters.Add(new ValueParameter<StringValue>("Source", "Source value name to be fuzzified.", new StringValue("Value")));
