@@ -23,9 +23,6 @@ namespace HeuristicLab.Optimization {
     public ValueParameter<StringValue> TargetParameter {
       get { return (ValueParameter<StringValue>)Parameters["Target"]; }
     }
-    public ValueParameter<StringValue> SuffixParameter {
-      get { return (ValueParameter<StringValue>)Parameters["Suffix"]; }
-    }
     public ValueParameter<DoubleValue> SpreadParameter {
       get { return (ValueParameter<DoubleValue>)Parameters["Spread"]; }
     }
@@ -38,8 +35,7 @@ namespace HeuristicLab.Optimization {
     #endregion
 
     private string Source { get { return SourceParameter.Value.Value; } }
-    private string Target { get { return TargetParameter.Value.Value; } }
-    private string Suffix { get { return SuffixParameter.Value.Value; } }
+    private string Target { get { return TargetParameter.Value.Value; } }    
     private double Spread { get { return SpreadParameter.Value.Value; } }
     private string GroupBy { get { return GroupByParameter.Value.Value; } }
     private List<string> Levels { get { return LevelsParameter.Value.Select(v => v.Value).ToList(); } }
@@ -53,8 +49,7 @@ namespace HeuristicLab.Optimization {
     }
     public RunCollectionFuzzifier() {
       Parameters.Add(new ValueParameter<StringValue>("Source", "Source value name to be fuzzified.", new StringValue("Value")));
-      Parameters.Add(new ValueParameter<StringValue>("Target", "Target value name. The new, fuzzified variable to be created.", new StringValue("Calc.Value")));
-      Parameters.Add(new ValueParameter<StringValue>("Suffix", "The suffix of all fuzzified values.", new StringValue()));
+      Parameters.Add(new ValueParameter<StringValue>("Target", "Target value name. The new, fuzzified variable to be created.", new StringValue("Calc.Value")));      
       Parameters.Add(new ValueParameter<DoubleValue>("Spread", "The number of standard deviations considered one additional level.", new DoubleValue(1)));
       Parameters.Add(new ValueParameter<StringValue>("GroupBy", "Create separate analyzes for different values of this variable.", new StringValue("")));
       Parameters.Add(new ValueParameter<ItemList<StringValue>>("Levels", "The list of levels to be assigned.",
@@ -79,8 +74,7 @@ namespace HeuristicLab.Optimization {
 
     private void RegisterEvents() {
       SourceParameter.ToStringChanged += Parameter_NameChanged;
-      TargetParameter.ToStringChanged += Parameter_NameChanged;
-      SuffixParameter.ToStringChanged += Parameter_NameChanged;
+      TargetParameter.ToStringChanged += Parameter_NameChanged;      
       GroupByParameter.ToStringChanged += Parameter_NameChanged;
     }
 
@@ -89,11 +83,10 @@ namespace HeuristicLab.Optimization {
     }
 
     private void UpdateName() {
-      name = string.Format("{0} := Fuzzy({1}) {3}",
+      name = string.Format("{0} := Fuzzy({1}{2})",
         Target,
         Source,
-        string.IsNullOrWhiteSpace(GroupBy) ? "" : string.Format("/{0}", GroupBy),
-        Suffix);
+        string.IsNullOrWhiteSpace(GroupBy) ? "" : string.Format("/{0}", GroupBy));        
       OnNameChanged();
     }
 
