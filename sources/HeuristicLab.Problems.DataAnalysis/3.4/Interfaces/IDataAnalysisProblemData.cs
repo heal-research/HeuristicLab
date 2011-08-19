@@ -38,6 +38,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
     IEnumerable<int> TrainingIndizes { get; }
     IEnumerable<int> TestIndizes { get; }
 
+    bool IsTrainingSample(int index);
+    bool IsTestSample(int index);
+
     event EventHandler Changed;
   }
 }

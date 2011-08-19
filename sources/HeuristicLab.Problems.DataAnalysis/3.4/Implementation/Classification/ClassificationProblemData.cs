@@ -170,11 +170,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
      {1176406,1,1,1,1,2,1,2,1,1,2      },
      {1176881,7,5,3,7,4,10,7,5,5,4        }
 };
-    private static Dataset defaultDataset;
-    private static IEnumerable<string> defaultAllowedInputVariables;
-    private static string defaultTargetVariable;
+    private static readonly Dataset defaultDataset;
+    private static readonly IEnumerable<string> defaultAllowedInputVariables;
+    private static readonly string defaultTargetVariable;
 
-    private static ClassificationProblemData emptyProblemData;
+    private static readonly ClassificationProblemData emptyProblemData;
     public static ClassificationProblemData EmptyProblemData {
       get { return EmptyProblemData; }
     }

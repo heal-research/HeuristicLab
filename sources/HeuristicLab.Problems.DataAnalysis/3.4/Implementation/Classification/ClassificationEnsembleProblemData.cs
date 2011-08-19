@@ -20,7 +20,6 @@
 #endregion
 
 using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -32,14 +31,17 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [Item("ClassificationEnsembleProblemData", "Represents an item containing all data defining a classification problem.")]
   public class ClassificationEnsembleProblemData : ClassificationProblemData {
 
-    public override IEnumerable<int> TrainingIndizes {
-      get { return Enumerable.Range(TrainingPartition.Start, TrainingPartition.End - TrainingPartition.Start); }
-    }
-    public override IEnumerable<int> TestIndizes {
-      get { return Enumerable.Range(TestPartition.Start, TestPartition.End - TestPartition.Start); }
+    public override bool IsTrainingSample(int index) {
+      return index >= 0 && index < Dataset.Rows &&
+             TrainingPartition.Start <= index && index < TrainingPartition.End;
     }
 
-    private static ClassificationEnsembleProblemData emptyProblemData;
+    public override bool IsTestSample(int index) {
+      return index >= 0 && index < Dataset.Rows &&
+             TestPartition.Start <= index && index < TestPartition.End;
+    }
+
+    private static readonly ClassificationEnsembleProblemData emptyProblemData;
     public static ClassificationEnsembleProblemData EmptyProblemData {
       get { return emptyProblemData; }
     }

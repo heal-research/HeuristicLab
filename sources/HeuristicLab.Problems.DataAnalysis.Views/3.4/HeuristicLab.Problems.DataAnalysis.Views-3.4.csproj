@@ -109,6 +109,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classification\ClassificationEnsembleSolutionEstimatedClassValuesView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Classification\ClassificationEnsembleSolutionEstimatedClassValuesView.Designer.cs">
+      <DependentUpon>ClassificationEnsembleSolutionEstimatedClassValuesView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Classification\ClassificationEnsembleSolutionModelView.cs">
       <SubType>UserControl</SubType>
     </Compile>

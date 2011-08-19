@@ -77,14 +77,25 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public virtual IEnumerable<int> TrainingIndizes {
       get {
         return Enumerable.Range(TrainingPartition.Start, TrainingPartition.End - TrainingPartition.Start)
-                         .Where(i => i >= 0 && i < Dataset.Rows && (i < TestPartition.Start || TestPartition.End <= i));
+                         .Where(IsTrainingSample);
       }
     }
     public virtual IEnumerable<int> TestIndizes {
       get {
         return Enumerable.Range(TestPartition.Start, TestPartition.End - TestPartition.Start)
-           .Where(i => i >= 0 && i < Dataset.Rows);
+           .Where(IsTestSample);
       }
+    }
+
+    public virtual bool IsTrainingSample(int index) {
+      return index >= 0 && index < Dataset.Rows &&
+        TrainingPartition.Start <= index && index < TrainingPartition.End &&
+        (index < TestPartition.Start || TestPartition.End <= index);
+    }
+
+    public virtual bool IsTestSample(int index) {
+      return index >= 0 && index < Dataset.Rows &&
+             TestPartition.Start <= index && index < TestPartition.End;
     }
     #endregion
 

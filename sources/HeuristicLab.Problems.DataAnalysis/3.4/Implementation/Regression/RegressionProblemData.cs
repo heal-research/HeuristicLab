@@ -63,11 +63,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
           {0.30182879,	0.232370249},
           {0.83763905,	0.468046718}
     };
-    private static Dataset defaultDataset;
-    private static IEnumerable<string> defaultAllowedInputVariables;
-    private static string defaultTargetVariable;
+    private static readonly Dataset defaultDataset;
+    private static readonly IEnumerable<string> defaultAllowedInputVariables;
+    private static readonly string defaultTargetVariable;
 
-    private static RegressionProblemData emptyProblemData;
+    private static readonly RegressionProblemData emptyProblemData;
     public static RegressionProblemData EmptyProblemData {
       get { return emptyProblemData; }
     }
