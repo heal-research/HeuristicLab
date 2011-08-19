@@ -44,6 +44,11 @@ namespace HeuristicLab.Core.Views {
       set { base.Content = value; }
     }
 
+    public bool ShowDetails {
+      get { return showDetailsCheckBox.Checked; }
+      set { showDetailsCheckBox.Checked = value; }
+    }
+
     public ListView ItemsListView {
       get { return itemsListView; }
     }
