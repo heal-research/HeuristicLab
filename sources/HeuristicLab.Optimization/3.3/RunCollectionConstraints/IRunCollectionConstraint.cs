@@ -25,6 +25,9 @@ using HeuristicLab.Core;
 namespace HeuristicLab.Optimization {
   public interface IRunCollectionConstraint : IConstraint {
     new RunCollection ConstrainedValue { get; set; }
+  }
+
+  public interface IRunCollectionColumnConstraint : IRunCollectionConstraint {
     string ConstraintColumn { get; set; }
     event EventHandler ConstraintColumnChanged;
   }

@@ -29,7 +29,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Optimization {
   [StorableClass]
   [Item("RunCollectionEqualityConstraint", "A constraint which checks the members of the contained runs for equality to the constraint data.")]
-  public class RunCollectionEqualityConstraint : EqualityConstraint, IRunCollectionConstraint {
+  public class RunCollectionEqualityConstraint : EqualityConstraint, IRunCollectionColumnConstraint {
     [StorableConstructor]
     protected RunCollectionEqualityConstraint(bool deserializing) : base(deserializing) { }
 

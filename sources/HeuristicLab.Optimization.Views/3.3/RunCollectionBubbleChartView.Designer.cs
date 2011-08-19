@@ -60,6 +60,7 @@ namespace HeuristicLab.Optimization.Views {
       this.sizeLabel = new System.Windows.Forms.Label();
       this.chart = new HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart();
       this.openBoxPlotViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.hideRunToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.zoomButton = new System.Windows.Forms.RadioButton();
       this.selectButton = new System.Windows.Forms.RadioButton();
       this.radioButtonGroup = new System.Windows.Forms.GroupBox();
@@ -213,6 +214,13 @@ namespace HeuristicLab.Optimization.Views {
       this.openBoxPlotViewToolStripMenuItem.Size = new System.Drawing.Size(256, 22);
       this.openBoxPlotViewToolStripMenuItem.Text = "Open BoxPlot View";
       this.openBoxPlotViewToolStripMenuItem.Click += new System.EventHandler(this.openBoxPlotViewToolStripMenuItem_Click);
+      //
+      // hideRunToolStripMenuItem
+      //
+      this.hideRunToolStripMenuItem.Name = "hideRunToolStripMenuItem";
+      this.hideRunToolStripMenuItem.Size = new System.Drawing.Size(256, 22);
+      this.hideRunToolStripMenuItem.Text = "Hide Run";
+      this.hideRunToolStripMenuItem.Click += new System.EventHandler(hideRunToolStripMenuItem_Click);
       // 
       // zoomButton
       // 
@@ -373,6 +381,7 @@ namespace HeuristicLab.Optimization.Views {
     private System.Windows.Forms.ToolTip tooltip;
     private System.Windows.Forms.Label noRunsLabel;
     private System.Windows.Forms.ToolStripMenuItem openBoxPlotViewToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem hideRunToolStripMenuItem;
     private System.Windows.Forms.Button colorXAxisButton;
     private System.Windows.Forms.Button colorYAxisButton;
     private System.Windows.Forms.TrackBar sizeTrackBar;

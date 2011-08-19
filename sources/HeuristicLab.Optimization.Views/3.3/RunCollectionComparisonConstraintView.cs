@@ -28,7 +28,7 @@ using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Optimization.Views {
   [Content(typeof(RunCollectionComparisonConstraint), true)]
-  public partial class RunCollectionComparisonConstraintView : RunCollectionConstraintView {
+  public partial class RunCollectionComparisonConstraintView : RunCollectionColumnConstraintView {
     public RunCollectionComparisonConstraintView() {
       InitializeComponent();
     }

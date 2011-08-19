@@ -54,7 +54,10 @@ namespace HeuristicLab.Optimization.Views {
 
     public RunCollectionBubbleChartView() {
       InitializeComponent();
-      chart.ContextMenuStrip.Items.Insert(0, openBoxPlotViewToolStripMenuItem);
+
+      chart.ContextMenuStrip.Items.Insert(0, hideRunToolStripMenuItem);
+      chart.ContextMenuStrip.Items.Insert(1, openBoxPlotViewToolStripMenuItem);
+      chart.ContextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(ContextMenuStrip_Opening);
 
       runToDataPointMapping = new Dictionary<IRun, List<DataPoint>>();
       categoricalMapping = new Dictionary<int, Dictionary<object, double>>();
@@ -630,6 +633,31 @@ namespace HeuristicLab.Optimization.Views {
       return colorImage;
     }
 
+    private IRun runToHide = null;
+    private void ContextMenuStrip_Opening(object sender, System.ComponentModel.CancelEventArgs e) {
+      var pos = Control.MousePosition;
+      var chartPos = chart.PointToClient(pos);
+
+      HitTestResult h = this.chart.HitTest(chartPos.X, chartPos.Y);
+      if (h.ChartElementType == ChartElementType.DataPoint) {
+        runToHide = (IRun)((DataPoint)h.Object).Tag;
+        hideRunToolStripMenuItem.Visible = true;
+      } else {
+        runToHide = null;
+        hideRunToolStripMenuItem.Visible = false;
+      }
+
+    }
+    private void hideRunToolStripMenuItem_Click(object sender, EventArgs e) {
+      var constraint = Content.Constraints.OfType<RunCollectionContentConstraint>().Where(c => c.Active).FirstOrDefault();
+      if (constraint == null) {
+        constraint = new RunCollectionContentConstraint();
+        Content.Constraints.Add(constraint);
+        constraint.Active = true;
+      }
+      constraint.ConstraintData.Add(runToHide);
+    }
+
     private void openBoxPlotViewToolStripMenuItem_Click(object sender, EventArgs e) {
       RunCollectionBoxPlotView boxplotView = new RunCollectionBoxPlotView();
       boxplotView.Content = this.Content;
@@ -661,6 +689,5 @@ namespace HeuristicLab.Optimization.Views {
       }
     }
     #endregion
-
   }
 }

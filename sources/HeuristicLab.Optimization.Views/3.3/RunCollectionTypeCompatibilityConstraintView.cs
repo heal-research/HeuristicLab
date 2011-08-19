@@ -24,7 +24,7 @@ using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Optimization.Views {
   [Content(typeof(RunCollectionTypeCompatibilityConstraint), true)]
-  public partial class RunCollectionTypeCompatibilityConstraintView : RunCollectionConstraintView {
+  public partial class RunCollectionTypeCompatibilityConstraintView : RunCollectionColumnConstraintView {
     public RunCollectionTypeCompatibilityConstraintView() {
       InitializeComponent();
       cmbType.DisplayMember = "Name";

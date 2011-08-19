@@ -29,7 +29,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Optimization {
   [StorableClass]
   [Item("RunCollectionTypeCompatibilityConstraint", "A constraint which checks the members of the contained runs for type compabitiliby to the constraint data.")]
-  public class RunCollectionTypeCompatibilityConstraint : TypeCompatibilityConstraint, IRunCollectionConstraint {
+  public class RunCollectionTypeCompatibilityConstraint : TypeCompatibilityConstraint, IRunCollectionColumnConstraint {
     [StorableConstructor]
     protected RunCollectionTypeCompatibilityConstraint(bool deserializing) {
     }

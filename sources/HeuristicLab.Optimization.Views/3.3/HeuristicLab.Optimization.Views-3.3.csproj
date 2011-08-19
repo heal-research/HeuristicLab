@@ -127,6 +127,12 @@
     <Compile Include="BatchRunView.Designer.cs">
       <DependentUpon>BatchRunView.cs</DependentUpon>
     </Compile>
+    <Compile Include="RunCollectionContentConstraintView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="RunCollectionContentConstraintView.Designer.cs">
+      <DependentUpon>RunCollectionContentConstraintView.cs</DependentUpon>
+    </Compile>
     <Compile Include="ExperimentTreeView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -175,11 +181,11 @@
     <Compile Include="RunCollectionConstraintCollectionView.Designer.cs">
       <DependentUpon>RunCollectionConstraintCollectionView.cs</DependentUpon>
     </Compile>
-    <Compile Include="RunCollectionConstraintView.cs">
+    <Compile Include="RunCollectionColumnConstraintView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="RunCollectionConstraintView.Designer.cs">
-      <DependentUpon>RunCollectionConstraintView.cs</DependentUpon>
+    <Compile Include="RunCollectionColumnConstraintView.Designer.cs">
+      <DependentUpon>RunCollectionColumnConstraintView.cs</DependentUpon>
     </Compile>
     <Compile Include="OptimizerListView.cs">
       <SubType>UserControl</SubType>

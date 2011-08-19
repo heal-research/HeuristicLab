@@ -143,6 +143,7 @@
     <Compile Include="RunCollectionModificationEvaluator.cs" />
     <Compile Include="RunCollectionConstraints\RunCollectionComparisonConstraint.cs" />
     <Compile Include="RunCollectionConstraints\RunCollectionConstraintCollection.cs" />
+    <Compile Include="RunCollectionConstraints\RunCollectionContentConstraint.cs" />
     <Compile Include="RunCollectionConstraints\RunCollectionTypeCompatiblityConstraint.cs" />
     <Compile Include="RunCollectionConstraints\RunCollectionEqualityConstraint.cs" />
     <Compile Include="Interfaces\IAnalyzer.cs" />
