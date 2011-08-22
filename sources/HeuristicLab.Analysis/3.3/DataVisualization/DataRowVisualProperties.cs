@@ -251,5 +251,23 @@ namespace HeuristicLab.Analysis {
       PropertyChangedEventHandler handler = PropertyChanged;
       if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
     }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (secondXAxis == default(bool)
+        && lineStyle == default(DataRowLineStyle)
+        && lineWidth == default(int) && bins == default(int) && exactBins == default(bool)
+        && displayName == default(string)) {
+        secondXAxis = false;
+        lineStyle = DataRowLineStyle.Solid;
+        lineWidth = 1;
+        bins = 10;
+        exactBins = false;
+        displayName = String.Empty;
+      }
+      #endregion
+    }
   }
 }

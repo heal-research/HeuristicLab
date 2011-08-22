@@ -79,8 +79,16 @@ namespace HeuristicLab.Analysis.Views {
           xAxisSecondaryRadioButton.Checked = Content.SecondXAxis;
           lineStyleComboBox.SelectedItem = Content.LineStyle;
           startIndexZeroCheckBox.Checked = Content.StartIndexZero;
-          lineWidthNumericUpDown.Value = Content.LineWidth;
-          binsNumericUpDown.Value = Content.Bins;
+          if (Content.LineWidth < lineWidthNumericUpDown.Minimum)
+            lineWidthNumericUpDown.Value = lineWidthNumericUpDown.Minimum;
+          else if (Content.LineWidth > lineWidthNumericUpDown.Maximum)
+            lineWidthNumericUpDown.Value = lineWidthNumericUpDown.Maximum;
+          else lineWidthNumericUpDown.Value = Content.LineWidth;
+          if (Content.Bins < binsNumericUpDown.Minimum)
+            binsNumericUpDown.Value = binsNumericUpDown.Minimum;
+          else if (Content.Bins > binsNumericUpDown.Maximum)
+            binsNumericUpDown.Value = binsNumericUpDown.Maximum;
+          else binsNumericUpDown.Value = Content.Bins;
           binsApproximatelyRadioButton.Checked = !Content.ExactBins;
           binsExactRadioButton.Checked = Content.ExactBins;
           displayNameTextBox.Text = Content.DisplayName;

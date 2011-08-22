@@ -490,5 +490,43 @@ namespace HeuristicLab.Analysis {
       PropertyChangedEventHandler handler = PropertyChanged;
       if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
     }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      // check if most of the properties that were added in Mai'11 were set to their default values, then we want to reset them to our default values
+      if (xAxisMinimumAuto == default(bool) && xAxisMaximumAuto == default(bool)
+        && yAxisMinimumAuto == default(bool) && yAxisMaximumAuto == default(bool)
+        && secondXAxisMinimumAuto == default(bool) && secondXAxisMaximumAuto == default(bool)
+        && secondYAxisMinimumAuto == default(bool) && secondYAxisMaximumAuto == default(bool)
+        && titleColor == default(Color) && axisTitleColor == default(Color)
+        && secondXAxisTitle == default(string)
+        && xAxisMinimumFixedValue == default(double) && xAxisMaximumFixedValue == default(double)
+        && yAxisMinimumFixedValue == default(double) && yAxisMaximumFixedValue == default(double)
+        && secondXAxisMinimumFixedValue == default(double) && secondXAxisMaximumFixedValue == default(double)
+        && secondYAxisMinimumFixedValue == default(double) && secondYAxisMaximumFixedValue == default(double)) {
+        titleColor = Color.Black;
+        axisTitleColor = Color.Black;
+        this.secondXAxisTitle = string.Empty;
+        this.xAxisMinimumAuto = true;
+        this.xAxisMinimumFixedValue = double.NaN;
+        this.xAxisMaximumAuto = true;
+        this.xAxisMaximumFixedValue = double.NaN;
+        this.secondXAxisMinimumAuto = true;
+        this.secondXAxisMinimumFixedValue = double.NaN;
+        this.secondXAxisMaximumAuto = true;
+        this.secondXAxisMaximumFixedValue = double.NaN;
+        this.yAxisMinimumAuto = true;
+        this.yAxisMinimumFixedValue = double.NaN;
+        this.yAxisMaximumAuto = true;
+        this.yAxisMaximumFixedValue = double.NaN;
+        this.secondYAxisMinimumAuto = true;
+        this.secondYAxisMinimumFixedValue = double.NaN;
+        this.secondYAxisMaximumAuto = true;
+        this.secondYAxisMaximumFixedValue = double.NaN;
+      #endregion
+      }
+    }
   }
 }

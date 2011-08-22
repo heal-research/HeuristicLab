@@ -257,10 +257,10 @@ namespace HeuristicLab.Analysis.Views {
       if (!Content.VisualProperties.YAxisMaximumAuto && !double.IsNaN(Content.VisualProperties.YAxisMaximumFixedValue)) area.AxisY.Maximum = Content.VisualProperties.YAxisMaximumFixedValue;
       if (!Content.VisualProperties.SecondYAxisMinimumAuto && !double.IsNaN(Content.VisualProperties.SecondYAxisMinimumFixedValue)) area.AxisY2.Minimum = Content.VisualProperties.SecondYAxisMinimumFixedValue;
       if (!Content.VisualProperties.SecondYAxisMaximumAuto && !double.IsNaN(Content.VisualProperties.SecondYAxisMaximumFixedValue)) area.AxisY2.Maximum = Content.VisualProperties.SecondYAxisMaximumFixedValue;
-      if (area.AxisX.Minimum > area.AxisX.Maximum) area.AxisX.Maximum = area.AxisX.Minimum + 1;
-      if (area.AxisX2.Minimum > area.AxisX2.Maximum) area.AxisX2.Maximum = area.AxisX2.Minimum + 1;
-      if (area.AxisY.Minimum > area.AxisY.Maximum) area.AxisY.Maximum = area.AxisY.Minimum + 1;
-      if (area.AxisY2.Minimum > area.AxisY2.Maximum) area.AxisY2.Maximum = area.AxisY2.Minimum + 1;
+      if (area.AxisX.Minimum >= area.AxisX.Maximum) area.AxisX.Maximum = area.AxisX.Minimum + 1;
+      if (area.AxisX2.Minimum >= area.AxisX2.Maximum) area.AxisX2.Maximum = area.AxisX2.Minimum + 1;
+      if (area.AxisY.Minimum >= area.AxisY.Maximum) area.AxisY.Maximum = area.AxisY.Minimum + 1;
+      if (area.AxisY2.Minimum >= area.AxisY2.Maximum) area.AxisY2.Maximum = area.AxisY2.Minimum + 1;
     }
 
     /// <summary>
