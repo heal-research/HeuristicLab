@@ -99,7 +99,7 @@ namespace HeuristicLab.Optimization {
 
       foreach (IRun run in ConstrainedValue.Where(r => r.Visible)) {
         IItem item = ConstrainedValue.GetValue(run, constraintColumn);
-        if (!base.Check(item.ToString()))
+        if (item != null && !base.Check(item.ToString()))
           run.Visible = false;
       }
       return true;
