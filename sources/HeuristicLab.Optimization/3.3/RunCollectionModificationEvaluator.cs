@@ -49,15 +49,34 @@ namespace HeuristicLab.Optimization {
 
     public void Evaluate() {
       RunCollection.UpdateOfRunsInProgress = true;
-      var runs = RunCollection.Where(r => r.Visible).ToList();
+      var runs = RunCollection.Select((r, i) => new {Run = r, r.Visible, Index = i}).ToList();
+      var visibleRuns = runs.Where(r => r.Visible).Select(r => r.Run).ToList();
+      int n = visibleRuns.Count;
+      if (n == 0)
+        return;
       foreach (var modifier in Modifiers.CheckedItems)
-        modifier.Value.Modify(runs);
-      RunCollection.UpdateOfRunsInProgress = false;
-      if (runs.Count > 0) { // force update
-        var run = (IRun) runs[0].Clone();
+        modifier.Value.Modify(visibleRuns);
+      if (n != visibleRuns.Count ||
+          runs.Where(r => r.Visible).Zip(visibleRuns, (r1, r2) => r1.Run != r2).Any()) {
+        var runIt = runs.GetEnumerator();
+        var visibleRunIt = visibleRuns.GetEnumerator();
+        var newRuns = new List<IRun>();
+        while (runIt.MoveNext()) {
+          if (!runIt.Current.Visible)
+            newRuns.Add(runIt.Current.Run);
+          else if (visibleRunIt.MoveNext())
+            newRuns.Add(visibleRunIt.Current);
+        }
+        while (visibleRunIt.MoveNext())
+          newRuns.Add(visibleRunIt.Current);
+        RunCollection.Clear();
+        RunCollection.AddRange(newRuns);
+      } else if (runs.Count > 0) { // force update
+        var run = (IRun) runs[0].Run.Clone();
         RunCollection.Add(run);
         RunCollection.Remove(run);
       }
+      RunCollection.UpdateOfRunsInProgress = false;
     }
   }
 }

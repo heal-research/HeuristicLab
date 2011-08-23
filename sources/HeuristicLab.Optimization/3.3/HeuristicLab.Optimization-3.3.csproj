@@ -110,6 +110,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RunCollectionSorter.cs" />
     <Compile Include="RunCollectionValueRemover.cs" />
     <Compile Include="IRunCollectionModifier.cs" />
     <None Include="HeuristicLabOptimizationPlugin.cs.frame" />
