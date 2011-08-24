@@ -62,15 +62,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.chart.Name = "chart";
       this.chart.Size = new System.Drawing.Size(358, 225);
       this.chart.TabIndex = 0;
+      this.chart.CustomizeLegend += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CustomizeLegendEventArgs>(this.chart_CustomizeLegend);
       this.chart.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Chart_MouseDoubleClick);
+      this.chart.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chart_MouseDown);
+      this.chart.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chart_MouseMove);
       // 
-      // LineChartView
+      // RegressionSolutionLineChartView
       // 
       this.AllowDrop = true;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.chart);
-      this.Name = "LineChartView";
+      this.Name = "RegressionSolutionLineChartView";
       this.Size = new System.Drawing.Size(358, 225);
       ((System.ComponentModel.ISupportInitialize)(this.chart)).EndInit();
       this.ResumeLayout(false);

@@ -218,5 +218,29 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       e.LegendItems[1].Cells[1].ForeColor = this.chart.Series[TRAINING_SERIES].Points.Count == 0 ? Color.Gray : Color.Black;
       e.LegendItems[2].Cells[1].ForeColor = this.chart.Series[TEST_SERIES].Points.Count == 0 ? Color.Gray : Color.Black;
     }
+
+    private void chart_PostPaint(object sender, ChartPaintEventArgs e) {
+      var chartArea = e.ChartElement as ChartArea;
+      if (chartArea != null) {
+        ChartGraphics chartGraphics = e.ChartGraphics;
+        using (Pen p = new Pen(Color.DarkGray)) {
+          double xmin = chartArea.AxisX.ScaleView.ViewMinimum;
+          double xmax = chartArea.AxisX.ScaleView.ViewMaximum;
+          double ymin = chartArea.AxisY.ScaleView.ViewMinimum;
+          double ymax = chartArea.AxisY.ScaleView.ViewMaximum;
+
+          if (xmin > ymax || ymin > xmax) return;
+
+          PointF start = PointF.Empty;
+          start.X = (float)chartGraphics.GetPositionFromAxis(chartArea.Name, chartArea.AxisX.AxisName, Math.Max(xmin, ymin));
+          start.Y = (float)chartGraphics.GetPositionFromAxis(chartArea.Name, chartArea.AxisY.AxisName, Math.Max(xmin, ymin));
+          PointF end = PointF.Empty;
+          end.X = (float)chartGraphics.GetPositionFromAxis(chartArea.Name, chartArea.AxisX.AxisName, Math.Min(xmax, ymax));
+          end.Y = (float)chartGraphics.GetPositionFromAxis(chartArea.Name, chartArea.AxisY.AxisName, Math.Min(xmax, ymax));
+
+          chartGraphics.Graphics.DrawLine(p, chartGraphics.GetAbsolutePoint(start), chartGraphics.GetAbsolutePoint(end));
+        }
+      }
+    }
   }
 }
