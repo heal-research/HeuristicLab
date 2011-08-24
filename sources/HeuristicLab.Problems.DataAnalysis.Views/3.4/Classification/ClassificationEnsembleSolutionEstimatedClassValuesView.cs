@@ -20,6 +20,7 @@
 #endregion
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Data;
@@ -32,8 +33,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
   public partial class ClassificationEnsembleSolutionEstimatedClassValuesView :
     ClassificationSolutionEstimatedClassValuesView {
     private const string RowColumnName = "Row";
-    private const string TargetClassValuesColumnName = "TargetVariable";
-    private const string EstimatedClassValuesColumnName = "EstimatedClassValues";
+    private const string TargetClassValuesColumnName = "Target Variable";
+    private const string EstimatedClassValuesColumnName = "Estimated Class Values";
+    private const string CorrectClassificationColumnName = "Correct Classification";
     private const string ConfidenceColumnName = "Confidence";
 
     private const string SamplesComboBoxAllSamples = "All Samples";
@@ -50,7 +52,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       InitializeComponent();
       SamplesComboBox.Items.AddRange(new string[] { SamplesComboBoxAllSamples, SamplesComboBoxTrainingSamples, SamplesComboBoxTestSamples });
       SamplesComboBox.SelectedIndex = 0;
+      matrixView.DataGridView.RowPrePaint += new DataGridViewRowPrePaintEventHandler(DataGridView_RowPrePaint);
     }
+
+
 
     private void SamplesComboBox_SelectedIndexChanged(object sender, EventArgs e) {
       UpdateEstimatedValues();
@@ -91,7 +96,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
       int classValuesCount = Content.ProblemData.ClassValues.Count;
       int modelCount = Content.Model.Models.Count();
-      string[,] values = new string[indizes.Length, 4 + classValuesCount + modelCount];
+      string[,] values = new string[indizes.Length, 5 + classValuesCount + modelCount];
       double[] target = Content.ProblemData.Dataset.GetVariableValues(Content.ProblemData.TargetVariable);
       List<List<double?>> estimatedValuesVector = GetEstimatedValues(SamplesComboBox.SelectedItem.ToString(), indizes,
                                                             Content.ClassificationSolutions);
@@ -101,16 +106,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         values[i, 0] = row.ToString();
         values[i, 1] = target[i].ToString();
         values[i, 2] = estimatedClassValues[i].ToString();
+        values[i, 3] = (target[i] == estimatedClassValues[i]).ToString();
         var groups = estimatedValuesVector[i].GroupBy(x => x).Select(g => new { Key = g.Key, Count = g.Count() }).ToList();
         var estimationCount = groups.Where(g => g.Key != null).Select(g => g.Count).Sum();
-        values[i, 3] = (((double)groups.Where(g => g.Key == estimatedClassValues[i]).Single().Count) / estimationCount).ToString();
+        values[i, 4] = (((double)groups.Where(g => g.Key == estimatedClassValues[i]).Single().Count) / estimationCount).ToString();
         for (int classIndex = 0; classIndex < Content.ProblemData.ClassValues.Count; classIndex++) {
           var group = groups.Where(g => g.Key == Content.ProblemData.ClassValues[classIndex]).SingleOrDefault();
-          if (group == null) values[i, 4 + classIndex] = 0.ToString();
-          else values[i, 4 + classIndex] = group.Count.ToString();
+          if (group == null) values[i, 5 + classIndex] = 0.ToString();
+          else values[i, 5 + classIndex] = group.Count.ToString();
         }
         for (int modelIndex = 0; modelIndex < estimatedValuesVector[i].Count; modelIndex++) {
-          values[i, 4 + classValuesCount + modelIndex] = estimatedValuesVector[i][modelIndex] == null
+          values[i, 5 + classValuesCount + modelIndex] = estimatedValuesVector[i][modelIndex] == null
                                                            ? string.Empty
                                                            : estimatedValuesVector[i][modelIndex].ToString();
         }
@@ -118,12 +124,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       }
 
       StringMatrix matrix = new StringMatrix(values);
-      List<string> columnNames = new List<string>() { "Id", TargetClassValuesColumnName, EstimatedClassValuesColumnName, ConfidenceColumnName };
+      List<string> columnNames = new List<string>() { "Id", TargetClassValuesColumnName, EstimatedClassValuesColumnName, CorrectClassificationColumnName, ConfidenceColumnName };
       columnNames.AddRange(Content.ProblemData.ClassNames);
       columnNames.AddRange(Content.Model.Models.Select(m => m.Name));
       matrix.ColumnNames = columnNames;
       matrix.SortableView = true;
       matrixView.Content = matrix;
+      UpdateColoringOfRows();
     }
 
     private List<List<double?>> GetEstimatedValues(string samplesSelection, int[] rows, IEnumerable<IClassificationSolution> solutions) {
@@ -149,7 +156,26 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       return values;
     }
 
+    private void DataGridView_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e) {
+      if (InvokeRequired) {
+        Invoke(new EventHandler<DataGridViewRowPrePaintEventArgs>(DataGridView_RowPrePaint), sender, e);
+        return;
+      }
+      bool correctClassified = bool.Parse(matrixView.DataGridView[3, e.RowIndex].Value.ToString());
+      matrixView.DataGridView.Rows[e.RowIndex].DefaultCellStyle.ForeColor = correctClassified ? Color.MediumSeaGreen : Color.Red;
+    }
 
-
+    private void UpdateColoringOfRows() {
+      if (InvokeRequired) {
+        Invoke((Action)UpdateColoringOfRows);
+        return;
+      }
+      //matrixView.DataGridView.SuspendRepaint();
+      //for (int i = 0; i < matrixView.DataGridView.Rows.Count; i++) {
+      //  bool correctClassified = bool.Parse(matrixView.Content.GetValue(i, 3));
+      //  matrixView.DataGridView.Rows[i].DefaultCellStyle.ForeColor = correctClassified ? Color.MediumSeaGreen : Color.Red;
+      //}
+      //matrixView.DataGridView.ResumeRepaint(true);
+    }
   }
 }

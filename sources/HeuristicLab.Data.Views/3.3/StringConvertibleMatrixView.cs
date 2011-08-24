@@ -43,6 +43,10 @@ namespace HeuristicLab.Data.Views {
       set { base.Content = value; }
     }
 
+    public DataGridView DataGridView {
+      get { return dataGridView; }
+    }
+
     public override bool ReadOnly {
       get {
         if ((Content != null) && Content.ReadOnly) return true;
