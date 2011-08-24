@@ -47,7 +47,7 @@ namespace HeuristicLab.Core {
     }
     protected Constraint() {
       this.Active = false;
-      if (AllowedConstraintOperations != null && AllowedConstraintOperations.Count() != 0)
+      if (AllowedConstraintOperations != null && AllowedConstraintOperations.Any())
         this.ConstraintOperation = AllowedConstraintOperations.ElementAt(0);
     }
     protected Constraint(IItem constrainedValue, ConstraintOperation constraintOperation, object constraintData)
