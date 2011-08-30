@@ -36,12 +36,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
     [StorableConstructor]
     protected SymbolicExpressionTreeTerminalNode(bool deserializing) : base(deserializing) { }
-    // don't call cloning constructor of base to prevent allocation of sub-trees list in base!
-    protected SymbolicExpressionTreeTerminalNode(SymbolicExpressionTreeTerminalNode original, Cloner cloner)
-      : base() {
-      // symbols are reused
-      this.Symbol = original.Symbol;
-    }
+    protected SymbolicExpressionTreeTerminalNode(SymbolicExpressionTreeTerminalNode original, Cloner cloner) : base(original, cloner) { }
     protected SymbolicExpressionTreeTerminalNode() : base() { }
 
     protected SymbolicExpressionTreeTerminalNode(ISymbol symbol)

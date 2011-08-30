@@ -54,11 +54,13 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     protected SymbolicExpressionTreeNode(SymbolicExpressionTreeNode original, Cloner cloner)
       : base() {
       symbol = original.symbol; // symbols are reused
-      subtrees = new List<ISymbolicExpressionTreeNode>(original.subtrees.Count);
-      foreach (var subtree in original.subtrees) {
-        var clonedSubtree = cloner.Clone(subtree);
-        subtrees.Add(clonedSubtree);
-        clonedSubtree.Parent = this;
+      if (original.subtrees != null) {
+        subtrees = new List<ISymbolicExpressionTreeNode>(original.subtrees.Count);
+        foreach (var subtree in original.subtrees) {
+          var clonedSubtree = cloner.Clone(subtree);
+          subtrees.Add(clonedSubtree);
+          clonedSubtree.Parent = this;
+        }
       }
     }
     public override IDeepCloneable Clone(Cloner cloner) {
