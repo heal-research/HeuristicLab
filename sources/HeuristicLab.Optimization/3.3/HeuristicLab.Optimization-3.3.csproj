@@ -110,6 +110,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RunCollectionDiscretizer.cs" />
     <Compile Include="RunCollectionGroupCreater.cs" />
     <Compile Include="RunCollectionSorter.cs" />
     <Compile Include="RunCollectionValueRemover.cs" />

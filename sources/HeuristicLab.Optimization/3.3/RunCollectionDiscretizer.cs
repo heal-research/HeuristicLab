@@ -9,9 +9,9 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization {
-  [Item("RunCollection Fuzzifier", "Creates several levels from the distribution of a certain result accross a run collection and assignes a fuzzified value.")]
+  [Item("RunCollection Discretizer", "Creates several levels from the distribution of a certain result accross a run collection and assignes a discretized value.")]
   [StorableClass]
-  public class RunCollectionFuzzifier : ParameterizedNamedItem, IRunCollectionModifier {
+  public class RunCollectionDiscretizer : ParameterizedNamedItem, IRunCollectionModifier {
 
     public override bool CanChangeName { get { return false; } }
     public override bool CanChangeDescription { get { return false; } }
@@ -42,12 +42,12 @@ namespace HeuristicLab.Optimization {
 
       #region Construction & Cloning
     [StorableConstructor]
-    protected RunCollectionFuzzifier(bool deserializing) : base(deserializing) { }
-    protected RunCollectionFuzzifier(RunCollectionFuzzifier original, Cloner cloner)
+    protected RunCollectionDiscretizer(bool deserializing) : base(deserializing) { }
+    protected RunCollectionDiscretizer(RunCollectionDiscretizer original, Cloner cloner)
       : base(original, cloner) {
       RegisterEvents();
     }
-    public RunCollectionFuzzifier() {
+    public RunCollectionDiscretizer() {
       Parameters.Add(new ValueParameter<StringValue>("Source", "Source value name to be fuzzified.", new StringValue("Value")));
       Parameters.Add(new ValueParameter<StringValue>("Target", "Target value name. The new, fuzzified variable to be created.", new StringValue("Calc.Value")));      
       Parameters.Add(new ValueParameter<DoubleValue>("Spread", "The number of standard deviations considered one additional level.", new DoubleValue(1)));
@@ -63,18 +63,9 @@ namespace HeuristicLab.Optimization {
       RegisterEvents();
       UpdateName();
     }
-
     public override IDeepCloneable Clone(Cloner cloner) {
-      var d = new RunCollectionDiscretizer();
-      cloner.RegisterClonedObject(this, d);
-      d.SourceParameter.Value = cloner.Clone(SourceParameter.Value);
-      d.TargetParameter.Value = cloner.Clone(TargetParameter.Value);
-      d.SpreadParameter.Value = cloner.Clone(SpreadParameter.Value);
-      d.GroupByParameter.Value = cloner.Clone(GroupByParameter.Value);
-      d.LevelsParameter.Value = cloner.Clone(LevelsParameter.Value);
-      return d;
+      return new RunCollectionDiscretizer(this, cloner);
     }
-
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       RegisterEvents();
@@ -92,7 +83,7 @@ namespace HeuristicLab.Optimization {
     }
 
     private void UpdateName() {
-      name = string.Format("{0} := Fuzzy({1}{2})",
+      name = string.Format("{0} := Discrete({1}{2})",
         Target,
         Source,
         string.IsNullOrWhiteSpace(GroupBy) ? "" : string.Format("/{0}", GroupBy));        
