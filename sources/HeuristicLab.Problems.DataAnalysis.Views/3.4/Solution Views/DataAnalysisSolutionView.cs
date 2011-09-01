@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.Optimization;
@@ -138,16 +139,27 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     #region drag and drop
     protected override void itemsListView_DragEnter(object sender, DragEventArgs e) {
       validDragOperation = false;
-      if (!ReadOnly && (e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) is DataAnalysisProblemData)) {
-        validDragOperation = true;
+      if (ReadOnly) return;
+
+      var dropData = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
+      if (dropData is DataAnalysisProblemData) validDragOperation = true;
+      else if (dropData is IValueParameter) {
+        var param = (IValueParameter)dropData;
+        if (param.Value is DataAnalysisProblemData) validDragOperation = true;
       }
     }
 
     protected override void itemsListView_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
-        if (e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) is DataAnalysisProblemData) {
-          DataAnalysisProblemData problemData = (DataAnalysisProblemData)e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
+        var dropData = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
+        if (dropData is DataAnalysisProblemData) {
+          DataAnalysisProblemData problemData = (DataAnalysisProblemData)dropData;
           Content.ProblemData = (DataAnalysisProblemData)problemData.Clone();
+        } else if (dropData is IValueParameter) {
+          var param = (IValueParameter)dropData;
+          DataAnalysisProblemData problemData = param.Value as DataAnalysisProblemData;
+          if (problemData != null)
+            Content.ProblemData = (DataAnalysisProblemData)problemData.Clone();
         }
       }
     }
