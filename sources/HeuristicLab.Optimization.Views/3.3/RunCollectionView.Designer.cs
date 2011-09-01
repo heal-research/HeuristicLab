@@ -296,10 +296,11 @@ namespace HeuristicLab.Optimization.Views {
             | System.Windows.Forms.AnchorStyles.Right)));
       this.runCollectionModifiersListView.Caption = "Modifier View";
       this.runCollectionModifiersListView.Content = null;
-      this.runCollectionModifiersListView.Location = new System.Drawing.Point(3, 6);
+      this.runCollectionModifiersListView.Evaluator = null;
+      this.runCollectionModifiersListView.Location = new System.Drawing.Point(3, 3);
       this.runCollectionModifiersListView.Name = "runCollectionModifiersListView";
       this.runCollectionModifiersListView.ReadOnly = false;
-      this.runCollectionModifiersListView.Size = new System.Drawing.Size(515, 345);
+      this.runCollectionModifiersListView.Size = new System.Drawing.Size(518, 351);
       this.runCollectionModifiersListView.TabIndex = 0;
       // 
       // RunCollectionView
