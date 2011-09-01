@@ -163,12 +163,6 @@
     <Compile Include="RunCollectionBoxPlotView.Designer.cs">
       <DependentUpon>RunCollectionBoxPlotView.cs</DependentUpon>
     </Compile>
-    <Compile Include="RunCollectionModificationEvaluatorView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="RunCollectionModificationEvaluatorView.Designer.cs">
-      <DependentUpon>RunCollectionModificationEvaluatorView.cs</DependentUpon>
-    </Compile>
     <Compile Include="RunCollectionComparisonConstraintView.cs">
       <SubType>UserControl</SubType>
     </Compile>

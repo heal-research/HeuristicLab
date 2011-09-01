@@ -142,7 +142,6 @@
     <Compile Include="Interfaces\ISingleObjectiveHeuristicOptimizationProblem.cs" />
     <Compile Include="Problems\Problem.cs" />
     <Compile Include="RunCollectionFormulaModifer.cs" />
-    <Compile Include="RunCollectionModificationEvaluator.cs" />
     <Compile Include="RunCollectionConstraints\RunCollectionComparisonConstraint.cs" />
     <Compile Include="RunCollectionConstraints\RunCollectionConstraintCollection.cs" />
     <Compile Include="RunCollectionConstraints\RunCollectionContentConstraint.cs" />
