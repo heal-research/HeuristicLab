@@ -57,6 +57,7 @@ namespace HeuristicLab.Optimization.Views {
       InitializeComponent();
       itemsGroupBox.Text = "Runs";
       itemListViewItemMapping = new Dictionary<IRun, List<ListViewItem>>();
+      runCollectionModifiersListView.Evaluator = EvaluateModifications;
     }
 
     protected override void DeregisterContentEvents() {
@@ -97,10 +98,6 @@ namespace HeuristicLab.Optimization.Views {
           analyzeRunsToolStripDropDownButton.DropDownItems.Add(menuItem);
         }
       }
-      var modifierMenuItem = new ToolStripMenuItem();
-      modifierMenuItem.Text = "Modify RunCollection";
-      modifierMenuItem.Click += ModifierMenuItem_OnClick;
-      analyzeRunsToolStripDropDownButton.DropDownItems.Add(modifierMenuItem);
     }
 
     protected override void OnContentChanged() {
@@ -121,6 +118,9 @@ namespace HeuristicLab.Optimization.Views {
             tabControl.TabPages.Add(constraintPage);
           runCollectionConstraintCollectionView.Content = RunCollection.Constraints;
           runCollectionConstraintCollectionView.ReadOnly = itemsListView.Items.Count == 0;
+          if (!tabControl.TabPages.Contains(modifiersPage))
+            tabControl.TabPages.Add(modifiersPage);
+          runCollectionModifiersListView.Content = RunCollection.Modifiers;
         }
         foreach (IRun item in Content) {
           ListViewItem listViewItem = CreateListViewItem(item);
@@ -133,6 +133,8 @@ namespace HeuristicLab.Optimization.Views {
         runCollectionConstraintCollectionView.Content = null;
         if (tabControl.TabPages.Contains(constraintPage))
           tabControl.TabPages.Remove(constraintPage);
+        if (tabControl.TabPages.Contains(modifiersPage))
+          tabControl.TabPages.Remove(modifiersPage);
       }
     }
 
@@ -339,11 +341,6 @@ namespace HeuristicLab.Optimization.Views {
         view.ReadOnly = ReadOnly;
       }
     }
-    private void ModifierMenuItem_OnClick(object sender, EventArgs args) {
-      var modifier = new RunCollectionModificationEvaluator();
-      modifier.RunCollection.AddRange(Content.Select(r => (IRun)r.Clone()));
-      MainFormManager.MainForm.ShowContent(modifier);
-    }
     private void removeButton_Click(object sender, EventArgs e) {
       if (itemsListView.SelectedItems.Count > 0) {
         foreach (ListViewItem item in itemsListView.SelectedItems)
@@ -356,7 +353,7 @@ namespace HeuristicLab.Optimization.Views {
     }
     #endregion
 
-    #region CheckBox Events
+    #region Control Events
     private void showDetailsCheckBox_CheckedChanged(object sender, EventArgs e) {
       if (showDetailsCheckBox.Checked) {
         splitContainer.Panel2Collapsed = false;
@@ -365,6 +362,16 @@ namespace HeuristicLab.Optimization.Views {
       } else {
         splitContainer.Panel2Collapsed = true;
         viewHost.Content = null;
+      }
+    }
+    private void EvaluateModifications() {
+      if (RunCollection == null)
+        return;
+      ReadOnly = true;
+      try {
+        RunCollection.Modify();
+      } finally {
+        ReadOnly = false;
       }
     }
     #endregion

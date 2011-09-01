@@ -50,6 +50,7 @@ namespace HeuristicLab.Optimization {
         dataTypes[s] = new HashSet<Type>(original.dataTypes[s]);
 
       constraints = new RunCollectionConstraintCollection(original.constraints.Select(x => cloner.Clone(x)));
+      modifiers = new CheckedItemList<IRunCollectionModifier>(original.modifiers.Select(cloner.Clone));
       foreach (IRunCollectionConstraint constraint in constraints)
         constraint.ConstrainedValue = this;
       RegisterConstraintsEvents();
@@ -66,6 +67,7 @@ namespace HeuristicLab.Optimization {
       resultNames = new List<string>();
       dataTypes = new Dictionary<string, HashSet<Type>>();
       constraints = new RunCollectionConstraintCollection();
+      modifiers = new CheckedItemList<IRunCollectionModifier>();
       RegisterConstraintsEvents();
     }
 
@@ -83,6 +85,13 @@ namespace HeuristicLab.Optimization {
       get { return constraints; }
     }
 
+    [Storable]
+    private CheckedItemList<IRunCollectionModifier> modifiers;
+    public CheckedItemList<IRunCollectionModifier> Modifiers {
+      get { return modifiers; }
+    }
+
+
     private bool updateOfRunsInProgress;
     public bool UpdateOfRunsInProgress {
       get { return updateOfRunsInProgress; }
@@ -97,6 +106,7 @@ namespace HeuristicLab.Optimization {
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       if (constraints == null) constraints = new RunCollectionConstraintCollection();
+      if (modifiers == null) modifiers = new CheckedItemList<IRunCollectionModifier>();
       RegisterConstraintsEvents();
       RegisterConstraintEvents(constraints);
       UpdateFiltering(true);
@@ -390,6 +400,45 @@ namespace HeuristicLab.Optimization {
       IRunCollectionConstraint constraint = (IRunCollectionConstraint)sender;
       if (constraint.Active)
         this.UpdateFiltering(true);
+    }
+    #endregion
+
+    #region Modification
+    public void Modify() {
+      UpdateOfRunsInProgress = true;
+      var runs = this.ToList();
+      var selectedRuns = runs.Where(r => r.Visible).ToList();
+      int nSelected = selectedRuns.Count;
+      if (nSelected > 0) {
+        foreach (var modifier in Modifiers.CheckedItems)
+          modifier.Value.Modify(selectedRuns);
+        if (nSelected != selectedRuns.Count || HaveDifferentOrder(selectedRuns, runs.Where(r => r.Visible))) {
+          Clear();
+          AddRange(ReplaceVisibleRuns(runs, selectedRuns));
+        } else if (runs.Count > 0) {
+          OnCollectionReset(this, runs);
+        }
+      }
+      UpdateOfRunsInProgress = false;
+    }
+
+    private static IEnumerable<IRun> ReplaceVisibleRuns(IEnumerable<IRun> runs, IEnumerable<IRun> visibleRuns) {
+      var newRuns = new List<IRun>();
+      var runIt = runs.GetEnumerator();
+      var visibleRunIt = visibleRuns.GetEnumerator();
+      while (runIt.MoveNext()) {
+        if (runIt.Current != null && !runIt.Current.Visible)
+          newRuns.Add(runIt.Current);
+        else if (visibleRunIt.MoveNext())
+          newRuns.Add(visibleRunIt.Current);
+      }
+      while (visibleRunIt.MoveNext())
+        newRuns.Add(visibleRunIt.Current);
+      return newRuns;
+    }
+
+    private static bool HaveDifferentOrder(IEnumerable<IRun> l1, IEnumerable<IRun> l2) {
+      return l1.Zip(l2, (r1, r2) => r1 != r2).Any();
     }
     #endregion
   }

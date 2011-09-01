@@ -47,9 +47,20 @@ namespace HeuristicLab.Optimization {
     }
     #endregion
 
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (RunCollection != null && RunCollection.Modifiers != null) {
+        RunCollection.Modifiers.AddRange(Modifiers);
+        foreach (var modifier in RunCollection.Modifiers) {
+          RunCollection.Modifiers.SetItemCheckedState(modifier, Modifiers.ItemChecked(modifier));
+        }
+        Modifiers.Clear();
+      }
+    }
+
     public void Evaluate() {
       RunCollection.UpdateOfRunsInProgress = true;
-      var runs = RunCollection.Select((r, i) => new {Run = r, r.Visible, Index = i}).ToList();
+      var runs = RunCollection.Select((r, i) => new { Run = r, r.Visible, Index = i }).ToList();
       var visibleRuns = runs.Where(r => r.Visible).Select(r => r.Run).ToList();
       int n = visibleRuns.Count;
       if (n == 0)
@@ -72,7 +83,7 @@ namespace HeuristicLab.Optimization {
         RunCollection.Clear();
         RunCollection.AddRange(newRuns);
       } else if (runs.Count > 0) { // force update
-        var run = (IRun) runs[0].Run.Clone();
+        var run = (IRun)runs[0].Run.Clone();
         RunCollection.Add(run);
         RunCollection.Remove(run);
       }

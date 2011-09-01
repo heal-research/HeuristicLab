@@ -64,6 +64,8 @@ namespace HeuristicLab.Optimization.Views {
       this.runPage = new System.Windows.Forms.TabPage();
       this.constraintPage = new System.Windows.Forms.TabPage();
       this.runCollectionConstraintCollectionView = new HeuristicLab.Optimization.Views.RunCollectionConstraintCollectionView();
+      this.modifiersPage = new System.Windows.Forms.TabPage();
+      this.runCollectionModifiersListView = new HeuristicLab.Optimization.Views.RunCollectionModifiersListView();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
       this.splitContainer.SuspendLayout();
@@ -73,6 +75,7 @@ namespace HeuristicLab.Optimization.Views {
       this.tabControl.SuspendLayout();
       this.runPage.SuspendLayout();
       this.constraintPage.SuspendLayout();
+      this.modifiersPage.SuspendLayout();
       this.SuspendLayout();
       // 
       // splitContainer
@@ -234,6 +237,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       this.tabControl.Controls.Add(this.runPage);
       this.tabControl.Controls.Add(this.constraintPage);
+      this.tabControl.Controls.Add(this.modifiersPage);
       this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
       this.tabControl.Location = new System.Drawing.Point(0, 0);
       this.tabControl.Name = "tabControl";
@@ -274,6 +278,30 @@ namespace HeuristicLab.Optimization.Views {
       this.runCollectionConstraintCollectionView.Size = new System.Drawing.Size(518, 351);
       this.runCollectionConstraintCollectionView.TabIndex = 0;
       // 
+      // modifiersPage
+      // 
+      this.modifiersPage.Controls.Add(this.runCollectionModifiersListView);
+      this.modifiersPage.Location = new System.Drawing.Point(4, 22);
+      this.modifiersPage.Name = "modifiersPage";
+      this.modifiersPage.Padding = new System.Windows.Forms.Padding(3);
+      this.modifiersPage.Size = new System.Drawing.Size(524, 357);
+      this.modifiersPage.TabIndex = 2;
+      this.modifiersPage.Text = "Modification";
+      this.modifiersPage.UseVisualStyleBackColor = true;
+      // 
+      // runCollectionModifiersListView
+      // 
+      this.runCollectionModifiersListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.runCollectionModifiersListView.Caption = "Modifier View";
+      this.runCollectionModifiersListView.Content = null;
+      this.runCollectionModifiersListView.Location = new System.Drawing.Point(3, 6);
+      this.runCollectionModifiersListView.Name = "runCollectionModifiersListView";
+      this.runCollectionModifiersListView.ReadOnly = false;
+      this.runCollectionModifiersListView.Size = new System.Drawing.Size(515, 345);
+      this.runCollectionModifiersListView.TabIndex = 0;
+      // 
       // RunCollectionView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -290,6 +318,7 @@ namespace HeuristicLab.Optimization.Views {
       this.tabControl.ResumeLayout(false);
       this.runPage.ResumeLayout(false);
       this.constraintPage.ResumeLayout(false);
+      this.modifiersPage.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }
@@ -313,5 +342,7 @@ namespace HeuristicLab.Optimization.Views {
     private RunCollectionConstraintCollectionView runCollectionConstraintCollectionView;
     private Button clearButton;
     private CheckBox showDetailsCheckBox;
+    private TabPage modifiersPage;
+    private RunCollectionModifiersListView runCollectionModifiersListView;
   }
 }
