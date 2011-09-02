@@ -45,8 +45,7 @@ namespace HeuristicLab.Core {
         locker.EnterReadLock();
         try {
           return log.Messages.ToArray(); // return copy of messages
-        }
-        finally { locker.ExitReadLock(); }
+        } finally { locker.ExitReadLock(); }
       }
     }
 
@@ -71,8 +70,7 @@ namespace HeuristicLab.Core {
       original.locker.EnterReadLock();
       try {
         log = cloner.Clone(original.log);
-      }
-      finally { locker.ExitReadLock(); }
+      } finally { original.locker.ExitReadLock(); }
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ThreadSafeLog(this, cloner);
@@ -82,24 +80,21 @@ namespace HeuristicLab.Core {
       locker.EnterWriteLock();
       try {
         log.Clear();
-      }
-      finally { locker.ExitWriteLock(); }
+      } finally { locker.ExitWriteLock(); }
     }
 
     public virtual void LogMessage(string message) {
       locker.EnterWriteLock();
       try {
         log.LogMessage(message);
-      }
-      finally { locker.ExitWriteLock(); }
+      } finally { locker.ExitWriteLock(); }
     }
 
     public virtual void LogException(Exception ex) {
       locker.EnterWriteLock();
       try {
         log.LogException(ex);
-      }
-      finally { locker.ExitWriteLock(); }
+      } finally { locker.ExitWriteLock(); }
     }
 
     #region Log Events
