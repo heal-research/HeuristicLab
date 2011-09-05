@@ -34,6 +34,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
   [View("Variable Impacts")]
   public sealed partial class RunCollectionVariableImpactView : AsynchronousContentView {
     private const string variableImpactResultName = "Variable impacts";
+    private const string crossValidationFoldsResultName = "CrossValidation Folds";
+    private const string numberOfFoldsParameterName = "Folds";
     public RunCollectionVariableImpactView() {
       InitializeComponent();
     }
@@ -94,82 +96,138 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.UpdateData();
     }
 
-    private void UpdateData() {
-      matrixView.Content = CalculateVariableImpactMatrix();
+    private void comboBox_SelectedValueChanged(object sender, EventArgs e) {
+      if (comboBox.SelectedItem != null) {
+        var cvRuns = from r in Content
+                     where r.Visible
+                     where r.Parameters.ContainsKey(numberOfFoldsParameterName)
+                     select r;
+        var selectedFolds = from r in cvRuns
+                            let foldCollection = (RunCollection)r.Results[crossValidationFoldsResultName]
+                            select (IRun)foldCollection.ElementAt((int)comboBox.SelectedItem).Clone();
+        matrixView.Content = CalculateVariableImpactMatrix(selectedFolds.ToArray(), cvRuns.Select(r => r.Name).ToArray());
+      }
     }
 
-    private DoubleMatrix CalculateVariableImpactMatrix() {
-      DoubleMatrix matrix = null;
+
+    private void UpdateData() {
       if (Content != null) {
-        List<IRun> runsWithVariables = Content.Where(r => r.Visible && r.Results.ContainsKey(variableImpactResultName)).ToList();
-        IEnumerable<DoubleMatrix> allVariableImpacts = (from run in runsWithVariables
-                                                        select run.Results[variableImpactResultName]).Cast<DoubleMatrix>();
-        IEnumerable<string> variableNames = (from variableImpact in allVariableImpacts
-                                             from variableName in variableImpact.RowNames
-                                             select variableName)
-                                            .Distinct();
-        // filter variableNames: only include names that have at least one non-zero value in a run
-        List<string> variableNamesList = (from variableName in variableNames
-                                          where GetVariableImpacts(variableName, allVariableImpacts).Any(x => !x.IsAlmost(0.0))
-                                          select variableName)
-                                         .ToList();
-
-        List<string> statictics = new List<string> { "Median Rank", "Mean", "StdDev", "pValue" };
-        List<string> columnNames = runsWithVariables.Select(r => r.Name).ToList();
-        columnNames.AddRange(statictics);
-        int runs = runsWithVariables.Count();
-
-        matrix = new DoubleMatrix(variableNamesList.Count, runs + statictics.Count);
-        matrix.SortableView = true;
-        matrix.RowNames = variableNamesList;
-        matrix.ColumnNames = columnNames;
-
-        for (int i = 0; i < runsWithVariables.Count; i++) {
-          IRun run = runsWithVariables[i];
-          DoubleMatrix runVariableImpacts = (DoubleMatrix)run.Results[variableImpactResultName];
-          for (int j = 0; j < runVariableImpacts.Rows; j++) {
-            int rowIndex = variableNamesList.FindIndex(s => s == runVariableImpacts.RowNames.ElementAt(j));
-            if (rowIndex > -1) {
-              matrix[rowIndex, i] = runVariableImpacts[j, 0];
+        comboBox.Items.Clear();
+        comboBox.Enabled = false;
+        var visibleRuns = Content.Where(r => r.Visible).ToArray();
+        var representativeCvRun =
+          visibleRuns.Where(r => r.Parameters.ContainsKey(numberOfFoldsParameterName)).FirstOrDefault();
+        if (representativeCvRun != null) {
+          // make sure all runs have the same number of folds
+          int nFolds = ((IntValue)representativeCvRun.Parameters[numberOfFoldsParameterName]).Value;
+          var cvRuns = visibleRuns.Where(r => r.Parameters.ContainsKey(numberOfFoldsParameterName));
+          if (cvRuns.All(r => ((IntValue)r.Parameters[numberOfFoldsParameterName]).Value == nFolds)) {
+            // populate combobox
+            for (int foldIndex = 0; foldIndex < nFolds; foldIndex++) {
+              comboBox.Items.Add(foldIndex);
             }
+            comboBox.Enabled = true;
+            var selectedFolds = from r in cvRuns
+                                let foldCollection = (RunCollection)r.Results[crossValidationFoldsResultName]
+                                select foldCollection.First();
+            matrixView.Content = CalculateVariableImpactMatrix(selectedFolds.ToArray(), cvRuns.Select(f => f.Name).ToArray());
+          } else {
+            matrixView.Content = null;
           }
+        } else {
+          var runsWithVariables = visibleRuns.Where(r => r.Results.ContainsKey(variableImpactResultName)).ToArray();
+          matrixView.Content = CalculateVariableImpactMatrix(runsWithVariables);
         }
+      }
+    }
 
-        List<List<double>> variableImpactsOverRuns = (from variableName in variableNamesList
-                                                      select GetVariableImpacts(variableName, allVariableImpacts).ToList())
-                                                     .ToList();
-        List<List<double>> variableRanks = (from variableName in variableNamesList
-                                            select GetVariableImpactRanks(variableName, allVariableImpacts).ToList())
-                                        .ToList();
-        if (variableImpactsOverRuns.Count() > 0) {
-          // the variable with the worst median impact value is chosen as the reference variable
-          // this is problematic if all variables are relevant, however works often in practice
-          List<double> referenceImpacts = (from impacts in variableImpactsOverRuns
-                                           let avg = impacts.Median()
-                                           orderby avg
-                                           select impacts)
-                                           .First();
-          // for all variables
-          for (int row = 0; row < variableImpactsOverRuns.Count; row++) {
-            // median rank
-            matrix[row, runs] = variableRanks[row].Median();
-            // also show mean and std.dev. of relative variable impacts to indicate the relative difference in impacts of variables
-            matrix[row, runs + 1] = variableImpactsOverRuns[row].Average();
-            matrix[row, runs + 2] = variableImpactsOverRuns[row].StandardDeviation();
+    private IStringConvertibleMatrix CalculateVariableImpactMatrix(IRun[] runs) {
+      return CalculateVariableImpactMatrix(runs, runs.Select(r => r.Name).ToArray());
+    }
 
-            double leftTail = 0; double rightTail = 0; double bothTails = 0;
-            // calc differences of impacts for current variable and reference variable
-            double[] z = new double[referenceImpacts.Count];
-            for (int i = 0; i < z.Length; i++) {
-              z[i] = variableImpactsOverRuns[row][i] - referenceImpacts[i];
-            }
-            // wilcoxon signed rank test is used because the impact values of two variables in a single run are not independent
-            alglib.wsr.wilcoxonsignedranktest(z, z.Length, 0, ref bothTails, ref leftTail, ref rightTail);
-            matrix[row, runs + 3] = bothTails;
+    private DoubleMatrix CalculateVariableImpactMatrix(IRun[] runs, string[] runNames) {
+      DoubleMatrix matrix = null;
+      IEnumerable<DoubleMatrix> allVariableImpacts = (from run in runs
+                                                      select run.Results[variableImpactResultName]).Cast<DoubleMatrix>();
+      IEnumerable<string> variableNames = (from variableImpact in allVariableImpacts
+                                           from variableName in variableImpact.RowNames
+                                           select variableName)
+                                          .Distinct();
+      // filter variableNames: only include names that have at least one non-zero value in a run
+      List<string> variableNamesList = (from variableName in variableNames
+                                        where GetVariableImpacts(variableName, allVariableImpacts).Any(x => !x.IsAlmost(0.0))
+                                        select variableName)
+                                       .ToList();
+
+      List<string> statictics = new List<string> { "Median Rank", "Mean", "StdDev", "pValue" };
+      List<string> columnNames = new List<string>(runNames);
+      columnNames.AddRange(statictics);
+      int numberOfRuns = runs.Length;
+
+      matrix = new DoubleMatrix(variableNamesList.Count, numberOfRuns + statictics.Count);
+      matrix.SortableView = true;
+      matrix.RowNames = variableNamesList;
+      matrix.ColumnNames = columnNames;
+
+      // calculate statistics
+      List<List<double>> variableImpactsOverRuns = (from variableName in variableNamesList
+                                                    select GetVariableImpacts(variableName, allVariableImpacts).ToList())
+                                             .ToList();
+      List<List<double>> variableRanks = (from variableName in variableNamesList
+                                          select GetVariableImpactRanks(variableName, allVariableImpacts).ToList())
+                                      .ToList();
+      if (variableImpactsOverRuns.Count() > 0) {
+        // the variable with the worst median impact value is chosen as the reference variable
+        // this is problematic if all variables are relevant, however works often in practice
+        List<double> referenceImpacts = (from impacts in variableImpactsOverRuns
+                                         let avg = impacts.Median()
+                                         orderby avg
+                                         select impacts)
+                                         .First();
+        // for all variables
+        for (int row = 0; row < variableImpactsOverRuns.Count; row++) {
+          // median rank
+          matrix[row, numberOfRuns] = variableRanks[row].Median();
+          // also show mean and std.dev. of relative variable impacts to indicate the relative difference in impacts of variables
+          matrix[row, numberOfRuns + 1] = Math.Round(variableImpactsOverRuns[row].Average(), 3);
+          matrix[row, numberOfRuns + 2] = Math.Round(variableImpactsOverRuns[row].StandardDeviation(), 3);
+
+          double leftTail = 0; double rightTail = 0; double bothTails = 0;
+          // calc differences of impacts for current variable and reference variable
+          double[] z = new double[referenceImpacts.Count];
+          for (int i = 0; i < z.Length; i++) {
+            z[i] = variableImpactsOverRuns[row][i] - referenceImpacts[i];
+          }
+          // wilcoxon signed rank test is used because the impact values of two variables in a single run are not independent
+          alglib.wsr.wilcoxonsignedranktest(z, z.Length, 0, ref bothTails, ref leftTail, ref rightTail);
+          matrix[row, numberOfRuns + 3] = Math.Round(bothTails, 4);
+        }
+      }
+
+      // fill matrix with impacts from runs
+      for (int i = 0; i < runs.Length; i++) {
+        IRun run = runs[i];
+        DoubleMatrix runVariableImpacts = (DoubleMatrix)run.Results[variableImpactResultName];
+        for (int j = 0; j < runVariableImpacts.Rows; j++) {
+          int rowIndex = variableNamesList.FindIndex(s => s == runVariableImpacts.RowNames.ElementAt(j));
+          if (rowIndex > -1) {
+            matrix[rowIndex, i] = Math.Round(runVariableImpacts[j, 0], 3);
           }
         }
       }
-      return matrix;
+      // sort by median
+      var sortedMatrix = (DoubleMatrix)matrix.Clone();
+      var sortedIndexes = from i in Enumerable.Range(0, sortedMatrix.Rows)
+                          orderby matrix[i, numberOfRuns]
+                          select i;
+
+      int targetIndex = 0;
+      foreach (var sourceIndex in sortedIndexes) {
+        for (int c = 0; c < matrix.Columns; c++)
+          sortedMatrix[targetIndex, c] = matrix[sourceIndex, c];
+        targetIndex++;
+      }
+      return sortedMatrix;
     }
 
     private IEnumerable<double> GetVariableImpactRanks(string variableName, IEnumerable<DoubleMatrix> allVariableImpacts) {
@@ -212,5 +270,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         }
       }
     }
+
   }
 }

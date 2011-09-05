@@ -45,6 +45,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     /// </summary>
     private void InitializeComponent() {
       this.matrixView = new HeuristicLab.Data.Views.StringConvertibleMatrixView();
+      this.comboBox = new System.Windows.Forms.ComboBox();
+      this.label1 = new System.Windows.Forms.Label();
+      this.variableImpactsGroupBox = new System.Windows.Forms.GroupBox();
+      this.variableImpactsGroupBox.SuspendLayout();
       this.SuspendLayout();
       // 
       // matrixView
@@ -54,25 +58,65 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.matrixView.Caption = "StringConvertibleMatrix View";
       this.matrixView.Content = null;
-      this.matrixView.Location = new System.Drawing.Point(3, 3);
+      this.matrixView.Location = new System.Drawing.Point(6, 19);
       this.matrixView.Name = "matrixView";
       this.matrixView.ReadOnly = true;
-      this.matrixView.Size = new System.Drawing.Size(303, 229);
+      this.matrixView.ShowRowsAndColumnsTextBox = true;
+      this.matrixView.ShowStatisticalInformation = true;
+      this.matrixView.Size = new System.Drawing.Size(294, 174);
       this.matrixView.TabIndex = 0;
+      // 
+      // comboBox
+      // 
+      this.comboBox.FormattingEnabled = true;
+      this.comboBox.Location = new System.Drawing.Point(39, 6);
+      this.comboBox.Name = "comboBox";
+      this.comboBox.Size = new System.Drawing.Size(68, 21);
+      this.comboBox.TabIndex = 1;
+      this.comboBox.SelectedValueChanged += new System.EventHandler(this.comboBox_SelectedValueChanged);
+      // 
+      // label1
+      // 
+      this.label1.AutoSize = true;
+      this.label1.Location = new System.Drawing.Point(3, 9);
+      this.label1.Name = "label1";
+      this.label1.Size = new System.Drawing.Size(30, 13);
+      this.label1.TabIndex = 2;
+      this.label1.Text = "Fold:";
+      // 
+      // variableImpactsGroupBox
+      // 
+      this.variableImpactsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.variableImpactsGroupBox.Controls.Add(this.matrixView);
+      this.variableImpactsGroupBox.Location = new System.Drawing.Point(0, 33);
+      this.variableImpactsGroupBox.Name = "variableImpactsGroupBox";
+      this.variableImpactsGroupBox.Size = new System.Drawing.Size(306, 199);
+      this.variableImpactsGroupBox.TabIndex = 3;
+      this.variableImpactsGroupBox.TabStop = false;
+      this.variableImpactsGroupBox.Text = "Variable impacts:";
       // 
       // RunCollectionVariableImpactView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.matrixView);
+      this.Controls.Add(this.variableImpactsGroupBox);
+      this.Controls.Add(this.label1);
+      this.Controls.Add(this.comboBox);
       this.Name = "RunCollectionVariableImpactView";
       this.Size = new System.Drawing.Size(309, 235);
+      this.variableImpactsGroupBox.ResumeLayout(false);
       this.ResumeLayout(false);
+      this.PerformLayout();
 
     }
 
     #endregion
 
     private HeuristicLab.Data.Views.StringConvertibleMatrixView matrixView;
+    private System.Windows.Forms.ComboBox comboBox;
+    private System.Windows.Forms.Label label1;
+    private System.Windows.Forms.GroupBox variableImpactsGroupBox;
   }
 }

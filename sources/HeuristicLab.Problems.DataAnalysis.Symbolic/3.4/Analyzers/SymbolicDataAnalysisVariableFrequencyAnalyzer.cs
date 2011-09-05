@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
@@ -103,7 +104,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           row.VisualProperties.StartIndexZero = true;
           datatable.Rows.Add(row);
         }
-        datatable.Rows[pair.Key].Values.Add(pair.Value);
+        datatable.Rows[pair.Key].Values.Add(Math.Round(pair.Value, 3));
       }
 
       // add a zero for each data row that was not modified in the previous loop 
