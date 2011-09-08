@@ -154,18 +154,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
         throw new NotSupportedException("Neural network regression does not support NaN or infinity values in the input dataset.");
 
-      double targetMin = problemData.Dataset.GetEnumeratedVariableValues(targetVariable).Min();
-      targetMin = targetMin - targetMin * 0.1; // -10%
-      double targetMax = problemData.Dataset.GetEnumeratedVariableValues(targetVariable).Max();
-      targetMax = targetMax + targetMax * 0.1; // + 10%
-
       alglib.multilayerperceptron multiLayerPerceptron = null;
       if (nLayers == 0) {
-        alglib.mlpcreater0(allowedInputVariables.Count(), 1, targetMin, targetMax, out multiLayerPerceptron);
+        alglib.mlpcreate0(allowedInputVariables.Count(), 1, out multiLayerPerceptron);
       } else if (nLayers == 1) {
-        alglib.mlpcreater1(allowedInputVariables.Count(), nHiddenNodes1, 1, targetMin, targetMax, out multiLayerPerceptron);
+        alglib.mlpcreate1(allowedInputVariables.Count(), nHiddenNodes1, 1, out multiLayerPerceptron);
       } else if (nLayers == 2) {
-        alglib.mlpcreater2(allowedInputVariables.Count(), nHiddenNodes1, nHiddenNodes2, 1, targetMin, targetMax, out multiLayerPerceptron);
+        alglib.mlpcreate2(allowedInputVariables.Count(), nHiddenNodes1, nHiddenNodes2, 1, out multiLayerPerceptron);
       } else throw new ArgumentException("Number of layers must be zero, one, or two.", "nLayers");
       alglib.mlpreport rep;
       int nRows = inputMatrix.GetLength(0);
@@ -176,7 +171,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (info != 2) throw new ArgumentException("Error in calculation of neural network regression solution");
 
       rmsError = alglib.mlprmserror(multiLayerPerceptron, inputMatrix, nRows);
-      avgRelError = alglib.mlpavgrelerror(multiLayerPerceptron, inputMatrix, nRows);      
+      avgRelError = alglib.mlpavgrelerror(multiLayerPerceptron, inputMatrix, nRows);
 
       return new NeuralNetworkRegressionSolution((IRegressionProblemData)problemData.Clone(), new NeuralNetworkModel(multiLayerPerceptron, targetVariable, allowedInputVariables));
     }
