@@ -112,10 +112,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private NeuralNetworkClassification(bool deserializing) : base(deserializing) { }
     private NeuralNetworkClassification(NeuralNetworkClassification original, Cloner cloner)
       : base(original, cloner) {
+      RegisterEventHandlers();
     }
     public NeuralNetworkClassification()
       : base() {
-      var validHiddenLayerValues = new ItemSet<IntValue>(new IntValue[] { new IntValue(0), new IntValue(1), new IntValue(2) });
+      var validHiddenLayerValues = new ItemSet<IntValue>(new IntValue[] { 
+        (IntValue)new IntValue(0).AsReadOnly(), 
+        (IntValue)new IntValue(1).AsReadOnly(), 
+        (IntValue)new IntValue(2).AsReadOnly() });
       var selectedHiddenLayerValue = (from v in validHiddenLayerValues
                                       where v.Value == 1
                                       select v)
@@ -126,13 +130,43 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Parameters.Add(new FixedValueParameter<IntValue>(NodesInSecondHiddenLayerParameterName, "The number of nodes in the second hidden layer. This value is not used if the number of hidden layers is zero or one.", new IntValue(10)));
       Parameters.Add(new FixedValueParameter<IntValue>(RestartsParameterName, "The number of restarts for learning.", new IntValue(2)));
 
+      RestartsParameter.Hidden = true;
+      NodesInSecondHiddenLayerParameter.Hidden = true;
+
+      RegisterEventHandlers();
+
       Problem = new ClassificationProblem();
     }
+
+    private void RegisterEventHandlers() {
+      HiddenLayersParameter.Value.ValueChanged += HiddenLayersParameterValueValueChanged;
+      HiddenLayersParameter.ValueChanged += HiddenLayersParameterValueChanged;
+    }
+
     [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() { }
+    private void AfterDeserialization() {
+      RegisterEventHandlers();
+    }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new NeuralNetworkClassification(this, cloner);
+    }
+    private void HiddenLayersParameterValueChanged(object source, EventArgs e) {
+      HiddenLayersParameter.Value.ValueChanged += HiddenLayersParameterValueValueChanged;
+      HiddenLayersParameterValueValueChanged(this, EventArgs.Empty);
+    }
+
+    private void HiddenLayersParameterValueValueChanged(object source, EventArgs e) {
+      if (HiddenLayers == 0) {
+        NodesInFirstHiddenLayerParameter.Hidden = true;
+        NodesInSecondHiddenLayerParameter.Hidden = true;
+      } else if (HiddenLayers == 1) {
+        NodesInFirstHiddenLayerParameter.Hidden = false;
+        NodesInSecondHiddenLayerParameter.Hidden = true;
+      } else {
+        NodesInFirstHiddenLayerParameter.Hidden = false;
+        NodesInSecondHiddenLayerParameter.Hidden = false;
+      }
     }
 
     #region neural network

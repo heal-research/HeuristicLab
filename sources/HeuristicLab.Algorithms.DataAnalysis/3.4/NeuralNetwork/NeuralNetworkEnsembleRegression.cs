@@ -126,7 +126,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     public NeuralNetworkEnsembleRegression()
       : base() {
-      var validHiddenLayerValues = new ItemSet<IntValue>(new IntValue[] { new IntValue(0), new IntValue(1), new IntValue(2) });
+        var validHiddenLayerValues = new ItemSet<IntValue>(new IntValue[] { 
+        (IntValue)new IntValue(0).AsReadOnly(), 
+        (IntValue)new IntValue(1).AsReadOnly(), 
+        (IntValue)new IntValue(2).AsReadOnly() });
       var selectedHiddenLayerValue = (from v in validHiddenLayerValues
                                       where v.Value == 1
                                       select v)
@@ -137,6 +140,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Parameters.Add(new FixedValueParameter<IntValue>(NodesInFirstHiddenLayerParameterName, "The number of nodes in the first hidden layer. The value should be rather large (30-100 nodes) in order to make the network highly flexible and run into the early stopping criterion). This value is not used if the number of hidden layers is zero.", new IntValue(100)));
       Parameters.Add(new FixedValueParameter<IntValue>(NodesInSecondHiddenLayerParameterName, "The number of nodes in the second hidden layer. This value is not used if the number of hidden layers is zero or one.", new IntValue(100)));
       Parameters.Add(new FixedValueParameter<IntValue>(RestartsParameterName, "The number of restarts for learning.", new IntValue(2)));
+
+      HiddenLayersParameter.Hidden = true;
+      NodesInFirstHiddenLayerParameter.Hidden = true;
+      NodesInSecondHiddenLayerParameter.Hidden = true;
+      RestartsParameter.Hidden = true;
 
       Problem = new RegressionProblem();
     }
