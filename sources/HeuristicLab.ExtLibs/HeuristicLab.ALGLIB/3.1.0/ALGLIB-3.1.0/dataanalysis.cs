@@ -15268,9 +15268,9 @@ public partial class alglib
                     //
                     if( state.xupdated )
                     {
-                        for(i_=0; i_<=wcount-1;i_++)
-                        {
-                            network.weights[i_] = w[i_];
+                        minlbfgs.minlbfgsresults(state, ref w, internalrep);
+                        for (i_ = 0; i_ <= wcount - 1; i_++) {
+                          network.weights[i_] = w[i_];
                         }
                         e = mlpbase.mlperror(network, valxy, valsize);
                         if( (double)(e)<(double)(ebest) )
