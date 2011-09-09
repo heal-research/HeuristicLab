@@ -29,6 +29,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Solution_Views {
   [View("DataAnalysisSolutionView")]
   [Content(typeof(DataAnalysisSolution), true)]
   public partial class NamedDataAnalysisSolutionView : NamedItemView {
+    private Type contentType;
+    private DataAnalysisSolutionView view;
+
     public NamedDataAnalysisSolutionView() {
       InitializeComponent();
     }
@@ -40,12 +43,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Solution_Views {
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      panel.Controls.Clear();
 
-      if (Content != null) {
+      if (Content == null) {
+        panel.Controls.Clear();
+      } else if (Content.GetType() == contentType && view != null) {
+        view.Content = Content;
+      } else {
+        view = null;
+        contentType = Content.GetType();
+        panel.Controls.Clear();
         var viewType = MainFormManager.GetViewTypes(Content.GetType(), true).Where(t => typeof(DataAnalysisSolutionView).IsAssignableFrom(t)).FirstOrDefault();
         if (viewType != null) {
-          var view = (DataAnalysisSolutionView)Activator.CreateInstance(viewType);
+          view = (DataAnalysisSolutionView)Activator.CreateInstance(viewType);
           view.Dock = DockStyle.Fill;
           view.Content = Content;
           panel.Controls.Add(view);
