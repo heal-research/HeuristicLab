@@ -75,14 +75,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
 
     public override IOperation Apply() {
       double[] trainingQuality = QualityParameter.ActualValue.Select(x => x.Value).ToArray();
+      var problemData = ProblemDataParameter.ActualValue;
+      var evaluator = EvaluatorParameter.ActualValue;
       // evaluate on validation partition
       IEnumerable<int> rows = GenerateRowsToEvaluate();
       if (!rows.Any()) return base.Apply();
-
-      IExecutionContext childContext = (IExecutionContext)ExecutionContext.CreateChildOperation(EvaluatorParameter.ActualValue);
-      double[] validationQuality = (from tree in SymbolicExpressionTree
-                                    select EvaluatorParameter.ActualValue.Evaluate(childContext, tree, ProblemDataParameter.ActualValue, rows))
-                                   .ToArray();
+      IExecutionContext childContext = (IExecutionContext)ExecutionContext.CreateChildOperation(evaluator);
+      double[] validationQuality = SymbolicExpressionTree
+        .AsParallel()
+        .Select(t => evaluator.Evaluate(childContext, t, problemData, rows))
+        .ToArray();
       double r = 0.0;
       try {
         r = alglib.spearmancorr2(trainingQuality, validationQuality);

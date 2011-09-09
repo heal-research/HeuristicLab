@@ -92,13 +92,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       #region find best trees
       IList<int> nonDominatedIndexes = new List<int>();
       ISymbolicExpressionTree[] tree = SymbolicExpressionTree.ToArray();
-      List<double[]> qualities = new List<double[]>();
       bool[] maximization = Maximization.ToArray();
       List<double[]> newNonDominatedQualities = new List<double[]>();
       var evaluator = EvaluatorParameter.ActualValue;
+      var problemData = ProblemDataParameter.ActualValue;
       IExecutionContext childContext = (IExecutionContext)ExecutionContext.CreateChildOperation(evaluator);
+
+      var qualities = tree
+        .AsParallel()
+        .Select(t => evaluator.Evaluate(childContext, t, problemData, rows))
+        .ToArray();
       for (int i = 0; i < tree.Length; i++) {
-        qualities.Add(evaluator.Evaluate(childContext, tree[i], ProblemDataParameter.ActualValue, rows)); // qualities[i] = ...
         if (IsNonDominated(qualities[i], trainingBestQualities, maximization) &&
           IsNonDominated(qualities[i], qualities, maximization)) {
           if (!newNonDominatedQualities.Contains(qualities[i], new DoubleArrayComparer())) {

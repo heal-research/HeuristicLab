@@ -75,14 +75,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       double bestQuality = Maximization.Value ? double.NegativeInfinity : double.PositiveInfinity;
       ISymbolicExpressionTree bestTree = null;
       ISymbolicExpressionTree[] tree = SymbolicExpressionTree.ToArray();
-      double[] quality = new double[tree.Length];
       var evaluator = EvaluatorParameter.ActualValue;
+      var problemData = ProblemDataParameter.ActualValue;
       IEnumerable<int> rows = GenerateRowsToEvaluate();
       if (!rows.Any()) return base.Apply();
 
       IExecutionContext childContext = (IExecutionContext)ExecutionContext.CreateChildOperation(evaluator);
+      var quality = tree
+        .AsParallel()
+        .Select(t => evaluator.Evaluate(childContext, t, problemData, rows))
+        .ToArray();
+
       for (int i = 0; i < tree.Length; i++) {
-        quality[i] = evaluator.Evaluate(childContext, tree[i], ProblemDataParameter.ActualValue, rows);
         if (IsBetter(quality[i], bestQuality, Maximization.Value)) {
           bestQuality = quality[i];
           bestTree = tree[i];

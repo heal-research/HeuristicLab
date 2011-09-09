@@ -69,12 +69,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     protected override Allele[] CalculateAlleles(ISymbolicExpressionTree solution) {
-      List<Allele> alleles = new List<Allele>();
-
-      foreach (var subtree in GetAllSubtreesOfDepth(solution, AlleleTreeDepth)) {
-        alleles.Add(GetAlleleFromSubtreeOfDepth(subtree, AlleleTreeDepth));
-      }
-      return alleles.ToArray();
+      return GetAllSubtreesOfDepth(solution, AlleleTreeDepth)
+        .AsParallel()
+        .Select(t => GetAlleleFromSubtreeOfDepth(t, AlleleTreeDepth))
+        .ToArray();
     }
 
     private Allele GetAlleleFromSubtreeOfDepth(ISymbolicExpressionTreeNode tree, int d) {

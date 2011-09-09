@@ -130,20 +130,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     public static IEnumerable<KeyValuePair<string, double>> CalculateVariableFrequencies(IEnumerable<ISymbolicExpressionTree> trees, bool aggregateLaggedVariables = true) {
-      Dictionary<string, double> variableFrequencies = new Dictionary<string, double>();
-      int totalNumberOfSymbols = 0;
 
-      foreach (var tree in trees) {
-        var variableReferences = GetVariableReferences(tree, aggregateLaggedVariables);
-        foreach (var pair in variableReferences) {
-          totalNumberOfSymbols += pair.Value;
-          if (variableFrequencies.ContainsKey(pair.Key)) {
-            variableFrequencies[pair.Key] += pair.Value;
-          } else {
-            variableFrequencies.Add(pair.Key, pair.Value);
-          }
-        }
-      }
+      var variableFrequencies = trees
+        .AsParallel()
+        .SelectMany(t => GetVariableReferences(t, aggregateLaggedVariables))
+        .GroupBy(pair => pair.Key, pair => pair.Value)
+        .ToDictionary(g => g.Key, g => (double)g.Sum());
+
+      double totalNumberOfSymbols = variableFrequencies.Values.Sum();
 
       foreach (var pair in variableFrequencies)
         yield return new KeyValuePair<string, double>(pair.Key, pair.Value / totalNumberOfSymbols);
