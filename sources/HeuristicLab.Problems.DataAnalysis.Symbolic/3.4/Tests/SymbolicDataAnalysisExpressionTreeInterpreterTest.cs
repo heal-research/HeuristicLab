@@ -29,10 +29,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
 
-  /// <summary>
-  ///This is a test class for SimpleArithmeticExpressionInterpreter and is intended
-  ///to contain all SimpleArithmeticExpressionInterpreter Unit Tests
-  ///</summary>
   [TestClass()]
   public class SymbolicDataAnalysisExpressionTreeInterpreterTest {
     private const int N = 1000;
@@ -54,7 +50,24 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     }
 
     [TestMethod]
-    public void FullGrammarSimpleArithmeticExpressionInterpreterPerformanceTest() {
+    public void SymbolicDataAnalysisExpressionTreeInterpreterFullGrammarPerformanceTest() {
+      FullGrammarPerformanceTest(new SymbolicDataAnalysisExpressionTreeInterpreter(), 12.5e6);
+    }
+    [TestMethod]
+    public void SymbolicDataAnalysisExpressionTreeInterpreterArithmeticGrammarPerformanceTest() {
+      FullGrammarPerformanceTest(new SymbolicDataAnalysisExpressionTreeInterpreter(), 12.5e6);
+    }
+
+    [TestMethod]
+    public void SymbolicDataAnalysisExpressionTreeILEmittingInterpreterFullGrammarPerformanceTest() {
+      FullGrammarPerformanceTest(new SymbolicDataAnalysisExpressionTreeILEmittingInterpreter(), 25e6);
+    }
+    [TestMethod]
+    public void SymbolicDataAnalysisExpressionTreeILEmittingInterpreterArithmeticGrammarPerformanceTest() {
+      FullGrammarPerformanceTest(new SymbolicDataAnalysisExpressionTreeILEmittingInterpreter(), 25e6);
+    }
+
+    private void FullGrammarPerformanceTest(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, double nodesPerSecThreshold) {
       var twister = new MersenneTwister(31415);
       var dataset = Util.CreateRandomDataset(twister, Rows, Columns);
       var grammar = new FullFunctionalExpressionGrammar();
@@ -63,17 +76,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       grammar.MinimumFunctionArguments = 0;
       grammar.MinimumFunctionDefinitions = 0;
       var randomTrees = Util.CreateRandomTrees(twister, dataset, grammar, N, 1, 100, 0, 0);
-      double[] estimation = new double[Rows];
       foreach (ISymbolicExpressionTree tree in randomTrees) {
         Util.InitTree(tree, twister, new List<string>(dataset.VariableNames));
       }
-      SymbolicDataAnalysisExpressionTreeInterpreter interpreter = new SymbolicDataAnalysisExpressionTreeInterpreter();
       double nodesPerSec = Util.CalculateEvaluatedNodesPerSec(randomTrees, interpreter, dataset, 3);
-      Assert.IsTrue(nodesPerSec > 12.5e6); // evaluated nodes per seconds must be larger than 15mNodes/sec
+      Assert.IsTrue(nodesPerSec > nodesPerSecThreshold); // evaluated nodes per seconds must be larger than 15mNodes/sec
     }
 
-    [TestMethod]
-    public void ArithmeticGrammarSimpleArithmeticExpressionInterpreterPerformanceTest() {
+    private void ArithmeticGrammarPerformanceTest(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, double nodesPerSecThreshold) {
       var twister = new MersenneTwister(31415);
       var dataset = Util.CreateRandomDataset(twister, Rows, Columns);
       var grammar = new ArithmeticExpressionGrammar();
@@ -82,13 +92,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       grammar.MinimumFunctionArguments = 0;
       grammar.MinimumFunctionDefinitions = 0;
       var randomTrees = Util.CreateRandomTrees(twister, dataset, grammar, N, 1, 100, 0, 0);
-      double[] estimation = new double[Rows];
       foreach (SymbolicExpressionTree tree in randomTrees) {
         Util.InitTree(tree, twister, new List<string>(dataset.VariableNames));
       }
-      SymbolicDataAnalysisExpressionTreeInterpreter interpreter = new SymbolicDataAnalysisExpressionTreeInterpreter();
+
       double nodesPerSec = Util.CalculateEvaluatedNodesPerSec(randomTrees, interpreter, dataset, 3);
-      Assert.IsTrue(nodesPerSec > 12.5e6); // evaluated nodes per seconds must be larger than 15mNodes/sec
+      Assert.IsTrue(nodesPerSec > nodesPerSecThreshold); // evaluated nodes per seconds must be larger than 15mNodes/sec
     }
 
 
@@ -96,24 +105,81 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     ///A test for Evaluate
     ///</summary>
     [TestMethod]
-    public void SimpleArithmeticExpressionInterpreterEvaluateTest() {
-
+    public void SymbolicDataAnalysisExpressionTreeInterpreterEvaluateTest() {
       Dataset ds = new Dataset(new string[] { "Y", "A", "B" }, new double[,] {
         { 1.0, 1.0, 1.0 },
         { 2.0, 2.0, 2.0 },
         { 3.0, 1.0, 2.0 }
       });
 
-      SymbolicDataAnalysisExpressionTreeInterpreter interpreter = new SymbolicDataAnalysisExpressionTreeInterpreter();
+      var interpreter = new SymbolicDataAnalysisExpressionTreeInterpreter();
+      EvaluateTerminals(interpreter, ds);
+      EvaluateOperations(interpreter, ds);
+      EvaluateAdf(interpreter, ds);
+    }
 
+    [TestMethod]
+    public void SymbolicDataAnalysisExpressionILEmittingTreeInterpreterEvaluateTest() {
+      Dataset ds = new Dataset(new string[] { "Y", "A", "B" }, new double[,] {
+        { 1.0, 1.0, 1.0 },
+        { 2.0, 2.0, 2.0 },
+        { 3.0, 1.0, 2.0 }
+      });
+
+      var interpreter = new SymbolicDataAnalysisExpressionTreeILEmittingInterpreter();
+      EvaluateTerminals(interpreter, ds);
+      EvaluateOperations(interpreter, ds);
+    }
+
+    private void EvaluateTerminals(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, Dataset ds) {
       // constants
       Evaluate(interpreter, ds, "(+ 1.5 3.5)", 0, 5.0);
 
       // variables
       Evaluate(interpreter, ds, "(variable 2.0 a)", 0, 2.0);
       Evaluate(interpreter, ds, "(variable 2.0 a)", 1, 4.0);
+    }
 
+    private void EvaluateAdf(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, Dataset ds) {
 
+      // ADF      
+      Evaluate(interpreter, ds, @"(PROG 
+                                    (MAIN 
+                                      (CALL ADF0)) 
+                                    (defun ADF0 1.0))", 1, 1.0);
+      Evaluate(interpreter, ds, @"(PROG 
+                                    (MAIN 
+                                      (* (CALL ADF0) (CALL ADF0)))
+                                    (defun ADF0 2.0))", 1, 4.0);
+      Evaluate(interpreter, ds, @"(PROG 
+                                    (MAIN 
+                                      (CALL ADF0 2.0 3.0))
+                                    (defun ADF0 
+                                      (+ (ARG 0) (ARG 1))))", 1, 5.0);
+      Evaluate(interpreter, ds, @"(PROG 
+                                    (MAIN (CALL ADF1 2.0 3.0))
+                                    (defun ADF0 
+                                      (- (ARG 1) (ARG 0)))
+                                    (defun ADF1
+                                      (+ (CALL ADF0 (ARG 1) (ARG 0))
+                                         (CALL ADF0 (ARG 0) (ARG 1)))))", 1, 0.0);
+      Evaluate(interpreter, ds, @"(PROG 
+                                    (MAIN (CALL ADF1 (variable 2.0 a) 3.0))
+                                    (defun ADF0 
+                                      (- (ARG 1) (ARG 0)))
+                                    (defun ADF1                                                                              
+                                      (CALL ADF0 (ARG 1) (ARG 0))))", 1, 1.0);
+      Evaluate(interpreter, ds,
+               @"(PROG 
+                                    (MAIN (CALL ADF1 (variable 2.0 a) 3.0))
+                                    (defun ADF0 
+                                      (- (ARG 1) (ARG 0)))
+                                    (defun ADF1                                                                              
+                                      (+ (CALL ADF0 (ARG 1) (ARG 0))
+                                         (CALL ADF0 (ARG 0) (ARG 1)))))", 1, 0.0);
+    }
+
+    private void EvaluateOperations(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, Dataset ds) {
       // addition
       Evaluate(interpreter, ds, "(+ (variable 2.0 a ))", 1, 4.0);
       Evaluate(interpreter, ds, "(+ (variable 2.0 a ) (variable 3.0 b ))", 0, 5.0);
@@ -147,14 +213,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Evaluate(interpreter, ds, "(> 2.0 (variable 2.0 a))", 0, -1.0);
       Evaluate(interpreter, ds, "(> (variable 2.0 a) 1.9)", 0, 1.0);
       Evaluate(interpreter, ds, "(> 1.9 (variable 2.0 a))", 0, -1.0);
-      //Evaluate(interpreter, ds, "(> (sqrt -1.0) (log -1.0))", 0, -1.0); // (> nan nan) should be false
+      Evaluate(interpreter, ds, "(> (log -1.0) (log -1.0))", 0, -1.0); // (> nan nan) should be false
 
       // lt
       Evaluate(interpreter, ds, "(< (variable 2.0 a) 2.0)", 0, -1.0);
       Evaluate(interpreter, ds, "(< 2.0 (variable 2.0 a))", 0, -1.0);
       Evaluate(interpreter, ds, "(< (variable 2.0 a) 1.9)", 0, -1.0);
       Evaluate(interpreter, ds, "(< 1.9 (variable 2.0 a))", 0, 1.0);
-      //Evaluate(interpreter, ds, "(< (sqrt -1,0) (log -1,0))", 0, -1.0); // (< nan nan) should be false
+      Evaluate(interpreter, ds, "(< (log -1.0) (log -1.0))", 0, -1.0); // (< nan nan) should be false
 
       // If
       Evaluate(interpreter, ds, "(if -10.0 2.0 3.0)", 0, 3.0);
@@ -162,7 +228,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Evaluate(interpreter, ds, "(if 0.0 2.0 3.0)", 0, 3.0);
       Evaluate(interpreter, ds, "(if 1.0 2.0 3.0)", 0, 2.0);
       Evaluate(interpreter, ds, "(if 10.0 2.0 3.0)", 0, 2.0);
-      // Evaluate(interpreter, ds, "(if (sqrt -1.0) 2.0 3.0)", 0, 3.0); // if(nan) should return the else branch
+      Evaluate(interpreter, ds, "(if (log -1.0) 2.0 3.0)", 0, 3.0); // if(nan) should return the else branch
 
       // NOT
       Evaluate(interpreter, ds, "(not -1.0)", 0, 1.0);
@@ -170,6 +236,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Evaluate(interpreter, ds, "(not 1.0)", 0, -1.0);
       Evaluate(interpreter, ds, "(not 2.0)", 0, -1.0);
       Evaluate(interpreter, ds, "(not 0.0)", 0, 1.0);
+      Evaluate(interpreter, ds, "(not (log -1.0))", 0, 1.0);
 
       // AND
       Evaluate(interpreter, ds, "(and -1.0 -2.0)", 0, -1.0);
@@ -180,6 +247,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Evaluate(interpreter, ds, "(and 1.0 2.0)", 0, 1.0);
       Evaluate(interpreter, ds, "(and 1.0 2.0 3.0)", 0, 1.0);
       Evaluate(interpreter, ds, "(and 1.0 -2.0 3.0)", 0, -1.0);
+      Evaluate(interpreter, ds, "(and (log -1.0))", 0, -1.0); // (and NaN)
+      Evaluate(interpreter, ds, "(and (log -1.0)  1.0)", 0, -1.0); // (and NaN 1.0)
+
 
       // OR
       Evaluate(interpreter, ds, "(or -1.0 -2.0)", 0, -1.0);
@@ -189,6 +259,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Evaluate(interpreter, ds, "(or 0.0 0.0)", 0, -1.0);
       Evaluate(interpreter, ds, "(or -1.0 -2.0 -3.0)", 0, -1.0);
       Evaluate(interpreter, ds, "(or -1.0 -2.0 3.0)", 0, 1.0);
+      Evaluate(interpreter, ds, "(or (log -1.0))", 0, -1.0); // (or NaN)
+      Evaluate(interpreter, ds, "(or (log -1.0)  1.0)", 0, -1.0); // (or NaN 1.0)
 
       // sin, cos, tan
       Evaluate(interpreter, ds, "(sin " + Math.PI.ToString(NumberFormatInfo.InvariantInfo) + ")", 0, 0.0);
@@ -206,43 +278,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       // mean
       Evaluate(interpreter, ds, "(mean -1.0 1.0 -1.0)", 0, -1.0 / 3.0);
 
-      // ADF      
-      Evaluate(interpreter, ds, @"(PROG 
-                                    (MAIN 
-                                      (CALL ADF0)) 
-                                    (defun ADF0 1.0))", 1, 1.0);
-      Evaluate(interpreter, ds, @"(PROG 
-                                    (MAIN 
-                                      (* (CALL ADF0) (CALL ADF0)))
-                                    (defun ADF0 2.0))", 1, 4.0);
-      Evaluate(interpreter, ds, @"(PROG 
-                                    (MAIN 
-                                      (CALL ADF0 2.0 3.0))
-                                    (defun ADF0 
-                                      (+ (ARG 0) (ARG 1))))", 1, 5.0);
-      Evaluate(interpreter, ds, @"(PROG 
-                                    (MAIN (CALL ADF1 2.0 3.0))
-                                    (defun ADF0 
-                                      (- (ARG 1) (ARG 0)))
-                                    (defun ADF1
-                                      (+ (CALL ADF0 (ARG 1) (ARG 0))
-                                         (CALL ADF0 (ARG 0) (ARG 1)))))", 1, 0.0);
-      Evaluate(interpreter, ds, @"(PROG 
-                                    (MAIN (CALL ADF1 (variable 2.0 a) 3.0))
-                                    (defun ADF0 
-                                      (- (ARG 1) (ARG 0)))
-                                    (defun ADF1                                                                              
-                                      (CALL ADF0 (ARG 1) (ARG 0))))", 1, 1.0);
-      Evaluate(interpreter, ds, @"(PROG 
-                                    (MAIN (CALL ADF1 (variable 2.0 a) 3.0))
-                                    (defun ADF0 
-                                      (- (ARG 1) (ARG 0)))
-                                    (defun ADF1                                                                              
-                                      (+ (CALL ADF0 (ARG 1) (ARG 0))
-                                         (CALL ADF0 (ARG 0) (ARG 1)))))", 1, 0.0);
     }
 
-    private void Evaluate(SymbolicDataAnalysisExpressionTreeInterpreter interpreter, Dataset ds, string expr, int index, double expected) {
+    private void Evaluate(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, Dataset ds, string expr, int index, double expected) {
       var importer = new SymbolicExpressionImporter();
       ISymbolicExpressionTree tree = importer.Import(expr);
 

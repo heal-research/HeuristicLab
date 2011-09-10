@@ -307,19 +307,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         case OpCodes.AND: {
             double result = Evaluate(dataset, ref row, state);
             for (int i = 1; i < currentInstr.nArguments; i++) {
-              if (result <= 0.0) SkipInstructions(state);
+              if (result > 0.0) result = Evaluate(dataset, ref row, state);
               else {
-                result = Evaluate(dataset, ref row, state);
+                SkipInstructions(state);
               }
             }
-            return result <= 0.0 ? -1.0 : 1.0;
+            return result > 0.0 ? 1.0 : -1.0;
           }
         case OpCodes.OR: {
             double result = Evaluate(dataset, ref row, state);
             for (int i = 1; i < currentInstr.nArguments; i++) {
-              if (result > 0.0) SkipInstructions(state);
+              if (result <= 0.0) result = Evaluate(dataset, ref row, state);
               else {
-                result = Evaluate(dataset, ref row, state);
+                SkipInstructions(state);
               }
             }
             return result > 0.0 ? 1.0 : -1.0;
