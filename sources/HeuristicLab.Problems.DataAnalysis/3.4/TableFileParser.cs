@@ -333,29 +333,31 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     private void ParseValues() {
       while (tokenizer.HasNext()) {
-        List<object> row = new List<object>();
-        object value = NextValue(tokenizer);
-        if (value == null) { tokenizer.Next(); continue; }
-        row.Add(value);
-        while (tokenizer.HasNext() && tokenizer.Peek() == tokenizer.SeparatorToken) {
-          Expect(tokenizer.SeparatorToken);
-          row.Add(NextValue(tokenizer));
+        if (tokenizer.Peek() == tokenizer.NewlineToken) {
+          tokenizer.Next();
+        } else {
+          List<object> row = new List<object>();
+          object value = NextValue(tokenizer);
+          row.Add(value);
+          while (tokenizer.HasNext() && tokenizer.Peek() == tokenizer.SeparatorToken) {
+            Expect(tokenizer.SeparatorToken);
+            row.Add(NextValue(tokenizer));
+          }
+          Expect(tokenizer.NewlineToken);
+          // all rows have to have the same number of values            
+          // the first row defines how many samples are needed
+          if (rowValues.Count > 0 && rowValues[0].Count != row.Count) {
+            Error("The first row of the dataset has " + rowValues[0].Count + " columns." +
+                  "\nLine " + tokenizer.CurrentLineNumber + " has " + row.Count + " columns.", "",
+                  tokenizer.CurrentLineNumber);
+          }
+          rowValues.Add(row);
         }
-        Expect(tokenizer.NewlineToken);
-        // all rows have to have the same number of values            
-        // the first row defines how many samples are needed
-        if (rowValues.Count > 0 && rowValues[0].Count != row.Count) {
-          Error("The first row of the dataset has " + rowValues[0].Count + " columns." +
-            "\nLine " + tokenizer.CurrentLineNumber + " has " + row.Count + " columns.", "", tokenizer.CurrentLineNumber);
-        }
-        rowValues.Add(row);
-        row = new List<object>();
       }
     }
 
     private object NextValue(Tokenizer tokenizer) {
-      if (tokenizer.Peek() == tokenizer.SeparatorToken) return string.Empty;
-      if (tokenizer.Peek() == tokenizer.NewlineToken) return null;
+      if (tokenizer.Peek() == tokenizer.SeparatorToken || tokenizer.Peek() == tokenizer.NewlineToken) return string.Empty;
       Token current = tokenizer.Next();
       if (current.type == TokenTypeEnum.Separator) {
         return double.NaN;
