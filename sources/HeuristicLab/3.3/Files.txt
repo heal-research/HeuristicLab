@@ -126,3 +126,7 @@ HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327:SharpDevelop License.t
 HeuristicLab.ExtLibs\HeuristicLab.WinFormsUI\2.3.1\WinFormsUI-2.3.1:WeifenLuo.WinFormsUI.Docking-2.3.1.dll
 HeuristicLab.ExtLibs\HeuristicLab.WinFormsUI\2.3.1\HeuristicLab.WinFormsUI-2.3.1:HeuristicLab.WinFormsUI-2.3.1.dll
 HeuristicLab.ExtLibs\HeuristicLab.WinFormsUI\2.3.1\HeuristicLab.WinFormsUI-2.3.1:WeifenLuo.WinFormsUI.Docking License.txt
+
+HeuristicLab.ExtLibs\HeuristicLab.DayView\1.0:HeuristicLab.DayView-1.0.dll
+HeuristicLab.ExtLibs\HeuristicLab.DayView\1.0:Calendar.DayView.dll
+HeuristicLab.ExtLibs\HeuristicLab.DayView\1.0:DayView License.txt
