@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Problems.DataAnalysis;
@@ -123,7 +122,7 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
         double c2Scale = 1.0;
         IEnumerable<double> x = from rows in Enumerable.Range(0, n)
                                 select testData[rows, c1] * c1Scale;
-        IEnumerable<double> y = (new List<double>() { 150494407424305.44 })
+        IEnumerable<double> y = (new List<double>() { 150494407424305.47 })
           .Concat(Enumerable.Repeat(150494407424305.47, n - 1));
         double[] xs = x.ToArray();
         double[] ys = y.ToArray();
