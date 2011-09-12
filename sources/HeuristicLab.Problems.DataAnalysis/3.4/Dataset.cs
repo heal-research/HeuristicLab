@@ -20,7 +20,9 @@
 #endregion
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -35,133 +37,172 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private Dataset(bool deserializing) : base(deserializing) { }
     private Dataset(Dataset original, Cloner cloner)
       : base(original, cloner) {
-      variableNameToVariableIndexMapping = original.variableNameToVariableIndexMapping;
-      data = original.data;
+      variableValues = new Dictionary<string, IList>(original.variableValues);
+      variableNames = new List<string>(original.variableNames);
+      rows = original.rows;
     }
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new Dataset(this, cloner);
-    }
+    public override IDeepCloneable Clone(Cloner cloner) { return new Dataset(this, cloner); }
 
     public Dataset()
       : base() {
       Name = "-";
       VariableNames = Enumerable.Empty<string>();
-      data = new double[0, 0];
+      variableValues = new Dictionary<string, IList>();
+      rows = 0;
     }
 
-    public Dataset(IEnumerable<string> variableNames, double[,] data)
+    public Dataset(IEnumerable<string> variableNames, IEnumerable<IList> variableValues)
       : base() {
       Name = "-";
-      if (variableNames.Count() != data.GetLength(1)) {
-        throw new ArgumentException("Number of variable names doesn't match the number of columns of data");
+      if (!variableNames.Any()) {
+        this.variableNames = Enumerable.Range(0, variableValues.Count()).Select(x => "Column " + x).ToList();
+      } else if (variableNames.Count() != variableValues.Count()) {
+        throw new ArgumentException("Number of variable names doesn't match the number of columns of variableValues");
+      } else if (!variableValues.All(list => list.Count == variableValues.First().Count)) {
+        throw new ArgumentException("The number of values must be equal for every variable");
+      } else if (variableNames.Distinct().Count() != variableNames.Count()) {
+        var duplicateVariableNames =
+          variableNames.GroupBy(v => v).Where(g => g.Count() > 1).Select(g => g.Key).ToList();
+        string message = "The dataset cannot contain duplicate variables names: " + Environment.NewLine;
+        foreach (var duplicateVariableName in duplicateVariableNames)
+          message += duplicateVariableName + Environment.NewLine;
+        throw new ArgumentException(message);
       }
-      this.data = (double[,])data.Clone();
-      VariableNames = variableNames;
+
+      rows = variableValues.First().Count;
+      this.variableNames = new List<string>(variableNames);
+      this.variableValues = new Dictionary<string, IList>();
+      for (int i = 0; i < this.variableNames.Count; i++) {
+        var values = variableValues.ElementAt(i);
+        IList clonedValues = null;
+        if (values is List<double>)
+          clonedValues = new List<double>(values.Cast<double>());
+        else if (values is List<string>)
+          clonedValues = new List<string>(values.Cast<string>());
+        else if (values is List<DateTime>)
+          clonedValues = new List<DateTime>(values.Cast<DateTime>());
+        else {
+          this.variableNames = new List<string>();
+          this.variableValues = new Dictionary<string, IList>();
+          throw new ArgumentException("The variable values must be of type List<double>, List<string> or List<DateTime>");
+        }
+        this.variableValues.Add(this.variableNames[i], clonedValues);
+      }
     }
 
+    public Dataset(IEnumerable<string> variableNames, double[,] variableValues) {
+      Name = "-";
+      if (variableNames.Count() != variableValues.GetLength(1)) {
+        throw new ArgumentException("Number of variable names doesn't match the number of columns of variableValues");
+      }
+      if (variableNames.Distinct().Count() != variableNames.Count()) {
+        var duplicateVariableNames = variableNames.GroupBy(v => v).Where(g => g.Count() > 1).Select(g => g.Key).ToList();
+        string message = "The dataset cannot contain duplicate variables names: " + Environment.NewLine;
+        foreach (var duplicateVariableName in duplicateVariableNames)
+          message += duplicateVariableName + Environment.NewLine;
+        throw new ArgumentException(message);
+      }
 
-    private Dictionary<string, int> variableNameToVariableIndexMapping;
-    private Dictionary<int, string> variableIndexToVariableNameMapping;
+      rows = variableValues.GetLength(0);
+      this.variableNames = new List<string>(variableNames);
+
+      this.variableValues = new Dictionary<string, IList>();
+      for (int col = 0; col < variableValues.GetLength(1); col++) {
+        string columName = this.variableNames[col];
+        var values = new List<double>();
+        for (int row = 0; row < variableValues.GetLength(0); row++) {
+          values.Add(variableValues[row, col]);
+        }
+        this.variableValues.Add(columName, values);
+      }
+    }
+
+    #region Backwards compatible code, remove with 3.5
+    private double[,] storableData;
+    //name alias used to suppport backwards compatibility
+    [Storable(Name = "data", AllowOneWay = true)]
+    private double[,] StorableData { set { storableData = value; } }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (variableValues == null) {
+        rows = storableData.GetLength(0);
+        variableValues = new Dictionary<string, IList>();
+        for (int col = 0; col < storableData.GetLength(1); col++) {
+          string columName = variableNames[col];
+          var values = new List<double>();
+          for (int row = 0; row < storableData.GetLength(0); row++) {
+            values.Add(storableData[row, col]);
+          }
+          variableValues.Add(columName, values);
+        }
+        storableData = null;
+      }
+    }
+    #endregion
+
+    private Dictionary<string, IList> variableValues;
+    private List<string> variableNames;
     [Storable]
     public IEnumerable<string> VariableNames {
-      get {
-        // convert KeyCollection to an array first for persistence
-        return variableNameToVariableIndexMapping.Keys.ToArray();
-      }
+      get { return variableNames; }
       private set {
-        if (variableNameToVariableIndexMapping != null) throw new InvalidOperationException("VariableNames can only be set once.");
-        this.variableNameToVariableIndexMapping = new Dictionary<string, int>();
-        this.variableIndexToVariableNameMapping = new Dictionary<int, string>();
-        int i = 0;
-        foreach (string variableName in value) {
-          this.variableNameToVariableIndexMapping.Add(variableName, i);
-          this.variableIndexToVariableNameMapping.Add(i, variableName);
-          i++;
-        }
+        if (variableNames != null) throw new InvalidOperationException();
+        variableNames = new List<string>(value);
       }
     }
 
-    [Storable]
-    private double[,] data;
-    private double[,] Data {
-      get { return data; }
+    public IEnumerable<string> DoubleVariables {
+      get { return variableValues.Where(p => p.Value is List<double>).Select(p => p.Key); }
     }
 
-    // elementwise access
-    public double this[int rowIndex, int columnIndex] {
-      get { return data[rowIndex, columnIndex]; }
-    }
-    public double this[string variableName, int rowIndex] {
-      get {
-        int columnIndex = GetVariableIndex(variableName);
-        return data[rowIndex, columnIndex];
-      }
-    }
+    public IEnumerable<double> GetDoubleValues(string variableName) {
+      IList list;
+      if (!variableValues.TryGetValue(variableName, out list))
+        throw new ArgumentException("The variable " + variableName + " does not exist in the dataset.");
+      List<double> values = list as List<double>;
+      if (values == null) throw new ArgumentException("The variable " + variableName + " is not a double variable.");
 
-    public double[] GetVariableValues(int variableIndex) {
-      return GetVariableValues(variableIndex, 0, Rows);
+      //mkommend yield return used to enable lazy evaluation
+      foreach (double value in values)
+        yield return value;
     }
-    public double[] GetVariableValues(string variableName) {
-      return GetVariableValues(GetVariableIndex(variableName), 0, Rows);
+    public ReadOnlyCollection<double> GetReadOnlyDoubleValues(string variableName) {
+      IList list;
+      if (!variableValues.TryGetValue(variableName, out list))
+        throw new ArgumentException("The variable " + variableName + " does not exist in the dataset.");
+      List<double> values = list as List<double>;
+      if (values == null) throw new ArgumentException("The variable " + variableName + " is not a double variable.");
+      return values.AsReadOnly();
     }
-    public double[] GetVariableValues(int variableIndex, int start, int end) {
-      return GetEnumeratedVariableValues(variableIndex, start, end).ToArray();
+    public double GetDoubleValue(string variableName, int row) {
+      IList list;
+      if (!variableValues.TryGetValue(variableName, out list))
+        throw new ArgumentException("The variable " + variableName + " does not exist in the dataset.");
+      List<double> values = list as List<double>;
+      if (values == null) throw new ArgumentException("The variable " + variableName + " is not a double variable.");
+      return values[row];
     }
-    public double[] GetVariableValues(string variableName, int start, int end) {
-      return GetVariableValues(GetVariableIndex(variableName), start, end);
-    }
+    public IEnumerable<double> GetDoubleValues(string variableName, IEnumerable<int> rows) {
+      IList list;
+      if (!variableValues.TryGetValue(variableName, out list))
+        throw new ArgumentException("The variable " + variableName + " does not exist in the dataset.");
+      List<double> values = list as List<double>;
+      if (values == null) throw new ArgumentException("The varialbe " + variableName + " is not a double variable.");
 
-    public IEnumerable<double> GetEnumeratedVariableValues(int variableIndex) {
-      return GetEnumeratedVariableValues(variableIndex, 0, Rows);
-    }
-    public IEnumerable<double> GetEnumeratedVariableValues(int variableIndex, int start, int end) {
-      if (start < 0 || !(start <= end))
-        throw new ArgumentException("Start must be between 0 and end (" + end + ").");
-      if (end > Rows || end < start)
-        throw new ArgumentException("End must be between start (" + start + ") and dataset rows (" + Rows + ").");
-
-      for (int i = start; i < end; i++)
-        yield return data[i, variableIndex];
-    }
-    public IEnumerable<double> GetEnumeratedVariableValues(int variableIndex, IEnumerable<int> rows) {
-      foreach (int row in rows)
-        yield return data[row, variableIndex];
-    }
-
-    public IEnumerable<double> GetEnumeratedVariableValues(string variableName) {
-      return GetEnumeratedVariableValues(GetVariableIndex(variableName), 0, Rows);
-    }
-    public IEnumerable<double> GetEnumeratedVariableValues(string variableName, int start, int end) {
-      return GetEnumeratedVariableValues(GetVariableIndex(variableName), start, end);
-    }
-    public IEnumerable<double> GetEnumeratedVariableValues(string variableName, IEnumerable<int> rows) {
-      return GetEnumeratedVariableValues(GetVariableIndex(variableName), rows);
-    }
-
-    public string GetVariableName(int variableIndex) {
-      try {
-        return variableIndexToVariableNameMapping[variableIndex];
-      }
-      catch (KeyNotFoundException ex) {
-        throw new ArgumentException("The variable index " + variableIndex + " was not found.", ex);
-      }
-    }
-    public int GetVariableIndex(string variableName) {
-      try {
-        return variableNameToVariableIndexMapping[variableName];
-      }
-      catch (KeyNotFoundException ex) {
-        throw new ArgumentException("The variable name " + variableName + " was not found.", ex);
-      }
+      foreach (int index in rows)
+        yield return values[index];
     }
 
     #region IStringConvertibleMatrix Members
+    [Storable]
+    private int rows;
     public int Rows {
-      get { return data.GetLength(0); }
+      get { return rows; }
       set { throw new NotSupportedException(); }
     }
     public int Columns {
-      get { return data.GetLength(1); }
+      get { return variableNames.Count; }
       set { throw new NotSupportedException(); }
     }
 
@@ -183,7 +224,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public string GetValue(int rowIndex, int columnIndex) {
-      return data[rowIndex, columnIndex].ToString();
+      return variableValues[variableNames[columnIndex]][rowIndex].ToString();
     }
     public bool SetValue(string value, int rowIndex, int columnIndex) {
       throw new NotSupportedException();

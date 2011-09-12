@@ -106,7 +106,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         } else throw new InvalidOperationException();
 
         double[] estimatedValues = Content.GetEstimatedValues(rows).ToArray();
-        double[] targetClassValues = Content.ProblemData.Dataset.GetEnumeratedVariableValues(Content.ProblemData.TargetVariable, rows).ToArray();
+        double[] targetClassValues = Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.TargetVariable, rows).ToArray();
         double minThreshold = estimatedValues.Min();
         double maxThreshold = estimatedValues.Max();
         double thresholdIncrement = (maxThreshold - minThreshold) / slices;

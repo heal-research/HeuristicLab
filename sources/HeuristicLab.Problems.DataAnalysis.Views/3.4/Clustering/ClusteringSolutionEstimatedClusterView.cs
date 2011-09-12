@@ -84,16 +84,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         if (Content != null) {
           int[] clusters = Content.Model.GetClusterValues(Content.ProblemData.Dataset, Enumerable.Range(0, Content.ProblemData.Dataset.Rows)).ToArray();
           var dataset = Content.ProblemData.Dataset;
-          int columns = Content.ProblemData.AllowedInputVariables.Count() + 1;
-          var columnsIndixes = Content.ProblemData.AllowedInputVariables.Select(x => dataset.GetVariableIndex(x)).ToList();
+          int columns = Content.ProblemData.AllowedInputVariables.Count() + 1;          
 
           double[,] values = new double[dataset.Rows, columns];
           for (int row = 0; row < dataset.Rows; row++) {
             values[row, 0] = clusters[row];
 
             int column = 1;
-            foreach (int columnIndex in columnsIndixes) {
-              values[row, column] = dataset[row, columnIndex];
+            foreach (var columnName in Content.ProblemData.AllowedInputVariables) {
+              values[row, column] = dataset.GetDoubleValue(columnName, row);
               column++;
             }
           }

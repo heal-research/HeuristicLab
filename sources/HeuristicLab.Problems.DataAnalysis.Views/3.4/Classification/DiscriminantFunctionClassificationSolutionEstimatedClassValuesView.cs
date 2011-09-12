@@ -50,7 +50,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         if (Content != null) {
           string[,] values = new string[Content.ProblemData.Dataset.Rows, 4];
 
-          double[] target = Content.ProblemData.Dataset.GetVariableValues(Content.ProblemData.TargetVariable);
+          double[] target = Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.TargetVariable).ToArray();
           double[] estimatedClassValues = Content.EstimatedClassValues.ToArray();
           double[] estimatedValues = Content.EstimatedValues.ToArray();
           for (int row = 0; row < target.Length; row++) {

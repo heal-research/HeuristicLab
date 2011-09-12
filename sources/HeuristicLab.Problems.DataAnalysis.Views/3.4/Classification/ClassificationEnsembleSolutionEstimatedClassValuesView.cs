@@ -97,7 +97,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       int classValuesCount = Content.ProblemData.ClassValues.Count;
       int modelCount = Content.Model.Models.Count();
       string[,] values = new string[indizes.Length, 5 + classValuesCount + modelCount];
-      double[] target = Content.ProblemData.Dataset.GetVariableValues(Content.ProblemData.TargetVariable);
+      double[] target = Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.TargetVariable).ToArray();
       List<List<double?>> estimatedValuesVector = GetEstimatedValues(SamplesComboBox.SelectedItem.ToString(), indizes,
                                                             Content.ClassificationSolutions);
 

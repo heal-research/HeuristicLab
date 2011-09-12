@@ -29,7 +29,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     public byte opCode;
     // number of arguments of the current instruction
     public byte nArguments;
-    // an optional short value (addresses for calls, argument index for arguments)
-    public ushort iArg0;
+    // an optional object value (addresses for calls, argument index for arguments)
+    public object iArg0;
   }
 }

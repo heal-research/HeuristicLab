@@ -87,7 +87,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         if (Content != null) {
           string[,] values = new string[Content.ProblemData.Dataset.Rows, 7];
 
-          double[] target = Content.ProblemData.Dataset.GetVariableValues(Content.ProblemData.TargetVariable);
+          double[] target = Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.TargetVariable).ToArray();
           var estimated = Content.EstimatedValues.GetEnumerator();
           var estimated_training = Content.EstimatedTrainingValues.GetEnumerator();
           var estimated_test = Content.EstimatedTestValues.GetEnumerator();

@@ -126,14 +126,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
       if (!ContainsKey(TrainingMeanAbsoluteErrorResultName)) {
         OnlineCalculatorError errorState;
         Add(new Result(TrainingMeanAbsoluteErrorResultName, "Mean of absolute errors of the model on the training partition", new DoubleValue()));
-        double trainingMAE = OnlineMeanAbsoluteErrorCalculator.Calculate(EstimatedTrainingValues, ProblemData.Dataset.GetEnumeratedVariableValues(ProblemData.TargetVariable, ProblemData.TrainingIndizes), out errorState);
+        double trainingMAE = OnlineMeanAbsoluteErrorCalculator.Calculate(EstimatedTrainingValues, ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndizes), out errorState);
         TrainingMeanAbsoluteError = errorState == OnlineCalculatorError.None ? trainingMAE : double.NaN;
       }
 
       if (!ContainsKey(TestMeanAbsoluteErrorResultName)) {
         OnlineCalculatorError errorState;
         Add(new Result(TestMeanAbsoluteErrorResultName, "Mean of absolute errors of the model on the test partition", new DoubleValue()));
-        double testMAE = OnlineMeanAbsoluteErrorCalculator.Calculate(EstimatedTestValues, ProblemData.Dataset.GetEnumeratedVariableValues(ProblemData.TargetVariable, ProblemData.TestIndizes), out errorState);
+        double testMAE = OnlineMeanAbsoluteErrorCalculator.Calculate(EstimatedTestValues, ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TestIndizes), out errorState);
         TestMeanAbsoluteError = errorState == OnlineCalculatorError.None ? testMAE : double.NaN;
       }
       #endregion
@@ -141,9 +141,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     protected void CalculateResults() {
       double[] estimatedTrainingValues = EstimatedTrainingValues.ToArray(); // cache values
-      double[] originalTrainingValues = ProblemData.Dataset.GetEnumeratedVariableValues(ProblemData.TargetVariable, ProblemData.TrainingIndizes).ToArray();
+      double[] originalTrainingValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndizes).ToArray();
       double[] estimatedTestValues = EstimatedTestValues.ToArray(); // cache values
-      double[] originalTestValues = ProblemData.Dataset.GetEnumeratedVariableValues(ProblemData.TargetVariable, ProblemData.TestIndizes).ToArray();
+      double[] originalTestValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TestIndizes).ToArray();
 
       OnlineCalculatorError errorState;
       double trainingMSE = OnlineMeanSquaredErrorCalculator.Calculate(estimatedTrainingValues, originalTrainingValues, out errorState);

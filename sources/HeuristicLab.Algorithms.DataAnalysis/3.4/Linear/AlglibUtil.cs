@@ -30,13 +30,18 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       List<int> rowsList = rows.ToList();
 
       double[,] matrix = new double[rowsList.Count, variablesList.Count];
-      for (int row = 0; row < rowsList.Count; row++) {
-        int col = 0;
-        foreach (string column in variables) {
-          matrix[row, col] = dataset[column, rowsList[row]];
-          col++;
+
+      int col = 0;
+      foreach (string column in variables) {
+        var values = dataset.GetDoubleValues(column, rows);
+        int row = 0;
+        foreach (var value in values) {
+          matrix[row, col] = value;
+          row++;
         }
+        col++;
       }
+
       return matrix;
     }
   }

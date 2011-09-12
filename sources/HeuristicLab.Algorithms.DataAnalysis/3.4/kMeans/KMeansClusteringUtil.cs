@@ -19,10 +19,10 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Problems.DataAnalysis;
-using System;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   public static class KMeansClusteringUtil {
@@ -41,7 +41,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           double centerDistance = 0;
           int col = 0;
           foreach (var inputVariable in allowedInputVariables) {
-            double d = center[col++] - dataset[inputVariable, row];
+            double d = center[col++] - dataset.GetDoubleValue(inputVariable, row);
             d = d * d; // square;
             centerDistance += d;
             if (centerDistance > bestCenterDistance[rowIndex]) break;
@@ -72,7 +72,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       foreach (var row in rows) {
         double[] p = new double[allowedInputVariables.Count];
         for (int i = 0; i < nCols; i++) {
-          p[i] = dataset[allowedInputVariables[i], row];
+          p[i] = dataset.GetDoubleValue(allowedInputVariables[i], row);
         }
         clusterPoints[clusterValues[clusterValueIndex++]].Add(p);
       }

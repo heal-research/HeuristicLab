@@ -134,9 +134,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     private void FillSeriesWithDataPoints(Series series) {
       List<double> estimatedValues = Content.EstimatedValues.ToList();
+      var targetValues = Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.TargetVariable).ToList();
+
       foreach (int row in Content.ProblemData.TrainingIndizes) {
         double estimatedValue = estimatedValues[row];
-        double targetValue = Content.ProblemData.Dataset[Content.ProblemData.TargetVariable, row];
+        double targetValue = targetValues[row];
         if (targetValue.IsAlmost((double)series.Tag)) {
           double jitterValue = random.NextDouble() * 2.0 - 1.0;
           DataPoint point = new DataPoint();
@@ -149,8 +151,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
       foreach (int row in Content.ProblemData.TestIndizes) {
         double estimatedValue = estimatedValues[row];
-        double targetValue = Content.ProblemData.Dataset[Content.ProblemData.TargetVariable, row];
-        if (targetValue == (double)series.Tag) {
+        double targetValue = targetValues[row];
+        if (targetValue.IsAlmost((double)series.Tag)) {
           double jitterValue = random.NextDouble() * 2.0 - 1.0;
           DataPoint point = new DataPoint();
           point.XValue = TestAxisValue + 0.01 * jitterValue * JitterTrackBar.Value * (TrainingTestBorder * 0.9);

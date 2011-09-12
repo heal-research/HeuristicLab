@@ -71,7 +71,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
       List<ISymbolicExpressionTreeNode> nodes = tree.Root.GetSubtree(0).GetSubtree(0).IterateNodesPostfix().ToList();
       var originalOutput = interpreter.GetSymbolicExpressionTreeValues(tree, dataset, rows)
         .ToArray();
-      var targetValues = dataset.GetEnumeratedVariableValues(targetVariable, rows);
+      var targetValues = dataset.GetDoubleValues(targetVariable, rows);
       OnlineCalculatorError errorState;
       double originalR2 = OnlinePearsonsRSquaredCalculator.Calculate(targetValues, originalOutput, out errorState);
       if (errorState != OnlineCalculatorError.None) originalR2 = 0.0;

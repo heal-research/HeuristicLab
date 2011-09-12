@@ -113,7 +113,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           predictedValues = Content.EstimatedTestClassValues.ToArray();
         } else throw new InvalidOperationException();
 
-        double[] targetValues = Content.ProblemData.Dataset.GetEnumeratedVariableValues(Content.ProblemData.TargetVariable, rows).ToArray();
+        double[] targetValues = Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.TargetVariable, rows).ToArray();
 
         Dictionary<double, int> classValueIndexMapping = new Dictionary<double, int>();
         int index = 0;

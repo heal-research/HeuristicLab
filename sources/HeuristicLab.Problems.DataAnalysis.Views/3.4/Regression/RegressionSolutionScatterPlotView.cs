@@ -129,16 +129,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         Dataset dataset = Content.ProblemData.Dataset;
         if (this.chart.Series[ALL_SERIES].Points.Count > 0)
           this.chart.Series[ALL_SERIES].Points.DataBindXY(Content.EstimatedValues.ToArray(), "",
-            dataset.GetVariableValues(targetVariableName), "");
+            dataset.GetDoubleValues(targetVariableName).ToArray(), "");
         if (this.chart.Series[TRAINING_SERIES].Points.Count > 0)
           this.chart.Series[TRAINING_SERIES].Points.DataBindXY(Content.EstimatedTrainingValues.ToArray(), "",
-            dataset.GetEnumeratedVariableValues(targetVariableName, Content.ProblemData.TrainingIndizes).ToArray(), "");
+            dataset.GetDoubleValues(targetVariableName, Content.ProblemData.TrainingIndizes).ToArray(), "");
         if (this.chart.Series[TEST_SERIES].Points.Count > 0)
           this.chart.Series[TEST_SERIES].Points.DataBindXY(Content.EstimatedTestValues.ToArray(), "",
-           dataset.GetEnumeratedVariableValues(targetVariableName, Content.ProblemData.TestIndizes).ToArray(), "");
+           dataset.GetDoubleValues(targetVariableName, Content.ProblemData.TestIndizes).ToArray(), "");
 
-        double max = Content.EstimatedTrainingValues.Concat(Content.EstimatedTestValues.Concat(Content.EstimatedValues.Concat(dataset.GetVariableValues(targetVariableName)))).Max();
-        double min = Content.EstimatedTrainingValues.Concat(Content.EstimatedTestValues.Concat(Content.EstimatedValues.Concat(dataset.GetVariableValues(targetVariableName)))).Min();
+        double max = Content.EstimatedTrainingValues.Concat(Content.EstimatedTestValues.Concat(Content.EstimatedValues.Concat(dataset.GetDoubleValues(targetVariableName)))).Max();
+        double min = Content.EstimatedTrainingValues.Concat(Content.EstimatedTestValues.Concat(Content.EstimatedValues.Concat(dataset.GetDoubleValues(targetVariableName)))).Min();
 
         max = max + 0.2 * Math.Abs(max);
         min = min - 0.2 * Math.Abs(min);
@@ -176,15 +176,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         switch (series.Name) {
           case ALL_SERIES:
             predictedValues = Content.EstimatedValues.ToArray();
-            targetValues = Content.ProblemData.Dataset.GetVariableValues(targetVariableName);
+            targetValues = Content.ProblemData.Dataset.GetDoubleValues(targetVariableName).ToArray();
             break;
           case TRAINING_SERIES:
             predictedValues = Content.EstimatedTrainingValues.ToArray();
-            targetValues = Content.ProblemData.Dataset.GetEnumeratedVariableValues(targetVariableName, Content.ProblemData.TrainingIndizes).ToArray();
+            targetValues = Content.ProblemData.Dataset.GetDoubleValues(targetVariableName, Content.ProblemData.TrainingIndizes).ToArray();
             break;
           case TEST_SERIES:
             predictedValues = Content.EstimatedTestValues.ToArray();
-            targetValues = Content.ProblemData.Dataset.GetEnumeratedVariableValues(targetVariableName, Content.ProblemData.TestIndizes).ToArray();
+            targetValues = Content.ProblemData.Dataset.GetDoubleValues(targetVariableName, Content.ProblemData.TestIndizes).ToArray();
             break;
         }
         series.Points.DataBindXY(predictedValues, "", targetValues, "");

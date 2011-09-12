@@ -72,7 +72,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var targetVariable = problemData.TargetVariable;
       var rows = problemData.TrainingIndizes;
       var estimatedValues = model.Interpreter.GetSymbolicExpressionTreeValues(model.SymbolicExpressionTree, dataset, rows);
-      var targetValues = dataset.GetEnumeratedVariableValues(targetVariable, rows);
+      var targetValues = dataset.GetDoubleValues(targetVariable, rows);
       double alpha;
       double beta;
       OnlineCalculatorError errorState;

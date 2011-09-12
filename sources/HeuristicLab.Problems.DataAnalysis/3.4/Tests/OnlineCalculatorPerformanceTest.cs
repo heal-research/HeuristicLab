@@ -79,7 +79,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
       Stopwatch watch = new Stopwatch();
       watch.Start();
       for (int i = 0; i < Repetitions; i++) {
-        double value = calculateFunc(dataset.GetEnumeratedVariableValues(0), dataset.GetEnumeratedVariableValues(1), out errorState);
+        double value = calculateFunc(dataset.GetDoubleValues("y"), dataset.GetDoubleValues("x0"), out errorState);
       }
       Assert.AreEqual(errorState, OnlineCalculatorError.None);
       watch.Stop();

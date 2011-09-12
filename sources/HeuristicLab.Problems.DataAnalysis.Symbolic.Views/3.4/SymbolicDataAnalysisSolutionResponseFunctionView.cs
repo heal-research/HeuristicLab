@@ -26,10 +26,8 @@ using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Common;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views;
-using HeuristicLab.MainForm.WindowsForms;
-using System.Windows.Forms.DataVisualization.Charting;
 using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
   [View("Response Function View")]
@@ -87,12 +85,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
        (from varNode in Content.Model.SymbolicExpressionTree.IterateNodesPrefix().OfType<VariableTreeNode>()
         select varNode.VariableName)
          .Distinct()
-         .OrderBy(x=>x)
+         .OrderBy(x => x)
          .ToList();
 
         medianValues.Clear();
         foreach (var variableName in referencedVariables) {
-          medianValues.Add(variableName, Content.ProblemData.Dataset.GetEnumeratedVariableValues(variableName).Median());
+          medianValues.Add(variableName, Content.ProblemData.Dataset.GetDoubleValues(variableName).Median());
         }
 
         comboBox.Items.Clear();
@@ -106,7 +104,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
       foreach (var variableName in variableNames) {
         var variableTrackbar = new VariableTrackbar(variableName,
-                                                    Content.ProblemData.Dataset.GetEnumeratedVariableValues(variableName));
+                                                    Content.ProblemData.Dataset.GetDoubleValues(variableName));
         variableTrackbar.Size = new Size(variableTrackbar.Size.Width, flowLayoutPanel.Size.Height - 23);
         variableTrackbar.ValueChanged += TrackBarValueChanged;
         flowLayoutPanel.Controls.Add(variableTrackbar);
@@ -131,7 +129,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       IEnumerable<string> fixedVariables = comboBox.Items.OfType<string>()
         .Except(new string[] { freeVariable });
 
-      var freeVariableValues = Content.ProblemData.Dataset.GetEnumeratedVariableValues(freeVariable, Content.ProblemData.TrainingIndizes).ToArray();
+      var freeVariableValues = Content.ProblemData.Dataset.GetDoubleValues(freeVariable, Content.ProblemData.TrainingIndizes).ToArray();
       var responseValues = Content.Model.Interpreter.GetSymbolicExpressionTreeValues(clonedTree,
                                                                               Content.ProblemData.Dataset,
                                                                               Content.ProblemData.TrainingIndizes).ToArray();

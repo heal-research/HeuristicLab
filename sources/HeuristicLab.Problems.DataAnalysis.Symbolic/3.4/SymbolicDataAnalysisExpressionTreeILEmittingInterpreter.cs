@@ -25,10 +25,10 @@ using System.Reflection;
 using System.Reflection.Emit;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
@@ -223,15 +223,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         Instruction instr = code[i];
         if (instr.opCode == OpCodes.Variable) {
           var variableTreeNode = instr.dynamicNode as VariableTreeNode;
-          instr.iArg0 = (ushort)dataset.GetVariableIndex(variableTreeNode.VariableName);
+          instr.iArg0 = dataset.GetReadOnlyDoubleValues(variableTreeNode.VariableName);
           code[i] = instr;
         } else if (instr.opCode == OpCodes.LagVariable) {
           var variableTreeNode = instr.dynamicNode as LaggedVariableTreeNode;
-          instr.iArg0 = (ushort)dataset.GetVariableIndex(variableTreeNode.VariableName);
+          instr.iArg0 = dataset.GetReadOnlyDoubleValues(variableTreeNode.VariableName);
           code[i] = instr;
         } else if (instr.opCode == OpCodes.VariableCondition) {
           var variableConditionTreeNode = instr.dynamicNode as VariableConditionTreeNode;
-          instr.iArg0 = (ushort)dataset.GetVariableIndex(variableConditionTreeNode.VariableName);
+          instr.iArg0 = dataset.GetReadOnlyDoubleValues(variableConditionTreeNode.VariableName);
         } else if (instr.opCode == OpCodes.Call) {
           necessaryArgStackSize += instr.nArguments + 1;
         }
@@ -467,15 +467,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             throw new NotImplementedException();
           }
         case OpCodes.Variable: {
-            VariableTreeNode varNode = (VariableTreeNode)currentInstr.dynamicNode;
-            il.Emit(System.Reflection.Emit.OpCodes.Ldarg_0); // load dataset
-            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, 0); // sampleOffset
-            il.Emit(System.Reflection.Emit.OpCodes.Ldarg_1); // sampleIndex
-            il.Emit(System.Reflection.Emit.OpCodes.Add); // row = sampleIndex + sampleOffset
-            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, currentInstr.iArg0); // load var
-            il.Emit(System.Reflection.Emit.OpCodes.Call, datasetGetValue); // dataset.GetValue
-            il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, varNode.Weight); // load weight
-            il.Emit(System.Reflection.Emit.OpCodes.Mul);
+            //VariableTreeNode varNode = (VariableTreeNode)currentInstr.dynamicNode;
+            //il.Emit(System.Reflection.Emit.OpCodes.Ldarg_0); // load dataset
+            //il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, 0); // sampleOffset
+            //il.Emit(System.Reflection.Emit.OpCodes.Ldarg_1); // sampleIndex
+            //il.Emit(System.Reflection.Emit.OpCodes.Add); // row = sampleIndex + sampleOffset
+            //il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, currentInstr.iArg0); // load var
+            //il.Emit(System.Reflection.Emit.OpCodes.Call, datasetGetValue); // dataset.GetValue
+            //il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, varNode.Weight); // load weight
+            //il.Emit(System.Reflection.Emit.OpCodes.Mul);
             return;
           }
         case OpCodes.LagVariable: {

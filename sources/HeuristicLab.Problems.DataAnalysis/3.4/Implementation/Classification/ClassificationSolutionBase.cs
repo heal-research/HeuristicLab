@@ -66,9 +66,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     protected void CalculateResults() {
       double[] estimatedTrainingClassValues = EstimatedTrainingClassValues.ToArray(); // cache values
-      double[] originalTrainingClassValues = ProblemData.Dataset.GetEnumeratedVariableValues(ProblemData.TargetVariable, ProblemData.TrainingIndizes).ToArray();
+      double[] originalTrainingClassValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndizes).ToArray();
       double[] estimatedTestClassValues = EstimatedTestClassValues.ToArray(); // cache values
-      double[] originalTestClassValues = ProblemData.Dataset.GetEnumeratedVariableValues(ProblemData.TargetVariable, ProblemData.TestIndizes).ToArray();
+      double[] originalTestClassValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TestIndizes).ToArray();
 
       OnlineCalculatorError errorState;
       double trainingAccuracy = OnlineAccuracyCalculator.Calculate(estimatedTrainingClassValues, originalTrainingClassValues, out errorState);

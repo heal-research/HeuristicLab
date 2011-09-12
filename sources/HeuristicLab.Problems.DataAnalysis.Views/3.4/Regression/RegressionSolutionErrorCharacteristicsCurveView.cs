@@ -163,13 +163,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       IEnumerable<double> originalValues;
       switch (cmbSamples.SelectedItem.ToString()) {
         case TrainingSamples:
-          originalValues = ProblemData.Dataset.GetEnumeratedVariableValues(ProblemData.TargetVariable, ProblemData.TrainingIndizes);
+          originalValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndizes);
           break;
         case TestSamples:
-          originalValues = ProblemData.Dataset.GetEnumeratedVariableValues(ProblemData.TargetVariable, ProblemData.TestIndizes);
+          originalValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TestIndizes);
           break;
         case AllSamples:
-          originalValues = ProblemData.Dataset.GetEnumeratedVariableValues(ProblemData.TargetVariable);
+          originalValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable);
           break;
         default:
           throw new NotSupportedException();
@@ -196,7 +196,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     protected IEnumerable<double> GetMeanModelEstimatedValues(IEnumerable<double> originalValues) {
-      double averageTrainingTarget = ProblemData.Dataset.GetEnumeratedVariableValues(ProblemData.TargetVariable, ProblemData.TrainingIndizes).Average();
+      double averageTrainingTarget = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndizes).Average();
       return Enumerable.Repeat(averageTrainingTarget, originalValues.Count());
     }
 

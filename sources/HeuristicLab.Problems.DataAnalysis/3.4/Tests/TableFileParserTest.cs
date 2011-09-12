@@ -20,11 +20,9 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
 using HeuristicLab.Problems.DataAnalysis;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
 
   [TestClass()]
@@ -45,7 +43,7 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
         parser.Parse(tempFileName);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
-        Assert.AreEqual(parser.Values[0, 3], 3.14);
+        Assert.AreEqual(parser.Values[3][0], 3.14);
       }
       finally {
         File.Delete(tempFileName);
@@ -67,7 +65,7 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
         parser.Parse(tempFileName);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
-        Assert.AreEqual(parser.Values[0, 3], 3.14);
+        Assert.AreEqual(parser.Values[3][0], 3.14);
       }
       finally {
         File.Delete(tempFileName);
@@ -89,7 +87,7 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
         parser.Parse(tempFileName);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
-        Assert.AreEqual(parser.Values[0, 3], 3.14);
+        Assert.AreEqual(parser.Values[3][0], 3.14);
       }
       finally {
         File.Delete(tempFileName);
@@ -112,7 +110,7 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
         parser.Parse(tempFileName);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
-        Assert.AreEqual(parser.Values[0, 3], 3.14);
+        Assert.AreEqual(parser.Values[3][0], 3.14);
       }
       finally {
         File.Delete(tempFileName);
@@ -134,7 +132,7 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
         parser.Parse(tempFileName);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
-        Assert.AreEqual(parser.Values[0, 3], 3);
+        Assert.AreEqual((double)parser.Values[3][0], 3);
       }
       finally {
         File.Delete(tempFileName);
@@ -156,7 +154,7 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
         parser.Parse(tempFileName);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
-        Assert.AreEqual(parser.Values[0, 3], 3);
+        Assert.AreEqual((double)parser.Values[3][0], 3);
       }
       finally {
         File.Delete(tempFileName);
@@ -178,7 +176,7 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
         parser.Parse(tempFileName);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
-        Assert.AreEqual(parser.Values[0, 3], 3);
+        Assert.AreEqual((double)parser.Values[3][0], 3);
       }
       finally {
         File.Delete(tempFileName);
@@ -201,7 +199,7 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
         parser.Parse(tempFileName);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
-        Assert.AreEqual(parser.Values[0, 3], 3);
+        Assert.AreEqual((double)parser.Values[3][0], 3);
       }
       finally {
         File.Delete(tempFileName);
@@ -224,7 +222,7 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
         parser.Parse(tempFileName);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
-        Assert.AreEqual(parser.Values[0, 3], 3.14);
+        Assert.AreEqual((double)parser.Values[3][0], 3.14);
       }
       finally {
         File.Delete(tempFileName);
@@ -247,7 +245,7 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
         parser.Parse(tempFileName);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
-        Assert.AreEqual(parser.Values[0, 3], 3.14);
+        Assert.AreEqual((double)parser.Values[3][0], 3.14);
       }
       finally {
         File.Delete(tempFileName);
@@ -269,7 +267,7 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
         parser.Parse(tempFileName);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
-        Assert.AreEqual(parser.Values[0, 3], 3.14);
+        Assert.AreEqual((double)parser.Values[3][0], 3.14);
       }
       finally {
         File.Delete(tempFileName);
@@ -291,7 +289,7 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
         parser.Parse(tempFileName);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
-        Assert.AreEqual(parser.Values[0, 3], 3.14);
+        Assert.AreEqual((double)parser.Values[3][0], 3.14);
       }
       finally {
         File.Delete(tempFileName);
@@ -313,7 +311,7 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
         parser.Parse(tempFileName);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
-        Assert.AreEqual(parser.Values[0, 3], 3);
+        Assert.AreEqual((double)parser.Values[3][0], 3);
       }
       finally {
         File.Delete(tempFileName);
@@ -335,7 +333,29 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
         parser.Parse(tempFileName);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
-        Assert.AreEqual(parser.Values[0, 3], 3);
+        Assert.AreEqual((double)parser.Values[3][0], 3);
+      }
+      finally {
+        File.Delete(tempFileName);
+      }
+    }
+
+    [TestMethod]
+    public void ParseWithEmtpyLines() {
+      string tempFileName = Path.GetTempFileName();
+      WriteToFile(tempFileName,
+"x01\t x02\t x03\t x04" + Environment.NewLine +
+"0\t 0\t 0\t 3" + Environment.NewLine +
+ Environment.NewLine +
+"0\t 0\t 0\t 0" + Environment.NewLine +
+" " + Environment.NewLine +
+"0\t 0\t 0\t 0" + Environment.NewLine +
+"0\t 0\t 0\t 0" + Environment.NewLine + Environment.NewLine);
+      TableFileParser parser = new TableFileParser();
+      try {
+        parser.Parse(tempFileName);
+        Assert.AreEqual(4, parser.Rows);
+        Assert.AreEqual(4, parser.Columns);
       }
       finally {
         File.Delete(tempFileName);
@@ -357,7 +377,7 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
         parser.Parse(tempFileName);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
-        Assert.AreEqual(parser.Values[0, 3], 3.14);
+        Assert.AreEqual((double)parser.Values[3][0], 3.14);
       }
       finally {
         File.Delete(tempFileName);
@@ -379,7 +399,7 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
         parser.Parse(tempFileName);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
-        Assert.AreEqual(parser.Values[0, 3], 3.14);
+        Assert.AreEqual((double)parser.Values[3][0], 3.14);
       }
       finally {
         File.Delete(tempFileName);
@@ -401,7 +421,7 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
         parser.Parse(tempFileName);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
-        Assert.AreEqual(parser.Values[0, 3], 3.14);
+        Assert.AreEqual((double)parser.Values[3][0], 3.14);
       }
       finally {
         File.Delete(tempFileName);
@@ -423,7 +443,7 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
         parser.Parse(tempFileName);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
-        Assert.AreEqual(parser.Values[0, 3], 3.14);
+        Assert.AreEqual((double)parser.Values[3][0], 3.14);
       }
       finally {
         File.Delete(tempFileName);
@@ -445,7 +465,7 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
         parser.Parse(tempFileName);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
-        Assert.AreEqual(parser.Values[0, 3], 3);
+        Assert.AreEqual((double)parser.Values[3][0], 3);
       }
       finally {
         File.Delete(tempFileName);
@@ -467,7 +487,7 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
         parser.Parse(tempFileName);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
-        Assert.AreEqual(parser.Values[0, 3], 3);
+        Assert.AreEqual((double)parser.Values[3][0], 3);
       }
       finally {
         File.Delete(tempFileName);

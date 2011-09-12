@@ -143,7 +143,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Dataset dataset = new Dataset(csvFileParser.VariableNames, csvFileParser.Values);
       dataset.Name = Path.GetFileName(fileName);
 
-      RegressionProblemData problemData = new RegressionProblemData(dataset, dataset.VariableNames.Skip(1), dataset.VariableNames.First());
+      RegressionProblemData problemData = new RegressionProblemData(dataset, dataset.DoubleVariables.Skip(1), dataset.DoubleVariables.First());
       problemData.Name = "Data imported from " + Path.GetFileName(fileName);
       return problemData;
     }

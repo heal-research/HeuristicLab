@@ -33,8 +33,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     /// <returns>A problem data type that can be used to train a support vector machine.</returns>
     public static SVM.Problem CreateSvmProblem(Dataset dataset, string targetVariable, IEnumerable<string> inputVariables, IEnumerable<int> rowIndices) {
       double[] targetVector =
-        dataset.GetEnumeratedVariableValues(targetVariable, rowIndices)
-        .ToArray();
+        dataset.GetDoubleValues(targetVariable, rowIndices).ToArray();
 
       SVM.Node[][] nodes = new SVM.Node[targetVector.Length][];
       List<SVM.Node> tempRow;
@@ -45,7 +44,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         tempRow = new List<SVM.Node>();
         int colIndex = 1; // make sure the smallest node index for SVM = 1
         foreach (var inputVariable in inputVariablesList) {
-          double value = dataset[row, dataset.GetVariableIndex(inputVariable)];
+          double value = dataset.GetDoubleValue(inputVariable, row);
           // SVM also works with missing values
           // => don't add NaN values in the dataset to the sparse SVM matrix representation
           if (!double.IsNaN(value)) {

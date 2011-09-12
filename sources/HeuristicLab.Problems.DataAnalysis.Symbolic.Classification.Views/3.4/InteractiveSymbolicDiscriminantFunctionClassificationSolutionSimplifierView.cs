@@ -72,7 +72,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
       Dictionary<ISymbolicExpressionTreeNode, double> impactValues = new Dictionary<ISymbolicExpressionTreeNode, double>();
       List<ISymbolicExpressionTreeNode> nodes = tree.Root.GetSubtree(0).GetSubtree(0).IterateNodesPostfix().ToList();
 
-      var targetClassValues = dataset.GetEnumeratedVariableValues(targetVariable, rows);
+      var targetClassValues = dataset.GetDoubleValues(targetVariable, rows);
       var originalOutput = interpreter.GetSymbolicExpressionTreeValues(tree, dataset, rows)
         .LimitToRange(Content.Model.LowerEstimationLimit, Content.Model.UpperEstimationLimit)
         .ToArray();

@@ -95,7 +95,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       int nRows = inputMatrix.GetLength(0);
       int nFeatures = inputMatrix.GetLength(1) - 1;
-      double[] classValues = dataset.GetVariableValues(targetVariable).Distinct().OrderBy(x => x).ToArray();
+      double[] classValues = dataset.GetDoubleValues(targetVariable).Distinct().OrderBy(x => x).ToArray();
       int nClasses = classValues.Count();
       // map original class values to values [0..nClasses-1]
       Dictionary<double, double> classIndizes = new Dictionary<double, double>();

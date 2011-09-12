@@ -225,7 +225,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public List<double> ClassValues {
       get {
         if (classValues == null) {
-          classValues = Dataset.GetEnumeratedVariableValues(TargetVariableParameter.Value.Value).Distinct().ToList();
+          classValues = Dataset.GetDoubleValues(TargetVariableParameter.Value.Value).Distinct().ToList();
           classValues.Sort();
         }
         return classValues;
@@ -290,8 +290,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     private static IEnumerable<string> CheckVariablesForPossibleTargetVariables(Dataset dataset) {
       int maxSamples = Math.Min(InspectedRowsToDetermineTargets, dataset.Rows);
-      var validTargetVariables = (from v in dataset.VariableNames
-                                  let distinctValues = dataset.GetEnumeratedVariableValues(v)
+      var validTargetVariables = (from v in dataset.DoubleVariables
+                                  let distinctValues = dataset.GetDoubleValues(v)
                                     .Take(maxSamples)
                                     .Distinct()
                                     .Count()
@@ -409,7 +409,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Dataset dataset = new Dataset(csvFileParser.VariableNames, csvFileParser.Values);
       dataset.Name = Path.GetFileName(fileName);
 
-      ClassificationProblemData problemData = new ClassificationProblemData(dataset, dataset.VariableNames.Skip(1), dataset.VariableNames.First());
+      ClassificationProblemData problemData = new ClassificationProblemData(dataset, dataset.DoubleVariables.Skip(1), dataset.DoubleVariables.First());
       problemData.Name = "Data imported from " + Path.GetFileName(fileName);
       return problemData;
     }
