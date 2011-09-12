@@ -20,6 +20,8 @@
 #endregion
 
 using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -34,20 +36,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("SymbolicDataAnalysisExpressionTreeILEmittingInterpreter", "Interpreter for symbolic expression trees.")]
   public sealed class SymbolicDataAnalysisExpressionTreeILEmittingInterpreter : ParameterizedNamedItem, ISymbolicDataAnalysisExpressionTreeInterpreter {
-    private static MethodInfo datasetGetValue = typeof(ThresholdCalculator).Assembly.GetType("HeuristicLab.Problems.DataAnalysis.Dataset").GetProperty("Item", new Type[] { typeof(int), typeof(int) }).GetGetMethod();
+    private static MethodInfo listGetValue = typeof(IList<double>).GetProperty("Item", new Type[] { typeof(int) }).GetGetMethod();
     private static MethodInfo cos = typeof(Math).GetMethod("Cos", new Type[] { typeof(double) });
     private static MethodInfo sin = typeof(Math).GetMethod("Sin", new Type[] { typeof(double) });
     private static MethodInfo tan = typeof(Math).GetMethod("Tan", new Type[] { typeof(double) });
     private static MethodInfo exp = typeof(Math).GetMethod("Exp", new Type[] { typeof(double) });
     private static MethodInfo log = typeof(Math).GetMethod("Log", new Type[] { typeof(double) });
-    private static MethodInfo sign = typeof(Math).GetMethod("Sign", new Type[] { typeof(double) });
     private static MethodInfo power = typeof(Math).GetMethod("Pow", new Type[] { typeof(double), typeof(double) });
-    private static MethodInfo sqrt = typeof(Math).GetMethod("Sqrt", new Type[] { typeof(double) });
-    private static MethodInfo isNan = typeof(double).GetMethod("IsNaN", new Type[] { typeof(double) });
-    private static MethodInfo abs = typeof(Math).GetMethod("Abs", new Type[] { typeof(double) });
-    private const double EPSILON = 1.0E-6;
 
-    internal delegate double CompiledFunction(Dataset dataset, int sampleIndex);
+    internal delegate double CompiledFunction(int sampleIndex, IList<double>[] columns);
     private const string CheckExpressionsWithIntervalArithmeticParameterName = "CheckExpressionsWithIntervalArithmetic";
     #region private classes
     private class InterpreterState {
@@ -219,26 +216,32 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var compiler = new SymbolicExpressionTreeCompiler();
       Instruction[] code = compiler.Compile(tree, MapSymbolToOpCode);
       int necessaryArgStackSize = 0;
+
+      Dictionary<string, int> doubleVariableNames = dataset.DoubleVariables.Select((x, i) => new { x, i }).ToDictionary(e => e.x, e => e.i);
+      IList<double>[] columns = (from v in doubleVariableNames.Keys
+                                 select dataset.GetReadOnlyDoubleValues(v))
+                                .ToArray();
+
       for (int i = 0; i < code.Length; i++) {
         Instruction instr = code[i];
         if (instr.opCode == OpCodes.Variable) {
           var variableTreeNode = instr.dynamicNode as VariableTreeNode;
-          instr.iArg0 = dataset.GetReadOnlyDoubleValues(variableTreeNode.VariableName);
+          instr.iArg0 = doubleVariableNames[variableTreeNode.VariableName];
           code[i] = instr;
         } else if (instr.opCode == OpCodes.LagVariable) {
           var variableTreeNode = instr.dynamicNode as LaggedVariableTreeNode;
-          instr.iArg0 = dataset.GetReadOnlyDoubleValues(variableTreeNode.VariableName);
+          instr.iArg0 = doubleVariableNames[variableTreeNode.VariableName];
           code[i] = instr;
         } else if (instr.opCode == OpCodes.VariableCondition) {
           var variableConditionTreeNode = instr.dynamicNode as VariableConditionTreeNode;
-          instr.iArg0 = dataset.GetReadOnlyDoubleValues(variableConditionTreeNode.VariableName);
+          instr.iArg0 = doubleVariableNames[variableConditionTreeNode.VariableName];
         } else if (instr.opCode == OpCodes.Call) {
           necessaryArgStackSize += instr.nArguments + 1;
         }
       }
       var state = new InterpreterState(code, necessaryArgStackSize);
 
-      Type[] methodArgs = { typeof(Dataset), typeof(int) };
+      Type[] methodArgs = { typeof(int), typeof(IList<double>[]) };
       DynamicMethod testFun = new DynamicMethod("TestFun", typeof(double), methodArgs, typeof(SymbolicDataAnalysisExpressionTreeILEmittingInterpreter).Module);
 
       ILGenerator il = testFun.GetILGenerator();
@@ -248,7 +251,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var function = (CompiledFunction)testFun.CreateDelegate(typeof(CompiledFunction));
 
       foreach (var row in rows) {
-        yield return function(dataset, row);
+        yield return function(row, columns);
       }
     }
 
@@ -467,15 +470,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             throw new NotImplementedException();
           }
         case OpCodes.Variable: {
-            //VariableTreeNode varNode = (VariableTreeNode)currentInstr.dynamicNode;
-            //il.Emit(System.Reflection.Emit.OpCodes.Ldarg_0); // load dataset
-            //il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, 0); // sampleOffset
-            //il.Emit(System.Reflection.Emit.OpCodes.Ldarg_1); // sampleIndex
-            //il.Emit(System.Reflection.Emit.OpCodes.Add); // row = sampleIndex + sampleOffset
-            //il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, currentInstr.iArg0); // load var
-            //il.Emit(System.Reflection.Emit.OpCodes.Call, datasetGetValue); // dataset.GetValue
-            //il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, varNode.Weight); // load weight
-            //il.Emit(System.Reflection.Emit.OpCodes.Mul);
+            VariableTreeNode varNode = (VariableTreeNode)currentInstr.dynamicNode;
+            il.Emit(System.Reflection.Emit.OpCodes.Ldarg_1); // load columns array
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, (int)currentInstr.iArg0); // load correct column of the current variable
+            il.Emit(System.Reflection.Emit.OpCodes.Ldelem_Ref);
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, 0); // sampleOffset
+            il.Emit(System.Reflection.Emit.OpCodes.Ldarg_0); // sampleIndex
+            il.Emit(System.Reflection.Emit.OpCodes.Add); // row = sampleIndex + sampleOffset
+            il.Emit(System.Reflection.Emit.OpCodes.Call, listGetValue);
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, varNode.Weight); // load weight
+            il.Emit(System.Reflection.Emit.OpCodes.Mul);
             return;
           }
         case OpCodes.LagVariable: {
