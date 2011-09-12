@@ -120,6 +120,9 @@
     <Compile Include="SupportVectorRegression\BestSupportVectorRegressionSolutionAnalyzer.cs" />
     <Compile Include="SupportVectorRegression\SupportVectorRegressionSolution.cs" />
     <Compile Include="Symbolic\Analyzers\BestSymbolicRegressionSolutionAnalyzer.cs" />
+    <Compile Include="Symbolic\Analyzers\SymbolicRegressionTournamentPruning.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Symbolic\Analyzers\TrainingBestScaledSymbolicRegressionSolutionAnalyzer.cs" />
     <Compile Include="Symbolic\Analyzers\SymbolicRegressionValidationAnalyzer.cs" />
     <Compile Include="Symbolic\Analyzers\FixedValidationBestScaledSymbolicRegressionSolutionAnalyzer.cs" />
