@@ -60,11 +60,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
     [TestMethod]
     public void SymbolicDataAnalysisExpressionTreeILEmittingInterpreterFullGrammarPerformanceTest() {
-      FullGrammarPerformanceTest(new SymbolicDataAnalysisExpressionTreeILEmittingInterpreter(), 25e6);
+      FullGrammarPerformanceTest(new SymbolicDataAnalysisExpressionTreeILEmittingInterpreter(), 10e6);
     }
     [TestMethod]
     public void SymbolicDataAnalysisExpressionTreeILEmittingInterpreterArithmeticGrammarPerformanceTest() {
-      FullGrammarPerformanceTest(new SymbolicDataAnalysisExpressionTreeILEmittingInterpreter(), 25e6);
+      FullGrammarPerformanceTest(new SymbolicDataAnalysisExpressionTreeILEmittingInterpreter(), 10e6);
     }
 
     private void FullGrammarPerformanceTest(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, double nodesPerSecThreshold) {
