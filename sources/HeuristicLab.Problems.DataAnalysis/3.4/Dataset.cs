@@ -141,7 +141,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     #endregion
 
+    [Storable(Name = "VariableValues")]
     private Dictionary<string, IList> variableValues;
+
     private List<string> variableNames;
     [Storable]
     public IEnumerable<string> VariableNames {
