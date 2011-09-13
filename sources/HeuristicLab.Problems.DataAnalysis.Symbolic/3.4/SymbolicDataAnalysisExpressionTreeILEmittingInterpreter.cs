@@ -43,6 +43,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private static MethodInfo exp = typeof(Math).GetMethod("Exp", new Type[] { typeof(double) });
     private static MethodInfo log = typeof(Math).GetMethod("Log", new Type[] { typeof(double) });
     private static MethodInfo power = typeof(Math).GetMethod("Pow", new Type[] { typeof(double), typeof(double) });
+    private static MethodInfo round = typeof(Math).GetMethod("Round", new Type[] { typeof(double) });
 
     internal delegate double CompiledFunction(int sampleIndex, IList<double>[] columns);
     private const string CheckExpressionsWithIntervalArithmeticParameterName = "CheckExpressionsWithIntervalArithmetic";
@@ -339,11 +340,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         case OpCodes.Power: {
             CompileInstructions(il, state);
             CompileInstructions(il, state);
+            il.Emit(System.Reflection.Emit.OpCodes.Call, round);
             il.Emit(System.Reflection.Emit.OpCodes.Call, power);
             return;
           }
         case OpCodes.Root: {
-            throw new NotImplementedException();
+            CompileInstructions(il, state);
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 1.0); // 1 / round(...)
+            CompileInstructions(il, state);
+            il.Emit(System.Reflection.Emit.OpCodes.Call, round);
+            il.Emit(System.Reflection.Emit.OpCodes.Div);
+            il.Emit(System.Reflection.Emit.OpCodes.Call, power);
+            return;
           }
         case OpCodes.Exp: {
             CompileInstructions(il, state);

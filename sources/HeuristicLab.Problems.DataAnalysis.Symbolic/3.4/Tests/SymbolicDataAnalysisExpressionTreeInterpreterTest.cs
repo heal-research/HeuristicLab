@@ -275,6 +275,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Evaluate(interpreter, ds, "(exp (log 7.0))", 0, Math.Exp(Math.Log(7)));
       Evaluate(interpreter, ds, "(log -3.0)", 0, Math.Log(-3));
 
+      // power
+      Evaluate(interpreter, ds, "(pow 2.0 3.0)", 0, 8.0);
+      Evaluate(interpreter, ds, "(pow 4.0 0.5)", 0, 1.0); // interpreter should round to the nearest integer value value (.5 is rounded to the even number)
+      Evaluate(interpreter, ds, "(pow 4.0 2.5)", 0, 16.0); // interpreter should round to the nearest integer value value (.5 is rounded to the even number)
+      Evaluate(interpreter, ds, "(pow -2.0 3.0)", 0, -8.0);
+      Evaluate(interpreter, ds, "(pow 2.0 -3.0)", 0, 1.0 / 8.0);
+      Evaluate(interpreter, ds, "(pow -2.0 -3.0)", 0, -1.0 / 8.0);
+
+      // root
+      Evaluate(interpreter, ds, "(root 9.0 2.0)", 0, 3.0);
+      Evaluate(interpreter, ds, "(root 27.0 3.0)", 0, 3.0);
+      Evaluate(interpreter, ds, "(root 2.0 -3.0)", 0, Math.Pow(2.0, -1.0 / 3.0));
+
       // mean
       Evaluate(interpreter, ds, "(mean -1.0 1.0 -1.0)", 0, -1.0 / 3.0);
 
