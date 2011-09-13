@@ -138,14 +138,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         var point = new DataPoint();
         if (residuals[i] > chart.ChartAreas[0].AxisX.Maximum) {
           point.XValue = chart.ChartAreas[0].AxisX.Maximum;
-          point.YValues[0] = ((double)i - 1) / residuals.Count;
+          point.YValues[0] = ((double)i) / residuals.Count;
           point.ToolTip = "Error: " + point.XValue + "\n" + "Samples: " + point.YValues[0];
           series.Points.Add(point);
           break;
         }
 
         point.XValue = residuals[i];
-        point.YValues[0] = ((double)i) / residuals.Count;
+        point.YValues[0] = ((double)i+1) / residuals.Count;
         point.ToolTip = "Error: " + point.XValue + "\n" + "Samples: " + point.YValues[0];
         series.Points.Add(point);
       }
