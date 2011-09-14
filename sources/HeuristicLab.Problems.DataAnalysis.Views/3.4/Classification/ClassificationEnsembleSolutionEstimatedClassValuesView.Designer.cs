@@ -43,7 +43,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.problemView1 = new HeuristicLab.Optimization.Views.ProblemView();
       this.SamplesComboBox = new System.Windows.Forms.ComboBox();
       this.SuspendLayout();
       // 
@@ -55,16 +54,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.matrixView.Dock = System.Windows.Forms.DockStyle.None;
       this.matrixView.Location = new System.Drawing.Point(3, 31);
       this.matrixView.Size = new System.Drawing.Size(304, 251);
-      // 
-      // problemView1
-      // 
-      this.problemView1.Caption = "Problem View";
-      this.problemView1.Content = null;
-      this.problemView1.Location = new System.Drawing.Point(1147, 687);
-      this.problemView1.Name = "problemView1";
-      this.problemView1.ReadOnly = false;
-      this.problemView1.Size = new System.Drawing.Size(490, 353);
-      this.problemView1.TabIndex = 1;
       // 
       // SamplesComboBox
       // 
@@ -83,10 +72,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.SamplesComboBox);
-      this.Controls.Add(this.problemView1);
       this.Name = "ClassificationEnsembleSolutionEstimatedClassValuesView";
       this.Controls.SetChildIndex(this.matrixView, 0);
-      this.Controls.SetChildIndex(this.problemView1, 0);
       this.Controls.SetChildIndex(this.SamplesComboBox, 0);
       this.ResumeLayout(false);
 
@@ -94,7 +81,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     #endregion
 
-    private Optimization.Views.ProblemView problemView1;
     private System.Windows.Forms.ComboBox SamplesComboBox;
 
   }
