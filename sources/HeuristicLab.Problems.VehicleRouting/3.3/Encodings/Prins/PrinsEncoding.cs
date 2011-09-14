@@ -85,7 +85,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
       double[] V = new double[cities + 1];
       V[0] = 0;
       for (int i = 1; i <= cities; i++) {
-        V[i] = int.MaxValue;
+        V[i] = double.MaxValue;
       }
 
       for (int i = 1; i <= cities; i++) {
