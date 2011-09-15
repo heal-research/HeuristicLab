@@ -291,6 +291,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       // mean
       Evaluate(interpreter, ds, "(mean -1.0 1.0 -1.0)", 0, -1.0 / 3.0);
 
+      // lag
+      Evaluate(interpreter, ds, "(lagVariable 1.0 a -1) ", 1, ds.GetDoubleValue("A", 0));
+      Evaluate(interpreter, ds, "(lagVariable 1.0 a -1) ", 2, ds.GetDoubleValue("A", 1));
+      Evaluate(interpreter, ds, "(lagVariable 1.0 a 0) ", 2, ds.GetDoubleValue("A", 2));
+      Evaluate(interpreter, ds, "(lagVariable 1.0 a 1) ", 0, ds.GetDoubleValue("A", 1));
     }
 
     private void Evaluate(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, Dataset ds, string expr, int index, double expected) {

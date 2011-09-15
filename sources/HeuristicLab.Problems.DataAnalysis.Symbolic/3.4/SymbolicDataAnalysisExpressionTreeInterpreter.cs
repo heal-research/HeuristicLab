@@ -414,7 +414,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             int actualRow = row + laggedVariableTreeNode.Lag;
             if (actualRow < 0 || actualRow >= dataset.Rows)
               return double.NaN;
-            return ((IList<double>)currentInstr.iArg0)[row] * laggedVariableTreeNode.Weight;
+            return ((IList<double>)currentInstr.iArg0)[actualRow] * laggedVariableTreeNode.Weight;
           }
         case OpCodes.Constant: {
             var constTreeNode = currentInstr.dynamicNode as ConstantTreeNode;

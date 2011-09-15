@@ -28,6 +28,7 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
   internal class SymbolicExpressionImporter {
     private const string VARSTART = "VAR";
+    private const string LAGGEDVARSTART = "LAG";
     private const string DEFUNSTART = "DEFUN";
     private const string ARGSTART = "ARG";
     private const string INVOKESTART = "CALL";
@@ -57,6 +58,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
     Constant constant = new Constant();
     Variable variable = new Variable();
+    LaggedVariable laggedVariable = new LaggedVariable();
     Defun defun = new Defun();
 
     ProgramRootSymbol programRootSymbol = new ProgramRootSymbol();
@@ -95,6 +97,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
         Expect(Token.LPAR, tokens);
         if (tokens.Peek().StringValue.StartsWith(VARSTART)) {
           tree = ParseVariable(tokens);
+        } else if (tokens.Peek().StringValue.StartsWith(LAGGEDVARSTART)) {
+          tree = ParseLaggedVariable(tokens);
         } else if (tokens.Peek().StringValue.StartsWith(DEFUNSTART)) {
           tree = ParseDefun(tokens);
           while (!tokens.Peek().Equals(Token.RPAR)) {
@@ -153,6 +157,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       VariableTreeNode t = (VariableTreeNode)variable.CreateTreeNode();
       t.Weight = tokens.Dequeue().DoubleValue;
       t.VariableName = tokens.Dequeue().StringValue;
+      return t;
+    }
+
+    private ISymbolicExpressionTreeNode ParseLaggedVariable(Queue<Token> tokens) {
+      Token varTok = tokens.Dequeue();
+      Debug.Assert(varTok.StringValue == "LAGVARIABLE");
+      LaggedVariableTreeNode t = (LaggedVariableTreeNode)laggedVariable.CreateTreeNode();
+      t.Weight = tokens.Dequeue().DoubleValue;
+      t.VariableName = tokens.Dequeue().StringValue;
+      t.Lag = (int)tokens.Dequeue().DoubleValue;
       return t;
     }
 
