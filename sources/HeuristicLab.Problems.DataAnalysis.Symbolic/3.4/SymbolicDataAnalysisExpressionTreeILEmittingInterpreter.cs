@@ -472,26 +472,34 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             throw new NotImplementedException();
           }
         case OpCodes.Call: {
-            throw new NotImplementedException();
+            throw new NotSupportedException("Automatically defined functions are not supported by the SymbolicDataAnalysisTreeILEmittingInterpreter. Either turn of ADFs or change the interpeter.");
           }
         case OpCodes.Arg: {
-            throw new NotImplementedException();
+            throw new NotSupportedException("Automatically defined functions are not supported by the SymbolicDataAnalysisTreeILEmittingInterpreter. Either turn of ADFs or change the interpeter.");
           }
         case OpCodes.Variable: {
             VariableTreeNode varNode = (VariableTreeNode)currentInstr.dynamicNode;
             il.Emit(System.Reflection.Emit.OpCodes.Ldarg_1); // load columns array
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, (int)currentInstr.iArg0); // load correct column of the current variable
             il.Emit(System.Reflection.Emit.OpCodes.Ldelem_Ref);
-            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, 0); // sampleOffset
             il.Emit(System.Reflection.Emit.OpCodes.Ldarg_0); // sampleIndex
-            il.Emit(System.Reflection.Emit.OpCodes.Add); // row = sampleIndex + sampleOffset
             il.Emit(System.Reflection.Emit.OpCodes.Call, listGetValue);
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, varNode.Weight); // load weight
             il.Emit(System.Reflection.Emit.OpCodes.Mul);
             return;
           }
         case OpCodes.LagVariable: {
-            throw new NotImplementedException();
+            LaggedVariableTreeNode varNode = (LaggedVariableTreeNode)currentInstr.dynamicNode;
+            il.Emit(System.Reflection.Emit.OpCodes.Ldarg_1); // load columns array
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, (int)currentInstr.iArg0); // load correct column of the current variable
+            il.Emit(System.Reflection.Emit.OpCodes.Ldelem_Ref);
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, varNode.Lag); // lag
+            il.Emit(System.Reflection.Emit.OpCodes.Ldarg_0); // sampleIndex
+            il.Emit(System.Reflection.Emit.OpCodes.Add); // row = sampleIndex + sampleOffset
+            il.Emit(System.Reflection.Emit.OpCodes.Call, listGetValue);
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, varNode.Weight); // load weight
+            il.Emit(System.Reflection.Emit.OpCodes.Mul);
+            return;
           }
         case OpCodes.Constant: {
             ConstantTreeNode constNode = (ConstantTreeNode)currentInstr.dynamicNode;
