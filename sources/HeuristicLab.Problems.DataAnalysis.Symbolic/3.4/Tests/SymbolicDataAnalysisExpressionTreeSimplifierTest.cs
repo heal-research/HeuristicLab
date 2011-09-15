@@ -130,15 +130,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
         Assert.AreEqual(formatter.Format(expectedTree), formatter.Format(actualTree));
       }
       {
-        // log transformation
-        var actualTree = simplifier.Simplify(importer.Import("(log (* (variable 2.0 a) (variable 3.0 b)))"));
-        var expectedTree = importer.Import("(+ (log (variable 1.0 a)) (log (variable 1.0 b)) 1.7918)");
+        // must not transform logs in this way as we do not know wether both variables are positive
+        var actualTree = simplifier.Simplify(importer.Import("(log (* (variable 1.0 a) (variable 1.0 b)))"));
+        var expectedTree = importer.Import("(log (* (variable 1.0 a) (variable 1.0 b)))");
         Assert.AreEqual(formatter.Format(expectedTree), formatter.Format(actualTree));
       }
       {
-        // log transformation
-        var actualTree = simplifier.Simplify(importer.Import("(log (/ (variable 2.0 a) (variable 3.0 b)))"));
-        var expectedTree = importer.Import("(- (log (variable 2.0 a)) (log (variable 3.0 b)))");
+        // must not transform logs in this way as we do not know wether both variables are positive
+        var actualTree = simplifier.Simplify(importer.Import("(log (/ (variable 1.0 a) (variable 1.0 b)))"));
+        var expectedTree = importer.Import("(log (/ (variable 1.0 a) (variable 1.0 b)))");
         Assert.AreEqual(formatter.Format(expectedTree), formatter.Format(actualTree));
       }
       #endregion

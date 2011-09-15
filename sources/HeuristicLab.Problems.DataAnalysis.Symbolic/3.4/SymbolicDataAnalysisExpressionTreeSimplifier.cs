@@ -537,14 +537,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return MakeConstant(Math.Log(constT.Value));
       } else if (IsExp(node)) {
         return node.GetSubtree(0);
-      } else if (IsMultiplication(node)) {
-        return node.Subtrees.Select(s => MakeLog(s)).Aggregate((x, y) => MakeSum(x, y));
-      } else if (IsDivision(node)) {
-        var subtractionNode = subSymbol.CreateTreeNode();
-        foreach (var subtree in node.Subtrees) {
-          subtractionNode.AddSubtree(MakeLog(subtree));
-        }
-        return subtractionNode;
       } else {
         var logNode = logSymbol.CreateTreeNode();
         logNode.AddSubtree(node);
