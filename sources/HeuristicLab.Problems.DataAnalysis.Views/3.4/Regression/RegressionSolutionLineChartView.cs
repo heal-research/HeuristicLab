@@ -229,6 +229,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         chart.DataManipulator.InsertEmptyPoints(1, IntervalType.Number, series.Name);
         chart.Legends[series.Legend].ForeColor = Color.Black;
         UpdateCursorInterval();
+        chart.Refresh();
       }
     }
 

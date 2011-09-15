@@ -103,13 +103,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
                      where r.Parameters.ContainsKey(numberOfFoldsParameterName)
                      select r;
         if (comboBox.SelectedIndex == 0) {
-          var selectedFolds = cvRuns.SelectMany(r => (RunCollection)r.Results[crossValidationFoldsResultName]);
+          var selectedFolds = cvRuns
+            .SelectMany(r => (RunCollection)r.Results[crossValidationFoldsResultName])
+            .Where(r => r.Results.ContainsKey(variableImpactResultName));
           matrixView.Content = CalculateVariableImpactMatrix(selectedFolds.ToArray());
         } else {
           var selectedFolds = from r in cvRuns
                               let foldCollection = (RunCollection)r.Results[crossValidationFoldsResultName]
-                              select (IRun)foldCollection.ElementAt(comboBox.SelectedIndex - 1).Clone();
-          matrixView.Content = CalculateVariableImpactMatrix(selectedFolds.ToArray(), cvRuns.Select(r => r.Name).ToArray());
+                              let run = foldCollection.ElementAt(comboBox.SelectedIndex - 1)
+                              where run.Results.ContainsKey(variableImpactResultName)
+                              select new { run, r.Name };
+          matrixView.Content = CalculateVariableImpactMatrix(selectedFolds.Select(x => x.run).ToArray(), selectedFolds.Select(x => x.Name).ToArray());
         }
       }
     }
@@ -134,8 +138,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
             }
             comboBox.SelectedIndex = 0;
             comboBox.Enabled = true;
-            var selectedFolds = cvRuns.SelectMany(r => (RunCollection)r.Results[crossValidationFoldsResultName]);
-            matrixView.Content = CalculateVariableImpactMatrix(selectedFolds.ToArray());
           } else {
             matrixView.Content = null;
           }
