@@ -103,7 +103,8 @@ namespace HeuristicLab.Optimization {
       }
     }
 
-    private bool stopPending;
+    private bool experimentStarted = false;
+    private bool experimentStopped = false;
 
     public Experiment()
       : base() {
@@ -113,7 +114,6 @@ namespace HeuristicLab.Optimization {
       executionTime = TimeSpan.Zero;
       optimizers = new OptimizerList();
       Runs = new RunCollection();
-      stopPending = false;
       Initialize();
     }
     public Experiment(string name)
@@ -123,7 +123,6 @@ namespace HeuristicLab.Optimization {
       executionTime = TimeSpan.Zero;
       optimizers = new OptimizerList();
       Runs = new RunCollection();
-      stopPending = false;
       Initialize();
     }
     public Experiment(string name, string description)
@@ -132,14 +131,10 @@ namespace HeuristicLab.Optimization {
       executionTime = TimeSpan.Zero;
       optimizers = new OptimizerList();
       Runs = new RunCollection();
-      stopPending = false;
       Initialize();
     }
     [StorableConstructor]
-    private Experiment(bool deserializing)
-      : base(deserializing) {
-      stopPending = false;
-    }
+    private Experiment(bool deserializing) : base(deserializing) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       Initialize();
@@ -150,7 +145,9 @@ namespace HeuristicLab.Optimization {
       executionTime = original.executionTime;
       optimizers = cloner.Clone(original.optimizers);
       runs = cloner.Clone(original.runs);
-      stopPending = original.stopPending;
+
+      experimentStarted = original.experimentStarted;
+      experimentStopped = original.experimentStopped;
       Initialize();
     }
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -171,37 +168,42 @@ namespace HeuristicLab.Optimization {
     public void Prepare(bool clearRuns) {
       if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused) && (ExecutionState != ExecutionState.Stopped))
         throw new InvalidOperationException(string.Format("Prepare not allowed in execution state \"{0}\".", ExecutionState));
-      if (Optimizers.Count > 0) {
-        if (clearRuns) runs.Clear();
-        foreach (IOptimizer optimizer in Optimizers.Where(x => x.ExecutionState != ExecutionState.Started))
+      if (Optimizers.Count == 0) return;
+
+      if (clearRuns) runs.Clear();
+      foreach (IOptimizer optimizer in Optimizers.Where(x => x.ExecutionState != ExecutionState.Started))
+        if (clearRuns || optimizer.ExecutionState != ExecutionState.Prepared)
           optimizer.Prepare(clearRuns);
-      }
     }
     public void Start() {
       if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused))
         throw new InvalidOperationException(string.Format("Start not allowed in execution state \"{0}\".", ExecutionState));
-      stopPending = false;
-      if (Optimizers.Count > 0) {
-        IOptimizer optimizer = Optimizers.FirstOrDefault(x => (x.ExecutionState == ExecutionState.Prepared) || (x.ExecutionState == ExecutionState.Paused));
-        if (optimizer != null) optimizer.Start();
-      }
+      if (Optimizers.Count == 0) return;
+
+      experimentStarted = true;
+      experimentStopped = false;
+      IOptimizer optimizer = Optimizers.FirstOrDefault(x => (x.ExecutionState == ExecutionState.Prepared) || (x.ExecutionState == ExecutionState.Paused));
+      if (optimizer != null) optimizer.Start();
     }
     public void Pause() {
       if (ExecutionState != ExecutionState.Started)
         throw new InvalidOperationException(string.Format("Pause not allowed in execution state \"{0}\".", ExecutionState));
-      if (Optimizers.Count > 0) {
-        foreach (IOptimizer optimizer in Optimizers.Where(x => x.ExecutionState == ExecutionState.Started))
-          optimizer.Pause();
-      }
+      if (Optimizers.Count == 0) return;
+
+      experimentStarted = false;
+      experimentStopped = false;
+      foreach (IOptimizer optimizer in Optimizers.Where(x => x.ExecutionState == ExecutionState.Started))
+        optimizer.Pause();
     }
     public void Stop() {
       if ((ExecutionState != ExecutionState.Started) && (ExecutionState != ExecutionState.Paused))
         throw new InvalidOperationException(string.Format("Stop not allowed in execution state \"{0}\".", ExecutionState));
-      stopPending = true;
-      if (Optimizers.Count > 0) {
-        foreach (IOptimizer optimizer in Optimizers.Where(x => (x.ExecutionState == ExecutionState.Started) || (x.ExecutionState == ExecutionState.Paused)))
-          optimizer.Stop();
-      }
+      if (Optimizers.Count == 0) return;
+
+      experimentStarted = false;
+      experimentStopped = true;
+      foreach (IOptimizer optimizer in Optimizers.Where(x => (x.ExecutionState == ExecutionState.Started) || (x.ExecutionState == ExecutionState.Paused)))
+        optimizer.Stop();
     }
 
     #region Events
@@ -332,13 +334,11 @@ namespace HeuristicLab.Optimization {
         OnStarted();
     }
     private void optimizer_Stopped(object sender, EventArgs e) {
-      if (!stopPending && Optimizers.Any(x => (x.ExecutionState == ExecutionState.Prepared) || (x.ExecutionState == ExecutionState.Paused))) {
+      if (experimentStopped && Optimizers.All(o => o.ExecutionState == ExecutionState.Stopped || o.ExecutionState == ExecutionState.Prepared)) OnStopped();
+      else if (Optimizers.All(o => o.ExecutionState == ExecutionState.Stopped)) OnStopped();
+      else if (Optimizers.Any(o => o.ExecutionState == ExecutionState.Paused) && Optimizers.All(o => o.ExecutionState != ExecutionState.Started)) OnPaused();
+      else if (experimentStarted && !experimentStopped && Optimizers.Any(x => (x.ExecutionState == ExecutionState.Prepared) || (x.ExecutionState == ExecutionState.Paused))) {
         Optimizers.First(x => (x.ExecutionState == ExecutionState.Prepared) || (x.ExecutionState == ExecutionState.Paused)).Start();
-      } else {
-        if (Optimizers.All(x => (x.ExecutionState != ExecutionState.Started) && (x.ExecutionState != ExecutionState.Paused))) {
-          stopPending = false;
-          OnStopped();
-        }
       }
     }
     private void optimizer_Runs_CollectionReset(object sender, CollectionItemsChangedEventArgs<IRun> e) {

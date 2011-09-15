@@ -146,7 +146,9 @@ namespace HeuristicLab.Optimization {
       }
     }
 
-    private bool stopPending;
+    private bool batchRunStarted = false;
+    private bool batchRunPaused = false;
+    private bool batchRunStopped = false;
 
     public BatchRun()
       : base() {
@@ -157,7 +159,6 @@ namespace HeuristicLab.Optimization {
       repetitions = 10;
       repetitionsCounter = 0;
       Runs = new RunCollection();
-      stopPending = false;
     }
     public BatchRun(string name)
       : base(name) {
@@ -167,7 +168,6 @@ namespace HeuristicLab.Optimization {
       repetitions = 10;
       repetitionsCounter = 0;
       Runs = new RunCollection();
-      stopPending = false;
     }
     public BatchRun(string name, string description)
       : base(name, description) {
@@ -176,13 +176,9 @@ namespace HeuristicLab.Optimization {
       repetitions = 10;
       repetitionsCounter = 0;
       Runs = new RunCollection();
-      stopPending = false;
     }
     [StorableConstructor]
-    private BatchRun(bool deserializing)
-      : base(deserializing) {
-      stopPending = false;
-    }
+    private BatchRun(bool deserializing) : base(deserializing) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       Initialize();
@@ -196,7 +192,9 @@ namespace HeuristicLab.Optimization {
       repetitions = original.repetitions;
       repetitionsCounter = original.repetitionsCounter;
       runs = cloner.Clone(original.runs);
-      stopPending = original.stopPending;
+      batchRunStarted = original.batchRunStarted;
+      batchRunPaused = original.batchRunPaused;
+      batchRunStopped = original.batchRunStopped;
       Initialize();
     }
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -226,21 +224,34 @@ namespace HeuristicLab.Optimization {
     public void Start() {
       if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused))
         throw new InvalidOperationException(string.Format("Start not allowed in execution state \"{0}\".", ExecutionState));
-      if (Optimizer != null) Optimizer.Start();
+      if (Optimizer == null) return;
+
+      batchRunStarted = true;
+      batchRunPaused = false;
+      batchRunStopped = false;
+      if (Optimizer.ExecutionState != ExecutionState.Prepared) Optimizer.Prepare();
+      Optimizer.Start();
     }
     public void Pause() {
       if (ExecutionState != ExecutionState.Started)
         throw new InvalidOperationException(string.Format("Pause not allowed in execution state \"{0}\".", ExecutionState));
-      if ((Optimizer != null) && (Optimizer.ExecutionState == ExecutionState.Started))
-        Optimizer.Pause();
+      if (Optimizer == null) return;
+      if (Optimizer.ExecutionState != ExecutionState.Started) return;
+
+      batchRunStarted = false;
+      batchRunPaused = true;
+      batchRunStopped = false;
+      Optimizer.Pause();
     }
     public void Stop() {
       if ((ExecutionState != ExecutionState.Started) && (ExecutionState != ExecutionState.Paused))
         throw new InvalidOperationException(string.Format("Stop not allowed in execution state \"{0}\".", ExecutionState));
-      stopPending = true;
-      if ((Optimizer != null) &&
-          ((Optimizer.ExecutionState == ExecutionState.Started) || (Optimizer.ExecutionState == ExecutionState.Paused)))
-        Optimizer.Stop();
+      if (Optimizer == null) return;
+      if (Optimizer.ExecutionState != ExecutionState.Started && Optimizer.ExecutionState != ExecutionState.Paused) return;
+      batchRunStarted = false;
+      batchRunPaused = false;
+      batchRunStopped = true;
+      Optimizer.Stop();
     }
 
     #region Events
@@ -323,26 +334,32 @@ namespace HeuristicLab.Optimization {
       OnExecutionTimeChanged();
     }
     private void Optimizer_Paused(object sender, EventArgs e) {
-      OnPaused();
+      if (ExecutionState == ExecutionState.Started) {
+        batchRunStarted = false;
+        batchRunPaused = true;
+        batchRunStopped = false;
+        OnPaused();
+      }
     }
     private void Optimizer_Prepared(object sender, EventArgs e) {
-      if ((ExecutionState == ExecutionState.Paused) || (ExecutionState == ExecutionState.Stopped))
+      if (ExecutionState == ExecutionState.Stopped || !batchRunStarted) {
         OnPrepared();
+      }
     }
     private void Optimizer_Started(object sender, EventArgs e) {
-      stopPending = false;
       if (ExecutionState != ExecutionState.Started)
         OnStarted();
     }
     private void Optimizer_Stopped(object sender, EventArgs e) {
       repetitionsCounter++;
 
-      if (!stopPending && (repetitionsCounter < repetitions)) {
+      if (batchRunStopped) OnStopped();
+      else if (repetitionsCounter >= repetitions) OnStopped();
+      else if (batchRunPaused) OnPaused();
+      else if (batchRunStarted) {
         Optimizer.Prepare();
         Optimizer.Start();
-      } else {
-        OnStopped();
-      }
+      } else OnStopped();
     }
     private void Optimizer_Runs_CollectionReset(object sender, CollectionItemsChangedEventArgs<IRun> e) {
       Runs.RemoveRange(e.OldItems);
