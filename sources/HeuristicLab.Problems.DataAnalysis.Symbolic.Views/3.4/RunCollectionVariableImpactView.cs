@@ -102,10 +102,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
                      where r.Visible
                      where r.Parameters.ContainsKey(numberOfFoldsParameterName)
                      select r;
-        var selectedFolds = from r in cvRuns
-                            let foldCollection = (RunCollection)r.Results[crossValidationFoldsResultName]
-                            select (IRun)foldCollection.ElementAt((int)comboBox.SelectedItem).Clone();
-        matrixView.Content = CalculateVariableImpactMatrix(selectedFolds.ToArray(), cvRuns.Select(r => r.Name).ToArray());
+        if (comboBox.SelectedIndex == 0) {
+          var selectedFolds = cvRuns.SelectMany(r => (RunCollection)r.Results[crossValidationFoldsResultName]);
+          matrixView.Content = CalculateVariableImpactMatrix(selectedFolds.ToArray());
+        } else {
+          var selectedFolds = from r in cvRuns
+                              let foldCollection = (RunCollection)r.Results[crossValidationFoldsResultName]
+                              select (IRun)foldCollection.ElementAt(comboBox.SelectedIndex - 1).Clone();
+          matrixView.Content = CalculateVariableImpactMatrix(selectedFolds.ToArray(), cvRuns.Select(r => r.Name).ToArray());
+        }
       }
     }
 
@@ -123,14 +128,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
           var cvRuns = visibleRuns.Where(r => r.Parameters.ContainsKey(numberOfFoldsParameterName));
           if (cvRuns.All(r => ((IntValue)r.Parameters[numberOfFoldsParameterName]).Value == nFolds)) {
             // populate combobox
+            comboBox.Items.Add("Overall");
             for (int foldIndex = 0; foldIndex < nFolds; foldIndex++) {
-              comboBox.Items.Add(foldIndex);
+              comboBox.Items.Add("Fold " + foldIndex);
             }
+            comboBox.SelectedIndex = 0;
             comboBox.Enabled = true;
-            var selectedFolds = from r in cvRuns
-                                let foldCollection = (RunCollection)r.Results[crossValidationFoldsResultName]
-                                select foldCollection.First();
-            matrixView.Content = CalculateVariableImpactMatrix(selectedFolds.ToArray(), cvRuns.Select(f => f.Name).ToArray());
+            var selectedFolds = cvRuns.SelectMany(r => (RunCollection)r.Results[crossValidationFoldsResultName]);
+            matrixView.Content = CalculateVariableImpactMatrix(selectedFolds.ToArray());
           } else {
             matrixView.Content = null;
           }
