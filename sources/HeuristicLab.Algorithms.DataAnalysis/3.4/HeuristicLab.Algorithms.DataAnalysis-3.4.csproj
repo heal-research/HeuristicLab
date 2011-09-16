@@ -106,7 +106,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="RegressionWorkbench.cs" />
     <Compile Include="CrossValidation.cs">
       <SubType>Code</SubType>
     </Compile>
