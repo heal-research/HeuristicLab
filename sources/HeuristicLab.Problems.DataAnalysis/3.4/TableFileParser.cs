@@ -97,7 +97,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
           continue;
         }
 
-        var columnType = types.GroupBy(v => v).OrderBy(v => v).Last().Key;
+        var columnType = types.GroupBy(v => v).OrderBy(v => v.Count()).Last().Key;
         if (columnType == typeof(double)) values.Add(new List<double>());
         else if (columnType == typeof(DateTime)) values.Add(new List<DateTime>());
         else if (columnType == typeof(string)) values.Add(new List<string>());
@@ -110,13 +110,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
       foreach (List<object> row in rowValues) {
         int columnIndex = 0;
         foreach (object element in row) {
-          //handle missing values with default values
-          if (element as string == string.Empty) {
-            if (values[columnIndex] is List<double>) values[columnIndex].Add(double.NaN);
-            else if (values[columnIndex] is List<DateTime>) values[columnIndex].Add(DateTime.MinValue);
-            else if (values[columnIndex] is List<string>) values[columnIndex].Add(string.Empty);
-            else throw new InvalidOperationException();
-          } else values[columnIndex].Add(element);
+          if (values[columnIndex] is List<double> && !(element is double))
+            values[columnIndex].Add(double.NaN);
+          else if (values[columnIndex] is List<DateTime> && !(element is DateTime))
+            values[columnIndex].Add(DateTime.MinValue);
+          else if (values[columnIndex] is List<string> && !(element is string))
+            values[columnIndex].Add(string.Empty);
+          else
+            values[columnIndex].Add(element);
           columnIndex++;
         }
       }
@@ -295,7 +296,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
         } else if (double.TryParse(strToken, NumberStyles.Float, numberFormatInfo, out token.doubleValue)) {
           token.type = TokenTypeEnum.Double;
           return token;
-        } else if (DateTime.TryParse(strToken, out token.dateTimeValue)) {
+        } else if (DateTime.TryParse(strToken, dateTimeFormatInfo, DateTimeStyles.None, out token.dateTimeValue)) {
           token.type = TokenTypeEnum.DateTime;
           return token;
         }
