@@ -173,7 +173,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
       matrix = new DoubleMatrix(variableNamesList.Count, numberOfRuns + statictics.Count);
       matrix.SortableView = true;
-      matrix.RowNames = variableNamesList;
       matrix.ColumnNames = columnNames;
 
       // calculate statistics
@@ -234,6 +233,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
           sortedMatrix[targetIndex, c] = matrix[sourceIndex, c];
         targetIndex++;
       }
+      sortedMatrix.RowNames = sortedIndexes.Select(i => variableNamesList[i]);
+
       return sortedMatrix;
     }
 
