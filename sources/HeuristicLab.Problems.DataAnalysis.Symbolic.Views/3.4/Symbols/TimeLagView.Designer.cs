@@ -72,10 +72,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // minimumArityTextBox
       // 
       this.errorProvider.SetIconAlignment(this.minimumArityTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
+      this.minimumArityTextBox.Size = new System.Drawing.Size(315, 20);
       // 
       // maximumArityTextBox
       // 
       this.errorProvider.SetIconAlignment(this.maximumArityTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
+      this.maximumArityTextBox.Size = new System.Drawing.Size(315, 20);
       // 
       // nameTextBox
       // 
@@ -107,6 +109,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // minTimeOffsetTextBox
       // 
+      this.minTimeOffsetTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.minTimeOffsetTextBox.Location = new System.Drawing.Point(93, 127);
       this.minTimeOffsetTextBox.Name = "minTimeOffsetTextBox";
       this.minTimeOffsetTextBox.Size = new System.Drawing.Size(315, 20);
@@ -115,6 +119,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // maxTimeOffsetTextBox
       // 
+      this.maxTimeOffsetTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.maxTimeOffsetTextBox.Location = new System.Drawing.Point(93, 153);
       this.maxTimeOffsetTextBox.Name = "maxTimeOffsetTextBox";
       this.maxTimeOffsetTextBox.Size = new System.Drawing.Size(315, 20);
