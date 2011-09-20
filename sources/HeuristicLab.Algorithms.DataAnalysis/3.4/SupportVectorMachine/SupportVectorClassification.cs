@@ -87,7 +87,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       : base() {
       Problem = new ClassificationProblem();
 
-      List<StringValue> svrTypes = (from type in new List<string> { "NU_SVC", "EPSILON_SVC" }
+      List<StringValue> svrTypes = (from type in new List<string> { "NU_SVC", "C_SVC" }
                                     select new StringValue(type).AsReadOnly())
                                    .ToList();
       ItemSet<StringValue> svrTypeSet = new ItemSet<StringValue>(svrTypes);
@@ -132,6 +132,16 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       parameter.Gamma = gamma;
       parameter.CacheSize = 500;
       parameter.Probability = false;
+
+      foreach (double c in problemData.ClassValues) {
+        double wSum = 0.0;
+        foreach (double otherClass in problemData.ClassValues) {
+          if (!c.IsAlmost(otherClass)) {
+            wSum += problemData.GetClassificationPenalty(c, otherClass);
+          }
+        }
+        parameter.Weights.Add((int)c, wSum);
+      }
 
 
       SVM.Problem problem = SupportVectorMachineUtil.CreateSvmProblem(dataset, targetVariable, allowedInputVariables, rows);
