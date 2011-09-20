@@ -94,7 +94,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
           // automatically fold all branches with impact = 1
           List<ISymbolicExpressionTreeNode> nodeList = Content.Model.SymbolicExpressionTree.Root.GetSubtree(0).IterateNodesPrefix().ToList();
           foreach (var parent in nodeList) {
-            for (int subTreeIndex = 0; subTreeIndex < parent.SubtreesCount; subTreeIndex++) {
+            for (int subTreeIndex = 0; subTreeIndex < parent.SubtreeCount; subTreeIndex++) {
               var child = parent.GetSubtree(subTreeIndex);
               if (!(child.Symbol is Constant) && nodeImpacts[child].IsAlmost(0.0)) {
                 SwitchNodeWithReplacementNode(parent, subTreeIndex);
@@ -104,7 +104,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         }
 
         // show only interesting part of solution 
-        if (tree.Root.SubtreesCount > 1)
+        if (tree.Root.SubtreeCount > 1)
           this.treeChart.Tree = new SymbolicExpressionTree(tree.Root); // RPB + ADFs
         else
           this.treeChart.Tree = new SymbolicExpressionTree(tree.Root.GetSubtree(0).GetSubtree(0)); // 1st child of RPB
@@ -129,14 +129,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       VisualSymbolicExpressionTreeNode visualTreeNode = (VisualSymbolicExpressionTreeNode)sender;
       var tree = Content.Model.SymbolicExpressionTree;
       foreach (SymbolicExpressionTreeNode treeNode in tree.IterateNodesPostfix()) {
-        for (int i = 0; i < treeNode.SubtreesCount; i++) {
+        for (int i = 0; i < treeNode.SubtreeCount; i++) {
           ISymbolicExpressionTreeNode subTree = treeNode.GetSubtree(i);
           // only allow to replace nodes for which a replacement value is known (replacement value for ADF nodes are not available)
           if (subTree == visualTreeNode.SymbolicExpressionTreeNode && replacementNodes.ContainsKey(subTree)) {
             SwitchNodeWithReplacementNode(treeNode, i);
 
             // show only interesting part of solution 
-            if (tree.Root.SubtreesCount > 1)
+            if (tree.Root.SubtreeCount > 1)
               this.treeChart.Tree = new SymbolicExpressionTree(tree.Root); // RPB + ADFs
             else
               this.treeChart.Tree = new SymbolicExpressionTree(tree.Root.GetSubtree(0).GetSubtree(0)); // 1st child of RPB

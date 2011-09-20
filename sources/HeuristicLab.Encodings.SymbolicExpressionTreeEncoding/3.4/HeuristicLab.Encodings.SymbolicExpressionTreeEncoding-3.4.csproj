@@ -166,6 +166,7 @@
     <Compile Include="SymbolicExpressionTreeNode.cs" />
     <Compile Include="Symbols\Argument.cs" />
     <Compile Include="Symbols\ArgumentTreeNode.cs" />
+    <Compile Include="Symbols\GroupSymbol.cs" />
     <Compile Include="Symbols\StartSymbol.cs" />
     <Compile Include="Symbols\InvokeFunction.cs" />
     <Compile Include="Symbols\InvokeFunctionTreeNode.cs" />

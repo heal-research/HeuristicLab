@@ -27,6 +27,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("Sine", "Symbol that represents the sine function.")]
   public sealed class Sine : Symbol {
+    private const int minimumArity = 1;
+    private const int maximumArity = 1;
+
+    public override int MinimumArity {
+      get { return minimumArity; }
+    }
+    public override int MaximumArity {
+      get { return maximumArity; }
+    }
+
     [StorableConstructor]
     private Sine(bool deserializing) : base(deserializing) { }
     private Sine(Sine original, Cloner cloner) : base(original, cloner) { }

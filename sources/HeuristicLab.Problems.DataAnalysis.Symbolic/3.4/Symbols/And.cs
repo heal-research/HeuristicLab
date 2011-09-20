@@ -27,6 +27,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("And", "Symbol that represents the boolean AND operator.")]
   public sealed class And : Symbol {
+    private const int minimumArity = 1;
+    private const int maximumArity = byte.MaxValue;
+
+    public override int MinimumArity {
+      get { return minimumArity; }
+    }
+    public override int MaximumArity {
+      get { return maximumArity; }
+    }
+
     [StorableConstructor]
     private And(bool deserializing) : base(deserializing) { }
     private And(And original, Cloner cloner) : base(original, cloner) { }

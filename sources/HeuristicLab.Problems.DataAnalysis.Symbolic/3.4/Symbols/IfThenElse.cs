@@ -27,6 +27,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("IfThenElse", "Symbol that represents a conditional operator.")]
   public sealed class IfThenElse : Symbol {
+    private const int minimumArity = 3;
+    private const int maximumArity = 3;
+
+    public override int MinimumArity {
+      get { return minimumArity; }
+    }
+    public override int MaximumArity {
+      get { return maximumArity; }
+    }
+
     [StorableConstructor]
     private IfThenElse(bool deserializing) : base(deserializing) { }
     private IfThenElse(IfThenElse original, Cloner cloner) : base(original, cloner) { }

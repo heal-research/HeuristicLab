@@ -56,8 +56,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
-      initialFrequencyTextBox.Enabled = Content != null;
+      initialFrequencyTextBox.Enabled = Content != null || Locked;
       initialFrequencyTextBox.ReadOnly = ReadOnly;
+      enabledCheckBox.Enabled = Content != null || Locked || ReadOnly;
     }
 
     #region content event handlers
@@ -92,17 +93,29 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
         Content.InitialFrequency = freq;
       }
     }
+
+    private void checkBoxEnabled_CheckedChanged(object sender, EventArgs e) {
+      if (Content != null)
+        Content.Enabled = enabledCheckBox.Checked;
+    }
     #endregion
 
     #region helpers
     private void UpdateControl() {
       if (Content == null) {
         initialFrequencyTextBox.Text = string.Empty;
+        minimumArityTextBox.Text = string.Empty;
+        maximumArityTextBox.Text = string.Empty;
+        enabledCheckBox.Checked = false;
       } else {
         initialFrequencyTextBox.Text = Content.InitialFrequency.ToString();
+        minimumArityTextBox.Text = Content.MinimumArity.ToString();
+        maximumArityTextBox.Text = Content.MaximumArity.ToString();
+        enabledCheckBox.Checked = Content.Enabled;
       }
       SetEnabledStateOfControls();
     }
     #endregion
+
   }
 }

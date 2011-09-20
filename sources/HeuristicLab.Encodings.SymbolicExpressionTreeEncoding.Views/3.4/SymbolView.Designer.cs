@@ -46,6 +46,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     private void InitializeComponent() {
       this.initialFrequencyLabel = new System.Windows.Forms.Label();
       this.initialFrequencyTextBox = new System.Windows.Forms.TextBox();
+      this.enabledCheckBox = new System.Windows.Forms.CheckBox();
+      this.minimumArityLabel = new System.Windows.Forms.Label();
+      this.maximumArityLabel = new System.Windows.Forms.Label();
+      this.minimumArityTextBox = new System.Windows.Forms.TextBox();
+      this.maximumArityTextBox = new System.Windows.Forms.TextBox();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.SuspendLayout();
       // 
@@ -72,8 +77,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       // 
       // initialFrequencyTextBox
       // 
-      this.initialFrequencyTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.initialFrequencyTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.errorProvider.SetIconAlignment(this.initialFrequencyTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.initialFrequencyTextBox.Location = new System.Drawing.Point(93, 26);
       this.initialFrequencyTextBox.Name = "initialFrequencyTextBox";
@@ -83,16 +88,79 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       this.initialFrequencyTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.initialFrequencyTextBox_Validating);
       this.initialFrequencyTextBox.Validated += new System.EventHandler(this.initialFrequencyTextBox_Validated);
       // 
+      // enabledCheckBox
+      // 
+      this.enabledCheckBox.AutoSize = true;
+      this.enabledCheckBox.Location = new System.Drawing.Point(93, 104);
+      this.enabledCheckBox.Name = "enabledCheckBox";
+      this.enabledCheckBox.Size = new System.Drawing.Size(65, 17);
+      this.enabledCheckBox.TabIndex = 5;
+      this.enabledCheckBox.Text = "Enabled";
+      this.enabledCheckBox.UseVisualStyleBackColor = true;
+      this.enabledCheckBox.CheckedChanged += new System.EventHandler(this.checkBoxEnabled_CheckedChanged);
+      // 
+      // minimumArityLabel
+      // 
+      this.minimumArityLabel.AutoSize = true;
+      this.minimumArityLabel.Location = new System.Drawing.Point(3, 55);
+      this.minimumArityLabel.Name = "minimumArityLabel";
+      this.minimumArityLabel.Size = new System.Drawing.Size(74, 13);
+      this.minimumArityLabel.TabIndex = 8;
+      this.minimumArityLabel.Text = "Minimum Arity:";
+      this.toolTip.SetToolTip(this.minimumArityLabel, "Relative frequency of the symbol in randomly created trees");
+      // 
+      // maximumArityLabel
+      // 
+      this.maximumArityLabel.AutoSize = true;
+      this.maximumArityLabel.Location = new System.Drawing.Point(3, 81);
+      this.maximumArityLabel.Name = "maximumArityLabel";
+      this.maximumArityLabel.Size = new System.Drawing.Size(74, 13);
+      this.maximumArityLabel.TabIndex = 6;
+      this.maximumArityLabel.Text = "Maximum Arity";
+      this.toolTip.SetToolTip(this.maximumArityLabel, "Relative frequency of the symbol in randomly created trees");
+      // 
+      // minimumArityTextBox
+      // 
+      this.minimumArityTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.errorProvider.SetIconAlignment(this.minimumArityTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
+      this.minimumArityTextBox.Location = new System.Drawing.Point(93, 52);
+      this.minimumArityTextBox.Name = "minimumArityTextBox";
+      this.minimumArityTextBox.ReadOnly = true;
+      this.minimumArityTextBox.Size = new System.Drawing.Size(227, 20);
+      this.minimumArityTextBox.TabIndex = 9;
+      // 
+      // maximumArityTextBox
+      // 
+      this.maximumArityTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.errorProvider.SetIconAlignment(this.maximumArityTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
+      this.maximumArityTextBox.Location = new System.Drawing.Point(93, 78);
+      this.maximumArityTextBox.Name = "maximumArityTextBox";
+      this.maximumArityTextBox.ReadOnly = true;
+      this.maximumArityTextBox.Size = new System.Drawing.Size(227, 20);
+      this.maximumArityTextBox.TabIndex = 7;
+      // 
       // SymbolView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.minimumArityTextBox);
+      this.Controls.Add(this.minimumArityLabel);
+      this.Controls.Add(this.maximumArityTextBox);
+      this.Controls.Add(this.maximumArityLabel);
       this.Controls.Add(this.initialFrequencyTextBox);
       this.Controls.Add(this.initialFrequencyLabel);
+      this.Controls.Add(this.enabledCheckBox);
       this.Name = "SymbolView";
-      this.Size = new System.Drawing.Size(320, 51);
+      this.Size = new System.Drawing.Size(320, 123);
+      this.Controls.SetChildIndex(this.enabledCheckBox, 0);
       this.Controls.SetChildIndex(this.initialFrequencyLabel, 0);
       this.Controls.SetChildIndex(this.initialFrequencyTextBox, 0);
+      this.Controls.SetChildIndex(this.maximumArityLabel, 0);
+      this.Controls.SetChildIndex(this.maximumArityTextBox, 0);
+      this.Controls.SetChildIndex(this.minimumArityLabel, 0);
+      this.Controls.SetChildIndex(this.minimumArityTextBox, 0);
       this.Controls.SetChildIndex(this.infoLabel, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);
@@ -106,6 +174,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
 
     protected System.Windows.Forms.Label initialFrequencyLabel;
     protected System.Windows.Forms.TextBox initialFrequencyTextBox;
+    private System.Windows.Forms.CheckBox enabledCheckBox;
+    protected System.Windows.Forms.Label minimumArityLabel;
+    protected System.Windows.Forms.Label maximumArityLabel;
+    protected System.Windows.Forms.TextBox minimumArityTextBox;
+    protected System.Windows.Forms.TextBox maximumArityTextBox;
 
   }
 }

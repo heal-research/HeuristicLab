@@ -31,6 +31,15 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   public sealed class Defun : Symbol, IReadOnlySymbol {
     public const string DefunName = "Defun";
     public const string DefunDescription = "Symbol that represents a function defining node.";
+    private const int minimumArity = 1;
+    private const int maximumArity = 1;
+
+    public override int MinimumArity {
+      get { return minimumArity; }
+    }
+    public override int MaximumArity {
+      get { return maximumArity; }
+    }
 
     [StorableConstructor]
     private Defun(bool deserializing) : base(deserializing) { }

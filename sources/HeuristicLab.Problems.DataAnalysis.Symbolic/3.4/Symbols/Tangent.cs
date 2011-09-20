@@ -27,6 +27,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("Tangent", "Symbol that represents the tangent trigonometric function.")]
   public sealed class Tangent : Symbol {
+    private const int minimumArity = 1;
+    private const int maximumArity = 1;
+
+    public override int MinimumArity {
+      get { return minimumArity; }
+    }
+    public override int MaximumArity {
+      get { return maximumArity; }
+    }
+
     [StorableConstructor]
     private Tangent(bool deserializing) : base(deserializing) { }
     private Tangent(Tangent original, Cloner cloner) : base(original, cloner) { }

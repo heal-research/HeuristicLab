@@ -85,10 +85,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var startNode = model.SymbolicExpressionTree.Root.GetSubtree(0);
       if (startNode.GetSubtree(0).Symbol is Addition) {
         var addNode = startNode.GetSubtree(0);
-        if (addNode.SubtreesCount == 2 && addNode.GetSubtree(0).Symbol is Multiplication && addNode.GetSubtree(1).Symbol is Constant) {
+        if (addNode.SubtreeCount == 2 && addNode.GetSubtree(0).Symbol is Multiplication && addNode.GetSubtree(1).Symbol is Constant) {
           alphaTreeNode = addNode.GetSubtree(1) as ConstantTreeNode;
           var mulNode = addNode.GetSubtree(0);
-          if (mulNode.SubtreesCount == 2 && mulNode.GetSubtree(1).Symbol is Constant) {
+          if (mulNode.SubtreeCount == 2 && mulNode.GetSubtree(1).Symbol is Constant) {
             betaTreeNode = mulNode.GetSubtree(1) as ConstantTreeNode;
           }
         }

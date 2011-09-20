@@ -61,7 +61,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     private IEnumerable<Instruction> Compile(ISymbolicExpressionTreeNode branch, Func<ISymbolicExpressionTreeNode, byte> opCodeMapper) {
       foreach (var node in branch.IterateNodesPrefix()) {
         Instruction instr = new Instruction();
-        int subtreesCount = node.SubtreesCount;
+        int subtreesCount = node.SubtreeCount;
         if (subtreesCount > 255) throw new ArgumentException("Number of subtrees is too big (>255)");
         instr.nArguments = (byte)subtreesCount;
         instr.opCode = opCodeMapper(node);

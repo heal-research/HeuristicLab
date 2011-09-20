@@ -28,6 +28,15 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   public sealed class ProgramRootSymbol : Symbol, IReadOnlySymbol {
     public const string ProgramRootSymbolName = "ProgramRootSymbol";
     public const string ProgramRootSymbolDescription = "Special symbol that represents the program root node of a symbolic expression tree.";
+    private const int minimumArity = 1;
+    private const int maximumArity = byte.MaxValue;
+
+    public override int MinimumArity {
+      get { return minimumArity; }
+    }
+    public override int MaximumArity {
+      get { return maximumArity; }
+    }
 
     [StorableConstructor]
     private ProgramRootSymbol(bool deserializing) : base(deserializing) { }

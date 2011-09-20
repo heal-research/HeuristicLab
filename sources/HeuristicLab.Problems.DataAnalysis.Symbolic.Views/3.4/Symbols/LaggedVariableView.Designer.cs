@@ -63,7 +63,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // weightInitializationMuTextBox
       // 
       this.toolTip.SetToolTip(this.weightInitializationMuTextBox, "The mu (mean) parameter of the normal distribution from which to sample the initi" +
-              "al weights.");
+        "al weights.");
       // 
       // initializationGroupBox
       // 
@@ -77,7 +77,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // weightInitializationSigmaTextBox
       // 
       this.toolTip.SetToolTip(this.weightInitializationSigmaTextBox, "The sigma parameter for the normal distribution from which to sample the initial " +
-              "weights.");
+        "weights.");
       // 
       // mutationGroupBox
       // 
@@ -87,26 +87,26 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // multiplicativeWeightChangeLabel
       // 
       this.toolTip.SetToolTip(this.multiplicativeWeightChangeLabel, "The sigma parameter for the normal distribution to use to sample a multiplicative" +
-              " change in weight.");
+        " change in weight.");
       // 
       // multiplicativeWeightChangeSigmaTextBox
       // 
       this.toolTip.SetToolTip(this.multiplicativeWeightChangeSigmaTextBox, "The sigma (std.dev.) parameter for the normal distribution to sample a multiplica" +
-              "tive change in weight.");
+        "tive change in weight.");
       // 
       // additiveWeightChangeLabel
       // 
       this.toolTip.SetToolTip(this.additiveWeightChangeLabel, "The sigma (std.dev.) parameter for the normal distribution to sample an additive " +
-              "change in weight.");
+        "change in weight.");
       // 
       // additiveWeightChangeSigmaTextBox
       // 
       this.toolTip.SetToolTip(this.additiveWeightChangeSigmaTextBox, "The sigma (std.dev.) parameter for the normal distribution to sample an additive " +
-              "change in weight.");
+        "change in weight.");
       // 
       // variableNamesTabPage
       // 
-      this.variableNamesTabPage.Size = new System.Drawing.Size(400, 164);
+      this.variableNamesTabPage.Size = new System.Drawing.Size(400, 149);
       // 
       // parametersTabPage
       // 
@@ -114,8 +114,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // tabControl
       // 
-      this.tabControl.Location = new System.Drawing.Point(0, 104);
-      this.tabControl.Size = new System.Drawing.Size(408, 190);
+      this.tabControl.Location = new System.Drawing.Point(0, 179);
+      this.tabControl.Size = new System.Drawing.Size(408, 175);
       this.tabControl.TabIndex = 9;
       // 
       // initialFrequencyLabel
@@ -126,6 +126,24 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       this.errorProvider.SetIconAlignment(this.initialFrequencyTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       // 
+      // minimumArityLabel
+      // 
+      this.toolTip.SetToolTip(this.minimumArityLabel, "Relative frequency of the symbol in randomly created trees");
+      // 
+      // maximumArityLabel
+      // 
+      this.toolTip.SetToolTip(this.maximumArityLabel, "Relative frequency of the symbol in randomly created trees");
+      // 
+      // minimumArityTextBox
+      // 
+      this.errorProvider.SetIconAlignment(this.minimumArityTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
+      this.minimumArityTextBox.Size = new System.Drawing.Size(315, 20);
+      // 
+      // maximumArityTextBox
+      // 
+      this.errorProvider.SetIconAlignment(this.maximumArityTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
+      this.maximumArityTextBox.Size = new System.Drawing.Size(315, 20);
+      // 
       // nameTextBox
       // 
       this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
@@ -134,7 +152,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // minTimeOffsetLabel
       // 
       this.minTimeOffsetLabel.AutoSize = true;
-      this.minTimeOffsetLabel.Location = new System.Drawing.Point(3, 55);
+      this.minTimeOffsetLabel.Location = new System.Drawing.Point(3, 130);
       this.minTimeOffsetLabel.Name = "minTimeOffsetLabel";
       this.minTimeOffsetLabel.Size = new System.Drawing.Size(81, 13);
       this.minTimeOffsetLabel.TabIndex = 5;
@@ -143,7 +161,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // maxTimeOffsetLabel
       // 
       this.maxTimeOffsetLabel.AutoSize = true;
-      this.maxTimeOffsetLabel.Location = new System.Drawing.Point(3, 81);
+      this.maxTimeOffsetLabel.Location = new System.Drawing.Point(3, 156);
       this.maxTimeOffsetLabel.Name = "maxTimeOffsetLabel";
       this.maxTimeOffsetLabel.Size = new System.Drawing.Size(84, 13);
       this.maxTimeOffsetLabel.TabIndex = 7;
@@ -151,7 +169,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // minTimeOffsetTextBox
       // 
-      this.minTimeOffsetTextBox.Location = new System.Drawing.Point(93, 52);
+      this.minTimeOffsetTextBox.Location = new System.Drawing.Point(93, 127);
       this.minTimeOffsetTextBox.Name = "minTimeOffsetTextBox";
       this.minTimeOffsetTextBox.Size = new System.Drawing.Size(315, 20);
       this.minTimeOffsetTextBox.TabIndex = 6;
@@ -159,7 +177,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // maxTimeOffsetTextBox
       // 
-      this.maxTimeOffsetTextBox.Location = new System.Drawing.Point(93, 78);
+      this.maxTimeOffsetTextBox.Location = new System.Drawing.Point(93, 153);
       this.maxTimeOffsetTextBox.Name = "maxTimeOffsetTextBox";
       this.maxTimeOffsetTextBox.Size = new System.Drawing.Size(315, 20);
       this.maxTimeOffsetTextBox.TabIndex = 8;
@@ -170,15 +188,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.minTimeOffsetTextBox);
-      this.Controls.Add(this.minTimeOffsetLabel);
       this.Controls.Add(this.maxTimeOffsetLabel);
+      this.Controls.Add(this.minTimeOffsetLabel);
       this.Controls.Add(this.maxTimeOffsetTextBox);
       this.Name = "LaggedVariableView";
-      this.Size = new System.Drawing.Size(408, 292);
+      this.Size = new System.Drawing.Size(408, 352);
       this.Controls.SetChildIndex(this.maxTimeOffsetTextBox, 0);
-      this.Controls.SetChildIndex(this.maxTimeOffsetLabel, 0);
       this.Controls.SetChildIndex(this.minTimeOffsetLabel, 0);
+      this.Controls.SetChildIndex(this.maxTimeOffsetLabel, 0);
       this.Controls.SetChildIndex(this.minTimeOffsetTextBox, 0);
+      this.Controls.SetChildIndex(this.maximumArityLabel, 0);
+      this.Controls.SetChildIndex(this.maximumArityTextBox, 0);
+      this.Controls.SetChildIndex(this.minimumArityLabel, 0);
+      this.Controls.SetChildIndex(this.minimumArityTextBox, 0);
       this.Controls.SetChildIndex(this.infoLabel, 0);
       this.Controls.SetChildIndex(this.tabControl, 0);
       this.Controls.SetChildIndex(this.initialFrequencyTextBox, 0);

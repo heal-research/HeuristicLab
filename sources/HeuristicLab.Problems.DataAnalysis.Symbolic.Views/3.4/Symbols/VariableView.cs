@@ -86,7 +86,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      variableNamesView.Content.Clear();
       UpdateControl();
     }
 
@@ -125,9 +124,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     private void UpdateContent() {
       if (Content != null) {
-        Content.Changed -= new EventHandler(Content_Changed);
+        DeregisterContentEvents();
         Content.VariableNames = variableNamesView.Content.CheckedItems.Select(x => x.Value).ToList();
-        Content.Changed += new EventHandler(Content_Changed);
+        RegisterContentEvents();
       }
     }
 

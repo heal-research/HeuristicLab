@@ -84,7 +84,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (d == 0) return "";
       StringBuilder builder = new StringBuilder();
       builder.Append("(" + tree.ToString());
-      for (int i = 0; i < tree.SubtreesCount; i++) {
+      for (int i = 0; i < tree.SubtreeCount; i++) {
         builder.Append(" " + GetTextualRepresentationFromSubtreeOfDepth(tree.GetSubtree(i), d - 1));
       }
       builder.Append(")");

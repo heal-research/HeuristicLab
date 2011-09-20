@@ -26,6 +26,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("Integral", "Represents the integral over the specified subtree.")]
   public sealed class Integral : LaggedSymbol {
+    private const int minimumArity = 1;
+    private const int maximumArity = 1;
+
+    public override int MinimumArity {
+      get { return minimumArity; }
+    }
+    public override int MaximumArity {
+      get { return maximumArity; }
+    }
+
     [StorableConstructor]
     private Integral(bool deserializing) : base(deserializing) { }
     private Integral(Integral original, Cloner cloner) : base(original, cloner) { }

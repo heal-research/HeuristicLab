@@ -80,10 +80,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       return grammar.IsAllowedChildSymbol(parent, child, argumentIndex) || base.IsAllowedChildSymbol(parent, child, argumentIndex);
     }
     public override IEnumerable<ISymbol> GetAllowedChildSymbols(ISymbol parent) {
-      return grammar.GetAllowedChildSymbols(parent).Union(base.GetAllowedChildSymbols(parent));
+      var symbols = grammar.GetAllowedChildSymbols(parent).Union(base.GetAllowedChildSymbols(parent));
+      return symbols.SelectMany(s => s.Flatten()).Where(s => s.Enabled && !(s is GroupSymbol));
     }
     public override IEnumerable<ISymbol> GetAllowedChildSymbols(ISymbol parent, int argumentIndex) {
-      return grammar.GetAllowedChildSymbols(parent, argumentIndex).Union(base.GetAllowedChildSymbols(parent, argumentIndex));
+      var symbols = grammar.GetAllowedChildSymbols(parent, argumentIndex).Union(base.GetAllowedChildSymbols(parent, argumentIndex));
+      return symbols.SelectMany(s => s.Flatten()).Where(s => s.Enabled && !(s is GroupSymbol));
     }
 
     public override int GetMinimumSubtreeCount(ISymbol symbol) {

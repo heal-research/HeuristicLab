@@ -27,6 +27,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("Power", "Symbol that represents the power function.")]
   public sealed class Power : Symbol {
+    private const int minimumArity = 2;
+    private const int maximumArity = 2;
+
+    public override int MinimumArity {
+      get { return minimumArity; }
+    }
+    public override int MaximumArity {
+      get { return maximumArity; }
+    }
+
     [StorableConstructor]
     private Power(bool deserializing) : base(deserializing) { }
     private Power(Power original, Cloner cloner) : base(original, cloner) { }

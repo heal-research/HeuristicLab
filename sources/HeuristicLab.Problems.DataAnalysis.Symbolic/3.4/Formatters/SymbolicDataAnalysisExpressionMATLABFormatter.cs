@@ -105,13 +105,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       stringBuilder.Append("(");
 
       if (symbol is Addition) {
-        for (int i = 0; i < node.SubtreesCount; i++) {
+        for (int i = 0; i < node.SubtreeCount; i++) {
           if (i > 0) stringBuilder.Append("+");
           stringBuilder.Append(FormatRecursively(node.GetSubtree(i)));
         }
       } else if (symbol is And) {
         stringBuilder.Append("((");
-        for (int i = 0; i < node.SubtreesCount; i++) {
+        for (int i = 0; i < node.SubtreeCount; i++) {
           if (i > 0) stringBuilder.Append("&");
           stringBuilder.Append("((");
           stringBuilder.Append(FormatRecursively(node.GetSubtree(i)));
@@ -120,9 +120,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         stringBuilder.Append(")-0.5)*2"); // MATLAB maps false and true to 0 and 1, resp., we map this result to -1.0 and +1.0, resp.
       } else if (symbol is Average) {
         stringBuilder.Append("(1/");
-        stringBuilder.Append(node.SubtreesCount);
+        stringBuilder.Append(node.SubtreeCount);
         stringBuilder.Append(")*(");
-        for (int i = 0; i < node.SubtreesCount; i++) {
+        for (int i = 0; i < node.SubtreeCount; i++) {
           if (i > 0) stringBuilder.Append("+");
           stringBuilder.Append("(");
           stringBuilder.Append(FormatRecursively(node.GetSubtree(i)));
@@ -137,13 +137,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
         stringBuilder.Append(")");
       } else if (symbol is Division) {
-        if (node.SubtreesCount == 1) {
+        if (node.SubtreeCount == 1) {
           stringBuilder.Append("1/");
           stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
         } else {
           stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
           stringBuilder.Append("/(");
-          for (int i = 1; i < node.SubtreesCount; i++) {
+          for (int i = 1; i < node.SubtreeCount; i++) {
             if (i > 1) stringBuilder.Append("*");
             stringBuilder.Append(FormatRecursively(node.GetSubtree(i)));
           }
@@ -186,7 +186,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
         stringBuilder.Append(")");
       } else if (symbol is Multiplication) {
-        for (int i = 0; i < node.SubtreesCount; i++) {
+        for (int i = 0; i < node.SubtreeCount; i++) {
           if (i > 0) stringBuilder.Append("*");
           stringBuilder.Append(FormatRecursively(node.GetSubtree(i)));
         }
@@ -196,7 +196,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         stringBuilder.Append(" > 0 )");
       } else if (symbol is Or) {
         stringBuilder.Append("((");
-        for (int i = 0; i < node.SubtreesCount; i++) {
+        for (int i = 0; i < node.SubtreeCount; i++) {
           if (i > 0) stringBuilder.Append("|");
           stringBuilder.Append("((");
           stringBuilder.Append(FormatRecursively(node.GetSubtree(i)));
@@ -208,12 +208,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
         stringBuilder.Append(")");
       } else if (symbol is Subtraction) {
-        if (node.SubtreesCount == 1) {
+        if (node.SubtreeCount == 1) {
           stringBuilder.Append("-1*");
           stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
         } else {
           stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
-          for (int i = 1; i < node.SubtreesCount; i++) {
+          for (int i = 1; i < node.SubtreeCount; i++) {
             stringBuilder.Append("-");
             stringBuilder.Append(FormatRecursively(node.GetSubtree(i)));
           }

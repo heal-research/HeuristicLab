@@ -59,8 +59,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       MaximumSymbolicExpressionTreeDepth.Value = InitialMaximumTreeDepth;
       MaximumSymbolicExpressionTreeLength.Value = InitialMaximumTreeLength;
 
+      SymbolicExpressionTreeGrammarParameter.ValueChanged += (o, e) => ConfigureGrammarSymbols();
+
+      ConfigureGrammarSymbols();
       InitializeOperators();
       UpdateEstimationLimits();
+    }
+
+    private void ConfigureGrammarSymbols() {
+      var grammar = SymbolicExpressionTreeGrammar as TypeCoherentExpressionGrammar;
+      if (grammar != null) grammar.ConfigureAsDefaultClassificationGrammar();
     }
 
     private void InitializeOperators() {

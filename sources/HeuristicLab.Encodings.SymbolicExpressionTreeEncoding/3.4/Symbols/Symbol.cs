@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -41,12 +42,40 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         }
       }
     }
+
+    [Storable(DefaultValue = true)]
+    private bool enabled;
+    public virtual bool Enabled {
+      get { return enabled; }
+      set {
+        if (value != enabled) {
+          enabled = value;
+          OnChanged(EventArgs.Empty);
+        }
+      }
+    }
+
+    [Storable(DefaultValue = false)]
+    private bool @fixed;
+    public bool Fixed {
+      get { return @fixed; }
+      set {
+        if (value != @fixed) {
+          @fixed = value;
+          OnChanged(EventArgs.Empty);
+        }
+      }
+    }
+
     public override bool CanChangeName {
       get { return !(this is IReadOnlySymbol); }
     }
     public override bool CanChangeDescription {
       get { return false; }
     }
+
+    public abstract int MinimumArity { get; }
+    public abstract int MaximumArity { get; }
     #endregion
 
     [StorableConstructor]
@@ -54,24 +83,39 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     protected Symbol(Symbol original, Cloner cloner)
       : base(original, cloner) {
       initialFrequency = original.initialFrequency;
+      enabled = original.enabled;
+      @fixed = original.@fixed;
     }
 
     protected Symbol(string name, string description)
       : base(name, description) {
       initialFrequency = 1.0;
+      enabled = true;
+      @fixed = false;
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (initialFrequency.IsAlmost(0.0) && !(this is GroupSymbol)) enabled = false;
+      #endregion
+
     }
 
     public virtual ISymbolicExpressionTreeNode CreateTreeNode() {
       return new SymbolicExpressionTreeNode(this);
     }
 
-    #region events
+    public virtual IEnumerable<ISymbol> Flatten() {
+      yield return this;
+    }
+
     public event EventHandler Changed;
-    protected void OnChanged(EventArgs e) {
+    protected virtual void OnChanged(EventArgs e) {
       EventHandler handlers = Changed;
       if (handlers != null)
         handlers(this, e);
     }
-    #endregion
   }
 }

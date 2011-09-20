@@ -27,6 +27,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("Not", "Symbol that represents the boolean NOT operator.")]
   public sealed class Not : Symbol {
+    private const int minimumArity = 1;
+    private const int maximumArity = 1;
+
+    public override int MinimumArity {
+      get { return minimumArity; }
+    }
+    public override int MaximumArity {
+      get { return maximumArity; }
+    }
+
     [StorableConstructor]
     private Not(bool deserializing) : base(deserializing) { }
     private Not(Not original, Cloner cloner) : base(original, cloner) { }

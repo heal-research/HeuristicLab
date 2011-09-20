@@ -27,6 +27,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("Multiplication", "Symbol that represents the * operator.")]
   public sealed class Multiplication : Symbol {
+    private const int minimumArity = 1;
+    private const int maximumArity = byte.MaxValue;
+
+    public override int MinimumArity {
+      get { return minimumArity; }
+    }
+    public override int MaximumArity {
+      get { return maximumArity; }
+    }
+
     [StorableConstructor]
     private Multiplication(bool deserializing) : base(deserializing) { }
     private Multiplication(Multiplication original, Cloner cloner) : base(original, cloner) { }

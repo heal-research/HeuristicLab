@@ -29,6 +29,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("TypeCoherentExpressionGrammar", "Represents a grammar for functional expressions in which special syntactic constraints are enforced so that boolean and real-valued expressions are not mixed.")]
   public class TypeCoherentExpressionGrammar : SymbolicExpressionGrammar, ISymbolicDataAnalysisGrammar {
+    private const string ArithmeticFunctionsName = "Arithmetic Functions";
+    private const string TrigonometricFunctionsName = "Trigonometric Functions";
+    private const string ExponentialFunctionsName = "Exponential and Logarithmic Functions";
+    private const string RealValuedSymbolsName = "Real Valued Symbols";
+    private const string TerminalsName = "Terminals";
+    private const string PowerFunctionsName = "Power Functions";
+    private const string ConditionsName = "Conditions";
+    private const string ComparisonsName = "Comparisons";
+    private const string BooleanOperatorsName = "Boolean Operators";
+    private const string ConditionalSymbolsName = "ConditionalSymbols";
+    private const string TimeSeriesSymbolsName = "Time Series Symbols";
 
     [StorableConstructor]
     protected TypeCoherentExpressionGrammar(bool deserializing) : base(deserializing) { }
@@ -42,6 +53,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private void Initialize() {
+      #region symbol declaration
       var add = new Addition();
       var sub = new Subtraction();
       var mul = new Multiplication();
@@ -52,9 +64,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var tan = new Tangent();
       var log = new Logarithm();
       var pow = new Power();
-      pow.InitialFrequency = 0.0;
       var root = new Root();
-      root.InitialFrequency = 0.0;
       var exp = new Exponential();
       var @if = new IfThenElse();
       var gt = new GreaterThan();
@@ -62,120 +72,124 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var and = new And();
       var or = new Or();
       var not = new Not();
+      var variableCondition = new VariableCondition();
 
       var timeLag = new TimeLag();
-      timeLag.InitialFrequency = 0.0;
       var integral = new Integral();
-      integral.InitialFrequency = 0.0;
       var derivative = new Derivative();
-      derivative.InitialFrequency = 0.0;
-      var variableCondition = new VariableCondition();
-      variableCondition.InitialFrequency = 0.0;
 
       var constant = new Constant();
       constant.MinValue = -20;
       constant.MaxValue = 20;
-      var variableSymbol = new HeuristicLab.Problems.DataAnalysis.Symbolic.Variable();
+      var variableSymbol = new Variable();
       var laggedVariable = new LaggedVariable();
+      #endregion
 
-      laggedVariable.InitialFrequency = 0.0;
-      mean.InitialFrequency = 0.0;
+      #region group symbol declaration
+      var arithmeticSymbols = new GroupSymbol(ArithmeticFunctionsName, new List<ISymbol>() { add, sub, mul, div, mean });
+      var trigonometricSymbols = new GroupSymbol(TrigonometricFunctionsName, new List<ISymbol>() { sin, cos, tan });
+      var exponentialAndLogarithmicSymbols = new GroupSymbol(ExponentialFunctionsName, new List<ISymbol> { exp, log });
+      var terminalSymbols = new GroupSymbol(TerminalsName, new List<ISymbol> { constant, variableSymbol });
+      var realValuedSymbols = new GroupSymbol(RealValuedSymbolsName, new List<ISymbol>() { arithmeticSymbols, trigonometricSymbols, exponentialAndLogarithmicSymbols, terminalSymbols });
 
-      /*
-       * Start = RealValueExpression
-       * 
-       * RealValueExpression = 
-       *   "Variable"  |
-       *   "Constant" | 
-       *   BinaryOperator RealValueExpression RealValueExpression |
-       *   UnaryOperator RealValueExpression | 
-       *   "IF" BooleanExpression RealValueExpression RealValueExpression | 
-       *   "VariableCondition" RealValueExpression RealValueExpression
-       * 
-       * BinaryOperator = 
-       *   "+" | "-" | "*" | "/" | "Power"
-       * 
-       * UnaryOperator = 
-       *   "Sin" | "Cos" | "Tan" | "Log" | "Exp"
-       * 
-       * BooleanExpression = 
-       *   "AND" BooleanExpression BooleanExpression |
-       *   "OR" BooleanExpression BooleanExpression |
-       *   "NOT" BooleanExpression |
-       *   ">" RealValueExpression RealValueExpression |
-       *   "<" RealValueExpression RealValueExpression
-       */
+      var powerSymbols = new GroupSymbol(PowerFunctionsName, new List<ISymbol> { pow, root });
 
-      var allSymbols = new List<Symbol>() { add, sub, mul, div, mean, sin, cos, tan, log, pow, root, exp, @if, gt, lt, and, or, not, timeLag, integral, derivative, constant, variableSymbol, laggedVariable, variableCondition };
+      var conditionSymbols = new GroupSymbol(ConditionsName, new List<ISymbol> { @if, variableCondition });
+      var comparisonSymbols = new GroupSymbol(ComparisonsName, new List<ISymbol> { gt, lt });
+      var booleanOperationSymbols = new GroupSymbol(BooleanOperatorsName, new List<ISymbol> { and, or, not });
+      var conditionalSymbols = new GroupSymbol(ConditionalSymbolsName, new List<ISymbol> { conditionSymbols, comparisonSymbols, booleanOperationSymbols });
 
-      var unaryFunctionSymbols = new List<Symbol>() { sin, cos, tan, log, exp, timeLag, integral, derivative };
-      var binaryFunctionSymbols = new List<Symbol>() { add, sub, mul, div, mean, pow, root, variableCondition };
+      var timeSeriesSymbols = new GroupSymbol(TimeSeriesSymbolsName, new List<ISymbol> { timeLag, integral, derivative, laggedVariable });
+      #endregion
 
-      var unaryBooleanFunctionSymbols = new List<Symbol>() { not };
-      var binaryBooleanFunctionSymbols = new List<Symbol>() { or, and };
-      var relationalFunctionSymbols = new List<Symbol>() { gt, lt };
-      var terminalSymbols = new List<Symbol>() { variableSymbol, constant, laggedVariable };
-      var realValuedSymbols = unaryFunctionSymbols.Concat(binaryFunctionSymbols).Concat(terminalSymbols).Concat(new List<Symbol>() { @if });
-      var booleanSymbols = unaryBooleanFunctionSymbols.Concat(binaryBooleanFunctionSymbols).Concat(relationalFunctionSymbols);
+      AddSymbol(realValuedSymbols);
+      AddSymbol(powerSymbols);
+      AddSymbol(conditionalSymbols);
+      AddSymbol(timeSeriesSymbols);
 
-      foreach (var symb in allSymbols)
-        AddSymbol(symb);
-
-      foreach (var unaryFun in unaryFunctionSymbols.Concat(unaryBooleanFunctionSymbols)) {
-        SetSubtreeCount(unaryFun, 1, 1);
-      }
-      foreach (var binaryFun in binaryFunctionSymbols.Concat(binaryBooleanFunctionSymbols).Concat(relationalFunctionSymbols)) {
-        SetSubtreeCount(binaryFun, 2, 2);
-      }
-
-      foreach (var terminalSymbol in terminalSymbols) {
-        SetSubtreeCount(terminalSymbol, 0, 0);
-      }
+      #region subtree count configuration
+      SetSubtreeCount(arithmeticSymbols, 2, 2);
+      SetSubtreeCount(trigonometricSymbols, 1, 1);
+      SetSubtreeCount(powerSymbols, 2, 2);
+      SetSubtreeCount(exponentialAndLogarithmicSymbols, 1, 1);
+      SetSubtreeCount(terminalSymbols, 0, 0);
 
       SetSubtreeCount(@if, 3, 3);
+      SetSubtreeCount(variableCondition, 2, 2);
+      SetSubtreeCount(comparisonSymbols, 2, 2);
+      SetSubtreeCount(and, 2, 2);
+      SetSubtreeCount(or, 2, 2);
+      SetSubtreeCount(not, 1, 1);
+
+      SetSubtreeCount(timeLag, 1, 1);
+      SetSubtreeCount(integral, 1, 1);
+      SetSubtreeCount(derivative, 1, 1);
+      SetSubtreeCount(laggedVariable, 0, 0);
+      #endregion
+
+      #region alloed child symbols configuration
+      AddAllowedChildSymbol(StartSymbol, realValuedSymbols);
+      AddAllowedChildSymbol(DefunSymbol, realValuedSymbols);
+
+      AddAllowedChildSymbol(realValuedSymbols, realValuedSymbols);
+      AddAllowedChildSymbol(realValuedSymbols, powerSymbols);
+      AddAllowedChildSymbol(realValuedSymbols, conditionSymbols);
+      AddAllowedChildSymbol(realValuedSymbols, timeSeriesSymbols);
+
+      AddAllowedChildSymbol(powerSymbols, variableSymbol, 0);
+      AddAllowedChildSymbol(powerSymbols, constant, 1);
+
+      AddAllowedChildSymbol(@if, comparisonSymbols, 0);
+      AddAllowedChildSymbol(@if, booleanOperationSymbols, 0);
+      AddAllowedChildSymbol(@if, conditionSymbols, 1);
+      AddAllowedChildSymbol(@if, realValuedSymbols, 1);
+      AddAllowedChildSymbol(@if, powerSymbols, 1);
+      AddAllowedChildSymbol(@if, timeSeriesSymbols, 1);
+      AddAllowedChildSymbol(@if, conditionSymbols, 2);
+      AddAllowedChildSymbol(@if, realValuedSymbols, 2);
+      AddAllowedChildSymbol(@if, powerSymbols, 2);
+      AddAllowedChildSymbol(@if, timeSeriesSymbols, 2);
+
+      AddAllowedChildSymbol(booleanOperationSymbols, comparisonSymbols);
+      AddAllowedChildSymbol(comparisonSymbols, realValuedSymbols);
+      AddAllowedChildSymbol(comparisonSymbols, powerSymbols);
+      AddAllowedChildSymbol(comparisonSymbols, conditionSymbols);
+      AddAllowedChildSymbol(comparisonSymbols, timeSeriesSymbols);
+
+      AddAllowedChildSymbol(variableCondition, realValuedSymbols);
+      AddAllowedChildSymbol(variableCondition, powerSymbols);
+      AddAllowedChildSymbol(variableCondition, conditionSymbols);
+      AddAllowedChildSymbol(variableCondition, timeSeriesSymbols);
 
 
-      // allow only real-valued expressions as child of the start symbol
-      foreach (var symb in realValuedSymbols) {
-        AddAllowedChildSymbol(StartSymbol, symb);
-        AddAllowedChildSymbol(DefunSymbol, symb);
-      }
+      AddAllowedChildSymbol(timeLag, realValuedSymbols);
+      AddAllowedChildSymbol(timeLag, powerSymbols);
+      AddAllowedChildSymbol(timeLag, conditionSymbols);
 
-      foreach (var symb in unaryFunctionSymbols) {
-        foreach (var childSymb in realValuedSymbols) {
-          AddAllowedChildSymbol(symb, childSymb);
-        }
-      }
+      AddAllowedChildSymbol(integral, realValuedSymbols);
+      AddAllowedChildSymbol(integral, powerSymbols);
+      AddAllowedChildSymbol(integral, conditionSymbols);
 
-      foreach (var symb in binaryFunctionSymbols) {
-        foreach (var childSymb in realValuedSymbols) {
-          AddAllowedChildSymbol(symb, childSymb);
-        }
-      }
+      AddAllowedChildSymbol(derivative, realValuedSymbols);
+      AddAllowedChildSymbol(derivative, powerSymbols);
+      AddAllowedChildSymbol(derivative, conditionSymbols);
+      #endregion
+    }
 
-      foreach (var childSymb in booleanSymbols) {
-        AddAllowedChildSymbol(@if, childSymb, 0);
-      }
-      foreach (var childSymb in realValuedSymbols) {
-        AddAllowedChildSymbol(@if, childSymb, 1);
-        AddAllowedChildSymbol(@if, childSymb, 2);
-      }
+    public void ConfigureAsDefaultRegressionGrammar() {
+      Symbols.Where(s => s is Average).First().Enabled = false;
+      Symbols.Where(s => s.Name == TrigonometricFunctionsName).First().Enabled = false;
+      Symbols.Where(s => s.Name == PowerFunctionsName).First().Enabled = false;
+      Symbols.Where(s => s.Name == ConditionalSymbolsName).First().Enabled = false;
+      Symbols.Where(s => s.Name == TimeSeriesSymbolsName).First().Enabled = false;
+    }
 
-      foreach (var symb in relationalFunctionSymbols) {
-        foreach (var childSymb in realValuedSymbols) {
-          AddAllowedChildSymbol(symb, childSymb);
-        }
-      }
-      foreach (var symb in binaryBooleanFunctionSymbols) {
-        foreach (var childSymb in booleanSymbols) {
-          AddAllowedChildSymbol(symb, childSymb);
-        }
-      }
-      foreach (var symb in unaryBooleanFunctionSymbols) {
-        foreach (var childSymb in booleanSymbols) {
-          AddAllowedChildSymbol(symb, childSymb);
-        }
-      }
+    public void ConfigureAsDefaultClassificationGrammar() {
+      Symbols.Where(s => s is Average).First().Enabled = false;
+      Symbols.Where(s => s.Name == TrigonometricFunctionsName).First().Enabled = false;
+      Symbols.Where(s => s.Name == ExponentialFunctionsName).First().Enabled = false;
+      Symbols.Where(s => s.Name == PowerFunctionsName).First().Enabled = false;
+      Symbols.Where(s => s.Name == TimeSeriesSymbolsName).First().Enabled = false;
     }
   }
 }

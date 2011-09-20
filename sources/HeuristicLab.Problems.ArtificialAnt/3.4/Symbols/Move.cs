@@ -27,6 +27,16 @@ namespace HeuristicLab.Problems.ArtificialAnt.Symbols {
   [StorableClass]
   [Item("Move", "Represents the move-forward symbol in a artificial ant expression.")]
   public sealed class Move : Symbol {
+    private const int minimumArity = 0;
+    private const int maximumArity = 0;
+
+    public override int MinimumArity {
+      get { return minimumArity; }
+    }
+    public override int MaximumArity {
+      get { return maximumArity; }
+    }
+
     [StorableConstructor]
     private Move(bool deserializing) : base(deserializing) { }
     private Move(Move original, Cloner cloner) : base(original, cloner) { }

@@ -19,21 +19,30 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using HeuristicLab.Core;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 
-namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
-  public interface ISymbol : INamedItem {
-    ISymbolicExpressionTreeNode CreateTreeNode();
-    double InitialFrequency { get; set; }
-    bool Enabled { get; set; }
+namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
+  public class VisualSymbolicExpressionTreeNodeConnection : object {
+    private static readonly Color defaultLineColor = Color.Black;
+    private static readonly DashStyle defaultDashStyle = DashStyle.Solid;
 
-    int MinimumArity { get; }
-    int MaximumArity { get; }
+    private Color lineColor;
+    public Color LineColor {
+      get { return lineColor; }
+      set { lineColor = value; }
+    }
 
-    IEnumerable<ISymbol> Flatten();
+    private DashStyle dashStyle;
+    public DashStyle DashStyle {
+      get { return dashStyle; }
+      set { dashStyle = value; }
+    }
 
-    event EventHandler Changed;
+    public VisualSymbolicExpressionTreeNodeConnection()
+      : base() {
+      lineColor = defaultLineColor;
+      dashStyle = defaultDashStyle;
+    }
   }
 }

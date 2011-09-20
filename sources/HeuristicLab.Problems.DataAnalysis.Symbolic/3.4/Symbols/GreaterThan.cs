@@ -27,6 +27,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("GreaterThan", "Symbol that represents a greater than relation.")]
   public sealed class GreaterThan : Symbol {
+    private const int minimumArity = 2;
+    private const int maximumArity = 2;
+
+    public override int MinimumArity {
+      get { return minimumArity; }
+    }
+    public override int MaximumArity {
+      get { return maximumArity; }
+    }
+
     [StorableConstructor]
     private GreaterThan(bool deserializing) : base(deserializing) { }
     private GreaterThan(GreaterThan original, Cloner cloner) : base(original, cloner) { }

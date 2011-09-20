@@ -20,11 +20,12 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Collections.Generic;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableClass]
@@ -119,7 +120,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     protected SymbolicExpressionGrammar(bool deserializing) : base(deserializing) { }
     protected SymbolicExpressionGrammar(SymbolicExpressionGrammar original, Cloner cloner)
       : base(original, cloner) {
-      foreach (ISymbol symbol in Symbols)
+      foreach (ISymbol symbol in symbols.Values)
         RegisterSymbolEvents(symbol);
 
       programRootSymbol = cloner.Clone(original.programRootSymbol);
@@ -160,13 +161,15 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       }
     }
 
-    protected override void AddSymbol(ISymbol symbol) {
+    protected override sealed void AddSymbol(ISymbol symbol) {
       base.AddSymbol(symbol);
       RegisterSymbolEvents(symbol);
+      OnChanged();
     }
-    protected override void RemoveSymbol(ISymbol symbol) {
+    protected override sealed void RemoveSymbol(ISymbol symbol) {
       DeregisterSymbolEvents(symbol);
       base.RemoveSymbol(symbol);
+      OnChanged();
     }
 
     public event EventHandler ReadOnlyChanged;
@@ -176,21 +179,107 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         handler(this, EventArgs.Empty);
     }
 
-    #region IStatefulItem
+    #region IStatefulItem methods
     void IStatefulItem.InitializeState() { }
     void IStatefulItem.ClearState() {
       ReadOnly = false;
     }
     #endregion
 
-    #region symbol events
-    protected virtual void RegisterSymbolEvents(ISymbol symbol) {
-      symbol.NameChanging += new EventHandler<CancelEventArgs<string>>(Symbol_NameChanging);
-      symbol.NameChanged += new EventHandler(Symbol_NameChanged);
+    #region ISymbolicExpressionGrammar methods
+    void ISymbolicExpressionGrammar.AddSymbol(ISymbol symbol) {
+      if (ReadOnly) throw new InvalidOperationException();
+      AddSymbol(symbol);
     }
-    protected virtual void DeregisterSymbolEvents(ISymbol symbol) {
-      symbol.NameChanging -= new EventHandler<CancelEventArgs<string>>(Symbol_NameChanging);
-      symbol.NameChanged -= new EventHandler(Symbol_NameChanged);
+    void ISymbolicExpressionGrammar.RemoveSymbol(ISymbol symbol) {
+      if (ReadOnly) throw new InvalidOperationException();
+      RemoveSymbol(symbol);
+    }
+
+    void ISymbolicExpressionGrammar.AddAllowedChildSymbol(ISymbol parent, ISymbol child) {
+      if (ReadOnly) throw new InvalidOperationException();
+      base.AddAllowedChildSymbol(parent, child);
+    }
+    void ISymbolicExpressionGrammar.AddAllowedChildSymbol(ISymbol parent, ISymbol child, int argumentIndex) {
+      if (ReadOnly) throw new InvalidOperationException();
+      base.AddAllowedChildSymbol(parent, child, argumentIndex);
+    }
+    void ISymbolicExpressionGrammar.RemoveAllowedChildSymbol(ISymbol parent, ISymbol child) {
+      if (ReadOnly) throw new InvalidOperationException();
+      base.RemoveAllowedChildSymbol(parent, child);
+    }
+    void ISymbolicExpressionGrammar.RemoveAllowedChildSymbol(ISymbol parent, ISymbol child, int argumentIndex) {
+      if (ReadOnly) throw new InvalidOperationException();
+      base.RemoveAllowedChildSymbol(parent, child, argumentIndex);
+    }
+
+    void ISymbolicExpressionGrammar.SetSubtreeCount(ISymbol symbol, int minimumSubtreeCount, int maximumSubtreeCount) {
+      if (ReadOnly) throw new InvalidOperationException();
+      base.SetSubtreeCount(symbol, minimumSubtreeCount, maximumSubtreeCount);
+    }
+
+    private bool suppressEvents = false;
+    void ISymbolicExpressionGrammar.StartGrammarManipulation() {
+      suppressEvents = true;
+    }
+    void ISymbolicExpressionGrammar.FinishedGrammarManipulation() {
+      suppressEvents = false;
+      OnChanged();
+    }
+
+    protected override void OnChanged() {
+      if (suppressEvents) return;
+      base.OnChanged();
+    }
+    #endregion
+
+    #region symbol events
+    private void RegisterSymbolEvents(ISymbol symbol) {
+      foreach (var s in symbol.Flatten()) {
+        s.NameChanging += new EventHandler<CancelEventArgs<string>>(Symbol_NameChanging);
+        s.NameChanged += new EventHandler(Symbol_NameChanged);
+
+        var groupSymbol = s as GroupSymbol;
+        if (groupSymbol != null) RegisterGroupSymbolEvents(groupSymbol);
+        else symbol.Changed += new EventHandler(Symbol_Changed);
+      }
+    }
+    private void DeregisterSymbolEvents(ISymbol symbol) {
+      foreach (var s in symbol.Flatten()) {
+        s.NameChanging -= new EventHandler<CancelEventArgs<string>>(Symbol_NameChanging);
+        s.NameChanged -= new EventHandler(Symbol_NameChanged);
+
+        var groupSymbol = s as GroupSymbol;
+        if (groupSymbol != null) DeregisterGroupSymbolEvents(groupSymbol);
+        else symbol.Changed -= new EventHandler(Symbol_Changed);
+      }
+    }
+
+    private void RegisterGroupSymbolEvents(GroupSymbol groupSymbol) {
+      groupSymbol.Changed += new EventHandler(GroupSymbol_Changed);
+      groupSymbol.SymbolsCollection.ItemsAdded += new Collections.CollectionItemsChangedEventHandler<ISymbol>(GroupSymbol_ItemsAdded);
+      groupSymbol.SymbolsCollection.ItemsRemoved += new Collections.CollectionItemsChangedEventHandler<ISymbol>(GroupSymbol_ItemsRemoved);
+      groupSymbol.SymbolsCollection.CollectionReset += new Collections.CollectionItemsChangedEventHandler<ISymbol>(GroupSymbol_CollectionReset);
+    }
+    private void DeregisterGroupSymbolEvents(GroupSymbol groupSymbol) {
+      groupSymbol.Changed -= new EventHandler(GroupSymbol_Changed);
+      groupSymbol.SymbolsCollection.ItemsAdded -= new Collections.CollectionItemsChangedEventHandler<ISymbol>(GroupSymbol_ItemsAdded);
+      groupSymbol.SymbolsCollection.ItemsRemoved -= new Collections.CollectionItemsChangedEventHandler<ISymbol>(GroupSymbol_ItemsRemoved);
+      groupSymbol.SymbolsCollection.CollectionReset -= new Collections.CollectionItemsChangedEventHandler<ISymbol>(GroupSymbol_CollectionReset);
+    }
+
+    private void Symbol_Changed(object sender, EventArgs e) {
+      ClearCaches();
+      OnChanged();
+    }
+
+    private void GroupSymbol_Changed(object sender, EventArgs e) {
+      GroupSymbol groupSymbol = (GroupSymbol)sender;
+      foreach (ISymbol symbol in groupSymbol.Flatten())
+        symbol.Enabled = groupSymbol.Enabled;
+
+      ClearCaches();
+      OnChanged();
     }
 
     private void Symbol_NameChanging(object sender, CancelEventArgs<string> e) {
@@ -233,6 +322,29 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       }
 
       ClearCaches();
+      OnChanged();
+    }
+
+    private void GroupSymbol_ItemsAdded(object sender, CollectionItemsChangedEventArgs<ISymbol> e) {
+      foreach (ISymbol symbol in e.Items)
+        if (!ContainsSymbol(symbol))
+          AddSymbol(symbol);
+      OnChanged();
+    }
+    private void GroupSymbol_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<ISymbol> e) {
+      foreach (ISymbol symbol in e.Items)
+        if (ContainsSymbol(symbol))
+          RemoveSymbol(symbol);
+      OnChanged();
+    }
+    private void GroupSymbol_CollectionReset(object sender, CollectionItemsChangedEventArgs<ISymbol> e) {
+      foreach (ISymbol symbol in e.Items)
+        if (!ContainsSymbol(symbol))
+          AddSymbol(symbol);
+      foreach (ISymbol symbol in e.OldItems)
+        if (ContainsSymbol(symbol))
+          RemoveSymbol(symbol);
+      OnChanged();
     }
     #endregion
   }

@@ -121,7 +121,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._4.Tests {
         int arity = defunTreeNode.NumberOfArguments;
 
         foreach (var argTreenode in defunTreeNode.IterateNodesPrefix().OfType<ArgumentTreeNode>()) {
-          Assert.IsTrue(argTreenode.SubtreesCount == 0);
+          Assert.IsTrue(argTreenode.SubtreeCount == 0);
           Assert.IsTrue(((Argument)argTreenode.Symbol).ArgumentIndex < arity);
         }
 

@@ -63,7 +63,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     // the argumentTrees list contains already expanded trees used as arguments for invocations
     private ISymbolicExpressionTreeNode MacroExpand(ISymbolicExpressionTreeNode root, ISymbolicExpressionTreeNode node, IList<ISymbolicExpressionTreeNode> argumentTrees) {
       List<ISymbolicExpressionTreeNode> subtrees = new List<ISymbolicExpressionTreeNode>(node.Subtrees);
-      while (node.SubtreesCount > 0) node.RemoveSubtree(0);
+      while (node.SubtreeCount > 0) node.RemoveSubtree(0);
       if (node.Symbol is InvokeFunction) {
         var invokeSym = node.Symbol as InvokeFunction;
         var defunNode = FindFunctionDefinition(root, invokeSym.FunctionName);
@@ -892,7 +892,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (IsMultiplication(x) || IsDivision(x)) {
         // x0 * x1 * .. * xn * -1 => x0 * x1 * .. * -xn
         var lastSubTree = x.Subtrees.Last();
-        x.RemoveSubtree(x.SubtreesCount - 1);
+        x.RemoveSubtree(x.SubtreeCount - 1);
         x.AddSubtree(Negate(lastSubTree)); // last is maybe a constant, prefer to negate the constant
       } else {
         // any other function

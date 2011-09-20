@@ -27,6 +27,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("Average", "Symbol that represents the average (arithmetic mean) function.")]
   public sealed class Average : Symbol {
+    private const int minimumArity = 1;
+    private const int maximumArity = byte.MaxValue;
+
+    public override int MinimumArity {
+      get { return minimumArity; }
+    }
+    public override int MaximumArity {
+      get { return maximumArity; }
+    }
+
     [StorableConstructor]
     private Average(bool deserializing) : base(deserializing) { }
     private Average(Average original, Cloner cloner) : base(original, cloner) { }

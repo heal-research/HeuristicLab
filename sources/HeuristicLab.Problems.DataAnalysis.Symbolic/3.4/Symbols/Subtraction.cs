@@ -27,6 +27,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("Subtraction", "Symbol that represents the - operator.")]
   public sealed class Subtraction : Symbol {
+    private const int minimumArity = 1;
+    private const int maximumArity = byte.MaxValue;
+
+    public override int MinimumArity {
+      get { return minimumArity; }
+    }
+    public override int MaximumArity {
+      get { return maximumArity; }
+    }
+
     [StorableConstructor]
     private Subtraction(bool deserializing) : base(deserializing) { }
     private Subtraction(Subtraction original, Cloner cloner) : base(original, cloner) { }

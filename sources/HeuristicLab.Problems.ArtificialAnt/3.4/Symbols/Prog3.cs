@@ -27,6 +27,16 @@ namespace HeuristicLab.Problems.ArtificialAnt.Symbols {
   [StorableClass]
   [Item("Prog3", "Represents the sequence symbol with 3 sub-trees in a artificial ant expression.")]
   public sealed class Prog3 : Symbol {
+    private const int minimumArity = 3;
+    private const int maximumArity = 3;
+
+    public override int MinimumArity {
+      get { return minimumArity; }
+    }
+    public override int MaximumArity {
+      get { return maximumArity; }
+    }
+
     [StorableConstructor]
     private Prog3(bool deserializing) : base(deserializing) { }
     private Prog3(Prog3 original, Cloner cloner) : base(original, cloner) { }

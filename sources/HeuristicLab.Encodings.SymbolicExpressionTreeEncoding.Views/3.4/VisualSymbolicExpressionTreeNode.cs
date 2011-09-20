@@ -22,7 +22,7 @@
 using System.Drawing;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
-  public class VisualSymbolicExpressionTreeNode {
+  public class VisualSymbolicExpressionTreeNode : object {
     private static readonly Color defaultLineColor = Color.Black;
     private static readonly Color defaultTextColor = Color.Black;
     private static readonly Color defaultFillColor = Color.White;

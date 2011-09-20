@@ -99,7 +99,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         OnChanged(EventArgs.Empty);
       }
     }
+
+    private const int minimumArity = 0;
+    private const int maximumArity = 0;
+
+    public override int MinimumArity {
+      get { return minimumArity; }
+    }
+    public override int MaximumArity {
+      get { return maximumArity; }
+    }
     #endregion
+
     [StorableConstructor]
     protected Variable(bool deserializing)
       : base(deserializing) {
@@ -123,6 +134,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       weightManipulatorSigma = 0.05;
       multiplicativeWeightManipulatorSigma = 0.03;
       variableNames = new List<string>();
+    }
+
+    protected override void OnChanged(EventArgs e) {
+      if (@Fixed) {
+        weightManipulatorMu = 1;
+        weightManipulatorSigma = 0;
+        weightMu = 1;
+        weightSigma = 0;
+        multiplicativeWeightManipulatorSigma = 0;
+      }
+      base.OnChanged(e);
     }
 
     public override ISymbolicExpressionTreeNode CreateTreeNode() {

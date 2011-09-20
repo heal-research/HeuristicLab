@@ -27,6 +27,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("Exponential", "Symbol that represents the exponential function.")]
   public sealed class Exponential : Symbol {
+    private const int minimumArity = 1;
+    private const int maximumArity = 1;
+
+    public override int MinimumArity {
+      get { return minimumArity; }
+    }
+    public override int MaximumArity {
+      get { return maximumArity; }
+    }
+
     [StorableConstructor]
     private Exponential(bool deserializing) : base(deserializing) { }
     private Exponential(Exponential original, Cloner cloner) : base(original, cloner) { }

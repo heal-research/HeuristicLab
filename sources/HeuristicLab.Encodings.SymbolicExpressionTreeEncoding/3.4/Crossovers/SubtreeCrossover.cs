@@ -95,12 +95,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       int maxInsertedBranchLength = maxTreeLength - (parent0.Length - childLength);
       int maxInsertedBranchDepth = maxTreeDepth - GetBranchLevel(parent0.Root, crossoverPoint0.Parent);
 
-
       List<ISymbolicExpressionTreeNode> allowedBranches = new List<ISymbolicExpressionTreeNode>();
       parent1.Root.ForEachNodePostfix((n) => {
         if (n.GetLength() <= maxInsertedBranchLength &&
-          n.GetDepth() <= maxInsertedBranchDepth &&
-          IsMatchingPointType(crossoverPoint0, n))
+            n.GetDepth() <= maxInsertedBranchDepth &&
+            IsMatchingPointType(crossoverPoint0, n))
           allowedBranches.Add(n);
       });
       // empty branch
@@ -132,8 +131,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       var parent = cutPoint.Parent;
       if (newChild == null) {
         // make sure that one subtree can be removed and that only the last subtree is removed 
-        return parent.Grammar.GetMinimumSubtreeCount(parent.Symbol) < parent.SubtreesCount &&
-          cutPoint.ChildIndex == parent.SubtreesCount - 1;
+        return parent.Grammar.GetMinimumSubtreeCount(parent.Symbol) < parent.SubtreeCount &&
+          cutPoint.ChildIndex == parent.SubtreeCount - 1;
       } else {
         // check syntax constraints of direct parent - child relation
         if (!parent.Grammar.ContainsSymbol(newChild.Symbol) ||
@@ -145,8 +144,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
           result =
             result &&
             parent.Grammar.ContainsSymbol(n.Symbol) &&
-            n.SubtreesCount >= parent.Grammar.GetMinimumSubtreeCount(n.Symbol) &&
-            n.SubtreesCount <= parent.Grammar.GetMaximumSubtreeCount(n.Symbol);
+            n.SubtreeCount >= parent.Grammar.GetMinimumSubtreeCount(n.Symbol) &&
+            n.SubtreeCount <= parent.Grammar.GetMaximumSubtreeCount(n.Symbol);
         });
         return result;
       }
@@ -168,9 +167,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
             }
           }
           // add one additional extension point if the number of sub trees for the symbol is not full
-          if (n.SubtreesCount < n.Grammar.GetMaximumSubtreeCount(n.Symbol)) {
+          if (n.SubtreeCount < n.Grammar.GetMaximumSubtreeCount(n.Symbol)) {
             // empty extension point
-            internalCrossoverPoints.Add(new CutPoint(n, n.SubtreesCount));
+            internalCrossoverPoints.Add(new CutPoint(n, n.SubtreeCount));
           }
         }
       });

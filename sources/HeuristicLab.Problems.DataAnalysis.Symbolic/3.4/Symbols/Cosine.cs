@@ -27,6 +27,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("Cosine", "Symbol that represents the cosine function.")]
   public sealed class Cosine : Symbol {
+    private const int minimumArity = 1;
+    private const int maximumArity = 1;
+
+    public override int MinimumArity {
+      get { return minimumArity; }
+    }
+    public override int MaximumArity {
+      get { return maximumArity; }
+    }
+
     [StorableConstructor]
     private Cosine(bool deserializing) : base(deserializing) { }
     private Cosine(Cosine original, Cloner cloner) : base(original, cloner) { }

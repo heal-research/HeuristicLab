@@ -72,7 +72,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       currentLag = 0;
       FormatBegin(node, strBuilder);
 
-      if (node.SubtreesCount > 0) {
+      if (node.SubtreeCount > 0) {
         strBuilder.Append(FormatRecursively(node.GetSubtree(0)));
       }
       foreach (SymbolicExpressionTreeNode subTree in node.Subtrees.Skip(1)) {
@@ -90,22 +90,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (node.Symbol is Addition) {
         strBuilder.Append(@" \left( ");
       } else if (node.Symbol is Subtraction) {
-        if (node.SubtreesCount == 1) {
+        if (node.SubtreeCount == 1) {
           strBuilder.Append(@"- \left(");
         } else {
           strBuilder.Append(@" \left( ");
         }
       } else if (node.Symbol is Multiplication) {
       } else if (node.Symbol is Division) {
-        if (node.SubtreesCount == 1) {
+        if (node.SubtreeCount == 1) {
           strBuilder.Append(@" \cfrac{1}{");
         } else {
           strBuilder.Append(@" \cfrac{ ");
         }
       } else if (node.Symbol is Average) {
         // skip output of (1/1) if only one subtree
-        if (node.SubtreesCount > 1) {
-          strBuilder.Append(@" \cfrac{1}{" + node.SubtreesCount + @"}");
+        if (node.SubtreeCount > 1) {
+          strBuilder.Append(@" \cfrac{1}{" + node.SubtreeCount + @"}");
         }
         strBuilder.Append(@" \left(");
       } else if (node.Symbol is Logarithm) {
@@ -245,9 +245,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (node.Symbol is Multiplication) {
       } else if (node.Symbol is Division) {
         strBuilder.Append("} ");
-        if (node.SubtreesCount > 1)
+        if (node.SubtreeCount > 1)
           strBuilder.Append("{1} ");
-        for (int i = 1; i < node.SubtreesCount; i++) {
+        for (int i = 1; i < node.SubtreeCount; i++) {
           strBuilder.Append(" } ");
         }
       } else if (node.Symbol is Average) {

@@ -127,7 +127,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     public virtual void ResetLocalParameters(IRandom random) { }
     public virtual void ShakeLocalParameters(IRandom random, double shakingFactor) { }
 
-    public int SubtreesCount {
+    public int SubtreeCount {
       get {
         if (subtrees == null) return 0;
         return subtrees.Count;

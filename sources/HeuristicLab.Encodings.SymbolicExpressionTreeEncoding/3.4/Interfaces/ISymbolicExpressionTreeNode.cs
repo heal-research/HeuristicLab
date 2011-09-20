@@ -38,7 +38,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     void ForEachNodePrefix(Action<ISymbolicExpressionTreeNode> a);
 
     IEnumerable<ISymbolicExpressionTreeNode> Subtrees { get; }
-    int SubtreesCount { get; }
+    int SubtreeCount { get; }
     ISymbolicExpressionTreeNode GetSubtree(int index);
     int IndexOfSubtree(ISymbolicExpressionTreeNode tree);
     void AddSubtree(ISymbolicExpressionTreeNode tree);

@@ -77,6 +77,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.errorProvider.SetIconAlignment(this.initialFrequencyTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.initialFrequencyTextBox.Size = new System.Drawing.Size(233, 20);
       // 
+      // minimumArityLabel
+      // 
+      this.toolTip.SetToolTip(this.minimumArityLabel, "Relative frequency of the symbol in randomly created trees");
+      // 
+      // maximumArityLabel
+      // 
+      this.toolTip.SetToolTip(this.maximumArityLabel, "Relative frequency of the symbol in randomly created trees");
+      // 
+      // minimumArityTextBox
+      // 
+      this.errorProvider.SetIconAlignment(this.minimumArityTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
+      // 
+      // maximumArityTextBox
+      // 
+      this.errorProvider.SetIconAlignment(this.maximumArityTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
+      // 
       // nameTextBox
       // 
       this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
@@ -95,20 +111,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // thresholdInitializationMuTextBox
       // 
-      this.thresholdInitializationMuTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.thresholdInitializationMuTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.thresholdInitializationMuTextBox.Location = new System.Drawing.Point(114, 15);
       this.thresholdInitializationMuTextBox.Name = "thresholdInitializationMuTextBox";
       this.thresholdInitializationMuTextBox.Size = new System.Drawing.Size(203, 20);
       this.thresholdInitializationMuTextBox.TabIndex = 1;
       this.toolTip.SetToolTip(this.thresholdInitializationMuTextBox, "The mu (mean) parameter of the normal distribution from which to sample the initi" +
-              "al thresholds.");
+        "al thresholds.");
       this.thresholdInitializationMuTextBox.TextChanged += new System.EventHandler(this.thresholdMuTextBox_TextChanged);
       // 
       // initializationGroupBox
       // 
-      this.initializationGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.initializationGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.initializationGroupBox.Controls.Add(this.slopeInitializationSigmaLabel);
       this.initializationGroupBox.Controls.Add(this.slopeInitializationSigmaTextBox);
       this.initializationGroupBox.Controls.Add(this.slopeInitializationMuLabel);
@@ -117,7 +133,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.initializationGroupBox.Controls.Add(this.thresholdInitializationSigmaTextBox);
       this.initializationGroupBox.Controls.Add(this.thresholdInitializationMuLabel);
       this.initializationGroupBox.Controls.Add(this.thresholdInitializationMuTextBox);
-      this.initializationGroupBox.Location = new System.Drawing.Point(0, 52);
+      this.initializationGroupBox.Location = new System.Drawing.Point(0, 127);
       this.initializationGroupBox.Name = "initializationGroupBox";
       this.initializationGroupBox.Size = new System.Drawing.Size(326, 127);
       this.initializationGroupBox.TabIndex = 5;
@@ -136,14 +152,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // slopeInitializationSigmaTextBox
       // 
-      this.slopeInitializationSigmaTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.slopeInitializationSigmaTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.slopeInitializationSigmaTextBox.Location = new System.Drawing.Point(114, 102);
       this.slopeInitializationSigmaTextBox.Name = "slopeInitializationSigmaTextBox";
       this.slopeInitializationSigmaTextBox.Size = new System.Drawing.Size(203, 20);
       this.slopeInitializationSigmaTextBox.TabIndex = 7;
       this.toolTip.SetToolTip(this.slopeInitializationSigmaTextBox, "The sigma parameter for the normal distribution from which to sample the initial " +
-              "slopes.");
+        "slopes.");
       this.slopeInitializationSigmaTextBox.TextChanged += new System.EventHandler(this.slopeInitializationSigmaTextBox_TextChanged);
       // 
       // slopeInitializationMuLabel
@@ -158,14 +174,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // slopeInitializationMuTextBox
       // 
-      this.slopeInitializationMuTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.slopeInitializationMuTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.slopeInitializationMuTextBox.Location = new System.Drawing.Point(114, 76);
       this.slopeInitializationMuTextBox.Name = "slopeInitializationMuTextBox";
       this.slopeInitializationMuTextBox.Size = new System.Drawing.Size(203, 20);
       this.slopeInitializationMuTextBox.TabIndex = 5;
       this.toolTip.SetToolTip(this.slopeInitializationMuTextBox, "The mu (mean) parameter of the normal distribution from which to sample the initi" +
-              "al slopes.");
+        "al slopes.");
       this.slopeInitializationMuTextBox.TextChanged += new System.EventHandler(this.slopeInitializationMuTextBox_TextChanged);
       // 
       // thresholdInitializationSigmaLabel
@@ -180,20 +196,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // thresholdInitializationSigmaTextBox
       // 
-      this.thresholdInitializationSigmaTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.thresholdInitializationSigmaTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.thresholdInitializationSigmaTextBox.Location = new System.Drawing.Point(114, 41);
       this.thresholdInitializationSigmaTextBox.Name = "thresholdInitializationSigmaTextBox";
       this.thresholdInitializationSigmaTextBox.Size = new System.Drawing.Size(203, 20);
       this.thresholdInitializationSigmaTextBox.TabIndex = 3;
       this.toolTip.SetToolTip(this.thresholdInitializationSigmaTextBox, "The sigma parameter for the normal distribution from which to sample the initial " +
-              "thresholds.");
+        "thresholds.");
       this.thresholdInitializationSigmaTextBox.TextChanged += new System.EventHandler(this.thresholdInitializationSigmaTextBox_TextChanged);
       // 
       // mutationGroupBox
       // 
-      this.mutationGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.mutationGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.mutationGroupBox.Controls.Add(this.slopeChangeSigmaLabel);
       this.mutationGroupBox.Controls.Add(this.slopeChangeSigmaTextBox);
       this.mutationGroupBox.Controls.Add(this.slopeChangeMuLabel);
@@ -202,7 +218,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.mutationGroupBox.Controls.Add(this.thresholdChangeSigmaTextBox);
       this.mutationGroupBox.Controls.Add(this.ThresholdChangeMuLabel);
       this.mutationGroupBox.Controls.Add(this.thresholdChangeMuTextBox);
-      this.mutationGroupBox.Location = new System.Drawing.Point(0, 185);
+      this.mutationGroupBox.Location = new System.Drawing.Point(0, 260);
       this.mutationGroupBox.Name = "mutationGroupBox";
       this.mutationGroupBox.Size = new System.Drawing.Size(326, 127);
       this.mutationGroupBox.TabIndex = 6;
@@ -218,18 +234,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.slopeChangeSigmaLabel.TabIndex = 6;
       this.slopeChangeSigmaLabel.Text = "Slope change (sigma):";
       this.toolTip.SetToolTip(this.slopeChangeSigmaLabel, "The sigma parameter for the normal distribution to use to sample the change in sl" +
-              "ope.");
+        "ope.");
       // 
       // slopeChangeSigmaTextBox
       // 
-      this.slopeChangeSigmaTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.slopeChangeSigmaTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.slopeChangeSigmaTextBox.Location = new System.Drawing.Point(149, 99);
       this.slopeChangeSigmaTextBox.Name = "slopeChangeSigmaTextBox";
       this.slopeChangeSigmaTextBox.Size = new System.Drawing.Size(168, 20);
       this.slopeChangeSigmaTextBox.TabIndex = 7;
       this.toolTip.SetToolTip(this.slopeChangeSigmaTextBox, "The sigma parameter for the normal distribution to use to sample the change in sl" +
-              "ope.");
+        "ope.");
       this.slopeChangeSigmaTextBox.TextChanged += new System.EventHandler(this.slopeChangeSigmaTextBox_TextChanged);
       // 
       // slopeChangeMuLabel
@@ -241,18 +257,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.slopeChangeMuLabel.TabIndex = 4;
       this.slopeChangeMuLabel.Text = "Slope change (mu):";
       this.toolTip.SetToolTip(this.slopeChangeMuLabel, "The nu (mean) parameter for the normal distribution to sample the change in slope" +
-              ".");
+        ".");
       // 
       // slopeChangeMuTextBox
       // 
-      this.slopeChangeMuTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.slopeChangeMuTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.slopeChangeMuTextBox.Location = new System.Drawing.Point(149, 73);
       this.slopeChangeMuTextBox.Name = "slopeChangeMuTextBox";
       this.slopeChangeMuTextBox.Size = new System.Drawing.Size(168, 20);
       this.slopeChangeMuTextBox.TabIndex = 5;
       this.toolTip.SetToolTip(this.slopeChangeMuTextBox, "The mu (mean) parameter for the normal distribution to sample the change in slope" +
-              ".");
+        ".");
       this.slopeChangeMuTextBox.TextChanged += new System.EventHandler(this.slopeChangeMuTextBox_TextChanged);
       // 
       // thresholdChangeSigmaLabel
@@ -264,18 +280,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.thresholdChangeSigmaLabel.TabIndex = 2;
       this.thresholdChangeSigmaLabel.Text = "Threshold change (sigma):";
       this.toolTip.SetToolTip(this.thresholdChangeSigmaLabel, "The sigma parameter for the normal distribution to use to sample the change in th" +
-              "reshold.");
+        "reshold.");
       // 
       // thresholdChangeSigmaTextBox
       // 
-      this.thresholdChangeSigmaTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.thresholdChangeSigmaTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.thresholdChangeSigmaTextBox.Location = new System.Drawing.Point(149, 41);
       this.thresholdChangeSigmaTextBox.Name = "thresholdChangeSigmaTextBox";
       this.thresholdChangeSigmaTextBox.Size = new System.Drawing.Size(168, 20);
       this.thresholdChangeSigmaTextBox.TabIndex = 3;
       this.toolTip.SetToolTip(this.thresholdChangeSigmaTextBox, "The sigma parameter for the normal distribution to use to sample the change in th" +
-              "reshold.");
+        "reshold.");
       this.thresholdChangeSigmaTextBox.TextChanged += new System.EventHandler(this.thresholdChangeSigmaTextBox_TextChanged);
       // 
       // ThresholdChangeMuLabel
@@ -287,18 +303,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.ThresholdChangeMuLabel.TabIndex = 0;
       this.ThresholdChangeMuLabel.Text = "Threshold change (mu):";
       this.toolTip.SetToolTip(this.ThresholdChangeMuLabel, "The nu (mean) parameter for the normal distribution to sample the change in thres" +
-              "hold.");
+        "hold.");
       // 
       // thresholdChangeMuTextBox
       // 
-      this.thresholdChangeMuTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.thresholdChangeMuTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.thresholdChangeMuTextBox.Location = new System.Drawing.Point(149, 15);
       this.thresholdChangeMuTextBox.Name = "thresholdChangeMuTextBox";
       this.thresholdChangeMuTextBox.Size = new System.Drawing.Size(168, 20);
       this.thresholdChangeMuTextBox.TabIndex = 1;
       this.toolTip.SetToolTip(this.thresholdChangeMuTextBox, "The mu (mean) parameter for the normal distribution to sample the change in thres" +
-              "hold.");
+        "hold.");
       this.thresholdChangeMuTextBox.TextChanged += new System.EventHandler(this.thresholdChangeMuTextBox_TextChanged);
       // 
       // VariableConditionView
@@ -308,7 +324,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.Controls.Add(this.mutationGroupBox);
       this.Controls.Add(this.initializationGroupBox);
       this.Name = "VariableConditionView";
-      this.Size = new System.Drawing.Size(326, 315);
+      this.Size = new System.Drawing.Size(326, 376);
+      this.Controls.SetChildIndex(this.maximumArityLabel, 0);
+      this.Controls.SetChildIndex(this.maximumArityTextBox, 0);
+      this.Controls.SetChildIndex(this.minimumArityLabel, 0);
+      this.Controls.SetChildIndex(this.minimumArityTextBox, 0);
       this.Controls.SetChildIndex(this.infoLabel, 0);
       this.Controls.SetChildIndex(this.initializationGroupBox, 0);
       this.Controls.SetChildIndex(this.initialFrequencyTextBox, 0);

@@ -27,6 +27,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("Derivative", "Represents the derivative over the specified subtree.")]
   public sealed class Derivative : Symbol {
+    private const int minimumArity = 1;
+    private const int maximumArity = 1;
+
+    public override int MinimumArity {
+      get { return minimumArity; }
+    }
+    public override int MaximumArity {
+      get { return maximumArity; }
+    }
+
     [StorableConstructor]
     private Derivative(bool deserializing) : base(deserializing) { }
     private Derivative(Derivative original, Cloner cloner) : base(original, cloner) { }

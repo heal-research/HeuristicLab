@@ -31,6 +31,15 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   public sealed class InvokeFunction : Symbol, IReadOnlySymbol {
     public const string InvokeFunctionName = "InvokeFunction";
     public const string InvokeFunctionDescription = "Symbol that the invocation of another function.";
+    private const int minimumArity = 0;
+    private const int maximumArity = byte.MaxValue;
+
+    public override int MinimumArity {
+      get { return minimumArity; }
+    }
+    public override int MaximumArity {
+      get { return maximumArity; }
+    }
 
     [Storable]
     private string functionName;

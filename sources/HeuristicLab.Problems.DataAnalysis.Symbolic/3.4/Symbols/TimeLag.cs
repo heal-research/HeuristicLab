@@ -27,6 +27,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("TimeLag", "Represents a symblol whose evaluation is shifted.")]
   public sealed class TimeLag : LaggedSymbol {
+    private const int minimumArity = 1;
+    private const int maximumArity = 1;
+
+    public override int MinimumArity {
+      get { return minimumArity; }
+    }
+    public override int MaximumArity {
+      get { return maximumArity; }
+    }
+
     [StorableConstructor]
     private TimeLag(bool deserializing) : base(deserializing) { }
     private TimeLag(TimeLag original, Cloner cloner) : base(original, cloner) { }

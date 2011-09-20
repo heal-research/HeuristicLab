@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using HeuristicLab.Core;
 
@@ -40,5 +41,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     int GetMinimumExpressionLength(ISymbol start);
     int GetMaximumExpressionLength(ISymbol start);
     int GetMinimumExpressionDepth(ISymbol start);
+
+    event EventHandler Changed;
   }
 }

@@ -26,9 +26,18 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._4.Tests {
   public static class Grammars {
-
     [StorableClass]
     private class Addition : Symbol {
+      private const int minimumArity = 1;
+      private const int maximumArity = byte.MaxValue;
+
+      public override int MinimumArity {
+        get { return minimumArity; }
+      }
+      public override int MaximumArity {
+        get { return maximumArity; }
+      }
+
       [StorableConstructor]
       protected Addition(bool deserializing) : base(deserializing) { }
       protected Addition(Addition original, Cloner cloner) : base(original, cloner) { }
@@ -40,6 +49,16 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._4.Tests {
 
     [StorableClass]
     private class Subtraction : Symbol {
+      private const int minimumArity = 1;
+      private const int maximumArity = byte.MaxValue;
+
+      public override int MinimumArity {
+        get { return minimumArity; }
+      }
+      public override int MaximumArity {
+        get { return maximumArity; }
+      }
+
       [StorableConstructor]
       protected Subtraction(bool deserializing) : base(deserializing) { }
       protected Subtraction(Subtraction original, Cloner cloner) : base(original, cloner) { }
@@ -51,6 +70,16 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._4.Tests {
 
     [StorableClass]
     private class Multiplication : Symbol {
+      private const int minimumArity = 1;
+      private const int maximumArity = byte.MaxValue;
+
+      public override int MinimumArity {
+        get { return minimumArity; }
+      }
+      public override int MaximumArity {
+        get { return maximumArity; }
+      }
+
       [StorableConstructor]
       protected Multiplication(bool deserializing) : base(deserializing) { }
       protected Multiplication(Multiplication original, Cloner cloner) : base(original, cloner) { }
@@ -62,6 +91,16 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._4.Tests {
 
     [StorableClass]
     private class Division : Symbol {
+      private const int minimumArity = 1;
+      private const int maximumArity = byte.MaxValue;
+
+      public override int MinimumArity {
+        get { return minimumArity; }
+      }
+      public override int MaximumArity {
+        get { return maximumArity; }
+      }
+
       [StorableConstructor]
       protected Division(bool deserializing) : base(deserializing) { }
       protected Division(Division original, Cloner cloner) : base(original, cloner) { }
@@ -73,6 +112,16 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._4.Tests {
 
     [StorableClass]
     private class Terminal : Symbol {
+      private const int minimumArity = 0;
+      private const int maximumArity = 0;
+
+      public override int MinimumArity {
+        get { return minimumArity; }
+      }
+      public override int MaximumArity {
+        get { return maximumArity; }
+      }
+
       [StorableConstructor]
       protected Terminal(bool deserializing) : base(deserializing) { }
       protected Terminal(Terminal original, Cloner cloner) : base(original, cloner) { }

@@ -27,6 +27,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("Root", "Symbol that represents the n-th root function.")]
   public sealed class Root : Symbol {
+    private const int minimumArity = 2;
+    private const int maximumArity = 2;
+
+    public override int MinimumArity {
+      get { return minimumArity; }
+    }
+    public override int MaximumArity {
+      get { return maximumArity; }
+    }
+
     [StorableConstructor]
     private Root(bool deserializing) : base(deserializing) { }
     private Root(Root original, Cloner cloner) : base(original, cloner) { }

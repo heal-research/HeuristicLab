@@ -126,7 +126,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         foreach (var node in tree.IterateNodesPrefix()) {
           string symbolName;
           if (aggregateDifferentNumberOfSubtrees) symbolName = node.Symbol.Name;
-          else symbolName = node.Symbol.Name + "-" + node.SubtreesCount;
+          else symbolName = node.Symbol.Name + "-" + node.SubtreeCount;
           if (symbolFrequencies.ContainsKey(symbolName)) symbolFrequencies[symbolName] += 1;
           else symbolFrequencies.Add(symbolName, 1);
           totalNumberOfSymbols++;

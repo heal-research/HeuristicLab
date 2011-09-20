@@ -178,9 +178,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         if (parent.Grammar.GetMinimumExpressionDepth(parent.Symbol) >= maxDepth - extensionDepth) {
           ReplaceWithMinimalTree(random, root, parent, argumentIndex);
         } else {
-          var allowedSymbols = (from s in parent.Grammar.Symbols
+          var allowedSymbols = (from s in parent.Grammar.GetAllowedChildSymbols(parent.Symbol, argumentIndex)
                                 where s.InitialFrequency > 0.0
-                                where parent.Grammar.IsAllowedChildSymbol(parent.Symbol, s, argumentIndex)
                                 where parent.Grammar.GetMinimumExpressionDepth(s) < maxDepth - extensionDepth + 1
                                 where parent.Grammar.GetMaximumExpressionLength(s) > targetLength - totalListMinLength - currentLength
                                 select s)
@@ -270,7 +269,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         aggregatedLongestExpressionLength += (from s in node.Grammar.GetAllowedChildSymbols(node.Symbol, i)
                                               where s.InitialFrequency > 0.0
                                               select node.Grammar.GetMaximumExpressionLength(s)).Max();
-        if (aggregatedLongestExpressionLength < targetLength) minArity = i + 1;
+        if (i > minArity && aggregatedLongestExpressionLength < targetLength) minArity = i + 1;
         else break;
       }
 

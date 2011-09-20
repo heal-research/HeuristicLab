@@ -35,6 +35,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// </summary>
   [StorableClass]
   public abstract class SymbolicExpressionGrammarBase : NamedItem, ISymbolicExpressionGrammarBase {
+
     #region properties for separation between implementation and persistence
     [Storable(Name = "Symbols")]
     private IEnumerable<ISymbol> StorableSymbols {
@@ -61,6 +62,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
     #endregion
 
+    private bool suppressEvents;
     protected Dictionary<string, ISymbol> symbols;
     protected Dictionary<string, Tuple<int, int>> symbolSubtreeCount;
     protected Dictionary<string, List<string>> allowedChildSymbols;
@@ -79,6 +81,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       cachedMinExpressionLength = new Dictionary<string, int>();
       cachedMaxExpressionLength = new Dictionary<string, int>();
       cachedMinExpressionDepth = new Dictionary<string, int>();
+
+      suppressEvents = false;
     }
 
     protected SymbolicExpressionGrammarBase(SymbolicExpressionGrammarBase original, Cloner cloner)
@@ -97,6 +101,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       allowedChildSymbolsPerIndex = new Dictionary<Tuple<string, int>, List<string>>();
       foreach (var element in original.allowedChildSymbolsPerIndex)
         allowedChildSymbolsPerIndex.Add(element.Key, new List<string>(element.Value));
+
+      suppressEvents = false;
     }
 
     protected SymbolicExpressionGrammarBase(string name, string description)
@@ -109,32 +115,42 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       symbolSubtreeCount = new Dictionary<string, Tuple<int, int>>();
       allowedChildSymbols = new Dictionary<string, List<string>>();
       allowedChildSymbolsPerIndex = new Dictionary<Tuple<string, int>, List<string>>();
+
+      suppressEvents = false;
     }
 
     #region protected grammar manipulation methods
     protected virtual void AddSymbol(ISymbol symbol) {
       if (ContainsSymbol(symbol)) throw new ArgumentException("Symbol " + symbol + " is already defined.");
-      symbols.Add(symbol.Name, symbol);
-      symbolSubtreeCount.Add(symbol.Name, Tuple.Create(0, 0));
+      foreach (var s in symbol.Flatten()) {
+        symbols.Add(s.Name, s);
+        symbolSubtreeCount.Add(s.Name, Tuple.Create(s.MinimumArity, s.MaximumArity));
+      }
       ClearCaches();
     }
 
     protected virtual void RemoveSymbol(ISymbol symbol) {
-      symbols.Remove(symbol.Name);
-      allowedChildSymbols.Remove(symbol.Name);
-      for (int i = 0; i < GetMaximumSubtreeCount(symbol); i++)
-        allowedChildSymbolsPerIndex.Remove(Tuple.Create(symbol.Name, i));
-      symbolSubtreeCount.Remove(symbol.Name);
+      foreach (var s in symbol.Flatten()) {
+        symbols.Remove(s.Name);
+        allowedChildSymbols.Remove(s.Name);
+        for (int i = 0; i < GetMaximumSubtreeCount(s); i++)
+          allowedChildSymbolsPerIndex.Remove(Tuple.Create(s.Name, i));
+        symbolSubtreeCount.Remove(s.Name);
 
-      foreach (var parent in Symbols) {
-        List<string> allowedChilds;
-        if (allowedChildSymbols.TryGetValue(parent.Name, out allowedChilds))
-          allowedChilds.Remove(symbol.Name);
+        foreach (var parent in Symbols) {
+          List<string> allowedChilds;
+          if (allowedChildSymbols.TryGetValue(parent.Name, out allowedChilds))
+            allowedChilds.Remove(s.Name);
 
-        for (int i = 0; i < GetMaximumSubtreeCount(parent); i++) {
-          if (allowedChildSymbolsPerIndex.TryGetValue(Tuple.Create(parent.Name, i), out allowedChilds))
-            allowedChilds.Remove(symbol.Name);
+          for (int i = 0; i < GetMaximumSubtreeCount(parent); i++) {
+            if (allowedChildSymbolsPerIndex.TryGetValue(Tuple.Create(parent.Name, i), out allowedChilds))
+              allowedChilds.Remove(s.Name);
+          }
         }
+        suppressEvents = true;
+        foreach (var groupSymbol in Symbols.OfType<GroupSymbol>())
+          groupSymbol.SymbolsCollection.Remove(symbol);
+        suppressEvents = false;
       }
       ClearCaches();
     }
@@ -146,89 +162,174 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     protected void AddAllowedChildSymbol(ISymbol parent, ISymbol child) {
+      bool changed = false;
+
+      foreach (ISymbol p in parent.Flatten().Where(p => !(p is GroupSymbol)))
+        changed |= AddAllowedChildSymbolToDictionaries(p, child);
+
+      if (changed) {
+        ClearCaches();
+        OnChanged();
+      }
+    }
+
+    private bool AddAllowedChildSymbolToDictionaries(ISymbol parent, ISymbol child) {
       List<string> childSymbols;
       if (!allowedChildSymbols.TryGetValue(parent.Name, out childSymbols)) {
         childSymbols = new List<string>();
         allowedChildSymbols.Add(parent.Name, childSymbols);
       }
-      if (childSymbols.Contains(child.Name)) throw new ArgumentException();
+      if (childSymbols.Contains(child.Name)) return false;
+
+      suppressEvents = true;
+      for (int argumentIndex = 0; argumentIndex < GetMaximumSubtreeCount(parent); argumentIndex++)
+        RemoveAllowedChildSymbol(parent, child, argumentIndex);
+      suppressEvents = false;
+
       childSymbols.Add(child.Name);
-      ClearCaches();
+      return true;
     }
 
     protected void AddAllowedChildSymbol(ISymbol parent, ISymbol child, int argumentIndex) {
-      var key = Tuple.Create(parent.Name, argumentIndex);
+      bool changed = false;
+
+      foreach (ISymbol p in parent.Flatten().Where(p => !(p is GroupSymbol)))
+        changed |= AddAllowedChildSymbolToDictionaries(p, child, argumentIndex);
+
+      if (changed) {
+        ClearCaches();
+        OnChanged();
+      }
+    }
+
+
+    private bool AddAllowedChildSymbolToDictionaries(ISymbol parent, ISymbol child, int argumentIndex) {
       List<string> childSymbols;
+      if (!allowedChildSymbols.TryGetValue(parent.Name, out childSymbols)) {
+        childSymbols = new List<string>();
+        allowedChildSymbols.Add(parent.Name, childSymbols);
+      }
+      if (childSymbols.Contains(child.Name)) return false;
+
+
+      var key = Tuple.Create(parent.Name, argumentIndex);
       if (!allowedChildSymbolsPerIndex.TryGetValue(key, out childSymbols)) {
         childSymbols = new List<string>();
         allowedChildSymbolsPerIndex.Add(key, childSymbols);
       }
 
-      if (IsAllowedChildSymbol(parent, child)) throw new ArgumentException();
-      if (childSymbols.Contains(child.Name)) throw new ArgumentException();
+      if (childSymbols.Contains(child.Name)) return false;
+
       childSymbols.Add(child.Name);
-      ClearCaches();
+      return true;
     }
 
     protected void RemoveAllowedChildSymbol(ISymbol parent, ISymbol child) {
+      bool changed = false;
       List<string> childSymbols;
       if (allowedChildSymbols.TryGetValue(child.Name, out childSymbols)) {
-        if (allowedChildSymbols[parent.Name].Remove(child.Name))
-          ClearCaches();
+        changed |= childSymbols.Remove(child.Name);
+      }
+
+      for (int argumentIndex = 0; argumentIndex < GetMaximumSubtreeCount(parent); argumentIndex++) {
+        var key = Tuple.Create(parent.Name, argumentIndex);
+        if (allowedChildSymbolsPerIndex.TryGetValue(key, out childSymbols))
+          changed |= childSymbols.Remove(child.Name);
+      }
+
+      if (changed) {
+        ClearCaches();
+        OnChanged();
       }
     }
 
     protected void RemoveAllowedChildSymbol(ISymbol parent, ISymbol child, int argumentIndex) {
-      var key = Tuple.Create(parent.Name, argumentIndex);
+      bool changed = false;
+
+      suppressEvents = true;
       List<string> childSymbols;
-      if (allowedChildSymbolsPerIndex.TryGetValue(key, out childSymbols)) {
-        if (allowedChildSymbolsPerIndex[key].Remove(child.Name))
-          ClearCaches();
+      if (allowedChildSymbols.TryGetValue(parent.Name, out childSymbols)) {
+        if (childSymbols.Remove(child.Name)) {
+          for (int i = 0; i < GetMaximumSubtreeCount(parent); i++) {
+            if (i != argumentIndex) AddAllowedChildSymbol(parent, child, i);
+          }
+          changed = true;
+        }
+      }
+      suppressEvents = false;
+
+      var key = Tuple.Create(parent.Name, argumentIndex);
+      if (allowedChildSymbolsPerIndex.TryGetValue(key, out childSymbols))
+        changed |= childSymbols.Remove(child.Name);
+
+      if (changed) {
+        ClearCaches();
+        OnChanged();
       }
     }
 
     protected void SetSubtreeCount(ISymbol symbol, int minimumSubtreeCount, int maximumSubtreeCount) {
-      for (int i = GetMaximumSubtreeCount(symbol) - 1; i >= maximumSubtreeCount; i--) {
+      var symbols = symbol.Flatten().Where(s => !(s is GroupSymbol));
+      if (symbols.Any(s => s.MinimumArity > minimumSubtreeCount)) throw new ArgumentException("Invalid minimum subtree count " + minimumSubtreeCount + " for " + symbol);
+      if (symbols.Any(s => s.MaximumArity < maximumSubtreeCount)) throw new ArgumentException("Invalid maximum subtree count " + maximumSubtreeCount + " for " + symbol);
+
+      foreach (ISymbol s in symbols)
+        SetSubTreeCountInDictionaries(s, minimumSubtreeCount, maximumSubtreeCount);
+
+      ClearCaches();
+      OnChanged();
+    }
+
+    private void SetSubTreeCountInDictionaries(ISymbol symbol, int minimumSubtreeCount, int maximumSubtreeCount) {
+      for (int i = maximumSubtreeCount; i < GetMaximumSubtreeCount(symbol); i++) {
         var key = Tuple.Create(symbol.Name, i);
         allowedChildSymbolsPerIndex.Remove(key);
       }
 
       symbolSubtreeCount[symbol.Name] = Tuple.Create(minimumSubtreeCount, maximumSubtreeCount);
-      ClearCaches();
     }
     #endregion
 
-    #region ISymbolicExpressionGrammarBase Members
     public virtual IEnumerable<ISymbol> Symbols {
       get { return symbols.Values; }
     }
     public virtual IEnumerable<ISymbol> AllowedSymbols {
-      get { return Symbols.Where(s => !s.InitialFrequency.IsAlmost(0.0)); }
+      get { return Symbols.Where(s => s.Enabled); }
     }
     public virtual bool ContainsSymbol(ISymbol symbol) {
       return symbols.ContainsKey(symbol.Name);
     }
 
     public virtual bool IsAllowedChildSymbol(ISymbol parent, ISymbol child) {
+      if (!child.Enabled) return false;
+
       List<string> temp;
-      if (allowedChildSymbols.TryGetValue(parent.Name, out temp))
+      if (allowedChildSymbols.TryGetValue(parent.Name, out temp)) {
         if (temp.Contains(child.Name)) return true;
+        if (temp.SelectMany(s => GetSymbol(s).Flatten().Select(n => n.Name)).Contains(child.Name)) return true;
+      }
       return false;
     }
 
     public virtual bool IsAllowedChildSymbol(ISymbol parent, ISymbol child, int argumentIndex) {
-      List<string> temp;
-      if (allowedChildSymbols.TryGetValue(parent.Name, out temp))
-        if (temp.Contains(child.Name)) return true;
+      if (!child.Enabled) return false;
+      if (IsAllowedChildSymbol(parent, child)) return true;
 
+      List<string> temp;
       var key = Tuple.Create(parent.Name, argumentIndex);
-      if (allowedChildSymbolsPerIndex.TryGetValue(key, out temp))
-        return temp.Contains(child.Name);
+      if (allowedChildSymbolsPerIndex.TryGetValue(key, out temp)) {
+        if (temp.Contains(child.Name)) return true;
+        if (temp.SelectMany(s => GetSymbol(s).Flatten().Select(n => n.Name)).Contains(child.Name)) return true;
+      }
       return false;
     }
 
     public virtual IEnumerable<ISymbol> GetAllowedChildSymbols(ISymbol parent) {
-      return from s in AllowedSymbols where IsAllowedChildSymbol(parent, s) select s;
+      List<string> childs;
+      if (!allowedChildSymbols.TryGetValue(parent.Name, out childs))
+        return Enumerable.Empty<ISymbol>();
+
+      return childs.Select(x => GetSymbol(x)).Where(s => s.Enabled);
     }
 
     public virtual IEnumerable<ISymbol> GetAllowedChildSymbols(ISymbol parent, int argumentIndex) {
@@ -241,7 +342,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       if (allowedChildSymbolsPerIndex.TryGetValue(key, out temp))
         result = result.Union(temp);
 
-      return result.Select(x => GetSymbol(x));
+      return result.Select(x => GetSymbol(x)).Where(s => s.Enabled);
     }
 
     public virtual int GetMinimumSubtreeCount(ISymbol symbol) {
@@ -250,7 +351,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     public virtual int GetMaximumSubtreeCount(ISymbol symbol) {
       return symbolSubtreeCount[symbol.Name].Item2;
     }
-
 
     protected void ClearCaches() {
       cachedMinExpressionLength.Clear();
@@ -264,8 +364,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       if (!cachedMinExpressionLength.TryGetValue(symbol.Name, out temp)) {
         cachedMinExpressionLength[symbol.Name] = int.MaxValue; // prevent infinite recursion
         long sumOfMinExpressionLengths = 1 + (from argIndex in Enumerable.Range(0, GetMinimumSubtreeCount(symbol))
-                                              let minForSlot = (long)(from s in AllowedSymbols
-                                                                      where IsAllowedChildSymbol(symbol, s, argIndex)
+                                              let minForSlot = (long)(from s in GetAllowedChildSymbols(symbol, argIndex)
                                                                       select GetMinimumExpressionLength(s)).DefaultIfEmpty(0).Min()
                                               select minForSlot).DefaultIfEmpty(0).Sum();
 
@@ -281,8 +380,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       if (!cachedMaxExpressionLength.TryGetValue(symbol.Name, out temp)) {
         cachedMaxExpressionLength[symbol.Name] = int.MaxValue; // prevent infinite recursion
         long sumOfMaxTrees = 1 + (from argIndex in Enumerable.Range(0, GetMaximumSubtreeCount(symbol))
-                                  let maxForSlot = (long)(from s in AllowedSymbols
-                                                          where IsAllowedChildSymbol(symbol, s, argIndex)
+                                  let maxForSlot = (long)(from s in GetAllowedChildSymbols(symbol, argIndex)
                                                           select GetMaximumExpressionLength(s)).DefaultIfEmpty(0).Max()
                                   select maxForSlot).DefaultIfEmpty(0).Sum();
         cachedMaxExpressionLength[symbol.Name] = (int)Math.Min(sumOfMaxTrees, int.MaxValue);
@@ -297,8 +395,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       if (!cachedMinExpressionDepth.TryGetValue(symbol.Name, out temp)) {
         cachedMinExpressionDepth[symbol.Name] = int.MaxValue; // prevent infinite recursion
         long minDepth = 1 + (from argIndex in Enumerable.Range(0, GetMinimumSubtreeCount(symbol))
-                             let minForSlot = (long)(from s in AllowedSymbols
-                                                     where IsAllowedChildSymbol(symbol, s, argIndex)
+                             let minForSlot = (long)(from s in GetAllowedChildSymbols(symbol, argIndex)
                                                      select GetMinimumExpressionDepth(s)).DefaultIfEmpty(0).Min()
                              select minForSlot).DefaultIfEmpty(0).Max();
         cachedMinExpressionDepth[symbol.Name] = (int)Math.Min(minDepth, int.MaxValue);
@@ -306,6 +403,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       }
       return temp;
     }
-    #endregion
+
+    public event EventHandler Changed;
+    protected virtual void OnChanged() {
+      if (suppressEvents) return;
+      var handler = Changed;
+      if (handler != null) Changed(this, EventArgs.Empty);
+    }
   }
 }

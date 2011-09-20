@@ -27,6 +27,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("Or", "Symbol that represents the boolean OR operator.")]
   public sealed class Or : Symbol {
+    private const int minimumArity = 1;
+    private const int maximumArity = byte.MaxValue;
+
+    public override int MinimumArity {
+      get { return minimumArity; }
+    }
+    public override int MaximumArity {
+      get { return maximumArity; }
+    }
+
     [StorableConstructor]
     private Or(bool deserializing) : base(deserializing) { }
     private Or(Or original, Cloner cloner) : base(original, cloner) { }

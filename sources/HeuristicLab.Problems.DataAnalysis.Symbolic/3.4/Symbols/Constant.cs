@@ -87,7 +87,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
+    private const int minimumArity = 0;
+    private const int maximumArity = 0;
+
+    public override int MinimumArity {
+      get { return minimumArity; }
+    }
+    public override int MaximumArity {
+      get { return maximumArity; }
+    }
     #endregion
+
     [StorableConstructor]
     private Constant(bool deserializing) : base(deserializing) { }
     private Constant(Constant original, Cloner cloner)

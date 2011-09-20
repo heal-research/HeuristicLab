@@ -29,7 +29,7 @@ using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
   [View("Symbolic Expression Grammar View")]
-  [Content(typeof(ISymbolicExpressionGrammar), true)]
+  [Content(typeof(ISymbolicExpressionGrammar), false)]
   public partial class SymbolicExpressionGrammarView : NamedItemView {
     private CheckedItemList<ISymbol> symbols;
 
@@ -89,7 +89,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
         foreach (ISymbol symbol in Content.Symbols) {
           if (!(symbol is IReadOnlySymbol)) {
             symbol.Changed += new EventHandler(symbol_Changed);
-            symbols.Add(symbol, symbol.InitialFrequency > 0.0);
+            symbols.Add(symbol, symbol.Enabled);
           }
         }
         checkedItemListView.Content = symbols.AsReadOnly();
@@ -100,18 +100,13 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
 
     private void symbol_Changed(object sender, EventArgs e) {
       ISymbol symbol = (ISymbol)sender;
-      symbols.SetItemCheckedState(symbol, symbol.InitialFrequency > 0.0);
+      symbols.SetItemCheckedState(symbol, symbol.Enabled);
     }
 
     private void symbols_CheckedItemsChanged(object sender, CollectionItemsChangedEventArgs<IndexedItem<ISymbol>> e) {
       ICheckedItemList<ISymbol> checkedItemList = (ICheckedItemList<ISymbol>)sender;
-      foreach (var indexedItem in e.Items) {
-        if (checkedItemList.ItemChecked(indexedItem.Value)) {
-          indexedItem.Value.InitialFrequency = 1.0;
-        } else {
-          indexedItem.Value.InitialFrequency = 0.0;
-        }
-      }
+      foreach (var indexedItem in e.Items)
+        indexedItem.Value.Enabled = checkedItemList.ItemChecked(indexedItem.Value);
     }
     private void ClearSymbols() {
       foreach (Symbol s in symbols)

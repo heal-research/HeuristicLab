@@ -28,9 +28,20 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   public sealed class StartSymbol : Symbol, IReadOnlySymbol {
     public const string StartSymbolName = "StartSymbol";
     public const string StartSymbolDescription = "Special symbol that represents the starting node of the result producing branch of a symbolic expression tree.";
+    private const int minimumArity = 1;
+    private const int maximumArity = 1;
+
+    public override int MinimumArity {
+      get { return minimumArity; }
+    }
+    public override int MaximumArity {
+      get { return maximumArity; }
+    }
 
     [StorableConstructor]
-    private StartSymbol(bool deserializing) : base(deserializing) { }
+    private StartSymbol(bool deserializing)
+      : base(deserializing) {
+    }
     private StartSymbol(StartSymbol original, Cloner cloner) : base(original, cloner) { }
     public StartSymbol() : base(StartSymbol.StartSymbolName, StartSymbol.StartSymbolDescription) { }
 

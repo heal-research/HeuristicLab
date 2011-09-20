@@ -27,6 +27,16 @@ namespace HeuristicLab.Problems.ArtificialAnt.Symbols {
   [StorableClass]
   [Item("Left", "Represents the turn-left symbol in a artificial ant expression.")]
   public sealed class Left : Symbol {
+    private const int minimumArity = 0;
+    private const int maximumArity = 0;
+
+    public override int MinimumArity {
+      get { return minimumArity; }
+    }
+    public override int MaximumArity {
+      get { return maximumArity; }
+    }
+
     [StorableConstructor]
     private Left(bool deserializing) : base(deserializing) { }
     private Left(Left original, Cloner cloner) : base(original, cloner) { }

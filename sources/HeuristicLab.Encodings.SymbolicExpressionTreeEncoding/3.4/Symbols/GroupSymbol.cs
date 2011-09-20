@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2011 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -19,18 +19,15 @@
  */
 #endregion
 
+using System.Collections.Generic;
+using System.Linq;
+using HeuristicLab.Collections;
 using HeuristicLab.Common;
-using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
-  /// <summary>
-  /// Symbol for function arguments
-  /// </summary>
   [StorableClass]
-  [Item(Argument.ArgumentName, Argument.ArgumentDescription)]
-  public sealed class Argument : Symbol, IReadOnlySymbol {
-    public const string ArgumentName = "Argument";
-    public const string ArgumentDescription = "Symbol that represents a function argument.";
+  public sealed class GroupSymbol : Symbol {
     private const int minimumArity = 0;
     private const int maximumArity = 0;
 
@@ -41,31 +38,35 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       get { return maximumArity; }
     }
 
+    private ObservableSet<ISymbol> symbols;
+    public IObservableSet<ISymbol> SymbolsCollection {
+      get { return symbols; }
+    }
     [Storable]
-    private int argumentIndex;
-    public int ArgumentIndex {
-      get { return argumentIndex; }
+    public IEnumerable<ISymbol> Symbols {
+      get { return symbols; }
+      private set { symbols = new ObservableSet<ISymbol>(value); }
     }
 
     [StorableConstructor]
-    private Argument(bool deserializing) : base(deserializing) { }
-    private Argument(Argument original, Cloner cloner)
+    private GroupSymbol(bool deserializing) : base(deserializing) { }
+    private GroupSymbol(GroupSymbol original, Cloner cloner)
       : base(original, cloner) {
-      argumentIndex = original.argumentIndex;
-      name = "ARG" + original.argumentIndex;
+      symbols = new ObservableSet<ISymbol>(original.Symbols.Select(s => cloner.Clone(s)));
     }
-    public Argument(int argumentIndex)
-      : base("ARG" + argumentIndex, Argument.ArgumentDescription) {
-      this.argumentIndex = argumentIndex;
-      this.name = "ARG" + argumentIndex;
-    }
-
-    public override ISymbolicExpressionTreeNode CreateTreeNode() {
-      return new ArgumentTreeNode(this);
-    }
-
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new Argument(this, cloner);
+      return new GroupSymbol(this, cloner);
+    }
+
+    public GroupSymbol() : this("Group Symbol", Enumerable.Empty<ISymbol>()) { }
+    public GroupSymbol(string name, IEnumerable<ISymbol> symbols)
+      : base(name, "A symbol which groups other symbols") {
+      this.symbols = new ObservableSet<ISymbol>(symbols);
+      InitialFrequency = 0.0;
+    }
+
+    public override IEnumerable<ISymbol> Flatten() {
+      return base.Flatten().Union(symbols.SelectMany(s => s.Flatten()));
     }
   }
 }
