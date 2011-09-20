@@ -96,13 +96,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis.Views 
 
     private double CalculateReplacementValue(ISymbolicExpressionTreeNode node, ISymbolicExpressionTree sourceTree) {
       // remove old ADFs
-      while (tempTree.Root.SubtreesCount > 1) tempTree.Root.RemoveSubtree(1);
+      while (tempTree.Root.SubtreeCount > 1) tempTree.Root.RemoveSubtree(1);
       // clone ADFs of source tree
-      for (int i = 1; i < sourceTree.Root.SubtreesCount; i++) {
+      for (int i = 1; i < sourceTree.Root.SubtreeCount; i++) {
         tempTree.Root.AddSubtree((ISymbolicExpressionTreeNode)sourceTree.Root.GetSubtree(i).Clone());
       }
       var start = tempTree.Root.GetSubtree(0);
-      while (start.SubtreesCount > 0) start.RemoveSubtree(0);
+      while (start.SubtreeCount > 0) start.RemoveSubtree(0);
       start.AddSubtree((ISymbolicExpressionTreeNode)node.Clone());
       var interpreter = Content.Model.Interpreter;
       var rows = Content.ProblemData.TrainingIndizes;
@@ -111,7 +111,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis.Views 
 
 
     private void SwitchNode(ISymbolicExpressionTreeNode root, ISymbolicExpressionTreeNode oldBranch, ISymbolicExpressionTreeNode newBranch) {
-      for (int i = 0; i < root.SubtreesCount; i++) {
+      for (int i = 0; i < root.SubtreeCount; i++) {
         if (root.GetSubtree(i) == oldBranch) {
           root.RemoveSubtree(i);
           root.InsertSubtree(i, newBranch);
