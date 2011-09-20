@@ -109,7 +109,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Dataset ds = new Dataset(new string[] { "Y", "A", "B" }, new double[,] {
         { 1.0, 1.0, 1.0 },
         { 2.0, 2.0, 2.0 },
-        { 3.0, 1.0, 2.0 }
+        { 3.0, 1.0, 2.0 },
+        { 4.0, 1.0, 1.0 },
+        { 5.0, 2.0, 2.0 },
+        { 6.0, 1.0, 2.0 },
+        { 7.0, 1.0, 1.0 },
+        { 8.0, 2.0, 2.0 },
+        { 9.0, 1.0, 2.0 },
+        { 10.0, 1.0, 1.0 },
+        { 11.0, 2.0, 2.0 },
+        { 12.0, 1.0, 2.0 }
       });
 
       var interpreter = new SymbolicDataAnalysisExpressionTreeInterpreter();
@@ -123,7 +132,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Dataset ds = new Dataset(new string[] { "Y", "A", "B" }, new double[,] {
         { 1.0, 1.0, 1.0 },
         { 2.0, 2.0, 2.0 },
-        { 3.0, 1.0, 2.0 }
+        { 3.0, 1.0, 2.0 },
+        { 4.0, 1.0, 1.0 },
+        { 5.0, 2.0, 2.0 },
+        { 6.0, 1.0, 2.0 },
+        { 7.0, 1.0, 1.0 },
+        { 8.0, 2.0, 2.0 },
+        { 9.0, 1.0, 2.0 },
+        { 10.0, 1.0, 1.0 },
+        { 11.0, 2.0, 2.0 },
+        { 12.0, 1.0, 2.0 }
       });
 
       var interpreter = new SymbolicDataAnalysisExpressionTreeILEmittingInterpreter();
@@ -296,6 +314,30 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Evaluate(interpreter, ds, "(lagVariable 1.0 a -1) ", 2, ds.GetDoubleValue("A", 1));
       Evaluate(interpreter, ds, "(lagVariable 1.0 a 0) ", 2, ds.GetDoubleValue("A", 2));
       Evaluate(interpreter, ds, "(lagVariable 1.0 a 1) ", 0, ds.GetDoubleValue("A", 1));
+
+      // integral
+      Evaluate(interpreter, ds, "(integral -1.0 (variable 1.0 a)) ", 1, ds.GetDoubleValue("A", 0) + ds.GetDoubleValue("A", 1));
+      Evaluate(interpreter, ds, "(integral -1.0 (lagVariable 1.0 a 1)) ", 1, ds.GetDoubleValue("A", 1) + ds.GetDoubleValue("A", 2));
+      Evaluate(interpreter, ds, "(integral -2.0 (variable 1.0 a)) ", 2, ds.GetDoubleValue("A", 0) + ds.GetDoubleValue("A", 1) + ds.GetDoubleValue("A", 2));
+      Evaluate(interpreter, ds, "(integral -1.0 (* (variable 1.0 a) (variable 1.0 b)))", 1, ds.GetDoubleValue("A", 0) * ds.GetDoubleValue("B", 0) + ds.GetDoubleValue("A", 1) * ds.GetDoubleValue("B", 1));
+      Evaluate(interpreter, ds, "(integral -2.0 3.0)", 1, 9.0);
+
+      // derivative
+      // (f_0 + 2 * f_1 - 2 * f_3 - f_4) / 8; // h = 1
+      Evaluate(interpreter, ds, "(diff (variable 1.0 a)) ", 5, (ds.GetDoubleValue("A", 5) + 2 * ds.GetDoubleValue("A", 4) - 2 * ds.GetDoubleValue("A", 2) - ds.GetDoubleValue("A", 1)) / 8.0);
+      Evaluate(interpreter, ds, "(diff (variable 1.0 b)) ", 5, (ds.GetDoubleValue("B", 5) + 2 * ds.GetDoubleValue("B", 4) - 2 * ds.GetDoubleValue("B", 2) - ds.GetDoubleValue("B", 1)) / 8.0);
+      Evaluate(interpreter, ds, "(diff (* (variable 1.0 a) (variable 1.0 b)))", 5, +
+        (ds.GetDoubleValue("A", 5) * ds.GetDoubleValue("B", 5) +
+        2 * ds.GetDoubleValue("A", 4) * ds.GetDoubleValue("B", 4) -
+        2 * ds.GetDoubleValue("A", 2) * ds.GetDoubleValue("B", 2) -
+        ds.GetDoubleValue("A", 1) * ds.GetDoubleValue("B", 1)) / 8.0);
+      Evaluate(interpreter, ds, "(diff -2.0 3.0)", 5, 0.0);
+
+      // timelag
+      Evaluate(interpreter, ds, "(lag -1.0 (lagVariable 1.0 a 2)) ", 1, ds.GetDoubleValue("A", 2));
+      Evaluate(interpreter, ds, "(lag -2.0 (lagVariable 1.0 a 2)) ", 2, ds.GetDoubleValue("A", 2));
+      Evaluate(interpreter, ds, "(lag -1.0 (* (lagVariable 1.0 a 1) (lagVariable 1.0 b 2)))", 1, ds.GetDoubleValue("A", 1) * ds.GetDoubleValue("B", 2));
+      Evaluate(interpreter, ds, "(lag -2.0 3.0)", 1, 3.0);
     }
 
     private void Evaluate(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, Dataset ds, string expr, int index, double expected) {
@@ -304,6 +346,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
       double actual = interpreter.GetSymbolicExpressionTreeValues(tree, ds, Enumerable.Range(index, 1)).First();
 
+      Assert.IsFalse(double.IsNaN(actual) && !double.IsNaN(expected));
+      Assert.IsFalse(!double.IsNaN(actual) && double.IsNaN(expected));
       Assert.AreEqual(expected, actual, 1.0E-12, expr);
     }
   }

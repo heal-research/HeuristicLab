@@ -42,6 +42,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private TimeLag(TimeLag original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) { return new TimeLag(this, cloner); }
 
-    public TimeLag() : base("TimeLag", "Represents a symblol whose evaluation is shifted.") { }
+    public TimeLag() : base("TimeLag", "Represents a symbol whose evaluation is shifted.") { }
   }
 }

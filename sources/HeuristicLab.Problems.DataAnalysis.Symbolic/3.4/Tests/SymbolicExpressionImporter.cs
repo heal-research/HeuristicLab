@@ -28,10 +28,12 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
   internal class SymbolicExpressionImporter {
     private const string VARSTART = "VAR";
-    private const string LAGGEDVARSTART = "LAG";
+    private const string LAGGEDVARSTART = "LAGVARIABLE";
+    private const string INTEGRALSTART = "INTEG";
     private const string DEFUNSTART = "DEFUN";
     private const string ARGSTART = "ARG";
     private const string INVOKESTART = "CALL";
+    private const string TIMELAGSTART = "LAG";
     private Dictionary<string, Symbol> knownSymbols = new Dictionary<string, Symbol>() 
       {
         {"+", new Addition()},
@@ -52,6 +54,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
         {"AND", new And()},
         {"OR", new Or()},
         {"NOT", new Not()},
+        {"DIFF", new Derivative()},
         {"PROG", new ProgramRootSymbol()},
         {"MAIN", new StartSymbol()},
       };
@@ -60,6 +63,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     Variable variable = new Variable();
     LaggedVariable laggedVariable = new LaggedVariable();
     Defun defun = new Defun();
+    TimeLag timeLag = new TimeLag();
+    Integral integral = new Integral();
 
     ProgramRootSymbol programRootSymbol = new ProgramRootSymbol();
     StartSymbol startSymbol = new StartSymbol();
@@ -99,6 +104,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
           tree = ParseVariable(tokens);
         } else if (tokens.Peek().StringValue.StartsWith(LAGGEDVARSTART)) {
           tree = ParseLaggedVariable(tokens);
+        } else if (tokens.Peek().StringValue.StartsWith(TIMELAGSTART)) {
+          tree = ParseTimeLag(tokens);
+          tree.AddSubtree(ParseSexp(tokens));
+        } else if (tokens.Peek().StringValue.StartsWith(INTEGRALSTART)) {
+          tree = ParseIntegral(tokens);
+          tree.AddSubtree(ParseSexp(tokens));
         } else if (tokens.Peek().StringValue.StartsWith(DEFUNSTART)) {
           tree = ParseDefun(tokens);
           while (!tokens.Peek().Equals(Token.RPAR)) {
@@ -148,6 +159,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Debug.Assert(defTok.StringValue == "DEFUN");
       DefunTreeNode t = (DefunTreeNode)defun.CreateTreeNode();
       t.FunctionName = tokens.Dequeue().StringValue;
+      return t;
+    }
+
+    private ISymbolicExpressionTreeNode ParseTimeLag(Queue<Token> tokens) {
+      Token varTok = tokens.Dequeue();
+      Debug.Assert(varTok.StringValue == "LAG");
+      LaggedTreeNode t = (LaggedTreeNode)timeLag.CreateTreeNode();
+      t.Lag = (int)tokens.Dequeue().DoubleValue;
+      return t;
+    }
+
+    private ISymbolicExpressionTreeNode ParseIntegral(Queue<Token> tokens) {
+      Token varTok = tokens.Dequeue();
+      Debug.Assert(varTok.StringValue == "INTEGRAL");
+      LaggedTreeNode t = (LaggedTreeNode)integral.CreateTreeNode();
+      t.Lag = (int)tokens.Dequeue().DoubleValue;
       return t;
     }
 

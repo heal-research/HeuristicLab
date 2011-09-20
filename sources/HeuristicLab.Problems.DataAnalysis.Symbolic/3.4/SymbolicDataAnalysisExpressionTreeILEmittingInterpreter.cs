@@ -246,7 +246,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       DynamicMethod testFun = new DynamicMethod("TestFun", typeof(double), methodArgs, typeof(SymbolicDataAnalysisExpressionTreeILEmittingInterpreter).Module);
 
       ILGenerator il = testFun.GetILGenerator();
-      CompileInstructions(il, state);
+      CompileInstructions(il, state, dataset);
       il.Emit(System.Reflection.Emit.OpCodes.Conv_R8);
       il.Emit(System.Reflection.Emit.OpCodes.Ret);
       var function = (CompiledFunction)testFun.CreateDelegate(typeof(CompiledFunction));
@@ -256,42 +256,42 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    private void CompileInstructions(ILGenerator il, InterpreterState state) {
+    private void CompileInstructions(ILGenerator il, InterpreterState state, Dataset ds) {
       Instruction currentInstr = state.NextInstruction();
       int nArgs = currentInstr.nArguments;
 
       switch (currentInstr.opCode) {
         case OpCodes.Add: {
             if (nArgs > 0) {
-              CompileInstructions(il, state);
+              CompileInstructions(il, state, ds);
             }
             for (int i = 1; i < nArgs; i++) {
-              CompileInstructions(il, state);
+              CompileInstructions(il, state, ds);
               il.Emit(System.Reflection.Emit.OpCodes.Add);
             }
             return;
           }
         case OpCodes.Sub: {
             if (nArgs == 1) {
-              CompileInstructions(il, state);
+              CompileInstructions(il, state, ds);
               il.Emit(System.Reflection.Emit.OpCodes.Neg);
               return;
             }
             if (nArgs > 0) {
-              CompileInstructions(il, state);
+              CompileInstructions(il, state, ds);
             }
             for (int i = 1; i < nArgs; i++) {
-              CompileInstructions(il, state);
+              CompileInstructions(il, state, ds);
               il.Emit(System.Reflection.Emit.OpCodes.Sub);
             }
             return;
           }
         case OpCodes.Mul: {
             if (nArgs > 0) {
-              CompileInstructions(il, state);
+              CompileInstructions(il, state, ds);
             }
             for (int i = 1; i < nArgs; i++) {
-              CompileInstructions(il, state);
+              CompileInstructions(il, state, ds);
               il.Emit(System.Reflection.Emit.OpCodes.Mul);
             }
             return;
@@ -299,23 +299,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         case OpCodes.Div: {
             if (nArgs == 1) {
               il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 1.0);
-              CompileInstructions(il, state);
+              CompileInstructions(il, state, ds);
               il.Emit(System.Reflection.Emit.OpCodes.Div);
               return;
             }
             if (nArgs > 0) {
-              CompileInstructions(il, state);
+              CompileInstructions(il, state, ds);
             }
             for (int i = 1; i < nArgs; i++) {
-              CompileInstructions(il, state);
+              CompileInstructions(il, state, ds);
               il.Emit(System.Reflection.Emit.OpCodes.Div);
             }
             return;
           }
         case OpCodes.Average: {
-            CompileInstructions(il, state);
+            CompileInstructions(il, state, ds);
             for (int i = 1; i < nArgs; i++) {
-              CompileInstructions(il, state);
+              CompileInstructions(il, state, ds);
               il.Emit(System.Reflection.Emit.OpCodes.Add);
             }
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, nArgs);
@@ -323,69 +323,69 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             return;
           }
         case OpCodes.Cos: {
-            CompileInstructions(il, state);
+            CompileInstructions(il, state, ds);
             il.Emit(System.Reflection.Emit.OpCodes.Call, cos);
             return;
           }
         case OpCodes.Sin: {
-            CompileInstructions(il, state);
+            CompileInstructions(il, state, ds);
             il.Emit(System.Reflection.Emit.OpCodes.Call, sin);
             return;
           }
         case OpCodes.Tan: {
-            CompileInstructions(il, state);
+            CompileInstructions(il, state, ds);
             il.Emit(System.Reflection.Emit.OpCodes.Call, tan);
             return;
           }
         case OpCodes.Power: {
-            CompileInstructions(il, state);
-            CompileInstructions(il, state);
+            CompileInstructions(il, state, ds);
+            CompileInstructions(il, state, ds);
             il.Emit(System.Reflection.Emit.OpCodes.Call, round);
             il.Emit(System.Reflection.Emit.OpCodes.Call, power);
             return;
           }
         case OpCodes.Root: {
-            CompileInstructions(il, state);
+            CompileInstructions(il, state, ds);
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 1.0); // 1 / round(...)
-            CompileInstructions(il, state);
+            CompileInstructions(il, state, ds);
             il.Emit(System.Reflection.Emit.OpCodes.Call, round);
             il.Emit(System.Reflection.Emit.OpCodes.Div);
             il.Emit(System.Reflection.Emit.OpCodes.Call, power);
             return;
           }
         case OpCodes.Exp: {
-            CompileInstructions(il, state);
+            CompileInstructions(il, state, ds);
             il.Emit(System.Reflection.Emit.OpCodes.Call, exp);
             return;
           }
         case OpCodes.Log: {
-            CompileInstructions(il, state);
+            CompileInstructions(il, state, ds);
             il.Emit(System.Reflection.Emit.OpCodes.Call, log);
             return;
           }
         case OpCodes.IfThenElse: {
             Label end = il.DefineLabel();
             Label c1 = il.DefineLabel();
-            CompileInstructions(il, state);
+            CompileInstructions(il, state, ds);
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4_0); // > 0
             il.Emit(System.Reflection.Emit.OpCodes.Cgt);
             il.Emit(System.Reflection.Emit.OpCodes.Brfalse, c1);
-            CompileInstructions(il, state);
+            CompileInstructions(il, state, ds);
             il.Emit(System.Reflection.Emit.OpCodes.Br, end);
             il.MarkLabel(c1);
-            CompileInstructions(il, state);
+            CompileInstructions(il, state, ds);
             il.MarkLabel(end);
             return;
           }
         case OpCodes.AND: {
             Label falseBranch = il.DefineLabel();
             Label end = il.DefineLabel();
-            CompileInstructions(il, state);
+            CompileInstructions(il, state, ds);
             for (int i = 1; i < nArgs; i++) {
               il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4_0); // > 0
               il.Emit(System.Reflection.Emit.OpCodes.Cgt);
               il.Emit(System.Reflection.Emit.OpCodes.Brfalse, falseBranch);
-              CompileInstructions(il, state);
+              CompileInstructions(il, state, ds);
             }
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4_0); // > 0
             il.Emit(System.Reflection.Emit.OpCodes.Cgt);
@@ -402,7 +402,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             Label trueBranch = il.DefineLabel();
             Label end = il.DefineLabel();
             Label resultBranch = il.DefineLabel();
-            CompileInstructions(il, state);
+            CompileInstructions(il, state, ds);
             for (int i = 1; i < nArgs; i++) {
               Label nextArgBranch = il.DefineLabel();
               // complex definition because of special properties of NaN  
@@ -412,7 +412,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
               il.Emit(System.Reflection.Emit.OpCodes.Br, resultBranch);
               il.MarkLabel(nextArgBranch);
               il.Emit(System.Reflection.Emit.OpCodes.Pop);
-              CompileInstructions(il, state);
+              CompileInstructions(il, state, ds);
             }
             il.MarkLabel(resultBranch);
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4_0); // > 0
@@ -427,7 +427,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             return;
           }
         case OpCodes.NOT: {
-            CompileInstructions(il, state);
+            CompileInstructions(il, state, ds);
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4_0); // > 0
             il.Emit(System.Reflection.Emit.OpCodes.Cgt);
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 2.0); // * 2
@@ -438,8 +438,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             return;
           }
         case OpCodes.GT: {
-            CompileInstructions(il, state);
-            CompileInstructions(il, state);
+            CompileInstructions(il, state, ds);
+            CompileInstructions(il, state, ds);
+
             il.Emit(System.Reflection.Emit.OpCodes.Cgt); // 1 (>) / 0 (otherwise)
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 2.0); // * 2
             il.Emit(System.Reflection.Emit.OpCodes.Mul);
@@ -448,8 +449,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             return;
           }
         case OpCodes.LT: {
-            CompileInstructions(il, state);
-            CompileInstructions(il, state);
+            CompileInstructions(il, state, ds);
+            CompileInstructions(il, state, ds);
             il.Emit(System.Reflection.Emit.OpCodes.Clt);
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 2.0); // * 2
             il.Emit(System.Reflection.Emit.OpCodes.Mul);
@@ -458,10 +459,36 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             return;
           }
         case OpCodes.TimeLag: {
-            throw new NotImplementedException();
+            LaggedTreeNode laggedTreeNode = (LaggedTreeNode)currentInstr.dynamicNode;
+            il.Emit(System.Reflection.Emit.OpCodes.Ldarg_0); // row -= lag
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, laggedTreeNode.Lag);
+            il.Emit(System.Reflection.Emit.OpCodes.Add);
+            il.Emit(System.Reflection.Emit.OpCodes.Starg, 0);
+            CompileInstructions(il, state, ds);
+            il.Emit(System.Reflection.Emit.OpCodes.Ldarg_0); // row += lag
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, laggedTreeNode.Lag);
+            il.Emit(System.Reflection.Emit.OpCodes.Sub);
+            il.Emit(System.Reflection.Emit.OpCodes.Starg, 0);
+            return;
           }
         case OpCodes.Integral: {
-            throw new NotImplementedException();
+            int savedPc = state.ProgramCounter;
+            LaggedTreeNode laggedTreeNode = (LaggedTreeNode)currentInstr.dynamicNode;
+            il.Emit(System.Reflection.Emit.OpCodes.Ldarg_0); // row -= lag
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, laggedTreeNode.Lag);
+            il.Emit(System.Reflection.Emit.OpCodes.Add);
+            il.Emit(System.Reflection.Emit.OpCodes.Starg, 0);
+            CompileInstructions(il, state, ds);
+            for (int l = laggedTreeNode.Lag; l < 0; l++) {
+              il.Emit(System.Reflection.Emit.OpCodes.Ldarg_0); // row += lag
+              il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4_1);
+              il.Emit(System.Reflection.Emit.OpCodes.Add);
+              il.Emit(System.Reflection.Emit.OpCodes.Starg, 0);
+              state.ProgramCounter = savedPc;
+              CompileInstructions(il, state, ds);
+              il.Emit(System.Reflection.Emit.OpCodes.Add);
+            }
+            return;
           }
 
         //mkommend: derivate calculation taken from: 
@@ -469,7 +496,43 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         //one sided smooth differentiatior, N = 4
         // y' = 1/8h (f_i + 2f_i-1, -2 f_i-3 - f_i-4)
         case OpCodes.Derivative: {
-            throw new NotImplementedException();
+            int savedPc = state.ProgramCounter;
+            CompileInstructions(il, state, ds);
+            il.Emit(System.Reflection.Emit.OpCodes.Ldarg_0); // row --
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4_M1);
+            il.Emit(System.Reflection.Emit.OpCodes.Add);
+            il.Emit(System.Reflection.Emit.OpCodes.Starg, 0);
+            state.ProgramCounter = savedPc;
+            CompileInstructions(il, state, ds);
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 2.0); // f_0 + 2 * f_1
+            il.Emit(System.Reflection.Emit.OpCodes.Mul);
+            il.Emit(System.Reflection.Emit.OpCodes.Add);
+
+            il.Emit(System.Reflection.Emit.OpCodes.Ldarg_0); // row -=2
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4_2);
+            il.Emit(System.Reflection.Emit.OpCodes.Sub);
+            il.Emit(System.Reflection.Emit.OpCodes.Starg, 0);
+            state.ProgramCounter = savedPc;
+            CompileInstructions(il, state, ds);
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 2.0); // f_0 + 2 * f_1 - 2 * f_3
+            il.Emit(System.Reflection.Emit.OpCodes.Mul);
+            il.Emit(System.Reflection.Emit.OpCodes.Sub);
+
+            il.Emit(System.Reflection.Emit.OpCodes.Ldarg_0); // row --
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4_M1);
+            il.Emit(System.Reflection.Emit.OpCodes.Add);
+            il.Emit(System.Reflection.Emit.OpCodes.Starg, 0);
+            state.ProgramCounter = savedPc;
+            CompileInstructions(il, state, ds);
+            il.Emit(System.Reflection.Emit.OpCodes.Sub); // f_0 + 2 * f_1 - 2 * f_3 - f_4
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 8.0); // / 8
+            il.Emit(System.Reflection.Emit.OpCodes.Div);
+
+            il.Emit(System.Reflection.Emit.OpCodes.Ldarg_0); // row +=4
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4_4);
+            il.Emit(System.Reflection.Emit.OpCodes.Add);
+            il.Emit(System.Reflection.Emit.OpCodes.Starg, 0);
+            return;
           }
         case OpCodes.Call: {
             throw new NotSupportedException("Automatically defined functions are not supported by the SymbolicDataAnalysisTreeILEmittingInterpreter. Either turn of ADFs or change the interpeter.");
@@ -478,17 +541,33 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             throw new NotSupportedException("Automatically defined functions are not supported by the SymbolicDataAnalysisTreeILEmittingInterpreter. Either turn of ADFs or change the interpeter.");
           }
         case OpCodes.Variable: {
+            var nanResult = il.DefineLabel();
+            var normalResult = il.DefineLabel();
             VariableTreeNode varNode = (VariableTreeNode)currentInstr.dynamicNode;
             il.Emit(System.Reflection.Emit.OpCodes.Ldarg_1); // load columns array
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, (int)currentInstr.iArg0); // load correct column of the current variable
             il.Emit(System.Reflection.Emit.OpCodes.Ldelem_Ref);
             il.Emit(System.Reflection.Emit.OpCodes.Ldarg_0); // sampleIndex
+            il.Emit(System.Reflection.Emit.OpCodes.Dup);
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4_0);
+            il.Emit(System.Reflection.Emit.OpCodes.Blt, nanResult);
+            il.Emit(System.Reflection.Emit.OpCodes.Dup);
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, ds.Rows);
+            il.Emit(System.Reflection.Emit.OpCodes.Bge, nanResult);
             il.Emit(System.Reflection.Emit.OpCodes.Call, listGetValue);
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, varNode.Weight); // load weight
             il.Emit(System.Reflection.Emit.OpCodes.Mul);
+            il.Emit(System.Reflection.Emit.OpCodes.Br, normalResult);
+            il.MarkLabel(nanResult);
+            il.Emit(System.Reflection.Emit.OpCodes.Pop); // sample index
+            il.Emit(System.Reflection.Emit.OpCodes.Pop); // column reference
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, double.NaN);
+            il.MarkLabel(normalResult);
             return;
           }
         case OpCodes.LagVariable: {
+            var nanResult = il.DefineLabel();
+            var normalResult = il.DefineLabel();
             LaggedVariableTreeNode varNode = (LaggedVariableTreeNode)currentInstr.dynamicNode;
             il.Emit(System.Reflection.Emit.OpCodes.Ldarg_1); // load columns array
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, (int)currentInstr.iArg0); // load correct column of the current variable
@@ -496,9 +575,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, varNode.Lag); // lag
             il.Emit(System.Reflection.Emit.OpCodes.Ldarg_0); // sampleIndex
             il.Emit(System.Reflection.Emit.OpCodes.Add); // row = sampleIndex + sampleOffset
+            il.Emit(System.Reflection.Emit.OpCodes.Dup);
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4_0);
+            il.Emit(System.Reflection.Emit.OpCodes.Blt, nanResult);
+            il.Emit(System.Reflection.Emit.OpCodes.Dup);
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, ds.Rows);
+            il.Emit(System.Reflection.Emit.OpCodes.Bge, nanResult);
             il.Emit(System.Reflection.Emit.OpCodes.Call, listGetValue);
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, varNode.Weight); // load weight
             il.Emit(System.Reflection.Emit.OpCodes.Mul);
+            il.Emit(System.Reflection.Emit.OpCodes.Br, normalResult);
+            il.MarkLabel(nanResult);
+            il.Emit(System.Reflection.Emit.OpCodes.Pop); // sample index
+            il.Emit(System.Reflection.Emit.OpCodes.Pop); // column reference
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, double.NaN);
+            il.MarkLabel(normalResult);
             return;
           }
         case OpCodes.Constant: {
