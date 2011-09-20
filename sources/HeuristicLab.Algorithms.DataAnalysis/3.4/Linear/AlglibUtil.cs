@@ -26,22 +26,45 @@ using HeuristicLab.Problems.DataAnalysis;
 namespace HeuristicLab.Algorithms.DataAnalysis {
   public static class AlglibUtil {
     public static double[,] PrepareInputMatrix(Dataset dataset, IEnumerable<string> variables, IEnumerable<int> rows) {
-      List<string> variablesList = variables.ToList();
-      List<int> rowsList = rows.ToList();
+      return PrepareInputMatrix(dataset, variables, rows, new int[] { 0 });
+    }
 
-      double[,] matrix = new double[rowsList.Count, variablesList.Count];
+    public static double[,] PrepareInputMatrix(Dataset dataset, IEnumerable<string> variables, IEnumerable<int> rows, IEnumerable<int> lags) {
+      int maxLag = lags.Max();
+
+      // drop last variable (target variable)
+      List<string> inputVariablesList = variables
+        .Reverse()
+        .Skip(1)
+        .Reverse()
+        .ToList();
+      string targetVariable = variables.Last();
+      List<int> rowsList = rows.ToList();
+      int nRows = rowsList.Count - maxLag;
+      double[,] matrix = new double[nRows, inputVariablesList.Count * lags.Count() + 1];
 
       int col = 0;
-      foreach (string column in variables) {
-        var values = dataset.GetDoubleValues(column, rows);
-        int row = 0;
-        foreach (var value in values) {
-          matrix[row, col] = value;
-          row++;
+      int row = 0;
+      // input variables
+      foreach (int lag in lags) {
+        foreach (string column in inputVariablesList) {
+          var values = dataset.GetDoubleValues(column, rows.Select(x => x - lag).Take(nRows));
+          row = 0;
+          foreach (var value in values) {
+            if (row >= 0) {
+              matrix[row, col] = value;
+            }
+            row++;
+          }
+          col++;
         }
-        col++;
       }
-
+      // target variable
+      row = 0;
+      foreach (var value in dataset.GetDoubleValues(targetVariable, rows).Take(nRows)) {
+        matrix[row, col] = value;
+        row++;
+      }
       return matrix;
     }
   }
