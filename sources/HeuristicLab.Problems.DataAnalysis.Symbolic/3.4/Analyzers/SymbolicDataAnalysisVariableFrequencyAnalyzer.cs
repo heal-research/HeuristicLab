@@ -79,20 +79,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public override IOperation Apply() {
       ItemArray<ISymbolicExpressionTree> expressions = SymbolicExpressionTreeParameter.ActualValue;
       ResultCollection results = ResultCollection;
-      DoubleMatrix impacts;
       DataTable datatable;
       if (VariableFrequenciesParameter.ActualValue == null) {
         datatable = new DataTable("Variable frequencies", "Relative frequency of variable references aggregated over the whole population.");
         datatable.VisualProperties.XAxisTitle = "Generation";
         datatable.VisualProperties.YAxisTitle = "Relative Variable Frequency";
-        impacts = new DoubleMatrix();
         VariableFrequenciesParameter.ActualValue = datatable;
-        VariableImpactsParameter.ActualValue = impacts;
         results.Add(new Result("Variable frequencies", "Relative frequency of variable references aggregated over the whole population.", datatable));
-        results.Add(new Result("Variable impacts", "The relative variable relevance calculated as the average relative variable frequency over the whole run.", impacts));
+        results.Add(new Result("Variable impacts", "The relative variable relevance calculated as the average relative variable frequency over the whole run.", new DoubleMatrix()));
       }
 
-      impacts = VariableImpactsParameter.ActualValue;
       datatable = VariableFrequenciesParameter.ActualValue;
       // all rows must have the same number of values so we can just take the first
       int numberOfValues = datatable.Rows.Select(r => r.Values.Count).DefaultIfEmpty().First();
@@ -116,7 +112,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
                             select new { Name = row.Name, Impact = datatable.Rows[row.Name].Values.Average() })
                            .OrderByDescending(p => p.Impact)
                            .ToList();
-      var matrix = (IStringConvertibleMatrix)impacts;
+      var impacts = new DoubleMatrix();
+      var matrix = impacts as IStringConvertibleMatrix;
       matrix.Rows = orderedImpacts.Count;
       matrix.RowNames = orderedImpacts.Select(x => x.Name);
       matrix.Columns = 1;
@@ -126,6 +123,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         matrix.SetValue(p.Impact.ToString(), i++, 0);
       }
 
+      VariableImpactsParameter.ActualValue = impacts;
+      results["Variable impacts"].Value = impacts;
       return base.Apply();
     }
 
