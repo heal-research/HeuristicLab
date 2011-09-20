@@ -69,6 +69,7 @@ HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views\3.4:HeuristicLa
 HeuristicLab.Problems.DataAnalysis.Symbolic.Regression\3.4:HeuristicLab.Problems.DataAnalysis.Symbolic.Regression-3.4.dll
 HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views\3.4:HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views-3.4.dll
 HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis\3.4:HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis-3.4.dll
+HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis.Views\3.4:HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis.Views-3.4.dll
 HeuristicLab.Problems.DataAnalysis.Views\3.3:HeuristicLab.Problems.DataAnalysis.Views-3.3.dll
 HeuristicLab.Problems.DataAnalysis.Views\3.4:HeuristicLab.Problems.DataAnalysis.Views-3.4.dll
 HeuristicLab.Problems.ExternalEvaluation\3.3:HeuristicLab.Problems.ExternalEvaluation-3.3.dll

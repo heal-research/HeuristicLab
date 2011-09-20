@@ -85,7 +85,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public static double Calculate(IEnumerable<double> first, IEnumerable<double> second, out OnlineCalculatorError errorState) {
       IEnumerator<double> firstEnumerator = first.GetEnumerator();
       IEnumerator<double> secondEnumerator = second.GetEnumerator();
-      OnlineDirectionalSymmetryCalculator dsCalculator = new OnlineDirectionalSymmetryCalculator();
+      OnlineWeightedDirectionalSymmetryCalculator dsCalculator = new OnlineWeightedDirectionalSymmetryCalculator();
       
       // add first element of time series as a reference point
       firstEnumerator.MoveNext();
@@ -106,7 +106,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
         throw new ArgumentException("Number of elements in first and second enumeration doesn't match.");
       } else {
         errorState = dsCalculator.ErrorState;
-        return dsCalculator.DirectionalSymmetry;
+        return dsCalculator.WeightedDirectionalSymmetry;
       }
     }
   }

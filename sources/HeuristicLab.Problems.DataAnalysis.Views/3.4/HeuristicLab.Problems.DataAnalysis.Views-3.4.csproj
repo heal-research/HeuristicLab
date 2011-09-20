@@ -127,6 +127,12 @@
     <Compile Include="Solution Views\TimeSeriesPrognosisSolutionView.Designer.cs">
       <DependentUpon>TimeSeriesPrognosisSolutionView.cs</DependentUpon>
     </Compile>
+    <Compile Include="TimeSeriesPrognosis\TimeSeriesPrognosisSolutionErrorCharacteristicsCurveView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TimeSeriesPrognosis\TimeSeriesPrognosisSolutionErrorCharacteristicsCurveView.Designer.cs">
+      <DependentUpon>TimeSeriesPrognosisSolutionErrorCharacteristicsCurveView.cs</DependentUpon>
+    </Compile>
     <Compile Include="TimeSeriesPrognosis\TimeSeriesPrognosisSolutionLineChartView.cs">
       <SubType>UserControl</SubType>
     </Compile>

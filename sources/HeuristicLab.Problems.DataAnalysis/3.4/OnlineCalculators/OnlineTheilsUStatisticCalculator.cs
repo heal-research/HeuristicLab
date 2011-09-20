@@ -65,6 +65,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
         double errorNoChange = (original - prevOriginal);
         unbiasedEstimatorMeanCalculator.Add(errorNoChange * errorNoChange);
         errorState = errorState & (~OnlineCalculatorError.InsufficientElementsAdded);        // n >= 1
+        prevOriginal = original;
+        n++;
       }
     }
 
