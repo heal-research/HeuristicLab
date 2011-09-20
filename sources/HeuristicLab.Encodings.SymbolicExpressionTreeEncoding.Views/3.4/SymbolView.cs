@@ -56,9 +56,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
-      initialFrequencyTextBox.Enabled = Content != null || Locked;
+      initialFrequencyTextBox.Enabled = Content != null && !Locked;
       initialFrequencyTextBox.ReadOnly = ReadOnly;
-      enabledCheckBox.Enabled = Content != null || Locked || ReadOnly;
+      enabledCheckBox.Enabled = Content != null && !Locked && !ReadOnly;
     }
 
     #region content event handlers
