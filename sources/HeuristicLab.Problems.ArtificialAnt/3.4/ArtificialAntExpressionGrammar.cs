@@ -49,12 +49,11 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       var move = new Move();
       var left = new Left();
       var right = new Right();
-      var defun = new Defun();
       var allSymbols = new List<Symbol>() { ifFoodAhead, prog2, prog3, move, left, right };
       var nonTerminalSymbols = new List<Symbol>() { ifFoodAhead, prog2, prog3 };
 
       allSymbols.ForEach(s => AddSymbol(s));
-      SetSubtreeCount(ifFoodAhead, 2, 3);
+      SetSubtreeCount(ifFoodAhead, 2, 2);
       SetSubtreeCount(prog2, 2, 2);
       SetSubtreeCount(prog3, 3, 3);
       SetSubtreeCount(move, 0, 0);

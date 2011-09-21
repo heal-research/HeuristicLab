@@ -28,7 +28,7 @@ namespace HeuristicLab.Problems.ArtificialAnt.Symbols {
   [Item("IfFoodAhead", "Represents the if-food-ahead symbol in a artificial ant expression.")]
   public sealed class IfFoodAhead : Symbol {
     private const int minimumArity = 2;
-    private const int maximumArity = 3;
+    private const int maximumArity = 2;
 
     public override int MinimumArity {
       get { return minimumArity; }
