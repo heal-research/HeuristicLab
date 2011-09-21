@@ -229,7 +229,7 @@ namespace HeuristicLab.Optimization {
       batchRunStarted = true;
       batchRunPaused = false;
       batchRunStopped = false;
-      if (Optimizer.ExecutionState != ExecutionState.Prepared) Optimizer.Prepare();
+      if (Optimizer.ExecutionState == ExecutionState.Stopped) Optimizer.Prepare();
       Optimizer.Start();
     }
     public void Pause() {
