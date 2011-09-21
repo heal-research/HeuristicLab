@@ -71,7 +71,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._4.Tests {
         Util.GetNumberOfSubtreesDistributionString(randomTrees) + Environment.NewLine +
         Util.GetTerminalDistributionString(randomTrees) + Environment.NewLine
         );
-      Assert.IsTrue(Math.Round(1000.0 / (msPerRandomTreeCreation)) > 500); // must achieve more than 500 random trees / s
+      Assert.IsTrue(Math.Round(1000.0 / (msPerRandomTreeCreation)) > 300); // must achieve more than 500 random trees / s
     }
   }
 }

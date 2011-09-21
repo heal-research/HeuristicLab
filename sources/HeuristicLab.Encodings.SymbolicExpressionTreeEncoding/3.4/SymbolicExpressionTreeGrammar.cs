@@ -81,11 +81,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
     public override IEnumerable<ISymbol> GetAllowedChildSymbols(ISymbol parent) {
       var symbols = grammar.GetAllowedChildSymbols(parent).Union(base.GetAllowedChildSymbols(parent));
-      return symbols.SelectMany(s => s.Flatten()).Where(s => s.Enabled && !(s is GroupSymbol));
+      return symbols.SelectMany(s => s.Flatten()).Where(s => s.Enabled).Distinct();
     }
     public override IEnumerable<ISymbol> GetAllowedChildSymbols(ISymbol parent, int argumentIndex) {
       var symbols = grammar.GetAllowedChildSymbols(parent, argumentIndex).Union(base.GetAllowedChildSymbols(parent, argumentIndex));
-      return symbols.SelectMany(s => s.Flatten()).Where(s => s.Enabled && !(s is GroupSymbol));
+      return symbols.SelectMany(s => s.Flatten()).Where(s => s.Enabled).Distinct();
     }
 
     public override int GetMinimumSubtreeCount(ISymbol symbol) {

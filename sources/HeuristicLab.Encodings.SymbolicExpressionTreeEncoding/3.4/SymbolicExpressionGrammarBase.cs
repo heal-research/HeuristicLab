@@ -51,7 +51,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
     [Storable(Name = "AllowedChildSymbols")]
     private IEnumerable<KeyValuePair<ISymbol, IEnumerable<ISymbol>>> StorableAllowedChildSymbols {
-      get { return allowedChildSymbols.Select(x => new KeyValuePair<ISymbol, IEnumerable<ISymbol>>(GetSymbol(x.Key), x.Value.Select(y => GetSymbol(y)).ToArray())).ToArray(); }
+      get { return allowedChildSymbols.Select(x => new KeyValuePair<ISymbol, IEnumerable<ISymbol>>(GetSymbol(x.Key), x.Value.Select(GetSymbol).ToArray())).ToArray(); }
       set { allowedChildSymbols = value.ToDictionary(x => x.Key.Name, x => x.Value.Select(y => y.Name).ToList()); }
     }
 
@@ -82,6 +82,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       cachedMaxExpressionLength = new Dictionary<string, int>();
       cachedMinExpressionDepth = new Dictionary<string, int>();
 
+      cachedIsAllowedChildSymbol = new Dictionary<Tuple<string, string>, bool>();
+      cachedIsAllowedChildSymbolIndex = new Dictionary<Tuple<string, string, int>, bool>();
+
       suppressEvents = false;
     }
 
@@ -91,7 +94,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       cachedMaxExpressionLength = new Dictionary<string, int>();
       cachedMinExpressionDepth = new Dictionary<string, int>();
 
-      symbols = original.symbols.ToDictionary(x => x.Key, y => (ISymbol)cloner.Clone(y.Value));
+      cachedIsAllowedChildSymbol = new Dictionary<Tuple<string, string>, bool>();
+      cachedIsAllowedChildSymbolIndex = new Dictionary<Tuple<string, string, int>, bool>();
+
+      symbols = original.symbols.ToDictionary(x => x.Key, y => cloner.Clone(y.Value));
       symbolSubtreeCount = new Dictionary<string, Tuple<int, int>>(original.symbolSubtreeCount);
 
       allowedChildSymbols = new Dictionary<string, List<string>>();
@@ -110,6 +116,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       cachedMinExpressionLength = new Dictionary<string, int>();
       cachedMaxExpressionLength = new Dictionary<string, int>();
       cachedMinExpressionDepth = new Dictionary<string, int>();
+
+      cachedIsAllowedChildSymbol = new Dictionary<Tuple<string, string>, bool>();
+      cachedIsAllowedChildSymbolIndex = new Dictionary<Tuple<string, string, int>, bool>();
 
       symbols = new Dictionary<string, ISymbol>();
       symbolSubtreeCount = new Dictionary<string, Tuple<int, int>>();
@@ -300,27 +309,41 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       return symbols.ContainsKey(symbol.Name);
     }
 
+    private readonly Dictionary<Tuple<string, string>, bool> cachedIsAllowedChildSymbol;
     public virtual bool IsAllowedChildSymbol(ISymbol parent, ISymbol child) {
       if (!child.Enabled) return false;
 
+      bool result;
+      if (cachedIsAllowedChildSymbol.TryGetValue(Tuple.Create(parent.Name, child.Name), out result)) return result;
       List<string> temp;
       if (allowedChildSymbols.TryGetValue(parent.Name, out temp)) {
-        if (temp.Contains(child.Name)) return true;
-        if (temp.SelectMany(s => GetSymbol(s).Flatten().Select(n => n.Name)).Contains(child.Name)) return true;
+        //if (temp.Contains(child.Name)) return true;
+        if (temp.SelectMany(s => GetSymbol(s).Flatten()).Where(s => s.Name == child.Name).Any()) {
+          cachedIsAllowedChildSymbol.Add(Tuple.Create(parent.Name, child.Name), true);
+          return true;
+        }
       }
+      cachedIsAllowedChildSymbol.Add(Tuple.Create(parent.Name, child.Name), false);
       return false;
     }
 
+    private readonly Dictionary<Tuple<string, string, int>, bool> cachedIsAllowedChildSymbolIndex;
     public virtual bool IsAllowedChildSymbol(ISymbol parent, ISymbol child, int argumentIndex) {
       if (!child.Enabled) return false;
       if (IsAllowedChildSymbol(parent, child)) return true;
 
+      bool result;
+      if (cachedIsAllowedChildSymbolIndex.TryGetValue(Tuple.Create(parent.Name, child.Name, argumentIndex), out result)) return result;
       List<string> temp;
       var key = Tuple.Create(parent.Name, argumentIndex);
       if (allowedChildSymbolsPerIndex.TryGetValue(key, out temp)) {
-        if (temp.Contains(child.Name)) return true;
-        if (temp.SelectMany(s => GetSymbol(s).Flatten().Select(n => n.Name)).Contains(child.Name)) return true;
+        //if (temp.Contains(child.Name)) return true;
+        if (temp.SelectMany(s => GetSymbol(s).Flatten()).Where(s => s.Name == child.Name).Any()) {
+          cachedIsAllowedChildSymbolIndex.Add(Tuple.Create(parent.Name, child.Name, argumentIndex), true);
+          return true;
+        }
       }
+      cachedIsAllowedChildSymbolIndex.Add(Tuple.Create(parent.Name, child.Name, argumentIndex), false);
       return false;
     }
 
@@ -329,7 +352,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       if (!allowedChildSymbols.TryGetValue(parent.Name, out childs))
         return Enumerable.Empty<ISymbol>();
 
-      return childs.Select(x => GetSymbol(x)).Where(s => s.Enabled);
+      return childs.Select(GetSymbol).Where(s => s.Enabled);
     }
 
     public virtual IEnumerable<ISymbol> GetAllowedChildSymbols(ISymbol parent, int argumentIndex) {
@@ -342,7 +365,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       if (allowedChildSymbolsPerIndex.TryGetValue(key, out temp))
         result = result.Union(temp);
 
-      return result.Select(x => GetSymbol(x)).Where(s => s.Enabled);
+      return result.Select(GetSymbol).Where(s => s.Enabled);
     }
 
     public virtual int GetMinimumSubtreeCount(ISymbol symbol) {
@@ -356,9 +379,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       cachedMinExpressionLength.Clear();
       cachedMaxExpressionLength.Clear();
       cachedMinExpressionDepth.Clear();
+
+      cachedIsAllowedChildSymbol.Clear();
+      cachedIsAllowedChildSymbolIndex.Clear();
     }
 
-    private Dictionary<string, int> cachedMinExpressionLength;
+    private readonly Dictionary<string, int> cachedMinExpressionLength;
     public int GetMinimumExpressionLength(ISymbol symbol) {
       int temp;
       if (!cachedMinExpressionLength.TryGetValue(symbol.Name, out temp)) {
@@ -374,7 +400,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       return temp;
     }
 
-    private Dictionary<string, int> cachedMaxExpressionLength;
+    private readonly Dictionary<string, int> cachedMaxExpressionLength;
     public int GetMaximumExpressionLength(ISymbol symbol) {
       int temp;
       if (!cachedMaxExpressionLength.TryGetValue(symbol.Name, out temp)) {
@@ -389,7 +415,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       return temp;
     }
 
-    private Dictionary<string, int> cachedMinExpressionDepth;
+    private readonly Dictionary<string, int> cachedMinExpressionDepth;
     public int GetMinimumExpressionDepth(ISymbol symbol) {
       int temp;
       if (!cachedMinExpressionDepth.TryGetValue(symbol.Name, out temp)) {

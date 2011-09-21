@@ -20,9 +20,11 @@
 #endregion
 
 using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._4.Tests {
   public static class Grammars {
@@ -211,7 +213,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._4.Tests {
     }
 
     public static ISymbolicExpressionGrammar CreateSimpleArithmeticGrammar() {
-      var g = new SimpleArithmeticGrammar();
+      var g = new TypeCoherentExpressionGrammar();
+      g.ConfigureAsDefaultRegressionGrammar();
+      g.Symbols.OfType<Variable>().First().Enabled = false;
+      //var g = new SimpleArithmeticGrammar();
       g.MaximumFunctionArguments = 0;
       g.MinimumFunctionArguments = 0;
       g.MaximumFunctionDefinitions = 0;
@@ -220,7 +225,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._4.Tests {
     }
 
     public static ISymbolicExpressionGrammar CreateArithmeticAndAdfGrammar() {
-      var g = new SimpleArithmeticGrammar();
+      var g = new TypeCoherentExpressionGrammar();
+      g.ConfigureAsDefaultRegressionGrammar();
+      g.Symbols.OfType<Variable>().First().Enabled = false;
       g.MaximumFunctionArguments = 3;
       g.MinimumFunctionArguments = 0;
       g.MaximumFunctionDefinitions = 3;
