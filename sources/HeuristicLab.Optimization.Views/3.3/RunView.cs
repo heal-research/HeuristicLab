@@ -43,6 +43,11 @@ namespace HeuristicLab.Optimization.Views {
       set { base.Content = value; }
     }
 
+    public override bool ReadOnly {
+      get { return true; }
+      set { /*not needed because runs are always readonly */}
+    }
+
     /// <summary>
     /// Initializes a new instance of <see cref="VariableView"/> with caption "Variable".
     /// </summary>
@@ -78,6 +83,7 @@ namespace HeuristicLab.Optimization.Views {
       listView.Enabled = Content != null;
       detailsGroupBox.Enabled = (Content != null) && (listView.SelectedItems.Count == 1);
       viewHost.Enabled = Content != null;
+      viewHost.ReadOnly = ReadOnly;
       changeColorButton.Enabled = Content != null;
       showAlgorithmButton.Enabled = Content != null && Content.Algorithm != null && !Locked;
     }
