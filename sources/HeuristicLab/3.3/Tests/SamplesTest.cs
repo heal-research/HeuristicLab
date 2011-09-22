@@ -189,17 +189,10 @@ namespace HeuristicLab_33.Tests {
       var ga = CreateGpArtificialAntSample();
       ga.SetSeedRandomly.Value = false;
       RunAlgorithm(ga);
-      if (!Environment.Is64BitProcess) {
-        Assert.AreEqual(89, GetDoubleResult(ga, "BestQuality"));
-        Assert.AreEqual(68.635, GetDoubleResult(ga, "CurrentAverageQuality"));
-        Assert.AreEqual(0, GetDoubleResult(ga, "CurrentWorstQuality"));
-        Assert.AreEqual(50950, GetIntResult(ga, "EvaluatedSolutions"));
-      } else {
-        Assert.AreEqual(82, GetDoubleResult(ga, "BestQuality"));
-        Assert.AreEqual(65.594, GetDoubleResult(ga, "CurrentAverageQuality"));
-        Assert.AreEqual(0, GetDoubleResult(ga, "CurrentWorstQuality"));
-        Assert.AreEqual(50950, GetIntResult(ga, "EvaluatedSolutions"));
-      }
+      Assert.AreEqual(89, GetDoubleResult(ga, "BestQuality"));
+      Assert.AreEqual(70.974, GetDoubleResult(ga, "CurrentAverageQuality"));
+      Assert.AreEqual(0, GetDoubleResult(ga, "CurrentWorstQuality"));
+      Assert.AreEqual(50950, GetIntResult(ga, "EvaluatedSolutions"));
     }
 
     public GeneticAlgorithm CreateGpArtificialAntSample() {
@@ -247,17 +240,10 @@ namespace HeuristicLab_33.Tests {
       var ga = CreateGpSymbolicRegressionSample();
       ga.SetSeedRandomly.Value = false;
       RunAlgorithm(ga);
-      if (!Environment.Is64BitProcess) {
-        Assert.AreEqual(0.82895806566669916, GetDoubleResult(ga, "BestQuality"));
-        Assert.AreEqual(0.50808259256341926, GetDoubleResult(ga, "CurrentAverageQuality"));
-        Assert.AreEqual(0, GetDoubleResult(ga, "CurrentWorstQuality"));
-        Assert.AreEqual(50950, GetIntResult(ga, "EvaluatedSolutions"));
-      } else {
-        Assert.AreEqual(0.80376816256837447, GetDoubleResult(ga, "BestQuality"));
-        Assert.AreEqual(0.56912229251001056, GetDoubleResult(ga, "CurrentAverageQuality"));
-        Assert.AreEqual(0, GetDoubleResult(ga, "CurrentWorstQuality"));
-        Assert.AreEqual(50950, GetIntResult(ga, "EvaluatedSolutions"));
-      }
+      Assert.AreEqual(0.86679405518127783, GetDoubleResult(ga, "BestQuality"));
+      Assert.AreEqual(0.66574774940005843, GetDoubleResult(ga, "CurrentAverageQuality"));
+      Assert.AreEqual(0, GetDoubleResult(ga, "CurrentWorstQuality"));
+      Assert.AreEqual(50950, GetIntResult(ga, "EvaluatedSolutions"));
     }
 
     private GeneticAlgorithm CreateGpSymbolicRegressionSample() {
@@ -369,17 +355,10 @@ namespace HeuristicLab_33.Tests {
       var ga = CreateGpSymbolicClassificationSample();
       ga.SetSeedRandomly.Value = false;
       RunAlgorithm(ga);
-      if (!Environment.Is64BitProcess) {
-        Assert.AreEqual(0.13607488888377872, GetDoubleResult(ga, "BestQuality"));
-        Assert.AreEqual(2.1634701155600293, GetDoubleResult(ga, "CurrentAverageQuality"));
-        Assert.AreEqual(100.62175156249987, GetDoubleResult(ga, "CurrentWorstQuality"));
-        Assert.AreEqual(100900, GetIntResult(ga, "EvaluatedSolutions"));
-      } else {
-        Assert.AreEqual(0.1343874434023121, GetDoubleResult(ga, "BestQuality"));
-        Assert.AreEqual(5.1125971846526053, GetDoubleResult(ga, "CurrentAverageQuality"));
-        Assert.AreEqual(100.62175156249987, GetDoubleResult(ga, "CurrentWorstQuality"));
-        Assert.AreEqual(100900, GetIntResult(ga, "EvaluatedSolutions"));
-      }
+      Assert.AreEqual(0.14089062240881498, GetDoubleResult(ga, "BestQuality"));
+      Assert.AreEqual(2.6490910151578269, GetDoubleResult(ga, "CurrentAverageQuality"));
+      Assert.AreEqual(100.62175156249987, GetDoubleResult(ga, "CurrentWorstQuality"));
+      Assert.AreEqual(100900, GetIntResult(ga, "EvaluatedSolutions"));
     }
 
     private GeneticAlgorithm CreateGpSymbolicClassificationSample() {
