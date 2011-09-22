@@ -68,14 +68,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.errorProvider.SetIconAlignment(this.initialFrequencyTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.initialFrequencyTextBox.Size = new System.Drawing.Size(280, 20);
       // 
-      // minimumArityLabel
-      // 
-      this.toolTip.SetToolTip(this.minimumArityLabel, "Relative frequency of the symbol in randomly created trees");
-      // 
-      // maximumArityLabel
-      // 
-      this.toolTip.SetToolTip(this.maximumArityLabel, "Relative frequency of the symbol in randomly created trees");
-      // 
       // minimumArityTextBox
       // 
       this.errorProvider.SetIconAlignment(this.minimumArityTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
@@ -108,7 +100,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // minValueTextBox
       // 
-      this.minValueTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.minValueTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.errorProvider.SetIconAlignment(this.minValueTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.minValueTextBox.Location = new System.Drawing.Point(92, 19);
@@ -120,7 +112,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // initializationGroupBox
       // 
-      this.initializationGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.initializationGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.initializationGroupBox.Controls.Add(this.weightSigmaLabel);
       this.initializationGroupBox.Controls.Add(this.maxValueTextBox);
@@ -145,7 +137,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // maxValueTextBox
       // 
-      this.maxValueTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.maxValueTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.errorProvider.SetIconAlignment(this.maxValueTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.maxValueTextBox.Location = new System.Drawing.Point(92, 45);
@@ -157,7 +149,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // mutationGroupBox
       // 
-      this.mutationGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.mutationGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.mutationGroupBox.Controls.Add(this.multiplicativeChangeLabel);
       this.mutationGroupBox.Controls.Add(this.multiplicativeChangeSigmaTextBox);
@@ -183,7 +175,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // multiplicativeChangeSigmaTextBox
       // 
-      this.multiplicativeChangeSigmaTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.multiplicativeChangeSigmaTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.errorProvider.SetIconAlignment(this.multiplicativeChangeSigmaTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.multiplicativeChangeSigmaTextBox.Location = new System.Drawing.Point(168, 45);
@@ -207,7 +199,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // additiveChangeSigmaTextBox
       // 
-      this.additiveChangeSigmaTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.additiveChangeSigmaTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.errorProvider.SetIconAlignment(this.additiveChangeSigmaTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.additiveChangeSigmaTextBox.Location = new System.Drawing.Point(168, 19);

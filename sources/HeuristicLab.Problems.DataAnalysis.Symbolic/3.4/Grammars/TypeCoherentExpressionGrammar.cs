@@ -127,7 +127,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       SetSubtreeCount(laggedVariable, 0, 0);
       #endregion
 
-      #region alloed child symbols configuration
+      #region allowed child symbols configuration
       AddAllowedChildSymbol(StartSymbol, realValuedSymbols);
       AddAllowedChildSymbol(DefunSymbol, realValuedSymbols);
 

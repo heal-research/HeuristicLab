@@ -77,7 +77,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       // 
       // initialFrequencyTextBox
       // 
-      this.initialFrequencyTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.initialFrequencyTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.errorProvider.SetIconAlignment(this.initialFrequencyTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.initialFrequencyTextBox.Location = new System.Drawing.Point(93, 26);
@@ -107,7 +107,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       this.minimumArityLabel.Size = new System.Drawing.Size(74, 13);
       this.minimumArityLabel.TabIndex = 8;
       this.minimumArityLabel.Text = "Minimum Arity:";
-      this.toolTip.SetToolTip(this.minimumArityLabel, "Relative frequency of the symbol in randomly created trees");
+      this.toolTip.SetToolTip(this.minimumArityLabel, "The minimum arity of the symbol");
       // 
       // maximumArityLabel
       // 
@@ -117,11 +117,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       this.maximumArityLabel.Size = new System.Drawing.Size(74, 13);
       this.maximumArityLabel.TabIndex = 6;
       this.maximumArityLabel.Text = "Maximum Arity";
-      this.toolTip.SetToolTip(this.maximumArityLabel, "Relative frequency of the symbol in randomly created trees");
+      this.toolTip.SetToolTip(this.maximumArityLabel, "The maximum arity of the symbol");
       // 
       // minimumArityTextBox
       // 
-      this.minimumArityTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.minimumArityTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.errorProvider.SetIconAlignment(this.minimumArityTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.minimumArityTextBox.Location = new System.Drawing.Point(93, 52);
@@ -132,7 +132,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       // 
       // maximumArityTextBox
       // 
-      this.maximumArityTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.maximumArityTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.errorProvider.SetIconAlignment(this.maximumArityTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.maximumArityTextBox.Location = new System.Drawing.Point(93, 78);

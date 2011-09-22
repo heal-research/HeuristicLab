@@ -61,14 +61,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.errorProvider.SetIconAlignment(this.initialFrequencyTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.initialFrequencyTextBox.Size = new System.Drawing.Size(315, 20);
       // 
-      // minimumArityLabel
-      // 
-      this.toolTip.SetToolTip(this.minimumArityLabel, "Relative frequency of the symbol in randomly created trees");
-      // 
-      // maximumArityLabel
-      // 
-      this.toolTip.SetToolTip(this.maximumArityLabel, "Relative frequency of the symbol in randomly created trees");
-      // 
       // minimumArityTextBox
       // 
       this.errorProvider.SetIconAlignment(this.minimumArityTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
@@ -109,7 +101,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // minTimeOffsetTextBox
       // 
-      this.minTimeOffsetTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.minTimeOffsetTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.minTimeOffsetTextBox.Location = new System.Drawing.Point(93, 127);
       this.minTimeOffsetTextBox.Name = "minTimeOffsetTextBox";
@@ -119,7 +111,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // maxTimeOffsetTextBox
       // 
-      this.maxTimeOffsetTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.maxTimeOffsetTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.maxTimeOffsetTextBox.Location = new System.Drawing.Point(93, 153);
       this.maxTimeOffsetTextBox.Name = "maxTimeOffsetTextBox";
