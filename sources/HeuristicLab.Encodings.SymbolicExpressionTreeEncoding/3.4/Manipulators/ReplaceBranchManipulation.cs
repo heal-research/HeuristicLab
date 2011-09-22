@@ -78,7 +78,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
                                                       // do not replace symbol with the same symbol
                                                       where symbol.Name != subtree.Symbol.Name
                                                       where symbol.InitialFrequency > 0
-                                                      where parent.Grammar.GetMinimumExpressionDepth(symbol) <= maxDepth
+                                                      where parent.Grammar.GetMinimumExpressionDepth(symbol) + 1 <= maxDepth
                                                       where parent.Grammar.GetMinimumExpressionLength(symbol) <= maxLength
                                                       select symbol)
                                                       .ToList()
