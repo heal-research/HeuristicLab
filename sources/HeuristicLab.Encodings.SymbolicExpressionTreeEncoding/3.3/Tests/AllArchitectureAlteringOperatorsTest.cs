@@ -109,7 +109,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._3.Tests {
         );
 
       Assert.IsTrue(failedEvents * 100.0 / (POPULATION_SIZE * N_ITERATIONS * 2.0) < 25.0); // 75% of architecture operations must succeed
-      Assert.IsTrue(Math.Round(1000.0 / (msPerOperation)) > 1000); // must achieve more than 1000 ops per second
+      Assert.IsTrue(Math.Round(1000.0 / (msPerOperation)) > 800); // must achieve more than 800 ops per second
     }
   }
 }
