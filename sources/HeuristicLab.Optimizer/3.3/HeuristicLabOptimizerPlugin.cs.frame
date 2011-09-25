@@ -20,6 +20,7 @@
 #endregion
 
 using System.Windows.Forms;
+using HeuristicLab.Optimizer.Properties;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Optimizer {
@@ -41,9 +42,22 @@ namespace HeuristicLab.Optimizer {
   [Application("Optimizer", "HeuristicLab Optimizer 3.3.5.$WCREV$")]
   internal class HeuristicLabOptimizerApplication : ApplicationBase {
     public override void Run() {
-      OptimizerMainForm mainForm = new OptimizerMainForm(typeof(IOptimizerUserInterfaceItemProvider));
-      mainForm.ShowContentInViewHost = true;
-      Application.Run(mainForm);
+     HeuristicLab.MainForm.WindowsForms.MainForm mainForm = null;
+
+      if (Settings.Default.MainFormType == OptimizerMainFormTypes.DockingMainForm) {
+        mainForm = new OptimizerDockingMainForm(typeof(IOptimizerUserInterfaceItemProvider));
+      } else if (Settings.Default.MainFormType == OptimizerMainFormTypes.MultipleDocumentMainForm) {
+        mainForm = new OptimizerMultipleDocumentMainForm(typeof(IOptimizerUserInterfaceItemProvider));
+      } else if (Settings.Default.MainFormType == OptimizerMainFormTypes.SingleDocumentMainForm) {
+        mainForm = new OptimizerSingleDocumentMainForm(typeof(IOptimizerUserInterfaceItemProvider));
+      }
+
+      if (mainForm != null) {
+        mainForm.ShowContentInViewHost = true;
+        Application.Run(mainForm);
+      } else {
+        MessageBox.Show("Error loading setting for the MainForm Type. Please check your configuration file!", "HeuristicLab", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
     }
   }
 }

@@ -67,11 +67,21 @@ namespace HeuristicLab.Optimizer.MenuItems {
     }
 
     public override void Execute() {
-      IView clipboard = ((OptimizerMainForm)MainFormManager.MainForm).Clipboard;
-      if (clipboard.IsShown) {
-        clipboard.Hide();
-      } else {
-        clipboard.Show();
+      IView clipboard = null;
+      if (MainFormManager.MainForm is OptimizerDockingMainForm) {
+        clipboard = ((OptimizerDockingMainForm)MainFormManager.MainForm).Clipboard;
+      } else if (MainFormManager.MainForm is OptimizerMultipleDocumentMainForm) {
+        clipboard = ((OptimizerMultipleDocumentMainForm)MainFormManager.MainForm).Clipboard;
+      } else if (MainFormManager.MainForm is OptimizerSingleDocumentMainForm) {
+        clipboard = ((OptimizerSingleDocumentMainForm)MainFormManager.MainForm).Clipboard;
+      }
+
+      if (clipboard != null) {
+        if (clipboard.IsShown) {
+          clipboard.Hide();
+        } else {
+          clipboard.Show();
+        }
       }
     }
   }

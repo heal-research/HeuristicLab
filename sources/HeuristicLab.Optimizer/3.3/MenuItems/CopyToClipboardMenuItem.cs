@@ -50,11 +50,22 @@ namespace HeuristicLab.Optimizer.MenuItems {
     }
 
     public override void Execute() {
+      Clipboard<IItem> clipboard = null;
       IContentView activeView = MainFormManager.MainForm.ActiveView as IContentView;
+
       if ((activeView != null) && (activeView.Content != null) && (activeView.Content is IItem) && !activeView.Locked) {
-        Clipboard<IItem> clipboard = ((OptimizerMainForm)MainFormManager.MainForm).Clipboard;
-        IItem content = (IItem)activeView.Content;
-        clipboard.AddItem((IItem)content.Clone());
+        if (MainFormManager.MainForm is OptimizerDockingMainForm) {
+          clipboard = ((OptimizerDockingMainForm)MainFormManager.MainForm).Clipboard;
+        } else if (MainFormManager.MainForm is OptimizerMultipleDocumentMainForm) {
+          clipboard = ((OptimizerMultipleDocumentMainForm)MainFormManager.MainForm).Clipboard;
+        } else if (MainFormManager.MainForm is OptimizerSingleDocumentMainForm) {
+          clipboard = ((OptimizerSingleDocumentMainForm)MainFormManager.MainForm).Clipboard;
+        }
+
+        if (clipboard != null) {
+          IItem content = (IItem)activeView.Content;
+          clipboard.AddItem((IItem)content.Clone());
+        }
       }
     }
   }

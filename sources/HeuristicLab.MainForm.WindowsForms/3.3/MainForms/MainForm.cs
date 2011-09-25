@@ -30,6 +30,8 @@ using WeifenLuo.WinFormsUI.Docking;
 namespace HeuristicLab.MainForm.WindowsForms {
   public partial class MainForm : Form, IMainForm {
     private bool initialized;
+    private int appStartingCursors;
+    private int waitingCursors;
 
     protected MainForm()
       : base() {
@@ -38,6 +40,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.userInterfaceItems = new List<IUserInterfaceItem>();
       this.initialized = false;
       this.showContentInViewHost = false;
+      appStartingCursors = 0;
+      waitingCursors = 0;
     }
 
     protected MainForm(Type userInterfaceItemType)
@@ -444,6 +448,46 @@ namespace HeuristicLab.MainForm.WindowsForms {
       catch (Exception ex) {
         ErrorHandling.ShowErrorDialog((Control)MainFormManager.MainForm, ex);
       }
+    }
+    #endregion
+
+    #region Cursor Handling
+    public void SetAppStartingCursor() {
+      if (InvokeRequired)
+        Invoke(new Action(SetAppStartingCursor));
+      else {
+        appStartingCursors++;
+        SetCursor();
+      }
+    }
+    public void ResetAppStartingCursor() {
+      if (InvokeRequired)
+        Invoke(new Action(ResetAppStartingCursor));
+      else {
+        appStartingCursors--;
+        SetCursor();
+      }
+    }
+    public void SetWaitCursor() {
+      if (InvokeRequired)
+        Invoke(new Action(SetWaitCursor));
+      else {
+        waitingCursors++;
+        SetCursor();
+      }
+    }
+    public void ResetWaitCursor() {
+      if (InvokeRequired)
+        Invoke(new Action(ResetWaitCursor));
+      else {
+        waitingCursors--;
+        SetCursor();
+      }
+    }
+    private void SetCursor() {
+      if (waitingCursors > 0) Cursor = Cursors.WaitCursor;
+      else if (appStartingCursors > 0) Cursor = Cursors.AppStarting;
+      else Cursor = Cursors.Default;
     }
     #endregion
   }

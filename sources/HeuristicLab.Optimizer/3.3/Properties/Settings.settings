@@ -20,5 +20,8 @@
     <Setting Name="CollapseOperatorsSidebar" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="MainFormType" Type="HeuristicLab.Optimizer.OptimizerMainFormTypes" Scope="User">
+      <Value Profile="(Default)">DockingMainForm</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

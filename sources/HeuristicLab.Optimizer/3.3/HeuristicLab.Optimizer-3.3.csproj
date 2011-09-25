@@ -116,7 +116,33 @@
     <EmbeddedResource Include="Documents\SGP_SymbReg.hl" />
     <EmbeddedResource Include="Documents\VNS_TSP.hl" />
     <EmbeddedResource Include="Documents\PSO_Schwefel.hl" />
+    <EmbeddedResource Include="MainFormTypeSelectionDialog.resx">
+      <DependentUpon>MainFormTypeSelectionDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OptimizerDockingMainForm.resx">
+      <DependentUpon>OptimizerDockingMainForm.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="HeuristicLabOptimizerPlugin.cs.frame" />
+    <Compile Include="OptimizerSingleDocumentMainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OptimizerSingleDocumentMainForm.Designer.cs">
+      <DependentUpon>OptimizerSingleDocumentMainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainFormTypeSelectionDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainFormTypeSelectionDialog.Designer.cs">
+      <DependentUpon>MainFormTypeSelectionDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MenuItems\ChangeMainFormTypeMenuItem.cs" />
+    <Compile Include="MenuItems\ChangeMainFormTypeSeperator.cs" />
+    <Compile Include="OptimizerMultipleDocumentMainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OptimizerMultipleDocumentMainForm.Designer.cs">
+      <DependentUpon>OptimizerMultipleDocumentMainForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="CreateExperimentDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -159,11 +185,11 @@
     <Compile Include="NewItemDialog.Designer.cs">
       <DependentUpon>NewItemDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="OptimizerMainForm.cs">
+    <Compile Include="OptimizerDockingMainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="OptimizerMainForm.Designer.cs">
-      <DependentUpon>OptimizerMainForm.cs</DependentUpon>
+    <Compile Include="OptimizerDockingMainForm.Designer.cs">
+      <DependentUpon>OptimizerDockingMainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ToolBarItems\SaveToolBarItem.cs" />

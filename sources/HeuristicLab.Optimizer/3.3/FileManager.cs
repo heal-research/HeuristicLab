@@ -59,7 +59,7 @@ namespace HeuristicLab.Optimizer {
 
       if (openFileDialog.ShowDialog() == DialogResult.OK) {
         foreach (string filename in openFileDialog.FileNames) {
-          ((OptimizerMainForm)MainFormManager.MainForm).SetAppStartingCursor();
+          ((MainForm.WindowsForms.MainForm)MainFormManager.MainForm).SetAppStartingCursor();
           ContentManager.LoadAsync(filename, LoadingCompleted);
         }
       }
@@ -75,7 +75,7 @@ namespace HeuristicLab.Optimizer {
         ErrorHandling.ShowErrorDialog((Control)MainFormManager.MainForm, "Cannot open file.", ex);
       }
       finally {
-        ((OptimizerMainForm)MainFormManager.MainForm).ResetAppStartingCursor();
+        ((MainForm.WindowsForms.MainForm)MainFormManager.MainForm).ResetAppStartingCursor();
       }
     }
 
@@ -91,7 +91,7 @@ namespace HeuristicLab.Optimizer {
         if (string.IsNullOrEmpty(content.Filename))
           SaveAs(view);
         else {
-          ((OptimizerMainForm)MainFormManager.MainForm).SetAppStartingCursor();
+          ((MainForm.WindowsForms.MainForm)MainFormManager.MainForm).SetAppStartingCursor();
           SetEnabledStateOfContentViews(content, false);
           ContentManager.SaveAsync(content, content.Filename, true, SavingCompleted);
         }
@@ -116,7 +116,7 @@ namespace HeuristicLab.Optimizer {
         saveFileDialog.FileName = string.IsNullOrEmpty(content.Filename) ? "Item" : content.Filename;
 
         if (saveFileDialog.ShowDialog() == DialogResult.OK) {
-          ((OptimizerMainForm)MainFormManager.MainForm).SetAppStartingCursor();
+          ((MainForm.WindowsForms.MainForm)MainFormManager.MainForm).SetAppStartingCursor();
           SetEnabledStateOfContentViews(content, false);
           if (saveFileDialog.FilterIndex == 1) {
             ContentManager.SaveAsync(content, saveFileDialog.FileName, false, SavingCompleted);
@@ -130,18 +130,18 @@ namespace HeuristicLab.Optimizer {
       try {
         SetEnabledStateOfContentViews(content, true);
         if (error != null) throw error;
-        MainFormManager.GetMainForm<OptimizerMainForm>().UpdateTitle();
+        MainFormManager.GetMainForm<OptimizerDockingMainForm>().UpdateTitle();
       }
       catch (Exception ex) {
         ErrorHandling.ShowErrorDialog((Control)MainFormManager.MainForm, "Cannot save file.", ex);
       }
       finally {
-        ((OptimizerMainForm)MainFormManager.MainForm).ResetAppStartingCursor();
+        ((MainForm.WindowsForms.MainForm)MainFormManager.MainForm).ResetAppStartingCursor();
       }
     }
 
     private static void SetEnabledStateOfContentViews(IStorableContent content, bool enabled) {
-      OptimizerMainForm mainForm = MainFormManager.GetMainForm<OptimizerMainForm>();
+      OptimizerDockingMainForm mainForm = MainFormManager.GetMainForm<OptimizerDockingMainForm>();
       if (mainForm.InvokeRequired)
         mainForm.Invoke((Action<IStorableContent, bool>)SetEnabledStateOfContentViews, content, enabled);
       else {

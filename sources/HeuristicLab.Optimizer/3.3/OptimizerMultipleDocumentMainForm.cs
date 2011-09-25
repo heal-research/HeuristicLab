@@ -31,29 +31,23 @@ using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Optimizer {
-  internal partial class OptimizerMainForm : DockingMainForm {
+  internal partial class OptimizerMultipleDocumentMainForm : MultipleDocumentMainForm {
     private string title;
-    private int appStartingCursors;
-    private int waitingCursors;
 
     private Clipboard<IItem> clipboard;
     public Clipboard<IItem> Clipboard {
       get { return clipboard; }
     }
 
-    public OptimizerMainForm()
+    public OptimizerMultipleDocumentMainForm()
       : base() {
       InitializeComponent();
-      appStartingCursors = 0;
-      waitingCursors = 0;
     }
-    public OptimizerMainForm(Type userInterfaceItemType)
+    public OptimizerMultipleDocumentMainForm(Type userInterfaceItemType)
       : base(userInterfaceItemType) {
       InitializeComponent();
-      appStartingCursors = 0;
-      waitingCursors = 0;
     }
-    public OptimizerMainForm(Type userInterfaceItemType, bool showContentInViewHost)
+    public OptimizerMultipleDocumentMainForm(Type userInterfaceItemType, bool showContentInViewHost)
       : this(userInterfaceItemType) {
       this.ShowContentInViewHost = showContentInViewHost;
     }
@@ -122,45 +116,5 @@ namespace HeuristicLab.Optimizer {
         }
       }
     }
-
-    #region Cursor Handling
-    public void SetAppStartingCursor() {
-      if (InvokeRequired)
-        Invoke(new Action(SetAppStartingCursor));
-      else {
-        appStartingCursors++;
-        SetCursor();
-      }
-    }
-    public void ResetAppStartingCursor() {
-      if (InvokeRequired)
-        Invoke(new Action(ResetAppStartingCursor));
-      else {
-        appStartingCursors--;
-        SetCursor();
-      }
-    }
-    public void SetWaitCursor() {
-      if (InvokeRequired)
-        Invoke(new Action(SetWaitCursor));
-      else {
-        waitingCursors++;
-        SetCursor();
-      }
-    }
-    public void ResetWaitCursor() {
-      if (InvokeRequired)
-        Invoke(new Action(ResetWaitCursor));
-      else {
-        waitingCursors--;
-        SetCursor();
-      }
-    }
-    private void SetCursor() {
-      if (waitingCursors > 0) Cursor = Cursors.WaitCursor;
-      else if (appStartingCursors > 0) Cursor = Cursors.AppStarting;
-      else Cursor = Cursors.Default;
-    }
-    #endregion
   }
 }

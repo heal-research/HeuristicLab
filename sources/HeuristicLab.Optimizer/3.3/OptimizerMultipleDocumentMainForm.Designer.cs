@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Optimizer {
-  partial class OptimizerMainForm {
+  partial class OptimizerMultipleDocumentMainForm {
     /// <summary>
     /// Required designer variable.
     /// </summary>
