@@ -80,7 +80,7 @@
       this.rbSingleDocumentMainForm.Size = new System.Drawing.Size(106, 17);
       this.rbSingleDocumentMainForm.TabIndex = 2;
       this.rbSingleDocumentMainForm.TabStop = true;
-      this.rbSingleDocumentMainForm.Text = "Single Document";
+      this.rbSingleDocumentMainForm.Text = "&Single Document";
       this.toolTip.SetToolTip(this.rbSingleDocumentMainForm, "Creates for each open document an own window");
       this.rbSingleDocumentMainForm.UseVisualStyleBackColor = true;
       // 
@@ -92,7 +92,7 @@
       this.rbMultipleDocumentMainForm.Size = new System.Drawing.Size(113, 17);
       this.rbMultipleDocumentMainForm.TabIndex = 1;
       this.rbMultipleDocumentMainForm.TabStop = true;
-      this.rbMultipleDocumentMainForm.Text = "Multiple Document";
+      this.rbMultipleDocumentMainForm.Text = "&Multiple Document";
       this.toolTip.SetToolTip(this.rbMultipleDocumentMainForm, "Shows for each open document an own, nested window");
       this.rbMultipleDocumentMainForm.UseVisualStyleBackColor = true;
       // 
@@ -104,7 +104,7 @@
       this.rbDockingMainForm.Size = new System.Drawing.Size(65, 17);
       this.rbDockingMainForm.TabIndex = 0;
       this.rbDockingMainForm.TabStop = true;
-      this.rbDockingMainForm.Text = "Docking";
+      this.rbDockingMainForm.Text = "&Docking";
       this.toolTip.SetToolTip(this.rbDockingMainForm, "Displays open documents as tab pages. \r\nIf you have resizing issues in the user i" +
               "nterface, please try the other options.");
       this.rbDockingMainForm.UseVisualStyleBackColor = true;
@@ -130,11 +130,13 @@
       this.Controls.Add(this.groupBox);
       this.Controls.Add(this.cancelButton);
       this.Controls.Add(this.okButton);
+      this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
       this.MaximizeBox = false;
       this.MinimizeBox = false;
       this.Name = "MainFormTypeSelectionDialog";
       this.ShowIcon = false;
       this.ShowInTaskbar = false;
+      this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
       this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
       this.Text = "Change MainForm Type";
       this.Load += new System.EventHandler(this.MainFormTypeSelectionDialog_Load);

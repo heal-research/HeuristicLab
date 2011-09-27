@@ -26,7 +26,7 @@ using HeuristicLab.MainForm;
 namespace HeuristicLab.Optimizer.MenuItems {
   internal class ChangeMainFormTypeMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItem, IOptimizerUserInterfaceItemProvider {
     public override string Name {
-      get { return "Change MainForm Type..."; }
+      get { return "Change &MainForm Type..."; }
     }
     public override IEnumerable<string> Structure {
       get { return new string[] { "&View" }; }
