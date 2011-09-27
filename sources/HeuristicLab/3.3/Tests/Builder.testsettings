@@ -85,6 +85,8 @@
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Problems.Knapsack-3.3.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Problems.OneMax.Views-3.3.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Problems.OneMax-3.3.dll" />
+    <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Problems.QuadraticAssignment-3.3.dll" />
+    <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Problems.QuadraticAssignment.Algorithms-3.3.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Problems.TestFunctions.Views-3.3.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Problems.TestFunctions-3.3.dll" />
     <DeploymentItem filename="HeuristicLab\3.3\Tests\bin\Release\HeuristicLab.Problems.TravelingSalesman.Views-3.3.dll" />
