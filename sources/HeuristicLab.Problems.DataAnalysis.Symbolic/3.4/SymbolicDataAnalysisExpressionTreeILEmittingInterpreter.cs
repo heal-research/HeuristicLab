@@ -49,61 +49,27 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private const string CheckExpressionsWithIntervalArithmeticParameterName = "CheckExpressionsWithIntervalArithmetic";
     #region private classes
     private class InterpreterState {
-      private double[] argumentStack;
-      private int argumentStackPointer;
       private Instruction[] code;
       private int pc;
+
       public int ProgramCounter {
         get { return pc; }
         set { pc = value; }
       }
-      internal InterpreterState(Instruction[] code, int argumentStackSize) {
+
+      private bool inLaggedContext;
+      public bool InLaggedContext {
+        get { return inLaggedContext; }
+        set { inLaggedContext = value; }
+      }
+      internal InterpreterState(Instruction[] code) {
+        this.inLaggedContext = false;
         this.code = code;
         this.pc = 0;
-        if (argumentStackSize > 0) {
-          this.argumentStack = new double[argumentStackSize];
-        }
-        this.argumentStackPointer = 0;
-      }
-
-      internal void Reset() {
-        this.pc = 0;
-        this.argumentStackPointer = 0;
       }
 
       internal Instruction NextInstruction() {
         return code[pc++];
-      }
-      private void Push(double val) {
-        argumentStack[argumentStackPointer++] = val;
-      }
-      private double Pop() {
-        return argumentStack[--argumentStackPointer];
-      }
-
-      internal void CreateStackFrame(double[] argValues) {
-        // push in reverse order to make indexing easier
-        for (int i = argValues.Length - 1; i >= 0; i--) {
-          argumentStack[argumentStackPointer++] = argValues[i];
-        }
-        Push(argValues.Length);
-      }
-
-      internal void RemoveStackFrame() {
-        int size = (int)Pop();
-        argumentStackPointer -= size;
-      }
-
-      internal double GetStackFrameValue(ushort index) {
-        // layout of stack:
-        // [0]   <- argumentStackPointer
-        // [StackFrameSize = N + 1]
-        // [Arg0] <- argumentStackPointer - 2 - 0
-        // [Arg1] <- argumentStackPointer - 2 - 1
-        // [...]
-        // [ArgN] <- argumentStackPointer - 2 - N
-        // <Begin of stack frame>
-        return argumentStack[argumentStackPointer - index - 2];
       }
     }
     private class OpCodes {
@@ -240,7 +206,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           necessaryArgStackSize += instr.nArguments + 1;
         }
       }
-      var state = new InterpreterState(code, necessaryArgStackSize);
+      var state = new InterpreterState(code);
 
       Type[] methodArgs = { typeof(int), typeof(IList<double>[]) };
       DynamicMethod testFun = new DynamicMethod("TestFun", typeof(double), methodArgs, typeof(SymbolicDataAnalysisExpressionTreeILEmittingInterpreter).Module);
@@ -464,11 +430,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, laggedTreeNode.Lag);
             il.Emit(System.Reflection.Emit.OpCodes.Add);
             il.Emit(System.Reflection.Emit.OpCodes.Starg, 0);
+            var prevLaggedContext = state.InLaggedContext;
+            state.InLaggedContext = true;
             CompileInstructions(il, state, ds);
             il.Emit(System.Reflection.Emit.OpCodes.Ldarg_0); // row += lag
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, laggedTreeNode.Lag);
             il.Emit(System.Reflection.Emit.OpCodes.Sub);
             il.Emit(System.Reflection.Emit.OpCodes.Starg, 0);
+            state.InLaggedContext = prevLaggedContext;
             return;
           }
         case OpCodes.Integral: {
@@ -478,6 +447,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, laggedTreeNode.Lag);
             il.Emit(System.Reflection.Emit.OpCodes.Add);
             il.Emit(System.Reflection.Emit.OpCodes.Starg, 0);
+            var prevLaggedContext = state.InLaggedContext;
+            state.InLaggedContext = true;
             CompileInstructions(il, state, ds);
             for (int l = laggedTreeNode.Lag; l < 0; l++) {
               il.Emit(System.Reflection.Emit.OpCodes.Ldarg_0); // row += lag
@@ -488,6 +459,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
               CompileInstructions(il, state, ds);
               il.Emit(System.Reflection.Emit.OpCodes.Add);
             }
+            state.InLaggedContext = prevLaggedContext;
             return;
           }
 
@@ -503,6 +475,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             il.Emit(System.Reflection.Emit.OpCodes.Add);
             il.Emit(System.Reflection.Emit.OpCodes.Starg, 0);
             state.ProgramCounter = savedPc;
+            var prevLaggedContext = state.InLaggedContext;
+            state.InLaggedContext = true;
             CompileInstructions(il, state, ds);
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 2.0); // f_0 + 2 * f_1
             il.Emit(System.Reflection.Emit.OpCodes.Mul);
@@ -532,6 +506,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4_4);
             il.Emit(System.Reflection.Emit.OpCodes.Add);
             il.Emit(System.Reflection.Emit.OpCodes.Starg, 0);
+            state.InLaggedContext = prevLaggedContext;
             return;
           }
         case OpCodes.Call: {
@@ -541,28 +516,35 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             throw new NotSupportedException("Automatically defined functions are not supported by the SymbolicDataAnalysisTreeILEmittingInterpreter. Either turn of ADFs or change the interpeter.");
           }
         case OpCodes.Variable: {
-            var nanResult = il.DefineLabel();
-            var normalResult = il.DefineLabel();
             VariableTreeNode varNode = (VariableTreeNode)currentInstr.dynamicNode;
             il.Emit(System.Reflection.Emit.OpCodes.Ldarg_1); // load columns array
-            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, (int)currentInstr.iArg0); // load correct column of the current variable
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, (int)currentInstr.iArg0);
+            // load correct column of the current variable
             il.Emit(System.Reflection.Emit.OpCodes.Ldelem_Ref);
-            il.Emit(System.Reflection.Emit.OpCodes.Ldarg_0); // sampleIndex
-            il.Emit(System.Reflection.Emit.OpCodes.Dup);
-            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4_0);
-            il.Emit(System.Reflection.Emit.OpCodes.Blt, nanResult);
-            il.Emit(System.Reflection.Emit.OpCodes.Dup);
-            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, ds.Rows);
-            il.Emit(System.Reflection.Emit.OpCodes.Bge, nanResult);
-            il.Emit(System.Reflection.Emit.OpCodes.Call, listGetValue);
-            il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, varNode.Weight); // load weight
-            il.Emit(System.Reflection.Emit.OpCodes.Mul);
-            il.Emit(System.Reflection.Emit.OpCodes.Br, normalResult);
-            il.MarkLabel(nanResult);
-            il.Emit(System.Reflection.Emit.OpCodes.Pop); // sample index
-            il.Emit(System.Reflection.Emit.OpCodes.Pop); // column reference
-            il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, double.NaN);
-            il.MarkLabel(normalResult);
+            il.Emit(System.Reflection.Emit.OpCodes.Ldarg_0); // rowIndex
+            if (!state.InLaggedContext) {
+              il.Emit(System.Reflection.Emit.OpCodes.Call, listGetValue);
+              il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, varNode.Weight); // load weight
+              il.Emit(System.Reflection.Emit.OpCodes.Mul);
+            } else {
+              var nanResult = il.DefineLabel();
+              var normalResult = il.DefineLabel();
+              il.Emit(System.Reflection.Emit.OpCodes.Dup);
+              il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4_0);
+              il.Emit(System.Reflection.Emit.OpCodes.Blt, nanResult);
+              il.Emit(System.Reflection.Emit.OpCodes.Dup);
+              il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, ds.Rows);
+              il.Emit(System.Reflection.Emit.OpCodes.Bge, nanResult);
+              il.Emit(System.Reflection.Emit.OpCodes.Call, listGetValue);
+              il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, varNode.Weight); // load weight
+              il.Emit(System.Reflection.Emit.OpCodes.Mul);
+              il.Emit(System.Reflection.Emit.OpCodes.Br, normalResult);
+              il.MarkLabel(nanResult);
+              il.Emit(System.Reflection.Emit.OpCodes.Pop); // rowIndex
+              il.Emit(System.Reflection.Emit.OpCodes.Pop); // column reference
+              il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, double.NaN);
+              il.MarkLabel(normalResult);
+            }
             return;
           }
         case OpCodes.LagVariable: {
@@ -573,8 +555,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, (int)currentInstr.iArg0); // load correct column of the current variable
             il.Emit(System.Reflection.Emit.OpCodes.Ldelem_Ref);
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, varNode.Lag); // lag
-            il.Emit(System.Reflection.Emit.OpCodes.Ldarg_0); // sampleIndex
-            il.Emit(System.Reflection.Emit.OpCodes.Add); // row = sampleIndex + sampleOffset
+            il.Emit(System.Reflection.Emit.OpCodes.Ldarg_0); // rowIndex
+            il.Emit(System.Reflection.Emit.OpCodes.Add); // actualRowIndex = rowIndex + sampleOffset
             il.Emit(System.Reflection.Emit.OpCodes.Dup);
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4_0);
             il.Emit(System.Reflection.Emit.OpCodes.Blt, nanResult);
@@ -612,15 +594,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return symbolToOpcode[treeNode.Symbol.GetType()];
       else
         throw new NotSupportedException("Symbol: " + treeNode.Symbol);
-    }
-
-    // skips a whole branch
-    private void SkipInstructions(InterpreterState state) {
-      int i = 1;
-      while (i > 0) {
-        i += state.NextInstruction().nArguments;
-        i--;
-      }
     }
   }
 }

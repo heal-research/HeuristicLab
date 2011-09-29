@@ -131,9 +131,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       public const byte Derivative = 26;
 
       public const byte VariableCondition = 27;
+
+      public const byte UncheckedVariable = 28;
+      public const byte UncheckedVariableCondition = 29;
     }
     #endregion
 
+    private Dictionary<Type, byte> symbolToUncheckedOpcode = new Dictionary<Type, byte>() {
+      { typeof(HeuristicLab.Problems.DataAnalysis.Symbolic.Variable), OpCodes.UncheckedVariable },
+      { typeof(VariableCondition),OpCodes.UncheckedVariableCondition}
+    };
     private Dictionary<Type, byte> symbolToOpcode = new Dictionary<Type, byte>() {
       { typeof(Addition), OpCodes.Add },
       { typeof(Subtraction), OpCodes.Sub },
@@ -205,7 +212,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       int necessaryArgStackSize = 0;
       for (int i = 0; i < code.Length; i++) {
         Instruction instr = code[i];
-        if (instr.opCode == OpCodes.Variable) {
+        if (instr.opCode == OpCodes.Variable || instr.opCode == OpCodes.UncheckedVariable) {
           var variableTreeNode = instr.dynamicNode as VariableTreeNode;
           instr.iArg0 = dataset.GetReadOnlyDoubleValues(variableTreeNode.VariableName);
           code[i] = instr;
@@ -213,7 +220,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           var laggedVariableTreeNode = instr.dynamicNode as LaggedVariableTreeNode;
           instr.iArg0 = dataset.GetReadOnlyDoubleValues(laggedVariableTreeNode.VariableName);
           code[i] = instr;
-        } else if (instr.opCode == OpCodes.VariableCondition) {
+        } else if (instr.opCode == OpCodes.VariableCondition || instr.opCode == OpCodes.UncheckedVariableCondition) {
           var variableConditionTreeNode = instr.dynamicNode as VariableConditionTreeNode;
           instr.iArg0 = dataset.GetReadOnlyDoubleValues(variableConditionTreeNode.VariableName);
         } else if (instr.opCode == OpCodes.Call) {
@@ -409,6 +416,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             var variableTreeNode = (VariableTreeNode)currentInstr.dynamicNode;
             return ((IList<double>)currentInstr.iArg0)[row] * variableTreeNode.Weight;
           }
+        case OpCodes.UncheckedVariable: {
+            var variableTreeNode = (VariableTreeNode)currentInstr.dynamicNode;
+            return ((IList<double>)currentInstr.iArg0)[row] * variableTreeNode.Weight;
+          }
         case OpCodes.LagVariable: {
             var laggedVariableTreeNode = (LaggedVariableTreeNode)currentInstr.dynamicNode;
             int actualRow = row + laggedVariableTreeNode.Lag;
@@ -436,15 +447,37 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
             return trueBranch * p + falseBranch * (1 - p);
           }
+        case OpCodes.UncheckedVariableCondition: {
+            var variableConditionTreeNode = (VariableConditionTreeNode)currentInstr.dynamicNode;
+            double variableValue = ((IList<double>)currentInstr.iArg0)[row];
+            double x = variableValue - variableConditionTreeNode.Threshold;
+            double p = 1 / (1 + Math.Exp(-variableConditionTreeNode.Slope * x));
+
+            double trueBranch = Evaluate(dataset, ref row, state);
+            double falseBranch = Evaluate(dataset, ref row, state);
+
+            return trueBranch * p + falseBranch * (1 - p);
+          }
         default: throw new NotSupportedException();
       }
     }
 
     private byte MapSymbolToOpCode(ISymbolicExpressionTreeNode treeNode) {
-      if (symbolToOpcode.ContainsKey(treeNode.Symbol.GetType()))
-        return symbolToOpcode[treeNode.Symbol.GetType()];
-      else
-        throw new NotSupportedException("Symbol: " + treeNode.Symbol);
+      if ((treeNode.Symbol.GetType() == typeof(Variable) || treeNode.Symbol.GetType() == typeof(VariableCondition)) && !InLaggedContext(treeNode)) {
+        return symbolToUncheckedOpcode[treeNode.Symbol.GetType()];
+      } else {
+        if (symbolToOpcode.ContainsKey(treeNode.Symbol.GetType()))
+          return symbolToOpcode[treeNode.Symbol.GetType()];
+        else
+          throw new NotSupportedException("Symbol: " + treeNode.Symbol);
+      }
+    }
+
+    private bool InLaggedContext(ISymbolicExpressionTreeNode treeNode) {
+      if (treeNode.Parent == null) return false;
+      if (treeNode.Parent is ILaggedTreeNode) return true;
+      if (treeNode.Parent.Symbol is Derivative) return true;
+      return InLaggedContext(treeNode.Parent);
     }
 
     // skips a whole branch
