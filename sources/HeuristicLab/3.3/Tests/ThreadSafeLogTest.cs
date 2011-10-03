@@ -19,8 +19,10 @@
  */
 #endregion
 
+using System;
 using System.Linq;
 using System.Threading.Tasks;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -39,6 +41,22 @@ namespace HeuristicLab_33.Tests {
       });
 
       Assert.AreEqual(count, log.Messages.Count());
+    }
+
+    private ThreadSafeLog recursionInLogViewTestLog;
+    [TestMethod]
+    public void ThreadSafeLogRecursionInLogViewTest() {
+      int count = 10;
+      recursionInLogViewTestLog = new ThreadSafeLog();
+      recursionInLogViewTestLog.MessageAdded += new EventHandler<EventArgs<string>>(log_MessageAdded);
+
+      for (int i = 0; i < count; i++) {
+        recursionInLogViewTestLog.LogMessage("Message " + i);
+      }
+    }
+    void log_MessageAdded(object sender, EventArgs<string> e) {
+      //access Messages like LogView does
+      Console.WriteLine(string.Join(Environment.NewLine, recursionInLogViewTestLog.Messages.ToArray()));
     }
   }
 }

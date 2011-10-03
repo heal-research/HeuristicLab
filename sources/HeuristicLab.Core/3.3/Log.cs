@@ -70,13 +70,13 @@ namespace HeuristicLab.Core {
       OnCleared();
     }
     public virtual void LogMessage(string message) {
-      string s = DateTime.Now.ToString() + "\t" + message;
+      string s = FormatLogMessage(message);
       messages.Add(s);
       CapMessages();
       OnMessageAdded(s);
     }
     public virtual void LogException(Exception ex) {
-      string s = DateTime.Now.ToString() + "\t" + "Exception occurred:" + Environment.NewLine + ErrorHandling.BuildErrorMessage(ex);
+      string s = FormatException(ex);
       messages.Add(s);
       CapMessages();
       OnMessageAdded(s);
@@ -85,6 +85,12 @@ namespace HeuristicLab.Core {
       while (maxMessageCount >= 0 && messages.Count > maxMessageCount) {
         messages.RemoveAt(0);
       }
+    }
+    protected virtual string FormatLogMessage(string message) {
+      return DateTime.Now.ToString() + "\t" + message;
+    }
+    protected virtual string FormatException(Exception ex) {
+      return DateTime.Now.ToString() + "\t" + "Exception occurred:" + Environment.NewLine + ErrorHandling.BuildErrorMessage(ex);
     }
 
     public event EventHandler<EventArgs<string>> MessageAdded;
