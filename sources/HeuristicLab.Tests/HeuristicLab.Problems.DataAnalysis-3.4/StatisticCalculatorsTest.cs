@@ -21,6 +21,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Problems.DataAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
@@ -59,7 +60,7 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
       int cols = testData.GetLength(1);
       {
         for (int col = 0; col < cols; col++) {
-          double scale = random.NextDouble() * 1E7;
+          double scale = random.NextDouble();
           IEnumerable<double> x = from rows in Enumerable.Range(0, n)
                                   select testData[rows, col] * scale;
           double[] xs = x.ToArray();
@@ -76,8 +77,8 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
           double mean = calculator.Mean;
           double variance = calculator.Variance;
 
-          Assert.AreEqual(mean_alglib.ToString(), mean.ToString());
-          Assert.AreEqual(variance_alglib.ToString(), variance.ToString());
+          Assert.IsTrue(mean_alglib.IsAlmost(mean));
+          Assert.IsTrue(variance_alglib.IsAlmost(variance));
         }
       }
     }
@@ -107,7 +108,7 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
             }
             double r2 = r2Calculator.RSquared;
 
-            Assert.AreEqual(r2_alglib.ToString(), r2.ToString());
+            Assert.IsTrue(r2_alglib.IsAlmost(r2));
           }
         }
       }
