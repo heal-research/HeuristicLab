@@ -74,7 +74,7 @@ namespace HeuristicLab.Random {
     /// Initializes a new instance of <see cref="MersenneTwister"/>.
     /// </summary>
     public MersenneTwister() {
-      if (!init) seed((uint)DateTime.Now.Ticks);
+      if (!init) Seed((uint)DateTime.Now.Ticks);
       init = true;
     }
     /// <summary>
@@ -83,7 +83,7 @@ namespace HeuristicLab.Random {
     /// </summary>
     /// <param name="s">The seed with which to initialize the random number generator.</param>
     public MersenneTwister(uint s) {
-      seed(s);
+      Seed(s);
       init = true;
     }
     /// <summary>
@@ -91,7 +91,7 @@ namespace HeuristicLab.Random {
     /// </summary>
     /// <param name="array">The seed array with which to initialize the random number generator.</param>
     public MersenneTwister(uint[] array) {
-      seed(array);
+      Seed(array);
       init = true;
     }
 
@@ -109,7 +109,7 @@ namespace HeuristicLab.Random {
     /// </summary>
     public void Reset() {
       lock (locker)
-        seed((uint)DateTime.Now.Ticks);
+        Seed((uint)DateTime.Now.Ticks);
     }
     /// <summary>
     /// Resets the current random number generator with the given seed <paramref name="s"/>.
@@ -117,7 +117,7 @@ namespace HeuristicLab.Random {
     /// <param name="s">The seed with which to reset the current instance.</param>
     public void Reset(int s) {
       lock (locker)
-        seed((uint)s);
+        Seed((uint)s);
     }
 
     /// <summary>
@@ -175,7 +175,7 @@ namespace HeuristicLab.Random {
     /// Initializes current instance with random seed.
     /// </summary>
     /// <param name="s">A starting seed.</param>
-    public void seed(uint s) {
+    public void Seed(uint s) {
       state[0] = s & 0xFFFFFFFFU;
       for (int i = 1; i < n; ++i) {
         state[i] = 1812433253U * (state[i - 1] ^ (state[i - 1] >> 30)) + (uint)i;
@@ -187,8 +187,8 @@ namespace HeuristicLab.Random {
     /// Initializes current instance with random seed.
     /// </summary>
     /// <param name="array">A starting seed array.</param>
-    public void seed(uint[] array) {
-      seed(19650218U);
+    public void Seed(uint[] array) {
+      Seed(19650218U);
       int i = 1, j = 0;
       for (int k = ((n > array.Length) ? n : array.Length); k > 0; --k) {
         state[i] = (state[i] ^ ((state[i - 1] ^ (state[i - 1] >> 30)) * 1664525U))
