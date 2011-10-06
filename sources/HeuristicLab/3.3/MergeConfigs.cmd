@@ -1,5 +1,3 @@
-ConfigMerger "%Outdir%HeuristicLab.PluginInfrastructure-3.3.dll.config" "HeuristicLab 3.3.exe.config"
-ConfigMerger "%Outdir%HeuristicLab.Clients.Common-3.3.dll.config" "HeuristicLab 3.3.exe.config"
-ConfigMerger "%Outdir%HeuristicLab.Optimizer-3.3.dll.config" "HeuristicLab 3.3.exe.config"
-ConfigMerger "%Outdir%HeuristicLab.Persistence-3.3.dll.config" "HeuristicLab 3.3.exe.config"
-ConfigMerger "%Outdir%HeuristicLab.Tracing-3.3.dll.config" "HeuristicLab 3.3.exe.config"
+FOR /F "tokens=*" %%A IN ('dir /B "%Outdir%*.dll.config"') DO (
+  ConfigMerger "%%A" "HeuristicLab 3.3.exe.config"
+)

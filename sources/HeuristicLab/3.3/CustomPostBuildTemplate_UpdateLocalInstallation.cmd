@@ -1,11 +1,6 @@
 set target=C:\Program Files\HeuristicLab 3.3
 
-copy "HeuristicLab 3.3.exe" "%target%"
-copy "HeuristicLab 3.3.exe.config" "%target%"
-copy HeuristicLab.PluginInfrastructure-3.3.dll "%target%"
-
-FOR /F "skip=1 tokens=1-2 delims=: usebackq" %%G IN ("%ProjectDir%\Files.txt") DO copy "%Outdir%\%%H" "%target%" >nul
-
+FOR /F "skip=1 tokens=1 delims= usebackq" %%G IN ("%ProjectDir%\Files.txt") DO copy "%Outdir%\%%G" "%target%" >nul
 
 echo "Platform: %Platform%, architecture: %PROCESSOR_ARCHITECTURE%"
 if "%Platform%" == "x86" (   
