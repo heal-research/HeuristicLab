@@ -120,7 +120,10 @@
     </Compile>
     <Compile Include="Analyzers\SymbolicDataAnalysisVariableFrequencyAnalyzer.cs" />
     <Compile Include="Analyzers\SymbolicDataAnalysisAlleleFrequencyAnalyzer.cs" />
+    <Compile Include="SymbolicDataAnalysisExpressionFullTreeCreator.cs" />
     <Compile Include="Plugin.cs" />
+    <Compile Include="SymbolicDataAnalysisExpressionGrowTreeCreator.cs" />
+    <Compile Include="SymbolicDataAnalysisExpressionRampedHalfAndHalfTreeCreator.cs" />
     <Compile Include="SymbolicDataAnalysisExpressionTreeILEmittingInterpreter.cs" />
     <Compile Include="Formatters\SymbolicDataAnalysisExpressionLatexFormatter.cs" />
     <Compile Include="Formatters\SymbolicDataAnalysisExpressionMATLABFormatter.cs" />

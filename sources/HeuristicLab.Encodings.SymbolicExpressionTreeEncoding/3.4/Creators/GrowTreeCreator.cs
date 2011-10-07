@@ -54,11 +54,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     public ILookupParameter<ISymbolicExpressionGrammar> ClonedSymbolicExpressionTreeGrammarParameter {
-      get {
-        return
-            (ILookupParameter<ISymbolicExpressionGrammar>)
-            Parameters[ClonedSymbolicExpressionTreeGrammarParameterName];
-      }
+      get { return (ILookupParameter<ISymbolicExpressionGrammar>)Parameters[ClonedSymbolicExpressionTreeGrammarParameterName]; }
     }
 
     #endregion
@@ -136,7 +132,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         throw new ArgumentException("Cannot create trees of depth " + maxDepth + " or smaller because of grammar constraints.", "maxDepth");
 
       var arity = SampleArity(random, seedNode);
-      if (arity <= 0) return; // maybe throw an exception here? But this should never happen.
+      // throw an exception if the seedNode happens to be a terminal, since in this case we cannot grow a tree
+      if (arity <= 0) 
+        throw new ArgumentException("Cannot grow tree. Seed node shouldn't have arity zero."); 
 
       var possibleSymbols = seedNode.Grammar.GetAllowedChildSymbols(seedNode.Symbol).Where(s => s.InitialFrequency > 0.0).ToList();
 
@@ -147,14 +145,16 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         seedNode.AddSubtree(tree);
       }
 
-      foreach (var subTree in seedNode.Subtrees) {
-        RecursiveGrow(random, subTree, 0, maxDepth);
-      }
+      // Only iterate over the non-terminal nodes (those which have arity > 0)
+      // Start from depth 2 since the first two levels are formed by the rootNode and the seedNode
+      foreach (var subTree in seedNode.Subtrees.Where(subTree => subTree.Grammar.GetMaximumSubtreeCount(subTree.Symbol) != 0))
+        RecursiveGrow(random, subTree, 2, maxDepth);
     }
 
     public static void RecursiveGrow(IRandom random, ISymbolicExpressionTreeNode root, int currentDepth, int maxDepth) {
       var arity = SampleArity(random, root);
-      if (arity <= 0) return;
+      if (arity <= 0)
+        throw new ArgumentException("Cannot grow node of arity zero. Expected a function node.");
 
       var possibleSymbols = currentDepth < maxDepth ?
         root.Grammar.GetAllowedChildSymbols(root.Symbol).Where(s => s.InitialFrequency > 0.0).ToList() :
@@ -167,9 +167,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         root.AddSubtree(tree);
       }
 
-      foreach (var subTree in root.Subtrees) {
+      foreach (var subTree in root.Subtrees.Where(subTree => subTree.Grammar.GetMaximumSubtreeCount(subTree.Symbol) != 0))
         RecursiveGrow(random, subTree, currentDepth + 1, maxDepth);
-      }
     }
 
     private static int SampleArity(IRandom random, ISymbolicExpressionTreeNode node) {

@@ -235,7 +235,9 @@
     <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\ArgumentDeleterTest.cs" />
     <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\ArgumentDuplicaterTest.cs" />
     <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\ChangeNodeTypeManipulationTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\FullTreeCreatorTest.cs" />
     <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\Grammars.cs" />
+    <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\GrowTreeCreatorTest.cs" />
     <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\ProbabilisticTreeCreaterTest.cs" />
     <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\ReplaceBranchManipulationTest.cs" />
     <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\SubroutineCreaterTest.cs" />
