@@ -25,73 +25,68 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using HeuristicLab.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Problems.QuadraticAssignment.Tests_33 {
   [TestClass]
   public class QAPLIBInstancesTest {
-    [TestMethod]
-    public void LoadAllEmbeddedInstances() {
-      QuadraticAssignmentProblem qap = new QuadraticAssignmentProblem();
-      StringBuilder failedInstances = new StringBuilder();
-      foreach (string instance in qap.EmbeddedInstances) {
-        try {
-          qap.LoadEmbeddedInstance(instance);
-        }
-        catch (Exception ex) {
-          failedInstances.AppendLine(instance + ": " + ex.Message);
-        }
-      }
-      Assert.IsTrue(failedInstances.Length == 0, "Following instances failed to load: " + Environment.NewLine + failedInstances.ToString());
-    }
+    private static string InstancePrefix = "HeuristicLab.Tests.HeuristicLab.Problems.QuadraticAssignment_3._3.QAPLIB.";
 
-    [TestMethod]
-    public void LoadAllEmbeddedSolutions() {
-      IEnumerable<string> solutionFiles = Assembly.GetAssembly(typeof(QuadraticAssignmentProblem))
+    private IEnumerable<string> EmbeddedInstances {
+      get {
+        return Assembly.GetExecutingAssembly()
           .GetManifestResourceNames()
-          .Where(x => x.EndsWith(".sln"));
-      QAPLIBSolutionParser parser = new QAPLIBSolutionParser();
-      StringBuilder failedInstances = new StringBuilder();
-      foreach (string solution in solutionFiles) {
-        using (Stream stream = Assembly.GetAssembly(typeof(QuadraticAssignmentProblem)).GetManifestResourceStream(solution)) {
-          parser.Reset();
-          parser.Parse(stream, true);
-          if (parser.Error != null)
-            failedInstances.AppendLine(solution + ": " + parser.Error.Message);
-        }
+          .Where(x => x.EndsWith(".dat"))
+          .OrderBy(x => x)
+          .Select(x => x.Replace(".dat", String.Empty))
+          .Select(x => x.Replace(InstancePrefix, String.Empty));
       }
-      Assert.IsTrue(failedInstances.Length == 0, "Following instances failed to load: " + Environment.NewLine + failedInstances.ToString());
     }
 
     [TestMethod]
-    public void TestReportedSolutionQuality() {
-      StringBuilder failedInstances = new StringBuilder();
-      QuadraticAssignmentProblem qap = new QuadraticAssignmentProblem();
-      foreach (string instance in qap.EmbeddedInstances) {
+    public void TestQAPLIBInstances() {
+      var qap = new QuadraticAssignmentProblem();
+      var failedInstances = new StringBuilder();
+      string tempPath = Path.GetTempPath();
+
+      Assert.IsTrue(EmbeddedInstances.Any(), "No instances could be found.");
+
+      foreach (string instance in EmbeddedInstances) {
+        WriteEmbeddedResourceToFile(InstancePrefix + instance + ".dat", File.Create(Path.Combine(tempPath, "instance.dat")));
+
+        bool solutionExists = Assembly.GetExecutingAssembly().GetManifestResourceNames().Any(x => x == InstancePrefix + instance + ".sln");
+        if (solutionExists)
+          WriteEmbeddedResourceToFile(InstancePrefix + instance + ".sln", File.Create(Path.Combine(tempPath, "instance.sln")));
+
         try {
-          qap.LoadEmbeddedInstance(instance);
-        }
-        catch {
-          Assert.Fail("Not all instances load correctly");
-        }
-        if (qap.BestKnownSolution != null) {
-          double quality = double.NaN;
-          try {
-            quality = QAPEvaluator.Apply(qap.BestKnownSolution, qap.Weights, qap.Distances);
-          }
-          catch (Exception ex) {
-            failedInstances.AppendLine("An unknown problem occurred evaluating solution of instance " + instance + ": " + ex.Message);
-          }
-          if (!quality.IsAlmost(qap.BestKnownQuality.Value)) {
-            failedInstances.AppendLine(instance + ": Reported quality: " + qap.BestKnownQuality.Value.ToString() + ", evaluated fitness: " + quality.ToString() + ".");
-          }
-        } else if (qap.BestKnownQuality != null) {
-          failedInstances.AppendLine(instance + ": The solution failed to load, only the quality value is available!");
+          qap.LoadInstanceFromFile(Path.Combine(tempPath, "instance.dat"));
+        } catch (Exception ex) {
+          failedInstances.AppendLine(instance + ": " + ex.Message);
+          solutionExists = false; // not necessary to test solution as well
         }
 
+        if (solutionExists) {
+          try {
+            qap.LoadInstanceFromFile(Path.Combine(tempPath, "instance.dat"), Path.Combine(tempPath, "instance.sln"));
+            if (qap.BestKnownSolution == null)
+              failedInstances.AppendLine(instance + " (sln): Given solution and reported quality cannot be reproduced.");
+          } catch (Exception ex) {
+            failedInstances.AppendLine(instance + " (+sln):" + ex.Message);
+          }
+        }
       }
-      Assert.IsTrue(failedInstances.Length == 0, "Following instances report divergent fitness values: " + Environment.NewLine + failedInstances.ToString());
+      Assert.IsTrue(failedInstances.Length == 0, "Following instances failed: " + Environment.NewLine + failedInstances.ToString());
+    }
+
+    private void WriteEmbeddedResourceToFile(string resource, FileStream file) {
+      try {
+        using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resource)) {
+          int token;
+          while ((token = stream.ReadByte()) >= 0) {
+            file.WriteByte((byte)token);
+          }
+        }
+      } finally { file.Close(); }
     }
   }
 }

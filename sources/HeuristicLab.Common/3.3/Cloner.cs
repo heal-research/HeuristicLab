@@ -32,7 +32,7 @@ namespace HeuristicLab.Common {
     /// Creates a new Cloner instance.
     /// </summary>
     public Cloner() {
-      mapping = new Dictionary<IDeepCloneable, IDeepCloneable>(new ReferenceEqualityComparer<IDeepCloneable>());
+      mapping = new Dictionary<IDeepCloneable, IDeepCloneable>(new ReferenceEqualityComparer());
     }
 
     /// <summary>

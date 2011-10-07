@@ -103,18 +103,19 @@
   <ItemGroup>
     <Reference Include="HeuristicLab.Collections-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=x86" />
     <Reference Include="HeuristicLab.Data.Views-3.3">
-      <HintPath>..\..\HeuristicLab.Data.Views\3.3\bin\x86\Debug\HeuristicLab.Data.Views-3.3.dll</HintPath>
+      <HintPath>..\..\HeuristicLab.Data.Views\3.3\bin\Debug\HeuristicLab.Data.Views-3.3.dll</HintPath>
     </Reference>
     <Reference Include="HeuristicLab.Visualization.ChartControlsExtensions-3.3">
-      <HintPath>..\..\HeuristicLab.Visualization.ChartControlsExtensions\3.3\bin\x86\Debug\HeuristicLab.Visualization.ChartControlsExtensions-3.3.dll</HintPath>
+      <HintPath>..\..\HeuristicLab.Visualization.ChartControlsExtensions\3.3\bin\Debug\HeuristicLab.Visualization.ChartControlsExtensions-3.3.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Forms.DataVisualization" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="QAPAssignmentView.cs">
@@ -209,6 +210,9 @@
       <Name>HeuristicLab.Problems.QuadraticAssignment-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

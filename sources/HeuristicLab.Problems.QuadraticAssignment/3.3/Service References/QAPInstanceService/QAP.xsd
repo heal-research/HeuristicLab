@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.ProblemInstances" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.ProblemInstances" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://services.heuristiclab.com/ProblemInstances-3.3/QAP/QAP.svc?xsd=xsd2" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:complexType name="QAPInstanceDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="BestKnownQuality" type="xs:double" />
+      <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
+      <xs:element xmlns:q1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Distances" nillable="true" type="q1:ArrayOfArrayOfdouble" />
+      <xs:element minOccurs="0" name="HasBestKnownQuality" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Maximization" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element xmlns:q2="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Weights" nillable="true" type="q2:ArrayOfArrayOfdouble" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="QAPInstanceDto" nillable="true" type="tns:QAPInstanceDto" />
+  <xs:complexType name="ArrayOfQAPSolutionDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="QAPSolutionDto" nillable="true" type="tns:QAPSolutionDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfQAPSolutionDto" nillable="true" type="tns:ArrayOfQAPSolutionDto" />
+  <xs:complexType name="QAPSolutionDto">
+    <xs:sequence>
+      <xs:element xmlns:q3="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Assignment" nillable="true" type="q3:ArrayOfint" />
+      <xs:element minOccurs="0" name="AssignmentUndefined" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Quality" type="xs:double" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="QAPSolutionDto" nillable="true" type="tns:QAPSolutionDto" />
+</xs:schema>

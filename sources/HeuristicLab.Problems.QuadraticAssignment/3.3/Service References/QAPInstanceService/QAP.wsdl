@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="QAP" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="http://services.heuristiclab.com/ProblemInstances-3.3/QAP/QAP.svc?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://services.heuristiclab.com/ProblemInstances-3.3/QAP/QAP.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://services.heuristiclab.com/ProblemInstances-3.3/QAP/QAP.svc?xsd=xsd2" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xsd:import schemaLocation="http://services.heuristiclab.com/ProblemInstances-3.3/QAP/QAP.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.ProblemInstances" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IQAP_GetProblemInstances_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetProblemInstances" />
+  </wsdl:message>
+  <wsdl:message name="IQAP_GetProblemInstances_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetProblemInstancesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IQAP_GetProblemInstanceData_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetProblemInstanceData" />
+  </wsdl:message>
+  <wsdl:message name="IQAP_GetProblemInstanceData_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetProblemInstanceDataResponse" />
+  </wsdl:message>
+  <wsdl:message name="IQAP_GetBestSolutionsData_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetBestSolutionsData" />
+  </wsdl:message>
+  <wsdl:message name="IQAP_GetBestSolutionsData_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetBestSolutionsDataResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IQAP">
+    <wsdl:operation name="GetProblemInstances">
+      <wsdl:input wsaw:Action="http://tempuri.org/IQAP/GetProblemInstances" message="tns:IQAP_GetProblemInstances_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IQAP/GetProblemInstancesResponse" message="tns:IQAP_GetProblemInstances_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetProblemInstanceData">
+      <wsdl:input wsaw:Action="http://tempuri.org/IQAP/GetProblemInstanceData" message="tns:IQAP_GetProblemInstanceData_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IQAP/GetProblemInstanceDataResponse" message="tns:IQAP_GetProblemInstanceData_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetBestSolutionsData">
+      <wsdl:input wsaw:Action="http://tempuri.org/IQAP/GetBestSolutionsData" message="tns:IQAP_GetBestSolutionsData_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IQAP/GetBestSolutionsDataResponse" message="tns:IQAP_GetBestSolutionsData_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BasicHttpBinding_IQAP" type="tns:IQAP">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetProblemInstances">
+      <soap:operation soapAction="http://tempuri.org/IQAP/GetProblemInstances" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetProblemInstanceData">
+      <soap:operation soapAction="http://tempuri.org/IQAP/GetProblemInstanceData" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetBestSolutionsData">
+      <soap:operation soapAction="http://tempuri.org/IQAP/GetBestSolutionsData" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="QAP">
+    <wsdl:port name="BasicHttpBinding_IQAP" binding="tns:BasicHttpBinding_IQAP">
+      <soap:address location="http://services.heuristiclab.com/ProblemInstances-3.3/QAP/QAP.svc" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

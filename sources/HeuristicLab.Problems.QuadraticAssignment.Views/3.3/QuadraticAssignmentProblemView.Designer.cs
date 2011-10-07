@@ -53,6 +53,10 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
       this.problemTabPage = new System.Windows.Forms.TabPage();
       this.visualizationTabPage = new System.Windows.Forms.TabPage();
       this.qapView = new HeuristicLab.Problems.QuadraticAssignment.Views.QAPVisualizationControl();
+      this.reloadInstancesButton = new System.Windows.Forms.Button();
+      this.loadInstanceWorker = new System.ComponentModel.BackgroundWorker();
+      this.progressBar = new System.Windows.Forms.ProgressBar();
+      this.getInstancesWorker = new System.ComponentModel.BackgroundWorker();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.tabControl.SuspendLayout();
       this.visualizationTabPage.SuspendLayout();
@@ -89,7 +93,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
       this.importInstanceButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
       this.toolTip.SetToolTip(this.importInstanceButton, "Import files in QAPLIB format.");
       this.importInstanceButton.UseVisualStyleBackColor = true;
-      this.importInstanceButton.Click += new System.EventHandler(this.importInstanceButton_Click);
+      this.importInstanceButton.Click += new System.EventHandler(this.importFileInstanceButton_Click);
       // 
       // openFileDialog
       // 
@@ -119,9 +123,9 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.instancesComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.instancesComboBox.FormattingEnabled = true;
-      this.instancesComboBox.Location = new System.Drawing.Point(105, 2);
+      this.instancesComboBox.Location = new System.Drawing.Point(137, 1);
       this.instancesComboBox.Name = "instancesComboBox";
-      this.instancesComboBox.Size = new System.Drawing.Size(358, 21);
+      this.instancesComboBox.Size = new System.Drawing.Size(326, 21);
       this.instancesComboBox.TabIndex = 7;
       this.instancesComboBox.SelectedValueChanged += new System.EventHandler(this.instancesComboBox_SelectedValueChanged);
       // 
@@ -183,18 +187,56 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
       this.qapView.TabIndex = 0;
       this.qapView.Weights = null;
       // 
+      // reloadInstancesButton
+      // 
+      this.reloadInstancesButton.Location = new System.Drawing.Point(105, 0);
+      this.reloadInstancesButton.Name = "reloadInstancesButton";
+      this.reloadInstancesButton.Size = new System.Drawing.Size(26, 23);
+      this.reloadInstancesButton.TabIndex = 9;
+      this.reloadInstancesButton.Text = "Reload";
+      this.reloadInstancesButton.UseVisualStyleBackColor = true;
+      this.reloadInstancesButton.Click += new System.EventHandler(this.reloadInstancesButton_Click);
+      // 
+      // loadInstanceWorker
+      // 
+      this.loadInstanceWorker.WorkerReportsProgress = true;
+      this.loadInstanceWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.loadInstanceWorker_DoWork);
+      this.loadInstanceWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.worker_ProgressChanged);
+      this.loadInstanceWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.worker_RunWorkerCompleted);
+      // 
+      // progressBar
+      // 
+      this.progressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.progressBar.Location = new System.Drawing.Point(137, 0);
+      this.progressBar.Name = "progressBar";
+      this.progressBar.Size = new System.Drawing.Size(326, 23);
+      this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+      this.progressBar.TabIndex = 10;
+      this.progressBar.Visible = false;
+      // 
+      // getInstancesWorker
+      // 
+      this.getInstancesWorker.WorkerReportsProgress = true;
+      this.getInstancesWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.getInstancesWorker_DoWork);
+      this.getInstancesWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.worker_ProgressChanged);
+      this.getInstancesWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.worker_RunWorkerCompleted);
+      // 
       // QuadraticAssignmentProblemView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.progressBar);
       this.Controls.Add(this.instancesComboBox);
       this.Controls.Add(this.tabControl);
       this.Controls.Add(this.importInstanceButton);
       this.Controls.Add(this.loadInstanceButton);
+      this.Controls.Add(this.reloadInstancesButton);
       this.Controls.Add(this.QAPLIBInstancesLabel);
       this.Name = "QuadraticAssignmentProblemView";
       this.Size = new System.Drawing.Size(647, 492);
       this.Controls.SetChildIndex(this.QAPLIBInstancesLabel, 0);
+      this.Controls.SetChildIndex(this.reloadInstancesButton, 0);
       this.Controls.SetChildIndex(this.loadInstanceButton, 0);
       this.Controls.SetChildIndex(this.importInstanceButton, 0);
       this.Controls.SetChildIndex(this.tabControl, 0);
@@ -203,6 +245,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
       this.Controls.SetChildIndex(this.parameterCollectionView, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);
+      this.Controls.SetChildIndex(this.progressBar, 0);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.tabControl.ResumeLayout(false);
       this.visualizationTabPage.ResumeLayout(false);
@@ -222,5 +265,9 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
     private System.Windows.Forms.TabPage problemTabPage;
     private System.Windows.Forms.TabPage visualizationTabPage;
     private QAPVisualizationControl qapView;
+    private System.Windows.Forms.Button reloadInstancesButton;
+    private System.ComponentModel.BackgroundWorker loadInstanceWorker;
+    private System.Windows.Forms.ProgressBar progressBar;
+    private System.ComponentModel.BackgroundWorker getInstancesWorker;
   }
 }

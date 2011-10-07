@@ -29,7 +29,7 @@ using System.Threading;
 
 namespace HeuristicLab.Common {
   public static class ObjectExtensions {
-    public static IEnumerable<object> GetObjectGraphObjects(this object obj) {
+    public static IEnumerable<object> GetObjectGraphObjects(this object obj, bool excludeStaticMembers = false) {
       if (obj == null) return Enumerable.Empty<object>();
 
       var objects = new HashSet<object>();
@@ -40,7 +40,7 @@ namespace HeuristicLab.Common {
         object current = stack.Pop();
         objects.Add(current);
 
-        foreach (object o in GetChildObjects(current)) {
+        foreach (object o in GetChildObjects(current, excludeStaticMembers)) {
           if (o != null && !objects.Contains(o) && !ExcludeType(o.GetType()))
             stack.Push(o);
         }
@@ -48,6 +48,7 @@ namespace HeuristicLab.Common {
 
       return objects;
     }
+
     /// <summary>
     /// Types not collected:
     ///   * System.Delegate
@@ -67,7 +68,7 @@ namespace HeuristicLab.Common {
              typeof(Pointer).IsAssignableFrom(type) ||
              (type.HasElementType && ExcludeType(type.GetElementType()));
     }
-    private static IEnumerable<object> GetChildObjects(object obj) {
+    private static IEnumerable<object> GetChildObjects(object obj, bool excludeStaticMembers) {
       Type type = obj.GetType();
 
       if (type.IsSubclassOfRawGeneric(typeof(ThreadLocal<>))) {
@@ -92,6 +93,7 @@ namespace HeuristicLab.Common {
           yield return value;
       } else {
         foreach (FieldInfo f in type.GetAllFields()) {
+          if (excludeStaticMembers && f.IsStatic) continue;
           yield return f.GetValue(obj);
         }
       }

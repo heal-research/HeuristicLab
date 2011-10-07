@@ -21,6 +21,7 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.RealVectorEncoding;
+using HeuristicLab.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="74c7fcd4-7d3e-4f3a-8994-04899eeb7cc6" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://services.heuristiclab.com/ProblemInstances-3.3/QAP/QAP.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="QAP.disco" MetadataType="Disco" ID="b54765ef-308f-455f-b119-459048980883" SourceId="1" SourceUrl="http://services.heuristiclab.com/ProblemInstances-3.3/QAP/QAP.svc?disco" />
+    <MetadataFile FileName="QAP.wsdl" MetadataType="Wsdl" ID="d68a5936-f219-47bf-89e8-7c978f2c91ca" SourceId="1" SourceUrl="http://services.heuristiclab.com/ProblemInstances-3.3/QAP/QAP.svc?wsdl" />
+    <MetadataFile FileName="QAP.xsd" MetadataType="Schema" ID="8bb3036d-2f76-4118-a269-ed1becc78397" SourceId="1" SourceUrl="http://services.heuristiclab.com/ProblemInstances-3.3/QAP/QAP.svc?xsd=xsd3" />
+    <MetadataFile FileName="QAP1.xsd" MetadataType="Schema" ID="9b73d0f8-d8e7-4c6f-8a99-57f2f14b7580" SourceId="1" SourceUrl="http://services.heuristiclab.com/ProblemInstances-3.3/QAP/QAP.svc?xsd=xsd0" />
+    <MetadataFile FileName="QAP2.xsd" MetadataType="Schema" ID="0ce49466-bcf0-4c23-8c91-29603d8987a6" SourceId="1" SourceUrl="http://services.heuristiclab.com/ProblemInstances-3.3/QAP/QAP.svc?xsd=xsd2" />
+    <MetadataFile FileName="QAP3.xsd" MetadataType="Schema" ID="29de7434-9c65-4d8b-a177-0600c8e4a7c6" SourceId="1" SourceUrl="http://services.heuristiclab.com/ProblemInstances-3.3/QAP/QAP.svc?xsd=xsd1" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

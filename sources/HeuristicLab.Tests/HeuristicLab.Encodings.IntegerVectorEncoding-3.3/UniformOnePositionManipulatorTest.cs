@@ -21,6 +21,7 @@
 
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
+using HeuristicLab.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding_33.Tests {

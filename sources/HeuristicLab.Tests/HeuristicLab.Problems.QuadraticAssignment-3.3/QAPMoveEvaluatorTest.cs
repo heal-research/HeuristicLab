@@ -232,26 +232,23 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Tests_33 {
 
         // SYMMETRIC MATRICES
         double before = QAPEvaluator.Apply(assignment, symmetricWeights, symmetricDistances);
-        Permutation clone = new Cloner().Clone(assignment);
+        double move = QAPScrambleMoveEvaluator.Apply(assignment, scramble, symmetricWeights, symmetricDistances);
         ScrambleManipulator.Apply(assignment, scramble.StartIndex, scramble.ScrambledIndices);
         double after = QAPEvaluator.Apply(assignment, symmetricWeights, symmetricDistances);
-        double move = QAPScrambleMoveEvaluator.Apply(clone, scramble, symmetricWeights, symmetricDistances);
         Assert.IsTrue(move.IsAlmost(after - before), "Failed on symmetric matrices");
 
         // ASYMMETRIC MATRICES
         before = QAPEvaluator.Apply(assignment, asymmetricWeights, asymmetricDistances);
-        clone = new Cloner().Clone(assignment);
+        move = QAPScrambleMoveEvaluator.Apply(assignment, scramble, asymmetricWeights, asymmetricDistances);
         ScrambleManipulator.Apply(assignment, scramble.StartIndex, scramble.ScrambledIndices);
         after = QAPEvaluator.Apply(assignment, asymmetricWeights, asymmetricDistances);
-        move = QAPScrambleMoveEvaluator.Apply(clone, scramble, asymmetricWeights, asymmetricDistances);
         Assert.IsTrue(move.IsAlmost(after - before), "Failed on asymmetric matrices");
 
         // NON-ZERO DIAGONAL ASYMMETRIC MATRICES
         before = QAPEvaluator.Apply(assignment, nonZeroDiagonalWeights, nonZeroDiagonalDistances);
-        clone = new Cloner().Clone(assignment);
+        move = QAPScrambleMoveEvaluator.Apply(assignment, scramble, nonZeroDiagonalWeights, nonZeroDiagonalDistances);
         ScrambleManipulator.Apply(assignment, scramble.StartIndex, scramble.ScrambledIndices);
         after = QAPEvaluator.Apply(assignment, nonZeroDiagonalWeights, nonZeroDiagonalDistances);
-        move = QAPScrambleMoveEvaluator.Apply(clone, scramble, nonZeroDiagonalWeights, nonZeroDiagonalDistances);
         Assert.IsTrue(move.IsAlmost(after - before), "Failed on non-zero diagonal matrices");
       }
     }

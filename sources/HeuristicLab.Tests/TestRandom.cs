@@ -20,10 +20,11 @@
 #endregion
 
 using System;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 
-namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
+namespace HeuristicLab.Tests {
   public class TestRandom : IRandom {
     #region Variables and Properties
     private int[] intNumbers;
@@ -54,6 +55,8 @@ namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
     }
 
     protected TestRandom(TestRandom original, Cloner cloner) {
+      this.intNumbers = original.intNumbers.ToArray();
+      this.doubleNumbers = original.doubleNumbers.ToArray();
     }
 
     public TestRandom(int[] intNumbers, double[] doubleNumbers) {
@@ -128,7 +131,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
     #region IDeepCloneable Members
 
     public IDeepCloneable Clone(Cloner cloner) {
-      throw new NotImplementedException();
+      return new TestRandom(this, cloner);
     }
 
     #endregion

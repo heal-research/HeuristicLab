@@ -22,12 +22,12 @@
 using System.Collections.Generic;
 
 namespace HeuristicLab.Common {
-  public class ReferenceEqualityComparer<T> : IEqualityComparer<T> where T : class {
-    bool IEqualityComparer<T>.Equals(T x, T y) {
+  public class ReferenceEqualityComparer : IEqualityComparer<object> {
+    bool IEqualityComparer<object>.Equals(object x, object y) {
       return object.ReferenceEquals(x, y);
     }
 
-    int IEqualityComparer<T>.GetHashCode(T obj) {
+    int IEqualityComparer<object>.GetHashCode(object obj) {
       if (obj == null) return 0;
       return obj.GetHashCode();
     }
