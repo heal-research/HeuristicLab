@@ -122,6 +122,13 @@
     <Compile Include="ArchitectureManipulators\SymbolicExpressionTreeArchitectureManipulator.cs" />
     <Compile Include="Compiler\Instruction.cs" />
     <Compile Include="Compiler\SymbolicExpressionTreeCompiler.cs" />
+    <Compile Include="Creators\FullTreeCreator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Creators\GrowTreeCreator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Creators\RampedHalfAndHalfTreeCreator.cs" />
     <Compile Include="Interfaces\IReadOnlySymbol.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionGrammar.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionGrammarBase.cs" />
