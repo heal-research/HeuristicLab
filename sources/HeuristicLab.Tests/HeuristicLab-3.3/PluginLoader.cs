@@ -41,12 +41,15 @@ namespace HeuristicLab_33.Tests {
         }
         catch (BadImageFormatException) { }
       }
-      Assemblies = AppDomain.CurrentDomain.GetAssemblies().ToList();
+      // test relevant path again to exclude previously loaded assemblies
+      Assemblies = AppDomain.CurrentDomain.GetAssemblies()
+        .Where(asm => IsRelevantAssemblyPath(asm.Location))
+        .ToList();
     }
 
     private static bool IsRelevantAssemblyPath(string path) {
       bool valid = true;
-      valid = valid && (path.EndsWith(ExecutableExtension, StringComparison.OrdinalIgnoreCase) || path.EndsWith(AssemblyExtension, StringComparison.OrdinalIgnoreCase));
+      valid = valid && path.EndsWith(ExecutableExtension, StringComparison.OrdinalIgnoreCase) || path.EndsWith(AssemblyExtension, StringComparison.OrdinalIgnoreCase);
       valid = valid && !path.EndsWith(TestAccessorAssemblyExtension, StringComparison.OrdinalIgnoreCase) && !path.EndsWith(TestAssemblyExtension, StringComparison.OrdinalIgnoreCase);
       return valid;
     }
