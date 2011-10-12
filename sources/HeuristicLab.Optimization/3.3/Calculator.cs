@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Globalization;
 
 namespace HeuristicLab.Optimization {
 
@@ -35,7 +35,8 @@ namespace HeuristicLab.Optimization {
     public Calculator() { }
     protected Calculator(Calculator original, Cloner cloner) {
       cloner.RegisterClonedObject(original, this);
-      tokens = original.tokens.ToList();
+      if (original.tokens != null)
+        tokens = original.tokens.ToList();
     }
     public IDeepCloneable Clone(Cloner cloner) {
       return new Calculator(this, cloner);
