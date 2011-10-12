@@ -139,8 +139,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
               double falsePositiveRate = ((double)falsePositives) / negatives;
 
               ROCPoint rocPoint = new ROCPoint(truePositiveRate, falsePositiveRate, lowerThreshold, upperThreshold);
-              if (!rocPoints.Any(x => x.truePositiveRate >= rocPoint.truePositiveRate && x.falsePositiveRate <= rocPoint.falsePositiveRate)) {
-                rocPoints.RemoveAll(x => x.falsePositiveRate >= rocPoint.falsePositiveRate && x.truePositiveRate <= rocPoint.truePositiveRate);
+              if (!rocPoints.Any(x => x.TruePositiveRate >= rocPoint.TruePositiveRate && x.FalsePositiveRate <= rocPoint.FalsePositiveRate)) {
+                rocPoints.RemoveAll(x => x.FalsePositiveRate >= rocPoint.FalsePositiveRate && x.TruePositiveRate <= rocPoint.TruePositiveRate);
                 rocPoints.Add(rocPoint);
               }
             }
@@ -149,7 +149,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           }
 
           string className = Content.ProblemData.ClassNames.ElementAt(classValues.IndexOf(classValue));
-          cachedRocPoints[className] = rocPoints.OrderBy(x => x.falsePositiveRate).ToList(); ;
+          cachedRocPoints[className] = rocPoints.OrderBy(x => x.FalsePositiveRate).ToList(); ;
 
           Series series = new Series(className);
           series.ChartType = SeriesChartType.Line;
@@ -168,15 +168,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       series.Points.Add(new DataPoint(0, 0));
       foreach (ROCPoint rocPoint in rocPoints) {
         DataPoint point = new DataPoint();
-        point.XValue = rocPoint.falsePositiveRate;
-        point.YValues[0] = rocPoint.truePositiveRate;
+        point.XValue = rocPoint.FalsePositiveRate;
+        point.YValues[0] = rocPoint.TruePositiveRate;
         point.Tag = rocPoint;
 
         StringBuilder sb = new StringBuilder();
-        sb.AppendLine("True Positive Rate: " + rocPoint.truePositiveRate);
-        sb.AppendLine("False Positive Rate: " + rocPoint.falsePositiveRate);
-        sb.AppendLine("Upper Threshold: " + rocPoint.upperThreshold);
-        sb.AppendLine("Lower Threshold: " + rocPoint.lowerThreshold);
+        sb.AppendLine("True Positive Rate: " + rocPoint.TruePositiveRate);
+        sb.AppendLine("False Positive Rate: " + rocPoint.FalsePositiveRate);
+        sb.AppendLine("Upper Threshold: " + rocPoint.UpperThreshold);
+        sb.AppendLine("Lower Threshold: " + rocPoint.LowerThreshold);
         point.ToolTip = sb.ToString();
 
         series.Points.Add(point);
@@ -248,16 +248,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     private class ROCPoint {
       public ROCPoint(double truePositiveRate, double falsePositiveRate, double lowerThreshold, double upperThreshold) {
-        this.truePositiveRate = truePositiveRate;
-        this.falsePositiveRate = falsePositiveRate;
-        this.lowerThreshold = lowerThreshold;
-        this.upperThreshold = upperThreshold;
+        this.TruePositiveRate = truePositiveRate;
+        this.FalsePositiveRate = falsePositiveRate;
+        this.LowerThreshold = lowerThreshold;
+        this.UpperThreshold = upperThreshold;
 
       }
-      public double truePositiveRate { get; private set; }
-      public double falsePositiveRate { get; private set; }
-      public double lowerThreshold { get; private set; }
-      public double upperThreshold { get; private set; }
+      public double TruePositiveRate { get; private set; }
+      public double FalsePositiveRate { get; private set; }
+      public double LowerThreshold { get; private set; }
+      public double UpperThreshold { get; private set; }
     }
 
   }

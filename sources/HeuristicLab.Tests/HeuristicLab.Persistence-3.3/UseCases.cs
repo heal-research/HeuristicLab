@@ -39,6 +39,7 @@ using HeuristicLab.Persistence.Default.DebugString;
 using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Persistence.Default.Xml.Primitive;
 using HeuristicLab.Persistence.Interfaces;
+using HeuristicLab_33.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Persistence_33.Tests {
@@ -531,7 +532,7 @@ namespace HeuristicLab.Persistence_33.Tests {
       List<string> lowerCaseMethodNames = new List<string>();
       List<string> lowerCaseProperties = new List<string>();
       List<string> lowerCaseFields = new List<string>();
-      foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies()) {
+      foreach (Assembly a in PluginLoader.Assemblies) {
         if (!a.GetName().Name.StartsWith("HeuristicLab"))
           continue;
         foreach (Type t in a.GetTypes()) {
