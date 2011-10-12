@@ -83,7 +83,7 @@ namespace HeuristicLab_33.Tests {
     #endregion
 
     [TestMethod]
-    [DeploymentItem("SamplesExperimentFinished.hl")]
+    [DeploymentItem(@"HeuristicLab-3.3\Resources\SamplesExperimentFinished.hl")]
     public void TestCloningFinishedExperiment() {
       Experiment experiment = (Experiment)XmlParser.Deserialize("SamplesExperimentFinished.hl");
 

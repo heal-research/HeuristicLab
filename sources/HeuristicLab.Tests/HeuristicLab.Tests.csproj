@@ -284,7 +284,9 @@
     <None Include="HeuristicLab-3.3\Resources\GA_TSP.hl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="HeuristicLab-3.3\Resources\SamplesExperimentFinished.hl" />
+    <Content Include="HeuristicLab-3.3\Resources\SamplesExperimentFinished.hl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\bur26a.dat" />
     <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\bur26b.dat" />
     <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\bur26c.dat" />
