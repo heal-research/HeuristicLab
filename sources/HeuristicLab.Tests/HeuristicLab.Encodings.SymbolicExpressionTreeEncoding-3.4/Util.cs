@@ -153,7 +153,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._4.Tests {
     public static void IsValid(ISymbolicExpressionTreeGrammar grammar) {
       Assert.IsTrue(grammar.Symbols.Count() == grammar.Symbols.Distinct().Count());
       foreach (ISymbol symbol in grammar.AllowedSymbols) {
-        Assert.IsTrue(grammar.GetMinimumSubtreeCount(symbol) <= grammar.GetMaximumExpressionLength(symbol));
         Assert.IsTrue(grammar.GetAllowedChildSymbols(symbol).Count() == grammar.GetAllowedChildSymbols(symbol).Distinct().Count());
         for (int i = 0; i < grammar.GetMaximumSubtreeCount(symbol); i++) {
           Assert.IsTrue(grammar.GetAllowedChildSymbols(symbol, i).Count() == grammar.GetAllowedChildSymbols(symbol, i).Distinct().Count());
@@ -164,17 +163,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._4.Tests {
         //check if ever symbol has at least on 
         for (int i = 0; i < grammar.GetMaximumSubtreeCount(symbol); i++)
           Assert.IsTrue(grammar.GetAllowedChildSymbols(symbol, i).Any());
-
-        //if (symbol is ProgramRootSymbol) continue;
-        ////check if symbol is allowed as at least one child symbol
-        //bool result = false;
-        //foreach (var parentSymbol in grammar.Symbols) {
-        //  if (result) break;
-        //  for (int i = 0; i < grammar.GetMaximumSubtreeCount(parentSymbol); i++)
-        //    result = result || grammar.IsAllowedChildSymbol(parentSymbol, symbol, i);
-        //}
-        //Assert.IsTrue(result);
-
       }
     }
 

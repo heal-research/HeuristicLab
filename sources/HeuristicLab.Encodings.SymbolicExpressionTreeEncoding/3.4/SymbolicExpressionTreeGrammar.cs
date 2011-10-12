@@ -79,14 +79,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     public override bool IsAllowedChildSymbol(ISymbol parent, ISymbol child, int argumentIndex) {
       return grammar.IsAllowedChildSymbol(parent, child, argumentIndex) || base.IsAllowedChildSymbol(parent, child, argumentIndex);
     }
-    public override IEnumerable<ISymbol> GetAllowedChildSymbols(ISymbol parent) {
-      var symbols = grammar.GetAllowedChildSymbols(parent).Union(base.GetAllowedChildSymbols(parent));
-      return symbols.SelectMany(s => s.Flatten()).Where(s => s.Enabled).Distinct();
-    }
-    public override IEnumerable<ISymbol> GetAllowedChildSymbols(ISymbol parent, int argumentIndex) {
-      var symbols = grammar.GetAllowedChildSymbols(parent, argumentIndex).Union(base.GetAllowedChildSymbols(parent, argumentIndex));
-      return symbols.SelectMany(s => s.Flatten()).Where(s => s.Enabled).Distinct();
-    }
 
     public override int GetMinimumSubtreeCount(ISymbol symbol) {
       if (grammar.ContainsSymbol(symbol)) return grammar.GetMinimumSubtreeCount(symbol);
@@ -120,6 +112,19 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     void ISymbolicExpressionTreeGrammar.SetSubtreeCount(ISymbol symbol, int minimumSubtreeCount, int maximumSubtreeCount) {
       if (!IsModifyableSymbol(symbol)) throw new InvalidOperationException();
       base.SetSubtreeCount(symbol, minimumSubtreeCount, maximumSubtreeCount);
+    }
+
+    int ISymbolicExpressionGrammarBase.GetMinimumExpressionDepth(ISymbol symbol) {
+      if (symbols.Count == 0) return grammar.GetMinimumExpressionDepth(symbol);
+      else return base.GetMinimumExpressionDepth(symbol);
+    }
+    int ISymbolicExpressionGrammarBase.GetMinimumExpressionLength(ISymbol symbol) {
+      if (symbols.Count == 0) return grammar.GetMinimumExpressionLength(symbol);
+      else return base.GetMinimumExpressionLength(symbol);
+    }
+    int ISymbolicExpressionGrammarBase.GetMaximumExpressionLength(ISymbol symbol, int maxDepth) {
+      if (symbols.Count == 0) return grammar.GetMaximumExpressionLength(symbol, maxDepth);
+      else return base.GetMaximumExpressionLength(symbol, maxDepth);
     }
   }
 }

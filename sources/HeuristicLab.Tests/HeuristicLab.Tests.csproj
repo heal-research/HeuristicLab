@@ -423,6 +423,7 @@
     <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\wil100.dat" />
     <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\wil50.dat" />
     <None Include="HeuristicLab.snk" />
+    <Shadow Include="Test References\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4.accessor" />
     <Shadow Include="Test References\HeuristicLab.PluginInfrastructure-3.3.accessor" />
     <Shadow Include="Test References\HeuristicLab.MainForm.WindowsForms-3.3.accessor" />
     <Shadow Include="Test References\HeuristicLab.Encodings.IntegerVectorEncoding-3.3.accessor" />

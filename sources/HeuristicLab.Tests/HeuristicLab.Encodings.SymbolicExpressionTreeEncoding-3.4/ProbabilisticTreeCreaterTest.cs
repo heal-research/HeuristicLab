@@ -71,7 +71,31 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._4.Tests {
         Util.GetNumberOfSubtreesDistributionString(randomTrees) + Environment.NewLine +
         Util.GetTerminalDistributionString(randomTrees) + Environment.NewLine
         );
-      Assert.IsTrue(Math.Round(1000.0 / (msPerRandomTreeCreation)) > 300); // must achieve more than 500 random trees / s
+      Assert.IsTrue(Math.Round(1000.0 / (msPerRandomTreeCreation)) > 250); // must achieve more than 250 random trees / s
+    }
+
+    [TestMethod]
+    public void ProbabilisticTreeCreatorSpecificTreeSizesTest() {
+      var trees = new List<ISymbolicExpressionTree>();
+      var grammar = Grammars.CreateSimpleArithmeticGrammar();
+      var random = new MersenneTwister(31415);
+      var treeGrammarType = SymbolicExpressionTreeGrammar_Accessor.ShadowedType.ReferencedType;
+
+
+      for (int targetTreeSize = 1; targetTreeSize <= 100; targetTreeSize++) {
+        var tree = new SymbolicExpressionTree();
+        var rootNode = (SymbolicExpressionTreeTopLevelNode)grammar.ProgramRootSymbol.CreateTreeNode();
+        rootNode.SetGrammar((ISymbolicExpressionTreeGrammar)Activator.CreateInstance(treeGrammarType, grammar));
+        if (rootNode.HasLocalParameters) rootNode.ResetLocalParameters(random);
+        var startNode = (SymbolicExpressionTreeTopLevelNode)grammar.StartSymbol.CreateTreeNode();
+        startNode.SetGrammar((ISymbolicExpressionTreeGrammar)Activator.CreateInstance(treeGrammarType, grammar));
+        if (startNode.HasLocalParameters) startNode.ResetLocalParameters(random);
+        rootNode.AddSubtree(startNode);
+
+        ProbabilisticTreeCreator_Accessor.TryCreateFullTreeFromSeed(random, startNode, targetTreeSize, ((int)Math.Log(targetTreeSize, 2)) + 1);
+        tree.Root = rootNode;
+        Assert.AreEqual(targetTreeSize + 2, tree.Length);  //the root and start node must be additionally added
+      }
     }
   }
 }
