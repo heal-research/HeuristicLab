@@ -31,6 +31,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
   public abstract class ClassificationSolutionBase : DataAnalysisSolution, IClassificationSolution {
     private const string TrainingAccuracyResultName = "Accuracy (training)";
     private const string TestAccuracyResultName = "Accuracy (test)";
+    private const string TrainingNormalizedGiniCoefficientResultName = "Normalized Gini Coefficient (training)";
+    private const string TestNormalizedGiniCoefficientResultName = "Normalized Gini Coefficient (test)";
 
     public new IClassificationModel Model {
       get { return (IClassificationModel)base.Model; }
@@ -51,6 +53,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
       get { return ((DoubleValue)this[TestAccuracyResultName].Value).Value; }
       private set { ((DoubleValue)this[TestAccuracyResultName].Value).Value = value; }
     }
+    public double TrainingNormalizedGiniCoefficient {
+      get { return ((DoubleValue)this[TrainingNormalizedGiniCoefficientResultName].Value).Value; }
+      protected set { ((DoubleValue)this[TrainingNormalizedGiniCoefficientResultName].Value).Value = value; }
+    }
+    public double TestNormalizedGiniCoefficient {
+      get { return ((DoubleValue)this[TestNormalizedGiniCoefficientResultName].Value).Value; }
+      protected set { ((DoubleValue)this[TestNormalizedGiniCoefficientResultName].Value).Value = value; }
+    }
     #endregion
 
     [StorableConstructor]
@@ -62,6 +72,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       : base(model, problemData) {
       Add(new Result(TrainingAccuracyResultName, "Accuracy of the model on the training partition (percentage of correctly classified instances).", new PercentValue()));
       Add(new Result(TestAccuracyResultName, "Accuracy of the model on the test partition (percentage of correctly classified instances).", new PercentValue()));
+      Add(new Result(TrainingNormalizedGiniCoefficientResultName, "Normalized Gini coefficient of the model on the training partition.", new DoubleValue()));
+      Add(new Result(TestNormalizedGiniCoefficientResultName, "Normalized Gini coefficient of the model on the test partition.", new DoubleValue()));
     }
 
     protected void CalculateResults() {
@@ -78,6 +90,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
       TrainingAccuracy = trainingAccuracy;
       TestAccuracy = testAccuracy;
+
+      double trainingNormalizedGini = NormalizedGiniCalculator.Calculate(originalTrainingClassValues, estimatedTrainingClassValues, out errorState);
+      if (errorState != OnlineCalculatorError.None) trainingNormalizedGini = double.NaN;
+      double testNormalizedGini = NormalizedGiniCalculator.Calculate(originalTestClassValues, estimatedTestClassValues, out errorState);
+      if (errorState != OnlineCalculatorError.None) testNormalizedGini = double.NaN;
+
+      TrainingNormalizedGiniCoefficient = trainingNormalizedGini;
+      TestNormalizedGiniCoefficient = testNormalizedGini;
     }
 
     public abstract IEnumerable<double> EstimatedClassValues { get; }

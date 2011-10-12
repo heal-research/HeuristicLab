@@ -146,6 +146,7 @@
     <Compile Include="Interfaces\TimeSeriesPrognosis\ITimeSeriesPrognosisProblem.cs" />
     <Compile Include="Interfaces\TimeSeriesPrognosis\ITimeSeriesPrognosisProblemData.cs" />
     <Compile Include="Interfaces\TimeSeriesPrognosis\ITimeSeriesPrognosisSolution.cs" />
+    <Compile Include="OnlineCalculators\NormalizedGiniCalculator.cs" />
     <Compile Include="OnlineCalculators\OnlineDirectionalSymmetryCalculator.cs" />
     <Compile Include="OnlineCalculators\OnlineMeanAbsoluteErrorCalculator.cs" />
     <Compile Include="OnlineCalculators\OnlineLinearScalingParameterCalculator.cs" />

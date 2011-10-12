@@ -116,6 +116,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
       TrainingRSquared = errorState == OnlineCalculatorError.None ? trainingR2 : double.NaN;
       double testR2 = OnlinePearsonsRSquaredCalculator.Calculate(estimatedTestValues, originalTestValues, out errorState);
       TestRSquared = errorState == OnlineCalculatorError.None ? testR2 : double.NaN;
+
+      double trainingNormalizedGini = NormalizedGiniCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);
+      if (errorState != OnlineCalculatorError.None) trainingNormalizedGini = double.NaN;
+      double testNormalizedGini = NormalizedGiniCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);
+      if (errorState != OnlineCalculatorError.None) testNormalizedGini = double.NaN;
+
+      TrainingNormalizedGiniCoefficient = trainingNormalizedGini;
+      TestNormalizedGiniCoefficient = testNormalizedGini;
     }
 
     private void RegisterEventHandler() {
