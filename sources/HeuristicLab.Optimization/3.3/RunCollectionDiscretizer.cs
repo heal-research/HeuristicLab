@@ -49,8 +49,8 @@ namespace HeuristicLab.Optimization {
     }
     public RunCollectionDiscretizer() {
       Parameters.Add(new ValueParameter<StringValue>("Source", "Source value name to be fuzzified.", new StringValue("Value")));
-      Parameters.Add(new ValueParameter<StringValue>("Target", "Target value name. The new, fuzzified variable to be created.", new StringValue("Calc.Value")));      
-      Parameters.Add(new ValueParameter<DoubleValue>("Spread", "The number of standard deviations considered one additional level.", new DoubleValue(1)));
+      Parameters.Add(new ValueParameter<StringValue>("Target", "Target value name. The new, fuzzified variable to be created.", new StringValue("Calc.Value")));
+      Parameters.Add(new ValueParameter<DoubleValue>("Spread", "The number of standard deviations considered one additional level. Set to zero to use empirical distribution instead.", new DoubleValue(1)));
       Parameters.Add(new ValueParameter<StringValue>("GroupBy", "Create separate analyzes for different values of this variable.", new StringValue("")));
       Parameters.Add(new ValueParameter<ItemList<StringValue>>("Levels", "The list of levels to be assigned.",
         new ItemList<StringValue> {
@@ -100,10 +100,18 @@ namespace HeuristicLab.Optimization {
         .GroupBy(r => r.Bin).ToList()) {
         var values = group.Select(r => r.Value).ToList();
         if (values.Count > 0) {
-          var avg = values.Average();
-          var stdDev = values.StandardDeviation();
-          foreach (var r in group) {
-            r.Run.Results[Target] = new StringValue(Fuzzify(r.Value, avg, stdDev));
+          if (Spread > 0) {
+            var avg = values.Average();
+            var stdDev = values.StandardDeviation();
+            foreach (var r in group) {
+              r.Run.Results[Target] = new StringValue(Discretize(r.Value, avg, stdDev));
+            }
+          } else {
+            values.Sort();
+            var a = values.ToArray();
+            foreach (var r in group) {
+              r.Run.Results[Target] = new StringValue(Discretize(r.Value, a));
+            }
           }
         }
       }      
@@ -140,7 +148,7 @@ namespace HeuristicLab.Optimization {
       return null;
     }
 
-    private string Fuzzify(double value, double avg, double stdDev) {
+    private string Discretize(double value, double avg, double stdDev) {
       double dev = (value - avg)/(stdDev*Spread);
       int index;
       if (Levels.Count % 2 == 1) {
@@ -154,6 +162,12 @@ namespace HeuristicLab.Optimization {
           index = Levels.Count/2 + 1 - index;
       }
       return Levels[Math.Min(Levels.Count - 1, Math.Max(0, index))];
+    }
+
+    private string Discretize(double value, double[] values) {
+      var index = Array.BinarySearch(values, value);
+      var pos = 1.0*(index < 0 ? ~index : index)/(values.Length-1);
+      return Levels[Math.Min(Levels.Count - 1, Math.Max(0, (int) Math.Round(pos*(Levels.Count-1))))];
     }
 
     #endregion
