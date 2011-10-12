@@ -9,7 +9,9 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization {
-  [Item("RunCollection Discretizer", "Creates several levels from the distribution of a certain result accross a run collection and assignes a discretized value.")]
+  [Item("RunCollection Discretizer",
+    "Creates several levels from the distribution of a certain result accross a run collection and " +
+    "assigns a discretized value. Non-existing numbers as well as NaN and infinities are excluded from the caluclation.")]
   [StorableClass]
   public class RunCollectionDiscretizer : ParameterizedNamedItem, IRunCollectionModifier {
 
@@ -138,13 +140,11 @@ namespace HeuristicLab.Optimization {
       IItem value;
       variables.TryGetValue(Source, out value);
       var intValue = value as IntValue;
-      if (intValue != null) {
+      if (intValue != null) 
         return intValue.Value;
-      } else {
-        var doubleValue = value as DoubleValue;
-        if (doubleValue != null)
-          return doubleValue.Value;
-      }
+      var doubleValue = value as DoubleValue;
+      if (doubleValue != null)
+        return doubleValue.Value;
       return null;
     }
 

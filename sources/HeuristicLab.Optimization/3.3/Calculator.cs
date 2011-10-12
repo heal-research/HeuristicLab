@@ -24,7 +24,7 @@ namespace HeuristicLab.Optimization {
     }
 
     private static readonly Regex TokenRegex =
-      new Regex(@"[a-zA-Z0-9._]+|""([^""]|\\"")*""|'([^']|\\')*'|[-+*/<>^]|dup|swap|drop|log|true|false|if|==|not|isnull|null|ismatch|rename");
+      new Regex(@"""(\\""|[^""])*""|'(\\'|[^'])*'|[^\s]+");
 
     #endregion
 
@@ -60,20 +60,24 @@ namespace HeuristicLab.Optimization {
           if (TryParse(token, out d)) {
             stack.Push(d);
           } else if (token.StartsWith("\"")) {
-            stack.Push(GetVariableValue(variables, token.Substring(1, token.Length - 2).Replace(@"\""", @"""")));
+            stack.Push(GetVariableValue(variables, token.Substring(1, token.Length - 2).Replace("\\\"", "\"")));
           } else if (token.StartsWith("'")) {
-            stack.Push(token.Substring(1, token.Length-2).Replace("\'", "'"));
+            stack.Push(token.Substring(1, token.Length-2).Replace("\\'", "'"));
           } else {
             Apply(token, stack, variables);
           }
         }
       } catch (Exception x) {
         throw new Exception(string.Format(
-          "Calculation Failed at token #{1}: '{2}' {0}current stack is: {0}{3}", Environment.NewLine,
-          i, tokens[i], string.Join(Environment.NewLine, stack.Select(AsString))),
+          "Calculation of '{1}'{0}failed at token #{2}: '{3}' {0}current stack is: {0}{4}", Environment.NewLine,
+          Formula, i, tokens[i],
+          string.Join(Environment.NewLine, stack.Select(AsString))),
           x);
       }
-      if (stack.Count != 1) throw new Exception(string.Format("Invalid final evaluation stack size {0} (should be 1)", stack.Count));
+      if (stack.Count != 1)
+        throw new Exception(
+          string.Format("Invalid final evaluation stack size {0} (should be 1) in formula '{1}'",
+          stack.Count, Formula));
       var result = stack.Pop();
       if (result is string) return new StringValue((string)result);
       if (result is double) return new DoubleValue((double)result);
