@@ -37,7 +37,8 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     private ScrambleMove(ScrambleMove original, Cloner cloner)
       : base(original, cloner) {
       this.StartIndex = original.StartIndex;
-      this.ScrambledIndices = (int[])original.ScrambledIndices.Clone();
+      if (original.ScrambledIndices != null)
+        this.ScrambledIndices = (int[])original.ScrambledIndices.Clone();
     }
     public ScrambleMove() : this(-1, null) { }
     public ScrambleMove(int startIndex, int[] scrambledIndices)
