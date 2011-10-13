@@ -179,6 +179,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
           subtree.Grammar.SetSubtreeCount(matchingSymbol, defunBranch.NumberOfArguments, defunBranch.NumberOfArguments);
           foreach (var symb in subtree.Grammar.Symbols) {
             if (symb is StartSymbol || symb is ProgramRootSymbol) continue;
+            if (symb.Name == matchingSymbol.Name) continue; //don't allow invoke as child of invoke
             if (subtree.Grammar.IsAllowedChildSymbol(selectedCutPoint.Parent.Symbol, symb, selectedCutPoint.ChildIndex))
               subtree.Grammar.AddAllowedChildSymbol(matchingSymbol, symb, newArgumentNode.Symbol.ArgumentIndex);
           }

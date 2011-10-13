@@ -136,6 +136,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._4.Tests {
           if (otherRootNode.Grammar.ContainsSymbol(invoke)) {
             Assert.IsTrue(otherRootNode.Grammar.GetMinimumSubtreeCount(invoke) == arity);
             Assert.IsTrue(otherRootNode.Grammar.GetMaximumSubtreeCount(invoke) == arity);
+            Assert.IsFalse(otherRootNode.Grammar.IsAllowedChildSymbol(invoke, invoke));
+            for (int i = 0; i < arity; i++) {
+              Assert.IsFalse(otherRootNode.Grammar.IsAllowedChildSymbol(invoke, invoke, i));
+            }
           }
         }
 
@@ -160,7 +164,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._4.Tests {
       }
 
       foreach (var symbol in grammar.ModifyableSymbols) {
-        //check if ever symbol has at least on 
+        //check if ever symbol has at least one allowed child
         for (int i = 0; i < grammar.GetMaximumSubtreeCount(symbol); i++)
           Assert.IsTrue(grammar.GetAllowedChildSymbols(symbol, i).Any());
       }
