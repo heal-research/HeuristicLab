@@ -50,6 +50,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._4.Tests {
     }
 
     [TestMethod()]
+    [Timeout(3600000)]
     public void AllArchitectureAlteringOperatorsDistributionTest() {
       var trees = new List<ISymbolicExpressionTree>();
       var newTrees = new List<ISymbolicExpressionTree>();
