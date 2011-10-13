@@ -36,12 +36,22 @@ namespace HeuristicLab_33.Tests {
   [TestClass]
   public class DeepCloneableCloningTest {
 
+    [ClassInitialize]
+    public static void MyClassInitialize(TestContext testContext) {
+      PluginLoader.Assemblies.Any();
+    }
+
     public DeepCloneableCloningTest() {
       excludedTypes = new HashSet<Type>();
       excludedTypes.Add(typeof(HeuristicLab.Problems.DataAnalysis.Dataset));
       excludedTypes.Add(typeof(HeuristicLab.Problems.TravelingSalesman.DistanceMatrix));
       excludedTypes.Add(typeof(HeuristicLab.Problems.DataAnalysis.ClassificationEnsembleSolution));
       excludedTypes.Add(typeof(HeuristicLab.Problems.DataAnalysis.RegressionEnsembleSolution));
+
+      foreach (var symbolType in ApplicationManager.Manager.GetTypes(typeof(HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbol)))
+        excludedTypes.Add(symbolType);
+      foreach (var grammarType in ApplicationManager.Manager.GetTypes(typeof(HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.SymbolicExpressionGrammarBase)))
+        excludedTypes.Add(grammarType);
     }
 
     private TestContext testContextInstance;
@@ -108,7 +118,8 @@ namespace HeuristicLab_33.Tests {
         IDeepCloneable item = null;
         try {
           item = (IDeepCloneable)Activator.CreateInstance(deepCloneableType, nonPublic: false);
-        } catch { continue; } // no default constructor
+        }
+        catch { continue; } // no default constructor
 
         var clone = (IDeepCloneable)item.Clone(new Cloner());
         var intersections = CheckTotalInequality(item, clone).Where(x => x.GetType().FullName.StartsWith("HeuristicLab"));
@@ -133,7 +144,7 @@ namespace HeuristicLab_33.Tests {
       foreach (object o in intersections) {
         string typeName = o.GetType().FullName;
         if (excludedTypes.Contains(o.GetType())) {
-          TestContext.WriteLine("Skipping excluded type " + typeName);
+          //TestContext.WriteLine("Skipping excluded type " + typeName);
         } else if (o is IDeepCloneable) {
           string info = (o is IItem) ? ((IItem)o).ItemName + ((o is INamedItem) ? ", " + ((INamedItem)o).Name : String.Empty) : String.Empty;
           TestContext.WriteLine("POTENTIAL ERROR! A DEEPCLONEABLE WAS NOT DEEP CLONED (" + info + "): " + typeName);
