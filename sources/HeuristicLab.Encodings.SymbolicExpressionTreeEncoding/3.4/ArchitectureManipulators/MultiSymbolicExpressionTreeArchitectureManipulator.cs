@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
@@ -94,12 +95,14 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       Parameters.Add(new ValueLookupParameter<IntValue>(MaximumSymbolicExpressionTreeLengthParameterName, "The maximal length (number of nodes) of the symbolic expression tree."));
       Parameters.Add(new ValueLookupParameter<IntValue>(MaximumSymbolicExpressionTreeDepthParameterName, "The maximal depth of the symbolic expression tree (a tree with one node has depth = 0)."));
 
-      CheckedItemList<ISymbolicExpressionTreeManipulator> list = new CheckedItemList<ISymbolicExpressionTreeManipulator>();
+      List<ISymbolicExpressionTreeManipulator> list = new List<ISymbolicExpressionTreeManipulator>();
       foreach (Type type in ApplicationManager.Manager.GetTypes(typeof(ISymbolicExpressionTreeManipulator))) {
         if (!typeof(IMultiOperator<ISymbolicExpressionTreeManipulator>).IsAssignableFrom(type))
-          list.Add((ISymbolicExpressionTreeManipulator)Activator.CreateInstance(type), true);
+          list.Add((ISymbolicExpressionTreeManipulator)Activator.CreateInstance(type));
       }
-      Operators = list.AsReadOnly();
+      CheckedItemList<ISymbolicExpressionTreeManipulator> checkedItemList = new CheckedItemList<ISymbolicExpressionTreeManipulator>();
+      checkedItemList.AddRange(list.OrderBy(op => op.Name));
+      Operators = checkedItemList.AsReadOnly();
       Operators_ItemsAdded(this, new CollectionItemsChangedEventArgs<IndexedItem<ISymbolicExpressionTreeManipulator>>(Operators.CheckedItems));
     }
 
