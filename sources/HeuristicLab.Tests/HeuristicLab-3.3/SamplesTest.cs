@@ -186,12 +186,11 @@ namespace HeuristicLab_33.Tests {
 
     [TestMethod]
     public void RunGpArtificialAntSampleTest() {
-      var ga = (GeneticAlgorithm)XmlParser.Deserialize("../../SGP_SantaFe.hl");
-      //var ga = CreateGpArtificialAntSample();
+      var ga = CreateGpArtificialAntSample();
       ga.SetSeedRandomly.Value = false;
       RunAlgorithm(ga);
-      Assert.AreEqual(68, GetDoubleResult(ga, "BestQuality"));
-      Assert.AreEqual(52.534, GetDoubleResult(ga, "CurrentAverageQuality"));
+      Assert.AreEqual(63, GetDoubleResult(ga, "BestQuality"));
+      Assert.AreEqual(49.59, GetDoubleResult(ga, "CurrentAverageQuality"));
       Assert.AreEqual(0, GetDoubleResult(ga, "CurrentWorstQuality"));
       Assert.AreEqual(50950, GetIntResult(ga, "EvaluatedSolutions"));
     }
