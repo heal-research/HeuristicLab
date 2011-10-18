@@ -130,7 +130,7 @@ namespace HeuristicLab.Optimizer {
       try {
         SetEnabledStateOfContentViews(content, true);
         if (error != null) throw error;
-        MainFormManager.GetMainForm<OptimizerDockingMainForm>().UpdateTitle();
+        MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().UpdateTitle();
       }
       catch (Exception ex) {
         ErrorHandling.ShowErrorDialog((Control)MainFormManager.MainForm, "Cannot save file.", ex);
@@ -141,7 +141,7 @@ namespace HeuristicLab.Optimizer {
     }
 
     private static void SetEnabledStateOfContentViews(IStorableContent content, bool enabled) {
-      OptimizerDockingMainForm mainForm = MainFormManager.GetMainForm<OptimizerDockingMainForm>();
+      HeuristicLab.MainForm.WindowsForms.MainForm mainForm = MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>();
       if (mainForm.InvokeRequired)
         mainForm.Invoke((Action<IStorableContent, bool>)SetEnabledStateOfContentViews, content, enabled);
       else {
