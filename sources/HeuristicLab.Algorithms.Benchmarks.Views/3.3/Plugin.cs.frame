@@ -25,17 +25,17 @@ namespace HeuristicLab.Algorithms.Benchmarks.Views {
   /// <summary>
   /// Plugin class for HeuristicLab.Algorithms.Benchmarks plugin.
   /// </summary>
-  [Plugin("HeuristicLab.Algorithms.Benchmarks.Views", "Provides wrappers for data analysis algorithms implemented in external libraries (linear regression, linear discriminant analysis, k-means clustering, support vector classification and regression)", "3.4.1.$WCREV$")]
+  [Plugin("HeuristicLab.Algorithms.Benchmarks.Views", "Provides views for benchmarking algorithms.", "3.3.5.$WCREV$")]
   [PluginFile("HeuristicLab.Algorithms.Benchmarks.Views-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Algorithms.Benchmarks", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
-  [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
-  [PluginDependency("HeuristicLab.Data", "3.3")] 
-  [PluginDependency("HeuristicLab.Operators", "3.3")]
+  [PluginDependency("HeuristicLab.Core.Views", "3.3")]
+  [PluginDependency("HeuristicLab.MainForm", "3.3")]
+  [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.3")] 
   [PluginDependency("HeuristicLab.Optimization", "3.3")]
-  [PluginDependency("HeuristicLab.Parameters", "3.3")]
-  [PluginDependency("HeuristicLab.Persistence", "3.3")] 
+  [PluginDependency("HeuristicLab.Optimization.Views", "3.3")]
   public class HeuristicLabAlgorithmsBenchmarksViewsPlugin : PluginBase {
   }
 }

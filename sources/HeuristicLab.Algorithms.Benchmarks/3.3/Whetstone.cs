@@ -1,6 +1,25 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2011 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -8,20 +27,15 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.Benchmarks {
-  [Item("Whetstone Algorithm", "A Whetstone benchmark algorithm.")]
+  [Item("Whetstone Algorithm", "Whetstone benchmarking algorithm.")]
   [Creatable("Benchmarks")]
   [StorableClass]
-  public class Whetstone : Algorithm {
-    private DateTime lastUpdateTime;
-
-    [Storable]
-    private ResultCollection results;
+  public class Whetstone : Benchmark {
 
     #region Benchmark Fields
 
     private long begin_time;
     private long end_time;
-    //private long total_time;
 
     private int ITERATIONS;
     private int numberOfCycles;
@@ -33,91 +47,31 @@ namespace HeuristicLab.Algorithms.Benchmarks {
 
     #endregion
 
-    #region Properties
-
-    public override ResultCollection Results {
-      get { return results; }
-    }
-
-    #endregion
-
     #region Costructors
 
     public Whetstone()
       : base() {
-      results = new ResultCollection();
+
     }
 
     private Whetstone(Whetstone original, Cloner cloner)
       : base(original, cloner) {
-      results = new ResultCollection();
+
     }
 
     #endregion
+
+    #region IDeepClonable Members
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new Whetstone(this, cloner);
     }
 
-    public override void Prepare() {
-      results.Clear();
-      OnPrepared();
-    }
-
-    public override void Start() {
-      var cancellationTokenSource = new CancellationTokenSource();
-      OnStarted();
-      Task task = Task.Factory.StartNew(Run, cancellationTokenSource.Token, cancellationTokenSource.Token);
-      task.ContinueWith(t => {
-        try {
-          t.Wait();
-        }
-        catch (AggregateException ex) {
-          try {
-            ex.Flatten().Handle(x => x is OperationCanceledException);
-          }
-          catch (AggregateException remaining) {
-            if (remaining.InnerExceptions.Count == 1) OnExceptionOccurred(remaining.InnerExceptions[0]);
-            else OnExceptionOccurred(remaining);
-          }
-        }
-        cancellationTokenSource.Dispose();
-        cancellationTokenSource = null;
-        OnStopped();
-      });
-    }
-
-    private void Run(object state) {
-      CancellationToken cancellationToken = (CancellationToken)state;
-      lastUpdateTime = DateTime.Now;
-      System.Timers.Timer timer = new System.Timers.Timer(250);
-      timer.AutoReset = true;
-      timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_Elapsed);
-      timer.Start();
-      try {
-        RunBenchmark();
-      }
-      finally {
-        timer.Elapsed -= new System.Timers.ElapsedEventHandler(timer_Elapsed);
-        timer.Stop();
-        ExecutionTime += DateTime.Now - lastUpdateTime;
-      }
-
-      cancellationToken.ThrowIfCancellationRequested();
-    }
-
-    private void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
-      System.Timers.Timer timer = (System.Timers.Timer)sender;
-      timer.Enabled = false;
-      DateTime now = DateTime.Now;
-      ExecutionTime += now - lastUpdateTime;
-      lastUpdateTime = now;
-      timer.Enabled = true;
-    }
+    #endregion
 
     #region Whetstone Benchmark
 
-    private void RunBenchmark() {
+    protected override void RunBenchmark() {
       ITERATIONS = 100; // ITERATIONS / 10 = Millions Whetstone instructions
 
       numberOfCycles = 100;
@@ -129,7 +83,6 @@ namespace HeuristicLab.Algorithms.Benchmarks {
       int intRating = 0;
 
       for (int runNumber = 1; runNumber <= numberOfRuns; runNumber++) {
-        //System.Console.WriteLine(runNumber + ". Test");
         elapsedTime = (float)(MainCalc() / 1000);
         meanTime = meanTime + (elapsedTime * 1000 / numberOfCycles);
         rating = (1000 * numberOfCycles) / elapsedTime;
@@ -141,10 +94,7 @@ namespace HeuristicLab.Algorithms.Benchmarks {
       meanTime = meanTime / numberOfRuns;
       meanRating = meanRating / numberOfRuns;
       intRating = (int)meanRating;
-      //System.Console.WriteLine("Number of Runs " + numberOfRuns);
-      //System.Console.WriteLine("Average time per cycle " + meanTime + " ms.");
-      //System.Console.WriteLine("Average Whetstone Rating " + intRating + " KWIPS");
-      //Results.Add(new Result("KWIPS", new IntValue(intRating)));
+
       Results.Add(new Result("MWIPS", new IntValue(intRating / 1000)));
     }
 
@@ -263,7 +213,6 @@ namespace HeuristicLab.Algorithms.Benchmarks {
       } /* for */
 
       end_time = DateTime.Now.Ticks / 10000; // get ms
-      //System.Console.WriteLine(" (time for " + numberOfCycles + " cycles): " + (end_time - begin_time) + " millisec.");
 
       return (end_time - begin_time);
     }

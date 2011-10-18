@@ -1,7 +1,26 @@
-﻿using System;
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2011 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System;
 using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -9,14 +28,10 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.Benchmarks {
-  [Item("Linpack Algorithm", "A Linpack benchmark algorithm.")]
+  [Item("Linpack Algorithm", "Linpack benchmarking algorithm.")]
   [Creatable("Benchmarks")]
   [StorableClass]
-  public class Linpack : Algorithm {
-    private DateTime lastUpdateTime;
-
-    [Storable]
-    private ResultCollection results;
+  public class Linpack : Benchmark {
 
     #region Benchmark Fields
 
@@ -32,91 +47,30 @@ namespace HeuristicLab.Algorithms.Benchmarks {
 
     #endregion
 
-    #region Properties
-
-    public override ResultCollection Results {
-      get { return results; }
-    }
-
-    #endregion
-
     #region Costructors
 
     public Linpack()
       : base() {
-      results = new ResultCollection();
     }
 
     private Linpack(Linpack original, Cloner cloner)
       : base(original, cloner) {
-      results = new ResultCollection();
     }
 
     #endregion
+
+    #region IDeepClonable Members
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new Linpack(this, cloner);
     }
 
-    public override void Prepare() {
-      results.Clear();
-      OnPrepared();
-    }
-
-    public override void Start() {
-      var cancellationTokenSource = new CancellationTokenSource();
-      OnStarted();
-      Task task = Task.Factory.StartNew(Run, cancellationTokenSource.Token, cancellationTokenSource.Token);
-      task.ContinueWith(t => {
-        try {
-          t.Wait();
-        }
-        catch (AggregateException ex) {
-          try {
-            ex.Flatten().Handle(x => x is OperationCanceledException);
-          }
-          catch (AggregateException remaining) {
-            if (remaining.InnerExceptions.Count == 1) OnExceptionOccurred(remaining.InnerExceptions[0]);
-            else OnExceptionOccurred(remaining);
-          }
-        }
-        cancellationTokenSource.Dispose();
-        cancellationTokenSource = null;
-        OnStopped();
-      });
-    }
-
-    private void Run(object state) {
-      CancellationToken cancellationToken = (CancellationToken)state;
-      lastUpdateTime = DateTime.Now;
-      System.Timers.Timer timer = new System.Timers.Timer(250);
-      timer.AutoReset = true;
-      timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_Elapsed);
-      timer.Start();
-      try {
-        RunBenchmark();
-      }
-      finally {
-        timer.Elapsed -= new System.Timers.ElapsedEventHandler(timer_Elapsed);
-        timer.Stop();
-        ExecutionTime += DateTime.Now - lastUpdateTime;
-      }
-
-      cancellationToken.ThrowIfCancellationRequested();
-    }
-
-    private void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
-      System.Timers.Timer timer = (System.Timers.Timer)sender;
-      timer.Enabled = false;
-      DateTime now = DateTime.Now;
-      ExecutionTime += now - lastUpdateTime;
-      lastUpdateTime = now;
-      timer.Enabled = true;
-    }
+    #endregion
 
     #region Linpack Benchmark
+    // implementation based on Java version: http://www.netlib.org/benchmark/linpackjava/
 
-    private void RunBenchmark() {
+    protected override void RunBenchmark() {
       int n = DEFAULT_PSIZE;
       int ldaa = DEFAULT_PSIZE;
       int lda = DEFAULT_PSIZE + 1;
@@ -188,10 +142,8 @@ namespace HeuristicLab.Algorithms.Benchmarks {
       mflops_result = (int)(mflops_result * 1000);
       mflops_result /= 1000;
 
-      //System.Console.WriteLine("Mflops/s: " + mflops_result + "  Time: " + time_result + " secs" + "  Norm Res: " + residn_result + "  Precision: " + eps_result);
-
       Results.Add(new Result("Mflops/s", new DoubleValue(mflops_result)));
-      //Results.Add(new Result("ca. Mflops/s", new DoubleValue(mflops_result * Environment.ProcessorCount)));
+      Results.Add(new Result("total Mflops/s", new DoubleValue(mflops_result * Environment.ProcessorCount)));
     }
 
     private double abs(double d) {

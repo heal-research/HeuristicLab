@@ -1,7 +1,26 @@
-﻿using System;
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2011 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System;
 using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -9,14 +28,10 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.Benchmarks {
-  [Item("Dhrystone Algorithm", "A Dhrystone benchmark algorithm.")]
+  [Item("Dhrystone Algorithm", "Dhrystone benchmarking algorithm.")]
   [Creatable("Benchmarks")]
   [StorableClass]
-  public class Dhrystone : Algorithm {
-    private DateTime lastUpdateTime;
-
-    [Storable]
-    private ResultCollection results;
+  public class Dhrystone : Benchmark {
 
     #region Benchmark Fields
 
@@ -45,91 +60,31 @@ namespace HeuristicLab.Algorithms.Benchmarks {
 
     #endregion
 
-    #region Properties
-
-    public override ResultCollection Results {
-      get { return results; }
-    }
-
-    #endregion
-
     #region Costructors
 
     public Dhrystone()
       : base() {
-      results = new ResultCollection();
+
     }
 
     private Dhrystone(Dhrystone original, Cloner cloner)
       : base(original, cloner) {
-      results = new ResultCollection();
+
     }
 
     #endregion
+
+    #region IDeepClonable Members
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new Dhrystone(this, cloner);
     }
 
-    public override void Prepare() {
-      results.Clear();
-      OnPrepared();
-    }
+    #endregion
 
-    public override void Start() {
-      var cancellationTokenSource = new CancellationTokenSource();
-      OnStarted();
-      Task task = Task.Factory.StartNew(Run, cancellationTokenSource.Token, cancellationTokenSource.Token);
-      task.ContinueWith(t => {
-        try {
-          t.Wait();
-        }
-        catch (AggregateException ex) {
-          try {
-            ex.Flatten().Handle(x => x is OperationCanceledException);
-          }
-          catch (AggregateException remaining) {
-            if (remaining.InnerExceptions.Count == 1) OnExceptionOccurred(remaining.InnerExceptions[0]);
-            else OnExceptionOccurred(remaining);
-          }
-        }
-        cancellationTokenSource.Dispose();
-        cancellationTokenSource = null;
-        OnStopped();
-      });
-    }
+    #region Benchmark Methods
 
-    private void Run(object state) {
-      CancellationToken cancellationToken = (CancellationToken)state;
-      lastUpdateTime = DateTime.Now;
-      System.Timers.Timer timer = new System.Timers.Timer(250);
-      timer.AutoReset = true;
-      timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_Elapsed);
-      timer.Start();
-      try {
-        RunBenchmark();
-      }
-      finally {
-        timer.Elapsed -= new System.Timers.ElapsedEventHandler(timer_Elapsed);
-        timer.Stop();
-        ExecutionTime += DateTime.Now - lastUpdateTime;
-      }
-
-      cancellationToken.ThrowIfCancellationRequested();
-    }
-
-    private void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
-      System.Timers.Timer timer = (System.Timers.Timer)sender;
-      timer.Enabled = false;
-      DateTime now = DateTime.Now;
-      ExecutionTime += now - lastUpdateTime;
-      lastUpdateTime = now;
-      timer.Enabled = true;
-    }
-
-    #region Dhrystone Benchmark
-
-    private void RunBenchmark() {
+    protected override void RunBenchmark() {
       int Int_Loc_1;
       int Int_Loc_2;
       int Int_Loc_3;
@@ -161,7 +116,6 @@ namespace HeuristicLab.Algorithms.Benchmarks {
         Array_Glob_2[i] = new int[128];
       }
 
-      //System.Console.WriteLine("Execution start, " + Number_Of_Runs + " runs through Dhrystone");
       Stopwatch sw = new Stopwatch();
       sw.Start();
 
@@ -204,8 +158,6 @@ namespace HeuristicLab.Algorithms.Benchmarks {
 
       sw.Stop();
       total_time = sw.ElapsedMilliseconds;
-      //System.Console.WriteLine("total time: {0} ms", total_time);
-      //System.Console.WriteLine("Result: " + Number_Of_Runs * 1000 / total_time + " dhrystone/ms.");
 
       Results.Add(new Result("DIPS", new DoubleValue(Number_Of_Runs * 1000 / total_time)));
     }
@@ -388,12 +340,6 @@ namespace HeuristicLab.Algorithms.Benchmarks {
       public int Enum_Comp;
       public int Int_Comp;
       public string String_Comp;
-      /*
-      public int Enum_Comp_2;
-      public string String_Comp_2;
-      public char Char_Comp_1;
-      public char Char_Comp_2;
-       */
     }
 
     #endregion

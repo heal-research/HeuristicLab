@@ -25,7 +25,7 @@ namespace HeuristicLab.Algorithms.Benchmarks {
   /// <summary>
   /// Plugin class for HeuristicLab.Algorithms.Benchmark plugin.
   /// </summary>
-  [Plugin("HeuristicLab.Algorithms.Benchmarks", "Provides wrappers for data analysis algorithms implemented in external libraries (linear regression, linear discriminant analysis, k-means clustering, support vector classification and regression)", "3.4.1.$WCREV$")]
+  [Plugin("HeuristicLab.Algorithms.Benchmarks", "Provides different benchmarking algorithms", "3.3.5.$WCREV$")]
   [PluginFile("HeuristicLab.Algorithms.Benchmarks-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
