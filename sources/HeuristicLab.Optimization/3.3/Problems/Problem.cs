@@ -25,18 +25,28 @@ using System.Drawing;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization {
   [Item("Problem", "Represents the base class for a problem.")]
   [StorableClass]
   public abstract class Problem : ParameterizedNamedItem, IProblem {
+    private static readonly string OperatorsParameterName = "Operators";
+
+    public IFixedValueParameter<OperatorCollection> OperatorsParameter {
+      get { return (IFixedValueParameter<OperatorCollection>)Parameters[OperatorsParameterName]; }
+    }
+
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
     }
 
     [StorableConstructor]
-    protected Problem(bool deserializing) : base(deserializing) { }
+    protected Problem(bool deserializing)
+      : base(deserializing) {
+      operators = new OperatorCollection(); // operators must never be null
+    }
     protected Problem(Problem original, Cloner cloner)
       : base(original, cloner) {
       operators = cloner.Clone(original.operators);
@@ -46,11 +56,20 @@ namespace HeuristicLab.Optimization {
     protected Problem()
       : base() {
       operators = new OperatorCollection();
+      Parameters.Add(new FixedValueParameter<OperatorCollection>(OperatorsParameterName, "The operators that the problem provides to the algorithms.", operators, false));
+      OperatorsParameter.Hidden = true;
       RegisterEventHandlers();
     }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (!Parameters.ContainsKey(OperatorsParameterName)) {
+        Parameters.Add(new FixedValueParameter<OperatorCollection>(OperatorsParameterName, "The operators that the problem provides to the algorithms.", operators, false));
+        OperatorsParameter.Hidden = true;
+      }
+      #endregion
       RegisterEventHandlers();
     }
 

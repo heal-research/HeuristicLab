@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using HeuristicLab.Common;
@@ -37,20 +36,10 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   [Item("Traveling Salesman Problem", "Represents a symmetric Traveling Salesman Problem.")]
   [Creatable("Problems")]
   [StorableClass]
-  public sealed class TravelingSalesmanProblem : ParameterizedNamedItem, ISingleObjectiveHeuristicOptimizationProblem, IStorableContent {
+  public sealed class TravelingSalesmanProblem : SingleObjectiveHeuristicOptimizationProblem<ITSPEvaluator, IPermutationCreator>, IStorableContent {
     public string Filename { get; set; }
 
-    public override Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
-    }
-
     #region Parameter Properties
-    public ValueParameter<BoolValue> MaximizationParameter {
-      get { return (ValueParameter<BoolValue>)Parameters["Maximization"]; }
-    }
-    IParameter ISingleObjectiveHeuristicOptimizationProblem.MaximizationParameter {
-      get { return MaximizationParameter; }
-    }
     public ValueParameter<DoubleMatrix> CoordinatesParameter {
       get { return (ValueParameter<DoubleMatrix>)Parameters["Coordinates"]; }
     }
@@ -59,24 +48,6 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
     public ValueParameter<BoolValue> UseDistanceMatrixParameter {
       get { return (ValueParameter<BoolValue>)Parameters["UseDistanceMatrix"]; }
-    }
-    public ValueParameter<IPermutationCreator> SolutionCreatorParameter {
-      get { return (ValueParameter<IPermutationCreator>)Parameters["SolutionCreator"]; }
-    }
-    IParameter IHeuristicOptimizationProblem.SolutionCreatorParameter {
-      get { return SolutionCreatorParameter; }
-    }
-    public ValueParameter<ITSPEvaluator> EvaluatorParameter {
-      get { return (ValueParameter<ITSPEvaluator>)Parameters["Evaluator"]; }
-    }
-    IParameter IHeuristicOptimizationProblem.EvaluatorParameter {
-      get { return EvaluatorParameter; }
-    }
-    public OptionalValueParameter<DoubleValue> BestKnownQualityParameter {
-      get { return (OptionalValueParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
-    }
-    IParameter ISingleObjectiveHeuristicOptimizationProblem.BestKnownQualityParameter {
-      get { return BestKnownQualityParameter; }
     }
     public OptionalValueParameter<Permutation> BestKnownSolutionParameter {
       get { return (OptionalValueParameter<Permutation>)Parameters["BestKnownSolution"]; }
@@ -96,70 +67,49 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       get { return UseDistanceMatrixParameter.Value; }
       set { UseDistanceMatrixParameter.Value = value; }
     }
-    public IPermutationCreator SolutionCreator {
-      get { return SolutionCreatorParameter.Value; }
-      set { SolutionCreatorParameter.Value = value; }
-    }
-    ISolutionCreator IHeuristicOptimizationProblem.SolutionCreator {
-      get { return SolutionCreatorParameter.Value; }
-    }
-    public ITSPEvaluator Evaluator {
-      get { return EvaluatorParameter.Value; }
-      set { EvaluatorParameter.Value = value; }
-    }
-    ISingleObjectiveEvaluator ISingleObjectiveHeuristicOptimizationProblem.Evaluator {
-      get { return EvaluatorParameter.Value; }
-    }
-    IEvaluator IHeuristicOptimizationProblem.Evaluator {
-      get { return EvaluatorParameter.Value; }
-    }
-    public DoubleValue BestKnownQuality {
-      get { return BestKnownQualityParameter.Value; }
-      set { BestKnownQualityParameter.Value = value; }
-    }
     public Permutation BestKnownSolution {
       get { return BestKnownSolutionParameter.Value; }
       set { BestKnownSolutionParameter.Value = value; }
     }
-    public IEnumerable<IOperator> Operators {
-      get { return operators; }
-    }
     private BestTSPSolutionAnalyzer BestTSPSolutionAnalyzer {
-      get { return operators.OfType<BestTSPSolutionAnalyzer>().FirstOrDefault(); }
+      get { return Operators.OfType<BestTSPSolutionAnalyzer>().FirstOrDefault(); }
     }
     private TSPAlleleFrequencyAnalyzer TSPAlleleFrequencyAnalyzer {
-      get { return operators.OfType<TSPAlleleFrequencyAnalyzer>().FirstOrDefault(); }
+      get { return Operators.OfType<TSPAlleleFrequencyAnalyzer>().FirstOrDefault(); }
     }
     private TSPPopulationDiversityAnalyzer TSPPopulationDiversityAnalyzer {
-      get { return operators.OfType<TSPPopulationDiversityAnalyzer>().FirstOrDefault(); }
+      get { return Operators.OfType<TSPPopulationDiversityAnalyzer>().FirstOrDefault(); }
     }
     #endregion
 
-    [Storable]
-    private List<IOperator> operators;
+    // BackwardsCompatibility3.3
+    #region Backwards compatible code, remove with 3.4
+    [Obsolete]
+    [Storable(Name = "operators")]
+    private IEnumerable<IOperator> oldOperators {
+      get { return null; }
+      set {
+        if (value != null && value.Any())
+          Operators.AddRange(value);
+      }
+    }
+    #endregion
 
     [StorableConstructor]
     private TravelingSalesmanProblem(bool deserializing) : base(deserializing) { }
     private TravelingSalesmanProblem(TravelingSalesmanProblem original, Cloner cloner)
       : base(original, cloner) {
-      this.operators = original.operators.Select(x => (IOperator)cloner.Clone(x)).ToList();
       AttachEventHandlers();
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new TravelingSalesmanProblem(this, cloner);
     }
     public TravelingSalesmanProblem()
-      : base() {
-      RandomPermutationCreator creator = new RandomPermutationCreator();
-      TSPRoundedEuclideanPathEvaluator evaluator = new TSPRoundedEuclideanPathEvaluator();
+      : base(new TSPRoundedEuclideanPathEvaluator(), new RandomPermutationCreator()) {
 
-      Parameters.Add(new ValueParameter<BoolValue>("Maximization", "Set to false as the Traveling Salesman Problem is a minimization problem.", new BoolValue(false)));
       Parameters.Add(new ValueParameter<DoubleMatrix>("Coordinates", "The x- and y-Coordinates of the cities."));
       Parameters.Add(new OptionalValueParameter<DistanceMatrix>("DistanceMatrix", "The matrix which contains the distances between the cities."));
       Parameters.Add(new ValueParameter<BoolValue>("UseDistanceMatrix", "True if a distance matrix should be calculated and used for evaluation, otherwise false.", new BoolValue(true)));
-      Parameters.Add(new ValueParameter<IPermutationCreator>("SolutionCreator", "The operator which should be used to create new TSP solutions.", creator));
-      Parameters.Add(new ValueParameter<ITSPEvaluator>("Evaluator", "The operator which should be used to evaluate TSP solutions.", evaluator));
-      Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this TSP instance."));
       Parameters.Add(new OptionalValueParameter<Permutation>("BestKnownSolution", "The best known solution of this TSP instance."));
 
       MaximizationParameter.Hidden = true;
@@ -172,8 +122,8 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         { 400, 100 }, { 400, 200 }, { 400, 300 }, { 400, 400 }
       });
 
-      creator.PermutationParameter.ActualName = "TSPTour";
-      evaluator.QualityParameter.ActualName = "TSPTourLength";
+      SolutionCreator.PermutationParameter.ActualName = "TSPTour";
+      Evaluator.QualityParameter.ActualName = "TSPTourLength";
       ParameterizeSolutionCreator();
       ParameterizeEvaluator();
 
@@ -182,27 +132,22 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
 
     #region Events
-    public event EventHandler SolutionCreatorChanged;
-    private void OnSolutionCreatorChanged() {
-      EventHandler handler = SolutionCreatorChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
+    protected override void OnSolutionCreatorChanged() {
+      base.OnSolutionCreatorChanged();
+      SolutionCreator.PermutationParameter.ActualNameChanged += new EventHandler(SolutionCreator_PermutationParameter_ActualNameChanged);
+      ParameterizeSolutionCreator();
+      ParameterizeEvaluator();
+      ParameterizeAnalyzers();
+      ParameterizeOperators();
     }
-    public event EventHandler EvaluatorChanged;
-    private void OnEvaluatorChanged() {
-      EventHandler handler = EvaluatorChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
+    protected override void OnEvaluatorChanged() {
+      base.OnEvaluatorChanged();
+      Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
+      ParameterizeEvaluator();
+      UpdateMoveEvaluators();
+      ParameterizeAnalyzers();
+      ClearDistanceMatrix();
     }
-    public event EventHandler OperatorsChanged;
-    private void OnOperatorsChanged() {
-      EventHandler handler = OperatorsChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-    public event EventHandler Reset;
-    private void OnReset() {
-      EventHandler handler = Reset;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-
     private void CoordinatesParameter_ValueChanged(object sender, EventArgs e) {
       Coordinates.ItemChanged += new EventHandler<EventArgs<int, int>>(Coordinates_ItemChanged);
       Coordinates.Reset += new EventHandler(Coordinates_Reset);
@@ -216,41 +161,13 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       ParameterizeSolutionCreator();
       ClearDistanceMatrix();
     }
-    private void SolutionCreatorParameter_ValueChanged(object sender, EventArgs e) {
-      SolutionCreator.PermutationParameter.ActualNameChanged += new EventHandler(SolutionCreator_PermutationParameter_ActualNameChanged);
-      ParameterizeSolutionCreator();
-      ParameterizeEvaluator();
-      ParameterizeAnalyzers();
-      ParameterizeOperators();
-      OnSolutionCreatorChanged();
-    }
     private void SolutionCreator_PermutationParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeEvaluator();
       ParameterizeAnalyzers();
       ParameterizeOperators();
     }
-    private void EvaluatorParameter_ValueChanged(object sender, EventArgs e) {
-      Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
-      ParameterizeEvaluator();
-      UpdateMoveEvaluators();
-      ParameterizeAnalyzers();
-      ClearDistanceMatrix();
-      OnEvaluatorChanged();
-    }
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeAnalyzers();
-    }
-    private void MoveGenerator_InversionMoveParameter_ActualNameChanged(object sender, EventArgs e) {
-      string name = ((ILookupParameter<InversionMove>)sender).ActualName;
-      foreach (IPermutationInversionMoveOperator op in Operators.OfType<IPermutationInversionMoveOperator>()) {
-        op.InversionMoveParameter.ActualName = name;
-      }
-    }
-    private void MoveGenerator_TranslocationMoveParameter_ActualNameChanged(object sender, EventArgs e) {
-      string name = ((ILookupParameter<TranslocationMove>)sender).ActualName;
-      foreach (IPermutationTranslocationMoveOperator op in Operators.OfType<IPermutationTranslocationMoveOperator>()) {
-        op.TranslocationMoveParameter.ActualName = name;
-      }
     }
     #endregion
 
@@ -276,7 +193,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         }
       }
 
-      if (operators == null) InitializeOperators();
+      if (Operators.Count == 0) InitializeOperators();
       #endregion
       AttachEventHandlers();
     }
@@ -285,40 +202,24 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       CoordinatesParameter.ValueChanged += new EventHandler(CoordinatesParameter_ValueChanged);
       Coordinates.ItemChanged += new EventHandler<EventArgs<int, int>>(Coordinates_ItemChanged);
       Coordinates.Reset += new EventHandler(Coordinates_Reset);
-      SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
       SolutionCreator.PermutationParameter.ActualNameChanged += new EventHandler(SolutionCreator_PermutationParameter_ActualNameChanged);
-      EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
       Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
     }
 
     private void InitializeOperators() {
-      operators = new List<IOperator>();
-      operators.Add(new BestTSPSolutionAnalyzer());
-      operators.Add(new TSPAlleleFrequencyAnalyzer());
-      operators.Add(new TSPPopulationDiversityAnalyzer());
+      Operators.Add(new BestTSPSolutionAnalyzer());
+      Operators.Add(new TSPAlleleFrequencyAnalyzer());
+      Operators.Add(new TSPPopulationDiversityAnalyzer());
       ParameterizeAnalyzers();
-      operators.AddRange(ApplicationManager.Manager.GetInstances<IPermutationOperator>().Cast<IOperator>());
+      Operators.AddRange(ApplicationManager.Manager.GetInstances<IPermutationOperator>().Cast<IOperator>());
       ParameterizeOperators();
       UpdateMoveEvaluators();
-      InitializeMoveGenerators();
-    }
-    private void InitializeMoveGenerators() {
-      foreach (IPermutationInversionMoveOperator op in Operators.OfType<IPermutationInversionMoveOperator>()) {
-        if (op is IMoveGenerator) {
-          op.InversionMoveParameter.ActualNameChanged += new EventHandler(MoveGenerator_InversionMoveParameter_ActualNameChanged);
-        }
-      }
-      foreach (IPermutationTranslocationMoveOperator op in Operators.OfType<IPermutationTranslocationMoveOperator>()) {
-        if (op is IMoveGenerator) {
-          op.TranslocationMoveParameter.ActualNameChanged += new EventHandler(MoveGenerator_TranslocationMoveParameter_ActualNameChanged);
-        }
-      }
     }
     private void UpdateMoveEvaluators() {
-      operators.RemoveAll(x => x is ISingleObjectiveMoveEvaluator);
+      Operators.RemoveAll(x => x is ISingleObjectiveMoveEvaluator);
       foreach (ITSPPathMoveEvaluator op in ApplicationManager.Manager.GetInstances<ITSPPathMoveEvaluator>())
         if (op.EvaluatorType == Evaluator.GetType()) {
-          operators.Add(op);
+          Operators.Add(op);
         }
       ParameterizeOperators();
       OnOperatorsChanged();
@@ -399,16 +300,6 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         op.QualityParameter.Hidden = true;
         op.PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
         op.PermutationParameter.Hidden = true;
-      }
-      string inversionMove = Operators.OfType<IMoveGenerator>().OfType<IPermutationInversionMoveOperator>().First().InversionMoveParameter.ActualName;
-      foreach (IPermutationInversionMoveOperator op in Operators.OfType<IPermutationInversionMoveOperator>()) {
-        op.InversionMoveParameter.ActualName = inversionMove;
-        op.InversionMoveParameter.Hidden = true;
-      }
-      string translocationMove = Operators.OfType<IMoveGenerator>().OfType<IPermutationTranslocationMoveOperator>().First().TranslocationMoveParameter.ActualName;
-      foreach (IPermutationTranslocationMoveOperator op in Operators.OfType<IPermutationTranslocationMoveOperator>()) {
-        op.TranslocationMoveParameter.ActualName = translocationMove;
-        op.TranslocationMoveParameter.Hidden = true;
       }
       foreach (IPermutationMultiNeighborhoodShakingOperator op in Operators.OfType<IPermutationMultiNeighborhoodShakingOperator>()) {
         op.PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
