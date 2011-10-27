@@ -113,6 +113,7 @@ namespace HeuristicLab.Problems.Knapsack {
       Parameters.Add(new OptionalValueParameter<BinaryVector>("BestKnownSolution", "The best known solution of this Knapsack instance."));
 
       Maximization.Value = true;
+      MaximizationParameter.Hidden = true;
 
       SolutionCreator.BinaryVectorParameter.ActualName = "KnapsackSolution";
 
@@ -190,7 +191,7 @@ namespace HeuristicLab.Problems.Knapsack {
     private void AfterDeserialization() {
       // BackwardsCompatibility3.3
       #region Backwards compatible code (remove with 3.4)
-      if (Operators.Count > 0) InitializeOperators();
+      if (Operators.Count == 0) InitializeOperators();
       #endregion
       AttachEventHandlers();
     }

@@ -112,6 +112,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       Parameters.Add(new ValueParameter<BoolValue>("UseDistanceMatrix", "True if a distance matrix should be calculated and used for evaluation, otherwise false.", new BoolValue(true)));
       Parameters.Add(new OptionalValueParameter<Permutation>("BestKnownSolution", "The best known solution of this TSP instance."));
 
+      Maximization.Value = false;
       MaximizationParameter.Hidden = true;
       DistanceMatrixParameter.ReactOnValueToStringChangedAndValueItemImageChanged = false;
 

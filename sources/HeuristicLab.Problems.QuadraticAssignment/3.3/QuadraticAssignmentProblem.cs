@@ -112,7 +112,8 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       Parameters.Add(new ValueParameter<DoubleMatrix>("Weights", "The strength of the connection between the facilities.", new DoubleMatrix(5, 5)));
       Parameters.Add(new ValueParameter<DoubleMatrix>("Distances", "The distance matrix which can either be specified directly without the coordinates, or can be calculated automatically from the coordinates.", new DoubleMatrix(5, 5)));
 
-      Maximization = new BoolValue(false);
+      Maximization.Value = false;
+      MaximizationParameter.Hidden = true;
 
       Weights = new DoubleMatrix(new double[,] {
         { 0, 1, 0, 0, 1 },

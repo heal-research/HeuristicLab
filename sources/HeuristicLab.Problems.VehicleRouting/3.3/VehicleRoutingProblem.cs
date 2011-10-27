@@ -174,6 +174,9 @@ namespace HeuristicLab.Problems.VehicleRouting {
       Parameters.Add(new ValueParameter<DoubleValue>("EvalOverloadPenalty", "The overload penalty considered in the evaluation.", new DoubleValue(100)));
       Parameters.Add(new ValueParameter<DoubleValue>("EvalTardinessPenalty", "The tardiness penalty considered in the evaluation.", new DoubleValue(100)));
 
+      Maximization.Value = false;
+      MaximizationParameter.Hidden = true;
+
       SolutionCreator.VRPToursParameter.ActualName = "VRPTours";
       Evaluator.QualityParameter.ActualName = "VRPQuality";
 

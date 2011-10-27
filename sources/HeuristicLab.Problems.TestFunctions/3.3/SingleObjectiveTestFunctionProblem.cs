@@ -99,6 +99,9 @@ namespace HeuristicLab.Problems.TestFunctions {
       Parameters.Add(new ValueParameter<IntValue>("ProblemSize", "The dimension of the problem.", new IntValue(2)));
       Parameters.Add(new OptionalValueParameter<RealVector>("BestKnownSolution", "The best known solution for this test function instance."));
 
+      Maximization.Value = Evaluator.Maximization;
+      BestKnownQuality.Value = Evaluator.BestKnownQuality;
+
       strategyVectorCreator = new StdDevStrategyVectorCreator();
       strategyVectorCreator.LengthParameter.ActualName = ProblemSizeParameter.Name;
       strategyVectorCrossover = new StdDevStrategyVectorCrossover();

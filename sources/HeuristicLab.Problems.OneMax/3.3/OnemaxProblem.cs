@@ -76,6 +76,9 @@ namespace HeuristicLab.Problems.OneMax {
     public OneMaxProblem()
       : base(new OneMaxEvaluator(), new RandomBinaryVectorCreator()) {
       Parameters.Add(new ValueParameter<IntValue>("Length", "The length of the BinaryVector.", new IntValue(5)));
+
+      Maximization.Value = true;
+      MaximizationParameter.Hidden = true;
       BestKnownQuality.Value = 5;
 
       SolutionCreator.BinaryVectorParameter.ActualName = "OneMaxSolution";
