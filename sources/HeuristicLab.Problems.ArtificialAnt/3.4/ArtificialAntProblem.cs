@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.ArtificialAnt {
   [StorableClass]
   public sealed class ArtificialAntProblem : SingleObjectiveHeuristicOptimizationProblem<Evaluator, ISymbolicExpressionTreeCreator>, IStorableContent {
     public string Filename { get; set; }
-    
+
     #region constant for default world (Santa Fe)
     private readonly bool[,] santaFeAntTrail = new bool[,] {
       {false, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false}, 
@@ -255,27 +255,27 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     private void ParameterizeOperators() {
       var operators = Parameters.OfType<IValueParameter>().Select(p => p.Value).OfType<IOperator>().Union(Operators);
 
-      foreach (ISymbolicExpressionTreeGrammarBasedOperator op in Operators.OfType<ISymbolicExpressionTreeGrammarBasedOperator>()) {
+      foreach (ISymbolicExpressionTreeGrammarBasedOperator op in operators.OfType<ISymbolicExpressionTreeGrammarBasedOperator>()) {
         op.SymbolicExpressionTreeGrammarParameter.ActualName = ArtificialAntExpressionGrammarParameter.Name;
       }
-      foreach (ISymbolicExpressionTreeSizeConstraintOperator op in Operators.OfType<ISymbolicExpressionTreeSizeConstraintOperator>()) {
+      foreach (ISymbolicExpressionTreeSizeConstraintOperator op in operators.OfType<ISymbolicExpressionTreeSizeConstraintOperator>()) {
         op.MaximumSymbolicExpressionTreeDepthParameter.ActualName = MaxExpressionDepthParameter.Name;
         op.MaximumSymbolicExpressionTreeLengthParameter.ActualName = MaxExpressionLengthParameter.Name;
 
       }
-      foreach (Evaluator op in Operators.OfType<Evaluator>()) {
+      foreach (Evaluator op in operators.OfType<Evaluator>()) {
         op.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
         op.MaxTimeStepsParameter.ActualName = MaxTimeStepsParameter.Name;
         op.WorldParameter.ActualName = WorldParameter.Name;
       }
-      foreach (ISymbolicExpressionTreeCrossover op in Operators.OfType<ISymbolicExpressionTreeCrossover>()) {
+      foreach (ISymbolicExpressionTreeCrossover op in operators.OfType<ISymbolicExpressionTreeCrossover>()) {
         op.ParentsParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
         op.ChildParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
       }
-      foreach (ISymbolicExpressionTreeManipulator op in Operators.OfType<ISymbolicExpressionTreeManipulator>()) {
+      foreach (ISymbolicExpressionTreeManipulator op in operators.OfType<ISymbolicExpressionTreeManipulator>()) {
         op.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
       }
-      foreach (ISymbolicExpressionTreeArchitectureAlteringOperator op in Operators.OfType<ISymbolicExpressionTreeArchitectureAlteringOperator>()) {
+      foreach (ISymbolicExpressionTreeArchitectureAlteringOperator op in operators.OfType<ISymbolicExpressionTreeArchitectureAlteringOperator>()) {
         op.MaximumFunctionDefinitionsParameter.ActualName = MaxFunctionDefinitionsParameter.Name;
         op.MaximumFunctionArgumentsParameter.ActualName = MaxFunctionArgumentsParameter.Name;
       }
