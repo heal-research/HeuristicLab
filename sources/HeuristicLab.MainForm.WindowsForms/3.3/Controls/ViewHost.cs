@@ -80,6 +80,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
               View cached = cachedView as View;
               if (cached != null) {
                 Controls.Remove(cached);
+                cached.Dispose();
               }
               cachedView = null;
             }
@@ -202,7 +203,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       base.OnSizeChanged(e);
       viewsLabel.Location = new Point(Width - viewsLabel.Margin.Right - viewsLabel.Width, viewsLabel.Margin.Top);
       configurationLabel.Location = new Point(Width - configurationLabel.Margin.Right - configurationLabel.Width, viewsLabel.Bottom + viewsLabel.Margin.Bottom + configurationLabel.Margin.Top);
-      
+
     }
 
     #region forwarding of view events
