@@ -21,6 +21,8 @@
 
 using System;
 using System.Diagnostics;
+using System.Drawing;
+using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -29,9 +31,16 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.Benchmarks {
   [Item("Linpack Algorithm", "Linpack benchmarking algorithm.")]
-  [Creatable("Benchmarks")]
   [StorableClass]
-  public class Linpack : Benchmark {
+  public class LinpackBenchmark : IBenchmark {
+    [Storable]
+    private byte[][] chunk;
+
+    private TimeSpan timeLimit;
+
+    private bool stopBenchmark;
+
+    private CancellationToken cancellationToken;
 
     #region Benchmark Fields
 
@@ -47,22 +56,43 @@ namespace HeuristicLab.Algorithms.Benchmarks {
 
     #endregion
 
-    #region Costructors
+    #region Properties
 
-    public Linpack()
-      : base() {
+    public byte[][] ChunkData {
+      get { return chunk; }
+      set { chunk = value; }
     }
 
-    private Linpack(Linpack original, Cloner cloner)
-      : base(original, cloner) {
+    public TimeSpan TimeLimit {
+      get { return timeLimit; }
+      set { timeLimit = value; }
+    }
+
+    public string ItemName {
+      get { return ItemAttribute.GetName(this.GetType()); }
+    }
+
+    public string ItemDescription {
+      get { return ItemAttribute.GetDescription(this.GetType()); }
+    }
+
+    public Version ItemVersion {
+      get { return ItemAttribute.GetVersion(this.GetType()); }
+    }
+
+    public Image ItemImage {
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Event; }
     }
 
     #endregion
 
-    #region IDeepClonable Members
+    #region Costructors
 
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new Linpack(this, cloner);
+    public LinpackBenchmark() {
+    }
+
+    public LinpackBenchmark(LinpackBenchmark original, Cloner cloner) {
+      cloner.RegisterClonedObject(original, this);
     }
 
     #endregion
@@ -70,80 +100,107 @@ namespace HeuristicLab.Algorithms.Benchmarks {
     #region Linpack Benchmark
     // implementation based on Java version: http://www.netlib.org/benchmark/linpackjava/
 
-    protected override void RunBenchmark() {
-      int n = DEFAULT_PSIZE;
-      int ldaa = DEFAULT_PSIZE;
-      int lda = DEFAULT_PSIZE + 1;
+    public void Run(CancellationToken token, ResultCollection results) {
+      cancellationToken = token;
+      stopBenchmark = false;
+      TimeSpan executionTime = new TimeSpan();
+      bool resultAchieved = false;
+      do {
+        int n = DEFAULT_PSIZE;
+        int ldaa = DEFAULT_PSIZE;
+        int lda = DEFAULT_PSIZE + 1;
 
-      double[][] a = new double[ldaa][];
-      double[] b = new double[ldaa];
-      double[] x = new double[ldaa];
+        double[][] a = new double[ldaa][];
+        double[] b = new double[ldaa];
+        double[] x = new double[ldaa];
 
-      double ops;
-      double norma;
-      double normx;
-      double resid;
-      int i;
-      int info;
-      int[] ipvt = new int[ldaa];
+        double ops;
+        double norma;
+        double normx;
+        double resid;
+        int i;
+        int info;
+        int[] ipvt = new int[ldaa];
 
-      for (i = 0; i < ldaa; i++) {
-        a[i] = new double[lda];
-      }
+        for (i = 0; i < ldaa; i++) {
+          a[i] = new double[lda];
+        }
 
-      ops = (2.0e0 * (((double)n) * n * n)) / 3.0 + 2.0 * (n * n);
+        ops = (2.0e0 * (((double)n) * n * n)) / 3.0 + 2.0 * (n * n);
 
-      norma = mathGen(a, lda, n, b);
+        norma = mathGen(a, lda, n, b);
 
-      sw.Reset();
-      sw.Start();
+        if (cancellationToken.IsCancellationRequested) {
+          throw new OperationCanceledException(cancellationToken);
+        }
 
-      info = dgefa(a, lda, n, ipvt);
+        sw.Reset();
+        sw.Start();
 
-      dgesl(a, lda, n, ipvt, b, 0);
+        info = dgefa(a, lda, n, ipvt);
 
-      sw.Stop();
-      total = sw.Elapsed.TotalMilliseconds / 1000;
+        if (cancellationToken.IsCancellationRequested) {
+          throw new OperationCanceledException(cancellationToken);
+        }
 
-      for (i = 0; i < n; i++) {
-        x[i] = b[i];
-      }
+        dgesl(a, lda, n, ipvt, b, 0);
 
-      norma = mathGen(a, lda, n, b);
+        sw.Stop();
+        total = sw.Elapsed.TotalMilliseconds / 1000;
 
-      for (i = 0; i < n; i++) {
-        b[i] = -b[i];
-      }
+        if (cancellationToken.IsCancellationRequested) {
+          throw new OperationCanceledException(cancellationToken);
+        }
 
-      dmxpy(n, b, n, lda, x, a);
+        for (i = 0; i < n; i++) {
+          x[i] = b[i];
+        }
 
-      resid = 0.0;
-      normx = 0.0;
+        norma = mathGen(a, lda, n, b);
 
-      for (i = 0; i < n; i++) {
-        resid = (resid > abs(b[i])) ? resid : abs(b[i]);
-        normx = (normx > abs(x[i])) ? normx : abs(x[i]);
-      }
+        for (i = 0; i < n; i++) {
+          b[i] = -b[i];
+        }
 
-      eps_result = epslon((double)1.0);
+        dmxpy(n, b, n, lda, x, a);
 
-      residn_result = resid / (n * norma * normx * eps_result);
-      residn_result += 0.005; // for rounding
-      residn_result = (int)(residn_result * 100);
-      residn_result /= 100;
+        resid = 0.0;
+        normx = 0.0;
 
-      time_result = total;
-      time_result += 0.005; // for rounding
-      time_result = (int)(time_result * 100);
-      time_result /= 100;
+        for (i = 0; i < n; i++) {
+          resid = (resid > abs(b[i])) ? resid : abs(b[i]);
+          normx = (normx > abs(x[i])) ? normx : abs(x[i]);
+        }
 
-      mflops_result = ops / (1.0e6 * total);
-      mflops_result += 0.0005; // for rounding
-      mflops_result = (int)(mflops_result * 1000);
-      mflops_result /= 1000;
+        eps_result = epslon((double)1.0);
 
-      Results.Add(new Result("Mflops/s", new DoubleValue(mflops_result)));
-      Results.Add(new Result("total Mflops/s", new DoubleValue(mflops_result * Environment.ProcessorCount)));
+        residn_result = resid / (n * norma * normx * eps_result);
+        residn_result += 0.005; // for rounding
+        residn_result = (int)(residn_result * 100);
+        residn_result /= 100;
+
+        time_result = total;
+        time_result += 0.005; // for rounding
+        time_result = (int)(time_result * 100);
+        time_result /= 100;
+
+        mflops_result = ops / (1.0e6 * total);
+        mflops_result += 0.0005; // for rounding
+        mflops_result = (int)(mflops_result * 1000);
+        mflops_result /= 1000;
+
+        if (!resultAchieved) {
+          results.Add(new Result("Mflops/s", new DoubleValue(mflops_result)));
+          results.Add(new Result("total Mflops/s", new DoubleValue(mflops_result * Environment.ProcessorCount)));
+          resultAchieved = true;
+        }
+
+        executionTime += sw.Elapsed;
+        if (timeLimit == null)
+          stopBenchmark = true;
+        else if (executionTime > timeLimit)
+          stopBenchmark = true;
+      } while (!stopBenchmark);
     }
 
     private double abs(double d) {
@@ -159,6 +216,10 @@ namespace HeuristicLab.Algorithms.Benchmarks {
       norma = 0.0;
 
       gen = new Random(init);
+
+      if (cancellationToken.IsCancellationRequested) {
+        throw new OperationCanceledException(cancellationToken);
+      }
 
       // Next two for() statements switched.  Solver wants
       // matrix in column order. --dmd 3/3/97
@@ -189,6 +250,10 @@ namespace HeuristicLab.Algorithms.Benchmarks {
       int j, k, kp1, l, nm1;
       int info;
 
+      if (cancellationToken.IsCancellationRequested) {
+        throw new OperationCanceledException(cancellationToken);
+      }
+
       // gaussian elimination with partial pivoting
 
       info = 0;
@@ -214,10 +279,18 @@ namespace HeuristicLab.Algorithms.Benchmarks {
               col_k[k] = t;
             }
 
+            if (cancellationToken.IsCancellationRequested) {
+              throw new OperationCanceledException(cancellationToken);
+            }
+
             // compute multipliers
 
             t = -1.0 / col_k[k];
             dscal(n - (kp1), t, col_k, kp1, 1);
+
+            if (cancellationToken.IsCancellationRequested) {
+              throw new OperationCanceledException(cancellationToken);
+            }
 
             // row elimination with column indexing
 
@@ -247,6 +320,10 @@ namespace HeuristicLab.Algorithms.Benchmarks {
       double t;
       int k, kb, l, nm1, kp1;
 
+      if (cancellationToken.IsCancellationRequested) {
+        throw new OperationCanceledException(cancellationToken);
+      }
+
       nm1 = n - 1;
       if (job == 0) {
         // job = 0 , solve  a * x = b.  first solve  l*y = b
@@ -264,6 +341,10 @@ namespace HeuristicLab.Algorithms.Benchmarks {
           }
         }
 
+        if (cancellationToken.IsCancellationRequested) {
+          throw new OperationCanceledException(cancellationToken);
+        }
+
         // now solve  u*x = y
 
         for (kb = 0; kb < n; kb++) {
@@ -278,6 +359,10 @@ namespace HeuristicLab.Algorithms.Benchmarks {
         for (k = 0; k < n; k++) {
           t = ddot(k, a[k], 0, 1, b, 0, 1);
           b[k] = (b[k] - t) / a[k][k];
+        }
+
+        if (cancellationToken.IsCancellationRequested) {
+          throw new OperationCanceledException(cancellationToken);
         }
 
         // now solve trans(l)*x = y 
@@ -301,6 +386,10 @@ namespace HeuristicLab.Algorithms.Benchmarks {
 
     private void daxpy(int n, double da, double[] dx, int dx_off, int incx, double[] dy, int dy_off, int incy) {
       int i, ix, iy;
+
+      if (cancellationToken.IsCancellationRequested) {
+        throw new OperationCanceledException(cancellationToken);
+      }
 
       if ((n > 0) && (da != 0)) {
         if (incx != 1 || incy != 1) {
@@ -330,6 +419,10 @@ namespace HeuristicLab.Algorithms.Benchmarks {
       double dtemp = 0;
       int i, ix, iy;
 
+      if (cancellationToken.IsCancellationRequested) {
+        throw new OperationCanceledException(cancellationToken);
+      }
+
       if (n > 0) {
         if (incx != 1 || incy != 1) {
           // code for unequal increments or equal increments not equal to 1
@@ -356,6 +449,10 @@ namespace HeuristicLab.Algorithms.Benchmarks {
     private void dscal(int n, double da, double[] dx, int dx_off, int incx) {
       int i, nincx;
 
+      if (cancellationToken.IsCancellationRequested) {
+        throw new OperationCanceledException(cancellationToken);
+      }
+
       if (n > 0) {
         if (incx != 1) {
           // code for increment not equal to 1
@@ -375,6 +472,10 @@ namespace HeuristicLab.Algorithms.Benchmarks {
     private int idamax(int n, double[] dx, int dx_off, int incx) {
       double dmax, dtemp;
       int i, ix, itemp = 0;
+
+      if (cancellationToken.IsCancellationRequested) {
+        throw new OperationCanceledException(cancellationToken);
+      }
 
       if (n < 1) {
         itemp = -1;
@@ -431,6 +532,34 @@ namespace HeuristicLab.Algorithms.Benchmarks {
           y[i] += x[j] * m[j][i];
         }
       }
+    }
+
+    #endregion
+
+    #region Clone
+
+    public IDeepCloneable Clone(Cloner cloner) {
+      return new LinpackBenchmark(this, cloner);
+    }
+
+    public object Clone() {
+      return Clone(new Cloner());
+    }
+
+    #endregion
+
+    #region Events
+
+    public event EventHandler ItemImageChanged;
+    protected virtual void OnItemImageChanged() {
+      EventHandler handler = ItemImageChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
+
+    public event EventHandler ToStringChanged;
+    protected virtual void OnToStringChanged() {
+      EventHandler handler = ToStringChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
 
     #endregion

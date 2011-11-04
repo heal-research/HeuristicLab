@@ -50,11 +50,12 @@
     <Compile Include="Benchmark.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Whetstone.cs" />
-    <Compile Include="Dhrystone.cs" />
-    <Compile Include="Linpack.cs" />
+    <Compile Include="DhrystoneBenchmark.cs" />
+    <Compile Include="IBenchmark.cs" />
+    <Compile Include="LinpackBenchmark.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WhetstoneAlgorithm.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />

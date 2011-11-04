@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2011 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -19,17 +19,14 @@
  */
 #endregion
 
-using System.Windows.Forms;
-using HeuristicLab.MainForm;
-using HeuristicLab.Optimization.Views;
-
-namespace HeuristicLab.Algorithms.Benchmarks.Views {
-  [View("Benchmark View")]
-  [Content(typeof(Benchmark), true)]
-  public partial class BenchmarkView : AlgorithmView {
-    public BenchmarkView() {
-      InitializeComponent();
-      tabControl.TabPages.Remove(this.problemTabPage);
-    }
+using System;
+using System.Threading;
+using HeuristicLab.Core;
+using HeuristicLab.Optimization;
+namespace HeuristicLab.Algorithms.Benchmarks {
+  public interface IBenchmark : IItem {
+    byte[][] ChunkData { get; set; }
+    TimeSpan TimeLimit { get; set; }
+    void Run(CancellationToken cancellationToken, ResultCollection resuls);
   }
 }

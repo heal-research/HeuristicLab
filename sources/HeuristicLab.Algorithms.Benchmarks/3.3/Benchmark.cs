@@ -30,17 +30,34 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Algorithms.Benchmarks {
   /// <summary>
   /// A base class for benchmarks.
   /// </summary>
-  [Item("Benchmark", "A base class for benchmarks.")]
+  [Item("Benchmark", "A wrapper for benchmark algorithms.")]
+  [Creatable("Benchmarks")]
   [StorableClass]
-  public abstract class Benchmark : IAlgorithm {
+  public class Benchmark : IAlgorithm {
+    private Random random = new Random();
 
+    [Storable]
     private DateTime lastUpdateTime;
+
+    [Storable]
+    private IBenchmark benchmarkAlgorithm;
+    public IBenchmark BenchmarkAlgorithm {
+      get { return benchmarkAlgorithm; }
+      set {
+        if (value == null) throw new ArgumentNullException();
+        benchmarkAlgorithm = value;
+      }
+    }
+
+    private CancellationTokenSource cancellationTokenSource;
 
     [Storable]
     private ExecutionState executionState;
@@ -201,9 +218,25 @@ namespace HeuristicLab.Algorithms.Benchmarks {
       get { return Enumerable.Empty<IOptimizer>(); }
     }
 
+    #region Parameter Properties
+
+    public ConstrainedValueParameter<IBenchmark> BenchmarkAlgorithmParameter {
+      get { return (ConstrainedValueParameter<IBenchmark>)Parameters["BenchmarkAlgorithm"]; }
+    }
+
+    private ValueParameter<IntValue> ChunkSizeParameter {
+      get { return (ValueParameter<IntValue>)Parameters["ChunkSize"]; }
+    }
+
+    private ValueParameter<DoubleValue> TimeLimitParameter {
+      get { return (ValueParameter<DoubleValue>)Parameters["TimeLimit"]; }
+    }
+
+    #endregion
+
     #region Constructors
 
-    protected Benchmark() {
+    public Benchmark() {
       name = ItemName;
       description = ItemDescription;
       parameters = new ParameterCollection();
@@ -214,10 +247,12 @@ namespace HeuristicLab.Algorithms.Benchmarks {
       runsCounter = 0;
       Runs = new RunCollection();
       results = new ResultCollection();
+      CreateParameters();
+      DiscoverBenchmarks();
       Prepare();
     }
 
-    protected Benchmark(Benchmark original, Cloner cloner) {
+    public Benchmark(Benchmark original, Cloner cloner) {
       cloner.RegisterClonedObject(original, this);
       name = original.name;
       description = original.description;
@@ -231,11 +266,36 @@ namespace HeuristicLab.Algorithms.Benchmarks {
       runs = cloner.Clone(original.runs);
       Initialize();
 
-      results = new ResultCollection();
+      results = cloner.Clone(original.results);
+      DiscoverBenchmarks();
       Prepare();
     }
 
     #endregion
+
+    private void CreateParameters() {
+      Parameters.Add(new ValueParameter<IntValue>("ChunkSize", "The size (MB) of the chunk array that gets generated", new IntValue(0)));
+      Parameters.Add(new ValueParameter<DoubleValue>("TimeLimit", "The time limit (in minutes) for a benchmark run", new DoubleValue(0)));
+    }
+
+    private void DiscoverBenchmarks() {
+      var benchmarks = from t in ApplicationManager.Manager.GetTypes(typeof(IBenchmark))
+                       select t;
+      ItemSet<IBenchmark> values = new ItemSet<IBenchmark>();
+      foreach (var benchmark in benchmarks) {
+        IBenchmark b = (IBenchmark)Activator.CreateInstance(benchmark);
+        values.Add(b);
+      }
+      string paramName = "BenchmarkAlgorithm";
+      if (!Parameters.ContainsKey(paramName)) {
+        if (values.Count > 0) {
+          Parameters.Add(new ConstrainedValueParameter<IBenchmark>(paramName, values, values.First(a => a is IBenchmark)));
+        } else {
+          // throw exception?
+          Parameters.Add(new ConstrainedValueParameter<IBenchmark>(paramName, values));
+        }
+      }
+    }
 
     private void Initialize() {
       if (problem != null) RegisterProblemEvents();
@@ -263,10 +323,11 @@ namespace HeuristicLab.Algorithms.Benchmarks {
     public virtual void Stop() {
       if ((ExecutionState != ExecutionState.Started) && (ExecutionState != ExecutionState.Paused))
         throw new InvalidOperationException(string.Format("Stop not allowed in execution state \"{0}\".", ExecutionState));
+      cancellationTokenSource.Cancel();
     }
 
     public virtual void Start() {
-      var cancellationTokenSource = new CancellationTokenSource();
+      cancellationTokenSource = new CancellationTokenSource();
       OnStarted();
       Task task = Task.Factory.StartNew(Run, cancellationTokenSource.Token, cancellationTokenSource.Token);
       task.ContinueWith(t => {
@@ -282,6 +343,7 @@ namespace HeuristicLab.Algorithms.Benchmarks {
             else OnExceptionOccurred(remaining);
           }
         }
+
         cancellationTokenSource.Dispose();
         cancellationTokenSource = null;
         OnStopped();
@@ -296,18 +358,23 @@ namespace HeuristicLab.Algorithms.Benchmarks {
       timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_Elapsed);
       timer.Start();
       try {
-        RunBenchmark();
+        BenchmarkAlgorithm = (IBenchmark)BenchmarkAlgorithmParameter.ActualValue;
+        int chunkSize = ((IntValue)ChunkSizeParameter.ActualValue).Value;
+        if (chunkSize > 0) {
+          BenchmarkAlgorithm.ChunkData = CreateDataChuck(chunkSize);
+        }
+        BenchmarkAlgorithm.TimeLimit = TimeSpan.FromMinutes(((DoubleValue)TimeLimitParameter.ActualValue).Value);
+        BenchmarkAlgorithm.Run(cancellationToken, results);
+      }
+      catch (OperationCanceledException) {
+        //Console.WriteLine(ex.ToString());
       }
       finally {
         timer.Elapsed -= new System.Timers.ElapsedEventHandler(timer_Elapsed);
         timer.Stop();
         ExecutionTime += DateTime.Now - lastUpdateTime;
       }
-
-      cancellationToken.ThrowIfCancellationRequested();
     }
-
-    protected abstract void RunBenchmark();
 
     private void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
       System.Timers.Timer timer = (System.Timers.Timer)sender;
@@ -346,6 +413,31 @@ namespace HeuristicLab.Algorithms.Benchmarks {
       values.Add("Benchmark Name", new StringValue(Name));
       values.Add("Benchmark Type", new StringValue(this.GetType().GetPrettyName()));
     }
+
+    private byte[][] CreateDataChuck(int megaBytes) {
+      if (megaBytes <= 0) {
+        throw new ArgumentException("MegaBytes must be greater than zero", "megaBytes");
+      }
+      byte[][] chunk = new byte[megaBytes][];
+      for (int i = 0; i < chunk.Length; i++) {
+        chunk[i] = new byte[1024 * 1024];
+        random.NextBytes(chunk[i]);
+      }
+      return chunk;
+    }
+    /*
+    private int[] CreateDataChuck(int megaBytes) {
+      if (megaBytes <= 0) {
+        throw new ArgumentException("MegaBytes must be greater than zero", "megaBytes");
+      }
+      int size = (megaBytes * 1020 * 1024) / sizeof(int);
+      int[] data = new int[size];
+      for (int i = 0; i < data.Length; i++) {
+        data[i] = random.Next();
+      }
+      return data;
+    }
+    */
 
     #region Events
 
@@ -463,13 +555,11 @@ namespace HeuristicLab.Algorithms.Benchmarks {
 
     #endregion
 
-    #region IDeepCloneable Members
+    #region Clone
 
-    public abstract IDeepCloneable Clone(Cloner cloner);
-
-    #endregion
-
-    #region ICloneable Members
+    public IDeepCloneable Clone(Cloner cloner) {
+      return new Benchmark(this, cloner);
+    }
 
     public object Clone() {
       return Clone(new Cloner());

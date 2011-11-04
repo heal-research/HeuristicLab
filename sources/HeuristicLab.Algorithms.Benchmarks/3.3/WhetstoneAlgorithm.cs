@@ -20,6 +20,9 @@
 #endregion
 
 using System;
+using System.Diagnostics;
+using System.Drawing;
+using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -28,9 +31,16 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.Benchmarks {
   [Item("Whetstone Algorithm", "Whetstone benchmarking algorithm.")]
-  [Creatable("Benchmarks")]
   [StorableClass]
-  public class Whetstone : Benchmark {
+  public class WhetstoneBenchmark : IBenchmark {
+    [Storable]
+    private byte[][] chunk;
+
+    private TimeSpan timeLimit;
+
+    private bool stopBenchmark;
+
+    private CancellationToken cancellationToken;
 
     #region Benchmark Fields
 
@@ -47,55 +57,96 @@ namespace HeuristicLab.Algorithms.Benchmarks {
 
     #endregion
 
-    #region Costructors
+    #region Properties
 
-    public Whetstone()
-      : base() {
-
+    public byte[][] ChunkData {
+      get { return chunk; }
+      set { chunk = value; }
     }
 
-    private Whetstone(Whetstone original, Cloner cloner)
-      : base(original, cloner) {
+    public TimeSpan TimeLimit {
+      get { return timeLimit; }
+      set { timeLimit = value; }
+    }
 
+    public string ItemName {
+      get { return ItemAttribute.GetName(this.GetType()); }
+    }
+
+    public string ItemDescription {
+      get { return ItemAttribute.GetDescription(this.GetType()); }
+    }
+
+    public Version ItemVersion {
+      get { return ItemAttribute.GetVersion(this.GetType()); }
+    }
+
+    public Image ItemImage {
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Event; }
     }
 
     #endregion
 
-    #region IDeepClonable Members
+    #region Costructors
 
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new Whetstone(this, cloner);
+    public WhetstoneBenchmark() {
+    }
+
+    private WhetstoneBenchmark(WhetstoneBenchmark original, Cloner cloner) {
+      cloner.RegisterClonedObject(original, this);
     }
 
     #endregion
 
     #region Whetstone Benchmark
+    // implementation based on Java version: www.aicas.com/download/Whetstone.java
 
-    protected override void RunBenchmark() {
+    public void Run(CancellationToken token, ResultCollection results) {
+      cancellationToken = token;
+      stopBenchmark = false;
+
       ITERATIONS = 100; // ITERATIONS / 10 = Millions Whetstone instructions
 
       numberOfCycles = 100;
-      int numberOfRuns = 10;
+      int defaultNumberOfRuns = 10;
       float elapsedTime = 0;
       float meanTime = 0;
       float rating = 0;
       float meanRating = 0;
       int intRating = 0;
 
-      for (int runNumber = 1; runNumber <= numberOfRuns; runNumber++) {
+      long runNumber = 1;
+      Stopwatch sw = new Stopwatch();
+      sw.Start();
+
+      while (!stopBenchmark) {
         elapsedTime = (float)(MainCalc() / 1000);
         meanTime = meanTime + (elapsedTime * 1000 / numberOfCycles);
         rating = (1000 * numberOfCycles) / elapsedTime;
         meanRating = meanRating + rating;
         intRating = (int)rating;
         numberOfCycles += 10;
-      }
 
-      meanTime = meanTime / numberOfRuns;
-      meanRating = meanRating / numberOfRuns;
+        if (cancellationToken.IsCancellationRequested) {
+          throw new OperationCanceledException(cancellationToken);
+        }
+
+        if ((timeLimit == null) || (timeLimit.TotalMilliseconds == 0)) {
+          if (runNumber > defaultNumberOfRuns) {
+            stopBenchmark = true;
+          }
+        } else if (sw.Elapsed > timeLimit) {
+          stopBenchmark = true;
+        }
+
+        runNumber++;
+      }
+      sw.Stop();
+      meanTime = meanTime / runNumber;
+      meanRating = meanRating / runNumber;
       intRating = (int)meanRating;
 
-      Results.Add(new Result("MWIPS", new IntValue(intRating / 1000)));
+      results.Add(new Result("MWIPS", new IntValue(intRating / 1000)));
     }
 
     private double MainCalc() {
@@ -240,6 +291,34 @@ namespace HeuristicLab.Algorithms.Benchmarks {
       e1[j] = e1[k];
       e1[k] = e1[l];
       e1[l] = e1[j];
+    }
+
+    #endregion
+
+    #region Clone
+
+    public IDeepCloneable Clone(Cloner cloner) {
+      return new WhetstoneBenchmark(this, cloner);
+    }
+
+    public object Clone() {
+      return Clone(new Cloner());
+    }
+
+    #endregion
+
+    #region Events
+
+    public event EventHandler ItemImageChanged;
+    protected virtual void OnItemImageChanged() {
+      EventHandler handler = ItemImageChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
+
+    public event EventHandler ToStringChanged;
+    protected virtual void OnToStringChanged() {
+      EventHandler handler = ToStringChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
 
     #endregion
