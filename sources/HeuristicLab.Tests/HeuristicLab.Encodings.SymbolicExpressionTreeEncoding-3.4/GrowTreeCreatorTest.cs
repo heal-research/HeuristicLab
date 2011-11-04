@@ -58,17 +58,28 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._4.Tests {
       }
       stopwatch.Stop();
 
+      int count = 0;
+      int depth = 0;
+      int maxLength = 0;
       foreach (var tree in randomTrees) {
         Util.IsValid(tree);
+        if (maxLength < tree.Length)
+          maxLength = tree.Length;
+        count += tree.Length;
+        depth += tree.Depth;
       }
+
       double msPerRandomTreeCreation = stopwatch.ElapsedMilliseconds / (double)POPULATION_SIZE;
 
       Console.WriteLine("GrowTreeCreator: " + Environment.NewLine +
         msPerRandomTreeCreation + " ms per random tree (~" + Math.Round(1000.0 / (msPerRandomTreeCreation)) + "random trees / s)" + Environment.NewLine +
-        Util.GetSizeDistributionString(randomTrees, 105, 5) + Environment.NewLine +
+        Util.GetSizeDistributionString(randomTrees, maxLength, 5) + Environment.NewLine +
         Util.GetFunctionDistributionString(randomTrees) + Environment.NewLine +
         Util.GetNumberOfSubtreesDistributionString(randomTrees) + Environment.NewLine +
-        Util.GetTerminalDistributionString(randomTrees) + Environment.NewLine
+        Util.GetTerminalDistributionString(randomTrees) + Environment.NewLine +
+        "Average tree depth: " + depth / POPULATION_SIZE + Environment.NewLine +
+        "Average tree length: " + count / POPULATION_SIZE + Environment.NewLine +
+        "Total nodes created: " + count + Environment.NewLine
         );
       Assert.IsTrue(Math.Round(1000.0 / (msPerRandomTreeCreation)) > 300); // must achieve more than 300 random trees / s
     }
