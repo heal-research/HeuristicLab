@@ -106,7 +106,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       IEvaluationServiceClient client = null;
       lock (clientLock) {
         client = Clients.CheckedItems.FirstOrDefault(c => !activeClients.Contains(c));
-        while (client == null && Clients.Count > 0) {
+        while (client == null && Clients.CheckedItems.Count() > 0) {
           Monitor.Wait(clientLock);
           client = Clients.CheckedItems.FirstOrDefault(c => !activeClients.Contains(c));
         }
