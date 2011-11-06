@@ -50,31 +50,31 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Algorithms {
     #endregion
 
     #region Parameter Properties
-    private FixedValueParameter<MultiAnalyzer> AnalyzerParameter {
+    public FixedValueParameter<MultiAnalyzer> AnalyzerParameter {
       get { return (FixedValueParameter<MultiAnalyzer>)Parameters["Analyzer"]; }
     }
-    private FixedValueParameter<IntValue> SeedParameter {
+    public FixedValueParameter<IntValue> SeedParameter {
       get { return (FixedValueParameter<IntValue>)Parameters["Seed"]; }
     }
-    private FixedValueParameter<BoolValue> SetSeedRandomlyParameter {
+    public FixedValueParameter<BoolValue> SetSeedRandomlyParameter {
       get { return (FixedValueParameter<BoolValue>)Parameters["SetSeedRandomly"]; }
     }
-    private FixedValueParameter<IntValue> MaximumIterationsParameter {
+    public FixedValueParameter<IntValue> MaximumIterationsParameter {
       get { return (FixedValueParameter<IntValue>)Parameters["MaximumIterations"]; }
     }
-    private FixedValueParameter<IntValue> MinimumTabuTenureParameter {
+    public FixedValueParameter<IntValue> MinimumTabuTenureParameter {
       get { return (FixedValueParameter<IntValue>)Parameters["MinimumTabuTenure"]; }
     }
-    private FixedValueParameter<IntValue> MaximumTabuTenureParameter {
+    public FixedValueParameter<IntValue> MaximumTabuTenureParameter {
       get { return (FixedValueParameter<IntValue>)Parameters["MaximumTabuTenure"]; }
     }
-    private FixedValueParameter<BoolValue> UseAlternativeAspirationParameter {
+    public FixedValueParameter<BoolValue> UseAlternativeAspirationParameter {
       get { return (FixedValueParameter<BoolValue>)Parameters["UseAlternativeAspiration"]; }
     }
-    private FixedValueParameter<IntValue> AlternativeAspirationTenureParameter {
+    public FixedValueParameter<IntValue> AlternativeAspirationTenureParameter {
       get { return (FixedValueParameter<IntValue>)Parameters["AlternativeAspirationTenure"]; }
     }
-    private FixedValueParameter<BoolValue> UseNewTabuTenureAdaptionSchemeParameter {
+    public FixedValueParameter<BoolValue> UseNewTabuTenureAdaptionSchemeParameter {
       get { return (FixedValueParameter<BoolValue>)Parameters["UseNewTabuTenureAdaptionScheme"]; }
     }
     #endregion
