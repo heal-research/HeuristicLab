@@ -81,7 +81,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     #endregion
 
-    public static double Calculate(IEnumerable<double> estimatedValues, IEnumerable<double> originalValues, out OnlineCalculatorError errorState) {
+    public static double Calculate(IEnumerable<double> originalValues, IEnumerable<double> estimatedValues, out OnlineCalculatorError errorState) {
       IEnumerator<double> originalValuesEnumerator = originalValues.GetEnumerator();
       IEnumerator<double> estimatedValuesEnumerator = estimatedValues.GetEnumerator();
       OnlineTheilsUStatisticCalculator calculator = new OnlineTheilsUStatisticCalculator();

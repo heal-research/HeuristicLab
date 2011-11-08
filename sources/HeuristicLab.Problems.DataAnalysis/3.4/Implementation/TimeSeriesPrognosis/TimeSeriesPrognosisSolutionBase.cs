@@ -165,44 +165,44 @@ namespace HeuristicLab.Problems.DataAnalysis {
       double[] originalTestValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TestIndizes).ToArray();
 
       OnlineCalculatorError errorState;
-      double trainingMse = OnlineMeanSquaredErrorCalculator.Calculate(estimatedTrainingValues, originalTrainingValues, out errorState);
+      double trainingMse = OnlineMeanSquaredErrorCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);
       TrainingMeanSquaredError = errorState == OnlineCalculatorError.None ? trainingMse : double.NaN;
-      double testMse = OnlineMeanSquaredErrorCalculator.Calculate(estimatedTestValues, originalTestValues, out errorState);
+      double testMse = OnlineMeanSquaredErrorCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);
       TestMeanSquaredError = errorState == OnlineCalculatorError.None ? testMse : double.NaN;
 
-      double trainingMae = OnlineMeanAbsoluteErrorCalculator.Calculate(estimatedTrainingValues, originalTrainingValues, out errorState);
+      double trainingMae = OnlineMeanAbsoluteErrorCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);
       TrainingMeanAbsoluteError = errorState == OnlineCalculatorError.None ? trainingMae : double.NaN;
-      double testMae = OnlineMeanAbsoluteErrorCalculator.Calculate(estimatedTestValues, originalTestValues, out errorState);
+      double testMae = OnlineMeanAbsoluteErrorCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);
       TestMeanAbsoluteError = errorState == OnlineCalculatorError.None ? testMae : double.NaN;
 
-      double trainingR2 = OnlinePearsonsRSquaredCalculator.Calculate(estimatedTrainingValues, originalTrainingValues, out errorState);
+      double trainingR2 = OnlinePearsonsRSquaredCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);
       TrainingRSquared = errorState == OnlineCalculatorError.None ? trainingR2 : double.NaN;
-      double testR2 = OnlinePearsonsRSquaredCalculator.Calculate(estimatedTestValues, originalTestValues, out errorState);
+      double testR2 = OnlinePearsonsRSquaredCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);
       TestRSquared = errorState == OnlineCalculatorError.None ? testR2 : double.NaN;
 
-      double trainingRelError = OnlineMeanAbsolutePercentageErrorCalculator.Calculate(estimatedTrainingValues, originalTrainingValues, out errorState);
+      double trainingRelError = OnlineMeanAbsolutePercentageErrorCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);
       TrainingRelativeError = errorState == OnlineCalculatorError.None ? trainingRelError : double.NaN;
-      double testRelError = OnlineMeanAbsolutePercentageErrorCalculator.Calculate(estimatedTestValues, originalTestValues, out errorState);
+      double testRelError = OnlineMeanAbsolutePercentageErrorCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);
       TestRelativeError = errorState == OnlineCalculatorError.None ? testRelError : double.NaN;
 
-      double trainingNmse = OnlineNormalizedMeanSquaredErrorCalculator.Calculate(estimatedTrainingValues, originalTrainingValues, out errorState);
+      double trainingNmse = OnlineNormalizedMeanSquaredErrorCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);
       TrainingNormalizedMeanSquaredError = errorState == OnlineCalculatorError.None ? trainingNmse : double.NaN;
-      double testNmse = OnlineNormalizedMeanSquaredErrorCalculator.Calculate(estimatedTestValues, originalTestValues, out errorState);
+      double testNmse = OnlineNormalizedMeanSquaredErrorCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);
       TestNormalizedMeanSquaredError = errorState == OnlineCalculatorError.None ? testNmse : double.NaN;
 
-      double trainingDirectionalSymmetry = OnlineDirectionalSymmetryCalculator.Calculate(estimatedTrainingValues, originalTrainingValues, out errorState);
+      double trainingDirectionalSymmetry = OnlineDirectionalSymmetryCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);
       TrainingDirectionalSymmetry = errorState == OnlineCalculatorError.None ? trainingDirectionalSymmetry : double.NaN;
-      double testDirectionalSymmetry = OnlineDirectionalSymmetryCalculator.Calculate(estimatedTestValues, originalTestValues, out errorState);
+      double testDirectionalSymmetry = OnlineDirectionalSymmetryCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);
       TestDirectionalSymmetry = errorState == OnlineCalculatorError.None ? testDirectionalSymmetry : double.NaN;
 
-      double trainingWeightedDirectionalSymmetry = OnlineWeightedDirectionalSymmetryCalculator.Calculate(estimatedTrainingValues, originalTrainingValues, out errorState);
+      double trainingWeightedDirectionalSymmetry = OnlineWeightedDirectionalSymmetryCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);
       TrainingWeightedDirectionalSymmetry = errorState == OnlineCalculatorError.None ? trainingWeightedDirectionalSymmetry : double.NaN;
-      double testWeightedDirectionalSymmetry = OnlineWeightedDirectionalSymmetryCalculator.Calculate(estimatedTestValues, originalTestValues, out errorState);
+      double testWeightedDirectionalSymmetry = OnlineWeightedDirectionalSymmetryCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);
       TestWeightedDirectionalSymmetry = errorState == OnlineCalculatorError.None ? testWeightedDirectionalSymmetry : double.NaN;
 
-      double trainingTheilsU = OnlineTheilsUStatisticCalculator.Calculate(estimatedTrainingValues, originalTrainingValues, out errorState);
+      double trainingTheilsU = OnlineTheilsUStatisticCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);
       TrainingTheilsUStatistic = errorState == OnlineCalculatorError.None ? trainingTheilsU : double.NaN;
-      double testTheilsU = OnlineTheilsUStatisticCalculator.Calculate(estimatedTestValues, originalTestValues, out errorState);
+      double testTheilsU = OnlineTheilsUStatisticCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);
       TestTheilsUStatistic = errorState == OnlineCalculatorError.None ? testTheilsU : double.NaN;
 
 

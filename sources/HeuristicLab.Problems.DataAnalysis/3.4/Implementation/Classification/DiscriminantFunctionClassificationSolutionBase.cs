@@ -107,14 +107,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
       double[] originalTestValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TestIndizes).ToArray();
 
       OnlineCalculatorError errorState;
-      double trainingMSE = OnlineMeanSquaredErrorCalculator.Calculate(estimatedTrainingValues, originalTrainingValues, out errorState);
+      double trainingMSE = OnlineMeanSquaredErrorCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);
       TrainingMeanSquaredError = errorState == OnlineCalculatorError.None ? trainingMSE : double.NaN;
-      double testMSE = OnlineMeanSquaredErrorCalculator.Calculate(estimatedTestValues, originalTestValues, out errorState);
+      double testMSE = OnlineMeanSquaredErrorCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);
       TestMeanSquaredError = errorState == OnlineCalculatorError.None ? testMSE : double.NaN;
 
-      double trainingR2 = OnlinePearsonsRSquaredCalculator.Calculate(estimatedTrainingValues, originalTrainingValues, out errorState);
+      double trainingR2 = OnlinePearsonsRSquaredCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);
       TrainingRSquared = errorState == OnlineCalculatorError.None ? trainingR2 : double.NaN;
-      double testR2 = OnlinePearsonsRSquaredCalculator.Calculate(estimatedTestValues, originalTestValues, out errorState);
+      double testR2 = OnlinePearsonsRSquaredCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);
       TestRSquared = errorState == OnlineCalculatorError.None ? testR2 : double.NaN;
 
       double trainingNormalizedGini = NormalizedGiniCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);

@@ -83,9 +83,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
       double[] originalTestClassValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TestIndizes).ToArray();
 
       OnlineCalculatorError errorState;
-      double trainingAccuracy = OnlineAccuracyCalculator.Calculate(estimatedTrainingClassValues, originalTrainingClassValues, out errorState);
+      double trainingAccuracy = OnlineAccuracyCalculator.Calculate(originalTrainingClassValues, estimatedTrainingClassValues, out errorState);
       if (errorState != OnlineCalculatorError.None) trainingAccuracy = double.NaN;
-      double testAccuracy = OnlineAccuracyCalculator.Calculate(estimatedTestClassValues, originalTestClassValues, out errorState);
+      double testAccuracy = OnlineAccuracyCalculator.Calculate(originalTestClassValues, estimatedTestClassValues, out errorState);
       if (errorState != OnlineCalculatorError.None) testAccuracy = double.NaN;
 
       TrainingAccuracy = trainingAccuracy;
