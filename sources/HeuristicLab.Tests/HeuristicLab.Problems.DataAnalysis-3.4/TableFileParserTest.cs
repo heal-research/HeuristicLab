@@ -184,6 +184,28 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
     }
 
     [TestMethod]
+    public void ParseEnglishCSVWithoutCommasWithoutSpace() {
+      string tempFileName = Path.GetTempFileName();
+      WriteToFile(tempFileName,
+@"0,0,0,3
+0,0,0,0
+0,0,0,0
+0,0,0,0
+0,0,0,0
+0,0,0,0");
+      TableFileParser parser = new TableFileParser();
+      try {
+        parser.Parse(tempFileName);
+        Assert.AreEqual(6, parser.Rows);
+        Assert.AreEqual(4, parser.Columns);
+        Assert.AreEqual((double)parser.Values[3][0], 3);
+      }
+      finally {
+        File.Delete(tempFileName);
+      }
+    }
+
+    [TestMethod]
     public void ParseEnglishCSVWithoutCommasWithNames() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -194,6 +216,29 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
 0, 0, 0, 0
 0, 0, 0, 0
 0, 0, 0, 0");
+      TableFileParser parser = new TableFileParser();
+      try {
+        parser.Parse(tempFileName);
+        Assert.AreEqual(6, parser.Rows);
+        Assert.AreEqual(4, parser.Columns);
+        Assert.AreEqual((double)parser.Values[3][0], 3);
+      }
+      finally {
+        File.Delete(tempFileName);
+      }
+    }
+
+    [TestMethod]
+    public void ParseEnglishCSVWithoutCommasWithoutSpacesWithNames() {
+      string tempFileName = Path.GetTempFileName();
+      WriteToFile(tempFileName,
+@"x01,x02,x03,x04
+0,0,0,3
+0,0,0,0
+0,0,0,0
+0,0,0,0
+0,0,0,0
+0,0,0,0");
       TableFileParser parser = new TableFileParser();
       try {
         parser.Parse(tempFileName);
