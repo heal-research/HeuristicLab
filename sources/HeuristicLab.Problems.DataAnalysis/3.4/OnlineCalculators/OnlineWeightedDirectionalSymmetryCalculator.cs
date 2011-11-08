@@ -82,28 +82,28 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
 
-    public static double Calculate(IEnumerable<double> first, IEnumerable<double> second, out OnlineCalculatorError errorState) {
-      IEnumerator<double> firstEnumerator = first.GetEnumerator();
-      IEnumerator<double> secondEnumerator = second.GetEnumerator();
+    public static double Calculate(IEnumerable<double> originalValues, IEnumerable<double> estimatedValues, out OnlineCalculatorError errorState) {
+      IEnumerator<double> originalEnumerator = originalValues.GetEnumerator();
+      IEnumerator<double> estimatedEnumerator = estimatedValues.GetEnumerator();
       OnlineWeightedDirectionalSymmetryCalculator dsCalculator = new OnlineWeightedDirectionalSymmetryCalculator();
-      
+
       // add first element of time series as a reference point
-      firstEnumerator.MoveNext();
-      secondEnumerator.MoveNext();
-      dsCalculator.Add(firstEnumerator.Current, secondEnumerator.Current);
+      originalEnumerator.MoveNext();
+      estimatedEnumerator.MoveNext();
+      dsCalculator.Add(originalEnumerator.Current, estimatedEnumerator.Current);
 
       // always move forward both enumerators (do not use short-circuit evaluation!)
-      while (firstEnumerator.MoveNext() & secondEnumerator.MoveNext()) {
-        double estimated = secondEnumerator.Current;
-        double original = firstEnumerator.Current;
+      while (originalEnumerator.MoveNext() & estimatedEnumerator.MoveNext()) {
+        double original = originalEnumerator.Current;
+        double estimated = estimatedEnumerator.Current;
         dsCalculator.Add(original, estimated);
         if (dsCalculator.ErrorState != OnlineCalculatorError.None) break;
       }
 
       // check if both enumerators are at the end to make sure both enumerations have the same length
       if (dsCalculator.ErrorState == OnlineCalculatorError.None &&
-          (secondEnumerator.MoveNext() || firstEnumerator.MoveNext())) {
-        throw new ArgumentException("Number of elements in first and second enumeration doesn't match.");
+          (originalEnumerator.MoveNext() || estimatedEnumerator.MoveNext())) {
+        throw new ArgumentException("Number of elements in originalValues and estimatedValues enumerations doesn't match.");
       } else {
         errorState = dsCalculator.ErrorState;
         return dsCalculator.WeightedDirectionalSymmetry;

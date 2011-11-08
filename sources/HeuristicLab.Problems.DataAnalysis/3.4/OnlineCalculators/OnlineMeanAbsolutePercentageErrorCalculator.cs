@@ -82,7 +82,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       // check if both enumerators are at the end to make sure both enumerations have the same length
       if (calculator.ErrorState == OnlineCalculatorError.None &&
             (estimatedEnumerator.MoveNext() || originalEnumerator.MoveNext())) {
-        throw new ArgumentException("Number of elements in first and second enumeration doesn't match.");
+        throw new ArgumentException("Number of elements in originalValues and second estimatedValues doesn't match.");
       } else {
         errorState = calculator.ErrorState;
         return calculator.MeanAbsolutePercentageError;

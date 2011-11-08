@@ -76,8 +76,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
       // always move forward both enumerators (do not use short-circuit evaluation!)
       while (originalEnumerator.MoveNext() & estimatedEnumerator.MoveNext()) {
-        double estimated = estimatedEnumerator.Current;
         double original = originalEnumerator.Current;
+        double estimated = estimatedEnumerator.Current;
         normalizedMSECalculator.Add(original, estimated);
         if (normalizedMSECalculator.ErrorState != OnlineCalculatorError.None) break;
       }
@@ -85,7 +85,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       // check if both enumerators are at the end to make sure both enumerations have the same length
       if (normalizedMSECalculator.ErrorState == OnlineCalculatorError.None &&
            (estimatedEnumerator.MoveNext() || originalEnumerator.MoveNext())) {
-        throw new ArgumentException("Number of elements in first and second enumeration doesn't match.");
+        throw new ArgumentException("Number of elements in originalValues and estimatedValues enumeration doesn't match.");
       } else {
         errorState = normalizedMSECalculator.ErrorState;
         return normalizedMSECalculator.NormalizedMeanSquaredError;

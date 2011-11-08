@@ -25,7 +25,7 @@ using System.Collections.Generic;
 namespace HeuristicLab.Problems.DataAnalysis {
   public class OnlineCovarianceCalculator : IOnlineCalculator {
 
-    private double originalMean, estimatedMean, Cn;
+    private double xMean, yMean, Cn;
     private int n;
     public double Covariance {
       get {
@@ -48,25 +48,25 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public void Reset() {
       n = 0;
       Cn = 0.0;
-      originalMean = 0.0;
-      estimatedMean = 0.0;
+      xMean = 0.0;
+      yMean = 0.0;
       errorState = OnlineCalculatorError.InsufficientElementsAdded;
     }
 
-    public void Add(double original, double estimated) {
-      if (double.IsNaN(estimated) || double.IsInfinity(estimated) || double.IsNaN(original) || double.IsInfinity(original) || (errorState & OnlineCalculatorError.InvalidValueAdded) > 0) {
+    public void Add(double x, double y) {
+      if (double.IsNaN(y) || double.IsInfinity(y) || double.IsNaN(x) || double.IsInfinity(x) || (errorState & OnlineCalculatorError.InvalidValueAdded) > 0) {
         errorState = errorState | OnlineCalculatorError.InvalidValueAdded;
       } else {
         n++;
         errorState = errorState & (~OnlineCalculatorError.InsufficientElementsAdded);        // n >= 1
 
         // online calculation of tMean
-        originalMean = originalMean + (original - originalMean) / n;
-        double delta = estimated - estimatedMean; // delta = (y - yMean(n-1))
-        estimatedMean = estimatedMean + delta / n;
+        xMean = xMean + (x - xMean) / n;
+        double delta = y - yMean; // delta = (y - yMean(n-1))
+        yMean = yMean + delta / n;
 
         // online calculation of covariance
-        Cn = Cn + delta * (original - originalMean); // C(n) = C(n-1) + (y - yMean(n-1)) (t - tMean(n))       
+        Cn = Cn + delta * (x - xMean); // C(n) = C(n-1) + (y - yMean(n-1)) (t - tMean(n))       
       }
     }
     #endregion
@@ -78,9 +78,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
       // always move forward both enumerators (do not use short-circuit evaluation!)
       while (firstEnumerator.MoveNext() & secondEnumerator.MoveNext()) {
-        double estimated = secondEnumerator.Current;
-        double original = firstEnumerator.Current;
-        covarianceCalculator.Add(original, estimated);
+        double x = secondEnumerator.Current;
+        double y = firstEnumerator.Current;
+        covarianceCalculator.Add(x, y);
         if (covarianceCalculator.ErrorState != OnlineCalculatorError.None) break;
       }
 
