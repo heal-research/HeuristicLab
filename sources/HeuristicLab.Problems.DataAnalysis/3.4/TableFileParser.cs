@@ -155,13 +155,17 @@ namespace HeuristicLab.Problems.DataAnalysis {
             .First();
         } else if (OccurrencesOf(charCounts, ',') > 10) {
           // no points and many commas
-          int countCommaNonDigitPairs = 0;
-          for (int i = 0; i < charsRead - 1; i++) {
-            if (buffer[i] == ',' && !Char.IsDigit(buffer[i + 1])) {
-              countCommaNonDigitPairs++;
+          // count the number of tokens (chains of only digits and commas) that contain multiple comma characters
+          int tokensWithMultipleCommas = 0;
+          for (int i = 0; i < charsRead; i++) {
+            int nCommas = 0;
+            while (i < charsRead && (buffer[i] == ',' || Char.IsDigit(buffer[i]))) {
+              if (buffer[i] == ',') nCommas++;
+              i++;
             }
+            if (nCommas > 2) tokensWithMultipleCommas++;
           }
-          if (countCommaNonDigitPairs > 10) {
+          if (tokensWithMultipleCommas > 1) {
             // English format (only integer values) with ',' as separator
             numberFormat = NumberFormatInfo.InvariantInfo;
             dateTimeFormatInfo = DateTimeFormatInfo.InvariantInfo;
