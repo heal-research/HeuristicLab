@@ -1,0 +1,104 @@
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2011 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System;
+using System.Windows.Forms;
+using HeuristicLab.Collections;
+using HeuristicLab.Core;
+using HeuristicLab.MainForm;
+
+namespace HeuristicLab.Clients.Hive.JobManager.Views {
+  [View("Refreshable Hive Job List")]
+  [Content(typeof(ItemCollection<RefreshableJob>), false)]
+  public partial class RefreshableHiveJobListView : HeuristicLab.Core.Views.ItemCollectionView<RefreshableJob> {
+
+    public RefreshableHiveJobListView() {
+      InitializeComponent();
+      itemsGroupBox.Text = "Jobs";
+      this.itemsListView.View = View.Details;
+      this.itemsListView.Columns.Clear();
+      this.itemsListView.Columns.Add(new ColumnHeader("Date") { Text = "Date" });
+      this.itemsListView.Columns.Add(new ColumnHeader("Name") { Text = "Name" });
+      foreach (ColumnHeader c in this.itemsListView.Columns) {
+        c.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
+      }
+      this.itemsListView.HeaderStyle = ColumnHeaderStyle.Clickable;
+      this.itemsListView.FullRowSelect = true;
+      this.itemsListView.Sorting = SortOrder.Ascending;
+      this.itemsListView.Sort();
+    }
+
+    protected override RefreshableJob CreateItem() {
+      return new RefreshableJob() { IsAllowedPrivileged = HiveClient.Instance.IsAllowedPrivileged };
+    }
+
+    protected override void removeButton_Click(object sender, EventArgs e) {
+      DialogResult result = MessageBox.Show("This action will permanently delete this job (also on the hive server). Continue?", "Delete Job", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+      if (result == DialogResult.OK) {
+        base.removeButton_Click(sender, e);
+      }
+    }
+
+    protected override void Content_ItemsAdded(object sender, Collections.CollectionItemsChangedEventArgs<RefreshableJob> e) {
+      base.Content_ItemsAdded(sender, e);
+      foreach (ColumnHeader c in this.itemsListView.Columns) {
+        c.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+      }
+    }
+
+    protected override void Content_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<RefreshableJob> e) {
+      base.Content_ItemsRemoved(sender, e);
+      if (Content != null && Content.Count == 0) {
+        foreach (ColumnHeader c in this.itemsListView.Columns) {
+          c.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
+        }
+      }
+    }
+
+    protected override ListViewItem CreateListViewItem(RefreshableJob item) {
+      ListViewItem listViewItem = base.CreateListViewItem(item);
+      listViewItem.SubItems.Clear();
+      listViewItem.SubItems.Insert(0, new ListViewItem.ListViewSubItem(listViewItem, item.Job.DateCreated.ToString("dd.MM.yyyy HH:mm")));
+      listViewItem.SubItems.Insert(1, new ListViewItem.ListViewSubItem(listViewItem, item.Job.Name));
+      listViewItem.Group = GetListViewGroup(item.Job.OwnerUsername);
+      return listViewItem;
+    }
+
+    protected override void UpdateListViewItemText(ListViewItem listViewItem) {
+      if (listViewItem == null) throw new ArgumentNullException();
+      var item = listViewItem.Tag as RefreshableJob;
+      listViewItem.SubItems[0].Text = item == null ? "null" : item.Job.DateCreated.ToString("dd.MM.yyyy HH:mm");
+      listViewItem.SubItems[1].Text = item == null ? "null" : item.Job.Name;
+      listViewItem.Group = GetListViewGroup(item.Job.OwnerUsername);
+      listViewItem.ToolTipText = item == null ? string.Empty : item.ItemName + ": " + item.ItemDescription;
+    }
+
+    private ListViewGroup GetListViewGroup(string groupName) {
+      foreach (ListViewGroup group in itemsListView.Groups) {
+        if (group.Name == groupName)
+          return group;
+      }
+      var newGroup = new ListViewGroup(string.Format("Owner ({0})", groupName), HorizontalAlignment.Left) { Name = groupName };
+      itemsListView.Groups.Add(newGroup);
+      return newGroup;
+    }
+  }
+}
