@@ -110,6 +110,7 @@
   <ItemGroup>
     <Compile Include="Analyzers\MinAverageMaxSymbolicExpressionTreeLengthAnalyzer.cs" />
     <Compile Include="Analyzers\SymbolicExpressionSymbolFrequencyAnalyzer.cs" />
+    <Compile Include="Analyzers\SymbolicExpressionTreeLengthAnalyzer.cs" />
     <Compile Include="Analyzers\SymbolicExpressionTreeLengthCalculator.cs" />
     <Compile Include="ArchitectureManipulators\ArgumentCreater.cs" />
     <Compile Include="ArchitectureManipulators\ArgumentDeleter.cs" />
