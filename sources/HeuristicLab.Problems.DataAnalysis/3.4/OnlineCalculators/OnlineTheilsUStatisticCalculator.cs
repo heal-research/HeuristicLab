@@ -21,13 +21,12 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlineTheilsUStatisticCalculator : IOnlineCalculator {
+  public class OnlineTheilsUStatisticCalculator : IOnlineTimeSeriesCalculator {
     private OnlineMeanAndVarianceCalculator squaredErrorMeanCalculator;
     private OnlineMeanAndVarianceCalculator unbiasedEstimatorMeanCalculator;
-    private double prevOriginal;
-    private int n;
 
     public double TheilsUStatistic {
       get {
@@ -51,29 +50,36 @@ namespace HeuristicLab.Problems.DataAnalysis {
       get { return TheilsUStatistic; }
     }
 
-    public void Add(double original, double estimated) {
-      if (double.IsNaN(estimated) || double.IsInfinity(estimated) || double.IsNaN(original) || double.IsInfinity(original) || (errorState & OnlineCalculatorError.InvalidValueAdded) > 0) {
+    public void Add(double startValue, IEnumerable<double> actualContinuation, IEnumerable<double> predictedContinuation) {
+      if (double.IsNaN(startValue) || (errorState & OnlineCalculatorError.InvalidValueAdded) > 0) {
         errorState = errorState | OnlineCalculatorError.InvalidValueAdded;
-      } else if (n == 0) {
-        prevOriginal = original;
-        n++;
       } else {
-        // error of predicted change
-        double errorEstimatedChange = (estimated - original);
-        squaredErrorMeanCalculator.Add(errorEstimatedChange * errorEstimatedChange);
+        var actualEnumerator = actualContinuation.GetEnumerator();
+        var predictedEnumerator = predictedContinuation.GetEnumerator();
+        while (actualEnumerator.MoveNext() & predictedEnumerator.MoveNext() & ErrorState != OnlineCalculatorError.InvalidValueAdded) {
+          double actual = actualEnumerator.Current;
+          double predicted = predictedEnumerator.Current;
+          if (double.IsNaN(actual) || double.IsNaN(predicted)) {
+            errorState = errorState | OnlineCalculatorError.InvalidValueAdded;
+          } else {
+            // error of predicted change
+            double errorPredictedChange = (predicted - startValue) - (actual - startValue);
+            squaredErrorMeanCalculator.Add(errorPredictedChange * errorPredictedChange);
 
-        double errorNoChange = (original - prevOriginal);
-        unbiasedEstimatorMeanCalculator.Add(errorNoChange * errorNoChange);
-        errorState = errorState & (~OnlineCalculatorError.InsufficientElementsAdded);        // n >= 1
-        prevOriginal = original;
-        n++;
+            double errorNoChange = (actual - startValue);
+            unbiasedEstimatorMeanCalculator.Add(errorNoChange * errorNoChange);
+          }
+        }
+        // check if both enumerators are at the end to make sure both enumerations have the same length
+        if (actualEnumerator.MoveNext() || predictedEnumerator.MoveNext()) {
+          errorState = errorState | OnlineCalculatorError.InvalidValueAdded;
+        } else {
+          errorState = errorState & (~OnlineCalculatorError.InsufficientElementsAdded); // n >= 1
+        }
       }
     }
 
-
     public void Reset() {
-      prevOriginal = double.NaN;
-      n = 0;
       squaredErrorMeanCalculator.Reset();
       unbiasedEstimatorMeanCalculator.Reset();
       errorState = OnlineCalculatorError.InsufficientElementsAdded;
@@ -81,28 +87,22 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     #endregion
 
-    public static double Calculate(IEnumerable<double> originalValues, IEnumerable<double> estimatedValues, out OnlineCalculatorError errorState) {
-      IEnumerator<double> originalValuesEnumerator = originalValues.GetEnumerator();
-      IEnumerator<double> estimatedValuesEnumerator = estimatedValues.GetEnumerator();
+    public static double Calculate(IEnumerable<double> startValues, IEnumerable<IEnumerable<double>> actualContinuations, IEnumerable<IEnumerable<double>> predictedContinuations, out OnlineCalculatorError errorState) {
+      IEnumerator<double> startValueEnumerator = startValues.GetEnumerator();
+      IEnumerator<IEnumerable<double>> actualContinuationsEnumerator = actualContinuations.GetEnumerator();
+      IEnumerator<IEnumerable<double>> predictedContinuationsEnumerator = predictedContinuations.GetEnumerator();
       OnlineTheilsUStatisticCalculator calculator = new OnlineTheilsUStatisticCalculator();
 
-      // add first element of time series as a reference point
-      originalValuesEnumerator.MoveNext();
-      estimatedValuesEnumerator.MoveNext();
-      calculator.Add(originalValuesEnumerator.Current, estimatedValuesEnumerator.Current);
-
-      // always move forward both enumerators (do not use short-circuit evaluation!)
-      while (originalValuesEnumerator.MoveNext() & estimatedValuesEnumerator.MoveNext()) {
-        double estimated = estimatedValuesEnumerator.Current;
-        double original = originalValuesEnumerator.Current;
-        calculator.Add(original, estimated);
+      // always move forward all enumerators (do not use short-circuit evaluation!)
+      while (startValueEnumerator.MoveNext() & actualContinuationsEnumerator.MoveNext() & predictedContinuationsEnumerator.MoveNext()) {
+        calculator.Add(startValueEnumerator.Current, actualContinuationsEnumerator.Current, predictedContinuationsEnumerator.Current);
         if (calculator.ErrorState != OnlineCalculatorError.None) break;
       }
 
-      // check if both enumerators are at the end to make sure both enumerations have the same length
+      // check if all enumerators are at the end to make sure both enumerations have the same length
       if (calculator.ErrorState == OnlineCalculatorError.None &&
-          (estimatedValuesEnumerator.MoveNext() || originalValuesEnumerator.MoveNext())) {
-        throw new ArgumentException("Number of elements in originalValues and estimatedValues enumerations doesn't match.");
+          (startValueEnumerator.MoveNext() || actualContinuationsEnumerator.MoveNext() || predictedContinuationsEnumerator.MoveNext())) {
+        throw new ArgumentException("Number of elements in startValues, actualContinuations and estimatedValues predictedContinuations doesn't match.");
       } else {
         errorState = calculator.ErrorState;
         return calculator.TheilsUStatistic;

@@ -39,12 +39,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private const string TestRelativeErrorResultName = "Average relative error (test)";
     private const string TrainingNormalizedMeanSquaredErrorResultName = "Normalized mean squared error (training)";
     private const string TestNormalizedMeanSquaredErrorResultName = "Normalized mean squared error (test)";
-    private const string TrainingDirectionalSymmetryResultName = "Directional symmetry (training)";
-    private const string TestDirectionalSymmetryResultName = "Directional symmetry (test)";
-    private const string TrainingWeightedDirectionalSymmetryResultName = "Weighted directional symmetry (training)";
-    private const string TestWeightedDirectionalSymmetryResultName = "Weighted directional symmetry (test)";
-    private const string TrainingTheilsUStatisticResultName = "Theil's U (training)";
-    private const string TestTheilsUStatisticResultName = "Theil's U (test)";
+    private const string TrainingDirectionalSymmetryResultName = "Average directional symmetry (training)";
+    private const string TestDirectionalSymmetryResultName = "Average directional symmetry (test)";
+    private const string TrainingWeightedDirectionalSymmetryResultName = "Average weighted directional symmetry (training)";
+    private const string TestWeightedDirectionalSymmetryResultName = "Average weighted directional symmetry (test)";
+    private const string TrainingTheilsUStatisticResultName = "Average Theil's U (training)";
+    private const string TestTheilsUStatisticResultName = "Average Theil's U (test)";
 
     public new ITimeSeriesPrognosisModel Model {
       get { return (ITimeSeriesPrognosisModel)base.Model; }
@@ -145,12 +145,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Add(new Result(TestRelativeErrorResultName, "Average of the relative errors of the model output and the actual values on the test partition", new PercentValue()));
       Add(new Result(TrainingNormalizedMeanSquaredErrorResultName, "Normalized mean of squared errors of the model on the training partition", new DoubleValue()));
       Add(new Result(TestNormalizedMeanSquaredErrorResultName, "Normalized mean of squared errors of the model on the test partition", new DoubleValue()));
-      Add(new Result(TrainingDirectionalSymmetryResultName, "The directional symmetry of the output of the model on the training partition", new DoubleValue()));
-      Add(new Result(TestDirectionalSymmetryResultName, "The directional symmetry of the output of the model on the test partition", new DoubleValue()));
-      Add(new Result(TrainingWeightedDirectionalSymmetryResultName, "The weighted directional symmetry of the output of the model on the training partition", new DoubleValue()));
-      Add(new Result(TestWeightedDirectionalSymmetryResultName, "The weighted directional symmetry of the output of the model on the test partition", new DoubleValue()));
-      Add(new Result(TrainingTheilsUStatisticResultName, "The Theil's U statistic of the output of the model on the training partition", new DoubleValue()));
-      Add(new Result(TestTheilsUStatisticResultName, "The Theil's U statistic of the output of the model on the test partition", new DoubleValue()));
+      Add(new Result(TrainingDirectionalSymmetryResultName, "The average directional symmetry of the forecasts of the model on the training partition", new PercentValue()));
+      Add(new Result(TestDirectionalSymmetryResultName, "The average directional symmetry of the forecasts of the model on the test partition", new PercentValue()));
+      Add(new Result(TrainingWeightedDirectionalSymmetryResultName, "The average weighted directional symmetry of the forecasts of the model on the training partition", new DoubleValue()));
+      Add(new Result(TestWeightedDirectionalSymmetryResultName, "The average weighted directional symmetry of the forecasts of the model on the test partition", new DoubleValue()));
+      Add(new Result(TrainingTheilsUStatisticResultName, "The average Theil's U statistic of the forecasts of the model on the training partition", new DoubleValue()));
+      Add(new Result(TestTheilsUStatisticResultName, "The average Theil's U statistic of the forecasts of the model on the test partition", new DoubleValue()));
     }
 
     [StorableHook(HookType.AfterDeserialization)]
@@ -190,22 +190,36 @@ namespace HeuristicLab.Problems.DataAnalysis {
       double testNmse = OnlineNormalizedMeanSquaredErrorCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);
       TestNormalizedMeanSquaredError = errorState == OnlineCalculatorError.None ? testNmse : double.NaN;
 
-      double trainingDirectionalSymmetry = OnlineDirectionalSymmetryCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);
+      var startTrainingValues = originalTrainingValues;
+      // each continuation is only one element long
+      var actualContinuationsTraining = from x in originalTrainingValues.Skip(1)
+                                        select Enumerable.Repeat(x, 1);
+      // each forecast is only one elemnt long
+      // disregards the first estimated value (we could include this again by extending the list of original values by one step to the left
+      // this is the easier way
+      var predictedContinuationsTraining = from x in estimatedTrainingValues.Skip(1)
+                                           select Enumerable.Repeat(x, 1);
+
+      var startTestValues = originalTestValues;
+      var actualContinuationsTest = from x in originalTestValues.Skip(1)
+                                    select Enumerable.Repeat(x, 1);
+      var predictedContinuationsTest = from x in estimatedTestValues.Skip(1)
+                                       select Enumerable.Repeat(x, 1);
+
+      double trainingDirectionalSymmetry = OnlineDirectionalSymmetryCalculator.Calculate(startTrainingValues, actualContinuationsTraining, predictedContinuationsTraining, out errorState);
       TrainingDirectionalSymmetry = errorState == OnlineCalculatorError.None ? trainingDirectionalSymmetry : double.NaN;
-      double testDirectionalSymmetry = OnlineDirectionalSymmetryCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);
+      double testDirectionalSymmetry = OnlineDirectionalSymmetryCalculator.Calculate(startTestValues, actualContinuationsTest, predictedContinuationsTest, out errorState);
       TestDirectionalSymmetry = errorState == OnlineCalculatorError.None ? testDirectionalSymmetry : double.NaN;
 
-      double trainingWeightedDirectionalSymmetry = OnlineWeightedDirectionalSymmetryCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);
+      double trainingWeightedDirectionalSymmetry = OnlineWeightedDirectionalSymmetryCalculator.Calculate(startTrainingValues, actualContinuationsTraining, predictedContinuationsTraining, out errorState);
       TrainingWeightedDirectionalSymmetry = errorState == OnlineCalculatorError.None ? trainingWeightedDirectionalSymmetry : double.NaN;
-      double testWeightedDirectionalSymmetry = OnlineWeightedDirectionalSymmetryCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);
+      double testWeightedDirectionalSymmetry = OnlineWeightedDirectionalSymmetryCalculator.Calculate(startTestValues, actualContinuationsTest, predictedContinuationsTest, out errorState);
       TestWeightedDirectionalSymmetry = errorState == OnlineCalculatorError.None ? testWeightedDirectionalSymmetry : double.NaN;
 
-      double trainingTheilsU = OnlineTheilsUStatisticCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);
+      double trainingTheilsU = OnlineTheilsUStatisticCalculator.Calculate(startTrainingValues, actualContinuationsTraining, predictedContinuationsTraining, out errorState);
       TrainingTheilsUStatistic = errorState == OnlineCalculatorError.None ? trainingTheilsU : double.NaN;
-      double testTheilsU = OnlineTheilsUStatisticCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);
+      double testTheilsU = OnlineTheilsUStatisticCalculator.Calculate(startTestValues, actualContinuationsTest, predictedContinuationsTest, out errorState);
       TestTheilsUStatistic = errorState == OnlineCalculatorError.None ? testTheilsU : double.NaN;
-
-
     }
   }
 }

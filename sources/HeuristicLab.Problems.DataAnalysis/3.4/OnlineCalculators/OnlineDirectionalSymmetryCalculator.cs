@@ -21,19 +21,18 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
 
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlineDirectionalSymmetryCalculator : IOnlineCalculator {
-    private double prevEstimated;
-    private double prevOriginal;
+  public class OnlineDirectionalSymmetryCalculator : IOnlineTimeSeriesCalculator {
     private int n;
     private int nCorrect;
 
     public double DirectionalSymmetry {
       get {
-        if (n <= 1) return 0.0;
-        return (double)nCorrect / (n - 1) * 100.0;
+        if (n < 1) return 0.0;
+        return (double)nCorrect / n;
       }
     }
 
@@ -50,55 +49,61 @@ namespace HeuristicLab.Problems.DataAnalysis {
       get { return errorState; }
     }
 
-    public void Add(double original, double estimated) {
-      if (double.IsNaN(estimated) || double.IsInfinity(estimated) || double.IsNaN(original) || double.IsInfinity(original) || (errorState & OnlineCalculatorError.InvalidValueAdded) > 0) {
+    public void Add(double startValue, IEnumerable<double> actualContinuation, IEnumerable<double> predictedContinuation) {
+      if (double.IsNaN(startValue) || (errorState & OnlineCalculatorError.InvalidValueAdded) > 0) {
         errorState = errorState | OnlineCalculatorError.InvalidValueAdded;
-      } else if (n == 0) {
-        prevOriginal = original;
-        prevEstimated = estimated;
-        n++;
       } else {
-        if ((original - prevOriginal) * (estimated - prevEstimated) >= 0.0) {
-          nCorrect++;
+        var actualEnumerator = actualContinuation.GetEnumerator();
+        var predictedEnumerator = predictedContinuation.GetEnumerator();
+        double prevActual = startValue;
+        double prevPredicted = startValue;
+        while (actualEnumerator.MoveNext() & predictedEnumerator.MoveNext() & errorState != OnlineCalculatorError.InvalidValueAdded) {
+          double actual = actualEnumerator.Current;
+          double predicted = predictedEnumerator.Current;
+          if (double.IsNaN(actual) || double.IsNaN(predicted)) {
+            errorState = errorState | OnlineCalculatorError.InvalidValueAdded;
+          } else {
+            // count a prediction correct if the trend (positive/negative/no change) is predicted correctly
+            if ((actual - prevActual) * (predicted - prevPredicted) > 0.0 ||
+                (actual - prevActual).IsAlmost(predicted - prevPredicted)
+              ) {
+              nCorrect++;
+            }
+            n++;
+          }
         }
-        n++;
-        errorState = errorState & (~OnlineCalculatorError.InsufficientElementsAdded);        // n >= 1
-        prevOriginal = original;
-        prevEstimated = estimated;
+        // check if both enumerators are at the end to make sure both enumerations have the same length
+        if (actualEnumerator.MoveNext() || predictedEnumerator.MoveNext()) {
+          errorState = errorState | OnlineCalculatorError.InvalidValueAdded;
+        } else {
+          errorState = errorState & (~OnlineCalculatorError.InsufficientElementsAdded); // n >= 1
+        }
       }
     }
 
     public void Reset() {
       n = 0;
       nCorrect = 0;
-      prevOriginal = double.NaN;
-      prevEstimated = double.NaN;
       errorState = OnlineCalculatorError.InsufficientElementsAdded;
     }
 
 
-    public static double Calculate(IEnumerable<double> originalValues, IEnumerable<double> estimatedValues, out OnlineCalculatorError errorState) {
-      IEnumerator<double> originalEnumerator = originalValues.GetEnumerator();
-      IEnumerator<double> estimatedEnumerator = estimatedValues.GetEnumerator();
+    public static double Calculate(IEnumerable<double> startValues, IEnumerable<IEnumerable<double>> actualContinuations, IEnumerable<IEnumerable<double>> predictedContinuations, out OnlineCalculatorError errorState) {
+      IEnumerator<double> startValueEnumerator = startValues.GetEnumerator();
+      IEnumerator<IEnumerable<double>> actualContinuationsEnumerator = actualContinuations.GetEnumerator();
+      IEnumerator<IEnumerable<double>> predictedContinuationsEnumerator = predictedContinuations.GetEnumerator();
       OnlineDirectionalSymmetryCalculator dsCalculator = new OnlineDirectionalSymmetryCalculator();
 
-      // add first element of time series as a reference point
-      originalEnumerator.MoveNext();
-      estimatedEnumerator.MoveNext();
-      dsCalculator.Add(originalEnumerator.Current, estimatedEnumerator.Current);
-      
-      // always move forward both enumerators (do not use short-circuit evaluation!)
-      while (originalEnumerator.MoveNext() & estimatedEnumerator.MoveNext()) {
-        double original = originalEnumerator.Current;
-        double estimated = estimatedEnumerator.Current;
-        dsCalculator.Add(original, estimated);
+      // always move forward all enumerators (do not use short-circuit evaluation!)
+      while (startValueEnumerator.MoveNext() & actualContinuationsEnumerator.MoveNext() & predictedContinuationsEnumerator.MoveNext()) {
+        dsCalculator.Add(startValueEnumerator.Current, actualContinuationsEnumerator.Current, predictedContinuationsEnumerator.Current);
         if (dsCalculator.ErrorState != OnlineCalculatorError.None) break;
       }
 
-      // check if both enumerators are at the end to make sure both enumerations have the same length
+      // check if all enumerators are at the end to make sure both enumerations have the same length
       if (dsCalculator.ErrorState == OnlineCalculatorError.None &&
-          (originalEnumerator.MoveNext() || estimatedEnumerator.MoveNext())) {
-        throw new ArgumentException("Number of elements in originalValues and estimatedValues enumerations doesn't match.");
+          (startValueEnumerator.MoveNext() || actualContinuationsEnumerator.MoveNext() || predictedContinuationsEnumerator.MoveNext())) {
+        throw new ArgumentException("Number of elements in startValues, actualContinuations and estimatedValues predictedContinuations doesn't match.");
       } else {
         errorState = dsCalculator.ErrorState;
         return dsCalculator.DirectionalSymmetry;

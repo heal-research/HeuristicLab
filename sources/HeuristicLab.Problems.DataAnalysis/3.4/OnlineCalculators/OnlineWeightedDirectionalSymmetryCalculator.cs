@@ -21,10 +21,11 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
 
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class OnlineWeightedDirectionalSymmetryCalculator : IOnlineCalculator {
+  public class OnlineWeightedDirectionalSymmetryCalculator : IOnlineTimeSeriesCalculator {
     private double prevEstimated;
     private double prevOriginal;
     private int n;
@@ -51,24 +52,35 @@ namespace HeuristicLab.Problems.DataAnalysis {
       get { return errorState; }
     }
 
-    public void Add(double original, double estimated) {
-      if (double.IsNaN(estimated) || double.IsInfinity(estimated) || double.IsNaN(original) || double.IsInfinity(original) || (errorState & OnlineCalculatorError.InvalidValueAdded) > 0) {
+    public void Add(double startValue, IEnumerable<double> actualContinuation, IEnumerable<double> predictedContinuation) {
+      if (double.IsNaN(startValue) || (errorState & OnlineCalculatorError.InvalidValueAdded) > 0) {
         errorState = errorState | OnlineCalculatorError.InvalidValueAdded;
-      } else if (n == 0) {
-        prevOriginal = original;
-        prevEstimated = estimated;
-        n++;
       } else {
-        double err = Math.Abs(original - estimated);
-        if ((original - prevOriginal) * (estimated - prevEstimated) >= 0.0) {
-          correctSum += err;
-        } else {
-          incorrectSum += err;
+        var actualEnumerator = actualContinuation.GetEnumerator();
+        var predictedEnumerator = predictedContinuation.GetEnumerator();
+        while (actualEnumerator.MoveNext() & predictedEnumerator.MoveNext() & errorState != OnlineCalculatorError.InvalidValueAdded) {
+          double actual = actualEnumerator.Current;
+          double predicted = predictedEnumerator.Current;
+          if (double.IsNaN(actual) || double.IsNaN(predicted)) {
+            errorState = errorState | OnlineCalculatorError.InvalidValueAdded;
+          } else {
+            double err = Math.Abs(actual - predicted);
+            // count as correct only if the trend (positive/negative/no change) is predicted correctly
+            if ((actual - startValue) * (predicted - startValue) > 0.0 ||
+              (actual - startValue).IsAlmost(predicted - startValue)) {
+              correctSum += err;
+            } else {
+              incorrectSum += err;
+            }
+            n++;
+          }
         }
-        n++;
-        errorState = errorState & (~OnlineCalculatorError.InsufficientElementsAdded);        // n >= 1
-        prevOriginal = original;
-        prevEstimated = estimated;
+        // check if both enumerators are at the end to make sure both enumerations have the same length
+        if (actualEnumerator.MoveNext() || predictedEnumerator.MoveNext()) {
+          errorState = errorState | OnlineCalculatorError.InvalidValueAdded;
+        } else {
+          errorState = errorState & (~OnlineCalculatorError.InsufficientElementsAdded); // n >= 1
+        }
       }
     }
 
@@ -82,31 +94,25 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
 
-    public static double Calculate(IEnumerable<double> originalValues, IEnumerable<double> estimatedValues, out OnlineCalculatorError errorState) {
-      IEnumerator<double> originalEnumerator = originalValues.GetEnumerator();
-      IEnumerator<double> estimatedEnumerator = estimatedValues.GetEnumerator();
-      OnlineWeightedDirectionalSymmetryCalculator dsCalculator = new OnlineWeightedDirectionalSymmetryCalculator();
+    public static double Calculate(IEnumerable<double> startValues, IEnumerable<IEnumerable<double>> actualContinuations, IEnumerable<IEnumerable<double>> predictedContinuations, out OnlineCalculatorError errorState) {
+      IEnumerator<double> startValueEnumerator = startValues.GetEnumerator();
+      IEnumerator<IEnumerable<double>> actualContinuationsEnumerator = actualContinuations.GetEnumerator();
+      IEnumerator<IEnumerable<double>> predictedContinuationsEnumerator = predictedContinuations.GetEnumerator();
+      OnlineWeightedDirectionalSymmetryCalculator calculator = new OnlineWeightedDirectionalSymmetryCalculator();
 
-      // add first element of time series as a reference point
-      originalEnumerator.MoveNext();
-      estimatedEnumerator.MoveNext();
-      dsCalculator.Add(originalEnumerator.Current, estimatedEnumerator.Current);
-
-      // always move forward both enumerators (do not use short-circuit evaluation!)
-      while (originalEnumerator.MoveNext() & estimatedEnumerator.MoveNext()) {
-        double original = originalEnumerator.Current;
-        double estimated = estimatedEnumerator.Current;
-        dsCalculator.Add(original, estimated);
-        if (dsCalculator.ErrorState != OnlineCalculatorError.None) break;
+      // always move forward all enumerators (do not use short-circuit evaluation!)
+      while (startValueEnumerator.MoveNext() & actualContinuationsEnumerator.MoveNext() & predictedContinuationsEnumerator.MoveNext()) {
+        calculator.Add(startValueEnumerator.Current, actualContinuationsEnumerator.Current, predictedContinuationsEnumerator.Current);
+        if (calculator.ErrorState != OnlineCalculatorError.None) break;
       }
 
-      // check if both enumerators are at the end to make sure both enumerations have the same length
-      if (dsCalculator.ErrorState == OnlineCalculatorError.None &&
-          (originalEnumerator.MoveNext() || estimatedEnumerator.MoveNext())) {
-        throw new ArgumentException("Number of elements in originalValues and estimatedValues enumerations doesn't match.");
+      // check if all enumerators are at the end to make sure both enumerations have the same length
+      if (calculator.ErrorState == OnlineCalculatorError.None &&
+          (startValueEnumerator.MoveNext() || actualContinuationsEnumerator.MoveNext() || predictedContinuationsEnumerator.MoveNext())) {
+        throw new ArgumentException("Number of elements in startValues, actualContinuations and estimatedValues predictedContinuations doesn't match.");
       } else {
-        errorState = dsCalculator.ErrorState;
-        return dsCalculator.WeightedDirectionalSymmetry;
+        errorState = calculator.ErrorState;
+        return calculator.WeightedDirectionalSymmetry;
       }
     }
   }

@@ -142,6 +142,7 @@
     </Compile>
     <Compile Include="Interfaces\Regression\IRegressionEnsembleSolution.cs" />
     <Compile Include="Implementation\Regression\RegressionSolutionBase.cs" />
+    <Compile Include="Interfaces\TimeSeriesPrognosis\IOnlineTimeSeriesCalculator.cs" />
     <Compile Include="Interfaces\TimeSeriesPrognosis\ITimeSeriesPrognosisModel.cs" />
     <Compile Include="Interfaces\TimeSeriesPrognosis\ITimeSeriesPrognosisProblem.cs" />
     <Compile Include="Interfaces\TimeSeriesPrognosis\ITimeSeriesPrognosisProblemData.cs" />
