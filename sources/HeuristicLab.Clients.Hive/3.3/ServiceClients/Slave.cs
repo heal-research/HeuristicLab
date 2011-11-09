@@ -19,8 +19,8 @@
  */
 #endregion
 
-
 using HeuristicLab.Common;
+
 namespace HeuristicLab.Clients.Hive {
 
   public partial class Slave : IContent, IDeepCloneable {

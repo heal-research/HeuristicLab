@@ -157,12 +157,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Views\Images\Monitor.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Views\Images\network_center.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Clients.Common\3.3\HeuristicLab.Clients.Common-3.3.csproj">
       <Project>{730A9104-D4D1-4360-966B-E49B7571DDA3}</Project>
       <Name>HeuristicLab.Clients.Common-3.3</Name>
