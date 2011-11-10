@@ -22,15 +22,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Analysis;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// <summary>
@@ -138,7 +137,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       double totalNumberOfSymbols = variableFrequencies.Values.Sum();
 
-      foreach (var pair in variableFrequencies)
+      foreach (var pair in variableFrequencies.OrderBy(p => p.Key, new NaturalStringComparer()))
         yield return new KeyValuePair<string, double>(pair.Key, pair.Value / totalNumberOfSymbols);
     }
 
