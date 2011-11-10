@@ -26,8 +26,6 @@ using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   public class OnlineWeightedDirectionalSymmetryCalculator : IOnlineTimeSeriesCalculator {
-    private double prevEstimated;
-    private double prevOriginal;
     private int n;
     private double correctSum;
     private double incorrectSum;
@@ -88,8 +86,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
       n = 0;
       correctSum = 0;
       incorrectSum = 0;
-      prevOriginal = double.NaN;
-      prevEstimated = double.NaN;
       errorState = OnlineCalculatorError.InsufficientElementsAdded;
     }
 
