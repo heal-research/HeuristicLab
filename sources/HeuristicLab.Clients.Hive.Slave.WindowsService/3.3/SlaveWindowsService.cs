@@ -44,6 +44,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore.WindowsService {
       core = new Core();
       core.ServiceEventLog = eventLog;
       coreThread = new Thread(core.Start);
+      coreThread.IsBackground = true; //dont keep app alive
       coreThread.Start();
 
       try {

@@ -5,9 +5,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-  <title></title>
+  <title>HeuristicLab Hive Status Monitor</title> 
+  <link rel="icon" type="image/ico" href="HeuristicLab.ico"> 
 </head>
 <body>
+  <center>
+    <h1>HeuristicLab Hive Status Monitor</h1>
+  </center>
   <form id="form1" runat="server">
   <div>
     Available Cores:
@@ -24,10 +28,7 @@
     <br />
     Avg. CPU Utilization:
     <asp:Label ID="cpuUtilizationLabel" runat="server" />
-    <br />
-    ExecutionTime on Hive:
-    <asp:Label ID="totalExecutionTimeLabel" runat="server" />
-    <br />
+    <br />  
     <br />
     Days:
     <asp:DropDownList ID="daysDropDownList" runat="server" AutoPostBack="True" OnSelectedIndexChanged="daysDropDownList_SelectedIndexChanged">

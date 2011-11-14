@@ -68,14 +68,6 @@ public partial class Status : System.Web.UI.Page {
     } else {
       stats = dao.GetStatistics(x => x.Timestamp >= DateTime.Now.Subtract(TimeSpan.FromDays(int.Parse(daysDropDownList.SelectedValue)))).OrderBy(x => x.TimeStamp).ToArray();
     }
-                                                     
-    if (stats.Length != 0) {
-      var firstStatisticsDate = stats.OrderBy(x => x.TimeStamp).First().TimeStamp;
-      var statisticsSince = DateTime.Now - firstStatisticsDate;
-      totalExecutionTimeLabel.Text = new TimeSpan(stats.Last().UserStatistics.Sum(x => x.ExecutionTime.Ticks)).ToString() + " (since " + Math.Round(statisticsSince.TotalDays, 2) + " days)";
-    } else {
-      totalExecutionTimeLabel.Text = "00:00:00.00";
-    }
     
     for (int i = 0; i < stats.Length; i++) {
       var s = stats[i];
