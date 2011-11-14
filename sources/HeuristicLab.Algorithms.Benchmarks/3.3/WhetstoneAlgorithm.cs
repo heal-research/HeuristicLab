@@ -35,39 +35,20 @@ namespace HeuristicLab.Algorithms.Benchmarks {
   public class WhetstoneBenchmark : IBenchmark {
     [Storable]
     private byte[][] chunk;
-
-    private TimeSpan timeLimit;
-
-    private bool stopBenchmark;
-
-    private CancellationToken cancellationToken;
-
-    #region Benchmark Fields
-
-    private long begin_time;
-    private long end_time;
-
-    private int ITERATIONS;
-    private int numberOfCycles;
-    private int cycleNo;
-    private double x1, x2, x3, x4, x, y, t, t1, t2;
-    private double[] z = new double[1];
-    private double[] e1 = new double[4];
-    private int i, j, k, l, n1, n2, n3, n4, n6, n7, n8, n9, n10, n11;
-
-    #endregion
-
-    #region Properties
-
     public byte[][] ChunkData {
       get { return chunk; }
       set { chunk = value; }
     }
 
+    private TimeSpan timeLimit;
     public TimeSpan TimeLimit {
       get { return timeLimit; }
       set { timeLimit = value; }
     }
+
+    private bool stopBenchmark;
+
+    private CancellationToken cancellationToken;
 
     public string ItemName {
       get { return ItemAttribute.GetName(this.GetType()); }
@@ -84,6 +65,19 @@ namespace HeuristicLab.Algorithms.Benchmarks {
     public Image ItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Event; }
     }
+
+    #region Benchmark Fields
+
+    private long begin_time;
+    private long end_time;
+
+    private int ITERATIONS;
+    private int numberOfCycles;
+    private int cycleNo;
+    private double x1, x2, x3, x4, x, y, t, t1, t2;
+    private double[] z = new double[1];
+    private double[] e1 = new double[4];
+    private int i, j, k, l, n1, n2, n3, n4, n6, n7, n8, n9, n10, n11;
 
     #endregion
 

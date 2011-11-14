@@ -35,12 +35,36 @@ namespace HeuristicLab.Algorithms.Benchmarks {
   public class DhrystoneAlgorithm : IBenchmark {
     [Storable]
     private byte[][] chunk;
+    public byte[][] ChunkData {
+      get { return chunk; }
+      set { chunk = value; }
+    }
 
     private TimeSpan timeLimit;
+    public TimeSpan TimeLimit {
+      get { return timeLimit; }
+      set { timeLimit = value; }
+    }
 
     private bool stopBenchmark;
 
     private CancellationToken cancellationToken;
+
+    public string ItemName {
+      get { return ItemAttribute.GetName(this.GetType()); }
+    }
+
+    public string ItemDescription {
+      get { return ItemAttribute.GetDescription(this.GetType()); }
+    }
+
+    public Version ItemVersion {
+      get { return ItemAttribute.GetVersion(this.GetType()); }
+    }
+
+    public Image ItemImage {
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Event; }
+    }
 
     #region Benchmark Fields
 
@@ -66,36 +90,6 @@ namespace HeuristicLab.Algorithms.Benchmarks {
     private Record_Type Second_Record = new Record_Type();
 
     private long Default_Number_Of_Runs = 10000000;
-
-    #endregion
-
-    #region Properties
-
-    public byte[][] ChunkData {
-      get { return chunk; }
-      set { chunk = value; }
-    }
-
-    public TimeSpan TimeLimit {
-      get { return timeLimit; }
-      set { timeLimit = value; }
-    }
-
-    public string ItemName {
-      get { return ItemAttribute.GetName(this.GetType()); }
-    }
-
-    public string ItemDescription {
-      get { return ItemAttribute.GetDescription(this.GetType()); }
-    }
-
-    public Version ItemVersion {
-      get { return ItemAttribute.GetVersion(this.GetType()); }
-    }
-
-    public Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VSImageLibrary.Event; }
-    }
 
     #endregion
 

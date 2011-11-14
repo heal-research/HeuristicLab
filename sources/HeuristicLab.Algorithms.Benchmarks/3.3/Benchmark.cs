@@ -275,7 +275,7 @@ namespace HeuristicLab.Algorithms.Benchmarks {
 
     private void CreateParameters() {
       Parameters.Add(new ValueParameter<IntValue>("ChunkSize", "The size (MB) of the chunk array that gets generated", new IntValue(0)));
-      Parameters.Add(new ValueParameter<DoubleValue>("TimeLimit", "The time limit (in minutes) for a benchmark run", new DoubleValue(0)));
+      Parameters.Add(new ValueParameter<DoubleValue>("TimeLimit", "The time limit (in minutes) for a benchmark run. Zero means a fixed number of iterations", new DoubleValue(0)));
     }
 
     private void DiscoverBenchmarks() {
@@ -291,7 +291,6 @@ namespace HeuristicLab.Algorithms.Benchmarks {
         if (values.Count > 0) {
           Parameters.Add(new ConstrainedValueParameter<IBenchmark>(paramName, values, values.First(a => a is IBenchmark)));
         } else {
-          // throw exception?
           Parameters.Add(new ConstrainedValueParameter<IBenchmark>(paramName, values));
         }
       }
@@ -362,12 +361,17 @@ namespace HeuristicLab.Algorithms.Benchmarks {
         int chunkSize = ((IntValue)ChunkSizeParameter.ActualValue).Value;
         if (chunkSize > 0) {
           BenchmarkAlgorithm.ChunkData = CreateDataChuck(chunkSize);
+        } else if (chunkSize < 0) {
+          throw new ArgumentException("ChunkSize must not be negativ.");
         }
-        BenchmarkAlgorithm.TimeLimit = TimeSpan.FromMinutes(((DoubleValue)TimeLimitParameter.ActualValue).Value);
+        TimeSpan timelimit = TimeSpan.FromMinutes(((DoubleValue)TimeLimitParameter.ActualValue).Value);
+        if (timelimit.TotalMilliseconds < 0) {
+          throw new ArgumentException("TimeLimit must not be negativ. ");
+        }
+        BenchmarkAlgorithm.TimeLimit = timelimit;
         BenchmarkAlgorithm.Run(cancellationToken, results);
       }
       catch (OperationCanceledException) {
-        //Console.WriteLine(ex.ToString());
       }
       finally {
         timer.Elapsed -= new System.Timers.ElapsedEventHandler(timer_Elapsed);
@@ -410,8 +414,6 @@ namespace HeuristicLab.Algorithms.Benchmarks {
             values.Add(param.Name + "." + key, children[key]);
         }
       }
-      values.Add("Benchmark Name", new StringValue(Name));
-      values.Add("Benchmark Type", new StringValue(this.GetType().GetPrettyName()));
     }
 
     private byte[][] CreateDataChuck(int megaBytes) {
@@ -425,19 +427,6 @@ namespace HeuristicLab.Algorithms.Benchmarks {
       }
       return chunk;
     }
-    /*
-    private int[] CreateDataChuck(int megaBytes) {
-      if (megaBytes <= 0) {
-        throw new ArgumentException("MegaBytes must be greater than zero", "megaBytes");
-      }
-      int size = (megaBytes * 1020 * 1024) / sizeof(int);
-      int[] data = new int[size];
-      for (int i = 0; i < data.Length; i++) {
-        data[i] = random.Next();
-      }
-      return data;
-    }
-    */
 
     #region Events
 

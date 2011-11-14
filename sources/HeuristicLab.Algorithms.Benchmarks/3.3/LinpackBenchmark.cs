@@ -35,38 +35,20 @@ namespace HeuristicLab.Algorithms.Benchmarks {
   public class LinpackBenchmark : IBenchmark {
     [Storable]
     private byte[][] chunk;
-
-    private TimeSpan timeLimit;
-
-    private bool stopBenchmark;
-
-    private CancellationToken cancellationToken;
-
-    #region Benchmark Fields
-
-    private const int DEFAULT_PSIZE = 1500;
-
-    private double eps_result = 0.0;
-    private double mflops_result = 0.0;
-    private double residn_result = 0.0;
-    private double time_result = 0.0;
-    private double total = 0.0;
-
-    private Stopwatch sw = new Stopwatch();
-
-    #endregion
-
-    #region Properties
-
     public byte[][] ChunkData {
       get { return chunk; }
       set { chunk = value; }
     }
 
+    private TimeSpan timeLimit;
     public TimeSpan TimeLimit {
       get { return timeLimit; }
       set { timeLimit = value; }
     }
+
+    private bool stopBenchmark;
+
+    private CancellationToken cancellationToken;
 
     public string ItemName {
       get { return ItemAttribute.GetName(this.GetType()); }
@@ -83,6 +65,18 @@ namespace HeuristicLab.Algorithms.Benchmarks {
     public Image ItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Event; }
     }
+
+    #region Benchmark Fields
+
+    private const int DEFAULT_PSIZE = 1500;
+
+    private double eps_result = 0.0;
+    private double mflops_result = 0.0;
+    private double residn_result = 0.0;
+    private double time_result = 0.0;
+    private double total = 0.0;
+
+    private Stopwatch sw = new Stopwatch();
 
     #endregion
 
@@ -196,7 +190,7 @@ namespace HeuristicLab.Algorithms.Benchmarks {
         }
 
         executionTime += sw.Elapsed;
-        if (timeLimit == null)
+        if ((timeLimit == null) || (timeLimit.TotalMilliseconds == 0))
           stopBenchmark = true;
         else if (executionTime > timeLimit)
           stopBenchmark = true;
