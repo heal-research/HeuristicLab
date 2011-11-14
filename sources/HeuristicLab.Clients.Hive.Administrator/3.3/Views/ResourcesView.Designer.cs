@@ -236,6 +236,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       this.Controls.Add(this.splitSlaves);
       this.Name = "ResourcesView";
       this.Size = new System.Drawing.Size(853, 553);
+      this.Load += new System.EventHandler(this.ResourcesView_Load);
       this.splitSlaves.Panel1.ResumeLayout(false);
       this.splitSlaves.Panel2.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.splitSlaves)).EndInit();

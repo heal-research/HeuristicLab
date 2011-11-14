@@ -55,8 +55,6 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
 
       HiveAdminClient.Instance.Refreshing += new EventHandler(Instance_Refreshing);
       HiveAdminClient.Instance.Refreshed += new EventHandler(Instance_Refreshed);
-
-      UpdateResourcesAsync();
     }
 
     public new void Dispose() {
@@ -397,6 +395,10 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     }
 
     private void btnRefresh_Click(object sender, EventArgs e) {
+      UpdateResourcesAsync();
+    }
+
+    private void ResourcesView_Load(object sender, EventArgs e) {
       UpdateResourcesAsync();
     }
   }

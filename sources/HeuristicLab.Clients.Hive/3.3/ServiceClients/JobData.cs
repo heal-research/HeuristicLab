@@ -28,7 +28,10 @@ namespace HeuristicLab.Clients.Hive {
 
     protected TaskData(TaskData original, Cloner cloner) {
       cloner.RegisterClonedObject(original, this);
-      if (original.Data != null) this.Data = new byte[original.Data.Length]; Array.Copy(original.Data, this.Data, original.Data.Length);
+      if (original.Data != null) {
+        this.Data = new byte[original.Data.Length];
+        Array.Copy(original.Data, this.Data, original.Data.Length);
+      }
       this.LastUpdate = original.LastUpdate;
     }
 

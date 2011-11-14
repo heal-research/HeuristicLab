@@ -33,7 +33,9 @@ namespace HeuristicLab.Clients.Hive {
       this.Priority = original.Priority;
       this.CoresNeeded = original.CoresNeeded;
       this.MemoryNeeded = original.MemoryNeeded;
-      this.PluginsNeededIds = new List<Guid>(original.PluginsNeededIds);
+      if (original.PluginsNeededIds != null) {
+        this.PluginsNeededIds = new List<Guid>(original.PluginsNeededIds);
+      }
       this.LastHeartbeat = original.LastHeartbeat;
       this.IsParentTask = original.IsParentTask;
       this.FinishWhenChildJobsFinished = original.FinishWhenChildJobsFinished;

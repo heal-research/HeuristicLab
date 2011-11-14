@@ -148,53 +148,46 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     private void DetermineAction(MessageContainer container) {
       clientCom.LogMessage(string.Format("Message: {0} for task: {1} ", container.Message.ToString(), container.TaskId));
 
-      if (container is ExecutorMessageContainer<Guid>) {
-        ExecutorMessageContainer<Guid> c = (ExecutorMessageContainer<Guid>)container;
-        c.execute();
-      } else if (container is MessageContainer) {
-        switch (container.Message) {
-          case MessageContainer.MessageType.CalculateTask:
-            CalculateTaskAsync(container.TaskId);
-            break;
-          case MessageContainer.MessageType.AbortTask:
-            AbortTaskAsync(container.TaskId);
-            break;
-          case MessageContainer.MessageType.StopTask:
-            StopTaskAsync(container.TaskId);
-            break;
-          case MessageContainer.MessageType.PauseTask:
-            PauseTaskAsync(container.TaskId);
-            break;
-          case MessageContainer.MessageType.StopAll:
-            DoStopAll();
-            break;
-          case MessageContainer.MessageType.PauseAll:
-            DoPauseAll();
-            break;
-          case MessageContainer.MessageType.AbortAll:
-            DoAbortAll();
-            break;
-          case MessageContainer.MessageType.ShutdownSlave:
-            ShutdownCore();
-            break;
-          case MessageContainer.MessageType.Restart:
-            DoStartSlave();
-            break;
-          case MessageContainer.MessageType.Sleep:
-            Sleep();
-            break;
-          case MessageContainer.MessageType.SayHello:
-            wcfService.Connect(configManager.GetClientInfo());
-            break;
-          case MessageContainer.MessageType.NewHBInterval:
-            int interval = wcfService.GetNewHeartbeatInterval(ConfigManager.Instance.GetClientInfo().Id);
-            if (interval != -1) {
-              HeartbeatManager.Interval = TimeSpan.FromSeconds(interval);
-            }
-            break;
-        }
-      } else {
-        clientCom.LogMessage("Unknown MessageContainer: " + container);
+      switch (container.Message) {
+        case MessageContainer.MessageType.CalculateTask:
+          CalculateTaskAsync(container.TaskId);
+          break;
+        case MessageContainer.MessageType.AbortTask:
+          AbortTaskAsync(container.TaskId);
+          break;
+        case MessageContainer.MessageType.StopTask:
+          StopTaskAsync(container.TaskId);
+          break;
+        case MessageContainer.MessageType.PauseTask:
+          PauseTaskAsync(container.TaskId);
+          break;
+        case MessageContainer.MessageType.StopAll:
+          DoStopAll();
+          break;
+        case MessageContainer.MessageType.PauseAll:
+          DoPauseAll();
+          break;
+        case MessageContainer.MessageType.AbortAll:
+          DoAbortAll();
+          break;
+        case MessageContainer.MessageType.ShutdownSlave:
+          ShutdownCore();
+          break;
+        case MessageContainer.MessageType.Restart:
+          DoStartSlave();
+          break;
+        case MessageContainer.MessageType.Sleep:
+          Sleep();
+          break;
+        case MessageContainer.MessageType.SayHello:
+          wcfService.Connect(configManager.GetClientInfo());
+          break;
+        case MessageContainer.MessageType.NewHBInterval:
+          int interval = wcfService.GetNewHeartbeatInterval(ConfigManager.Instance.GetClientInfo().Id);
+          if (interval != -1) {
+            HeartbeatManager.Interval = TimeSpan.FromSeconds(interval);
+          }
+          break;
       }
     }
 

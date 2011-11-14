@@ -207,7 +207,7 @@ namespace HeuristicLab.Clients.Hive {
     }
     protected RefreshableJob(RefreshableJob original, Cloner cloner) {
       cloner.RegisterClonedObject(original, this);
-      this.Job = original.Job;
+      this.Job = cloner.Clone(original.Job);
       this.IsControllable = original.IsControllable;
       this.log = cloner.Clone(original.log);
       this.RefreshAutomatically = false; // do not start results polling automatically

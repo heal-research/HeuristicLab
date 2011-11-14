@@ -152,6 +152,9 @@ namespace HeuristicLab.Clients.Hive {
     }
 
     #region Constructors and Cloning
+    [StorableConstructor]
+    protected HiveTask(bool deserializing) { }
+
     public HiveTask() {
       this.Task = new Task() { CoresNeeded = 1, MemoryNeeded = 0 };
       task.State = TaskState.Offline;
@@ -514,8 +517,10 @@ namespace HeuristicLab.Clients.Hive {
 
     #region Constructors and Cloning
     public HiveTask() : base() { }
+    [StorableConstructor]
+    protected HiveTask(bool deserializing) { }
     public HiveTask(T itemJob) : base(itemJob, true) { }
-    protected HiveTask(HiveTask original, Cloner cloner)
+    protected HiveTask(HiveTask<T> original, Cloner cloner)
       : base(original, cloner) {
     }
     public override IDeepCloneable Clone(Cloner cloner) {

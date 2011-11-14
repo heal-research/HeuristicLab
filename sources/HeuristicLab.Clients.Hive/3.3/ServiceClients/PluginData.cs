@@ -30,9 +30,10 @@ namespace HeuristicLab.Clients.Hive {
 
     protected PluginData(PluginData original, Cloner cloner)
       : base(original, cloner) {
-      if (original.Data != null)
+      if (original.Data != null) {
         this.Data = new byte[original.Data.Length];
-      Array.Copy(original.Data, this.Data, original.Data.Length);
+        Array.Copy(original.Data, this.Data, original.Data.Length);
+      }
       this.FileName = original.FileName;
       this.PluginId = original.PluginId;
     }

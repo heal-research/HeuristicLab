@@ -143,7 +143,6 @@
     <Compile Include="ServiceClients\SlaveGroup.cs" />
     <Compile Include="ServiceClients\Slave.cs" />
     <Compile Include="ServiceClients\LightweightTask.cs" />
-    <Compile Include="ServiceClients\ExecutorMessageContainer.cs" />
     <Compile Include="ServiceClients\MessageContainer.cs" />
     <Compile Include="ServiceClients\HiveServiceClient.cs" />
     <Compile Include="ServiceClients\Task.cs" />
