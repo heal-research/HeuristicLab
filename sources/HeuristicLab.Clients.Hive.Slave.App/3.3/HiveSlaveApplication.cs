@@ -61,7 +61,7 @@ namespace HeuristicLab.Clients.Hive.Slave.App {
       }
 
       if (!Path.IsPathRooted(Settings.Default.PluginTempBaseDir)) {
-        Settings.Default.PluginCacheDir = Path.Combine(Path.GetTempPath(), Settings.Default.PluginTempBaseDir);
+        Settings.Default.PluginTempBaseDir = Path.Combine(Path.GetTempPath(), Settings.Default.PluginTempBaseDir);
         Settings.Default.Save();
       }
     }
