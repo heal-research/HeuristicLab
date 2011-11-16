@@ -35,7 +35,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   public abstract class SymbolicDataAnalysisProblem<T, U, V> : HeuristicOptimizationProblem<U, V>, IDataAnalysisProblem<T>, ISymbolicDataAnalysisProblem, IStorableContent
-    where T : class,IDataAnalysisProblemData
+    where T : class, IDataAnalysisProblemData
     where U : class, ISymbolicDataAnalysisEvaluator<T>
     where V : class, ISymbolicDataAnalysisSolutionCreator {
 
@@ -201,6 +201,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Operators.Add(new SymbolicExpressionSymbolFrequencyAnalyzer());
       Operators.Add(new SymbolicDataAnalysisVariableFrequencyAnalyzer());
       Operators.Add(new MinAverageMaxSymbolicExpressionTreeLengthAnalyzer());
+      Operators.Add(new SymbolicExpressionTreeLengthAnalyzer());
       ParameterizeOperators();
     }
 

@@ -62,30 +62,30 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     #endregion
 
-    public static double Calculate(IEnumerable<double> first, IEnumerable<double> second, out OnlineCalculatorError errorState) {
-      IEnumerator<double> firstEnumerator = first.GetEnumerator();
-      IEnumerator<double> secondEnumerator = second.GetEnumerator();
+    public static double Calculate(IEnumerable<double> originalValues, IEnumerable<double> estimatedValues, out OnlineCalculatorError errorState) {
+      IEnumerator<double> originalEnumerator = originalValues.GetEnumerator();
+      IEnumerator<double> estimatedEnumerator = estimatedValues.GetEnumerator();
       OnlineNormalizedMeanSquaredErrorCalculator normalizedMSECalculator = new OnlineNormalizedMeanSquaredErrorCalculator();
 
       //needed because otherwise the normalizedMSECalculator is in ErrorState.InsufficientValuesAdded
-      if (firstEnumerator.MoveNext() & secondEnumerator.MoveNext()) {
-        double estimated = secondEnumerator.Current;
-        double original = firstEnumerator.Current;
+      if (originalEnumerator.MoveNext() & estimatedEnumerator.MoveNext()) {
+        double original = originalEnumerator.Current;
+        double estimated = estimatedEnumerator.Current;
         normalizedMSECalculator.Add(original, estimated);
       }
 
       // always move forward both enumerators (do not use short-circuit evaluation!)
-      while (firstEnumerator.MoveNext() & secondEnumerator.MoveNext()) {
-        double estimated = secondEnumerator.Current;
-        double original = firstEnumerator.Current;
+      while (originalEnumerator.MoveNext() & estimatedEnumerator.MoveNext()) {
+        double original = originalEnumerator.Current;
+        double estimated = estimatedEnumerator.Current;
         normalizedMSECalculator.Add(original, estimated);
         if (normalizedMSECalculator.ErrorState != OnlineCalculatorError.None) break;
       }
 
       // check if both enumerators are at the end to make sure both enumerations have the same length
       if (normalizedMSECalculator.ErrorState == OnlineCalculatorError.None &&
-           (secondEnumerator.MoveNext() || firstEnumerator.MoveNext())) {
-        throw new ArgumentException("Number of elements in first and second enumeration doesn't match.");
+           (estimatedEnumerator.MoveNext() || originalEnumerator.MoveNext())) {
+        throw new ArgumentException("Number of elements in originalValues and estimatedValues enumeration doesn't match.");
       } else {
         errorState = normalizedMSECalculator.ErrorState;
         return normalizedMSECalculator.NormalizedMeanSquaredError;

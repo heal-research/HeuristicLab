@@ -105,6 +105,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         int row = indizes[i];
         values[i, 0] = row.ToString();
         values[i, 1] = target[i].ToString();
+        //display only indices and target values if no models are present
+        if (i >= estimatedClassValues.Length) continue;
+
         values[i, 2] = estimatedClassValues[i].ToString();
         values[i, 3] = (target[i] == estimatedClassValues[i]).ToString();
         var groups = estimatedValuesVector[i].GroupBy(x => x).Select(g => new { Key = g.Key, Count = g.Count() }).ToList();
@@ -130,7 +133,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       matrix.ColumnNames = columnNames;
       matrix.SortableView = true;
       matrixView.Content = matrix;
-      UpdateColoringOfRows();
     }
 
     private List<List<double?>> GetEstimatedValues(string samplesSelection, int[] rows, IEnumerable<IClassificationSolution> solutions) {
@@ -161,21 +163,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         Invoke(new EventHandler<DataGridViewRowPrePaintEventArgs>(DataGridView_RowPrePaint), sender, e);
         return;
       }
-      bool correctClassified = bool.Parse(matrixView.DataGridView[3, e.RowIndex].Value.ToString());
+      var cellValue = matrixView.DataGridView[3, e.RowIndex].Value.ToString();
+      if (string.IsNullOrEmpty(cellValue)) return;
+      bool correctClassified = bool.Parse(cellValue);
       matrixView.DataGridView.Rows[e.RowIndex].DefaultCellStyle.ForeColor = correctClassified ? Color.MediumSeaGreen : Color.Red;
-    }
-
-    private void UpdateColoringOfRows() {
-      if (InvokeRequired) {
-        Invoke((Action)UpdateColoringOfRows);
-        return;
-      }
-      //matrixView.DataGridView.SuspendRepaint();
-      //for (int i = 0; i < matrixView.DataGridView.Rows.Count; i++) {
-      //  bool correctClassified = bool.Parse(matrixView.Content.GetValue(i, 3));
-      //  matrixView.DataGridView.Rows[i].DefaultCellStyle.ForeColor = correctClassified ? Color.MediumSeaGreen : Color.Red;
-      //}
-      //matrixView.DataGridView.ResumeRepaint(true);
     }
   }
 }

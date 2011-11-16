@@ -37,6 +37,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       if (nArgs > 0) {
         //set allowed child symbols of invoke symbol 
         foreach (ISymbol child in grammar.Symbols) {
+          if (child.Name == invokeSym.Name) continue;
           int i = 0;
           foreach (CutPoint argumentCutPoint in argumentCutPoints) {
             if (grammar.IsAllowedChildSymbol(argumentCutPoint.Parent.Symbol, child, argumentCutPoint.ChildIndex))

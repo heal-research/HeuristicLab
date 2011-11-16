@@ -79,7 +79,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       // 
       // openFileDialog
       // 
-      this.openFileDialog.FileName = "openFileDialog";
+      this.openFileDialog.Filter = "CSV files|*.csv|Text files|*.txt|All files|*.*";
+      this.openFileDialog.Title = "Import data...";
       // 
       // DataAnalysisProblemView
       // 

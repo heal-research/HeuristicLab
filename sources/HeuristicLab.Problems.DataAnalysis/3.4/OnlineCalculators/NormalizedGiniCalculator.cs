@@ -27,14 +27,16 @@ using HeuristicLab.Common;
 namespace HeuristicLab.Problems.DataAnalysis {
   public class NormalizedGiniCalculator {
 
-    public static double Calculate(IEnumerable<double> original, IEnumerable<double> estimated, out OnlineCalculatorError errorState) {
-      if (original.Count() != estimated.Count()) {
-        throw new ArgumentException("Number of elements in first and second enumeration doesn't match.");
+    public static double Calculate(IEnumerable<double> originalValues, IEnumerable<double> estimatedValues, out OnlineCalculatorError errorState) {
+      var originalValuesArr = originalValues.ToArray();
+      var estimatedValuesArr = estimatedValues.ToArray();
+      if (originalValuesArr.Count() != estimatedValuesArr.Count()) {
+        throw new ArgumentException("Number of elements in originalValues and estimatedValues enumerations doesn't match.");
       }
-      double oe = Gini(original, estimated, out errorState);
+      double oe = Gini(originalValuesArr, estimatedValuesArr, out errorState);
       if (errorState != OnlineCalculatorError.None) return double.NaN;
 
-      return oe / (Gini(original, original, out errorState));
+      return oe / (Gini(originalValuesArr, estimatedValuesArr, out errorState));
     }
 
     private static double Gini(IEnumerable<double> original, IEnumerable<double> estimated, out OnlineCalculatorError errorState) {

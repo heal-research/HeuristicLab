@@ -22,7 +22,6 @@
 using System;
 using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -32,7 +31,6 @@ using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Optimizer {
   internal partial class OptimizerDockingMainForm : DockingMainForm {
-    private string title;
 
     private Clipboard<IItem> clipboard;
     public Clipboard<IItem> Clipboard {
@@ -54,11 +52,6 @@ namespace HeuristicLab.Optimizer {
 
     protected override void OnInitialized(EventArgs e) {
       base.OnInitialized(e);
-      AssemblyFileVersionAttribute version = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyFileVersionAttribute), true).
-                                             Cast<AssemblyFileVersionAttribute>().FirstOrDefault();
-      title = "HeuristicLab Optimizer";
-      if (version != null) title += " " + version.Version;
-      Title = title;
 
       ContentManager.Initialize(new PersistenceContentManager());
 
@@ -101,20 +94,6 @@ namespace HeuristicLab.Optimizer {
     protected override void OnActiveViewChanged() {
       base.OnActiveViewChanged();
       UpdateTitle();
-    }
-
-    public void UpdateTitle() {
-      if (InvokeRequired)
-        Invoke(new Action(UpdateTitle));
-      else {
-        IContentView activeView = ActiveView as IContentView;
-        if ((activeView != null) && (activeView.Content != null) && (activeView.Content is IStorableContent)) {
-          IStorableContent content = (IStorableContent)activeView.Content;
-          Title = title + " [" + (string.IsNullOrEmpty(content.Filename) ? "Unsaved" : content.Filename) + "]";
-        } else {
-          Title = title;
-        }
-      }
     }
   }
 }

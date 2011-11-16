@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -36,7 +35,7 @@ namespace HeuristicLab.Problems.TestFunctions {
   [Item("Single Objective Test Function", "Test function with real valued inputs and a single objective.")]
   [StorableClass]
   [Creatable("Problems")]
-  public sealed class SingleObjectiveTestFunctionProblem : ParameterizedNamedItem, ISingleObjectiveHeuristicOptimizationProblem, IStorableContent {
+  public sealed class SingleObjectiveTestFunctionProblem : SingleObjectiveHeuristicOptimizationProblem<ISingleObjectiveTestFunctionProblemEvaluator, IRealVectorCreator>, IStorableContent {
     public string Filename { get; set; }
 
     [Storable]
@@ -46,40 +45,12 @@ namespace HeuristicLab.Problems.TestFunctions {
     [Storable]
     private StdDevStrategyVectorManipulator strategyVectorManipulator;
 
-    public override Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
-    }
-
     #region Parameter Properties
-    public ValueParameter<BoolValue> MaximizationParameter {
-      get { return (ValueParameter<BoolValue>)Parameters["Maximization"]; }
-    }
-    IParameter ISingleObjectiveHeuristicOptimizationProblem.MaximizationParameter {
-      get { return MaximizationParameter; }
-    }
     public ValueParameter<DoubleMatrix> BoundsParameter {
       get { return (ValueParameter<DoubleMatrix>)Parameters["Bounds"]; }
     }
     public ValueParameter<IntValue> ProblemSizeParameter {
       get { return (ValueParameter<IntValue>)Parameters["ProblemSize"]; }
-    }
-    public ValueParameter<IRealVectorCreator> SolutionCreatorParameter {
-      get { return (ValueParameter<IRealVectorCreator>)Parameters["SolutionCreator"]; }
-    }
-    IParameter IHeuristicOptimizationProblem.SolutionCreatorParameter {
-      get { return SolutionCreatorParameter; }
-    }
-    public ValueParameter<ISingleObjectiveTestFunctionProblemEvaluator> EvaluatorParameter {
-      get { return (ValueParameter<ISingleObjectiveTestFunctionProblemEvaluator>)Parameters["Evaluator"]; }
-    }
-    IParameter IHeuristicOptimizationProblem.EvaluatorParameter {
-      get { return EvaluatorParameter; }
-    }
-    public OptionalValueParameter<DoubleValue> BestKnownQualityParameter {
-      get { return (OptionalValueParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
-    }
-    IParameter ISingleObjectiveHeuristicOptimizationProblem.BestKnownQualityParameter {
-      get { return BestKnownQualityParameter; }
     }
     public OptionalValueParameter<RealVector> BestKnownSolutionParameter {
       get { return (OptionalValueParameter<RealVector>)Parameters["BestKnownSolution"]; }
@@ -87,10 +58,6 @@ namespace HeuristicLab.Problems.TestFunctions {
     #endregion
 
     #region Properties
-    public BoolValue Maximization {
-      get { return MaximizationParameter.Value; }
-      set { MaximizationParameter.Value = value; }
-    }
     public DoubleMatrix Bounds {
       get { return BoundsParameter.Value; }
       set { BoundsParameter.Value = value; }
@@ -99,63 +66,41 @@ namespace HeuristicLab.Problems.TestFunctions {
       get { return ProblemSizeParameter.Value; }
       set { ProblemSizeParameter.Value = value; }
     }
-    public IRealVectorCreator SolutionCreator {
-      get { return SolutionCreatorParameter.Value; }
-      set { SolutionCreatorParameter.Value = value; }
-    }
-    ISolutionCreator IHeuristicOptimizationProblem.SolutionCreator {
-      get { return SolutionCreatorParameter.Value; }
-    }
-    public ISingleObjectiveTestFunctionProblemEvaluator Evaluator {
-      get { return EvaluatorParameter.Value; }
-      set { EvaluatorParameter.Value = value; }
-    }
-    ISingleObjectiveEvaluator ISingleObjectiveHeuristicOptimizationProblem.Evaluator {
-      get { return EvaluatorParameter.Value; }
-    }
-    IEvaluator IHeuristicOptimizationProblem.Evaluator {
-      get { return EvaluatorParameter.Value; }
-    }
-    public DoubleValue BestKnownQuality {
-      get { return BestKnownQualityParameter.Value; }
-      set { BestKnownQualityParameter.Value = value; }
-    }
-    public IEnumerable<IOperator> Operators {
-      get { return operators; }
-    }
     private BestSingleObjectiveTestFunctionSolutionAnalyzer BestSingleObjectiveTestFunctionSolutionAnalyzer {
-      get { return operators.OfType<BestSingleObjectiveTestFunctionSolutionAnalyzer>().FirstOrDefault(); }
+      get { return Operators.OfType<BestSingleObjectiveTestFunctionSolutionAnalyzer>().FirstOrDefault(); }
     }
     #endregion
 
-    [Storable]
-    private List<IOperator> operators;
+    // BackwardsCompatibility3.3
+    #region Backwards compatible code, remove with 3.4
+    [Obsolete]
+    [Storable(Name = "operators")]
+    private IEnumerable<IOperator> oldOperators {
+      get { return null; }
+      set {
+        if (value != null && value.Any())
+          Operators.AddRange(value);
+      }
+    }
+    #endregion
 
     [StorableConstructor]
     private SingleObjectiveTestFunctionProblem(bool deserializing) : base(deserializing) { }
     private SingleObjectiveTestFunctionProblem(SingleObjectiveTestFunctionProblem original, Cloner cloner)
       : base(original, cloner) {
-      operators = original.operators.Where(x => original.IsNotFieldReferenced(x)).Select(x => cloner.Clone(x)).ToList();
       strategyVectorCreator = cloner.Clone(original.strategyVectorCreator);
-      operators.Add(strategyVectorCreator);
       strategyVectorCrossover = cloner.Clone(original.strategyVectorCrossover);
-      operators.Add(strategyVectorCrossover);
       strategyVectorManipulator = cloner.Clone(original.strategyVectorManipulator);
-      operators.Add(strategyVectorManipulator);
       AttachEventHandlers();
     }
     public SingleObjectiveTestFunctionProblem()
-      : base() {
-      UniformRandomRealVectorCreator creator = new UniformRandomRealVectorCreator();
-      AckleyEvaluator evaluator = new AckleyEvaluator();
-
-      Parameters.Add(new ValueParameter<BoolValue>("Maximization", "Set to false as most test functions are minimization problems.", new BoolValue(evaluator.Maximization)));
-      Parameters.Add(new ValueParameter<DoubleMatrix>("Bounds", "The lower and upper bounds in each dimension.", evaluator.Bounds));
+      : base(new AckleyEvaluator(), new UniformRandomRealVectorCreator()) {
+      Parameters.Add(new ValueParameter<DoubleMatrix>("Bounds", "The lower and upper bounds in each dimension.", Evaluator.Bounds));
       Parameters.Add(new ValueParameter<IntValue>("ProblemSize", "The dimension of the problem.", new IntValue(2)));
-      Parameters.Add(new ValueParameter<IRealVectorCreator>("SolutionCreator", "The operator which should be used to create new test function solutions.", creator));
-      Parameters.Add(new ValueParameter<ISingleObjectiveTestFunctionProblemEvaluator>("Evaluator", "The operator which should be used to evaluate test function solutions.", evaluator));
-      Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this test function.", new DoubleValue(evaluator.BestKnownQuality)));
       Parameters.Add(new OptionalValueParameter<RealVector>("BestKnownSolution", "The best known solution for this test function instance."));
+
+      Maximization.Value = Evaluator.Maximization;
+      BestKnownQuality.Value = Evaluator.BestKnownQuality;
 
       strategyVectorCreator = new StdDevStrategyVectorCreator();
       strategyVectorCreator.LengthParameter.ActualName = ProblemSizeParameter.Name;
@@ -164,7 +109,7 @@ namespace HeuristicLab.Problems.TestFunctions {
       strategyVectorManipulator.LearningRateParameter.Value = new DoubleValue(0.5);
       strategyVectorManipulator.GeneralLearningRateParameter.Value = new DoubleValue(0.5);
 
-      creator.RealVectorParameter.ActualName = "Point";
+      SolutionCreator.RealVectorParameter.ActualName = "Point";
       ParameterizeSolutionCreator();
       ParameterizeEvaluator();
 
@@ -184,51 +129,15 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     #region Events
-    public event EventHandler SolutionCreatorChanged;
-    private void OnSolutionCreatorChanged() {
-      EventHandler handler = SolutionCreatorChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-    public event EventHandler EvaluatorChanged;
-    private void OnEvaluatorChanged() {
-      EventHandler handler = EvaluatorChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-    public event EventHandler OperatorsChanged;
-    private void OnOperatorsChanged() {
-      EventHandler handler = OperatorsChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-    public event EventHandler Reset;
-    private void OnReset() {
-      EventHandler handler = Reset;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-
-    private void ProblemSizeParameter_ValueChanged(object sender, EventArgs e) {
-      ProblemSize.ValueChanged += new EventHandler(ProblemSize_ValueChanged);
-      ProblemSize_ValueChanged(null, EventArgs.Empty);
-    }
-    private void ProblemSize_ValueChanged(object sender, EventArgs e) {
-      if (ProblemSize.Value < 1) ProblemSize.Value = 1;
-      ParameterizeSolutionCreator();
-      ParameterizeEvaluator();
-      strategyVectorManipulator.GeneralLearningRateParameter.Value = new DoubleValue(1.0 / Math.Sqrt(2 * ProblemSize.Value));
-      strategyVectorManipulator.LearningRateParameter.Value = new DoubleValue(1.0 / Math.Sqrt(2 * Math.Sqrt(ProblemSize.Value)));
-      OnReset();
-    }
-    private void SolutionCreatorParameter_ValueChanged(object sender, EventArgs e) {
+    protected override void OnSolutionCreatorChanged() {
+      base.OnSolutionCreatorChanged();
       ParameterizeSolutionCreator();
       ParameterizeAnalyzers();
+      SolutionCreator.RealVectorParameter.ActualNameChanged += new EventHandler(SolutionCreator_RealVectorParameter_ActualNameChanged);
       SolutionCreator_RealVectorParameter_ActualNameChanged(null, EventArgs.Empty);
-      OnSolutionCreatorChanged();
     }
-    private void SolutionCreator_RealVectorParameter_ActualNameChanged(object sender, EventArgs e) {
-      ParameterizeEvaluator();
-      ParameterizeOperators();
-      ParameterizeAnalyzers();
-    }
-    private void EvaluatorParameter_ValueChanged(object sender, EventArgs e) {
+    protected override void OnEvaluatorChanged() {
+      base.OnEvaluatorChanged();
       ParameterizeEvaluator();
       UpdateMoveEvaluators();
       ParameterizeAnalyzers();
@@ -241,8 +150,24 @@ namespace HeuristicLab.Problems.TestFunctions {
       BestKnownQuality = new DoubleValue(Evaluator.BestKnownQuality);
       Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       Evaluator_QualityParameter_ActualNameChanged(null, EventArgs.Empty);
-      OnEvaluatorChanged();
       OnReset();
+    }
+    private void ProblemSizeParameter_ValueChanged(object sender, EventArgs e) {
+      ProblemSize.ValueChanged += new EventHandler(ProblemSize_ValueChanged);
+      ProblemSize_ValueChanged(null, EventArgs.Empty);
+    }
+    private void ProblemSize_ValueChanged(object sender, EventArgs e) {
+      if (ProblemSize.Value < 1) ProblemSize.Value = 1;
+      ParameterizeSolutionCreator();
+      ParameterizeEvaluator();
+      strategyVectorManipulator.GeneralLearningRateParameter.Value = new DoubleValue(1.0 / Math.Sqrt(2 * ProblemSize.Value));
+      strategyVectorManipulator.LearningRateParameter.Value = new DoubleValue(1.0 / Math.Sqrt(2 * Math.Sqrt(ProblemSize.Value)));
+      OnReset();
+    }
+    private void SolutionCreator_RealVectorParameter_ActualNameChanged(object sender, EventArgs e) {
+      ParameterizeEvaluator();
+      ParameterizeOperators();
+      ParameterizeAnalyzers();
     }
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeOperators();
@@ -304,7 +229,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     private void AfterDeserialization() {
       // BackwardsCompatibility3.3
       #region Backwards compatible code (remove with 3.4)
-      if (operators == null) InitializeOperators();
+      if (Operators.Count == 0) InitializeOperators();
       #endregion
       AttachEventHandlers();
     }
@@ -315,9 +240,7 @@ namespace HeuristicLab.Problems.TestFunctions {
       BoundsParameter.ValueChanged += new EventHandler(BoundsParameter_ValueChanged);
       Bounds.ToStringChanged += new EventHandler(Bounds_ToStringChanged);
       Bounds.ItemChanged += new EventHandler<EventArgs<int, int>>(Bounds_ItemChanged);
-      SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
       SolutionCreator.RealVectorParameter.ActualNameChanged += new EventHandler(SolutionCreator_RealVectorParameter_ActualNameChanged);
-      EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
       Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       strategyVectorCreator.BoundsParameter.ValueChanged += new EventHandler(strategyVectorCreator_BoundsParameter_ValueChanged);
       strategyVectorCreator.StrategyParameterParameter.ActualNameChanged += new EventHandler(strategyVectorCreator_StrategyParameterParameter_ActualNameChanged);
@@ -333,13 +256,12 @@ namespace HeuristicLab.Problems.TestFunctions {
       BestSingleObjectiveTestFunctionSolutionAnalyzer.BoundsParameter.ActualName = BoundsParameter.Name;
     }
     private void InitializeOperators() {
-      operators = new List<IOperator>();
-      operators.Add(new BestSingleObjectiveTestFunctionSolutionAnalyzer());
+      Operators.Add(new BestSingleObjectiveTestFunctionSolutionAnalyzer());
       ParameterizeAnalyzers();
-      operators.AddRange(ApplicationManager.Manager.GetInstances<IRealVectorOperator>().Cast<IOperator>());
-      operators.Add(strategyVectorCreator);
-      operators.Add(strategyVectorCrossover);
-      operators.Add(strategyVectorManipulator);
+      Operators.AddRange(ApplicationManager.Manager.GetInstances<IRealVectorOperator>().Cast<IOperator>());
+      Operators.Add(strategyVectorCreator);
+      Operators.Add(strategyVectorCrossover);
+      Operators.Add(strategyVectorManipulator);
       UpdateMoveEvaluators();
       ParameterizeOperators();
       InitializeMoveGenerators();
@@ -353,10 +275,10 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
     private void UpdateMoveEvaluators() {
       foreach (ISingleObjectiveTestFunctionMoveEvaluator op in Operators.OfType<ISingleObjectiveTestFunctionMoveEvaluator>().ToList())
-        operators.Remove(op);
+        Operators.Remove(op);
       foreach (ISingleObjectiveTestFunctionMoveEvaluator op in ApplicationManager.Manager.GetInstances<ISingleObjectiveTestFunctionMoveEvaluator>())
         if (op.EvaluatorType == Evaluator.GetType()) {
-          operators.Add(op);
+          Operators.Add(op);
           #region Synchronize evaluator specific parameters with the parameters of the corresponding move evaluators
           if (op is ISphereMoveEvaluator) {
             SphereEvaluator e = (Evaluator as SphereEvaluator);

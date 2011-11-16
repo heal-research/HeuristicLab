@@ -132,6 +132,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     protected void UpdateSeries(List<double> residuals, Series series) {
       series.Points.Clear();
       residuals.Sort();
+      if (!residuals.Any() || residuals.All(double.IsNaN)) return;
 
       series.Points.AddXY(0, 0);
       for (int i = 0; i < residuals.Count; i++) {
@@ -145,7 +146,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         }
 
         point.XValue = residuals[i];
-        point.YValues[0] = ((double)i+1) / residuals.Count;
+        point.YValues[0] = ((double)i + 1) / residuals.Count;
         point.ToolTip = "Error: " + point.XValue + "\n" + "Samples: " + point.YValues[0];
         series.Points.Add(point);
       }
@@ -205,7 +206,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     private double CalculateAreaOverCurve(Series series) {
-      if (series.Points.Count < 1) throw new ArgumentException("Could not calculate area under curve if less than 1 data points were given.");
+      if (series.Points.Count < 1) return 0;
 
       double auc = 0.0;
       for (int i = 1; i < series.Points.Count; i++) {

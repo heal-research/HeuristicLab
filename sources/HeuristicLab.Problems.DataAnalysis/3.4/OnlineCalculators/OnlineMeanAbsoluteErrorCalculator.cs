@@ -64,23 +64,23 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     #endregion
 
-    public static double Calculate(IEnumerable<double> first, IEnumerable<double> second, out OnlineCalculatorError errorState) {
-      IEnumerator<double> firstEnumerator = first.GetEnumerator();
-      IEnumerator<double> secondEnumerator = second.GetEnumerator();
+    public static double Calculate(IEnumerable<double> originalValues, IEnumerable<double> estimatedValues, out OnlineCalculatorError errorState) {
+      IEnumerator<double> originalEnumerator = originalValues.GetEnumerator();
+      IEnumerator<double> estimatedEnumerator = estimatedValues.GetEnumerator();
       OnlineMeanAbsoluteErrorCalculator maeCalculator = new OnlineMeanAbsoluteErrorCalculator();
 
       // always move forward both enumerators (do not use short-circuit evaluation!)
-      while (firstEnumerator.MoveNext() & secondEnumerator.MoveNext()) {
-        double estimated = secondEnumerator.Current;
-        double original = firstEnumerator.Current;
+      while (originalEnumerator.MoveNext() & estimatedEnumerator.MoveNext()) {
+        double original = originalEnumerator.Current;
+        double estimated = estimatedEnumerator.Current;
         maeCalculator.Add(original, estimated);
         if (maeCalculator.ErrorState != OnlineCalculatorError.None) break;
       }
 
       // check if both enumerators are at the end to make sure both enumerations have the same length
       if (maeCalculator.ErrorState == OnlineCalculatorError.None &&
-         (secondEnumerator.MoveNext() || firstEnumerator.MoveNext())) {
-        throw new ArgumentException("Number of elements in first and second enumeration doesn't match.");
+         (estimatedEnumerator.MoveNext() || originalEnumerator.MoveNext())) {
+        throw new ArgumentException("Number of elements in originalValues and estimatedValues enumerations doesn't match.");
       } else {
         errorState = maeCalculator.ErrorState;
         return maeCalculator.MeanAbsoluteError;

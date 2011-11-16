@@ -180,7 +180,6 @@
     <Compile Include="HeuristicLab-3.3\SamplesTest.cs" />
     <Compile Include="HeuristicLab-3.3\StorableConstructorTest.cs" />
     <Compile Include="HeuristicLab-3.3\SupportVectorMachineTest.cs" />
-    <Compile Include="HeuristicLab-3.3\SymbolicRegressionTest.cs" />
     <Compile Include="HeuristicLab-3.3\ThreadSafeLogTest.cs" />
     <Compile Include="HeuristicLab.Analysis-3.3\MultidimensionalScalingTest.cs" />
     <Compile Include="HeuristicLab.Encodings.BinaryVectorEncoding-3.3\Auxiliary.cs" />
@@ -626,6 +625,22 @@
       <Project>{730A9104-D4D1-4360-966B-E49B7571DDA3}</Project>
       <Name>HeuristicLab.Clients.Common-3.3</Name>
     </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Clients.Hive.Administrator\3.3\HeuristicLab.Clients.Hive.Administrator-3.3.csproj">
+      <Project>{5211F1AD-BBA2-4C62-8749-DCA0A25CF5D8}</Project>
+      <Name>HeuristicLab.Clients.Hive.Administrator-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Clients.Hive.JobManager\3.3\HeuristicLab.Clients.Hive.JobManager-3.3.csproj">
+      <Project>{DBFD7205-61AF-40EF-8776-3052DEF91CF3}</Project>
+      <Name>HeuristicLab.Clients.Hive.JobManager-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Clients.Hive.Views\3.3\HeuristicLab.Clients.Hive.Views-3.3.csproj">
+      <Project>{E1D6C801-892A-406A-B606-F158E36DD3C3}</Project>
+      <Name>HeuristicLab.Clients.Hive.Views-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Clients.Hive\3.3\HeuristicLab.Clients.Hive-3.3.csproj">
+      <Project>{B5EF1E5A-9F3D-40B9-B4B0-30AADF2E2CEB}</Project>
+      <Name>HeuristicLab.Clients.Hive-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.CodeEditor\3.3\HeuristicLab.CodeEditor-3.3.csproj">
       <Project>{489CFE09-FDF7-4C89-BAB5-BD09CADD61AD}</Project>
       <Name>HeuristicLab.CodeEditor-3.3</Name>
@@ -689,6 +704,10 @@
     <ProjectReference Include="..\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding\3.4\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4.csproj">
       <Project>{06D4A186-9319-48A0-BADE-A2058D462EEA}</Project>
       <Name>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Hive\3.3\HeuristicLab.Hive-3.3.csproj">
+      <Project>{F98A1740-9AC9-4D36-A582-6A2D0D06978D}</Project>
+      <Name>HeuristicLab.Hive-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.MainForm.WindowsForms\3.3\HeuristicLab.MainForm.WindowsForms-3.3.csproj">
       <Project>{AB687BBE-1BFE-476B-906D-44237135431D}</Project>

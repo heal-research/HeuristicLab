@@ -19,7 +19,6 @@
  */
 #endregion
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -171,8 +170,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       } else if (Content != null) {
         string targetVariableName = Content.ProblemData.TargetVariable;
 
-        IEnumerable<double> predictedValues = null;
-        IEnumerable<double> targetValues = null;
+        double[] predictedValues = null;
+        double[] targetValues = null;
         switch (series.Name) {
           case ALL_SERIES:
             predictedValues = Content.EstimatedValues.ToArray();
@@ -187,7 +186,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
             targetValues = Content.ProblemData.Dataset.GetDoubleValues(targetVariableName, Content.ProblemData.TestIndizes).ToArray();
             break;
         }
-        series.Points.DataBindXY(predictedValues, "", targetValues, "");
+        if (predictedValues.Length == targetValues.Length)
+          series.Points.DataBindXY(predictedValues, "", targetValues, "");
         this.chart.Legends[series.Legend].ForeColor = Color.Black;
         UpdateCursorInterval();
       }

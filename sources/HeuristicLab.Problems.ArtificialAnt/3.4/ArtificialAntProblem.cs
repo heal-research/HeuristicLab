@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -37,12 +36,8 @@ namespace HeuristicLab.Problems.ArtificialAnt {
   [Item("Artificial Ant Problem", "Represents the Artificial Ant problem.")]
   [Creatable("Problems")]
   [StorableClass]
-  public sealed class ArtificialAntProblem : ParameterizedNamedItem, ISingleObjectiveHeuristicOptimizationProblem, IStorableContent {
+  public sealed class ArtificialAntProblem : SingleObjectiveHeuristicOptimizationProblem<Evaluator, ISymbolicExpressionTreeCreator>, IStorableContent {
     public string Filename { get; set; }
-
-    public override Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
-    }
 
     #region constant for default world (Santa Fe)
     private readonly bool[,] santaFeAntTrail = new bool[,] {
@@ -82,24 +77,6 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     #endregion
 
     #region Parameter Properties
-    public IValueParameter<BoolValue> MaximizationParameter {
-      get { return (IValueParameter<BoolValue>)Parameters["Maximization"]; }
-    }
-    IParameter ISingleObjectiveHeuristicOptimizationProblem.MaximizationParameter {
-      get { return MaximizationParameter; }
-    }
-    public IValueParameter<ISymbolicExpressionTreeCreator> SolutionCreatorParameter {
-      get { return (IValueParameter<ISymbolicExpressionTreeCreator>)Parameters["SolutionCreator"]; }
-    }
-    IParameter IHeuristicOptimizationProblem.SolutionCreatorParameter {
-      get { return SolutionCreatorParameter; }
-    }
-    public IValueParameter<Evaluator> EvaluatorParameter {
-      get { return (IValueParameter<Evaluator>)Parameters["Evaluator"]; }
-    }
-    IParameter IHeuristicOptimizationProblem.EvaluatorParameter {
-      get { return EvaluatorParameter; }
-    }
     public IValueParameter<ISymbolicExpressionGrammar> ArtificialAntExpressionGrammarParameter {
       get { return (IValueParameter<ISymbolicExpressionGrammar>)Parameters["ArtificialAntExpressionGrammar"]; }
     }
@@ -120,13 +97,6 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     }
     public IValueParameter<IntValue> MaxTimeStepsParameter {
       get { return (IValueParameter<IntValue>)Parameters["MaximumTimeSteps"]; }
-    }
-
-    public IValueParameter<DoubleValue> BestKnownQualityParameter {
-      get { return (IValueParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
-    }
-    IParameter ISingleObjectiveHeuristicOptimizationProblem.BestKnownQualityParameter {
-      get { return BestKnownQualityParameter; }
     }
     #endregion
 
@@ -155,40 +125,26 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       get { return MaxFunctionArgumentsParameter.Value; }
       set { MaxFunctionArgumentsParameter.Value = value; }
     }
-    public ISymbolicExpressionTreeCreator SolutionCreator {
-      get { return SolutionCreatorParameter.Value; }
-      set { SolutionCreatorParameter.Value = value; }
-    }
-    ISolutionCreator IHeuristicOptimizationProblem.SolutionCreator {
-      get { return SolutionCreatorParameter.Value; }
-    }
-    public Evaluator Evaluator {
-      get { return EvaluatorParameter.Value; }
-      set { EvaluatorParameter.Value = value; }
-    }
-    ISingleObjectiveEvaluator ISingleObjectiveHeuristicOptimizationProblem.Evaluator {
-      get { return EvaluatorParameter.Value; }
-    }
-    IEvaluator IHeuristicOptimizationProblem.Evaluator {
-      get { return EvaluatorParameter.Value; }
-    }
     public ArtificialAntExpressionGrammar ArtificialAntExpressionGrammar {
       get { return (ArtificialAntExpressionGrammar)ArtificialAntExpressionGrammarParameter.Value; }
     }
-    public DoubleValue BestKnownQuality {
-      get { return BestKnownQualityParameter.Value; }
-    }
-    public IEnumerable<IOperator> Operators {
-      get { return operators; }
-    }
-
     public IEnumerable<IAntTrailAnalyzer> AntTrailAnalyzers {
-      get { return operators.OfType<IAntTrailAnalyzer>(); }
+      get { return Operators.OfType<IAntTrailAnalyzer>(); }
     }
     #endregion
 
-    [Storable]
-    private List<IOperator> operators;
+    // BackwardsCompatibility3.3
+    #region Backwards compatible code, remove with 3.4
+    [Obsolete]
+    [Storable(Name = "operators")]
+    private IEnumerable<IOperator> oldOperators {
+      get { return null; }
+      set {
+        if (value != null && value.Any())
+          Operators.AddRange(value);
+      }
+    }
+    #endregion
 
     [StorableConstructor]
     private ArtificialAntProblem(bool deserializing) : base(deserializing) { }
@@ -199,21 +155,14 @@ namespace HeuristicLab.Problems.ArtificialAnt {
 
     private ArtificialAntProblem(ArtificialAntProblem original, Cloner cloner)
       : base(original, cloner) {
-      operators = original.operators.Select(x => cloner.Clone(x)).ToList();
       AttachEventHandlers();
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ArtificialAntProblem(this, cloner);
     }
     public ArtificialAntProblem()
-      : base() {
-      ProbabilisticTreeCreator creator = new ProbabilisticTreeCreator();
-      Evaluator evaluator = new Evaluator();
+      : base(new Evaluator(), new ProbabilisticTreeCreator()) {
       BoolMatrix world = new BoolMatrix(santaFeAntTrail);
-      Parameters.Add(new ValueParameter<BoolValue>("Maximization", "Set to true as the Artificial Ant Problem is a maximization problem.", new BoolValue(true)));
-      Parameters.Add(new ValueParameter<ISymbolicExpressionTreeCreator>("SolutionCreator", "The operator which should be used to create new artificial ant solutions.", creator));
-      Parameters.Add(new ValueParameter<Evaluator>("Evaluator", "The operator which should be used to evaluate artificial ant solutions.", evaluator));
-      Parameters.Add(new ValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this artificial ant instance.", new DoubleValue(89)));
       Parameters.Add(new ValueParameter<IntValue>("MaximumExpressionLength", "Maximal length of the expression to control the artificial ant.", new IntValue(100)));
       Parameters.Add(new ValueParameter<IntValue>("MaximumExpressionDepth", "Maximal depth of the expression to control the artificial ant.", new IntValue(10)));
       Parameters.Add(new ValueParameter<IntValue>("MaximumFunctionDefinitions", "Maximal number of automatically defined functions in the expression to control the artificial ant.", new IntValue(3)));
@@ -222,36 +171,19 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       Parameters.Add(new ValueParameter<BoolMatrix>("World", "The world for the artificial ant with scattered food items.", world));
       Parameters.Add(new ValueParameter<IntValue>("MaximumTimeSteps", "The number of time steps the artificial ant has available to collect all food items.", new IntValue(600)));
 
-      creator.SymbolicExpressionTreeParameter.ActualName = "AntTrailSolution";
-      creator.SymbolicExpressionTreeGrammarParameter.ActualName = "ArtificialAntExpressionGrammar";
-      evaluator.QualityParameter.ActualName = "FoodEaten";
+      Maximization.Value = true;
+      MaximizationParameter.Hidden = true;
+      BestKnownQuality.Value = 89;
+      SolutionCreator.SymbolicExpressionTreeParameter.ActualName = "AntTrailSolution";
+      ((ProbabilisticTreeCreator)SolutionCreator).SymbolicExpressionTreeGrammarParameter.ActualName = "ArtificialAntExpressionGrammar";
+      Evaluator.QualityParameter.ActualName = "FoodEaten";
       InitializeOperators();
       AttachEventHandlers();
     }
 
     #region Events
-    public event EventHandler SolutionCreatorChanged;
-    private void OnSolutionCreatorChanged() {
-      EventHandler handler = SolutionCreatorChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-    public event EventHandler EvaluatorChanged;
-    private void OnEvaluatorChanged() {
-      EventHandler handler = EvaluatorChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-    public event EventHandler OperatorsChanged;
-    private void OnOperatorsChanged() {
-      EventHandler handler = OperatorsChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-    public event EventHandler Reset;
-    private void OnReset() {
-      EventHandler handler = Reset;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-
-    private void SolutionCreatorParameter_ValueChanged(object sender, EventArgs e) {
+    protected override void OnSolutionCreatorChanged() {
+      base.OnSolutionCreatorChanged();
       SolutionCreator.SymbolicExpressionTreeParameter.ActualName = "AntTrailSolution";
       var grammarBased = SolutionCreator as ISymbolicExpressionTreeGrammarBasedOperator;
       if (grammarBased != null)
@@ -260,18 +192,17 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       SolutionCreator.SymbolicExpressionTreeParameter.ActualNameChanged += new EventHandler(SolutionCreator_SymbolicExpressionTreeParameter_ActualNameChanged);
       ParameterizeAnalyzers();
       ParameterizeOperators();
-      OnSolutionCreatorChanged();
     }
-    private void SolutionCreator_SymbolicExpressionTreeParameter_ActualNameChanged(object sender, EventArgs e) {
-      ParameterizeAnalyzers();
-      ParameterizeOperators();
-    }
-    private void EvaluatorParameter_ValueChanged(object sender, EventArgs e) {
+    protected override void OnEvaluatorChanged() {
+      base.OnEvaluatorChanged();
       Evaluator.QualityParameter.ActualName = "FoodEaten";
       Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       ParameterizeAnalyzers();
       ParameterizeOperators();
-      OnEvaluatorChanged();
+    }
+    private void SolutionCreator_SymbolicExpressionTreeParameter_ActualNameChanged(object sender, EventArgs e) {
+      ParameterizeAnalyzers();
+      ParameterizeOperators();
     }
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeAnalyzers();
@@ -281,9 +212,7 @@ namespace HeuristicLab.Problems.ArtificialAnt {
 
     #region Helpers
     private void AttachEventHandlers() {
-      SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
       SolutionCreator.SymbolicExpressionTreeParameter.ActualNameChanged += new EventHandler(SolutionCreator_SymbolicExpressionTreeParameter_ActualNameChanged);
-      EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
       Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       MaxFunctionArgumentsParameter.ValueChanged += new EventHandler(MaxFunctionArgumentsParameter_ValueChanged);
       MaxFunctionArguments.ValueChanged += new EventHandler(MaxFunctionArgumentsParameter_ValueChanged);
@@ -303,11 +232,10 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     }
 
     private void InitializeOperators() {
-      operators = new List<IOperator>();
-      operators.AddRange(ApplicationManager.Manager.GetInstances<ISymbolicExpressionTreeOperator>().OfType<IOperator>());
-      operators.Add(new BestAntTrailAnalyzer());
-      operators.Add(new MinAverageMaxSymbolicExpressionTreeLengthAnalyzer());
-      operators.Add(new SymbolicExpressionSymbolFrequencyAnalyzer());
+      Operators.AddRange(ApplicationManager.Manager.GetInstances<ISymbolicExpressionTreeOperator>().OfType<IOperator>());
+      Operators.Add(new BestAntTrailAnalyzer());
+      Operators.Add(new MinAverageMaxSymbolicExpressionTreeLengthAnalyzer());
+      Operators.Add(new SymbolicExpressionSymbolFrequencyAnalyzer());
       ParameterizeAnalyzers();
       ParameterizeOperators();
     }

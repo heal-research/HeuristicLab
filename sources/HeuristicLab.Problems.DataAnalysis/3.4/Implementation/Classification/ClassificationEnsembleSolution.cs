@@ -200,6 +200,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public IEnumerable<IEnumerable<double>> GetEstimatedClassValueVectors(Dataset dataset, IEnumerable<int> rows) {
+      if (!Model.Models.Any()) yield break;
       var estimatedValuesEnumerators = (from model in Model.Models
                                         select model.GetEstimatedClassValues(dataset, rows).GetEnumerator())
                                        .ToList();

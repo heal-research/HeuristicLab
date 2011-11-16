@@ -21,12 +21,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -39,20 +37,10 @@ namespace HeuristicLab.Problems.VehicleRouting {
   [Item("Vehicle Routing Problem", "Represents a Vehicle Routing Problem.")]
   [Creatable("Problems")]
   [StorableClass]
-  public sealed class VehicleRoutingProblem : ParameterizedNamedItem, ISingleObjectiveHeuristicOptimizationProblem, IStorableContent {
+  public sealed class VehicleRoutingProblem : SingleObjectiveHeuristicOptimizationProblem<IVRPEvaluator, IVRPCreator>, IStorableContent {
     public string Filename { get; set; }
 
-    public override Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
-    }
-
     #region Parameter Properties
-    public ValueParameter<BoolValue> MaximizationParameter {
-      get { return (ValueParameter<BoolValue>)Parameters["Maximization"]; }
-    }
-    IParameter ISingleObjectiveHeuristicOptimizationProblem.MaximizationParameter {
-      get { return MaximizationParameter; }
-    }
     public ValueParameter<DoubleMatrix> CoordinatesParameter {
       get { return (ValueParameter<DoubleMatrix>)Parameters["Coordinates"]; }
     }
@@ -80,18 +68,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
     public ValueParameter<DoubleArray> ServiceTimeParameter {
       get { return (ValueParameter<DoubleArray>)Parameters["ServiceTime"]; }
     }
-    ValueParameter<IVRPCreator> SolutionCreatorParameter {
-      get { return (ValueParameter<IVRPCreator>)Parameters["SolutionCreator"]; }
-    }
-    IParameter IHeuristicOptimizationProblem.SolutionCreatorParameter {
-      get { return SolutionCreatorParameter; }
-    }
-    ValueParameter<IVRPEvaluator> EvaluatorParameter {
-      get { return (ValueParameter<IVRPEvaluator>)Parameters["Evaluator"]; }
-    }
-    IParameter IHeuristicOptimizationProblem.EvaluatorParameter {
-      get { return EvaluatorParameter; }
-    }
     public IValueParameter<DoubleValue> FleetUsageFactorParameter {
       get { return (IValueParameter<DoubleValue>)Parameters["EvalFleetUsageFactor"]; }
     }
@@ -106,12 +82,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
     public IValueParameter<DoubleValue> TardinessPenaltyParameter {
       get { return (IValueParameter<DoubleValue>)Parameters["EvalTardinessPenalty"]; }
-    }
-    public OptionalValueParameter<DoubleValue> BestKnownQualityParameter {
-      get { return (OptionalValueParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
-    }
-    IParameter ISingleObjectiveHeuristicOptimizationProblem.BestKnownQualityParameter {
-      get { return BestKnownQualityParameter; }
     }
     public OptionalValueParameter<IVRPEncoding> BestKnownSolutionParameter {
       get { return (OptionalValueParameter<IVRPEncoding>)Parameters["BestKnownSolution"]; }
@@ -155,58 +125,39 @@ namespace HeuristicLab.Problems.VehicleRouting {
       get { return ServiceTimeParameter.Value; }
       set { ServiceTimeParameter.Value = value; }
     }
-    public DoubleValue BestKnownQuality {
-      get { return BestKnownQualityParameter.Value; }
-      set { BestKnownQualityParameter.Value = value; }
-    }
     public IVRPEncoding BestKnownSolution {
       get { return BestKnownSolutionParameter.Value; }
       set { BestKnownSolutionParameter.Value = value; }
     }
-    public IVRPCreator SolutionCreator {
-      get { return SolutionCreatorParameter.Value; }
-      set { SolutionCreatorParameter.Value = value; }
-    }
-    ISolutionCreator IHeuristicOptimizationProblem.SolutionCreator {
-      get { return SolutionCreatorParameter.Value; }
-    }
-    public IVRPEvaluator Evaluator {
-      get { return EvaluatorParameter.Value; }
-      set { EvaluatorParameter.Value = value; }
-    }
-    ISingleObjectiveEvaluator ISingleObjectiveHeuristicOptimizationProblem.Evaluator {
-      get { return EvaluatorParameter.Value; }
-    }
-    IEvaluator IHeuristicOptimizationProblem.Evaluator {
-      get { return EvaluatorParameter.Value; }
-    }
-    public IEnumerable<IOperator> Operators {
-      get { return operators; }
-    }
     private BestVRPSolutionAnalyzer BestVRPSolutionAnalyzer {
-      get { return operators.OfType<BestVRPSolutionAnalyzer>().FirstOrDefault(); }
+      get { return Operators.OfType<BestVRPSolutionAnalyzer>().FirstOrDefault(); }
     }
     private BestAverageWorstVRPToursAnalyzer BestAverageWorstVRPToursAnalyzer {
-      get { return operators.OfType<BestAverageWorstVRPToursAnalyzer>().FirstOrDefault(); }
+      get { return Operators.OfType<BestAverageWorstVRPToursAnalyzer>().FirstOrDefault(); }
     }
     #endregion
 
-    [Storable]
-    private List<IOperator> operators;
+    // BackwardsCompatibility3.3
+    #region Backwards compatible code, remove with 3.4
+    [Obsolete]
+    [Storable(Name = "operators")]
+    private IEnumerable<IOperator> oldOperators {
+      get { return null; }
+      set {
+        if (value != null && value.Any())
+          Operators.AddRange(value);
+      }
+    }
+    #endregion
 
     [StorableConstructor]
     private VehicleRoutingProblem(bool deserializing) : base(deserializing) { }
     private VehicleRoutingProblem(VehicleRoutingProblem original, Cloner cloner)
       : base(original, cloner) {
-      operators = original.operators.Select(x => (IOperator)cloner.Clone(x)).ToList();
       AttachEventHandlers();
     }
     public VehicleRoutingProblem()
-      : base() {
-      IVRPCreator creator = new RandomCreator();
-      IVRPEvaluator evaluator = new VRPEvaluator();
-
-      Parameters.Add(new ValueParameter<BoolValue>("Maximization", "Set to false as the Vehicle Routing Problem is a minimization problem.", new BoolValue(false)));
+      : base(new VRPEvaluator(), new RandomCreator()) {
       Parameters.Add(new ValueParameter<DoubleMatrix>("Coordinates", "The x- and y-Coordinates of the cities.", new DoubleMatrix()));
       Parameters.Add(new OptionalValueParameter<DoubleMatrix>("DistanceMatrix", "The matrix which contains the distances between the cities."));
       Parameters.Add(new ValueParameter<BoolValue>("UseDistanceMatrix", "True if a distance matrix should be calculated and used for evaluation, otherwise false.", new BoolValue(true)));
@@ -216,7 +167,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
       Parameters.Add(new ValueParameter<DoubleArray>("ReadyTime", "The ready time of each customer.", new DoubleArray()));
       Parameters.Add(new ValueParameter<DoubleArray>("DueTime", "The due time of each customer.", new DoubleArray()));
       Parameters.Add(new ValueParameter<DoubleArray>("ServiceTime", "The service time of each customer.", new DoubleArray()));
-      Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this VRP instance."));
       Parameters.Add(new OptionalValueParameter<IVRPEncoding>("BestKnownSolution", "The best known solution of this VRP instance."));
       Parameters.Add(new ValueParameter<DoubleValue>("EvalFleetUsageFactor", "The fleet usage factor considered in the evaluation.", new DoubleValue(100)));
       Parameters.Add(new ValueParameter<DoubleValue>("EvalTimeFactor", "The time factor considered in the evaluation.", new DoubleValue(0)));
@@ -224,11 +174,11 @@ namespace HeuristicLab.Problems.VehicleRouting {
       Parameters.Add(new ValueParameter<DoubleValue>("EvalOverloadPenalty", "The overload penalty considered in the evaluation.", new DoubleValue(100)));
       Parameters.Add(new ValueParameter<DoubleValue>("EvalTardinessPenalty", "The tardiness penalty considered in the evaluation.", new DoubleValue(100)));
 
-      Parameters.Add(new ValueParameter<IVRPCreator>("SolutionCreator", "The operator which should be used to create new VRP solutions.", creator));
-      Parameters.Add(new ValueParameter<IVRPEvaluator>("Evaluator", "The operator which should be used to evaluate VRP solutions.", evaluator));
+      Maximization.Value = false;
+      MaximizationParameter.Hidden = true;
 
-      creator.VRPToursParameter.ActualName = "VRPTours";
-      evaluator.QualityParameter.ActualName = "VRPQuality";
+      SolutionCreator.VRPToursParameter.ActualName = "VRPTours";
+      Evaluator.QualityParameter.ActualName = "VRPQuality";
 
       InitializeRandomVRPInstance();
 
@@ -244,27 +194,21 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     #region Events
-    public event EventHandler SolutionCreatorChanged;
-    private void OnSolutionCreatorChanged() {
-      EventHandler handler = SolutionCreatorChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
+    protected override void OnSolutionCreatorChanged() {
+      base.OnSolutionCreatorChanged();
+      ParameterizeSolutionCreator();
+      ParameterizeEvaluator();
+      ParameterizeAnalyzer();
+      ParameterizeOperators();
     }
-    public event EventHandler EvaluatorChanged;
-    private void OnEvaluatorChanged() {
-      EventHandler handler = EvaluatorChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
+    protected override void OnEvaluatorChanged() {
+      base.OnEvaluatorChanged();
+      Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
+      ParameterizeEvaluator();
+      UpdateMoveEvaluators();
+      ParameterizeAnalyzer();
     }
-    public event EventHandler OperatorsChanged;
-    private void OnOperatorsChanged() {
-      EventHandler handler = OperatorsChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-    public event EventHandler Reset;
-    private void OnReset() {
-      EventHandler handler = Reset;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-    void VehiclesValue_ValueChanged(object sender, EventArgs e) {
+    private void VehiclesValue_ValueChanged(object sender, EventArgs e) {
       ParameterizeSolutionCreator();
     }
     private void CoordinatesParameter_ValueChanged(object sender, EventArgs e) {
@@ -286,33 +230,8 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
       BestKnownSolution = null;
     }
-    private void SolutionCreatorParameter_ValueChanged(object sender, EventArgs e) {
-      ParameterizeSolutionCreator();
-      ParameterizeEvaluator();
-      ParameterizeAnalyzer();
-      ParameterizeOperators();
-      OnSolutionCreatorChanged();
-    }
-    private void SolutionCreator_PermutationParameter_ActualNameChanged(object sender, EventArgs e) {
-      ParameterizeEvaluator();
-      ParameterizeAnalyzer();
-      ParameterizeOperators();
-    }
-    private void EvaluatorParameter_ValueChanged(object sender, EventArgs e) {
-      Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
-      ParameterizeEvaluator();
-      UpdateMoveEvaluators();
-      ParameterizeAnalyzer();
-      OnEvaluatorChanged();
-    }
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeAnalyzer();
-    }
-    private void TranslocationMoveParameter_ActualNameChanged(object sender, EventArgs e) {
-      string name = ((ILookupParameter<TranslocationMove>)sender).ActualName;
-      foreach (IPermutationTranslocationMoveOperator op in Operators.OfType<IPermutationTranslocationMoveOperator>()) {
-        op.TranslocationMoveParameter.ActualName = name;
-      }
     }
 
     void DistanceFactor_ValueChanged(object sender, EventArgs e) {
@@ -452,9 +371,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
       Vehicles.ValueChanged += new EventHandler(VehiclesValue_ValueChanged);
 
-      SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
-
-      EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
       Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
 
       DistanceFactorParameter.ValueChanged += new EventHandler(DistanceFactor_ValueChanged);
@@ -493,22 +409,12 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     private void InitializeOperators() {
-      operators = new List<IOperator>();
-      operators.Add(new BestVRPSolutionAnalyzer());
-      operators.Add(new BestAverageWorstVRPToursAnalyzer());
+      Operators.Add(new BestVRPSolutionAnalyzer());
+      Operators.Add(new BestAverageWorstVRPToursAnalyzer());
       ParameterizeAnalyzer();
-      operators.AddRange(ApplicationManager.Manager.GetInstances<IVRPOperator>().Cast<IOperator>().OrderBy(op => op.Name));
+      Operators.AddRange(ApplicationManager.Manager.GetInstances<IVRPOperator>().Cast<IOperator>().OrderBy(op => op.Name));
       ParameterizeOperators();
       UpdateMoveEvaluators();
-      InitializeMoveGenerators();
-    }
-    private void InitializeMoveGenerators() {
-      foreach (IAlbaTranslocationMoveOperator op in Operators.OfType<IAlbaTranslocationMoveOperator>()) {
-        if (op is IMoveGenerator) {
-          op.TranslocationMoveParameter.ActualNameChanged += new EventHandler(TranslocationMoveParameter_ActualNameChanged);
-        }
-      }
-
     }
     private void UpdateMoveEvaluators() {
       ParameterizeOperators();

@@ -73,8 +73,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
       // always move forward both enumerators (do not use short-circuit evaluation!)
       while (firstEnumerator.MoveNext() & secondEnumerator.MoveNext()) {
-        double estimated = secondEnumerator.Current;
         double original = firstEnumerator.Current;
+        double estimated = secondEnumerator.Current;
         rSquaredCalculator.Add(original, estimated);
         if (rSquaredCalculator.ErrorState != OnlineCalculatorError.None) break;
       }

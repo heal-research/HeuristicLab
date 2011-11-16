@@ -63,7 +63,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       foreach (var model in Model.Models) {
-        IRegressionProblemData problemData = (IRegressionProblemData) ProblemData.Clone();
+        IRegressionProblemData problemData = (IRegressionProblemData)ProblemData.Clone();
         problemData.TrainingPartition.Start = trainingPartitions[model].Start;
         problemData.TrainingPartition.End = trainingPartitions[model].End;
         problemData.TestPartition.Start = testPartitions[model].Start;
@@ -201,6 +201,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public IEnumerable<IEnumerable<double>> GetEstimatedValueVectors(Dataset dataset, IEnumerable<int> rows) {
+      if (!Model.Models.Any()) yield break;
       var estimatedValuesEnumerators = (from model in Model.Models
                                         select model.GetEstimatedValues(dataset, rows).GetEnumerator())
                                        .ToList();

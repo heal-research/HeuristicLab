@@ -141,6 +141,16 @@ namespace HeuristicLab.Analysis {
         }
       }
     }
+    private double scaleFactor;
+    public double ScaleFactor {
+      get { return scaleFactor; }
+      set {
+        if (scaleFactor != value) {
+          scaleFactor = value;
+          OnPropertyChanged("ScaleFactor");
+        }
+      }
+    }
     private string displayName;
     public string DisplayName {
       get { return displayName == null ? String.Empty : displayName; }
@@ -203,6 +213,11 @@ namespace HeuristicLab.Analysis {
       get { return exactBins; }
       set { exactBins = value; }
     }
+    [Storable(Name = "ScaleFactor")]
+    private double StorableScaleFactor {
+      get { return scaleFactor; }
+      set { scaleFactor = value; }
+    }
     [Storable(Name = "DisplayName")]
     private string StorableDisplayName {
       get { return displayName; }
@@ -223,6 +238,7 @@ namespace HeuristicLab.Analysis {
       this.lineWidth = original.lineWidth;
       this.bins = original.bins;
       this.exactBins = original.exactBins;
+      this.scaleFactor = original.scaleFactor;
       this.displayName = original.displayName;
     }
     public DataRowVisualProperties() {
@@ -235,6 +251,7 @@ namespace HeuristicLab.Analysis {
       lineWidth = 1;
       bins = 10;
       exactBins = false;
+      scaleFactor = 1.0;
       displayName = String.Empty;
     }
     public DataRowVisualProperties(string displayName)

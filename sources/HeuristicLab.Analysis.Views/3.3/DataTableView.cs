@@ -575,19 +575,27 @@ namespace HeuristicLab.Analysis.Views {
         maxValue = Math.Ceiling(maxValue / intervalWidth) * intervalWidth;
       }
 
-      double current = minValue, intervalCenter = intervalWidth / 2.0;
+      var area = chart.ChartAreas[0];
+      double current = 0.0;
+      if (!Double.IsNaN(Content.VisualProperties.XAxisMinimumFixedValue) && !Content.VisualProperties.XAxisMinimumAuto)
+        current = Content.VisualProperties.XAxisMinimumFixedValue;
+      else current = minValue;
+
+      area.AxisX.Interval = intervalWidth / row.VisualProperties.ScaleFactor;
+      area.AxisX.IntervalOffset = intervalWidth / row.VisualProperties.ScaleFactor;
+
+      series.SetCustomProperty("PointWidth", intervalWidth.ToString());
+
       int frequency = 0;
-      series.Points.AddXY(current - intervalCenter, 0); // so that the first column is not visually truncated
       foreach (double v in row.Values.Where(x => !IsInvalidValue(x)).OrderBy(x => x)) {
         while (v > current + intervalWidth) {
-          series.Points.AddXY(current + intervalCenter, frequency);
+          series.Points.AddXY(current + intervalWidth, frequency);
           current += intervalWidth;
           frequency = 0;
         }
         frequency++;
       }
-      series.Points.AddXY(current + intervalCenter, frequency);
-      series.Points.AddXY(current + 3 * intervalCenter, 0); // so that the last column is not visually truncated
+      series.Points.AddXY(current + intervalWidth, frequency);
     }
 
     #region Helpers

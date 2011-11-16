@@ -19,14 +19,14 @@
  */
 #endregion
 
-using System.Text;
-using System.Linq;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using System.Collections.Generic;
 using System;
-using HeuristicLab.Core;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [Item("LaTeX String Formatter", "Formatter for symbolic expression trees for import into LaTeX documents.")]
@@ -136,12 +136,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         constants.Add(constNode.Value);
       } else if (node.Symbol is LaggedVariable) {
         var laggedVarNode = node as LaggedVariableTreeNode;
-        strBuilder.Append("c_{" + constants.Count + "} " + laggedVarNode.VariableName);
+        strBuilder.Append("c_{" + constants.Count + "} " + EscapeLatexString(laggedVarNode.VariableName));
         strBuilder.Append(LagToString(currentLag + laggedVarNode.Lag));
         constants.Add(laggedVarNode.Weight);
       } else if (node.Symbol is HeuristicLab.Problems.DataAnalysis.Symbolic.Variable) {
         var varNode = node as VariableTreeNode;
-        strBuilder.Append("c_{" + constants.Count + "} " + varNode.VariableName);
+        strBuilder.Append("c_{" + constants.Count + "} " + EscapeLatexString(varNode.VariableName));
         strBuilder.Append(LagToString(currentLag));
         constants.Add(varNode.Weight);
       } else if (node.Symbol is ProgramRootSymbol) {
@@ -173,7 +173,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var conditionTreeNode = node as VariableConditionTreeNode;
         string p = @"1 / \left( 1 + \exp \left( - c_{" + constants.Count + "} ";
         constants.Add(conditionTreeNode.Slope);
-        p += @" \cdot \left(" + conditionTreeNode.VariableName + LagToString(currentLag) + " - c_{" + constants.Count + @"} \right) \right) \right)";
+        p += @" \cdot \left(" + EscapeLatexString(conditionTreeNode.VariableName) + LagToString(currentLag) + " - c_{" + constants.Count + @"} \right) \right) \right)";
         constants.Add(conditionTreeNode.Threshold);
         strBuilder.Append(@"\left( " + p + @"\cdot ");
       } else {
@@ -229,7 +229,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var conditionTreeNode = node as VariableConditionTreeNode;
         string p = @"1 / \left( 1 + \exp \left( - c_{" + constants.Count + "} ";
         constants.Add(conditionTreeNode.Slope);
-        p += @" \cdot \left(" + conditionTreeNode.VariableName + LagToString(currentLag) + " - c_{" + constants.Count + @"} \right) \right) \right)";
+        p += @" \cdot \left(" + EscapeLatexString(conditionTreeNode.VariableName) + LagToString(currentLag) + " - c_{" + constants.Count + @"} \right) \right) \right)";
         constants.Add(conditionTreeNode.Threshold);
         strBuilder.Append(@" + \left( 1 - " + p + @" \right) \cdot ");
       } else {
@@ -310,12 +310,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         throw new NotImplementedException("Export of " + node.Symbol + " is not implemented.");
       }
     }
+
     private string LagToString(int lag) {
       if (lag < 0) {
         return "(t" + lag + ")";
       } else if (lag > 0) {
         return "(t+" + lag + ")";
       } else return "(t)";
+    }
+
+    private string EscapeLatexString(string s) {
+      return s.Replace(@"_", @"\_");
     }
   }
 }

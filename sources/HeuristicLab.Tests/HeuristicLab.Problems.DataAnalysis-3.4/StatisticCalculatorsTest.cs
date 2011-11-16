@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
@@ -138,6 +139,107 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
 
         Assert.AreEqual(r2_alglib.ToString(), r2.ToString());
       }
+    }
+
+    [TestMethod]
+    public void CalculateDirectionalSymmetryTest() {
+      // delta: +0.01, +1, -0.01, -2, -0.01, -1, +0.01, +2
+      var original = new double[]
+                       {
+                         0, 
+                         0.01, 
+                         1.01, 
+                         1, 
+                         -1, 
+                         -1.01, 
+                         -2.01, 
+                         -2, 
+                         0
+                       };
+      // delta to original(t-1): +1, +0, -1, -0, -1, +0.01, +0.01, +2
+      var estimated = new double[]
+                        {
+                          -1, 
+                          1, 
+                          0.01,
+                          0.01,
+                          1,
+                          -1,
+                          -1.02,
+                          -2.02,
+                          0
+                        };
+
+      // one-step forecast
+      var startValues = original;
+      var actualContinuations = from x in original.Skip(1)
+                                select Enumerable.Repeat(x, 1);
+      var predictedContinuations = from x in estimated.Skip(1)
+                                   select Enumerable.Repeat(x, 1);
+      double expected = 0.5;  // half of the predicted deltas are correct
+      OnlineCalculatorError errorState;
+      double actual = OnlineDirectionalSymmetryCalculator.Calculate(startValues, actualContinuations, predictedContinuations, out errorState);
+      Assert.AreEqual(expected, actual, 1E-9);
+    }
+    [TestMethod]
+    public void CalculateWeightedDirectionalSymmetryTest() {
+      var original = new double[] { 0, 0.01, 1.01, 1, -1, -1.01, -2.01, -2, 0 }; // +0.01, +1, -0.01, -2, -0.01, -1, +0.01, +2
+      var estimated = new double[] { 1, 2, 2, 1, 1, 0, 0.01, 0.02, 2.02 }; // delta to original: +2, +1.99, -0.01, 0, +1, -1.02, +2.01, +4.02
+      // one-step forecast
+      var startValues = original;
+      var actualContinuations = from x in original.Skip(1)
+                                select Enumerable.Repeat(x, 1);
+      var predictedContinuations = from x in estimated.Skip(1)
+                                   select Enumerable.Repeat(x, 1);
+      // absolute errors = 1.99, 0.99, 0, 2, 1.01, 2.02, 2.02, 2.02     
+      // sum of absolute errors for correctly predicted deltas = 2.97
+      // sum of absolute errors for incorrectly predicted deltas = 3.03 
+      double expected = 5.03 / 7.02;
+      OnlineCalculatorError errorState;
+      double actual = OnlineWeightedDirectionalSymmetryCalculator.Calculate(startValues, actualContinuations, predictedContinuations, out errorState);
+      Assert.AreEqual(expected, actual, 1E-9);
+    }
+    [TestMethod]
+    public void CalculateTheilsUTest() {
+      var original = new double[] { 0, 0.01, 1.01, 1, -1, -1.01, -2.01, -2, 0 };
+      var estimated = new double[] { 1, 1.01, 0.01, 2, 0, -0.01, -1.01, -3, 1 };
+      // one-step forecast
+      var startValues = original;
+      var actualContinuations = from x in original.Skip(1)
+                                select Enumerable.Repeat(x, 1);
+      var predictedContinuations = from x in estimated.Skip(1)
+                                   select Enumerable.Repeat(x, 1);
+      // Sum of squared errors of model y(t+1) = y(t) = 10.0004
+      // Sum of squared errors of predicted values = 8  
+      double expected = Math.Sqrt(8 / 10.0004);
+      OnlineCalculatorError errorState;
+      double actual = OnlineTheilsUStatisticCalculator.Calculate(startValues, actualContinuations, predictedContinuations, out errorState);
+      Assert.AreEqual(expected, actual, 1E-9);
+    }
+    [TestMethod]
+    public void CalculateAccuracyTest() {
+      var original = new double[] { 1, 1, 0, 0 };
+      var estimated = new double[] { 1, 0, 1, 0 };
+      double expected = 0.5;
+      OnlineCalculatorError errorState;
+      double actual = OnlineAccuracyCalculator.Calculate(original, estimated, out errorState);
+      Assert.AreEqual(expected, actual, 1E-9);
+    }
+
+    [TestMethod]
+    public void CalculateMeanAbsolutePercentageErrorTest() {
+      var original = new double[] { 1, 2, 3, 1, 5 };
+      var estimated = new double[] { 2, 1, 3, 1, 0 };
+      double expected = 0.5;
+      OnlineCalculatorError errorState;
+      double actual = OnlineMeanAbsolutePercentageErrorCalculator.Calculate(original, estimated, out errorState);
+      Assert.AreEqual(expected, actual, 1E-9);
+      Assert.AreEqual(OnlineCalculatorError.None, errorState);
+
+      // if the original contains zero values the result is not defined
+      var original2 = new double[] { 1, 2, 0, 0, 0 };
+      OnlineMeanAbsolutePercentageErrorCalculator.Calculate(original2, estimated, out errorState);
+      Assert.AreEqual(OnlineCalculatorError.InvalidValueAdded, errorState);
     }
   }
 }

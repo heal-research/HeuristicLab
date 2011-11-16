@@ -1,0 +1,18 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="HeuristicLab.Clients.Hive.SlaveCore.Views.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="ShowBalloonTips" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="ShowUICmd" Type="System.String" Scope="User">
+      <Value Profile="(Default)">showui</Value>
+    </Setting>
+    <Setting Name="SlaveCommunicationServiceEndpoint" Type="System.String" Scope="User">
+      <Value Profile="(Default)">SlaveCommunicationServiceEndpoint</Value>
+    </Setting>
+    <Setting Name="ServiceName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">HeuristicLab.Clients.Hive.SlaveCore.WindowsService</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

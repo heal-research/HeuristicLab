@@ -104,6 +104,7 @@ namespace HeuristicLab.Core.Views {
         this.baseTypes = baseTypes;
         this.showNotInstantiableTypes = showNotInstantiableTypes;
         this.showGenericTypes = showGenericTypes;
+        bool selectedTypeFound = false;
 
         typeParametersSplitContainer.Panel2Collapsed = !showGenericTypes;
 
@@ -150,11 +151,13 @@ namespace HeuristicLab.Core.Views {
               typeNode.SelectedImageIndex = typeNode.ImageIndex;
               typeNode.Tag = type;
               pluginNode.Nodes.Add(typeNode);
+              if (type.Equals(selectedType)) selectedTypeFound = true;
             }
           }
           if (pluginNode.Nodes.Count > 0)
             treeNodes.Add(pluginNode);
         }
+        if (!selectedTypeFound) SelectedType = null;
         foreach (TreeNode node in treeNodes)
           typesTreeView.Nodes.Add((TreeNode)node.Clone());
         RestoreSelectedNode(selectedNode);
@@ -188,9 +191,11 @@ namespace HeuristicLab.Core.Views {
         while (i < typesTreeView.Nodes.Count) {
           int j = 0;
           while (j < typesTreeView.Nodes[i].Nodes.Count) {
-            if (!typesTreeView.Nodes[i].Nodes[j].Text.ToLower().Contains(searchString))
+            if (!typesTreeView.Nodes[i].Nodes[j].Text.ToLower().Contains(searchString)) {
+              if ((typesTreeView.Nodes[i].Nodes[j].Tag as Type).Equals(selectedType))
+                SelectedType = null;
               typesTreeView.Nodes[i].Nodes[j].Remove();
-            else
+            } else
               j++;
           }
           if (typesTreeView.Nodes[i].Nodes.Count == 0)

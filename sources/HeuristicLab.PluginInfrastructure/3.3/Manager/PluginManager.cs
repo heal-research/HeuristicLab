@@ -73,9 +73,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     public void DiscoverAndCheckPlugins() {
       OnInitializing(PluginInfrastructureEventArgs.Empty);
       AppDomainSetup setup = AppDomain.CurrentDomain.SetupInformation;
-      setup.PrivateBinPath = pluginDir;
-      // probing should only occur in PrivateBinPath (not in ApplicationBase). This is enforced by the value string.Empty
-      setup.PrivateBinPathProbe = string.Empty;
+      setup.ApplicationBase = pluginDir;
       AppDomain pluginDomain = null;
       try {
         pluginDomain = AppDomain.CreateDomain("plugin domain", null, setup);
@@ -206,7 +204,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
     /// Make sure that the plugin manager is never disposed (necessary for cross-app-domain events)
     /// </summary>
     /// <returns><c>null</c>.</returns>
-    [SecurityPermission(SecurityAction.LinkDemand, Flags=SecurityPermissionFlag.Infrastructure)]
+    [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.Infrastructure)]
     public override object InitializeLifetimeService() {
       return null;
     }
