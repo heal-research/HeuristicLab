@@ -186,6 +186,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     public void ConfigureAsDefaultClassificationGrammar() {
       Symbols.Where(s => s is Average).First().Enabled = false;
+      Symbols.Where(s => s is VariableCondition).First().Enabled = false;
       Symbols.Where(s => s.Name == TrigonometricFunctionsName).First().Enabled = false;
       Symbols.Where(s => s.Name == ExponentialFunctionsName).First().Enabled = false;
       Symbols.Where(s => s.Name == PowerFunctionsName).First().Enabled = false;

@@ -279,19 +279,7 @@ namespace HeuristicLab_33.Tests {
 
       // configure grammar
       var grammar = new TypeCoherentExpressionGrammar();
-      grammar.Symbols.OfType<Sine>().Single().InitialFrequency = 0.0;
-      grammar.Symbols.OfType<Cosine>().Single().InitialFrequency = 0.0;
-      grammar.Symbols.OfType<Tangent>().Single().InitialFrequency = 0.0;
-      grammar.Symbols.OfType<IfThenElse>().Single().InitialFrequency = 0.0;
-      grammar.Symbols.OfType<GreaterThan>().Single().InitialFrequency = 0.0;
-      grammar.Symbols.OfType<LessThan>().Single().InitialFrequency = 0.0;
-      grammar.Symbols.OfType<And>().Single().InitialFrequency = 0.0;
-      grammar.Symbols.OfType<Or>().Single().InitialFrequency = 0.0;
-      grammar.Symbols.OfType<Not>().Single().InitialFrequency = 0.0;
-      grammar.Symbols.OfType<TimeLag>().Single().InitialFrequency = 0.0;
-      grammar.Symbols.OfType<Integral>().Single().InitialFrequency = 0.0;
-      grammar.Symbols.OfType<Derivative>().Single().InitialFrequency = 0.0;
-      grammar.Symbols.OfType<LaggedVariable>().Single().InitialFrequency = 0.0;
+      grammar.ConfigureAsDefaultRegressionGrammar();
       grammar.Symbols.OfType<VariableCondition>().Single().InitialFrequency = 0.0;
       var varSymbol = grammar.Symbols.OfType<Variable>().Where(x => !(x is LaggedVariable)).Single();
       varSymbol.WeightMu = 1.0;
@@ -392,16 +380,8 @@ namespace HeuristicLab_33.Tests {
 
       // configure grammar
       var grammar = new TypeCoherentExpressionGrammar();
-      grammar.Symbols.OfType<Sine>().Single().InitialFrequency = 0.0;
-      grammar.Symbols.OfType<Cosine>().Single().InitialFrequency = 0.0;
-      grammar.Symbols.OfType<Tangent>().Single().InitialFrequency = 0.0;
-      grammar.Symbols.OfType<Power>().Single().InitialFrequency = 0.0;
-      grammar.Symbols.OfType<Root>().Single().InitialFrequency = 0.0;
-      grammar.Symbols.OfType<TimeLag>().Single().InitialFrequency = 0.0;
-      grammar.Symbols.OfType<Integral>().Single().InitialFrequency = 0.0;
-      grammar.Symbols.OfType<Derivative>().Single().InitialFrequency = 0.0;
-      grammar.Symbols.OfType<LaggedVariable>().Single().InitialFrequency = 0.0;
-      grammar.Symbols.OfType<VariableCondition>().Single().InitialFrequency = 0.0;
+      grammar.ConfigureAsDefaultClassificationGrammar();
+      grammar.Symbols.OfType<VariableCondition>().Single().Enabled = false;
       var varSymbol = grammar.Symbols.OfType<Variable>().Where(x => !(x is LaggedVariable)).Single();
       varSymbol.WeightMu = 1.0;
       varSymbol.WeightSigma = 1.0;

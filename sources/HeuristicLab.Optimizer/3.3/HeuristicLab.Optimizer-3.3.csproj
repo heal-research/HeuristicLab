@@ -115,7 +115,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Documents\GA_VRP.hl" />
-    <EmbeddedResource Include="Documents\SGP_SymbClass_Mammographic.hl" />
+    <EmbeddedResource Include="Documents\SGP_SymbClass.hl" />
     <EmbeddedResource Include="Documents\SGP_SymbReg.hl" />
     <EmbeddedResource Include="Documents\VNS_TSP.hl" />
     <EmbeddedResource Include="Documents\PSO_Schwefel.hl" />

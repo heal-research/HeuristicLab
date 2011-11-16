@@ -95,8 +95,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       if (Grammar.GetMaximumSubtreeCount(Symbol) > 0) {
         for (int i = 0; i < Grammar.GetMaximumSubtreeCount(Symbol); i++) {
           var node = new DummySymbol("Subtree " + i).CreateTreeNode();
+          var groupSymbols = grammar.GetAllowedChildSymbols(Symbol, i).OfType<GroupSymbol>().ToList();
           foreach (var childSymbol in Grammar.GetAllowedChildSymbols(Symbol, i)) {
-            node.AddSubtree(new SymbolicExpressionTreeNode(childSymbol));
+            if (!groupSymbols.Any(g => g != childSymbol && g.Flatten().Contains(childSymbol)))
+              node.AddSubtree(new SymbolicExpressionTreeNode(childSymbol));
           }
           tree.Root.AddSubtree(node);
         }
