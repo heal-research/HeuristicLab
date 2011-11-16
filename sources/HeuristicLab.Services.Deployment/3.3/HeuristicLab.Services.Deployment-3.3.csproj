@@ -13,7 +13,8 @@
     <ProjectTypeGuids>{3D9AD99F-2412-4246-B90B-4EAA41C64699};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <StartArguments>/client:"WcfTestClient.exe"</StartArguments>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile></TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
     <FileUpgradeFlags>
@@ -123,7 +124,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
-    <None Include="Properties\AssemblyInfo.frame" />
+    <None Include="Properties\AssemblyInfo.cs.frame" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -133,7 +134,8 @@
     <ProjectReference Include="..\..\HeuristicLab.Services.Deployment.DataAccess\3.3\HeuristicLab.Services.Deployment.DataAccess-3.3.csproj">
       <Project>{EBEBA863-DD05-4331-BE25-5758B15F7407}</Project>
       <Name>HeuristicLab.Services.Deployment.DataAccess-3.3</Name>
-  <Private>False</Private></ProjectReference>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

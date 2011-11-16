@@ -11,7 +11,8 @@
     <RootNamespace>HeuristicLab.Services.Deployment.DataAccess</RootNamespace>
     <AssemblyName>HeuristicLab.Services.Deployment.DataAccess</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile></TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
@@ -135,7 +136,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="HeuristicLab.snk" />
-    <None Include="Properties\AssemblyInfo.frame" />
+    <None Include="Properties\AssemblyInfo.cs.frame" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
