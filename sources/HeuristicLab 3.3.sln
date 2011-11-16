@@ -311,6 +311,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Clients.Hive.J
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Clients.Hive.Administrator-3.3", "HeuristicLab.Clients.Hive.Administrator\3.3\HeuristicLab.Clients.Hive.Administrator-3.3.csproj", "{5211F1AD-BBA2-4C62-8749-DCA0A25CF5D8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Algorithms.Benchmarks-3.3", "HeuristicLab.Algorithms.Benchmarks\3.3\HeuristicLab.Algorithms.Benchmarks-3.3.csproj", "{068C70A7-8CAF-4AB6-8721-4564D62292BC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Algorithms.Benchmarks.Views-3.3", "HeuristicLab.Algorithms.Benchmarks.Views\3.3\HeuristicLab.Algorithms.Benchmarks.Views-3.3.csproj", "{3C906172-E044-4DF0-B4FD-AA21192D5D3E}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = HeuristicLab 3.3.vsmdi
@@ -1518,6 +1522,22 @@ Global
 		{5211F1AD-BBA2-4C62-8749-DCA0A25CF5D8}.Release|x64.Build.0 = Release|x64
 		{5211F1AD-BBA2-4C62-8749-DCA0A25CF5D8}.Release|x86.ActiveCfg = Release|x86
 		{5211F1AD-BBA2-4C62-8749-DCA0A25CF5D8}.Release|x86.Build.0 = Release|x86
+		{068C70A7-8CAF-4AB6-8721-4564D62292BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{068C70A7-8CAF-4AB6-8721-4564D62292BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{068C70A7-8CAF-4AB6-8721-4564D62292BC}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{068C70A7-8CAF-4AB6-8721-4564D62292BC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{068C70A7-8CAF-4AB6-8721-4564D62292BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{068C70A7-8CAF-4AB6-8721-4564D62292BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{068C70A7-8CAF-4AB6-8721-4564D62292BC}.Release|x64.ActiveCfg = Release|Any CPU
+		{068C70A7-8CAF-4AB6-8721-4564D62292BC}.Release|x86.ActiveCfg = Release|Any CPU
+		{3C906172-E044-4DF0-B4FD-AA21192D5D3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C906172-E044-4DF0-B4FD-AA21192D5D3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C906172-E044-4DF0-B4FD-AA21192D5D3E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{3C906172-E044-4DF0-B4FD-AA21192D5D3E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3C906172-E044-4DF0-B4FD-AA21192D5D3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C906172-E044-4DF0-B4FD-AA21192D5D3E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C906172-E044-4DF0-B4FD-AA21192D5D3E}.Release|x64.ActiveCfg = Release|Any CPU
+		{3C906172-E044-4DF0-B4FD-AA21192D5D3E}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
