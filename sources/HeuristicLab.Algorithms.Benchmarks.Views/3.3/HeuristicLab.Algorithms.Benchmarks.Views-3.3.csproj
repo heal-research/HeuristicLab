@@ -98,6 +98,12 @@
     <Compile Include="BenchmarkView.Designer.cs">
       <DependentUpon>BenchmarkView.cs</DependentUpon>
     </Compile>
+    <Compile Include="IBenchmarkView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="IBenchmarkView.Designer.cs">
+      <DependentUpon>IBenchmarkView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -161,6 +167,9 @@
   <ItemGroup>
     <EmbeddedResource Include="BenchmarkView.resx">
       <DependentUpon>BenchmarkView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="IBenchmarkView.resx">
+      <DependentUpon>IBenchmarkView.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
