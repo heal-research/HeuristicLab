@@ -75,16 +75,20 @@ namespace HeuristicLab.Clients.Hive.SlaveCore.Views {
 
     #region Event Handlers
     protected virtual void Content_SlaveDisplayStateChanged(object sender, EventArgs<SlaveDisplayStat> e) {
-      lastSlaveDisplayStat = e.Value;
+      if (this.InvokeRequired) {
+        Action<object, EventArgs<SlaveDisplayStat>> action = new Action<object, EventArgs<SlaveDisplayStat>>(Content_SlaveDisplayStateChanged);
+        Invoke(action, sender, e);
+      } else {
+        lastSlaveDisplayStat = e.Value;
+        if (e.Value == SlaveDisplayStat.Asleep || e.Value == SlaveDisplayStat.NoService) {
+          btnStart.Enabled = true;
+          btnStop.Enabled = false;
+        }
 
-      if (e.Value == SlaveDisplayStat.Asleep || e.Value == SlaveDisplayStat.NoService) {
-        btnStart.Enabled = true;
-        btnStop.Enabled = false;
-      }
-
-      if (e.Value == SlaveDisplayStat.Busy || e.Value == SlaveDisplayStat.Idle || e.Value == SlaveDisplayStat.Offline) {
-        btnStart.Enabled = false;
-        btnStop.Enabled = true;
+        if (e.Value == SlaveDisplayStat.Busy || e.Value == SlaveDisplayStat.Idle || e.Value == SlaveDisplayStat.Offline) {
+          btnStart.Enabled = false;
+          btnStop.Enabled = true;
+        }
       }
     }
 
