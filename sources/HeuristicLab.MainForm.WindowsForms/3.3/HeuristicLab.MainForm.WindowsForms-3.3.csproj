@@ -139,7 +139,9 @@
     </Compile>
     <None Include="Plugin.cs.frame" />
     <Compile Include="Controls\ControlExtensions.cs" />
-    <Compile Include="MainForms\DockForm.cs" />
+    <Compile Include="MainForms\DockForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="MainForms\DockForm.Designer.cs">
       <DependentUpon>DockForm.cs</DependentUpon>
     </Compile>

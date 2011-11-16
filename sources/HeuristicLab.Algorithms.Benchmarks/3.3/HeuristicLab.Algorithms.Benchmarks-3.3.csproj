@@ -99,7 +99,7 @@
     <Compile Include="LinpackBenchmark.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WhetstoneAlgorithm.cs" />
+    <Compile Include="WhetstoneBenchmark.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />

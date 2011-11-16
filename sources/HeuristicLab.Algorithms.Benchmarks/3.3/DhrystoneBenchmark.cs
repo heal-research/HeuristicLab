@@ -32,7 +32,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Algorithms.Benchmarks {
   [Item("Dhrystone Algorithm", "Dhrystone benchmarking algorithm.")]
   [StorableClass]
-  public class DhrystoneAlgorithm : IBenchmark {
+  public class DhrystoneBenchmark : IBenchmark {
     [Storable]
     private byte[][] chunk;
     public byte[][] ChunkData {
@@ -97,11 +97,11 @@ namespace HeuristicLab.Algorithms.Benchmarks {
     #region Costructors
 
     [StorableConstructor]
-    public DhrystoneAlgorithm(bool deserializing) { }
+    public DhrystoneBenchmark(bool deserializing) { }
 
-    public DhrystoneAlgorithm() { }
+    public DhrystoneBenchmark() { }
 
-    protected DhrystoneAlgorithm(DhrystoneAlgorithm original, Cloner cloner) {
+    protected DhrystoneBenchmark(DhrystoneBenchmark original, Cloner cloner) {
       cloner.RegisterClonedObject(original, this);
     }
 
@@ -391,7 +391,7 @@ namespace HeuristicLab.Algorithms.Benchmarks {
     #region Clone
 
     public IDeepCloneable Clone(Cloner cloner) {
-      return new DhrystoneAlgorithm(this, cloner);
+      return new DhrystoneBenchmark(this, cloner);
     }
 
     public object Clone() {
