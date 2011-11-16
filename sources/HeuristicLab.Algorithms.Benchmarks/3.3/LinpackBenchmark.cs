@@ -188,7 +188,7 @@ namespace HeuristicLab.Algorithms.Benchmarks {
 
         if (!resultAchieved) {
           results.Add(new Result("Mflops/s", new DoubleValue(mflops_result)));
-          results.Add(new Result("total Mflops/s", new DoubleValue(mflops_result * Environment.ProcessorCount)));
+          results.Add(new Result("Total Mflops/s", new DoubleValue(mflops_result * Environment.ProcessorCount)));
           resultAchieved = true;
         }
 
