@@ -405,7 +405,10 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
 
     #region Log Events
     private void log_MessageAdded(object sender, EventArgs<string> e) {
-      clientCom.LogMessage(e.Value.Split('\t')[1]);
+      try {
+        clientCom.LogMessage(e.Value.Split('\t')[1]);
+      }
+      catch { }
     }
     #endregion
 
