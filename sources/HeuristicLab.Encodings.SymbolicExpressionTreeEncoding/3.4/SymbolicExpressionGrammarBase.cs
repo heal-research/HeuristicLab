@@ -133,7 +133,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       if (ContainsSymbol(symbol)) throw new ArgumentException("Symbol " + symbol + " is already defined.");
       foreach (var s in symbol.Flatten()) {
         symbols.Add(s.Name, s);
-        symbolSubtreeCount.Add(s.Name, Tuple.Create(s.MinimumArity, s.MaximumArity));
+        int maxSubTreeCount = Math.Min(s.MinimumArity + 1, s.MaximumArity);
+        symbolSubtreeCount.Add(s.Name, Tuple.Create(s.MinimumArity, maxSubTreeCount));
       }
       ClearCaches();
     }
