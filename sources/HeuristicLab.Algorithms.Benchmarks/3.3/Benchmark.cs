@@ -236,6 +236,9 @@ namespace HeuristicLab.Algorithms.Benchmarks {
 
     #region Constructors
 
+    [StorableConstructor]
+    public Benchmark(bool deserializing) { }
+
     public Benchmark() {
       name = ItemName;
       description = ItemDescription;

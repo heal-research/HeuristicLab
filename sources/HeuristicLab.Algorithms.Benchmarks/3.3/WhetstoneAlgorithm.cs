@@ -40,6 +40,7 @@ namespace HeuristicLab.Algorithms.Benchmarks {
       set { chunk = value; }
     }
 
+    [Storable]
     private TimeSpan timeLimit;
     public TimeSpan TimeLimit {
       get { return timeLimit; }
@@ -83,10 +84,12 @@ namespace HeuristicLab.Algorithms.Benchmarks {
 
     #region Costructors
 
-    public WhetstoneBenchmark() {
-    }
+    [StorableConstructor]
+    public WhetstoneBenchmark(bool deserializing) { }
 
-    private WhetstoneBenchmark(WhetstoneBenchmark original, Cloner cloner) {
+    public WhetstoneBenchmark() { }
+
+    protected WhetstoneBenchmark(WhetstoneBenchmark original, Cloner cloner) {
       cloner.RegisterClonedObject(original, this);
     }
 

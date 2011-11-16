@@ -27,6 +27,10 @@ namespace HeuristicLab.Algorithms.Benchmarks.Views {
   [View("Benchmark View")]
   [Content(typeof(Benchmark), true)]
   public partial class BenchmarkView : AlgorithmView {
+    public new Benchmark Content {
+      get { return (Benchmark)base.Content; }
+      set { base.Content = value; }
+    }
     public BenchmarkView() {
       InitializeComponent();
       tabControl.TabPages.Remove(this.problemTabPage);

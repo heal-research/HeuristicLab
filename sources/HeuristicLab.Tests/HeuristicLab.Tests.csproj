@@ -569,6 +569,14 @@
     <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\wil100.sln" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\HeuristicLab.Algorithms.Benchmarks.Views\3.3\HeuristicLab.Algorithms.Benchmarks.Views-3.3.csproj">
+      <Project>{3C906172-E044-4DF0-B4FD-AA21192D5D3E}</Project>
+      <Name>HeuristicLab.Algorithms.Benchmarks.Views-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Algorithms.Benchmarks\3.3\HeuristicLab.Algorithms.Benchmarks-3.3.csproj">
+      <Project>{068C70A7-8CAF-4AB6-8721-4564D62292BC}</Project>
+      <Name>HeuristicLab.Algorithms.Benchmarks-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.Algorithms.DataAnalysis.Views\3.4\HeuristicLab.Algorithms.DataAnalysis.Views-3.4.csproj">
       <Project>{A2330DB0-413D-4424-B4E6-591118E2B9F8}</Project>
       <Name>HeuristicLab.Algorithms.DataAnalysis.Views-3.4</Name>
