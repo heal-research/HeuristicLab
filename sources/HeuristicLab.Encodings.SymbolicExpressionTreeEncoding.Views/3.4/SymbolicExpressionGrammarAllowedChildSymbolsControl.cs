@@ -193,7 +193,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
         if (visualNode != null) {
           var node = visualNode.SymbolicExpressionTreeNode;
           var root = symbolicExpressionTreeChart.Tree.Root;
-          if (root.Symbol is ProgramRootSymbol) return;
           if (node == root || node.Parent == root) e.Effect = DragDropEffects.Copy;
         }
       }

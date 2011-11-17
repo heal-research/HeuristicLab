@@ -128,6 +128,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
 
     private void UpdateChildTreeNodes(TreeNodeCollection collection, IEnumerable<ISymbol> symbols) {
       foreach (ISymbol symbol in symbols) {
+        if (symbol is ProgramRootSymbol) continue;
+        if (symbol is Defun) continue;
+
         TreeNode node = collection.Cast<TreeNode>().Where(n => n.Tag == symbol).FirstOrDefault();
         if (node == null) {
           node = new TreeNode();
