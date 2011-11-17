@@ -27,7 +27,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
   [Item("Classification Problem", "A general classification problem.")]
   [Creatable("Problems")]
-  public class ClassificationProblem : DataAnalysisProblem<IClassificationProblemData>, IClassificationProblem {
+  public class ClassificationProblem : DataAnalysisProblem<IClassificationProblemData>, IClassificationProblem, IStorableContent {
+    public string Filename { get; set; }
+
     [StorableConstructor]
     protected ClassificationProblem(bool deserializing) : base(deserializing) { }
     protected ClassificationProblem(ClassificationProblem original, Cloner cloner) : base(original, cloner) { }
