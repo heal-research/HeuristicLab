@@ -39,7 +39,7 @@ namespace HeuristicLab.Algorithms.Benchmarks {
   /// A base class for benchmarks.
   /// </summary>
   [Item("Benchmark", "A wrapper for benchmark algorithms.")]
-  [Creatable("Benchmarks")]
+  [Creatable("Algorithms")]
   [StorableClass]
   public class Benchmark : IAlgorithm {
     private Random random = new Random();
