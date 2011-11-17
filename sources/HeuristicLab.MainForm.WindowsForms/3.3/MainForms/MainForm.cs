@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
 using HeuristicLab.Common;
 using HeuristicLab.PluginInfrastructure;
@@ -33,7 +32,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
     private bool initialized;
     private int appStartingCursors;
     private int waitingCursors;
-    private string title;
 
     protected MainForm()
       : base() {
@@ -176,13 +174,9 @@ namespace HeuristicLab.MainForm.WindowsForms {
       }
     }
 
-    protected virtual void OnInitialized(EventArgs e) {
-      AssemblyFileVersionAttribute version = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyFileVersionAttribute), true).
-                                             Cast<AssemblyFileVersionAttribute>().FirstOrDefault();
-      title = "HeuristicLab Optimizer";
-      if (version != null) title += " " + version.Version;
-      Title = title;
-    }
+    protected virtual void OnInitialized(EventArgs e) { }
+
+    public virtual void UpdateTitle() { }
 
     private void FormActivated(object sender, EventArgs e) {
       this.ActiveView = GetView((Form)sender);
@@ -497,19 +491,5 @@ namespace HeuristicLab.MainForm.WindowsForms {
       else Cursor = Cursors.Default;
     }
     #endregion
-
-    public virtual void UpdateTitle() {
-      if (InvokeRequired)
-        Invoke(new Action(UpdateTitle));
-      else {
-        IContentView activeView = ActiveView as IContentView;
-        if ((activeView != null) && (activeView.Content != null) && (activeView.Content is IStorableContent)) {
-          IStorableContent content = (IStorableContent)activeView.Content;
-          Title = title + " [" + (string.IsNullOrEmpty(content.Filename) ? "Unsaved" : content.Filename) + "]";
-        } else {
-          Title = title;
-        }
-      }
-    }
   }
 }
