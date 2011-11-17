@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="HeartbeatInterval" Type="System.TimeSpan" Scope="User">
-      <Value Profile="(Default)">00:00:10</Value>
+      <Value Profile="(Default)">00:00:20</Value>
     </Setting>
     <Setting Name="LastUsedFileName" Type="System.String" Scope="User">
       <Value Profile="(Default)">lastUsed.dat</Value>
