@@ -31,6 +31,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._4.Tests {
   public class FullTreeCreatorTest {
     private const int POPULATION_SIZE = 10000;
     private const int MAX_TREE_DEPTH = 10;
+    private const int MAX_TREE_LENGTH = 1000;
     private TestContext testContextInstance;
 
     /// <summary>
@@ -54,7 +55,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._4.Tests {
       var stopwatch = new Stopwatch();
       stopwatch.Start();
       for (int i = 0; i != POPULATION_SIZE; i++) {
-        randomTrees.Add(FullTreeCreator.Create(random, grammar, MAX_TREE_DEPTH));
+        randomTrees.Add(FullTreeCreator.Create(random, grammar, MAX_TREE_DEPTH, MAX_TREE_LENGTH));
       }
       stopwatch.Stop();
       double msPerRandomTreeCreation = stopwatch.ElapsedMilliseconds / (double)POPULATION_SIZE;

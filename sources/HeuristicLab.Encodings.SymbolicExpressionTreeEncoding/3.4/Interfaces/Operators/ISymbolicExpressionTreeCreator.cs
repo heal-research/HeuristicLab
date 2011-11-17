@@ -28,5 +28,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// </summary>
   public interface ISymbolicExpressionTreeCreator : ISymbolicExpressionTreeOperator, ISolutionCreator {
     ILookupParameter<ISymbolicExpressionTree> SymbolicExpressionTreeParameter { get; }
+    ISymbolicExpressionTree CreateTree(IRandom random, ISymbolicExpressionGrammar grammar, int maxTreeLength, int maxTreeDepth);
   }
 }

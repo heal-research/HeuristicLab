@@ -51,6 +51,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       this.maxTreeLengthTextBox = new System.Windows.Forms.TextBox();
       this.maxTreeDepthTextBox = new System.Windows.Forms.TextBox();
       this.generateSampleTreeButton = new System.Windows.Forms.Button();
+      this.treeCreatorComboBox = new System.Windows.Forms.ComboBox();
+      this.treeCreatorLabel = new System.Windows.Forms.Label();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.sampleTreeGroupBox.SuspendLayout();
       this.SuspendLayout();
@@ -68,13 +70,13 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       // 
       // sampleTreeGroupBox
       // 
-      this.sampleTreeGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+      this.sampleTreeGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.sampleTreeGroupBox.Controls.Add(this.sampleTreeView);
-      this.sampleTreeGroupBox.Location = new System.Drawing.Point(3, 107);
+      this.sampleTreeGroupBox.Location = new System.Drawing.Point(3, 134);
       this.sampleTreeGroupBox.Name = "sampleTreeGroupBox";
-      this.sampleTreeGroupBox.Size = new System.Drawing.Size(431, 292);
+      this.sampleTreeGroupBox.Size = new System.Drawing.Size(431, 265);
       this.sampleTreeGroupBox.TabIndex = 3;
       this.sampleTreeGroupBox.TabStop = false;
       this.sampleTreeGroupBox.Text = "Sample SymbolicExpressionTree";
@@ -88,7 +90,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       this.sampleTreeView.Location = new System.Drawing.Point(3, 16);
       this.sampleTreeView.Name = "sampleTreeView";
       this.sampleTreeView.ReadOnly = false;
-      this.sampleTreeView.Size = new System.Drawing.Size(425, 273);
+      this.sampleTreeView.Size = new System.Drawing.Size(425, 246);
       this.sampleTreeView.TabIndex = 0;
       // 
       // maxTreeLengthLabel
@@ -111,8 +113,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       // 
       // maxTreeLengthTextBox
       // 
-      this.maxTreeLengthTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+      this.maxTreeLengthTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.maxTreeLengthTextBox.Location = new System.Drawing.Point(93, 26);
       this.maxTreeLengthTextBox.Name = "maxTreeLengthTextBox";
       this.maxTreeLengthTextBox.Size = new System.Drawing.Size(341, 20);
@@ -123,8 +125,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       // 
       // maxTreeDepthTextBox
       // 
-      this.maxTreeDepthTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+      this.maxTreeDepthTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.maxTreeDepthTextBox.Location = new System.Drawing.Point(93, 52);
       this.maxTreeDepthTextBox.Name = "maxTreeDepthTextBox";
       this.maxTreeDepthTextBox.Size = new System.Drawing.Size(341, 20);
@@ -135,9 +137,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       // 
       // generateSampleTreeButton
       // 
-      this.generateSampleTreeButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.generateSampleTreeButton.Location = new System.Drawing.Point(3, 78);
+      this.generateSampleTreeButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.generateSampleTreeButton.Location = new System.Drawing.Point(6, 105);
       this.generateSampleTreeButton.Name = "generateSampleTreeButton";
       this.generateSampleTreeButton.Size = new System.Drawing.Size(431, 23);
       this.generateSampleTreeButton.TabIndex = 8;
@@ -145,13 +147,36 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       this.generateSampleTreeButton.UseVisualStyleBackColor = true;
       this.generateSampleTreeButton.Click += new System.EventHandler(this.generateSampleTreeButton_Click);
       // 
+      // treeCreatorComboBox
+      // 
+      this.treeCreatorComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.treeCreatorComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.treeCreatorComboBox.FormattingEnabled = true;
+      this.treeCreatorComboBox.Location = new System.Drawing.Point(93, 78);
+      this.treeCreatorComboBox.Name = "treeCreatorComboBox";
+      this.treeCreatorComboBox.Size = new System.Drawing.Size(341, 21);
+      this.treeCreatorComboBox.TabIndex = 9;
+      this.treeCreatorComboBox.SelectedIndexChanged += new System.EventHandler(this.treeCreatorComboBox_SelectedIndexChanged);
+      // 
+      // treeCreatorLabel
+      // 
+      this.treeCreatorLabel.AutoSize = true;
+      this.treeCreatorLabel.Location = new System.Drawing.Point(3, 81);
+      this.treeCreatorLabel.Name = "treeCreatorLabel";
+      this.treeCreatorLabel.Size = new System.Drawing.Size(69, 13);
+      this.treeCreatorLabel.TabIndex = 10;
+      this.treeCreatorLabel.Text = "Tree Creator:";
+      // 
       // SymbolicExpressionGrammarSampleExpressionTreeView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.treeCreatorLabel);
       this.Controls.Add(this.sampleTreeGroupBox);
       this.Controls.Add(this.maxTreeDepthLabel);
       this.Controls.Add(this.maxTreeLengthTextBox);
+      this.Controls.Add(this.treeCreatorComboBox);
       this.Controls.Add(this.maxTreeLengthLabel);
       this.Controls.Add(this.maxTreeDepthTextBox);
       this.Controls.Add(this.generateSampleTreeButton);
@@ -160,9 +185,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       this.Controls.SetChildIndex(this.generateSampleTreeButton, 0);
       this.Controls.SetChildIndex(this.maxTreeDepthTextBox, 0);
       this.Controls.SetChildIndex(this.maxTreeLengthLabel, 0);
+      this.Controls.SetChildIndex(this.treeCreatorComboBox, 0);
       this.Controls.SetChildIndex(this.maxTreeLengthTextBox, 0);
       this.Controls.SetChildIndex(this.maxTreeDepthLabel, 0);
       this.Controls.SetChildIndex(this.sampleTreeGroupBox, 0);
+      this.Controls.SetChildIndex(this.treeCreatorLabel, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);
       this.Controls.SetChildIndex(this.infoLabel, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
@@ -182,5 +209,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     private System.Windows.Forms.TextBox maxTreeDepthTextBox;
     private System.Windows.Forms.Button generateSampleTreeButton;
     private GraphicalSymbolicExpressionTreeView sampleTreeView;
+    private System.Windows.Forms.ComboBox treeCreatorComboBox;
+    private System.Windows.Forms.Label treeCreatorLabel;
   }
 }

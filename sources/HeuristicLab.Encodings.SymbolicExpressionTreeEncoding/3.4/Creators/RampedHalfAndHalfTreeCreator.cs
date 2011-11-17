@@ -28,8 +28,10 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
+  [NonDiscoverableType]
   [StorableClass]
   [Item("RampedHalfAndHalfTreeCreator", "An operator that creates new symbolic expression trees in an alternate way: half the trees are created usign the 'Grow' method while the other half are created using the 'Full' method")]
   public class RampedHalfAndHalfTreeCreator : SymbolicExpressionTreeCreator,
@@ -71,6 +73,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       get { return MaximumSymbolicExpressionTreeDepthParameter.ActualValue; }
     }
 
+    public IntValue MaximumSymbolicExpressionTreeLength {
+      get { return MaximumSymbolicExpressionTreeLengthParameter.ActualValue; }
+    }
+
     public ISymbolicExpressionGrammar SymbolicExpressionTreeGrammar {
       get { return ClonedSymbolicExpressionTreeGrammarParameter.ActualValue; }
     }
@@ -105,7 +111,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     protected override ISymbolicExpressionTree Create(IRandom random) {
-      return Create(random, SymbolicExpressionTreeGrammar, MaximumSymbolicExpressionTreeDepth.Value);
+      return Create(random, SymbolicExpressionTreeGrammar, MaximumSymbolicExpressionTreeDepth.Value, MaximumSymbolicExpressionTreeLength.Value);
+    }
+
+    public override ISymbolicExpressionTree CreateTree(IRandom random, ISymbolicExpressionGrammar grammar, int maxTreeLength, int maxTreeDepth) {
+      return Create(random, grammar, maxTreeLength, maxTreeDepth);
     }
 
     /// <summary>
@@ -116,7 +126,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     /// <param name="grammar">Available tree grammar</param>
     /// <param name="maxTreeDepth">Maximum tree depth</param>
     /// <returns></returns>
-    public static ISymbolicExpressionTree Create(IRandom random, ISymbolicExpressionGrammar grammar, int maxTreeDepth) {
+    public static ISymbolicExpressionTree Create(IRandom random, ISymbolicExpressionGrammar grammar, int maxTreeLength, int maxTreeDepth) {
       var tree = new SymbolicExpressionTree();
       var rootNode = (SymbolicExpressionTreeTopLevelNode)grammar.ProgramRootSymbol.CreateTreeNode();
       if (rootNode.HasLocalParameters) rootNode.ResetLocalParameters(random);

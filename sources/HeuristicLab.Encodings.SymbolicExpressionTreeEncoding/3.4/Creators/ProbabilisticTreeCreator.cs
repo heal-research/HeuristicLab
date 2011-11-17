@@ -27,8 +27,10 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
+  [NonDiscoverableType]
   [StorableClass]
   [Item("ProbabilisticTreeCreator", "An operator that creates new symbolic expression trees with uniformly distributed length")]
   public class ProbabilisticTreeCreator : SymbolicExpressionTreeCreator,
@@ -100,8 +102,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       return Create(random, SymbolicExpressionTreeGrammar, MaximumSymbolicExpressionTreeLength.Value, MaximumSymbolicExpressionTreeDepth.Value);
     }
 
-    public static ISymbolicExpressionTree Create(IRandom random, ISymbolicExpressionGrammar grammar,
-      int maxTreeLength, int maxTreeDepth) {
+    public override ISymbolicExpressionTree CreateTree(IRandom random, ISymbolicExpressionGrammar grammar, int maxTreeLength, int maxTreeDepth) {
+      return Create(random, grammar, maxTreeLength, maxTreeDepth);
+    }
+
+    public static ISymbolicExpressionTree Create(IRandom random, ISymbolicExpressionGrammar grammar, int maxTreeLength, int maxTreeDepth) {
       SymbolicExpressionTree tree = new SymbolicExpressionTree();
       var rootNode = (SymbolicExpressionTreeTopLevelNode)grammar.ProgramRootSymbol.CreateTreeNode();
       if (rootNode.HasLocalParameters) rootNode.ResetLocalParameters(random);

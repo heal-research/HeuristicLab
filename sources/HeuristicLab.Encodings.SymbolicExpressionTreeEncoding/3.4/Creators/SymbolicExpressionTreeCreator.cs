@@ -38,7 +38,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
     #endregion
 
-    #region Propeties
+    #region Properties
     public ISymbolicExpressionTree SymbolicExpressionTree {
       get { return SymbolicExpressionTreeParameter.ActualValue; }
       set { SymbolicExpressionTreeParameter.ActualValue = value; }
@@ -59,5 +59,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     protected abstract ISymbolicExpressionTree Create(IRandom random);
+    public abstract ISymbolicExpressionTree CreateTree(IRandom random, ISymbolicExpressionGrammar grammar, int maxTreeLength, int maxTreeDepth);
   }
 }

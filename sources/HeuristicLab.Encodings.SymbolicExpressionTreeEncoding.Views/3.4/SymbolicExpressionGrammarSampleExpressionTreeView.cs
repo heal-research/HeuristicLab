@@ -35,9 +35,13 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     private IRandom random;
     public SymbolicExpressionGrammarSampleExpressionTreeView() {
       InitializeComponent();
-      random = new MersenneTwister();
+      random = new MersenneTwister();    
       maxSampleTreeLength = int.Parse(maxTreeLengthTextBox.Text);
       maxSampleTreeDepth = int.Parse(maxTreeDepthTextBox.Text);
+      foreach (var treeCreator in ApplicationManager.Manager.GetInstances<ISymbolicExpressionTreeCreator>()) {
+        treeCreatorComboBox.Items.Add(treeCreator);
+      }
+      treeCreatorComboBox.SelectedIndex = 0;
     }
 
     private int maxSampleTreeLength;
@@ -96,7 +100,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
 
     private void UpdateSampleTreeView() {
       try {
-        ISymbolicExpressionTree tree = ProbabilisticTreeCreator.Create(random, Content, MaxSampleTreeLength, MaxSampleTreeDepth);
+        ISymbolicExpressionTreeCreator creator = (SymbolicExpressionTreeCreator)treeCreatorComboBox.SelectedItem;
+        ISymbolicExpressionTree tree = creator.CreateTree(random, Content, MaxSampleTreeLength, MaxSampleTreeDepth);
         foreach (var node in tree.Root.IterateNodesPrefix().OfType<SymbolicExpressionTreeTopLevelNode>())
           node.SetGrammar(null);
         sampleTreeView.Content = tree;
@@ -146,5 +151,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       }
     }
     #endregion
+
+    private void treeCreatorComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+    }
   }
 }
