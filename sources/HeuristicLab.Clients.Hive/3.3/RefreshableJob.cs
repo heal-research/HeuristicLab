@@ -193,7 +193,7 @@ namespace HeuristicLab.Clients.Hive {
       this.refreshAutomatically = true;
       this.Job = new Job();
       this.log = new ThreadSafeLog();
-      this.jobDownloader = new ConcurrentTaskDownloader<ItemTask>(2, 2);
+      this.jobDownloader = new ConcurrentTaskDownloader<ItemTask>(Settings.Default.MaxParallelDownloads, Settings.Default.MaxParallelDownloads);
       this.jobDownloader.ExceptionOccured += new EventHandler<EventArgs<Exception>>(jobDownloader_ExceptionOccured);
       this.HiveTasks = new ItemCollection<HiveTask>();
     }
@@ -201,7 +201,7 @@ namespace HeuristicLab.Clients.Hive {
       this.refreshAutomatically = true;
       this.Job = hiveExperiment;
       this.log = new ThreadSafeLog();
-      this.jobDownloader = new ConcurrentTaskDownloader<ItemTask>(2, 2);
+      this.jobDownloader = new ConcurrentTaskDownloader<ItemTask>(Settings.Default.MaxParallelDownloads, Settings.Default.MaxParallelDownloads);
       this.jobDownloader.ExceptionOccured += new EventHandler<EventArgs<Exception>>(jobDownloader_ExceptionOccured);
       this.HiveTasks = new ItemCollection<HiveTask>();
     }
@@ -211,7 +211,7 @@ namespace HeuristicLab.Clients.Hive {
       this.IsControllable = original.IsControllable;
       this.log = cloner.Clone(original.log);
       this.RefreshAutomatically = false; // do not start results polling automatically
-      this.jobDownloader = new ConcurrentTaskDownloader<ItemTask>(2, 2);
+      this.jobDownloader = new ConcurrentTaskDownloader<ItemTask>(Settings.Default.MaxParallelDownloads, Settings.Default.MaxParallelDownloads);
       this.jobDownloader.ExceptionOccured += new EventHandler<EventArgs<Exception>>(jobDownloader_ExceptionOccured);
       this.HiveTasks = cloner.Clone(original.HiveTasks);
       this.ExecutionTime = original.ExecutionTime;
@@ -229,7 +229,7 @@ namespace HeuristicLab.Clients.Hive {
 
     public void StartResultPolling() {
       if (jobResultPoller == null) {
-        jobResultPoller = new JobResultPoller(job.Id, /*ApplicationConstants.ResultPollingInterval*/new TimeSpan(0, 0, 5)); //TODO: find a better place for ApplicationConstants
+        jobResultPoller = new JobResultPoller(job.Id, Settings.Default.ResultPollingInterval);
         RegisterResultPollingEvents();
         jobResultPoller.AutoResumeOnException = true;
       }

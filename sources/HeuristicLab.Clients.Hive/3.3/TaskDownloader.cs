@@ -50,7 +50,7 @@ namespace HeuristicLab.Clients.Hive {
         return currentException;
       }
     }
-    
+
     public int FinishedCount {
       get {
         return results.Count;
@@ -65,11 +65,11 @@ namespace HeuristicLab.Clients.Hive {
 
     public TaskDownloader(IEnumerable<Guid> jobIds) {
       this.taskIds = jobIds;
-      this.taskDownloader = new ConcurrentTaskDownloader<ItemTask>(2, 2);
+      this.taskDownloader = new ConcurrentTaskDownloader<ItemTask>(Settings.Default.MaxParallelDownloads, Settings.Default.MaxParallelDownloads);
       this.taskDownloader.ExceptionOccured += new EventHandler<EventArgs<Exception>>(taskDownloader_ExceptionOccured);
       this.results = new Dictionary<Guid, HiveTask>();
     }
-    
+
     public void StartAsync() {
       foreach (Guid taskId in taskIds) {
         Task task = ServiceLocator.Instance.CallHiveService(s => s.GetTask(taskId));
@@ -87,7 +87,7 @@ namespace HeuristicLab.Clients.Hive {
               this.results.Add(localJob.Id, hiveTask);
             }
           });
-      }      
+      }
     }
 
     private void taskDownloader_ExceptionOccured(object sender, EventArgs<Exception> e) {

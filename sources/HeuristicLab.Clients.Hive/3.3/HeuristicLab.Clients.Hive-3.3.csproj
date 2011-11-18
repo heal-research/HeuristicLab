@@ -97,7 +97,9 @@
     <Compile Include="ServiceClients\JobPermission.cs" />
     <Compile Include="StateLogList.cs" />
     <Compile Include="StateLogListList.cs" />
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Plugin.cs.frame" />
     <Compile Include="Exceptions\AddTaskToHiveException.cs" />
     <Compile Include="Exceptions\TaskResultPollingException.cs" />
