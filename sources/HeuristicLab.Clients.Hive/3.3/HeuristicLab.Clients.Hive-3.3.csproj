@@ -185,6 +185,7 @@
     <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
       <Project>{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}</Project>
       <Name>HeuristicLab.Data-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Hive\3.3\HeuristicLab.Hive-3.3.csproj">
       <Project>{F98A1740-9AC9-4D36-A582-6A2D0D06978D}</Project>

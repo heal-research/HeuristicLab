@@ -96,6 +96,7 @@
   <ItemGroup>
     <Reference Include="Google.ProtocolBuffers-0.9.1, Version=0.9.0.0, Culture=neutral, PublicKeyToken=17b3b1f090c3ea48, processorArchitecture=MSIL">
       <HintPath>..\..\bin\Google.ProtocolBuffers-0.9.1.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">

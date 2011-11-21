@@ -105,6 +105,7 @@
   <ItemGroup>
     <Reference Include="LibSVM-1.6.3, Version=1.6.3.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <HintPath>..\..\bin\LibSVM-1.6.3.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

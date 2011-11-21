@@ -103,9 +103,11 @@
   <ItemGroup>
     <Reference Include="HeuristicLab.Netron-3.0.2672.12446, Version=3.0.2672.12446, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <HintPath>..\..\bin\HeuristicLab.Netron-3.0.2672.12446.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Netron.Diagramming.Core-3.0.2672.12446, Version=3.0.2672.12446, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <HintPath>..\..\bin\Netron.Diagramming.Core-3.0.2672.12446.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

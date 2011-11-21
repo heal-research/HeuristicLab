@@ -115,19 +115,23 @@
   <ItemGroup>
     <Reference Include="ICSharpCode.NRefactory, Version=3.1.1.5327, Culture=neutral, PublicKeyToken=efe927acf176eea2, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327\ICSharpCode.NRefactory.dll</HintPath>
+      <HintPath>..\..\bin\ICSharpCode.NRefactory.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="ICSharpCode.SharpDevelop.Dom, Version=3.1.1.5327, Culture=neutral, PublicKeyToken=f829da5c02be14ee, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327\ICSharpCode.SharpDevelop.Dom.dll</HintPath>
+      <HintPath>..\..\bin\ICSharpCode.SharpDevelop.Dom.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="ICSharpCode.TextEditor, Version=3.1.1.5327, Culture=neutral, PublicKeyToken=4d61825e8dd49f1a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327\ICSharpCode.TextEditor.dll</HintPath>
+      <HintPath>..\..\bin\ICSharpCode.TextEditor.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Mono.Cecil, Version=0.6.9.1, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\HeuristicLab.ExtLibs\HeuristicLab.SharpDevelop\3.1.1.5327\Mono.Cecil.dll</HintPath>
+      <HintPath>..\..\bin\Mono.Cecil.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">

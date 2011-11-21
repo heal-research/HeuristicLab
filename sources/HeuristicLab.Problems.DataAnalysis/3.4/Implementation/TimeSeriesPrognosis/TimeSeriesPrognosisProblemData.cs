@@ -1564,7 +1564,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       problemData.Parameters.Add(new FixedValueParameter<IntRange>(TrainingPartitionParameterName, "", (IntRange)new IntRange(0, 0).AsReadOnly()));
       problemData.Parameters.Add(new FixedValueParameter<IntRange>(TestPartitionParameterName, "", (IntRange)new IntRange(0, 0).AsReadOnly()));
       problemData.Parameters.Add(new ConstrainedValueParameter<StringValue>(TargetVariableParameterName, new ItemSet<StringValue>()));
-      emptyProblemData = problemData;
+      emptyProblemData = problemData;      
     }
     #endregion
 
