@@ -116,6 +116,12 @@
       <DependentUpon>InteractiveSymbolicRegressionSolutionSimplifierView.cs</DependentUpon>
     </Compile>
     <Compile Include="Plugin.cs" />
+    <Compile Include="SymbolicDataAnalysisSolutionResponseFunctionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SymbolicDataAnalysisSolutionResponseFunctionView.Designer.cs">
+      <DependentUpon>SymbolicDataAnalysisSolutionResponseFunctionView.cs</DependentUpon>
+    </Compile>
     <Compile Include="SymbolicRegressionSolutionErrorCharacteristicsCurveView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -127,6 +133,12 @@
     </Compile>
     <Compile Include="SymbolicRegressionSolutionView.Designer.cs">
       <DependentUpon>SymbolicRegressionSolutionView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="VariableTrackbar.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VariableTrackbar.Designer.cs">
+      <DependentUpon>VariableTrackbar.cs</DependentUpon>
     </Compile>
     <None Include="HeuristicLab.snk" />
     <None Include="Plugin.cs.frame" />
@@ -261,6 +273,11 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SymbolicDataAnalysisSolutionResponseFunctionView.resx">
+      <DependentUpon>SymbolicDataAnalysisSolutionResponseFunctionView.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
   partial class SymbolicDataAnalysisSolutionResponseFunctionView {
     /// <summary> 
     /// Required designer variable.
@@ -47,6 +47,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
       System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
       System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+      System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+      System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+      System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
+      System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
       this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
       this.responseChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
       this.comboBox = new System.Windows.Forms.ComboBox();
@@ -79,12 +83,45 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.responseChart.Location = new System.Drawing.Point(3, 30);
       this.responseChart.Name = "responseChart";
       series1.ChartArea = "ChartArea";
-      series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastLine;
+      series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastPoint;
       series1.Legend = "Legend";
+      series1.MarkerColor = System.Drawing.Color.Gold;
       series1.MarkerSize = 3;
-      series1.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Cross;
-      series1.Name = "Model Response";
+      series1.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Diamond;
+      series1.Name = "Training Data (edge)";
+      series2.ChartArea = "ChartArea";
+      series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastPoint;
+      series2.Legend = "Legend";
+      series2.MarkerColor = System.Drawing.Color.OrangeRed;
+      series2.MarkerSize = 3;
+      series2.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Diamond;
+      series2.Name = "Test Data (edge)";
+      series3.ChartArea = "ChartArea";
+      series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastPoint;
+      series3.Legend = "Legend";
+      series3.MarkerColor = System.Drawing.Color.Gold;
+      series3.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Diamond;
+      series3.Name = "Training Data";
+      series4.ChartArea = "ChartArea";
+      series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastPoint;
+      series4.Legend = "Legend";
+      series4.MarkerColor = System.Drawing.Color.OrangeRed;
+      series4.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Diamond;
+      series4.Name = "Test Data";
+      series5.BorderWidth = 3;
+      series5.ChartArea = "ChartArea";
+      series5.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastLine;
+      series5.Color = System.Drawing.Color.DodgerBlue;
+      series5.Legend = "Legend";
+      series5.MarkerSize = 1;
+      series5.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Cross;
+      series5.Name = "Model Response";
+      series5.ShadowColor = System.Drawing.Color.DodgerBlue;
       this.responseChart.Series.Add(series1);
+      this.responseChart.Series.Add(series2);
+      this.responseChart.Series.Add(series3);
+      this.responseChart.Series.Add(series4);
+      this.responseChart.Series.Add(series5);
       this.responseChart.Size = new System.Drawing.Size(258, 166);
       this.responseChart.TabIndex = 3;
       // 

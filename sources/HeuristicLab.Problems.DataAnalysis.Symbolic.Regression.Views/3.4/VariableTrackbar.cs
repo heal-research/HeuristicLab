@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using HeuristicLab.Common;
 
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
   public partial class VariableTrackbar : UserControl {
     private readonly string variableName;
     private const double FACTOR = 1000;

@@ -29,9 +29,9 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
   [View("Response Function View")]
-  [Content(typeof(RegressionSolutionBase), false)]
+  [Content(typeof(ISymbolicRegressionSolution), false)]
   public partial class SymbolicDataAnalysisSolutionResponseFunctionView : AsynchronousContentView {
     private Dictionary<string, List<ISymbolicExpressionTreeNode>> variableNodes;
     private ISymbolicExpressionTree clonedTree;
@@ -43,8 +43,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.Caption = "Response Function View";
     }
 
-    public new ISymbolicDataAnalysisSolution Content {
-      get { return (ISymbolicDataAnalysisSolution)base.Content; }
+    public new ISymbolicRegressionSolution Content {
+      get { return (ISymbolicRegressionSolution)base.Content; }
       set { base.Content = value; }
     }
 
@@ -121,29 +121,77 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       foreach (var constNode in variableNodes[variableName].Cast<ConstantTreeNode>())
         constNode.Value = value;
 
-      UpdateChart();
+      UpdateResponseSeries();
     }
 
-    private void UpdateChart() {
+    private void UpdateScatterPlot() {
       string freeVariable = (string)comboBox.SelectedItem;
       IEnumerable<string> fixedVariables = comboBox.Items.OfType<string>()
         .Except(new string[] { freeVariable });
+      
+      // scatter plots for subset of samples that have values near the median values for all variables
+      Func<int, bool> NearMedianValue = (r) => {
+        foreach (var fixedVar in fixedVariables) {
+          double med = medianValues[fixedVar];
+          if (!(Content.ProblemData.Dataset.GetDoubleValue(fixedVar, r) < med + 0.1 * Math.Abs(med) &&
+            Content.ProblemData.Dataset.GetDoubleValue(fixedVar, r) > med - 0.1 * Math.Abs(med)))
+            return false;
+        }
+        return true;
+      };
+
+      var mainTrainingIndizes = (from row in Content.ProblemData.TrainingIndizes
+                                 where NearMedianValue(row)
+                                 select row)
+        .ToArray();
+      var mainTestIndizes = (from row in Content.ProblemData.TestIndizes
+                             where NearMedianValue(row)
+                             select row)
+        .ToArray();
+
+      var freeVariableValues = Content.ProblemData.Dataset.GetDoubleValues(freeVariable, mainTrainingIndizes).ToArray();
+      var trainingValues = Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.TargetVariable,
+                                                                     mainTrainingIndizes).ToArray();
+      Array.Sort(freeVariableValues, trainingValues);
+      responseChart.Series["Training Data"].Points.DataBindXY(freeVariableValues, trainingValues);
+
+      freeVariableValues = Content.ProblemData.Dataset.GetDoubleValues(freeVariable, mainTestIndizes).ToArray();
+      var testValues = Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.TargetVariable,
+                                                                     mainTestIndizes).ToArray();
+      Array.Sort(freeVariableValues, testValues);
+      responseChart.Series["Test Data"].Points.DataBindXY(freeVariableValues, testValues);
+
+      // draw scatter plots of remaining values
+      freeVariableValues = Content.ProblemData.Dataset.GetDoubleValues(freeVariable, Content.ProblemData.TrainingIndizes).ToArray();
+      trainingValues = Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.TargetVariable,
+                                                                     Content.ProblemData.TrainingIndizes).ToArray();
+      Array.Sort(freeVariableValues, trainingValues);
+      responseChart.Series["Training Data (edge)"].Points.DataBindXY(freeVariableValues, trainingValues);
+
+      freeVariableValues = Content.ProblemData.Dataset.GetDoubleValues(freeVariable, Content.ProblemData.TestIndizes).ToArray();
+      testValues = Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.TargetVariable,
+                                                                     Content.ProblemData.TestIndizes).ToArray();
+      Array.Sort(freeVariableValues, testValues);
+      responseChart.Series["Test Data (edge)"].Points.DataBindXY(freeVariableValues, testValues);
+
+
+
+      responseChart.ChartAreas[0].AxisX.Maximum = Math.Ceiling(freeVariableValues.Max());
+      responseChart.ChartAreas[0].AxisX.Minimum = Math.Floor(freeVariableValues.Min());
+      responseChart.ChartAreas[0].AxisY.Maximum = Math.Ceiling(Math.Max(testValues.Max(), trainingValues.Max()));
+      responseChart.ChartAreas[0].AxisY.Minimum = Math.Floor(Math.Min(testValues.Min(), trainingValues.Min()));
+    }
+
+    private void UpdateResponseSeries() {
+      string freeVariable = (string)comboBox.SelectedItem;
 
       var freeVariableValues = Content.ProblemData.Dataset.GetDoubleValues(freeVariable, Content.ProblemData.TrainingIndizes).ToArray();
       var responseValues = Content.Model.Interpreter.GetSymbolicExpressionTreeValues(clonedTree,
                                                                               Content.ProblemData.Dataset,
-                                                                              Content.ProblemData.TrainingIndizes).ToArray();
+                                                                              Content.ProblemData.TrainingIndizes)
+                                                                              .ToArray();
       Array.Sort(freeVariableValues, responseValues);
       responseChart.Series["Model Response"].Points.DataBindXY(freeVariableValues, responseValues);
-    }
-
-    private ConstantTreeNode MakeConstantTreeNode(double value) {
-      Constant constant = new Constant();
-      constant.MinValue = value - 1;
-      constant.MaxValue = value + 1;
-      ConstantTreeNode constantTreeNode = (ConstantTreeNode)constant.CreateTreeNode();
-      constantTreeNode.Value = value;
-      return constantTreeNode;
     }
 
     private void ComboBoxSelectedIndexChanged(object sender, EventArgs e) {
@@ -163,13 +211,31 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
           var replacementNode = MakeConstantTreeNode(medianValues[varNode.VariableName]);
           var parent = varNode.Parent;
           parent.RemoveSubtree(childIndex);
-          parent.InsertSubtree(childIndex, replacementNode);
+          parent.InsertSubtree(childIndex, MakeProduct(replacementNode, varNode.Weight));
           variableNodes[varNode.VariableName].Add(replacementNode);
         }
       }
 
       CreateSliders(fixedVariables);
-      UpdateChart();
+      UpdateScatterPlot();
+      UpdateResponseSeries();
+    }
+
+    private ISymbolicExpressionTreeNode MakeProduct(ConstantTreeNode c, double weight) {
+      var mul = new Multiplication();
+      var prod = mul.CreateTreeNode();
+      prod.AddSubtree(MakeConstantTreeNode(weight));
+      prod.AddSubtree(c);
+      return prod;
+    }
+
+    private ConstantTreeNode MakeConstantTreeNode(double value) {
+      Constant constant = new Constant();
+      constant.MinValue = value - 1;
+      constant.MaxValue = value + 1;
+      ConstantTreeNode constantTreeNode = (ConstantTreeNode)constant.CreateTreeNode();
+      constantTreeNode.Value = value;
+      return constantTreeNode;
     }
   }
 }

@@ -114,12 +114,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Plugin.cs" />
-    <Compile Include="SymbolicDataAnalysisSolutionResponseFunctionView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="SymbolicDataAnalysisSolutionResponseFunctionView.Designer.cs">
-      <DependentUpon>SymbolicDataAnalysisSolutionResponseFunctionView.cs</DependentUpon>
-    </Compile>
     <Compile Include="TextualSymbolicDataAnalysisModelView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -167,12 +161,6 @@
     </Compile>
     <Compile Include="Symbols\VariableView.Designer.cs">
       <DependentUpon>VariableView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="VariableTrackbar.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="VariableTrackbar.Designer.cs">
-      <DependentUpon>VariableTrackbar.cs</DependentUpon>
     </Compile>
     <None Include="HeuristicLab.snk" />
     <None Include="Plugin.cs.frame" />

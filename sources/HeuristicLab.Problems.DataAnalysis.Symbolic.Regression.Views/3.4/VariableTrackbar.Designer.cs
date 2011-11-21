@@ -1,4 +1,4 @@
-﻿namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
+﻿namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
   partial class VariableTrackbar {
     /// <summary> 
     /// Required designer variable.
