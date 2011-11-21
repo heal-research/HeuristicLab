@@ -50,10 +50,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
 
     protected override void UpdateModel(ISymbolicExpressionTree tree) {
       Content.Model = new SymbolicDiscriminantFunctionClassificationModel(tree, Content.Model.Interpreter);
-      // the default policy for setting thresholds in classification models is the accuarcy maximizing policy
-      // however for performance reasons we must use estimations of the normal distribution cut points as the thresholds
-      // here and in CalculateImpactValues as they are a lot faster to calculate
-      Content.SetClassDistibutionCutPointThresholds();
+      // the default policy for setting thresholds in classification models is the accuarcy maximizing policy.
+      // This is rather slow to calculate and can lead to a very laggy UI in the interactive solution simplifier.
+      // However, since we automatically prune sub-trees based on the threshold reaching the maximum accuracy we must
+      // also use maximum accuracy threshold calculation here in order to prevent incoherent behavior of the simplifier.
+      Content.SetAccuracyMaximizingThresholds();
     }
 
     protected override Dictionary<ISymbolicExpressionTreeNode, double> CalculateReplacementValues(ISymbolicExpressionTree tree) {
