@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       double oe = Gini(originalValuesArr, estimatedValuesArr, out errorState);
       if (errorState != OnlineCalculatorError.None) return double.NaN;
 
-      return oe / (Gini(originalValuesArr, estimatedValuesArr, out errorState));
+      return oe / (Gini(originalValuesArr, originalValuesArr, out errorState));
     }
 
     private static double Gini(IEnumerable<double> original, IEnumerable<double> estimated, out OnlineCalculatorError errorState) {
