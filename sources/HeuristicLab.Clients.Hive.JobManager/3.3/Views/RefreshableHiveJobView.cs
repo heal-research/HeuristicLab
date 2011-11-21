@@ -301,6 +301,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     }
     private void Content_ExceptionOccured(object sender, EventArgs<Exception> e) {
       // don't show exception, it is logged anyway
+      throw e.Value;
     }
     private void Content_StateLogListChanged(object sender, EventArgs e) {
       if (InvokeRequired)
@@ -374,7 +375,11 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     }
 
     private void refreshPermissionsButton_Click(object sender, EventArgs e) {
-      hiveExperimentPermissionListView.Content = HiveClient.GetJobPermissions(this.Content.Job.Id);
+      if (this.Content.Job.Id == Guid.Empty) {
+        MessageBox.Show("You have to upload the Job first before you can share it.", "HeuristicLab Hive Job Manager", MessageBoxButtons.OK, MessageBoxIcon.Information);
+      } else {
+        hiveExperimentPermissionListView.Content = HiveClient.GetJobPermissions(this.Content.Job.Id);
+      }
     }
 
 
