@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using HeuristicLab.Common;
 using HeuristicLab.Data;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
@@ -95,8 +96,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       }
 
       int classValuesCount = Content.ProblemData.ClassValues.Count;
-      int modelCount = Content.Model.Models.Count();
-      string[,] values = new string[indizes.Length, 5 + classValuesCount + modelCount];
+      int solutionsCount = Content.ClassificationSolutions.Count();
+      string[,] values = new string[indizes.Length, 5 + classValuesCount + solutionsCount];
       double[] target = Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.TargetVariable).ToArray();
       List<List<double?>> estimatedValuesVector = GetEstimatedValues(SamplesComboBox.SelectedItem.ToString(), indizes,
                                                             Content.ClassificationSolutions);
@@ -106,24 +107,25 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         values[i, 0] = row.ToString();
         values[i, 1] = target[i].ToString();
         //display only indices and target values if no models are present
-        if (i >= estimatedClassValues.Length) continue;
-
-        values[i, 2] = estimatedClassValues[i].ToString();
-        values[i, 3] = (target[i] == estimatedClassValues[i]).ToString();
-        var groups = estimatedValuesVector[i].GroupBy(x => x).Select(g => new { Key = g.Key, Count = g.Count() }).ToList();
-        var estimationCount = groups.Where(g => g.Key != null).Select(g => g.Count).Sum();
-        values[i, 4] = (((double)groups.Where(g => g.Key == estimatedClassValues[i]).Single().Count) / estimationCount).ToString();
-        for (int classIndex = 0; classIndex < Content.ProblemData.ClassValues.Count; classIndex++) {
-          var group = groups.Where(g => g.Key == Content.ProblemData.ClassValues[classIndex]).SingleOrDefault();
-          if (group == null) values[i, 5 + classIndex] = 0.ToString();
-          else values[i, 5 + classIndex] = group.Count.ToString();
+        if (solutionsCount > 0) {
+          values[i, 2] = estimatedClassValues[i].ToString();
+          values[i, 3] = (target[i].IsAlmost(estimatedClassValues[i])).ToString();
+          var groups =
+            estimatedValuesVector[i].GroupBy(x => x).Select(g => new { Key = g.Key, Count = g.Count() }).ToList();
+          var estimationCount = groups.Where(g => g.Key != null).Select(g => g.Count).Sum();
+          values[i, 4] =
+            (((double)groups.Where(g => g.Key == estimatedClassValues[i]).Single().Count) / estimationCount).ToString();
+          for (int classIndex = 0; classIndex < Content.ProblemData.ClassValues.Count; classIndex++) {
+            var group = groups.Where(g => g.Key == Content.ProblemData.ClassValues[classIndex]).SingleOrDefault();
+            if (group == null) values[i, 5 + classIndex] = 0.ToString();
+            else values[i, 5 + classIndex] = group.Count.ToString();
+          }
+          for (int modelIndex = 0; modelIndex < estimatedValuesVector[i].Count; modelIndex++) {
+            values[i, 5 + classValuesCount + modelIndex] = estimatedValuesVector[i][modelIndex] == null
+                                                             ? string.Empty
+                                                             : estimatedValuesVector[i][modelIndex].ToString();
+          }
         }
-        for (int modelIndex = 0; modelIndex < estimatedValuesVector[i].Count; modelIndex++) {
-          values[i, 5 + classValuesCount + modelIndex] = estimatedValuesVector[i][modelIndex] == null
-                                                           ? string.Empty
-                                                           : estimatedValuesVector[i][modelIndex].ToString();
-        }
-
       }
 
       StringMatrix matrix = new StringMatrix(values);
