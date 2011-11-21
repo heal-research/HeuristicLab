@@ -36,6 +36,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       set { base.Content = value; }
     }
 
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
+      itemsListView.Items.Remove(itemsListView.FindItemWithText("Model: RegressionEnsembleModel"));
+    }
+
     #region drag & drop
     protected override void itemsListView_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
