@@ -42,7 +42,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     private static readonly ClassificationEnsembleProblemData emptyProblemData;
-    public static ClassificationEnsembleProblemData EmptyProblemData {
+    public static new ClassificationEnsembleProblemData EmptyProblemData {
       get { return emptyProblemData; }
     }
 

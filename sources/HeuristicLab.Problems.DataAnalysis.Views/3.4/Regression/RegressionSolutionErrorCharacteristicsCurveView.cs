@@ -30,6 +30,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Error Characteristics Curve")]
   [Content(typeof(IRegressionSolution))]
   public partial class RegressionSolutionErrorCharacteristicsCurveView : DataAnalysisSolutionEvaluationView {
+    private IRegressionSolution constantModel;
     protected const string TrainingSamples = "Training";
     protected const string TestSamples = "Test";
     protected const string AllSamples = "All Samples";
@@ -100,8 +101,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       chart.Annotations.Clear();
       if (Content == null) return;
 
-      var originalValues = GetOriginalValues();
-      var meanModelEstimatedValues = GetMeanModelEstimatedValues(originalValues);
+      var originalValues = GetOriginalValues().ToList();
+      constantModel = CreateConstantModel();
+      var meanModelEstimatedValues = GetEstimatedValues(constantModel);
       var meanModelResiduals = GetResiduals(originalValues, meanModelEstimatedValues);
 
       meanModelResiduals.Sort();
@@ -112,6 +114,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       meanModelSeries.ChartType = SeriesChartType.FastLine;
       UpdateSeries(meanModelResiduals, meanModelSeries);
       meanModelSeries.ToolTip = "Area over Curve: " + CalculateAreaOverCurve(meanModelSeries);
+      meanModelSeries.Tag = constantModel;
       chart.Series.Add(meanModelSeries);
 
       AddRegressionSolution(Content);
@@ -224,5 +227,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       if (InvokeRequired) Invoke((Action<object, EventArgs>)cmbSamples_SelectedIndexChanged, sender, e);
       else UpdateChart();
     }
+
+    #region Mean Model
+    private void chart_MouseDown(object sender, MouseEventArgs e) {
+      if (e.Clicks < 2) return;
+      HitTestResult result = chart.HitTest(e.X, e.Y);
+      if (result.ChartElementType != ChartElementType.LegendItem) return;
+      if (result.Series.Name != constantModel.Name) return;
+
+      MainFormManager.MainForm.ShowContent((IRegressionSolution)result.Series.Tag);
+    }
+
+    private IRegressionSolution CreateConstantModel() {
+      double averageTrainingTarget = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndizes).Average();
+      var solution = new ConstantRegressionModel(averageTrainingTarget).CreateRegressionSolution(ProblemData);
+      solution.Name = "Mean Model";
+      return solution;
+    }
+    #endregion
   }
 }

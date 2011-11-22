@@ -48,6 +48,7 @@
       this.chart.Size = new System.Drawing.Size(366, 202);
       this.chart.TabIndex = 0;
       this.chart.Text = "chart";
+      this.chart.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chart_MouseDown);
       // 
       // label1
       // 
