@@ -103,55 +103,72 @@
   <ItemGroup>
     <Reference Include="ALGLIB-3.1.0">
       <HintPath>..\bin\ALGLIB-3.1.0.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Calendar.DayView">
       <HintPath>..\bin\Calendar.DayView.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Google.ProtocolBuffers-0.9.1, Version=0.9.0.0, Culture=neutral, PublicKeyToken=17b3b1f090c3ea48, processorArchitecture=AMD64">
       <HintPath>..\bin\Google.ProtocolBuffers-0.9.1.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.ALGLIB-3.1.0">
       <HintPath>..\bin\HeuristicLab.ALGLIB-3.1.0.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.LibSVM-1.6.3">
       <HintPath>..\bin\HeuristicLab.LibSVM-1.6.3.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.log4net-1.2.10.0">
       <HintPath>..\bin\HeuristicLab.log4net-1.2.10.0.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Netron-3.0.2672.12446">
       <HintPath>..\bin\HeuristicLab.Netron-3.0.2672.12446.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.ProtobufCS-0.9.1">
       <HintPath>..\bin\HeuristicLab.ProtobufCS-0.9.1.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.SharpDevelop-3.1.1.5327">
       <HintPath>..\bin\HeuristicLab.SharpDevelop-3.1.1.5327.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.WinFormsUI-2.3.1">
       <HintPath>..\bin\HeuristicLab.WinFormsUI-2.3.1.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="ICSharpCode.NRefactory, Version=3.1.1.5327, Culture=neutral, PublicKeyToken=efe927acf176eea2, processorArchitecture=MSIL">
       <HintPath>..\bin\ICSharpCode.NRefactory.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="ICSharpCode.SharpDevelop.Dom, Version=3.1.1.5327, Culture=neutral, PublicKeyToken=f829da5c02be14ee, processorArchitecture=MSIL">
       <HintPath>..\bin\ICSharpCode.SharpDevelop.Dom.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\bin\ICSharpCode.SharpZipLib.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="ICSharpCode.TextEditor, Version=3.1.1.5327, Culture=neutral, PublicKeyToken=4d61825e8dd49f1a, processorArchitecture=MSIL">
       <HintPath>..\bin\ICSharpCode.TextEditor.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="LibSVM-1.6.3, Version=1.6.3.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=AMD64">
+    <Reference Include="LibSVM-1.6.3, Version=1.6.3.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <HintPath>..\bin\LibSVM-1.6.3.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <HintPath>..\bin\log4net.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="Netron.Diagramming.Core-3.0.2672.12446, Version=3.0.2672.12446, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=AMD64">
+    <Reference Include="Netron.Diagramming.Core-3.0.2672.12446, Version=3.0.2672.12446, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <HintPath>..\bin\Netron.Diagramming.Core-3.0.2672.12446.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -159,8 +176,9 @@
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="WeifenLuo.WinFormsUI.Docking-2.3.1, Version=2.3.1.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=AMD64">
+    <Reference Include="WeifenLuo.WinFormsUI.Docking-2.3.1, Version=2.3.1.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <HintPath>..\bin\WeifenLuo.WinFormsUI.Docking-2.3.1.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
