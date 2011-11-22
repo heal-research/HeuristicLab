@@ -86,7 +86,10 @@ namespace HeuristicLab.Services.Hive {
     public Task GetTask(Guid taskId) {
       authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client, HiveRoles.Slave);
       author.AuthorizeForTask(taskId, Permission.Read);
-      return dao.GetTask(taskId);
+
+      return trans.UseTransaction(() => {
+        return dao.GetTask(taskId);
+      }, false, false);
     }
 
     public IEnumerable<Task> GetTasks() {
@@ -99,24 +102,33 @@ namespace HeuristicLab.Services.Hive {
 
     public IEnumerable<LightweightTask> GetLightweightTasks(IEnumerable<Guid> taskIds) {
       authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
-      var tasks = dao.GetTasks(x => taskIds.Contains(x.TaskId)).Select(x => new LightweightTask(x)).ToArray();
-      foreach (var task in tasks)
-        author.AuthorizeForTask(task.Id, Permission.Read);
-      return tasks;
+
+      return trans.UseTransaction(() => {
+        var tasks = dao.GetTasks(x => taskIds.Contains(x.TaskId)).Select(x => new LightweightTask(x)).ToArray();
+        foreach (var task in tasks)
+          author.AuthorizeForTask(task.Id, Permission.Read);
+        return tasks;
+      }, false, false);
     }
 
     public IEnumerable<LightweightTask> GetLightweightChildTasks(Guid? parentTaskId, bool recursive, bool includeParent) {
       authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
-      var tasks = GetChildTasks(parentTaskId, recursive, includeParent).Select(x => new LightweightTask(x)).ToArray();
-      foreach (var task in tasks)
-        author.AuthorizeForTask(task.Id, Permission.Read);
-      return tasks;
+
+      return trans.UseTransaction(() => {
+        var tasks = GetChildTasks(parentTaskId, recursive, includeParent).Select(x => new LightweightTask(x)).ToArray();
+        foreach (var task in tasks)
+          author.AuthorizeForTask(task.Id, Permission.Read);
+        return tasks;
+      }, false, false);
     }
 
     public IEnumerable<LightweightTask> GetLightweightJobTasks(Guid jobId) {
       authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
       author.AuthorizeForJob(jobId, Permission.Read);
-      return dao.GetTasks(x => x.JobId == jobId).Select(x => new LightweightTask(x)).ToArray();
+
+      return trans.UseTransaction(() => {
+        return dao.GetTasks(x => x.JobId == jobId).Select(x => new LightweightTask(x)).ToArray();
+      }, false, false);
     }
 
     public TaskData GetTaskData(Guid taskId) {
