@@ -31,29 +31,39 @@ using HeuristicLab.Services.Hive.DataTransfer;
 using System.Text;
 using System.Web.UI.DataVisualization.Charting;
 using DA = HeuristicLab.Services.Hive.DataAccess;
+using DT = HeuristicLab.Services.Hive.DataTransfer;
 
 public partial class Status : System.Web.UI.Page {
   protected void Page_Load(object sender, EventArgs e) {
     var dao = ServiceLocator.Instance.HiveDao;
+    var transactionManager = ServiceLocator.Instance.TransactionManager;
     var resourceName = Request.QueryString["resource"];
-    IEnumerable<Guid> resourceIds;
+    IEnumerable<Guid> resourceIds = new List<Guid>();
+    IEnumerable<DT.Slave> onlineSlaves = new List<DT.Slave>();
+    int currentlyJobsWaiting = 0;
+
     if (!string.IsNullOrEmpty(resourceName)) {
-      var resId = dao.GetResources(x => x.Name == resourceName).Single().Id;
-      resourceIds = dao.GetChildResources(resId).Select(x => x.Id).Union(new List<Guid> { resId });
-      speedupChartHours.Visible = false;
-      speedupChartMinutes.Visible = false;
+        transactionManager.UseTransaction(() =>
+        {
+            var resId = dao.GetResources(x => x.Name == resourceName).Single().Id;
+            resourceIds = dao.GetChildResources(resId).Select(x => x.Id).Union(new List<Guid> { resId });
+        }, false, false);        
     } else {
-      resourceIds = dao.GetResources(x => true).Select(y => y.Id);
-      speedupChartHours.Visible = true;
-      speedupChartMinutes.Visible = true;
-    }
-                                  
-    var onlineSlaves = dao.GetSlaves(x => (x.SlaveState == DA.SlaveState.Calculating || x.SlaveState == DA.SlaveState.Idle) && resourceIds.Contains(x.ResourceId));
+        transactionManager.UseTransaction(() =>
+        {
+             resourceIds = dao.GetResources(x => true).Select(y => y.Id);
+        }, false, false);
+    }   
+
+    transactionManager.UseTransaction(() =>
+    {                     
+        onlineSlaves = dao.GetSlaves(x => (x.SlaveState == DA.SlaveState.Calculating || x.SlaveState == DA.SlaveState.Idle) && resourceIds.Contains(x.ResourceId));
+        currentlyJobsWaiting = dao.GetTasks(x => x.State == DA.TaskState.Waiting).Count();
+    }, false, false);
 
     int currentlyAvailableCores = onlineSlaves.Where(s => s.Cores.HasValue).Sum(s => s.Cores.Value);
     int currentlyUsedCores = currentlyAvailableCores - onlineSlaves.Where(s => s.FreeCores.HasValue).Sum(s => s.FreeCores.Value);
-    int currentlyJobsWaiting = ServiceLocator.Instance.HiveDao.GetTasks(x => x.State == DA.TaskState.Waiting).Count();
-
+    
     this.availableCoresLabel.Text = currentlyAvailableCores.ToString();
     this.usedCoresLabel.Text = currentlyUsedCores.ToString();
     this.waitingJobsLabel.Text = currentlyJobsWaiting.ToString();
@@ -62,12 +72,15 @@ public partial class Status : System.Web.UI.Page {
 
     cpuUtilizationLabel.Text = (onlineSlaves.Count() > 0 ? Math.Round(onlineSlaves.Average(s => s.CpuUtilization), 2).ToString() : "0.0") + " %";
 
-    HeuristicLab.Services.Hive.DataTransfer.Statistics[] stats;
-    if (daysDropDownList.SelectedValue == "All") {
-      stats = dao.GetStatistics(x => true).OrderBy(x => x.TimeStamp).ToArray();
-    } else {
-      stats = dao.GetStatistics(x => x.Timestamp >= DateTime.Now.Subtract(TimeSpan.FromDays(int.Parse(daysDropDownList.SelectedValue)))).OrderBy(x => x.TimeStamp).ToArray();
-    }
+    DT.Statistics[] stats = new DT.Statistics[0];    
+    transactionManager.UseTransaction(() =>
+    {   
+        if (daysDropDownList.SelectedValue == "All") {
+          stats = dao.GetStatistics(x => true).OrderBy(x => x.TimeStamp).ToArray();
+        } else {
+          stats = dao.GetStatistics(x => x.Timestamp >= DateTime.Now.Subtract(TimeSpan.FromDays(int.Parse(daysDropDownList.SelectedValue)))).OrderBy(x => x.TimeStamp).ToArray();
+        }
+    }, false, false);
     
     for (int i = 0; i < stats.Length; i++) {
       var s = stats[i];
@@ -86,31 +99,6 @@ public partial class Status : System.Web.UI.Page {
       var usedMemory = memory - slaveStats.Sum(x => x.FreeMemory);
       memoryChart.Series[0].Points.AddXY(s.TimeStamp.ToOADate(), memory / 1024.0);
       memoryChart.Series[1].Points.AddXY(s.TimeStamp.ToOADate(), usedMemory / 1024.0);
-
-      if (i > 0) {
-        var execTime = new TimeSpan(s.UserStatistics.Sum(x => x.ExecutionTime.Ticks));
-        var execTimePrev = new TimeSpan(stats[i - 1].UserStatistics.Sum(x => x.ExecutionTime.Ticks));
-        var execTimeDifference = execTimePrev - execTime;
-
-        var timeDifference = stats[i - 1].TimeStamp - s.TimeStamp; // the difference between statistic entries is not alway exactly 1 minute
-        var speedup = execTimeDifference.TotalMinutes / timeDifference.TotalMinutes;
-        speedupChartMinutes.Series[0].Points.AddXY(s.TimeStamp.ToOADate(), speedup);
-        speedupChartMinutes.Series[1].Points.AddXY(s.TimeStamp.ToOADate(), cores);
-      }
-      if (i - 60 >= 0) {
-        var execTime = new TimeSpan(s.UserStatistics.Sum(x => x.ExecutionTime.Ticks));
-        var execTimePrev = new TimeSpan(stats[i - 60].UserStatistics.Sum(x => x.ExecutionTime.Ticks));
-        var execTimeDifference = execTimePrev - execTime;
-
-        var timeDifference = stats[i - 60].TimeStamp - s.TimeStamp; // the difference between statistic entries is not alway exactly 1 minute
-        var speedup = execTimeDifference.TotalMinutes / timeDifference.TotalMinutes;
-        speedupChartHours.Series[0].Points.AddXY(s.TimeStamp.ToOADate(), speedup);
-        speedupChartHours.Series[1].Points.AddXY(s.TimeStamp.ToOADate(), cores);
-      }
     }
-  }
-
-  protected void daysDropDownList_SelectedIndexChanged(object sender, EventArgs e) {
-
   }
 }

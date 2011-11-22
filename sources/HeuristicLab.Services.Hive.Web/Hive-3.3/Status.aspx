@@ -6,7 +6,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
   <title>HeuristicLab Hive Status Monitor</title> 
-  <link rel="icon" type="image/ico" href="HeuristicLab.ico"> 
+  <link rel="icon" type="image/ico" href="HeuristicLab.ico" /> 
 </head>
 <body>
   <center>
@@ -23,15 +23,15 @@
     Waiting Jobs:
     <asp:Label ID="waitingJobsLabel" runat="server" />
     <br />
-    Slaves (CPU Utilization):
-    <asp:Label ID="slavesLabel" runat="server" />
-    <br />
     Avg. CPU Utilization:
     <asp:Label ID="cpuUtilizationLabel" runat="server" />
-    <br />  
+      <br />
+    Slaves (CPU Utilization):
+    <asp:Label ID="slavesLabel" runat="server" />
+      <br />
     <br />
     Days:
-    <asp:DropDownList ID="daysDropDownList" runat="server" AutoPostBack="True" OnSelectedIndexChanged="daysDropDownList_SelectedIndexChanged">
+    <asp:DropDownList ID="daysDropDownList" runat="server" AutoPostBack="True">
       <asp:ListItem Value="1"></asp:ListItem>
       <asp:ListItem Value="2"></asp:ListItem>
       <asp:ListItem Value="3"></asp:ListItem>
@@ -121,57 +121,7 @@
       </ChartAreas>
     </asp:Chart>
     <br />
-    Speedup (ComputedMinutes/Minute)<br />
-    <asp:Chart ID="speedupChartMinutes" runat="server" Palette="None" Width="1900px"
-      PaletteCustomColors="79, 129, 189">
-      <Series>
-        <asp:Series ChartType="Area" Name="Speedup" XValueType="DateTime" YValueType="Double">
-        </asp:Series>
-        <asp:Series BorderWidth="2" ChartArea="ChartArea1" 
-          ChartType="Line" Color="185, 205, 150" Name="Cores">
-        </asp:Series>
-      </Series>
-      <ChartAreas>
-        <asp:ChartArea BackColor="Black" BackHatchStyle="DottedGrid" BackSecondaryColor="0, 96, 43"
-          BorderColor="DarkGreen" BorderDashStyle="Dot" Name="ChartArea1">
-          <AxisY Minimum="-5">
-            <MajorGrid Enabled="False" />
-          </AxisY>
-          <AxisX IntervalAutoMode="VariableCount" IntervalOffset="1" IntervalOffsetType="Hours"
-            IntervalType="Hours" IsLabelAutoFit="False" >
-            <MajorGrid Enabled="False" />
-            <LabelStyle Format="d/M/yyyy HH:mm" IsStaggered="True" />
-          </AxisX>
-        </asp:ChartArea>
-      </ChartAreas>
-    </asp:Chart>
-    <br />
-    Speedup (ComputedHours/Hour)<br />
-    <br />
-    <asp:Chart ID="speedupChartHours" runat="server" Palette="None" Width="1900px" PaletteCustomColors="79, 129, 189">
-      <Series>
-        <asp:Series ChartType="Area" Name="Speedup" XValueType="DateTime" 
-          YValueType="Double">
-        </asp:Series>
-        <asp:Series BorderWidth="2" ChartArea="ChartArea1" 
-          ChartType="Line" Color="185, 205, 150" Name="Cores">
-        </asp:Series>
-      </Series>
-      <ChartAreas>
-        <asp:ChartArea BackColor="Black" BackHatchStyle="DottedGrid" BackSecondaryColor="0, 96, 43"
-          BorderColor="DarkGreen" BorderDashStyle="Dot" Name="ChartArea1">
-          <AxisY>
-            <MajorGrid Enabled="False" />
-          </AxisY>
-          <AxisX IntervalAutoMode="VariableCount" IntervalOffset="1" IntervalOffsetType="Hours"
-            IntervalType="Hours" IsLabelAutoFit="False">
-            <MajorGrid Enabled="False" />
-            <LabelStyle Format="d/M/yyyy HH:mm" IsStaggered="True" />
-          </AxisX>
-        </asp:ChartArea>
-      </ChartAreas>
-    </asp:Chart>
-    <br />
+      <br />
   </div>
   </form>
 </body>
