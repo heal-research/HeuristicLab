@@ -300,8 +300,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       }
     }
     private void Content_ExceptionOccured(object sender, EventArgs<Exception> e) {
-      // don't show exception, it is logged anyway
-      throw e.Value;
+      // don't show exception, it is logged anyway      
     }
     private void Content_StateLogListChanged(object sender, EventArgs e) {
       if (InvokeRequired)
