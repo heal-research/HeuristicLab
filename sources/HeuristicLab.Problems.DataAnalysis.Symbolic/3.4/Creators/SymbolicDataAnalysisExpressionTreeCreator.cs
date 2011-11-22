@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2011 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -20,17 +20,19 @@
 #endregion
 
 using HeuristicLab.Common;
+using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
-  public class SymbolicDataAnalysisExpressionGrowTreeCreator : GrowTreeCreator, ISymbolicDataAnalysisSolutionCreator {
+  [Item("ProbabilisticTreeCreator", "An operator that creates new symbolic expression trees with uniformly distributed length")]
+  public class SymbolicDataAnalysisExpressionTreeCreator : ProbabilisticTreeCreator, ISymbolicDataAnalysisSolutionCreator {
     [StorableConstructor]
-    protected SymbolicDataAnalysisExpressionGrowTreeCreator(bool deserializing) : base(deserializing) { }
-    protected SymbolicDataAnalysisExpressionGrowTreeCreator(SymbolicDataAnalysisExpressionGrowTreeCreator original, Cloner cloner) : base(original, cloner) { }
-    public override IDeepCloneable Clone(Cloner cloner) { return new SymbolicDataAnalysisExpressionGrowTreeCreator(this, cloner); }
+    protected SymbolicDataAnalysisExpressionTreeCreator(bool deserializing) : base(deserializing) { }
+    protected SymbolicDataAnalysisExpressionTreeCreator(SymbolicDataAnalysisExpressionTreeCreator original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) { return new SymbolicDataAnalysisExpressionTreeCreator(this, cloner); }
 
-    public SymbolicDataAnalysisExpressionGrowTreeCreator() : base() { }
+    public SymbolicDataAnalysisExpressionTreeCreator() : base() { }
   }
 }

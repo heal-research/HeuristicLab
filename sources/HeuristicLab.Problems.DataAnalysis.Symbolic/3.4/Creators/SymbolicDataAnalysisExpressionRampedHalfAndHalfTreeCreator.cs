@@ -1,4 +1,4 @@
-﻿#region License Information
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2011 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -20,17 +20,21 @@
 #endregion
 
 using HeuristicLab.Common;
+using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
+using System;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
-  public class SymbolicDataAnalysisExpressionTreeCreator : ProbabilisticTreeCreator, ISymbolicDataAnalysisSolutionCreator {
+  [Item("RampedHalfAndHalfTreeCreator", "An operator that creates new symbolic expression trees in an alternate way: half the trees are created usign the 'Grow' method while the other half are created using the 'Full' method")]
+  public class SymbolicDataAnalysisExpressionRampedHalfAndHalfTreeCreator : RampedHalfAndHalfTreeCreator, ISymbolicDataAnalysisSolutionCreator {
     [StorableConstructor]
-    protected SymbolicDataAnalysisExpressionTreeCreator(bool deserializing) : base(deserializing) { }
-    protected SymbolicDataAnalysisExpressionTreeCreator(SymbolicDataAnalysisExpressionTreeCreator original, Cloner cloner) : base(original, cloner) { }
-    public override IDeepCloneable Clone(Cloner cloner) { return new SymbolicDataAnalysisExpressionTreeCreator(this, cloner); }
+    protected SymbolicDataAnalysisExpressionRampedHalfAndHalfTreeCreator(bool deserializing) : base(deserializing) { }
+    protected SymbolicDataAnalysisExpressionRampedHalfAndHalfTreeCreator(SymbolicDataAnalysisExpressionRampedHalfAndHalfTreeCreator original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) { return new SymbolicDataAnalysisExpressionRampedHalfAndHalfTreeCreator(this, cloner); }
 
-    public SymbolicDataAnalysisExpressionTreeCreator() : base() { }
+    public SymbolicDataAnalysisExpressionRampedHalfAndHalfTreeCreator() : base() { }
   }
 }

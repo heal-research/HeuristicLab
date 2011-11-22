@@ -19,12 +19,16 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
+  [Item("FullTreeCreator", "An operator that creates new symbolic expression trees using the 'Full' method")]
   public class SymbolicDataAnalysisExpressionFullTreeCreator : FullTreeCreator, ISymbolicDataAnalysisSolutionCreator {
     [StorableConstructor]
     protected SymbolicDataAnalysisExpressionFullTreeCreator(bool deserializing) : base(deserializing) { }

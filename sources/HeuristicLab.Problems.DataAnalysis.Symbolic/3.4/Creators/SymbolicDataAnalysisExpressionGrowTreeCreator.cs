@@ -20,17 +20,21 @@
 #endregion
 
 using HeuristicLab.Common;
+using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
+using System;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
-  public class SymbolicDataAnalysisExpressionRampedHalfAndHalfTreeCreator : RampedHalfAndHalfTreeCreator, ISymbolicDataAnalysisSolutionCreator {
+  [Item("GrowTreeCreator", "An operator that creates new symbolic expression trees using the 'Grow' method")]
+  public class SymbolicDataAnalysisExpressionGrowTreeCreator : GrowTreeCreator, ISymbolicDataAnalysisSolutionCreator {
     [StorableConstructor]
-    protected SymbolicDataAnalysisExpressionRampedHalfAndHalfTreeCreator(bool deserializing) : base(deserializing) { }
-    protected SymbolicDataAnalysisExpressionRampedHalfAndHalfTreeCreator(SymbolicDataAnalysisExpressionRampedHalfAndHalfTreeCreator original, Cloner cloner) : base(original, cloner) { }
-    public override IDeepCloneable Clone(Cloner cloner) { return new SymbolicDataAnalysisExpressionRampedHalfAndHalfTreeCreator(this, cloner); }
+    protected SymbolicDataAnalysisExpressionGrowTreeCreator(bool deserializing) : base(deserializing) { }
+    protected SymbolicDataAnalysisExpressionGrowTreeCreator(SymbolicDataAnalysisExpressionGrowTreeCreator original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) { return new SymbolicDataAnalysisExpressionGrowTreeCreator(this, cloner); }
 
-    public SymbolicDataAnalysisExpressionRampedHalfAndHalfTreeCreator() : base() { }
+    public SymbolicDataAnalysisExpressionGrowTreeCreator() : base() { }
   }
 }

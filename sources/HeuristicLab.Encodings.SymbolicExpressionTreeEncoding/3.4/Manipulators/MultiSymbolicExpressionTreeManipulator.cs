@@ -72,7 +72,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       Parameters.Add(new ValueLookupParameter<IntValue>(MaximumSymbolicExpressionTreeDepthParameterName, "The maximal depth of the symbolic expression tree (a tree with one node has depth = 0)."));
 
       List<ISymbolicExpressionTreeManipulator> list = new List<ISymbolicExpressionTreeManipulator>();
-      foreach (Type type in ApplicationManager.Manager.GetTypes(typeof(ISymbolicExpressionTreeManipulator))) {
+      var plugin = ApplicationManager.Manager.GetDeclaringPlugin(this.GetType());
+      foreach (Type type in ApplicationManager.Manager.GetTypes(typeof(ISymbolicExpressionTreeManipulator), plugin)) {
         if (!typeof(IMultiOperator<ISymbolicExpressionTreeManipulator>).IsAssignableFrom(type) &&
             !typeof(ISymbolicExpressionTreeArchitectureAlteringOperator).IsAssignableFrom(type))
           list.Add((ISymbolicExpressionTreeManipulator)Activator.CreateInstance(type));
