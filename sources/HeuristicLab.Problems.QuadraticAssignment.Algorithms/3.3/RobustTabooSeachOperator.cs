@@ -30,6 +30,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.QuadraticAssignment.Algorithms {
   [Item("RobustTabooSearchOperator", "Performs an iteration of the robust taboo search algorithm as descrbied in Taillard 1991.")]
+  [StorableClass]
   public sealed class RobustTabooSeachOperator : SingleSuccessorOperator, IIterationBasedOperator, IStochasticOperator {
 
     #region Parameter Properties
@@ -85,6 +86,10 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Algorithms {
     public IValueLookupParameter<IntValue> AlternativeAspirationTenureParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters["AlternativeAspirationTenure"]; }
     }
+
+    private ILookupParameter<BoolValue> AllMovesTabuParameter {
+      get { return (ILookupParameter<BoolValue>)Parameters["AllMovesTabu"]; }
+    }
     #endregion
 
     [StorableConstructor]
@@ -110,10 +115,21 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Algorithms {
       Parameters.Add(new ValueLookupParameter<IntValue>("MaximumTabuTenure", "The maximum tabu tenure."));
       Parameters.Add(new ValueLookupParameter<BoolValue>("UseAlternativeAspiration", "True if the alternative aspiration condition should be used that takes moves that have not been made for some time above others."));
       Parameters.Add(new ValueLookupParameter<IntValue>("AlternativeAspirationTenure", "The time t that a move will be remembered for the alternative aspiration condition."));
+      Parameters.Add(new LookupParameter<BoolValue>("AllMovesTabu", "Indicates that all moves are tabu."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new RobustTabooSeachOperator(this, cloner);
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (!Parameters.ContainsKey("AllMovesTabu")) {
+        Parameters.Add(new LookupParameter<BoolValue>("AllMovesTabu", "Indicates that all moves are tabu."));
+      }
+      #endregion
     }
 
     public override IOperation Apply() {
@@ -130,6 +146,10 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Algorithms {
         BestQualityParameter.ActualValue = (DoubleValue)quality.Clone();
         bestQuality = BestQualityParameter.ActualValue;
       }
+      bool allMovesTabu = false;
+      if (AllMovesTabuParameter.ActualValue == null)
+        AllMovesTabuParameter.ActualValue = new BoolValue(false);
+      else allMovesTabu = AllMovesTabuParameter.ActualValue.Value;
 
       int minTenure = MinimumTabuTenureParameter.ActualValue.Value;
       int maxTenure = MaximumTabuTenureParameter.ActualValue.Value;
@@ -146,6 +166,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Algorithms {
         double moveQuality;
         if (lastMove == null)
           moveQuality = QAPSwap2MoveEvaluator.Apply(solution, move, weights, distances);
+        else if (allMovesTabu) moveQuality = moveQualityMatrix[move.Index1, move.Index2];
         else moveQuality = QAPSwap2MoveEvaluator.Apply(solution, move, moveQualityMatrix[move.Index1, move.Index2], weights, distances, lastMove);
 
         moveQualityMatrix[move.Index1, move.Index2] = moveQuality;
@@ -179,9 +200,12 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Algorithms {
         }
       }
 
-      LastMoveParameter.ActualValue = bestMove;
+      allMovesTabu = bestMove == null;
+      if (!allMovesTabu)
+        LastMoveParameter.ActualValue = bestMove;
+      AllMovesTabuParameter.ActualValue.Value = allMovesTabu;
 
-      if (bestMove == null) return base.Apply();
+      if (allMovesTabu) return base.Apply();
 
       bool useNewAdaptionScheme = UseNewTabuTenureAdaptionSchemeParameter.ActualValue.Value;
       if (useNewAdaptionScheme) {

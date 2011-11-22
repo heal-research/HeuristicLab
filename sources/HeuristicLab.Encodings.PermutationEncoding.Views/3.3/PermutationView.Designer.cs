@@ -71,9 +71,9 @@ namespace HeuristicLab.Encodings.PermutationEncoding.Views {
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.permutationTypeView);
       this.Name = "PermutationView";
-      this.Controls.SetChildIndex(this.permutationTypeView, 0);
       this.Controls.SetChildIndex(this.lengthLabel, 0);
       this.Controls.SetChildIndex(this.lengthTextBox, 0);
+      this.Controls.SetChildIndex(this.permutationTypeView, 0);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();

@@ -50,8 +50,8 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Algorithms {
     #endregion
 
     #region Parameter Properties
-    public FixedValueParameter<MultiAnalyzer> AnalyzerParameter {
-      get { return (FixedValueParameter<MultiAnalyzer>)Parameters["Analyzer"]; }
+    public IValueParameter<MultiAnalyzer> AnalyzerParameter {
+      get { return (IValueParameter<MultiAnalyzer>)Parameters["Analyzer"]; }
     }
     public FixedValueParameter<IntValue> SeedParameter {
       get { return (FixedValueParameter<IntValue>)Parameters["Seed"]; }
@@ -76,6 +76,9 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Algorithms {
     }
     public FixedValueParameter<BoolValue> UseNewTabuTenureAdaptionSchemeParameter {
       get { return (FixedValueParameter<BoolValue>)Parameters["UseNewTabuTenureAdaptionScheme"]; }
+    }
+    public FixedValueParameter<BoolValue> TerminateOnOptimalSolutionParameter {
+      get { return (FixedValueParameter<BoolValue>)Parameters["TerminateOnOptimalSolution"]; }
     }
     #endregion
 
@@ -112,6 +115,10 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Algorithms {
       get { return UseNewTabuTenureAdaptionSchemeParameter.Value.Value; }
       set { UseNewTabuTenureAdaptionSchemeParameter.Value.Value = value; }
     }
+    public bool TerminateOnOptimalSolution {
+      get { return TerminateOnOptimalSolutionParameter.Value.Value; }
+      set { TerminateOnOptimalSolutionParameter.Value.Value = value; }
+    }
     #endregion
 
     [Storable]
@@ -131,7 +138,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Algorithms {
       RegisterEventHandlers();
     }
     public RobustTabooSearch() {
-      Parameters.Add(new FixedValueParameter<MultiAnalyzer>("Analyzer", "The analyzers that are applied after each iteration.", new MultiAnalyzer()));
+      Parameters.Add(new ValueParameter<MultiAnalyzer>("Analyzer", "The analyzers that are applied after each iteration.", new MultiAnalyzer()));
       Parameters.Add(new FixedValueParameter<IntValue>("Seed", "The seed value of the random number generator.", new IntValue(0)));
       Parameters.Add(new FixedValueParameter<BoolValue>("SetSeedRandomly", "True whether the seed should be set randomly for each run, false if it should be fixed.", new BoolValue(true)));
       Parameters.Add(new FixedValueParameter<IntValue>("MaximumIterations", "The number of iterations that the algorithm should run.", new IntValue(10000)));
@@ -139,11 +146,13 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Algorithms {
       Parameters.Add(new FixedValueParameter<IntValue>("MaximumTabuTenure", "The maximum tabu tenure.", new IntValue(20)));
       Parameters.Add(new FixedValueParameter<BoolValue>("UseAlternativeAspiration", "True if the alternative aspiration condition should be used that takes moves that have not been made for some time above others.", new BoolValue(false)));
       Parameters.Add(new FixedValueParameter<IntValue>("AlternativeAspirationTenure", "The time t that a move will be remembered for the alternative aspiration condition.", new IntValue(int.MaxValue)));
-      Parameters.Add(new FixedValueParameter<BoolValue>("TerminateOnOptimalSolution", "True when the algorithm should stop if it reached a quality equal or smaller to the BestKnownQuality.", new BoolValue(true)));
+      Parameters.Add(new FixedValueParameter<BoolValue>("TerminateOnOptimalSolution", "True when the algorithm should stop if it reached a quality equal or smaller to the BestKnownQuality.", new BoolValue(false)));
       Parameters.Add(new FixedValueParameter<BoolValue>("UseNewTabuTenureAdaptionScheme", @"In an updated version of his implementation, Eric Taillard introduced a different way to change the tabu tenure.
 Instead of setting it uniformly between min and max, it will be set between 0 and max according to a right-skewed distribution.
 Set this option to false if you want to optimize using the earlier 1991 version, and set to true if you want to optimize using the newer version.
 Please note that the MinimumTabuTenure parameter has no effect in the new version.", new BoolValue(true)));
+
+      TerminateOnOptimalSolutionParameter.Hidden = true;
 
       qualityAnalyzer = new BestAverageWorstQualityAnalyzer();
       qualityAnalyzer.ResultsParameter.ActualName = "Results";
@@ -297,6 +306,14 @@ Please note that the MinimumTabuTenure parameter has no effect in the new versio
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (Parameters["Analyzer"] is FixedValueParameter<MultiAnalyzer>) {
+        MultiAnalyzer analyzer = AnalyzerParameter.Value;
+        Parameters.Remove("Analyzer");
+        Parameters.Add(new ValueParameter<MultiAnalyzer>("Analyzer", "The analyzers that are applied after each iteration.", analyzer));
+      }
+      #endregion
       RegisterEventHandlers();
     }
 

@@ -36,6 +36,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding.Views {
     public PermutationView() {
       InitializeComponent();
       dataGridView.Top = permutationTypeView.Bottom + permutationTypeView.Margin.Bottom + dataGridView.Margin.Top;
+      dataGridView.Height = Bottom - dataGridView.Top;
     }
 
     #region Register Content Events

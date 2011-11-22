@@ -53,9 +53,9 @@ namespace HeuristicLab.Encodings.PermutationEncoding.Views {
       this.valueLabel.AutoSize = true;
       this.valueLabel.Location = new System.Drawing.Point(3, 3);
       this.valueLabel.Name = "valueLabel";
-      this.valueLabel.Size = new System.Drawing.Size(37, 13);
+      this.valueLabel.Size = new System.Drawing.Size(34, 13);
       this.valueLabel.TabIndex = 0;
-      this.valueLabel.Text = "&Value:";
+      this.valueLabel.Text = "&Type:";
       // 
       // valueComboBox
       // 
@@ -70,13 +70,13 @@ namespace HeuristicLab.Encodings.PermutationEncoding.Views {
       this.valueComboBox.TabIndex = 1;
       this.valueComboBox.SelectedIndexChanged += new System.EventHandler(this.valueComboBox_SelectedIndexChanged);
       // 
-      // ComparisonView
+      // PermutationTypeView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.valueComboBox);
       this.Controls.Add(this.valueLabel);
-      this.Name = "ComparisonView";
+      this.Name = "PermutationTypeView";
       this.Size = new System.Drawing.Size(265, 29);
       this.ResumeLayout(false);
       this.PerformLayout();
