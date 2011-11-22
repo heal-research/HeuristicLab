@@ -1,6 +1,6 @@
 @ECHO OFF
 
-SET CLEANBEFOREBUILD=1
+SET CLEANBEFOREBUILD=0
 
 SET SELECTED=
 SET CONFIGURATION=
@@ -76,7 +76,7 @@ IF "%CLEANBEFOREBUILD%"=="1" (
   %MSBUILDPATH%msbuild.exe %SELECTED% /target:Clean /p:Configuration="%CONFIGURATION%",Platform="%PLATFORM%" /m:2 /nologo /verbosity:q /clp:ErrorsOnly
 )
 ECHO Building ...
-%MSBUILDPATH%msbuild.exe %SELECTED% /target:Build /p:Configuration="%CONFIGURATION%",Platform="%PLATFORM%" /m:2 /nologo /verbosity:q /clp:ErrorsOnly
+%MSBUILDPATH%msbuild.exe %SELECTED% /target:Rebuild /p:Configuration="%CONFIGURATION%",Platform="%PLATFORM%" /m:2 /nologo /verbosity:q /clp:ErrorsOnly
 
 ECHO.
 ECHO DONE.
