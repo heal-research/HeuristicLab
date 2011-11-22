@@ -465,6 +465,10 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
               }
             }
           }
+        } else {  // no solution exists
+          BestKnownSolution = null;
+          BestKnownSolutions = new ItemSet<Permutation>(new PermutationEqualityComparer());
+          BestKnownQuality = null;
         }
       }
       OnReset();
