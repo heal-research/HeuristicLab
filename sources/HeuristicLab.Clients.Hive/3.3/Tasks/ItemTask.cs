@@ -149,41 +149,16 @@ namespace HeuristicLab.Clients.Hive {
     #endregion
 
     #region INamedItem Members
-    public abstract bool CanChangeDescription { get; }
+    public abstract new bool CanChangeDescription { get; }
 
-    public abstract bool CanChangeName { get; }
+    public abstract new bool CanChangeName { get; }
 
-    public abstract string Description { get; set; }
+    public abstract new string Description { get; set; }
 
-    public abstract string Name { get; set; }
+    public abstract new string Name { get; set; }
     #endregion
 
     #region Events
-    public event EventHandler DescriptionChanged;
-    protected virtual void OnDescriptionChanged() {
-      var handler = DescriptionChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-    public event EventHandler ItemImageChanged;
-    protected virtual void OnItemImageChanged() {
-      var handler = ItemImageChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-    public event EventHandler ToStringChanged;
-    protected virtual void OnToStringChanged() {
-      var handler = ToStringChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-    public event EventHandler NameChanged;
-    protected virtual void OnNameChanged() {
-      var handler = NameChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-    public event EventHandler<CancelEventArgs<string>> NameChanging;
-    protected virtual void OnNameChanging(string value, bool cancel) {
-      var handler = NameChanging;
-      if (handler != null) handler(this, new CancelEventArgs<string>(value, cancel));
-    }
     public event EventHandler ExecutionTimeChanged;
     protected virtual void OnExecutionTimeChanged() {
       EventHandler handler = ExecutionTimeChanged;
@@ -197,19 +172,22 @@ namespace HeuristicLab.Clients.Hive {
     #endregion
 
     #region IItem Members
-    public virtual string ItemDescription {
+    public virtual new string ItemDescription {
       get { return item.ItemDescription; }
     }
 
-    public virtual Image ItemImage {
+    public virtual new Image ItemImage
+    {
       get { return item.ItemImage; }
     }
 
-    public virtual string ItemName {
+    public virtual new string ItemName
+    {
       get { return item.ItemName; }
     }
 
-    public virtual Version ItemVersion {
+    public virtual new Version ItemVersion
+    {
       get { return item.ItemVersion; }
     }
     #endregion

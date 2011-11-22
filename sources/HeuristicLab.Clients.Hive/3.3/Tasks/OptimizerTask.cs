@@ -141,7 +141,7 @@ namespace HeuristicLab.Clients.Hive.Jobs {
     }
 
     protected void optimizer_NameChanging(object sender, CancelEventArgs<string> e) {
-      this.OnNameChanging(e.Value, e.Cancel);
+      OnNameChanging(new CancelEventArgs<string>(e.Value, e.Cancel));
     }
 
     protected void optimizer_NameChanged(object sender, EventArgs e) {
