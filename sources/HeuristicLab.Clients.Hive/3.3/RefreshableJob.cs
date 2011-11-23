@@ -532,6 +532,7 @@ namespace HeuristicLab.Clients.Hive {
     public event EventHandler Loaded;
     public virtual void OnLoaded() {
       this.UpdateTotalExecutionTime();
+      this.OnStateLogListChanged();
 
       if (this.ExecutionState != ExecutionState.Stopped) {
         this.RefreshAutomatically = true;

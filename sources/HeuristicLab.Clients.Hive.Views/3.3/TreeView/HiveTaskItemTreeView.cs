@@ -80,6 +80,8 @@ namespace HeuristicLab.Clients.Hive.Views.ExperimentManager {
           var experiment = ((HiveTask)treeView.SelectedNode.Tag).ItemTask.Item as Experiment;
           if (experiment != null) {
             experiment.Optimizers.Add(optimizer);
+          } else {
+            Content.Add(new OptimizerHiveTask(optimizer));
           }
         }
       }

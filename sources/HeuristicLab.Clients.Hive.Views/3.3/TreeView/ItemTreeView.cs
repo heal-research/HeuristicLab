@@ -275,7 +275,7 @@ namespace HeuristicLab.Clients.Hive.Views {
           idx = i; break;
         }
       }
-      if (idx > 0) {
+      if (idx > -1) {
         DeregisterContentEvents(item, treeNodeCollection[idx]);
         treeNodeCollection.RemoveAt(idx);
       }

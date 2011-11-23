@@ -91,6 +91,12 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       listViewItem.ToolTipText = item == null ? string.Empty : item.ItemName + ": " + item.ItemDescription;
     }
 
+    //drag'n'drop is not supported
+    protected override void itemsListView_ItemDrag(object sender, ItemDragEventArgs e) { }
+    protected override void itemsListView_DragEnter(object sender, DragEventArgs e) { }
+    protected override void itemsListView_DragOver(object sender, DragEventArgs e) { }
+    protected override void itemsListView_DragDrop(object sender, DragEventArgs e) { }
+
     private ListViewGroup GetListViewGroup(string groupName) {
       foreach (ListViewGroup group in itemsListView.Groups) {
         if (group.Name == groupName)
