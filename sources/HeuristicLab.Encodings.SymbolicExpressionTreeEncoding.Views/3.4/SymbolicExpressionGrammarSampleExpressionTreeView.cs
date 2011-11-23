@@ -35,7 +35,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     private IRandom random;
     public SymbolicExpressionGrammarSampleExpressionTreeView() {
       InitializeComponent();
-      random = new MersenneTwister();    
+      random = new MersenneTwister();
       maxSampleTreeLength = int.Parse(maxTreeLengthTextBox.Text);
       maxSampleTreeDepth = int.Parse(maxTreeDepthTextBox.Text);
       foreach (var treeCreator in ApplicationManager.Manager.GetInstances<ISymbolicExpressionTreeCreator>()) {
@@ -100,7 +100,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
 
     private void UpdateSampleTreeView() {
       try {
-        ISymbolicExpressionTreeCreator creator = (SymbolicExpressionTreeCreator)treeCreatorComboBox.SelectedItem;
+        ISymbolicExpressionTreeCreator creator = (ISymbolicExpressionTreeCreator)treeCreatorComboBox.SelectedItem;
         ISymbolicExpressionTree tree = creator.CreateTree(random, Content, MaxSampleTreeLength, MaxSampleTreeDepth);
         foreach (var node in tree.Root.IterateNodesPrefix().OfType<SymbolicExpressionTreeTopLevelNode>())
           node.SetGrammar(null);

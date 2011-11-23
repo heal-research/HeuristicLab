@@ -75,6 +75,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       foreach (Type type in ApplicationManager.Manager.GetTypes(typeof(ISymbolicExpressionTreeManipulator))) {
         if (this.GetType().Assembly != type.Assembly) continue;
         if (typeof(IMultiOperator<ISymbolicExpressionTreeManipulator>).IsAssignableFrom(type)) continue;
+        if (typeof(ISymbolicExpressionTreeArchitectureAlteringOperator).IsAssignableFrom(type)) continue;
         list.Add((ISymbolicExpressionTreeManipulator)Activator.CreateInstance(type));
       }
       CheckedItemList<ISymbolicExpressionTreeManipulator> checkedItemList = new CheckedItemList<ISymbolicExpressionTreeManipulator>();
