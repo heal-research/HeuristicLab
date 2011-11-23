@@ -12,8 +12,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     [StorableConstructor]
-    private ConstantRegressionSolution(bool deserializing) : base(deserializing) { }
-    private ConstantRegressionSolution(ConstantRegressionSolution original, Cloner cloner) : base(original, cloner) { }
+    protected ConstantRegressionSolution(bool deserializing) : base(deserializing) { }
+    protected ConstantRegressionSolution(ConstantRegressionSolution original, Cloner cloner) : base(original, cloner) { }
     public ConstantRegressionSolution(ConstantRegressionModel model, IRegressionProblemData problemData)
       : base(model, problemData) {
       RecalculateResults();
