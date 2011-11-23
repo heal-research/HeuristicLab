@@ -180,7 +180,7 @@
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="WeifenLuo.WinFormsUI.Docking-2.3.1, Version=2.3.1.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <HintPath>..\bin\WeifenLuo.WinFormsUI.Docking-2.3.1.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
