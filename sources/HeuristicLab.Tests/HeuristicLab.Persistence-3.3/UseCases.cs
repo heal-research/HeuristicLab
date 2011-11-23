@@ -527,7 +527,6 @@ namespace HeuristicLab.Persistence_33.Tests {
         .Append(mi.Name).ToString();
     }
 
-    [TestMethod]
     public void CodingConventions() {
       List<string> lowerCaseMethodNames = new List<string>();
       List<string> lowerCaseProperties = new List<string>();
