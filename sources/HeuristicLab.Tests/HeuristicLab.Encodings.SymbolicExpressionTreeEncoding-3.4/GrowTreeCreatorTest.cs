@@ -55,7 +55,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._4.Tests {
       var stopwatch = new Stopwatch();
       stopwatch.Start();
       for (int i = 0; i != POPULATION_SIZE; i++) {
-        randomTrees.Add(GrowTreeCreator.Create(random, grammar, MAX_TREE_DEPTH, MAX_TREE_LENGTH));
+        randomTrees.Add(GrowTreeCreator.Create(random, grammar, MAX_TREE_LENGTH, MAX_TREE_DEPTH));
       }
       stopwatch.Stop();
 
