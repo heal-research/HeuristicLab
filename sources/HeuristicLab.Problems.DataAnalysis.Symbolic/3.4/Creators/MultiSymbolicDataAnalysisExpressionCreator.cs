@@ -81,11 +81,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Creators {
       Parameters.Add(new ValueLookupParameter<ISymbolicExpressionGrammar>(SymbolicExpressionTreeGrammarParameterName, "The tree grammar that defines the correct syntax of symbolic expression trees that should be created."));
       Parameters.Add(new LookupParameter<ISymbolicExpressionGrammar>(ClonedSymbolicExpressionTreeGrammarParameterName, "An immutable clone of the concrete grammar that is actually used to create and manipulate trees."));
 
-      var plugin = ApplicationManager.Manager.GetDeclaringPlugin(this.GetType());
       List<ISymbolicDataAnalysisSolutionCreator> list = new List<ISymbolicDataAnalysisSolutionCreator>();
-      foreach (Type type in ApplicationManager.Manager.GetTypes(typeof(ISymbolicDataAnalysisSolutionCreator), plugin)) {
-        if (!typeof(IMultiOperator<ISymbolicDataAnalysisSolutionCreator>).IsAssignableFrom(type))
-          list.Add((ISymbolicDataAnalysisSolutionCreator)Activator.CreateInstance(type));
+      foreach (Type type in ApplicationManager.Manager.GetTypes(typeof(ISymbolicDataAnalysisSolutionCreator))) {
+        if (this.GetType().Assembly != type.Assembly) continue;
+        if (typeof(IMultiOperator<ISymbolicDataAnalysisSolutionCreator>).IsAssignableFrom(type)) continue;
+        list.Add((ISymbolicDataAnalysisSolutionCreator)Activator.CreateInstance(type));
       }
       CheckedItemList<ISymbolicDataAnalysisSolutionCreator> checkedItemList = new CheckedItemList<ISymbolicDataAnalysisSolutionCreator>();
       checkedItemList.AddRange(list.OrderBy(op => op.Name));
