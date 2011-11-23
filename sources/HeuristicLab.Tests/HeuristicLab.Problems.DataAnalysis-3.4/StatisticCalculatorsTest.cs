@@ -121,7 +121,6 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
       int cols = testData.GetLength(1);
       for (int c1 = 0; c1 < cols; c1++) {
         double c1Scale = random.NextDouble() * 1E7;
-        double c2Scale = 1.0;
         IEnumerable<double> x = from rows in Enumerable.Range(0, n)
                                 select testData[rows, c1] * c1Scale;
         IEnumerable<double> y = (new List<double>() { 150494407424305.47 })
