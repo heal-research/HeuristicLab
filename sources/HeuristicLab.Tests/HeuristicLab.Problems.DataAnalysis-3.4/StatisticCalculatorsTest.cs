@@ -180,6 +180,76 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
       double actual = OnlineDirectionalSymmetryCalculator.Calculate(startValues, actualContinuations, predictedContinuations, out errorState);
       Assert.AreEqual(expected, actual, 1E-9);
     }
+
+    [TestMethod]
+    public void CalculateMultiStepDirectionalSymmetryTest() {
+      // delta: +0.01, +1, -0.01, -2, -0.01, -1, +0.01, +2
+      var original = new double[] { 0, 0.01, 1.01, 1, -1, -1.01, -2.01, -2, 0 };
+      {
+        var estimated = new double[][]
+                          {
+                            new double[] {0.01, 1.01, 1, -1, -1.01},
+                            new double[] {1.01, 1, -1, -1.01, -2.01},
+                            new double[] {1, -1, -1.01, -2.01, -2},
+                            new double[] {-1, -1.01, -2.01, -2, 0}
+                          };
+
+        // 5-step forecast
+        var startValues = original.Take(4);
+        var actualContinuations = from i in Enumerable.Range(1, original.Count() - 5)
+                                  select original.Skip(i).Take(5);
+        var predictedContinuations = estimated;
+        double expected = 1; // predictions are 100% correct
+        OnlineCalculatorError errorState;
+        double actual = OnlineDirectionalSymmetryCalculator.Calculate(startValues, actualContinuations,
+                                                                      predictedContinuations, out errorState);
+        Assert.AreEqual(expected, actual, 1E-9);
+      }
+      {
+        // only the direction is relevant
+        var estimated = new double[][]
+                          {
+                            new double[] {0.01, 0.01, 0.01, -0.01, -0.01},  // start=0, original deltas: 0.01, 1.01, 1.00, -1.00, -1.01
+                            new double[] {0.02, 0.02, 0.00, 0.00, 0.00}, // start=0.01, original deltas: 1.00, 0.90, -1.01, -1.02, -2.02,
+                            new double[] { 1.00, 1.00, 1.00, 1.00, 1.00}, // start=1.01, original deltas: -0.01, -2.01, -2.02, -3.02, -3.01
+                            new double[] { 0.90, 0.90, 0.90, 0.90, 0.90}  // start=1, original deltas: -2.00, -0.01, -3.01, -3.00, -1.00
+                          };
+
+        // 5-step forecast
+        var startValues = original.Take(4);
+        var actualContinuations = from i in Enumerable.Range(1, original.Count() - 5)
+                                  select original.Skip(i).Take(5);
+        var predictedContinuations = estimated;
+        double expected = 1; // half of the predicted deltas are correct
+        OnlineCalculatorError errorState;
+        double actual = OnlineDirectionalSymmetryCalculator.Calculate(startValues, actualContinuations,
+                                                                      predictedContinuations, out errorState);
+        Assert.AreEqual(expected, actual, 1E-9);
+      }
+      {
+        // also check incorrectly predicted directions
+        var estimated = new double[][]
+                          {
+                            new double[] {0.01, 0.01, 0.01, +0.01, +0.01},  // start=0, original deltas: 0.01, 1.01, 1.00, -1.00, -1.01
+                            new double[] {0.02, 0.00, 0.02, 0.00, 0.00}, // start=0.01, original deltas: 1.00, 0.90, -1.01, -1.02, -2.02,
+                            new double[] { 1.02, 1.00, 1.02, 1.00, 1.02}, // start=1.01, original deltas: -0.01, -2.01, -2.02, -3.02, -3.01
+                            new double[] { 0.90, 0.90, 0.90, 0.90, 0.90}  // start=1, original deltas: -2.00, -0.01, -3.01, -3.00, -1.00
+                          };
+
+        // 5-step forecast
+        var startValues = original.Take(4);
+        var actualContinuations = from i in Enumerable.Range(1, original.Count() - 5)
+                                  select original.Skip(i).Take(5);
+        var predictedContinuations = estimated;
+        double expected = (20 - 7) / 20.0; // half of the predicted deltas are correct
+        OnlineCalculatorError errorState;
+        double actual = OnlineDirectionalSymmetryCalculator.Calculate(startValues, actualContinuations,
+                                                                      predictedContinuations, out errorState);
+        Assert.AreEqual(expected, actual, 1E-9);
+      }
+    }
+
+
     [TestMethod]
     public void CalculateWeightedDirectionalSymmetryTest() {
       var original = new double[] { 0, 0.01, 1.01, 1, -1, -1.01, -2.01, -2, 0 }; // +0.01, +1, -0.01, -2, -0.01, -1, +0.01, +2
@@ -198,6 +268,7 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
       double actual = OnlineWeightedDirectionalSymmetryCalculator.Calculate(startValues, actualContinuations, predictedContinuations, out errorState);
       Assert.AreEqual(expected, actual, 1E-9);
     }
+
     [TestMethod]
     public void CalculateTheilsUTest() {
       var original = new double[] { 0, 0.01, 1.01, 1, -1, -1.01, -2.01, -2, 0 };
@@ -215,6 +286,75 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
       double actual = OnlineTheilsUStatisticCalculator.Calculate(startValues, actualContinuations, predictedContinuations, out errorState);
       Assert.AreEqual(expected, actual, 1E-9);
     }
+
+    [TestMethod]
+    public void CalculateMultiStepTheilsUTest() {
+      var original = new double[] { 0, 0.01, 1.01, 1, -1, -1.01, -2.01, -2, 0 };
+      {
+        // prefect prediction
+        var estimated = new double[][]
+                          {
+                            new double[] {0.01, 1.01, 1, -1, -1.01},
+                            new double[] {1.01, 1, -1, -1.01, -2.01},
+                            new double[] {1, -1, -1.01, -2.01, -2},
+                            new double[] {-1, -1.01, -2.01, -2, 0}
+                          };
+        // 5-step forecast
+        var startValues = original.Take(4);
+        var actualContinuations = from i in Enumerable.Range(1, original.Count() - 5)
+                                  select original.Skip(i).Take(5);
+        var predictedContinuations = estimated;
+
+        double expected = 0;
+        OnlineCalculatorError errorState;
+        double actual = OnlineTheilsUStatisticCalculator.Calculate(startValues, actualContinuations,
+                                                                   predictedContinuations, out errorState);
+        Assert.AreEqual(expected, actual, 1E-9);
+      }
+      {
+        // naive prediction
+        var estimated = new double[][]
+                          {
+                            new double[] {0, 0, 0, 0, 0},
+                            new double[] {0.01, 0.01, 0.01, 0.01, 0.01},
+                            new double[] {1.01, 1.01, 1.01, 1.01, 1.01},
+                            new double[] {1, 1, 1, 1, 1}
+                          };
+        // 5-step forecast
+        var startValues = original.Take(4);
+        var actualContinuations = from i in Enumerable.Range(1, original.Count() - 5)
+                                  select original.Skip(i).Take(5);
+        var predictedContinuations = estimated;
+
+        double expected = 1;
+        OnlineCalculatorError errorState;
+        double actual = OnlineTheilsUStatisticCalculator.Calculate(startValues, actualContinuations,
+                                                                   predictedContinuations, out errorState);
+        Assert.AreEqual(expected, actual, 1E-9);
+      }
+      {
+        // realistic prediction
+        var estimated = new double[][]
+                          {
+                            new double[] {0.005, 0.5, 0.5, -0.5, -0.5},    // start = 0
+                            new double[] {0.60, 0.5, -0.5, -0.5, -1},   // start = 0.01
+                            new double[] {-0.005, 0, 0, -0.5, -1},     // start = 1.01
+                            new double[] {-0, 0, -0.5, -1, 0.5}      // start = 1
+                          };
+        // 5-step forecast
+        var startValues = original.Take(4);
+        var actualContinuations = from i in Enumerable.Range(1, original.Count() - 5)
+                                  select original.Skip(i).Take(5);
+        var predictedContinuations = estimated;
+
+        double expected = 0.47558387;
+        OnlineCalculatorError errorState;
+        double actual = OnlineTheilsUStatisticCalculator.Calculate(startValues, actualContinuations,
+                                                                   predictedContinuations, out errorState);
+        Assert.AreEqual(expected, actual, 1E-6);
+      }
+    }
+
     [TestMethod]
     public void CalculateAccuracyTest() {
       var original = new double[] { 1, 1, 0, 0 };
