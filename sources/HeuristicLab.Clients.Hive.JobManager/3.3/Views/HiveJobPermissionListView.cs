@@ -21,6 +21,7 @@
 
 using System;
 using System.Windows.Forms;
+using HeuristicLab.Collections;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
@@ -42,6 +43,15 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
 
     protected override JobPermission CreateItem() {
       return new JobPermission() { JobId = this.hiveExperimentId };
+    }
+
+    protected override void Content_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<JobPermission> e) {
+      base.Content_ItemsRemoved(sender, e);
+      foreach (var item in e.Items) {
+        if (item.GrantedUserId != Guid.Empty) {
+          HiveClient.Delete(item);
+        }
+      }
     }
   }
 }

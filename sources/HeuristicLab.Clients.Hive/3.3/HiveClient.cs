@@ -172,7 +172,7 @@ namespace HeuristicLab.Clients.Hive {
 
     #region Delete
     public static void Delete(IHiveItem item) {
-      if (item.Id == Guid.Empty)
+      if (item.Id == Guid.Empty && item.GetType() != typeof(JobPermission))
         return;
 
       if (item is Job)
@@ -509,7 +509,7 @@ namespace HeuristicLab.Clients.Hive {
       return ServiceLocator.Instance.CallHiveService((service) => {
         IEnumerable<JobPermission> jps = service.GetJobPermissions(jobId);
         foreach (var hep in jps) {
-          hep.GrantedUserName = service.GetUsernameByUserId(hep.GrantedUserId);
+          hep.UnmodifiedGrantedUserNameUpdate(service.GetUsernameByUserId(hep.GrantedUserId));
         }
         return new HiveItemCollection<JobPermission>(jps);
       });

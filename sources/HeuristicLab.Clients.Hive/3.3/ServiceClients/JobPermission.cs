@@ -36,6 +36,10 @@ namespace HeuristicLab.Clients.Hive {
       }
     }
 
+    public void UnmodifiedGrantedUserNameUpdate(string userName) {
+      grantedUserName = userName;
+    }
+
     public JobPermission() {
       this.Permission = Permission.Read;
     }

@@ -62,10 +62,30 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       foreach (ColumnHeader c in this.itemsListView.Columns) {
         c.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
       }
+      foreach (var item in e.Items) {
+        item.ItemImageChanged += new EventHandler(item_ItemImageChanged);
+      }
+    }
+
+    void item_ItemImageChanged(object sender, EventArgs e) {
+      RefreshableJob job = sender as RefreshableJob;
+      if (job != null) {
+        foreach (ListViewItem item in this.itemsListView.Items) {
+          if (item.Tag != null) {
+            RefreshableJob cur = item.Tag as RefreshableJob;
+            if (cur != null && cur == job) {
+              this.UpdateListViewItemImage(item);
+            }
+          }
+        }
+      }
     }
 
     protected override void Content_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<RefreshableJob> e) {
       base.Content_ItemsRemoved(sender, e);
+      foreach (var item in e.Items) {
+        item.ItemImageChanged -= new EventHandler(item_ItemImageChanged);
+      }
       if (Content != null && Content.Count == 0) {
         foreach (ColumnHeader c in this.itemsListView.Columns) {
           c.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);

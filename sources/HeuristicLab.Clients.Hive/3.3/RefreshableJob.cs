@@ -50,6 +50,7 @@ namespace HeuristicLab.Clients.Hive {
           }
           OnJobChanged();
           OnToStringChanged(this, EventArgs.Empty);
+          job_ItemImageChanged(this, EventArgs.Empty);
         }
       }
     }
