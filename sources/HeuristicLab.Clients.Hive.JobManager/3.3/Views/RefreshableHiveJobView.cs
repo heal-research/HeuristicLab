@@ -435,7 +435,8 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       e.Effect = DragDropEffects.None;
       var obj = e.Data.GetData(Constants.DragDropDataFormat);
       if (obj is IOptimizer) {
-        if ((e.KeyState & 32) == 32) e.Effect = DragDropEffects.Link;  // ALT key
+        if (Content.Id != Guid.Empty) e.Effect = DragDropEffects.None;
+        else if ((e.KeyState & 32) == 32) e.Effect = DragDropEffects.Link;  // ALT key
         else if (e.AllowedEffect.HasFlag(DragDropEffects.Copy)) e.Effect = DragDropEffects.Copy;
       }
     }
@@ -446,7 +447,17 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
 
         var optimizer = obj as IOptimizer;
         if (optimizer != null) {
-          Content.HiveTasks.Add(new OptimizerHiveTask(e.Effect.HasFlag(DragDropEffects.Copy) ? (IOptimizer)optimizer.Clone() : optimizer));
+          IOptimizer newOptimizer = null;
+          if (e.Effect.HasFlag(DragDropEffects.Copy)) {
+            newOptimizer = (IOptimizer)optimizer.Clone();
+          } else {
+            newOptimizer = optimizer;
+          }
+          if (newOptimizer.ExecutionState != ExecutionState.Prepared) {
+            newOptimizer.Prepare();
+          }
+
+          Content.HiveTasks.Add(new OptimizerHiveTask(newOptimizer));
         }
       }
     }
