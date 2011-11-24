@@ -137,6 +137,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       AddAllowedChildSymbol(realValuedSymbols, timeSeriesSymbols);
 
       AddAllowedChildSymbol(powerSymbols, variableSymbol, 0);
+      AddAllowedChildSymbol(powerSymbols, laggedVariable, 0);
       AddAllowedChildSymbol(powerSymbols, constant, 1);
 
       AddAllowedChildSymbol(@if, comparisonSymbols, 0);
