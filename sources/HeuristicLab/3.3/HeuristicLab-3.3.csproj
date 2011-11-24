@@ -209,7 +209,7 @@ set Outdir=$(Outdir)
 set Platform=$(PlatformName)
 set Configuration=$(ConfigurationName)
 
-call "$(SolutionDir)" MergeConfigs.cmd
+call "$(SolutionDir)MergeConfigs.cmd"
 if exist "%25ProjectDir%25CustomPostBuild.cmd" call CustomPostBuild.cmd</PostBuildEvent>
   </PropertyGroup>
 </Project>
