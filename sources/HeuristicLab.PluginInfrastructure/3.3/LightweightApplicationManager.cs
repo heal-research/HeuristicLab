@@ -123,11 +123,15 @@ namespace HeuristicLab.PluginInfrastructure {
       try {
         var assemblyTypes = assembly.GetTypes();
 
-        return from t in assemblyTypes
-               where !IsNonDiscoverableType(t)
-               where CheckTypeCompatibility(type, t)
-               where onlyInstantiable == false || (!t.IsAbstract && !t.IsInterface && !t.HasElementType && !t.IsGenericTypeDefinition)
-               select BuildType(t, type);
+        var buildTypes = from t in assemblyTypes
+                         where !IsNonDiscoverableType(t)
+                         where CheckTypeCompatibility(type, t)
+                         where onlyInstantiable == false || (!t.IsAbstract && !t.IsInterface && !t.HasElementType)
+                         select BuildType(t, type);
+
+        return from t in buildTypes
+               where onlyInstantiable == false || !t.IsGenericTypeDefinition
+               select t;
       }
       catch (TypeLoadException) {
         return Enumerable.Empty<Type>();

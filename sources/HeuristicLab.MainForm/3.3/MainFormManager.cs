@@ -48,7 +48,7 @@ namespace HeuristicLab.MainForm {
 
         MainFormManager.mainform = mainForm;
         IEnumerable<Type> types =
-          from t in ApplicationManager.Manager.GetTypes(typeof(IContentView))
+          from t in ApplicationManager.Manager.GetTypes(typeof(IContentView), false)
           where !t.IsAbstract && !t.IsInterface && ContentAttribute.HasContentAttribute(t)
           select t;
 

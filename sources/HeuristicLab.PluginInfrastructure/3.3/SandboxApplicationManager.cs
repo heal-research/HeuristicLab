@@ -261,12 +261,16 @@ namespace HeuristicLab.PluginInfrastructure {
     /// (interfaces, abstract classes...  are not returned)</param>
     /// <returns>Enumerable of the discovered types.</returns>
     private static IEnumerable<Type> GetTypes(Type type, Assembly assembly, bool onlyInstantiable) {
-      return from t in assembly.GetTypes()
-             where !IsNonDiscoverableType(t)
-             where CheckTypeCompatibility(type, t)
-             where onlyInstantiable == false ||
-                (!t.IsAbstract && !t.IsInterface && !t.HasElementType && !t.IsGenericTypeDefinition)
-             select BuildType(t, type);
+      var buildTypes = from t in assembly.GetTypes()
+                       where !IsNonDiscoverableType(t)
+                       where CheckTypeCompatibility(type, t)
+                       where onlyInstantiable == false ||
+                             (!t.IsAbstract && !t.IsInterface && !t.HasElementType)
+                       select BuildType(t, type);
+
+      return from t in buildTypes
+             where onlyInstantiable == false || !t.IsGenericTypeDefinition
+             select t;
     }
 
 
