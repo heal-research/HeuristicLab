@@ -237,7 +237,9 @@ namespace HeuristicLab.Optimization.Views {
     #region ListView Events
     private void itemsListView_SelectedIndexChanged(object sender, EventArgs e) {
       removeButton.Enabled = itemsListView.SelectedItems.Count > 0 && (Content != null) && !Content.IsReadOnly && !ReadOnly;
-      AdjustListViewColumnSizes();
+      // for performance reason (multiple selection fires this handler for every selected item)
+      if (itemsListView.SelectedIndices.Count <= 1)
+        AdjustListViewColumnSizes();
       if (showDetailsCheckBox.Checked) {
         if (itemsListView.SelectedItems.Count == 1) {
           IRun item = (IRun)itemsListView.SelectedItems[0].Tag;
@@ -324,8 +326,12 @@ namespace HeuristicLab.Optimization.Views {
             Cloner cloner = new Cloner();
             items = items.Select(x => cloner.Clone(x));
           }
-          foreach (IRun item in items)
-            Content.Add(item);
+          if (RunCollection != null) {
+            RunCollection.AddRange(items);
+          } else { // the content is an IItemCollection<IRun>
+            foreach (IRun item in items)
+              Content.Add(item);
+          }
         }
       }
     }
