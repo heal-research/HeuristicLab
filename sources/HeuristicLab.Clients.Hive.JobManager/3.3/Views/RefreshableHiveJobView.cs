@@ -333,7 +333,11 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
 
     #region Control events
     private void startButton_Click(object sender, EventArgs e) {
-      HiveClient.StartJob((Exception ex) => ErrorHandling.ShowErrorDialog(this, "Start failed.", ex), Content, new CancellationToken());
+      if (nameTextBox.Text.Trim() == string.Empty) {
+        MessageBox.Show("Please enter a name for the job before uploading it!", "HeuristicLab Hive Job Manager", MessageBoxButtons.OK, MessageBoxIcon.Information);
+      } else {
+        HiveClient.StartJob((Exception ex) => ErrorHandling.ShowErrorDialog(this, "Start failed.", ex), Content, new CancellationToken());
+      }
     }
     private void pauseButton_Click(object sender, EventArgs e) {
       HiveClient.PauseJob(Content);

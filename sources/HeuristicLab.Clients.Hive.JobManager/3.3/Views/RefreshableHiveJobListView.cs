@@ -47,11 +47,13 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     }
 
     protected override RefreshableJob CreateItem() {
-      return new RefreshableJob() { IsAllowedPrivileged = HiveClient.Instance.IsAllowedPrivileged };
+      var refreshableJob = new RefreshableJob() { IsAllowedPrivileged = HiveClient.Instance.IsAllowedPrivileged };
+      refreshableJob.Job.Name = "New Hive Job";
+      return refreshableJob;
     }
 
     protected override void removeButton_Click(object sender, EventArgs e) {
-      DialogResult result = MessageBox.Show("This action will permanently delete this job (also on the hive server). Continue?", "Delete Job", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+      DialogResult result = MessageBox.Show("This action will permanently delete this job (also on the hive server). Continue?", "HeuristicLab Hive Job Manager", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
       if (result == DialogResult.OK) {
         base.removeButton_Click(sender, e);
       }
