@@ -112,9 +112,11 @@
       // labelRestart
       // 
       this.labelRestart.AutoSize = true;
+      this.labelRestart.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.labelRestart.ForeColor = System.Drawing.Color.Red;
       this.labelRestart.Location = new System.Drawing.Point(9, 123);
       this.labelRestart.Name = "labelRestart";
-      this.labelRestart.Size = new System.Drawing.Size(199, 26);
+      this.labelRestart.Size = new System.Drawing.Size(241, 26);
       this.labelRestart.TabIndex = 11;
       this.labelRestart.Text = "Please note that you have to restart the \r\nOptimizer for the changes to take effe" +
           "ct. ";
