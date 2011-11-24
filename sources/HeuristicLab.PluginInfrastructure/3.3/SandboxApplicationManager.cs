@@ -262,10 +262,10 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <returns>Enumerable of the discovered types.</returns>
     private static IEnumerable<Type> GetTypes(Type type, Assembly assembly, bool onlyInstantiable) {
       return from t in assembly.GetTypes()
+             where !IsNonDiscoverableType(t)
              where CheckTypeCompatibility(type, t)
              where onlyInstantiable == false ||
-                (!t.IsAbstract && !t.IsInterface && !t.HasElementType)
-             where !IsNonDiscoverableType(t)
+                (!t.IsAbstract && !t.IsInterface && !t.HasElementType && !t.IsGenericTypeDefinition)
              select BuildType(t, type);
     }
 

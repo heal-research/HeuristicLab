@@ -124,9 +124,9 @@ namespace HeuristicLab.PluginInfrastructure {
         var assemblyTypes = assembly.GetTypes();
 
         return from t in assemblyTypes
-               where CheckTypeCompatibility(type, t)
-               where onlyInstantiable == false || (!t.IsAbstract && !t.IsInterface && !t.HasElementType)
                where !IsNonDiscoverableType(t)
+               where CheckTypeCompatibility(type, t)
+               where onlyInstantiable == false || (!t.IsAbstract && !t.IsInterface && !t.HasElementType && !t.IsGenericTypeDefinition)
                select BuildType(t, type);
       }
       catch (TypeLoadException) {
