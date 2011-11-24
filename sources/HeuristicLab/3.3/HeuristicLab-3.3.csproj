@@ -133,6 +133,7 @@
     </Compile>
     <None Include="app.config">
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="CustomPostBuild.cmd" />
     <None Include="CustomPostBuildTemplate_UpdateLocalInstallation.cmd" />
@@ -209,7 +210,7 @@ set Outdir=$(Outdir)
 set Platform=$(PlatformName)
 set Configuration=$(ConfigurationName)
 
-call MergeConfigs.cmd
+call $(SolutionDir)MergeConfigs.cmd
 if exist "%25ProjectDir%25CustomPostBuild.cmd" call CustomPostBuild.cmd</PostBuildEvent>
   </PropertyGroup>
 </Project>
