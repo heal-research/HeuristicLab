@@ -583,9 +583,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         //mkommend: this symbol uses the logistic function f(x) = 1 / (1 + e^(-alpha * x) ) 
         //to determine the relative amounts of the true and false branch see http://en.wikipedia.org/wiki/Logistic_function
         case OpCodes.VariableCondition: {
-            throw new NotImplementedException();
+            throw new NotSupportedException("Interpretation of symbol " + currentInstr.dynamicNode.Symbol.Name + " is not supported by the SymbolicDataAnalysisTreeILEmittingInterpreter");
           }
-        default: throw new NotSupportedException();
+        default: throw new NotSupportedException("Interpretation of symbol " + currentInstr.dynamicNode.Symbol.Name + " is not supported by the SymbolicDataAnalysisTreeILEmittingInterpreter");
       }
     }
 
