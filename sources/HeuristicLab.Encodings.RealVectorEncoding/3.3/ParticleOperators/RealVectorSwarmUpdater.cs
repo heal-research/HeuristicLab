@@ -65,8 +65,8 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public ILookupParameter<BoolValue> MaximizationParameter {
       get { return (ILookupParameter<BoolValue>)Parameters["Maximization"]; }
     }
-    public ILookupParameter<DoubleValue> BestQualityParameter {
-      get { return (ILookupParameter<DoubleValue>)Parameters["BestQuality"]; }
+    public ILookupParameter<DoubleValue> SwarmBestQualityParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters["SwarmBestQuality"]; }
     }
     public ILookupParameter<RealVector> BestRealVectorParameter {
       get { return (ILookupParameter<RealVector>)Parameters["BestRealVector"]; }
@@ -111,9 +111,9 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     #endregion
 
     #region Parameter values
-    private DoubleValue BestQuality {
-      get { return BestQualityParameter.ActualValue; }
-      set { BestQualityParameter.ActualValue = value; }
+    private DoubleValue SwarmBestQuality {
+      get { return SwarmBestQualityParameter.ActualValue; }
+      set { SwarmBestQualityParameter.ActualValue = value; }
     }
     private RealVector BestRealVector {
       get { return BestRealVectorParameter.ActualValue; }
@@ -179,14 +179,14 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
     public RealVectorSwarmUpdater()
       : base() {
-      Parameters.Add(new LookupParameter<DoubleValue>("BestQuality", "Overall best quality."));
-      Parameters.Add(new LookupParameter<RealVector>("BestRealVector", "Global best particle position"));
-      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "Particle's quality"));
-      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("PersonalBestQuality", "Particle's personal best quality"));
-      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("NeighborBestQuality", "Global best particle quality"));
-      Parameters.Add(new ScopeTreeLookupParameter<RealVector>("RealVector", "Particle's position"));
-      Parameters.Add(new ScopeTreeLookupParameter<RealVector>("PersonalBest", "Particle's personal best position"));
-      Parameters.Add(new ScopeTreeLookupParameter<RealVector>("NeighborBest", "Neighborhood (or global in case of totally connected neighborhood) best particle position"));
+      Parameters.Add(new LookupParameter<DoubleValue>("SwarmBestQuality", "Swarm's best quality."));
+      Parameters.Add(new LookupParameter<RealVector>("BestRealVector", "Global best particle position."));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "Particles' qualities."));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("PersonalBestQuality", "Particles' personal best qualities."));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("NeighborBestQuality", "Best neighbor particles' qualities."));
+      Parameters.Add(new ScopeTreeLookupParameter<RealVector>("RealVector", "Particles' positions."));
+      Parameters.Add(new ScopeTreeLookupParameter<RealVector>("PersonalBest", "Particles' personal best positions."));
+      Parameters.Add(new ScopeTreeLookupParameter<RealVector>("NeighborBest", "Neighborhood (or global in case of totally connected neighborhood) best particle positions."));
       Parameters.Add(new ScopeTreeLookupParameter<IntArray>("Neighbors", "The list of neighbors for each particle."));
       Parameters.Add(new LookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, otherwise false."));
       Parameters.Add(new ValueLookupParameter<DoubleMatrix>("VelocityBounds", "Maximum velocity for each dimension.", new DoubleMatrix(new double[,] { { -1, 1 } })));
@@ -216,6 +216,14 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     #endregion
 
     [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey("SwarmBestQuality")) {
+        Parameters.Add(new LookupParameter<DoubleValue>("SwarmBestQuality", "Swarm's best quality."));
+        Parameters.Remove("BestQuality");
+      }
+      RegisterEvents();
+    }
+
     private void RegisterEvents() {
       VelocityBoundsStartValueParameter.ValueChanged += new EventHandler(VelocityBoundsStartValueParameter_ValueChanged);
       VelocityBoundsStartValueParameter.Value.ValueChanged += new EventHandler(VelocityBoundsStartValueParameter_Value_ValueChanged);
@@ -272,10 +280,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
 
     private void UpdateGlobalBest() {
-      if (BestQuality == null)
-        BestQuality = new DoubleValue();
-      BestQuality.Value = Maximization ? Quality.Max(v => v.Value) : Quality.Min(v => v.Value);
-      BestRealVector = (RealVector)RealVector[Quality.FindIndex(v => v.Value == BestQuality.Value)].Clone();
+      if (SwarmBestQuality == null)
+        SwarmBestQuality = new DoubleValue();
+      SwarmBestQuality.Value = Maximization ? Quality.Max(v => v.Value) : Quality.Min(v => v.Value);
+      BestRealVector = (RealVector)RealVector[Quality.FindIndex(v => v.Value == SwarmBestQuality.Value)].Clone();
     }
 
     private void UpdateNeighborBest() {
