@@ -218,7 +218,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       if (!Parameters.ContainsKey("SwarmBestQuality")) {
+        ILookupParameter<DoubleValue> oldBestQualityParameter = Parameters["BestQuality"] as ILookupParameter<DoubleValue>;
         Parameters.Add(new LookupParameter<DoubleValue>("SwarmBestQuality", "Swarm's best quality."));
+        if (oldBestQualityParameter.ActualName != oldBestQualityParameter.Name)
+          SwarmBestQualityParameter.ActualName = oldBestQualityParameter.ActualName;
         Parameters.Remove("BestQuality");
       }
       RegisterEvents();
