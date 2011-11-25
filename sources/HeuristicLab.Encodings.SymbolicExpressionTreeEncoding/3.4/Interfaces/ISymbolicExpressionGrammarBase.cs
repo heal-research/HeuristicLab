@@ -39,6 +39,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     int GetMaximumSubtreeCount(ISymbol symbol);
 
     int GetMinimumExpressionDepth(ISymbol start);
+    int GetMaximumExpressionDepth(ISymbol start);
     int GetMinimumExpressionLength(ISymbol start);
     int GetMaximumExpressionLength(ISymbol start, int maxDepth);
 

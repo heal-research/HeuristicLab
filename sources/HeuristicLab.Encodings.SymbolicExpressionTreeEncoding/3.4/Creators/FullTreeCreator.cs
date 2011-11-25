@@ -62,7 +62,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     public IntValue MaximumSymbolicExpressionTreeDepth {
       get { return MaximumSymbolicExpressionTreeDepthParameter.ActualValue; }
     }
-    
+
     public IntValue MaximumSymbolicExpressionTreeLength {
       get { return MaximumSymbolicExpressionTreeLengthParameter.ActualValue; }
     }
@@ -106,7 +106,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     public override ISymbolicExpressionTree CreateTree(IRandom random, ISymbolicExpressionGrammar grammar, int maxTreeLength, int maxTreeDepth) {
-     return Create(random, grammar, maxTreeLength, maxTreeDepth);
+      return Create(random, grammar, maxTreeLength, maxTreeDepth);
     }
 
     /// <summary>
@@ -148,7 +148,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         throw new ArgumentException("Cannot grow tree. Seed node shouldn't have arity zero.");
 
       for (var i = 0; i != arity; ++i) {
-        var possibleSymbols = seedNode.Grammar.GetAllowedChildSymbols(seedNode.Symbol,i).Where(s => s.InitialFrequency > 0.0 && seedNode.Grammar.GetMaximumSubtreeCount(s) > 0);
+        var possibleSymbols = seedNode.Grammar.GetAllowedChildSymbols(seedNode.Symbol, i).Where(s => s.InitialFrequency > 0.0 && seedNode.Grammar.GetMaximumSubtreeCount(s) > 0);
         var selectedSymbol = possibleSymbols.SelectRandom(random);
         var tree = selectedSymbol.CreateTreeNode();
         if (tree.HasLocalParameters) tree.ResetLocalParameters(random);
@@ -167,11 +167,14 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       if (arity <= 0)
         throw new ArgumentException("Cannot grow node of arity zero. Expected a function node.");
 
-
       for (var i = 0; i != arity; ++i) {
-        var possibleSymbols = currentDepth < maxDepth ?
-          root.Grammar.GetAllowedChildSymbols(root.Symbol,i).Where(s => s.InitialFrequency > 0.0 && root.Grammar.GetMaximumSubtreeCount(s) > 0) :
-          root.Grammar.GetAllowedChildSymbols(root.Symbol,i).Where(s => s.InitialFrequency > 0.0 && root.Grammar.GetMaximumSubtreeCount(s) == 0);
+        var possibleSymbols = root.Grammar.GetAllowedChildSymbols(root.Symbol, i);
+        possibleSymbols = possibleSymbols.Where(s => s.InitialFrequency > 0.0 &&
+                                          root.Grammar.GetMinimumExpressionDepth(s) - 1 <= maxDepth - currentDepth &&
+                                          root.Grammar.GetMaximumExpressionDepth(s) > maxDepth - currentDepth);
+
+
+        if (!possibleSymbols.Any()) throw new InvalidOperationException("No symbols are available for the tree.");
         var selectedSymbol = possibleSymbols.SelectRandom(random);
         var tree = selectedSymbol.CreateTreeNode();
         if (tree.HasLocalParameters) tree.ResetLocalParameters(random);

@@ -63,7 +63,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       get { return MaximumSymbolicExpressionTreeDepthParameter.ActualValue; }
     }
 
-    public IntValue MaximumSymbolicExpressionTreeLength { 
+    public IntValue MaximumSymbolicExpressionTreeLength {
       get { return MaximumSymbolicExpressionTreeLengthParameter.ActualValue; }
     }
 
@@ -165,12 +165,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       if (arity <= 0)
         throw new ArgumentException("Cannot grow node of arity zero. Expected a function node.");
 
-
       for (var i = 0; i != arity; ++i) {
-        var possibleSymbols = currentDepth < maxDepth
-                                ? root.Grammar.GetAllowedChildSymbols(root.Symbol,i).Where(s => s.InitialFrequency > 0.0)
-                                : root.Grammar.GetAllowedChildSymbols(root.Symbol,i).Where(
-                                  s => s.InitialFrequency > 0.0 && root.Grammar.GetMaximumSubtreeCount(s) == 0);
+        var possibleSymbols = root.Grammar.GetAllowedChildSymbols(root.Symbol, i);
+        possibleSymbols = possibleSymbols.Where(s => s.InitialFrequency > 0.0 &&
+                                          root.Grammar.GetMinimumExpressionDepth(s) - 1 <= maxDepth - currentDepth);
+        if (!possibleSymbols.Any()) throw new InvalidOperationException("No symbols are available for the tree.");
         var selectedSymbol = possibleSymbols.SelectRandom(random);
         var tree = selectedSymbol.CreateTreeNode();
         if (tree.HasLocalParameters) tree.ResetLocalParameters(random);
