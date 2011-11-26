@@ -70,16 +70,22 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     }
 
     void item_ItemImageChanged(object sender, EventArgs e) {
-      RefreshableJob job = sender as RefreshableJob;
-      if (job != null) {
-        foreach (ListViewItem item in this.itemsListView.Items) {
-          if (item.Tag != null) {
-            RefreshableJob cur = item.Tag as RefreshableJob;
-            if (cur != null && cur == job) {
-              this.UpdateListViewItemImage(item);
+        if (this.itemsListView.InvokeRequired) {
+            Invoke(new EventHandler(item_ItemImageChanged), sender, e); 
+        } else { 
+          RefreshableJob job = sender as RefreshableJob;
+          if (job != null) {
+            foreach (ListViewItem item in this.itemsListView.Items) {
+                if (item.Tag != null)
+                {
+                    RefreshableJob cur = item.Tag as RefreshableJob;
+                    if (cur != null && cur == job)
+                    {
+                        this.UpdateListViewItemImage(item);
+                    }
+                }
             }
-          }
-        }
+         }
       }
     }
 
