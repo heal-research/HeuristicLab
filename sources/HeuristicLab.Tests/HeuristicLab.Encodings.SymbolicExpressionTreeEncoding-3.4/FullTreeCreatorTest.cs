@@ -30,8 +30,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._4.Tests {
   [TestClass]
   public class FullTreeCreatorTest {
     private const int POPULATION_SIZE = 10000;
-    private const int MAX_TREE_DEPTH = 10;
-    private const int MAX_TREE_LENGTH = 1000;
+    private const int MAX_TREE_DEPTH = 9 ;
+    private const int MAX_TREE_LENGTH = 256;
     private TestContext testContextInstance;
 
     /// <summary>

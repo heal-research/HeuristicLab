@@ -118,6 +118,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       if (symbols.Count == 0) return grammar.GetMinimumExpressionDepth(symbol);
       else return base.GetMinimumExpressionDepth(symbol);
     }
+    int ISymbolicExpressionGrammarBase.GetMaximumExpressionDepth(ISymbol symbol) {
+      if (symbols.Count == 0) return grammar.GetMaximumExpressionDepth(symbol);
+      else return base.GetMaximumExpressionDepth(symbol);
+    }
     int ISymbolicExpressionGrammarBase.GetMinimumExpressionLength(ISymbol symbol) {
       if (symbols.Count == 0) return grammar.GetMinimumExpressionLength(symbol);
       else return base.GetMinimumExpressionLength(symbol);
@@ -126,5 +130,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       if (symbols.Count == 0) return grammar.GetMaximumExpressionLength(symbol, maxDepth);
       else return base.GetMaximumExpressionLength(symbol, maxDepth);
     }
+
   }
 }
