@@ -48,8 +48,8 @@ ECHO Building configuration %CONFIGURATION% ...
 GOTO :platform_selection
 
 :prompt_config
-SET /P CONFIGURATION=Which configuration to build [Debug]: 
-IF "%CONFIGURATION%"=="" SET CONFIGURATION=Debug
+SET /P CONFIGURATION=Which configuration to build [Release]: 
+IF "%CONFIGURATION%"=="" SET CONFIGURATION=Release
 
 :platform_selection
 IF "%~3"=="" GOTO :prompt_platform
