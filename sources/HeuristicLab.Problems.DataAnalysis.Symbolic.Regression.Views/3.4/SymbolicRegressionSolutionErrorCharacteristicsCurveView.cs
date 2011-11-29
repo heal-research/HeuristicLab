@@ -66,12 +66,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
         problemData.InputVariables.SetItemCheckedState(inputVariable.Value, false);
       }
 
-      var laggedVariables = Content.Model.SymbolicExpressionTree.IterateNodesPostfix()
-        .OfType<LaggedVariableTreeNode>()
-        .Select(n => n.Lag)
-        .Where(l => l < 0);
-      if (laggedVariables.Any()) throw new NotSupportedException("The symbolic regression solution contains lagged variables.");
-
       //check inputVariables used in the symbolic regression model
       var usedVariables =
         Content.Model.SymbolicExpressionTree.IterateNodesPostfix().OfType<VariableTreeNode>().Select(

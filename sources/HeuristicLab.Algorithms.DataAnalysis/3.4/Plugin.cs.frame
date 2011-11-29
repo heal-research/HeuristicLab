@@ -41,7 +41,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [PluginDependency("HeuristicLab.Problems.DataAnalysis.Symbolic", "3.4")]
   [PluginDependency("HeuristicLab.Problems.DataAnalysis.Symbolic.Classification", "3.4")]
   [PluginDependency("HeuristicLab.Problems.DataAnalysis.Symbolic.Regression", "3.4")]
-  [PluginDependency("HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis", "3.4")]
   public class HeuristicLabAlgorithmsDataAnalysisPlugin : PluginBase {
   }
 }

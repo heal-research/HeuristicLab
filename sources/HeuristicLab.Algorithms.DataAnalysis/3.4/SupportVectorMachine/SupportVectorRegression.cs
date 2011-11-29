@@ -142,6 +142,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       parameter.CacheSize = 500;
       parameter.Probability = false;
 
+
       SVM.Problem problem = SupportVectorMachineUtil.CreateSvmProblem(dataset, targetVariable, allowedInputVariables, rows);
       SVM.RangeTransform rangeTransform = SVM.RangeTransform.Compute(problem);
       SVM.Problem scaledProblem = SVM.Scaling.Scale(rangeTransform, problem);

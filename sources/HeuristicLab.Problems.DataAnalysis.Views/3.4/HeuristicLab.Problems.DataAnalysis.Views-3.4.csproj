@@ -121,43 +121,13 @@
     <Compile Include="Classification\ClassificationEnsembleSolutionModelView.Designer.cs">
       <DependentUpon>ClassificationEnsembleSolutionModelView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Plugin.cs" />
-    <Compile Include="Solution Views\TimeSeriesPrognosisSolutionView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Solution Views\TimeSeriesPrognosisSolutionView.Designer.cs">
-      <DependentUpon>TimeSeriesPrognosisSolutionView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="TimeSeriesPrognosis\TimeSeriesPrognosisSolutionErrorCharacteristicsCurveView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="TimeSeriesPrognosis\TimeSeriesPrognosisSolutionErrorCharacteristicsCurveView.Designer.cs">
-      <DependentUpon>TimeSeriesPrognosisSolutionErrorCharacteristicsCurveView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="TimeSeriesPrognosis\TimeSeriesPrognosisSolutionLineChartView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="TimeSeriesPrognosis\TimeSeriesPrognosisSolutionLineChartView.Designer.cs">
-      <DependentUpon>TimeSeriesPrognosisSolutionLineChartView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="TimeSeriesPrognosis\TimeSeriesPrognosisSolutionPrognosedValuesView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="TimeSeriesPrognosis\TimeSeriesPrognosisSolutionPrognosedValuesView.Designer.cs">
-      <DependentUpon>TimeSeriesPrognosisSolutionPrognosedValuesView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="TimeSeriesPrognosis\TimeSeriesPrognosisSolutionScatterPlotView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="TimeSeriesPrognosis\TimeSeriesPrognosisSolutionScatterPlotView.Designer.cs">
-      <DependentUpon>TimeSeriesPrognosisSolutionScatterPlotView.cs</DependentUpon>
-    </Compile>
     <Compile Include="DataAnalysisSolutionEvaluationView.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="DataAnalysisSolutionEvaluationView.Designer.cs">
       <DependentUpon>DataAnalysisSolutionEvaluationView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Plugin.cs" />
     <Compile Include="Regression\RegressionSolutionErrorCharacteristicsCurveView.cs">
       <SubType>UserControl</SubType>
     </Compile>

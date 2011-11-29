@@ -193,12 +193,5 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Symbols.Where(s => s.Name == PowerFunctionsName).First().Enabled = false;
       Symbols.Where(s => s.Name == TimeSeriesSymbolsName).First().Enabled = false;
     }
-
-    public void ConfigureAsDefaultTimeSeriesPrognosisGrammar() {
-      Symbols.Where(s => s is Variable).First().Enabled = false;
-      Symbols.Where(s => s.Name == TrigonometricFunctionsName).First().Enabled = false;
-      Symbols.Where(s => s.Name == PowerFunctionsName).First().Enabled = false;
-      Symbols.Where(s => s.Name == ConditionalSymbolsName).First().Enabled = false;
-    }
   }
 }
