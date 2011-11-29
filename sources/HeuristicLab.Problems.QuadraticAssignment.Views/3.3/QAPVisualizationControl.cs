@@ -21,8 +21,6 @@
 
 using System;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Text;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -172,8 +170,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
     private void WriteCenteredTextToBitmap(ref Bitmap bitmap, string text) {
       if (bitmap == null) return;
       using (Graphics g = Graphics.FromImage(bitmap)) {
-        g.TextRenderingHint = TextRenderingHint.AntiAlias;
-        g.SmoothingMode = SmoothingMode.AntiAlias;
+        g.Clear(Color.White);
 
         Font font = new Font(FontFamily.GenericSansSerif, 12, FontStyle.Regular);
         SizeF strSize = g.MeasureString(text, font);
@@ -303,8 +300,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
 
         Random rand = new Random();
         using (Graphics graphics = Graphics.FromImage(newBitmap)) {
-          graphics.SmoothingMode = SmoothingMode.AntiAlias;
-          graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
+          graphics.Clear(Color.White);
           graphics.DrawString("Showing locations spaced out according to their distances", Font, Brushes.Black, 5, 2);
 
           for (int i = 0; i < coordinates.Rows - 1; i++) {
@@ -393,8 +389,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
 
         Random rand = new Random();
         using (Graphics graphics = Graphics.FromImage(newBitmap)) {
-          graphics.SmoothingMode = SmoothingMode.AntiAlias;
-          graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
+          graphics.Clear(Color.White);
           graphics.DrawString("Showing facilities spaced out according to their weights", Font, Brushes.Black, 5, 2);
 
           for (int i = 0; i < coordinates.Rows - 1; i++) {
@@ -489,9 +484,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
 
         Random rand = new Random();
         using (Graphics graphics = Graphics.FromImage(newBitmap)) {
-          graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-          graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
-
+          graphics.Clear(Color.White);
           for (int i = 0; i < assignment.Length - 1; i++) {
             for (int j = i + 1; j < assignment.Length; j++) {
               Point start, end;
