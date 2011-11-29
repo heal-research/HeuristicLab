@@ -167,7 +167,7 @@ set Outdir=$(Outdir)
 set Platform=$(PlatformName)
 set Configuration=$(ConfigurationName)
 
-call $(SolutionDir)\MergeConfigs.cmd</PostBuildEvent>
+call "$(SolutionDir)MergeConfigs.cmd"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
