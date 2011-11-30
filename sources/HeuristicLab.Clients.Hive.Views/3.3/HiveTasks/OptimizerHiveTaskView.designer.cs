@@ -31,9 +31,9 @@
       this.runCollectionViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.stateLogTabPage.SuspendLayout();
       this.detailsTabPage.SuspendLayout();
-      this.configurationGroupBox.SuspendLayout();
       this.jobStatusGroupBox.SuspendLayout();
       this.tabControl.SuspendLayout();
+      this.configurationGroupBox.SuspendLayout();
       this.runsTabPage.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -42,6 +42,7 @@
       this.detailsTabPage.Controls.Add(this.restartButton);
       this.detailsTabPage.Controls.Add(this.pauseButton);
       this.detailsTabPage.Controls.Add(this.stopButton);
+      this.detailsTabPage.Controls.SetChildIndex(this.modifyItemButton, 0);
       this.detailsTabPage.Controls.SetChildIndex(this.stopButton, 0);
       this.detailsTabPage.Controls.SetChildIndex(this.pauseButton, 0);
       this.detailsTabPage.Controls.SetChildIndex(this.restartButton, 0);
@@ -53,9 +54,9 @@
       this.tabControl.Controls.SetChildIndex(this.stateLogTabPage, 0);
       this.tabControl.Controls.SetChildIndex(this.detailsTabPage, 0);
       // 
-      // showItemButton
+      // modifyItemButton
       // 
-      this.modifyItemButton.Text = "Modify Optimizer";
+      this.modifyItemButton.Text = "Show/Modify Optimizer";
       // 
       // restartButton
       // 
@@ -122,12 +123,11 @@
       this.Name = "OptimizerHiveTaskView";
       this.stateLogTabPage.ResumeLayout(false);
       this.detailsTabPage.ResumeLayout(false);
-      this.detailsTabPage.PerformLayout();
-      this.configurationGroupBox.ResumeLayout(false);
-      this.configurationGroupBox.PerformLayout();
       this.jobStatusGroupBox.ResumeLayout(false);
       this.jobStatusGroupBox.PerformLayout();
       this.tabControl.ResumeLayout(false);
+      this.configurationGroupBox.ResumeLayout(false);
+      this.configurationGroupBox.PerformLayout();
       this.runsTabPage.ResumeLayout(false);
       this.ResumeLayout(false);
 

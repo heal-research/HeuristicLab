@@ -32,6 +32,7 @@
       this.refreshPermissionsButton = new System.Windows.Forms.Button();
       this.hiveExperimentPermissionListView = new HeuristicLab.Clients.Hive.JobManager.Views.HiveJobPermissionListView();
       this.runsTabPage = new System.Windows.Forms.TabPage();
+      this.runCollectionViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.stateTabPage = new System.Windows.Forms.TabPage();
       this.stateLogViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.logTabPage = new System.Windows.Forms.TabPage();
@@ -57,7 +58,6 @@
       this.finishedLabel = new System.Windows.Forms.Label();
       this.calculatingLabel = new System.Windows.Forms.Label();
       this.jobsLabel = new System.Windows.Forms.Label();
-      this.runCollectionViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.tabControl.SuspendLayout();
       this.tasksTabPage.SuspendLayout();
       this.permissionTabPage.SuspendLayout();
@@ -106,7 +106,7 @@
       this.jobsTreeView.Name = "jobsTreeView";
       this.jobsTreeView.ReadOnly = false;
       this.jobsTreeView.Size = new System.Drawing.Size(704, 420);
-      this.jobsTreeView.TabIndex = 0;
+      this.jobsTreeView.TabIndex = 4;
       this.jobsTreeView.DragDrop += new System.Windows.Forms.DragEventHandler(this.jobsTreeView_DragDrop);
       this.jobsTreeView.DragEnter += new System.Windows.Forms.DragEventHandler(this.jobsTreeView_DragEnter);
       this.jobsTreeView.DragOver += new System.Windows.Forms.DragEventHandler(this.jobsTreeView_DragOver);
@@ -158,6 +158,22 @@
       this.runsTabPage.TabIndex = 8;
       this.runsTabPage.Text = "Runs";
       this.runsTabPage.UseVisualStyleBackColor = true;
+      // 
+      // runCollectionViewHost
+      // 
+      this.runCollectionViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.runCollectionViewHost.Caption = "View";
+      this.runCollectionViewHost.Content = null;
+      this.runCollectionViewHost.Enabled = false;
+      this.runCollectionViewHost.Location = new System.Drawing.Point(3, 3);
+      this.runCollectionViewHost.Name = "runCollectionViewHost";
+      this.runCollectionViewHost.ReadOnly = false;
+      this.runCollectionViewHost.Size = new System.Drawing.Size(703, 420);
+      this.runCollectionViewHost.TabIndex = 2;
+      this.runCollectionViewHost.ViewsLabelVisible = true;
+      this.runCollectionViewHost.ViewType = null;
       // 
       // stateTabPage
       // 
@@ -293,7 +309,7 @@
       this.resourceNamesTextBox.Location = new System.Drawing.Point(70, 52);
       this.resourceNamesTextBox.Name = "resourceNamesTextBox";
       this.resourceNamesTextBox.Size = new System.Drawing.Size(415, 20);
-      this.resourceNamesTextBox.TabIndex = 14;
+      this.resourceNamesTextBox.TabIndex = 2;
       this.resourceNamesTextBox.Validated += new System.EventHandler(this.resourceNamesTextBox_Validated);
       // 
       // nameLabel
@@ -312,7 +328,7 @@
       this.nameTextBox.Location = new System.Drawing.Point(70, 27);
       this.nameTextBox.Name = "nameTextBox";
       this.nameTextBox.Size = new System.Drawing.Size(501, 20);
-      this.nameTextBox.TabIndex = 21;
+      this.nameTextBox.TabIndex = 1;
       this.nameTextBox.Validated += new System.EventHandler(this.nameTextBox_Validated);
       // 
       // refreshButton
@@ -333,7 +349,7 @@
       this.isPrivilegedCheckBox.Location = new System.Drawing.Point(491, 53);
       this.isPrivilegedCheckBox.Name = "isPrivilegedCheckBox";
       this.isPrivilegedCheckBox.Size = new System.Drawing.Size(72, 17);
-      this.isPrivilegedCheckBox.TabIndex = 26;
+      this.isPrivilegedCheckBox.TabIndex = 3;
       this.isPrivilegedCheckBox.Text = "Privileged";
       this.toolTip.SetToolTip(this.isPrivilegedCheckBox, "If checked, the task will be executed in a privileged sandbox on the slave.");
       this.isPrivilegedCheckBox.UseVisualStyleBackColor = true;
@@ -419,22 +435,6 @@
       this.jobsLabel.Size = new System.Drawing.Size(46, 13);
       this.jobsLabel.TabIndex = 0;
       this.jobsLabel.Text = "Waiting:";
-      // 
-      // runCollectionViewHost
-      // 
-      this.runCollectionViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.runCollectionViewHost.Caption = "View";
-      this.runCollectionViewHost.Content = null;
-      this.runCollectionViewHost.Enabled = false;
-      this.runCollectionViewHost.Location = new System.Drawing.Point(3, 3);
-      this.runCollectionViewHost.Name = "runCollectionViewHost";
-      this.runCollectionViewHost.ReadOnly = false;
-      this.runCollectionViewHost.Size = new System.Drawing.Size(703, 420);
-      this.runCollectionViewHost.TabIndex = 2;
-      this.runCollectionViewHost.ViewsLabelVisible = true;
-      this.runCollectionViewHost.ViewType = null;
       // 
       // RefreshableHiveJobView
       // 

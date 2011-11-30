@@ -29,12 +29,15 @@
       this.splitContainer1 = new System.Windows.Forms.SplitContainer();
       this.splitContainer2 = new System.Windows.Forms.SplitContainer();
       this.groupBoxGenerel = new System.Windows.Forms.GroupBox();
+      this.priorityComboBox = new System.Windows.Forms.ComboBox();
       this.jobIdLabel = new System.Windows.Forms.Label();
       this.jobIdTextBox = new System.Windows.Forms.TextBox();
       this.lastUpdatedLabel = new System.Windows.Forms.Label();
       this.lastUpdatedTextBox = new System.Windows.Forms.TextBox();
       this.priorityLabel = new System.Windows.Forms.Label();
       this.configurationGroupBox = new System.Windows.Forms.GroupBox();
+      this.memoryNeededComboBox = new System.Windows.Forms.ComboBox();
+      this.coresNeededComboBox = new System.Windows.Forms.ComboBox();
       this.memoryNeededLabel = new System.Windows.Forms.Label();
       this.coresNeededLabel = new System.Windows.Forms.Label();
       this.computeInParallelLabel = new System.Windows.Forms.Label();
@@ -56,9 +59,6 @@
       this.exceptionTextBox = new System.Windows.Forms.TextBox();
       this.modifyItemButton = new System.Windows.Forms.Button();
       this.tabControl = new System.Windows.Forms.TabControl();
-      this.priorityComboBox = new System.Windows.Forms.ComboBox();
-      this.coresNeededComboBox = new System.Windows.Forms.ComboBox();
-      this.memoryNeededComboBox = new System.Windows.Forms.ComboBox();
       this.stateLogTabPage.SuspendLayout();
       this.detailsTabPage.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -165,6 +165,22 @@
       this.groupBoxGenerel.TabStop = false;
       this.groupBoxGenerel.Text = "Generel";
       // 
+      // priorityComboBox
+      // 
+      this.priorityComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.priorityComboBox.FormattingEnabled = true;
+      this.priorityComboBox.Items.AddRange(new object[] {
+            "1",
+            "2",
+            "3",
+            "4",
+            "5"});
+      this.priorityComboBox.Location = new System.Drawing.Point(87, 39);
+      this.priorityComboBox.Name = "priorityComboBox";
+      this.priorityComboBox.Size = new System.Drawing.Size(182, 21);
+      this.priorityComboBox.TabIndex = 43;
+      // 
       // jobIdLabel
       // 
       this.jobIdLabel.AutoSize = true;
@@ -186,7 +202,7 @@
       // lastUpdatedLabel
       // 
       this.lastUpdatedLabel.AutoSize = true;
-      this.lastUpdatedLabel.Location = new System.Drawing.Point(6, 60);
+      this.lastUpdatedLabel.Location = new System.Drawing.Point(6, 68);
       this.lastUpdatedLabel.Name = "lastUpdatedLabel";
       this.lastUpdatedLabel.Size = new System.Drawing.Size(75, 13);
       this.lastUpdatedLabel.TabIndex = 1;
@@ -196,7 +212,7 @@
       // 
       this.lastUpdatedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.lastUpdatedTextBox.Location = new System.Drawing.Point(87, 57);
+      this.lastUpdatedTextBox.Location = new System.Drawing.Point(87, 66);
       this.lastUpdatedTextBox.Name = "lastUpdatedTextBox";
       this.lastUpdatedTextBox.Size = new System.Drawing.Size(182, 20);
       this.lastUpdatedTextBox.TabIndex = 2;
@@ -204,7 +220,7 @@
       // priorityLabel
       // 
       this.priorityLabel.AutoSize = true;
-      this.priorityLabel.Location = new System.Drawing.Point(6, 38);
+      this.priorityLabel.Location = new System.Drawing.Point(6, 42);
       this.priorityLabel.Name = "priorityLabel";
       this.priorityLabel.Size = new System.Drawing.Size(41, 13);
       this.priorityLabel.TabIndex = 42;
@@ -226,10 +242,45 @@
       this.configurationGroupBox.TabStop = false;
       this.configurationGroupBox.Text = "Resource demands";
       // 
+      // memoryNeededComboBox
+      // 
+      this.memoryNeededComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.memoryNeededComboBox.FormattingEnabled = true;
+      this.memoryNeededComboBox.Items.AddRange(new object[] {
+            "128",
+            "256",
+            "512",
+            "1024",
+            "2048"});
+      this.memoryNeededComboBox.Location = new System.Drawing.Point(134, 40);
+      this.memoryNeededComboBox.Name = "memoryNeededComboBox";
+      this.memoryNeededComboBox.Size = new System.Drawing.Size(134, 21);
+      this.memoryNeededComboBox.TabIndex = 42;
+      // 
+      // coresNeededComboBox
+      // 
+      this.coresNeededComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.coresNeededComboBox.FormattingEnabled = true;
+      this.coresNeededComboBox.Items.AddRange(new object[] {
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8"});
+      this.coresNeededComboBox.Location = new System.Drawing.Point(134, 13);
+      this.coresNeededComboBox.Name = "coresNeededComboBox";
+      this.coresNeededComboBox.Size = new System.Drawing.Size(134, 21);
+      this.coresNeededComboBox.TabIndex = 41;
+      // 
       // memoryNeededLabel
       // 
       this.memoryNeededLabel.AutoSize = true;
-      this.memoryNeededLabel.Location = new System.Drawing.Point(6, 38);
+      this.memoryNeededLabel.Location = new System.Drawing.Point(6, 43);
       this.memoryNeededLabel.Name = "memoryNeededLabel";
       this.memoryNeededLabel.Size = new System.Drawing.Size(122, 13);
       this.memoryNeededLabel.TabIndex = 40;
@@ -247,7 +298,7 @@
       // computeInParallelLabel
       // 
       this.computeInParallelLabel.AutoSize = true;
-      this.computeInParallelLabel.Location = new System.Drawing.Point(6, 60);
+      this.computeInParallelLabel.Location = new System.Drawing.Point(6, 67);
       this.computeInParallelLabel.Name = "computeInParallelLabel";
       this.computeInParallelLabel.Size = new System.Drawing.Size(122, 13);
       this.computeInParallelLabel.TabIndex = 36;
@@ -256,7 +307,7 @@
       // computeInParallelCheckBox
       // 
       this.computeInParallelCheckBox.AutoSize = true;
-      this.computeInParallelCheckBox.Location = new System.Drawing.Point(135, 61);
+      this.computeInParallelCheckBox.Location = new System.Drawing.Point(135, 67);
       this.computeInParallelCheckBox.Name = "computeInParallelCheckBox";
       this.computeInParallelCheckBox.Size = new System.Drawing.Size(15, 14);
       this.computeInParallelCheckBox.TabIndex = 35;
@@ -291,7 +342,7 @@
       // 
       this.commandTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.commandTextBox.Location = new System.Drawing.Point(95, 41);
+      this.commandTextBox.Location = new System.Drawing.Point(95, 39);
       this.commandTextBox.Name = "commandTextBox";
       this.commandTextBox.Size = new System.Drawing.Size(171, 20);
       this.commandTextBox.TabIndex = 24;
@@ -299,7 +350,7 @@
       // commandLabel
       // 
       this.commandLabel.AutoSize = true;
-      this.commandLabel.Location = new System.Drawing.Point(7, 41);
+      this.commandLabel.Location = new System.Drawing.Point(7, 42);
       this.commandLabel.Name = "commandLabel";
       this.commandLabel.Size = new System.Drawing.Size(57, 13);
       this.commandLabel.TabIndex = 25;
@@ -309,7 +360,7 @@
       // 
       this.stateTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.stateTextBox.Location = new System.Drawing.Point(95, 19);
+      this.stateTextBox.Location = new System.Drawing.Point(95, 13);
       this.stateTextBox.Name = "stateTextBox";
       this.stateTextBox.Size = new System.Drawing.Size(171, 20);
       this.stateTextBox.TabIndex = 2;
@@ -317,7 +368,7 @@
       // dateCalculatedLabel
       // 
       this.dateCalculatedLabel.AutoSize = true;
-      this.dateCalculatedLabel.Location = new System.Drawing.Point(7, 108);
+      this.dateCalculatedLabel.Location = new System.Drawing.Point(7, 120);
       this.dateCalculatedLabel.Name = "dateCalculatedLabel";
       this.dateCalculatedLabel.Size = new System.Drawing.Size(85, 13);
       this.dateCalculatedLabel.TabIndex = 23;
@@ -326,7 +377,7 @@
       // stateLabel
       // 
       this.stateLabel.AutoSize = true;
-      this.stateLabel.Location = new System.Drawing.Point(7, 19);
+      this.stateLabel.Location = new System.Drawing.Point(7, 16);
       this.stateLabel.Name = "stateLabel";
       this.stateLabel.Size = new System.Drawing.Size(35, 13);
       this.stateLabel.TabIndex = 0;
@@ -336,7 +387,7 @@
       // 
       this.dateCalculatedText.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.dateCalculatedText.Location = new System.Drawing.Point(95, 108);
+      this.dateCalculatedText.Location = new System.Drawing.Point(95, 117);
       this.dateCalculatedText.Name = "dateCalculatedText";
       this.dateCalculatedText.Size = new System.Drawing.Size(171, 20);
       this.dateCalculatedText.TabIndex = 22;
@@ -345,7 +396,7 @@
       // 
       this.dateFinishedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.dateFinishedTextBox.Location = new System.Drawing.Point(95, 130);
+      this.dateFinishedTextBox.Location = new System.Drawing.Point(95, 143);
       this.dateFinishedTextBox.Name = "dateFinishedTextBox";
       this.dateFinishedTextBox.Size = new System.Drawing.Size(171, 20);
       this.dateFinishedTextBox.TabIndex = 6;
@@ -354,7 +405,7 @@
       // 
       this.executionTimeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.executionTimeTextBox.Location = new System.Drawing.Point(95, 64);
+      this.executionTimeTextBox.Location = new System.Drawing.Point(95, 65);
       this.executionTimeTextBox.Name = "executionTimeTextBox";
       this.executionTimeTextBox.Size = new System.Drawing.Size(171, 20);
       this.executionTimeTextBox.TabIndex = 4;
@@ -363,7 +414,7 @@
       // 
       this.dateCreatedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.dateCreatedTextBox.Location = new System.Drawing.Point(95, 86);
+      this.dateCreatedTextBox.Location = new System.Drawing.Point(95, 91);
       this.dateCreatedTextBox.Name = "dateCreatedTextBox";
       this.dateCreatedTextBox.Size = new System.Drawing.Size(171, 20);
       this.dateCreatedTextBox.TabIndex = 5;
@@ -371,7 +422,7 @@
       // executionTimeLabel
       // 
       this.executionTimeLabel.AutoSize = true;
-      this.executionTimeLabel.Location = new System.Drawing.Point(7, 64);
+      this.executionTimeLabel.Location = new System.Drawing.Point(7, 68);
       this.executionTimeLabel.Name = "executionTimeLabel";
       this.executionTimeLabel.Size = new System.Drawing.Size(79, 13);
       this.executionTimeLabel.TabIndex = 13;
@@ -380,7 +431,7 @@
       // exceptionLabel
       // 
       this.exceptionLabel.AutoSize = true;
-      this.exceptionLabel.Location = new System.Drawing.Point(7, 152);
+      this.exceptionLabel.Location = new System.Drawing.Point(7, 172);
       this.exceptionLabel.Name = "exceptionLabel";
       this.exceptionLabel.Size = new System.Drawing.Size(57, 13);
       this.exceptionLabel.TabIndex = 19;
@@ -389,7 +440,7 @@
       // dateCreatedLabel
       // 
       this.dateCreatedLabel.AutoSize = true;
-      this.dateCreatedLabel.Location = new System.Drawing.Point(7, 86);
+      this.dateCreatedLabel.Location = new System.Drawing.Point(7, 94);
       this.dateCreatedLabel.Name = "dateCreatedLabel";
       this.dateCreatedLabel.Size = new System.Drawing.Size(72, 13);
       this.dateCreatedLabel.TabIndex = 14;
@@ -398,7 +449,7 @@
       // dateFinishedLabel
       // 
       this.dateFinishedLabel.AutoSize = true;
-      this.dateFinishedLabel.Location = new System.Drawing.Point(7, 130);
+      this.dateFinishedLabel.Location = new System.Drawing.Point(7, 146);
       this.dateFinishedLabel.Name = "dateFinishedLabel";
       this.dateFinishedLabel.Size = new System.Drawing.Size(72, 13);
       this.dateFinishedLabel.TabIndex = 15;
@@ -408,7 +459,7 @@
       // 
       this.exceptionTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.exceptionTextBox.Location = new System.Drawing.Point(95, 152);
+      this.exceptionTextBox.Location = new System.Drawing.Point(95, 169);
       this.exceptionTextBox.Name = "exceptionTextBox";
       this.exceptionTextBox.Size = new System.Drawing.Size(171, 20);
       this.exceptionTextBox.TabIndex = 10;
@@ -438,57 +489,6 @@
       this.tabControl.SelectedIndex = 0;
       this.tabControl.Size = new System.Drawing.Size(571, 401);
       this.tabControl.TabIndex = 25;
-      // 
-      // priorityComboBox
-      // 
-      this.priorityComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.priorityComboBox.FormattingEnabled = true;
-      this.priorityComboBox.Items.AddRange(new object[] {
-            "1",
-            "2",
-            "3",
-            "4",
-            "5"});
-      this.priorityComboBox.Location = new System.Drawing.Point(87, 35);
-      this.priorityComboBox.Name = "priorityComboBox";
-      this.priorityComboBox.Size = new System.Drawing.Size(182, 21);
-      this.priorityComboBox.TabIndex = 43;
-      // 
-      // coresNeededComboBox
-      // 
-      this.coresNeededComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.coresNeededComboBox.FormattingEnabled = true;
-      this.coresNeededComboBox.Items.AddRange(new object[] {
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8"});
-      this.coresNeededComboBox.Location = new System.Drawing.Point(134, 13);
-      this.coresNeededComboBox.Name = "coresNeededComboBox";
-      this.coresNeededComboBox.Size = new System.Drawing.Size(134, 21);
-      this.coresNeededComboBox.TabIndex = 41;
-      // 
-      // memoryNeededComboBox
-      // 
-      this.memoryNeededComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.memoryNeededComboBox.FormattingEnabled = true;
-      this.memoryNeededComboBox.Items.AddRange(new object[] {
-            "128",
-            "256",
-            "512",
-            "1024",
-            "2048"});
-      this.memoryNeededComboBox.Location = new System.Drawing.Point(134, 35);
-      this.memoryNeededComboBox.Name = "memoryNeededComboBox";
-      this.memoryNeededComboBox.Size = new System.Drawing.Size(135, 21);
-      this.memoryNeededComboBox.TabIndex = 42;
       // 
       // HiveTaskView
       // 
