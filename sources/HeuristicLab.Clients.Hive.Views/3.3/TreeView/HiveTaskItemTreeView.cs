@@ -28,7 +28,7 @@ using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Optimization;
 
-namespace HeuristicLab.Clients.Hive.Views.ExperimentManager {
+namespace HeuristicLab.Clients.Hive.Views {
   [View("HiveTask ItemTreeView")]
   [Content(typeof(ItemCollection<HiveTask>), IsDefaultView = false)]
   public partial class HiveTaskItemTreeView : ItemTreeView<HiveTask> {

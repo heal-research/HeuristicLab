@@ -27,7 +27,7 @@
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RefreshableHiveJobView));
       this.tabControl = new System.Windows.Forms.TabControl();
       this.tasksTabPage = new System.Windows.Forms.TabPage();
-      this.jobsTreeView = new HeuristicLab.Clients.Hive.Views.ExperimentManager.HiveTaskItemTreeView();
+      this.jobsTreeView = new HeuristicLab.Clients.Hive.Views.HiveTaskItemTreeView();
       this.permissionTabPage = new System.Windows.Forms.TabPage();
       this.refreshPermissionsButton = new System.Windows.Forms.Button();
       this.hiveExperimentPermissionListView = new HeuristicLab.Clients.Hive.JobManager.Views.HiveJobPermissionListView();
@@ -483,7 +483,7 @@
     private System.Windows.Forms.TabPage logTabPage;
     private Core.Views.LogView logView;
     private System.Windows.Forms.TabPage tasksTabPage;
-    private HeuristicLab.Clients.Hive.Views.ExperimentManager.HiveTaskItemTreeView jobsTreeView;
+    private HeuristicLab.Clients.Hive.Views.HiveTaskItemTreeView jobsTreeView;
     private System.Windows.Forms.Label nameLabel;
     private System.Windows.Forms.TextBox nameTextBox;
     private System.Windows.Forms.ToolTip toolTip;

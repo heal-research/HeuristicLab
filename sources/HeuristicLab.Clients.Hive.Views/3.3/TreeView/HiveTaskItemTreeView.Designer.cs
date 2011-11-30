@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.Clients.Hive.Views.ExperimentManager {
+namespace HeuristicLab.Clients.Hive.Views {
   partial class HiveTaskItemTreeView {
     /// <summary> 
     /// Required designer variable.

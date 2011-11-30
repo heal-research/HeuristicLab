@@ -24,7 +24,7 @@ using HeuristicLab.Clients.Hive.Jobs;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 
-namespace HeuristicLab.Clients.Hive.Views.ExperimentManager.TreeView {
+namespace HeuristicLab.Clients.Hive.Views.TreeView {
   public class DeleteTaskTreeNodeAction : IItemTreeNodeAction<HiveTask> {
     private ItemCollection<HiveTask> hiveTasks;
 

@@ -24,7 +24,7 @@ using HeuristicLab.Clients.Hive;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Optimizer.MenuItems {
-  public class ExperimentManagerMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItem, IOptimizerUserInterfaceItemProvider {
+  public class JobManagerMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItem, IOptimizerUserInterfaceItemProvider {
     public override string Name {
       get { return "&Job Manager"; }
     }

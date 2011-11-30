@@ -78,7 +78,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.refreshButton);
       this.Controls.Add(this.hiveExperimentListView);
-      this.Name = "HiveExperimentManagerView";
+      this.Name = "JobManagerView";
       this.Size = new System.Drawing.Size(735, 524);
       this.ResumeLayout(false);
 
