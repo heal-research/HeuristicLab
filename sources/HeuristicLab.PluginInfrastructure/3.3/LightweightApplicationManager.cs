@@ -72,7 +72,7 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <returns>Enumerable of the created instances.</returns>
     public IEnumerable<object> GetInstances(Type type) {
       List<object> instances = new List<object>();
-      foreach (Type t in GetTypes(type, true)) {
+      foreach (Type t in GetTypes(type)) {
         object instance = null;
         try { instance = Activator.CreateInstance(t); }
         catch { }
@@ -87,11 +87,12 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <param name="types">Most general types for which to find matching types.</param>
     /// <remarks>Return only types that are instantiable 
     /// (interfaces, abstract classes... are not returned)</remarks>
+    /// <param name="includeGenericTypeDefinitions">Specifies if generic type definitions shall be included</param>
     /// <returns>Enumerable of the discovered types.</returns>
-    public IEnumerable<Type> GetTypes(IEnumerable<Type> types, bool onlyInstantiable = true, bool assignableToAllTypes = true) {
-      IEnumerable<Type> result = GetTypes(types.First(), onlyInstantiable);
+    public IEnumerable<Type> GetTypes(IEnumerable<Type> types, bool onlyInstantiable = true, bool includeGenericTypeDefinitions = false, bool assignableToAllTypes = true) {
+      IEnumerable<Type> result = GetTypes(types.First(), onlyInstantiable, includeGenericTypeDefinitions);
       foreach (Type type in types.Skip(1)) {
-        IEnumerable<Type> discoveredTypes = GetTypes(type, onlyInstantiable);
+        IEnumerable<Type> discoveredTypes = GetTypes(type, onlyInstantiable, includeGenericTypeDefinitions);
         if (assignableToAllTypes) result = result.Intersect(discoveredTypes);
         else result = result.Union(discoveredTypes);
       }
@@ -104,10 +105,11 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <param name="type">Most general type for which to find matching types.</param>
     /// <param name="onlyInstantiable">Return only types that are instantiable 
     /// (interfaces, abstract classes... are not returned)</param>
+    /// <param name="includeGenericTypeDefinitions">Specifies if generic type definitions shall be included</param>
     /// <returns>Enumerable of the discovered types.</returns>
-    public IEnumerable<Type> GetTypes(Type type, bool onlyInstantiable = true) {
+    public IEnumerable<Type> GetTypes(Type type, bool onlyInstantiable = true, bool includeGenericTypeDefinitions = false) {
       return from asm in AppDomain.CurrentDomain.GetAssemblies()
-             from t in GetTypes(type, asm, onlyInstantiable)
+             from t in GetTypes(type, asm, onlyInstantiable, includeGenericTypeDefinitions)
              select t;
     }
 
@@ -119,7 +121,7 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <param name="onlyInstantiable">Return only types that are instantiable 
     /// (interfaces, abstract classes...  are not returned)</param>
     /// <returns>Enumerable of the discovered types.</returns>
-    private static IEnumerable<Type> GetTypes(Type type, Assembly assembly, bool onlyInstantiable = true) {
+    private static IEnumerable<Type> GetTypes(Type type, Assembly assembly, bool onlyInstantiable = true, bool includeGenericTypeDefinitions = false) {
       try {
         var assemblyTypes = assembly.GetTypes();
 
@@ -130,7 +132,7 @@ namespace HeuristicLab.PluginInfrastructure {
                          select BuildType(t, type);
 
         return from t in buildTypes
-               where onlyInstantiable == false || !t.IsGenericTypeDefinition
+               where includeGenericTypeDefinitions || !t.IsGenericTypeDefinition
                select t;
       }
       catch (TypeLoadException) {
@@ -181,9 +183,10 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <param name="type"></param>
     /// <param name="plugin"></param>
     /// <param name="onlyInstantiable"></param>
+    /// <param name="includeGenericTypeDefinitions"></param>
     /// <returns></returns>
     /// <throws>NotSupportedException</throws>
-    public IEnumerable<Type> GetTypes(Type type, IPluginDescription plugin, bool onlyInstantiable = true) {
+    public IEnumerable<Type> GetTypes(Type type, IPluginDescription plugin, bool onlyInstantiable = true, bool includeGenericTypeDefinitions = false) {
       throw new NotSupportedException("LightweightApplicationManager doesn't support type discovery for plugins.");
     }
 
@@ -193,9 +196,10 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <param name="type"></param>
     /// <param name="plugin"></param>
     /// <param name="onlyInstantiable"></param>
+    /// <param name="includeGenericTypeDefinitions"></param>
     /// <returns></returns>
     /// <throws>NotSupportedException</throws>
-    public IEnumerable<Type> GetTypes(IEnumerable<Type> types, IPluginDescription plugin, bool onlyInstantiable = true, bool assignableToAllTypes = true) {
+    public IEnumerable<Type> GetTypes(IEnumerable<Type> types, IPluginDescription plugin, bool onlyInstantiable = true, bool includeGenericTypeDefinitions = false, bool assignableToAllTypes = true) {
       throw new NotSupportedException("LightweightApplicationManager doesn't support type discovery for plugins.");
     }
 

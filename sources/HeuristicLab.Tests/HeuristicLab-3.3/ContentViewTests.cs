@@ -58,7 +58,7 @@ namespace HeuristicLab_33.Tests {
     [TestMethod]
     public void ContentViewAttributeTest() {
       //get all non-generic and instantiable classes which implement IContentView
-      foreach (Type viewType in ApplicationManager.Manager.GetTypes(typeof(IContentView), true).Where(t => !t.ContainsGenericParameters)) {
+      foreach (Type viewType in ApplicationManager.Manager.GetTypes(typeof(IContentView))) {
         //get all ContentAttributes on the instantiable view
         foreach (ContentAttribute attribute in viewType.GetCustomAttributes(typeof(ContentAttribute), false).Cast<ContentAttribute>()) {
           Assert.IsTrue(attribute.ContentType == typeof(IContent) || attribute.ContentType.GetInterfaces().Contains(typeof(IContent)),

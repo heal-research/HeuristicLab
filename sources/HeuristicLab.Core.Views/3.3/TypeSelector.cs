@@ -127,13 +127,12 @@ namespace HeuristicLab.Core.Views {
           pluginNode.SelectedImageIndex = pluginNode.ImageIndex;
           pluginNode.Tag = plugin;
 
-          var types = from t in ApplicationManager.Manager.GetTypes(BaseTypes, plugin, !ShowNotInstantiableTypes, assignableToAllTypes)
+          var types = from t in ApplicationManager.Manager.GetTypes(BaseTypes, plugin, !ShowNotInstantiableTypes, ShowGenericTypes, assignableToAllTypes)
                       where typeCondition(t)
                       orderby t.Name ascending
                       select t;
           foreach (Type type in types) {
             bool valid = true;
-            valid = valid && (ShowGenericTypes || !type.ContainsGenericParameters);
             valid = valid && (ShowNotInstantiableTypes || type.GetConstructor(Type.EmptyTypes) != null); //check for public default ctor
             if (valid) {
               TreeNode typeNode = new TreeNode();
