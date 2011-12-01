@@ -277,6 +277,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
             int testStart = (i * testSamplesCount) + SamplesStart.Value;
             int testEnd = (i + 1) == Folds.Value ? SamplesEnd.Value : (i + 1) * testSamplesCount + SamplesStart.Value;
 
+            problem.ProblemData.TrainingPartition.Start = SamplesStart.Value;
+            problem.ProblemData.TrainingPartition.End = SamplesEnd.Value;
             problem.ProblemData.TestPartition.Start = testStart;
             problem.ProblemData.TestPartition.End = testEnd;
             DataAnalysisProblemData problemData = problem.ProblemData as DataAnalysisProblemData;
@@ -514,11 +516,17 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (ExecutionState != ExecutionState.Prepared)
         throw new InvalidOperationException("Can not change number of folds if the execution state is not prepared.");
     }
+
+    private bool samplesChanged = false;
     private void SamplesStart_ValueChanged(object sender, EventArgs e) {
+      samplesChanged = true;
       if (Problem != null) Problem.ProblemData.TrainingPartition.Start = SamplesStart.Value;
+      samplesChanged = false;
     }
     private void SamplesEnd_ValueChanged(object sender, EventArgs e) {
-      if (Problem != null) Problem.ProblemData.TrainingPartition.End = SamplesEnd.Value;
+      samplesChanged = true;
+      if (Problem != null) problem.ProblemData.TrainingPartition.End = SamplesEnd.Value;
+      samplesChanged = false;
     }
 
     #region template algorithms events
@@ -542,7 +550,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         algorithm.Problem = problem;
         throw new ArgumentException("A cross validation algorithm can only contain DataAnalysisProblems.");
       }
-      algorithm.Problem.Reset += (x,y) => OnProblemChanged();
+      algorithm.Problem.Reset += (x, y) => OnProblemChanged();
       problem = (IDataAnalysisProblem)algorithm.Problem;
       OnProblemChanged();
     }
@@ -550,6 +558,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private void OnProblemChanged() {
       EventHandler handler = ProblemChanged;
       if (handler != null) handler(this, EventArgs.Empty);
+      if (samplesChanged) return;
 
       SamplesStart.Value = 0;
       if (Problem != null) {
