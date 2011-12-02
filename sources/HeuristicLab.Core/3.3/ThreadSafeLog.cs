@@ -29,45 +29,39 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Core {
   [Item("ThreadSafeLog", "A thread-safe log for logging string messages.")]
   [StorableClass]
-  public class ThreadSafeLog : Log, IDeepCloneable {
-    protected ReaderWriterLockSlim locker = new ReaderWriterLockSlim();
+  public sealed class ThreadSafeLog : Log {
+    private ReaderWriterLockSlim locker = new ReaderWriterLockSlim();
 
     public override IEnumerable<string> Messages {
       get {
         locker.EnterReadLock();
         try {
           return messages.ToArray(); // return copy of messages
-        }
-        finally { locker.ExitReadLock(); }
+        } finally { locker.ExitReadLock(); }
       }
     }
 
     [StorableConstructor]
-    protected ThreadSafeLog(bool deserializing) : base(deserializing) { }
+    private ThreadSafeLog(bool deserializing) : base(deserializing) { }
     public ThreadSafeLog(long maxMessageCount = -1)
       : base(maxMessageCount) {
     }
 
-    protected ThreadSafeLog(ThreadSafeLog original, Cloner cloner) {
-      original.locker.EnterReadLock();
-      try {
-        cloner.RegisterClonedObject(original, this);
-        this.messages = new List<string>(original.messages);
-        this.maxMessageCount = original.maxMessageCount;
-      }
-      finally { original.locker.ExitReadLock(); }
-    }
+    private ThreadSafeLog(ThreadSafeLog original, Cloner cloner)
+      : base(original, cloner) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new ThreadSafeLog(this, cloner);
+      locker.EnterReadLock();
+      try {
+        return new ThreadSafeLog(this, cloner);
+      } finally { locker.ExitReadLock(); }
     }
 
     public override void Clear() {
       locker.EnterWriteLock();
       try {
         messages.Clear();
-      }
-      finally { locker.ExitWriteLock(); }
+      } finally { locker.ExitWriteLock(); }
       OnCleared();
     }
 
@@ -77,8 +71,7 @@ namespace HeuristicLab.Core {
       try {
         messages.Add(s);
         CapMessages();
-      }
-      finally { locker.ExitWriteLock(); }
+      } finally { locker.ExitWriteLock(); }
       OnMessageAdded(s);
     }
 
@@ -88,8 +81,7 @@ namespace HeuristicLab.Core {
       try {
         messages.Add(s);
         CapMessages();
-      }
-      finally { locker.ExitWriteLock(); }
+      } finally { locker.ExitWriteLock(); }
       OnMessageAdded(s);
     }
   }
