@@ -525,7 +525,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     private void SamplesEnd_ValueChanged(object sender, EventArgs e) {
       samplesChanged = true;
-      if (Problem != null) problem.ProblemData.TrainingPartition.End = SamplesEnd.Value;
+      if (Problem != null) Problem.ProblemData.TrainingPartition.End = SamplesEnd.Value;
       samplesChanged = false;
     }
 
