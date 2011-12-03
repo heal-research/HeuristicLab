@@ -276,7 +276,7 @@ namespace HeuristicLab.Clients.Hive {
           if (!hiveTask.IsFinishedTaskDownloaded && !hiveTask.IsDownloading && hiveTask.Task.LastTaskDataUpdate < lightweightTask.LastTaskDataUpdate) {
             log.LogMessage(string.Format("Downloading task {0}", lightweightTask.Id));
             hiveTask.IsDownloading = true;
-            jobDownloader.DownloadTask(hiveTask.Task, (localJob, itemJob) => {
+            jobDownloader.DownloadTaskData(hiveTask.Task, (localJob, itemJob) => {
               log.LogMessage(string.Format("Finished downloading task {0}", localJob.Id));
               HiveTask localHiveTask = GetHiveJobById(localJob.Id);
 

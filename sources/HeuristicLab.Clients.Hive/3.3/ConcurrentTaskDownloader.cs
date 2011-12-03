@@ -41,46 +41,60 @@ namespace HeuristicLab.Clients.Hive {
       TaskScheduler.UnobservedTaskException += new EventHandler<UnobservedTaskExceptionEventArgs>(TaskScheduler_UnobservedTaskException);
     }
 
-    public void DownloadTask(Task job, Action<Task, T> onFinishedAction) {
-      Task<T> task = Task<TaskData>.Factory.StartNew((x) => DownloadTask(x), job.Id)
-                                     .ContinueWith((x) => DeserializeTask(x.Result));
-      task.ContinueWith((x) => OnTaskFinished(job, x, onFinishedAction), TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.OnlyOnRanToCompletion);
-      task.ContinueWith((x) => OnTaskFailed(job, x, onFinishedAction), TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.OnlyOnFaulted);
+    public void DownloadTaskData(Task t, Action<Task, T> onFinishedAction) {
+      Task<Tuple<Task, T>> task = Task<Tuple<Task, TaskData>>.Factory.StartNew(DownloadTaskData, t)
+                                     .ContinueWith((y) => DeserializeTask(y.Result));
+
+      task.ContinueWith((x) => OnTaskFinished(x, onFinishedAction), TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.OnlyOnRanToCompletion);
+      task.ContinueWith((x) => OnTaskFailed(x, onFinishedAction), TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.OnlyOnFaulted);
     }
 
-    private void OnTaskFinished(Task job, Task<T> task, Action<Task, T> onFinishedAction) {
-      onFinishedAction(job, task.Result);
+    public void DownloadTaskDataAndTask(Guid taskId, Action<Task, T> onFinishedAction) {
+      Task<Tuple<Task, T>> task = Task<Task>.Factory.StartNew(DownloadTask, taskId)
+                                     .ContinueWith((x) => DownloadTaskData(x.Result))
+                                     .ContinueWith((y) => DeserializeTask(y.Result));
+
+      task.ContinueWith((x) => OnTaskFinished(x, onFinishedAction), TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.OnlyOnRanToCompletion);
+      task.ContinueWith((x) => OnTaskFailed(x, onFinishedAction), TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.OnlyOnFaulted);
     }
-    private void OnTaskFailed(Task job, Task<T> task, Action<Task, T> onFinishedAction) {
+
+    private void OnTaskFinished(Task<Tuple<Task, T>> task, Action<Task, T> onFinishedAction) {
+      onFinishedAction(task.Result.Item1, task.Result.Item2);
+    }
+    private void OnTaskFailed(Task<Tuple<Task, T>> task, Action<Task, T> onFinishedAction) {
       task.Exception.Flatten().Handle((e) => { return true; });
       OnExceptionOccured(task.Exception.Flatten());
-      onFinishedAction(job, null);
+      onFinishedAction(task.Result.Item1, null);
     }
 
-    protected TaskData DownloadTask(object taskId) {
+    private Task DownloadTask(object taskId) {
+      return ServiceLocator.Instance.CallHiveService(s => s.GetTask((Guid)taskId));
+    }
+
+    protected Tuple<Task, TaskData> DownloadTaskData(object taskId) {
+      return DownloadTaskData((Task)taskId);
+    }
+
+    protected Tuple<Task, TaskData> DownloadTaskData(Task task) {
       downloadSemaphore.WaitOne();
       deserializeSemaphore.WaitOne();
       TaskData result;
       try {
         if (abort) return null;
-        result = ServiceLocator.Instance.CallHiveService(s => s.GetTaskData((Guid)taskId));
-      }
-      finally {
+        result = ServiceLocator.Instance.CallHiveService(s => s.GetTaskData(task.Id));
+      } finally {
         downloadSemaphore.Release();
       }
-      return result;
+      return new Tuple<Task, TaskData>(task, result);
     }
 
-    protected T DeserializeTask(TaskData taskData) {
+    protected Tuple<Task, T> DeserializeTask(Tuple<Task, TaskData> taskData) {
       try {
-        if (abort || taskData == null) return null;
-        Task task = ServiceLocator.Instance.CallHiveService(s => s.GetTask(taskData.TaskId));
-        if (task == null) return null;
-        var deserializedJob = PersistenceUtil.Deserialize<T>(taskData.Data);
-        taskData.Data = null; // reduce memory consumption.
-        return deserializedJob;
-      }
-      finally {
+        if (abort || taskData.Item2 == null || taskData.Item1 == null) return null;
+        var deserializedJob = PersistenceUtil.Deserialize<T>(taskData.Item2.Data);
+        taskData.Item2.Data = null; // reduce memory consumption.
+        return new Tuple<Task, T>(taskData.Item1, deserializedJob);
+      } finally {
         deserializeSemaphore.Release();
       }
     }

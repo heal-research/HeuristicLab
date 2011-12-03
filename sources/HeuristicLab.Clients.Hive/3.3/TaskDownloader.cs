@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Clients.Hive.Jobs;
 using HeuristicLab.Common;
+using System.Threading;
 
 namespace HeuristicLab.Clients.Hive {
   public class TaskDownloader {
@@ -32,10 +33,14 @@ namespace HeuristicLab.Clients.Hive {
     private IDictionary<Guid, HiveTask> results;
     private bool exceptionOccured = false;
     private Exception currentException;
+    private ReaderWriterLockSlim resultsLock = new ReaderWriterLockSlim();
 
     public bool IsFinished {
       get {
-        return results.Count == taskIds.Count();
+          try {        
+              resultsLock.EnterReadLock();
+              return results.Count == taskIds.Count();
+          } finally { resultsLock.ExitReadLock(); }
       }
     }
 
@@ -53,13 +58,19 @@ namespace HeuristicLab.Clients.Hive {
 
     public int FinishedCount {
       get {
-        return results.Count;
+            try {
+              resultsLock.EnterReadLock();
+              return results.Count;
+             } finally { resultsLock.ExitReadLock(); }
       }
     }
 
     public IDictionary<Guid, HiveTask> Results {
       get {
-        return results;
+            try {
+              resultsLock.EnterReadLock();
+              return results;
+            } finally { resultsLock.ExitReadLock(); }
       }
     }
 
@@ -72,9 +83,7 @@ namespace HeuristicLab.Clients.Hive {
 
     public void StartAsync() {
       foreach (Guid taskId in taskIds) {
-        Task task = ServiceLocator.Instance.CallHiveService(s => s.GetTask(taskId));
-
-        taskDownloader.DownloadTask(task,
+        taskDownloader.DownloadTaskDataAndTask(taskId,
           (localJob, itemJob) => {
             if (localJob != null && itemJob != null) {
               HiveTask hiveTask;
@@ -84,7 +93,10 @@ namespace HeuristicLab.Clients.Hive {
                 hiveTask = new HiveTask(itemJob, true);
               }
               hiveTask.Task = localJob;
-              this.results.Add(localJob.Id, hiveTask);
+              try {
+                resultsLock.EnterWriteLock();
+                this.results.Add(localJob.Id, hiveTask);
+              } finally { resultsLock.ExitWriteLock(); }
             }
           });
       }
