@@ -25,6 +25,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Common;
+using HeuristicLab.Core.Views;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
@@ -32,15 +33,15 @@ using HeuristicLab.MainForm.WindowsForms;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
   [View("Response Function View")]
   [Content(typeof(ISymbolicRegressionSolution), false)]
-  public partial class SymbolicDataAnalysisSolutionResponseFunctionView : AsynchronousContentView {
+  public partial class SymbolicRegressionSolutionResponseFunctionView : ItemView {
     private Dictionary<string, List<ISymbolicExpressionTreeNode>> variableNodes;
     private ISymbolicExpressionTree clonedTree;
     private Dictionary<string, double> medianValues;
-    public SymbolicDataAnalysisSolutionResponseFunctionView() {
+    public SymbolicRegressionSolutionResponseFunctionView() {
       InitializeComponent();
-      this.variableNodes = new Dictionary<string, List<ISymbolicExpressionTreeNode>>();
+      variableNodes = new Dictionary<string, List<ISymbolicExpressionTreeNode>>();
       medianValues = new Dictionary<string, double>();
-      this.Caption = "Response Function View";
+      Caption = "Response Function View";
     }
 
     public new ISymbolicRegressionSolution Content {
@@ -85,7 +86,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
        (from varNode in Content.Model.SymbolicExpressionTree.IterateNodesPrefix().OfType<VariableTreeNode>()
         select varNode.VariableName)
          .Distinct()
-         .OrderBy(x => x)
+         .OrderBy(x => x, new NaturalStringComparer())
          .ToList();
 
         medianValues.Clear();
@@ -128,7 +129,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
       string freeVariable = (string)comboBox.SelectedItem;
       IEnumerable<string> fixedVariables = comboBox.Items.OfType<string>()
         .Except(new string[] { freeVariable });
-      
+
       // scatter plots for subset of samples that have values near the median values for all variables
       Func<int, bool> NearMedianValue = (r) => {
         foreach (var fixedVar in fixedVariables) {

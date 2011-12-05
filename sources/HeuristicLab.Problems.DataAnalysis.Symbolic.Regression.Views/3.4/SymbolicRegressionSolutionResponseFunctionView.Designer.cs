@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
-  partial class SymbolicDataAnalysisSolutionResponseFunctionView {
+  partial class SymbolicRegressionSolutionResponseFunctionView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>

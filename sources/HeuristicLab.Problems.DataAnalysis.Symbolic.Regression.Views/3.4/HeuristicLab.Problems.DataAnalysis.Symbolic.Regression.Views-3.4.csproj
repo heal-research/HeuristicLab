@@ -116,11 +116,11 @@
       <DependentUpon>InteractiveSymbolicRegressionSolutionSimplifierView.cs</DependentUpon>
     </Compile>
     <Compile Include="Plugin.cs" />
-    <Compile Include="SymbolicDataAnalysisSolutionResponseFunctionView.cs">
+    <Compile Include="SymbolicRegressionSolutionResponseFunctionView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="SymbolicDataAnalysisSolutionResponseFunctionView.Designer.cs">
-      <DependentUpon>SymbolicDataAnalysisSolutionResponseFunctionView.cs</DependentUpon>
+    <Compile Include="SymbolicRegressionSolutionResponseFunctionView.Designer.cs">
+      <DependentUpon>SymbolicRegressionSolutionResponseFunctionView.cs</DependentUpon>
     </Compile>
     <Compile Include="SymbolicRegressionSolutionErrorCharacteristicsCurveView.cs">
       <SubType>UserControl</SubType>
