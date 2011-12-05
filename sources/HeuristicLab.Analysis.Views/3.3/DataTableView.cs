@@ -202,6 +202,7 @@ namespace HeuristicLab.Analysis.Views {
           break;
         case DataRowVisualProperties.DataRowChartType.Histogram:
           series.ChartType = SeriesChartType.Column;
+          series.IsVisibleInLegend = row.VisualProperties.IsVisibleInLegend;
           series.SetCustomProperty("PointWidth", "1");
           if (!series.Color.IsEmpty && series.Color.GetBrightness() < 0.25)
             series.BorderColor = Color.White;

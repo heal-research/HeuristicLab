@@ -51,14 +51,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       get { return (IScopeTreeLookupParameter<ISymbolicExpressionTree>)Parameters[SymbolicExpressionTreeParameterName]; }
     }
     public ValueLookupParameter<DataTable> SymbolicExpressionTreeLengthsParameter {
-      get {
-        return (ValueLookupParameter<DataTable>)Parameters[SymbolicExpressionTreeLengthsParameterName];
-      }
+      get { return (ValueLookupParameter<DataTable>)Parameters[SymbolicExpressionTreeLengthsParameterName]; }
     }
     public ValueLookupParameter<DataTableHistory> SymbolicExpressionTreeLengthsHistoryParameter {
-      get {
-        return (ValueLookupParameter<DataTableHistory>)Parameters[SymbolicExpressionTreeLengthsHistoryParameterName];
-      }
+      get { return (ValueLookupParameter<DataTableHistory>)Parameters[SymbolicExpressionTreeLengthsHistoryParameterName]; }
     }
     public ValueLookupParameter<ResultCollection> ResultsParameter {
       get { return (ValueLookupParameter<ResultCollection>)Parameters[ResultsParameterName]; }
@@ -74,6 +70,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       get { return (LookupParameter<IntValue>)Parameters[UpdateCounterParameterName]; }
     }
     #endregion
+
     [StorableConstructor]
     private SymbolicExpressionTreeLengthAnalyzer(bool deserializing) : base() { }
     private SymbolicExpressionTreeLengthAnalyzer(SymbolicExpressionTreeLengthAnalyzer original, Cloner cloner)
@@ -90,12 +87,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       Parameters.Add(new ValueLookupParameter<DataTable>(SymbolicExpressionTreeLengthsParameterName, "The data table to store the symbolic expression tree lengths."));
       Parameters.Add(new ValueLookupParameter<DataTableHistory>(SymbolicExpressionTreeLengthsHistoryParameterName, "The data table to store the symbolic expression tree lengths history."));
       Parameters.Add(new ValueLookupParameter<ResultCollection>(ResultsParameterName, "The results collection where the analysis values should be stored."));
-
-      #region Add parameters for history
       Parameters.Add(new ValueParameter<BoolValue>(StoreHistoryParameterName, "True if the tree lengths history of the population should be stored.", new BoolValue(false)));
       Parameters.Add(new ValueParameter<IntValue>(UpdateIntervalParameterName, "The interval in which the tree length analysis should be applied.", new IntValue(1)));
       Parameters.Add(new LookupParameter<IntValue>(UpdateCounterParameterName, "The value which counts how many times the operator was called since the last update", "MinMaxAverageSymbolicExpressionTreeLengthAnalyzerUpdateCounter"));
-      #endregion
 
       UpdateCounterParameter.Hidden = true;
 
@@ -135,89 +129,104 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         var treeLengthsTable = SymbolicExpressionTreeLengthsParameter.ActualValue;
         // if the table was not created yet, we create it here
         if (treeLengthsTable == null) {
-          treeLengthsTable = new DataTable("Tree Length Values");
+          treeLengthsTable = new DataTable("Histogram");
           SymbolicExpressionTreeLengthsParameter.ActualValue = treeLengthsTable;
         }
 
         // data table which stores tree length values
-        DataRow dataRow;
+        DataRow treeLengthsTableRow;
+
+        const string treeLengthsTableRowName = "Symbolic expression tree lengths";
+        const string treeLengthsTableRowDesc = "The distribution of symbolic expression tree lengths";
+        const string xAxisTitle = "Symbolic expression tree lengths";
+        const string yAxisTitle = "Frequency / Number of tree individuals";
 
         var treeLengths = solutions.Select(s => (double)s.Length);
+        int maxLength = solutions.Max(s => s.Length);
+        int minLength = solutions.Min(s => s.Length);
 
-        if (!treeLengthsTable.Rows.ContainsKey("Tree Lengths")) {
-          dataRow = new DataRow("Tree Lengths", "", treeLengths);
-          treeLengthsTable.Rows.Add(dataRow);
+        if (!treeLengthsTable.Rows.ContainsKey(treeLengthsTableRowName)) {
+          treeLengthsTableRow = new DataRow(treeLengthsTableRowName, treeLengthsTableRowDesc, treeLengths);
+          treeLengthsTable.Rows.Add(treeLengthsTableRow);
         } else {
-          dataRow = treeLengthsTable.Rows["Tree Lengths"];
-          dataRow.Values.Replace(treeLengths);
+          treeLengthsTableRow = treeLengthsTable.Rows[treeLengthsTableRowName];
+          treeLengthsTableRow.Values.Replace(treeLengths);
         }
 
         double maximumAllowedTreeLength = ((LookupParameter<IntValue>)Parameters[MaximumSymbolicExpressionTreeLengthParameterName]).ActualValue.Value;
 
-        dataRow.VisualProperties.ChartType = DataRowVisualProperties.DataRowChartType.Histogram;
-        dataRow.VisualProperties.ExactBins = false;
+        treeLengthsTableRow.VisualProperties.ChartType = DataRowVisualProperties.DataRowChartType.Histogram;
+        treeLengthsTableRow.VisualProperties.ExactBins = false;
 
-        // the following trick should result in an intervalWidth of 1,2,4,... (an int value)
-        dataRow.VisualProperties.Bins = solutions.Max(s => s.Length) - solutions.Min(s => s.Length);
+        // the following trick should result in an integer intervalWidth of 1,2,4,...
+        treeLengthsTableRow.VisualProperties.Bins = maxLength - minLength;
 
-        int maxLength = solutions.Max(s => s.Length);
-        if (maxLength <= 25)      // [0,25]
-          dataRow.VisualProperties.ScaleFactor = 1.0;
+        if (maxLength <= 25) // [0,25]
+          treeLengthsTableRow.VisualProperties.ScaleFactor = 1.0;
         else if (maxLength <= 100) // [26,100])
-          dataRow.VisualProperties.ScaleFactor = 1.0 / 2.0;
+          treeLengthsTableRow.VisualProperties.ScaleFactor = 1.0 / 2.0;
         else if (maxLength <= 250) // [100,250]
-          dataRow.VisualProperties.ScaleFactor = 1.0 / 5.0;
+          treeLengthsTableRow.VisualProperties.ScaleFactor = 1.0 / 5.0;
         else if (maxLength <= 500) // [251,500]
-          dataRow.VisualProperties.ScaleFactor = 1.0 / 10.0;
+          treeLengthsTableRow.VisualProperties.ScaleFactor = 1.0 / 10.0;
         else
-          dataRow.VisualProperties.ScaleFactor = 1.0 / 20.0;   // [501,inf]
+          treeLengthsTableRow.VisualProperties.ScaleFactor = 1.0 / 20.0; // [501,inf]
+
+        treeLengthsTableRow.VisualProperties.IsVisibleInLegend = false;
 
         // visual properties for the X-axis
         treeLengthsTable.VisualProperties.XAxisMinimumAuto = false;
         treeLengthsTable.VisualProperties.XAxisMaximumAuto = false;
         treeLengthsTable.VisualProperties.XAxisMinimumFixedValue = 0.0;
         if (maxLength > maximumAllowedTreeLength + 1)
-          treeLengthsTable.VisualProperties.XAxisMaximumFixedValue = solutions.Max(s => s.Length) + 1; // +1 so the histogram column for the maximum length won't get trimmed
+          treeLengthsTable.VisualProperties.XAxisMaximumFixedValue = maxLength + 1; // +1 so the histogram column for the maximum length won't get trimmed
         else
           treeLengthsTable.VisualProperties.XAxisMaximumFixedValue = maximumAllowedTreeLength + 1;
+        treeLengthsTable.VisualProperties.XAxisTitle = xAxisTitle;
         // visual properties for the Y-axis
         treeLengthsTable.VisualProperties.YAxisMinimumAuto = false;
         treeLengthsTable.VisualProperties.YAxisMaximumAuto = false;
         treeLengthsTable.VisualProperties.YAxisMinimumFixedValue = 0.0;
         treeLengthsTable.VisualProperties.YAxisMaximumFixedValue = Math.Ceiling(solutions.Length / 2.0);
+        treeLengthsTable.VisualProperties.YAxisTitle = yAxisTitle;
 
         var results = ResultsParameter.ActualValue;
 
-        if (!results.ContainsKey("Tree Lengths")) {
-          results.Add(new Result("Tree Lengths", treeLengthsTable));
+        if (!results.ContainsKey(treeLengthsTableRowName)) {
+          results.Add(new Result(treeLengthsTableRowName, treeLengthsTable));
         } else {
-          results["Tree Lengths"].Value = treeLengthsTable;
+          results[treeLengthsTableRowName].Value = treeLengthsTable;
         }
 
         bool storeHistory = StoreHistoryParameter.Value.Value;
+        const string treeLengthHistoryTableName = "Tree lengths history";
+        const string treeLengthHistoryRowPrefix = "Tree lengths ";
+        int currentGeneration = ((IntValue)results["Generations"].Value).Value;
 
         if (storeHistory) {
           // store tree lengths for each generation
-          var historyDataRow = new DataRow("Tree Lengths " + results["Generations"].Value, "", dataRow.Values);
+          var historyDataRow = new DataRow(treeLengthHistoryRowPrefix + currentGeneration, "Symbolic expression tree lengths at generation " + currentGeneration, treeLengthsTableRow.Values);
           historyDataRow.VisualProperties.ChartType = DataRowVisualProperties.DataRowChartType.Histogram;
           historyDataRow.VisualProperties.ExactBins = false;
-          historyDataRow.VisualProperties.Bins = solutions.Max(s => s.Length) - solutions.Min(s => s.Length);
-          historyDataRow.VisualProperties.ScaleFactor = dataRow.VisualProperties.ScaleFactor;
-          var historyTable = new DataTable("Lengths Table " + results["Generations"]);
+          historyDataRow.VisualProperties.Bins = maxLength - minLength;
+          historyDataRow.VisualProperties.ScaleFactor = treeLengthsTableRow.VisualProperties.ScaleFactor;
+          var historyTable = new DataTable();
           historyTable.Rows.Add(historyDataRow);
           // visual properties for the X-axis
           historyTable.VisualProperties.XAxisMinimumAuto = false;
           historyTable.VisualProperties.XAxisMaximumAuto = false;
           historyTable.VisualProperties.XAxisMinimumFixedValue = 0.0;
-          if (solutions.Max(s => s.Length) > maximumAllowedTreeLength + 1)
+          if (maxLength > maximumAllowedTreeLength + 1)
             historyTable.VisualProperties.XAxisMaximumFixedValue = maxLength + 1; // +1 so the histogram column for the maximum length won't get trimmed
           else
             historyTable.VisualProperties.XAxisMaximumFixedValue = maximumAllowedTreeLength + 1;
+          historyTable.VisualProperties.XAxisTitle = xAxisTitle;
           // visual properties for the Y-axis
           historyTable.VisualProperties.YAxisMinimumAuto = false;
           historyTable.VisualProperties.YAxisMaximumAuto = false;
           historyTable.VisualProperties.YAxisMinimumFixedValue = 0.0;
           historyTable.VisualProperties.YAxisMaximumFixedValue = Math.Ceiling(solutions.Length / 2.0);
+          historyTable.VisualProperties.YAxisTitle = yAxisTitle;
 
           var treeLengthsHistory = SymbolicExpressionTreeLengthsHistoryParameter.ActualValue;
           if (treeLengthsHistory == null) {
@@ -227,14 +236,13 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
           treeLengthsHistory.Add(historyTable);
 
-          if (!results.ContainsKey("Tree Lengths History")) {
-            results.Add(new Result("Tree Lengths History", treeLengthsHistory));
+          if (!results.ContainsKey(treeLengthHistoryTableName)) {
+            results.Add(new Result(treeLengthHistoryTableName, treeLengthsHistory));
           } else {
-            results["Tree Lengths History"].Value = treeLengthsHistory;
+            results[treeLengthHistoryTableName].Value = treeLengthsHistory;
           }
         }
       }
-
       return base.Apply();
     }
   }

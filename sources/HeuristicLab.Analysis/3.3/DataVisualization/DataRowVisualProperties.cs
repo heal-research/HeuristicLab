@@ -151,6 +151,16 @@ namespace HeuristicLab.Analysis {
         }
       }
     }
+    private bool isVisibleInLegend;
+    public bool IsVisibleInLegend {
+      get { return isVisibleInLegend; }
+      set {
+        if (isVisibleInLegend != value) {
+          isVisibleInLegend = value;
+          OnPropertyChanged("IsVisibleInLegend");
+        }
+      }
+    }
     private string displayName;
     public string DisplayName {
       get { return displayName == null ? String.Empty : displayName; }
@@ -218,6 +228,11 @@ namespace HeuristicLab.Analysis {
       get { return scaleFactor; }
       set { scaleFactor = value; }
     }
+    [Storable(Name = "IsVisibleInLegend")]
+    private bool StorableIsVisibleInLegend {
+      get { return isVisibleInLegend; }
+      set { isVisibleInLegend = value; }
+    }
     [Storable(Name = "DisplayName")]
     private string StorableDisplayName {
       get { return displayName; }
@@ -240,6 +255,7 @@ namespace HeuristicLab.Analysis {
       this.exactBins = original.exactBins;
       this.scaleFactor = original.scaleFactor;
       this.displayName = original.displayName;
+      this.isVisibleInLegend = original.isVisibleInLegend;
     }
     public DataRowVisualProperties() {
       chartType = DataRowChartType.Line;
@@ -253,6 +269,7 @@ namespace HeuristicLab.Analysis {
       exactBins = false;
       scaleFactor = 1.0;
       displayName = String.Empty;
+      isVisibleInLegend = true;
     }
     public DataRowVisualProperties(string displayName)
       : this() {
