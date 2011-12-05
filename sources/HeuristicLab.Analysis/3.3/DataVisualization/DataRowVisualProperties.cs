@@ -228,7 +228,7 @@ namespace HeuristicLab.Analysis {
       get { return scaleFactor; }
       set { scaleFactor = value; }
     }
-    [Storable(Name = "IsVisibleInLegend")]
+    [Storable(Name = "IsVisibleInLegend", DefaultValue = true)]
     private bool StorableIsVisibleInLegend {
       get { return isVisibleInLegend; }
       set { isVisibleInLegend = value; }
