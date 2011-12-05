@@ -77,7 +77,6 @@ namespace HeuristicLab.Clients.Hive {
 
     protected Tuple<Task, TaskData> DownloadTaskData(Task task) {
       downloadSemaphore.WaitOne();
-      deserializeSemaphore.WaitOne();
       TaskData result;
       try {
         if (abort) return null;
@@ -89,6 +88,7 @@ namespace HeuristicLab.Clients.Hive {
     }
 
     protected Tuple<Task, T> DeserializeTask(Tuple<Task, TaskData> taskData) {
+      deserializeSemaphore.WaitOne();
       try {
         if (abort || taskData.Item2 == null || taskData.Item1 == null) return null;
         var deserializedJob = PersistenceUtil.Deserialize<T>(taskData.Item2.Data);

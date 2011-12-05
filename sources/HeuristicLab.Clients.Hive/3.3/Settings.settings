@@ -9,10 +9,13 @@
       <Value Profile="(Default)">HeuristicLab 3.3.exe</Value>
     </Setting>
     <Setting Name="ResultPollingInterval" Type="System.TimeSpan" Scope="Application">
-      <Value Profile="(Default)">00:00:10</Value>
+      <Value Profile="(Default)">00:00:20</Value>
     </Setting>
     <Setting Name="MaxParallelDownloads" Type="System.Int32" Scope="Application">
-      <Value Profile="(Default)">2</Value>
+      <Value Profile="(Default)">5</Value>
+    </Setting>
+    <Setting Name="MaxRepeatServiceCalls" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">5</Value>
     </Setting>
   </Settings>
 </SettingsFile>

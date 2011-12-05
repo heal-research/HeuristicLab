@@ -43,7 +43,7 @@ namespace HeuristicLab.Clients.Hive {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("00:00:10")]
+        [global::System.Configuration.DefaultSettingValueAttribute("00:00:20")]
         public global::System.TimeSpan ResultPollingInterval {
             get {
                 return ((global::System.TimeSpan)(this["ResultPollingInterval"]));
@@ -52,10 +52,19 @@ namespace HeuristicLab.Clients.Hive {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
         public int MaxParallelDownloads {
             get {
                 return ((int)(this["MaxParallelDownloads"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        public int MaxRepeatServiceCalls {
+            get {
+                return ((int)(this["MaxRepeatServiceCalls"]));
             }
         }
     }

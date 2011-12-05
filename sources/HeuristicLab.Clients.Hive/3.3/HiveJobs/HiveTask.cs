@@ -237,10 +237,10 @@ namespace HeuristicLab.Clients.Hive {
       }
     }
 
-    public virtual void AddChildHiveJob(HiveTask hiveJob) {
+    public virtual void AddChildHiveTask(HiveTask hiveTask) {
       childHiveTasksLock.EnterWriteLock();
       try {
-        this.childHiveTasks.Add(hiveJob);
+        this.childHiveTasks.Add(hiveTask);
       }
       finally { childHiveTasksLock.ExitWriteLock(); }
     }

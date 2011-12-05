@@ -112,8 +112,7 @@ namespace HeuristicLab.Clients.Hive {
       catch {
         jobs = null;
         throw;
-      }
-      finally {
+      } finally {
         OnRefreshed();
       }
     }
@@ -296,8 +295,7 @@ namespace HeuristicLab.Clients.Hive {
           if (!ae.InnerExceptions.All(e => e is TaskCanceledException)) throw ae; // for some reason the WaitAll throws a AggregateException containg a TaskCanceledException. i don't know where it comes from, however the tasks all finish properly, so for now just ignore it
         }
         refreshableJob.Job.Modified = false;
-      }
-      finally {
+      } finally {
         refreshableJob.IsProgressing = false;
       }
     }
@@ -361,7 +359,7 @@ namespace HeuristicLab.Clients.Hive {
               ServiceLocator.Instance.CallHiveService((s) => hiveTask.Task.PluginsNeededIds = PluginUtil.GetPluginDependencies(s, this.onlinePlugins, this.alreadyUploadedPlugins, plugins));
             }
           }
-        }, -1, "Failed to upload plugins");
+        }, Settings.Default.MaxRepeatServiceCalls, "Failed to upload plugins");
         cancellationToken.ThrowIfCancellationRequested();
         hiveTask.Task.PluginsNeededIds.Add(configPluginId);
         hiveTask.Task.JobId = jobId;
@@ -376,7 +374,7 @@ namespace HeuristicLab.Clients.Hive {
               hiveTask.Task.Id = ServiceLocator.Instance.CallHiveService((s) => s.AddTask(hiveTask.Task, taskData, groups.ToList()));
             }
           }
-        }, 50, "Failed to add task", log);
+        }, Settings.Default.MaxRepeatServiceCalls, "Failed to add task", log);
         cancellationToken.ThrowIfCancellationRequested();
 
         lock (jobCountLocker) {
@@ -399,8 +397,7 @@ namespace HeuristicLab.Clients.Hive {
         catch (AggregateException ae) {
           if (!ae.InnerExceptions.All(e => e is TaskCanceledException)) throw ae; // for some reason the WaitAll throws a AggregateException containg a TaskCanceledException. i don't know where it comes from, however the tasks all finish properly, so for now just ignore it
         }
-      }
-      finally {
+      } finally {
         if (!semaphoreReleased) taskUploadSemaphore.Release();
       }
     }
@@ -422,6 +419,7 @@ namespace HeuristicLab.Clients.Hive {
         allTasks = ServiceLocator.Instance.CallHiveService(s => s.GetLightweightJobTasks(hiveExperiment.Id));
         totalJobCount = allTasks.Count();
 
+        refreshableJob.Progress.Status = "Downloading tasks...";
         TaskDownloader downloader = new TaskDownloader(allTasks.Select(x => x.Id));
         downloader.StartAsync();
 
@@ -444,27 +442,27 @@ namespace HeuristicLab.Clients.Hive {
           refreshableJob.ExecutionState = Core.ExecutionState.Started;
         }
 
+        refreshableJob.Progress.Status = "Downloading/deserializing complete. Displaying tasks...";
         // build child-task tree
         foreach (HiveTask hiveTask in refreshableJob.HiveTasks) {
           BuildHiveJobTree(hiveTask, allTasks, allHiveTasks);
         }
 
         refreshableJob.OnLoaded();
-      }
-      finally {
+      } finally {
         refreshableJob.IsProgressing = false;
       }
     }
 
-    private static void BuildHiveJobTree(HiveTask parentHiveJob, IEnumerable<LightweightTask> allJobs, IDictionary<Guid, HiveTask> allHiveJobs) {
-      IEnumerable<LightweightTask> childTasks = from job in allJobs
-                                                where job.ParentTaskId.HasValue && job.ParentTaskId.Value == parentHiveJob.Task.Id
+    private static void BuildHiveJobTree(HiveTask parentHiveTask, IEnumerable<LightweightTask> allTasks, IDictionary<Guid, HiveTask> allHiveTasks) {
+      IEnumerable<LightweightTask> childTasks = from job in allTasks
+                                                where job.ParentTaskId.HasValue && job.ParentTaskId.Value == parentHiveTask.Task.Id
                                                 orderby job.DateCreated ascending
                                                 select job;
       foreach (LightweightTask task in childTasks) {
-        HiveTask childHiveTask = allHiveJobs[task.Id];
-        parentHiveJob.AddChildHiveJob(childHiveTask);
-        BuildHiveJobTree(childHiveTask, allJobs, allHiveJobs);
+        HiveTask childHiveTask = allHiveTasks[task.Id];
+        parentHiveTask.AddChildHiveTask(childHiveTask);
+        BuildHiveJobTree(childHiveTask, allTasks, allHiveTasks);
       }
     }
     #endregion

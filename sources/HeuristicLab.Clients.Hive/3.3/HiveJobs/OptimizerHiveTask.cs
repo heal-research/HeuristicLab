@@ -135,8 +135,7 @@ namespace HeuristicLab.Clients.Hive {
               this.childHiveTasks.Add(new OptimizerHiveTask(item.Value));
             }
           }
-        }
-        finally { childHiveTasksLock.ExitWriteLock(); }
+        } finally { childHiveTasksLock.ExitWriteLock(); }
       }
     }
     private void Optimizers_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<IOptimizer>> e) {
@@ -151,8 +150,7 @@ namespace HeuristicLab.Clients.Hive {
               this.childHiveTasks.Add(new OptimizerHiveTask(item.Value));
             }
           }
-        }
-        finally { childHiveTasksLock.ExitWriteLock(); }
+        } finally { childHiveTasksLock.ExitWriteLock(); }
       }
     }
     private void Optimizers_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<IOptimizer>> e) {
@@ -162,8 +160,7 @@ namespace HeuristicLab.Clients.Hive {
           foreach (var item in e.Items) {
             this.childHiveTasks.Remove(this.GetChildByOptimizer(item.Value));
           }
-        }
-        finally { childHiveTasksLock.ExitWriteLock(); }
+        } finally { childHiveTasksLock.ExitWriteLock(); }
       }
     }
     private void Optimizers_CollectionReset(object sender, CollectionItemsChangedEventArgs<IndexedItem<IOptimizer>> e) {
@@ -173,8 +170,7 @@ namespace HeuristicLab.Clients.Hive {
           foreach (var item in e.Items) {
             this.childHiveTasks.Remove(this.GetChildByOptimizer(item.Value));
           }
-        }
-        finally { childHiveTasksLock.ExitWriteLock(); }
+        } finally { childHiveTasksLock.ExitWriteLock(); }
       }
     }
 
@@ -204,8 +200,7 @@ namespace HeuristicLab.Clients.Hive {
           child.ItemTask = optimizerTask;
           child.syncTasksWithOptimizers = true;
         }
-      }
-      finally { childHiveTasksLock.ExitReadLock(); }
+      } finally { childHiveTasksLock.ExitReadLock(); }
       syncTasksWithOptimizers = true;
     }
 
@@ -267,13 +262,12 @@ namespace HeuristicLab.Clients.Hive {
         foreach (OptimizerHiveTask child in childHiveTasks) {
           child.SetIndexInParentOptimizerList(this);
         }
-      }
-      finally { childHiveTasksLock.ExitReadLock(); }
+      } finally { childHiveTasksLock.ExitReadLock(); }
     }
 
-    public override void AddChildHiveJob(HiveTask hiveJob) {
-      base.AddChildHiveJob(hiveJob);
-      var optimizerHiveJob = (OptimizerHiveTask)hiveJob;
+    public override void AddChildHiveTask(HiveTask hiveTask) {
+      base.AddChildHiveTask(hiveTask);
+      var optimizerHiveJob = (OptimizerHiveTask)hiveTask;
       syncTasksWithOptimizers = false;
       if (this.ItemTask != null && optimizerHiveJob.ItemTask != null) {
         // if task is in state Paused, it has to preserve its ResultCollection, which is cleared when a optimizer is added to an experiment
@@ -338,8 +332,7 @@ namespace HeuristicLab.Clients.Hive {
             return child;
         }
         return null;
-      }
-      finally { childHiveTasksLock.ExitReadLock(); }
+      } finally { childHiveTasksLock.ExitReadLock(); }
     }
 
     public HiveTask<OptimizerTask> GetChildByOptimizer(IOptimizer optimizer) {
@@ -350,8 +343,7 @@ namespace HeuristicLab.Clients.Hive {
             return child;
         }
         return null;
-      }
-      finally { childHiveTasksLock.ExitReadLock(); }
+      } finally { childHiveTasksLock.ExitReadLock(); }
     }
 
     #region Helpers
