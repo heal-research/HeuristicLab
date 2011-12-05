@@ -132,8 +132,7 @@ namespace HeuristicLab.Core.Views {
                       orderby t.Name ascending
                       select t;
           foreach (Type type in types) {
-            bool valid = true;
-            valid = valid && (ShowNotInstantiableTypes || type.GetConstructor(Type.EmptyTypes) != null); //check for public default ctor
+            bool valid = (ShowNotInstantiableTypes || type.GetConstructor(Type.EmptyTypes) != null); //check for public default ctor
             if (valid) {
               TreeNode typeNode = new TreeNode();
               string name = ItemAttribute.GetName(type);
