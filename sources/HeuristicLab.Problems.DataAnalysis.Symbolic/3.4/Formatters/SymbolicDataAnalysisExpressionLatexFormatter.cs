@@ -76,10 +76,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (node.SubtreeCount > 0) {
         strBuilder.Append(FormatRecursively(node.GetSubtree(0)));
       }
+      int i = 1;
       foreach (SymbolicExpressionTreeNode subTree in node.Subtrees.Skip(1)) {
-        FormatSep(node, strBuilder);
+        FormatSep(node, strBuilder, i);
         // format the whole subtree
         strBuilder.Append(FormatRecursively(subTree));
+        i++;
       }
 
       FormatEnd(node, strBuilder);
@@ -189,7 +191,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    private void FormatSep(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
+    private void FormatSep(ISymbolicExpressionTreeNode node, StringBuilder strBuilder, int step) {
       if (node.Symbol is Addition) {
         strBuilder.Append(" + ");
       } else if (node.Symbol is Subtraction) {
@@ -197,7 +199,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (node.Symbol is Multiplication) {
         strBuilder.Append(@" \cdot ");
       } else if (node.Symbol is Division) {
-        strBuilder.Append(@" }{ \cfrac{ ");
+        if (step + 1 == node.SubtreeCount)
+          strBuilder.Append(@"}{");
+        else
+          strBuilder.Append(@" }{ \cfrac{ ");
       } else if (node.Symbol is Average) {
         strBuilder.Append(@" + ");
       } else if (node.Symbol is Logarithm) {
@@ -252,12 +257,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         strBuilder.Append(@" ) ");
       } else if (node.Symbol is Multiplication) {
       } else if (node.Symbol is Division) {
-        strBuilder.Append("} ");
-        if (node.SubtreeCount > 1)
-          strBuilder.Append("{1} ");
-        for (int i = 1; i < node.SubtreeCount; i++) {
+        strBuilder.Append(" } ");
+        for (int i = 2; i < node.SubtreeCount; i++)
           strBuilder.Append(" } ");
-        }
       } else if (node.Symbol is Average) {
         strBuilder.Append(@" ) ");
       } else if (node.Symbol is Logarithm) {
