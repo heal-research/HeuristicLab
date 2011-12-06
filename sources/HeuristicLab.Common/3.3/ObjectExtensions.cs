@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Reflection;
+using System.Security;
 using System.Threading;
 
 namespace HeuristicLab.Common {
@@ -94,7 +95,13 @@ namespace HeuristicLab.Common {
       } else {
         foreach (FieldInfo f in type.GetAllFields()) {
           if (excludeStaticMembers && f.IsStatic) continue;
-          yield return f.GetValue(obj);
+          object fieldValue;
+          try {
+            fieldValue = f.GetValue(obj);
+          } catch (SecurityException) {
+            continue;
+          }
+          yield return fieldValue;
         }
       }
     }
