@@ -176,8 +176,13 @@ namespace HeuristicLab.Clients.Hive {
 
       if (item is Job)
         HiveServiceLocator.Instance.CallHiveService(s => s.DeleteJob(item.Id));
-      if (item is RefreshableJob)
+      if (item is RefreshableJob) {
+        RefreshableJob job = (RefreshableJob)item;
+        if (job.RefreshAutomatically) {
+          job.StopResultPolling();
+        }
         HiveServiceLocator.Instance.CallHiveService(s => s.DeleteJob(item.Id));
+      }
       if (item is JobPermission) {
         var hep = (JobPermission)item;
         HiveServiceLocator.Instance.CallHiveService(s => s.RevokePermission(hep.JobId, hep.GrantedUserId));
