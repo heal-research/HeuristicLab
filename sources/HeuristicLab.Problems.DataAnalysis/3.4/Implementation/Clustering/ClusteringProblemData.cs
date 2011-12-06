@@ -28,7 +28,8 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
   [Item("ClusteringProblemData", "Represents an item containing all data defining a clustering problem.")]
-  public sealed class ClusteringProblemData : DataAnalysisProblemData, IClusteringProblemData {
+  public sealed class ClusteringProblemData : DataAnalysisProblemData, IClusteringProblemData, IStorableContent {
+    public string Filename { get; set; }
 
     #region default data
     private static double[,] kozaF1 = new double[,] {

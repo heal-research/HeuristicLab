@@ -32,8 +32,9 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
   [Item("RegressionProblemData", "Represents an item containing all data defining a regression problem.")]
-  public class RegressionProblemData : DataAnalysisProblemData, IRegressionProblemData {
+  public class RegressionProblemData : DataAnalysisProblemData, IRegressionProblemData, IStorableContent {
     protected const string TargetVariableParameterName = "TargetVariable";
+    public string Filename { get; set; }
 
     #region default data
     private static double[,] kozaF1 = new double[,] {

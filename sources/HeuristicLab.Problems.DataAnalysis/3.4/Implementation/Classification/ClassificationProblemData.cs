@@ -32,12 +32,14 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
   [Item("ClassificationProblemData", "Represents an item containing all data defining a classification problem.")]
-  public class ClassificationProblemData : DataAnalysisProblemData, IClassificationProblemData {
+  public class ClassificationProblemData : DataAnalysisProblemData, IClassificationProblemData, IStorableContent {
     protected const string TargetVariableParameterName = "TargetVariable";
     protected const string ClassNamesParameterName = "ClassNames";
     protected const string ClassificationPenaltiesParameterName = "ClassificationPenalties";
     protected const int MaximumNumberOfClasses = 20;
     protected const int InspectedRowsToDetermineTargets = 500;
+
+    public string Filename { get; set; }
 
     #region default data
     private static string[] defaultVariableNames = new string[] { "sample", "clump thickness", "cell size", "cell shape", "marginal adhesion", "epithelial cell size", "bare nuclei", "chromatin", "nucleoli", "mitoses", "class" };
