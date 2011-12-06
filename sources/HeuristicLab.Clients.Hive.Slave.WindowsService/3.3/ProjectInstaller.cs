@@ -11,6 +11,18 @@ namespace HeuristicLab.Clients.Hive.SlaveCore.WindowsService {
       InitializeComponent();
     }
 
+    protected override void OnBeforeUninstall(IDictionary savedState) {
+      base.OnBeforeUninstall(savedState);
+
+      //try to shutdown the service before uninstalling it
+      using (var serviceController = new ServiceController(this.serviceInstaller1.ServiceName, Environment.MachineName)) {
+        try {
+          serviceController.Stop();
+        }
+        catch { }
+      }
+    }
+
     protected override void OnAfterInstall(IDictionary savedState) {
       base.OnAfterInstall(savedState);
 
