@@ -70,5 +70,29 @@ namespace HeuristicLab.Clients.Hive.SlaveCore.Views.Properties {
                 this["ServiceName"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("00:00:20")]
+        public global::System.TimeSpan ServiceStartStopTimeout {
+            get {
+                return ((global::System.TimeSpan)(this["ServiceStartStopTimeout"]));
+            }
+            set {
+                this["ServiceStartStopTimeout"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("00:00:03")]
+        public global::System.TimeSpan ServiceReconnectTimeout {
+            get {
+                return ((global::System.TimeSpan)(this["ServiceReconnectTimeout"]));
+            }
+            set {
+                this["ServiceReconnectTimeout"] = value;
+            }
+        }
     }
 }

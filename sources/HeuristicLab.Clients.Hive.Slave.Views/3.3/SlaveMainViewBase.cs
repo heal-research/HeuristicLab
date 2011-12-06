@@ -61,17 +61,25 @@ namespace HeuristicLab.Clients.Hive.SlaveCore.Views {
     #region Register Content Events
     protected override void DeregisterContentEvents() {
       Content.CoreConnectionChanged -= new EventHandler<Common.EventArgs<CoreConnection>>(Content_CoreConnectionChanged);
+      Content.SlaveDisplayStateChanged -= new EventHandler<Common.EventArgs<SlaveDisplayStat>>(Content_SlaveDisplayStateChanged);
       base.DeregisterContentEvents();
     }
 
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.CoreConnectionChanged += new EventHandler<Common.EventArgs<CoreConnection>>(Content_CoreConnectionChanged);
+      Content.SlaveDisplayStateChanged += new EventHandler<Common.EventArgs<SlaveDisplayStat>>(Content_SlaveDisplayStateChanged);
+    }
+
+    void Content_SlaveDisplayStateChanged(object sender, Common.EventArgs<SlaveDisplayStat> e) {
+      if (e.Value == SlaveDisplayStat.NoService) {
+        Task.Factory.StartNew(Connector);
+      }
     }
 
     void Content_CoreConnectionChanged(object sender, Common.EventArgs<CoreConnection> e) {
       if (e.Value == CoreConnection.Offline) {
-        Connector();
+        Task.Factory.StartNew(Connector);
       }
     }
     #endregion
@@ -118,7 +126,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore.Views {
         connected = ((SlaveItem)base.Content).ReconnectToSlaveCore();
 
         if (!connected) {
-          Thread.Sleep(1000);
+          Thread.Sleep(Settings.Default.ServiceReconnectTimeout);
         }
       }
       this.Invoke(new Action(SetEnabledStateOfControls));

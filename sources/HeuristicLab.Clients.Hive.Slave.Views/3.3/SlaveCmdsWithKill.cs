@@ -125,17 +125,15 @@ namespace HeuristicLab.Clients.Hive.SlaveCore.Views {
     }
 
     private void StartService() {
-      TimeSpan timeout = TimeSpan.FromMilliseconds(5000);
-
       ServiceController service = new ServiceController(serviceName);
       try {
         if (service.Status == ServiceControllerStatus.Running) {
           service.Stop();
-          service.WaitForStatus(ServiceControllerStatus.Stopped, timeout);
+          service.WaitForStatus(ServiceControllerStatus.Stopped, Settings.Default.ServiceStartStopTimeout);
         }
 
         service.Start();
-        service.WaitForStatus(ServiceControllerStatus.Running, timeout);
+        service.WaitForStatus(ServiceControllerStatus.Running, Settings.Default.ServiceStartStopTimeout);
       }
       catch (InvalidOperationException ex) {
         MessageBox.Show("Error starting service: Hive Slave Service not found!" + Environment.NewLine + ex.ToString());
@@ -146,20 +144,18 @@ namespace HeuristicLab.Clients.Hive.SlaveCore.Views {
     }
 
     private void StopService() {
-      TimeSpan timeout = TimeSpan.FromMilliseconds(7000);
-
       ServiceController service = new ServiceController(serviceName);
       try {
         if (service.Status == ServiceControllerStatus.Running) {
           service.Stop();
-          service.WaitForStatus(ServiceControllerStatus.Stopped, timeout);
+          service.WaitForStatus(ServiceControllerStatus.Stopped, Settings.Default.ServiceStartStopTimeout);
         }
       }
       catch (InvalidOperationException ex) {
-        MessageBox.Show("Error starting service: Hive Slave Service not found!" + Environment.NewLine + ex.ToString());
+        MessageBox.Show("Error stopping service: Hive Slave Service not found!" + Environment.NewLine + ex.ToString());
       }
       catch (Exception ex) {
-        MessageBox.Show("Error starting service, exception is: " + Environment.NewLine + ex.ToString());
+        MessageBox.Show("Error stopping service, exception is: " + Environment.NewLine + ex.ToString());
       }
     }
 

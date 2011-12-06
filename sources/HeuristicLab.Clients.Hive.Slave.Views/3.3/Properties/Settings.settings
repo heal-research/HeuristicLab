@@ -14,5 +14,11 @@
     <Setting Name="ServiceName" Type="System.String" Scope="User">
       <Value Profile="(Default)">HeuristicLab.Clients.Hive.Slave</Value>
     </Setting>
+    <Setting Name="ServiceStartStopTimeout" Type="System.TimeSpan" Scope="User">
+      <Value Profile="(Default)">00:00:20</Value>
+    </Setting>
+    <Setting Name="ServiceReconnectTimeout" Type="System.TimeSpan" Scope="User">
+      <Value Profile="(Default)">00:00:03</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

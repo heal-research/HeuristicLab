@@ -90,9 +90,11 @@ namespace HeuristicLab.Clients.Hive.SlaveCore.Views {
 
     public bool ReconnectToSlaveCore() {
       try {
+        DeregisterEvents();
         pipeProxy = pipeFactory.CreateChannel();
         StatusCommons st = pipeProxy.Subscribe();
         if (st != null) {
+          RegisterEvents();
           OnStatusChanged(st);
           return true;
         } else {
