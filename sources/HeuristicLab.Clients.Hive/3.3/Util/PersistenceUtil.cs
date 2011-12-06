@@ -28,26 +28,26 @@ using HeuristicLab.Persistence.Default.Xml;
 namespace HeuristicLab.Clients.Hive {
   public static class PersistenceUtil {
     public static byte[] Serialize(object obj, out IEnumerable<Type> types) {
-      MemoryStream memStream = new MemoryStream();
-      XmlGenerator.Serialize(obj, memStream, ConfigurationService.Instance.GetConfiguration(new XmlFormat()), false, out types);
-      byte[] jobByteArray = memStream.ToArray();
-      memStream.Dispose();
-      return jobByteArray;
+      using (MemoryStream memStream = new MemoryStream()) {
+        XmlGenerator.Serialize(obj, memStream, ConfigurationService.Instance.GetConfiguration(new XmlFormat()), false, out types);
+        byte[] jobByteArray = memStream.ToArray();
+        return jobByteArray;
+      }
     }
 
     public static byte[] Serialize(object obj) {
-      MemoryStream memStream = new MemoryStream();
-      XmlGenerator.Serialize(obj, memStream);
-      byte[] jobByteArray = memStream.ToArray();
-      memStream.Dispose();
-      return jobByteArray;
+      using (MemoryStream memStream = new MemoryStream()) {
+        XmlGenerator.Serialize(obj, memStream);
+        byte[] jobByteArray = memStream.ToArray();
+        return jobByteArray;
+      }
     }
 
     public static T Deserialize<T>(byte[] sjob) {
-      MemoryStream memStream = new MemoryStream(sjob);
-      T job = XmlParser.Deserialize<T>(memStream);
-      memStream.Dispose();
-      return job;
+      using (MemoryStream memStream = new MemoryStream(sjob)) {
+        T job = XmlParser.Deserialize<T>(memStream);
+        return job;
+      }
     }
   }
 }

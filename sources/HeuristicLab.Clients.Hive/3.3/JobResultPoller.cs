@@ -26,7 +26,7 @@ using HeuristicLab.Common;
 
 namespace HeuristicLab.Clients.Hive {
   public class JobResultPoller {
-    private bool stopRequested { get; set; }
+    private bool stopRequested;
     private AutoResetEvent waitHandle;
     private Thread thread;
 
@@ -95,8 +95,7 @@ namespace HeuristicLab.Clients.Hive {
         }
         catch (Exception e) {
           OnExceptionOccured(e);
-        }
-        finally {
+        } finally {
           IsPolling = false;
         }
         if (stopRequested) return;

@@ -166,7 +166,7 @@
     <Compile Include="ServiceClients\NamedHiveItem.cs" />
     <Compile Include="ServiceClients\Heartbeat.cs" />
     <Compile Include="ServiceClients\HiveItem.cs" />
-    <Compile Include="ServiceClients\JobData.cs" />
+    <Compile Include="ServiceClients\TaskData.cs" />
     <Compile Include="ServiceClients\Plugin.cs" />
     <Compile Include="ServiceClients\PluginData.cs" />
     <Compile Include="ServiceClients\Resource.cs" />

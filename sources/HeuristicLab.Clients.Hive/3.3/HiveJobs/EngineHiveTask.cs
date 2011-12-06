@@ -54,20 +54,18 @@ namespace HeuristicLab.Clients.Hive {
       TaskData jobData = new TaskData();
       IEnumerable<Type> usedTypes;
 
-      // clone operation and remove unnecessary scopes; don't do this earlier to avoid memory problems
-      //lock (locker) {
-        ((IAtomicOperation)ItemTask.InitialOperation).Scope.Parent = parentScopeClone;
-        ItemTask.InitialOperation = (IOperation)ItemTask.InitialOperation.Clone();
-        ((IAtomicOperation)ItemTask.InitialOperation).Scope.ClearParentScopes();
-        jobData.Data = PersistenceUtil.Serialize(ItemTask, out usedTypes);
-      //}
+      // clone operation and remove unnecessary scopes; don't do this earlier to avoid memory problems      
+      ((IAtomicOperation)ItemTask.InitialOperation).Scope.Parent = parentScopeClone;
+      ItemTask.InitialOperation = (IOperation)ItemTask.InitialOperation.Clone();
+      ((IAtomicOperation)ItemTask.InitialOperation).Scope.ClearParentScopes();
+      jobData.Data = PersistenceUtil.Serialize(ItemTask, out usedTypes);
 
       // add type objects from object graph to work around ticket #1527
       var typeObjects = ItemTask.GetObjectGraphObjects().OfType<Type>();
       usedTypes = new List<Type>(usedTypes).Union(typeObjects);
 
       PluginUtil.CollectDeclaringPlugins(plugins, usedTypes);
-      
+
       return jobData;
     }
 

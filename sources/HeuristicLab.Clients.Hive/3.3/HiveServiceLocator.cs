@@ -32,9 +32,6 @@ namespace HeuristicLab.Clients.Hive {
         }
         return instance;
       }
-      set {
-        instance = value;
-      }
     }
 
     private string username;
@@ -55,7 +52,7 @@ namespace HeuristicLab.Clients.Hive {
         cl = ClientFactory.CreateClient<HiveServiceClient, IHiveService>();
       else
         cl = ClientFactory.CreateClient<HiveServiceClient, IHiveService>(null, null, username, password);
-      
+
       return cl;
     }
 
@@ -63,8 +60,7 @@ namespace HeuristicLab.Clients.Hive {
       HiveServiceClient client = NewServiceClient();
       try {
         return call(client);
-      }
-      finally {
+      } finally {
         try {
           client.Close();
         }
@@ -78,8 +74,7 @@ namespace HeuristicLab.Clients.Hive {
       HiveServiceClient client = NewServiceClient();
       try {
         call(client);
-      }
-      finally {
+      } finally {
         try {
           client.Close();
         }

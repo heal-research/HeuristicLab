@@ -353,7 +353,7 @@ namespace HeuristicLab.Clients.Hive {
     private static string GetNewRunName(IRun run, RunCollection runs) {
       int idx = run.Name.IndexOf("Run ") + 4;
 
-      if (idx == -1 || runs.Count == 0)
+      if (idx == 3 || runs.Count == 0)
         return run.Name;
 
       int maxRunNumber = int.MinValue;
@@ -370,7 +370,7 @@ namespace HeuristicLab.Clients.Hive {
     /// </summary>
     private static int GetRunNumber(string runName) {
       int idx = runName.IndexOf("Run ") + 4;
-      if (idx == -1) {
+      if (idx == 3) {
         return 0;
       } else {
         return int.Parse(runName.Substring(idx, runName.Length - idx));
