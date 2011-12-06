@@ -45,6 +45,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     private const string StoreHistoryParameterName = "StoreHistory";
     private const string UpdateIntervalParameterName = "UpdateInterval";
     private const string UpdateCounterParameterName = "UpdateCounter";
+    private const string GenerationCounterParameterName = "GenerationCounter";
 
     #region Parameter properties
     public IScopeTreeLookupParameter<ISymbolicExpressionTree> SymbolicExpressionTreeParameter {
@@ -66,9 +67,28 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     public ValueParameter<IntValue> UpdateIntervalParameter {
       get { return (ValueParameter<IntValue>)Parameters[UpdateIntervalParameterName]; }
     }
-    public LookupParameter<IntValue> UpdateCounterParameter {
-      get { return (LookupParameter<IntValue>)Parameters[UpdateCounterParameterName]; }
+    public ValueParameter<IntValue> UpdateCounterParameter {
+      get { return (ValueParameter<IntValue>)Parameters[UpdateCounterParameterName]; }
     }
+    public ValueParameter<IntValue> GenerationCounterParameter {
+      get { return (ValueParameter<IntValue>)Parameters[GenerationCounterParameterName]; }
+    }
+    #endregion
+
+    #region Properties
+    public IntValue UpdateInterval {
+      get { return UpdateIntervalParameter.Value; }
+    }
+    public IntValue UpdateCounter {
+      get { return UpdateCounterParameter.Value; }
+    }
+    public BoolValue StoreHistory {
+      get { return StoreHistoryParameter.Value; }
+    }
+    public IntValue GenerationCounter {
+      get { return GenerationCounterParameter.Value; }
+    }
+
     #endregion
 
     [StorableConstructor]
@@ -89,7 +109,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       Parameters.Add(new ValueLookupParameter<ResultCollection>(ResultsParameterName, "The results collection where the analysis values should be stored."));
       Parameters.Add(new ValueParameter<BoolValue>(StoreHistoryParameterName, "True if the tree lengths history of the population should be stored.", new BoolValue(false)));
       Parameters.Add(new ValueParameter<IntValue>(UpdateIntervalParameterName, "The interval in which the tree length analysis should be applied.", new IntValue(1)));
-      Parameters.Add(new LookupParameter<IntValue>(UpdateCounterParameterName, "The value which counts how many times the operator was called since the last update", "MinMaxAverageSymbolicExpressionTreeLengthAnalyzerUpdateCounter"));
+      Parameters.Add(new ValueParameter<IntValue>(UpdateCounterParameterName, "The value which counts how many times the operator was called since the last update", new IntValue(0)));
+      Parameters.Add(new ValueParameter<IntValue>(GenerationCounterParameterName, "The value of the total number of generations this operator has been applied.", new IntValue(0)));
 
       UpdateCounterParameter.Hidden = true;
 
@@ -106,22 +127,22 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         Parameters.Add(new ValueParameter<IntValue>(UpdateIntervalParameterName, "The interval in which the tree length analysis should be applied.", new IntValue(1)));
       }
       if (!Parameters.ContainsKey(UpdateCounterParameterName)) {
-        Parameters.Add(new LookupParameter<IntValue>(UpdateCounterParameterName, "The value which counts how many times the operator was called since the last update", "MinMaxAverageSymbolicExpressionTreeLengthAnalyzerUpdateCounter"));
+        Parameters.Add(new LookupParameter<IntValue>(UpdateCounterParameterName, "The value which counts how many times the operator was called since the last update"));
+      }
+      if (!Parameters.ContainsKey(GenerationCounterParameterName)) {
+        Parameters.Add(new ValueParameter<IntValue>(GenerationCounterParameterName, "The value of the total number of generations this operator has been applied.", new IntValue(1)));
       }
     }
 
     public override IOperation Apply() {
-      int updateInterval = UpdateIntervalParameter.Value.Value;
-      IntValue updateCounter = UpdateCounterParameter.ActualValue;
+      //IntValue updateCounter = UpdateCounterParameter.Value;
       // if the counter doesn't exist yet, we initialize it here with the current update interval
-      if (updateCounter == null) {
-        updateCounter = new IntValue(updateInterval);
-        UpdateCounterParameter.ActualValue = updateCounter;
-      } else updateCounter.Value++;
+      GenerationCounter.Value++;
+      UpdateCounter.Value++;
 
       // the analyzer runs periodically, every 'updateInterval' times
-      if (updateCounter.Value == updateInterval) {
-        updateCounter.Value = 0; // reset counter
+      if (UpdateCounter.Value == UpdateInterval.Value) {
+        UpdateCounter.Value = 0; // reset counter
 
         // compute all tree lengths and store them in the lengthsTable
         var solutions = SymbolicExpressionTreeParameter.ActualValue;
@@ -201,11 +222,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         bool storeHistory = StoreHistoryParameter.Value.Value;
         const string treeLengthHistoryTableName = "Tree lengths history";
         const string treeLengthHistoryRowPrefix = "Tree lengths ";
-        int currentGeneration = ((IntValue)results["Generations"].Value).Value;
 
         if (storeHistory) {
           // store tree lengths for each generation
-          var historyDataRow = new DataRow(treeLengthHistoryRowPrefix + currentGeneration, "Symbolic expression tree lengths at generation " + currentGeneration, treeLengthsTableRow.Values);
+          var historyDataRow = new DataRow(treeLengthHistoryRowPrefix + GenerationCounter.Value, "Symbolic expression tree lengths at generation " + GenerationCounter.Value, treeLengthsTableRow.Values);
           historyDataRow.VisualProperties.ChartType = DataRowVisualProperties.DataRowChartType.Histogram;
           historyDataRow.VisualProperties.ExactBins = false;
           historyDataRow.VisualProperties.Bins = maxLength - minLength;
