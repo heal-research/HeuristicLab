@@ -78,7 +78,7 @@ namespace HeuristicLab.Clients.Hive {
       try {
         resources = new ItemList<Resource>();
 
-        ServiceLocator.Instance.CallHiveService(service => {
+        HiveServiceLocator.Instance.CallHiveService(service => {
           service.GetSlaveGroups().ForEach(g => resources.Add(g));
           service.GetSlaves().ForEach(s => resources.Add(s));
         });
@@ -100,7 +100,7 @@ namespace HeuristicLab.Clients.Hive {
         try {
           downtimes = new ItemList<Downtime>();
 
-          ServiceLocator.Instance.CallHiveService(service => {
+          HiveServiceLocator.Instance.CallHiveService(service => {
             service.GetDowntimesForResource(downtimeForResourceId).ForEach(d => downtimes.Add(d));
           });
         }
@@ -118,23 +118,23 @@ namespace HeuristicLab.Clients.Hive {
     public static void Store(IHiveItem item, CancellationToken cancellationToken) {
       if (item.Id == Guid.Empty) {
         if (item is SlaveGroup) {
-          item.Id = ServiceLocator.Instance.CallHiveService((s) => s.AddSlaveGroup((SlaveGroup)item));
+          item.Id = HiveServiceLocator.Instance.CallHiveService((s) => s.AddSlaveGroup((SlaveGroup)item));
         }
         if (item is Slave) {
-          item.Id = ServiceLocator.Instance.CallHiveService((s) => s.AddSlave((Slave)item));
+          item.Id = HiveServiceLocator.Instance.CallHiveService((s) => s.AddSlave((Slave)item));
         }
         if (item is Downtime) {
-          item.Id = ServiceLocator.Instance.CallHiveService((s) => s.AddDowntime((Downtime)item));
+          item.Id = HiveServiceLocator.Instance.CallHiveService((s) => s.AddDowntime((Downtime)item));
         }
       } else {
         if (item is SlaveGroup) {
-          ServiceLocator.Instance.CallHiveService((s) => s.UpdateSlaveGroup((SlaveGroup)item));
+          HiveServiceLocator.Instance.CallHiveService((s) => s.UpdateSlaveGroup((SlaveGroup)item));
         }
         if (item is Slave) {
-          ServiceLocator.Instance.CallHiveService((s) => s.UpdateSlave((Slave)item));
+          HiveServiceLocator.Instance.CallHiveService((s) => s.UpdateSlave((Slave)item));
         }
         if (item is Downtime) {
-          ServiceLocator.Instance.CallHiveService((s) => s.UpdateDowntime((Downtime)item));
+          HiveServiceLocator.Instance.CallHiveService((s) => s.UpdateDowntime((Downtime)item));
         }
       }
     }
@@ -143,11 +143,11 @@ namespace HeuristicLab.Clients.Hive {
     #region Delete
     public static void Delete(IHiveItem item) {
       if (item is SlaveGroup) {
-        ServiceLocator.Instance.CallHiveService((s) => s.DeleteSlaveGroup(item.Id));
+        HiveServiceLocator.Instance.CallHiveService((s) => s.DeleteSlaveGroup(item.Id));
       } else if (item is Slave) {
-        ServiceLocator.Instance.CallHiveService((s) => s.DeleteSlave(item.Id));
+        HiveServiceLocator.Instance.CallHiveService((s) => s.DeleteSlave(item.Id));
       } else if (item is Downtime) {
-        ServiceLocator.Instance.CallHiveService((s) => s.DeleteDowntime(item.Id));
+        HiveServiceLocator.Instance.CallHiveService((s) => s.DeleteDowntime(item.Id));
       }
     }
     #endregion

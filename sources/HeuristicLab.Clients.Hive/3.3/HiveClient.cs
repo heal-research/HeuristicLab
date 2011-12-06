@@ -81,11 +81,11 @@ namespace HeuristicLab.Clients.Hive {
       OnRefreshing();
 
       try {
-        this.IsAllowedPrivileged = ServiceLocator.Instance.CallHiveService((s) => s.IsAllowedPrivileged());
+        this.IsAllowedPrivileged = HiveServiceLocator.Instance.CallHiveService((s) => s.IsAllowedPrivileged());
 
         var oldJobs = jobs ?? new ItemCollection<RefreshableJob>();
         jobs = new HiveItemCollection<RefreshableJob>();
-        var jobsLoaded = ServiceLocator.Instance.CallHiveService<IEnumerable<Job>>(s => s.GetJobs());
+        var jobsLoaded = HiveServiceLocator.Instance.CallHiveService<IEnumerable<Job>>(s => s.GetJobs());
 
         foreach (var j in jobsLoaded) {
           var job = oldJobs.SingleOrDefault(x => x.Id == j.Id);
@@ -141,15 +141,15 @@ namespace HeuristicLab.Clients.Hive {
         }
         if (item is JobPermission) {
           var hep = (JobPermission)item;
-          hep.GrantedUserId = ServiceLocator.Instance.CallHiveService((s) => s.GetUserIdByUsername(hep.GrantedUserName));
+          hep.GrantedUserId = HiveServiceLocator.Instance.CallHiveService((s) => s.GetUserIdByUsername(hep.GrantedUserName));
           if (hep.GrantedUserId == Guid.Empty) {
             throw new ArgumentException(string.Format("The user {0} was not found.", hep.GrantedUserName));
           }
-          ServiceLocator.Instance.CallHiveService((s) => s.GrantPermission(hep.JobId, hep.GrantedUserId, hep.Permission));
+          HiveServiceLocator.Instance.CallHiveService((s) => s.GrantPermission(hep.JobId, hep.GrantedUserId, hep.Permission));
         }
       } else {
         if (item is Job)
-          ServiceLocator.Instance.CallHiveService(s => s.UpdateJob((Job)item));
+          HiveServiceLocator.Instance.CallHiveService(s => s.UpdateJob((Job)item));
       }
     }
     public static void StoreAsync(Action<Exception> exceptionCallback, IHiveItem item, CancellationToken cancellationToken) {
@@ -175,12 +175,12 @@ namespace HeuristicLab.Clients.Hive {
         return;
 
       if (item is Job)
-        ServiceLocator.Instance.CallHiveService(s => s.DeleteJob(item.Id));
+        HiveServiceLocator.Instance.CallHiveService(s => s.DeleteJob(item.Id));
       if (item is RefreshableJob)
-        ServiceLocator.Instance.CallHiveService(s => s.DeleteJob(item.Id));
+        HiveServiceLocator.Instance.CallHiveService(s => s.DeleteJob(item.Id));
       if (item is JobPermission) {
         var hep = (JobPermission)item;
-        ServiceLocator.Instance.CallHiveService(s => s.RevokePermission(hep.JobId, hep.GrantedUserId));
+        HiveServiceLocator.Instance.CallHiveService(s => s.RevokePermission(hep.JobId, hep.GrantedUserId));
       }
       item.Id = Guid.Empty;
     }
@@ -214,7 +214,7 @@ namespace HeuristicLab.Clients.Hive {
     }
 
     public static void PauseJob(RefreshableJob refreshableJob) {
-      ServiceLocator.Instance.CallHiveService(service => {
+      HiveServiceLocator.Instance.CallHiveService(service => {
         foreach (HiveTask task in refreshableJob.GetAllHiveTasks()) {
           if (task.Task.State != TaskState.Finished && task.Task.State != TaskState.Aborted && task.Task.State != TaskState.Failed)
             service.PauseTask(task.Task.Id);
@@ -224,7 +224,7 @@ namespace HeuristicLab.Clients.Hive {
     }
 
     public static void StopJob(RefreshableJob refreshableJob) {
-      ServiceLocator.Instance.CallHiveService(service => {
+      HiveServiceLocator.Instance.CallHiveService(service => {
         foreach (HiveTask task in refreshableJob.GetAllHiveTasks()) {
           if (task.Task.State != TaskState.Finished && task.Task.State != TaskState.Aborted && task.Task.State != TaskState.Failed)
             service.StopTask(task.Task.Id);
@@ -245,7 +245,7 @@ namespace HeuristicLab.Clients.Hive {
         IEnumerable<string> resourceNames = ToResourceNameList(refreshableJob.Job.ResourceNames);
         var resourceIds = new List<Guid>();
         foreach (var resourceName in resourceNames) {
-          Guid resourceId = ServiceLocator.Instance.CallHiveService((s) => s.GetResourceId(resourceName));
+          Guid resourceId = HiveServiceLocator.Instance.CallHiveService((s) => s.GetResourceId(resourceName));
           if (resourceId == Guid.Empty) {
             throw new ResourceNotFoundException(string.Format("Could not find the resource '{0}'", resourceName));
           }
@@ -258,9 +258,9 @@ namespace HeuristicLab.Clients.Hive {
 
         // upload Job
         refreshableJob.Progress.Status = "Uploading Job...";
-        refreshableJob.Job.Id = ServiceLocator.Instance.CallHiveService((s) => s.AddJob(refreshableJob.Job));
+        refreshableJob.Job.Id = HiveServiceLocator.Instance.CallHiveService((s) => s.AddJob(refreshableJob.Job));
         bool isPrivileged = refreshableJob.Job.IsPrivileged;
-        refreshableJob.Job = ServiceLocator.Instance.CallHiveService((s) => s.GetJob(refreshableJob.Job.Id)); // update owner and permissions
+        refreshableJob.Job = HiveServiceLocator.Instance.CallHiveService((s) => s.GetJob(refreshableJob.Job.Id)); // update owner and permissions
         refreshableJob.Job.IsPrivileged = isPrivileged;
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -270,9 +270,9 @@ namespace HeuristicLab.Clients.Hive {
 
         // upload plugins
         refreshableJob.Progress.Status = "Uploading plugins...";
-        this.OnlinePlugins = ServiceLocator.Instance.CallHiveService((s) => s.GetPlugins());
+        this.OnlinePlugins = HiveServiceLocator.Instance.CallHiveService((s) => s.GetPlugins());
         this.AlreadyUploadedPlugins = new List<Plugin>();
-        Plugin configFilePlugin = ServiceLocator.Instance.CallHiveService((s) => UploadConfigurationFile(s, onlinePlugins));
+        Plugin configFilePlugin = HiveServiceLocator.Instance.CallHiveService((s) => UploadConfigurationFile(s, onlinePlugins));
         this.alreadyUploadedPlugins.Add(configFilePlugin);
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -356,7 +356,7 @@ namespace HeuristicLab.Clients.Hive {
         TryAndRepeat(() => {
           if (!cancellationToken.IsCancellationRequested) {
             lock (pluginLocker) {
-              ServiceLocator.Instance.CallHiveService((s) => hiveTask.Task.PluginsNeededIds = PluginUtil.GetPluginDependencies(s, this.onlinePlugins, this.alreadyUploadedPlugins, plugins));
+              HiveServiceLocator.Instance.CallHiveService((s) => hiveTask.Task.PluginsNeededIds = PluginUtil.GetPluginDependencies(s, this.onlinePlugins, this.alreadyUploadedPlugins, plugins));
             }
           }
         }, Settings.Default.MaxRepeatServiceCalls, "Failed to upload plugins");
@@ -369,9 +369,9 @@ namespace HeuristicLab.Clients.Hive {
         TryAndRepeat(() => {
           if (!cancellationToken.IsCancellationRequested) {
             if (parentHiveTask != null) {
-              hiveTask.Task.Id = ServiceLocator.Instance.CallHiveService((s) => s.AddChildTask(parentHiveTask.Task.Id, hiveTask.Task, taskData));
+              hiveTask.Task.Id = HiveServiceLocator.Instance.CallHiveService((s) => s.AddChildTask(parentHiveTask.Task.Id, hiveTask.Task, taskData));
             } else {
-              hiveTask.Task.Id = ServiceLocator.Instance.CallHiveService((s) => s.AddTask(hiveTask.Task, taskData, groups.ToList()));
+              hiveTask.Task.Id = HiveServiceLocator.Instance.CallHiveService((s) => s.AddTask(hiveTask.Task, taskData, groups.ToList()));
             }
           }
         }, Settings.Default.MaxRepeatServiceCalls, "Failed to add task", log);
@@ -416,7 +416,7 @@ namespace HeuristicLab.Clients.Hive {
         refreshableJob.Progress.Status = "Connecting to Server...";
         // fetch all task objects to create the full tree of tree of HiveTask objects
         refreshableJob.Progress.Status = "Downloading list of tasks...";
-        allTasks = ServiceLocator.Instance.CallHiveService(s => s.GetLightweightJobTasks(hiveExperiment.Id));
+        allTasks = HiveServiceLocator.Instance.CallHiveService(s => s.GetLightweightJobTasks(hiveExperiment.Id));
         totalJobCount = allTasks.Count();
 
         refreshableJob.Progress.Status = "Downloading tasks...";
@@ -479,7 +479,7 @@ namespace HeuristicLab.Clients.Hive {
     }
 
     public static ItemTask LoadItemJob(Guid jobId) {
-      TaskData taskData = ServiceLocator.Instance.CallHiveService(s => s.GetTaskData(jobId));
+      TaskData taskData = HiveServiceLocator.Instance.CallHiveService(s => s.GetTaskData(jobId));
       try {
         return PersistenceUtil.Deserialize<ItemTask>(taskData.Data);
       }
@@ -504,7 +504,7 @@ namespace HeuristicLab.Clients.Hive {
     }
 
     public static HiveItemCollection<JobPermission> GetJobPermissions(Guid jobId) {
-      return ServiceLocator.Instance.CallHiveService((service) => {
+      return HiveServiceLocator.Instance.CallHiveService((service) => {
         IEnumerable<JobPermission> jps = service.GetJobPermissions(jobId);
         foreach (var hep in jps) {
           hep.UnmodifiedGrantedUserNameUpdate(service.GetUsernameByUserId(hep.GrantedUserId));

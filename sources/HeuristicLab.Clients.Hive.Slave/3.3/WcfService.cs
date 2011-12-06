@@ -41,8 +41,8 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       get {
         if (instance == null) {
           instance = new WcfService();
-          ServiceLocator.Instance.Username = HeuristicLab.Clients.Hive.SlaveCore.Properties.Settings.Default.SlaveUser;
-          ServiceLocator.Instance.Password = HeuristicLab.Clients.Hive.SlaveCore.Properties.Settings.Default.SlavePwd;
+          HiveServiceLocator.Instance.Username = HeuristicLab.Clients.Hive.SlaveCore.Properties.Settings.Default.SlaveUser;
+          HiveServiceLocator.Instance.Password = HeuristicLab.Clients.Hive.SlaveCore.Properties.Settings.Default.SlavePwd;
         }
         return instance;
       }
@@ -160,7 +160,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
 
     public void CallHiveService(Action<IHiveService> call) {
       try {
-        ServiceLocator.Instance.CallHiveService(call);
+        HiveServiceLocator.Instance.CallHiveService(call);
       }
       catch (Exception ex) {
         HandleNetworkError(ex);
@@ -169,7 +169,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
 
     private T CallHiveService<T>(Func<IHiveService, T> call) {
       try {
-        return ServiceLocator.Instance.CallHiveService(call);
+        return HiveServiceLocator.Instance.CallHiveService(call);
       }
       catch (Exception ex) {
         HandleNetworkError(ex);

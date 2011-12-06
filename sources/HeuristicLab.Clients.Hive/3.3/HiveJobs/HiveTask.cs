@@ -455,12 +455,12 @@ namespace HeuristicLab.Clients.Hive {
         childHiveTasksLock.EnterReadLock();
         try {
           foreach (var child in childHiveTasks) {
-            ServiceLocator.Instance.CallHiveService(s => s.PauseTask(child.task.Id));
+            HiveServiceLocator.Instance.CallHiveService(s => s.PauseTask(child.task.Id));
           }
         }
         finally { childHiveTasksLock.ExitReadLock(); }
       } else {
-        ServiceLocator.Instance.CallHiveService(s => s.PauseTask(this.task.Id));
+        HiveServiceLocator.Instance.CallHiveService(s => s.PauseTask(this.task.Id));
       }
     }
 
@@ -469,17 +469,17 @@ namespace HeuristicLab.Clients.Hive {
         childHiveTasksLock.EnterReadLock();
         try {
           foreach (var child in childHiveTasks) {
-            ServiceLocator.Instance.CallHiveService(s => s.StopTask(child.task.Id));
+            HiveServiceLocator.Instance.CallHiveService(s => s.StopTask(child.task.Id));
           }
         }
         finally { childHiveTasksLock.ExitReadLock(); }
       } else {
-        ServiceLocator.Instance.CallHiveService(s => s.StopTask(this.task.Id));
+        HiveServiceLocator.Instance.CallHiveService(s => s.StopTask(this.task.Id));
       }
     }
 
     public void Restart() {
-      ServiceLocator.Instance.CallHiveService(service => {
+      HiveServiceLocator.Instance.CallHiveService(service => {
         TaskData taskData = new TaskData();
         taskData.TaskId = this.task.Id;
         taskData.Data = PersistenceUtil.Serialize(this.itemTask);

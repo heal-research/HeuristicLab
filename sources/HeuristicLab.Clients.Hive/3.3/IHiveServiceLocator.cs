@@ -22,7 +22,7 @@
 using System;
 
 namespace HeuristicLab.Clients.Hive {
-  public interface IServiceLocator {
+  public interface IHiveServiceLocator {
     string Username { get; set; }
     string Password { get; set; }
     void CallHiveService(Action<IHiveService> call);

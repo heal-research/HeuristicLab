@@ -115,7 +115,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Exceptions\ResourceNotFoundException.cs" />
-    <Compile Include="IServiceLocator.cs" />
+    <Compile Include="IHiveServiceLocator.cs" />
     <Compile Include="Tasks\EngineTask.cs" />
     <Compile Include="Tasks\OptimizerTask.cs" />
     <Compile Include="Plugin.cs" />
@@ -148,7 +148,7 @@
     <Compile Include="ServiceClients\MessageContainer.cs" />
     <Compile Include="ServiceClients\HiveServiceClient.cs" />
     <Compile Include="ServiceClients\Task.cs" />
-    <Compile Include="ServiceLocator.cs" />
+    <Compile Include="HiveServiceLocator.cs" />
     <None Include="HeuristicLab.snk" />
     <None Include="ServiceClients\GenerateServiceClients.cmd" />
     <None Include="Settings.settings">

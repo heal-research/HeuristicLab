@@ -12,7 +12,7 @@
       <Value Profile="(Default)">SlaveCommunicationServiceEndpoint</Value>
     </Setting>
     <Setting Name="ServiceName" Type="System.String" Scope="User">
-      <Value Profile="(Default)">HeuristicLab.Clients.Hive.SlaveCore.WindowsService</Value>
+      <Value Profile="(Default)">HeuristicLab.Clients.Hive.Slave</Value>
     </Setting>
   </Settings>
 </SettingsFile>

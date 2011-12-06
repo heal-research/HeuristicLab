@@ -68,7 +68,7 @@ namespace HeuristicLab.Clients.Hive {
     }
 
     private Task DownloadTask(object taskId) {
-      return ServiceLocator.Instance.CallHiveService(s => s.GetTask((Guid)taskId));
+      return HiveServiceLocator.Instance.CallHiveService(s => s.GetTask((Guid)taskId));
     }
 
     protected Tuple<Task, TaskData> DownloadTaskData(object taskId) {
@@ -80,7 +80,7 @@ namespace HeuristicLab.Clients.Hive {
       TaskData result;
       try {
         if (abort) return null;
-        result = ServiceLocator.Instance.CallHiveService(s => s.GetTaskData(task.Id));
+        result = HiveServiceLocator.Instance.CallHiveService(s => s.GetTaskData(task.Id));
       } finally {
         downloadSemaphore.Release();
       }

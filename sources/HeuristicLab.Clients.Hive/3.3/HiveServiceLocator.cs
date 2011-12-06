@@ -23,12 +23,12 @@ using System;
 using HeuristicLab.Clients.Common;
 
 namespace HeuristicLab.Clients.Hive {
-  public class ServiceLocator : IServiceLocator {
-    private static IServiceLocator instance = null;
-    public static IServiceLocator Instance {
+  public class HiveServiceLocator : IHiveServiceLocator {
+    private static IHiveServiceLocator instance = null;
+    public static IHiveServiceLocator Instance {
       get {
         if (instance == null) {
-          instance = new ServiceLocator();
+          instance = new HiveServiceLocator();
         }
         return instance;
       }
