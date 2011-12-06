@@ -89,12 +89,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     private void FormatBegin(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
       if (node.Symbol is Addition) {
-        strBuilder.Append(@"  ");
+        strBuilder.Append(@" ( ");
       } else if (node.Symbol is Subtraction) {
         if (node.SubtreeCount == 1) {
-          strBuilder.Append(@"- ");
+          strBuilder.Append(@"- ( ");
         } else {
-          strBuilder.Append(@"  ");
+          strBuilder.Append(@" ( ");
         }
       } else if (node.Symbol is Multiplication) {
       } else if (node.Symbol is Division) {
@@ -108,29 +108,29 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         if (node.SubtreeCount > 1) {
           strBuilder.Append(@" \cfrac{1}{" + node.SubtreeCount + @"}");
         }
-        strBuilder.Append(@" ");
+        strBuilder.Append(@" ( ");
       } else if (node.Symbol is Logarithm) {
-        strBuilder.Append(@"\log ");
+        strBuilder.Append(@"\log ( ");
       } else if (node.Symbol is Exponential) {
-        strBuilder.Append(@"\exp ");
+        strBuilder.Append(@"\exp ( ");
       } else if (node.Symbol is Sine) {
-        strBuilder.Append(@"\sin ");
+        strBuilder.Append(@"\sin ( ");
       } else if (node.Symbol is Cosine) {
-        strBuilder.Append(@"\cos ");
+        strBuilder.Append(@"\cos ( ");
       } else if (node.Symbol is Tangent) {
-        strBuilder.Append(@"\tan ");
+        strBuilder.Append(@"\tan ( ");
       } else if (node.Symbol is GreaterThan) {
-        strBuilder.Append(@"  ");
+        strBuilder.Append(@"  ( ");
       } else if (node.Symbol is LessThan) {
-        strBuilder.Append(@"  ");
+        strBuilder.Append(@"  ( ");
       } else if (node.Symbol is And) {
-        strBuilder.Append(@"   ");
+        strBuilder.Append(@"   ( ");
       } else if (node.Symbol is Or) {
-        strBuilder.Append(@"   ");
+        strBuilder.Append(@"   ( ");
       } else if (node.Symbol is Not) {
-        strBuilder.Append(@" \neg  ");
+        strBuilder.Append(@" \neg ( ");
       } else if (node.Symbol is IfThenElse) {
-        strBuilder.Append(@" \operatorname{if}  0 < ");
+        strBuilder.Append(@" \operatorname{if}  ( 0 < ");
       } else if (node.Symbol is Constant) {
         strBuilder.Append("c_{" + constants.Count + "} ");
         var constNode = node as ConstantTreeNode;
@@ -158,32 +158,32 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         strBuilder.Append(defunNode.FunctionName + " & = ");
       } else if (node.Symbol is InvokeFunction) {
         var invokeNode = node as InvokeFunctionTreeNode;
-        strBuilder.Append(invokeNode.Symbol.FunctionName + @"  ");
+        strBuilder.Append(invokeNode.Symbol.FunctionName + @" ( ");
       } else if (node.Symbol is StartSymbol) {
         strBuilder.Append("Result & = ");
       } else if (node.Symbol is Argument) {
         var argSym = node.Symbol as Argument;
         strBuilder.Append(" ARG+" + argSym.ArgumentIndex + " ");
       } else if (node.Symbol is Derivative) {
-        strBuilder.Append(@" \cfrac{d ");
+        strBuilder.Append(@" \cfrac{d ( ");
       } else if (node.Symbol is TimeLag) {
         var laggedNode = node as ILaggedTreeNode;
         currentLag += laggedNode.Lag;
       } else if (node.Symbol is Power) {
-        strBuilder.Append(@"");
+        strBuilder.Append(@" ( ");
       } else if (node.Symbol is Root) {
-        strBuilder.Append(@"");
+        strBuilder.Append(@" ( ");
       } else if (node.Symbol is Integral) {
         // actually a new variable for t is needed in all subtrees (TODO)
         var laggedTreeNode = node as ILaggedTreeNode;
-        strBuilder.Append(@"\sum_{t=" + (laggedTreeNode.Lag + currentLag) + @"}^0 ");
+        strBuilder.Append(@"\sum_{t=" + (laggedTreeNode.Lag + currentLag) + @"}^0 ( ");
       } else if (node.Symbol is VariableCondition) {
         var conditionTreeNode = node as VariableConditionTreeNode;
         string p = @"1 /  1 + \exp  - c_{" + constants.Count + "} ";
         constants.Add(conditionTreeNode.Slope);
         p += @" \cdot " + EscapeLatexString(conditionTreeNode.VariableName) + LagToString(currentLag) + " - c_{" + constants.Count + @"}   ";
         constants.Add(conditionTreeNode.Threshold);
-        strBuilder.Append(@" " + p + @"\cdot ");
+        strBuilder.Append(@" ( " + p + @"\cdot ");
       } else {
         throw new NotImplementedException("Export of " + node.Symbol + " is not implemented.");
       }
@@ -215,13 +215,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (node.Symbol is LessThan) {
         strBuilder.Append(@" < ");
       } else if (node.Symbol is And) {
-        strBuilder.Append(@" > 0  \land ");
+        strBuilder.Append(@" > 0  ) \land (");
       } else if (node.Symbol is Or) {
-        strBuilder.Append(@" > 0  \lor ");
+        strBuilder.Append(@" > 0  ) \lor (");
       } else if (node.Symbol is Not) {
         throw new InvalidOperationException();
       } else if (node.Symbol is IfThenElse) {
-        strBuilder.Append(@" , ");
+        strBuilder.Append(@" ) , (");
       } else if (node.Symbol is ProgramRootSymbol) {
         strBuilder.Append(@"\\" + Environment.NewLine);
       } else if (node.Symbol is Defun) {
@@ -230,16 +230,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (node.Symbol is StartSymbol) {
         strBuilder.Append(@"\\" + Environment.NewLine + " & ");
       } else if (node.Symbol is Power) {
-        strBuilder.Append(@" ^ { \operatorname{round} ");
+        strBuilder.Append(@") ^ { \operatorname{round} (");
       } else if (node.Symbol is Root) {
-        strBuilder.Append(@" ^ {  \cfrac{1}{ \operatorname{round} ");
+        strBuilder.Append(@") ^ {  \cfrac{1}{ \operatorname{round} (");
       } else if (node.Symbol is VariableCondition) {
         var conditionTreeNode = node as VariableConditionTreeNode;
-        string p = @"1 /  1 + \exp  - c_{" + constants.Count + "} ";
+        string p = @"1 / ( 1 + \exp ( - c_{" + constants.Count + "} ";
         constants.Add(conditionTreeNode.Slope);
-        p += @" \cdot " + EscapeLatexString(conditionTreeNode.VariableName) + LagToString(currentLag) + " - c_{" + constants.Count + @"}   ";
+        p += @" \cdot " + EscapeLatexString(conditionTreeNode.VariableName) + LagToString(currentLag) + " - c_{" + constants.Count + @"} ) ) )   ";
         constants.Add(conditionTreeNode.Threshold);
-        strBuilder.Append(@" +  1 - " + p + @"  \cdot ");
+        strBuilder.Append(@" +  ( 1 - " + p + @" ) \cdot ");
       } else {
         throw new NotImplementedException("Export of " + node.Symbol + " is not implemented.");
       }
@@ -247,9 +247,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     private void FormatEnd(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
       if (node.Symbol is Addition) {
-        strBuilder.Append(@"  ");
+        strBuilder.Append(@" ) ");
       } else if (node.Symbol is Subtraction) {
-        strBuilder.Append(@"  ");
+        strBuilder.Append(@" ) ");
       } else if (node.Symbol is Multiplication) {
       } else if (node.Symbol is Division) {
         strBuilder.Append("} ");
@@ -259,29 +259,29 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           strBuilder.Append(" } ");
         }
       } else if (node.Symbol is Average) {
-        strBuilder.Append(@" ");
+        strBuilder.Append(@" ) ");
       } else if (node.Symbol is Logarithm) {
-        strBuilder.Append(@"  ");
+        strBuilder.Append(@" ) ");
       } else if (node.Symbol is Exponential) {
-        strBuilder.Append(@"  ");
+        strBuilder.Append(@" ) ");
       } else if (node.Symbol is Sine) {
-        strBuilder.Append(@"  ");
+        strBuilder.Append(@" ) ");
       } else if (node.Symbol is Cosine) {
-        strBuilder.Append(@"  ");
+        strBuilder.Append(@" ) ");
       } else if (node.Symbol is Tangent) {
-        strBuilder.Append(@"  ");
+        strBuilder.Append(@" ) ");
       } else if (node.Symbol is GreaterThan) {
-        strBuilder.Append(@"  ");
+        strBuilder.Append(@" ) ");
       } else if (node.Symbol is LessThan) {
-        strBuilder.Append(@"  ");
+        strBuilder.Append(@" ) ");
       } else if (node.Symbol is And) {
-        strBuilder.Append(@" > 0   ");
+        strBuilder.Append(@" > 0 ) ) ");
       } else if (node.Symbol is Or) {
-        strBuilder.Append(@" > 0   ");
+        strBuilder.Append(@" > 0 ) ) ");
       } else if (node.Symbol is Not) {
-        strBuilder.Append(@"  ");
+        strBuilder.Append(@" ) ");
       } else if (node.Symbol is IfThenElse) {
-        strBuilder.Append(@"   ");
+        strBuilder.Append(@" ) ) ");
       } else if (node.Symbol is Constant) {
       } else if (node.Symbol is LaggedVariable) {
       } else if (node.Symbol is Variable) {
@@ -297,21 +297,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         }
       } else if (node.Symbol is Defun) {
       } else if (node.Symbol is InvokeFunction) {
-        strBuilder.Append(@"  ");
+        strBuilder.Append(@" ) ");
       } else if (node.Symbol is StartSymbol) {
       } else if (node.Symbol is Argument) {
       } else if (node.Symbol is Derivative) {
-        strBuilder.Append(@"  }{dt} ");
+        strBuilder.Append(@" ) }{dt} ");
       } else if (node.Symbol is TimeLag) {
         var laggedNode = node as ILaggedTreeNode;
         currentLag -= laggedNode.Lag;
       } else if (node.Symbol is Power) {
-        strBuilder.Append(@" } ");
+        strBuilder.Append(@" ) } ");
       } else if (node.Symbol is Root) {
-        strBuilder.Append(@" }  } ");
+        strBuilder.Append(@" ) } ) } ");
       } else if (node.Symbol is Integral) {
         var laggedTreeNode = node as ILaggedTreeNode;
-        strBuilder.Append(@" ");
+        strBuilder.Append(@" ) ");
       } else if (node.Symbol is VariableCondition) {
         strBuilder.Append(@"\left) ");
       } else {
