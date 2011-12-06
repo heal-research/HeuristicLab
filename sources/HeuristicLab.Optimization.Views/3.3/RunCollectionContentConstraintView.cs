@@ -81,6 +81,16 @@ namespace HeuristicLab.Optimization.Views {
     private class RunSetView : ItemSetView<IRun> {
       public RunCollection RunCollection { get; set; }
 
+      public RunSetView()
+        : base() {
+        addButton.Enabled = false;
+      }
+
+      protected override void SetEnabledStateOfControls() {
+        base.SetEnabledStateOfControls();
+        addButton.Enabled = false;
+      }
+
       protected override void itemsListView_DragEnter(object sender, DragEventArgs e) {
         base.itemsListView_DragEnter(sender, e);
         if (RunCollection != null) {
@@ -92,7 +102,7 @@ namespace HeuristicLab.Optimization.Views {
 
       protected override void itemsListView_DragOver(object sender, DragEventArgs e) {
         e.Effect = DragDropEffects.None;
-        if (validDragOperation) {
+        if (validDragOperation && !draggedItemsAlreadyContained) {
           e.Effect = DragDropEffects.Link;
         }
       }
