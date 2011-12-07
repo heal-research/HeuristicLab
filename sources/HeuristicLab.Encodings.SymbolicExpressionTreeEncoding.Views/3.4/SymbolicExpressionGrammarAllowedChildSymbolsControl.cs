@@ -65,15 +65,22 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
 
     private void RegisterGrammarEvents() {
       grammar.Changed += new EventHandler(Grammar_Changed);
+      grammar.ReadOnlyChanged += new EventHandler(Grammar_ReadOnlyChanged);
     }
     private void DeregisterGrammarEvents() {
       grammar.Changed -= new EventHandler(Grammar_Changed);
+      grammar.ReadOnlyChanged -= new EventHandler(Grammar_ReadOnlyChanged);
     }
 
     private void Grammar_Changed(object sender, EventArgs e) {
       if (Grammar == null) return;
       if (Symbol == null) return;
       if (Symbol != null && !Grammar.ContainsSymbol(Symbol)) Symbol = null;
+      else BuildAllowedChildSymbolsTree();
+    }
+
+    private void Grammar_ReadOnlyChanged(object sender, EventArgs e) {
+      if (InvokeRequired) Invoke((MethodInvoker)BuildAllowedChildSymbolsTree);
       else BuildAllowedChildSymbolsTree();
     }
 
@@ -89,8 +96,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     }
 
     private void BuildAllowedChildSymbolsTree() {
-      var tree = new SymbolicExpressionTree(new SymbolicExpressionTreeNode(Symbol));
+      if (Symbol == null) {
+        symbolicExpressionTreeChart.Tree = null;
+        return;
+      }
 
+      var tree = new SymbolicExpressionTree(new SymbolicExpressionTreeNode(Symbol));
       symbolicExpressionTreeChart.SuspendRepaint = true;
       if (Grammar.GetMaximumSubtreeCount(Symbol) > 0) {
         for (int i = 0; i < Grammar.GetMaximumSubtreeCount(Symbol); i++) {
@@ -145,6 +156,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     }
 
     private void symbolicExpressionTreeChart_SymbolicExpressionTreeNodeClicked(object sender, MouseEventArgs e) {
+      if (Grammar.ReadOnly) return;
       if ((Control.ModifierKeys & Keys.Control) == 0)
         selectedSymbolicExpressionTreeNodes.Clear();
 
@@ -161,6 +173,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     }
 
     private void symbolicExpressionTreeChart_KeyDown(object sender, KeyEventArgs e) {
+      if (Grammar.ReadOnly) return;
       if (e.KeyCode == Keys.Delete) {
         var root = symbolicExpressionTreeChart.Tree.Root;
         Grammar.StartGrammarManipulation();
@@ -178,6 +191,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     private bool validDragOperation;
     private void symbolicExpressionTreeChart_DragEnter(object sender, DragEventArgs e) {
       validDragOperation = false;
+      if (Grammar.ReadOnly) return;
+
       var data = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
       var symbol = data as ISymbol;
       var symbols = data as IEnumerable<ISymbol>;
@@ -257,22 +272,22 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
           increaseMaximumSubtreeCountRectangle = new RectangleF(visualRootNode.X + visualRootNode.Width + spacing, visualRootNode.Y + spacing, size, size);
           decreaseMaximumSubtreeCountRectangle = new RectangleF(visualRootNode.X + visualRootNode.Width + spacing, visualRootNode.Y + size + 2 * spacing, size, size);
 
-          pen.Color = Grammar.GetMaximumSubtreeCount(rootNode.Symbol) == Grammar.GetMinimumSubtreeCount(rootNode.Symbol) ? Color.LightGray : Color.Black;
+          pen.Color = Grammar.ReadOnly || Grammar.GetMaximumSubtreeCount(rootNode.Symbol) == Grammar.GetMinimumSubtreeCount(rootNode.Symbol) ? Color.LightGray : Color.Black;
           graphics.DrawString("+", font, pen.Brush, increaseMinimumSubtreeCountRectangle, stringFormat);
           graphics.DrawRectangle(pen, Rectangle.Round(increaseMinimumSubtreeCountRectangle));
           if (pen.Color == Color.LightGray) increaseMinimumSubtreeCountRectangle = RectangleF.Empty;
 
-          pen.Color = Grammar.GetMinimumSubtreeCount(rootNode.Symbol) == rootNode.Symbol.MinimumArity ? Color.LightGray : Color.Black;
+          pen.Color = Grammar.ReadOnly || Grammar.GetMinimumSubtreeCount(rootNode.Symbol) == rootNode.Symbol.MinimumArity ? Color.LightGray : Color.Black;
           graphics.DrawString("-", font, pen.Brush, decreaseMinimumSubtreeCountRectangle, stringFormat);
           graphics.DrawRectangle(pen, Rectangle.Round(decreaseMinimumSubtreeCountRectangle));
           if (pen.Color == Color.LightGray) decreaseMinimumSubtreeCountRectangle = RectangleF.Empty;
 
-          pen.Color = Grammar.GetMaximumSubtreeCount(rootNode.Symbol) == rootNode.Symbol.MaximumArity ? Color.LightGray : Color.Black;
+          pen.Color = Grammar.ReadOnly || Grammar.GetMaximumSubtreeCount(rootNode.Symbol) == rootNode.Symbol.MaximumArity ? Color.LightGray : Color.Black;
           graphics.DrawRectangle(pen, Rectangle.Round(increaseMaximumSubtreeCountRectangle));
           graphics.DrawString("+", font, pen.Brush, increaseMaximumSubtreeCountRectangle, stringFormat);
           if (pen.Color == Color.LightGray) increaseMaximumSubtreeCountRectangle = RectangleF.Empty;
 
-          pen.Color = Grammar.GetMaximumSubtreeCount(rootNode.Symbol) == Grammar.GetMinimumSubtreeCount(rootNode.Symbol) ? Color.LightGray : Color.Black;
+          pen.Color = Grammar.ReadOnly || Grammar.GetMaximumSubtreeCount(rootNode.Symbol) == Grammar.GetMinimumSubtreeCount(rootNode.Symbol) ? Color.LightGray : Color.Black;
           graphics.DrawRectangle(pen, Rectangle.Round(decreaseMaximumSubtreeCountRectangle));
           graphics.DrawString("-", font, pen.Brush, decreaseMaximumSubtreeCountRectangle, stringFormat);
           if (pen.Color == Color.LightGray) decreaseMaximumSubtreeCountRectangle = RectangleF.Empty;
@@ -281,7 +296,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     }
 
     private void allowedChildSymbolsControl_MouseDown(object sender, MouseEventArgs e) {
-      if (Grammar == null) return;
+      if (Grammar == null || Grammar.ReadOnly) return;
       if (symbolicExpressionTreeChart.Tree == null) return;
 
       var pointF = new PointF(e.X, e.Y);

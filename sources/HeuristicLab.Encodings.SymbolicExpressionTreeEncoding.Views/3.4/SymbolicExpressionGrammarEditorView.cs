@@ -53,11 +53,24 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       set { base.Content = value; }
     }
 
+    private Color treeViewBackColor = Color.Empty;
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
-      addButton.Enabled = Content != null && !Content.ReadOnly;
-      removeButton.Enabled = Content != null && !Content.ReadOnly && symbolsTreeView.SelectedNode != null && !(symbolsTreeView.SelectedNode.Tag is IReadOnlySymbol);
-      copyButton.Enabled = Content != null && !Content.ReadOnly && symbolsTreeView.SelectedNode != null && !(symbolsTreeView.SelectedNode.Tag is IReadOnlySymbol);
+      if (Content == null || Content.ReadOnly || ReadOnly || Locked) {
+        addButton.Enabled = false;
+        removeButton.Enabled = false;
+        copyButton.Enabled = false;
+        treeViewBackColor = symbolsTreeView.BackColor;
+        symbolsTreeView.BackColor = Color.FromArgb(255,240,240,240);
+      } else {
+        addButton.Enabled = true;
+        if (symbolsTreeView.SelectedNode != null && !(symbolsTreeView.SelectedNode.Tag is IReadOnlySymbol)) {
+          removeButton.Enabled = true;
+          copyButton.Enabled = true;
+        }
+        treeViewBackColor = Color.Empty;
+        symbolsTreeView.BackColor = treeViewBackColor;
+      }
     }
 
     protected override void OnContentChanged() {
@@ -111,7 +124,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     }
     #endregion
 
+    private bool internalTreeViewUpdateInProgress = false;
     private void UpdateSymbolsTreeView() {
+      internalTreeViewUpdateInProgress = true;
       var symbols = Content.Symbols.ToList();
       foreach (var treeNode in IterateTreeNodes().ToList()) {
         var symbol = treeNode.Tag as ISymbol;
@@ -124,6 +139,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       UpdateChildTreeNodes(symbolsTreeView.Nodes, topLevelSymbols);
 
       RebuildImageList();
+      internalTreeViewUpdateInProgress = false;
     }
 
     private void UpdateChildTreeNodes(TreeNodeCollection collection, IEnumerable<ISymbol> symbols) {
@@ -147,9 +163,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
 
     private void symbolsTreeView_AfterSelect(object sender, TreeViewEventArgs e) {
       if (e.Action != TreeViewAction.Unknown) UpdateSymbolDetailsViews();
-
-      removeButton.Enabled = symbolsTreeView.SelectedNode != null && !(symbolsTreeView.SelectedNode.Tag is IReadOnlySymbol);
-      copyButton.Enabled = symbolsTreeView.SelectedNode != null && !(symbolsTreeView.SelectedNode.Tag is IReadOnlySymbol);
+      SetEnabledStateOfControls();
     }
 
     private void symbolsTreeView_AfterCheck(object sender, TreeViewEventArgs e) {
@@ -163,6 +177,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
 
         Content.FinishedGrammarManipulation();
       }
+    }
+
+    private void symbolsTreeView_BeforeCheck(object sender, TreeViewCancelEventArgs e) {
+      if (internalTreeViewUpdateInProgress) return;      
+      if (Content == null || Content.ReadOnly) e.Cancel = true;
+      if (ReadOnly || Locked) e.Cancel = true;
     }
 
     #region drag & drop operations
@@ -182,7 +202,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     private bool validDragOperation;
     private void symbolsTreeView_DragEnter(object sender, DragEventArgs e) {
       validDragOperation = false;
-      if (Content == null) return;
+      if (Content == null || Content.ReadOnly || ReadOnly || Locked) return;
 
       var data = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
       var symbol = data as ISymbol;
@@ -229,7 +249,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       // enables deselection of treeNodes
       Point coordinates = new Point(e.X, e.Y);
       TreeNode node = symbolsTreeView.GetNodeAt(coordinates);
-      if (e.Button == System.Windows.Forms.MouseButtons.Left && node == null) {
+      if (e.Button == MouseButtons.Left && node == null) {
         symbolsTreeView.SelectedNode = null;
         symbolDetailsViewHost.Content = null;
         SetEnabledStateOfControls();
@@ -237,7 +257,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     }
 
     private void symbolsTreeView_KeyDown(object sender, KeyEventArgs e) {
-      if (ReadOnly) return;
+      if (Content == null || Content.ReadOnly || ReadOnly || Locked) return;
       if (symbolsTreeView.SelectedNode == null) return;
       if (e.KeyCode != Keys.Delete) return;
 

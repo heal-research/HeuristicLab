@@ -161,6 +161,7 @@
       this.symbolsTreeView.Size = new System.Drawing.Size(185, 299);
       this.symbolsTreeView.TabIndex = 0;
       this.symbolsTreeView.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.symbolsTreeView_AfterCheck);
+      this.symbolsTreeView.BeforeCheck += new System.Windows.Forms.TreeViewCancelEventHandler(symbolsTreeView_BeforeCheck);
       this.symbolsTreeView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.symbolsTreeView_ItemDrag);
       this.symbolsTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.symbolsTreeView_AfterSelect);
       this.symbolsTreeView.DragDrop += new System.Windows.Forms.DragEventHandler(this.symbolsTreeView_DragDrop);
