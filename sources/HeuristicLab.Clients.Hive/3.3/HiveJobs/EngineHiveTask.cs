@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.PluginInfrastructure;
@@ -60,12 +59,7 @@ namespace HeuristicLab.Clients.Hive {
       ((IAtomicOperation)ItemTask.InitialOperation).Scope.ClearParentScopes();
       jobData.Data = PersistenceUtil.Serialize(ItemTask, out usedTypes);
 
-      // add type objects from object graph to work around ticket #1527
-      var typeObjects = ItemTask.GetObjectGraphObjects().OfType<Type>();
-      usedTypes = new List<Type>(usedTypes).Union(typeObjects);
-
       PluginUtil.CollectDeclaringPlugins(plugins, usedTypes);
-
       return jobData;
     }
 

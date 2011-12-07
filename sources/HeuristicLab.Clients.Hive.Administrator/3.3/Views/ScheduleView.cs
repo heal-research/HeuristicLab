@@ -191,7 +191,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
         if (!selectedAppointment.Recurring)
           DeleteAppointment();
         else {
-          DialogResult res = MessageBox.Show("Delete all events in this series?", "Delete recurrences", MessageBoxButtons.YesNo);
+          DialogResult res = MessageBox.Show("Delete all events in this series?", "Delete recurrences", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
           if (res != DialogResult.Yes)
             DeleteAppointment();
           else
@@ -281,7 +281,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
         } else {
           //change recurring appointment
           //check, if only selected appointment has to change or whole recurrence
-          DialogResult res = MessageBox.Show("Change all events in this series?", "Change recurrences", MessageBoxButtons.YesNo);
+          DialogResult res = MessageBox.Show("Change all events in this series?", "Change recurrences", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
           if (res != DialogResult.Yes) {
             if (CreateAppointment())
               DeleteAppointment();
