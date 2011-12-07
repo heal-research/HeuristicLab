@@ -44,7 +44,9 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      Calendar.DrawTool drawTool2 = new Calendar.DrawTool();
+      this.components = new System.ComponentModel.Container();
+      Calendar.DrawTool drawTool1 = new Calendar.DrawTool();
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ScheduleView));
       this.dvOnline = new Calendar.DayView();
       this.txttimeTo = new System.Windows.Forms.DateTimePicker();
       this.txttimeFrom = new System.Windows.Forms.DateTimePicker();
@@ -60,13 +62,14 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       this.btnSaveCal = new System.Windows.Forms.Button();
       this.btnClearCal = new System.Windows.Forms.Button();
       this.mcOnline = new System.Windows.Forms.MonthCalendar();
+      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.groupBox1.SuspendLayout();
       this.SuspendLayout();
       // 
       // dvOnline
       // 
-      drawTool2.DayView = this.dvOnline;
-      this.dvOnline.ActiveTool = drawTool2;
+      drawTool1.DayView = this.dvOnline;
+      this.dvOnline.ActiveTool = drawTool1;
       this.dvOnline.AmPmDisplay = false;
       this.dvOnline.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)));
@@ -157,21 +160,27 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // btnRecurrence
       // 
+      this.btnRecurrence.Image = ((System.Drawing.Image)(resources.GetObject("btnRecurrence.Image")));
+      this.btnRecurrence.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
       this.btnRecurrence.Location = new System.Drawing.Point(135, 129);
       this.btnRecurrence.Name = "btnRecurrence";
       this.btnRecurrence.Size = new System.Drawing.Size(113, 26);
       this.btnRecurrence.TabIndex = 30;
       this.btnRecurrence.Text = "Recurrence";
+      this.toolTip.SetToolTip(this.btnRecurrence, "Create recurring appointments");
       this.btnRecurrence.UseVisualStyleBackColor = true;
       this.btnRecurrence.Click += new System.EventHandler(this.btnRecurrence_Click);
       // 
       // btbDelete
       // 
+      this.btbDelete.Image = ((System.Drawing.Image)(resources.GetObject("btbDelete.Image")));
+      this.btbDelete.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
       this.btbDelete.Location = new System.Drawing.Point(8, 129);
       this.btbDelete.Name = "btbDelete";
       this.btbDelete.Size = new System.Drawing.Size(114, 26);
       this.btbDelete.TabIndex = 25;
       this.btbDelete.Text = "Delete";
+      this.toolTip.SetToolTip(this.btbDelete, "Delete selected appointment");
       this.btbDelete.UseVisualStyleBackColor = true;
       this.btbDelete.Click += new System.EventHandler(this.btbDelete_Click);
       // 
@@ -195,31 +204,40 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // btCreate
       // 
+      this.btCreate.Image = ((System.Drawing.Image)(resources.GetObject("btCreate.Image")));
+      this.btCreate.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
       this.btCreate.Location = new System.Drawing.Point(6, 93);
       this.btCreate.Name = "btCreate";
       this.btCreate.Size = new System.Drawing.Size(242, 26);
       this.btCreate.TabIndex = 20;
-      this.btCreate.Text = "Save Appointment";
+      this.btCreate.Text = "Create Appointment";
+      this.toolTip.SetToolTip(this.btCreate, "Create a new appointment in the calender");
       this.btCreate.UseVisualStyleBackColor = true;
       this.btCreate.Click += new System.EventHandler(this.btCreate_Click);
       // 
       // btnSaveCal
       // 
-      this.btnSaveCal.Location = new System.Drawing.Point(633, 40);
+      this.btnSaveCal.Image = ((System.Drawing.Image)(resources.GetObject("btnSaveCal.Image")));
+      this.btnSaveCal.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      this.btnSaveCal.Location = new System.Drawing.Point(633, 41);
       this.btnSaveCal.Name = "btnSaveCal";
-      this.btnSaveCal.Size = new System.Drawing.Size(199, 23);
+      this.btnSaveCal.Size = new System.Drawing.Size(199, 26);
       this.btnSaveCal.TabIndex = 57;
-      this.btnSaveCal.Text = "Save Calendar";
+      this.btnSaveCal.Text = "Save Calendar on Server";
+      this.toolTip.SetToolTip(this.btnSaveCal, "Store the calender on the server");
       this.btnSaveCal.UseVisualStyleBackColor = true;
       this.btnSaveCal.Click += new System.EventHandler(this.btnSaveCal_Click);
       // 
       // btnClearCal
       // 
+      this.btnClearCal.Image = ((System.Drawing.Image)(resources.GetObject("btnClearCal.Image")));
+      this.btnClearCal.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
       this.btnClearCal.Location = new System.Drawing.Point(633, 9);
       this.btnClearCal.Name = "btnClearCal";
-      this.btnClearCal.Size = new System.Drawing.Size(199, 23);
+      this.btnClearCal.Size = new System.Drawing.Size(199, 26);
       this.btnClearCal.TabIndex = 58;
       this.btnClearCal.Text = "Clear Calendar";
+      this.toolTip.SetToolTip(this.btnClearCal, "Remove all appointments from calender");
       this.btnClearCal.UseVisualStyleBackColor = true;
       this.btnClearCal.Click += new System.EventHandler(this.btnClearCal_Click);
       // 
@@ -265,5 +283,6 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private System.Windows.Forms.Button btnSaveCal;
     private System.Windows.Forms.Button btnClearCal;
     private System.Windows.Forms.MonthCalendar mcOnline;
+    private System.Windows.Forms.ToolTip toolTip;
   }
 }

@@ -242,32 +242,27 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     }
 
     private void dvOnline_OnSelectionChanged(object sender, EventArgs e) {
-      //btCreate.Enabled = true;
       if (dvOnline.Selection == SelectionType.DateRange) {
         dtpFrom.Text = dvOnline.SelectionStart.ToShortDateString();
         dtpTo.Text = dvOnline.SelectionEnd.Date.ToShortDateString();
         txttimeFrom.Text = dvOnline.SelectionStart.ToShortTimeString();
         txttimeTo.Text = dvOnline.SelectionEnd.ToShortTimeString();
-
-        btCreate.Text = "Save";
+        btCreate.Text = "Create Appointment";
       }
 
       if (dvOnline.Selection == SelectionType.Appointment) {
-
         dtpFrom.Text = dvOnline.SelectedAppointment.StartDate.ToShortDateString();
         dtpTo.Text = dvOnline.SelectedAppointment.EndDate.ToShortDateString();
         txttimeFrom.Text = dvOnline.SelectedAppointment.StartDate.ToShortTimeString();
         txttimeTo.Text = dvOnline.SelectedAppointment.EndDate.ToShortTimeString();
 
         if (dvOnline.SelectedAppointment.Recurring)
-          //btCreate.Enabled = false;
           //also change the caption of the save button
           btCreate.Text = "Save changes";
       }
-
       if (dvOnline.Selection == SelectionType.None) {
         //also change the caption of the save button
-        btCreate.Text = "Save";
+        btCreate.Text = "Create Appointment";
       }
     }
 

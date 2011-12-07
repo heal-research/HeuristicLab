@@ -135,7 +135,6 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
               tn.Text = g.Name;
 
               BuildSlaveGroupTree(g, tn);
-              tn.ExpandAll();
               treeSlaveGroup.Nodes.Add(tn);
             }
           } else if (g.GetType() == typeof(Slave)) {
@@ -148,7 +147,6 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
             }
           }
         }
-        ungrp.ExpandAll();
         treeSlaveGroup.Nodes.Add(ungrp);
       }
     }
@@ -166,7 +164,6 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
         tn.Nodes.Add(stn);
 
         BuildSlaveGroupTree(r, stn);
-        tn.ExpandAll();
       }
     }
 

@@ -60,6 +60,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       this.slaveView = new HeuristicLab.Clients.Hive.Administrator.Views.SlaveView();
       this.tabSchedule = new System.Windows.Forms.TabPage();
       this.scheduleView = new HeuristicLab.Clients.Hive.Administrator.Views.ScheduleView();
+      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       ((System.ComponentModel.ISupportInitialize)(this.splitSlaves)).BeginInit();
       this.splitSlaves.Panel1.SuspendLayout();
       this.splitSlaves.Panel2.SuspendLayout();
@@ -106,6 +107,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       this.btnRefresh.Name = "btnRefresh";
       this.btnRefresh.Size = new System.Drawing.Size(24, 24);
       this.btnRefresh.TabIndex = 8;
+      this.toolTip.SetToolTip(this.btnRefresh, "Fetch list from server");
       this.btnRefresh.UseVisualStyleBackColor = true;
       this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
       // 
@@ -124,6 +126,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       this.btnSave.Name = "btnSave";
       this.btnSave.Size = new System.Drawing.Size(24, 24);
       this.btnSave.TabIndex = 5;
+      this.toolTip.SetToolTip(this.btnSave, "Store slave and group configuration on the server");
       this.btnSave.UseVisualStyleBackColor = true;
       this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
       // 
@@ -134,6 +137,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       this.btnRemoveGroup.Name = "btnRemoveGroup";
       this.btnRemoveGroup.Size = new System.Drawing.Size(24, 24);
       this.btnRemoveGroup.TabIndex = 2;
+      this.toolTip.SetToolTip(this.btnRemoveGroup, "Delete a slave or a group");
       this.btnRemoveGroup.UseVisualStyleBackColor = true;
       this.btnRemoveGroup.Click += new System.EventHandler(this.btnRemoveGroup_Click);
       // 
@@ -144,6 +148,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       this.btnAddGroup.Name = "btnAddGroup";
       this.btnAddGroup.Size = new System.Drawing.Size(24, 24);
       this.btnAddGroup.TabIndex = 1;
+      this.toolTip.SetToolTip(this.btnAddGroup, "Add a new group");
       this.btnAddGroup.UseVisualStyleBackColor = true;
       this.btnAddGroup.Click += new System.EventHandler(this.btnAddGroup_Click);
       // 
@@ -263,5 +268,6 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private System.Windows.Forms.Button btnSave;
     private System.Windows.Forms.ProgressBar progressBar;
     private System.Windows.Forms.Button btnRefresh;
+    private System.Windows.Forms.ToolTip toolTip;
   }
 }
