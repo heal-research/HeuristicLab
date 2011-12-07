@@ -126,9 +126,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       if (!Parameters.ContainsKey(UpdateIntervalParameterName)) {
         Parameters.Add(new ValueParameter<IntValue>(UpdateIntervalParameterName, "The interval in which the tree length analysis should be applied.", new IntValue(1)));
       }
-      if (!Parameters.ContainsKey(UpdateCounterParameterName)) {
-        Parameters.Add(new LookupParameter<IntValue>(UpdateCounterParameterName, "The value which counts how many times the operator was called since the last update"));
-      }
+      if (Parameters.ContainsKey(UpdateCounterParameterName))
+        Parameters.Remove(UpdateCounterParameterName);
+      Parameters.Add(new ValueParameter<IntValue>(UpdateCounterParameterName, "The value which counts how many times the operator was called since the last update", new IntValue(0)));
       if (!Parameters.ContainsKey(GenerationCounterParameterName)) {
         Parameters.Add(new ValueParameter<IntValue>(GenerationCounterParameterName, "The value of the total number of generations this operator has been applied.", new IntValue(1)));
       }
@@ -162,16 +162,17 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         const string xAxisTitle = "Symbolic expression tree lengths";
         const string yAxisTitle = "Frequency / Number of tree individuals";
 
-        var treeLengths = solutions.Select(s => (double)s.Length);
-        int maxLength = solutions.Max(s => s.Length);
-        int minLength = solutions.Min(s => s.Length);
+        var treeLengths = solutions.Select(s => (int)s.Length).ToList();
+
+        int maxLength = treeLengths.Max(t => t);
+        int minLength = treeLengths.Min(t => t);
 
         if (!treeLengthsTable.Rows.ContainsKey(treeLengthsTableRowName)) {
-          treeLengthsTableRow = new DataRow(treeLengthsTableRowName, treeLengthsTableRowDesc, treeLengths);
+          treeLengthsTableRow = new DataRow(treeLengthsTableRowName, treeLengthsTableRowDesc, treeLengths.Select(x => (double)x));
           treeLengthsTable.Rows.Add(treeLengthsTableRow);
         } else {
           treeLengthsTableRow = treeLengthsTable.Rows[treeLengthsTableRowName];
-          treeLengthsTableRow.Values.Replace(treeLengths);
+          treeLengthsTableRow.Values.Replace(treeLengths.Select(x => (double)x));
         }
 
         double maximumAllowedTreeLength = ((LookupParameter<IntValue>)Parameters[MaximumSymbolicExpressionTreeLengthParameterName]).ActualValue.Value;
@@ -179,14 +180,16 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         treeLengthsTableRow.VisualProperties.ChartType = DataRowVisualProperties.DataRowChartType.Histogram;
         treeLengthsTableRow.VisualProperties.ExactBins = false;
 
+        int range = maxLength - minLength;
+        if (range == 0) range = 1;
         // the following trick should result in an integer intervalWidth of 1,2,4,...
-        treeLengthsTableRow.VisualProperties.Bins = maxLength - minLength;
+        treeLengthsTableRow.VisualProperties.Bins = range;
 
         if (maxLength <= 25) // [0,25]
           treeLengthsTableRow.VisualProperties.ScaleFactor = 1.0;
-        else if (maxLength <= 100) // [26,100])
+        else if (maxLength <= 100) // [26,100]
           treeLengthsTableRow.VisualProperties.ScaleFactor = 1.0 / 2.0;
-        else if (maxLength <= 250) // [100,250]
+        else if (maxLength <= 250) // [101,250]
           treeLengthsTableRow.VisualProperties.ScaleFactor = 1.0 / 5.0;
         else if (maxLength <= 500) // [251,500]
           treeLengthsTableRow.VisualProperties.ScaleFactor = 1.0 / 10.0;
@@ -204,11 +207,16 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         else
           treeLengthsTable.VisualProperties.XAxisMaximumFixedValue = maximumAllowedTreeLength + 1;
         treeLengthsTable.VisualProperties.XAxisTitle = xAxisTitle;
-        // visual properties for the Y-axis
+        //visual properties for the Y-axis
         treeLengthsTable.VisualProperties.YAxisMinimumAuto = false;
         treeLengthsTable.VisualProperties.YAxisMaximumAuto = false;
         treeLengthsTable.VisualProperties.YAxisMinimumFixedValue = 0.0;
-        treeLengthsTable.VisualProperties.YAxisMaximumFixedValue = Math.Ceiling(solutions.Length / 2.0);
+        int maxFreq = solutions.GroupBy(s => s.Length).Max(g => g.Count());
+        double yAxisMaximumFixedValue = Math.Ceiling(solutions.Length / 2.0) > maxFreq ? Math.Ceiling(solutions.Length / 2.0) : maxFreq;
+        // round up yAxisMaximumFixedValue to the nearest multiple of 5, so it would look nice in the chart
+        yAxisMaximumFixedValue = yAxisMaximumFixedValue + 5 - ((int)yAxisMaximumFixedValue % 5);
+
+        treeLengthsTable.VisualProperties.YAxisMaximumFixedValue = yAxisMaximumFixedValue;
         treeLengthsTable.VisualProperties.YAxisTitle = yAxisTitle;
 
         var results = ResultsParameter.ActualValue;
@@ -228,7 +236,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
           var historyDataRow = new DataRow(treeLengthHistoryRowPrefix + GenerationCounter.Value, "Symbolic expression tree lengths at generation " + GenerationCounter.Value, treeLengthsTableRow.Values);
           historyDataRow.VisualProperties.ChartType = DataRowVisualProperties.DataRowChartType.Histogram;
           historyDataRow.VisualProperties.ExactBins = false;
-          historyDataRow.VisualProperties.Bins = maxLength - minLength;
+          historyDataRow.VisualProperties.Bins = range;
           historyDataRow.VisualProperties.ScaleFactor = treeLengthsTableRow.VisualProperties.ScaleFactor;
           var historyTable = new DataTable();
           historyTable.Rows.Add(historyDataRow);
@@ -245,7 +253,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
           historyTable.VisualProperties.YAxisMinimumAuto = false;
           historyTable.VisualProperties.YAxisMaximumAuto = false;
           historyTable.VisualProperties.YAxisMinimumFixedValue = 0.0;
-          historyTable.VisualProperties.YAxisMaximumFixedValue = Math.Ceiling(solutions.Length / 2.0);
+          historyTable.VisualProperties.YAxisMaximumFixedValue = yAxisMaximumFixedValue;
           historyTable.VisualProperties.YAxisTitle = yAxisTitle;
 
           var treeLengthsHistory = SymbolicExpressionTreeLengthsHistoryParameter.ActualValue;
