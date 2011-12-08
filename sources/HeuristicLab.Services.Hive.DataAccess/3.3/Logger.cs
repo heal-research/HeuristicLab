@@ -46,13 +46,10 @@ namespace HeuristicLab.Services.Hive.DataAccess {
     /// </summary>
     public Logger(string name, string source) {
       try {
-        if (!EventLog.SourceExists(source)) {
-          EventLog.CreateEventSource(source, name);
-        }
         log = new EventLog(name);
         log.Source = source;
       }
-      catch (SecurityException) { }
+      catch (Exception) { }
     }
 
     public void Log(string message) {
@@ -61,7 +58,7 @@ namespace HeuristicLab.Services.Hive.DataAccess {
           log.WriteEntry(string.Format("{0} (AppDomain: {1}, Thread: {2})", message, AppDomain.CurrentDomain.Id, Thread.CurrentThread.ManagedThreadId), EventLogEntryType.Information);
         }
       }
-      catch (SecurityException) { }
+      catch (Exception) { }
     }
 
     public void Error(Exception e) {
@@ -70,7 +67,7 @@ namespace HeuristicLab.Services.Hive.DataAccess {
           log.WriteEntry(string.Format("{0} (AppDomain: {1}, Thread: {2})", e.Message, AppDomain.CurrentDomain.Id, Thread.CurrentThread.ManagedThreadId), EventLogEntryType.Error);
         }
       }
-      catch (SecurityException) { }
+      catch (Exception) { }
     }
   }
 }
