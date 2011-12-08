@@ -22,11 +22,15 @@
 using System;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
+using System.Threading.Tasks;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Clients.Hive.Views {
   [View("OptimizerHiveTask View")]
   [Content(typeof(OptimizerHiveTask), true)]
   public partial class OptimizerHiveTaskView : HiveTaskView {
+    private ProgressView progressView;
+
     public new OptimizerHiveTask Content {
       get { return (OptimizerHiveTask)base.Content; }
       set {
@@ -66,17 +70,77 @@ namespace HeuristicLab.Clients.Hive.Views {
 
     #region Child Control Events
     private void restartButton_Click(object sender, EventArgs e) {
-      Content.Restart();
+      var task = System.Threading.Tasks.Task.Factory.StartNew(ResumeTaskAsync);
+      task.ContinueWith((t) => {
+        FinishProgressView();
+        ErrorHandling.ShowErrorDialog(this, "An error occured while resuming the task.", t.Exception);
+      }, TaskContinuationOptions.OnlyOnFaulted); 
     }
 
     private void pauseButton_Click(object sender, EventArgs e) {
-      Content.Pause();
+      var task = System.Threading.Tasks.Task.Factory.StartNew(PauseTaskAsync);
+      task.ContinueWith((t) => {
+        FinishProgressView();
+        ErrorHandling.ShowErrorDialog(this, "An error occured while pausing the task.", t.Exception);
+      }, TaskContinuationOptions.OnlyOnFaulted);
     }
 
     private void stopButton_Click(object sender, EventArgs e) {
-      Content.Stop();
+      var task = System.Threading.Tasks.Task.Factory.StartNew(StopTaskAsync);
+      task.ContinueWith((t) => {
+        FinishProgressView();
+        ErrorHandling.ShowErrorDialog(this, "An error occured while stopping the task.", t.Exception);
+      }, TaskContinuationOptions.OnlyOnFaulted);
     }
     #endregion
+
+    private void PauseTaskAsync() {
+      IProgress prog = new Progress();
+      prog.Status = "Pausing task. Please be patient for the command to take effect.";
+      SetProgressView(prog);
+      Content.Pause();
+      FinishProgressView();
+    }
+
+    private void StopTaskAsync() {
+      IProgress prog = new Progress();
+      prog.Status = "Stopping task. Please be patient for the command to take effect.";
+      SetProgressView(prog);
+      Content.Stop();
+      FinishProgressView();
+    }
+
+    private void ResumeTaskAsync() {
+      IProgress prog = new Progress();
+      prog.Status = "Resuming task. Please be patient for the command to take effect.";
+      SetProgressView(prog);
+      Content.Restart();
+      FinishProgressView();
+    }
+
+    private void SetProgressView(IProgress progress) {
+      if (InvokeRequired) {
+        Invoke(new Action<IProgress>(SetProgressView), progress);
+      } else {
+        if (progressView == null) {
+          progressView = new ProgressView(this, progress);
+        } else {
+          progressView.Progress = progress;
+        }
+      }
+    }
+
+    private void FinishProgressView() {
+      if (InvokeRequired) {
+        Invoke(new Action(FinishProgressView));
+      } else {
+        if (progressView != null) {
+          progressView.Finish();
+          progressView = null;
+          SetEnabledStateOfControls();
+        }
+      }
+    }
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();

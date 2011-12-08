@@ -31,6 +31,7 @@ using HeuristicLab.Core;
 using HeuristicLab.MainForm;
 using HeuristicLab.Optimization;
 using HeuristicLab.PluginInfrastructure;
+using System.Threading.Tasks;
 
 namespace HeuristicLab.Clients.Hive.JobManager.Views {
   /// <summary>
@@ -315,8 +316,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       else {
         SetEnabledStateOfControls();
       }
-    }
-
+    } 
 
     private void UpdateStateLogList() {
       if (Content != null && this.Content.Job != null) {
@@ -335,17 +335,60 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     private void startButton_Click(object sender, EventArgs e) {
       if (nameTextBox.Text.Trim() == string.Empty) {
         MessageBox.Show("Please enter a name for the job before uploading it!", "HeuristicLab Hive Job Manager", MessageBoxButtons.OK, MessageBoxIcon.Information);
+      } else if (Content.ExecutionState == ExecutionState.Paused) {             
+        var task = System.Threading.Tasks.Task.Factory.StartNew(ResumeJobAsync, Content);
+        task.ContinueWith((t) => {
+          FinishProgressView();
+          MessageBox.Show("An error occured resuming the job. See the log for more information.", "HeuristicLab Hive Job Manager", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          Content.Log.LogException(t.Exception);
+        }, TaskContinuationOptions.OnlyOnFaulted);
       } else {
         HiveClient.StartJob((Exception ex) => ErrorHandling.ShowErrorDialog(this, "Start failed.", ex), Content, new CancellationToken());
       }
     }
+
     private void pauseButton_Click(object sender, EventArgs e) {
-      HiveClient.PauseJob(Content);
-    }
+      var task = System.Threading.Tasks.Task.Factory.StartNew(PauseJobAsync, Content);
+      task.ContinueWith((t) => {        
+        FinishProgressView();
+        MessageBox.Show("An error occured pausing the job. See the log for more information.", "HeuristicLab Hive Job Manager", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Content.Log.LogException(t.Exception);
+      }, TaskContinuationOptions.OnlyOnFaulted);
+    }         
+
     private void stopButton_Click(object sender, EventArgs e) {
-      HiveClient.StopJob(Content);
+      var task = System.Threading.Tasks.Task.Factory.StartNew(StopJobAsync, Content);
+      task.ContinueWith((t) => {
+        FinishProgressView();
+        MessageBox.Show("An error occured stopping the job. See the log for more information.", "HeuristicLab Hive Job Manager", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Content.Log.LogException(t.Exception);
+      }, TaskContinuationOptions.OnlyOnFaulted);
     }
     private void resetButton_Click(object sender, EventArgs e) { }
+
+    private void PauseJobAsync(object job) {
+      IProgress prog = new Progress();
+      prog.Status = "Pausing job...";
+      SetProgressView(prog);
+      HiveClient.PauseJob((RefreshableJob)job);
+      FinishProgressView();
+    }
+
+    private void StopJobAsync(object job) {
+      IProgress prog = new Progress();
+      prog.Status = "Stopping job...";
+      SetProgressView(prog);
+      HiveClient.StopJob((RefreshableJob)job);
+      FinishProgressView();
+    }
+
+    private void ResumeJobAsync(object job) {
+      IProgress prog = new Progress();
+      prog.Status = "Resuming job...";
+      SetProgressView(prog);
+      HiveClient.ResumeJob((RefreshableJob)job);
+      FinishProgressView();
+    }
 
     private void nameTextBox_Validated(object sender, EventArgs e) {
       if (Content.Job.Name != nameTextBox.Text)
@@ -384,8 +427,6 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
         hiveExperimentPermissionListView.Content = HiveClient.GetJobPermissions(this.Content.Job.Id);
       }
     }
-
-
     #endregion
 
     #region Helpers
@@ -393,7 +434,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       if (Content == null) {
         startButton.Enabled = pauseButton.Enabled = stopButton.Enabled = resetButton.Enabled = false;
       } else {
-        startButton.Enabled = Content.IsControllable && Content.HiveTasks != null && Content.HiveTasks.Count > 0 && Content.ExecutionState == ExecutionState.Prepared;
+        startButton.Enabled = Content.IsControllable && Content.HiveTasks != null && Content.HiveTasks.Count > 0 && (Content.ExecutionState == ExecutionState.Prepared || Content.ExecutionState == ExecutionState.Paused);
         pauseButton.Enabled = Content.IsControllable && Content.ExecutionState == ExecutionState.Started;
         stopButton.Enabled = Content.IsControllable && Content.ExecutionState == ExecutionState.Started;
         resetButton.Enabled = false;
@@ -415,17 +456,38 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     }
 
     private void SetProgressView() {
-      if (progressView == null) {
-        progressView = new ProgressView(this, Content.Progress);
+      if (InvokeRequired) {
+        Invoke(new Action(SetProgressView));
+      } else {
+        if (progressView == null) {
+          progressView = new ProgressView(this, Content.Progress);
+        } else {
+          progressView.Progress = Content.Progress;
+        }
       }
-      progressView.Progress = Content.Progress;
+    }
+
+    private void SetProgressView(IProgress progress) {
+      if (InvokeRequired) {
+        Invoke(new Action<IProgress>(SetProgressView), progress);
+      } else {
+        if (progressView == null) {
+          progressView = new ProgressView(this, progress);
+        } else {
+          progressView.Progress = progress;
+        }
+      }
     }
 
     private void FinishProgressView() {
-      if (progressView != null) {
-        progressView.Finish();
-        progressView = null;
-        SetEnabledStateOfControls();
+      if (InvokeRequired) {
+        Invoke(new Action(FinishProgressView));
+      } else {
+        if (progressView != null) {
+          progressView.Finish();
+          progressView = null;
+          SetEnabledStateOfControls();
+        }
       }
     }
     #endregion

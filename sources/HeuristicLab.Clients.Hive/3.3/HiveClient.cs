@@ -235,7 +235,18 @@ namespace HeuristicLab.Clients.Hive {
             service.StopTask(task.Task.Id);
         }
       });
-      // execution state does not need to be set. it will be set to Stopped, when all jobs have been downloaded
+      refreshableJob.ExecutionState = ExecutionState.Stopped;
+    }
+
+    public static void ResumeJob(RefreshableJob refreshableJob) {
+      HiveServiceLocator.Instance.CallHiveService(service => {
+        foreach (HiveTask task in refreshableJob.GetAllHiveTasks()) {
+          if (task.Task.State == TaskState.Paused) {            
+            service.RestartTask(task.Task.Id);            
+          }
+        }
+      });
+      refreshableJob.ExecutionState = ExecutionState.Started;
     }
 
     #region Upload Job
