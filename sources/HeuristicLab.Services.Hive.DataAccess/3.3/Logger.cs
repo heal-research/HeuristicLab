@@ -27,7 +27,8 @@ using System.Threading;
 namespace HeuristicLab.Services.Hive.DataAccess {
   public class LogFactory {
     public static ILogger GetLogger(string source) {
-      return new Logger(Settings.Default.EventLogName, source);
+      //ignore the source parameter for now
+      return new Logger(source, Settings.Default.EventLogName);
     }
   }
 
@@ -46,7 +47,7 @@ namespace HeuristicLab.Services.Hive.DataAccess {
     /// </summary>
     public Logger(string name, string source) {
       try {
-        log = new EventLog(name);
+        log = new EventLog();
         log.Source = source;
       }
       catch (Exception) { }
