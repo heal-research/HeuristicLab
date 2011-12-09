@@ -399,7 +399,11 @@ namespace HeuristicLab.Core.Views {
       else {
         foreach (IndexedItem<T> item in e.Items) {
           ListViewItem listViewItem = itemsListView.Items[item.Index];
+          if (listViewItem.Tag != null)
+            itemListViewItemMapping[(T)listViewItem.Tag].Remove(listViewItem);
           listViewItem.Tag = item.Value;
+          if (listViewItem.Tag != null)
+            itemListViewItemMapping[item.Value].Add(listViewItem);
           UpdateListViewItemImage(listViewItem);
           UpdateListViewItemText(listViewItem);
         }
