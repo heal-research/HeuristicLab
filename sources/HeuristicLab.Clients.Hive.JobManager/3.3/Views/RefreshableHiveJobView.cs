@@ -23,6 +23,7 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using HeuristicLab.Clients.Hive.Views;
 using HeuristicLab.Collections;
@@ -31,7 +32,6 @@ using HeuristicLab.Core;
 using HeuristicLab.MainForm;
 using HeuristicLab.Optimization;
 using HeuristicLab.PluginInfrastructure;
-using System.Threading.Tasks;
 
 namespace HeuristicLab.Clients.Hive.JobManager.Views {
   /// <summary>
@@ -301,7 +301,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       }
     }
     private void Content_ExceptionOccured(object sender, EventArgs<Exception> e) {
-      // don't show exception, it is logged anyway      
+      throw e.Value;
     }
     private void Content_StateLogListChanged(object sender, EventArgs e) {
       if (InvokeRequired)
@@ -316,7 +316,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       else {
         SetEnabledStateOfControls();
       }
-    } 
+    }
 
     private void UpdateStateLogList() {
       if (Content != null && this.Content.Job != null) {
@@ -335,7 +335,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     private void startButton_Click(object sender, EventArgs e) {
       if (nameTextBox.Text.Trim() == string.Empty) {
         MessageBox.Show("Please enter a name for the job before uploading it!", "HeuristicLab Hive Job Manager", MessageBoxButtons.OK, MessageBoxIcon.Information);
-      } else if (Content.ExecutionState == ExecutionState.Paused) {             
+      } else if (Content.ExecutionState == ExecutionState.Paused) {
         var task = System.Threading.Tasks.Task.Factory.StartNew(ResumeJobAsync, Content);
         task.ContinueWith((t) => {
           FinishProgressView();
@@ -349,12 +349,12 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
 
     private void pauseButton_Click(object sender, EventArgs e) {
       var task = System.Threading.Tasks.Task.Factory.StartNew(PauseJobAsync, Content);
-      task.ContinueWith((t) => {        
+      task.ContinueWith((t) => {
         FinishProgressView();
         MessageBox.Show("An error occured pausing the job. See the log for more information.", "HeuristicLab Hive Job Manager", MessageBoxButtons.OK, MessageBoxIcon.Error);
         Content.Log.LogException(t.Exception);
       }, TaskContinuationOptions.OnlyOnFaulted);
-    }         
+    }
 
     private void stopButton_Click(object sender, EventArgs e) {
       var task = System.Threading.Tasks.Task.Factory.StartNew(StopJobAsync, Content);
@@ -532,7 +532,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     private void tabControl_SelectedIndexChanged(object sender, EventArgs e) {
       if (tabControl.SelectedTab == permissionTabPage) {
         if (!Content.IsSharable) {
-          MessageBox.Show("Unable to load tab. You have insufficient access privileges.");
+          MessageBox.Show("Unable to load permissions. You have insufficient access privileges.", "HeuristicLab Hive Job Manager", MessageBoxButtons.OK, MessageBoxIcon.Information);
           tabControl.SelectedTab = tasksTabPage;
         }
       }
