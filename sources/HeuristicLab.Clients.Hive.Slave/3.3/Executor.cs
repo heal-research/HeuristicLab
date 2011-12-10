@@ -90,9 +90,9 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       }
       catch (Exception e) {
         this.CurrentException = e;
+        taskDataInvalid = true;
         Task_TaskFailed(this, new EventArgs<Exception>(e));
-      }
-      finally {
+      } finally {
         taskStartedSem.Set();
       }
     }
