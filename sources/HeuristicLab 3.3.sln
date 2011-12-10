@@ -255,11 +255,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Operators.View
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.QuadraticAssignment.Algorithms-3.3", "HeuristicLab.Problems.QuadraticAssignment.Algorithms\3.3\HeuristicLab.Problems.QuadraticAssignment.Algorithms-3.3.csproj", "{5B9B9E8C-2706-43C2-80B8-A08341E431F7}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{C89ADA03-1DAC-406A-9C1F-128CC9986D80}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Tests", "HeuristicLab.Tests\HeuristicLab.Tests.csproj", "{B62872C1-6752-4758-9823-751A2D28C388}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Hive", "Hive", "{40362A4B-25F8-48AC-AFB1-645E6F4226A9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Hive-3.3", "HeuristicLab.Hive\3.3\HeuristicLab.Hive-3.3.csproj", "{F98A1740-9AC9-4D36-A582-6A2D0D06978D}"
 EndProject
@@ -1335,13 +1331,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{B62872C1-6752-4758-9823-751A2D28C388} = {C89ADA03-1DAC-406A-9C1F-128CC9986D80}
-		{F98A1740-9AC9-4D36-A582-6A2D0D06978D} = {40362A4B-25F8-48AC-AFB1-645E6F4226A9}
-		{B5EF1E5A-9F3D-40B9-B4B0-30AADF2E2CEB} = {40362A4B-25F8-48AC-AFB1-645E6F4226A9}
-		{E1D6C801-892A-406A-B606-F158E36DD3C3} = {40362A4B-25F8-48AC-AFB1-645E6F4226A9}
-		{DBFD7205-61AF-40EF-8776-3052DEF91CF3} = {40362A4B-25F8-48AC-AFB1-645E6F4226A9}
-		{5211F1AD-BBA2-4C62-8749-DCA0A25CF5D8} = {40362A4B-25F8-48AC-AFB1-645E6F4226A9}
 	EndGlobalSection
 EndGlobal

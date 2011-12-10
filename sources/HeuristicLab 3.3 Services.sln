@@ -16,8 +16,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Services.Deplo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Services.Deployment-3.3.Tests", "HeuristicLab.Services.Deployment\3.3\Tests\HeuristicLab.Services.Deployment-3.3.Tests.csproj", "{421D9CCA-5A48-4813-AB9C-ED7025F9CC35}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Hive", "Hive", "{C159ED4A-0E0C-4CCC-81B4-F8979F5C3CE1}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Services.Hive.DataAccess-3.3", "HeuristicLab.Services.Hive.DataAccess\3.3\HeuristicLab.Services.Hive.DataAccess-3.3.csproj", "{EC2C8109-6E1E-4C88-9A2B-908CFF2EF4AC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Services.Hive-3.3", "HeuristicLab.Services.Hive\3.3\HeuristicLab.Services.Hive-3.3.csproj", "{CF9DA321-AC1B-4FD3-9EC3-67BC6B861BDE}"
@@ -127,10 +125,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{EC2C8109-6E1E-4C88-9A2B-908CFF2EF4AC} = {C159ED4A-0E0C-4CCC-81B4-F8979F5C3CE1}
-		{CF9DA321-AC1B-4FD3-9EC3-67BC6B861BDE} = {C159ED4A-0E0C-4CCC-81B4-F8979F5C3CE1}
-		{0CA6706D-A569-45DE-A85C-4158891CC1BC} = {C159ED4A-0E0C-4CCC-81B4-F8979F5C3CE1}
 	EndGlobalSection
 EndGlobal
