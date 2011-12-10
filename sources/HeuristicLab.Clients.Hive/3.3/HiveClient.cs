@@ -241,8 +241,8 @@ namespace HeuristicLab.Clients.Hive {
     public static void ResumeJob(RefreshableJob refreshableJob) {
       HiveServiceLocator.Instance.CallHiveService(service => {
         foreach (HiveTask task in refreshableJob.GetAllHiveTasks()) {
-          if (task.Task.State == TaskState.Paused) {            
-            service.RestartTask(task.Task.Id);            
+          if (task.Task.State == TaskState.Paused) {
+            service.RestartTask(task.Task.Id);
           }
         }
       });
@@ -449,21 +449,20 @@ namespace HeuristicLab.Clients.Hive {
           }
         }
         IDictionary<Guid, HiveTask> allHiveTasks = downloader.Results;
+        var parents = allHiveTasks.Values.Where(x => !x.Task.ParentTaskId.HasValue);
 
-        refreshableJob.HiveTasks = new ItemCollection<HiveTask>(allHiveTasks.Values.Where(x => !x.Task.ParentTaskId.HasValue));
+        refreshableJob.Progress.Status = "Downloading/deserializing complete. Displaying tasks...";
+        // build child-task tree
+        foreach (HiveTask hiveTask in parents) {
+          BuildHiveJobTree(hiveTask, allTasks, allHiveTasks);
+        }
 
+        refreshableJob.HiveTasks = new ItemCollection<HiveTask>(parents);
         if (refreshableJob.IsFinished()) {
           refreshableJob.ExecutionState = Core.ExecutionState.Stopped;
         } else {
           refreshableJob.ExecutionState = Core.ExecutionState.Started;
         }
-
-        refreshableJob.Progress.Status = "Downloading/deserializing complete. Displaying tasks...";
-        // build child-task tree
-        foreach (HiveTask hiveTask in refreshableJob.HiveTasks) {
-          BuildHiveJobTree(hiveTask, allTasks, allHiveTasks);
-        }
-
         refreshableJob.OnLoaded();
       } finally {
         refreshableJob.IsProgressing = false;
