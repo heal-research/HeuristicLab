@@ -143,46 +143,34 @@
     <Compile Include="Symbols\VariableTreeNode.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
-      <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
-      <Name>HeuristicLab.Collections-3.3</Name>
+    <Reference Include="HeuristicLab.Collections-3.3">
+      <HintPath>..\..\bin\HeuristicLab.Collections-3.3.dll</HintPath>
       <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Common\3.3\HeuristicLab.Common-3.3.csproj">
-      <Project>{A9AD58B9-3EF9-4CC1-97E5-8D909039FF5C}</Project>
-      <Name>HeuristicLab.Common-3.3</Name>
+    </Reference>
+    <Reference Include="HeuristicLab.Common-3.3">
+      <HintPath>..\..\bin\HeuristicLab.Common-3.3.dll</HintPath>
       <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
-      <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>
-      <Name>HeuristicLab.Core-3.3</Name>
+    </Reference>
+    <Reference Include="HeuristicLab.Core-3.3">
+      <HintPath>..\..\bin\HeuristicLab.Core-3.3.dll</HintPath>
       <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding\3.3\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3.csproj">
-      <Project>{125D3006-67F5-48CB-913E-73C0548F17FA}</Project>
-      <Name>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3</Name>
+    </Reference>
+    <Reference Include="HeuristicLab.Persistence-3.3">
+      <HintPath>..\..\bin\HeuristicLab.Persistence-3.3.dll</HintPath>
       <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
-      <Project>{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}</Project>
-      <Name>HeuristicLab.Persistence-3.3</Name>
+    </Reference>
+    <Reference Include="HeuristicLab.PluginInfrastructure-3.3">
+      <HintPath>..\..\bin\HeuristicLab.PluginInfrastructure-3.3.dll</HintPath>
       <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
-      <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
-      <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
+    </Reference>
+    <Reference Include="HeuristicLab.Problems.ExternalEvaluation-3.3">
+      <HintPath>..\..\bin\HeuristicLab.Problems.ExternalEvaluation-3.3.dll</HintPath>
       <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Problems.ExternalEvaluation\3.3\HeuristicLab.Problems.ExternalEvaluation-3.3.csproj">
-      <Project>{25735DB4-8E54-4A2C-83E3-A60C76565E55}</Project>
-      <Name>HeuristicLab.Problems.ExternalEvaluation-3.3</Name>
+    </Reference>
+    <Reference Include="HeuristicLab.Random-3.3">
+      <HintPath>..\..\bin\HeuristicLab.Random-3.3.dll</HintPath>
       <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj">
-      <Project>{F4539FB6-4708-40C9-BE64-0A1390AEA197}</Project>
-      <Name>HeuristicLab.Random-3.3</Name>
-      <Private>False</Private>
-    </ProjectReference>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
@@ -206,6 +194,12 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding\3.3\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3.csproj">
+      <Project>{125D3006-67F5-48CB-913E-73C0548F17FA}</Project>
+      <Name>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
