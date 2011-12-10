@@ -97,8 +97,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
           clientCom.LogMessage(string.Format("Uncaught exception: {0} {1} Core is going to shutdown.", ex.ToString(), Environment.NewLine));
         }
         ShutdownCore();
-      }
-      finally {
+      } finally {
         DeregisterServiceEvents();
         waitShutdownSem.Release();
       }
@@ -333,7 +332,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
         Task task = wcfService.GetTask(e.Value.TaskId);
         if (task == null) throw new TaskNotFoundException(e.Value.TaskId);
         task.ExecutionTime = e.Value.ExecutionTime;
-        TaskData taskData = e.Value.GetTaskData();
+        TaskData taskData = e.Value2;
         wcfService.UpdateTaskData(task, taskData, configManager.GetClientInfo().Id, TaskState.Paused);
       }
       catch (TaskNotFoundException ex) {
@@ -351,7 +350,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
         Task task = wcfService.GetTask(e.Value.TaskId);
         if (task == null) throw new TaskNotFoundException(e.Value.TaskId);
         task.ExecutionTime = e.Value.ExecutionTime;
-        TaskData taskData = e.Value.GetTaskData();
+        TaskData taskData = e.Value2;
         wcfService.UpdateTaskData(task, taskData, configManager.GetClientInfo().Id, TaskState.Finished);
       }
       catch (TaskNotFoundException ex) {

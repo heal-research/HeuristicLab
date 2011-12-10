@@ -81,7 +81,12 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
 
     private void RunHeartBeatThread() {
       while (!threadStopped) {
-        SlaveClientCom.Instance.ClientCom.StatusChanged(ConfigManager.Instance.GetStatusForClientConsole());
+        try {
+          SlaveClientCom.Instance.ClientCom.StatusChanged(ConfigManager.Instance.GetStatusForClientConsole());
+        }
+        catch (Exception ex) {
+          EventLogManager.LogMessage("Couldn't sent status information to client ui. Exception is: " + Environment.NewLine + ex.ToString());
+        }
 
         try {
           lock (locker) {

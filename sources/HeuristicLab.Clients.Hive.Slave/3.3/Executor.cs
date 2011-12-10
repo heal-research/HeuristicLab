@@ -187,7 +187,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     public TaskData GetTaskData() {
       if (taskDataInvalid) return null;
 
-      if (task.ExecutionState == ExecutionState.Started) {
+      if (task != null && task.ExecutionState == ExecutionState.Started) {
         throw new InvalidStateException("Task is still running");
       } else {
         TaskData taskData = new TaskData();
