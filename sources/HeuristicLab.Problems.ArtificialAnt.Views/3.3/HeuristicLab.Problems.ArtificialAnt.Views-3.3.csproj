@@ -192,14 +192,17 @@
     <ProjectReference Include="..\..\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views\3.3\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views-3.3.csproj">
       <Project>{6F42C5F8-16CD-43EE-8208-FD4573A69D85}</Project>
       <Name>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding\3.3\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3.csproj">
       <Project>{125D3006-67F5-48CB-913E-73C0548F17FA}</Project>
       <Name>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Problems.ArtificialAnt\3.3\HeuristicLab.Problems.ArtificialAnt-3.3.csproj">
       <Project>{F5C0ECAC-EDBA-4024-872A-1F74AFCB20B4}</Project>
       <Name>HeuristicLab.Problems.ArtificialAnt-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

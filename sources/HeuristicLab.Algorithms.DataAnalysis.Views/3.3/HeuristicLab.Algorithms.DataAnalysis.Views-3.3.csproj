@@ -181,10 +181,12 @@
     <ProjectReference Include="..\..\HeuristicLab.Algorithms.DataAnalysis\3.3\HeuristicLab.Algorithms.DataAnalysis-3.3.csproj">
       <Project>{A8D5676D-9662-437A-B44D-ECB4046CDE12}</Project>
       <Name>HeuristicLab.Algorithms.DataAnalysis-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Problems.DataAnalysis\3.3\HeuristicLab.Problems.DataAnalysis-3.3.csproj">
       <Project>{70DFD984-B1D9-46FE-8EB7-4DE92D71A9FC}</Project>
       <Name>HeuristicLab.Problems.DataAnalysis-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -172,14 +172,17 @@
     <ProjectReference Include="..\..\HeuristicLab.Problems.DataAnalysis.Classification\3.3\HeuristicLab.Problems.DataAnalysis.Classification-3.3.csproj">
       <Project>{D35FD6DB-D704-4BEA-BDAE-C40ABFB5B13E}</Project>
       <Name>HeuristicLab.Problems.DataAnalysis.Classification-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Problems.DataAnalysis.Regression\3.3\HeuristicLab.Problems.DataAnalysis.Regression-3.3.csproj">
       <Project>{BDF86B1D-630E-4CE2-8A49-8C90B1BDE4C9}</Project>
       <Name>HeuristicLab.Problems.DataAnalysis.Regression-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Problems.DataAnalysis\3.3\HeuristicLab.Problems.DataAnalysis-3.3.csproj">
       <Project>{70DFD984-B1D9-46FE-8EB7-4DE92D71A9FC}</Project>
       <Name>HeuristicLab.Problems.DataAnalysis-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

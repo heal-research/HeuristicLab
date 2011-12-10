@@ -164,10 +164,12 @@
     <ProjectReference Include="..\..\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding\3.3\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3.csproj">
       <Project>{125D3006-67F5-48CB-913E-73C0548F17FA}</Project>
       <Name>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Problems.ExternalEvaluation.GP\3.3\HeuristicLab.Problems.ExternalEvaluation.GP-3.3.csproj">
       <Project>{E86E215D-E3CE-4244-978D-555D4E17AC09}</Project>
       <Name>HeuristicLab.Problems.ExternalEvaluation.GP-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

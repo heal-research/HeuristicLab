@@ -186,23 +186,33 @@
     <Compile Include="Symbolic\SymbolicRegressionSolutionView.Designer.cs">
       <DependentUpon>SymbolicRegressionSolutionView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Symbolic\Symbols\ConstantView.cs" />
+    <Compile Include="Symbolic\Symbols\ConstantView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Symbolic\Symbols\ConstantView.Designer.cs">
       <DependentUpon>ConstantView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Symbolic\Symbols\VariableConditionView.cs" />
+    <Compile Include="Symbolic\Symbols\VariableConditionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Symbolic\Symbols\VariableConditionView.Designer.cs">
       <DependentUpon>VariableConditionView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Symbolic\Symbols\LaggedVariableView.cs" />
+    <Compile Include="Symbolic\Symbols\LaggedVariableView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Symbolic\Symbols\LaggedVariableView.Designer.cs">
       <DependentUpon>LaggedVariableView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Symbolic\Symbols\TimeLagView.cs" />
+    <Compile Include="Symbolic\Symbols\TimeLagView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Symbolic\Symbols\TimeLagView.Designer.cs">
       <DependentUpon>TimeLagView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Symbolic\Symbols\VariableView.cs" />
+    <Compile Include="Symbolic\Symbols\VariableView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Symbolic\Symbols\VariableView.Designer.cs">
       <DependentUpon>VariableView.cs</DependentUpon>
     </Compile>
@@ -286,18 +296,22 @@
     <ProjectReference Include="..\..\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views\3.3\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views-3.3.csproj">
       <Project>{6F42C5F8-16CD-43EE-8208-FD4573A69D85}</Project>
       <Name>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding\3.3\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3.csproj">
       <Project>{125D3006-67F5-48CB-913E-73C0548F17FA}</Project>
       <Name>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Problems.DataAnalysis.Regression\3.3\HeuristicLab.Problems.DataAnalysis.Regression-3.3.csproj">
       <Project>{BDF86B1D-630E-4CE2-8A49-8C90B1BDE4C9}</Project>
       <Name>HeuristicLab.Problems.DataAnalysis.Regression-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Problems.DataAnalysis\3.3\HeuristicLab.Problems.DataAnalysis-3.3.csproj">
       <Project>{70DFD984-B1D9-46FE-8EB7-4DE92D71A9FC}</Project>
       <Name>HeuristicLab.Problems.DataAnalysis-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
