@@ -124,7 +124,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
         prog = jobManager.GetExecutionTimes();
       }
       catch (Exception ex) {
-        SlaveClientCom.Instance.ClientCom.LogMessage(string.Format("Exception was thrown while trying to get execution times: {0}", ex.Message));
+        SlaveClientCom.Instance.LogMessage(string.Format("Exception was thrown while trying to get execution times: {0}", ex.Message));
       }
       return prog;
     }

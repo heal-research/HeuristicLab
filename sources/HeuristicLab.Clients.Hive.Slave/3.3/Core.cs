@@ -46,7 +46,6 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
 
     private Semaphore waitShutdownSem = new Semaphore(0, 1);
     private bool abortRequested;
-    private ISlaveCommunication clientCom;
     private ServiceHost slaveComm;
     private WcfService wcfService;
     private TaskManager taskManager;
@@ -76,11 +75,10 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
         //start the client communication service (pipe between slave and slave gui)
         slaveComm = new ServiceHost(typeof(SlaveCommunicationService));
         slaveComm.Open();
-        clientCom = SlaveClientCom.Instance.ClientCom;
-
+        
         // delete all left over task directories
         pluginManager.CleanPluginTemp();
-        clientCom.LogMessage("Hive Slave started");
+        SlaveClientCom.Instance.LogMessage("Hive Slave started");
 
         wcfService = WcfService.Instance;
         RegisterServiceEvents();
@@ -92,9 +90,9 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
         if (ServiceEventLog != null) {
           EventLogManager.LogException(ex);
         } else {
-          //try to log with clientCom. if this works the user sees at least a message, 
+          //try to log with SlaveClientCom.Instance. if this works the user sees at least a message, 
           //else an exception will be thrown anyways.
-          clientCom.LogMessage(string.Format("Uncaught exception: {0} {1} Core is going to shutdown.", ex.ToString(), Environment.NewLine));
+          SlaveClientCom.Instance.LogMessage(string.Format("Uncaught exception: {0} {1} Core is going to shutdown.", ex.ToString(), Environment.NewLine));
         }
         ShutdownCore();
       } finally {
@@ -117,7 +115,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
         MessageContainer container = queue.GetMessage();
         DetermineAction(container);
         if (!abortRequested) {
-          clientCom.StatusChanged(configManager.GetStatusForClientConsole());
+          SlaveClientCom.Instance.StatusChanged(configManager.GetStatusForClientConsole());
         }
       }
     }
@@ -133,11 +131,11 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     }
 
     private void WcfService_ExceptionOccured(object sender, EventArgs<Exception> e) {
-      clientCom.LogMessage(string.Format("Connection to server interruped with exception: {0}", e.Value.Message));
+      SlaveClientCom.Instance.LogMessage(string.Format("Connection to server interruped with exception: {0}", e.Value.Message));
     }
 
     private void WcfService_Connected(object sender, EventArgs e) {
-      clientCom.LogMessage("Connected successfully to Hive server");
+      SlaveClientCom.Instance.LogMessage("Connected successfully to Hive server");
     }
 
     /// <summary>
@@ -145,7 +143,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     /// </summary>
     /// <param name="container">The container, containing the message</param>
     private void DetermineAction(MessageContainer container) {
-      clientCom.LogMessage(string.Format("Message: {0} for task: {1} ", container.Message.ToString(), container.TaskId));
+      SlaveClientCom.Instance.LogMessage(string.Format("Message: {0} for task: {1} ", container.Message.ToString(), container.TaskId));
 
       switch (container.Message) {
         case MessageContainer.MessageType.CalculateTask:
@@ -194,7 +192,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       TS.Task.Factory.StartNew(HandleCalculateTask, jobId)
       .ContinueWith((t) => {
         SlaveStatusInfo.IncrementExceptionOccured();
-        clientCom.LogMessage(t.Exception.ToString());
+        SlaveClientCom.Instance.LogMessage(t.Exception.ToString());
       }, TaskContinuationOptions.OnlyOnFaulted);
     }
 
@@ -202,7 +200,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       TS.Task.Factory.StartNew(HandleStopTask, jobId)
        .ContinueWith((t) => {
          SlaveStatusInfo.IncrementExceptionOccured();
-         clientCom.LogMessage(t.Exception.ToString());
+         SlaveClientCom.Instance.LogMessage(t.Exception.ToString());
        }, TaskContinuationOptions.OnlyOnFaulted);
     }
 
@@ -210,7 +208,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       TS.Task.Factory.StartNew(HandlePauseTask, jobId)
        .ContinueWith((t) => {
          SlaveStatusInfo.IncrementExceptionOccured();
-         clientCom.LogMessage(t.Exception.ToString());
+         SlaveClientCom.Instance.LogMessage(t.Exception.ToString());
        }, TaskContinuationOptions.OnlyOnFaulted);
     }
 
@@ -218,7 +216,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       TS.Task.Factory.StartNew(HandleAbortTask, jobId)
        .ContinueWith((t) => {
          SlaveStatusInfo.IncrementExceptionOccured();
-         clientCom.LogMessage(t.Exception.ToString());
+         SlaveClientCom.Instance.LogMessage(t.Exception.ToString());
        }, TaskContinuationOptions.OnlyOnFaulted);
     }
 
@@ -336,10 +334,10 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
         wcfService.UpdateTaskData(task, taskData, configManager.GetClientInfo().Id, TaskState.Paused);
       }
       catch (TaskNotFoundException ex) {
-        clientCom.LogMessage(ex.ToString());
+        SlaveClientCom.Instance.LogMessage(ex.ToString());
       }
       catch (Exception ex) {
-        clientCom.LogMessage(ex.ToString());
+        SlaveClientCom.Instance.LogMessage(ex.ToString());
       }
     }
 
@@ -354,10 +352,10 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
         wcfService.UpdateTaskData(task, taskData, configManager.GetClientInfo().Id, TaskState.Finished);
       }
       catch (TaskNotFoundException ex) {
-        clientCom.LogMessage(ex.ToString());
+        SlaveClientCom.Instance.LogMessage(ex.ToString());
       }
       catch (Exception ex) {
-        clientCom.LogMessage(ex.ToString());
+        SlaveClientCom.Instance.LogMessage(ex.ToString());
       }
     }
 
@@ -377,15 +375,15 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
         } else {
           wcfService.UpdateJobState(task.Id, TaskState.Failed, exception.ToString());
         }
-        clientCom.LogMessage(exception.Message);
+        SlaveClientCom.Instance.LogMessage(exception.Message);
       }
       catch (TaskNotFoundException ex) {
         SlaveStatusInfo.IncrementExceptionOccured();
-        clientCom.LogMessage(ex.ToString());
+        SlaveClientCom.Instance.LogMessage(ex.ToString());
       }
       catch (Exception ex) {
         SlaveStatusInfo.IncrementExceptionOccured();
-        clientCom.LogMessage(ex.ToString());
+        SlaveClientCom.Instance.LogMessage(ex.ToString());
       }
     }
 
@@ -393,7 +391,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       SlaveStatusInfo.DecrementUsedCores(e.Value.CoresNeeded);
       SlaveStatusInfo.IncrementExceptionOccured();
       heartbeatManager.AwakeHeartBeatThread();
-      clientCom.LogMessage(string.Format("Exception occured for task {0}: {1}", e.Value.TaskId, e.Value2.ToString()));
+      SlaveClientCom.Instance.LogMessage(string.Format("Exception occured for task {0}: {1}", e.Value.TaskId, e.Value2.ToString()));
       wcfService.UpdateJobState(e.Value.TaskId, TaskState.Waiting, e.Value2.ToString());
     }
 
@@ -405,7 +403,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     #region Log Events
     private void log_MessageAdded(object sender, EventArgs<string> e) {
       try {
-        clientCom.LogMessage(e.Value.Split('\t')[1]);
+        SlaveClientCom.Instance.LogMessage(e.Value.Split('\t')[1]);
       }
       catch { }
     }
@@ -415,7 +413,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     /// aborts all running jobs, no results are sent back
     /// </summary>
     private void DoAbortAll() {
-      clientCom.LogMessage("Aborting all jobs.");
+      SlaveClientCom.Instance.LogMessage("Aborting all jobs.");
       foreach (Guid taskId in taskManager.TaskIds) {
         AbortTaskAsync(taskId);
       }
@@ -425,7 +423,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     /// wait for jobs to finish, then pause client
     /// </summary>
     private void DoPauseAll() {
-      clientCom.LogMessage("Pausing all jobs.");
+      SlaveClientCom.Instance.LogMessage("Pausing all jobs.");
       foreach (Guid taskId in taskManager.TaskIds) {
         PauseTaskAsync(taskId);
       }
@@ -435,7 +433,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     /// pause slave immediately
     /// </summary>
     private void DoStopAll() {
-      clientCom.LogMessage("Stopping all jobs.");
+      SlaveClientCom.Instance.LogMessage("Stopping all jobs.");
       foreach (Guid taskId in taskManager.TaskIds) {
         StopTaskAsync(taskId);
       }
@@ -455,16 +453,16 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     /// complete shutdown, should be called before the the application is exited
     /// </summary>
     private void ShutdownCore() {
-      clientCom.LogMessage("Shutdown signal received");
-      clientCom.LogMessage("Stopping heartbeat");
+      SlaveClientCom.Instance.LogMessage("Shutdown signal received");
+      SlaveClientCom.Instance.LogMessage("Stopping heartbeat");
       heartbeatManager.StopHeartBeat();
       abortRequested = true;
 
       DoAbortAll();
 
-      clientCom.LogMessage("Logging out");
+      SlaveClientCom.Instance.LogMessage("Logging out");
       WcfService.Instance.Disconnect();
-      clientCom.Shutdown();
+      SlaveClientCom.Instance.ClientCom.Shutdown();
       SlaveClientCom.Close();
 
       if (slaveComm.State != CommunicationState.Closed)
@@ -476,7 +474,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     /// can be called after Sleep()
     /// </summary>  
     private void DoStartSlave() {
-      clientCom.LogMessage("Restart received");
+      SlaveClientCom.Instance.LogMessage("Restart received");
       configManager.Asleep = false;
     }
 
@@ -485,7 +483,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     /// primarily used by gui if core is running as windows service
     /// </summary>    
     private void Sleep() {
-      clientCom.LogMessage("Sleep received - not accepting any new jobs");
+      SlaveClientCom.Instance.LogMessage("Sleep received - not accepting any new jobs");
       configManager.Asleep = true;
       DoPauseAll();
     }

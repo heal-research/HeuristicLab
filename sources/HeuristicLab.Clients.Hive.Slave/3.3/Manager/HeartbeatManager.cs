@@ -82,7 +82,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     private void RunHeartBeatThread() {
       while (!threadStopped) {
         try {
-          SlaveClientCom.Instance.ClientCom.StatusChanged(ConfigManager.Instance.GetStatusForClientConsole());
+          SlaveClientCom.Instance.StatusChanged(ConfigManager.Instance.GetStatusForClientConsole());
         }
         catch (Exception ex) {
           EventLogManager.LogMessage("Couldn't sent status information to client ui. Exception is: " + Environment.NewLine + ex.ToString());
@@ -108,28 +108,28 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
                 HbInterval = (int)interval.TotalSeconds
               };
 
-              SlaveClientCom.Instance.ClientCom.LogMessage("Send HB: " + heartBeatData);
+              SlaveClientCom.Instance.LogMessage("Send HB: " + heartBeatData);
               List<MessageContainer> msgs = wcfService.SendHeartbeat(heartBeatData);
 
               if (msgs == null) {
-                SlaveClientCom.Instance.ClientCom.LogMessage("Error getting response from HB");
+                SlaveClientCom.Instance.LogMessage("Error getting response from HB");
                 OnExceptionOccured(new Exception("Error getting response from HB"));
               } else {
-                SlaveClientCom.Instance.ClientCom.LogMessage("HB Response received (" + msgs.Count + "): ");
-                msgs.ForEach(mc => SlaveClientCom.Instance.ClientCom.LogMessage(mc.Message.ToString()));
+                SlaveClientCom.Instance.LogMessage("HB Response received (" + msgs.Count + "): ");
+                msgs.ForEach(mc => SlaveClientCom.Instance.LogMessage(mc.Message.ToString()));
                 msgs.ForEach(mc => MessageQueue.GetInstance().AddMessage(mc));
               }
             }
           }
         }
         catch (Exception e) {
-          SlaveClientCom.Instance.ClientCom.LogMessage("Heartbeat thread failed: " + e.ToString());
+          SlaveClientCom.Instance.LogMessage("Heartbeat thread failed: " + e.ToString());
           OnExceptionOccured(e);
         }
         waitHandle.WaitOne(this.interval);
       }
       waitHandle.Close();
-      SlaveClientCom.Instance.ClientCom.LogMessage("Heartbeat thread stopped");
+      SlaveClientCom.Instance.LogMessage("Heartbeat thread stopped");
     }
 
     #region Eventhandler

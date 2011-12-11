@@ -22,6 +22,7 @@
 using System.ServiceModel;
 using HeuristicLab.Clients.Hive.SlaveCore.Properties;
 using HeuristicLab.Clients.Hive.SlaveCore.ServiceContracts;
+using System;
 
 namespace HeuristicLab.Clients.Hive.SlaveCore {
 
@@ -43,6 +44,24 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
           instance = new SlaveClientCom();
         }
         return instance;
+      }
+    }
+
+    public void LogMessage(string message) {
+      try {
+        ClientCom.LogMessage(message);
+      }
+      catch (Exception ex) {
+        EventLogManager.LogMessage("Exception on LogMessage: " + ex.ToString() + Environment.NewLine + "Orginal message was: " + message);
+      }
+    }
+
+    public void StatusChanged(StatusCommons status) {
+      try {
+        ClientCom.StatusChanged(status);
+      }
+      catch (Exception ex) {
+        EventLogManager.LogMessage("Exception on StatusChanged: " + ex.ToString());
       }
     }
 
