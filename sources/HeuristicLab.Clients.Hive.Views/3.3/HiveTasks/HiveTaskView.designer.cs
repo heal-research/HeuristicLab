@@ -169,17 +169,17 @@
       // 
       this.priorityComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
+      this.priorityComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.priorityComboBox.FormattingEnabled = true;
       this.priorityComboBox.Items.AddRange(new object[] {
-            "1",
-            "2",
-            "3",
-            "4",
-            "5"});
+            "Normal",
+            "Urgent",
+            "Critical"});
       this.priorityComboBox.Location = new System.Drawing.Point(87, 39);
       this.priorityComboBox.Name = "priorityComboBox";
       this.priorityComboBox.Size = new System.Drawing.Size(182, 21);
       this.priorityComboBox.TabIndex = 43;
+      this.priorityComboBox.SelectedIndexChanged += new System.EventHandler(this.priorityComboBox_SelectedIndexChanged);
       // 
       // jobIdLabel
       // 

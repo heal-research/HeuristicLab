@@ -64,13 +64,17 @@ namespace HeuristicLab.Clients.Hive {
           if (ItemTask.Item is Optimization.Experiment) {
             Optimization.Experiment experiment = (Optimization.Experiment)ItemTask.Item;
             foreach (IOptimizer childOpt in experiment.Optimizers) {
-              this.childHiveTasks.Add(new OptimizerHiveTask(childOpt));
+              var optimizerHiveTask = new OptimizerHiveTask(childOpt);
+              optimizerHiveTask.Task.Priority = Task.Priority; //inherit priority from parent
+              this.childHiveTasks.Add(optimizerHiveTask);
             }
           } else if (ItemTask.Item is Optimization.BatchRun) {
             Optimization.BatchRun batchRun = ItemTask.OptimizerAsBatchRun;
             if (batchRun.Optimizer != null) {
               while (this.childHiveTasks.Count < batchRun.Repetitions) {
-                this.childHiveTasks.Add(new OptimizerHiveTask(batchRun.Optimizer));
+                var optimizerHiveTask = new OptimizerHiveTask(batchRun.Optimizer);
+                optimizerHiveTask.Task.Priority = Task.Priority;
+                this.childHiveTasks.Add(optimizerHiveTask);
               }
               while (this.childHiveTasks.Count > batchRun.Repetitions) {
                 this.childHiveTasks.Remove(this.childHiveTasks.Last());
