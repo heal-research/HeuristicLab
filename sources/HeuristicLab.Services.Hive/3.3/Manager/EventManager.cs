@@ -42,7 +42,6 @@ namespace HeuristicLab.Services.Hive {
     }
 
     public void Cleanup() {
-      log.Log("EventManager.Cleanup()");
       SetTimeoutSlavesOffline();
       SetTimeoutTasksWaiting();
       FinishParentTasks();

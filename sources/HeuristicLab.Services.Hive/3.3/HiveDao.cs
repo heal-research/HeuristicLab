@@ -114,8 +114,9 @@ namespace HeuristicLab.Services.Hive.DataAccess {
     public IEnumerable<DT.Task> GetWaitingTasks(DT.Slave slave, int count) {
       using (var db = CreateContext()) {
         var resourceIds = GetParentResources(slave.Id).Select(r => r.Id);
-        var waitingParentJobs = GetParentTasks(resourceIds, count, false);
-        if (count > 0 && waitingParentJobs.Count() >= count) return waitingParentJobs.Take(count).ToArray();
+        //Originally we checked here if there are parent tasks which should be calculated (with GetParentTasks(resourceIds, count, false);).
+        //Because there is at the moment no case where this makes sense (there don't exist parent tasks which need to be calculated), 
+        //we skip this step because it's wasted runtime
 
         var query = from ar in db.AssignedResources
                     where resourceIds.Contains(ar.ResourceId)
@@ -126,7 +127,7 @@ namespace HeuristicLab.Services.Hive.DataAccess {
                     orderby ar.Task.Priority descending, db.Random() // take random task to avoid the race condition that occurs when this method is called concurrently (the same task would be returned)
                     select DT.Convert.ToDto(ar.Task);
         var waitingTasks = (count == 0 ? query : query.Take(count)).ToArray();
-        return waitingTasks.Union(waitingParentJobs).OrderByDescending(x => x.Priority);
+        return waitingTasks;
       }
     }
 
