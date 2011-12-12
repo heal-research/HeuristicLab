@@ -46,16 +46,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     private void InitializeComponent() {
       this.matrixView = new HeuristicLab.Data.Views.StringConvertibleMatrixView();
       this.comboBox = new System.Windows.Forms.ComboBox();
-      this.label1 = new System.Windows.Forms.Label();
+      this.foldsLabel = new System.Windows.Forms.Label();
       this.variableImpactsGroupBox = new System.Windows.Forms.GroupBox();
       this.variableImpactsGroupBox.SuspendLayout();
       this.SuspendLayout();
       // 
       // matrixView
       // 
-      this.matrixView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.matrixView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.matrixView.Caption = "StringConvertibleMatrix View";
       this.matrixView.Content = null;
       this.matrixView.Location = new System.Drawing.Point(6, 19);
@@ -77,18 +77,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // label1
       // 
-      this.label1.AutoSize = true;
-      this.label1.Location = new System.Drawing.Point(3, 9);
-      this.label1.Name = "label1";
-      this.label1.Size = new System.Drawing.Size(30, 13);
-      this.label1.TabIndex = 2;
-      this.label1.Text = "Fold:";
+      this.foldsLabel.AutoSize = true;
+      this.foldsLabel.Location = new System.Drawing.Point(3, 9);
+      this.foldsLabel.Name = "foldsLabel";
+      this.foldsLabel.Size = new System.Drawing.Size(30, 13);
+      this.foldsLabel.TabIndex = 2;
+      this.foldsLabel.Text = "Fold:";
       // 
       // variableImpactsGroupBox
       // 
-      this.variableImpactsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.variableImpactsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.variableImpactsGroupBox.Controls.Add(this.matrixView);
       this.variableImpactsGroupBox.Location = new System.Drawing.Point(0, 33);
       this.variableImpactsGroupBox.Name = "variableImpactsGroupBox";
@@ -102,7 +102,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.variableImpactsGroupBox);
-      this.Controls.Add(this.label1);
+      this.Controls.Add(this.foldsLabel);
       this.Controls.Add(this.comboBox);
       this.Name = "RunCollectionVariableImpactView";
       this.Size = new System.Drawing.Size(309, 235);
@@ -116,7 +116,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     private HeuristicLab.Data.Views.StringConvertibleMatrixView matrixView;
     private System.Windows.Forms.ComboBox comboBox;
-    private System.Windows.Forms.Label label1;
+    private System.Windows.Forms.Label foldsLabel;
     private System.Windows.Forms.GroupBox variableImpactsGroupBox;
   }
 }

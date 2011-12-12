@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Common;
@@ -48,27 +49,27 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     #region events
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      Content.UpdateOfRunsInProgressChanged += new EventHandler(Content_UpdateOfRunsInProgressChanged);
-      Content.ItemsAdded += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
-      Content.ItemsRemoved += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
-      Content.CollectionReset += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
+      Content.UpdateOfRunsInProgressChanged += Content_UpdateOfRunsInProgressChanged;
+      Content.ItemsAdded += Content_ItemsAdded;
+      Content.ItemsRemoved += Content_ItemsRemoved;
+      Content.CollectionReset += Content_CollectionReset;
       RegisterRunEvents(Content);
     }
     protected override void DeregisterContentEvents() {
       base.RegisterContentEvents();
-      Content.UpdateOfRunsInProgressChanged -= new EventHandler(Content_UpdateOfRunsInProgressChanged);
-      Content.ItemsAdded -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
-      Content.ItemsRemoved -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
-      Content.CollectionReset -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
+      Content.UpdateOfRunsInProgressChanged -= Content_UpdateOfRunsInProgressChanged;
+      Content.ItemsAdded -= Content_ItemsAdded;
+      Content.ItemsRemoved -= Content_ItemsRemoved;
+      Content.CollectionReset -= Content_CollectionReset;
       DeregisterRunEvents(Content);
     }
     private void RegisterRunEvents(IEnumerable<IRun> runs) {
       foreach (IRun run in runs)
-        run.Changed += new EventHandler(Run_Changed);
+        run.Changed += Run_Changed;
     }
     private void DeregisterRunEvents(IEnumerable<IRun> runs) {
       foreach (IRun run in runs)
-        run.Changed -= new EventHandler(Run_Changed);
+        run.Changed -= Run_Changed;
     }
     private void Content_ItemsAdded(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IRun> e) {
       RegisterRunEvents(e.Items);
@@ -98,39 +99,75 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     private void comboBox_SelectedValueChanged(object sender, EventArgs e) {
       if (comboBox.SelectedItem != null) {
-        var cvRuns = from r in Content
-                     where r.Visible
-                     where r.Parameters.ContainsKey(numberOfFoldsParameterName)
-                     select r;
+        var visibleRuns = from run in Content where run.Visible select run;
         if (comboBox.SelectedIndex == 0) {
-          var selectedFolds = cvRuns
-            .SelectMany(r => (RunCollection)r.Results[crossValidationFoldsResultName])
-            .Where(r => r.Results.ContainsKey(variableImpactResultName));
-          matrixView.Content = CalculateVariableImpactMatrix(selectedFolds.ToArray());
+          var selectedFolds = from r in visibleRuns
+                              let foldCollection = (RunCollection)r.Results[crossValidationFoldsResultName]
+                              from run in foldCollection
+                              let name = (r.Name + " " + run.Name)
+                              select new { run, name };
+          matrixView.Content = CalculateVariableImpactMatrix(selectedFolds.Select(x => x.run).ToArray(), selectedFolds.Select(x => x.name).ToArray());
         } else {
-          var selectedFolds = from r in cvRuns
+          var selectedFolds = from r in visibleRuns
                               let foldCollection = (RunCollection)r.Results[crossValidationFoldsResultName]
                               let run = foldCollection.ElementAt(comboBox.SelectedIndex - 1)
-                              where run.Results.ContainsKey(variableImpactResultName)
-                              select new { run, r.Name };
-          matrixView.Content = CalculateVariableImpactMatrix(selectedFolds.Select(x => x.run).ToArray(), selectedFolds.Select(x => x.Name).ToArray());
+                              let name = (r.Name + " " + run.Name)
+                              select new { run, name };
+          matrixView.Content = CalculateVariableImpactMatrix(selectedFolds.Select(x => x.run).ToArray(), selectedFolds.Select(x => x.name).ToArray());
         }
       }
     }
 
 
     private void UpdateData() {
-      if (Content != null) {
-        comboBox.Items.Clear();
-        comboBox.Enabled = false;
-        var visibleRuns = Content.Where(r => r.Visible).ToArray();
-        var representativeCvRun =
-          visibleRuns.Where(r => r.Parameters.ContainsKey(numberOfFoldsParameterName)).FirstOrDefault();
-        if (representativeCvRun != null) {
-          // make sure all runs have the same number of folds
-          int nFolds = ((IntValue)representativeCvRun.Parameters[numberOfFoldsParameterName]).Value;
-          var cvRuns = visibleRuns.Where(r => r.Parameters.ContainsKey(numberOfFoldsParameterName));
-          if (cvRuns.All(r => ((IntValue)r.Parameters[numberOfFoldsParameterName]).Value == nFolds)) {
+      if (InvokeRequired) {
+        Invoke((Action)UpdateData);
+      } else {
+        if (Content != null) {
+          comboBox.Items.Clear();
+          comboBox.Enabled = false;
+          comboBox.Visible = false;
+          foldsLabel.Visible = false;
+          variableImpactsGroupBox.Dock = DockStyle.Fill;
+          var visibleRuns = Content.Where(r => r.Visible).ToArray();
+          if (visibleRuns.Length == 0) {
+            DisplayMessage("Run collection is empty.");
+          } else if (visibleRuns.All(r => r.Parameters.ContainsKey(numberOfFoldsParameterName))) {
+            // check if all runs are comparable (CV or normal runs)
+            CheckAndUpdateCvRuns();
+          } else if (visibleRuns.All(r => !r.Parameters.ContainsKey(numberOfFoldsParameterName))) {
+            CheckAndUpdateNormalRuns();
+          } else {
+            // there is a mix of CV and normal runs => show an error message
+            DisplayMessage("The run collection contains a mixture of normal runs and cross-validation runs. Variable impact calculation does not work in this case.");
+          }
+        }
+      }
+    }
+
+    private void CheckAndUpdateCvRuns() {
+      var visibleRuns = from run in Content where run.Visible select run;
+      var representativeRun = visibleRuns.First();
+      // make sure all runs have the same number of folds
+      int nFolds = ((IntValue)representativeRun.Parameters[numberOfFoldsParameterName]).Value;
+      if (visibleRuns.All(r => ((IntValue)r.Parameters[numberOfFoldsParameterName]).Value == nFolds)) {
+        var allFoldResults = visibleRuns.SelectMany(run => (RunCollection)run.Results[crossValidationFoldsResultName]);
+
+        // make sure each fold contains variable impacts 
+        if (!allFoldResults.All(r => r.Results.ContainsKey(variableImpactResultName))) {
+          DisplayMessage("At least one of the runs does not contain a variable impact result.");
+        } else {
+          // make sure each of the runs has the same input variables
+          var allVariableNames = from run in allFoldResults
+                                 let varImpacts = (DoubleMatrix)run.Results[variableImpactResultName]
+                                 select varImpacts.RowNames;
+          var groupedVariableNames = allVariableNames
+            .SelectMany(x => x)
+            .GroupBy(x => x);
+
+          if (groupedVariableNames.Any(g => g.Count() != allFoldResults.Count())) {
+            DisplayMessage("At least one of the runs has a different input variable set than the rest.");
+          } else {
             // populate combobox
             comboBox.Items.Add("Overall");
             for (int foldIndex = 0; foldIndex < nFolds; foldIndex++) {
@@ -138,18 +175,49 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
             }
             comboBox.SelectedIndex = 0;
             comboBox.Enabled = true;
-          } else {
-            matrixView.Content = null;
+            comboBox.Visible = true;
+            foldsLabel.Visible = true;
+            variableImpactsGroupBox.Controls.Clear();
+            variableImpactsGroupBox.Dock = DockStyle.None;
+            variableImpactsGroupBox.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right |
+                                             AnchorStyles.Bottom;
+            variableImpactsGroupBox.Height = this.Height - comboBox.Height - 12;
+            variableImpactsGroupBox.Width = this.Width;
+            matrixView.Dock = DockStyle.Fill;
+            variableImpactsGroupBox.Controls.Add(matrixView);
           }
-        } else {
-          var runsWithVariables = visibleRuns.Where(r => r.Results.ContainsKey(variableImpactResultName)).ToArray();
-          matrixView.Content = CalculateVariableImpactMatrix(runsWithVariables);
         }
+      } else {
+        DisplayMessage("At least on of the cross-validation runs has a different number of folds than the rest.");
       }
     }
 
-    private IStringConvertibleMatrix CalculateVariableImpactMatrix(IRun[] runs) {
-      return CalculateVariableImpactMatrix(runs, runs.Select(r => r.Name).ToArray());
+    private void CheckAndUpdateNormalRuns() {
+      // make sure all runs contain variable impact results
+      var visibleRuns = from run in Content where run.Visible select run;
+
+      if (!visibleRuns.All(r => r.Results.ContainsKey(variableImpactResultName))) {
+        DisplayMessage("At least one of the runs does not contain a variable impact result.");
+      } else {
+        // make sure each of the runs has the same input variables
+        var allVariableNames = from run in visibleRuns
+                               let varImpacts = (DoubleMatrix)run.Results[variableImpactResultName]
+                               select varImpacts.RowNames;
+        var groupedVariableNames = allVariableNames
+          .SelectMany(x => x)
+          .GroupBy(x => x);
+
+        if (groupedVariableNames.Any(g => g.Count() != visibleRuns.Count())) {
+          DisplayMessage("At least one of the runs has a different input variable set than the rest.");
+        } else {
+          if (!variableImpactsGroupBox.Controls.Contains(matrixView)) {
+            variableImpactsGroupBox.Controls.Clear();
+            matrixView.Dock = DockStyle.Fill;
+            variableImpactsGroupBox.Controls.Add(matrixView);
+          }
+          matrixView.Content = CalculateVariableImpactMatrix(visibleRuns.ToArray(), visibleRuns.Select(r => r.Name).ToArray());
+        }
+      }
     }
 
     private DoubleMatrix CalculateVariableImpactMatrix(IRun[] runs, string[] runNames) {
@@ -279,5 +347,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       }
     }
 
+    private void DisplayMessage(string message) {
+      variableImpactsGroupBox.Controls.Remove(matrixView);
+      var label = new Label { TextAlign = ContentAlignment.MiddleCenter, Text = message, Dock = DockStyle.Fill };
+      variableImpactsGroupBox.Controls.Add(label);
+    }
   }
 }
