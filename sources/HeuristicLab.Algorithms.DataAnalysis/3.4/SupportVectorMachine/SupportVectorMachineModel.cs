@@ -97,9 +97,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       this.rangeTransform = original.rangeTransform;
       this.targetVariable = original.targetVariable;
       this.allowedInputVariables = (string[])original.allowedInputVariables.Clone();
-      foreach (var dataset in original.cachedPredictions.Keys) {
-        this.cachedPredictions.Add(cloner.Clone(dataset), (double[])original.cachedPredictions[dataset].Clone());
-      }
       if (original.classValues != null)
         this.classValues = (double[])original.classValues.Clone();
     }
@@ -161,52 +158,19 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return CreateClassificationSolution(problemData);
     }
     #endregion
-    // cache for predictions, which is cloned but not persisted, must be cleared when the model is changed
-    private Dictionary<Dataset, double[]> cachedPredictions = new Dictionary<Dataset, double[]>();
     private IEnumerable<double> GetEstimatedValuesHelper(Dataset dataset, IEnumerable<int> rows) {
-      if (!cachedPredictions.ContainsKey(dataset)) {
-        // create an array of cached predictions which is initially filled with NaNs
-        double[] predictions = Enumerable.Repeat(double.NaN, dataset.Rows).ToArray();
-        CalculatePredictions(dataset, rows, predictions);
-        cachedPredictions.Add(dataset, predictions);
-      }
-      // get the array of predictions and select the subset of requested rows
-      double[] p = cachedPredictions[dataset];
-      var requestedPredictions = from r in rows
-                                 select p[r];
-      // check if the requested predictions contain NaNs 
-      // (this means for the request rows some predictions have not been cached)
-      if (requestedPredictions.Any(x => double.IsNaN(x))) {
-        // updated the predictions for currently requested rows
-        CalculatePredictions(dataset, rows, p);
-        cachedPredictions[dataset] = p;
-        // now we can be sure that for the current rows all predictions are available
-        return from r in rows
-               select p[r];
-      } else {
-        // there were no NaNs => just return the cached predictions
-        return requestedPredictions;
-      }
-    }
-
-    private void CalculatePredictions(Dataset dataset, IEnumerable<int> rows, double[] predictions) {
-      // calculate and cache predictions for the currently requested rows
+      // calculate predictions for the currently requested rows
       SVM.Problem problem = SupportVectorMachineUtil.CreateSvmProblem(dataset, targetVariable, allowedInputVariables, rows);
       SVM.Problem scaledProblem = Scaling.Scale(RangeTransform, problem);
 
-      // row is the index in the original dataset, 
-      // i is the index in the scaled dataset (containing only the necessary rows)
-      int i = 0;
-      foreach (var row in rows) {
-        predictions[row] = SVM.Prediction.Predict(Model, scaledProblem.X[i]);
-        i++;
+      for (int i = 0; i < scaledProblem.Count; i++) {
+        yield return SVM.Prediction.Predict(Model, scaledProblem.X[i]);
       }
     }
 
     #region events
     public event EventHandler Changed;
     private void OnChanged(EventArgs e) {
-      cachedPredictions.Clear();
       var handlers = Changed;
       if (handlers != null)
         handlers(this, e);
