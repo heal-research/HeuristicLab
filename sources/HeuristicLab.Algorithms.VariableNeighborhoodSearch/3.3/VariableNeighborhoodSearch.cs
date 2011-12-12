@@ -314,10 +314,10 @@ namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
         foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>()) {
           foreach (IScopeTreeLookupParameter param in analyzer.Parameters.OfType<IScopeTreeLookupParameter>())
             param.Depth = 1;
-          Analyzer.Operators.Add(analyzer);
+          Analyzer.Operators.Add(analyzer, analyzer.EnabledByDefault);
         }
       }
-      Analyzer.Operators.Add(qualityAnalyzer);
+      Analyzer.Operators.Add(qualityAnalyzer, qualityAnalyzer.EnabledByDefault);
     }
     private VariableNeighborhoodSearchMainLoop FindMainLoop(IOperator start) {
       IOperator mainLoop = start;

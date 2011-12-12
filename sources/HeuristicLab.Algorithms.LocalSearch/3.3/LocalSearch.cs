@@ -334,10 +334,10 @@ namespace HeuristicLab.Algorithms.LocalSearch {
         foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>()) {
           foreach (IScopeTreeLookupParameter param in analyzer.Parameters.OfType<IScopeTreeLookupParameter>())
             param.Depth = 0;
-          Analyzer.Operators.Add(analyzer);
+          Analyzer.Operators.Add(analyzer, analyzer.EnabledByDefault);
         }
       }
-      Analyzer.Operators.Add(moveQualityAnalyzer);
+      Analyzer.Operators.Add(moveQualityAnalyzer, moveQualityAnalyzer.EnabledByDefault);
     }
     private void ClearMoveParameters() {
       MoveMakerParameter.ValidValues.Clear();

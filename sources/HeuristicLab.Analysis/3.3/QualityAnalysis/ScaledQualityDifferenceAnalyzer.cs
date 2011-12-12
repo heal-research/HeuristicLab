@@ -33,6 +33,10 @@ The difference lies in the interval [0;1] if the range [min;max] is as large as 
 A value towards 0 always means that it's closer to the better fitness value, while a value towards 1 means that it's closer to the worse fitness value.")]
   [StorableClass]
   public class ScaledQualityDifferenceAnalyzer : SingleSuccessorOperator, IAnalyzer {
+    public virtual bool EnabledByDefault {
+      get { return true; }
+    }
+
     public ILookupParameter<DoubleValue> QualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
     }

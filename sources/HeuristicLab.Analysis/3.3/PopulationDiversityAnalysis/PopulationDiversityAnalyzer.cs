@@ -36,6 +36,10 @@ namespace HeuristicLab.Analysis {
   [Item("PopulationDiversityAnalyzer", "An operator for analyzing the solution diversity in a population.")]
   [StorableClass]
   public abstract class PopulationDiversityAnalyzer<T> : SingleSuccessorOperator, IAnalyzer where T : class, IItem {
+    public virtual bool EnabledByDefault {
+      get { return false; }
+    }
+
     public LookupParameter<BoolValue> MaximizationParameter {
       get { return (LookupParameter<BoolValue>)Parameters["Maximization"]; }
     }

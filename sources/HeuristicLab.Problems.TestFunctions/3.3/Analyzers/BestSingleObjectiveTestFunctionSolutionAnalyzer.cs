@@ -36,6 +36,10 @@ namespace HeuristicLab.Problems.TestFunctions {
   [Item("BestSingleObjectiveTestFunctionSolutionAnalyzer", "An operator for analyzing the best solution for a SingleObjectiveTestFunction problem.")]
   [StorableClass]
   class BestSingleObjectiveTestFunctionSolutionAnalyzer : SingleSuccessorOperator, IBestSingleObjectiveTestFunctionSolutionAnalyzer, IAnalyzer {
+    public virtual bool EnabledByDefault {
+      get { return true; }
+    }
+
     public LookupParameter<BoolValue> MaximizationParameter {
       get { return (LookupParameter<BoolValue>)Parameters["Maximization"]; }
     }

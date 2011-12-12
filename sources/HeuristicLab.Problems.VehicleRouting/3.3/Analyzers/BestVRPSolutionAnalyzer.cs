@@ -35,6 +35,10 @@ namespace HeuristicLab.Problems.VehicleRouting {
   [Item("BestVRPSolutionAnalyzer", "An operator for analyzing the best solution of Vehicle Routing Problems.")]
   [StorableClass]
   public sealed class BestVRPSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer {
+    public bool EnabledByDefault {
+      get { return true; }
+    }
+
     public ScopeTreeLookupParameter<IVRPEncoding> VRPToursParameter {
       get { return (ScopeTreeLookupParameter<IVRPEncoding>)Parameters["VRPTours"]; }
     }
@@ -94,7 +98,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
     public BestVRPSolutionAnalyzer()
       : base() {
-        Parameters.Add(new ScopeTreeLookupParameter<IVRPEncoding>("VRPTours", "The VRP tours which should be evaluated."));
+      Parameters.Add(new ScopeTreeLookupParameter<IVRPEncoding>("VRPTours", "The VRP tours which should be evaluated."));
       Parameters.Add(new LookupParameter<DoubleMatrix>("Coordinates", "The x- and y-Coordinates of the cities."));
       Parameters.Add(new LookupParameter<DoubleMatrix>("DistanceMatrix", "The matrix which contains the distances between the cities."));
       Parameters.Add(new LookupParameter<BoolValue>("UseDistanceMatrix", "True if a distance matrix should be calculated and used for evaluation, otherwise false."));

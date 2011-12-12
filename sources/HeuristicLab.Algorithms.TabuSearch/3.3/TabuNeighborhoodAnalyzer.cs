@@ -32,6 +32,10 @@ namespace HeuristicLab.Algorithms.TabuSearch {
   [StorableClass]
   [Item("TabuNeighborhoodAnalyzer", "Analyzes the tabu neighborhood")]
   public class TabuNeighborhoodAnalyzer : SingleSuccessorOperator, IAnalyzer {
+    public virtual bool EnabledByDefault {
+      get { return true; }
+    }
+
     public ScopeTreeLookupParameter<BoolValue> IsTabuParameter {
       get { return (ScopeTreeLookupParameter<BoolValue>)Parameters["IsTabu"]; }
     }

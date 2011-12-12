@@ -49,6 +49,9 @@ namespace HeuristicLab.Analysis {
     #endregion
 
     #region Properties
+    public bool EnabledByDefault {
+      get { return true; }
+    }
     private DataTableValuesCollector DataTableValuesCollector {
       get { return (DataTableValuesCollector)OperatorGraph.InitialOperator; }
     }
@@ -62,7 +65,7 @@ namespace HeuristicLab.Analysis {
     private ValueAnalyzer(bool deserializing) : base(deserializing) { }
     private ValueAnalyzer(ValueAnalyzer original, Cloner cloner)
       : base(original, cloner) {
-        Initialize();
+      Initialize();
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ValueAnalyzer(this, cloner);

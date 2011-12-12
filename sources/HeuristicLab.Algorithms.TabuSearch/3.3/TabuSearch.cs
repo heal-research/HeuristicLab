@@ -406,11 +406,11 @@ namespace HeuristicLab.Algorithms.TabuSearch {
         foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>()) {
           foreach (IScopeTreeLookupParameter param in analyzer.Parameters.OfType<IScopeTreeLookupParameter>())
             param.Depth = 0;
-          Analyzer.Operators.Add(analyzer);
+          Analyzer.Operators.Add(analyzer, analyzer.EnabledByDefault);
         }
       }
-      Analyzer.Operators.Add(moveQualityAnalyzer);
-      Analyzer.Operators.Add(tabuNeighborhoodAnalyzer);
+      Analyzer.Operators.Add(moveQualityAnalyzer, moveQualityAnalyzer.EnabledByDefault);
+      Analyzer.Operators.Add(tabuNeighborhoodAnalyzer, tabuNeighborhoodAnalyzer.EnabledByDefault);
     }
     private void ClearMoveParameters() {
       MoveMakerParameter.ValidValues.Clear();

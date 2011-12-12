@@ -278,11 +278,11 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
             IAnalyzer clone = analyzer.Clone() as IAnalyzer;
             foreach (IScopeTreeLookupParameter param in clone.Parameters.OfType<IScopeTreeLookupParameter>())
               param.Depth = 0;
-            Analyzer.Operators.Add(clone);
+            Analyzer.Operators.Add(clone, clone.EnabledByDefault);
           }
         }
       }
-      Analyzer.Operators.Add(qualityAnalyzer);
+      Analyzer.Operators.Add(qualityAnalyzer, qualityAnalyzer.EnabledByDefault);
     }
 
     private void UpdateMoveOperators() {

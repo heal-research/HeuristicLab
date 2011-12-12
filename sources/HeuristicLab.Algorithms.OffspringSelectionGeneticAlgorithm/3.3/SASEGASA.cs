@@ -556,19 +556,18 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     private void UpdateAnalyzers() {
       VillageAnalyzer.Operators.Clear();
       Analyzer.Operators.Clear();
-      VillageAnalyzer.Operators.Add(villageQualityAnalyzer);
-      VillageAnalyzer.Operators.Add(villageSelectionPressureAnalyzer);
+      VillageAnalyzer.Operators.Add(villageQualityAnalyzer, villageQualityAnalyzer.EnabledByDefault);
+      VillageAnalyzer.Operators.Add(villageSelectionPressureAnalyzer, villageSelectionPressureAnalyzer.EnabledByDefault);
       if (Problem != null) {
         foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>()) {
           foreach (IScopeTreeLookupParameter param in analyzer.Parameters.OfType<IScopeTreeLookupParameter>())
             param.Depth = 2;
-          Analyzer.Operators.Add(analyzer);
+          Analyzer.Operators.Add(analyzer, analyzer.EnabledByDefault);
         }
       }
-      Analyzer.Operators.Add(qualityAnalyzer);
-      Analyzer.Operators.Add(selectionPressureAnalyzer);
-      Analyzer.Operators.Add(successfulOffspringAnalyzer);
-      Analyzer.Operators.SetItemCheckedState(successfulOffspringAnalyzer, false);
+      Analyzer.Operators.Add(qualityAnalyzer, qualityAnalyzer.EnabledByDefault);
+      Analyzer.Operators.Add(selectionPressureAnalyzer, selectionPressureAnalyzer.EnabledByDefault);
+      Analyzer.Operators.Add(successfulOffspringAnalyzer, successfulOffspringAnalyzer.EnabledByDefault);
     }
     private SASEGASAMainLoop FindMainLoop(IOperator start) {
       IOperator mainLoop = start;

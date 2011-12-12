@@ -54,6 +54,10 @@ namespace HeuristicLab.Analysis.QualityAnalysis {
     }
     #endregion
 
+    public virtual bool EnabledByDefault {
+      get { return true; }
+    }
+
     public string HistogramName {
       get { return HistogramNameParameter.Value.Value; }
       set { HistogramNameParameter.Value.Value = value; }

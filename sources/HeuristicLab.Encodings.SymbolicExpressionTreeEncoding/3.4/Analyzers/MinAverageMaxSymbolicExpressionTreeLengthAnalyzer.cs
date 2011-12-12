@@ -43,6 +43,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     private const string MaxTreeLengthParameterName = "Maximal symbolic expression tree length";
     private const string ResultsParameterName = "Results";
 
+    public bool EnabledByDefault {
+      get { return true; }
+    }
+
     #region parameter properties
     public IScopeTreeLookupParameter<ISymbolicExpressionTree> SymbolicExpressionTreeParameter {
       get { return (IScopeTreeLookupParameter<ISymbolicExpressionTree>)Parameters[SymbolicExpressionTreeParameterName]; }

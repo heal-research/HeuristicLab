@@ -25,5 +25,7 @@ namespace HeuristicLab.Optimization {
   /// <summary>
   /// An interface which represents an analysis operator.
   /// </summary>
-  public interface IAnalyzer : IOperator { }
+  public interface IAnalyzer : IOperator {
+    bool EnabledByDefault { get; }
+  }
 }

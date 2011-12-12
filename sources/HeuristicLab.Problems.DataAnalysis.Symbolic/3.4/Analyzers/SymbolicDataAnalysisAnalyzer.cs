@@ -19,16 +19,13 @@
  */
 #endregion
 
-using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Operators;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// <summary>
@@ -48,6 +45,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
     #endregion
     #region properties
+    public virtual bool EnabledByDefault {
+      get { return true; }
+    }
     public ItemArray<ISymbolicExpressionTree> SymbolicExpressionTree {
       get { return SymbolicExpressionTreeParameter.ActualValue; }
     }

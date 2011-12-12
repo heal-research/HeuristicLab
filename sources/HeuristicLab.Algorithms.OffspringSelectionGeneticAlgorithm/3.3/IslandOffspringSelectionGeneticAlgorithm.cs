@@ -260,7 +260,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       if (successfulOffspringAnalyzer == null)
         successfulOffspringAnalyzer = new SuccessfulOffspringAnalyzer();
       #endregion
-      
+
       Initialize();
     }
     private IslandOffspringSelectionGeneticAlgorithm(IslandOffspringSelectionGeneticAlgorithm original, Cloner cloner)
@@ -618,19 +618,18 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     private void UpdateAnalyzers() {
       IslandAnalyzer.Operators.Clear();
       Analyzer.Operators.Clear();
-      IslandAnalyzer.Operators.Add(islandQualityAnalyzer);
-      IslandAnalyzer.Operators.Add(islandSelectionPressureAnalyzer);
+      IslandAnalyzer.Operators.Add(islandQualityAnalyzer, islandQualityAnalyzer.EnabledByDefault);
+      IslandAnalyzer.Operators.Add(islandSelectionPressureAnalyzer, islandSelectionPressureAnalyzer.EnabledByDefault);
       if (Problem != null) {
         foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>()) {
           foreach (IScopeTreeLookupParameter param in analyzer.Parameters.OfType<IScopeTreeLookupParameter>())
             param.Depth = 2;
-          Analyzer.Operators.Add(analyzer);
+          Analyzer.Operators.Add(analyzer, analyzer.EnabledByDefault);
         }
       }
-      Analyzer.Operators.Add(qualityAnalyzer);
-      Analyzer.Operators.Add(selectionPressureAnalyzer);
-      Analyzer.Operators.Add(successfulOffspringAnalyzer);
-      Analyzer.Operators.SetItemCheckedState(successfulOffspringAnalyzer, false);
+      Analyzer.Operators.Add(qualityAnalyzer, qualityAnalyzer.EnabledByDefault);
+      Analyzer.Operators.Add(selectionPressureAnalyzer, selectionPressureAnalyzer.EnabledByDefault);
+      Analyzer.Operators.Add(successfulOffspringAnalyzer, successfulOffspringAnalyzer.EnabledByDefault);
     }
     private IslandOffspringSelectionGeneticAlgorithmMainLoop FindMainLoop(IOperator start) {
       IOperator mainLoop = start;

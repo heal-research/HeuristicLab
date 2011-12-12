@@ -451,10 +451,10 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
         foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>()) {
           foreach (IScopeTreeLookupParameter param in analyzer.Parameters.OfType<IScopeTreeLookupParameter>())
             param.Depth = 0;
-          Analyzer.Operators.Add(analyzer);
+          Analyzer.Operators.Add(analyzer, analyzer.EnabledByDefault);
         }
       }
-      Analyzer.Operators.Add(qualityAnalyzer);
+      Analyzer.Operators.Add(qualityAnalyzer, qualityAnalyzer.EnabledByDefault);
     }
     private SimulatedAnnealingMainLoop FindMainLoop(IOperator start) {
       IOperator mainLoop = start;

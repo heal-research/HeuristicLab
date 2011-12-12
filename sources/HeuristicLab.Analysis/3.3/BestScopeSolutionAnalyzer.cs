@@ -36,6 +36,10 @@ namespace HeuristicLab.Analysis {
   [Item("BestScopeSolutionAnalyzer", "An operator that extracts the scope containing the best quality.")]
   [StorableClass]
   public class BestScopeSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer {
+    public virtual bool EnabledByDefault {
+      get { return true; }
+    }
+
     public LookupParameter<BoolValue> MaximizationParameter {
       get { return (LookupParameter<BoolValue>)Parameters["Maximization"]; }
     }
@@ -83,7 +87,7 @@ namespace HeuristicLab.Analysis {
       if (!max)
         i = qualities.Select((x, index) => new { index, x.Value }).OrderBy(x => x.Value).First().index;
       else i = qualities.Select((x, index) => new { index, x.Value }).OrderByDescending(x => x.Value).First().index;
-      
+
       IEnumerable<IScope> scopes = new IScope[] { ExecutionContext.Scope };
       for (int j = 0; j < QualityParameter.Depth; j++)
         scopes = scopes.Select(x => (IEnumerable<IScope>)x.SubScopes).Aggregate((a, b) => a.Concat(b));

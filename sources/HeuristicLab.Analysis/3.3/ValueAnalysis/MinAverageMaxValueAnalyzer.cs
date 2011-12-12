@@ -67,6 +67,9 @@ namespace HeuristicLab.Analysis {
     #endregion
 
     #region Properties
+    public bool EnabledByDefault {
+      get { return true; }
+    }
     private MinAverageMaxValueCalculator MinAverageMaxValueCalculator {
       get { return (MinAverageMaxValueCalculator)OperatorGraph.InitialOperator; }
     }
@@ -80,6 +83,7 @@ namespace HeuristicLab.Analysis {
       get { return CollectAverageValueInResultsParameter.Value; }
     }
     #endregion
+
     [Storable]
     private ResultsCollector resultsCollector;
 
@@ -192,7 +196,7 @@ namespace HeuristicLab.Analysis {
         resultsCollector.CollectedValues.Add(new LookupParameter<DoubleValue>("MaxValue", null, MaxValueParameter.Name));
       else if (!CollectMaxValueInResults.Value && maxValueParameter != null)
         resultsCollector.CollectedValues.Remove(maxValueParameter);
-      }
+    }
 
     private void CollectMinValueInResultsParameter_ValueChanged(object sender, EventArgs e) {
       IParameter minValueParameter;

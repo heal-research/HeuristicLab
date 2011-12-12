@@ -36,6 +36,10 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
   [Item("BestQAPSolutionAnalyzer", "An operator for analyzing the best solution of Quadratic Assignment Problems.")]
   [StorableClass]
   public sealed class BestQAPSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer {
+    public bool EnabledByDefault {
+      get { return true; }
+    }
+
     public LookupParameter<BoolValue> MaximizationParameter {
       get { return (LookupParameter<BoolValue>)Parameters["Maximization"]; }
     }

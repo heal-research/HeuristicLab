@@ -96,7 +96,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
 
     [Storable]
     private ParticleSwarmOptimizationMainLoop mainLoop;
-    
+
     public override Type ProblemType {
       get { return typeof(ISingleObjectiveHeuristicOptimizationProblem); }
     }
@@ -316,9 +316,9 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       Analyzer.Operators.Clear();
       if (Problem != null) {
         foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>())
-          Analyzer.Operators.Add(analyzer);
+          Analyzer.Operators.Add(analyzer, analyzer.EnabledByDefault);
       }
-      Analyzer.Operators.Add(qualityAnalyzer);
+      Analyzer.Operators.Add(qualityAnalyzer, qualityAnalyzer.EnabledByDefault);
     }
 
     private void InitInertiaUpdater() {

@@ -64,6 +64,9 @@ namespace HeuristicLab.Analysis {
     #endregion
 
     #region Properties
+    public bool EnabledByDefault {
+      get { return true; }
+    }
     private BestQualityMemorizer BestQualityMemorizer {
       get { return (BestQualityMemorizer)OperatorGraph.InitialOperator; }
     }

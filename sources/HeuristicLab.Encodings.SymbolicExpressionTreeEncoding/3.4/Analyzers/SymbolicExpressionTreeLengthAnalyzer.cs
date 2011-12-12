@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System;
 using System.Linq;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
@@ -72,6 +71,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     #endregion
 
     #region Properties
+    public bool EnabledByDefault {
+      get { return true; }
+    }
     public IntValue UpdateInterval {
       get { return UpdateIntervalParameter.Value; }
     }

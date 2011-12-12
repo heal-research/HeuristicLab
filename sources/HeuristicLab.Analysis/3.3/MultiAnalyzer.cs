@@ -38,6 +38,9 @@ namespace HeuristicLab.Analysis {
     public override bool CanChangeName {
       get { return false; }
     }
+    public virtual bool EnabledByDefault {
+      get { return true; }
+    }
 
     public ValueLookupParameter<IntValue> UpdateIntervalParameter {
       get { return (ValueLookupParameter<IntValue>)Parameters["UpdateInterval"]; }

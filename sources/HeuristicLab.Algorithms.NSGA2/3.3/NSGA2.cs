@@ -384,10 +384,10 @@ namespace HeuristicLab.Algorithms.NSGA2 {
         foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>()) {
           foreach (IScopeTreeLookupParameter param in analyzer.Parameters.OfType<IScopeTreeLookupParameter>())
             param.Depth = 1;
-          Analyzer.Operators.Add(analyzer);
+          Analyzer.Operators.Add(analyzer, analyzer.EnabledByDefault);
         }
       }
-      Analyzer.Operators.Add(paretoFrontAnalyzer);
+      Analyzer.Operators.Add(paretoFrontAnalyzer, paretoFrontAnalyzer.EnabledByDefault);
     }
     private NSGA2MainLoop FindMainLoop(IOperator start) {
       IOperator mainLoop = start;

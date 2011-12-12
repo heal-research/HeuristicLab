@@ -10,6 +10,10 @@ namespace HeuristicLab.Analysis {
   [Item("ParetoFrontAnalyzer", "Analyzer for multiobjective problems that collects and presents the current Pareto front as double matrix as well as the solution scopes that lie on the current front.")]
   [StorableClass]
   public abstract class ParetoFrontAnalyzer : SingleSuccessorOperator, IAnalyzer {
+    public virtual bool EnabledByDefault {
+      get { return true; }
+    }
+
     public IScopeTreeLookupParameter<DoubleArray> QualitiesParameter {
       get { return (IScopeTreeLookupParameter<DoubleArray>)Parameters["Qualities"]; }
     }

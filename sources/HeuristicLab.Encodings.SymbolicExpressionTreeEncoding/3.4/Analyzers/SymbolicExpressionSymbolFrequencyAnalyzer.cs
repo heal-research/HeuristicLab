@@ -58,6 +58,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
     #endregion
     #region properties
+    public virtual bool EnabledByDefault {
+      get { return true; }
+    }
     public BoolValue AggregrateSymbolsWithDifferentSubtreeCount {
       get { return AggregateSymbolsWithDifferentSubtreeCountParameter.Value; }
       set { AggregateSymbolsWithDifferentSubtreeCountParameter.Value = value; }

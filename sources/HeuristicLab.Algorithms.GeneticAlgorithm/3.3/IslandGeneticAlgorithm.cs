@@ -508,15 +508,15 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     private void UpdateAnalyzers() {
       IslandAnalyzer.Operators.Clear();
       Analyzer.Operators.Clear();
-      IslandAnalyzer.Operators.Add(islandQualityAnalyzer);
+      IslandAnalyzer.Operators.Add(islandQualityAnalyzer, islandQualityAnalyzer.EnabledByDefault);
       if (Problem != null) {
         foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>()) {
           foreach (IScopeTreeLookupParameter param in analyzer.Parameters.OfType<IScopeTreeLookupParameter>())
             param.Depth = 2;
-          Analyzer.Operators.Add(analyzer);
+          Analyzer.Operators.Add(analyzer, analyzer.EnabledByDefault);
         }
       }
-      Analyzer.Operators.Add(qualityAnalyzer);
+      Analyzer.Operators.Add(qualityAnalyzer, qualityAnalyzer.EnabledByDefault);
     }
     private IslandGeneticAlgorithmMainLoop FindMainLoop(IOperator start) {
       IOperator mainLoop = start;

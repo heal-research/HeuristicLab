@@ -32,7 +32,6 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Random;
-using System.Collections.Generic;
 
 namespace HeuristicLab.Algorithms.GeneticAlgorithm {
   /// <summary>
@@ -376,10 +375,10 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
         foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>()) {
           foreach (IScopeTreeLookupParameter param in analyzer.Parameters.OfType<IScopeTreeLookupParameter>())
             param.Depth = 1;
-          Analyzer.Operators.Add(analyzer);
+          Analyzer.Operators.Add(analyzer, analyzer.EnabledByDefault);
         }
       }
-      Analyzer.Operators.Add(qualityAnalyzer);
+      Analyzer.Operators.Add(qualityAnalyzer, qualityAnalyzer.EnabledByDefault);
     }
     private GeneticAlgorithmMainLoop FindMainLoop(IOperator start) {
       IOperator mainLoop = start;

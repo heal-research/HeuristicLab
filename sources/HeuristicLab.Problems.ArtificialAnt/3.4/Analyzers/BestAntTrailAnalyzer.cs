@@ -36,6 +36,10 @@ namespace HeuristicLab.Problems.ArtificialAnt.Analyzers {
   [Item("BestAntTrailAnalyzer", "An operator for analyzing the best ant trail of an artificial ant problem.")]
   [StorableClass]
   public sealed class BestAntTrailAnalyzer : SingleSuccessorOperator, IAntTrailAnalyzer {
+    public bool EnabledByDefault {
+      get { return true; }
+    }
+
     public ILookupParameter<BoolMatrix> WorldParameter {
       get { return (ILookupParameter<BoolMatrix>)Parameters["World"]; }
     }

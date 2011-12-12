@@ -36,6 +36,10 @@ namespace HeuristicLab.Problems.OneMax {
   [Item("BestOneMaxSolutionAnalyzer", "An operator for analyzing the best solution for a OneMax problem.")]
   [StorableClass]
   public class BestOneMaxSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer {
+    public virtual bool EnabledByDefault {
+      get { return true; }
+    }
+
     public LookupParameter<BoolValue> MaximizationParameter {
       get { return (LookupParameter<BoolValue>)Parameters["Maximization"]; }
     }

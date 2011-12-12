@@ -139,6 +139,9 @@ namespace HeuristicLab.Problems.VehicleRouting {
     #endregion
 
     #region Properties
+    public bool EnabledByDefault {
+      get { return true; }
+    }
     private BestVRPToursMemorizer BestMemorizer {
       get { return (BestVRPToursMemorizer)OperatorGraph.InitialOperator; }
     }

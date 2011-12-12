@@ -36,6 +36,10 @@ namespace HeuristicLab.Problems.Knapsack {
   [Item("BestKnapsackSolutionAnalyzer", "An operator for analyzing the best solution for a Knapsack problem.")]
   [StorableClass]
   public class BestKnapsackSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer {
+    public virtual bool EnabledByDefault {
+      get { return true; }
+    }
+
     public LookupParameter<BoolValue> MaximizationParameter {
       get { return (LookupParameter<BoolValue>)Parameters["Maximization"]; }
     }

@@ -208,7 +208,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       if (successfulOffspringAnalyzer == null)
         successfulOffspringAnalyzer = new SuccessfulOffspringAnalyzer();
       #endregion
-      
+
       Initialize();
     }
     private OffspringSelectionGeneticAlgorithm(OffspringSelectionGeneticAlgorithm original, Cloner cloner)
@@ -469,13 +469,12 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
         foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>()) {
           foreach (IScopeTreeLookupParameter param in analyzer.Parameters.OfType<IScopeTreeLookupParameter>())
             param.Depth = 1;
-          Analyzer.Operators.Add(analyzer);
+          Analyzer.Operators.Add(analyzer, analyzer.EnabledByDefault);
         }
       }
-      Analyzer.Operators.Add(qualityAnalyzer);
-      Analyzer.Operators.Add(selectionPressureAnalyzer);
-      Analyzer.Operators.Add(successfulOffspringAnalyzer);
-      Analyzer.Operators.SetItemCheckedState(successfulOffspringAnalyzer, false);
+      Analyzer.Operators.Add(qualityAnalyzer, qualityAnalyzer.EnabledByDefault);
+      Analyzer.Operators.Add(selectionPressureAnalyzer, selectionPressureAnalyzer.EnabledByDefault);
+      Analyzer.Operators.Add(successfulOffspringAnalyzer, successfulOffspringAnalyzer.EnabledByDefault);
     }
     private OffspringSelectionGeneticAlgorithmMainLoop FindMainLoop(IOperator start) {
       IOperator mainLoop = start;
