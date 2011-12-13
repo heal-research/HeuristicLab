@@ -44,23 +44,9 @@ namespace HeuristicLab.Clients.Hive.SlaveCore.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.txtLog = new System.Windows.Forms.TextBox();
       this.chkShowBalloonTips = new System.Windows.Forms.CheckBox();
+      this.hlLogView = new HeuristicLab.Core.Views.LogView();
       this.SuspendLayout();
-      // 
-      // txtLog
-      // 
-      this.txtLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.txtLog.BackColor = System.Drawing.Color.White;
-      this.txtLog.Location = new System.Drawing.Point(3, 3);
-      this.txtLog.Multiline = true;
-      this.txtLog.Name = "txtLog";
-      this.txtLog.ReadOnly = true;
-      this.txtLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-      this.txtLog.Size = new System.Drawing.Size(480, 238);
-      this.txtLog.TabIndex = 2;
       // 
       // chkShowBalloonTips
       // 
@@ -74,12 +60,25 @@ namespace HeuristicLab.Clients.Hive.SlaveCore.Views {
       this.chkShowBalloonTips.UseVisualStyleBackColor = true;
       this.chkShowBalloonTips.CheckedChanged += new System.EventHandler(this.chkShowBalloonTips_CheckedChanged);
       // 
+      // hlLogView
+      // 
+      this.hlLogView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.hlLogView.Caption = "Log View";
+      this.hlLogView.Content = null;
+      this.hlLogView.Location = new System.Drawing.Point(3, 3);
+      this.hlLogView.Name = "hlLogView";
+      this.hlLogView.ReadOnly = false;
+      this.hlLogView.Size = new System.Drawing.Size(480, 238);
+      this.hlLogView.TabIndex = 4;
+      // 
       // LogView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.hlLogView);
       this.Controls.Add(this.chkShowBalloonTips);
-      this.Controls.Add(this.txtLog);
       this.Name = "LogView";
       this.Size = new System.Drawing.Size(486, 267);
       this.Load += new System.EventHandler(this.LogView_Load);
@@ -90,7 +89,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore.Views {
 
     #endregion
 
-    private System.Windows.Forms.TextBox txtLog;
     private System.Windows.Forms.CheckBox chkShowBalloonTips;
+    private HeuristicLab.Core.Views.LogView hlLogView;
   }
 }

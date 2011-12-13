@@ -94,5 +94,14 @@ namespace HeuristicLab.Clients.Hive.SlaveCore.Views.Properties {
                 this["ServiceReconnectTimeout"] = value;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
+        public int MaxLogCount {
+            get {
+                return ((int)(this["MaxLogCount"]));
+            }
+        }
     }
 }

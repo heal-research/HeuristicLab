@@ -23,6 +23,7 @@ using System;
 using System.Windows.Forms;
 using HeuristicLab.Clients.Hive.SlaveCore.Views.Properties;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
@@ -39,8 +40,12 @@ namespace HeuristicLab.Clients.Hive.SlaveCore.Views {
       }
     }
 
+    private ILog log;
+
     public LogView() {
       InitializeComponent();
+      log = new ThreadSafeLog(Settings.Default.MaxLogCount);
+      hlLogView.Content = log;
     }
 
     #region Register Content Events
@@ -57,7 +62,6 @@ namespace HeuristicLab.Clients.Hive.SlaveCore.Views {
     }
     #endregion
 
-
     protected override void OnContentChanged() {
       base.OnContentChanged();
     }
@@ -68,13 +72,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore.Views {
 
     #region Event Handlers
     void Content_SlaveMessageLogged(object sender, EventArgs<string> e) {
-      string msg = string.Format("{0}: {1} {2}", DateTime.Now.ToString("HH:mm:ss"), e.Value, Environment.NewLine);
-
-      if (txtLog.InvokeRequired) {
-        txtLog.Invoke(new Action<string>(txtLog.AppendText), msg);
-      } else {
-        txtLog.AppendText(msg);
-      }
+      log.LogMessage(e.Value);
     }
 
     private void LogView_Load(object sender, EventArgs e) {
