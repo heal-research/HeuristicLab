@@ -25,6 +25,7 @@ using System.ServiceModel;
 using HeuristicLab.Clients.Hive.SlaveCore.ServiceContracts;
 
 namespace HeuristicLab.Clients.Hive.SlaveCore {
+  [ServiceBehavior(UseSynchronizationContext = false)]
   public class SlaveCommunicationService : ISlaveCommunication {
     private static List<ISlaveCommunicationCallbacks> subscribers = new List<ISlaveCommunicationCallbacks>();
 

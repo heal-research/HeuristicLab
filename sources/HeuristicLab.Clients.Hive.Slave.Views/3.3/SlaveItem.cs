@@ -41,7 +41,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore.Views {
     Offline
   }
 
-  [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant)]
+  [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant, UseSynchronizationContext = false)]
   [Item("SlaveItem", "Represents a slave which receives messages from the core")]
   public class SlaveItem : Item, ISlaveCommunicationCallbacks, IDisposable {
     private ISlaveCommunication pipeProxy;

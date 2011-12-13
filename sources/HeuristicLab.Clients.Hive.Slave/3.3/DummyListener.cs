@@ -25,7 +25,7 @@ using HeuristicLab.Clients.Hive.SlaveCore.ServiceContracts;
 
 namespace HeuristicLab.Clients.Hive.SlaveCore {
 
-  [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant)]
+  [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant, UseSynchronizationContext = false)]
   internal class DummyListener : ISlaveCommunicationCallbacks {
 
     public void OnStatusChanged(SlaveCore.StatusCommons status) {

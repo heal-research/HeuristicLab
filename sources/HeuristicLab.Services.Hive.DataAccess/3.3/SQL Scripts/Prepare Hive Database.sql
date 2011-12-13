@@ -231,6 +231,16 @@ BEGIN
 END
 GO
 
+
+ALTER TRIGGER [dbo].[tr_StatisticsDeleteCascade] ON [dbo].[Statistics] INSTEAD OF DELETE AS 
+BEGIN
+	DELETE SlaveStatistics FROM deleted, SlaveStatistics WHERE deleted.StatisticsId = SlaveStatistics.StatisticsId
+	-- should also remove UserStatistics here 
+	DELETE [Statistics] FROM deleted, [Statistics] WHERE deleted.StatisticsId = [Statistics].StatisticsId
+END
+GO
+
+
 -- ============================================================
 -- Description:	Create indices to speed up execution of queries
 -- ============================================================
