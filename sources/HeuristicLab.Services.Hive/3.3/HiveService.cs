@@ -395,8 +395,14 @@ namespace HeuristicLab.Services.Hive {
     #region Heartbeat Methods
     public List<MessageContainer> Heartbeat(Heartbeat heartbeat) {
       authen.AuthenticateForAnyRole(HiveRoles.Slave);
-      TriggerEventManager(false);
-      return trans.UseTransaction(() => heartbeatManager.ProcessHeartbeat(heartbeat));
+
+      List<MessageContainer> result = trans.UseTransaction(() => heartbeatManager.ProcessHeartbeat(heartbeat));
+
+      if (HeuristicLab.Services.Hive.Properties.Settings.Default.TriggerEventManagerInHeartbeat) {
+        TriggerEventManager(false);
+      }
+
+      return result;
     }
     #endregion
 
@@ -561,7 +567,7 @@ namespace HeuristicLab.Services.Hive {
       bool cleanup = false;
       trans.UseTransaction(() => {
         DateTime lastCleanup = dao.GetLastCleanup();
-        if (force || DateTime.Now - lastCleanup > TimeSpan.FromSeconds(140)) {
+        if (force || DateTime.Now - lastCleanup > HeuristicLab.Services.Hive.Properties.Settings.Default.CleanupInterval) {
           dao.SetLastCleanup(DateTime.Now);
           cleanup = true;
         }
