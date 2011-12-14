@@ -558,13 +558,18 @@ namespace HeuristicLab.Services.Hive {
     public void TriggerEventManager(bool force) {
       authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Slave);
       // use a serializable transaction here to ensure not two threads execute this simultaniously (mutex-lock would not work since IIS may use multiple AppDomains)
+      bool cleanup = false;
       trans.UseTransaction(() => {
         DateTime lastCleanup = dao.GetLastCleanup();
-        if (force || DateTime.Now - lastCleanup > TimeSpan.FromSeconds(59)) {
+        if (force || DateTime.Now - lastCleanup > TimeSpan.FromSeconds(140)) {
           dao.SetLastCleanup(DateTime.Now);
-          eventManager.Cleanup();
+          cleanup = true;
         }
       }, true);
+
+      if (cleanup) {
+        eventManager.Cleanup();
+      }
     }
     #endregion
 

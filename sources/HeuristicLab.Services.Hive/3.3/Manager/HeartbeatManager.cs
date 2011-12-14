@@ -43,14 +43,11 @@ namespace HeuristicLab.Services.Hive {
       Slave slave = dao.GetSlave(heartbeat.SlaveId);
       if (slave == null) {
         actions.Add(new MessageContainer(MessageContainer.MessageType.SayHello));
-      } else {
-        Slave s = dao.GetSlave(heartbeat.SlaveId);
-        if (s != null) {
-          if (heartbeat.HbInterval != s.HbInterval) {
-            actions.Add(new MessageContainer(MessageContainer.MessageType.NewHBInterval));
-          }
+      } else {        
+        if (heartbeat.HbInterval != slave.HbInterval) {
+          actions.Add(new MessageContainer(MessageContainer.MessageType.NewHBInterval));
         }
-
+        
         // update slave data
         slave.FreeCores = heartbeat.FreeCores;
         slave.FreeMemory = heartbeat.FreeMemory;

@@ -40,12 +40,20 @@ namespace HeuristicLab.Services.Hive {
     private ILogger log {
       get { return LogFactory.GetLogger(this.GetType().Namespace); }
     }
+    private DataAccess.ITransactionManager trans {
+      get { return ServiceLocator.Instance.TransactionManager; }
+    }
 
-    public void Cleanup() {
-      SetTimeoutSlavesOffline();
-      SetTimeoutTasksWaiting();
-      FinishParentTasks();
-      UpdateStatistics();
+    public void Cleanup() { 
+      trans.UseTransaction(() => {
+        SetTimeoutSlavesOffline();
+        SetTimeoutTasksWaiting();
+      }, true);
+
+      trans.UseTransaction(() => {
+        FinishParentTasks();
+        UpdateStatistics();
+      }, false);
     }
 
     private void UpdateStatistics() {
