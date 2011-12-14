@@ -43,7 +43,7 @@ namespace HeuristicLab.Services.Hive.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("00:05:30")]
+        [global::System.Configuration.DefaultSettingValueAttribute("00:15:00")]
         public global::System.TimeSpan TransferringJobHeartbeatTimeout {
             get {
                 return ((global::System.TimeSpan)(this["TransferringJobHeartbeatTimeout"]));

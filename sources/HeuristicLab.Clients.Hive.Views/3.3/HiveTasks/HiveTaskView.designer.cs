@@ -163,7 +163,7 @@
       this.groupBoxGenerel.Size = new System.Drawing.Size(275, 100);
       this.groupBoxGenerel.TabIndex = 43;
       this.groupBoxGenerel.TabStop = false;
-      this.groupBoxGenerel.Text = "Generel";
+      this.groupBoxGenerel.Text = "General";
       // 
       // priorityComboBox
       // 
