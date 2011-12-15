@@ -82,7 +82,7 @@
       this.stateLogTabPage.Name = "stateLogTabPage";
       this.stateLogTabPage.Size = new System.Drawing.Size(563, 375);
       this.stateLogTabPage.TabIndex = 5;
-      this.stateLogTabPage.Text = "State";
+      this.stateLogTabPage.Text = "Execution History";
       this.stateLogTabPage.UseVisualStyleBackColor = true;
       // 
       // stateLogViewHost
@@ -300,9 +300,9 @@
       this.computeInParallelLabel.AutoSize = true;
       this.computeInParallelLabel.Location = new System.Drawing.Point(6, 67);
       this.computeInParallelLabel.Name = "computeInParallelLabel";
-      this.computeInParallelLabel.Size = new System.Drawing.Size(122, 13);
+      this.computeInParallelLabel.Size = new System.Drawing.Size(107, 13);
       this.computeInParallelLabel.TabIndex = 36;
-      this.computeInParallelLabel.Text = "Compute task in parallel:";
+      this.computeInParallelLabel.Text = "Distribute child tasks:";
       // 
       // computeInParallelCheckBox
       // 

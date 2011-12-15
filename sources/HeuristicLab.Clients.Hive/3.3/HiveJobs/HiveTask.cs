@@ -142,7 +142,11 @@ namespace HeuristicLab.Clients.Hive {
     protected bool syncTasksWithOptimizers = true;
 
     public StateLogList StateLog {
-      get { return new StateLogList(this.task.StateLog); }
+      get {
+        var list = new StateLogList(this.task.StateLog);
+        list.ForEach(s => { s.TaskName = itemTask.Name; });
+        return list;
+      }
     }
 
     public StateLogListList ChildStateLogList {

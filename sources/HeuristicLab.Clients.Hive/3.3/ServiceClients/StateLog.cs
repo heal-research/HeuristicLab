@@ -37,6 +37,8 @@ namespace HeuristicLab.Clients.Hive {
       this.TaskId = original.TaskId;
     }
 
+    public string TaskName { get; set; }
+
     public override IDeepCloneable Clone(Cloner cloner) {
       return new StateLog(this, cloner);
     }

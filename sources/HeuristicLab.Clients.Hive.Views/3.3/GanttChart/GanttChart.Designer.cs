@@ -68,6 +68,8 @@
 
     #endregion
 
-    private Visualization.ChartControlsExtensions.EnhancedChart chart;
+    public Visualization.ChartControlsExtensions.EnhancedChart chart;
+
+
   }
 }
