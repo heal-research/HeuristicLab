@@ -246,6 +246,7 @@
       // 
       this.memoryNeededComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
+      this.memoryNeededComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.memoryNeededComboBox.FormattingEnabled = true;
       this.memoryNeededComboBox.Items.AddRange(new object[] {
             "128",
@@ -262,16 +263,13 @@
       // 
       this.coresNeededComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
+      this.coresNeededComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.coresNeededComboBox.FormattingEnabled = true;
       this.coresNeededComboBox.Items.AddRange(new object[] {
             "1",
             "2",
             "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8"});
+            "4"});
       this.coresNeededComboBox.Location = new System.Drawing.Point(134, 13);
       this.coresNeededComboBox.Name = "coresNeededComboBox";
       this.coresNeededComboBox.Size = new System.Drawing.Size(134, 21);
@@ -291,9 +289,9 @@
       this.coresNeededLabel.AutoSize = true;
       this.coresNeededLabel.Location = new System.Drawing.Point(6, 16);
       this.coresNeededLabel.Name = "coresNeededLabel";
-      this.coresNeededLabel.Size = new System.Drawing.Size(101, 13);
+      this.coresNeededLabel.Size = new System.Drawing.Size(104, 13);
       this.coresNeededLabel.TabIndex = 39;
-      this.coresNeededLabel.Text = "Nr. of cores needed";
+      this.coresNeededLabel.Text = "Nr. of needed cores:";
       // 
       // computeInParallelLabel
       // 

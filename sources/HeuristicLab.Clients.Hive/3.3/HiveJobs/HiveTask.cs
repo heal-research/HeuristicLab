@@ -70,7 +70,6 @@ namespace HeuristicLab.Clients.Hive {
           OnToStringChanged();
           OnItemImageChanged();
         }
-
       }
     }
 
@@ -158,7 +157,7 @@ namespace HeuristicLab.Clients.Hive {
     protected HiveTask(bool deserializing) { }
 
     public HiveTask() {
-      this.Task = new Task() { CoresNeeded = 1, MemoryNeeded = 0 };
+      this.Task = new Task() { CoresNeeded = 1, MemoryNeeded = 128 };
       task.State = TaskState.Offline;
       this.childHiveTasks = new ItemList<HiveTask>();
       syncTasksWithOptimizers = true;

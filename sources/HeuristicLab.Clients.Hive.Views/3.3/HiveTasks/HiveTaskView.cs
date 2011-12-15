@@ -104,7 +104,7 @@ namespace HeuristicLab.Clients.Hive.Views {
           this.dateCreatedTextBox.Text = string.Empty;
           this.priorityComboBox.SelectedIndex = 0;
           this.coresNeededComboBox.Text = "1";
-          this.memoryNeededComboBox.Text = "256";
+          this.memoryNeededComboBox.Text = "128";
         }
       }
     }
