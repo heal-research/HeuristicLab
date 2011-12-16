@@ -49,6 +49,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization.Views {
       shape.Tag = shapeInfo;
       shape.Location = shapeInfo.Location;
       shape.Title = shapeInfo.Title;
+      shape.TypeName = shapeInfo.TypeName;
       shape.Color = shapeInfo.Color;
       shape.LineColor = shapeInfo.LineColor;
       shape.LineWidth = shapeInfo.LineWidth;
@@ -64,6 +65,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization.Views {
 
     public static void UpdateShape(IOperatorShapeInfo operatorShapeInfo, OperatorShape operatorShape) {
       operatorShape.Title = operatorShapeInfo.Title;
+      operatorShape.TypeName = operatorShapeInfo.TypeName;
       operatorShape.Color = operatorShapeInfo.Color;
       operatorShape.LineColor = operatorShapeInfo.LineColor;
       operatorShape.LineWidth = operatorShapeInfo.LineWidth;
@@ -104,6 +106,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization.Views {
 
     public static void UpdateShapeInfo(IOperatorShapeInfo operatorShapeInfo, OperatorShape operatorShape) {
       operatorShapeInfo.Title = operatorShape.Title;
+      operatorShapeInfo.TypeName = operatorShape.TypeName;
       operatorShapeInfo.Color = operatorShape.Color;
       operatorShapeInfo.LineColor = operatorShape.LineColor;
       operatorShapeInfo.LineWidth = operatorShape.LineWidth;

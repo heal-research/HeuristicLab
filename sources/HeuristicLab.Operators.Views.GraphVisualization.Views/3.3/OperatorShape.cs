@@ -78,6 +78,8 @@ namespace HeuristicLab.Operators.Views.GraphVisualization.Views {
       set { title = value; }
     }
 
+    public string TypeName { get; set; }
+
     private IconMaterial iconMaterial;
     public Bitmap Icon {
       get { return this.iconMaterial.Icon; }
@@ -218,8 +220,13 @@ namespace HeuristicLab.Operators.Views.GraphVisualization.Views {
       Pen pen = new Pen(lineColor, lineWidth);
 
       SizeF titleSize = g.MeasureString(this.Title, ArtPalette.DefaultBoldFont, Rectangle.Width - 45);
-      if (titleSize.Height + 10 > Rectangle.Height) {
-        headerHeight = (int)titleSize.Height + 10;
+      titleSize.Height += 10; //add spacing
+      SizeF typeNameSize = g.MeasureString(this.TypeName, ArtPalette.DefaultFont, Rectangle.Width - 45);
+      typeNameSize.Height += 10;  //add spacing
+      if (this.Title == this.TypeName) typeNameSize = new SizeF(0, 0);
+
+      if (titleSize.Height + typeNameSize.Height > Rectangle.Height) {
+        headerHeight = (int)titleSize.Height + (int)typeNameSize.Height;
         this.UpdateLabels();
       }
 
@@ -263,7 +270,16 @@ namespace HeuristicLab.Operators.Views.GraphVisualization.Views {
       g.DrawPath(pen, path);
 
       //the title
-      g.DrawString(this.Title, ArtPalette.DefaultBoldFont, Brushes.Black, new Rectangle(Rectangle.X + 25, Rectangle.Y + 5, Rectangle.Width - 45, Rectangle.Height - 5));
+      g.DrawString(this.Title, ArtPalette.DefaultBoldFont, Brushes.Black,
+        new Rectangle(Rectangle.X + 25, Rectangle.Y + 5,
+                      Rectangle.Width - 45, Rectangle.Height - 5 - (int)typeNameSize.Height));
+
+      //the typeName
+      if (this.Title != this.TypeName) {
+        g.DrawString(this.TypeName, ArtPalette.DefaultFont, Brushes.Black,
+          new Rectangle(Rectangle.X + 25, Rectangle.Y + (int)titleSize.Height,
+                        Rectangle.Width - 45, Rectangle.Height - 5));
+      }
 
 
       //the material

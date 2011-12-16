@@ -22,6 +22,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
@@ -36,6 +37,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       operatorShapeInfo.AddConnector(PredecessorConnector);
       operatorShapeInfo.Collapsed = true;
       operatorShapeInfo.Title = op.Name;
+      operatorShapeInfo.TypeName = op.GetType().GetPrettyName();
       operatorShapeInfo.Color = Color.LightBlue;
       operatorShapeInfo.LineWidth = 1;
       operatorShapeInfo.LineColor = Color.Black;

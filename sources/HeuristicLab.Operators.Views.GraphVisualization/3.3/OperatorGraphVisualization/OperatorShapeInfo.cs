@@ -37,6 +37,11 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
 
     [StorableConstructor]
     protected OperatorShapeInfo(bool deserializing) : base(deserializing) { }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (string.IsNullOrEmpty(this.typeName))
+        typeName = title;
+    }
     protected OperatorShapeInfo(OperatorShapeInfo original, Cloner cloner)
       : base(original, cloner) {
       collapsed = original.collapsed;
@@ -44,6 +49,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       lineColor = original.lineColor;
       lineWidth = original.lineWidth;
       title = original.title;
+      typeName = original.typeName;
 
       //mkommend: necessary because cloning a Bitmap is not threadsafe
       //see http://stackoverflow.com/questions/1851292/invalidoperationexception-object-is-currently-in-use-elsewhere for further information
@@ -122,6 +128,18 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
       set {
         if (this.title != value) {
           this.title = value;
+          this.OnChanged();
+        }
+      }
+    }
+
+    [Storable]
+    private string typeName;
+    public string TypeName {
+      get { return this.typeName; }
+      set {
+        if (this.typeName != value) {
+          this.typeName = value;
           this.OnChanged();
         }
       }

@@ -26,6 +26,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
   public interface IOperatorShapeInfo : IShapeInfo {
     bool Collapsed { get; set; }
     string Title { get; set; }
+    string TypeName { get; set; }
     Color Color { get; set; }
     Color LineColor { get; set; }
     float LineWidth { get; set; }
