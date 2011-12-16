@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Linq;
 using System.Drawing;
 using System.Windows.Forms;
 using HeuristicLab.Collections;
@@ -83,6 +84,39 @@ namespace HeuristicLab.Core.Views {
     protected void itemsListView_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e) {
       if (e.Clicks > 1)
         doubleClick = true;
+    }
+
+    protected override void itemsListView_DragEnter(object sender, DragEventArgs e) {
+      validDragOperation = false;
+      if (Locked || ReadOnly) return;
+
+      var data = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) as ICheckedItemCollection<T>;
+      if (data != null)
+        validDragOperation = Content.Select(x => x.ToString()).SequenceEqual(data.Select(x => x.ToString()));
+      else
+        base.itemsListView_DragEnter(sender, e);
+    }
+
+    protected override void itemsListView_DragOver(object sender, DragEventArgs e) {
+      e.Effect = DragDropEffects.None;
+      if (!validDragOperation) return;
+
+      var data = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) as ICheckedItemCollection<T>;
+      if (data != null)
+        e.Effect = DragDropEffects.Copy;
+      else
+        base.itemsListView_DragOver(sender, e);
+    }
+
+    protected override void itemsListView_DragDrop(object sender, DragEventArgs e) {
+      if (e.Effect == DragDropEffects.None) return;
+      var data = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) as ICheckedItemCollection<T>;
+      if (data != null) {
+        for (int i = 0; i < Content.Count; i++) {
+          Content.SetItemCheckedState(Content.ElementAt(i), data.ItemChecked(data.ElementAt(i)));
+        }
+      } else
+        base.itemsListView_DragDrop(sender, e);
     }
     #endregion
 
