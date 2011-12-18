@@ -53,9 +53,24 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     }
 
     protected override void removeButton_Click(object sender, EventArgs e) {
-      DialogResult result = MessageBox.Show("This action will permanently delete this job (also on the hive server). Continue?", "HeuristicLab Hive Job Manager", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-      if (result == DialogResult.OK) {
-        base.removeButton_Click(sender, e);
+      DialogResult result = MessageBox.Show("This action will permanently delete this job (also on the Hive server). Continue?", "HeuristicLab Hive Job Manager", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+      if (result == DialogResult.Yes) {
+        System.Windows.Forms.ListView.SelectedListViewItemCollection selectedItems = itemsListView.SelectedItems;
+        bool inProgress = false;
+        foreach (ListViewItem item in selectedItems) {                                  
+          RefreshableJob job = item.Tag as RefreshableJob;
+          if (job != null && job.IsProgressing) {
+            inProgress = true;
+            break;
+          }
+        }
+
+        if (inProgress) {
+          MessageBox.Show("You can't delete jobs which are currently uploading or downloading." + Environment.NewLine + "Please wait for the jobs to complete and try again. ", "HeuristicLab Hive Job Manager", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+          return;
+        } else {
+          base.removeButton_Click(sender, e);
+        }
       }
     }
 
