@@ -32,7 +32,7 @@ namespace HeuristicLab.Analysis {
   [Item("AlleleFrequencyCollectionHistory", "Represents history values of allele frequencies collections.")]
   [StorableClass]
   public class AlleleFrequencyCollectionHistory : ItemCollection<AlleleFrequencyCollection> {
-    public override Image ItemImage {
+    public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Cab; }
     }
 

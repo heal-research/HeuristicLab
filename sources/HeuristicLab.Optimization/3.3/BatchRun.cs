@@ -38,13 +38,16 @@ namespace HeuristicLab.Optimization {
   public sealed class BatchRun : NamedItem, IOptimizer, IStorableContent {
     public string Filename { get; set; }
 
+    public static new Image StaticItemImage {
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Event; }
+    }
     public override Image ItemImage {
       get {
         if (ExecutionState == ExecutionState.Prepared) return HeuristicLab.Common.Resources.VSImageLibrary.BatchRunPrepared;
         else if (ExecutionState == ExecutionState.Started) return HeuristicLab.Common.Resources.VSImageLibrary.BatchRunStarted;
         else if (ExecutionState == ExecutionState.Paused) return HeuristicLab.Common.Resources.VSImageLibrary.BatchRunPaused;
         else if (ExecutionState == ExecutionState.Stopped) return HeuristicLab.Common.Resources.VSImageLibrary.BatchRunStopped;
-        else return HeuristicLab.Common.Resources.VSImageLibrary.Event;
+        else return base.ItemImage;
       }
     }
 

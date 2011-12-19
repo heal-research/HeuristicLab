@@ -30,7 +30,7 @@ namespace HeuristicLab.Data {
   [Item("BoolValue", "Represents a boolean value.")]
   [StorableClass]
   public class BoolValue : ValueTypeValue<bool>, IComparable, IStringConvertibleValue {
-    public override Image ItemImage {
+    public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Field; }
     }
 

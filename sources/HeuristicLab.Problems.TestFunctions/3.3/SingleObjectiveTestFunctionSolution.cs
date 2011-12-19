@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.TestFunctions {
   [Item("SingleObjectiveTestFunctionSolution", "Represents a SingleObjectiveTestFunction solution.")]
   [StorableClass]
   public class SingleObjectiveTestFunctionSolution : Item {
-    public override Image ItemImage {
+    public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Image; }
     }
 

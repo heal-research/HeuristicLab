@@ -33,7 +33,7 @@ namespace HeuristicLab.Data {
   [Item("StringMatrix", "Represents a matrix of strings.")]
   [StorableClass]
   public class StringMatrix : Item, IEnumerable<string>, IStringConvertibleMatrix {
-    public override Image ItemImage {
+    public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Class; }
     }
 

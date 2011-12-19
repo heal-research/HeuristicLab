@@ -40,7 +40,7 @@ namespace HeuristicLab.Optimization {
       return new ResultCollection(this, cloner);
     }
 
-    public override System.Drawing.Image ItemImage {
+    public static new System.Drawing.Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Object; }
     }
   }

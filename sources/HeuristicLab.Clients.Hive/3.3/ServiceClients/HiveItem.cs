@@ -37,12 +37,15 @@ namespace HeuristicLab.Clients.Hive {
     public Version ItemVersion {
       get { return ItemAttribute.GetVersion(this.GetType()); }
     }
+    public static new Image StaticItemImage {
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Database; }
+    }
     public virtual Image ItemImage {
       get {
         if (Modified)
           return HeuristicLab.Common.Resources.VSImageLibrary.DatabaseModified;
         else
-          return HeuristicLab.Common.Resources.VSImageLibrary.Database;
+          return ItemAttribute.GetImage(this.GetType());
       }
     }
 

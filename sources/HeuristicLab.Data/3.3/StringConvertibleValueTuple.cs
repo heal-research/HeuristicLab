@@ -31,7 +31,7 @@ namespace HeuristicLab.Data {
   public abstract class StringConvertibleValueTuple<T, U> : Item, IStringConvertibleValueTuple
     where T : class, IDeepCloneable, IStringConvertibleValue
     where U : class, IDeepCloneable, IStringConvertibleValue {
-    public override Image ItemImage {
+    public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.ValueType; }
     }
 

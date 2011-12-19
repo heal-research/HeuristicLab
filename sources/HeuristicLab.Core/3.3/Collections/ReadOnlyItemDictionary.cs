@@ -23,7 +23,6 @@ using System;
 using System.Drawing;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
-using HeuristicLab.Common.Resources;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
@@ -42,8 +41,11 @@ namespace HeuristicLab.Core {
     public Version ItemVersion {
       get { return ItemAttribute.GetVersion(this.GetType()); }
     }
+    public static Image StaticItemImage {
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Class; }
+    }
     public virtual Image ItemImage {
-      get { return VSImageLibrary.Class; }
+      get { return ItemAttribute.GetImage(this.GetType()); }
     }
 
     [StorableConstructor]

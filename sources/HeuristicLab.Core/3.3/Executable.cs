@@ -28,13 +28,16 @@ namespace HeuristicLab.Core {
   [Item("Executable", "A base class for executables.")]
   [StorableClass]
   public abstract class Executable : Item, IExecutable {
+    public static new Image StaticItemImage {
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Event; }
+    }
     public override Image ItemImage {
       get {
         if (ExecutionState == ExecutionState.Prepared) return HeuristicLab.Common.Resources.VSImageLibrary.ExecutablePrepared;
         else if (ExecutionState == ExecutionState.Started) return HeuristicLab.Common.Resources.VSImageLibrary.ExecutableStarted;
         else if (ExecutionState == ExecutionState.Paused) return HeuristicLab.Common.Resources.VSImageLibrary.ExecutablePaused;
         else if (ExecutionState == ExecutionState.Stopped) return HeuristicLab.Common.Resources.VSImageLibrary.ExecutableStopped;
-        else return HeuristicLab.Common.Resources.VSImageLibrary.Event;
+        else return base.ItemImage;
       }
     }
 

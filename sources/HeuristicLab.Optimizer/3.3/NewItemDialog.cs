@@ -20,7 +20,7 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Core;
@@ -29,7 +29,6 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Optimizer {
   internal partial class NewItemDialog : Form {
     private bool initialized;
-    private List<IItem> items;
 
     private IItem item;
     public IItem Item {
@@ -38,7 +37,6 @@ namespace HeuristicLab.Optimizer {
 
     public NewItemDialog() {
       initialized = false;
-      items = new List<IItem>();
       item = null;
       InitializeComponent();
     }
@@ -52,16 +50,22 @@ namespace HeuristicLab.Optimizer {
                          select c;
 
         itemsListView.SmallImageList = new ImageList();
+        itemsListView.SmallImageList.Images.Add(HeuristicLab.Common.Resources.VSImageLibrary.Class);  // default icon
         foreach (var category in categories) {
           ListViewGroup group = new ListViewGroup(category.Key);
           itemsListView.Groups.Add(group);
           foreach (var creatable in category) {
-            IItem i = (IItem)Activator.CreateInstance(creatable);
-            items.Add(i);
-            ListViewItem item = new ListViewItem(new string[] { i.ItemName, i.ItemVersion.ToString(), i.ItemDescription }, group);
-            itemsListView.SmallImageList.Images.Add(i.ItemImage);
-            item.ImageIndex = itemsListView.SmallImageList.Images.Count - 1;
-            item.Tag = i;
+            string name = ItemAttribute.GetName(creatable);
+            string version = ItemAttribute.GetVersion(creatable).ToString();
+            string description = ItemAttribute.GetDescription(creatable);
+            ListViewItem item = new ListViewItem(new string[] { name, version, description }, group);
+            item.ImageIndex = 0;
+            Image image = ItemAttribute.GetImage(creatable);
+            if (image != null) {
+              itemsListView.SmallImageList.Images.Add(image);
+              item.ImageIndex = itemsListView.SmallImageList.Images.Count - 1;
+            }
+            item.Tag = creatable;
             itemsListView.Items.Add(item);
           }
         }
@@ -81,14 +85,14 @@ namespace HeuristicLab.Optimizer {
 
     private void okButton_Click(object sender, EventArgs e) {
       if (itemsListView.SelectedItems.Count == 1) {
-        item = (IItem)((IItem)itemsListView.SelectedItems[0].Tag).Clone();
+        item = (IItem)Activator.CreateInstance((Type)itemsListView.SelectedItems[0].Tag);
         DialogResult = DialogResult.OK;
         Close();
       }
     }
     private void itemTypesListView_DoubleClick(object sender, EventArgs e) {
       if (itemsListView.SelectedItems.Count == 1) {
-        item = (IItem)((IItem)itemsListView.SelectedItems[0].Tag).Clone();
+        item = (IItem)Activator.CreateInstance((Type)itemsListView.SelectedItems[0].Tag);
         DialogResult = DialogResult.OK;
         Close();
       }

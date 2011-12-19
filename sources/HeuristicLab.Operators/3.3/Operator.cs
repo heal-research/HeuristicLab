@@ -33,10 +33,13 @@ namespace HeuristicLab.Operators {
   [Item("Operator", "Base class for operators.")]
   [StorableClass]
   public abstract class Operator : ParameterizedNamedItem, IOperator, IStatefulItem {
+    public static new Image StaticItemImage {
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Method; }
+    }
     public override Image ItemImage {
       get {
         if (Breakpoint) return HeuristicLab.Common.Resources.VSImageLibrary.BreakpointActive;
-        else return HeuristicLab.Common.Resources.VSImageLibrary.Method;
+        else return base.ItemImage;
       }
     }
     public override bool CanChangeDescription {

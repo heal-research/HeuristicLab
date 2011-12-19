@@ -101,7 +101,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     #region properties
     public string Filename { get; set; }
-    public override Image ItemImage { get { return VSImageLibrary.Type; } }
+    public static new Image StaticItemImage { get { return VSImageLibrary.Type; } }
 
     IDataAnalysisProblemData IDataAnalysisProblem.ProblemData {
       get { return ProblemData; }

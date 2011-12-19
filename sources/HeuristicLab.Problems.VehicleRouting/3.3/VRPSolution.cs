@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
   [Item("VRPSolution", "Represents a VRP solution which can be visualized in the GUI.")]
   [StorableClass]
   public sealed class VRPSolution : Item {
-    public override Image ItemImage {
+    public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Image; }
     }
 

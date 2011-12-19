@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using HeuristicLab.Common;
@@ -80,6 +81,10 @@ namespace HeuristicLab.Core {
       } else {
         return assembly.GetName().Version;
       }
+    }
+    public static Image GetImage(Type type) {
+      var staticItemImageProperty = type.GetProperty("StaticItemImage", BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy);
+      return staticItemImageProperty == null ? null : (Image)staticItemImageProperty.GetValue(null, null);
     }
   }
 }

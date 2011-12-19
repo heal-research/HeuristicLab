@@ -38,7 +38,7 @@ namespace HeuristicLab.Optimization {
       get { return (IFixedValueParameter<OperatorCollection>)Parameters[OperatorsParameterName]; }
     }
 
-    public override Image ItemImage {
+    public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
     }
 

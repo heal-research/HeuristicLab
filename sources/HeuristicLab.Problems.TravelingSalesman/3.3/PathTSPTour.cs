@@ -34,7 +34,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   [Item("PathTSPTour", "Represents a tour of a Traveling Salesman Problem given in path representation which can be visualized in the GUI.")]
   [StorableClass]
   public sealed class PathTSPTour : Item {
-    public override Image ItemImage {
+    public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Image; }
     }
 

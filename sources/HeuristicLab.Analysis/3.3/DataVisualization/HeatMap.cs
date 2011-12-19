@@ -30,7 +30,7 @@ namespace HeuristicLab.Analysis {
   [Item("HeatMap", "Represents a heat map of double values.")]
   [StorableClass]
   public class HeatMap : DoubleMatrix {
-    public override Image ItemImage {
+    public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Gradient; }
     }
 

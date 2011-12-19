@@ -19,17 +19,13 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Drawing;
 using System.Linq;
-using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using SVM;
 using HeuristicLab.Problems.DataAnalysis;
-using System.Drawing;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
@@ -38,7 +34,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item("KMeansClusteringModel", "Represents a k-Means clustering model.")]
   public sealed class KMeansClusteringModel : NamedItem, IClusteringModel {
-    public override Image ItemImage {
+    public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Function; }
     }
 

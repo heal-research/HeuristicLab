@@ -29,7 +29,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("PermutationType", "Represents a certain type of permutation.")]
   [StorableClass]
   public class PermutationType : ValueTypeValue<PermutationTypes> {
-    public override Image ItemImage {
+    public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Enum; }
     }
 

@@ -30,7 +30,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableClass]
   [Item("SymbolicExpressionTree", "Represents a symbolic expression tree.")]
   public class SymbolicExpressionTree : Item, ISymbolicExpressionTree {
-    public override Image ItemImage {
+    public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Function; }
     }
     [Storable]

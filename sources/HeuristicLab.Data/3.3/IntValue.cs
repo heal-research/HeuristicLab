@@ -30,7 +30,7 @@ namespace HeuristicLab.Data {
   [Item("IntValue", "Represents an integer value.")]
   [StorableClass]
   public class IntValue : ValueTypeValue<int>, IComparable, IStringConvertibleValue {
-    public override Image ItemImage {
+    public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Field; }
     }
 

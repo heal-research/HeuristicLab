@@ -85,7 +85,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     #endregion
 
     #region Properties
-    public override System.Drawing.Image ItemImage {
+    public static new System.Drawing.Image StaticItemImage {
       get { return VSImageLibrary.Database; }
     }
     public int Size { get { lock (cacheLock) return index.Count; } }
@@ -219,7 +219,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
                 Monitor.Enter(cacheLock, ref lockTaken);
                 index[entry] = list.AddLast(entry);
                 Trim();
-              } finally {
+              }
+              finally {
                 if (!lockTaken)
                   Monitor.Enter(cacheLock, ref lockTaken);
                 activeEvaluations.Remove(entry.Key);
@@ -232,7 +233,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
             }
           }
         }
-      } finally {
+      }
+      finally {
         if (lockTaken)
           Monitor.Exit(cacheLock);
       }

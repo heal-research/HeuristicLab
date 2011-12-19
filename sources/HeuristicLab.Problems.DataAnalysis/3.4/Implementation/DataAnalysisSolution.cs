@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public string Filename { get; set; }
 
-    public override Image ItemImage {
+    public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Function; }
     }
 

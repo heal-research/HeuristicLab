@@ -63,8 +63,11 @@ namespace HeuristicLab.Algorithms.Benchmarks {
       get { return ItemAttribute.GetVersion(this.GetType()); }
     }
 
-    public Image ItemImage {
+    public static Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Event; }
+    }
+    public Image ItemImage {
+      get { return ItemAttribute.GetImage(this.GetType()); }
     }
 
     #region Benchmark Fields

@@ -31,7 +31,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("TourEncoding", "Represents a base class for tour encodings of VRP solutions.")]
   [StorableClass]
   public abstract class TourEncoding : Item, IVRPEncoding {
-    public override Image ItemImage {
+    public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Class; }
     }
 

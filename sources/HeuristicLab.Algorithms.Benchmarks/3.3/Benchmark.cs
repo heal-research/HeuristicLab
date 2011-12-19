@@ -188,13 +188,16 @@ namespace HeuristicLab.Algorithms.Benchmarks {
       get { return ItemAttribute.GetVersion(this.GetType()); }
     }
 
+    public static Image StaticItemImage {
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Event; }
+    }
     public Image ItemImage {
       get {
         if (ExecutionState == ExecutionState.Prepared) return HeuristicLab.Common.Resources.VSImageLibrary.ExecutablePrepared;
         else if (ExecutionState == ExecutionState.Started) return HeuristicLab.Common.Resources.VSImageLibrary.ExecutableStarted;
         else if (ExecutionState == ExecutionState.Paused) return HeuristicLab.Common.Resources.VSImageLibrary.ExecutablePaused;
         else if (ExecutionState == ExecutionState.Stopped) return HeuristicLab.Common.Resources.VSImageLibrary.ExecutableStopped;
-        else return HeuristicLab.Common.Resources.VSImageLibrary.Event;
+        else return ItemAttribute.GetImage(this.GetType());
       }
     }
 

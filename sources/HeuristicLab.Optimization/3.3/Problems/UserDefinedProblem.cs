@@ -42,7 +42,7 @@ namespace HeuristicLab.Optimization {
   public sealed class UserDefinedProblem : ParameterizedNamedItem, ISingleObjectiveHeuristicOptimizationProblem, IStorableContent {
     public string Filename { get; set; }
 
-    public override Image ItemImage {
+    public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
     }
     public new ParameterCollection Parameters {
@@ -262,7 +262,7 @@ namespace HeuristicLab.Optimization {
 
       #endregion
 
-      public override Image ItemImage {
+      public static new Image StaticItemImage {
         get { return HeuristicLab.Common.Resources.VSImageLibrary.Method; }
       }
     }

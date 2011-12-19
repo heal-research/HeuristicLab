@@ -141,10 +141,12 @@ namespace HeuristicLab.Core.Views {
               if (type.IsInterface) typeNode.ImageIndex = 2;
               else if (type.ContainsGenericParameters) typeNode.ImageIndex = 3;
               else if (imageList.Images.ContainsKey(type.FullName)) typeNode.ImageIndex = imageList.Images.IndexOfKey(type.FullName);
-              else if (typeof(IItem).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract && type.GetConstructor(Type.EmptyTypes) != null) {
-                IItem item = (IItem)Activator.CreateInstance(type);
-                imageList.Images.Add(type.FullName, item.ItemImage);
-                typeNode.ImageIndex = imageList.Images.IndexOfKey(type.FullName);
+              else {
+                var image = ItemAttribute.GetImage(type);
+                if (image != null) {
+                  imageList.Images.Add(type.FullName, image);
+                  typeNode.ImageIndex = imageList.Images.IndexOfKey(type.FullName);
+                }
               }
               typeNode.SelectedImageIndex = typeNode.ImageIndex;
               typeNode.Tag = type;

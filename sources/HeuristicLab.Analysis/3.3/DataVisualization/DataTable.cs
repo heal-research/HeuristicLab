@@ -37,7 +37,7 @@ namespace HeuristicLab.Analysis {
   [Item("DataTable", "A table of data values.")]
   [StorableClass]
   public class DataTable : NamedItem, IStringConvertibleMatrix {
-    public override Image ItemImage {
+    public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Performance; }
     }
 

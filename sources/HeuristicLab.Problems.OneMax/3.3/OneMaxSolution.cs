@@ -34,7 +34,7 @@ namespace HeuristicLab.Problems.OneMax {
   [Item("OneMaxSolution", "Represents a OneMax solution.")]
   [StorableClass]
   public sealed class OneMaxSolution : Item {
-    public override Image ItemImage {
+    public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Image; }
     }
 

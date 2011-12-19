@@ -29,7 +29,7 @@ namespace HeuristicLab.Data {
   [Item("ValueTypeValue", "An abstract base class for representing values of value types.")]
   [StorableClass]
   public abstract class ValueTypeValue<T> : Item where T : struct {
-    public override Image ItemImage {
+    public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.ValueType; }
     }
 

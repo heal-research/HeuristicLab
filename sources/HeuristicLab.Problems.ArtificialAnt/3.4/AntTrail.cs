@@ -34,7 +34,7 @@ namespace HeuristicLab.Problems.ArtificialAnt {
   [Item("AntTrail", "Represents a trail of an artificial ant which can be visualized in the GUI.")]
   [StorableClass]
   public sealed class AntTrail : Item {
-    public override Image ItemImage {
+    public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Image; }
     }
     [Storable]

@@ -31,7 +31,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// </summary>
   [StorableClass]
   public abstract class SymbolicDataAnalysisModel : NamedItem, ISymbolicDataAnalysisModel {
-    public override Image ItemImage {
+    public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Function; }
     }
 

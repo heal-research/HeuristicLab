@@ -39,6 +39,9 @@ namespace HeuristicLab.Clients.Hive {
     protected static object locker = new object();
     protected ReaderWriterLockSlim childHiveTasksLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
+    public static new Image StaticItemImage {
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Event; }
+    }
     public override Image ItemImage {
       get {
         if (task.Id == Guid.Empty) { // not yet uploaded
@@ -51,7 +54,7 @@ namespace HeuristicLab.Clients.Hive {
           else if (task.State == TaskState.Aborted) return HeuristicLab.Common.Resources.VSImageLibrary.ExecutableStopped;
           else if (task.State == TaskState.Failed) return HeuristicLab.Common.Resources.VSImageLibrary.Error;
           else if (task.State == TaskState.Finished) return HeuristicLab.Common.Resources.VSImageLibrary.ExecutableStopped;
-          else return HeuristicLab.Common.Resources.VSImageLibrary.Event;
+          else return base.ItemImage;
         }
       }
     }
@@ -119,7 +122,8 @@ namespace HeuristicLab.Clients.Hive {
             foreach (var hiveJob in childHiveTasks) {
               hiveJob.IsControllable = value;
             }
-          } finally {
+          }
+          finally {
             childHiveTasksLock.ExitReadLock();
           }
         }
@@ -133,7 +137,8 @@ namespace HeuristicLab.Clients.Hive {
         childHiveTasksLock.EnterReadLock();
         try {
           return childHiveTasks.AsReadOnly();
-        } finally { childHiveTasksLock.ExitReadLock(); }
+        }
+        finally { childHiveTasksLock.ExitReadLock(); }
       }
     }
 
@@ -192,7 +197,8 @@ namespace HeuristicLab.Clients.Hive {
       original.childHiveTasksLock.EnterReadLock();
       try {
         this.childHiveTasks = cloner.Clone(original.childHiveTasks);
-      } finally { original.childHiveTasksLock.ExitReadLock(); }
+      }
+      finally { original.childHiveTasksLock.ExitReadLock(); }
       this.syncTasksWithOptimizers = original.syncTasksWithOptimizers;
       this.isFinishedTaskDownloaded = original.isFinishedTaskDownloaded;
     }
@@ -241,7 +247,8 @@ namespace HeuristicLab.Clients.Hive {
       childHiveTasksLock.EnterWriteLock();
       try {
         this.childHiveTasks.Add(hiveTask);
-      } finally { childHiveTasksLock.ExitWriteLock(); }
+      }
+      finally { childHiveTasksLock.ExitWriteLock(); }
     }
 
     public override string ToString() {
@@ -358,7 +365,8 @@ namespace HeuristicLab.Clients.Hive {
           jobs.AddRange(child.GetAllHiveTasks());
         }
         return jobs;
-      } finally { childHiveTasksLock.ExitReadLock(); }
+      }
+      finally { childHiveTasksLock.ExitReadLock(); }
     }
 
     public HiveTask GetParentByJobId(Guid taskId) {
@@ -372,7 +380,8 @@ namespace HeuristicLab.Clients.Hive {
             return result;
         }
         return null;
-      } finally { childHiveTasksLock.ExitWriteLock(); }
+      }
+      finally { childHiveTasksLock.ExitWriteLock(); }
     }
 
     /// <summary>
@@ -389,7 +398,8 @@ namespace HeuristicLab.Clients.Hive {
             if (result != null)
               return result;
           }
-        } finally { childHiveTasksLock.ExitReadLock(); }
+        }
+        finally { childHiveTasksLock.ExitReadLock(); }
       }
       return null;
     }
@@ -404,7 +414,8 @@ namespace HeuristicLab.Clients.Hive {
         foreach (HiveTask child in childHiveTasks) {
           child.RemoveByTaskId(jobId);
         }
-      } finally { childHiveTasksLock.ExitWriteLock(); }
+      }
+      finally { childHiveTasksLock.ExitWriteLock(); }
     }
 
     public IEnumerable<IItemTree<HiveTask>> GetChildItems() {
@@ -457,7 +468,8 @@ namespace HeuristicLab.Clients.Hive {
           foreach (var child in childHiveTasks) {
             HiveServiceLocator.Instance.CallHiveService(s => s.PauseTask(child.task.Id));
           }
-        } finally { childHiveTasksLock.ExitReadLock(); }
+        }
+        finally { childHiveTasksLock.ExitReadLock(); }
       } else {
         HiveServiceLocator.Instance.CallHiveService(s => s.PauseTask(this.task.Id));
       }
@@ -470,7 +482,8 @@ namespace HeuristicLab.Clients.Hive {
           foreach (var child in childHiveTasks) {
             HiveServiceLocator.Instance.CallHiveService(s => s.StopTask(child.task.Id));
           }
-        } finally { childHiveTasksLock.ExitReadLock(); }
+        }
+        finally { childHiveTasksLock.ExitReadLock(); }
       } else {
         HiveServiceLocator.Instance.CallHiveService(s => s.StopTask(this.task.Id));
       }

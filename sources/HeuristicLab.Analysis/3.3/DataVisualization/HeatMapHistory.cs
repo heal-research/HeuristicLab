@@ -32,7 +32,7 @@ namespace HeuristicLab.Analysis {
   [Item("HeatMapHistory", "Represents history values of heat maps.")]
   [StorableClass]
   public class HeatMapHistory : ItemCollection<HeatMap> {
-    public override Image ItemImage {
+    public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Cab; }
     }
 

@@ -31,10 +31,13 @@ namespace HeuristicLab.Operators {
   [Item("AlgorithmOperator", "An operator which represents an algorithm represented as an operator graph.")]
   [StorableClass]
   public abstract class AlgorithmOperator : SingleSuccessorOperator {
+    public static new Image StaticItemImage {
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Module; }
+    }
     public override Image ItemImage {
       get {
         if (Breakpoint) return HeuristicLab.Common.Resources.VSImageLibrary.BreakpointActive;
-        else return HeuristicLab.Common.Resources.VSImageLibrary.Module;
+        else return base.ItemImage;
       }
     }
     [Storable]

@@ -32,7 +32,7 @@ namespace HeuristicLab.Analysis {
   [Item("DataTableHistory", "Represents history values of data tables.")]
   [StorableClass]
   public class DataTableHistory : ItemCollection<DataTable> {
-    public override Image ItemImage {
+    public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Cab; }
     }
 

@@ -31,7 +31,7 @@ namespace HeuristicLab.Core {
   [Item("Scope", "A scope which contains variables and sub-scopes.")]
   [StorableClass]
   public sealed class Scope : NamedItem, IScope {
-    public override Image ItemImage {
+    public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.OrgChart; }
     }
 
