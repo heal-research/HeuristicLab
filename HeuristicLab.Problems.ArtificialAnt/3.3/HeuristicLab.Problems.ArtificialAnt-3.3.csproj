@@ -1,0 +1,214 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F5C0ECAC-EDBA-4024-872A-1F74AFCB20B4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HeuristicLab.Problems.ArtificialAnt</RootNamespace>
+    <AssemblyName>HeuristicLab.Problems.ArtificialAnt-3.3</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Analyzers\BestAntTrailAnalyzer.cs" />
+    <Compile Include="Analyzers\IAntTrailAnalyzer.cs" />
+    <Compile Include="AntInterpreter.cs" />
+    <Compile Include="Evaluator.cs" />
+    <Compile Include="ArtificialAntExpressionGrammar.cs" />
+    <Compile Include="ArtificialAntProblem.cs" />
+    <Compile Include="AntTrail.cs" />
+    <Compile Include="Plugin.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Symbols\IfFoodAhead.cs" />
+    <Compile Include="Symbols\Left.cs" />
+    <Compile Include="Symbols\Move.cs" />
+    <Compile Include="Symbols\Prog2.cs" />
+    <Compile Include="Symbols\Prog3.cs" />
+    <Compile Include="Symbols\Right.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="HeuristicLab.snk" />
+    <None Include="Plugin.cs.frame" />
+    <None Include="Properties\AssemblyInfo.cs.frame" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="HeuristicLab.Collections-3.3">
+      <HintPath>..\..\bin\HeuristicLab.Collections-3.3.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="HeuristicLab.Common.Resources-3.3">
+      <HintPath>..\..\bin\HeuristicLab.Common.Resources-3.3.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="HeuristicLab.Common-3.3">
+      <HintPath>..\..\bin\HeuristicLab.Common-3.3.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="HeuristicLab.Core-3.3">
+      <HintPath>..\..\bin\HeuristicLab.Core-3.3.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="HeuristicLab.Data-3.3">
+      <HintPath>..\..\bin\HeuristicLab.Data-3.3.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="HeuristicLab.Operators-3.3">
+      <HintPath>..\..\bin\HeuristicLab.Operators-3.3.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="HeuristicLab.Optimization-3.3">
+      <HintPath>..\..\bin\HeuristicLab.Optimization-3.3.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="HeuristicLab.Parameters-3.3">
+      <HintPath>..\..\bin\HeuristicLab.Parameters-3.3.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="HeuristicLab.Persistence-3.3">
+      <HintPath>..\..\bin\HeuristicLab.Persistence-3.3.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="HeuristicLab.PluginInfrastructure-3.3">
+      <HintPath>..\..\bin\HeuristicLab.PluginInfrastructure-3.3.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding\3.3\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3.csproj">
+      <Project>{125D3006-67F5-48CB-913E-73C0548F17FA}</Project>
+      <Name>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PreBuildEvent>set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+set ProjectDir=$(ProjectDir)
+set SolutionDir=$(SolutionDir)
+set Outdir=$(Outdir)
+
+call PreBuildEvent.cmd
+</PreBuildEvent>
+  </PropertyGroup>
+</Project>

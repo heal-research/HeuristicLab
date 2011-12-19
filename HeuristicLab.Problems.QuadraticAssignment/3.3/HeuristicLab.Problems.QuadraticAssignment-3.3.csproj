@@ -1,0 +1,482 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{79271BC8-4446-40E2-BB89-9BE4E17174FE}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HeuristicLab.Problems.QuadraticAssignment</RootNamespace>
+    <AssemblyName>HeuristicLab.Problems.QuadraticAssignment-3.3</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\Plugin.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisLogFile>$(SolutionDir)\bin\Plugin.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\Plugin.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisLogFile>$(SolutionDir)\bin\Plugin.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Analyzers\BestQAPSolutionAnalyzer.cs" />
+    <Compile Include="Analyzers\QAPAlleleFrequencyAnalyzer.cs" />
+    <Compile Include="Analyzers\QAPPopulationDiversityAnalyzer.cs" />
+    <Compile Include="Evaluators\QAPScrambleMoveEvaluator.cs" />
+    <Compile Include="Evaluators\QAPSwap2MoveEvaluator.cs" />
+    <Compile Include="Evaluators\QAPEvaluator.cs" />
+    <Compile Include="Evaluators\QAPInversionMoveEvaluator.cs" />
+    <Compile Include="Evaluators\QAPMoveEvaluator.cs" />
+    <Compile Include="Evaluators\QAPTranslocationMoveEvaluator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Interfaces\IQAPEvaluator.cs" />
+    <Compile Include="Interfaces\IQAPMoveEvaluator.cs" />
+    <Compile Include="LocalImprovement\QAPExhaustiveSwap2LocalImprovement.cs" />
+    <Compile Include="Parsers\QAPLIBSolutionParser.cs" />
+    <Compile Include="Parsers\QAPLIBParser.cs" />
+    <Compile Include="QAPAssignment.cs" />
+    <Compile Include="QAPPermutationProximityCalculator.cs" />
+    <Compile Include="QuadraticAssignmentProblem.cs" />
+    <EmbeddedResource Include="Data\bur26a.dat" />
+    <EmbeddedResource Include="Data\bur26b.dat" />
+    <EmbeddedResource Include="Data\bur26c.dat" />
+    <EmbeddedResource Include="Data\bur26d.dat" />
+    <EmbeddedResource Include="Data\bur26e.dat" />
+    <EmbeddedResource Include="Data\bur26f.dat" />
+    <EmbeddedResource Include="Data\bur26g.dat" />
+    <EmbeddedResource Include="Data\bur26h.dat" />
+    <EmbeddedResource Include="Data\chr12a.dat" />
+    <EmbeddedResource Include="Data\chr12b.dat" />
+    <EmbeddedResource Include="Data\chr12c.dat" />
+    <EmbeddedResource Include="Data\chr15a.dat" />
+    <EmbeddedResource Include="Data\chr15b.dat" />
+    <EmbeddedResource Include="Data\chr15c.dat" />
+    <EmbeddedResource Include="Data\chr18a.dat" />
+    <EmbeddedResource Include="Data\chr18b.dat" />
+    <EmbeddedResource Include="Data\chr20a.dat" />
+    <EmbeddedResource Include="Data\chr20b.dat" />
+    <EmbeddedResource Include="Data\chr20c.dat" />
+    <EmbeddedResource Include="Data\chr22a.dat" />
+    <EmbeddedResource Include="Data\chr22b.dat" />
+    <EmbeddedResource Include="Data\chr25a.dat" />
+    <EmbeddedResource Include="Data\els19.dat" />
+    <EmbeddedResource Include="Data\esc128.dat" />
+    <EmbeddedResource Include="Data\esc16a.dat" />
+    <EmbeddedResource Include="Data\esc16b.dat" />
+    <EmbeddedResource Include="Data\esc16c.dat" />
+    <EmbeddedResource Include="Data\esc16d.dat" />
+    <EmbeddedResource Include="Data\esc16e.dat" />
+    <EmbeddedResource Include="Data\esc16f.dat" />
+    <EmbeddedResource Include="Data\esc16g.dat" />
+    <EmbeddedResource Include="Data\esc16h.dat" />
+    <EmbeddedResource Include="Data\esc16i.dat" />
+    <EmbeddedResource Include="Data\esc16j.dat" />
+    <EmbeddedResource Include="Data\esc32a.dat" />
+    <EmbeddedResource Include="Data\esc32b.dat" />
+    <EmbeddedResource Include="Data\esc32c.dat" />
+    <EmbeddedResource Include="Data\esc32d.dat" />
+    <EmbeddedResource Include="Data\esc32e.dat" />
+    <EmbeddedResource Include="Data\esc32f.dat" />
+    <EmbeddedResource Include="Data\esc32g.dat" />
+    <EmbeddedResource Include="Data\esc32h.dat" />
+    <EmbeddedResource Include="Data\esc64a.dat" />
+    <EmbeddedResource Include="Data\had12.dat" />
+    <EmbeddedResource Include="Data\had14.dat" />
+    <EmbeddedResource Include="Data\had16.dat" />
+    <EmbeddedResource Include="Data\had18.dat" />
+    <EmbeddedResource Include="Data\had20.dat" />
+    <EmbeddedResource Include="Data\kra30a.dat" />
+    <EmbeddedResource Include="Data\kra30b.dat" />
+    <EmbeddedResource Include="Data\kra32.dat" />
+    <EmbeddedResource Include="Data\lipa20a.dat" />
+    <EmbeddedResource Include="Data\lipa20b.dat" />
+    <EmbeddedResource Include="Data\lipa30a.dat" />
+    <EmbeddedResource Include="Data\lipa30b.dat" />
+    <EmbeddedResource Include="Data\lipa40a.dat" />
+    <EmbeddedResource Include="Data\lipa40b.dat" />
+    <EmbeddedResource Include="Data\lipa50a.dat" />
+    <EmbeddedResource Include="Data\lipa50b.dat" />
+    <EmbeddedResource Include="Data\lipa60a.dat" />
+    <EmbeddedResource Include="Data\lipa60b.dat" />
+    <EmbeddedResource Include="Data\lipa70a.dat" />
+    <EmbeddedResource Include="Data\lipa70b.dat" />
+    <EmbeddedResource Include="Data\lipa80a.dat" />
+    <EmbeddedResource Include="Data\lipa80b.dat" />
+    <EmbeddedResource Include="Data\lipa90a.dat" />
+    <EmbeddedResource Include="Data\lipa90b.dat" />
+    <EmbeddedResource Include="Data\nug12.dat" />
+    <EmbeddedResource Include="Data\nug14.dat" />
+    <EmbeddedResource Include="Data\nug15.dat" />
+    <EmbeddedResource Include="Data\nug16a.dat" />
+    <EmbeddedResource Include="Data\nug16b.dat" />
+    <EmbeddedResource Include="Data\nug17.dat" />
+    <EmbeddedResource Include="Data\nug18.dat" />
+    <EmbeddedResource Include="Data\nug20.dat" />
+    <EmbeddedResource Include="Data\nug21.dat" />
+    <EmbeddedResource Include="Data\nug22.dat" />
+    <EmbeddedResource Include="Data\nug24.dat" />
+    <EmbeddedResource Include="Data\nug25.dat" />
+    <EmbeddedResource Include="Data\nug27.dat" />
+    <EmbeddedResource Include="Data\nug28.dat" />
+    <EmbeddedResource Include="Data\nug30.dat" />
+    <EmbeddedResource Include="Data\rou12.dat" />
+    <EmbeddedResource Include="Data\rou15.dat" />
+    <EmbeddedResource Include="Data\rou20.dat" />
+    <EmbeddedResource Include="Data\scr12.dat" />
+    <EmbeddedResource Include="Data\scr15.dat" />
+    <EmbeddedResource Include="Data\scr20.dat" />
+    <EmbeddedResource Include="Data\sko100a.dat" />
+    <EmbeddedResource Include="Data\sko100b.dat" />
+    <EmbeddedResource Include="Data\sko100c.dat" />
+    <EmbeddedResource Include="Data\sko100d.dat" />
+    <EmbeddedResource Include="Data\sko100e.dat" />
+    <EmbeddedResource Include="Data\sko100f.dat" />
+    <EmbeddedResource Include="Data\sko42.dat" />
+    <EmbeddedResource Include="Data\sko49.dat" />
+    <EmbeddedResource Include="Data\sko56.dat" />
+    <EmbeddedResource Include="Data\sko64.dat" />
+    <EmbeddedResource Include="Data\sko72.dat" />
+    <EmbeddedResource Include="Data\sko81.dat" />
+    <EmbeddedResource Include="Data\sko90.dat" />
+    <EmbeddedResource Include="Data\ste36a.dat" />
+    <EmbeddedResource Include="Data\ste36b.dat" />
+    <EmbeddedResource Include="Data\ste36c.dat" />
+    <EmbeddedResource Include="Data\tai100a.dat" />
+    <EmbeddedResource Include="Data\tai100b.dat" />
+    <EmbeddedResource Include="Data\tai10a.dat" />
+    <EmbeddedResource Include="Data\tai10b.dat" />
+    <EmbeddedResource Include="Data\tai12a.dat" />
+    <EmbeddedResource Include="Data\tai12b.dat" />
+    <EmbeddedResource Include="Data\tai150b.dat" />
+    <EmbeddedResource Include="Data\tai15a.dat" />
+    <EmbeddedResource Include="Data\tai15b.dat" />
+    <EmbeddedResource Include="Data\tai17a.dat" />
+    <EmbeddedResource Include="Data\tai20a.dat" />
+    <EmbeddedResource Include="Data\tai20b.dat" />
+    <EmbeddedResource Include="Data\tai256c.dat" />
+    <EmbeddedResource Include="Data\tai25a.dat" />
+    <EmbeddedResource Include="Data\tai25b.dat" />
+    <EmbeddedResource Include="Data\tai30a.dat" />
+    <EmbeddedResource Include="Data\tai30b.dat" />
+    <EmbeddedResource Include="Data\tai35a.dat" />
+    <EmbeddedResource Include="Data\tai35b.dat" />
+    <EmbeddedResource Include="Data\tai40a.dat" />
+    <EmbeddedResource Include="Data\tai40b.dat" />
+    <EmbeddedResource Include="Data\tai50a.dat" />
+    <EmbeddedResource Include="Data\tai50b.dat" />
+    <EmbeddedResource Include="Data\tai60a.dat" />
+    <EmbeddedResource Include="Data\tai60b.dat" />
+    <EmbeddedResource Include="Data\tai64c.dat" />
+    <EmbeddedResource Include="Data\tai80a.dat" />
+    <EmbeddedResource Include="Data\tai80b.dat" />
+    <EmbeddedResource Include="Data\tho150.dat" />
+    <EmbeddedResource Include="Data\tho30.dat" />
+    <EmbeddedResource Include="Data\tho40.dat" />
+    <EmbeddedResource Include="Data\wil100.dat" />
+    <EmbeddedResource Include="Data\wil50.dat" />
+    <None Include="Plugin.cs.frame" />
+    <Compile Include="Plugin.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="Properties\AssemblyInfo.cs.frame" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="HeuristicLab.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
+      <Project>{887425B4-4348-49ED-A457-B7D2C26DDBF9}</Project>
+      <Name>HeuristicLab.Analysis-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
+      <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
+      <Name>HeuristicLab.Collections-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Common.Resources\3.3\HeuristicLab.Common.Resources-3.3.csproj">
+      <Project>{0E27A536-1C4A-4624-A65E-DC4F4F23E3E1}</Project>
+      <Name>HeuristicLab.Common.Resources-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Common\3.3\HeuristicLab.Common-3.3.csproj">
+      <Project>{A9AD58B9-3EF9-4CC1-97E5-8D909039FF5C}</Project>
+      <Name>HeuristicLab.Common-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
+      <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>
+      <Name>HeuristicLab.Core-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
+      <Project>{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}</Project>
+      <Name>HeuristicLab.Data-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Encodings.PermutationEncoding\3.3\HeuristicLab.Encodings.PermutationEncoding-3.3.csproj">
+      <Project>{DBECB8B0-B166-4133-BAF1-ED67C3FD7FCA}</Project>
+      <Name>HeuristicLab.Encodings.PermutationEncoding-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
+      <Project>{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}</Project>
+      <Name>HeuristicLab.Operators-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
+      <Project>{14AB8D24-25BC-400C-A846-4627AA945192}</Project>
+      <Name>HeuristicLab.Optimization-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Parameters\3.3\HeuristicLab.Parameters-3.3.csproj">
+      <Project>{56F9106A-079F-4C61-92F6-86A84C2D84B7}</Project>
+      <Name>HeuristicLab.Parameters-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
+      <Project>{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}</Project>
+      <Name>HeuristicLab.Persistence-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
+      <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
+      <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Data\bur26a.sln" />
+    <EmbeddedResource Include="Data\bur26b.sln" />
+    <EmbeddedResource Include="Data\bur26c.sln" />
+    <EmbeddedResource Include="Data\bur26d.sln" />
+    <EmbeddedResource Include="Data\bur26e.sln" />
+    <EmbeddedResource Include="Data\bur26f.sln" />
+    <EmbeddedResource Include="Data\bur26g.sln" />
+    <EmbeddedResource Include="Data\bur26h.sln" />
+    <EmbeddedResource Include="Data\chr12a.sln" />
+    <EmbeddedResource Include="Data\chr12b.sln" />
+    <EmbeddedResource Include="Data\chr12c.sln" />
+    <EmbeddedResource Include="Data\chr15a.sln" />
+    <EmbeddedResource Include="Data\chr15b.sln" />
+    <EmbeddedResource Include="Data\chr15c.sln" />
+    <EmbeddedResource Include="Data\chr18a.sln" />
+    <EmbeddedResource Include="Data\chr18b.sln" />
+    <EmbeddedResource Include="Data\chr20a.sln" />
+    <EmbeddedResource Include="Data\chr20b.sln" />
+    <EmbeddedResource Include="Data\chr20c.sln" />
+    <EmbeddedResource Include="Data\chr22a.sln" />
+    <EmbeddedResource Include="Data\chr22b.sln" />
+    <EmbeddedResource Include="Data\chr25a.sln" />
+    <EmbeddedResource Include="Data\els19.sln" />
+    <EmbeddedResource Include="Data\esc128.sln" />
+    <EmbeddedResource Include="Data\esc16a.sln" />
+    <EmbeddedResource Include="Data\esc16b.sln" />
+    <EmbeddedResource Include="Data\esc16c.sln" />
+    <EmbeddedResource Include="Data\esc16d.sln" />
+    <EmbeddedResource Include="Data\esc16e.sln" />
+    <EmbeddedResource Include="Data\esc16f.sln" />
+    <EmbeddedResource Include="Data\esc16g.sln" />
+    <EmbeddedResource Include="Data\esc16h.sln" />
+    <EmbeddedResource Include="Data\esc16i.sln" />
+    <EmbeddedResource Include="Data\esc16j.sln" />
+    <EmbeddedResource Include="Data\esc32a.sln" />
+    <EmbeddedResource Include="Data\esc32e.sln" />
+    <EmbeddedResource Include="Data\esc32f.sln" />
+    <EmbeddedResource Include="Data\esc32g.sln" />
+    <EmbeddedResource Include="Data\had12.sln" />
+    <EmbeddedResource Include="Data\had14.sln" />
+    <EmbeddedResource Include="Data\had16.sln" />
+    <EmbeddedResource Include="Data\had18.sln" />
+    <EmbeddedResource Include="Data\had20.sln" />
+    <EmbeddedResource Include="Data\kra30a.sln" />
+    <EmbeddedResource Include="Data\kra30b.sln" />
+    <EmbeddedResource Include="Data\kra32.sln" />
+    <EmbeddedResource Include="Data\lipa20a.sln" />
+    <EmbeddedResource Include="Data\lipa20b.sln" />
+    <EmbeddedResource Include="Data\lipa30a.sln" />
+    <EmbeddedResource Include="Data\lipa30b.sln" />
+    <EmbeddedResource Include="Data\lipa40a.sln" />
+    <EmbeddedResource Include="Data\lipa40b.sln" />
+    <EmbeddedResource Include="Data\lipa50a.sln" />
+    <EmbeddedResource Include="Data\lipa50b.sln" />
+    <EmbeddedResource Include="Data\lipa60a.sln" />
+    <EmbeddedResource Include="Data\lipa60b.sln" />
+    <EmbeddedResource Include="Data\lipa70a.sln" />
+    <EmbeddedResource Include="Data\lipa70b.sln" />
+    <EmbeddedResource Include="Data\lipa80a.sln" />
+    <EmbeddedResource Include="Data\lipa80b.sln" />
+    <EmbeddedResource Include="Data\lipa90a.sln" />
+    <EmbeddedResource Include="Data\lipa90b.sln" />
+    <EmbeddedResource Include="Data\nug12.sln" />
+    <EmbeddedResource Include="Data\nug14.sln" />
+    <EmbeddedResource Include="Data\nug15.sln" />
+    <EmbeddedResource Include="Data\nug16a.sln" />
+    <EmbeddedResource Include="Data\nug16b.sln" />
+    <EmbeddedResource Include="Data\nug17.sln" />
+    <EmbeddedResource Include="Data\nug18.sln" />
+    <EmbeddedResource Include="Data\nug20.sln" />
+    <EmbeddedResource Include="Data\nug21.sln" />
+    <EmbeddedResource Include="Data\nug22.sln" />
+    <EmbeddedResource Include="Data\nug24.sln" />
+    <EmbeddedResource Include="Data\nug25.sln" />
+    <EmbeddedResource Include="Data\nug27.sln" />
+    <EmbeddedResource Include="Data\nug28.sln" />
+    <EmbeddedResource Include="Data\nug30.sln" />
+    <EmbeddedResource Include="Data\rou12.sln" />
+    <EmbeddedResource Include="Data\rou15.sln" />
+    <EmbeddedResource Include="Data\rou20.sln" />
+    <EmbeddedResource Include="Data\scr12.sln" />
+    <EmbeddedResource Include="Data\scr15.sln" />
+    <EmbeddedResource Include="Data\scr20.sln" />
+    <EmbeddedResource Include="Data\sko100a.sln" />
+    <EmbeddedResource Include="Data\sko100b.sln" />
+    <EmbeddedResource Include="Data\sko100c.sln" />
+    <EmbeddedResource Include="Data\sko100d.sln" />
+    <EmbeddedResource Include="Data\sko100e.sln" />
+    <EmbeddedResource Include="Data\sko100f.sln" />
+    <EmbeddedResource Include="Data\sko49.sln" />
+    <EmbeddedResource Include="Data\sko81.sln" />
+    <EmbeddedResource Include="Data\sko90.sln" />
+    <EmbeddedResource Include="Data\ste36a.sln" />
+    <EmbeddedResource Include="Data\ste36b.sln" />
+    <EmbeddedResource Include="Data\ste36c.sln" />
+    <EmbeddedResource Include="Data\tai100a.sln" />
+    <EmbeddedResource Include="Data\tai100b.sln" />
+    <EmbeddedResource Include="Data\tai12a.sln" />
+    <EmbeddedResource Include="Data\tai12b.sln" />
+    <EmbeddedResource Include="Data\tai150b.sln" />
+    <EmbeddedResource Include="Data\tai15a.sln" />
+    <EmbeddedResource Include="Data\tai15b.sln" />
+    <EmbeddedResource Include="Data\tai17a.sln" />
+    <EmbeddedResource Include="Data\tai20a.sln" />
+    <EmbeddedResource Include="Data\tai20b.sln" />
+    <EmbeddedResource Include="Data\tai256c.sln" />
+    <EmbeddedResource Include="Data\tai25a.sln" />
+    <EmbeddedResource Include="Data\tai25b.sln" />
+    <EmbeddedResource Include="Data\tai30b.sln" />
+    <EmbeddedResource Include="Data\tai35b.sln" />
+    <EmbeddedResource Include="Data\tai40b.sln" />
+    <EmbeddedResource Include="Data\tai50a.sln" />
+    <EmbeddedResource Include="Data\tai50b.sln" />
+    <EmbeddedResource Include="Data\tai60a.sln" />
+    <EmbeddedResource Include="Data\tai60b.sln" />
+    <EmbeddedResource Include="Data\tai64c.sln" />
+    <EmbeddedResource Include="Data\tai80a.sln" />
+    <EmbeddedResource Include="Data\tai80b.sln" />
+    <EmbeddedResource Include="Data\tho150.sln" />
+    <EmbeddedResource Include="Data\tho30.sln" />
+    <EmbeddedResource Include="Data\wil100.sln" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+set ProjectDir=$(ProjectDir)
+set SolutionDir=$(SolutionDir)
+set Outdir=$(Outdir)
+
+call PreBuildEvent.cmd</PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

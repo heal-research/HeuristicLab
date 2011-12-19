@@ -1,0 +1,334 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{799B0B38-E384-4A17-A73C-F211EB854592}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HeuristicLab.Problems.DataAnalysis.Views</RootNamespace>
+    <AssemblyName>HeuristicLab.Problems.DataAnalysis.Views-3.3</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="HeuristicLab.snk" />
+    <None Include="Plugin.cs.frame" />
+    <None Include="Properties\AssemblyInfo.cs.frame" />
+    <Compile Include="DataAnalysisSolutionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DataAnalysisSolutionView.Designer.cs">
+      <DependentUpon>DataAnalysisSolutionView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Plugin.cs" />
+    <Compile Include="ResultsView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ResultsView.Designer.cs">
+      <DependentUpon>ResultsView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SupportVectorRegressionSolutionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SupportVectorRegressionSolutionView.Designer.cs">
+      <DependentUpon>SupportVectorRegressionSolutionView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SupportVectorMachineModelView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SupportVectorMachineModelView.Designer.cs">
+      <DependentUpon>SupportVectorMachineModelView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EstimatedValuesView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="EstimatedValuesView.Designer.cs">
+      <DependentUpon>EstimatedValuesView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataAnalysisProblemDataView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DataAnalysisProblemDataView.Designer.cs">
+      <DependentUpon>DataAnalysisProblemDataView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LineChartView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="LineChartView.Designer.cs">
+      <DependentUpon>LineChartView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScatterPlotView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ScatterPlotView.Designer.cs">
+      <DependentUpon>ScatterPlotView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Symbolic\InteractiveSymbolicRegressionSolutionSimplifierView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Symbolic\InteractiveSymbolicRegressionSolutionSimplifierView.Designer.cs">
+      <DependentUpon>InteractiveSymbolicRegressionSolutionSimplifierView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Symbolic\SimplifiedSymbolicExpressionModelView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Symbolic\SimplifiedSymbolicExpressionModelView.designer.cs">
+      <DependentUpon>SimplifiedSymbolicExpressionModelView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Symbolic\SymbolicExpressionModelView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Symbolic\SymbolicExpressionModelView.designer.cs">
+      <DependentUpon>SymbolicExpressionModelView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Symbolic\SymbolicRegressionSolutionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Symbolic\SymbolicRegressionSolutionView.Designer.cs">
+      <DependentUpon>SymbolicRegressionSolutionView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Symbolic\Symbols\ConstantView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Symbolic\Symbols\ConstantView.Designer.cs">
+      <DependentUpon>ConstantView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Symbolic\Symbols\VariableConditionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Symbolic\Symbols\VariableConditionView.Designer.cs">
+      <DependentUpon>VariableConditionView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Symbolic\Symbols\LaggedVariableView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Symbolic\Symbols\LaggedVariableView.Designer.cs">
+      <DependentUpon>LaggedVariableView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Symbolic\Symbols\TimeLagView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Symbolic\Symbols\TimeLagView.Designer.cs">
+      <DependentUpon>TimeLagView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Symbolic\Symbols\VariableView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Symbolic\Symbols\VariableView.Designer.cs">
+      <DependentUpon>VariableView.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="HeuristicLab.Collections-3.3">
+      <HintPath>..\..\bin\HeuristicLab.Collections-3.3.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="HeuristicLab.Common-3.3">
+      <HintPath>..\..\bin\HeuristicLab.Common-3.3.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="HeuristicLab.Core.Views-3.3">
+      <HintPath>..\..\bin\HeuristicLab.Core.Views-3.3.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="HeuristicLab.Core-3.3">
+      <HintPath>..\..\bin\HeuristicLab.Core-3.3.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="HeuristicLab.Data.Views-3.3">
+      <HintPath>..\..\bin\HeuristicLab.Data.Views-3.3.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="HeuristicLab.Data-3.3">
+      <HintPath>..\..\bin\HeuristicLab.Data-3.3.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="HeuristicLab.MainForm.WindowsForms-3.3">
+      <HintPath>..\..\bin\HeuristicLab.MainForm.WindowsForms-3.3.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="HeuristicLab.MainForm-3.3">
+      <HintPath>..\..\bin\HeuristicLab.MainForm-3.3.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="HeuristicLab.Operators-3.3">
+      <HintPath>..\..\bin\HeuristicLab.Operators-3.3.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="HeuristicLab.Optimization-3.3">
+      <HintPath>..\..\bin\HeuristicLab.Optimization-3.3.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="HeuristicLab.Parameters-3.3">
+      <HintPath>..\..\bin\HeuristicLab.Parameters-3.3.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="HeuristicLab.Persistence-3.3">
+      <HintPath>..\..\bin\HeuristicLab.Persistence-3.3.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="HeuristicLab.PluginInfrastructure-3.3">
+      <HintPath>..\..\bin\HeuristicLab.PluginInfrastructure-3.3.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="HeuristicLab.Visualization.ChartControlsExtensions-3.3">
+      <HintPath>..\..\bin\HeuristicLab.Visualization.ChartControlsExtensions-3.3.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views\3.3\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views-3.3.csproj">
+      <Project>{6F42C5F8-16CD-43EE-8208-FD4573A69D85}</Project>
+      <Name>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding\3.3\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3.csproj">
+      <Project>{125D3006-67F5-48CB-913E-73C0548F17FA}</Project>
+      <Name>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.DataAnalysis.Regression\3.3\HeuristicLab.Problems.DataAnalysis.Regression-3.3.csproj">
+      <Project>{BDF86B1D-630E-4CE2-8A49-8C90B1BDE4C9}</Project>
+      <Name>HeuristicLab.Problems.DataAnalysis.Regression-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.DataAnalysis\3.3\HeuristicLab.Problems.DataAnalysis-3.3.csproj">
+      <Project>{70DFD984-B1D9-46FE-8EB7-4DE92D71A9FC}</Project>
+      <Name>HeuristicLab.Problems.DataAnalysis-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PreBuildEvent>set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+set ProjectDir=$(ProjectDir)
+set SolutionDir=$(SolutionDir)
+set Outdir=$(Outdir)
+
+call PreBuildEvent.cmd
+</PreBuildEvent>
+  </PropertyGroup>
+</Project>

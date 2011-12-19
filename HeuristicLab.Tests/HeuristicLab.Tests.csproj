@@ -1,0 +1,942 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B62872C1-6752-4758-9823-751A2D28C388}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HeuristicLab.Tests</RootNamespace>
+    <AssemblyName>HeuristicLab.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\HeuristicLab.Tests.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\HeuristicLab.Tests.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\HeuristicLab.Tests.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\HeuristicLab.Tests.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ALGLIB-3.1.0">
+      <HintPath>..\bin\ALGLIB-3.1.0.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Calendar.DayView">
+      <HintPath>..\bin\Calendar.DayView.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Google.ProtocolBuffers-0.9.1, Version=0.9.0.0, Culture=neutral, PublicKeyToken=17b3b1f090c3ea48, processorArchitecture=AMD64">
+      <HintPath>..\bin\Google.ProtocolBuffers-0.9.1.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="HeuristicLab.ALGLIB-3.1.0">
+      <HintPath>..\bin\HeuristicLab.ALGLIB-3.1.0.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="HeuristicLab.LibSVM-1.6.3">
+      <HintPath>..\bin\HeuristicLab.LibSVM-1.6.3.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="HeuristicLab.log4net-1.2.10.0">
+      <HintPath>..\bin\HeuristicLab.log4net-1.2.10.0.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="HeuristicLab.Netron-3.0.2672.12446">
+      <HintPath>..\bin\HeuristicLab.Netron-3.0.2672.12446.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="HeuristicLab.ProtobufCS-0.9.1">
+      <HintPath>..\bin\HeuristicLab.ProtobufCS-0.9.1.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="HeuristicLab.SharpDevelop-3.1.1.5327">
+      <HintPath>..\bin\HeuristicLab.SharpDevelop-3.1.1.5327.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="HeuristicLab.WinFormsUI-2.3.1">
+      <HintPath>..\bin\HeuristicLab.WinFormsUI-2.3.1.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ICSharpCode.NRefactory, Version=3.1.1.5327, Culture=neutral, PublicKeyToken=efe927acf176eea2, processorArchitecture=MSIL">
+      <HintPath>..\bin\ICSharpCode.NRefactory.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpDevelop.Dom, Version=3.1.1.5327, Culture=neutral, PublicKeyToken=f829da5c02be14ee, processorArchitecture=MSIL">
+      <HintPath>..\bin\ICSharpCode.SharpDevelop.Dom.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\bin\ICSharpCode.SharpZipLib.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ICSharpCode.TextEditor, Version=3.1.1.5327, Culture=neutral, PublicKeyToken=4d61825e8dd49f1a, processorArchitecture=MSIL">
+      <HintPath>..\bin\ICSharpCode.TextEditor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="LibSVM-1.6.3, Version=1.6.3.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <HintPath>..\bin\LibSVM-1.6.3.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <HintPath>..\bin\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Netron.Diagramming.Core-3.0.2672.12446, Version=3.0.2672.12446, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <HintPath>..\bin\Netron.Diagramming.Core-3.0.2672.12446.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="WeifenLuo.WinFormsUI.Docking-2.3.1, Version=2.3.1.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <HintPath>..\bin\WeifenLuo.WinFormsUI.Docking-2.3.1.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDependentAssemblyPaths Condition=" '$(VS100COMNTOOLS)' != '' " Include="$(VS100COMNTOOLS)..\IDE\PrivateAssemblies">
+      <Visible>False</Visible>
+    </CodeAnalysisDependentAssemblyPaths>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="HeuristicLab-3.3\AlgorithmExtensions.cs" />
+    <Compile Include="HeuristicLab-3.3\CloningConstructorTest.cs" />
+    <Compile Include="HeuristicLab-3.3\CollectObjectGraphTest.cs" />
+    <Compile Include="HeuristicLab-3.3\ContentViewTests.cs" />
+    <Compile Include="HeuristicLab-3.3\DeepCloneableCloningTest.cs" />
+    <Compile Include="HeuristicLab-3.3\GeneticAlgorithmTest.cs" />
+    <Compile Include="HeuristicLab-3.3\PluginDependenciesTest.cs" />
+    <Compile Include="HeuristicLab-3.3\PluginLoader.cs" />
+    <Compile Include="HeuristicLab-3.3\SamplesTest.cs" />
+    <Compile Include="HeuristicLab-3.3\StorableConstructorTest.cs" />
+    <Compile Include="HeuristicLab-3.3\SupportVectorMachineTest.cs" />
+    <Compile Include="HeuristicLab-3.3\ThreadSafeLogTest.cs" />
+    <Compile Include="HeuristicLab.Analysis-3.3\MultidimensionalScalingTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.BinaryVectorEncoding-3.3\Auxiliary.cs" />
+    <Compile Include="HeuristicLab.Encodings.BinaryVectorEncoding-3.3\NPointCrossoverTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.BinaryVectorEncoding-3.3\SinglePointCrossoverTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.BinaryVectorEncoding-3.3\SinglePositionBitflipManipulatorTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.BinaryVectorEncoding-3.3\SomePositionsBitflipManipulatorTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.BinaryVectorEncoding-3.3\UniformCrossoverTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.IntegerVectorEncoding-3.3\Auxiliary.cs" />
+    <Compile Include="HeuristicLab.Encodings.IntegerVectorEncoding-3.3\DiscreteCrossoverTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.IntegerVectorEncoding-3.3\SinglePointCrossoverTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.IntegerVectorEncoding-3.3\UniformOnePositionManipulatorTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.PermutationEncoding-3.3\Auxiliary.cs" />
+    <Compile Include="HeuristicLab.Encodings.PermutationEncoding-3.3\CosaCrossoverTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.PermutationEncoding-3.3\CyclicCrossover2Test.cs" />
+    <Compile Include="HeuristicLab.Encodings.PermutationEncoding-3.3\CyclicCrossoverTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.PermutationEncoding-3.3\EdgeRecombinationCrossoverTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.PermutationEncoding-3.3\InsertionManipulatorTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.PermutationEncoding-3.3\InversionManipulatorTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.PermutationEncoding-3.3\MaximalPreservativeCrossoverTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.PermutationEncoding-3.3\OrderBasedCrossoverTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.PermutationEncoding-3.3\OrderCrossover2Test.cs" />
+    <Compile Include="HeuristicLab.Encodings.PermutationEncoding-3.3\OrderCrossoverTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.PermutationEncoding-3.3\PartiallyMatchedCrossoverTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.PermutationEncoding-3.3\PermutationEqualityComparerTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.PermutationEncoding-3.3\PositionBasedCrossoverTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.PermutationEncoding-3.3\ScrambleManipulatorTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.PermutationEncoding-3.3\Swap2ManipulatorTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.PermutationEncoding-3.3\Swap3ManipulatorTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.PermutationEncoding-3.3\TranslocationInversionManipulatorTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.PermutationEncoding-3.3\TranslocationManipulatorTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.PermutationEncoding-3.3\UniformLikeCrossoverTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.RealVectorEncoding-3.3\Auxiliary.cs" />
+    <Compile Include="HeuristicLab.Encodings.RealVectorEncoding-3.3\BlendAlphaBetaCrossoverTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.RealVectorEncoding-3.3\BlendAlphaCrossoverTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.RealVectorEncoding-3.3\DiscreteCrossoverTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.RealVectorEncoding-3.3\HeuristicCrossoverTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.RealVectorEncoding-3.3\LocalCrossoverTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.RealVectorEncoding-3.3\MichalewiczNonUniformAllPositionsManipulatorTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.RealVectorEncoding-3.3\MichalewiczNonUniformOnePositionManipulatorTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.RealVectorEncoding-3.3\PolynomialAllPositionManipulatorTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.RealVectorEncoding-3.3\PolynomialOnePositionManipulatorTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.RealVectorEncoding-3.3\RandomConvexCrossoverTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.RealVectorEncoding-3.3\SimulatedBinaryCrossoverTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.RealVectorEncoding-3.3\SinglePointCrossoverTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.RealVectorEncoding-3.3\UniformOnePositionManipulatorTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\AllArchitectureAlteringOperatorsTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\ArgumentCreaterTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\ArgumentDeleterTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\ArgumentDuplicaterTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\ChangeNodeTypeManipulationTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\FullTreeCreatorTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\Grammars.cs" />
+    <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\GrowTreeCreatorTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\ProbabilisticTreeCreaterTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\ReplaceBranchManipulationTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\SubroutineCreaterTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\SubroutineDeleterTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\SubroutineDuplicaterTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\SubtreeCrossoverTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\Util.cs" />
+    <Compile Include="HeuristicLab.Persistence-3.3\StorableAttributeTests.cs" />
+    <Compile Include="HeuristicLab.Persistence-3.3\UseCases.cs" />
+    <Compile Include="HeuristicLab.PluginInfraStructure-3.3\InstallationManagerTest.cs" />
+    <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\OnlineCalculatorPerformanceTest.cs" />
+    <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\StatisticCalculatorsTest.cs" />
+    <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\TableFileParserTest.cs" />
+    <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\SymbolicDataAnalysisExpressionTreeInterpreterTest.cs" />
+    <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\SymbolicDataAnalysisExpressionTreeSimplifierTest.cs" />
+    <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\SymbolicExpressionImporter.cs" />
+    <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\Token.cs" />
+    <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\Util.cs" />
+    <Compile Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIBInstancesTest.cs" />
+    <Compile Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPMoveEvaluatorTest.cs" />
+    <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\AckleyEvaluatorTest.cs" />
+    <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\BealeEvaluatorTest.cs" />
+    <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\BoothEvaluatorTest.cs" />
+    <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\GriewankEvaluatorTest.cs" />
+    <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\LevyEvaluatorTest.cs" />
+    <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\MatyasEvaluatorTest.cs" />
+    <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\RastriginEvaluatorTest.cs" />
+    <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\RosenbrockEvaluatorTest.cs" />
+    <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\SphereEvaluatorTest.cs" />
+    <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\SumSquaresEvaluatorTest.cs" />
+    <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\ZakharovEvaluatorTest.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestRandom.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Builder.testsettings" />
+    <None Include="HeuristicLab-3.3\Resources\ch130.opt.tour">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="HeuristicLab-3.3\Resources\ch130.tsp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="HeuristicLab-3.3\Resources\GA_SymbReg.hl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="HeuristicLab-3.3\Resources\GA_TSP.hl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <Content Include="HeuristicLab-3.3\Resources\SamplesExperimentFinished.hl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\bur26a.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\bur26b.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\bur26c.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\bur26d.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\bur26e.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\bur26f.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\bur26g.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\bur26h.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr12a.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr12b.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr12c.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr15a.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr15b.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr15c.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr18a.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr18b.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr20a.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr20b.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr20c.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr22a.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr22b.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr25a.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\els19.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc128.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16a.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16b.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16c.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16d.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16e.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16f.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16g.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16h.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16i.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16j.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc32a.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc32b.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc32c.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc32d.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc32e.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc32f.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc32g.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc32h.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc64a.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\had12.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\had14.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\had16.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\had18.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\had20.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\kra30a.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\kra30b.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\kra32.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa20a.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa20b.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa30a.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa30b.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa40a.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa40b.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa50a.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa50b.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa60a.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa60b.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa70a.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa70b.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa80a.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa80b.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa90a.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa90b.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug12.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug14.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug15.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug16a.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug16b.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug17.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug18.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug20.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug21.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug22.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug24.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug25.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug27.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug28.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug30.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\rou12.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\rou15.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\rou20.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\scr12.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\scr15.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\scr20.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko100a.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko100b.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko100c.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko100d.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko100e.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko100f.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko42.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko49.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko56.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko64.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko72.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko81.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko90.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\ste36a.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\ste36b.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\ste36c.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai100a.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai100b.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai10a.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai10b.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai12a.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai12b.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai150b.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai15a.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai15b.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai17a.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai20a.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai20b.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai256c.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai25a.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai25b.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai30a.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai30b.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai35a.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai35b.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai40a.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai40b.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai50a.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai50b.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai60a.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai60b.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai64c.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai80a.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai80b.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tho150.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tho30.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tho40.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\wil100.dat" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\wil50.dat" />
+    <None Include="HeuristicLab.snk" />
+    <Shadow Include="Test References\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4.accessor" />
+    <Shadow Include="Test References\HeuristicLab.PluginInfrastructure-3.3.accessor" />
+    <Shadow Include="Test References\HeuristicLab.MainForm.WindowsForms-3.3.accessor" />
+    <Shadow Include="Test References\HeuristicLab.Encodings.IntegerVectorEncoding-3.3.accessor" />
+    <Shadow Include="Test References\HeuristicLab.Encodings.RealVectorEncoding-3.3.accessor" />
+    <Shadow Include="Test References\HeuristicLab.Encodings.BinaryVectorEncoding-3.3.accessor" />
+    <Shadow Include="Test References\HeuristicLab.Encodings.PermutationEncoding-3.3.accessor" />
+    <Shadow Include="Test References\HeuristicLab.Problems.TestFunctions-3.3.accessor" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="HeuristicLab-3.3\Resources\C101.opt.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="HeuristicLab-3.3\Resources\C101.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="HeuristicLab-3.3\Resources\mammographic_masses.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="HeuristicLab-3.3\Resources\towerData.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\bur26a.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\bur26b.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\bur26c.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\bur26d.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\bur26e.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\bur26f.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\bur26g.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\bur26h.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr12a.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr12b.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr12c.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr15a.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr15b.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr15c.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr18a.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr18b.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr20a.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr20b.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr20c.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr22a.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr22b.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr25a.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\els19.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc128.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16a.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16b.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16c.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16d.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16e.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16f.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16g.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16h.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16i.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16j.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc32a.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc32e.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc32f.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc32g.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\had12.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\had14.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\had16.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\had18.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\had20.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\kra30a.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\kra30b.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\kra32.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa20a.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa20b.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa30a.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa30b.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa40a.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa40b.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa50a.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa50b.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa60a.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa60b.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa70a.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa70b.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa80a.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa80b.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa90a.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa90b.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug12.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug14.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug15.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug16a.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug16b.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug17.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug18.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug20.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug21.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug22.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug24.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug25.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug27.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug28.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug30.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\rou12.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\rou15.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\rou20.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\scr12.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\scr15.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\scr20.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko100a.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko100b.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko100c.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko100d.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko100e.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko100f.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko49.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko81.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko90.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\ste36a.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\ste36b.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\ste36c.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai100a.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai100b.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai12a.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai12b.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai150b.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai15a.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai15b.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai17a.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai20a.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai20b.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai256c.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai25a.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai25b.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai30b.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai35b.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai40b.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai50a.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai50b.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai60a.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai60b.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai64c.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai80a.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai80b.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tho150.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tho30.sln" />
+    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\wil100.sln" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\HeuristicLab.Algorithms.Benchmarks.Views\3.3\HeuristicLab.Algorithms.Benchmarks.Views-3.3.csproj">
+      <Project>{3C906172-E044-4DF0-B4FD-AA21192D5D3E}</Project>
+      <Name>HeuristicLab.Algorithms.Benchmarks.Views-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Algorithms.Benchmarks\3.3\HeuristicLab.Algorithms.Benchmarks-3.3.csproj">
+      <Project>{068C70A7-8CAF-4AB6-8721-4564D62292BC}</Project>
+      <Name>HeuristicLab.Algorithms.Benchmarks-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Algorithms.DataAnalysis.Views\3.4\HeuristicLab.Algorithms.DataAnalysis.Views-3.4.csproj">
+      <Project>{A2330DB0-413D-4424-B4E6-591118E2B9F8}</Project>
+      <Name>HeuristicLab.Algorithms.DataAnalysis.Views-3.4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Algorithms.DataAnalysis\3.4\HeuristicLab.Algorithms.DataAnalysis-3.4.csproj">
+      <Project>{2E782078-FA81-4B70-B56F-74CE38DAC6C8}</Project>
+      <Name>HeuristicLab.Algorithms.DataAnalysis-3.4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Algorithms.EvolutionStrategy\3.3\HeuristicLab.Algorithms.EvolutionStrategy-3.3.csproj">
+      <Project>{E0B45023-CB84-48A1-A1B7-8295B64B7BAD}</Project>
+      <Name>HeuristicLab.Algorithms.EvolutionStrategy-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Algorithms.GeneticAlgorithm\3.3\HeuristicLab.Algorithms.GeneticAlgorithm-3.3.csproj">
+      <Project>{A51DA44F-CB35-4F6F-99F5-2A2E904AB93B}</Project>
+      <Name>HeuristicLab.Algorithms.GeneticAlgorithm-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Algorithms.LocalSearch\3.3\HeuristicLab.Algorithms.LocalSearch-3.3.csproj">
+      <Project>{4AE3FC69-C575-42D2-BC46-0FAD5850EFC5}</Project>
+      <Name>HeuristicLab.Algorithms.LocalSearch-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Algorithms.NSGA2\3.3\HeuristicLab.Algorithms.NSGA2-3.3.csproj">
+      <Project>{15452B9F-A436-4139-8EE7-DA72FB8D3664}</Project>
+      <Name>HeuristicLab.Algorithms.NSGA2-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm\3.3\HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm-3.3.csproj">
+      <Project>{F409DD9E-1E9C-4EB1-AA3A-9F6E987C6E58}</Project>
+      <Name>HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Algorithms.ParticleSwarmOptimization\3.3\HeuristicLab.Algorithms.ParticleSwarmOptimization-3.3.csproj">
+      <Project>{2C429157-9C34-4DD3-9D5F-B444B751E39A}</Project>
+      <Name>HeuristicLab.Algorithms.ParticleSwarmOptimization-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Algorithms.SimulatedAnnealing\3.3\HeuristicLab.Algorithms.SimulatedAnnealing-3.3.csproj">
+      <Project>{96E5ED5B-187D-4012-9CDA-D85CDAD38342}</Project>
+      <Name>HeuristicLab.Algorithms.SimulatedAnnealing-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Algorithms.TabuSearch\3.3\HeuristicLab.Algorithms.TabuSearch-3.3.csproj">
+      <Project>{D58A232D-04BA-4186-B73E-0EC86FD31ABE}</Project>
+      <Name>HeuristicLab.Algorithms.TabuSearch-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Algorithms.VariableNeighborhoodSearch\3.3\HeuristicLab.Algorithms.VariableNeighborhoodSearch-3.3.csproj">
+      <Project>{E4CFB0C3-0589-4893-B38E-8BEDF885C765}</Project>
+      <Name>HeuristicLab.Algorithms.VariableNeighborhoodSearch-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Analysis.Views\3.3\HeuristicLab.Analysis.Views-3.3.csproj">
+      <Project>{76945D76-CA61-4147-9DC2-0ACDCDDF87F9}</Project>
+      <Name>HeuristicLab.Analysis.Views-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
+      <Project>{887425B4-4348-49ED-A457-B7D2C26DDBF9}</Project>
+      <Name>HeuristicLab.Analysis-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Clients.Common\3.3\HeuristicLab.Clients.Common-3.3.csproj">
+      <Project>{730A9104-D4D1-4360-966B-E49B7571DDA3}</Project>
+      <Name>HeuristicLab.Clients.Common-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Clients.Hive.Administrator\3.3\HeuristicLab.Clients.Hive.Administrator-3.3.csproj">
+      <Project>{5211F1AD-BBA2-4C62-8749-DCA0A25CF5D8}</Project>
+      <Name>HeuristicLab.Clients.Hive.Administrator-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Clients.Hive.JobManager\3.3\HeuristicLab.Clients.Hive.JobManager-3.3.csproj">
+      <Project>{DBFD7205-61AF-40EF-8776-3052DEF91CF3}</Project>
+      <Name>HeuristicLab.Clients.Hive.JobManager-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Clients.Hive.Views\3.3\HeuristicLab.Clients.Hive.Views-3.3.csproj">
+      <Project>{E1D6C801-892A-406A-B606-F158E36DD3C3}</Project>
+      <Name>HeuristicLab.Clients.Hive.Views-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Clients.Hive\3.3\HeuristicLab.Clients.Hive-3.3.csproj">
+      <Project>{B5EF1E5A-9F3D-40B9-B4B0-30AADF2E2CEB}</Project>
+      <Name>HeuristicLab.Clients.Hive-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.CodeEditor\3.3\HeuristicLab.CodeEditor-3.3.csproj">
+      <Project>{489CFE09-FDF7-4C89-BAB5-BD09CADD61AD}</Project>
+      <Name>HeuristicLab.CodeEditor-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
+      <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
+      <Name>HeuristicLab.Collections-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Common.Resources\3.3\HeuristicLab.Common.Resources-3.3.csproj">
+      <Project>{0E27A536-1C4A-4624-A65E-DC4F4F23E3E1}</Project>
+      <Name>HeuristicLab.Common.Resources-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Common\3.3\HeuristicLab.Common-3.3.csproj">
+      <Project>{A9AD58B9-3EF9-4CC1-97E5-8D909039FF5C}</Project>
+      <Name>HeuristicLab.Common-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Core.Views\3.3\HeuristicLab.Core.Views-3.3.csproj">
+      <Project>{E226881D-315F-423D-B419-A766FE0D8685}</Project>
+      <Name>HeuristicLab.Core.Views-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
+      <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>
+      <Name>HeuristicLab.Core-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Data.Views\3.3\HeuristicLab.Data.Views-3.3.csproj">
+      <Project>{72104A0B-90E7-42F3-9ABE-9BBBADD4B943}</Project>
+      <Name>HeuristicLab.Data.Views-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
+      <Project>{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}</Project>
+      <Name>HeuristicLab.Data-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.DebugEngine\3.3\HeuristicLab.DebugEngine-3.3.csproj">
+      <Project>{49F28045-7B5F-411B-8D59-16C846FA26E0}</Project>
+      <Name>HeuristicLab.DebugEngine-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Encodings.BinaryVectorEncoding\3.3\HeuristicLab.Encodings.BinaryVectorEncoding-3.3.csproj">
+      <Project>{66D249C3-A01D-42A8-82A2-919BC8EC3D83}</Project>
+      <Name>HeuristicLab.Encodings.BinaryVectorEncoding-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Encodings.IntegerVectorEncoding\3.3\HeuristicLab.Encodings.IntegerVectorEncoding-3.3.csproj">
+      <Project>{DDFB14DD-2A85-493C-A52D-E69729BBAEB0}</Project>
+      <Name>HeuristicLab.Encodings.IntegerVectorEncoding-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Encodings.PermutationEncoding.Views\3.3\HeuristicLab.Encodings.PermutationEncoding.Views-3.3.csproj">
+      <Project>{3EAF1454-086D-44A2-8509-B1BA24DB1865}</Project>
+      <Name>HeuristicLab.Encodings.PermutationEncoding.Views-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Encodings.PermutationEncoding\3.3\HeuristicLab.Encodings.PermutationEncoding-3.3.csproj">
+      <Project>{DBECB8B0-B166-4133-BAF1-ED67C3FD7FCA}</Project>
+      <Name>HeuristicLab.Encodings.PermutationEncoding-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Encodings.RealVectorEncoding\3.3\HeuristicLab.Encodings.RealVectorEncoding-3.3.csproj">
+      <Project>{BB6D334A-4BB6-4674-9883-31A6EBB32CAB}</Project>
+      <Name>HeuristicLab.Encodings.RealVectorEncoding-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views\3.4\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views-3.4.csproj">
+      <Project>{423BD94F-963A-438E-BA45-3BB3D61CD03B}</Project>
+      <Name>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views-3.4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding\3.4\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4.csproj">
+      <Project>{06D4A186-9319-48A0-BADE-A2058D462EEA}</Project>
+      <Name>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Hive\3.3\HeuristicLab.Hive-3.3.csproj">
+      <Project>{F98A1740-9AC9-4D36-A582-6A2D0D06978D}</Project>
+      <Name>HeuristicLab.Hive-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.MainForm.WindowsForms\3.3\HeuristicLab.MainForm.WindowsForms-3.3.csproj">
+      <Project>{AB687BBE-1BFE-476B-906D-44237135431D}</Project>
+      <Name>HeuristicLab.MainForm.WindowsForms-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.MainForm\3.3\HeuristicLab.MainForm-3.3.csproj">
+      <Project>{3BD61258-31DA-4B09-89C0-4F71FEF5F05A}</Project>
+      <Name>HeuristicLab.MainForm-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Operators.Programmable\3.3\HeuristicLab.Operators.Programmable-3.3.csproj">
+      <Project>{6A5F8C2D-B0C3-4B36-BC20-9B1A91EE6DB6}</Project>
+      <Name>HeuristicLab.Operators.Programmable-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Operators.Views.GraphVisualization.Views\3.3\HeuristicLab.Operators.Views.GraphVisualization.Views-3.3.csproj">
+      <Project>{0C39A349-1979-419A-89BD-E4E2F26BD287}</Project>
+      <Name>HeuristicLab.Operators.Views.GraphVisualization.Views-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Operators.Views.GraphVisualization\3.3\HeuristicLab.Operators.Views.GraphVisualization-3.3.csproj">
+      <Project>{57F38579-409D-4DD8-AB19-3F2C4A665126}</Project>
+      <Name>HeuristicLab.Operators.Views.GraphVisualization-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Operators.Views\3.3\HeuristicLab.Operators.Views-3.3.csproj">
+      <Project>{C49CB749-8B24-4628-8003-E86475749410}</Project>
+      <Name>HeuristicLab.Operators.Views-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
+      <Project>{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}</Project>
+      <Name>HeuristicLab.Operators-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Optimization.Operators\3.3\HeuristicLab.Optimization.Operators-3.3.csproj">
+      <Project>{25087811-F74C-4128-BC86-8324271DA13E}</Project>
+      <Name>HeuristicLab.Optimization.Operators-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Optimization.Views\3.3\HeuristicLab.Optimization.Views-3.3.csproj">
+      <Project>{662B4B15-8F4D-4AE5-B3EB-D91C215F5AF2}</Project>
+      <Name>HeuristicLab.Optimization.Views-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
+      <Project>{14AB8D24-25BC-400C-A846-4627AA945192}</Project>
+      <Name>HeuristicLab.Optimization-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Optimizer\3.3\HeuristicLab.Optimizer-3.3.csproj">
+      <Project>{C664305E-497C-4533-A140-967DEDB05C19}</Project>
+      <Name>HeuristicLab.Optimizer-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.ParallelEngine\3.3\HeuristicLab.ParallelEngine-3.3.csproj">
+      <Project>{00814351-4AB8-4088-9B99-F62787B89E93}</Project>
+      <Name>HeuristicLab.ParallelEngine-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Parameters.Views\3.3\HeuristicLab.Parameters.Views-3.3.csproj">
+      <Project>{AE5B1CE5-9862-4D6F-A700-D72CD9AEA295}</Project>
+      <Name>HeuristicLab.Parameters.Views-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Parameters\3.3\HeuristicLab.Parameters-3.3.csproj">
+      <Project>{56F9106A-079F-4C61-92F6-86A84C2D84B7}</Project>
+      <Name>HeuristicLab.Parameters-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Persistence.GUI\3.3\HeuristicLab.Persistence.GUI-3.3.csproj">
+      <Project>{A9E282EA-180F-4233-B809-AEDF0787545C}</Project>
+      <Name>HeuristicLab.Persistence.GUI-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
+      <Project>{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}</Project>
+      <Name>HeuristicLab.Persistence-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
+      <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
+      <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.ArtificialAnt.Views\3.4\HeuristicLab.Problems.ArtificialAnt.Views-3.4.csproj">
+      <Project>{3083C7AA-5AF4-4C75-BA19-B69B86E2F66A}</Project>
+      <Name>HeuristicLab.Problems.ArtificialAnt.Views-3.4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.ArtificialAnt\3.4\HeuristicLab.Problems.ArtificialAnt-3.4.csproj">
+      <Project>{0C67A033-F6D9-4237-B3CA-C033A44706BE}</Project>
+      <Name>HeuristicLab.Problems.ArtificialAnt-3.4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views\3.4\HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views-3.4.csproj">
+      <Project>{BF1E4DF4-A4CC-451F-9D50-303F405E265E}</Project>
+      <Name>HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views-3.4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.DataAnalysis.Symbolic.Classification\3.4\HeuristicLab.Problems.DataAnalysis.Symbolic.Classification-3.4.csproj">
+      <Project>{05BAE4E1-A9FA-4644-AA77-42558720159E}</Project>
+      <Name>HeuristicLab.Problems.DataAnalysis.Symbolic.Classification-3.4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views\3.4\HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views-3.4.csproj">
+      <Project>{20831A74-D18F-42D9-A667-1CE3AF53DF93}</Project>
+      <Name>HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views-3.4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.DataAnalysis.Symbolic.Regression\3.4\HeuristicLab.Problems.DataAnalysis.Symbolic.Regression-3.4.csproj">
+      <Project>{5AC82412-911B-4FA2-A013-EDC5E3F3FCC2}</Project>
+      <Name>HeuristicLab.Problems.DataAnalysis.Symbolic.Regression-3.4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.DataAnalysis.Symbolic.Views\3.4\HeuristicLab.Problems.DataAnalysis.Symbolic.Views-3.4.csproj">
+      <Project>{7A2531CE-3F7C-4F13-BCCA-ED6DC27A7086}</Project>
+      <Name>HeuristicLab.Problems.DataAnalysis.Symbolic.Views-3.4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.DataAnalysis.Symbolic\3.4\HeuristicLab.Problems.DataAnalysis.Symbolic-3.4.csproj">
+      <Project>{3D28463F-EC96-4D82-AFEE-38BE91A0CA00}</Project>
+      <Name>HeuristicLab.Problems.DataAnalysis.Symbolic-3.4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.DataAnalysis.Views\3.4\HeuristicLab.Problems.DataAnalysis.Views-3.4.csproj">
+      <Project>{3E9E8944-44FF-40BB-A622-3A4A7DD0F198}</Project>
+      <Name>HeuristicLab.Problems.DataAnalysis.Views-3.4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.DataAnalysis\3.4\HeuristicLab.Problems.DataAnalysis-3.4.csproj">
+      <Project>{DF87C13E-A889-46FF-8153-66DCAA8C5674}</Project>
+      <Name>HeuristicLab.Problems.DataAnalysis-3.4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.ExternalEvaluation.GP\3.4\HeuristicLab.Problems.ExternalEvaluation.GP-3.4.csproj">
+      <Project>{B7A64A60-B538-479F-9C47-A3180C458F6C}</Project>
+      <Name>HeuristicLab.Problems.ExternalEvaluation.GP-3.4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.ExternalEvaluation.Views\3.3\HeuristicLab.Problems.ExternalEvaluation.Views-3.3.csproj">
+      <Project>{3081630C-9521-47D7-8075-1777C12F212C}</Project>
+      <Name>HeuristicLab.Problems.ExternalEvaluation.Views-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.ExternalEvaluation\3.3\HeuristicLab.Problems.ExternalEvaluation-3.3.csproj">
+      <Project>{25735DB4-8E54-4A2C-83E3-A60C76565E55}</Project>
+      <Name>HeuristicLab.Problems.ExternalEvaluation-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.Knapsack.Views\3.3\HeuristicLab.Problems.Knapsack.Views-3.3.csproj">
+      <Project>{A9EE65D9-405B-4C9C-B470-FC911AAC541B}</Project>
+      <Name>HeuristicLab.Problems.Knapsack.Views-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.Knapsack\3.3\HeuristicLab.Problems.Knapsack-3.3.csproj">
+      <Project>{E10F395F-C8A6-48AD-B470-9AA7A1F43809}</Project>
+      <Name>HeuristicLab.Problems.Knapsack-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.OneMax.Views\3.3\HeuristicLab.Problems.OneMax.Views-3.3.csproj">
+      <Project>{4FE983A1-AAF8-4977-B9E2-52B3224510CB}</Project>
+      <Name>HeuristicLab.Problems.OneMax.Views-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.OneMax\3.3\HeuristicLab.Problems.OneMax-3.3.csproj">
+      <Project>{F62BCD22-FB83-4444-9401-8031C2487A86}</Project>
+      <Name>HeuristicLab.Problems.OneMax-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.QuadraticAssignment.Algorithms\3.3\HeuristicLab.Problems.QuadraticAssignment.Algorithms-3.3.csproj">
+      <Project>{5B9B9E8C-2706-43C2-80B8-A08341E431F7}</Project>
+      <Name>HeuristicLab.Problems.QuadraticAssignment.Algorithms-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.QuadraticAssignment.Views\3.3\HeuristicLab.Problems.QuadraticAssignment.Views-3.3.csproj">
+      <Project>{997F018D-AEA2-4F21-9301-82FAF6A5612D}</Project>
+      <Name>HeuristicLab.Problems.QuadraticAssignment.Views-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.QuadraticAssignment\3.3\HeuristicLab.Problems.QuadraticAssignment-3.3.csproj">
+      <Project>{79271BC8-4446-40E2-BB89-9BE4E17174FE}</Project>
+      <Name>HeuristicLab.Problems.QuadraticAssignment-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.TestFunctions.Views\3.3\HeuristicLab.Problems.TestFunctions.Views-3.3.csproj">
+      <Project>{6AE0E1F5-D3FF-43A3-90E1-2435E7493FB5}</Project>
+      <Name>HeuristicLab.Problems.TestFunctions.Views-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.TestFunctions\3.3\HeuristicLab.Problems.TestFunctions-3.3.csproj">
+      <Project>{88B9B0E3-344E-4196-82A3-0F9732506FE8}</Project>
+      <Name>HeuristicLab.Problems.TestFunctions-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.TravelingSalesman.Views\3.3\HeuristicLab.Problems.TravelingSalesman.Views-3.3.csproj">
+      <Project>{CDA28124-ACD0-4231-8EB0-C510B361F84E}</Project>
+      <Name>HeuristicLab.Problems.TravelingSalesman.Views-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.TravelingSalesman\3.3\HeuristicLab.Problems.TravelingSalesman-3.3.csproj">
+      <Project>{D767C38D-8014-46B0-9A32-03A3AECCE34A}</Project>
+      <Name>HeuristicLab.Problems.TravelingSalesman-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.VehicleRouting.Views\3.3\HeuristicLab.Problems.VehicleRouting.Views-3.3.csproj">
+      <Project>{D1386FE7-682D-4E18-8C4F-CFD423FA5DD0}</Project>
+      <Name>HeuristicLab.Problems.VehicleRouting.Views-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.VehicleRouting\3.3\HeuristicLab.Problems.VehicleRouting-3.3.csproj">
+      <Project>{6410BDA6-3641-42B2-BABA-AA626E2F6F71}</Project>
+      <Name>HeuristicLab.Problems.VehicleRouting-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj">
+      <Project>{F4539FB6-4708-40C9-BE64-0A1390AEA197}</Project>
+      <Name>HeuristicLab.Random-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Selection\3.3\HeuristicLab.Selection-3.3.csproj">
+      <Project>{2C36CD4F-E5F5-43A4-801A-201EA895FE17}</Project>
+      <Name>HeuristicLab.Selection-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.SequentialEngine\3.3\HeuristicLab.SequentialEngine-3.3.csproj">
+      <Project>{DC3D7072-7999-4719-B65D-3997744D5DC1}</Project>
+      <Name>HeuristicLab.SequentialEngine-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Tracing\3.3\HeuristicLab.Tracing-3.3.csproj">
+      <Project>{EE2034D9-6E27-48A1-B855-42D45F69A4FC}</Project>
+      <Name>HeuristicLab.Tracing-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Visualization.ChartControlsExtensions\3.3\HeuristicLab.Visualization.ChartControlsExtensions-3.3.csproj">
+      <Project>{315BDA09-3F4F-49B3-9790-B37CFC1C5750}</Project>
+      <Name>HeuristicLab.Visualization.ChartControlsExtensions-3.3</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

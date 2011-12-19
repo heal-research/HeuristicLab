@@ -1,0 +1,205 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7F038E9A-B91E-4F49-8C27-D47BC86F1220}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HeuristicLab.Problems.DataAnalysis.Classification.Views</RootNamespace>
+    <AssemblyName>HeuristicLab.Problems.DataAnalysis.Classification.Views-3.3</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\HeuristicLab.Problems.DataAnalysis.Classification.Views-3.3.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;c:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;c:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisLogFile>$(SolutionDir)\bin\HeuristicLab.Problems.DataAnalysis.Classification.Views-3.3.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;c:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;c:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\HeuristicLab.Problems.DataAnalysis.Classification.Views-3.3.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;c:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;c:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisLogFile>$(SolutionDir)\bin\HeuristicLab.Problems.DataAnalysis.Classification.Views-3.3.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;c:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;c:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ConfusionMatrixView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ConfusionMatrixView.Designer.cs">
+      <DependentUpon>ConfusionMatrixView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Plugin.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RocCurvesView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="RocCurvesView.Designer.cs">
+      <DependentUpon>RocCurvesView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SymbolicClassificationSolutionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SymbolicClassificationSolutionView.Designer.cs">
+      <DependentUpon>SymbolicClassificationSolutionView.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="HeuristicLab.snk" />
+    <None Include="Plugin.cs.frame" />
+    <None Include="Properties\AssemblyInfo.cs.frame" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="HeuristicLab.Common-3.3">
+      <HintPath>..\..\bin\HeuristicLab.Common-3.3.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="HeuristicLab.Core-3.3">
+      <HintPath>..\..\bin\HeuristicLab.Core-3.3.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="HeuristicLab.Data-3.3">
+      <HintPath>..\..\bin\HeuristicLab.Data-3.3.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="HeuristicLab.MainForm.WindowsForms-3.3">
+      <HintPath>..\..\bin\HeuristicLab.MainForm.WindowsForms-3.3.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="HeuristicLab.MainForm-3.3">
+      <HintPath>..\..\bin\HeuristicLab.MainForm-3.3.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="HeuristicLab.PluginInfrastructure-3.3">
+      <HintPath>..\..\bin\HeuristicLab.PluginInfrastructure-3.3.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="HeuristicLab.Visualization.ChartControlsExtensions-3.3">
+      <HintPath>..\..\bin\HeuristicLab.Visualization.ChartControlsExtensions-3.3.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.DataAnalysis.Classification\3.3\HeuristicLab.Problems.DataAnalysis.Classification-3.3.csproj">
+      <Project>{D35FD6DB-D704-4BEA-BDAE-C40ABFB5B13E}</Project>
+      <Name>HeuristicLab.Problems.DataAnalysis.Classification-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.DataAnalysis.Regression\3.3\HeuristicLab.Problems.DataAnalysis.Regression-3.3.csproj">
+      <Project>{BDF86B1D-630E-4CE2-8A49-8C90B1BDE4C9}</Project>
+      <Name>HeuristicLab.Problems.DataAnalysis.Regression-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.DataAnalysis\3.3\HeuristicLab.Problems.DataAnalysis-3.3.csproj">
+      <Project>{70DFD984-B1D9-46FE-8EB7-4DE92D71A9FC}</Project>
+      <Name>HeuristicLab.Problems.DataAnalysis-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+set ProjectDir=$(ProjectDir)
+set SolutionDir=$(SolutionDir)
+set Outdir=$(Outdir)
+
+call PreBuildEvent.cmd
+</PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
