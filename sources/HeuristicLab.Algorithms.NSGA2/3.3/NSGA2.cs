@@ -235,6 +235,10 @@ namespace HeuristicLab.Algorithms.NSGA2 {
       return new NSGA2(this, cloner);
     }
 
+    public override void Prepare() {
+      if (Problem != null) base.Prepare();
+    }
+
     #region Events
     protected override void OnProblemChanged() {
       ParameterizeStochasticOperator(Problem.SolutionCreator);
