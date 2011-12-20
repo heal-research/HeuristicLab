@@ -37,7 +37,7 @@ namespace HeuristicLab.Clients.Hive {
     public Version ItemVersion {
       get { return ItemAttribute.GetVersion(this.GetType()); }
     }
-    public static new Image StaticItemImage {
+    public static Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Database; }
     }
     public virtual Image ItemImage {
