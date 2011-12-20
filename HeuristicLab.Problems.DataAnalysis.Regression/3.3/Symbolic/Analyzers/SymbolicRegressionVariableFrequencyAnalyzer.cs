@@ -41,6 +41,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     private const string VariableFrequenciesParameterName = "VariableFrequencies";
     private const string ResultsParameterName = "Results";
 
+    public bool EnabledByDefault {
+      get { return true; }
+    }
+
     #region parameter properties
     public ScopeTreeLookupParameter<SymbolicExpressionTree> SymbolicExpressionTreeParameter {
       get { return (ScopeTreeLookupParameter<SymbolicExpressionTree>)Parameters[SymbolicExpressionTreeParameterName]; }

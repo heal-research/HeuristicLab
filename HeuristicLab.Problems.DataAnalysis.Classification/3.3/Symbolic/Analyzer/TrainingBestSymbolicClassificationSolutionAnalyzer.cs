@@ -68,6 +68,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification.Symbolic.Analyzers {
     private const string BestSolutionAccuracyTestParameterName = "Best training solution accuracy (test)";
     private const string ResultsParameterName = "Results";
 
+    public bool EnabledByDefault {
+      get { return true; }
+    }
+
     #region parameter properties
     public ScopeTreeLookupParameter<SymbolicExpressionTree> SymbolicExpressionTreeParameter {
       get { return (ScopeTreeLookupParameter<SymbolicExpressionTree>)Parameters[SymbolicExpressionTreeParameterName]; }

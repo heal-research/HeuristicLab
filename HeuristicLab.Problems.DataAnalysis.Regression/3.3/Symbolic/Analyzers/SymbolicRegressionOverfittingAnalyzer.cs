@@ -44,6 +44,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     private const string OverfittingParameterName = "IsOverfitting";
     private const string ResultsParameterName = "Results";
 
+    public bool EnabledByDefault {
+      get { return true; }
+    }
+
     #region parameter properties
     public ScopeTreeLookupParameter<DoubleValue> QualityParameter {
       get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters[QualityParameterName]; }

@@ -43,6 +43,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Analyzers {
     private const string ResultsParameterName = "Results";
     private const string SymbolFrequenciesParameterName = "SymbolFrequencies";
 
+    public virtual bool EnabledByDefault {
+      get { return true; }
+    }
+
     #region parameter properties
     public ScopeTreeLookupParameter<SymbolicExpressionTree> SymbolicExpressionTreeParameter {
       get { return (ScopeTreeLookupParameter<SymbolicExpressionTree>)Parameters[SymbolicExpressionTreeParameterName]; }

@@ -63,6 +63,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     private const string ResultsParameterName = "Results";
     private const string BestKnownQualityParameterName = "BestKnownQuality";
 
+    public bool EnabledByDefault {
+      get { return true; }
+    }
+
     public ScopeTreeLookupParameter<SymbolicExpressionTree> SymbolicExpressionTreeParameter {
       get { return (ScopeTreeLookupParameter<SymbolicExpressionTree>)Parameters[SymbolicExpressionTreeParameterName]; }
     }
