@@ -66,6 +66,8 @@
       this.label13 = new System.Windows.Forms.Label();
       this.previewZoomLabel = new System.Windows.Forms.Label();
       this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+      this.label19 = new System.Windows.Forms.Label();
+      this.rawImageSizeLabel = new System.Windows.Forms.Label();
       ((System.ComponentModel.ISupportInitialize)(this.widthNumericUD)).BeginInit();
       this.groupBox1.SuspendLayout();
       this.groupBox2.SuspendLayout();
@@ -161,8 +163,7 @@
             "72",
             "96",
             "150",
-            "300",
-            "600"});
+            "300"});
       this.resolutionComboBox.Location = new System.Drawing.Point(76, 383);
       this.resolutionComboBox.Name = "resolutionComboBox";
       this.resolutionComboBox.Size = new System.Drawing.Size(75, 21);
@@ -179,16 +180,11 @@
             0,
             65536});
       this.widthNumericUD.Location = new System.Drawing.Point(76, 410);
-      this.widthNumericUD.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
       this.widthNumericUD.Minimum = new decimal(new int[] {
             1,
             0,
             0,
-            131072});
+            65536});
       this.widthNumericUD.Name = "widthNumericUD";
       this.widthNumericUD.Size = new System.Drawing.Size(75, 20);
       this.widthNumericUD.TabIndex = 8;
@@ -498,16 +494,11 @@
             0,
             65536});
       this.heightNumericUD.Location = new System.Drawing.Point(76, 436);
-      this.heightNumericUD.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
       this.heightNumericUD.Minimum = new decimal(new int[] {
             1,
             0,
             0,
-            131072});
+            65536});
       this.heightNumericUD.Name = "heightNumericUD";
       this.heightNumericUD.Size = new System.Drawing.Size(75, 20);
       this.heightNumericUD.TabIndex = 11;
@@ -547,7 +538,9 @@
       // splitContainer.Panel2
       // 
       this.splitContainer.Panel2.Controls.Add(this.previewPictureBox);
+      this.splitContainer.Panel2.Controls.Add(this.label19);
       this.splitContainer.Panel2.Controls.Add(this.label13);
+      this.splitContainer.Panel2.Controls.Add(this.rawImageSizeLabel);
       this.splitContainer.Panel2.Controls.Add(this.previewZoomLabel);
       this.splitContainer.Size = new System.Drawing.Size(793, 478);
       this.splitContainer.SplitterDistance = 300;
@@ -640,6 +633,24 @@
           "*.gif)|*.gif|TIFF (*.tif)|*.tif\"";
       this.saveFileDialog.FilterIndex = 2;
       // 
+      // label19
+      // 
+      this.label19.AutoSize = true;
+      this.label19.Location = new System.Drawing.Point(85, 459);
+      this.label19.Name = "label19";
+      this.label19.Size = new System.Drawing.Size(84, 13);
+      this.label19.TabIndex = 10;
+      this.label19.Text = "Raw image size:";
+      // 
+      // rawImageSizeLabel
+      // 
+      this.rawImageSizeLabel.AutoSize = true;
+      this.rawImageSizeLabel.Location = new System.Drawing.Point(175, 459);
+      this.rawImageSizeLabel.Name = "rawImageSizeLabel";
+      this.rawImageSizeLabel.Size = new System.Drawing.Size(37, 13);
+      this.rawImageSizeLabel.TabIndex = 10;
+      this.rawImageSizeLabel.Text = "0.00M";
+      // 
       // ImageExportDialog
       // 
       this.AcceptButton = this.okButton;
@@ -720,5 +731,7 @@
     private System.Windows.Forms.Label label18;
     private System.Windows.Forms.ComboBox legendFontSizeComboBox;
     private System.Windows.Forms.Label label17;
+    private System.Windows.Forms.Label label19;
+    private System.Windows.Forms.Label rawImageSizeLabel;
   }
 }

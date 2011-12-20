@@ -126,6 +126,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
         previewWidth = (int)Math.Round(width);
         previewHeight = (int)Math.Round(height);
       } else previewZoomLabel.Text = (scaleFactor * 100).ToString("0") + "%";
+      rawImageSizeLabel.Text = GetRawImageSizeInMegabytes(width, height).ToString("0.00") + "M   " + "(" + Math.Round(width).ToString("0") + " x " + Math.Round(height).ToString("0") + ") pixels";
 
       Bitmap image = new Bitmap(previewWidth, previewHeight);
       image.SetResolution(dpi, dpi);
@@ -237,10 +238,18 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
     }
 
     private void widthNumericUD_ValueChanged(object sender, EventArgs e) {
+      float dpi, width, height;
+      GetImageParameters(out dpi, out width, out height);
+      if (GetRawImageSizeInMegabytes(width, height) > 25) // bigger than A4 at 300dpi
+        MessageBox.Show("Warning: The image is getting quite big.");
       if (togglePreviewCheckBox.Checked) UpdatePreview();
     }
 
     private void heightNumericUD_ValueChanged(object sender, EventArgs e) {
+      float dpi, width, height;
+      GetImageParameters(out dpi, out width, out height);
+      if (GetRawImageSizeInMegabytes(width, height) > 25) // bigger than A4 at 300dpi
+        MessageBox.Show("Warning: The image is getting quite big.");
       if (togglePreviewCheckBox.Checked) UpdatePreview();
     }
 
@@ -373,6 +382,10 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
         }
       }
       return font;
+    }
+
+    private static float GetRawImageSizeInMegabytes(float width, float height) {
+      return ((3 * width * height) / (1024 * 1024));
     }
 
   }

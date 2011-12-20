@@ -19,10 +19,11 @@
  */
 #endregion
 
-using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
+using System.Collections.Generic;
 
 namespace HeuristicLab.Analysis.Views {
   [View("DataTableHistory View")]
@@ -38,21 +39,16 @@ namespace HeuristicLab.Analysis.Views {
       if (current == null) return;
       using (DataTableVisualPropertiesDialog dialog = new DataTableVisualPropertiesDialog(current)) {
         if (dialog.ShowDialog() != DialogResult.OK) return;
-        Dictionary<string, bool> changeDisplayName = new Dictionary<string, bool>();
-        foreach (DataRow row in current.Rows) {
-          var answer = MessageBox.Show("Change display name for series " + row.Name + " to " + row.VisualProperties.DisplayName + " for all frames?", "Confirm change", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
-          if (answer == DialogResult.Cancel) return;
-          changeDisplayName[row.Name] = (answer == DialogResult.Yes);
-        }
+        HashSet<string> modifiedDisplayNames = new HashSet<string>(dialog.RowsWithModifiedDisplayNames);
         foreach (DataTable dt in Content) {
           if (current == dt) continue;
           dt.VisualProperties = (DataTableVisualProperties)current.VisualProperties.Clone();
           foreach (DataRow row in current.Rows) {
             if (!dt.Rows.ContainsKey(row.Name)) continue;
             string oldDisplayName = dt.Rows[row.Name].VisualProperties.DisplayName;
-            var props = (DataRowVisualProperties)row.VisualProperties.Clone();
-            if (!changeDisplayName[row.Name]) props.DisplayName = oldDisplayName;
-            dt.Rows[row.Name].VisualProperties = props;
+            dt.Rows[row.Name].VisualProperties = (DataRowVisualProperties)row.VisualProperties.Clone();
+            if (!modifiedDisplayNames.Contains(row.Name))
+              dt.Rows[row.Name].VisualProperties.DisplayName = oldDisplayName;
           }
         }
       }
