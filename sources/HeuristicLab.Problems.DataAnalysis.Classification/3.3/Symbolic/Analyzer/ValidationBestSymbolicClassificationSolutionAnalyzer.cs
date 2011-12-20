@@ -65,6 +65,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Classification {
     private const string BestSolutionHeightParameterName = "Best solution height (on validation set)";
     private const string VariableFrequenciesParameterName = "VariableFrequencies";
 
+    public virtual bool EnabledByDefault {
+      get { return true; }
+    }
+
     #region parameter properties
     public ILookupParameter<BoolValue> MaximizationParameter {
       get { return (ILookupParameter<BoolValue>)Parameters[MaximizationParameterName]; }

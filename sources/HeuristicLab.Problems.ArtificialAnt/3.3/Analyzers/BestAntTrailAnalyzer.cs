@@ -57,6 +57,10 @@ namespace HeuristicLab.Problems.ArtificialAnt.Analyzers {
       get { return (ValueLookupParameter<ResultCollection>)Parameters["Results"]; }
     }
 
+    public bool EnabledByDefault {
+      get { return true; }
+    }
+
     public BestAntTrailAnalyzer()
       : base() {
       Parameters.Add(new LookupParameter<BoolMatrix>("World", "The world with food items for the artificial ant."));

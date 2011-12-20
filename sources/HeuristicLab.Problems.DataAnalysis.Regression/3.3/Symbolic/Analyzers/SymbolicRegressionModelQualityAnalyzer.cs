@@ -91,6 +91,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     private const string UpperEstimationLimitParameterName = "UpperEstimationLimit";
     private const string LowerEstimationLimitParameterName = "LowerEstimationLimit";
 
+    public bool EnabledByDefault {
+      get { return true; }
+    }
+
     #region parameter properties
     public ScopeTreeLookupParameter<SymbolicExpressionTree> SymbolicExpressionTreeParameter {
       get { return (ScopeTreeLookupParameter<SymbolicExpressionTree>)Parameters[SymbolicExpressionTreeParameterName]; }

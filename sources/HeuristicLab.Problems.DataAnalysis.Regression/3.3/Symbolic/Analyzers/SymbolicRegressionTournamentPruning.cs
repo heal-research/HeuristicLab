@@ -55,6 +55,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     private const string GenerationParameterName = "Generations";
     private const string ResultsParameterName = "Results";
 
+    public virtual bool EnabledByDefault {
+      get { return true; }
+    }
+
     #region parameter properties
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters[RandomParameterName]; }

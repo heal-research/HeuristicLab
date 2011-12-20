@@ -52,6 +52,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Regression.Symbolic.Analyzers {
     private const string BestKnownQualityParameterName = "BestKnownQuality";
     private const string GenerationsParameterName = "Generations";
 
+    public bool EnabledByDefault {
+      get { return true; }
+    }
+
     #region parameter properties
     public ILookupParameter<BoolValue> MaximizationParameter {
       get { return (ILookupParameter<BoolValue>)Parameters[MaximizationParameterName]; }
