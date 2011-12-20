@@ -334,6 +334,10 @@ Please note that the MinimumTabuTenure parameter has no effect in the new versio
       base.DeregisterProblemEvents();
     }
 
+    public override void Prepare() {
+      if (Problem != null) base.Prepare();
+    }
+
     public override void Start() {
       if (ExecutionState == ExecutionState.Prepared) {
         int dim = Problem.Weights.Rows;
