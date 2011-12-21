@@ -25,7 +25,7 @@ namespace HeuristicLab.Algorithms.TabuSearch {
   /// <summary>
   /// Plugin class for HeuristicLab.Algorithms.TabuSearch plugin.
   /// </summary>
-  [Plugin("HeuristicLab.Algorithms.TabuSearch", "3.3.5.$WCREV$")]
+  [Plugin("HeuristicLab.Algorithms.TabuSearch", "3.3.6.$WCREV$")]
   [PluginFile("HeuristicLab.Algorithms.TabuSearch-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Analysis", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]

@@ -22,7 +22,7 @@
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Clients.Hive.Administration {
-  [Plugin("HeuristicLab.Clients.Hive.Administrator", "3.3.5.$WCREV$")]
+  [Plugin("HeuristicLab.Clients.Hive.Administrator", "3.3.6.$WCREV$")]
   [PluginFile("HeuristicLab.Clients.Hive.Administrator-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]

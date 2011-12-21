@@ -25,7 +25,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
   /// <summary>
   /// Plugin class for HeuristicLab.Algorithms.DataAnalysis.Views plugin.
   /// </summary>
-  [Plugin("HeuristicLab.Algorithms.DataAnalysis.Views", "Provides views for data analysis algorithms implemented in external libraries (linear regression, linear discriminant analysis, k-means clustering, support vector classification and regression)", "3.4.1.$WCREV$")]
+  [Plugin("HeuristicLab.Algorithms.DataAnalysis.Views", "Provides views for data analysis algorithms implemented in external libraries (linear regression, linear discriminant analysis, k-means clustering, support vector classification and regression)", "3.4.2.$WCREV$")]
   [PluginFile("HeuristicLab.Algorithms.DataAnalysis.Views-3.4.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Algorithms.DataAnalysis", "3.4")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
