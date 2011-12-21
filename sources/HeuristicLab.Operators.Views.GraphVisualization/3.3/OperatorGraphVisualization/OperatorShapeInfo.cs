@@ -37,11 +37,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
 
     [StorableConstructor]
     protected OperatorShapeInfo(bool deserializing) : base(deserializing) { }
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-      if (string.IsNullOrEmpty(this.typeName))
-        typeName = title;
-    }
+
     protected OperatorShapeInfo(OperatorShapeInfo original, Cloner cloner)
       : base(original, cloner) {
       collapsed = original.collapsed;

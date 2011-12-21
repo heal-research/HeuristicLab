@@ -78,7 +78,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization.Views {
       set { title = value; }
     }
 
-    public string TypeName { get; set; }
+    public string Subtitle { get; set; }
 
     private IconMaterial iconMaterial;
     public Bitmap Icon {
@@ -217,79 +217,90 @@ namespace HeuristicLab.Operators.Views.GraphVisualization.Views {
 
       g.SmoothingMode = SmoothingMode.HighQuality;
 
-      Pen pen = new Pen(lineColor, lineWidth);
+      using (Pen pen = new Pen(lineColor, lineWidth)) {
 
-      SizeF titleSize = g.MeasureString(this.Title, ArtPalette.DefaultBoldFont, Rectangle.Width - 45);
-      titleSize.Height += 10; //add spacing
-      SizeF typeNameSize = g.MeasureString(this.TypeName, ArtPalette.DefaultFont, Rectangle.Width - 45);
-      typeNameSize.Height += 10;  //add spacing
-      if (this.Title == this.TypeName) typeNameSize = new SizeF(0, 0);
+        SizeF titleSize = g.MeasureString(this.Title, ArtPalette.DefaultBoldFont, Rectangle.Width - 45);
+        titleSize.Height += 10; //add spacing
+        SizeF subtitleSize = g.MeasureString(this.Subtitle, ArtPalette.DefaultFont, Rectangle.Width - 45);
+        subtitleSize.Height += 5; //add spacing
+        if (this.Title == this.Subtitle || string.IsNullOrEmpty(this.Subtitle)) subtitleSize = new SizeF(0, 0);
 
-      if (titleSize.Height + typeNameSize.Height > Rectangle.Height) {
-        headerHeight = (int)titleSize.Height + (int)typeNameSize.Height;
-        this.UpdateLabels();
-      }
-
-      GraphicsPath path = new GraphicsPath();
-      path.AddArc(Rectangle.X, Rectangle.Y, 20, 20, -180, 90);
-      path.AddLine(Rectangle.X + 10, Rectangle.Y, Rectangle.X + Rectangle.Width - 10, Rectangle.Y);
-      path.AddArc(Rectangle.X + Rectangle.Width - 20, Rectangle.Y, 20, 20, -90, 90);
-      path.AddLine(Rectangle.X + Rectangle.Width, Rectangle.Y + 10, Rectangle.X + Rectangle.Width, Rectangle.Y + Rectangle.Height - 10);
-      path.AddArc(Rectangle.X + Rectangle.Width - 20, Rectangle.Y + Rectangle.Height - 20, 20, 20, 0, 90);
-      path.AddLine(Rectangle.X + Rectangle.Width - 10, Rectangle.Y + Rectangle.Height, Rectangle.X + 10, Rectangle.Y + Rectangle.Height);
-      path.AddArc(Rectangle.X, Rectangle.Y + Rectangle.Height - 20, 20, 20, 90, 90);
-      path.AddLine(Rectangle.X, Rectangle.Y + Rectangle.Height - 10, Rectangle.X, Rectangle.Y + 10);
-      //shadow
-      if (ArtPalette.EnableShadows) {
-        Region darkRegion = new Region(path);
-        darkRegion.Translate(5, 5);
-        g.FillRegion(ArtPalette.ShadowBrush, darkRegion);
-      }
-      //background
-      g.FillPath(Brush, path);
-
-      using (LinearGradientBrush gradientBrush = new LinearGradientBrush(Rectangle.Location, new Point(Rectangle.X + Rectangle.Width, Rectangle.Y), this.Color, Color.White)) {
-        Region gradientRegion = new Region(path);
-        g.FillRegion(gradientBrush, gradientRegion);
-      }
-
-      if (!this.Collapsed) {
-        TextStyle textStyle = new TextStyle(Color.Black, new Font("Arial", 7), StringAlignment.Near, StringAlignment.Near);
-        StringFormat stringFormat = textStyle.StringFormat;
-        stringFormat.Trimming = StringTrimming.EllipsisWord;
-        stringFormat.FormatFlags = StringFormatFlags.LineLimit;
-        Rectangle rect;
-
-        for (int i = 0; i < this.labels.Count; i++) {
-          rect = new Rectangle(Rectangle.X + 25, Rectangle.Y + headerHeight + i * (LABEL_HEIGHT + LABEL_SPACING), LABEL_WIDTH, LABEL_HEIGHT);
-          g.DrawString(textStyle.GetFormattedText(this.labels[i]), textStyle.Font, textStyle.GetBrush(), rect, stringFormat);
+        if ((int)titleSize.Height + (int)subtitleSize.Height != Rectangle.Height) {
+          headerHeight = (int)titleSize.Height + (int)subtitleSize.Height;
+          this.UpdateLabels();
         }
-      }
 
-      //the border
-      g.DrawPath(pen, path);
+        GraphicsPath path = new GraphicsPath();
+        path.AddArc(Rectangle.X, Rectangle.Y, 20, 20, -180, 90);
+        path.AddLine(Rectangle.X + 10, Rectangle.Y, Rectangle.X + Rectangle.Width - 10, Rectangle.Y);
+        path.AddArc(Rectangle.X + Rectangle.Width - 20, Rectangle.Y, 20, 20, -90, 90);
+        path.AddLine(Rectangle.X + Rectangle.Width, Rectangle.Y + 10, Rectangle.X + Rectangle.Width, Rectangle.Y + Rectangle.Height - 10);
+        path.AddArc(Rectangle.X + Rectangle.Width - 20, Rectangle.Y + Rectangle.Height - 20, 20, 20, 0, 90);
+        path.AddLine(Rectangle.X + Rectangle.Width - 10, Rectangle.Y + Rectangle.Height, Rectangle.X + 10, Rectangle.Y + Rectangle.Height);
+        path.AddArc(Rectangle.X, Rectangle.Y + Rectangle.Height - 20, 20, 20, 90, 90);
+        path.AddLine(Rectangle.X, Rectangle.Y + Rectangle.Height - 10, Rectangle.X, Rectangle.Y + 10);
+        //shadow
+        if (ArtPalette.EnableShadows) {
+          Region darkRegion = new Region(path);
+          darkRegion.Translate(5, 5);
+          g.FillRegion(ArtPalette.ShadowBrush, darkRegion);
+        }
+        //background
+        g.FillPath(Brush, path);
 
-      //the title
-      g.DrawString(this.Title, ArtPalette.DefaultBoldFont, Brushes.Black,
-        new Rectangle(Rectangle.X + 25, Rectangle.Y + 5,
-                      Rectangle.Width - 45, Rectangle.Height - 5 - (int)typeNameSize.Height));
+        using (LinearGradientBrush gradientBrush = new LinearGradientBrush(Rectangle.Location, new Point(Rectangle.X + Rectangle.Width, Rectangle.Y), this.Color, Color.White)) {
+          Region gradientRegion = new Region(path);
+          g.FillRegion(gradientBrush, gradientRegion);
+        }
 
-      //the typeName
-      if (this.Title != this.TypeName) {
-        g.DrawString(this.TypeName, ArtPalette.DefaultFont, Brushes.Black,
-          new Rectangle(Rectangle.X + 25, Rectangle.Y + (int)titleSize.Height,
-                        Rectangle.Width - 45, Rectangle.Height - 5));
-      }
+        if (!this.Collapsed) {
+          TextStyle textStyle = new TextStyle(Color.Black, new Font("Arial", 7), StringAlignment.Near, StringAlignment.Near);
+          StringFormat stringFormat = textStyle.StringFormat;
+          stringFormat.Trimming = StringTrimming.EllipsisWord;
+          stringFormat.FormatFlags = StringFormatFlags.LineLimit;
+          Rectangle rect;
+
+          const int verticalHeaderSpacing = 5;
+          Point separationLineStart = new Point(Rectangle.X + 25, Rectangle.Y + headerHeight - verticalHeaderSpacing);
+          Point separationLineEnd = new Point(Rectangle.X + Rectangle.Width - 25, Rectangle.Y + headerHeight - verticalHeaderSpacing);
+          using (LinearGradientBrush brush = new LinearGradientBrush(separationLineStart, separationLineEnd, Color.Black, Color.White)) {
+            using (Pen separationLinePen = new Pen(brush)) {
+              g.DrawLine(separationLinePen, separationLineStart, separationLineEnd);
+            }
+          }
 
 
-      //the material
-      foreach (IPaintable material in Children)
-        material.Paint(g);
+          for (int i = 0; i < this.labels.Count; i++) {
+            rect = new Rectangle(Rectangle.X + 25, Rectangle.Y + headerHeight + i * (LABEL_HEIGHT + LABEL_SPACING), LABEL_WIDTH, LABEL_HEIGHT);
+            g.DrawString(textStyle.GetFormattedText(this.labels[i]), textStyle.Font, textStyle.GetBrush(), rect, stringFormat);
+          }
+        }
 
-      //the connectors
-      if (this.ShowConnectors) {
-        for (int k = 0; k < Connectors.Count; k++)
-          Connectors[k].Paint(g);
+        //the border
+        g.DrawPath(pen, path);
+
+        //the title
+        g.DrawString(this.Title, ArtPalette.DefaultBoldFont, Brushes.Black,
+                     new Rectangle(Rectangle.X + 25, Rectangle.Y + 5,
+                                   Rectangle.Width - 45, Rectangle.Height - 5 - (int)subtitleSize.Height));
+
+        //the subtitle
+        if (this.Title != this.Subtitle || string.IsNullOrEmpty(this.Subtitle)) {
+          g.DrawString(this.Subtitle, ArtPalette.DefaultFont, Brushes.Black,
+                       new Rectangle(Rectangle.X + 25, Rectangle.Y + (int)titleSize.Height -5 ,
+                                     Rectangle.Width - 45, Rectangle.Height - 5));
+        }
+
+
+        //the material
+        foreach (IShapeMaterial material in Children)
+          material.Paint(g);
+
+        //the connectors
+        if (this.ShowConnectors) {
+          foreach (IConnector t in Connectors)
+            t.Paint(g);
+        }
       }
     }
   }

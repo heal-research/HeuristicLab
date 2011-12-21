@@ -120,6 +120,9 @@ namespace HeuristicLab.Operators.Views.GraphVisualization {
             this.RegisterParameterEvents(param);
         }
       }
+
+      foreach (IOperatorShapeInfo shapeInfo2 in this.operatorShapeInfoMapping.SecondValues)
+        if (string.IsNullOrEmpty(shapeInfo2.TypeName)) shapeInfo2.TypeName = this.operatorShapeInfoMapping.GetBySecond(shapeInfo2).GetType().GetPrettyName();
     }
 
     private void operatorGraph_DeserializationFinished(object sender, EventArgs e) {
