@@ -49,6 +49,7 @@ namespace HeuristicLab.Analysis.Views {
         if (Content == null) {
           titleFontLabel.Text = "(  )";
           axisFontLabel.Text = "(  )";
+          titleTextBox.Text = string.Empty;
 
           xAxisPrimaryTitleTextBox.Text = string.Empty;
           xAxisPrimaryMinimumAutoRadioButton.Checked = false;
@@ -82,6 +83,7 @@ namespace HeuristicLab.Analysis.Views {
         } else {
           titleFontLabel.Text = "( " + FormatFont(Content.TitleFont) + " )";
           axisFontLabel.Text = "( " + FormatFont(Content.AxisTitleFont) + " )";
+          titleTextBox.Text = Content.Title;
 
           xAxisPrimaryTitleTextBox.Text = Content.XAxisTitle;
           xAxisPrimaryMinimumAutoRadioButton.Checked = Content.XAxisMinimumAuto;
@@ -113,7 +115,8 @@ namespace HeuristicLab.Analysis.Views {
           yAxisSecondaryMaximumFixedRadioButton.Checked = !Content.SecondYAxisMaximumAuto;
           yAxisSecondaryMaximumFixedTextBox.Text = Content.SecondYAxisMaximumFixedValue.ToString();
         }
-      } finally { SuppressEvents = false; }
+      }
+      finally { SuppressEvents = false; }
       SetEnabledStateOfControls();
     }
 
@@ -313,7 +316,8 @@ namespace HeuristicLab.Analysis.Views {
         try {
           Content.XAxisMinimumAuto = xAxisPrimaryMinimumAutoRadioButton.Checked;
           if (Content.XAxisMinimumAuto) xAxisPrimaryMinimumFixedTextBox.Text = double.NaN.ToString();
-        } finally { SuppressEvents = false; }
+        }
+        finally { SuppressEvents = false; }
         SetEnabledStateOfControls();
       }
     }
@@ -324,7 +328,8 @@ namespace HeuristicLab.Analysis.Views {
         try {
           Content.XAxisMaximumAuto = xAxisPrimaryMaximumAutoRadioButton.Checked;
           if (Content.XAxisMaximumAuto) xAxisPrimaryMaximumFixedTextBox.Text = double.NaN.ToString();
-        } finally { SuppressEvents = false; }
+        }
+        finally { SuppressEvents = false; }
         SetEnabledStateOfControls();
       }
     }
@@ -335,7 +340,8 @@ namespace HeuristicLab.Analysis.Views {
         try {
           Content.SecondXAxisMinimumAuto = xAxisSecondaryMinimumAutoRadioButton.Checked;
           if (Content.SecondXAxisMinimumAuto) xAxisSecondaryMinimumFixedTextBox.Text = double.NaN.ToString();
-        } finally { SuppressEvents = false; }
+        }
+        finally { SuppressEvents = false; }
         SetEnabledStateOfControls();
       }
     }
@@ -346,7 +352,8 @@ namespace HeuristicLab.Analysis.Views {
         try {
           Content.SecondXAxisMaximumAuto = xAxisSecondaryMaximumAutoRadioButton.Checked;
           if (Content.SecondXAxisMaximumAuto) xAxisSecondaryMaximumFixedTextBox.Text = double.NaN.ToString();
-        } finally { SuppressEvents = false; }
+        }
+        finally { SuppressEvents = false; }
         SetEnabledStateOfControls();
       }
     }
@@ -357,7 +364,8 @@ namespace HeuristicLab.Analysis.Views {
         try {
           Content.YAxisMinimumAuto = yAxisPrimaryMinimumAutoRadioButton.Checked;
           if (Content.YAxisMinimumAuto) yAxisPrimaryMinimumFixedTextBox.Text = double.NaN.ToString();
-        } finally { SuppressEvents = false; }
+        }
+        finally { SuppressEvents = false; }
         SetEnabledStateOfControls();
       }
     }
@@ -368,7 +376,8 @@ namespace HeuristicLab.Analysis.Views {
         try {
           Content.YAxisMaximumAuto = yAxisPrimaryMaximumAutoRadioButton.Checked;
           if (Content.YAxisMaximumAuto) yAxisPrimaryMaximumFixedTextBox.Text = double.NaN.ToString();
-        } finally { SuppressEvents = false; }
+        }
+        finally { SuppressEvents = false; }
         SetEnabledStateOfControls();
       }
     }
@@ -379,7 +388,8 @@ namespace HeuristicLab.Analysis.Views {
         try {
           Content.SecondYAxisMinimumAuto = yAxisSecondaryMinimumAutoRadioButton.Checked;
           if (Content.SecondYAxisMinimumAuto) yAxisSecondaryMinimumFixedTextBox.Text = double.NaN.ToString();
-        } finally { SuppressEvents = false; }
+        }
+        finally { SuppressEvents = false; }
         SetEnabledStateOfControls();
       }
     }
@@ -390,7 +400,8 @@ namespace HeuristicLab.Analysis.Views {
         try {
           Content.SecondYAxisMaximumAuto = yAxisSecondaryMaximumAutoRadioButton.Checked;
           if (Content.SecondYAxisMaximumAuto) yAxisSecondaryMaximumFixedTextBox.Text = double.NaN.ToString();
-        } finally { SuppressEvents = false; }
+        }
+        finally { SuppressEvents = false; }
         SetEnabledStateOfControls();
       }
     }
@@ -412,6 +423,12 @@ namespace HeuristicLab.Analysis.Views {
         Content.AxisTitleFont = axisFontDialog.Font;
         Content.AxisTitleColor = axisFontDialog.Color;
         axisFontLabel.Text = "( " + FormatFont(Content.AxisTitleFont) + " )";
+      }
+    }
+
+    private void titleTextBox_Validated(object sender, System.EventArgs e) {
+      if (!SuppressEvents && Content != null) {
+        Content.Title = titleTextBox.Text;
       }
     }
     #endregion

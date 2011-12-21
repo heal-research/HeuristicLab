@@ -77,6 +77,8 @@ namespace HeuristicLab.Analysis.Views {
       this.xAxisSecondaryMinimumAutoRadioButton = new System.Windows.Forms.RadioButton();
       this.axisTabControl = new System.Windows.Forms.TabControl();
       this.mainTabPage = new System.Windows.Forms.TabPage();
+      this.titleTextBox = new System.Windows.Forms.TextBox();
+      this.label15 = new System.Windows.Forms.Label();
       this.axisFontLabel = new System.Windows.Forms.Label();
       this.titleFontLabel = new System.Windows.Forms.Label();
       this.axisFontButton = new System.Windows.Forms.Button();
@@ -144,7 +146,7 @@ namespace HeuristicLab.Analysis.Views {
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.yAxisPrimaryTitleTextBox.Location = new System.Drawing.Point(63, 23);
       this.yAxisPrimaryTitleTextBox.Name = "yAxisPrimaryTitleTextBox";
-      this.yAxisPrimaryTitleTextBox.Size = new System.Drawing.Size(221, 20);
+      this.yAxisPrimaryTitleTextBox.Size = new System.Drawing.Size(242, 20);
       this.yAxisPrimaryTitleTextBox.TabIndex = 1;
       this.yAxisPrimaryTitleTextBox.Validated += new System.EventHandler(this.yPrimaryTitleTextBox_Validated);
       // 
@@ -154,7 +156,7 @@ namespace HeuristicLab.Analysis.Views {
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.yAxisSecondaryTitleTextBox.Location = new System.Drawing.Point(63, 23);
       this.yAxisSecondaryTitleTextBox.Name = "yAxisSecondaryTitleTextBox";
-      this.yAxisSecondaryTitleTextBox.Size = new System.Drawing.Size(243, 20);
+      this.yAxisSecondaryTitleTextBox.Size = new System.Drawing.Size(242, 20);
       this.yAxisSecondaryTitleTextBox.TabIndex = 1;
       this.yAxisSecondaryTitleTextBox.Validated += new System.EventHandler(this.ySecondaryTitleTextBox_Validated);
       // 
@@ -169,6 +171,8 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // xAxisPrimaryGroupBox
       // 
+      this.xAxisPrimaryGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.xAxisPrimaryGroupBox.Controls.Add(this.label12);
       this.xAxisPrimaryGroupBox.Controls.Add(this.label9);
       this.xAxisPrimaryGroupBox.Controls.Add(this.xAxisPrimaryTitleTextBox);
@@ -185,7 +189,7 @@ namespace HeuristicLab.Analysis.Views {
       // label12
       // 
       this.label12.AutoSize = true;
-      this.label12.Location = new System.Drawing.Point(4, 77);
+      this.label12.Location = new System.Drawing.Point(4, 78);
       this.label12.Name = "label12";
       this.label12.Size = new System.Drawing.Size(54, 13);
       this.label12.TabIndex = 4;
@@ -206,7 +210,7 @@ namespace HeuristicLab.Analysis.Views {
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.xAxisPrimaryTitleTextBox.Location = new System.Drawing.Point(63, 23);
       this.xAxisPrimaryTitleTextBox.Name = "xAxisPrimaryTitleTextBox";
-      this.xAxisPrimaryTitleTextBox.Size = new System.Drawing.Size(221, 20);
+      this.xAxisPrimaryTitleTextBox.Size = new System.Drawing.Size(242, 20);
       this.xAxisPrimaryTitleTextBox.TabIndex = 1;
       this.xAxisPrimaryTitleTextBox.Validated += new System.EventHandler(this.xPrimaryTitleTextBox_Validated);
       // 
@@ -221,19 +225,23 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // xAxisPrimaryMaximumPanel
       // 
+      this.xAxisPrimaryMaximumPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.xAxisPrimaryMaximumPanel.Controls.Add(this.xAxisPrimaryMaximumFixedTextBox);
       this.xAxisPrimaryMaximumPanel.Controls.Add(this.xAxisPrimaryMaximumFixedRadioButton);
       this.xAxisPrimaryMaximumPanel.Controls.Add(this.xAxisPrimaryMaximumAutoRadioButton);
-      this.xAxisPrimaryMaximumPanel.Location = new System.Drawing.Point(63, 71);
+      this.xAxisPrimaryMaximumPanel.Location = new System.Drawing.Point(63, 72);
       this.xAxisPrimaryMaximumPanel.Name = "xAxisPrimaryMaximumPanel";
       this.xAxisPrimaryMaximumPanel.Size = new System.Drawing.Size(245, 25);
       this.xAxisPrimaryMaximumPanel.TabIndex = 5;
       // 
       // xAxisPrimaryMaximumFixedTextBox
       // 
+      this.xAxisPrimaryMaximumFixedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.xAxisPrimaryMaximumFixedTextBox.Location = new System.Drawing.Point(126, 2);
       this.xAxisPrimaryMaximumFixedTextBox.Name = "xAxisPrimaryMaximumFixedTextBox";
-      this.xAxisPrimaryMaximumFixedTextBox.Size = new System.Drawing.Size(95, 20);
+      this.xAxisPrimaryMaximumFixedTextBox.Size = new System.Drawing.Size(116, 20);
       this.xAxisPrimaryMaximumFixedTextBox.TabIndex = 2;
       this.xAxisPrimaryMaximumFixedTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.xAxisPrimaryMaximumFixedTextBox_Validating);
       // 
@@ -263,6 +271,8 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // xAxisPrimaryMinimumPanel
       // 
+      this.xAxisPrimaryMinimumPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.xAxisPrimaryMinimumPanel.Controls.Add(this.xAxisPrimaryMinimumFixedTextBox);
       this.xAxisPrimaryMinimumPanel.Controls.Add(this.xAxisPrimaryMinimumFixedRadioButton);
       this.xAxisPrimaryMinimumPanel.Controls.Add(this.xAxisPrimaryMinimumAutoRadioButton);
@@ -273,9 +283,11 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // xAxisPrimaryMinimumFixedTextBox
       // 
+      this.xAxisPrimaryMinimumFixedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.xAxisPrimaryMinimumFixedTextBox.Location = new System.Drawing.Point(126, 2);
       this.xAxisPrimaryMinimumFixedTextBox.Name = "xAxisPrimaryMinimumFixedTextBox";
-      this.xAxisPrimaryMinimumFixedTextBox.Size = new System.Drawing.Size(95, 20);
+      this.xAxisPrimaryMinimumFixedTextBox.Size = new System.Drawing.Size(116, 20);
       this.xAxisPrimaryMinimumFixedTextBox.TabIndex = 2;
       this.xAxisPrimaryMinimumFixedTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.xAxisPrimaryMinimumFixedTextBox_Validating);
       // 
@@ -305,6 +317,8 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // xAxisSecondaryGroupBox
       // 
+      this.xAxisSecondaryGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.xAxisSecondaryGroupBox.Controls.Add(this.label10);
       this.xAxisSecondaryGroupBox.Controls.Add(this.xAxisSecondaryTitleTextBox);
       this.xAxisSecondaryGroupBox.Controls.Add(this.label5);
@@ -333,14 +347,14 @@ namespace HeuristicLab.Analysis.Views {
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.xAxisSecondaryTitleTextBox.Location = new System.Drawing.Point(63, 23);
       this.xAxisSecondaryTitleTextBox.Name = "xAxisSecondaryTitleTextBox";
-      this.xAxisSecondaryTitleTextBox.Size = new System.Drawing.Size(221, 20);
+      this.xAxisSecondaryTitleTextBox.Size = new System.Drawing.Size(242, 20);
       this.xAxisSecondaryTitleTextBox.TabIndex = 1;
       this.xAxisSecondaryTitleTextBox.Validated += new System.EventHandler(this.xSecondaryTitleTextBox_Validated);
       // 
       // label5
       // 
       this.label5.AutoSize = true;
-      this.label5.Location = new System.Drawing.Point(4, 77);
+      this.label5.Location = new System.Drawing.Point(4, 78);
       this.label5.Name = "label5";
       this.label5.Size = new System.Drawing.Size(54, 13);
       this.label5.TabIndex = 4;
@@ -357,19 +371,23 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // xAxisSecondaryMaximumPanel
       // 
+      this.xAxisSecondaryMaximumPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.xAxisSecondaryMaximumPanel.Controls.Add(this.xAxisSecondaryMaximumFixedTextBox);
       this.xAxisSecondaryMaximumPanel.Controls.Add(this.xAxisSecondaryMaximumFixedRadioButton);
       this.xAxisSecondaryMaximumPanel.Controls.Add(this.xAxisSecondaryMaximumAutoRadioButton);
-      this.xAxisSecondaryMaximumPanel.Location = new System.Drawing.Point(63, 71);
+      this.xAxisSecondaryMaximumPanel.Location = new System.Drawing.Point(63, 72);
       this.xAxisSecondaryMaximumPanel.Name = "xAxisSecondaryMaximumPanel";
       this.xAxisSecondaryMaximumPanel.Size = new System.Drawing.Size(245, 25);
       this.xAxisSecondaryMaximumPanel.TabIndex = 5;
       // 
       // xAxisSecondaryMaximumFixedTextBox
       // 
+      this.xAxisSecondaryMaximumFixedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.xAxisSecondaryMaximumFixedTextBox.Location = new System.Drawing.Point(126, 2);
       this.xAxisSecondaryMaximumFixedTextBox.Name = "xAxisSecondaryMaximumFixedTextBox";
-      this.xAxisSecondaryMaximumFixedTextBox.Size = new System.Drawing.Size(95, 20);
+      this.xAxisSecondaryMaximumFixedTextBox.Size = new System.Drawing.Size(116, 20);
       this.xAxisSecondaryMaximumFixedTextBox.TabIndex = 2;
       this.xAxisSecondaryMaximumFixedTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.xAxisSecondaryMaximumFixedTextBox_Validating);
       // 
@@ -399,6 +417,8 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // xAxisSecondaryMinimumPanel
       // 
+      this.xAxisSecondaryMinimumPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.xAxisSecondaryMinimumPanel.Controls.Add(this.xAxisSecondaryMinimumFixedTextBox);
       this.xAxisSecondaryMinimumPanel.Controls.Add(this.xAxisSecondaryMinimumFixedRadioButton);
       this.xAxisSecondaryMinimumPanel.Controls.Add(this.xAxisSecondaryMinimumAutoRadioButton);
@@ -409,9 +429,11 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // xAxisSecondaryMinimumFixedTextBox
       // 
+      this.xAxisSecondaryMinimumFixedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.xAxisSecondaryMinimumFixedTextBox.Location = new System.Drawing.Point(126, 2);
       this.xAxisSecondaryMinimumFixedTextBox.Name = "xAxisSecondaryMinimumFixedTextBox";
-      this.xAxisSecondaryMinimumFixedTextBox.Size = new System.Drawing.Size(95, 20);
+      this.xAxisSecondaryMinimumFixedTextBox.Size = new System.Drawing.Size(116, 20);
       this.xAxisSecondaryMinimumFixedTextBox.TabIndex = 2;
       this.xAxisSecondaryMinimumFixedTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.xAxisSecondaryMinimumFixedTextBox_Validating);
       // 
@@ -455,6 +477,8 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // mainTabPage
       // 
+      this.mainTabPage.Controls.Add(this.titleTextBox);
+      this.mainTabPage.Controls.Add(this.label15);
       this.mainTabPage.Controls.Add(this.axisFontLabel);
       this.mainTabPage.Controls.Add(this.titleFontLabel);
       this.mainTabPage.Controls.Add(this.axisFontButton);
@@ -468,10 +492,29 @@ namespace HeuristicLab.Analysis.Views {
       this.mainTabPage.Text = "Main";
       this.mainTabPage.UseVisualStyleBackColor = true;
       // 
+      // titleTextBox
+      // 
+      this.titleTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.titleTextBox.Location = new System.Drawing.Point(72, 5);
+      this.titleTextBox.Name = "titleTextBox";
+      this.titleTextBox.Size = new System.Drawing.Size(253, 20);
+      this.titleTextBox.TabIndex = 4;
+      this.titleTextBox.Validated += new System.EventHandler(this.titleTextBox_Validated);
+      // 
+      // label15
+      // 
+      this.label15.AutoSize = true;
+      this.label15.Location = new System.Drawing.Point(12, 8);
+      this.label15.Name = "label15";
+      this.label15.Size = new System.Drawing.Size(30, 13);
+      this.label15.TabIndex = 3;
+      this.label15.Text = "Title:";
+      // 
       // axisFontLabel
       // 
       this.axisFontLabel.AutoSize = true;
-      this.axisFontLabel.Location = new System.Drawing.Point(101, 44);
+      this.axisFontLabel.Location = new System.Drawing.Point(104, 65);
       this.axisFontLabel.Name = "axisFontLabel";
       this.axisFontLabel.Size = new System.Drawing.Size(13, 13);
       this.axisFontLabel.TabIndex = 2;
@@ -480,7 +523,7 @@ namespace HeuristicLab.Analysis.Views {
       // titleFontLabel
       // 
       this.titleFontLabel.AutoSize = true;
-      this.titleFontLabel.Location = new System.Drawing.Point(101, 15);
+      this.titleFontLabel.Location = new System.Drawing.Point(104, 36);
       this.titleFontLabel.Name = "titleFontLabel";
       this.titleFontLabel.Size = new System.Drawing.Size(13, 13);
       this.titleFontLabel.TabIndex = 2;
@@ -488,7 +531,7 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // axisFontButton
       // 
-      this.axisFontButton.Location = new System.Drawing.Point(69, 39);
+      this.axisFontButton.Location = new System.Drawing.Point(72, 60);
       this.axisFontButton.Name = "axisFontButton";
       this.axisFontButton.Size = new System.Drawing.Size(26, 23);
       this.axisFontButton.TabIndex = 1;
@@ -499,7 +542,7 @@ namespace HeuristicLab.Analysis.Views {
       // label3
       // 
       this.label3.AutoSize = true;
-      this.label3.Location = new System.Drawing.Point(9, 44);
+      this.label3.Location = new System.Drawing.Point(12, 65);
       this.label3.Name = "label3";
       this.label3.Size = new System.Drawing.Size(53, 13);
       this.label3.TabIndex = 0;
@@ -507,7 +550,7 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // titleFontButton
       // 
-      this.titleFontButton.Location = new System.Drawing.Point(69, 10);
+      this.titleFontButton.Location = new System.Drawing.Point(72, 31);
       this.titleFontButton.Name = "titleFontButton";
       this.titleFontButton.Size = new System.Drawing.Size(26, 23);
       this.titleFontButton.TabIndex = 1;
@@ -518,7 +561,7 @@ namespace HeuristicLab.Analysis.Views {
       // label2
       // 
       this.label2.AutoSize = true;
-      this.label2.Location = new System.Drawing.Point(9, 15);
+      this.label2.Location = new System.Drawing.Point(12, 36);
       this.label2.Name = "label2";
       this.label2.Size = new System.Drawing.Size(54, 13);
       this.label2.TabIndex = 0;
@@ -550,6 +593,8 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // yAxisSecondaryGroupBox
       // 
+      this.yAxisSecondaryGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.yAxisSecondaryGroupBox.Controls.Add(this.yAxisSecondaryTitleTextBox);
       this.yAxisSecondaryGroupBox.Controls.Add(this.label4);
       this.yAxisSecondaryGroupBox.Controls.Add(this.label13);
@@ -566,7 +611,7 @@ namespace HeuristicLab.Analysis.Views {
       // label13
       // 
       this.label13.AutoSize = true;
-      this.label13.Location = new System.Drawing.Point(4, 77);
+      this.label13.Location = new System.Drawing.Point(4, 78);
       this.label13.Name = "label13";
       this.label13.Size = new System.Drawing.Size(54, 13);
       this.label13.TabIndex = 4;
@@ -583,19 +628,23 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // yAxisSecondaryMaximumPanel
       // 
+      this.yAxisSecondaryMaximumPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.yAxisSecondaryMaximumPanel.Controls.Add(this.yAxisSecondaryMaximumFixedTextBox);
       this.yAxisSecondaryMaximumPanel.Controls.Add(this.yAxisSecondaryMaximumFixedRadioButton);
       this.yAxisSecondaryMaximumPanel.Controls.Add(this.yAxisSecondaryMaximumAutoRadioButton);
-      this.yAxisSecondaryMaximumPanel.Location = new System.Drawing.Point(63, 71);
+      this.yAxisSecondaryMaximumPanel.Location = new System.Drawing.Point(63, 72);
       this.yAxisSecondaryMaximumPanel.Name = "yAxisSecondaryMaximumPanel";
       this.yAxisSecondaryMaximumPanel.Size = new System.Drawing.Size(245, 25);
       this.yAxisSecondaryMaximumPanel.TabIndex = 5;
       // 
       // yAxisSecondaryMaximumFixedTextBox
       // 
+      this.yAxisSecondaryMaximumFixedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.yAxisSecondaryMaximumFixedTextBox.Location = new System.Drawing.Point(126, 2);
       this.yAxisSecondaryMaximumFixedTextBox.Name = "yAxisSecondaryMaximumFixedTextBox";
-      this.yAxisSecondaryMaximumFixedTextBox.Size = new System.Drawing.Size(95, 20);
+      this.yAxisSecondaryMaximumFixedTextBox.Size = new System.Drawing.Size(116, 20);
       this.yAxisSecondaryMaximumFixedTextBox.TabIndex = 2;
       this.yAxisSecondaryMaximumFixedTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.yAxisSecondaryMaximumFixedTextBox_Validating);
       // 
@@ -625,6 +674,8 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // yAxisSecondaryMinimumPanel
       // 
+      this.yAxisSecondaryMinimumPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.yAxisSecondaryMinimumPanel.Controls.Add(this.yAxisSecondaryMinimumFixedTextBox);
       this.yAxisSecondaryMinimumPanel.Controls.Add(this.yAxisSecondaryMinimumFixedRadioButton);
       this.yAxisSecondaryMinimumPanel.Controls.Add(this.yAxisSecondaryMinimumAutoRadioButton);
@@ -635,9 +686,11 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // yAxisSecondaryMinimumFixedTextBox
       // 
+      this.yAxisSecondaryMinimumFixedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.yAxisSecondaryMinimumFixedTextBox.Location = new System.Drawing.Point(126, 2);
       this.yAxisSecondaryMinimumFixedTextBox.Name = "yAxisSecondaryMinimumFixedTextBox";
-      this.yAxisSecondaryMinimumFixedTextBox.Size = new System.Drawing.Size(95, 20);
+      this.yAxisSecondaryMinimumFixedTextBox.Size = new System.Drawing.Size(116, 20);
       this.yAxisSecondaryMinimumFixedTextBox.TabIndex = 2;
       this.yAxisSecondaryMinimumFixedTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.yAxisSecondaryMinimumFixedTextBox_Validating);
       // 
@@ -667,6 +720,8 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // yAxisPrimaryGroupBox
       // 
+      this.yAxisPrimaryGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.yAxisPrimaryGroupBox.Controls.Add(this.label7);
       this.yAxisPrimaryGroupBox.Controls.Add(this.yAxisPrimaryTitleTextBox);
       this.yAxisPrimaryGroupBox.Controls.Add(this.label8);
@@ -683,7 +738,7 @@ namespace HeuristicLab.Analysis.Views {
       // label7
       // 
       this.label7.AutoSize = true;
-      this.label7.Location = new System.Drawing.Point(4, 77);
+      this.label7.Location = new System.Drawing.Point(4, 78);
       this.label7.Name = "label7";
       this.label7.Size = new System.Drawing.Size(54, 13);
       this.label7.TabIndex = 4;
@@ -700,19 +755,23 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // yAxisPrimaryMaximumPanel
       // 
+      this.yAxisPrimaryMaximumPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.yAxisPrimaryMaximumPanel.Controls.Add(this.yAxisPrimaryMaximumFixedTextBox);
       this.yAxisPrimaryMaximumPanel.Controls.Add(this.yAxisPrimaryMaximumFixedRadioButton);
       this.yAxisPrimaryMaximumPanel.Controls.Add(this.yAxisPrimaryMaximumAutoRadioButton);
-      this.yAxisPrimaryMaximumPanel.Location = new System.Drawing.Point(63, 71);
+      this.yAxisPrimaryMaximumPanel.Location = new System.Drawing.Point(63, 72);
       this.yAxisPrimaryMaximumPanel.Name = "yAxisPrimaryMaximumPanel";
       this.yAxisPrimaryMaximumPanel.Size = new System.Drawing.Size(245, 25);
       this.yAxisPrimaryMaximumPanel.TabIndex = 5;
       // 
       // yAxisPrimaryMaximumFixedTextBox
       // 
+      this.yAxisPrimaryMaximumFixedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.yAxisPrimaryMaximumFixedTextBox.Location = new System.Drawing.Point(126, 2);
       this.yAxisPrimaryMaximumFixedTextBox.Name = "yAxisPrimaryMaximumFixedTextBox";
-      this.yAxisPrimaryMaximumFixedTextBox.Size = new System.Drawing.Size(95, 20);
+      this.yAxisPrimaryMaximumFixedTextBox.Size = new System.Drawing.Size(116, 20);
       this.yAxisPrimaryMaximumFixedTextBox.TabIndex = 2;
       this.yAxisPrimaryMaximumFixedTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.yAxisPrimaryMaximumFixedTextBox_Validating);
       // 
@@ -742,6 +801,8 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // yAxisPrimaryMinimumPanel
       // 
+      this.yAxisPrimaryMinimumPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.yAxisPrimaryMinimumPanel.Controls.Add(this.yAxisPrimaryMinimumFixedTextBox);
       this.yAxisPrimaryMinimumPanel.Controls.Add(this.yAxisPrimaryMinimumFixedRadioButton);
       this.yAxisPrimaryMinimumPanel.Controls.Add(this.yAxisPrimaryMinimumAutoRadioButton);
@@ -752,9 +813,11 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // yAxisPrimaryMinimumFixedTextBox
       // 
+      this.yAxisPrimaryMinimumFixedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.yAxisPrimaryMinimumFixedTextBox.Location = new System.Drawing.Point(126, 2);
       this.yAxisPrimaryMinimumFixedTextBox.Name = "yAxisPrimaryMinimumFixedTextBox";
-      this.yAxisPrimaryMinimumFixedTextBox.Size = new System.Drawing.Size(95, 20);
+      this.yAxisPrimaryMinimumFixedTextBox.Size = new System.Drawing.Size(116, 20);
       this.yAxisPrimaryMinimumFixedTextBox.TabIndex = 2;
       this.yAxisPrimaryMinimumFixedTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.yAxisPrimaryMinimumFixedTextBox_Validating);
       // 
@@ -899,5 +962,7 @@ namespace HeuristicLab.Analysis.Views {
     private System.Windows.Forms.Label axisFontLabel;
     private System.Windows.Forms.Label titleFontLabel;
     private System.Windows.Forms.FontDialog axisFontDialog;
+    private System.Windows.Forms.Label label15;
+    private System.Windows.Forms.TextBox titleTextBox;
   }
 }

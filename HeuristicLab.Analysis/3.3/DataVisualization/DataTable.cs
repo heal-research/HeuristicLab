@@ -94,12 +94,14 @@ namespace HeuristicLab.Analysis {
       : base(name) {
       VisualProperties = new DataTableVisualProperties();
       rows = new NamedItemCollection<DataRow>();
+      visualProperties.Title = name;
       this.RegisterRowsEvents();
     }
     public DataTable(string name, string description)
       : base(name, description) {
       VisualProperties = new DataTableVisualProperties();
       rows = new NamedItemCollection<DataRow>();
+      visualProperties.Title = name;
       this.RegisterRowsEvents();
     }
 
