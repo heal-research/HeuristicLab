@@ -264,7 +264,7 @@ namespace HeuristicLab.Clients.Hive {
     }
     private void jobResultPoller_JobResultReceived(object sender, EventArgs<IEnumerable<LightweightTask>> e) {
       foreach (LightweightTask lightweightTask in e.Value) {
-        HiveTask hiveTask = GetHiveJobById(lightweightTask.Id);
+        HiveTask hiveTask = GetHiveTaskById(lightweightTask.Id);
         if (hiveTask != null) {
           // lastJobDataUpdate equals DateTime.MinValue right after it was uploaded. When the first results are polled, this value is updated
           if (hiveTask.Task.State == TaskState.Offline && lightweightTask.State != TaskState.Finished && lightweightTask.State != TaskState.Failed && lightweightTask.State != TaskState.Aborted) {
@@ -278,7 +278,7 @@ namespace HeuristicLab.Clients.Hive {
             hiveTask.IsDownloading = true;
             jobDownloader.DownloadTaskData(hiveTask.Task, (localJob, itemJob) => {
               log.LogMessage(string.Format("Finished downloading task {0}", localJob.Id));
-              HiveTask localHiveTask = GetHiveJobById(localJob.Id);
+              HiveTask localHiveTask = GetHiveTaskById(localJob.Id);
 
               if (itemJob == null) {
                 localHiveTask.IsDownloading = false;
@@ -293,7 +293,7 @@ namespace HeuristicLab.Clients.Hive {
                   localHiveTask.ItemTask = itemJob;
                 } else {
                   if (localJob.ParentTaskId.HasValue) {
-                    HiveTask parentHiveTask = GetHiveJobById(localJob.ParentTaskId.Value);
+                    HiveTask parentHiveTask = GetHiveTaskById(localJob.ParentTaskId.Value);
                     parentHiveTask.IntegrateChild(itemJob, localJob.Id);
                   } else {
                     localHiveTask.ItemTask = itemJob;
@@ -316,9 +316,9 @@ namespace HeuristicLab.Clients.Hive {
       OnStateLogListChanged();
     }
 
-    public HiveTask GetHiveJobById(Guid jobId) {
-      foreach (HiveTask job in this.HiveTasks) {
-        var hj = job.GetHiveTaskByTaskId(jobId);
+    public HiveTask GetHiveTaskById(Guid jobId) {
+      foreach (HiveTask t in this.HiveTasks) {
+        var hj = t.GetHiveTaskByTaskId(jobId);
         if (hj != null)
           return hj;
       }

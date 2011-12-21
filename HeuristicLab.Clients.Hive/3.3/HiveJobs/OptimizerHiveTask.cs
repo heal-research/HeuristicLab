@@ -184,7 +184,7 @@ namespace HeuristicLab.Clients.Hive {
     /// if this.Optimizer is BatchRun
     ///   add the runs from the optimizerTask to the batchrun and replace the Optimizer
     /// </summary>
-    public override void IntegrateChild(ItemTask task, Guid childJobId) {
+    public override void IntegrateChild(ItemTask task, Guid childTaskId) {
       var optimizerTask = (OptimizerTask)task;
       syncTasksWithOptimizers = false; // don't sync with optimizers during this method
 
@@ -197,7 +197,7 @@ namespace HeuristicLab.Clients.Hive {
       }
 
       childHiveTasksLock.EnterReadLock();
-      OptimizerHiveTask child = (OptimizerHiveTask)this.ChildHiveTasks.Single(j => j.Task.Id == childJobId);
+      OptimizerHiveTask child = (OptimizerHiveTask)this.ChildHiveTasks.Single(j => j.Task.Id == childTaskId);
       try {
         if (!optimizerTask.ComputeInParallel) {
           child.syncTasksWithOptimizers = false;
@@ -328,11 +328,11 @@ namespace HeuristicLab.Clients.Hive {
       return jobData;
     }
 
-    public OptimizerHiveTask GetChildByOptimizerJob(OptimizerTask optimizerJob) {
+    public OptimizerHiveTask GetChildByOptimizerTask(OptimizerTask optimizerTask) {
       childHiveTasksLock.EnterReadLock();
       try {
         foreach (OptimizerHiveTask child in childHiveTasks) {
-          if (child.ItemTask == optimizerJob)
+          if (child.ItemTask == optimizerTask)
             return child;
         }
         return null;

@@ -359,12 +359,12 @@ namespace HeuristicLab.Clients.Hive {
     public IEnumerable<HiveTask> GetAllHiveTasks() {
       childHiveTasksLock.EnterReadLock();
       try {
-        var jobs = new List<HiveTask>();
-        jobs.Add(this);
+        var tasks = new List<HiveTask>();
+        tasks.Add(this);
         foreach (HiveTask child in this.childHiveTasks) {
-          jobs.AddRange(child.GetAllHiveTasks());
+          tasks.AddRange(child.GetAllHiveTasks());
         }
-        return jobs;
+        return tasks;
       }
       finally { childHiveTasksLock.ExitReadLock(); }
     }
@@ -404,15 +404,15 @@ namespace HeuristicLab.Clients.Hive {
       return null;
     }
 
-    public void RemoveByTaskId(Guid jobId) {
+    public void RemoveByTaskId(Guid taskId) {
       childHiveTasksLock.EnterWriteLock();
       try {
-        IEnumerable<HiveTask> jobs = childHiveTasks.Where(j => j.Task.Id == jobId).ToList();
-        foreach (HiveTask j in jobs) {
-          this.childHiveTasks.Remove(j);
+        IEnumerable<HiveTask> tasks = childHiveTasks.Where(j => j.Task.Id == taskId).ToList();
+        foreach (HiveTask t in tasks) {
+          this.childHiveTasks.Remove(t);
         }
         foreach (HiveTask child in childHiveTasks) {
-          child.RemoveByTaskId(jobId);
+          child.RemoveByTaskId(taskId);
         }
       }
       finally { childHiveTasksLock.ExitWriteLock(); }
