@@ -28,7 +28,7 @@ namespace HeuristicLab.Core {
   /// <summary>
   /// Plugin class for HeuristicLab.Core plugin.
   /// </summary>
-  [Plugin("HeuristicLab.Core", "3.3.5.$WCREV$")]
+  [Plugin("HeuristicLab.Core", "3.3.6.$WCREV$")]
   [PluginFile("HeuristicLab.Core-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
