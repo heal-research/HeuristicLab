@@ -51,6 +51,16 @@ namespace HeuristicLab.Analysis {
         }
       }
     }
+    private string title;
+    public string Title {
+      get { return title; }
+      set {
+        if (title != value) {
+          title = value;
+          OnPropertyChanged("Title");
+        }
+      }
+    }
     private Font axisTitleFont;
     public Font AxisTitleFont {
       get { return axisTitleFont; }
@@ -315,6 +325,11 @@ namespace HeuristicLab.Analysis {
       get { return titleColor; }
       set { titleColor = value; }
     }
+    [Storable(Name = "Title")]
+    private string StorableTitle {
+      get { return title; }
+      set { title = value; }
+    }
     [Storable(Name = "AxisTitleFont")]
     private Font StorableAxisTitleFont {
       get { return axisTitleFont; }
@@ -435,6 +450,7 @@ namespace HeuristicLab.Analysis {
         this.titleFont = (Font)original.titleFont.Clone();
       if (original.axisTitleFont != null)
         this.axisTitleFont = (Font)original.axisTitleFont.Clone();
+      this.title = original.title;
       this.xAxisTitle = original.xAxisTitle;
       this.yAxisTitle = original.yAxisTitle;
       this.secondXAxisTitle = original.secondXAxisTitle;
@@ -457,8 +473,9 @@ namespace HeuristicLab.Analysis {
       this.secondYAxisMaximumFixedValue = original.secondYAxisMaximumFixedValue;
     }
     public DataTableVisualProperties() {
-      titleColor = Color.Black;
-      axisTitleColor = Color.Black;
+      this.titleColor = Color.Black;
+      this.axisTitleColor = Color.Black;
+      this.title = string.Empty;
       this.xAxisTitle = string.Empty;
       this.yAxisTitle = string.Empty;
       this.secondXAxisTitle = string.Empty;
