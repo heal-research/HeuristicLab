@@ -135,13 +135,13 @@
     <Compile Include="Exceptions\TaskResultPollingException.cs" />
     <Compile Include="Exceptions\OptimizerNotFoundException.cs" />
     <Compile Include="ConcurrentTaskDownloader.cs" />
-    <Compile Include="HiveJobs\EngineHiveTask.cs" />
+    <Compile Include="HiveTasks\EngineHiveTask.cs" />
     <Compile Include="Exceptions\HiveException.cs" />
     <Compile Include="TaskDownloader.cs" />
     <Compile Include="ConcurrentTaskDownloaderException.cs" />
     <Compile Include="TreeView\IItemTree.cs" />
     <Compile Include="TreeView\IItemTreeAction.cs" />
-    <Compile Include="HiveJobs\OptimizerHiveTask.cs">
+    <Compile Include="HiveTasks\OptimizerHiveTask.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Exceptions\ResourceNotFoundException.cs" />
@@ -149,7 +149,7 @@
     <Compile Include="Tasks\EngineTask.cs" />
     <Compile Include="Tasks\OptimizerTask.cs" />
     <Compile Include="Plugin.cs" />
-    <Compile Include="HiveJobs\HiveTask.cs" />
+    <Compile Include="HiveTasks\HiveTask.cs" />
     <Compile Include="JobResultPoller.cs" />
     <Compile Include="Util\PersistenceUtil.cs" />
     <Compile Include="Util\PluginUtil.cs" />
