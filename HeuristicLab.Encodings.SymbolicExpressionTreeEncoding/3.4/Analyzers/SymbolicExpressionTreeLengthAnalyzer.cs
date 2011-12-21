@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Linq;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
@@ -28,7 +29,6 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// <summary>
@@ -36,7 +36,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// </summary>
   [Item("SymbolicExpressionTreeLengthAnalyzer", "An operator that tracks tree lengths of Symbolic Expression Trees")]
   [StorableClass]
-  public sealed class SymbolicExpressionTreeLengthAnalyzer : SingleSuccessorOperator, ISymbolicExpressionTreeAnalyzer {
+  public sealed class SymbolicExpressionTreeLengthAnalyzer : SingleSuccessorOperator, ISymbolicExpressionTreeAnalyzer, IStatefulItem {
     private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
     private const string MaximumSymbolicExpressionTreeLengthParameterName = "MaximumSymbolicExpressionTreeLength";
     private const string SymbolicExpressionTreeLengthsParameterName = "SymbolicExpressionTreeLengthsTable";
@@ -90,7 +90,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     private SymbolicExpressionTreeLengthAnalyzer(bool deserializing) : base() { }
     private SymbolicExpressionTreeLengthAnalyzer(SymbolicExpressionTreeLengthAnalyzer original, Cloner cloner)
       : base(original, cloner) {
-      AfterDeserialization();
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SymbolicExpressionTreeLengthAnalyzer(this, cloner);
@@ -106,7 +105,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       Parameters.Add(new ValueParameter<IntValue>(UpdateIntervalParameterName, "The interval in which the tree length analysis should be applied.", new IntValue(1)));
       Parameters.Add(new ValueParameter<IntValue>(UpdateCounterParameterName, "The value which counts how many times the operator was called since the last update", new IntValue(0)));
 
-      AfterDeserialization();
+      SymbolicExpressionTreeLengthsParameter.Hidden = true;
+      SymbolicExpressionTreeLengthsHistoryParameter.Hidden = true;
+      ResultsParameter.Hidden = true;
+      UpdateCounterParameter.Hidden = true;
     }
 
     [StorableHook(HookType.AfterDeserialization)]
@@ -118,15 +120,20 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       if (!Parameters.ContainsKey(UpdateIntervalParameterName)) {
         Parameters.Add(new ValueParameter<IntValue>(UpdateIntervalParameterName, "The interval in which the tree length analysis should be applied.", new IntValue(1)));
       }
-      if (Parameters.ContainsKey(UpdateCounterParameterName))
-        Parameters.Remove(UpdateCounterParameterName);
-      Parameters.Add(new ValueParameter<IntValue>(UpdateCounterParameterName, "The value which counts how many times the operator was called since the last update", new IntValue(0)));
-
-      SymbolicExpressionTreeLengthsParameter.Hidden = true;
-      SymbolicExpressionTreeLengthsHistoryParameter.Hidden = true;
-      ResultsParameter.Hidden = true;
-      UpdateCounterParameter.Hidden = true;
+      if (!Parameters.ContainsKey(UpdateCounterParameterName)) {
+        Parameters.Add(new ValueParameter<IntValue>(UpdateCounterParameterName, "The value which counts how many times the operator was called since the last update", new IntValue(0)));
+        UpdateCounterParameter.Hidden = true;
+      }
     }
+
+    #region IStatefulItem members
+    public void InitializeState() {
+      UpdateCounter.Value = 0;
+    }
+    public void ClearState() {
+      UpdateCounter.Value = 0;
+    }
+    #endregion
 
     public override IOperation Apply() {
       UpdateCounter.Value++;
@@ -221,38 +228,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         const string treeLengthHistoryTableName = "Tree lengths history";
 
         if (storeHistory) {
-          // store tree lengths for each generation
-          var historyDataRow = new DataRow("Tree lengths", "", treeLengthsTableRow.Values);
-          historyDataRow.VisualProperties.ChartType = DataRowVisualProperties.DataRowChartType.Histogram;
-          historyDataRow.VisualProperties.ExactBins = false;
-          historyDataRow.VisualProperties.Bins = range;
-          historyDataRow.VisualProperties.ScaleFactor = treeLengthsTableRow.VisualProperties.ScaleFactor;
-          historyDataRow.VisualProperties.IsVisibleInLegend = false;
-          var historyTable = new DataTable("Tree lengths");
-          historyTable.Rows.Add(historyDataRow);
-          // visual properties for the X-axis
-          historyTable.VisualProperties.XAxisMinimumAuto = false;
-          historyTable.VisualProperties.XAxisMaximumAuto = false;
-          historyTable.VisualProperties.XAxisMinimumFixedValue = 0.0;
-          if (maxLength > maximumAllowedTreeLength + 1)
-            historyTable.VisualProperties.XAxisMaximumFixedValue = maxLength + 1; // +1 so the histogram column for the maximum length won't get trimmed
-          else
-            historyTable.VisualProperties.XAxisMaximumFixedValue = maximumAllowedTreeLength + 1;
-          historyTable.VisualProperties.XAxisTitle = xAxisTitle;
-          // visual properties for the Y-axis
-          historyTable.VisualProperties.YAxisMinimumAuto = false;
-          historyTable.VisualProperties.YAxisMaximumAuto = false;
-          historyTable.VisualProperties.YAxisMinimumFixedValue = 0.0;
-          historyTable.VisualProperties.YAxisMaximumFixedValue = yAxisMaximumFixedValue;
-          historyTable.VisualProperties.YAxisTitle = yAxisTitle;
-
           var treeLengthsHistory = SymbolicExpressionTreeLengthsHistoryParameter.ActualValue;
           if (treeLengthsHistory == null) {
             treeLengthsHistory = new DataTableHistory();
             SymbolicExpressionTreeLengthsHistoryParameter.ActualValue = treeLengthsHistory;
           }
-
-          treeLengthsHistory.Add(historyTable);
+          treeLengthsHistory.Add((DataTable)treeLengthsTable.Clone());
 
           if (!results.ContainsKey(treeLengthHistoryTableName)) {
             results.Add(new Result(treeLengthHistoryTableName, treeLengthsHistory));
