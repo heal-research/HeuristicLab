@@ -28,6 +28,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// <summary>
@@ -200,7 +201,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         treeLengthsTable.VisualProperties.YAxisMinimumAuto = false;
         treeLengthsTable.VisualProperties.YAxisMaximumAuto = false;
         treeLengthsTable.VisualProperties.YAxisMinimumFixedValue = 0.0;
-        int maxFreq = solutions.GroupBy(s => s.Length).Max(g => g.Count());
+        int maxFreq = (int)Math.Round(solutions.GroupBy(s => s.Length).Max(g => g.Count()) / treeLengthsTableRow.VisualProperties.ScaleFactor);
         if (maxFreq % 5 != 0)
           maxFreq += (5 - maxFreq % 5);
         double yAxisMaximumFixedValue = maxFreq;
