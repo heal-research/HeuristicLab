@@ -222,7 +222,6 @@ namespace HeuristicLab.Analysis.Views {
     private void ConfigureChartArea(ChartArea area) {
       if (Content.VisualProperties.TitleFont != null) chart.Titles[0].Font = Content.VisualProperties.TitleFont;
       if (!Content.VisualProperties.TitleColor.IsEmpty) chart.Titles[0].ForeColor = Content.VisualProperties.TitleColor;
-      chart.Titles[0].Text = Content.VisualProperties.Title;
 
       if (Content.VisualProperties.AxisTitleFont != null) area.AxisX.TitleFont = Content.VisualProperties.AxisTitleFont;
       if (!Content.VisualProperties.AxisTitleColor.IsEmpty) area.AxisX.TitleForeColor = Content.VisualProperties.AxisTitleColor;
@@ -577,30 +576,57 @@ namespace HeuristicLab.Analysis.Views {
         maxValue = Math.Ceiling(maxValue / intervalWidth) * intervalWidth;
       }
 
-      var area = chart.ChartAreas[0];
-      double current = 0.0;
+      double intervalCenter = intervalWidth / 2;
+
+      double min = 0.0;
       if (!Double.IsNaN(Content.VisualProperties.XAxisMinimumFixedValue) && !Content.VisualProperties.XAxisMinimumAuto)
-        current = Content.VisualProperties.XAxisMinimumFixedValue;
-      else current = minValue;
+        min = Content.VisualProperties.XAxisMinimumFixedValue;
+      else min = minValue;
 
-      area.AxisX.Interval = intervalWidth / row.VisualProperties.ScaleFactor;
-      area.AxisX.IntervalOffset = intervalWidth / row.VisualProperties.ScaleFactor;
+      double axisInterval = intervalWidth / row.VisualProperties.ScaleFactor;
 
-      series.SetCustomProperty("PointWidth", intervalWidth.ToString());
+      var area = chart.ChartAreas[0];
+      area.AxisX.Interval = axisInterval;
 
-      int frequency = 0;
-      foreach (double v in row.Values.Where(x => !IsInvalidValue(x)).OrderBy(x => x)) {
-        while (v > current + intervalWidth) {
-          series.Points.AddXY(current + intervalWidth, frequency);
-          current += intervalWidth;
-          frequency = 0;
+      series.SetCustomProperty("PointWidth", "1"); // 0.8 is the default value
+
+      // get the range or intervals which define the grouping of the frequency values
+      var doubleRange = DoubleRange(min, maxValue + intervalWidth, intervalWidth).Skip(1).ToList();
+
+      // aggregate the row values by unique key and frequency value
+      var valueFrequencies = (from v in row.Values
+                              where !IsInvalidValue(v)
+                              orderby v
+                              group v by v into g
+                              select new Tuple<double, double>(g.First(), g.Count())).ToList();
+
+      // shift the chart to the left so the bars are placed on the intervals
+      if (valueFrequencies.First().Item1 < doubleRange.First())
+        series.Points.Add(new DataPoint(min - intervalWidth, 0));
+
+      // add data points
+      int j = 0;
+      foreach (var d in doubleRange) {
+        double sum = 0.0;
+        // sum the frequency values that fall within the same interval
+        while (j < valueFrequencies.Count && valueFrequencies[j].Item1 < d) {
+          sum += valueFrequencies[j].Item2;
+          ++j;
         }
-        frequency++;
+        series.Points.Add(new DataPoint(d - intervalCenter, sum) { ToolTip = "X: [" + (d - intervalWidth) + "-" + d + "), Y: " + sum });
       }
-      series.Points.AddXY(current + intervalWidth, frequency);
     }
 
     #region Helpers
+    public static IEnumerable<double> DoubleRange(double min, double max, double step) {
+      double i;
+      for (i = min; i <= max; i += step)
+        yield return i;
+
+      if (i != max + step)
+        yield return i;
+    }
+
     protected void RemoveCustomPropertyIfExists(Series series, string property) {
       if (series.IsCustomPropertySet(property)) series.DeleteCustomProperty(property);
     }
