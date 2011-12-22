@@ -36,7 +36,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// </summary>
   [Item("SymbolicExpressionTreeLengthAnalyzer", "An operator that tracks tree lengths of Symbolic Expression Trees")]
   [StorableClass]
-  public sealed class SymbolicExpressionTreeLengthAnalyzer : SingleSuccessorOperator, ISymbolicExpressionTreeAnalyzer, IStatefulItem {
+  public sealed class SymbolicExpressionTreeLengthAnalyzer : SingleSuccessorOperator, ISymbolicExpressionTreeAnalyzer {
     private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
     private const string MaximumSymbolicExpressionTreeLengthParameterName = "MaximumSymbolicExpressionTreeLength";
     private const string SymbolicExpressionTreeLengthsParameterName = "SymbolicExpressionTreeLengthsTable";
@@ -127,10 +127,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     #region IStatefulItem members
-    public void InitializeState() {
+    public override void InitializeState() {
+      base.InitializeState();
       UpdateCounter.Value = 0;
     }
-    public void ClearState() {
+    public override void ClearState() {
+      base.ClearState();
       UpdateCounter.Value = 0;
     }
     #endregion
