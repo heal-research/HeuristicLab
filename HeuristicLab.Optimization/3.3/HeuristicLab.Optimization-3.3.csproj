@@ -113,17 +113,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="RunCollectionRunRemover.cs" />
+    <Compile Include="RunCollectionModification\RunCollectionRunRemover.cs" />
     <Compile Include="Plugin.cs" />
-    <Compile Include="RunCollectionDiscretizer.cs" />
-    <Compile Include="RunCollectionGroupCreater.cs" />
-    <Compile Include="RunCollectionSorter.cs" />
-    <Compile Include="RunCollectionValueRemover.cs" />
-    <Compile Include="IRunCollectionModifier.cs" />
+    <Compile Include="RunCollectionModification\RunCollectionDiscretizer.cs" />
+    <Compile Include="RunCollectionModification\RunCollectionGroupCreater.cs" />
+    <Compile Include="RunCollectionModification\RunCollectionSorter.cs" />
+    <Compile Include="RunCollectionModification\RunCollectionValueRemover.cs" />
+    <Compile Include="Interfaces\IRunCollectionModifier.cs" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="Algorithms\Algorithm.cs" />
     <Compile Include="BatchRun.cs" />
-    <Compile Include="Calculator.cs" />
+    <Compile Include="RunCollectionModification\Calculator.cs" />
     <Compile Include="Interfaces\IDiscreteDoubleMatrixModifier.cs" />
     <Compile Include="Algorithms\HeuristicOptimizationEngineAlgorithm.cs" />
     <Compile Include="Interfaces\IGlobalParticleUpdater.cs" />
@@ -146,7 +146,7 @@
     <Compile Include="Interfaces\IMultiObjectiveHeuristicOptimizationProblem.cs" />
     <Compile Include="Interfaces\ISingleObjectiveHeuristicOptimizationProblem.cs" />
     <Compile Include="Problems\Problem.cs" />
-    <Compile Include="RunCollectionFormulaModifer.cs" />
+    <Compile Include="RunCollectionModification\RunCollectionFormulaModifer.cs" />
     <Compile Include="RunCollectionConstraints\RunCollectionComparisonConstraint.cs" />
     <Compile Include="RunCollectionConstraints\RunCollectionConstraintCollection.cs" />
     <Compile Include="RunCollectionConstraints\RunCollectionContentConstraint.cs" />
