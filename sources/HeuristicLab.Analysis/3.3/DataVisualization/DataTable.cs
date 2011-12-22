@@ -92,16 +92,14 @@ namespace HeuristicLab.Analysis {
     }
     public DataTable(string name)
       : base(name) {
-      VisualProperties = new DataTableVisualProperties();
+      VisualProperties = new DataTableVisualProperties(name);
       rows = new NamedItemCollection<DataRow>();
-      visualProperties.Title = name;
       this.RegisterRowsEvents();
     }
     public DataTable(string name, string description)
       : base(name, description) {
-      VisualProperties = new DataTableVisualProperties();
+      VisualProperties = new DataTableVisualProperties(name);
       rows = new NamedItemCollection<DataRow>();
-      visualProperties.Title = name;
       this.RegisterRowsEvents();
     }
 
@@ -109,7 +107,8 @@ namespace HeuristicLab.Analysis {
     #region Backwards compatible code, remove with 3.4
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
-      if (VisualProperties == null) VisualProperties = new DataTableVisualProperties();
+      if (VisualProperties == null) VisualProperties = new DataTableVisualProperties(name);
+      if (VisualProperties.Title == null) VisualProperties.Title = name;
     }
     #endregion
 

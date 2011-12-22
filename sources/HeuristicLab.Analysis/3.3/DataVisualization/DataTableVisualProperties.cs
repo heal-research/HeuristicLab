@@ -497,6 +497,10 @@ namespace HeuristicLab.Analysis {
       this.secondYAxisMaximumAuto = true;
       this.secondYAxisMaximumFixedValue = double.NaN;
     }
+    public DataTableVisualProperties(string title)
+      : this() {
+      this.title = title;
+    }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new DataTableVisualProperties(this, cloner);
