@@ -37,7 +37,10 @@ namespace HeuristicLab.Optimization {
     #endregion
 
     private string Source { get { return SourceParameter.Value.Value; } }
-    private string Target { get { return TargetParameter.Value.Value; } }    
+    private string Target {
+      get { return TargetParameter.Value.Value; }
+      set { TargetParameter.Value.Value = value; }
+    }    
     private double Spread { get { return SpreadParameter.Value.Value; } }
     private string GroupBy { get { return GroupByParameter.Value.Value; } }
     private List<string> Levels { get { return LevelsParameter.Value.Select(v => v.Value).ToList(); } }
@@ -75,9 +78,13 @@ namespace HeuristicLab.Optimization {
     #endregion
 
     private void RegisterEvents() {
-      SourceParameter.ToStringChanged += Parameter_NameChanged;
-      TargetParameter.ToStringChanged += Parameter_NameChanged;      
+      SourceParameter.ToStringChanged += SourceParameter_NameChanged;
+      TargetParameter.ToStringChanged += Parameter_NameChanged;
       GroupByParameter.ToStringChanged += Parameter_NameChanged;
+    }
+
+    private void SourceParameter_NameChanged(object sender, EventArgs e) {
+      Target = string.Format("{0}/Level", Source);
     }
 
     private void Parameter_NameChanged(object sender, EventArgs e) {

@@ -7,6 +7,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System.Text;
 
 namespace HeuristicLab.Optimization {
 
@@ -69,8 +70,8 @@ namespace HeuristicLab.Optimization {
         }
       } catch (Exception x) {
         throw new Exception(string.Format(
-          "Calculation of '{1}'{0}failed at token #{2}: '{3}' {0}current stack is: {0}{4}", Environment.NewLine,
-          Formula, i, tokens[i],
+          "Calculation of '{1}'{0}failed at token #{2}: {3} {0}current stack is: {0}{4}", Environment.NewLine,
+          Formula, i, TokenWithContext(tokens, i, 3), 
           string.Join(Environment.NewLine, stack.Select(AsString))),
           x);
       }
@@ -84,6 +85,21 @@ namespace HeuristicLab.Optimization {
       if (result is bool) return new BoolValue((bool)result);
       return null;
     }
+
+    private string TokenWithContext(List<string> tokens, int i, int context) {
+      var sb = new StringBuilder();
+      if (i > context+1)
+        sb.Append("... ");
+      int prefix = Math.Max(0, i - context);
+      sb.Append(string.Join(" ", tokens.GetRange(prefix, i - prefix)));
+      sb.Append("   ---> ").Append(tokens[i]).Append(" <---   ");
+      int postfix = Math.Min(tokens.Count, i + 1 + context);
+      sb.Append(string.Join(" ", tokens.GetRange(i + 1, postfix - (i + 1))));
+      if (postfix < tokens.Count)
+        sb.Append(" ...");
+      return sb.ToString();
+    }
+
 
     private static void Apply(string token, Stack<object> stack, IDictionary<string, IItem> variables) {
       switch (token) {

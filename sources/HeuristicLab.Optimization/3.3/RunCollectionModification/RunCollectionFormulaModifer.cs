@@ -95,11 +95,15 @@ If the final value is null, the result variable is removed if it exists.",
           variables[param.Key] = param.Value;
         foreach (var result in run.Results)
           variables[result.Key] = result.Value;
-        var value = calc.GetValue(variables);
-        if (value != null)
-          run.Results[ResultName] = value;
-        else
-          run.Results.Remove(ResultName);
+        try {
+          var value = calc.GetValue(variables);
+          if (value != null)
+            run.Results[ResultName] = value;
+          else
+            run.Results.Remove(ResultName);
+        } catch (Exception x) {
+          throw new Exception(string.Format("Calculation failed at Run {0}", run.Name), x);
+        }
       }
     }
 
