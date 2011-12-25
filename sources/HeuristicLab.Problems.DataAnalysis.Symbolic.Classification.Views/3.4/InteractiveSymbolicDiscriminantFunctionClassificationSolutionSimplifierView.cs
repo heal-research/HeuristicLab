@@ -80,7 +80,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
       double[] classValues;
       double[] thresholds;
       // normal distribution cut points are used as thresholds here because they are a lot faster to calculate than the accuracy maximizing thresholds
-      NormalDistributionCutPointsThresholdCalculator.CalculateThresholds(Content.ProblemData, originalOutput, targetClassValues, out classValues, out thresholds);
+      AccuracyMaximizationThresholdCalculator.CalculateThresholds(Content.ProblemData, originalOutput, targetClassValues, out classValues, out thresholds);
       var classifier = new SymbolicDiscriminantFunctionClassificationModel(tree, interpreter);
       classifier.SetThresholdsAndClassValues(thresholds, classValues);
       OnlineCalculatorError errorState;
@@ -95,7 +95,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
         var newOutput = interpreter.GetSymbolicExpressionTreeValues(tree, dataset, rows)
           .LimitToRange(Content.Model.LowerEstimationLimit, Content.Model.UpperEstimationLimit)
           .ToArray();
-        NormalDistributionCutPointsThresholdCalculator.CalculateThresholds(Content.ProblemData, newOutput, targetClassValues, out classValues, out thresholds);
+        AccuracyMaximizationThresholdCalculator.CalculateThresholds(Content.ProblemData, newOutput, targetClassValues, out classValues, out thresholds);
         classifier = new SymbolicDiscriminantFunctionClassificationModel(tree, interpreter);
         classifier.SetThresholdsAndClassValues(thresholds, classValues);
         double newAccuracy = OnlineAccuracyCalculator.Calculate(targetClassValues, classifier.GetEstimatedClassValues(dataset, rows), out errorState);
