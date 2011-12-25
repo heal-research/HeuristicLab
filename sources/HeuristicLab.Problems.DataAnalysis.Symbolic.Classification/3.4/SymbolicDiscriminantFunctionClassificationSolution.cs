@@ -78,6 +78,5 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       ModelLength = Model.SymbolicExpressionTree.Length;
       ModelDepth = Model.SymbolicExpressionTree.Depth;
     }
-
   }
 }

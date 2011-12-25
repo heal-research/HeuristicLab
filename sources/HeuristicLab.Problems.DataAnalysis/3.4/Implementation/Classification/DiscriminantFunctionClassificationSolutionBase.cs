@@ -156,6 +156,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     protected virtual void OnModelThresholdsChanged(EventArgs e) {
       CalculateResults();
+      CalculateRegressionResults();
     }
 
     public abstract IEnumerable<double> EstimatedValues { get; }
