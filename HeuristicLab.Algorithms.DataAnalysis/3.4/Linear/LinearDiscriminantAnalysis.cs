@@ -99,11 +99,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         col++;
       }
 
-      ConstantTreeNode cNode = (ConstantTreeNode)new Constant().CreateTreeNode();
-      cNode.Value = w[w.Length - 1];
-      addition.AddSubtree(cNode);
-
-
       var model = LinearDiscriminantAnalysis.CreateDiscriminantFunctionModel(tree, new SymbolicDataAnalysisExpressionTreeInterpreter(), problemData, rows);
       SymbolicDiscriminantFunctionClassificationSolution solution = new SymbolicDiscriminantFunctionClassificationSolution(model, (IClassificationProblemData)problemData.Clone());
 
