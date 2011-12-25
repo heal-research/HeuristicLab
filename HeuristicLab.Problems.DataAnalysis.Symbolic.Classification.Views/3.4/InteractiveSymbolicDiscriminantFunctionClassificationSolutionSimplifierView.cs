@@ -77,15 +77,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
       var originalOutput = interpreter.GetSymbolicExpressionTreeValues(tree, dataset, rows)
         .LimitToRange(Content.Model.LowerEstimationLimit, Content.Model.UpperEstimationLimit)
         .ToArray();
-      double[] classValues;
-      double[] thresholds;
-      // normal distribution cut points are used as thresholds here because they are a lot faster to calculate than the accuracy maximizing thresholds
-      AccuracyMaximizationThresholdCalculator.CalculateThresholds(Content.ProblemData, originalOutput, targetClassValues, out classValues, out thresholds);
-      var classifier = new SymbolicDiscriminantFunctionClassificationModel(tree, interpreter);
-      classifier.SetThresholdsAndClassValues(thresholds, classValues);
       OnlineCalculatorError errorState;
-      double originalAccuracy = OnlineAccuracyCalculator.Calculate(targetClassValues, classifier.GetEstimatedClassValues(dataset, rows), out errorState);
-      if (errorState != OnlineCalculatorError.None) originalAccuracy = 0.0;
+      double originalGini = NormalizedGiniCalculator.Calculate(targetClassValues, originalOutput, out errorState);
+      if (errorState != OnlineCalculatorError.None) originalGini = 0.0;
 
       foreach (ISymbolicExpressionTreeNode node in nodes) {
         var parent = node.Parent;
@@ -95,16 +89,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
         var newOutput = interpreter.GetSymbolicExpressionTreeValues(tree, dataset, rows)
           .LimitToRange(Content.Model.LowerEstimationLimit, Content.Model.UpperEstimationLimit)
           .ToArray();
-        AccuracyMaximizationThresholdCalculator.CalculateThresholds(Content.ProblemData, newOutput, targetClassValues, out classValues, out thresholds);
-        classifier = new SymbolicDiscriminantFunctionClassificationModel(tree, interpreter);
-        classifier.SetThresholdsAndClassValues(thresholds, classValues);
-        double newAccuracy = OnlineAccuracyCalculator.Calculate(targetClassValues, classifier.GetEstimatedClassValues(dataset, rows), out errorState);
-        if (errorState != OnlineCalculatorError.None) newAccuracy = 0.0;
+        double newGini = NormalizedGiniCalculator.Calculate(targetClassValues, newOutput, out errorState);
+        if (errorState != OnlineCalculatorError.None) newGini = 0.0;
 
         // impact = 0 if no change
         // impact < 0 if new solution is better
         // impact > 0 if new solution is worse
-        impactValues[node] = originalAccuracy - newAccuracy;
+        impactValues[node] = originalGini - newGini;
         SwitchNode(parent, replacementNode, node);
       }
       return impactValues;
