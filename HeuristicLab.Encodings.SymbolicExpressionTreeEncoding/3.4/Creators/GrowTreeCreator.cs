@@ -67,7 +67,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       get { return MaximumSymbolicExpressionTreeLengthParameter.ActualValue; }
     }
 
-    public ISymbolicExpressionGrammar SymbolicExpressionTreeGrammar {
+    public ISymbolicExpressionGrammar ClonedSymbolicExpressionTreeGrammar {
       get { return ClonedSymbolicExpressionTreeGrammarParameter.ActualValue; }
     }
 
@@ -79,10 +79,14 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
     public GrowTreeCreator()
       : base() {
-      Parameters.Add(new ValueLookupParameter<IntValue>(MaximumSymbolicExpressionTreeLengthParameterName, "The maximal length (number of nodes) of the symbolic expression tree."));
-      Parameters.Add(new ValueLookupParameter<IntValue>(MaximumSymbolicExpressionTreeDepthParameterName, "The maximal depth of the symbolic expression tree (a tree with one node has depth = 0)."));
-      Parameters.Add(new ValueLookupParameter<ISymbolicExpressionGrammar>(SymbolicExpressionTreeGrammarParameterName, "The tree grammar that defines the correct syntax of symbolic expression trees that should be created."));
-      Parameters.Add(new LookupParameter<ISymbolicExpressionGrammar>(ClonedSymbolicExpressionTreeGrammarParameterName, "An immutable clone of the concrete grammar that is actually used to create and manipulate trees."));
+      Parameters.Add(new ValueLookupParameter<IntValue>(MaximumSymbolicExpressionTreeLengthParameterName,
+        "The maximal length (number of nodes) of the symbolic expression tree (this parameter is ignored)."));
+      Parameters.Add(new ValueLookupParameter<IntValue>(MaximumSymbolicExpressionTreeDepthParameterName,
+        "The maximal depth of the symbolic expression tree (a tree with one node has depth = 0)."));
+      Parameters.Add(new ValueLookupParameter<ISymbolicExpressionGrammar>(SymbolicExpressionTreeGrammarParameterName,
+        "The tree grammar that defines the correct syntax of symbolic expression trees that should be created."));
+      Parameters.Add(new LookupParameter<ISymbolicExpressionGrammar>(ClonedSymbolicExpressionTreeGrammarParameterName,
+        "An immutable clone of the concrete grammar that is actually used to create and manipulate trees."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -96,13 +100,15 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         while (globalScope.Parent != null)
           globalScope = globalScope.Parent;
 
-        globalScope.Variables.Add(new Variable(ClonedSymbolicExpressionTreeGrammarParameterName, (ISymbolicExpressionGrammar)SymbolicExpressionTreeGrammarParameter.ActualValue.Clone()));
+        globalScope.Variables.Add(new Variable(ClonedSymbolicExpressionTreeGrammarParameterName,
+          (ISymbolicExpressionGrammar)SymbolicExpressionTreeGrammarParameter.ActualValue.Clone()));
       }
       return base.Apply();
     }
 
     protected override ISymbolicExpressionTree Create(IRandom random) {
-      return Create(random, SymbolicExpressionTreeGrammar, MaximumSymbolicExpressionTreeLength.Value, MaximumSymbolicExpressionTreeDepth.Value);
+      return Create(random, ClonedSymbolicExpressionTreeGrammar,
+        MaximumSymbolicExpressionTreeLength.Value, MaximumSymbolicExpressionTreeDepth.Value);
     }
 
     public override ISymbolicExpressionTree CreateTree(IRandom random, ISymbolicExpressionGrammar grammar, int maxTreeLength, int maxTreeDepth) {
@@ -125,17 +131,17 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       if (rootNode.HasLocalParameters) rootNode.ResetLocalParameters(random);
 
       var startNode = (SymbolicExpressionTreeTopLevelNode)grammar.StartSymbol.CreateTreeNode();
-      startNode.SetGrammar(new SymbolicExpressionTreeGrammar(grammar));
       if (startNode.HasLocalParameters) startNode.ResetLocalParameters(random);
+      startNode.SetGrammar(new SymbolicExpressionTreeGrammar(grammar));
 
       rootNode.AddSubtree(startNode);
 
-      Grow(random, startNode, maxTreeDepth - 2);
+      Create(random, startNode, maxTreeDepth - 2);
       tree.Root = rootNode;
       return tree;
     }
 
-    public static void Grow(IRandom random, ISymbolicExpressionTreeNode seedNode, int maxDepth) {
+    public static void Create(IRandom random, ISymbolicExpressionTreeNode seedNode, int maxDepth) {
       // make sure it is possible to create a trees smaller than maxDepth
       if (seedNode.Grammar.GetMinimumExpressionDepth(seedNode.Symbol) > maxDepth)
         throw new ArgumentException("Cannot create trees of depth " + maxDepth + " or smaller because of grammar constraints.", "maxDepth");
@@ -145,10 +151,14 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       if (arity <= 0)
         throw new ArgumentException("Cannot grow tree. Seed node shouldn't have arity zero.");
 
-      var allowedSymbols = seedNode.Grammar.AllowedSymbols.Where(s => s.InitialFrequency > 0.0).ToList();
+      var allowedSymbols = seedNode.Grammar.AllowedSymbols
+        .Where(s => s.InitialFrequency > 0.0)
+        .ToList();
 
-      for (var i = 0; i != arity; ++i) {
-        var possibleSymbols = allowedSymbols.Where(s => seedNode.Grammar.IsAllowedChildSymbol(seedNode.Symbol, s, i)).ToList();
+      for (var i = 0; i < arity; i++) {
+        var possibleSymbols = allowedSymbols
+          .Where(s => seedNode.Grammar.IsAllowedChildSymbol(seedNode.Symbol, s, i))
+          .ToList();
         var selectedSymbol = possibleSymbols.SelectRandom(random);
         var tree = selectedSymbol.CreateTreeNode();
         if (tree.HasLocalParameters) tree.ResetLocalParameters(random);
@@ -157,19 +167,25 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
       // Only iterate over the non-terminal nodes (those which have arity > 0)
       // Start from depth 2 since the first two levels are formed by the rootNode and the seedNode
-      foreach (var subTree in seedNode.Subtrees.Where(subTree => subTree.Grammar.GetMaximumSubtreeCount(subTree.Symbol) > 0))
-        RecursiveGrow(random, subTree, 2, maxDepth);
+      foreach (var subTree in seedNode.Subtrees)
+        if (subTree.Grammar.GetMaximumSubtreeCount(subTree.Symbol) > 0)
+          RecursiveCreate(random, subTree, 2, maxDepth);
     }
 
-    public static void RecursiveGrow(IRandom random, ISymbolicExpressionTreeNode root, int currentDepth, int maxDepth) {
+    private static void RecursiveCreate(IRandom random, ISymbolicExpressionTreeNode root, int currentDepth, int maxDepth) {
       var arity = SampleArity(random, root);
       if (arity <= 0)
         throw new ArgumentException("Cannot grow node of arity zero. Expected a function node.");
 
-      var allowedSymbols = root.Grammar.AllowedSymbols.Where(s => s.InitialFrequency > 0.0).ToList();
+      var allowedSymbols = root.Grammar.AllowedSymbols
+        .Where(s => s.InitialFrequency > 0.0)
+        .ToList();
 
-      for (var i = 0; i != arity; ++i) {
-        var possibleSymbols = allowedSymbols.Where(s => root.Grammar.IsAllowedChildSymbol(root.Symbol, s, i) && root.Grammar.GetMinimumExpressionDepth(s) - 1 <= maxDepth - currentDepth).ToList();
+      for (var i = 0; i < arity; i++) {
+        var possibleSymbols = allowedSymbols
+          .Where(s => root.Grammar.IsAllowedChildSymbol(root.Symbol, s, i) &&
+            root.Grammar.GetMinimumExpressionDepth(s) - 1 <= maxDepth - currentDepth)
+          .ToList();
         if (!possibleSymbols.Any())
           throw new InvalidOperationException("No symbols are available for the tree.");
         var selectedSymbol = possibleSymbols.SelectRandom(random);
@@ -178,8 +194,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         root.AddSubtree(tree);
       }
 
-      foreach (var subTree in root.Subtrees.Where(subTree => subTree.Grammar.GetMaximumSubtreeCount(subTree.Symbol) != 0))
-        RecursiveGrow(random, subTree, currentDepth + 1, maxDepth);
+      foreach (var subTree in root.Subtrees)
+        if (subTree.Grammar.GetMaximumSubtreeCount(subTree.Symbol) != 0)
+          RecursiveCreate(random, subTree, currentDepth + 1, maxDepth);
     }
 
     private static int SampleArity(IRandom random, ISymbolicExpressionTreeNode node) {
