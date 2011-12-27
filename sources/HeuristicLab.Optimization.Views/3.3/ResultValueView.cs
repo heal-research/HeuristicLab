@@ -29,6 +29,8 @@ namespace HeuristicLab.Optimization.Views {
   [Content(typeof(Result), true)]
   [Content(typeof(IResult), false)]
   public sealed partial class ResultValueView : ItemView {
+    private const string infoLabelToolTipSuffix = "Double-click to open description editor.";
+
     public new IResult Content {
       get { return (IResult)base.Content; }
       set { base.Content = value; }
@@ -44,11 +46,15 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     protected override void DeregisterContentEvents() {
+      Content.NameChanged -= new EventHandler(Content_NameChanged);
+      Content.DescriptionChanged -= new EventHandler(Content_DescriptionChanged);
       Content.ValueChanged -= new EventHandler(Content_ValueChanged);
       base.DeregisterContentEvents();
     }
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
+      Content.NameChanged += new EventHandler(Content_NameChanged);
+      Content.DescriptionChanged += new EventHandler(Content_DescriptionChanged);
       Content.ValueChanged += new EventHandler(Content_ValueChanged);
     }
 
@@ -56,9 +62,16 @@ namespace HeuristicLab.Optimization.Views {
       base.OnContentChanged();
       if (Content == null) {
         viewHost.Content = null;
+        toolTip.SetToolTip(infoLabel, string.Empty);
+        if (ViewAttribute.HasViewAttribute(this.GetType()))
+          this.Caption = ViewAttribute.GetViewName(this.GetType());
+        else
+          this.Caption = "ResultValue View";
       } else {
         viewHost.ViewType = null;
         viewHost.Content = Content.Value;
+        toolTip.SetToolTip(infoLabel, string.IsNullOrEmpty(Content.Description) ? infoLabelToolTipSuffix : Content.Description + Environment.NewLine + Environment.NewLine + infoLabelToolTipSuffix);
+        Caption = Content.Name;
       }
     }
 
@@ -66,13 +79,33 @@ namespace HeuristicLab.Optimization.Views {
       base.SetEnabledStateOfControls();
       viewHost.Enabled = Content != null;
       viewHost.ReadOnly = this.ReadOnly;
+      infoLabel.Enabled = Content != null;
     }
 
+    private void Content_NameChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_NameChanged), sender, e);
+      else
+        Caption = Content.Name;
+    }
+    private void Content_DescriptionChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_DescriptionChanged), sender, e);
+      else
+        toolTip.SetToolTip(infoLabel, string.IsNullOrEmpty(Content.Description) ? infoLabelToolTipSuffix : Content.Description + Environment.NewLine + Environment.NewLine + infoLabelToolTipSuffix);
+    }
     private void Content_ValueChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_ValueChanged), sender, e);
       else {
         viewHost.Content = Content.Value;
+      }
+    }
+
+    private void infoLabel_DoubleClick(object sender, System.EventArgs e) {
+      using (TextDialog dialog = new TextDialog("Description of " + Content.Name, Content.Description, ReadOnly || !Content.CanChangeDescription)) {
+        if (dialog.ShowDialog(this) == DialogResult.OK)
+          Content.Description = dialog.Content;
       }
     }
   }

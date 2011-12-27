@@ -26,18 +26,10 @@ using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Optimization.Views {
-  /// <summary>
-  /// The visual representation of a <see cref="Variable"/>.
-  /// </summary>
   [View("Result View")]
   [Content(typeof(Result), false)]
   [Content(typeof(IResult), false)]
   public sealed partial class ResultView : NamedItemView {
-    /// <summary>
-    /// Gets or sets the variable to represent visually.
-    /// </summary>
-    /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
-    /// No own data storage present.</remarks>
     public new IResult Content {
       get { return (IResult)base.Content; }
       set { base.Content = value; }
@@ -48,26 +40,14 @@ namespace HeuristicLab.Optimization.Views {
       set { /*not needed because results are always readonly */}
     }
 
-    /// <summary>
-    /// Initializes a new instance of <see cref="VariableView"/> with caption "Variable".
-    /// </summary>
     public ResultView() {
       InitializeComponent();
     }
 
-    /// <summary>
-    /// Removes the eventhandlers from the underlying <see cref="Variable"/>.
-    /// </summary>
-    /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void DeregisterContentEvents() {
       Content.ValueChanged -= new EventHandler(Content_ValueChanged);
       base.DeregisterContentEvents();
     }
-
-    /// <summary>
-    /// Adds eventhandlers to the underlying <see cref="Variable"/>.
-    /// </summary>
-    /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.ValueChanged += new EventHandler(Content_ValueChanged);

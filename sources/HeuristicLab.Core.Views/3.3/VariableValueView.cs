@@ -24,45 +24,31 @@ using System.Windows.Forms;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Core.Views {
-  /// <summary>
-  /// The visual representation of a <see cref="Variable"/>.
-  /// </summary>
   [View("Variable Value View")]
   [Content(typeof(Variable), false)]
   [Content(typeof(IVariable), false)]
   public partial class VariableValueView : ItemView {
-    /// <summary>
-    /// Gets or sets the variable to represent visually.
-    /// </summary>
-    /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
-    /// No own data storage present.</remarks>
+    private const string infoLabelToolTipSuffix = "Double-click to open description editor.";
+
     public new IVariable Content {
       get { return (IVariable)base.Content; }
       set { base.Content = value; }
     }
 
-    /// <summary>
-    /// Initializes a new instance of <see cref="VariableView"/> with caption "Variable".
-    /// </summary>
     public VariableValueView() {
       InitializeComponent();
     }
 
-    /// <summary>
-    /// Removes the eventhandlers from the underlying <see cref="Variable"/>.
-    /// </summary>
-    /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void DeregisterContentEvents() {
+      Content.NameChanged -= new EventHandler(Content_NameChanged);
+      Content.DescriptionChanged -= new EventHandler(Content_DescriptionChanged);
       Content.ValueChanged -= new EventHandler(Content_ValueChanged);
       base.DeregisterContentEvents();
     }
-
-    /// <summary>
-    /// Adds eventhandlers to the underlying <see cref="Variable"/>.
-    /// </summary>
-    /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
+      Content.NameChanged += new EventHandler(Content_NameChanged);
+      Content.DescriptionChanged += new EventHandler(Content_DescriptionChanged);
       Content.ValueChanged += new EventHandler(Content_ValueChanged);
     }
 
@@ -70,12 +56,38 @@ namespace HeuristicLab.Core.Views {
       base.OnContentChanged();
       if (Content == null) {
         viewHost.Content = null;
+        toolTip.SetToolTip(infoLabel, string.Empty);
+        if (ViewAttribute.HasViewAttribute(this.GetType()))
+          this.Caption = ViewAttribute.GetViewName(this.GetType());
+        else
+          this.Caption = "VariableValue View";
       } else {
         viewHost.ViewType = null;
         viewHost.Content = Content.Value;
+        toolTip.SetToolTip(infoLabel, string.IsNullOrEmpty(Content.Description) ? infoLabelToolTipSuffix : Content.Description + Environment.NewLine + Environment.NewLine + infoLabelToolTipSuffix);
+        Caption = Content.Name;
       }
     }
 
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
+      viewHost.Enabled = Content != null;
+      viewHost.ReadOnly = this.ReadOnly;
+      infoLabel.Enabled = Content != null;
+    }
+
+    protected virtual void Content_NameChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_NameChanged), sender, e);
+      else
+        Caption = Content.Name;
+    }
+    protected virtual void Content_DescriptionChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_DescriptionChanged), sender, e);
+      else
+        toolTip.SetToolTip(infoLabel, string.IsNullOrEmpty(Content.Description) ? infoLabelToolTipSuffix : Content.Description + Environment.NewLine + Environment.NewLine + infoLabelToolTipSuffix);
+    }
     protected virtual void Content_ValueChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_ValueChanged), sender, e);
@@ -100,6 +112,12 @@ namespace HeuristicLab.Core.Views {
         IItem item = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) as IItem;
         if (e.Effect.HasFlag(DragDropEffects.Copy)) item = (IItem)item.Clone();
         Content.Value = item;
+      }
+    }
+    protected virtual void infoLabel_DoubleClick(object sender, EventArgs e) {
+      using (TextDialog dialog = new TextDialog("Description of " + Content.Name, Content.Description, ReadOnly || !Content.CanChangeDescription)) {
+        if (dialog.ShowDialog(this) == DialogResult.OK)
+          Content.Description = dialog.Content;
       }
     }
   }
