@@ -44,7 +44,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     [Storable]
     private ISymbolicExpressionGrammar grammar;
     public SymbolicExpressionTreeGrammar(ISymbolicExpressionGrammar grammar)
-      : base("SymbolicExpressionTreeGrammar", "A grammar that is used held by symbolic expression trees and allows extensions to the wraped grammar.") {
+      : base("SymbolicExpressionTreeGrammar", "A grammar that is used held by symbolic expression trees and allows extensions to the wrapped grammar.") {
       if (grammar == null) throw new ArgumentNullException();
       this.grammar = grammar;
     }
