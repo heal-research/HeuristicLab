@@ -44,27 +44,45 @@ namespace HeuristicLab.Core.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.components = new System.ComponentModel.Container();
       this.viewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
+      this.infoLabel = new System.Windows.Forms.Label();
+      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.SuspendLayout();
       // 
       // viewHost
       // 
+      this.viewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.viewHost.Caption = "View";
       this.viewHost.Content = null;
-      this.viewHost.Dock = System.Windows.Forms.DockStyle.Fill;
       this.viewHost.Enabled = false;
       this.viewHost.Location = new System.Drawing.Point(0, 0);
       this.viewHost.Name = "viewHost";
       this.viewHost.ReadOnly = false;
-      this.viewHost.Size = new System.Drawing.Size(359, 274);
+      this.viewHost.Size = new System.Drawing.Size(334, 274);
       this.viewHost.TabIndex = 0;
+      this.viewHost.ViewsLabelVisible = true;
       this.viewHost.ViewType = null;
+      // 
+      // infoLabel
+      // 
+      this.infoLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.infoLabel.Image = HeuristicLab.Common.Resources.VSImageLibrary.Information;
+      this.infoLabel.Location = new System.Drawing.Point(340, 3);
+      this.infoLabel.Name = "infoLabel";
+      this.infoLabel.Size = new System.Drawing.Size(16, 16);
+      this.infoLabel.TabIndex = 1;
+      this.toolTip.SetToolTip(this.infoLabel, "Double-click to open description editor.");
+      this.infoLabel.DoubleClick += new System.EventHandler(this.infoLabel_DoubleClick);
       // 
       // VariableValueView
       // 
+      this.AllowDrop = true;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.AllowDrop = true;
+      this.Controls.Add(this.infoLabel);
       this.Controls.Add(this.viewHost);
       this.Name = "VariableValueView";
       this.Size = new System.Drawing.Size(359, 274);
@@ -78,6 +96,8 @@ namespace HeuristicLab.Core.Views {
     #endregion
 
     protected MainForm.WindowsForms.ViewHost viewHost;
+    private System.Windows.Forms.Label infoLabel;
+    private System.Windows.Forms.ToolTip toolTip;
 
   }
 }

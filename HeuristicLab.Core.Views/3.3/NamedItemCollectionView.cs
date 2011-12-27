@@ -76,6 +76,13 @@ namespace HeuristicLab.Core.Views {
       }
       return listViewItem;
     }
+    protected override void UpdateListViewItemText(ListViewItem listViewItem) {
+      base.UpdateListViewItemText(listViewItem);
+      T item = listViewItem.Tag as T;
+      if ((item != null) && !string.IsNullOrEmpty(item.Description)) {
+        listViewItem.ToolTipText = item.ItemName + ": " + item.Description;
+      }
+    }
 
     #region ListView Events
     protected override void itemsListView_DragEnter(object sender, DragEventArgs e) {

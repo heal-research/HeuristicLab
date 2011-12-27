@@ -25,9 +25,6 @@ using System.Windows.Forms;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Core.Views {
-  /// <summary>
-  /// The visual representation of a <see cref="Variable"/>.
-  /// </summary>
   [View("NamedItem View")]
   [Content(typeof(NamedItem), false)]
   [Content(typeof(INamedItem), false)]
