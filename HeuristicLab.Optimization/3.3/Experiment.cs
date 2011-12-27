@@ -337,8 +337,8 @@ namespace HeuristicLab.Optimization {
         OnStarted();
     }
     private void optimizer_Stopped(object sender, EventArgs e) {
-      if (experimentStopped && Optimizers.All(o => o.ExecutionState == ExecutionState.Stopped || o.ExecutionState == ExecutionState.Prepared)) OnStopped();
-      else if (Optimizers.Any(o => o.ExecutionState == ExecutionState.Stopped) && Optimizers.All(o => o.ExecutionState != ExecutionState.Started) && Optimizers.All(o => o.ExecutionState != ExecutionState.Paused)) OnStopped();
+      if (!experimentStarted && Optimizers.Any(o => o.ExecutionState == ExecutionState.Prepared) && Optimizers.All(o => o.ExecutionState != ExecutionState.Started && o.ExecutionState != ExecutionState.Paused)) OnPrepared();
+      else if (Optimizers.All(o => o.ExecutionState == ExecutionState.Stopped)) OnStopped();
       else if (Optimizers.Any(o => o.ExecutionState == ExecutionState.Paused) && Optimizers.All(o => o.ExecutionState != ExecutionState.Started)) OnPaused();
       else if (experimentStarted && !experimentStopped && Optimizers.Any(x => (x.ExecutionState == ExecutionState.Prepared) || (x.ExecutionState == ExecutionState.Paused))) {
         Optimizers.First(x => (x.ExecutionState == ExecutionState.Prepared) || (x.ExecutionState == ExecutionState.Paused)).Start();
