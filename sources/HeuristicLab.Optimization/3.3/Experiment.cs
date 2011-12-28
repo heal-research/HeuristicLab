@@ -174,6 +174,9 @@ namespace HeuristicLab.Optimization {
       if (Optimizers.Count == 0) return;
 
       if (clearRuns) runs.Clear();
+
+      experimentStarted = false;
+      experimentStopped = false;
       foreach (IOptimizer optimizer in Optimizers.Where(x => x.ExecutionState != ExecutionState.Started))
         if (clearRuns || optimizer.ExecutionState != ExecutionState.Prepared)
           optimizer.Prepare(clearRuns);
@@ -205,8 +208,12 @@ namespace HeuristicLab.Optimization {
 
       experimentStarted = false;
       experimentStopped = true;
-      foreach (IOptimizer optimizer in Optimizers.Where(x => (x.ExecutionState == ExecutionState.Started) || (x.ExecutionState == ExecutionState.Paused)))
-        optimizer.Stop();
+      if (Optimizers.Any(x => (x.ExecutionState == ExecutionState.Started) || (x.ExecutionState == ExecutionState.Paused))) {
+        foreach (IOptimizer optimizer in Optimizers.Where(x => (x.ExecutionState == ExecutionState.Started) || (x.ExecutionState == ExecutionState.Paused)))
+          optimizer.Stop();
+      } else {
+        OnStopped();
+      }
     }
 
     #region Events
@@ -325,23 +332,23 @@ namespace HeuristicLab.Optimization {
       ExecutionTime = Optimizers.Aggregate(TimeSpan.Zero, (t, o) => t + o.ExecutionTime);
     }
     private void optimizer_Paused(object sender, EventArgs e) {
-      if (Optimizers.All(x => x.ExecutionState != ExecutionState.Started))
-        OnPaused();
+      if (Optimizers.All(x => x.ExecutionState != ExecutionState.Started)) OnPaused();
     }
     private void optimizer_Prepared(object sender, EventArgs e) {
-      if (ExecutionState == ExecutionState.Stopped)
-        OnPrepared();
+      if (Optimizers.All(x => x.ExecutionState == ExecutionState.Prepared)) OnPrepared();
+      else if (Optimizers.All(x => x.ExecutionState != ExecutionState.Started)) OnPaused();
     }
     private void optimizer_Started(object sender, EventArgs e) {
-      if (ExecutionState != ExecutionState.Started)
-        OnStarted();
+      if (ExecutionState != ExecutionState.Started) OnStarted();
     }
     private void optimizer_Stopped(object sender, EventArgs e) {
-      if (!experimentStarted && Optimizers.Any(o => o.ExecutionState == ExecutionState.Prepared) && Optimizers.All(o => o.ExecutionState != ExecutionState.Started && o.ExecutionState != ExecutionState.Paused)) OnPrepared();
-      else if (Optimizers.All(o => o.ExecutionState == ExecutionState.Stopped)) OnStopped();
-      else if (Optimizers.Any(o => o.ExecutionState == ExecutionState.Paused) && Optimizers.All(o => o.ExecutionState != ExecutionState.Started)) OnPaused();
-      else if (experimentStarted && !experimentStopped && Optimizers.Any(x => (x.ExecutionState == ExecutionState.Prepared) || (x.ExecutionState == ExecutionState.Paused))) {
-        Optimizers.First(x => (x.ExecutionState == ExecutionState.Prepared) || (x.ExecutionState == ExecutionState.Paused)).Start();
+      if (experimentStopped) {
+        if (Optimizers.All(x => (x.ExecutionState == ExecutionState.Stopped) || (x.ExecutionState == ExecutionState.Prepared))) OnStopped();
+      } else {
+        if (experimentStarted && Optimizers.Any(x => (x.ExecutionState == ExecutionState.Prepared) || (x.ExecutionState == ExecutionState.Paused))) {
+          Optimizers.First(x => (x.ExecutionState == ExecutionState.Prepared) || (x.ExecutionState == ExecutionState.Paused)).Start();
+        } else if (Optimizers.All(x => x.ExecutionState == ExecutionState.Stopped)) OnStopped();
+        else if (Optimizers.Any(x => (x.ExecutionState == ExecutionState.Prepared) || (x.ExecutionState == ExecutionState.Paused)) && Optimizers.All(o => o.ExecutionState != ExecutionState.Started)) OnPaused();
       }
     }
     private void optimizer_Runs_CollectionReset(object sender, CollectionItemsChangedEventArgs<IRun> e) {
