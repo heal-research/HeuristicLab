@@ -30,27 +30,17 @@ using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Analysis.Views {
-  /// <summary>
-  /// The visual representation of a <see cref="Variable"/>.
-  /// </summary>
   [View("DataTable View")]
   [Content(typeof(DataTable), true)]
   public partial class DataTableView : NamedItemView, IConfigureableView {
     protected List<Series> invisibleSeries;
     protected Dictionary<IObservableList<double>, DataRow> valuesRowsTable;
-    /// <summary>
-    /// Gets or sets the variable to represent visually.
-    /// </summary>
-    /// <remarks>Uses property <see cref="ViewBase.Item"/> of base class <see cref="ViewBase"/>.
-    /// No own data storage present.</remarks>
+
     public new DataTable Content {
       get { return (DataTable)base.Content; }
       set { base.Content = value; }
     }
 
-    /// <summary>
-    /// Initializes a new instance of <see cref="VariableView"/> with caption "Variable".
-    /// </summary>
     public DataTableView() {
       InitializeComponent();
       valuesRowsTable = new Dictionary<IObservableList<double>, DataRow>();
@@ -60,10 +50,6 @@ namespace HeuristicLab.Analysis.Views {
     }
 
     #region Event Handler Registration
-    /// <summary>
-    /// Removes the eventhandlers from the underlying <see cref="Variable"/>.
-    /// </summary>
-    /// <remarks>Calls <see cref="ViewBase.RemoveItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void DeregisterContentEvents() {
       foreach (DataRow row in Content.Rows)
         DeregisterDataRowEvents(row);
@@ -74,11 +60,6 @@ namespace HeuristicLab.Analysis.Views {
       Content.Rows.CollectionReset -= new CollectionItemsChangedEventHandler<DataRow>(Rows_CollectionReset);
       base.DeregisterContentEvents();
     }
-
-    /// <summary>
-    /// Adds eventhandlers to the underlying <see cref="Variable"/>.
-    /// </summary>
-    /// <remarks>Calls <see cref="ViewBase.AddItemEvents"/> of base class <see cref="ViewBase"/>.</remarks>
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.VisualPropertiesChanged += new EventHandler(Content_VisualPropertiesChanged);
@@ -90,11 +71,6 @@ namespace HeuristicLab.Analysis.Views {
         RegisterDataRowEvents(row);
     }
 
-    /// <summary>
-    /// Automatically called for every existing data row and whenever a data row is added
-    /// to the data table. Do not call this method directly.
-    /// </summary>
-    /// <param name="row">The DataRow that was added.</param>
     protected virtual void RegisterDataRowEvents(DataRow row) {
       row.NameChanged += new EventHandler(Row_NameChanged);
       row.VisualPropertiesChanged += new EventHandler(Row_VisualPropertiesChanged);
@@ -105,12 +81,6 @@ namespace HeuristicLab.Analysis.Views {
       row.Values.ItemsMoved += new CollectionItemsChangedEventHandler<IndexedItem<double>>(Values_ItemsMoved);
       row.Values.CollectionReset += new CollectionItemsChangedEventHandler<IndexedItem<double>>(Values_CollectionReset);
     }
-
-    /// <summary>
-    /// Automatically called for every data row that is removed from the DataTable. Do
-    /// not directly call this method.
-    /// </summary>
-    /// <param name="row">The DataRow that was removed.</param>
     protected virtual void DeregisterDataRowEvents(DataRow row) {
       row.Values.ItemsAdded -= new CollectionItemsChangedEventHandler<IndexedItem<double>>(Values_ItemsAdded);
       row.Values.ItemsRemoved -= new CollectionItemsChangedEventHandler<IndexedItem<double>>(Values_ItemsRemoved);
@@ -147,15 +117,12 @@ namespace HeuristicLab.Analysis.Views {
 
     public void ShowConfiguration() {
       if (Content != null) {
-        DataTableVisualPropertiesDialog dialog = new DataTableVisualPropertiesDialog(Content);
-        dialog.ShowDialog();
+        using (DataTableVisualPropertiesDialog dialog = new DataTableVisualPropertiesDialog(Content)) {
+          dialog.ShowDialog(this);
+        }
       } else MessageBox.Show("Nothing to configure.");
     }
 
-    /// <summary>
-    /// Add the DataRow as a series to the chart.
-    /// </summary>
-    /// <param name="row">DataRow to add as series to the chart.</param>
     protected virtual void AddDataRow(DataRow row) {
       Series series = new Series(row.Name);
       if (row.VisualProperties.DisplayName.Trim() != String.Empty) series.LegendText = row.VisualProperties.DisplayName;
@@ -265,9 +232,6 @@ namespace HeuristicLab.Analysis.Views {
       if (area.AxisY2.Minimum >= area.AxisY2.Maximum) area.AxisY2.Maximum = area.AxisY2.Minimum + 1;
     }
 
-    /// <summary>
-    /// Set the Y Cursor interval to visible points of enabled series.
-    /// </summary>
     protected virtual void UpdateYCursorInterval() {
       double interestingValuesRange = (
         from series in chart.Series
@@ -286,10 +250,6 @@ namespace HeuristicLab.Analysis.Views {
     }
 
 
-    /// <summary>
-    /// Remove the corresponding series for a certain DataRow.
-    /// </summary>
-    /// <param name="row">DataRow which series should be removed.</param>
     protected virtual void RemoveDataRow(DataRow row) {
       Series series = chart.Series[row.Name];
       chart.Series.Remove(series);
@@ -671,12 +631,6 @@ namespace HeuristicLab.Analysis.Views {
       }
     }
 
-    /// <summary>
-    /// Determines whether a double value can be displayed (converted to Decimal and not an NaN).
-    /// </summary>
-    /// <param name="x">The number to check.</param>
-    /// <returns><code>true</code> if the value can be safely shwon in the chart,
-    /// <code>false</code> otherwise.</returns>
     protected static bool IsInvalidValue(double x) {
       return double.IsNaN(x) || x < (double)decimal.MinValue || x > (double)decimal.MaxValue;
     }

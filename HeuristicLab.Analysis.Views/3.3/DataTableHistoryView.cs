@@ -19,11 +19,10 @@
  */
 #endregion
 
-using System.Linq;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
-using System.Collections.Generic;
 
 namespace HeuristicLab.Analysis.Views {
   [View("DataTableHistory View")]
@@ -38,7 +37,7 @@ namespace HeuristicLab.Analysis.Views {
       DataTable current = viewHost.Content as DataTable;
       if (current == null) return;
       using (DataTableVisualPropertiesDialog dialog = new DataTableVisualPropertiesDialog(current)) {
-        if (dialog.ShowDialog() != DialogResult.OK) return;
+        if (dialog.ShowDialog(this) != DialogResult.OK) return;
         HashSet<string> modifiedDisplayNames = new HashSet<string>(dialog.RowsWithModifiedDisplayNames);
         foreach (DataTable dt in Content) {
           if (current == dt) continue;
@@ -53,6 +52,5 @@ namespace HeuristicLab.Analysis.Views {
         }
       }
     }
-
   }
 }

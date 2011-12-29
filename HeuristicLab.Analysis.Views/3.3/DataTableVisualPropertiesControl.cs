@@ -41,14 +41,30 @@ namespace HeuristicLab.Analysis.Views {
 
     public DataTableVisualPropertiesControl() {
       InitializeComponent();
+      errorProvider.SetIconAlignment(xAxisPrimaryMinimumFixedTextBox, ErrorIconAlignment.MiddleLeft);
+      errorProvider.SetIconAlignment(xAxisPrimaryMaximumFixedTextBox, ErrorIconAlignment.MiddleLeft);
+      errorProvider.SetIconAlignment(xAxisSecondaryMinimumFixedTextBox, ErrorIconAlignment.MiddleLeft);
+      errorProvider.SetIconAlignment(xAxisSecondaryMaximumFixedTextBox, ErrorIconAlignment.MiddleLeft);
+      errorProvider.SetIconAlignment(yAxisPrimaryMinimumFixedTextBox, ErrorIconAlignment.MiddleLeft);
+      errorProvider.SetIconAlignment(yAxisPrimaryMaximumFixedTextBox, ErrorIconAlignment.MiddleLeft);
+      errorProvider.SetIconAlignment(yAxisSecondaryMinimumFixedTextBox, ErrorIconAlignment.MiddleLeft);
+      errorProvider.SetIconAlignment(yAxisSecondaryMaximumFixedTextBox, ErrorIconAlignment.MiddleLeft);
+      errorProvider.SetIconPadding(xAxisPrimaryMinimumFixedTextBox, 2);
+      errorProvider.SetIconPadding(xAxisPrimaryMaximumFixedTextBox, 2);
+      errorProvider.SetIconPadding(xAxisSecondaryMinimumFixedTextBox, 2);
+      errorProvider.SetIconPadding(xAxisSecondaryMaximumFixedTextBox, 2);
+      errorProvider.SetIconPadding(yAxisPrimaryMinimumFixedTextBox, 2);
+      errorProvider.SetIconPadding(yAxisPrimaryMaximumFixedTextBox, 2);
+      errorProvider.SetIconPadding(yAxisSecondaryMinimumFixedTextBox, 2);
+      errorProvider.SetIconPadding(yAxisSecondaryMaximumFixedTextBox, 2);
     }
 
     protected virtual void OnContentChanged() {
       SuppressEvents = true;
       try {
         if (Content == null) {
-          titleFontLabel.Text = "(  )";
-          axisFontLabel.Text = "(  )";
+          titleFontLabel.Text = "( none )";
+          axisFontLabel.Text = "( none )";
           titleTextBox.Text = string.Empty;
 
           xAxisPrimaryTitleTextBox.Text = string.Empty;
@@ -434,7 +450,7 @@ namespace HeuristicLab.Analysis.Views {
     #endregion
 
     private string FormatFont(Font f) {
-      if (f == null) return string.Empty;
+      if (f == null) return "default";
       else return f.Name + ", " + f.SizeInPoints.ToString() + "pt, " + f.Style.ToString();
     }
   }
