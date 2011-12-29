@@ -292,7 +292,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
         startDragAndDrop = false;
     }
 
-    private void configurationLabel_MouseDoubleClick(object sender, MouseEventArgs e) {
+    private void configurationLabel_DoubleClick(object sender, MouseEventArgs e) {
       ((IConfigureableView)ActiveView).ShowConfiguration();
     }
     #endregion

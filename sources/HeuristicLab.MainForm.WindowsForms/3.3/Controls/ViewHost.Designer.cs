@@ -45,7 +45,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ViewHost));
       this.messageLabel = new System.Windows.Forms.Label();
       this.viewsLabel = new System.Windows.Forms.Label();
       this.viewContextMenuStrip = new HeuristicLab.MainForm.WindowsForms.ViewContextMenuStrip();
@@ -72,8 +71,10 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.viewsLabel.Name = "viewsLabel";
       this.viewsLabel.Size = new System.Drawing.Size(16, 16);
       this.viewsLabel.TabIndex = 0;
-      this.toolTip.SetToolTip(this.viewsLabel, "Double-click to open a new window of the current view.\r\nRight-click to change cur" +
-              "rent view.\r\nDrag icon to copy or link content to another view.");
+      this.toolTip.SetToolTip(this.viewsLabel,
+        "Double-click to open a new window of the current view." + System.Environment.NewLine +
+        "Right-click to change current view." + System.Environment.NewLine +
+        "Drag icon to copy or link content to another view.");
       this.viewsLabel.DoubleClick += new System.EventHandler(this.viewsLabel_DoubleClick);
       this.viewsLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.viewsLabel_MouseDown);
       this.viewsLabel.MouseLeave += new System.EventHandler(this.viewsLabel_MouseLeave);
@@ -94,9 +95,10 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.configurationLabel.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
       this.configurationLabel.Name = "configurationLabel";
       this.configurationLabel.Size = new System.Drawing.Size(16, 16);
-      this.configurationLabel.TabIndex = 0;
+      this.configurationLabel.TabIndex = 1;
+      this.toolTip.SetToolTip(this.configurationLabel, "Double-click to open view configuration.");
       this.configurationLabel.Visible = false;
-      this.configurationLabel.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.configurationLabel_MouseDoubleClick);
+      this.configurationLabel.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.configurationLabel_DoubleClick);
       // 
       // ViewHost
       // 
@@ -110,8 +112,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.ResumeLayout(false);
 
     }
-
     #endregion
+
     private System.Windows.Forms.Label viewsLabel;
     private System.Windows.Forms.Label messageLabel;
     private System.Windows.Forms.ToolTip toolTip;
