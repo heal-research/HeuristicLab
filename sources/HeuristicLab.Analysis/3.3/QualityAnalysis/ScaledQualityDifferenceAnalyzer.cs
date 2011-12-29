@@ -90,8 +90,8 @@ A value towards 0 always means that it's closer to the better fitness value, whi
       ResultCollection results = ResultsParameter.ActualValue;
       if (results != null) {
         IResult r;
-        if (!results.TryGetValue(ScaledDifferenceParameter.ActualName, out r)) {
-          r = new Result(ScaledDifferenceParameter.ActualName, differenceValue);
+        if (!results.TryGetValue(ScaledDifferenceParameter.TranslatedName, out r)) {
+          r = new Result(ScaledDifferenceParameter.TranslatedName, differenceValue);
           results.Add(r);
         }
       }
