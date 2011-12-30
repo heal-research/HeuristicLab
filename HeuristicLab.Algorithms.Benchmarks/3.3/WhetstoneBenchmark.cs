@@ -30,7 +30,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.Benchmarks {
-  [Item("Whetstone Algorithm", "Whetstone benchmarking algorithm.")]
+  [Item("Whetstone Benchmark", "Whetstone performance benchmark algorithm.")]
   [StorableClass]
   public class WhetstoneBenchmark : IBenchmark {
     [Storable]

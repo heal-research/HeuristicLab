@@ -30,9 +30,28 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.Benchmarks {
-  [Item("Dhrystone Algorithm", "Dhrystone benchmarking algorithm.")]
+  [Item("Dhrystone Benchmark", "Dhrystone performance benchmark algorithm.")]
   [StorableClass]
   public class DhrystoneBenchmark : IBenchmark {
+    private bool stopBenchmark;
+    private CancellationToken cancellationToken;
+
+    public string ItemName {
+      get { return ItemAttribute.GetName(this.GetType()); }
+    }
+    public string ItemDescription {
+      get { return ItemAttribute.GetDescription(this.GetType()); }
+    }
+    public Version ItemVersion {
+      get { return ItemAttribute.GetVersion(this.GetType()); }
+    }
+    public static Image StaticItemImage {
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Event; }
+    }
+    public Image ItemImage {
+      get { return ItemAttribute.GetImage(this.GetType()); }
+    }
+
     [Storable]
     private byte[][] chunk;
     public byte[][] ChunkData {
@@ -47,28 +66,6 @@ namespace HeuristicLab.Algorithms.Benchmarks {
       set { timeLimit = value; }
     }
 
-    private bool stopBenchmark;
-
-    private CancellationToken cancellationToken;
-
-    public string ItemName {
-      get { return ItemAttribute.GetName(this.GetType()); }
-    }
-
-    public string ItemDescription {
-      get { return ItemAttribute.GetDescription(this.GetType()); }
-    }
-
-    public Version ItemVersion {
-      get { return ItemAttribute.GetVersion(this.GetType()); }
-    }
-
-    public static Image StaticItemImage {
-      get { return HeuristicLab.Common.Resources.VSImageLibrary.Event; }
-    }
-    public Image ItemImage {
-      get { return ItemAttribute.GetImage(this.GetType()); }
-    }
 
     #region Benchmark Fields
 

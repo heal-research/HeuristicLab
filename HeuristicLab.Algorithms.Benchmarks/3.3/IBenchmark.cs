@@ -23,10 +23,11 @@ using System;
 using System.Threading;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
+
 namespace HeuristicLab.Algorithms.Benchmarks {
   public interface IBenchmark : IItem {
     byte[][] ChunkData { get; set; }
     TimeSpan TimeLimit { get; set; }
-    void Run(CancellationToken cancellationToken, ResultCollection resuls);
+    void Run(CancellationToken cancellationToken, ResultCollection results);
   }
 }
