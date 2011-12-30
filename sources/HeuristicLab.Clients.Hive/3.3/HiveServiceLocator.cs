@@ -58,9 +58,12 @@ namespace HeuristicLab.Clients.Hive {
 
     public T CallHiveService<T>(Func<IHiveService, T> call) {
       HiveServiceClient client = NewServiceClient();
+      HandleAnonymousUser(client);
+
       try {
         return call(client);
-      } finally {
+      }
+      finally {
         try {
           client.Close();
         }
@@ -72,15 +75,30 @@ namespace HeuristicLab.Clients.Hive {
 
     public void CallHiveService(Action<IHiveService> call) {
       HiveServiceClient client = NewServiceClient();
+      HandleAnonymousUser(client);
+
       try {
         call(client);
-      } finally {
+      }
+      finally {
         try {
           client.Close();
         }
         catch (Exception) {
           client.Abort();
         }
+      }
+    }
+
+    private void HandleAnonymousUser(HiveServiceClient client) {
+      if (client.ClientCredentials.UserName.UserName == Settings.Default.AnonymousUserName) {
+        try {
+          client.Close();
+        }
+        catch (Exception) {
+          client.Abort();
+        }
+        throw new AnonymousUserException();
       }
     }
   }

@@ -60,6 +60,13 @@ namespace HeuristicLab.Clients.Hive.Views {
             }
         }
         
+        public static System.Drawing.Bitmap Information {
+            get {
+                object obj = ResourceManager.GetObject("Information", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         public static System.Drawing.Icon Slave {
             get {
                 object obj = ResourceManager.GetObject("Slave", resourceCulture);

@@ -362,6 +362,10 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       catch (MessageSecurityException) {
         MessageBox.Show("A Message Security error has occured. This normally means that your user name or password is wrong.", "HeuristicLab Hive Administrator", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
+      catch (AnonymousUserException) {
+        HiveInformationDialog dialog = new HiveInformationDialog();
+        dialog.ShowDialog(this);
+      }
     }
 
     private void UpdateResourcesAsync() {
