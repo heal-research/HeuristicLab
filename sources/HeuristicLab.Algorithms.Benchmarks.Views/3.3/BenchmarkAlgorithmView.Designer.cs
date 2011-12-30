@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Algorithms.Benchmarks.Views {
-  partial class BenchmarkView {
+  partial class BenchmarkAlgorithmView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>

@@ -26,7 +26,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("HeuristicLab.Algorithms.Benchmarks.Views")]
-[assembly: AssemblyDescription("Benchmarking")]
+[assembly: AssemblyDescription("Views of the HeuristicLab performance benchmark algorithms")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("HeuristicLab")]
@@ -40,7 +40,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("3E422463-0CE0-400D-9544-5C11D5818769")]
+[assembly: Guid("E4BF5E27-BFA8-4402-9B75-4BE3B91E012C")]
 
 // Version information for an assembly consists of the following four values:
 //

@@ -19,22 +19,21 @@
  */
 #endregion
 
+using System.Windows.Forms;
+using HeuristicLab.MainForm;
+using HeuristicLab.Optimization.Views;
+
 namespace HeuristicLab.Algorithms.Benchmarks.Views {
-  partial class IBenchmarkView {
-    /// <summary> 
-    /// Required designer variable.
-    /// </summary>
-
-    #region Component Designer generated code
-
-    /// <summary> 
-    /// Required method for Designer support - do not modify 
-    /// the contents of this method with the code editor.
-    /// </summary>
-    private void InitializeComponent() {
-
+  [View("BenchmarkAlgorithm View")]
+  [Content(typeof(BenchmarkAlgorithm), true)]
+  public partial class BenchmarkAlgorithmView : AlgorithmView {
+    public new BenchmarkAlgorithm Content {
+      get { return (BenchmarkAlgorithm)base.Content; }
+      set { base.Content = value; }
     }
-
-    #endregion
+    public BenchmarkAlgorithmView() {
+      InitializeComponent();
+      tabControl.TabPages.Remove(this.problemTabPage);
+    }
   }
 }

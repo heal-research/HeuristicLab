@@ -25,13 +25,14 @@ namespace HeuristicLab.Algorithms.Benchmarks.Views {
   /// <summary>
   /// Plugin class for HeuristicLab.Algorithms.Benchmarks plugin.
   /// </summary>
-  [Plugin("HeuristicLab.Algorithms.Benchmarks.Views", "Provides views for benchmarking algorithms.", "3.3.6.$WCREV$")]
-  [PluginFile("HeuristicLab.Algorithms.Benchmarks.Views-3.3.dll", PluginFileType.Assembly)]  
+  [Plugin("HeuristicLab.Algorithms.Benchmarks.Views", "Provides views for performance benchmark algorithms.", "3.3.6.$WCREV$")]
+  [PluginFile("HeuristicLab.Algorithms.Benchmarks.Views-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Algorithms.Benchmarks", "3.3")]
+  [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.MainForm", "3.3")]
-  [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.3")] 
+  [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.3")]
   [PluginDependency("HeuristicLab.Optimization", "3.3")]
   [PluginDependency("HeuristicLab.Optimization.Views", "3.3")]
-  [PluginDependency("HeuristicLab.Algorithms.Benchmarks", "3.3")] 
   public class HeuristicLabAlgorithmsBenchmarksViewsPlugin : PluginBase {
   }
 }

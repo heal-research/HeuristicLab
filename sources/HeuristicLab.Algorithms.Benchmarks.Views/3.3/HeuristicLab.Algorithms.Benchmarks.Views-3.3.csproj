@@ -83,26 +83,16 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BenchmarkView.cs">
+    <Compile Include="BenchmarkAlgorithmView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="BenchmarkView.Designer.cs">
-      <DependentUpon>BenchmarkView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="IBenchmarkView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="IBenchmarkView.Designer.cs">
-      <DependentUpon>IBenchmarkView.cs</DependentUpon>
+    <Compile Include="BenchmarkAlgorithmView.Designer.cs">
+      <DependentUpon>BenchmarkAlgorithmView.cs</DependentUpon>
     </Compile>
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -116,11 +106,6 @@
     <ProjectReference Include="..\..\HeuristicLab.Algorithms.Benchmarks\3.3\HeuristicLab.Algorithms.Benchmarks-3.3.csproj">
       <Project>{068C70A7-8CAF-4AB6-8721-4564D62292BC}</Project>
       <Name>HeuristicLab.Algorithms.Benchmarks-3.3</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
-      <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
-      <Name>HeuristicLab.Collections-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Common\3.3\HeuristicLab.Common-3.3.csproj">

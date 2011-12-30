@@ -30,7 +30,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.Benchmarks {
-  [Item("Linpack Algorithm", "Linpack benchmarking algorithm.")]
+  [Item("Linpack Benchmark", "Linpack performance benchmark algorithm.")]
   [StorableClass]
   public class LinpackBenchmark : IBenchmark {
     [Storable]
