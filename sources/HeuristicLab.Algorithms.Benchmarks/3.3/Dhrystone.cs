@@ -21,7 +21,6 @@
 
 using System;
 using System.Diagnostics;
-using System.Drawing;
 using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -30,45 +29,9 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.Benchmarks {
-  [Item("Dhrystone Benchmark", "Dhrystone performance benchmark algorithm.")]
+  [Item("Dhrystone", "Dhrystone performance benchmark.")]
   [StorableClass]
-  public class DhrystoneBenchmark : IBenchmark {
-    private bool stopBenchmark;
-    private CancellationToken cancellationToken;
-
-    public string ItemName {
-      get { return ItemAttribute.GetName(this.GetType()); }
-    }
-    public string ItemDescription {
-      get { return ItemAttribute.GetDescription(this.GetType()); }
-    }
-    public Version ItemVersion {
-      get { return ItemAttribute.GetVersion(this.GetType()); }
-    }
-    public static Image StaticItemImage {
-      get { return HeuristicLab.Common.Resources.VSImageLibrary.Event; }
-    }
-    public Image ItemImage {
-      get { return ItemAttribute.GetImage(this.GetType()); }
-    }
-
-    [Storable]
-    private byte[][] chunk;
-    public byte[][] ChunkData {
-      get { return chunk; }
-      set { chunk = value; }
-    }
-
-    [Storable]
-    private TimeSpan timeLimit;
-    public TimeSpan TimeLimit {
-      get { return timeLimit; }
-      set { timeLimit = value; }
-    }
-
-
-    #region Benchmark Fields
-
+  public sealed class Dhrystone : Benchmark {
     private const int Ident_1 = 0;
     private const int Ident_2 = 1;
     private const int Ident_3 = 2;
@@ -92,27 +55,26 @@ namespace HeuristicLab.Algorithms.Benchmarks {
 
     private long Default_Number_Of_Runs = 10000000;
 
-    #endregion
-
-    #region Costructors
-
     [StorableConstructor]
-    public DhrystoneBenchmark(bool deserializing) { }
+    private Dhrystone(bool deserializing) : base(deserializing) { }
+    private Dhrystone(Dhrystone original, Cloner cloner) : base(original, cloner) { }
+    public Dhrystone() { }
 
-    public DhrystoneBenchmark() { }
-
-    protected DhrystoneBenchmark(DhrystoneBenchmark original, Cloner cloner) {
-      cloner.RegisterClonedObject(original, this);
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Dhrystone(this, cloner);
     }
 
-    #endregion
+    private class Record_Type {
+      public Record_Type Record_Comp;
+      public int Discr;
+      public int Enum_Comp;
+      public int Int_Comp;
+      public string String_Comp;
+    }
 
-    #region Benchmark Methods
     // implementation based on Java version: http://www.okayan.jp/DhrystoneApplet/dhry_src.jar
-
-    public void Run(CancellationToken token, ResultCollection results) {
-      cancellationToken = token;
-      stopBenchmark = false;
+    public override void Run(CancellationToken cancellationToken, ResultCollection results) {
+      bool stopBenchmark = false;
 
       int Int_Loc_1;
       int Int_Loc_2;
@@ -188,11 +150,11 @@ namespace HeuristicLab.Algorithms.Benchmarks {
           throw new OperationCanceledException(cancellationToken);
         }
 
-        if ((timeLimit == null) || (timeLimit.TotalMilliseconds == 0)) {
+        if ((TimeLimit == null) || (TimeLimit.TotalMilliseconds == 0)) {
           if (Run_Index > Default_Number_Of_Runs) {
             stopBenchmark = true;
           }
-        } else if (sw.Elapsed > timeLimit) {
+        } else if (sw.Elapsed > TimeLimit) {
           stopBenchmark = true;
         }
 
@@ -373,49 +335,5 @@ namespace HeuristicLab.Algorithms.Benchmarks {
       Array_Par_2_Ref[Int_Loc + 20][Int_Loc] = Array_Par_1_Ref[Int_Loc];
       Int_Glob = 5;
     }
-
-    #endregion
-
-    #region Private Class
-
-    private class Record_Type {
-      public Record_Type Record_Comp;
-      public int Discr;
-      public int Enum_Comp;
-      public int Int_Comp;
-      public string String_Comp;
-    }
-
-    #endregion
-
-    #region Clone
-
-    public IDeepCloneable Clone(Cloner cloner) {
-      return new DhrystoneBenchmark(this, cloner);
-    }
-
-    public object Clone() {
-      return Clone(new Cloner());
-    }
-
-    #endregion
-
-    #region Events
-
-    public event EventHandler ItemImageChanged;
-    protected virtual void OnItemImageChanged() {
-      EventHandler handler = ItemImageChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-
-    public event EventHandler ToStringChanged;
-    protected virtual void OnToStringChanged() {
-      EventHandler handler = ToStringChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-
-    #endregion
-
-
   }
 }
