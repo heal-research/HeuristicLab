@@ -21,7 +21,6 @@
 
 using System;
 using System.Diagnostics;
-using System.Drawing;
 using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -30,48 +29,9 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.Benchmarks {
-  [Item("Whetstone Benchmark", "Whetstone performance benchmark algorithm.")]
+  [Item("Whetstone", "Whetstone performance benchmark.")]
   [StorableClass]
-  public class WhetstoneBenchmark : IBenchmark {
-    [Storable]
-    private byte[][] chunk;
-    public byte[][] ChunkData {
-      get { return chunk; }
-      set { chunk = value; }
-    }
-
-    [Storable]
-    private TimeSpan timeLimit;
-    public TimeSpan TimeLimit {
-      get { return timeLimit; }
-      set { timeLimit = value; }
-    }
-
-    private bool stopBenchmark;
-
-    private CancellationToken cancellationToken;
-
-    public string ItemName {
-      get { return ItemAttribute.GetName(this.GetType()); }
-    }
-
-    public string ItemDescription {
-      get { return ItemAttribute.GetDescription(this.GetType()); }
-    }
-
-    public Version ItemVersion {
-      get { return ItemAttribute.GetVersion(this.GetType()); }
-    }
-
-    public static Image StaticItemImage {
-      get { return HeuristicLab.Common.Resources.VSImageLibrary.Event; }
-    }
-    public Image ItemImage {
-      get { return ItemAttribute.GetImage(this.GetType()); }
-    }
-
-    #region Benchmark Fields
-
+  public sealed class Whetstone : Benchmark {
     private long begin_time;
     private long end_time;
 
@@ -83,27 +43,18 @@ namespace HeuristicLab.Algorithms.Benchmarks {
     private double[] e1 = new double[4];
     private int i, j, k, l, n1, n2, n3, n4, n6, n7, n8, n9, n10, n11;
 
-    #endregion
-
-    #region Costructors
-
     [StorableConstructor]
-    public WhetstoneBenchmark(bool deserializing) { }
+    private Whetstone(bool deserializing) : base(deserializing) { }
+    private Whetstone(Whetstone original, Cloner cloner) : base(original, cloner) { }
+    public Whetstone() { }
 
-    public WhetstoneBenchmark() { }
-
-    protected WhetstoneBenchmark(WhetstoneBenchmark original, Cloner cloner) {
-      cloner.RegisterClonedObject(original, this);
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Whetstone(this, cloner);
     }
 
-    #endregion
-
-    #region Whetstone Benchmark
     // implementation based on Java version: www.aicas.com/download/Whetstone.java
-
-    public void Run(CancellationToken token, ResultCollection results) {
-      cancellationToken = token;
-      stopBenchmark = false;
+    public override void Run(CancellationToken cancellationToken, ResultCollection results) {
+      bool stopBenchmark = false;
 
       ITERATIONS = 100; // ITERATIONS / 10 = Millions Whetstone instructions
 
@@ -131,11 +82,11 @@ namespace HeuristicLab.Algorithms.Benchmarks {
           throw new OperationCanceledException(cancellationToken);
         }
 
-        if ((timeLimit == null) || (timeLimit.TotalMilliseconds == 0)) {
+        if ((TimeLimit == null) || (TimeLimit.TotalMilliseconds == 0)) {
           if (runNumber > defaultNumberOfRuns) {
             stopBenchmark = true;
           }
-        } else if (sw.Elapsed > timeLimit) {
+        } else if (sw.Elapsed > TimeLimit) {
           stopBenchmark = true;
         }
 
@@ -292,35 +243,5 @@ namespace HeuristicLab.Algorithms.Benchmarks {
       e1[k] = e1[l];
       e1[l] = e1[j];
     }
-
-    #endregion
-
-    #region Clone
-
-    public IDeepCloneable Clone(Cloner cloner) {
-      return new WhetstoneBenchmark(this, cloner);
-    }
-
-    public object Clone() {
-      return Clone(new Cloner());
-    }
-
-    #endregion
-
-    #region Events
-
-    public event EventHandler ItemImageChanged;
-    protected virtual void OnItemImageChanged() {
-      EventHandler handler = ItemImageChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-
-    public event EventHandler ToStringChanged;
-    protected virtual void OnToStringChanged() {
-      EventHandler handler = ToStringChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-
-    #endregion
   }
 }

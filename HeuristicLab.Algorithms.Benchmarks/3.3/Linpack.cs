@@ -21,7 +21,6 @@
 
 using System;
 using System.Diagnostics;
-using System.Drawing;
 using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -30,48 +29,9 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.Benchmarks {
-  [Item("Linpack Benchmark", "Linpack performance benchmark algorithm.")]
+  [Item("Linpack", "Linpack performance benchmark.")]
   [StorableClass]
-  public class LinpackBenchmark : IBenchmark {
-    [Storable]
-    private byte[][] chunk;
-    public byte[][] ChunkData {
-      get { return chunk; }
-      set { chunk = value; }
-    }
-
-    [Storable]
-    private TimeSpan timeLimit;
-    public TimeSpan TimeLimit {
-      get { return timeLimit; }
-      set { timeLimit = value; }
-    }
-
-    private bool stopBenchmark;
-
-    private CancellationToken cancellationToken;
-
-    public string ItemName {
-      get { return ItemAttribute.GetName(this.GetType()); }
-    }
-
-    public string ItemDescription {
-      get { return ItemAttribute.GetDescription(this.GetType()); }
-    }
-
-    public Version ItemVersion {
-      get { return ItemAttribute.GetVersion(this.GetType()); }
-    }
-
-    public static Image StaticItemImage {
-      get { return HeuristicLab.Common.Resources.VSImageLibrary.Event; }
-    }
-    public Image ItemImage {
-      get { return ItemAttribute.GetImage(this.GetType()); }
-    }
-
-    #region Benchmark Fields
-
+  public sealed class Linpack : Benchmark {
     private const int DEFAULT_PSIZE = 1500;
 
     private double eps_result = 0.0;
@@ -80,29 +40,22 @@ namespace HeuristicLab.Algorithms.Benchmarks {
     private double time_result = 0.0;
     private double total = 0.0;
 
+    private CancellationToken cancellationToken;
     private Stopwatch sw = new Stopwatch();
 
-    #endregion
-
-    #region Costructors
-
     [StorableConstructor]
-    public LinpackBenchmark(bool deserializing) { }
+    private Linpack(bool deserializing) : base(deserializing) { }
+    private Linpack(Linpack original, Cloner cloner) : base(original, cloner) { }
+    public Linpack() { }
 
-    public LinpackBenchmark() { }
-
-    public LinpackBenchmark(LinpackBenchmark original, Cloner cloner) {
-      cloner.RegisterClonedObject(original, this);
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Linpack(this, cloner);
     }
 
-    #endregion
-
-    #region Linpack Benchmark
     // implementation based on Java version: http://www.netlib.org/benchmark/linpackjava/
-
-    public void Run(CancellationToken token, ResultCollection results) {
+    public override void Run(CancellationToken token, ResultCollection results) {
       cancellationToken = token;
-      stopBenchmark = false;
+      bool stopBenchmark = false;
       TimeSpan executionTime = new TimeSpan();
       bool resultAchieved = false;
       do {
@@ -196,9 +149,9 @@ namespace HeuristicLab.Algorithms.Benchmarks {
         }
 
         executionTime += sw.Elapsed;
-        if ((timeLimit == null) || (timeLimit.TotalMilliseconds == 0))
+        if ((TimeLimit == null) || (TimeLimit.TotalMilliseconds == 0))
           stopBenchmark = true;
-        else if (executionTime > timeLimit)
+        else if (executionTime > TimeLimit)
           stopBenchmark = true;
       } while (!stopBenchmark);
     }
@@ -533,35 +486,5 @@ namespace HeuristicLab.Algorithms.Benchmarks {
         }
       }
     }
-
-    #endregion
-
-    #region Clone
-
-    public IDeepCloneable Clone(Cloner cloner) {
-      return new LinpackBenchmark(this, cloner);
-    }
-
-    public object Clone() {
-      return Clone(new Cloner());
-    }
-
-    #endregion
-
-    #region Events
-
-    public event EventHandler ItemImageChanged;
-    protected virtual void OnItemImageChanged() {
-      EventHandler handler = ItemImageChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-
-    public event EventHandler ToStringChanged;
-    protected virtual void OnToStringChanged() {
-      EventHandler handler = ToStringChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-
-    #endregion
   }
 }
