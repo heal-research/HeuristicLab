@@ -94,6 +94,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HiveInformationDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HiveInformationDialog.Designer.cs">
+      <DependentUpon>HiveInformationDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="HiveTasks\OptimizerHiveTaskView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -182,6 +188,9 @@
     <None Include="HeuristicLab.snk" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="HiveInformationDialog.resx">
+      <DependentUpon>HiveInformationDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="HiveTasks\OptimizerHiveTaskView.resx">
       <DependentUpon>OptimizerHiveTaskView.cs</DependentUpon>
     </EmbeddedResource>
@@ -293,6 +302,9 @@
       <Name>HeuristicLab.Visualization.ChartControlsExtensions-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\109_AllAnnotations_Info_48x48_72.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

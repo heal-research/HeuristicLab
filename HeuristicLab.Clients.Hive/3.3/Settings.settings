@@ -17,5 +17,8 @@
     <Setting Name="MaxRepeatServiceCalls" Type="System.Int32" Scope="Application">
       <Value Profile="(Default)">5</Value>
     </Setting>
+    <Setting Name="AnonymousUserName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">anonymous</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

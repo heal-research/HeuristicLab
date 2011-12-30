@@ -67,5 +67,14 @@ namespace HeuristicLab.Clients.Hive {
                 return ((int)(this["MaxRepeatServiceCalls"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("anonymous")]
+        public string AnonymousUserName {
+            get {
+                return ((string)(this["AnonymousUserName"]));
+            }
+        }
     }
 }
