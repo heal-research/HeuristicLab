@@ -227,6 +227,11 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
+      if (Content == null) {
+        btnSaveCal.Enabled = false;
+      } else {
+        btnSaveCal.Enabled = true;
+      }
     }
 
     private void btnClearCal_Click(object sender, System.EventArgs e) {

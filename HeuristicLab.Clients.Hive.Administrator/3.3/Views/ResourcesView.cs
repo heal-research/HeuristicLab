@@ -169,6 +169,15 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
+      if (Content == null) {
+        btnAddGroup.Enabled = false;
+        btnRemoveGroup.Enabled = false;
+        btnSave.Enabled = false;
+      } else {
+        btnAddGroup.Enabled = true;
+        btnRemoveGroup.Enabled = true;
+        btnSave.Enabled = true;
+      }
     }
 
     private void treeSlaveGroup_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e) {
