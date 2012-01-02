@@ -164,7 +164,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._4.Tests {
       }
 
       foreach (var symbol in grammar.ModifyableSymbols) {
-        //check if ever symbol has at least one allowed child
+        //check if every symbol has at least one allowed child
         for (int i = 0; i < grammar.GetMaximumSubtreeCount(symbol); i++)
           Assert.IsTrue(grammar.GetAllowedChildSymbols(symbol, i).Any());
       }
