@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Diagnostics;
 using System.Reflection;
 using System.Windows.Forms;
 using HeuristicLab.Core;
@@ -55,7 +56,10 @@ namespace HeuristicLab.Clients.Hive.SlaveCore.Views {
     }
 
     private void AboutView_Load(object sender, System.EventArgs e) {
-      versionTextBox.Text = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+      FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
+      string version = versionInfo.FileVersion;
+
+      versionTextBox.Text = version;
     }
 
     private void webLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
