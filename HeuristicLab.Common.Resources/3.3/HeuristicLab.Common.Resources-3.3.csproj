@@ -431,6 +431,9 @@
   <ItemGroup>
     <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Checkout.png" />
     <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Clone.png" />
+    <None Include="Resources\VS2010ImageLibrary\VS2010ImageLibrary_Objects_Information_Large.png" />
+    <None Include="Resources\VS2010ImageLibrary\VS2010ImageLibrary_Objects_Network_Center_Large.png" />
+    <None Include="Resources\VS2010ImageLibrary\VS2010ImageLibrary_Objects_Monitor_Large.png" />
     <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_DisplayInColor_Vertical.png" />
     <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_BatchRun_Paused.png" />
     <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_BatchRun_Prepared.png" />

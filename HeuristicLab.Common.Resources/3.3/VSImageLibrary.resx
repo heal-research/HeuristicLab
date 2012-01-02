@@ -507,5 +507,14 @@
   </data>
   <data name="DisplayInColorVertical" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_DisplayInColor_Vertical.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>  
+  <data name="InformationLarge" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2010ImageLibrary\VS2010ImageLibrary_Objects_Information_Large.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MonitorLarge" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2010ImageLibrary\VS2010ImageLibrary_Objects_Monitor_Large.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="NetworkCenterLarge" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VS2010ImageLibrary\VS2010ImageLibrary_Objects_Network_Center_Large.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

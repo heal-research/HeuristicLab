@@ -24,69 +24,34 @@
     /// </summary>
     private void InitializeComponent() {
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HiveInformationDialog));
-      this.richTextBox1 = new System.Windows.Forms.RichTextBox();
-      this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-      this.pictureBox1 = new System.Windows.Forms.PictureBox();
+      this.richTextBox = new System.Windows.Forms.RichTextBox();
       this.okButton = new System.Windows.Forms.Button();
-      ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
-      this.splitContainer2.Panel1.SuspendLayout();
-      this.splitContainer2.Panel2.SuspendLayout();
-      this.splitContainer2.SuspendLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+      this.panel = new System.Windows.Forms.Panel();
+      this.label = new System.Windows.Forms.Label();
+      this.panel.SuspendLayout();
       this.SuspendLayout();
       // 
-      // richTextBox1
+      // richTextBox
       // 
-      this.richTextBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+      this.richTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.richTextBox1.BackColor = System.Drawing.Color.White;
-      this.richTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-      this.richTextBox1.Cursor = System.Windows.Forms.Cursors.Default;
-      this.richTextBox1.Location = new System.Drawing.Point(3, 3);
-      this.richTextBox1.Name = "richTextBox1";
-      this.richTextBox1.ReadOnly = true;
-      this.richTextBox1.Size = new System.Drawing.Size(383, 149);
-      this.richTextBox1.TabIndex = 0;
-      this.richTextBox1.Text = resources.GetString("richTextBox1.Text");
-      this.richTextBox1.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.richTextBox1_LinkClicked);
-      // 
-      // splitContainer2
-      // 
-      this.splitContainer2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.splitContainer2.BackColor = System.Drawing.Color.White;
-      this.splitContainer2.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
-      this.splitContainer2.IsSplitterFixed = true;
-      this.splitContainer2.Location = new System.Drawing.Point(12, 12);
-      this.splitContainer2.Name = "splitContainer2";
-      // 
-      // splitContainer2.Panel1
-      // 
-      this.splitContainer2.Panel1.Controls.Add(this.pictureBox1);
-      // 
-      // splitContainer2.Panel2
-      // 
-      this.splitContainer2.Panel2.Controls.Add(this.richTextBox1);
-      this.splitContainer2.Size = new System.Drawing.Size(493, 155);
-      this.splitContainer2.SplitterDistance = 100;
-      this.splitContainer2.TabIndex = 3;
-      // 
-      // pictureBox1
-      // 
-      this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-      this.pictureBox1.Location = new System.Drawing.Point(3, 3);
-      this.pictureBox1.Name = "pictureBox1";
-      this.pictureBox1.Size = new System.Drawing.Size(94, 136);
-      this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-      this.pictureBox1.TabIndex = 0;
-      this.pictureBox1.TabStop = false;
+      this.richTextBox.BackColor = System.Drawing.Color.White;
+      this.richTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+      this.richTextBox.Cursor = System.Windows.Forms.Cursors.Default;
+      this.richTextBox.Location = new System.Drawing.Point(95, 12);
+      this.richTextBox.Name = "richTextBox";
+      this.richTextBox.ReadOnly = true;
+      this.richTextBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
+      this.richTextBox.Size = new System.Drawing.Size(422, 137);
+      this.richTextBox.TabIndex = 1;
+      this.richTextBox.Text = resources.GetString("richTextBox.Text");
+      this.richTextBox.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.richTextBox1_LinkClicked);
       // 
       // okButton
       // 
       this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.okButton.Location = new System.Drawing.Point(430, 182);
+      this.okButton.Location = new System.Drawing.Point(442, 170);
       this.okButton.Name = "okButton";
       this.okButton.Size = new System.Drawing.Size(75, 23);
       this.okButton.TabIndex = 0;
@@ -94,33 +59,53 @@
       this.okButton.UseVisualStyleBackColor = true;
       this.okButton.Click += new System.EventHandler(this.okButton_Click);
       // 
+      // panel
+      // 
+      this.panel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.panel.BackColor = System.Drawing.SystemColors.Window;
+      this.panel.Controls.Add(this.label);
+      this.panel.Controls.Add(this.richTextBox);
+      this.panel.Location = new System.Drawing.Point(0, 0);
+      this.panel.Name = "panel";
+      this.panel.Size = new System.Drawing.Size(529, 164);
+      this.panel.TabIndex = 1;
+      // 
+      // label
+      // 
+      this.label.Anchor = System.Windows.Forms.AnchorStyles.Left;
+      this.label.Location = new System.Drawing.Point(24, 58);
+      this.label.Name = "label";
+      this.label.Size = new System.Drawing.Size(48, 48);
+      this.label.TabIndex = 0;
+      // 
       // HiveInformationDialog
       // 
+      this.AcceptButton = this.okButton;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(517, 208);
+      this.ClientSize = new System.Drawing.Size(529, 205);
+      this.Controls.Add(this.panel);
       this.Controls.Add(this.okButton);
-      this.Controls.Add(this.splitContainer2);
       this.MaximizeBox = false;
       this.MinimizeBox = false;
       this.Name = "HiveInformationDialog";
       this.ShowIcon = false;
       this.ShowInTaskbar = false;
+      this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
       this.Text = "HeuristicLab Hive";
-      this.splitContainer2.Panel1.ResumeLayout(false);
-      this.splitContainer2.Panel2.ResumeLayout(false);
-      ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
-      this.splitContainer2.ResumeLayout(false);
-      ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+      this.TopMost = true;
+      this.panel.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }
 
     #endregion
 
-    private System.Windows.Forms.RichTextBox richTextBox1;
-    private System.Windows.Forms.SplitContainer splitContainer2;
-    private System.Windows.Forms.PictureBox pictureBox1;
+    private System.Windows.Forms.RichTextBox richTextBox;
     private System.Windows.Forms.Button okButton;
+    private System.Windows.Forms.Panel panel;
+    private System.Windows.Forms.Label label;
   }
 }

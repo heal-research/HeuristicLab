@@ -50,8 +50,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
 
     public ResourcesView() {
       InitializeComponent();
-      treeSlaveGroup.ImageList.Images.Add(HiveImageLibrary.Slave);
-      treeSlaveGroup.ImageList.Images.Add(HiveImageLibrary.SlaveGroup);
+      treeSlaveGroup.ImageList.Images.Add(HeuristicLab.Common.Resources.VSImageLibrary.MonitorLarge);
+      treeSlaveGroup.ImageList.Images.Add(HeuristicLab.Common.Resources.VSImageLibrary.NetworkCenterLarge);
 
       HiveAdminClient.Instance.Refreshing += new EventHandler(Instance_Refreshing);
       HiveAdminClient.Instance.Refreshed += new EventHandler(Instance_Refreshed);
@@ -345,35 +345,52 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     }
 
     void ResetView() {
-      treeSlaveGroup.Nodes.Clear();
+      if (this.InvokeRequired) {
+        Invoke(new Action(ResetView));
+      } else {
+        treeSlaveGroup.Nodes.Clear();
 
-      if (slaveView.Content != null && slaveView.Content is SlaveGroup) {
-        slaveView.Content.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(SlaveViewContent_PropertyChanged);
+        if (slaveView.Content != null && slaveView.Content is SlaveGroup) {
+          slaveView.Content.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(SlaveViewContent_PropertyChanged);
+        }
+        slaveView.Content = null;
+        if (scheduleView.Content != null) {
+          scheduleView.Content.Clear();
+        }
+        HiveAdminClient.Instance.ResetDowntime();
       }
-      slaveView.Content = null;
-      if (scheduleView.Content != null) {
-        scheduleView.Content.Clear();
-      }
-      HiveAdminClient.Instance.ResetDowntime();
     }
 
     private void UpdateResources() {
-      if (this.InvokeRequired) {
-        this.Invoke(new Action(ResetView));
-      } else {
-        ResetView();
-      }
+      ResetView();
 
       try {
         HiveAdminClient.Instance.Refresh();
         Content = HiveAdminClient.Instance.Resources;
       }
       catch (MessageSecurityException) {
-        MessageBox.Show("A Message Security error has occured. This normally means that your user name or password is wrong.", "HeuristicLab Hive Administrator", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        ShowMessageSecurityException();
       }
       catch (AnonymousUserException) {
-        HiveInformationDialog dialog = new HiveInformationDialog();
-        dialog.ShowDialog(this);
+        ShowHiveInformationDialog();
+      }
+    }
+
+    private void ShowMessageSecurityException() {
+      if (this.InvokeRequired) {
+        Invoke(new Action(ShowMessageSecurityException));
+      } else {
+        MessageBox.Show("A Message Security error has occured. This normally means that your user name or password is wrong.", "HeuristicLab Hive Administrator", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
+    }
+
+    private void ShowHiveInformationDialog() {
+      if (this.InvokeRequired) {
+        Invoke(new Action(ShowHiveInformationDialog));
+      } else {
+        using (HiveInformationDialog dialog = new HiveInformationDialog()) {
+          dialog.ShowDialog(this);
+        }
       }
     }
 
