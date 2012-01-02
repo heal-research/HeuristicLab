@@ -26,6 +26,8 @@ namespace HeuristicLab.Clients.Hive.Views {
   public partial class HiveInformationDialog : Form {
     public HiveInformationDialog() {
       InitializeComponent();
+
+      label.Image = HeuristicLab.Common.Resources.VSImageLibrary.InformationLarge;
     }
 
     private void okButton_Click(object sender, EventArgs e) {

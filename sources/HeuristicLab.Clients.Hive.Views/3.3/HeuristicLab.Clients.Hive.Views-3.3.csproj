@@ -168,11 +168,6 @@
     <Compile Include="StateLog\StateLogView.designer.cs">
       <DependentUpon>StateLogView.cs</DependentUpon>
     </Compile>
-    <Compile Include="HiveImageLibrary.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>HiveImageLibrary.resx</DependentUpon>
-    </Compile>
     <None Include="Plugin.cs.frame" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Progress\ProgressView.cs">
@@ -212,19 +207,9 @@
     <EmbeddedResource Include="StateLog\StateLogView.resx">
       <DependentUpon>StateLogView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="HiveImageLibrary.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>HiveImageLibrary.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="Progress\ProgressView.resx">
       <DependentUpon>ProgressView.cs</DependentUpon>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\Monitor.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\network_center.ico" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Clients.Hive\3.3\HeuristicLab.Clients.Hive-3.3.csproj">
@@ -302,9 +287,6 @@
       <Name>HeuristicLab.Visualization.ChartControlsExtensions-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Images\109_AllAnnotations_Info_48x48_72.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
