@@ -113,7 +113,6 @@
     <DeploymentItem filename="HeuristicLab.Tests\bin\Release\ICSharpCode.SharpZipLib.dll" />
     <DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.Data-3.3.dll" />
     <DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.CodeEditor-3.3.dll" />
-    <DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.Persistence.GUI-3.3.dll" />
     <DeploymentItem filename="HeuristicLab.Tests\HeuristicLab-3.3\Resources\ch130.opt.tour" />
     <DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.Problems.DataAnalysis.Symbolic.Views-3.4.dll" />
     <DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.Operators.Views-3.3.dll" />

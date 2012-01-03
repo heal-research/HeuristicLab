@@ -793,10 +793,6 @@
       <Project>{56F9106A-079F-4C61-92F6-86A84C2D84B7}</Project>
       <Name>HeuristicLab.Parameters-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Persistence.GUI\3.3\HeuristicLab.Persistence.GUI-3.3.csproj">
-      <Project>{A9E282EA-180F-4233-B809-AEDF0787545C}</Project>
-      <Name>HeuristicLab.Persistence.GUI-3.3</Name>
-    </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
       <Project>{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}</Project>
       <Name>HeuristicLab.Persistence-3.3</Name>
