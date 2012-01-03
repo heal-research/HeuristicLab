@@ -25,15 +25,12 @@ namespace HeuristicLab.Clients.Hive.Views {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ItemTreeView<T>));
       this.splitContainer = new System.Windows.Forms.SplitContainer();
       this.showDetailsCheckBox = new System.Windows.Forms.CheckBox();
       this.removeButton = new System.Windows.Forms.Button();
       this.addButton = new System.Windows.Forms.Button();
       this.treeView = new System.Windows.Forms.TreeView();
       this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-      this.asfasdfToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.gfgffToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.imageList = new System.Windows.Forms.ImageList(this.components);
       this.detailsGroupBox = new System.Windows.Forms.GroupBox();
       this.detailsViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
@@ -122,24 +119,9 @@ namespace HeuristicLab.Clients.Hive.Views {
       // 
       // contextMenuStrip
       // 
-      this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.asfasdfToolStripMenuItem,
-            this.gfgffToolStripMenuItem});
       this.contextMenuStrip.Name = "contextMenuStrip";
       this.contextMenuStrip.Size = new System.Drawing.Size(153, 70);
       this.contextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip_Opening);
-      // 
-      // asfasdfToolStripMenuItem
-      // 
-      this.asfasdfToolStripMenuItem.Name = "asfasdfToolStripMenuItem";
-      this.asfasdfToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-      this.asfasdfToolStripMenuItem.Text = "asfasdf";
-      // 
-      // gfgffToolStripMenuItem
-      // 
-      this.gfgffToolStripMenuItem.Name = "gfgffToolStripMenuItem";
-      this.gfgffToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-      this.gfgffToolStripMenuItem.Text = "gfgff";
       // 
       // imageList
       // 
@@ -196,8 +178,6 @@ namespace HeuristicLab.Clients.Hive.Views {
     private System.Windows.Forms.ImageList imageList;
     private System.Windows.Forms.GroupBox detailsGroupBox;
     private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
-    private System.Windows.Forms.ToolStripMenuItem asfasdfToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem gfgffToolStripMenuItem;
     protected System.Windows.Forms.CheckBox showDetailsCheckBox;
     protected System.Windows.Forms.Button removeButton;
     protected System.Windows.Forms.Button addButton;

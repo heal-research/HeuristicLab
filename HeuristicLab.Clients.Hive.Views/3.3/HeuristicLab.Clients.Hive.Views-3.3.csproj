@@ -186,30 +186,6 @@
     <EmbeddedResource Include="HiveInformationDialog.resx">
       <DependentUpon>HiveInformationDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="HiveTasks\OptimizerHiveTaskView.resx">
-      <DependentUpon>OptimizerHiveTaskView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="HiveTasks\HiveTaskView.resx">
-      <DependentUpon>HiveTaskView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="TreeView\ItemTreeView.resx">
-      <DependentUpon>ItemTreeView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="StateLog\StateLogGanttChartListView.resx">
-      <DependentUpon>StateLogGanttChartListView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GanttChart\GanttChart.resx">
-      <DependentUpon>GanttChart.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="StateLog\StateLogGanttChartView.resx">
-      <DependentUpon>StateLogGanttChartView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="StateLog\StateLogView.resx">
-      <DependentUpon>StateLogView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Progress\ProgressView.resx">
-      <DependentUpon>ProgressView.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Clients.Hive\3.3\HeuristicLab.Clients.Hive-3.3.csproj">

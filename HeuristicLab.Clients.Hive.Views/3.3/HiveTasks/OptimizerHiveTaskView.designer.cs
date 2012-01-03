@@ -23,7 +23,6 @@
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OptimizerHiveTaskView));
       this.restartButton = new System.Windows.Forms.Button();
       this.pauseButton = new System.Windows.Forms.Button();
       this.stopButton = new System.Windows.Forms.Button();
@@ -61,7 +60,7 @@
       // restartButton
       // 
       this.restartButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.restartButton.Image = ((System.Drawing.Image)(resources.GetObject("restartButton.Image")));
+      this.restartButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Restart;
       this.restartButton.Location = new System.Drawing.Point(3, 348);
       this.restartButton.Name = "restartButton";
       this.restartButton.Size = new System.Drawing.Size(24, 24);
@@ -73,7 +72,7 @@
       // 
       this.pauseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.pauseButton.Enabled = false;
-      this.pauseButton.Image = ((System.Drawing.Image)(resources.GetObject("pauseButton.Image")));
+      this.pauseButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Pause;
       this.pauseButton.Location = new System.Drawing.Point(33, 348);
       this.pauseButton.Name = "pauseButton";
       this.pauseButton.Size = new System.Drawing.Size(24, 24);
@@ -84,7 +83,7 @@
       // stopButton
       // 
       this.stopButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.stopButton.Image = ((System.Drawing.Image)(resources.GetObject("stopButton.Image")));
+      this.stopButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Stop;
       this.stopButton.Location = new System.Drawing.Point(63, 348);
       this.stopButton.Name = "stopButton";
       this.stopButton.Size = new System.Drawing.Size(24, 24);

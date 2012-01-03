@@ -23,7 +23,6 @@
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Recurrence));
       this.gbAppointment = new System.Windows.Forms.GroupBox();
       this.chbade = new System.Windows.Forms.CheckBox();
       this.dtpEnd = new System.Windows.Forms.DateTimePicker();
@@ -242,7 +241,7 @@
       this.Controls.Add(this.btSaveRecurrence);
       this.Controls.Add(this.gbAppointment);
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-      this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+      this.Icon = HeuristicLab.Common.Resources.HeuristicLab.Icon;
       this.Name = "Recurrence";
       this.Text = "Recurrence";
       this.gbAppointment.ResumeLayout(false);

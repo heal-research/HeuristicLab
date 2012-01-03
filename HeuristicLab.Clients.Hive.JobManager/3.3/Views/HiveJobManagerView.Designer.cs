@@ -44,7 +44,6 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HiveJobManagerView));
       this.hiveExperimentListView = new RefreshableHiveJobListView();
       this.refreshButton = new System.Windows.Forms.Button();
       this.SuspendLayout();
@@ -64,7 +63,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       // 
       // refreshButton
       // 
-      this.refreshButton.Image = ((System.Drawing.Image)(resources.GetObject("refreshButton.Image")));
+      this.refreshButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Refresh;
       this.refreshButton.Location = new System.Drawing.Point(3, 3);
       this.refreshButton.Name = "refreshButton";
       this.refreshButton.Size = new System.Drawing.Size(24, 24);
