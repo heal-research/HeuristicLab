@@ -36,8 +36,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
     protected const string TargetVariableParameterName = "TargetVariable";
     protected const string ClassNamesParameterName = "ClassNames";
     protected const string ClassificationPenaltiesParameterName = "ClassificationPenalties";
-    protected const int MaximumNumberOfClasses = 20;
-    protected const int InspectedRowsToDetermineTargets = 500;
+    protected const int MaximumNumberOfClasses = 100;
+    protected const int InspectedRowsToDetermineTargets = 2000;
 
     public string Filename { get; set; }
 
