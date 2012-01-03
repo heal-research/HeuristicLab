@@ -135,18 +135,6 @@
     <None Include="HeuristicLab.snk" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Views\HiveJobManagerView.resx">
-      <DependentUpon>HiveJobManagerView.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\HiveJobPermissionView.resx">
-      <DependentUpon>HiveJobPermissionView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\RefreshableHiveJobView.resx">
-      <DependentUpon>RefreshableHiveJobView.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Clients.Hive.Views\3.3\HeuristicLab.Clients.Hive.Views-3.3.csproj">
       <Project>{E1D6C801-892A-406A-B606-F158E36DD3C3}</Project>
       <Name>HeuristicLab.Clients.Hive.Views-3.3</Name>

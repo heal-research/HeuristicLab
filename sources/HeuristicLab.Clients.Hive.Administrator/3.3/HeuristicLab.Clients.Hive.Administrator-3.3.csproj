@@ -140,23 +140,6 @@
     <None Include="HeuristicLab.snk" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Views\HiveAdministratorView.resx">
-      <DependentUpon>HiveAdministratorView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\Recurrence.resx">
-      <DependentUpon>Recurrence.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\ResourcesView.resx">
-      <DependentUpon>ResourcesView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\ScheduleView.resx">
-      <DependentUpon>ScheduleView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\SlaveView.resx">
-      <DependentUpon>SlaveView.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Clients.Common\3.3\HeuristicLab.Clients.Common-3.3.csproj">
       <Project>{730A9104-D4D1-4360-966B-E49B7571DDA3}</Project>
       <Name>HeuristicLab.Clients.Common-3.3</Name>

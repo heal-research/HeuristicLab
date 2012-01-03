@@ -46,7 +46,6 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
       Calendar.DrawTool drawTool1 = new Calendar.DrawTool();
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ScheduleView));
       this.dvOnline = new Calendar.DayView();
       this.txttimeTo = new System.Windows.Forms.DateTimePicker();
       this.txttimeFrom = new System.Windows.Forms.DateTimePicker();
@@ -160,7 +159,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // btnRecurrence
       // 
-      this.btnRecurrence.Image = ((System.Drawing.Image)(resources.GetObject("btnRecurrence.Image")));
+      this.btnRecurrence.Image = HeuristicLab.Common.Resources.VSImageLibrary.Timer;
       this.btnRecurrence.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
       this.btnRecurrence.Location = new System.Drawing.Point(135, 129);
       this.btnRecurrence.Name = "btnRecurrence";
@@ -173,7 +172,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // btbDelete
       // 
-      this.btbDelete.Image = ((System.Drawing.Image)(resources.GetObject("btbDelete.Image")));
+      this.btbDelete.Image = HeuristicLab.Common.Resources.VSImageLibrary.Delete;
       this.btbDelete.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
       this.btbDelete.Location = new System.Drawing.Point(8, 129);
       this.btbDelete.Name = "btbDelete";
@@ -204,7 +203,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // btCreate
       // 
-      this.btCreate.Image = ((System.Drawing.Image)(resources.GetObject("btCreate.Image")));
+      this.btCreate.Image = HeuristicLab.Common.Resources.VSImageLibrary.Add;
       this.btCreate.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
       this.btCreate.Location = new System.Drawing.Point(6, 93);
       this.btCreate.Name = "btCreate";
@@ -217,7 +216,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // btnSaveCal
       // 
-      this.btnSaveCal.Image = ((System.Drawing.Image)(resources.GetObject("btnSaveCal.Image")));
+      this.btnSaveCal.Image = HeuristicLab.Common.Resources.VSImageLibrary.PublishToWeb;
       this.btnSaveCal.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
       this.btnSaveCal.Location = new System.Drawing.Point(633, 41);
       this.btnSaveCal.Name = "btnSaveCal";
@@ -230,7 +229,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // btnClearCal
       // 
-      this.btnClearCal.Image = ((System.Drawing.Image)(resources.GetObject("btnClearCal.Image")));
+      this.btnClearCal.Image = HeuristicLab.Common.Resources.VSImageLibrary.Document;
       this.btnClearCal.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
       this.btnClearCal.Location = new System.Drawing.Point(633, 9);
       this.btnClearCal.Name = "btnClearCal";

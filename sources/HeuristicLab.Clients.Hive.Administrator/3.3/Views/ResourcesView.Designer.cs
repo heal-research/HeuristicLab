@@ -46,7 +46,6 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ResourcesView));
       this.imageListSlaveGroups = new System.Windows.Forms.ImageList(this.components);
       this.splitSlaves = new System.Windows.Forms.SplitContainer();
       this.btnRefresh = new System.Windows.Forms.Button();
@@ -102,7 +101,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // btnRefresh
       // 
-      this.btnRefresh.Image = ((System.Drawing.Image)(resources.GetObject("btnRefresh.Image")));
+      this.btnRefresh.Image = HeuristicLab.Common.Resources.VSImageLibrary.Refresh;
       this.btnRefresh.Location = new System.Drawing.Point(3, 3);
       this.btnRefresh.Name = "btnRefresh";
       this.btnRefresh.Size = new System.Drawing.Size(24, 24);
@@ -121,7 +120,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // btnSave
       // 
-      this.btnSave.Image = ((System.Drawing.Image)(resources.GetObject("btnSave.Image")));
+      this.btnSave.Image = HeuristicLab.Common.Resources.VSImageLibrary.PublishToWeb;
       this.btnSave.Location = new System.Drawing.Point(93, 3);
       this.btnSave.Name = "btnSave";
       this.btnSave.Size = new System.Drawing.Size(24, 24);
@@ -132,7 +131,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // btnRemoveGroup
       // 
-      this.btnRemoveGroup.Image = ((System.Drawing.Image)(resources.GetObject("btnRemoveGroup.Image")));
+      this.btnRemoveGroup.Image = HeuristicLab.Common.Resources.VSImageLibrary.Remove;
       this.btnRemoveGroup.Location = new System.Drawing.Point(63, 3);
       this.btnRemoveGroup.Name = "btnRemoveGroup";
       this.btnRemoveGroup.Size = new System.Drawing.Size(24, 24);
@@ -143,7 +142,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // btnAddGroup
       // 
-      this.btnAddGroup.Image = ((System.Drawing.Image)(resources.GetObject("btnAddGroup.Image")));
+      this.btnAddGroup.Image = HeuristicLab.Common.Resources.VSImageLibrary.Add;
       this.btnAddGroup.Location = new System.Drawing.Point(33, 3);
       this.btnAddGroup.Name = "btnAddGroup";
       this.btnAddGroup.Size = new System.Drawing.Size(24, 24);

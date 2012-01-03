@@ -24,7 +24,6 @@
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RefreshableHiveJobView));
       this.tabControl = new System.Windows.Forms.TabControl();
       this.tasksTabPage = new System.Windows.Forms.TabPage();
       this.jobsTreeView = new HeuristicLab.Clients.Hive.Views.HiveTaskItemTreeView();
@@ -124,7 +123,7 @@
       // 
       // refreshPermissionsButton
       // 
-      this.refreshPermissionsButton.Image = ((System.Drawing.Image)(resources.GetObject("refreshPermissionsButton.Image")));
+      this.refreshPermissionsButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Refresh;
       this.refreshPermissionsButton.Location = new System.Drawing.Point(3, 3);
       this.refreshPermissionsButton.Name = "refreshPermissionsButton";
       this.refreshPermissionsButton.Size = new System.Drawing.Size(24, 24);
@@ -227,7 +226,7 @@
       // startButton
       // 
       this.startButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.startButton.Image = ((System.Drawing.Image)(resources.GetObject("startButton.Image")));
+      this.startButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Play;
       this.startButton.Location = new System.Drawing.Point(0, 536);
       this.startButton.Name = "startButton";
       this.startButton.Size = new System.Drawing.Size(24, 24);
@@ -239,7 +238,7 @@
       // stopButton
       // 
       this.stopButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.stopButton.Image = ((System.Drawing.Image)(resources.GetObject("stopButton.Image")));
+      this.stopButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Stop;
       this.stopButton.Location = new System.Drawing.Point(60, 536);
       this.stopButton.Name = "stopButton";
       this.stopButton.Size = new System.Drawing.Size(24, 24);
@@ -252,7 +251,7 @@
       // 
       this.resetButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.resetButton.Enabled = false;
-      this.resetButton.Image = ((System.Drawing.Image)(resources.GetObject("resetButton.Image")));
+      this.resetButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Restart;
       this.resetButton.Location = new System.Drawing.Point(90, 536);
       this.resetButton.Name = "resetButton";
       this.resetButton.Size = new System.Drawing.Size(24, 24);
@@ -284,7 +283,7 @@
       // 
       this.pauseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.pauseButton.Enabled = false;
-      this.pauseButton.Image = ((System.Drawing.Image)(resources.GetObject("pauseButton.Image")));
+      this.pauseButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Pause;
       this.pauseButton.Location = new System.Drawing.Point(30, 536);
       this.pauseButton.Name = "pauseButton";
       this.pauseButton.Size = new System.Drawing.Size(24, 24);
@@ -333,7 +332,7 @@
       // 
       // refreshButton
       // 
-      this.refreshButton.Image = ((System.Drawing.Image)(resources.GetObject("refreshButton.Image")));
+      this.refreshButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Refresh;
       this.refreshButton.Location = new System.Drawing.Point(3, 0);
       this.refreshButton.Name = "refreshButton";
       this.refreshButton.Size = new System.Drawing.Size(24, 24);

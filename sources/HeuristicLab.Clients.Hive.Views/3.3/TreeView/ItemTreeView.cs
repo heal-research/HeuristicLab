@@ -344,7 +344,9 @@ namespace HeuristicLab.Clients.Hive.Views {
     }
 
     protected virtual void contextMenuStrip_Opening(object sender, CancelEventArgs e) {
-      if (treeView.SelectedNode != null) {
+      if (treeView.SelectedNode == null) {
+        e.Cancel = true;
+      } else {
         T selectedItem = treeView.SelectedNode.Tag as T;
         T parentItem = GetParentItem(selectedItem);
         var actions = GetTreeNodeItemActions(selectedItem);
@@ -352,6 +354,7 @@ namespace HeuristicLab.Clients.Hive.Views {
         foreach (var action in actions) {
           contextMenuStrip.Items.Add(new DelegateMenuItem<T>(action.Name, action.Image, new Action<T, T>(action.Execute), selectedItem, parentItem));
         }
+        e.Cancel = contextMenuStrip.Items.Count == 0;
       }
     }
 
