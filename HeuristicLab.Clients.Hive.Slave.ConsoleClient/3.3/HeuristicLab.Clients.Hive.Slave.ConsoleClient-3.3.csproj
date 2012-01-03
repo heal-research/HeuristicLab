@@ -79,10 +79,10 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="HeuristicLab.Clients.Hive-3.3, Version=3.3.5.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Clients.Hive-3.3">
       <HintPath>..\..\bin\HeuristicLab.Clients.Hive-3.3.dll</HintPath>
     </Reference>
-    <Reference Include="HeuristicLab.Hive-3.3, Version=3.3.5.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Hive-3.3">
       <HintPath>..\..\bin\HeuristicLab.Hive-3.3.dll</HintPath>
     </Reference>
     <Reference Include="System" />

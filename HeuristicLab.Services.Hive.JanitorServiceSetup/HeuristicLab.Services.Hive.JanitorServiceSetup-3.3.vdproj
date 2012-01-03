@@ -15,56 +15,32 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_0F40CA9449FDFB78B8AC4B440AC4D8A4"
-        "OwnerKey" = "8:_4600B5723344406E706AADE162ECB57E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_0F40CA9449FDFB78B8AC4B440AC4D8A4"
-        "OwnerKey" = "8:_9FA44D8824EA4446CC7862718941EADB"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_0F40CA9449FDFB78B8AC4B440AC4D8A4"
+        "MsmKey" = "8:_26AC61839DEB95F447CF5985EBBDF137"
         "OwnerKey" = "8:_830DEB35A0E94E6F97C523B8D05CE085"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_4600B5723344406E706AADE162ECB57E"
+        "MsmKey" = "8:_26AC61839DEB95F447CF5985EBBDF137"
+        "OwnerKey" = "8:_3D7D1EBDCFA5A8F3254F3F4E8141354D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_3D7D1EBDCFA5A8F3254F3F4E8141354D"
         "OwnerKey" = "8:_830DEB35A0E94E6F97C523B8D05CE085"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_4600B5723344406E706AADE162ECB57E"
-        "OwnerKey" = "8:_E68259CC2E813B82DC8BE13ED3806EA2"
+        "MsmKey" = "8:_473FF02284C0F37B2F5439EB9A6A5C83"
+        "OwnerKey" = "8:_26AC61839DEB95F447CF5985EBBDF137"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_4600B5723344406E706AADE162ECB57E"
-        "OwnerKey" = "8:_7D3E40C4BB9138C205778F7DA9F0A5CE"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_4600B5723344406E706AADE162ECB57E"
-        "OwnerKey" = "8:_9FA44D8824EA4446CC7862718941EADB"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_4600B5723344406E706AADE162ECB57E"
-        "OwnerKey" = "8:_B39FCFE104205C1A9AEF0A315E14EE1B"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_4600B5723344406E706AADE162ECB57E"
-        "OwnerKey" = "8:_5F70A85EDF6BF4408D8BEB2B11C31C9F"
+        "MsmKey" = "8:_473FF02284C0F37B2F5439EB9A6A5C83"
+        "OwnerKey" = "8:_830DEB35A0E94E6F97C523B8D05CE085"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -75,56 +51,50 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_5F70A85EDF6BF4408D8BEB2B11C31C9F"
-        "OwnerKey" = "8:_830DEB35A0E94E6F97C523B8D05CE085"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_5F70A85EDF6BF4408D8BEB2B11C31C9F"
-        "OwnerKey" = "8:_E68259CC2E813B82DC8BE13ED3806EA2"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_7D3E40C4BB9138C205778F7DA9F0A5CE"
-        "OwnerKey" = "8:_9FA44D8824EA4446CC7862718941EADB"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_7D3E40C4BB9138C205778F7DA9F0A5CE"
-        "OwnerKey" = "8:_830DEB35A0E94E6F97C523B8D05CE085"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_830DEB35A0E94E6F97C523B8D05CE085"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_9FA44D8824EA4446CC7862718941EADB"
+        "MsmKey" = "8:_88B5E042BEDBFEC9EF1D2F53B84CF4E2"
+        "OwnerKey" = "8:_D26A72EAB446EF9D5AD913CBA32F156E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_88B5E042BEDBFEC9EF1D2F53B84CF4E2"
+        "OwnerKey" = "8:_26AC61839DEB95F447CF5985EBBDF137"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_88B5E042BEDBFEC9EF1D2F53B84CF4E2"
         "OwnerKey" = "8:_830DEB35A0E94E6F97C523B8D05CE085"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_9FA44D8824EA4446CC7862718941EADB"
-        "OwnerKey" = "8:_E68259CC2E813B82DC8BE13ED3806EA2"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_B39FCFE104205C1A9AEF0A315E14EE1B"
+        "MsmKey" = "8:_9107FC2238B53A89983A8A248C520A28"
         "OwnerKey" = "8:_830DEB35A0E94E6F97C523B8D05CE085"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_B39FCFE104205C1A9AEF0A315E14EE1B"
-        "OwnerKey" = "8:_E68259CC2E813B82DC8BE13ED3806EA2"
+        "MsmKey" = "8:_9107FC2238B53A89983A8A248C520A28"
+        "OwnerKey" = "8:_3D7D1EBDCFA5A8F3254F3F4E8141354D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_AF6EC587974A22815ED989410E18990B"
+        "OwnerKey" = "8:_830DEB35A0E94E6F97C523B8D05CE085"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_AF6EC587974A22815ED989410E18990B"
+        "OwnerKey" = "8:_3D7D1EBDCFA5A8F3254F3F4E8141354D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -135,56 +105,86 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_E68259CC2E813B82DC8BE13ED3806EA2"
+        "MsmKey" = "8:_D26A72EAB446EF9D5AD913CBA32F156E"
+        "OwnerKey" = "8:_830DEB35A0E94E6F97C523B8D05CE085"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D26A72EAB446EF9D5AD913CBA32F156E"
+        "OwnerKey" = "8:_3D7D1EBDCFA5A8F3254F3F4E8141354D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D26A72EAB446EF9D5AD913CBA32F156E"
+        "OwnerKey" = "8:_473FF02284C0F37B2F5439EB9A6A5C83"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D26A72EAB446EF9D5AD913CBA32F156E"
+        "OwnerKey" = "8:_26AC61839DEB95F447CF5985EBBDF137"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D26A72EAB446EF9D5AD913CBA32F156E"
+        "OwnerKey" = "8:_9107FC2238B53A89983A8A248C520A28"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D26A72EAB446EF9D5AD913CBA32F156E"
+        "OwnerKey" = "8:_AF6EC587974A22815ED989410E18990B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_830DEB35A0E94E6F97C523B8D05CE085"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_0F40CA9449FDFB78B8AC4B440AC4D8A4"
+        "OwnerKey" = "8:_3D7D1EBDCFA5A8F3254F3F4E8141354D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_830DEB35A0E94E6F97C523B8D05CE085"
+        "OwnerKey" = "8:_26AC61839DEB95F447CF5985EBBDF137"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_E68259CC2E813B82DC8BE13ED3806EA2"
+        "OwnerKey" = "8:_473FF02284C0F37B2F5439EB9A6A5C83"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_9FA44D8824EA4446CC7862718941EADB"
+        "OwnerKey" = "8:_9107FC2238B53A89983A8A248C520A28"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_7D3E40C4BB9138C205778F7DA9F0A5CE"
+        "OwnerKey" = "8:_AF6EC587974A22815ED989410E18990B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_B39FCFE104205C1A9AEF0A315E14EE1B"
+        "OwnerKey" = "8:_D26A72EAB446EF9D5AD913CBA32F156E"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_5F70A85EDF6BF4408D8BEB2B11C31C9F"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_4600B5723344406E706AADE162ECB57E"
+        "OwnerKey" = "8:_88B5E042BEDBFEC9EF1D2F53B84CF4E2"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -205,6 +205,27 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.0"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.0"
+                    }
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.3.1"
+                    {
+                    "Name" = "8:Windows Installer 3.1"
+                    "ProductCode" = "8:Microsoft.Windows.Installer.3.1"
+                    }
+                }
+            }
         }
         "Release"
         {
@@ -221,6 +242,14 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+            }
         }
     }
     "Deployable"
@@ -298,7 +327,7 @@
                 {
                 "Name" = "8:.NET Framework"
                 "Message" = "8:[VSDNETMSG]"
-                "FrameworkVersion" = "8:.NETFramework,Version=v4.0,Profile=Client"
+                "FrameworkVersion" = "8:.NETFramework,Version=v4.0"
                 "AllowLaterVersions" = "11:FALSE"
                 "InstallUrl" = "8:http://go.microsoft.com/fwlink/?LinkId=131000"
                 }
@@ -306,20 +335,20 @@
         }
         "File"
         {
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_0F40CA9449FDFB78B8AC4B440AC4D8A4"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_26AC61839DEB95F447CF5985EBBDF137"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:HeuristicLab.Persistence-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_0F40CA9449FDFB78B8AC4B440AC4D8A4"
+                    "_26AC61839DEB95F447CF5985EBBDF137"
                     {
-                    "Name" = "8:ICSharpCode.SharpZipLib.dll"
+                    "Name" = "8:HeuristicLab.Persistence-3.3.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:ICSharpCode.SharpZipLib.dll"
+            "SourcePath" = "8:HeuristicLab.Persistence-3.3.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_BDE807FCDC3142CDB8D93E3C50E7F241"
@@ -337,20 +366,51 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_4600B5723344406E706AADE162ECB57E"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_3D7D1EBDCFA5A8F3254F3F4E8141354D"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:HeuristicLab.PluginInfrastructure-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:HeuristicLab.Services.Hive-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_4600B5723344406E706AADE162ECB57E"
+                    "_3D7D1EBDCFA5A8F3254F3F4E8141354D"
                     {
-                    "Name" = "8:HeuristicLab.PluginInfrastructure-3.3.dll"
+                    "Name" = "8:HeuristicLab.Services.Hive-3.3.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:HeuristicLab.PluginInfrastructure-3.3.dll"
+            "SourcePath" = "8:HeuristicLab.Services.Hive-3.3.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_BDE807FCDC3142CDB8D93E3C50E7F241"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_473FF02284C0F37B2F5439EB9A6A5C83"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:HeuristicLab.Tracing-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_473FF02284C0F37B2F5439EB9A6A5C83"
+                    {
+                    "Name" = "8:HeuristicLab.Tracing-3.3.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:HeuristicLab.Tracing-3.3.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_BDE807FCDC3142CDB8D93E3C50E7F241"
@@ -388,20 +448,20 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_5F70A85EDF6BF4408D8BEB2B11C31C9F"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_88B5E042BEDBFEC9EF1D2F53B84CF4E2"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:HeuristicLab.Services.Hive.DataAccess-3.3, Version=3.3.5.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_5F70A85EDF6BF4408D8BEB2B11C31C9F"
+                    "_88B5E042BEDBFEC9EF1D2F53B84CF4E2"
                     {
-                    "Name" = "8:HeuristicLab.Services.Hive.DataAccess-3.3.dll"
+                    "Name" = "8:ICSharpCode.SharpZipLib.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:HeuristicLab.Services.Hive.DataAccess-3.3.dll"
+            "SourcePath" = "8:ICSharpCode.SharpZipLib.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_BDE807FCDC3142CDB8D93E3C50E7F241"
@@ -419,82 +479,51 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_7D3E40C4BB9138C205778F7DA9F0A5CE"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:HeuristicLab.Tracing-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_7D3E40C4BB9138C205778F7DA9F0A5CE"
-                    {
-                    "Name" = "8:HeuristicLab.Tracing-3.3.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:HeuristicLab.Tracing-3.3.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_BDE807FCDC3142CDB8D93E3C50E7F241"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_9FA44D8824EA4446CC7862718941EADB"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:HeuristicLab.Persistence-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_9FA44D8824EA4446CC7862718941EADB"
-                    {
-                    "Name" = "8:HeuristicLab.Persistence-3.3.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:HeuristicLab.Persistence-3.3.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_BDE807FCDC3142CDB8D93E3C50E7F241"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_B39FCFE104205C1A9AEF0A315E14EE1B"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_9107FC2238B53A89983A8A248C520A28"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:HeuristicLab.Common-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_B39FCFE104205C1A9AEF0A315E14EE1B"
+                    "_9107FC2238B53A89983A8A248C520A28"
                     {
                     "Name" = "8:HeuristicLab.Common-3.3.dll"
                     "Attributes" = "3:512"
                     }
                 }
             "SourcePath" = "8:HeuristicLab.Common-3.3.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_BDE807FCDC3142CDB8D93E3C50E7F241"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_AF6EC587974A22815ED989410E18990B"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:HeuristicLab.Services.Hive.DataAccess-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_AF6EC587974A22815ED989410E18990B"
+                    {
+                    "Name" = "8:HeuristicLab.Services.Hive.DataAccess-3.3.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:HeuristicLab.Services.Hive.DataAccess-3.3.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_BDE807FCDC3142CDB8D93E3C50E7F241"
@@ -532,20 +561,20 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_E68259CC2E813B82DC8BE13ED3806EA2"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_D26A72EAB446EF9D5AD913CBA32F156E"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:HeuristicLab.Services.Hive-3.3, Version=3.3.5.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:HeuristicLab.PluginInfrastructure-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_E68259CC2E813B82DC8BE13ED3806EA2"
+                    "_D26A72EAB446EF9D5AD913CBA32F156E"
                     {
-                    "Name" = "8:HeuristicLab.Services.Hive-3.3.dll"
+                    "Name" = "8:HeuristicLab.PluginInfrastructure-3.3.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:HeuristicLab.Services.Hive-3.3.dll"
+            "SourcePath" = "8:HeuristicLab.PluginInfrastructure-3.3.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_BDE807FCDC3142CDB8D93E3C50E7F241"
@@ -620,7 +649,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:HeuristicLab Hive Janitor "
         "ProductCode" = "8:{8E9966D0-E531-4651-964A-3DC456E2DB00}"
-        "PackageCode" = "8:{8477677F-887A-4644-B69D-1423AD58AC66}"
+        "PackageCode" = "8:{A9C12112-9AE1-452A-B2D0-55AFAB0C97CE}"
         "UpgradeCode" = "8:{66E141EC-C86B-4002-AB68-6F237C55C4FC}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -1141,7 +1170,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_830DEB35A0E94E6F97C523B8D05CE085"
             {
-            "SourcePath" = "8:..\\HeuristicLab.Services.Hive.JanitorService\\obj\\Debug\\HeuristicLab.Services.Hive.JanitorService-3.3.exe"
+            "SourcePath" = "8:..\\HeuristicLab.Services.Hive.JanitorService\\3.3\\obj\\Debug\\HeuristicLab.Services.Hive.JanitorService-3.3.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_BDE807FCDC3142CDB8D93E3C50E7F241"
