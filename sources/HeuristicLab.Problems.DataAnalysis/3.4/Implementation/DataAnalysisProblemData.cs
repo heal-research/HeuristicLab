@@ -76,13 +76,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public virtual IEnumerable<int> TrainingIndizes {
       get {
-        return Enumerable.Range(TrainingPartition.Start, TrainingPartition.End - TrainingPartition.Start)
+        return Enumerable.Range(TrainingPartition.Start, Math.Max(0, TrainingPartition.End - TrainingPartition.Start))
                          .Where(IsTrainingSample);
       }
     }
     public virtual IEnumerable<int> TestIndizes {
       get {
-        return Enumerable.Range(TestPartition.Start, TestPartition.End - TestPartition.Start)
+        return Enumerable.Range(TestPartition.Start, Math.Max(0, TestPartition.End - TestPartition.Start))
            .Where(IsTestSample);
       }
     }
