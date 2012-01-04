@@ -39,6 +39,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private const string TestRelativeErrorResultName = "Average relative error (test)";
     private const string TrainingNormalizedMeanSquaredErrorResultName = "Normalized mean squared error (training)";
     private const string TestNormalizedMeanSquaredErrorResultName = "Normalized mean squared error (test)";
+    private const string TrainingMeanErrorResultName = "Mean error (training)";
+    private const string TestMeanErrorResultName = "Mean error (test)";
 
     public new IRegressionModel Model {
       get { return (IRegressionModel)base.Model; }
@@ -96,6 +98,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
       get { return ((DoubleValue)this[TestNormalizedMeanSquaredErrorResultName].Value).Value; }
       private set { ((DoubleValue)this[TestNormalizedMeanSquaredErrorResultName].Value).Value = value; }
     }
+    public double TrainingMeanError {
+      get { return ((DoubleValue)this[TrainingMeanErrorResultName].Value).Value; }
+      private set { ((DoubleValue)this[TrainingMeanErrorResultName].Value).Value = value; }
+    }
+    public double TestMeanError {
+      get { return ((DoubleValue)this[TestMeanErrorResultName].Value).Value; }
+      private set { ((DoubleValue)this[TestMeanErrorResultName].Value).Value = value; }
+    }
     #endregion
 
     [StorableConstructor]
@@ -115,6 +125,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Add(new Result(TestRelativeErrorResultName, "Average of the relative errors of the model output and the actual values on the test partition", new PercentValue()));
       Add(new Result(TrainingNormalizedMeanSquaredErrorResultName, "Normalized mean of squared errors of the model on the training partition", new DoubleValue()));
       Add(new Result(TestNormalizedMeanSquaredErrorResultName, "Normalized mean of squared errors of the model on the test partition", new DoubleValue()));
+      Add(new Result(TrainingMeanErrorResultName, "Mean of errors of the model on the training partition", new DoubleValue()));
+      Add(new Result(TestMeanErrorResultName, "Mean of errors of the model on the test partition", new DoubleValue()));
     }
 
     [StorableHook(HookType.AfterDeserialization)]
@@ -135,6 +147,19 @@ namespace HeuristicLab.Problems.DataAnalysis {
         Add(new Result(TestMeanAbsoluteErrorResultName, "Mean of absolute errors of the model on the test partition", new DoubleValue()));
         double testMAE = OnlineMeanAbsoluteErrorCalculator.Calculate(EstimatedTestValues, ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TestIndizes), out errorState);
         TestMeanAbsoluteError = errorState == OnlineCalculatorError.None ? testMAE : double.NaN;
+      }
+
+      if (!ContainsKey(TrainingMeanErrorResultName)) {
+        OnlineCalculatorError errorState;
+        Add(new Result(TrainingMeanErrorResultName, "Mean of errors of the model on the training partition", new DoubleValue()));
+        double trainingME = OnlineMeanErrorCalculator.Calculate(EstimatedTrainingValues, ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndizes), out errorState);
+        TrainingMeanError = errorState == OnlineCalculatorError.None ? trainingME : double.NaN;
+      }
+      if (!ContainsKey(TestMeanErrorResultName)) {
+        OnlineCalculatorError errorState;
+        Add(new Result(TestMeanErrorResultName, "Mean of errors of the model on the test partition", new DoubleValue()));
+        double testME = OnlineMeanErrorCalculator.Calculate(EstimatedTestValues, ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TestIndizes), out errorState);
+        TestMeanError = errorState == OnlineCalculatorError.None ? testME : double.NaN;
       }
       #endregion
     }
@@ -170,6 +195,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
       TrainingNormalizedMeanSquaredError = errorState == OnlineCalculatorError.None ? trainingNMSE : double.NaN;
       double testNMSE = OnlineNormalizedMeanSquaredErrorCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);
       TestNormalizedMeanSquaredError = errorState == OnlineCalculatorError.None ? testNMSE : double.NaN;
+
+      double trainingME = OnlineMeanErrorCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);
+      TrainingMeanError = errorState == OnlineCalculatorError.None ? trainingME : double.NaN;
+      double testME = OnlineMeanErrorCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);
+      TestMeanError = errorState == OnlineCalculatorError.None ? testME : double.NaN;
     }
   }
 }
