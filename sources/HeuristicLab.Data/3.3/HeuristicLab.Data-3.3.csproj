@@ -116,6 +116,8 @@
     <Compile Include="BoolValue.cs" />
     <Compile Include="Comparison.cs" />
     <Compile Include="ComparisonType.cs" />
+    <Compile Include="PercentMatrix.cs" />
+    <Compile Include="PercentArray.cs" />
     <Compile Include="DoubleRange.cs" />
     <Compile Include="IntRange.cs" />
     <Compile Include="Interfaces\IStringConvertibleValueTuple.cs" />
