@@ -31,7 +31,7 @@ namespace HeuristicLab.Data {
   public class PercentMatrix : DoubleMatrix {
     [StorableConstructor]
     protected PercentMatrix(bool deserializing) : base(deserializing) { }
-    protected PercentMatrix(DoubleMatrix original, Cloner cloner)
+    protected PercentMatrix(PercentMatrix original, Cloner cloner)
       : base(original, cloner) {
     }
     public PercentMatrix() : base() { }
