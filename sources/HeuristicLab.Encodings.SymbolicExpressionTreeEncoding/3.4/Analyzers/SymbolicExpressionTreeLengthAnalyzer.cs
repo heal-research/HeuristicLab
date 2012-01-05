@@ -120,6 +120,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       if (!Parameters.ContainsKey(UpdateIntervalParameterName)) {
         Parameters.Add(new ValueParameter<IntValue>(UpdateIntervalParameterName, "The interval in which the tree length analysis should be applied.", new IntValue(1)));
       }
+      //necessary code to correct UpdateCounterParameter - type was changed from LookupParameter to ValueParameter
+      if (Parameters.ContainsKey(UpdateCounterParameterName) && (Parameters[UpdateCounterParameterName] is LookupParameter<IntValue>))
+        Parameters.Remove(UpdateCounterParameterName);
       if (!Parameters.ContainsKey(UpdateCounterParameterName)) {
         Parameters.Add(new ValueParameter<IntValue>(UpdateCounterParameterName, "The value which counts how many times the operator was called since the last update", new IntValue(0)));
         UpdateCounterParameter.Hidden = true;
