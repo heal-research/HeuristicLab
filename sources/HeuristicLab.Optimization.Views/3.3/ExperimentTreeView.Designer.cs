@@ -47,7 +47,9 @@ namespace HeuristicLab.Optimization.Views {
       this.detailsViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.ExpandToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.ExpandAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.CollapseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.CollapseAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.EditNodeLabelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.optimizersGroupBox.SuspendLayout();
@@ -221,7 +223,9 @@ namespace HeuristicLab.Optimization.Views {
       this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.EditNodeLabelToolStripMenuItem,
             this.ExpandToolStripMenuItem,
-            this.CollapseToolStripMenuItem});
+            this.ExpandAllToolStripMenuItem,
+            this.CollapseToolStripMenuItem,
+            this.CollapseAllToolStripMenuItem});
       this.contextMenuStrip.Name = "contextMenuStrip";
       this.contextMenuStrip.Size = new System.Drawing.Size(120, 48);
       // 
@@ -232,12 +236,26 @@ namespace HeuristicLab.Optimization.Views {
       this.ExpandToolStripMenuItem.Text = "Expand";
       this.ExpandToolStripMenuItem.Click += new System.EventHandler(this.ExpandToolStripMenuItem_Click);
       // 
+      // ExpandAllToolStripMenuItem
+      // 
+      this.ExpandAllToolStripMenuItem.Name = "ExpandAllToolStripMenuItem";
+      this.ExpandAllToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
+      this.ExpandAllToolStripMenuItem.Text = "Expand All";
+      this.ExpandAllToolStripMenuItem.Click += new System.EventHandler(this.ExpandAllToolStripMenuItem_Click);
+      // 
       // CollapseToolStripMenuItem
       // 
       this.CollapseToolStripMenuItem.Name = "CollapseToolStripMenuItem";
       this.CollapseToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
       this.CollapseToolStripMenuItem.Text = "Collapse";
       this.CollapseToolStripMenuItem.Click += new System.EventHandler(this.CollapseToolStripMenuItem_Click);
+      // 
+      // CollapseAllToolStripMenuItem
+      // 
+      this.CollapseAllToolStripMenuItem.Name = "CollapseAllToolStripMenuItem";
+      this.CollapseAllToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
+      this.CollapseAllToolStripMenuItem.Text = "Collapse All";
+      this.CollapseAllToolStripMenuItem.Click += new System.EventHandler(this.CollapseAllToolStripMenuItem_Click);
       //
       // EditNodeLabelToolStripMenuItem
       //
@@ -280,7 +298,9 @@ namespace HeuristicLab.Optimization.Views {
     private System.Windows.Forms.ImageList imageList;
     private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
     private System.Windows.Forms.ToolStripMenuItem ExpandToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem ExpandAllToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem CollapseToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem CollapseAllToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem EditNodeLabelToolStripMenuItem;
 
   }

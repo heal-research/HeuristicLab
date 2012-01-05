@@ -651,15 +651,18 @@ namespace HeuristicLab.Optimization.Views {
         detailsViewHost.Content = (IContent)toolStripMenuNode.Tag;
         SetEnabledStateOfControls();
 
-        ExpandToolStripMenuItem.Enabled = !toolStripMenuNode.IsExpanded && toolStripMenuNode.Nodes.Count > 0;
-        ExpandToolStripMenuItem.Visible = !toolStripMenuNode.IsExpanded && toolStripMenuNode.Nodes.Count > 0;
-        CollapseToolStripMenuItem.Enabled = toolStripMenuNode.IsExpanded;
-        CollapseToolStripMenuItem.Visible = toolStripMenuNode.IsExpanded;
-        EditNodeLabelToolStripMenuItem.Enabled = !Locked && !ReadOnly && toolStripMenuNode.Tag != null && toolStripMenuNode.Tag is INamedItem && ((INamedItem)toolStripMenuNode.Tag).CanChangeName;
-        EditNodeLabelToolStripMenuItem.Visible = !Locked && !ReadOnly && toolStripMenuNode.Tag != null && toolStripMenuNode.Tag is INamedItem && ((INamedItem)toolStripMenuNode.Tag).CanChangeName;
-        if (contextMenuStrip.Items.Cast<ToolStripMenuItem>().Any(item => item.Enabled))
-          contextMenuStrip.Show(Cursor.Position);
+        ExpandToolStripMenuItem.Enabled = ExpandToolStripMenuItem.Visible = !toolStripMenuNode.IsExpanded && toolStripMenuNode.Nodes.Count > 0;
+        CollapseToolStripMenuItem.Enabled = CollapseToolStripMenuItem.Visible = toolStripMenuNode.IsExpanded;
+        EditNodeLabelToolStripMenuItem.Enabled = EditNodeLabelToolStripMenuItem.Visible = !Locked && !ReadOnly && toolStripMenuNode.Tag != null && toolStripMenuNode.Tag is INamedItem && ((INamedItem)toolStripMenuNode.Tag).CanChangeName;
+      } else {
+        ExpandToolStripMenuItem.Enabled = ExpandToolStripMenuItem.Visible = false;
+        CollapseToolStripMenuItem.Enabled = CollapseToolStripMenuItem.Visible = false;
+        EditNodeLabelToolStripMenuItem.Enabled = EditNodeLabelToolStripMenuItem.Visible = false;
       }
+      ExpandAllToolStripMenuItem.Enabled = ExpandAllToolStripMenuItem.Visible = !treeView.Nodes.OfType<TreeNode>().All(x => TreeNodeIsFullyExpanded(x));
+      CollapseAllToolStripMenuItem.Enabled = CollapseAllToolStripMenuItem.Visible = treeView.Nodes.OfType<TreeNode>().Any(x => x.IsExpanded);
+      if (contextMenuStrip.Items.Cast<ToolStripMenuItem>().Any(item => item.Enabled))
+        contextMenuStrip.Show(Cursor.Position);
     }
 
     private void treeView_BeforeLabelEdit(object sender, NodeLabelEditEventArgs e) {
@@ -680,8 +683,14 @@ namespace HeuristicLab.Optimization.Views {
     private void ExpandToolStripMenuItem_Click(object sender, EventArgs e) {
       if (toolStripMenuNode != null) toolStripMenuNode.ExpandAll();
     }
+    private void ExpandAllToolStripMenuItem_Click(object sender, EventArgs e) {
+      treeView.ExpandAll();
+    }
     private void CollapseToolStripMenuItem_Click(object sender, EventArgs e) {
       if (toolStripMenuNode != null) toolStripMenuNode.Collapse();
+    }
+    private void CollapseAllToolStripMenuItem_Click(object sender, EventArgs e) {
+      treeView.CollapseAll();
     }
     private void EditNodeLabelToolStripMenuItem_Click(object sender, EventArgs e) {
       if (toolStripMenuNode != null) {
@@ -722,7 +731,8 @@ namespace HeuristicLab.Optimization.Views {
             IProblem problem = (IProblem)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
             algorithm.Problem = problem;
           }
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
           ErrorHandling.ShowErrorDialog(this, ex);
         }
       }
@@ -868,6 +878,10 @@ namespace HeuristicLab.Optimization.Views {
       foreach (var childNode in nodes.OfType<TreeNode>())
         foreach (var n in IterateTreeNodes(childNode))
           yield return n;
+    }
+
+    private bool TreeNodeIsFullyExpanded(TreeNode node) {
+      return (node.Nodes.Count == 0) || (node.IsExpanded && node.Nodes.OfType<TreeNode>().All(x => TreeNodeIsFullyExpanded(x)));
     }
 
     private void RebuildImageList() {
