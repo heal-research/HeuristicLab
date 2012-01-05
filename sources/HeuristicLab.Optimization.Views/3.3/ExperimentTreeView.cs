@@ -185,7 +185,7 @@ namespace HeuristicLab.Optimization.Views {
         List<TreeNode> nodes;
         foreach (TreeNode childNode in CreateAlgorithmChildNodes(algorithm)) {
           node.Nodes.Add(childNode);
-          NamedItem namedItem = childNode.Tag as NamedItem;
+          INamedItem namedItem = childNode.Tag as INamedItem;
           if (namedItem != null) {
             if (!treeNodeTagMapping.TryGetValue(namedItem, out nodes)) {
               nodes = new List<TreeNode>();
@@ -606,7 +606,7 @@ namespace HeuristicLab.Optimization.Views {
       if (!(treeView.SelectedNode.Tag is INamedItem)) return;
 
       var treeNode = treeView.SelectedNode;
-      var namedItem = (NamedItem)treeNode.Tag;
+      var namedItem = (INamedItem)treeNode.Tag;
       var optimizer = namedItem as IOptimizer;
 
       if (e.KeyCode == Keys.F2 && !treeNode.IsEditing) {
@@ -820,7 +820,7 @@ namespace HeuristicLab.Optimization.Views {
       nodes.Add(node);
 
       foreach (TreeNode childNode in node.Nodes) {
-        NamedItem namedItem = childNode.Tag as NamedItem;
+        INamedItem namedItem = childNode.Tag as INamedItem;
         if (namedItem != null) {
           if (!treeNodeTagMapping.TryGetValue(namedItem, out nodes)) {
             nodes = new List<TreeNode>();
