@@ -37,7 +37,8 @@ namespace HeuristicLab.Analysis {
       Columns,
       Points,
       Bars,
-      Histogram
+      Histogram,
+      StepLine
     }
     #endregion
     #region LineStyle

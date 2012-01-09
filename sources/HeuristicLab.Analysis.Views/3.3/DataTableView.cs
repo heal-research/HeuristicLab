@@ -175,6 +175,11 @@ namespace HeuristicLab.Analysis.Views {
             series.BorderColor = Color.White;
           else series.BorderColor = Color.Black;
           break;
+        case DataRowVisualProperties.DataRowChartType.StepLine:
+          series.ChartType = SeriesChartType.StepLine;
+          series.BorderWidth = row.VisualProperties.LineWidth;
+          series.BorderDashStyle = ConvertLineStyle(row.VisualProperties.LineStyle);
+          break;
         default:
           series.ChartType = SeriesChartType.FastPoint;
           break;
