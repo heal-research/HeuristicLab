@@ -28,6 +28,1340 @@ public partial class alglib
 }
 public partial class alglib
 {
+    public class scodes
+    {
+        public static int getrdfserializationcode()
+        {
+            int result = 0;
+
+            result = 1;
+            return result;
+        }
+
+
+        public static int getkdtreeserializationcode()
+        {
+            int result = 0;
+
+            result = 2;
+            return result;
+        }
+
+
+        public static int getmlpserializationcode()
+        {
+            int result = 0;
+
+            result = 3;
+            return result;
+        }
+
+
+    }
+    public class apserv
+    {
+        /*************************************************************************
+        Buffers for internal functions which need buffers:
+        * check for size of the buffer you want to use.
+        * if buffer is too small, resize it; leave unchanged, if it is larger than
+          needed.
+        * use it.
+
+        We can pass this structure to multiple functions;  after first run through
+        functions buffer sizes will be finally determined,  and  on  a next run no
+        allocation will be required.
+        *************************************************************************/
+        public class apbuffers
+        {
+            public int[] ia0;
+            public int[] ia1;
+            public int[] ia2;
+            public int[] ia3;
+            public double[] ra0;
+            public double[] ra1;
+            public double[] ra2;
+            public double[] ra3;
+            public apbuffers()
+            {
+                ia0 = new int[0];
+                ia1 = new int[0];
+                ia2 = new int[0];
+                ia3 = new int[0];
+                ra0 = new double[0];
+                ra1 = new double[0];
+                ra2 = new double[0];
+                ra3 = new double[0];
+            }
+        };
+
+
+
+
+        /*************************************************************************
+        This  function  generates  1-dimensional  general  interpolation task with
+        moderate Lipshitz constant (close to 1.0)
+
+        If N=1 then suborutine generates only one point at the middle of [A,B]
+
+          -- ALGLIB --
+             Copyright 02.12.2009 by Bochkanov Sergey
+        *************************************************************************/
+        public static void taskgenint1d(double a,
+            double b,
+            int n,
+            ref double[] x,
+            ref double[] y)
+        {
+            int i = 0;
+            double h = 0;
+
+            x = new double[0];
+            y = new double[0];
+
+            ap.assert(n>=1, "TaskGenInterpolationEqdist1D: N<1!");
+            x = new double[n];
+            y = new double[n];
+            if( n>1 )
+            {
+                x[0] = a;
+                y[0] = 2*math.randomreal()-1;
+                h = (b-a)/(n-1);
+                for(i=1; i<=n-1; i++)
+                {
+                    if( i!=n-1 )
+                    {
+                        x[i] = a+(i+0.2*(2*math.randomreal()-1))*h;
+                    }
+                    else
+                    {
+                        x[i] = b;
+                    }
+                    y[i] = y[i-1]+(2*math.randomreal()-1)*(x[i]-x[i-1]);
+                }
+            }
+            else
+            {
+                x[0] = 0.5*(a+b);
+                y[0] = 2*math.randomreal()-1;
+            }
+        }
+
+
+        /*************************************************************************
+        This function generates  1-dimensional equidistant interpolation task with
+        moderate Lipshitz constant (close to 1.0)
+
+        If N=1 then suborutine generates only one point at the middle of [A,B]
+
+          -- ALGLIB --
+             Copyright 02.12.2009 by Bochkanov Sergey
+        *************************************************************************/
+        public static void taskgenint1dequidist(double a,
+            double b,
+            int n,
+            ref double[] x,
+            ref double[] y)
+        {
+            int i = 0;
+            double h = 0;
+
+            x = new double[0];
+            y = new double[0];
+
+            ap.assert(n>=1, "TaskGenInterpolationEqdist1D: N<1!");
+            x = new double[n];
+            y = new double[n];
+            if( n>1 )
+            {
+                x[0] = a;
+                y[0] = 2*math.randomreal()-1;
+                h = (b-a)/(n-1);
+                for(i=1; i<=n-1; i++)
+                {
+                    x[i] = a+i*h;
+                    y[i] = y[i-1]+(2*math.randomreal()-1)*h;
+                }
+            }
+            else
+            {
+                x[0] = 0.5*(a+b);
+                y[0] = 2*math.randomreal()-1;
+            }
+        }
+
+
+        /*************************************************************************
+        This function generates  1-dimensional Chebyshev-1 interpolation task with
+        moderate Lipshitz constant (close to 1.0)
+
+        If N=1 then suborutine generates only one point at the middle of [A,B]
+
+          -- ALGLIB --
+             Copyright 02.12.2009 by Bochkanov Sergey
+        *************************************************************************/
+        public static void taskgenint1dcheb1(double a,
+            double b,
+            int n,
+            ref double[] x,
+            ref double[] y)
+        {
+            int i = 0;
+
+            x = new double[0];
+            y = new double[0];
+
+            ap.assert(n>=1, "TaskGenInterpolation1DCheb1: N<1!");
+            x = new double[n];
+            y = new double[n];
+            if( n>1 )
+            {
+                for(i=0; i<=n-1; i++)
+                {
+                    x[i] = 0.5*(b+a)+0.5*(b-a)*Math.Cos(Math.PI*(2*i+1)/(2*n));
+                    if( i==0 )
+                    {
+                        y[i] = 2*math.randomreal()-1;
+                    }
+                    else
+                    {
+                        y[i] = y[i-1]+(2*math.randomreal()-1)*(x[i]-x[i-1]);
+                    }
+                }
+            }
+            else
+            {
+                x[0] = 0.5*(a+b);
+                y[0] = 2*math.randomreal()-1;
+            }
+        }
+
+
+        /*************************************************************************
+        This function generates  1-dimensional Chebyshev-2 interpolation task with
+        moderate Lipshitz constant (close to 1.0)
+
+        If N=1 then suborutine generates only one point at the middle of [A,B]
+
+          -- ALGLIB --
+             Copyright 02.12.2009 by Bochkanov Sergey
+        *************************************************************************/
+        public static void taskgenint1dcheb2(double a,
+            double b,
+            int n,
+            ref double[] x,
+            ref double[] y)
+        {
+            int i = 0;
+
+            x = new double[0];
+            y = new double[0];
+
+            ap.assert(n>=1, "TaskGenInterpolation1DCheb2: N<1!");
+            x = new double[n];
+            y = new double[n];
+            if( n>1 )
+            {
+                for(i=0; i<=n-1; i++)
+                {
+                    x[i] = 0.5*(b+a)+0.5*(b-a)*Math.Cos(Math.PI*i/(n-1));
+                    if( i==0 )
+                    {
+                        y[i] = 2*math.randomreal()-1;
+                    }
+                    else
+                    {
+                        y[i] = y[i-1]+(2*math.randomreal()-1)*(x[i]-x[i-1]);
+                    }
+                }
+            }
+            else
+            {
+                x[0] = 0.5*(a+b);
+                y[0] = 2*math.randomreal()-1;
+            }
+        }
+
+
+        /*************************************************************************
+        This function checks that all values from X[] are distinct. It does more
+        than just usual floating point comparison:
+        * first, it calculates max(X) and min(X)
+        * second, it maps X[] from [min,max] to [1,2]
+        * only at this stage actual comparison is done
+
+        The meaning of such check is to ensure that all values are "distinct enough"
+        and will not cause interpolation subroutine to fail.
+
+        NOTE:
+            X[] must be sorted by ascending (subroutine ASSERT's it)
+
+          -- ALGLIB --
+             Copyright 02.12.2009 by Bochkanov Sergey
+        *************************************************************************/
+        public static bool aredistinct(double[] x,
+            int n)
+        {
+            bool result = new bool();
+            double a = 0;
+            double b = 0;
+            int i = 0;
+            bool nonsorted = new bool();
+
+            ap.assert(n>=1, "APSERVAreDistinct: internal error (N<1)");
+            if( n==1 )
+            {
+                
+                //
+                // everything is alright, it is up to caller to decide whether it
+                // can interpolate something with just one point
+                //
+                result = true;
+                return result;
+            }
+            a = x[0];
+            b = x[0];
+            nonsorted = false;
+            for(i=1; i<=n-1; i++)
+            {
+                a = Math.Min(a, x[i]);
+                b = Math.Max(b, x[i]);
+                nonsorted = nonsorted | (double)(x[i-1])>=(double)(x[i]);
+            }
+            ap.assert(!nonsorted, "APSERVAreDistinct: internal error (not sorted)");
+            for(i=1; i<=n-1; i++)
+            {
+                if( (double)((x[i]-a)/(b-a)+1)==(double)((x[i-1]-a)/(b-a)+1) )
+                {
+                    result = false;
+                    return result;
+                }
+            }
+            result = true;
+            return result;
+        }
+
+
+        /*************************************************************************
+        If Length(X)<N, resizes X
+
+          -- ALGLIB --
+             Copyright 20.03.2009 by Bochkanov Sergey
+        *************************************************************************/
+        public static void bvectorsetlengthatleast(ref bool[] x,
+            int n)
+        {
+            if( ap.len(x)<n )
+            {
+                x = new bool[n];
+            }
+        }
+
+
+        /*************************************************************************
+        If Length(X)<N, resizes X
+
+          -- ALGLIB --
+             Copyright 20.03.2009 by Bochkanov Sergey
+        *************************************************************************/
+        public static void ivectorsetlengthatleast(ref int[] x,
+            int n)
+        {
+            if( ap.len(x)<n )
+            {
+                x = new int[n];
+            }
+        }
+
+
+        /*************************************************************************
+        If Length(X)<N, resizes X
+
+          -- ALGLIB --
+             Copyright 20.03.2009 by Bochkanov Sergey
+        *************************************************************************/
+        public static void rvectorsetlengthatleast(ref double[] x,
+            int n)
+        {
+            if( ap.len(x)<n )
+            {
+                x = new double[n];
+            }
+        }
+
+
+        /*************************************************************************
+        If Cols(X)<N or Rows(X)<M, resizes X
+
+          -- ALGLIB --
+             Copyright 20.03.2009 by Bochkanov Sergey
+        *************************************************************************/
+        public static void rmatrixsetlengthatleast(ref double[,] x,
+            int m,
+            int n)
+        {
+            if( ap.rows(x)<m | ap.cols(x)<n )
+            {
+                x = new double[m, n];
+            }
+        }
+
+
+        /*************************************************************************
+        Resizes X and:
+        * preserves old contents of X
+        * fills new elements by zeros
+
+          -- ALGLIB --
+             Copyright 20.03.2009 by Bochkanov Sergey
+        *************************************************************************/
+        public static void rmatrixresize(ref double[,] x,
+            int m,
+            int n)
+        {
+            double[,] oldx = new double[0,0];
+            int i = 0;
+            int j = 0;
+            int m2 = 0;
+            int n2 = 0;
+
+            m2 = ap.rows(x);
+            n2 = ap.cols(x);
+            ap.swap(ref x, ref oldx);
+            x = new double[m, n];
+            for(i=0; i<=m-1; i++)
+            {
+                for(j=0; j<=n-1; j++)
+                {
+                    if( i<m2 & j<n2 )
+                    {
+                        x[i,j] = oldx[i,j];
+                    }
+                    else
+                    {
+                        x[i,j] = 0.0;
+                    }
+                }
+            }
+        }
+
+
+        /*************************************************************************
+        This function checks that all values from X[] are finite
+
+          -- ALGLIB --
+             Copyright 18.06.2010 by Bochkanov Sergey
+        *************************************************************************/
+        public static bool isfinitevector(double[] x,
+            int n)
+        {
+            bool result = new bool();
+            int i = 0;
+
+            ap.assert(n>=0, "APSERVIsFiniteVector: internal error (N<0)");
+            for(i=0; i<=n-1; i++)
+            {
+                if( !math.isfinite(x[i]) )
+                {
+                    result = false;
+                    return result;
+                }
+            }
+            result = true;
+            return result;
+        }
+
+
+        /*************************************************************************
+        This function checks that all values from X[] are finite
+
+          -- ALGLIB --
+             Copyright 18.06.2010 by Bochkanov Sergey
+        *************************************************************************/
+        public static bool isfinitecvector(complex[] z,
+            int n)
+        {
+            bool result = new bool();
+            int i = 0;
+
+            ap.assert(n>=0, "APSERVIsFiniteCVector: internal error (N<0)");
+            for(i=0; i<=n-1; i++)
+            {
+                if( !math.isfinite(z[i].x) | !math.isfinite(z[i].y) )
+                {
+                    result = false;
+                    return result;
+                }
+            }
+            result = true;
+            return result;
+        }
+
+
+        /*************************************************************************
+        This function checks that all values from X[0..M-1,0..N-1] are finite
+
+          -- ALGLIB --
+             Copyright 18.06.2010 by Bochkanov Sergey
+        *************************************************************************/
+        public static bool apservisfinitematrix(double[,] x,
+            int m,
+            int n)
+        {
+            bool result = new bool();
+            int i = 0;
+            int j = 0;
+
+            ap.assert(n>=0, "APSERVIsFiniteMatrix: internal error (N<0)");
+            ap.assert(m>=0, "APSERVIsFiniteMatrix: internal error (M<0)");
+            for(i=0; i<=m-1; i++)
+            {
+                for(j=0; j<=n-1; j++)
+                {
+                    if( !math.isfinite(x[i,j]) )
+                    {
+                        result = false;
+                        return result;
+                    }
+                }
+            }
+            result = true;
+            return result;
+        }
+
+
+        /*************************************************************************
+        This function checks that all values from X[0..M-1,0..N-1] are finite
+
+          -- ALGLIB --
+             Copyright 18.06.2010 by Bochkanov Sergey
+        *************************************************************************/
+        public static bool apservisfinitecmatrix(complex[,] x,
+            int m,
+            int n)
+        {
+            bool result = new bool();
+            int i = 0;
+            int j = 0;
+
+            ap.assert(n>=0, "APSERVIsFiniteCMatrix: internal error (N<0)");
+            ap.assert(m>=0, "APSERVIsFiniteCMatrix: internal error (M<0)");
+            for(i=0; i<=m-1; i++)
+            {
+                for(j=0; j<=n-1; j++)
+                {
+                    if( !math.isfinite(x[i,j].x) | !math.isfinite(x[i,j].y) )
+                    {
+                        result = false;
+                        return result;
+                    }
+                }
+            }
+            result = true;
+            return result;
+        }
+
+
+        /*************************************************************************
+        This function checks that all values from upper/lower triangle of
+        X[0..N-1,0..N-1] are finite
+
+          -- ALGLIB --
+             Copyright 18.06.2010 by Bochkanov Sergey
+        *************************************************************************/
+        public static bool isfinitertrmatrix(double[,] x,
+            int n,
+            bool isupper)
+        {
+            bool result = new bool();
+            int i = 0;
+            int j1 = 0;
+            int j2 = 0;
+            int j = 0;
+
+            ap.assert(n>=0, "APSERVIsFiniteRTRMatrix: internal error (N<0)");
+            for(i=0; i<=n-1; i++)
+            {
+                if( isupper )
+                {
+                    j1 = i;
+                    j2 = n-1;
+                }
+                else
+                {
+                    j1 = 0;
+                    j2 = i;
+                }
+                for(j=j1; j<=j2; j++)
+                {
+                    if( !math.isfinite(x[i,j]) )
+                    {
+                        result = false;
+                        return result;
+                    }
+                }
+            }
+            result = true;
+            return result;
+        }
+
+
+        /*************************************************************************
+        This function checks that all values from upper/lower triangle of
+        X[0..N-1,0..N-1] are finite
+
+          -- ALGLIB --
+             Copyright 18.06.2010 by Bochkanov Sergey
+        *************************************************************************/
+        public static bool apservisfinitectrmatrix(complex[,] x,
+            int n,
+            bool isupper)
+        {
+            bool result = new bool();
+            int i = 0;
+            int j1 = 0;
+            int j2 = 0;
+            int j = 0;
+
+            ap.assert(n>=0, "APSERVIsFiniteCTRMatrix: internal error (N<0)");
+            for(i=0; i<=n-1; i++)
+            {
+                if( isupper )
+                {
+                    j1 = i;
+                    j2 = n-1;
+                }
+                else
+                {
+                    j1 = 0;
+                    j2 = i;
+                }
+                for(j=j1; j<=j2; j++)
+                {
+                    if( !math.isfinite(x[i,j].x) | !math.isfinite(x[i,j].y) )
+                    {
+                        result = false;
+                        return result;
+                    }
+                }
+            }
+            result = true;
+            return result;
+        }
+
+
+        /*************************************************************************
+        This function checks that all values from X[0..M-1,0..N-1] are  finite  or
+        NaN's.
+
+          -- ALGLIB --
+             Copyright 18.06.2010 by Bochkanov Sergey
+        *************************************************************************/
+        public static bool apservisfiniteornanmatrix(double[,] x,
+            int m,
+            int n)
+        {
+            bool result = new bool();
+            int i = 0;
+            int j = 0;
+
+            ap.assert(n>=0, "APSERVIsFiniteOrNaNMatrix: internal error (N<0)");
+            ap.assert(m>=0, "APSERVIsFiniteOrNaNMatrix: internal error (M<0)");
+            for(i=0; i<=m-1; i++)
+            {
+                for(j=0; j<=n-1; j++)
+                {
+                    if( !(math.isfinite(x[i,j]) | Double.IsNaN(x[i,j])) )
+                    {
+                        result = false;
+                        return result;
+                    }
+                }
+            }
+            result = true;
+            return result;
+        }
+
+
+        /*************************************************************************
+        Safe sqrt(x^2+y^2)
+
+          -- ALGLIB --
+             Copyright by Bochkanov Sergey
+        *************************************************************************/
+        public static double safepythag2(double x,
+            double y)
+        {
+            double result = 0;
+            double w = 0;
+            double xabs = 0;
+            double yabs = 0;
+            double z = 0;
+
+            xabs = Math.Abs(x);
+            yabs = Math.Abs(y);
+            w = Math.Max(xabs, yabs);
+            z = Math.Min(xabs, yabs);
+            if( (double)(z)==(double)(0) )
+            {
+                result = w;
+            }
+            else
+            {
+                result = w*Math.Sqrt(1+math.sqr(z/w));
+            }
+            return result;
+        }
+
+
+        /*************************************************************************
+        Safe sqrt(x^2+y^2)
+
+          -- ALGLIB --
+             Copyright by Bochkanov Sergey
+        *************************************************************************/
+        public static double safepythag3(double x,
+            double y,
+            double z)
+        {
+            double result = 0;
+            double w = 0;
+
+            w = Math.Max(Math.Abs(x), Math.Max(Math.Abs(y), Math.Abs(z)));
+            if( (double)(w)==(double)(0) )
+            {
+                result = 0;
+                return result;
+            }
+            x = x/w;
+            y = y/w;
+            z = z/w;
+            result = w*Math.Sqrt(math.sqr(x)+math.sqr(y)+math.sqr(z));
+            return result;
+        }
+
+
+        /*************************************************************************
+        Safe division.
+
+        This function attempts to calculate R=X/Y without overflow.
+
+        It returns:
+        * +1, if abs(X/Y)>=MaxRealNumber or undefined - overflow-like situation
+              (no overlfow is generated, R is either NAN, PosINF, NegINF)
+        *  0, if MinRealNumber<abs(X/Y)<MaxRealNumber or X=0, Y<>0
+              (R contains result, may be zero)
+        * -1, if 0<abs(X/Y)<MinRealNumber - underflow-like situation
+              (R contains zero; it corresponds to underflow)
+
+        No overflow is generated in any case.
+
+          -- ALGLIB --
+             Copyright by Bochkanov Sergey
+        *************************************************************************/
+        public static int saferdiv(double x,
+            double y,
+            ref double r)
+        {
+            int result = 0;
+
+            r = 0;
+
+            
+            //
+            // Two special cases:
+            // * Y=0
+            // * X=0 and Y<>0
+            //
+            if( (double)(y)==(double)(0) )
+            {
+                result = 1;
+                if( (double)(x)==(double)(0) )
+                {
+                    r = Double.NaN;
+                }
+                if( (double)(x)>(double)(0) )
+                {
+                    r = Double.PositiveInfinity;
+                }
+                if( (double)(x)<(double)(0) )
+                {
+                    r = Double.NegativeInfinity;
+                }
+                return result;
+            }
+            if( (double)(x)==(double)(0) )
+            {
+                r = 0;
+                result = 0;
+                return result;
+            }
+            
+            //
+            // make Y>0
+            //
+            if( (double)(y)<(double)(0) )
+            {
+                x = -x;
+                y = -y;
+            }
+            
+            //
+            //
+            //
+            if( (double)(y)>=(double)(1) )
+            {
+                r = x/y;
+                if( (double)(Math.Abs(r))<=(double)(math.minrealnumber) )
+                {
+                    result = -1;
+                    r = 0;
+                }
+                else
+                {
+                    result = 0;
+                }
+            }
+            else
+            {
+                if( (double)(Math.Abs(x))>=(double)(math.maxrealnumber*y) )
+                {
+                    if( (double)(x)>(double)(0) )
+                    {
+                        r = Double.PositiveInfinity;
+                    }
+                    else
+                    {
+                        r = Double.NegativeInfinity;
+                    }
+                    result = 1;
+                }
+                else
+                {
+                    r = x/y;
+                    result = 0;
+                }
+            }
+            return result;
+        }
+
+
+        /*************************************************************************
+        This function calculates "safe" min(X/Y,V) for positive finite X, Y, V.
+        No overflow is generated in any case.
+
+          -- ALGLIB --
+             Copyright by Bochkanov Sergey
+        *************************************************************************/
+        public static double safeminposrv(double x,
+            double y,
+            double v)
+        {
+            double result = 0;
+            double r = 0;
+
+            if( (double)(y)>=(double)(1) )
+            {
+                
+                //
+                // Y>=1, we can safely divide by Y
+                //
+                r = x/y;
+                result = v;
+                if( (double)(v)>(double)(r) )
+                {
+                    result = r;
+                }
+                else
+                {
+                    result = v;
+                }
+            }
+            else
+            {
+                
+                //
+                // Y<1, we can safely multiply by Y
+                //
+                if( (double)(x)<(double)(v*y) )
+                {
+                    result = x/y;
+                }
+                else
+                {
+                    result = v;
+                }
+            }
+            return result;
+        }
+
+
+        /*************************************************************************
+        This function makes periodic mapping of X to [A,B].
+
+        It accepts X, A, B (A>B). It returns T which lies in  [A,B] and integer K,
+        such that X = T + K*(B-A).
+
+        NOTES:
+        * K is represented as real value, although actually it is integer
+        * T is guaranteed to be in [A,B]
+        * T replaces X
+
+          -- ALGLIB --
+             Copyright by Bochkanov Sergey
+        *************************************************************************/
+        public static void apperiodicmap(ref double x,
+            double a,
+            double b,
+            ref double k)
+        {
+            k = 0;
+
+            ap.assert((double)(a)<(double)(b), "APPeriodicMap: internal error!");
+            k = (int)Math.Floor((x-a)/(b-a));
+            x = x-k*(b-a);
+            while( (double)(x)<(double)(a) )
+            {
+                x = x+(b-a);
+                k = k-1;
+            }
+            while( (double)(x)>(double)(b) )
+            {
+                x = x-(b-a);
+                k = k+1;
+            }
+            x = Math.Max(x, a);
+            x = Math.Min(x, b);
+        }
+
+
+        /*************************************************************************
+        'bounds' value: maps X to [B1,B2]
+
+          -- ALGLIB --
+             Copyright 20.03.2009 by Bochkanov Sergey
+        *************************************************************************/
+        public static double boundval(double x,
+            double b1,
+            double b2)
+        {
+            double result = 0;
+
+            if( (double)(x)<=(double)(b1) )
+            {
+                result = b1;
+                return result;
+            }
+            if( (double)(x)>=(double)(b2) )
+            {
+                result = b2;
+                return result;
+            }
+            result = x;
+            return result;
+        }
+
+
+        /*************************************************************************
+        Allocation of serializer: complex value
+        *************************************************************************/
+        public static void alloccomplex(alglib.serializer s,
+            complex v)
+        {
+            s.alloc_entry();
+            s.alloc_entry();
+        }
+
+
+        /*************************************************************************
+        Serialization: complex value
+        *************************************************************************/
+        public static void serializecomplex(alglib.serializer s,
+            complex v)
+        {
+            s.serialize_double(v.x);
+            s.serialize_double(v.y);
+        }
+
+
+        /*************************************************************************
+        Unserialization: complex value
+        *************************************************************************/
+        public static complex unserializecomplex(alglib.serializer s)
+        {
+            complex result = 0;
+
+            result.x = s.unserialize_double();
+            result.y = s.unserialize_double();
+            return result;
+        }
+
+
+        /*************************************************************************
+        Allocation of serializer: real array
+        *************************************************************************/
+        public static void allocrealarray(alglib.serializer s,
+            double[] v,
+            int n)
+        {
+            int i = 0;
+
+            if( n<0 )
+            {
+                n = ap.len(v);
+            }
+            s.alloc_entry();
+            for(i=0; i<=n-1; i++)
+            {
+                s.alloc_entry();
+            }
+        }
+
+
+        /*************************************************************************
+        Serialization: complex value
+        *************************************************************************/
+        public static void serializerealarray(alglib.serializer s,
+            double[] v,
+            int n)
+        {
+            int i = 0;
+
+            if( n<0 )
+            {
+                n = ap.len(v);
+            }
+            s.serialize_int(n);
+            for(i=0; i<=n-1; i++)
+            {
+                s.serialize_double(v[i]);
+            }
+        }
+
+
+        /*************************************************************************
+        Unserialization: complex value
+        *************************************************************************/
+        public static void unserializerealarray(alglib.serializer s,
+            ref double[] v)
+        {
+            int n = 0;
+            int i = 0;
+            double t = 0;
+
+            v = new double[0];
+
+            n = s.unserialize_int();
+            if( n==0 )
+            {
+                return;
+            }
+            v = new double[n];
+            for(i=0; i<=n-1; i++)
+            {
+                t = s.unserialize_double();
+                v[i] = t;
+            }
+        }
+
+
+        /*************************************************************************
+        Allocation of serializer: Integer array
+        *************************************************************************/
+        public static void allocintegerarray(alglib.serializer s,
+            int[] v,
+            int n)
+        {
+            int i = 0;
+
+            if( n<0 )
+            {
+                n = ap.len(v);
+            }
+            s.alloc_entry();
+            for(i=0; i<=n-1; i++)
+            {
+                s.alloc_entry();
+            }
+        }
+
+
+        /*************************************************************************
+        Serialization: Integer array
+        *************************************************************************/
+        public static void serializeintegerarray(alglib.serializer s,
+            int[] v,
+            int n)
+        {
+            int i = 0;
+
+            if( n<0 )
+            {
+                n = ap.len(v);
+            }
+            s.serialize_int(n);
+            for(i=0; i<=n-1; i++)
+            {
+                s.serialize_int(v[i]);
+            }
+        }
+
+
+        /*************************************************************************
+        Unserialization: complex value
+        *************************************************************************/
+        public static void unserializeintegerarray(alglib.serializer s,
+            ref int[] v)
+        {
+            int n = 0;
+            int i = 0;
+            int t = 0;
+
+            v = new int[0];
+
+            n = s.unserialize_int();
+            if( n==0 )
+            {
+                return;
+            }
+            v = new int[n];
+            for(i=0; i<=n-1; i++)
+            {
+                t = s.unserialize_int();
+                v[i] = t;
+            }
+        }
+
+
+        /*************************************************************************
+        Allocation of serializer: real matrix
+        *************************************************************************/
+        public static void allocrealmatrix(alglib.serializer s,
+            double[,] v,
+            int n0,
+            int n1)
+        {
+            int i = 0;
+            int j = 0;
+
+            if( n0<0 )
+            {
+                n0 = ap.rows(v);
+            }
+            if( n1<0 )
+            {
+                n1 = ap.cols(v);
+            }
+            s.alloc_entry();
+            s.alloc_entry();
+            for(i=0; i<=n0-1; i++)
+            {
+                for(j=0; j<=n1-1; j++)
+                {
+                    s.alloc_entry();
+                }
+            }
+        }
+
+
+        /*************************************************************************
+        Serialization: complex value
+        *************************************************************************/
+        public static void serializerealmatrix(alglib.serializer s,
+            double[,] v,
+            int n0,
+            int n1)
+        {
+            int i = 0;
+            int j = 0;
+
+            if( n0<0 )
+            {
+                n0 = ap.rows(v);
+            }
+            if( n1<0 )
+            {
+                n1 = ap.cols(v);
+            }
+            s.serialize_int(n0);
+            s.serialize_int(n1);
+            for(i=0; i<=n0-1; i++)
+            {
+                for(j=0; j<=n1-1; j++)
+                {
+                    s.serialize_double(v[i,j]);
+                }
+            }
+        }
+
+
+        /*************************************************************************
+        Unserialization: complex value
+        *************************************************************************/
+        public static void unserializerealmatrix(alglib.serializer s,
+            ref double[,] v)
+        {
+            int i = 0;
+            int j = 0;
+            int n0 = 0;
+            int n1 = 0;
+            double t = 0;
+
+            v = new double[0,0];
+
+            n0 = s.unserialize_int();
+            n1 = s.unserialize_int();
+            if( n0==0 | n1==0 )
+            {
+                return;
+            }
+            v = new double[n0, n1];
+            for(i=0; i<=n0-1; i++)
+            {
+                for(j=0; j<=n1-1; j++)
+                {
+                    t = s.unserialize_double();
+                    v[i,j] = t;
+                }
+            }
+        }
+
+
+        /*************************************************************************
+        Copy integer array
+        *************************************************************************/
+        public static void copyintegerarray(int[] src,
+            ref int[] dst)
+        {
+            int i = 0;
+
+            dst = new int[0];
+
+            if( ap.len(src)>0 )
+            {
+                dst = new int[ap.len(src)];
+                for(i=0; i<=ap.len(src)-1; i++)
+                {
+                    dst[i] = src[i];
+                }
+            }
+        }
+
+
+        /*************************************************************************
+        Copy real array
+        *************************************************************************/
+        public static void copyrealarray(double[] src,
+            ref double[] dst)
+        {
+            int i = 0;
+
+            dst = new double[0];
+
+            if( ap.len(src)>0 )
+            {
+                dst = new double[ap.len(src)];
+                for(i=0; i<=ap.len(src)-1; i++)
+                {
+                    dst[i] = src[i];
+                }
+            }
+        }
+
+
+        /*************************************************************************
+        Copy real matrix
+        *************************************************************************/
+        public static void copyrealmatrix(double[,] src,
+            ref double[,] dst)
+        {
+            int i = 0;
+            int j = 0;
+
+            dst = new double[0,0];
+
+            if( ap.rows(src)>0 & ap.cols(src)>0 )
+            {
+                dst = new double[ap.rows(src), ap.cols(src)];
+                for(i=0; i<=ap.rows(src)-1; i++)
+                {
+                    for(j=0; j<=ap.cols(src)-1; j++)
+                    {
+                        dst[i,j] = src[i,j];
+                    }
+                }
+            }
+        }
+
+
+        /*************************************************************************
+        This function searches integer array. Elements in this array are actually
+        records, each NRec elements wide. Each record has unique header - NHeader
+        integer values, which identify it. Records are lexicographically sorted by
+        header.
+
+        Records are identified by their index, not offset (offset = NRec*index).
+
+        This function searches A (records with indices [I0,I1)) for a record with
+        header B. It returns index of this record (not offset!), or -1 on failure.
+
+          -- ALGLIB --
+             Copyright 28.03.2011 by Bochkanov Sergey
+        *************************************************************************/
+        public static int recsearch(ref int[] a,
+            int nrec,
+            int nheader,
+            int i0,
+            int i1,
+            int[] b)
+        {
+            int result = 0;
+            int mididx = 0;
+            int cflag = 0;
+            int k = 0;
+            int offs = 0;
+
+            result = -1;
+            while( true )
+            {
+                if( i0>=i1 )
+                {
+                    break;
+                }
+                mididx = (i0+i1)/2;
+                offs = nrec*mididx;
+                cflag = 0;
+                for(k=0; k<=nheader-1; k++)
+                {
+                    if( a[offs+k]<b[k] )
+                    {
+                        cflag = -1;
+                        break;
+                    }
+                    if( a[offs+k]>b[k] )
+                    {
+                        cflag = 1;
+                        break;
+                    }
+                }
+                if( cflag==0 )
+                {
+                    result = mididx;
+                    return result;
+                }
+                if( cflag<0 )
+                {
+                    i0 = mididx+1;
+                }
+                else
+                {
+                    i1 = mididx;
+                }
+            }
+            return result;
+        }
+
+
+    }
     public class tsort
     {
         /*************************************************************************
@@ -64,18 +1398,38 @@ public partial class alglib
             ref int[] p1,
             ref int[] p2)
         {
+            apserv.apbuffers buf = new apserv.apbuffers();
+
+            p1 = new int[0];
+            p2 = new int[0];
+
+            tagsortbuf(ref a, n, ref p1, ref p2, buf);
+        }
+
+
+        /*************************************************************************
+        Buffered variant of TagSort, which accepts preallocated output arrays as
+        well as special structure for buffered allocations. If arrays are too
+        short, they are reallocated. If they are large enough, no memory
+        allocation is done.
+
+        It is intended to be used in the performance-critical parts of code, where
+        additional allocations can lead to severe performance degradation
+
+          -- ALGLIB --
+             Copyright 14.05.2008 by Bochkanov Sergey
+        *************************************************************************/
+        public static void tagsortbuf(ref double[] a,
+            int n,
+            ref int[] p1,
+            ref int[] p2,
+            apserv.apbuffers buf)
+        {
             int i = 0;
-            int[] pv = new int[0];
-            int[] vp = new int[0];
-            double[] bufa = new double[0];
-            int[] bufb = new int[0];
             int lv = 0;
             int lp = 0;
             int rv = 0;
             int rp = 0;
-
-            p1 = new int[0];
-            p2 = new int[0];
 
             
             //
@@ -87,8 +1441,8 @@ public partial class alglib
             }
             if( n==1 )
             {
-                p1 = new int[0+1];
-                p2 = new int[0+1];
+                apserv.ivectorsetlengthatleast(ref p1, 1);
+                apserv.ivectorsetlengthatleast(ref p2, 1);
                 p1[0] = 0;
                 p2[0] = 0;
                 return;
@@ -97,7 +1451,7 @@ public partial class alglib
             //
             // General case, N>1: prepare permutations table P1
             //
-            p1 = new int[n-1+1];
+            apserv.ivectorsetlengthatleast(ref p1, n);
             for(i=0; i<=n-1; i++)
             {
                 p1[i] = i;
@@ -106,29 +1460,29 @@ public partial class alglib
             //
             // General case, N>1: sort, update P1
             //
-            bufa = new double[n];
-            bufb = new int[n];
-            tagsortfasti(ref a, ref p1, ref bufa, ref bufb, n);
+            apserv.rvectorsetlengthatleast(ref buf.ra0, n);
+            apserv.ivectorsetlengthatleast(ref buf.ia0, n);
+            tagsortfasti(ref a, ref p1, ref buf.ra0, ref buf.ia0, n);
             
             //
             // General case, N>1: fill permutations table P2
             //
             // To fill P2 we maintain two arrays:
-            // * PV, Position(Value). PV[i] contains position of I-th key at the moment
-            // * VP, Value(Position). VP[i] contains key which has position I at the moment
+            // * PV (Buf.IA0), Position(Value). PV[i] contains position of I-th key at the moment
+            // * VP (Buf.IA1), Value(Position). VP[i] contains key which has position I at the moment
             //
             // At each step we making permutation of two items:
             //   Left, which is given by position/value pair LP/LV
             //   and Right, which is given by RP/RV
             // and updating PV[] and VP[] correspondingly.
             //
-            pv = new int[n-1+1];
-            vp = new int[n-1+1];
-            p2 = new int[n-1+1];
+            apserv.ivectorsetlengthatleast(ref buf.ia0, n);
+            apserv.ivectorsetlengthatleast(ref buf.ia1, n);
+            apserv.ivectorsetlengthatleast(ref p2, n);
             for(i=0; i<=n-1; i++)
             {
-                pv[i] = i;
-                vp[i] = i;
+                buf.ia0[i] = i;
+                buf.ia1[i] = i;
             }
             for(i=0; i<=n-1; i++)
             {
@@ -137,9 +1491,9 @@ public partial class alglib
                 // calculate LP, LV, RP, RV
                 //
                 lp = i;
-                lv = vp[lp];
+                lv = buf.ia1[lp];
                 rv = p1[i];
-                rp = pv[rv];
+                rp = buf.ia0[rv];
                 
                 //
                 // Fill P2
@@ -149,10 +1503,10 @@ public partial class alglib
                 //
                 // update PV and VP
                 //
-                vp[lp] = rv;
-                vp[rp] = lv;
-                pv[lv] = rp;
-                pv[rv] = lp;
+                buf.ia1[lp] = rv;
+                buf.ia1[rp] = lv;
+                buf.ia0[lv] = rp;
+                buf.ia0[rv] = lp;
             }
         }
 
@@ -1182,748 +2536,6 @@ public partial class alglib
             //
             tagsortfastrec(ref a, ref bufa, i1, i1+cntless-1);
             tagsortfastrec(ref a, ref bufa, i1+cntless+cnteq, i2);
-        }
-
-
-    }
-    public class apserv
-    {
-        /*************************************************************************
-        Buffers for internal functions which need buffers:
-        * check for size of the buffer you want to use.
-        * if buffer is too small, resize it; leave unchanged, if it is larger than
-          needed.
-        * use it.
-
-        We can pass this structure to multiple functions;  after first run through
-        functions buffer sizes will be finally determined,  and  on  a next run no
-        allocation will be required.
-        *************************************************************************/
-        public class apbuffers
-        {
-            public int[] ia1;
-            public int[] ia2;
-            public double[] ra1;
-            public double[] ra2;
-            public apbuffers()
-            {
-                ia1 = new int[0];
-                ia2 = new int[0];
-                ra1 = new double[0];
-                ra2 = new double[0];
-            }
-        };
-
-
-
-
-        /*************************************************************************
-        This  function  generates  1-dimensional  general  interpolation task with
-        moderate Lipshitz constant (close to 1.0)
-
-        If N=1 then suborutine generates only one point at the middle of [A,B]
-
-          -- ALGLIB --
-             Copyright 02.12.2009 by Bochkanov Sergey
-        *************************************************************************/
-        public static void taskgenint1d(double a,
-            double b,
-            int n,
-            ref double[] x,
-            ref double[] y)
-        {
-            int i = 0;
-            double h = 0;
-
-            x = new double[0];
-            y = new double[0];
-
-            ap.assert(n>=1, "TaskGenInterpolationEqdist1D: N<1!");
-            x = new double[n];
-            y = new double[n];
-            if( n>1 )
-            {
-                x[0] = a;
-                y[0] = 2*math.randomreal()-1;
-                h = (b-a)/(n-1);
-                for(i=1; i<=n-1; i++)
-                {
-                    if( i!=n-1 )
-                    {
-                        x[i] = a+(i+0.2*(2*math.randomreal()-1))*h;
-                    }
-                    else
-                    {
-                        x[i] = b;
-                    }
-                    y[i] = y[i-1]+(2*math.randomreal()-1)*(x[i]-x[i-1]);
-                }
-            }
-            else
-            {
-                x[0] = 0.5*(a+b);
-                y[0] = 2*math.randomreal()-1;
-            }
-        }
-
-
-        /*************************************************************************
-        This function generates  1-dimensional equidistant interpolation task with
-        moderate Lipshitz constant (close to 1.0)
-
-        If N=1 then suborutine generates only one point at the middle of [A,B]
-
-          -- ALGLIB --
-             Copyright 02.12.2009 by Bochkanov Sergey
-        *************************************************************************/
-        public static void taskgenint1dequidist(double a,
-            double b,
-            int n,
-            ref double[] x,
-            ref double[] y)
-        {
-            int i = 0;
-            double h = 0;
-
-            x = new double[0];
-            y = new double[0];
-
-            ap.assert(n>=1, "TaskGenInterpolationEqdist1D: N<1!");
-            x = new double[n];
-            y = new double[n];
-            if( n>1 )
-            {
-                x[0] = a;
-                y[0] = 2*math.randomreal()-1;
-                h = (b-a)/(n-1);
-                for(i=1; i<=n-1; i++)
-                {
-                    x[i] = a+i*h;
-                    y[i] = y[i-1]+(2*math.randomreal()-1)*h;
-                }
-            }
-            else
-            {
-                x[0] = 0.5*(a+b);
-                y[0] = 2*math.randomreal()-1;
-            }
-        }
-
-
-        /*************************************************************************
-        This function generates  1-dimensional Chebyshev-1 interpolation task with
-        moderate Lipshitz constant (close to 1.0)
-
-        If N=1 then suborutine generates only one point at the middle of [A,B]
-
-          -- ALGLIB --
-             Copyright 02.12.2009 by Bochkanov Sergey
-        *************************************************************************/
-        public static void taskgenint1dcheb1(double a,
-            double b,
-            int n,
-            ref double[] x,
-            ref double[] y)
-        {
-            int i = 0;
-
-            x = new double[0];
-            y = new double[0];
-
-            ap.assert(n>=1, "TaskGenInterpolation1DCheb1: N<1!");
-            x = new double[n];
-            y = new double[n];
-            if( n>1 )
-            {
-                for(i=0; i<=n-1; i++)
-                {
-                    x[i] = 0.5*(b+a)+0.5*(b-a)*Math.Cos(Math.PI*(2*i+1)/(2*n));
-                    if( i==0 )
-                    {
-                        y[i] = 2*math.randomreal()-1;
-                    }
-                    else
-                    {
-                        y[i] = y[i-1]+(2*math.randomreal()-1)*(x[i]-x[i-1]);
-                    }
-                }
-            }
-            else
-            {
-                x[0] = 0.5*(a+b);
-                y[0] = 2*math.randomreal()-1;
-            }
-        }
-
-
-        /*************************************************************************
-        This function generates  1-dimensional Chebyshev-2 interpolation task with
-        moderate Lipshitz constant (close to 1.0)
-
-        If N=1 then suborutine generates only one point at the middle of [A,B]
-
-          -- ALGLIB --
-             Copyright 02.12.2009 by Bochkanov Sergey
-        *************************************************************************/
-        public static void taskgenint1dcheb2(double a,
-            double b,
-            int n,
-            ref double[] x,
-            ref double[] y)
-        {
-            int i = 0;
-
-            x = new double[0];
-            y = new double[0];
-
-            ap.assert(n>=1, "TaskGenInterpolation1DCheb2: N<1!");
-            x = new double[n];
-            y = new double[n];
-            if( n>1 )
-            {
-                for(i=0; i<=n-1; i++)
-                {
-                    x[i] = 0.5*(b+a)+0.5*(b-a)*Math.Cos(Math.PI*i/(n-1));
-                    if( i==0 )
-                    {
-                        y[i] = 2*math.randomreal()-1;
-                    }
-                    else
-                    {
-                        y[i] = y[i-1]+(2*math.randomreal()-1)*(x[i]-x[i-1]);
-                    }
-                }
-            }
-            else
-            {
-                x[0] = 0.5*(a+b);
-                y[0] = 2*math.randomreal()-1;
-            }
-        }
-
-
-        /*************************************************************************
-        This function checks that all values from X[] are distinct. It does more
-        than just usual floating point comparison:
-        * first, it calculates max(X) and min(X)
-        * second, it maps X[] from [min,max] to [1,2]
-        * only at this stage actual comparison is done
-
-        The meaning of such check is to ensure that all values are "distinct enough"
-        and will not cause interpolation subroutine to fail.
-
-        NOTE:
-            X[] must be sorted by ascending (subroutine ASSERT's it)
-
-          -- ALGLIB --
-             Copyright 02.12.2009 by Bochkanov Sergey
-        *************************************************************************/
-        public static bool aredistinct(double[] x,
-            int n)
-        {
-            bool result = new bool();
-            double a = 0;
-            double b = 0;
-            int i = 0;
-            bool nonsorted = new bool();
-
-            ap.assert(n>=1, "APSERVAreDistinct: internal error (N<1)");
-            if( n==1 )
-            {
-                
-                //
-                // everything is alright, it is up to caller to decide whether it
-                // can interpolate something with just one point
-                //
-                result = true;
-                return result;
-            }
-            a = x[0];
-            b = x[0];
-            nonsorted = false;
-            for(i=1; i<=n-1; i++)
-            {
-                a = Math.Min(a, x[i]);
-                b = Math.Max(b, x[i]);
-                nonsorted = nonsorted | (double)(x[i-1])>=(double)(x[i]);
-            }
-            ap.assert(!nonsorted, "APSERVAreDistinct: internal error (not sorted)");
-            for(i=1; i<=n-1; i++)
-            {
-                if( (double)((x[i]-a)/(b-a)+1)==(double)((x[i-1]-a)/(b-a)+1) )
-                {
-                    result = false;
-                    return result;
-                }
-            }
-            result = true;
-            return result;
-        }
-
-
-        /*************************************************************************
-        This function checks that all values from X[] are finite
-
-          -- ALGLIB --
-             Copyright 18.06.2010 by Bochkanov Sergey
-        *************************************************************************/
-        public static bool isfinitevector(double[] x,
-            int n)
-        {
-            bool result = new bool();
-            int i = 0;
-
-            ap.assert(n>=0, "APSERVIsFiniteVector: internal error (N<0)");
-            for(i=0; i<=n-1; i++)
-            {
-                if( !math.isfinite(x[i]) )
-                {
-                    result = false;
-                    return result;
-                }
-            }
-            result = true;
-            return result;
-        }
-
-
-        /*************************************************************************
-        This function checks that all values from X[] are finite
-
-          -- ALGLIB --
-             Copyright 18.06.2010 by Bochkanov Sergey
-        *************************************************************************/
-        public static bool isfinitecvector(complex[] z,
-            int n)
-        {
-            bool result = new bool();
-            int i = 0;
-
-            ap.assert(n>=0, "APSERVIsFiniteCVector: internal error (N<0)");
-            for(i=0; i<=n-1; i++)
-            {
-                if( !math.isfinite(z[i].x) | !math.isfinite(z[i].y) )
-                {
-                    result = false;
-                    return result;
-                }
-            }
-            result = true;
-            return result;
-        }
-
-
-        /*************************************************************************
-        This function checks that all values from X[0..M-1,0..N-1] are finite
-
-          -- ALGLIB --
-             Copyright 18.06.2010 by Bochkanov Sergey
-        *************************************************************************/
-        public static bool apservisfinitematrix(double[,] x,
-            int m,
-            int n)
-        {
-            bool result = new bool();
-            int i = 0;
-            int j = 0;
-
-            ap.assert(n>=0, "APSERVIsFiniteMatrix: internal error (N<0)");
-            ap.assert(m>=0, "APSERVIsFiniteMatrix: internal error (M<0)");
-            for(i=0; i<=m-1; i++)
-            {
-                for(j=0; j<=n-1; j++)
-                {
-                    if( !math.isfinite(x[i,j]) )
-                    {
-                        result = false;
-                        return result;
-                    }
-                }
-            }
-            result = true;
-            return result;
-        }
-
-
-        /*************************************************************************
-        This function checks that all values from X[0..M-1,0..N-1] are finite
-
-          -- ALGLIB --
-             Copyright 18.06.2010 by Bochkanov Sergey
-        *************************************************************************/
-        public static bool apservisfinitecmatrix(complex[,] x,
-            int m,
-            int n)
-        {
-            bool result = new bool();
-            int i = 0;
-            int j = 0;
-
-            ap.assert(n>=0, "APSERVIsFiniteCMatrix: internal error (N<0)");
-            ap.assert(m>=0, "APSERVIsFiniteCMatrix: internal error (M<0)");
-            for(i=0; i<=m-1; i++)
-            {
-                for(j=0; j<=n-1; j++)
-                {
-                    if( !math.isfinite(x[i,j].x) | !math.isfinite(x[i,j].y) )
-                    {
-                        result = false;
-                        return result;
-                    }
-                }
-            }
-            result = true;
-            return result;
-        }
-
-
-        /*************************************************************************
-        This function checks that all values from upper/lower triangle of
-        X[0..N-1,0..N-1] are finite
-
-          -- ALGLIB --
-             Copyright 18.06.2010 by Bochkanov Sergey
-        *************************************************************************/
-        public static bool isfinitertrmatrix(double[,] x,
-            int n,
-            bool isupper)
-        {
-            bool result = new bool();
-            int i = 0;
-            int j1 = 0;
-            int j2 = 0;
-            int j = 0;
-
-            ap.assert(n>=0, "APSERVIsFiniteRTRMatrix: internal error (N<0)");
-            for(i=0; i<=n-1; i++)
-            {
-                if( isupper )
-                {
-                    j1 = i;
-                    j2 = n-1;
-                }
-                else
-                {
-                    j1 = 0;
-                    j2 = i;
-                }
-                for(j=j1; j<=j2; j++)
-                {
-                    if( !math.isfinite(x[i,j]) )
-                    {
-                        result = false;
-                        return result;
-                    }
-                }
-            }
-            result = true;
-            return result;
-        }
-
-
-        /*************************************************************************
-        This function checks that all values from upper/lower triangle of
-        X[0..N-1,0..N-1] are finite
-
-          -- ALGLIB --
-             Copyright 18.06.2010 by Bochkanov Sergey
-        *************************************************************************/
-        public static bool apservisfinitectrmatrix(complex[,] x,
-            int n,
-            bool isupper)
-        {
-            bool result = new bool();
-            int i = 0;
-            int j1 = 0;
-            int j2 = 0;
-            int j = 0;
-
-            ap.assert(n>=0, "APSERVIsFiniteCTRMatrix: internal error (N<0)");
-            for(i=0; i<=n-1; i++)
-            {
-                if( isupper )
-                {
-                    j1 = i;
-                    j2 = n-1;
-                }
-                else
-                {
-                    j1 = 0;
-                    j2 = i;
-                }
-                for(j=j1; j<=j2; j++)
-                {
-                    if( !math.isfinite(x[i,j].x) | !math.isfinite(x[i,j].y) )
-                    {
-                        result = false;
-                        return result;
-                    }
-                }
-            }
-            result = true;
-            return result;
-        }
-
-
-        /*************************************************************************
-        This function checks that all values from X[0..M-1,0..N-1] are  finite  or
-        NaN's.
-
-          -- ALGLIB --
-             Copyright 18.06.2010 by Bochkanov Sergey
-        *************************************************************************/
-        public static bool apservisfiniteornanmatrix(double[,] x,
-            int m,
-            int n)
-        {
-            bool result = new bool();
-            int i = 0;
-            int j = 0;
-
-            ap.assert(n>=0, "APSERVIsFiniteOrNaNMatrix: internal error (N<0)");
-            ap.assert(m>=0, "APSERVIsFiniteOrNaNMatrix: internal error (M<0)");
-            for(i=0; i<=m-1; i++)
-            {
-                for(j=0; j<=n-1; j++)
-                {
-                    if( !(math.isfinite(x[i,j]) | Double.IsNaN(x[i,j])) )
-                    {
-                        result = false;
-                        return result;
-                    }
-                }
-            }
-            result = true;
-            return result;
-        }
-
-
-        /*************************************************************************
-        Safe sqrt(x^2+y^2)
-
-          -- ALGLIB --
-             Copyright by Bochkanov Sergey
-        *************************************************************************/
-        public static double safepythag2(double x,
-            double y)
-        {
-            double result = 0;
-            double w = 0;
-            double xabs = 0;
-            double yabs = 0;
-            double z = 0;
-
-            xabs = Math.Abs(x);
-            yabs = Math.Abs(y);
-            w = Math.Max(xabs, yabs);
-            z = Math.Min(xabs, yabs);
-            if( (double)(z)==(double)(0) )
-            {
-                result = w;
-            }
-            else
-            {
-                result = w*Math.Sqrt(1+math.sqr(z/w));
-            }
-            return result;
-        }
-
-
-        /*************************************************************************
-        Safe sqrt(x^2+y^2)
-
-          -- ALGLIB --
-             Copyright by Bochkanov Sergey
-        *************************************************************************/
-        public static double safepythag3(double x,
-            double y,
-            double z)
-        {
-            double result = 0;
-            double w = 0;
-
-            w = Math.Max(Math.Abs(x), Math.Max(Math.Abs(y), Math.Abs(z)));
-            if( (double)(w)==(double)(0) )
-            {
-                result = 0;
-                return result;
-            }
-            x = x/w;
-            y = y/w;
-            z = z/w;
-            result = w*Math.Sqrt(math.sqr(x)+math.sqr(y)+math.sqr(z));
-            return result;
-        }
-
-
-        /*************************************************************************
-        Safe division.
-
-        This function attempts to calculate R=X/Y without overflow.
-
-        It returns:
-        * +1, if abs(X/Y)>=MaxRealNumber or undefined - overflow-like situation
-              (no overlfow is generated, R is either NAN, PosINF, NegINF)
-        *  0, if MinRealNumber<abs(X/Y)<MaxRealNumber or X=0, Y<>0
-              (R contains result, may be zero)
-        * -1, if 0<abs(X/Y)<MinRealNumber - underflow-like situation
-              (R contains zero; it corresponds to underflow)
-
-        No overflow is generated in any case.
-
-          -- ALGLIB --
-             Copyright by Bochkanov Sergey
-        *************************************************************************/
-        public static int saferdiv(double x,
-            double y,
-            ref double r)
-        {
-            int result = 0;
-
-            r = 0;
-
-            
-            //
-            // Two special cases:
-            // * Y=0
-            // * X=0 and Y<>0
-            //
-            if( (double)(y)==(double)(0) )
-            {
-                result = 1;
-                if( (double)(x)==(double)(0) )
-                {
-                    r = Double.NaN;
-                }
-                if( (double)(x)>(double)(0) )
-                {
-                    r = Double.PositiveInfinity;
-                }
-                if( (double)(x)<(double)(0) )
-                {
-                    r = Double.NegativeInfinity;
-                }
-                return result;
-            }
-            if( (double)(x)==(double)(0) )
-            {
-                r = 0;
-                result = 0;
-                return result;
-            }
-            
-            //
-            // make Y>0
-            //
-            if( (double)(y)<(double)(0) )
-            {
-                x = -x;
-                y = -y;
-            }
-            
-            //
-            //
-            //
-            if( (double)(y)>=(double)(1) )
-            {
-                r = x/y;
-                if( (double)(Math.Abs(r))<=(double)(math.minrealnumber) )
-                {
-                    result = -1;
-                    r = 0;
-                }
-                else
-                {
-                    result = 0;
-                }
-            }
-            else
-            {
-                if( (double)(Math.Abs(x))>=(double)(math.maxrealnumber*y) )
-                {
-                    if( (double)(x)>(double)(0) )
-                    {
-                        r = Double.PositiveInfinity;
-                    }
-                    else
-                    {
-                        r = Double.NegativeInfinity;
-                    }
-                    result = 1;
-                }
-                else
-                {
-                    r = x/y;
-                    result = 0;
-                }
-            }
-            return result;
-        }
-
-
-        /*************************************************************************
-        This function makes periodic mapping of X to [A,B].
-
-        It accepts X, A, B (A>B). It returns T which lies in  [A,B] and integer K,
-        such that X = T + K*(B-A).
-
-        NOTES:
-        * K is represented as real value, although actually it is integer
-        * T is guaranteed to be in [A,B]
-        * T replaces X
-
-          -- ALGLIB --
-             Copyright by Bochkanov Sergey
-        *************************************************************************/
-        public static void apperiodicmap(ref double x,
-            double a,
-            double b,
-            ref double k)
-        {
-            k = 0;
-
-            ap.assert((double)(a)<(double)(b), "APPeriodicMap: internal error!");
-            k = (int)Math.Floor((x-a)/(b-a));
-            x = x-k*(b-a);
-            while( (double)(x)<(double)(a) )
-            {
-                x = x+(b-a);
-                k = k-1;
-            }
-            while( (double)(x)>(double)(b) )
-            {
-                x = x-(b-a);
-                k = k+1;
-            }
-            x = Math.Max(x, a);
-            x = Math.Min(x, b);
-        }
-
-
-        /*************************************************************************
-        'bounds' value: maps X to [B1,B2]
-
-          -- ALGLIB --
-             Copyright 20.03.2009 by Bochkanov Sergey
-        *************************************************************************/
-        public static double boundval(double x,
-            double b1,
-            double b2)
-        {
-            double result = 0;
-
-            if( (double)(x)<=(double)(b1) )
-            {
-                result = b1;
-                return result;
-            }
-            if( (double)(x)>=(double)(b2) )
-            {
-                result = b2;
-                return result;
-            }
-            result = x;
-            return result;
         }
 
 
@@ -4034,6 +4646,31 @@ public partial class alglib
     }
     public class rotations
     {
+        /*************************************************************************
+        Application of a sequence of  elementary rotations to a matrix
+
+        The algorithm pre-multiplies the matrix by a sequence of rotation
+        transformations which is given by arrays C and S. Depending on the value
+        of the IsForward parameter either 1 and 2, 3 and 4 and so on (if IsForward=true)
+        rows are rotated, or the rows N and N-1, N-2 and N-3 and so on, are rotated.
+
+        Not the whole matrix but only a part of it is transformed (rows from M1 to
+        M2, columns from N1 to N2). Only the elements of this submatrix are changed.
+
+        Input parameters:
+            IsForward   -   the sequence of the rotation application.
+            M1,M2       -   the range of rows to be transformed.
+            N1, N2      -   the range of columns to be transformed.
+            C,S         -   transformation coefficients.
+                            Array whose index ranges within [1..M2-M1].
+            A           -   processed matrix.
+            WORK        -   working array whose index ranges within [N1..N2].
+
+        Output parameters:
+            A           -   transformed matrix.
+
+        Utility subroutine.
+        *************************************************************************/
         public static void applyrotationsfromtheleft(bool isforward,
             int m1,
             int m2,
@@ -4176,6 +4813,31 @@ public partial class alglib
         }
 
 
+        /*************************************************************************
+        Application of a sequence of  elementary rotations to a matrix
+
+        The algorithm post-multiplies the matrix by a sequence of rotation
+        transformations which is given by arrays C and S. Depending on the value
+        of the IsForward parameter either 1 and 2, 3 and 4 and so on (if IsForward=true)
+        rows are rotated, or the rows N and N-1, N-2 and N-3 and so on are rotated.
+
+        Not the whole matrix but only a part of it is transformed (rows from M1
+        to M2, columns from N1 to N2). Only the elements of this submatrix are changed.
+
+        Input parameters:
+            IsForward   -   the sequence of the rotation application.
+            M1,M2       -   the range of rows to be transformed.
+            N1, N2      -   the range of columns to be transformed.
+            C,S         -   transformation coefficients.
+                            Array whose index ranges within [1..N2-N1].
+            A           -   processed matrix.
+            WORK        -   working array whose index ranges within [M1..M2].
+
+        Output parameters:
+            A           -   transformed matrix.
+
+        Utility subroutine.
+        *************************************************************************/
         public static void applyrotationsfromtheright(bool isforward,
             int m1,
             int m2,
@@ -4314,6 +4976,14 @@ public partial class alglib
         }
 
 
+        /*************************************************************************
+        The subroutine generates the elementary rotation, so that:
+
+        [  CS  SN  ]  .  [ F ]  =  [ R ]
+        [ -SN  CS  ]     [ G ]     [ 0 ]
+
+        CS**2 + SN**2 = 1
+        *************************************************************************/
         public static void generaterotation(double f,
             double g,
             ref double cs,
@@ -4369,6 +5039,49 @@ public partial class alglib
     }
     public class hsschur
     {
+        /*************************************************************************
+        Subroutine performing  the  Schur  decomposition  of  a  matrix  in  upper
+        Hessenberg form using the QR algorithm with multiple shifts.
+
+        The  source matrix  H  is  represented as  S'*H*S = T, where H - matrix in
+        upper Hessenberg form,  S - orthogonal matrix (Schur vectors),   T - upper
+        quasi-triangular matrix (with blocks of sizes  1x1  and  2x2  on  the main
+        diagonal).
+
+        Input parameters:
+            H   -   matrix to be decomposed.
+                    Array whose indexes range within [1..N, 1..N].
+            N   -   size of H, N>=0.
+
+
+        Output parameters:
+            H   –   contains the matrix T.
+                    Array whose indexes range within [1..N, 1..N].
+                    All elements below the blocks on the main diagonal are equal
+                    to 0.
+            S   -   contains Schur vectors.
+                    Array whose indexes range within [1..N, 1..N].
+
+        Note 1:
+            The block structure of matrix T could be easily recognized: since  all
+            the elements  below  the blocks are zeros, the elements a[i+1,i] which
+            are equal to 0 show the block border.
+
+        Note 2:
+            the algorithm  performance  depends  on  the  value  of  the  internal
+            parameter NS of InternalSchurDecomposition  subroutine  which  defines
+            the number of shifts in the QR algorithm (analog of  the  block  width
+            in block matrix algorithms in linear algebra). If you require  maximum
+            performance  on  your  machine,  it  is  recommended  to  adjust  this
+            parameter manually.
+
+        Result:
+            True, if the algorithm has converged and the parameters H and S contain
+                the result.
+            False, if the algorithm has not converged.
+
+        Algorithm implemented on the basis of subroutine DHSEQR (LAPACK 3.0 library).
+        *************************************************************************/
         public static bool upperhessenbergschurdecomposition(ref double[,] h,
             int n,
             ref double[,] s)
@@ -7714,7 +8427,6 @@ public partial class alglib
 
         public const double ftol = 0.001;
         public const double xtol = 100*math.machineepsilon;
-        public const double gtol = 0.3;
         public const int maxfev = 20;
         public const double stpmin = 1.0E-50;
         public const double defstpmax = 1.0E+50;
@@ -7803,6 +8515,22 @@ public partial class alglib
         ALGORITHM  USUALLY STOPS  WHEN  ROUNDING ERRORS  PREVENT FURTHER PROGRESS.
         IN THIS CASE STP ONLY SATISFIES THE SUFFICIENT DECREASE CONDITION.
 
+
+        :::::::::::::IMPORTANT NOTES:::::::::::::
+
+        NOTE 1:
+
+        This routine  guarantees that it will stop at the last point where function
+        value was calculated. It won't make several additional function evaluations
+        after finding good point. So if you store function evaluations requested by
+        this routine, you can be sure that last one is the point where we've stopped.
+
+        NOTE 2:
+
+        when 0<StpMax<StpMin, algorithm will terminate with INFO=5 and Stp=0.0
+        :::::::::::::::::::::::::::::::::::::::::
+
+
         PARAMETERS DESCRIPRION
 
         STAGE IS ZERO ON FIRST CALL, ZERO ON FINAL EXIT
@@ -7870,6 +8598,7 @@ public partial class alglib
             double[] s,
             ref double stp,
             double stpmax,
+            double gtol,
             ref int info,
             ref int nfev,
             ref double[] wa,
@@ -7925,6 +8654,12 @@ public partial class alglib
                     //
                     //     CHECK THE INPUT PARAMETERS FOR ERRORS.
                     //
+                    if( (double)(stpmax)<(double)(stpmin) & (double)(stpmax)>(double)(0) )
+                    {
+                        info = 5;
+                        stp = 0.0;
+                        return;
+                    }
                     if( ((((((n<=0 | (double)(stp)<=(double)(0)) | (double)(ftol)<(double)(0)) | (double)(gtol)<(double)(zero)) | (double)(xtol)<(double)(zero)) | (double)(stpmin)<(double)(zero)) | (double)(stpmax)<(double)(stpmin)) | maxfev<=0 )
                     {
                         stage = 0;
@@ -8797,6 +9532,61 @@ public partial class alglib
                 else
                 {
                     stp = Math.Max(stx+0.66*(sty-stx), stp);
+                }
+            }
+        }
+
+
+    }
+    public class optserv
+    {
+        /*************************************************************************
+        This subroutine is used to prepare threshold value which will be used for
+        trimming of the target function (see comments on TrimFunction() for more
+        information).
+
+        This function accepts only one parameter: function value at the starting
+        point. It returns threshold which will be used for trimming.
+
+          -- ALGLIB --
+             Copyright 10.05.2011 by Bochkanov Sergey
+        *************************************************************************/
+        public static void trimprepare(double f,
+            ref double threshold)
+        {
+            threshold = 0;
+
+            threshold = 10*(Math.Abs(f)+1);
+        }
+
+
+        /*************************************************************************
+        This subroutine is used to "trim" target function, i.e. to do following
+        transformation:
+
+                           { {F,G}          if F<Threshold
+            {F_tr, G_tr} = {
+                           { {Threshold, 0} if F>=Threshold
+                           
+        Such transformation allows us to  solve  problems  with  singularities  by
+        redefining function in such way that it becomes bounded from above.
+
+          -- ALGLIB --
+             Copyright 10.05.2011 by Bochkanov Sergey
+        *************************************************************************/
+        public static void trimfunction(ref double f,
+            ref double[] g,
+            int n,
+            double threshold)
+        {
+            int i = 0;
+
+            if( (double)(f)>=(double)(threshold) )
+            {
+                f = threshold;
+                for(i=0; i<=n-1; i++)
+                {
+                    g[i] = 0.0;
                 }
             }
         }

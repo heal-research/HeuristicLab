@@ -167,21 +167,6 @@ public partial class alglib
         diff    -   callback which calculates dy/dx for given y and x
         obj     -   optional object which is passed to diff; can be NULL
 
-    One iteration of ODE solver.
-
-    Called after inialization of State structure with OdeSolverXXX subroutine.
-    See HTML docs for examples.
-
-    INPUT PARAMETERS:
-        State   -   structure which stores algorithm state between subsequent
-                    calls and which is used for reverse communication. Must be
-                    initialized with OdeSolverXXX() call first.
-
-    If subroutine returned False, algorithm have finished its work.
-    If subroutine returned True, then user should:
-    * calculate F(State.X, State.Y)
-    * store it in State.DY
-    Here State.X is real, State.Y and State.DY are arrays[0..N-1] of reals.
 
       -- ALGLIB --
          Copyright 01.09.2009 by Bochkanov Sergey
@@ -371,21 +356,6 @@ public partial class alglib
 
 
         /*************************************************************************
-        One iteration of ODE solver.
-
-        Called after inialization of State structure with OdeSolverXXX subroutine.
-        See HTML docs for examples.
-
-        INPUT PARAMETERS:
-            State   -   structure which stores algorithm state between subsequent
-                        calls and which is used for reverse communication. Must be
-                        initialized with OdeSolverXXX() call first.
-
-        If subroutine returned False, algorithm have finished its work.
-        If subroutine returned True, then user should:
-        * calculate F(State.X, State.Y)
-        * store it in State.DY
-        Here State.X is real, State.Y and State.DY are arrays[0..N-1] of reals.
 
           -- ALGLIB --
              Copyright 01.09.2009 by Bochkanov Sergey
@@ -471,8 +441,6 @@ public partial class alglib
             n = state.n;
             m = state.m;
             h = state.h;
-            state.y = new double[n];
-            state.dy = new double[n];
             maxgrowpow = Math.Pow(odesolvermaxgrow, 5);
             state.repnfev = 0;
             
@@ -964,6 +932,12 @@ public partial class alglib
             }
             state.solvertype = solvertype;
             state.repterminationtype = 0;
+            
+            //
+            // Allocate arrays
+            //
+            state.y = new double[n];
+            state.dy = new double[n];
         }
 
 

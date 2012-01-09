@@ -215,6 +215,51 @@ public partial class alglib
         }
     }
 
+
+    /*************************************************************************
+    This function serializes data structure to string.
+
+    Important properties of s_out:
+    * it contains alphanumeric characters, dots, underscores, minus signs
+    * these symbols are grouped into words, which are separated by spaces
+      and Windows-style (CR+LF) newlines
+    * although  serializer  uses  spaces and CR+LF as separators, you can 
+      replace any separator character by arbitrary combination of spaces,
+      tabs, Windows or Unix newlines. It allows flexible reformatting  of
+      the  string  in  case you want to include it into text or XML file. 
+      But you should not insert separators into the middle of the "words"
+      nor you should change case of letters.
+    * s_out can be freely moved between 32-bit and 64-bit systems, little
+      and big endian machines, and so on. You can serialize structure  on
+      32-bit machine and unserialize it on 64-bit one (or vice versa), or
+      serialize  it  on  SPARC  and  unserialize  on  x86.  You  can also 
+      serialize  it  in  C# version of ALGLIB and unserialize in C++ one, 
+      and vice versa.
+    *************************************************************************/
+    public static void kdtreeserialize(kdtree obj, out string s_out)
+    {
+        alglib.serializer s = new alglib.serializer();
+        s.alloc_start();
+        nearestneighbor.kdtreealloc(s, obj.innerobj);
+        s.sstart_str();
+        nearestneighbor.kdtreeserialize(s, obj.innerobj);
+        s.stop();
+        s_out = s.get_string();
+    }
+
+
+    /*************************************************************************
+    This function unserializes data structure from string.
+    *************************************************************************/
+    public static void kdtreeunserialize(string s_in, out kdtree obj)
+    {
+        alglib.serializer s = new alglib.serializer();
+        obj = new kdtree();
+        s.ustart_str(s_in);
+        nearestneighbor.kdtreeunserialize(s, obj.innerobj);
+        s.stop();
+    }
+
     /*************************************************************************
     KD-tree creation
 
@@ -960,14 +1005,10 @@ public partial class alglib
             public int nx;
             public int ny;
             public int normtype;
-            public int distmatrixtype;
             public double[,] xy;
             public int[] tags;
             public double[] boxmin;
             public double[] boxmax;
-            public double[] curboxmin;
-            public double[] curboxmax;
-            public double curdist;
             public int[] nodes;
             public double[] splits;
             public double[] x;
@@ -979,6 +1020,9 @@ public partial class alglib
             public int[] idx;
             public double[] r;
             public double[] buf;
+            public double[] curboxmin;
+            public double[] curboxmax;
+            public double curdist;
             public int debugcounter;
             public kdtree()
             {
@@ -986,14 +1030,14 @@ public partial class alglib
                 tags = new int[0];
                 boxmin = new double[0];
                 boxmax = new double[0];
-                curboxmin = new double[0];
-                curboxmax = new double[0];
                 nodes = new int[0];
                 splits = new double[0];
                 x = new double[0];
                 idx = new int[0];
                 r = new double[0];
                 buf = new double[0];
+                curboxmin = new double[0];
+                curboxmax = new double[0];
             }
         };
 
@@ -1001,6 +1045,7 @@ public partial class alglib
 
 
         public const int splitnodesize = 6;
+        public const int kdtreefirstversion = 0;
 
 
         /*************************************************************************
@@ -1132,13 +1177,12 @@ public partial class alglib
             kdt.nx = nx;
             kdt.ny = ny;
             kdt.normtype = normtype;
-            kdt.distmatrixtype = 0;
-            kdt.xy = new double[n, 2*nx+ny];
-            kdt.tags = new int[n];
-            kdt.idx = new int[n];
-            kdt.r = new double[n];
-            kdt.x = new double[nx];
-            kdt.buf = new double[Math.Max(n, nx)];
+            
+            //
+            // Allocate
+            //
+            kdtreeallocdatasetindependent(kdt, nx, ny);
+            kdtreeallocdatasetdependent(kdt, n, nx, ny);
             
             //
             // Initial fill
@@ -1160,10 +1204,6 @@ public partial class alglib
             //
             // Determine bounding box
             //
-            kdt.boxmin = new double[nx];
-            kdt.boxmax = new double[nx];
-            kdt.curboxmin = new double[nx];
-            kdt.curboxmax = new double[nx];
             for(i_=0; i_<=nx-1;i_++)
             {
                 kdt.boxmin[i_] = kdt.xy[0,i_];
@@ -1752,6 +1792,108 @@ public partial class alglib
             r = new double[0];
 
             kdtreequeryresultsdistances(kdt, ref r);
+        }
+
+
+        /*************************************************************************
+        Serializer: allocation
+
+          -- ALGLIB --
+             Copyright 14.03.2011 by Bochkanov Sergey
+        *************************************************************************/
+        public static void kdtreealloc(alglib.serializer s,
+            kdtree tree)
+        {
+            
+            //
+            // Header
+            //
+            s.alloc_entry();
+            s.alloc_entry();
+            
+            //
+            // Data
+            //
+            s.alloc_entry();
+            s.alloc_entry();
+            s.alloc_entry();
+            s.alloc_entry();
+            apserv.allocrealmatrix(s, tree.xy, -1, -1);
+            apserv.allocintegerarray(s, tree.tags, -1);
+            apserv.allocrealarray(s, tree.boxmin, -1);
+            apserv.allocrealarray(s, tree.boxmax, -1);
+            apserv.allocintegerarray(s, tree.nodes, -1);
+            apserv.allocrealarray(s, tree.splits, -1);
+        }
+
+
+        /*************************************************************************
+        Serializer: serialization
+
+          -- ALGLIB --
+             Copyright 14.03.2011 by Bochkanov Sergey
+        *************************************************************************/
+        public static void kdtreeserialize(alglib.serializer s,
+            kdtree tree)
+        {
+            
+            //
+            // Header
+            //
+            s.serialize_int(scodes.getkdtreeserializationcode());
+            s.serialize_int(kdtreefirstversion);
+            
+            //
+            // Data
+            //
+            s.serialize_int(tree.n);
+            s.serialize_int(tree.nx);
+            s.serialize_int(tree.ny);
+            s.serialize_int(tree.normtype);
+            apserv.serializerealmatrix(s, tree.xy, -1, -1);
+            apserv.serializeintegerarray(s, tree.tags, -1);
+            apserv.serializerealarray(s, tree.boxmin, -1);
+            apserv.serializerealarray(s, tree.boxmax, -1);
+            apserv.serializeintegerarray(s, tree.nodes, -1);
+            apserv.serializerealarray(s, tree.splits, -1);
+        }
+
+
+        /*************************************************************************
+        Serializer: unserialization
+
+          -- ALGLIB --
+             Copyright 14.03.2011 by Bochkanov Sergey
+        *************************************************************************/
+        public static void kdtreeunserialize(alglib.serializer s,
+            kdtree tree)
+        {
+            int i0 = 0;
+            int i1 = 0;
+
+            
+            //
+            // check correctness of header
+            //
+            i0 = s.unserialize_int();
+            ap.assert(i0==scodes.getkdtreeserializationcode(), "KDTreeUnserialize: stream header corrupted");
+            i1 = s.unserialize_int();
+            ap.assert(i1==kdtreefirstversion, "KDTreeUnserialize: stream header corrupted");
+            
+            //
+            // Unserialize data
+            //
+            tree.n = s.unserialize_int();
+            tree.nx = s.unserialize_int();
+            tree.ny = s.unserialize_int();
+            tree.normtype = s.unserialize_int();
+            apserv.unserializerealmatrix(s, ref tree.xy);
+            apserv.unserializeintegerarray(s, ref tree.tags);
+            apserv.unserializerealarray(s, ref tree.boxmin);
+            apserv.unserializerealarray(s, ref tree.boxmax);
+            apserv.unserializeintegerarray(s, ref tree.nodes);
+            apserv.unserializerealarray(s, ref tree.splits);
+            kdtreealloctemporaries(tree, tree.n, tree.nx, tree.ny);
         }
 
 
@@ -2401,6 +2543,77 @@ public partial class alglib
                     }
                 }
             }
+        }
+
+
+        /*************************************************************************
+        This function allocates all dataset-independent array  fields  of  KDTree,
+        i.e.  such  array  fields  that  their dimensions do not depend on dataset
+        size.
+
+        This function do not sets KDT.NX or KDT.NY - it just allocates arrays
+
+          -- ALGLIB --
+             Copyright 14.03.2011 by Bochkanov Sergey
+        *************************************************************************/
+        private static void kdtreeallocdatasetindependent(kdtree kdt,
+            int nx,
+            int ny)
+        {
+            kdt.x = new double[nx];
+            kdt.boxmin = new double[nx];
+            kdt.boxmax = new double[nx];
+            kdt.curboxmin = new double[nx];
+            kdt.curboxmax = new double[nx];
+        }
+
+
+        /*************************************************************************
+        This function allocates all dataset-dependent array fields of KDTree, i.e.
+        such array fields that their dimensions depend on dataset size.
+
+        This function do not sets KDT.N, KDT.NX or KDT.NY -
+        it just allocates arrays.
+
+          -- ALGLIB --
+             Copyright 14.03.2011 by Bochkanov Sergey
+        *************************************************************************/
+        private static void kdtreeallocdatasetdependent(kdtree kdt,
+            int n,
+            int nx,
+            int ny)
+        {
+            kdt.xy = new double[n, 2*nx+ny];
+            kdt.tags = new int[n];
+            kdt.idx = new int[n];
+            kdt.r = new double[n];
+            kdt.x = new double[nx];
+            kdt.buf = new double[Math.Max(n, nx)];
+            kdt.nodes = new int[splitnodesize*2*n];
+            kdt.splits = new double[2*n];
+        }
+
+
+        /*************************************************************************
+        This function allocates temporaries.
+
+        This function do not sets KDT.N, KDT.NX or KDT.NY -
+        it just allocates arrays.
+
+          -- ALGLIB --
+             Copyright 14.03.2011 by Bochkanov Sergey
+        *************************************************************************/
+        private static void kdtreealloctemporaries(kdtree kdt,
+            int n,
+            int nx,
+            int ny)
+        {
+            kdt.x = new double[nx];
+            kdt.idx = new int[n];
+            kdt.r = new double[n];
+            kdt.buf = new double[Math.Max(n, nx)];
+            kdt.curboxmin = new double[nx];
+            kdt.curboxmax = new double[nx];
         }
 
 

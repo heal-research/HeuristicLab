@@ -101,9 +101,8 @@
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ALGLIB-3.1.0">
-      <HintPath>..\bin\ALGLIB-3.1.0.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="ALGLIB-3.4.0">
+      <HintPath>..\bin\ALGLIB-3.4.0.dll</HintPath>
     </Reference>
     <Reference Include="Calendar.DayView">
       <HintPath>..\bin\Calendar.DayView.dll</HintPath>
@@ -113,9 +112,8 @@
       <HintPath>..\bin\Google.ProtocolBuffers-0.9.1.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="HeuristicLab.ALGLIB-3.1.0">
-      <HintPath>..\bin\HeuristicLab.ALGLIB-3.1.0.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="HeuristicLab.ALGLIB-3.4.0">
+      <HintPath>..\bin\HeuristicLab.ALGLIB-3.4.0.dll</HintPath>
     </Reference>
     <Reference Include="HeuristicLab.LibSVM-1.6.3">
       <HintPath>..\bin\HeuristicLab.LibSVM-1.6.3.dll</HintPath>

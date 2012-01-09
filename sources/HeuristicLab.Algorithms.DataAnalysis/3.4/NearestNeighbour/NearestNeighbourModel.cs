@@ -72,7 +72,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       kdTree.curboxmin = (double[])original.kdTree.curboxmin.Clone();
       kdTree.curdist = original.kdTree.curdist;
       kdTree.debugcounter = original.kdTree.debugcounter;
-      kdTree.distmatrixtype = original.kdTree.distmatrixtype;
       kdTree.idx = (int[])original.kdTree.idx.Clone();
       kdTree.kcur = original.kdTree.kcur;
       kdTree.kneeded = original.kdTree.kneeded;
@@ -238,11 +237,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public int KDTreeDebugCounter {
       get { return kdTree.debugcounter; }
       set { kdTree.debugcounter = value; }
-    }
-    [Storable]
-    public int KDTreeDistMatrixType {
-      get { return kdTree.distmatrixtype; }
-      set { kdTree.distmatrixtype = value; }
     }
     [Storable]
     public int[] KDTreeIdx {

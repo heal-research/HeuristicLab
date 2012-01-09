@@ -27,6 +27,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
   [Plugin("HeuristicLab.Problems.DataAnalysis.Symbolic.Views","Provides views for symbolic data analysis problem classes.", "3.4.2.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.DataAnalysis.Symbolic.Views-3.4.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.ALGLIB", "3.4")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]

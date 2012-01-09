@@ -26,10 +26,10 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.ALGLIB {
-  [Plugin("HeuristicLab.ALGLIB","HeuristicLab wrapper for ALGLIB® - numerical analysis library","3.1.0.$WCREV$")]  
-  [PluginFile("HeuristicLab.ALGLIB-3.1.0.dll", PluginFileType.Assembly)]
-  [PluginFile("ALGLIB-3.1.0.dll", PluginFileType.Assembly)]
-  [PluginFile("ALGLIB License-3.1.0.txt", PluginFileType.License)]
+  [Plugin("HeuristicLab.ALGLIB","HeuristicLab wrapper for ALGLIB® - numerical analysis library","3.4.0.$WCREV$")]  
+  [PluginFile("HeuristicLab.ALGLIB-3.4.0.dll", PluginFileType.Assembly)]
+  [PluginFile("ALGLIB-3.4.0.dll", PluginFileType.Assembly)]
+  [PluginFile("ALGLIB License-3.4.0.txt", PluginFileType.License)]
   public class HeuristicLabAlgLibPlugin : PluginBase {
   }
 }

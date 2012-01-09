@@ -1,4 +1,4 @@
-﻿ALGLIB® - numerical analysis library, 1999-2010.
+﻿ALGLIB® - numerical analysis library, 1999-2012.
 ALGLIB is registered trademark of the ALGLIB Project.
 
 
