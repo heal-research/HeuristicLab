@@ -188,7 +188,17 @@ namespace HeuristicLab.Analysis.Views {
       series.XAxisType = row.VisualProperties.SecondXAxis ? AxisType.Secondary : AxisType.Primary;
       if (row.VisualProperties.DisplayName.Trim() != String.Empty) series.LegendText = row.VisualProperties.DisplayName;
       else series.LegendText = row.Name;
-      series.ToolTip = series.LegendText + " X = #INDEX, Y = #VAL";
+
+      string xAxisTitle = string.IsNullOrEmpty(Content.VisualProperties.XAxisTitle)
+                      ? "X"
+                      : Content.VisualProperties.XAxisTitle;
+      string yAxisTitle = string.IsNullOrEmpty(Content.VisualProperties.YAxisTitle)
+                            ? "Y"
+                            : Content.VisualProperties.YAxisTitle;
+      series.ToolTip =
+        series.LegendText + Environment.NewLine +
+        xAxisTitle + " = " + "#INDEX," + Environment.NewLine +
+        yAxisTitle + " = " + "#VAL";
     }
 
     private void ConfigureChartArea(ChartArea area) {
@@ -579,7 +589,17 @@ namespace HeuristicLab.Analysis.Views {
           sum += valueFrequencies[j].Item2;
           ++j;
         }
-        series.Points.Add(new DataPoint(d - intervalCenter, sum) { ToolTip = "X: [" + (d - intervalWidth) + "-" + d + "), Y: " + sum });
+        string xAxisTitle = string.IsNullOrEmpty(Content.VisualProperties.XAxisTitle)
+                              ? "X"
+                              : Content.VisualProperties.XAxisTitle;
+        string yAxisTitle = string.IsNullOrEmpty(Content.VisualProperties.YAxisTitle)
+                              ? "Y"
+                              : Content.VisualProperties.YAxisTitle;
+        series.Points.Add(new DataPoint(d - intervalCenter, sum) {
+          ToolTip =
+            xAxisTitle + ": [" + (d - intervalWidth) + "-" + d + ")" + Environment.NewLine +
+            yAxisTitle + ": " + sum
+        });
       }
     }
 
