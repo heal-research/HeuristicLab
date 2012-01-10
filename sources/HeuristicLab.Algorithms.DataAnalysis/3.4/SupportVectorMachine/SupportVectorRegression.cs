@@ -120,13 +120,21 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     protected override void Run() {
       IRegressionProblemData problemData = Problem.ProblemData;
       IEnumerable<string> selectedInputVariables = problemData.AllowedInputVariables;
-      var solution = CreateSupportVectorRegressionSolution(problemData, selectedInputVariables, SvmType.Value, KernelType.Value, Cost.Value, Nu.Value, Gamma.Value, Epsilon.Value);
+      double trainR2, testR2;
+      int nSv;
+      var solution = CreateSupportVectorRegressionSolution(problemData, selectedInputVariables, SvmType.Value,
+        KernelType.Value, Cost.Value, Nu.Value, Gamma.Value, Epsilon.Value,
+        out trainR2, out testR2, out nSv);
 
       Results.Add(new Result("Support vector regression solution", "The support vector regression solution.", solution));
+      Results.Add(new Result("Training R²", "The Pearson's R² of the SVR solution on the training partition.", new DoubleValue(trainR2)));
+      Results.Add(new Result("Test R²", "The Pearson's R² of the SVR solution on the test partition.", new DoubleValue(testR2)));
+      Results.Add(new Result("Number of support vectors", "The number of support vectors of the SVR solution.", new IntValue(nSv)));
     }
 
     public static SupportVectorRegressionSolution CreateSupportVectorRegressionSolution(IRegressionProblemData problemData, IEnumerable<string> allowedInputVariables,
-      string svmType, string kernelType, double cost, double nu, double gamma, double epsilon) {
+      string svmType, string kernelType, double cost, double nu, double gamma, double epsilon,
+      out double trainingR2, out double testR2, out int nSv) {
       Dataset dataset = problemData.Dataset;
       string targetVariable = problemData.TargetVariable;
       IEnumerable<int> rows = problemData.TrainingIndizes;
@@ -146,8 +154,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       SVM.Problem problem = SupportVectorMachineUtil.CreateSvmProblem(dataset, targetVariable, allowedInputVariables, rows);
       SVM.RangeTransform rangeTransform = SVM.RangeTransform.Compute(problem);
       SVM.Problem scaledProblem = SVM.Scaling.Scale(rangeTransform, problem);
-      var model = new SupportVectorMachineModel(SVM.Training.Train(scaledProblem, parameter), rangeTransform, targetVariable, allowedInputVariables);
-      return new SupportVectorRegressionSolution(model, (IRegressionProblemData)problemData.Clone());
+      var svmModel = SVM.Training.Train(scaledProblem, parameter);
+      nSv = svmModel.SupportVectorCount;
+      var model = new SupportVectorMachineModel(svmModel, rangeTransform, targetVariable, allowedInputVariables);
+      var solution = new SupportVectorRegressionSolution(model, (IRegressionProblemData)problemData.Clone());
+      trainingR2 = solution.TrainingRSquared;
+      testR2 = solution.TestRSquared;
+      return solution;
     }
     #endregion
   }
