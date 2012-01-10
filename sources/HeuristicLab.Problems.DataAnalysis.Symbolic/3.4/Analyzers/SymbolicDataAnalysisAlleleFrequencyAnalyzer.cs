@@ -83,7 +83,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private string GetTextualRepresentationFromSubtreeOfDepth(ISymbolicExpressionTreeNode tree, int d) {
       if (d == 0) return "";
       StringBuilder builder = new StringBuilder();
-      builder.Append("(" + tree.ToString());
+      var varTreeNode = tree as VariableTreeNode;
+      var constTreeNode = tree as ConstantTreeNode;
+      if (varTreeNode != null) {
+        builder.Append("(var " + varTreeNode.VariableName);
+      } else if (constTreeNode != null) {
+        builder.Append("(const");
+      } else {
+        builder.Append("(" + tree.ToString());
+      }
       for (int i = 0; i < tree.SubtreeCount; i++) {
         builder.Append(" " + GetTextualRepresentationFromSubtreeOfDepth(tree.GetSubtree(i), d - 1));
       }
