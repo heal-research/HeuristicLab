@@ -70,9 +70,9 @@ namespace HeuristicLab.Data.Views {
       this.lengthTextBox.Name = "lengthTextBox";
       this.lengthTextBox.Size = new System.Drawing.Size(372, 20);
       this.lengthTextBox.TabIndex = 1;
-      this.lengthTextBox.Validated += new System.EventHandler(this.lengthTextBox_Validated);
       this.lengthTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lengthTextBox_KeyDown);
       this.lengthTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.lengthTextBox_Validating);
+      this.lengthTextBox.Validated += new System.EventHandler(this.lengthTextBox_Validated);
       // 
       // dataGridView
       // 
@@ -88,9 +88,10 @@ namespace HeuristicLab.Data.Views {
       this.dataGridView.Name = "dataGridView";
       this.dataGridView.Size = new System.Drawing.Size(424, 378);
       this.dataGridView.TabIndex = 2;
+      this.dataGridView.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellEndEdit);
       this.dataGridView.CellParsing += new System.Windows.Forms.DataGridViewCellParsingEventHandler(this.dataGridView_CellParsing);
       this.dataGridView.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dataGridView_CellValidating);
-      this.dataGridView.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellEndEdit);
+      this.dataGridView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dataGridView_KeyDown);
       // 
       // errorProvider
       // 

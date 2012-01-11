@@ -22,6 +22,7 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Common;
 using HeuristicLab.MainForm;
@@ -151,6 +152,50 @@ namespace HeuristicLab.Data.Views {
     }
     private void dataGridView_CellEndEdit(object sender, DataGridViewCellEventArgs e) {
       dataGridView.Rows[e.RowIndex].ErrorText = string.Empty;
+    }
+    private void dataGridView_KeyDown(object sender, KeyEventArgs e) {
+      if (!ReadOnly && e.Control && e.KeyCode == Keys.V)
+        PasteValuesToDataGridView();
+      else if (e.Control && e.KeyCode == Keys.C)
+        CopyValuesFromDataGridView();
+      else if (e.Control && e.KeyCode == Keys.A)
+        dataGridView.SelectAll();
+    }
+    private void CopyValuesFromDataGridView() {
+      if (dataGridView.SelectedCells.Count == 0) return;
+      StringBuilder s = new StringBuilder();
+      int minRowIndex = dataGridView.SelectedCells[0].RowIndex;
+      int maxRowIndex = dataGridView.SelectedCells[dataGridView.SelectedCells.Count - 1].RowIndex;
+
+      if (minRowIndex > maxRowIndex) {
+        int temp = minRowIndex;
+        minRowIndex = maxRowIndex;
+        maxRowIndex = temp;
+      }
+
+      for (int i = minRowIndex; i <= maxRowIndex; i++) {
+        DataGridViewColumn column = dataGridView.Columns.GetFirstColumn(DataGridViewElementStates.Visible);
+        DataGridViewCell cell = dataGridView[column.Index, i];
+        if (cell.Selected) {
+          s.Append(Content.GetValue(i));
+          s.Append(Environment.NewLine);
+        }
+      }
+      Clipboard.SetText(s.ToString());
+    }
+    private void PasteValuesToDataGridView() {
+      string[] values = SplitClipboardString(Clipboard.GetText());
+      int rowIndex = 0;
+      if (dataGridView.CurrentCell != null)
+        rowIndex = dataGridView.CurrentCell.RowIndex;
+
+      if (Content.Length < rowIndex + values.Length) Content.Length = rowIndex + values.Length;
+      for (int row = 0; row < values.Length; row++)
+        Content.SetValue(values[row], row + rowIndex);
+    }
+    private string[] SplitClipboardString(string clipboardText) {
+      clipboardText = clipboardText.Remove(clipboardText.Length - Environment.NewLine.Length);  //remove last newline constant
+      return clipboardText.Split(new string[] { Environment.NewLine, "\t" }, StringSplitOptions.None);
     }
     #endregion
   }
