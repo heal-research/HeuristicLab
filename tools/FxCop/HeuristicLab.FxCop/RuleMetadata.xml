@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Rules FriendlyName="HeuristicLab 3.3 FxCop Rules">
+  <Rule TypeName="EnforceAfterDeserializationHookName" Category="HeuristicLab.Persistence" CheckId="HL0001">
+    <Name>Enforce AfterDeserialization as method name</Name>
+    <Description>Enforce the name AfterDeserialization for methods marked with the respective hook.</Description>
+    <Resolution>Method {0} is marked to act as an AfterDeserializationHook. It needs to be called AfterDeserialization.</Resolution>
+    <MessageLevel Certainty="100">Error</MessageLevel>
+    <FixCategories>Breaking</FixCategories>
+    <Url />
+    <Owner />
+    <Email />
+  </Rule>
+</Rules>
