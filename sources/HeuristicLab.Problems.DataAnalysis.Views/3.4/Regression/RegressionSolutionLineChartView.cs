@@ -65,18 +65,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         this.chart.Series.Add(TARGETVARIABLE_SERIES_NAME);
         this.chart.Series[TARGETVARIABLE_SERIES_NAME].LegendText = Content.ProblemData.TargetVariable;
         this.chart.Series[TARGETVARIABLE_SERIES_NAME].ChartType = SeriesChartType.FastLine;
+        this.chart.Series[TARGETVARIABLE_SERIES_NAME].EmptyPointStyle.Color = this.chart.Series[TARGETVARIABLE_SERIES_NAME].Color;
         this.chart.Series[TARGETVARIABLE_SERIES_NAME].Points.DataBindXY(Enumerable.Range(0, Content.ProblemData.Dataset.Rows).ToArray(),
           Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.TargetVariable).ToArray());
         // training series
         this.chart.Series.Add(ESTIMATEDVALUES_TRAINING_SERIES_NAME);
         this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].LegendText = ESTIMATEDVALUES_TRAINING_SERIES_NAME;
         this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].ChartType = SeriesChartType.FastLine;
+        this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].EmptyPointStyle.Color = this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].Color;
         this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].Points.DataBindXY(Content.ProblemData.TrainingIndizes.ToArray(), Content.EstimatedTrainingValues.ToArray());
         this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].Tag = Content;
         // test series
         this.chart.Series.Add(ESTIMATEDVALUES_TEST_SERIES_NAME);
         this.chart.Series[ESTIMATEDVALUES_TEST_SERIES_NAME].LegendText = ESTIMATEDVALUES_TEST_SERIES_NAME;
         this.chart.Series[ESTIMATEDVALUES_TEST_SERIES_NAME].ChartType = SeriesChartType.FastLine;
+        this.chart.Series[ESTIMATEDVALUES_TEST_SERIES_NAME].EmptyPointStyle.Color = this.chart.Series[ESTIMATEDVALUES_TEST_SERIES_NAME].Color;
         this.chart.Series[ESTIMATEDVALUES_TEST_SERIES_NAME].Points.DataBindXY(Content.ProblemData.TestIndizes.ToArray(), Content.EstimatedTestValues.ToArray());
         this.chart.Series[ESTIMATEDVALUES_TEST_SERIES_NAME].Tag = Content;
         // series of remaining points
@@ -87,6 +90,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         this.chart.Series.Add(ESTIMATEDVALUES_ALL_SERIES_NAME);
         this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME].LegendText = ESTIMATEDVALUES_ALL_SERIES_NAME;
         this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME].ChartType = SeriesChartType.FastLine;
+        this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME].EmptyPointStyle.Color = this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME].Color;
         this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME].Points.DataBindXY(allIndizes, allEstimatedValues);
         this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME].Tag = Content;
         this.ToggleSeriesData(this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME]);
