@@ -46,7 +46,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EnforceAfterDeserializationHookName.cs" />
+    <Compile Include="EnforceOneStorableHookPerClass.cs" />
+    <Compile Include="EnforceStorableHookNames.cs" />
     <Compile Include="HeuristicLabFxCopRuleBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -1,13 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Rules FriendlyName="HeuristicLab 3.3 FxCop Rules">
-  <Rule TypeName="EnforceAfterDeserializationHookName" Category="HeuristicLab.Persistence" CheckId="HL0001">
-    <Name>Enforce AfterDeserialization as method name</Name>
-    <Description>Enforce the name AfterDeserialization for methods marked with the respective hook.</Description>
-    <Resolution>Method {0} is marked to act as an AfterDeserializationHook. It needs to be called AfterDeserialization.</Resolution>
+  <Rule TypeName="EnforceStorableHookNames" Category="HeuristicLab.Persistence" CheckId="HL0001">
+    <Name>Enforce StorableHook Names</Name>
+    <Description>The method that is marked to be a storable hook should always be called similar to the respective hook type.</Description>
+    <Resolution>Method {0} is attributed as a StorableHook. It needs to be called {1}.</Resolution>
     <MessageLevel Certainty="100">Error</MessageLevel>
-    <FixCategories>Breaking</FixCategories>
-    <Url />
-    <Owner />
-    <Email />
+    <FixCategories>NonBreaking</FixCategories>
+    <Url></Url>
+    <Owner></Owner>
+    <Email></Email>
+  </Rule>
+  <Rule TypeName="EnforceOneStorableHookPerClass" Category="HeuristicLab.Persistence" CheckId="HL0002">
+    <Name>Enforce One StorableHook Per Class</Name>
+    <Description>Each class shall have only one storable hook of each type.</Description>
+    <Resolution>Class {0} declares {1} storable hooks of type {2}. Merge these into one hook.</Resolution>
+    <MessageLevel Certainty="100">Error</MessageLevel>
+    <FixCategories>NonBreaking</FixCategories>
+    <Url></Url>
+    <Owner></Owner>
+    <Email></Email>
   </Rule>
 </Rules>

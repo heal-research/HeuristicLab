@@ -23,20 +23,26 @@ using System.Linq;
 using Microsoft.FxCop.Sdk;
 
 namespace HeuristicLab.FxCop {
-  internal sealed class EnforceAfterDeserializationHookName : HeuristicLabFxCopRuleBase {
-    public EnforceAfterDeserializationHookName()
-      : base("EnforceAfterDeserializationHookName") { }
+  internal sealed class EnforceStorableHookNames : HeuristicLabFxCopRuleBase {
+    public EnforceStorableHookNames()
+      : base("EnforceStorableHookNames") { }
 
     public override ProblemCollection Check(Member member) {
       Method method = member as Method;
       if (method == null) return null;
 
-      if (method.Attributes.Any(x => x.Type.FullName == "HeuristicLab.Persistence.Default.CompositeSerializers.Storable.StorableHookAttribute")
-        && method.Name.Name != "AfterDeserialization") {
-        var resolution = GetResolution(method.FullName);
-        Problems.Add(new Problem(resolution));
+      var attribute = method.Attributes.FirstOrDefault(x => x.Type.FullName == "HeuristicLab.Persistence.Default.CompositeSerializers.Storable.StorableHookAttribute");
+      if (attribute != null && attribute.Expressions.Count > 0) {
+        var literal = (Literal)attribute.Expressions[0];
+        if (literal != null && literal.Value is int) {
+          int hookType = (int)literal.Value;
+          if (hookType == 1 && method.Name.Name != "AfterDeserialization") {
+            Problems.Add(new Problem(GetResolution(method.FullName, "AfterDeserialization")));
+          } else if (hookType == 0 && method.Name.Name != "BeforeSerialization") {
+            Problems.Add(new Problem(GetResolution(method.FullName, "BeforeSerialization")));
+          }
+        }
       }
-
       return Problems;
     }
   }
