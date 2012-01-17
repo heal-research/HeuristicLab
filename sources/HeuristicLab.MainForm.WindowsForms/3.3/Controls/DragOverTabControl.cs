@@ -24,21 +24,38 @@ using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm.WindowsForms {
   public partial class DragOverTabControl : TabControl {
+    private int destinationTabIndex;
+
     public DragOverTabControl() {
       InitializeComponent();
     }
 
-    private void DragOverTabControl_DragOver(object sender, DragEventArgs e) {
+    private int GetTabIndex() {
       Point position = PointToClient(Control.MousePosition);
       int tabIndex = -1;
       for (int i = 0; i < TabPages.Count; i++) {
         if (GetTabRect(i).Contains(position))
           tabIndex = i;
       }
+      return tabIndex;
+    }
 
-      if (tabIndex != SelectedIndex && tabIndex != -1)
+    private void DragOverTabControl_DragOver(object sender, DragEventArgs e) {
+      int tabIndex = GetTabIndex();
+
+      if (!timer.Enabled && tabIndex != SelectedIndex && tabIndex != -1) {
+        destinationTabIndex = tabIndex;
+        timer.Start();
+      }
+    }
+
+    private void timer_Tick(object sender, System.EventArgs e) {
+      timer.Stop();
+      int tabIndex = GetTabIndex();
+
+      if (tabIndex == destinationTabIndex && tabIndex != SelectedIndex && tabIndex != -1) {
         SelectedIndex = tabIndex;
-
+      }
     }
   }
 }

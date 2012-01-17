@@ -44,7 +44,14 @@ namespace HeuristicLab.MainForm.WindowsForms {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.components = new System.ComponentModel.Container();
+      this.timer = new System.Windows.Forms.Timer(this.components);
       this.SuspendLayout();
+      // 
+      // timer
+      // 
+      this.timer.Interval = 500;
+      this.timer.Tick += new System.EventHandler(this.timer_Tick);
       // 
       // DragOverTabControl
       // 
@@ -55,5 +62,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     #endregion
+
+    private System.Windows.Forms.Timer timer;
   }
 }
