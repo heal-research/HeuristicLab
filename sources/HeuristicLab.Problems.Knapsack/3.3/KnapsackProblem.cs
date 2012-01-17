@@ -99,7 +99,7 @@ namespace HeuristicLab.Problems.Knapsack {
     private KnapsackProblem(bool deserializing) : base(deserializing) { }
     private KnapsackProblem(KnapsackProblem original, Cloner cloner)
       : base(original, cloner) {
-      AttachEventHandlers();
+      RegisterEventHandlers();
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new KnapsackProblem(this, cloner);
@@ -123,7 +123,7 @@ namespace HeuristicLab.Problems.Knapsack {
       ParameterizeEvaluator();
 
       InitializeOperators();
-      AttachEventHandlers();
+      RegisterEventHandlers();
     }
 
     #region Events
@@ -193,10 +193,10 @@ namespace HeuristicLab.Problems.Knapsack {
       #region Backwards compatible code (remove with 3.4)
       if (Operators.Count == 0) InitializeOperators();
       #endregion
-      AttachEventHandlers();
+      RegisterEventHandlers();
     }
 
-    private void AttachEventHandlers() {
+    private void RegisterEventHandlers() {
       SolutionCreator.BinaryVectorParameter.ActualNameChanged += new EventHandler(SolutionCreator_BinaryVectorParameter_ActualNameChanged);
       KnapsackCapacityParameter.ValueChanged += new EventHandler(KnapsackCapacityParameter_ValueChanged);
       WeightsParameter.ValueChanged += new EventHandler(WeightsParameter_ValueChanged);

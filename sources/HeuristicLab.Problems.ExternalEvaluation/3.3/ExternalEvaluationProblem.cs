@@ -126,14 +126,9 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
 
     [StorableConstructor]
     private ExternalEvaluationProblem(bool deserializing) : base(deserializing) { }
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserializationHook() {
-      AttachEventHandlers();
-    }
-
     private ExternalEvaluationProblem(ExternalEvaluationProblem original, Cloner cloner)
       : base(original, cloner) {
-      AttachEventHandlers();
+      RegisterEventHandlers();
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ExternalEvaluationProblem(this, cloner);
@@ -153,7 +148,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       Parameters.Add(new OptionalValueParameter<EvaluationCache>("Cache", "Cache of previously evaluated solutions."));
 
       InitializeOperators();
-      AttachEventHandlers();
+      RegisterEventHandlers();
     }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
@@ -169,6 +164,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
         }
       }
       #endregion
+      RegisterEventHandlers();
     }
 
     #region Events
@@ -219,7 +215,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     #endregion
 
     #region Helper
-    private void AttachEventHandlers() {
+    private void RegisterEventHandlers() {
       SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
       EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
       Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);

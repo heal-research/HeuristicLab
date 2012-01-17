@@ -120,7 +120,7 @@ namespace HeuristicLab.Optimization {
     private UserDefinedProblem(bool deserializing) : base(deserializing) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
-      AttachEventHandlers();
+      RegisterEventHandlers();
     }
     public UserDefinedProblem()
       : base() {
@@ -131,12 +131,12 @@ namespace HeuristicLab.Optimization {
       Parameters.Add(new OptionalValueParameter<IScope>("BestKnownSolution", "The best known solution for this external evaluation problem."));
       Parameters.Add(new ValueParameter<ItemList<IOperator>>("Operators", "The operators that are passed to the algorithm.", new ItemList<IOperator>()));
 
-      AttachEventHandlers();
+      RegisterEventHandlers();
     }
 
     private UserDefinedProblem(UserDefinedProblem original, Cloner cloner)
       : base(original, cloner) {
-      AttachEventHandlers();
+      RegisterEventHandlers();
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new UserDefinedProblem(this, cloner);
@@ -193,7 +193,7 @@ namespace HeuristicLab.Optimization {
     #endregion
 
     #region Helpers
-    private void AttachEventHandlers() {
+    private void RegisterEventHandlers() {
       SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
       EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
       if (Evaluator != null)

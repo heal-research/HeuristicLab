@@ -154,7 +154,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     private VehicleRoutingProblem(bool deserializing) : base(deserializing) { }
     private VehicleRoutingProblem(VehicleRoutingProblem original, Cloner cloner)
       : base(original, cloner) {
-      AttachEventHandlers();
+      RegisterEventHandlers();
     }
     public VehicleRoutingProblem()
       : base(new VRPEvaluator(), new RandomCreator()) {
@@ -186,7 +186,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       ParameterizeEvaluator();
 
       InitializeOperators();
-      AttachEventHandlers();
+      RegisterEventHandlers();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -354,17 +354,18 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     #region Helpers
     [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserializationHook() {
-      #region Backwards Compatibility
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
       if (!Parameters.ContainsKey("BestKnownSolution")) {
         Parameters.Add(new OptionalValueParameter<IVRPEncoding>("BestKnownSolution", "The best known solution of this TSP instance."));
       }
       #endregion
 
-      AttachEventHandlers();
+      RegisterEventHandlers();
     }
 
-    private void AttachEventHandlers() {
+    private void RegisterEventHandlers() {
       CoordinatesParameter.ValueChanged += new EventHandler(CoordinatesParameter_ValueChanged);
       Coordinates.ItemChanged += new EventHandler<EventArgs<int, int>>(Coordinates_ItemChanged);
       Coordinates.Reset += new EventHandler(Coordinates_Reset);

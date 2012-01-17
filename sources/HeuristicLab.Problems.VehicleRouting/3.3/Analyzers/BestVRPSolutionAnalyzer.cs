@@ -124,8 +124,9 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserializationHook() {
-      #region Backwards Compatibility
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
       if (!Parameters.ContainsKey("BestKnownQuality")) {
         Parameters.Add(new LookupParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this VRP instance."));
       }

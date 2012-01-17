@@ -71,7 +71,7 @@ namespace HeuristicLab.Problems.OneMax {
     private OneMaxProblem(bool deserializing) : base(deserializing) { }
     private OneMaxProblem(OneMaxProblem original, Cloner cloner)
       : base(original, cloner) {
-      AttachEventHandlers();
+      RegisterEventHandlers();
     }
     public OneMaxProblem()
       : base(new OneMaxEvaluator(), new RandomBinaryVectorCreator()) {
@@ -87,7 +87,7 @@ namespace HeuristicLab.Problems.OneMax {
       ParameterizeEvaluator();
 
       InitializeOperators();
-      AttachEventHandlers();
+      RegisterEventHandlers();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -139,10 +139,10 @@ namespace HeuristicLab.Problems.OneMax {
       #region Backwards compatible code (remove with 3.4)
       if (Operators.Count == 0) InitializeOperators();
       #endregion
-      AttachEventHandlers();
+      RegisterEventHandlers();
     }
 
-    private void AttachEventHandlers() {
+    private void RegisterEventHandlers() {
       SolutionCreator.BinaryVectorParameter.ActualNameChanged += new EventHandler(SolutionCreator_BinaryVectorParameter_ActualNameChanged);
       LengthParameter.ValueChanged += new EventHandler(LengthParameter_ValueChanged);
       LengthParameter.Value.ValueChanged += new EventHandler(Length_ValueChanged);

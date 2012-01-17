@@ -150,12 +150,12 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     private ArtificialAntProblem(bool deserializing) : base(deserializing) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
-      AttachEventHandlers();
+      RegisterEventHandlers();
     }
 
     private ArtificialAntProblem(ArtificialAntProblem original, Cloner cloner)
       : base(original, cloner) {
-      AttachEventHandlers();
+      RegisterEventHandlers();
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ArtificialAntProblem(this, cloner);
@@ -178,7 +178,7 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       ((ProbabilisticTreeCreator)SolutionCreator).SymbolicExpressionTreeGrammarParameter.ActualName = "ArtificialAntExpressionGrammar";
       Evaluator.QualityParameter.ActualName = "FoodEaten";
       InitializeOperators();
-      AttachEventHandlers();
+      RegisterEventHandlers();
     }
 
     #region Events
@@ -211,7 +211,7 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     #endregion
 
     #region Helpers
-    private void AttachEventHandlers() {
+    private void RegisterEventHandlers() {
       SolutionCreator.SymbolicExpressionTreeParameter.ActualNameChanged += new EventHandler(SolutionCreator_SymbolicExpressionTreeParameter_ActualNameChanged);
       Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       MaxFunctionArgumentsParameter.ValueChanged += new EventHandler(MaxFunctionArgumentsParameter_ValueChanged);

@@ -93,7 +93,7 @@ namespace HeuristicLab.Analysis {
     private MinAverageMaxValueAnalyzer(MinAverageMaxValueAnalyzer original, Cloner cloner)
       : base(original, cloner) {
       resultsCollector = cloner.Clone(original.resultsCollector);
-      Initialize();
+      RegisterEventHandlers();
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new MinAverageMaxValueAnalyzer(this, cloner);
@@ -146,11 +146,15 @@ namespace HeuristicLab.Analysis {
       resultsCollector.Successor = null;
       #endregion
 
-      Initialize();
+      RegisterEventHandlers();
     }
 
     [StorableHook(HookType.AfterDeserialization)]
-    private void Initialize() {
+    private void AfterDeserialization() {
+      RegisterEventHandlers();
+    }
+
+    private void RegisterEventHandlers() {
       ValueParameter.DepthChanged += new EventHandler(ValueParameter_DepthChanged);
       CollectMinValueInResultsParameter.ValueChanged += new EventHandler(CollectMinValueInResultsParameter_ValueChanged);
       CollectMinValueInResultsParameter.Value.ValueChanged += new EventHandler(CollectMinValueInResultsParameter_Value_ValueChanged);

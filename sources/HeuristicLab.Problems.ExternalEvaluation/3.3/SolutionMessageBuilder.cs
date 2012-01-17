@@ -51,13 +51,25 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     protected SolutionMessageBuilder(bool deserializing) : base(deserializing) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
-      AttachEventHandlers();
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+#pragma warning disable 0612
+      if (converters != null) {
+        if (convertersList == null) convertersList = new CheckedItemList<IItemToSolutionMessageConverter>();
+        foreach (IItemToSolutionMessageConverter c in converters)
+          convertersList.Add(c);
+        converters.Clear();
+        converters = null;
+      }
+#pragma warning restore 0612
+      #endregion
+      RegisterEventHandlers();
     }
 
     protected SolutionMessageBuilder(SolutionMessageBuilder original, Cloner cloner)
       : base(original, cloner) {
       convertersList = cloner.Clone(original.convertersList);
-      AttachEventHandlers();
+      RegisterEventHandlers();
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SolutionMessageBuilder(this, cloner);
@@ -74,7 +86,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       convertersList.Add(new StringConverter());
       convertersList.Add(new TimeSpanValueConverter());
 
-      AttachEventHandlers();
+      RegisterEventHandlers();
     }
 
     public void AddToMessage(IItem item, string name, SolutionMessage.Builder builder) {
@@ -92,19 +104,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       dispatcher[itemType](item, name, builder);
     }
 
-    private void AttachEventHandlers() {
-      // BackwardsCompatibility3.3
-      #region Backwards compatible code, remove with 3.4
-#pragma warning disable 0612
-      if (converters != null) {
-        if (convertersList == null) convertersList = new CheckedItemList<IItemToSolutionMessageConverter>();
-        foreach (IItemToSolutionMessageConverter c in converters)
-          convertersList.Add(c);
-        converters.Clear();
-        converters = null;
-      }
-#pragma warning restore 0612
-      #endregion
+    private void RegisterEventHandlers() {
       convertersList.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<IItemToSolutionMessageConverter>>(convertersList_Changed);
       convertersList.ItemsRemoved += new CollectionItemsChangedEventHandler<IndexedItem<IItemToSolutionMessageConverter>>(convertersList_Changed);
       convertersList.CheckedItemsChanged += new CollectionItemsChangedEventHandler<IndexedItem<IItemToSolutionMessageConverter>>(convertersList_Changed);

@@ -52,11 +52,15 @@ namespace HeuristicLab.Optimization.Operators {
     public CrowdingDistanceAssignment() {
       Parameters.Add(new ScopeTreeLookupParameter<DoubleArray>("Qualities", "The vector of quality values."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("CrowdingDistance", "Sets the crowding distance in each sub-scope."));
-      AttachEventHandlers();
+      RegisterEventHandlers();
     }
 
     [StorableHook(HookType.AfterDeserialization)]
-    private void AttachEventHandlers() {
+    private void AfterDeserialization() {
+      RegisterEventHandlers();
+    }
+
+    private void RegisterEventHandlers() {
       QualitiesParameter.DepthChanged += new EventHandler(QualitiesParameter_DepthChanged);
     }
 

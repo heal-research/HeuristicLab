@@ -108,7 +108,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     private QuadraticAssignmentProblem(bool deserializing) : base(deserializing) { }
     private QuadraticAssignmentProblem(QuadraticAssignmentProblem original, Cloner cloner)
       : base(original, cloner) {
-      AttachEventHandlers();
+      RegisterEventHandlers();
     }
     public QuadraticAssignmentProblem()
       : base(new QAPEvaluator(), new RandomPermutationCreator()) {
@@ -141,7 +141,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       ParameterizeEvaluator();
 
       InitializeOperators();
-      AttachEventHandlers();
+      RegisterEventHandlers();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -164,7 +164,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
         Parameters.Remove("DistanceMatrix");
         Parameters.Add(new ValueParameter<DoubleMatrix>("Distances", "The distance matrix which can either be specified directly without the coordinates, or can be calculated automatically from the coordinates.", d));
       }
-      AttachEventHandlers();
+      RegisterEventHandlers();
       #endregion
     }
 
@@ -253,7 +253,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     #endregion
 
     #region Helpers
-    private void AttachEventHandlers() {
+    private void RegisterEventHandlers() {
       SolutionCreator.PermutationParameter.ActualNameChanged += new EventHandler(SolutionCreator_PermutationParameter_ActualNameChanged);
       Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       WeightsParameter.ValueChanged += new EventHandler(WeightsParameter_ValueChanged);

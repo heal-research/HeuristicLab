@@ -60,19 +60,6 @@ namespace HeuristicLab.Operators {
       set { ProbabilitiesParameter.Value = value; }
     }
 
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserializationHook() {
-      #region Backwards Compatibility
-      if (!Parameters.ContainsKey("SelectedOperator")) {
-        Parameters.Add(new LookupParameter<StringValue>("SelectedOperator", "If the TraceSelectedOperator flag is set, the name of the operator is traced in this parameter."));
-        SelectedOperatorParameter.Hidden = false;
-      }
-      if (!Parameters.ContainsKey("TraceSelectedOperator")) {
-        Parameters.Add(new ValueParameter<BoolValue>("TraceSelectedOperator", "Indicates, if the selected operator should be traced.", new BoolValue(false)));
-      }
-      #endregion
-    }
-
     [StorableConstructor]
     protected StochasticMultiBranch(bool deserializing) : base(deserializing) { }
     protected StochasticMultiBranch(StochasticMultiBranch<T> original, Cloner cloner)
@@ -89,6 +76,20 @@ namespace HeuristicLab.Operators {
       Parameters.Add(new LookupParameter<StringValue>("SelectedOperator", "If the TraceSelectedOperator flag is set, the name of the operator is traced in this parameter."));
       Parameters.Add(new ValueParameter<BoolValue>("TraceSelectedOperator", "Indicates, if the selected operator should be traced.", new BoolValue(false)));
       SelectedOperatorParameter.Hidden = false;
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (!Parameters.ContainsKey("SelectedOperator")) {
+        Parameters.Add(new LookupParameter<StringValue>("SelectedOperator", "If the TraceSelectedOperator flag is set, the name of the operator is traced in this parameter."));
+        SelectedOperatorParameter.Hidden = false;
+      }
+      if (!Parameters.ContainsKey("TraceSelectedOperator")) {
+        Parameters.Add(new ValueParameter<BoolValue>("TraceSelectedOperator", "Indicates, if the selected operator should be traced.", new BoolValue(false)));
+      }
+      #endregion
     }
 
     protected override void Operators_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {

@@ -91,7 +91,7 @@ namespace HeuristicLab.Problems.TestFunctions {
       strategyVectorCreator = cloner.Clone(original.strategyVectorCreator);
       strategyVectorCrossover = cloner.Clone(original.strategyVectorCrossover);
       strategyVectorManipulator = cloner.Clone(original.strategyVectorManipulator);
-      AttachEventHandlers();
+      RegisterEventHandlers();
     }
     public SingleObjectiveTestFunctionProblem()
       : base(new AckleyEvaluator(), new UniformRandomRealVectorCreator()) {
@@ -114,7 +114,7 @@ namespace HeuristicLab.Problems.TestFunctions {
       ParameterizeEvaluator();
 
       InitializeOperators();
-      AttachEventHandlers();
+      RegisterEventHandlers();
       UpdateStrategyVectorBounds();
     }
 
@@ -231,10 +231,10 @@ namespace HeuristicLab.Problems.TestFunctions {
       #region Backwards compatible code (remove with 3.4)
       if (Operators.Count == 0) InitializeOperators();
       #endregion
-      AttachEventHandlers();
+      RegisterEventHandlers();
     }
 
-    private void AttachEventHandlers() {
+    private void RegisterEventHandlers() {
       ProblemSizeParameter.ValueChanged += new EventHandler(ProblemSizeParameter_ValueChanged);
       ProblemSize.ValueChanged += new EventHandler(ProblemSize_ValueChanged);
       BoundsParameter.ValueChanged += new EventHandler(BoundsParameter_ValueChanged);

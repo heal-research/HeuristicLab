@@ -99,7 +99,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     private TravelingSalesmanProblem(bool deserializing) : base(deserializing) { }
     private TravelingSalesmanProblem(TravelingSalesmanProblem original, Cloner cloner)
       : base(original, cloner) {
-      AttachEventHandlers();
+      RegisterEventHandlers();
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new TravelingSalesmanProblem(this, cloner);
@@ -129,7 +129,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       ParameterizeEvaluator();
 
       InitializeOperators();
-      AttachEventHandlers();
+      RegisterEventHandlers();
     }
 
     #region Events
@@ -196,10 +196,10 @@ namespace HeuristicLab.Problems.TravelingSalesman {
 
       if (Operators.Count == 0) InitializeOperators();
       #endregion
-      AttachEventHandlers();
+      RegisterEventHandlers();
     }
 
-    private void AttachEventHandlers() {
+    private void RegisterEventHandlers() {
       CoordinatesParameter.ValueChanged += new EventHandler(CoordinatesParameter_ValueChanged);
       Coordinates.ItemChanged += new EventHandler<EventArgs<int, int>>(Coordinates_ItemChanged);
       Coordinates.Reset += new EventHandler(Coordinates_Reset);
