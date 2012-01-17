@@ -24,7 +24,7 @@
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      this.tabControl = new System.Windows.Forms.TabControl();
+      this.tabControl = new HeuristicLab.MainForm.WindowsForms.DragOverTabControl();
       this.tasksTabPage = new System.Windows.Forms.TabPage();
       this.jobsTreeView = new HeuristicLab.Clients.Hive.Views.HiveTaskItemTreeView();
       this.permissionTabPage = new System.Windows.Forms.TabPage();
