@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using System.Linq;
 using HeuristicLab.PluginInfrastructure.Advanced;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -90,7 +89,7 @@ namespace HeuristicLab.PluginInfrastructure.Tests {
       try {
         InstallationManager target = new InstallationManager(pluginDir);
         var pluginList = target.GetRemotePluginList();
-        Assert.IsTrue(pluginList.Count() > 0);
+        Assert.IsTrue(pluginList != null);
       }
       catch (Exception e) {
         Assert.Fail("Connection to the update service failed. " + e.Message);
@@ -106,7 +105,7 @@ namespace HeuristicLab.PluginInfrastructure.Tests {
       try {
         InstallationManager target = new InstallationManager(pluginDir);
         var productList = target.GetRemoteProductList();
-        Assert.IsTrue(productList.Count() > 0);
+        Assert.IsTrue(productList != null);
       }
       catch (Exception e) {
         Assert.Fail("Connection to the update service failed. " + e.Message);
