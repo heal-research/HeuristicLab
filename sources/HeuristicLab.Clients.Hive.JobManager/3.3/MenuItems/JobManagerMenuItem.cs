@@ -20,6 +20,7 @@
 #endregion
 
 using System.Collections.Generic;
+using System.Windows.Forms;
 using HeuristicLab.Clients.Hive;
 using HeuristicLab.MainForm;
 
@@ -36,6 +37,9 @@ namespace HeuristicLab.Optimizer.MenuItems {
     }
     public override int Position {
       get { return 10000; }
+    }
+    public override Keys ShortCutKeys {
+      get { return Keys.Control | Keys.H; }
     }
   }
 }
