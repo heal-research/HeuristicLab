@@ -141,6 +141,12 @@
       <DependentUpon>OperatorView.cs</DependentUpon>
     </Compile>
     <Compile Include="Plugin.cs" />
+    <Compile Include="ReductionOperationView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ReductionOperationView.Designer.cs">
+      <DependentUpon>ReductionOperationView.cs</DependentUpon>
+    </Compile>
     <Compile Include="ValuesCollectorView.cs">
       <SubType>UserControl</SubType>
     </Compile>

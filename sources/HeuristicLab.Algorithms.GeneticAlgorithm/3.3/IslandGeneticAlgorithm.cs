@@ -241,7 +241,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       IslandGeneticAlgorithmMainLoop mainLoop = new IslandGeneticAlgorithmMainLoop();
       OperatorGraph.InitialOperator = randomCreator;
 
-      randomCreator.RandomParameter.ActualName = "Random";
+      randomCreator.RandomParameter.ActualName = "GlobalRandom";
       randomCreator.SeedParameter.ActualName = SeedParameter.Name;
       randomCreator.SeedParameter.Value = null;
       randomCreator.SetSeedRandomlyParameter.ActualName = SetSeedRandomlyParameter.Name;
@@ -255,6 +255,8 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       ussp1.Successor = variableCreator;
 
       solutionsCreator.NumberOfSolutionsParameter.ActualName = PopulationSizeParameter.Name;
+      //don't create solutions in parallel because the hive engine would distribute these tasks
+      solutionsCreator.ParallelParameter.Value = new BoolValue(false);
       solutionsCreator.Successor = null;
 
       variableCreator.Name = "Initialize EvaluatedSolutions";
@@ -415,12 +417,19 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
         stochasticOp.RandomParameter.Hidden = true;
       }
     }
+    private void ParameterizeStochasticOperatorForIsland(IOperator op) {
+      IStochasticOperator stochasticOp = op as IStochasticOperator;
+      if (stochasticOp != null) {
+        stochasticOp.RandomParameter.ActualName = "LocalRandom";
+        stochasticOp.RandomParameter.Hidden = true;
+      }
+    }
     private void ParameterizeSelectors() {
       foreach (ISelector selector in SelectorParameter.ValidValues) {
         selector.CopySelected = new BoolValue(true);
         selector.NumberOfSelectedSubScopesParameter.Value = new IntValue(2 * (PopulationSize.Value - Elites.Value));
         selector.NumberOfSelectedSubScopesParameter.Hidden = true;
-        ParameterizeStochasticOperator(selector);
+        ParameterizeStochasticOperatorForIsland(selector);
       }
       foreach (ISelector selector in EmigrantsSelectorParameter.ValidValues) {
         selector.CopySelected = new BoolValue(true);
@@ -488,8 +497,10 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     private void UpdateCrossovers() {
       ICrossover oldCrossover = CrossoverParameter.Value;
       CrossoverParameter.ValidValues.Clear();
-      foreach (ICrossover crossover in Problem.Operators.OfType<ICrossover>().OrderBy(x => x.Name))
+      foreach (ICrossover crossover in Problem.Operators.OfType<ICrossover>().OrderBy(x => x.Name)) {
+        ParameterizeStochasticOperatorForIsland(crossover);
         CrossoverParameter.ValidValues.Add(crossover);
+      }
       if (oldCrossover != null) {
         ICrossover crossover = CrossoverParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldCrossover.GetType());
         if (crossover != null) CrossoverParameter.Value = crossover;
@@ -498,8 +509,10 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     private void UpdateMutators() {
       IManipulator oldMutator = MutatorParameter.Value;
       MutatorParameter.ValidValues.Clear();
-      foreach (IManipulator mutator in Problem.Operators.OfType<IManipulator>().OrderBy(x => x.Name))
+      foreach (IManipulator mutator in Problem.Operators.OfType<IManipulator>().OrderBy(x => x.Name)) {
+        ParameterizeStochasticOperatorForIsland(mutator);
         MutatorParameter.ValidValues.Add(mutator);
+      }
       if (oldMutator != null) {
         IManipulator mutator = MutatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMutator.GetType());
         if (mutator != null) MutatorParameter.Value = mutator;

@@ -103,6 +103,15 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     public LookupParameter<IntValue> EvaluatedSolutionsParameter {
       get { return (LookupParameter<IntValue>)Parameters["EvaluatedSolutions"]; }
     }
+    public LookupParameter<IntValue> IslandGenerations {
+      get { return (LookupParameter<IntValue>)Parameters["IslandGenerations"]; }
+    }
+    public LookupParameter<IntValue> IslandEvaluatedSolutions {
+      get { return (LookupParameter<IntValue>)Parameters["IslandEvaluatedSolutions"]; }
+    }
+    public ValueLookupParameter<BoolValue> Migrate {
+      get { return (ValueLookupParameter<BoolValue>)Parameters["Migrate"]; }
+    }
     #endregion
 
     [StorableConstructor]
@@ -132,12 +141,15 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       Parameters.Add(new ValueLookupParameter<IOperator>("Crossover", "The operator used to cross solutions."));
       Parameters.Add(new ValueLookupParameter<PercentValue>("MutationProbability", "The probability that the mutation operator is applied on a solution."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Mutator", "The operator used to mutate solutions."));
-      Parameters.Add(new ValueLookupParameter<IOperator>("Evaluator", "The operator used to evaluate solutions. This operator is executed in parallel, if an engine is used which supports parallelization."));
+      Parameters.Add(new ValueLookupParameter<IOperator>("Evaluator", "The operator used to evaluate solutions."));
       Parameters.Add(new ValueLookupParameter<IntValue>("Elites", "The numer of elite solutions which are kept in each generation."));
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The results collection to store the results."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Analyzer", "The operator used to the analyze the islands."));
       Parameters.Add(new ValueLookupParameter<IOperator>("IslandAnalyzer", "The operator used to analyze each island."));
       Parameters.Add(new LookupParameter<IntValue>("EvaluatedSolutions", "The number of times a solution has been evaluated."));
+      Parameters.Add(new LookupParameter<IntValue>("IslandGenerations", "The number of generations calculated on one island."));
+      Parameters.Add(new LookupParameter<IntValue>("IslandEvaluatedSolutions", "The number of times a solution has been evaluated on one island."));
+      Parameters.Add(new ValueLookupParameter<BoolValue>("Migrate", "Migrate the island?"));
       #endregion
 
       #region Create operators
@@ -145,9 +157,12 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       UniformSubScopesProcessor uniformSubScopesProcessor0 = new UniformSubScopesProcessor();
       VariableCreator islandVariableCreator = new VariableCreator();
       Placeholder islandAnalyzer1 = new Placeholder();
+      LocalRandomCreator localRandomCreator = new LocalRandomCreator();
       Placeholder analyzer1 = new Placeholder();
       ResultsCollector resultsCollector1 = new ResultsCollector();
       UniformSubScopesProcessor uniformSubScopesProcessor1 = new UniformSubScopesProcessor();
+      Assigner generationsAssigner = new Assigner();
+      Assigner evaluatedSolutionsAssigner = new Assigner();
       Placeholder selector = new Placeholder();
       SubScopesProcessor subScopesProcessor1 = new SubScopesProcessor();
       ChildrenCreator childrenCreator = new ChildrenCreator();
@@ -163,16 +178,15 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       BestSelector bestSelector = new BestSelector();
       RightReducer rightReducer = new RightReducer();
       MergingReducer mergingReducer = new MergingReducer();
-      IntCounter generationsCounter = new IntCounter();
-      UniformSubScopesProcessor uniformSubScopesProcessor4 = new UniformSubScopesProcessor();
+      IntCounter islandGenerationsCounter = new IntCounter();
+      Comparator checkIslandGenerationsReachedMaximum = new Comparator();
+      ConditionalBranch checkContinueEvolution = new ConditionalBranch();
+      DataReducer generationsReducer = new DataReducer();
+      DataReducer evaluatedSolutionsReducer = new DataReducer();
       Placeholder islandAnalyzer2 = new Placeholder();
-      IntCounter generationsSinceLastMigrationCounter = new IntCounter();
-      Comparator migrationComparator = new Comparator();
-      ConditionalBranch migrationBranch = new ConditionalBranch();
-      Assigner resetGenerationsSinceLastMigrationAssigner = new Assigner();
-      IntCounter migrationsCounter = new IntCounter();
       UniformSubScopesProcessor uniformSubScopesProcessor5 = new UniformSubScopesProcessor();
       Placeholder emigrantsSelector = new Placeholder();
+      IntCounter migrationsCounter = new IntCounter();
       Placeholder migrator = new Placeholder();
       UniformSubScopesProcessor uniformSubScopesProcessor6 = new UniformSubScopesProcessor();
       Placeholder immigrationReplacer = new Placeholder();
@@ -180,11 +194,14 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       Placeholder analyzer2 = new Placeholder();
       ConditionalBranch generationsTerminationCondition = new ConditionalBranch();
 
+
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Migrations", new IntValue(0)));
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("GenerationsSinceLastMigration", new IntValue(0)));
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Generations", new IntValue(0))); // Class IslandGeneticAlgorithm expects this to be called Generations
 
       islandVariableCreator.CollectedValues.Add(new ValueParameter<ResultCollection>("Results", new ResultCollection()));
+      islandVariableCreator.CollectedValues.Add(new ValueParameter<IntValue>("IslandGenerations", new IntValue(0)));
+      islandVariableCreator.CollectedValues.Add(new ValueParameter<IntValue>("IslandEvaluatedSolutions", new IntValue(0)));
 
       islandAnalyzer1.Name = "Island Analyzer (placeholder)";
       islandAnalyzer1.OperatorParameter.ActualName = IslandAnalyzerParameter.Name;
@@ -197,6 +214,16 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       resultsCollector1.CollectedValues.Add(new ScopeTreeLookupParameter<ResultCollection>("IslandResults", "Result set for each island", "Results"));
       resultsCollector1.ResultsParameter.ActualName = ResultsParameter.Name;
 
+      uniformSubScopesProcessor1.Parallel.Value = true;
+
+      generationsAssigner.Name = "Initialize Island Generations";
+      generationsAssigner.LeftSideParameter.ActualName = IslandGenerations.Name;
+      generationsAssigner.RightSideParameter.Value = new IntValue(0);
+
+      evaluatedSolutionsAssigner.Name = "Initialize Island evaluated solutions";
+      evaluatedSolutionsAssigner.LeftSideParameter.ActualName = IslandEvaluatedSolutions.Name;
+      evaluatedSolutionsAssigner.RightSideParameter.Value = new IntValue(0);
+
       selector.Name = "Selector (placeholder)";
       selector.OperatorParameter.ActualName = SelectorParameter.Name;
 
@@ -206,56 +233,59 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       crossover.OperatorParameter.ActualName = CrossoverParameter.Name;
 
       stochasticBranch.ProbabilityParameter.ActualName = MutationProbabilityParameter.Name;
-      stochasticBranch.RandomParameter.ActualName = RandomParameter.Name;
+      //set it to the random number generator of the island
+      stochasticBranch.RandomParameter.ActualName = "LocalRandom";
 
       mutator.Name = "Mutator (placeholder)";
       mutator.OperatorParameter.ActualName = MutatorParameter.Name;
 
       subScopesRemover.RemoveAllSubScopes = true;
 
-      uniformSubScopesProcessor3.Parallel.Value = true;
-
       evaluator.Name = "Evaluator (placeholder)";
       evaluator.OperatorParameter.ActualName = EvaluatorParameter.Name;
 
       subScopesCounter.Name = "Increment EvaluatedSolutions";
-      subScopesCounter.ValueParameter.ActualName = EvaluatedSolutionsParameter.Name;
+      subScopesCounter.ValueParameter.ActualName = IslandEvaluatedSolutions.Name;
 
       bestSelector.CopySelected = new BoolValue(false);
       bestSelector.MaximizationParameter.ActualName = MaximizationParameter.Name;
       bestSelector.NumberOfSelectedSubScopesParameter.ActualName = ElitesParameter.Name;
       bestSelector.QualityParameter.ActualName = QualityParameter.Name;
 
+      islandGenerationsCounter.Name = "Increment island generatrions";
+      islandGenerationsCounter.ValueParameter.ActualName = IslandGenerations.Name;
+      islandGenerationsCounter.Increment = new IntValue(1);
+
+      checkIslandGenerationsReachedMaximum.LeftSideParameter.ActualName = IslandGenerations.Name;
+      checkIslandGenerationsReachedMaximum.RightSideParameter.ActualName = MigrationIntervalParameter.Name;
+      checkIslandGenerationsReachedMaximum.Comparison = new Comparison(ComparisonType.GreaterOrEqual);
+      checkIslandGenerationsReachedMaximum.ResultParameter.ActualName = Migrate.Name;
+
+      checkContinueEvolution.Name = "Migrate?";
+      checkContinueEvolution.ConditionParameter.ActualName = Migrate.Name;
+      checkContinueEvolution.FalseBranch = selector;
+
       islandAnalyzer2.Name = "Island Analyzer (placeholder)";
       islandAnalyzer2.OperatorParameter.ActualName = IslandAnalyzerParameter.Name;
 
-      generationsCounter.Name = "Generations + 1";
-      generationsCounter.Increment = new IntValue(1);
-      generationsCounter.ValueParameter.ActualName = "Generations";
+      generationsReducer.Name = "Increment Generations";
+      generationsReducer.ParameterToReduce.ActualName = islandGenerationsCounter.ValueParameter.ActualName;
+      generationsReducer.TargetParameter.ActualName = "Generations";
+      generationsReducer.ReductionOperation.Value = new ReductionOperation(ReductionOperations.Min);
+      generationsReducer.TargetOperation.Value = new ReductionOperation(ReductionOperations.Sum);
 
-      generationsSinceLastMigrationCounter.Name = "GenerationsSinceLastMigration + 1";
-      generationsSinceLastMigrationCounter.ValueParameter.ActualName = "GenerationsSinceLastMigration";
-      generationsSinceLastMigrationCounter.Increment = new IntValue(1);
-
-      migrationComparator.Name = "GenerationsSinceLastMigration = MigrationInterval ?";
-      migrationComparator.LeftSideParameter.ActualName = "GenerationsSinceLastMigration";
-      migrationComparator.Comparison = new Comparison(ComparisonType.Equal);
-      migrationComparator.RightSideParameter.ActualName = MigrationIntervalParameter.Name;
-      migrationComparator.ResultParameter.ActualName = "Migrate";
-
-      migrationBranch.Name = "Migrate?";
-      migrationBranch.ConditionParameter.ActualName = "Migrate";
-
-      resetGenerationsSinceLastMigrationAssigner.Name = "Reset GenerationsSinceLastMigration";
-      resetGenerationsSinceLastMigrationAssigner.LeftSideParameter.ActualName = "GenerationsSinceLastMigration";
-      resetGenerationsSinceLastMigrationAssigner.RightSideParameter.Value = new IntValue(0);
-
-      migrationsCounter.Name = "Migrations + 1";
-      migrationsCounter.IncrementParameter.Value = new IntValue(1);
-      migrationsCounter.ValueParameter.ActualName = "Migrations";
+      evaluatedSolutionsReducer.Name = "Increment Evaluated Solutions";
+      evaluatedSolutionsReducer.ParameterToReduce.ActualName = IslandEvaluatedSolutions.Name;
+      evaluatedSolutionsReducer.TargetParameter.ActualName = EvaluatedSolutionsParameter.Name;
+      evaluatedSolutionsReducer.ReductionOperation.Value = new ReductionOperation(ReductionOperations.Sum);
+      evaluatedSolutionsReducer.TargetOperation.Value = new ReductionOperation(ReductionOperations.Sum);
 
       emigrantsSelector.Name = "Emigrants Selector (placeholder)";
       emigrantsSelector.OperatorParameter.ActualName = EmigrantsSelectorParameter.Name;
+
+      migrationsCounter.Name = "Increment number of Migrations";
+      migrationsCounter.ValueParameter.ActualName = "Migrations";
+      migrationsCounter.Increment = new IntValue(1);
 
       migrator.Name = "Migrator (placeholder)";
       migrator.OperatorParameter.ActualName = MigratorParameter.Name;
@@ -282,11 +312,17 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       uniformSubScopesProcessor0.Operator = islandVariableCreator;
       uniformSubScopesProcessor0.Successor = analyzer1;
       islandVariableCreator.Successor = islandAnalyzer1;
-      islandAnalyzer1.Successor = null;
+      islandAnalyzer1.Successor = localRandomCreator;
+      localRandomCreator.Successor = null;
       analyzer1.Successor = resultsCollector1;
       resultsCollector1.Successor = uniformSubScopesProcessor1;
-      uniformSubScopesProcessor1.Operator = selector;
-      uniformSubScopesProcessor1.Successor = generationsCounter;
+      uniformSubScopesProcessor1.Operator = generationsAssigner;
+      uniformSubScopesProcessor1.Successor = generationsReducer;
+      generationsReducer.Successor = evaluatedSolutionsReducer;
+      evaluatedSolutionsReducer.Successor = migrationsCounter;
+      migrationsCounter.Successor = uniformSubScopesProcessor5;
+      generationsAssigner.Successor = evaluatedSolutionsAssigner;
+      evaluatedSolutionsAssigner.Successor = selector;
       selector.Successor = subScopesProcessor1;
       subScopesProcessor1.Operators.Add(new EmptyOperator());
       subScopesProcessor1.Operators.Add(childrenCreator);
@@ -304,28 +340,22 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       uniformSubScopesProcessor3.Successor = subScopesCounter;
       evaluator.Successor = null;
       subScopesCounter.Successor = null;
+      subScopesCounter.Successor = null;
       subScopesProcessor2.Operators.Add(bestSelector);
       subScopesProcessor2.Operators.Add(new EmptyOperator());
       subScopesProcessor2.Successor = mergingReducer;
+      mergingReducer.Successor = islandAnalyzer2;
       bestSelector.Successor = rightReducer;
       rightReducer.Successor = null;
-      mergingReducer.Successor = null;
-      generationsCounter.Successor = uniformSubScopesProcessor4;
-      uniformSubScopesProcessor4.Operator = islandAnalyzer2;
-      uniformSubScopesProcessor4.Successor = generationsSinceLastMigrationCounter;
-      islandAnalyzer2.Successor = null;
-      generationsSinceLastMigrationCounter.Successor = migrationComparator;
-      migrationComparator.Successor = migrationBranch;
-      migrationBranch.TrueBranch = resetGenerationsSinceLastMigrationAssigner;
-      migrationBranch.FalseBranch = null;
-      migrationBranch.Successor = generationsComparator;
-      resetGenerationsSinceLastMigrationAssigner.Successor = migrationsCounter;
-      migrationsCounter.Successor = uniformSubScopesProcessor5;
+      islandAnalyzer2.Successor = islandGenerationsCounter;
+      islandGenerationsCounter.Successor = checkIslandGenerationsReachedMaximum;
+      checkIslandGenerationsReachedMaximum.Successor = checkContinueEvolution;
       uniformSubScopesProcessor5.Operator = emigrantsSelector;
+      emigrantsSelector.Successor = null;
       uniformSubScopesProcessor5.Successor = migrator;
       migrator.Successor = uniformSubScopesProcessor6;
       uniformSubScopesProcessor6.Operator = immigrationReplacer;
-      uniformSubScopesProcessor6.Successor = null;
+      uniformSubScopesProcessor6.Successor = generationsComparator;
       generationsComparator.Successor = analyzer2;
       analyzer2.Successor = generationsTerminationCondition;
       generationsTerminationCondition.TrueBranch = null;
