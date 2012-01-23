@@ -501,9 +501,9 @@ namespace HeuristicLab_33.Tests {
       var ga = CreateIslandGaTspSample();
       ga.SetSeedRandomly.Value = false;
       RunAlgorithm(ga);
-      Assert.AreEqual(10469, GetDoubleResult(ga, "BestQuality"));
-      Assert.AreEqual(11184.87, GetDoubleResult(ga, "CurrentAverageQuality"));
-      Assert.AreEqual(13420, GetDoubleResult(ga, "CurrentWorstQuality"));
+      Assert.AreEqual(9918, GetDoubleResult(ga, "BestQuality"));
+      Assert.AreEqual(10324.64, GetDoubleResult(ga, "CurrentAverageQuality"));
+      Assert.AreEqual(11823, GetDoubleResult(ga, "CurrentWorstQuality"));
       Assert.AreEqual(495500, GetIntResult(ga, "EvaluatedSolutions"));
     }
 
