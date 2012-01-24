@@ -41,10 +41,10 @@ namespace HeuristicLab.Optimizer.MenuItems {
     }
 
     protected override void OnToolStripItemSet(EventArgs e) {
-      ToolStripItem.Enabled = !(MainFormManager.MainForm.ActiveView is Sidebar);
+      ToolStripItem.Enabled = (MainFormManager.MainForm.ActiveView != null) && !(MainFormManager.MainForm.ActiveView is Sidebar);
     }
     protected override void OnActiveViewChanged(object sender, EventArgs e) {
-      ToolStripItem.Enabled = !(MainFormManager.MainForm.ActiveView is Sidebar);
+      ToolStripItem.Enabled = (MainFormManager.MainForm.ActiveView != null) && !(MainFormManager.MainForm.ActiveView is Sidebar);
     }
 
     public override void Execute() {
