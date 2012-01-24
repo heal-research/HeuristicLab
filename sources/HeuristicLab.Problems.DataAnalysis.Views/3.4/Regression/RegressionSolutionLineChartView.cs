@@ -25,7 +25,6 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using HeuristicLab.MainForm;
-using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Line Chart")]
@@ -65,7 +64,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         this.chart.Series.Add(TARGETVARIABLE_SERIES_NAME);
         this.chart.Series[TARGETVARIABLE_SERIES_NAME].LegendText = Content.ProblemData.TargetVariable;
         this.chart.Series[TARGETVARIABLE_SERIES_NAME].ChartType = SeriesChartType.FastLine;
-        this.chart.Series[TARGETVARIABLE_SERIES_NAME].EmptyPointStyle.Color = this.chart.Series[TARGETVARIABLE_SERIES_NAME].Color;
         this.chart.Series[TARGETVARIABLE_SERIES_NAME].Points.DataBindXY(Enumerable.Range(0, Content.ProblemData.Dataset.Rows).ToArray(),
           Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.TargetVariable).ToArray());
         // training series
@@ -74,29 +72,49 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].ChartType = SeriesChartType.FastLine;
         this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].EmptyPointStyle.Color = this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].Color;
         this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].Points.DataBindXY(Content.ProblemData.TrainingIndizes.ToArray(), Content.EstimatedTrainingValues.ToArray());
+        this.InsertEmptyPoints(this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME]);
         this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].Tag = Content;
         // test series
         this.chart.Series.Add(ESTIMATEDVALUES_TEST_SERIES_NAME);
         this.chart.Series[ESTIMATEDVALUES_TEST_SERIES_NAME].LegendText = ESTIMATEDVALUES_TEST_SERIES_NAME;
         this.chart.Series[ESTIMATEDVALUES_TEST_SERIES_NAME].ChartType = SeriesChartType.FastLine;
-        this.chart.Series[ESTIMATEDVALUES_TEST_SERIES_NAME].EmptyPointStyle.Color = this.chart.Series[ESTIMATEDVALUES_TEST_SERIES_NAME].Color;
         this.chart.Series[ESTIMATEDVALUES_TEST_SERIES_NAME].Points.DataBindXY(Content.ProblemData.TestIndizes.ToArray(), Content.EstimatedTestValues.ToArray());
+        this.InsertEmptyPoints(this.chart.Series[ESTIMATEDVALUES_TEST_SERIES_NAME]);
         this.chart.Series[ESTIMATEDVALUES_TEST_SERIES_NAME].Tag = Content;
         // series of remaining points
         int[] allIndizes = Enumerable.Range(0, Content.ProblemData.Dataset.Rows).Except(Content.ProblemData.TrainingIndizes).Except(Content.ProblemData.TestIndizes).ToArray();
         var estimatedValues = Content.EstimatedValues.ToArray();
         List<double> allEstimatedValues = allIndizes.Select(index => estimatedValues[index]).ToList();
-
         this.chart.Series.Add(ESTIMATEDVALUES_ALL_SERIES_NAME);
         this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME].LegendText = ESTIMATEDVALUES_ALL_SERIES_NAME;
         this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME].ChartType = SeriesChartType.FastLine;
-        this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME].EmptyPointStyle.Color = this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME].Color;
         this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME].Points.DataBindXY(allIndizes, allEstimatedValues);
+        this.InsertEmptyPoints(this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME]);
         this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME].Tag = Content;
         this.ToggleSeriesData(this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME]);
 
         UpdateCursorInterval();
         this.UpdateStripLines();
+      }
+    }
+
+    private void InsertEmptyPoints(Series series) {
+      int i = 0;
+      while (i < series.Points.Count - 1) {
+        if (series.Points[i].IsEmpty) {
+          ++i;
+          continue;
+        }
+
+        var p1 = series.Points[i];
+        var p2 = series.Points[i + 1];
+        // check for consecutive indices
+        if ((int)p2.XValue - (int)p1.XValue != 1) {
+          // insert an empty point between p1 and p2 so that the line will be invisible (transparent)
+          var p = new DataPoint((int)((p1.XValue + p2.XValue) / 2), 0.0) { IsEmpty = true };
+          series.Points.Insert(i + 1, p);
+        }
+        ++i;
       }
     }
 
@@ -199,7 +217,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private void ToggleSeriesData(Series series) {
       if (series.Points.Count > 0) {  //checks if series is shown
         if (this.chart.Series.Any(s => s != series && s.Points.Count > 0)) {
-          series.Points.Clear();
+          ClearPointsQuick(series.Points);
         }
       } else if (Content != null) {
         string targetVariableName = Content.ProblemData.TargetVariable;
@@ -222,10 +240,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
             break;
         }
         series.Points.DataBindXY(indizes, predictedValues);
+        this.InsertEmptyPoints(series);
         chart.Legends[series.Legend].ForeColor = Color.Black;
         UpdateCursorInterval();
         chart.Refresh();
       }
+    }
+
+    // workaround as per http://stackoverflow.com/questions/5744930/datapointcollection-clear-performance
+    private static void ClearPointsQuick(DataPointCollection points) {
+      points.SuspendUpdates();
+      while (points.Count > 0)
+        points.RemoveAt(points.Count - 1);
+      points.ResumeUpdates();
     }
 
     private void chart_MouseMove(object sender, MouseEventArgs e) {
