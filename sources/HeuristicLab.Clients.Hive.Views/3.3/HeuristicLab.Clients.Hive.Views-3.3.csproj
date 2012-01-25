@@ -144,12 +144,6 @@
     <Compile Include="StateLog\StateLogGanttChartListView.designer.cs">
       <DependentUpon>StateLogGanttChartListView.cs</DependentUpon>
     </Compile>
-    <Compile Include="GanttChart\GanttChart.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GanttChart\GanttChart.Designer.cs">
-      <DependentUpon>GanttChart.cs</DependentUpon>
-    </Compile>
     <Compile Include="StateLog\StateLogGanttChartView.cs">
       <SubType>UserControl</SubType>
     </Compile>

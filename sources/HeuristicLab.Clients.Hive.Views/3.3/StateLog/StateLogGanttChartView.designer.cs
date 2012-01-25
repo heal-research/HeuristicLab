@@ -23,7 +23,7 @@
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.ganttChart = new HeuristicLab.Clients.Hive.Views.GanttChart();
+      this.ganttChart = new HeuristicLab.Visualization.ChartControlsExtensions.GanttChart();
       this.SuspendLayout();
       // 
       // ganttChart
@@ -49,7 +49,7 @@
 
     #endregion
 
-    private GanttChart ganttChart;
+    private HeuristicLab.Visualization.ChartControlsExtensions.GanttChart ganttChart;
 
   }
 }

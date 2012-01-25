@@ -24,6 +24,7 @@ using System.Drawing;
 using System.Linq;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
+using HeuristicLab.Visualization.ChartControlsExtensions;
 
 namespace HeuristicLab.Clients.Hive.Views {
   [View("StateLogGanttChartList View")]

@@ -1,4 +1,4 @@
-﻿namespace HeuristicLab.Clients.Hive.Views {
+﻿namespace HeuristicLab.Visualization.ChartControlsExtensions {
   partial class GanttChart {
     /// <summary> 
     /// Required designer variable.

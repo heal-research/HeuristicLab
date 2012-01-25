@@ -26,7 +26,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
-namespace HeuristicLab.Clients.Hive.Views {
+namespace HeuristicLab.Visualization.ChartControlsExtensions {
   public partial class GanttChart : UserControl {
 
     private IDictionary<string, Color> categories = new Dictionary<string, Color>();

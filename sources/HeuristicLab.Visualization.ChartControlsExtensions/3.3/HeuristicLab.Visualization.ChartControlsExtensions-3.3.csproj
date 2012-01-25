@@ -120,6 +120,12 @@
     <Compile Include="EnhancedChart.Designer.cs">
       <DependentUpon>EnhancedChart.cs</DependentUpon>
     </Compile>
+    <Compile Include="GanttChart.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GanttChart.Designer.cs">
+      <DependentUpon>GanttChart.cs</DependentUpon>
+    </Compile>
     <Compile Include="HistogramControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
