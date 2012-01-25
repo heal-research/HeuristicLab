@@ -341,10 +341,10 @@ namespace HeuristicLab.Clients.Hive {
     }
 
     private void jobResultPoller_ExceptionOccured(object sender, EventArgs<Exception> e) {
-      OnExceptionOccured(e.Value);
+      OnExceptionOccured(sender, e.Value);
     }
     private void jobDownloader_ExceptionOccured(object sender, EventArgs<Exception> e) {
-      OnExceptionOccured(e.Value);
+      OnExceptionOccured(sender, e.Value);
     }
     public void UpdateTotalExecutionTime() {
       this.ExecutionTime = TimeSpan.FromMilliseconds(this.GetAllHiveTasks().Sum(x => x.Task.ExecutionTime.TotalMilliseconds));
@@ -444,10 +444,10 @@ namespace HeuristicLab.Clients.Hive {
     }
 
     public event EventHandler<EventArgs<Exception>> ExceptionOccured;
-    private void OnExceptionOccured(Exception exception) {
+    private void OnExceptionOccured(object sender, Exception exception) {
       log.LogException(exception);
       var handler = ExceptionOccured;
-      if (handler != null) handler(this, new EventArgs<Exception>(exception));
+      if (handler != null) handler(sender, new EventArgs<Exception>(exception));
     }
 
     public event EventHandler StateLogListChanged;

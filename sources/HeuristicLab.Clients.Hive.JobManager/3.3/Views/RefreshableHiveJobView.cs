@@ -113,7 +113,6 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
         isPrivilegedCheckBox.Checked = false;
         logView.Content = null;
         refreshAutomaticallyCheckBox.Checked = false;
-        logView.Content = null;
         runCollectionViewHost.Content = null;
       } else {
         nameTextBox.Text = Content.Job.Name;
@@ -301,7 +300,14 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       }
     }
     private void Content_ExceptionOccured(object sender, EventArgs<Exception> e) {
-      throw e.Value;
+      if (InvokeRequired)
+        Invoke(new EventHandler<EventArgs<Exception>>(Content_ExceptionOccured), sender, e);
+      else {
+        //don't show the error dialog when downloading tasks, the HiveClient will throw an exception and the dialog will be shown then
+        if (sender.GetType() != typeof(ConcurrentTaskDownloader<ItemTask>) && sender.GetType() != typeof(TaskDownloader)) {
+          ErrorHandling.ShowErrorDialog(this, e.Value);
+        }
+      }
     }
     private void Content_StateLogListChanged(object sender, EventArgs e) {
       if (InvokeRequired)
