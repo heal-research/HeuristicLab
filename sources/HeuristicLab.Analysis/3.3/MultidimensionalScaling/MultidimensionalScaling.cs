@@ -102,10 +102,12 @@ namespace HeuristicLab.Analysis {
 
     private static void StressFitness(double[] x, double[] fi, object obj) {
       Info info = (obj as Info);
+      int idx = 0;
       for (int i = 0; i < info.Coordinates.Rows; i++) {
-        double f = Stress(x, info.Dissimilarities[info.Row, i], info.Coordinates[i, 0], info.Coordinates[i, 1]);
-        if (i < info.Row) fi[i] = f;
-        else if (i > info.Row) fi[i - 1] = f;
+        if (i == info.Row) continue;
+        if (!double.IsNaN(info.Dissimilarities[info.Row, i]))
+          fi[idx++] = Stress(x, info.Dissimilarities[info.Row, i], info.Coordinates[i, 0], info.Coordinates[i, 1]);
+        else fi[idx++] = 0.0;
       }
     }
 
@@ -113,16 +115,18 @@ namespace HeuristicLab.Analysis {
       Info info = (obj as Info);
       int idx = 0;
       for (int i = 0; i < info.Coordinates.Rows; i++) {
-        if (i != info.Row) {
-          double c = info.Dissimilarities[info.Row, i];
-          double a = info.Coordinates[i, 0];
-          double b = info.Coordinates[i, 1];
-          double f = Stress(x, c, a, b);
-          fi[idx] = f;
+        if (i == info.Row) continue;
+        double c = info.Dissimilarities[info.Row, i];
+        double a = info.Coordinates[i, 0];
+        double b = info.Coordinates[i, 1];
+        if (!double.IsNaN(c)) {
+          fi[idx] = Stress(x, c, a, b); ;
           jac[idx, 0] = 2 * (x[0] - a) * (Math.Sqrt((a - x[0]) * (a - x[0]) + (b - x[1]) * (b - x[1])) - c) / Math.Sqrt((a - x[0]) * (a - x[0]) + (b - x[1]) * (b - x[1]));
           jac[idx, 1] = 2 * (x[1] - b) * (Math.Sqrt((a - x[0]) * (a - x[0]) + (b - x[1]) * (b - x[1])) - c) / Math.Sqrt((a - x[0]) * (a - x[0]) + (b - x[1]) * (b - x[1]));
-          idx++;
+        } else {
+          fi[idx] = jac[idx, 0] = jac[idx, 1] = 0;
         }
+        idx++;
       }
     }
 
@@ -152,8 +156,9 @@ namespace HeuristicLab.Analysis {
       double stress = 0, normalization = 0;
       for (int i = 0; i < dimension - 1; i++) {
         for (int j = i + 1; j < dimension; j++) {
-          if (dissimilarities[i, j] != dissimilarities[j, i]) throw new ArgumentException("Dissimilarities is not a symmetric matrix.", "dissimilarities");
-          if (dissimilarities[i, j] != 0) {
+          if (dissimilarities[i, j] != dissimilarities[j, i] && !(double.IsNaN(dissimilarities[i, j]) && double.IsNaN(dissimilarities[j, i])))
+            throw new ArgumentException("Dissimilarities is not a symmetric matrix.", "dissimilarities");
+          if (!double.IsNaN(dissimilarities[i, j])) {
             stress += Stress(coordinates[i, 0], coordinates[i, 1], dissimilarities[i, j], coordinates[j, 0], coordinates[j, 1]);
             normalization += (dissimilarities[i, j] * dissimilarities[i, j]);
           }

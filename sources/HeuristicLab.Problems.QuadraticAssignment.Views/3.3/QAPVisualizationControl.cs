@@ -204,16 +204,17 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
       if (pictureBox.Width > 0 && pictureBox.Height > 0) {
         Bitmap newBitmap = null;
         stressLabel.Text = "-";
+        stressLabel.ForeColor = Color.Black;
         if (distancesRadioButton.Checked && Distances != null && Distances.Rows > 0
           && Distances.Rows == Distances.Columns) {
-          if (Distances.Rows > 35) {
+          if (Distances.Rows > 50) {
             newBitmap = new Bitmap(pictureBox.Width, pictureBox.Height);
             WriteCenteredTextToBitmap(ref newBitmap, "Problem dimension is too large for visualization.");
             showingMessage = true;
           } else newBitmap = GenerateDistanceImage();
         } else if (weightsRadioButton.Checked && Weights != null && Weights.Rows > 0
           && Weights.Rows == Weights.Columns) {
-          if (Weights.Rows > 35) {
+          if (Weights.Rows > 50) {
             newBitmap = new Bitmap(pictureBox.Width, pictureBox.Height);
             WriteCenteredTextToBitmap(ref newBitmap, "Problem dimension is too large for visualization.");
             showingMessage = true;
@@ -227,7 +228,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
           && Assignment.Length == Weights.Rows
           && Assignment.Length == Distances.Rows
           && Assignment.Validate()) {
-          if (Assignment.Length > 35) {
+          if (Assignment.Length > 50) {
             newBitmap = new Bitmap(pictureBox.Width, pictureBox.Height);
             WriteCenteredTextToBitmap(ref newBitmap, "Problem dimension is too large for visualization.");
             showingMessage = true;
@@ -248,6 +249,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
       if (pictureBox.Width > 0 && pictureBox.Height > 0) {
         Bitmap newBitmap = new Bitmap(pictureBox.Width, pictureBox.Height);
         stressLabel.Text = "-";
+        stressLabel.ForeColor = Color.Black;
         WriteCenteredTextToBitmap(ref newBitmap, "Please refresh view.");
         showingMessage = false; // we're showing a message, but we should be showing the visualization, so this is false
 
@@ -269,10 +271,14 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
           coordinates = MultidimensionalScaling.KruskalShepard(distances);
           stress = MultidimensionalScaling.CalculateNormalizedStress(distances, coordinates);
           stressLabel.Text = stress.ToString("0.00", CultureInfo.CurrentCulture.NumberFormat);
+          if (stress < 0.1) stressLabel.ForeColor = Color.DarkGreen;
+          else if (stress < 0.2) stressLabel.ForeColor = Color.DarkOrange;
+          else stressLabel.ForeColor = Color.DarkRed;
         } catch {
           WriteCenteredTextToBitmap(ref newBitmap, "Distance matrix is not symmetric");
           showingMessage = true;
           stressLabel.Text = "-";
+          stressLabel.ForeColor = Color.Black;
           return newBitmap;
         }
         double xMin = double.MaxValue, yMin = double.MaxValue, xMax = double.MinValue, yMax = double.MinValue;
@@ -348,14 +354,15 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
         double maxWeight = double.MinValue;
         for (int i = 0; i < weights.Rows; i++)
           for (int j = i + 1; j < weights.Rows; j++) {
-            if (weights[i, j] > maxWeight)
-              maxWeight = weights[i, j] + weights[j, i];
+            if (weights[i, j] > maxWeight) maxWeight = weights[i, j];
+            if (weights[j, i] > maxWeight) maxWeight = weights[j, i];
           }
 
         DoubleMatrix distances = new DoubleMatrix(weights.Rows, weights.Columns);
         for (int i = 0; i < distances.Rows; i++)
           for (int j = 0; j < distances.Columns; j++) {
-            distances[i, j] = maxWeight + 1 - weights[i, j];
+            if (weights[i, j] == 0) distances[i, j] = double.NaN;
+            else distances[i, j] = maxWeight / weights[i, j];
           }
 
         DoubleMatrix coordinates;
@@ -364,10 +371,14 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
           coordinates = MultidimensionalScaling.KruskalShepard(distances);
           stress = MultidimensionalScaling.CalculateNormalizedStress(distances, coordinates);
           stressLabel.Text = stress.ToString("0.00", CultureInfo.CurrentCulture.NumberFormat);
+          if (stress < 0.1) stressLabel.ForeColor = Color.DarkGreen;
+          else if (stress < 0.2) stressLabel.ForeColor = Color.DarkOrange;
+          else stressLabel.ForeColor = Color.DarkRed;
         } catch {
           WriteCenteredTextToBitmap(ref newBitmap, "Weights matrix is not symmetric");
           showingMessage = true;
           stressLabel.Text = "-";
+          stressLabel.ForeColor = Color.Black;
           return newBitmap;
         }
         double xMin = double.MaxValue, yMin = double.MaxValue, xMax = double.MinValue, yMax = double.MinValue;
@@ -453,10 +464,14 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
           coordinates = MultidimensionalScaling.KruskalShepard(distances);
           stress = MultidimensionalScaling.CalculateNormalizedStress(distances, coordinates);
           stressLabel.Text = stress.ToString("0.00", CultureInfo.CurrentCulture.NumberFormat);
+          if (stress < 0.1) stressLabel.ForeColor = Color.DarkGreen;
+          else if (stress < 0.2) stressLabel.ForeColor = Color.DarkOrange;
+          else stressLabel.ForeColor = Color.DarkRed;
         } catch {
           WriteCenteredTextToBitmap(ref newBitmap, "Unknown error");
           showingMessage = true;
           stressLabel.Text = "-";
+          stressLabel.ForeColor = Color.Black;
           return newBitmap;
         }
 
