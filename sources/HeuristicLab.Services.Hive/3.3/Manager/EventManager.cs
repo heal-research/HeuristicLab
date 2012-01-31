@@ -44,7 +44,7 @@ namespace HeuristicLab.Services.Hive {
       get { return ServiceLocator.Instance.TransactionManager; }
     }
 
-    public void Cleanup() { 
+    public void Cleanup() {
       trans.UseTransaction(() => {
         SetTimeoutSlavesOffline();
         SetTimeoutTasksWaiting();
@@ -88,7 +88,6 @@ namespace HeuristicLab.Services.Hive {
       foreach (DT.Slave slave in slaves) {
         if (!slave.LastHeartbeat.HasValue || (DateTime.Now - slave.LastHeartbeat.Value) > HeuristicLab.Services.Hive.Properties.Settings.Default.SlaveHeartbeatTimeout) {
           slave.SlaveState = DT.SlaveState.Offline;
-          SetTasksWaiting(slave.Id);
           dao.UpdateSlave(slave);
         }
       }
@@ -101,15 +100,6 @@ namespace HeuristicLab.Services.Hive {
       var parentTasksToFinish = dao.GetParentTasks(dao.GetResources(x => true).Select(x => x.Id), 0, true);
       foreach (var task in parentTasksToFinish) {
         dao.UpdateTaskState(task.Id, TaskState.Finished, null, null, string.Empty);
-      }
-    }
-
-    private void SetTasksWaiting(Guid slaveId) {
-      var tasks = dao.GetTasks(x => x.State == TaskState.Calculating).Where(x => x.StateLog.Last().SlaveId == slaveId);
-      foreach (var j in tasks) {
-        DT.Task task = dao.UpdateTaskState(j.Id, TaskState.Waiting, slaveId, null, "Slave timed out.");
-        task.Command = null;
-        dao.UpdateTask(task);
       }
     }
 
