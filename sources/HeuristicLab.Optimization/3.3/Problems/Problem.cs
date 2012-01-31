@@ -43,33 +43,21 @@ namespace HeuristicLab.Optimization {
     }
 
     [StorableConstructor]
-    protected Problem(bool deserializing)
-      : base(deserializing) {
-      operators = new OperatorCollection(); // operators must never be null
-    }
+    protected Problem(bool deserializing) : base(deserializing) { }
     protected Problem(Problem original, Cloner cloner)
       : base(original, cloner) {
-      operators = cloner.Clone(original.operators);
       RegisterEventHandlers();
     }
 
     protected Problem()
       : base() {
-      operators = new OperatorCollection();
-      Parameters.Add(new FixedValueParameter<OperatorCollection>(OperatorsParameterName, "The operators that the problem provides to the algorithms.", operators, false));
+      Parameters.Add(new FixedValueParameter<OperatorCollection>(OperatorsParameterName, "The operators that the problem provides to the algorithms.", new OperatorCollection(), false));
       OperatorsParameter.Hidden = true;
       RegisterEventHandlers();
     }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
-      // BackwardsCompatibility3.3
-      #region Backwards compatible code, remove with 3.4
-      if (!Parameters.ContainsKey(OperatorsParameterName)) {
-        Parameters.Add(new FixedValueParameter<OperatorCollection>(OperatorsParameterName, "The operators that the problem provides to the algorithms.", operators, false));
-        OperatorsParameter.Hidden = true;
-      }
-      #endregion
       RegisterEventHandlers();
     }
 
@@ -80,16 +68,32 @@ namespace HeuristicLab.Optimization {
     }
 
     #region properties
-    private OperatorCollection operators;
+    // BackwardsCompatibility3.3
+    #region Backwards compatible code, remove with 3.4
     [Storable(Name = "Operators")]
     private IEnumerable<IOperator> StorableOperators {
-      get { return operators; }
-      set { operators = new OperatorCollection(value); }
+      get { return null; }
+      set {
+        if (!Parameters.ContainsKey(OperatorsParameterName)) {
+          Parameters.Add(new FixedValueParameter<OperatorCollection>(OperatorsParameterName, "The operators that the problem provides to the algorithms.", new OperatorCollection(value), false));
+          OperatorsParameter.Hidden = true;
+        }
+      }
     }
+    #endregion
     protected OperatorCollection Operators {
-      get { return this.operators; }
+      get {
+        // BackwardsCompatibility3.3
+        #region Backwards compatible code, remove with 3.4
+        if (!Parameters.ContainsKey(OperatorsParameterName)) {
+          Parameters.Add(new FixedValueParameter<OperatorCollection>(OperatorsParameterName, "The operators that the problem provides to the algorithms.", new OperatorCollection(), false));
+          OperatorsParameter.Hidden = true;
+        }
+        #endregion
+        return OperatorsParameter.Value;
+      }
     }
-    IEnumerable<IOperator> IProblem.Operators { get { return operators; } }
+    IEnumerable<IOperator> IProblem.Operators { get { return Operators; } }
     #endregion
 
     #region events
