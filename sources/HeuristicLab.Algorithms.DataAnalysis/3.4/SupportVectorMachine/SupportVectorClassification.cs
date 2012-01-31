@@ -112,13 +112,21 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     protected override void Run() {
       IClassificationProblemData problemData = Problem.ProblemData;
       IEnumerable<string> selectedInputVariables = problemData.AllowedInputVariables;
-      var solution = CreateSupportVectorClassificationSolution(problemData, selectedInputVariables, SvmType.Value, KernelType.Value, Cost.Value, Nu.Value, Gamma.Value);
+      double trainingAccuracy, testAccuracy;
+      int nSv;
+      var solution = CreateSupportVectorClassificationSolution(problemData, selectedInputVariables,
+        SvmType.Value, KernelType.Value, Cost.Value, Nu.Value, Gamma.Value,
+        out trainingAccuracy, out testAccuracy, out nSv);
 
       Results.Add(new Result("Support vector classification solution", "The support vector classification solution.", solution));
+      Results.Add(new Result("Training accuracy", "The accuracy of the SVR solution on the training partition.", new DoubleValue(trainingAccuracy)));
+      Results.Add(new Result("Test R²", "The accuracy of the SVR solution on the test partition.", new DoubleValue(testAccuracy)));
+      Results.Add(new Result("Number of support vectors", "The number of support vectors of the SVR solution.", new IntValue(nSv)));
     }
 
     public static SupportVectorClassificationSolution CreateSupportVectorClassificationSolution(IClassificationProblemData problemData, IEnumerable<string> allowedInputVariables,
-      string svmType, string kernelType, double cost, double nu, double gamma) {
+      string svmType, string kernelType, double cost, double nu, double gamma,
+      out double trainingAccuracy, out double testAccuracy, out int nSv) {
       Dataset dataset = problemData.Dataset;
       string targetVariable = problemData.TargetVariable;
       IEnumerable<int> rows = problemData.TrainingIndizes;
@@ -147,9 +155,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       SVM.Problem problem = SupportVectorMachineUtil.CreateSvmProblem(dataset, targetVariable, allowedInputVariables, rows);
       SVM.RangeTransform rangeTransform = SVM.RangeTransform.Compute(problem);
       SVM.Problem scaledProblem = SVM.Scaling.Scale(rangeTransform, problem);
-      var model = new SupportVectorMachineModel(SVM.Training.Train(scaledProblem, parameter), rangeTransform, targetVariable, allowedInputVariables, problemData.ClassValues);
+      var svmModel = SVM.Training.Train(scaledProblem, parameter);
+      var model = new SupportVectorMachineModel(svmModel, rangeTransform, targetVariable, allowedInputVariables, problemData.ClassValues);
+      var solution = new SupportVectorClassificationSolution(model, (IClassificationProblemData)problemData.Clone());
 
-      return new SupportVectorClassificationSolution(model, (IClassificationProblemData)problemData.Clone());
+      nSv = svmModel.SupportVectorCount;
+      trainingAccuracy = solution.TrainingAccuracy;
+      testAccuracy = solution.TestAccuracy;
+
+      return solution;
     }
     #endregion
   }
