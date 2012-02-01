@@ -40,13 +40,13 @@ namespace HeuristicLab.Optimization {
     protected SingleObjectiveHeuristicOptimizationProblem()
       : base() {
       Parameters.Add(new ValueParameter<BoolValue>(MaximizationParameterName, "Set to false if the problem should be minimized.", new BoolValue()));
-      Parameters.Add(new OptionalValueParameter<DoubleValue>(BestKnownQualityParameterName, "The quality of the best known solution of this problem.", new DoubleValue()));
+      Parameters.Add(new OptionalValueParameter<DoubleValue>(BestKnownQualityParameterName, "The quality of the best known solution of this problem."));
     }
 
     protected SingleObjectiveHeuristicOptimizationProblem(T evaluator, U solutionCreator)
       : base(evaluator, solutionCreator) {
       Parameters.Add(new ValueParameter<BoolValue>(MaximizationParameterName, "Set to false if the problem should be minimized.", new BoolValue()));
-      Parameters.Add(new OptionalValueParameter<DoubleValue>(BestKnownQualityParameterName, "The quality of the best known solution of this problem.", new DoubleValue()));
+      Parameters.Add(new OptionalValueParameter<DoubleValue>(BestKnownQualityParameterName, "The quality of the best known solution of this problem."));
     }
 
     [StorableHook(HookType.AfterDeserialization)]
