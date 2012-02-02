@@ -100,7 +100,7 @@ namespace HeuristicLab.Problems.TestFunctions {
       Parameters.Add(new OptionalValueParameter<RealVector>("BestKnownSolution", "The best known solution for this test function instance."));
 
       Maximization.Value = Evaluator.Maximization;
-      BestKnownQuality.Value = Evaluator.BestKnownQuality;
+      BestKnownQuality = new DoubleValue(Evaluator.BestKnownQuality);
 
       strategyVectorCreator = new StdDevStrategyVectorCreator();
       strategyVectorCreator.LengthParameter.ActualName = ProblemSizeParameter.Name;

@@ -67,7 +67,7 @@ namespace HeuristicLab.Optimization {
     }
     public BoolValue Maximization {
       get { return MaximizationParameter.Value; }
-      protected set { MaximizationParameter.Value = value; }
+      set { MaximizationParameter.Value = value; }
     }
 
     public IValueParameter<DoubleValue> BestKnownQualityParameter {
@@ -78,7 +78,7 @@ namespace HeuristicLab.Optimization {
     }
     public DoubleValue BestKnownQuality {
       get { return BestKnownQualityParameter.Value; }
-      protected set { BestKnownQualityParameter.Value = value; }
+      set { BestKnownQualityParameter.Value = value; }
     }
 
     ISingleObjectiveEvaluator ISingleObjectiveHeuristicOptimizationProblem.Evaluator {

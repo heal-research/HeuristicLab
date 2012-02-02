@@ -173,7 +173,7 @@ namespace HeuristicLab.Problems.ArtificialAnt {
 
       Maximization.Value = true;
       MaximizationParameter.Hidden = true;
-      BestKnownQuality.Value = 89;
+      BestKnownQuality = new DoubleValue(89);
       SolutionCreator.SymbolicExpressionTreeParameter.ActualName = "AntTrailSolution";
       ((ProbabilisticTreeCreator)SolutionCreator).SymbolicExpressionTreeGrammarParameter.ActualName = "ArtificialAntExpressionGrammar";
       Evaluator.QualityParameter.ActualName = "FoodEaten";
