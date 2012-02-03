@@ -113,6 +113,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MathSymbolicDataAnalysisModelView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MathSymbolicDataAnalysisModelView.designer.cs">
+      <DependentUpon>MathSymbolicDataAnalysisModelView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Plugin.cs" />
     <Compile Include="TextualSymbolicDataAnalysisModelView.cs">
       <SubType>UserControl</SubType>
@@ -291,6 +297,11 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="displayModelFrame.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
