@@ -96,9 +96,6 @@
       <HintPath>..\..\bin\ALGLIB-3.4.0.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="HeuristicLab.MathJax-1.1, Version=1.1.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <HintPath>..\..\bin\HeuristicLab.MathJax-1.1.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>

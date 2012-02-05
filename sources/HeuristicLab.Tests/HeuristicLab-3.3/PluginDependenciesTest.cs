@@ -44,6 +44,7 @@ namespace HeuristicLab_33.Tests {
       extLibPluginNames.Add("HeuristicLab.ALGLIB");
       extLibPluginNames.Add("HeuristicLab.LibSVM");
       extLibPluginNames.Add("HeuristicLab.log4net");
+      extLibPluginNames.Add("HeuristicLab.MathJax");
       extLibPluginNames.Add("HeuristicLab.Netron");
       extLibPluginNames.Add("HeuristicLab.ProtobufCS");
       extLibPluginNames.Add("HeuristicLab.SharpDevelop");
