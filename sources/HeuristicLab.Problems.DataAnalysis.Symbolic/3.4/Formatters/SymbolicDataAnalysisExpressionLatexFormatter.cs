@@ -122,9 +122,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (node.Symbol is LessThan) {
         strBuilder.Append(@"  \left( ");
       } else if (node.Symbol is And) {
-        strBuilder.Append(@"   \left( ");
+        strBuilder.Append(@"  \left( \left( ");
       } else if (node.Symbol is Or) {
-        strBuilder.Append(@"   \left( ");
+        strBuilder.Append(@"   \left( \left( ");
       } else if (node.Symbol is Not) {
         strBuilder.Append(@" \neg \left( ");
       } else if (node.Symbol is IfThenElse) {
@@ -297,7 +297,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           foreach (var constant in constants) {
             // replace "." with ".&" to align decimal points
             var constStr = string.Format(System.Globalization.NumberFormatInfo.InvariantInfo, "{0:G5}", constant);
-            if(!constStr.Contains(".")) constStr = constStr + ".0";
+            if (!constStr.Contains(".")) constStr = constStr + ".0";
             constStr = constStr.Replace(".", "\\negthickspace&.");  // fix problem in rendering of aligned expressions
             strBuilder.Append("c_{" + i + "}& = & " + constStr);
             strBuilder.Append(@"\\");
