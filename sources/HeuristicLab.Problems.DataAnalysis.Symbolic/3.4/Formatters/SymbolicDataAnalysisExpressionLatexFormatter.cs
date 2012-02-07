@@ -342,7 +342,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
          .Replace("\\", "\\\\")
          .Replace("{", "\\{")
          .Replace("}", "\\}")
-         .Replace("%", "\\%")
         + "}";
     }
   }
