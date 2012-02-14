@@ -30,8 +30,9 @@ using System.Threading;
 
 namespace HeuristicLab.Common {
   public static class ObjectExtensions {
-    public static IEnumerable<object> GetObjectGraphObjects(this object obj, bool excludeStaticMembers = false) {
+    public static IEnumerable<object> GetObjectGraphObjects(this object obj, HashSet<string> excludedMembers = null, bool excludeStaticMembers = false) {
       if (obj == null) return Enumerable.Empty<object>();
+      if (excludedMembers == null) excludedMembers = new HashSet<string>();
 
       var objects = new HashSet<object>();
       var stack = new Stack<object>();
@@ -41,7 +42,7 @@ namespace HeuristicLab.Common {
         object current = stack.Pop();
         objects.Add(current);
 
-        foreach (object o in GetChildObjects(current, excludeStaticMembers)) {
+        foreach (object o in GetChildObjects(current, excludedMembers, excludeStaticMembers)) {
           if (o != null && !objects.Contains(o) && !ExcludeType(o.GetType()))
             stack.Push(o);
         }
@@ -69,7 +70,7 @@ namespace HeuristicLab.Common {
              typeof(Pointer).IsAssignableFrom(type) ||
              (type.HasElementType && ExcludeType(type.GetElementType()));
     }
-    private static IEnumerable<object> GetChildObjects(object obj, bool excludeStaticMembers) {
+    private static IEnumerable<object> GetChildObjects(object obj, HashSet<string> excludedMembers, bool excludeStaticMembers) {
       Type type = obj.GetType();
 
       if (type.IsSubclassOfRawGeneric(typeof(ThreadLocal<>))) {
@@ -94,11 +95,13 @@ namespace HeuristicLab.Common {
           yield return value;
       } else {
         foreach (FieldInfo f in type.GetAllFields()) {
+          if (excludedMembers.Contains(f.Name)) continue;
           if (excludeStaticMembers && f.IsStatic) continue;
           object fieldValue;
           try {
             fieldValue = f.GetValue(obj);
-          } catch (SecurityException) {
+          }
+          catch (SecurityException) {
             continue;
           }
           yield return fieldValue;

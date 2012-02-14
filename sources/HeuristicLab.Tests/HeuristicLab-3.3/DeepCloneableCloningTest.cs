@@ -132,8 +132,8 @@ namespace HeuristicLab_33.Tests {
     }
 
     private IEnumerable<object> CheckTotalInequality(object original, object clone) {
-      var originalObjects = new HashSet<object>(original.GetObjectGraphObjects(true).Where(x => !x.GetType().IsValueType), new ReferenceEqualityComparer());
-      var clonedObjects = new HashSet<object>(clone.GetObjectGraphObjects(true).Where(x => !x.GetType().IsValueType), new ReferenceEqualityComparer());
+      var originalObjects = new HashSet<object>(original.GetObjectGraphObjects(excludeStaticMembers: true).Where(x => !x.GetType().IsValueType), new ReferenceEqualityComparer());
+      var clonedObjects = new HashSet<object>(clone.GetObjectGraphObjects(excludeStaticMembers: true).Where(x => !x.GetType().IsValueType), new ReferenceEqualityComparer());
 
       return originalObjects.Intersect(clonedObjects);
     }
