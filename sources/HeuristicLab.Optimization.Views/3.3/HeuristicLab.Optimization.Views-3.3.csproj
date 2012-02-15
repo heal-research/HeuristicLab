@@ -142,10 +142,10 @@
     <Compile Include="RunCollectionModifierListView.Designer.cs">
       <DependentUpon>RunCollectionModifierListView.cs</DependentUpon>
     </Compile>
-    <Compile Include="RunCollectionContentConstraintView.cs">
+    <Compile Include="RunCollectionConstraintViews\RunCollectionContentConstraintView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="RunCollectionContentConstraintView.Designer.cs">
+    <Compile Include="RunCollectionConstraintViews\RunCollectionContentConstraintView.Designer.cs">
       <DependentUpon>RunCollectionContentConstraintView.cs</DependentUpon>
     </Compile>
     <Compile Include="ExperimentTreeView.cs">
@@ -166,34 +166,34 @@
     <Compile Include="ResultValueView.Designer.cs">
       <DependentUpon>ResultValueView.cs</DependentUpon>
     </Compile>
-    <Compile Include="RunCollectionBoxPlotView.cs">
+    <Compile Include="RunCollectionViews\RunCollectionBoxPlotView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="RunCollectionBoxPlotView.Designer.cs">
+    <Compile Include="RunCollectionViews\RunCollectionBoxPlotView.Designer.cs">
       <DependentUpon>RunCollectionBoxPlotView.cs</DependentUpon>
     </Compile>
-    <Compile Include="RunCollectionComparisonConstraintView.cs">
+    <Compile Include="RunCollectionConstraintViews\RunCollectionComparisonConstraintView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="RunCollectionComparisonConstraintView.Designer.cs">
+    <Compile Include="RunCollectionConstraintViews\RunCollectionComparisonConstraintView.Designer.cs">
       <DependentUpon>RunCollectionComparisonConstraintView.cs</DependentUpon>
     </Compile>
-    <Compile Include="RunCollectionTypeCompatibilityConstraintView.cs">
+    <Compile Include="RunCollectionConstraintViews\RunCollectionTypeCompatibilityConstraintView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="RunCollectionTypeCompatibilityConstraintView.Designer.cs">
+    <Compile Include="RunCollectionConstraintViews\RunCollectionTypeCompatibilityConstraintView.Designer.cs">
       <DependentUpon>RunCollectionTypeCompatibilityConstraintView.cs</DependentUpon>
     </Compile>
-    <Compile Include="RunCollectionConstraintCollectionView.cs">
+    <Compile Include="RunCollectionConstraintViews\RunCollectionConstraintCollectionView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="RunCollectionConstraintCollectionView.Designer.cs">
+    <Compile Include="RunCollectionConstraintViews\RunCollectionConstraintCollectionView.Designer.cs">
       <DependentUpon>RunCollectionConstraintCollectionView.cs</DependentUpon>
     </Compile>
-    <Compile Include="RunCollectionColumnConstraintView.cs">
+    <Compile Include="RunCollectionConstraintViews\RunCollectionColumnConstraintView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="RunCollectionColumnConstraintView.Designer.cs">
+    <Compile Include="RunCollectionConstraintViews\RunCollectionColumnConstraintView.Designer.cs">
       <DependentUpon>RunCollectionColumnConstraintView.cs</DependentUpon>
     </Compile>
     <Compile Include="OptimizerListView.cs">
@@ -208,28 +208,28 @@
     <Compile Include="ExperimentView.Designer.cs">
       <DependentUpon>ExperimentView.cs</DependentUpon>
     </Compile>
-    <Compile Include="RunCollectionBubbleChartView.cs">
+    <Compile Include="RunCollectionViews\RunCollectionBubbleChartView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="RunCollectionBubbleChartView.Designer.cs">
+    <Compile Include="RunCollectionViews\RunCollectionBubbleChartView.Designer.cs">
       <DependentUpon>RunCollectionBubbleChartView.cs</DependentUpon>
     </Compile>
-    <Compile Include="RunCollectionEqualityConstraintView.cs">
+    <Compile Include="RunCollectionConstraintViews\RunCollectionEqualityConstraintView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="RunCollectionEqualityConstraintView.Designer.cs">
+    <Compile Include="RunCollectionConstraintViews\RunCollectionEqualityConstraintView.Designer.cs">
       <DependentUpon>RunCollectionEqualityConstraintView.cs</DependentUpon>
     </Compile>
-    <Compile Include="RunCollectionTabularView.cs">
+    <Compile Include="RunCollectionViews\RunCollectionTabularView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="RunCollectionTabularView.Designer.cs">
+    <Compile Include="RunCollectionViews\RunCollectionTabularView.Designer.cs">
       <DependentUpon>RunCollectionTabularView.cs</DependentUpon>
     </Compile>
-    <Compile Include="RunCollectionView.cs">
+    <Compile Include="RunCollectionViews\RunCollectionView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="RunCollectionView.Designer.cs">
+    <Compile Include="RunCollectionViews\RunCollectionView.Designer.cs">
       <DependentUpon>RunCollectionView.cs</DependentUpon>
     </Compile>
     <Compile Include="RunView.cs">

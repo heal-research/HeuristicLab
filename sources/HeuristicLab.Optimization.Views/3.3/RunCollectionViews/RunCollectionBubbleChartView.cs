@@ -677,7 +677,7 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void ColorRuns(string axisValue) {
-      var runs = Content.Select(r => new { Run = r, Value = GetValue(r, axisValue) }).Where(r => r.Value.HasValue);
+      var runs = Content.Where(r => r.Visible).Select(r => new { Run = r, Value = GetValue(r, axisValue) }).Where(r => r.Value.HasValue);
       double minValue = runs.Min(r => r.Value.Value);
       double maxValue = runs.Max(r => r.Value.Value);
       double range = maxValue - minValue;
