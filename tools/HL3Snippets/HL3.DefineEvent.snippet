@@ -19,13 +19,18 @@
           <Function>
           </Function>
         </Literal>
+        <Literal Editable="true">
+          <ID>Modifier</ID>
+          <ToolTip>Visibility modifier</ToolTip>
+          <Default>protected virtual</Default>
+          <Function>
+          </Function>
+        </Literal>
       </Declarations>
       <Code Language="csharp"><![CDATA[public event EventHandler $EventName$;
-
-protected virtual void On$EventName$() {
-  EventHandler handler = $EventName$;
-  if (handler != null)
-    handler(this, EventArgs.Empty);
+$Modifier$ void On$EventName$() {
+  var handler = $EventName$;
+  if (handler != null) handler(this, EventArgs.Empty);
 }]]></Code>
     </Snippet>
   </CodeSnippet>

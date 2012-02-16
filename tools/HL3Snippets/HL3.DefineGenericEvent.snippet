@@ -31,13 +31,18 @@
           <Function>
           </Function>
         </Literal>
+        <Literal Editable="true">
+          <ID>Modifier</ID>
+          <ToolTip>Visibility modifier</ToolTip>
+          <Default>protected virtual</Default>
+          <Function>
+          </Function>
+        </Literal>
       </Declarations>
       <Code Language="csharp"><![CDATA[public event EventHandler<EventArgs<$ArgsType$>> $EventName$;
-
-protected virtual void On$EventName$($ArgsType$ args) {
-  EventHandler<EventArgs<$ArgsType$>> handler = $EventName$;
-  if (handler != null)
-    handler(this, new EventArgs<$ArgsType$>(args));
+$Modifier$ void On$EventName$($ArgsType$ args) {
+  var handler = $EventName$;
+  if (handler != null) handler(this, new EventArgs<$ArgsType$>(args));
 }]]></Code>
     </Snippet>
   </CodeSnippet>
