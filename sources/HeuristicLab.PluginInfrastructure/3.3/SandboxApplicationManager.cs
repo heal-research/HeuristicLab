@@ -266,9 +266,9 @@ namespace HeuristicLab.PluginInfrastructure {
     private static IEnumerable<Type> GetTypes(Type type, Assembly assembly, bool onlyInstantiable, bool includeGenericTypeDefinitions) {
       var buildTypes = from t in assembly.GetTypes()
                        where !IsNonDiscoverableType(t)
-                       where CheckTypeCompatibility(type, t)
                        where onlyInstantiable == false ||
                              (!t.IsAbstract && !t.IsInterface && !t.HasElementType)
+                       where CheckTypeCompatibility(type, t)
                        select BuildType(t, type);
 
       return from t in buildTypes
@@ -285,8 +285,26 @@ namespace HeuristicLab.PluginInfrastructure {
       if (type.IsAssignableFrom(other))
         return true;
       if (type.IsGenericType && other.IsGenericType) {
+        var otherGenericArguments = other.GetGenericArguments();
+        var typeGenericArguments = type.GetGenericArguments();
+
+        //check type arguments count
+        if (otherGenericArguments.Length != typeGenericArguments.Length)
+          return false;
+
+        //check type arguments & constraints
+        int i = 0;
+        foreach (var genericArgument in typeGenericArguments) {
+          if (otherGenericArguments[i].IsGenericParameter) {
+            foreach (var constraint in otherGenericArguments[i].GetGenericParameterConstraints())
+              if (!constraint.IsAssignableFrom(genericArgument)) return false;
+          } else if (genericArgument != otherGenericArguments[i]) return false;
+          i++;
+        }
+        //check types
         try {
-          if (type.IsAssignableFrom(other.GetGenericTypeDefinition().MakeGenericType(type.GetGenericArguments())))
+          var otherGenericTypeDefinition = other.GetGenericTypeDefinition();
+          if (type.IsAssignableFrom(otherGenericTypeDefinition.MakeGenericType(typeGenericArguments)))
             return true;
         }
         catch (Exception) { }
