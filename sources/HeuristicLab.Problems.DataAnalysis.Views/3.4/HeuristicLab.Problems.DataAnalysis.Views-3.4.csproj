@@ -140,6 +140,12 @@
     <Compile Include="Regression\RegressionEnsembleSolutionModelView.Designer.cs">
       <DependentUpon>RegressionEnsembleSolutionModelView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Regression\RegressionSolutionResidualHistogram.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Regression\RegressionSolutionResidualHistogram.Designer.cs">
+      <DependentUpon>RegressionSolutionResidualHistogram.cs</DependentUpon>
+    </Compile>
     <Compile Include="Solution Views\ClassificationSolutionView.cs">
       <SubType>UserControl</SubType>
     </Compile>
