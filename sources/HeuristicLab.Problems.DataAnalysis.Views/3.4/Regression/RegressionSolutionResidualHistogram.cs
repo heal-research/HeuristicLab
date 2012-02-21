@@ -92,24 +92,37 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       }
       if (Content != null) {
         Dictionary<string, List<double>> residuals = CalculateResiduals();
-        double max = Math.Max(Math.Abs(residuals[ALL_SAMPLES].Min()), Math.Abs(residuals[ALL_SAMPLES].Max()));
-        double intervalWidth = (max * 2.0) / bins;
-        max = HumanRoundMax(max);
+        double realMax = Math.Max(Math.Abs(residuals[ALL_SAMPLES].Min()), Math.Abs(residuals[ALL_SAMPLES].Max()));
+        double roundedMax = HumanRoundMax(realMax);
+        double intervalWidth = (roundedMax * 2.0) / bins;
         intervalWidth = HumanRoundMax(intervalWidth);
+        // sets roundedMax to a value, so that zero will be in the middle of the x axis
+        double help = realMax / intervalWidth;
+        help = help % 1 < 0.5 ? (int)help : (int)help + 1;
+        roundedMax = help * intervalWidth;
 
         foreach (string series in ALL_SERIES) {
-          CalculateFrequencies(residuals[series], series, max, intervalWidth);
+          CalculateFrequencies(residuals[series], series, roundedMax, intervalWidth);
           if (!series.Equals(ALL_SAMPLES))
             ShowValues(chart.Series[series], relativeFrequencies[series]);
         }
 
         ChartArea chartArea = chart.ChartAreas[0];
-        chartArea.AxisX.Minimum = -max - intervalWidth;
-        chartArea.AxisX.Maximum = max + intervalWidth;
-        chartArea.AxisY.Maximum = relativeFrequencies[ALL_SAMPLES].Select(x => x.ElementAt(1)).Max() + 0.02;
-        chartArea.AxisY.Interval = 0.1;
+        chartArea.AxisX.Minimum = -roundedMax - intervalWidth;
+        chartArea.AxisX.Maximum = roundedMax + intervalWidth;
+        // get the highest frequency of a residual of any series
+        chartArea.AxisY.Maximum = (from series in relativeFrequencies.Values
+                                   select (from residual in series
+                                           select residual.ElementAt(1)).Max()).Max();
+        if (chartArea.AxisY.Maximum < 0.1) {
+          chartArea.AxisY.Interval = 0.01;
+          chartArea.AxisY.Maximum = Math.Ceiling(chartArea.AxisY.Maximum * 100) / 100;
+        } else {
+          chartArea.AxisY.Interval = 0.1;
+          chartArea.AxisY.Maximum = Math.Ceiling(chartArea.AxisY.Maximum * 10) / 10;
+        }
         chartArea.AxisX.Interval = intervalWidth;
-        int curBins = (int)Math.Round(max / intervalWidth);
+        int curBins = (int)Math.Round((roundedMax * 2) / intervalWidth);
         //shifts the x axis label so that zero is in the middle
         if (curBins % 2 == 0)
           chartArea.AxisX.IntervalOffset = intervalWidth;
@@ -140,7 +153,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     private void CalculateFrequencies(List<double> residualValues, string series, double max, double intervalWidth) {
-      //Series residualSeries = chart.Series[series];
       double intervalCenter = intervalWidth / 2.0;
       double sampleCount = residualValues.Count();
       double current = -max;
@@ -150,7 +162,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         relativeFrequencies[series].Add(new List<double>() { current, help.Count() / sampleCount, current - intervalCenter, current + intervalCenter });
         current += intervalWidth;
       }
-      //ShowValues(residualSeries, relativeFrequencies[series]);
     }
 
     private double HumanRoundMax(double max) {
