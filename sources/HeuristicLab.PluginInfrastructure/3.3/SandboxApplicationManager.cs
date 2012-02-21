@@ -234,7 +234,7 @@ namespace HeuristicLab.PluginInfrastructure {
     internal static IEnumerable<Type> GetTypes(Type type, IPluginDescription pluginDescription, bool onlyInstantiable, bool includeGenericTypeDefinitions) {
       PluginDescription pluginDesc = (PluginDescription)pluginDescription;
       return from asm in AppDomain.CurrentDomain.GetAssemblies()
-             where !IsDynamicAssembly(asm)
+             where !asm.IsDynamic
              where pluginDesc.AssemblyLocations.Any(location => location.Equals(Path.GetFullPath(asm.Location), StringComparison.CurrentCultureIgnoreCase))
              from t in GetTypes(type, asm, onlyInstantiable, includeGenericTypeDefinitions)
              select t;
@@ -248,10 +248,6 @@ namespace HeuristicLab.PluginInfrastructure {
         else result = result.Union(discoveredTypes);
       }
       return result;
-    }
-
-    private static bool IsDynamicAssembly(Assembly asm) {
-      return (asm is System.Reflection.Emit.AssemblyBuilder) || string.IsNullOrEmpty(asm.Location);
     }
 
     /// <summary>
