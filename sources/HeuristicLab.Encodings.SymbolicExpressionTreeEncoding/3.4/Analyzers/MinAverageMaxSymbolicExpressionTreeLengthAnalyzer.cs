@@ -72,6 +72,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     private MinAverageMaxSymbolicExpressionTreeLengthAnalyzer(bool deserializing) : base() { }
     private MinAverageMaxSymbolicExpressionTreeLengthAnalyzer(MinAverageMaxSymbolicExpressionTreeLengthAnalyzer original, Cloner cloner)
       : base(original, cloner) {
+      valueAnalyzer = cloner.Clone(original.valueAnalyzer);
+      subScopesProcessor = cloner.Clone(original.subScopesProcessor);
       AfterDeserialization();
     }
     public MinAverageMaxSymbolicExpressionTreeLengthAnalyzer()
