@@ -446,12 +446,16 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     private void UpdateCrossovers() {
       ICrossover oldCrossover = CrossoverParameter.Value;
       CrossoverParameter.ValidValues.Clear();
+      ICrossover defaultCrossover = Problem.Operators.OfType<ICrossover>().FirstOrDefault();
+
       foreach (ICrossover crossover in Problem.Operators.OfType<ICrossover>().OrderBy(x => x.Name))
         CrossoverParameter.ValidValues.Add(crossover);
+
       if (oldCrossover != null) {
         ICrossover crossover = CrossoverParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldCrossover.GetType());
         if (crossover != null) CrossoverParameter.Value = crossover;
-      }
+      } else if (defaultCrossover != null)
+        CrossoverParameter.Value = defaultCrossover;
     }
     private void UpdateMutators() {
       IManipulator oldMutator = MutatorParameter.Value;
