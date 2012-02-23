@@ -29,5 +29,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   public interface ISymbolicExpressionTreeCrossover : ISymbolicExpressionTreeOperator, ICrossover {
     ILookupParameter<ItemArray<ISymbolicExpressionTree>> ParentsParameter { get; }
     ILookupParameter<ISymbolicExpressionTree> ChildParameter { get; }
+    ISymbolicExpressionTree Crossover(IRandom random, ISymbolicExpressionTree parent0, ISymbolicExpressionTree parent1);
   }
 }
