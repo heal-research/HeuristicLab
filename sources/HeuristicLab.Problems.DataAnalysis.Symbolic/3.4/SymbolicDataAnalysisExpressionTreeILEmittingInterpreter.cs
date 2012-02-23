@@ -20,9 +20,8 @@
 #endregion
 
 using System;
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using HeuristicLab.Common;
@@ -47,6 +46,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     internal delegate double CompiledFunction(int sampleIndex, IList<double>[] columns);
     private const string CheckExpressionsWithIntervalArithmeticParameterName = "CheckExpressionsWithIntervalArithmetic";
+    private const string EvaluatedSolutionsParameterName = "EvaluatedSolutions";
     #region private classes
     private class InterpreterState {
       private Instruction[] code;
@@ -155,12 +155,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public IValueParameter<BoolValue> CheckExpressionsWithIntervalArithmeticParameter {
       get { return (IValueParameter<BoolValue>)Parameters[CheckExpressionsWithIntervalArithmeticParameterName]; }
     }
+
+    public IValueParameter<IntValue> EvaluatedSolutionsParameter {
+      get { return (IValueParameter<IntValue>)Parameters[EvaluatedSolutionsParameterName]; }
+    }
     #endregion
 
     #region properties
     public BoolValue CheckExpressionsWithIntervalArithmetic {
       get { return CheckExpressionsWithIntervalArithmeticParameter.Value; }
       set { CheckExpressionsWithIntervalArithmeticParameter.Value = value; }
+    }
+
+    public IntValue EvaluatedSolutions {
+      get { return EvaluatedSolutionsParameter.Value; }
+      set { EvaluatedSolutionsParameter.Value = value; }
     }
     #endregion
 
@@ -175,11 +184,29 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public SymbolicDataAnalysisExpressionTreeILEmittingInterpreter()
       : base("SymbolicDataAnalysisExpressionTreeILEmittingInterpreter", "Interpreter for symbolic expression trees.") {
       Parameters.Add(new ValueParameter<BoolValue>(CheckExpressionsWithIntervalArithmeticParameterName, "Switch that determines if the interpreter checks the validity of expressions with interval arithmetic before evaluating the expression.", new BoolValue(false)));
+      Parameters.Add(new ValueParameter<IntValue>(EvaluatedSolutionsParameterName, "A counter for the total number of solutions the interpreter has evaluated", new IntValue(0)));
     }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey(EvaluatedSolutionsParameterName))
+        Parameters.Add(new ValueParameter<IntValue>(EvaluatedSolutionsParameterName, "A counter for the total number of solutions the interpreter has evaluated", new IntValue(0)));
+    }
+
+    #region IStatefulItem
+    public void InitializeState() {
+      EvaluatedSolutions.Value = 0;
+    }
+
+    public void ClearState() {
+      EvaluatedSolutions.Value = 0;
+    }
+    #endregion
 
     public IEnumerable<double> GetSymbolicExpressionTreeValues(ISymbolicExpressionTree tree, Dataset dataset, IEnumerable<int> rows) {
       if (CheckExpressionsWithIntervalArithmetic.Value)
         throw new NotSupportedException("Interval arithmetic is not yet supported in the symbolic data analysis interpreter.");
+      EvaluatedSolutions.Value++; // increment the evaluated solutions counter
       var compiler = new SymbolicExpressionTreeCompiler();
       Instruction[] code = compiler.Compile(tree, MapSymbolToOpCode);
       int necessaryArgStackSize = 0;

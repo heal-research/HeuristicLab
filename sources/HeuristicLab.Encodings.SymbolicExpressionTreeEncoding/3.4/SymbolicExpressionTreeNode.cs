@@ -124,6 +124,21 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       }
     }
 
+    public int GetBranchLevel(ISymbolicExpressionTreeNode child) {
+      return GetBranchLevel(this, child);
+    }
+
+    private static int GetBranchLevel(ISymbolicExpressionTreeNode root, ISymbolicExpressionTreeNode point) {
+      if (root == point)
+        return 0;
+      foreach (var subtree in root.Subtrees) {
+        int branchLevel = GetBranchLevel(subtree, point);
+        if (branchLevel < int.MaxValue)
+          return 1 + branchLevel;
+      }
+      return int.MaxValue;
+    }
+
     public virtual void ResetLocalParameters(IRandom random) { }
     public virtual void ShakeLocalParameters(IRandom random, double shakingFactor) { }
 

@@ -21,7 +21,7 @@
 
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
-  internal class CutPoint {
+  public class CutPoint {
     public ISymbolicExpressionTreeNode Parent { get; set; }
     public ISymbolicExpressionTreeNode Child { get; set; }
     private int childIndex;
@@ -37,6 +37,31 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       this.Parent = parent;
       this.childIndex = childIndex;
       this.Child = null;
+    }
+
+    public bool IsMatchingPointType(ISymbolicExpressionTreeNode newChild) {
+      var parent = this.Parent;
+      if (newChild == null) {
+        // make sure that one subtree can be removed and that only the last subtree is removed 
+        return parent.Grammar.GetMinimumSubtreeCount(parent.Symbol) < parent.SubtreeCount &&
+          this.ChildIndex == parent.SubtreeCount - 1;
+      } else {
+        // check syntax constraints of direct parent - child relation
+        if (!parent.Grammar.ContainsSymbol(newChild.Symbol) ||
+            !parent.Grammar.IsAllowedChildSymbol(parent.Symbol, newChild.Symbol, this.ChildIndex))
+          return false;
+
+        bool result = true;
+        // check point type for the whole branch
+        newChild.ForEachNodePostfix((n) => {
+          result =
+            result &&
+            parent.Grammar.ContainsSymbol(n.Symbol) &&
+            n.SubtreeCount >= parent.Grammar.GetMinimumSubtreeCount(n.Symbol) &&
+            n.SubtreeCount <= parent.Grammar.GetMaximumSubtreeCount(n.Symbol);
+        });
+        return result;
+      }
     }
   }
 }

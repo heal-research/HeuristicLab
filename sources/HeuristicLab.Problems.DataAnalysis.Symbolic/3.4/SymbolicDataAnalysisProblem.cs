@@ -197,6 +197,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     private void InitializeOperators() {
       Operators.AddRange(ApplicationManager.Manager.GetInstances<ISymbolicExpressionTreeOperator>());
+      Operators.AddRange(ApplicationManager.Manager.GetInstances<ISymbolicDataAnalysisExpressionCrossover<T>>());
       Operators.Add(new SymbolicExpressionSymbolFrequencyAnalyzer());
       Operators.Add(new SymbolicDataAnalysisVariableFrequencyAnalyzer());
       Operators.Add(new MinAverageMaxSymbolicExpressionTreeLengthAnalyzer());
@@ -267,7 +268,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     protected virtual void ParameterizeOperators() {
-      var operators = Parameters.OfType<IValueParameter>().Select(p => p.Value).OfType<IOperator>().Union(Operators);
+      var operators = Parameters.OfType<IValueParameter>().Select(p => p.Value).OfType<IOperator>().Union(Operators).ToList();
 
       foreach (var op in operators.OfType<ISymbolicExpressionTreeGrammarBasedOperator>()) {
         op.SymbolicExpressionTreeGrammarParameter.ActualName = SymbolicExpressionTreeGrammarParameterName;
@@ -305,6 +306,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
       foreach (var op in operators.OfType<ISymbolicDataAnalysisInterpreterOperator>()) {
         op.SymbolicDataAnalysisTreeInterpreterParameter.ActualName = SymbolicExpressionTreeInterpreterParameterName;
+      }
+      foreach (var op in operators.OfType<ISymbolicDataAnalysisExpressionCrossover<T>>()) {
+        op.EvaluationPartitionParameter.ActualName = FitnessCalculationPartitionParameterName;
+      }
+      foreach (var op in operators.OfType<ISymbolicDataAnalysisExpressionCrossover<T>>()) {
+        op.ProblemDataParameter.ActualName = ProblemDataParameter.Name;
+        op.EvaluationPartitionParameter.ActualName = FitnessCalculationPartitionParameter.Name;
+        op.RelativeNumberOfEvaluatedSamplesParameter.ActualName = RelativeNumberOfEvaluatedSamplesParameter.Name;
+        op.EvaluatorParameter.ActualName = EvaluatorParameter.Name;
       }
     }
 

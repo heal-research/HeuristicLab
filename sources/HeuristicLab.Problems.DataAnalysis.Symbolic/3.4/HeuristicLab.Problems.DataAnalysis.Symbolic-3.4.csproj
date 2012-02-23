@@ -125,6 +125,14 @@
     <Compile Include="Creators\SymbolicDataAnalysisExpressionGrowTreeCreator.cs" />
     <Compile Include="Creators\SymbolicDataAnalysisExpressionRampedHalfAndHalfTreeCreator.cs" />
     <Compile Include="Creators\SymbolicDataAnalysisExpressionTreeCreator.cs" />
+    <Compile Include="Crossovers\MultiSymbolicDataAnalysisExpressionCrossover.cs" />
+    <Compile Include="Crossovers\SymbolicDataAnalysisExpressionContextAwareCrossover.cs" />
+    <Compile Include="Crossovers\SymbolicDataAnalysisExpressionCrossover.cs" />
+    <Compile Include="Crossovers\SymbolicDataAnalysisExpressionDepthConstrainedCrossover.cs" />
+    <Compile Include="Crossovers\SymbolicDataAnalysisExpressionDeterministicBestCrossover.cs" />
+    <Compile Include="Crossovers\SymbolicDataAnalysisExpressionProbabilisticFunctionalCrossover.cs" />
+    <Compile Include="Crossovers\SymbolicDataAnalysisExpressionSemanticSimilarityCrossover.cs" />
+    <Compile Include="Interfaces\ISymbolicDataAnalysisExpressionCrossover.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="SymbolicDataAnalysisExpressionTreeILEmittingInterpreter.cs" />
     <Compile Include="Formatters\SymbolicDataAnalysisExpressionLatexFormatter.cs" />

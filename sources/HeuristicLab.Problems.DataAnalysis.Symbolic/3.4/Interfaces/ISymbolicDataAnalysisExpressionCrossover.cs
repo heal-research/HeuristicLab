@@ -19,14 +19,17 @@
  */
 #endregion
 
-using System.Collections.Generic;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  public interface ISymbolicDataAnalysisExpressionTreeInterpreter : INamedItem, IStatefulItem {
-    IEnumerable<double> GetSymbolicExpressionTreeValues(ISymbolicExpressionTree tree, Dataset dataset, IEnumerable<int> rows);
-    IntValue EvaluatedSolutions { get; set; }
+  public interface ISymbolicDataAnalysisExpressionCrossover<T> : ISymbolicExpressionTreeCrossover,
+    ISymbolicExpressionTreeSizeConstraintOperator, ISymbolicDataAnalysisInterpreterOperator
+    where T : class, IDataAnalysisProblemData {
+    IValueLookupParameter<T> ProblemDataParameter { get; }
+    ILookupParameter<ISymbolicDataAnalysisSingleObjectiveEvaluator<T>> EvaluatorParameter { get; }
+    IValueLookupParameter<IntRange> EvaluationPartitionParameter { get; }
+    IValueLookupParameter<PercentValue> RelativeNumberOfEvaluatedSamplesParameter { get; }
   }
 }

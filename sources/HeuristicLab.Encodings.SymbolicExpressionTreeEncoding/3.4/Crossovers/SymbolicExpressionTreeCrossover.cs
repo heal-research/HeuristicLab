@@ -22,7 +22,6 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -65,13 +64,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       if (Parents.Length != 2)
         throw new ArgumentException("Number of parents must be exactly two for symbolic expression tree crossover operators.");
 
-      ISymbolicExpressionTree result = Cross(Random, Parents[0], Parents[1]);
+      ISymbolicExpressionTree result = Crossover(Random, Parents[0], Parents[1]);
 
       Child = result;
       return base.Apply();
     }
 
-    protected abstract ISymbolicExpressionTree Cross(IRandom random,
-      ISymbolicExpressionTree parent0, ISymbolicExpressionTree parent1);
+    public abstract ISymbolicExpressionTree Crossover(IRandom random, ISymbolicExpressionTree parent0, ISymbolicExpressionTree parent1);
   }
 }
