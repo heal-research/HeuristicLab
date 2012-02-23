@@ -265,6 +265,7 @@
     <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\OnlineCalculatorPerformanceTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\StatisticCalculatorsTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\TableFileParserTest.cs" />
+    <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\SymbolicDataAnalysisExpressionCrossoverTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\SymbolicDataAnalysisExpressionTreeInterpreterTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\SymbolicDataAnalysisExpressionTreeSimplifierTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\SymbolicExpressionImporter.cs" />
