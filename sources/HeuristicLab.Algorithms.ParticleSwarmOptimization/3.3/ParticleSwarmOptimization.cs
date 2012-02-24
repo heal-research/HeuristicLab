@@ -287,6 +287,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     private void InitializeParticleCreator() {
       if (Problem != null) {
         IParticleCreator oldParticleCreator = ParticleCreator;
+        IParticleCreator defaultParticleCreator = Problem.Operators.OfType<IParticleCreator>().FirstOrDefault();
         ParticleCreatorParameter.ValidValues.Clear();
         foreach (IParticleCreator Creator in Problem.Operators.OfType<IParticleCreator>().OrderBy(x => x.Name)) {
           ParticleCreatorParameter.ValidValues.Add(Creator);
@@ -294,7 +295,10 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
         if (oldParticleCreator != null) {
           IParticleCreator creator = ParticleCreatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldParticleCreator.GetType());
           if (creator != null) ParticleCreator = creator;
+          else oldParticleCreator = null;
         }
+        if (oldParticleCreator == null && defaultParticleCreator != null)
+          ParticleCreator = defaultParticleCreator;
       }
     }
 
@@ -371,12 +375,15 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       IParticleUpdater oldParticleUpdater = ParticleUpdater;
       ClearTopologyParameters();
       if (Problem != null) {
+        IParticleUpdater defaultParticleUpdater = null;
         if (TopologyInitializer != null) {
           foreach (ITopologyUpdater topologyUpdater in ApplicationManager.Manager.GetInstances<ITopologyUpdater>())
             TopologyUpdaterParameter.ValidValues.Add(topologyUpdater);
+          defaultParticleUpdater = Problem.Operators.OfType<ILocalParticleUpdater>().FirstOrDefault();
           foreach (IParticleUpdater particleUpdater in Problem.Operators.OfType<ILocalParticleUpdater>().OrderBy(x => x.Name))
             ParticleUpdaterParameter.ValidValues.Add(particleUpdater);
         } else {
+          defaultParticleUpdater = Problem.Operators.OfType<IGlobalParticleUpdater>().FirstOrDefault();
           foreach (IParticleUpdater particleUpdater in Problem.Operators.OfType<IGlobalParticleUpdater>().OrderBy(x => x.Name))
             ParticleUpdaterParameter.ValidValues.Add(particleUpdater);
         }
@@ -387,7 +394,10 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
         if (oldParticleUpdater != null) {
           IParticleUpdater newParticleUpdater = ParticleUpdaterParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldParticleUpdater.GetType());
           if (newParticleUpdater != null) ParticleUpdater = newParticleUpdater;
+          else oldParticleUpdater = null;
         }
+        if (oldParticleUpdater == null && defaultParticleUpdater != null)
+          ParticleUpdater = defaultParticleUpdater;
 
         ParameterizeTopologyUpdaters();
       }
