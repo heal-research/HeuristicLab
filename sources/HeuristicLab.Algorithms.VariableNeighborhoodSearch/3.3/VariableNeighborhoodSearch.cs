@@ -301,11 +301,21 @@ namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
       }
     }
     private void UpdateShakingOperators() {
+      IMultiNeighborhoodShakingOperator oldShakingOperator = ShakingOperator;
+      IMultiNeighborhoodShakingOperator defaultShakingOperator = Problem.Operators.OfType<IMultiNeighborhoodShakingOperator>().FirstOrDefault();
       ShakingOperatorParameter.ValidValues.Clear();
-      foreach (IMultiNeighborhoodShakingOperator op in Problem.Operators.OfType<IMultiNeighborhoodShakingOperator>()) {
+      foreach (IMultiNeighborhoodShakingOperator op in Problem.Operators.OfType<IMultiNeighborhoodShakingOperator>().OrderBy(op => op.Name)) {
         ShakingOperatorParameter.ValidValues.Add(op);
         op.CurrentNeighborhoodIndexParameter.ActualName = "CurrentNeighborhoodIndex";
         op.NeighborhoodCountParameter.ActualName = "NeighborhoodCount";
+      }
+      if (oldShakingOperator != null) {
+        IMultiNeighborhoodShakingOperator shakingOperator = ShakingOperatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldShakingOperator.GetType());
+        if (shakingOperator != null) ShakingOperator = shakingOperator;
+        else oldShakingOperator = null;
+      }
+      if (oldShakingOperator == null && defaultShakingOperator != null) {
+        ShakingOperator = defaultShakingOperator;
       }
     }
     private void UpdateAnalyzers() {
