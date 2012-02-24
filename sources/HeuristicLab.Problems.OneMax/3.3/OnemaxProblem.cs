@@ -79,7 +79,7 @@ namespace HeuristicLab.Problems.OneMax {
 
       Maximization.Value = true;
       MaximizationParameter.Hidden = true;
-      BestKnownQuality.Value = 5;
+      BestKnownQuality = new DoubleValue(5);
 
       SolutionCreator.BinaryVectorParameter.ActualName = "OneMaxSolution";
       Evaluator.QualityParameter.ActualName = "NumberOfOnes";

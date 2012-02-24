@@ -164,7 +164,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Netron.Diagramming.Core-3.0.2672.12446, Version=3.0.2672.12446, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <HintPath>..\bin\Netron.Diagramming.Core-3.0.2672.12446.dll</HintPath>
@@ -193,6 +193,7 @@
     <Compile Include="HeuristicLab-3.3\ContentViewTests.cs" />
     <Compile Include="HeuristicLab-3.3\DeepCloneableCloningTest.cs" />
     <Compile Include="HeuristicLab-3.3\GeneticAlgorithmTest.cs" />
+    <Compile Include="HeuristicLab-3.3\InstantiateCreatablesTest.cs" />
     <Compile Include="HeuristicLab-3.3\PluginDependenciesTest.cs" />
     <Compile Include="HeuristicLab-3.3\PluginLoader.cs" />
     <Compile Include="HeuristicLab-3.3\SamplesTest.cs" />
