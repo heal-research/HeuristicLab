@@ -496,15 +496,17 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     }
     private void UpdateCrossovers() {
       ICrossover oldCrossover = CrossoverParameter.Value;
+      ICrossover defaultCrossover = Problem.Operators.OfType<ICrossover>().FirstOrDefault();
       CrossoverParameter.ValidValues.Clear();
-      foreach (ICrossover crossover in Problem.Operators.OfType<ICrossover>().OrderBy(x => x.Name)) {
-        ParameterizeStochasticOperatorForIsland(crossover);
+      foreach (ICrossover crossover in Problem.Operators.OfType<ICrossover>().OrderBy(x => x.Name))
         CrossoverParameter.ValidValues.Add(crossover);
-      }
       if (oldCrossover != null) {
         ICrossover crossover = CrossoverParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldCrossover.GetType());
         if (crossover != null) CrossoverParameter.Value = crossover;
+        else oldCrossover = null;
       }
+      if (oldCrossover == null && defaultCrossover != null)
+        CrossoverParameter.Value = defaultCrossover;
     }
     private void UpdateMutators() {
       IManipulator oldMutator = MutatorParameter.Value;
