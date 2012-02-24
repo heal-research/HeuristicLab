@@ -74,8 +74,7 @@ namespace HeuristicLab.PluginInfrastructure {
       List<object> instances = new List<object>();
       foreach (Type t in GetTypes(type)) {
         object instance = null;
-        try { instance = Activator.CreateInstance(t); }
-        catch { }
+        try { instance = Activator.CreateInstance(t); } catch { }
         if (instance != null) instances.Add(instance);
       }
       return instances;
@@ -126,20 +125,18 @@ namespace HeuristicLab.PluginInfrastructure {
         var assemblyTypes = assembly.GetTypes();
 
         var buildTypes = from t in assembly.GetTypes()
+                         where CheckTypeCompatibility(type, t)
                          where !IsNonDiscoverableType(t)
                          where onlyInstantiable == false ||
                                (!t.IsAbstract && !t.IsInterface && !t.HasElementType)
-                         where CheckTypeCompatibility(type, t)
                          select BuildType(t, type);
 
         return from t in buildTypes
                where includeGenericTypeDefinitions || !t.IsGenericTypeDefinition
                select t;
-      }
-      catch (TypeLoadException) {
+      } catch (TypeLoadException) {
         return Enumerable.Empty<Type>();
-      }
-      catch (ReflectionTypeLoadException) {
+      } catch (ReflectionTypeLoadException) {
         return Enumerable.Empty<Type>();
       }
     }
@@ -173,8 +170,7 @@ namespace HeuristicLab.PluginInfrastructure {
           var otherGenericTypeDefinition = other.GetGenericTypeDefinition();
           if (type.IsAssignableFrom(otherGenericTypeDefinition.MakeGenericType(typeGenericArguments)))
             return true;
-        }
-        catch (Exception) { }
+        } catch (Exception) { }
       }
       return false;
     }

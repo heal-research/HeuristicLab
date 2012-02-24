@@ -118,8 +118,7 @@ namespace HeuristicLab.PluginInfrastructure {
       IApplication runnablePlugin = (IApplication)Activator.CreateInstance(appInfo.DeclaringAssemblyName, appInfo.DeclaringTypeName).Unwrap();
       try {
         runnablePlugin.Run();
-      }
-      finally {
+      } finally {
         // unload plugins in reverse order
         foreach (var plugin in loadedPlugins.Reverse<IPlugin>()) {
           plugin.OnUnload();
@@ -149,8 +148,7 @@ namespace HeuristicLab.PluginInfrastructure {
       List<T> instances = new List<T>();
       foreach (Type t in GetTypes(typeof(T), plugin, onlyInstantiable: true, includeGenericTypeDefinitions: false)) {
         T instance = null;
-        try { instance = (T)Activator.CreateInstance(t); }
-        catch { }
+        try { instance = (T)Activator.CreateInstance(t); } catch { }
         if (instance != null) instances.Add(instance);
       }
       return instances;
@@ -165,8 +163,7 @@ namespace HeuristicLab.PluginInfrastructure {
       List<T> instances = new List<T>();
       foreach (Type t in GetTypes(typeof(T), asm, onlyInstantiable: true, includeGenericTypeDefinitions: false)) {
         T instance = null;
-        try { instance = (T)Activator.CreateInstance(t); }
-        catch { }
+        try { instance = (T)Activator.CreateInstance(t); } catch { }
         if (instance != null) instances.Add(instance);
       }
       return instances;
@@ -190,8 +187,7 @@ namespace HeuristicLab.PluginInfrastructure {
       List<object> instances = new List<object>();
       foreach (Type t in GetTypes(type, onlyInstantiable: true, includeGenericTypeDefinitions: false)) {
         object instance = null;
-        try { instance = Activator.CreateInstance(t); }
-        catch { }
+        try { instance = Activator.CreateInstance(t); } catch { }
         if (instance != null) instances.Add(instance);
       }
       return instances;
@@ -261,10 +257,10 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <returns>Enumerable of the discovered types.</returns>
     private static IEnumerable<Type> GetTypes(Type type, Assembly assembly, bool onlyInstantiable, bool includeGenericTypeDefinitions) {
       var buildTypes = from t in assembly.GetTypes()
+                       where CheckTypeCompatibility(type, t)
                        where !IsNonDiscoverableType(t)
                        where onlyInstantiable == false ||
                              (!t.IsAbstract && !t.IsInterface && !t.HasElementType)
-                       where CheckTypeCompatibility(type, t)
                        select BuildType(t, type);
 
       return from t in buildTypes
@@ -302,8 +298,7 @@ namespace HeuristicLab.PluginInfrastructure {
           var otherGenericTypeDefinition = other.GetGenericTypeDefinition();
           if (type.IsAssignableFrom(otherGenericTypeDefinition.MakeGenericType(typeGenericArguments)))
             return true;
-        }
-        catch (Exception) { }
+        } catch (Exception) { }
       }
       return false;
     }
