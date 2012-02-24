@@ -56,7 +56,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public SymbolicDataAnalysisExpressionSemanticSimilarityCrossover()
       : base() {
       Parameters.Add(new ValueLookupParameter<DoubleRange>(SemanticSimilarityRangeParameterName, "Semantic similarity interval.", new DoubleRange(0.0001, 10)));
-      Name = "SemanticSimilarityCrossover";
+      name = "SemanticSimilarityCrossover";
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SymbolicDataAnalysisExpressionSemanticSimilarityCrossover<T>(this, cloner);

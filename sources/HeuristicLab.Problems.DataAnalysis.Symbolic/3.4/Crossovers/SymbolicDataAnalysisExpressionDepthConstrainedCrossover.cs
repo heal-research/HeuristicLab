@@ -61,7 +61,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       DepthRangeParameter.ValidValues.Add(new StringValue(Enum.GetName(typeof(Ranges), Ranges.HighLevel)).AsReadOnly());
       DepthRangeParameter.ValidValues.Add(new StringValue(Enum.GetName(typeof(Ranges), Ranges.Standard)).AsReadOnly());
       DepthRangeParameter.ValidValues.Add(new StringValue(Enum.GetName(typeof(Ranges), Ranges.LowLevel)).AsReadOnly());
-      Name = "DepthConstrainedCrossover";
+      name = "DepthConstrainedCrossover";
     }
     public override IDeepCloneable Clone(Cloner cloner) { return new SymbolicDataAnalysisExpressionDepthConstrainedCrossover<T>(this, cloner); }
 

@@ -46,12 +46,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private const string RelativeNumberOfEvaluatedSamplesParameterName = "RelativeNumberOfEvaluatedSamples";
     private const string ProblemDataParameterName = "ProblemData";
 
-
-    public override bool CanChangeName {
-      get { return true; }
-    }
     protected override bool CreateChildOperation {
       get { return true; }
+    }
+
+    public override bool CanChangeName {
+      get { return false; }
     }
 
     #region parameter properties
@@ -107,7 +107,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       RelativeNumberOfEvaluatedSamplesParameter.Hidden = true;
 
       InitializeOperators();
-      Name = "MultiSymbolicDataAnalysisExpressionCrossover";
+      name = "MultiSymbolicDataAnalysisExpressionCrossover";
     }
 
     private void InitializeOperators() {

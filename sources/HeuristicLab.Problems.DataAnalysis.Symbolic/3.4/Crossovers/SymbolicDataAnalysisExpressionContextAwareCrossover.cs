@@ -40,7 +40,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
     public SymbolicDataAnalysisExpressionContextAwareCrossover()
       : base() {
-      Name = "ContextAwareCrossover";
+      name = "ContextAwareCrossover";
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SymbolicDataAnalysisExpressionContextAwareCrossover<T>(this, cloner);

@@ -41,7 +41,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       : base(original, cloner) { }
     public SymbolicDataAnalysisExpressionProbabilisticFunctionalCrossover()
       : base() {
-      Name = "ProbabilisticFunctionalCrossover";
+      name = "ProbabilisticFunctionalCrossover";
     }
     public override IDeepCloneable Clone(Cloner cloner) { return new SymbolicDataAnalysisExpressionProbabilisticFunctionalCrossover<T>(this, cloner); }
 

@@ -40,7 +40,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
     public SymbolicDataAnalysisExpressionDeterministicBestCrossover()
       : base() {
-      Name = "DeterministicBestCrossover";
+      name = "DeterministicBestCrossover";
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SymbolicDataAnalysisExpressionDeterministicBestCrossover<T>(this, cloner);
