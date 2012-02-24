@@ -316,6 +316,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     }
     private void UpdateMoveGenerator() {
       IMultiMoveGenerator oldMoveGenerator = MoveGenerator;
+      IMultiMoveGenerator defaultMoveGenerator = Problem.Operators.OfType<IMultiMoveGenerator>().FirstOrDefault();
       MoveGeneratorParameter.ValidValues.Clear();
       if (Problem != null) {
         foreach (IMultiMoveGenerator generator in Problem.Operators.OfType<IMultiMoveGenerator>().OrderBy(x => x.Name))
@@ -324,7 +325,10 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       if (oldMoveGenerator != null) {
         IMultiMoveGenerator newMoveGenerator = MoveGeneratorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMoveGenerator.GetType());
         if (newMoveGenerator != null) MoveGenerator = newMoveGenerator;
+        else oldMoveGenerator = null;
       }
+      if (oldMoveGenerator == null && defaultMoveGenerator != null)
+        MoveGenerator = defaultMoveGenerator;
       if (MoveGenerator == null) {
         ClearMoveParameters();
       }
@@ -349,27 +353,37 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       IMoveMaker oldMoveMaker = MoveMaker;
       ISingleObjectiveMoveEvaluator oldMoveEvaluator = MoveEvaluator;
       ClearMoveParameters();
+
       if (MoveGenerator != null) {
         List<Type> moveTypes = MoveGenerator.GetType().GetInterfaces().Where(x => typeof(IMoveOperator).IsAssignableFrom(x)).ToList();
         foreach (Type type in moveTypes.ToList()) {
           if (moveTypes.Any(t => t != type && type.IsAssignableFrom(t)))
             moveTypes.Remove(type);
         }
-        foreach (Type type in moveTypes) {
-          var operators = Problem.Operators.Where(x => type.IsAssignableFrom(x.GetType())).OrderBy(x => x.Name);
-          foreach (IMoveMaker moveMaker in operators.OfType<IMoveMaker>())
-            MoveMakerParameter.ValidValues.Add(moveMaker);
-          foreach (ISingleObjectiveMoveEvaluator moveEvaluator in operators.OfType<ISingleObjectiveMoveEvaluator>())
-            MoveEvaluatorParameter.ValidValues.Add(moveEvaluator);
-        }
+        var operators = Problem.Operators.Where(op => moveTypes.Any(m => m.IsInstanceOfType(op))).ToList();
+        IMoveMaker defaultMoveMaker = operators.OfType<IMoveMaker>().FirstOrDefault();
+        ISingleObjectiveMoveEvaluator defaultMoveEvaluator = operators.OfType<ISingleObjectiveMoveEvaluator>().FirstOrDefault();
+
+        foreach (IMoveMaker moveMaker in operators.OfType<IMoveMaker>().OrderBy(op => op.Name))
+          MoveMakerParameter.ValidValues.Add(moveMaker);
+        foreach (ISingleObjectiveMoveEvaluator moveEvaluator in operators.OfType<ISingleObjectiveMoveEvaluator>().OrderBy(op => op.Name))
+          MoveEvaluatorParameter.ValidValues.Add(moveEvaluator);
+
         if (oldMoveMaker != null) {
           IMoveMaker mm = MoveMakerParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMoveMaker.GetType());
           if (mm != null) MoveMaker = mm;
+          else oldMoveMaker = null;
         }
+        if (oldMoveMaker == null && defaultMoveMaker != null)
+          MoveMaker = defaultMoveMaker;
+
         if (oldMoveEvaluator != null) {
           ISingleObjectiveMoveEvaluator me = MoveEvaluatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldMoveEvaluator.GetType());
           if (me != null) MoveEvaluator = me;
+          else oldMoveEvaluator = null;
         }
+        if (oldMoveEvaluator == null & defaultMoveEvaluator != null)
+          MoveEvaluator = defaultMoveEvaluator;
       }
     }
     private void ClearMoveParameters() {
