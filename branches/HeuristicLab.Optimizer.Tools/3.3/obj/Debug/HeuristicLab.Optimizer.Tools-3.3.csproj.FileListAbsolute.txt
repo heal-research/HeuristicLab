@@ -1,8 +1,0 @@
-C:\Users\Don\Work\HL3\trunk\sources\bin\HeuristicLab.Optimizer.Tools-3.3.dll
-C:\Users\Don\Work\HL3\trunk\sources\bin\HeuristicLab.Optimizer.Tools-3.3.pdb
-C:\Users\Don\Work\HL3\branches\OptimizerTools\HeuristicLab.Optimizer.Tools\3.3\obj\Debug\ResolveAssemblyReference.cache
-C:\Users\Don\Work\HL3\branches\OptimizerTools\HeuristicLab.Optimizer.Tools\3.3\obj\Debug\HeuristicLab.Optimizer.Tools-3.3.dll
-C:\Users\Don\Work\HL3\branches\OptimizerTools\HeuristicLab.Optimizer.Tools\3.3\obj\Debug\HeuristicLab.Optimizer.Tools-3.3.pdb
-C:\Users\Don\Work\HL3\branches\OptimizerTools\HeuristicLab.Optimizer.Tools\3.3\obj\Debug\HeuristicLab.Optimizer.Tools.MDSView.resources
-C:\Users\Don\Work\HL3\branches\OptimizerTools\HeuristicLab.Optimizer.Tools\3.3\obj\Debug\GenerateResource.read.1.tlog
-C:\Users\Don\Work\HL3\branches\OptimizerTools\HeuristicLab.Optimizer.Tools\3.3\obj\Debug\GenerateResource.write.1.tlog
