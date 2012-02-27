@@ -206,7 +206,7 @@ namespace HeuristicLab.Clients.Hive.Views {
     }
 
     private void priorityComboBox_SelectedIndexChanged(object sender, EventArgs e) {
-      if (Content.Task.Priority != priorityComboBox.SelectedIndex) {
+      if (Content != null && Content.Task != null && Content.Task.Priority != priorityComboBox.SelectedIndex) {
         Content.Task.Priority = priorityComboBox.SelectedIndex;
       }
     }
