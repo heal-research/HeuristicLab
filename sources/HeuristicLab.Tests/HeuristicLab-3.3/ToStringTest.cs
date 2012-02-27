@@ -19,28 +19,27 @@
  */
 #endregion
 
-using System;
-using HeuristicLab.Common;
+using System.Linq;
+using HeuristicLab.Core;
+using HeuristicLab.PluginInfrastructure;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Clients.Hive {
+namespace HeuristicLab_33.Tests {
+  [TestClass]
+  public class ToStringTest {
 
-  public partial class Plugin : IDeepCloneable, IContent {
-
-    public Plugin() { }
-
-    protected Plugin(Plugin original, Cloner cloner)
-      : base(original, cloner) {
-      this.Version = original.Version;
-      this.UserId = original.UserId;
-      this.DateCreated = original.DateCreated;
+    // Use ClassInitialize to run code before running the first test in the class
+    [ClassInitialize]
+    public static void MyClassInitialize(TestContext testContext) {
+      PluginLoader.Assemblies.Any();
     }
 
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new Plugin(this, cloner);
-    }
-
-    public override string ToString() {
-      return string.Format("{0}-{1}", this.Name, this.Version == null ? new Version(0, 0).ToString() : this.Version.ToString());
+    [TestMethod]
+    public void TestToString() {
+      // just test for all IItems that the ToString method doesn't throw an exception
+      foreach (object item in ApplicationManager.Manager.GetInstances(typeof(IItem))) {
+        item.ToString();
+      }
     }
   }
 }

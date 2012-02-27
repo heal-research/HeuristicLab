@@ -147,20 +147,12 @@ namespace HeuristicLab.Clients.Hive {
       set { throw new NotSupportedException(); }
     }
 
-    public override string ItemDescription {
-      get { return Description; }
-    }
-
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Operator; }
     }
 
     public override string ItemName {
       get { return "EngineTask"; }
-    }
-
-    public override Version ItemVersion {
-      get { return null; }
     }
   }
 }

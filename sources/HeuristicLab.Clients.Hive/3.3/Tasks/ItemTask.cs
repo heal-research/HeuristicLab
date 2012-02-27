@@ -94,11 +94,9 @@ namespace HeuristicLab.Clients.Hive {
     protected void item_ItemImageChanged(object sender, EventArgs e) {
       this.OnItemImageChanged();
     }
-
     #endregion
 
     #region ITask Members
-
     public abstract ExecutionState ExecutionState { get; }
 
     public abstract TimeSpan ExecutionTime { get; }
@@ -172,7 +170,7 @@ namespace HeuristicLab.Clients.Hive {
     #endregion
 
     #region IItem Members
-    public virtual new string ItemDescription {
+    public override string ItemDescription {
       get {
         if (item == null)
           return string.Empty;
@@ -181,7 +179,7 @@ namespace HeuristicLab.Clients.Hive {
       }
     }
 
-    public virtual new Image ItemImage {
+    public override Image ItemImage {
       get {
         if (item == null)
           return HeuristicLab.Common.Resources.VSImageLibrary.Class;
@@ -190,7 +188,7 @@ namespace HeuristicLab.Clients.Hive {
       }
     }
 
-    public virtual new string ItemName {
+    public override string ItemName {
       get {
         if (item == null)
           return string.Empty;
