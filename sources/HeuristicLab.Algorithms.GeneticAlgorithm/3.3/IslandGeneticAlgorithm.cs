@@ -498,8 +498,10 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       ICrossover oldCrossover = CrossoverParameter.Value;
       ICrossover defaultCrossover = Problem.Operators.OfType<ICrossover>().FirstOrDefault();
       CrossoverParameter.ValidValues.Clear();
-      foreach (ICrossover crossover in Problem.Operators.OfType<ICrossover>().OrderBy(x => x.Name))
+      foreach (ICrossover crossover in Problem.Operators.OfType<ICrossover>().OrderBy(x => x.Name)) {
+        ParameterizeStochasticOperatorForIsland(crossover);
         CrossoverParameter.ValidValues.Add(crossover);
+      }
       if (oldCrossover != null) {
         ICrossover crossover = CrossoverParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldCrossover.GetType());
         if (crossover != null) CrossoverParameter.Value = crossover;
