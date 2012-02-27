@@ -179,20 +179,40 @@ namespace HeuristicLab.Clients.Hive.Jobs {
 
     #region INamedItem Members
     public override bool CanChangeDescription {
-      get { return Item.CanChangeDescription; }
+      get {
+        if (Item == null)
+          return false;
+        else
+          return Item.CanChangeDescription;
+      }
     }
 
     public override bool CanChangeName {
-      get { return Item.CanChangeName; }
+      get {
+        if (Item == null)
+          return false;
+        else
+          return Item.CanChangeName;
+      }
     }
 
     public override string Description {
-      get { return Item.Description; }
+      get {
+        if (Item == null)
+          return string.Empty;
+        else
+          return Item.Description;
+      }
       set { Item.Description = value; }
     }
 
     public override string Name {
-      get { return Item.Name; }
+      get {
+        if (Item == null)
+          return string.Empty;
+        else
+          return Item.Name;
+      }
       set { Item.Name = value; }
     }
     #endregion

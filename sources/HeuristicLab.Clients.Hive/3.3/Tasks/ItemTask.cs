@@ -173,22 +173,39 @@ namespace HeuristicLab.Clients.Hive {
 
     #region IItem Members
     public virtual new string ItemDescription {
-      get { return item.ItemDescription; }
+      get {
+        if (item == null)
+          return string.Empty;
+        else
+          return item.ItemDescription;
+      }
     }
 
-    public virtual new Image ItemImage
-    {
-      get { return item.ItemImage; }
+    public virtual new Image ItemImage {
+      get {
+        if (item == null)
+          return HeuristicLab.Common.Resources.VSImageLibrary.Class;
+        else
+          return item.ItemImage;
+      }
     }
 
-    public virtual new string ItemName
-    {
-      get { return item.ItemName; }
+    public virtual new string ItemName {
+      get {
+        if (item == null)
+          return string.Empty;
+        else
+          return item.ItemName;
+      }
     }
 
-    public virtual new Version ItemVersion
-    {
-      get { return item.ItemVersion; }
+    public virtual new Version ItemVersion {
+      get {
+        if (item == null)
+          return ItemAttribute.GetVersion(this.GetType());
+        else
+          return item.ItemVersion;
+      }
     }
     #endregion
 
