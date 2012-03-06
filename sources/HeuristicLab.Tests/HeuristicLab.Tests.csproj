@@ -273,6 +273,10 @@
     <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\SymbolicExpressionImporter.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\Token.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\Util.cs" />
+    <Compile Include="HeuristicLab.Problems.Instances-3.3\CordeauGQAPInstanceProviderTest.cs" />
+    <Compile Include="HeuristicLab.Problems.Instances-3.3\ElloumiCTAPInstanceProviderTest.cs" />
+    <Compile Include="HeuristicLab.Problems.Instances-3.3\QAPLIBInstanceProviderTest.cs" />
+    <Compile Include="HeuristicLab.Problems.Instances-3.3\TSPLIBInstanceProviderTest.cs" />
     <Compile Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIBInstancesTest.cs" />
     <Compile Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPMoveEvaluatorTest.cs" />
     <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\AckleyEvaluatorTest.cs" />
