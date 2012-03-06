@@ -336,7 +336,6 @@ namespace HeuristicLab.Optimization {
     }
     private void optimizer_Prepared(object sender, EventArgs e) {
       if (Optimizers.All(x => x.ExecutionState == ExecutionState.Prepared)) OnPrepared();
-      else if (Optimizers.All(x => x.ExecutionState != ExecutionState.Started)) OnPaused();
     }
     private void optimizer_Started(object sender, EventArgs e) {
       if (ExecutionState != ExecutionState.Started) OnStarted();

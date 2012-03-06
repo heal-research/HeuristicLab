@@ -338,9 +338,6 @@ namespace HeuristicLab.Optimization {
     }
     private void Optimizer_Paused(object sender, EventArgs e) {
       if (ExecutionState == ExecutionState.Started) {
-        batchRunStarted = false;
-        batchRunPaused = true;
-        batchRunStopped = false;
         OnPaused();
       }
     }
