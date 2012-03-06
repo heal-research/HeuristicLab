@@ -21,10 +21,8 @@
 
 using System;
 using System.Windows.Forms;
-using HeuristicLab.Core;
-using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
-using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Optimization.Views;
 
 namespace HeuristicLab.Problems.TravelingSalesman.Views {
   /// <summary>
@@ -32,9 +30,7 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
   /// </summary>
   [View("Traveling Salesman Problem View")]
   [Content(typeof(TravelingSalesmanProblem), true)]
-  public sealed partial class TravelingSalesmanProblemView : NamedItemView {
-    private TSPLIBImportDialog tsplibImportDialog;
-
+  public sealed partial class TravelingSalesmanProblemView : HeuristicOptimizationProblemView {
     public new TravelingSalesmanProblem Content {
       get { return (TravelingSalesmanProblem)base.Content; }
       set { base.Content = value; }
@@ -45,14 +41,6 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
     /// </summary>
     public TravelingSalesmanProblemView() {
       InitializeComponent();
-    }
-
-    protected override void Dispose(bool disposing) {
-      if (disposing) {
-        if (tsplibImportDialog != null) tsplibImportDialog.Dispose();
-        if (components != null) components.Dispose();
-      }
-      base.Dispose(disposing);
     }
 
     protected override void DeregisterContentEvents() {
@@ -71,35 +59,15 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        parameterCollectionView.Content = null;
         pathTSPTourView.Content = null;
       } else {
-        parameterCollectionView.Content = ((IParameterizedNamedItem)Content).Parameters;
         pathTSPTourView.Content = new PathTSPTour(Content.Coordinates, Content.BestKnownSolution, Content.BestKnownQuality);
       }
     }
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
-      parameterCollectionView.Enabled = Content != null;
       pathTSPTourView.Enabled = Content != null;
-      importButton.Enabled = Content != null && !ReadOnly;
-    }
-
-    private void importButton_Click(object sender, System.EventArgs e) {
-      if (tsplibImportDialog == null) tsplibImportDialog = new TSPLIBImportDialog();
-
-      if (tsplibImportDialog.ShowDialog(this) == DialogResult.OK) {
-        try {
-          if (tsplibImportDialog.Quality == null)
-            Content.ImportFromTSPLIB(tsplibImportDialog.TSPFileName, tsplibImportDialog.TourFileName);
-          else
-            Content.ImportFromTSPLIB(tsplibImportDialog.TSPFileName, tsplibImportDialog.TourFileName, (double)tsplibImportDialog.Quality);
-        }
-        catch (Exception ex) {
-          ErrorHandling.ShowErrorDialog(this, ex);
-        }
-      }
     }
 
     private void CoordinatesParameter_ValueChanged(object sender, EventArgs e) {

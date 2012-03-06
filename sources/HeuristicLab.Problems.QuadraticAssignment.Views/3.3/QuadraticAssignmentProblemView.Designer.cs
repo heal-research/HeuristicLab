@@ -44,11 +44,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.importInstanceButton = new System.Windows.Forms.Button();
       this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-      this.QAPLIBInstancesLabel = new System.Windows.Forms.Label();
-      this.instancesComboBox = new System.Windows.Forms.ComboBox();
-      this.loadInstanceButton = new System.Windows.Forms.Button();
       this.tabControl = new System.Windows.Forms.TabControl();
       this.problemTabPage = new System.Windows.Forms.TabPage();
       this.visualizationTabPage = new System.Windows.Forms.TabPage();
@@ -67,8 +63,8 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
       // 
       this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.errorProvider.SetIconPadding(this.nameTextBox, 2);
-      this.nameTextBox.Location = new System.Drawing.Point(105, 29);
-      this.nameTextBox.Size = new System.Drawing.Size(517, 20);
+      this.nameTextBox.Location = new System.Drawing.Point(50, 29);
+      this.nameTextBox.Size = new System.Drawing.Size(572, 20);
       // 
       // nameLabel
       // 
@@ -78,71 +74,16 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
       // 
       this.infoLabel.Location = new System.Drawing.Point(628, 32);
       // 
-      // importInstanceButton
-      // 
-      this.importInstanceButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.importInstanceButton.Location = new System.Drawing.Point(548, 0);
-      this.importInstanceButton.Name = "importInstanceButton";
-      this.importInstanceButton.Size = new System.Drawing.Size(99, 23);
-      this.importInstanceButton.TabIndex = 5;
-      this.importInstanceButton.Text = "Import...";
-      this.importInstanceButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-      this.toolTip.SetToolTip(this.importInstanceButton, "Import files in QAPLIB format.");
-      this.importInstanceButton.UseVisualStyleBackColor = true;
-      this.importInstanceButton.Click += new System.EventHandler(this.importInstanceButton_Click);
-      // 
       // openFileDialog
       // 
       this.openFileDialog.FileName = "instance.dat";
       this.openFileDialog.Filter = "Dat files|*.dat|All files|*.*";
       // 
-      // QAPLIBInstancesLabel
-      // 
-      this.QAPLIBInstancesLabel.AutoSize = true;
-      this.QAPLIBInstancesLabel.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.QAPLIBInstancesLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.QAPLIBInstancesLabel.ForeColor = System.Drawing.Color.Blue;
-      this.QAPLIBInstancesLabel.Location = new System.Drawing.Point(3, 5);
-      this.QAPLIBInstancesLabel.Name = "QAPLIBInstancesLabel";
-      this.QAPLIBInstancesLabel.Size = new System.Drawing.Size(96, 13);
-      this.QAPLIBInstancesLabel.TabIndex = 6;
-      this.QAPLIBInstancesLabel.Text = "QAPLIB instances:";
-      this.toolTip.SetToolTip(this.QAPLIBInstancesLabel, "These instances were taken from the QAPLIB homepage at http://www.seas.upenn.edu/" +
-              "qaplib/");
-      this.QAPLIBInstancesLabel.Click += new System.EventHandler(this.QAPLIBInstancesLabel_Click);
-      this.QAPLIBInstancesLabel.MouseEnter += new System.EventHandler(this.QAPLIBInstancesLabel_MouseEnter);
-      this.QAPLIBInstancesLabel.MouseLeave += new System.EventHandler(this.QAPLIBInstancesLabel_MouseLeave);
-      // 
-      // instancesComboBox
-      // 
-      this.instancesComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.instancesComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.instancesComboBox.FormattingEnabled = true;
-      this.instancesComboBox.Location = new System.Drawing.Point(105, 2);
-      this.instancesComboBox.Name = "instancesComboBox";
-      this.instancesComboBox.Size = new System.Drawing.Size(358, 21);
-      this.instancesComboBox.TabIndex = 7;
-      this.instancesComboBox.SelectedValueChanged += new System.EventHandler(this.instancesComboBox_SelectedValueChanged);
-      // 
-      // loadInstanceButton
-      // 
-      this.loadInstanceButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.loadInstanceButton.Location = new System.Drawing.Point(469, 0);
-      this.loadInstanceButton.Name = "loadInstanceButton";
-      this.loadInstanceButton.Size = new System.Drawing.Size(73, 23);
-      this.loadInstanceButton.TabIndex = 5;
-      this.loadInstanceButton.Text = "Load";
-      this.loadInstanceButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-      this.toolTip.SetToolTip(this.loadInstanceButton, "Load the selected QAPLIB instance.");
-      this.loadInstanceButton.UseVisualStyleBackColor = true;
-      this.loadInstanceButton.Click += new System.EventHandler(this.loadInstanceButton_Click);
-      // 
       // tabControl
       // 
-      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl.Controls.Add(this.problemTabPage);
       this.tabControl.Controls.Add(this.visualizationTabPage);
       this.tabControl.Location = new System.Drawing.Point(0, 55);
@@ -187,18 +128,10 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.instancesComboBox);
       this.Controls.Add(this.tabControl);
-      this.Controls.Add(this.importInstanceButton);
-      this.Controls.Add(this.loadInstanceButton);
-      this.Controls.Add(this.QAPLIBInstancesLabel);
       this.Name = "QuadraticAssignmentProblemView";
       this.Size = new System.Drawing.Size(647, 492);
-      this.Controls.SetChildIndex(this.QAPLIBInstancesLabel, 0);
-      this.Controls.SetChildIndex(this.loadInstanceButton, 0);
-      this.Controls.SetChildIndex(this.importInstanceButton, 0);
       this.Controls.SetChildIndex(this.tabControl, 0);
-      this.Controls.SetChildIndex(this.instancesComboBox, 0);
       this.Controls.SetChildIndex(this.infoLabel, 0);
       this.Controls.SetChildIndex(this.parameterCollectionView, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
@@ -213,11 +146,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
 
     #endregion
 
-    private System.Windows.Forms.Button importInstanceButton;
     private System.Windows.Forms.OpenFileDialog openFileDialog;
-    private System.Windows.Forms.Label QAPLIBInstancesLabel;
-    private System.Windows.Forms.ComboBox instancesComboBox;
-    private System.Windows.Forms.Button loadInstanceButton;
     private System.Windows.Forms.TabControl tabControl;
     private System.Windows.Forms.TabPage problemTabPage;
     private System.Windows.Forms.TabPage visualizationTabPage;

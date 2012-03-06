@@ -23,70 +23,190 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
+using HeuristicLab.Problems.Instances.QAPLIB;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Problems.QuadraticAssignment.Tests_33 {
   [TestClass]
   public class QAPLIBInstancesTest {
-    private static string InstancePrefix = "HeuristicLab.Tests.HeuristicLab.Problems.QuadraticAssignment_3._3.QAPLIB.";
-
-    private IEnumerable<string> EmbeddedInstances {
-      get {
-        return Assembly.GetExecutingAssembly()
-          .GetManifestResourceNames()
-          .Where(x => x.EndsWith(".dat"))
-          .OrderBy(x => x)
-          .Select(x => x.Replace(".dat", String.Empty))
-          .Select(x => x.Replace(InstancePrefix, String.Empty));
-      }
-    }
+    #region instances
+    private static Dictionary<string, double> qaplibInstances = new Dictionary<string, double>() {
+      { "bur26a", 5426670 },
+      { "bur26b", 3817852 },
+      { "bur26c", 5426795 },
+      { "bur26d", 3821225 },
+      { "bur26e", 5386879 },
+      { "bur26f", 3782044 },
+      { "bur26g", 10117172 },
+      { "bur26h", 7098658 },
+      { "chr12a", 9552 },
+      { "chr12b", 9742 },
+      { "chr12c", 11156 },
+      { "chr15a", 9896 },
+      { "chr15b", 7990 },
+      { "chr15c", 9504 },
+      { "chr18a", 11098 },
+      { "chr18b", 1534 },
+      { "chr20a", 2192 },
+      { "chr20b", 2298 },
+      { "chr20c", 14142 },
+      { "chr22a", 6156 },
+      { "chr22b", 6194 },
+      { "chr25a", 3796 },
+      { "els19", 17212548 },
+      { "esc16a", 68 },
+      { "esc16b", 292 },
+      { "esc16c", 160 },
+      { "esc16d", 16 },
+      { "esc16e", 28 },
+      { "esc16f", 0 },
+      { "esc16g", 26 },
+      { "esc16h", 996 },
+      { "esc16i", 14 },
+      { "esc16j", 8 },
+      { "esc32a", 130 },
+      { "esc32b", 168 },
+      { "esc32c", 642 },
+      { "esc32d", 200 },
+      { "esc32e", 2 },
+      { "esc32f", 2 },
+      { "esc32g", 6 },
+      { "esc32h", 438 },
+      { "esc64", 116 },
+      { "esc128", 64 },
+      { "had12", 1652 },
+      { "had14", 2724 },
+      { "had16", 3720 },
+      { "had18", 5358 },
+      { "had20", 6922 },
+      { "kra30a", 88900 },
+      { "kra30b", 91420 },
+      { "kra32", 88700 },
+      { "lipa20a", 3683 },
+      { "lipa20b", 27076 },
+      { "lipa30a", 13178 },
+      { "lipa30b", 151426 },
+      { "lipa40a", 31538 },
+      { "lipa40b", 476581 },
+      { "lipa50a", 62093 },
+      { "lipa50b", 1210244 },
+      { "lipa60a", 107218 },
+      { "lipa60b", 2520135 },
+      { "lipa70a", 169755 },
+      { "lipa70b", 4603200 },
+      { "lipa80a", 253195 },
+      { "lipa80b", 7763962 },
+      { "lipa90a", 360630 },
+      { "lipa90b", 12490441 },
+      { "nug12", 578 },
+      { "nug14", 1014 },
+      { "nug15", 1150 },
+      { "nug16a", 1610 },
+      { "nug16b", 1240 },
+      { "nug17", 1732 },
+      { "nug18", 1930 },
+      { "nug20", 2570 },
+      { "nug21", 2438 },
+      { "nug22", 3596 },
+      { "nug24", 3488 },
+      { "nug25", 3744 },
+      { "nug27", 5234 },
+      { "nug28", 5166 },
+      { "nug30", 6124 },
+      { "rou12", 235528 },
+      { "rou15", 354210 },
+      { "rou20", 725522 },
+      { "scr12", 31410 },
+      { "scr15", 51140 },
+      { "scr20", 110030 },
+      { "sko42", 15812 },
+      { "sko49", 23386 },
+      { "sko56", 34458 },
+      { "sko64", 48498 },
+      { "sko72", 66256 },
+      { "sko81", 90998 },
+      { "sko90", 115534 },
+      { "sko100a", 152002 },
+      { "sko100b", 153890 },
+      { "sko100c", 147862 },
+      { "sko100d", 149576 },
+      { "sko100e", 149150 },
+      { "sko100f", 149036 },
+      { "ste36a", 9526 },
+      { "ste36b", 15852 },
+      { "ste36c", 8239110 },
+      { "tai12a", 224416 },
+      { "tai12b", 39464925 },
+      { "tai15a", 388214 },
+      { "tai15b", 51765268 },
+      { "tai17a", 491812 },
+      { "tai20a", 703482 },
+      { "tai20b", 122455319 },
+      { "tai25a", 1167256 },
+      { "tai25b", 344355646 },
+      { "tai30a", 1818146 },
+      { "tai30b", 637117113 },
+      { "tai35a", 2422002 },
+      { "tai35b", 283315445 },
+      { "tai40a", 3139370 },
+      { "tai40b", 637250948 },
+      { "tai50a", 4938796 },
+      { "tai50b", 458821517 },
+      { "tai60a", 7208572  },
+      { "tai60b", 608215054 },
+      { "tai64c", 1855928 },
+      { "tai80a", 13557864 },
+      { "tai80b", 818415043 },
+      { "tai100a", 21052466 },
+      { "tai100b", 1185996137 },
+      { "tai150b", 498896643 },
+      { "tai256c", 44759294 },
+      { "tho30", 149936 },
+      { "tho40", 240516 },
+      { "tho150", 8133398 },
+      { "wil50", 48816 },
+      { "wil100", 273038 }
+    };
+    #endregion
 
     [TestMethod]
     public void TestQAPLIBInstances() {
+      var provider = new QAPLIBInstanceProvider();
       var qap = new QuadraticAssignmentProblem();
       var failedInstances = new StringBuilder();
       string tempPath = Path.GetTempPath();
 
-      Assert.IsTrue(EmbeddedInstances.Any(), "No instances could be found.");
+      var instances = provider.GetDataDescriptors();
+      Assert.IsTrue(instances.Any(), "No instances could be found.");
 
-      foreach (string instance in EmbeddedInstances) {
-        WriteEmbeddedResourceToFile(InstancePrefix + instance + ".dat", File.Create(Path.Combine(tempPath, "instance.dat")));
-
-        bool solutionExists = Assembly.GetExecutingAssembly().GetManifestResourceNames().Any(x => x == InstancePrefix + instance + ".sln");
-        if (solutionExists)
-          WriteEmbeddedResourceToFile(InstancePrefix + instance + ".sln", File.Create(Path.Combine(tempPath, "instance.sln")));
-
+      foreach (var instance in instances) {
         try {
-          qap.LoadInstanceFromFile(Path.Combine(tempPath, "instance.dat"));
+          qap.Load(provider.LoadData(instance));
         } catch (Exception ex) {
           failedInstances.AppendLine(instance + ": " + ex.Message);
-          solutionExists = false; // not necessary to test solution as well
-        }
-
-        if (solutionExists) {
-          try {
-            qap.LoadInstanceFromFile(Path.Combine(tempPath, "instance.dat"), Path.Combine(tempPath, "instance.sln"));
-            if (qap.BestKnownSolution == null)
-              failedInstances.AppendLine(instance + " (sln): Given solution and reported quality cannot be reproduced.");
-          } catch (Exception ex) {
-            failedInstances.AppendLine(instance + " (+sln):" + ex.Message);
-          }
         }
       }
       Assert.IsTrue(failedInstances.Length == 0, "Following instances failed: " + Environment.NewLine + failedInstances.ToString());
     }
 
-    private void WriteEmbeddedResourceToFile(string resource, FileStream file) {
-      try {
-        using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resource)) {
-          int token;
-          while ((token = stream.ReadByte()) >= 0) {
-            file.WriteByte((byte)token);
-          }
-        }
-      } finally { file.Close(); }
+    [TestMethod]
+    public void TestQAPLIBSolutions() {
+      var provider = new QAPLIBInstanceProvider();
+      var qap = new QuadraticAssignmentProblem();
+      var failedInstances = new StringBuilder();
+      string tempPath = Path.GetTempPath();
+
+      var instances = provider.GetDataDescriptors();
+      Assert.IsTrue(instances.Any(), "No instances could be found.");
+
+      foreach (var instance in instances) {
+        qap.Load(provider.LoadData(instance));
+        if (qaplibInstances.ContainsKey(instance.Name)
+          && qap.BestKnownQuality != null && qap.BestKnownQuality.Value != qaplibInstances[instance.Name])
+          failedInstances.AppendLine(instance.Name + ": " + qap.BestKnownQuality.Value.ToString() + " vs " + qaplibInstances[instance.Name]);
+      }
+      Assert.IsTrue(failedInstances.Length == 0, "Following instances/solutions have suspicious quality: " + Environment.NewLine + failedInstances.ToString());
     }
   }
 }

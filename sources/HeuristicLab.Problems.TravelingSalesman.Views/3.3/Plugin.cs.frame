@@ -28,7 +28,6 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
   [Plugin("HeuristicLab.Problems.TravelingSalesman.Views", "3.3.6.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.TravelingSalesman.Views-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Common", "3.3")]
-  [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
   [PluginDependency("HeuristicLab.Core.Views", "3.3")]
   [PluginDependency("HeuristicLab.Data", "3.3")]
@@ -36,6 +35,7 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
   [PluginDependency("HeuristicLab.MainForm", "3.3")]
   [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.3")]
   [PluginDependency("HeuristicLab.Optimization", "3.3")]
+  [PluginDependency("HeuristicLab.Optimization.Views", "3.3")]
   [PluginDependency("HeuristicLab.Parameters", "3.3")]
   [PluginDependency("HeuristicLab.Problems.TravelingSalesman", "3.3")]
   public class HeuristicLabProblemsTravelingSalesmanViewsPlugin : PluginBase {

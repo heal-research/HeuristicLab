@@ -114,8 +114,10 @@
     <Compile Include="Analyzers\TSPPopulationDiversityAnalyzer.cs" />
     <Compile Include="Analyzers\TSPAlleleFrequencyAnalyzer.cs" />
     <Compile Include="DistanceMatrix.cs" />
+    <Compile Include="Evaluators\TSPDistanceMatrixEvaluator.cs" />
     <Compile Include="Evaluators\TSPEuclideanPathEvaluator.cs" />
     <Compile Include="Evaluators\TSPGeoPathEvaluator.cs" />
+    <Compile Include="Interfaces\ITSPDistanceMatrixEvaluator.cs" />
     <Compile Include="MoveEvaluators\ThreeOpt\TSPTranslocationMoveEuclideanPathEvaluator.cs" />
     <Compile Include="MoveEvaluators\ThreeOpt\TSPTranslocationMoveGeoPathEvaluator.cs" />
     <Compile Include="MoveEvaluators\ThreeOpt\TSPTranslocationMovePathEvaluator.cs" />
@@ -126,7 +128,6 @@
     <Compile Include="MoveEvaluators\TwoOpt\TSPInversionMoveRoundedEuclideanPathEvaluator.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="TravelingSalesmanProblem.cs" />
-    <Compile Include="TSPLIBTourParser.cs" />
     <Compile Include="PathTSPTour.cs" />
     <Compile Include="Evaluators\TSPCoordinatesPathEvaluator.cs" />
     <Compile Include="Evaluators\TSPEvaluator.cs" />
@@ -138,7 +139,6 @@
     <Compile Include="Interfaces\ITSPPathMoveEvaluator.cs" />
     <Compile Include="MoveEvaluators\TSPPathMoveEvaluator.cs" />
     <Compile Include="MoveEvaluators\TSPMoveEvaluator.cs" />
-    <Compile Include="TSPLIBParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -202,16 +202,15 @@
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.Instances\3.3\HeuristicLab.Problems.Instances-3.3.csproj">
+      <Project>{3540E29E-4793-49E7-8EE2-FEA7F61C3994}</Project>
+      <Name>HeuristicLab.Problems.Instances-3.3</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
     <None Include="Plugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.cs.frame" />
-    <None Include="TSPLIB Sample Problems\ch130.opt.tour" />
-    <None Include="TSPLIB Sample Problems\ch130.tsp" />
-    <None Include="TSPLIB Sample Problems\fl1400.tsp" />
-    <None Include="TSPLIB Sample Problems\gr666.opt.tour" />
-    <None Include="TSPLIB Sample Problems\gr666.tsp" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

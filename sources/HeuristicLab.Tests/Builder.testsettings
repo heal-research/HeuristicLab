@@ -109,16 +109,22 @@
     <DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.Problems.DataAnalysis-3.4.dll" />
     <DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.Problems.TravelingSalesman-3.3.dll" />
     <DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.Parameters.Views-3.3.dll" />
-	<DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.Algorithms.Benchmarks.Views-3.3.dll" />
-	<DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.Algorithms.Benchmarks-3.3.dll" />
-	<DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.Hive-3.3.dll" />
-	<DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.Clients.Hive-3.3.dll" />	
-	<DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.Clients.Hive.Administrator-3.3.dll" />
-	<DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.Clients.Hive.JobManager-3.3" />
-	<DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.Clients.Hive.Views-3.3.dll" />
-	<DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.Clients.Hive-3.3.dll" />
-	<DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.DayView-1.0.dll" />
-	<DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.MathJax-1.1.dll" />
+    <DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.Algorithms.Benchmarks.Views-3.3.dll" />
+    <DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.Algorithms.Benchmarks-3.3.dll" />
+    <DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.Hive-3.3.dll" />
+    <DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.Clients.Hive-3.3.dll" />	
+    <DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.Clients.Hive.Administrator-3.3.dll" />
+    <DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.Clients.Hive.JobManager-3.3" />
+    <DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.Clients.Hive.Views-3.3.dll" />
+    <DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.Clients.Hive-3.3.dll" />
+    <DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.DayView-1.0.dll" />
+    <DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.MathJax-1.1.dll" />
+    <DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.Problems.Instances-3.3.dll" />
+    <DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.Problems.Instances.TSPLIB-3.3.dll" />
+    <DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.Problems.Instances.QAPLIB-3.3.dll" />
+    <DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.Problems.Instances.ElloumiCTAP-3.3.dll" />
+    <DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.Problems.Instances.CordeauGQAP-3.3.dll" />
+    <DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.Problems.Instances.TSPLIB.Views-3.3.dll" />
   </Deployment>
   <Execution hostProcessPlatform="MSIL">
     <TestTypeSpecific>

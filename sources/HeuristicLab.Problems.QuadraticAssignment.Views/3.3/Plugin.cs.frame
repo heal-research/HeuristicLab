@@ -33,6 +33,8 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
   [PluginDependency("HeuristicLab.Encodings.PermutationEncoding", "3.3")]
   [PluginDependency("HeuristicLab.MainForm", "3.3")]
   [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.3")]
+  [PluginDependency("HeuristicLab.Optimization", "3.3")]
+  [PluginDependency("HeuristicLab.Optimization.Views", "3.3")]
   [PluginDependency("HeuristicLab.Problems.QuadraticAssignment", "3.3")]
   public class HeuristicLabProblemsQuadraticAssignmentViewsPlugin : PluginBase {
   }

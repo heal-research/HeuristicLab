@@ -72,6 +72,16 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       #endregion
     }
 
+    public static double Apply(TSPCoordinatesPathEvaluator evaluator, DoubleMatrix coordinates, Permutation tour) {
+      DoubleMatrix c = coordinates;
+      Permutation p = tour;
+      double length = 0;
+      for (int i = 0; i < p.Length - 1; i++)
+        length += evaluator.CalculateDistance(c[p[i], 0], c[p[i], 1], c[p[i + 1], 0], c[p[i + 1], 1]);
+      length += evaluator.CalculateDistance(c[p[p.Length - 1], 0], c[p[p.Length - 1], 1], c[p[0], 0], c[p[0], 1]);
+      return length;
+    }
+
     public sealed override IOperation Apply() {
       if (UseDistanceMatrixParameter.ActualValue.Value) {
         Permutation p = PermutationParameter.ActualValue;

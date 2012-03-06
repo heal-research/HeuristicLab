@@ -43,6 +43,7 @@ using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Classification;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
+using HeuristicLab.Problems.Instances.TSPLIB;
 using HeuristicLab.Problems.Knapsack;
 using HeuristicLab.Problems.TestFunctions;
 using HeuristicLab.Problems.TravelingSalesman;
@@ -55,8 +56,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace HeuristicLab_33.Tests {
   [TestClass]
   [DeploymentItem(@"HeuristicLab-3.3/Resources/C101.opt.txt")]
-  [DeploymentItem(@"HeuristicLab-3.3/Resources/ch130.tsp")]
-  [DeploymentItem(@"HeuristicLab-3.3/Resources/ch130.opt.tour")]
   [DeploymentItem(@"HeuristicLab-3.3/Resources/mammographic_masses.txt")]
   [DeploymentItem(@"HeuristicLab-3.3/Resources/towerData.txt")]
   [DeploymentItem(@"HeuristicLab-3.3/Resources/C101.txt")]
@@ -82,13 +81,11 @@ namespace HeuristicLab_33.Tests {
     private GeneticAlgorithm CreateGaTspSample() {
       GeneticAlgorithm ga = new GeneticAlgorithm();
       #region Problem Configuration
+      var provider = new TSPLIBTSPInstanceProvider();
+      var instance = provider.GetDataDescriptors().Where(x => x.Name == "ch130").Single();
       TravelingSalesmanProblem tspProblem = new TravelingSalesmanProblem();
-      tspProblem.ImportFromTSPLIB("ch130.tsp", "ch130.opt.tour", 6110);
-      tspProblem.EvaluatorParameter.Value = new TSPRoundedEuclideanPathEvaluator();
-      tspProblem.SolutionCreatorParameter.Value = new RandomPermutationCreator();
+      tspProblem.Load(provider.LoadData(instance));
       tspProblem.UseDistanceMatrix.Value = true;
-      tspProblem.Name = "ch130 TSP (imported from TSPLIB)";
-      tspProblem.Description = "130 city problem (Churritz)";
       #endregion
       #region Algorithm Configuration
       ga.Name = "Genetic Algorithm - TSP";
@@ -510,13 +507,11 @@ namespace HeuristicLab_33.Tests {
     private IslandGeneticAlgorithm CreateIslandGaTspSample() {
       IslandGeneticAlgorithm ga = new IslandGeneticAlgorithm();
       #region Problem Configuration
+      var provider = new TSPLIBTSPInstanceProvider();
+      var instance = provider.GetDataDescriptors().Where(x => x.Name == "ch130").Single();
       TravelingSalesmanProblem tspProblem = new TravelingSalesmanProblem();
-      tspProblem.ImportFromTSPLIB("ch130.tsp", "ch130.opt.tour", 6110);
-      tspProblem.EvaluatorParameter.Value = new TSPRoundedEuclideanPathEvaluator();
-      tspProblem.SolutionCreatorParameter.Value = new RandomPermutationCreator();
+      tspProblem.Load(provider.LoadData(instance));
       tspProblem.UseDistanceMatrix.Value = true;
-      tspProblem.Name = "ch130 TSP (imported from TSPLIB)";
-      tspProblem.Description = "130 city problem (Churritz)";
       #endregion
       #region Algorithm Configuration
       ga.Name = "Island Genetic Algorithm - TSP";
@@ -765,13 +760,11 @@ namespace HeuristicLab_33.Tests {
     private TabuSearch CreateTabuSearchTspSample() {
       TabuSearch ts = new TabuSearch();
       #region Problem Configuration
-      var tspProblem = new TravelingSalesmanProblem();
-      tspProblem.ImportFromTSPLIB("ch130.tsp", "ch130.opt.tour", 6110);
-      tspProblem.EvaluatorParameter.Value = new TSPRoundedEuclideanPathEvaluator();
-      tspProblem.SolutionCreatorParameter.Value = new RandomPermutationCreator();
+      var provider = new TSPLIBTSPInstanceProvider();
+      var instance = provider.GetDataDescriptors().Where(x => x.Name == "ch130").Single();
+      TravelingSalesmanProblem tspProblem = new TravelingSalesmanProblem();
+      tspProblem.Load(provider.LoadData(instance));
       tspProblem.UseDistanceMatrix.Value = true;
-      tspProblem.Name = "ch130 TSP (imported from TSPLIB)";
-      tspProblem.Description = "130 city problem (Churritz)";
       #endregion
       #region Algorithm Configuration
       ts.Name = "Tabu Search - TSP";

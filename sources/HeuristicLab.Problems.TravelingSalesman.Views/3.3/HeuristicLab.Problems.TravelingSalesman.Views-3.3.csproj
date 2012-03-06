@@ -127,12 +127,6 @@
     <Compile Include="TravelingSalesmanProblemView.Designer.cs">
       <DependentUpon>TravelingSalesmanProblemView.cs</DependentUpon>
     </Compile>
-    <Compile Include="TSPLIBImportDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="TSPLIBImportDialog.Designer.cs">
-      <DependentUpon>TSPLIBImportDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -144,11 +138,6 @@
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
       <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
       <Name>HeuristicLab.Collections-3.3</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Common.Resources\3.3\HeuristicLab.Common.Resources-3.3.csproj">
-      <Project>{0E27A536-1C4A-4624-A65E-DC4F4F23E3E1}</Project>
-      <Name>HeuristicLab.Common.Resources-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Common\3.3\HeuristicLab.Common-3.3.csproj">
@@ -205,6 +194,10 @@
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.Instances\3.3\HeuristicLab.Problems.Instances-3.3.csproj">
+      <Project>{3540E29E-4793-49E7-8EE2-FEA7F61C3994}</Project>
+      <Name>HeuristicLab.Problems.Instances-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Problems.TravelingSalesman\3.3\HeuristicLab.Problems.TravelingSalesman-3.3.csproj">
       <Project>{D767C38D-8014-46B0-9A32-03A3AECCE34A}</Project>

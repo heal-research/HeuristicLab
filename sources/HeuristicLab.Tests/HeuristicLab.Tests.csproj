@@ -292,12 +292,6 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="Builder.testsettings" />
-    <None Include="HeuristicLab-3.3\Resources\ch130.opt.tour">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="HeuristicLab-3.3\Resources\ch130.tsp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="HeuristicLab-3.3\Resources\GA_SymbReg.hl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -307,143 +301,6 @@
     <Content Include="HeuristicLab-3.3\Resources\SamplesExperimentFinished.hl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\bur26a.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\bur26b.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\bur26c.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\bur26d.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\bur26e.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\bur26f.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\bur26g.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\bur26h.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr12a.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr12b.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr12c.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr15a.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr15b.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr15c.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr18a.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr18b.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr20a.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr20b.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr20c.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr22a.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr22b.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr25a.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\els19.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc128.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16a.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16b.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16c.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16d.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16e.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16f.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16g.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16h.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16i.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16j.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc32a.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc32b.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc32c.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc32d.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc32e.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc32f.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc32g.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc32h.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc64a.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\had12.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\had14.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\had16.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\had18.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\had20.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\kra30a.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\kra30b.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\kra32.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa20a.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa20b.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa30a.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa30b.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa40a.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa40b.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa50a.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa50b.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa60a.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa60b.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa70a.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa70b.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa80a.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa80b.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa90a.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa90b.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug12.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug14.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug15.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug16a.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug16b.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug17.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug18.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug20.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug21.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug22.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug24.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug25.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug27.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug28.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug30.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\rou12.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\rou15.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\rou20.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\scr12.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\scr15.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\scr20.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko100a.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko100b.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko100c.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko100d.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko100e.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko100f.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko42.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko49.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko56.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko64.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko72.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko81.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko90.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\ste36a.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\ste36b.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\ste36c.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai100a.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai100b.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai10a.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai10b.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai12a.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai12b.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai150b.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai15a.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai15b.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai17a.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai20a.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai20b.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai256c.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai25a.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai25b.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai30a.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai30b.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai35a.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai35b.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai40a.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai40b.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai50a.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai50b.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai60a.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai60b.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai64c.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai80a.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai80b.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tho150.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tho30.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tho40.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\wil100.dat" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\wil50.dat" />
     <None Include="HeuristicLab.snk" />
     <Shadow Include="Test References\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4.accessor" />
     <Shadow Include="Test References\HeuristicLab.PluginInfrastructure-3.3.accessor" />
@@ -467,127 +324,6 @@
     <Content Include="HeuristicLab-3.3\Resources\towerData.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\bur26a.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\bur26b.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\bur26c.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\bur26d.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\bur26e.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\bur26f.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\bur26g.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\bur26h.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr12a.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr12b.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr12c.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr15a.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr15b.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr15c.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr18a.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr18b.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr20a.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr20b.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr20c.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr22a.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr22b.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\chr25a.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\els19.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc128.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16a.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16b.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16c.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16d.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16e.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16f.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16g.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16h.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16i.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc16j.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc32a.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc32e.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc32f.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\esc32g.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\had12.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\had14.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\had16.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\had18.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\had20.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\kra30a.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\kra30b.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\kra32.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa20a.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa20b.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa30a.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa30b.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa40a.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa40b.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa50a.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa50b.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa60a.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa60b.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa70a.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa70b.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa80a.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa80b.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa90a.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\lipa90b.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug12.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug14.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug15.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug16a.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug16b.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug17.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug18.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug20.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug21.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug22.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug24.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug25.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug27.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug28.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\nug30.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\rou12.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\rou15.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\rou20.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\scr12.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\scr15.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\scr20.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko100a.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko100b.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko100c.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko100d.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko100e.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko100f.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko49.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko81.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\sko90.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\ste36a.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\ste36b.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\ste36c.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai100a.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai100b.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai12a.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai12b.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai150b.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai15a.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai15b.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai17a.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai20a.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai20b.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai256c.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai25a.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai25b.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai30b.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai35b.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai40b.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai50a.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai50b.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai60a.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai60b.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai64c.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai80a.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tai80b.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tho150.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\tho30.sln" />
-    <EmbeddedResource Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIB\wil100.sln" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HeuristicLab.Algorithms.Benchmarks.Views\3.3\HeuristicLab.Algorithms.Benchmarks.Views-3.3.csproj">
@@ -858,6 +594,30 @@
       <Project>{25735DB4-8E54-4A2C-83E3-A60C76565E55}</Project>
       <Name>HeuristicLab.Problems.ExternalEvaluation-3.3</Name>
     </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.Instances.CordeauGQAP\3.3\HeuristicLab.Problems.Instances.CordeauGQAP-3.3.csproj">
+      <Project>{1F2718DA-BF13-40EE-A7FD-EEDB4912E64E}</Project>
+      <Name>HeuristicLab.Problems.Instances.CordeauGQAP-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.Instances.ElloumiCTAP\3.3\HeuristicLab.Problems.Instances.ElloumiCTAP-3.3.csproj">
+      <Project>{CCF61DA0-B226-4C0F-8052-29ACC6BDE6EE}</Project>
+      <Name>HeuristicLab.Problems.Instances.ElloumiCTAP-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.Instances.QAPLIB\3.3\HeuristicLab.Problems.Instances.QAPLIB-3.3.csproj">
+      <Project>{73F29D43-5714-4069-8FAB-0D18FEB5F175}</Project>
+      <Name>HeuristicLab.Problems.Instances.QAPLIB-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.Instances.TSPLIB.Views\3.3\HeuristicLab.Problems.Instances.TSPLIB.Views-3.3.csproj">
+      <Project>{8B2BC81F-6B6C-414D-A934-57FD3FA8D6DC}</Project>
+      <Name>HeuristicLab.Problems.Instances.TSPLIB.Views-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.Instances.TSPLIB\3.3\HeuristicLab.Problems.Instances.TSPLIB-3.3.csproj">
+      <Project>{CE0F99D6-1C56-48A9-9B68-3E5B833703EF}</Project>
+      <Name>HeuristicLab.Problems.Instances.TSPLIB-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.Instances\3.3\HeuristicLab.Problems.Instances-3.3.csproj">
+      <Project>{3540E29E-4793-49E7-8EE2-FEA7F61C3994}</Project>
+      <Name>HeuristicLab.Problems.Instances-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.Problems.Knapsack.Views\3.3\HeuristicLab.Problems.Knapsack.Views-3.3.csproj">
       <Project>{A9EE65D9-405B-4C9C-B470-FC911AAC541B}</Project>
       <Name>HeuristicLab.Problems.Knapsack.Views-3.3</Name>
@@ -931,7 +691,6 @@
       <Name>HeuristicLab.Visualization.ChartControlsExtensions-3.3</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

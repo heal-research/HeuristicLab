@@ -20,11 +20,8 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -33,14 +30,15 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.QuadraticAssignment {
   [Item("Quadratic Assignment Problem", "The Quadratic Assignment Problem (QAP) can be described as the problem of assigning N facilities to N fixed locations such that there is exactly one facility in each location and that the sum of the distances multiplied by the connection strength between the facilities becomes minimal.")]
   [Creatable("Problems")]
   [StorableClass]
-  public sealed class QuadraticAssignmentProblem : SingleObjectiveHeuristicOptimizationProblem<IQAPEvaluator, IPermutationCreator>, IStorableContent {
-    private static string InstancePrefix = "HeuristicLab.Problems.QuadraticAssignment.Data.";
-
+  public sealed class QuadraticAssignmentProblem : SingleObjectiveHeuristicOptimizationProblem<IQAPEvaluator, IPermutationCreator>, IStorableContent,
+    IProblemInstanceConsumer<QAPData>,
+    IProblemInstanceConsumer<TSPData> {
     public string Filename { get; set; }
 
     public static new Image StaticItemImage {
@@ -90,17 +88,6 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
 
     private QAPPopulationDiversityAnalyzer QAPPopulationDiversityAnalyzer {
       get { return Operators.OfType<QAPPopulationDiversityAnalyzer>().FirstOrDefault(); }
-    }
-
-    public IEnumerable<string> Instances {
-      get {
-        return Assembly.GetExecutingAssembly()
-          .GetManifestResourceNames()
-          .Where(x => x.EndsWith(".dat"))
-          .OrderBy(x => x)
-          .Select(x => x.Replace(".dat", String.Empty))
-          .Select(x => x.Replace(InstancePrefix, String.Empty));
-      }
     }
     #endregion
 
@@ -364,114 +351,54 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     }
     #endregion
 
-    public void LoadInstanceFromFile(string filename) {
-      QAPLIBParser parser = new QAPLIBParser();
-      parser.Parse(filename);
-      if (parser.Error != null) throw parser.Error;
-      Distances = new DoubleMatrix(parser.Distances);
-      Weights = new DoubleMatrix(parser.Weights);
-      Name = "Quadratic Assignment Problem (imported from " + Path.GetFileNameWithoutExtension(filename) + ")";
-      Description = "Imported problem data using QAPLIBParser " + Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyFileVersionAttribute), true).Cast<AssemblyFileVersionAttribute>().FirstOrDefault().Version + ".";
+    public void Load(QAPData data) {
+      var weights = new DoubleMatrix(data.Weights);
+      var distances = new DoubleMatrix(data.Distances);
+      Load(weights, distances);
+      EvaluateAndLoadAssignment(data.BestKnownAssignment);
+      OnReset();
+    }
+
+    public void Load(TSPData data) {
+      if (data.Dimension > 1000)
+        throw new System.IO.InvalidDataException("Instances with more than 1000 customers are not supported by the QAP.");
+      var weights = new DoubleMatrix(data.Dimension, data.Dimension);
+      for (int i = 0; i < data.Dimension; i++)
+        weights[i, (i + 1) % data.Dimension] = 1;
+      var distances = new DoubleMatrix(data.GetDistanceMatrix());
+      Load(weights, distances);
+      EvaluateAndLoadAssignment(data.BestKnownTour);
+      OnReset();
+    }
+
+    public void Load(DoubleMatrix weights, DoubleMatrix distances) {
+      if (weights == null || weights.Rows == 0)
+        throw new System.IO.InvalidDataException("The given instance does not contain weights!");
+      if (weights.Rows != weights.Columns)
+        throw new System.IO.InvalidDataException("The weights matrix is not a square matrix!");
+      if (distances == null || distances.Rows == 0)
+        throw new System.IO.InvalidDataException("The given instance does not contain distances!");
+      if (distances.Rows != distances.Columns)
+        throw new System.IO.InvalidDataException("The distances matrix is not a square matrix!");
+      if (weights.Rows != distances.Columns)
+        throw new System.IO.InvalidDataException("The weights matrix and the distance matrix are not of equal size!");
+
+      Weights = weights;
+      Distances = distances;
+
       BestKnownQuality = null;
       BestKnownSolution = null;
       BestKnownSolutions = null;
-      OnReset();
     }
 
-    public void LoadInstanceFromFile(string datFilename, string slnFilename) {
-      QAPLIBParser datParser = new QAPLIBParser();
-      datParser.Parse(datFilename);
-      if (datParser.Error != null) throw datParser.Error;
-      Distances = new DoubleMatrix(datParser.Distances);
-      Weights = new DoubleMatrix(datParser.Weights);
-      Name = "Quadratic Assignment Problem (imported from " + Path.GetFileNameWithoutExtension(datFilename) + ")";
-      Description = "Imported problem data using QAPLIBParser " + Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyFileVersionAttribute), true).Cast<AssemblyFileVersionAttribute>().FirstOrDefault().Version + ".";
-
-      QAPLIBSolutionParser slnParser = new QAPLIBSolutionParser();
-      slnParser.Parse(slnFilename, true);
-      if (slnParser.Error != null) throw slnParser.Error;
-
-      BestKnownQuality = new DoubleValue(slnParser.Quality);
-      BestKnownSolution = new Permutation(PermutationTypes.Absolute, slnParser.Assignment);
-      BestKnownSolutions = new ItemSet<Permutation>(new PermutationEqualityComparer());
-      BestKnownSolutions.Add((Permutation)BestKnownSolution.Clone());
-
-      if (!BestKnownQuality.Value.IsAlmost(QAPEvaluator.Apply(BestKnownSolution, Weights, Distances))) {
-        // the solution doesn't result in the given quality, maybe indices and values are inverted
-        // try parsing again, this time inverting them
-        slnParser.Reset();
-        slnParser.Parse(slnFilename, false);
-        if (slnParser.Error != null) throw slnParser.Error;
-
-        BestKnownQuality = new DoubleValue(slnParser.Quality);
-        BestKnownSolution = new Permutation(PermutationTypes.Absolute, slnParser.Assignment);
-        BestKnownSolutions = new ItemSet<Permutation>(new PermutationEqualityComparer());
-        BestKnownSolutions.Add((Permutation)BestKnownSolution.Clone());
-
-        if (!BestKnownQuality.Value.IsAlmost(QAPEvaluator.Apply(BestKnownSolution, Weights, Distances))) {
-          // if the solution still doesn't result in the given quality, remove it and only take the quality
-          BestKnownSolution = null;
-          BestKnownSolutions = new ItemSet<Permutation>(new PermutationEqualityComparer());
-        }
-      }
-      OnReset();
-    }
-
-    public void LoadInstanceFromEmbeddedResource(string instance) {
-      using (Stream stream = Assembly.GetExecutingAssembly()
-        .GetManifestResourceStream(InstancePrefix + instance + ".dat")) {
-        QAPLIBParser datParser = new QAPLIBParser();
-        datParser.Parse(stream);
-        if (datParser.Error != null) throw datParser.Error;
-        Distances = new DoubleMatrix(datParser.Distances);
-        Weights = new DoubleMatrix(datParser.Weights);
-        Name = instance;
-        Description = "Loaded embedded instance " + instance + " of plugin version " + Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyFileVersionAttribute), true).Cast<AssemblyFileVersionAttribute>().FirstOrDefault().Version + ".";
-
-        bool solutionExists = Assembly.GetExecutingAssembly()
-          .GetManifestResourceNames()
-          .Where(x => x.EndsWith(instance + ".sln"))
-          .Any();
-
-        if (solutionExists) {
-          using (Stream solStream = Assembly.GetExecutingAssembly()
-            .GetManifestResourceStream(InstancePrefix + instance + ".sln")) {
-            QAPLIBSolutionParser slnParser = new QAPLIBSolutionParser();
-            slnParser.Parse(solStream, true);
-            if (slnParser.Error != null) throw slnParser.Error;
-
-            BestKnownQuality = new DoubleValue(slnParser.Quality);
-            BestKnownSolution = new Permutation(PermutationTypes.Absolute, slnParser.Assignment);
-            BestKnownSolutions = new ItemSet<Permutation>(new PermutationEqualityComparer());
-            BestKnownSolutions.Add((Permutation)BestKnownSolution.Clone());
-
-            if (!BestKnownQuality.Value.IsAlmost(QAPEvaluator.Apply(BestKnownSolution, Weights, Distances))) {
-              // the solution doesn't result in the given quality, maybe indices and values are inverted
-              // try parsing again, this time inverting them
-              solStream.Seek(0, SeekOrigin.Begin);
-              slnParser.Reset();
-              slnParser.Parse(solStream, false);
-              if (slnParser.Error != null) throw slnParser.Error;
-
-              BestKnownQuality = new DoubleValue(slnParser.Quality);
-              BestKnownSolution = new Permutation(PermutationTypes.Absolute, slnParser.Assignment);
-              BestKnownSolutions = new ItemSet<Permutation>(new PermutationEqualityComparer());
-              BestKnownSolutions.Add((Permutation)BestKnownSolution.Clone());
-
-              if (!BestKnownQuality.Value.IsAlmost(QAPEvaluator.Apply(BestKnownSolution, Weights, Distances))) {
-                // if the solution still doesn't result in the given quality, remove it and only take the quality
-                BestKnownSolution = null;
-                BestKnownSolutions = new ItemSet<Permutation>(new PermutationEqualityComparer());
-              }
-            }
-          }
-        } else {  // no solution exists
-          BestKnownSolution = null;
-          BestKnownSolutions = new ItemSet<Permutation>(new PermutationEqualityComparer());
-          BestKnownQuality = null;
-        }
-      }
-      OnReset();
+    public void EvaluateAndLoadAssignment(int[] assignment) {
+      if (assignment == null || assignment.Length == 0) return;
+      var vector = new Permutation(PermutationTypes.Absolute, assignment);
+      var result = QAPEvaluator.Apply(vector, Weights, Distances);
+      BestKnownQuality = new DoubleValue(result);
+      BestKnownSolution = vector;
+      BestKnownSolutions = new ItemSet<Permutation>();
+      BestKnownSolutions.Add((Permutation)vector.Clone());
     }
   }
 }

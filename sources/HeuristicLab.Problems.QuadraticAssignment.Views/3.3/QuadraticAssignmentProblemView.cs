@@ -20,18 +20,15 @@
 #endregion
 
 using System;
-using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
-using HeuristicLab.Common.Resources;
-using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
+using HeuristicLab.Optimization.Views;
 
 namespace HeuristicLab.Problems.QuadraticAssignment.Views {
   [View("Quadratic Assignment Problem View")]
   [Content(typeof(QuadraticAssignmentProblem), IsDefaultView = true)]
-  public sealed partial class QuadraticAssignmentProblemView : ParameterizedNamedItemView {
+  public sealed partial class QuadraticAssignmentProblemView : HeuristicOptimizationProblemView {
     public new QuadraticAssignmentProblem Content {
       get { return (QuadraticAssignmentProblem)base.Content; }
       set { base.Content = value; }
@@ -39,7 +36,6 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
 
     public QuadraticAssignmentProblemView() {
       InitializeComponent();
-      importInstanceButton.Image = VSImageLibrary.Open;
       Controls.Remove(parameterCollectionView);
       parameterCollectionView.Dock = DockStyle.Fill;
       problemTabPage.Controls.Add(parameterCollectionView);
@@ -73,11 +69,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      instancesComboBox.Items.Clear();
       if (Content != null) {
-        foreach (string instance in Content.Instances) {
-          instancesComboBox.Items.Add(instance);
-        }
         qapView.Distances = Content.Distances;
         qapView.Weights = Content.Weights;
         qapView.Assignment = Content.BestKnownSolution;
@@ -90,55 +82,6 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
-      instancesComboBox.Enabled = !ReadOnly && !Locked && Content != null;
-      loadInstanceButton.Enabled = !ReadOnly && !Locked && Content != null && instancesComboBox.SelectedItem != null;
-      importInstanceButton.Enabled = !ReadOnly && !Locked && Content != null;
-    }
-
-    private void instancesComboBox_SelectedValueChanged(object sender, System.EventArgs e) {
-      loadInstanceButton.Enabled = instancesComboBox.SelectedItem != null;
-    }
-
-    private void loadInstanceButton_Click(object sender, System.EventArgs e) {
-      string instance = instancesComboBox.SelectedItem as string;
-      try {
-        Content.LoadInstanceFromEmbeddedResource(instance);
-      } catch (Exception ex) {
-        PluginInfrastructure.ErrorHandling.ShowErrorDialog(ex);
-      }
-    }
-
-    private void importInstanceButton_Click(object sender, System.EventArgs e) {
-      if (openFileDialog.ShowDialog() == DialogResult.OK) {
-        try {
-          string datFile = openFileDialog.FileName;
-          string directory = Path.GetDirectoryName(datFile);
-          string solFile = Path.Combine(directory, Path.GetFileNameWithoutExtension(datFile) + ".sln");
-          if (File.Exists(solFile)) {
-            Content.LoadInstanceFromFile(datFile, solFile);
-          } else {
-            Content.LoadInstanceFromFile(datFile);
-          }
-        } catch (Exception ex) {
-          PluginInfrastructure.ErrorHandling.ShowErrorDialog(ex);
-        }
-      }
-    }
-
-    private void QAPLIBInstancesLabel_Click(object sender, System.EventArgs e) {
-      System.Diagnostics.Process.Start("http://www.seas.upenn.edu/qaplib/");
-    }
-
-    private void QAPLIBInstancesLabel_MouseEnter(object sender, EventArgs e) {
-      Cursor = Cursors.Hand;
-      QAPLIBInstancesLabel.ForeColor = Color.Red;
-      toolTip.SetToolTip(QAPLIBInstancesLabel, "Browse to http://www.seas.upenn.edu/qaplib/");
-    }
-
-    private void QAPLIBInstancesLabel_MouseLeave(object sender, EventArgs e) {
-      Cursor = Cursors.Default;
-      QAPLIBInstancesLabel.ForeColor = Color.Blue;
-      toolTip.SetToolTip(QAPLIBInstancesLabel, String.Empty);
     }
   }
 }

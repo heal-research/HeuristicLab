@@ -31,12 +31,15 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
   [Item("Traveling Salesman Problem", "Represents a symmetric Traveling Salesman Problem.")]
   [Creatable("Problems")]
   [StorableClass]
-  public sealed class TravelingSalesmanProblem : SingleObjectiveHeuristicOptimizationProblem<ITSPEvaluator, IPermutationCreator>, IStorableContent {
+  public sealed class TravelingSalesmanProblem : SingleObjectiveHeuristicOptimizationProblem<ITSPEvaluator, IPermutationCreator>, IStorableContent,
+    IProblemInstanceConsumer<TSPData> {
+    private static readonly int DistanceMatrixSizeLimit = 1000;
     public string Filename { get; set; }
 
     #region Parameter Properties
@@ -106,7 +109,6 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
     public TravelingSalesmanProblem()
       : base(new TSPRoundedEuclideanPathEvaluator(), new RandomPermutationCreator()) {
-
       Parameters.Add(new ValueParameter<DoubleMatrix>("Coordinates", "The x- and y-Coordinates of the cities."));
       Parameters.Add(new OptionalValueParameter<DistanceMatrix>("DistanceMatrix", "The matrix which contains the distances between the cities."));
       Parameters.Add(new ValueParameter<BoolValue>("UseDistanceMatrix", "True if a distance matrix should be calculated and used for evaluation, otherwise false.", new BoolValue(true)));
@@ -246,6 +248,11 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         evaluator.UseDistanceMatrixParameter.ActualName = UseDistanceMatrixParameter.Name;
         evaluator.UseDistanceMatrixParameter.Hidden = true;
       }
+      if (Evaluator is ITSPDistanceMatrixEvaluator) {
+        var evaluator = (ITSPDistanceMatrixEvaluator)Evaluator;
+        evaluator.DistanceMatrixParameter.ActualName = DistanceMatrixParameter.Name;
+        evaluator.DistanceMatrixParameter.Hidden = true;
+      }
     }
     private void ParameterizeAnalyzers() {
       if (BestTSPSolutionAnalyzer != null) {
@@ -309,39 +316,89 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
 
     private void ClearDistanceMatrix() {
-      DistanceMatrixParameter.Value = null;
+      if (!(Evaluator is ITSPDistanceMatrixEvaluator))
+        DistanceMatrixParameter.Value = null;
     }
     #endregion
 
-    public void ImportFromTSPLIB(string tspFileName, string optimalTourFileName) {
-      TSPLIBParser tspParser = new TSPLIBParser(tspFileName);
-      tspParser.Parse();
-      Name = tspParser.Name + " TSP (imported from TSPLIB)";
-      if (!string.IsNullOrEmpty(tspParser.Comment)) Description = tspParser.Comment;
-      Coordinates = new DoubleMatrix(tspParser.Vertices);
-      if (tspParser.WeightType == TSPLIBParser.TSPLIBEdgeWeightType.EUC_2D) {
-        TSPRoundedEuclideanPathEvaluator evaluator = new TSPRoundedEuclideanPathEvaluator();
-        evaluator.QualityParameter.ActualName = "TSPTourLength";
-        Evaluator = evaluator;
-      } else if (tspParser.WeightType == TSPLIBParser.TSPLIBEdgeWeightType.GEO) {
-        TSPGeoPathEvaluator evaluator = new TSPGeoPathEvaluator();
-        evaluator.QualityParameter.ActualName = "TSPTourLength";
-        Evaluator = evaluator;
-      }
-      BestKnownQuality = null;
-      BestKnownSolution = null;
+    public void Load(TSPData data) {
+      if (data.Coordinates == null && data.Distances == null)
+        throw new System.IO.InvalidDataException("The given instance does not specify neither coordinates or distances!");
+      if (data.Dimension > DistanceMatrixSizeLimit && (data.DistanceMeasure == TSPDistanceMeasure.Att
+        || data.DistanceMeasure == TSPDistanceMeasure.Manhattan
+        || data.DistanceMeasure == TSPDistanceMeasure.Maximum
+        || data.DistanceMeasure == TSPDistanceMeasure.UpperEuclidean))
+        throw new System.IO.InvalidDataException("The given instance uses an unsupported distance measure and is too large for using a distance matrix.");
+      if (data.Coordinates != null && data.Coordinates.GetLength(1) != 2)
+        throw new System.IO.InvalidDataException("The coordinates of the given instance are not in the right format, there need to be one row for each customer and two columns for the x and y coordinates.");
 
-      if (!string.IsNullOrEmpty(optimalTourFileName)) {
-        TSPLIBTourParser tourParser = new TSPLIBTourParser(optimalTourFileName);
-        tourParser.Parse();
-        if (tourParser.Tour.Length != Coordinates.Rows) throw new InvalidDataException("Length of optimal tour is not equal to number of cities.");
-        BestKnownSolution = new Permutation(PermutationTypes.RelativeUndirected, tourParser.Tour);
+      Name = data.Name;
+      Description = data.Description;
+
+      if (data.Coordinates != null && data.Coordinates.GetLength(0) > 0)
+        Coordinates = new DoubleMatrix(data.Coordinates);
+
+      TSPEvaluator evaluator;
+      if (data.DistanceMeasure == TSPDistanceMeasure.Att
+        || data.DistanceMeasure == TSPDistanceMeasure.Manhattan
+        || data.DistanceMeasure == TSPDistanceMeasure.Maximum
+        || data.DistanceMeasure == TSPDistanceMeasure.UpperEuclidean) {
+        evaluator = new TSPDistanceMatrixEvaluator();
+        UseDistanceMatrix = new BoolValue(true);
+        DistanceMatrix = new DistanceMatrix(data.GetDistanceMatrix());
+      } else if (data.DistanceMeasure == TSPDistanceMeasure.Direct && data.Distances != null) {
+        evaluator = new TSPDistanceMatrixEvaluator();
+        UseDistanceMatrix = new BoolValue(true);
+        DistanceMatrix = new DistanceMatrix(data.Distances);
+      } else {
+        DistanceMatrix = null;
+        UseDistanceMatrix = new BoolValue(data.Dimension <= DistanceMatrixSizeLimit);
+        switch (data.DistanceMeasure) {
+          case TSPDistanceMeasure.Euclidean:
+            evaluator = new TSPEuclideanPathEvaluator();
+            break;
+          case TSPDistanceMeasure.RoundedEuclidean:
+            evaluator = new TSPRoundedEuclideanPathEvaluator();
+            break;
+          case TSPDistanceMeasure.Geo:
+            evaluator = new TSPGeoPathEvaluator();
+            break;
+          default:
+            throw new InvalidDataException("An unknown distance measure is given in the instance!");
+        }
+      }
+      evaluator.QualityParameter.ActualName = "TSPTourLength";
+      Evaluator = evaluator;
+
+      BestKnownSolution = null;
+      BestKnownQuality = null;
+
+      if (data.BestKnownTour != null) {
+        try {
+          EvaluateAndLoadTour(data.BestKnownTour);
+        } catch (InvalidOperationException) {
+          if (data.BestKnownQuality.HasValue)
+            BestKnownQuality = new DoubleValue(data.BestKnownQuality.Value);
+        }
+      } else if (data.BestKnownQuality.HasValue) {
+        BestKnownQuality = new DoubleValue(data.BestKnownQuality.Value);
       }
       OnReset();
     }
-    public void ImportFromTSPLIB(string tspFileName, string optimalTourFileName, double bestKnownQuality) {
-      ImportFromTSPLIB(tspFileName, optimalTourFileName);
-      BestKnownQuality = new DoubleValue(bestKnownQuality);
+
+    public void EvaluateAndLoadTour(int[] tour) {
+      var route = new Permutation(PermutationTypes.RelativeUndirected, tour);
+      BestKnownSolution = route;
+
+      double quality;
+      if (Evaluator is TSPDistanceMatrixEvaluator) {
+        quality = TSPDistanceMatrixEvaluator.Apply(DistanceMatrix, route);
+      } else if (Evaluator is TSPCoordinatesPathEvaluator) {
+        quality = TSPCoordinatesPathEvaluator.Apply((TSPCoordinatesPathEvaluator)Evaluator, Coordinates, route);
+      } else {
+        throw new InvalidOperationException("Cannot calculate solution quality, evaluator type is unknown.");
+      }
+      BestKnownQuality = new DoubleValue(quality);
     }
   }
 }

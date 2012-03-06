@@ -98,6 +98,7 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -136,6 +137,18 @@
       <DependentUpon>ExperimentListView.cs</DependentUpon>
     </Compile>
     <Compile Include="Plugin.cs" />
+    <Compile Include="ProblemInstanceProviderView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ProblemInstanceProviderView.Designer.cs">
+      <DependentUpon>ProblemInstanceProviderView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProblemView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ProblemView.designer.cs">
+      <DependentUpon>ProblemView.cs</DependentUpon>
+    </Compile>
     <Compile Include="RunCollectionModifierListView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -250,11 +263,11 @@
     <Compile Include="EngineAlgorithmView.Designer.cs">
       <DependentUpon>EngineAlgorithmView.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProblemView.cs">
+    <Compile Include="HeuristicOptimizationProblemView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ProblemView.Designer.cs">
-      <DependentUpon>ProblemView.cs</DependentUpon>
+    <Compile Include="HeuristicOptimizationProblemView.Designer.cs">
+      <DependentUpon>HeuristicOptimizationProblemView.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResultCollectionView.cs">
@@ -334,6 +347,10 @@
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.Instances\3.3\HeuristicLab.Problems.Instances-3.3.csproj">
+      <Project>{3540E29E-4793-49E7-8EE2-FEA7F61C3994}</Project>
+      <Name>HeuristicLab.Problems.Instances-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Visualization.ChartControlsExtensions\3.3\HeuristicLab.Visualization.ChartControlsExtensions-3.3.csproj">
       <Project>{315BDA09-3F4F-49B3-9790-B37CFC1C5750}</Project>
