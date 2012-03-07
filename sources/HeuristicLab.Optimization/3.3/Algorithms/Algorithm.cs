@@ -239,6 +239,15 @@ namespace HeuristicLab.Optimization {
       }
     }
 
+    protected override IEnumerable<KeyValuePair<string, IItem>> GetCollectedValues(IItem value) {
+      var children = base.GetCollectedValues(value);
+      foreach (var child in children) {
+        if (child.Value is IOperator)
+          yield return new KeyValuePair<string, IItem>(child.Key, new StringValue(((IOperator)child.Value).Name));
+        else yield return child;
+      }
+    }
+
     #region Events
     public event EventHandler ExecutionStateChanged;
     protected virtual void OnExecutionStateChanged() {

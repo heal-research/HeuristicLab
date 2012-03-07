@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
@@ -83,13 +84,25 @@ namespace HeuristicLab.Core {
 
     public virtual void CollectParameterValues(IDictionary<string, IItem> values) {
       foreach (IValueParameter param in parameters.OfType<IValueParameter>()) {
-        if (param.GetsCollected && param.Value != null) values.Add(param.Name, param.Value);
-        if (param.Value is IParameterizedItem) {
-          Dictionary<string, IItem> children = new Dictionary<string, IItem>();
-          ((IParameterizedItem)param.Value).CollectParameterValues(children);
-          foreach (string key in children.Keys)
-            values.Add(param.Name + "." + key, children[key]);
+        if (param.GetsCollected) {
+          var children = GetCollectedValues(param.Value);
+          foreach (var c in children) {
+            if (String.IsNullOrEmpty(c.Key))
+              values.Add(param.Name, c.Value);
+            else values.Add(param.Name + "." + c.Key, c.Value);
+          }
         }
+      }
+    }
+
+    protected virtual IEnumerable<KeyValuePair<string, IItem>> GetCollectedValues(IItem value) {
+      if (value == null) yield break;
+      yield return new KeyValuePair<string, IItem>(String.Empty, value);
+      var parameterizedItem = value as IParameterizedItem;
+      if (parameterizedItem != null) {
+        var children = new Dictionary<string, IItem>();
+        parameterizedItem.CollectParameterValues(children);
+        foreach (var child in children) yield return child;
       }
     }
   }

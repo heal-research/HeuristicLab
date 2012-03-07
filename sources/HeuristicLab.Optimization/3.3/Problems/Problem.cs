@@ -25,6 +25,7 @@ using System.Drawing;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -95,6 +96,15 @@ namespace HeuristicLab.Optimization {
     }
     IEnumerable<IOperator> IProblem.Operators { get { return Operators; } }
     #endregion
+
+    protected override IEnumerable<KeyValuePair<string, IItem>> GetCollectedValues(IItem value) {
+      var children = base.GetCollectedValues(value);
+      foreach (var child in children) {
+        if (child.Value is IOperator)
+          yield return new KeyValuePair<string, IItem>(child.Key, new StringValue(((IOperator)child.Value).Name));
+        else yield return child;
+      }
+    }
 
     #region events
     private void Operators_Changed(object sender, EventArgs e) {
