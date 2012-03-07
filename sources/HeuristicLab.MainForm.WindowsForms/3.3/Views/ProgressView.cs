@@ -131,6 +131,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
           c.Enabled = true;
         }
         parentView.Controls.Remove(this);
+        DeregisterProgressEvents();
         this.Dispose();
       }
     }
