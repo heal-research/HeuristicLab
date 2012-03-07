@@ -154,9 +154,6 @@
     <Compile Include="JobResultPoller.cs" />
     <Compile Include="Util\PersistenceUtil.cs" />
     <Compile Include="Util\PluginUtil.cs" />
-    <Compile Include="Progress\IProgress.cs" />
-    <Compile Include="Progress\IProgressReporter.cs" />
-    <Compile Include="Progress\Progress.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\AssemblyInfo.cs.frame" />
     <Compile Include="Exceptions\ServiceClientFactoryException.cs" />
@@ -221,6 +218,11 @@
     <ProjectReference Include="..\..\HeuristicLab.Hive\3.3\HeuristicLab.Hive-3.3.csproj">
       <Project>{F98A1740-9AC9-4D36-A582-6A2D0D06978D}</Project>
       <Name>HeuristicLab.Hive-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.MainForm\3.3\HeuristicLab.MainForm-3.3.csproj">
+      <Project>{3BD61258-31DA-4B09-89C0-4F71FEF5F05A}</Project>
+      <Name>HeuristicLab.MainForm-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">

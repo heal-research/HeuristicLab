@@ -20,9 +20,10 @@
 #endregion
 
 using System;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
-using System.Threading.Tasks;
+using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Clients.Hive.Views {
@@ -74,7 +75,7 @@ namespace HeuristicLab.Clients.Hive.Views {
       task.ContinueWith((t) => {
         FinishProgressView();
         ErrorHandling.ShowErrorDialog(this, "An error occured while resuming the task.", t.Exception);
-      }, TaskContinuationOptions.OnlyOnFaulted); 
+      }, TaskContinuationOptions.OnlyOnFaulted);
     }
 
     private void pauseButton_Click(object sender, EventArgs e) {

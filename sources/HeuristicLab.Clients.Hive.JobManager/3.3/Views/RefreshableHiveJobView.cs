@@ -25,11 +25,11 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using HeuristicLab.Clients.Hive.Views;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Optimization;
 using HeuristicLab.PluginInfrastructure;
 

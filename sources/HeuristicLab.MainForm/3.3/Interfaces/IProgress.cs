@@ -21,11 +21,15 @@
 
 using System;
 
-namespace HeuristicLab.Clients.Hive {
-  public interface IProgressReporter {
-    IProgress Progress { get; }
-    bool IsProgressing { get; }
+namespace HeuristicLab.MainForm {
+  public interface IProgress {
+    string Status { get; set; }
+    double ProgressValue { get; set; }
 
-    event EventHandler IsProgressingChanged;
+    void Finish();
+
+    event EventHandler Finished;
+    event EventHandler StatusChanged;
+    event EventHandler ProgressValueChanged;
   }
 }

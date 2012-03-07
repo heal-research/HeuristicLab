@@ -185,6 +185,12 @@
       <DependentUpon>SingleDocumentMainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ToolBarItem.cs" />
+    <Compile Include="Views\ProgressView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\ProgressView.designer.cs">
+      <DependentUpon>ProgressView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\View.cs">
       <SubType>UserControl</SubType>
     </Compile>

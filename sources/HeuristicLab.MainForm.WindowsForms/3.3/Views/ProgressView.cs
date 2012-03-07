@@ -21,9 +21,8 @@
 
 using System;
 using System.Windows.Forms;
-using HeuristicLab.MainForm.WindowsForms;
 
-namespace HeuristicLab.Clients.Hive.Views {
+namespace HeuristicLab.MainForm.WindowsForms {
   public partial class ProgressView : HeuristicLab.MainForm.WindowsForms.View {
     private ContentView parentView;
     private IProgress progress;

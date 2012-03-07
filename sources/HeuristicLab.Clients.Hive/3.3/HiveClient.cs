@@ -29,6 +29,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.MainForm;
 using HeuristicLab.PluginInfrastructure;
 using TS = System.Threading.Tasks;
 
@@ -112,7 +113,8 @@ namespace HeuristicLab.Clients.Hive {
       catch {
         jobs = null;
         throw;
-      } finally {
+      }
+      finally {
         OnRefreshed();
       }
     }
@@ -311,7 +313,8 @@ namespace HeuristicLab.Clients.Hive {
           if (!ae.InnerExceptions.All(e => e is TaskCanceledException)) throw ae; // for some reason the WaitAll throws a AggregateException containg a TaskCanceledException. i don't know where it comes from, however the tasks all finish properly, so for now just ignore it
         }
         refreshableJob.Job.Modified = false;
-      } finally {
+      }
+      finally {
         refreshableJob.IsProgressing = false;
       }
     }
@@ -413,7 +416,8 @@ namespace HeuristicLab.Clients.Hive {
         catch (AggregateException ae) {
           if (!ae.InnerExceptions.All(e => e is TaskCanceledException)) throw ae; // for some reason the WaitAll throws a AggregateException containg a TaskCanceledException. i don't know where it comes from, however the tasks all finish properly, so for now just ignore it
         }
-      } finally {
+      }
+      finally {
         if (!semaphoreReleased) taskUploadSemaphore.Release();
       }
     }
@@ -464,7 +468,8 @@ namespace HeuristicLab.Clients.Hive {
           refreshableJob.ExecutionState = Core.ExecutionState.Started;
         }
         refreshableJob.OnLoaded();
-      } finally {
+      }
+      finally {
         refreshableJob.IsProgressing = false;
       }
     }

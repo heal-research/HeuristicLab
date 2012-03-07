@@ -27,6 +27,7 @@ using System.Linq;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Clients.Hive {
   public class RefreshableJob : IHiveItem, IDeepCloneable, IContent, IProgressReporter, IComparable<RefreshableJob> {

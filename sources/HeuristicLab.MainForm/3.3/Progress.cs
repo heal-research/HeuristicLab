@@ -21,7 +21,7 @@
 
 using System;
 
-namespace HeuristicLab.Clients.Hive {
+namespace HeuristicLab.MainForm {
   public class Progress : IProgress {
     private string status;
     public string Status {

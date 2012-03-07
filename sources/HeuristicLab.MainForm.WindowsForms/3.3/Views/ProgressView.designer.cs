@@ -1,5 +1,5 @@
-﻿using HeuristicLab.MainForm.WindowsForms;
-namespace HeuristicLab.Clients.Hive.Views {
+﻿
+namespace HeuristicLab.MainForm.WindowsForms {
   partial class ProgressView : View {
     /// <summary> 
     /// Required designer variable.

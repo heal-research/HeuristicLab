@@ -164,12 +164,6 @@
     </Compile>
     <None Include="Plugin.cs.frame" />
     <Compile Include="Plugin.cs" />
-    <Compile Include="Progress\ProgressView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Progress\ProgressView.designer.cs">
-      <DependentUpon>ProgressView.cs</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\AssemblyInfo.cs.frame" />
   </ItemGroup>

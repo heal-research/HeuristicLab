@@ -115,7 +115,10 @@
   <ItemGroup>
     <None Include="Plugin.cs.frame" />
     <Compile Include="Interfaces\IConfigureableView.cs" />
+    <Compile Include="Interfaces\IProgress.cs" />
+    <Compile Include="Interfaces\IProgressReporter.cs" />
     <Compile Include="Plugin.cs" />
+    <Compile Include="Progress.cs" />
     <Compile Include="ViewAttribute.cs" />
     <Compile Include="Interfaces\IContentView.cs" />
     <Compile Include="Interfaces\IActionUserInterfaceItem.cs" />
