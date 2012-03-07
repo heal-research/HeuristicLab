@@ -61,7 +61,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
         removeButton.Enabled = false;
         copyButton.Enabled = false;
         treeViewBackColor = symbolsTreeView.BackColor;
-        symbolsTreeView.BackColor = Color.FromArgb(255,240,240,240);
+        symbolsTreeView.BackColor = Color.FromArgb(255, 240, 240, 240);
       } else {
         addButton.Enabled = true;
         if (symbolsTreeView.SelectedNode != null && !(symbolsTreeView.SelectedNode.Tag is IReadOnlySymbol)) {
@@ -124,9 +124,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     }
     #endregion
 
-    private bool internalTreeViewUpdateInProgress = false;
     private void UpdateSymbolsTreeView() {
-      internalTreeViewUpdateInProgress = true;
       var symbols = Content.Symbols.ToList();
       foreach (var treeNode in IterateTreeNodes().ToList()) {
         var symbol = treeNode.Tag as ISymbol;
@@ -139,7 +137,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       UpdateChildTreeNodes(symbolsTreeView.Nodes, topLevelSymbols);
 
       RebuildImageList();
-      internalTreeViewUpdateInProgress = false;
     }
 
     private void UpdateChildTreeNodes(TreeNodeCollection collection, IEnumerable<ISymbol> symbols) {
@@ -180,17 +177,14 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     }
 
     private void symbolsTreeView_BeforeCheck(object sender, TreeViewCancelEventArgs e) {
-      if (internalTreeViewUpdateInProgress) return;      
       if (Content == null || Content.ReadOnly) e.Cancel = true;
       if (ReadOnly || Locked) e.Cancel = true;
     }
 
     #region drag & drop operations
-    private GroupSymbol parentOfDraggedSymbol;
     private void symbolsTreeView_ItemDrag(object sender, ItemDragEventArgs e) {
       if (!Locked) {
         var treeNode = e.Item as TreeNode;
-        if (treeNode.Parent != null) parentOfDraggedSymbol = treeNode.Parent.Tag as GroupSymbol;
         var data = new DataObject();
         data.SetData(HeuristicLab.Common.Constants.DragDropDataFormat, treeNode.Tag);
         validDragOperation = true;
@@ -254,6 +248,15 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
         symbolDetailsViewHost.Content = null;
         SetEnabledStateOfControls();
       }
+    }
+
+    private void symbolsTreeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e) {
+      var symbol = e.Node.Tag as ISymbol;
+      if (symbol == null) return;
+      if (e.Button != MouseButtons.Left) return;
+      if (e.X < e.Node.Bounds.Left - symbolsTreeView.ImageList.Images[e.Node.ImageIndex].Width || e.X > e.Node.Bounds.Right) return;
+      MainFormManager.MainForm.ShowContent(symbol);
+      e.Node.Toggle();
     }
 
     private void symbolsTreeView_KeyDown(object sender, KeyEventArgs e) {
@@ -423,10 +426,26 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
   }
 
   //this class is necessary to prevent double clicks which do not fire the checkbox checked event
+  //workaround taken from http://connect.microsoft.com/VisualStudio/feedback/details/374516/treeview-control-does-not-fire-events-reliably-when-double-clicking-on-checkbox
   internal class CheckBoxTreeView : TreeView {
     protected override void WndProc(ref Message m) {
       // Suppress WM_LBUTTONDBLCLK
-      if (m.Msg == 0x203) { m.Result = IntPtr.Zero; } else base.WndProc(ref m);
+      if (m.Msg == 0x203 && IsOnCheckBox(m)) { m.Result = IntPtr.Zero; } else base.WndProc(ref m);
+    }
+
+    private int GetXLParam(IntPtr lParam) {
+      return lParam.ToInt32() & 0xffff;
+    }
+
+    private int GetYLParam(IntPtr lParam) {
+      return lParam.ToInt32() >> 16;
+    }
+
+    private bool IsOnCheckBox(Message m) {
+      int x = GetXLParam(m.LParam);
+      int y = GetYLParam(m.LParam);
+      TreeNode node = this.GetNodeAt(x, y);
+      return ((x <= node.Bounds.Left - 20) && (x >= node.Bounds.Left - 32));
     }
   }
 }

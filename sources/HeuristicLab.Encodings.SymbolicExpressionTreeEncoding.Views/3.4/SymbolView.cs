@@ -28,7 +28,7 @@ using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
   [View("Symbol View")]
-  [Content(typeof(ISymbol), false)]
+  [Content(typeof(ISymbol), true)]
   public partial class SymbolView : NamedItemView {
     public new ISymbol Content {
       get { return (ISymbol)base.Content; }

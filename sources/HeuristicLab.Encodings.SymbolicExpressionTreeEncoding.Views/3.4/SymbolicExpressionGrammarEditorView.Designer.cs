@@ -169,6 +169,7 @@
       this.symbolsTreeView.DragOver += new System.Windows.Forms.DragEventHandler(this.symbolsTreeView_DragOver);
       this.symbolsTreeView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.symbolsTreeView_KeyDown);
       this.symbolsTreeView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.symbolsTreeView_MouseDown);
+      this.symbolsTreeView.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(symbolsTreeView_NodeMouseDoubleClick);
       // 
       // imageList
       // 
