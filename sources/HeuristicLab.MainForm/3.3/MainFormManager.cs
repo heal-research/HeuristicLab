@@ -117,24 +117,31 @@ namespace HeuristicLab.MainForm {
             return TransformGenericTypeDefinition(defaultViews[defaultContentType], contentType);
         }
 
-        //check interfaces
-        IEnumerable<Type> nonInheritedInterfaces = type.GetInterfaces().Where(i => !i.IsAssignableFrom(type.BaseType));
-        List<Type> defaultViewList = new List<Type>();
-        foreach (Type defaultContentType in defaultViews.Keys) {
-          if (nonInheritedInterfaces.Contains(defaultContentType) || nonInheritedInterfaces.Any(i => i.CheckGenericTypes(defaultContentType)))
-            defaultViewList.Add(defaultViews[defaultContentType]);
-        }
+        //check interfaces hierarchy of implemented and not inherited interfaces
+        var nonInheritedInterfaces = type.GetInterfaces().Where(i => !i.IsAssignableFrom(type.BaseType));
+        var interfaces = new HashSet<Type>(nonInheritedInterfaces);
 
-        //return only most spefic view as default view
-        foreach (Type viewType in defaultViewList.ToList()) {
-          if (defaultViewList.Any(t => t.IsSubclassOf(viewType)))
-            defaultViewList.Remove(viewType);
-        }
+        while (interfaces.Any()) {
+          interfaces.RemoveWhere(i => interfaces.Any(x => x.GetInterfaces().Contains(i)));
 
-        if (defaultViewList.Count == 1)
-          return TransformGenericTypeDefinition(defaultViewList[0], contentType);
-        else if (defaultViewList.Count > 1)
-          throw new InvalidOperationException("Could not determine which is the default view for type " + contentType.ToString() + ". Because more than one implemented interfaces have a default view.");
+          List<Type> defaultViewList = (from defaultContentType in defaultViews.Keys
+                                        where interfaces.Contains(defaultContentType) ||
+                                              interfaces.Any(i => i.CheckGenericTypes(defaultContentType))
+                                        select defaultViews[defaultContentType]).ToList();
+
+          //return only most spefic view as default view
+          foreach (Type viewType in defaultViewList.ToList()) {
+            if (defaultViewList.Any(t => t.IsSubclassOf(viewType)))
+              defaultViewList.Remove(viewType);
+          }
+
+          if (defaultViewList.Count == 1)
+            return TransformGenericTypeDefinition(defaultViewList[0], contentType);
+          else if (defaultViewList.Count > 1)
+            throw new InvalidOperationException("Could not determine which is the default view for type " + contentType.ToString() + ". Because more than one implemented interfaces have a default view.");
+
+          interfaces = new HashSet<Type>(interfaces.SelectMany(i => i.GetInterfaces()));
+        }
 
         type = type.BaseType;
       }
