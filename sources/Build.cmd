@@ -1,6 +1,6 @@
 @ECHO OFF
 
-SET CLEANBEFOREBUILD=0
+SET CLEANBEFOREBUILD=
 
 SET SELECTED=
 SET CONFIGURATION=
@@ -56,11 +56,21 @@ IF "%~3"=="" GOTO :prompt_platform
   
 SET PLATFORM=%~3
 ECHO Building platform %PLATFORM% ...
-GOTO :main
+GOTO :clean
 
 :prompt_platform
 SET /P PLATFORM=Which platform to build [Any CPU]: 
 IF "%PLATFORM%"=="" SET PLATFORM=Any CPU
+
+:clean
+IF "%~4"=="" GOTO :prompt_clean
+
+SET CLEANBEFOREBUILD=%~4
+GOTO :main
+
+:prompt_clean
+SET /P CLEANBEFOREBUILD=Would you like to clean before building [n]: 
+IF "%CLEANBEFOREBUILD%"=="" SET CLEANBEFOREBUILD=n
 
 :main
 REM First find the path to the msbuild.exe by performing a registry query
@@ -71,12 +81,12 @@ REM Then execute msbuild to clean and build the solution
 REM Disable that msbuild creates a cache file of the solution
 SET MSBuildUseNoSolutionCache=1
 REM Run msbuild to clean and then build
-IF "%CLEANBEFOREBUILD%"=="1" (
+IF "%CLEANBEFOREBUILD%" NEQ "n" (
   ECHO Cleaning ...
   %MSBUILDPATH%msbuild.exe %SELECTED% /target:Clean /p:Configuration="%CONFIGURATION%",Platform="%PLATFORM%" /m:2 /nologo /verbosity:q /clp:ErrorsOnly
 )
 ECHO Building ...
-%MSBUILDPATH%msbuild.exe %SELECTED% /target:Rebuild /p:Configuration="%CONFIGURATION%",Platform="%PLATFORM%" /m:2 /nologo /verbosity:q /clp:ErrorsOnly
+%MSBUILDPATH%msbuild.exe %SELECTED% /target:Build /p:Configuration="%CONFIGURATION%",Platform="%PLATFORM%" /m:2 /nologo /verbosity:q /clp:ErrorsOnly
 
 ECHO.
 ECHO DONE.
