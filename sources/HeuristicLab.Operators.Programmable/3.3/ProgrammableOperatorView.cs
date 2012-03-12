@@ -71,7 +71,7 @@ namespace HeuristicLab.Operators.Programmable {
       breakpointCheckBox.Checked = ProgrammableOperator.Breakpoint;
     }
     private void ProgrammableOperator_CodeChanged(object sender, EventArgs e) {
-      codeEditor.Text = ProgrammableOperator.Code;
+      codeEditor.UserCode = ProgrammableOperator.Code;
     }
     private void ProgrammableOperator_SignatureChanged(object sender, EventArgs args) {
       codeEditor.Prefix = GetGeneratedPrefix();
@@ -81,7 +81,7 @@ namespace HeuristicLab.Operators.Programmable {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (ProgrammableOperator == null) {
-        codeEditor.Text = "";
+        codeEditor.UserCode = "";
         assembliesTreeView.Nodes.Clear();
         parameterCollectionView.Content = null;
       } else {
