@@ -20,14 +20,10 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text.RegularExpressions;
 
 namespace HeuristicLab.Problems.Instances.TSPLIB {
-  public class TSPLIBCVRPInstanceProvider : ProblemInstanceProvider<CVRPData> {
+  public class TSPLIBCVRPInstanceProvider : TSPLIBInstanceProvider<CVRPData> {
 
     public override string Name {
       get { return "TSPLIB (CVRP)"; }
@@ -37,59 +33,9 @@ namespace HeuristicLab.Problems.Instances.TSPLIB {
       get { return "Traveling Salesman Problem Library"; }
     }
 
-    public override Uri WebLink {
-      get { return new Uri("http://comopt.ifi.uni-heidelberg.de/software/TSPLIB95/"); }
-    }
+    protected override string FileExtension { get { return "vrp"; } }
 
-    public override string ReferencePublication {
-      get {
-        return @"G. Reinelt. 1991.
-TSPLIB - A Traveling Salesman Problem Library.
-ORSA Journal on Computing, 3, pp. 376-384.";
-      }
-    }
-
-    public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
-      var solutions = Assembly.GetExecutingAssembly()
-        .GetManifestResourceNames()
-        .Where(x => Regex.Match(x, @".*\.Data\.CVRP\..*").Success)
-        .Where(x => x.EndsWith(".opt.tour"))
-        .ToDictionary(x => x.Substring(0, x.Length - ".opt.tour".Length) + ".vrp", x => x);
-
-      return Assembly.GetExecutingAssembly()
-          .GetManifestResourceNames()
-          .Where(x => Regex.Match(x, @".*\.Data\.CVRP\..*").Success)
-          .OrderBy(x => x)
-          .Select(x => new TSPLIBDataDescriptor(GetPrettyName(x), GetDescription(), x, solutions.ContainsKey(x) ? solutions[x] : String.Empty));
-    }
-
-    public override CVRPData LoadData(IDataDescriptor id) {
-      var descriptor = (TSPLIBDataDescriptor)id;
-      using (var stream = Assembly.GetExecutingAssembly()
-        .GetManifestResourceStream(descriptor.InstanceIdentifier)) {
-        var instance = Load(new TSPLIBParser(stream));
-
-        if (!String.IsNullOrEmpty(descriptor.SolutionIdentifier)) {
-          using (Stream solStream = Assembly.GetExecutingAssembly()
-            .GetManifestResourceStream(descriptor.SolutionIdentifier)) {
-            var slnParser = new TSPLIBParser(solStream);
-            slnParser.Parse();
-            instance.BestKnownTour = slnParser.Tour;
-          }
-        }
-        return instance;
-      }
-    }
-
-    public override CVRPData LoadData(string path) {
-      return Load(new TSPLIBParser(path));
-    }
-
-    public override void SaveData(CVRPData instance, string path) {
-      throw new NotSupportedException();
-    }
-
-    private CVRPData Load(TSPLIBParser parser) {
+    protected override CVRPData LoadInstance(TSPLIBParser parser) {
       parser.Parse();
       var instance = new CVRPData();
       instance.Dimension = parser.Dimension;
@@ -122,17 +68,14 @@ ORSA Journal on Computing, 3, pp. 376-384.";
       instance.Name = parser.Name;
       instance.Description = parser.Comment
         + Environment.NewLine + Environment.NewLine
-        + GetDescription();
+        + GetInstanceDescription();
 
       return instance;
     }
 
-    private string GetPrettyName(string instanceIdentifier) {
-      return Regex.Match(instanceIdentifier, GetType().Namespace + @"\.Data\.CVRP\.(.*)\.vrp").Groups[1].Captures[0].Value;
-    }
-
-    private string GetDescription() {
-      return "Embedded instance of plugin version " + Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyFileVersionAttribute), true).Cast<AssemblyFileVersionAttribute>().First().Version + ".";
+    protected override void LoadSolution(TSPLIBParser parser, CVRPData instance) {
+      parser.Parse();
+      instance.BestKnownTour = parser.Tour;
     }
   }
 }
