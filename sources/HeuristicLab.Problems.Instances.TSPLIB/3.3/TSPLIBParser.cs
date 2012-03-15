@@ -475,7 +475,9 @@ namespace HeuristicLab.Problems.Instances.TSPLIB {
 
       var tours = new List<List<int>>();
       do {
-        string[] nodes = NextLine().Split(itemSeparator, StringSplitOptions.RemoveEmptyEntries);
+        var line = NextLine();
+        if (String.IsNullOrEmpty(line)) break;
+        string[] nodes = line.Split(itemSeparator, StringSplitOptions.RemoveEmptyEntries);
         if (!nodes.Any()) break;
 
         bool finished = false;

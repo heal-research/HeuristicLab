@@ -53,7 +53,7 @@ ORSA Journal on Computing, 3, pp. 376-384.";
       if (!String.IsNullOrEmpty(solutionsArchiveName)) {
         using (var solutionsZipFile = new ZipInputStream(GetType().Assembly.GetManifestResourceStream(solutionsArchiveName))) {
           foreach (var entry in GetZipContents(solutionsZipFile))
-            solutions.Add(entry.Substring(0, entry.Length - ".opt.tour".Length) + FileExtension, entry);
+            solutions.Add(entry.Substring(0, entry.Length - ".opt.tour".Length) + "." + FileExtension, entry);
         }
       }
       var instanceArchiveName = GetResourceName(FileExtension + @"\.zip");
