@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -92,6 +93,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
             dm = DistanceMatrixParameter.ActualValue;
             if (dm == null) {  // check again to avoid race condition
               DoubleMatrix c = CoordinatesParameter.ActualValue;
+              if (c == null) throw new InvalidOperationException("Neither a distance matrix nor coordinates were given.");
               dm = new DistanceMatrix(c.Rows, c.Rows);
               for (int i = 0; i < dm.Rows; i++) {
                 for (int j = 0; j < dm.Columns; j++)
@@ -110,7 +112,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       } else {
         Permutation p = PermutationParameter.ActualValue;
         DoubleMatrix c = CoordinatesParameter.ActualValue;
-
+        if (c == null) throw new InvalidOperationException("No coordinates were given.");
         double length = 0;
         for (int i = 0; i < p.Length - 1; i++)
           length += CalculateDistance(c[p[i], 0], c[p[i], 1], c[p[i + 1], 0], c[p[i + 1], 1]);

@@ -43,8 +43,8 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     public string Filename { get; set; }
 
     #region Parameter Properties
-    public ValueParameter<DoubleMatrix> CoordinatesParameter {
-      get { return (ValueParameter<DoubleMatrix>)Parameters["Coordinates"]; }
+    public OptionalValueParameter<DoubleMatrix> CoordinatesParameter {
+      get { return (OptionalValueParameter<DoubleMatrix>)Parameters["Coordinates"]; }
     }
     public OptionalValueParameter<DistanceMatrix> DistanceMatrixParameter {
       get { return (OptionalValueParameter<DistanceMatrix>)Parameters["DistanceMatrix"]; }
@@ -109,7 +109,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
     public TravelingSalesmanProblem()
       : base(new TSPRoundedEuclideanPathEvaluator(), new RandomPermutationCreator()) {
-      Parameters.Add(new ValueParameter<DoubleMatrix>("Coordinates", "The x- and y-Coordinates of the cities."));
+      Parameters.Add(new OptionalValueParameter<DoubleMatrix>("Coordinates", "The x- and y-Coordinates of the cities."));
       Parameters.Add(new OptionalValueParameter<DistanceMatrix>("DistanceMatrix", "The matrix which contains the distances between the cities."));
       Parameters.Add(new ValueParameter<BoolValue>("UseDistanceMatrix", "True if a distance matrix should be calculated and used for evaluation, otherwise false.", new BoolValue(true)));
       Parameters.Add(new OptionalValueParameter<Permutation>("BestKnownSolution", "The best known solution of this TSP instance."));
@@ -147,13 +147,16 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       base.OnEvaluatorChanged();
       Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       ParameterizeEvaluator();
+      ParameterizeSolutionCreator();
       UpdateMoveEvaluators();
       ParameterizeAnalyzers();
       ClearDistanceMatrix();
     }
     private void CoordinatesParameter_ValueChanged(object sender, EventArgs e) {
-      Coordinates.ItemChanged += new EventHandler<EventArgs<int, int>>(Coordinates_ItemChanged);
-      Coordinates.Reset += new EventHandler(Coordinates_Reset);
+      if (Coordinates != null) {
+        Coordinates.ItemChanged += new EventHandler<EventArgs<int, int>>(Coordinates_ItemChanged);
+        Coordinates.Reset += new EventHandler(Coordinates_Reset);
+      }
       ParameterizeSolutionCreator();
       ClearDistanceMatrix();
     }
@@ -196,6 +199,12 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         }
       }
 
+      ValueParameter<DoubleMatrix> oldCoordinates = (Parameters["Coordinates"] as ValueParameter<DoubleMatrix>);
+      if (oldCoordinates != null) {
+        Parameters.Remove(oldCoordinates);
+        Parameters.Add(new OptionalValueParameter<DoubleMatrix>("Coordinates", "The x- and y-Coordinates of the cities.", oldCoordinates.Value, oldCoordinates.GetsCollected));
+      }
+
       if (Operators.Count == 0) InitializeOperators();
       #endregion
       RegisterEventHandlers();
@@ -203,8 +212,10 @@ namespace HeuristicLab.Problems.TravelingSalesman {
 
     private void RegisterEventHandlers() {
       CoordinatesParameter.ValueChanged += new EventHandler(CoordinatesParameter_ValueChanged);
-      Coordinates.ItemChanged += new EventHandler<EventArgs<int, int>>(Coordinates_ItemChanged);
-      Coordinates.Reset += new EventHandler(Coordinates_Reset);
+      if (Coordinates != null) {
+        Coordinates.ItemChanged += new EventHandler<EventArgs<int, int>>(Coordinates_ItemChanged);
+        Coordinates.Reset += new EventHandler(Coordinates_Reset);
+      }
       SolutionCreator.PermutationParameter.ActualNameChanged += new EventHandler(SolutionCreator_PermutationParameter_ActualNameChanged);
       Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
     }
@@ -228,8 +239,12 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       OnOperatorsChanged();
     }
     private void ParameterizeSolutionCreator() {
-      SolutionCreator.LengthParameter.Value = new IntValue(Coordinates.Rows);
-      SolutionCreator.LengthParameter.Hidden = true;
+      if (Evaluator is ITSPDistanceMatrixEvaluator && DistanceMatrix != null)
+        SolutionCreator.LengthParameter.Value = new IntValue(DistanceMatrix.Rows);
+      else if (Evaluator is ITSPCoordinatesPathEvaluator && Coordinates != null)
+        SolutionCreator.LengthParameter.Value = new IntValue(Coordinates.Rows);
+      else SolutionCreator.LengthParameter.Value = null;
+      SolutionCreator.LengthParameter.Hidden = SolutionCreator.LengthParameter.Value != null;
       SolutionCreator.PermutationTypeParameter.Value = new PermutationType(PermutationTypes.RelativeUndirected);
       SolutionCreator.PermutationTypeParameter.Hidden = true;
     }
@@ -323,7 +338,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
 
     public void Load(TSPData data) {
       if (data.Coordinates == null && data.Distances == null)
-        throw new System.IO.InvalidDataException("The given instance does not specify neither coordinates or distances!");
+        throw new System.IO.InvalidDataException("The given instance specifies neither coordinates nor distances!");
       if (data.Dimension > DistanceMatrixSizeLimit && (data.DistanceMeasure == TSPDistanceMeasure.Att
         || data.DistanceMeasure == TSPDistanceMeasure.Manhattan
         || data.DistanceMeasure == TSPDistanceMeasure.Maximum
@@ -337,6 +352,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
 
       if (data.Coordinates != null && data.Coordinates.GetLength(0) > 0)
         Coordinates = new DoubleMatrix(data.Coordinates);
+      else Coordinates = null;
 
       TSPEvaluator evaluator;
       if (data.DistanceMeasure == TSPDistanceMeasure.Att
@@ -391,9 +407,9 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       BestKnownSolution = route;
 
       double quality;
-      if (Evaluator is TSPDistanceMatrixEvaluator) {
+      if (Evaluator is ITSPDistanceMatrixEvaluator) {
         quality = TSPDistanceMatrixEvaluator.Apply(DistanceMatrix, route);
-      } else if (Evaluator is TSPCoordinatesPathEvaluator) {
+      } else if (Evaluator is ITSPCoordinatesPathEvaluator) {
         quality = TSPCoordinatesPathEvaluator.Apply((TSPCoordinatesPathEvaluator)Evaluator, Coordinates, route);
       } else {
         throw new InvalidOperationException("Cannot calculate solution quality, evaluator type is unknown.");

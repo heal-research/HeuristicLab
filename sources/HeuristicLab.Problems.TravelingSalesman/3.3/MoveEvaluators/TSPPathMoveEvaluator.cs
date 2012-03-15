@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -77,11 +78,15 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       if (UseDistanceMatrixParameter.ActualValue.Value) {
         DistanceMatrix distanceMatrix = DistanceMatrixParameter.ActualValue;
         if (distanceMatrix == null) {
+          if (coordinates == null) throw new InvalidOperationException("Neither a distance matrix nor coordinates were given.");
           distanceMatrix = CalculateDistanceMatrix(coordinates);
           DistanceMatrixParameter.ActualValue = distanceMatrix;
         }
         relativeQualityDifference = EvaluateByDistanceMatrix(permutation, distanceMatrix);
-      } else relativeQualityDifference = EvaluateByCoordinates(permutation, coordinates);
+      } else {
+        if (coordinates == null) throw new InvalidOperationException("No coordinates were given.");
+        relativeQualityDifference = EvaluateByCoordinates(permutation, coordinates);
+      }
       DoubleValue moveQuality = MoveQualityParameter.ActualValue;
       if (moveQuality == null) MoveQualityParameter.ActualValue = new DoubleValue(QualityParameter.ActualValue.Value + relativeQualityDifference);
       else moveQuality.Value = QualityParameter.ActualValue.Value + relativeQualityDifference;

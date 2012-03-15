@@ -117,6 +117,14 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
               for (int i = 0; i < points.Length; i++)
                 graphics.FillRectangle(Brushes.Red, points[i].X - 2, points[i].Y - 2, 6, 6);
             }
+          } else {
+            using (Graphics graphics = Graphics.FromImage(bitmap)) {
+              graphics.Clear(Color.White);
+              Font font = new Font(FontFamily.GenericSansSerif, 12, FontStyle.Regular);
+              string text = "No coordinates defined or in wrong format.";
+              SizeF strSize = graphics.MeasureString(text, font);
+              graphics.DrawString(text, font, Brushes.Black, (float)(pictureBox.Width - strSize.Width) / 2.0f, (float)(pictureBox.Height - strSize.Height) / 2.0f);
+            }
           }
           pictureBox.Image = bitmap;
         }

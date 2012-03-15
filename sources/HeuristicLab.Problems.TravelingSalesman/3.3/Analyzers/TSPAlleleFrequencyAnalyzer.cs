@@ -59,6 +59,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       Allele[] alleles = new Allele[solution.Length];
       DoubleMatrix coords = CoordinatesParameter.ActualValue;
       DistanceMatrix dm = DistanceMatrixParameter.ActualValue;
+      if (dm == null && coords == null) throw new InvalidOperationException("Neither a distance matrix nor coordinates were given.");
       int source, target, h;
       double impact;
 
