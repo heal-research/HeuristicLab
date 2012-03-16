@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using HeuristicLab.Common;
@@ -252,7 +253,13 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     }
 
     private void InitializeOperators() {
-      Operators.AddRange(ApplicationManager.Manager.GetInstances<IPermutationOperator>());
+      var defaultOperators = new HashSet<IPermutationOperator>(new IPermutationOperator[] {
+        new PartiallyMatchedCrossover(),
+        new Swap2Manipulator(),
+        new ExhaustiveSwap2MoveGenerator()
+      });
+      Operators.AddRange(defaultOperators);
+      Operators.AddRange(ApplicationManager.Manager.GetInstances<IPermutationOperator>().Except(defaultOperators, new TypeEqualityComparer<IPermutationOperator>()));
       Operators.RemoveAll(x => x is ISingleObjectiveMoveEvaluator);
       Operators.AddRange(ApplicationManager.Manager.GetInstances<IQAPMoveEvaluator>());
       Operators.Add(new BestQAPSolutionAnalyzer());

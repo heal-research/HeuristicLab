@@ -225,7 +225,13 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       Operators.Add(new TSPAlleleFrequencyAnalyzer());
       Operators.Add(new TSPPopulationDiversityAnalyzer());
       ParameterizeAnalyzers();
-      Operators.AddRange(ApplicationManager.Manager.GetInstances<IPermutationOperator>().Cast<IOperator>());
+      var defaultOperators = new HashSet<IPermutationOperator>(new IPermutationOperator[] {
+        new OrderCrossover2(),
+        new InversionManipulator(),
+        new StochasticInversionMultiMoveGenerator()
+      });
+      Operators.AddRange(defaultOperators);
+      Operators.AddRange(ApplicationManager.Manager.GetInstances<IPermutationOperator>().Except(defaultOperators, new TypeEqualityComparer<IPermutationOperator>()));
       ParameterizeOperators();
       UpdateMoveEvaluators();
     }
