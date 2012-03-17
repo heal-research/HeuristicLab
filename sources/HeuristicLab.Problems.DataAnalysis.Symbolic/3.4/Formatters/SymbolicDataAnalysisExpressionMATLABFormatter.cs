@@ -66,7 +66,30 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public string Format(ISymbolicExpressionTree symbolicExpressionTree) {
       currentLag = 0;
       currentIndexNumber = 0;
-      return FormatRecursively(symbolicExpressionTree.Root);
+
+      var stringBuilder = new StringBuilder();
+      stringBuilder.AppendLine("rows = ???");
+      stringBuilder.AppendLine(FormatOnlyExpression(symbolicExpressionTree.Root) + ";");
+      stringBuilder.AppendLine();
+      stringBuilder.AppendLine("function y = log_(x)");
+      stringBuilder.AppendLine("  if(x<=0) y = NaN;");
+      stringBuilder.AppendLine("  else     y = log(x);");
+      stringBuilder.AppendLine("  end");
+      stringBuilder.AppendLine("end");
+      stringBuilder.AppendLine();
+      stringBuilder.AppendLine("function y = fivePoint(f0, f1, f3, f4)");
+      stringBuilder.AppendLine("  y = (f0 + 2*f1 - 2*f3 - f4) / 8;");
+      stringBuilder.AppendLine("end");
+      return stringBuilder.ToString();
+    }
+
+    public string FormatOnlyExpression(ISymbolicExpressionTreeNode expressionNode)
+    {
+      var stringBuilder = new StringBuilder();
+      stringBuilder.AppendLine("  for " + CurrentIndexVariable + " = 1:1:rows");
+      stringBuilder.AppendLine("    estimated(" + CurrentIndexVariable + ") = " + FormatRecursively(expressionNode.GetSubtree(0)) + ";");
+      stringBuilder.AppendLine("  end;");
+      return stringBuilder.ToString();
     }
 
     private string FormatRecursively(ISymbolicExpressionTreeNode node) {
@@ -74,41 +97,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       StringBuilder stringBuilder = new StringBuilder();
 
       if (symbol is ProgramRootSymbol) {
-        var variableNames = node.IterateNodesPostfix()
-          .OfType<VariableTreeNode>()
-          .Select(n => n.VariableName)
-          .Distinct()
-          .OrderBy(x => x);
-        stringBuilder.AppendLine("function test_model");
-        foreach (string variableName in variableNames)
-          stringBuilder.AppendLine("  " + variableName + " = Data(:, ???);");
-        stringBuilder.AppendLine("  for " + CurrentIndexVariable + " = size(Data,1):-1:1");
-        stringBuilder.AppendLine("    Target_estimated(" + CurrentIndexVariable + ") = " + FormatRecursively(node.GetSubtree(0)) + ";");
-        stringBuilder.AppendLine("  end");
-        stringBuilder.AppendLine("end");
-        stringBuilder.AppendLine();
-        stringBuilder.AppendLine("function y = log_(x)");
-        stringBuilder.AppendLine("  if(x<=0) y = NaN;");
-        stringBuilder.AppendLine("  else     y = log(x);");
-        stringBuilder.AppendLine("  end");
-        stringBuilder.AppendLine("end");
-        stringBuilder.AppendLine();
-        stringBuilder.AppendLine("function y = fivePoint(f0, f1, f3, f4)");
-        stringBuilder.AppendLine("  y = (f0 + 2*f1 - 2*f3 - f4) / 8;");
-        stringBuilder.AppendLine("end");
-        return stringBuilder.ToString();
-      }
-
-      if (symbol is StartSymbol)
+        stringBuilder.AppendLine(FormatRecursively(node.GetSubtree(0)));
+      } else if (symbol is StartSymbol)
         return FormatRecursively(node.GetSubtree(0));
-
-      stringBuilder.Append("(");
-
-      if (symbol is Addition) {
+      else if (symbol is Addition) {
+        stringBuilder.Append("(");
         for (int i = 0; i < node.SubtreeCount; i++) {
           if (i > 0) stringBuilder.Append("+");
           stringBuilder.Append(FormatRecursively(node.GetSubtree(i)));
         }
+        stringBuilder.Append(")");
       } else if (symbol is And) {
         stringBuilder.Append("((");
         for (int i = 0; i < node.SubtreeCount; i++) {
@@ -117,7 +115,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           stringBuilder.Append(FormatRecursively(node.GetSubtree(i)));
           stringBuilder.Append(")>0)");
         }
-        stringBuilder.Append(")-0.5)*2"); // MATLAB maps false and true to 0 and 1, resp., we map this result to -1.0 and +1.0, resp.
+        stringBuilder.Append(")-0.5)*2");
+        // MATLAB maps false and true to 0 and 1, resp., we map this result to -1.0 and +1.0, resp.
       } else if (symbol is Average) {
         stringBuilder.Append("(1/");
         stringBuilder.Append(node.SubtreeCount);
@@ -158,7 +157,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
         stringBuilder.Append(">");
         stringBuilder.Append(FormatRecursively(node.GetSubtree(1)));
-        stringBuilder.Append(")-0.5)*2"); // MATLAB maps false and true to 0 and 1, resp., we map this result to -1.0 and +1.0, resp.
+        stringBuilder.Append(")-0.5)*2");
+        // MATLAB maps false and true to 0 and 1, resp., we map this result to -1.0 and +1.0, resp.
       } else if (symbol is IfThenElse) {
         stringBuilder.Append("(");
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
@@ -174,13 +174,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         LaggedVariableTreeNode laggedVariableTreeNode = node as LaggedVariableTreeNode;
         stringBuilder.Append(laggedVariableTreeNode.Weight.ToString(CultureInfo.InvariantCulture));
         stringBuilder.Append("*");
-        stringBuilder.Append(laggedVariableTreeNode.VariableName + LagToString(currentLag + laggedVariableTreeNode.Lag));
+        stringBuilder.Append(laggedVariableTreeNode.VariableName +
+                             LagToString(currentLag + laggedVariableTreeNode.Lag));
       } else if (symbol is LessThan) {
         stringBuilder.Append("((");
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
         stringBuilder.Append("<");
         stringBuilder.Append(FormatRecursively(node.GetSubtree(1)));
-        stringBuilder.Append(")-0.5)*2"); // MATLAB maps false and true to 0 and 1, resp., we map this result to -1.0 and +1.0, resp.
+        stringBuilder.Append(")-0.5)*2");
+        // MATLAB maps false and true to 0 and 1, resp., we map this result to -1.0 and +1.0, resp.
       } else if (symbol is Logarithm) {
         stringBuilder.Append("log_(");
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
@@ -202,7 +204,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           stringBuilder.Append(FormatRecursively(node.GetSubtree(i)));
           stringBuilder.Append(")>0)");
         }
-        stringBuilder.Append(")-0.5)*2"); // MATLAB maps false and true to 0 and 1, resp., we map this result to -1.0 and +1.0, resp.
+        stringBuilder.Append(")-0.5)*2");
+        // MATLAB maps false and true to 0 and 1, resp., we map this result to -1.0 and +1.0, resp.
       } else if (symbol is Sine) {
         stringBuilder.Append("sin(");
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
@@ -261,7 +264,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var laggedNode = node as LaggedTreeNode;
         string prevCounterVariable = CurrentIndexVariable;
         string counterVariable = AllocateIndexVariable();
-        stringBuilder.AppendLine(" sum (map(@(" + counterVariable + ") " + FormatRecursively(node.GetSubtree(0)) + ", (" + prevCounterVariable + "+" + laggedNode.Lag + "):" + prevCounterVariable + "))");
+        stringBuilder.AppendLine(" sum (map(@(" + counterVariable + ") " + FormatRecursively(node.GetSubtree(0)) +
+                                 ", (" + prevCounterVariable + "+" + laggedNode.Lag + "):" + prevCounterVariable +
+                                 "))");
         ReleaseIndexVariable();
       } else if (symbol is TimeLag) {
         var laggedNode = node as LaggedTreeNode;
@@ -271,13 +276,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else {
         stringBuilder.Append("ERROR");
       }
-
-      stringBuilder.Append(")");
       return stringBuilder.ToString();
     }
 
 
-    private string LagToString(int lag) {
+    private string LagToString(int lag)
+    {
       if (lag < 0) {
         return "(" + CurrentIndexVariable + "" + lag + ")";
       } else if (lag > 0) {
