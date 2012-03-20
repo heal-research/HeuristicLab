@@ -44,7 +44,7 @@ namespace HeuristicLab.Optimization.Views {
       importButton.Image = VSImageLibrary.Open;
       toolTip.SetToolTip(importButton, "Import a " + GetProblemType() + " instance from file.");
       loadButton.Text = String.Empty;
-      loadButton.Image = VSImageLibrary.Checkout;
+      loadButton.Image = VSImageLibrary.RefreshDocument;
       toolTip.SetToolTip(loadButton, "Load the selected instance.");
     }
 

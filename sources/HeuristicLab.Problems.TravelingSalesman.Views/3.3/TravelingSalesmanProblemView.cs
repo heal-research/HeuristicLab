@@ -30,7 +30,7 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
   /// </summary>
   [View("Traveling Salesman Problem View")]
   [Content(typeof(TravelingSalesmanProblem), true)]
-  public sealed partial class TravelingSalesmanProblemView : HeuristicOptimizationProblemView {
+  public sealed partial class TravelingSalesmanProblemView : ProblemView {
     public new TravelingSalesmanProblem Content {
       get { return (TravelingSalesmanProblem)base.Content; }
       set { base.Content = value; }

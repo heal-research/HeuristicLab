@@ -263,12 +263,6 @@
     <Compile Include="EngineAlgorithmView.Designer.cs">
       <DependentUpon>EngineAlgorithmView.cs</DependentUpon>
     </Compile>
-    <Compile Include="HeuristicOptimizationProblemView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="HeuristicOptimizationProblemView.Designer.cs">
-      <DependentUpon>HeuristicOptimizationProblemView.cs</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResultCollectionView.cs">
       <SubType>UserControl</SubType>

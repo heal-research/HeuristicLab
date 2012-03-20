@@ -44,60 +44,61 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
       this.tabControl = new System.Windows.Forms.TabControl();
       this.problemTabPage = new System.Windows.Forms.TabPage();
       this.visualizationTabPage = new System.Windows.Forms.TabPage();
       this.qapView = new HeuristicLab.Problems.QuadraticAssignment.Views.QAPVisualizationControl();
+      ((System.ComponentModel.ISupportInitialize)(this.problemInstanceSplitContainer)).BeginInit();
+      this.problemInstanceSplitContainer.Panel1.SuspendLayout();
+      this.problemInstanceSplitContainer.Panel2.SuspendLayout();
+      this.problemInstanceSplitContainer.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.tabControl.SuspendLayout();
+      this.problemTabPage.SuspendLayout();
       this.visualizationTabPage.SuspendLayout();
       this.SuspendLayout();
       // 
+      // libraryInfoButton
+      // 
+      this.libraryInfoButton.Location = new System.Drawing.Point(224, 1);
+      // 
+      // problemInstanceSplitContainer
+      // 
+      // 
+      // problemInstanceSplitContainer.Panel2
+      // 
+      this.problemInstanceSplitContainer.Panel2.Controls.Add(this.tabControl);
+      // 
       // parameterCollectionView
       // 
-      this.parameterCollectionView.Location = new System.Drawing.Point(8, 107);
-      this.parameterCollectionView.Size = new System.Drawing.Size(629, 375);
+      this.parameterCollectionView.Location = new System.Drawing.Point(0, 3);
+      this.parameterCollectionView.Size = new System.Drawing.Size(497, 269);
       // 
       // nameTextBox
       // 
       this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.errorProvider.SetIconPadding(this.nameTextBox, 2);
-      this.nameTextBox.Location = new System.Drawing.Point(50, 29);
-      this.nameTextBox.Size = new System.Drawing.Size(572, 20);
-      // 
-      // nameLabel
-      // 
-      this.nameLabel.Location = new System.Drawing.Point(3, 32);
-      // 
-      // infoLabel
-      // 
-      this.infoLabel.Location = new System.Drawing.Point(628, 32);
-      // 
-      // openFileDialog
-      // 
-      this.openFileDialog.FileName = "instance.dat";
-      this.openFileDialog.Filter = "Dat files|*.dat|All files|*.*";
       // 
       // tabControl
       // 
-      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl.Controls.Add(this.problemTabPage);
       this.tabControl.Controls.Add(this.visualizationTabPage);
-      this.tabControl.Location = new System.Drawing.Point(0, 55);
+      this.tabControl.Location = new System.Drawing.Point(0, 29);
       this.tabControl.Name = "tabControl";
       this.tabControl.SelectedIndex = 0;
-      this.tabControl.Size = new System.Drawing.Size(647, 437);
+      this.tabControl.Size = new System.Drawing.Size(511, 304);
       this.tabControl.TabIndex = 8;
       // 
       // problemTabPage
       // 
+      this.problemTabPage.Controls.Add(this.parameterCollectionView);
       this.problemTabPage.Location = new System.Drawing.Point(4, 22);
       this.problemTabPage.Name = "problemTabPage";
       this.problemTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.problemTabPage.Size = new System.Drawing.Size(639, 411);
+      this.problemTabPage.Size = new System.Drawing.Size(503, 278);
       this.problemTabPage.TabIndex = 0;
       this.problemTabPage.Text = "Problem";
       this.problemTabPage.UseVisualStyleBackColor = true;
@@ -108,7 +109,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
       this.visualizationTabPage.Location = new System.Drawing.Point(4, 22);
       this.visualizationTabPage.Name = "visualizationTabPage";
       this.visualizationTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.visualizationTabPage.Size = new System.Drawing.Size(639, 411);
+      this.visualizationTabPage.Size = new System.Drawing.Size(503, 278);
       this.visualizationTabPage.TabIndex = 1;
       this.visualizationTabPage.Text = "Visualization";
       this.visualizationTabPage.UseVisualStyleBackColor = true;
@@ -120,7 +121,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
       this.qapView.Dock = System.Windows.Forms.DockStyle.Fill;
       this.qapView.Location = new System.Drawing.Point(3, 3);
       this.qapView.Name = "qapView";
-      this.qapView.Size = new System.Drawing.Size(633, 405);
+      this.qapView.Size = new System.Drawing.Size(497, 272);
       this.qapView.TabIndex = 0;
       this.qapView.Weights = null;
       // 
@@ -128,25 +129,23 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.tabControl);
       this.Name = "QuadraticAssignmentProblemView";
-      this.Size = new System.Drawing.Size(647, 492);
-      this.Controls.SetChildIndex(this.tabControl, 0);
-      this.Controls.SetChildIndex(this.infoLabel, 0);
-      this.Controls.SetChildIndex(this.parameterCollectionView, 0);
-      this.Controls.SetChildIndex(this.nameLabel, 0);
-      this.Controls.SetChildIndex(this.nameTextBox, 0);
+      this.problemInstanceSplitContainer.Panel1.ResumeLayout(false);
+      this.problemInstanceSplitContainer.Panel1.PerformLayout();
+      this.problemInstanceSplitContainer.Panel2.ResumeLayout(false);
+      this.problemInstanceSplitContainer.Panel2.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.problemInstanceSplitContainer)).EndInit();
+      this.problemInstanceSplitContainer.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.tabControl.ResumeLayout(false);
+      this.problemTabPage.ResumeLayout(false);
       this.visualizationTabPage.ResumeLayout(false);
       this.ResumeLayout(false);
-      this.PerformLayout();
 
     }
 
     #endregion
 
-    private System.Windows.Forms.OpenFileDialog openFileDialog;
     private System.Windows.Forms.TabControl tabControl;
     private System.Windows.Forms.TabPage problemTabPage;
     private System.Windows.Forms.TabPage visualizationTabPage;

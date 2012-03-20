@@ -28,7 +28,7 @@ using HeuristicLab.Optimization.Views;
 namespace HeuristicLab.Problems.QuadraticAssignment.Views {
   [View("Quadratic Assignment Problem View")]
   [Content(typeof(QuadraticAssignmentProblem), IsDefaultView = true)]
-  public sealed partial class QuadraticAssignmentProblemView : HeuristicOptimizationProblemView {
+  public sealed partial class QuadraticAssignmentProblemView : ProblemView {
     public new QuadraticAssignmentProblem Content {
       get { return (QuadraticAssignmentProblem)base.Content; }
       set { base.Content = value; }

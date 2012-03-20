@@ -361,6 +361,8 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     public void Load(QAPData data) {
       var weights = new DoubleMatrix(data.Weights);
       var distances = new DoubleMatrix(data.Distances);
+      Name = data.Name;
+      Description = data.Description;
       Load(weights, distances);
       EvaluateAndLoadAssignment(data.BestKnownAssignment);
       OnReset();
@@ -373,6 +375,8 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       for (int i = 0; i < data.Dimension; i++)
         weights[i, (i + 1) % data.Dimension] = 1;
       var distances = new DoubleMatrix(data.GetDistanceMatrix());
+      Name = data.Name;
+      Description = data.Description;
       Load(weights, distances);
       EvaluateAndLoadAssignment(data.BestKnownTour);
       OnReset();

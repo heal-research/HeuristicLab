@@ -256,15 +256,15 @@
     <Compile Include="Regression\RegressionSolutionScatterPlotView.Designer.cs">
       <DependentUpon>RegressionSolutionScatterPlotView.cs</DependentUpon>
     </Compile>
-    <None Include="HeuristicLab.snk" />
-    <None Include="Plugin.cs.frame" />
-    <None Include="Properties\AssemblyInfo.cs.frame" />
     <Compile Include="DataAnalysisProblemView.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="DataAnalysisProblemView.Designer.cs">
       <DependentUpon>DataAnalysisProblemView.cs</DependentUpon>
     </Compile>
+    <None Include="HeuristicLab.snk" />
+    <None Include="Plugin.cs.frame" />
+    <None Include="Properties\AssemblyInfo.cs.frame" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
