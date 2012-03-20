@@ -101,11 +101,13 @@
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Data\CordeauGQAP.zip" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="CordeauGQAPParser.cs" />
     <Compile Include="CordeauGQAPInstanceProvider.cs" />
@@ -130,29 +132,6 @@
       <Project>{3540E29E-4793-49E7-8EE2-FEA7F61C3994}</Project>
       <Name>HeuristicLab.Problems.Instances-3.3</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Data\20-15-35.txt" />
-    <EmbeddedResource Include="Data\20-15-55.txt" />
-    <EmbeddedResource Include="Data\20-15-75.txt" />
-    <EmbeddedResource Include="Data\30-06-95.txt" />
-    <EmbeddedResource Include="Data\30-07-75.txt" />
-    <EmbeddedResource Include="Data\30-08-55.txt" />
-    <EmbeddedResource Include="Data\30-10-65.txt" />
-    <EmbeddedResource Include="Data\30-20-35.txt" />
-    <EmbeddedResource Include="Data\30-20-55.txt" />
-    <EmbeddedResource Include="Data\30-20-75.txt" />
-    <EmbeddedResource Include="Data\30-20-95.txt" />
-    <EmbeddedResource Include="Data\35-15-35.txt" />
-    <EmbeddedResource Include="Data\35-15-55.txt" />
-    <EmbeddedResource Include="Data\35-15-75.txt" />
-    <EmbeddedResource Include="Data\35-15-95.txt" />
-    <EmbeddedResource Include="Data\40-07-75.txt" />
-    <EmbeddedResource Include="Data\40-09-95.txt" />
-    <EmbeddedResource Include="Data\40-10-65.txt" />
-    <EmbeddedResource Include="Data\50-10-65.txt" />
-    <EmbeddedResource Include="Data\50-10-75.txt" />
-    <EmbeddedResource Include="Data\50-10-95.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

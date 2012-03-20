@@ -60,7 +60,7 @@ ORSA Journal on Computing, 3, pp. 376-384.";
       if (String.IsNullOrEmpty(instanceArchiveName)) yield break;
 
       using (var instanceStream = new ZipInputStream(GetType().Assembly.GetManifestResourceStream(instanceArchiveName))) {
-        foreach (var entry in GetZipContents(instanceStream)) {
+        foreach (var entry in GetZipContents(instanceStream).OrderBy(x => x)) {
           yield return new TSPLIBDataDescriptor(Path.GetFileNameWithoutExtension(entry), GetInstanceDescription(), entry, solutions.ContainsKey(entry) ? solutions[entry] : String.Empty);
         }
       }

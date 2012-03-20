@@ -25,6 +25,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using ICSharpCode.SharpZipLib.Zip;
 
 namespace HeuristicLab.Problems.Instances.CordeauGQAP {
   public class CordeauGQAPInstanceProvider : ProblemInstanceProvider<GQAPData> {
@@ -48,26 +49,34 @@ INFORMS Journal on Computing, 18, pp. 433–443.";
       }
     }
 
+    private const string FileName = "CordeauGQAP";
+   
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
-      return Assembly.GetExecutingAssembly()
-          .GetManifestResourceNames()
-          .Where(x => x.EndsWith(".txt"))
-          .OrderBy(x => x)
-          .Select(x => new CordeauGQAPDataDescriptor(GetPrettyName(x), GetDescription(), x));
+      var instanceArchiveName = GetResourceName(FileName + @"\.zip");
+      if (String.IsNullOrEmpty(instanceArchiveName)) yield break;
+
+      using (var instanceStream = new ZipInputStream(GetType().Assembly.GetManifestResourceStream(instanceArchiveName))) {
+        foreach (var entry in GetZipContents(instanceStream).OrderBy(x => x)) {
+          yield return new CordeauGQAPDataDescriptor(Path.GetFileNameWithoutExtension(entry), GetDescription(), entry);
+        }
+      }
     }
 
     public override GQAPData LoadData(IDataDescriptor id) {
       var descriptor = (CordeauGQAPDataDescriptor)id;
-      using (var stream = Assembly.GetExecutingAssembly()
-        .GetManifestResourceStream(descriptor.InstanceIdentifier)) {
-        var parser = new CordeauGQAPParser();
-        parser.Parse(stream);
-        var instance = Load(parser);
+      var instanceArchiveName = GetResourceName(FileName + @"\.zip");
+      using (var instancesZipFile = new ZipFile(GetType().Assembly.GetManifestResourceStream(instanceArchiveName))) {
+        var entry = instancesZipFile.GetEntry(descriptor.InstanceIdentifier);
+        using (var stream = instancesZipFile.GetInputStream(entry)) {
+          var parser = new CordeauGQAPParser();
+          parser.Parse(stream);
+          var instance = Load(parser);
 
-        instance.Name = id.Name;
-        instance.Description = id.Description;
+          instance.Name = id.Name;
+          instance.Description = id.Description;
 
-        return instance;
+          return instance;
+        }
       }
     }
 
@@ -99,12 +108,20 @@ INFORMS Journal on Computing, 18, pp. 433–443.";
       return instance;
     }
 
-    private string GetPrettyName(string instanceIdentifier) {
-      return Regex.Match(instanceIdentifier, GetType().Namespace + @"\.Data\.(.*)\.txt").Groups[1].Captures[0].Value;
-    }
-
     private string GetDescription() {
       return "Embedded instance of plugin version " + Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyFileVersionAttribute), true).Cast<AssemblyFileVersionAttribute>().First().Version + ".";
+    }
+
+    protected virtual string GetResourceName(string fileName) {
+      return Assembly.GetExecutingAssembly().GetManifestResourceNames()
+              .Where(x => Regex.Match(x, @".*\.Data\." + fileName).Success).SingleOrDefault();
+    }
+
+    protected IEnumerable<string> GetZipContents(ZipInputStream zipFile) {
+      ZipEntry entry;
+      while ((entry = zipFile.GetNextEntry()) != null) {
+        yield return entry.Name;
+      }
     }
   }
 }

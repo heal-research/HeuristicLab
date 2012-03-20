@@ -25,6 +25,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using ICSharpCode.SharpZipLib.Zip;
 
 namespace HeuristicLab.Problems.Instances.QAPLIB {
   public class QAPLIBInstanceProvider : ProblemInstanceProvider<QAPData> {
@@ -158,47 +159,62 @@ Journal of Global Optimization, 10, pp. 391-403.";
       }
     }
 
-    public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
-      var solutions = Assembly.GetExecutingAssembly()
-        .GetManifestResourceNames()
-        .Where(x => x.EndsWith(".sln"))
-        .ToDictionary(x => Path.GetFileNameWithoutExtension(x) + ".dat", x => x);
+    private const string FileName = "qap";
 
-      return Assembly.GetExecutingAssembly()
-          .GetManifestResourceNames()
-          .Where(x => x.EndsWith(".dat"))
-          .OrderBy(x => x)
-          .Select(x => new QAPLIBDataDescriptor(GetPrettyName(x), GetDescription(), x, solutions.ContainsKey(x) ? solutions[x] : String.Empty));
+    public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
+      Dictionary<string, string> solutions = new Dictionary<string, string>();
+      var solutionsArchiveName = GetResourceName(FileName + @"\.sln\.zip");
+      if (!String.IsNullOrEmpty(solutionsArchiveName)) {
+        using (var solutionsZipFile = new ZipInputStream(GetType().Assembly.GetManifestResourceStream(solutionsArchiveName))) {
+          foreach (var entry in GetZipContents(solutionsZipFile))
+              solutions.Add(Path.GetFileNameWithoutExtension(entry) + ".dat", entry);
+        }
+      }
+      var instanceArchiveName = GetResourceName(FileName + @"\.dat\.zip");
+      if (String.IsNullOrEmpty(instanceArchiveName)) yield break;
+
+      using (var instanceStream = new ZipInputStream(GetType().Assembly.GetManifestResourceStream(instanceArchiveName))) {
+        foreach (var entry in GetZipContents(instanceStream).OrderBy(x => x)) {
+          yield return new QAPLIBDataDescriptor(Path.GetFileNameWithoutExtension(entry), GetDescription(), entry, solutions.ContainsKey(entry) ? solutions[entry] : String.Empty);
+        }
+      }
     }
 
     public override QAPData LoadData(IDataDescriptor id) {
       var descriptor = (QAPLIBDataDescriptor)id;
-      using (var stream = Assembly.GetExecutingAssembly()
-        .GetManifestResourceStream(descriptor.InstanceIdentifier)) {
-        var parser = new QAPLIBParser();
-        parser.Parse(stream);
-        var instance = Load(parser);
-        instance.Name = id.Name;
-        instance.Description = id.Description;
+      var instanceArchiveName = GetResourceName(FileName + @"\.dat\.zip");
+      using (var instancesZipFile = new ZipFile(GetType().Assembly.GetManifestResourceStream(instanceArchiveName))) {
+        var entry = instancesZipFile.GetEntry(descriptor.InstanceIdentifier);
 
-        if (!String.IsNullOrEmpty(descriptor.SolutionIdentifier)) {
-          using (Stream solStream = Assembly.GetExecutingAssembly()
-            .GetManifestResourceStream(descriptor.SolutionIdentifier)) {
-            var slnParser = new QAPLIBSolutionParser();
-            slnParser.Parse(solStream, true);
-            if (slnParser.Error != null) throw slnParser.Error;
+        using (var stream = instancesZipFile.GetInputStream(entry)) {
+          var parser = new QAPLIBParser();
+          parser.Parse(stream);
+          var instance = Load(parser);
+          instance.Name = id.Name;
+          instance.Description = id.Description;
 
-            int[] assignment = slnParser.Assignment;
-            if (reversedSolutions.Contains(instance.Name)) {
-              assignment = (int[])slnParser.Assignment.Clone();
-              for (int i = 0; i < assignment.Length; i++)
-                assignment[slnParser.Assignment[i]] = i;
+          if (!String.IsNullOrEmpty(descriptor.SolutionIdentifier)) {
+            var solutionsArchiveName = GetResourceName(FileName + @"\.sln\.zip");
+            using (var solutionsZipFile = new ZipFile(GetType().Assembly.GetManifestResourceStream(solutionsArchiveName))) {
+              entry = solutionsZipFile.GetEntry(descriptor.SolutionIdentifier);
+              using (var solStream = solutionsZipFile.GetInputStream(entry)) {
+                var slnParser = new QAPLIBSolutionParser();
+                slnParser.Parse(solStream, true);
+                if (slnParser.Error != null) throw slnParser.Error;
+
+                int[] assignment = slnParser.Assignment;
+                if (reversedSolutions.Contains(instance.Name)) {
+                  assignment = (int[])slnParser.Assignment.Clone();
+                  for (int i = 0; i < assignment.Length; i++)
+                    assignment[slnParser.Assignment[i]] = i;
+                }
+                instance.BestKnownAssignment = assignment;
+                instance.BestKnownQuality = slnParser.Quality;
+              }
             }
-            instance.BestKnownAssignment = assignment;
-            instance.BestKnownQuality = slnParser.Quality;
           }
+          return instance;
         }
-        return instance;
       }
     }
 
@@ -223,12 +239,20 @@ Journal of Global Optimization, 10, pp. 391-403.";
       return instance;
     }
 
-    private string GetPrettyName(string instanceIdentifier) {
-      return Regex.Match(instanceIdentifier, GetType().Namespace + @"\.Data\.(.*)\.dat").Groups[1].Captures[0].Value;
-    }
-
     private string GetDescription() {
       return "Embedded instance of plugin version " + Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyFileVersionAttribute), true).Cast<AssemblyFileVersionAttribute>().First().Version + ".";
+    }
+
+    protected virtual string GetResourceName(string fileName) {
+      return Assembly.GetExecutingAssembly().GetManifestResourceNames()
+              .Where(x => Regex.Match(x, @".*\.Data\." + fileName).Success).SingleOrDefault();
+    }
+
+    protected IEnumerable<string> GetZipContents(ZipInputStream zipFile) {
+      ZipEntry entry;
+      while ((entry = zipFile.GetNextEntry()) != null) {
+        yield return entry.Name;
+      }
     }
   }
 }

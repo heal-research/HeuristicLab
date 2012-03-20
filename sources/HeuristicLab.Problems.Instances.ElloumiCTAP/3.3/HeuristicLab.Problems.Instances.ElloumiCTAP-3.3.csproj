@@ -101,94 +101,15 @@
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ElloumiCTAPSolutionParser.cs" />
-    <EmbeddedResource Include="Data\tass1003Aa.dat" />
-    <EmbeddedResource Include="Data\tass1003Ab.dat" />
-    <EmbeddedResource Include="Data\tass1003Ac.dat" />
-    <EmbeddedResource Include="Data\tass1003Ad.dat" />
-    <EmbeddedResource Include="Data\tass1003Ae.dat" />
-    <EmbeddedResource Include="Data\tass1003Ba.dat" />
-    <EmbeddedResource Include="Data\tass1003Bb.dat" />
-    <EmbeddedResource Include="Data\tass1003Bc.dat" />
-    <EmbeddedResource Include="Data\tass1003Bd.dat" />
-    <EmbeddedResource Include="Data\tass1003Be.dat" />
-    <EmbeddedResource Include="Data\tass1003Ca.dat" />
-    <EmbeddedResource Include="Data\tass1003Cb.dat" />
-    <EmbeddedResource Include="Data\tass1003Cc.dat" />
-    <EmbeddedResource Include="Data\tass1003Cd.dat" />
-    <EmbeddedResource Include="Data\tass1003Ce.dat" />
-    <EmbeddedResource Include="Data\tass1003Da.dat" />
-    <EmbeddedResource Include="Data\tass1003Db.dat" />
-    <EmbeddedResource Include="Data\tass1003Dc.dat" />
-    <EmbeddedResource Include="Data\tass1003Dd.dat" />
-    <EmbeddedResource Include="Data\tass1003De.dat" />
-    <EmbeddedResource Include="Data\tass2005Aa.dat" />
-    <EmbeddedResource Include="Data\tass2005Ab.dat" />
-    <EmbeddedResource Include="Data\tass2005Ac.dat" />
-    <EmbeddedResource Include="Data\tass2005Ad.dat" />
-    <EmbeddedResource Include="Data\tass2005Ae.dat" />
-    <EmbeddedResource Include="Data\tass2005Ba.dat" />
-    <EmbeddedResource Include="Data\tass2005Bb.dat" />
-    <EmbeddedResource Include="Data\tass2005Bc.dat" />
-    <EmbeddedResource Include="Data\tass2005Bd.dat" />
-    <EmbeddedResource Include="Data\tass2005Be.dat" />
-    <EmbeddedResource Include="Data\tass2005Ca.dat" />
-    <EmbeddedResource Include="Data\tass2005Cb.dat" />
-    <EmbeddedResource Include="Data\tass2005Cc.dat" />
-    <EmbeddedResource Include="Data\tass2005Cd.dat" />
-    <EmbeddedResource Include="Data\tass2005Ce.dat" />
-    <EmbeddedResource Include="Data\tass2005Da.dat" />
-    <EmbeddedResource Include="Data\tass2005Db.dat" />
-    <EmbeddedResource Include="Data\tass2005Dc.dat" />
-    <EmbeddedResource Include="Data\tass2005Dd.dat" />
-    <EmbeddedResource Include="Data\tass2005De.dat" />
-    <EmbeddedResource Include="Data\tass2408Aa.dat" />
-    <EmbeddedResource Include="Data\tass2408Ca.dat" />
-    <EmbeddedResource Include="Data\tassc1003Aa.dat" />
-    <EmbeddedResource Include="Data\tassc1003Ab.dat" />
-    <EmbeddedResource Include="Data\tassc1003Ac.dat" />
-    <EmbeddedResource Include="Data\tassc1003Ad.dat" />
-    <EmbeddedResource Include="Data\tassc1003Ae.dat" />
-    <EmbeddedResource Include="Data\tassc1003Ba.dat" />
-    <EmbeddedResource Include="Data\tassc1003Bb.dat" />
-    <EmbeddedResource Include="Data\tassc1003Bc.dat" />
-    <EmbeddedResource Include="Data\tassc1003Bd.dat" />
-    <EmbeddedResource Include="Data\tassc1003Be.dat" />
-    <EmbeddedResource Include="Data\tassc1003Ca.dat" />
-    <EmbeddedResource Include="Data\tassc1003Cb.dat" />
-    <EmbeddedResource Include="Data\tassc1003Cc.dat" />
-    <EmbeddedResource Include="Data\tassc1003Cd.dat" />
-    <EmbeddedResource Include="Data\tassc1003Ce.dat" />
-    <EmbeddedResource Include="Data\tassc1003Da.dat" />
-    <EmbeddedResource Include="Data\tassc1003Db.dat" />
-    <EmbeddedResource Include="Data\tassc1003Dc.dat" />
-    <EmbeddedResource Include="Data\tassc1003Dd.dat" />
-    <EmbeddedResource Include="Data\tassc1003De.dat" />
-    <EmbeddedResource Include="Data\tassc2005Aa.dat" />
-    <EmbeddedResource Include="Data\tassc2005Ab.dat" />
-    <EmbeddedResource Include="Data\tassc2005Ac.dat" />
-    <EmbeddedResource Include="Data\tassc2005Ad.dat" />
-    <EmbeddedResource Include="Data\tassc2005Ae.dat" />
-    <EmbeddedResource Include="Data\tassc2005Ba.dat" />
-    <EmbeddedResource Include="Data\tassc2005Bb.dat" />
-    <EmbeddedResource Include="Data\tassc2005Bc.dat" />
-    <EmbeddedResource Include="Data\tassc2005Bd.dat" />
-    <EmbeddedResource Include="Data\tassc2005Be.dat" />
-    <EmbeddedResource Include="Data\tassc2005Ca.dat" />
-    <EmbeddedResource Include="Data\tassc2005Cb.dat" />
-    <EmbeddedResource Include="Data\tassc2005Cc.dat" />
-    <EmbeddedResource Include="Data\tassc2005Cd.dat" />
-    <EmbeddedResource Include="Data\tassc2005Ce.dat" />
-    <EmbeddedResource Include="Data\tassc2005Da.dat" />
-    <EmbeddedResource Include="Data\tassc2005Db.dat" />
-    <EmbeddedResource Include="Data\tassc2005Dc.dat" />
-    <EmbeddedResource Include="Data\tassc2005Dd.dat" />
-    <EmbeddedResource Include="Data\tassc2005De.dat" />
+    <None Include="Data\ElloumiCTAP.dat.zip" />
+    <None Include="Data\ElloumiCTAP.sol.zip" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="ElloumiCTAPDataDescriptor.cs" />
     <Compile Include="ElloumiCTAPInstanceProvider.cs" />
@@ -214,28 +135,6 @@
       <Name>HeuristicLab.Problems.Instances-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Data\tassc1003Aa.sol" />
-    <EmbeddedResource Include="Data\tassc1003Ab.sol" />
-    <EmbeddedResource Include="Data\tassc1003Ac.sol" />
-    <EmbeddedResource Include="Data\tassc1003Ad.sol" />
-    <EmbeddedResource Include="Data\tassc1003Ae.sol" />
-    <EmbeddedResource Include="Data\tassc1003Ba.sol" />
-    <EmbeddedResource Include="Data\tassc1003Bb.sol" />
-    <EmbeddedResource Include="Data\tassc1003Bc.sol" />
-    <EmbeddedResource Include="Data\tassc1003Bd.sol" />
-    <EmbeddedResource Include="Data\tassc1003Be.sol" />
-    <EmbeddedResource Include="Data\tassc1003Ca.sol" />
-    <EmbeddedResource Include="Data\tassc1003Cb.sol" />
-    <EmbeddedResource Include="Data\tassc1003Cc.sol" />
-    <EmbeddedResource Include="Data\tassc1003Cd.sol" />
-    <EmbeddedResource Include="Data\tassc1003Ce.sol" />
-    <EmbeddedResource Include="Data\tassc1003Da.sol" />
-    <EmbeddedResource Include="Data\tassc1003Db.sol" />
-    <EmbeddedResource Include="Data\tassc1003Dc.sol" />
-    <EmbeddedResource Include="Data\tassc1003Dd.sol" />
-    <EmbeddedResource Include="Data\tassc1003De.sol" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
