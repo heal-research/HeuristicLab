@@ -129,6 +129,7 @@
     <ProjectReference Include="..\..\..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\LibSVM-1.6.3\LibSVM-1.6.3.csproj">
       <Project>{A16F23B5-FB62-499E-A831-26953AA56FE2}</Project>

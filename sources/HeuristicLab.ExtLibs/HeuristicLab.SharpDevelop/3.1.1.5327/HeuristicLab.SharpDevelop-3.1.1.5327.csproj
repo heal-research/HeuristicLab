@@ -96,14 +96,17 @@
     <Reference Include="ICSharpCode.NRefactory, Version=3.1.1.5327, Culture=neutral, PublicKeyToken=efe927acf176eea2, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\ICSharpCode.NRefactory.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="ICSharpCode.SharpDevelop.Dom, Version=3.1.1.5327, Culture=neutral, PublicKeyToken=f829da5c02be14ee, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\ICSharpCode.SharpDevelop.Dom.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="ICSharpCode.TextEditor, Version=3.1.1.5327, Culture=neutral, PublicKeyToken=4d61825e8dd49f1a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\ICSharpCode.TextEditor.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Mono.Cecil, Version=0.6.9.1, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -169,6 +172,7 @@
     <ProjectReference Include="..\..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

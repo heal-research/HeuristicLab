@@ -127,6 +127,7 @@
     <ProjectReference Include="..\..\..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Netron.Diagramming.Core-3.0.2672.12446\Netron.Diagramming.Core-3.0.2672.12446.csproj">
       <Project>{96AEBBEE-4203-45F3-BCF5-7B73BF256BDA}</Project>
