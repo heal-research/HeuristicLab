@@ -486,6 +486,10 @@
       <Project>{3BD61258-31DA-4B09-89C0-4F71FEF5F05A}</Project>
       <Name>HeuristicLab.MainForm-3.3</Name>
     </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Operators.Programmable.Views\3.3\HeuristicLab.Operators.Programmable.Views-3.3.csproj">
+      <Project>{8C426FA3-6614-412C-B669-BCE58DB9710E}</Project>
+      <Name>HeuristicLab.Operators.Programmable.Views-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.Operators.Programmable\3.3\HeuristicLab.Operators.Programmable-3.3.csproj">
       <Project>{6A5F8C2D-B0C3-4B36-BC20-9B1A91EE6DB6}</Project>
       <Name>HeuristicLab.Operators.Programmable-3.3</Name>
@@ -611,7 +615,7 @@
       <Name>HeuristicLab.Problems.Instances.QAPLIB-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.Problems.Instances.TSPLIB.Views\3.3\HeuristicLab.Problems.Instances.TSPLIB.Views-3.3.csproj">
-      <Project>{8B2BC81F-6B6C-414D-A934-57FD3FA8D6DC}</Project>
+      <Project>{B7FA451C-26BF-4EE5-8E0E-BECAADA5B8E9}</Project>
       <Name>HeuristicLab.Problems.Instances.TSPLIB.Views-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.Problems.Instances.TSPLIB\3.3\HeuristicLab.Problems.Instances.TSPLIB-3.3.csproj">
