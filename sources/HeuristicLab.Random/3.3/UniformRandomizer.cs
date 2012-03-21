@@ -88,7 +88,7 @@ namespace HeuristicLab.Random {
       double max = MaxParameter.ActualValue.Value;
 
       ValueParameter.ActualValue = new DoubleValue(random.NextDouble() * (max - min) + min);
-      return null;
+      return base.Apply();
     }
   }
 }

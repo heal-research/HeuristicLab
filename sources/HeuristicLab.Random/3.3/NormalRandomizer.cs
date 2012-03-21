@@ -87,7 +87,7 @@ namespace HeuristicLab.Random {
 
       NormalDistributedRandom normalRandom = new NormalDistributedRandom(random, mu, sigma);
       ValueParameter.ActualValue = new DoubleValue(normalRandom.NextDouble());
-      return null;
+      return base.Apply();
     }
   }
 }
