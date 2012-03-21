@@ -198,6 +198,7 @@
     <ProjectReference Include="..\..\HeuristicLab.Problems.Instances\3.3\HeuristicLab.Problems.Instances-3.3.csproj">
       <Project>{3540E29E-4793-49E7-8EE2-FEA7F61C3994}</Project>
       <Name>HeuristicLab.Problems.Instances-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Problems.TravelingSalesman\3.3\HeuristicLab.Problems.TravelingSalesman-3.3.csproj">
       <Project>{D767C38D-8014-46B0-9A32-03A3AECCE34A}</Project>
