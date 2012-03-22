@@ -307,7 +307,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       get { return symbols.Values; }
     }
     public virtual IEnumerable<ISymbol> AllowedSymbols {
-      get { return Symbols.Where(s => s.Enabled); }
+      get { foreach (var s in Symbols) if (s.Enabled) yield return s; }
     }
     public virtual bool ContainsSymbol(ISymbol symbol) {
       return symbols.ContainsKey(symbol.Name);
@@ -315,52 +315,56 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
     private readonly Dictionary<Tuple<string, string>, bool> cachedIsAllowedChildSymbol;
     public virtual bool IsAllowedChildSymbol(ISymbol parent, ISymbol child) {
+      if (allowedChildSymbols.Count == 0) return false;
       if (!child.Enabled) return false;
 
       bool result;
-      if (cachedIsAllowedChildSymbol.TryGetValue(Tuple.Create(parent.Name, child.Name), out result)) return result;
+      var key = Tuple.Create(parent.Name, child.Name);
+      if (cachedIsAllowedChildSymbol.TryGetValue(key, out result)) return result;
+
       List<string> temp;
       if (allowedChildSymbols.TryGetValue(parent.Name, out temp)) {
         //if (temp.Contains(child.Name)) return true;
-        if (temp.SelectMany(s => GetSymbol(s).Flatten()).Where(s => s.Name == child.Name).Any()) {
-          cachedIsAllowedChildSymbol.Add(Tuple.Create(parent.Name, child.Name), true);
+        if (temp.SelectMany(s => GetSymbol(s).Flatten()).Any(s => s.Name == child.Name)) {
+          cachedIsAllowedChildSymbol.Add(key, true);
           return true;
         }
       }
-      cachedIsAllowedChildSymbol.Add(Tuple.Create(parent.Name, child.Name), false);
+      cachedIsAllowedChildSymbol.Add(key, false);
       return false;
     }
 
     private readonly Dictionary<Tuple<string, string, int>, bool> cachedIsAllowedChildSymbolIndex;
     public virtual bool IsAllowedChildSymbol(ISymbol parent, ISymbol child, int argumentIndex) {
       if (!child.Enabled) return false;
+      if (allowedChildSymbolsPerIndex.Count == 0) return false;
       if (IsAllowedChildSymbol(parent, child)) return true;
 
       bool result;
-      if (cachedIsAllowedChildSymbolIndex.TryGetValue(Tuple.Create(parent.Name, child.Name, argumentIndex), out result)) return result;
+      var key = Tuple.Create(parent.Name, child.Name, argumentIndex);
+      if (cachedIsAllowedChildSymbolIndex.TryGetValue(key, out result)) return result;
+
       List<string> temp;
-      var key = Tuple.Create(parent.Name, argumentIndex);
-      if (allowedChildSymbolsPerIndex.TryGetValue(key, out temp)) {
-        //if (temp.Contains(child.Name)) return true;
-        if (temp.SelectMany(s => GetSymbol(s).Flatten()).Where(s => s.Name == child.Name).Any()) {
-          cachedIsAllowedChildSymbolIndex.Add(Tuple.Create(parent.Name, child.Name, argumentIndex), true);
+      if (allowedChildSymbolsPerIndex.TryGetValue(Tuple.Create(parent.Name, argumentIndex), out temp)) {
+        if (temp.SelectMany(s => GetSymbol(s).Flatten()).Any(s => s.Name == child.Name)) {
+          cachedIsAllowedChildSymbolIndex.Add(key, true);
           return true;
         }
       }
-      cachedIsAllowedChildSymbolIndex.Add(Tuple.Create(parent.Name, child.Name, argumentIndex), false);
+      cachedIsAllowedChildSymbolIndex.Add(key, false);
       return false;
     }
 
     public IEnumerable<ISymbol> GetAllowedChildSymbols(ISymbol parent) {
-      return from child in AllowedSymbols
-             where IsAllowedChildSymbol(parent, child)
-             select child;
+      foreach (ISymbol child in AllowedSymbols) {
+        if (IsAllowedChildSymbol(parent, child)) yield return child;
+      }
     }
 
     public IEnumerable<ISymbol> GetAllowedChildSymbols(ISymbol parent, int argumentIndex) {
-      return from child in AllowedSymbols
-             where IsAllowedChildSymbol(parent, child, argumentIndex)
-             select child;
+      foreach (ISymbol child in AllowedSymbols) {
+        if (IsAllowedChildSymbol(parent, child, argumentIndex)) yield return child;
+      }
     }
 
     public virtual int GetMinimumSubtreeCount(ISymbol symbol) {

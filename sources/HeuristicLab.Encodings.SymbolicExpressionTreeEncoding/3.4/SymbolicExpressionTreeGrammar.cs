@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -50,7 +49,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     public override IEnumerable<ISymbol> Symbols {
-      get { return grammar.Symbols.Union(base.Symbols); }
+      get {
+        foreach (var s in base.symbols.Values) yield return s;
+        foreach (var s in grammar.Symbols) yield return s;
+      }
     }
     public override IEnumerable<ISymbol> AllowedSymbols {
       get { return base.AllowedSymbols; }
