@@ -211,8 +211,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
         stringBuilder.Append(")");
       } else if (symbol is Subtraction) {
+        stringBuilder.Append("(");
         if (node.SubtreeCount == 1) {
-          stringBuilder.Append("-1*");
+          stringBuilder.Append("-");
           stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
         } else {
           stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
@@ -221,6 +222,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             stringBuilder.Append(FormatRecursively(node.GetSubtree(i)));
           }
         }
+        stringBuilder.Append(")");
       } else if (symbol is Tangent) {
         stringBuilder.Append("tan(");
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
