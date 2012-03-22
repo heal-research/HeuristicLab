@@ -54,6 +54,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     protected SymbolicExpressionTreeNode(SymbolicExpressionTreeNode original, Cloner cloner)
       : base() {
       symbol = original.symbol; // symbols are reused
+      length = original.length;
+      depth = original.depth;
       if (original.subtrees != null) {
         subtrees = new List<ISymbolicExpressionTreeNode>(original.subtrees.Count);
         foreach (var subtree in original.subtrees) {
