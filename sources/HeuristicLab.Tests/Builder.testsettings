@@ -116,7 +116,6 @@
     <DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.Clients.Hive.Administrator-3.3.dll" />
     <DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.Clients.Hive.JobManager-3.3" />
     <DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.Clients.Hive.Views-3.3.dll" />
-    <DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.Clients.Hive-3.3.dll" />
     <DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.DayView-1.0.dll" />
     <DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.MathJax-1.1.dll" />
     <DeploymentItem filename="HeuristicLab.Tests\bin\Release\HeuristicLab.Problems.Instances-3.3.dll" />
