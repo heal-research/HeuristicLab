@@ -337,8 +337,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     private readonly Dictionary<Tuple<string, string, int>, bool> cachedIsAllowedChildSymbolIndex;
     public virtual bool IsAllowedChildSymbol(ISymbol parent, ISymbol child, int argumentIndex) {
       if (!child.Enabled) return false;
-      if (allowedChildSymbolsPerIndex.Count == 0) return false;
       if (IsAllowedChildSymbol(parent, child)) return true;
+      if (allowedChildSymbolsPerIndex.Count == 0) return false;
 
       bool result;
       var key = Tuple.Create(parent.Name, child.Name, argumentIndex);
