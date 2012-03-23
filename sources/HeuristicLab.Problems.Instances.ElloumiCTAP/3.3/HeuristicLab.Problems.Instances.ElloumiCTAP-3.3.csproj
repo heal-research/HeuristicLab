@@ -110,8 +110,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ElloumiCTAPSolutionParser.cs" />
-    <None Include="Data\ElloumiCTAP.dat.zip" />
-    <None Include="Data\ElloumiCTAP.sol.zip" />
+    <EmbeddedResource Include="Data\ElloumiCTAP.dat.zip" />
+    <EmbeddedResource Include="Data\ElloumiCTAP.sol.zip" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="ElloumiCTAPDataDescriptor.cs" />
     <Compile Include="ElloumiCTAPInstanceProvider.cs" />
