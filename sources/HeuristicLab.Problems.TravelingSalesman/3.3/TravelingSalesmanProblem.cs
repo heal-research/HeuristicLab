@@ -225,13 +225,14 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       Operators.Add(new TSPAlleleFrequencyAnalyzer());
       Operators.Add(new TSPPopulationDiversityAnalyzer());
       ParameterizeAnalyzers();
-      var defaultOperators = new HashSet<IPermutationOperator>(new IPermutationOperator[] {
+      var operators = new HashSet<IPermutationOperator>(new IPermutationOperator[] {
         new OrderCrossover2(),
         new InversionManipulator(),
         new StochasticInversionMultiMoveGenerator()
-      });
-      Operators.AddRange(defaultOperators);
-      Operators.AddRange(ApplicationManager.Manager.GetInstances<IPermutationOperator>().Except(defaultOperators, new TypeEqualityComparer<IPermutationOperator>()));
+      }, new TypeEqualityComparer<IPermutationOperator>());
+      foreach (var op in ApplicationManager.Manager.GetInstances<IPermutationOperator>())
+        operators.Add(op);
+      Operators.AddRange(operators);
       ParameterizeOperators();
       UpdateMoveEvaluators();
     }
@@ -398,7 +399,8 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       if (data.BestKnownTour != null) {
         try {
           EvaluateAndLoadTour(data.BestKnownTour);
-        } catch (InvalidOperationException) {
+        }
+        catch (InvalidOperationException) {
           if (data.BestKnownQuality.HasValue)
             BestKnownQuality = new DoubleValue(data.BestKnownQuality.Value);
         }
