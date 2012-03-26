@@ -186,8 +186,8 @@ namespace HeuristicLab_33.Tests {
       var ga = CreateGpArtificialAntSample();
       ga.SetSeedRandomly.Value = false;
       RunAlgorithm(ga);
-      Assert.AreEqual(63, GetDoubleResult(ga, "BestQuality"));
-      Assert.AreEqual(47.26, GetDoubleResult(ga, "CurrentAverageQuality"));
+      Assert.AreEqual(67, GetDoubleResult(ga, "BestQuality"));
+      Assert.AreEqual(45.813, GetDoubleResult(ga, "CurrentAverageQuality"));
       Assert.AreEqual(0, GetDoubleResult(ga, "CurrentWorstQuality"));
       Assert.AreEqual(50950, GetIntResult(ga, "EvaluatedSolutions"));
     }
@@ -237,9 +237,9 @@ namespace HeuristicLab_33.Tests {
       var ga = CreateGpSymbolicRegressionSample();
       ga.SetSeedRandomly.Value = false;
       RunAlgorithm(ga);
-      Assert.AreEqual(0.82932035115203739, GetDoubleResult(ga, "BestQuality"));
-      Assert.AreEqual(0.53850226351927422, GetDoubleResult(ga, "CurrentAverageQuality"));
-      Assert.AreEqual(0, GetDoubleResult(ga, "CurrentWorstQuality"));
+      Assert.AreEqual(0.78855594192122458, GetDoubleResult(ga, "BestQuality"), 1E-8);
+      Assert.AreEqual(0.61395271071681523, GetDoubleResult(ga, "CurrentAverageQuality"), 1E-8);
+      Assert.AreEqual(0, GetDoubleResult(ga, "CurrentWorstQuality"), 1E-8);
       Assert.AreEqual(50950, GetIntResult(ga, "EvaluatedSolutions"));
     }
 
@@ -340,9 +340,9 @@ namespace HeuristicLab_33.Tests {
       var ga = CreateGpSymbolicClassificationSample();
       ga.SetSeedRandomly.Value = false;
       RunAlgorithm(ga);
-      Assert.AreEqual(0.13941049901558636, GetDoubleResult(ga, "BestQuality"));
-      Assert.AreEqual(5.7121443289014842, GetDoubleResult(ga, "CurrentAverageQuality"));
-      Assert.AreEqual(102.59400156249991, GetDoubleResult(ga, "CurrentWorstQuality"));
+      Assert.AreEqual(0.13775264138895371, GetDoubleResult(ga, "BestQuality"), 1E-8);
+      Assert.AreEqual(14.232802217120254, GetDoubleResult(ga, "CurrentAverageQuality"), 1E-8);
+      Assert.AreEqual(104.24339008411457, GetDoubleResult(ga, "CurrentWorstQuality"), 1E-8);
       Assert.AreEqual(100900, GetIntResult(ga, "EvaluatedSolutions"));
     }
 

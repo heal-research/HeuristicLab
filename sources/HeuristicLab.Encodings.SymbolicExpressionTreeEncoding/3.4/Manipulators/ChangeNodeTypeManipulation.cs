@@ -23,11 +23,14 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System.Collections.Generic;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableClass]
   [Item("ChangeNodeTypeManipulation", "Selects a random tree node and changes the symbol.")]
   public sealed class ChangeNodeTypeManipulation : SymbolicExpressionTreeManipulator {
+    private const int MAX_TRIES = 100;
+
     [StorableConstructor]
     private ChangeNodeTypeManipulation(bool deserializing) : base(deserializing) { }
     private ChangeNodeTypeManipulation(ChangeNodeTypeManipulation original, Cloner cloner) : base(original, cloner) { }
@@ -42,43 +45,52 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     public static void ChangeNodeType(IRandom random, ISymbolicExpressionTree symbolicExpressionTree) {
-      // select any node as parent (except the root node)
-      var manipulationPoints = (from parent in symbolicExpressionTree.Root.IterateNodesPrefix().Skip(1)
-                                let subtreeCount = parent.Subtrees.Count()
-                                from subtreeIndex in Enumerable.Range(0, subtreeCount)
-                                let subtree = parent.GetSubtree(subtreeIndex)
-                                let existingSubtreeCount = subtree.Subtrees.Count()
-                                // find possible symbols for the node (also considering the existing branches below it)
-                                let allowedSymbols = (from symbol in parent.Grammar.GetAllowedChildSymbols(parent.Symbol, subtreeIndex)
-                                                      // do not replace the existing symbol with itself
-                                                      where symbol.Name != subtree.Symbol.Name
-                                                      where symbol.InitialFrequency > 0
-                                                      where existingSubtreeCount <= parent.Grammar.GetMaximumSubtreeCount(symbol)
-                                                      where existingSubtreeCount >= parent.Grammar.GetMinimumSubtreeCount(symbol)
-                                                      // keep only symbols that are still possible considering the existing sub-trees
-                                                      where (from existingSubtreeIndex in Enumerable.Range(0, existingSubtreeCount)
-                                                             let existingSubtree = subtree.GetSubtree(existingSubtreeIndex)
-                                                             select parent.Grammar.IsAllowedChildSymbol(symbol, existingSubtree.Symbol, existingSubtreeIndex))
-                                                             .All(x => x == true)
-                                                      select symbol)
-                                                      .ToList()
-                                where allowedSymbols.Count() > 0
-                                select new { Parent = parent, Child = subtree, Index = subtreeIndex, AllowedSymbols = allowedSymbols })
-                               .ToList();
-      if (manipulationPoints.Count == 0) { return; }
-      var selectedManipulationPoint = manipulationPoints.SelectRandom(random);
+      List<ISymbol> allowedSymbols = new List<ISymbol>();
+      ISymbolicExpressionTreeNode parent;
+      int childIndex;
+      ISymbolicExpressionTreeNode child;
+      // repeat until a fitting parent and child are found (MAX_TRIES times)
+      int tries = 0;
+      do {
+        parent = symbolicExpressionTree.Root.IterateNodesPrefix().Skip(1).Where(n => n.SubtreeCount > 0).SelectRandom(random);
+        childIndex = random.Next(parent.SubtreeCount);
 
-      var weights = selectedManipulationPoint.AllowedSymbols.Select(s => s.InitialFrequency).ToList();
-      var newSymbol = selectedManipulationPoint.AllowedSymbols.SelectRandom(weights, random);
+        child = parent.GetSubtree(childIndex);
+        int existingSubtreeCount = child.SubtreeCount;
+        allowedSymbols.Clear();
+        foreach (var symbol in parent.Grammar.GetAllowedChildSymbols(parent.Symbol, childIndex)) {
+          // check basic properties that the new symbol must have
+          if (symbol.Name != child.Symbol.Name &&
+            symbol.InitialFrequency > 0 &&
+            existingSubtreeCount <= parent.Grammar.GetMinimumSubtreeCount(symbol) &&
+            existingSubtreeCount >= parent.Grammar.GetMaximumSubtreeCount(symbol)) {
+            // check that all existing subtrees are also allowed for the new symbol
+            bool allExistingSubtreesAllowed = true;
+            for (int existingSubtreeIndex = 0; existingSubtreeIndex < existingSubtreeCount && allExistingSubtreesAllowed; existingSubtreeIndex++) {
+              var existingSubtree = child.GetSubtree(existingSubtreeIndex);
+              allExistingSubtreesAllowed &= parent.Grammar.IsAllowedChildSymbol(symbol, existingSubtree.Symbol, existingSubtreeIndex);
+            }
+            if (allExistingSubtreesAllowed) {
+              allowedSymbols.Add(symbol);
+            }
+          }
+        }
+        tries++;
+      } while (tries < MAX_TRIES && allowedSymbols.Count == 0);
 
-      // replace the old node with the new node
-      var newNode = newSymbol.CreateTreeNode();
-      if (newNode.HasLocalParameters)
-        newNode.ResetLocalParameters(random);
-      foreach (var subtree in selectedManipulationPoint.Child.Subtrees)
-        newNode.AddSubtree(subtree);
-      selectedManipulationPoint.Parent.RemoveSubtree(selectedManipulationPoint.Index);
-      selectedManipulationPoint.Parent.InsertSubtree(selectedManipulationPoint.Index, newNode);
+      if (tries < MAX_TRIES) {
+        var weights = allowedSymbols.Select(s => s.InitialFrequency).ToList();
+        var newSymbol = allowedSymbols.SelectRandom(weights, random);
+
+        // replace the old node with the new node
+        var newNode = newSymbol.CreateTreeNode();
+        if (newNode.HasLocalParameters)
+          newNode.ResetLocalParameters(random);
+        foreach (var subtree in child.Subtrees)
+          newNode.AddSubtree(subtree);
+        parent.RemoveSubtree(childIndex);
+        parent.InsertSubtree(childIndex, newNode);
+      }
     }
   }
 }

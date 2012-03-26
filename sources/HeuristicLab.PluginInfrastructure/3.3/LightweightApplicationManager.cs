@@ -122,6 +122,8 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <returns>Enumerable of the discovered types.</returns>
     private static IEnumerable<Type> GetTypes(Type type, Assembly assembly, bool onlyInstantiable = true, bool includeGenericTypeDefinitions = false) {
       try {
+        // necessary to make sure the exception is immediately thrown
+        // instead of later when the enumerable is iterated?
         var assemblyTypes = assembly.GetTypes();
 
         var buildTypes = from t in assembly.GetTypes()

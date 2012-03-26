@@ -25,11 +25,13 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System.Collections.Generic;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableClass]
   [Item("ReplaceBranchManipulation", "Selects a branch of the tree randomly and replaces it with a newly initialized branch (using PTC2).")]
   public sealed class ReplaceBranchManipulation : SymbolicExpressionTreeManipulator, ISymbolicExpressionTreeSizeConstraintOperator {
+    private const int MAX_TRIES = 100;
     private const string MaximumSymbolicExpressionTreeLengthParameterName = "MaximumSymbolicExpressionTreeLength";
     private const string MaximumSymbolicExpressionTreeDepthParameterName = "MaximumSymbolicExpressionTreeDepth";
     #region Parameter Properties
@@ -67,45 +69,45 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     public static void ReplaceRandomBranch(IRandom random, ISymbolicExpressionTree symbolicExpressionTree, int maxTreeLength, int maxTreeDepth) {
-      // select any node as parent (except the root node)
-      var manipulationPoints = (from parent in symbolicExpressionTree.Root.IterateNodesPrefix().Skip(1)
-                                from subtree in parent.Subtrees
-                                let subtreeIndex = parent.IndexOfSubtree(subtree)
-                                let maxLength = maxTreeLength - symbolicExpressionTree.Length + subtree.GetLength()
-                                let maxDepth = maxTreeDepth - symbolicExpressionTree.Depth + subtree.GetDepth()
-                                // find possible symbols for the node (also considering the existing branches below it)
-                                let allowedSymbols = (from symbol in parent.Grammar.GetAllowedChildSymbols(parent.Symbol, subtreeIndex)
-                                                      // do not replace symbol with the same symbol
-                                                      where symbol.Name != subtree.Symbol.Name
-                                                      where symbol.InitialFrequency > 0
-                                                      where parent.Grammar.GetMinimumExpressionDepth(symbol) + 1 <= maxDepth
-                                                      where parent.Grammar.GetMinimumExpressionLength(symbol) <= maxLength
-                                                      select symbol)
-                                                      .ToList()
-                                where allowedSymbols.Count > 0
-                                select new {
-                                  Parent = parent,
-                                  Child = subtree,
-                                  Index = subtreeIndex,
-                                  AllowedSymbols = allowedSymbols,
-                                  MaxLength = maxLength,
-                                  MaxDepth = maxDepth
-                                })
-                               .ToList();
+      var allowedSymbols = new List<ISymbol>();
+      ISymbolicExpressionTreeNode parent;
+      int childIndex;
+      int maxLength;
+      int maxDepth;
+      // repeat until a fitting parent and child are found (MAX_TRIES times)
+      int tries = 0;
+      do {
+        parent = symbolicExpressionTree.Root.IterateNodesPrefix().Skip(1).Where(n => n.SubtreeCount > 0).SelectRandom(random);
+        childIndex = random.Next(parent.SubtreeCount);
+        var child = parent.GetSubtree(childIndex);
+        maxLength = maxTreeLength - symbolicExpressionTree.Length + child.GetLength();
+        maxDepth = maxTreeDepth - symbolicExpressionTree.Depth + child.GetDepth();
 
-      if (manipulationPoints.Count == 0) return;
-      var selectedManipulationPoint = manipulationPoints.SelectRandom(random);
+        allowedSymbols.Clear();
+        foreach (var symbol in parent.Grammar.GetAllowedChildSymbols(parent.Symbol, childIndex)) {
+          // check basic properties that the new symbol must have
+          if (symbol.Name != child.Symbol.Name &&
+            symbol.InitialFrequency > 0 &&
+            parent.Grammar.GetMinimumExpressionDepth(symbol) + 1 <= maxDepth &&
+            parent.Grammar.GetMinimumExpressionLength(symbol) <= maxLength) {
+            allowedSymbols.Add(symbol);
+          }
+        }
+        tries++;
+      } while (tries < MAX_TRIES && allowedSymbols.Count == 0);
 
-      var weights = selectedManipulationPoint.AllowedSymbols.Select(s => s.InitialFrequency).ToList();
-      var seedSymbol = selectedManipulationPoint.AllowedSymbols.SelectRandom(weights, random);
-      // replace the old node with the new node
-      var seedNode = seedSymbol.CreateTreeNode();
-      if (seedNode.HasLocalParameters)
-        seedNode.ResetLocalParameters(random);
+      if (tries < MAX_TRIES) {
+        var weights = allowedSymbols.Select(s => s.InitialFrequency).ToList();
+        var seedSymbol = allowedSymbols.SelectRandom(weights, random);
+        // replace the old node with the new node
+        var seedNode = seedSymbol.CreateTreeNode();
+        if (seedNode.HasLocalParameters)
+          seedNode.ResetLocalParameters(random);
 
-      selectedManipulationPoint.Parent.RemoveSubtree(selectedManipulationPoint.Index);
-      selectedManipulationPoint.Parent.InsertSubtree(selectedManipulationPoint.Index, seedNode);
-      ProbabilisticTreeCreator.PTC2(random, seedNode, selectedManipulationPoint.MaxLength, selectedManipulationPoint.MaxDepth);
+        parent.RemoveSubtree(childIndex);
+        parent.InsertSubtree(childIndex, seedNode);
+        ProbabilisticTreeCreator.PTC2(random, seedNode, maxLength, maxDepth);
+      }
     }
   }
 }
