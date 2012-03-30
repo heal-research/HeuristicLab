@@ -87,8 +87,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     public override string ToString() {
-      return variableName + " > " + threshold.ToString("E4") + Environment.NewLine +
-        "slope: " + slope.ToString("E4");
+      if (slope.IsAlmost(0.0))
+        return variableName + " > " + threshold.ToString("E4") + Environment.NewLine +
+          "slope: " + slope.ToString("E4");
+      else
+        return variableName + " > " + threshold.ToString("E4");
     }
   }
 }

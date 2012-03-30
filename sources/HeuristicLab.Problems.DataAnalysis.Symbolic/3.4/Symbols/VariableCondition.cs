@@ -28,7 +28,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
-  [Item("Variable Condition", "Represents a condition that tests a given variable.")]
+  [Item("Variable Condition", "Represents a condition that tests a given variable against a specified threshold.")]
   public sealed class VariableCondition : Symbol {
     #region properties
     [Storable]
@@ -181,10 +181,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       variableNames = new List<string>();
 
-      slopeInitializerMu = 1.0;
-      slopeInitializerSigma = 0.05;
+      slopeInitializerMu = 0.0;
+      slopeInitializerSigma = 0.0;
       slopeManipulatorMu = 0.0;
-      slopeManipulatorSigma = 0.05;
+      slopeManipulatorSigma = 0.0;
     }
 
     public override ISymbolicExpressionTreeNode CreateTreeNode() {
