@@ -28,19 +28,19 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
-  [Item("Mean squared error Evaluator", "Calculates the mean squared error of a symbolic regression solution.")]
+  [Item("Mean absolute error Evaluator", "Calculates the mean absolute error of a symbolic regression solution.")]
   [StorableClass]
-  public class SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator : SymbolicRegressionSingleObjectiveEvaluator {
+  public class SymbolicRegressionSingleObjectiveMeanAbsoluteErrorEvaluator : SymbolicRegressionSingleObjectiveEvaluator {
     public override bool Maximization { get { return false; } }
     [StorableConstructor]
-    protected SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator(bool deserializing) : base(deserializing) { }
-    protected SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator(SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator original, Cloner cloner)
+    protected SymbolicRegressionSingleObjectiveMeanAbsoluteErrorEvaluator(bool deserializing) : base(deserializing) { }
+    protected SymbolicRegressionSingleObjectiveMeanAbsoluteErrorEvaluator(SymbolicRegressionSingleObjectiveMeanAbsoluteErrorEvaluator original, Cloner cloner)
       : base(original, cloner) {
     }
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator(this, cloner);
+      return new SymbolicRegressionSingleObjectiveMeanAbsoluteErrorEvaluator(this, cloner);
     }
-    public SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator() : base() { }
+    public SymbolicRegressionSingleObjectiveMeanAbsoluteErrorEvaluator() : base() { }
 
     public override IOperation Apply() {
       var solution = SymbolicExpressionTreeParameter.ActualValue;
@@ -60,10 +60,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       double mse;
       if (applyLinearScaling) {
-        var mseCalculator = new OnlineMeanSquaredErrorCalculator();
-        CalculateWithScaling(targetValues, boundedEstimatedValues, mseCalculator, problemData.Dataset.Rows);
-        errorState = mseCalculator.ErrorState;
-        mse = mseCalculator.MeanSquaredError;
+        var maeCalculator = new OnlineMeanAbsoluteErrorCalculator();
+        CalculateWithScaling(targetValues, boundedEstimatedValues, maeCalculator, problemData.Dataset.Rows);
+        errorState = maeCalculator.ErrorState;
+        mse = maeCalculator.MeanAbsoluteError;
       } else
         mse = OnlineMeanSquaredErrorCalculator.Calculate(targetValues, boundedEstimatedValues, out errorState);
 
