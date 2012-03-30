@@ -38,7 +38,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.ALGLIB-3.4.0",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.MathJax-1.1", "HeuristicLab.ExtLibs\HeuristicLab.MathJax\1.1\HeuristicLab.MathJax-1.1\HeuristicLab.MathJax-1.1.csproj", "{BF4C452F-4903-44E6-89B7-DF93D02C4819}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ALGLIB-3.5.0", "HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.5.0\ALGLIB-3.5.0\ALGLIB-3.5.0.csproj", "{D863807E-4774-455E-85A4-96E7E6A8F68E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.ALGLIB-3.5.0", "HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.5.0\HeuristicLab.ALGLIB-3.5.0\HeuristicLab.ALGLIB-3.5.0.csproj", "{65A15C73-FEC3-4E59-AF2E-6539F323068E}"
+EndProject
 Global
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
@@ -240,12 +248,32 @@ Global
 		{BF4C452F-4903-44E6-89B7-DF93D02C4819}.Release|x64.Build.0 = Release|x64
 		{BF4C452F-4903-44E6-89B7-DF93D02C4819}.Release|x86.ActiveCfg = Release|x86
 		{BF4C452F-4903-44E6-89B7-DF93D02C4819}.Release|x86.Build.0 = Release|x86
+		{D863807E-4774-455E-85A4-96E7E6A8F68E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D863807E-4774-455E-85A4-96E7E6A8F68E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D863807E-4774-455E-85A4-96E7E6A8F68E}.Debug|x64.ActiveCfg = Debug|x64
+		{D863807E-4774-455E-85A4-96E7E6A8F68E}.Debug|x64.Build.0 = Debug|x64
+		{D863807E-4774-455E-85A4-96E7E6A8F68E}.Debug|x86.ActiveCfg = Debug|x86
+		{D863807E-4774-455E-85A4-96E7E6A8F68E}.Debug|x86.Build.0 = Debug|x86
+		{D863807E-4774-455E-85A4-96E7E6A8F68E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D863807E-4774-455E-85A4-96E7E6A8F68E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D863807E-4774-455E-85A4-96E7E6A8F68E}.Release|x64.ActiveCfg = Release|x64
+		{D863807E-4774-455E-85A4-96E7E6A8F68E}.Release|x64.Build.0 = Release|x64
+		{D863807E-4774-455E-85A4-96E7E6A8F68E}.Release|x86.ActiveCfg = Release|x86
+		{D863807E-4774-455E-85A4-96E7E6A8F68E}.Release|x86.Build.0 = Release|x86
+		{65A15C73-FEC3-4E59-AF2E-6539F323068E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65A15C73-FEC3-4E59-AF2E-6539F323068E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65A15C73-FEC3-4E59-AF2E-6539F323068E}.Debug|x64.ActiveCfg = Debug|x64
+		{65A15C73-FEC3-4E59-AF2E-6539F323068E}.Debug|x64.Build.0 = Debug|x64
+		{65A15C73-FEC3-4E59-AF2E-6539F323068E}.Debug|x86.ActiveCfg = Debug|x86
+		{65A15C73-FEC3-4E59-AF2E-6539F323068E}.Debug|x86.Build.0 = Debug|x86
+		{65A15C73-FEC3-4E59-AF2E-6539F323068E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65A15C73-FEC3-4E59-AF2E-6539F323068E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65A15C73-FEC3-4E59-AF2E-6539F323068E}.Release|x64.ActiveCfg = Release|x64
+		{65A15C73-FEC3-4E59-AF2E-6539F323068E}.Release|x64.Build.0 = Release|x64
+		{65A15C73-FEC3-4E59-AF2E-6539F323068E}.Release|x86.ActiveCfg = Release|x86
+		{65A15C73-FEC3-4E59-AF2E-6539F323068E}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(SubversionScc) = preSolution
-		Svn-Managed = True
-		Manager = AnkhSVN - Subversion Support for Visual Studio
 	EndGlobalSection
 EndGlobal
