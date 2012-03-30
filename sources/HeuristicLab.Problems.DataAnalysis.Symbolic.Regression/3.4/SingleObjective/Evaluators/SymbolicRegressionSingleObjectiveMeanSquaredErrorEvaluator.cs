@@ -19,7 +19,9 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -30,6 +32,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [Item("Mean squared error Evaluator", "Calculates the mean squared error of a symbolic regression solution.")]
   [StorableClass]
   public class SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator : SymbolicRegressionSingleObjectiveEvaluator {
+    public override bool Maximization { get { return false; } }
+    [ThreadStatic]
+    private static double[] estimatedValuesCache;
+
     [StorableConstructor]
     protected SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator(bool deserializing) : base(deserializing) { }
     protected SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator(SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator original, Cloner cloner)
@@ -38,28 +44,41 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator(this, cloner);
     }
-
     public SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator() : base() { }
-
-    public override bool Maximization { get { return false; } }
 
     public override IOperation Apply() {
       var solution = SymbolicExpressionTreeParameter.ActualValue;
       IEnumerable<int> rows = GenerateRowsToEvaluate();
 
-      double quality = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, ProblemDataParameter.ActualValue, rows);
+      double quality = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, ProblemDataParameter.ActualValue, rows, ApplyLinearScaling);
       QualityParameter.ActualValue = new DoubleValue(quality);
 
       return base.Apply();
     }
 
-    public static double Calculate(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, IRegressionProblemData problemData, IEnumerable<int> rows) {
+    public static double Calculate(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, IRegressionProblemData problemData, IEnumerable<int> rows, bool applyLinearScaling) {
       IEnumerable<double> estimatedValues = interpreter.GetSymbolicExpressionTreeValues(solution, problemData.Dataset, rows);
       IEnumerable<double> originalValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, rows);
-      IEnumerable<double> boundedEstimationValues = estimatedValues.LimitToRange(lowerEstimationLimit, upperEstimationLimit);
+      IEnumerable<double> boundedEstimatedValues = estimatedValues.LimitToRange(lowerEstimationLimit, upperEstimationLimit);
       OnlineCalculatorError errorState;
-      double mse = OnlineMeanSquaredErrorCalculator.Calculate(originalValues, boundedEstimationValues, out errorState);
-      if (errorState != OnlineCalculatorError.None) return double.NaN;
+
+      double mse;
+      if (applyLinearScaling) {
+        //int i = 0;
+        //int rowCount = rows.Count();
+        //if (estimatedValuesCache == null) estimatedValuesCache = new double[problemData.Dataset.Rows];
+        //foreach (var value in boundedEstimatedValues) {
+        //  estimatedValuesCache[i] = value;
+        //  i++;
+        //}
+
+        double alpha, beta;
+        OnlineLinearScalingParameterCalculator.Calculate(boundedEstimatedValues, originalValues, out alpha, out beta, out errorState);
+        mse = OnlineMeanSquaredErrorCalculator.Calculate(originalValues, boundedEstimatedValues.Select(value => value * beta + alpha), out errorState);
+      } else
+        mse = OnlineMeanSquaredErrorCalculator.Calculate(originalValues, boundedEstimatedValues, out errorState);
+
+      if (errorState != OnlineCalculatorError.None) return Double.NaN;
       else return mse;
     }
 
@@ -67,8 +86,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = context;
       EstimationLimitsParameter.ExecutionContext = context;
 
-      double mse = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, tree, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, problemData, rows);
-
+      double mse = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, tree, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, problemData, rows, ApplyLinearScaling);
 
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = null;
       EstimationLimitsParameter.ExecutionContext = null;

@@ -113,7 +113,7 @@
   <ItemGroup>
     <Compile Include="MultiObjective\SymbolicRegressionMultiObjectiveValidationBestSolutionAnalyzer.cs" />
     <Compile Include="Plugin.cs" />
-    <Compile Include="SingleObjective\SymbolicRegressionConstantOptimizationEvaluator.cs" />
+    <Compile Include="SingleObjective\Evaluators\SymbolicRegressionConstantOptimizationEvaluator.cs" />
     <Compile Include="SingleObjective\SymbolicRegressionSingleObjectiveOverfittingAnalyzer.cs" />
     <Compile Include="SymbolicRegressionModel.cs" />
     <Compile Include="Interfaces\ISymbolicRegressionModel.cs" />
@@ -129,9 +129,9 @@
     <Compile Include="MultiObjective\SymbolicRegressionMultiObjectiveEvaluator.cs" />
     <Compile Include="MultiObjective\SymbolicRegressionMultiObjectiveMeanSquaredErrorTreeSizeEvaluator.cs" />
     <Compile Include="MultiObjective\SymbolicRegressionMultiObjectivePearsonRSquaredTreeSizeEvaluator.cs" />
-    <Compile Include="SingleObjective\SymbolicRegressionSingleObjectiveEvaluator.cs" />
-    <Compile Include="SingleObjective\SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator.cs" />
-    <Compile Include="SingleObjective\SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.cs" />
+    <Compile Include="SingleObjective\Evaluators\SymbolicRegressionSingleObjectiveEvaluator.cs" />
+    <Compile Include="SingleObjective\Evaluators\SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator.cs" />
+    <Compile Include="SingleObjective\Evaluators\SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.cs" />
     <Compile Include="SymbolicRegressionSolution.cs" />
     <None Include="HeuristicLab.snk" />
     <None Include="Plugin.cs.frame" />
