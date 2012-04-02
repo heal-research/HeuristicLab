@@ -47,6 +47,13 @@ namespace HeuristicLab.Clients.Common {
           System.Security.Cryptography.DataProtectionScope.CurrentUser);
         return System.Text.Encoding.Unicode.GetString(decryptedData);
       }
+      catch (CryptographicException) {
+        // we assume here that the password was saved in clear text in a previous HL version
+        return encryptedData;
+      }
+      catch (FormatException) {
+        return encryptedData;
+      }
       catch (Exception ex) {
         throw ex;
       }
