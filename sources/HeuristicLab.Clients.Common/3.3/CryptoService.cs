@@ -31,7 +31,7 @@ namespace HeuristicLab.Clients.Common {
   public static class CryptoService {
     private static byte[] entropy = System.Text.Encoding.Unicode.GetBytes("Salt Is Not A Password");
 
-    public static string EncryptString(String input) {
+    public static string EncryptString(string input) {
       byte[] encryptedData = ProtectedData.Protect(
         Encoding.Unicode.GetBytes(input),
         entropy,
@@ -39,7 +39,7 @@ namespace HeuristicLab.Clients.Common {
       return Convert.ToBase64String(encryptedData);
     }
 
-    public static String DecryptString(string encryptedData) {
+    public static string DecryptString(string encryptedData) {
       try {
         byte[] decryptedData = System.Security.Cryptography.ProtectedData.Unprotect(
           Convert.FromBase64String(encryptedData),
