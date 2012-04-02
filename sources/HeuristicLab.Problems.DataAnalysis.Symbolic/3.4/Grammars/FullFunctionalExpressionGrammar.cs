@@ -54,8 +54,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var log = new Logarithm();
       var pow = new Power();
       pow.InitialFrequency = 0.0;
+      var square = new Square();
+      square.InitialFrequency = 0.0;
       var root = new Root();
       root.InitialFrequency = 0.0;
+      var sqrt = new SquareRoot();
+      sqrt.InitialFrequency = 0.0;
       var exp = new Exponential();
       var @if = new IfThenElse();
       var gt = new GreaterThan();
@@ -81,8 +85,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var laggedVariable = new LaggedVariable();
       laggedVariable.InitialFrequency = 0.0;
 
-      var allSymbols = new List<Symbol>() { add, sub, mul, div, mean, sin, cos, tan, log, pow, root, exp, @if, gt, lt, and, or, not, timeLag, integral, derivative, constant, variableSymbol, laggedVariable, variableCondition };
-      var unaryFunctionSymbols = new List<Symbol>() { sin, cos, tan, log, exp, not, timeLag, integral, derivative };
+      var allSymbols = new List<Symbol>() { add, sub, mul, div, mean, sin, cos, tan, log, square, pow, sqrt, root, exp, @if, gt, lt, and, or, not, timeLag, integral, derivative, constant, variableSymbol, laggedVariable, variableCondition };
+      var unaryFunctionSymbols = new List<Symbol>() { square, sqrt, sin, cos, tan, log, exp, not, timeLag, integral, derivative };
 
       var binaryFunctionSymbols = new List<Symbol>() { pow, root, gt, lt, variableCondition };
       var functionSymbols = new List<Symbol>() { add, sub, mul, div, mean, and, or };

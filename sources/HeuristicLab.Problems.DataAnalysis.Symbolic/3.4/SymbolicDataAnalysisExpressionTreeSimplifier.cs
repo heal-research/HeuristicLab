@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
@@ -40,6 +39,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private Logarithm logSymbol = new Logarithm();
     private Exponential expSymbol = new Exponential();
     private Root rootSymbol = new Root();
+    private Square sqrSymbol = new Square();
+    private SquareRoot sqrtSymbol = new SquareRoot();
     private Power powSymbol = new Power();
     private Sine sineSymbol = new Sine();
     private Cosine cosineSymbol = new Cosine();
@@ -125,6 +126,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private bool IsRoot(ISymbolicExpressionTreeNode node) {
       return node.Symbol is Root;
     }
+    private bool IsSquare(ISymbolicExpressionTreeNode node) {
+      return node.Symbol is Square;
+    }
+    private bool IsSquareRoot(ISymbolicExpressionTreeNode node) {
+      return node.Symbol is SquareRoot;
+    }
     private bool IsPower(ISymbolicExpressionTreeNode node) {
       return node.Symbol is Power;
     }
@@ -200,10 +207,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return SimplifyLog(original);
       } else if (IsExp(original)) {
         return SimplifyExp(original);
-      } else if (IsRoot(original)) {
-        return SimplifyRoot(original);
+      } else if (IsSquare(original)) {
+        return SimplifySquare(original);
+      } else if (IsSquareRoot(original)) {
+        return SimplifySquareRoot(original);
       } else if (IsPower(original)) {
         return SimplifyPower(original);
+      } else if (IsRoot(original)) {
+        return SimplifyRoot(original);
       } else if (IsSine(original)) {
         return SimplifySine(original);
       } else if (IsCosine(original)) {
@@ -346,6 +357,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
     private ISymbolicExpressionTreeNode SimplifyExp(ISymbolicExpressionTreeNode original) {
       return MakeExp(GetSimplifiedTree(original.GetSubtree(0)));
+    }
+    private ISymbolicExpressionTreeNode SimplifySquare(ISymbolicExpressionTreeNode original) {
+      return MakeSquare(GetSimplifiedTree(original.GetSubtree(0)));
+    }
+    private ISymbolicExpressionTreeNode SimplifySquareRoot(ISymbolicExpressionTreeNode original) {
+      return MakeSquareRoot(GetSimplifiedTree(original.GetSubtree(0)));
     }
 
     private ISymbolicExpressionTreeNode SimplifyLog(ISymbolicExpressionTreeNode original) {
@@ -531,6 +548,32 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return expNode;
       }
     }
+
+    private ISymbolicExpressionTreeNode MakeSquare(ISymbolicExpressionTreeNode node) {
+      if (IsConstant(node)) {
+        var constT = node as ConstantTreeNode;
+        return MakeConstant(constT.Value * constT.Value);
+      } else if (IsSquareRoot(node)) {
+        return node.GetSubtree(0);
+      } else {
+        var sqrNode = sqrSymbol.CreateTreeNode();
+        sqrNode.AddSubtree(node);
+        return sqrNode;
+      }
+    }
+    private ISymbolicExpressionTreeNode MakeSquareRoot(ISymbolicExpressionTreeNode node) {
+      if (IsConstant(node)) {
+        var constT = node as ConstantTreeNode;
+        return MakeConstant(Math.Sqrt(constT.Value));
+      } else if (IsSquare(node)) {
+        return node.GetSubtree(0);
+      } else {
+        var sqrtNode = sqrtSymbol.CreateTreeNode();
+        sqrtNode.AddSubtree(node);
+        return sqrtNode;
+      }
+    }
+
     private ISymbolicExpressionTreeNode MakeLog(ISymbolicExpressionTreeNode node) {
       if (IsConstant(node)) {
         var constT = node as ConstantTreeNode;
@@ -635,20 +678,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return MakeProduct(a, Invert(b));
       } else if (IsDivision(a) && IsConstant(b)) {
         // (a1 / a2) / c => (a1 / (a2 * c))
-        Trace.Assert(a.Subtrees.Count() == 2);
         return MakeFraction(a.GetSubtree(0), MakeProduct(a.GetSubtree(1), b));
       } else if (IsDivision(a) && IsDivision(b)) {
         // (a1 / a2) / (b1 / b2) => 
-        Trace.Assert(a.Subtrees.Count() == 2);
-        Trace.Assert(b.Subtrees.Count() == 2);
         return MakeFraction(MakeProduct(a.GetSubtree(0), b.GetSubtree(1)), MakeProduct(a.GetSubtree(1), b.GetSubtree(0)));
       } else if (IsDivision(a)) {
         // (a1 / a2) / b => (a1 / (a2 * b))
-        Trace.Assert(a.Subtrees.Count() == 2);
         return MakeFraction(a.GetSubtree(0), MakeProduct(a.GetSubtree(1), b));
       } else if (IsDivision(b)) {
         // a / (b1 / b2) => (a * b2) / b1
-        Trace.Assert(b.Subtrees.Count() == 2);
         return MakeFraction(MakeProduct(a, b.GetSubtree(1)), b.GetSubtree(0));
       } else {
         var div = divSymbol.CreateTreeNode();
@@ -773,16 +811,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return a.Subtrees.Select(x => MakeProduct(x, b)).Aggregate((c, d) => MakeSum(c, d));
       } else if (IsDivision(a) && IsDivision(b)) {
         // (a1 / a2) * (b1 / b2) => (a1 * b1) / (a2 * b2)
-        Trace.Assert(a.Subtrees.Count() == 2);
-        Trace.Assert(b.Subtrees.Count() == 2);
         return MakeFraction(MakeProduct(a.GetSubtree(0), b.GetSubtree(0)), MakeProduct(a.GetSubtree(1), b.GetSubtree(1)));
       } else if (IsDivision(a)) {
         // (a1 / a2) * b => (a1 * b) / a2
-        Trace.Assert(a.Subtrees.Count() == 2);
         return MakeFraction(MakeProduct(a.GetSubtree(0), b), a.GetSubtree(1));
       } else if (IsDivision(b)) {
         // a * (b1 / b2) => (b1 * a) / b2
-        Trace.Assert(b.Subtrees.Count() == 2);
         return MakeFraction(MakeProduct(b.GetSubtree(0), a), b.GetSubtree(1));
       } else if (IsMultiplication(a) && IsMultiplication(b)) {
         // merge multiplications (make sure constants are merged)
@@ -911,7 +945,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (IsConstant(x)) {
         return MakeConstant(1.0 / ((ConstantTreeNode)x).Value);
       } else if (IsDivision(x)) {
-        Trace.Assert(x.Subtrees.Count() == 2);
         return MakeFraction(x.GetSubtree(1), x.GetSubtree(0));
       } else {
         // any other function

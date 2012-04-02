@@ -64,7 +64,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var tan = new Tangent();
       var log = new Logarithm();
       var pow = new Power();
+      var square = new Square();
       var root = new Root();
+      var sqrt = new SquareRoot();
       var exp = new Exponential();
       var @if = new IfThenElse();
       var gt = new GreaterThan();
@@ -92,7 +94,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var terminalSymbols = new GroupSymbol(TerminalsName, new List<ISymbol> { constant, variableSymbol });
       var realValuedSymbols = new GroupSymbol(RealValuedSymbolsName, new List<ISymbol>() { arithmeticSymbols, trigonometricSymbols, exponentialAndLogarithmicSymbols, terminalSymbols });
 
-      var powerSymbols = new GroupSymbol(PowerFunctionsName, new List<ISymbol> { pow, root });
+      var powerSymbols = new GroupSymbol(PowerFunctionsName, new List<ISymbol> { square, pow, sqrt, root });
 
       var conditionSymbols = new GroupSymbol(ConditionsName, new List<ISymbol> { @if, variableCondition });
       var comparisonSymbols = new GroupSymbol(ComparisonsName, new List<ISymbol> { gt, lt });
@@ -110,7 +112,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       #region subtree count configuration
       SetSubtreeCount(arithmeticSymbols, 2, 2);
       SetSubtreeCount(trigonometricSymbols, 1, 1);
-      SetSubtreeCount(powerSymbols, 2, 2);
+      SetSubtreeCount(pow, 2, 2);
+      SetSubtreeCount(root, 2, 2);
+      SetSubtreeCount(square, 1, 1);
+      SetSubtreeCount(sqrt, 1, 1);
       SetSubtreeCount(exponentialAndLogarithmicSymbols, 1, 1);
       SetSubtreeCount(terminalSymbols, 0, 0);
 
@@ -139,6 +144,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       AddAllowedChildSymbol(powerSymbols, variableSymbol, 0);
       AddAllowedChildSymbol(powerSymbols, laggedVariable, 0);
       AddAllowedChildSymbol(powerSymbols, constant, 1);
+      AddAllowedChildSymbol(square, realValuedSymbols, 0);
+      AddAllowedChildSymbol(sqrt, realValuedSymbols, 0);
 
       AddAllowedChildSymbol(@if, comparisonSymbols, 0);
       AddAllowedChildSymbol(@if, booleanOperationSymbols, 0);

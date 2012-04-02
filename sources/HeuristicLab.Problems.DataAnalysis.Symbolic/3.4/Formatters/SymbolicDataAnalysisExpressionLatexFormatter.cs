@@ -111,6 +111,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         strBuilder.Append(@"\log \left( ");
       } else if (node.Symbol is Exponential) {
         strBuilder.Append(@"\exp \left( ");
+      } else if (node.Symbol is Square) {
+        strBuilder.Append(@"\left(");
+      } else if (node.Symbol is SquareRoot) {
+        strBuilder.Append(@"\sqrt{");
       } else if (node.Symbol is Sine) {
         strBuilder.Append(@"\sin \left( ");
       } else if (node.Symbol is Cosine) {
@@ -208,6 +212,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         throw new InvalidOperationException();
       } else if (node.Symbol is Exponential) {
         throw new InvalidOperationException();
+      } else if (node.Symbol is Square) {
+        throw new InvalidOperationException();
+      } else if (node.Symbol is SquareRoot) {
+        throw new InvalidOperationException();
       } else if (node.Symbol is Sine) {
         throw new InvalidOperationException();
       } else if (node.Symbol is Cosine) {
@@ -265,6 +273,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         strBuilder.Append(@" \right) ");
       } else if (node.Symbol is Exponential) {
         strBuilder.Append(@" \right) ");
+      } else if (node.Symbol is Square) {
+        strBuilder.Append(@"\right)^2");
+      } else if (node.Symbol is SquareRoot) {
+        strBuilder.Append(@"}");
       } else if (node.Symbol is Sine) {
         strBuilder.Append(@" \right) ");
       } else if (node.Symbol is Cosine) {

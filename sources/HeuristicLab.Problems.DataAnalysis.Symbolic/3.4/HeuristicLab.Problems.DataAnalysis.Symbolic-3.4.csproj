@@ -160,6 +160,8 @@
     <Compile Include="Symbols\Average.cs" />
     <Compile Include="Symbols\Constant.cs" />
     <Compile Include="Symbols\ConstantTreeNode.cs" />
+    <Compile Include="Symbols\SquareRoot.cs" />
+    <Compile Include="Symbols\Square.cs" />
     <Compile Include="Symbols\Cosine.cs" />
     <Compile Include="Symbols\Derivative.cs" />
     <Compile Include="Symbols\Division.cs" />

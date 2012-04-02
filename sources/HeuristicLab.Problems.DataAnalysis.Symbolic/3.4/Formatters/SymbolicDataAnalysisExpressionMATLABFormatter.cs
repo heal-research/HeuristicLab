@@ -19,16 +19,12 @@
  */
 #endregion
 
-using System.Text;
-using System.Linq;
-using HeuristicLab.Core;
-using HeuristicLab.Common;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Problems.DataAnalysis;
-using System.Collections.Generic;
-using System;
 using System.Globalization;
+using System.Text;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
@@ -83,8 +79,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return stringBuilder.ToString();
     }
 
-    public string FormatOnlyExpression(ISymbolicExpressionTreeNode expressionNode)
-    {
+    public string FormatOnlyExpression(ISymbolicExpressionTreeNode expressionNode) {
       var stringBuilder = new StringBuilder();
       stringBuilder.AppendLine("  for " + CurrentIndexVariable + " = 1:1:rows");
       stringBuilder.AppendLine("    estimated(" + CurrentIndexVariable + ") = " + FormatRecursively(expressionNode.GetSubtree(0)) + ";");
@@ -150,6 +145,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         }
       } else if (symbol is Exponential) {
         stringBuilder.Append("exp(");
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
+        stringBuilder.Append(")");
+      } else if (symbol is Square) {
+        stringBuilder.Append("(");
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
+        stringBuilder.Append(").^2");
+      } else if (symbol is SquareRoot) {
+        stringBuilder.Append("sqrt(");
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
         stringBuilder.Append(")");
       } else if (symbol is GreaterThan) {
@@ -282,8 +285,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
 
-    private string LagToString(int lag)
-    {
+    private string LagToString(int lag) {
       if (lag < 0) {
         return "(" + CurrentIndexVariable + "" + lag + ")";
       } else if (lag > 0) {

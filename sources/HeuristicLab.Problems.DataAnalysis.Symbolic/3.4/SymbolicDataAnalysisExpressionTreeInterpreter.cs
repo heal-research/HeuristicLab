@@ -132,6 +132,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       public const byte Derivative = 26;
 
       public const byte VariableCondition = 27;
+
+      public const byte Square = 28;
+      public const byte SquareRoot = 29;
     }
     #endregion
 
@@ -153,7 +156,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       { typeof(Not), OpCodes.NOT},
       { typeof(Average), OpCodes.Average},
       { typeof(InvokeFunction), OpCodes.Call },
-      { typeof(HeuristicLab.Problems.DataAnalysis.Symbolic.Variable), OpCodes.Variable },
+      { typeof(Variable), OpCodes.Variable },
       { typeof(LaggedVariable), OpCodes.LagVariable },
       { typeof(Constant), OpCodes.Constant },
       { typeof(Argument), OpCodes.Arg },
@@ -162,7 +165,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       { typeof(TimeLag), OpCodes.TimeLag}, 
       { typeof(Integral), OpCodes.Integral},
       { typeof(Derivative), OpCodes.Derivative},
-      { typeof(VariableCondition),OpCodes.VariableCondition}
+      { typeof(VariableCondition),OpCodes.VariableCondition},
+      { typeof(Square),OpCodes.Square},
+      {typeof(SquareRoot),OpCodes.SquareRoot}
     };
 
     public override bool CanChangeName {
@@ -304,10 +309,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         case OpCodes.Tan: {
             return Math.Tan(Evaluate(dataset, ref row, state));
           }
+        case OpCodes.Square: {
+            return Math.Pow(Evaluate(dataset, ref row, state), 2);
+          }
         case OpCodes.Power: {
             double x = Evaluate(dataset, ref row, state);
             double y = Math.Round(Evaluate(dataset, ref row, state));
             return Math.Pow(x, y);
+          }
+        case OpCodes.SquareRoot: {
+            return Math.Sqrt(Evaluate(dataset, ref row, state));
           }
         case OpCodes.Root: {
             double x = Evaluate(dataset, ref row, state);
