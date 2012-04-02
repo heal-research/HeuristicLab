@@ -31,7 +31,7 @@ namespace HeuristicLab.Clients.Common {
 
     private void PasswordDialog_Load(object sender, EventArgs e) {
       usernameTextBox.Text = Settings.Default.UserName;
-      passwordTextBox.Text = Settings.Default.Password;
+      passwordTextBox.Text = CryptoService.DecryptString(Settings.Default.Password);
       savePasswordCheckBox.Checked = Settings.Default.SavePassword;
     }
 
@@ -40,7 +40,7 @@ namespace HeuristicLab.Clients.Common {
       Settings.Default.SavePassword = savePasswordCheckBox.Checked;
       Settings.Default.Password = string.Empty;
       Settings.Default.Save();
-      Settings.Default.Password = passwordTextBox.Text;
+      Settings.Default.Password = CryptoService.EncryptString(passwordTextBox.Text);
       if (savePasswordCheckBox.Checked)
         Settings.Default.Save();
     }

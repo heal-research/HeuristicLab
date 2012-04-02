@@ -40,7 +40,7 @@ namespace HeuristicLab.Clients.Common {
     public static T CreateClient<T, I>(string endpointConfigurationName, string remoteAddress)
       where T : ClientBase<I>, I
       where I : class {
-      return CreateClient<T, I>(endpointConfigurationName, remoteAddress, Settings.Default.UserName, Settings.Default.Password);
+      return CreateClient<T, I>(endpointConfigurationName, remoteAddress, Settings.Default.UserName, CryptoService.DecryptString(Settings.Default.Password));
     }
     public static T CreateClient<T, I>(string endpointConfigurationName, string remoteAddress, string userName, string password)
       where T : ClientBase<I>, I
@@ -70,7 +70,7 @@ namespace HeuristicLab.Clients.Common {
     }
     public static ChannelFactory<I> CreateChannelFactory<I>(string endpointConfigurationName, string remoteAddress)
       where I : class {
-      return CreateChannelFactory<I>(endpointConfigurationName, remoteAddress, Settings.Default.UserName, Settings.Default.Password);
+      return CreateChannelFactory<I>(endpointConfigurationName, remoteAddress, Settings.Default.UserName, CryptoService.DecryptString(Settings.Default.Password));
     }
     public static ChannelFactory<I> CreateChannelFactory<I>(string endpointConfigurationName, string remoteAddress, string userName, string password)
       where I : class {
