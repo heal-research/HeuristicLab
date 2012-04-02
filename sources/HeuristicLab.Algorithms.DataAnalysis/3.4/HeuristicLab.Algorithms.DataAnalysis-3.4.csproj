@@ -100,8 +100,8 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ALGLIB-3.4.0, Version=3.4.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <HintPath>..\..\bin\ALGLIB-3.4.0.dll</HintPath>
+    <Reference Include="ALGLIB-3.5.0, Version=3.5.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <HintPath>..\..\bin\ALGLIB-3.5.0.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="LibSVM-1.6.3, Version=1.6.3.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">

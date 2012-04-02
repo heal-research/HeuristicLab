@@ -62,24 +62,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private NeuralNetworkEnsembleModel(NeuralNetworkEnsembleModel original, Cloner cloner)
       : base(original, cloner) {
       mlpEnsemble = new alglib.mlpensemble();
-      mlpEnsemble.innerobj.columnmeans = (double[])original.mlpEnsemble.innerobj.columnmeans.Clone();
-      mlpEnsemble.innerobj.columnsigmas = (double[])original.mlpEnsemble.innerobj.columnsigmas.Clone();
-      mlpEnsemble.innerobj.dfdnet = (double[])original.mlpEnsemble.innerobj.dfdnet.Clone();
-      mlpEnsemble.innerobj.ensemblesize = original.mlpEnsemble.innerobj.ensemblesize;
-      mlpEnsemble.innerobj.issoftmax = original.mlpEnsemble.innerobj.issoftmax;
-      mlpEnsemble.innerobj.neurons = (double[])original.mlpEnsemble.innerobj.neurons.Clone();
-      mlpEnsemble.innerobj.nin = original.mlpEnsemble.innerobj.nin;
-      mlpEnsemble.innerobj.nout = original.mlpEnsemble.innerobj.nout;
-      mlpEnsemble.innerobj.postprocessing = original.mlpEnsemble.innerobj.postprocessing;
-      mlpEnsemble.innerobj.serializedlen = original.mlpEnsemble.innerobj.serializedlen;
-      mlpEnsemble.innerobj.serializedmlp = (double[])original.mlpEnsemble.innerobj.serializedmlp.Clone();
-      mlpEnsemble.innerobj.structinfo = (int[])original.mlpEnsemble.innerobj.structinfo.Clone();
-      mlpEnsemble.innerobj.tmpmeans = (double[])original.mlpEnsemble.innerobj.tmpmeans.Clone();
-      mlpEnsemble.innerobj.tmpsigmas = (double[])original.mlpEnsemble.innerobj.tmpsigmas.Clone();
-      mlpEnsemble.innerobj.tmpweights = (double[])original.mlpEnsemble.innerobj.tmpweights.Clone();
-      mlpEnsemble.innerobj.wcount = original.mlpEnsemble.innerobj.wcount;
-      mlpEnsemble.innerobj.weights = (double[])original.mlpEnsemble.innerobj.weights.Clone();
-      mlpEnsemble.innerobj.y = (double[])original.mlpEnsemble.innerobj.y.Clone();
+      string serializedEnsemble;
+      alglib.mlpeserialize(original.mlpEnsemble, out serializedEnsemble);
+      alglib.mlpeunserialize(serializedEnsemble, out this.mlpEnsemble);
       targetVariable = original.targetVariable;
       allowedInputVariables = (string[])original.allowedInputVariables.Clone();
       if (original.classValues != null)
@@ -167,147 +152,61 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     #region persistence
     [Storable]
-    private double[] MultiLayerPerceptronEnsembleColumnMeans {
+    private string MultiLayerPerceptronEnsembleNetwork {
       get {
-        return mlpEnsemble.innerobj.columnmeans;
+        string serializedNetwork;
+        alglib.mlpeserialize(this.mlpEnsemble, out serializedNetwork);
+        return serializedNetwork;
       }
       set {
+        alglib.mlpeunserialize(value, out this.mlpEnsemble);
+      }
+    }
+
+    [Storable]
+    private double[] MultiLayerPerceptronEnsembleColumnMeans {
+      get { return mlpEnsemble.innerobj.columnmeans; }
+      set {
         mlpEnsemble.innerobj.columnmeans = value;
+        mlpEnsemble.innerobj.network.columnmeans = value;
       }
     }
     [Storable]
     private double[] MultiLayerPerceptronEnsembleColumnSigmas {
-      get {
-        return mlpEnsemble.innerobj.columnsigmas;
-      }
+      get { return mlpEnsemble.innerobj.columnsigmas; }
       set {
         mlpEnsemble.innerobj.columnsigmas = value;
+        mlpEnsemble.innerobj.network.columnsigmas = value;
       }
     }
-    [Storable]
+    [Storable(AllowOneWay = true)]
     private double[] MultiLayerPerceptronEnsembleDfdnet {
-      get {
-        return mlpEnsemble.innerobj.dfdnet;
-      }
       set {
-        mlpEnsemble.innerobj.dfdnet = value;
+        mlpEnsemble.innerobj.network.dfdnet = value;
       }
     }
     [Storable]
     private int MultiLayerPerceptronEnsembleSize {
-      get {
-        return mlpEnsemble.innerobj.ensemblesize;
-      }
+      get { return mlpEnsemble.innerobj.ensemblesize; }
       set {
+        mlpEnsemble.innerobj.ensemblesize = value;
         mlpEnsemble.innerobj.ensemblesize = value;
       }
     }
-    [Storable]
-    private bool MultiLayerPerceptronEnsembleIsSoftMax {
-      get {
-        return mlpEnsemble.innerobj.issoftmax;
-      }
-      set {
-        mlpEnsemble.innerobj.issoftmax = value;
-      }
-    }
-    [Storable]
+    [Storable(AllowOneWay = true)]
     private double[] MultiLayerPerceptronEnsembleNeurons {
-      get {
-        return mlpEnsemble.innerobj.neurons;
-      }
-      set {
-        mlpEnsemble.innerobj.neurons = value;
-      }
+      set { mlpEnsemble.innerobj.network.neurons = value; }
     }
-    [Storable]
-    private int MultiLayerPerceptronEnsembleNin {
-      get {
-        return mlpEnsemble.innerobj.nin;
-      }
-      set {
-        mlpEnsemble.innerobj.nin = value;
-      }
-    }
-    [Storable]
-    private int MultiLayerPerceptronEnsembleNout {
-      get {
-        return mlpEnsemble.innerobj.nout;
-      }
-      set {
-        mlpEnsemble.innerobj.nout = value;
-      }
-    }
-    [Storable]
-    private bool MultiLayerPerceptronEnsemblePostprocessing {
-      get {
-        return mlpEnsemble.innerobj.postprocessing;
-      }
-      set {
-        mlpEnsemble.innerobj.postprocessing = value;
-      }
-    }
-    [Storable]
-    private int MultiLayerPerceptronEnsembleSerializedLen {
-      get {
-        return mlpEnsemble.innerobj.serializedlen;
-      }
-      set {
-        mlpEnsemble.innerobj.serializedlen = value;
-      }
-    }
-    [Storable]
+    [Storable(AllowOneWay = true)]
     private double[] MultiLayerPerceptronEnsembleSerializedMlp {
-      get {
-        return mlpEnsemble.innerobj.serializedmlp;
-      }
       set {
-        mlpEnsemble.innerobj.serializedmlp = value;
+        mlpEnsemble.innerobj.network.dfdnet = value;
       }
     }
-    [Storable]
+    [Storable(AllowOneWay = true)]
     private int[] MultiLayerPerceptronStuctinfo {
-      get {
-        return mlpEnsemble.innerobj.structinfo;
-      }
       set {
-        mlpEnsemble.innerobj.structinfo = value;
-      }
-    }
-    [Storable]
-    private double[] MultiLayerPerceptronEnsembleTmpMeans {
-      get {
-        return mlpEnsemble.innerobj.tmpmeans;
-      }
-      set {
-        mlpEnsemble.innerobj.tmpmeans = value;
-      }
-    }
-    [Storable]
-    private double[] MultiLayerPerceptronEnsembleTmpSigmas {
-      get {
-        return mlpEnsemble.innerobj.tmpsigmas;
-      }
-      set {
-        mlpEnsemble.innerobj.tmpsigmas = value;
-      }
-    }
-    [Storable]
-    private double[] MultiLayerPerceptronEnsembleTmpWeights {
-      get {
-        return mlpEnsemble.innerobj.tmpweights;
-      }
-      set {
-        mlpEnsemble.innerobj.tmpweights = value;
-      }
-    }
-    [Storable]
-    private int MultiLayerPerceptronEnsembleWCount {
-      get {
-        return mlpEnsemble.innerobj.wcount;
-      }
-      set {
-        mlpEnsemble.innerobj.wcount = value;
+        mlpEnsemble.innerobj.network.structinfo = value;
       }
     }
 
@@ -318,6 +217,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
       set {
         mlpEnsemble.innerobj.weights = value;
+        mlpEnsemble.innerobj.network.weights = value;
       }
     }
     [Storable]
@@ -327,6 +227,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
       set {
         mlpEnsemble.innerobj.y = value;
+        mlpEnsemble.innerobj.network.y = value;
       }
     }
     #endregion
