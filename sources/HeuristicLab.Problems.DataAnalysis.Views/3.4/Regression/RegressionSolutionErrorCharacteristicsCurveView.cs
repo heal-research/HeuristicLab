@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -34,6 +35,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     protected const string TrainingSamples = "Training";
     protected const string TestSamples = "Test";
     protected const string AllSamples = "All Samples";
+
+    protected Dictionary<string, List<double>> seriesResiduals = new Dictionary<string, List<double>>();
 
     public RegressionSolutionErrorCharacteristicsCurveView()
       : base() {
@@ -98,24 +101,26 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     protected virtual void UpdateChart() {
       chart.Series.Clear();
+      seriesResiduals.Clear();
       chart.Annotations.Clear();
       if (Content == null) return;
 
       var originalValues = GetOriginalValues().ToList();
       constantModel = CreateConstantModel();
-      var meanModelEstimatedValues = GetEstimatedValues(constantModel);
-      var meanModelResiduals = GetResiduals(originalValues, meanModelEstimatedValues);
+      var baselineEstimatedValues = GetEstimatedValues(constantModel);
+      var baselineResiduals = GetResiduals(originalValues, baselineEstimatedValues);
 
-      meanModelResiduals.Sort();
-      chart.ChartAreas[0].AxisX.Maximum = Math.Ceiling(meanModelResiduals.Last());
-      chart.ChartAreas[0].CursorX.Interval = meanModelResiduals.First() / 100;
+      baselineResiduals.Sort();
+      chart.ChartAreas[0].AxisX.Maximum = Math.Ceiling(baselineResiduals.Last());
+      chart.ChartAreas[0].CursorX.Interval = baselineResiduals.First() / 100;
 
-      Series meanModelSeries = new Series("Mean Model");
-      meanModelSeries.ChartType = SeriesChartType.FastLine;
-      UpdateSeries(meanModelResiduals, meanModelSeries);
-      meanModelSeries.ToolTip = "Area over Curve: " + CalculateAreaOverCurve(meanModelSeries);
-      meanModelSeries.Tag = constantModel;
-      chart.Series.Add(meanModelSeries);
+      Series baselineSeries = new Series("Baseline");
+      baselineSeries.ChartType = SeriesChartType.FastLine;
+      seriesResiduals[baselineSeries.Name] = baselineResiduals;
+      UpdateSeries(baselineResiduals, baselineSeries);
+      baselineSeries.ToolTip = "Area over Curve: " + CalculateAreaOverCurve(baselineSeries);
+      baselineSeries.Tag = constantModel;
+      chart.Series.Add(baselineSeries);
 
       AddRegressionSolution(Content);
     }
@@ -127,6 +132,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       solutionSeries.Tag = solution;
       solutionSeries.ChartType = SeriesChartType.FastLine;
       var estimatedValues = GetResiduals(GetOriginalValues(), GetEstimatedValues(solution));
+      seriesResiduals[solutionSeries.Name] = estimatedValues;
       UpdateSeries(estimatedValues, solutionSeries);
       solutionSeries.ToolTip = "Area over Curve: " + CalculateAreaOverCurve(solutionSeries);
       chart.Series.Add(solutionSeries);
@@ -199,7 +205,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       return estimatedValues;
     }
 
-    protected IEnumerable<double> GetMeanModelEstimatedValues(IEnumerable<double> originalValues) {
+    protected IEnumerable<double> GetbaselineEstimatedValues(IEnumerable<double> originalValues) {
       double averageTrainingTarget = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndizes).Average();
       return Enumerable.Repeat(averageTrainingTarget, originalValues.Count());
     }
@@ -228,22 +234,62 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       else UpdateChart();
     }
 
-    #region Mean Model
-    private void chart_MouseDown(object sender, MouseEventArgs e) {
-      if (e.Clicks < 2) return;
+    #region events
+    private void Chart_MouseDoubleClick(object sender, MouseEventArgs e) {
       HitTestResult result = chart.HitTest(e.X, e.Y);
       if (result.ChartElementType != ChartElementType.LegendItem) return;
       if (result.Series.Name != constantModel.Name) return;
 
       MainFormManager.MainForm.ShowContent((IRegressionSolution)result.Series.Tag);
     }
+    private void chart_MouseMove(object sender, MouseEventArgs e) {
+      HitTestResult result = chart.HitTest(e.X, e.Y);
+      if (result.ChartElementType == ChartElementType.LegendItem)
+        Cursor = Cursors.Hand;
+      else
+        Cursor = Cursors.Default;
+    }
+    private void chart_MouseDown(object sender, MouseEventArgs e) {
+      HitTestResult result = chart.HitTest(e.X, e.Y);
+      if (result.ChartElementType == ChartElementType.LegendItem) {
+        ToggleSeriesData(result.Series);
+      }
+    }
+    private void chart_CustomizeLegend(object sender, CustomizeLegendEventArgs e) {
+      foreach (LegendItem legend in e.LegendItems) {
+        legend.Cells[1].ForeColor = this.chart.Series[legend.SeriesName].Points.Count == 0 ? Color.Gray : Color.Black;
+      }
+    }
+    #endregion
 
     private IRegressionSolution CreateConstantModel() {
       double averageTrainingTarget = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndizes).Average();
       var solution = new ConstantRegressionModel(averageTrainingTarget).CreateRegressionSolution(ProblemData);
-      solution.Name = "Mean Model";
+      solution.Name = "Baseline";
       return solution;
     }
-    #endregion
+
+    private void ToggleSeriesData(Series series) {
+      if (series.Points.Count > 0) {  //checks if series is shown
+        if (this.chart.Series.Any(s => s != series && s.Points.Count > 0)) {
+          ClearPointsQuick(series.Points);
+        }
+      } else if (Content != null) {
+        List<double> residuals;
+        if (seriesResiduals.TryGetValue(series.Name, out residuals)) {
+          UpdateSeries(residuals, series);
+          chart.Legends[series.Legend].ForeColor = Color.Black;
+          chart.Refresh();
+        }
+      }
+    }
+
+    // workaround as per http://stackoverflow.com/questions/5744930/datapointcollection-clear-performance
+    private static void ClearPointsQuick(DataPointCollection points) {
+      points.SuspendUpdates();
+      while (points.Count > 0)
+        points.RemoveAt(points.Count - 1);
+      points.ResumeUpdates();
+    }
   }
 }
