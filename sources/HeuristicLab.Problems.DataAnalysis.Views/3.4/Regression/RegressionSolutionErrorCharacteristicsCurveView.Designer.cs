@@ -48,10 +48,8 @@
       this.chart.Size = new System.Drawing.Size(366, 202);
       this.chart.TabIndex = 0;
       this.chart.Text = "chart";
-      this.chart.CustomizeLegend += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CustomizeLegendEventArgs>(this.chart_CustomizeLegend);
       this.chart.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Chart_MouseDoubleClick);
       this.chart.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chart_MouseMove);
-      this.chart.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chart_MouseDown);
       // 
       // label1
       // 

@@ -21,12 +21,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
+
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Error Characteristics Curve")]
   [Content(typeof(IRegressionSolution))]
@@ -35,8 +35,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     protected const string TrainingSamples = "Training";
     protected const string TestSamples = "Test";
     protected const string AllSamples = "All Samples";
-
-    protected Dictionary<string, List<double>> seriesResiduals = new Dictionary<string, List<double>>();
 
     public RegressionSolutionErrorCharacteristicsCurveView()
       : base() {
@@ -101,7 +99,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     protected virtual void UpdateChart() {
       chart.Series.Clear();
-      seriesResiduals.Clear();
       chart.Annotations.Clear();
       if (Content == null) return;
 
@@ -116,7 +113,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
       Series baselineSeries = new Series("Baseline");
       baselineSeries.ChartType = SeriesChartType.FastLine;
-      seriesResiduals[baselineSeries.Name] = baselineResiduals;
       UpdateSeries(baselineResiduals, baselineSeries);
       baselineSeries.ToolTip = "Area over Curve: " + CalculateAreaOverCurve(baselineSeries);
       baselineSeries.Tag = constantModel;
@@ -132,7 +128,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       solutionSeries.Tag = solution;
       solutionSeries.ChartType = SeriesChartType.FastLine;
       var estimatedValues = GetResiduals(GetOriginalValues(), GetEstimatedValues(solution));
-      seriesResiduals[solutionSeries.Name] = estimatedValues;
       UpdateSeries(estimatedValues, solutionSeries);
       solutionSeries.ToolTip = "Area over Curve: " + CalculateAreaOverCurve(solutionSeries);
       chart.Series.Add(solutionSeries);
@@ -234,33 +229,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       else UpdateChart();
     }
 
-    #region events
+    #region Baseline
     private void Chart_MouseDoubleClick(object sender, MouseEventArgs e) {
       HitTestResult result = chart.HitTest(e.X, e.Y);
       if (result.ChartElementType != ChartElementType.LegendItem) return;
-      if (result.Series.Name != constantModel.Name) return;
 
       MainFormManager.MainForm.ShowContent((IRegressionSolution)result.Series.Tag);
     }
-    private void chart_MouseMove(object sender, MouseEventArgs e) {
-      HitTestResult result = chart.HitTest(e.X, e.Y);
-      if (result.ChartElementType == ChartElementType.LegendItem)
-        Cursor = Cursors.Hand;
-      else
-        Cursor = Cursors.Default;
-    }
-    private void chart_MouseDown(object sender, MouseEventArgs e) {
-      HitTestResult result = chart.HitTest(e.X, e.Y);
-      if (result.ChartElementType == ChartElementType.LegendItem) {
-        ToggleSeriesData(result.Series);
-      }
-    }
-    private void chart_CustomizeLegend(object sender, CustomizeLegendEventArgs e) {
-      foreach (LegendItem legend in e.LegendItems) {
-        legend.Cells[1].ForeColor = this.chart.Series[legend.SeriesName].Points.Count == 0 ? Color.Gray : Color.Black;
-      }
-    }
-    #endregion
 
     private IRegressionSolution CreateConstantModel() {
       double averageTrainingTarget = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndizes).Average();
@@ -268,28 +243,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       solution.Name = "Baseline";
       return solution;
     }
+    #endregion
 
-    private void ToggleSeriesData(Series series) {
-      if (series.Points.Count > 0) {  //checks if series is shown
-        if (this.chart.Series.Any(s => s != series && s.Points.Count > 0)) {
-          ClearPointsQuick(series.Points);
-        }
-      } else if (Content != null) {
-        List<double> residuals;
-        if (seriesResiduals.TryGetValue(series.Name, out residuals)) {
-          UpdateSeries(residuals, series);
-          chart.Legends[series.Legend].ForeColor = Color.Black;
-          chart.Refresh();
-        }
-      }
-    }
-
-    // workaround as per http://stackoverflow.com/questions/5744930/datapointcollection-clear-performance
-    private static void ClearPointsQuick(DataPointCollection points) {
-      points.SuspendUpdates();
-      while (points.Count > 0)
-        points.RemoveAt(points.Count - 1);
-      points.ResumeUpdates();
+    private void chart_MouseMove(object sender, MouseEventArgs e) {
+      HitTestResult result = chart.HitTest(e.X, e.Y);
+      if (result.ChartElementType == ChartElementType.LegendItem)
+        Cursor = Cursors.Hand;
+      else
+        Cursor = Cursors.Default;
     }
   }
 }
