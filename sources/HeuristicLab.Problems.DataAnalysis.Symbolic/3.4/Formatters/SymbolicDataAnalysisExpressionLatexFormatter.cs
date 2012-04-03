@@ -145,6 +145,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         strBuilder.Append(@"\operatorname{hypCosInt} \left( ");
       } else if (node.Symbol is HyperbolicSineIntegral) {
         strBuilder.Append(@"\operatorname{hypSinInt} \left( ");
+      } else if (node.Symbol is Norm) {
+        strBuilder.Append(@"\operatorname{norm} \left( ");
       } else if (node.Symbol is Psi) {
         strBuilder.Append(@"\operatorname{digamma} \left( ");
       } else if (node.Symbol is SineIntegral) {
@@ -274,6 +276,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         throw new InvalidOperationException();
       } else if (node.Symbol is HyperbolicSineIntegral) {
         throw new InvalidOperationException();
+      } else if (node.Symbol is Norm) {
+        throw new InvalidOperationException();
       } else if (node.Symbol is Psi) {
         throw new InvalidOperationException();
       } else if (node.Symbol is SineIntegral) {
@@ -362,6 +366,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (node.Symbol is HyperbolicCosineIntegral) {
         strBuilder.Append(@" \right) ");
       } else if (node.Symbol is HyperbolicSineIntegral) {
+        strBuilder.Append(@" \right) ");
+      } else if (node.Symbol is Norm) {
         strBuilder.Append(@" \right) ");
       } else if (node.Symbol is Psi) {
         strBuilder.Append(@" \right) ");
