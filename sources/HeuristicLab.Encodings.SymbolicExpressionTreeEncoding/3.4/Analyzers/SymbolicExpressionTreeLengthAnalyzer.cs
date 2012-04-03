@@ -152,7 +152,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         var treeLengthsTable = SymbolicExpressionTreeLengthsParameter.ActualValue;
         // if the table was not created yet, we create it here
         if (treeLengthsTable == null) {
-          treeLengthsTable = new DataTable("Histogram");
+          treeLengthsTable = new DataTable("Tree Length Histogram");
           SymbolicExpressionTreeLengthsParameter.ActualValue = treeLengthsTable;
         }
 
