@@ -121,6 +121,34 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         strBuilder.Append(@"\cos \left( ");
       } else if (node.Symbol is Tangent) {
         strBuilder.Append(@"\tan \left( ");
+      } else if (node.Symbol is AiryA) {
+        strBuilder.Append(@"\operatorname{airy}_a \left( ");
+      } else if (node.Symbol is AiryB) {
+        strBuilder.Append(@"\operatorname{airy}_b \left( ");
+      } else if (node.Symbol is Bessel) {
+        strBuilder.Append(@"\operatorname{bessel}_1 \left( ");
+      } else if (node.Symbol is CosineIntegral) {
+        strBuilder.Append(@"\operatorname{cosInt} \left( ");
+      } else if (node.Symbol is Dawson) {
+        strBuilder.Append(@"\operatorname{dawson} \left( ");
+      } else if (node.Symbol is Erf) {
+        strBuilder.Append(@"\operatorname{erf} \left( ");
+      } else if (node.Symbol is ExponentialIntegralEi) {
+        strBuilder.Append(@"\operatorname{expInt}_i \left( ");
+      } else if (node.Symbol is FresnelCosineIntegral) {
+        strBuilder.Append(@"\operatorname{fresnel}_\operatorName{cosInt} \left( ");
+      } else if (node.Symbol is FresnelSineIntegral) {
+        strBuilder.Append(@"\operatorname{fresnel}_\operatorName{sinInt} \left( ");
+      } else if (node.Symbol is Gamma) {
+        strBuilder.Append(@"\Gamma \left( ");
+      } else if (node.Symbol is HyperbolicCosineIntegral) {
+        strBuilder.Append(@"\operatorname{hypCosInt} \left( ");
+      } else if (node.Symbol is HyperbolicSineIntegral) {
+        strBuilder.Append(@"\operatorname{hypSinInt} \left( ");
+      } else if (node.Symbol is Psi) {
+        strBuilder.Append(@"\operatorname{digamma} \left( ");
+      } else if (node.Symbol is SineIntegral) {
+        strBuilder.Append(@"\operatorname{sinInt} \left( ");
       } else if (node.Symbol is GreaterThan) {
         strBuilder.Append(@"  \left( ");
       } else if (node.Symbol is LessThan) {
@@ -222,6 +250,34 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         throw new InvalidOperationException();
       } else if (node.Symbol is Tangent) {
         throw new InvalidOperationException();
+      } else if (node.Symbol is AiryA) {
+        throw new InvalidOperationException();
+      } else if (node.Symbol is AiryB) {
+        throw new InvalidOperationException();
+      } else if (node.Symbol is Bessel) {
+        throw new InvalidOperationException();
+      } else if (node.Symbol is CosineIntegral) {
+        throw new InvalidOperationException();
+      } else if (node.Symbol is Dawson) {
+        throw new InvalidOperationException();
+      } else if (node.Symbol is Erf) {
+        throw new InvalidOperationException();
+      } else if (node.Symbol is ExponentialIntegralEi) {
+        throw new InvalidOperationException();
+      } else if (node.Symbol is FresnelCosineIntegral) {
+        throw new InvalidOperationException();
+      } else if (node.Symbol is FresnelSineIntegral) {
+        throw new InvalidOperationException();
+      } else if (node.Symbol is Gamma) {
+        throw new InvalidOperationException();
+      } else if (node.Symbol is HyperbolicCosineIntegral) {
+        throw new InvalidOperationException();
+      } else if (node.Symbol is HyperbolicSineIntegral) {
+        throw new InvalidOperationException();
+      } else if (node.Symbol is Psi) {
+        throw new InvalidOperationException();
+      } else if (node.Symbol is SineIntegral) {
+        throw new InvalidOperationException();
       } else if (node.Symbol is GreaterThan) {
         strBuilder.Append(@" > ");
       } else if (node.Symbol is LessThan) {
@@ -282,6 +338,34 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (node.Symbol is Cosine) {
         strBuilder.Append(@" \right) ");
       } else if (node.Symbol is Tangent) {
+        strBuilder.Append(@" \right) ");
+      } else if (node.Symbol is AiryA) {
+        strBuilder.Append(@" \right) ");
+      } else if (node.Symbol is AiryB) {
+        strBuilder.Append(@" \right) ");
+      } else if (node.Symbol is Bessel) {
+        strBuilder.Append(@" \right) ");
+      } else if (node.Symbol is CosineIntegral) {
+        strBuilder.Append(@" \right) ");
+      } else if (node.Symbol is Dawson) {
+        strBuilder.Append(@" \right) ");
+      } else if (node.Symbol is Erf) {
+        strBuilder.Append(@" \right) ");
+      } else if (node.Symbol is ExponentialIntegralEi) {
+        strBuilder.Append(@" \right) ");
+      } else if (node.Symbol is FresnelCosineIntegral) {
+        strBuilder.Append(@" \right) ");
+      } else if (node.Symbol is FresnelSineIntegral) {
+        strBuilder.Append(@" \right) ");
+      } else if (node.Symbol is Gamma) {
+        strBuilder.Append(@" \right) ");
+      } else if (node.Symbol is HyperbolicCosineIntegral) {
+        strBuilder.Append(@" \right) ");
+      } else if (node.Symbol is HyperbolicSineIntegral) {
+        strBuilder.Append(@" \right) ");
+      } else if (node.Symbol is Psi) {
+        strBuilder.Append(@" \right) ");
+      } else if (node.Symbol is SineIntegral) {
         strBuilder.Append(@" \right) ");
       } else if (node.Symbol is GreaterThan) {
         strBuilder.Append(@" \right) ");

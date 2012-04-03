@@ -39,6 +39,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private const string ComparisonsName = "Comparisons";
     private const string BooleanOperatorsName = "Boolean Operators";
     private const string ConditionalSymbolsName = "ConditionalSymbols";
+    private const string SpecialFunctionsName = "Special Functions";
     private const string TimeSeriesSymbolsName = "Time Series Symbols";
 
     [StorableConstructor]
@@ -68,6 +69,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var root = new Root();
       var sqrt = new SquareRoot();
       var exp = new Exponential();
+
+      var airyA = new AiryA();
+      var airyB = new AiryB();
+      var bessel = new Bessel();
+      var cosineIntegral = new CosineIntegral();
+      var dawson = new Dawson();
+      var erf = new Erf();
+      var expIntegralEi = new ExponentialIntegralEi();
+      var fresnelCosineIntegral = new FresnelCosineIntegral();
+      var fresnelSineIntegral = new FresnelSineIntegral();
+      var gamma = new Gamma();
+      var hypCosineIntegral = new HyperbolicCosineIntegral();
+      var hypSineIntegral = new HyperbolicSineIntegral();
+      var norm = new Norm();
+      var psi = new Psi();
+      var sineIntegral = new SineIntegral();
+
       var @if = new IfThenElse();
       var gt = new GreaterThan();
       var lt = new LessThan();
@@ -91,8 +109,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var arithmeticSymbols = new GroupSymbol(ArithmeticFunctionsName, new List<ISymbol>() { add, sub, mul, div, mean });
       var trigonometricSymbols = new GroupSymbol(TrigonometricFunctionsName, new List<ISymbol>() { sin, cos, tan });
       var exponentialAndLogarithmicSymbols = new GroupSymbol(ExponentialFunctionsName, new List<ISymbol> { exp, log });
+      var specialFunctions = new GroupSymbol(SpecialFunctionsName, new List<ISymbol> { airyA, airyB, bessel, cosineIntegral, dawson, erf, expIntegralEi, 
+        fresnelCosineIntegral,fresnelSineIntegral,gamma,hypCosineIntegral,hypSineIntegral,norm, psi, sineIntegral});
       var terminalSymbols = new GroupSymbol(TerminalsName, new List<ISymbol> { constant, variableSymbol });
-      var realValuedSymbols = new GroupSymbol(RealValuedSymbolsName, new List<ISymbol>() { arithmeticSymbols, trigonometricSymbols, exponentialAndLogarithmicSymbols, terminalSymbols });
+      var realValuedSymbols = new GroupSymbol(RealValuedSymbolsName, new List<ISymbol>() { arithmeticSymbols, trigonometricSymbols, exponentialAndLogarithmicSymbols, specialFunctions, terminalSymbols });
 
       var powerSymbols = new GroupSymbol(PowerFunctionsName, new List<ISymbol> { square, pow, sqrt, root });
 
@@ -117,6 +137,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       SetSubtreeCount(square, 1, 1);
       SetSubtreeCount(sqrt, 1, 1);
       SetSubtreeCount(exponentialAndLogarithmicSymbols, 1, 1);
+      SetSubtreeCount(specialFunctions, 1, 1);
       SetSubtreeCount(terminalSymbols, 0, 0);
 
       SetSubtreeCount(@if, 3, 3);
@@ -140,6 +161,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       AddAllowedChildSymbol(realValuedSymbols, powerSymbols);
       AddAllowedChildSymbol(realValuedSymbols, conditionSymbols);
       AddAllowedChildSymbol(realValuedSymbols, timeSeriesSymbols);
+      AddAllowedChildSymbol(realValuedSymbols, specialFunctions);
 
       AddAllowedChildSymbol(powerSymbols, variableSymbol, 0);
       AddAllowedChildSymbol(powerSymbols, laggedVariable, 0);
@@ -185,20 +207,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     public void ConfigureAsDefaultRegressionGrammar() {
-      Symbols.Where(s => s is Average).First().Enabled = false;
-      Symbols.Where(s => s.Name == TrigonometricFunctionsName).First().Enabled = false;
-      Symbols.Where(s => s.Name == PowerFunctionsName).First().Enabled = false;
-      Symbols.Where(s => s.Name == ConditionalSymbolsName).First().Enabled = false;
-      Symbols.Where(s => s.Name == TimeSeriesSymbolsName).First().Enabled = false;
+      Symbols.First(s => s is Average).Enabled = false;
+      Symbols.First(s => s.Name == TrigonometricFunctionsName).Enabled = false;
+      Symbols.First(s => s.Name == PowerFunctionsName).Enabled = false;
+      Symbols.First(s => s.Name == SpecialFunctionsName).Enabled = false;
+      Symbols.First(s => s.Name == ConditionalSymbolsName).Enabled = false;
+      Symbols.First(s => s.Name == TimeSeriesSymbolsName).Enabled = false;
     }
 
     public void ConfigureAsDefaultClassificationGrammar() {
-      Symbols.Where(s => s is Average).First().Enabled = false;
-      Symbols.Where(s => s is VariableCondition).First().Enabled = false;
-      Symbols.Where(s => s.Name == TrigonometricFunctionsName).First().Enabled = false;
-      Symbols.Where(s => s.Name == ExponentialFunctionsName).First().Enabled = false;
-      Symbols.Where(s => s.Name == PowerFunctionsName).First().Enabled = false;
-      Symbols.Where(s => s.Name == TimeSeriesSymbolsName).First().Enabled = false;
+      Symbols.First(s => s is Average).Enabled = false;
+      Symbols.First(s => s is VariableCondition).Enabled = false;
+      Symbols.First(s => s.Name == TrigonometricFunctionsName).Enabled = false;
+      Symbols.First(s => s.Name == ExponentialFunctionsName).Enabled = false;
+      Symbols.First(s => s.Name == SpecialFunctionsName).Enabled = false;
+      Symbols.First(s => s.Name == PowerFunctionsName).Enabled = false;
+      Symbols.First(s => s.Name == TimeSeriesSymbolsName).Enabled = false;
     }
   }
 }

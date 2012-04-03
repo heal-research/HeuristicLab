@@ -60,6 +60,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       root.InitialFrequency = 0.0;
       var sqrt = new SquareRoot();
       sqrt.InitialFrequency = 0.0;
+      var airyA = new AiryA();
+      var airyB = new AiryB();
+      var bessel = new Bessel();
+      var cosineIntegral = new CosineIntegral();
+      var dawson = new Dawson();
+      var erf = new Erf();
+      var expIntegralEi = new ExponentialIntegralEi();
+      var fresnelCosineIntegral = new FresnelCosineIntegral();
+      var fresnelSineIntegral = new FresnelSineIntegral();
+      var gamma = new Gamma();
+      var hypCosineIntegral = new HyperbolicCosineIntegral();
+      var hypSineIntegral = new HyperbolicSineIntegral();
+      var norm = new Norm();
+      var psi = new Psi();
+      var sineIntegral = new SineIntegral();
+
       var exp = new Exponential();
       var @if = new IfThenElse();
       var gt = new GreaterThan();
@@ -85,17 +101,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var laggedVariable = new LaggedVariable();
       laggedVariable.InitialFrequency = 0.0;
 
-      var allSymbols = new List<Symbol>() { add, sub, mul, div, mean, sin, cos, tan, log, square, pow, sqrt, root, exp, @if, gt, lt, and, or, not, timeLag, integral, derivative, constant, variableSymbol, laggedVariable, variableCondition };
-      var unaryFunctionSymbols = new List<Symbol>() { square, sqrt, sin, cos, tan, log, exp, not, timeLag, integral, derivative };
+      var allSymbols = new List<Symbol>() { add, sub, mul, div, mean, sin, cos, tan, log, square, pow, sqrt, root, exp,
+        airyA, airyB, bessel, cosineIntegral, dawson, erf, expIntegralEi, fresnelCosineIntegral, fresnelSineIntegral, gamma, hypCosineIntegral, hypSineIntegral, norm, psi, sineIntegral,
+        @if, gt, lt, and, or, not, timeLag, integral, derivative, constant, variableSymbol, laggedVariable, variableCondition };
+      var unaryFunctionSymbols = new List<Symbol>() { square, sqrt, sin, cos, tan, log, exp, not, timeLag, integral, derivative,
+        airyA, airyB, bessel, cosineIntegral, dawson, erf, expIntegralEi, fresnelCosineIntegral, fresnelSineIntegral, gamma, hypCosineIntegral, hypSineIntegral, norm, psi, sineIntegral
+      };
 
       var binaryFunctionSymbols = new List<Symbol>() { pow, root, gt, lt, variableCondition };
-      var functionSymbols = new List<Symbol>() { add, sub, mul, div, mean, and, or };
+      var ternarySymbols = new List<Symbol>() { add, sub, mul, div, mean, and, or };
       var terminalSymbols = new List<Symbol>() { variableSymbol, constant, laggedVariable };
 
       foreach (var symb in allSymbols)
         AddSymbol(symb);
 
-      foreach (var funSymb in functionSymbols) {
+      foreach (var funSymb in ternarySymbols) {
         SetSubtreeCount(funSymb, 1, 3);
       }
       foreach (var funSymb in unaryFunctionSymbols) {

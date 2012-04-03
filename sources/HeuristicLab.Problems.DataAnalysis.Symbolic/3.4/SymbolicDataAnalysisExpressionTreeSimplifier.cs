@@ -580,6 +580,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return MakeConstant(Math.Log(constT.Value));
       } else if (IsExp(node)) {
         return node.GetSubtree(0);
+      } else if (IsSquareRoot(node)) {
+        return MakeFraction(MakeLog(node.GetSubtree(0)), MakeConstant(2.0));
       } else {
         var logNode = logSymbol.CreateTreeNode();
         logNode.AddSubtree(node);

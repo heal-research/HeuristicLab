@@ -135,6 +135,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       public const byte Square = 28;
       public const byte SquareRoot = 29;
+      public const byte Gamma = 30;
+      public const byte Psi = 31;
+      public const byte Dawson = 32;
+      public const byte ExponentialIntegralEi = 33;
+      public const byte CosineIntegral = 34;
+      public const byte SineIntegral = 35;
+      public const byte HyperbolicCosineIntegral = 36;
+      public const byte HyperbolicSineIntegral = 37;
+      public const byte FresnelCosineIntegral = 38;
+      public const byte FresnelSineIntegral = 39;
+      public const byte AiryA = 40;
+      public const byte AiryB = 41;
+      public const byte Norm = 42;
+      public const byte Erf = 43;
+      public const byte Bessel = 44;
     }
     #endregion
 
@@ -167,7 +182,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       { typeof(Derivative), OpCodes.Derivative},
       { typeof(VariableCondition),OpCodes.VariableCondition},
       { typeof(Square),OpCodes.Square},
-      {typeof(SquareRoot),OpCodes.SquareRoot}
+      { typeof(SquareRoot),OpCodes.SquareRoot},
+      { typeof(Gamma), OpCodes.Gamma },
+      { typeof(Psi), OpCodes.Psi },
+      { typeof(Dawson), OpCodes.Dawson},
+      { typeof(ExponentialIntegralEi), OpCodes.ExponentialIntegralEi },
+      { typeof(CosineIntegral), OpCodes.CosineIntegral },
+      { typeof(SineIntegral), OpCodes.SineIntegral },
+      { typeof(HyperbolicCosineIntegral), OpCodes.HyperbolicCosineIntegral },
+      { typeof(HyperbolicSineIntegral), OpCodes.HyperbolicSineIntegral },
+      { typeof(FresnelCosineIntegral), OpCodes.FresnelCosineIntegral },
+      { typeof(FresnelSineIntegral), OpCodes.FresnelSineIntegral },
+      { typeof(AiryA), OpCodes.AiryA },
+      { typeof(AiryB), OpCodes.AiryB },
+      { typeof(Norm), OpCodes.Norm},
+      { typeof(Erf), OpCodes.Erf},
+      { typeof(Bessel), OpCodes.Bessel}      
     };
 
     public override bool CanChangeName {
@@ -330,6 +360,115 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           }
         case OpCodes.Log: {
             return Math.Log(Evaluate(dataset, ref row, state));
+          }
+        case OpCodes.Gamma: {
+            var x = Evaluate(dataset, ref row, state);
+            if (double.IsNaN(x)) return double.NaN;
+            else return alglib.gammafunction(x);
+          }
+        case OpCodes.Psi: {
+            var x = Evaluate(dataset, ref row, state);
+            if (double.IsNaN(x)) return double.NaN;
+            else if (x.IsAlmost(0.0)) return 0.0;
+            else if (x.IsAlmost(-1.0)) return 0.0;
+            return alglib.psi(x);
+          }
+        case OpCodes.Dawson: {
+            var x = Evaluate(dataset, ref row, state);
+            if (double.IsNaN(x)) return double.NaN;
+            return alglib.dawsonintegral(x);
+          }
+        case OpCodes.ExponentialIntegralEi: {
+            var x = Evaluate(dataset, ref row, state);
+            if (double.IsNaN(x)) return double.NaN;
+            return alglib.exponentialintegralei(x);
+          }
+        case OpCodes.SineIntegral: {
+            double si, ci;
+            var x = Evaluate(dataset, ref row, state);
+            if (double.IsNaN(x)) return double.NaN;
+            else {
+              alglib.sinecosineintegrals(x, out si, out ci);
+              return si;
+            }
+          }
+        case OpCodes.CosineIntegral: {
+            double si, ci;
+            var x = Evaluate(dataset, ref row, state);
+            if (double.IsNaN(x)) return double.NaN;
+            else {
+              alglib.sinecosineintegrals(x, out si, out ci);
+              return ci;
+            }
+          }
+        case OpCodes.HyperbolicSineIntegral: {
+            double shi, chi;
+            var x = Evaluate(dataset, ref row, state);
+            if (double.IsNaN(x)) return double.NaN;
+            else {
+              alglib.hyperbolicsinecosineintegrals(x, out shi, out chi);
+              return shi;
+            }
+          }
+        case OpCodes.HyperbolicCosineIntegral: {
+            double shi, chi;
+            var x = Evaluate(dataset, ref row, state);
+            if (double.IsNaN(x)) return double.NaN;
+            else {
+              alglib.hyperbolicsinecosineintegrals(x, out shi, out chi);
+              return chi;
+            }
+          }
+        case OpCodes.FresnelCosineIntegral: {
+            double c = 0, s = 0;
+            var x = Evaluate(dataset, ref row, state);
+            if (double.IsNaN(x)) return double.NaN;
+            else {
+              alglib.fresnelintegral(x, ref c, ref s);
+              return c;
+            }
+          }
+        case OpCodes.FresnelSineIntegral: {
+            double c = 0, s = 0;
+            var x = Evaluate(dataset, ref row, state);
+            if (double.IsNaN(x)) return double.NaN;
+            else {
+              alglib.fresnelintegral(x, ref c, ref s);
+              return s;
+            }
+          }
+        case OpCodes.AiryA: {
+            double ai, aip, bi, bip;
+            var x = Evaluate(dataset, ref row, state);
+            if (double.IsNaN(x)) return double.NaN;
+            else {
+              alglib.airy(x, out ai, out aip, out bi, out bip);
+              return ai;
+            }
+          }
+        case OpCodes.AiryB: {
+            double ai, aip, bi, bip;
+            var x = Evaluate(dataset, ref row, state);
+            if (double.IsNaN(x)) return double.NaN;
+            else {
+              alglib.airy(x, out ai, out aip, out bi, out bip);
+              return bi;
+            }
+          }
+        case OpCodes.Norm: {
+            var x = Evaluate(dataset, ref row, state);
+            if (double.IsNaN(x)) return double.NaN;
+            else return alglib.normaldistribution(x);
+          }
+        case OpCodes.Erf: {
+            var x = Evaluate(dataset, ref row, state);
+            if (double.IsNaN(x)) return double.NaN;
+            else return alglib.errorfunction(x);
+          }
+        case OpCodes.Bessel: {
+            var x = Evaluate(dataset, ref row, state);
+            if (double.IsNaN(x)) return double.NaN;
+            else return alglib.besseli0(x);
           }
         case OpCodes.IfThenElse: {
             double condition = Evaluate(dataset, ref row, state);

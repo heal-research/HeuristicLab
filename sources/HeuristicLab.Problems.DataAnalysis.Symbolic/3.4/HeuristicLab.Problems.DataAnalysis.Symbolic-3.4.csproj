@@ -92,6 +92,9 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ALGLIB-3.5.0, Version=3.5.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <HintPath>..\..\bin\ALGLIB-3.5.0.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -160,6 +163,21 @@
     <Compile Include="Symbols\Average.cs" />
     <Compile Include="Symbols\Constant.cs" />
     <Compile Include="Symbols\ConstantTreeNode.cs" />
+    <Compile Include="Symbols\AiryA.cs" />
+    <Compile Include="Symbols\AiryB.cs" />
+    <Compile Include="Symbols\Bessel.cs" />
+    <Compile Include="Symbols\Erf.cs" />
+    <Compile Include="Symbols\Norm.cs" />
+    <Compile Include="Symbols\FresnelCosineIntegral.cs" />
+    <Compile Include="Symbols\FresnelSineIntegral.cs" />
+    <Compile Include="Symbols\HyperbolicSineIntegral.cs" />
+    <Compile Include="Symbols\HyperbolicCosineIntegral.cs" />
+    <Compile Include="Symbols\SineIntegral.cs" />
+    <Compile Include="Symbols\CosineIntegral.cs" />
+    <Compile Include="Symbols\ExponentialIntegralEi.cs" />
+    <Compile Include="Symbols\Dawson.cs" />
+    <Compile Include="Symbols\Psi.cs" />
+    <Compile Include="Symbols\Gamma.cs" />
     <Compile Include="Symbols\SquareRoot.cs" />
     <Compile Include="Symbols\Square.cs" />
     <Compile Include="Symbols\Cosine.cs" />
