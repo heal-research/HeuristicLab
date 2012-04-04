@@ -107,6 +107,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GeneralizedExponentialDiscreteDoubleValueModifier.cs" />
     <Compile Include="MultiObjective\CrowdedComparisonSorter.cs" />
     <Compile Include="MultiObjective\CrowdingDistanceAssignment.cs" />
     <Compile Include="ParentCopyCrossover.cs" />

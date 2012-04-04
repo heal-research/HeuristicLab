@@ -28,7 +28,9 @@ namespace HeuristicLab.Optimization.Operators {
   /// <summary>
   /// Modifies the value by exponential fall (steep fall initially, slow fall to the end) or rise (slow rise initially, fast rise to the end).
   /// </summary>
-  [Item("ExponentialDiscreteDoubleValueModifier", "Modifies the value by exponential fall (steep fall initially, slow fall to the end) or rise (slow rise initially, fast rise to the end).")]
+  [Item("ExponentialDiscreteDoubleValueModifier",
+@"Modifies the value by exponential fall (steep fall initially, slow fall to the end) or rise (slow rise initially, fast rise to the end).
+This uses a standard exponential distribution and yields a base which is implicitly derived by start and end indices and values.")]
   [StorableClass]
   public class ExponentialDiscreteDoubleValueModifier : DiscreteDoubleValueModifier {
     [StorableConstructor]
@@ -52,7 +54,7 @@ namespace HeuristicLab.Optimization.Operators {
     /// <param name="endIndex">The end index.</param>
     /// <returns>The new value.</returns>
     protected override double Modify(double value, double startValue, double endValue, int index, int startIndex, int endIndex) {
-      if (endValue <= 0 || startValue <= 0) throw new ArgumentException("ExponentialDiscreteDoubleValueModifier: startValue and endValue must be greater than 0.");
+      if (endValue <= 0 || startValue <= 0) throw new ArgumentException("startValue and endValue must be greater than 0.");
       double b = Math.Pow(endValue / startValue, 1.0 / (endIndex - startIndex));
       return startValue * Math.Pow(b, index - startIndex);
     }
