@@ -51,7 +51,7 @@ If you use `base`=1 you will get a linear interpolation.")]
     protected GeneralizedExponentialDiscreteDoubleValueModifier(bool deserializing) : base(deserializing) { }
     protected GeneralizedExponentialDiscreteDoubleValueModifier(GeneralizedExponentialDiscreteDoubleValueModifier original, Cloner cloner) : base(original, cloner) { }
     public GeneralizedExponentialDiscreteDoubleValueModifier() {
-      Parameters.Add(new ValueLookupParameter<DoubleValue>("Base", "Base of the exponential function. Must be > 0. If > 1 steep in the end, if < 1 steep at the start, if == 1 linear interpolation.", new DoubleValue(10000)));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("Base", "Base of the exponential function. Must be > 0. If > 1 steep in the end, if < 1 steep at the start, if == 1 linear interpolation.", new DoubleValue(0.00001)));
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new GeneralizedExponentialDiscreteDoubleValueModifier(this, cloner);
