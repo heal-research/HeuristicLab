@@ -239,8 +239,8 @@ namespace HeuristicLab.Optimization {
       }
     }
 
-    protected override IEnumerable<KeyValuePair<string, IItem>> GetCollectedValues(IItem value) {
-      var children = base.GetCollectedValues(value);
+    protected override IEnumerable<KeyValuePair<string, IItem>> GetCollectedValues(IValueParameter param) {
+      var children = base.GetCollectedValues(param);
       foreach (var child in children) {
         if (child.Value is IOperator)
           yield return new KeyValuePair<string, IItem>(child.Key, new StringValue(((IOperator)child.Value).Name));

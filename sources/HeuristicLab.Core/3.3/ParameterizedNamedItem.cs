@@ -84,21 +84,19 @@ namespace HeuristicLab.Core {
 
     public virtual void CollectParameterValues(IDictionary<string, IItem> values) {
       foreach (IValueParameter param in parameters.OfType<IValueParameter>()) {
-        if (param.GetsCollected) {
-          var children = GetCollectedValues(param.Value);
-          foreach (var c in children) {
-            if (String.IsNullOrEmpty(c.Key))
-              values.Add(param.Name, c.Value);
-            else values.Add(param.Name + "." + c.Key, c.Value);
-          }
+        var children = GetCollectedValues(param);
+        foreach (var c in children) {
+          if (String.IsNullOrEmpty(c.Key))
+            values.Add(param.Name, c.Value);
+          else values.Add(param.Name + "." + c.Key, c.Value);
         }
       }
     }
 
-    protected virtual IEnumerable<KeyValuePair<string, IItem>> GetCollectedValues(IItem value) {
-      if (value == null) yield break;
-      yield return new KeyValuePair<string, IItem>(String.Empty, value);
-      var parameterizedItem = value as IParameterizedItem;
+    protected virtual IEnumerable<KeyValuePair<string, IItem>> GetCollectedValues(IValueParameter param) {
+      if (param.Value == null) yield break;
+      if (param.GetsCollected) yield return new KeyValuePair<string, IItem>(String.Empty, param.Value);
+      var parameterizedItem = param.Value as IParameterizedItem;
       if (parameterizedItem != null) {
         var children = new Dictionary<string, IItem>();
         parameterizedItem.CollectParameterValues(children);
