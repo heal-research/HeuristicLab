@@ -370,7 +370,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             var x = Evaluate(dataset, ref row, state);
             if (double.IsNaN(x)) return double.NaN;
             else if (x.IsAlmost(0.0)) return double.NaN;
-            else if ((Math.Floor(x) - x).IsAlmost(-1.0)) return double.NaN;
+            else if ((Math.Floor(x) - x).IsAlmost(0)) return double.NaN;
             return alglib.psi(x);
           }
         case OpCodes.Dawson: {

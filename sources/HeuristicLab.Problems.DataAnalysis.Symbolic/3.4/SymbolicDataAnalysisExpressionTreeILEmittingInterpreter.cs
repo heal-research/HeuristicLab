@@ -34,8 +34,11 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("SymbolicDataAnalysisExpressionTreeILEmittingInterpreter", "Interpreter for symbolic expression trees.")]
-  public sealed class SymbolicDataAnalysisExpressionTreeILEmittingInterpreter : ParameterizedNamedItem, ISymbolicDataAnalysisExpressionTreeInterpreter {
-    private static MethodInfo listGetValue = typeof(IList<double>).GetProperty("Item", new Type[] { typeof(int) }).GetGetMethod();
+  public sealed class SymbolicDataAnalysisExpressionTreeILEmittingInterpreter : ParameterizedNamedItem,
+                                                                                ISymbolicDataAnalysisExpressionTreeInterpreter {
+    private static MethodInfo listGetValue =
+      typeof(IList<double>).GetProperty("Item", new Type[] { typeof(int) }).GetGetMethod();
+
     private static MethodInfo cos = typeof(Math).GetMethod("Cos", new Type[] { typeof(double) });
     private static MethodInfo sin = typeof(Math).GetMethod("Sin", new Type[] { typeof(double) });
     private static MethodInfo tan = typeof(Math).GetMethod("Tan", new Type[] { typeof(double) });
@@ -43,11 +46,32 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private static MethodInfo log = typeof(Math).GetMethod("Log", new Type[] { typeof(double) });
     private static MethodInfo power = typeof(Math).GetMethod("Pow", new Type[] { typeof(double), typeof(double) });
     private static MethodInfo round = typeof(Math).GetMethod("Round", new Type[] { typeof(double) });
+    private static MethodInfo sqrt = typeof(Math).GetMethod("Sqrt", new Type[] { typeof(double) });
+
+    private static Type thisType = typeof(SymbolicDataAnalysisExpressionTreeILEmittingInterpreter);
+    private static MethodInfo airyA = thisType.GetMethod("AiryA", new Type[] { typeof(double) });
+    private static MethodInfo airyB = thisType.GetMethod("AiryB", new Type[] { typeof(double) });
+    private static MethodInfo gamma = thisType.GetMethod("Gamma", new Type[] { typeof(double) });
+    private static MethodInfo psi = thisType.GetMethod("Psi", new Type[] { typeof(double) });
+    private static MethodInfo dawson = thisType.GetMethod("Dawson", new Type[] { typeof(double) });
+    private static MethodInfo expIntegralEi = thisType.GetMethod("ExpIntegralEi", new Type[] { typeof(double) });
+    private static MethodInfo sinIntegral = thisType.GetMethod("SinIntegral", new Type[] { typeof(double) });
+    private static MethodInfo cosIntegral = thisType.GetMethod("CosIntegral", new Type[] { typeof(double) });
+    private static MethodInfo hypSinIntegral = thisType.GetMethod("HypSinIntegral", new Type[] { typeof(double) });
+    private static MethodInfo hypCosIntegral = thisType.GetMethod("HypCosIntegral", new Type[] { typeof(double) });
+    private static MethodInfo fresnelCosIntegral = thisType.GetMethod("FresnelCosIntegral", new Type[] { typeof(double) });
+    private static MethodInfo fresnelSinIntegral = thisType.GetMethod("FresnelSinIntegral", new Type[] { typeof(double) });
+    private static MethodInfo norm = thisType.GetMethod("Norm", new Type[] { typeof(double) });
+    private static MethodInfo erf = thisType.GetMethod("Erf", new Type[] { typeof(double) });
+    private static MethodInfo bessel = thisType.GetMethod("Bessel", new Type[] { typeof(double) });
 
     internal delegate double CompiledFunction(int sampleIndex, IList<double>[] columns);
+
     private const string CheckExpressionsWithIntervalArithmeticParameterName = "CheckExpressionsWithIntervalArithmetic";
     private const string EvaluatedSolutionsParameterName = "EvaluatedSolutions";
+
     #region private classes
+
     private class InterpreterState {
       private Instruction[] code;
       private int pc;
@@ -58,10 +82,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
 
       private bool inLaggedContext;
+
       public bool InLaggedContext {
         get { return inLaggedContext; }
         set { inLaggedContext = value; }
       }
+
       internal InterpreterState(Instruction[] code) {
         this.inLaggedContext = false;
         this.code = code;
@@ -72,6 +98,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return code[pc++];
       }
     }
+
     private class OpCodes {
       public const byte Add = 1;
       public const byte Sub = 2;
@@ -111,47 +138,94 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       public const byte Derivative = 26;
 
       public const byte VariableCondition = 27;
+
+      public const byte Square = 28;
+      public const byte SquareRoot = 29;
+      public const byte Gamma = 30;
+      public const byte Psi = 31;
+      public const byte Dawson = 32;
+      public const byte ExponentialIntegralEi = 33;
+      public const byte CosineIntegral = 34;
+      public const byte SineIntegral = 35;
+      public const byte HyperbolicCosineIntegral = 36;
+      public const byte HyperbolicSineIntegral = 37;
+      public const byte FresnelCosineIntegral = 38;
+      public const byte FresnelSineIntegral = 39;
+      public const byte AiryA = 40;
+      public const byte AiryB = 41;
+      public const byte Norm = 42;
+      public const byte Erf = 43;
+      public const byte Bessel = 44;
     }
+
     #endregion
 
-    private Dictionary<Type, byte> symbolToOpcode = new Dictionary<Type, byte>() {
-      { typeof(Addition), OpCodes.Add },
-      { typeof(Subtraction), OpCodes.Sub },
-      { typeof(Multiplication), OpCodes.Mul },
-      { typeof(Division), OpCodes.Div },
-      { typeof(Sine), OpCodes.Sin },
-      { typeof(Cosine), OpCodes.Cos },
-      { typeof(Tangent), OpCodes.Tan },
-      { typeof(Logarithm), OpCodes.Log },
-      { typeof(Exponential), OpCodes.Exp },
-      { typeof(IfThenElse), OpCodes.IfThenElse },
-      { typeof(GreaterThan), OpCodes.GT },
-      { typeof(LessThan), OpCodes.LT },
-      { typeof(And), OpCodes.AND },
-      { typeof(Or), OpCodes.OR },
-      { typeof(Not), OpCodes.NOT},
-      { typeof(Average), OpCodes.Average},
-      { typeof(InvokeFunction), OpCodes.Call },
-      { typeof(HeuristicLab.Problems.DataAnalysis.Symbolic.Variable), OpCodes.Variable },
-      { typeof(LaggedVariable), OpCodes.LagVariable },
-      { typeof(Constant), OpCodes.Constant },
-      { typeof(Argument), OpCodes.Arg },
-      { typeof(Power),OpCodes.Power},
-      { typeof(Root),OpCodes.Root},
-      { typeof(TimeLag), OpCodes.TimeLag}, 
-      { typeof(Integral), OpCodes.Integral},
-      { typeof(Derivative), OpCodes.Derivative},
-      { typeof(VariableCondition),OpCodes.VariableCondition}
-    };
+    private Dictionary<Type, byte> symbolToOpcode = new Dictionary<Type, byte>()
+                                                      {
+                                                        {typeof (Addition), OpCodes.Add},
+                                                        {typeof (Subtraction), OpCodes.Sub},
+                                                        {typeof (Multiplication), OpCodes.Mul},
+                                                        {typeof (Division), OpCodes.Div},
+                                                        {typeof (Sine), OpCodes.Sin},
+                                                        {typeof (Cosine), OpCodes.Cos},
+                                                        {typeof (Tangent), OpCodes.Tan},
+                                                        {typeof (Logarithm), OpCodes.Log},
+                                                        {typeof (Exponential), OpCodes.Exp},
+                                                        {typeof (IfThenElse), OpCodes.IfThenElse},
+                                                        {typeof (GreaterThan), OpCodes.GT},
+                                                        {typeof (LessThan), OpCodes.LT},
+                                                        {typeof (And), OpCodes.AND},
+                                                        {typeof (Or), OpCodes.OR},
+                                                        {typeof (Not), OpCodes.NOT},
+                                                        {typeof (Average), OpCodes.Average},
+                                                        {typeof (InvokeFunction), OpCodes.Call},
+                                                        {
+                                                          typeof (HeuristicLab.Problems.DataAnalysis.Symbolic.Variable),
+                                                          OpCodes.Variable
+                                                          },
+                                                        {typeof (LaggedVariable), OpCodes.LagVariable},
+                                                        {typeof (Constant), OpCodes.Constant},
+                                                        {typeof (Argument), OpCodes.Arg},
+                                                        {typeof (Power), OpCodes.Power},
+                                                        {typeof (Root), OpCodes.Root},
+                                                        {typeof (TimeLag), OpCodes.TimeLag},
+                                                        {typeof (Integral), OpCodes.Integral},
+                                                        {typeof (Derivative), OpCodes.Derivative},
+                                                        {typeof (VariableCondition), OpCodes.VariableCondition},
+                                                        {typeof (Square), OpCodes.Square},
+                                                        {typeof (SquareRoot), OpCodes.SquareRoot},
+                                                        {typeof (Gamma), OpCodes.Gamma},
+                                                        {typeof (Psi), OpCodes.Psi},
+                                                        {typeof (Dawson), OpCodes.Dawson},
+                                                        {typeof (ExponentialIntegralEi), OpCodes.ExponentialIntegralEi},
+                                                        {typeof (CosineIntegral), OpCodes.CosineIntegral},
+                                                        {typeof (SineIntegral), OpCodes.SineIntegral},
+                                                        {
+                                                          typeof (HyperbolicCosineIntegral),
+                                                          OpCodes.HyperbolicCosineIntegral
+                                                          },
+                                                        {
+                                                          typeof (HyperbolicSineIntegral), OpCodes.HyperbolicSineIntegral
+                                                          },
+                                                        {typeof (FresnelCosineIntegral), OpCodes.FresnelCosineIntegral},
+                                                        {typeof (FresnelSineIntegral), OpCodes.FresnelSineIntegral},
+                                                        {typeof (AiryA), OpCodes.AiryA},
+                                                        {typeof (AiryB), OpCodes.AiryB},
+                                                        {typeof (Norm), OpCodes.Norm},
+                                                        {typeof (Erf), OpCodes.Erf},
+                                                        {typeof (Bessel), OpCodes.Bessel}
+                                                      };
 
     public override bool CanChangeName {
       get { return false; }
     }
+
     public override bool CanChangeDescription {
       get { return false; }
     }
 
     #region parameter properties
+
     public IValueParameter<BoolValue> CheckExpressionsWithIntervalArithmeticParameter {
       get { return (IValueParameter<BoolValue>)Parameters[CheckExpressionsWithIntervalArithmeticParameterName]; }
     }
@@ -159,9 +233,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public IValueParameter<IntValue> EvaluatedSolutionsParameter {
       get { return (IValueParameter<IntValue>)Parameters[EvaluatedSolutionsParameterName]; }
     }
+
     #endregion
 
     #region properties
+
     public BoolValue CheckExpressionsWithIntervalArithmetic {
       get { return CheckExpressionsWithIntervalArithmeticParameter.Value; }
       set { CheckExpressionsWithIntervalArithmeticParameter.Value = value; }
@@ -171,29 +247,44 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       get { return EvaluatedSolutionsParameter.Value; }
       set { EvaluatedSolutionsParameter.Value = value; }
     }
+
     #endregion
 
 
     [StorableConstructor]
-    private SymbolicDataAnalysisExpressionTreeILEmittingInterpreter(bool deserializing) : base(deserializing) { }
-    private SymbolicDataAnalysisExpressionTreeILEmittingInterpreter(SymbolicDataAnalysisExpressionTreeILEmittingInterpreter original, Cloner cloner) : base(original, cloner) { }
+    private SymbolicDataAnalysisExpressionTreeILEmittingInterpreter(bool deserializing)
+      : base(deserializing) {
+    }
+
+    private SymbolicDataAnalysisExpressionTreeILEmittingInterpreter(
+      SymbolicDataAnalysisExpressionTreeILEmittingInterpreter original, Cloner cloner)
+      : base(original, cloner) {
+    }
+
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SymbolicDataAnalysisExpressionTreeILEmittingInterpreter(this, cloner);
     }
 
     public SymbolicDataAnalysisExpressionTreeILEmittingInterpreter()
       : base("SymbolicDataAnalysisExpressionTreeILEmittingInterpreter", "Interpreter for symbolic expression trees.") {
-      Parameters.Add(new ValueParameter<BoolValue>(CheckExpressionsWithIntervalArithmeticParameterName, "Switch that determines if the interpreter checks the validity of expressions with interval arithmetic before evaluating the expression.", new BoolValue(false)));
-      Parameters.Add(new ValueParameter<IntValue>(EvaluatedSolutionsParameterName, "A counter for the total number of solutions the interpreter has evaluated", new IntValue(0)));
+      Parameters.Add(new ValueParameter<BoolValue>(CheckExpressionsWithIntervalArithmeticParameterName,
+                                                   "Switch that determines if the interpreter checks the validity of expressions with interval arithmetic before evaluating the expression.",
+                                                   new BoolValue(false)));
+      Parameters.Add(new ValueParameter<IntValue>(EvaluatedSolutionsParameterName,
+                                                  "A counter for the total number of solutions the interpreter has evaluated",
+                                                  new IntValue(0)));
     }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       if (!Parameters.ContainsKey(EvaluatedSolutionsParameterName))
-        Parameters.Add(new ValueParameter<IntValue>(EvaluatedSolutionsParameterName, "A counter for the total number of solutions the interpreter has evaluated", new IntValue(0)));
+        Parameters.Add(new ValueParameter<IntValue>(EvaluatedSolutionsParameterName,
+                                                    "A counter for the total number of solutions the interpreter has evaluated",
+                                                    new IntValue(0)));
     }
 
     #region IStatefulItem
+
     public void InitializeState() {
       EvaluatedSolutions.Value = 0;
     }
@@ -201,20 +292,24 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public void ClearState() {
       EvaluatedSolutions.Value = 0;
     }
+
     #endregion
 
-    public IEnumerable<double> GetSymbolicExpressionTreeValues(ISymbolicExpressionTree tree, Dataset dataset, IEnumerable<int> rows) {
+    public IEnumerable<double> GetSymbolicExpressionTreeValues(ISymbolicExpressionTree tree, Dataset dataset,
+                                                               IEnumerable<int> rows) {
       if (CheckExpressionsWithIntervalArithmetic.Value)
-        throw new NotSupportedException("Interval arithmetic is not yet supported in the symbolic data analysis interpreter.");
+        throw new NotSupportedException(
+          "Interval arithmetic is not yet supported in the symbolic data analysis interpreter.");
       EvaluatedSolutions.Value++; // increment the evaluated solutions counter
       var compiler = new SymbolicExpressionTreeCompiler();
       Instruction[] code = compiler.Compile(tree, MapSymbolToOpCode);
       int necessaryArgStackSize = 0;
 
-      Dictionary<string, int> doubleVariableNames = dataset.DoubleVariables.Select((x, i) => new { x, i }).ToDictionary(e => e.x, e => e.i);
+      Dictionary<string, int> doubleVariableNames =
+        dataset.DoubleVariables.Select((x, i) => new { x, i }).ToDictionary(e => e.x, e => e.i);
       IList<double>[] columns = (from v in doubleVariableNames.Keys
                                  select dataset.GetReadOnlyDoubleValues(v))
-                                .ToArray();
+        .ToArray();
 
       for (int i = 0; i < code.Length; i++) {
         Instruction instr = code[i];
@@ -236,7 +331,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var state = new InterpreterState(code);
 
       Type[] methodArgs = { typeof(int), typeof(IList<double>[]) };
-      DynamicMethod testFun = new DynamicMethod("TestFun", typeof(double), methodArgs, typeof(SymbolicDataAnalysisExpressionTreeILEmittingInterpreter).Module);
+      DynamicMethod testFun = new DynamicMethod("TestFun", typeof(double), methodArgs,
+                                                typeof(SymbolicDataAnalysisExpressionTreeILEmittingInterpreter).Module);
 
       ILGenerator il = testFun.GetILGenerator();
       CompileInstructions(il, state, dataset);
@@ -354,6 +450,92 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         case OpCodes.Log: {
             CompileInstructions(il, state, ds);
             il.Emit(System.Reflection.Emit.OpCodes.Call, log);
+            return;
+          }
+        case OpCodes.Square: {
+            CompileInstructions(il, state, ds);
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_R8, 2.0);
+            il.Emit(System.Reflection.Emit.OpCodes.Call, power);
+            return;
+          }
+        case OpCodes.SquareRoot: {
+            CompileInstructions(il, state, ds);
+            il.Emit(System.Reflection.Emit.OpCodes.Call, sqrt);
+            return;
+          }
+        case OpCodes.AiryA: {
+            CompileInstructions(il, state, ds);
+            il.Emit(System.Reflection.Emit.OpCodes.Call, airyA);
+            return;
+          }
+        case OpCodes.AiryB: {
+            CompileInstructions(il, state, ds);
+            il.Emit(System.Reflection.Emit.OpCodes.Call, airyB);
+            return;
+          }
+        case OpCodes.Bessel: {
+            CompileInstructions(il, state, ds);
+            il.Emit(System.Reflection.Emit.OpCodes.Call, bessel);
+            return;
+          }
+        case OpCodes.CosineIntegral: {
+            CompileInstructions(il, state, ds);
+            il.Emit(System.Reflection.Emit.OpCodes.Call, cosIntegral);
+            return;
+          }
+        case OpCodes.Dawson: {
+            CompileInstructions(il, state, ds);
+            il.Emit(System.Reflection.Emit.OpCodes.Call, dawson);
+            return;
+          }
+        case OpCodes.Erf: {
+            CompileInstructions(il, state, ds);
+            il.Emit(System.Reflection.Emit.OpCodes.Call, erf);
+            return;
+          }
+        case OpCodes.ExponentialIntegralEi: {
+            CompileInstructions(il, state, ds);
+            il.Emit(System.Reflection.Emit.OpCodes.Call, expIntegralEi);
+            return;
+          }
+        case OpCodes.FresnelCosineIntegral: {
+            CompileInstructions(il, state, ds);
+            il.Emit(System.Reflection.Emit.OpCodes.Call, fresnelCosIntegral);
+            return;
+          }
+        case OpCodes.FresnelSineIntegral: {
+            CompileInstructions(il, state, ds);
+            il.Emit(System.Reflection.Emit.OpCodes.Call, fresnelSinIntegral);
+            return;
+          }
+        case OpCodes.Gamma: {
+            CompileInstructions(il, state, ds);
+            il.Emit(System.Reflection.Emit.OpCodes.Call, gamma);
+            return;
+          }
+        case OpCodes.HyperbolicCosineIntegral: {
+            CompileInstructions(il, state, ds);
+            il.Emit(System.Reflection.Emit.OpCodes.Call, hypCosIntegral);
+            return;
+          }
+        case OpCodes.HyperbolicSineIntegral: {
+            CompileInstructions(il, state, ds);
+            il.Emit(System.Reflection.Emit.OpCodes.Call, hypSinIntegral);
+            return;
+          }
+        case OpCodes.Norm: {
+            CompileInstructions(il, state, ds);
+            il.Emit(System.Reflection.Emit.OpCodes.Call, norm);
+            return;
+          }
+        case OpCodes.Psi: {
+            CompileInstructions(il, state, ds);
+            il.Emit(System.Reflection.Emit.OpCodes.Call, psi);
+            return;
+          }
+        case OpCodes.SineIntegral: {
+            CompileInstructions(il, state, ds);
+            il.Emit(System.Reflection.Emit.OpCodes.Call, sinIntegral);
             return;
           }
         case OpCodes.IfThenElse: {
@@ -537,10 +719,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             return;
           }
         case OpCodes.Call: {
-            throw new NotSupportedException("Automatically defined functions are not supported by the SymbolicDataAnalysisTreeILEmittingInterpreter. Either turn of ADFs or change the interpeter.");
+            throw new NotSupportedException(
+              "Automatically defined functions are not supported by the SymbolicDataAnalysisTreeILEmittingInterpreter. Either turn of ADFs or change the interpeter.");
           }
         case OpCodes.Arg: {
-            throw new NotSupportedException("Automatically defined functions are not supported by the SymbolicDataAnalysisTreeILEmittingInterpreter. Either turn of ADFs or change the interpeter.");
+            throw new NotSupportedException(
+              "Automatically defined functions are not supported by the SymbolicDataAnalysisTreeILEmittingInterpreter. Either turn of ADFs or change the interpeter.");
           }
         case OpCodes.Variable: {
             VariableTreeNode varNode = (VariableTreeNode)currentInstr.dynamicNode;
@@ -579,7 +763,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             var normalResult = il.DefineLabel();
             LaggedVariableTreeNode varNode = (LaggedVariableTreeNode)currentInstr.dynamicNode;
             il.Emit(System.Reflection.Emit.OpCodes.Ldarg_1); // load columns array
-            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, (int)currentInstr.iArg0); // load correct column of the current variable
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, (int)currentInstr.iArg0);
+            // load correct column of the current variable
             il.Emit(System.Reflection.Emit.OpCodes.Ldelem_Ref);
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, varNode.Lag); // lag
             il.Emit(System.Reflection.Emit.OpCodes.Ldarg_0); // rowIndex
@@ -610,9 +795,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         //mkommend: this symbol uses the logistic function f(x) = 1 / (1 + e^(-alpha * x) ) 
         //to determine the relative amounts of the true and false branch see http://en.wikipedia.org/wiki/Logistic_function
         case OpCodes.VariableCondition: {
-            throw new NotSupportedException("Interpretation of symbol " + currentInstr.dynamicNode.Symbol.Name + " is not supported by the SymbolicDataAnalysisTreeILEmittingInterpreter");
+            throw new NotSupportedException("Interpretation of symbol " + currentInstr.dynamicNode.Symbol.Name +
+                                            " is not supported by the SymbolicDataAnalysisTreeILEmittingInterpreter");
           }
-        default: throw new NotSupportedException("Interpretation of symbol " + currentInstr.dynamicNode.Symbol.Name + " is not supported by the SymbolicDataAnalysisTreeILEmittingInterpreter");
+        default:
+          throw new NotSupportedException("Interpretation of symbol " + currentInstr.dynamicNode.Symbol.Name +
+                                          " is not supported by the SymbolicDataAnalysisTreeILEmittingInterpreter");
       }
     }
 
@@ -622,5 +810,98 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       else
         throw new NotSupportedException("Symbol: " + treeNode.Symbol);
     }
+
+    public static double AiryA(double x) {
+      if (double.IsNaN(x)) return double.NaN;
+      double ai, aip, bi, bip;
+      alglib.airy(x, out ai, out aip, out bi, out bip);
+      return ai;
+    }
+
+    public static double AiryB(double x) {
+      if (double.IsNaN(x)) return double.NaN;
+      double ai, aip, bi, bip;
+      alglib.airy(x, out ai, out aip, out bi, out bip);
+      return bi;
+    }
+    public static double Dawson(double x) {
+      if (double.IsNaN(x)) return double.NaN;
+      return alglib.dawsonintegral(x);
+    }
+
+    public static double Gamma(double x) {
+      if (double.IsNaN(x)) return double.NaN;
+      return alglib.gammafunction(x);
+    }
+
+    public static double Psi(double x) {
+      if (double.IsNaN(x)) return double.NaN;
+      else if (x.IsAlmost(0.0)) return double.NaN;
+      else if ((Math.Floor(x) - x).IsAlmost(0.0)) return double.NaN;
+      return alglib.psi(x);
+    }
+
+    public static double ExpIntegralEi(double x) {
+      if (double.IsNaN(x)) return double.NaN;
+      return alglib.exponentialintegralei(x);
+    }
+
+    public static double SinIntegral(double x) {
+      if (double.IsNaN(x)) return double.NaN;
+      double si, ci;
+      alglib.sinecosineintegrals(x, out si, out ci);
+      return si;
+    }
+
+    public static double CosIntegral(double x) {
+      if (double.IsNaN(x)) return double.NaN;
+      double si, ci;
+      alglib.sinecosineintegrals(x, out si, out ci);
+      return ci;
+    }
+
+    public static double HypSinIntegral(double x) {
+      if (double.IsNaN(x)) return double.NaN;
+      double shi, chi;
+      alglib.hyperbolicsinecosineintegrals(x, out shi, out chi);
+      return chi;
+    }
+
+    public static double HypCosIntegral(double x) {
+      if (double.IsNaN(x)) return double.NaN;
+      double shi, chi;
+      alglib.hyperbolicsinecosineintegrals(x, out shi, out chi);
+      return chi;
+    }
+
+    public static double FresnelCosIntegral(double x) {
+      if (double.IsNaN(x)) return double.NaN;
+      double c = 0, s = 0;
+      alglib.fresnelintegral(x, ref c, ref s);
+      return c;
+    }
+
+    public static double FresnelSinIntegral(double x) {
+      if (double.IsNaN(x)) return double.NaN;
+      double c = 0, s = 0;
+      alglib.fresnelintegral(x, ref c, ref s);
+      return s;
+    }
+
+    public static double Norm(double x) {
+      if (double.IsNaN(x)) return double.NaN;
+      return alglib.normaldistribution(x);
+    }
+
+    public static double Erf(double x) {
+      if (double.IsNaN(x)) return double.NaN;
+      return alglib.errorfunction(x);
+    }
+
+    public static double Bessel(double x) {
+      if (double.IsNaN(x)) return double.NaN;
+      return alglib.besseli0(x);
+    }
+
   }
 }

@@ -136,9 +136,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (node.Symbol is ExponentialIntegralEi) {
         strBuilder.Append(@"\operatorname{expInt}_i \left( ");
       } else if (node.Symbol is FresnelCosineIntegral) {
-        strBuilder.Append(@"\operatorname{fresnel}_\operatorName{cosInt} \left( ");
+        strBuilder.Append(@"\operatorname{fresnel}_\operatorname{cosInt} \left( ");
       } else if (node.Symbol is FresnelSineIntegral) {
-        strBuilder.Append(@"\operatorname{fresnel}_\operatorName{sinInt} \left( ");
+        strBuilder.Append(@"\operatorname{fresnel}_\operatorname{sinInt} \left( ");
       } else if (node.Symbol is Gamma) {
         strBuilder.Append(@"\Gamma \left( ");
       } else if (node.Symbol is HyperbolicCosineIntegral) {
