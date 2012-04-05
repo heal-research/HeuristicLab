@@ -55,7 +55,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     }
     [TestMethod]
     public void SymbolicDataAnalysisExpressionTreeInterpreterArithmeticGrammarPerformanceTest() {
-      FullGrammarPerformanceTest(new SymbolicDataAnalysisExpressionTreeInterpreter(), 12.5e6);
+      ArithmeticGrammarPerformanceTest(new SymbolicDataAnalysisExpressionTreeInterpreter(), 12.5e6);
     }
 
     [TestMethod]
@@ -64,7 +64,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     }
     [TestMethod]
     public void SymbolicDataAnalysisExpressionTreeILEmittingInterpreterArithmeticGrammarPerformanceTest() {
-      FullGrammarPerformanceTest(new SymbolicDataAnalysisExpressionTreeILEmittingInterpreter(), 7.5e6);
+      ArithmeticGrammarPerformanceTest(new SymbolicDataAnalysisExpressionTreeILEmittingInterpreter(), 7.5e6);
     }
 
     private void FullGrammarPerformanceTest(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, double nodesPerSecThreshold) {
