@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
@@ -71,24 +72,44 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     public override IOperation Apply() {
-      #region find best tree
-      double bestQuality = Maximization.Value ? double.NegativeInfinity : double.PositiveInfinity;
-      ISymbolicExpressionTree bestTree = null;
-      ISymbolicExpressionTree[] tree = SymbolicExpressionTree.ToArray();
-      var evaluator = EvaluatorParameter.ActualValue;
-      var problemData = ProblemDataParameter.ActualValue;
       IEnumerable<int> rows = GenerateRowsToEvaluate();
       if (!rows.Any()) return base.Apply();
 
+      #region find best tree
+      var evaluator = EvaluatorParameter.ActualValue;
+      var problemData = ProblemDataParameter.ActualValue;
+      double bestValidationQuality = Maximization.Value ? double.NegativeInfinity : double.PositiveInfinity;
+      ISymbolicExpressionTree bestTree = null;
+      ISymbolicExpressionTree[] tree = SymbolicExpressionTree.ToArray();
+
+      // sort is ascending and we take the first n% => order so that best solutions are smallest
+      // sort order is determined by maximization parameter
+      double[] trainingQuality;
+      if (Maximization.Value) {
+        // largest values must be sorted first
+        trainingQuality = Quality.Select(x => -x.Value).ToArray();
+      } else {
+        // smallest values must be sorted first
+        trainingQuality = Quality.Select(x => x.Value).ToArray();
+      }
+
+      // sort trees by training qualities
+      Array.Sort(trainingQuality, tree);
+
+      // number of best training solutions to validate (at least 1)
+      int topN = (int)Math.Max(tree.Length * PercentageOfBestSolutionsParameter.ActualValue.Value, 1);
+
       IExecutionContext childContext = (IExecutionContext)ExecutionContext.CreateChildOperation(evaluator);
+      // evaluate best n training trees on validiation set
       var quality = tree
+        .Take(topN)
         .AsParallel()
         .Select(t => evaluator.Evaluate(childContext, t, problemData, rows))
         .ToArray();
 
-      for (int i = 0; i < tree.Length; i++) {
-        if (IsBetter(quality[i], bestQuality, Maximization.Value)) {
-          bestQuality = quality[i];
+      for (int i = 0; i < quality.Length; i++) {
+        if (IsBetter(quality[i], bestValidationQuality, Maximization.Value)) {
+          bestValidationQuality = quality[i];
           bestTree = tree[i];
         }
       }
@@ -96,9 +117,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       var results = ResultCollection;
       if (ValidationBestSolutionQuality == null ||
-        IsBetter(bestQuality, ValidationBestSolutionQuality.Value, Maximization.Value)) {
-        ValidationBestSolution = CreateSolution(bestTree, bestQuality);
-        ValidationBestSolutionQuality = new DoubleValue(bestQuality);
+        IsBetter(bestValidationQuality, ValidationBestSolutionQuality.Value, Maximization.Value)) {
+        ValidationBestSolution = CreateSolution(bestTree, bestValidationQuality);
+        ValidationBestSolutionQuality = new DoubleValue(bestValidationQuality);
 
         if (!results.ContainsKey(ValidationBestSolutionParameter.Name)) {
           results.Add(new Result(ValidationBestSolutionParameter.Name, ValidationBestSolutionParameter.Description, ValidationBestSolution));

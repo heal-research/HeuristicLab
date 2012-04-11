@@ -44,6 +44,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private const string SymbolicDataAnalysisTreeInterpreterParameterName = "SymbolicDataAnalysisTreeInterpreter";
     private const string ValidationPartitionParameterName = "ValidationPartition";
     private const string RelativeNumberOfEvaluatedSamplesParameterName = "RelativeNumberOfEvaluatedSamples";
+    private const string PercentageOfBestSolutionsParameterName = "PercentageOfBestSolutions";
 
     #region parameter properties
     public ILookupParameter<IRandom> RandomParameter {
@@ -64,6 +65,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public IValueLookupParameter<PercentValue> RelativeNumberOfEvaluatedSamplesParameter {
       get { return (IValueLookupParameter<PercentValue>)Parameters[RelativeNumberOfEvaluatedSamplesParameterName]; }
     }
+    public IValueLookupParameter<PercentValue> PercentageOfBestSolutionsParameter {
+      get { return (IValueLookupParameter<PercentValue>)Parameters[PercentageOfBestSolutionsParameterName]; }
+    }
     #endregion
 
     [StorableConstructor]
@@ -79,6 +83,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Parameters.Add(new LookupParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>(SymbolicDataAnalysisTreeInterpreterParameterName, "The interpreter for symbolic data analysis expression trees."));
       Parameters.Add(new ValueLookupParameter<IntRange>(ValidationPartitionParameterName, "Thes validation partition."));
       Parameters.Add(new ValueLookupParameter<PercentValue>(RelativeNumberOfEvaluatedSamplesParameterName, "The relative number of samples of the dataset partition, which should be randomly chosen for evaluation between the start and end index."));
+      Parameters.Add(new ValueLookupParameter<PercentValue>(PercentageOfBestSolutionsParameterName,
+                                                            "The percentage of the top solutions which should be analyzed.", new PercentValue(0.1)));
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey(PercentageOfBestSolutionsParameterName))
+        Parameters.Add(new ValueLookupParameter<PercentValue>(PercentageOfBestSolutionsParameterName,
+                                                               "The percentage of the top solutions which should be analyzed.", new PercentValue(1)));
     }
 
     protected IEnumerable<int> GenerateRowsToEvaluate() {
