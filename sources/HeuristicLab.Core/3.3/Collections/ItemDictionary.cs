@@ -53,8 +53,8 @@ namespace HeuristicLab.Core {
     protected ItemDictionary(bool deserializing) : base(deserializing) { }
     protected ItemDictionary(ItemDictionary<TKey, TValue> original, Cloner cloner) {
       cloner.RegisterClonedObject(original, this);
-      foreach (TKey key in dict.Keys)
-        dict.Add(cloner.Clone(key), cloner.Clone(dict[key]));
+      foreach (TKey key in original.dict.Keys)
+        dict.Add(cloner.Clone(key), cloner.Clone(original.dict[key]));
     }
     public ItemDictionary() : base() { }
     public ItemDictionary(int capacity) : base(capacity) { }
