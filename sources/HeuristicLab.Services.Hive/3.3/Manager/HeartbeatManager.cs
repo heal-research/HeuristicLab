@@ -43,11 +43,11 @@ namespace HeuristicLab.Services.Hive {
       Slave slave = dao.GetSlave(heartbeat.SlaveId);
       if (slave == null) {
         actions.Add(new MessageContainer(MessageContainer.MessageType.SayHello));
-      } else {        
+      } else {
         if (heartbeat.HbInterval != slave.HbInterval) {
           actions.Add(new MessageContainer(MessageContainer.MessageType.NewHBInterval));
         }
-        
+
         // update slave data
         slave.FreeCores = heartbeat.FreeCores;
         slave.FreeMemory = heartbeat.FreeMemory;
@@ -101,36 +101,36 @@ namespace HeuristicLab.Services.Hive {
       } else {
         // process the jobProgresses
         foreach (var jobProgress in heartbeat.JobProgress) {
-          Task curJob = dao.GetTask(jobProgress.Key);
-          if (curJob == null) {
+          Task curTask = dao.GetTask(jobProgress.Key);
+          if (curTask == null) {
             // task does not exist in db
             actions.Add(new MessageContainer(MessageContainer.MessageType.AbortTask, jobProgress.Key));
-            DA.LogFactory.GetLogger(this.GetType().Namespace).Log("Job does not exist in DB: " + jobProgress.Key);
+            DA.LogFactory.GetLogger(this.GetType().Namespace).Log("Task on slave " + heartbeat.SlaveId + " does not exist in DB: " + jobProgress.Key);
           } else {
-            if (curJob.CurrentStateLog.SlaveId == Guid.Empty || curJob.CurrentStateLog.SlaveId != heartbeat.SlaveId) {
+            if (curTask.CurrentStateLog.SlaveId == Guid.Empty || curTask.CurrentStateLog.SlaveId != heartbeat.SlaveId) {
               // assigned slave does not match heartbeat
-              actions.Add(new MessageContainer(MessageContainer.MessageType.AbortTask, curJob.Id));
-              DA.LogFactory.GetLogger(this.GetType().Namespace).Log("The slave " + heartbeat.SlaveId + " is not supposed to calculate Job: " + curJob);
-            } else if (!TaskIsAllowedToBeCalculatedBySlave(heartbeat.SlaveId, curJob)) {
+              actions.Add(new MessageContainer(MessageContainer.MessageType.AbortTask, curTask.Id));
+              DA.LogFactory.GetLogger(this.GetType().Namespace).Log("The slave " + heartbeat.SlaveId + " is not supposed to calculate task: " + curTask);
+            } else if (!TaskIsAllowedToBeCalculatedBySlave(heartbeat.SlaveId, curTask)) {
               // assigned resources ids of task do not match with slaveId (and parent resourceGroupIds); this might happen when slave is moved to different group
-              actions.Add(new MessageContainer(MessageContainer.MessageType.PauseTask, curJob.Id));
+              actions.Add(new MessageContainer(MessageContainer.MessageType.PauseTask, curTask.Id));
             } else {
               // save task execution time
-              curJob.ExecutionTime = jobProgress.Value;
-              curJob.LastHeartbeat = DateTime.Now;
+              curTask.ExecutionTime = jobProgress.Value;
+              curTask.LastHeartbeat = DateTime.Now;
 
-              switch (curJob.Command) {
+              switch (curTask.Command) {
                 case Command.Stop:
-                  actions.Add(new MessageContainer(MessageContainer.MessageType.StopTask, curJob.Id));
+                  actions.Add(new MessageContainer(MessageContainer.MessageType.StopTask, curTask.Id));
                   break;
                 case Command.Pause:
-                  actions.Add(new MessageContainer(MessageContainer.MessageType.PauseTask, curJob.Id));
+                  actions.Add(new MessageContainer(MessageContainer.MessageType.PauseTask, curTask.Id));
                   break;
                 case Command.Abort:
-                  actions.Add(new MessageContainer(MessageContainer.MessageType.AbortTask, curJob.Id));
+                  actions.Add(new MessageContainer(MessageContainer.MessageType.AbortTask, curTask.Id));
                   break;
               }
-              dao.UpdateTask(curJob);
+              dao.UpdateTask(curTask);
             }
           }
         }
