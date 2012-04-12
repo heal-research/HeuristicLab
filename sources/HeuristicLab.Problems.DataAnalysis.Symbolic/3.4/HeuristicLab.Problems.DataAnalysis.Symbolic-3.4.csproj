@@ -110,6 +110,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Analyzers\SymbolicDataAnalysisComplexityAnalyzer.cs" />
+    <Compile Include="Analyzers\SymbolicDataAnalysisSingleObjectiveTrainingParetoBestSolutionAnalyzer.cs" />
     <Compile Include="Analyzers\SymbolicDataAnalysisMultiObjectiveValidationAnalyzer.cs" />
     <Compile Include="Analyzers\SymbolicDataAnalysisMultiObjectiveValidationBestSolutionAnalyzer.cs" />
     <Compile Include="Analyzers\SymbolicDataAnalysisSingleObjectiveValidationAnalyzer.cs" />

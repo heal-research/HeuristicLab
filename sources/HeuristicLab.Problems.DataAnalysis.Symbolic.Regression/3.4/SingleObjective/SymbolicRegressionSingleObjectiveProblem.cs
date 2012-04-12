@@ -77,6 +77,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       Operators.Add(new SymbolicRegressionSingleObjectiveTrainingBestSolutionAnalyzer());
       Operators.Add(new SymbolicRegressionSingleObjectiveValidationBestSolutionAnalyzer());
       Operators.Add(new SymbolicRegressionSingleObjectiveOverfittingAnalyzer());
+      Operators.Add(new SymbolicRegressionSingleObjectiveTrainingParetoBestSolutionAnalyzer());
+
       ParameterizeOperators();
     }
 
