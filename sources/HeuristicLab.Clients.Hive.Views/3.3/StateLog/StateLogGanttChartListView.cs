@@ -49,10 +49,6 @@ namespace HeuristicLab.Clients.Hive.Views {
       // Register your event handlers here
     }
 
-    #region Event Handlers (Content)
-    // Put event handlers of the content here
-    #endregion
-
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
@@ -76,7 +72,7 @@ namespace HeuristicLab.Clients.Hive.Views {
             this.ganttChart.chart.Series[0].YValueType = System.Windows.Forms.DataVisualization.Charting.ChartValueType.Time;
           }
 
-          for (int i = 0; i < Content.Count; i++) {
+          for (int i = Content.Count - 1; i >= 0; i--) {
             for (int j = 0; j < Content[i].Count - 1; j++) {
               if (Content[i][j].State != TaskState.Offline)
                 AddData(ganttChart, i.ToString(), Content[i][j], Content[i][j + 1], upperLimit);
@@ -103,7 +99,11 @@ namespace HeuristicLab.Clients.Hive.Views {
     public static void AddData(GanttChart ganttChart, string name, StateLog from, StateLog to, DateTime upperLimit) {
       DateTime until = to != null ? to.DateTime : upperLimit;
       TimeSpan duration = until - from.DateTime;
-      string tooltip = string.Format("Task: {0} " + Environment.NewLine + "Task Id: {1}" + Environment.NewLine + "State: {2} " + Environment.NewLine + "Duration: {3} " + Environment.NewLine + "{4} - {5}", from.TaskName, from.TaskId, from.State, duration, from.DateTime, until);
+      string tooltip = string.Format("Task: {0} " + Environment.NewLine + "Task Id: {1}" + Environment.NewLine + "State: {2} " + Environment.NewLine + "Duration: {3} " + Environment.NewLine + "{4} - {5}" + Environment.NewLine, from.TaskName, from.TaskId, from.State, duration, from.DateTime, until);
+
+      if (to != null && to.SlaveId != null)
+        tooltip += "Slave: " + to.SlaveId;
+
       if (!string.IsNullOrEmpty(from.Exception))
         tooltip += Environment.NewLine + from.Exception;
       ganttChart.AddData(name, from.State.ToString(), from.DateTime, until, tooltip, false);
@@ -111,11 +111,6 @@ namespace HeuristicLab.Clients.Hive.Views {
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
-      // Enable or disable controls based on whether the content is null or the view is set readonly
     }
-
-    #region Event Handlers (child controls)
-    // Put event handlers of child controls here.
-    #endregion
   }
 }
