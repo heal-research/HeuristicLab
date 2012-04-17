@@ -20,7 +20,6 @@
 #endregion
 
 using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
@@ -165,10 +164,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     protected void CalculateResults() {
-      double[] estimatedTrainingValues = EstimatedTrainingValues.ToArray(); // cache values
-      double[] originalTrainingValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndizes).ToArray();
-      double[] estimatedTestValues = EstimatedTestValues.ToArray(); // cache values
-      double[] originalTestValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TestIndizes).ToArray();
+      IEnumerable<double> estimatedTrainingValues = EstimatedTrainingValues; // cache values
+      IEnumerable<double> originalTrainingValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndizes);
+      IEnumerable<double> estimatedTestValues = EstimatedTestValues; // cache values
+      IEnumerable<double> originalTestValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TestIndizes);
 
       OnlineCalculatorError errorState;
       double trainingMSE = OnlineMeanSquaredErrorCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);

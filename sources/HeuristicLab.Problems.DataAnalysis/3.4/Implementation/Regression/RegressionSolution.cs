@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     protected RegressionSolution(IRegressionModel model, IRegressionProblemData problemData)
       : base(model, problemData) {
-      evaluationCache = new Dictionary<int, double>();
+      evaluationCache = new Dictionary<int, double>(problemData.Dataset.Rows);
     }
 
     protected override void RecalculateResults() {
