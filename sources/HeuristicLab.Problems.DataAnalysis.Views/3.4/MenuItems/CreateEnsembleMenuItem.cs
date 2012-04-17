@@ -72,7 +72,7 @@ namespace HeuristicLab.Problems.DataAnalysis.MenuItems {
               .OfType<IRegressionSolution>()
               .First()
               .ProblemData.Clone();
-            var ensemble = new RegressionEnsembleSolution(Enumerable.Empty<IRegressionModel>(), problemData);
+            var ensemble = new RegressionEnsembleSolution(problemData);
             ensemble.Name = group.Key + " ensemble";
             var nestedSolutions = group.OfType<RegressionEnsembleSolution>().SelectMany(e => e.RegressionSolutions);
             var solutions = group.Where(s => !(s is RegressionEnsembleSolution)).OfType<IRegressionSolution>();

@@ -294,7 +294,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
               symbolicProblem.FitnessCalculationPartition.Start = SamplesStart.Value;
               symbolicProblem.FitnessCalculationPartition.End = SamplesEnd.Value;
             }
-
+            clonedAlgorithm.Prepare();
             clonedAlgorithms.Add(clonedAlgorithm);
           }
         }
@@ -415,11 +415,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         problemDataClone.TrainingPartition.Start = SamplesStart.Value; problemDataClone.TrainingPartition.End = SamplesEnd.Value;
         problemDataClone.TestPartition.Start = SamplesStart.Value; problemDataClone.TestPartition.End = SamplesEnd.Value;
         // clone models
-        var ensembleSolution = new RegressionEnsembleSolution(
-          solutions.Value.Select(x => cloner.Clone(x.Model)),
-          problemDataClone,
-          solutions.Value.Select(x => cloner.Clone(x.ProblemData.TrainingPartition)),
-          solutions.Value.Select(x => cloner.Clone(x.ProblemData.TestPartition)));
+        var ensembleSolution = new RegressionEnsembleSolution(problemDataClone);
+        ensembleSolution.AddRegressionSolutions(solutions.Value);
 
         aggregatedResults.Add(new Result(solutions.Key + " (ensemble)", ensembleSolution));
       }

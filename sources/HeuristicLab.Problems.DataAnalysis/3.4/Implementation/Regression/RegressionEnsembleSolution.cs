@@ -98,6 +98,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
       RegisterRegressionSolutionsEventHandler();
     }
 
+    public RegressionEnsembleSolution(IRegressionProblemData problemData)
+      : this(Enumerable.Empty<IRegressionModel>(), problemData) {
+    }
+
     public RegressionEnsembleSolution(IEnumerable<IRegressionModel> models, IRegressionProblemData problemData)
       : this(models, problemData,
              models.Select(m => (IntRange)problemData.TrainingPartition.Clone()),
