@@ -180,7 +180,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     #region IStatefulItem methods
-    void IStatefulItem.InitializeState() { }
+    void IStatefulItem.InitializeState()
+    {
+      ReadOnly = false;
+    }
     void IStatefulItem.ClearState() {
       ReadOnly = false;
     }
