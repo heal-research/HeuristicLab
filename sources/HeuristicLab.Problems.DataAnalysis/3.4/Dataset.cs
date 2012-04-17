@@ -71,7 +71,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
       rows = variableValues.First().Count;
       this.variableNames = new List<string>(variableNames);
-      this.variableValues = new Dictionary<string, IList>();
+      this.variableValues = new Dictionary<string, IList>(this.variableNames.Count);
       for (int i = 0; i < this.variableNames.Count; i++) {
         var values = variableValues.ElementAt(i);
         IList clonedValues = null;
@@ -106,10 +106,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
       rows = variableValues.GetLength(0);
       this.variableNames = new List<string>(variableNames);
 
-      this.variableValues = new Dictionary<string, IList>();
+      this.variableValues = new Dictionary<string, IList>(variableValues.GetLength(1));
       for (int col = 0; col < variableValues.GetLength(1); col++) {
         string columName = this.variableNames[col];
-        var values = new List<double>();
+        var values = new List<double>(variableValues.GetLength(0));
         for (int row = 0; row < variableValues.GetLength(0); row++) {
           values.Add(variableValues[row, col]);
         }
