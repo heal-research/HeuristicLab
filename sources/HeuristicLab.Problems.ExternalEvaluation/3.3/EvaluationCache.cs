@@ -150,6 +150,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     protected EvaluationCache(EvaluationCache original, Cloner cloner)
       : base(original, cloner) {
       SetCacheValues(original.GetCacheValues());
+      Hits = original.Hits;
       RegisterEvents();
     }
     public EvaluationCache() {
@@ -166,10 +167,10 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
 
     #region Event Handling
     private void RegisterEvents() {
-      CapacityParameter.Value.ValueChanged += new EventHandler(Value_ValueChanged);
+      CapacityParameter.Value.ValueChanged += new EventHandler(CapacityChanged);
     }
 
-    void Value_ValueChanged(object sender, EventArgs e) {
+    void CapacityChanged(object sender, EventArgs e) {
       if (Capacity < 0)
         throw new ArgumentOutOfRangeException("Cache capacity cannot be less than zero");
       lock (cacheLock)
@@ -189,13 +190,13 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     }
 
     public double GetValue(SolutionMessage message, Evaluator evaluate) {
-      CacheEntry entry = new CacheEntry(message.ToString());
-      LinkedListNode<CacheEntry> node;
+      var entry = new CacheEntry(message.ToString());
       bool lockTaken = false;
       bool waited = false;
       try {
         Monitor.Enter(cacheLock, ref lockTaken);
         while (true) {
+          LinkedListNode<CacheEntry> node;
           if (index.TryGetValue(entry, out node)) {
             list.Remove(node);
             list.AddLast(node);
@@ -242,7 +243,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
 
     private void Trim() {
       while (list.Count > Capacity) {
-        LinkedListNode<CacheEntry> item = list.First;
+        var item = list.First;
         list.Remove(item);
         index.Remove(item.Value);
       }
@@ -259,8 +260,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
         list = new LinkedList<CacheEntry>();
         index = new Dictionary<CacheEntry, LinkedListNode<CacheEntry>>();
         foreach (var kvp in value) {
-          var entry = new CacheEntry(kvp.Key);
-          entry.Value = kvp.Value;
+          var entry = new CacheEntry(kvp.Key) { Value = kvp.Value };
           index[entry] = list.AddLast(entry);
         }
       }
