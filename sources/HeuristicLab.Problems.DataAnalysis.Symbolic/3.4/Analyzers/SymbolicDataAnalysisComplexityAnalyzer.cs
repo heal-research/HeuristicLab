@@ -42,7 +42,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   public sealed class SymbolicDataAnalysisComplexityAnalyzer : SymbolicDataAnalysisAnalyzer {
     private const string ComplexityParameterName = "Complexity";
     private const string WeightsParameterName = "Weights";
-
+    
+    public override bool EnabledByDefault {
+      get { return false; }
+    }
 
     #region parameter properties
     public IScopeTreeLookupParameter<DoubleValue> ComplexityParameter {
