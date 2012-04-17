@@ -35,13 +35,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// <summary>
   /// An operator that collects the Pareto-best symbolic data analysis solutions for single objective symbolic data analysis problems.
   /// </summary>
-  [Item("SymbolicDataAnalysisSingleObjectiveTrainingBestSolutionAnalyzer", "An operator that analyzes the training best symbolic data analysis solution for multi objective symbolic data analysis problems.")]
+  [Item("SymbolicDataAnalysisSingleObjectiveTrainingParetoBestSolutionAnalyzer", "An operator that analyzes the Pareto-best symbolic data analysis solution for single objective symbolic data analysis problems.")]
   [StorableClass]
   public abstract class SymbolicDataAnalysisSingleObjectiveTrainingParetoBestSolutionAnalyzer<T> : SymbolicDataAnalysisSingleObjectiveAnalyzer
     where T : class, ISymbolicDataAnalysisSolution {
     private const string TrainingBestSolutionsParameterName = "Best training solutions";
     private const string TrainingBestSolutionQualitiesParameterName = "Best training solution qualities";
     private const string ComplexityParameterName = "Complexity";
+
+    public override bool EnabledByDefault {
+      get { return false; }
+    }
 
     #region parameter properties
     public ILookupParameter<ItemList<T>> TrainingBestSolutionsParameter {

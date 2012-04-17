@@ -117,6 +117,8 @@
     <Compile Include="SingleObjective\SymbolicClassificationSingleObjectiveBoundedMeanSquaredErrorEvaluator.cs" />
     <Compile Include="SingleObjective\SymbolicClassificationSingleObjectiveOverfittingAnalyzer.cs" />
     <Compile Include="SingleObjective\SymbolicClassificationSingleObjectiveValidationBestSolutionAnalyzer.cs" />
+    <Compile Include="SingleObjective\SymbolicClassificationSingleObjectiveTrainingParetoBestSolutionAnalyzer.cs" />
+    <Compile Include="SingleObjective\SymbolicClassificationSingleObjectiveValidationParetoBestSolutionAnalyzer.cs" />
     <Compile Include="SymbolicDiscriminantFunctionClassificationModel.cs" />
     <Compile Include="Interfaces\ISymbolicClassificationModel.cs" />
     <Compile Include="Interfaces\ISymbolicClassificationSolution.cs" />

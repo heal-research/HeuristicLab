@@ -75,6 +75,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       Operators.Add(new SymbolicClassificationSingleObjectiveTrainingBestSolutionAnalyzer());
       Operators.Add(new SymbolicClassificationSingleObjectiveValidationBestSolutionAnalyzer());
       Operators.Add(new SymbolicClassificationSingleObjectiveOverfittingAnalyzer());
+      Operators.Add(new SymbolicClassificationSingleObjectiveTrainingParetoBestSolutionAnalyzer());
+      Operators.Add(new SymbolicClassificationSingleObjectiveValidationParetoBestSolutionAnalyzer());
       ParameterizeOperators();
     }
 
