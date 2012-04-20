@@ -45,8 +45,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       Parameters.Add(new LookupParameter<InversionMove>("InversionMove", "The move to evaluate."));
     }
 
-    protected override double EvaluateByCoordinates(Permutation permutation, DoubleMatrix coordinates) {
-      InversionMove move = InversionMoveParameter.ActualValue;
+    public static double EvaluateByCoordinates(Permutation permutation, InversionMove move, DoubleMatrix coordinates, TSPInversionMovePathEvaluator evaluator) {
       int edge1source = permutation.GetCircular(move.Index1 - 1);
       int edge1target = permutation[move.Index1];
       int edge2source = permutation[move.Index2];
@@ -54,20 +53,19 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       if (move.Index2 - move.Index1 >= permutation.Length - 2) return 0;
       double moveQuality = 0;
       // remove two edges
-      moveQuality -= CalculateDistance(coordinates[edge1source, 0], coordinates[edge1source, 1],
+      moveQuality -= evaluator.CalculateDistance(coordinates[edge1source, 0], coordinates[edge1source, 1],
             coordinates[edge1target, 0], coordinates[edge1target, 1]);
-      moveQuality -= CalculateDistance(coordinates[edge2source, 0], coordinates[edge2source, 1],
+      moveQuality -= evaluator.CalculateDistance(coordinates[edge2source, 0], coordinates[edge2source, 1],
         coordinates[edge2target, 0], coordinates[edge2target, 1]);
       // add two edges
-      moveQuality += CalculateDistance(coordinates[edge1source, 0], coordinates[edge1source, 1],
+      moveQuality += evaluator.CalculateDistance(coordinates[edge1source, 0], coordinates[edge1source, 1],
         coordinates[edge2source, 0], coordinates[edge2source, 1]);
-      moveQuality += CalculateDistance(coordinates[edge1target, 0], coordinates[edge1target, 1],
+      moveQuality += evaluator.CalculateDistance(coordinates[edge1target, 0], coordinates[edge1target, 1],
         coordinates[edge2target, 0], coordinates[edge2target, 1]);
       return moveQuality;
     }
 
-    protected override double EvaluateByDistanceMatrix(Permutation permutation, DistanceMatrix distanceMatrix) {
-      InversionMove move = InversionMoveParameter.ActualValue;
+    public static double EvaluateByDistanceMatrix(Permutation permutation, InversionMove move, DistanceMatrix distanceMatrix) {
       int edge1source = permutation.GetCircular(move.Index1 - 1);
       int edge1target = permutation[move.Index1];
       int edge2source = permutation[move.Index2];
@@ -81,6 +79,14 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       moveQuality += distanceMatrix[edge1source, edge2source];
       moveQuality += distanceMatrix[edge1target, edge2target];
       return moveQuality;
+    }
+
+    protected override double EvaluateByCoordinates(Permutation permutation, DoubleMatrix coordinates) {
+      return EvaluateByCoordinates(permutation, InversionMoveParameter.ActualValue, coordinates, this);
+    }
+
+    protected override double EvaluateByDistanceMatrix(Permutation permutation, DistanceMatrix distanceMatrix) {
+      return EvaluateByDistanceMatrix(permutation, InversionMoveParameter.ActualValue, distanceMatrix);
     }
   }
 }
