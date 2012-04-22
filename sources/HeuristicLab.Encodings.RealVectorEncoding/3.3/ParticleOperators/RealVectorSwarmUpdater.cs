@@ -198,7 +198,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       Parameters.Add(new OptionalConstrainedValueParameter<IDiscreteDoubleValueModifier>("VelocityBoundsScalingOperator", "Modifies the value"));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("VelocityBoundsStartValue", "The start value of 'Value'.", new DoubleValue(1)));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("VelocityBoundsEndValue", "The end value of 'Value'.", new DoubleValue(1E-10)));
-      Parameters.Add(new LookupParameter<IntValue>("VelocityBoundsIndex", "The current index.", "CurrentIteration"));
+      Parameters.Add(new LookupParameter<IntValue>("VelocityBoundsIndex", "The current index.", "Iterations"));
       Parameters.Add(new ValueLookupParameter<IntValue>("VelocityBoundsStartIndex", "The start index at which to start modifying 'Value'.", new IntValue(0)));
       Parameters.Add(new ValueLookupParameter<IntValue>("VelocityBoundsEndIndex", "The end index by which 'Value' should have reached 'EndValue'.", "MaxIterations"));
       VelocityBoundsStartIndexParameter.Hidden = true;
