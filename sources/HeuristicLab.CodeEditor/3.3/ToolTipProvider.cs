@@ -59,12 +59,14 @@ namespace HeuristicLab.CodeEditor {
 
         TextEditor.TextArea textArea = editor.ActiveTextAreaControl.TextArea;
         NRefactoryResolver resolver = new NRefactoryResolver(codeEditor.projectContent.Language);
-        ResolveResult rr = resolver.Resolve(expression,
-                                            codeEditor.parseInformation,
-                                            textArea.MotherTextEditorControl.Text);
-        string toolTipText = GetText(rr);
-        if (toolTipText != null) {
-          e.ShowToolTip(toolTipText);
+        if (expression.Expression != null) {
+          ResolveResult rr = resolver.Resolve(expression,
+            codeEditor.parseInformation,
+            textArea.MotherTextEditorControl.Text);
+          string toolTipText = GetText(rr);
+          if (toolTipText != null) {
+            e.ShowToolTip(toolTipText);
+          }
         }
       }
     }
