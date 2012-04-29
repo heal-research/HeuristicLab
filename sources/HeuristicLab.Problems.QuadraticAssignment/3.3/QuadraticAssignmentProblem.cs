@@ -321,15 +321,21 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
         op.PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
       }
       if (Operators.OfType<IMoveGenerator>().Any()) {
-        string inversionMove = Operators.OfType<IMoveGenerator>().OfType<IPermutationInversionMoveOperator>().First().InversionMoveParameter.ActualName;
-        foreach (IPermutationInversionMoveOperator op in Operators.OfType<IPermutationInversionMoveOperator>())
-          op.InversionMoveParameter.ActualName = inversionMove;
-        string translocationMove = Operators.OfType<IMoveGenerator>().OfType<IPermutationTranslocationMoveOperator>().First().TranslocationMoveParameter.ActualName;
-        foreach (IPermutationTranslocationMoveOperator op in Operators.OfType<IPermutationTranslocationMoveOperator>())
-          op.TranslocationMoveParameter.ActualName = translocationMove;
-        string swapMove = Operators.OfType<IMoveGenerator>().OfType<IPermutationSwap2MoveOperator>().First().Swap2MoveParameter.ActualName;
-        foreach (IPermutationSwap2MoveOperator op in Operators.OfType<IPermutationSwap2MoveOperator>()) {
-          op.Swap2MoveParameter.ActualName = swapMove;
+        if (Operators.OfType<IMoveGenerator>().OfType<IPermutationInversionMoveOperator>().Any()) {
+          string inversionMove = Operators.OfType<IMoveGenerator>().OfType<IPermutationInversionMoveOperator>().First().InversionMoveParameter.ActualName;
+          foreach (IPermutationInversionMoveOperator op in Operators.OfType<IPermutationInversionMoveOperator>())
+            op.InversionMoveParameter.ActualName = inversionMove;
+        }
+        if (Operators.OfType<IMoveGenerator>().OfType<IPermutationTranslocationMoveOperator>().Any()) {
+          string translocationMove = Operators.OfType<IMoveGenerator>().OfType<IPermutationTranslocationMoveOperator>().First().TranslocationMoveParameter.ActualName;
+          foreach (IPermutationTranslocationMoveOperator op in Operators.OfType<IPermutationTranslocationMoveOperator>())
+            op.TranslocationMoveParameter.ActualName = translocationMove;
+        }
+        if (Operators.OfType<IMoveGenerator>().OfType<IPermutationSwap2MoveOperator>().Any()) {
+          string swapMove = Operators.OfType<IMoveGenerator>().OfType<IPermutationSwap2MoveOperator>().First().Swap2MoveParameter.ActualName;
+          foreach (IPermutationSwap2MoveOperator op in Operators.OfType<IPermutationSwap2MoveOperator>()) {
+            op.Swap2MoveParameter.ActualName = swapMove;
+          }
         }
       }
       foreach (var op in Operators.OfType<IPermutationMultiNeighborhoodShakingOperator>())
