@@ -307,7 +307,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
         Random rand = new Random();
         using (Graphics graphics = Graphics.FromImage(newBitmap)) {
           graphics.Clear(Color.White);
-          graphics.DrawString("Showing locations spaced out according to their distances", Font, Brushes.Black, 5, 2);
+          graphics.DrawString("Showing locations layed out according to their distances", Font, Brushes.Black, 5, 2);
 
           for (int i = 0; i < coordinates.Rows - 1; i++) {
             for (int j = i + 1; j < coordinates.Rows; j++) {
@@ -401,7 +401,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
         Random rand = new Random();
         using (Graphics graphics = Graphics.FromImage(newBitmap)) {
           graphics.Clear(Color.White);
-          graphics.DrawString("Showing facilities spaced out according to their weights", Font, Brushes.Black, 5, 2);
+          graphics.DrawString("Showing facilities layed out according to their weights", Font, Brushes.Black, 5, 2);
 
           for (int i = 0; i < coordinates.Rows - 1; i++) {
             for (int j = i + 1; j < coordinates.Rows; j++) {
