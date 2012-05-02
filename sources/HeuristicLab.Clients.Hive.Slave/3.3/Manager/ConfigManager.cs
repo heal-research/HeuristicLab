@@ -62,7 +62,11 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       slave = new Slave();
       slave.Id = GetUniqueMachineId();
       slave.Name = Environment.MachineName;
-      slave.Cores = Environment.ProcessorCount;
+      if (Settings.Default.NrOfCoresToScavenge < 1 || Settings.Default.NrOfCoresToScavenge > Environment.ProcessorCount) {
+        slave.Cores = Environment.ProcessorCount;
+      } else {
+        slave.Cores = Settings.Default.NrOfCoresToScavenge;
+      }
       slave.Memory = GetPhysicalMemory();
       slave.CpuArchitecture = Environment.Is64BitOperatingSystem ? CpuArchitecture.x64 : CpuArchitecture.x86;
       slave.OperatingSystem = Environment.OSVersion.VersionString;

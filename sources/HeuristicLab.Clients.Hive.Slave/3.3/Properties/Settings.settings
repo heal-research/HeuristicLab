@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="HeartbeatInterval" Type="System.TimeSpan" Scope="User">
-      <Value Profile="(Default)">00:00:20</Value>
+      <Value Profile="(Default)">00:00:40</Value>
     </Setting>
     <Setting Name="LastUsedFileName" Type="System.String" Scope="User">
       <Value Profile="(Default)">lastUsed.dat</Value>
@@ -70,6 +70,9 @@
     </Setting>
     <Setting Name="ExecutorQueueTimeout" Type="System.TimeSpan" Scope="User">
       <Value Profile="(Default)">00:00:20</Value>
+    </Setting>
+    <Setting Name="NrOfCoresToScavenge" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">-1</Value>
     </Setting>
   </Settings>
 </SettingsFile>
