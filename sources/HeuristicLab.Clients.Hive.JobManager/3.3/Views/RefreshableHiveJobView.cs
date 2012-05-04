@@ -68,6 +68,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       Content.ExecutionTimeChanged += new EventHandler(Content_ExecutionTimeChanged);
       Content.IsAllowedPrivilegedChanged += new EventHandler(Content_IsAllowedPrivilegedChanged);
       Content.Loaded += new EventHandler(Content_Loaded);
+      Content.TaskReceived += new EventHandler(Content_TaskReceived);
     }
 
     protected override void DeregisterContentEvents() {
@@ -82,6 +83,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       Content.ExecutionStateChanged -= new EventHandler(Content_ExecutionStateChanged);
       Content.ExecutionTimeChanged -= new EventHandler(Content_ExecutionTimeChanged);
       Content.Loaded -= new EventHandler(Content_Loaded);
+      Content.TaskReceived -= new EventHandler(Content_TaskReceived);
       base.DeregisterContentEvents();
     }
 
@@ -166,13 +168,14 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     }
 
     #region Content Events
+    void Content_TaskReceived(object sender, EventArgs e) {
+      runCollectionViewHost.Content = GetAllRunsFromJob(Content);
+    }
+
     private void HiveTasks_ItemsAdded(object sender, CollectionItemsChangedEventArgs<HiveTask> e) {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<HiveTask>(HiveTasks_ItemsAdded), sender, e);
       else {
-        foreach (HiveTask t in e.Items) {
-          t.TaskStateChanged += new EventHandler(HiveTask_TaskStateChanged);
-        }
         SetEnabledStateOfControls();
       }
     }
@@ -181,9 +184,6 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<HiveTask>(HiveTasks_ItemsRemoved), sender, e);
       else {
-        foreach (HiveTask t in e.Items) {
-          t.TaskStateChanged -= new EventHandler(HiveTask_TaskStateChanged);
-        }
         SetEnabledStateOfControls();
       }
     }
@@ -192,15 +192,8 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<HiveTask>(HiveTasks_CollectionReset), sender, e);
       else {
-        foreach (HiveTask t in e.Items) {
-          t.TaskStateChanged -= new EventHandler(HiveTask_TaskStateChanged);
-        }
         SetEnabledStateOfControls();
       }
-    }
-
-    void HiveTask_TaskStateChanged(object sender, EventArgs e) {
-      runCollectionViewHost.Content = GetAllRunsFromJob(Content);
     }
 
     private void Content_ExecutionStateChanged(object sender, EventArgs e) {

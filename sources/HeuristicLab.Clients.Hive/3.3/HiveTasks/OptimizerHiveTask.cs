@@ -31,6 +31,8 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Clients.Hive {
   public class OptimizerHiveTask : HiveTask<OptimizerTask> {
 
+    Object batchRunLocker = new Object();
+
     #region Constructors and Cloning
     public OptimizerHiveTask() { }
     public OptimizerHiveTask(IOptimizer optimizer)
@@ -223,10 +225,12 @@ namespace HeuristicLab.Clients.Hive {
       if (batchRun.Optimizer == null) {
         batchRun.Optimizer = (IOptimizer)optimizerTask.Item; // only set the first optimizer as Optimizer. if every time the Optimizer would be set, the runs would be cleared each time
       }
-      foreach (IRun run in optimizerTask.Item.Runs) {
-        if (!batchRun.Runs.Contains(run)) {
-          run.Name = GetNewRunName(run, batchRun.Runs);
-          batchRun.Runs.Add(run);
+      lock (batchRunLocker) {
+        foreach (IRun run in optimizerTask.Item.Runs) {
+          if (!batchRun.Runs.Contains(run)) {
+            run.Name = GetNewRunName(run, batchRun.Runs);
+            batchRun.Runs.Add(run);
+          }
         }
       }
     }

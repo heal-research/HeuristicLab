@@ -315,6 +315,7 @@ namespace HeuristicLab.Clients.Hive {
       UpdateTotalExecutionTime();
       UpdateStatistics();
       OnStateLogListChanged();
+      OnTaskReceived();
     }
 
     public HiveTask GetHiveTaskById(Guid jobId) {
@@ -466,6 +467,11 @@ namespace HeuristicLab.Clients.Hive {
     public event EventHandler ExecutionStateChanged;
     protected virtual void OnExecutionStateChanged() {
       var handler = ExecutionStateChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
+    public event EventHandler TaskReceived;
+    protected virtual void OnTaskReceived() {
+      var handler = TaskReceived;
       if (handler != null) handler(this, EventArgs.Empty);
     }
     #endregion
