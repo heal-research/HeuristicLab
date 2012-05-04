@@ -257,12 +257,6 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
       Initialize();
     }
 
-    public override void Prepare() {
-      if (Problem != null && ParticleCreator != null && ParticleUpdater != null) {
-        base.Prepare();
-      }
-    }
-
     #region Events
     protected override void OnProblemChanged() {
       UpdateAnalyzers();
@@ -411,7 +405,10 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     private void ParameterizeSolutionsCreator() {
       if (Problem != null) {
         solutionsCreator.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
-        solutionsCreator.SolutionCreatorParameter.ActualName = ParticleCreatorParameter.Name;
+        if (ParticleCreatorParameter.Value != null)
+          solutionsCreator.SolutionCreatorParameter.ActualName = ParticleCreatorParameter.Name;
+        else
+          solutionsCreator.SolutionCreatorParameter.ActualName = Problem.SolutionCreatorParameter.Name;
       }
     }
 
