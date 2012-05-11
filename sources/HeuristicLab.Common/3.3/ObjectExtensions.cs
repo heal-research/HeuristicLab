@@ -56,7 +56,7 @@ namespace HeuristicLab.Common {
     ///   * System.Delegate
     ///   * System.Reflection.Pointer
     ///   * Primitives (Boolean, Byte, SByte, Int16, UInt16, Int32, UInt32, Int64, UInt64, IntPtr, UIntPtr, Char, Double, Single)
-    ///   * string, decimal
+    ///   * string, decimal, DateTime
     ///   * Arrays of types not collected
     ///   
     /// Dictionaries and HashSets are treated specially, because it is cheaper to iterate over their keys and values
@@ -66,8 +66,11 @@ namespace HeuristicLab.Common {
       return type.IsPrimitive ||
              type == typeof(string) ||
              type == typeof(decimal) ||
+             type == typeof(DateTime) ||
              typeof(Delegate).IsAssignableFrom(type) ||
              typeof(Pointer).IsAssignableFrom(type) ||
+             type == typeof(string[]) ||
+             type == typeof(DateTime[]) ||
              (type.HasElementType && ExcludeType(type.GetElementType()));
     }
     private static IEnumerable<object> GetChildObjects(object obj, HashSet<string> excludedMembers, bool excludeStaticMembers) {
