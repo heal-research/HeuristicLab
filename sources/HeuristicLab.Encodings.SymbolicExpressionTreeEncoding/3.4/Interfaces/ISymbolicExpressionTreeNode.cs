@@ -33,6 +33,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     int GetLength();
     int GetBranchLevel(ISymbolicExpressionTreeNode child);
 
+    IEnumerable<ISymbolicExpressionTreeNode> IterateNodesBreadth();
     IEnumerable<ISymbolicExpressionTreeNode> IterateNodesPostfix();
     IEnumerable<ISymbolicExpressionTreeNode> IterateNodesPrefix();
     void ForEachNodePostfix(Action<ISymbolicExpressionTreeNode> a);

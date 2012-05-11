@@ -28,6 +28,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     int Length { get; }
     int Depth { get; }
 
+    IEnumerable<ISymbolicExpressionTreeNode> IterateNodesBreadth();
     IEnumerable<ISymbolicExpressionTreeNode> IterateNodesPrefix();
     IEnumerable<ISymbolicExpressionTreeNode> IterateNodesPostfix();
   }

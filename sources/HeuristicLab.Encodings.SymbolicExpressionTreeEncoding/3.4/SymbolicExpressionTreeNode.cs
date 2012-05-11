@@ -173,6 +173,17 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       ResetCachedValues();
     }
 
+    public IEnumerable<ISymbolicExpressionTreeNode> IterateNodesBreadth() {
+      var list = new List<ISymbolicExpressionTreeNode>() { this };
+      int i = 0;
+      while (i != list.Count) {
+        for (int j = 0; j != list[i].SubtreeCount; ++j)
+          list.Add(list[i].GetSubtree(j));
+        ++i;
+      }
+      return list;
+    }
+
     public IEnumerable<ISymbolicExpressionTreeNode> IterateNodesPrefix() {
       List<ISymbolicExpressionTreeNode> list = new List<ISymbolicExpressionTreeNode>();
       ForEachNodePrefix((n) => list.Add(n));
