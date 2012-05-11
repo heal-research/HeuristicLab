@@ -178,7 +178,7 @@ namespace HeuristicLab.Optimization {
       experimentStarted = false;
       experimentStopped = false;
       foreach (IOptimizer optimizer in Optimizers.Where(x => x.ExecutionState != ExecutionState.Started))
-        if (clearRuns || optimizer.ExecutionState != ExecutionState.Prepared)
+        //if (clearRuns || optimizer.ExecutionState != ExecutionState.Prepared)
           optimizer.Prepare(clearRuns);
     }
     public void Start() {
