@@ -125,6 +125,7 @@ namespace HeuristicLab.Optimization {
     protected override void OnCollectionReset(IEnumerable<IRun> items, IEnumerable<IRun> oldItems) {
       parameterNames.Clear();
       resultNames.Clear();
+      dataTypes.Clear();
       foreach (IRun run in items) {
         foreach (KeyValuePair<string, IItem> parameter in run.Parameters)
           AddParameter(parameter.Key, parameter.Value);
