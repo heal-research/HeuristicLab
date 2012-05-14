@@ -101,24 +101,6 @@
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4, Version=3.4.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="HeuristicLab.Problems.DataAnalysis-3.4, Version=3.4.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4, Version=3.4.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="HeuristicLab.Problems.DataAnalysis.Symbolic.Classification-3.4, Version=3.4.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="HeuristicLab.Problems.DataAnalysis.Symbolic.Views-3.4, Version=3.4.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="HeuristicLab.Problems.DataAnalysis.Views-3.4, Version=3.4.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -161,11 +143,6 @@
       <Name>HeuristicLab.Analysis-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
-      <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
-      <Name>HeuristicLab.Collections-3.3</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Common.Resources\3.3\HeuristicLab.Common.Resources-3.3.csproj">
       <Project>{0E27A536-1C4A-4624-A65E-DC4F4F23E3E1}</Project>
       <Name>HeuristicLab.Common.Resources-3.3</Name>
@@ -184,11 +161,6 @@
     <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
       <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>
       <Name>HeuristicLab.Core-3.3</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Data.Views\3.3\HeuristicLab.Data.Views-3.3.csproj">
-      <Project>{72104A0B-90E7-42F3-9ABE-9BBBADD4B943}</Project>
-      <Name>HeuristicLab.Data.Views-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
@@ -226,11 +198,6 @@
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views\3.4\HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views-3.4.csproj">
-      <Project>{BF1E4DF4-A4CC-451F-9D50-303F405E265E}</Project>
-      <Name>HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views-3.4</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Problems.Instances\3.3\HeuristicLab.Problems.Instances-3.3.csproj">
       <Project>{3540E29E-4793-49E7-8EE2-FEA7F61C3994}</Project>
       <Name>HeuristicLab.Problems.Instances-3.3</Name>
@@ -239,11 +206,6 @@
     <ProjectReference Include="..\..\HeuristicLab.Problems.QuadraticAssignment\3.3\HeuristicLab.Problems.QuadraticAssignment-3.3.csproj">
       <Project>{79271BC8-4446-40E2-BB89-9BE4E17174FE}</Project>
       <Name>HeuristicLab.Problems.QuadraticAssignment-3.3</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Visualization.ChartControlsExtensions\3.3\HeuristicLab.Visualization.ChartControlsExtensions-3.3.csproj">
-      <Project>{315BDA09-3F4F-49B3-9790-B37CFC1C5750}</Project>
-      <Name>HeuristicLab.Visualization.ChartControlsExtensions-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
