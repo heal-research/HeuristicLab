@@ -123,6 +123,8 @@
     <Compile Include="Content\ContentManager.cs" />
     <Compile Include="Content\IStorableContent.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="EnumerableExtensions.cs" />
+    <Compile Include="MatrixExtensions.cs" />
     <Compile Include="NaturalStringComparer.cs" />
     <Compile Include="ObjectExtensions.cs" />
     <Compile Include="DeepCloneable.cs" />
