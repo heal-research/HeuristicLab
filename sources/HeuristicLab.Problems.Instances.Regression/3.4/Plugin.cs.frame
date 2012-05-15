@@ -30,6 +30,6 @@ namespace HeuristicLab.Problems.Instances.Regression {
   [PluginDependency("HeuristicLab.Problems.DataAnalysis", "3.4")]
   [PluginDependency("HeuristicLab.Problems.Instances", "3.3")]
   [PluginDependency("HeuristicLab.Random", "3.3")]
-  public class HeuristicLabProblemsInstancesPlugin : PluginBase {
+  public class HeuristicLabProblemsInstancesRegressionPlugin : PluginBase {
   }
 }

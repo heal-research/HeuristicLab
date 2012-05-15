@@ -29,6 +29,6 @@ namespace HeuristicLab.Problems.Instances.Views {
   [PluginDependency("HeuristicLab.MainForm", "3.3")]
   [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.3")]
   [PluginDependency("HeuristicLab.Problems.Instances", "3.3")]
-  public class HeuristicLabProblemsInstancesPlugin : PluginBase {
+  public class HeuristicLabProblemsInstancesViewsPlugin : PluginBase {
   }
 }

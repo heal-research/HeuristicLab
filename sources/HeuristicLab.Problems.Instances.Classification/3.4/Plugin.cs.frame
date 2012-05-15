@@ -29,6 +29,6 @@ namespace HeuristicLab.Problems.Instances.Classification {
   [PluginDependency("HeuristicLab.Data", "3.3")]
   [PluginDependency("HeuristicLab.Problems.DataAnalysis", "3.4")]
   [PluginDependency("HeuristicLab.Problems.Instances", "3.3")]
-  public class HeuristicLabProblemsInstancesPlugin : PluginBase {
+  public class HeuristicLabProblemsInstancesClassificationPlugin : PluginBase {
   }
 }
