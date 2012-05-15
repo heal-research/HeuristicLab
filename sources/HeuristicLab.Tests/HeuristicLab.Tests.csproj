@@ -594,9 +594,9 @@
       <Project>{25735DB4-8E54-4A2C-83E3-A60C76565E55}</Project>
       <Name>HeuristicLab.Problems.ExternalEvaluation-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Problems.Instances.Classification\3.4\HeuristicLab.Problems.Instances.Classification-3.4.csproj">
+    <ProjectReference Include="..\HeuristicLab.Problems.Instances.Classification\3.3\HeuristicLab.Problems.Instances.Classification-3.3.csproj">
       <Project>{1BBFCD5B-8A1C-4225-A682-ADEC7800E683}</Project>
-      <Name>HeuristicLab.Problems.Instances.Classification-3.4</Name>
+      <Name>HeuristicLab.Problems.Instances.Classification-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.Problems.Instances.CordeauGQAP\3.3\HeuristicLab.Problems.Instances.CordeauGQAP-3.3.csproj">
       <Project>{1F2718DA-BF13-40EE-A7FD-EEDB4912E64E}</Project>
@@ -610,9 +610,9 @@
       <Project>{73F29D43-5714-4069-8FAB-0D18FEB5F175}</Project>
       <Name>HeuristicLab.Problems.Instances.QAPLIB-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Problems.Instances.Regression\3.4\HeuristicLab.Problems.Instances.Regression-3.4.csproj">
+    <ProjectReference Include="..\HeuristicLab.Problems.Instances.Regression\3.3\HeuristicLab.Problems.Instances.Regression-3.3.csproj">
       <Project>{26BF13E1-C8B2-4ACE-862D-EBFD360116B3}</Project>
-      <Name>HeuristicLab.Problems.Instances.Regression-3.4</Name>
+      <Name>HeuristicLab.Problems.Instances.Regression-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.Problems.Instances.TSPLIB.Views\3.3\HeuristicLab.Problems.Instances.TSPLIB.Views-3.3.csproj">
       <Project>{B7FA451C-26BF-4EE5-8E0E-BECAADA5B8E9}</Project>
@@ -621,10 +621,6 @@
     <ProjectReference Include="..\HeuristicLab.Problems.Instances.TSPLIB\3.3\HeuristicLab.Problems.Instances.TSPLIB-3.3.csproj">
       <Project>{CE0F99D6-1C56-48A9-9B68-3E5B833703EF}</Project>
       <Name>HeuristicLab.Problems.Instances.TSPLIB-3.3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Problems.Instances.Views\3.4\HeuristicLab.Problems.Instances.Views-3.4.csproj">
-      <Project>{B1BA398F-953F-4C3A-B07B-1E5E17A27DD9}</Project>
-      <Name>HeuristicLab.Problems.Instances.Views-3.4</Name>
     </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.Problems.Instances\3.3\HeuristicLab.Problems.Instances-3.3.csproj">
       <Project>{3540E29E-4793-49E7-8EE2-FEA7F61C3994}</Project>

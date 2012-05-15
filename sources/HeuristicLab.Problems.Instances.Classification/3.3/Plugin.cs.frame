@@ -22,8 +22,8 @@
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.Instances.Classification {
-  [Plugin("HeuristicLab.Problems.Instances.Classification", "3.4.0.$WCREV$")]
-  [PluginFile("HeuristicLab.Problems.Instances.Classification-3.4.dll", PluginFileType.Assembly)]
+  [Plugin("HeuristicLab.Problems.Instances.Classification", "3.3.6.$WCREV$")]
+  [PluginFile("HeuristicLab.Problems.Instances.Classification-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
   [PluginDependency("HeuristicLab.Data", "3.3")]

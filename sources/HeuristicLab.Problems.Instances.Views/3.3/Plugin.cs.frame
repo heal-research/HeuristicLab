@@ -21,15 +21,14 @@
 
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Problems.Instances.Regression {
-  [Plugin("HeuristicLab.Problems.Instances.Regression", "3.4.0.$WCREV$")]
-  [PluginFile("HeuristicLab.Problems.Instances.Regression-3.4.dll", PluginFileType.Assembly)]
+namespace HeuristicLab.Problems.Instances.Views {
+  [Plugin("HeuristicLab.Problems.Instances.Views", "3.3.6.$WCREV$")]
+  [PluginFile("HeuristicLab.Problems.Instances.Views-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Common", "3.3")]
-  [PluginDependency("HeuristicLab.Core", "3.3")]
-  [PluginDependency("HeuristicLab.Data", "3.3")]
-  [PluginDependency("HeuristicLab.Problems.DataAnalysis", "3.4")]
+  [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
+  [PluginDependency("HeuristicLab.MainForm", "3.3")]
+  [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.3")]
   [PluginDependency("HeuristicLab.Problems.Instances", "3.3")]
-  [PluginDependency("HeuristicLab.Random", "3.3")]
-  public class HeuristicLabProblemsInstancesRegressionPlugin : PluginBase {
+  public class HeuristicLabProblemsInstancesViewsPlugin : PluginBase {
   }
 }

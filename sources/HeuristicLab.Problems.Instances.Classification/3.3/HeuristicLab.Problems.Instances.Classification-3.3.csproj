@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{26BF13E1-C8B2-4ACE-862D-EBFD360116B3}</ProjectGuid>
+    <ProjectGuid>{1BBFCD5B-8A1C-4225-A682-ADEC7800E683}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeuristicLab.Problems.Instances.Regression</RootNamespace>
-    <AssemblyName>HeuristicLab.Problems.Instances.Regression-3.4</AssemblyName>
+    <RootNamespace>HeuristicLab.Problems.Instances.Classification</RootNamespace>
+    <AssemblyName>HeuristicLab.Problems.Instances.Classification-3.3</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -49,72 +49,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Keijzer\KeijzerFunctionTwelve.cs" />
-    <Compile Include="Keijzer\KeijzerFunctionThirteen.cs" />
-    <Compile Include="Keijzer\KeijzerFunctionSixteen.cs" />
-    <Compile Include="Keijzer\KeijzerFunctionSix.cs" />
-    <Compile Include="Keijzer\KeijzerFunctionSeven.cs" />
-    <Compile Include="Keijzer\KeijzerFunctionFour.cs" />
-    <Compile Include="Keijzer\KeijzerFunctionFifteen.cs" />
-    <Compile Include="Keijzer\KeijzerFunctionEight.cs" />
-    <Compile Include="Korns\KornsFunctionTwo.cs" />
-    <Compile Include="Korns\KornsFunctionTwelve.cs" />
-    <Compile Include="Korns\KornsFunctionThree.cs" />
-    <Compile Include="Korns\KornsFunctionThirteen.cs" />
-    <Compile Include="Korns\KornsFunctionTen.cs" />
-    <Compile Include="Korns\KornsFunctionSix.cs" />
-    <Compile Include="Korns\KornsFunctionSeven.cs" />
-    <Compile Include="Korns\KornsFunctionOne.cs" />
-    <Compile Include="Korns\KornsFunctionNine.cs" />
-    <Compile Include="Korns\KornsFunctionFourteen.cs" />
-    <Compile Include="Korns\KornsFunctionFour.cs" />
-    <Compile Include="Korns\KornsFunctionFiveteen.cs" />
-    <Compile Include="Korns\KornsFunctionFive.cs" />
-    <Compile Include="Korns\KornsFunctionEleven.cs" />
-    <Compile Include="Korns\KornsFunctionEight.cs" />
-    <Compile Include="Korns\KornsInstanceProvider.cs" />
-    <Compile Include="Nguyen\NguyenFunctionTwo.cs" />
-    <Compile Include="Nguyen\NguyenFunctionTwelve.cs" />
-    <Compile Include="Nguyen\NguyenFunctionThree.cs" />
-    <Compile Include="Nguyen\NguyenFunctionTen.cs" />
-    <Compile Include="Nguyen\NguyenFunctionSix.cs" />
-    <Compile Include="Nguyen\NguyenFunctionSeven.cs" />
-    <Compile Include="Nguyen\NguyenFunctionOne.cs" />
-    <Compile Include="Nguyen\NguyenFunctionNine.cs" />
-    <Compile Include="Nguyen\NguyenFunctionFour.cs" />
-    <Compile Include="Nguyen\NguyenFunctionFive.cs" />
-    <Compile Include="Nguyen\NguyenFunctionEleven.cs" />
-    <Compile Include="Nguyen\NguyenFunctionEight.cs" />
-    <Compile Include="Nguyen\NguyenInstanceProvider.cs" />
+    <Compile Include="ArtificialClassificationDataDescriptor.cs" />
+    <Compile Include="ArtificialClassificationInstanceProvider.cs" />
     <Compile Include="Plugin.cs" />
-    <Compile Include="RealWorld\RealWorldInstanceProvider.cs" />
-    <Compile Include="ResourceRegressionInstanceProvider.cs" />
-    <Compile Include="ArtificialRegressionInstanceProvider.cs" />
-    <Compile Include="ResourceRegressionDataDescriptor.cs" />
-    <Compile Include="ArtificialRegressionDataDescriptor.cs" />
-    <Compile Include="Keijzer\KeijzerInstanceProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RegressionInstanceProvider.cs" />
-    <Compile Include="ValueGenerator.cs" />
-    <Compile Include="Various\BreimanOne.cs" />
-    <Compile Include="Various\SpatialCoevolution.cs" />
-    <Compile Include="Various\PolyTen.cs" />
-    <Compile Include="Various\VariousInstanceProvider.cs" />
-    <Compile Include="Vladislavleva\UnwrappedBallFunctionFiveDimensional.cs" />
-    <Compile Include="Vladislavleva\SineCosineFunction.cs" />
-    <Compile Include="Vladislavleva\SalutowiczFunctionTwoDimensional.cs" />
-    <Compile Include="Vladislavleva\SalutowiczFunctionOneDimensional.cs" />
-    <Compile Include="Vladislavleva\RippleFunction.cs" />
-    <Compile Include="Vladislavleva\RationalPolynomialTwoDimensional.cs" />
-    <Compile Include="Vladislavleva\RationalPolynomialThreeDimensional.cs" />
-    <Compile Include="Vladislavleva\KotanchekFunction.cs" />
-    <Compile Include="Vladislavleva\VladislavlevaInstanceProvider.cs" />
+    <Compile Include="ClassificationInstanceProvider.cs" />
+    <Compile Include="RealWorld\Iris.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RealWorld\Mammography.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RealWorld\RealWorldInstanceProvider.cs" />
+    <Compile Include="ResourceClassificationDataDescriptor.cs" />
+    <Compile Include="ResourceClassificationInstanceProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Data\RealWorld.zip" />
+    <None Include="Properties\AssemblyInfo.cs.frame" />
     <None Include="HeuristicLab.snk" />
     <None Include="Plugin.cs.frame" />
-    <None Include="Properties\AssemblyInfo.cs.frame" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
@@ -150,11 +104,6 @@
     <ProjectReference Include="..\..\HeuristicLab.Problems.Instances\3.3\HeuristicLab.Problems.Instances-3.3.csproj">
       <Project>{3540E29E-4793-49E7-8EE2-FEA7F61C3994}</Project>
       <Name>HeuristicLab.Problems.Instances-3.3</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj">
-      <Project>{F4539FB6-4708-40C9-BE64-0A1390AEA197}</Project>
-      <Name>HeuristicLab.Random-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
