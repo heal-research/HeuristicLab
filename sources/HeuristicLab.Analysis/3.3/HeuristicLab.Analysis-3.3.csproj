@@ -132,6 +132,7 @@
     <Compile Include="DataVisualization\DataTableVisualProperties.cs" />
     <Compile Include="DataVisualization\HeatMap.cs" />
     <Compile Include="DataVisualization\HeatMapHistory.cs" />
+    <Compile Include="DataVisualization\ScatterPlot.cs" />
     <Compile Include="MultidimensionalScaling\MultidimensionalScaling.cs" />
     <Compile Include="MultiObjective\RankBasedParetoFrontAnalyzer.cs" />
     <Compile Include="MultiObjective\ParetoFrontAnalyzer.cs" />
