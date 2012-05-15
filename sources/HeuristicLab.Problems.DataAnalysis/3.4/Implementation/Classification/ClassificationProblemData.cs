@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -400,20 +399,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     private void MatrixParameter_ItemChanged(object sender, EventArgs<int, int> e) {
       OnChanged();
-    }
-    #endregion
-
-    #region Import from file
-    public static ClassificationProblemData ImportFromFile(string fileName) {
-      TableFileParser csvFileParser = new TableFileParser();
-      csvFileParser.Parse(fileName);
-
-      Dataset dataset = new Dataset(csvFileParser.VariableNames, csvFileParser.Values);
-      dataset.Name = Path.GetFileName(fileName);
-
-      ClassificationProblemData problemData = new ClassificationProblemData(dataset, dataset.DoubleVariables.Skip(1), dataset.DoubleVariables.First());
-      problemData.Name = "Data imported from " + Path.GetFileName(fileName);
-      return problemData;
     }
     #endregion
   }

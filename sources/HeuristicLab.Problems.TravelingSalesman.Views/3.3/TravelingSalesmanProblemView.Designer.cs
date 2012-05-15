@@ -54,10 +54,6 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
       this.visualizationTabPage.SuspendLayout();
       this.SuspendLayout();
       // 
-      // libraryInfoButton
-      // 
-      this.libraryInfoButton.Location = new System.Drawing.Point(224, 1);
-      // 
       // problemInstanceSplitContainer
       // 
       // 

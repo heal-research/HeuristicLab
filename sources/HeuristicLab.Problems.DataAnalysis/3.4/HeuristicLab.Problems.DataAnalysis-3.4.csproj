@@ -179,7 +179,6 @@
     <Compile Include="OnlineCalculators\OnlinePearsonsRSquaredCalculator.cs" />
     <Compile Include="Implementation\Regression\RegressionSolution.cs" />
     <Compile Include="Plugin.cs" />
-    <Compile Include="TableFileParser.cs" />
     <Compile Include="Implementation\Classification\ThresholdCalculators\AccuracyMaximizationThresholdCalculator.cs" />
     <Compile Include="Implementation\Classification\ThresholdCalculators\NormalDistributionCutPointsThresholdCalculator.cs" />
     <Compile Include="Implementation\Classification\ThresholdCalculators\ThresholdCalculator.cs" />
@@ -235,6 +234,10 @@
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.Instances\3.3\HeuristicLab.Problems.Instances-3.3.csproj">
+      <Project>{3540E29E-4793-49E7-8EE2-FEA7F61C3994}</Project>
+      <Name>HeuristicLab.Problems.Instances-3.3</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

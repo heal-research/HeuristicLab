@@ -23,12 +23,13 @@ using System;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
-using HeuristicLab.Optimization.Views;
+using HeuristicLab.Problems.Instances.Views;
+using System.IO;
 
 namespace HeuristicLab.Problems.Instances.TSPLIB.Views {
   [View("TSPLIB TSP InstanceProvider View")]
   [Content(typeof(TSPLIBTSPInstanceProvider), IsDefaultView = true)]
-  public partial class TSPLIBTSPInstanceProviderView : ProblemInstanceProviderView<TSPData> {
+  public partial class TSPLIBTSPInstanceProviderView : ProblemInstanceProviderViewGeneric<TSPData> {
     public new TSPLIBTSPInstanceProvider Content {
       get { return (TSPLIBTSPInstanceProvider)base.Content; }
       set { base.Content = value; }
@@ -42,7 +43,12 @@ namespace HeuristicLab.Problems.Instances.TSPLIB.Views {
       using (var dialog = new TSPLIBImportDialog()) {
         if (dialog.ShowDialog() == DialogResult.OK) {
           var instance = Content.LoadData(dialog.TSPFileName, dialog.TourFileName, dialog.Quality);
-          Content.Consumer.Load(instance);
+          try {
+            GenericConsumer.Load(instance);
+          }
+          catch (Exception ex) {
+            MessageBox.Show(String.Format("This problem does not support loading the instance {0}: {1}", Path.GetFileName(openFileDialog.FileName), Environment.NewLine + ex.Message), "Cannot load instance");
+          }
         }
       }
     }

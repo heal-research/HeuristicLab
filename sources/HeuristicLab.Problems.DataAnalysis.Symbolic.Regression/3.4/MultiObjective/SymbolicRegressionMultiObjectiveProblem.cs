@@ -110,10 +110,5 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         }
       }
     }
-
-    public override void ImportProblemDataFromFile(string fileName) {
-      RegressionProblemData problemData = RegressionProblemData.ImportFromFile(fileName);
-      ProblemData = problemData;
-    }
   }
 }

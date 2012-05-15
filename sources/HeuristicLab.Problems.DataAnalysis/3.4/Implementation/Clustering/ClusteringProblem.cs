@@ -37,10 +37,5 @@ namespace HeuristicLab.Problems.DataAnalysis {
       : base() {
       ProblemData = new ClusteringProblemData();
     }
-
-    public override void ImportProblemDataFromFile(string fileName) {
-      ClusteringProblemData problemData = ClusteringProblemData.ImportFromFile(fileName);
-      ProblemData = problemData;
-    }
   }
 }

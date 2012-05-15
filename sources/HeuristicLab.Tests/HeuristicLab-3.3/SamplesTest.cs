@@ -52,12 +52,12 @@ using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Potvin;
 using HeuristicLab.Selection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using classification = HeuristicLab.Problems.Instances.Classification;
+using regression = HeuristicLab.Problems.Instances.Regression;
 
 namespace HeuristicLab_33.Tests {
   [TestClass]
   [DeploymentItem(@"HeuristicLab-3.3/Resources/C101.opt.txt")]
-  [DeploymentItem(@"HeuristicLab-3.3/Resources/mammographic_masses.txt")]
-  [DeploymentItem(@"HeuristicLab-3.3/Resources/towerData.txt")]
   [DeploymentItem(@"HeuristicLab-3.3/Resources/C101.txt")]
   public class SamplesTest {
     #region GA
@@ -249,7 +249,9 @@ namespace HeuristicLab_33.Tests {
       SymbolicRegressionSingleObjectiveProblem symbRegProblem = new SymbolicRegressionSingleObjectiveProblem();
       symbRegProblem.Name = "Tower Symbolic Regression Problem";
       symbRegProblem.Description = "Tower Dataset (downloaded from: http://vanillamodeling.com/realproblems.html)";
-      var towerProblemData = RegressionProblemData.ImportFromFile("towerData.txt");
+      regression.RealWorldInstanceProvider provider = new regression.RealWorldInstanceProvider();
+      var instance = provider.GetDataDescriptors().Where(x => x.Name.Equals("towerData")).Single();
+      var towerProblemData = (RegressionProblemData)provider.LoadData(instance);
       towerProblemData.TargetVariableParameter.Value = towerProblemData.TargetVariableParameter.ValidValues
         .First(v => v.Value == "towerResponse");
       towerProblemData.InputVariables.SetItemCheckedState(
@@ -352,7 +354,9 @@ namespace HeuristicLab_33.Tests {
       SymbolicClassificationSingleObjectiveProblem symbClassProblem = new SymbolicClassificationSingleObjectiveProblem();
       symbClassProblem.Name = "Mammography Classification Problem";
       symbClassProblem.Description = "Mammography dataset imported from the UCI machine learning repository (http://archive.ics.uci.edu/ml/datasets/Mammographic+Mass)";
-      var mammoData = ClassificationProblemData.ImportFromFile("mammographic_masses.txt");
+      classification.RealWorldInstanceProvider provider = new classification.RealWorldInstanceProvider();
+      var instance = provider.GetDataDescriptors().Where(x => x.Name.Equals("mammography")).Single();
+      var mammoData = (ClassificationProblemData)provider.LoadData(instance);
       mammoData.TargetVariableParameter.Value = mammoData.TargetVariableParameter.ValidValues
         .First(v => v.Value == "Severity");
       mammoData.InputVariables.SetItemCheckedState(

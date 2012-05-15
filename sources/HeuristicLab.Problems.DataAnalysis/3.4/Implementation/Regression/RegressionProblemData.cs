@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -135,19 +134,5 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private void TargetVariableParameter_ValueChanged(object sender, EventArgs e) {
       OnChanged();
     }
-
-    #region Import from file
-    public static RegressionProblemData ImportFromFile(string fileName) {
-      TableFileParser csvFileParser = new TableFileParser();
-      csvFileParser.Parse(fileName);
-
-      Dataset dataset = new Dataset(csvFileParser.VariableNames, csvFileParser.Values);
-      dataset.Name = Path.GetFileName(fileName);
-
-      RegressionProblemData problemData = new RegressionProblemData(dataset, dataset.DoubleVariables.Skip(1), dataset.DoubleVariables.First());
-      problemData.Name = "Data imported from " + Path.GetFileName(fileName);
-      return problemData;
-    }
-    #endregion
   }
 }

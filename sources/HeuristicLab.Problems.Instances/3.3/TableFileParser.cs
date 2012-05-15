@@ -19,6 +19,7 @@
  */
 #endregion
 
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -28,10 +29,10 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 
-namespace HeuristicLab.Problems.DataAnalysis {
+namespace HeuristicLab.Problems.Instances {
   public class TableFileParser {
     private const int BUFFER_SIZE = 1024;
-    private readonly char[] POSSIBLE_SEPARATORS = new char[] { ',', ';', '\t' };
+    private static readonly char[] POSSIBLE_SEPARATORS = new char[] { ',', ';', '\t' };
     private Tokenizer tokenizer;
     private List<List<object>> rowValues;
 
@@ -73,12 +74,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
       variableNames = new List<string>();
     }
 
-    public void Parse(string fileName) {
-      NumberFormatInfo numberFormat;
-      DateTimeFormatInfo dateTimeFormatInfo;
-      char separator;
-      DetermineFileFormat(fileName, out numberFormat, out dateTimeFormatInfo, out separator);
-      using (StreamReader reader = new StreamReader(fileName)) {
+    public void Parse(string fileName, NumberFormatInfo numberFormat, DateTimeFormatInfo dateTimeFormatInfo, char separator) {
+      Parse(new FileStream(fileName, FileMode.Open), numberFormat, dateTimeFormatInfo, separator);
+    }
+
+    public void Parse(Stream stream, NumberFormatInfo numberFormat, DateTimeFormatInfo dateTimeFormatInfo, char separator) {
+      using (StreamReader reader = new StreamReader(stream)) {
         tokenizer = new Tokenizer(reader, numberFormat, dateTimeFormatInfo, separator);
         // parse the file
         Parse();
@@ -123,8 +124,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
-    private void DetermineFileFormat(string fileName, out NumberFormatInfo numberFormat, out DateTimeFormatInfo dateTimeFormatInfo, out char separator) {
-      using (StreamReader reader = new StreamReader(fileName)) {
+    public static void DetermineFileFormat(string path, out NumberFormatInfo numberFormat, out DateTimeFormatInfo dateTimeFormatInfo, out char separator) {
+      DetermineFileFormat(new FileStream(path, FileMode.Open), out numberFormat, out dateTimeFormatInfo, out separator);
+    }
+
+    public static void DetermineFileFormat(Stream stream, out NumberFormatInfo numberFormat, out DateTimeFormatInfo dateTimeFormatInfo, out char separator) {
+      using (StreamReader reader = new StreamReader(stream)) {
         // skip first line
         reader.ReadLine();
         // read a block
@@ -195,7 +200,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
-    private int OccurrencesOf(Dictionary<char, int> charCounts, char c) {
+    private static int OccurrencesOf(Dictionary<char, int> charCounts, char c) {
       return charCounts.ContainsKey(c) ? charCounts[c] : 0;
     }
 

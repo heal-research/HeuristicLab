@@ -20,8 +20,9 @@
 #endregion
 
 using System;
+using System.Globalization;
 using System.IO;
-using HeuristicLab.Problems.DataAnalysis;
+using HeuristicLab.Problems.Instances;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
 
@@ -31,8 +32,11 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
     [TestMethod]
     public void ParseCSV() {
       string tempFileName = Path.GetTempFileName();
+      NumberFormatInfo numberFormat;
+      DateTimeFormatInfo dateFormatInfo;
+      char separator;
       WriteToFile(tempFileName,
-@"0.00, 0.00, 0.00, 3.14
+      @"0.00, 0.00, 0.00, 3.14
 0.00, 0.00, 0.00, 0.00
 0.00, 0.00, 0.00, 0.00
 0.00, 0.00, 0.00, 0.00
@@ -40,7 +44,8 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
 0.00, 0.00, 0.00, 0.00");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        TableFileParser.DetermineFileFormat(tempFileName, out numberFormat, out dateFormatInfo, out separator);
+        parser.Parse(tempFileName, numberFormat, dateFormatInfo, separator);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual(parser.Values[3][0], 3.14);
@@ -52,8 +57,11 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
     [TestMethod]
     public void ParseCSVWithNames() {
       string tempFileName = Path.GetTempFileName();
+      NumberFormatInfo numberFormat;
+      DateTimeFormatInfo dateFormatInfo;
+      char separator;
       WriteToFile(tempFileName,
-@"x01, x02, x03, x04
+      @"x01, x02, x03, x04
 0.00, 0.00, 0.00, 3.14
 0.00, 0.00, 0.00, 0.00
 0.00, 0.00, 0.00, 0.00
@@ -62,7 +70,8 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
 0.00, 0.00, 0.00, 0.00");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        TableFileParser.DetermineFileFormat(tempFileName, out numberFormat, out dateFormatInfo, out separator);
+        parser.Parse(tempFileName, numberFormat, dateFormatInfo, separator);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual(parser.Values[3][0], 3.14);
@@ -75,8 +84,11 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
     [TestMethod]
     public void ParseGermanCSV() {
       string tempFileName = Path.GetTempFileName();
+      NumberFormatInfo numberFormat;
+      DateTimeFormatInfo dateFormatInfo;
+      char separator;
       WriteToFile(tempFileName,
-@"0,00; 0,00; 0,00; 3,14
+      @"0,00; 0,00; 0,00; 3,14
 0,00; 0,00; 0,00; 0,00
 0,00; 0,00; 0,00; 0,00
 0,00; 0,00; 0,00; 0,00
@@ -84,7 +96,8 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
 0,00; 0,00; 0,00; 0,00");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        TableFileParser.DetermineFileFormat(tempFileName, out numberFormat, out dateFormatInfo, out separator);
+        parser.Parse(tempFileName, numberFormat, dateFormatInfo, separator);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual(parser.Values[3][0], 3.14);
@@ -97,8 +110,11 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
     [TestMethod]
     public void ParseGermanCSVWithNames() {
       string tempFileName = Path.GetTempFileName();
+      NumberFormatInfo numberFormat;
+      DateTimeFormatInfo dateFormatInfo;
+      char separator;
       WriteToFile(tempFileName,
-@"x01; x02; x03; x04
+      @"x01; x02; x03; x04
 0,00; 0,00; 0,00; 3,14
 0,00; 0,00; 0,00; 0,00
 0,00; 0,00; 0,00; 0,00
@@ -107,7 +123,8 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
 0,00; 0,00; 0,00; 0,00");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        TableFileParser.DetermineFileFormat(tempFileName, out numberFormat, out dateFormatInfo, out separator);
+        parser.Parse(tempFileName, numberFormat, dateFormatInfo, separator);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual(parser.Values[3][0], 3.14);
@@ -120,8 +137,11 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
     [TestMethod]
     public void ParseGermanCSVWithoutCommas() {
       string tempFileName = Path.GetTempFileName();
+      NumberFormatInfo numberFormat;
+      DateTimeFormatInfo dateFormatInfo;
+      char separator;
       WriteToFile(tempFileName,
-@"0; 0; 0; 3
+      @"0; 0; 0; 3
 0; 0; 0; 0
 0; 0; 0; 0
 0; 0; 0; 0
@@ -129,7 +149,8 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
 0; 0; 0; 0");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        TableFileParser.DetermineFileFormat(tempFileName, out numberFormat, out dateFormatInfo, out separator);
+        parser.Parse(tempFileName, numberFormat, dateFormatInfo, separator);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
@@ -141,8 +162,11 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
     [TestMethod]
     public void ParseGermanCSVWithoutCommasWithNames() {
       string tempFileName = Path.GetTempFileName();
+      NumberFormatInfo numberFormat;
+      DateTimeFormatInfo dateFormatInfo;
+      char separator;
       WriteToFile(tempFileName,
-@"x01; x02; x03; x04
+      @"x01; x02; x03; x04
 0; 0; 0; 3
 0; 0; 0; 0
 0; 0; 0; 0
@@ -151,7 +175,8 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
 0; 0; 0; 0");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        TableFileParser.DetermineFileFormat(tempFileName, out numberFormat, out dateFormatInfo, out separator);
+        parser.Parse(tempFileName, numberFormat, dateFormatInfo, separator);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
@@ -164,8 +189,11 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
     [TestMethod]
     public void ParseEnglishCSVWithoutCommas() {
       string tempFileName = Path.GetTempFileName();
+      NumberFormatInfo numberFormat;
+      DateTimeFormatInfo dateFormatInfo;
+      char separator;
       WriteToFile(tempFileName,
-@"0, 0, 0, 3
+      @"0, 0, 0, 3
 0, 0, 0, 0
 0, 0, 0, 0
 0, 0, 0, 0
@@ -173,7 +201,8 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
 0, 0, 0, 0");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        TableFileParser.DetermineFileFormat(tempFileName, out numberFormat, out dateFormatInfo, out separator);
+        parser.Parse(tempFileName, numberFormat, dateFormatInfo, separator);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
@@ -186,8 +215,11 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
     [TestMethod]
     public void ParseEnglishCSVWithoutCommasWithoutSpace() {
       string tempFileName = Path.GetTempFileName();
+      NumberFormatInfo numberFormat;
+      DateTimeFormatInfo dateFormatInfo;
+      char separator;
       WriteToFile(tempFileName,
-@"0,0,0,3
+      @"0,0,0,3
 0,0,0,0
 0,0,0,0
 0,0,0,0
@@ -195,7 +227,8 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
 0,0,0,0");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        TableFileParser.DetermineFileFormat(tempFileName, out numberFormat, out dateFormatInfo, out separator);
+        parser.Parse(tempFileName, numberFormat, dateFormatInfo, separator);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
@@ -208,8 +241,11 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
     [TestMethod]
     public void ParseEnglishCSVWithoutCommasWithNames() {
       string tempFileName = Path.GetTempFileName();
+      NumberFormatInfo numberFormat;
+      DateTimeFormatInfo dateFormatInfo;
+      char separator;
       WriteToFile(tempFileName,
-@"x01, x02, x03, x04
+      @"x01, x02, x03, x04
 0, 0, 0, 3
 0, 0, 0, 0
 0, 0, 0, 0
@@ -218,7 +254,8 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
 0, 0, 0, 0");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        TableFileParser.DetermineFileFormat(tempFileName, out numberFormat, out dateFormatInfo, out separator);
+        parser.Parse(tempFileName, numberFormat, dateFormatInfo, separator);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
@@ -231,8 +268,11 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
     [TestMethod]
     public void ParseEnglishCSVWithoutCommasWithoutSpacesWithNames() {
       string tempFileName = Path.GetTempFileName();
+      NumberFormatInfo numberFormat;
+      DateTimeFormatInfo dateFormatInfo;
+      char separator;
       WriteToFile(tempFileName,
-@"x01,x02,x03,x04
+      @"x01,x02,x03,x04
 0,0,0,3
 0,0,0,0
 0,0,0,0
@@ -241,7 +281,8 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
 0,0,0,0");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        TableFileParser.DetermineFileFormat(tempFileName, out numberFormat, out dateFormatInfo, out separator);
+        parser.Parse(tempFileName, numberFormat, dateFormatInfo, separator);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
@@ -255,16 +296,20 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
     [TestMethod]
     public void ParseGermanTabSeparated() {
       string tempFileName = Path.GetTempFileName();
+      NumberFormatInfo numberFormat;
+      DateTimeFormatInfo dateFormatInfo;
+      char separator;
       WriteToFile(tempFileName,
-"0,00\t 0,00\t 0,00\t 3,14" + Environment.NewLine +
-"0,00\t 0,00\t 0,00\t 0,00" + Environment.NewLine +
-"0,00\t 0,00\t 0,00\t 0,00" + Environment.NewLine +
-"0,00\t 0,00\t 0,00\t 0,00" + Environment.NewLine +
-"0,00\t 0,00\t 0,00\t 0,00" + Environment.NewLine +
-"0,00\t 0,00\t 0,00\t 0,00");
+      "0,00\t 0,00\t 0,00\t 3,14" + Environment.NewLine +
+      "0,00\t 0,00\t 0,00\t 0,00" + Environment.NewLine +
+      "0,00\t 0,00\t 0,00\t 0,00" + Environment.NewLine +
+      "0,00\t 0,00\t 0,00\t 0,00" + Environment.NewLine +
+      "0,00\t 0,00\t 0,00\t 0,00" + Environment.NewLine +
+      "0,00\t 0,00\t 0,00\t 0,00");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        TableFileParser.DetermineFileFormat(tempFileName, out numberFormat, out dateFormatInfo, out separator);
+        parser.Parse(tempFileName, numberFormat, dateFormatInfo, separator);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3.14);
@@ -277,17 +322,21 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
     [TestMethod]
     public void ParseGermanTabSeparatedWithNames() {
       string tempFileName = Path.GetTempFileName();
+      NumberFormatInfo numberFormat;
+      DateTimeFormatInfo dateFormatInfo;
+      char separator;
       WriteToFile(tempFileName,
-"x01\t x02\t x03\t x04" + Environment.NewLine +
-"0,00\t 0,00\t 0,00\t 3,14" + Environment.NewLine +
-"0,00\t 0,00\t 0,00\t 0,00" + Environment.NewLine +
-"0,00\t 0,00\t 0,00\t 0,00" + Environment.NewLine +
-"0,00\t 0,00\t 0,00\t 0,00" + Environment.NewLine +
-"0,00\t 0,00\t 0,00\t 0,00" + Environment.NewLine +
-"0,00\t 0,00\t 0,00\t 0,00");
+      "x01\t x02\t x03\t x04" + Environment.NewLine +
+      "0,00\t 0,00\t 0,00\t 3,14" + Environment.NewLine +
+      "0,00\t 0,00\t 0,00\t 0,00" + Environment.NewLine +
+      "0,00\t 0,00\t 0,00\t 0,00" + Environment.NewLine +
+      "0,00\t 0,00\t 0,00\t 0,00" + Environment.NewLine +
+      "0,00\t 0,00\t 0,00\t 0,00" + Environment.NewLine +
+      "0,00\t 0,00\t 0,00\t 0,00");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        TableFileParser.DetermineFileFormat(tempFileName, out numberFormat, out dateFormatInfo, out separator);
+        parser.Parse(tempFileName, numberFormat, dateFormatInfo, separator);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3.14);
@@ -300,16 +349,20 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
     [TestMethod]
     public void ParseEnglishTabSeparated() {
       string tempFileName = Path.GetTempFileName();
+      NumberFormatInfo numberFormat;
+      DateTimeFormatInfo dateFormatInfo;
+      char separator;
       WriteToFile(tempFileName,
-"0.00\t 0.00\t 0.00\t 3.14" + Environment.NewLine +
-"0.00\t 0.00\t 0.00\t 0.00" + Environment.NewLine +
-"0.00\t 0.00\t 0.00\t 0.00" + Environment.NewLine +
-"0.00\t 0.00\t 0.00\t 0.00" + Environment.NewLine +
-"0.00\t 0.00\t 0.00\t 0.00" + Environment.NewLine +
-"0.00\t 0.00\t 0.00\t 0.00");
+      "0.00\t 0.00\t 0.00\t 3.14" + Environment.NewLine +
+      "0.00\t 0.00\t 0.00\t 0.00" + Environment.NewLine +
+      "0.00\t 0.00\t 0.00\t 0.00" + Environment.NewLine +
+      "0.00\t 0.00\t 0.00\t 0.00" + Environment.NewLine +
+      "0.00\t 0.00\t 0.00\t 0.00" + Environment.NewLine +
+      "0.00\t 0.00\t 0.00\t 0.00");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        TableFileParser.DetermineFileFormat(tempFileName, out numberFormat, out dateFormatInfo, out separator);
+        parser.Parse(tempFileName, numberFormat, dateFormatInfo, separator);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3.14);
@@ -321,17 +374,21 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
     [TestMethod]
     public void ParseEnglishTabSeparatedWithNames() {
       string tempFileName = Path.GetTempFileName();
+      NumberFormatInfo numberFormat;
+      DateTimeFormatInfo dateFormatInfo;
+      char separator;
       WriteToFile(tempFileName,
-"x01\t x02\t x03\t x04" + Environment.NewLine +
-"0.00\t 0.00\t 0.00\t 3.14" + Environment.NewLine +
-"0.00\t 0.00\t 0.00\t 0.00" + Environment.NewLine +
-"0.00\t 0.00\t 0.00\t 0.00" + Environment.NewLine +
-"0.00\t 0.00\t 0.00\t 0.00" + Environment.NewLine +
-"0.00\t 0.00\t 0.00\t 0.00" + Environment.NewLine +
-"0.00\t 0.00\t 0.00\t 0.00");
+      "x01\t x02\t x03\t x04" + Environment.NewLine +
+      "0.00\t 0.00\t 0.00\t 3.14" + Environment.NewLine +
+      "0.00\t 0.00\t 0.00\t 0.00" + Environment.NewLine +
+      "0.00\t 0.00\t 0.00\t 0.00" + Environment.NewLine +
+      "0.00\t 0.00\t 0.00\t 0.00" + Environment.NewLine +
+      "0.00\t 0.00\t 0.00\t 0.00" + Environment.NewLine +
+      "0.00\t 0.00\t 0.00\t 0.00");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        TableFileParser.DetermineFileFormat(tempFileName, out numberFormat, out dateFormatInfo, out separator);
+        parser.Parse(tempFileName, numberFormat, dateFormatInfo, separator);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3.14);
@@ -344,16 +401,20 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
     [TestMethod]
     public void ParseTabSeparatedWithoutCommas() {
       string tempFileName = Path.GetTempFileName();
+      NumberFormatInfo numberFormat;
+      DateTimeFormatInfo dateFormatInfo;
+      char separator;
       WriteToFile(tempFileName,
-"0\t 0\t 0\t 3" + Environment.NewLine +
-"0\t 0\t 0\t 0" + Environment.NewLine +
-"0\t 0\t 0\t 0" + Environment.NewLine +
-"0\t 0\t 0\t 0" + Environment.NewLine +
-"0\t 0\t 0\t 0" + Environment.NewLine +
-"0\t 0\t 0\t 0");
+      "0\t 0\t 0\t 3" + Environment.NewLine +
+      "0\t 0\t 0\t 0" + Environment.NewLine +
+      "0\t 0\t 0\t 0" + Environment.NewLine +
+      "0\t 0\t 0\t 0" + Environment.NewLine +
+      "0\t 0\t 0\t 0" + Environment.NewLine +
+      "0\t 0\t 0\t 0");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        TableFileParser.DetermineFileFormat(tempFileName, out numberFormat, out dateFormatInfo, out separator);
+        parser.Parse(tempFileName, numberFormat, dateFormatInfo, separator);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
@@ -365,17 +426,21 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
     [TestMethod]
     public void ParseTabSeparatedWithoutCommasWithNames() {
       string tempFileName = Path.GetTempFileName();
+      NumberFormatInfo numberFormat;
+      DateTimeFormatInfo dateFormatInfo;
+      char separator;
       WriteToFile(tempFileName,
-"x01\t x02\t x03\t x04" + Environment.NewLine +
-"0\t 0\t 0\t 3" + Environment.NewLine +
-"0\t 0\t 0\t 0" + Environment.NewLine +
-"0\t 0\t 0\t 0" + Environment.NewLine +
-"0\t 0\t 0\t 0" + Environment.NewLine +
-"0\t 0\t 0\t 0" + Environment.NewLine +
-"0\t 0\t 0\t 0");
+      "x01\t x02\t x03\t x04" + Environment.NewLine +
+      "0\t 0\t 0\t 3" + Environment.NewLine +
+      "0\t 0\t 0\t 0" + Environment.NewLine +
+      "0\t 0\t 0\t 0" + Environment.NewLine +
+      "0\t 0\t 0\t 0" + Environment.NewLine +
+      "0\t 0\t 0\t 0" + Environment.NewLine +
+      "0\t 0\t 0\t 0");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        TableFileParser.DetermineFileFormat(tempFileName, out numberFormat, out dateFormatInfo, out separator);
+        parser.Parse(tempFileName, numberFormat, dateFormatInfo, separator);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
@@ -388,17 +453,21 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
     [TestMethod]
     public void ParseWithEmtpyLines() {
       string tempFileName = Path.GetTempFileName();
+      NumberFormatInfo numberFormat;
+      DateTimeFormatInfo dateFormatInfo;
+      char separator;
       WriteToFile(tempFileName,
-"x01\t x02\t x03\t x04" + Environment.NewLine +
-"0\t 0\t 0\t 3" + Environment.NewLine +
- Environment.NewLine +
-"0\t 0\t 0\t 0" + Environment.NewLine +
-" " + Environment.NewLine +
-"0\t 0\t 0\t 0" + Environment.NewLine +
-"0\t 0\t 0\t 0" + Environment.NewLine + Environment.NewLine);
+      "x01\t x02\t x03\t x04" + Environment.NewLine +
+      "0\t 0\t 0\t 3" + Environment.NewLine +
+      Environment.NewLine +
+      "0\t 0\t 0\t 0" + Environment.NewLine +
+      " " + Environment.NewLine +
+      "0\t 0\t 0\t 0" + Environment.NewLine +
+      "0\t 0\t 0\t 0" + Environment.NewLine + Environment.NewLine);
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        TableFileParser.DetermineFileFormat(tempFileName, out numberFormat, out dateFormatInfo, out separator);
+        parser.Parse(tempFileName, numberFormat, dateFormatInfo, separator);
         Assert.AreEqual(4, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
       }
@@ -410,8 +479,11 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
     [TestMethod]
     public void ParseGermanSpaceSeparated() {
       string tempFileName = Path.GetTempFileName();
+      NumberFormatInfo numberFormat;
+      DateTimeFormatInfo dateFormatInfo;
+      char separator;
       WriteToFile(tempFileName,
-@"0,00 0,00 0,00 3,14
+      @"0,00 0,00 0,00 3,14
 0,00 0,00 0,00 0,00
 0,00 0,00 0,00 0,00
 0,00 0,00 0,00 0,00
@@ -419,7 +491,8 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
 0,00 0,00 0,00 0,00");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        TableFileParser.DetermineFileFormat(tempFileName, out numberFormat, out dateFormatInfo, out separator);
+        parser.Parse(tempFileName, numberFormat, dateFormatInfo, separator);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3.14);
@@ -431,8 +504,11 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
     [TestMethod]
     public void ParseGermanSpaceSeparatedWithNames() {
       string tempFileName = Path.GetTempFileName();
+      NumberFormatInfo numberFormat;
+      DateTimeFormatInfo dateFormatInfo;
+      char separator;
       WriteToFile(tempFileName,
-@"x01 x02 x03 x04
+      @"x01 x02 x03 x04
 0,00 0,00 0,00 3,14
 0,00 0,00 0,00 0,00
 0,00 0,00 0,00 0,00
@@ -441,7 +517,8 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
 0,00 0,00 0,00 0,00");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        TableFileParser.DetermineFileFormat(tempFileName, out numberFormat, out dateFormatInfo, out separator);
+        parser.Parse(tempFileName, numberFormat, dateFormatInfo, separator);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3.14);
@@ -454,8 +531,11 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
     [TestMethod]
     public void ParseEnglishSpaceSeparated() {
       string tempFileName = Path.GetTempFileName();
+      NumberFormatInfo numberFormat;
+      DateTimeFormatInfo dateFormatInfo;
+      char separator;
       WriteToFile(tempFileName,
-@"0.00 0.00 0.00 3.14
+      @"0.00 0.00 0.00 3.14
 0.00 0.00 0.00 0.00
 0.00 0.00 0.00 0.00
 0.00 0.00 0.00 0.00
@@ -463,7 +543,8 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
 0.00 0.00 0.00 0.00");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        TableFileParser.DetermineFileFormat(tempFileName, out numberFormat, out dateFormatInfo, out separator);
+        parser.Parse(tempFileName, numberFormat, dateFormatInfo, separator);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3.14);
@@ -475,8 +556,11 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
     [TestMethod]
     public void ParseEnglishSpaceSeparatedWithNames() {
       string tempFileName = Path.GetTempFileName();
+      NumberFormatInfo numberFormat;
+      DateTimeFormatInfo dateFormatInfo;
+      char separator;
       WriteToFile(tempFileName,
-@"x01 x02 x03 x04
+      @"x01 x02 x03 x04
 0.00 0.00 0.00 3.14
 0.00 0.00 0.00 0.00
 0.00 0.00 0.00 0.00
@@ -485,7 +569,8 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
 0.00 0.00 0.00 0.00");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        TableFileParser.DetermineFileFormat(tempFileName, out numberFormat, out dateFormatInfo, out separator);
+        parser.Parse(tempFileName, numberFormat, dateFormatInfo, separator);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3.14);
@@ -498,8 +583,11 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
     [TestMethod]
     public void ParseSpaceSeparatedWithoutCommas() {
       string tempFileName = Path.GetTempFileName();
+      NumberFormatInfo numberFormat;
+      DateTimeFormatInfo dateFormatInfo;
+      char separator;
       WriteToFile(tempFileName,
-@"0 0 0 3
+      @"0 0 0 3
 0 0 0 0
 0 0 0 0
 0 0 0 0
@@ -507,7 +595,8 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
 0 0 0 0");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        TableFileParser.DetermineFileFormat(tempFileName, out numberFormat, out dateFormatInfo, out separator);
+        parser.Parse(tempFileName, numberFormat, dateFormatInfo, separator);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
@@ -519,8 +608,11 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
     [TestMethod]
     public void ParseSpaceSeparatedWithoutCommasWithNames() {
       string tempFileName = Path.GetTempFileName();
+      NumberFormatInfo numberFormat;
+      DateTimeFormatInfo dateFormatInfo;
+      char separator;
       WriteToFile(tempFileName,
-@"x01 x02 x03 x04
+      @"x01 x02 x03 x04
 0 0 0 3
 0 0 0 0
 0 0 0 0
@@ -529,7 +621,8 @@ namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
 0 0 0 0");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        TableFileParser.DetermineFileFormat(tempFileName, out numberFormat, out dateFormatInfo, out separator);
+        parser.Parse(tempFileName, numberFormat, dateFormatInfo, separator);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);

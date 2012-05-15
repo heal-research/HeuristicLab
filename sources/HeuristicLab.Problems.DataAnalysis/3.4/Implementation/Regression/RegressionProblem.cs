@@ -39,10 +39,5 @@ namespace HeuristicLab.Problems.DataAnalysis {
       : base() {
       ProblemData = new RegressionProblemData();
     }
-
-    public override void ImportProblemDataFromFile(string fileName) {
-      RegressionProblemData problemData = RegressionProblemData.ImportFromFile(fileName);
-      ProblemData = problemData;
-    }
   }
 }

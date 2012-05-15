@@ -19,8 +19,16 @@
  */
 #endregion
 
-namespace HeuristicLab.Problems.Instances {
-  public interface IExportable<TData> {
-    void ExportTo(TData data);
+using HeuristicLab.PluginInfrastructure;
+
+namespace HeuristicLab.Problems.Instances.Classification {
+  [Plugin("HeuristicLab.Problems.Instances.Classification", "3.4.0.$WCREV$")]
+  [PluginFile("HeuristicLab.Problems.Instances.Classification-3.4.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Common", "3.3")]
+  [PluginDependency("HeuristicLab.Core", "3.3")]
+  [PluginDependency("HeuristicLab.Data", "3.3")]
+  [PluginDependency("HeuristicLab.Problems.DataAnalysis", "3.4")]
+  [PluginDependency("HeuristicLab.Problems.Instances", "3.3")]
+  public class HeuristicLabProblemsInstancesPlugin : PluginBase {
   }
 }

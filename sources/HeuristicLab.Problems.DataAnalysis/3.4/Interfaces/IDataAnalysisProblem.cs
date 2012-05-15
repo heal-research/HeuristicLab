@@ -28,8 +28,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
     IParameter ProblemDataParameter { get; }
     IDataAnalysisProblemData ProblemData { get; }
     event EventHandler ProblemDataChanged;
-
-    void ImportProblemDataFromFile(string fileName);
   }
 
   public interface IDataAnalysisProblem<T> : IDataAnalysisProblem

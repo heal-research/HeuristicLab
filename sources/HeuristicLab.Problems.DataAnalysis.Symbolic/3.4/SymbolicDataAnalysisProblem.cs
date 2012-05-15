@@ -31,10 +31,12 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
-  public abstract class SymbolicDataAnalysisProblem<T, U, V> : HeuristicOptimizationProblem<U, V>, IDataAnalysisProblem<T>, ISymbolicDataAnalysisProblem, IStorableContent
+  public abstract class SymbolicDataAnalysisProblem<T, U, V> : HeuristicOptimizationProblem<U, V>, IDataAnalysisProblem<T>, ISymbolicDataAnalysisProblem, IStorableContent,
+    IProblemInstanceConsumer<T>, IProblemInstanceExporter<T>
     where T : class, IDataAnalysisProblemData
     where U : class, ISymbolicDataAnalysisEvaluator<T>
     where V : class, ISymbolicDataAnalysisSolutionCreator {
@@ -319,6 +321,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    public abstract void ImportProblemDataFromFile(string fileName);
+    #region Import & Export
+    public void Load(T data) {
+      Name = data.Name;
+      Description = data.Description;
+      ProblemData = data;
+      OnReset();
+    }
+
+    public T Export() {
+      return ProblemData;
+    }
+    #endregion
   }
 }

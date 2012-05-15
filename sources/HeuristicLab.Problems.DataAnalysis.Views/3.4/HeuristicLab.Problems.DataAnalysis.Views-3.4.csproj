@@ -128,23 +128,41 @@
       <DependentUpon>DataAnalysisSolutionEvaluationView.cs</DependentUpon>
     </Compile>
     <Compile Include="Plugin.cs" />
-    <Compile Include="Regression\RegressionSolutionErrorCharacteristicsCurveView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Regression\RegressionSolutionErrorCharacteristicsCurveView.Designer.cs">
-      <DependentUpon>RegressionSolutionErrorCharacteristicsCurveView.cs</DependentUpon>
-    </Compile>
     <Compile Include="Regression\RegressionEnsembleSolutionModelView.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Regression\RegressionEnsembleSolutionModelView.Designer.cs">
       <DependentUpon>RegressionEnsembleSolutionModelView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Regression\RegressionSolutionErrorCharacteristicsCurveView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Regression\RegressionSolutionErrorCharacteristicsCurveView.Designer.cs">
+      <DependentUpon>RegressionSolutionErrorCharacteristicsCurveView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Regression\RegressionSolutionEstimatedValuesView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Regression\RegressionSolutionEstimatedValuesView.Designer.cs">
+      <DependentUpon>RegressionSolutionEstimatedValuesView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Regression\RegressionSolutionLineChartView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Regression\RegressionSolutionLineChartView.Designer.cs">
+      <DependentUpon>RegressionSolutionLineChartView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Regression\RegressionSolutionResidualHistogram.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Regression\RegressionSolutionResidualHistogram.Designer.cs">
       <DependentUpon>RegressionSolutionResidualHistogram.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Regression\RegressionSolutionScatterPlotView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Regression\RegressionSolutionScatterPlotView.Designer.cs">
+      <DependentUpon>RegressionSolutionScatterPlotView.cs</DependentUpon>
     </Compile>
     <Compile Include="Solution Views\ClassificationSolutionView.cs">
       <SubType>UserControl</SubType>
@@ -237,30 +255,6 @@
     </Compile>
     <Compile Include="Solution Views\RegressionSolutionView.Designer.cs">
       <DependentUpon>RegressionSolutionView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Regression\RegressionSolutionEstimatedValuesView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Regression\RegressionSolutionEstimatedValuesView.Designer.cs">
-      <DependentUpon>RegressionSolutionEstimatedValuesView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Regression\RegressionSolutionLineChartView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Regression\RegressionSolutionLineChartView.Designer.cs">
-      <DependentUpon>RegressionSolutionLineChartView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Regression\RegressionSolutionScatterPlotView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Regression\RegressionSolutionScatterPlotView.Designer.cs">
-      <DependentUpon>RegressionSolutionScatterPlotView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="DataAnalysisProblemView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="DataAnalysisProblemView.Designer.cs">
-      <DependentUpon>DataAnalysisProblemView.cs</DependentUpon>
     </Compile>
     <None Include="HeuristicLab.snk" />
     <None Include="Plugin.cs.frame" />
@@ -370,6 +364,9 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="obj\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

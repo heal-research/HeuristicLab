@@ -32,12 +32,10 @@ namespace HeuristicLab.Problems.Instances {
   }
 
   public interface IProblemInstanceProvider<TData> : IProblemInstanceProvider {
-    IProblemInstanceConsumer<TData> Consumer { get; set; }
-
     IEnumerable<IDataDescriptor> GetDataDescriptors();
     TData LoadData(IDataDescriptor descriptor);
     TData LoadData(string path);
-    
+
     void SaveData(TData instance, string path);
   }
 }

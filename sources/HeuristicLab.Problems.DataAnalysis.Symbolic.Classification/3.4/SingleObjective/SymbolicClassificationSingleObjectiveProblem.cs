@@ -107,10 +107,5 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
         }
       }
     }
-
-    public override void ImportProblemDataFromFile(string fileName) {
-      ClassificationProblemData problemData = ClassificationProblemData.ImportFromFile(fileName);
-      ProblemData = problemData;
-    }
   }
 }

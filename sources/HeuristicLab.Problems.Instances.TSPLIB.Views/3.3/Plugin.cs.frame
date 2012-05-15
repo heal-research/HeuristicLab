@@ -27,9 +27,9 @@ namespace HeuristicLab.Problems.Instances.TSPLIB.Views {
   [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
   [PluginDependency("HeuristicLab.Data", "3.3")]
   [PluginDependency("HeuristicLab.MainForm", "3.3")]
-  [PluginDependency("HeuristicLab.Optimization.Views", "3.3")]
   [PluginDependency("HeuristicLab.Problems.Instances", "3.3")]
   [PluginDependency("HeuristicLab.Problems.Instances.TSPLIB", "3.3")]
+  [PluginDependency("HeuristicLab.Problems.Instances.Views", "3.4")]
   public class HeuristicLabProblemsInstancesTSPLIBViewsPlugin : PluginBase {
   }
 }

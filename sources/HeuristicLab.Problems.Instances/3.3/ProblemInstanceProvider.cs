@@ -24,8 +24,6 @@ using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.Instances {
   public abstract class ProblemInstanceProvider<TData> : IProblemInstanceProvider<TData> {
-    public virtual IProblemInstanceConsumer<TData> Consumer { get; set; }
-
     public abstract string Name { get; }
     public abstract string Description { get; }
     public abstract Uri WebLink { get; }

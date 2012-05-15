@@ -25,11 +25,12 @@ using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
-  public abstract class DataAnalysisProblem<T> : Problem,
-    IDataAnalysisProblem<T>
+  public abstract class DataAnalysisProblem<T> : Problem, IDataAnalysisProblem<T>,
+    IProblemInstanceConsumer<T>, IProblemInstanceExporter<T>
     where T : class, IDataAnalysisProblemData {
     private const string ProblemDataParameterName = "ProblemData";
     private const string ProblemDataParameterDescription = "The data set, target variable and input variables of the data analysis problem.";
@@ -90,6 +91,17 @@ namespace HeuristicLab.Problems.DataAnalysis {
       if (handler != null) handler(this, EventArgs.Empty);
     }
 
-    public abstract void ImportProblemDataFromFile(string fileName);
+    #region Import & Export
+    public void Load(T data) {
+      Name = data.Name;
+      Description = data.Description;
+      ProblemData = data;
+      OnReset();
+    }
+
+    public T Export() {
+      return ProblemData;
+    }
+    #endregion
   }
 }

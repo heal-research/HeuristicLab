@@ -20,7 +20,6 @@
 #endregion
 
 using System.Collections.Generic;
-using System.IO;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -89,20 +88,5 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public ClusteringProblemData(Dataset dataset, IEnumerable<string> allowedInputVariables)
       : base(dataset, allowedInputVariables) {
     }
-
-
-    #region Import from file
-    public static ClusteringProblemData ImportFromFile(string fileName) {
-      TableFileParser csvFileParser = new TableFileParser();
-      csvFileParser.Parse(fileName);
-
-      Dataset dataset = new Dataset(csvFileParser.VariableNames, csvFileParser.Values);
-      dataset.Name = Path.GetFileName(fileName);
-
-      ClusteringProblemData problemData = new ClusteringProblemData(dataset, dataset.DoubleVariables);
-      problemData.Name = "Data imported from " + Path.GetFileName(fileName);
-      return problemData;
-    }
-    #endregion
   }
 }
