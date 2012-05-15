@@ -224,8 +224,8 @@ namespace HeuristicLab.Random {
         }
       } else {
         if (windowing) {
-          if (inverseProportional) InverseProportionalScale(valueArray, minValue);
-          else ProportionalScale(valueArray, maxValue);
+          if (inverseProportional) InverseProportionalScale(valueArray, maxValue);
+          else ProportionalScale(valueArray, minValue);
         } else {
           if (minValue < 0.0) throw new InvalidOperationException("Proportional selection without windowing does not work with values < 0.");
           if (inverseProportional) InverseProportionalScale(valueArray, 2 * maxValue);
