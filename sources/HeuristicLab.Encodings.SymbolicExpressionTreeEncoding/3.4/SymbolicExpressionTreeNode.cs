@@ -52,7 +52,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     [StorableConstructor]
     protected SymbolicExpressionTreeNode(bool deserializing) { }
     protected SymbolicExpressionTreeNode(SymbolicExpressionTreeNode original, Cloner cloner)
-      : base() {
+      : base(original, cloner) {
       symbol = original.symbol; // symbols are reused
       length = original.length;
       depth = original.depth;
