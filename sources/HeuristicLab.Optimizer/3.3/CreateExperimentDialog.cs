@@ -20,8 +20,12 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Optimization;
+using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Optimizer {
   public partial class CreateExperimentDialog : Form {
@@ -40,14 +44,59 @@ namespace HeuristicLab.Optimizer {
       get { return experiment; }
     }
 
-    public CreateExperimentDialog() {
-      experiment = null;
-      optimizer = null;
+    public CreateExperimentDialog() : this(null) { }
+    public CreateExperimentDialog(IOptimizer optimizer) {
       InitializeComponent();
-    }
-    public CreateExperimentDialog(IOptimizer optimizer)
-      : this() {
       Optimizer = optimizer;
+      experiment = null;
+      instancesListView.Items.Clear();
+      instancesListView.Groups.Clear();
+      FillOrHideInstanceListView();
+    }
+
+    private void FillOrHideInstanceListView() {
+      if (Optimizer != null && optimizer is IAlgorithm) {
+        var algorithm = (IAlgorithm)Optimizer;
+        if (algorithm.Problem != null) {
+          var instanceProviders = GetProblemInstanceProviders(algorithm.Problem);
+          if (instanceProviders.Any()) {
+            foreach (var provider in instanceProviders) {
+              var group = new ListViewGroup(provider.Name, provider.Name);
+              group.Tag = provider;
+              instancesListView.Groups.Add(group);
+              IEnumerable<IDataDescriptor> descriptors = ((dynamic)provider).GetDataDescriptors();
+              foreach (var d in descriptors) {
+                var item = new ListViewItem(d.Name, group);
+                item.Checked = true;
+                item.Tag = d;
+                instancesListView.Items.Add(item);
+              }
+            }
+            instancesListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+            if (instancesListView.Items.Count > 0) return;
+          }
+        }
+      }
+      instancesLabel.Visible = false;
+      instancesListView.Visible = false;
+      Height = 130;
+    }
+
+    private IEnumerable<IProblemInstanceProvider> GetProblemInstanceProviders(IProblem problem) {
+      var consumerTypes = problem.GetType().GetInterfaces()
+        .Where(x => x.IsGenericType
+          && x.GetGenericTypeDefinition() == typeof(IProblemInstanceConsumer<>));
+
+      if (consumerTypes.Any()) {
+        var instanceTypes = consumerTypes
+          .Select(x => x.GetGenericArguments().First())
+          .Select(x => typeof(IProblemInstanceProvider<>).MakeGenericType(x));
+
+        foreach (var type in instanceTypes) {
+          foreach (var provider in ApplicationManager.Manager.GetInstances(type))
+            yield return (IProblemInstanceProvider)provider;
+        }
+      }
     }
 
     private void createBatchRunCheckBox_CheckedChanged(object sender, EventArgs e) {
@@ -59,15 +108,29 @@ namespace HeuristicLab.Optimizer {
     }
     private void okButton_Click(object sender, EventArgs e) {
       experiment = new Experiment();
-      if (createBatchRunCheckBox.Checked) {
-        BatchRun batchRun = new BatchRun();
-        batchRun.Repetitions = (int)repetitionsNumericUpDown.Value;
-        batchRun.Optimizer = (IOptimizer)Optimizer.Clone();
-        Experiment.Optimizers.Add(batchRun);
+      if (instancesListView.CheckedItems.Count == 0) {
+        AddOptimizer((IOptimizer)Optimizer.Clone());
       } else {
-        Experiment.Optimizers.Add((IOptimizer)Optimizer.Clone());
+        foreach (var item in instancesListView.CheckedItems.OfType<ListViewItem>()) {
+          var descriptor = (IDataDescriptor)item.Tag;
+          var provider = (IProblemInstanceProvider)item.Group.Tag;
+          var algorithm = (IAlgorithm)Optimizer.Clone();
+          ((dynamic)algorithm.Problem).Load(((dynamic)provider).LoadData(descriptor));
+          AddOptimizer(algorithm);
+        }
       }
       Experiment.Prepare(true);
+    }
+
+    private void AddOptimizer(IOptimizer optimizer) {
+      if (createBatchRunCheckBox.Checked) {
+        var batchRun = new BatchRun();
+        batchRun.Repetitions = (int)repetitionsNumericUpDown.Value;
+        batchRun.Optimizer = optimizer;
+        experiment.Optimizers.Add(batchRun);
+      } else {
+        experiment.Optimizers.Add(optimizer);
+      }
     }
   }
 }
