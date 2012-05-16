@@ -622,6 +622,10 @@
       <Project>{CE0F99D6-1C56-48A9-9B68-3E5B833703EF}</Project>
       <Name>HeuristicLab.Problems.Instances.TSPLIB-3.3</Name>
     </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.Instances.Views\3.3\HeuristicLab.Problems.Instances.Views-3.3.csproj">
+      <Project>{B1BA398F-953F-4C3A-B07B-1E5E17A27DD9}</Project>
+      <Name>HeuristicLab.Problems.Instances.Views-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.Problems.Instances\3.3\HeuristicLab.Problems.Instances-3.3.csproj">
       <Project>{3540E29E-4793-49E7-8EE2-FEA7F61C3994}</Project>
       <Name>HeuristicLab.Problems.Instances-3.3</Name>
