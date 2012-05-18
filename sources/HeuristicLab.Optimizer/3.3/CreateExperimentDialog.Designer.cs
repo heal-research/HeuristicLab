@@ -45,12 +45,6 @@ namespace HeuristicLab.Optimizer {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("QAPLIB", System.Windows.Forms.HorizontalAlignment.Left);
-      System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("TSPLIB", System.Windows.Forms.HorizontalAlignment.Left);
-      System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("bur26a");
-      System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("esc32a");
-      System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("berlin52");
-      System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("ch130");
       this.okButton = new System.Windows.Forms.Button();
       this.cancelButton = new System.Windows.Forms.Button();
       this.createBatchRunCheckBox = new System.Windows.Forms.CheckBox();
@@ -61,6 +55,11 @@ namespace HeuristicLab.Optimizer {
       this.instancesLabel = new System.Windows.Forms.Label();
       this.instancesListView = new System.Windows.Forms.ListView();
       this.columnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+      this.experimentCreationBackgroundWorker = new System.ComponentModel.BackgroundWorker();
+      this.experimentCreationProgressBar = new System.Windows.Forms.ProgressBar();
+      this.progressLabel = new System.Windows.Forms.Label();
+      this.selectAllCheckBox = new System.Windows.Forms.CheckBox();
+      this.selectNoneCheckBox = new System.Windows.Forms.CheckBox();
       ((System.ComponentModel.ISupportInitialize)(this.repetitionsNumericUpDown)).BeginInit();
       this.SuspendLayout();
       // 
@@ -163,40 +162,71 @@ namespace HeuristicLab.Optimizer {
       this.instancesListView.CheckBoxes = true;
       this.instancesListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader});
-      listViewGroup1.Header = "QAPLIB";
-      listViewGroup1.Name = "QAPLIBHeader";
-      listViewGroup2.Header = "TSPLIB";
-      listViewGroup2.Name = "TSPLIBHeader";
-      listViewGroup2.Tag = "";
-      this.instancesListView.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup1,
-            listViewGroup2});
       this.instancesListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-      listViewItem1.Checked = true;
-      listViewItem1.Group = listViewGroup1;
-      listViewItem1.StateImageIndex = 1;
-      listViewItem2.Checked = true;
-      listViewItem2.Group = listViewGroup1;
-      listViewItem2.StateImageIndex = 1;
-      listViewItem3.Group = listViewGroup2;
-      listViewItem3.StateImageIndex = 0;
-      listViewItem4.Group = listViewGroup2;
-      listViewItem4.StateImageIndex = 0;
-      this.instancesListView.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1,
-            listViewItem2,
-            listViewItem3,
-            listViewItem4});
-      this.instancesListView.Location = new System.Drawing.Point(113, 54);
+      this.instancesListView.Location = new System.Drawing.Point(113, 77);
       this.instancesListView.Name = "instancesListView";
-      this.instancesListView.Size = new System.Drawing.Size(156, 199);
+      this.instancesListView.Size = new System.Drawing.Size(156, 176);
       this.instancesListView.TabIndex = 6;
       this.instancesListView.UseCompatibleStateImageBehavior = false;
       this.instancesListView.View = System.Windows.Forms.View.Details;
+      this.instancesListView.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.instancesListView_ItemChecked);
       // 
       // columnHeader
       // 
       this.columnHeader.Width = 150;
+      // 
+      // experimentCreationBackgroundWorker
+      // 
+      this.experimentCreationBackgroundWorker.WorkerReportsProgress = true;
+      this.experimentCreationBackgroundWorker.WorkerSupportsCancellation = true;
+      this.experimentCreationBackgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.experimentCreationBackgroundWorker_DoWork);
+      this.experimentCreationBackgroundWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.experimentCreationBackgroundWorker_ProgressChanged);
+      this.experimentCreationBackgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.experimentCreationBackgroundWorker_RunWorkerCompleted);
+      // 
+      // experimentCreationProgressBar
+      // 
+      this.experimentCreationProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.experimentCreationProgressBar.Location = new System.Drawing.Point(15, 259);
+      this.experimentCreationProgressBar.Name = "experimentCreationProgressBar";
+      this.experimentCreationProgressBar.Size = new System.Drawing.Size(92, 23);
+      this.experimentCreationProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+      this.experimentCreationProgressBar.TabIndex = 7;
+      this.experimentCreationProgressBar.Visible = false;
+      // 
+      // progressLabel
+      // 
+      this.progressLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.progressLabel.BackColor = System.Drawing.SystemColors.Control;
+      this.progressLabel.Location = new System.Drawing.Point(113, 259);
+      this.progressLabel.Name = "progressLabel";
+      this.progressLabel.Size = new System.Drawing.Size(75, 23);
+      this.progressLabel.TabIndex = 8;
+      this.progressLabel.Text = "label1";
+      this.progressLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      this.progressLabel.Visible = false;
+      // 
+      // selectAllCheckBox
+      // 
+      this.selectAllCheckBox.AutoSize = true;
+      this.selectAllCheckBox.Location = new System.Drawing.Point(113, 54);
+      this.selectAllCheckBox.Name = "selectAllCheckBox";
+      this.selectAllCheckBox.Size = new System.Drawing.Size(67, 17);
+      this.selectAllCheckBox.TabIndex = 9;
+      this.selectAllCheckBox.Text = "select all";
+      this.selectAllCheckBox.UseVisualStyleBackColor = true;
+      this.selectAllCheckBox.CheckedChanged += new System.EventHandler(this.selectAllCheckBox_CheckedChanged);
+      // 
+      // selectNoneCheckBox
+      // 
+      this.selectNoneCheckBox.AutoSize = true;
+      this.selectNoneCheckBox.Location = new System.Drawing.Point(186, 54);
+      this.selectNoneCheckBox.Name = "selectNoneCheckBox";
+      this.selectNoneCheckBox.Size = new System.Drawing.Size(81, 17);
+      this.selectNoneCheckBox.TabIndex = 9;
+      this.selectNoneCheckBox.Text = "select none";
+      this.selectNoneCheckBox.UseVisualStyleBackColor = true;
+      this.selectNoneCheckBox.CheckedChanged += new System.EventHandler(this.selectNoneCheckBox_CheckedChanged);
       // 
       // CreateExperimentDialog
       // 
@@ -205,6 +235,8 @@ namespace HeuristicLab.Optimizer {
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.CancelButton = this.cancelButton;
       this.ClientSize = new System.Drawing.Size(281, 294);
+      this.Controls.Add(this.selectNoneCheckBox);
+      this.Controls.Add(this.selectAllCheckBox);
       this.Controls.Add(this.instancesListView);
       this.Controls.Add(this.repetitionsNumericUpDown);
       this.Controls.Add(this.instancesLabel);
@@ -213,6 +245,8 @@ namespace HeuristicLab.Optimizer {
       this.Controls.Add(this.createBatchRunCheckBox);
       this.Controls.Add(this.cancelButton);
       this.Controls.Add(this.okButton);
+      this.Controls.Add(this.progressLabel);
+      this.Controls.Add(this.experimentCreationProgressBar);
       this.MaximizeBox = false;
       this.MinimizeBox = false;
       this.Name = "CreateExperimentDialog";
@@ -220,6 +254,8 @@ namespace HeuristicLab.Optimizer {
       this.ShowInTaskbar = false;
       this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
       this.Text = "Create Experiment";
+      this.TopMost = true;
+      this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CreateExperimentDialog_FormClosing);
       ((System.ComponentModel.ISupportInitialize)(this.repetitionsNumericUpDown)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
@@ -238,6 +274,11 @@ namespace HeuristicLab.Optimizer {
     private System.Windows.Forms.Label instancesLabel;
     private System.Windows.Forms.ListView instancesListView;
     private System.Windows.Forms.ColumnHeader columnHeader;
+    private System.ComponentModel.BackgroundWorker experimentCreationBackgroundWorker;
+    private System.Windows.Forms.ProgressBar experimentCreationProgressBar;
+    private System.Windows.Forms.Label progressLabel;
+    private System.Windows.Forms.CheckBox selectAllCheckBox;
+    private System.Windows.Forms.CheckBox selectNoneCheckBox;
 
   }
 }

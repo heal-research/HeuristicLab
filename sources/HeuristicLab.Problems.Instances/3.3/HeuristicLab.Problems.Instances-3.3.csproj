@@ -104,12 +104,14 @@
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Plugin.cs.frame" />
+    <Compile Include="ProblemInstanceManager.cs" />
     <Compile Include="IProblemInstanceExporter.cs" />
     <Compile Include="TableFileParser.cs" />
     <Compile Include="Types\ATSPData.cs" />

@@ -27,7 +27,6 @@ using System.Windows.Forms;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
-using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.Instances.Views {
   [View("ProblemInstanceConsumerView")]
@@ -62,27 +61,10 @@ namespace HeuristicLab.Problems.Instances.Views {
         problemInstanceProviderComboBox.DataSource = null;
       } else {
         problemInstanceProviderComboBox.DisplayMember = "Name";
-        ProblemInstanceProviders = GetProblemInstanceProviders();
+        ProblemInstanceProviders = ProblemInstanceManager.GetProviders(Content);
         problemInstanceProviderComboBox.DataSource = ProblemInstanceProviders.OrderBy(x => x.Name).ToList();
       }
       SetEnabledStateOfControls();
-    }
-
-    private IEnumerable<IProblemInstanceProvider> GetProblemInstanceProviders() {
-      var consumerTypes = Content.GetType().GetInterfaces()
-        .Where(x => x.IsGenericType
-          && x.GetGenericTypeDefinition() == typeof(IProblemInstanceConsumer<>));
-
-      if (consumerTypes.Any()) {
-        var instanceTypes = consumerTypes
-          .Select(x => x.GetGenericArguments().First())
-          .Select(x => typeof(IProblemInstanceProvider<>).MakeGenericType(x));
-
-        foreach (var type in instanceTypes) {
-          foreach (var provider in ApplicationManager.Manager.GetInstances(type))
-            yield return (IProblemInstanceProvider)provider;
-        }
-      }
     }
 
     public bool ContainsProviders() {
