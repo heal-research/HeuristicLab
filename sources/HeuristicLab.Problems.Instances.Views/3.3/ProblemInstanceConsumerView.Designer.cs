@@ -66,7 +66,7 @@ namespace HeuristicLab.Problems.Instances.Views {
       // 
       this.libraryInfoButton.Location = new System.Drawing.Point(226, -1);
       this.libraryInfoButton.Name = "libraryInfoButton";
-      this.libraryInfoButton.Size = new System.Drawing.Size(26, 23);
+      this.libraryInfoButton.Size = new System.Drawing.Size(24, 24);
       this.libraryInfoButton.TabIndex = 17;
       this.libraryInfoButton.Text = "Info";
       this.libraryInfoButton.UseVisualStyleBackColor = true;
@@ -84,7 +84,7 @@ namespace HeuristicLab.Problems.Instances.Views {
       // problemInstanceProviderViewHost
       // 
       this.problemInstanceProviderViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.problemInstanceProviderViewHost.Caption = "View";
       this.problemInstanceProviderViewHost.Content = null;
       this.problemInstanceProviderViewHost.Enabled = false;
@@ -105,7 +105,7 @@ namespace HeuristicLab.Problems.Instances.Views {
       this.Controls.Add(this.libraryInfoButton);
       this.Controls.Add(this.libraryLabel);
       this.Name = "ProblemInstanceConsumerView";
-      this.Size = new System.Drawing.Size(694, 21);
+      this.Size = new System.Drawing.Size(694, 22);
       this.ResumeLayout(false);
       this.PerformLayout();
 

@@ -113,7 +113,6 @@
     <None Include="Plugin.cs.frame" />
     <Compile Include="ProblemInstanceManager.cs" />
     <Compile Include="IProblemInstanceExporter.cs" />
-    <Compile Include="TableFileParser.cs" />
     <Compile Include="Types\ATSPData.cs" />
     <Compile Include="Types\CTAPData.cs" />
     <Compile Include="IDataDescriptor.cs" />

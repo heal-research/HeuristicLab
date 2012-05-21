@@ -22,8 +22,9 @@
 using System;
 using System.Globalization;
 using System.IO;
-using HeuristicLab.Problems.Instances;
+using HeuristicLab.Problems.Instances.DataAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 namespace HeuristicLab.Problems.DataAnalysis_3_4.Tests {
 
   [TestClass()]

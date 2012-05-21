@@ -43,6 +43,7 @@ using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Classification;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
+using HeuristicLab.Problems.Instances.DataAnalysis;
 using HeuristicLab.Problems.Instances.TSPLIB;
 using HeuristicLab.Problems.Knapsack;
 using HeuristicLab.Problems.TestFunctions;
@@ -52,8 +53,6 @@ using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Potvin;
 using HeuristicLab.Selection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using classification = HeuristicLab.Problems.Instances.Classification;
-using regression = HeuristicLab.Problems.Instances.Regression;
 
 namespace HeuristicLab_33.Tests {
   [TestClass]
@@ -249,7 +248,7 @@ namespace HeuristicLab_33.Tests {
       SymbolicRegressionSingleObjectiveProblem symbRegProblem = new SymbolicRegressionSingleObjectiveProblem();
       symbRegProblem.Name = "Tower Symbolic Regression Problem";
       symbRegProblem.Description = "Tower Dataset (downloaded from: http://vanillamodeling.com/realproblems.html)";
-      regression.RealWorldInstanceProvider provider = new regression.RealWorldInstanceProvider();
+      RegressionRealWorldInstanceProvider provider = new RegressionRealWorldInstanceProvider();
       var instance = provider.GetDataDescriptors().Where(x => x.Name.Equals("towerData")).Single();
       var towerProblemData = (RegressionProblemData)provider.LoadData(instance);
       towerProblemData.TargetVariableParameter.Value = towerProblemData.TargetVariableParameter.ValidValues
@@ -354,7 +353,7 @@ namespace HeuristicLab_33.Tests {
       SymbolicClassificationSingleObjectiveProblem symbClassProblem = new SymbolicClassificationSingleObjectiveProblem();
       symbClassProblem.Name = "Mammography Classification Problem";
       symbClassProblem.Description = "Mammography dataset imported from the UCI machine learning repository (http://archive.ics.uci.edu/ml/datasets/Mammographic+Mass)";
-      classification.RealWorldInstanceProvider provider = new classification.RealWorldInstanceProvider();
+      ClassificationRealWorldInstanceProvider provider = new ClassificationRealWorldInstanceProvider();
       var instance = provider.GetDataDescriptors().Where(x => x.Name.Equals("mammography")).Single();
       var mammoData = (ClassificationProblemData)provider.LoadData(instance);
       mammoData.TargetVariableParameter.Value = mammoData.TargetVariableParameter.ValidValues

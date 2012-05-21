@@ -65,7 +65,7 @@ namespace HeuristicLab.Problems.Instances.Views {
       this.loadButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.loadButton.Location = new System.Drawing.Point(604, 0);
       this.loadButton.Name = "loadButton";
-      this.loadButton.Size = new System.Drawing.Size(26, 23);
+      this.loadButton.Size = new System.Drawing.Size(24, 24);
       this.loadButton.TabIndex = 6;
       this.loadButton.Text = "Load";
       this.loadButton.UseVisualStyleBackColor = true;
@@ -97,7 +97,7 @@ namespace HeuristicLab.Problems.Instances.Views {
       this.importButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.importButton.Location = new System.Drawing.Point(636, 0);
       this.importButton.Name = "importButton";
-      this.importButton.Size = new System.Drawing.Size(26, 23);
+      this.importButton.Size = new System.Drawing.Size(24, 24);
       this.importButton.TabIndex = 6;
       this.importButton.Text = "Import";
       this.importButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -113,7 +113,7 @@ namespace HeuristicLab.Problems.Instances.Views {
       this.exportButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.exportButton.Location = new System.Drawing.Point(-1, 0);
       this.exportButton.Name = "exportButton";
-      this.exportButton.Size = new System.Drawing.Size(26, 23);
+      this.exportButton.Size = new System.Drawing.Size(24, 24);
       this.exportButton.TabIndex = 8;
       this.exportButton.Text = "Export";
       this.exportButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
