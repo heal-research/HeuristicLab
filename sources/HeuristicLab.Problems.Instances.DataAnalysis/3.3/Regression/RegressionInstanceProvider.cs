@@ -22,7 +22,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -32,12 +31,20 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public abstract class RegressionInstanceProvider : IProblemInstanceProvider<IRegressionProblemData> {
 
     public IRegressionProblemData LoadData(string path) {
-      NumberFormatInfo numberFormat;
-      DateTimeFormatInfo dateFormat;
-      char separator;
-      TableFileParser.DetermineFileFormat(path, out numberFormat, out dateFormat, out separator);
+      TableFileParser csvFileParser = new TableFileParser();
+      csvFileParser.Parse(path);
 
-      IRegressionProblemData regData = LoadData(new FileStream(path, FileMode.Open), numberFormat, dateFormat, separator);
+      Dataset dataset = new Dataset(csvFileParser.VariableNames, csvFileParser.Values);
+      string targetVar = csvFileParser.VariableNames.Last();
+      IEnumerable<string> allowedInputVars = csvFileParser.VariableNames.Where(x => !x.Equals(targetVar));
+
+      IRegressionProblemData regData = new RegressionProblemData(dataset, allowedInputVars, targetVar);
+
+      int trainingPartEnd = csvFileParser.Rows * 2 / 3;
+      regData.TrainingPartition.Start = 0;
+      regData.TrainingPartition.End = trainingPartEnd;
+      regData.TestPartition.Start = trainingPartEnd;
+      regData.TestPartition.End = csvFileParser.Rows;
 
       int pos = path.LastIndexOf('\\');
       if (pos < 0)
@@ -46,26 +53,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         pos++;
         regData.Name = path.Substring(pos, path.Length - pos);
       }
-      return regData;
-    }
-
-    protected IRegressionProblemData LoadData(Stream stream, NumberFormatInfo numberFormat, DateTimeFormatInfo dateFormat, char separator) {
-      TableFileParser csvFileParser = new TableFileParser();
-
-      csvFileParser.Parse(stream, numberFormat, dateFormat, separator);
-
-      Dataset dataset = new Dataset(csvFileParser.VariableNames, csvFileParser.Values);
-      string targetVar = csvFileParser.VariableNames.Last();
-      IEnumerable<string> allowedInputVars = csvFileParser.VariableNames.Where(x => !x.Equals(targetVar));
-
-      RegressionProblemData regData = new RegressionProblemData(dataset, allowedInputVars, targetVar);
-
-      int trainingPartEnd = csvFileParser.Rows * 2 / 3;
-      regData.TrainingPartition.Start = 0;
-      regData.TrainingPartition.End = trainingPartEnd;
-      regData.TestPartition.Start = trainingPartEnd;
-      regData.TestPartition.End = csvFileParser.Rows;
-
       return regData;
     }
 

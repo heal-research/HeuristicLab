@@ -74,10 +74,47 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       variableNames = new List<string>();
     }
 
+    /// <summary>
+    /// Parses a file and determines the format first
+    /// </summary>
+    /// <param name="fileName">file which is parsed</param>
+    public void Parse(string fileName) {
+      NumberFormatInfo numberFormat;
+      DateTimeFormatInfo dateTimeFormatInfo;
+      char separator;
+      DetermineFileFormat(new FileStream(fileName, FileMode.Open), out numberFormat, out dateTimeFormatInfo, out separator);
+      Parse(new FileStream(fileName, FileMode.Open), numberFormat, dateTimeFormatInfo, separator);
+    }
+
+    /// <summary>
+    /// Parses a file with the given formats
+    /// </summary>
+    /// <param name="fileName">file which is parsed</param>
+    /// <param name="numberFormat">Format of numbers</param>
+    /// <param name="dateTimeFormatInfo">Format of datetime</param>
+    /// <param name="separator">defines the separator</param>
     public void Parse(string fileName, NumberFormatInfo numberFormat, DateTimeFormatInfo dateTimeFormatInfo, char separator) {
       Parse(new FileStream(fileName, FileMode.Open), numberFormat, dateTimeFormatInfo, separator);
     }
 
+    /// <summary>
+    /// Takes a Stream and parses it with default format. NumberFormatInfo.InvariantInfo, DateTimeFormatInfo.InvariantInfo and separator = ','
+    /// </summary>
+    /// <param name="stream">stream which is parsed</param>
+    public void Parse(Stream stream) {
+      NumberFormatInfo numberFormat = NumberFormatInfo.InvariantInfo;
+      DateTimeFormatInfo dateTimeFormatInfo = DateTimeFormatInfo.InvariantInfo;
+      char separator = ',';
+      Parse(stream, numberFormat, dateTimeFormatInfo, separator);
+    }
+
+    /// <summary>
+    /// Parses a stream with the given formats.
+    /// </summary>
+    /// <param name="stream">Stream which is parsed</param>    
+    /// <param name="numberFormat">Format of numbers</param>
+    /// <param name="dateTimeFormatInfo">Format of datetime</param>
+    /// <param name="separator">defines the separator</param>
     public void Parse(Stream stream, NumberFormatInfo numberFormat, DateTimeFormatInfo dateTimeFormatInfo, char separator) {
       using (StreamReader reader = new StreamReader(stream)) {
         tokenizer = new Tokenizer(reader, numberFormat, dateTimeFormatInfo, separator);

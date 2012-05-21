@@ -63,10 +63,22 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
           TableFileParser.DetermineFileFormat(stream, out numberFormat, out dateFormat, out separator);
         }
 
-        IRegressionProblemData regData;
+        TableFileParser csvFileParser = new TableFileParser();
         using (Stream stream = instancesZipFile.GetInputStream(entry)) {
-          regData = LoadData(stream, numberFormat, dateFormat, separator);
+          csvFileParser.Parse(stream, numberFormat, dateFormat, separator);
         }
+
+        Dataset dataset = new Dataset(csvFileParser.VariableNames, csvFileParser.Values);
+        string targetVar = csvFileParser.VariableNames.Last();
+        IEnumerable<string> allowedInputVars = csvFileParser.VariableNames.Where(x => !x.Equals(targetVar));
+
+        IRegressionProblemData regData = new RegressionProblemData(dataset, allowedInputVars, targetVar);
+
+        int trainingPartEnd = csvFileParser.Rows * 2 / 3;
+        regData.TrainingPartition.Start = 0;
+        regData.TrainingPartition.End = trainingPartEnd;
+        regData.TestPartition.Start = trainingPartEnd;
+        regData.TestPartition.End = csvFileParser.Rows;
 
         regData.Name = descriptor.Name;
         regData.Description = descriptor.Description;

@@ -22,7 +22,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -31,27 +30,9 @@ using HeuristicLab.Problems.DataAnalysis;
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public abstract class ClassificationInstanceProvider : IProblemInstanceProvider<IClassificationProblemData> {
     public IClassificationProblemData LoadData(string path) {
-      NumberFormatInfo numberFormat;
-      DateTimeFormatInfo dateFormat;
-      char separator;
-      TableFileParser.DetermineFileFormat(new FileStream(path, FileMode.Open), out numberFormat, out dateFormat, out separator);
-
-      IClassificationProblemData claData = LoadData(new FileStream(path, FileMode.Open), numberFormat, dateFormat, separator);
-      int pos = path.LastIndexOf('\\');
-      if (pos < 0)
-        claData.Name = path;
-      else {
-        pos++;
-        claData.Name = path.Substring(pos, path.Length - pos);
-      }
-
-      return claData;
-    }
-
-    protected IClassificationProblemData LoadData(Stream stream, NumberFormatInfo numberFormat, DateTimeFormatInfo dateFormat, char separator) {
       TableFileParser csvFileParser = new TableFileParser();
 
-      csvFileParser.Parse(stream, numberFormat, dateFormat, separator);
+      csvFileParser.Parse(path);
 
       Dataset dataset = new Dataset(csvFileParser.VariableNames, csvFileParser.Values);
       string targetVar = csvFileParser.VariableNames.Last();
@@ -64,6 +45,14 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       claData.TrainingPartition.End = trainingPartEnd;
       claData.TestPartition.Start = trainingPartEnd;
       claData.TestPartition.End = csvFileParser.Rows;
+      int pos = path.LastIndexOf('\\');
+      if (pos < 0)
+        claData.Name = path;
+      else {
+        pos++;
+        claData.Name = path.Substring(pos, path.Length - pos);
+      }
+
       return claData;
     }
 

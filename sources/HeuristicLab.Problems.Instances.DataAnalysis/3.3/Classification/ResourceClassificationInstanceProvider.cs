@@ -63,10 +63,23 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
           TableFileParser.DetermineFileFormat(stream, out numberFormat, out dateFormat, out separator);
         }
 
-        IClassificationProblemData claData;
+        TableFileParser csvFileParser = new TableFileParser();
         using (Stream stream = instancesZipFile.GetInputStream(entry)) {
-          claData = LoadData(stream, numberFormat, dateFormat, separator);
+          csvFileParser.Parse(stream, numberFormat, dateFormat, separator);
         }
+
+        Dataset dataset = new Dataset(csvFileParser.VariableNames, csvFileParser.Values);
+        string targetVar = csvFileParser.VariableNames.Last();
+        IEnumerable<string> allowedInputVars = csvFileParser.VariableNames.Where(x => !x.Equals(targetVar));
+
+        ClassificationProblemData claData = new ClassificationProblemData(dataset, allowedInputVars, targetVar);
+
+        int trainingPartEnd = csvFileParser.Rows * 2 / 3;
+        claData.TrainingPartition.Start = 0;
+        claData.TrainingPartition.End = trainingPartEnd;
+        claData.TestPartition.Start = trainingPartEnd;
+        claData.TestPartition.End = csvFileParser.Rows;
+
         claData.Name = descriptor.Name;
         claData.Description = descriptor.Description;
         return claData;
