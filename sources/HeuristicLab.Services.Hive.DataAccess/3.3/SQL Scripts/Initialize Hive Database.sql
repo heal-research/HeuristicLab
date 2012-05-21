@@ -40,6 +40,7 @@ CREATE TABLE [dbo].[Resource](
   [LastHeartbeat] DateTime,
   [CpuUtilization] float,
   [HbInterval] int NOT NULL,
+  [IsDisposable] Bit,
   CONSTRAINT [PK_dbo.Resource] PRIMARY KEY ([ResourceId])
   )
 CREATE TABLE [dbo].[Task](

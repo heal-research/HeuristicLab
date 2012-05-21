@@ -64,12 +64,14 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       this.label2 = new System.Windows.Forms.Label();
       this.label3 = new System.Windows.Forms.Label();
       this.txtHbIntervall = new System.Windows.Forms.TextBox();
+      this.cbxDisposable = new System.Windows.Forms.CheckBox();
+      this.label4 = new System.Windows.Forms.Label();
       this.SuspendLayout();
       // 
       // txtSlaveState
       // 
-      this.txtSlaveState.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.txtSlaveState.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.txtSlaveState.Enabled = false;
       this.txtSlaveState.Location = new System.Drawing.Point(146, 216);
       this.txtSlaveState.Name = "txtSlaveState";
@@ -78,8 +80,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // txtOS
       // 
-      this.txtOS.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.txtOS.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.txtOS.Enabled = false;
       this.txtOS.Location = new System.Drawing.Point(146, 190);
       this.txtOS.Name = "txtOS";
@@ -106,8 +108,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // txtDetailsDescription
       // 
-      this.txtDetailsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.txtDetailsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.txtDetailsDescription.Enabled = false;
       this.txtDetailsDescription.Location = new System.Drawing.Point(146, 86);
       this.txtDetailsDescription.Name = "txtDetailsDescription";
@@ -125,8 +127,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // txtName
       // 
-      this.txtName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.txtName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.txtName.Location = new System.Drawing.Point(146, 8);
       this.txtName.Name = "txtName";
       this.txtName.Size = new System.Drawing.Size(390, 20);
@@ -135,8 +137,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // txtCPU
       // 
-      this.txtCPU.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.txtCPU.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.txtCPU.Enabled = false;
       this.txtCPU.Location = new System.Drawing.Point(146, 112);
       this.txtCPU.Name = "txtCPU";
@@ -145,8 +147,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // txtMemory
       // 
-      this.txtMemory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.txtMemory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.txtMemory.Enabled = false;
       this.txtMemory.Location = new System.Drawing.Point(146, 138);
       this.txtMemory.Name = "txtMemory";
@@ -155,8 +157,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // txtLastHeartbeat
       // 
-      this.txtLastHeartbeat.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.txtLastHeartbeat.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.txtLastHeartbeat.Enabled = false;
       this.txtLastHeartbeat.Location = new System.Drawing.Point(146, 242);
       this.txtLastHeartbeat.Name = "txtLastHeartbeat";
@@ -210,8 +212,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // txtFreeMemory
       // 
-      this.txtFreeMemory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.txtFreeMemory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.txtFreeMemory.Enabled = false;
       this.txtFreeMemory.Location = new System.Drawing.Point(146, 164);
       this.txtFreeMemory.Name = "txtFreeMemory";
@@ -220,8 +222,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // txtId
       // 
-      this.txtId.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.txtId.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.txtId.Enabled = false;
       this.txtId.Location = new System.Drawing.Point(146, 60);
       this.txtId.Name = "txtId";
@@ -248,18 +250,39 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // txtHbIntervall
       // 
-      this.txtHbIntervall.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.txtHbIntervall.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.txtHbIntervall.Location = new System.Drawing.Point(146, 34);
       this.txtHbIntervall.Name = "txtHbIntervall";
       this.txtHbIntervall.Size = new System.Drawing.Size(390, 20);
       this.txtHbIntervall.TabIndex = 33;
       this.txtHbIntervall.TextChanged += new System.EventHandler(this.txtHbIntervall_TextChanged);
       // 
+      // cbxDisposable
+      // 
+      this.cbxDisposable.AutoSize = true;
+      this.cbxDisposable.Location = new System.Drawing.Point(146, 268);
+      this.cbxDisposable.Name = "cbxDisposable";
+      this.cbxDisposable.Size = new System.Drawing.Size(15, 14);
+      this.cbxDisposable.TabIndex = 34;
+      this.cbxDisposable.UseVisualStyleBackColor = true;
+      this.cbxDisposable.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+      // 
+      // label4
+      // 
+      this.label4.AutoSize = true;
+      this.label4.Location = new System.Drawing.Point(3, 269);
+      this.label4.Name = "label4";
+      this.label4.Size = new System.Drawing.Size(62, 13);
+      this.label4.TabIndex = 35;
+      this.label4.Text = "Disposable:";
+      // 
       // SlaveView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.label4);
+      this.Controls.Add(this.cbxDisposable);
       this.Controls.Add(this.txtHbIntervall);
       this.Controls.Add(this.label3);
       this.Controls.Add(this.label2);
@@ -281,7 +304,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       this.Controls.Add(this.label10);
       this.Controls.Add(this.label9);
       this.Name = "SlaveView";
-      this.Size = new System.Drawing.Size(539, 267);
+      this.Size = new System.Drawing.Size(539, 285);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -309,5 +332,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private System.Windows.Forms.Label label2;
     private System.Windows.Forms.Label label3;
     private System.Windows.Forms.TextBox txtHbIntervall;
+    private System.Windows.Forms.CheckBox cbxDisposable;
+    private System.Windows.Forms.Label label4;
   }
 }

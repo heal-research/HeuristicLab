@@ -71,6 +71,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       slave.CpuArchitecture = Environment.Is64BitOperatingSystem ? CpuArchitecture.x64 : CpuArchitecture.x86;
       slave.OperatingSystem = Environment.OSVersion.VersionString;
       slave.CpuSpeed = GetCpuSpeed();
+      slave.IsDisposable = true;
 
       UpdateSlaveInfo();
     }

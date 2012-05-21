@@ -52,6 +52,8 @@ namespace HeuristicLab.Services.Hive.DataTransfer {
     public DateTime? LastHeartbeat { get; set; }
     [DataMember]
     public double CpuUtilization { get; set; }
+    [DataMember]
+    public bool IsDisposable { get; set; }
 
     public Slave() {
       SlaveState = DataTransfer.SlaveState.Idle;

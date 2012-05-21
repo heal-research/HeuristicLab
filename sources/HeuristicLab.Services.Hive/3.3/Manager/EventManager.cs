@@ -48,6 +48,7 @@ namespace HeuristicLab.Services.Hive {
       trans.UseTransaction(() => {
         SetTimeoutSlavesOffline();
         SetTimeoutTasksWaiting();
+        DeleteObsoleteSlaves();
       }, true);
 
       trans.UseTransaction(() => {
@@ -114,6 +115,14 @@ namespace HeuristicLab.Services.Hive {
         task.Command = null;
         dao.UpdateTask(task);
       }
+    }
+
+    /// <summary>
+    /// Searches for slaves that are disposable and deletes them if they were offline for too long
+    /// </summary>
+    private void DeleteObsoleteSlaves() {
+      var slaves = dao.GetSlaves(x => x.IsDisposable && x.SlaveState == SlaveState.Offline && (DateTime.Now - x.LastHeartbeat) > HeuristicLab.Services.Hive.Properties.Settings.Default.SweepInterval);
+      foreach (DT.Slave slave in slaves) dao.DeleteSlave(slave.Id);
     }
   }
 }

@@ -61,12 +61,14 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
         txtFreeMemory.Clear();
         txtId.Clear();
         txtHbIntervall.Clear();
+        cbxDisposable.Checked = false;
       } else {
         if (Content.GetType() == typeof(Slave)) {
           ShowSlaveUI(true);
           Slave ct = (Slave)Content;
           txtName.Text = ct.Name;
           txtHbIntervall.Text = ct.HbInterval.ToString();
+          cbxDisposable.Checked = ct.IsDisposable;
           txtCPU.Text = string.Format("{0} Cores @ {1} Mhz, Arch.: {2}", ct.Cores.ToString(), ct.CpuSpeed.ToString(), ct.CpuArchitecture.ToString());
           txtDetailsDescription.Text = ct.Description;
           txtMemory.Text = ct.Memory.ToString();
@@ -87,8 +89,9 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     }
 
     private void ShowSlaveUI(bool show) {
-      label2.Visible = show;
       label1.Visible = show;
+      label2.Visible = show;
+      label4.Visible = show;
       label10.Visible = show;
       label11.Visible = show;
       label12.Visible = show;
@@ -104,6 +107,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       txtFreeMemory.Visible = show;
       txtId.Visible = show;
       txtName.Enabled = !show;
+      cbxDisposable.Visible = show;
     }
 
     protected override void SetEnabledStateOfControls() {
@@ -128,6 +132,12 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
             txtHbIntervall.Text = "10";
           }
         }
+      }
+    }
+
+    private void checkBox1_CheckedChanged(object sender, EventArgs e) {
+      if (Content != null) {
+        ((Slave)Content).IsDisposable = cbxDisposable.Checked;
       }
     }
   }

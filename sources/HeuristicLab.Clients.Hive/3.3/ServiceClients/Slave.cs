@@ -42,6 +42,7 @@ namespace HeuristicLab.Clients.Hive {
       this.CpuArchitecture = original.CpuArchitecture;
       this.LastHeartbeat = original.LastHeartbeat;
       this.CpuUtilization = original.CpuUtilization;
+      this.IsDisposable = original.IsDisposable;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

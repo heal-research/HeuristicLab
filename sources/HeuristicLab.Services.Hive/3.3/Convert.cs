@@ -217,7 +217,8 @@ namespace HeuristicLab.Services.Hive.DataTransfer {
         OperatingSystem = source.OperatingSystem,
         LastHeartbeat = source.LastHeartbeat,
         CpuUtilization = source.CpuUtilization,
-        HbInterval = source.HbInterval
+        HbInterval = source.HbInterval,
+        IsDisposable = source.IsDisposable
       };
     }
     public static DB.Slave ToEntity(DT.Slave source) {
@@ -242,6 +243,7 @@ namespace HeuristicLab.Services.Hive.DataTransfer {
         target.LastHeartbeat = source.LastHeartbeat;
         target.CpuUtilization = source.CpuUtilization;
         target.HbInterval = source.HbInterval;
+        target.IsDisposable = source.IsDisposable;
       }
     }
     #endregion
