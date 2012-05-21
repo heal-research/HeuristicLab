@@ -68,7 +68,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
           Slave ct = (Slave)Content;
           txtName.Text = ct.Name;
           txtHbIntervall.Text = ct.HbInterval.ToString();
-          cbxDisposable.Checked = ct.IsDisposable;
+          cbxDisposable.Checked = ct.IsDisposable.GetValueOrDefault();
           txtCPU.Text = string.Format("{0} Cores @ {1} Mhz, Arch.: {2}", ct.Cores.ToString(), ct.CpuSpeed.ToString(), ct.CpuArchitecture.ToString());
           txtDetailsDescription.Text = ct.Description;
           txtMemory.Text = ct.Memory.ToString();

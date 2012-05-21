@@ -178,7 +178,7 @@
         <classShapeMoniker Id="8d5712f7-7a1a-4a89-bd4d-fd60200d3306" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(7.5 : 4.30930826822917); (7.5 : 4.876650890625); (8.875 : 4.876650890625)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+    <associationConnector edgePoints="[(7.5 : 4.30930826822917); (7.5 : 4.876650890625); (7.97916666666667 : 4.876650890625 : JumpStart); (8.14583333333333 : 4.876650890625 : JumpEnd); (8.875 : 4.876650890625)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HiveDataContext/Task/Task_AssignedResource" />
       <nodes>
         <classShapeMoniker Id="695bfc39-59f3-4e60-8644-f847964bf62c" />

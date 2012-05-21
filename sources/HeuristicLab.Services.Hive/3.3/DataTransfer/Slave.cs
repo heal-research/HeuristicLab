@@ -53,7 +53,7 @@ namespace HeuristicLab.Services.Hive.DataTransfer {
     [DataMember]
     public double CpuUtilization { get; set; }
     [DataMember]
-    public bool IsDisposable { get; set; }
+    public bool? IsDisposable { get; set; }
 
     public Slave() {
       SlaveState = DataTransfer.SlaveState.Idle;
