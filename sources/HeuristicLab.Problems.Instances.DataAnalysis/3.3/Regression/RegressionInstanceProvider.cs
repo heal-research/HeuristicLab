@@ -36,6 +36,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
       Dataset dataset = new Dataset(csvFileParser.VariableNames, csvFileParser.Values);
       string targetVar = csvFileParser.VariableNames.Last();
+
       IEnumerable<string> allowedInputVars = csvFileParser.VariableNames.Where(x => !x.Equals(targetVar));
 
       IRegressionProblemData regData = new RegressionProblemData(dataset, allowedInputVars, targetVar);

@@ -19,39 +19,33 @@
  */
 #endregion
 
+
 using System;
 using System.Collections.Generic;
-
+using HeuristicLab.Problems.DataAnalysis;
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  public class KeijzerInstanceProvider : ArtificialRegressionInstanceProvider {
+  public class RegressionCSVInstanceProvider : RegressionInstanceProvider {
     public override string Name {
-      get { return "Keijzer Benchmark Problems"; }
+      get { return "CSV Problem Provider"; }
     }
     public override string Description {
-      get { return ""; }
+      get {
+        return "";
+      }
     }
     public override Uri WebLink {
-      get { return new Uri("http://groups.csail.mit.edu/EVO-DesignOpt/GPBenchmarks/"); }
+      get { return new Uri("http://dev.heuristiclab.com/trac/hl/core/wiki/UsersFAQ#DataAnalysisImportFileFormat"); }
     }
     public override string ReferencePublication {
       get { return ""; }
     }
 
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
-      List<IDataDescriptor> descriptorList = new List<IDataDescriptor>();
-      descriptorList.Add(new KeijzerFunctionFour());
-      descriptorList.Add(new KeijzerFunctionFive());
-      descriptorList.Add(new KeijzerFunctionSix());
-      descriptorList.Add(new KeijzerFunctionSeven());
-      descriptorList.Add(new KeijzerFunctionEight());
-      descriptorList.Add(new KeijzerFunctionNine());
-      descriptorList.Add(new KeijzerFunctionEleven());
-      descriptorList.Add(new KeijzerFunctionTwelve());
-      descriptorList.Add(new KeijzerFunctionThirteen());
-      descriptorList.Add(new KeijzerFunctionFourteen());
-      descriptorList.Add(new KeijzerFunctionFifteen());
-      descriptorList.Add(new KeijzerFunctionSixteen());
-      return descriptorList;
+      return new List<IDataDescriptor>();
+    }
+
+    public override IRegressionProblemData LoadData(IDataDescriptor descriptor) {
+      throw new NotImplementedException();
     }
   }
 }

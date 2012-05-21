@@ -31,7 +31,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       get { return ""; }
     }
     public override Uri WebLink {
-      get { return null; }
+      get { return new Uri("http://dev.heuristiclab.com/trac/hl/core/wiki/AdditionalMaterial"); }
     }
     public override string ReferencePublication {
       get { return ""; }
@@ -40,6 +40,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
       List<IDataDescriptor> descriptorList = new List<IDataDescriptor>();
       descriptorList.Add(new BreimanOne());
+      descriptorList.Add(new FriedmanOne());
+      descriptorList.Add(new FriedmanTwo());
       descriptorList.Add(new PolyTen());
       descriptorList.Add(new SpatialCoevolution());
       return descriptorList;

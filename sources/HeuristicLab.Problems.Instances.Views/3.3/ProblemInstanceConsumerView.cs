@@ -51,7 +51,7 @@ namespace HeuristicLab.Problems.Instances.Views {
     public ProblemInstanceConsumerView() {
       InitializeComponent();
       libraryInfoButton.Text = String.Empty;
-      libraryInfoButton.Image = VSImageLibrary.Internet;
+      libraryInfoButton.Image = VSImageLibrary.Help;
     }
 
     protected override void OnContentChanged() {

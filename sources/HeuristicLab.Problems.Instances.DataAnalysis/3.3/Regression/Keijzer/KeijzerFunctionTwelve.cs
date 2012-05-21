@@ -26,7 +26,7 @@ using System.Linq;
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class KeijzerFunctionTwelve : ArtificialRegressionDataDescriptor {
 
-    public override string Name { get { return "Keijzer 12 f(x) = xy + sin((x - 1)(y - 1))"; } }
+    public override string Name { get { return "Keijzer 12 f(x, y) = xy + sin((x - 1)(y - 1))"; } }
     public override string Description {
       get {
         return "Paper: Improving Symbolic Regression with Interval Arithmetic and Linear Scaling" + Environment.NewLine

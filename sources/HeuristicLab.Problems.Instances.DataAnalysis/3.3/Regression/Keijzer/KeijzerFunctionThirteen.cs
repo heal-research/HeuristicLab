@@ -26,7 +26,7 @@ using System.Linq;
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class KeijzerFunctionThirteen : ArtificialRegressionDataDescriptor {
 
-    public override string Name { get { return "Keijzer 13 f(x) = x^4 - x^3 + y^2 / 2 - y"; } }
+    public override string Name { get { return "Keijzer 13 f(x, y) = x^4 - x^3 + y^2 / 2 - y"; } }
     public override string Description {
       get {
         return "Paper: Improving Symbolic Regression with Interval Arithmetic and Linear Scaling" + Environment.NewLine

@@ -42,6 +42,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -52,6 +54,7 @@
     <Compile Include="Classification\ArtificialClassificationDataDescriptor.cs" />
     <Compile Include="Classification\ArtificialClassificationInstanceProvider.cs" />
     <Compile Include="Classification\ClassificationInstanceProvider.cs" />
+    <Compile Include="Classification\CSV\ClassifiactionCSVInstanceProvider.cs" />
     <Compile Include="Classification\RealWorld\Iris.cs" />
     <Compile Include="Classification\RealWorld\Mammography.cs" />
     <Compile Include="Classification\RealWorld\ClassificationRealWorldInstanceProvider.cs" />
@@ -61,6 +64,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Regression\ArtificialRegressionDataDescriptor.cs" />
     <Compile Include="Regression\ArtificialRegressionInstanceProvider.cs" />
+    <Compile Include="Regression\CSV\RegressionCSVInstanceProvider.cs" />
+    <Compile Include="Regression\Keijzer\KeijzerFunctionFourteen.cs" />
+    <Compile Include="Regression\Keijzer\KeijzerFunctionEleven.cs" />
+    <Compile Include="Regression\Keijzer\KeijzerFunctionNine.cs" />
+    <Compile Include="Regression\Keijzer\KeijzerFunctionFive.cs" />
     <Compile Include="Regression\Keijzer\KeijzerFunctionEight.cs" />
     <Compile Include="Regression\Keijzer\KeijzerFunctionFifteen.cs" />
     <Compile Include="Regression\Keijzer\KeijzerFunctionFour.cs" />
@@ -105,6 +113,8 @@
     <Compile Include="Regression\ResourceRegressionInstanceProvider.cs" />
     <Compile Include="Regression\ValueGenerator.cs" />
     <Compile Include="Regression\Various\BreimanOne.cs" />
+    <Compile Include="Regression\Various\FriedmanTwo.cs" />
+    <Compile Include="Regression\Various\FriedmanOne.cs" />
     <Compile Include="Regression\Various\PolyTen.cs" />
     <Compile Include="Regression\Various\SpatialCoevolution.cs" />
     <Compile Include="Regression\Various\VariousInstanceProvider.cs" />

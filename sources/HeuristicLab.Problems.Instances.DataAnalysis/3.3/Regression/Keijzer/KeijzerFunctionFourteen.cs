@@ -24,15 +24,15 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  public class KeijzerFunctionSixteen : ArtificialRegressionDataDescriptor {
+  public class KeijzerFunctionFourteen : ArtificialRegressionDataDescriptor {
 
-    public override string Name { get { return "Keijzer 16 f(x, y) = x^3 / 5 + y^3 / 2 - y - x"; } }
+    public override string Name { get { return "Keijzer 14 f(x, y) = 6 * sin(x) * cos(y)"; } }
     public override string Description {
       get {
         return "Paper: Improving Symbolic Regression with Interval Arithmetic and Linear Scaling" + Environment.NewLine
         + "Authors: Maarten Keijzer" + Environment.NewLine
-        + "Function: f(x, y) = x^3 / 5 + y^3 / 2 - y - x" + Environment.NewLine
-        + "range(train): 20 Training cases x,y = rnd(-3, 3)" + Environment.NewLine
+        + "Function: f(x, y) = 6 * sin(x) * cos(y)" + Environment.NewLine
+        + "range(train): 20 Train cases x,y = rnd(-3, 3)" + Environment.NewLine
         + "range(test): x,y = [-3:0.01:3]" + Environment.NewLine
         + "Function Set: x + y, x * y, 1/x, -x, sqrt(x)" + Environment.NewLine + Environment.NewLine
         + "Note: Test partition has been adjusted to only 100 random uniformly distributed test cases in the intercal [-3, 3] (not ca. 360000 as described) "
@@ -58,7 +58,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       for (int i = 0; i < data[0].Count; i++) {
         x = data[0][i];
         y = data[1][i];
-        results.Add(Math.Pow(x, 3) / 5 + Math.Pow(y, 3) / 2 - y - x);
+        results.Add(6 * Math.Sin(x) * Math.Cos(y));
       }
       data.Add(results);
 

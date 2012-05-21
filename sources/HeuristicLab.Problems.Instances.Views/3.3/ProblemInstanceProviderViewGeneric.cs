@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -64,7 +65,7 @@ namespace HeuristicLab.Problems.Instances.Views {
       InitializeComponent();
       importButton.Text = String.Empty;
       importButton.Image = VSImageLibrary.Open;
-      toolTip.SetToolTip(importButton, "Import a " + GetProblemType() + " problem from file.");
+      toolTip.SetToolTip(importButton, "Open a " + GetProblemType() + " problem from file.");
       exportButton.Text = String.Empty;
       exportButton.Image = VSImageLibrary.Save;
       toolTip.SetToolTip(exportButton, "Export currently loaded " + GetProblemType() + " problem to a file.");
@@ -79,7 +80,21 @@ namespace HeuristicLab.Problems.Instances.Views {
         instancesComboBox.DataSource = null;
       } else {
         instancesComboBox.DisplayMember = "Name";
-        instancesComboBox.DataSource = Content.GetDataDescriptors().ToList();
+        IEnumerable<IDataDescriptor> dataDescriptors = Content.GetDataDescriptors().ToList();
+        ShowInstanceLoad(dataDescriptors.Count() > 0);
+        instancesComboBox.DataSource = dataDescriptors;
+      }
+    }
+
+    protected void ShowInstanceLoad(bool show) {
+      if (show) {
+        instanceLabel.Show();
+        instancesComboBox.Show();
+        loadButton.Show();
+      } else {
+        instanceLabel.Hide();
+        instancesComboBox.Hide();
+        loadButton.Hide();
       }
     }
 
