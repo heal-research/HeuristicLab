@@ -249,7 +249,7 @@ namespace HeuristicLab_33.Tests {
       symbRegProblem.Name = "Tower Symbolic Regression Problem";
       symbRegProblem.Description = "Tower Dataset (downloaded from: http://vanillamodeling.com/realproblems.html)";
       RegressionRealWorldInstanceProvider provider = new RegressionRealWorldInstanceProvider();
-      var instance = provider.GetDataDescriptors().Where(x => x.Name.Equals("towerData")).Single();
+      var instance = provider.GetDataDescriptors().Where(x => x.Name.Equals("TowerData")).Single();
       var towerProblemData = (RegressionProblemData)provider.LoadData(instance);
       towerProblemData.TargetVariableParameter.Value = towerProblemData.TargetVariableParameter.ValidValues
         .First(v => v.Value == "towerResponse");
@@ -354,7 +354,7 @@ namespace HeuristicLab_33.Tests {
       symbClassProblem.Name = "Mammography Classification Problem";
       symbClassProblem.Description = "Mammography dataset imported from the UCI machine learning repository (http://archive.ics.uci.edu/ml/datasets/Mammographic+Mass)";
       ClassificationRealWorldInstanceProvider provider = new ClassificationRealWorldInstanceProvider();
-      var instance = provider.GetDataDescriptors().Where(x => x.Name.Equals("mammography")).Single();
+      var instance = provider.GetDataDescriptors().Where(x => x.Name.Equals("Mammography")).Single();
       var mammoData = (ClassificationProblemData)provider.LoadData(instance);
       mammoData.TargetVariableParameter.Value = mammoData.TargetVariableParameter.ValidValues
         .First(v => v.Value == "Severity");
