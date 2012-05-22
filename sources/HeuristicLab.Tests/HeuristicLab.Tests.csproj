@@ -263,7 +263,8 @@
     <Compile Include="HeuristicLab.PluginInfraStructure-3.3\InstallationManagerTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\OnlineCalculatorPerformanceTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\StatisticCalculatorsTest.cs" />
-    <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\TableFileParserTest.cs" />
+    <Compile Include="HeuristicLab.Problems.Instances.DataAnalysis-3.3\RegressionInstanceProviderTest.cs" />
+    <Compile Include="HeuristicLab.Problems.Instances.DataAnalysis-3.3\TableFileParserTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\SymbolicDataAnalysisExpressionCrossoverTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\SymbolicDataAnalysisExpressionTreeInterpreterTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\SymbolicDataAnalysisExpressionTreeSimplifierTest.cs" />
@@ -274,6 +275,7 @@
     <Compile Include="HeuristicLab.Problems.Instances-3.3\ElloumiCTAPInstanceProviderTest.cs" />
     <Compile Include="HeuristicLab.Problems.Instances-3.3\QAPLIBInstanceProviderTest.cs" />
     <Compile Include="HeuristicLab.Problems.Instances-3.3\TSPLIBInstanceProviderTest.cs" />
+    <Compile Include="HeuristicLab.Problems.Instances.DataAnalysis-3.3\ClassificationInstanceProviderTest.cs" />
     <Compile Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIBInstancesTest.cs" />
     <Compile Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPMoveEvaluatorTest.cs" />
     <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\AckleyEvaluatorTest.cs" />
