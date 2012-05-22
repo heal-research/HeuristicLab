@@ -130,7 +130,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       }
     }
 
-
     private void weightMuTextBox_TextChanged(object sender, EventArgs e) {
       double nu;
       if (double.TryParse(weightInitializationMuTextBox.Text, out nu)) {

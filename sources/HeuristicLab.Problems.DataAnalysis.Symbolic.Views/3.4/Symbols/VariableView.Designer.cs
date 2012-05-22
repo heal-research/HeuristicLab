@@ -73,6 +73,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.errorProvider.SetIconAlignment(this.initialFrequencyTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.initialFrequencyTextBox.Size = new System.Drawing.Size(311, 20);
       // 
+      // minimumArityLabel
+      // 
+      this.toolTip.SetToolTip(this.minimumArityLabel, "The minimum arity of the symbol");
+      // 
+      // maximumArityLabel
+      // 
+      this.toolTip.SetToolTip(this.maximumArityLabel, "The maximum arity of the symbol");
+      // 
       // minimumArityTextBox
       // 
       this.errorProvider.SetIconAlignment(this.minimumArityTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
@@ -231,7 +239,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.variableNamesTabPage.Location = new System.Drawing.Point(4, 22);
       this.variableNamesTabPage.Name = "variableNamesTabPage";
       this.variableNamesTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.variableNamesTabPage.Size = new System.Drawing.Size(400, 141);
+      this.variableNamesTabPage.Size = new System.Drawing.Size(400, 164);
       this.variableNamesTabPage.TabIndex = 0;
       this.variableNamesTabPage.Text = "Variable Names";
       this.variableNamesTabPage.UseVisualStyleBackColor = true;

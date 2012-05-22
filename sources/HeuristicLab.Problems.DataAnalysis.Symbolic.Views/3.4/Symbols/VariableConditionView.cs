@@ -20,7 +20,12 @@
 #endregion
 
 using System;
+using System.Linq;
 using System.Windows.Forms;
+using HeuristicLab.Collections;
+using HeuristicLab.Core;
+using HeuristicLab.Core.Views;
+using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
@@ -29,6 +34,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
   [View("Variable View")]
   [Content(typeof(VariableCondition), true)]
   public partial class VariableConditionView : SymbolView {
+    private CheckedItemCollectionView<StringValue> variableNamesView;
+
     public new VariableCondition Content {
       get { return (VariableCondition)base.Content; }
       set { base.Content = value; }
@@ -36,6 +43,32 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     public VariableConditionView() {
       InitializeComponent();
+      variableNamesView = new CheckedItemCollectionView<StringValue>();
+      variableNamesView.Dock = DockStyle.Fill;
+      variableNamesTabPage.Controls.Add(variableNamesView);
+      variableNamesView.Content = new CheckedItemCollection<StringValue>();
+
+      RegisterVariableNamesViewContentEvents();
+    }
+
+    private void RegisterVariableNamesViewContentEvents() {
+      variableNamesView.Content.ItemsAdded += new CollectionItemsChangedEventHandler<StringValue>(variableNames_Changed);
+      variableNamesView.Content.ItemsRemoved += new CollectionItemsChangedEventHandler<StringValue>(variableNames_Changed);
+      variableNamesView.Content.CheckedItemsChanged += new CollectionItemsChangedEventHandler<StringValue>(variableNames_Changed);
+      variableNamesView.Content.CollectionReset += new CollectionItemsChangedEventHandler<StringValue>(variableNames_Changed);
+      foreach (var variable in variableNamesView.Content) {
+        variable.ValueChanged += new EventHandler(variable_ValueChanged);
+      }
+    }
+
+    private void DeregisterVariableNamesViewContentEvents() {
+      variableNamesView.Content.ItemsAdded -= new CollectionItemsChangedEventHandler<StringValue>(variableNames_Changed);
+      variableNamesView.Content.ItemsRemoved -= new CollectionItemsChangedEventHandler<StringValue>(variableNames_Changed);
+      variableNamesView.Content.CheckedItemsChanged -= new CollectionItemsChangedEventHandler<StringValue>(variableNames_Changed);
+      variableNamesView.Content.CollectionReset -= new CollectionItemsChangedEventHandler<StringValue>(variableNames_Changed);
+      foreach (var variable in variableNamesView.Content) {
+        variable.ValueChanged -= new EventHandler(variable_ValueChanged);
+      }
     }
 
     protected override void RegisterContentEvents() {
@@ -75,8 +108,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       slopeChangeSigmaTextBox.ReadOnly = ReadOnly;
     }
 
-
-
     private void UpdateControl() {
       if (Content == null) {
         thresholdInitializationMuTextBox.Text = string.Empty;
@@ -87,7 +118,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         thresholdChangeSigmaTextBox.Text = string.Empty;
         slopeChangeMuTextBox.Text = string.Empty;
         slopeChangeSigmaTextBox.Text = string.Empty;
+        // temporarily deregister to prevent circular calling of events
+        DeregisterVariableNamesViewContentEvents();
+        variableNamesView.Content.Clear();
+        RegisterVariableNamesViewContentEvents();
       } else {
+        var existingEntries = variableNamesView.Content.ToList();
+
+        // temporarily deregister to prevent circular calling of events
+        DeregisterVariableNamesViewContentEvents();
+        // add additional entries
+        foreach (var variableName in Content.VariableNames.Except(existingEntries.Select(x => x.Value)))
+          variableNamesView.Content.Add(new StringValue(variableName), true);
+        foreach (var oldEntry in existingEntries.Where(x => !Content.VariableNames.Contains(x.Value)))
+          variableNamesView.Content.Remove(oldEntry);
+        RegisterVariableNamesViewContentEvents();
+
         thresholdInitializationMuTextBox.Text = Content.ThresholdInitializerMu.ToString();
         thresholdInitializationSigmaTextBox.Text = Content.ThresholdInitializerSigma.ToString();
         slopeInitializationMuTextBox.Text = Content.SlopeInitializerMu.ToString();
@@ -101,6 +147,28 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     }
 
     #region control events
+    private void variableNames_Changed(object sender, CollectionItemsChangedEventArgs<StringValue> args) {
+      if (args.Items != null)
+        foreach (var newVar in args.Items)
+          newVar.ValueChanged += new EventHandler(variable_ValueChanged);
+      if (args.OldItems != null)
+        foreach (var oldVar in args.OldItems)
+          oldVar.ValueChanged -= new EventHandler(variable_ValueChanged);
+      UpdateContent();
+    }
+
+    private void variable_ValueChanged(object sender, EventArgs e) {
+      UpdateContent();
+    }
+
+    private void UpdateContent() {
+      if (Content != null) {
+        DeregisterContentEvents();
+        Content.VariableNames = variableNamesView.Content.CheckedItems.Select(x => x.Value).ToList();
+        RegisterContentEvents();
+      }
+    }
+
     private void thresholdMuTextBox_TextChanged(object sender, EventArgs e) {
       double value;
       if (double.TryParse(thresholdInitializationMuTextBox.Text, out value)) {
@@ -161,6 +229,5 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       } else errorProvider.SetError(slopeChangeSigmaTextBox, "Invalid value");
     }
     #endregion
-
   }
 }
