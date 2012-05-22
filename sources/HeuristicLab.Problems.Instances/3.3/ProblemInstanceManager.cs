@@ -35,6 +35,14 @@ namespace HeuristicLab.Problems.Instances {
           .Select(x => x.GetGenericArguments().First())
           .Select(x => typeof(IProblemInstanceProvider<>).MakeGenericType(x));
 
+        if (instanceTypes.Any(x => x.GetGenericArguments().First().IsInterface)) {
+          var interfaceTypes = instanceTypes.Where(x => x.GetGenericArguments().First().IsInterface)
+            .SelectMany(x => ApplicationManager.Manager.GetTypes(x.GetGenericArguments().First()));
+
+          if (interfaceTypes.Any())
+            instanceTypes = instanceTypes.Union(interfaceTypes.Select(x => typeof(IProblemInstanceProvider<>).MakeGenericType(x))).Distinct();
+        }
+
         foreach (var type in instanceTypes) {
           foreach (var provider in ApplicationManager.Manager.GetInstances(type))
             yield return (IProblemInstanceProvider)provider;
