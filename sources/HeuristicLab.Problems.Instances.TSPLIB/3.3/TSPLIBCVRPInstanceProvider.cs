@@ -45,22 +45,22 @@ namespace HeuristicLab.Problems.Instances.TSPLIB {
       instance.Demands = parser.Demands;
       switch (parser.EdgeWeightType) {
         case TSPLIBEdgeWeightTypes.ATT:
-          instance.DistanceMeasure = CVRPDistanceMeasure.Att; break;
+          instance.DistanceMeasure = DistanceMeasure.Att; break;
         case TSPLIBEdgeWeightTypes.CEIL_2D:
-          instance.DistanceMeasure = CVRPDistanceMeasure.UpperEuclidean; break;
+          instance.DistanceMeasure = DistanceMeasure.UpperEuclidean; break;
         case TSPLIBEdgeWeightTypes.EUC_2D:
         case TSPLIBEdgeWeightTypes.EUC_3D:
-          instance.DistanceMeasure = CVRPDistanceMeasure.RoundedEuclidean; break;
+          instance.DistanceMeasure = DistanceMeasure.RoundedEuclidean; break;
         case TSPLIBEdgeWeightTypes.EXPLICIT:
-          instance.DistanceMeasure = CVRPDistanceMeasure.Direct; break;
+          instance.DistanceMeasure = DistanceMeasure.Direct; break;
         case TSPLIBEdgeWeightTypes.GEO:
-          instance.DistanceMeasure = CVRPDistanceMeasure.Geo; break;
+          instance.DistanceMeasure = DistanceMeasure.Geo; break;
         case TSPLIBEdgeWeightTypes.MAN_2D:
         case TSPLIBEdgeWeightTypes.MAN_3D:
-          instance.DistanceMeasure = CVRPDistanceMeasure.Manhattan; break;
+          instance.DistanceMeasure = DistanceMeasure.Manhattan; break;
         case TSPLIBEdgeWeightTypes.MAX_2D:
         case TSPLIBEdgeWeightTypes.MAX_3D:
-          instance.DistanceMeasure = CVRPDistanceMeasure.Maximum; break;
+          instance.DistanceMeasure = DistanceMeasure.Maximum; break;
         default:
           throw new InvalidDataException("The given edge weight is not supported by HeuristicLab.");
       }

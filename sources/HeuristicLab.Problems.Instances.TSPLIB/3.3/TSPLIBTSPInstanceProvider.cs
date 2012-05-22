@@ -45,23 +45,23 @@ namespace HeuristicLab.Problems.Instances.TSPLIB {
       instance.Distances = parser.Distances;
       switch (parser.EdgeWeightType) {
         case TSPLIBEdgeWeightTypes.ATT:
-          instance.DistanceMeasure = TSPDistanceMeasure.Att; break;
+          instance.DistanceMeasure = DistanceMeasure.Att; break;
         case TSPLIBEdgeWeightTypes.CEIL_2D:
-          instance.DistanceMeasure = TSPDistanceMeasure.UpperEuclidean; break;
+          instance.DistanceMeasure = DistanceMeasure.UpperEuclidean; break;
         case TSPLIBEdgeWeightTypes.EUC_2D:
-          instance.DistanceMeasure = TSPDistanceMeasure.RoundedEuclidean; break;
+          instance.DistanceMeasure = DistanceMeasure.RoundedEuclidean; break;
         case TSPLIBEdgeWeightTypes.EUC_3D:
           throw new InvalidDataException("3D coordinates are not supported.");
         case TSPLIBEdgeWeightTypes.EXPLICIT:
-          instance.DistanceMeasure = TSPDistanceMeasure.Direct; break;
+          instance.DistanceMeasure = DistanceMeasure.Direct; break;
         case TSPLIBEdgeWeightTypes.GEO:
-          instance.DistanceMeasure = TSPDistanceMeasure.Geo; break;
+          instance.DistanceMeasure = DistanceMeasure.Geo; break;
         case TSPLIBEdgeWeightTypes.MAN_2D:
-          instance.DistanceMeasure = TSPDistanceMeasure.Manhattan; break;
+          instance.DistanceMeasure = DistanceMeasure.Manhattan; break;
         case TSPLIBEdgeWeightTypes.MAN_3D:
           throw new InvalidDataException("3D coordinates are not supported.");
         case TSPLIBEdgeWeightTypes.MAX_2D:
-          instance.DistanceMeasure = TSPDistanceMeasure.Maximum; break;
+          instance.DistanceMeasure = DistanceMeasure.Maximum; break;
         case TSPLIBEdgeWeightTypes.MAX_3D:
           throw new InvalidDataException("3D coordinates are not supported.");
         default:

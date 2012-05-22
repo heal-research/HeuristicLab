@@ -116,8 +116,10 @@
     <Compile Include="Types\ATSPData.cs" />
     <Compile Include="Types\CTAPData.cs" />
     <Compile Include="IDataDescriptor.cs" />
-    <Compile Include="Types\CVRPData.cs" />
+    <Compile Include="Types\DistanceHelper.cs" />
+    <Compile Include="Types\VRP\CVRPData.cs" />
     <Compile Include="Types\GQAPData.cs" />
+    <Compile Include="Types\VRP\IVRPData.cs" />
     <Compile Include="Types\QAPData.cs" />
     <Compile Include="Types\TSPData.cs" />
     <Compile Include="IProblemInstanceConsumer.cs" />

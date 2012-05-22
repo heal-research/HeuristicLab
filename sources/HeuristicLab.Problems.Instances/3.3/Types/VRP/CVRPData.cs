@@ -21,12 +21,10 @@
 
 
 namespace HeuristicLab.Problems.Instances {
-  public enum CVRPDistanceMeasure { Direct, Euclidean, RoundedEuclidean, UpperEuclidean, Geo, Manhattan, Maximum, Att };
-
   /// <summary>
   /// Describes instances of the Capacitated Vehicle Routing Problem (CVRP).
   /// </summary>
-  public class CVRPData {
+  public class CVRPData: IVRPData {
     /// <summary>
     /// The name of the instance
     /// </summary>
@@ -44,7 +42,7 @@ namespace HeuristicLab.Problems.Instances {
     /// The distance measure that is used to calculate the distance between
     ///the coordinates if no <see cref="Distances"/> is given.
     /// </summary>
-    public CVRPDistanceMeasure DistanceMeasure { get; set; }
+    public DistanceMeasure DistanceMeasure { get; set; }
     /// <summary>
     /// Optional! The maximum number of vehicles that can be used.
     /// </summary>
@@ -89,5 +87,13 @@ namespace HeuristicLab.Problems.Instances {
     /// Optional! The quality of the best-known solution.
     /// </summary>
     public double? BestKnownQuality { get; set; }
+
+    /// <summary>
+    /// If only the coordinates are given, can calculate the distance matrix.
+    /// </summary>
+    /// <returns>A full distance matrix between all cities.</returns>
+    public double[,] GetDistanceMatrix() {
+      return DistanceHelper.GetDistanceMatrix(DistanceMeasure, Coordinates, Distances, Dimension);
+    }
   }
 }
