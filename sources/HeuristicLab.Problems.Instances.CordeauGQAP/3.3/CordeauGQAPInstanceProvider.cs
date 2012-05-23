@@ -50,7 +50,7 @@ INFORMS Journal on Computing, 18, pp. 433–443.";
     }
 
     private const string FileName = "CordeauGQAP";
-   
+
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
       var instanceArchiveName = GetResourceName(FileName + @"\.zip");
       if (String.IsNullOrEmpty(instanceArchiveName)) yield break;
@@ -97,6 +97,7 @@ INFORMS Journal on Computing, 18, pp. 433–443.";
 
     private GQAPData Load(CordeauGQAPParser parser) {
       var instance = new GQAPData();
+      instance.BestKnownQuality = parser.BestKnownQuality;
       instance.Equipments = parser.Equipments;
       instance.Locations = parser.Locations;
       instance.Demands = parser.Demands;

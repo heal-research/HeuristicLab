@@ -28,6 +28,7 @@ namespace HeuristicLab.Problems.Instances.CordeauGQAP {
     public int Equipments { get; private set; }
     public int Locations { get; private set; }
     public double TransportationCosts { get; private set; }
+    public double BestKnownQuality { get; private set; }
     public double[,] Weights { get; private set; }
     public double[,] Distances { get; private set; }
     public double[,] InstallationCosts { get; private set; }
@@ -72,6 +73,13 @@ namespace HeuristicLab.Problems.Instances.CordeauGQAP {
       TransportationCosts = double.Parse(info[2]);
 
       line = Continue(reader);
+      double bkq;
+      if (!double.TryParse(line, out bkq))
+        BestKnownQuality = double.NaN;
+      else {
+        BestKnownQuality = bkq;
+        line = Continue(reader);
+      }
 
       Weights = new double[Equipments, Equipments];
       for (int i = 0; i < Equipments; i++) {
