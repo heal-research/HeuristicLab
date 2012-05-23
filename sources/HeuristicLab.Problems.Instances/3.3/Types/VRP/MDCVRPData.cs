@@ -19,20 +19,23 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace HeuristicLab.Problems.Instances {
   /// <summary>
-  /// Interface for VRP data
+  /// Describes instances of the Multi-Depot Capacitated Vehicle Routing Problem (MDCVRP).
   /// </summary>
-  public interface IVRPData {
-    string Name { get; set; }
-    string Description { get; set; }
-    int Dimension { get; set; }
-    double? BestKnownQuality { get; set; }
-    int[][] BestKnownTour { get; set; }
+  public class MDCVRPData: VRPData {
+    /// <summary>
+    /// The number of depots
+    /// </summary>
+    public int Depots { get; set; }
+    /// <summary>
+    /// The assignment of the vehicles to the depot.
+    /// </summary>
+    public int[] VehicleDepotAssignment { get; set; }
+    /// <summary>
+    /// The capacity of the vehicles, which is not the same for all (heterogeneous fleet).
+    /// </summary>
+    public double[] Capacity { get; set; }
   }
 }

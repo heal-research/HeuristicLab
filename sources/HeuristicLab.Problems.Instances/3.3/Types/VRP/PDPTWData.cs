@@ -19,20 +19,15 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace HeuristicLab.Problems.Instances {
   /// <summary>
-  /// Interface for VRP data
+  /// Describes instances of the Pickup and Delivery Problem with Time Windows (PDPTW).
   /// </summary>
-  public interface IVRPData {
-    string Name { get; set; }
-    string Description { get; set; }
-    int Dimension { get; set; }
-    double? BestKnownQuality { get; set; }
-    int[][] BestKnownTour { get; set; }
+  public class PDPTWData: CVRPTWData {
+    /// <summary>
+    /// The pickup and delivery locations of the requests
+    /// </summary>
+    public int[] PickupDeliveryLocations { get; set; }
   }
 }

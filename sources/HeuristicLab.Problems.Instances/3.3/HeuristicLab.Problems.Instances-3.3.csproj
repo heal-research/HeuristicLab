@@ -117,6 +117,11 @@
     <Compile Include="Types\CTAPData.cs" />
     <Compile Include="IDataDescriptor.cs" />
     <Compile Include="Types\DistanceHelper.cs" />
+    <Compile Include="Types\VRP\MDCVRPTWData.cs" />
+    <Compile Include="Types\VRP\MDCVRPData.cs" />
+    <Compile Include="Types\VRP\PDPTWData.cs" />
+    <Compile Include="Types\VRP\CVRPTWData.cs" />
+    <Compile Include="Types\VRP\VRPData.cs" />
     <Compile Include="Types\VRP\CVRPData.cs" />
     <Compile Include="Types\GQAPData.cs" />
     <Compile Include="Types\VRP\IVRPData.cs" />
